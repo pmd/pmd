@@ -1502,6 +1502,29 @@ subset of virtual methods.</p>
     <p>By default, both properties are <code class="language-plaintext highlighter-rouge">true</code> to not change the default behaviour of this rule.</p>
   </li>
   <li>
+    <p>The Apex rule <a href="pmd_rules_apex_errorprone.html#emptycatchblock"><code class="language-plaintext highlighter-rouge">EmptyCatchBlock</code></a> has two new properties modeled after the analgous Java rule:</p>
+
+    <p>The <code class="language-plaintext highlighter-rouge">allowCommentedBlocks</code> property, when set to <code class="language-plaintext highlighter-rouge">true</code> (defaults to <code class="language-plaintext highlighter-rouge">false</code>), ignores empty blocks containing comments, e.g.:</p>
+
+    <div class="language-apex highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">try</span> <span class="p">{</span>
+    <span class="nf">doSomethingThatThrowsAnExpectedException</span><span class="p">();</span>
+    <span class="n">System</span><span class="o">.</span><span class="nf">assert</span><span class="p">(</span><span class="kc">false</span><span class="p">,</span> <span class="s1">'</span><span class="s2">Expected to catch an exception.'</span><span class="p">);</span>
+<span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="n">Exception</span> <span class="n">e</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// Expected</span>
+<span class="p">}</span>
+</code></pre></div>    </div>
+
+    <p>The <code class="language-plaintext highlighter-rouge">allowExceptionNameRegex</code> property is a regular expression for exception variable names for which empty catch blocks should be ignored by this rule. For example, using the default property value of <code class="language-plaintext highlighter-rouge">^(ignored|expected)$</code>, the following empty catch blocks will not be reported:</p>
+
+    <div class="language-apex highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">try</span> <span class="p">{</span>
+    <span class="nf">doSomethingThatThrowsAnExpectedException</span><span class="p">();</span>
+    <span class="n">System</span><span class="o">.</span><span class="nf">assert</span><span class="p">(</span><span class="kc">false</span><span class="p">,</span> <span class="s1">'</span><span class="s2">Expected to catch an exception.'</span><span class="p">);</span>
+<span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="n">IllegalStateException</span> <span class="n">ignored</span><span class="p">)</span> <span class="p">{</span>
+<span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="n">NumberFormatException</span> <span class="n">expected</span><span class="p">)</span> <span class="p">{</span>
+<span class="p">}</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
     <p>The Apex rule <a href="pmd_rules_apex_codestyle.html#onedeclarationperline"><code class="language-plaintext highlighter-rouge">OneDeclarationPerLine</code></a> has a new property <code class="language-plaintext highlighter-rouge">reportInForLoopInitializer</code>:
 If set to <code class="language-plaintext highlighter-rouge">false</code> (default is <code class="language-plaintext highlighter-rouge">true</code> if unspecified) doesn’t report an issue for multiple declarations in
 a <code class="language-plaintext highlighter-rouge">for</code> loop’s initializer section. This is support the common idiom of one declaration for the loop variable
@@ -1523,6 +1546,7 @@ and another for the loop bounds condition, e.g.,</p>
       <li><a href="https://github.com/pmd/pmd/issues/3532">#3532</a>: [apex] Promote usage of consistent getDescribe() info</li>
       <li><a href="https://github.com/pmd/pmd/issues/3566">#3566</a>: [apex] ApexDoc rule should not require “@description”</li>
       <li><a href="https://github.com/pmd/pmd/issues/3568">#3568</a>: [apex] EmptyStatementBlock: should provide options to ignore empty private constructors and empty virtual methods</li>
+      <li><a href="https://github.com/pmd/pmd/issues/3569">#3569</a>: [apex] EmptyCatchBlock: should provide an option to ignore empty catch blocks in test methods</li>
       <li><a href="https://github.com/pmd/pmd/issues/3570">#3570</a>: [apex] OneDeclarationPerLine: should provide an option to ignore multiple declarations in a for loop initializer</li>
       <li><a href="https://github.com/pmd/pmd/issues/3576">#3576</a>: [apex] ApexCRUDViolation should provide an option to specify additional patterns for methods that encapsulate authorization checks</li>
       <li><a href="https://github.com/pmd/pmd/issues/3579">#3579</a>: [apex] ApexCRUDViolation: false negative with undelete</li>
