@@ -62,6 +62,18 @@ This is a {{ site.pmd.release_type }} release.
     </rule>
     ```
 
+*   The apex rule {% rule apex/errorprone/EmptyStatementBlock %} has two new properties:
+    
+    Setting `reportEmptyPrivateNoArgConstructor` to `false` ignores empty private no-arg constructors
+    that are commonly used in singleton pattern implementations and utility classes in support of
+    prescribed best practices.
+    
+    Setting `reportEmptyVirtualMethod` to `false` ignores empty virtual methods that are commonly used in
+    abstract base classes as default no-op implementations when derived classes typically only override a
+    subset of virtual methods.
+    
+    By default, both properties are `true` to not change the default behaviour of this rule.
+
 ### Fixed Issues
 
 *   apex
@@ -69,6 +81,7 @@ This is a {{ site.pmd.release_type }} release.
     *   [#1090](https://github.com/pmd/pmd/issues/1090): \[apex] ApexCRUDViolation: checks not detected if done in another method
     *   [#3532](https://github.com/pmd/pmd/issues/3532): \[apex] Promote usage of consistent getDescribe() info
     *   [#3566](https://github.com/pmd/pmd/issues/3566): \[apex] ApexDoc rule should not require "@description"
+    *   [#3568](https://github.com/pmd/pmd/issues/3568): \[apex] EmptyStatementBlock: should provide options to ignore empty private constructors and empty virtual methods
     *   [#3576](https://github.com/pmd/pmd/issues/3576): \[apex] ApexCRUDViolation should provide an option to specify additional patterns for methods that encapsulate authorization checks
     *   [#3579](https://github.com/pmd/pmd/issues/3579): \[apex] ApexCRUDViolation: false negative with undelete
 *   java-errorprone
@@ -86,6 +99,7 @@ This is a {{ site.pmd.release_type }} release.
 *   [#3565](https://github.com/pmd/pmd/pull/3565): \[doc] Fix resource leak due to Files.walk - [lujiefsi](https://github.com/lujiefsi)
 *   [#3571](https://github.com/pmd/pmd/pull/3571): \[apex] Fix for #1089 - Added new configuration property additionalAssertMethodPattern to ApexUnitTestClassShouldHaveAssertsRule - [Scott Wells](https://github.com/SCWells72)
 *   [#3572](https://github.com/pmd/pmd/pull/3572): \[apex] Fix for #3566 - Added new configuration property reportMissingDescription to ApexDocRule - [Scott Wells](https://github.com/SCWells72)
+*   [#3573](https://github.com/pmd/pmd/pull/3573): \[apex] Fix for #3568 - Added new configuration properties reportEmptyPrivateNoArgConstructor and reportEmptyVirtualMethod to EmptyStatementBlock - [Scott Wells](https://github.com/SCWells72)
 *   [#3577](https://github.com/pmd/pmd/pull/3577): \[apex] Fix for #3576 - Added new configuration properties \*AuthMethodPattern and \*AuthMethodTypeParamIndex to ApexCRUDViolation rule - [Scott Wells](https://github.com/SCWells72)
 *   [#3578](https://github.com/pmd/pmd/pull/3578): \[apex] ApexCRUDViolation: Documentation changes for #3576 - [Scott Wells](https://github.com/SCWells72)
 
