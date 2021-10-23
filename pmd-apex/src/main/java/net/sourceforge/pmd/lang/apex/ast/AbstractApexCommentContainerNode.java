@@ -11,7 +11,7 @@ import apex.jorje.semantic.ast.AstNode;
  *
  * @param <T> the node type
  */
-public abstract class AbstractApexCommentContainerNode<T extends AstNode> extends AbstractApexNode<T> implements ASTCommentContainer<T> {
+abstract class AbstractApexCommentContainerNode<T extends AstNode> extends AbstractApexNode<T> implements ASTCommentContainer<T> {
 
     private boolean containsComment = false;
 
