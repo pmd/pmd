@@ -1700,9 +1700,7 @@ In most circumstances, this swallows an exception which should either be acted o
 or reported.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
-<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">CatchBlockStatement</span><span class="p">[.</span><span class="o">/</span><span class="nt">BlockStatement</span><span class="p">[</span><span class="nf">count</span><span class="p">(</span><span class="err">*</span><span class="p">)</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="m">0</span><span class="p">]</span><span class="w"> </span><span class="ow">and</span><span class="w">
-    </span><span class="ow">not</span><span class="p">(</span><span class="nf">matches</span><span class="p">(</span><span class="na">@VariableName</span><span class="p">,</span><span class="w"> </span><span class="nv">$allowExceptionNameRegex</span><span class="p">))</span><span class="w"> </span><span class="ow">and</span><span class="w">
-    </span><span class="p">(</span><span class="nv">$allowCommentedBlocks</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">false</span><span class="p">()</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="na">@ContainsComment</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">false</span><span class="p">())]</span><span class="w">
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">CatchBlockStatement</span><span class="p">[.</span><span class="o">/</span><span class="nt">BlockStatement</span><span class="p">[</span><span class="nf">count</span><span class="p">(</span><span class="err">*</span><span class="p">)</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="m">0</span><span class="p">]]</span><span class="w">
 </span></code></pre></div></div>
 
 <p><strong>Example(s):</strong></p>
@@ -1747,32 +1745,11 @@ or reported.</p>
       <td><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Block Highlighting</td>
       <td>no</td>
     </tr>
-    <tr>
-      <td>allowCommentedBlocks</td>
-      <td>false</td>
-      <td>Empty blocks containing comments will be skipped</td>
-      <td>no</td>
-    </tr>
-    <tr>
-      <td>allowExceptionNameRegex</td>
-      <td>^(ignored|expected)$</td>
-      <td>Empty blocks catching exceptions with names matching this regular expression will be skipped</td>
-      <td>no</td>
-    </tr>
   </tbody>
 </table>
 
 <p><strong>Use this rule with the default properties by just referencing it:</strong></p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/apex/errorprone.xml/EmptyCatchBlock"</span> <span class="nt">/&gt;</span>
-</code></pre></div></div>
-
-<p><strong>Use this rule and customize it:</strong></p>
-<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/apex/errorprone.xml/EmptyCatchBlock"</span><span class="nt">&gt;</span>
-    <span class="nt">&lt;properties&gt;</span>
-        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"allowCommentedBlocks"</span> <span class="na">value=</span><span class="s">"false"</span> <span class="nt">/&gt;</span>
-        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"allowExceptionNameRegex"</span> <span class="na">value=</span><span class="s">"^(ignored|expected)$"</span> <span class="nt">/&gt;</span>
-    <span class="nt">&lt;/properties&gt;</span>
-<span class="nt">&lt;/rule&gt;</span>
 </code></pre></div></div>
 
 <h2 id="emptyifstmt">EmptyIfStmt</h2>
