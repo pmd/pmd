@@ -6,6 +6,8 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -249,7 +251,7 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
 
     private final SourceCodePositioner sourceCodePositioner;
     private final String sourceCode;
-    private List<Token> allCommentTokens;
+    private final boolean[] commentedLineFlags;
     private List<ApexDocTokenLocation> apexDocTokenLocations;
     private Map<Integer, String> suppressMap;
 
@@ -258,7 +260,7 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
         sourceCodePositioner = new SourceCodePositioner(sourceCode);
 
         CommentInformation commentInformation = extractInformationFromComments(sourceCode, parserOptions.getSuppressMarker());
-        allCommentTokens = commentInformation.allCommentTokens;
+        commentedLineFlags = flagCommentedLines(commentInformation.allCommentTokens);
         apexDocTokenLocations = commentInformation.docTokenLocations;
         suppressMap = commentInformation.suppressMap;
     }
@@ -314,17 +316,52 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
         // If appropriate, determine whether this node contains comments or not
         if (node instanceof AbstractApexCommentContainerNode) {
             AbstractApexCommentContainerNode<?> commentContainer = (AbstractApexCommentContainerNode<?>) node;
-            for (Token commentToken : allCommentTokens) {
-                int commentTokenLine = commentToken.getLine();
-                // Using strict comparisons here which could miss an EOL comment immediately after an open brace
-                if (commentTokenLine > commentContainer.getBeginLine() && commentTokenLine < commentContainer.getEndLine()) {
-                    commentContainer.setContainsComment(true);
-                    break;
-                }
+            if (containsCommentedLine(commentContainer)) {
+                commentContainer.setContainsComment(true);
             }
         }
 
         return node;
+    }
+
+    // Builds an array of lines that contain comments for easy, indexed lookup later
+    private static boolean[] flagCommentedLines(List<Token> commentTokens) {
+        if (commentTokens.isEmpty()) {
+            return new boolean[0];
+        }
+
+        // These are probably already sorted, but just in case, but it's critical that be the case so we know that the
+        // last entry is the highest numbered commented line
+        List<Token> sortedCommentTokens = new ArrayList<>(commentTokens);
+        sortedCommentTokens.sort((token1, token2) -> token1.getLine() - token2.getLine());
+        int lastCommentedLineNumber = sortedCommentTokens.get(commentTokens.size() - 1).getLine();
+
+        // This is almost certainly not the last line in the file, but we'll deal with that boundary condition in the check
+        boolean[] commentedLineFlags = new boolean[lastCommentedLineNumber + 1];
+        Arrays.fill(commentedLineFlags, false);
+        for (Token commentToken : commentTokens) {
+            commentedLineFlags[commentToken.getLine()] = true;
+        }
+        return commentedLineFlags;
+    }
+
+    private boolean containsCommentedLine(ASTCommentContainer<?> commentContainer) {
+        // If this potential comment container is after the last commented line, we're done
+        int beginLine = commentContainer.getBeginLine();
+        if (beginLine > commentedLineFlags.length) {
+            return false;
+        }
+
+        // Otherwise compute a range that is bounded by either the last line of the comment container or the last
+        // commented line, and see whether any line in that range (exclusive) was reported as a comment
+        int endLine = Math.min(commentContainer.getEndLine(), commentedLineFlags.length);
+        for (int line = beginLine + 1; line < endLine; line++) {
+            if (commentedLineFlags[line]) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private void addFormalComments() {
