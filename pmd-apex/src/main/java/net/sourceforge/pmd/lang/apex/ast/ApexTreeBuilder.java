@@ -249,6 +249,7 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
 
     private final SourceCodePositioner sourceCodePositioner;
     private final String sourceCode;
+    private List<Token> allCommentTokens;
     private List<ApexDocTokenLocation> apexDocTokenLocations;
     private Map<Integer, String> suppressMap;
 
@@ -257,6 +258,7 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
         sourceCodePositioner = new SourceCodePositioner(sourceCode);
 
         CommentInformation commentInformation = extractInformationFromComments(sourceCode, parserOptions.getSuppressMarker());
+        allCommentTokens = commentInformation.allCommentTokens;
         apexDocTokenLocations = commentInformation.docTokenLocations;
         suppressMap = commentInformation.suppressMap;
     }
@@ -309,6 +311,19 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
         // out the positions if necessary.
         node.calculateLineNumbers(sourceCodePositioner);
 
+        // If appropriate, determine whether this node contains comments or not
+        if (node instanceof AbstractApexCommentContainerNode) {
+            AbstractApexCommentContainerNode<?> commentContainer = (AbstractApexCommentContainerNode<?>) node;
+            for (Token commentToken : allCommentTokens) {
+                int commentTokenLine = commentToken.getLine();
+                // Using strict comparisons here which could miss an EOL comment immediately after an open brace
+                if (commentTokenLine > commentContainer.getBeginLine() && commentTokenLine < commentContainer.getEndLine()) {
+                    commentContainer.setContainsComment(true);
+                    break;
+                }
+            }
+        }
+
         return node;
     }
 
@@ -344,6 +359,7 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
      * the nodes appearing later in the source might be visiting first.
      * The correct node will then be visited afterwards, and since the distance
      * to the comment is smaller, it overrides the remembered node.
+     *
      * @param jorjeNode the original node
      * @param node the potential parent node, to which the comment could belong
      */
@@ -375,6 +391,7 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
         ANTLRStringStream stream = new ANTLRStringStream(source);
         ApexLexer lexer = new ApexLexer(stream);
 
+        List<Token> allCommentTokens = new LinkedList<>();
         List<ApexDocTokenLocation> tokenLocations = new LinkedList<>();
         Map<Integer, String> suppressMap = new HashMap<>();
 
@@ -385,6 +402,11 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
         boolean checkForCommentSuppression = suppressMarker != null;
 
         while (token.getType() != Token.EOF) {
+            // Keep track of all comment tokens
+            if (token.getType() == ApexLexer.BLOCK_COMMENT || token.getType() == ApexLexer.EOL_COMMENT) {
+                allCommentTokens.add(token);
+            }
+
             if (token.getType() == ApexLexer.BLOCK_COMMENT) {
                 // Filter only block comments starting with "/**"
                 if (token.getText().startsWith("/**")) {
@@ -405,15 +427,17 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
             endIndex = lexer.getCharIndex();
         }
 
-        return new CommentInformation(suppressMap, tokenLocations);
+        return new CommentInformation(suppressMap, allCommentTokens, tokenLocations);
     }
 
     private static class CommentInformation {
         Map<Integer, String> suppressMap;
+        List<Token> allCommentTokens;
         List<ApexDocTokenLocation> docTokenLocations;
 
-        CommentInformation(Map<Integer, String> suppressMap, List<ApexDocTokenLocation> docTokenLocations) {
+        CommentInformation(Map<Integer, String> suppressMap, List<Token> allCommentTokens, List<ApexDocTokenLocation> docTokenLocations) {
             this.suppressMap = suppressMap;
+            this.allCommentTokens = allCommentTokens;
             this.docTokenLocations = docTokenLocations;
         }
     }
