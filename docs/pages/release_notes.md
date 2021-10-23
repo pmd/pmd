@@ -87,6 +87,7 @@ This is a {{ site.pmd.release_type }} release.
 *   [#3571](https://github.com/pmd/pmd/pull/3571): \[apex] Fix for #1089 - Added new configuration property additionalAssertMethodPattern to ApexUnitTestClassShouldHaveAssertsRule - [Scott Wells](https://github.com/SCWells72)
 *   [#3572](https://github.com/pmd/pmd/pull/3572): \[apex] Fix for #3566 - Added new configuration property reportMissingDescription to ApexDocRule - [Scott Wells](https://github.com/SCWells72)
 *   [#3577](https://github.com/pmd/pmd/pull/3577): \[apex] Fix for #3576 - Added new configuration properties \*AuthMethodPattern and \*AuthMethodTypeParamIndex to ApexCRUDViolation rule - [Scott Wells](https://github.com/SCWells72)
+*   [#3578](https://github.com/pmd/pmd/pull/3578): \[apex] ApexCRUDViolation: Documentation changes for #3576 - [Scott Wells](https://github.com/SCWells72)
 
 {% endtocmaker %}
 
