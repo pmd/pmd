@@ -35,12 +35,42 @@ This is a {{ site.pmd.release_type }} release.
     [SfApexDoc](https://gitlab.com/StevenWCox/sfapexdoc) and also with analogous documentation tools for
     other languages, e.g., JavaDoc, ESDoc/JSDoc, etc.
 
+*   The Apex rule {% rule apex/security/ApexCRUDViolation %} has a couple of new properties:
+    These allow specification of regular-expression-based patterns for additional methods that should
+    be considered valid for pre-CRUD authorization beyond those offered by the system Apex checks and
+    ESAPI, e.g., [`sirono-common`'s `AuthorizationUtil` class](https://github.com/SCWells72/sirono-common#authorization-utilities).
+    Two new properties have been added per-CRUD operation, one to specify the naming pattern for a method
+    that authorizes that operation and another to specify the argument passed to that method that contains
+    the `SObjectType` instance of the type being authorized. Here is an example of these new properties:
+    
+    ```xml
+    <rule ref="category/apex/security.xml/ApexCRUDViolation" message="...">
+      <priority>3</priority>
+      <properties>
+        <property name="createAuthMethodPattern" value="AuthorizationUtil\.(is|assert)(Createable|Upsertable)"/>
+        <!--
+         There's one of these properties for each operation, and the default value is 0 so this is technically
+         superfluous, but it's included it here for example purposes.
+         -->
+        <property name="createAuthMethodTypeParamIndex" value="0"/>
+        <property name="readAuthMethodPattern" value="AuthorizationUtil\.(is|assert)Accessible"/>
+        <property name="updateAuthMethodPattern" value="AuthorizationUtil\.(is|assert)(Updateable|Upsertable)"/>
+        <property name="deleteAuthMethodPattern" value="AuthorizationUtil\.(is|assert)Deletable"/>
+        <property name="undeleteAuthMethodPattern" value="AuthorizationUtil\.(is|assert)Undeletable"/>
+        <property name="mergeAuthMethodPattern" value="AuthorizationUtil\.(is|assert)Mergeable"/>
+      </properties>
+    </rule>
+    ```
+
 ### Fixed Issues
 
 *   apex
-    *   [#1089](https://github.com/pmd/pmd/issues/1089): \[apex] Test asserts in other methods not detected
+    *   [#1089](https://github.com/pmd/pmd/issues/1089): \[apex] ApexUnitTestClassShouldHaveAsserts: Test asserts in other methods not detected
+    *   [#1090](https://github.com/pmd/pmd/issues/1090): \[apex] ApexCRUDViolation: checks not detected if done in another method
     *   [#3532](https://github.com/pmd/pmd/issues/3532): \[apex] Promote usage of consistent getDescribe() info
     *   [#3566](https://github.com/pmd/pmd/issues/3566): \[apex] ApexDoc rule should not require "@description"
+    *   [#3576](https://github.com/pmd/pmd/issues/3576): \[apex] ApexCRUDViolation should provide an option to specify additional patterns for methods that encapsulate authorization checks
+    *   [#3579](https://github.com/pmd/pmd/issues/3579): \[apex] ApexCRUDViolation: false negative with undelete
 *   java-errorprone
     *   [#3560](https://github.com/pmd/pmd/issues/3560): \[java] InvalidLogMessageFormat: False positive with message and exception in a block inside a lambda
 *   java-performance
@@ -56,6 +86,7 @@ This is a {{ site.pmd.release_type }} release.
 *   [#3565](https://github.com/pmd/pmd/pull/3565): \[doc] Fix resource leak due to Files.walk - [lujiefsi](https://github.com/lujiefsi)
 *   [#3571](https://github.com/pmd/pmd/pull/3571): \[apex] Fix for #1089 - Added new configuration property additionalAssertMethodPattern to ApexUnitTestClassShouldHaveAssertsRule - [Scott Wells](https://github.com/SCWells72)
 *   [#3572](https://github.com/pmd/pmd/pull/3572): \[apex] Fix for #3566 - Added new configuration property reportMissingDescription to ApexDocRule - [Scott Wells](https://github.com/SCWells72)
+*   [#3577](https://github.com/pmd/pmd/pull/3577): \[apex] Fix for #3576 - Added new configuration properties \*AuthMethodPattern and \*AuthMethodTypeParamIndex to ApexCRUDViolation rule - [Scott Wells](https://github.com/SCWells72)
 
 {% endtocmaker %}
 
