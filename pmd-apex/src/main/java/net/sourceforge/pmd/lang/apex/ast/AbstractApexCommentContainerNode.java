@@ -19,8 +19,7 @@ public abstract class AbstractApexCommentContainerNode<T extends AstNode> extend
         super(node);
     }
 
-    @Override
-    public void setContainsComment(boolean containsComment) {
+    void setContainsComment(boolean containsComment) {
         this.containsComment = containsComment;
     }
 

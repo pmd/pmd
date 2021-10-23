@@ -312,8 +312,8 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
         node.calculateLineNumbers(sourceCodePositioner);
 
         // If appropriate, determine whether this node contains comments or not
-        if (node instanceof ASTCommentContainer) {
-            ASTCommentContainer commentContainer = (ASTCommentContainer) node;
+        if (node instanceof AbstractApexCommentContainerNode) {
+            AbstractApexCommentContainerNode<?> commentContainer = (AbstractApexCommentContainerNode<?>) node;
             for (Token commentToken : allCommentTokens) {
                 int commentTokenLine = commentToken.getLine();
                 // Using strict comparisons here which could miss an EOL comment immediately after an open brace
