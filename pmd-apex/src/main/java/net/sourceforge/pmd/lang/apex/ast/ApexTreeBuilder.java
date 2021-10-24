@@ -7,7 +7,6 @@ package net.sourceforge.pmd.lang.apex.ast;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -251,7 +250,7 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
 
     private final SourceCodePositioner sourceCodePositioner;
     private final String sourceCode;
-    private final boolean[] commentedLineFlags;
+    private List<Token> allCommentTokens;
     private List<ApexDocTokenLocation> apexDocTokenLocations;
     private Map<Integer, String> suppressMap;
 
@@ -260,7 +259,7 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
         sourceCodePositioner = new SourceCodePositioner(sourceCode);
 
         CommentInformation commentInformation = extractInformationFromComments(sourceCode, parserOptions.getSuppressMarker());
-        commentedLineFlags = flagCommentedLines(commentInformation.allCommentTokens);
+        allCommentTokens = commentInformation.allCommentTokens;
         apexDocTokenLocations = commentInformation.docTokenLocations;
         suppressMap = commentInformation.suppressMap;
     }
@@ -324,43 +323,35 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
         return node;
     }
 
-    // Builds an array of lines that contain comments for easy, indexed lookup later
-    private static boolean[] flagCommentedLines(List<Token> commentTokens) {
-        if (commentTokens.isEmpty()) {
-            return new boolean[0];
-        }
-
-        // These are probably already sorted, but just in case, but it's critical that be the case so we know that the
-        // last entry is the highest numbered commented line
-        List<Token> sortedCommentTokens = new ArrayList<>(commentTokens);
-        sortedCommentTokens.sort((token1, token2) -> token1.getLine() - token2.getLine());
-        int lastCommentedLineNumber = sortedCommentTokens.get(commentTokens.size() - 1).getLine();
-
-        // This is almost certainly not the last line in the file, but we'll deal with that boundary condition in the check
-        boolean[] commentedLineFlags = new boolean[lastCommentedLineNumber + 1];
-        Arrays.fill(commentedLineFlags, false);
-        for (Token commentToken : commentTokens) {
-            commentedLineFlags[commentToken.getLine()] = true;
-        }
-        return commentedLineFlags;
-    }
-
     private boolean containsCommentedLine(ASTCommentContainer<?> commentContainer) {
-        // If this potential comment container is after the last commented line, we're done
-        int beginLine = commentContainer.getBeginLine();
-        if (beginLine > commentedLineFlags.length) {
-            return false;
-        }
+        int commentContainerBeginLine = commentContainer.getBeginLine();
+        int commentContainerEndLine = commentContainer.getEndLine();
 
-        // Otherwise compute a range that is bounded by either the last line of the comment container or the last
-        // commented line, and see whether any line in that range (exclusive) was reported as a comment
-        int endLine = Math.min(commentContainer.getEndLine(), commentedLineFlags.length);
-        for (int line = beginLine + 1; line < endLine; line++) {
-            if (commentedLineFlags[line]) {
+        // We have to provide our own binary search implementation because of the way that we determine a match based
+        // on being within a range rather than distinct value equivalence
+        int lowIndex = 0;
+        int highIndex = allCommentTokens.size() - 1;
+        while (lowIndex <= highIndex) {
+            int midIndex = lowIndex + ((highIndex - lowIndex) / 2);
+            Token commentToken = allCommentTokens.get(midIndex);
+            int commentTokenLine = commentToken.getLine();
+            // These comparisons are performed for lines in the container's range exclusive of the begin and end lines.
+            // This is because the containers don't have offsets within the respective lines, though the tokens do, so
+            // we can't be 100% sure that a token is within the character range of the container node, only the line
+            // range. As a result, this would incorrectly miss (bad):
+            // } catch (Exception e) { /* Expected */ }
+            // but it won't incorrectly find either of the following (good):
+            // } /* Expected */ catch (Exception e) {
+            //   handleException(e);
+            // } // Expected
+            if (commentTokenLine <= commentContainerBeginLine) {
+                lowIndex = midIndex + 1;
+            } else if (commentTokenLine >= commentContainerEndLine) {
+                highIndex = midIndex - 1;
+            } else if (commentContainerBeginLine < commentTokenLine && commentTokenLine < commentContainerEndLine) {
                 return true;
             }
         }
-
         return false;
     }
 
@@ -428,7 +419,7 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
         ANTLRStringStream stream = new ANTLRStringStream(source);
         ApexLexer lexer = new ApexLexer(stream);
 
-        List<Token> allCommentTokens = new LinkedList<>();
+        List<Token> allCommentTokens = new ArrayList<>();
         List<ApexDocTokenLocation> tokenLocations = new LinkedList<>();
         Map<Integer, String> suppressMap = new HashMap<>();
 
