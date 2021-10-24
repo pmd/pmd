@@ -229,4 +229,45 @@ private class FunctionalityTest {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#3569 - Verify use of allowCommentedBlocks, binary search boundaries verification</description>
+        <rule-property name="allowCommentedBlocks">true</rule-property>
+        <expected-problems>6</expected-problems>
+        <expected-linenumbers>10,14,18,22,25,29</expected-linenumbers>
+        <code><![CDATA[
+@IsTest
+private class FunctionalityTest {
+    static testMethod void testWithModifier() {
+        try {
+        } catch (Exception e) {
+          // Inside of catch block; should not be reported
+        }
+
+        try {
+        } /* Outside of catch block; should not be found; should be reported */ catch (Exception e) {
+        }
+
+        try {
+        } catch (Exception e) { // Inside of catch block but on same line as begin; should be found but currently isn't; should be reported
+        }
+
+        try {
+        } catch (Exception e) {
+        /* Inside of catch block but on same line as end; should be found but currently isn't; should be reported */ }
+
+        try {
+        } catch (Exception e5) { /* Inside of catch block but on same line as begin/end; should be found but currently isn't; should be reported */ }
+
+        try {
+        } catch (Exception e) { // Inside of catch block but on same line as begin; should be found but currently isn't; should be reported
+        }
+
+        try {
+        } catch (Exception e) {
+        } // Outside of catch block; should not be found; should be reported
+    }
+}
+]]></code>
+    </test-code>
 </test-data>
