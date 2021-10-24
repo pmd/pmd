@@ -213,8 +213,7 @@ private class FunctionalityTest {
         try {
             doSomethingThatShouldThrowAnException();
             System.assert(false, 'Expected an exception to be thrown.');
-        } catch (Exception e) {
-            // Expected
+        } catch (Exception e) { // Expected
         }
     }
 
