@@ -2211,37 +2211,41 @@ public class MyClass {
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#misplacednullcheck">
         <description>
-The null check here is misplaced. If the variable is null a NullPointerException will be thrown.
-Either the check is useless (the variable will never be "null") or it is incorrect.
+The null check here is misplaced. If the variable is null a `NullPointerException` will be thrown.
+Either the check is useless (the variable will never be `null`) or it is incorrect.
         </description>
         <priority>3</priority>
         <properties>
             <property name="xpath">
                 <value>
 <![CDATA[
-//ConditionalAndExpression
-  /EqualityExpression
-    [@Image = '!=']
-    (: one side is null :)
-    [PrimaryExpression/PrimaryPrefix/Literal/NullLiteral]
-    (: other side checks for the variable used somewhere in the first child of conditional and expression :)
-    [some $var in preceding-sibling::PrimaryExpression//Name
-      [not(ancestor::ConditionalOrExpression/EqualityExpression[@Image = '=='])]
-      /@Image
-      satisfies starts-with($var, concat(PrimaryExpression/PrimaryPrefix/Name/@Image, '.'))]
-  /PrimaryExpression/PrimaryPrefix/Name
+//InfixExpression[@Operator = '&&']
+    /InfixExpression[@Operator = '!=']
+        (: one side is null :)
+        [NullLiteral]
+        (: other side checks for the variable used somewhere in the first child of conditional and expression :)
+        [VariableAccess]
+        [some $var in preceding-sibling::*//VariableAccess
+            [parent::MethodCall or parent::FieldAccess]
+            [not(ancestor::InfixExpression[@Operator = '||'])]
+            /@Name
+            satisfies $var = VariableAccess/@Name
+        ]
+    /VariableAccess
 |
-//ConditionalOrExpression
-  /EqualityExpression
-    [@Image = '==']
-    (: one side is null :)
-    [PrimaryExpression/PrimaryPrefix/Literal/NullLiteral]
-    (: other side checks for the variable used somewhere in the first child of conditional or expression :)
-    [some $var in preceding-sibling::PrimaryExpression//Name
-      [not(ancestor::ConditionalAndExpression/EqualityExpression[@Image = '!='])]
-      /@Image
-      satisfies starts-with($var, concat(PrimaryExpression/PrimaryPrefix/Name/@Image, '.'))]
-  /PrimaryExpression/PrimaryPrefix/Name
+//InfixExpression[@Operator = '||']
+    /InfixExpression[@Operator = '==']
+        (: one side is null :)
+        [NullLiteral]
+        (: other side checks for the variable used somewhere in the first child of conditional or expression :)
+        [VariableAccess]
+        [some $var in preceding-sibling::*//VariableAccess
+            [parent::MethodCall or parent::FieldAccess]
+            [not(ancestor::InfixExpression[@Operator = '&&'])]
+            /@Name
+            satisfies $var = VariableAccess/@Name
+        ]
+    /VariableAccess
 ]]>
                 </value>
             </property>
