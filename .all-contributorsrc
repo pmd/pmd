@@ -5391,7 +5391,8 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/7671043?v=4",
       "profile": "https://github.com/SCWells72",
       "contributions": [
-        "bug"
+        "bug",
+        "code"
       ]
     },
     {
@@ -6434,6 +6435,33 @@
       "name": "Kevin Guerra",
       "avatar_url": "https://avatars.githubusercontent.com/u/5151740?v=4",
       "profile": "https://github.com/kevingnet",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "smyachenkov",
+      "name": "Stanislav Myachenkov",
+      "avatar_url": "https://avatars.githubusercontent.com/u/10816424?v=4",
+      "profile": "https://smyachenkov.com/",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "essobedo",
+      "name": "Nicolas Filotto",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1618116?v=4",
+      "profile": "https://stackoverflow.com/users/1997376/nicolas-filotto",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "lujiefsi",
+      "name": "lujiefsi",
+      "avatar_url": "https://avatars.githubusercontent.com/u/2918158?v=4",
+      "profile": "http://lujie.ac.cn/",
       "contributions": [
         "code"
       ]

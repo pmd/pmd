@@ -80,9 +80,7 @@ public class Violation {
         ]]></code>
     </test-code>
 
-    <test-code regressionTest="false">
-        <!-- Note: type res doesn't work well on method call chains in PMD 6, so none
-             of these are detected. -->
+    <test-code>
         <description>Make sure to detect method call chains</description>
         <expected-problems>6</expected-problems>
         <expected-linenumbers>3,4,5,6,7,8</expected-linenumbers>
@@ -92,7 +90,6 @@ public class Violation {
         this.getClass().getDeclaredConstructor(String.class).setAccessible(true);
         this.getClass().getDeclaredMethod("aPrivateMethod").setAccessible(true);
         this.getClass().getDeclaredField("aPrivateField").setAccessible(true);
-
         Violation.class.getDeclaredConstructor(String.class).setAccessible(true);
         Violation.class.getDeclaredMethod("aPrivateMethod").setAccessible(true);
         Violation.class.getDeclaredField("aPrivateField").setAccessible(true);
@@ -115,7 +112,7 @@ public class NoViolation {
         Method[] methods = AccessController.doPrivileged(new PrivilegedAction<Method[]>() {
             @Override
             public Method[] run() {
-                Method[] declaredMethods = Violation.class.getDeclaredMethods();
+                Method[] declaredMethods = NoViolation.class.getDeclaredMethods();
                 AccessibleObject.setAccessible(declaredMethods, true);
                 return declaredMethods;
             }
@@ -156,6 +153,7 @@ public class Violation {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import java.lang.reflect.Constructor;
+import java.util.ArrayList;
 import java.util.List;
 
 public class NoViolation { {
