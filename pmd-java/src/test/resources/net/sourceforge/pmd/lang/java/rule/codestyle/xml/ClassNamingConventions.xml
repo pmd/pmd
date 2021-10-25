@@ -47,13 +47,7 @@ public class foo {
         ]]></code>
     </test-code>
 
-    <test-code>
-        <description>Utility class convention</description>
-        <expected-problems>1</expected-problems>
-        <expected-messages>
-            <message>The utility class name 'Foo' doesn't match '[A-Z][a-zA-Z0-9]+(Utils?|Helper|Constants)'</message>
-        </expected-messages>
-        <code><![CDATA[
+    <code-fragment id="utility-class"><![CDATA[
 public class Foo {
 
     static final int ZERO = 0;
@@ -68,11 +62,28 @@ public class Foo {
 
     }
 }
-        ]]></code>
+    ]]></code-fragment>
+
+    <test-code>
+        <description>Utility class convention (default) - #3563</description>
+        <expected-problems>0</expected-problems>
+        <code-ref id="utility-class"/>
+    </test-code>
+
+    <test-code>
+        <description>Utility class convention</description>
+        <rule-property name="utilityClassPattern">[A-Z][a-zA-Z0-9]+(Utils?|Helper|Constants)</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>1</expected-linenumbers>
+        <expected-messages>
+            <message>The utility class name 'Foo' doesn't match '[A-Z][a-zA-Z0-9]+(Utils?|Helper|Constants)'</message>
+        </expected-messages>
+        <code-ref id="utility-class"/>
     </test-code>
 
     <test-code>
         <description>Class with only empty decls should not be a utility class</description>
+        <rule-property name="utilityClassPattern">[A-Z][a-zA-Z0-9]+(Utils?|Helper|Constants)</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -83,6 +94,7 @@ public class Foo {
 
     <test-code>
         <description>Class with some instance fields should not be a utility class</description>
+        <rule-property name="utilityClassPattern">[A-Z][a-zA-Z0-9]+(Utils?|Helper|Constants)</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Position {
@@ -105,6 +117,7 @@ public class Position {
 
     <test-code>
         <description>Class with static initializer alone should not be a utility class</description>
+        <rule-property name="utilityClassPattern">[A-Z][a-zA-Z0-9]+(Utils?|Helper|Constants)</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -119,6 +132,7 @@ public class Foo {
 
     <test-code>
         <description>Class with instance initializer should not be a utility class</description>
+        <rule-property name="utilityClassPattern">[A-Z][a-zA-Z0-9]+(Utils?|Helper|Constants)</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -140,6 +154,7 @@ public class Foo {
 
     <test-code>
         <description>Class with only static members except constructors should be a utility class</description>
+        <rule-property name="utilityClassPattern">[A-Z][a-zA-Z0-9]+(Utils?|Helper|Constants)</rule-property>
         <expected-problems>1</expected-problems>
         <expected-messages>
             <message>The utility class name 'Foo' doesn't match '[A-Z][a-zA-Z0-9]+(Utils?|Helper|Constants)'</message>
@@ -168,6 +183,7 @@ public class Foo {
 
     <test-code>
         <description>Class with only constructors should not be a utility class</description>
+        <rule-property name="utilityClassPattern">[A-Z][a-zA-Z0-9]+(Utils?|Helper|Constants)</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -190,6 +206,7 @@ public class Md5Checksum {
 
     <test-code>
         <description>Class extending another class should not be utility class</description>
+        <rule-property name="utilityClassPattern">[A-Z][a-zA-Z0-9]+(Utils?|Helper|Constants)</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class StringList extends ArrayList<String> {
@@ -202,6 +219,7 @@ public class StringList extends ArrayList<String> {
 
     <test-code>
         <description>Class extending another class should not be utility class 2</description>
+        <rule-property name="utilityClassPattern">[A-Z][a-zA-Z0-9]+(Utils?|Helper|Constants)</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 // I couldn't reproduce the original failure, but we can use another regression test.
@@ -215,6 +233,7 @@ public class MyException extends RuntimeException {
 
     <test-code>
         <description>Class with only main method should not be utility class</description>
+        <rule-property name="utilityClassPattern">[A-Z][a-zA-Z0-9]+(Utils?|Helper|Constants)</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class MyException {
@@ -228,6 +247,7 @@ public class MyException {
 
     <test-code>
         <description>Class with only main method should not be utility class - varargs case</description>
+        <rule-property name="utilityClassPattern">[A-Z][a-zA-Z0-9]+(Utils?|Helper|Constants)</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class MyException {
@@ -241,6 +261,7 @@ public class MyException {
 
     <test-code>
         <description>Class with main method and private static fields should not be utility class</description>
+        <rule-property name="utilityClassPattern">[A-Z][a-zA-Z0-9]+(Utils?|Helper|Constants)</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class MyException {
@@ -255,6 +276,7 @@ public class MyException {
 
     <test-code>
         <description>Utility class can have name constants</description>
+        <rule-property name="utilityClassPattern">[A-Z][a-zA-Z0-9]+(Utils?|Helper|Constants)</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class MyConstants {
