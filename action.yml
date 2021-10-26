@@ -1,0 +1,68 @@
+name: 'PMD Analyser'
+description: 'Runs PMD Source Code Analyser based on the ruleset defined - https://pmd.github.io/'
+branding:
+  icon: 'zoom-in'  
+  color: 'yellow'
+inputs:
+  analyse-all-code:
+    description: 'Used to determine whether you just want to analyse the files changed or the whole repository.'
+    required: false
+    default: 'false'
+  auth-token:
+    description: 'If you are looking to compare the file difference based on the GitHub pull request, you will need to specify the [GitHub secrets token](https://docs.github.com/en/actions/reference/authentication-in-a-workflow)'
+    required: false
+  error-rules:
+    description: 'If you wish to define rules that log as an error, enter each rule name separated with a comma and no spaces. Note that if an error is identified the run will fail. e.g. ClassNamingConventions,GuardLogStatement'
+    required: false
+  file-diff-type:
+    description: 'Choose whether you want the file comparison to be based on a git diff or based on the files changed specified on the GitHub pull request. Note that if you use the GitHub pull request option, this action will only work on a pull request event. Options to set this are either `git` or `github`.'
+    required: false
+    default: 'git'
+  file-path:
+    description: 'Path to the sources to analyse. This can be a file name, a directory, or a jar or zip file containing the sources.'
+    required: true
+  note-rules:
+    description: 'If you wish to define rules that log as a note, enter each rule name separated with a comma and no spaces. Note that if a note is identified the run will not fail. e.g. ClassNamingConventions,GuardLogStatement'
+    required: false
+  pmd-version:
+    description: 'The version of PMD you would like to run. You can either specify latest to always get the newest version, or you can specify a version number like 6.37.0'
+    required: false
+    default: 'latest'
+  rules-path:
+    description: 'The ruleset file you want to use. PMD uses xml configuration files, called rulesets, which specify which rules to execute on your sources. You can also run a single rule by referencing it using its category and name (more details here). For example, you can check for unnecessary modifiers on Java sources with -R category/java/codestyle.xml/UnnecessaryModifier.'
+    required: true
+outputs:
+  error-found:
+    description: 'Identifies whether an error has been found based on the ruleset.'
+    value: ${{ steps.pmd-analysis.outputs.error-found }}
+runs:
+  using: "composite"
+  steps: 
+    - id: code
+      run: |
+        if [ ${{ github.event_name }} == 'pull_request' ]; then
+            echo "::set-output name=current_code::${{ github.base_ref }}"
+            echo "::set-output name=changed_code::${{ github.head_ref }}"
+        else
+            echo "::set-output name=current_code::${{ github.event.before }}"
+            echo "::set-output name=changed_code::${{ github.event.after }}"
+        fi
+      shell: bash
+    - id: pmd-analysis
+      run: ${{ github.action_path }}/pmd-analyser.sh
+      shell: bash
+      env:
+        PMD_VERSION: ${{ inputs.pmd-version }}
+        FILE_PATH: ${{ inputs.file-path }}
+        RULES_PATH: ${{ inputs.rules-path }}
+        ANALYSE_ALL_CODE: ${{ inputs.analyse-all-code }}
+        CURRENT_CODE: ${{ steps.code.outputs.current_code }}
+        CHANGED_CODE: ${{ steps.code.outputs.changed_code }}
+        ERROR_RULES: ${{ inputs.error-rules }}
+        NOTE_RULES: ${{ inputs.note-rules }}
+        REPO_NAME: ${{ github.event.repository.full_name }}
+        PR_NUMBER: ${{ github.event.number }}
+        AUTH_TOKEN: ${{ inputs.auth-token }}
+        FILE_DIFF_TYPE: ${{ inputs.file-diff-type }}
+        WORKSPACE: ${{ github.workspace }}/
+        ACTION_EVENT_NAME: ${{ github.event_name }}
