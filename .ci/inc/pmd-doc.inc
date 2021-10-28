@@ -55,9 +55,9 @@ function publish_release_documentation_github() {
         cd pmd.github.io || { echo "Directory 'pmd.github.io' doesn't exist"; exit 1; }
         git init
         git config user.name "PMD CI (pmd-bot)"
-        git config user.email "andreas.dangel+pmd-bot@adangel.org"
+        git config user.email "pmd-bot@users.noreply.github.com"
         git config core.sparsecheckout true
-        git remote add origin git@github.com:pmd/pmd.github.io.git
+        git remote add origin git@github.com-pmd.github.io:pmd/pmd.github.io.git
         echo "/latest/" > .git/info/sparse-checkout
         echo "/sitemap.xml" >> .git/info/sparse-checkout
         git pull --depth=1 origin master
@@ -96,7 +96,7 @@ function publish_release_documentation_github() {
 function pmd_doc_publish_to_github_pages() {
     echo -e "\n\n"
     pmd_ci_log_info "Pushing the new site to github pages..."
-    git clone --branch gh-pages --depth 1 git@github.com:pmd/pmd.git pmd-gh-pages
+    git clone --branch gh-pages --depth 1 --origin origin https://github.com/pmd/pmd.git pmd-gh-pages
     # clear the files first
     rm -rf pmd-gh-pages/*
     # copy the new site
@@ -104,14 +104,16 @@ function pmd_doc_publish_to_github_pages() {
     (
         cd pmd-gh-pages || { echo "Directory 'pmd-gh-pages' doesn't exist"; exit 1; }
         git config user.name "PMD CI (pmd-bot)"
-        git config user.email "andreas.dangel+pmd-bot@adangel.org"
+        git config user.email "pmd-bot@users.noreply.github.com"
+        git config --local http.https://github.com/.extraheader "AUTHORIZATION: basic $(echo -n "x-access-token:${GITHUB_TOKEN}"|base64)"
         git add -A
         MSG="Update documentation
 
 ${PMD_CI_JOB_URL}
 ${PMD_CI_PUSH_COMMIT_COMPARE}"
         git commit -q -m "$MSG"
-        git push git@github.com:pmd/pmd.git HEAD:gh-pages
+        git push origin HEAD:gh-pages
+        git config --local --unset-all http.https://github.com/.extraheader
         pmd_ci_log_success "Successfully pushed site to https://pmd.github.io/pmd/"
     )
 }

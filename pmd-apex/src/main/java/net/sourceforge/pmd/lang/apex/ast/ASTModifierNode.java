@@ -105,4 +105,8 @@ public class ASTModifierNode extends AbstractApexNode<ModifierNode> implements A
     public boolean isOverride() {
         return node.getModifiers().has(ModifierTypeInfos.OVERRIDE);
     }
+
+    public boolean isVirtual() {
+        return node.getModifiers().has(ModifierTypeInfos.VIRTUAL);
+    }
 }
