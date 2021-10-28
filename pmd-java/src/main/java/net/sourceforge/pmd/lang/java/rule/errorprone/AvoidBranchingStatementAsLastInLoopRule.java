@@ -20,12 +20,11 @@ import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
-import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
-import net.sourceforge.pmd.properties.PropertySource;
 
-public class AvoidBranchingStatementAsLastInLoopRule extends AbstractJavaRule {
+public class AvoidBranchingStatementAsLastInLoopRule extends AbstractJavaRulechainRule {
 
     public static final String CHECK_FOR = "for";
     public static final String CHECK_DO = "do";
@@ -53,20 +52,17 @@ public class AvoidBranchingStatementAsLastInLoopRule extends AbstractJavaRule {
 
 
     public AvoidBranchingStatementAsLastInLoopRule() {
+        super(ASTBreakStatement.class, ASTContinueStatement.class, ASTReturnStatement.class);
         definePropertyDescriptor(CHECK_BREAK_LOOP_TYPES);
         definePropertyDescriptor(CHECK_CONTINUE_LOOP_TYPES);
         definePropertyDescriptor(CHECK_RETURN_LOOP_TYPES);
-
-        addRuleChainVisit(ASTBreakStatement.class);
-        addRuleChainVisit(ASTContinueStatement.class);
-        addRuleChainVisit(ASTReturnStatement.class);
     }
 
 
     @Override
     public Object visit(ASTBreakStatement node, Object data) {
         // skip breaks, that are within a switch statement
-        if (node.getNthParent(3) instanceof ASTSwitchStatement) {
+        if (node.ancestors().get(1) instanceof ASTSwitchStatement) {
             return data;
         }
         return check(CHECK_BREAK_LOOP_TYPES, node, data);
@@ -74,7 +70,7 @@ public class AvoidBranchingStatementAsLastInLoopRule extends AbstractJavaRule {
 
 
     protected Object check(PropertyDescriptor<List<String>> property, Node node, Object data) {
-        Node parent = node.getNthParent(5);
+        Node parent = node.ancestors().get(1);
         if (parent instanceof ASTForStatement) {
             if (hasPropertyValue(property, CHECK_FOR)) {
                 super.addViolation(data, node);
@@ -109,9 +105,6 @@ public class AvoidBranchingStatementAsLastInLoopRule extends AbstractJavaRule {
     }
 
 
-    /**
-     * @see PropertySource#dysfunctionReason()
-     */
     @Override
     public String dysfunctionReason() {
         return checksNothing() ? "All loop types are ignored" : null;
