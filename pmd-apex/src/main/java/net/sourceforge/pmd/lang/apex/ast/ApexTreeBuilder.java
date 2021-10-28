@@ -131,6 +131,8 @@ import apex.jorje.semantic.exception.Errors;
 @InternalApi
 public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
 
+    private static final String DOC_COMMENT_PREFIX = "/**";
+
     private static final Map<Class<? extends AstNode>, Constructor<? extends AbstractApexNode<?>>>
         NODE_TYPE_TO_NODE_ADAPTER_TYPE = new HashMap<>();
 
@@ -257,7 +259,6 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
     public ApexTreeBuilder(String sourceCode, ApexParserOptions parserOptions) {
         this.sourceCode = sourceCode;
         sourceCodePositioner = new SourceCodePositioner(sourceCode);
-
         commentInfo = extractInformationFromComments(sourceCode, parserOptions.getSuppressMarker());
     }
 
@@ -312,7 +313,7 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
         // If appropriate, determine whether this node contains comments or not
         if (node instanceof AbstractApexCommentContainerNode) {
             AbstractApexCommentContainerNode<?> commentContainer = (AbstractApexCommentContainerNode<?>) node;
-            if (containsCommentedLine(commentContainer)) {
+            if (containsComments(commentContainer)) {
                 commentContainer.setContainsComment(true);
             }
         }
@@ -320,12 +321,32 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
         return node;
     }
 
-    private boolean containsCommentedLine(ASTCommentContainer<?> commentContainer) {
+    private boolean containsComments(ASTCommentContainer<?> commentContainer) {
         List<Token> allComments = commentInfo.allCommentTokens;
-        // find the first comment after the start of the container
+        // find the first comment after the start of the container (same line or next lines)
         int index = Collections.binarySearch(new CommentLinesList(allComments), commentContainer.getBeginLine());
-        return index >= 0 // there is a comment at the begin line
-            || ~index < allComments.size() && allComments.get(~index).getLine() < commentContainer.getEndLine();
+
+        // no exact hit found - there is no comment on the same begin line as the node
+        // extract "insertion point"
+        if (index < 0) {
+            index = ~index;
+        }
+        
+        // then start searching the tokens and check, whether they are inside
+        for (int i = index; i < allComments.size() && allComments.get(i).getLine() <= commentContainer.getEndLine(); i++) {
+            Token comment = allComments.get(i);
+            
+            if (commentContainer.getBeginLine() == comment.getLine() && commentContainer.getBeginColumn() < (comment.getCharPositionInLine() + 1)
+                || commentContainer.getBeginLine() < comment.getLine()) {
+                
+                if (commentContainer.getEndLine() == comment.getLine() && commentContainer.getEndColumn() > (comment.getCharPositionInLine() + 1)
+                    || commentContainer.getEndLine() > comment.getLine()) {
+                    return true;
+                }
+            }
+        }
+        
+        return false;
     }
 
     private void addFormalComments() {
@@ -408,12 +429,14 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
                 assert allCommentTokens.isEmpty()
                     || allCommentTokens.get(allCommentTokens.size() - 1).getLine() <= token.getLine()
                     : "Comments should be sorted";
-                allCommentTokens.add(token);
+                if (!token.getText().startsWith(DOC_COMMENT_PREFIX)) {
+                    allCommentTokens.add(token);
+                }
             }
 
             if (token.getType() == ApexLexer.BLOCK_COMMENT) {
                 // Filter only block comments starting with "/**"
-                if (token.getText().startsWith("/**")) {
+                if (token.getText().startsWith(DOC_COMMENT_PREFIX)) {
                     tokenLocations.add(new ApexDocTokenLocation(startIndex, token));
                 }
             } else if (checkForCommentSuppression && token.getType() == ApexLexer.EOL_COMMENT) {
