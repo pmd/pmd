@@ -14,6 +14,10 @@ This is a {{ site.pmd.release_type }} release.
 
 ### New and noteworthy
 
+#### Updated Apex Support
+
+*   The Apex language support has been bumped to version 54.0 (Spring '22).
+
 #### New rules
 
 *   The new Apex rule {% rule apex/performance/EagerlyLoadedDescribeSObjectResult %} finds
