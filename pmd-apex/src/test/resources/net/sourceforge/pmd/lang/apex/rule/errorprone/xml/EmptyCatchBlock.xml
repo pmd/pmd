@@ -230,44 +230,110 @@ private class FunctionalityTest {
 ]]></code>
     </test-code>
 
-    <test-code>
-        <description>#3569 - Verify use of allowCommentedBlocks, binary search boundaries verification</description>
-        <rule-property name="allowCommentedBlocks">true</rule-property>
-        <expected-problems>6</expected-problems>
-        <expected-linenumbers>10,14,18,22,25,29</expected-linenumbers>
-        <code><![CDATA[
+    <code-fragment id="with-comments"><![CDATA[
 @IsTest
 private class FunctionalityTest {
     static testMethod void testWithModifier() {
+        ///////////////////////////////
+        //  eol comments
+        ///////////////////////////////
         try {
         } catch (Exception e) {
-          // Inside of catch block; should not be reported
+          // OK: eol comment inside of empty catch block; should not be reported
         }
 
         try {
-        } /* Outside of catch block; should not be found; should be reported */ catch (Exception e) {
+        } catch (Exception e) { // OK: eol comment inside of empty catch block, same line as begin; should not be reported
         }
 
         try {
-        } catch (Exception e) { // Inside of catch block but on same line as begin; should be found but currently isn't; should be reported
         }
-
-        try {
-        } catch (Exception e) {
-        /* Inside of catch block but on same line as end; should be found but currently isn't; should be reported */ }
-
-        try {
-        } catch (Exception e5) { /* Inside of catch block but on same line as begin/end; should be found but currently isn't; should be reported */ }
-
-        try {
-        } catch (Exception e) { // Inside of catch block but on same line as begin; should be found but currently isn't; should be reported
+        // NOK: eol comment outside empty catch block; should be reported
+        catch (Exception e) {
         }
 
         try {
         } catch (Exception e) {
-        } // Outside of catch block; should not be found; should be reported
+        } // NOK: eol comment outside of catch block; should be reported
+
+        ///////////////////////////////
+        // block comments
+        ///////////////////////////////
+        try {
+        } catch (Exception e) {
+          /* OK: block comment inside of empty catch block; should not be reported */
+        }
+
+        try {
+        } catch (Exception e) {
+          /* OK: block comment inside of empty catch block;
+           * multiple lines
+           * should not be reported
+           */
+        }
+
+        try {
+        } catch (Exception e) { /* OK: block comment inside of empty catch block, same line as begin; should not be reported */
+        }
+
+        try {
+        } catch (Exception e) {
+        /* OK: block comment inside of empty catch block, same line as end; should not be reported */ }
+
+        try {
+        } catch (Exception e) { /* OK: block comment inside catch block, same line as begin/end; should be reported */ }
+
+        try {
+        } /* NOK: block comment outside of catch block; should be reported */ catch (Exception e) {
+        }
+
+        try {
+        } catch (Exception e) {
+        } /* NOK: block comment outside of catch block; should be reported */
+
+        ///////////////////////////////
+        //  doc comments
+        ///////////////////////////////
+        try {
+        } catch (Exception e) {
+          /** NOK: doc comment inside of empty catch block; should be reported */
+        }
+
+        try {
+        } catch (Exception e) {
+          /** NOK: doc comment inside of empty catch block;
+           * multiple lines
+           * should be reported
+           */
+        }
+
+        try {
+        } catch (Exception e) { /** NOK: doc comment inside of empty catch block, same line as begin; should be reported */
+        }
+
+        try {
+        } catch (Exception e) {
+        /** NOK: doc comment inside of empty catch block, same line as end; should be reported */ }
+
+        try {
+        } catch (Exception e) { /** NOK: doc comment inside catch block, same line as begin/end; should be reported */ }
     }
 }
-]]></code>
+    ]]></code-fragment>
+
+    <test-code>
+        <description>#3569 - Verify use of allowCommentedBlocks=false</description>
+        <rule-property name="allowCommentedBlocks">false</rule-property>
+        <expected-problems>16</expected-problems>
+        <expected-linenumbers>8,13,19,23,30,35,43,47,51,54,58,65,70,78,82,86</expected-linenumbers>
+        <code-ref id="with-comments"/>
+    </test-code>
+
+    <test-code>
+        <description>#3569 - Verify use of allowCommentedBlocks=true, binary search boundaries verification</description>
+        <rule-property name="allowCommentedBlocks">true</rule-property>
+        <expected-problems>9</expected-problems>
+        <expected-linenumbers>19,23,54,58,65,70,78,82,86</expected-linenumbers>
+        <code-ref id="with-comments"/>
     </test-code>
 </test-data>
