@@ -322,31 +322,25 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
     }
 
     private boolean containsComments(ASTCommentContainer<?> commentContainer) {
-        List<Token> allComments = commentInfo.allCommentTokens;
-        // find the first comment after the start of the container (same line or next lines)
-        int index = Collections.binarySearch(new CommentLinesList(allComments), commentContainer.getBeginLine());
+        Location loc = commentContainer.getNode().getLoc();
+        if (!Locations.isReal(loc)) {
+            // Synthetic nodes don't have a location and can't have comments
+            return false;
+        }
 
-        // no exact hit found - there is no comment on the same begin line as the node
+        List<TokenLocation> allComments = commentInfo.allCommentTokens;
+        // find the first comment after the start of the container node
+        int index = Collections.binarySearch(commentInfo.allCommentTokensByStartIndex, loc.getStartIndex());
+
+        // no exact hit found - this is expected: there is no comment token starting at the very same index as the node
+        assert index < 0 : "comment token is at the same position as non-comment token";
         // extract "insertion point"
-        if (index < 0) {
-            index = ~index;
-        }
-        
-        // then start searching the tokens and check, whether they are inside
-        for (int i = index; i < allComments.size() && allComments.get(i).getLine() <= commentContainer.getEndLine(); i++) {
-            Token comment = allComments.get(i);
-            
-            if (commentContainer.getBeginLine() == comment.getLine() && commentContainer.getBeginColumn() < (comment.getCharPositionInLine() + 1)
-                || commentContainer.getBeginLine() < comment.getLine()) {
-                
-                if (commentContainer.getEndLine() == comment.getLine() && commentContainer.getEndColumn() > (comment.getCharPositionInLine() + 1)
-                    || commentContainer.getEndLine() > comment.getLine()) {
-                    return true;
-                }
-            }
-        }
-        
-        return false;
+        index = ~index;
+
+        // now check whether the next comment after the node is still inside the node
+        return index >= 0 && index < allComments.size()
+            && loc.getStartIndex() < allComments.get(index).index
+            && loc.getEndIndex() > allComments.get(index).index;
     }
 
     private void addFormalComments() {
@@ -413,7 +407,7 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
         ANTLRStringStream stream = new ANTLRStringStream(source);
         ApexLexer lexer = new ApexLexer(stream);
 
-        List<Token> allCommentTokens = new ArrayList<>();
+        ArrayList<TokenLocation> allCommentTokens = new ArrayList<>();
         List<ApexDocTokenLocation> tokenLocations = new ArrayList<>();
         Map<Integer, String> suppressMap = new HashMap<>();
 
@@ -427,10 +421,10 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
             // Keep track of all comment tokens
             if (token.getType() == ApexLexer.BLOCK_COMMENT || token.getType() == ApexLexer.EOL_COMMENT) {
                 assert allCommentTokens.isEmpty()
-                    || allCommentTokens.get(allCommentTokens.size() - 1).getLine() <= token.getLine()
+                    || allCommentTokens.get(allCommentTokens.size() - 1).index < startIndex
                     : "Comments should be sorted";
                 if (!token.getText().startsWith(DOC_COMMENT_PREFIX)) {
-                    allCommentTokens.add(token);
+                    allCommentTokens.add(new TokenLocation(startIndex, token));
                 }
             }
 
@@ -460,32 +454,37 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
     private static class CommentInformation {
 
         final Map<Integer, String> suppressMap;
-        final List<Token> allCommentTokens;
+        final List<TokenLocation> allCommentTokens;
+        final TokenListByStartIndex allCommentTokensByStartIndex;
         final List<ApexDocTokenLocation> docTokenLocations;
 
-        CommentInformation(Map<Integer, String> suppressMap, List<Token> allCommentTokens, List<ApexDocTokenLocation> docTokenLocations) {
+        <T extends List<TokenLocation> & RandomAccess>
+            CommentInformation(Map<Integer, String> suppressMap, T allCommentTokens, List<ApexDocTokenLocation> docTokenLocations) {
             this.suppressMap = suppressMap;
             this.allCommentTokens = allCommentTokens;
             this.docTokenLocations = docTokenLocations;
+            this.allCommentTokensByStartIndex = new TokenListByStartIndex(allCommentTokens);
         }
     }
 
     /**
-     * List that maps tokens to their line numbers without copy.
+     * List that maps comment tokens to their start index without copy.
      * This is used to implement a "binary search by key" routine which unfortunately isn't in the stdlib.
+     *
+     * <p>
+     * Note that the provided token list must implement {@link RandomAccess}.
      */
-    private static final class CommentLinesList extends AbstractList<Integer> implements RandomAccess {
+    private static final class TokenListByStartIndex extends AbstractList<Integer> implements RandomAccess {
 
-        private final List<Token> tokens;
+        private final List<TokenLocation> tokens;
 
-        CommentLinesList(List<Token> tokens) {
-            assert tokens instanceof RandomAccess : "expected RandomAccess list";
+        <T extends List<TokenLocation> & RandomAccess> TokenListByStartIndex(T tokens) {
             this.tokens = tokens;
         }
 
         @Override
         public Integer get(int index) {
-            return tokens.get(index).getLine();
+            return tokens.get(index).index;
         }
 
         @Override
@@ -494,16 +493,22 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
         }
     }
 
-    private static class ApexDocTokenLocation {
-
+    private static class TokenLocation {
         int index;
         Token token;
+
+        TokenLocation(int index, Token token) {
+            this.index = index;
+            this.token = token;
+        }
+    }
+
+    private static class ApexDocTokenLocation extends TokenLocation {
         ApexNode<?> nearestNode;
         int nearestNodeDistance;
 
         ApexDocTokenLocation(int index, Token token) {
-            this.index = index;
-            this.token = token;
+            super(index, token);
         }
     }
 
