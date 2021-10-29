@@ -130,6 +130,8 @@ This is a {{ site.pmd.release_type }} release.
     *   [#3560](https://github.com/pmd/pmd/issues/3560): \[java] InvalidLogMessageFormat: False positive with message and exception in a block inside a lambda
 *   java-performance
     *   [#2364](https://github.com/pmd/pmd/issues/2364): \[java] AddEmptyString false positive in annotation value
+*   java-security
+    *   [#3368](https://github.com/pmd/pmd/issues/3368): \[java] HardcodedCryptoKey false negative with variable assignments
 
 ### API Changes
 
