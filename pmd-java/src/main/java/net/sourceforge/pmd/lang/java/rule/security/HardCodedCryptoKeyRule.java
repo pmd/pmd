@@ -92,7 +92,7 @@ public class HardCodedCryptoKeyRule extends AbstractJavaRule {
                 validateProperKeyArgument(data, initializer.getFirstDescendantOfType(ASTPrimaryPrefix.class));
             }
             
-            List<NameOccurrence> usages = varDecl.getNode().getScope().getDeclarations().get(varDecl);
+            List<NameOccurrence> usages = varDecl.getDeclaratorId().getUsages();
             for (NameOccurrence occurrence : usages) {
                 ASTStatementExpression parentExpr = occurrence.getLocation().getFirstParentOfType(ASTStatementExpression.class);
                 if (isAssignment(occurrence.getLocation(), parentExpr)) {
