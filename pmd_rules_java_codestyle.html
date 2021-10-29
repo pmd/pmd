@@ -1060,6 +1060,18 @@
 
             
             
+            
+
+            
+
+                
+                <li><a href="pmd_languages_visualforce.html">Visualforce</a></li>
+                
+
+            
+
+            
+            
         </ul>
      </li>
        
@@ -1863,8 +1875,16 @@ type declarations which do not match the regex that applies to their
 specific kind (e.g. enum or interface). Each regex can be configured through
 properties.</p>
 
-<p>By default this rule uses the standard Java naming convention (Pascal case),
-and reports utility class names not ending with ‘Util’.</p>
+<p>By default this rule uses the standard Java naming convention (Pascal case).</p>
+
+<p>The rule can detect utility classes and enforce a different naming convention
+on those. E.g. setting the property <code class="language-plaintext highlighter-rouge">utilityClassPattern</code> to
+<code class="language-plaintext highlighter-rouge">[A-Z][a-zA-Z0-9]+(Utils?|Helper|Constants)</code> reports any utility class, whose name
+does not end in "Util(s)", "Helper" or "Constants".</p>
+
+<p>For this rule, a utility class is defined as: a concrete class that does not
+inherit from a super class or implement any interface and only has static fields
+or methods.</p>
 
 <p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/codestyle/ClassNamingConventionsRule.java">net.sourceforge.pmd.lang.java.rule.codestyle.ClassNamingConventionsRule</a></p>
 
@@ -1928,7 +1948,7 @@ and reports utility class names not ending with ‘Util’.</p>
     </tr>
     <tr>
       <td>utilityClassPattern</td>
-      <td>[A-Z][a-zA-Z0-9]+(Utils?|Helper|Constants)</td>
+      <td>[A-Z][a-zA-Z0-9]*</td>
       <td>Regex which applies to utility class names</td>
       <td>no</td>
     </tr>
@@ -1947,7 +1967,7 @@ and reports utility class names not ending with ‘Util’.</p>
         <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"interfacePattern"</span> <span class="na">value=</span><span class="s">"[A-Z][a-zA-Z0-9]*"</span> <span class="nt">/&gt;</span>
         <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"enumPattern"</span> <span class="na">value=</span><span class="s">"[A-Z][a-zA-Z0-9]*"</span> <span class="nt">/&gt;</span>
         <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"annotationPattern"</span> <span class="na">value=</span><span class="s">"[A-Z][a-zA-Z0-9]*"</span> <span class="nt">/&gt;</span>
-        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"utilityClassPattern"</span> <span class="na">value=</span><span class="s">"[A-Z][a-zA-Z0-9]+(Utils?|Helper|Constants)"</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"utilityClassPattern"</span> <span class="na">value=</span><span class="s">"[A-Z][a-zA-Z0-9]*"</span> <span class="nt">/&gt;</span>
     <span class="nt">&lt;/properties&gt;</span>
 <span class="nt">&lt;/rule&gt;</span>
 </code></pre></div></div>

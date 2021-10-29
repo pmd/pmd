@@ -1060,6 +1060,18 @@
 
             
             
+            
+
+            
+
+                
+                <li><a href="pmd_languages_visualforce.html">Visualforce</a></li>
+                
+
+            
+
+            
+            
         </ul>
      </li>
        
@@ -1540,6 +1552,29 @@ and another for the loop bounds condition, e.g.,</p>
 <span class="p">}</span>
 </code></pre></div>    </div>
   </li>
+  <li>
+    <p>The Java rule <a href="pmd_rules_java_codestyle.html#classnamingconventions"><code class="language-plaintext highlighter-rouge">ClassNamingConventions</code></a> uses a different default value of the
+property <code class="language-plaintext highlighter-rouge">utilityClassPattern</code>: This rule was detecting utility classes by default since PMD 6.3.0
+and enforcing the naming convention that utility classes has to be suffixed with Util or Helper or Constants.
+However this turned out to be not so useful as a default configuration, as there is no standard
+naming convention for utility classes.</p>
+
+    <p>With PMD 6.40.0, the default value of this property has been changed to <code class="language-plaintext highlighter-rouge">[A-Z][a-zA-Z0-9]*</code>
+(Pascal case), effectively disabling the special handling of utility classes. This is the same default
+pattern used for concrete classes.</p>
+
+    <p>This means, that the feature to enforce a naming convention for utility classes is now a opt-in
+feature and can be enabled on demand.</p>
+
+    <p>To use the old behaviour, the property needs to be configured as follows:</p>
+
+    <p>```xml</p>
+    <rule ref="category/java/codestyle.xml/ClassNamingConventions">
+    <properties>
+        <property name="utilityClassPattern" value="[A-Z][a-zA-Z0-9]+(Utils?|Helper|Constants)" />
+    </properties>
+</rule>
+  </li>
 </ul>
 
 <h3 id="fixed-issues">Fixed Issues</h3>
@@ -1558,6 +1593,17 @@ and another for the loop bounds condition, e.g.,</p>
       <li><a href="https://github.com/pmd/pmd/issues/3579">#3579</a>: [apex] ApexCRUDViolation: false negative with undelete</li>
     </ul>
   </li>
+  <li>java-bestpractices
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/3542">#3542</a>: [java] MissingOverride: False negative for enum method</li>
+    </ul>
+  </li>
+  <li>java-codestyle
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/1595">#1595</a>: [java] Discuss default for utility classes in ClassNamingConventions</li>
+      <li><a href="https://github.com/pmd/pmd/issues/3563">#3563</a>: [java] The ClassNamingConventionsRule false-positive’s on the class name “Constants”</li>
+    </ul>
+  </li>
   <li>java-errorprone
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/3560">#3560</a>: [java] InvalidLogMessageFormat: False positive with message and exception in a block inside a lambda</li>
@@ -1566,6 +1612,11 @@ and another for the loop bounds condition, e.g.,</p>
   <li>java-performance
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/2364">#2364</a>: [java] AddEmptyString false positive in annotation value</li>
+    </ul>
+  </li>
+  <li>java-security
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/3368">#3368</a>: [java] HardcodedCryptoKey false negative with variable assignments</li>
     </ul>
   </li>
 </ul>
