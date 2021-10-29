@@ -19,6 +19,20 @@ public class Foo {
     </test-code>
 
     <test-code>
+        <description>clear rule violation with this</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    static int x;
+    Foo(int y) {
+        this.x = y;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
         <description>ok</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
