@@ -158,7 +158,7 @@
     <!-- <rule ref="category/java/design.xml/TooManyMethods"/> -->
     <!-- <rule ref="category/java/design.xml/UseObjectForClearerAPI"/> -->
     <rule ref="category/java/design.xml/UseUtilityClass"/>
-    <!-- <rule ref="category/java/design.xml/UselessOverridingMethod"/> -->
+    <rule ref="category/java/design.xml/UselessOverridingMethod"/>
 
     <!-- documentation.xml -->
 

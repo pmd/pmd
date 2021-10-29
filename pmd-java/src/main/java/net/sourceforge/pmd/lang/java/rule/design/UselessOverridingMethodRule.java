@@ -6,36 +6,40 @@ package net.sourceforge.pmd.lang.java.rule.design;
 
 import static net.sourceforge.pmd.properties.PropertyFactory.booleanProperty;
 
-import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
 import java.util.List;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
-import net.sourceforge.pmd.lang.java.ast.ASTArguments;
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
+import net.sourceforge.pmd.lang.java.ast.ASTExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTExpressionStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameters;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTPackageDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
-import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
-import net.sourceforge.pmd.lang.java.ast.ASTResultType;
+import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTSuperExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTThrowsList;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
-import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
+import net.sourceforge.pmd.lang.java.ast.AccessNode.Visibility;
+import net.sourceforge.pmd.lang.java.ast.JModifier;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
+import net.sourceforge.pmd.lang.java.types.JClassType;
+import net.sourceforge.pmd.lang.java.types.JMethodSig;
+import net.sourceforge.pmd.lang.java.types.TypeOps;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
-
 
 /**
  * @author Romain Pelisse, bugfix for [ 1522517 ] False +:
@@ -73,21 +77,16 @@ public class UselessOverridingMethodRule extends AbstractJavaRule {
 
     // TODO: this method should be externalize into an utility class, shouldn't it ?
     private boolean isMethodResultType(ASTMethodDeclaration node, Class<?> resultType) {
-        ASTResultType type = node.getResultType();
-        if (type != null && type.getChild(0) instanceof ASTType) {
-            Class<?> resolvedResultType = ((ASTType) type.getChild(0)).getType();
-            return resultType.equals(resolvedResultType);
-        }
-        return false;
+        ASTType type = node.getResultTypeNode();
+        return TypeTestUtil.isA(resultType, type);
     }
 
     // TODO: this method should be externalize into an utility class, shouldn't it ?
     private boolean isMethodThrowingType(ASTMethodDeclaration node, Class<? extends Exception> exceptionType) {
         @Nullable ASTThrowsList thrownExceptions = node.getThrowsList();
         if (thrownExceptions != null) {
-            List<ASTName> names = thrownExceptions.findChildrenOfType(ASTName.class);
-            for (ASTName name : names) {
-                if (name.getType() != null && name.getType() == exceptionType) {
+            for (ASTClassOrInterfaceType type : thrownExceptions) {
+                if (TypeTestUtil.isA(exceptionType, type)) {
                     return true;
                 }
             }
@@ -106,7 +105,7 @@ public class UselessOverridingMethodRule extends AbstractJavaRule {
         // Can skip abstract methods and methods whose only purpose is to
         // guarantee that the inherited method is not changed by finalizing
         // them.
-        if (node.isAbstract() || node.isFinal() || node.isNative() || node.isSynchronized()) {
+        if (node.getModifiers().hasAny(JModifier.ABSTRACT, JModifier.FINAL, JModifier.NATIVE, JModifier.SYNCHRONIZED)) {
             return super.visit(node, data);
         }
         // We can also skip the 'clone' method as they are generally
@@ -121,89 +120,30 @@ public class UselessOverridingMethodRule extends AbstractJavaRule {
             return super.visit(node, data);
         }
         // Only process functions with one BlockStatement
-        if (block.getNumChildren() != 1 || block.findDescendantsOfType(ASTStatement.class).size() != 1) {
+        if (block.getNumChildren() != 1 || block.descendants(ASTStatement.class).count() != 1) {
             return super.visit(node, data);
         }
 
-        Node statement = block.getChild(0).getChild(0);
-        if (statement.getChild(0).getNumChildren() == 0) {
-            return data; // skips empty return statements
+        Node statement = block.getChild(0);
+        if (statement.getNumChildren() == 0) {
+            return super.visit(node, data); // skips empty return statements
         }
-        Node statementGrandChild = statement.getChild(0).getChild(0);
-        ASTPrimaryExpression primaryExpression;
 
-        if (statementGrandChild instanceof ASTPrimaryExpression) {
-            primaryExpression = (ASTPrimaryExpression) statementGrandChild;
-        } else {
-            List<ASTPrimaryExpression> primaryExpressions = statementGrandChild
-                    .findChildrenOfType(ASTPrimaryExpression.class);
-            if (primaryExpressions.size() != 1) {
+        if (!getProperty(IGNORE_ANNOTATIONS_DESCRIPTOR)
+                && node.getDeclaredAnnotations().any(it -> !TypeTestUtil.isA(Override.class, it))) {
+            return super.visit(node, data);
+        }
+
+        // merely calling super.foo() or returning super.foo()
+        if ((statement instanceof ASTExpressionStatement || statement instanceof ASTReturnStatement)
+                && statement.getNumChildren() == 1
+                && statement.getChild(0) instanceof ASTMethodCall) {
+            ASTMethodCall methodCall = (ASTMethodCall) statement.getChild(0);
+            if (!isSuperCallSameMethod(node, methodCall)) {
                 return super.visit(node, data);
             }
-            primaryExpression = primaryExpressions.get(0);
-        }
-
-        ASTPrimaryPrefix primaryPrefix = primaryExpression.getFirstChildOfType(ASTPrimaryPrefix.class);
-        if (!primaryPrefix.usesSuperModifier()) {
+        } else {
             return super.visit(node, data);
-        }
-
-        List<ASTPrimarySuffix> primarySuffixList = primaryExpression.findChildrenOfType(ASTPrimarySuffix.class);
-        if (primarySuffixList.size() != 2) {
-            // extra method call on result of super method
-            return super.visit(node, data);
-        }
-
-        ASTPrimarySuffix primarySuffix = primarySuffixList.get(0);
-        if (!primarySuffix.hasImageEqualTo(node.getName())) {
-            return super.visit(node, data);
-        }
-        // Process arguments
-        primarySuffix = primarySuffixList.get(1);
-        ASTArguments arguments = (ASTArguments) primarySuffix.getChild(0);
-        ASTFormalParameters formalParameters = node.getFormalParameters();
-        if (formalParameters.getNumChildren() != arguments.getNumChildren()) {
-            return super.visit(node, data);
-        }
-
-        if (!getProperty(IGNORE_ANNOTATIONS_DESCRIPTOR) && node.getDeclaredAnnotations().any(it -> !TypeTestUtil.isA(Override.class, it))) {
-            return super.visit(node, data);
-        }
-
-        // different number of args
-        if (arguments.size() != node.getArity()) {
-            return super.visit(node, data);
-        }
-
-        if (arguments.size() > 0) {
-            ASTArgumentList argumentList = (ASTArgumentList) arguments.getChild(0);
-            for (int i = 0; i < argumentList.getNumChildren(); i++) {
-                Node expressionChild = argumentList.getChild(i).getChild(0);
-                if (!(expressionChild instanceof ASTPrimaryExpression) || expressionChild.getNumChildren() != 1) {
-                    // The arguments are not simply passed through
-                    return super.visit(node, data);
-                }
-
-                ASTPrimaryExpression argumentPrimaryExpression = (ASTPrimaryExpression) expressionChild;
-                ASTPrimaryPrefix argumentPrimaryPrefix = (ASTPrimaryPrefix) argumentPrimaryExpression.getChild(0);
-                if (argumentPrimaryPrefix.getNumChildren() == 0) {
-                    // The arguments are not simply passed through (using "this" for instance)
-                    return super.visit(node, data);
-                }
-                Node argumentPrimaryPrefixChild = argumentPrimaryPrefix.getChild(0);
-                if (!(argumentPrimaryPrefixChild instanceof ASTName)) {
-                    // The arguments are not simply passed through
-                    return super.visit(node, data);
-                }
-
-                ASTName argumentName = (ASTName) argumentPrimaryPrefixChild;
-                ASTFormalParameter formalParameter = (ASTFormalParameter) formalParameters.getChild(i);
-                ASTVariableDeclaratorId variableId = formalParameter.getFirstChildOfType(ASTVariableDeclaratorId.class);
-                if (!argumentName.hasImageEqualTo(variableId.getImage())) {
-                    // The arguments are not simply passed through
-                    return super.visit(node, data);
-                }
-            }
         }
 
         if (modifiersChanged(node)) {
@@ -211,13 +151,50 @@ public class UselessOverridingMethodRule extends AbstractJavaRule {
         }
 
         // All arguments are passed through directly or there were no arguments
-        addViolation(data, node, getMessage());
+        addViolation(data, node);
 
         return super.visit(node, data);
     }
 
+    private boolean isSuperCallSameMethod(ASTMethodDeclaration node, ASTMethodCall methodCall) {
+        if (!(methodCall.getQualifier() instanceof ASTSuperExpression)) {
+            return false;
+        }
+
+        @NonNull
+        ASTFormalParameters formalParameters = node.getFormalParameters();
+        @NonNull
+        ASTArgumentList arguments = methodCall.getArguments();
+
+        if (node.getName().equals(methodCall.getMethodName())
+                && formalParameters.size() == arguments.size()) {
+            // simple case - no args
+            if (formalParameters.size() == 0) {
+                return true;
+            }
+
+            // compare each arg
+            for (int i = 0; i < node.getArity(); i++) {
+                ASTFormalParameter formalParam = formalParameters.get(i);
+                ASTExpression arg = arguments.get(i);
+                
+                if (!(arg instanceof ASTVariableAccess)) {
+                    return false;
+                }
+                ASTVariableAccess varAccess = (ASTVariableAccess) arg;
+                if (!formalParam.getVarId().getName().equals(varAccess.getName())) {
+                    return false;
+                }
+            }
+            
+            // now all args matched
+            return true;
+        }
+        return false;
+    }
+
     private boolean isCloneMethod(ASTMethodDeclaration node) {
-        boolean isCloneAndPublic = CLONE_METHOD_NAME.equals(node.getName()) && node.isPublic();
+        boolean isCloneAndPublic = CLONE_METHOD_NAME.equals(node.getName()) && node.getVisibility() == Visibility.V_PUBLIC;
         boolean hasNoParameters = node.getArity() == 0;
         return isCloneAndPublic
                 && hasNoParameters
@@ -226,52 +203,31 @@ public class UselessOverridingMethodRule extends AbstractJavaRule {
     }
 
     private boolean modifiersChanged(ASTMethodDeclaration node) {
-        Class<?> type = node.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class).getType();
-        if (type == null) {
-            return false;
-        }
-
-        String overriddenMethodName = node.getName();
-
-        List<Class<?>> typeArguments = new ArrayList<>();
-        for (ASTFormalParameter parameter : node.getFormalParameters()) {
-            Class<?> parameterType = parameter.getType();
-            if (parameterType != null) {
-                typeArguments.add(parameterType);
-            }
-        }
-
-        // did we have for each parameter the type?
-        if (typeArguments.size() != node.getFormalParameters().size()) {
-            return false;
-        }
+        JClassType type = node.getEnclosingType().getTypeMirror();
 
         // search method with same name up the hierarchy
-        Class<?>[] typeArgumentArray = typeArguments.toArray(new Class<?>[0]);
-        Class<?> superType = type.getSuperclass();
-        Method declaredMethod = null;
+        JClassType superType = type.getSuperClass();
+        JMethodSig declaredMethod = null;
         while (superType != null && declaredMethod == null) {
-            try {
-                declaredMethod = superType.getDeclaredMethod(overriddenMethodName, typeArgumentArray);
-            } catch (NoSuchMethodException | SecurityException e) {
-                declaredMethod = null;
+            List<JMethodSymbol> superMethods = superType.getSymbol().getDeclaredMethods();
+            for (JMethodSymbol m : superMethods) {
+                if (TypeOps.overrides(node.getTypeSystem().sigOf(node.getSymbol()), m.getTypeSystem().sigOf(m), type)) {
+                    declaredMethod = superType.getDeclaredMethod(m);
+                    break;
+                }
             }
-            superType = superType.getSuperclass();
+            superType = superType.getSuperClass();
         }
-
         return declaredMethod != null && isElevatingAccessModifier(node, declaredMethod);
     }
 
-    private boolean isElevatingAccessModifier(ASTMethodDeclaration overridingMethod, Method superMethod) {
-        String superPackageName = null;
-        Package p = superMethod.getDeclaringClass().getPackage();
-        if (p != null) {
-            superPackageName = p.getName();
-        }
+    private boolean isElevatingAccessModifier(ASTMethodDeclaration overridingMethod, JMethodSig superMethod) {
+        String superPackageName = superMethod.getDeclaringType().getSymbol().getPackageName();
+
         // Note: can't simply compare superMethod.getModifiers() with overridingMethod.getModifiers()
         // since AccessNode#PROTECTED != Modifier#PROTECTED.
         boolean elevatingFromProtected = Modifier.isProtected(superMethod.getModifiers())
-                && !overridingMethod.isProtected();
+                && overridingMethod.getVisibility() != Visibility.V_PROTECTED;
         boolean elevatingFromPackagePrivate = superMethod.getModifiers() == 0
             && !overridingMethod.getModifiers().getExplicitModifiers().isEmpty();
         boolean elevatingIntoDifferentPackage = !packageName.equals(superPackageName)
