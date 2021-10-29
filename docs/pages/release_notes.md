@@ -117,6 +117,29 @@ This is a {{ site.pmd.release_type }} release.
     }
     ```
 
+*   The Java rule {% rule java/codestyle/ClassNamingConventions %} uses a different default value of the
+    property `utilityClassPattern`: This rule was detecting utility classes by default since PMD 6.3.0
+    and enforcing the naming convention that utility classes has to be suffixed with Util or Helper or Constants.
+    However this turned out to be not so useful as a default configuration, as there is no standard
+    naming convention for utility classes.
+    
+    With PMD 6.40.0, the default value of this property has been changed to `[A-Z][a-zA-Z0-9]*`
+    (Pascal case), effectively disabling the special handling of utility classes. This is the same default
+    pattern used for concrete classes.
+    
+    This means, that the feature to enforce a naming convention for utility classes is now a opt-in
+    feature and can be enabled on demand.
+    
+    To use the old behaviour, the property needs to be configured as follows:
+    
+    ```xml
+    <rule ref="category/java/codestyle.xml/ClassNamingConventions">
+        <properties>
+            <property name="utilityClassPattern" value="[A-Z][a-zA-Z0-9]+(Utils?|Helper|Constants)" />
+        </properties>
+    </rule>
+
+
 ### Fixed Issues
 
 *   apex
@@ -129,10 +152,17 @@ This is a {{ site.pmd.release_type }} release.
     *   [#3570](https://github.com/pmd/pmd/issues/3570): \[apex] OneDeclarationPerLine: should provide an option to ignore multiple declarations in a for loop initializer
     *   [#3576](https://github.com/pmd/pmd/issues/3576): \[apex] ApexCRUDViolation should provide an option to specify additional patterns for methods that encapsulate authorization checks
     *   [#3579](https://github.com/pmd/pmd/issues/3579): \[apex] ApexCRUDViolation: false negative with undelete
+*   java-bestpractices
+    *   [#3542](https://github.com/pmd/pmd/issues/3542): \[java] MissingOverride: False negative for enum method
+*   java-codestyle
+    *   [#1595](https://github.com/pmd/pmd/issues/1595): \[java] Discuss default for utility classes in ClassNamingConventions
+    *   [#3563](https://github.com/pmd/pmd/issues/3563): \[java] The ClassNamingConventionsRule false-positive's on the class name "Constants"
 *   java-errorprone
     *   [#3560](https://github.com/pmd/pmd/issues/3560): \[java] InvalidLogMessageFormat: False positive with message and exception in a block inside a lambda
 *   java-performance
     *   [#2364](https://github.com/pmd/pmd/issues/2364): \[java] AddEmptyString false positive in annotation value
+*   java-security
+    *   [#3368](https://github.com/pmd/pmd/issues/3368): \[java] HardcodedCryptoKey false negative with variable assignments
 
 ### API Changes
 
