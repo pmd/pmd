@@ -13,7 +13,7 @@
   </parent>
 
   <properties>
-    <apex.jorje.version>2020-09-10-5a5192</apex.jorje.version>
+    <apex.jorje.version>2021-10-08-631b8c</apex.jorje.version>
   </properties>
 
   <build>

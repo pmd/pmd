@@ -19,6 +19,10 @@ This is a {{ site.pmd.release_type }} release.
 
 ### New and noteworthy
 
+#### Updated Apex Support
+
+*   The Apex language support has been bumped to version 54.0 (Spring '22).
+
 #### New rules
 
 *   The new Apex rule {% rule apex/performance/EagerlyLoadedDescribeSObjectResult %} finds
@@ -79,6 +83,30 @@ This is a {{ site.pmd.release_type }} release.
     
     By default, both properties are `true` to not change the default behaviour of this rule.
 
+*   The Apex rule {% rule apex/errorprone/EmptyCatchBlock %} has two new properties modeled after the analgous Java rule:
+    
+    The `allowCommentedBlocks` property, when set to `true` (defaults to `false`), ignores empty blocks containing comments, e.g.:
+
+    ```apex
+    try {
+        doSomethingThatThrowsAnExpectedException();
+        System.assert(false, 'Expected to catch an exception.');
+    } catch (Exception e) {
+        // Expected
+    }
+    ```
+
+    The `allowExceptionNameRegex` property is a regular expression for exception variable names for which empty catch blocks should be ignored by this rule. For example, using the default property value of `^(ignored|expected)$`, the following empty catch blocks will not be reported:
+
+    ```apex
+    try {
+        doSomethingThatThrowsAnExpectedException();
+        System.assert(false, 'Expected to catch an exception.');
+    } catch (IllegalStateException ignored) {
+    } catch (NumberFormatException expected) {
+    }
+    ```
+
 *   The Apex rule {% rule apex/codestyle/OneDeclarationPerLine %} has a new property `reportInForLoopInitializer`:
     If set to `false` (default is `true` if unspecified) doesn't report an issue for multiple declarations in
     a `for` loop's initializer section. This is support the common idiom of one declaration for the loop variable
@@ -97,6 +125,7 @@ This is a {{ site.pmd.release_type }} release.
     *   [#3532](https://github.com/pmd/pmd/issues/3532): \[apex] Promote usage of consistent getDescribe() info
     *   [#3566](https://github.com/pmd/pmd/issues/3566): \[apex] ApexDoc rule should not require "@description"
     *   [#3568](https://github.com/pmd/pmd/issues/3568): \[apex] EmptyStatementBlock: should provide options to ignore empty private constructors and empty virtual methods
+    *   [#3569](https://github.com/pmd/pmd/issues/3569): \[apex] EmptyCatchBlock: should provide an option to ignore empty catch blocks in test methods
     *   [#3570](https://github.com/pmd/pmd/issues/3570): \[apex] OneDeclarationPerLine: should provide an option to ignore multiple declarations in a for loop initializer
     *   [#3576](https://github.com/pmd/pmd/issues/3576): \[apex] ApexCRUDViolation should provide an option to specify additional patterns for methods that encapsulate authorization checks
     *   [#3579](https://github.com/pmd/pmd/issues/3579): \[apex] ApexCRUDViolation: false negative with undelete
@@ -116,9 +145,12 @@ This is a {{ site.pmd.release_type }} release.
 *   [#3571](https://github.com/pmd/pmd/pull/3571): \[apex] Fix for #1089 - Added new configuration property additionalAssertMethodPattern to ApexUnitTestClassShouldHaveAssertsRule - [Scott Wells](https://github.com/SCWells72)
 *   [#3572](https://github.com/pmd/pmd/pull/3572): \[apex] Fix for #3566 - Added new configuration property reportMissingDescription to ApexDocRule - [Scott Wells](https://github.com/SCWells72)
 *   [#3573](https://github.com/pmd/pmd/pull/3573): \[apex] Fix for #3568 - Added new configuration properties reportEmptyPrivateNoArgConstructor and reportEmptyVirtualMethod to EmptyStatementBlock - [Scott Wells](https://github.com/SCWells72)
+*   [#3574](https://github.com/pmd/pmd/pull/3574): \[apex] Fix for #3569 - Added new configuration properties allowCommentedBlocks and allowExceptionNameRegex to EmptyCatchBlock - [Scott Wells](https://github.com/SCWells72)
 *   [#3575](https://github.com/pmd/pmd/pull/3575): \[apex] Fix for #3570 - Added new configuration property reportInForLoopInitializer to OneDeclarationPerLine - [Scott Wells](https://github.com/SCWells72)
 *   [#3577](https://github.com/pmd/pmd/pull/3577): \[apex] Fix for #3576 - Added new configuration properties \*AuthMethodPattern and \*AuthMethodTypeParamIndex to ApexCRUDViolation rule - [Scott Wells](https://github.com/SCWells72)
 *   [#3578](https://github.com/pmd/pmd/pull/3578): \[apex] ApexCRUDViolation: Documentation changes for #3576 - [Scott Wells](https://github.com/SCWells72)
+*   [#3580](https://github.com/pmd/pmd/pull/3580): \[doc] Release notes updates for the changes in issue #3569 - [Scott Wells](https://github.com/SCWells72)
+*   [#3581](https://github.com/pmd/pmd/pull/3581): \[apex] #3569 - Requested changes for code review feedback - [Scott Wells](https://github.com/SCWells72)
 
 {% endtocmaker %}
 
