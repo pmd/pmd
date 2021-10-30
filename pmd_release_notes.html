@@ -173,7 +173,7 @@
 
 
 <ul id="mysidebar" class="nav">
-    <li class="sidebarTitle">PMD 6.40.0</li>
+    <li class="sidebarTitle">PMD 6.41.0-SNAPSHOT</li>
     
     
     
@@ -1440,223 +1440,19 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 
     
 
-  <h2 id="30-october-2021---6400">30-October-2021 - 6.40.0</h2>
+  <h2 id="27-november-2021---6410-snapshot">27-November-2021 - 6.41.0-SNAPSHOT</h2>
 
-<p>The PMD team is pleased to announce PMD 6.40.0.</p>
+<p>The PMD team is pleased to announce PMD 6.41.0-SNAPSHOT.</p>
 
 <p>This is a minor release.</p>
 
 <h3 id="new-and-noteworthy">New and noteworthy</h3>
 
-<h4 id="updated-apex-support">Updated Apex Support</h4>
-
-<ul>
-  <li>The Apex language support has been bumped to version 54.0 (Spring ‘22).</li>
-</ul>
-
-<h4 id="new-rules">New rules</h4>
-
-<ul>
-  <li>The new Apex rule <a href="pmd_rules_apex_performance.html#eagerlyloadeddescribesobjectresult"><code class="language-plaintext highlighter-rouge">EagerlyLoadedDescribeSObjectResult</code></a> finds
-<code class="language-plaintext highlighter-rouge">DescribeSObjectResult</code>s which could have been loaded eagerly via <code class="language-plaintext highlighter-rouge">SObjectType.getDescribe()</code>.</li>
-</ul>
-
-<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/apex/performance.xml/EagerlyLoadedDescribeSObjectResult"</span> <span class="nt">/&gt;</span>
-</code></pre></div></div>
-
-<h4 id="modified-rules">Modified rules</h4>
-
-<ul>
-  <li>
-    <p>The Apex rule <a href="pmd_rules_apex_bestpractices.html#apexunittestclassshouldhaveasserts"><code class="language-plaintext highlighter-rouge">ApexUnitTestClassShouldHaveAsserts</code></a> has a new property
-<code class="language-plaintext highlighter-rouge">additionalAssertMethodPattern</code>. When specified the pattern is evaluated against each invoked
-method name to determine whether it represents a test assertion in addition to the standard names.</p>
-  </li>
-  <li>
-    <p>The Apex rule <a href="pmd_rules_apex_documentation.html#apexdoc"><code class="language-plaintext highlighter-rouge">ApexDoc</code></a> has a new property <code class="language-plaintext highlighter-rouge">reportMissingDescription</code>.
-If set to <code class="language-plaintext highlighter-rouge">false</code> (default is <code class="language-plaintext highlighter-rouge">true</code> if unspecified) doesn’t report an issue if the <code class="language-plaintext highlighter-rouge">@description</code>
-tag is missing. This is consistent with the ApexDoc dialect supported by derivatives such as
-<a href="https://gitlab.com/StevenWCox/sfapexdoc">SfApexDoc</a> and also with analogous documentation tools for
-other languages, e.g., JavaDoc, ESDoc/JSDoc, etc.</p>
-  </li>
-  <li>
-    <p>The Apex rule <a href="pmd_rules_apex_security.html#apexcrudviolation"><code class="language-plaintext highlighter-rouge">ApexCRUDViolation</code></a> has a couple of new properties:
-These allow specification of regular-expression-based patterns for additional methods that should
-be considered valid for pre-CRUD authorization beyond those offered by the system Apex checks and
-ESAPI, e.g., <a href="https://github.com/SCWells72/sirono-common#authorization-utilities"><code class="language-plaintext highlighter-rouge">sirono-common</code>’s <code class="language-plaintext highlighter-rouge">AuthorizationUtil</code> class</a>.
-Two new properties have been added per-CRUD operation, one to specify the naming pattern for a method
-that authorizes that operation and another to specify the argument passed to that method that contains
-the <code class="language-plaintext highlighter-rouge">SObjectType</code> instance of the type being authorized. Here is an example of these new properties:</p>
-
-    <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/apex/security.xml/ApexCRUDViolation"</span> <span class="na">message=</span><span class="s">"..."</span><span class="nt">&gt;</span>
-  <span class="nt">&lt;priority&gt;</span>3<span class="nt">&lt;/priority&gt;</span>
-  <span class="nt">&lt;properties&gt;</span>
-    <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"createAuthMethodPattern"</span> <span class="na">value=</span><span class="s">"AuthorizationUtil\.(is|assert)(Createable|Upsertable)"</span><span class="nt">/&gt;</span>
-    <span class="c">&lt;!--
-     There's one of these properties for each operation, and the default value is 0 so this is technically
-     superfluous, but it's included it here for example purposes.
-     --&gt;</span>
-    <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"createAuthMethodTypeParamIndex"</span> <span class="na">value=</span><span class="s">"0"</span><span class="nt">/&gt;</span>
-    <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"readAuthMethodPattern"</span> <span class="na">value=</span><span class="s">"AuthorizationUtil\.(is|assert)Accessible"</span><span class="nt">/&gt;</span>
-    <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"updateAuthMethodPattern"</span> <span class="na">value=</span><span class="s">"AuthorizationUtil\.(is|assert)(Updateable|Upsertable)"</span><span class="nt">/&gt;</span>
-    <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"deleteAuthMethodPattern"</span> <span class="na">value=</span><span class="s">"AuthorizationUtil\.(is|assert)Deletable"</span><span class="nt">/&gt;</span>
-    <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"undeleteAuthMethodPattern"</span> <span class="na">value=</span><span class="s">"AuthorizationUtil\.(is|assert)Undeletable"</span><span class="nt">/&gt;</span>
-    <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"mergeAuthMethodPattern"</span> <span class="na">value=</span><span class="s">"AuthorizationUtil\.(is|assert)Mergeable"</span><span class="nt">/&gt;</span>
-  <span class="nt">&lt;/properties&gt;</span>
-<span class="nt">&lt;/rule&gt;</span>
-</code></pre></div>    </div>
-  </li>
-  <li>
-    <p>The Apex rule <a href="pmd_rules_apex_errorprone.html#emptystatementblock"><code class="language-plaintext highlighter-rouge">EmptyStatementBlock</code></a> has two new properties:</p>
-
-    <p>Setting <code class="language-plaintext highlighter-rouge">reportEmptyPrivateNoArgConstructor</code> to <code class="language-plaintext highlighter-rouge">false</code> ignores empty private no-arg constructors
-that are commonly used in singleton pattern implementations and utility classes in support of
-prescribed best practices.</p>
-
-    <p>Setting <code class="language-plaintext highlighter-rouge">reportEmptyVirtualMethod</code> to <code class="language-plaintext highlighter-rouge">false</code> ignores empty virtual methods that are commonly used in
-abstract base classes as default no-op implementations when derived classes typically only override a
-subset of virtual methods.</p>
-
-    <p>By default, both properties are <code class="language-plaintext highlighter-rouge">true</code> to not change the default behaviour of this rule.</p>
-  </li>
-  <li>
-    <p>The Apex rule <a href="pmd_rules_apex_errorprone.html#emptycatchblock"><code class="language-plaintext highlighter-rouge">EmptyCatchBlock</code></a> has two new properties modeled after the analgous Java rule:</p>
-
-    <p>The <code class="language-plaintext highlighter-rouge">allowCommentedBlocks</code> property, when set to <code class="language-plaintext highlighter-rouge">true</code> (defaults to <code class="language-plaintext highlighter-rouge">false</code>), ignores empty blocks containing comments, e.g.:</p>
-
-    <div class="language-apex highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">try</span> <span class="p">{</span>
-    <span class="nf">doSomethingThatThrowsAnExpectedException</span><span class="p">();</span>
-    <span class="n">System</span><span class="o">.</span><span class="nf">assert</span><span class="p">(</span><span class="kc">false</span><span class="p">,</span> <span class="s1">'</span><span class="s2">Expected to catch an exception.'</span><span class="p">);</span>
-<span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="n">Exception</span> <span class="n">e</span><span class="p">)</span> <span class="p">{</span>
-    <span class="c1">// Expected</span>
-<span class="p">}</span>
-</code></pre></div>    </div>
-
-    <p>The <code class="language-plaintext highlighter-rouge">allowExceptionNameRegex</code> property is a regular expression for exception variable names for which empty catch blocks should be ignored by this rule. For example, using the default property value of <code class="language-plaintext highlighter-rouge">^(ignored|expected)$</code>, the following empty catch blocks will not be reported:</p>
-
-    <div class="language-apex highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">try</span> <span class="p">{</span>
-    <span class="nf">doSomethingThatThrowsAnExpectedException</span><span class="p">();</span>
-    <span class="n">System</span><span class="o">.</span><span class="nf">assert</span><span class="p">(</span><span class="kc">false</span><span class="p">,</span> <span class="s1">'</span><span class="s2">Expected to catch an exception.'</span><span class="p">);</span>
-<span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="n">IllegalStateException</span> <span class="n">ignored</span><span class="p">)</span> <span class="p">{</span>
-<span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="n">NumberFormatException</span> <span class="n">expected</span><span class="p">)</span> <span class="p">{</span>
-<span class="p">}</span>
-</code></pre></div>    </div>
-  </li>
-  <li>
-    <p>The Apex rule <a href="pmd_rules_apex_codestyle.html#onedeclarationperline"><code class="language-plaintext highlighter-rouge">OneDeclarationPerLine</code></a> has a new property <code class="language-plaintext highlighter-rouge">reportInForLoopInitializer</code>:
-If set to <code class="language-plaintext highlighter-rouge">false</code> (default is <code class="language-plaintext highlighter-rouge">true</code> if unspecified) doesn’t report an issue for multiple declarations in
-a <code class="language-plaintext highlighter-rouge">for</code> loop’s initializer section. This is support the common idiom of one declaration for the loop variable
-and another for the loop bounds condition, e.g.,</p>
-
-    <div class="language-apex highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">for</span> <span class="p">(</span><span class="n">Integer</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">numIterations</span> <span class="o">=</span> <span class="nf">computeNumIterations</span><span class="p">();</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">numIterations</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
-<span class="p">}</span>
-</code></pre></div>    </div>
-  </li>
-  <li>
-    <p>The Java rule <a href="pmd_rules_java_codestyle.html#classnamingconventions"><code class="language-plaintext highlighter-rouge">ClassNamingConventions</code></a> uses a different default value of the
-property <code class="language-plaintext highlighter-rouge">utilityClassPattern</code>: This rule was detecting utility classes by default since PMD 6.3.0
-and enforcing the naming convention that utility classes has to be suffixed with Util or Helper or Constants.
-However this turned out to be not so useful as a default configuration, as there is no standard
-naming convention for utility classes.</p>
-
-    <p>With PMD 6.40.0, the default value of this property has been changed to <code class="language-plaintext highlighter-rouge">[A-Z][a-zA-Z0-9]*</code>
-(Pascal case), effectively disabling the special handling of utility classes. This is the same default
-pattern used for concrete classes.</p>
-
-    <p>This means, that the feature to enforce a naming convention for utility classes is now a opt-in
-feature and can be enabled on demand.</p>
-
-    <p>To use the old behaviour, the property needs to be configured as follows:</p>
-
-    <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/codestyle.xml/ClassNamingConventions"</span><span class="nt">&gt;</span>
-    <span class="nt">&lt;properties&gt;</span>
-        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"utilityClassPattern"</span> <span class="na">value=</span><span class="s">"[A-Z][a-zA-Z0-9]+(Utils?|Helper|Constants)"</span> <span class="nt">/&gt;</span>
-    <span class="nt">&lt;/properties&gt;</span>
-<span class="nt">&lt;/rule&gt;</span>
-</code></pre></div>    </div>
-  </li>
-</ul>
-
 <h3 id="fixed-issues">Fixed Issues</h3>
-
-<ul>
-  <li>apex
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/1089">#1089</a>: [apex] ApexUnitTestClassShouldHaveAsserts: Test asserts in other methods not detected</li>
-      <li><a href="https://github.com/pmd/pmd/issues/1090">#1090</a>: [apex] ApexCRUDViolation: checks not detected if done in another method</li>
-      <li><a href="https://github.com/pmd/pmd/issues/3532">#3532</a>: [apex] Promote usage of consistent getDescribe() info</li>
-      <li><a href="https://github.com/pmd/pmd/issues/3566">#3566</a>: [apex] ApexDoc rule should not require “@description”</li>
-      <li><a href="https://github.com/pmd/pmd/issues/3568">#3568</a>: [apex] EmptyStatementBlock: should provide options to ignore empty private constructors and empty virtual methods</li>
-      <li><a href="https://github.com/pmd/pmd/issues/3569">#3569</a>: [apex] EmptyCatchBlock: should provide an option to ignore empty catch blocks in test methods</li>
-      <li><a href="https://github.com/pmd/pmd/issues/3570">#3570</a>: [apex] OneDeclarationPerLine: should provide an option to ignore multiple declarations in a for loop initializer</li>
-      <li><a href="https://github.com/pmd/pmd/issues/3576">#3576</a>: [apex] ApexCRUDViolation should provide an option to specify additional patterns for methods that encapsulate authorization checks</li>
-      <li><a href="https://github.com/pmd/pmd/issues/3579">#3579</a>: [apex] ApexCRUDViolation: false negative with undelete</li>
-    </ul>
-  </li>
-  <li>java-bestpractices
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/3542">#3542</a>: [java] MissingOverride: False negative for enum method</li>
-    </ul>
-  </li>
-  <li>java-codestyle
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/1595">#1595</a>: [java] Discuss default for utility classes in ClassNamingConventions</li>
-      <li><a href="https://github.com/pmd/pmd/issues/3563">#3563</a>: [java] The ClassNamingConventionsRule false-positive’s on the class name “Constants”</li>
-    </ul>
-  </li>
-  <li>java-errorprone
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/3560">#3560</a>: [java] InvalidLogMessageFormat: False positive with message and exception in a block inside a lambda</li>
-    </ul>
-  </li>
-  <li>java-performance
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/2364">#2364</a>: [java] AddEmptyString false positive in annotation value</li>
-    </ul>
-  </li>
-  <li>java-security
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/3368">#3368</a>: [java] HardcodedCryptoKey false negative with variable assignments</li>
-    </ul>
-  </li>
-</ul>
 
 <h3 id="api-changes">API Changes</h3>
 
-<h4 id="experimental-apis">Experimental APIs</h4>
-
-<ul>
-  <li>The interface <a href="https://docs.pmd-code.org/apidocs/pmd-apex/6.40.0/net/sourceforge/pmd/lang/apex/ast/ASTCommentContainer.html#"><code>ASTCommentContainer</code></a> has been added to the Apex AST.
-It provides a way to check whether a node contains at least one comment. Currently this is only implemented for
-<a href="https://docs.pmd-code.org/apidocs/pmd-apex/6.40.0/net/sourceforge/pmd/lang/apex/ast/ASTCatchBlockStatement.html#"><code>ASTCatchBlockStatement</code></a> and used by the rule
-<a href="pmd_rules_apex_errorprone.html#emptycatchblock"><code class="language-plaintext highlighter-rouge">EmptyCatchBlock</code></a>.
-This information is also available via XPath attribute <code class="language-plaintext highlighter-rouge">@ContainsComment</code>.</li>
-</ul>
-
 <h3 id="external-contributions">External Contributions</h3>
-
-<ul>
-  <li><a href="https://github.com/pmd/pmd/pull/3538">#3538</a>: [apex] New rule EagerlyLoadedDescribeSObjectResult - <a href="https://github.com/jonathanwiesel">Jonathan Wiesel</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/3549">#3549</a>: [java] Ignore AddEmptyString rule in annotations - <a href="https://github.com/smyachenkov">Stanislav Myachenkov</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/3561">#3561</a>: [java] InvalidLogMessageFormat: False positive with message and exception in a block inside a lambda - <a href="https://github.com/essobedo">Nicolas Filotto</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/3565">#3565</a>: [doc] Fix resource leak due to Files.walk - <a href="https://github.com/lujiefsi">lujiefsi</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/3571">#3571</a>: [apex] Fix for #1089 - Added new configuration property additionalAssertMethodPattern to ApexUnitTestClassShouldHaveAssertsRule - <a href="https://github.com/SCWells72">Scott Wells</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/3572">#3572</a>: [apex] Fix for #3566 - Added new configuration property reportMissingDescription to ApexDocRule - <a href="https://github.com/SCWells72">Scott Wells</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/3573">#3573</a>: [apex] Fix for #3568 - Added new configuration properties reportEmptyPrivateNoArgConstructor and reportEmptyVirtualMethod to EmptyStatementBlock - <a href="https://github.com/SCWells72">Scott Wells</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/3574">#3574</a>: [apex] Fix for #3569 - Added new configuration properties allowCommentedBlocks and allowExceptionNameRegex to EmptyCatchBlock - <a href="https://github.com/SCWells72">Scott Wells</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/3575">#3575</a>: [apex] Fix for #3570 - Added new configuration property reportInForLoopInitializer to OneDeclarationPerLine - <a href="https://github.com/SCWells72">Scott Wells</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/3577">#3577</a>: [apex] Fix for #3576 - Added new configuration properties *AuthMethodPattern and *AuthMethodTypeParamIndex to ApexCRUDViolation rule - <a href="https://github.com/SCWells72">Scott Wells</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/3578">#3578</a>: [apex] ApexCRUDViolation: Documentation changes for #3576 - <a href="https://github.com/SCWells72">Scott Wells</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/3580">#3580</a>: [doc] Release notes updates for the changes in issue #3569 - <a href="https://github.com/SCWells72">Scott Wells</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/3581">#3581</a>: [apex] #3569 - Requested changes for code review feedback - <a href="https://github.com/SCWells72">Scott Wells</a></li>
-</ul>
-
-<h3 id="stats">Stats</h3>
-<ul>
-  <li>72 commits</li>
-  <li>37 closed tickets &amp; PRs</li>
-  <li>Days since last release: 34</li>
-</ul>
 
 
 
