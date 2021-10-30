@@ -133,6 +133,7 @@ This is a {{ site.pmd.release_type }} release.
             <property name="utilityClassPattern" value="[A-Z][a-zA-Z0-9]+(Utils?|Helper|Constants)" />
         </properties>
     </rule>
+    ```
 
 
 ### Fixed Issues
@@ -160,6 +161,14 @@ This is a {{ site.pmd.release_type }} release.
     *   [#3368](https://github.com/pmd/pmd/issues/3368): \[java] HardcodedCryptoKey false negative with variable assignments
 
 ### API Changes
+
+#### Experimental APIs
+
+*   The interface {% jdoc apex::lang.apex.ast.ASTCommentContainer %} has been added to the Apex AST.
+    It provides a way to check whether a node contains at least one comment. Currently this is only implemented for
+    {% jdoc apex::lang.apex.ast.ASTCatchBlockStatement %} and used by the rule
+    {% rule apex/errorprone/EmptyCatchBlock %}.
+    This information is also available via XPath attribute `@ContainsComment`.
 
 ### External Contributions
 
