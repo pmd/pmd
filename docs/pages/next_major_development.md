@@ -246,6 +246,16 @@ the breaking API changes will be performed in 7.0.0.
 an API is tagged as `@Deprecated` or not in the latest minor release. During the development of 7.0.0,
 we may decide to remove some APIs that were not tagged as deprecated, though we'll try to avoid it." %}
 
+#### 6.40.0
+
+##### Experimental APIs
+
+*   The interface {% jdoc apex::lang.apex.ast.ASTCommentContainer %} has been added to the Apex AST.
+    It provides a way to check whether a node contains at least one comment. Currently this is only implemented for
+    {% jdoc apex::lang.apex.ast.ASTCatchBlockStatement %} and used by the rule
+    {% rule apex/errorprone/EmptyCatchBlock %}.
+    This information is also available via XPath attribute `@ContainsComment`.
+
 #### 6.39.0
 
 No changes.
