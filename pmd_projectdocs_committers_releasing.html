@@ -1539,7 +1539,7 @@ create the numbers, that can be attached to the release notes as a last section:
 
 <span class="nb">echo</span> <span class="s2">"### Stats"</span>
 <span class="nb">echo</span> <span class="s2">"* </span><span class="si">$(</span>git log pmd_releases/<span class="k">${</span><span class="nv">LAST_VERSION</span><span class="k">}</span>..<span class="k">${</span><span class="nv">NEW_VERSION_COMMITISH</span><span class="k">}</span> <span class="nt">--oneline</span> <span class="nt">--no-merges</span> |wc <span class="nt">-l</span><span class="si">)</span><span class="s2"> commits"</span>
-<span class="nb">echo</span> <span class="s2">"* </span><span class="si">$(</span>curl <span class="nt">-s</span> https://api.github.com/repos/pmd/pmd/milestones|jq <span class="s2">".[] | select(.title == </span><span class="se">\"</span><span class="nv">$NEW_VERSION</span><span class="se">\"</span><span class="s2">) | .closed_issues"</span><span class="si">)</span><span class="s2"> closed tickets &amp; PRs"</span>
+<span class="nb">echo</span> <span class="s2">"* </span><span class="si">$(</span>curl <span class="nt">-s</span> <span class="s2">"https://api.github.com/repos/pmd/pmd/milestones?state=all&amp;direction=desc&amp;per_page=5"</span>|jq <span class="s2">".[] | select(.title == </span><span class="se">\"</span><span class="nv">$NEW_VERSION</span><span class="se">\"</span><span class="s2">) | .closed_issues"</span><span class="si">)</span><span class="s2"> closed tickets &amp; PRs"</span>
 <span class="nb">echo</span> <span class="s2">"* Days since last release: </span><span class="k">$((</span> <span class="o">(</span> <span class="si">$(</span><span class="nb">date</span> +%s<span class="si">)</span> <span class="o">-</span> <span class="si">$(</span>git log <span class="nt">--max-count</span><span class="o">=</span>1 <span class="nt">--format</span><span class="o">=</span><span class="s2">"%at"</span> pmd_releases/<span class="k">${</span><span class="nv">LAST_VERSION</span><span class="k">}</span><span class="si">)</span> <span class="o">)</span> <span class="o">/</span> <span class="m">86400</span><span class="k">))</span><span class="s2">"</span>
 </code></pre></div></div>
 
@@ -1859,7 +1859,7 @@ the maintenance branch needs to be set.</p>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2021 PMD Open Source Project. All rights reserved. <br />
-<span>Page last updated:</span> April 2021<br/> Site last generated: Oct 29, 2021 <br />
+<span>Page last updated:</span> April 2021<br/> Site last generated: Oct 30, 2021 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

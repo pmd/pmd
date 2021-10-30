@@ -1568,12 +1568,12 @@ feature and can be enabled on demand.</p>
 
     <p>To use the old behaviour, the property needs to be configured as follows:</p>
 
-    <p>```xml</p>
-    <rule ref="category/java/codestyle.xml/ClassNamingConventions">
-    <properties>
-        <property name="utilityClassPattern" value="[A-Z][a-zA-Z0-9]+(Utils?|Helper|Constants)" />
-    </properties>
-</rule>
+    <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/codestyle.xml/ClassNamingConventions"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;properties&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"utilityClassPattern"</span> <span class="na">value=</span><span class="s">"[A-Z][a-zA-Z0-9]+(Utils?|Helper|Constants)"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/properties&gt;</span>
+<span class="nt">&lt;/rule&gt;</span>
+</code></pre></div>    </div>
   </li>
 </ul>
 
@@ -1623,6 +1623,16 @@ feature and can be enabled on demand.</p>
 
 <h3 id="api-changes">API Changes</h3>
 
+<h4 id="experimental-apis">Experimental APIs</h4>
+
+<ul>
+  <li>The interface <a href="https://docs.pmd-code.org/apidocs/pmd-apex/6.40.0-SNAPSHOT/net/sourceforge/pmd/lang/apex/ast/ASTCommentContainer.html#"><code>ASTCommentContainer</code></a> has been added to the Apex AST.
+It provides a way to check whether a node contains at least one comment. Currently this is only implemented for
+<a href="https://docs.pmd-code.org/apidocs/pmd-apex/6.40.0-SNAPSHOT/net/sourceforge/pmd/lang/apex/ast/ASTCatchBlockStatement.html#"><code>ASTCatchBlockStatement</code></a> and used by the rule
+<a href="pmd_rules_apex_errorprone.html#emptycatchblock"><code class="language-plaintext highlighter-rouge">EmptyCatchBlock</code></a>.
+This information is also available via XPath attribute <code class="language-plaintext highlighter-rouge">@ContainsComment</code>.</li>
+</ul>
+
 <h3 id="external-contributions">External Contributions</h3>
 
 <ul>
@@ -1657,7 +1667,7 @@ feature and can be enabled on demand.</p>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2021 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Oct 29, 2021 <br />
+ Site last generated: Oct 30, 2021 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
