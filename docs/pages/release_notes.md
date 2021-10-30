@@ -186,5 +186,10 @@ This is a {{ site.pmd.release_type }} release.
 *   [#3580](https://github.com/pmd/pmd/pull/3580): \[doc] Release notes updates for the changes in issue #3569 - [Scott Wells](https://github.com/SCWells72)
 *   [#3581](https://github.com/pmd/pmd/pull/3581): \[apex] #3569 - Requested changes for code review feedback - [Scott Wells](https://github.com/SCWells72)
 
+### Stats
+* 72 commits
+* 37 closed tickets & PRs
+* Days since last release: 34
+
 {% endtocmaker %}
 

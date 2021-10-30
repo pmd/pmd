@@ -1,7 +1,7 @@
 repository: pmd/pmd
 
 pmd:
-    version: 6.40.0-SNAPSHOT
+    version: 6.40.0
     previous_version: 6.39.0
     date: 30-October-2021
     release_type: minor
