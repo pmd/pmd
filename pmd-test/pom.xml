@@ -8,7 +8,7 @@
     <parent>
         <groupId>net.sourceforge.pmd</groupId>
         <artifactId>pmd</artifactId>
-        <version>6.40.0</version>
+        <version>6.41.0-SNAPSHOT</version>
         <relativePath>../</relativePath>
     </parent>
 
