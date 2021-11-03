@@ -23,6 +23,7 @@ import java.util.logging.ConsoleHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.benchmark.TextTimingReportRenderer;
 import net.sourceforge.pmd.benchmark.TimeTracker;
@@ -538,6 +539,9 @@ public class PMD {
         if (parseResult.isHelp()) {
             PMDCommandLineInterface.printJcommanderUsageOnConsole();
             System.out.println(PMDCommandLineInterface.buildUsageText());
+            return StatusCode.OK;
+        } else if(parseResult.isVersion()){
+            System.out.println("PMD " + PMDVersion.VERSION);
             return StatusCode.OK;
         } else if (parseResult.isError()) {
             System.out.println(PMDCommandLineInterface.buildUsageText());

@@ -45,6 +45,14 @@ public final class PmdParametersParseResult {
     }
 
     /**
+     * Returns whether parsing just requested the {@code --version} text.
+     * In this case no configuration is produced.
+     */
+    public boolean isVersion() {
+        return !isError() && result.isVersion();
+    }
+
+    /**
      * Returns the error if parsing failed. Parsing may fail if required
      * parameters are not provided, or if some parameters don't pass validation.
      * Otherwise returns null.
