@@ -49,7 +49,7 @@ public final class PmdParametersParseResult {
      * In this case no configuration is produced.
      */
     public boolean isVersion() {
-        return !isError() && result.isVersion();
+        return result.isVersion();
     }
 
     /**
