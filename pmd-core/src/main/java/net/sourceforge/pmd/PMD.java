@@ -540,7 +540,7 @@ public class PMD {
             PMDCommandLineInterface.printJcommanderUsageOnConsole();
             System.out.println(PMDCommandLineInterface.buildUsageText());
             return StatusCode.OK;
-        } else if (parseResult.isVersion()){
+        } else if (parseResult.isVersion()) {
             System.out.println("PMD " + PMDVersion.VERSION);
             return StatusCode.OK;
         } else if (parseResult.isError()) {
