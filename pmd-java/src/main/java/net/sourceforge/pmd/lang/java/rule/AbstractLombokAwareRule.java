@@ -42,7 +42,7 @@ public class AbstractLombokAwareRule extends AbstractIgnoredAnnotationRule {
 
     @Override
     public Object visit(ASTImportDeclaration node, Object data) {
-        if (!lombokImported && node.getImage() != null & node.getImage().startsWith(LOMBOK_PACKAGE)) {
+        if (!lombokImported && node.getImage() != null && node.getImage().startsWith(LOMBOK_PACKAGE)) {
             lombokImported = true;
         }
         return super.visit(node, data);
