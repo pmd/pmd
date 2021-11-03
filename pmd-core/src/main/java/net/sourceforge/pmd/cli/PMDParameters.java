@@ -72,7 +72,7 @@ public class PMDParameters {
     @Parameter(names = { "--short-names", "-shortnames" }, description = "Prints shortened filenames in the report.")
     private boolean shortnames = false;
 
-    @Parameter(names = { "--show-suppressed", "-shortnames" }, description = "Report should show suppressed rule violations.")
+    @Parameter(names = { "--show-suppressed", "-showsuppressed" }, description = "Report should show suppressed rule violations.")
     private boolean showsuppressed = false;
 
     @Parameter(names = { "--suppress-marker", "-suppressmarker" },
@@ -98,7 +98,7 @@ public class PMDParameters {
     @Parameter(names = { "--use-version", "-version", "-v" }, description = "Specify version of a language PMD should use.")
     private String version = null;
 
-    @Parameter(names = { "--version" }, description = "Display current version of PMD.")
+    @Parameter(names = "--version", description = "Display current version of PMD.")
     private boolean currentVersion = false;
 
     @Parameter(names = { "--language", "-language", "-l" }, description = "Specify a language PMD should use.")
@@ -130,7 +130,7 @@ public class PMDParameters {
                     + "with the most up-to-date rule violations.")
     private String cacheLocation = null;
 
-    @Parameter(names = { "--no-cache", "-no-cache" },  description = "Explicitly disable incremental analysis. The '-cache' option is ignored if this switch is present in the command line.")
+    @Parameter(names = { "--no-cache", "-no-cache" }, description = "Explicitly disable incremental analysis. The '-cache' option is ignored if this switch is present in the command line.")
     private boolean noCache = false;
 
     // this has to be a public static class, so that JCommander can use it!
