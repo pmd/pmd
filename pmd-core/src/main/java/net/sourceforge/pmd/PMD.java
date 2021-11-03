@@ -536,12 +536,12 @@ public class PMD {
      */
     public static StatusCode runPmd(String... args) {
         PmdParametersParseResult parseResult = PmdParametersParseResult.extractParameters(args);
-        if (parseResult.isHelp()) {
+        if (parseResult.isVersion()) {
+            System.out.println("PMD " + PMDVersion.VERSION);
+            return StatusCode.OK;
+        } else if (parseResult.isHelp()) {
             PMDCommandLineInterface.printJcommanderUsageOnConsole();
             System.out.println(PMDCommandLineInterface.buildUsageText());
-            return StatusCode.OK;
-        } else if (parseResult.isVersion()) {
-            System.out.println("PMD " + PMDVersion.VERSION);
             return StatusCode.OK;
         } else if (parseResult.isError()) {
             System.out.println(PMDCommandLineInterface.buildUsageText());

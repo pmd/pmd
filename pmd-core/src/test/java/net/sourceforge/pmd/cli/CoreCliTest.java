@@ -65,12 +65,40 @@ public class CoreCliTest {
     }
 
     @Test
-    public void testNonExistentReportFile() {
+    public void testPreExistingReportFileLongOption() throws IOException {
+        Path reportFile = tempRoot().resolve("out/reportFile.txt");
+        // now we create the file
+        Files.createDirectories(reportFile.getParent());
+        writeString(reportFile, STRING_TO_REPLACE);
+
+        assertTrue("Report file should exist", Files.exists(reportFile));
+
+        runPmdSuccessfully("--no-cache", "-d", srcDir, "-R", DUMMY_RULESET, "-r", reportFile);
+
+        assertNotEquals(readString(reportFile), STRING_TO_REPLACE);
+    }
+
+    @Test
+    public void testNonExistentReportFile() throws IOException {
         Path reportFile = tempRoot().resolve("out/reportFile.txt");
 
         assertFalse("Report file should not exist", Files.exists(reportFile));
 
-        runPmdSuccessfully("-no-cache", "-d", srcDir, "-R", DUMMY_RULESET, "-r", reportFile);
+        try {
+            runPmdSuccessfully("-no-cache", "-d", srcDir, "-R", DUMMY_RULESET, "-r", reportFile);
+            assertTrue("Report file should have been created", Files.exists(reportFile));
+        } finally {
+            Files.deleteIfExists(reportFile);
+        }
+    }
+
+    @Test
+    public void testNonExistentReportFileLongOption() {
+        Path reportFile = tempRoot().resolve("out/reportFile.txt");
+
+        assertFalse("Report file should not exist", Files.exists(reportFile));
+
+        runPmdSuccessfully("--no-cache", "-d", srcDir, "-R", DUMMY_RULESET, "-r", reportFile);
 
         assertTrue("Report file should have been created", Files.exists(reportFile));
     }
@@ -91,6 +119,21 @@ public class CoreCliTest {
 
         try {
             runPmdSuccessfully("-no-cache", "-d", srcDir, "-R", DUMMY_RULESET, "-r", reportFile);
+            assertTrue("Report file should have been created", Files.exists(absoluteReportFile));
+        } finally {
+            Files.deleteIfExists(absoluteReportFile);
+        }
+    }
+
+    @Test
+    public void testRelativeReportFileLongOption() throws IOException {
+        String reportFile = "reportFile.txt";
+        Path absoluteReportFile = FileSystems.getDefault().getPath(reportFile).toAbsolutePath();
+        // verify the file doesn't exist yet - we will delete the file at the end!
+        assertFalse("Report file must not exist yet!", Files.exists(absoluteReportFile));
+
+        try {
+            runPmdSuccessfully("--no-cache", "-d", srcDir, "-R", DUMMY_RULESET, "-r", reportFile);
             assertTrue("Report file should have been created", Files.exists(absoluteReportFile));
         } finally {
             Files.deleteIfExists(absoluteReportFile);

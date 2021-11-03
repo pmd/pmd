@@ -114,7 +114,7 @@ public class CPDConfiguration extends AbstractConfiguration {
             required = false, converter = FileConverter.class)
     private List<File> files;
 
-    @Parameter(names = "--filelist", description = "Path to a file containing a list of files to analyze.",
+    @Parameter(names = { "--filelist", "--file-list" }, description = "Path to a file containing a list of files to analyze.",
             required = false)
     private String fileListPath;
 
@@ -131,7 +131,7 @@ public class CPDConfiguration extends AbstractConfiguration {
     @Parameter(names = { "--help", "-h" }, description = "Print help text", required = false, help = true)
     private boolean help;
 
-    @Parameter(names = { "--failOnViolation", "-failOnViolation" }, arity = 1,
+    @Parameter(names = { "--failOnViolation", "-failOnViolation", "--fail-on-violation" }, arity = 1,
             description = "By default CPD exits with status 4 if code duplications are found. Disable this option with '-failOnViolation false' to exit with 0 instead and just write the report.")
     private boolean failOnViolation = true;
 

@@ -38,9 +38,23 @@ public class CLITest extends BaseCLITest {
     }
 
     @Test
+    public void usingDebugLongOption() {
+        String[] args = { "-d", SOURCE_FOLDER, "-f", "text", "-R", "category/java/design.xml", "--debug", };
+        runTest(args, "minimalArgsWithDebug");
+    }
+
+    @Test
     public void changeJavaVersion() {
         String[] args = { "-d", SOURCE_FOLDER, "-f", "text", "-R", "category/java/design.xml", "-version", "1.5", "-language",
             "java", "-debug", };
+        String resultFilename = runTest(args, "chgJavaVersion");
+        assertTrue("Invalid Java version",
+                FileUtil.findPatternInFile(new File(resultFilename), "Using Java version: Java 1.5"));
+    }
+
+    @Test
+    public void changeJavaVersionLongOption() {
+        String[] args = { "-d", SOURCE_FOLDER, "-f", "text", "-R", "category/java/design.xml", "--use-version", "1.5", "--language", "java", "-debug", };
         String resultFilename = runTest(args, "chgJavaVersion");
         assertTrue("Invalid Java version",
                 FileUtil.findPatternInFile(new File(resultFilename), "Using Java version: Java 1.5"));
@@ -62,6 +76,13 @@ public class CLITest extends BaseCLITest {
     @Test
     public void exitStatusWithViolationsAndWithoutFailOnViolations() {
         String[] args = { "-d", SOURCE_FOLDER, "-f", "text", "-R", "category/java/errorprone.xml", "-failOnViolation", "false", };
+        String resultFilename = runTest(args, "exitStatusWithViolationsAndWithoutFailOnViolations", 0);
+        assertTrue(FileUtil.findPatternInFile(new File(resultFilename), "Avoid empty if"));
+    }
+
+    @Test
+    public void exitStatusWithViolationsAndWithoutFailOnViolationsLongOption() {
+        String[] args = { "-d", SOURCE_FOLDER, "-f", "text", "-R", "category/java/errorprone.xml", "--fail-on-violation", "false", };
         String resultFilename = runTest(args, "exitStatusWithViolationsAndWithoutFailOnViolations", 0);
         assertTrue(FileUtil.findPatternInFile(new File(resultFilename), "Avoid empty if"));
     }
