@@ -41,7 +41,7 @@ public final class PmdParametersParseResult {
      * In this case no configuration is produced.
      */
     public boolean isHelp() {
-        return !isError() && result.isHelp();
+        return !isError() && result.isHelp() && !result.isVersion();
     }
 
     /**
@@ -49,7 +49,7 @@ public final class PmdParametersParseResult {
      * In this case no configuration is produced.
      */
     public boolean isVersion() {
-        return result.isVersion();
+        return !isError() && result.isHelp() && result.isVersion();
     }
 
     /**

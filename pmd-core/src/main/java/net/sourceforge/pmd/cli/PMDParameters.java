@@ -98,7 +98,7 @@ public class PMDParameters {
     @Parameter(names = { "--use-version", "-version", "-v" }, description = "Specify version of a language PMD should use.")
     private String version = null;
 
-    @Parameter(names = "--version", description = "Display current version of PMD.")
+    @Parameter(names = "--version", description = "Display current version of PMD.", help = true)
     private boolean currentVersion = false;
 
     @Parameter(names = { "--language", "-language", "-l" }, description = "Specify a language PMD should use.")
