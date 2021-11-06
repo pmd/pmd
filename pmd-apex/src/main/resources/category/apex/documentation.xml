@@ -22,7 +22,7 @@ This rule validates that:
     overrides and test classes (as well as the contents of test classes).
 *   ApexDoc comments are present for classes, methods, and properties that are protected or private, depending
     on the properties `reportPrivate` and `reportProtected`.
-*   ApexDoc comments should contain @description.
+*   ApexDoc comments should contain @description depending on the property 'reportMissingDescription'.
 *   ApexDoc comments on non-void, non-constructor methods should contain @return.
 *   ApexDoc comments on void or constructor methods should not contain @return.
 *   ApexDoc comments on methods with parameters should contain @param for each parameter, in the same

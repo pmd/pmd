@@ -254,8 +254,16 @@ public class Foo extends Bar{
             specific kind (e.g. enum or interface). Each regex can be configured through
             properties.
 
-            By default this rule uses the standard Java naming convention (Pascal case),
-            and reports utility class names not ending with 'Util'.
+            By default this rule uses the standard Java naming convention (Pascal case).
+            
+            The rule can detect utility classes and enforce a different naming convention
+            on those. E.g. setting the property `utilityClassPattern` to
+            `[A-Z][a-zA-Z0-9]+(Utils?|Helper|Constants)` reports any utility class, whose name
+            does not end in "Util(s)", "Helper" or "Constants".
+            
+            For this rule, a utility class is defined as: a concrete class that does not
+            inherit from a super class or implement any interface and only has static fields
+            or methods.
         </description>
         <priority>1</priority>
         <example>

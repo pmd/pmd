@@ -862,7 +862,7 @@ Integer[] b = (Integer [])c.toArray(new Integer[c.size()]);
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#clonemethodmustbepublic">
         <description>
-The java Manual says "By convention, classes that implement this interface should override
+The java manual says "By convention, classes that implement this interface should override
 Object.clone (which is protected) with a public method."
         </description>
         <priority>3</priority>
@@ -870,9 +870,9 @@ Object.clone (which is protected) with a public method."
             <property name="xpath">
                 <value>
 <![CDATA[
-//MethodDeclaration[@Public= false()]
-  [@Name = 'clone']
-  [@Arity = 0]
+//MethodDeclaration[not(pmd-java:modifiers() = "public")]
+    [@Name = 'clone']
+    [@Arity = 0]
 ]]>
                 </value>
             </property>
@@ -931,10 +931,10 @@ public class MyClass {
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#clonemethodreturntypemustmatchclassname">
         <description>
-If a class implements cloneable the return type of the method clone() must be the class name. That way, the caller
+If a class implements `Cloneable` the return type of the method `clone()` must be the class name. That way, the caller
 of the clone method doesn't need to cast the returned clone to the correct type.
 
-Note: This is only possible with Java 1.5 or higher.
+Note: Such a covariant return type is only possible with Java 1.5 or higher.
         </description>
         <priority>3</priority>
         <properties>
@@ -942,11 +942,9 @@ Note: This is only possible with Java 1.5 or higher.
                 <value>
 <![CDATA[
 //MethodDeclaration
-[
-@Name = 'clone'
-and @Arity = 0
-and not (ResultType//ClassOrInterfaceType/@Image = ancestor::ClassOrInterfaceDeclaration[1]/@SimpleName)
-]
+    [@Name = 'clone']
+    [@Arity = 0]
+    [ClassOrInterfaceType[1]/@SimpleName != ancestor::ClassOrInterfaceDeclaration[1]/@SimpleName]
 ]]>
                 </value>
             </property>
@@ -1211,9 +1209,11 @@ public class MyTest {
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#donotcallgarbagecollectionexplicitly">
         <description>
-Calls to System.gc(), Runtime.getRuntime().gc(), and System.runFinalization() are not advised. Code should have the
-same behavior whether the garbage collection is disabled using the option -Xdisableexplicitgc or not.
-Moreover, "modern" jvms do a very good job handling garbage collections. If memory usage issues unrelated to memory
+Calls to `System.gc()`, `Runtime.getRuntime().gc()`, and `System.runFinalization()` are not advised.
+Code should have the same behavior whether the garbage collection is disabled using the option
+`-Xdisableexplicitgc` or not.
+
+Moreover, "modern" JVMs do a very good job handling garbage collections. If memory usage issues unrelated to memory
 leaks develop within an application, it should be dealt with JVM options rather than within the code itself.
         </description>
         <priority>2</priority>
@@ -1221,14 +1221,11 @@ leaks develop within an application, it should be dealt with JVM options rather 
             <property name="xpath">
                 <value>
 <![CDATA[
-//Name[
-(starts-with(@Image, 'System.') and
-(starts-with(@Image, 'System.gc') or
-starts-with(@Image, 'System.runFinalization'))) or
-(
-starts-with(@Image,'Runtime.getRuntime') and
-../../PrimarySuffix[ends-with(@Image,'gc')]
-)
+//MethodCall[
+       pmd-java:matchesSig("java.lang.System#gc()")
+    or pmd-java:matchesSig("java.lang.Runtime#gc()")
+    or pmd-java:matchesSig("java.lang.System#runFinalization()")
+    or pmd-java:matchesSig("java.lang.Runtime#runFinalization()")
 ]
 ]]>
                 </value>
@@ -1441,8 +1438,7 @@ performance need (space or time).
             <property name="xpath">
                 <value>
 <![CDATA[
-//ForStatement/ForInit/LocalVariableDeclaration
-/Type/PrimitiveType[@Image="float"]
+//ForStatement/ForInit//VariableDeclaratorId[pmd-java:typeIs('float')]
 ]]>
                 </value>
             </property>
@@ -2108,18 +2104,18 @@ LOGGER.error("param {}", "arg1", new IllegalStateException("arg")); //The except
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#jumbledincrementer">
         <description>
-Avoid jumbled loop incrementers - its usually a mistake, and is confusing even if intentional.
+Avoid jumbled loop incrementers - it's usually a mistake, and is confusing even if intentional.
         </description>
         <priority>3</priority>
         <properties>
             <property name="xpath">
                 <value><![CDATA[
 //ForStatement
-  [
-    ForUpdate/StatementExpressionList/StatementExpression/PostfixExpression/PrimaryExpression/PrimaryPrefix/Name/@Image
-    =
-    ancestor::ForStatement/ForInit//VariableDeclaratorId/@Name
-  ]
+    [not(ForInit) or ForInit//VariableDeclaratorId/@Name != ForUpdate//VariableAccess/@Name]
+    [ForUpdate//VariableAccess[@AccessType = 'WRITE']/@Name
+     =
+     ancestor::ForStatement/ForInit//VariableDeclaratorId/@Name
+    ]
 ]]>
                 </value>
             </property>
@@ -2215,37 +2211,41 @@ public class MyClass {
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#misplacednullcheck">
         <description>
-The null check here is misplaced. If the variable is null a NullPointerException will be thrown.
-Either the check is useless (the variable will never be "null") or it is incorrect.
+The null check here is misplaced. If the variable is null a `NullPointerException` will be thrown.
+Either the check is useless (the variable will never be `null`) or it is incorrect.
         </description>
         <priority>3</priority>
         <properties>
             <property name="xpath">
                 <value>
 <![CDATA[
-//ConditionalAndExpression
-  /EqualityExpression
-    [@Image = '!=']
-    (: one side is null :)
-    [PrimaryExpression/PrimaryPrefix/Literal/NullLiteral]
-    (: other side checks for the variable used somewhere in the first child of conditional and expression :)
-    [some $var in preceding-sibling::PrimaryExpression//Name
-      [not(ancestor::ConditionalOrExpression/EqualityExpression[@Image = '=='])]
-      /@Image
-      satisfies starts-with($var, concat(PrimaryExpression/PrimaryPrefix/Name/@Image, '.'))]
-  /PrimaryExpression/PrimaryPrefix/Name
+//InfixExpression[@Operator = '&&']
+    /InfixExpression[@Operator = '!=']
+        (: one side is null :)
+        [NullLiteral]
+        (: other side checks for the variable used somewhere in the first child of conditional and expression :)
+        [VariableAccess]
+        [some $var in preceding-sibling::*//VariableAccess
+            [parent::MethodCall or parent::FieldAccess]
+            [not(ancestor::InfixExpression[@Operator = '||'])]
+            /@Name
+            satisfies $var = VariableAccess/@Name
+        ]
+    /VariableAccess
 |
-//ConditionalOrExpression
-  /EqualityExpression
-    [@Image = '==']
-    (: one side is null :)
-    [PrimaryExpression/PrimaryPrefix/Literal/NullLiteral]
-    (: other side checks for the variable used somewhere in the first child of conditional or expression :)
-    [some $var in preceding-sibling::PrimaryExpression//Name
-      [not(ancestor::ConditionalAndExpression/EqualityExpression[@Image = '!='])]
-      /@Image
-      satisfies starts-with($var, concat(PrimaryExpression/PrimaryPrefix/Name/@Image, '.'))]
-  /PrimaryExpression/PrimaryPrefix/Name
+//InfixExpression[@Operator = '||']
+    /InfixExpression[@Operator = '==']
+        (: one side is null :)
+        [NullLiteral]
+        (: other side checks for the variable used somewhere in the first child of conditional or expression :)
+        [VariableAccess]
+        [some $var in preceding-sibling::*//VariableAccess
+            [parent::MethodCall or parent::FieldAccess]
+            [not(ancestor::InfixExpression[@Operator = '&&'])]
+            /@Name
+            satisfies $var = VariableAccess/@Name
+        ]
+    /VariableAccess
 ]]>
                 </value>
             </property>
@@ -2429,12 +2429,12 @@ public class Foo {
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#noncaselabelinswitchstatement">
         <description>
 A non-case label (e.g. a named break/continue label) was present in a switch statement.
-This legal, but confusing. It is easy to mix up the case labels and the non-case labels.
+This is legal, but confusing. It is easy to mix up the case labels and the non-case labels.
         </description>
         <priority>3</priority>
         <properties>
             <property name="xpath">
-                <value>//SwitchStatement//BlockStatement/Statement/LabeledStatement</value>
+                <value>//SwitchStatement//LabeledStatement</value>
             </property>
         </properties>
         <example>

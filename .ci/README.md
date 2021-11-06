@@ -8,7 +8,10 @@ It uses the common scripts from [build-tools](https://github.com/pmd/build-tools
 This files contains the following environment variables:
 
 *   DANGER_GITHUB_API_TOKEN: Token for danger to add comments to PRs as <https://github.com/pmd-test>.
-    The token needs the scope "public_repo".
+    The token needs the scope "public_repo". Note: The default GITHUB_TOKEN can't be used, because
+    danger runs in pull request builds from fork and the default GITHUB_TOKEN has read-only access there
+    and can't write comments. Therefore the personal access token of the bot account "pmd-test" is used.
+    pmd-test has no commit permissions, but can comment on any public repo, including pmd/pmd.
 *   PMD_CI_CHUNK_TOKEN: Token for uploading reports to chunk.io
 
 The file is encrypted, so that the tokens are not automatically disabled when github detects them
