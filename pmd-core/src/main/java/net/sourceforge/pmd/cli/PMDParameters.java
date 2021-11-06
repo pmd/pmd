@@ -101,7 +101,7 @@ public class PMDParameters {
     @Parameter(names = "--version", description = "Display current version of PMD and exit without performing any analysis.", help = true)
     private boolean currentVersion = false;
 
-    @Parameter(names = { "--language", "-language", "-l" }, description = "Specify a language PMD should use.")
+    @Parameter(names = { "-language", "-l" }, description = "Specify a language PMD should use.")
     private String language = null;
 
     @Parameter(names = { "--force-language", "-force-language" }, description = "Force a language to be used for all input files, irrespective of filenames.")
