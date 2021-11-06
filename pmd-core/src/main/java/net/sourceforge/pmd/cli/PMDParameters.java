@@ -95,7 +95,7 @@ public class PMDParameters {
                    + "If this option is not specified, the report is rendered to standard output.")
     private String reportfile = null;
 
-    @Parameter(names = { "--use-version", "-version", "-v" }, description = "Specify version of a language PMD should use.")
+    @Parameter(names = { "-version", "-v" }, description = "Specify version of a language PMD should use.")
     private String version = null;
 
     @Parameter(names = "--version", description = "Display current version of PMD and exit without performing any analysis.", help = true)

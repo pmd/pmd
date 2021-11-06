@@ -25,12 +25,4 @@ public class CLITest extends BaseCLITest {
         assertTrue("Invalid JavaScript version",
                 FileUtil.findPatternInFile(new File(resultFilename), "Using Ecmascript version: Ecmascript 3"));
     }
-
-    @Test
-    public void useEcmaScriptLongOption() {
-        String[] args = { "-d", SOURCE_FOLDER, "-f", "xml", "-R", "ecmascript-basic", "--use-version", "3", "-l", "ecmascript", "-debug", };
-        String resultFilename = runTest(args, "useEcmaScript");
-        assertTrue("Invalid JavaScript version",
-                FileUtil.findPatternInFile(new File(resultFilename), "Using Ecmascript version: Ecmascript 3"));
-    }
 }

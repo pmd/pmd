@@ -66,7 +66,7 @@ public final class PmdParametersParseResult {
      * Otherwise returns null.
      */
     public PMDConfiguration toConfiguration() {
-        return result != null && !isHelp() ? result.toConfiguration() : null;
+        return result != null && !isHelp() && !isVersion() ? result.toConfiguration() : null;
     }
 
     /**
