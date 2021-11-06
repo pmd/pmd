@@ -280,6 +280,24 @@ public class Foo {
         ]]></code>
     </test-code>
 
+    <test-code>
+        <description>If connection is returned indirectly, we should not log a violation.</description>
+        <rule-property name="types">java.sql.Connection,java.sql.Statement,java.sql.ResultSet</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.sql.*;
+import net.sourceforge.pmd.lang.java.rule.errorprone.closeresource.Pool;
+
+public class Foo {
+    private Pool pool;
+    public Object[] getConnection() {
+        Connection c = pool.getConnection();
+        return new Object[] { c };
+    }
+}
+        ]]></code>
+    </test-code>
+
     <test-code reinitializeRule="true">
         <description>invoke an external method that close the resource: bug 2920057</description>
         <rule-property name="closeTargets">closeStatement,closeStatement,closeResultSet,closeConnexion</rule-property>
@@ -1346,7 +1364,7 @@ import java.io.*;
 public class CloseResourceNullPointer {
     public void check(UnknownType param) {
         InputStream in = param;
-        // note: in doesn't need to be closed here, because it from outside via method parameter.
+        // note: in doesn't need to be closed here, because it is from outside via method parameter.
     }
 }
         ]]></code>
@@ -1420,7 +1438,7 @@ public class Foo {
         <expected-problems>1</expected-problems>
         <expected-linenumbers>5</expected-linenumbers>
         <expected-messages>
-            <message>it is recommended to wrap resource in try-with-resource declaration directly</message>
+            <message>it is recommended to wrap resource 'ois' in try-with-resource declaration directly</message>
         </expected-messages>
         <code><![CDATA[
 import java.io.*;
@@ -1760,6 +1778,163 @@ class CloseResourceWithNull {
         catch (IOException e) {
             ;
         }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>False positive with multiple resources in try-with-resources</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+
+class CloseResourceFP {
+    private final ByteArrayOutputStream stream = new ByteArrayOutputStream();
+
+    void test() throws Exception {
+        try (ByteArrayInputStream inputStream = new ByteArrayInputStream(stream.toByteArray());
+             LineNumberReader lnr = new LineNumberReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
+              ;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>False positive with single resource in try-with-resources multiple lines</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package foopackage;
+
+import java.io.*;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.*;
+
+class CloseResourceFP {
+    private CloseResourceFP() { }
+
+    static void test(String name) throws Exception {
+        Charset charset = StandardCharsets.US_ASCII;
+        Path outputFilePath = Paths.get(name);
+
+        try (
+            final BufferedWriter writer = Files.newBufferedWriter(outputFilePath, charset);
+        ) {
+            ;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>false positive with reassignment after null check</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.sql.Connection;
+import net.sourceforge.pmd.lang.java.rule.errorprone.closeresource.Pool;
+
+public class Foo {
+    void bar(Pool pool) {
+        Connection c = pool.getConnection();
+        try {
+          if (c == null) {
+            // this reassignment is ok, since the previous value was null
+            // so there is no unclosed resource left behind
+            c = pool.getConnection();
+          }
+        } catch (Exception e) {
+        } finally {
+            c.close();
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>false negative with classloader</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <expected-messages>
+            <message>Ensure that resources like this URLClassLoader object are closed after use</message>
+        </expected-messages>
+        <code><![CDATA[
+import java.net.URLClassLoader;
+
+class CloseResourceFN {
+    void test() throws Exception {
+        // only URLClassLoader implements Closeable, but not ClassLoader
+        ClassLoader loader = new URLClassLoader(null, null);
+        try {
+        } catch (Exception e) {
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>a directory stream build from a path as formal parameter should be reported</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>8</expected-linenumbers>
+        <expected-messages>
+            <message>Ensure that resources like this DirectoryStream&lt;Path&gt; object are closed after use</message>
+        </expected-messages>
+        <code><![CDATA[
+import java.nio.file.Path;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.io.IOException;
+
+class CloseResourceUnclosedStream {
+    public static void list(Path dir) throws IOException {
+        DirectoryStream<Path> ds = Files.newDirectoryStream(dir);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>a returned stream should not be reported</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.nio.file.Path;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.io.IOException;
+
+class CloseResourceReturnedStream {
+    public static DirectoryStream<Path> list(Path dir) throws IOException {
+        DirectoryStream<Path> ds = Files.newDirectoryStream(dir);
+        return ds;
+    }
+}
+
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>a returned, wrapped stream should not be reported</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.nio.file.Path;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.io.IOException;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
+import java.util.Spliterator;
+import java.util.Spliterators;
+
+class CloseResourceWrappedStream {
+    public static Stream<Path> list(Path dir) throws IOException {
+        DirectoryStream<Path> ds = Files.newDirectoryStream(dir);
+        return StreamSupport.stream(Spliterators.spliteratorUnknownSize(ds.iterator, Spliterator.DISTINCT), false);
     }
 }
         ]]></code>
