@@ -34,4 +34,200 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#3569 - Verify use of allowExceptionNameRegex, negative test unspecified</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>7,16</expected-linenumbers>
+        <code><![CDATA[
+@IsTest
+private class FunctionalityTest {
+    static testMethod void testWithModifier() {
+        try {
+            doSomethingThatShouldThrowAnException();
+            System.assert(false, 'Expected an exception to be thrown.');
+        } catch (Exception e) {
+        }
+    }
+
+    @IsTest
+    static void testWithAnnotation() {
+        try {
+            doSomethingThatShouldThrowAnException();
+            System.assert(false, 'Expected an exception to be thrown.');
+        } catch (Exception e) {
+        }
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#3569 - Verify use of allowExceptionNameRegex, negative test specified</description>
+        <rule-property name="allowExceptionNameRegex">ignoreMe</rule-property>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>7,16</expected-linenumbers>
+        <code><![CDATA[
+@IsTest
+private class FunctionalityTest {
+    static testMethod void testWithModifier() {
+        try {
+            doSomethingThatShouldThrowAnException();
+            System.assert(false, 'Expected an exception to be thrown.');
+        } catch (Exception expected) {
+        }
+    }
+
+    @IsTest
+    static void testWithAnnotation() {
+        try {
+            doSomethingThatShouldThrowAnException();
+            System.assert(false, 'Expected an exception to be thrown.');
+        } catch (Exception ignored) {
+        }
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#3569 - Verify use of allowExceptionNameRegex, positive test unspecified</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+@IsTest
+private class FunctionalityTest {
+    static testMethod void testWithModifier() {
+        try {
+            doSomethingThatShouldThrowAnException();
+            System.assert(false, 'Expected an exception to be thrown.');
+        } catch (Exception expected) {
+        }
+    }
+
+    @IsTest
+    static void testWithAnnotation() {
+        try {
+            doSomethingThatShouldThrowAnException();
+            System.assert(false, 'Expected an exception to be thrown.');
+        } catch (Exception ignored) {
+        }
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#3569 - Verify use of allowExceptionNameRegex, positive test specified</description>
+        <rule-property name="allowExceptionNameRegex">ignoreMe</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+@IsTest
+private class FunctionalityTest {
+    static testMethod void testWithModifier() {
+        try {
+            doSomethingThatShouldThrowAnException();
+            System.assert(false, 'Expected an exception to be thrown.');
+        } catch (Exception ignoreMe) {
+        }
+    }
+
+    @IsTest
+    static void testWithAnnotation() {
+        try {
+            doSomethingThatShouldThrowAnException();
+            System.assert(false, 'Expected an exception to be thrown.');
+        } catch (Exception ignoreMe) {
+        }
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#3569 - Verify use of allowCommentedBlocks, negative test unspecified/default</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>7,17</expected-linenumbers>
+        <code><![CDATA[
+@IsTest
+private class FunctionalityTest {
+    static testMethod void testWithModifier() {
+        try {
+            doSomethingThatShouldThrowAnException();
+            System.assert(false, 'Expected an exception to be thrown.');
+        } catch (Exception e) {
+            // Expected
+        }
+    }
+
+    @IsTest
+    static void testWithAnnotation() {
+        try {
+            doSomethingThatShouldThrowAnException();
+            System.assert(false, 'Expected an exception to be thrown.');
+        } catch (Exception e) {
+            // Expected
+        }
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#3569 - Verify use of allowCommentedBlocks, negative test specified</description>
+        <rule-property name="allowCommentedBlocks">false</rule-property>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>7,17</expected-linenumbers>
+        <code><![CDATA[
+@IsTest
+private class FunctionalityTest {
+    static testMethod void testWithModifier() {
+        try {
+            doSomethingThatShouldThrowAnException();
+            System.assert(false, 'Expected an exception to be thrown.');
+        } catch (Exception e) {
+            // Expected
+        }
+    }
+
+    @IsTest
+    static void testWithAnnotation() {
+        try {
+            doSomethingThatShouldThrowAnException();
+            System.assert(false, 'Expected an exception to be thrown.');
+        } catch (Exception e) {
+            // Expected
+        }
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#3569 - Verify use of allowCommentedBlocks, positive test</description>
+        <rule-property name="allowCommentedBlocks">true</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+@IsTest
+private class FunctionalityTest {
+    static testMethod void testWithModifier() {
+        try {
+            doSomethingThatShouldThrowAnException();
+            System.assert(false, 'Expected an exception to be thrown.');
+        } catch (Exception e) {
+            // Expected
+        }
+    }
+
+    @IsTest
+    static void testWithAnnotation() {
+        try {
+            doSomethingThatShouldThrowAnException();
+            System.assert(false, 'Expected an exception to be thrown.');
+        } catch (Exception e) {
+            // Expected
+        }
+    }
+}
+]]></code>
+    </test-code>
 </test-data>

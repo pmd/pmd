@@ -6,6 +6,8 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -249,6 +251,7 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
 
     private final SourceCodePositioner sourceCodePositioner;
     private final String sourceCode;
+    private final boolean[] commentedLineFlags;
     private List<ApexDocTokenLocation> apexDocTokenLocations;
     private Map<Integer, String> suppressMap;
 
@@ -257,6 +260,7 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
         sourceCodePositioner = new SourceCodePositioner(sourceCode);
 
         CommentInformation commentInformation = extractInformationFromComments(sourceCode, parserOptions.getSuppressMarker());
+        commentedLineFlags = flagCommentedLines(commentInformation.allCommentTokens);
         apexDocTokenLocations = commentInformation.docTokenLocations;
         suppressMap = commentInformation.suppressMap;
     }
@@ -309,7 +313,55 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
         // out the positions if necessary.
         node.calculateLineNumbers(sourceCodePositioner);
 
+        // If appropriate, determine whether this node contains comments or not
+        if (node instanceof AbstractApexCommentContainerNode) {
+            AbstractApexCommentContainerNode<?> commentContainer = (AbstractApexCommentContainerNode<?>) node;
+            if (containsCommentedLine(commentContainer)) {
+                commentContainer.setContainsComment(true);
+            }
+        }
+
         return node;
+    }
+
+    // Builds an array of lines that contain comments for easy, indexed lookup later
+    private static boolean[] flagCommentedLines(List<Token> commentTokens) {
+        if (commentTokens.isEmpty()) {
+            return new boolean[0];
+        }
+
+        // These are probably already sorted, but just in case, but it's critical that be the case so we know that the
+        // last entry is the highest numbered commented line
+        List<Token> sortedCommentTokens = new ArrayList<>(commentTokens);
+        sortedCommentTokens.sort((token1, token2) -> token1.getLine() - token2.getLine());
+        int lastCommentedLineNumber = sortedCommentTokens.get(commentTokens.size() - 1).getLine();
+
+        // This is almost certainly not the last line in the file, but we'll deal with that boundary condition in the check
+        boolean[] commentedLineFlags = new boolean[lastCommentedLineNumber + 1];
+        Arrays.fill(commentedLineFlags, false);
+        for (Token commentToken : commentTokens) {
+            commentedLineFlags[commentToken.getLine()] = true;
+        }
+        return commentedLineFlags;
+    }
+
+    private boolean containsCommentedLine(ASTCommentContainer<?> commentContainer) {
+        // If this potential comment container is after the last commented line, we're done
+        int beginLine = commentContainer.getBeginLine();
+        if (beginLine > commentedLineFlags.length) {
+            return false;
+        }
+
+        // Otherwise compute a range that is bounded by either the last line of the comment container or the last
+        // commented line, and see whether any line in that range (exclusive) was reported as a comment
+        int endLine = Math.min(commentContainer.getEndLine(), commentedLineFlags.length);
+        for (int line = beginLine + 1; line < endLine; line++) {
+            if (commentedLineFlags[line]) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private void addFormalComments() {
@@ -344,6 +396,7 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
      * the nodes appearing later in the source might be visiting first.
      * The correct node will then be visited afterwards, and since the distance
      * to the comment is smaller, it overrides the remembered node.
+     *
      * @param jorjeNode the original node
      * @param node the potential parent node, to which the comment could belong
      */
@@ -375,6 +428,7 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
         ANTLRStringStream stream = new ANTLRStringStream(source);
         ApexLexer lexer = new ApexLexer(stream);
 
+        List<Token> allCommentTokens = new LinkedList<>();
         List<ApexDocTokenLocation> tokenLocations = new LinkedList<>();
         Map<Integer, String> suppressMap = new HashMap<>();
 
@@ -385,6 +439,11 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
         boolean checkForCommentSuppression = suppressMarker != null;
 
         while (token.getType() != Token.EOF) {
+            // Keep track of all comment tokens
+            if (token.getType() == ApexLexer.BLOCK_COMMENT || token.getType() == ApexLexer.EOL_COMMENT) {
+                allCommentTokens.add(token);
+            }
+
             if (token.getType() == ApexLexer.BLOCK_COMMENT) {
                 // Filter only block comments starting with "/**"
                 if (token.getText().startsWith("/**")) {
@@ -405,15 +464,17 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
             endIndex = lexer.getCharIndex();
         }
 
-        return new CommentInformation(suppressMap, tokenLocations);
+        return new CommentInformation(suppressMap, allCommentTokens, tokenLocations);
     }
 
     private static class CommentInformation {
         Map<Integer, String> suppressMap;
+        List<Token> allCommentTokens;
         List<ApexDocTokenLocation> docTokenLocations;
 
-        CommentInformation(Map<Integer, String> suppressMap, List<ApexDocTokenLocation> docTokenLocations) {
+        CommentInformation(Map<Integer, String> suppressMap, List<Token> allCommentTokens, List<ApexDocTokenLocation> docTokenLocations) {
             this.suppressMap = suppressMap;
+            this.allCommentTokens = allCommentTokens;
             this.docTokenLocations = docTokenLocations;
         }
     }

@@ -8,7 +8,7 @@ import net.sourceforge.pmd.annotation.InternalApi;
 
 import apex.jorje.semantic.ast.statement.CatchBlockStatement;
 
-public class ASTCatchBlockStatement extends AbstractApexNode<CatchBlockStatement> {
+public class ASTCatchBlockStatement extends AbstractApexCommentContainerNode<CatchBlockStatement> {
 
     @Deprecated
     @InternalApi
