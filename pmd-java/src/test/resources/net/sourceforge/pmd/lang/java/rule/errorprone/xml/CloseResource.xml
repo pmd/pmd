@@ -1939,4 +1939,52 @@ class CloseResourceWrappedStream {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>a reassignment that wraps the original stream should not be reported</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.io.BufferedOutputStream;
+import java.io.OutputStream;
+
+public class CloseResourceWrapAssignment {
+    public OutputStream wrap() throws Exception {
+        OutputStream os = System.out;
+        os = new BufferedOutputStream(os);
+        return os;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>stream in for-each-loop</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+import java.io.InputStream;
+
+public class CloseResourceForEachLoop {
+    public void testUnclosed() throws Exception {
+        InputStream[] streams = getStreams();
+        for (InputStream stream : streams) {
+            stream.read();
+        }
+    }
+
+    public void testClosed() throws Exception {
+        InputStream[] streams = getStreams();
+        for (InputStream stream : streams) { // this is not reported, as the stream is being closed
+            try {
+                stream.read();
+            } finally {
+                stream.close();
+            }
+        }
+    }
+
+    private InputStream[] getStreams() { return null; }
+}
+        ]]></code>
+    </test-code>
 </test-data>

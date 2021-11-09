@@ -194,7 +194,8 @@ public class CloseResourceRule extends AbstractJavaRule {
         }
 
         List<ASTVariableDeclaratorId> vars = method.getBody().descendants(ASTVariableDeclaratorId.class)
-            .filter(ASTVariableDeclaratorId::isLocalVariable)
+            .filterNot(ASTVariableDeclaratorId::isFormalParameter)
+            .filterNot(ASTVariableDeclaratorId::isExceptionBlockParameter)
             .filter(this::isVariableNotSpecifiedInTryWithResource)
             .filter(var -> isResourceTypeOrSubtype(var) || isNodeInstanceOfResourceType(getTypeOfVariable(var)))
             .filter(var -> var.getAnnotation("lombok.Cleanup") == null)
@@ -710,9 +711,11 @@ public class CloseResourceRule extends AbstractJavaRule {
             }
 
             if (isAssignmentForVariable(statement, variable)) {
+                ASTAssignmentExpression assignment = (ASTAssignmentExpression) statement.getFirstChild();
                 if (isInitialized && !variableClosed) {
                     if (initializingExpression != null && !inSameIfBlock(statement, initializingExpression)
-                            && notInNullCheckIf(statement, variable)) {
+                            && notInNullCheckIf(statement, variable)
+                            && isNotSelfAssignment(assignment)) {
                         return statement;
                     }
                 }
@@ -727,6 +730,12 @@ public class CloseResourceRule extends AbstractJavaRule {
             }
         }
         return null;
+    }
+
+    private boolean isNotSelfAssignment(ASTAssignmentExpression assignment) {
+        return assignment.getRightOperand().descendantsOrSelf().filterIs(ASTVariableAccess.class).filter(access -> {
+            return JavaRuleUtil.isReferenceToSameVar(access, assignment.getLeftOperand());
+        }).isEmpty();
     }
 
     private boolean notInNullCheckIf(ASTExpressionStatement statement, ASTVariableDeclaratorId variable) {
