@@ -183,7 +183,7 @@
     <rule ref="category/java/errorprone.xml/AvoidEnumAsIdentifier"/>
     <!-- <rule ref="category/java/errorprone.xml/AvoidFieldNameMatchingMethodName"/> -->
     <!-- <rule ref="category/java/errorprone.xml/AvoidFieldNameMatchingTypeName"/> -->
-    <!-- <rule ref="category/java/errorprone.xml/AvoidInstanceofChecksInCatchClause"/> -->
+    <rule ref="category/java/errorprone.xml/AvoidInstanceofChecksInCatchClause"/>
     <!-- <rule ref="category/java/errorprone.xml/AvoidLiteralsInIfCondition"/> -->
     <!-- <rule ref="category/java/errorprone.xml/AvoidLosingExceptionInformation"/> -->
     <rule ref="category/java/errorprone.xml/AvoidMultipleUnaryOperators"/>

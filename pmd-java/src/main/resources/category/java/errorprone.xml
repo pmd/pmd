@@ -422,12 +422,9 @@ Each caught exception type should be handled in its own catch clause.
             <property name="xpath">
                 <value>
 <![CDATA[
-//CatchStatement/FormalParameter
- /following-sibling::Block//InstanceOfExpression/PrimaryExpression/PrimaryPrefix
-  /Name[
-   @Image = ./ancestor::Block/preceding-sibling::FormalParameter
-    /VariableDeclaratorId/@Name
-  ]
+//CatchParameter
+    /following-sibling::Block//InfixExpression[@Operator = 'instanceof']
+        /VariableAccess[@Name = ./ancestor::Block/preceding-sibling::CatchParameter/@Name]
 ]]>
                 </value>
             </property>
