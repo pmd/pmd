@@ -115,7 +115,7 @@ public class PMDParameters {
                     + "can be specified.")
     private String auxclasspath;
 
-    @Parameter(names = { "--fail-on-violation", "-failOnViolation", "--failOnViolation"}, arity = 1,
+    @Parameter(names = { "--fail-on-violation", "--failOnViolation", "-failOnViolation"}, arity = 1,
             description = "By default PMD exits with status 4 if violations are found. Disable this option with '-failOnViolation false' to exit with 0 instead and just write the report.")
     private boolean failOnViolation = true;
 
