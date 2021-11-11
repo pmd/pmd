@@ -355,8 +355,9 @@ class Bar {
         <description>[ 2142986 ] UselessOverridingMethod doesn't consider annotations, ignoreAnnotations property set to true</description>
         <rule-property name="ignoreAnnotations">true</rule-property>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>9</expected-linenumbers>
+        <expected-linenumbers>10</expected-linenumbers>
         <code><![CDATA[
+package net.sourceforge.pmd.lang.java.rule.design.uselessoverridingmethod;
 class PersistentObject {
     public Long getId() { return 1L; }
 }
@@ -374,6 +375,7 @@ public class Example extends PersistentObject {
         <description>[ 2142986 ] UselessOverridingMethod doesn't consider annotations</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+package net.sourceforge.pmd.lang.java.rule.design.uselessoverridingmethod;
 class PersistentObject {
     public Long getId() { return 1L; }
 }
@@ -434,6 +436,8 @@ package net.sourceforge.pmd.lang.java.rule.design.uselessoverridingmethod;
 
 public class DirectSubclass extends BaseClass {
 
+    // overrides to make the methods public
+
     @Override
     public void doBase() {
         super.doBase();
@@ -442,6 +446,11 @@ public class DirectSubclass extends BaseClass {
     @Override
     public void doBaseWithArg(String foo) {
         super.doBaseWithArg(foo);
+    }
+
+    @Override
+    public void doBaseWithArgs(String foo, int bar) {
+        super.doBaseWithArgs(foo, bar);
     }
 }
         ]]></code>
@@ -473,9 +482,21 @@ import net.sourceforge.pmd.lang.java.rule.design.uselessoverridingmethod.BaseCla
 
 public class DirectSubclassInOtherPackage extends BaseClass {
 
+    // overrides to make the method available in this package
+
     @Override
     protected void doBase() {
         super.doBase();
+    }
+
+    @Override
+    protected void doBaseWithArg(String foo) {
+        super.doBaseWithArg(foo);
+    }
+
+    @Override
+    protected void doBaseWithArgs(String foo, int bar) {
+        super.doBaseWithArgs(foo, bar);
     }
 }
         ]]></code>
@@ -489,9 +510,21 @@ package net.sourceforge.pmd.lang.java.rule.design.uselessoverridingmethod;
 
 public class TransitiveSubclass extends OtherSubclass {
 
+    // overrides to make the methods public
+
     @Override
     public void doBase() {
         super.doBase();
+    }
+
+    @Override
+    public void doBaseWithArg(String foo) {
+        super.doBaseWithArg(foo);
+    }
+
+    @Override
+    public void doBaseWithArgs(String foo, int bar) {
+        super.doBaseWithArgs(foo, bar);
     }
 }
         ]]></code>
@@ -499,15 +532,26 @@ public class TransitiveSubclass extends OtherSubclass {
 
     <test-code>
         <description>[java] UselessOverridingMethod false positive when elevating access modifier #911 - direct2</description>
-        <expected-problems>1</expected-problems>
-        <expected-linenumbers>5</expected-linenumbers>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>6,11,16</expected-linenumbers>
         <code><![CDATA[
 package net.sourceforge.pmd.lang.java.rule.design.uselessoverridingmethod;
 
 public class DirectSubclass2 extends DirectSubclass {
+    // useless overrides - it's already public
     @Override
-    public void doBase() { // it's already public in DirectSubclass
+    public void doBase() {
         super.doBase();
+    }
+ 
+    @Override
+    public void doBaseWithArg(String foo) {
+        super.doBaseWithArg(foo);
+    }
+
+    @Override
+    public void doBaseWithArgs(String foo, int bar) {
+        super.doBaseWithArgs(foo, bar);
     }
 }
         ]]></code>
@@ -546,6 +590,28 @@ public class UselessOverridingMethodHashCode {
     @Override
     public boolean equals(Object obj) {
         return super.equals(obj);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Not overriding but overloading</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>11</expected-linenumbers>
+        <code><![CDATA[
+package net.sourceforge.pmd.lang.java.rule.design.uselessoverridingmethod;
+
+public class OtherSubclass extends BaseClass {
+
+    // note: argument type overloaded from CharSequence to String
+    protected void methodWithInterface(String arg) {
+        super.methodWithInterface(arg);
+    }
+
+    // that's actual overwriting
+    protected void doBase() {
+        super.doBase();
     }
 }
         ]]></code>

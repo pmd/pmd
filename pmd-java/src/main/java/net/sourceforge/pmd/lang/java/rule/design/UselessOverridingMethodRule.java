@@ -7,7 +7,6 @@ package net.sourceforge.pmd.lang.java.rule.design;
 import static net.sourceforge.pmd.properties.PropertyFactory.booleanProperty;
 
 import java.lang.reflect.Modifier;
-import java.util.List;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -34,10 +33,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
 import net.sourceforge.pmd.lang.java.ast.AccessNode.Visibility;
 import net.sourceforge.pmd.lang.java.ast.JModifier;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
-import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
-import net.sourceforge.pmd.lang.java.types.TypeOps;
+import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
@@ -116,9 +113,6 @@ public class UselessOverridingMethodRule extends AbstractJavaRule {
         }
 
         ASTBlock block = node.getBody();
-        if (block == null) {
-            return super.visit(node, data);
-        }
         // Only process functions with one BlockStatement
         if (block.getNumChildren() != 1 || block.descendants(ASTStatement.class).count() != 1) {
             return super.visit(node, data);
@@ -135,18 +129,25 @@ public class UselessOverridingMethodRule extends AbstractJavaRule {
         }
 
         // merely calling super.foo() or returning super.foo()
+        ASTMethodCall superMethodCall = null;
         if ((statement instanceof ASTExpressionStatement || statement instanceof ASTReturnStatement)
                 && statement.getNumChildren() == 1
                 && statement.getChild(0) instanceof ASTMethodCall) {
             ASTMethodCall methodCall = (ASTMethodCall) statement.getChild(0);
-            if (!isSuperCallSameMethod(node, methodCall)) {
-                return super.visit(node, data);
+            if (methodCall.getQualifier() instanceof ASTSuperExpression) {
+                superMethodCall = methodCall;
             }
-        } else {
+        }
+
+        if (superMethodCall == null) {
             return super.visit(node, data);
         }
 
-        if (modifiersChanged(node)) {
+        if (!isSuperCallSameMethod(node, superMethodCall)) {
+            return super.visit(node, data);
+        }
+
+        if (modifiersChanged(node, superMethodCall)) {
             return super.visit(node, data);
         }
 
@@ -157,14 +158,13 @@ public class UselessOverridingMethodRule extends AbstractJavaRule {
     }
 
     private boolean isSuperCallSameMethod(ASTMethodDeclaration node, ASTMethodCall methodCall) {
-        if (!(methodCall.getQualifier() instanceof ASTSuperExpression)) {
-            return false;
-        }
-
         @NonNull
         ASTFormalParameters formalParameters = node.getFormalParameters();
         @NonNull
         ASTArgumentList arguments = methodCall.getArguments();
+
+        OverloadSelectionResult overloadSelectionInfo = methodCall.getOverloadSelectionInfo();
+        JMethodSig methodType = overloadSelectionInfo.getMethodType();
 
         if (node.getName().equals(methodCall.getMethodName())
                 && formalParameters.size() == arguments.size()) {
@@ -177,7 +177,7 @@ public class UselessOverridingMethodRule extends AbstractJavaRule {
             for (int i = 0; i < node.getArity(); i++) {
                 ASTFormalParameter formalParam = formalParameters.get(i);
                 ASTExpression arg = arguments.get(i);
-                
+
                 if (!(arg instanceof ASTVariableAccess)) {
                     return false;
                 }
@@ -185,8 +185,12 @@ public class UselessOverridingMethodRule extends AbstractJavaRule {
                 if (!formalParam.getVarId().getName().equals(varAccess.getName())) {
                     return false;
                 }
+                // check the type - must be equal for overwrites, but could be different for overloads
+                if (!formalParam.getTypeMirror().equals(methodType.getFormalParameters().get(i))) {
+                    return false;
+                }
             }
-            
+
             // now all args matched
             return true;
         }
@@ -202,22 +206,8 @@ public class UselessOverridingMethodRule extends AbstractJavaRule {
                 && this.isMethodThrowingType(node, CloneNotSupportedException.class);
     }
 
-    private boolean modifiersChanged(ASTMethodDeclaration node) {
-        JClassType type = node.getEnclosingType().getTypeMirror();
-
-        // search method with same name up the hierarchy
-        JClassType superType = type.getSuperClass();
-        JMethodSig declaredMethod = null;
-        while (superType != null && declaredMethod == null) {
-            List<JMethodSymbol> superMethods = superType.getSymbol().getDeclaredMethods();
-            for (JMethodSymbol m : superMethods) {
-                if (TypeOps.overrides(node.getTypeSystem().sigOf(node.getSymbol()), m.getTypeSystem().sigOf(m), type)) {
-                    declaredMethod = superType.getDeclaredMethod(m);
-                    break;
-                }
-            }
-            superType = superType.getSuperClass();
-        }
+    private boolean modifiersChanged(ASTMethodDeclaration node, ASTMethodCall superMethodCall) {
+        JMethodSig declaredMethod = superMethodCall.getOverloadSelectionInfo().getMethodType();
         return declaredMethod != null && isElevatingAccessModifier(node, declaredMethod);
     }
 
