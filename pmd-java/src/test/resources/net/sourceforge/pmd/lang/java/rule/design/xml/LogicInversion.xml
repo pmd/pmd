@@ -7,6 +7,7 @@
     <test-code>
         <description>failure case, inequality</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
    public int bar(int x) {
@@ -21,6 +22,7 @@ public class Foo {
     <test-code>
         <description>failure case, comparison</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
    public int bar(int x) {
