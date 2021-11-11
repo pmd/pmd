@@ -66,7 +66,7 @@ Novice as much as advanced readers may want to [read on on Refactoring Guru](htt
                description="List of files and directories to process"
                required="yes"
     %}
-    {% include custom/cli_option_row.html options="--filelist"
+    {% include custom/cli_option_row.html options="--file-list"
                description="Path to file containing a comma delimited list of files to analyze. If this is given, then you don't need to provide `--files`."
     %}
     {% include custom/cli_option_row.html options="--language"
