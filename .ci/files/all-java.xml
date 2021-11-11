@@ -246,7 +246,7 @@
     <!-- <rule ref="category/java/errorprone.xml/ProperLogger"/> -->
     <rule ref="category/java/errorprone.xml/ReturnEmptyCollectionRatherThanNull"/>
     <rule ref="category/java/errorprone.xml/ReturnFromFinallyBlock"/>
-    <!-- <rule ref="category/java/errorprone.xml/SimpleDateFormatNeedsLocale"/> -->
+    <rule ref="category/java/errorprone.xml/SimpleDateFormatNeedsLocale"/>
     <rule ref="category/java/errorprone.xml/SingleMethodSingleton"/>
     <rule ref="category/java/errorprone.xml/SingletonClassReturningNewInstance"/>
     <rule ref="category/java/errorprone.xml/StaticEJBFieldShouldBeFinal"/>
