@@ -8,6 +8,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.AccessType;
+import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
@@ -37,7 +38,7 @@ public class AssignmentToNonFinalStaticRule extends AbstractJavaRulechainRule {
     }
 
     private void checkAccess(ASTNamedReferenceExpr node, Object data) {
-        if (node.getAccessType() == AccessType.WRITE) {
+        if (isInsideConstructor(node) && node.getAccessType() == AccessType.WRITE) {
             @Nullable
             JVariableSymbol symbol = node.getReferencedSym();
             if (symbol != null && symbol.isField()) {
@@ -47,5 +48,9 @@ public class AssignmentToNonFinalStaticRule extends AbstractJavaRulechainRule {
                 }
             }
         }
+    }
+
+    private boolean isInsideConstructor(ASTNamedReferenceExpr node) {
+        return node.ancestors(ASTConstructorDeclaration.class).nonEmpty();
     }
 }
