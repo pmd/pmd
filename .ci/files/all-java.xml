@@ -138,7 +138,7 @@
     <rule ref="category/java/design.xml/ExcessiveMethodLength"/>
     <rule ref="category/java/design.xml/ExcessiveParameterList"/>
     <rule ref="category/java/design.xml/ExcessivePublicCount"/>
-    <!-- <rule ref="category/java/design.xml/FinalFieldCouldBeStatic"/> -->
+    <rule ref="category/java/design.xml/FinalFieldCouldBeStatic"/>
     <rule ref="category/java/design.xml/GodClass"/>
     <rule ref="category/java/design.xml/ImmutableField"/>
     <!-- <rule ref="category/java/design.xml/LawOfDemeter"/> -->
