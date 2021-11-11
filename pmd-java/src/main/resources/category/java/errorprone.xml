@@ -2580,36 +2580,32 @@ with the restriction that the logger needs to be passed into the constructor.
                 <value>
 <![CDATA[
 //FieldDeclaration
-[Type/ReferenceType/ClassOrInterfaceType[pmd-java:typeIs($loggerClass)]]
-[
-    (: check modifiers :)
-    (@Private = false() or @Final = false())
-    (: check logger name :)
-    or (@Static and VariableDeclarator/VariableDeclaratorId[@Name != $staticLoggerName])
-    or (@Static = false() and VariableDeclarator/VariableDeclaratorId[@Name != $loggerName])
+    [ClassOrInterfaceType[pmd-java:typeIs($loggerClass)]]
+    [
+        (: check modifiers :)
+        (not(pmd-java:modifiers() = 'private') or not(pmd-java:modifiers() = 'final'))
+        (: check logger name :)
+        or (pmd-java:modifiers() = 'static' and VariableDeclarator/VariableDeclaratorId/@Name != $staticLoggerName)
+        or (not(pmd-java:modifiers() = 'static') and VariableDeclarator/VariableDeclaratorId/@Name != $loggerName)
+        (: check logger argument type matches class or enum name :)
+        or .//ArgumentList/ClassLiteral/ClassOrInterfaceType/@SimpleName != ancestor::ClassOrInterfaceDeclaration/@SimpleName
+        or .//ArgumentList/ClassLiteral/ClassOrInterfaceType/@SimpleName != ancestor::EnumDeclaration/@SimpleName
 
-    (: check logger argument type matches class or enum name :)
-    or .//ArgumentList//ClassOrInterfaceType[@Image != ancestor::ClassOrInterfaceDeclaration/@SimpleName]
-    or .//ArgumentList//ClassOrInterfaceType[@Image != ancestor::EnumDeclaration/@SimpleName]
-]
-[not(
-     (: special case - final logger initialized inside constructor :)
-     not(VariableDeclarator/VariableInitializer)
-     and @Static = false()
-     and
-     ancestor::ClassOrInterfaceBody//ConstructorDeclaration//StatementExpression
-        [PrimaryExpression[PrimaryPrefix[@ThisModifier]]/PrimarySuffix[@Image=$loggerName]]
-        [AssignmentOperator[@Image = '=']]
-        [Expression/PrimaryExpression/PrimaryPrefix/Name[@Image = ancestor::ConstructorDeclaration//FormalParameter/VariableDeclaratorId/@Name]]
-        [not(.//AllocationExpression)]
-  )
-]
+        (: special case - final logger initialized inside constructor :)
+        or (VariableDeclarator/@Initializer = false()
+            and not(pmd-java:modifiers() = 'static')
+            and not(ancestor::ClassOrInterfaceBody/ConstructorDeclaration
+                //AssignmentExpression[@Operator = '=']
+                    [FieldAccess[1]/@Name = $loggerName or VariableAccess[1]/@Name = $loggerName]
+                    [*[2][@Name = ancestor::ConstructorDeclaration//FormalParameter/VariableDeclaratorId/@Name]])
+        )
+    ]
 ]]>
                 </value>
             </property>
             <property name="staticLoggerName" type="String" description="Name of the static Logger variable" value="LOG"/>
             <property name="loggerName" type="String" description="Name of the Logger instance variable" value="log"/>
-            <property name="loggerClass" type="String" description="Class name of the logger" value="Log"/>
+            <property name="loggerClass" type="String" description="Class name of the logger" value="org.apache.commons.logging.Log"/>
         </properties>
         <example>
  <![CDATA[

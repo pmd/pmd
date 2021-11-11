@@ -8,6 +8,8 @@
         <description>Ok</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
 public class Foo {
     private static final Log LOG = LogFactory.getLog(Foo.class);
 }
@@ -17,10 +19,14 @@ public class Foo {
     <test-code>
         <description>Wrong class name</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
         <code><![CDATA[
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
 public class Foo {
     private static final Log LOG = LogFactory.getLog(Bar.class);
 }
+class Bar {}
         ]]></code>
     </test-code>
 
@@ -28,6 +34,7 @@ public class Foo {
         <description>Ok, special case</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import org.apache.commons.logging.Log;
 public class Foo {
     private final Log log;
     Foo(Log log) {
@@ -40,11 +47,15 @@ public class Foo {
     <test-code>
         <description>Enum wrong class name</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
         <code><![CDATA[
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
 public enum Foo {
     TEST;
     private static final Log LOG = LogFactory.getLog(Bar.class);
 }
+class Bar {}
         ]]></code>
     </test-code>
 
@@ -52,6 +63,7 @@ public enum Foo {
         <description>bug 1626232, a separate variable initialization should not confuse the rule</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import org.apache.commons.logging.Log;
 public class Foo {
     private String bar = "";
     private final Log log;
@@ -66,6 +78,8 @@ public class Foo {
         <description>Enums shoud be accepted for declaration</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
 public enum Foo {
     TEST;
     private static final Log LOG = LogFactory.getLog(Foo.class);
@@ -76,7 +90,10 @@ public enum Foo {
     <test-code>
         <description>bug 1626232, extra loggers with different names are not allowed by default (use NOPMD if you want them)</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
         <code><![CDATA[
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
 public class Foo {
     private static final Log LOG = LogFactory.getLog(Foo.class);
     private static final Log LOG2 = LogFactory.getLog(Foo.class + ".foo");
@@ -88,17 +105,25 @@ public class Foo {
         <description>Custom logger-class with invalid logger variable name</description>
         <rule-property name="loggerClass">MyLog</rule-property>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
         <code><![CDATA[
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
 public class Foo {
     private static final MyLog INVALID_LOG_NAME = LogFactory.getLog(Foo.class);
 }
+
+abstract class MyLog implements Log {}
         ]]></code>
     </test-code>
 
     <test-code>
         <description>Public logger</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
         <code><![CDATA[
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
 public class Foo {
     public static final Log LOG = LogFactory.getLog(Foo.class);
 }
@@ -108,7 +133,10 @@ public class Foo {
     <test-code>
         <description>package-private logger</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
         <code><![CDATA[
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
 public class Foo {
     static final Log LOG = LogFactory.getLog(Foo.class);
 }
@@ -118,7 +146,10 @@ public class Foo {
     <test-code>
         <description>package-private logger non static</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
         <code><![CDATA[
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
 public class Foo {
     final Log LOG = LogFactory.getLog(Foo.class);
 }
@@ -128,7 +159,10 @@ public class Foo {
     <test-code>
         <description>package-private logger non static and non final</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
         <code><![CDATA[
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
 public class Foo {
     Log LOG = LogFactory.getLog(Foo.class);
 }
@@ -138,7 +172,10 @@ public class Foo {
     <test-code>
         <description>Public logger when static final required</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
         <code><![CDATA[
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
 public class Foo {
     public static final Log LOG = LogFactory.getLog(Foo.class);
 }
@@ -161,6 +198,7 @@ public class Foo {
         <description>non-private Logger initialized as String constant from class name</description>
         <rule-property name="loggerClass">java.util.logging.Logger</rule-property>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
         <code><![CDATA[
 import java.util.logging.Logger;
 
@@ -173,7 +211,10 @@ public class Foo {
     <test-code>
         <description>Package-protected logger when static final is not required</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
         <code><![CDATA[
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
 public class Foo {
     Log LOG = LogFactory.getLog(Foo.class);
 }
@@ -183,7 +224,10 @@ public class Foo {
     <test-code>
         <description>Package-protected logger when static final is required</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
         <code><![CDATA[
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
 public class Foo {
     Log LOG = LogFactory.getLog(Foo.class);
 }
@@ -208,6 +252,7 @@ public class Foo {
         <description>Check type resolution of logger with invalid logger specified</description>
         <rule-property name="loggerClass">org.slf4j.Logger</rule-property>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
         <code><![CDATA[
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -215,13 +260,17 @@ import org.slf4j.LoggerFactory;
 public class Foo {
     private static final Logger LOG = LoggerFactory.getLogger(Bar.class);
 }
+class Bar {}
         ]]></code>
     </test-code>
 
     <test-code>
         <description>similar to special case but with creating a new logger instead of passing in</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
         <code><![CDATA[
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
 public class Foo {
     private final Log log;
     public Foo() {
@@ -234,7 +283,9 @@ public class Foo {
     <test-code>
         <description>similar to special case but with creating a new logger instead of passing in</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
         <code><![CDATA[
+import org.apache.commons.logging.Log;
 public class Foo {
     private final Log log;
     public Foo() {
@@ -247,6 +298,7 @@ public class Foo {
     <test-code>
         <description>false negative with apache commons logging</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
         <code><![CDATA[
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
