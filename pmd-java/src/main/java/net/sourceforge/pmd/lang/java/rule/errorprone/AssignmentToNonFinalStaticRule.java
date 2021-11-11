@@ -44,7 +44,7 @@ public class AssignmentToNonFinalStaticRule extends AbstractJavaRulechainRule {
             if (symbol != null && symbol.isField()) {
                 JFieldSymbol field = (JFieldSymbol) symbol;
                 if (field.isStatic() && !field.isFinal()) {
-                    addViolation(data, node);
+                    addViolation(data, node, field.getSimpleName());
                 }
             }
         }
