@@ -13,6 +13,9 @@ public class Foo {
                 return true;
             }
         }
+        for (int i = 0; i < 10;)
+            if (b)
+                return true;
         for (int i = 0; i < 10;) {
             if (b) {
                 break;
@@ -23,11 +26,22 @@ public class Foo {
                 continue;
             }
         }
+        for (String s : new String[] { "a", "b" }) {
+            if (b) {
+                return;
+            }
+        }
+        for (String s : new String[] { "a", "b" })
+            if (b)
+                return;
         while (true) {
             if (b) {
                 return true;
             }
         }
+        while (true)
+            if (b)
+                return true;
         while (true) {
             if (b) {
                 break;
@@ -43,6 +57,14 @@ public class Foo {
                 return true;
             }
         } while (true);
+        do {
+            if (b)
+                return true;
+        } while (true);
+        do
+            if (b)
+                return true;
+        while (true);
         do {
             if (b) {
                 break;
@@ -68,6 +90,15 @@ public class Foo {
             break;
         }
         for (int i = 0; i < 10;) {
+            continue;
+        }
+        for (String s : new String[] { "a", "b" }) {
+            return;
+        }
+        for (String s : new String[] { "a", "b" }) {
+            break;
+        }
+        for (String s : new String[] { "a", "b" }) {
             continue;
         }
         while (true) {
@@ -100,8 +131,8 @@ public class Foo {
 
     <test-code>
         <description>violations: break:for/do/while, continue:for/do/while and return:for/do/while</description>
-        <expected-problems>9</expected-problems>
-        <expected-linenumbers>5,8,11,14,17,20,23,26,29</expected-linenumbers>
+        <expected-problems>12</expected-problems>
+        <expected-linenumbers>5,8,11,14,17,20,23,26,29,32,35,38</expected-linenumbers>
         <code-ref id="violations"/>
     </test-code>
 
@@ -110,8 +141,8 @@ public class Foo {
         <rule-property name="checkBreakLoopTypes">for|do|while</rule-property>
         <rule-property name="checkContinueLoopTypes"></rule-property>
         <rule-property name="checkReturnLoopTypes"></rule-property>
-        <expected-problems>3</expected-problems>
-        <expected-linenumbers>8,17,26</expected-linenumbers>
+        <expected-problems>4</expected-problems>
+        <expected-linenumbers>8,17,26,35</expected-linenumbers>
         <code-ref id="violations"/>
     </test-code>
 
@@ -120,8 +151,8 @@ public class Foo {
         <rule-property name="checkBreakLoopTypes"></rule-property>
         <rule-property name="checkContinueLoopTypes">for|do|while</rule-property>
         <rule-property name="checkReturnLoopTypes"></rule-property>
-        <expected-problems>3</expected-problems>
-        <expected-linenumbers>11,20,29</expected-linenumbers>
+        <expected-problems>4</expected-problems>
+        <expected-linenumbers>11,20,29,38</expected-linenumbers>
         <code-ref id="violations"/>
     </test-code>
 
@@ -130,8 +161,8 @@ public class Foo {
         <rule-property name="checkBreakLoopTypes"></rule-property>
         <rule-property name="checkContinueLoopTypes"></rule-property>
         <rule-property name="checkReturnLoopTypes">for|do|while</rule-property>
-        <expected-problems>3</expected-problems>
-        <expected-linenumbers>5,14,23</expected-linenumbers>
+        <expected-problems>4</expected-problems>
+        <expected-linenumbers>5,14,23,32</expected-linenumbers>
         <code-ref id="violations"/>
     </test-code>
 
@@ -140,8 +171,8 @@ public class Foo {
         <rule-property name="checkBreakLoopTypes">for</rule-property>
         <rule-property name="checkContinueLoopTypes"></rule-property>
         <rule-property name="checkReturnLoopTypes"></rule-property>
-        <expected-problems>1</expected-problems>
-        <expected-linenumbers>8</expected-linenumbers>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>8,17</expected-linenumbers>
         <code-ref id="violations"/>
     </test-code>
 
@@ -151,7 +182,7 @@ public class Foo {
         <rule-property name="checkContinueLoopTypes"></rule-property>
         <rule-property name="checkReturnLoopTypes"></rule-property>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>26</expected-linenumbers>
+        <expected-linenumbers>35</expected-linenumbers>
         <code-ref id="violations"/>
     </test-code>
 
@@ -161,7 +192,7 @@ public class Foo {
         <rule-property name="checkContinueLoopTypes"></rule-property>
         <rule-property name="checkReturnLoopTypes"></rule-property>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>17</expected-linenumbers>
+        <expected-linenumbers>26</expected-linenumbers>
         <code-ref id="violations"/>
     </test-code>
 
@@ -170,8 +201,8 @@ public class Foo {
         <rule-property name="checkBreakLoopTypes"></rule-property>
         <rule-property name="checkContinueLoopTypes">for</rule-property>
         <rule-property name="checkReturnLoopTypes"></rule-property>
-        <expected-problems>1</expected-problems>
-        <expected-linenumbers>11</expected-linenumbers>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>11,20</expected-linenumbers>
         <code-ref id="violations"/>
     </test-code>
 
@@ -181,7 +212,7 @@ public class Foo {
         <rule-property name="checkContinueLoopTypes">do</rule-property>
         <rule-property name="checkReturnLoopTypes"></rule-property>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>29</expected-linenumbers>
+        <expected-linenumbers>38</expected-linenumbers>
         <code-ref id="violations"/>
     </test-code>
 
@@ -191,7 +222,7 @@ public class Foo {
         <rule-property name="checkContinueLoopTypes">while</rule-property>
         <rule-property name="checkReturnLoopTypes"></rule-property>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>20</expected-linenumbers>
+        <expected-linenumbers>29</expected-linenumbers>
         <code-ref id="violations"/>
     </test-code>
 
@@ -200,8 +231,8 @@ public class Foo {
         <rule-property name="checkBreakLoopTypes"></rule-property>
         <rule-property name="checkContinueLoopTypes"></rule-property>
         <rule-property name="checkReturnLoopTypes">for</rule-property>
-        <expected-problems>1</expected-problems>
-        <expected-linenumbers>5</expected-linenumbers>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>5,14</expected-linenumbers>
         <code-ref id="violations"/>
     </test-code>
 
@@ -211,7 +242,7 @@ public class Foo {
         <rule-property name="checkContinueLoopTypes"></rule-property>
         <rule-property name="checkReturnLoopTypes">do</rule-property>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>23</expected-linenumbers>
+        <expected-linenumbers>32</expected-linenumbers>
         <code-ref id="violations"/>
     </test-code>
 
@@ -221,7 +252,7 @@ public class Foo {
         <rule-property name="checkContinueLoopTypes"></rule-property>
         <rule-property name="checkReturnLoopTypes">while</rule-property>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>14</expected-linenumbers>
+        <expected-linenumbers>23</expected-linenumbers>
         <code-ref id="violations"/>
     </test-code>
 
@@ -243,6 +274,39 @@ public class Foo {
                     do_c();
                     break;
             }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Without blocks</description>
+        <expected-problems>12</expected-problems>
+        <expected-linenumbers>4,6,8,10,12,14,16,18,20,21,22,23</expected-linenumbers>
+        <code><![CDATA[
+class Foo {
+    public void bar(boolean b) {
+        for (int i = 0; i < 10; i++)
+            return;
+        for (int i = 0; i < 10; i++)
+            break;
+        for (int i = 0; i < 10; i++)
+            continue;
+        for (String s : new String[] { "a", "b" })
+            return;
+        for (String s : new String[] { "a", "b" })
+            break;
+        for (String s : new String[] { "a", "b" })
+            continue;
+        while (true)
+            return;
+        while (true)
+            break;
+        while (true)
+            continue;
+        do return; while (true);
+        do break; while (true);
+        do continue; while (true);
     }
 }
         ]]></code>
