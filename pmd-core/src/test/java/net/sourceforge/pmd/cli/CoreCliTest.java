@@ -73,9 +73,9 @@ public class CoreCliTest {
 
         assertTrue("Report file should exist", Files.exists(reportFile));
 
-        runPmdSuccessfully("--no-cache", "-d", srcDir, "-R", DUMMY_RULESET, "-r", reportFile);
+        runPmdSuccessfully("--no-cache", "--dir", srcDir, "--rulesets", DUMMY_RULESET, "--report-file", reportFile);
 
-        assertNotEquals(readString(reportFile), STRING_TO_REPLACE);
+        assertNotEquals("Report file should have been overwritten", readString(reportFile), STRING_TO_REPLACE);
     }
 
     @Test
@@ -98,7 +98,7 @@ public class CoreCliTest {
 
         assertFalse("Report file should not exist", Files.exists(reportFile));
 
-        runPmdSuccessfully("--no-cache", "-d", srcDir, "-R", DUMMY_RULESET, "-r", reportFile);
+        runPmdSuccessfully("--no-cache", "--dir", srcDir, "--rulesets", DUMMY_RULESET, "--report-file", reportFile);
 
         assertTrue("Report file should have been created", Files.exists(reportFile));
     }
@@ -133,7 +133,7 @@ public class CoreCliTest {
         assertFalse("Report file must not exist yet!", Files.exists(absoluteReportFile));
 
         try {
-            runPmdSuccessfully("--no-cache", "-d", srcDir, "-R", DUMMY_RULESET, "-r", reportFile);
+            runPmdSuccessfully("--no-cache", "--dir", srcDir, "--rulesets", DUMMY_RULESET, "--report-file", reportFile);
             assertTrue("Report file should have been created", Files.exists(absoluteReportFile));
         } finally {
             Files.deleteIfExists(absoluteReportFile);

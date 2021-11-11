@@ -80,7 +80,7 @@ public final class PmdParametersParseResult {
     }
 
     /**
-     * Returns the resulting configuration if parsing succeeded and not {@link #isHelp().
+     * Returns the resulting configuration if parsing succeeded and neither {@link #isHelp()} nor {@link #isVersion()} is requested.
      * Otherwise returns null.
      */
     public PMDConfiguration toConfiguration() {
