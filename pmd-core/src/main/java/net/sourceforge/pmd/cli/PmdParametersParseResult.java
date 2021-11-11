@@ -6,8 +6,8 @@ package net.sourceforge.pmd.cli;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 
@@ -113,7 +113,7 @@ public final class PmdParametersParseResult {
     }
 
     private static Map<String, String> filterDeprecatedOptions(String... args) {
-        Map<String, String> argSet = new HashMap<>(SUGGESTED_REPLACEMENT);
+        Map<String, String> argSet = new LinkedHashMap<>(SUGGESTED_REPLACEMENT);
         argSet.keySet().retainAll(new HashSet<>(Arrays.asList(args)));
         return Collections.unmodifiableMap(argSet);
     }
@@ -122,7 +122,7 @@ public final class PmdParametersParseResult {
     private static final Map<String, String> SUGGESTED_REPLACEMENT;
 
     static {
-        Map<String, String> m = new HashMap<>();
+        Map<String, String> m = new LinkedHashMap<>();
 
         m.put("-rulesets", "--rulesets (or -R)");
         m.put("-uri", "--uri");
