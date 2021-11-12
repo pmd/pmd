@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMarkerAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTMemberValuePair;
@@ -31,14 +30,6 @@ import net.sourceforge.pmd.lang.symboltable.Scope;
 public class JUnitTestsShouldIncludeAssertRule extends AbstractJUnitRule {
 
     @Override
-    public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
-        if (node.isInterface()) {
-            return data;
-        }
-        return super.visit(node, data);
-    }
-
-    @Override
     public Object visit(ASTMethodDeclaration method, Object data) {
         if (isJUnitMethod(method, data)) {
             if (!isExpectAnnotated(method.getParent())) {
@@ -52,7 +43,7 @@ public class JUnitTestsShouldIncludeAssertRule extends AbstractJUnitRule {
                 }
             }
         }
-        return data;
+        return super.visit(method, data);
     }
 
     private boolean containsExpectOrAssert(Node n,
