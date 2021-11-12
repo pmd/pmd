@@ -10,7 +10,6 @@ import java.util.List;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentOperator;
 import net.sourceforge.pmd.lang.java.ast.ASTBlockStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEqualityExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
@@ -42,14 +41,8 @@ public class ArrayIsStoredDirectlyRule extends AbstractSunSecureRule {
 
     public ArrayIsStoredDirectlyRule() {
         definePropertyDescriptor(ALLOW_PRIVATE);
-    }
-
-    @Override
-    public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
-        if (node.isInterface()) {
-            return data;
-        }
-        return super.visit(node, data);
+        addRuleChainVisit(ASTConstructorDeclaration.class);
+        addRuleChainVisit(ASTMethodDeclaration.class);
     }
 
     @Override
