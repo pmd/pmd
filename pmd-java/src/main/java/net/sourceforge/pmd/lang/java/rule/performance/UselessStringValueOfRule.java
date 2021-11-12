@@ -54,7 +54,7 @@ public class UselessStringValueOfRule extends AbstractJavaRule {
                     && "+".equals(gp.getImage())) {
                 boolean ok = false;
                 if (gp.getChild(0) == parent) {
-                    ok = !isPrimitive(gp.getChild(1));
+                    return super.visit(node, data);
                 } else {
                     for (int i = 0; !ok && gp.getChild(i) != parent; i++) {
                         ok = !isPrimitive(gp.getChild(i));
