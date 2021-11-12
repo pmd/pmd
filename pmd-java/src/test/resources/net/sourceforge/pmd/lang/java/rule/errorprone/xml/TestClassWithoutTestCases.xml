@@ -28,6 +28,7 @@ public class FooTest extends TestCase {
     <test-code>
         <description>inner class should get checked</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
         <code><![CDATA[
 import junit.framework.TestCase;
 public class FooTest extends TestCase {

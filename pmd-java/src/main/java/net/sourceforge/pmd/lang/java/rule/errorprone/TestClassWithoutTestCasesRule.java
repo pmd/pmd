@@ -4,13 +4,14 @@
 
 package net.sourceforge.pmd.lang.java.rule.errorprone;
 
-import java.util.List;
-
+import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBody;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.rule.AbstractJUnitRule;
 
 public class TestClassWithoutTestCasesRule extends AbstractJUnitRule {
+
+    private boolean testsFound;
 
     @Override
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
@@ -18,22 +19,30 @@ public class TestClassWithoutTestCasesRule extends AbstractJUnitRule {
             return data;
         }
 
-        List<ASTMethodDeclaration> m = node.findDescendantsOfType(ASTMethodDeclaration.class);
-        boolean testsFound = false;
+        return super.visit(node, data);
+    }
 
-        if (m != null) {
-            for (ASTMethodDeclaration md : m) {
-                if (isJUnitMethod(md, data)) {
-                    testsFound = true;
-                    break;
-                }
+    @Override
+    public Object visit(ASTClassOrInterfaceBody node, Object data) {
+        boolean oldState = testsFound;
+        try {
+            testsFound = false;
+            super.visit(node, data);
+    
+            if (isJUnitTestClass() && !testsFound) {
+                addViolation(data, node);
             }
+        } finally {
+            testsFound = oldState;
         }
-
-        if (!testsFound) {
-            addViolation(data, node);
-        }
-
         return data;
+    }
+
+    @Override
+    public Object visit(ASTMethodDeclaration node, Object data) {
+        if (isJUnitMethod(node, data)) {
+            testsFound = true;
+        }
+        return super.visit(node, data);
     }
 }
