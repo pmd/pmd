@@ -242,7 +242,7 @@ public class MethodReturnsInternalArrayCase {
     </test-code>
 
     <test-code>
-        <description> #1738 MethodReturnsInternalArray in inner classes</description>
+        <description>#1738 MethodReturnsInternalArray in inner classes</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Outer {
@@ -440,6 +440,20 @@ public class MyClass {
             return fooBarNonFinal;
         }
     };
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>nested class in interface</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+public interface Outer {
+    class Foo {
+        String [] arr;
+        String [] getArr() {return arr;}
+    }
 }
         ]]></code>
     </test-code>
