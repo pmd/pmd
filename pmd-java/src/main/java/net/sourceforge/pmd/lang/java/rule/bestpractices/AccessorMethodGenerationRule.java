@@ -33,6 +33,10 @@ public class AccessorMethodGenerationRule extends AbstractJavaRule {
 
     private List<String> cache = new ArrayList<>();
 
+    public AccessorMethodGenerationRule() {
+        addRuleChainVisit(ASTCompilationUnit.class);
+    }
+
     @Override
     public Object visit(final ASTCompilationUnit node, final Object data) {
         final SourceFileScope file = node.getScope().getEnclosingScope(SourceFileScope.class);
