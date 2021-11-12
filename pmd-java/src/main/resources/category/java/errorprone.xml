@@ -34,7 +34,7 @@ public void bar() {
     <rule name="AssignmentToNonFinalStatic"
           language="java"
           since="2.2"
-          message="Possible unsafe assignment to a non-final static field in a constructor."
+          message="Possible unsafe assignment to non-final static field ''{0}'' in a constructor."
           class="net.sourceforge.pmd.lang.java.rule.errorprone.AssignmentToNonFinalStaticRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#assignmenttononfinalstatic">
         <description>
