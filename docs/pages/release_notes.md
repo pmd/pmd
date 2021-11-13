@@ -16,6 +16,9 @@ This is a {{ site.pmd.release_type }} release.
 
 ### Fixed Issues
 
+*   java-bestpractices
+    *   [#3618](https://github.com/pmd/pmd/issues/3618): \[java] UnusedFormalParameter doesn't consider anonymous classes
+
 ### API Changes
 
 ### External Contributions
