@@ -75,4 +75,40 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>nested classes</description>
+        <expected-problems>4</expected-problems>
+        <expected-linenumbers>6,12,19,26</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    void myMethod() {
+        Object anonymous = new Object() {
+            public void bar1() {
+                int y = 1;
+                return;
+            }
+        };
+        class Local {
+            public void bar2() {
+                int y = 2;
+                return;
+            }
+        }
+    }
+    class Inner {
+        void bar3() {
+            int y = 3;
+            return;
+        }
+    }
+}
+interface MyInterface {
+    default void myDefaultMethod() {
+        int y = 4;
+        return;
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
