@@ -145,4 +145,22 @@ public class MyTest {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>[java] TestClassWithoutTestCases reports wrong classes in a file #3624</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.junit.Test;
+
+public class MyTest {
+    @Test
+    public void myTest() {
+    }
+
+    class NestedHelper { }
+}
+
+class Helper { }
+        ]]></code>
+    </test-code>
 </test-data>

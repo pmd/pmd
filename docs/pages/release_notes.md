@@ -19,6 +19,8 @@ This is a {{ site.pmd.release_type }} release.
 *   java-bestpractices
     *   [#3613](https://github.com/pmd/pmd/issues/3613): \[java] ArrayIsStoredDirectly doesn't consider nested classes
     *   [#3614](https://github.com/pmd/pmd/issues/3614): \[java] JUnitTestsShouldIncludeAssert doesn't consider nested classes
+*   java-errorprone
+    *   [#3624](https://github.com/pmd/pmd/issues/3624): \[java] TestClassWithoutTestCases reports wrong classes in a file
 
 ### API Changes
 
