@@ -457,4 +457,26 @@ public interface Outer {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>[java] MethodReturnsInternalArray doesn't consider anonymous classes #3630</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
+        <code><![CDATA[
+public class Outer {
+    private static final String[] names = new String[] {"a", "b"};
+    public static Provider getProvider() {
+        return new Provider() {
+            @Override
+            public String[] getNames() {
+                return names;
+            }
+        };
+    }
+    public interface Provider {
+        String[] getNames();
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
