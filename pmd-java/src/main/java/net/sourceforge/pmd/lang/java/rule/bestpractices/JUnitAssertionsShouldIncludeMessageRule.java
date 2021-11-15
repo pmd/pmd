@@ -128,7 +128,7 @@ public class JUnitAssertionsShouldIncludeMessageRule extends AbstractJavaRule {
 
                     if (name != null
                             && (name.hasImageEqualTo(this.assertionName)
-                                    || name.getImage().endsWith("." + this.assertionName))) {
+                                    || name.getImage().endsWith("Assert." + this.assertionName))) {
                         return name;
                     }
                 }
