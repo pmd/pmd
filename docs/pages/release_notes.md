@@ -16,6 +16,9 @@ This is a {{ site.pmd.release_type }} release.
 
 ### Fixed Issues
 
+*   java-bestpractices
+    *   [#3595](https://github.com/pmd/pmd/issues/3595): \[java] PrimitiveWrapperInstantiation: no violation on 'new Boolean(val)'
+
 ### API Changes
 
 ### External Contributions
