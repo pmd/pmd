@@ -143,7 +143,7 @@ public class CompilerService {
                         MethodUtils.invokeMethod(CompilerStage.ADDITIONAL_VALIDATE, true, "getOperation");
                 operation.invoke(compilerContext, unit);
             }
-        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+        } catch (IllegalArgumentException | ReflectiveOperationException e) {
             throw new RuntimeException(e);
         }
     }
