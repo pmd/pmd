@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.rule.performance;
 
-import net.sourceforge.pmd.lang.ast.GenericToken;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAdditiveExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
@@ -12,7 +11,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
-import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType;
 import net.sourceforge.pmd.lang.java.ast.ASTReferenceType;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
@@ -34,9 +32,13 @@ public class UselessStringValueOfRule extends AbstractJavaRule {
             if (parent.getNumChildren() != 2) {
                 return super.visit(node, data);
             }
-            // skip String.valueOf(anyarraytype[])
             ASTArgumentList args = parent.getFirstDescendantOfType(ASTArgumentList.class);
             if (args != null) {
+                if (args.size() > 1) {
+                    // skip String.valueOf with more than one argument (e.g. String.valueOf(char[],int,int))
+                    return super.visit(node, data);
+                }
+                // skip String.valueOf(anyarraytype[])
                 ASTName arg = args.getFirstDescendantOfType(ASTName.class);
                 if (arg != null) {
                     NameDeclaration declaration = arg.getNameDeclaration();
@@ -47,13 +49,6 @@ public class UselessStringValueOfRule extends AbstractJavaRule {
                                 && ((ASTReferenceType) argType.getChild(0)).isArray()) {
                             return super.visit(node, data);
                         }
-                        // declaration may be of format [TYPE] [IDENTIFIER] [LBRACKET] [RBRACKET]
-                        try {
-                            GenericToken t = ((ASTPrimitiveType)argType.getChild(0)).jjtGetFirstToken();
-                            if (t.getNext().getNext().getKind() == 79 && t.getNext().getNext().getNext().getKind() == 80) {
-                                return super.visit(node, data);
-                            } 
-                        } catch (Exception e) {}
                     }
                 }
             }
