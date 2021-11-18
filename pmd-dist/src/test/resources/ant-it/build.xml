@@ -8,7 +8,7 @@
     <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask" classpathref="pmd.classpath"/>
 
     <target name="pmd">
-        <pmd>
+        <pmd failOnRuleViolation="false">
             <ruleset>rulesets/java/quickstart.xml</ruleset>
             <formatter type="text" toConsole="true"/>
             <fileset dir="src">

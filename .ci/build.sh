@@ -9,14 +9,15 @@ SCRIPT_INCLUDES="log.bash utils.bash setup-secrets.bash openjdk.bash maven.bash 
 source "$(dirname "$0")/inc/fetch_ci_scripts.bash" && fetch_ci_scripts
 
 function build() {
-    pmd_ci_log_group_start "Prepare Java 7+11, Bundler"
+    pmd_ci_log_group_start "Prepare Java 7+11+17, Bundler"
         pmd_ci_openjdk_install_adoptopenjdk 11
         pmd_ci_openjdk_setdefault 11
         PMD_MAVEN_EXTRA_OPTS=()
         if [ "$(pmd_ci_utils_get_os)" = "linux" ]; then
             pmd_ci_log_info "Install openjdk7 for integration tests"
             pmd_ci_openjdk_install_zuluopenjdk 7
-            PMD_MAVEN_EXTRA_OPTS=(-Djava7.home="${HOME}/openjdk7")
+            pmd_ci_openjdk_install_adoptopenjdk 17
+            PMD_MAVEN_EXTRA_OPTS=(-Djava7.home="${HOME}/openjdk7" -Djava17.home="${HOME}/openjdk17")
         fi
         pmd_ci_build_setup_bundler
     pmd_ci_log_group_end
