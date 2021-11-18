@@ -88,16 +88,18 @@
                             <goal>copy</goal>
                         </goals>
                         <configuration>
+                            <!-- note: ant 1.9.x is still compatible with java7,
+                                 ant 1.10.x requires java8 -->
                             <artifactItems>
                                 <artifactItem>
                                     <groupId>org.apache.ant</groupId>
                                     <artifactId>ant</artifactId>
-                                    <version>${ant.version}</version>
+                                    <version>1.9.16</version>
                                 </artifactItem>
                                 <artifactItem>
                                     <groupId>org.apache.ant</groupId>
                                     <artifactId>ant-launcher</artifactId>
-                                    <version>${ant.version}</version>
+                                    <version>1.9.16</version>
                                 </artifactItem>
                             </artifactItems>
                             <outputDirectory>${project.build.directory}/ant</outputDirectory>
