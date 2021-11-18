@@ -16,6 +16,9 @@ This is a {{ site.pmd.release_type }} release.
 
 ### Fixed Issues
 
+*   core
+    *   [#3593](https://github.com/pmd/pmd/issues/3593): \[core] Ant task fails with Java17
+
 ### API Changes
 
 ### External Contributions
