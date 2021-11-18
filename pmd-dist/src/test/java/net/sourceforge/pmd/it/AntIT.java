@@ -28,7 +28,7 @@ public class AntIT extends AbstractBinaryDistributionTest {
 
     @Test
     public void runAnt() throws IOException, InterruptedException {
-        Assume.assumeTrue(SystemUtils.IS_OS_UNIX);
+        Assume.assumeTrue(SystemUtils.IS_OS_LINUX);
 
         String antBasepath = new File("target/ant").getAbsolutePath();
         String pmdHome = tempDir.resolve(PMD_BIN_PREFIX + PMDVersion.VERSION).toAbsolutePath().toString();
