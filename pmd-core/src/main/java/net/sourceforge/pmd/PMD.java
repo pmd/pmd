@@ -64,6 +64,7 @@ public class PMD {
 
     private static final Logger LOG = Logger.getLogger(PMD.class.getName());
 
+
     /**
      * The line delimiter used by PMD in outputs. Usually the platform specific
      * line separator.
