@@ -52,6 +52,22 @@ public class Report implements Iterable<RuleViolation> {
     private long start;
     private long end;
     private final List<SuppressedViolation> suppressedRuleViolations = new ArrayList<>();
+    /**
+     * Variable for empty If rule
+    **/
+    private static final String EMPTY_IF_RULE = "EmptyIfStmt";
+    /**
+     * Variable for empty If rule
+     **/
+    private static final String EMPTY_WHILE_RULE = "EmptyWhileStmt";
+    /**
+     * Variable for empty If rule
+     **/
+    private static final String EMPTY_CATCH_RULE = "EmptyCatchBlock";
+    /**
+     * Variable for empty If rule
+     **/
+    private static final String EMPTY_BLOCK_RULE = "EmptyStatementBlock";
 
     /**
      * Creates a new, initialized, empty report for the given file name.
@@ -356,33 +372,33 @@ public class Report implements Iterable<RuleViolation> {
         }
     }
 
-    public boolean isDuplicateViolation(RuleViolation violation) {
-        boolean isDuplicate = false;
-        for (RuleViolation existingViolation : violations) {
+    private boolean isDuplicateViolation(final RuleViolation violation) {
+        boolean isDuplicateBlockType = false;
+        for (final RuleViolation existingViolation : violations) {
             if (isCheckDuplicate(existingViolation, violation)) {
-                isDuplicate = true;
+                isDuplicateBlockType = true;
                 break;
             }
         }
-        return isDuplicate;
+        return isDuplicateBlockType;
     }
 
-    public boolean isCheckDuplicate(RuleViolation existingViolation, RuleViolation violation) {
-        boolean isDuplicate = false;
+    private boolean isCheckDuplicate(final RuleViolation existingViolation, final RuleViolation violation) {
+        boolean isDuplicateViolation = false;
         if (isSameCodeBlockViolation(existingViolation, violation)) {
             if (isEmptyBock(existingViolation)
                     && isEmptyIfWhileCatch(violation)) {
                 violations.remove(existingViolation);
-                isDuplicate = false;
+                isDuplicateViolation = false;
             } else if (isEmptyIfWhileCatch(existingViolation)
                     && isEmptyBock(violation)) {
-                isDuplicate = true;
+                isDuplicateViolation = true;
             }
         }
-        return isDuplicate;
+        return isDuplicateViolation;
     }
 
-    public boolean isSameCodeBlockViolation(RuleViolation existingViolation, RuleViolation violation) {
+    private boolean isSameCodeBlockViolation(final RuleViolation existingViolation, final RuleViolation violation) {
         return existingViolation != null
                 && violation != null
                 && existingViolation.getBeginLine() == violation.getBeginLine()
@@ -392,22 +408,28 @@ public class Report implements Iterable<RuleViolation> {
                 && existingViolation.getPackageName() != null && existingViolation.getPackageName().equals(violation.getPackageName());
     }
 
-    public boolean isEmptyIfWhileCatch(RuleViolation violation) {
-        return isCheckValidViolation(violation)
-                && (violation.getRule().getName().equals(new String("EmptyIfStmt"))
-                || violation.getRule().getName().equals(new String("EmptyWhileStmt"))
-                || violation.getRule().getName().equals(new String("EmptyCatchBlock")));
+    private boolean isEmptyIfWhileCatch(final RuleViolation violation) {
+        boolean isMatch = false;
+        if (isCheckValidViolation(violation)) {
+            String currentRuleName = violation.getRule().getName();
+            if (EMPTY_IF_RULE.equals(currentRuleName)
+                    || EMPTY_WHILE_RULE.equals(currentRuleName)
+                    || EMPTY_CATCH_RULE.equals(currentRuleName)) {
+                isMatch = true;
+            }
+        }
+        return isMatch;
     }
 
-    public boolean isCheckValidViolation(RuleViolation violation) {
+    private boolean isCheckValidViolation(final RuleViolation violation) {
         return violation != null
                 && violation.getRule() != null
                 && violation.getRule().getName() != null;
     }
 
-    public boolean isEmptyBock(RuleViolation violation) {
+    private boolean isEmptyBock(final RuleViolation violation) {
         return isCheckValidViolation(violation)
-                && violation.getRule().getName().equals(new String("EmptyStatementBlock"));
+                && EMPTY_BLOCK_RULE.equals(violation.getRule().getName());
     }
 
     /**
