@@ -267,6 +267,12 @@ public abstract class RuleTst {
 
     public void runTestFromString(String code, Rule rule, Report report, LanguageVersion languageVersion,
             boolean isUseAuxClasspath) {
+        RuleSet rules = RuleSet.forSingleRule(rule);
+        runTestFromString(code, rules, report, languageVersion, isUseAuxClasspath);
+    }
+
+    public void runTestFromString(String code, RuleSet rules, Report report, LanguageVersion languageVersion,
+                                  boolean isUseAuxClasspath) {
         try {
             PMD p = new PMD();
             p.getConfiguration().setDefaultLanguageVersion(languageVersion);
@@ -294,7 +300,7 @@ public abstract class RuleTst {
             ctx.setSourceCodeFile(new File("n/a"));
             ctx.setLanguageVersion(languageVersion);
             ctx.setIgnoreExceptions(false);
-            RuleSet rules = RuleSet.forSingleRule(rule);
+            //RuleSet rules = RuleSet.forSingleRule(rule);
             p.getSourceCodeProcessor().processSourceCode(new StringReader(code), new RuleSets(rules), ctx);
         } catch (Exception e) {
             throw new RuntimeException(e);
