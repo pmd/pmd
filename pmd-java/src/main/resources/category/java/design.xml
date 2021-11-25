@@ -927,7 +927,7 @@ Use opposite operator instead of negating the whole expression with a logic comp
             <property name="xpath">
                 <value>
 <![CDATA[
-//UnaryExpression[@Operator='!']/InfixExpression[@Operator = ('==', '<', '>', '<=', '>=')]
+//UnaryExpression[@Operator='!']/InfixExpression[@Operator = ('==', '!=', '<', '>', '<=', '>=')]
 ]]>
                 </value>
             </property>
