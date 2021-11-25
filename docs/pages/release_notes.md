@@ -18,10 +18,15 @@ This is a {{ site.pmd.release_type }} release.
 
 *   core
     *   [#3593](https://github.com/pmd/pmd/issues/3593): \[core] Ant task fails with Java17
+    *   [#3635](https://github.com/pmd/pmd/issues/3635): \[ci] Update sample projects for regression tester
+*   java-performance
+    *   [#3491](https://github.com/pmd/pmd/issues/3491): \[java] UselessStringValueOf: False positive when `valueOf(char [], int, int)` is used
 
 ### API Changes
 
 ### External Contributions
+
+*   [#3612](https://github.com/pmd/pmd/pull/3612): \[java] Created fix for UselessStringValueOf false positive - [John Armgardt](https://github.com/johnra2)
 
 {% endtocmaker %}
 

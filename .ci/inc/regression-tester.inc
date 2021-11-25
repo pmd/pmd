@@ -13,9 +13,6 @@ source "$(dirname "$0")/inc/fetch_ci_scripts.bash" && fetch_ci_scripts
 # PMD_CI_CHUNK_TOKEN
 
 function regression_tester_setup_ci() {
-    pmd_ci_log_info "Install openjdk8 for pmd-regression-tests"
-    pmd_ci_openjdk_install_adoptopenjdk 8
-
     gpg --batch --yes --decrypt --passphrase="GnxdjywUEPveyCD1RLiTd7t8CImnefYr" \
         --output .ci/files/public-env .ci/files/public-env.gpg
     # shellcheck disable=SC1091
