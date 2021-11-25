@@ -142,6 +142,7 @@ public class Test {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>FP with char array valueOf</description>
         <expected-problems>0</expected-problems>
@@ -151,6 +152,30 @@ public class Test {
     public String test() {
         // if we remove the valueOf, then the toString of the array would be printed
         return "Literal(" + String.valueOf(this.text) + ")";
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#3491 False positive for UselessStringValueOf when valueOf(char [], int, int) is used</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Test {
+    public String test(char buf[], int offset, int len) {
+        print("XML Parser characters: " + String.valueOf(buf, offset, len));
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#3491 False positive for UselessStringValueOf when valueOf(char [], int, int) is used</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Test {
+    public String test(char[] buf, int offset, int len) {
+        print("XML Parser characters: " + String.valueOf(buf, offset, len));
     }
 }
         ]]></code>

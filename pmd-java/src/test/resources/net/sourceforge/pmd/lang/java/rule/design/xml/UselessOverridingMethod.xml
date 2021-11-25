@@ -7,7 +7,12 @@
     <test-code>
         <description>call super</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
         <code><![CDATA[
+class Bar {
+    public void foo() { }
+}
+
 public class Foo extends Bar {
     public void foo() {
         super.foo();
@@ -19,7 +24,12 @@ public class Foo extends Bar {
     <test-code>
         <description>call super with same argument</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
         <code><![CDATA[
+class Bar {
+    public void foo(String bar) { }
+}
+
 public class Foo extends Bar {
     public void foo(String bar) {
         super.foo(bar);
@@ -32,6 +42,10 @@ public class Foo extends Bar {
         <description>call super with different argument</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+class Bar {
+    public void foo(String bar) { }
+}
+
 public class Foo extends Bar {
     String text = "text";
     public void foo(String bar) {
@@ -45,10 +59,15 @@ public class Foo extends Bar {
         <description>call super with different argument 2</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+class Bar {
+    public void foo(String bar) { }
+}
+
 public class Foo extends Bar {
     public void foo(String bar) {
         super.foo(boe(bar));
     }
+    private String boe(String b) { return b; }
 }
         ]]></code>
     </test-code>
@@ -57,7 +76,11 @@ public class Foo extends Bar {
         <description>call super with different argument 3</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-public class Buz{
+class Bar {
+    public void foo(String bar) { }
+}
+
+public class Foo extends Bar {
     public String foo(String bar) {
         super.foo("" + bar);
     }
@@ -69,6 +92,10 @@ public class Buz{
         <description>call super with inverted arguments</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+class Bar {
+    public void foo(String bar, String stool) { }
+}
+
 public class Foo extends Bar {
     public void foo(String bar, String stool) {
         super.foo(stool, bar);
@@ -80,7 +107,12 @@ public class Foo extends Bar {
     <test-code>
         <description>return value of super</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
         <code><![CDATA[
+class Bar {
+    public String foo() { return null; }
+}
+
 public class Foo extends Bar {
     public String foo() {
         return super.foo();
@@ -92,7 +124,12 @@ public class Foo extends Bar {
     <test-code>
         <description>return value of super with argument</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
         <code><![CDATA[
+class Bar {
+    public String foo(String bar) { return null; }
+}
+
 public class Foo extends Bar {
     public String foo(String bar) {
         return super.foo(bar);
@@ -105,6 +142,10 @@ public class Foo extends Bar {
         <description>return value of super after adding a string</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+class Bar {
+    public String foo(String bar) { return null; }
+}
+
 public class Foo extends Bar {
     public String foo(String bar) {
         return super.foo(bar) + "is foo";
@@ -117,6 +158,9 @@ public class Foo extends Bar {
         <description>do not crash on abstract methods</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+class Bar {
+}
+
 public class Foo extends Bar {
     public abstract String foo();
 }
@@ -127,6 +171,9 @@ public class Foo extends Bar {
         <description>do not crash on interfaces</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+interface Bar {
+}
+
 public interface Foo extends Bar {
     public String foo();
 }
@@ -150,8 +197,9 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
+    private static final boolean NO_MODULES = true;
     public void init(String[] args) {
-        super.init( args, Application.NO_MODULES );
+        super.init( args, NO_MODULES );
     }
 }
         ]]></code>
@@ -161,9 +209,13 @@ public class Foo {
         <description>call super with different argument 4</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-public class Buz{
+class Bar {
+    public String foo(Object bar) { return ""; }
+}
+
+public class Buz extends Bar {
     public String foo(Object bar) {
-        super.foo(this);
+        return super.foo(this);
     }
 }
         ]]></code>
@@ -173,6 +225,10 @@ public class Buz{
         <description>adding final is OK</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+class Bar {
+    public String foo() { return ""; }
+}
+
 public class Foo extends Bar {
     public final String foo() {
         return super.foo();
@@ -185,6 +241,10 @@ public class Foo extends Bar {
         <description>adding synchronized is OK, see sf-bug #423</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+class Bar {
+    public String foo() { return ""; }
+}
+
 public class Foo extends Bar {
     public synchronized String foo() {
         return super.foo();
@@ -197,6 +257,10 @@ public class Foo extends Bar {
         <description>Constructors are OK</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+class Bar {
+    public Bar(String bar) { }
+}
+
 public class Foo extends Bar {
     public Foo(String bar) {
         super(bar);
@@ -209,6 +273,9 @@ public class Foo extends Bar {
         <description>Should ignore clone implementation ( see bug 1522517)</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+class Bar {
+}
+
 public class Foo extends Bar {
     public Object clone() throws CloneNotSupportedException {
         return super.clone();
@@ -221,6 +288,10 @@ public class Foo extends Bar {
         <description>clone method with arguments should not be ignored</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
+class Bar {
+    public Object clone(Object o) throws CloneNotSupportedException { return null; }
+}
+
 public class Foo extends Bar {
     public Object clone(Object o) throws CloneNotSupportedException {
         return super.clone(o);
@@ -230,7 +301,7 @@ public class Foo extends Bar {
     </test-code>
 
     <test-code>
-        <description>False +: Overriding method merely calls super (see bug 1415525)</description>
+        <description>False +: Overriding method merely calls super - see bug 1415525</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 package net.sourceforge.pmd.lang.java.rule.design.uselessoverridingmethod;
@@ -265,6 +336,9 @@ class ExposingSerializer extends Serializer {
         <description>[ 1977230 ] false positive: UselessOverridingMethod</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.math.BigDecimal;
+import java.util.Date;
+
 public class Foo extends Bar {
     public BigDecimal getBalance(Date date) {
         return super.getBalance(date).negate();
@@ -272,8 +346,7 @@ public class Foo extends Bar {
 }
 
 class Bar {
-    public BigDecimal getBalance(Date date) {
-    }
+    public BigDecimal getBalance(Date date) { return null; }
 }
         ]]></code>
     </test-code>
@@ -282,7 +355,9 @@ class Bar {
         <description>[ 2142986 ] UselessOverridingMethod doesn't consider annotations, ignoreAnnotations property set to true</description>
         <rule-property name="ignoreAnnotations">true</rule-property>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>10</expected-linenumbers>
         <code><![CDATA[
+package net.sourceforge.pmd.lang.java.rule.design.uselessoverridingmethod;
 class PersistentObject {
     public Long getId() { return 1L; }
 }
@@ -300,6 +375,7 @@ public class Example extends PersistentObject {
         <description>[ 2142986 ] UselessOverridingMethod doesn't consider annotations</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+package net.sourceforge.pmd.lang.java.rule.design.uselessoverridingmethod;
 class PersistentObject {
     public Long getId() { return 1L; }
 }
@@ -316,6 +392,7 @@ public class Example extends PersistentObject {
     <test-code>
         <description>[ 2142986 ] UselessOverridingMethod doesn't consider annotations, @Override only</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
         <code><![CDATA[
 class PersistentObject {
     public Long getId() { return 1L; }
@@ -359,6 +436,8 @@ package net.sourceforge.pmd.lang.java.rule.design.uselessoverridingmethod;
 
 public class DirectSubclass extends BaseClass {
 
+    // overrides to make the methods public
+
     @Override
     public void doBase() {
         super.doBase();
@@ -367,6 +446,11 @@ public class DirectSubclass extends BaseClass {
     @Override
     public void doBaseWithArg(String foo) {
         super.doBaseWithArg(foo);
+    }
+
+    @Override
+    public void doBaseWithArgs(String foo, int bar) {
+        super.doBaseWithArgs(foo, bar);
     }
 }
         ]]></code>
@@ -398,9 +482,21 @@ import net.sourceforge.pmd.lang.java.rule.design.uselessoverridingmethod.BaseCla
 
 public class DirectSubclassInOtherPackage extends BaseClass {
 
+    // overrides to make the method available in this package
+
     @Override
     protected void doBase() {
         super.doBase();
+    }
+
+    @Override
+    protected void doBaseWithArg(String foo) {
+        super.doBaseWithArg(foo);
+    }
+
+    @Override
+    protected void doBaseWithArgs(String foo, int bar) {
+        super.doBaseWithArgs(foo, bar);
     }
 }
         ]]></code>
@@ -414,9 +510,21 @@ package net.sourceforge.pmd.lang.java.rule.design.uselessoverridingmethod;
 
 public class TransitiveSubclass extends OtherSubclass {
 
+    // overrides to make the methods public
+
     @Override
     public void doBase() {
         super.doBase();
+    }
+
+    @Override
+    public void doBaseWithArg(String foo) {
+        super.doBaseWithArg(foo);
+    }
+
+    @Override
+    public void doBaseWithArgs(String foo, int bar) {
+        super.doBaseWithArgs(foo, bar);
     }
 }
         ]]></code>
@@ -424,15 +532,26 @@ public class TransitiveSubclass extends OtherSubclass {
 
     <test-code>
         <description>[java] UselessOverridingMethod false positive when elevating access modifier #911 - direct2</description>
-        <expected-problems>1</expected-problems>
-        <expected-linenumbers>5</expected-linenumbers>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>6,11,16</expected-linenumbers>
         <code><![CDATA[
 package net.sourceforge.pmd.lang.java.rule.design.uselessoverridingmethod;
 
 public class DirectSubclass2 extends DirectSubclass {
+    // useless overrides - it's already public
     @Override
-    public void doBase() { // it's already public in DirectSubclass
+    public void doBase() {
         super.doBase();
+    }
+ 
+    @Override
+    public void doBaseWithArg(String foo) {
+        super.doBaseWithArg(foo);
+    }
+
+    @Override
+    public void doBaseWithArgs(String foo, int bar) {
+        super.doBaseWithArgs(foo, bar);
     }
 }
         ]]></code>
@@ -471,6 +590,28 @@ public class UselessOverridingMethodHashCode {
     @Override
     public boolean equals(Object obj) {
         return super.equals(obj);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Not overriding but overloading</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>11</expected-linenumbers>
+        <code><![CDATA[
+package net.sourceforge.pmd.lang.java.rule.design.uselessoverridingmethod;
+
+public class OtherSubclass extends BaseClass {
+
+    // note: argument type overloaded from CharSequence to String
+    protected void methodWithInterface(String arg) {
+        super.methodWithInterface(arg);
+    }
+
+    // that's actual overwriting
+    protected void doBase() {
+        super.doBase();
     }
 }
         ]]></code>

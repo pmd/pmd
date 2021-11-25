@@ -138,7 +138,7 @@
     <rule ref="category/java/design.xml/ExcessiveMethodLength"/>
     <rule ref="category/java/design.xml/ExcessiveParameterList"/>
     <rule ref="category/java/design.xml/ExcessivePublicCount"/>
-    <!-- <rule ref="category/java/design.xml/FinalFieldCouldBeStatic"/> -->
+    <rule ref="category/java/design.xml/FinalFieldCouldBeStatic"/>
     <rule ref="category/java/design.xml/GodClass"/>
     <rule ref="category/java/design.xml/ImmutableField"/>
     <!-- <rule ref="category/java/design.xml/LawOfDemeter"/> -->
@@ -158,7 +158,7 @@
     <!-- <rule ref="category/java/design.xml/TooManyMethods"/> -->
     <!-- <rule ref="category/java/design.xml/UseObjectForClearerAPI"/> -->
     <rule ref="category/java/design.xml/UseUtilityClass"/>
-    <!-- <rule ref="category/java/design.xml/UselessOverridingMethod"/> -->
+    <rule ref="category/java/design.xml/UselessOverridingMethod"/>
 
     <!-- documentation.xml -->
 
@@ -171,10 +171,10 @@
     <!-- errorprone.xml -->
 
     <rule ref="category/java/errorprone.xml/AssignmentInOperand"/>
-    <!-- <rule ref="category/java/errorprone.xml/AssignmentToNonFinalStatic"/> -->
+    <rule ref="category/java/errorprone.xml/AssignmentToNonFinalStatic"/>
     <rule ref="category/java/errorprone.xml/AvoidAccessibilityAlteration"/>
     <rule ref="category/java/errorprone.xml/AvoidAssertAsIdentifier"/>
-    <!-- <rule ref="category/java/errorprone.xml/AvoidBranchingStatementAsLastInLoop"/> -->
+    <rule ref="category/java/errorprone.xml/AvoidBranchingStatementAsLastInLoop"/>
     <!-- <rule ref="category/java/errorprone.xml/AvoidCallingFinalize"/> -->
     <!-- <rule ref="category/java/errorprone.xml/AvoidCatchingNPE"/> -->
     <rule ref="category/java/errorprone.xml/AvoidCatchingThrowable"/>
@@ -198,7 +198,7 @@
     <rule ref="category/java/errorprone.xml/CloneMethodMustImplementCloneable"/>
     <rule ref="category/java/errorprone.xml/CloneMethodReturnTypeMustMatchClassName"/>
     <!-- <rule ref="category/java/errorprone.xml/CloneThrowsCloneNotSupportedException"/> -->
-    <!-- <rule ref="category/java/errorprone.xml/CloseResource"/> -->
+    <rule ref="category/java/errorprone.xml/CloseResource"/>
     <rule ref="category/java/errorprone.xml/CompareObjectsWithEquals"/>
     <rule ref="category/java/errorprone.xml/ComparisonWithNaN"/>
     <rule ref="category/java/errorprone.xml/ConstructorCallsOverridableMethod"/>
@@ -243,10 +243,10 @@
     <!-- <rule ref="category/java/errorprone.xml/NullAssignment"/> -->
     <rule ref="category/java/errorprone.xml/OverrideBothEqualsAndHashcode"/>
     <rule ref="category/java/errorprone.xml/ProperCloneImplementation"/>
-    <!-- <rule ref="category/java/errorprone.xml/ProperLogger"/> -->
+    <rule ref="category/java/errorprone.xml/ProperLogger"/>
     <rule ref="category/java/errorprone.xml/ReturnEmptyCollectionRatherThanNull"/>
     <rule ref="category/java/errorprone.xml/ReturnFromFinallyBlock"/>
-    <!-- <rule ref="category/java/errorprone.xml/SimpleDateFormatNeedsLocale"/> -->
+    <rule ref="category/java/errorprone.xml/SimpleDateFormatNeedsLocale"/>
     <rule ref="category/java/errorprone.xml/SingleMethodSingleton"/>
     <rule ref="category/java/errorprone.xml/SingletonClassReturningNewInstance"/>
     <rule ref="category/java/errorprone.xml/StaticEJBFieldShouldBeFinal"/>
