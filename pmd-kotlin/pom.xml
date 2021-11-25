@@ -16,6 +16,13 @@
     </properties>
 
     <build>
+        <!-- needed for pmd sonar plugin -->
+        <resources>
+            <resource>
+                <directory>${project.basedir}/src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.antlr</groupId>
