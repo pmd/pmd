@@ -18,6 +18,8 @@ import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 
 public class PrimitiveWrapperInstantiationRule extends AbstractJavaRulechainRule {
 
+    private static final InvocationMatcher BOOLEAN_VALUEOF_MATCHER = InvocationMatcher.parse("java.lang.Boolean#valueOf(_)");
+
     public PrimitiveWrapperInstantiationRule() {
         super(ASTConstructorCall.class, ASTMethodCall.class);
     }
@@ -49,7 +51,7 @@ public class PrimitiveWrapperInstantiationRule extends AbstractJavaRulechainRule
      */
     @Override
     public Object visit(ASTMethodCall node, Object data) {
-        if (InvocationMatcher.parse("java.lang.Boolean#valueOf(_)").matchesCall(node)) {
+        if (BOOLEAN_VALUEOF_MATCHER.matchesCall(node)) {
             checkArguments(node.getArguments(), node, data);
         }
 
