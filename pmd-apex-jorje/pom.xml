@@ -8,13 +8,13 @@
   <parent>
     <groupId>net.sourceforge.pmd</groupId>
     <artifactId>pmd</artifactId>
-    <version>6.40.0-SNAPSHOT</version>
+    <version>6.41.0-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
 
   <properties>
     <java.version>8</java.version>
-    <apex.jorje.version>2020-09-10-5a5192</apex.jorje.version>
+    <apex.jorje.version>2021-10-08-631b8c</apex.jorje.version>
   </properties>
 
   <build>

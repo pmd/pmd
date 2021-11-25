@@ -202,16 +202,12 @@ public class ConcreteClassArrayParams extends AbstractClass {
         ]]></code>
     </test-code>
 
-    <test-code regressionTest="false">  <!-- FIXME bug in typeres, anon constants are not resolved -->
-        <description>Consider enum anon class</description>
-        <expected-problems>1</expected-problems>
-        <expected-linenumbers>10</expected-linenumbers>
+    <test-code>
+        <description>Consider enum anon class (#3542)</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>6,11</expected-linenumbers>
         <code><![CDATA[
 package net.sourceforge.pmd.lang.java.rule.bestpractices.missingoverride;
-
-import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
-import net.sourceforge.pmd.lang.metrics.Metric;
-import net.sourceforge.pmd.lang.metrics.MetricKey;
 
 public enum EnumWithAnonClass {
     Foo {
@@ -220,13 +216,11 @@ public enum EnumWithAnonClass {
             return super.toString();
         }
 
-
         // missing
         public String getSomething() {
             return null;
         }
     };
-
 
     public Object getSomething() {
         return null;
@@ -564,5 +558,37 @@ public record Point(int x, int y) {
 }
         ]]></code>
         <source-type>java 16</source-type>
+    </test-code>
+
+    <test-code>
+        <description>[java] MissingOverride: False negative for enum method #3542</description>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>6,11,17</expected-linenumbers>
+        <code><![CDATA[
+package net.sourceforge.pmd.lang.java.rule.bestpractices.missingoverride;
+
+public enum EnumToString {
+    sub_EnumClazz {
+        // missing @Override
+        public String toString() {
+            return "test";
+        }
+
+        // missing @Override
+        public void notOverride() {
+            System.out.println("test");
+        }
+    };
+
+    // missing @Override
+    public String toString() {
+        return "test";
+    }
+
+    public void notOverride() {
+        System.out.println("test");
+    }
+}
+        ]]></code>
     </test-code>
 </test-data>

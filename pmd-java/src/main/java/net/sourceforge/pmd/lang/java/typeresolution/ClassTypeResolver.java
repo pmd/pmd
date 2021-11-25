@@ -40,6 +40,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTBlockStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTBooleanLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTBreakStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTCastExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBody;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
@@ -48,6 +49,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalOrExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumConstant;
+import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEqualityExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTExclusiveOrExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
@@ -259,13 +261,33 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter implements Nulla
     }
 
     @Override
+    public Object visit(ASTEnumConstant node, Object data) {
+        super.visit(node, data);
+
+        if (node.getNumChildren() > 0 && node.getFirstChildOfType(ASTClassOrInterfaceBody.class) != null) {
+            ASTEnumDeclaration enumDecl = (ASTEnumDeclaration) node.getParent().getParent();
+            int clazznumber = node.getIndexInParent() + 1;
+            JavaTypeDefinition enumType = enumDecl.getTypeDefinition();
+
+            if (enumType != null) {
+                String constantType = enumType.getType().getName() + "$" + clazznumber;
+                Class<?> enumConstantClass = pmdClassLoader.loadClassOrNull(constantType);
+                if (enumConstantClass != null) {
+                    node.setTypeDefinition(JavaTypeDefinition.forClass(enumConstantClass));
+                }
+            }
+        }
+        return data;
+    }
+
+    @Override
     public Object visit(ASTClassOrInterfaceType node, Object data) {
         super.visit(node, data);
 
         String typeName = node.getImage();
 
         if (node.isAnonymousClass()) {
-            QualifiableNode parent = node.getFirstParentOfAnyType(ASTAllocationExpression.class, ASTEnumConstant.class);
+            QualifiableNode parent = node.getFirstParentOfType(ASTAllocationExpression.class);
 
             if (parent != null) {
                 typeName = parent.getQualifiedName().toString();

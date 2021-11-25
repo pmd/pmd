@@ -19,7 +19,7 @@ import net.sourceforge.pmd.lang.java.qname.JavaTypeQualifiedName;
  *
  * </pre>
  */
-public class ASTEnumConstant extends AbstractJavaNode implements JavaQualifiableNode {
+public class ASTEnumConstant extends AbstractJavaTypeNode implements JavaQualifiableNode {
 
     private JavaTypeQualifiedName qualifiedName;
 
