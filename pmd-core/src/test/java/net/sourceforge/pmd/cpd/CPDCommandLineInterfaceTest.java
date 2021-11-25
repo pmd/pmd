@@ -59,7 +59,7 @@ public class CPDCommandLineInterfaceTest {
 
         CPDCommandLineInterface.main(new String[] { "--minimum-tokens", "340", "--language", "java", "--filelist",
             filelist.getAbsolutePath(), "--format", "xml", "-failOnViolation", "true" });
-        Assert.assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" + "<pmd-cpd/>", log.getLog());
+        Assert.assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" + "<pmd-cpd/>", log.getLog().trim());
         assertTrue(loggingRule.getLog().contains("Some deprecated options were used on the command-line, including -failOnViolation"));
         assertTrue(loggingRule.getLog().contains("Consider replacing it with --fail-on-violation"));
         // only one parameter is logged
