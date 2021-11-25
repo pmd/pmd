@@ -10,7 +10,7 @@ source "$(dirname "$0")/inc/fetch_ci_scripts.bash" && fetch_ci_scripts
 
 function build() {
     pmd_ci_log_group_start "Prepare Java 8+11, Bundler"
-        pmd_ci_openjdk_install_adoptopenjdk 11
+        pmd_ci_openjdk_install_adoptium 11
         pmd_ci_openjdk_setdefault 11
         PMD_MAVEN_EXTRA_OPTS=()
         if [ "$(pmd_ci_utils_get_os)" = "linux" ]; then
