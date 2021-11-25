@@ -2715,9 +2715,9 @@ formatting is used.
             <property name="xpath">
                 <value>
 <![CDATA[
-//AllocationExpression
- [ClassOrInterfaceType[@Image='SimpleDateFormat']]
- [Arguments[@Size=1]]
+//ConstructorCall
+    [pmd-java:typeIs('java.text.SimpleDateFormat')]
+    [ArgumentList/@Size = 1]
 ]]>
                     </value>
                 </property>
