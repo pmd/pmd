@@ -34,7 +34,7 @@ public void bar() {
     <rule name="AssignmentToNonFinalStatic"
           language="java"
           since="2.2"
-          message="Possible unsafe assignment to a non-final static field in a constructor."
+          message="Possible unsafe assignment to non-final static field ''{0}'' in a constructor."
           class="net.sourceforge.pmd.lang.java.rule.errorprone.AssignmentToNonFinalStaticRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#assignmenttononfinalstatic">
         <description>
@@ -2580,36 +2580,32 @@ with the restriction that the logger needs to be passed into the constructor.
                 <value>
 <![CDATA[
 //FieldDeclaration
-[Type/ReferenceType/ClassOrInterfaceType[pmd-java:typeIs($loggerClass)]]
-[
-    (: check modifiers :)
-    (@Private = false() or @Final = false())
-    (: check logger name :)
-    or (@Static and VariableDeclarator/VariableDeclaratorId[@Name != $staticLoggerName])
-    or (@Static = false() and VariableDeclarator/VariableDeclaratorId[@Name != $loggerName])
+    [ClassOrInterfaceType[pmd-java:typeIs($loggerClass)]]
+    [
+        (: check modifiers :)
+        (not(pmd-java:modifiers() = 'private') or not(pmd-java:modifiers() = 'final'))
+        (: check logger name :)
+        or (pmd-java:modifiers() = 'static' and VariableDeclarator/VariableDeclaratorId/@Name != $staticLoggerName)
+        or (not(pmd-java:modifiers() = 'static') and VariableDeclarator/VariableDeclaratorId/@Name != $loggerName)
+        (: check logger argument type matches class or enum name :)
+        or .//ArgumentList/ClassLiteral/ClassOrInterfaceType/@SimpleName != ancestor::ClassOrInterfaceDeclaration/@SimpleName
+        or .//ArgumentList/ClassLiteral/ClassOrInterfaceType/@SimpleName != ancestor::EnumDeclaration/@SimpleName
 
-    (: check logger argument type matches class or enum name :)
-    or .//ArgumentList//ClassOrInterfaceType[@Image != ancestor::ClassOrInterfaceDeclaration/@SimpleName]
-    or .//ArgumentList//ClassOrInterfaceType[@Image != ancestor::EnumDeclaration/@SimpleName]
-]
-[not(
-     (: special case - final logger initialized inside constructor :)
-     not(VariableDeclarator/VariableInitializer)
-     and @Static = false()
-     and
-     ancestor::ClassOrInterfaceBody//ConstructorDeclaration//StatementExpression
-        [PrimaryExpression[PrimaryPrefix[@ThisModifier]]/PrimarySuffix[@Image=$loggerName]]
-        [AssignmentOperator[@Image = '=']]
-        [Expression/PrimaryExpression/PrimaryPrefix/Name[@Image = ancestor::ConstructorDeclaration//FormalParameter/VariableDeclaratorId/@Name]]
-        [not(.//AllocationExpression)]
-  )
-]
+        (: special case - final logger initialized inside constructor :)
+        or (VariableDeclarator/@Initializer = false()
+            and not(pmd-java:modifiers() = 'static')
+            and not(ancestor::ClassOrInterfaceBody/ConstructorDeclaration
+                //AssignmentExpression[@Operator = '=']
+                    [FieldAccess[1]/@Name = $loggerName or VariableAccess[1]/@Name = $loggerName]
+                    [*[2][@Name = ancestor::ConstructorDeclaration//FormalParameter/VariableDeclaratorId/@Name]])
+        )
+    ]
 ]]>
                 </value>
             </property>
             <property name="staticLoggerName" type="String" description="Name of the static Logger variable" value="LOG"/>
             <property name="loggerName" type="String" description="Name of the Logger instance variable" value="log"/>
-            <property name="loggerClass" type="String" description="Class name of the logger" value="Log"/>
+            <property name="loggerClass" type="String" description="Class name of the logger" value="org.apache.commons.logging.Log"/>
         </properties>
         <example>
  <![CDATA[
@@ -2715,9 +2711,9 @@ formatting is used.
             <property name="xpath">
                 <value>
 <![CDATA[
-//AllocationExpression
- [ClassOrInterfaceType[@Image='SimpleDateFormat']]
- [Arguments[@Size=1]]
+//ConstructorCall
+    [pmd-java:typeIs('java.text.SimpleDateFormat')]
+    [ArgumentList/@Size = 1]
 ]]>
                     </value>
                 </property>

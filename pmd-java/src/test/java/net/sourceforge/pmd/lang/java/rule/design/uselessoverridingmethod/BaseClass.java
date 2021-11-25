@@ -6,11 +6,15 @@ package net.sourceforge.pmd.lang.java.rule.design.uselessoverridingmethod;
 
 public class BaseClass {
 
-
     protected void doBase() {
     }
 
-
     protected void doBaseWithArg(String foo) {
+    }
+
+    protected void doBaseWithArgs(String foo, int bar) {
+    }
+
+    protected void methodWithInterface(CharSequence arg) {
     }
 }
