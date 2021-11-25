@@ -61,4 +61,17 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>negated negation</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar(int a, int b) {
+        if (!(a != b)) { } // violation
+        if (a == b) { } // ok
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
