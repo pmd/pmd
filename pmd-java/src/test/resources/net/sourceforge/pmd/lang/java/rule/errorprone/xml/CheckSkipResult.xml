@@ -7,6 +7,7 @@
     <test-code>
         <description>failure case</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>8</expected-linenumbers>
         <code><![CDATA[
 import java.io.FileInputStream;
 
@@ -24,6 +25,7 @@ public class Foo {
     <test-code>
         <description>failure case but obfuscated</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>8</expected-linenumbers>
         <code><![CDATA[
 import java.io.FileInputStream;
 

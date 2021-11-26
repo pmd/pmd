@@ -7,16 +7,17 @@
     <test-code>
         <description>failure case</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
         <code><![CDATA[
-            public class Foo {
+public class Foo {
 
-                private int x;
+    private int x;
 
-                int bar(int y) {
+    int bar(int y) {
         x = y + 5;
         return x;
-                }
-            }
+    }
+}
             ]]></code>
     </test-code>
 
@@ -190,6 +191,7 @@ public class Foo {
     <test-code>
         <description>Reuse variable name as params in method calls</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     private Integer x = new Integer(1);
@@ -244,6 +246,7 @@ public class Foo {
     <test-code>
         <description>failure, static</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     private int x;
@@ -257,6 +260,7 @@ public class Foo {
     <test-code>
         <description>failure, second method re-uses class level name</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     private int x;
@@ -308,6 +312,7 @@ public class Foo {
     <test-code>
         <description>1409944, fields not used to synchronize should trigger</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     private final Object sync = new Object();
@@ -365,6 +370,7 @@ public class Foo {
         <description>Not ok, since inner classes are checked</description>
         <rule-property name="checkInnerClasses">true</rule-property>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     private class Bar {
@@ -387,6 +393,7 @@ public class Foo {
         <description>Not ok, violation with first usage = non-assignment</description>
         <rule-property name="disallowNotAssignment">true</rule-property>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     private int x;
@@ -429,6 +436,7 @@ public class Foo {
     <test-code>
         <description>multiple fields on same line</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     private int x, foo;
@@ -572,6 +580,7 @@ public class Outer {
     <test-code>
         <description>[java] SingularField: Lombok false positive with annotated inner class</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>9</expected-linenumbers>
         <code><![CDATA[
 import lombok.Data;
 
@@ -749,6 +758,46 @@ public class Foo {
                     }
                 }
             }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>failure case with anonymous class</description>
+        <expected-problems>4</expected-problems>
+        <expected-linenumbers>4,13,20,23</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    void myMethod() {
+        Object o = new Object() {
+            private int x;
+
+            int bar(int y) {
+                x = y + 5;
+                return x;
+            }
+        };
+    }
+    Object field = new Object() {
+        private int x;
+
+        int bar(int y) {
+            x = y + 5;
+            return x;
+        }
+    };
+    private Object doubleSingular;
+    Object doBar(final int y) {
+        doubleSingular = new Object() {
+            private int x;
+
+            int bar() {
+                x = y + 5;
+                return x;
+            }
+        };
+        return doubleSingular;
+    }
+}
             ]]></code>
     </test-code>
 </test-data>

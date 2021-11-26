@@ -25,6 +25,8 @@ This is a {{ site.pmd.release_type }} release.
     *   [#3614](https://github.com/pmd/pmd/issues/3614): \[java] JUnitTestsShouldIncludeAssert doesn't consider nested classes
     *   [#3618](https://github.com/pmd/pmd/issues/3618): \[java] UnusedFormalParameter doesn't consider anonymous classes
     *   [#3630](https://github.com/pmd/pmd/issues/3630): \[java] MethodReturnsInternalArray doesn't consider anonymous classes
+*   java-design
+    *   [#3620](https://github.com/pmd/pmd/issues/3620): \[java] SingularField doesn't consider anonymous classes defined in non-private fields
 *   java-errorprone
     *   [#3624](https://github.com/pmd/pmd/issues/3624): \[java] TestClassWithoutTestCases reports wrong classes in a file
 *   java-performance
