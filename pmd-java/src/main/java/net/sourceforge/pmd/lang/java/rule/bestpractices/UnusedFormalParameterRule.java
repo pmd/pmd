@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
@@ -42,18 +43,18 @@ public class UnusedFormalParameterRule extends AbstractJavaRule {
     @Override
     public Object visit(ASTConstructorDeclaration node, Object data) {
         check(node, data);
-        return data;
+        return super.visit(node, data);
     }
 
     @Override
     public Object visit(ASTMethodDeclaration node, Object data) {
         if (!node.isPrivate() && !getProperty(CHECKALL_DESCRIPTOR)) {
-            return data;
+            return super.visit(node, data);
         }
         if (!node.isNative() && !node.isAbstract() && !isSerializationMethod(node) && !hasOverrideAnnotation(node)) {
             check(node, data);
         }
-        return data;
+        return super.visit(node, data);
     }
 
     private boolean isSerializationMethod(ASTMethodDeclaration node) {
@@ -86,7 +87,8 @@ public class UnusedFormalParameterRule extends AbstractJavaRule {
     private void check(Node node, Object data) {
         Node parent = node.getParent().getParent().getParent();
         if (parent instanceof ASTClassOrInterfaceDeclaration
-                && !((ASTClassOrInterfaceDeclaration) parent).isInterface()) {
+                && !((ASTClassOrInterfaceDeclaration) parent).isInterface()
+                || parent instanceof ASTAllocationExpression) {
             Map<VariableNameDeclaration, List<NameOccurrence>> vars = ((JavaNode) node).getScope()
                     .getDeclarations(VariableNameDeclaration.class);
             for (Map.Entry<VariableNameDeclaration, List<NameOccurrence>> entry : vars.entrySet()) {
