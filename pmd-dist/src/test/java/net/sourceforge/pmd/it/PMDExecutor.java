@@ -24,7 +24,6 @@ import net.sourceforge.pmd.PMDVersion;
  * @author Andreas Dangel
  */
 public class PMDExecutor {
-    private static final String PMD_BIN_PREFIX = "pmd-bin-";
     private static final String SOURCE_DIRECTORY_FLAG = "-d";
     private static final String RULESET_FLAG = "-R";
     private static final String FORMAT_FLAG = "-f";
@@ -36,7 +35,7 @@ public class PMDExecutor {
     }
 
     private static ExecutionResult runPMDUnix(Path tempDir, Path reportFile, String ... arguments) throws Exception {
-        String cmd = tempDir.resolve(PMD_BIN_PREFIX + PMDVersion.VERSION + "/bin/run.sh").toAbsolutePath().toString();
+        String cmd = tempDir.resolve(AbstractBinaryDistributionTest.PMD_BIN_PREFIX + PMDVersion.VERSION + "/bin/run.sh").toAbsolutePath().toString();
         List<String> args = new ArrayList<>();
         args.add("pmd");
         args.addAll(Arrays.asList(arguments));
@@ -44,7 +43,7 @@ public class PMDExecutor {
     }
 
     private static ExecutionResult runPMDWindows(Path tempDir, Path reportFile, String ... arguments) throws Exception {
-        String cmd = tempDir.resolve(PMD_BIN_PREFIX + PMDVersion.VERSION + "/bin/pmd.bat").toAbsolutePath().toString();
+        String cmd = tempDir.resolve(AbstractBinaryDistributionTest.PMD_BIN_PREFIX + PMDVersion.VERSION + "/bin/pmd.bat").toAbsolutePath().toString();
         return runPMD(cmd, Arrays.asList(arguments), reportFile);
     }
 
