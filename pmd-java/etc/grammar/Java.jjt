@@ -1079,8 +1079,8 @@ void PermittedSubclasses() #PermitsList:
           throw new ParseException("ERROR: expecting permits");
         }
     }
-    TypeName()
-    ( "," TypeName() )*
+    ClassOrInterfaceType()
+    ( "," ClassOrInterfaceType() )*
 }
 
 void EnumDeclaration():
@@ -1354,20 +1354,6 @@ void Initializer() :
 {
   [ "static" {jjtThis.setStatic();} ] Block()
 }
-
-void TypeName() #ClassOrInterfaceType:
-{
-  StringBuilder s = new StringBuilder();
-  Token t;
-}
-{
-    t=<IDENTIFIER> {s.append(t.image);}
-    ( "." t=<IDENTIFIER> {s.append('.').append(t.image);} )*
-    {jjtThis.setImage(s.toString());}
-}
-
-
-
 
 /* JLS: https://docs.oracle.com/javase/specs/jls/se8/html/jls-4.html#jls-4.3
 
