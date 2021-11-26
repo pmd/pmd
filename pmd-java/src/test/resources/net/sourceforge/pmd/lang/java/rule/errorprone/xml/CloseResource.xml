@@ -1987,4 +1987,16 @@ public class CloseResourceForEachLoop {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>ClassCastException with pattern matching</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class TypePattern {
+    static boolean doStuff(Object obj) {
+        return obj instanceof Integer myIntVar && myIntVar > 0;
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
