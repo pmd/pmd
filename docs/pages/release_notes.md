@@ -32,7 +32,8 @@ preferred usage is now `--rulesets`. Alternatively one can still use the short o
 Some options also have been renamed to a more consistent casing pattern at the same time
 (`--fail-on-violation` instead of `-failOnViolation`).
 The old single-dash options are still supported but are deprecated and will be removed with PMD 7.
-This change allows us to improve the command line interface in the future.
+This change makes the command line interface more consistent within PMD and also less surprising
+compared to other cli tools.
 
 The changes in detail for PMD:
 
