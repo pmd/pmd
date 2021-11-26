@@ -105,7 +105,7 @@
 
         <argLine>-Xmx512m -Dfile.encoding=${project.build.sourceEncoding}</argLine>
 
-        <pmd.build-tools.version>17</pmd.build-tools.version>
+        <pmd.build-tools.version>18-SNAPSHOT</pmd.build-tools.version>
 
         <pmd-designer.version>6.37.0</pmd-designer.version>
         <javacc.jar>${settings.localRepository}/net/java/dev/javacc/javacc/${javacc.version}/javacc-${javacc.version}.jar</javacc.jar>
