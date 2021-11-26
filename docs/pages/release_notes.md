@@ -22,6 +22,7 @@ This is a {{ site.pmd.release_type }} release.
     *   [#3593](https://github.com/pmd/pmd/issues/3593): \[core] Ant task fails with Java17
     *   [#3635](https://github.com/pmd/pmd/issues/3635): \[ci] Update sample projects for regression tester
 *   java-bestpractices
+    *   [#3595](https://github.com/pmd/pmd/issues/3595): \[java] PrimitiveWrapperInstantiation: no violation on 'new Boolean(val)'
     *   [#3613](https://github.com/pmd/pmd/issues/3613): \[java] ArrayIsStoredDirectly doesn't consider nested classes
     *   [#3614](https://github.com/pmd/pmd/issues/3614): \[java] JUnitTestsShouldIncludeAssert doesn't consider nested classes
     *   [#3618](https://github.com/pmd/pmd/issues/3618): \[java] UnusedFormalParameter doesn't consider anonymous classes
