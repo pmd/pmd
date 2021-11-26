@@ -396,4 +396,25 @@ public class Foo {
             }
             ]]></code>
     </test-code>
+
+    <test-code>
+        <description>[java] PrimitiveWrapperInstantiation: no violation on 'new Boolean(val)' #3595</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>5,6</expected-linenumbers>
+        <expected-messages>
+            <message>Do not use `new Boolean(...)`, prefer `Boolean.valueOf`</message>
+            <message>Do not use `new Boolean("...")`, prefer `Boolean.valueOf`</message>
+        </expected-messages>
+        <code><![CDATA[
+public class SomeClass {
+      private Boolean bar;
+
+      public void method(String s) {
+            this.bar = new Boolean(s);      //violation for the BooleanInstantiation
+            this.bar = new Boolean("some arbitrary string is just false"); //violation
+            this.bar = Boolean.valueOf(s);  //use this instead of Boolean#new
+      }
+}
+        ]]></code>
+    </test-code>
 </test-data>

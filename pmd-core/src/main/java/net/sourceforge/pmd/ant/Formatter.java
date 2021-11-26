@@ -193,8 +193,6 @@ public class Formatter {
         return writer;
     }
 
-    // Note: With Java17, there will be
-    // https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/Console.html#charset()
     private static String getConsoleEncoding() {
         Console console = System.console();
         // in case of pipe or redirect, no interactive console.
@@ -204,7 +202,17 @@ public class Formatter {
                 if (res instanceof Charset) {
                     return ((Charset) res).name();
                 }
-            } catch (ReflectiveOperationException ignored) {
+            } catch (IllegalArgumentException | ReflectiveOperationException ignored) {
+                // fall-through
+            }
+
+            // Maybe this is Java17? Then there will be
+            // https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/Console.html#charset()
+            // instead of the field "cs".
+            try {
+                Charset charset = (Charset) MethodUtils.invokeMethod(console, "charset");
+                return charset.name();
+            } catch (IllegalArgumentException | ReflectiveOperationException ignored) {
                 // fall-through
             }
             return getNativeConsoleEncoding();
@@ -218,7 +226,7 @@ public class Formatter {
             if (res instanceof String) {
                 return (String) res;
             }
-        } catch (ReflectiveOperationException ignored) {
+        } catch (IllegalArgumentException | ReflectiveOperationException ignored) {
             // fall-through
         }
         return null;

@@ -62,7 +62,8 @@ public class PrimitiveWrapperInstantiationRule extends AbstractJavaRulechainRule
         if (arguments == null || arguments.size() != 1) {
             return;
         }
-        String messagePart = node instanceof ASTConstructorCall
+        boolean isNewBoolean = node instanceof ASTConstructorCall;
+        String messagePart = isNewBoolean
                 ? "Do not use `new Boolean"
                 : "Do not use `Boolean.valueOf";
         ASTStringLiteral stringLiteral = getFirstArgStringLiteralOrNull(arguments);
@@ -72,6 +73,8 @@ public class PrimitiveWrapperInstantiationRule extends AbstractJavaRulechainRule
                 addViolationWithMessage(data, node, messagePart + "(\"true\")`, prefer `Boolean.TRUE`");
             } else if ("\"false\"".equals(stringLiteral.getImage())) {
                 addViolationWithMessage(data, node, messagePart + "(\"false\")`, prefer `Boolean.FALSE`");
+            } else {
+                addViolationWithMessage(data, node, messagePart + "(\"...\")`, prefer `Boolean.valueOf`");
             }
         } else if (boolLiteral != null) {
             if (boolLiteral.isTrue()) {
@@ -79,6 +82,9 @@ public class PrimitiveWrapperInstantiationRule extends AbstractJavaRulechainRule
             } else {
                 addViolationWithMessage(data, node, messagePart + "(false)`, prefer `Boolean.FALSE`");
             }
+        } else if (isNewBoolean) {
+            // any argument with "new Boolean", might be a variable access
+            addViolationWithMessage(data, node, messagePart + "(...)`, prefer `Boolean.valueOf`");
         }
     }
 

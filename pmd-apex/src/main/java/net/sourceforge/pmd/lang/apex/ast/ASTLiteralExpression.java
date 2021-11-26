@@ -73,7 +73,7 @@ public final class ASTLiteralExpression extends AbstractApexNode<LiteralExpressi
             Optional<NameValueParameter> parameter = parent.node.getParameters().stream().filter(p -> {
                 try {
                     return this.node.equals(FieldUtils.readDeclaredField(p, "expression", true));
-                } catch (IllegalArgumentException | IllegalAccessException e) {
+                } catch (IllegalArgumentException | ReflectiveOperationException e) {
                     return false;
                 }
             }).findFirst();
@@ -81,7 +81,7 @@ public final class ASTLiteralExpression extends AbstractApexNode<LiteralExpressi
             return parameter.map(p -> {
                 try {
                     return (Identifier) FieldUtils.readDeclaredField(p, "name", true);
-                } catch (IllegalArgumentException | IllegalAccessException e) {
+                } catch (IllegalArgumentException | ReflectiveOperationException e) {
                     return null;
                 }
             }).map(Identifier::getValue).orElse(null);

@@ -9,7 +9,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTCatchClause;
 import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTTryStatement;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
-import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 
 /**
@@ -17,11 +17,14 @@ import net.sourceforge.pmd.lang.java.types.JTypeMirror;
  *
  * @author Will Sargent
  */
-public class ExceptionAsFlowControlRule extends AbstractJavaRule {
+public class ExceptionAsFlowControlRule extends AbstractJavaRulechainRule {
 
     // TODO tests:
     //   - catch a supertype of the exception (unless this is unwanted)
     //   - throw statements with not just a new SomethingExpression, eg a method call returning an exception
+    public ExceptionAsFlowControlRule() {
+        super(ASTThrowStatement.class);
+    }
 
     @Override
     public Object visit(ASTThrowStatement node, Object data) {

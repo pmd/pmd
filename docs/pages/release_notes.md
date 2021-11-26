@@ -24,7 +24,18 @@ This is a {{ site.pmd.release_type }} release.
 *   core
     *   [#3424](https://github.com/pmd/pmd/issues/3424): \[core] Migrate CLI to using GNU-style long options
     *   [#3425](https://github.com/pmd/pmd/issues/3425): \[core] Add a `--version` CLI option
+    *   [#3593](https://github.com/pmd/pmd/issues/3593): \[core] Ant task fails with Java17
     *   [#3635](https://github.com/pmd/pmd/issues/3635): \[ci] Update sample projects for regression tester
+*   java-bestpractices
+    *   [#3595](https://github.com/pmd/pmd/issues/3595): \[java] PrimitiveWrapperInstantiation: no violation on 'new Boolean(val)'
+    *   [#3613](https://github.com/pmd/pmd/issues/3613): \[java] ArrayIsStoredDirectly doesn't consider nested classes
+    *   [#3614](https://github.com/pmd/pmd/issues/3614): \[java] JUnitTestsShouldIncludeAssert doesn't consider nested classes
+    *   [#3618](https://github.com/pmd/pmd/issues/3618): \[java] UnusedFormalParameter doesn't consider anonymous classes
+    *   [#3630](https://github.com/pmd/pmd/issues/3630): \[java] MethodReturnsInternalArray doesn't consider anonymous classes
+*   java-design
+    *   [#3620](https://github.com/pmd/pmd/issues/3620): \[java] SingularField doesn't consider anonymous classes defined in non-private fields
+*   java-errorprone
+    *   [#3624](https://github.com/pmd/pmd/issues/3624): \[java] TestClassWithoutTestCases reports wrong classes in a file
 *   java-performance
     *   [#3491](https://github.com/pmd/pmd/issues/3491): \[java] UselessStringValueOf: False positive when `valueOf(char [], int, int)` is used
 
@@ -37,7 +48,8 @@ preferred usage is now `--rulesets`. Alternatively one can still use the short o
 Some options also have been renamed to a more consistent casing pattern at the same time
 (`--fail-on-violation` instead of `-failOnViolation`).
 The old single-dash options are still supported but are deprecated and will be removed with PMD 7.
-This change allows us to improve the command line interface in the future.
+This change makes the command line interface more consistent within PMD and also less surprising
+compared to other cli tools.
 
 The changes in detail for PMD:
 

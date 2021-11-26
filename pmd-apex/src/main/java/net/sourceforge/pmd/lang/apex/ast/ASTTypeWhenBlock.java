@@ -23,7 +23,7 @@ public final class ASTTypeWhenBlock extends AbstractApexNode<TypeWhenBlock> {
         // unfortunately the name is not exposed...
         try {
             return String.valueOf(FieldUtils.readDeclaredField(node, "name", true));
-        } catch (SecurityException | ReflectiveOperationException e) {
+        } catch (IllegalArgumentException | ReflectiveOperationException e) {
             return null;
         }
     }
