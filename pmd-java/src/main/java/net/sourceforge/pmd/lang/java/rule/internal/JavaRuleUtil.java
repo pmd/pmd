@@ -247,7 +247,7 @@ public final class JavaRuleUtil {
      * custom definition.
      */
     public static boolean isUtilityClass(ASTAnyTypeDeclaration node) {
-        if (node.isInterface() || node.isEnum()) {
+        if (!node.isRegularClass()) {
             return false;
         }
 
