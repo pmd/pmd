@@ -14,9 +14,18 @@ This is a {{ site.pmd.release_type }} release.
 
 ### New and noteworthy
 
+#### GitHub Action for PMD
+
+PMD now has its own official GitHub Action: [GitHub Action for PMD](https://github.com/marketplace/actions/pmd).
+It can execute PMD with your own ruleset against your project. It creates a [SARIF](https://docs.oasis-open.org/sarif/sarif/v2.1.0/sarif-v2.1.0.html)
+report which is uploaded as a build artifact. Furthermore the build can be failed based on the number of violations.
+
+Feedback and pull requests are welcome at <https://github.com/pmd/pmd-github-action>.
+
 ### Fixed Issues
 
 *   core
+    *   [#2954](https://github.com/pmd/pmd/issues/2954): Create GitHub Action for PMD
     *   [#3424](https://github.com/pmd/pmd/issues/3424): \[core] Migrate CLI to using GNU-style long options
     *   [#3425](https://github.com/pmd/pmd/issues/3425): \[core] Add a `--version` CLI option
     *   [#3593](https://github.com/pmd/pmd/issues/3593): \[core] Ant task fails with Java17
