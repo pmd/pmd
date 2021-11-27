@@ -22,6 +22,10 @@ report which is uploaded as a build artifact. Furthermore the build can be faile
 
 Feedback and pull requests are welcome at <https://github.com/pmd/pmd-github-action>.
 
+#### Last release in 2021
+
+This minor release will be the last one in 2021. The next release is scheduled to be end of January 2022.
+
 ### Fixed Issues
 
 *   core
