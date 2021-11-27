@@ -89,6 +89,7 @@ The changes in detail for CPD:
 
 *   [#3600](https://github.com/pmd/pmd/pull/3600): \[core] Implement GNU-style long options and '--version' - [Yang](https://github.com/duanyang25)
 *   [#3612](https://github.com/pmd/pmd/pull/3612): \[java] Created fix for UselessStringValueOf false positive - [John Armgardt](https://github.com/johnra2)
+*   [#3648](https://github.com/pmd/pmd/pull/3648): \[doc] Rename Code Inspector to Codiga - [Julien Delange](https://github.com/juli1)
 
 {% endtocmaker %}
 
