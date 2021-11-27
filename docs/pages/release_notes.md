@@ -104,5 +104,10 @@ The changes in detail for CPD:
 *   [#3612](https://github.com/pmd/pmd/pull/3612): \[java] Created fix for UselessStringValueOf false positive - [John Armgardt](https://github.com/johnra2)
 *   [#3648](https://github.com/pmd/pmd/pull/3648): \[doc] Rename Code Inspector to Codiga - [Julien Delange](https://github.com/juli1)
 
+### Stats
+* 80 commits
+* 23 closed tickets & PRs
+* Days since last release: 28
+
 {% endtocmaker %}
 
