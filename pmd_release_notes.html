@@ -173,7 +173,7 @@
 
 
 <ul id="mysidebar" class="nav">
-    <li class="sidebarTitle">PMD 6.42.0-SNAPSHOT</li>
+    <li class="sidebarTitle">PMD 6.41.0</li>
     
     
     
@@ -1440,19 +1440,232 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 
     
 
-  <h2 id="29-january-2022---6420-snapshot">29-January-2022 - 6.42.0-SNAPSHOT</h2>
+  <h2 id="27-november-2021---6410">27-November-2021 - 6.41.0</h2>
 
-<p>The PMD team is pleased to announce PMD 6.42.0-SNAPSHOT.</p>
+<p>The PMD team is pleased to announce PMD 6.41.0.</p>
 
 <p>This is a minor release.</p>
 
 <h3 id="new-and-noteworthy">New and noteworthy</h3>
 
+<h4 id="github-action-for-pmd">GitHub Action for PMD</h4>
+
+<p>PMD now has its own official GitHub Action: <a href="https://github.com/marketplace/actions/pmd">GitHub Action for PMD</a>.
+It can execute PMD with your own ruleset against your project. It creates a <a href="https://docs.oasis-open.org/sarif/sarif/v2.1.0/sarif-v2.1.0.html">SARIF</a>
+report which is uploaded as a build artifact. Furthermore the build can be failed based on the number of violations.</p>
+
+<p>Feedback and pull requests are welcome at <a href="https://github.com/pmd/pmd-github-action">https://github.com/pmd/pmd-github-action</a>.</p>
+
+<h4 id="last-release-in-2021">Last release in 2021</h4>
+
+<p>This minor release will be the last one in 2021. The next release is scheduled to be end of January 2022.</p>
+
 <h3 id="fixed-issues">Fixed Issues</h3>
+
+<ul>
+  <li>core
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/2954">#2954</a>: Create GitHub Action for PMD</li>
+      <li><a href="https://github.com/pmd/pmd/issues/3424">#3424</a>: [core] Migrate CLI to using GNU-style long options</li>
+      <li><a href="https://github.com/pmd/pmd/issues/3425">#3425</a>: [core] Add a <code class="language-plaintext highlighter-rouge">--version</code> CLI option</li>
+      <li><a href="https://github.com/pmd/pmd/issues/3593">#3593</a>: [core] Ant task fails with Java17</li>
+      <li><a href="https://github.com/pmd/pmd/issues/3635">#3635</a>: [ci] Update sample projects for regression tester</li>
+    </ul>
+  </li>
+  <li>java-bestpractices
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/3595">#3595</a>: [java] PrimitiveWrapperInstantiation: no violation on ‘new Boolean(val)’</li>
+      <li><a href="https://github.com/pmd/pmd/issues/3613">#3613</a>: [java] ArrayIsStoredDirectly doesn’t consider nested classes</li>
+      <li><a href="https://github.com/pmd/pmd/issues/3614">#3614</a>: [java] JUnitTestsShouldIncludeAssert doesn’t consider nested classes</li>
+      <li><a href="https://github.com/pmd/pmd/issues/3618">#3618</a>: [java] UnusedFormalParameter doesn’t consider anonymous classes</li>
+      <li><a href="https://github.com/pmd/pmd/issues/3630">#3630</a>: [java] MethodReturnsInternalArray doesn’t consider anonymous classes</li>
+    </ul>
+  </li>
+  <li>java-design
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/3620">#3620</a>: [java] SingularField doesn’t consider anonymous classes defined in non-private fields</li>
+    </ul>
+  </li>
+  <li>java-errorprone
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/3624">#3624</a>: [java] TestClassWithoutTestCases reports wrong classes in a file</li>
+    </ul>
+  </li>
+  <li>java-performance
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/3491">#3491</a>: [java] UselessStringValueOf: False positive when <code class="language-plaintext highlighter-rouge">valueOf(char [], int, int)</code> is used</li>
+    </ul>
+  </li>
+</ul>
 
 <h3 id="api-changes">API Changes</h3>
 
+<h4 id="command-line-interface">Command Line Interface</h4>
+
+<p>The command line options for PMD and CPD now use GNU-syle long options format. E.g. instead of <code class="language-plaintext highlighter-rouge">-rulesets</code> the
+preferred usage is now <code class="language-plaintext highlighter-rouge">--rulesets</code>. Alternatively one can still use the short option <code class="language-plaintext highlighter-rouge">-R</code>.
+Some options also have been renamed to a more consistent casing pattern at the same time
+(<code class="language-plaintext highlighter-rouge">--fail-on-violation</code> instead of <code class="language-plaintext highlighter-rouge">-failOnViolation</code>).
+The old single-dash options are still supported but are deprecated and will be removed with PMD 7.
+This change makes the command line interface more consistent within PMD and also less surprising
+compared to other cli tools.</p>
+
+<p>The changes in detail for PMD:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>old option</th>
+      <th>new option</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">-rulesets</code></td>
+      <td><code class="language-plaintext highlighter-rouge">--rulesets</code> (or <code class="language-plaintext highlighter-rouge">-R</code>)</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">-uri</code></td>
+      <td><code class="language-plaintext highlighter-rouge">--uri</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">-dir</code></td>
+      <td><code class="language-plaintext highlighter-rouge">--dir</code> (or <code class="language-plaintext highlighter-rouge">-d</code>)</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">-filelist</code></td>
+      <td><code class="language-plaintext highlighter-rouge">--file-list</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">-ignorelist</code></td>
+      <td><code class="language-plaintext highlighter-rouge">--ignore-list</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">-format</code></td>
+      <td><code class="language-plaintext highlighter-rouge">--format</code> (or <code class="language-plaintext highlighter-rouge">-f</code>)</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">-debug</code></td>
+      <td><code class="language-plaintext highlighter-rouge">--debug</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">-verbose</code></td>
+      <td><code class="language-plaintext highlighter-rouge">--verbose</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">-help</code></td>
+      <td><code class="language-plaintext highlighter-rouge">--help</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">-encoding</code></td>
+      <td><code class="language-plaintext highlighter-rouge">--encoding</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">-threads</code></td>
+      <td><code class="language-plaintext highlighter-rouge">--threads</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">-benchmark</code></td>
+      <td><code class="language-plaintext highlighter-rouge">--benchmark</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">-stress</code></td>
+      <td><code class="language-plaintext highlighter-rouge">--stress</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">-shortnames</code></td>
+      <td><code class="language-plaintext highlighter-rouge">--short-names</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">-showsuppressed</code></td>
+      <td><code class="language-plaintext highlighter-rouge">--show-suppressed</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">-suppressmarker</code></td>
+      <td><code class="language-plaintext highlighter-rouge">--suppress-marker</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">-minimumpriority</code></td>
+      <td><code class="language-plaintext highlighter-rouge">--minimum-priority</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">-property</code></td>
+      <td><code class="language-plaintext highlighter-rouge">--property</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">-reportfile</code></td>
+      <td><code class="language-plaintext highlighter-rouge">--report-file</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">-force-language</code></td>
+      <td><code class="language-plaintext highlighter-rouge">--force-language</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">-auxclasspath</code></td>
+      <td><code class="language-plaintext highlighter-rouge">--aux-classpath</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">-failOnViolation</code></td>
+      <td><code class="language-plaintext highlighter-rouge">--fail-on-violation</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">--failOnViolation</code></td>
+      <td><code class="language-plaintext highlighter-rouge">--fail-on-violation</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">-norulesetcompatibility</code></td>
+      <td><code class="language-plaintext highlighter-rouge">--no-ruleset-compatibility</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">-cache</code></td>
+      <td><code class="language-plaintext highlighter-rouge">--cache</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">-no-cache</code></td>
+      <td><code class="language-plaintext highlighter-rouge">--no-cache</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<p>The changes in detail for CPD:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>old option</th>
+      <th>new option</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">--failOnViolation</code></td>
+      <td><code class="language-plaintext highlighter-rouge">--fail-on-violation</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">-failOnViolation</code></td>
+      <td><code class="language-plaintext highlighter-rouge">--fail-on-violation</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">--filelist</code></td>
+      <td><code class="language-plaintext highlighter-rouge">--file-list</code></td>
+    </tr>
+  </tbody>
+</table>
+
 <h3 id="external-contributions">External Contributions</h3>
+
+<ul>
+  <li><a href="https://github.com/pmd/pmd/pull/3600">#3600</a>: [core] Implement GNU-style long options and ‘–version’ - <a href="https://github.com/duanyang25">Yang</a></li>
+  <li><a href="https://github.com/pmd/pmd/pull/3612">#3612</a>: [java] Created fix for UselessStringValueOf false positive - <a href="https://github.com/johnra2">John Armgardt</a></li>
+  <li><a href="https://github.com/pmd/pmd/pull/3648">#3648</a>: [doc] Rename Code Inspector to Codiga - <a href="https://github.com/juli1">Julien Delange</a></li>
+</ul>
+
+<h3 id="stats">Stats</h3>
+<ul>
+  <li>80 commits</li>
+  <li>23 closed tickets &amp; PRs</li>
+  <li>Days since last release: 28</li>
+</ul>
 
 
 
