@@ -173,7 +173,7 @@
 
 
 <ul id="mysidebar" class="nav">
-    <li class="sidebarTitle">PMD 6.41.0-SNAPSHOT</li>
+    <li class="sidebarTitle">PMD 6.42.0-SNAPSHOT</li>
     
     
     
@@ -1456,22 +1456,22 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[tom@hal building]$ ls -l
 total 5716
--rw-rw-r--    1 tom      tom       5837216 Jul 17 13:09 pmd-src-6.41.0-SNAPSHOT.zip
-[tom@hal building]$ unzip -q pmd-src-6.41.0-SNAPSHOT.zip
+-rw-rw-r--    1 tom      tom       5837216 Jul 17 13:09 pmd-src-6.42.0-SNAPSHOT.zip
+[tom@hal building]$ unzip -q pmd-src-6.42.0-SNAPSHOT.zip
 [tom@hal building]$
 </code></pre></div></div>
 
 <p>Now cd down into the <code class="language-plaintext highlighter-rouge">pmd</code> directory:</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[tom@hal building]$ cd pmd-src-6.41.0-SNAPSHOT
-[tom@hal pmd-src-6.41.0-SNAPSHOT]$ ls -l | grep pom.xml
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[tom@hal building]$ cd pmd-src-6.42.0-SNAPSHOT
+[tom@hal pmd-src-6.42.0-SNAPSHOT]$ ls -l | grep pom.xml
 -rw-rw-r--    1 tom      tom          36482 14\. Nov 17:36 pom.xml
-[tom@hal pmd-src-6.41.0-SNAPSHOT]$
+[tom@hal pmd-src-6.42.0-SNAPSHOT]$
 </code></pre></div></div>
 
 <p>That’s the project configuration for maven… let’s compile!</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[tom@hal pmd-src-6.41.0-SNAPSHOT]$ ./mvnw clean verify
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[tom@hal pmd-src-6.42.0-SNAPSHOT]$ ./mvnw clean verify
 [INFO] Scanning for projects...
 [INFO] ------------------------------------------------------------------------
 [INFO] Reactor Build Order:
@@ -1511,7 +1511,7 @@ total 5716
 [INFO] Finished at: 2015-11-14T17:46:06+01:00
 [INFO] Final Memory: 63M/765M
 [INFO] ------------------------------------------------------------------------
-[tom@hal pmd-src-6.41.0-SNAPSHOT]$
+[tom@hal pmd-src-6.42.0-SNAPSHOT]$
 </code></pre></div></div>
 
 <p>Now the source and binary distribution zip files can be found in the folder <code class="language-plaintext highlighter-rouge">pmd-dist/target</code>.</p>
