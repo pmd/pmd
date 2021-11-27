@@ -1448,11 +1448,20 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 
 <h3 id="new-and-noteworthy">New and noteworthy</h3>
 
+<h4 id="github-action-for-pmd">GitHub Action for PMD</h4>
+
+<p>PMD now has its own official GitHub Action: <a href="https://github.com/marketplace/actions/pmd">GitHub Action for PMD</a>.
+It can execute PMD with your own ruleset against your project. It creates a <a href="https://docs.oasis-open.org/sarif/sarif/v2.1.0/sarif-v2.1.0.html">SARIF</a>
+report which is uploaded as a build artifact. Furthermore the build can be failed based on the number of violations.</p>
+
+<p>Feedback and pull requests are welcome at <a href="https://github.com/pmd/pmd-github-action">https://github.com/pmd/pmd-github-action</a>.</p>
+
 <h3 id="fixed-issues">Fixed Issues</h3>
 
 <ul>
   <li>core
     <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/2954">#2954</a>: Create GitHub Action for PMD</li>
       <li><a href="https://github.com/pmd/pmd/issues/3424">#3424</a>: [core] Migrate CLI to using GNU-style long options</li>
       <li><a href="https://github.com/pmd/pmd/issues/3425">#3425</a>: [core] Add a <code class="language-plaintext highlighter-rouge">--version</code> CLI option</li>
       <li><a href="https://github.com/pmd/pmd/issues/3593">#3593</a>: [core] Ant task fails with Java17</li>
@@ -1662,7 +1671,7 @@ compared to other cli tools.</p>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2021 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Nov 26, 2021 <br />
+ Site last generated: Nov 27, 2021 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
