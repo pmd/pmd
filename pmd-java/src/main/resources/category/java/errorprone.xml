@@ -1362,7 +1362,7 @@ Note: This is a PMD implementation of the Lint4j rule "A throw in a finally bloc
         <priority>4</priority>
         <properties>
             <property name="xpath">
-                <value>//FinallyStatement[descendant::ThrowStatement]</value>
+                <value>//FinallyClause[descendant::ThrowStatement]</value>
             </property>
         </properties>
         <example>
