@@ -245,14 +245,14 @@ public class GUI implements CPDListener {
         return LANGUAGE_CONFIGS_BY_LABEL.get(label);
     }
 
-    private static class CancelListener implements ActionListener {
+    private static final class CancelListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
             System.exit(0);
         }
     }
 
-    private class GoListener implements ActionListener {
+    private final class GoListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
             new Thread(new Runnable() {
@@ -308,7 +308,7 @@ public class GUI implements CPDListener {
 
     }
 
-    private class BrowseListener implements ActionListener {
+    private final class BrowseListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
             JFileChooser fc = new JFileChooser(rootDirectoryField.getText());

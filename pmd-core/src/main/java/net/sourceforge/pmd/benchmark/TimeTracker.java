@@ -245,10 +245,7 @@ public final class TimeTracker {
                 return false;
             }
             TimedOperationKey other = (TimedOperationKey) obj;
-            if (category != other.category) {
-                return false;
-            }
-            return Objects.equals(label, other.label);
+            return category == other.category && Objects.equals(label, other.label);
         }
 
         @Override
@@ -260,7 +257,7 @@ public final class TimeTracker {
     /**
      * A standard timed operation implementation.
      */
-    private static class TimedOperationImpl implements TimedOperation {
+    private static final class TimedOperationImpl implements TimedOperation {
         private boolean closed = false;
 
         @Override

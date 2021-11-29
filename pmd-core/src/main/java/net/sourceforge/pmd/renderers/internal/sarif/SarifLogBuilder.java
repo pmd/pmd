@@ -47,7 +47,7 @@ public class SarifLogBuilder {
         final ReportingDescriptor ruleDescriptor = getReportingDescriptor(violation);
         final Location location = getRuleViolationLocation(violation);
 
-        final List<Location> ruleLocation = locationsByRule.containsKey(ruleDescriptor) ? locationsByRule.get(ruleDescriptor) : new ArrayList<Location>();
+        final List<Location> ruleLocation = locationsByRule.containsKey(ruleDescriptor) ? locationsByRule.get(ruleDescriptor) : new ArrayList<>();
         ruleLocation.add(location);
         locationsByRule.put(ruleDescriptor, ruleLocation);
 

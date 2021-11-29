@@ -217,7 +217,7 @@ public class PMD {
                 report = processFiles(configuration, Arrays.asList(ruleSets.getAllRuleSets()), files, renderers);
             }
 
-            try (TimedOperation rto = TimeTracker.startOperation(TimedOperationCategory.REPORTING)) {
+            try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.REPORTING)) {
                 renderer.end();
                 renderer.flush();
                 return report.getViolations().size();
@@ -621,7 +621,7 @@ public class PMD {
 
     }
 
-    private static class AcceptAllFilenames implements FilenameFilter {
+    private static final class AcceptAllFilenames implements FilenameFilter {
         @Override
         public boolean accept(File dir, String name) {
             return true;

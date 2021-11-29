@@ -134,8 +134,7 @@ public class Formatter {
     }
 
     private static String[] validRendererCodes() {
-        return RendererFactory.REPORT_FORMAT_TO_RENDERER.keySet()
-                .toArray(new String[RendererFactory.REPORT_FORMAT_TO_RENDERER.size()]);
+        return RendererFactory.REPORT_FORMAT_TO_RENDERER.keySet().toArray(new String[0]);
     }
 
     private static String unknownRendererMessage(String userSpecifiedType) {
