@@ -20,6 +20,7 @@ public class Foo {
     <test-code>
         <description>bad assignment</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     public void foo() {
@@ -28,6 +29,7 @@ public class Foo {
         bar(x);
         x = null; // This is bad
     }
+    private void bar(Object o) { }
 }
         ]]></code>
     </test-code>
@@ -68,6 +70,7 @@ public class Foo {
     public void foo() {
         String x = bar() ? "fiz" : null;
     }
+    private boolean bar() { return false; }
 }
         ]]></code>
     </test-code>
@@ -75,12 +78,14 @@ public class Foo {
     <test-code>
         <description>null assignment in ternary</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     public void foo() {
         String x;
         x = bar() ? "fiz" : null;
     }
+    private boolean bar() { return false; }
 }
         ]]></code>
     </test-code>
@@ -93,6 +98,7 @@ public class Foo {
     public void foo() {
         String x = bar() ? null : "fiz";
     }
+    private boolean bar() { return true; }
 }
         ]]></code>
     </test-code>
@@ -100,12 +106,14 @@ public class Foo {
     <test-code>
         <description>null assignment in ternary, part deux</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     public void foo() {
         String x;
         x = bar() ? null : "fiz";
     }
+    private boolean bar() { return true; }
 }
         ]]></code>
     </test-code>
@@ -115,7 +123,7 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-    public String foo() {
+    public String foo(String x) {
         return x == null ? "42" : x;
     }
 }
@@ -140,9 +148,11 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
+    private Object parentContext;
     public void foo() {
         assert isRoot() ? parentContext == null : parentContext != null;
     }
+    private boolean isRoot() { return true; }
 }
         ]]></code>
     </test-code>
@@ -151,9 +161,13 @@ public class Foo {
         <description>[java] NullAssignment false positive - initialization #629</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.util.HashMap;
+import java.util.Map;
+
 public class NullAssignmentFP {
-    public void foo() {
-        Type result = someHash.computeIfAbsent(a, _unused -> test ? truthy : null);
+    private Map<String, Object> someHash = new HashMap<>();
+    public void foo(String a, boolean test, Object truthy) {
+        Object result = someHash.computeIfAbsent(a, _unused -> test ? truthy : null);
     }
 }
         ]]></code>
@@ -163,9 +177,13 @@ public class NullAssignmentFP {
         <description>[java] NullAssignment false positive - no direct assignment, but lambda #629</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.util.HashMap;
+import java.util.Map;
+
 public class NullAssignmentFP {
-    public void foo() {
-        Type result;
+    private Map<String, Object> someHash = new HashMap<>();
+    public void foo(String a, boolean test, Object truthy) {
+        Object result;
         result = someHash.computeIfAbsent(a, _unused -> test ? truthy : null);
     }
 }
@@ -176,8 +194,10 @@ public class NullAssignmentFP {
         <description>[java] NullAssignment false positive - return with ternary #629</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.time.LocalDateTime;
+
 public class NullAssignmentFP {
-    public DateTime foo(DateTime dateTime) {
+    public LocalDateTime foo(LocalDateTime dateTime) {
         return dateTime.getYear() < 2100 ? dateTime : null;
     }
 }

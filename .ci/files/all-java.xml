@@ -240,7 +240,7 @@
     <!-- <rule ref="category/java/errorprone.xml/MoreThanOneLogger"/> -->
     <rule ref="category/java/errorprone.xml/NonCaseLabelInSwitchStatement"/>
     <rule ref="category/java/errorprone.xml/NonStaticInitializer"/>
-    <!-- <rule ref="category/java/errorprone.xml/NullAssignment"/> -->
+    <rule ref="category/java/errorprone.xml/NullAssignment"/>
     <rule ref="category/java/errorprone.xml/OverrideBothEqualsAndHashcode"/>
     <rule ref="category/java/errorprone.xml/ProperCloneImplementation"/>
     <rule ref="category/java/errorprone.xml/ProperLogger"/>
