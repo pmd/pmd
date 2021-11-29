@@ -1291,7 +1291,7 @@ Use Environment.getExternalStorageDirectory() instead of "/sdcard"
         <priority>3</priority>
         <properties>
             <property name="xpath">
-                <value>//Literal[starts-with(@Image,'"/sdcard')]</value>
+                <value>//StringLiteral[starts-with(@Image,'"/sdcard')]</value>
             </property>
         </properties>
         <example>
