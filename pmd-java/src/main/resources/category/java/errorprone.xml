@@ -1161,21 +1161,23 @@ should be annotated with @Test and @Ignore.
         <properties>
             <property name="xpath">
                 <value><![CDATA[
-//ClassOrInterfaceBodyDeclaration
-[../ClassOrInterfaceBodyDeclaration/Annotation/*/Name
+//MethodDeclaration
+    (: at least one other method with test annotation :)
+    [../../ClassOrInterfaceBody/MethodDeclaration/ModifierList/Annotation
         [pmd-java:typeIs('org.junit.Test')
          or pmd-java:typeIs('org.junit.jupiter.api.Test')
          or pmd-java:typeIs('org.junit.jupiter.api.RepeatedTest')
          or pmd-java:typeIs('org.junit.jupiter.api.TestFactory')
          or pmd-java:typeIs('org.junit.jupiter.api.TestTemplate')
          or pmd-java:typeIs('org.junit.jupiter.params.ParameterizedTest')]
-]
-[not(Annotation)]
-[MethodDeclaration[(@Public = true() or @PackagePrivate = true()) and @Static = false() and
-        ResultType[@Void = true()] and
-        MethodDeclarator/FormalParameters[@Size = 0]
     ]
-]
+    (: the method itself has no annotation :)
+    [not(ModifierList/Annotation)]
+    (: looks like a test case :)
+    [VoidType]
+    [FormalParameters/@Size = 0]
+    [pmd-java:modifiers() = 'public' or @Visibility = 'package']
+    [not(pmd-java:modifiers() = 'static')]
 ]]></value>
             </property>
             <property name="version" value="2.0" />
