@@ -35,7 +35,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTNullLiteral;
-import net.sourceforge.pmd.lang.java.ast.ASTPatternExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTTryStatement;
@@ -211,19 +210,7 @@ public class CloseResourceRule extends AbstractJavaRule {
 
     private TypeNode getTypeOfVariable(ASTVariableDeclaratorId var) {
         TypeNode runtimeType = getRuntimeTypeOfVariable(var);
-        return runtimeType != null ? runtimeType : getDeclaredTypeOfVariable(var);
-    }
-
-    private TypeNode getDeclaredTypeOfVariable(ASTVariableDeclaratorId var) {
-        JavaNode exprOrDecl = var.getParent().getParent();
-        if (exprOrDecl instanceof ASTLocalVariableDeclaration) {
-            ASTLocalVariableDeclaration localVar = (ASTLocalVariableDeclaration) exprOrDecl;
-            return localVar.getTypeNode(); // note: can be null, if type is inferred (var)
-        } else if (exprOrDecl instanceof ASTPatternExpression) {
-            ASTPatternExpression pattern = (ASTPatternExpression) exprOrDecl;
-            return pattern.descendants(TypeNode.class).first();
-        }
-        return null;
+        return runtimeType != null ? runtimeType : var.getTypeNode();
     }
 
     private TypeNode getRuntimeTypeOfVariable(ASTVariableDeclaratorId var) {
