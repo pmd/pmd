@@ -7,6 +7,7 @@
     <test-code>
         <description>duplicate literals in argument list</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     private void bar() {
@@ -34,6 +35,7 @@ public class Foo {
     <test-code>
         <description>duplicate literals in field decl</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     String[] FOO = {"foo", "foo", "foo", "foo", "foo", "foo", "foo", "foo", "foo"};
@@ -44,6 +46,7 @@ public class Foo {
     <test-code>
         <description>duplicate literals in annotations</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>1</expected-linenumbers>
         <code><![CDATA[
 @SuppressWarnings("foo")
 @SuppressWarnings("foo")
@@ -80,6 +83,7 @@ public class Foo {
         <description>threshold property</description>
         <rule-property name="maxDuplicateLiterals">2</rule-property>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     private void bar() {
@@ -123,6 +127,7 @@ public class Foo {
         <description>minimum length property, minimum length reached</description>
         <rule-property name="minimumLength">5</rule-property>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     private void bar() {
@@ -148,6 +153,7 @@ public class Foo {
     <test-code>
         <description>minimum length property, default value</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     private void bar() {
@@ -161,6 +167,7 @@ public class Foo {
     <test-code>
         <description>#1425 Invalid XML Characters in Output</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
         <expected-messages>
             <message>The String literal "Tokenizer \ud801\udc1ctest" appears 4 times in this file; the first occurrence is on line 2</message>
         </expected-messages>
