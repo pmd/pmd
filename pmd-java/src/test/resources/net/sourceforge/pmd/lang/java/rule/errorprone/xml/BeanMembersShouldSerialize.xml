@@ -7,10 +7,11 @@
     <test-code>
         <description>private String, no accessor</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     private String foo;
-    private String bar = foo;
+    private String bar = foo; // bar is unused
 }
         ]]></code>
     </test-code>
@@ -40,10 +41,11 @@ public class Foo {
     <test-code>
         <description>getter, no setter</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     private String foo;
-    private String bar = Foo.foo;
+    private String bar = Foo.foo; // bar is unused
     public String getFoo() {return foo;}
 }
         ]]></code>
@@ -52,10 +54,11 @@ public class Foo {
     <test-code>
         <description>setter, no getter</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     private String foo;
-    private String bar = Foo.foo;
+    private String bar = Foo.foo; // bar is unused
     public void setFoo(Foo foo) {this.foo = foo;}
 }
         ]]></code>
@@ -89,6 +92,7 @@ public class Foo {
     <test-code>
         <description>setFoo and isFoo is not OK for Strings</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     private String foo;
@@ -109,6 +113,7 @@ public class Foo {
     <test-code>
         <description>prefix is off by default</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
         <code-ref id="prefix"/>
     </test-code>
 
@@ -123,6 +128,7 @@ public class Foo {
         <description>invalid prefix</description>
         <rule-property name="prefix">xxxxxx</rule-property>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
         <code-ref id="prefix"/>
     </test-code>
 
@@ -158,6 +164,7 @@ public abstract class List<A> implements Iterable<A> {
     public static <A> F<List<A>, Boolean> isEmpty() {
         return null;
     }
+    public static class F<A, B> {}
 }
         ]]></code>
     </test-code>
@@ -186,6 +193,7 @@ import lombok.Data;
 @Data
 public class Buzz {
     private String foo;
+    private String bar = foo;
 
     public Buzz(String s) {
         foo = s;
@@ -200,19 +208,21 @@ public class Buzz {
         <code><![CDATA[
 @lombok.Data
 public class Foo {
-    private String bar;
+    private String foo;
+    private String bar = foo;
 }
         ]]></code>
     </test-code>
 
-    <test-code>
+    <test-code regressionTest="false">
         <description>#780 [java] BeanMembersShouldSerializeRule does not recognize lombok accessors - 3</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import lombok.*;
-@Data
+@Data // we don't have lombok on the classpath, so we don't know whether lombok.* contains lombok.Data
 public class Foo {
-    private String bar;
+    private String foo;
+    private String bar = foo;
 }
         ]]></code>
     </test-code>
@@ -224,7 +234,8 @@ public class Foo {
 import lombok.Getter;
 @Getter
 public class Foo {
-    private String bar;
+    private String foo;
+    private String bar = foo;
 }
         ]]></code>
     </test-code>
@@ -235,7 +246,8 @@ public class Foo {
         <code><![CDATA[
 import lombok.Getter;
 public class Foo {
-    @Getter private String bar;
+    @Getter private String foo;
+    private String bar = foo;
 }
         ]]></code>
     </test-code>
@@ -246,18 +258,8 @@ public class Foo {
         <code><![CDATA[
 import lombok.Getter;
 public class Foo {
-    @Getter(lazy=true) private String bar;
-}
-        ]]></code>
-    </test-code>
-
-    <test-code>
-        <description>#780 [java] BeanMembersShouldSerializeRule does not recognize lombok accessors - 7</description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-@Data
-public class Foo {
-    private String bar;
+    @Getter(lazy=true) private String foo;
+    private String bar = foo;
 }
         ]]></code>
     </test-code>
@@ -265,15 +267,17 @@ public class Foo {
     <test-code>
         <description>#1796 BeanMembersShouldSerialize should still report with @Delegate</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
         <code><![CDATA[
 import lombok.experimental.Delegate;
 
 public class Foo {
     @Delegate
-    private String bar;
+    private String foo;
+    private String bar = foo;
 
     public String toString() {
-        return "Foo: " + bar;
+        return "Foo: " + foo;
     }
 }
         ]]></code>

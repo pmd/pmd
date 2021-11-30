@@ -369,7 +369,8 @@ public final class JavaRuleUtil {
         ASTAnyTypeDeclaration enclosing = node.getEnclosingType();
         if (startsWithCamelCaseWord(node.getName(), "get")) {
             return hasField(enclosing, node.getName().substring(3));
-        } else if (startsWithCamelCaseWord(node.getName(), "is")) {
+        } else if (startsWithCamelCaseWord(node.getName(), "is")
+                && TypeTestUtil.isA(Boolean.TYPE, node.getResultTypeNode())) {
             return hasField(enclosing, node.getName().substring(2));
         }
 
