@@ -399,7 +399,7 @@
                         <minimumTokens>100</minimumTokens>
                         <targetJdk>1.${java.version}</targetJdk>
                         <rulesets>
-                            <ruleset>/net/sourceforge/pmd/pmd-dogfood-config7.xml</ruleset>
+                            <ruleset>/net/sourceforge/pmd/pmd-dogfood-config.xml</ruleset>
                         </rulesets>
                         <excludeRoots>
                             <excludeRoot>target/generated-sources/javacc</excludeRoot>

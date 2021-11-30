@@ -90,6 +90,9 @@ function build() {
     pmd_ci_log_group_start "Executing PMD dogfood test with ${PMD_CI_MAVEN_PROJECT_VERSION}"
         ./mvnw versions:set -DnewVersion="${PMD_CI_MAVEN_PROJECT_VERSION}-dogfood" -DgenerateBackupPoms=false
         sed -i 's/<version>[0-9]\{1,\}\.[0-9]\{1,\}\.[0-9]\{1,\}.*<\/version>\( *<!-- pmd.dogfood.version -->\)/<version>'"${PMD_CI_MAVEN_PROJECT_VERSION}"'<\/version>\1/' pom.xml
+        if [ "${PMD_CI_MAVEN_PROJECT_VERSION}" = "7.0.0-SNAPSHOT" ]; then
+            sed -i 's/pmd-dogfood-config\.xml/pmd-dogfood-config7.xml/' pom.xml
+        fi
         ./mvnw verify --show-version --errors --batch-mode --no-transfer-progress "${PMD_MAVEN_EXTRA_OPTS[@]}" \
             -DskipTests \
             -Dmaven.javadoc.skip=true \
