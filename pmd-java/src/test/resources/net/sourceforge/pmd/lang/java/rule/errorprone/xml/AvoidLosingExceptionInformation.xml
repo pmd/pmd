@@ -7,6 +7,7 @@
     <test-code>
         <description>basic failure case</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     void bar() {
@@ -15,6 +16,7 @@ public class Foo {
             se.getMessage();
         }
     }
+    public class SomeException extends Exception {}
 }
         ]]></code>
     </test-code>
@@ -30,6 +32,7 @@ public class Foo {
             String msg = se.getMessage();
         }
     }
+    public class SomeException extends Exception {}
 }
         ]]></code>
     </test-code>
@@ -45,6 +48,7 @@ public class Foo {
             Throwable t = se.getCause();
         }
     }
+    public class SomeException extends Exception {}
 }
         ]]></code>
     </test-code>
@@ -52,6 +56,7 @@ public class Foo {
     <test-code>
         <description>a mix of guilty calls to getMessage(), getLocalizedMessage(), getCause() or getStackTrace(), failure</description>
         <expected-problems>2</expected-problems>
+        <expected-linenumbers>9,11</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     void bar() {
@@ -66,6 +71,7 @@ public class Foo {
             se.getMessage();
         }
     }
+    public class SomeException extends Exception {}
 }
         ]]></code>
     </test-code>
@@ -73,6 +79,7 @@ public class Foo {
     <test-code>
         <description>a larger mix of guilty calls to getMessage(), getLocalizedMessage(), getCause(), getStackTrace() or toString(), failure</description>
         <expected-problems>5</expected-problems>
+        <expected-linenumbers>9,11,13,14,16</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     void bar() {
@@ -92,6 +99,7 @@ public class Foo {
             se.getStackTrace();
         }
     }
+    public class SomeException extends Exception {}
 }
         ]]></code>
     </test-code>

@@ -543,17 +543,12 @@ only add to code size.  Either remove the invocation, or use the return result.
             <property name="xpath">
                 <value>
 <![CDATA[
-//CatchStatement/Block/BlockStatement/Statement/StatementExpression/PrimaryExpression/PrimaryPrefix/Name
-[
-   @Image = concat(../../../../../../../FormalParameter/VariableDeclaratorId/@Name, '.getMessage')
-   or
-   @Image = concat(../../../../../../../FormalParameter/VariableDeclaratorId/@Name, '.getLocalizedMessage')
-   or
-   @Image = concat(../../../../../../../FormalParameter/VariableDeclaratorId/@Name, '.getCause')
-   or
-   @Image = concat(../../../../../../../FormalParameter/VariableDeclaratorId/@Name, '.getStackTrace')
-   or
-   @Image = concat(../../../../../../../FormalParameter/VariableDeclaratorId/@Name, '.toString')
+//CatchClause/Block/ExpressionStatement/MethodCall[
+    pmd-java:matchesSig("java.lang.Throwable#getMessage()")
+    or pmd-java:matchesSig("java.lang.Throwable#getLocalizedMessage()")
+    or pmd-java:matchesSig("java.lang.Throwable#getCause()")
+    or pmd-java:matchesSig("java.lang.Throwable#getStackTrace()")
+    or pmd-java:matchesSig("java.lang.Object#toString()")
 ]
 ]]>
                 </value>
