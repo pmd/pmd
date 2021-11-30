@@ -189,7 +189,7 @@ for (int i = 0; i < 10; i++) {
           language="java"
           since="3.0"
           message="Avoid calling finalize() explicitly"
-          class="net.sourceforge.pmd.lang.java.rule.errorprone.AvoidCallingFinalizeRule"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#avoidcallingfinalize">
         <description>
 The method Object.finalize() is called by the garbage collector on an object when garbage collection determines
@@ -198,6 +198,18 @@ that there are no more references to the object. It should not be invoked by app
 Note that Oracle has declared Object.finalize() as deprecated since JDK 9.
         </description>
         <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//MethodCall[pmd-java:matchesSig("java.lang.Object#finalize()")]
+    (: it's ok inside finalize :)
+    [not(SuperExpression and ../../../../MethodDeclaration[@Name = 'finalize'][@Arity = 0][VoidType]
+     and not(ancestor::Initializer))]
+]]>
+                </value>
+            </property>
+        </properties>
         <example>
 <![CDATA[
 void foo() {
