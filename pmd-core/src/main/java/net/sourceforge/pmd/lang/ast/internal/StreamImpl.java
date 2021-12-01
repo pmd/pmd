@@ -31,7 +31,7 @@ import net.sourceforge.pmd.lang.ast.internal.GreedyNStream.GreedyKnownNStream;
 
 public final class StreamImpl {
 
-    @SuppressWarnings("rawtypes")
+    @SuppressWarnings({"rawtypes", "PMD.UseDiamondOperator"})
     private static final DescendantNodeStream EMPTY = new EmptyNodeStream();
 
     private StreamImpl() {
@@ -179,7 +179,7 @@ public final class StreamImpl {
     }
 
 
-    private static class EmptyNodeStream<N extends Node> extends IteratorBasedNStream<N> implements DescendantNodeStream<N> {
+    private static final class EmptyNodeStream<N extends Node> extends IteratorBasedNStream<N> implements DescendantNodeStream<N> {
 
         @Override
         protected <R extends Node> NodeStream<R> mapIter(Function<Iterator<N>, Iterator<R>> fun) {

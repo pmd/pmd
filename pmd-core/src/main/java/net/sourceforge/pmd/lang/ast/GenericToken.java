@@ -120,7 +120,7 @@ public interface GenericToken<T extends GenericToken<T>> {
                     + ") must come before " + to + " (at " + to.getStartInDocument() + ")"
             );
         }
-        return IteratorUtil.generate(from, t -> t == to ? null : t.getNext());
+        return IteratorUtil.generate(from, t -> t.equals(to) ? null : t.getNext());
     }
 
 

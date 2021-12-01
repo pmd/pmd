@@ -60,7 +60,7 @@ public abstract class DeprecatedAttrLogger {
         return attr.getParent().getXPathNodeName() + "/@" + attr.getName();
     }
 
-    private static class Noop extends DeprecatedAttrLogger {
+    private static final class Noop extends DeprecatedAttrLogger {
 
         static final Noop INSTANCE = new Noop();
 
@@ -70,7 +70,7 @@ public abstract class DeprecatedAttrLogger {
         }
     }
 
-    private static class AttrLoggerImpl extends DeprecatedAttrLogger {
+    private static final class AttrLoggerImpl extends DeprecatedAttrLogger {
 
         private final ConcurrentMap<String, Boolean> deprecated = new ConcurrentHashMap<>();
         private final Rule rule;
@@ -112,7 +112,7 @@ public abstract class DeprecatedAttrLogger {
         }
     }
 
-    private static class AdhocLoggerImpl extends DeprecatedAttrLogger {
+    private static final class AdhocLoggerImpl extends DeprecatedAttrLogger {
         @Override
         public void recordUsageOf(Attribute attribute) {
             String replacement = attribute.replacementIfDeprecated();

@@ -189,7 +189,7 @@ public class SarifLogBuilder {
         return PropertyBag.builder()
                 .ruleset(rv.getRule().getRuleSetName())
                 .priority(rv.getRule().getPriority().getPriority())
-                .tags(new HashSet<String>(Arrays.asList(rv.getRule().getRuleSetName())))
+                .tags(new HashSet<>(Arrays.asList(rv.getRule().getRuleSetName())))
                 .build();
     }
 

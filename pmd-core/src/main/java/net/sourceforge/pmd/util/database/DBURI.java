@@ -501,7 +501,9 @@ public class DBURI {
                 schemasList = Arrays.asList(dbType.getProperties().getProperty("schemas").split(","));
             }
 
-            sourceCodeNames = dbType.getProperties().getProperty("sourcecodenames");
+            if (null != dbType.getProperties().getProperty("sourcecodenames")) {
+                sourceCodeNames = dbType.getProperties().getProperty("sourcecodenames");
+            }
 
             String returnType = dbType.getProperties().getProperty("returnType");
             if (null != returnType) {

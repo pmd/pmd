@@ -31,7 +31,7 @@ public class CodeClimateIssue {
         public String path;
         public Lines lines;
 
-        private class Lines {
+        private static final class Lines {
             public int begin;
             public int end;
         }

@@ -86,10 +86,8 @@ import org.apache.commons.lang3.StringUtils;
         if (obj == null) {
             return false;
         }
-        if (obj instanceof PropertyDescriptor) {
-            return name.equals(((PropertyDescriptor<?>) obj).name());
-        }
-        return false;
+        return obj instanceof PropertyDescriptor
+            && name.equals(((PropertyDescriptor<?>) obj).name());
     }
 
 

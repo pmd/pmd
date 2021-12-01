@@ -17,7 +17,7 @@ import java.util.Set;
  * @author Clément Fournier
  * @since 6.0.0
  */
-public class MetricOptions {
+public final class MetricOptions {
 
     private static final Map<MetricOptions, MetricOptions> POOL = new HashMap<>();
     private static final MetricOptions EMPTY_OPTIONS;
@@ -146,7 +146,7 @@ public class MetricOptions {
     }
 
 
-    private static class MetricOptionsBuilder {
+    private static final class MetricOptionsBuilder {
 
 
         private Set<MetricOption> opts = new HashSet<>();
