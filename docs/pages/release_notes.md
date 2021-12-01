@@ -16,6 +16,9 @@ This is a {{ site.pmd.release_type }} release.
 
 ### Fixed Issues
 
+*   java-errorprone
+    *   [#3644](https://github.com/pmd/pmd/issues/3644): \[java] InvalidLogMessageFormat: false positives with logstash structured logging
+
 ### API Changes
 
 ### External Contributions
