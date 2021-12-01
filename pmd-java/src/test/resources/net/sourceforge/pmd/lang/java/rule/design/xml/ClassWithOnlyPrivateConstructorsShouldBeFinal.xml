@@ -159,4 +159,16 @@ class ClassWithOnlyPrivateConstructorsShouldBeFinal {
             }
             ]]></code>
     </test-code>
+
+    <test-code>
+        <description>Private abstract classes should be ignored</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Outer {
+    private abstract class Base {
+        abstract void run();
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

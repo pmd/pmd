@@ -9,6 +9,7 @@ import static net.sourceforge.pmd.lang.java.ast.AccessNode.Visibility.V_PRIVATE;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
+import net.sourceforge.pmd.lang.java.ast.JModifier;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 
@@ -21,7 +22,7 @@ public class ClassWithOnlyPrivateConstructorsShouldBeFinalRule extends AbstractJ
     @Override
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
         if (node.isRegularClass()
-            && !node.isFinal()
+            && !node.getModifiers().hasAny(JModifier.FINAL, JModifier.ABSTRACT)
             && hasOnlyPrivateCtors(node)
             && hasNoSubclasses(node)) {
             addViolation(data, node);
