@@ -7,6 +7,8 @@ package net.sourceforge.pmd.lang.java.rule.bestpractices;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.ast.ASTArrayAllocation;
@@ -21,6 +23,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTSuperExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTThisExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeParameter;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
@@ -45,7 +48,8 @@ public class LooseCouplingRule extends AbstractJavaRulechainRule {
         if (isConcreteCollectionType(node)
             && !isInOverriddenMethodSignature(node)
             && !isInAllowedSyntacticCtx(node)
-            && !isAllowedType(node)) {
+            && !isAllowedType(node)
+            && !isTypeParameter(node)) {
             addViolation(data, node, node.getSimpleName());
         }
         return null;
@@ -86,5 +90,14 @@ public class LooseCouplingRule extends AbstractJavaRulechainRule {
             return ((ASTMethodDeclaration) ancestor).isOverridden();
         }
         return false;
+    }
+
+    private boolean isTypeParameter(ASTClassOrInterfaceType node) {
+        Set<String> typeParameters = node.getRoot()
+                .descendants(ASTTypeParameter.class)
+                .toStream()
+                .map(ASTTypeParameter::getName)
+                .collect(Collectors.toSet());
+        return typeParameters.contains(node.getSimpleName());
     }
 }
