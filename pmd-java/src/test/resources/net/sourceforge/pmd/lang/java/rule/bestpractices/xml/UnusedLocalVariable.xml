@@ -422,7 +422,7 @@ public class UnusedLocalVariable {
     </test-code>
 
     <test-code>
-        <description>False positive with variable used in unary expression</description>
+        <description>False positive with variable used in unary expression #3671</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
