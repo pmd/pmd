@@ -420,4 +420,27 @@ public class UnusedLocalVariable {
             }
             ]]></code>
     </test-code>
+
+    <test-code>
+        <description>False positive with variable used in unary expression</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void run1(String ...args) {
+        int i;
+        for (String a : args) {
+            String id = a + " -> " + i++;
+            System.out.println(id);
+        }
+    }
+    public void run2(String ...args) {
+        int x;
+        for (String a : args) {
+            String id = a + " -> " + (++x);
+            System.out.println(id);
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
