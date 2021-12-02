@@ -21,6 +21,7 @@ public class JavaUtilLoggingRule extends ExternalResource {
     private final Logger logger;
     private final ByteArrayOutputStream stream;
     private final StreamHandler customLogHandler;
+    private boolean mute;
 
 
     /**
@@ -39,13 +40,20 @@ public class JavaUtilLoggingRule extends ExternalResource {
         this.customLogHandler = new StreamHandler(stream, currentLogger.getHandlers()[0].getFormatter());
     }
 
+    public JavaUtilLoggingRule mute() {
+        this.mute = true;
+        return this;
+    }
+
     @Override
     protected void before() throws Throwable {
+        logger.setUseParentHandlers(!mute);
         logger.addHandler(customLogHandler);
     }
 
     @Override
     protected void after() {
+        logger.setUseParentHandlers(true);
         logger.removeHandler(customLogHandler);
     }
 

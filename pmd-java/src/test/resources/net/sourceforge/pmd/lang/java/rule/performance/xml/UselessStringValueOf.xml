@@ -133,4 +133,28 @@ public class Test {
 }
         ]]></code>
     </test-code>
+    
+    <test-code>
+        <description>#3491 False positive for UselessStringValueOf when valueOf(char [], int, int) is used</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Test {
+    public String test(char buf[], int offset, int len) {
+        print("XML Parser characters: " + String.valueOf(buf, offset, len));
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#3491 False positive for UselessStringValueOf when valueOf(char [], int, int) is used</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Test {
+    public String test(char[] buf, int offset, int len) {
+        print("XML Parser characters: " + String.valueOf(buf, offset, len));
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

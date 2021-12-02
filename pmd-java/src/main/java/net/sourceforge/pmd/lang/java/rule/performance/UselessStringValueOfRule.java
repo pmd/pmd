@@ -33,9 +33,13 @@ public class UselessStringValueOfRule extends AbstractJavaRule {
             if (parent.getNumChildren() != 2) {
                 return super.visit(node, data);
             }
-            // skip String.valueOf(anyarraytype[])
             ASTArgumentList args = parent.getFirstDescendantOfType(ASTArgumentList.class);
             if (args != null) {
+                if (args.size() > 1) {
+                    // skip String.valueOf with more than one argument (e.g. String.valueOf(char[],int,int))
+                    return super.visit(node, data);
+                }
+                // skip String.valueOf(anyarraytype[])
                 ASTName arg = args.getFirstDescendantOfType(ASTName.class);
                 if (arg != null) {
                     NameDeclaration declaration = arg.getNameDeclaration();

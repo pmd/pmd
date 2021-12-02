@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -143,7 +142,7 @@ public class CompilerService {
                         MethodUtils.invokeMethod(CompilerStage.ADDITIONAL_VALIDATE, true, "getOperation");
                 operation.invoke(compilerContext, unit);
             }
-        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+        } catch (IllegalArgumentException | ReflectiveOperationException e) {
             throw new RuntimeException(e);
         }
     }

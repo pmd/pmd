@@ -29,6 +29,10 @@ public class LooseCouplingRule extends AbstractJavaRule {
     // "java.util.TreeMap", "java.util.Vector"
     // });
 
+    public LooseCouplingRule() {
+        addRuleChainVisit(ASTClassOrInterfaceType.class);
+    }
+
     @Override
     public Object visit(ASTClassOrInterfaceType node, Object data) {
         if (methodHasOverride(node)) {

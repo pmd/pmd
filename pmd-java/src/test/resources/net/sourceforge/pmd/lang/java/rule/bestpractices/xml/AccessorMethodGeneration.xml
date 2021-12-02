@@ -237,4 +237,26 @@ class Outer {
         ]]></code>
         <source-type>java 10</source-type>
     </test-code>
+
+    <test-code>
+        <description>nesting three levels</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>9</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    public static class Outer {
+        private int field;
+
+        public class Inner {
+            private long innerField;
+
+            Inner() {
+                innerField = Outer.this.field; // violation, accessing a private field
+            }
+        }
+    }
+}
+        ]]></code>
+        <source-type>java 10</source-type>
+    </test-code>
 </test-data>

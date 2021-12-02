@@ -51,7 +51,6 @@ public class SwitchDensityRule extends AbstractStatisticalJavaRule {
     }
 
     public SwitchDensityRule() {
-        super();
         setProperty(MINIMUM_DESCRIPTOR, 10d);
     }
 
@@ -65,7 +64,7 @@ public class SwitchDensityRule extends AbstractStatisticalJavaRule {
 
         SwitchDensity density = new SwitchDensity();
 
-        node.childrenAccept(this, density);
+        super.visit(node, density);
 
         DataPoint point = new DataPoint();
         point.setNode(node);
@@ -86,9 +85,7 @@ public class SwitchDensityRule extends AbstractStatisticalJavaRule {
             ((SwitchDensity) data).addStatement();
         }
 
-        statement.childrenAccept(this, data);
-
-        return data;
+        return super.visit(statement, data);
     }
 
     @Override
@@ -97,7 +94,6 @@ public class SwitchDensityRule extends AbstractStatisticalJavaRule {
             ((SwitchDensity) data).addSwitchLabel();
         }
 
-        switchLabel.childrenAccept(this, data);
-        return data;
+        return super.visit(switchLabel, data);
     }
 }
