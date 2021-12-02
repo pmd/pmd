@@ -14,6 +14,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTReferenceType;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.symboltable.MethodNameDeclaration;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 
@@ -54,7 +55,7 @@ public class UselessStringValueOfRule extends AbstractJavaRule {
                     && "+".equals(gp.getImage())) {
                 boolean ok = false;
                 if (gp.getChild(0) == parent) {
-                    return super.visit(node, data);
+                    ok = !isPrimitive(gp.getChild(1));
                 } else {
                     for (int i = 0; !ok && gp.getChild(i) != parent; i++) {
                         ok = !isPrimitive(gp.getChild(i));
@@ -71,7 +72,7 @@ public class UselessStringValueOfRule extends AbstractJavaRule {
 
     private static boolean isPrimitive(Node parent) {
         boolean result = false;
-        if (parent instanceof ASTPrimaryExpression && parent.getNumChildren() == 1) {
+        if (parent instanceof ASTPrimaryExpression && parent.getNumChildren() > 0) {
             Node child = parent.getChild(0);
             if (child instanceof ASTPrimaryPrefix && child.getNumChildren() == 1) {
                 Node gc = child.getChild(0);
@@ -79,6 +80,9 @@ public class UselessStringValueOfRule extends AbstractJavaRule {
                     ASTName name = (ASTName) gc;
                     NameDeclaration nd = name.getNameDeclaration();
                     if (nd instanceof VariableNameDeclaration && ((VariableNameDeclaration) nd).isPrimitiveType()) {
+                        result = true;
+                    } else if (nd instanceof MethodNameDeclaration
+                            && ((MethodNameDeclaration) nd).isPrimitiveReturnType()) {
                         result = true;
                     }
                 } else if (gc instanceof ASTLiteral) {

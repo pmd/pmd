@@ -32,6 +32,11 @@ public class MethodNameDeclaration extends AbstractNameDeclaration {
         return p.isVarargs();
     }
 
+    public boolean isPrimitiveReturnType() {
+        return getMethodNameDeclaratorNode().getParent().getResultType().getChild(0)
+                .getChild(0) instanceof ASTPrimitiveType;
+    }
+
     public ASTMethodDeclarator getMethodNameDeclaratorNode() {
         return (ASTMethodDeclarator) node;
     }
