@@ -33,6 +33,7 @@ function build() {
             ./mvnw clean verify --show-version --errors --batch-mode --no-transfer-progress "${PMD_MAVEN_EXTRA_OPTS[@]}"
         pmd_ci_log_group_end
 
+        if [ "$(pmd_ci_utils_get_os)" = "linux" ]; then
         pmd_ci_log_group_start "Executing PMD dogfood test with ${PMD_CI_MAVEN_PROJECT_VERSION}"
             ./mvnw versions:set -DnewVersion="${PMD_CI_MAVEN_PROJECT_VERSION}-dogfood" -DgenerateBackupPoms=false
             sed -i 's/<version>[0-9]\{1,\}\.[0-9]\{1,\}\.[0-9]\{1,\}.*<\/version>\( *<!-- pmd.dogfood.version -->\)/<version>'"${PMD_CI_MAVEN_PROJECT_VERSION}"'<\/version>\1/' pom.xml
@@ -47,6 +48,7 @@ function build() {
             ./mvnw versions:set -DnewVersion="${PMD_CI_MAVEN_PROJECT_VERSION}" -DgenerateBackupPoms=false
             git checkout -- pom.xml
         pmd_ci_log_group_end
+        fi
 
         # Danger is executed only on the linux runner
         if [ "$(pmd_ci_utils_get_os)" = "linux" ]; then
