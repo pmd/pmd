@@ -12,21 +12,18 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collector;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
-
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JModifier;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
-import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.table.internal.SuperTypesEnumerator;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.TypeOps;
-import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 
 
 /**
@@ -35,11 +32,10 @@ import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
  * @author Clément Fournier
  * @since 6.2.0
  */
-public class MissingOverrideRule extends AbstractJavaRule {
+public class MissingOverrideRule extends AbstractJavaRulechainRule {
 
-    @Override
-    protected @NonNull RuleTargetSelector buildTargetSelector() {
-        return RuleTargetSelector.forTypes(ASTAnyTypeDeclaration.class);
+    public MissingOverrideRule() {
+        super(ASTAnyTypeDeclaration.class);
     }
 
     @Override

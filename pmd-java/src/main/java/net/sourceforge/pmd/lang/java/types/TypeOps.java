@@ -1249,7 +1249,11 @@ public final class TypeOps {
             JTypeMirror fi1 = formals1.get(i);
             JTypeMirror fi2 = formals2.get(i);
 
-            if (!isSameType(fi1.getErasure(), fi2.getErasure())) {
+            // Mixing type vars with concrete types while overriding
+            // leads to non equivalent parameters.
+            boolean mixedTypeVars = fi1 instanceof JTypeVar ^ fi2 instanceof JTypeVar;
+
+            if (!isSameType(fi1.getErasure(), fi2.getErasure()) || mixedTypeVars) {
                 return false;
             }
         }
