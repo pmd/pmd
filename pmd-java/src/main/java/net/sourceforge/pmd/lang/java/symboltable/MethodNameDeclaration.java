@@ -9,6 +9,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameters;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType;
+import net.sourceforge.pmd.lang.java.ast.ASTResultType;
 import net.sourceforge.pmd.lang.symboltable.AbstractNameDeclaration;
 
 public class MethodNameDeclaration extends AbstractNameDeclaration {
@@ -30,6 +31,11 @@ public class MethodNameDeclaration extends AbstractNameDeclaration {
         // If it's a varargs, it HAS to be the last parameter
         ASTFormalParameter p = (ASTFormalParameter) params.getChild(params.size() - 1);
         return p.isVarargs();
+    }
+
+    public boolean isPrimitiveReturnType() {
+        ASTResultType resultType = getMethodNameDeclaratorNode().getParent().getResultType();
+        return !resultType.isVoid() && resultType.getChild(0).getChild(0) instanceof ASTPrimitiveType;
     }
 
     public ASTMethodDeclarator getMethodNameDeclaratorNode() {
