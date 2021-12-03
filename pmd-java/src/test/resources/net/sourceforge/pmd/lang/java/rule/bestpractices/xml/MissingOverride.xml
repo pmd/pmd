@@ -619,7 +619,7 @@ public enum EnumToString {
     </test-code>
 
     <test-code>
-        <description>False positive with generic erasure</description>
+        <description>False positive with generic erasure #3675</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>23</expected-linenumbers>
         <code><![CDATA[
