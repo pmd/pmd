@@ -76,7 +76,6 @@ public class BrokenNullCheckRule extends AbstractJavaRule {
             return; // No good null check
         }
 
-        // TODO: fix #3430
         // Now we find the expression to compare to and do the comparison
         for (int i = 0; i < conditionalExpression.getNumChildren(); i++) {
             Node conditionalSubnode = conditionalExpression.getChild(i);
@@ -177,8 +176,6 @@ public class BrokenNullCheckRule extends AbstractJavaRule {
             for (ASTPrimaryPrefix primaryPrefix : primaryPrefixes) {
                 if (primaryPrefix.hasDescendantOfType(ASTName.class)) {
                     // We found the variable that is compared to null
-
-                    // TODO: fix #3430
                     return primaryExpression;
                 }
             }
