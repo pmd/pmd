@@ -187,14 +187,26 @@ public class Foo {
         ]]></code>
     </test-code>
 
-
     <test-code>
-        <description>#3430 False positive for BrokenNullCheck when the object variable is in the then branch of a conditional expression</description>
-        <expected-problems>0</expected-problems>
+        <description>#3430 Correct analyzation for BrokenNullCheck when the object variable may be null</description>
+        <expected-problems>1</expected-problems>
         <code><![CDATA[
 class BrokenNullCheck{
         void test(){
                 if (index < 0 || (replacement != null ? properties.set(index, replacement) : properties.remove(index)) != old); //detected
+        }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#3430 Correct analyzation for BrokenNullCheck when the object variable may be null</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+class BrokenNullCheck{
+        void test(){
+                if (index < 0       //detected
+                || (replacement != null ? properties.set(index, replacement) : properties.remove(index)) != old);
         }
 }
         ]]></code>
