@@ -17,6 +17,7 @@ import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.ast.GenericToken;
 import net.sourceforge.pmd.lang.cpp.CppTokenManager;
 import net.sourceforge.pmd.lang.cpp.ast.CppParserConstants;
+import net.sourceforge.pmd.lang.cpp.ast.Token;
 import net.sourceforge.pmd.util.IOUtil;
 
 /**
@@ -91,6 +92,13 @@ public class CPPTokenizer extends JavaCCTokenizer {
     @Override
     protected TokenFilter getTokenFilter(final TokenManager tokenManager) {
         return new CppTokenFilter(tokenManager, ignoreLiteralSequences);
+    }
+    
+    @Override
+    protected TokenEntry processToken(Tokens tokenEntries, GenericToken currentToken, String fileName) {
+        Token javaToken = (Token) currentToken;
+        String image = String.valueOf(javaToken.kind);
+        return new TokenEntry(image, fileName, currentToken.getBeginLine(), currentToken.getBeginColumn(), currentToken.getEndColumn());
     }
 
     private static class CppTokenFilter extends JavaCCTokenFilter {
