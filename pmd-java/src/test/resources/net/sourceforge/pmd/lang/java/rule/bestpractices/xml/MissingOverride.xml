@@ -618,7 +618,7 @@ public enum EnumToString {
         ]]></code>
     </test-code>
 
-    <test-code>
+    <test-code regressionTest="false">
         <description>False positive with generic erasure #3675</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>23</expected-linenumbers>

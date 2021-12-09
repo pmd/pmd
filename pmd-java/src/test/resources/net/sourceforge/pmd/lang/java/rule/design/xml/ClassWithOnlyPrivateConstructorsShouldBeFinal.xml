@@ -160,7 +160,7 @@ class ClassWithOnlyPrivateConstructorsShouldBeFinal {
             ]]></code>
     </test-code>
 
-    <test-code>
+    <test-code regressionTest="false">
         <description>Private abstract classes with abstract methods should be ignored #3668</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
