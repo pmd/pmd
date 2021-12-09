@@ -42,6 +42,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTExpressionStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
@@ -467,9 +468,9 @@ public final class JavaRuleUtil {
 
     private static boolean isReadUsage(ASTNamedReferenceExpr expr) {
         return expr.getAccessType() == AccessType.READ
-            // foo(x++)
+            // x++ as a method argument or used in other expression
             || expr.getParent() instanceof ASTUnaryExpression
-            && expr.getParent().getParent() instanceof ASTArgumentList;
+            && !(expr.getParent().getParent() instanceof ASTExpressionStatement);
     }
 
     /**

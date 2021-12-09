@@ -658,7 +658,7 @@ public class Foo {
         ]]></code>
     </test-code>
 
-    <test-code regressionTest="false">
+    <test-code>
         <description>False positive with field used in unary expression #3671</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
