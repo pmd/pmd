@@ -230,7 +230,13 @@ public class ClassScope extends AbstractJavaScope {
         Map<ClassNameDeclaration, List<NameOccurrence>> classDeclarations = getClassDeclarations();
         if (result.isEmpty() && !classDeclarations.isEmpty()) {
             for (ClassNameDeclaration innerClass : getClassDeclarations().keySet()) {
+                ASTMethodDeclarator md = innerClass.getNode().getFirstDescendantOfType(ASTMethodDeclarator.class);
+                if (md != null) {
+                    images.add(md.getImage());
+                    finder = new ImageFinderFunction(images);
+                }
                 Applier.apply(finder, innerClass.getScope().getDeclarations(VariableNameDeclaration.class).keySet().iterator());
+                Applier.apply(finder, innerClass.getScope().getDeclarations(MethodNameDeclaration.class).keySet().iterator());
                 if (finder.getDecl() != null) {
                     result.add(finder.getDecl());
                 }

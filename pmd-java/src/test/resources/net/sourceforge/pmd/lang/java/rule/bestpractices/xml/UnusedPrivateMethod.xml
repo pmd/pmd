@@ -1727,4 +1727,22 @@ public class Outer {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#3468 UnusedPrivateMethod false positive when outer class calls private static method on inner class</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class OuterClass {
+
+	public void foo() {
+		InnerClass.doSomething();
+	}
+
+	static class InnerClass {
+		private static void doSomething() {
+		}
+	}
+}
+        ]]></code>
+    </test-code> 
 </test-data>
