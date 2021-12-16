@@ -14,9 +14,10 @@ import org.junit.rules.TemporaryFolder;
 import net.sourceforge.pmd.PMDVersion;
 
 public abstract class AbstractBinaryDistributionTest {
+    public static final String PMD_BIN_PREFIX = "pmd-bin-";
 
     protected static File getBinaryDistribution() {
-        return new File(".", "target/pmd-bin-" + PMDVersion.VERSION + ".zip");
+        return new File(".", "target/" + PMD_BIN_PREFIX + PMDVersion.VERSION + ".zip");
     }
 
     @ClassRule

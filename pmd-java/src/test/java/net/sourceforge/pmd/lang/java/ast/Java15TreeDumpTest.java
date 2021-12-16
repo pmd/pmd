@@ -15,7 +15,6 @@ public class Java15TreeDumpTest extends BaseJavaTreeDumpTest {
     private final JavaParsingHelper java15 =
             JavaParsingHelper.WITH_PROCESSING.withDefaultVersion("15")
                     .withResourceContext(Java15TreeDumpTest.class, "jdkversiontests/java15/");
-    private final JavaParsingHelper java15p = java15.withDefaultVersion("15-preview");
     private final JavaParsingHelper java14 = java15.withDefaultVersion("14");
 
     @Override
@@ -26,7 +25,6 @@ public class Java15TreeDumpTest extends BaseJavaTreeDumpTest {
     @Test
     public void textBlocks() {
         doTest("TextBlocks");
-        java15p.parseResource("TextBlocks.java"); // make sure we can parse it with preview as well
     }
 
     @Test(expected = net.sourceforge.pmd.lang.ast.ParseException.class)
@@ -42,6 +40,5 @@ public class Java15TreeDumpTest extends BaseJavaTreeDumpTest {
     @Test
     public void sealedAndNonSealedIdentifiers() {
         doTest("NonSealedIdentifier");
-        java15p.parseResource("NonSealedIdentifier.java"); // make sure we can parse it with preview as well
     }
 }

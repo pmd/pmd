@@ -21,6 +21,7 @@ public class Foo {
     <test-code>
         <description>failure case</description>
         <expected-problems>2</expected-problems>
+        <expected-linenumbers>2,6</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     StringBuffer sb = new StringBuffer('c');

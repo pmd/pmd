@@ -19,10 +19,16 @@ public abstract class AbstractXPathFunctionDef extends ExtensionFunctionDefiniti
     private static final String PMD_URI_PREFIX = "http://pmd.sourceforge.net/";
     private final StructuredQName qname;
 
-    protected AbstractXPathFunctionDef(String localName, String languageTerseName) {
-        String namespacePrefix = "pmd-" + languageTerseName;
-        String uri = PMD_URI_PREFIX + namespacePrefix;
+    private AbstractXPathFunctionDef(String localName, String namespacePrefix, String uri) {
         this.qname = new StructuredQName(namespacePrefix, uri, localName);
+    }
+
+    protected AbstractXPathFunctionDef(String localName) {
+        this(localName, "pmd", PMD_URI_PREFIX + "pmd-core");
+    }
+
+    protected AbstractXPathFunctionDef(String localName, String languageTerseName) {
+        this(localName, "pmd-" + languageTerseName, PMD_URI_PREFIX + "pmd-" + languageTerseName);
     }
 
     @Override

@@ -7,6 +7,7 @@
     <test-code>
         <description>failure case</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>9</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     void bar() {

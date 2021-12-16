@@ -55,7 +55,10 @@ class AstSymbolTests : ParserTestSpec({
             @interface Annot { }
         """)
 
-        val (fooClass, innerItf, innerEnum, innerClass, annot) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.symbol }
+        val (fooClass, innerItf, innerEnum, innerClass, annot) = acu
+                .descendants(ASTAnyTypeDeclaration::class.java)
+                .crossFindBoundaries()
+                .toList { it.symbol }
 
         val (barM, ohioM) = acu.descendants(ASTMethodDeclaration::class.java).toList { it.symbol }
 
