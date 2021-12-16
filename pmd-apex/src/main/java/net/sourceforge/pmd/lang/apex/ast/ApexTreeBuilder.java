@@ -131,7 +131,7 @@ final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
 
     private static final Pattern COMMENT_PATTERN =
         // we only need to check for \n as the input is normalized
-        Pattern.compile("/\\*\\*([^*]++|\\*(?!/))*+\\*/|//[^\n]++\n");
+        Pattern.compile("/\\*([^*]++|\\*(?!/))*+\\*/|//[^\n]++\n");
 
     private static final Map<Class<? extends AstNode>, Constructor<? extends AbstractApexNode<?>>>
         NODE_TYPE_TO_NODE_ADAPTER_TYPE = new HashMap<>();
@@ -352,8 +352,8 @@ final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
 
         // now check whether the next comment after the node is still inside the node
         return index >= 0 && index < allComments.size()
-            && loc.getStartIndex() < allComments.get(index).index
-            && loc.getEndIndex() > allComments.get(index).index;
+            && loc.getStartIndex() < allComments.get(index).region.getStartOffset()
+            && loc.getEndIndex() >= allComments.get(index).region.getEndOffset();
     }
 
     private void addFormalComments() {
@@ -414,7 +414,6 @@ final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
         Map<Integer, String> suppressMap = new HashMap<>();
 
 
-        int index = 0;
         Matcher matcher = COMMENT_PATTERN.matcher(text);
         while (matcher.find()) {
             int startIdx = matcher.start();
@@ -424,14 +423,12 @@ final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
 
             final TokenLocation tok;
             if (commentText.startsWith("/**")) {
-                ApexDocTokenLocation doctok = new ApexDocTokenLocation(index, commentRegion, commentText);
+                ApexDocTokenLocation doctok = new ApexDocTokenLocation(commentRegion, commentText);
                 tokenLocations.add(doctok);
                 tok = doctok;
             } else {
-                tok = new TokenLocation(index, commentRegion);
+                tok = new TokenLocation(commentRegion);
             }
-            index++;
-            assert tok.index == allCommentTokens.size();
             allCommentTokens.add(tok);
 
             if (checkForCommentSuppression && commentText.startsWith("//")) {
@@ -478,7 +475,7 @@ final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
 
         @Override
         public Integer get(int index) {
-            return tokens.get(index).index;
+            return tokens.get(index).region.getStartOffset();
         }
 
         @Override
@@ -490,10 +487,8 @@ final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
     private static class TokenLocation {
 
         final TextRegion region;
-        final int index;
 
-        TokenLocation(int index, TextRegion region) {
-            this.index = index;
+        TokenLocation(TextRegion region) {
             this.region = region;
         }
     }
@@ -505,8 +500,8 @@ final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
         private AbstractApexNode<?> nearestNode;
         private int nearestNodeDistance;
 
-        ApexDocTokenLocation(int index, TextRegion commentRegion, Chars image) {
-            super(index, commentRegion);
+        ApexDocTokenLocation(TextRegion commentRegion, Chars image) {
+            super(commentRegion);
             this.image = image;
         }
     }
