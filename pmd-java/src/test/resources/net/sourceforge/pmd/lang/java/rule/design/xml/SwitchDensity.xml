@@ -8,6 +8,7 @@
         <description>Five stmts in one switch case, should be flagged</description>
         <rule-property name="minimum">4</rule-property>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
         <code><![CDATA[
 // Switch Density = 5.0
 public class SwitchDensity1 {

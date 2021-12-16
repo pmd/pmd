@@ -22,6 +22,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.lang.java.ast.ASTResultType;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.rule.AbstractInefficientZeroCheck;
 import net.sourceforge.pmd.lang.java.symboltable.ClassScope;
 import net.sourceforge.pmd.lang.java.symboltable.JavaNameOccurrence;
@@ -37,6 +38,11 @@ import net.sourceforge.pmd.util.CollectionUtil;
  * @author Jason Bennett
  */
 public class UseCollectionIsEmptyRule extends AbstractInefficientZeroCheck {
+
+    public UseCollectionIsEmptyRule() {
+        addRuleChainVisit(ASTVariableDeclaratorId.class); // visited in AbstractInefficientZeroCheck
+        addRuleChainVisit(ASTPrimarySuffix.class);
+    }
 
     @Override
     public boolean appliesToClassName(String name) {

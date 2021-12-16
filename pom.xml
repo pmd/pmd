@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.sourceforge.pmd</groupId>
     <artifactId>pmd</artifactId>
-    <version>6.41.0-SNAPSHOT</version>
+    <version>6.42.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>PMD</name>
 
@@ -76,7 +76,7 @@
     </issueManagement>
 
     <properties>
-        <project.build.outputTimestamp>2021-10-30T08:00:19Z</project.build.outputTimestamp>
+        <project.build.outputTimestamp>2021-11-27T10:21:16Z</project.build.outputTimestamp>
 
         <java.version>7</java.version>
 
@@ -95,7 +95,7 @@
         <checkstyle.version>8.42</checkstyle.version>
         <checkstyle.plugin.version>3.1.2</checkstyle.plugin.version>
         <pmd.plugin.version>3.15.0</pmd.plugin.version>
-        <ant.version>1.10.11</ant.version>
+        <ant.version>1.10.12</ant.version>
         <javadoc.plugin.version>3.2.0</javadoc.plugin.version>
         <antlr.version>4.7.2</antlr.version>
 
@@ -105,7 +105,7 @@
 
         <argLine>-Xmx512m -Dfile.encoding=${project.build.sourceEncoding}</argLine>
 
-        <pmd.build-tools.version>17-SNAPSHOT</pmd.build-tools.version>
+        <pmd.build-tools.version>17</pmd.build-tools.version>
 
         <pmd-designer.version>6.37.0</pmd-designer.version>
     </properties>
@@ -406,12 +406,12 @@
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-core</artifactId>
-                            <version>6.40.0</version> <!-- pmd.dogfood.version -->
+                            <version>6.41.0</version> <!-- pmd.dogfood.version -->
                         </dependency>
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-java</artifactId>
-                            <version>6.40.0</version> <!-- pmd.dogfood.version -->
+                            <version>6.41.0</version> <!-- pmd.dogfood.version -->
                         </dependency>
                         <!-- This contains the dogfood ruleset -->
                         <dependency>

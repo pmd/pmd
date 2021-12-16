@@ -238,4 +238,35 @@ public class AISD {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>nested classes</description>
+        <expected-problems>4</expected-problems>
+        <expected-linenumbers>4,9,16,20</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    public class Inner {
+        String [] arr;
+        void foo (String[] x) {arr = x;}
+    }
+    public interface InnerInterface {
+        class Nested {
+            String [] arr;
+            void foo (String[] x) {arr = x;}
+        }
+    }
+    public enum InnerEnum {
+        A;
+
+        String [] arr;
+        void foo (String[] x) {arr = x;}
+
+        class Nested {
+            String [] arr;
+            void foo (String[] x) {arr = x;}
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

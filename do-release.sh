@@ -221,7 +221,7 @@ This is a {{ site.pmd.release_type }} release.
 
 EOF
 
-git commit -a -m "Prepare next development version"
+git commit -a -m "Prepare next development version [skip ci]"
 git push origin "${CURRENT_BRANCH}"
 ./mvnw -B release:clean
 echo

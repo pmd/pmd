@@ -73,9 +73,23 @@ public class Foo extends TestCase {
     <test-code>
         <description>assertEquals bad</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
         <code><![CDATA[
 import junit.framework.TestCase;
 public class Foo extends TestCase {
+    public void test1() {
+        assertEquals(1, 1);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>assertEquals bad, without import</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+public class Foo extends junit.framework.TestCase {
     public void test1() {
         assertEquals(1, 1);
     }
@@ -339,6 +353,9 @@ public class Foo {
     public void test1() {
         assertEquals(1, 1);
     }
+    private void assertEquals(int x, int y) {
+        if (x != y) throw new AssertionError();
+    }
 }
         ]]></code>
     </test-code>
@@ -346,13 +363,31 @@ public class Foo {
     <test-code>
         <description>JUnit 4 - assertEquals</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
         <code><![CDATA[
 import org.junit.Test;
+import static org.junit.Assert.*;
 public class Foo {
     @Test
     public void foo() {
         assertEquals(1, 1);
     }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>JUnit 4 - assertEquals - without imports</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    @org.junit.Test
+    public void foo() {
+        org.junit.Assert.assertEquals(1, 1);
+        Foo.fail();
+    }
+    private static void fail() { }
 }
         ]]></code>
     </test-code>
@@ -429,6 +464,30 @@ class SimpleTest {
     @Test
     public void simpleMethod() {
         assertEquals(0, Integer.compare(0, 0), "Not equals 0 != 1");
+    }
+}
+        ]]></code>
+    </test-code>
+    
+    <test-code>
+        <description>Assert calls should be considered in the whole file that contains at least one test case</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>14</expected-linenumbers>
+        <code><![CDATA[
+import org.junit.Test;
+import static org.junit.Assert.*;
+
+public class SimpleTest {
+    @Test
+    public void myTest() {
+        Bean bean = new Bean();
+        bean.doSomething("foo");
+    }
+}
+
+class Bean {
+    public void doSomething(String name) {
+        assertEquals("foo", name);
     }
 }
         ]]></code>

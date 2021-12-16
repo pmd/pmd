@@ -23,6 +23,10 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
  */
 public class ExceptionAsFlowControlRule extends AbstractJavaRule {
 
+    public ExceptionAsFlowControlRule() {
+        addRuleChainVisit(ASTThrowStatement.class);
+    }
+
     @Override
     public Object visit(ASTThrowStatement node, Object data) {
         ASTTryStatement parent = node.getFirstParentOfType(ASTTryStatement.class);
