@@ -653,4 +653,22 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>False positive when referenced from within inner class</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private static final String OUTER_CONSTANT = "";
+
+    private static final class Empty {
+        private static final class Inner {
+            public boolean isEmpty(String s) {
+                return OUTER_CONSTANT.equals(s);
+            }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
