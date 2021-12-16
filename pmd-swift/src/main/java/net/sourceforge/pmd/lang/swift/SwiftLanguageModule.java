@@ -21,6 +21,6 @@ public class SwiftLanguageModule extends BaseLanguageModule {
      */
     public SwiftLanguageModule() {
         super(NAME, null, TERSE_NAME, "swift");
-        addVersion("", new SwiftHandler(), true);
+        addDefaultVersion("", new SwiftHandler());
     }
 }

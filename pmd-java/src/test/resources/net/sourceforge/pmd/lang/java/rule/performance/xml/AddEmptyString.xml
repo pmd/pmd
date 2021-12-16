@@ -39,4 +39,18 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>Ignore in annotations</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private static final int VERSION = 1;
+
+    @Deprecated(since = "" + VERSION)
+    public void foo() {
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

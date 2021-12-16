@@ -14,6 +14,7 @@ import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.ToIntFunction;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -616,6 +617,23 @@ public interface NodeStream<@NonNull T extends Node> extends Iterable<@NonNull T
         R result = identity;
         for (T node : this) {
             result = accumulate.apply(result, node);
+        }
+        return result;
+    }
+
+    /**
+     * Sum the elements of this stream by associating them to an integer.
+     *
+     * @param toInt Map an element to an integer, which will be added
+     *              to the running sum
+     *              returns the next intermediate result
+     *
+     * @return The sum, zero if the stream is empty.
+     */
+    default int sumBy(ToIntFunction<? super T> toInt) {
+        int result = 0;
+        for (T node : this) {
+            result += toInt.applyAsInt(node);
         }
         return result;
     }

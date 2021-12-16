@@ -7,6 +7,7 @@
     <test-code>
         <description>Format called from non-synchronized block</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
         <code><![CDATA[
 import java.text.SimpleDateFormat;
 
@@ -36,6 +37,7 @@ public class Foo {
     <test-code>
         <description>3, Inside synchronized, Not OK</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
         <code><![CDATA[
 import java.text.SimpleDateFormat;
 
@@ -68,6 +70,7 @@ public class Foo {
     <test-code>
         <description>5, Use DateFormat, not ok</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
         <code><![CDATA[
 import java.text.DateFormat;
 
@@ -100,6 +103,7 @@ public class Foo {
     <test-code>
         <description>6, Use DateFormat, fail</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
         <code><![CDATA[
 import java.text.DateFormat;
 
@@ -116,14 +120,20 @@ public class Foo {
         <description>#940 False positive on UnsynchronizedStaticDateFormatter</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Locale;
 
 public class Test {
     private static final DateFormat enFormat = new SimpleDateFormat("EEEE MMMM d, yyyy 'at' hh':'mma", Locale.US);
     private static final DateFormat frFormat = new SimpleDateFormat("EEEE 'le' d MMMM yyyy 'à' HH'h'mm", Locale.CANADA_FRENCH);
 
     protected DateFormat getDateFormat() {
-        return getLang() == LangEnum.FR ? frFormat : enFormat;
+        return "fr".equals(getLang()) ? frFormat : enFormat;
+    }
+
+    private String getLang() {
+        return "fr";
     }
 }
         ]]></code>
@@ -132,6 +142,7 @@ public class Test {
     <test-code>
         <description>NumberFormatters should be detected</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
         <code><![CDATA[
 import java.text.DecimalFormat;
 
@@ -147,6 +158,7 @@ public class Foo {
     <test-code>
         <description>MessageFormatters should be detected</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
         <code><![CDATA[
 import java.text.MessageFormat;
 
@@ -164,6 +176,7 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import org.apache.commons.lang3.time.FastDateFormat;
+import java.util.Date;
 
 public class Foo {
     private static final FastDateFormat FDF = FastDateFormat.getInstance("dd.MM.yyyy HH:mm:ss");
@@ -177,6 +190,7 @@ public class Foo {
     <test-code>
         <description>#1815 static synchronized, Not OK</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
         <code><![CDATA[
 import java.text.SimpleDateFormat;
 
@@ -192,6 +206,7 @@ public class Foo {
     <test-code>
         <description>#1815 static synchronized, also Not OK</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
         <code><![CDATA[
 import java.text.SimpleDateFormat;
 
@@ -224,6 +239,7 @@ public class Foo {
         <description>#1815 static synchronized, Not OK if allowMethodLevelSynchronization</description>
         <rule-property name="allowMethodLevelSynchronization">true</rule-property>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
         <code><![CDATA[
 import java.text.SimpleDateFormat;
 
@@ -256,6 +272,7 @@ public class Foo {
     <test-code>
         <description>#1815 static synchronized, Not OK</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
         <code><![CDATA[
 import java.text.SimpleDateFormat;
 

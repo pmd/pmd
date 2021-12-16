@@ -278,21 +278,21 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
     // TODO remove those methods, make Rules have type-safe access to a RuleContext
 
     /**
-     * @see RuleContext#addViolation(Rule, Node, Object...)
+     * @see RuleContext#addViolation(Node)
      */
     public void addViolation(Object data, Node node) {
         ((RuleContext) data).addViolation(node);
     }
 
     /**
-     * @see RuleContext#addViolation(Rule, Node, Object...)
+     * @see RuleContext#addViolation(Node, Object[])
      */
     public void addViolation(Object data, Node node, Object... args) {
         ((RuleContext) data).addViolation(node, args);
     }
 
     /**
-     * @see RuleContext#addViolationWithMessage(Rule, Node, String, Object...)
+     * @see RuleContext#addViolationWithMessage(Node, String)
      */
     public void addViolationWithMessage(Object data, Node node, String message) {
         ((RuleContext) data).addViolationWithMessage(node, message);

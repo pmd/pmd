@@ -82,5 +82,4 @@ public class UnnecessaryReturnRule extends AbstractJavaRulechainRule {
     private static boolean isBranchOfSwitchExpr(ASTSwitchBranch branch) {
         return branch.getParent() instanceof ASTSwitchExpression;
     }
-
 }

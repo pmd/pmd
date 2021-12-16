@@ -74,7 +74,14 @@ The default version is always ES6.
 
 #### New Rules
 
+##### Apex
+
 *   The Apex rule {% rule "apex/design/UnusedMethod" %} finds unused methods in your code.
+
+##### Java
+
+*   {% rule "java/codestyle/UnnecessaryBoxing" %} reports boxing and unboxing
+conversions that may be made implicit.
 
 #### Changed Rules
 
@@ -89,32 +96,57 @@ The default version is always ES6.
   reading and understanding the expressions.
 * {% rule "java/bestpractices/LooseCoupling" %}: the rule has a new property to allow some types to be coupled to (`allowedTypes`).
 * {% rule "java/errorprone/EmptyCatchBlock" %}: `CloneNotSupportedException` and `InterruptedException` are not special-cased anymore. Rename the exception parameter to `ignored` to ignore them.
+* {% rule "java/errorprone/DontImportSun" %}: `sun.misc.Signal` is not special-cased anymore.
 * {% rule "java/codestyle/UseDiamondOperator" %}: the property `java7Compatibility` is removed. The rule now handles Java 7
   properly without a property.
 * {% rule "java/design/SingularField" %}: Properties `checkInnerClasses` and `disallowNotAssignment` are removed. The rule is now more precise and will check these cases properly.
+* {% rule "java/design/UseUtilityClass" %}: The property `ignoredAnnotations` has been removed.
+
+#### Deprecated Rules
+
 
 #### Removed Rules
 
 The following previously deprecated rules have been finally removed:
 
-*   AbstractNaming (java-codestyle)
-*   AvoidFinalLocalVariable (java-codestyle)
-*   AvoidPrefixingMethodParameters (java-codestyle)
-*   DataflowAnomalyAnalysis (java-errorprone)
-*   ForLoopsMustUseBraces (java-codestyle)
-*   IfElseStmtsMustUseBraces (java-codestyle)
-*   IfStmtsMustUseBraces (java-codestyle)
+*   AbstractNaming (java-codestyle) -> use {% rule "java/codestyle/ClassNamingConventions" %}
+*   AvoidFinalLocalVariable (java-codestyle) -> not replaced
+*   AvoidPrefixingMethodParameters (java-codestyle) -> use {% rule "java/codestyle/FormalParameterNamingConventions" %}
+*   AvoidUsingShortType (java-performance) -> not replaced
+*   BadComparison (java-errorprone) -> use {% rule "java/errorprone/ComparisonWithNaN" %}
+*   BooleanInstantiation (java-performance) -> use {% rule "java/codestyle/UnnecessaryBoxing" %} and {% rule "java/bestpractices/PrimitiveWrapperInstantiation" %}
+*   ByteInstantiation (java-performance) -> use {% rule "java/codestyle/UnnecessaryBoxing" %} and {% rule "java/bestpractices/PrimitiveWrapperInstantiation" %}
+*   CloneThrowsCloneNotSupportedException (java-errorprone) -> not replaced
+*   DataflowAnomalyAnalysis (java-errorprone) -> not replaced
+*   DefaultPackage (java-codestyle) -> use {% rule "java/codestyle/CommentDefaultAccessModifier" %}
+*   DoNotCallSystemExit (java-errorprone) -> use {% rule "java/errorprone/DoNotTerminateVM" %}
+*   ForLoopsMustUseBraces (java-codestyle) -> use {% rule "java/codestyle/ControlStatementBraces" %}
+*   IfElseStmtsMustUseBraces (java-codestyle) -> use {% rule "java/codestyle/ControlStatementBraces" %}
+*   IfStmtsMustUseBraces (java-codestyle) -> use {% rule "java/codestyle/ControlStatementBraces" %}
+*   IntegerInstantiation (java-performance) -> use {% rule "java/codestyle/UnnecessaryBoxing" %} and {% rule "java/bestpractices/PrimitiveWrapperInstantiation" %}
+*   InvalidSlf4jMessageFormat (java-errorprone) ->  use {% rule "java/errorprone/InvalidLogMessageFormat" %}
 *   LoggerIsNotStaticFinal (java-errorprone)
-*   MIsLeadingVariableName (java-codestyle)
-*   ModifiedCyclomaticComplexity (java-design)
-*   PositionLiteralsFirstInCaseInsensitiveComparisons (java-bestpractices)
-*   PositionLiteralsFirstInComparisons (java-bestpractices)
-*   StdCyclomaticComplexity (java-design)
+*   LongInstantiation (java-performance) -> use {% rule "java/codestyle/UnnecessaryBoxing" %} and {% rule "java/bestpractices/PrimitiveWrapperInstantiation" %}
+*   MIsLeadingVariableName (java-codestyle) -> use {% rule "java/codestyle/FieldNamingConventions" %}
+*   MissingBreakInSwitch (java-errorprone) ->  use {% rule "java/errorprone/ImplicitSwitchFallThrough" %}
+*   ModifiedCyclomaticComplexity (java-design) -> use {% rule "java/design/CyclomaticComplexity" %}
+*   PositionLiteralsFirstInCaseInsensitiveComparisons (java-bestpractices) -> use {% rule "java/bestpractices/LiteralsFirstInComparisons" %}
+*   PositionLiteralsFirstInComparisons (java-bestpractices) -> use {% rule "java/bestpractices/LiteralsFirstInComparisons" %}
+*   ReturnEmptyArrayRatherThanNull (java-errorprone) ->  use {% rule "java/errorprone/ReturnEmptyCollectionRatherThanNull" %}
+*   ShortInstantiation (java-performance) -> use {% rule "java/codestyle/UnnecessaryBoxing" %} and {% rule "java/bestpractices/PrimitiveWrapperInstantiation" %}
+*   SimplifyBooleanAssertion (java-design) -> use {% rule "java/bestpractices/SimplifiableTestAssertion" %}
+*   SimplifyStartsWith (java-performance) -> not replaced
+*   StdCyclomaticComplexity (java-design) -> use {% rule "java/design/CyclomaticComplexity" %}
 *   SuspiciousConstantFieldName (java-codestyle)
+*   UnnecessaryWrapperObjectCreation (java-performance) -> use the new rule {% rule "java/codestyle/UnnecessaryBoxing" %}
 *   UnsynchronizedStaticDateFormatter (java-multithreading)
+*   UseAssertEqualsInsteadOfAssertTrue (java-bestpractices) -> use {% rule "java/bestpractices/SimplifiableTestAssertion" %}
+*   UseAssertNullInsteadOfAssertEquals (java-bestpractices) -> use {% rule "java/bestpractices/SimplifiableTestAssertion" %}
+*   UseAssertSameInsteadOfAssertEquals (java-bestpractices) -> use {% rule "java/bestpractices/SimplifiableTestAssertion" %}
+*   UseAssertTrueInsteadOfAssertEquals (java-bestpractices) -> use {% rule "java/bestpractices/SimplifiableTestAssertion" %}
 *   VariableNamingConventions (apex-codestyle)
-*   VariableNamingConventions (java-codestyle)
-*   WhileLoopsMustUseBraces (java-codestyle)
+*   VariableNamingConventions (java-codestyle) -> use {% rule "java/codestyle/FieldNamingConventions" %} and such
+*   WhileLoopsMustUseBraces (java-codestyle) -> use {% rule "java/codestyle/ControlStatementBraces" %}
 
 ### Fixed Issues
 
@@ -165,6 +197,8 @@ The following previously deprecated rules have been finally removed:
     * [#3218](https://github.com/pmd/pmd/pull/3218): \[java] Generalize UnnecessaryCast to flag all unnecessary casts
     * [#3221](https://github.com/pmd/pmd/issues/3221): \[java] PrematureDeclaration false positive for unused variables
     * [#3238](https://github.com/pmd/pmd/issues/3238): \[java] Improve ExprContext, fix FNs of UnnecessaryCast
+* java-design
+    * [#2536](https://github.com/pmd/pmd/issues/2536): \[java] ClassWithOnlyPrivateConstructorsShouldBeFinal can't detect inner class
 * java-errorprone
     * [#659](https://github.com/pmd/pmd/issues/659): \[java] MissingBreakInSwitch - last default case does not contain a break
     * [#1005](https://github.com/pmd/pmd/issues/1005): \[java] CloneMethodMustImplementCloneable triggers for interfaces
@@ -175,6 +209,9 @@ The following previously deprecated rules have been finally removed:
     * [#2880](https://github.com/pmd/pmd/issues/2880): \[java] CompareObjectsWithEquals - false negative with type res
     * [#2894](https://github.com/pmd/pmd/issues/2894): \[java] Improve MissingBreakInSwitch
     * [#3071](https://github.com/pmd/pmd/issues/3071): \[java] BrokenNullCheck FP with PMD 6.30.0
+    * [#3087](https://github.com/pmd/pmd/issues/3087): \[java] UnnecessaryBooleanAssertion overlaps with SimplifiableTestAssertion
+    * [#3100](https://github.com/pmd/pmd/issues/3100): \[java] UseCorrectExceptionLogging FP in 6.31.0
+    * [#3173](https://github.com/pmd/pmd/issues/3173): \[java] UseProperClassLoader false positive
     * [#3351](https://github.com/pmd/pmd/issues/3351): \[java] ConstructorCallsOverridableMethod ignores abstract methods
 * java-multithreading
     * [#2537](https://github.com/pmd/pmd/issues/2537): \[java] DontCallThreadRun can't detect the case that call run() in `this.run()`
@@ -225,7 +262,8 @@ The metrics framework has been made simpler and more general.
 *   [#1658](https://github.com/pmd/pmd/pull/1658): \[core] Node support for Antlr-based languages - [Matías Fraga](https://github.com/matifraga)
 *   [#1698](https://github.com/pmd/pmd/pull/1698): \[core] [swift] Antlr Base Parser adapter and Swift Implementation - [Lucas Soncini](https://github.com/lsoncini)
 *   [#1774](https://github.com/pmd/pmd/pull/1774): \[core] Antlr visitor rules - [Lucas Soncini](https://github.com/lsoncini)
-*   [#1877](https://github.com/pmd/pmd/pull/1877): \[swift] Feature/swift rules - [Matias Fraga](https://github.com/matifraga)
+*   [#1877](https://github.com/pmd/pmd/pull/1877): \[swift] Feature/swift rules - [Matías Fraga](https://github.com/matifraga)
+*   [#1881](https://github.com/pmd/pmd/pull/1881): \[doc] Add ANTLR documentation - [Matías Fraga](https://github.com/matifraga)
 *   [#1882](https://github.com/pmd/pmd/pull/1882): \[swift] UnavailableFunction Swift rule - [Tomás de Lucca](https://github.com/tomidelucca)
 *   [#2830](https://github.com/pmd/pmd/pull/2830): \[apex] Apexlink POC - [Kevin Jones](https://github.com/nawforce)
 

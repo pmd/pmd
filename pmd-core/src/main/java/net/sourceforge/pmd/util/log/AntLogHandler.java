@@ -50,6 +50,7 @@ public class AntLogHandler extends Handler {
         this.project = project;
     }
 
+    @SuppressWarnings("PMD.AvoidAccessibilityAlteration")
     public Level getAntLogLevel() {
         for (final BuildListener l : project.getBuildListeners()) {
             Field declaredField = null;
@@ -129,6 +130,7 @@ public class AntLogHandler extends Handler {
         // nothing to do
     }
 
+    @SuppressWarnings("PMD.AvoidAccessibilityAlteration")
     private Level determineGradleLogLevel(BuildListener l) {
         try {
             project.log("Detected gradle AntLoggingAdapter", Project.MSG_DEBUG);

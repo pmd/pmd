@@ -5,4 +5,9 @@
 package net.sourceforge.pmd.lang.java.rule.design.uselessoverridingmethod;
 
 public class OtherSubclass extends BaseClass {
+
+    // note: argument type overloaded from CharSequence to String
+    protected void methodWithInterface(String arg) {
+        super.methodWithInterface(arg);
+    }
 }

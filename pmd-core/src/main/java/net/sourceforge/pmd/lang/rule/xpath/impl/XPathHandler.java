@@ -5,8 +5,10 @@
 package net.sourceforge.pmd.lang.rule.xpath.impl;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
+import net.sourceforge.pmd.lang.rule.xpath.internal.DefaultXPathFunctions;
 import net.sourceforge.pmd.util.CollectionUtil;
 
 import net.sf.saxon.lib.ExtensionFunctionDefinition;
@@ -26,15 +28,16 @@ public interface XPathHandler {
 
 
     static XPathHandler noFunctionDefinitions() {
-        return Collections::emptySet;
+        return () -> DefaultXPathFunctions.getDefaultFunctions();
     }
-
 
     /**
      * Returns a default XPath handler.
      */
     static XPathHandler getHandlerForFunctionDefs(ExtensionFunctionDefinition first, ExtensionFunctionDefinition... defs) {
-        Set<ExtensionFunctionDefinition> set = CollectionUtil.setOf(first, defs);
-        return () -> set;
+        Set<ExtensionFunctionDefinition> set = new HashSet<>(CollectionUtil.setOf(first, defs));
+        set.addAll(DefaultXPathFunctions.getDefaultFunctions());
+
+        return () -> Collections.unmodifiableSet(set);
     }
 }

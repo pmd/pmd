@@ -4,59 +4,53 @@
 
 package net.sourceforge.pmd.lang.java.rule.errorprone;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
+import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.AccessType;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
-import net.sourceforge.pmd.lang.java.ast.AccessNode;
-import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-import net.sourceforge.pmd.lang.java.symboltable.JavaNameOccurrence;
-import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
-import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
+import net.sourceforge.pmd.lang.java.ast.ASTFieldAccess;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
+import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
+import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 
 /**
  * @author Eric Olander
  * @since Created on October 24, 2004, 8:56 AM
  */
-public class AssignmentToNonFinalStaticRule extends AbstractJavaRule {
+public class AssignmentToNonFinalStaticRule extends AbstractJavaRulechainRule {
 
-    @Override
-    public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
-        Map<VariableNameDeclaration, List<NameOccurrence>> vars = node.getScope()
-                .getDeclarations(VariableNameDeclaration.class);
-        for (Map.Entry<VariableNameDeclaration, List<NameOccurrence>> entry : vars.entrySet()) {
-            VariableNameDeclaration decl = entry.getKey();
-            AccessNode accessNodeParent = decl.getAccessNodeParent();
-            if (!accessNodeParent.isStatic() || accessNodeParent.isFinal()) {
-                continue;
-            }
-
-            final List<Node> locations = initializedInConstructor(entry.getValue());
-            for (final Node location : locations) {
-                addViolation(data, location, decl.getImage());
-            }
-        }
-        return super.visit(node, data);
+    public AssignmentToNonFinalStaticRule() {
+        super(ASTFieldAccess.class, ASTVariableAccess.class);
     }
 
-    private List<Node> initializedInConstructor(List<NameOccurrence> usages) {
-        final List<Node> unsafeAssignments = new ArrayList<>();
-        for (NameOccurrence occ : usages) {
-            // specifically omitting prefix and postfix operators as there are
-            // legitimate usages of these with static fields, e.g. typesafe enum pattern.
-            if (((JavaNameOccurrence) occ).isOnLeftHandSide()) {
-                Node node = occ.getLocation();
-                Node constructor = node.getFirstParentOfType(ASTConstructorDeclaration.class);
-                if (constructor != null) {
-                    unsafeAssignments.add(node);
+    @Override
+    public Object visit(ASTVariableAccess node, Object data) {
+        checkAccess(node, data);
+        return null;
+    }
+
+    @Override
+    public Object visit(ASTFieldAccess node, Object data) {
+        checkAccess(node, data);
+        return null;
+    }
+
+    private void checkAccess(ASTNamedReferenceExpr node, Object data) {
+        if (isInsideConstructor(node) && node.getAccessType() == AccessType.WRITE) {
+            @Nullable
+            JVariableSymbol symbol = node.getReferencedSym();
+            if (symbol != null && symbol.isField()) {
+                JFieldSymbol field = (JFieldSymbol) symbol;
+                if (field.isStatic() && !field.isFinal()) {
+                    addViolation(data, node, field.getSimpleName());
                 }
             }
         }
-
-        return unsafeAssignments;
     }
 
+    private boolean isInsideConstructor(ASTNamedReferenceExpr node) {
+        return node.ancestors(ASTConstructorDeclaration.class).nonEmpty();
+    }
 }
