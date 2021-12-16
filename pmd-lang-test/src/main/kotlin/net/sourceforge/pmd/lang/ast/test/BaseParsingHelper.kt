@@ -242,7 +242,7 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
 
         AbstractPMDProcessor.runSingleFile(
             listOf(RuleSet.forSingleRule(rule)),
-            DataSource.forString(code, filename),
+            DataSource.forString(code, fileName),
             fullListener,
             config
         )
