@@ -15,6 +15,7 @@ import net.sourceforge.pmd.lang.LanguageVersion;
 
 /**
  * A builder for a new text file.
+ * See static methods on {@link TextFile}.
  */
 public abstract class TextFileBuilder {
 

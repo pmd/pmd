@@ -223,7 +223,10 @@ public final class FileUtil {
 
     private static void internalGetApplicableFiles(List<TextFile> files, PMDConfiguration configuration, Set<Language> languages) throws IOException {
         List<String> ignoredFiles = getIgnoredFiles(configuration);
-        Predicate<Path> fileFilter = PredicateUtil.toFileFilter(new LanguageFilenameFilter(languages));
+        LanguageVersion forcedVersion = configuration.getForceLanguageVersion();
+        Predicate<Path> fileFilter =
+            forcedVersion != null ? Files::isRegularFile // accept everything except dirs
+                                  : PredicateUtil.toFileFilter(new LanguageFilenameFilter(languages));
         fileFilter = fileFilter.and(path -> !ignoredFiles.contains(path.toString()));
 
         for (String root : configuration.getAllInputPaths()) {
