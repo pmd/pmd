@@ -153,7 +153,7 @@ public class FileAnalysisCache extends AbstractAnalysisCache {
 
     @Override
     public void close() throws Exception {
-        // todo
+         // nothing to do, PMD calls persist explicitly
     }
 
     @Override

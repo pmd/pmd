@@ -48,8 +48,8 @@ public abstract class AbstractAnalysisCache implements AnalysisCache {
     protected static final Logger LOG = Logger.getLogger(AbstractAnalysisCache.class.getName());
     protected static final ClasspathFingerprinter FINGERPRINTER = new ClasspathFingerprinter();
     protected final String pmdVersion;
-    protected final ConcurrentMap<String, AnalysisResult> fileResultsCache;
-    protected final ConcurrentMap<String, AnalysisResult> updatedResultsCache;
+    protected final ConcurrentMap<String, AnalysisResult> fileResultsCache = new ConcurrentHashMap<>();
+    protected final ConcurrentMap<String, AnalysisResult> updatedResultsCache = new ConcurrentHashMap<>();
     protected final CachedRuleMapper ruleMapper = new CachedRuleMapper();
     protected long rulesetChecksum;
     protected long auxClassPathChecksum;
@@ -60,8 +60,6 @@ public abstract class AbstractAnalysisCache implements AnalysisCache {
      */
     public AbstractAnalysisCache() {
         pmdVersion = PMDVersion.VERSION;
-        fileResultsCache = new ConcurrentHashMap<>();
-        updatedResultsCache = new ConcurrentHashMap<>();
     }
 
     @Override
@@ -215,12 +213,12 @@ public abstract class AbstractAnalysisCache implements AnalysisCache {
 
     @Override
     public FileAnalysisListener startFileAnalysis(DataSource filename) {
-        return new FileAnalysisListener() {
-            @Override
-            public void onRuleViolation(RuleViolation violation) {
-                final AnalysisResult analysisResult = updatedResultsCache.get(violation.getFilename());
+        return violation -> {
+            final AnalysisResult analysisResult = 
+                updatedResultsCache.get(violation.getFilename());
 
-                analysisResult.addViolation(violation); // fixme this does NOT look thread-safe
+            synchronized (analysisResult) {
+                analysisResult.addViolation(violation);
             }
         };
     }
