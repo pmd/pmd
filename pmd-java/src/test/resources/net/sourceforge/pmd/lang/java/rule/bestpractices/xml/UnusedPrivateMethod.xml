@@ -1727,4 +1727,43 @@ public class Outer {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#3468 UnusedPrivateMethod false positive when outer class calls private static method on inner class</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class OuterClass {
+
+    public void foo() {
+        InnerClass.doSomething();
+    }
+
+    static class InnerClass {
+        private static void doSomething() {}
+    }
+}
+        ]]></code>
+    </test-code> 
+
+    <test-code>
+        <description>[java] UnusedPrivateMethod false positive with static method and cast expression #3209</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class UnusedAssignmentRule {
+    private static class ReachingDefsVisitor {
+        private static String getVarIfUnaryAssignment(String node) {
+            return null;
+        }
+    }
+    public static class AssignmentEntry {
+        final String var;
+        final Object rhs;
+        public boolean isUnaryReassign() {
+            return rhs instanceof String
+                && var.equals(ReachingDefsVisitor.getVarIfUnaryAssignment((String) rhs));
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
