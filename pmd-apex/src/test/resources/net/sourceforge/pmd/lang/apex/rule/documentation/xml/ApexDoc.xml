@@ -631,4 +631,32 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>property should have comment</description>
+        <rule-property name="reportMissingProperty">true</rule-property>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+/**
+ * @description Foo
+ */
+public class Foo {
+    global Object Bar { get; set; }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>property does not need comment</description>
+        <rule-property name="reportMissingProperty">false</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+/**
+ * @description Foo
+ */
+public class Foo {
+    global Object Bar { get; set; }
+}
+        ]]></code>
+    </test-code>
 </test-data>

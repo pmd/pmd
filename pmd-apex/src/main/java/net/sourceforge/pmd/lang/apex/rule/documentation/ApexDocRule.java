@@ -48,10 +48,15 @@ public class ApexDocRule extends AbstractApexRule {
             booleanProperty("reportMissingDescription")
                 .desc("Report missing @description").defaultValue(true).build();
 
+    private static final PropertyDescriptor<Boolean> REPORT_MISSING_PROPERTY_DESCRIPTOR =
+            booleanProperty("reportMissingProperty")
+                .desc("Report missing properties").defaultValue(true).build();
+
     public ApexDocRule() {
         definePropertyDescriptor(REPORT_PRIVATE_DESCRIPTOR);
         definePropertyDescriptor(REPORT_PROTECTED_DESCRIPTOR);
         definePropertyDescriptor(REPORT_MISSING_DESCRIPTION_DESCRIPTOR);
+        definePropertyDescriptor(REPORT_MISSING_PROPERTY_DESCRIPTOR);
 
         addRuleChainVisit(ASTUserClass.class);
         addRuleChainVisit(ASTUserInterface.class);
@@ -113,13 +118,16 @@ public class ApexDocRule extends AbstractApexRule {
     @Override
     public Object visit(ASTProperty node, Object data) {
         ApexDocComment comment = getApexDocComment(node);
-        if (comment == null) {
-            if (shouldHaveApexDocs(node)) {
-                addViolationWithMessage(data, node, MISSING_COMMENT_MESSAGE);
-            }
-        } else {
-            if (getProperty(REPORT_MISSING_DESCRIPTION_DESCRIPTOR) && !comment.hasDescription) {
-                addViolationWithMessage(data, node, MISSING_DESCRIPTION_MESSAGE);
+
+        if (getProperty(REPORT_MISSING_PROPERTY_DESCRIPTOR)) {
+            if (comment == null) {
+                if (shouldHaveApexDocs(node)) {
+                    addViolationWithMessage(data, node, MISSING_COMMENT_MESSAGE);
+                }
+            } else {
+                if (getProperty(REPORT_MISSING_DESCRIPTION_DESCRIPTOR) && !comment.hasDescription) {
+                    addViolationWithMessage(data, node, MISSING_DESCRIPTION_MESSAGE);
+                }
             }
         }
 
