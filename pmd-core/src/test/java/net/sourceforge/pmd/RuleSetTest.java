@@ -421,7 +421,7 @@ public class RuleSetTest {
         RuleSets ruleSets = new RuleSets(listOf(ruleSet1, ruleSet2));
 
         // Two violations
-        Report report = RuleContextTest.getReport(ctx -> ruleSets.apply(makeCompilationUnits(), ctx));
+        Report report = Report.buildReport(ctx1 -> ruleSets.apply(makeCompilationUnits(), ctx1));
         assertEquals("Violations", 2, report.getViolations().size());
 
         // One violation
@@ -432,7 +432,7 @@ public class RuleSetTest {
 
         RuleSets ruleSets2 = new RuleSets(listOf(ruleSet1, ruleSet2));
 
-        report = RuleContextTest.getReport(ctx -> ruleSets2.apply(makeCompilationUnits("C:\\package\\RandomClass.java"), ctx));
+        report = Report.buildReport(ctx -> ruleSets2.apply(makeCompilationUnits("C:\\package\\RandomClass.java"), ctx));
         assertEquals("Violations", 1, report.getViolations().size());
     }
 
