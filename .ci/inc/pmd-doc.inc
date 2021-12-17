@@ -65,7 +65,7 @@ function publish_release_documentation_github() {
         rsync -ah --stats "../docs/pmd-doc-${PMD_CI_MAVEN_PROJECT_VERSION}/" "pmd-${PMD_CI_MAVEN_PROJECT_VERSION}/"
         git status
         pmd_ci_log_debug "Executing: git add pmd-${PMD_CI_MAVEN_PROJECT_VERSION}"
-        git add "pmd-${PMD_CI_MAVEN_PROJECT_VERSION}"
+        git add --sparse "pmd-${PMD_CI_MAVEN_PROJECT_VERSION}"
         pmd_ci_log_debug "Executing: git commit..."
         git commit -q -m "Added pmd-${PMD_CI_MAVEN_PROJECT_VERSION}"
 

@@ -1999,4 +1999,18 @@ public class TypePattern {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>ClassCastException with local record</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public record MyRecord(boolean a) {
+    public void foo () {
+        record TestInnerRecord() {
+            private static Object test;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
