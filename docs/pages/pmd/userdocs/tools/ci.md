@@ -10,12 +10,14 @@ author: Romain PELISSE <belaran@gmail.com>
 PMD can be integrate through some of the Continuous Integration tools that exist now.
 Here is a list of known (to us) plugin to do so.
 
-## Hudson Plugin
+## Jenkins Plugin
 
-Hafner Ullrich has developed a [PMD plugin][hudsonplugin] for Hudson.
-Please check the plugin homepage for more info.
+[Ullrich Hafner](https://github.com/uhafner) developed the
+[Warnings Next Generation](https://plugins.jenkins.io/warnings-ng/) plugin for Jenkins. It supports
+PMD among many other linting tools.
 
-[hudsonplugin]: http://hudson.gotdns.com/wiki/display/HUDSON/PMD+Plugin
+* Homepage: https://plugins.jenkins.io/warnings-ng/
+* Source: https://github.com/jenkinsci/warnings-ng-plugin and https://github.com/jenkinsci/analysis-model
 
 ## Continuum
 
