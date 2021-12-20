@@ -1445,15 +1445,25 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 <p>PMD can be integrate through some of the Continuous Integration tools that exist now.
 Here is a list of known (to us) plugin to do so.</p>
 
-<h2 id="hudson-plugin">Hudson Plugin</h2>
+<h2 id="jenkins-plugin">Jenkins Plugin</h2>
 
-<p>Hafner Ullrich has developed a <a href="http://hudson.gotdns.com/wiki/display/HUDSON/PMD+Plugin">PMD plugin</a> for Hudson.
-Please check the plugin homepage for more info.</p>
+<p><a href="https://github.com/uhafner">Ullrich Hafner</a> developed the
+<a href="https://plugins.jenkins.io/warnings-ng/">Warnings Next Generation</a> plugin for Jenkins. It supports
+PMD among many other linting tools.</p>
+
+<ul>
+  <li>Homepage: https://plugins.jenkins.io/warnings-ng/</li>
+  <li>Source: https://github.com/jenkinsci/warnings-ng-plugin and https://github.com/jenkinsci/analysis-model</li>
+</ul>
 
 <h2 id="continuum">Continuum</h2>
 
 <p>Continuum does not have a plugin for PMD per see, but can failed the build according to the
 result of the PMD maven plugin.</p>
+
+<h2 id="github-action">GitHub Action</h2>
+
+<p>See <a href="pmd_userdocs_tools.html#github-actions">Other Tools / Integrations</a></p>
 
 <!-- TODO: Find out about other plugins ? -->
 
