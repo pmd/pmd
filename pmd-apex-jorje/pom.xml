@@ -117,7 +117,7 @@
     <dependency>
         <groupId>org.yaml</groupId>
         <artifactId>snakeyaml</artifactId>
-        <version>1.26</version>
+        <!-- apex jorje actually depends on 1.17 (https://github.com/forcedotcom/salesforcedx-vscode/commit/631b8cfb85cff5e989bfea13bca681b6cedcb003) -->
     </dependency>
     <dependency>
         <groupId>aopalliance</groupId>
