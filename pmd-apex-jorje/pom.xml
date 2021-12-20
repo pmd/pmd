@@ -54,12 +54,12 @@
     <dependency>
         <groupId>ch.qos.logback</groupId>
         <artifactId>logback-classic</artifactId>
-        <version>1.2.3</version>
+        <version>1.2.9</version> <!-- apex jorje actually depends on 1.1.7 (https://github.com/forcedotcom/salesforcedx-vscode/commit/631b8cfb85cff5e989bfea13bca681b6cedcb003) -->
     </dependency>
     <dependency>
         <groupId>ch.qos.logback</groupId>
         <artifactId>logback-core</artifactId>
-        <version>1.2.3</version>
+        <version>1.2.9</version> <!-- apex jorje actually depends on 1.1.7 (https://github.com/forcedotcom/salesforcedx-vscode/commit/631b8cfb85cff5e989bfea13bca681b6cedcb003) -->
     </dependency>
     <dependency>
         <groupId>com.google.code.findbugs</groupId>
