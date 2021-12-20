@@ -762,8 +762,8 @@
             <dependency>
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
-                <!-- using 30.0-android flavor instead of 30.0-jre, so that we are compatible with java7 -->
-                <version>30.0-android</version>
+                <!-- using 31.0.1-android flavor instead of 31.0.1-jre, so that we are compatible with java7 -->
+                <version>31.0.1-android</version>
                 <scope>test</scope>
             </dependency>
 
