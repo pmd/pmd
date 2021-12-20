@@ -22,5 +22,8 @@ Please check the plugin homepage for more info.
 Continuum does not have a plugin for PMD per see, but can failed the build according to the
 result of the PMD maven plugin.
 
+## GitHub Action
+
+See [Other Tools / Integrations](pmd_userdocs_tools.html#github-actions)
 
 <!-- TODO: Find out about other plugins ? -->
