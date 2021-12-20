@@ -49,7 +49,7 @@
     <dependency>
         <groupId>cglib</groupId>
         <artifactId>cglib</artifactId>
-        <version>3.2.0</version>
+        <version>3.3.0</version> <!-- apex jorje actually depends on 3.2.0 (https://github.com/forcedotcom/salesforcedx-vscode/commit/631b8cfb85cff5e989bfea13bca681b6cedcb003) -->
     </dependency>
     <dependency>
         <groupId>ch.qos.logback</groupId>
