@@ -11,13 +11,9 @@ import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTInfixExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTNullLiteral;
-import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
-import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 
 public class NullAssignmentRule extends AbstractJavaRulechainRule {
@@ -30,14 +26,14 @@ public class NullAssignmentRule extends AbstractJavaRulechainRule {
     public Object visit(ASTNullLiteral node, Object data) {
         if (node.getParent() instanceof ASTAssignmentExpression) {
             ASTAssignmentExpression assignment = (ASTAssignmentExpression) node.getParent();
-            if (isAssignmentToFinalField(assignment)) {
+            if (isAssignmentToFinal(assignment)) {
                 return data;
             }
             if (assignment.getRightOperand() == node) {
                 addViolation(data, node);
             }
         } else if (node.getParent() instanceof ASTConditionalExpression) {
-            if (isBadTernary((ASTConditionalExpression) node.getParent())) {
+            if (isBadTernary((ASTConditionalExpression) node.getParent(), node)) {
                 addViolation(data, node);
             }
         }
@@ -45,10 +41,10 @@ public class NullAssignmentRule extends AbstractJavaRulechainRule {
         return data;
     }
 
-    private boolean isAssignmentToFinalField(ASTAssignmentExpression n) {
+    private boolean isAssignmentToFinal(ASTAssignmentExpression n) {
         @NonNull
         ASTAssignableExpr leftOperand = n.getLeftOperand();
-        if (JavaRuleUtil.isRefToFieldOfThisInstance(leftOperand)) {
+        if (leftOperand instanceof ASTNamedReferenceExpr) {
             @Nullable
             JVariableSymbol symbol = ((ASTNamedReferenceExpr) leftOperand).getReferencedSym();
             return symbol != null && symbol.isFinal();
@@ -56,15 +52,18 @@ public class NullAssignmentRule extends AbstractJavaRulechainRule {
         return false;
     }
 
-    private boolean isBadTernary(ASTConditionalExpression ternary) {
+    private boolean isBadTernary(ASTConditionalExpression ternary, ASTNullLiteral nullLiteral) {
         boolean isInitializer = false;
 
         ASTVariableDeclarator variableDeclarator = ternary.ancestors(ASTVariableDeclarator.class).first();
         isInitializer = variableDeclarator != null && variableDeclarator.getInitializer() == ternary;
 
-        return !(ternary.getCondition() instanceof ASTInfixExpression)
-                && !isInitializer
-                && !(ternary.getParent() instanceof ASTReturnStatement)
-                && !(ternary.getParent() instanceof ASTLambdaExpression);
+        boolean isThenOrElse = ternary.getThenBranch() == nullLiteral || ternary.getElseBranch() == nullLiteral;
+
+        boolean isAssignment = ternary.getParent() instanceof ASTAssignmentExpression;
+
+        return isThenOrElse
+                && isAssignment
+                && !isInitializer;
     }
 }

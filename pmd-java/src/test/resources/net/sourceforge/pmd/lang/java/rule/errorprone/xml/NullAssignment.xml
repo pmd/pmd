@@ -203,4 +203,64 @@ public class NullAssignmentFP {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>False negative with ternary</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>4,5</expected-linenumbers>
+        <code><![CDATA[
+public class NullAssignmentTernary {
+    public void bar(String a) {
+        String b;
+        b = (a == null || a.length() < 1) ? null : a.substring(1);
+        b = ((a == null || a.length() < 1) ? null : a.substring(1));
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code regressionTest="false">
+        <description>Multiple ternaries with null assignment eventually</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+public class NullAssignmentTernary {
+    public void bar(String a, String b, String c) {
+        String x;
+        x = a != null ? a : b != null ? b : c != null ? c : null;
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>False positive with initializing final var</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class NullAssignmentFinal {
+    public void bar(String a) {
+        final String b;
+        if (a != null) {
+            b = a;
+        } else {
+            b = null;
+        }
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>False positive with null as method argument</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class NullAssignmentMethodCall {
+    public void bar(String a) {
+        String b = this.getString(a == null ? null : a);
+    }
+
+    private String getString(String a) { return a; }
+}
+]]></code>
+    </test-code>
 </test-data>
