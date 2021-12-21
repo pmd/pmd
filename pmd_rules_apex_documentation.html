@@ -1456,11 +1456,13 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 overrides and test classes (as well as the contents of test classes).</li>
   <li>ApexDoc comments are present for classes, methods, and properties that are protected or private, depending
 on the properties <code class="language-plaintext highlighter-rouge">reportPrivate</code> and <code class="language-plaintext highlighter-rouge">reportProtected</code>.</li>
-  <li>ApexDoc comments should contain @description depending on the property ‘reportMissingDescription’.</li>
+  <li>ApexDoc comments should contain @description depending on the property <code class="language-plaintext highlighter-rouge">reportMissingDescription</code>.</li>
   <li>ApexDoc comments on non-void, non-constructor methods should contain @return.</li>
   <li>ApexDoc comments on void or constructor methods should not contain @return.</li>
   <li>ApexDoc comments on methods with parameters should contain @param for each parameter, in the same
 order as the method signature.</li>
+  <li>ApexDoc comments are present on properties is only validated, if the property <code class="language-plaintext highlighter-rouge">reportProperty</code> is enabled.
+By setting <code class="language-plaintext highlighter-rouge">reportProperty</code> to false, you can ignore missing comments on properties.</li>
 </ul>
 
 <p>Method overrides and tests are both exempted from having ApexDoc.</p>
@@ -1514,19 +1516,25 @@ order as the method signature.</li>
     <tr>
       <td>reportPrivate</td>
       <td>false</td>
-      <td>Report private classes and methods</td>
+      <td>Report private classes, methods and properties</td>
       <td>no</td>
     </tr>
     <tr>
       <td>reportProtected</td>
       <td>false</td>
-      <td>Report protected methods</td>
+      <td>Report protected classes, methods and properties</td>
       <td>no</td>
     </tr>
     <tr>
       <td>reportMissingDescription</td>
       <td>true</td>
       <td>Report missing @description</td>
+      <td>no</td>
+    </tr>
+    <tr>
+      <td>reportProperty</td>
+      <td>true</td>
+      <td>Report properties without comments</td>
       <td>no</td>
     </tr>
   </tbody>
@@ -1542,6 +1550,7 @@ order as the method signature.</li>
         <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"reportPrivate"</span> <span class="na">value=</span><span class="s">"false"</span> <span class="nt">/&gt;</span>
         <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"reportProtected"</span> <span class="na">value=</span><span class="s">"false"</span> <span class="nt">/&gt;</span>
         <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"reportMissingDescription"</span> <span class="na">value=</span><span class="s">"true"</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"reportProperty"</span> <span class="na">value=</span><span class="s">"true"</span> <span class="nt">/&gt;</span>
     <span class="nt">&lt;/properties&gt;</span>
 <span class="nt">&lt;/rule&gt;</span>
 </code></pre></div></div>
@@ -1562,7 +1571,7 @@ order as the method signature.</li>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2021 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Dec 20, 2021 <br />
+ Site last generated: Dec 21, 2021 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
