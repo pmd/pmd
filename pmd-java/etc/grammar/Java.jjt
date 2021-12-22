@@ -602,7 +602,7 @@ MORE :
 <IN_FORMAL_COMMENT>
 SPECIAL_TOKEN :
 {
-  <FORMAL_COMMENT: "*/" > { comments.add(new FormalComment(matchedToken)); } : DEFAULT
+  <FORMAL_COMMENT: "*/" > { comments.add(new JavadocComment(matchedToken)); } : DEFAULT
 }
 
 <IN_MULTI_LINE_COMMENT>

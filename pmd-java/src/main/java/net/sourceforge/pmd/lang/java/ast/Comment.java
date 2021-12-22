@@ -18,6 +18,9 @@ import net.sourceforge.pmd.util.document.Reportable;
  * Wraps a comment token to provide some utilities.
  * This is not a node, it's not part of the tree anywhere,
  * just convenient.
+ * 
+ * <p>This class represents any kind of comment. A specialized subclass
+ * provides more API for Javadoc comments, see {@link JavadocComment}.
  */
 public class Comment implements Reportable {
     //TODO maybe move part of this into pmd core

@@ -23,8 +23,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.lang.java.ast.Comment;
-import net.sourceforge.pmd.lang.java.ast.FormalComment;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
+import net.sourceforge.pmd.lang.java.ast.JavadocComment;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.ast.internal.ImportWrapper;
 import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
@@ -97,7 +97,7 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
             return;
         }
         for (Comment comment : node.getComments()) {
-            if (!(comment instanceof FormalComment)) {
+            if (!(comment instanceof JavadocComment)) {
                 continue;
             }
             for (Pattern p : PATTERNS) {

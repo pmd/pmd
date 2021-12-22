@@ -40,7 +40,7 @@ public class ParserCornersTest extends BaseJavaTreeDumpTest {
     @Test
     public void testInvalidUnicodeEscape() {
         expect.expect(MalformedSourceException.class); // previously Error
-        expect.expectMessage("Source format error in file x/filename.java at line 1, column 1: Invalid unicode escape");
+        expect.expectMessage("Source format error in file 'x/filename.java' at line 1, column 1: Invalid unicode escape");
         java.parse("\\u00k0", null, "x/filename.java");
     }
 

@@ -9,13 +9,13 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 
 /**
- * A wrapper for Javadoc {@link Comment}s.
+ * A {@link Comment} that has Javadoc content.
  */
-public class FormalComment extends Comment {
+public final class JavadocComment extends Comment {
 
     private JavadocCommentOwner owner;
 
-    public FormalComment(JavaccToken t) {
+    JavadocComment(JavaccToken t) {
         super(t);
         assert t.kind == JavaTokenKinds.FORMAL_COMMENT;
     }
@@ -24,6 +24,10 @@ public class FormalComment extends Comment {
         this.owner = owner;
     }
 
+    /**
+     * Returns the owner of this comment. Null if this comment is 
+     * misplaced.
+     */
     public @Nullable JavadocCommentOwner getOwner() {
         return owner;
     }

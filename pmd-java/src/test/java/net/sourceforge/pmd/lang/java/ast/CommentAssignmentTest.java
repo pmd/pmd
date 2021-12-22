@@ -39,7 +39,7 @@ public class CommentAssignmentTest extends BaseNonParserTest {
         comment = node.getComments().get(1);
         assertFalse(comment.isSingleLine());
         assertTrue(comment.hasJavadocContent());
-        assertThat(comment, instanceOf(FormalComment.class));
+        assertThat(comment, instanceOf(JavadocComment.class));
         assertEquals("a formal comment with blank lines", StringUtils.join(comment.filteredLines(), ' '));
     }
 
