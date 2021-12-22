@@ -1312,4 +1312,27 @@ public class InsufficientStringBufferDeclaration {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>NPE when StringBuilder is used in lambda and if without else</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.LinkedHashSet;
+import java.util.Set;
+
+public class InsufficientStringBufferDeclarationNPE {
+    public void perform() {
+        boolean added;
+        String mode;
+        if (added) {
+            String msg = "";
+            Set<String> altns = new LinkedHashSet<>();
+            StringBuilder sb = new StringBuilder();
+            altns.forEach(s -> sb.append(System.lineSeparator()).append("\tat " + "foo"));
+            msg = sb.toString();
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

@@ -9,6 +9,7 @@ import java.util.List;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.reporting.FileAnalysisListener;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
 import net.sourceforge.pmd.util.document.TextDocument;
 
@@ -31,8 +32,8 @@ public interface AnalysisCache extends GlobalAnalysisListener {
     /**
      * Checks if a given file is up to date in the cache and can be skipped from analysis.
      * Regardless of the return value of this method, each call adds the parameter to the
-     * updated cache, which allows {@link #onRuleViolation(RuleViolation)} to add a rule
-     * violation to the file. TODO is this really best behaviour? This side-effects seems counter-intuitive.
+     * updated cache, which allows {@link FileAnalysisListener#onRuleViolation(RuleViolation)}
+     * to add a rule violation to the file. TODO is this really best behaviour? This side-effects seems counter-intuitive.
      *
      * @param document The file to check in the cache
      * @return True if the cache is a hit, false otherwise

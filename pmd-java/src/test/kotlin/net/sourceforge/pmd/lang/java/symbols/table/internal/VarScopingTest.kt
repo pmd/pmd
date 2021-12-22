@@ -61,10 +61,12 @@ class VarScopingTest : ProcessorTestSpec({
                 acu.descendants(ASTClassOrInterfaceDeclaration::class.java).toList()
 
         val (outerField, localInInit, foreachParam, methodParam, localInBlock, innerField) =
-                acu.descendants(ASTVariableDeclaratorId::class.java).toList()
+                acu.descendants(ASTVariableDeclaratorId::class.java)
+                   .crossFindBoundaries().toList()
 
         val (inInitializer, inForeachInit, inForeach, inMethod, inLocalBlock, inInnerClass) =
-                acu.descendants(ASTMethodCall::class.java).toList()
+                acu.descendants(ASTMethodCall::class.java)
+                   .crossFindBoundaries().toList()
 
 
         doTest("Inside outer initializer: f is outerField") {
@@ -341,7 +343,8 @@ class VarScopingTest : ProcessorTestSpec({
         val (_, t_SomeEnum) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
 
         val (enumA, enumB) =
-                acu.descendants(ASTVariableDeclaratorId::class.java).toList()
+                acu.descendants(ASTEnumDeclaration::class.java)
+                   .descendants(ASTVariableDeclaratorId::class.java).toList()
 
         val (e, caseA, caseB) =
                 acu.descendants(ASTVariableAccess::class.java).toList()

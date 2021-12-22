@@ -9,14 +9,16 @@ SCRIPT_INCLUDES="log.bash utils.bash setup-secrets.bash openjdk.bash maven.bash 
 source "$(dirname "$0")/inc/fetch_ci_scripts.bash" && fetch_ci_scripts
 
 function build() {
-    pmd_ci_log_group_start "Prepare Java 8+11, Bundler"
-        pmd_ci_openjdk_install_adoptopenjdk 11
+    pmd_ci_log_group_start "Prepare Java 8+11+17, Bundler"
+        pmd_ci_openjdk_install_adoptium 11
         pmd_ci_openjdk_setdefault 11
         PMD_MAVEN_EXTRA_OPTS=()
         if [ "$(pmd_ci_utils_get_os)" = "linux" ]; then
             pmd_ci_log_info "Install openjdk8 for integration tests and pmd-regression-tests"
-            pmd_ci_openjdk_install_adoptopenjdk 8
-            PMD_MAVEN_EXTRA_OPTS=(-Djava8.home="${HOME}/openjdk8")
+            pmd_ci_openjdk_install_adoptium 8
+            pmd_ci_log_info "Install openjdk17 for integration tests and pmd-regression-tests"
+            pmd_ci_openjdk_install_adoptium 17
+            PMD_MAVEN_EXTRA_OPTS=(-Djava8.home="${HOME}/openjdk8" -Djava17.home="${HOME}/openjdk17")
         fi
         pmd_ci_build_setup_bundler
     pmd_ci_log_group_end
@@ -85,6 +87,23 @@ function build() {
     pmd_ci_log_group_end
 
     if pmd_ci_maven_isSnapshotBuild; then
+    if [ "${PMD_CI_MAVEN_PROJECT_VERSION}" != "7.0.0-SNAPSHOT" ]; then
+        pmd_ci_log_group_start "Executing PMD dogfood test with ${PMD_CI_MAVEN_PROJECT_VERSION}"
+            ./mvnw versions:set -DnewVersion="${PMD_CI_MAVEN_PROJECT_VERSION}-dogfood" -DgenerateBackupPoms=false
+            sed -i 's/<version>[0-9]\{1,\}\.[0-9]\{1,\}\.[0-9]\{1,\}.*<\/version>\( *<!-- pmd.dogfood.version -->\)/<version>'"${PMD_CI_MAVEN_PROJECT_VERSION}"'<\/version>\1/' pom.xml
+            ./mvnw verify --show-version --errors --batch-mode --no-transfer-progress "${PMD_MAVEN_EXTRA_OPTS[@]}" \
+                -DskipTests \
+                -Dmaven.javadoc.skip=true \
+                -Dmaven.source.skip=true \
+                -Dcheckstyle.skip=true
+            ./mvnw versions:set -DnewVersion="${PMD_CI_MAVEN_PROJECT_VERSION}" -DgenerateBackupPoms=false
+            git checkout -- pom.xml
+        pmd_ci_log_group_end
+    else
+        # current maven-pmd-plugin is not compatible with PMD 7 yet.
+        pmd_ci_log_info "Skipping PMD dogfood test with ${PMD_CI_MAVEN_PROJECT_VERSION}"
+    fi
+
     pmd_ci_log_group_start "Executing build with sonar"
         # Note: Sonar also needs GITHUB_TOKEN (!)
         ./mvnw \

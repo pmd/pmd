@@ -10,5 +10,7 @@ This ruleset contains links to rules that are new in PMD v7.0.0
 
     <rule ref="category/apex/design.xml/UnusedMethod"/>
 
+    <rule ref="category/java/codestyle.xml/UnnecessaryBoxing"/>
+
 </ruleset>
 

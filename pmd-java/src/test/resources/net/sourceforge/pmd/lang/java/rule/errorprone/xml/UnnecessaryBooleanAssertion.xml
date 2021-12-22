@@ -7,6 +7,7 @@
     <test-code>
         <description>failure case</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
         <code><![CDATA[
 import junit.framework.TestCase;
 public class Foo extends TestCase {
@@ -20,6 +21,7 @@ public class Foo extends TestCase {
     <test-code>
         <description>variations</description>
         <expected-problems>4</expected-problems>
+        <expected-linenumbers>4,5,6,7</expected-linenumbers>
         <code><![CDATA[
 import junit.framework.TestCase;
 public class Foo extends TestCase {
@@ -47,26 +49,48 @@ public class Foo extends TestCase {
     </test-code>
 
     <test-code>
-        <description>asserting true a !</description>
+        <description>asserting true a ! (see also #3087)</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>14</expected-linenumbers>
         <code><![CDATA[
 import junit.framework.TestCase;
 public class Foo extends TestCase {
-    void bar() {
-        assertTrue(!foo);
+    private boolean flag;
+    private Foo field;
+    void bar(boolean foo) {
+        assertTrue(!foo);   // not relevant for this rule, but SimplifiableTestAssertion
+        assertFalse(foo);   // that's ok
+
+        assertTrue(!this.flag); // not relevant for this rule, but SimplifiableTestAssertion
+        assertFalse(this.flag);
+        assertTrue(!field.flag);
+        assertFalse(field.flag); // not relevant for this rule, but SimplifiableTestAssertion
+
+        assertTrue(!false); // unnecessary
     }
 }
         ]]></code>
     </test-code>
 
     <test-code>
-        <description>asserting false a !</description>
+        <description>asserting false a ! (see also #3087)</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>14</expected-linenumbers>
         <code><![CDATA[
 import junit.framework.TestCase;
 public class Foo extends TestCase {
-    void bar() {
-        assertFalse(!foo);
+    private boolean flag;
+    private Foo field;
+    void bar(boolean foo) {
+        assertFalse(!foo);  // not relevant for this rule, but SimplifiableTestAssertion
+        assertTrue(foo);    // that's ok
+
+        assertFalse(!this.flag); // not relevant for this rule, but SimplifiableTestAssertion
+        assertTrue(this.flag);
+        assertFalse(!field.flag); // not relevant for this rule, but SimplifiableTestAssertion
+        assertTrue(field.flag);
+
+        assertFalse(!true); // unnecessary
     }
 }
         ]]></code>
@@ -78,8 +102,8 @@ public class Foo extends TestCase {
         <code><![CDATA[
 import junit.framework.TestCase;
 public class Foo extends TestCase {
-    void bar() {
-        assertTrue(!s.contains(new NameOccurrence(node, node.getImage())));
+    void bar(String s) {
+        assertTrue(!s.contains(new Foo(s, s.toString())));
     }
 }
         ]]></code>
@@ -100,6 +124,7 @@ public class Foo {
     <test-code>
         <description>JUnit 4 - failure case</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
         <code><![CDATA[
 import org.junit.Test;
 public class Foo {
@@ -114,6 +139,7 @@ public class Foo {
     <test-code>
         <description>JUnit 5 - failure case - @Test</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
         <code><![CDATA[
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertTrue;

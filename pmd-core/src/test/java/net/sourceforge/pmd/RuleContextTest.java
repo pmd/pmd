@@ -5,31 +5,18 @@
 package net.sourceforge.pmd;
 
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 
 import org.junit.Assert;
 import org.junit.Test;
 
-import net.sourceforge.pmd.Report.ReportBuilderListener;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.ast.impl.DummyTreeUtil;
-import net.sourceforge.pmd.reporting.FileAnalysisListener;
 
 public class RuleContextTest {
 
-    public static Report getReport(Consumer<FileAnalysisListener> sideEffects) {
-        ReportBuilderListener listener = new ReportBuilderListener();
-        try {
-            sideEffects.accept(listener);
-        } finally {
-            listener.close();
-        }
-        return listener.getResult();
-    }
-
     public static Report getReport(Rule rule, BiConsumer<Rule, RuleContext> sideEffects) throws Exception {
-        return getReport(listener -> sideEffects.accept(rule, RuleContext.create(listener, rule)));
+        return Report.buildReport(listener -> sideEffects.accept(rule, RuleContext.create(listener, rule)));
     }
 
     public static Report getReportForRuleApply(Rule rule, Node node) throws Exception {
@@ -37,7 +24,7 @@ public class RuleContextTest {
     }
 
     public static Report getReportForRuleSetApply(RuleSet ruleset, RootNode node) throws Exception {
-        return getReport(listener -> new RuleSets(ruleset).apply(node, listener));
+        return Report.buildReport(listener -> new RuleSets(ruleset).apply(node, listener));
     }
 
     @Test

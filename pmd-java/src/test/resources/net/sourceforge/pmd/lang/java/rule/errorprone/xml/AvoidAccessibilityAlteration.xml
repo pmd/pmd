@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>Example code snippet</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>11,15</expected-linenumbers>
+        <code><![CDATA[
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+
+public class Violation {
+    private void invalidSetAccessCalls() throws NoSuchMethodException, SecurityException {
+        Constructor<?> constructor = this.getClass().getDeclaredConstructor(String.class);
+        // call to forbidden setAccessible
+        constructor.setAccessible(true);
+
+        Method privateMethod = this.getClass().getDeclaredMethod("aPrivateMethod");
+        // call to forbidden setAccessible
+        privateMethod.setAccessible(true);
+
+        // deliberate accessibility alteration
+        String privateField = AccessController.doPrivileged(new PrivilegedAction<String>() {
+            @Override
+            public String run() {
+                try {
+                    Field field = Violation.class.getDeclaredField("aPrivateField");
+                    field.setAccessible(true);
+                    return (String) field.get(null);
+                } catch (ReflectiveOperationException | SecurityException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Detect calls to setAccessible</description>
+        <expected-problems>9</expected-problems>
+        <expected-linenumbers>9,12,13,16,19,20,23,26,27</expected-linenumbers>
+        <code><![CDATA[
+import java.lang.reflect.AccessibleObject;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+
+public class Violation {
+    public void invalidSetAccessibleCalls() {
+        for (Constructor<?> constructor : this.getClass().getConstructors()) {
+            constructor.setAccessible(true);
+        }
+        Constructor<?>[] constructors = this.getClass().getConstructors();
+        AccessibleObject.setAccessible(constructors, true);
+        Constructor.setAccessible(constructors, true);
+
+        for (Method method : this.getClass().getMethods()) {
+            method.setAccessible(true);
+        }
+        Method[] methods = this.getClass().getMethods();
+        AccessibleObject.setAccessible(methods, true);
+        Method.setAccessible(methods, true);
+
+        for (Field field : this.getClass().getFields()) {
+            field.setAccessible(true);
+        }
+        Field[] fields = this.getClass().getFields();
+        AccessibleObject.setAccessible(fields, true);
+        Field.setAccessible(fields, true);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Make sure to detect method call chains</description>
+        <expected-problems>6</expected-problems>
+        <expected-linenumbers>3,4,5,6,7,8</expected-linenumbers>
+        <code><![CDATA[
+public class Violation {
+    public void invalidSetAccessibleCalls() {
+        this.getClass().getDeclaredConstructor(String.class).setAccessible(true);
+        this.getClass().getDeclaredMethod("aPrivateMethod").setAccessible(true);
+        this.getClass().getDeclaredField("aPrivateField").setAccessible(true);
+        Violation.class.getDeclaredConstructor(String.class).setAccessible(true);
+        Violation.class.getDeclaredMethod("aPrivateMethod").setAccessible(true);
+        Violation.class.getDeclaredField("aPrivateField").setAccessible(true);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Anonymous privileged action is OK</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.lang.reflect.AccessibleObject;
+import java.lang.reflect.Method;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+
+public class NoViolation {
+    public void explicitAccessibilityAlteration() {
+        Method[] methods = AccessController.doPrivileged(new PrivilegedAction<Method[]>() {
+            @Override
+            public Method[] run() {
+                Method[] declaredMethods = NoViolation.class.getDeclaredMethods();
+                AccessibleObject.setAccessible(declaredMethods, true);
+                return declaredMethods;
+            }
+        });
+        try {
+            methods[0].invoke(null);
+        } catch (ReflectiveOperationException e) {
+            e.printStackTrace();
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Inner class privileged action is OK</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.lang.reflect.AccessibleObject;
+import java.lang.reflect.Field;
+import java.security.PrivilegedAction;
+
+public class Violation {
+    private static class MyPrivilegedAction implements PrivilegedAction<Field[]> {
+        @Override
+        public Field[] run() {
+            Field[] declaredFields = Violation.class.getDeclaredFields();
+            AccessibleObject.setAccessible(declaredFields, true);
+            return declaredFields;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>false positive when accessible object is used as primary prefix</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.lang.reflect.Constructor;
+import java.util.ArrayList;
+import java.util.List;
+
+public class NoViolation { {
+    List<Constructor<?>> list = new ArrayList<>();
+    Constructor<?> ctor = NoViolation.class.getConstructor();
+    list.add(ctor);
+} }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>setAccessible(false) is ok</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.lang.reflect.AccessibleObject;
+import java.lang.reflect.Constructor;
+
+public class Violation {
+    private void invalidSetAccessCalls() throws NoSuchMethodException, SecurityException {
+        Constructor<?> constructor = this.getClass().getDeclaredConstructor(String.class);
+        // call to setAccessible with false - that's ok
+        constructor.setAccessible(false);
+
+        Constructor<?>[] constructors = this.getClass().getConstructors();
+        AccessibleObject.setAccessible(constructors, false);
+        Constructor.setAccessible(constructors, false);
+    }
+}
+        ]]></code>
+    </test-code>
+</test-data>

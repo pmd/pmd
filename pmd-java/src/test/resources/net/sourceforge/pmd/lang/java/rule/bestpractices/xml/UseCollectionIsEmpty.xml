@@ -463,7 +463,6 @@ public record CollectionRecord(List<String> theList) {
     }
 }
         ]]></code>
-        <source-type>java 15-preview</source-type>
     </test-code>
 
     <test-code>
@@ -478,6 +477,41 @@ public class Foo {
         var theList = new ArrayList<String>();
         if (theList.size() == 0) throw new IllegalArgumentException("empty list");
         if (theList.isEmpty()) throw new IllegalArgumentException("empty list");
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>With nested classes</description>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>7,15,21</expected-linenumbers>
+        <code><![CDATA[
+import java.util.List;
+
+public class Foo {
+    void myMethod() {
+        Object anonymous = new Object() {
+            public boolean check(List lst) {
+                if (lst.size() == 0) {
+                    return true;
+                }
+                return false;
+            }
+        };
+        class Local {
+            public boolean check2(List lst) {
+                return lst.size() == 0;
+            }
+        }
+    }
+    class Inner {
+        public static boolean bar(List lst) {
+            if(lst.size() == 0){
+                return true;
+            }
+            return false;
+        }
     }
 }
         ]]></code>

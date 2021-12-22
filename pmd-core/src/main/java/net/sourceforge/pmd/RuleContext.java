@@ -23,6 +23,10 @@ import net.sourceforge.pmd.util.document.FileLocation;
  * This forwards events to a {@link FileAnalysisListener}. It implements
  * violation suppression by filtering some violations out, according to
  * the {@link ViolationSuppressor}s for the language.
+ *
+ * A RuleContext contains a Rule instance and violation reporting methods
+ * implicitly report only for that rule. Contrary to PMD 6, RuleContext is
+ * not unique throughout the analysis, a separate one is used per file and rule.
  */
 public final class RuleContext {
     // todo move to package reporting
@@ -42,28 +46,71 @@ public final class RuleContext {
         this.rule = rule;
     }
 
-    // TODO document
-
     private String getDefaultMessage() {
         return rule.getMessage();
     }
 
+    /**
+     * Record a new violation of the contextual rule, at the given node.
+     *
+     * @param location Location of the violation
+     */
     public void addViolation(Node location) {
         addViolationWithMessage(location, getDefaultMessage(), NO_ARGS);
     }
 
+    /**
+     * Record a new violation of the contextual rule, at the given node.
+     * The default violation message ({@link Rule#getMessage()}) is formatted
+     * using the given format arguments.
+     *
+     * @param location   Location of the violation
+     * @param formatArgs Format arguments for the message
+     *
+     * @see MessageFormat
+     */
     public void addViolation(Node location, Object... formatArgs) {
         addViolationWithMessage(location, getDefaultMessage(), formatArgs);
     }
 
+    /**
+     * Record a new violation of the contextual rule, at the given node.
+     * The given violation message ({@link Rule#getMessage()}) is treated
+     * as a format string for a {@link MessageFormat} and should hence use
+     * appropriate escapes. No formatting arguments are provided.
+     *
+     * @param location Location of the violation
+     * @param message  Violation message
+     */
     public void addViolationWithMessage(Node location, String message) {
         addViolationWithPosition(location, -1, -1, message, NO_ARGS);
     }
 
+    /**
+     * Record a new violation of the contextual rule, at the given node.
+     * The given violation message ({@link Rule#getMessage()}) is treated
+     * as a format string for a {@link MessageFormat} and should hence use
+     * appropriate escapes. The given formatting arguments are used.
+     *
+     * @param location   Location of the violation
+     * @param message    Violation message
+     * @param formatArgs Format arguments for the message
+     */
     public void addViolationWithMessage(Node location, String message, Object... formatArgs) {
         addViolationWithPosition(location, -1, -1, message, formatArgs);
     }
 
+    /**
+     * Record a new violation of the contextual rule, at the given node.
+     * The position is refined using the given begin and end line numbers.
+     * The given violation message ({@link Rule#getMessage()}) is treated
+     * as a format string for a {@link MessageFormat} and should hence use
+     * appropriate escapes. The given formatting arguments are used.
+     *
+     * @param location   Location of the violation
+     * @param message    Violation message
+     * @param formatArgs Format arguments for the message
+     */
     public void addViolationWithPosition(Node node, int beginLine, int endLine, String message, Object... formatArgs) {
         Objects.requireNonNull(node, "Node was null");
         Objects.requireNonNull(message, "Message was null");
@@ -88,6 +135,12 @@ public final class RuleContext {
         }
     }
 
+    /**
+     * Force the recording of a violation, ignoring the violation
+     * suppression mechanism ({@link ViolationSuppressor}).
+     * 
+     * @param rv A violation
+     */
     public void addViolationNoSuppress(RuleViolation rv) {
         listener.onRuleViolation(rv);
     }

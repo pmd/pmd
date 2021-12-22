@@ -364,6 +364,9 @@ entries:
     - title: PLSQL
       url: /pmd_languages_plsql.html
       output: web, pdf
+    - title: Visualforce
+      url: /pmd_languages_visualforce.html
+      output: web, pdf
   - title: Developer Documentation
     output: web, pdf
     folderitems:
@@ -397,8 +400,14 @@ entries:
       - title: Major contributions
         output: web, pdf
         subfolderitems:
-        - title: Adding a new language
-          url: /pmd_devdocs_major_adding_new_language.html
+        - title: Rule Guidelines
+          url: /pmd_devdocs_major_rule_guidelines.html
+          output: web, pdf
+        - title: Adding a new language (JavaCC)
+          url: /pmd_devdocs_major_adding_new_language_javacc.html
+          output: web, pdf
+        - title: Adding a new language (Antlr)
+          url: /pmd_devdocs_major_adding_new_language_antlr.html
           output: web, pdf
         - title: Adding a new CPD language
           url: /pmd_devdocs_major_adding_new_cpd_language.html

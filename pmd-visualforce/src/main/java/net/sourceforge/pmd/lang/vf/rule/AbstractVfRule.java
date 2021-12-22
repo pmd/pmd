@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -21,5 +21,4 @@ public abstract class AbstractVfRule extends AbstractRule implements VfParserVis
     public void apply(Node target, RuleContext ctx) {
         target.acceptVisitor(this, ctx);
     }
-
 }

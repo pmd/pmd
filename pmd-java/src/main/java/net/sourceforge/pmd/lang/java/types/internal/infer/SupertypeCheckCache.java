@@ -41,7 +41,7 @@ final class SupertypeCheckCache {
     }
 
     void remember(JTypeMirror t, JTypeMirror s) {
-        if (shouldCache(t)) {
+        if (shouldCache(t) && shouldCache(s)) {
             cache.computeIfAbsent(t, k -> new HashSet<>()).add(s);
         }
     }

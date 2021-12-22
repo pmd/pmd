@@ -30,7 +30,7 @@ public class UnusedFormalParameterRule extends AbstractJavaRulechainRule {
     @Override
     public Object visit(ASTConstructorDeclaration node, Object data) {
         check(node, data);
-        return data;
+        return super.visit(node, data);
     }
 
     @Override

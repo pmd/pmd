@@ -1,3 +1,15 @@
+import static java.lang.annotation.ElementType.CONSTRUCTOR;
+import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.ElementType.LOCAL_VARIABLE;
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.ElementType.MODULE;
+import static java.lang.annotation.ElementType.PACKAGE;
+import static java.lang.annotation.ElementType.PARAMETER;
+import static java.lang.annotation.ElementType.TYPE;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Target;
+
 /**
  * 
  * @see <a href="https://openjdk.java.net/jeps/394">JEP 394: Pattern Matching for instanceof</a>
@@ -52,4 +64,15 @@ public class PatternMatchingInstanceof {
     public static void main(String[] args) {
         new PatternMatchingInstanceof().test();
     }
+
+    // InstanceofExpression can be annotated
+    class Foo {
+        {
+            Object f = null;
+            Object o = f instanceof @Nullable Foo;
+        }
+    }
+
+    @Target(value=ElementType.TYPE_USE)
+    @interface Nullable { }
 }

@@ -96,6 +96,7 @@ public class PMDConfiguration extends AbstractConfiguration {
     private int threads = Runtime.getRuntime().availableProcessors();
     private ClassLoader classLoader = getClass().getClassLoader();
     private LanguageVersionDiscoverer languageVersionDiscoverer = new LanguageVersionDiscoverer();
+    private LanguageVersion forceLanguageVersion;
 
     // Rule and source file options
     private List<String> ruleSets;
@@ -220,6 +221,35 @@ public class PMDConfiguration extends AbstractConfiguration {
     }
 
     /**
+     * Get the LanguageVersion specified by the force-language parameter. This overrides detection based on file
+     * extensions
+     *
+     * @return The LanguageVersion.
+     */
+    public LanguageVersion getForceLanguageVersion() {
+        return forceLanguageVersion;
+    }
+
+    /**
+     * Is the force-language parameter set to anything?
+     *
+     * @return true if ${@link #getForceLanguageVersion()} is not null
+     */
+    public boolean isForceLanguageVersion() {
+        return forceLanguageVersion != null;
+    }
+
+    /**
+     * Set the LanguageVersion specified by the force-language parameter. This overrides detection based on file
+     * extensions
+     *
+     * @param forceLanguageVersion the language version
+     */
+    public void setForceLanguageVersion(LanguageVersion forceLanguageVersion) {
+        this.forceLanguageVersion = forceLanguageVersion;
+    }
+
+    /**
      * Set the given LanguageVersion as the current default for it's Language.
      *
      * @param languageVersion
@@ -258,6 +288,13 @@ public class PMDConfiguration extends AbstractConfiguration {
     // Failure to determine the LanguageVersion for a file should be a hard
     // error, or simply cause the file to be skipped?
     public LanguageVersion getLanguageVersionOfFile(String fileName) {
+        LanguageVersion forcedVersion = getForceLanguageVersion();
+        if (forcedVersion != null) {
+            // use force language if given
+            return forcedVersion;
+        }
+
+        // otherwise determine by file extension
         LanguageVersion languageVersion = languageVersionDiscoverer.getDefaultLanguageVersionForFile(fileName);
         if (languageVersion == null) {
             // For compatibility with older code that does not always pass in

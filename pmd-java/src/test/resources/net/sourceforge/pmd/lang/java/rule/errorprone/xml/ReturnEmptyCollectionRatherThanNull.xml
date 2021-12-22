@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data xmlns="http://pmd.sourceforge.net/rule-tests"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+   <test-code>
+      <description>Returning null array</description>
+      <expected-problems>1</expected-problems>
+      <expected-linenumbers>3</expected-linenumbers>
+      <code><![CDATA[
+public class Foo {
+    // Not a good idea...
+    public int []bar()
+    {
+        // ...
+        return null;
+    }
+}
+        ]]></code>
+   </test-code>
+   <test-code>
+      <description>Nonnull empty array</description>
+      <expected-problems>0</expected-problems>
+      <code><![CDATA[
+public class Foo {
+    // Good behavior
+    public String[] bar()
+    {
+        //...
+        return new String[0];
+    }
+}
+        ]]></code>
+   </test-code>
+   <test-code>
+      <description>Returning null instead of collection (List)</description>
+      <expected-problems>1</expected-problems>
+      <expected-linenumbers>5</expected-linenumbers>
+      <code><![CDATA[
+import java.util.List;
+
+public class Foo {
+    // Not a good idea...
+    public List<String> bar()
+    {
+        // ...
+        return null;
+    }
+}
+        ]]></code>
+   </test-code>
+   <test-code>
+      <description>Returning proper empty collection</description>
+      <expected-problems>0</expected-problems>
+      <code><![CDATA[
+import java.util.List;
+import java.util.Collections;
+
+public class Foo {
+    // Not a good idea...
+    public List<String> bar()
+    {
+        // ...
+        return Collections.emptyList();
+    }
+}
+        ]]></code>
+   </test-code>
+   <test-code>
+      <description>Returning null instead of collection (Set)</description>
+      <expected-problems>1</expected-problems>
+      <expected-linenumbers>5</expected-linenumbers>
+      <code><![CDATA[
+import java.util.Set;
+
+public class Foo {
+    // Not a good idea...
+    public Set<String> bar()
+    {
+        // ...
+        return null;
+    }
+}
+        ]]></code>
+   </test-code>
+   <test-code>
+      <description>Returning null instead of collection (Map)</description>
+      <expected-problems>1</expected-problems>
+      <expected-linenumbers>5</expected-linenumbers>
+      <code><![CDATA[
+import java.util.Map;
+
+public class Foo {
+    // Not a good idea...
+    public Map<String, String> bar()
+    {
+        // ...
+        return null;
+    }
+}
+        ]]></code>
+   </test-code>
+</test-data>

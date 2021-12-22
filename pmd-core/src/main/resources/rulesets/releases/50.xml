@@ -38,7 +38,7 @@ This ruleset contains links to rules that are new in PMD v5.0
 	<rule ref="rulesets/java/empty.xml/EmptyStatementBlock"/>
 	<rule ref="rulesets/java/imports.xml/UnnecessaryFullyQualifiedName"/>
 	<rule ref="rulesets/java/junit.xml/JUnitTestContainsTooManyAsserts"/>
-	<rule ref="rulesets/java/junit.xml/UseAssertTrueInsteadOfAssertEquals"/>
+<!--	<rule ref="rulesets/java/junit.xml/UseAssertTrueInsteadOfAssertEquals"/>-->
     <rule ref="rulesets/java/logging-jakarta-commons.xml/GuardDebugLogging"/>
 	<rule ref="rulesets/java/naming.xml/ShortClassName"/>
 	<rule ref="rulesets/java/optimizations.xml/RedundantFieldInitializer"/>

@@ -40,8 +40,8 @@ public class ParserCornersTest extends BaseJavaTreeDumpTest {
     @Test
     public void testInvalidUnicodeEscape() {
         expect.expect(MalformedSourceException.class); // previously Error
-        expect.expectMessage("Source format error at line 1, column 1: Invalid unicode escape");
-        java.parse("\\u00k0");
+        expect.expectMessage("Source format error in file x/filename.java at line 1, column 1: Invalid unicode escape");
+        java.parse("\\u00k0", null, "x/filename.java");
     }
 
     /**
@@ -204,7 +204,7 @@ public class ParserCornersTest extends BaseJavaTreeDumpTest {
     public void testGitHubBug2767() {
         // PMD fails to parse an initializer block.
         // PMD 6.26.0 parses this code just fine.
-        java.withDefaultVersion("15-preview")
+        java.withDefaultVersion("16")
             .parse("class Foo {\n"
                        + "    {final int I;}\n"
                        + "}\n");

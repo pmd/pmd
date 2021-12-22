@@ -1,0 +1,19 @@
+<project name="ant-it" default="pmd">
+
+    <path id="pmd.classpath">
+        <fileset dir="${pmd.home}/lib">
+            <include name="*.jar"/>
+        </fileset>
+    </path>
+    <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask" classpathref="pmd.classpath"/>
+
+    <target name="pmd">
+        <pmd failOnRuleViolation="false">
+            <ruleset>rulesets/java/quickstart.xml</ruleset>
+            <formatter type="text" toConsole="true"/>
+            <fileset dir="src">
+                <include name="*.java"/>
+            </fileset>
+        </pmd>
+    </target>
+</project>
