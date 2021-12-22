@@ -450,7 +450,7 @@ final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
         final List<ApexDocTokenLocation> docTokenLocations;
 
         <T extends List<TokenLocation> & RandomAccess>
-        CommentInformation(Map<Integer, String> suppressMap, T allCommentTokens, List<ApexDocTokenLocation> docTokenLocations) {
+            CommentInformation(Map<Integer, String> suppressMap, T allCommentTokens, List<ApexDocTokenLocation> docTokenLocations) {
             this.suppressMap = suppressMap;
             this.allCommentTokens = allCommentTokens;
             this.docTokenLocations = docTokenLocations;
