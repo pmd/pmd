@@ -26,6 +26,7 @@ public class Foo {
     <test-code>
         <description>simple failure</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>1</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     private Foo() {}
@@ -37,6 +38,7 @@ public class Foo {
     <test-code>
         <description>failure with multiple constructors</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>1</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     private Foo(){}
@@ -96,6 +98,7 @@ public class Foo {
     <test-code>
         <description>not ok, non-public static field</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>1</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     private static int BUZ = 2;
@@ -150,7 +153,10 @@ public class Suit {
         <description>#1125 Missing Static Method In Non Instantiatable Class / Factory</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-public class AccountSelectionSubForm extends Form implements WidgetEventListener
+import java.awt.Frame;
+import java.awt.event.ActionListener;
+
+public class AccountSelectionSubForm extends Frame implements ActionListener
 {
     public static class Factory
     {
@@ -159,7 +165,7 @@ public class AccountSelectionSubForm extends Form implements WidgetEventListener
             // do
         }
         // factory method which creates the outer class
-        public AccountSelectionSubForm create( Form parent, boolean supportAllAccountsSelection )
+        public AccountSelectionSubForm create( Frame parent, boolean supportAllAccountsSelection )
         {
             return new AccountSelectionSubForm();
         }
@@ -288,6 +294,7 @@ public class Foo {
     <test-code>
         <description>#1832 but fail with both private constructors annotated with @PersistenceConstructor</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
         <code><![CDATA[
 import org.springframework.data.annotation.PersistenceConstructor;
 
@@ -312,6 +319,8 @@ public class Foo {
         <description>#2102 [java] False positive MissingStaticMethodInNonInstantiatableClass when inheritors are instantiable</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.util.Function;
+
 public abstract class MyADT {
     private MyADT() {
     }

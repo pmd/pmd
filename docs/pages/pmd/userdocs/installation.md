@@ -63,7 +63,7 @@ modifiers on Java sources with `-R category/java/codestyle.xml/UnnecessaryModifi
 Additionally, the following options, are specified most of the time even though they're not required:
 * `-f <format>`: report format. PMD supports many report formats out of the box. You may want to start with the basic
 `text` format (default) or `xml` format. The supported formats are [documented here](pmd_userdocs_cli_reference.html#available-report-formats).
-* `-auxclasspath <classpath>`: class path containing the compiled class files of the analysed Java sources, if any.
+* `--aux-classpath <classpath>`: class path containing the compiled class files of the analysed Java sources, if any.
   Setting this up correctly allows PMD to do much deeper analysis using reflection. Some rules, such as [MissingOverride](pmd_rules_java_bestpractices.html#missingoverride),
   require it to function properly.
 

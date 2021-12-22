@@ -4,12 +4,13 @@
 
 package net.sourceforge.pmd.cpd;
 
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.util.document.FileLocation;
 
 public class TokenEntry implements Comparable<TokenEntry> {
@@ -98,23 +99,30 @@ public class TokenEntry implements Comparable<TokenEntry> {
     /**
      * Helper class to preserve and restore the current state of the token
      * entries.
+     * 
+     * @deprecated This is internal API.
      */
+    @InternalApi
+    @Deprecated
     public static class State {
-        private int tokenCount;
-        private Map<String, Integer> tokens;
-        private List<TokenEntry> entries;
+        private final int tokenCount;
+        private final int tokensMapSize;
 
-        public State(List<TokenEntry> entries) {
+        public State() {
             this.tokenCount = TokenEntry.TOKEN_COUNT.get().intValue();
-            this.tokens = new HashMap<>(TokenEntry.TOKENS.get());
-            this.entries = new ArrayList<>(entries);
+            this.tokensMapSize = TokenEntry.TOKENS.get().size();
         }
 
-        public List<TokenEntry> restore() {
+        public void restore(Tokens tokens) {
+            final List<TokenEntry> entries = tokens.getTokens();
             TokenEntry.TOKEN_COUNT.get().set(tokenCount);
-            TOKENS.get().clear();
-            TOKENS.get().putAll(tokens);
-            return entries;
+            final Iterator<Map.Entry<String, Integer>> it = TOKENS.get().entrySet().iterator();
+            while (it.hasNext()) {
+                if (it.next().getValue() > tokensMapSize) {
+                    it.remove();
+                }
+            }
+            entries.subList(tokenCount, entries.size()).clear();
         }
     }
 

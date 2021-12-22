@@ -13,11 +13,9 @@ import apex.jorje.semantic.ast.compilation.UserClass;
 
 public final class ASTUserClass extends BaseApexClass<UserClass> implements ASTUserClassOrInterface<UserClass> {
 
-
     ASTUserClass(UserClass userClass) {
         super(userClass);
     }
-
 
     @Override
     protected <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data) {

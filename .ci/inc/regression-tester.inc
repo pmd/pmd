@@ -9,12 +9,10 @@ source "$(dirname "$0")/inc/fetch_ci_scripts.bash" && fetch_ci_scripts
 # The functions here require the following environment variables:
 # PMD_CI_BRANCH
 #
-# DANGER_GITHUB_API_TOKEN
+# GITHUB_TOKEN
 # PMD_CI_CHUNK_TOKEN
 
 function regression_tester_setup_ci() {
-    # note: building spring needs java8. This is setup already by build.sh
-
     gpg --batch --yes --decrypt --passphrase="GnxdjywUEPveyCD1RLiTd7t8CImnefYr" \
         --output .ci/files/public-env .ci/files/public-env.gpg
     # shellcheck disable=SC1091
@@ -69,19 +67,21 @@ function regression_tester_uploadBaseline() {
 function regression_tester_executeDanger() {
     pmd_ci_log_debug "${FUNCNAME[0]}"
 
-    # Create a corresponding remote branch locally
-    if ! git show-ref --verify --quiet "refs/heads/${PMD_CI_BRANCH}"; then
-        git fetch --no-tags --depth=1 origin "+refs/heads/${PMD_CI_BRANCH}:refs/remotes/origin/${PMD_CI_BRANCH}"
-        git branch "${PMD_CI_BRANCH}" "origin/${PMD_CI_BRANCH}"
-        pmd_ci_log_debug "Created local branch ${PMD_CI_BRANCH}"
-    fi
-    # Fetch more commits of the PR for danger and regression tester
-    git fetch --no-tags --depth=50 origin "+$(git rev-parse HEAD^2):"
-    # Fetch more commits from master branch for regression tester
-    if [[ "${PMD_CI_BRANCH}" != "master" ]]; then
-        git fetch --no-tags --depth=50 origin +master:
-        git branch master origin/master
-    fi
+    # git clone initially only fetched with depth 2. Danger and regression tester
+    # need more history, so we'll fetch more here
+    # and create local branches as well (${PMD_CI_BRANCH} and pr-fetch)
+
+    pmd_ci_log_info "Fetching 25 commits for ${PMD_CI_BRANCH} and pull/${PMD_CI_PULL_REQUEST_NUMBER}/head"
+    git fetch --no-tags --depth=25 origin "${PMD_CI_BRANCH}:${PMD_CI_BRANCH}" "pull/${PMD_CI_PULL_REQUEST_NUMBER}/head:pr-fetch"
+
+    # if the PR is older, base might have advanced more than 25 commits... fetch more, up to 150
+    for i in $(seq 1 3); do
+        if [ -z "$( git merge-base "${PMD_CI_BRANCH}" "pr-fetch" )" ]; then
+            pmd_ci_log_info "No merge-base yet - fetching more commits... (try $i)"
+            git fetch --no-tags --deepen=50 origin "${PMD_CI_BRANCH}:" "pull/${PMD_CI_PULL_REQUEST_NUMBER}/head:pr-fetch"
+        fi
+    done
+    pmd_ci_log_info "Merge base is: $( git merge-base "${PMD_CI_BRANCH}" "pr-fetch" )"
 
     pmd_ci_log_info "Running danger on branch ${PMD_CI_BRANCH}"
     bundle exec danger --verbose

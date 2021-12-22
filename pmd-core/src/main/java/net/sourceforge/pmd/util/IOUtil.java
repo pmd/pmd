@@ -79,7 +79,7 @@ public final class IOUtil {
             if (StringUtils.isBlank(reportFile)) {
                 return createWriter();
             }
-            Path path = new File(reportFile).toPath();
+            Path path = new File(reportFile).toPath().toAbsolutePath();
             Files.createDirectories(path.getParent()); // ensure parent dir exists
             // this will create the file if it doesn't exist
             return Files.newBufferedWriter(path, getDefaultCharset());

@@ -35,6 +35,7 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.commons.io.IOUtils;
 
@@ -284,8 +285,8 @@ public class DeadLinksChecker {
 
 
     private List<Path> listMdFiles(Path pagesDirectory) {
-        try {
-            return Files.walk(pagesDirectory)
+        try (Stream<Path> stream = Files.walk(pagesDirectory)) {
+            return stream
                  .filter(Files::isRegularFile)
                  .filter(path -> path.toString().endsWith(".md"))
                  .collect(Collectors.toList());

@@ -286,8 +286,8 @@ public class Foo {
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#avoiduncheckedexceptionsinsignatures">
         <description>
-A method or constructor should not explicitly declare unchecked exceptions in its
-`throws` clause. Java doesn't force the caller to handle an unchecked exception,
+Reports unchecked exceptions in the `throws` clause of a method or constructor.
+Java doesn't force the caller to handle an unchecked exception,
 so it's unnecessary except for documentation. A better practice is to document the
 exceptional cases with a `@throws` Javadoc tag, which allows being more descriptive.
         </description>
@@ -296,9 +296,7 @@ exceptional cases with a `@throws` Javadoc tag, which allows being more descript
             <property name="xpath">
                 <value>
 <![CDATA[
-//MethodDeclaration/NameList/Name[pmd-java:typeIs("java.lang.RuntimeException")]
-|
-//ConstructorDeclaration/NameList/Name[pmd-java:typeIs("java.lang.RuntimeException")]
+//ThrowsList/ClassOrInterfaceType[pmd-java:typeIs('java.lang.RuntimeException')]
 ]]>
                 </value>
             </property>
@@ -314,27 +312,15 @@ public void foo() throws RuntimeException {
     <rule name="ClassWithOnlyPrivateConstructorsShouldBeFinal"
           language="java"
           since="4.1"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
-          message="A class which only has private constructors should be final"
+          class="net.sourceforge.pmd.lang.java.rule.design.ClassWithOnlyPrivateConstructorsShouldBeFinalRule"
+          message="This class has only private constructors and may be final"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#classwithonlyprivateconstructorsshouldbefinal">
         <description>
-A class with only private constructors should be final, unless the private constructor
-is invoked by a inner class.
+Reports classes that may be made final because they cannot be extended from outside
+their compilation unit anyway. This is because all their constructors are private,
+so a subclass could not call the super constructor.
         </description>
         <priority>1</priority>
-        <properties>
-            <property name="xpath">
-                <value>
-<![CDATA[
-//TypeDeclaration[count(../TypeDeclaration) = 1]/ClassOrInterfaceDeclaration
-[@Final = false()]
-[ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration[@Private = true()]]
-[not(./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration[(@Public = true()) or (@Protected = true()) or (@PackagePrivate = true())])]
-[not(.//ClassOrInterfaceDeclaration)]
-]]>
-                </value>
-            </property>
-        </properties>
         <example>
 <![CDATA[
 public class Foo {  //Should be final
@@ -347,40 +333,41 @@ public class Foo {  //Should be final
     <rule name="CollapsibleIfStatements"
           language="java"
           since="3.1"
-          message="These nested if statements could be combined"
+          message="This if statement could be combined with its parent"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#collapsibleifstatements">
-        <description>
-Sometimes two consecutive 'if' statements can be consolidated by separating their conditions with a boolean short-circuit operator.
-        </description>
+        <description><![CDATA[
+Reports nested 'if' statements that can be merged together by joining their
+conditions with a boolean `&&` operator in between.
+        ]]></description>
         <priority>3</priority>
         <properties>
             <property name="xpath">
                 <value>
 <![CDATA[
-//IfStatement[@Else= false()]/Statement
- /IfStatement[@Else= false()]
- |
-//IfStatement[@Else= false()]/Statement
- /Block[count(BlockStatement)=1]/BlockStatement
-  /Statement/IfStatement[@Else= false()]
+//IfStatement[@Else = false()]/IfStatement[@Else = false()]
+|
+//IfStatement[@Else = false()]/Block[count(*) = 1]/IfStatement[@Else = false()]
 ]]>
                 </value>
             </property>
         </properties>
         <example>
 <![CDATA[
-void bar() {
-    if (x) {            // original implementation
-        if (y) {
-            // do stuff
+class Foo {
+
+    void bar() {
+        if (x) {            // original implementation
+            if (y) {
+                // do stuff
+            }
         }
     }
-}
 
-void bar() {
-    if (x && y) {        // optimized implementation
-        // do stuff
+    void bar() {
+        if (x && y) {        // clearer implementation
+            // do stuff
+        }
     }
 }
 ]]>
@@ -797,12 +784,11 @@ in each object at runtime.
                 <value>
 <![CDATA[
 //FieldDeclaration
- [@Final= true() and @Static= false()]
- [not(preceding-sibling::Annotation/MarkerAnnotation/Name[@Image="Builder.Default"]
-    and //ImportDeclaration/Name[@Image="lombok.Builder"])]
-/VariableDeclarator
- [VariableInitializer/Expression/PrimaryExpression[not(PrimarySuffix)]/PrimaryPrefix/Literal]
-/VariableDeclaratorId
+    [pmd-java:modifiers() = 'final']
+    [not(pmd-java:modifiers() = 'static')]
+    [not(.//Annotation[pmd-java:typeIs('lombok.Builder.Default')])]
+    /VariableDeclarator[NumericLiteral or StringLiteral or CharLiteral or BooleanLiteral or NullLiteral]
+    /VariableDeclaratorId
 ]]>
                 </value>
             </property>
@@ -940,7 +926,7 @@ Use opposite operator instead of negating the whole expression with a logic comp
             <property name="xpath">
                 <value>
 <![CDATA[
-//UnaryExpressionNotPlusMinus[@Image='!']/PrimaryExpression/PrimaryPrefix/Expression[EqualityExpression or RelationalExpression]
+//UnaryExpression[@Operator='!']/InfixExpression[@Operator = ('==', '!=', '<', '>', '<=', '>=')]
 ]]>
                 </value>
             </property>
@@ -1112,12 +1098,12 @@ public void foo() throws Exception {
     <rule name="SimplifiedTernary"
           language="java"
           since="5.4.0"
-          message="Ternary operators that can be simplified with || or &amp;&amp;"
+          message="This conditional expression can be simplified with || or &amp;&amp;"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#simplifiedternary">
         <description>
 <![CDATA[
-Look for ternary operators with the form `condition ? literalBoolean : foo`
+Reports ternary expression with the form `condition ? literalBoolean : foo`
 or `condition ? foo : literalBoolean`.
 
 These expressions can be simplified respectively to
@@ -1133,9 +1119,7 @@ or
             <property name="xpath">
                 <value>
 <![CDATA[
-//ConditionalExpression[not(PrimaryExpression/*/Literal) and (Expression/PrimaryExpression/*/Literal/BooleanLiteral)]
-|
-//ConditionalExpression[not(Expression/PrimaryExpression/*/Literal) and (PrimaryExpression/*/Literal/BooleanLiteral)]
+//ConditionalExpression[BooleanLiteral and not(NullLiteral)]
 ]]>
                 </value>
             </property>
@@ -1163,62 +1147,6 @@ public class Foo {
         </example>
     </rule>
 
-    <rule name="SimplifyBooleanAssertion"
-          language="java"
-          since="3.6"
-          message="assertTrue(!expr) can be replaced by assertFalse(expr)"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#simplifybooleanassertion">
-        <description>
-Avoid negation in an assertTrue or assertFalse test.
-
-For example, rephrase:
-
-    assertTrue(!expr);
-
-as:
-
-    assertFalse(expr);
-
-        </description>
-        <priority>3</priority>
-        <properties>
-            <property name="xpath">
-                <value>
-<![CDATA[
-//ClassOrInterfaceDeclaration[
-    pmd-java:typeIs('junit.framework.TestCase')
-    or .//MarkerAnnotation/Name[
-        pmd-java:typeIs('org.junit.Test')
-        or pmd-java:typeIs('org.junit.jupiter.api.Test')
-        or pmd-java:typeIs('org.junit.jupiter.api.RepeatedTest')
-        or pmd-java:typeIs('org.junit.jupiter.api.TestFactory')
-        or pmd-java:typeIs('org.junit.jupiter.api.TestTemplate')
-        or pmd-java:typeIs('org.junit.jupiter.params.ParameterizedTest')
-        ]
-    ]
-//StatementExpression
-[
-    .//Name[@Image='assertTrue' or  @Image='assertFalse']
-    and
-    PrimaryExpression/PrimarySuffix/Arguments/ArgumentList/Expression/UnaryExpressionNotPlusMinus[@Image='!']
-        /PrimaryExpression/PrimaryPrefix
-]
-]]>
-                </value>
-            </property>
-        </properties>
-        <example>
-<![CDATA[
-public class SimpleTest extends TestCase {
-    public void testX() {
-        assertTrue("not empty", !r.isEmpty());  // replace with assertFalse("not empty", r.isEmpty())
-        assertFalse(!r.isEmpty());              // replace with assertTrue(r.isEmpty())
-    }
-}
-]]>
-        </example>
-    </rule>
 
     <rule name="SimplifyBooleanExpressions"
           language="java"
@@ -1284,44 +1212,12 @@ public boolean isBarEqualTo(int x) {
           language="java"
           since="3.1"
           message="No need to check for null before an instanceof"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.java.rule.design.SimplifyConditionalRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#simplifyconditional">
         <description>
 No need to check for null before an instanceof; the instanceof keyword returns false when given a null argument.
         </description>
         <priority>3</priority>
-        <properties>
-            <property name="xpath">
-                <value>
-<![CDATA[
-//Expression
- [ConditionalOrExpression
- [EqualityExpression[@Image='==']
-  //NullLiteral
-  and
-  UnaryExpressionNotPlusMinus
-   [@Image='!']//InstanceOfExpression[PrimaryExpression
-     //Name/@Image = ancestor::ConditionalOrExpression/EqualityExpression
-      /PrimaryExpression/PrimaryPrefix/Name/@Image]
-  and
-  (count(UnaryExpressionNotPlusMinus) + 1 = count(*))
- ]
-or
-ConditionalAndExpression
- [EqualityExpression[@Image='!=']//NullLiteral
- and
-InstanceOfExpression
- [PrimaryExpression[not(PrimarySuffix[@ArrayDereference= true()])]
-  //Name[not(contains(@Image,'.'))]/@Image = ancestor::ConditionalAndExpression
-   /EqualityExpression/PrimaryExpression/PrimaryPrefix/Name/@Image]
- and
-(count(InstanceOfExpression) + 1 = count(*))
- ]
-]
-]]>
-                </value>
-            </property>
-        </properties>
         <example>
 <![CDATA[
 class Foo {

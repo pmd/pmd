@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.ast;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.rule.xpath.DeprecatedAttribute;
@@ -15,6 +16,7 @@ import net.sourceforge.pmd.util.document.FileLocation;
 
 /**
  * Abstract class for type declarations nodes.
+ * This is a {@linkplain Node#isFindBoundary() find boundary} for tree traversal methods.
  */
 abstract class AbstractAnyTypeDeclaration extends AbstractTypedSymbolDeclarator<JClassSymbol> implements ASTAnyTypeDeclaration, LeftRecursiveNode {
 
@@ -78,6 +80,11 @@ abstract class AbstractAnyTypeDeclaration extends AbstractTypedSymbolDeclarator<
     @Override
     public @NonNull JClassType getTypeMirror() {
         return (JClassType) super.getTypeMirror();
+    }
+
+    @Override
+    public boolean isFindBoundary() {
+        return isNested();
     }
 }
 

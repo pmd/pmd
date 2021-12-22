@@ -7,11 +7,15 @@
     <test-code>
         <description>failure case</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
         <code><![CDATA[
+import java.util.ArrayList;
+import java.util.List;
+
 public class Foo {
-    private static List buz;
-    public static List bar() {
-        if (buz == null) buz = new ArrayList();
+    private static List<Object> buz;
+    public static List<Object> bar() {
+        if (buz == null) buz = new ArrayList<>();
         return buz;
     }
 }
@@ -22,10 +26,13 @@ public class Foo {
         <description>OK, method is synchronized</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.util.ArrayList;
+import java.util.List;
+
 public class Foo {
-    private static List buz;
-    public static synchronized List bar() {
-        if (buz == null) buz = new ArrayList();
+    private static List<Object> buz;
+    public static synchronized List<Object> bar() {
+        if (buz == null) buz = new ArrayList<>();
         return buz;
     }
 }
@@ -36,11 +43,14 @@ public class Foo {
         <description>OK, in synchronized block</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.util.ArrayList;
+import java.util.List;
+
 public class Foo {
-    private static List buz;
-    public static List bar() {
+    private static List<Object> buz;
+    public static List<Object> bar() {
         synchronized (baz) {
-            if (buz == null) buz = new ArrayList();
+            if (buz == null) buz = new ArrayList<>();
             return buz;
         }
     }
@@ -52,10 +62,12 @@ public class Foo {
         <description>OK, in returning non-static data</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.util.Locale;
+
 public class Foo {
     private static Locale locale;
-    public static List bar() {
-        if (locale==null) return Locale.getDefault();
+    public static Locale bar() {
+        if (locale == null) return Locale.getDefault();
         return locale;
     }
 }
@@ -65,13 +77,17 @@ public class Foo {
     <test-code>
         <description>failure case, two if statements</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>8</expected-linenumbers>
         <code><![CDATA[
+import java.util.ArrayList;
+import java.util.List;
+
 public class Foo {
-    private static List buz;
+    private static List<Object> buz;
     private static boolean b = false;
-    public static List bar(String foo) {
+    public static List<Object> bar(String foo) {
         if (buz == null) {
-            buz = new ArrayList();
+            buz = new ArrayList<>();
             if (foo == null) {
                 b = true;
             }
@@ -85,12 +101,16 @@ public class Foo {
     <test-code>
         <description>failure case, compound if statement</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
         <code><![CDATA[
+import java.util.ArrayList;
+import java.util.List;
+
 public class Foo {
-    private static List list;
-    public static List bar(String param) {
+    private static List<Object> list;
+    public static List<Object> bar(String param) {
         if (list == null || !param.equals("foo")) {
-            list = new ArrayList();
+            list = new ArrayList<>();
             param = "x";
         }
         return list;
@@ -102,12 +122,16 @@ public class Foo {
     <test-code>
         <description>failure case 2</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
         <code><![CDATA[
+import java.util.Collections;
+import java.util.List;
+
 public class Foo {
-    private static List buz = null;
-    private static List bar() {
+    private static List<Object> buz = null;
+    private static List<Object> bar() {
         if (buz == null) {
-            buz = Collections.get(Integer.MAX_SIZE);
+            buz = Collections.<Object> emptyList();
         }
         return buz;
     }
@@ -134,16 +158,38 @@ public class A {
     <test-code>
         <description>#997 Rule NonThreadSafeSingleton gives analysis problem</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
         <code><![CDATA[
-public class A extends B {
+public class B {}
+class A extends B {
     static B instance = null;
     private boolean bar = false;
 
     static void foo() {
-        if (instance == null ) {
+        if (instance == null) {
             instance = new A();
-            ((A)instance).bar=false;
+            ((A)instance).bar = false;
         }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>False positive with correct double checked pattern</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private static volatile Object o;
+    public static Object getO() {
+        if (o == null) {
+            synchronized(Foo.class) {
+                if (o == null) {
+                    o = new Object();
+                }
+            }
+        }
+        return o;
     }
 }
         ]]></code>

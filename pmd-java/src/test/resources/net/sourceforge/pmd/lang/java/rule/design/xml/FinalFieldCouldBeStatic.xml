@@ -7,6 +7,7 @@
     <test-code>
         <description>simple failure case</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     public final int BAR = 42;
@@ -37,6 +38,7 @@ public class Foo {
     <test-code>
         <description>non-primitive failure case - only works for String</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     public final String BAR = "42";
@@ -124,6 +126,7 @@ public class ExampleClass {
     <test-code>
         <description>#2708 - Should trigger with non-lombok @Builder.Default fields</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>11</expected-linenumbers>
         <code><![CDATA[
 package com.example;
 
@@ -134,7 +137,7 @@ import lombok.Data;
 @Builder
 public class ExampleClass {
 
-    @Builder.Default
+    @Builder.Default // that's not a lombok Builder!!
     private final long exampleField = 0L;
 }
         ]]></code>
@@ -143,6 +146,7 @@ public class ExampleClass {
     <test-code>
         <description>Should trigger multiple times for fields declared on one line</description>
         <expected-problems>2</expected-problems>
+        <expected-linenumbers>5,5</expected-linenumbers>
         <code><![CDATA[
 package com.example;
 

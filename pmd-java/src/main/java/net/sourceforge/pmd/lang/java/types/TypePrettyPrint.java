@@ -31,6 +31,10 @@ public final class TypePrettyPrint {
         return prettyPrint(t, new TypePrettyPrinter());
     }
 
+    public static @NonNull String prettyPrintWithSimpleNames(@NonNull JTypeVisitable t) {
+        return prettyPrint(t, new TypePrettyPrinter().useSimpleNames(true));
+    }
+
     public static String prettyPrint(@NonNull JTypeVisitable t, TypePrettyPrinter prettyPrinter) {
         t.acceptVisitor(PrettyPrintVisitor.INSTANCE, prettyPrinter);
         return prettyPrinter.consumeResult();

@@ -7,6 +7,7 @@
     <test-code>
         <description>protected method clone with Object as return type</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
         <code><![CDATA[
 public class Foo implements Cloneable {
     @Override
@@ -19,6 +20,7 @@ public class Foo implements Cloneable {
     <test-code>
         <description>public method clone with Object as return type</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
         <code><![CDATA[
 public class Foo implements Cloneable {
     @Override
@@ -43,6 +45,7 @@ public final class Foo implements Cloneable {
     <test-code>
         <description>final class with public method clone with Object as return type</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
         <code><![CDATA[
 public final class Foo implements Cloneable {
     @Override

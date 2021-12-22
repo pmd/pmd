@@ -9,7 +9,7 @@
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
-    void bar() { ClassLoader cl = SomeClass.class.getClassLoader(); }
+    void bar() { ClassLoader cl = Foo.class.getClassLoader(); }
 }
         ]]></code>
     </test-code>
@@ -36,6 +36,22 @@ public class UseProperClassLoaderFN {
 
         Class<?> c = o.getClass();
         ClassLoader cl2 = c.getClassLoader();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>False positives (#3173)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class UseProperClassLoaderFP {
+    public void run() {
+        ClassLoader cl = UseProperClassLoaderFP.getClassLoader();
+    }
+    
+    private static ClassLoader getClassLoader() {
+        return null;
     }
 }
         ]]></code>

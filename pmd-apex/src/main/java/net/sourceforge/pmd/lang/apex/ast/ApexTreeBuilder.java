@@ -6,10 +6,13 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.AbstractList;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.RandomAccess;
 import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -128,7 +131,7 @@ final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
 
     private static final Pattern COMMENT_PATTERN =
         // we only need to check for \n as the input is normalized
-        Pattern.compile("/\\*\\*([^*]++|\\*(?!/))*+\\*/|//[^\n]++\n");
+        Pattern.compile("/\\*([^*]++|\\*(?!/))*+\\*/|//[^\n]++\n");
 
     private static final Map<Class<? extends AstNode>, Constructor<? extends AbstractApexNode<?>>>
         NODE_TYPE_TO_NODE_ADAPTER_TYPE = new HashMap<>();
@@ -251,16 +254,12 @@ final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
 
     private final TextDocument sourceCode;
     private final ParserTask task;
-    private final List<ApexDocTokenLocation> apexDocTokenLocations;
-    private final Map<Integer, String> suppressMap;
+    private final CommentInformation commentInfo;
 
     ApexTreeBuilder(ParserTask task) {
         this.sourceCode = task.getTextDocument();
         this.task = task;
-
-        CommentInformation commentInformation = extractInformationFromComments(sourceCode, task.getCommentMarker());
-        apexDocTokenLocations = commentInformation.docTokenLocations;
-        suppressMap = commentInformation.suppressMap;
+        commentInfo = extractInformationFromComments(sourceCode, task.getCommentMarker());
     }
 
     static <T extends AstNode> AbstractApexNode<T> createNodeAdapter(T node) {
@@ -284,7 +283,7 @@ final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
 
     ASTApexFile buildTree(Compilation astNode, ApexMultifileAnalysis analysisHandler) {
         assert nodes.isEmpty() : "stack should be empty";
-        ASTApexFile root = new ASTApexFile(task, astNode, suppressMap, analysisHandler);
+        ASTApexFile root = new ASTApexFile(task, astNode, commentInfo.suppressMap, analysisHandler);
         nodes.push(root);
         parents.push(astNode);
 
@@ -312,6 +311,20 @@ final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
         astNode.traverse(this, scope);
         nodes.pop();
         parents.pop();
+
+
+        if (nodes.isEmpty()) {
+            // add the comments only at the end of the processing as the last step
+            addFormalComments();
+        }
+
+        // If appropriate, determine whether this node contains comments or not
+        if (node instanceof AbstractApexCommentContainerNode) {
+            AbstractApexCommentContainerNode<?> commentContainer = (AbstractApexCommentContainerNode<?>) node;
+            if (containsComments(commentContainer)) {
+                commentContainer.setContainsComment(true);
+            }
+        }
     }
 
     private void closeTree(AbstractApexNode<?> node) {
@@ -321,8 +334,30 @@ final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
         }
     }
 
+    private boolean containsComments(ASTCommentContainer<?> commentContainer) {
+        Location loc = commentContainer.getNode().getLoc();
+        if (!Locations.isReal(loc)) {
+            // Synthetic nodes don't have a location and can't have comments
+            return false;
+        }
+
+        List<TokenLocation> allComments = commentInfo.allCommentTokens;
+        // find the first comment after the start of the container node
+        int index = Collections.binarySearch(commentInfo.allCommentTokensByStartIndex, loc.getStartIndex());
+
+        // no exact hit found - this is expected: there is no comment token starting at the very same index as the node
+        assert index < 0 : "comment token is at the same position as non-comment token";
+        // extract "insertion point"
+        index = ~index;
+
+        // now check whether the next comment after the node is still inside the node
+        return index >= 0 && index < allComments.size()
+            && loc.getStartIndex() < allComments.get(index).region.getStartOffset()
+            && loc.getEndIndex() >= allComments.get(index).region.getEndOffset();
+    }
+
     private void addFormalComments() {
-        for (ApexDocTokenLocation tokenLocation : apexDocTokenLocations) {
+        for (ApexDocTokenLocation tokenLocation : commentInfo.docTokenLocations) {
             AbstractApexNode<?> parent = tokenLocation.nearestNode;
             if (parent != null) {
                 parent.insertChild(new ASTFormalComment(tokenLocation.region, tokenLocation.image), 0);
@@ -342,6 +377,7 @@ final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
      * the nodes appearing later in the source might be visiting first.
      * The correct node will then be visited afterwards, and since the distance
      * to the comment is smaller, it overrides the remembered node.
+     *
      * @param jorjeNode the original node
      * @param node the potential parent node, to which the comment could belong
      */
@@ -354,7 +390,7 @@ final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
         }
         // find the token, that appears as close as possible before the node
         TextRegion nodeRegion = node.getRegion();
-        for (ApexDocTokenLocation comment : apexDocTokenLocations) {
+        for (ApexDocTokenLocation comment : commentInfo.docTokenLocations) {
             if (comment.region.compareTo(nodeRegion) > 0) {
                 // this and all remaining tokens are after the node
                 // so no need to check the remaining tokens.
@@ -373,19 +409,29 @@ final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
         Chars text = source.getText();
 
         boolean checkForCommentSuppression = suppressMarker != null;
-        List<ApexDocTokenLocation> tokenLocations = new LinkedList<>();
+        ArrayList<TokenLocation> allCommentTokens = new ArrayList<>();
+        List<ApexDocTokenLocation> tokenLocations = new ArrayList<>();
         Map<Integer, String> suppressMap = new HashMap<>();
+
 
         Matcher matcher = COMMENT_PATTERN.matcher(text);
         while (matcher.find()) {
             int startIdx = matcher.start();
             int endIdx = matcher.end();
             Chars commentText = text.subSequence(startIdx, endIdx);
+            TextRegion commentRegion = TextRegion.fromBothOffsets(startIdx, endIdx);
 
+            final TokenLocation tok;
             if (commentText.startsWith("/**")) {
-                TextRegion commentRegion = TextRegion.fromBothOffsets(startIdx, endIdx);
-                tokenLocations.add(new ApexDocTokenLocation(commentRegion, commentText));
-            } else if (checkForCommentSuppression && commentText.startsWith("//")) {
+                ApexDocTokenLocation doctok = new ApexDocTokenLocation(commentRegion, commentText);
+                tokenLocations.add(doctok);
+                tok = doctok;
+            } else {
+                tok = new TokenLocation(commentRegion);
+            }
+            allCommentTokens.add(tok);
+
+            if (checkForCommentSuppression && commentText.startsWith("//")) {
                 Chars trimmed = commentText.subSequence("//".length(), commentText.length()).trimStart();
                 if (trimmed.startsWith(suppressMarker)) {
                     Chars userMessage = trimmed.subSequence(suppressMarker.length(), trimmed.length()).trim();
@@ -393,30 +439,69 @@ final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
                 }
             }
         }
-
-        return new CommentInformation(suppressMap, tokenLocations);
+        return new CommentInformation(suppressMap, allCommentTokens, tokenLocations);
     }
 
     private static class CommentInformation {
-        Map<Integer, String> suppressMap;
-        List<ApexDocTokenLocation> docTokenLocations;
 
-        CommentInformation(Map<Integer, String> suppressMap, List<ApexDocTokenLocation> docTokenLocations) {
+        final Map<Integer, String> suppressMap;
+        final List<TokenLocation> allCommentTokens;
+        final TokenListByStartIndex allCommentTokensByStartIndex;
+        final List<ApexDocTokenLocation> docTokenLocations;
+
+        <T extends List<TokenLocation> & RandomAccess>
+            CommentInformation(Map<Integer, String> suppressMap, T allCommentTokens, List<ApexDocTokenLocation> docTokenLocations) {
             this.suppressMap = suppressMap;
+            this.allCommentTokens = allCommentTokens;
             this.docTokenLocations = docTokenLocations;
+            this.allCommentTokensByStartIndex = new TokenListByStartIndex(allCommentTokens);
         }
     }
 
-    private static class ApexDocTokenLocation {
+    /**
+     * List that maps comment tokens to their start index without copy.
+     * This is used to implement a "binary search by key" routine which unfortunately isn't in the stdlib.
+     *
+     * <p>
+     * Note that the provided token list must implement {@link RandomAccess}.
+     */
+    private static final class TokenListByStartIndex extends AbstractList<Integer> implements RandomAccess {
 
-        private final TextRegion region;
+        private final List<TokenLocation> tokens;
+
+        <T extends List<TokenLocation> & RandomAccess> TokenListByStartIndex(T tokens) {
+            this.tokens = tokens;
+        }
+
+        @Override
+        public Integer get(int index) {
+            return tokens.get(index).region.getStartOffset();
+        }
+
+        @Override
+        public int size() {
+            return tokens.size();
+        }
+    }
+
+    private static class TokenLocation {
+
+        final TextRegion region;
+
+        TokenLocation(TextRegion region) {
+            this.region = region;
+        }
+    }
+
+    private static class ApexDocTokenLocation extends TokenLocation {
+
         private final Chars image;
 
         private AbstractApexNode<?> nearestNode;
         private int nearestNodeDistance;
 
         ApexDocTokenLocation(TextRegion commentRegion, Chars image) {
-            this.region = commentRegion;
+            super(commentRegion);
             this.image = image;
         }
     }
@@ -431,7 +516,7 @@ final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
     }
 
     public Map<Integer, String> getSuppressMap() {
-        return suppressMap;
+        return commentInfo.suppressMap;
     }
 
     @Override

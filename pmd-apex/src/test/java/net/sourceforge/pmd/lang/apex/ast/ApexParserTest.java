@@ -45,6 +45,15 @@ public class ApexParserTest extends ApexParserTestBase {
         assertEquals(4, methods.size());
     }
 
+    @Test
+    public void fileName() {
+        String code = "class Outer { class Inner {}}";
+
+        ASTUserClass rootNode = (ASTUserClass) parse(code, "src/filename.cls");
+
+        assertEquals("src/filename.cls", rootNode.getTextDocument().getDisplayName());
+    }
+
     private final String testCodeForLineNumbers =
               "public class SimpleClass {\n" // line 1
             + "    public void method1() {\n" // line 2

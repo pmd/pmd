@@ -13,7 +13,12 @@ import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.logging.Logger;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -80,6 +85,14 @@ public final class CPDCommandLineInterface {
             setStatusCodeOrExit(ERROR_STATUS);
             return;
         }
+
+        Map<String, String> deprecatedOptions = filterDeprecatedOptions(args);
+        if (!deprecatedOptions.isEmpty()) {
+            Entry<String, String> first = deprecatedOptions.entrySet().iterator().next();
+            LOGGER.warning("Some deprecated options were used on the command-line, including " + first.getKey());
+            LOGGER.warning("Consider replacing it with " + first.getValue());
+        }
+
         arguments.postContruct();
         // Pass extra parameters as System properties to allow language
         // implementation to retrieve their associate values...
@@ -109,6 +122,24 @@ public final class CPDCommandLineInterface {
             e.printStackTrace();
             setStatusCodeOrExit(ERROR_STATUS);
         }
+    }
+
+    private static Map<String, String> filterDeprecatedOptions(String... args) {
+        Map<String, String> argSet = new LinkedHashMap<>(SUGGESTED_REPLACEMENT);
+        argSet.keySet().retainAll(new HashSet<>(Arrays.asList(args)));
+        return Collections.unmodifiableMap(argSet);
+    }
+
+    /** Map of deprecated option to suggested replacement. */
+    private static final Map<String, String> SUGGESTED_REPLACEMENT;
+
+    static {
+        Map<String, String> m = new LinkedHashMap<>();
+
+        m.put("--failOnViolation", "--fail-on-violation");
+        m.put("-failOnViolation", "--fail-on-violation");
+        m.put("--filelist", "--file-list");
+        SUGGESTED_REPLACEMENT = Collections.unmodifiableMap(m);
     }
 
     public static void addSourceFilesToCPD(CPD cpd, CPDConfiguration arguments) {

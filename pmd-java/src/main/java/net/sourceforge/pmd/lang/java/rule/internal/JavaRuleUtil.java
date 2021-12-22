@@ -16,7 +16,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -31,6 +30,7 @@ import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTArrayAccess;
+import net.sourceforge.pmd.lang.java.ast.ASTArrayAllocation;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.AccessType;
@@ -42,6 +42,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTExpressionStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
@@ -76,12 +77,14 @@ import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.ast.UnaryOp;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
+import net.sourceforge.pmd.lang.java.symbols.internal.ast.AstLocalVarSym;
 import net.sourceforge.pmd.lang.java.types.InvocationMatcher;
 import net.sourceforge.pmd.lang.java.types.InvocationMatcher.CompoundInvocationMatcher;
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.util.CollectionUtil;
+import net.sourceforge.pmd.util.OptionalBool;
 
 /**
  * Utilities shared between rules.
@@ -465,9 +468,9 @@ public final class JavaRuleUtil {
 
     private static boolean isReadUsage(ASTNamedReferenceExpr expr) {
         return expr.getAccessType() == AccessType.READ
-            // foo(x++)
+            // x++ as a method argument or used in other expression
             || expr.getParent() instanceof ASTUnaryExpression
-            && expr.getParent().getParent() instanceof ASTArgumentList;
+            && !(expr.getParent().getParent() instanceof ASTExpressionStatement);
     }
 
     /**
@@ -658,7 +661,7 @@ public final class JavaRuleUtil {
         return e instanceof ASTBooleanLiteral;
     }
 
-    public static boolean isBooleanNegation(ASTExpression e) {
+    public static boolean isBooleanNegation(JavaNode e) {
         return e instanceof ASTUnaryExpression && ((ASTUnaryExpression) e).getOperator() == UnaryOp.NEGATION;
     }
 
@@ -770,8 +773,7 @@ public final class JavaRuleUtil {
      */
     public static boolean isReferenceToSameVar(ASTExpression e1, ASTExpression e2) {
         if (e1 instanceof ASTNamedReferenceExpr && e2 instanceof ASTNamedReferenceExpr) {
-            if (!Objects.equals(((ASTNamedReferenceExpr) e2).getReferencedSym(),
-                                ((ASTNamedReferenceExpr) e1).getReferencedSym())) {
+            if (OptionalBool.YES != referenceSameSymbol((ASTNamedReferenceExpr) e1, (ASTNamedReferenceExpr) e2)) {
                 return false;
             }
 
@@ -790,13 +792,24 @@ public final class JavaRuleUtil {
         return false;
     }
 
+    private static OptionalBool referenceSameSymbol(ASTNamedReferenceExpr e1, ASTNamedReferenceExpr e2) {
+        if (!e1.getName().equals(e2.getName())) {
+            return OptionalBool.NO;
+        }
+        JVariableSymbol ref1 = e1.getReferencedSym();
+        JVariableSymbol ref2 = e2.getReferencedSym();
+        if (ref1 == null || ref2 == null) {
+            return OptionalBool.UNKNOWN;
+        }
+        return OptionalBool.definitely(ref1.equals(ref2));
+    }
+
     /**
      * Returns true if the expression is a reference to a local variable.
      */
     public static boolean isReferenceToLocal(ASTExpression expr) {
         if (expr instanceof ASTVariableAccess) {
-            JVariableSymbol sym = ((ASTVariableAccess) expr).getReferencedSym();
-            return sym != null && !sym.isField();
+            return ((ASTVariableAccess) expr).getReferencedSym() instanceof AstLocalVarSym;
         }
         return false;
     }
@@ -951,5 +964,32 @@ public final class JavaRuleUtil {
      */
     public static boolean hasLombokAnnotation(Annotatable node) {
         return LOMBOK_ANNOTATIONS.stream().anyMatch(node::isAnnotationPresent);
+    }
+
+    /**
+     * Returns true if the expression is a null check on the given variable.
+     */
+    public static boolean isNullCheck(ASTExpression expr, JVariableSymbol var) {
+        return isNullCheck(expr, StablePathMatcher.matching(var));
+    }
+
+    public static boolean isNullCheck(ASTExpression expr, StablePathMatcher matcher) {
+        if (expr instanceof ASTInfixExpression) {
+            ASTInfixExpression condition = (ASTInfixExpression) expr;
+            if (condition.getOperator().hasSamePrecedenceAs(BinaryOp.EQ)) {
+                ASTNullLiteral nullLit = condition.firstChild(ASTNullLiteral.class);
+                if (nullLit != null) {
+                    return matcher.matches(getOtherOperandIfInInfixExpr(nullLit));
+                }
+            }
+        }
+        return false;
+    }
+
+    public static boolean isArrayInitializer(ASTExpression expr) {
+        if (expr instanceof ASTArrayAllocation) {
+            return ((ASTArrayAllocation) expr).getArrayInitializer() != null;
+        }
+        return false;
     }
 }

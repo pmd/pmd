@@ -16,5 +16,8 @@ pmd-core/dependency-reduced-pom.xml
 vendor
 .DS_Store
 
+# node modules for https://allcontributors.org/docs/en/cli/installation
+node_modules
+
 # rule docs are generated
 docs/pages/pmd/rules
