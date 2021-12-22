@@ -1,4 +1,4 @@
-+- Input[@CanonicalImage = null, @ExcludedLinesCount = "0", @ExcludedRangesCount = "0", @Sourcecode = "--\n-- See https://github.com/pmd/pmd/issues/3515\n--\n\nCREATE OR REPLACE PROCEDURE EXAMPLE_PROCEDURE IS\n   --\n   TYPE example_data_rt IS RECORD(\n      field_one   PLS_INTEGER,\n      field_two   PLS_INTEGER,\n      field_three PLS_INTEGER);\n   --\n   TYPE example_data_aat IS TABLE OF example_data_rt INDEX BY BINARY_INTEGER;\n   --\n   l_example_data example_data_aat;\n   --\nBEGIN\n   --\n   SELECT 1 field_value_one, 2 field_value_two, 3 field_value_three\n     INTO l_example_data(1).field_one,l_example_data(1).field_two,l_example_data(1).field_three\n     FROM DUAL;\n   --\nEND EXAMPLE_PROCEDURE;\n"]
++- Input[@CanonicalImage = null, @ExcludedLinesCount = "0", @ExcludedRangesCount = "0"]
    +- Global[@CanonicalImage = null]
       +- ProgramUnit[@CanonicalImage = null, @MethodName = "EXAMPLE_PROCEDURE", @Name = "EXAMPLE_PROCEDURE", @ObjectName = null]
          +- MethodDeclarator[@CanonicalImage = "EXAMPLE_PROCEDURE", @Image = "EXAMPLE_PROCEDURE", @ParameterCount = "1"]
