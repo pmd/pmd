@@ -219,7 +219,7 @@ public class NullAssignmentTernary {
 ]]></code>
     </test-code>
 
-    <test-code regressionTest="false">
+    <test-code>
         <description>Multiple ternaries with null assignment eventually</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>4</expected-linenumbers>

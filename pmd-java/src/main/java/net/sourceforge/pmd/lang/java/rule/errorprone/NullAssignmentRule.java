@@ -60,7 +60,15 @@ public class NullAssignmentRule extends AbstractJavaRulechainRule {
 
         boolean isThenOrElse = ternary.getThenBranch() == nullLiteral || ternary.getElseBranch() == nullLiteral;
 
-        boolean isAssignment = ternary.getParent() instanceof ASTAssignmentExpression;
+        // check for nested ternaries...
+        ASTConditionalExpression currentTernary = ternary;
+        while (currentTernary.getParent() instanceof ASTConditionalExpression) {
+            ASTConditionalExpression parentTernary = (ASTConditionalExpression) currentTernary.getParent();
+            isThenOrElse &= parentTernary.getThenBranch() == currentTernary || parentTernary.getElseBranch() == currentTernary;
+            currentTernary = parentTernary;
+        }
+
+        boolean isAssignment = currentTernary.getParent() instanceof ASTAssignmentExpression;
 
         return isThenOrElse
                 && isAssignment
