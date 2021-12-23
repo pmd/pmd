@@ -251,15 +251,40 @@ public class NullAssignmentFinal {
     </test-code>
 
     <test-code>
-        <description>False positive with null as method argument</description>
+        <description>[java] NullAssignment - FP with ternary and null as method argument #2320</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.util.ArrayList;
+import java.util.List;
+
 public class NullAssignmentMethodCall {
     public void bar(String a) {
         String b = this.getString(a == null ? null : a);
     }
 
     private String getString(String a) { return a; }
+
+    public String methodOne(String one, String two) {
+        return "test";
+    }
+    public String methodTwo(String one, String two) {
+        List<String> strings = new ArrayList<>();
+        return methodOne("one", strings.isEmpty() ? null : "two");
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] NullAssignment - FP with ternay and null as constructor argument #1669</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class NullAssignmentConstructorCall {
+    public void bar(String discordClient) {
+        throw new IllegalArgumentException(String.format(
+            "Unsupported client with class '%s' given",
+            (discordClient == null) ? null : discordClient.getClass()));
+    }
 }
 ]]></code>
     </test-code>
