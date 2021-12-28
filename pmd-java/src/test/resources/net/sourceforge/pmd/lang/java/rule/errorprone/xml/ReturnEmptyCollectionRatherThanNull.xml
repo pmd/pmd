@@ -157,7 +157,8 @@ public class Foo {
 
   <test-code>
     <description>Null is returned from a loop</description>
-    <expected-problems>0</expected-problems>
+    <expected-problems>1</expected-problems>
+    <expected-linenumbers>7</expected-linenumbers>
     <code><![CDATA[
   import java.util.List;
 
