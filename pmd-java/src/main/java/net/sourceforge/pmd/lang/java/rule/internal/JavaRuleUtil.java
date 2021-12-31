@@ -371,7 +371,7 @@ public final class JavaRuleUtil {
         if (startsWithCamelCaseWord(node.getName(), "get")) {
             return hasField(enclosing, node.getName().substring(3));
         } else if (startsWithCamelCaseWord(node.getName(), "is")
-                && TypeTestUtil.isA(Boolean.TYPE, node.getResultTypeNode())) {
+                && TypeTestUtil.isA(boolean.class, node.getResultTypeNode())) {
             return hasField(enclosing, node.getName().substring(2));
         }
 

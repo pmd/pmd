@@ -8,14 +8,14 @@ import static net.sourceforge.pmd.properties.PropertyFactory.stringProperty;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
@@ -67,23 +67,25 @@ public class BeanMembersShouldSerializeRule extends AbstractIgnoredAnnotationRul
             return data;
         }
 
-        List<String> accessors = node.getDeclarations(ASTMethodDeclaration.class)
+        Set<String> accessors =
+            node.getDeclarations(ASTMethodDeclaration.class)
                 .filter(JavaRuleUtil::isGetterOrSetter)
-                .collect(Collectors.mapping(m -> m.getName(), CollectionUtil.toMutableList()));
-        Collections.sort(accessors);
+                .collect(Collectors.mapping(ASTMethodDeclaration::getName, Collectors.toSet()));
 
-        NodeStream<ASTVariableDeclaratorId> fields = node.getDeclarations(ASTFieldDeclaration.class)
+        NodeStream<ASTVariableDeclaratorId> fields =
+            node.getDeclarations(ASTFieldDeclaration.class)
                 .flatMap(ASTFieldDeclaration::getVarIds);
+
         for (ASTVariableDeclaratorId field : fields) {
             if (field.getLocalUsages().isEmpty()
-                    || field.getModifiers().hasAny(JModifier.TRANSIENT, JModifier.STATIC)
-                    || hasIgnoredAnnotation(field)) {
+                || field.getModifiers().hasAny(JModifier.TRANSIENT, JModifier.STATIC)
+                || hasIgnoredAnnotation(field)) {
                 continue;
             }
             String varName = StringUtils.capitalize(trimIfPrefix(field.getName()));
-            boolean hasGetMethod = Collections.binarySearch(accessors, "get" + varName) >= 0
-                    || Collections.binarySearch(accessors, "is" + varName) >= 0;
-            boolean hasSetMethod = Collections.binarySearch(accessors, "set" + varName) >= 0;
+            boolean hasGetMethod = accessors.contains("get" + varName)
+                || accessors.contains("is" + varName);
+            boolean hasSetMethod = accessors.contains("set" + varName);
             // Note that a Setter method is not applicable to a final
             // variable...
             if (!hasGetMethod || !field.hasModifiers(JModifier.FINAL) && !hasSetMethod) {
