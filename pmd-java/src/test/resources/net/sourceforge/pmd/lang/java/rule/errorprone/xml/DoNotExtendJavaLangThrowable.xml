@@ -33,4 +33,12 @@ public class Foo extends FooThrowable {
 class FooThrowable {}
         ]]></code>
     </test-code>
+    <test-code>
+        <description>Extends exception is allowed</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo extends Exception {
+}
+        ]]></code>
+    </test-code>
 </test-data>
