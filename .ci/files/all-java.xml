@@ -207,7 +207,7 @@
     <rule ref="category/java/errorprone.xml/DoNotCallGarbageCollectionExplicitly"/>
     <!-- <rule ref="category/java/errorprone.xml/DoNotExtendJavaLangThrowable"/> -->
     <!-- <rule ref="category/java/errorprone.xml/DoNotHardCodeSDCard"/> -->
-    <!-- <rule ref="category/java/errorprone.xml/DoNotThrowExceptionInFinally"/> -->
+    <rule ref="category/java/errorprone.xml/DoNotThrowExceptionInFinally"/>
     <rule ref="category/java/errorprone.xml/DontImportSun"/>
     <rule ref="category/java/errorprone.xml/DontUseFloatTypeForLoopIndices"/>
     <rule ref="category/java/errorprone.xml/EmptyCatchBlock"/>
