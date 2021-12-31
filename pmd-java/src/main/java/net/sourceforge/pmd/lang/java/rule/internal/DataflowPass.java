@@ -29,6 +29,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTBreakStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTCatchClause;
 import net.sourceforge.pmd.lang.java.ast.ASTCatchParameter;
+import net.sourceforge.pmd.lang.java.ast.ASTCompactConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
@@ -966,7 +967,7 @@ public final class DataflowPass {
             // All static field initializers + static initializers
             SpanInfo staticInit = beforeLocal.forkEmptyNonLocal();
 
-            List<ASTConstructorDeclaration> ctors = new ArrayList<>();
+            List<ASTBodyDeclaration> ctors = new ArrayList<>();
 
             for (ASTBodyDeclaration declaration : declarations) {
                 final boolean isStatic;
@@ -974,8 +975,9 @@ public final class DataflowPass {
                     isStatic = ((ASTFieldDeclaration) declaration).isStatic();
                 } else if (declaration instanceof ASTInitializer) {
                     isStatic = ((ASTInitializer) declaration).isStatic();
-                } else if (declaration instanceof ASTConstructorDeclaration) {
-                    ctors.add((ASTConstructorDeclaration) declaration);
+                } else if (declaration instanceof ASTConstructorDeclaration
+                        || declaration instanceof ASTCompactConstructorDeclaration) {
+                    ctors.add(declaration);
                     continue;
                 } else {
                     continue;
@@ -989,7 +991,7 @@ public final class DataflowPass {
             }
 
             SpanInfo ctorEndState = ctors.isEmpty() ? ctorHeader : null;
-            for (ASTConstructorDeclaration ctor : ctors) {
+            for (ASTBodyDeclaration ctor : ctors) {
                 SpanInfo state = instanceVisitor.acceptOpt(ctor, ctorHeader.forkCapturingNonLocal());
                 ctorEndState = ctorEndState == null ? state : ctorEndState.absorb(state);
             }
