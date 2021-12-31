@@ -1293,7 +1293,7 @@ Use Environment.getExternalStorageDirectory() instead of "/sdcard"
         <priority>3</priority>
         <properties>
             <property name="xpath">
-                <value>//Literal[starts-with(@Image,'"/sdcard')]</value>
+                <value>//StringLiteral[starts-with(@Image,'"/sdcard')]</value>
             </property>
         </properties>
         <example>
@@ -1364,7 +1364,7 @@ Note: This is a PMD implementation of the Lint4j rule "A throw in a finally bloc
         <priority>4</priority>
         <properties>
             <property name="xpath">
-                <value>//FinallyStatement[descendant::ThrowStatement]</value>
+                <value>//FinallyClause[descendant::ThrowStatement]</value>
             </property>
         </properties>
         <example>
@@ -2390,7 +2390,7 @@ log4j2 (since 6.19.0).
                 <value><![CDATA[
 //ClassOrInterfaceDeclaration[
   count(
-    ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/FieldDeclaration//ClassOrInterfaceType[
+    ClassOrInterfaceBody/FieldDeclaration/ClassOrInterfaceType[
       pmd-java:typeIs("org.apache.log4j.Logger") or
       pmd-java:typeIs("org.apache.logging.log4j.Logger") or
       pmd-java:typeIs("java.util.logging.Logger") or
