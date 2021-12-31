@@ -67,15 +67,13 @@ public class BeanMembersShouldSerializeRule extends AbstractIgnoredAnnotationRul
             return data;
         }
 
-        List<String> accessors = node.descendants(ASTMethodDeclaration.class)
+        List<String> accessors = node.getDeclarations(ASTMethodDeclaration.class)
                 .filter(JavaRuleUtil::isGetterOrSetter)
-                .toStream()
-                .map(m -> m.getName())
-                .collect(Collectors.toList());
+                .collect(Collectors.mapping(m -> m.getName(), CollectionUtil.toMutableList()));
         Collections.sort(accessors);
 
-        List<@NonNull ASTVariableDeclaratorId> fields = node.descendants(ASTFieldDeclaration.class)
-                .descendants(ASTVariableDeclaratorId.class).toList();
+        NodeStream<ASTVariableDeclaratorId> fields = node.getDeclarations(ASTFieldDeclaration.class)
+                .flatMap(ASTFieldDeclaration::getVarIds);
         for (ASTVariableDeclaratorId field : fields) {
             if (field.getLocalUsages().isEmpty()
                     || field.getModifiers().hasAny(JModifier.TRANSIENT, JModifier.STATIC)
