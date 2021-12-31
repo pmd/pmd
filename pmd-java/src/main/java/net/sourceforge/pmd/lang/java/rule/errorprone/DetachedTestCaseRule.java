@@ -11,15 +11,6 @@ import net.sourceforge.pmd.lang.java.ast.JModifier;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.rule.internal.TestFrameworksUtil;
 
-/**
- * The method clone() should only be implemented if the class implements the
- * Cloneable interface with the exception of a final method that only throws
- * CloneNotSupportedException. This version uses PMD's type resolution
- * facilities, and can detect if the class implements or extends a Cloneable
- * class
- *
- * @author acaplan
- */
 public class DetachedTestCaseRule extends AbstractJavaRulechainRule {
 
     public DetachedTestCaseRule() {
