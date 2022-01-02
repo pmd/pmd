@@ -8,25 +8,50 @@
         <description>Success</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import android.app.Activity;
+
 public class MyActivity extends Activity {
     @Override
     protected void onPause() {
         foo();
         super.onPause();
     }
+    private void foo() {}
 }
         ]]></code>
     </test-code>
 
     <test-code>
-        <description>Failure</description>
+        <description>Failure - missing super</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
         <code><![CDATA[
+import android.app.Activity;
+
 public class MyActivity extends Activity {
     @Override
     protected void onPause() {
         foo();
     }
+    private void foo() {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Failure - super not as last</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+import android.app.Activity;
+
+public class MyActivity extends Activity {
+    @Override
+    protected void onPause() {
+        super.onPause();
+        foo();
+    }
+    private void foo() {}
 }
         ]]></code>
     </test-code>
@@ -35,11 +60,15 @@ public class MyActivity extends Activity {
         <description>#1154 Call super onPause when there is no super</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import android.app.Activity;
+
 public class NotAnActivity {
-    Activity a = myActivity;
+    Activity a = getActivity();
     protected void onPause() {
         doSomething();
     }
+    private Activity getActivity() { return null; }
+    private void doSomething() {}
 }
         ]]></code>
     </test-code>
