@@ -125,6 +125,11 @@ public class MissingOverrideRule extends AbstractJavaRulechainRule {
                                     JMethodSig superSig) {
             ASTMethodDeclaration subSig = null;
             for (ASTMethodDeclaration it : tracked) {
+                // note: we don't use override-equivalence, the definition
+                // of an override uses the concept of sub-signature instead,
+                // which is slightly different. We could also use TypeOps.overrides
+                // but at this point we already know much of what that method checks.
+                // https://docs.oracle.com/javase/specs/jls/se15/html/jls-8.html#jls-8.4.8.1
                 if (TypeOps.isSubSignature(it.getGenericSignature(), superSig)) {
                     subSig = it;
                     // we assume there is a single relevant method that may match,
