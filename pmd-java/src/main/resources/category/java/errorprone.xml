@@ -204,8 +204,7 @@ Note that Oracle has declared Object.finalize() as deprecated since JDK 9.
 <![CDATA[
 //MethodCall[pmd-java:matchesSig("java.lang.Object#finalize()")]
     (: it's ok inside finalize :)
-    [not(SuperExpression and ../../../../MethodDeclaration[@Name = 'finalize'][@Arity = 0][VoidType]
-     and not(ancestor::Initializer))]
+    [not(SuperExpression and ancestor::*[self::MethodDeclaration or self::Initializer][1][@Name = 'finalize'][@Arity = 0][VoidType])]
 ]]>
                 </value>
             </property>
