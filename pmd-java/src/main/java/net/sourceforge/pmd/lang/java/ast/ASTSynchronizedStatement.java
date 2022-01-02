@@ -24,4 +24,11 @@ public class ASTSynchronizedStatement extends AbstractJavaNode {
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }
+
+    /**
+     * Returns the body of this statement.
+     */
+    public ASTBlock getBody() {
+        return (ASTBlock) getChild(1);
+    }
 }

@@ -80,8 +80,8 @@
     </test-code>
 
     <test-code>
-        <description>#432 empty try-with-resource</description>
-        <expected-problems>0</expected-problems>
+        <description>#432 empty try-with-resource - not ok</description>
+        <expected-problems>1</expected-problems>
         <code><![CDATA[
             class X {
                 void method() {
@@ -94,13 +94,12 @@
     </test-code>
 
     <test-code>
-        <description>#432 empty try-with-resource</description>
+        <description>#432 empty try-with-resource - ok with unused var name</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
             class X {
                 void method() {
-                    try (ClientResponse response = execute(() -> target.request(mediaTypes).delete(), DELETE, new ExpectedResponse(status, required))) {
-                        // false positive
+                    try (ClientResponse ignored = execute(() -> target.request(mediaTypes).delete(), DELETE, new ExpectedResponse(status, required))) {
                     }
                 }
             }
@@ -160,6 +159,31 @@
             ]]></code>
     </test-code>
 
+
+    <test-code>
+        <description>pos, empty block</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            public class Foo {
+                public void bar() {
+                    {}
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>statement block not empty</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class Foo {
+                public void bar() {
+                    { return; }
+                }
+            }
+            ]]></code>
+    </test-code>
+    
     <test-code>
         <description>failure case (non static)</description>
         <expected-problems>1</expected-problems>
@@ -182,7 +206,7 @@
 
     <test-code>
         <description>not an initializer</description>
-        <expected-problems>0</expected-problems>
+        <expected-problems>1</expected-problems>
         <code><![CDATA[
             public class Foo {
                 public void bar() {

@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.java.rule.codestyle;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class EmptyCodeBlockTest extends PmdRuleTst {
+public class EmptyControlStatementTest extends PmdRuleTst {
     // no additional unit tests
 }

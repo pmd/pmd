@@ -36,4 +36,12 @@ public class ASTInitializer extends AbstractJavaNode {
     public void setStatic() {
         isStatic = true;
     }
+
+    /**
+     * Returns the body of this initializer.
+     */
+    public ASTBlock getBody() {
+        return (ASTBlock) getChild(0);
+    }
+
 }

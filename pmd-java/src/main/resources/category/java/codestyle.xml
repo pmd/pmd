@@ -710,12 +710,15 @@ public abstract class ShouldBeAbstract {
         </example>
     </rule>
 
-    <rule name="EmptyCodeBlock"
+    <rule name="EmptyControlStatement"
           language="java"
           since="6.42.0"
           message="This control statement has an empty branch"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.java.rule.codestyle.EmptyControlStatementRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#unnecessarysemicolon">
+        <!-- Note about naming: EmptyCodeBlock does not work because the rule flags `if(true);`  -->
+        <!-- EmptyControlStatement is weird because `{}` is not a control statement, and we also flag initializers. -->
+        <!-- EmptyStatement does not work because `;` is called an "empty statement" and is not flagged by this rule, rather, by UnnecessarySemicolon. -->
         <description><![CDATA[
             Reports control statements whose body is empty, as well as empty initializers.
 
@@ -735,36 +738,17 @@ public abstract class ShouldBeAbstract {
             EmptyStatementNotInLoop is replaced by {% rule java/codestyle/UnnecessarySemiColon %}.
         ]]></description>
         <priority>3</priority>
-        <properties>
-            <property name="version" value="2.0"/>
-            <property name="xpath">
-                <value><![CDATA[      
-      //TryStatement[not(ResourceSpecification)]/Block[1][not(*)]
-    | //FinallyStatement/Block[not(*)]
-    | //SwitchStatement[count(*)=1]
-    | //SynchronizedStatement/Block[not(*)]
-
-    (: todo allow if there is an else branch and a comment :)
-    | //IfStatement/Statement[Block[not(*)] or EmptyStatement]
-
-    (: todo allow if there is a comment :)
-    | //WhileStatement/Statement[Block[not(*)] or EmptyStatement]
-    | //ForStatement/Statement[Block[not(*)] or EmptyStatement]
-    | //DoStatement/Statement[Block[not(*)] or EmptyStatement]
-
-    | //Initializer/Block[not(*)]
-        ]]></value>
-            </property>
-        </properties>
         <example>
             <![CDATA[
             class Foo {
                 {
-                    toString();; // one of these semicolons is unnecessary
-                    if (true); // this semicolon is not unnecessary, but it could be an empty block instead (not reported)
+                    if (true); // empty if statement
+                    if (true) { // empty as well
+                    }
                 }
-            }; // this semicolon is unnecessary
 
+                {} // empty initializer
+            }
             ]]>
         </example>
     </rule>
