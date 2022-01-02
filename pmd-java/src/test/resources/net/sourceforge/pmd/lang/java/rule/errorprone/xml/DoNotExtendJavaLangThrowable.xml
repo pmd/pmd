@@ -7,6 +7,7 @@
     <test-code>
         <description>Extends with fully qualified name</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>1</expected-linenumbers>
         <code><![CDATA[
 public class Foo extends java.lang.Throwable {
 }
@@ -16,6 +17,7 @@ public class Foo extends java.lang.Throwable {
     <test-code>
         <description>Extends with implicit import</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>1</expected-linenumbers>
         <code><![CDATA[
 public class Foo extends Throwable {
 }
@@ -27,6 +29,15 @@ public class Foo extends Throwable {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo extends FooThrowable {
+}
+class FooThrowable {}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Extends exception is allowed</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo extends Exception {
 }
         ]]></code>
     </test-code>

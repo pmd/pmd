@@ -1263,7 +1263,7 @@ Extend Exception or RuntimeException instead of Throwable.
                 <value>
 <![CDATA[
 //ClassOrInterfaceDeclaration/ExtendsList/ClassOrInterfaceType
-  [@Image="Throwable" or @Image="java.lang.Throwable"]
+  [pmd-java:typeIsExactly('java.lang.Throwable')]
 ]]>
                 </value>
             </property>
