@@ -451,7 +451,7 @@ try {  // Prefer this:
     <rule name="AvoidLiteralsInIfCondition"
           language="java"
           since="4.2.6"
-          message="Avoid using Literals in Conditional Statements"
+          message="Avoid using literals in if statements"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#avoidliteralsinifcondition">
         <description>
