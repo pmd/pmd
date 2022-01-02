@@ -93,11 +93,6 @@ public class LooseCouplingRule extends AbstractJavaRulechainRule {
     }
 
     private boolean isTypeParameter(ASTClassOrInterfaceType node) {
-        Set<String> typeParameters = node.getRoot()
-                .descendants(ASTTypeParameter.class)
-                .toStream()
-                .map(ASTTypeParameter::getName)
-                .collect(Collectors.toSet());
-        return typeParameters.contains(node.getSimpleName());
+        return node.getTypeMirror().isTypeVariable();
     }
 }
