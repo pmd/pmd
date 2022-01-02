@@ -223,8 +223,7 @@ original error, causing other, more subtle problems later on.
             <property name="xpath">
                 <value>
 <![CDATA[
-//CatchStatement/FormalParameter/Type
- /ReferenceType/ClassOrInterfaceType[@Image='NullPointerException']
+//CatchClause/CatchParameter/ClassOrInterfaceType[pmd-java:typeIsExactly('java.lang.NullPointerException')]
 ]]>
                 </value>
             </property>
