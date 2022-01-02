@@ -2088,6 +2088,52 @@ public class Foo {
         </example>
     </rule>
 
+    <rule name="UnnecessarySemicolon"
+          language="java"
+          since="6.42.0"
+          message="Unnecessary semicolon"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#unnecessarysemicolon">
+        <description>
+            Reports unnecessary semicolons (so called "empty statements" and "empty declarations").
+            These can be removed without changing the program. The Java grammar
+            allows them for historical reasons, but they should be avoided.
+            
+            This rule will not report empty statements that are syntactically 
+            required, for instance, because they are the body of a control statement.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="version" value="2.0"></property>
+            <property name="xpath">
+                <value><![CDATA[
+      (: empty top-level declarations :)
+      //EmptyStatement[parent::CompilationUnit]
+      (: empty body declarations :)
+    | //ClassOrInterfaceBodyDeclaration[count(*)=0]
+      (: empty statements :)
+    | //Block/BlockStatement/Statement/EmptyStatement
+      (: grammar is irregular in pmd 6 :)
+    | //ConstructorDeclaration/BlockStatement/Statement/EmptyStatement
+
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+            <![CDATA[
+class Foo {
+    {
+        toString();; // one of these semicolons is unnecessary
+        if (true); // this semicolon is not unnecessary, but it could be an empty block instead (not reported)
+    }
+}; // this semicolon is unnecessary
+
+]]>
+        </example>
+    </rule>
+
+
     <rule name="UseDiamondOperator"
           language="java"
           since="6.11.0"
