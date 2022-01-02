@@ -702,29 +702,27 @@ public String bar(String string) {
             <property name="xpath">
                 <value>
 <![CDATA[
-//MethodDeclaration[
-  @Name='onCreate' or
-  @Name='onConfigurationChanged' or
-  @Name='onPostCreate' or
-  @Name='onPostResume' or
-  @Name='onRestart' or
-  @Name='onRestoreInstanceState' or
-  @Name='onResume' or
-  @Name='onStart'
-  ]
-    /Block[not(
-      (BlockStatement[1]/Statement/StatementExpression/PrimaryExpression[./PrimaryPrefix[@SuperModifier= true()]]/PrimarySuffix[@Image= ancestor::MethodDeclaration/@Name]))]
-[ancestor::ClassOrInterfaceDeclaration[ExtendsList/ClassOrInterfaceType[
-  pmd-java:typeIs('android.app.Activity') or
-  pmd-java:typeIs('android.app.Application') or
-  pmd-java:typeIs('android.app.Service')
-]]]
+//ClassOrInterfaceDeclaration
+    [
+      pmd-java:typeIs('android.app.Activity') or
+      pmd-java:typeIs('android.app.Application') or
+      pmd-java:typeIs('android.app.Service')
+    ]
+    //MethodDeclaration
+    [
+      @Name=('onCreate', 'onConfigurationChanged', 'onPostCreate', 'onPostResume', 'onRestart',
+             'onRestoreInstanceState', 'onResume', 'onStart')
+    ]
+    [not(Block/*[1]/MethodCall[SuperExpression][@MethodName = ancestor::MethodDeclaration/@Name])]
 ]]>
                 </value>
             </property>
         </properties>
         <example>
 <![CDATA[
+import android.app.Activity;
+import android.os.Bundle;
+
 public class DummyActivity extends Activity {
     public void onCreate(Bundle bundle) {
         // missing call to super.onCreate(bundle)
@@ -749,27 +747,25 @@ Super should be called at the end of the method
             <property name="xpath">
                 <value>
 <![CDATA[
-//MethodDeclaration[
-  @Name='finish' or
-  @Name='onDestroy' or
-  @Name='onPause' or
-  @Name='onSaveInstanceState' or
-  @Name='onStop' or
-  @Name='onTerminate'
-  ]
-   /Block/BlockStatement[last()]
-    [not(Statement/StatementExpression/PrimaryExpression[./PrimaryPrefix[@SuperModifier= true()]]/PrimarySuffix[@Image= ancestor::MethodDeclaration/@Name])]
-[ancestor::ClassOrInterfaceDeclaration[ExtendsList/ClassOrInterfaceType[
-  pmd-java:typeIs('android.app.Activity') or
-  pmd-java:typeIs('android.app.Application') or
-  pmd-java:typeIs('android.app.Service')
-]]]
+//ClassOrInterfaceDeclaration
+    [
+      pmd-java:typeIs('android.app.Activity') or
+      pmd-java:typeIs('android.app.Application') or
+      pmd-java:typeIs('android.app.Service')
+    ]
+    //MethodDeclaration
+    [
+      @Name=('finish', 'onDestroy', 'onPause', 'onSaveInstanceState', 'onStop', 'onTerminate')
+    ]
+    [not(Block/*[last()]/MethodCall[SuperExpression][@MethodName = ancestor::MethodDeclaration/@Name])]
 ]]>
                 </value>
             </property>
         </properties>
         <example>
 <![CDATA[
+import android.app.Activity;
+
 public class DummyActivity extends Activity {
     public void onPause() {
         foo();
