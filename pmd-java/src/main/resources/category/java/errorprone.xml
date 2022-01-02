@@ -481,7 +481,7 @@ the property ignoreMagicNumbers is not taken into account, if there are multiple
     [empty(index-of(tokenize($ignoreMagicNumbers, '\s*,\s*'), @Image))]
 |
 (: consider also deeper expressions :)
-//IfStatement[$ignoreExpressions = false()]/*[1]//*[local-name() != 'UnaryExpression' or @Operator != '-']/*[pmd-java:nodeIs('Literal')]
+//IfStatement[$ignoreExpressions = false()]/*[1]//*[not(self::UnaryExpression[@Operator = '-'])]/*[pmd-java:nodeIs('Literal')]
     [not(pmd-java:nodeIs('NullLiteral'))]
     [not(pmd-java:nodeIs('BooleanLiteral'))]
     [empty(index-of(tokenize($ignoreMagicNumbers, '\s*,\s*'), @Image))]
