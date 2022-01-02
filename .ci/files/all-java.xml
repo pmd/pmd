@@ -190,8 +190,8 @@
     <rule ref="category/java/errorprone.xml/AvoidUsingOctalValues"/>
     <!-- <rule ref="category/java/errorprone.xml/BeanMembersShouldSerialize"/> -->
     <rule ref="category/java/errorprone.xml/BrokenNullCheck"/>
-    <!-- <rule ref="category/java/errorprone.xml/CallSuperFirst"/> -->
-    <!-- <rule ref="category/java/errorprone.xml/CallSuperLast"/> -->
+    <rule ref="category/java/errorprone.xml/CallSuperFirst"/>
+    <rule ref="category/java/errorprone.xml/CallSuperLast"/>
     <rule ref="category/java/errorprone.xml/CheckSkipResult"/>
     <rule ref="category/java/errorprone.xml/ClassCastExceptionWithToArray"/>
     <rule ref="category/java/errorprone.xml/CloneMethodMustBePublic"/>
@@ -205,7 +205,7 @@
     <!-- <rule ref="category/java/errorprone.xml/DataflowAnomalyAnalysis"/> -->
     <rule ref="category/java/errorprone.xml/DetachedTestCase"/>
     <rule ref="category/java/errorprone.xml/DoNotCallGarbageCollectionExplicitly"/>
-    <!-- <rule ref="category/java/errorprone.xml/DoNotExtendJavaLangThrowable"/> -->
+    <rule ref="category/java/errorprone.xml/DoNotExtendJavaLangThrowable"/>
     <rule ref="category/java/errorprone.xml/DoNotHardCodeSDCard"/>
     <rule ref="category/java/errorprone.xml/DoNotThrowExceptionInFinally"/>
     <rule ref="category/java/errorprone.xml/DontImportSun"/>
