@@ -285,15 +285,15 @@ public class Foo {
 
     <test-code>
         <description>False negatives for inner class references</description>
-        <expected-problems>4</expected-problems>
-        <expected-linenumbers>3,5,7,21</expected-linenumbers>
+        <expected-problems>5</expected-problems>
+        <expected-linenumbers>3,5,6,7,21</expected-linenumbers>
         <code><![CDATA[
 // from https://github.com/checkstyle/checkstyle/blob/checkstyle-9.1/src/test/resources-noncompilable/com/puppycrawl/tools/checkstyle/grammar/antlr4/InputAntlr4AstRegressionUncommon.java#L185
 class OtherClass {
     Object x;
     class SuperClassA{
         protected SuperClassA bs;
-        protected SuperClassA s; // this is actually a false negative
+        protected SuperClassA s;
         Object s2;
 
         private void method() {
