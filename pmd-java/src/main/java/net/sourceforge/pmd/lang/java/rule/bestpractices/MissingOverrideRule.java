@@ -19,9 +19,9 @@ import net.sourceforge.pmd.lang.java.ast.JModifier;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
-import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.table.internal.SuperTypesEnumerator;
+import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.TypeOps;
 
@@ -49,7 +49,7 @@ public class MissingOverrideRule extends AbstractJavaRulechainRule {
         // - may override another method (non private, non static)
         // - not already annotated @Override
 
-        RelevantMethodSet relevantMethods = new RelevantMethodSet(node.getSymbol());
+        RelevantMethodSet relevantMethods = new RelevantMethodSet(node.getTypeMirror());
 
         for (ASTMethodDeclaration methodDecl : node.getDeclarations(ASTMethodDeclaration.class)) {
             relevantMethods.addIfRelevant(methodDecl);
@@ -88,9 +88,9 @@ public class MissingOverrideRule extends AbstractJavaRulechainRule {
         // nodes that may be violations
         private final Set<ASTMethodDeclaration> tracked = new LinkedHashSet<>();
 
-        private final JClassSymbol site;
+        private final JClassType site;
 
-        private RelevantMethodSet(JClassSymbol site) {
+        private RelevantMethodSet(JClassType site) {
             this.site = site;
         }
 
@@ -111,7 +111,7 @@ public class MissingOverrideRule extends AbstractJavaRulechainRule {
         // we use this to only consider methods that may produce a violation,
         // among the supertype methods
         boolean isRelevant(JMethodSymbol superMethod) {
-            if (!TypeOps.isOverridableIn(superMethod, site)) {
+            if (!TypeOps.isOverridableIn(superMethod, site.getSymbol())) {
                 return false;
             }
             BitSet aritySet = map.get(superMethod.getSimpleName());
@@ -125,7 +125,7 @@ public class MissingOverrideRule extends AbstractJavaRulechainRule {
                                     JMethodSig superSig) {
             ASTMethodDeclaration subSig = null;
             for (ASTMethodDeclaration it : tracked) {
-                if (TypeOps.areOverrideEquivalent(it.getGenericSignature(), superSig)) {
+                if (TypeOps.overrides(it.getGenericSignature(), superSig, site)) {
                     subSig = it;
                     // we assume there is a single relevant method that may match,
                     // otherwise it would be a compile-time error

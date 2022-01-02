@@ -623,7 +623,7 @@ public enum EnumToString {
         <expected-problems>1</expected-problems>
         <expected-linenumbers>23</expected-linenumbers>
         <code><![CDATA[
-package net.sourceforge.pmd.lang.java.rule.bestpractices.missingoverride;
+package test;
 
 import java.util.Collection;
 
