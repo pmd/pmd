@@ -451,7 +451,7 @@ try {  // Prefer this:
     <rule name="AvoidLiteralsInIfCondition"
           language="java"
           since="4.2.6"
-          message="Avoid using Literals in Conditional Statements"
+          message="Avoid using literals in if statements"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#avoidliteralsinifcondition">
         <description>
@@ -474,28 +474,28 @@ the property ignoreMagicNumbers is not taken into account, if there are multiple
             <property name="xpath">
                 <value>
 <![CDATA[
-(: simple case - no deep expressions :)
-//IfStatement[$ignoreExpressions = true()]/Expression/*/PrimaryExpression/PrimaryPrefix/Literal
-    [not(NullLiteral)]
-    [not(BooleanLiteral)]
+(: simple case - no deep expressions - this is always executed :)
+//IfStatement/*[1]/*[pmd-java:nodeIs('Literal')]
+    [not(pmd-java:nodeIs('NullLiteral'))]
+    [not(pmd-java:nodeIs('BooleanLiteral'))]
     [empty(index-of(tokenize($ignoreMagicNumbers, '\s*,\s*'), @Image))]
 |
 (: consider also deeper expressions :)
-//IfStatement[$ignoreExpressions = false()]/Expression//*[local-name() != 'UnaryExpression' or @Operator != '-']/PrimaryExpression/PrimaryPrefix/Literal
-    [not(NullLiteral)]
-    [not(BooleanLiteral)]
+//IfStatement[$ignoreExpressions = false()]/*[1]//*[not(self::UnaryExpression[@Operator = '-'])]/*[pmd-java:nodeIs('Literal')]
+    [not(pmd-java:nodeIs('NullLiteral'))]
+    [not(pmd-java:nodeIs('BooleanLiteral'))]
     [empty(index-of(tokenize($ignoreMagicNumbers, '\s*,\s*'), @Image))]
 |
 (: consider negative literals :)
-//IfStatement[$ignoreExpressions = false()]/Expression//UnaryExpression[@Operator = '-']/PrimaryExpression/PrimaryPrefix/Literal
-    [not(NullLiteral)]
-    [not(BooleanLiteral)]
+//IfStatement[$ignoreExpressions = false()]/*[1]//UnaryExpression[@Operator = '-']/*[pmd-java:nodeIs('Literal')]
+    [not(pmd-java:nodeIs('NullLiteral'))]
+    [not(pmd-java:nodeIs('BooleanLiteral'))]
     [empty(index-of(tokenize($ignoreMagicNumbers, '\s*,\s*'), concat('-', @Image)))]
 |
 (: consider multiple literals in expressions :)
-//IfStatement[$ignoreExpressions = false()]/Expression[count(*/PrimaryExpression/PrimaryPrefix/Literal
-    [not(NullLiteral)]
-    [not(BooleanLiteral)]) > 1]
+//IfStatement[$ignoreExpressions = false()]/*[1][count(*[pmd-java:nodeIs('Literal')]
+    [not(pmd-java:nodeIs('NullLiteral'))]
+    [not(pmd-java:nodeIs('BooleanLiteral'))]) > 1]
 ]]>
                 </value>
             </property>
