@@ -190,8 +190,8 @@
     <rule ref="category/java/errorprone.xml/AvoidUsingOctalValues"/>
     <!-- <rule ref="category/java/errorprone.xml/BeanMembersShouldSerialize"/> -->
     <rule ref="category/java/errorprone.xml/BrokenNullCheck"/>
-    <!-- <rule ref="category/java/errorprone.xml/CallSuperFirst"/> -->
-    <!-- <rule ref="category/java/errorprone.xml/CallSuperLast"/> -->
+    <rule ref="category/java/errorprone.xml/CallSuperFirst"/>
+    <rule ref="category/java/errorprone.xml/CallSuperLast"/>
     <rule ref="category/java/errorprone.xml/CheckSkipResult"/>
     <rule ref="category/java/errorprone.xml/ClassCastExceptionWithToArray"/>
     <rule ref="category/java/errorprone.xml/CloneMethodMustBePublic"/>
@@ -203,11 +203,11 @@
     <rule ref="category/java/errorprone.xml/ComparisonWithNaN"/>
     <rule ref="category/java/errorprone.xml/ConstructorCallsOverridableMethod"/>
     <!-- <rule ref="category/java/errorprone.xml/DataflowAnomalyAnalysis"/> -->
-    <!-- <rule ref="category/java/errorprone.xml/DetachedTestCase"/> -->
+    <rule ref="category/java/errorprone.xml/DetachedTestCase"/>
     <rule ref="category/java/errorprone.xml/DoNotCallGarbageCollectionExplicitly"/>
-    <!-- <rule ref="category/java/errorprone.xml/DoNotExtendJavaLangThrowable"/> -->
-    <!-- <rule ref="category/java/errorprone.xml/DoNotHardCodeSDCard"/> -->
-    <!-- <rule ref="category/java/errorprone.xml/DoNotThrowExceptionInFinally"/> -->
+    <rule ref="category/java/errorprone.xml/DoNotExtendJavaLangThrowable"/>
+    <rule ref="category/java/errorprone.xml/DoNotHardCodeSDCard"/>
+    <rule ref="category/java/errorprone.xml/DoNotThrowExceptionInFinally"/>
     <rule ref="category/java/errorprone.xml/DontImportSun"/>
     <rule ref="category/java/errorprone.xml/DontUseFloatTypeForLoopIndices"/>
     <rule ref="category/java/errorprone.xml/EmptyCatchBlock"/>
@@ -237,7 +237,7 @@
     <rule ref="category/java/errorprone.xml/MisplacedNullCheck"/>
     <rule ref="category/java/errorprone.xml/MissingSerialVersionUID"/>
     <rule ref="category/java/errorprone.xml/MissingStaticMethodInNonInstantiatableClass"/>
-    <!-- <rule ref="category/java/errorprone.xml/MoreThanOneLogger"/> -->
+    <rule ref="category/java/errorprone.xml/MoreThanOneLogger"/>
     <rule ref="category/java/errorprone.xml/NonCaseLabelInSwitchStatement"/>
     <rule ref="category/java/errorprone.xml/NonStaticInitializer"/>
     <!-- <rule ref="category/java/errorprone.xml/NullAssignment"/> -->
