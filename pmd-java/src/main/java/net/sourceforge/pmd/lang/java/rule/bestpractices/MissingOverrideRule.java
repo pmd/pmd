@@ -125,7 +125,7 @@ public class MissingOverrideRule extends AbstractJavaRulechainRule {
                                     JMethodSig superSig) {
             ASTMethodDeclaration subSig = null;
             for (ASTMethodDeclaration it : tracked) {
-                if (TypeOps.overrides(it.getGenericSignature(), superSig, site)) {
+                if (TypeOps.isSubSignature(it.getGenericSignature(), superSig)) {
                     subSig = it;
                     // we assume there is a single relevant method that may match,
                     // otherwise it would be a compile-time error
