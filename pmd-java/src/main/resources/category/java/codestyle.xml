@@ -710,6 +710,65 @@ public abstract class ShouldBeAbstract {
         </example>
     </rule>
 
+    <rule name="EmptyCodeBlock"
+          language="java"
+          since="6.42.0"
+          message="This control statement has an empty branch"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#unnecessarysemicolon">
+        <description><![CDATA[
+            Reports control statements whose body is empty, as well as empty initializers.
+
+            The checked code constructs are the following:
+            - bodies of `try` statements (not try-with-resources)
+            - `finally` clauses of `try` statements
+            - `switch` statements
+            - `synchronized` statements
+            - `if` statements
+            - loop statements: `while`, `for`, `do .. while`
+            - initializers
+
+            This rule replaces the rules EmptyCatchBlock, EmptyFinallyBlock, 
+            EmptyIfStmt, EmptyInitializer, EmptyStatementBlock, 
+            EmptySwitchStatements, EmptySynchronizedBlock, EmptyTryBlock, and EmptyWhileStmt.
+            Notice that EmptyCatchBlock is still an independent rule.
+            EmptyStatementNotInLoop is replaced by {% rule java/codestyle/UnnecessarySemiColon %}.
+        ]]></description>
+        <priority>3</priority>
+        <properties>
+            <property name="version" value="2.0"/>
+            <property name="xpath">
+                <value><![CDATA[      
+      //TryStatement[not(ResourceSpecification)]/Block[1][not(*)]
+    | //FinallyStatement/Block[not(*)]
+    | //SwitchStatement[count(*)=1]
+    | //SynchronizedStatement/Block[not(*)]
+
+    (: todo allow if there is an else branch and a comment :)
+    | //IfStatement/Statement[Block[not(*)] or EmptyStatement]
+
+    (: todo allow if there is a comment :)
+    | //WhileStatement/Statement[Block[not(*)] or EmptyStatement]
+    | //ForStatement/Statement[Block[not(*)] or EmptyStatement]
+    | //DoStatement/Statement[Block[not(*)] or EmptyStatement]
+
+    | //Initializer/Block[not(*)]
+        ]]></value>
+            </property>
+        </properties>
+        <example>
+            <![CDATA[
+            class Foo {
+                {
+                    toString();; // one of these semicolons is unnecessary
+                    if (true); // this semicolon is not unnecessary, but it could be an empty block instead (not reported)
+                }
+            }; // this semicolon is unnecessary
+
+            ]]>
+        </example>
+    </rule>
+
     <rule name="ExtendsObject"
           language="java"
           since="5.0"

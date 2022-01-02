@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data xmlns="http://pmd.sourceforge.net/rule-tests"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>pos, empty try block</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+            public class EmptyTryBlock1 {
+                public void foo() {
+                    try {
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>pos, empty try block</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+            public class EmptyTryBlock2 {
+                public void foo() {
+                    try {
+                    } finally {
+                        int x = 5;
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>pos, empty finally block</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+            public class EmptyTryBlock2 {
+                public void foo() {
+                    try {
+                        int x = 0;
+                    } finally { // warn
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>pos, empty finally block</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class EmptyTryBlock3 {
+                public void foo() {
+                    try {
+                        int f =2;
+                    } finally {
+                        int x = 5;
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>pos, empty try and finally block</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+            public class EmptyTryBlock3 {
+                public void foo() {
+                    try {
+                    } finally {
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#432 empty try-with-resource</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            class X {
+                void method() {
+                    try (ClientResponse response = execute(() -> target.request(mediaTypes).delete(), DELETE, new ExpectedResponse(status, required))) {
+                        // false positive
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#432 empty try-with-resource</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            class X {
+                void method() {
+                    try (ClientResponse response = execute(() -> target.request(mediaTypes).delete(), DELETE, new ExpectedResponse(status, required))) {
+                        // false positive
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>pos, empty synchronized stmt</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            public class Foo {
+                void foo() {
+                    synchronized (this) {}
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>neg, nonempty synchronized stmt</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class Foo {
+                void foo() {
+                    synchronized (this) {int x = 2;}
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>pos, empty switch stmt</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            public class EmptySwitchStmt1 {
+                public void bar() {
+                    int x = 2;
+                    switch (x) {}
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>neg, nonempty switch stmt</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class EmptySwitchStmt2 {
+                public void bar() {
+                    int x = 2;
+                    switch (x) {
+                    case 2: int y=4;
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>failure case (non static)</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            public class Foo {
+                {}
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>failure case (static)</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            public class Foo {
+                static {}
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>not an initializer</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class Foo {
+                public void bar() {
+                    { }
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>initializer not empty</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class Foo {
+                {
+                    System.out.print("something interesting");
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>static initializer not empty</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class Foo {
+                static {
+                    x++;
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>pos, empty while</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+            public class Foo {
+                public void bar() {
+                    while (true == true) {
+                    }
+                    while (true == true) {
+                        String x = "";
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>while(true);</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            public class Foo {
+                public void bar() {
+                    while (true);
+                }
+            }
+            ]]></code>
+    </test-code>
+</test-data>
