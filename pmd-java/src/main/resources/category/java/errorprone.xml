@@ -364,7 +364,7 @@ public class A {
           language="java"
           since="3.0"
           message="Field {0} has the same name as a method"
-          class="net.sourceforge.pmd.lang.java.rule.errorprone.AvoidFieldNameMatchingMethodNameRule"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#avoidfieldnamematchingmethodname">
         <description>
 It can be confusing to have a field name with the same name as a method. While this is permitted,
@@ -372,6 +372,16 @@ having information (field) and actions (method) is not clear naming. Developers 
 Smalltalk often prefer this approach as the methods denote accessor methods.
         </description>
         <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//FieldDeclaration/VariableDeclarator/VariableDeclaratorId
+    [lower-case(@Name) = lower-case(ancestor::ClassOrInterfaceBody[1]/MethodDeclaration/@Name)]
+]]>
+                </value>
+            </property>
+        </properties>
         <example>
 <![CDATA[
 public class Foo {
@@ -388,13 +398,23 @@ public class Foo {
           language="java"
           since="3.0"
           message="It is somewhat confusing to have a field name matching the declaring class name"
-          class="net.sourceforge.pmd.lang.java.rule.errorprone.AvoidFieldNameMatchingTypeNameRule"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#avoidfieldnamematchingtypename">
         <description>
 It is somewhat confusing to have a field name matching the declaring type name.
 This probably means that type and/or field names should be chosen more carefully.
         </description>
         <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//FieldDeclaration/VariableDeclarator/VariableDeclaratorId
+    [lower-case(@Name) = lower-case(ancestor::ClassOrInterfaceDeclaration[1]/@SimpleName)]
+]]>
+                </value>
+            </property>
+        </properties>
         <example>
 <![CDATA[
 public class Foo extends Bar {

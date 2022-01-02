@@ -7,6 +7,7 @@
     <test-code>
         <description>TEST1</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     int bar;
@@ -18,8 +19,9 @@ public class Foo {
     <test-code>
         <description>TEST2</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
         <code><![CDATA[
-public class Bar {
+public class Foo {
     class Dummy {
         Foo foo;
         void foo() {}
@@ -32,7 +34,7 @@ public class Bar {
         <description>TEST3</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-public class Bar {
+public class Foo {
     Foo foo;
     class Dummy {
         void foo() {}
@@ -45,7 +47,7 @@ public class Bar {
         <description>TEST4</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-public class Bar {
+public class Foo {
     void foo() {}
     class Dummy {
         Foo foo;
