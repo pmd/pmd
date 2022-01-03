@@ -698,4 +698,50 @@ public interface Bar {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>Static is not necessary in class</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Unnecessary modifier 'static' on record 'BarRecord': record are implicitly static</message>
+        </expected-messages>
+        <code><![CDATA[
+public class FooClass {
+    static record BarRecord() {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Correct nested record declaration in classes</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class FooClass {
+    record BarRecord() {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Static is not necessary in interface</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Unnecessary modifier 'static' on record 'BarRecord': record are implicitly static</message>
+        </expected-messages>
+        <code><![CDATA[
+public interface FooInterface {
+    static record BarRecord() {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Correct nested record declaration in interface</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public interface FooInterface {
+    record BarRecord() {}
+}
+        ]]></code>
+    </test-code>
 </test-data>
