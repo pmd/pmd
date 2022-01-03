@@ -377,7 +377,8 @@ Smalltalk often prefer this approach as the methods denote accessor methods.
                 <value>
 <![CDATA[
 //FieldDeclaration/VariableDeclarator/VariableDeclaratorId
-    [lower-case(@Name) = lower-case(ancestor::ClassOrInterfaceBody[1]/MethodDeclaration/@Name)]
+    [some $method in ../../..[self::ClassOrInterfaceBody or self::EnumBody]/MethodDeclaration
+     satisfies lower-case(@Name) = lower-case($method/@Name)]
 ]]>
                 </value>
             </property>
