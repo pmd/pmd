@@ -658,6 +658,10 @@ public final class JavaRuleUtil {
         return !thatIt.hasNext();
     }
 
+    public static boolean isNullLiteral(ASTExpression node) {
+        return node instanceof ASTNullLiteral;
+    }
+
     public static boolean isBooleanLiteral(ASTExpression e) {
         return e instanceof ASTBooleanLiteral;
     }

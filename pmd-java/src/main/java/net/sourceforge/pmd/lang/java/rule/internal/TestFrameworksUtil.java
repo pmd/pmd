@@ -39,6 +39,7 @@ public final class TestFrameworksUtil {
                                                                "org.junit.jupiter.api.Assertions",
                                                                "org.hamcrest.MatcherAssert",
                                                                "org.testng.Assert",
+                                                               "junit.framework.Assert",
                                                                "junit.framework.TestCase");
 
     private TestFrameworksUtil() {
@@ -117,14 +118,13 @@ public final class TestFrameworksUtil {
     }
 
     public static boolean isCallOnAssertionContainer(ASTMethodCall call) {
-        return isCallOnType(call, ASSERT_CONTAINERS);
-    }
-
-    private static boolean isCallOnType(ASTMethodCall call, Set<String> qualifierTypes) {
         JTypeMirror declaring = call.getMethodType().getDeclaringType();
         JTypeDeclSymbol sym = declaring.getSymbol();
-        String binaryName = !(sym instanceof JClassSymbol) ? null : ((JClassSymbol) sym).getBinaryName();
-        return qualifierTypes.contains(binaryName);
+        if (sym instanceof JClassSymbol) {
+            return ASSERT_CONTAINERS.contains(((JClassSymbol) sym).getBinaryName())
+                || TypeTestUtil.isA("junit.framework.Assert", declaring);
+        }
+        return false;
     }
 
     public static boolean isProbableAssertCall(ASTMethodCall call) {
