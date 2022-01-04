@@ -239,6 +239,80 @@
             }
             ]]></code>
     </test-code>
+    <test-code>
+        <description>pos, empty for</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,5</expected-linenumbers>
+        <code><![CDATA[
+            public class Foo {
+                public void bar() {
+                    for (int i = 0; i < 2; i++) {
+                    }
+                    for (int i = 0; i < 2; i++);
+                    for (int i = 0; i < 2; i++) { // neg, nonempty
+                        System.out.println(i);
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>pos, empty do..while</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>4,6</expected-linenumbers>
+        <code><![CDATA[
+            public class Foo {
+                public void bar() {
+                    int i = 0;
+                    do {
+                    } while (i < 3);
+                    do; while (i < 3);
+                    do { // neg, nonempty
+                        System.out.println(i);
+                    } while (i < 3);
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>pos, empty foreach</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>6,8</expected-linenumbers>
+        <code><![CDATA[
+            import java.util.List;
+
+            public class Foo {
+
+                public void bar(List<Integer> list) {
+                    for (int i : list) {
+                    }
+                    for (int i : list) ;
+                    for (int i : list)  { // neg, nonempty
+                        System.out.println(i);
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>neg, empty foreach with unused var name</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import java.util.List;
+
+            public class Foo {
+
+                public void bar(List<Integer> list) {
+                    for (int ignored : list) {
+                    }
+                    for (int ignored2 : list) ;
+                    for (int i : list) { // neg, nonempty
+                        System.out.println(i);
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
 
     <test-code>
         <description>pos, empty while</description>

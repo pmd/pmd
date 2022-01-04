@@ -11,6 +11,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTFinallyStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTInitializer;
+import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTResource;
 import net.sourceforge.pmd.lang.java.ast.ASTResourceSpecification;
 import net.sourceforge.pmd.lang.java.ast.ASTStatement;
@@ -95,6 +96,10 @@ public class EmptyControlStatementRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTForStatement node, Object data) {
+        if (node.isForeach() && JavaRuleUtil.isExplicitUnusedVarName(node.getFirstChildOfType(ASTLocalVariableDeclaration.class).getVariableName())) {
+            // allow `for (ignored : iterable) {}`
+            return null;
+        }
         if (isEmpty(node.getBody())) {
             addViolation(data, node, "Empty for statement");
         }

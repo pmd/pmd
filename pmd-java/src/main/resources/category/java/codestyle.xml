@@ -719,6 +719,7 @@ public abstract class ShouldBeAbstract {
         <!-- Note about naming: EmptyCodeBlock does not work because the rule flags `if(true);`  -->
         <!-- EmptyControlStatement is weird because `{}` is not a control statement, and we also flag initializers. -->
         <!-- EmptyStatement does not work because `;` is called an "empty statement" and is not flagged by this rule, rather, by UnnecessarySemicolon. -->
+        <!-- EmptyCodeConstruct would work but sounds a bit odd (right?). -->
         <description><![CDATA[
             Reports control statements whose body is empty, as well as empty initializers.
 
@@ -731,7 +732,7 @@ public abstract class ShouldBeAbstract {
             - loop statements: `while`, `for`, `do .. while`
             - initializers
 
-            This rule replaces the rules EmptyCatchBlock, EmptyFinallyBlock, 
+            This rule replaces the rules EmptyFinallyBlock, 
             EmptyIfStmt, EmptyInitializer, EmptyStatementBlock, 
             EmptySwitchStatements, EmptySynchronizedBlock, EmptyTryBlock, and EmptyWhileStmt.
             Notice that EmptyCatchBlock is still an independent rule.
