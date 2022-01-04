@@ -6,65 +6,51 @@ package net.sourceforge.pmd.lang.java.rule.errorprone;
 
 import static net.sourceforge.pmd.properties.PropertyFactory.stringProperty;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 
-import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType;
-import net.sourceforge.pmd.lang.java.ast.ASTResultType;
-import net.sourceforge.pmd.lang.java.ast.AccessNode;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.Annotatable;
-import net.sourceforge.pmd.lang.java.rule.AbstractLombokAwareRule;
+import net.sourceforge.pmd.lang.java.ast.JModifier;
+import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
+import net.sourceforge.pmd.lang.java.rule.internal.JavaPropertyUtil;
 import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
-import net.sourceforge.pmd.lang.java.symboltable.ClassScope;
-import net.sourceforge.pmd.lang.java.symboltable.MethodNameDeclaration;
-import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
-import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind;
-import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
-public class BeanMembersShouldSerializeRule extends AbstractLombokAwareRule {
+public class BeanMembersShouldSerializeRule extends AbstractJavaRulechainRule {
 
     private String prefixProperty;
 
-    private static final PropertyDescriptor<String> PREFIX_DESCRIPTOR = stringProperty("prefix").desc("A variable prefix to skip, i.e., m_").defaultValue("").build();
+
+    private static final PropertyDescriptor<List<String>> IGNORED_ANNOTATIONS_DESCRIPTOR
+        = JavaPropertyUtil.ignoredAnnotationsDescriptor(
+        "lombok.Data",
+        "lombok.Getter",
+        "lombok.Value"
+    );
+
+
+    private static final PropertyDescriptor<String> PREFIX_DESCRIPTOR = stringProperty("prefix")
+        .desc("A variable prefix to skip, i.e., m_").defaultValue("").build();
 
     public BeanMembersShouldSerializeRule() {
+        super(ASTClassOrInterfaceDeclaration.class);
         definePropertyDescriptor(PREFIX_DESCRIPTOR);
+        definePropertyDescriptor(IGNORED_ANNOTATIONS_DESCRIPTOR);
     }
 
     @Override
-    protected Collection<String> defaultSuppressionAnnotations() {
-        return Arrays.asList(
-            "lombok.Data",
-            "lombok.Getter",
-            "lombok.Value"
-        );
-    }
-
-    @Override
-    public Object visit(ASTCompilationUnit node, Object data) {
+    public void start(RuleContext ctx) {
+        super.start(ctx);
         prefixProperty = getProperty(PREFIX_DESCRIPTOR);
-        super.visit(node, data);
-        return data;
-    }
-
-    private static String[] imagesOf(List<? extends Node> nodes) {
-
-        String[] imageArray = new String[nodes.size()];
-
-        for (int i = 0; i < nodes.size(); i++) {
-            imageArray[i] = nodes.get(i).getImage();
-        }
-        return imageArray;
     }
 
     @Override
@@ -74,43 +60,35 @@ public class BeanMembersShouldSerializeRule extends AbstractLombokAwareRule {
         }
 
         if (JavaRuleUtil.hasLombokAnnotation(node)) {
-            return super.visit(node, data);
+            return data;
         }
 
-        Map<MethodNameDeclaration, List<NameOccurrence>> methods = node.getScope().getEnclosingScope(ClassScope.class)
-                .getMethodDeclarations();
-        List<ASTMethodDeclaration> getSetMethList = new ArrayList<>(methods.size());
-        for (MethodNameDeclaration d : methods.keySet()) {
-            ASTMethodDeclaration mnd = d.getDeclarator();
-            if (isBeanAccessor(mnd)) {
-                getSetMethList.add(mnd);
-            }
-        }
+        Set<String> accessors =
+            node.getDeclarations(ASTMethodDeclaration.class)
+                .filter(JavaRuleUtil::isGetterOrSetter)
+                .collect(Collectors.mapping(ASTMethodDeclaration::getName, Collectors.toSet()));
 
-        String[] methNameArray = imagesOf(getSetMethList);
+        NodeStream<ASTVariableDeclaratorId> fields =
+            node.getDeclarations(ASTFieldDeclaration.class)
+                .flatMap(ASTFieldDeclaration::getVarIds);
 
-        Arrays.sort(methNameArray);
-
-        Map<VariableNameDeclaration, List<NameOccurrence>> vars = node.getScope()
-                .getDeclarations(VariableNameDeclaration.class);
-        for (Map.Entry<VariableNameDeclaration, List<NameOccurrence>> entry : vars.entrySet()) {
-            VariableNameDeclaration decl = entry.getKey();
-            AccessNode accessNodeParent = decl.getAccessNodeParent();
-            if (entry.getValue().isEmpty() || accessNodeParent.isTransient() || accessNodeParent.isStatic()
-                    || hasIgnoredAnnotation((Annotatable) accessNodeParent)) {
+        for (ASTVariableDeclaratorId field : fields) {
+            if (field.getLocalUsages().isEmpty()
+                || field.getModifiers().hasAny(JModifier.TRANSIENT, JModifier.STATIC)
+                || hasIgnoredAnnotation(field)) {
                 continue;
             }
-            String varName = StringUtils.capitalize(trimIfPrefix(decl.getImage()));
-            boolean hasGetMethod = Arrays.binarySearch(methNameArray, "get" + varName) >= 0
-                    || Arrays.binarySearch(methNameArray, "is" + varName) >= 0;
-            boolean hasSetMethod = Arrays.binarySearch(methNameArray, "set" + varName) >= 0;
+            String varName = StringUtils.capitalize(trimIfPrefix(field.getName()));
+            boolean hasGetMethod = accessors.contains("get" + varName)
+                || accessors.contains("is" + varName);
+            boolean hasSetMethod = accessors.contains("set" + varName);
             // Note that a Setter method is not applicable to a final
             // variable...
-            if (!hasGetMethod || !accessNodeParent.isFinal() && !hasSetMethod) {
-                addViolation(data, decl.getNode(), decl.getImage());
+            if (!hasGetMethod || !field.hasModifiers(JModifier.FINAL) && !hasSetMethod) {
+                addViolation(data, field, field.getName());
             }
         }
-        return super.visit(node, data);
+        return data;
     }
 
     private String trimIfPrefix(String img) {
@@ -120,18 +98,7 @@ public class BeanMembersShouldSerializeRule extends AbstractLombokAwareRule {
         return img;
     }
 
-    private boolean isBeanAccessor(ASTMethodDeclaration meth) {
-
-        String methodName = meth.getMethodName();
-
-        if (methodName.startsWith("get") || methodName.startsWith("set")) {
-            return true;
-        }
-        if (methodName.startsWith("is")) {
-            ASTResultType ret = ((ASTMethodDeclaration) meth.getParent()).getResultType();
-            List<ASTPrimitiveType> primitives = ret.findDescendantsOfType(ASTPrimitiveType.class);
-            return !primitives.isEmpty() && primitives.get(0).getTypeMirror().isPrimitive(PrimitiveTypeKind.BOOLEAN);
-        }
-        return false;
+    private boolean hasIgnoredAnnotation(Annotatable node) {
+        return node.isAnyAnnotationPresent(getProperty(IGNORED_ANNOTATIONS_DESCRIPTOR));
     }
 }
