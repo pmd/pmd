@@ -269,7 +269,10 @@ public class UnnecessaryModifierRule extends AbstractJavaRule {
     @Override
     public Object visit(ASTRecordDeclaration node, Object data) {
         if (node.isStatic()) {
-            reportUnnecessaryModifiers(data, node, Modifier.STATIC, "record are implicitly static");
+            reportUnnecessaryModifiers(data, node, Modifier.STATIC, "records are implicitly static");
+        }
+        if (node.isFinal()) {
+            reportUnnecessaryModifiers(data, node, Modifier.FINAL, "records are implicitly final");
         }
         return data;
     }

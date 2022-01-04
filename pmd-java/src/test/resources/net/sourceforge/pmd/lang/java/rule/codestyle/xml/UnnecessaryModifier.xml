@@ -700,10 +700,10 @@ public interface Bar {
     </test-code>
 
     <test-code>
-        <description>Static is not necessary in class</description>
+        <description>Static is not necessary for record declaration in class</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>Unnecessary modifier 'static' on record 'BarRecord': record are implicitly static</message>
+            <message>Unnecessary modifier 'static' on record 'BarRecord': records are implicitly static</message>
         </expected-messages>
         <code><![CDATA[
 public class FooClass {
@@ -723,10 +723,10 @@ public class FooClass {
     </test-code>
 
     <test-code>
-        <description>Static is not necessary in interface</description>
+        <description>Static is not necessary for record declaration in interface</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>Unnecessary modifier 'static' on record 'BarRecord': record are implicitly static</message>
+            <message>Unnecessary modifier 'static' on record 'BarRecord': records are implicitly static</message>
         </expected-messages>
         <code><![CDATA[
 public interface FooInterface {
@@ -741,6 +741,32 @@ public interface FooInterface {
         <code><![CDATA[
 public interface FooInterface {
     record BarRecord() {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Final is not necessary for record declaration in class</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Unnecessary modifier 'final' on record 'BarRecord': records are implicitly final</message>
+        </expected-messages>
+        <code><![CDATA[
+public class FooClass {
+    final record BarRecord() {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Final is not necessary for record declaration in interface</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Unnecessary modifier 'final' on record 'BarRecord': records are implicitly final</message>
+        </expected-messages>
+        <code><![CDATA[
+public interface FooInterface {
+    final record BarRecord() {}
 }
         ]]></code>
     </test-code>
