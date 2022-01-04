@@ -20,16 +20,27 @@ With Codacy you have PMDJava analysis out-of-the-box, and it is free for open so
 * Source code: [https://github.com/codacy/codacy-pmdjava](https://github.com/codacy/codacy-pmdjava)
 * Maintainer: Codacy
 
-### Code Inspector
+### Codiga
 
-[Code Inspector](https://www.code-inspector.com) automates code review, check your code quality and helps you manage your technical debt.
+[Codiga](https://www.codiga.io) automates code review, check your code quality and helps you manage your technical debt.
 It is integrated with GitHub, GitLab and Bitbucket. The platform also analyzes code directly in your IDE using its integration
 plugins for VS Code and IntelliJ, providing a consistent analysis along your development cycle (from the IDE to the CI/CD pipeline).
 
-Code Inspector uses PMD to check Java and Apex code.
+Codiga uses PMD to check Java and Apex code.
 
-* Homepage: [https://www.code-inspector.com](https://www.code-inspector.com)
-* Documentation: [https://doc.code-inspector.com](https://doc.code-inspector.com)
+* Homepage: [https://www.codiga.io](https://www.codiga.io)
+* Documentation: [https://doc.codiga.io](https://doc.codiga.io)
+
+### GitHub Actions
+
+PMD provides its own GitHub Action, that can be integrated in custom workflows.
+
+It can execute PMD with your own ruleset against your project. It creates a [SARIF](https://docs.oasis-open.org/sarif/sarif/v2.1.0/sarif-v2.1.0.html)
+report which is uploaded as a build artifact. Furthermore the build can be failed based on the number of violations.
+
+The action can also be used as a code scanner to create "Code scanning alerts".
+
+* Homepage: [pmd/pmd-github-action](https://github.com/pmd/pmd-github-action)
 
 
 ## IDE Integrations

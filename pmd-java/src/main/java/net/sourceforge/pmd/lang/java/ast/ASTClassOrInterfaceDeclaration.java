@@ -10,8 +10,8 @@ import net.sourceforge.pmd.lang.ast.Node;
 
 
 /**
- * Represents class and interface declarations. This is a {@linkplain Node#isFindBoundary() find boundary}
- * for tree traversal methods.
+ * Represents class and interface declarations.
+ * This is a {@linkplain Node#isFindBoundary() find boundary} for tree traversal methods.
  *
  * <pre class="grammar">
  *

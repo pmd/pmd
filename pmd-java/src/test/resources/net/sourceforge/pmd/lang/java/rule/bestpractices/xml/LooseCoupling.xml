@@ -7,6 +7,7 @@
     <test-code>
         <description>returning a HashSet, bad</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
         <code><![CDATA[
 import java.util.HashSet;
 public class Foo {
@@ -284,7 +285,45 @@ class Foo extends ArrayList {
             Foo.super.clear();
         }
     }
+}
+        ]]></code>
+    </test-code>
 
+    <test-code>
+        <description>Verify with nested (local) classes</description>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>6,11,15</expected-linenumbers>
+        <code><![CDATA[
+import java.util.HashSet;
+public class Foo {
+    void firstMethod() { }
+    void myMethod() {
+        class Inner {
+            HashSet foo() {
+                return new HashSet();
+            }
+        }
+        Object o = new Object() {
+            HashSet foo() { return new HashSet(); }
+        };
+    }
+    class Nested {
+        HashSet foo() {
+            return new HashSet();
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>False positive with generics #3672</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.Collection;
+import java.util.Set;
+public final class Foo<A, B extends Collection<A>> {
+    private final Set<? super B> things;
 }
         ]]></code>
     </test-code>

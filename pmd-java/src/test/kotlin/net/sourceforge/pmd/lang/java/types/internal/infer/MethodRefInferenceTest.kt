@@ -548,7 +548,7 @@ class Scratch {
         """.trimIndent())
 
         val (_, t_Sink) = acu.descendants(ASTClassOrInterfaceDeclaration::class.java).toList { it.typeMirror }
-        val (_, acceptInt, acceptLong) = acu.descendants(ASTMethodDeclaration::class.java).toList()
+        val (_, acceptInt, acceptLong) = acu.descendants(ASTMethodDeclaration::class.java).crossFindBoundaries().toList()
         val (castRef, returnRef) = acu.descendants(ASTMethodReference::class.java).toList()
 
         doTest("In cast context") {
@@ -936,7 +936,7 @@ class Scratch {
         """.trimIndent())
 
         val (_, t_NodeStream) = acu.descendants(ASTClassOrInterfaceDeclaration::class.java).toList { it.typeMirror }
-        val (_, tvar) = acu.descendants(ASTTypeParameter::class.java).toList { it.typeMirror }
+        val (_, tvar) = acu.descendants(ASTTypeParameter::class.java).crossFindBoundaries().toList { it.typeMirror }
         val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
 
         call.shouldMatchN {

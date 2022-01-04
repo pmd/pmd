@@ -364,6 +364,9 @@ entries:
     - title: PLSQL
       url: /pmd_languages_plsql.html
       output: web, pdf
+    - title: Visualforce
+      url: /pmd_languages_visualforce.html
+      output: web, pdf
   - title: Developer Documentation
     output: web, pdf
     folderitems:

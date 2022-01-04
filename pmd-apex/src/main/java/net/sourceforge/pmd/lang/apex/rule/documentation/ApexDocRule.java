@@ -47,9 +47,14 @@ public class ApexDocRule extends AbstractApexRule {
             booleanProperty("reportProtected")
                     .desc("Report protected methods").defaultValue(false).build();
 
+    private static final PropertyDescriptor<Boolean> REPORT_MISSING_DESCRIPTION_DESCRIPTOR =
+            booleanProperty("reportMissingDescription")
+                .desc("Report missing @description").defaultValue(true).build();
+
     public ApexDocRule() {
         definePropertyDescriptor(REPORT_PRIVATE_DESCRIPTOR);
         definePropertyDescriptor(REPORT_PROTECTED_DESCRIPTOR);
+        definePropertyDescriptor(REPORT_MISSING_DESCRIPTION_DESCRIPTOR);
     }
 
     @Override
@@ -82,7 +87,7 @@ public class ApexDocRule extends AbstractApexRule {
                 addViolationWithMessage(data, node, MISSING_COMMENT_MESSAGE);
             }
         } else {
-            if (!comment.hasDescription) {
+            if (getProperty(REPORT_MISSING_DESCRIPTION_DESCRIPTOR) && !comment.hasDescription) {
                 addViolationWithMessage(data, node, MISSING_DESCRIPTION_MESSAGE);
             }
 
@@ -116,7 +121,7 @@ public class ApexDocRule extends AbstractApexRule {
                 addViolationWithMessage(data, node, MISSING_COMMENT_MESSAGE);
             }
         } else {
-            if (!comment.hasDescription) {
+            if (getProperty(REPORT_MISSING_DESCRIPTION_DESCRIPTOR) && !comment.hasDescription) {
                 addViolationWithMessage(data, node, MISSING_DESCRIPTION_MESSAGE);
             }
         }
@@ -131,7 +136,7 @@ public class ApexDocRule extends AbstractApexRule {
                 addViolationWithMessage(data, node, MISSING_COMMENT_MESSAGE);
             }
         } else {
-            if (!comment.hasDescription) {
+            if (getProperty(REPORT_MISSING_DESCRIPTION_DESCRIPTOR) && !comment.hasDescription) {
                 addViolationWithMessage(data, node, MISSING_DESCRIPTION_MESSAGE);
             }
         }

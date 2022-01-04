@@ -12,21 +12,18 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collector;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
-
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JModifier;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
-import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
+import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.table.internal.SuperTypesEnumerator;
+import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.TypeOps;
-import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 
 
 /**
@@ -35,11 +32,10 @@ import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
  * @author Clément Fournier
  * @since 6.2.0
  */
-public class MissingOverrideRule extends AbstractJavaRule {
+public class MissingOverrideRule extends AbstractJavaRulechainRule {
 
-    @Override
-    protected @NonNull RuleTargetSelector buildTargetSelector() {
-        return RuleTargetSelector.forTypes(ASTAnyTypeDeclaration.class);
+    public MissingOverrideRule() {
+        super(ASTAnyTypeDeclaration.class);
     }
 
     @Override
@@ -53,7 +49,7 @@ public class MissingOverrideRule extends AbstractJavaRule {
         // - may override another method (non private, non static)
         // - not already annotated @Override
 
-        RelevantMethodSet relevantMethods = new RelevantMethodSet(node.getSymbol());
+        RelevantMethodSet relevantMethods = new RelevantMethodSet(node.getTypeMirror());
 
         for (ASTMethodDeclaration methodDecl : node.getDeclarations(ASTMethodDeclaration.class)) {
             relevantMethods.addIfRelevant(methodDecl);
@@ -92,9 +88,9 @@ public class MissingOverrideRule extends AbstractJavaRule {
         // nodes that may be violations
         private final Set<ASTMethodDeclaration> tracked = new LinkedHashSet<>();
 
-        private final JClassSymbol site;
+        private final JClassType site;
 
-        private RelevantMethodSet(JClassSymbol site) {
+        private RelevantMethodSet(JClassType site) {
             this.site = site;
         }
 
@@ -115,7 +111,7 @@ public class MissingOverrideRule extends AbstractJavaRule {
         // we use this to only consider methods that may produce a violation,
         // among the supertype methods
         boolean isRelevant(JMethodSymbol superMethod) {
-            if (!TypeOps.isOverridableIn(superMethod, site)) {
+            if (!TypeOps.isOverridableIn(superMethod, site.getSymbol())) {
                 return false;
             }
             BitSet aritySet = map.get(superMethod.getSimpleName());
@@ -129,7 +125,12 @@ public class MissingOverrideRule extends AbstractJavaRule {
                                     JMethodSig superSig) {
             ASTMethodDeclaration subSig = null;
             for (ASTMethodDeclaration it : tracked) {
-                if (TypeOps.areOverrideEquivalent(it.getGenericSignature(), superSig)) {
+                // note: we don't use override-equivalence, the definition
+                // of an override uses the concept of sub-signature instead,
+                // which is slightly different. We could also use TypeOps.overrides
+                // but at this point we already know much of what that method checks.
+                // https://docs.oracle.com/javase/specs/jls/se15/html/jls-8.html#jls-8.4.8.1
+                if (TypeOps.isSubSignature(it.getGenericSignature(), superSig)) {
                     subSig = it;
                     // we assume there is a single relevant method that may match,
                     // otherwise it would be a compile-time error
@@ -155,6 +156,3 @@ public class MissingOverrideRule extends AbstractJavaRule {
 
     }
 }
-
-
-

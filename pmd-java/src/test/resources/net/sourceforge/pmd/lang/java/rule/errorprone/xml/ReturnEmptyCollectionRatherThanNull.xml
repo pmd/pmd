@@ -5,6 +5,7 @@
    <test-code>
       <description>Returning null array</description>
       <expected-problems>1</expected-problems>
+      <expected-linenumbers>3</expected-linenumbers>
       <code><![CDATA[
 public class Foo {
     // Not a good idea...

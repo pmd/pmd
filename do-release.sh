@@ -103,7 +103,7 @@ read -r
 STATS=$(
 echo "### Stats"
 echo "* $(git log pmd_releases/"${LAST_VERSION}"..HEAD --oneline --no-merges |wc -l) commits"
-echo "* $(curl -s https://api.github.com/repos/pmd/pmd/milestones|jq ".[] | select(.title == \"$RELEASE_VERSION\") | .closed_issues") closed tickets & PRs"
+echo "* $(curl -s "https://api.github.com/repos/pmd/pmd/milestones?state=all&direction=desc&per_page=5"|jq ".[] | select(.title == \"$RELEASE_VERSION\") | .closed_issues") closed tickets & PRs"
 echo "* Days since last release: $(( ( $(date +%s) - $(git log --max-count=1 --format="%at" pmd_releases/"${LAST_VERSION}") ) / 86400))"
 )
 
@@ -221,7 +221,7 @@ This is a {{ site.pmd.release_type }} release.
 
 EOF
 
-git commit -a -m "Prepare next development version"
+git commit -a -m "Prepare next development version [skip ci]"
 git push origin "${CURRENT_BRANCH}"
 ./mvnw -B release:clean
 echo

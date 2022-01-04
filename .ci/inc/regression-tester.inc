@@ -9,12 +9,10 @@ source "$(dirname "$0")/inc/fetch_ci_scripts.bash" && fetch_ci_scripts
 # The functions here require the following environment variables:
 # PMD_CI_BRANCH
 #
-# DANGER_GITHUB_API_TOKEN
+# GITHUB_TOKEN
 # PMD_CI_CHUNK_TOKEN
 
 function regression_tester_setup_ci() {
-    # note: building spring needs java8. This is setup already by build.sh
-
     gpg --batch --yes --decrypt --passphrase="GnxdjywUEPveyCD1RLiTd7t8CImnefYr" \
         --output .ci/files/public-env .ci/files/public-env.gpg
     # shellcheck disable=SC1091

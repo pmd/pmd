@@ -134,23 +134,26 @@ public class Test {
         <code><![CDATA[
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import java.io.IOException;
 
 public class InvalidSlf4jExceptionTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(InvalidSlf4jExceptionTest.class);
 
-    public void foo() {
+    public void foo(int tcmport) {
         try {
             throw new RuntimeException();
         } catch (RuntimeException e) {
             try {
-                LOGGER.error("Exception was thrown during conversion from tc model: {}.", jsonMarshaller.marshall(tcmport));
+                LOGGER.error("Exception was thrown during conversion from tc model: {}.", marshall(tcmport));
             } catch (IOException e1) {
                 LOGGER.error("Problem to marshall to json tcImport: {}", tcsTripImport, e1);
             }
             throw e;
         }
     }
+
+    Object marshall(int i) {}
 }
         ]]></code>
     </test-code>
@@ -171,6 +174,27 @@ public class InvalidSl4jExceptionBug1541 {
         } catch (Exception e) {
             log.error("Arg1 = {}. Exception: {}", "arg1Value", e);
         }
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#3560 [java] InvalidLogMessageFormat: False positive with message and exception in a block inside a lambda</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import java.util.function.Consumer;
+
+public class InvalidSl4jExceptionBug3560 {
+    private static final Logger LOGGER = LoggerFactory.getLogger(InvalidSl4jExceptionBug3560.class);
+
+    public static Consumer<Throwable> build() {
+        return e -> {
+            if (e instanceof RuntimeException) {
+                LOGGER.warn("Unexpected RuntimeException", e);
+            }
+        };
     }
 }
         ]]></code>
@@ -226,6 +250,7 @@ public class Foo
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class LoggerHelper {
     public LoggerHelper(String loggerName) {
@@ -271,6 +296,7 @@ public final class Main {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class LoggerHelper {
     static {
@@ -284,9 +310,10 @@ public class LoggerHelper {
     <test-code>
         <description>missing argument in static block</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>8</expected-linenumbers>
+        <expected-linenumbers>9</expected-linenumbers>
         <code><![CDATA[
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class LoggerHelper {
     static {
@@ -304,6 +331,8 @@ public class LoggerHelper {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import java.util.List;
 
 public class LoggerHelper {
     final Logger logger = LoggerFactory.getLogger(loggerName);
@@ -316,9 +345,11 @@ public class LoggerHelper {
     <test-code>
         <description>missing argument in lambda call</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>9</expected-linenumbers>
+        <expected-linenumbers>11</expected-linenumbers>
         <code><![CDATA[
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import java.util.List;
 
 public class LoggerHelper {
     final Logger logger = LoggerFactory.getLogger(loggerName);
@@ -507,23 +538,25 @@ public class Test {
         <code><![CDATA[
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import java.io.IOException;
 
 public class InvalidLog4j2ExceptionTest {
 
     private static final Logger LOGGER = LogManager.getLogger(InvalidLog4j2ExceptionTest.class);
 
-    public void foo() {
+    public void foo(int tcmport) {
         try {
             throw new RuntimeException();
         } catch (RuntimeException e) {
             try {
-                LOGGER.error("Exception was thrown during conversion from tc model: {}.", jsonMarshaller.marshall(tcmport));
+                LOGGER.error("Exception was thrown during conversion from tc model: {}.", marshall(tcmport));
             } catch (IOException e1) {
                 LOGGER.error("Problem to marshall to json tcImport: {}", tcsTripImport, e1);
             }
             throw e;
         }
     }
+    Object marshall(int i) {}
 }
         ]]></code>
     </test-code>
@@ -599,6 +632,7 @@ public class Foo
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 public class LoggerHelper {
     public LoggerHelper(String loggerName) {
@@ -644,6 +678,7 @@ public final class Main {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 public class LoggerHelper {
     static {
@@ -657,9 +692,10 @@ public class LoggerHelper {
     <test-code>
         <description>log4j2: missing argument in static block</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>8</expected-linenumbers>
+        <expected-linenumbers>9</expected-linenumbers>
         <code><![CDATA[
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 public class LoggerHelper {
     static {
@@ -677,6 +713,8 @@ public class LoggerHelper {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import java.util.List;
 
 public class LoggerHelper {
     final Logger logger = LogManager.getLogger(loggerName);
@@ -689,9 +727,11 @@ public class LoggerHelper {
     <test-code>
         <description>log4j2: missing argument in lambda call</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>9</expected-linenumbers>
+        <expected-linenumbers>11</expected-linenumbers>
         <code><![CDATA[
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import java.util.List;
 
 public class LoggerHelper {
     final Logger logger = LogManager.getLogger(loggerName);
@@ -790,12 +830,13 @@ public class InvalidLogMessageFormatTest {
 
     <test-code>
         <description>ignore slf4j-Markers when detecting the number of arguments #2250</description>
-        <expected-problems>2</expected-problems>
-        <expected-linenumbers>11,17</expected-linenumbers>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>12</expected-linenumbers>
         <code><![CDATA[
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Marker;
+import org.slf4j.MarkerFactory;
 import org.slf4j.helpers.BasicMarkerFactory;
 
 public class InvalidLogMessageFormatTest {
@@ -809,7 +850,7 @@ public class InvalidLogMessageFormatTest {
         logger.warn(marker, "foo {}", "bar"); // correct: marker and one argument
 
         final var otherMarker = MarkerFactory.getMarker("OTHER_MARKER");
-        logger.warn(otherMarker, "foo"); // gets flagged as we can't statically determine the type of the "otherMarker" variable
+        logger.warn(otherMarker, "foo");
     }
 }
         ]]></code>
@@ -821,6 +862,7 @@ public class InvalidLogMessageFormatTest {
         <code><![CDATA[
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import java.util.function.Consumer;
 
 class InvalidLogMessageFormatTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(InvalidLogMessageFormatTest.class);
@@ -868,7 +910,7 @@ class InvalidLogMessageFormatTest {
 }
         ]]></code>
     </test-code>
-    
+
     <test-code>
         <description>#2431 IndexOutOfBoundsException when only logging exception message</description>
         <expected-problems>0</expected-problems>
@@ -879,7 +921,7 @@ public class Foo {
     private static final Logger LOG = LoggerFactory.getLogger(Foo.class);
     public void bar() {
         try {
-            new File("/text.txt");
+            new java.io.File("/text.txt");
         } catch (Exception e) {
             LOG.warn(e.getMessage());
         }
@@ -893,8 +935,8 @@ public class Foo {
         <expected-problems>2</expected-problems>
         <expected-linenumbers>10,14</expected-linenumbers>
         <expected-messages>
-            <message>Missing arguments, expected 2 arguments but have 1</message>
-            <message>Too many arguments, expected 1 argument but have 2</message>
+            <message>Missing arguments, expected 2 arguments but found 1</message>
+            <message>Too many arguments, expected 1 argument but found 2</message>
         </expected-messages>
         <code><![CDATA[
 import org.slf4j.Logger;

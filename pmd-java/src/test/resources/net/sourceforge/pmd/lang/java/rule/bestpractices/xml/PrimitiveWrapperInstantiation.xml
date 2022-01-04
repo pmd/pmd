@@ -7,6 +7,7 @@
     <test-code>
         <description>simple failure case</description>
         <expected-problems>2</expected-problems>
+        <expected-linenumbers>2,3</expected-linenumbers>
         <expected-messages>
             <message>Do not use `new Boolean("true")`, prefer `Boolean.TRUE`</message>
             <message>Do not use `new Boolean("false")`, prefer `Boolean.FALSE`</message>
@@ -22,6 +23,7 @@ public class Foo {
     <test-code>
         <description>new java.lang.Boolean</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
         <expected-messages>
             <message>Do not use `new Boolean("true")`, prefer `Boolean.TRUE`</message>
         </expected-messages>
@@ -72,6 +74,7 @@ public class Foo {
     <test-code>
         <description>don't use Boolean.valueOf() with string literal</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
         <expected-messages>
             <message>Do not use `Boolean.valueOf("true")`, prefer `Boolean.TRUE`</message>
         </expected-messages>
@@ -161,6 +164,7 @@ public class Foo {
     <test-code>
         <description>Test for failure after rule with custom Boolean, should report failure if rule reset done correctly</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     Boolean b = Boolean.valueOf("true");
@@ -177,6 +181,9 @@ public class Foo {
         Object o = new @Interned MyObject();
     }
 }
+
+@interface Interned { }
+class MyObject { }
         ]]></code>
     </test-code>
 
@@ -194,6 +201,7 @@ public class Foo {
     <test-code>
         <description>new Short(), bad</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
         <expected-messages>
             <message>Do not use `new Short(...)`, prefer `Short.valueOf(...)`</message>
         </expected-messages>
@@ -222,6 +230,7 @@ public class Foo {
     <test-code>
         <description>new Integer(), bad</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
         <expected-messages>
             <message>Do not use `new Integer(...)`, prefer `Integer.valueOf(...)`</message>
         </expected-messages>
@@ -247,6 +256,7 @@ public class Foo {
     <test-code>
         <description>new Long(), bad</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
         <expected-messages>
             <message>Do not use `new Long(...)`, prefer `Long.valueOf(...)`</message>
         </expected-messages>
@@ -275,6 +285,7 @@ public class Foo {
     <test-code>
         <description>new Double(), bad</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
         <expected-messages>
             <message>Do not use `new Double(...)`, prefer `Double.valueOf(...)`</message>
         </expected-messages>
@@ -303,6 +314,7 @@ public class Foo {
     <test-code>
         <description>new Float(), bad</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
         <expected-messages>
             <message>Do not use `new Float(...)`, prefer `Float.valueOf(...)`</message>
         </expected-messages>
@@ -331,6 +343,7 @@ public class Foo {
     <test-code>
         <description>new Byte(), bad</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
         <expected-messages>
             <message>Do not use `new Byte(...)`, prefer `Byte.valueOf(...)`</message>
         </expected-messages>
@@ -359,6 +372,7 @@ public class Foo {
     <test-code>
         <description>new Character(), bad</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
         <expected-messages>
             <message>Do not use `new Character(...)`, prefer `Character.valueOf(...)`</message>
         </expected-messages>
@@ -381,5 +395,26 @@ public class Foo {
                 }
             }
             ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] PrimitiveWrapperInstantiation: no violation on 'new Boolean(val)' #3595</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>5,6</expected-linenumbers>
+        <expected-messages>
+            <message>Do not use `new Boolean(...)`, prefer `Boolean.valueOf`</message>
+            <message>Do not use `new Boolean("...")`, prefer `Boolean.valueOf`</message>
+        </expected-messages>
+        <code><![CDATA[
+public class SomeClass {
+      private Boolean bar;
+
+      public void method(String s) {
+            this.bar = new Boolean(s);      //violation for the BooleanInstantiation
+            this.bar = new Boolean("some arbitrary string is just false"); //violation
+            this.bar = Boolean.valueOf(s);  //use this instead of Boolean#new
+      }
+}
+        ]]></code>
     </test-code>
 </test-data>

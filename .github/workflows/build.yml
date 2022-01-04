@@ -34,9 +34,9 @@ jobs:
           ~/.cache
           ~/work/pmd/target/repositories
           vendor/bundle
-        key: v1-${{ runner.os }}-${{ hashFiles('**/pom.xml') }}
+        key: v2-${{ runner.os }}-${{ hashFiles('**/pom.xml') }}
         restore-keys: |
-          v1-${{ runner.os }}-
+          v2-${{ runner.os }}-
     - name: Set up Ruby 2.7
       uses: ruby/setup-ruby@v1
       with:
@@ -46,7 +46,7 @@ jobs:
       run: |
         echo "LANG=en_US.UTF-8" >> $GITHUB_ENV
         echo "MAVEN_OPTS=-Dmaven.wagon.httpconnectionManager.ttlSeconds=180 -Dmaven.wagon.http.retryHandler.count=3 -DautoReleaseAfterClose=true -DstagingProgressTimeoutMinutes=30" >> $GITHUB_ENV
-        echo "PMD_CI_SCRIPTS_URL=https://raw.githubusercontent.com/pmd/build-tools/15/scripts" >> $GITHUB_ENV
+        echo "PMD_CI_SCRIPTS_URL=https://raw.githubusercontent.com/pmd/build-tools/17/scripts" >> $GITHUB_ENV
     - name: Check Environment
       shell: bash
       run: |

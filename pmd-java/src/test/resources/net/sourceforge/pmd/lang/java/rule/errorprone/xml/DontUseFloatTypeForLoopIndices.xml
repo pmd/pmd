@@ -7,6 +7,7 @@
     <test-code>
         <description>basic test case</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
         <code><![CDATA[
 public class Count {
     public static void main(String[] args) {
