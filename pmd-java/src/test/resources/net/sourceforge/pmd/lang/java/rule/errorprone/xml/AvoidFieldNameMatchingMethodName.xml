@@ -5,8 +5,9 @@
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
 
     <test-code>
-        <description>TEST1</description>
+        <description>pos</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     int bar;
@@ -16,10 +17,24 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>TEST2</description>
+        <description>Problem when there are several methods</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
         <code><![CDATA[
-public class Bar {
+public class Foo {
+    int bar;
+    void bar() {}
+    void bar2() {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>pos, inner class</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
     class Dummy {
         Foo foo;
         void foo() {}
@@ -29,10 +44,10 @@ public class Bar {
     </test-code>
 
     <test-code>
-        <description>TEST3</description>
+        <description>neg, field and method are in different classes</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-public class Bar {
+public class Foo {
     Foo foo;
     class Dummy {
         void foo() {}
@@ -42,10 +57,36 @@ public class Bar {
     </test-code>
 
     <test-code>
-        <description>TEST4</description>
+        <description>Neg, inner enum</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-public class Bar {
+            public class Foo {
+                int bar;
+                enum Inner {
+                    ;
+                    void bar() {}
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Pos in enum</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+            public enum Foo {
+                ;
+                int bar;
+                void bar() {}
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>neg, field and method are in different classes, reversed</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
     void foo() {}
     class Dummy {
         Foo foo;
