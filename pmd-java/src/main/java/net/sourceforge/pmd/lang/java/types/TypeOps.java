@@ -1265,7 +1265,7 @@ public final class TypeOps {
      * - m2 has the same signature as m1, or
      * - the signature of m1 is the same as the erasure (§4.6) of the signature of m2.
      */
-    private static boolean isSubSignature(JMethodSig m1, JMethodSig m2) {
+    public static boolean isSubSignature(JMethodSig m1, JMethodSig m2) {
         // prune easy cases
         if (m1.getArity() != m2.getArity() || !m1.getName().equals(m2.getName())) {
             return false;

@@ -316,7 +316,7 @@ public class Foo {
         ]]></code>
     </test-code>
 
-    <test-code regressionTest="false">
+    <test-code>
         <description>False positive with generics #3672</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
