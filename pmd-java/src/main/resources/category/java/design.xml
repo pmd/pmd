@@ -57,10 +57,10 @@ Avoid catching generic exceptions such as NullPointerException, RuntimeException
             <property name="xpath">
                 <value>
 <![CDATA[
-//CatchStatement/FormalParameter/Type/ReferenceType/ClassOrInterfaceType[
-    @Image='NullPointerException' or
-    @Image='Exception' or
-    @Image='RuntimeException']
+//CatchParameter/ClassOrInterfaceType[
+    pmd-java:typeIsExactly('java.lang.NullPointerException') or
+    pmd-java:typeIsExactly('java.lang.Exception') or
+    pmd-java:typeIsExactly('java.lang.RuntimeException')]
 ]]>
                 </value>
             </property>
