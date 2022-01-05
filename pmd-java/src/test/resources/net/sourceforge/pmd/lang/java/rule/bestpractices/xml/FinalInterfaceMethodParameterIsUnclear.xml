@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+        xmlns="http://pmd.sourceforge.net/rule-tests"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>Final is not allowed in interface public method</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Using final in public (non default) interface method is unclear</message>
+        </expected-messages>
+        <code><![CDATA[
+public interface Foo {
+    void bar(final int a);
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Final is allowed in interface static method</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public interface Foo {
+    static void bar(final int a) {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Final is allowed in interface private method</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public interface Foo {
+    private void bar(final int a) {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Final is allowed in interface default method</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public interface Foo {
+    default void bar(final int a) {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Final is allowed in interface inner class method</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public interface Foo {
+  class Inner {
+    public void bar(final int a) {}
+  }
+}
+        ]]></code>
+    </test-code>
+
+</test-data>
