@@ -4207,6 +4207,12 @@ For historical reasons, modifiers which are implied by the context are accepted 
         <span class="no">FOO</span><span class="o">;</span>
     <span class="o">}</span>
 <span class="o">}</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">FooClass</span> <span class="o">{</span>
+    <span class="kd">static</span> <span class="n">record</span> <span class="nf">BarRecord</span><span class="o">()</span> <span class="o">{}</span>     <span class="c1">// static ignored</span>
+<span class="o">}</span>
+<span class="kd">public</span> <span class="kd">interface</span> <span class="nc">FooInterface</span> <span class="o">{</span>
+    <span class="kd">static</span> <span class="n">record</span> <span class="nf">BarRecord</span><span class="o">()</span> <span class="o">{}</span>     <span class="c1">// static ignored</span>
+<span class="o">}</span>
 </code></pre></div></div>
 
 <p><strong>Use this rule by referencing it:</strong></p>
@@ -4735,7 +4741,7 @@ by the rule <a href="pmd_rules_java_codestyle.html#controlstatementbraces"><code
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2022 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Jan 1, 2022 <br />
+ Site last generated: Jan 5, 2022 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
