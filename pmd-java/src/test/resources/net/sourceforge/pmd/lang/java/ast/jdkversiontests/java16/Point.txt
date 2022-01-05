@@ -1,6 +1,6 @@
 +- CompilationUnit[@PackageName = "", @declarationsAreInDefaultPackage = true]
    +- TypeDeclaration[]
-      +- RecordDeclaration[@Abstract = false, @BinaryName = "Point", @Default = false, @Final = false, @Image = "Point", @Local = false, @Modifiers = 1, @Native = false, @Nested = false, @PackagePrivate = false, @Private = false, @Protected = false, @Public = true, @SimpleName = "Point", @Static = false, @Strictfp = false, @Synchronized = false, @Transient = false, @TypeKind = TypeKind.RECORD, @Volatile = false]
+      +- RecordDeclaration[@Abstract = false, @BinaryName = "Point", @Default = false, @Final = true, @Image = "Point", @Local = false, @Modifiers = 1, @Native = false, @Nested = false, @PackagePrivate = false, @Private = false, @Protected = false, @Public = true, @SimpleName = "Point", @Static = false, @Strictfp = false, @Synchronized = false, @SyntacticallyFinal = false, @Transient = false, @TypeKind = TypeKind.RECORD, @Volatile = false]
          +- RecordComponentList[@Size = 2]
          |  +- RecordComponent[@Varargs = false]
          |  |  +- Type[@Array = false, @ArrayDepth = 0, @ArrayType = false, @TypeImage = "int"]

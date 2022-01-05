@@ -55,6 +55,16 @@ public final class ASTRecordDeclaration extends AbstractAnyTypeDeclaration {
         return isNested() || isLocal();
     }
 
+    public boolean isSyntacticallyFinal() {
+        return super.isFinal();
+    }
+
+    @Override
+    public boolean isFinal() {
+        // A record is implicitly final
+        return true;
+    }
+
     @Override
     public boolean isLocal() {
         return getParent() instanceof ASTBlockStatement;

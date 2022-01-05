@@ -271,7 +271,7 @@ public class UnnecessaryModifierRule extends AbstractJavaRule {
         if (node.isStatic()) {
             reportUnnecessaryModifiers(data, node, Modifier.STATIC, "records are implicitly static");
         }
-        if (node.isFinal()) {
+        if (node.isSyntacticallyFinal()) {
             reportUnnecessaryModifiers(data, node, Modifier.FINAL, "records are implicitly final");
         }
         return data;
