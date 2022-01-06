@@ -808,7 +808,7 @@ public class HelloWorldBean {
           message="Final parameter in abstract method"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           typeResolution="true"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#finalparameterinabstractmethod">
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#finalparameterinabstractmethod">
         <description>
             Declaring a method parameter as final for an interface method is useless because the implementation may choose to not respect it.
         </description>
