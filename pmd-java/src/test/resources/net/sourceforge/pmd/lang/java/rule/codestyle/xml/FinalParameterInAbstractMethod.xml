@@ -8,7 +8,7 @@
         <description>Final is not allowed in interface public method</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>Using final in public (non default) interface method is unclear</message>
+            <message>Final parameter in abstract method</message>
         </expected-messages>
         <code><![CDATA[
 public interface Foo {
@@ -55,6 +55,19 @@ public interface Foo {
   class Inner {
     public void bar(final int a) {}
   }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Final is not allowed in abstract method</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Final parameter in abstract method</message>
+        </expected-messages>
+        <code><![CDATA[
+public abstract class Foo {
+    abstract void bar(final int a);
 }
         ]]></code>
     </test-code>

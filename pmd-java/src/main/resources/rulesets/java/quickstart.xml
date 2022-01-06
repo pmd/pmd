@@ -20,7 +20,6 @@
     <rule ref="category/java/bestpractices.xml/ConstantsInInterface"/>
     <rule ref="category/java/bestpractices.xml/DefaultLabelNotLastInSwitchStmt"/>
     <rule ref="category/java/bestpractices.xml/DoubleBraceInitialization"/>
-    <rule ref="category/java/bestpractices.xml/FinalInterfaceMethodParameterIsUnclear"/>
     <rule ref="category/java/bestpractices.xml/ForLoopCanBeForeach"/>
     <!-- <rule ref="category/java/bestpractices.xml/ForLoopVariableCount" /> -->
     <rule ref="category/java/bestpractices.xml/GuardLogStatement"/>
@@ -94,6 +93,7 @@
     <!-- <rule ref="category/java/codestyle.xml/EmptyMethodInAbstractClassShouldBeAbstract" /> -->
     <rule ref="category/java/codestyle.xml/ExtendsObject"/>
     <!-- <rule ref="category/java/codestyle.xml/FieldDeclarationsShouldBeAtStartOfClass" /> -->
+    <rule ref="category/java/codestyle.xml/FinalParameterInAbstractMethod"/>
     <rule ref="category/java/codestyle.xml/ForLoopShouldBeWhileLoop"/>
     <rule ref="category/java/codestyle.xml/IdenticalCatchBranches"/>
     <!-- <rule ref="category/java/codestyle.xml/LocalVariableCouldBeFinal" /> -->

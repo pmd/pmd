@@ -802,6 +802,39 @@ public class HelloWorldBean {
         </example>
     </rule>
 
+    <rule name="FinalParameterInAbstractMethod"
+          language="java"
+          since="6.42.0"
+          message="Final parameter in abstract method"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          typeResolution="true"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#finalparameterinabstractmethod">
+        <description>
+            Declaring a method parameter as final for an interface method is useless because the implementation may choose to not respect it.
+        </description>
+        <priority>1</priority>
+        <properties>
+            <property name="version" value="2.0"/>
+            <property name="xpath">
+                <value>
+                    <![CDATA[
+//MethodDeclaration[
+    MethodDeclarator/FormalParameters/FormalParameter[@Final = true()] and
+    not(Block)
+]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+            <![CDATA[
+public interface MyInterface {
+  void process(final Object arg); // Avoid using final here
+}
+]]>
+        </example>
+    </rule>
+
     <rule name="ForLoopShouldBeWhileLoop"
           language="java"
           since="1.02"

@@ -541,42 +541,6 @@ return a;
         </example>
     </rule>
 
-    <rule name="FinalInterfaceMethodParameterIsUnclear"
-          language="java"
-          since="6.42.0"
-          message="Using final in public (non default) interface method is unclear"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
-          typeResolution="true"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#finalinterfacemethodparameterisunclear">
-        <description>
-            Declaring a method parameter as final for an interface method is useless because the implementation may choose to not respect it.
-        </description>
-        <priority>1</priority>
-        <properties>
-            <property name="version" value="2.0"/>
-            <property name="xpath">
-                <value>
-<![CDATA[
-//ClassOrInterfaceDeclaration[@Interface = true()]
-    /ClassOrInterfaceBody
-    /ClassOrInterfaceBodyDeclaration
-    /MethodDeclaration[@Public = true() and @Default = false() and @Static = false()]
-    /MethodDeclarator
-    /FormalParameters
-    /FormalParameter[@Final = true()]
-]]>
-                </value>
-            </property>
-        </properties>
-        <example>
-<![CDATA[
-public interface MyInterface {
-  void process(final Object arg); // Avoid using final here
-}
-]]>
-        </example>
-    </rule>
-
     <rule name="ForLoopCanBeForeach"
           language="java"
           since="6.0.0"
