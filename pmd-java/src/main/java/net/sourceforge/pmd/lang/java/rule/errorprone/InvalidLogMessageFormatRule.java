@@ -37,7 +37,6 @@ import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.Scope;
-import net.sourceforge.pmd.util.StringUtil;
 
 public class InvalidLogMessageFormatRule extends AbstractJavaRule {
 
@@ -53,8 +52,10 @@ public class InvalidLogMessageFormatRule extends AbstractJavaRule {
     /**
      * Whitelisted methods of net.logstash.logback.argument.StructuredArguments
      */
-    private static final String[] STRUCTURED_ARGUMENTS_METHODS = {"a", "array", "defer", "e",
-        "entries", "f", "fields", "keyValue", "kv", "r", "raw", "v", "value"};
+    private static final Set<String> STRUCTURED_ARGUMENTS_METHODS = Collections.unmodifiableSet(new HashSet<>(
+            Arrays.asList("a", "array", "defer", "e",
+                    "entries", "f", "fields", "keyValue",
+                    "kv", "r", "raw", "v", "value")));
 
     static {
         Map<String, Set<String>> loggersMap = new HashMap<>();
@@ -382,7 +383,7 @@ public class InvalidLogMessageFormatRule extends AbstractJavaRule {
                 if (suffix.isArguments() && prefix.getNumChildren() == 1 && prefix.getChild(0) instanceof ASTName) {
                     ASTName name = (ASTName) prefix.getChild(0);
                     return name.getImage().startsWith("StructuredArguments.")
-                        || StringUtil.isAnyOf(name.getImage(), STRUCTURED_ARGUMENTS_METHODS);
+                        || STRUCTURED_ARGUMENTS_METHODS.contains(name.getImage());
                 }
             }
         }
