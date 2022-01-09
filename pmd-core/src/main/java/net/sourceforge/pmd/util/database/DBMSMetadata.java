@@ -15,6 +15,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -302,7 +303,7 @@ public class DBMSMetadata {
 
         if (null == dburi) {
             LOGGER.warning("No dbUri defined - no further action possible");
-            return null;
+            return Collections.emptyList();
         } else {
             return getSourceObjectList(dburi.getLanguagesList(), dburi.getSchemasList(), dburi.getSourceCodeTypesList(),
                     dburi.getSourceCodeNamesList());

@@ -98,11 +98,7 @@ public class TypeSignatureVisitor extends SignatureVisitor {
         if (parameterTypes == null) {
             throw new RuntimeException();
         }
-        if (parameterTypes != null) {
-            return parameterTypes.toArray(new Class<?>[0]);
-        } else {
-            return null;
-        }
+        return parameterTypes.toArray(new Class<?>[0]);
     }
 
     private void pushType(int type) {
