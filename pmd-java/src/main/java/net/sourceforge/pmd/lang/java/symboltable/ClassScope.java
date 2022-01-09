@@ -226,9 +226,13 @@ public class ClassScope extends AbstractJavaScope {
             result.add(finder.getDecl());
         }
 
-        // search inner classes
+        // search references to inner classes
         Map<ClassNameDeclaration, List<NameOccurrence>> classDeclarations = getClassDeclarations();
         if (result.isEmpty() && !classDeclarations.isEmpty()) {
+            Applier.apply(finder, classDeclarations.keySet().iterator());
+            if (finder.getDecl() != null) {
+                result.add(finder.getDecl());
+            }
             for (ClassNameDeclaration innerClass : getClassDeclarations().keySet()) {
                 Applier.apply(finder, innerClass.getScope().getDeclarations(VariableNameDeclaration.class).keySet().iterator());
                 if (finder.getDecl() != null) {
