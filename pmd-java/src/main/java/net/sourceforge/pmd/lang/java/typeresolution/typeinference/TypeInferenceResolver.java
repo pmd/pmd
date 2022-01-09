@@ -36,6 +36,7 @@ public final class TypeInferenceResolver {
 
     }
 
+    @SuppressWarnings("PMD.ReturnEmptyCollectionRatherThanNull")
     public static List<JavaTypeDefinition> inferTypes(List<Constraint> constraints, List<Bound> bounds,
                                                       List<Variable> variables) {
 
