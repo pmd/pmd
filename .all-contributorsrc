@@ -6502,6 +6502,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "squaresurf",
+      "name": "Daniel Paul Searles",
+      "avatar_url": "https://avatars.githubusercontent.com/u/863076?v=4",
+      "profile": "https://github.com/squaresurf",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
