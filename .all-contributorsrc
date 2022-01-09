@@ -6511,6 +6511,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "dykov",
+      "name": "Oleksii Dykov",
+      "avatar_url": "https://avatars.githubusercontent.com/u/36415196?v=4",
+      "profile": "https://github.com/dykov",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
