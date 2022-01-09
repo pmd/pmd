@@ -6493,6 +6493,33 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "vgalloy",
+      "name": "Vincent Galloy",
+      "avatar_url": "https://avatars.githubusercontent.com/u/11443605?v=4",
+      "profile": "https://github.com/vgalloy",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "squaresurf",
+      "name": "Daniel Paul Searles",
+      "avatar_url": "https://avatars.githubusercontent.com/u/863076?v=4",
+      "profile": "https://github.com/squaresurf",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "dykov",
+      "name": "Oleksii Dykov",
+      "avatar_url": "https://avatars.githubusercontent.com/u/36415196?v=4",
+      "profile": "https://github.com/dykov",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
