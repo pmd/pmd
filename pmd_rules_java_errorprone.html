@@ -4765,10 +4765,12 @@ inadvertent NullPointerExceptions.</p>
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">MethodDeclaration</span><span class="w">
 </span><span class="p">[</span><span class="w">
-</span><span class="p">(.</span><span class="o">/</span><span class="nt">ResultType</span><span class="o">/</span><span class="nt">Type</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.util.Collection'</span><span class="p">)</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.util.Map'</span><span class="p">)</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="na">@ArrayType</span><span class="err">=</span><span class="nf">true</span><span class="p">()])</span><span class="w">
-</span><span class="ow">and</span><span class="w">
-</span><span class="p">(.</span><span class="o">/</span><span class="nt">Block</span><span class="o">/</span><span class="nt">BlockStatement</span><span class="o">/</span><span class="nt">Statement</span><span class="o">/</span><span class="nt">ReturnStatement</span><span class="o">/</span><span class="nt">Expression</span><span class="o">/</span><span class="nt">PrimaryExpression</span><span class="o">/</span><span class="nt">PrimaryPrefix</span><span class="o">/</span><span class="nt">Literal</span><span class="o">/</span><span class="nt">NullLiteral</span><span class="p">)</span><span class="w">
+    </span><span class="p">(.</span><span class="o">/</span><span class="nt">ResultType</span><span class="o">/</span><span class="nt">Type</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.util.Collection'</span><span class="p">)</span><span class="w">
+    </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.util.Map'</span><span class="p">)</span><span class="w">
+    </span><span class="ow">or</span><span class="w"> </span><span class="na">@ArrayType</span><span class="err">=</span><span class="nf">true</span><span class="p">()])</span><span class="w">
 </span><span class="p">]</span><span class="w">
+</span><span class="o">//</span><span class="nt">ReturnStatement</span><span class="o">/</span><span class="nt">Expression</span><span class="o">/</span><span class="nt">PrimaryExpression</span><span class="o">/</span><span class="nt">PrimaryPrefix</span><span class="o">/</span><span class="nt">Literal</span><span class="o">/</span><span class="nt">NullLiteral</span><span class="w">
+</span><span class="p">[</span><span class="ow">not</span><span class="p">(.</span><span class="o">/</span><span class="kn">ancestor::</span><span class="nt">StatementExpression</span><span class="p">)]</span><span class="w">
 </span></code></pre></div></div>
 
 <p><strong>Example(s):</strong></p>
@@ -5524,7 +5526,7 @@ Thread.currentThread().getContextClassLoader() instead.</p>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2022 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Jan 8, 2022 <br />
+ Site last generated: Jan 9, 2022 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
