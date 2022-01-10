@@ -27,6 +27,7 @@ This is a {{ site.pmd.release_type }} release.
     *   [#3468](https://github.com/pmd/pmd/issues/3468): \[java] UnusedPrivateMethod false positive when outer class calls private static method on inner class
 *   java-errorprone
     *   [#3686](https://github.com/pmd/pmd/issues/3686): \[java] ReturnEmptyCollectionRatherThanNull - false negative with conditioned returns
+    *   [#3721](https://github.com/pmd/pmd/issues/3721): \[java] ReturnEmptyCollectionRatherThanNull - false positive with stream and lambda
 *   java-performance
     *   [#3492](https://github.com/pmd/pmd/issues/3492): \[java] UselessStringValueOf: False positive when there is no initial String to append to
 
