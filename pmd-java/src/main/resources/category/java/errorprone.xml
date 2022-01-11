@@ -189,7 +189,7 @@ for (int i = 0; i < 10; i++) {
           language="java"
           since="3.0"
           message="Avoid calling finalize() explicitly"
-          class="net.sourceforge.pmd.lang.java.rule.errorprone.AvoidCallingFinalizeRule"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#avoidcallingfinalize">
         <description>
 The method Object.finalize() is called by the garbage collector on an object when garbage collection determines
@@ -198,6 +198,17 @@ that there are no more references to the object. It should not be invoked by app
 Note that Oracle has declared Object.finalize() as deprecated since JDK 9.
         </description>
         <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//MethodCall[pmd-java:matchesSig("java.lang.Object#finalize()")]
+    (: it's ok inside finalize :)
+    [not(SuperExpression and ancestor::*[self::MethodDeclaration or self::Initializer][1][@Name = 'finalize'][@Arity = 0][VoidType])]
+]]>
+                </value>
+            </property>
+        </properties>
         <example>
 <![CDATA[
 void foo() {
@@ -223,8 +234,7 @@ original error, causing other, more subtle problems later on.
             <property name="xpath">
                 <value>
 <![CDATA[
-//CatchStatement/FormalParameter/Type
- /ReferenceType/ClassOrInterfaceType[@Image='NullPointerException']
+//CatchClause/CatchParameter/ClassOrInterfaceType[pmd-java:typeIsExactly('java.lang.NullPointerException')]
 ]]>
                 </value>
             </property>
@@ -365,7 +375,7 @@ public class A {
           language="java"
           since="3.0"
           message="Field {0} has the same name as a method"
-          class="net.sourceforge.pmd.lang.java.rule.errorprone.AvoidFieldNameMatchingMethodNameRule"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#avoidfieldnamematchingmethodname">
         <description>
 It can be confusing to have a field name with the same name as a method. While this is permitted,
@@ -373,6 +383,17 @@ having information (field) and actions (method) is not clear naming. Developers 
 Smalltalk often prefer this approach as the methods denote accessor methods.
         </description>
         <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//FieldDeclaration/VariableDeclarator/VariableDeclaratorId
+    [some $method in ../../..[self::ClassOrInterfaceBody or self::EnumBody]/MethodDeclaration
+     satisfies lower-case(@Name) = lower-case($method/@Name)]
+]]>
+                </value>
+            </property>
+        </properties>
         <example>
 <![CDATA[
 public class Foo {
@@ -389,13 +410,23 @@ public class Foo {
           language="java"
           since="3.0"
           message="It is somewhat confusing to have a field name matching the declaring class name"
-          class="net.sourceforge.pmd.lang.java.rule.errorprone.AvoidFieldNameMatchingTypeNameRule"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#avoidfieldnamematchingtypename">
         <description>
 It is somewhat confusing to have a field name matching the declaring type name.
 This probably means that type and/or field names should be chosen more carefully.
         </description>
         <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//FieldDeclaration/VariableDeclarator/VariableDeclaratorId
+    [lower-case(@Name) = lower-case(ancestor::ClassOrInterfaceDeclaration[1]/@SimpleName)]
+]]>
+                </value>
+            </property>
+        </properties>
         <example>
 <![CDATA[
 public class Foo extends Bar {
@@ -451,7 +482,7 @@ try {  // Prefer this:
     <rule name="AvoidLiteralsInIfCondition"
           language="java"
           since="4.2.6"
-          message="Avoid using Literals in Conditional Statements"
+          message="Avoid using literals in if statements"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#avoidliteralsinifcondition">
         <description>
@@ -474,28 +505,28 @@ the property ignoreMagicNumbers is not taken into account, if there are multiple
             <property name="xpath">
                 <value>
 <![CDATA[
-(: simple case - no deep expressions :)
-//IfStatement[$ignoreExpressions = true()]/Expression/*/PrimaryExpression/PrimaryPrefix/Literal
-    [not(NullLiteral)]
-    [not(BooleanLiteral)]
+(: simple case - no deep expressions - this is always executed :)
+//IfStatement/*[1]/*[pmd-java:nodeIs('Literal')]
+    [not(pmd-java:nodeIs('NullLiteral'))]
+    [not(pmd-java:nodeIs('BooleanLiteral'))]
     [empty(index-of(tokenize($ignoreMagicNumbers, '\s*,\s*'), @Image))]
 |
 (: consider also deeper expressions :)
-//IfStatement[$ignoreExpressions = false()]/Expression//*[local-name() != 'UnaryExpression' or @Operator != '-']/PrimaryExpression/PrimaryPrefix/Literal
-    [not(NullLiteral)]
-    [not(BooleanLiteral)]
+//IfStatement[$ignoreExpressions = false()]/*[1]//*[not(self::UnaryExpression[@Operator = '-'])]/*[pmd-java:nodeIs('Literal')]
+    [not(pmd-java:nodeIs('NullLiteral'))]
+    [not(pmd-java:nodeIs('BooleanLiteral'))]
     [empty(index-of(tokenize($ignoreMagicNumbers, '\s*,\s*'), @Image))]
 |
 (: consider negative literals :)
-//IfStatement[$ignoreExpressions = false()]/Expression//UnaryExpression[@Operator = '-']/PrimaryExpression/PrimaryPrefix/Literal
-    [not(NullLiteral)]
-    [not(BooleanLiteral)]
+//IfStatement[$ignoreExpressions = false()]/*[1]//UnaryExpression[@Operator = '-']/*[pmd-java:nodeIs('Literal')]
+    [not(pmd-java:nodeIs('NullLiteral'))]
+    [not(pmd-java:nodeIs('BooleanLiteral'))]
     [empty(index-of(tokenize($ignoreMagicNumbers, '\s*,\s*'), concat('-', @Image)))]
 |
 (: consider multiple literals in expressions :)
-//IfStatement[$ignoreExpressions = false()]/Expression[count(*/PrimaryExpression/PrimaryPrefix/Literal
-    [not(NullLiteral)]
-    [not(BooleanLiteral)]) > 1]
+//IfStatement[$ignoreExpressions = false()]/*[1][count(*[pmd-java:nodeIs('Literal')]
+    [not(pmd-java:nodeIs('NullLiteral'))]
+    [not(pmd-java:nodeIs('BooleanLiteral'))]) > 1]
 ]]>
                 </value>
             </property>
@@ -702,29 +733,27 @@ public String bar(String string) {
             <property name="xpath">
                 <value>
 <![CDATA[
-//MethodDeclaration[
-  @Name='onCreate' or
-  @Name='onConfigurationChanged' or
-  @Name='onPostCreate' or
-  @Name='onPostResume' or
-  @Name='onRestart' or
-  @Name='onRestoreInstanceState' or
-  @Name='onResume' or
-  @Name='onStart'
-  ]
-    /Block[not(
-      (BlockStatement[1]/Statement/StatementExpression/PrimaryExpression[./PrimaryPrefix[@SuperModifier= true()]]/PrimarySuffix[@Image= ancestor::MethodDeclaration/@Name]))]
-[ancestor::ClassOrInterfaceDeclaration[ExtendsList/ClassOrInterfaceType[
-  pmd-java:typeIs('android.app.Activity') or
-  pmd-java:typeIs('android.app.Application') or
-  pmd-java:typeIs('android.app.Service')
-]]]
+//ClassOrInterfaceDeclaration
+    [
+      pmd-java:typeIs('android.app.Activity') or
+      pmd-java:typeIs('android.app.Application') or
+      pmd-java:typeIs('android.app.Service')
+    ]
+    //MethodDeclaration
+    [
+      @Name=('onCreate', 'onConfigurationChanged', 'onPostCreate', 'onPostResume', 'onRestart',
+             'onRestoreInstanceState', 'onResume', 'onStart')
+    ]
+    [not(Block/*[1]/MethodCall[SuperExpression][@MethodName = ancestor::MethodDeclaration/@Name])]
 ]]>
                 </value>
             </property>
         </properties>
         <example>
 <![CDATA[
+import android.app.Activity;
+import android.os.Bundle;
+
 public class DummyActivity extends Activity {
     public void onCreate(Bundle bundle) {
         // missing call to super.onCreate(bundle)
@@ -749,27 +778,25 @@ Super should be called at the end of the method
             <property name="xpath">
                 <value>
 <![CDATA[
-//MethodDeclaration[
-  @Name='finish' or
-  @Name='onDestroy' or
-  @Name='onPause' or
-  @Name='onSaveInstanceState' or
-  @Name='onStop' or
-  @Name='onTerminate'
-  ]
-   /Block/BlockStatement[last()]
-    [not(Statement/StatementExpression/PrimaryExpression[./PrimaryPrefix[@SuperModifier= true()]]/PrimarySuffix[@Image= ancestor::MethodDeclaration/@Name])]
-[ancestor::ClassOrInterfaceDeclaration[ExtendsList/ClassOrInterfaceType[
-  pmd-java:typeIs('android.app.Activity') or
-  pmd-java:typeIs('android.app.Application') or
-  pmd-java:typeIs('android.app.Service')
-]]]
+//ClassOrInterfaceDeclaration
+    [
+      pmd-java:typeIs('android.app.Activity') or
+      pmd-java:typeIs('android.app.Application') or
+      pmd-java:typeIs('android.app.Service')
+    ]
+    //MethodDeclaration
+    [
+      @Name=('finish', 'onDestroy', 'onPause', 'onSaveInstanceState', 'onStop', 'onTerminate')
+    ]
+    [not(Block/*[last()]/MethodCall[SuperExpression][@MethodName = ancestor::MethodDeclaration/@Name])]
 ]]>
                 </value>
             </property>
         </properties>
         <example>
 <![CDATA[
+import android.app.Activity;
+
 public class DummyActivity extends Activity {
     public void onPause() {
         foo();
@@ -1148,7 +1175,7 @@ public class JuniorClass extends SeniorClass {
           language="java"
           since="6.13.0"
           message="Probable detached JUnit test case."
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.java.rule.errorprone.DetachedTestCaseRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#detachedtestcase">
         <description>
 The method appears to be a test case since it has public or default visibility,
@@ -1158,28 +1185,6 @@ method, it should likely have private visibility. If it is an ignored test, it
 should be annotated with @Test and @Ignore.
         </description>
         <priority>3</priority>
-        <properties>
-            <property name="xpath">
-                <value><![CDATA[
-//ClassOrInterfaceBodyDeclaration
-[../ClassOrInterfaceBodyDeclaration/Annotation/*/Name
-        [pmd-java:typeIs('org.junit.Test')
-         or pmd-java:typeIs('org.junit.jupiter.api.Test')
-         or pmd-java:typeIs('org.junit.jupiter.api.RepeatedTest')
-         or pmd-java:typeIs('org.junit.jupiter.api.TestFactory')
-         or pmd-java:typeIs('org.junit.jupiter.api.TestTemplate')
-         or pmd-java:typeIs('org.junit.jupiter.params.ParameterizedTest')]
-]
-[not(Annotation)]
-[MethodDeclaration[(@Public = true() or @PackagePrivate = true()) and @Static = false() and
-        ResultType[@Void = true()] and
-        MethodDeclarator/FormalParameters[@Size = 0]
-    ]
-]
-]]></value>
-            </property>
-            <property name="version" value="2.0" />
-        </properties>
         <example>
 <![CDATA[
 public class MyTest {
@@ -1267,7 +1272,7 @@ Extend Exception or RuntimeException instead of Throwable.
                 <value>
 <![CDATA[
 //ClassOrInterfaceDeclaration/ExtendsList/ClassOrInterfaceType
-  [@Image="Throwable" or @Image="java.lang.Throwable"]
+  [pmd-java:typeIsExactly('java.lang.Throwable')]
 ]]>
                 </value>
             </property>
@@ -1291,7 +1296,7 @@ Use Environment.getExternalStorageDirectory() instead of "/sdcard"
         <priority>3</priority>
         <properties>
             <property name="xpath">
-                <value>//Literal[starts-with(@Image,'"/sdcard')]</value>
+                <value>//StringLiteral[starts-with(@Image,'"/sdcard')]</value>
             </property>
         </properties>
         <example>
@@ -1362,7 +1367,7 @@ Note: This is a PMD implementation of the Lint4j rule "A throw in a finally bloc
         <priority>4</priority>
         <properties>
             <property name="xpath">
-                <value>//FinallyStatement[descendant::ThrowStatement]</value>
+                <value>//FinallyClause[descendant::ThrowStatement]</value>
             </property>
         </properties>
         <example>
@@ -2179,13 +2184,23 @@ public class Foo extends TestCase {
     <rule name="MethodWithSameNameAsEnclosingClass"
           language="java"
           since="1.5"
-          message="Classes should not have non-constructor methods with the same name as the class"
-          class="net.sourceforge.pmd.lang.java.rule.errorprone.MethodWithSameNameAsEnclosingClassRule"
+          message="A method should not have the same name as its containing class"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#methodwithsamenameasenclosingclass">
         <description>
-Non-constructor methods should not have the same name as the enclosing class.
+A method should not have the same name as its containing class.
+This would be confusing as it would look like a constructor. 
         </description>
         <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//MethodDeclaration[@Name = ancestor::ClassOrInterfaceDeclaration/@SimpleName]
+]]>
+                </value>
+            </property>
+        </properties>
         <example>
 <![CDATA[
 public class MyClass {
@@ -2388,7 +2403,7 @@ log4j2 (since 6.19.0).
                 <value><![CDATA[
 //ClassOrInterfaceDeclaration[
   count(
-    ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/FieldDeclaration//ClassOrInterfaceType[
+    ClassOrInterfaceBody/FieldDeclaration/ClassOrInterfaceType[
       pmd-java:typeIs("org.apache.log4j.Logger") or
       pmd-java:typeIs("org.apache.logging.log4j.Logger") or
       pmd-java:typeIs("java.util.logging.Logger") or
@@ -2639,8 +2654,12 @@ See Effective Java, 3rd Edition, Item 54: Return empty collections or arrays ins
                 <value>
 <![CDATA[
 //MethodDeclaration
-    [ArrayType or ClassOrInterfaceType[pmd-java:typeIs('java.util.Collection') or pmd-java:typeIs('java.util.Map')]]
-    [Block/ReturnStatement/NullLiteral]
+    [ArrayType
+     or ClassOrInterfaceType[pmd-java:typeIs('java.util.Collection')
+        or pmd-java:typeIs('java.util.Map')]]
+//ReturnStatement/NullLiteral
+[not(./ancestor::LambdaExpression)]
+[not(./ancestor::AnonymousClassDeclaration)]
 ]]>
                 </value>
             </property>

@@ -618,12 +618,12 @@ public enum EnumToString {
         ]]></code>
     </test-code>
 
-    <test-code regressionTest="false">
+    <test-code>
         <description>False positive with generic erasure #3675</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>23</expected-linenumbers>
         <code><![CDATA[
-package net.sourceforge.pmd.lang.java.rule.bestpractices.missingoverride;
+package test;
 
 import java.util.Collection;
 
