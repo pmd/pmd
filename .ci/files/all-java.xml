@@ -233,7 +233,7 @@
     <rule ref="category/java/errorprone.xml/JUnitSpelling"/>
     <rule ref="category/java/errorprone.xml/JUnitStaticSuite"/>
     <rule ref="category/java/errorprone.xml/JumbledIncrementer"/>
-    <!-- <rule ref="category/java/errorprone.xml/MethodWithSameNameAsEnclosingClass"/> -->
+    <rule ref="category/java/errorprone.xml/MethodWithSameNameAsEnclosingClass"/>
     <rule ref="category/java/errorprone.xml/MisplacedNullCheck"/>
     <rule ref="category/java/errorprone.xml/MissingSerialVersionUID"/>
     <rule ref="category/java/errorprone.xml/MissingStaticMethodInNonInstantiatableClass"/>

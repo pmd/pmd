@@ -2184,13 +2184,23 @@ public class Foo extends TestCase {
     <rule name="MethodWithSameNameAsEnclosingClass"
           language="java"
           since="1.5"
-          message="Classes should not have non-constructor methods with the same name as the class"
-          class="net.sourceforge.pmd.lang.java.rule.errorprone.MethodWithSameNameAsEnclosingClassRule"
+          message="A method should not have the same name as its containing class"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#methodwithsamenameasenclosingclass">
         <description>
-Non-constructor methods should not have the same name as the enclosing class.
+A method should not have the same name as its containing class.
+This would be confusing as it would look like a constructor. 
         </description>
         <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//MethodDeclaration[@Name = ancestor::ClassOrInterfaceDeclaration/@SimpleName]
+]]>
+                </value>
+            </property>
+        </properties>
         <example>
 <![CDATA[
 public class MyClass {
