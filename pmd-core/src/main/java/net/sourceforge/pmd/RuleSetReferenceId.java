@@ -232,7 +232,7 @@ public class RuleSetReferenceId {
     private boolean checkRulesetExists(final String name) {
         boolean resourceFound = false;
         if (name != null) {
-            try (InputStream resource = new ResourceLoader().loadClassPathResourceAsStreamOrThrow(name)) {
+            try (InputStream ignored = new ResourceLoader().loadClassPathResourceAsStreamOrThrow(name)) {
                 resourceFound = true;
             } catch (Exception ignored) {
                 // ignored

@@ -64,7 +64,7 @@ public abstract class AbstractAnalysisCache implements AnalysisCache {
 
     @Override
     public boolean isUpToDate(final File sourceFile) {
-        try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.ANALYSIS_CACHE, "up-to-date check")) {
+        try (TimedOperation ignored = TimeTracker.startOperation(TimedOperationCategory.ANALYSIS_CACHE, "up-to-date check")) {
             // There is a new file being analyzed, prepare entry in updated cache
             final AnalysisResult updatedResult = new AnalysisResult(sourceFile);
             updatedResultsCache.put(sourceFile.getPath(), updatedResult);
@@ -116,7 +116,7 @@ public abstract class AbstractAnalysisCache implements AnalysisCache {
 
     @Override
     public void checkValidity(final RuleSets ruleSets, final ClassLoader auxclassPathClassLoader) {
-        try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.ANALYSIS_CACHE, "validity check")) {
+        try (TimedOperation ignored = TimeTracker.startOperation(TimedOperationCategory.ANALYSIS_CACHE, "validity check")) {
             boolean cacheIsValid = cacheExists();
 
             if (cacheIsValid && ruleSets.getChecksum() != rulesetChecksum) {

@@ -205,7 +205,7 @@ public class PMD {
         try {
             Renderer renderer;
             final List<Renderer> renderers;
-            try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.REPORTING)) {
+            try (TimedOperation ignored = TimeTracker.startOperation(TimedOperationCategory.REPORTING)) {
                 renderer = configuration.createRenderer();
                 renderers = Collections.singletonList(renderer);
                 renderer.setReportFile(configuration.getReportFile());
@@ -213,11 +213,11 @@ public class PMD {
             }
 
             Report report;
-            try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.FILE_PROCESSING)) {
+            try (TimedOperation ignored = TimeTracker.startOperation(TimedOperationCategory.FILE_PROCESSING)) {
                 report = processFiles(configuration, Arrays.asList(ruleSets.getAllRuleSets()), files, renderers);
             }
 
-            try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.REPORTING)) {
+            try (TimedOperation ignored = TimeTracker.startOperation(TimedOperationCategory.REPORTING)) {
                 renderer.end();
                 renderer.flush();
                 return report.getViolations().size();
@@ -245,7 +245,7 @@ public class PMD {
     }
 
     private static List<RuleSet> getRuleSetsWithBenchmark(List<String> rulesetPaths, RuleSetLoader factory) {
-        try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.LOAD_RULES)) {
+        try (TimedOperation ignored = TimeTracker.startOperation(TimedOperationCategory.LOAD_RULES)) {
             List<RuleSet> ruleSets;
             try {
                 ruleSets = factory.loadFromResources(rulesetPaths);
@@ -384,7 +384,7 @@ public class PMD {
      * @return List of {@link DataSource} of files
      */
     public static List<DataSource> getApplicableFiles(PMDConfiguration configuration, Set<Language> languages) {
-        try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.COLLECT_FILES)) {
+        try (TimedOperation ignored = TimeTracker.startOperation(TimedOperationCategory.COLLECT_FILES)) {
             return internalGetApplicableFiles(configuration, languages);
         }
     }

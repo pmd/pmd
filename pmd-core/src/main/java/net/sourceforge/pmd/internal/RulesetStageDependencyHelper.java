@@ -64,7 +64,7 @@ public class RulesetStageDependencyHelper {
     private void executeProcessingStage(AstProcessingStage<?> stage, RootNode root, AstAnalysisContext context) {
 
         String label = stage.getLanguage().getShortName() + ": " + stage.getDisplayName();
-        try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.LANGUAGE_SPECIFIC_PROCESSING, label)) {
+        try (TimedOperation ignored = TimeTracker.startOperation(TimedOperationCategory.LANGUAGE_SPECIFIC_PROCESSING, label)) {
             stage.processAST(root, context);
         }
     }
