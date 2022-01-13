@@ -808,7 +808,9 @@ in each object at runtime.
  [not(preceding-sibling::Annotation/MarkerAnnotation/Name[@Image="Builder.Default"]
     and //ImportDeclaration/Name[@Image="lombok.Builder"])]
 /VariableDeclarator
- [VariableInitializer/Expression/PrimaryExpression[not(PrimarySuffix)]/PrimaryPrefix/Literal]
+ [VariableInitializer/Expression/PrimaryExpression[not(PrimarySuffix)]
+  /PrimaryPrefix/*[self::Literal or self::Name]
+ ]
 /VariableDeclaratorId
 ]]>
                 </value>

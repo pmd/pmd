@@ -152,4 +152,26 @@ public class ExampleClass {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#3679 - False-negative on initializing with another object</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+class Clazz {
+  public static final int a = 10;
+  public final int b = a;  // should report a warning here
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[OK] initializing with a method invocation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Clazz {
+  public final int a = getValue();
+}
+        ]]></code>
+    </test-code>
 </test-data>
