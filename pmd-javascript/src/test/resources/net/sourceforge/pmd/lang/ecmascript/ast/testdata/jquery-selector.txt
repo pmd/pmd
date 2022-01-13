@@ -744,7 +744,7 @@
                   |     |                 |     |        +- Name
                   |     |                 |     |        +- Name
                   |     |                 |     +- WhileLoop
-                  |     |                 |     |  +- UnaryExpression
+                  |     |                 |     |  +- UpdateExpression
                   |     |                 |     |  |  +- Name
                   |     |                 |     |  +- Scope
                   |     |                 |     |     +- ExpressionStatement
@@ -1075,7 +1075,7 @@
                   |                             |        +- Name
                   |                             +- Comment
                   |                             +- WhileLoop
-                  |                                +- UnaryExpression
+                  |                                +- UpdateExpression
                   |                                |  +- Name
                   |                                +- Scope
                   |                                   +- IfStatement
@@ -2239,7 +2239,7 @@
                   |           |     |                          |  |     |     +- Name
                   |           |     |                          |  |     |     +- InfixExpression
                   |           |     |                          |  |     |        +- InfixExpression
-                  |           |     |                          |  |     |        |  +- UnaryExpression
+                  |           |     |                          |  |     |        |  +- UpdateExpression
                   |           |     |                          |  |     |        |  |  +- Name
                   |           |     |                          |  |     |        |  +- InfixExpression
                   |           |     |                          |  |     |        |     +- Name
@@ -2267,7 +2267,7 @@
                   |           |     |                          |  |           |  |  |  +- Name
                   |           |     |                          |  |           |  |  +- NumberLiteral
                   |           |     |                          |  |           |  +- InfixExpression
-                  |           |     |                          |  |           |     +- UnaryExpression
+                  |           |     |                          |  |           |     +- UpdateExpression
                   |           |     |                          |  |           |     |  +- Name
                   |           |     |                          |  |           |     +- InfixExpression
                   |           |     |                          |  |           |        +- Name
@@ -2337,7 +2337,7 @@
                   |           |     |                          |              |     +- Name
                   |           |     |                          |              |     +- InfixExpression
                   |           |     |                          |              |        +- InfixExpression
-                  |           |     |                          |              |        |  +- UnaryExpression
+                  |           |     |                          |              |        |  +- UpdateExpression
                   |           |     |                          |              |        |  |  +- Name
                   |           |     |                          |              |        |  +- InfixExpression
                   |           |     |                          |              |        |     +- Name
@@ -2370,7 +2370,7 @@
                   |           |     |                          |                    |  |        |  +- Name
                   |           |     |                          |                    |  |        |  +- Name
                   |           |     |                          |                    |  |        +- NumberLiteral
-                  |           |     |                          |                    |  +- UnaryExpression
+                  |           |     |                          |                    |  +- UpdateExpression
                   |           |     |                          |                    |     +- Name
                   |           |     |                          |                    +- Scope
                   |           |     |                          |                       +- Comment
@@ -2521,7 +2521,7 @@
                   |           |              |           |        |        +- Name
                   |           |              |           |        |        +- Name
                   |           |              |           |        +- WhileLoop
-                  |           |              |           |           +- UnaryExpression
+                  |           |              |           |           +- UpdateExpression
                   |           |              |           |           |  +- Name
                   |           |              |           |           +- Scope
                   |           |              |           |              +- ExpressionStatement
@@ -2621,7 +2621,7 @@
                   |                 |                 |        |        +- Name
                   |                 |                 |        +- Comment
                   |                 |                 |        +- WhileLoop
-                  |                 |                 |           +- UnaryExpression
+                  |                 |                 |           +- UpdateExpression
                   |                 |                 |           |  +- Name
                   |                 |                 |           +- Scope
                   |                 |                 |              +- IfStatement
@@ -3221,7 +3221,7 @@
                   |                 |           +- ForLoop
                   |                 |           |  +- EmptyExpression
                   |                 |           |  +- InfixExpression
-                  |                 |           |  |  +- UnaryExpression
+                  |                 |           |  |  +- UpdateExpression
                   |                 |           |  |  |  +- Name
                   |                 |           |  |  +- NumberLiteral
                   |                 |           |  +- EmptyExpression
@@ -3257,7 +3257,7 @@
                   |                             +- ForLoop
                   |                             |  +- EmptyExpression
                   |                             |  +- InfixExpression
-                  |                             |  |  +- UnaryExpression
+                  |                             |  |  +- UpdateExpression
                   |                             |  |  |  +- Name
                   |                             |  |  +- Name
                   |                             |  +- EmptyExpression
@@ -3618,7 +3618,7 @@
                   |     |  +- InfixExpression
                   |     |  |  +- Name
                   |     |  |  +- Name
-                  |     |  +- UnaryExpression
+                  |     |  +- UpdateExpression
                   |     |  |  +- Name
                   |     |  +- Scope
                   |     |     +- ExpressionStatement
@@ -3662,7 +3662,7 @@
                   |     |  |        +- StringLiteral
                   |     |  +- VariableInitializer
                   |     |     +- Name
-                  |     |     +- UnaryExpression
+                  |     |     +- UpdateExpression
                   |     |        +- Name
                   |     +- ReturnStatement
                   |        +- ConditionalExpression
@@ -3869,7 +3869,7 @@
                   |           |     |        +- Name
                   |           |     |        +- Name
                   |           |     +- WhileLoop
-                  |           |     |  +- UnaryExpression
+                  |           |     |  +- UpdateExpression
                   |           |     |  |  +- Name
                   |           |     |  +- Scope
                   |           |     |     +- IfStatement
@@ -3909,7 +3909,7 @@
                   |     |  +- InfixExpression
                   |     |  |  +- Name
                   |     |  |  +- Name
-                  |     |  +- UnaryExpression
+                  |     |  +- UpdateExpression
                   |     |  |  +- Name
                   |     |  +- Scope
                   |     |     +- ExpressionStatement
@@ -3954,7 +3954,7 @@
                   |     |  +- InfixExpression
                   |     |  |  +- Name
                   |     |  |  +- Name
-                  |     |  +- UnaryExpression
+                  |     |  +- UpdateExpression
                   |     |  |  +- Name
                   |     |  +- Scope
                   |     |     +- IfStatement
@@ -4153,7 +4153,7 @@
                   |                 |     |        +- Name
                   |                 |     |        +- Name
                   |                 |     +- WhileLoop
-                  |                 |        +- UnaryExpression
+                  |                 |        +- UpdateExpression
                   |                 |        |  +- Name
                   |                 |        +- Scope
                   |                 |           +- IfStatement
@@ -4203,7 +4203,7 @@
                   |                    |        |     |        +- Name
                   |                    |        |     |        +- Name
                   |                    |        |     +- WhileLoop
-                  |                    |        |     |  +- UnaryExpression
+                  |                    |        |     |  +- UpdateExpression
                   |                    |        |     |  |  +- Name
                   |                    |        |     |  +- Scope
                   |                    |        |     |     +- IfStatement
@@ -4243,7 +4243,7 @@
                   |                    |        |        +- Name
                   |                    |        |        +- Name
                   |                    |        +- WhileLoop
-                  |                    |           +- UnaryExpression
+                  |                    |           +- UpdateExpression
                   |                    |           |  +- Name
                   |                    |           +- Scope
                   |                    |              +- IfStatement
@@ -4447,7 +4447,7 @@
                   |     |  +- InfixExpression
                   |     |  |  +- Name
                   |     |  |  +- Name
-                  |     |  +- UnaryExpression
+                  |     |  +- UpdateExpression
                   |     |  |  +- Name
                   |     |  +- Scope
                   |     |     +- IfStatement
@@ -4506,14 +4506,14 @@
                   |     |           |     +- ExpressionStatement
                   |     |           |     |  +- Assignment
                   |     |           |     |     +- Name
-                  |     |           |     |     +- UnaryExpression
+                  |     |           |     |     +- UpdateExpression
                   |     |           |     |        +- Name
                   |     |           |     +- ForLoop
                   |     |           |     |  +- EmptyExpression
                   |     |           |     |  +- InfixExpression
                   |     |           |     |  |  +- Name
                   |     |           |     |  |  +- Name
-                  |     |           |     |  +- UnaryExpression
+                  |     |           |     |  +- UpdateExpression
                   |     |           |     |  |  +- Name
                   |     |           |     |  +- Scope
                   |     |           |     |     +- IfStatement
@@ -4729,7 +4729,7 @@
                   |     |           |  |  |        +- Name
                   |     |           |  |  |        +- Name
                   |     |           |  |  +- KeywordLiteral
-                  |     |           |  +- UnaryExpression
+                  |     |           |  +- UpdateExpression
                   |     |           |  |  +- Name
                   |     |           |  +- Scope
                   |     |           |     +- IfStatement
@@ -4770,7 +4770,7 @@
                   |     |           |     |     |  |     +- Name
                   |     |           |     |     |  |     +- ElementGet
                   |     |           |     |     |  |        +- Name
-                  |     |           |     |     |  |        +- UnaryExpression
+                  |     |           |     |     |  |        +- UpdateExpression
                   |     |           |     |     |  |           +- Name
                   |     |           |     |     |  +- Scope
                   |     |           |     |     |     +- IfStatement
@@ -4811,7 +4811,7 @@
                   |     |           |           |  |        +- Name
                   |     |           |           |  +- Scope
                   |     |           |           |     +- ExpressionStatement
-                  |     |           |           |        +- UnaryExpression
+                  |     |           |           |        +- UpdateExpression
                   |     |           |           |           +- Name
                   |     |           |           +- IfStatement
                   |     |           |              +- Name
@@ -4852,7 +4852,7 @@
                   |     |           |     |  |     +- Name
                   |     |           |     |  |     +- ElementGet
                   |     |           |     |  |        +- Name
-                  |     |           |     |  |        +- UnaryExpression
+                  |     |           |     |  |        +- UpdateExpression
                   |     |           |     |  |           +- Name
                   |     |           |     |  +- Scope
                   |     |           |     |     +- ExpressionStatement
@@ -4872,7 +4872,7 @@
                   |     |           |     |     |  |  +- NumberLiteral
                   |     |           |     |     |  +- Scope
                   |     |           |     |     |     +- WhileLoop
-                  |     |           |     |     |        +- UnaryExpression
+                  |     |           |     |     |        +- UpdateExpression
                   |     |           |     |     |        |  +- Name
                   |     |           |     |     |        +- Scope
                   |     |           |     |     |           +- IfStatement
@@ -5000,7 +5000,7 @@
                   |     |     |        +- Name
                   |     |     |        +- Name
                   |     |     +- WhileLoop
-                  |     |     |  +- UnaryExpression
+                  |     |     |  +- UpdateExpression
                   |     |     |  |  +- Name
                   |     |     |  +- Scope
                   |     |     |     +- ExpressionStatement
@@ -5229,7 +5229,7 @@
                   |     |     |           +- Name
                   |     |     |           +- Name
                   |     |     +- WhileLoop
-                  |     |        +- UnaryExpression
+                  |     |        +- UpdateExpression
                   |     |        |  +- Name
                   |     |        +- Scope
                   |     |           +- ExpressionStatement

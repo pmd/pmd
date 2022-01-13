@@ -22,7 +22,6 @@
    +- EmptyStatement
    +- EmptyStatement
    +- EmptyStatement
-   +- EmptyStatement
    +- Comment
    +- EmptyStatement
    +- ExpressionStatement

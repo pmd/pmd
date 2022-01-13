@@ -14,6 +14,13 @@ This is a {{ site.pmd.release_type }} release.
 
 ### New and noteworthy
 
+#### Javascript: Rhino updated to latest version 1.7.14
+
+[Rhino](https://github.com/mozilla/rhino), the implementation of JavaScript we use
+for parsing JavaScript code, has been updated to the latest version 1.7.14.
+Now language features like template strings can be parsed. However Rhino does
+not support all features of the latest EcmaScript standard.
+
 #### Modified rules
 
 *   The Apex rule {% rule "apex/documentation/ApexDoc" %} has a new property `reportProperty`.

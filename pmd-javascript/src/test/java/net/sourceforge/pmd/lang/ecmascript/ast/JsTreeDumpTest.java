@@ -35,4 +35,9 @@ public class JsTreeDumpTest extends BaseTreeDumpTest {
     public void decorators() {
         doTest("decorators");
     }
+
+    @Test
+    public void templateStrings() {
+        doTest("templateStrings");
+    }
 }

@@ -15,11 +15,7 @@ public class ASTUnaryExpression extends AbstractEcmascriptNode<UnaryExpression> 
     @InternalApi
     public ASTUnaryExpression(UnaryExpression unaryExpression) {
         super(unaryExpression);
-        if (unaryExpression.getOperator() == Token.VOID) {
-            super.setImage("void");
-        } else {
-            super.setImage(AstRoot.operatorToString(unaryExpression.getOperator()));
-        }
+        super.setImage(AstRoot.operatorToString(unaryExpression.getOperator()));
     }
 
     @Override
@@ -32,10 +28,10 @@ public class ASTUnaryExpression extends AbstractEcmascriptNode<UnaryExpression> 
     }
 
     public boolean isPrefix() {
-        return node.isPrefix();
+        return !isPostfix();
     }
 
     public boolean isPostfix() {
-        return node.isPostfix();
+        return node.getOperator() == Token.INC || node.getOperator() == Token.DEC;
     }
 }

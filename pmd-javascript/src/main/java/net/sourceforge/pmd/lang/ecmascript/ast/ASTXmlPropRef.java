@@ -7,12 +7,9 @@ package net.sourceforge.pmd.lang.ecmascript.ast;
 import org.mozilla.javascript.ast.Name;
 import org.mozilla.javascript.ast.XmlPropRef;
 
-import net.sourceforge.pmd.annotation.InternalApi;
+public final class ASTXmlPropRef extends AbstractEcmascriptNode<XmlPropRef> {
 
-public class ASTXmlPropRef extends AbstractEcmascriptNode<XmlPropRef> {
-    @Deprecated
-    @InternalApi
-    public ASTXmlPropRef(XmlPropRef xmlPropRef) {
+    ASTXmlPropRef(XmlPropRef xmlPropRef) {
         super(xmlPropRef);
 
         Name propName = xmlPropRef.getPropName();
