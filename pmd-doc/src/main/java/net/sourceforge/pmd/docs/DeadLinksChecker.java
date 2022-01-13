@@ -221,6 +221,7 @@ public class DeadLinksChecker {
     }
 
 
+    @SuppressWarnings("PMD.ReturnEmptyCollectionRatherThanNull")
     private Map<Path, List<String>> joinFutures(Map<Path, List<Future<String>>> map) {
         Map<Path, List<String>> joined = new HashMap<>();
 

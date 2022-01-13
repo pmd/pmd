@@ -484,6 +484,7 @@ public class Foo {
         <description>JUnit Test contains assertEquals on other than boolean literal</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+            import junit.framework.TestCase;
             public class MyTestCase extends TestCase {
 
                 public void testMyCase() {
@@ -629,8 +630,8 @@ public class Foo {
 
                 @Test
                 public void test() {
-                    assertTrue(!Thread.currentThread().getName().equals(event.content));
-                    assertTrue(Thread.currentThread().getName().equals(event.content));
+                    assertTrue(!Thread.currentThread().getName().equals("event.content"));
+                    assertTrue(Thread.currentThread().getName().equals("event.content"));
                 }
             }
             ]]></code>

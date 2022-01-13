@@ -189,7 +189,7 @@ for (int i = 0; i < 10; i++) {
           language="java"
           since="3.0"
           message="Avoid calling finalize() explicitly"
-          class="net.sourceforge.pmd.lang.java.rule.errorprone.AvoidCallingFinalizeRule"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#avoidcallingfinalize">
         <description>
 The method Object.finalize() is called by the garbage collector on an object when garbage collection determines
@@ -198,6 +198,17 @@ that there are no more references to the object. It should not be invoked by app
 Note that Oracle has declared Object.finalize() as deprecated since JDK 9.
         </description>
         <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//MethodCall[pmd-java:matchesSig("java.lang.Object#finalize()")]
+    (: it's ok inside finalize :)
+    [not(SuperExpression and ancestor::*[self::MethodDeclaration or self::Initializer][1][@Name = 'finalize'][@Arity = 0][VoidType])]
+]]>
+                </value>
+            </property>
+        </properties>
         <example>
 <![CDATA[
 void foo() {
@@ -2173,13 +2184,23 @@ public class Foo extends TestCase {
     <rule name="MethodWithSameNameAsEnclosingClass"
           language="java"
           since="1.5"
-          message="Classes should not have non-constructor methods with the same name as the class"
-          class="net.sourceforge.pmd.lang.java.rule.errorprone.MethodWithSameNameAsEnclosingClassRule"
+          message="A method should not have the same name as its containing class"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#methodwithsamenameasenclosingclass">
         <description>
-Non-constructor methods should not have the same name as the enclosing class.
+A method should not have the same name as its containing class.
+This would be confusing as it would look like a constructor. 
         </description>
         <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//MethodDeclaration[@Name = ancestor::ClassOrInterfaceDeclaration/@SimpleName]
+]]>
+                </value>
+            </property>
+        </properties>
         <example>
 <![CDATA[
 public class MyClass {
@@ -2633,8 +2654,12 @@ See Effective Java, 3rd Edition, Item 54: Return empty collections or arrays ins
                 <value>
 <![CDATA[
 //MethodDeclaration
-    [ArrayType or ClassOrInterfaceType[pmd-java:typeIs('java.util.Collection') or pmd-java:typeIs('java.util.Map')]]
-    [Block/ReturnStatement/NullLiteral]
+    [ArrayType
+     or ClassOrInterfaceType[pmd-java:typeIs('java.util.Collection')
+        or pmd-java:typeIs('java.util.Map')]]
+//ReturnStatement/NullLiteral
+[not(./ancestor::LambdaExpression)]
+[not(./ancestor::AnonymousClassDeclaration)]
 ]]>
                 </value>
             </property>
