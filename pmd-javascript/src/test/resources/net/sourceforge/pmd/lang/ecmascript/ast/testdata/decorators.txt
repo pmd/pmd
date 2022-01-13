@@ -1,0 +1,50 @@
++- AstRoot
+   +- EmptyStatement
+   +- EmptyStatement
+   +- EmptyStatement
+   +- EmptyStatement
+   +- ExpressionStatement
+   |  +- XmlPropRef
+   |     +- Name
+   +- ExpressionStatement
+   |  +- Name
+   +- EmptyStatement
+   +- Comment
+   +- ExpressionStatement
+   |  +- FunctionCall
+   |     +- XmlPropRef
+   |     |  +- Name
+   |     +- Name
+   |     +- ObjectLiteral
+   |        +- ObjectProperty
+   |           +- Name
+   |           +- StringLiteral
+   +- EmptyStatement
+   +- EmptyStatement
+   +- EmptyStatement
+   +- EmptyStatement
+   +- Comment
+   +- EmptyStatement
+   +- ExpressionStatement
+   |  +- Assignment
+   |     +- Name
+   |     +- NewExpression
+   |        +- Name
+   |        +- ObjectLiteral
+   |           +- ObjectProperty
+   |           |  +- Name
+   |           |  +- StringLiteral
+   |           +- ObjectProperty
+   |           |  +- Name
+   |           |  +- Name
+   |           +- ObjectProperty
+   |              +- Name
+   |              +- StringLiteral
+   +- ExpressionStatement
+   |  +- FunctionCall
+   |     +- PropertyGet
+   |     |  +- KeywordLiteral
+   |     |  +- Name
+   |     +- Name
+   +- EmptyStatement
+   +- EmptyStatement

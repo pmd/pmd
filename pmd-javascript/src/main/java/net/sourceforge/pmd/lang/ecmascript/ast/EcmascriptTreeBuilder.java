@@ -64,6 +64,7 @@ import org.mozilla.javascript.ast.WithStatement;
 import org.mozilla.javascript.ast.XmlDotQuery;
 import org.mozilla.javascript.ast.XmlExpression;
 import org.mozilla.javascript.ast.XmlMemberGet;
+import org.mozilla.javascript.ast.XmlPropRef;
 import org.mozilla.javascript.ast.XmlString;
 
 import net.sourceforge.pmd.annotation.InternalApi;
@@ -126,6 +127,7 @@ public final class EcmascriptTreeBuilder implements NodeVisitor {
         register(XmlDotQuery.class, ASTXmlDotQuery.class);
         register(XmlExpression.class, ASTXmlExpression.class);
         register(XmlMemberGet.class, ASTXmlMemberGet.class);
+        register(XmlPropRef.class, ASTXmlPropRef.class);
         register(XmlString.class, ASTXmlString.class);
     }
 
