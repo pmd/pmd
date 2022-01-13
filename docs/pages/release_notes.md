@@ -14,6 +14,18 @@ This is a {{ site.pmd.release_type }} release.
 
 ### New and noteworthy
 
+#### New rules
+
+*   The new Java rule {% rule "java/codestyle/FinalParameterInAbstractMethod" %} detects parameters that are
+    declared as final in interfaces or abstract methods. Declaring the parameters as final is useless
+    because the implementation may choose to not respect it.
+
+```xml
+    <rule ref="category/java/codestyle.xml/FinalParameterInAbstractMethod" />
+```
+
+   The rule is part of the quickstart.xml ruleset.
+
 #### Modified rules
 
 *   The Apex rule {% rule "apex/documentation/ApexDoc" %} has a new property `reportProperty`.
@@ -37,6 +49,7 @@ This is a {{ site.pmd.release_type }} release.
 *   [#3688](https://github.com/pmd/pmd/pull/3688): \[java] Bump log4j to 2.16.0 - [Sergey Nuyanzin](https://github.com/snuyanzin)
 *   [#3693](https://github.com/pmd/pmd/pull/3693): \[apex] ApexDoc: Add reportProperty property - [Steve Babula](https://github.com/babula)
 *   [#3713](https://github.com/pmd/pmd/pull/3713): \[java] Enhance UnnecessaryModifier to support records - [Vincent Galloy](https://github.com/vgalloy)
+*   [#3720](https://github.com/pmd/pmd/pull/3720): \[java] New rule: FinalParameterInAbstractMethod - [Vincent Galloy](https://github.com/vgalloy)
 
 {% endtocmaker %}
 
