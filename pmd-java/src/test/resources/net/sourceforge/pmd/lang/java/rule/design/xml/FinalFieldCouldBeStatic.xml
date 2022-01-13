@@ -174,4 +174,22 @@ class Clazz {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>
+            #3724 - the rule should be triggered only if the referenced name is static
+        </description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    private int nonStaticPrivate = 1;                   //no violation cause non-final
+    private final int nonStatic = nonStaticPrivate;     //no violation cause referenced name is non-static
+
+    //private static final int staticFinal = nonStatic; //noncompliant: Non-static field 'nonStatic' cannot be referenced from a static context
+    private static int staticNonFinal = 1;              //no violation cause non-final
+    private final int nonStatic2 = staticNonFinal;      //violation because it could be static
+}
+        ]]></code>
+    </test-code>
 </test-data>
