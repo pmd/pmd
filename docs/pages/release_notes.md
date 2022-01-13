@@ -22,6 +22,8 @@ This is a {{ site.pmd.release_type }} release.
 
 ### Fixed Issues
 
+*   core
+    *   [#3328](https://github.com/pmd/pmd/issues/3328): \[core] designer.bat errors when JAVAFX_HOME contains spaces
 *   java-bestpractices
     *   [#3209](https://github.com/pmd/pmd/issues/3209): \[java] UnusedPrivateMethod false positive with static method and cast expression
     *   [#3468](https://github.com/pmd/pmd/issues/3468): \[java] UnusedPrivateMethod false positive when outer class calls private static method on inner class

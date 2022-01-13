@@ -1,5 +1,5 @@
 @echo off
-set TOPDIR=%~dp0..
+set TOPDIR="%~dp0.."
 set OPTS=
 set MAIN_CLASS=net.sourceforge.pmd.util.fxdesigner.DesignerStarter
 
@@ -42,10 +42,10 @@ if %_needjfxlib% EQU 1 (
         pause
         exit
     )
-    set "classpath=%TOPDIR%\lib\*;%JAVAFX_HOME%\lib\*"
+    set classpath=%TOPDIR%\lib\*;%JAVAFX_HOME%\lib\*
 ) else (
-    set "classpath=%TOPDIR%\lib\*"
+    set classpath=%TOPDIR%\lib\*
 )
 
 
-java %PMD_JAVA_OPTS% %jreopts% -classpath "%classpath%" %OPTS% %MAIN_CLASS% %*
+java %PMD_JAVA_OPTS% %jreopts% -classpath %classpath% %OPTS% %MAIN_CLASS% %*
