@@ -25,6 +25,8 @@ This is a {{ site.pmd.release_type }} release.
 *   java-bestpractices
     *   [#3209](https://github.com/pmd/pmd/issues/3209): \[java] UnusedPrivateMethod false positive with static method and cast expression
     *   [#3468](https://github.com/pmd/pmd/issues/3468): \[java] UnusedPrivateMethod false positive when outer class calls private static method on inner class
+*   java-design
+    *   [#3679](https://github.com/pmd/pmd/issues/3679): \[java] Make FinalFieldCouldBeStatic detect constant variable
 *   java-errorprone
     *   [#3686](https://github.com/pmd/pmd/issues/3686): \[java] ReturnEmptyCollectionRatherThanNull - false negative with conditioned returns
 *   java-performance
@@ -41,6 +43,7 @@ This is a {{ site.pmd.release_type }} release.
 *   [#3704](https://github.com/pmd/pmd/pull/3704): \[java] Fix for #3686 - Fix ReturnEmptyCollectionRatherThanNull - [Oleksii Dykov](https://github.com/dykov)
 *   [#3713](https://github.com/pmd/pmd/pull/3713): \[java] Enhance UnnecessaryModifier to support records - [Vincent Galloy](https://github.com/vgalloy)
 *   [#3719](https://github.com/pmd/pmd/pull/3719): \[java] Upgrade log4j to 2.17.1 - [Daniel Paul Searles](https://github.com/squaresurf)
+*   [#3724](https://github.com/pmd/pmd/pull/3724): \[java] Fix for #3686 - fix FinalFieldCouldBeStatic - [Oleksii Dykov](https://github.com/dykov)
 
 {% endtocmaker %}
 
