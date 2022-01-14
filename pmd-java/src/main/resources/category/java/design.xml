@@ -163,15 +163,11 @@ code size and runtime complexity.
             <property name="xpath">
                 <value>
 <![CDATA[
-//CatchStatement[
-  count(Block/BlockStatement/Statement) = 1
-  and
-  FormalParameter/Type/ReferenceType/ClassOrInterfaceType/@Image = Block/BlockStatement/Statement/ThrowStatement/Expression/PrimaryExpression/PrimaryPrefix/AllocationExpression/ClassOrInterfaceType/@Image
-  and
-  count(Block/BlockStatement/Statement/ThrowStatement/Expression/PrimaryExpression/PrimaryPrefix/AllocationExpression/Arguments/ArgumentList/Expression) = 1
-  and
-  FormalParameter/VariableDeclaratorId = Block/BlockStatement/Statement/ThrowStatement/Expression/PrimaryExpression/PrimaryPrefix/AllocationExpression/Arguments/ArgumentList/Expression/PrimaryExpression/PrimaryPrefix/Name
-  ]
+//CatchClause
+    [count(Block/*) = 1]
+    [CatchParameter/ClassOrInterfaceType/@SimpleName = Block/ThrowStatement/ConstructorCall/ClassOrInterfaceType/@SimpleName]
+    [Block/ThrowStatement/ConstructorCall/ArgumentList/@Size = 1]
+    /Block/ThrowStatement/ConstructorCall
 ]]>
                 </value>
             </property>
