@@ -38,7 +38,7 @@ public class ClassWithOnlyPrivateConstructorsShouldBeFinalRule extends AbstractJ
     }
 
     private boolean doesExtend(ASTAnyTypeDeclaration sub, ASTClassOrInterfaceDeclaration superClass) {
-        return sub != superClass && TypeTestUtil.isA(superClass.getTypeMirror(), sub);
+        return sub != superClass && TypeTestUtil.isA(superClass.getTypeMirror().getErasure(), sub);
     }
 
     private boolean hasOnlyPrivateCtors(ASTClassOrInterfaceDeclaration node) {
@@ -46,4 +46,5 @@ public class ClassWithOnlyPrivateConstructorsShouldBeFinalRule extends AbstractJ
             && (node.getVisibility() == V_PRIVATE // then the default ctor is private
             || node.getDeclarations(ASTConstructorDeclaration.class).nonEmpty());
     }
+
 }
