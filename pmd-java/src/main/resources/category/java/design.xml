@@ -254,7 +254,7 @@ Exception, or Error, use a subclassed exception or error instead.
             <property name="xpath">
                 <value>
 <![CDATA[
-//ThrowStatement//AllocationExpression
+//ThrowStatement//ConstructorCall
  /ClassOrInterfaceType[
  pmd-java:typeIsExactly('java.lang.Throwable')
 or
