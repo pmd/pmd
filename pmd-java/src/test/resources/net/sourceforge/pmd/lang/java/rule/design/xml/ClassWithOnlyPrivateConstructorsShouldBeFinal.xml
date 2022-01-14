@@ -7,6 +7,18 @@
     <test-code>
         <description>Simple violation</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>1</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    private Foo() { }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>violation for abstract class</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>1</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     private Foo() { }
@@ -29,6 +41,17 @@ public final class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
+    private Foo() { }
+    public Foo(String param) { }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>abstract class, one public constructor, not required to be final</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public abstract class Foo {
     private Foo() { }
     public Foo(String param) { }
 }
@@ -74,7 +97,7 @@ public class Foo {
 public class Foo {
     private Foo() { }
 }
-public class Bar extends Foo {
+class Bar extends Foo {
     public Bar() { }
 }
         ]]></code>
@@ -148,15 +171,17 @@ public class Main209 {
         ]]></code>
     </test-code>
     <test-code>
-        <description>Inner class with only private constructor called within compilation unit</description>
+        <description>Inner class with only private constructor extended within compilation unit (#2536)</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Main209 {
     private static class InputBits {
         private InputBits(int number) { }
     }
-    public static void main(String[] args) {
-        InputBits o = new InputBits(1);
+    public static final class Sub extends InputBits {
+        private Sub() {
+            super(1);
+        }
     }
 }
         ]]></code>
@@ -181,9 +206,7 @@ public class Main209 {
     private static class InputBits {
         // default ctor is implicitly private
     }
-    public static void main(String[] args) {
-        InputBits o = new InputBits();
-    }
+    public static final class Sub extends InputBits {}
 }
         ]]></code>
     </test-code>
@@ -239,7 +262,8 @@ public class Outer {
         <code><![CDATA[
 public abstract class FooUtils {
     private FooUtils() {
-        throw new AssertionError("Do not instantiate utility classes");
+        // private constructor can't be called from sub classes,
+        // so this class can't be extended
     }
     // note: this "abstract" class does not contain abstract methods
     // it was only declared as abstract to prevent instantiation
