@@ -1300,7 +1300,7 @@ public class Foo {
           language="java"
           since="3.0"
           message="Too many fields"
-          class="net.sourceforge.pmd.lang.java.rule.design.TooManyFieldsRule"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#toomanyfields">
         <description>
 Classes that have too many fields can become unwieldy and could be redesigned to have fewer fields,
@@ -1308,6 +1308,20 @@ possibly through grouping related fields in new objects.  For example, a class w
 city/state/zip fields could park them within a single Address field.
         </description>
         <priority>3</priority>
+        <properties>
+            <property name="maxfields" type="Integer" description="Max allowable fields" min="1" max="1000" value="15"/>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//ClassOrInterfaceDeclaration/ClassOrInterfaceBody
+  [count(FieldDeclaration
+            [not(pmd-java:modifiers() = 'final')]
+            [not(pmd-java:modifiers() = 'static')]
+        ) > $maxfields]
+]]>
+                </value>
+            </property>
+        </properties>
         <example>
 <![CDATA[
 public class Person {   // too many separate fields
@@ -1341,30 +1355,10 @@ complexity and find a way to have more fine grained objects.
             <property name="maxmethods" type="Integer" description="The method count reporting threshold" min="1" max="1000" value="10"/>
             <property name="xpath">
                 <value>
-                    <!--  FIXME: Refine XPath to discard 'get' and 'set' methods with Block no more than 3 lines,
-                                something like this:
-                                    not (
-                                            (
-                                                starts-with(@Name,'get')
-                                                or
-                                                starts-with(@Name,'set')
-                                                or
-                                                starts-with(@Name,'is')
-                                            )
-                                            and (
-                                                    (
-                                                        (../Block/attribute::endLine)
-                                                         -
-                                                        (../Block/attribute::beginLine)
-                                                    ) <= 3
-                                            )
-                                        )
-                                This will avoid discarding 'real' methods...
-                     -->
 <![CDATA[
  //ClassOrInterfaceDeclaration/ClassOrInterfaceBody
      [
-      count(./ClassOrInterfaceBodyDeclaration/MethodDeclaration[
+      count(MethodDeclaration[
          not (
                 starts-with(@Name,'get')
                 or
