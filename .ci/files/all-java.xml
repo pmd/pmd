@@ -144,7 +144,7 @@
     <rule ref="category/java/design.xml/ImmutableField"/>
     <!-- <rule ref="category/java/design.xml/LawOfDemeter"/> -->
     <rule ref="category/java/design.xml/LogicInversion"/>
-    <!-- <rule ref="category/java/design.xml/LoosePackageCoupling"/> -->
+    <rule ref="category/java/design.xml/LoosePackageCoupling"/>
     <rule ref="category/java/design.xml/MutableStaticState" />
     <rule ref="category/java/design.xml/NPathComplexity"/>
     <rule ref="category/java/design.xml/NcssCount"/>
