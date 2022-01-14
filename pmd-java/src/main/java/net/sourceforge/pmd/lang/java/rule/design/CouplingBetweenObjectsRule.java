@@ -10,19 +10,16 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTReferenceType;
-import net.sourceforge.pmd.lang.java.ast.ASTResultType;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
-import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.symboltable.ClassScope;
+import net.sourceforge.pmd.lang.java.types.TypePrettyPrint;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 
@@ -38,13 +35,13 @@ import net.sourceforge.pmd.properties.PropertyFactory;
  */
 public class CouplingBetweenObjectsRule extends AbstractJavaRule {
 
-    private int couplingCount;
-    private Set<String> typesFoundSoFar;
-
     private static final PropertyDescriptor<Integer> THRESHOLD_DESCRIPTOR
             = PropertyFactory.intProperty("threshold")
                              .desc("Unique type reporting threshold")
                              .require(positive()).defaultValue(20).build();
+
+    private int couplingCount;
+    private Set<String> typesFoundSoFar;
 
     public CouplingBetweenObjectsRule() {
         definePropertyDescriptor(THRESHOLD_DESCRIPTOR);
@@ -66,61 +63,31 @@ public class CouplingBetweenObjectsRule extends AbstractJavaRule {
     }
 
     @Override
-    public Object visit(ASTResultType node, Object data) {
-        for (int x = 0; x < node.getNumChildren(); x++) {
-            Node tNode = node.getChild(x);
-            if (tNode instanceof ASTType) {
-                Node reftypeNode = tNode.getChild(0);
-                if (reftypeNode instanceof ASTReferenceType) {
-                    Node classOrIntType = reftypeNode.getChild(0);
-                    if (classOrIntType instanceof ASTClassOrInterfaceType) {
-                        Node nameNode = classOrIntType;
-                        this.checkVariableType(nameNode, nameNode.getImage());
-                    }
-                }
-            }
-        }
+    public Object visit(ASTMethodDeclaration node, Object data) {
+        ASTType type = node.getResultTypeNode();
+        checkVariableType(type);
         return super.visit(node, data);
     }
 
     @Override
     public Object visit(ASTLocalVariableDeclaration node, Object data) {
-        handleASTTypeChildren(node);
+        ASTType type = node.getTypeNode();
+        checkVariableType(type);
         return super.visit(node, data);
     }
 
     @Override
     public Object visit(ASTFormalParameter node, Object data) {
-        handleASTTypeChildren(node);
+        ASTType type = node.getTypeNode();
+        checkVariableType(type);
         return super.visit(node, data);
     }
 
     @Override
     public Object visit(ASTFieldDeclaration node, Object data) {
-        for (int x = 0; x < node.getNumChildren(); ++x) {
-            Node firstStmt = node.getChild(x);
-            if (firstStmt instanceof ASTType) {
-                ASTType tp = (ASTType) firstStmt;
-                Node nd = tp.getChild(0);
-                checkVariableType(nd, nd.getImage());
-            }
-        }
-
+        ASTType type = node.getTypeNode();
+        checkVariableType(type);
         return super.visit(node, data);
-    }
-
-    /**
-     * Convenience method to handle hierarchy. This is probably too much work and
-     * will go away once I figure out the framework
-     */
-    private void handleASTTypeChildren(Node node) {
-        for (int x = 0; x < node.getNumChildren(); x++) {
-            Node sNode = node.getChild(x);
-            if (sNode instanceof ASTType) {
-                Node nameNode = sNode.getChild(0);
-                checkVariableType(nameNode, nameNode.getImage());
-            }
-        }
     }
 
     /**
@@ -130,8 +97,10 @@ public class CouplingBetweenObjectsRule extends AbstractJavaRule {
      * @param variableType
      *            The variable type.
      */
-    private void checkVariableType(Node nameNode, String variableType) {
-        List<ASTClassOrInterfaceDeclaration> parentTypes = nameNode.getParentsOfType(ASTClassOrInterfaceDeclaration.class);
+    private void checkVariableType(ASTType typeNode) {
+        List<ASTClassOrInterfaceDeclaration> parentTypes = typeNode
+                .ancestors(ASTClassOrInterfaceDeclaration.class)
+                .toList();
 
         // TODO - move this into the symbol table somehow?
         if (parentTypes.isEmpty()) {
@@ -145,11 +114,12 @@ public class CouplingBetweenObjectsRule extends AbstractJavaRule {
 
         // if the field is of any type other than the class type
         // increment the count
-        ClassScope clzScope = ((JavaNode) nameNode).getScope().getEnclosingScope(ClassScope.class);
-        if (!clzScope.getClassName().equals(variableType) && !this.filterTypes(variableType)
-                && !this.typesFoundSoFar.contains(variableType)) {
+        ClassScope clzScope = typeNode.getScope().getEnclosingScope(ClassScope.class);
+        String typeName = TypePrettyPrint.prettyPrint(typeNode.getTypeMirror());
+        if (!clzScope.getClassName().equals(typeName) && !this.filterTypes(typeName)
+                && !this.typesFoundSoFar.contains(typeName)) {
             couplingCount++;
-            typesFoundSoFar.add(variableType);
+            typesFoundSoFar.add(typeName);
         }
     }
 
