@@ -192,6 +192,8 @@ public class Foo {
         }
       }
     }
+
+    enum MyEnum { A, B; }
 }
         ]]></code>
     </test-code>
@@ -367,6 +369,33 @@ public class DemoMissingBreak {
                 break;
         }
         return mc;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>NPE with Switch in record constructor</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>16</expected-linenumbers>
+        <code><![CDATA[
+record MyRecord(boolean b) {
+    public MyRecord {
+        int n = 8;
+        // no fallthrough
+        switch (n) {
+            case 1:
+                doSomething();
+                break;
+            default:
+                break;
+        }
+        // implicit fallthrough
+        switch (n) {
+            case 1:
+                doSomething();
+            default:
+        }
     }
 }
         ]]></code>

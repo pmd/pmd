@@ -55,6 +55,12 @@ public class Java17TreeDumpTest extends BaseTreeDumpTest {
     }
 
     @Test
+    public void sealedQualifiedPermitClass() {
+        doTest("SealedInnerClasses");
+        java17p.parseResource("SealedInnerClasses.java"); // make sure we can parse it with preview as well
+    }
+
+    @Test
     public void sealedInterfaceBeforeJava17() {
         ParseException thrown = Assert.assertThrows(ParseException.class, new ThrowingRunnable() {
             @Override
