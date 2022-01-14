@@ -230,6 +230,26 @@ public class Outer {
     </test-code>
 
     <test-code>
+        <description>Private abstract generic classes with abstract methods should be ignored #3668</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.Comparator;
+public class Outer {
+    private abstract class Base<E> {
+        abstract void run();
+        abstract void sort(Comparator<E> comparator);
+    }
+    public void someMethod() {
+        Base b = new Base<Object>() {
+            void run() {}
+            void sort(Comparator<Object> comparator) {}
+        };
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
         <description>Private abstract classes without abstract methods but with subclasses should be ignored #3668</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
