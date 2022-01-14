@@ -11,6 +11,10 @@
         <relativePath>../</relativePath>
     </parent>
 
+    <properties>
+        <log4j.version>2.17.1</log4j.version>
+    </properties>
+
     <build>
         <testResources>
             <testResource>
@@ -252,13 +256,13 @@
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-api</artifactId>
-            <version>2.13.3</version>
+            <version>${log4j.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-core</artifactId>
-            <version>2.13.3</version>
+            <version>${log4j.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>

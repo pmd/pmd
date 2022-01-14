@@ -158,6 +158,27 @@ public class Test {
     </test-code>
 
     <test-code>
+        <description>#3492 False positive for UselessStringValueOf, when there is no initial String to append to</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Test {
+    private short getPrefix(long id) {
+        return 0;
+    }
+    private short getTimestamp(long id) {
+        return 0;
+    }
+    private short getCounter(long id) {
+        return 0;
+    }
+    public String toShortString(long id) {
+        return String.valueOf(getPrefix(id)) + getTimestamp(id) + getCounter(id); // (12)
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
         <description>#3491 False positive for UselessStringValueOf when valueOf(char [], int, int) is used</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[

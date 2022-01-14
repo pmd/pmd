@@ -1987,4 +1987,30 @@ public class CloseResourceForEachLoop {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>ClassCastException with pattern matching</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class TypePattern {
+    static boolean doStuff(Object obj) {
+        return obj instanceof Integer myIntVar && myIntVar > 0;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>ClassCastException with local record</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public record MyRecord(boolean a) {
+    public void foo () {
+        record TestInnerRecord() {
+            private static Object test;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

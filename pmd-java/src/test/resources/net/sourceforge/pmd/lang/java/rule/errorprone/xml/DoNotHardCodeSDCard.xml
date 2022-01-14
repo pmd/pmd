@@ -7,7 +7,11 @@
     <test-code>
         <description>basic /sdcard test</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
         <code><![CDATA[
+import android.app.Activity;
+import android.os.Environment;
+
 public class MyActivity extends Activity {
     protected void bad() {
         String storageLocation = "/sdcard/mypackage";
