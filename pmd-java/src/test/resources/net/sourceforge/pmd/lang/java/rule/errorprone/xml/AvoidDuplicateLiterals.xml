@@ -44,7 +44,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>duplicate literals in annotations</description>
+        <description>duplicate literals in annotations, default case</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>1</expected-linenumbers>
         <code><![CDATA[
@@ -179,6 +179,20 @@ public class Duplicate {
     String s4 = "Tokenizer \ud801\udc1ctest";
     char c = '\uffef';
     char c\u0030 = 'a';
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Duplicated string literals as annotation parameter</description>
+        <rule-property name="skipAnnotations">true</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class AnnotationParams {
+    public static void foo(@SuppressWarnings("unused") Object str,
+                           @SuppressWarnings("unused") String str2,
+                           @SuppressWarnings("unused") String str3,
+                           @SuppressWarnings("unused") String str4) {}
 }
         ]]></code>
     </test-code>
