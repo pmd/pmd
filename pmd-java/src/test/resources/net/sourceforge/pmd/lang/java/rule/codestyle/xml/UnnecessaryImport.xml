@@ -776,7 +776,7 @@ class NPEImport {}
         <description>ImportFromSamePackage: importing all from same package</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>Unnecessary import from the current package 'foo.bar.*'</message>
+            <message>Unused import 'foo.bar.*'</message>
         </expected-messages>
         <code><![CDATA[
             package foo.bar;
@@ -808,6 +808,34 @@ class NPEImport {}
             <message>Unused import 'java.lang.String'</message>
         </expected-messages>
         <code><![CDATA[
+            import java.lang.String;
+            public class Foo { }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>import java.lang type when it shadows a same package type</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            // this package redefines a String type
+            package net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryimport.javalang;
+
+            import java.lang.String;
+            public class Foo { 
+                String foo;
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>import java.lang type when it shadows a same package type (unused)</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Unused import 'java.lang.String'</message>
+        </expected-messages>
+        <code><![CDATA[
+            // this package redefines a String type
+            package net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryimport.javalang;
+
             import java.lang.String;
             public class Foo { }
             ]]></code>

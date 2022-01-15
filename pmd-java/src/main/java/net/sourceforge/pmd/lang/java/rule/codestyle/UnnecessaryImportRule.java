@@ -17,7 +17,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
-import net.sourceforge.pmd.lang.java.ast.ASTPackageDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchLabel;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchLike;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
@@ -54,6 +53,8 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
     private final Set<ImportWrapper> singleImports = new HashSet<>();
     private final Set<ImportWrapper> importsOnDemand = new HashSet<>();
     private final Set<ImportWrapper> staticImportsOnDemand = new HashSet<>();
+    private final Set<ImportWrapper> unnecessaryJavaLangImports = new HashSet<>();
+    private final Set<ImportWrapper> unnecessaryImportsFromSamePackage = new HashSet<>();
     private String thisPackageName;
 
     /*
@@ -83,21 +84,40 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTCompilationUnit node, Object data) {
+        this.singleImports.clear();
+        this.staticImports.clear();
+        this.staticImportsOnDemand.clear();
+        this.importsOnDemand.clear();
+        this.unnecessaryJavaLangImports.clear();
+        this.unnecessaryImportsFromSamePackage.clear();
         this.thisPackageName = node.getPackageName();
+
+        for (ASTImportDeclaration importDecl : node.children(ASTImportDeclaration.class)) {
+            visitImport(importDecl, data);
+        }
+
+        for (ImportWrapper wrapper : singleImports) {
+            if (wrapper.node.getPackageName().equals("java.lang")) {
+                if (!isJavaLangImportNecessary(node, wrapper)) {
+                    // the import is not shadowing something
+                    unnecessaryJavaLangImports.add(wrapper);
+                }
+            }
+        }
+
         super.visit(node, data);
         visitComments(node);
 
-        /*
-         * special handling for Bug 2606609 : False "UnusedImports" positive in
-         * package-info.java package annotations are processed before the import
-         * clauses so they need to be examined again later on.
-         */
-        if (node.getNumChildren() > 0 && node.getChild(0) instanceof ASTPackageDeclaration) {
-            visit((ASTPackageDeclaration) node.getChild(0), data);
-        }
+        doReporting(data);
+
+        return data;
+    }
+
+    private void doReporting(Object data) {
         for (ImportWrapper wrapper : singleImports) {
             reportWithMessage(wrapper.node, data, UNUSED_IMPORT_MESSAGE);
         }
+
         for (ImportWrapper wrapper : staticImports) {
             reportWithMessage(wrapper.node, data, UNUSED_IMPORT_MESSAGE);
         }
@@ -107,13 +127,36 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
         for (ImportWrapper wrapper : importsOnDemand) {
             reportWithMessage(wrapper.node, data, UNUSED_IMPORT_MESSAGE);
         }
-        return data;
+
+        // remove unused ones, they have already been reported
+        unnecessaryJavaLangImports.removeAll(singleImports);
+        unnecessaryImportsFromSamePackage.removeAll(singleImports);
+        unnecessaryImportsFromSamePackage.removeAll(importsOnDemand);
+        for (ImportWrapper wrapper : unnecessaryJavaLangImports) {
+            reportWithMessage(wrapper.node, data, IMPORT_FROM_JAVA_LANG_MESSAGE);
+        }
+        for (ImportWrapper wrapper : unnecessaryImportsFromSamePackage) {
+            reportWithMessage(wrapper.node, data, IMPORT_FROM_SAME_PACKAGE_MESSAGE);
+        }
+    }
+
+    private boolean isJavaLangImportNecessary(ASTCompilationUnit node, ImportWrapper wrapper) {
+        ShadowChainIterator<JTypeMirror, ScopeInfo> iter =
+            node.getSymbolTable().types().iterateResults(wrapper.node.getImportedSimpleName());
+        if (iter.hasNext()) {
+            iter.next();
+            if (iter.getScopeTag() == ScopeInfo.SINGLE_IMPORT) {
+                if (iter.hasNext()) {
+                    iter.next();
+                    // the import is shadowing something else
+                    return iter.getScopeTag() != ScopeInfo.JAVA_LANG;
+                }
+            }
+        }
+        return false;
     }
 
     private void visitComments(ASTCompilationUnit node) {
-        if (singleImports.isEmpty()) {
-            return;
-        }
         for (Comment comment : node.getComments()) {
             if (!(comment instanceof FormalComment)) {
                 continue;
@@ -144,11 +187,9 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
         }
     }
 
-    @Override
-    public Object visit(ASTImportDeclaration node, Object data) {
+    private void visitImport(ASTImportDeclaration node, Object data) {
         if (thisPackageName.equals(node.getPackageName())) {
-            // import for the same package
-            reportWithMessage(node, data, IMPORT_FROM_SAME_PACKAGE_MESSAGE);
+            unnecessaryImportsFromSamePackage.add(new ImportWrapper(node));
         }
 
         Set<ImportWrapper> container =
@@ -161,7 +202,6 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
             // duplicate
             reportWithMessage(node, data, DUPLICATE_IMPORT_MESSAGE);
         }
-        return data;
     }
 
     private void reportWithMessage(ASTImportDeclaration node, Object data, String message) {
@@ -233,10 +273,15 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
             // must be the first result
             // todo make sure new Outer().new Inner() does not mark Inner as used
             if (containsTarget.test(scopeIter.getResults())) {
+                // We found the declaration bringing the symbol in scope
+                // If it's an import, then it's used. However, maybe it's from java.lang.
+
                 if (scopeIter.getScopeTag() == ScopeInfo.SINGLE_IMPORT) {
                     Set<ImportWrapper> container = isStatic ? staticImports : singleImports;
                     container.removeIf(it -> symbol.getSimpleName().equals(it.node.getImportedSimpleName()));
+
                 } else if (scopeIter.getScopeTag() == ScopeInfo.IMPORT_ON_DEMAND) {
+
                     Set<ImportWrapper> container = isStatic ? staticImportsOnDemand : importsOnDemand;
                     container.removeIf(it -> {
                         // This is the class that contains the symbol 
