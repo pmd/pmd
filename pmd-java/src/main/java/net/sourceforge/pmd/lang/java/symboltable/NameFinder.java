@@ -59,10 +59,12 @@ public class NameFinder {
         if (node instanceof ASTPrimarySuffix) {
             ASTPrimarySuffix suffix = (ASTPrimarySuffix) node;
             if (suffix.isArguments()) {
-                JavaNameOccurrence occurrence = names.get(names.size() - 1);
-                occurrence.setIsMethodOrConstructorInvocation();
-                ASTArguments args = (ASTArguments) ((ASTPrimarySuffix) node).getChild(0);
-                occurrence.setArgumentCount(args.size());
+                if (!names.isEmpty()) {
+                    JavaNameOccurrence occurrence = names.get(names.size() - 1);
+                    occurrence.setIsMethodOrConstructorInvocation();
+                    ASTArguments args = (ASTArguments) ((ASTPrimarySuffix) node).getChild(0);
+                    occurrence.setArgumentCount(args.size());
+                }
             } else if (suffix.getNumChildren() == 1 && suffix.getChild(0) instanceof ASTMemberSelector) {
                 ASTMemberSelector member = (ASTMemberSelector) suffix.getChild(0);
                 if (member.getNumChildren() == 1 && member.getChild(0) instanceof ASTMethodReference) {

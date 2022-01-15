@@ -16,6 +16,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclarator;
+import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 
 public class ScopeAndDeclarationFinderTest extends BaseNonParserTest {
@@ -72,4 +73,19 @@ public class ScopeAndDeclarationFinderTest extends BaseNonParserTest {
         ClassScope scope2 = methods.get(1).getScope().getEnclosingScope(ClassScope.class);
         Assert.assertSame(scope1, scope2);
     }
+
+
+
+    @Test
+    public void testSuperCtor() {
+        // #3698 -- test that parsing does not throw (this executes the symbol pass)
+        ASTCompilationUnit acu = parseCode("class Foo {  Object rs; class Inner { \n"
+                                               + "            Inner(Object phase) {\n"
+                                               + "                 (rs.deferredAttr).super(AttrMode.SPECULATIVE, msym, phase);\n"
+                                               + "            }  } }");
+        ASTClassOrInterfaceDeclaration inner = acu.getFirstDescendantOfType(ASTClassOrInterfaceDeclaration.class)
+                                                  .getFirstDescendantOfType(ASTClassOrInterfaceDeclaration.class);
+        Assert.assertEquals(5, inner.findDescendantsOfType(ASTPrimaryExpression.class).size());
+    }
+
 }
