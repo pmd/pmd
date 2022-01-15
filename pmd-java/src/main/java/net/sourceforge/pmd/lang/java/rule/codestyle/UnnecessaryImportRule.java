@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.rule.codestyle;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -15,6 +16,7 @@ import org.apache.commons.lang3.StringUtils;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTPackageDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchLabel;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchLike;
@@ -25,13 +27,17 @@ import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.symbols.JAccessibleElementSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.table.ScopeInfo;
 import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.ShadowChainIterator;
 import net.sourceforge.pmd.lang.java.types.JClassType;
+import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.JVariableSig;
+import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
+import net.sourceforge.pmd.util.CollectionUtil;
 
 public class UnnecessaryImportRule extends AbstractJavaRule {
     // todo: java lang imports may be necessary if they're shadowed by a
@@ -162,8 +168,35 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTClassOrInterfaceType node, Object data) {
-        if (node.getQualifier() == null && !node.isFullyQualified()) {
-            checkType(node);
+        if (node.getQualifier() == null
+            && !node.isFullyQualified()
+            && node.getTypeMirror().isClassOrInterface()) {
+
+            JClassSymbol symbol = ((JClassType) node.getTypeMirror()).getSymbol();
+            ShadowChainIterator<JTypeMirror, ScopeInfo> scopeIter =
+                node.getSymbolTable().types().iterateResults(node.getSimpleName());
+            checkScopeChain(false, symbol, scopeIter, ts -> true);
+        }
+        return super.visit(node, data);
+    }
+
+    @Override
+    public Object visit(ASTMethodCall node, Object data) {
+        if (node.getQualifier() == null) {
+            OverloadSelectionResult overload = node.getOverloadSelectionInfo();
+            if (overload.isFailed()) {
+                return null; // todo we're erring towards FPs 
+            }
+
+            ShadowChainIterator<JMethodSig, ScopeInfo> scopeIter =
+                node.getSymbolTable().methods().iterateResults(node.getMethodName());
+
+
+            JExecutableSymbol symbol = overload.getMethodType().getSymbol();
+            checkScopeChain(true,
+                            symbol,
+                            scopeIter,
+                            methods -> CollectionUtil.any(methods, m -> m.getSymbol().equals(symbol)));
         }
         return super.visit(node, data);
     }
@@ -182,34 +215,17 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
             }
 
             ShadowChainIterator<JVariableSig, ScopeInfo> scopeIter = node.getSymbolTable().variables().iterateResults(node.getName());
-            checkScopeChain(node.getSignature(), (JFieldSymbol) sym, scopeIter);
+            checkScopeChain(false, (JFieldSymbol) sym, scopeIter, ts -> true);
         }
         return null;
     }
 
-    /**
-     * Remove the import wrapper that imports the name referenced by the
-     * given node.
-     */
-    protected void checkType(ASTClassOrInterfaceType referenceNode) {
-        if (!referenceNode.getTypeMirror().isClassOrInterface()) {
-            return;
-        }
-
-        String simpleName = referenceNode.getSimpleName();
-        JClassSymbol symbol = ((JClassType) referenceNode.getTypeMirror()).getSymbol();
-        ShadowChainIterator<JTypeMirror, ScopeInfo> scopeIter = referenceNode.getSymbolTable().types().iterateResults(simpleName);
-        JClassType asDecl = ((JClassType) referenceNode.getTypeMirror()).getGenericTypeDeclaration();
-        checkScopeChain(asDecl, symbol, scopeIter);
-    }
-
-    private <T> void checkScopeChain(T referenceNode, JAccessibleElementSymbol symbol, ShadowChainIterator<T, ScopeInfo> scopeIter) {
-        if (scopeIter.hasNext()) {
+    private <S extends JAccessibleElementSymbol, T> void checkScopeChain(boolean recursive, S symbol, ShadowChainIterator<T, ScopeInfo> scopeIter, Predicate<List<T>> containsTarget) {
+        while (scopeIter.hasNext()) {
             scopeIter.next();
             // must be the first result
             // todo make sure new Outer().new Inner() does not mark Inner as used
-            List<T> results = scopeIter.getResults();
-            if (results.contains(referenceNode)) {
+            if (containsTarget.test(scopeIter.getResults())) {
                 if (scopeIter.getScopeTag() == ScopeInfo.SINGLE_IMPORT) {
                     Set<ImportWrapper> container = symbol.isStatic() ? staticImports : singleImports;
                     container.removeIf(it -> symbol.getSimpleName().equals(it.node.getImportedSimpleName()));
@@ -225,6 +241,10 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
                         }
                     });
                 }
+                return;
+            }
+            if (!recursive) {
+                break;
             }
         }
         // unknown reference
