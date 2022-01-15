@@ -130,6 +130,7 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
 
         // remove unused ones, they have already been reported
         unnecessaryJavaLangImports.removeAll(singleImports);
+        unnecessaryJavaLangImports.removeAll(importsOnDemand);
         unnecessaryImportsFromSamePackage.removeAll(singleImports);
         unnecessaryImportsFromSamePackage.removeAll(importsOnDemand);
         for (ImportWrapper wrapper : unnecessaryJavaLangImports) {
@@ -217,7 +218,7 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
             JClassSymbol symbol = ((JClassType) node.getTypeMirror()).getSymbol();
             ShadowChainIterator<JTypeMirror, ScopeInfo> scopeIter =
                 node.getSymbolTable().types().iterateResults(node.getSimpleName());
-            checkScopeChain(false, symbol, scopeIter, ts -> true, symbol.isStatic());
+            checkScopeChain(false, symbol, scopeIter, ts -> true, false);
         }
         return super.visit(node, data);
     }
