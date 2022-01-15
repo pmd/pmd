@@ -6,14 +6,11 @@ package net.sourceforge.pmd.lang.java.rule.design;
 
 import static net.sourceforge.pmd.properties.PropertyFactory.booleanProperty;
 
-import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTThrowsList;
+import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.rule.internal.TestFrameworksUtil;
-import net.sourceforge.pmd.lang.java.types.JMethodSig;
-import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
@@ -32,79 +29,36 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
  * @since 1.2
  */
 
-public class SignatureDeclareThrowsExceptionRule extends AbstractJavaRule {
+public class SignatureDeclareThrowsExceptionRule extends AbstractJavaRulechainRule {
 
     private static final PropertyDescriptor<Boolean> IGNORE_JUNIT_COMPLETELY_DESCRIPTOR =
-            booleanProperty("IgnoreJUnitCompletely").defaultValue(false)
-            .desc("Allow all methods in a JUnit3 TestCase to throw Exceptions").build();
-
-    // Set to true when the class is determined to be a JUnit testcase
-    private boolean junit3TestClass = false;
+        booleanProperty("IgnoreJUnitCompletely").defaultValue(false)
+                                                .desc("Allow all methods in a JUnit3 TestCase to throw Exceptions").build();
 
     public SignatureDeclareThrowsExceptionRule() {
+        super(ASTThrowsList.class);
         definePropertyDescriptor(IGNORE_JUNIT_COMPLETELY_DESCRIPTOR);
     }
 
     @Override
-    public void start(RuleContext ctx) {
-        super.start(ctx);
-        junit3TestClass = false;
+    public Object visit(ASTThrowsList throwsList, Object o) {
+        if (!isIgnored(throwsList.getOwner())
+            && throwsList.toStream().any(it -> TypeTestUtil.isExactlyA(Exception.class, it))) {
+            addViolation(o, throwsList);
+        }
+        return null;
     }
 
-    @Override
-    public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
-        if (junit3TestClass) {
-            return super.visit(node, data);
-        }
-
-        if (TestFrameworksUtil.isJUnit3Class(node)) {
-            junit3TestClass = true;
-            return super.visit(node, data);
-        }
-
-        return super.visit(node, data);
-    }
-
-    @Override
-    public Object visit(ASTMethodDeclaration methodDeclaration, Object o) {
-        if (junit3TestClass && getProperty(IGNORE_JUNIT_COMPLETELY_DESCRIPTOR)
-                || TestFrameworksUtil.isTestMethod(methodDeclaration)
-                || TestFrameworksUtil.isTestConfigurationMethod(methodDeclaration)
+    private boolean isIgnored(ASTMethodOrConstructorDeclaration owner) {
+        if (getProperty(IGNORE_JUNIT_COMPLETELY_DESCRIPTOR)
+            && TestFrameworksUtil.isJUnit3Class(owner.getEnclosingType())) {
+            return true;
+        } else if (owner instanceof ASTMethodDeclaration) {
+            ASTMethodDeclaration m = (ASTMethodDeclaration) owner;
+            return TestFrameworksUtil.isTestMethod(m)
+                || TestFrameworksUtil.isTestConfigurationMethod(m)
                 // Ignore overridden methods, the issue should be marked on the method definition
-                || methodDeclaration.isAnnotationPresent(Override.class)) {
-            return super.visit(methodDeclaration, o);
-        }
-
-        if (checkExceptions(methodDeclaration.getGenericSignature())) {
-            addViolation(o, methodDeclaration);
-        }
-
-        return super.visit(methodDeclaration, o);
-    }
-
-    @Override
-    public Object visit(ASTConstructorDeclaration constructorDeclaration, Object o) {
-        if (junit3TestClass && getProperty(IGNORE_JUNIT_COMPLETELY_DESCRIPTOR)) {
-            return super.visit(constructorDeclaration, o);
-        }
-
-        if (checkExceptions(constructorDeclaration.getGenericSignature())) {
-            addViolation(o, constructorDeclaration);
-        }
-        return super.visit(constructorDeclaration, o);
-    }
-
-    /**
-     * Checks all exceptions for possible violation on the exception
-     * declaration.
-     *
-     * @return true if "java.lang.Exception" has been declared
-     */
-    private boolean checkExceptions(JMethodSig signature) {
-        for (JTypeMirror exception : signature.getThrownExceptions()) {
-            if (TypeTestUtil.isA(Exception.class, exception)) {
-                return true;
-            }
+                || m.isOverridden();
         }
         return false;
     }

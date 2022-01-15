@@ -37,6 +37,28 @@ public class Foo {
     </test-code>
 
     <test-code>
+        <description>constructor throws IOException</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import java.io.IOException;
+            public class Foo {
+                Foo() throws IOException { }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>method throws IOException</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import java.io.IOException;
+            public class Foo {
+                void foo() throws IOException { }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
         <description>skip junit3 setUp method</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
