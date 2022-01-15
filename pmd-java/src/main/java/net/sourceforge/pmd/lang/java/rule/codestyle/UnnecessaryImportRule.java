@@ -16,15 +16,22 @@ import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTPackageDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTSwitchLabel;
+import net.sourceforge.pmd.lang.java.ast.ASTSwitchLike;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
 import net.sourceforge.pmd.lang.java.ast.Comment;
 import net.sourceforge.pmd.lang.java.ast.FormalComment;
 import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.symbols.JAccessibleElementSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.table.ScopeInfo;
 import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.ShadowChainIterator;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
+import net.sourceforge.pmd.lang.java.types.JVariableSig;
 
 public class UnnecessaryImportRule extends AbstractJavaRule {
     // todo: java lang imports may be necessary if they're shadowed by a
@@ -35,8 +42,10 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
     private static final String IMPORT_FROM_SAME_PACKAGE_MESSAGE = "Unnecessary import from the current package ''{0}''";
     private static final String IMPORT_FROM_JAVA_LANG_MESSAGE = "Unnecessary import from the java.lang package ''{0}''";
 
+    private final Set<ImportWrapper> staticImports = new HashSet<>();
     private final Set<ImportWrapper> singleImports = new HashSet<>();
     private final Set<ImportWrapper> importsOnDemand = new HashSet<>();
+    private final Set<ImportWrapper> staticImportsOnDemand = new HashSet<>();
     private String thisPackageName;
 
     /*
@@ -79,6 +88,12 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
             visit((ASTPackageDeclaration) node.getChild(0), data);
         }
         for (ImportWrapper wrapper : singleImports) {
+            reportWithMessage(wrapper.node, data, UNUSED_IMPORT_MESSAGE);
+        }
+        for (ImportWrapper wrapper : staticImports) {
+            reportWithMessage(wrapper.node, data, UNUSED_IMPORT_MESSAGE);
+        }
+        for (ImportWrapper wrapper : staticImportsOnDemand) {
             reportWithMessage(wrapper.node, data, UNUSED_IMPORT_MESSAGE);
         }
         for (ImportWrapper wrapper : importsOnDemand) {
@@ -128,7 +143,12 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
             reportWithMessage(node, data, IMPORT_FROM_SAME_PACKAGE_MESSAGE);
         }
 
-        Set<ImportWrapper> container = node.isImportOnDemand() ? importsOnDemand : singleImports;
+        Set<ImportWrapper> container =
+            node.isStatic() && node.isImportOnDemand() ? staticImportsOnDemand :
+            node.isStatic() ? staticImports :
+            node.isImportOnDemand() ? importsOnDemand :
+            singleImports;
+
         if (!container.add(new ImportWrapper(node))) {
             // duplicate
             reportWithMessage(node, data, DUPLICATE_IMPORT_MESSAGE);
@@ -148,12 +168,30 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
         return super.visit(node, data);
     }
 
+    @Override
+    public Object visit(ASTVariableAccess node, Object data) {
+        JVariableSymbol sym = node.getReferencedSym();
+        if (sym != null
+            && sym.isField()
+            && ((JFieldSymbol) sym).isStatic()) {
+
+            if (node.getParent() instanceof ASTSwitchLabel
+                && node.ancestors(ASTSwitchLike.class).take(1).any(ASTSwitchLike::isEnumSwitch)) {
+                // special scoping rules, see JSymbolTable#variables doc
+                return null;
+            }
+
+            ShadowChainIterator<JVariableSig, ScopeInfo> scopeIter = node.getSymbolTable().variables().iterateResults(node.getName());
+            checkScopeChain(node.getSignature(), (JFieldSymbol) sym, scopeIter);
+        }
+        return null;
+    }
+
     /**
      * Remove the import wrapper that imports the name referenced by the
      * given node.
      */
     protected void checkType(ASTClassOrInterfaceType referenceNode) {
-
         if (!referenceNode.getTypeMirror().isClassOrInterface()) {
             return;
         }
@@ -161,18 +199,26 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
         String simpleName = referenceNode.getSimpleName();
         JClassSymbol symbol = ((JClassType) referenceNode.getTypeMirror()).getSymbol();
         ShadowChainIterator<JTypeMirror, ScopeInfo> scopeIter = referenceNode.getSymbolTable().types().iterateResults(simpleName);
+        JClassType asDecl = ((JClassType) referenceNode.getTypeMirror()).getGenericTypeDeclaration();
+        checkScopeChain(asDecl, symbol, scopeIter);
+    }
+
+    private <T> void checkScopeChain(T referenceNode, JAccessibleElementSymbol symbol, ShadowChainIterator<T, ScopeInfo> scopeIter) {
         if (scopeIter.hasNext()) {
             scopeIter.next();
             // must be the first result
             // todo make sure new Outer().new Inner() does not mark Inner as used
-            List<JTypeMirror> results = scopeIter.getResults();
-            if (results.contains(((JClassType) referenceNode.getTypeMirror()).getGenericTypeDeclaration())) {
+            List<T> results = scopeIter.getResults();
+            if (results.contains(referenceNode)) {
                 if (scopeIter.getScopeTag() == ScopeInfo.SINGLE_IMPORT) {
-                    singleImports.removeIf(it -> simpleName.equals(it.node.getImportedSimpleName()));
+                    Set<ImportWrapper> container = symbol.isStatic() ? staticImports : singleImports;
+                    container.removeIf(it -> symbol.getSimpleName().equals(it.node.getImportedSimpleName()));
                 } else if (scopeIter.getScopeTag() == ScopeInfo.IMPORT_ON_DEMAND) {
-                    importsOnDemand.removeIf(it -> {
+                    Set<ImportWrapper> container = symbol.isStatic() ? staticImportsOnDemand : importsOnDemand;
+                    container.removeIf(it -> {
                         JClassSymbol enclosing = symbol.getEnclosingClass();
                         if (enclosing == null) {
+                            // package import on demand
                             return symbol.getPackageName().equals(it.node.getImportedName());
                         } else {
                             return enclosing.getCanonicalName().equals(it.node.getImportedName());
