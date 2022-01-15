@@ -5,7 +5,7 @@
    <test-code>
       <description>Returning null array</description>
       <expected-problems>1</expected-problems>
-      <expected-linenumbers>3</expected-linenumbers>
+      <expected-linenumbers>6</expected-linenumbers>
       <code><![CDATA[
 public class Foo {
     // Not a good idea...
@@ -34,7 +34,7 @@ public class Foo {
    <test-code>
       <description>Returning null instead of collection (List)</description>
       <expected-problems>1</expected-problems>
-      <expected-linenumbers>5</expected-linenumbers>
+      <expected-linenumbers>8</expected-linenumbers>
       <code><![CDATA[
 import java.util.List;
 
@@ -68,7 +68,7 @@ public class Foo {
    <test-code>
       <description>Returning null instead of collection (Set)</description>
       <expected-problems>1</expected-problems>
-      <expected-linenumbers>5</expected-linenumbers>
+      <expected-linenumbers>8</expected-linenumbers>
       <code><![CDATA[
 import java.util.Set;
 
@@ -85,7 +85,7 @@ public class Foo {
    <test-code>
       <description>Returning null instead of collection (Map)</description>
       <expected-problems>1</expected-problems>
-      <expected-linenumbers>5</expected-linenumbers>
+      <expected-linenumbers>8</expected-linenumbers>
       <code><![CDATA[
 import java.util.Map;
 
@@ -99,4 +99,84 @@ public class Foo {
 }
         ]]></code>
    </test-code>
+
+  <test-code>
+    <description>False negative case #3686</description>
+    <expected-problems>2</expected-problems>
+    <expected-linenumbers>4, 6</expected-linenumbers>
+    <code><![CDATA[
+public class Foo {
+    public int[] foo() {
+     if(true) {
+         return null;   //violation
+     } else {
+         return null;   //violation
+     }
+   }
+}
+    ]]></code>
+  </test-code>
+
+  <test-code>
+    <description>Null is returned from an internal statement, not from the method</description>
+    <expected-problems>0</expected-problems>
+    <code><![CDATA[
+public class Foo {
+
+    private int[] foo() {
+        bar(new SomeInterface() {
+            @Override
+            public Object run() {
+                baz();
+                return null;
+            }
+        });
+
+        return new int[0];
+    }
+}
+
+interface SomeInterface {
+    Object run();
+}
+    ]]></code>
+  </test-code>
+
+  <test-code>
+    <description>Null is returned from an internal statement, not from the method</description>
+    <expected-problems>0</expected-problems>
+    <code><![CDATA[
+public class Foo {
+
+    private int[] foo() {
+        bar(() -> {
+            baz();
+            return null;
+        });
+
+        return new int[0];
+    }
+}
+    ]]></code>
+  </test-code>
+
+  <test-code>
+    <description>Null is returned from a loop</description>
+    <expected-problems>1</expected-problems>
+    <expected-linenumbers>7</expected-linenumbers>
+    <code><![CDATA[
+  import java.util.List;
+
+  public class Foo {
+      private List<Integer> foo(List<Integer> list) {
+          for(Integer i : list) {
+              if(condition) {
+                  return null;
+              }
+          }
+          return list;
+      }
+  }
+    ]]></code>
+  </test-code>
 </test-data>
