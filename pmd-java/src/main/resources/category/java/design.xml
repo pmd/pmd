@@ -1427,9 +1427,8 @@ your API.
             <property name="xpath">
                 <value>
 <![CDATA[
-//MethodDeclaration[@Public=true()]/MethodDeclarator/FormalParameters[
-     count(FormalParameter/Type/ReferenceType/ClassOrInterfaceType[@Image = 'String' and @Array=false()]) > 3
-]
+//MethodDeclaration[pmd-java:modifiers() = 'public']
+    [count(FormalParameters/FormalParameter[pmd-java:typeIs('java.lang.String')]) > 3]
 ]]>
                 </value>
             </property>
