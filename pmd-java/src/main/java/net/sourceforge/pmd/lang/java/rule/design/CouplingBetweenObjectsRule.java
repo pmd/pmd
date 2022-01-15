@@ -7,7 +7,6 @@ package net.sourceforge.pmd.lang.java.rule.design;
 import static net.sourceforge.pmd.properties.constraints.NumericConstraints.positive;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
@@ -18,8 +17,9 @@ import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-import net.sourceforge.pmd.lang.java.symboltable.ClassScope;
-import net.sourceforge.pmd.lang.java.types.TypePrettyPrint;
+import net.sourceforge.pmd.lang.java.symbols.JAccessibleElementSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
+import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 
@@ -36,12 +36,13 @@ import net.sourceforge.pmd.properties.PropertyFactory;
 public class CouplingBetweenObjectsRule extends AbstractJavaRule {
 
     private static final PropertyDescriptor<Integer> THRESHOLD_DESCRIPTOR
-            = PropertyFactory.intProperty("threshold")
-                             .desc("Unique type reporting threshold")
-                             .require(positive()).defaultValue(20).build();
+        = PropertyFactory.intProperty("threshold")
+                         .desc("Unique type reporting threshold")
+                         .require(positive()).defaultValue(20).build();
 
     private int couplingCount;
-    private Set<String> typesFoundSoFar;
+    private boolean inInterface;
+    private final Set<JTypeMirror> typesFoundSoFar = new HashSet<>();
 
     public CouplingBetweenObjectsRule() {
         definePropertyDescriptor(THRESHOLD_DESCRIPTOR);
@@ -49,17 +50,25 @@ public class CouplingBetweenObjectsRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTCompilationUnit cu, Object data) {
-        typesFoundSoFar = new HashSet<>();
-        couplingCount = 0;
-
-        Object returnObj = super.visit(cu, data);
+        super.visit(cu, data);
 
         if (couplingCount > getProperty(THRESHOLD_DESCRIPTOR)) {
             addViolation(data, cu,
-                    "A value of " + couplingCount + " may denote a high amount of coupling within the class");
+                         "A value of " + couplingCount + " may denote a high amount of coupling within the class");
         }
 
-        return returnObj;
+        couplingCount = 0;
+        typesFoundSoFar.clear();
+        return null;
+    }
+
+    @Override
+    public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
+        boolean prev = inInterface;
+        inInterface = node.isInterface();
+        super.visit(node, data);
+        inInterface = prev;
+        return null;
     }
 
     @Override
@@ -94,32 +103,17 @@ public class CouplingBetweenObjectsRule extends AbstractJavaRule {
      * performs a check on the variable and updates the counter. Counter is
      * instance for a class and is reset upon new class scan.
      *
-     * @param variableType
-     *            The variable type.
+     * @param typeNode The variable type.
      */
     private void checkVariableType(ASTType typeNode) {
-        List<ASTClassOrInterfaceDeclaration> parentTypes = typeNode
-                .ancestors(ASTClassOrInterfaceDeclaration.class)
-                .toList();
-
-        // TODO - move this into the symbol table somehow?
-        if (parentTypes.isEmpty()) {
+        if (inInterface) {
             return;
         }
-
-        // skip interfaces
-        if (parentTypes.get(0).isInterface()) {
-            return;
-        }
-
         // if the field is of any type other than the class type
         // increment the count
-        ClassScope clzScope = typeNode.getScope().getEnclosingScope(ClassScope.class);
-        String typeName = TypePrettyPrint.prettyPrint(typeNode.getTypeMirror());
-        if (!clzScope.getClassName().equals(typeName) && !this.filterTypes(typeName)
-                && !this.typesFoundSoFar.contains(typeName)) {
+        JTypeMirror t = typeNode.getTypeMirror();
+        if (!this.ignoreType(typeNode, t) && this.typesFoundSoFar.add(t)) {
             couplingCount++;
-            typesFoundSoFar.add(typeName);
         }
     }
 
@@ -128,24 +122,19 @@ public class CouplingBetweenObjectsRule extends AbstractJavaRule {
      * This needs more work. I'd like to filter out super types and perhaps
      * interfaces
      *
-     * @param variableType
-     *            The variable type.
+     * @param t The variable type.
+     *
      * @return boolean true if variableType is not what we care about
      */
-    private boolean filterTypes(String variableType) {
-        return variableType != null && (variableType.startsWith("java.lang.") || "String".equals(variableType)
-                || filterPrimitivesAndWrappers(variableType));
+    private boolean ignoreType(ASTType typeNode, JTypeMirror t) {
+        if (typeNode.getEnclosingType().getSymbol().equals(t.getSymbol())) {
+            return true;
+        }
+        JTypeDeclSymbol symbol = t.getSymbol();
+        return symbol == null
+            || symbol.getPackageName().equals(JAccessibleElementSymbol.PRIMITIVE_PACKAGE)
+            || t.isPrimitive()
+            || t.isBoxedPrimitive();
     }
 
-    /**
-     * @param variableType
-     *            The variable type.
-     * @return boolean true if variableType is a primitive or wrapper
-     */
-    private boolean filterPrimitivesAndWrappers(String variableType) {
-        return "int".equals(variableType) || "Integer".equals(variableType) || "char".equals(variableType)
-                || "Character".equals(variableType) || "double".equals(variableType) || "long".equals(variableType)
-                || "short".equals(variableType) || "float".equals(variableType) || "byte".equals(variableType)
-                || "boolean".equals(variableType);
-    }
 }
