@@ -37,6 +37,8 @@ import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.JVariableSig;
 import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
+import net.sourceforge.pmd.lang.java.types.TypeSystem;
+import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.util.CollectionUtil;
 
 public class UnnecessaryImportRule extends AbstractJavaRule {
@@ -175,7 +177,7 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
             JClassSymbol symbol = ((JClassType) node.getTypeMirror()).getSymbol();
             ShadowChainIterator<JTypeMirror, ScopeInfo> scopeIter =
                 node.getSymbolTable().types().iterateResults(node.getSimpleName());
-            checkScopeChain(false, symbol, scopeIter, ts -> true);
+            checkScopeChain(false, symbol, scopeIter, ts -> true, symbol.isStatic());
         }
         return super.visit(node, data);
     }
@@ -196,7 +198,8 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
             checkScopeChain(true,
                             symbol,
                             scopeIter,
-                            methods -> CollectionUtil.any(methods, m -> m.getSymbol().equals(symbol)));
+                            methods -> CollectionUtil.any(methods, m -> m.getSymbol().equals(symbol)),
+                            true);
         }
         return super.visit(node, data);
     }
@@ -215,29 +218,49 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
             }
 
             ShadowChainIterator<JVariableSig, ScopeInfo> scopeIter = node.getSymbolTable().variables().iterateResults(node.getName());
-            checkScopeChain(false, (JFieldSymbol) sym, scopeIter, ts -> true);
+            checkScopeChain(false, (JFieldSymbol) sym, scopeIter, ts -> true, true);
         }
         return null;
     }
 
-    private <S extends JAccessibleElementSymbol, T> void checkScopeChain(boolean recursive, S symbol, ShadowChainIterator<T, ScopeInfo> scopeIter, Predicate<List<T>> containsTarget) {
+    private <T> void checkScopeChain(boolean recursive,
+                                     JAccessibleElementSymbol symbol,
+                                     ShadowChainIterator<T, ScopeInfo> scopeIter,
+                                     Predicate<List<T>> containsTarget,
+                                     boolean isStatic) {
         while (scopeIter.hasNext()) {
             scopeIter.next();
             // must be the first result
             // todo make sure new Outer().new Inner() does not mark Inner as used
             if (containsTarget.test(scopeIter.getResults())) {
                 if (scopeIter.getScopeTag() == ScopeInfo.SINGLE_IMPORT) {
-                    Set<ImportWrapper> container = symbol.isStatic() ? staticImports : singleImports;
+                    Set<ImportWrapper> container = isStatic ? staticImports : singleImports;
                     container.removeIf(it -> symbol.getSimpleName().equals(it.node.getImportedSimpleName()));
                 } else if (scopeIter.getScopeTag() == ScopeInfo.IMPORT_ON_DEMAND) {
-                    Set<ImportWrapper> container = symbol.isStatic() ? staticImportsOnDemand : importsOnDemand;
+                    Set<ImportWrapper> container = isStatic ? staticImportsOnDemand : importsOnDemand;
                     container.removeIf(it -> {
-                        JClassSymbol enclosing = symbol.getEnclosingClass();
-                        if (enclosing == null) {
+                        // This is the class that contains the symbol 
+                        // we're looking for.
+                        // We have to test whether this symbol is contained
+                        // by the imported type or package.
+                        JClassSymbol symbolOwner = symbol.getEnclosingClass();
+                        if (symbolOwner == null) {
                             // package import on demand
-                            return symbol.getPackageName().equals(it.node.getImportedName());
+                            return it.node.getImportedName().equals(symbol.getPackageName());
                         } else {
-                            return enclosing.getCanonicalName().equals(it.node.getImportedName());
+                            if (it.node.getImportedName().equals(symbolOwner.getCanonicalName())) {
+                                // importing the container directly
+                                return true;
+                            }
+                            // maybe we're importing a subclass of the container.
+                            TypeSystem ts = symbolOwner.getTypeSystem();
+                            JClassSymbol importedContainer = ts.getClassSymbol(it.node.getImportedName());
+                            if (importedContainer != null) {
+                                return TypeTestUtil.isA(ts.rawType(symbolOwner), ts.rawType(importedContainer));
+                            } else {
+                                // insufficient classpath, err towards FNs
+                                return true;
+                            }
                         }
                     });
                 }

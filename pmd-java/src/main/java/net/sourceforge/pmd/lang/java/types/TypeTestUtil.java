@@ -139,7 +139,7 @@ public final class TypeTestUtil {
     }
 
     /**
-     * Checks whether the first type is a subtype of the second. This
+     * Checks whether the second type is a subtype of the first. This
      * removes some behavior of isSubtypeOf that we don't want (eg, that
      * unresolved types are subtypes of everything).
      *
@@ -148,7 +148,7 @@ public final class TypeTestUtil {
      *
      * @return Whether t1 is a subtype of t2
      */
-    private static boolean isA(@Nullable JTypeMirror t1, @NonNull JTypeMirror t2) {
+    public static boolean isA(@Nullable JTypeMirror t1, @NonNull JTypeMirror t2) {
         if (t1 == null) {
             return false;
         } else if (t2.isPrimitive() || t1.isPrimitive()) {
