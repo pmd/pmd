@@ -122,7 +122,7 @@
     <rule ref="category/java/design.xml/AvoidCatchingGenericException"/>
     <rule ref="category/java/design.xml/AvoidDeeplyNestedIfStmts"/>
     <rule ref="category/java/design.xml/AvoidRethrowingException"/>
-    <!-- <rule ref="category/java/design.xml/AvoidThrowingNewInstanceOfSameException"/> -->
+    <rule ref="category/java/design.xml/AvoidThrowingNewInstanceOfSameException"/>
     <rule ref="category/java/design.xml/AvoidThrowingNullPointerException"/>
     <!-- <rule ref="category/java/design.xml/AvoidThrowingRawExceptionTypes"/> -->
     <rule ref="category/java/design.xml/AvoidUncheckedExceptionsInSignatures"/>
@@ -144,7 +144,7 @@
     <rule ref="category/java/design.xml/ImmutableField"/>
     <!-- <rule ref="category/java/design.xml/LawOfDemeter"/> -->
     <rule ref="category/java/design.xml/LogicInversion"/>
-    <!-- <rule ref="category/java/design.xml/LoosePackageCoupling"/> -->
+    <rule ref="category/java/design.xml/LoosePackageCoupling"/>
     <rule ref="category/java/design.xml/MutableStaticState" />
     <rule ref="category/java/design.xml/NPathComplexity"/>
     <rule ref="category/java/design.xml/NcssCount"/>
@@ -157,7 +157,7 @@
     <rule ref="category/java/design.xml/SwitchDensity"/>
     <!-- <rule ref="category/java/design.xml/TooManyFields"/> -->
     <!-- <rule ref="category/java/design.xml/TooManyMethods"/> -->
-    <!-- <rule ref="category/java/design.xml/UseObjectForClearerAPI"/> -->
+    <rule ref="category/java/design.xml/UseObjectForClearerAPI"/>
     <rule ref="category/java/design.xml/UseUtilityClass"/>
     <rule ref="category/java/design.xml/UselessOverridingMethod"/>
 
