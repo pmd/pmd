@@ -40,9 +40,17 @@ import net.sourceforge.pmd.lang.java.types.TypeSystem;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.util.CollectionUtil;
 
+/**
+ * Detects unnecessary imports.
+ *
+ * <p>For PMD 7 I had hoped this rule could be rewritten to use the
+ * symbol table implementation directly instead of reimplementing a
+ * symbol table (with less care). This would be good for performance
+ * and correctness. Modifying the symbol table chain to track which
+ * import is used is hard though, mostly because the API to expose
+ * is unclear (we wouldn't want symbol tables to expose a mutable API).
+ */
 public class UnnecessaryImportRule extends AbstractJavaRule {
-    // todo: java lang imports may be necessary if they're shadowed by a
-    //  member of the same package.
 
     private static final String UNUSED_IMPORT_MESSAGE = "Unused import ''{0}''";
     private static final String DUPLICATE_IMPORT_MESSAGE = "Duplicate import ''{0}''";
@@ -55,7 +63,6 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
     private final Set<ImportWrapper> staticImportsOnDemand = new HashSet<>();
     private final Set<ImportWrapper> unnecessaryJavaLangImports = new HashSet<>();
     private final Set<ImportWrapper> unnecessaryImportsFromSamePackage = new HashSet<>();
-    private String thisPackageName;
 
     /*
      * Patterns to match the following constructs:
@@ -90,10 +97,10 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
         this.importsOnDemand.clear();
         this.unnecessaryJavaLangImports.clear();
         this.unnecessaryImportsFromSamePackage.clear();
-        this.thisPackageName = node.getPackageName();
+        String packageName = node.getPackageName();
 
         for (ASTImportDeclaration importDecl : node.children(ASTImportDeclaration.class)) {
-            visitImport(importDecl, data);
+            visitImport(importDecl, data, packageName);
         }
 
         for (ImportWrapper wrapper : singleImports) {
@@ -158,6 +165,7 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
     }
 
     private void visitComments(ASTCompilationUnit node) {
+        // todo improve that when we have a javadoc parser
         for (Comment comment : node.getComments()) {
             if (!(comment instanceof FormalComment)) {
                 continue;
@@ -188,7 +196,7 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
         }
     }
 
-    private void visitImport(ASTImportDeclaration node, Object data) {
+    private void visitImport(ASTImportDeclaration node, Object data, String thisPackageName) {
         if (thisPackageName.equals(node.getPackageName())) {
             unnecessaryImportsFromSamePackage.add(new ImportWrapper(node));
         }
