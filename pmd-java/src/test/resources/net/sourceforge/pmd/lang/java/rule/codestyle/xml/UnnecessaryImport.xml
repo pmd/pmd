@@ -593,6 +593,23 @@ public class Test {
     </test-code>
 
     <test-code>
+        <description>Unused import with member inherited AND imported</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+package net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryimport;
+
+import static net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryimport.HelloMore.sayHello;
+
+public class Test extends HelloMore {
+    public static void main(String... args) {
+        // import is unused as the method is inherited here
+        sayHello();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
         <description>NPE with static import on interface</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
