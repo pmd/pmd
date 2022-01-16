@@ -97,7 +97,7 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
         }
 
         for (ImportWrapper wrapper : singleImports) {
-            if (wrapper.node.getPackageName().equals("java.lang")) {
+            if ("java.lang".equals(wrapper.node.getPackageName())) {
                 if (!isJavaLangImportNecessary(node, wrapper)) {
                     // the import is not shadowing something
                     unnecessaryJavaLangImports.add(wrapper);
@@ -194,10 +194,10 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
         }
 
         Set<ImportWrapper> container =
-            node.isStatic() && node.isImportOnDemand() ? staticImportsOnDemand :
-            node.isStatic() ? staticImports :
-            node.isImportOnDemand() ? importsOnDemand :
-            singleImports;
+              node.isStatic() && node.isImportOnDemand() ? staticImportsOnDemand
+            : node.isStatic() ? staticImports
+            : node.isImportOnDemand() ? importsOnDemand
+            : singleImports;
 
         if (!container.add(new ImportWrapper(node))) {
             // duplicate
