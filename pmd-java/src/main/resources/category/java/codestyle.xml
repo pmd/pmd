@@ -715,7 +715,7 @@ public abstract class ShouldBeAbstract {
           since="6.42.0"
           message="This control statement has an empty branch"
           class="net.sourceforge.pmd.lang.java.rule.codestyle.EmptyControlStatementRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#unnecessarysemicolon">
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#emptycontrolstatement">
         <!-- Note about naming: EmptyCodeBlock does not work because the rule flags `if(true);`  -->
         <!-- EmptyControlStatement is weird because `{}` is not a control statement, and we also flag initializers. -->
         <!-- EmptyStatement does not work because `;` is called an "empty statement" and is not flagged by this rule, rather, by UnnecessarySemicolon. -->
