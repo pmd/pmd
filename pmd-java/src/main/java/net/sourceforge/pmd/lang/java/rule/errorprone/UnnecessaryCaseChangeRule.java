@@ -63,7 +63,7 @@ public class UnnecessaryCaseChangeRule extends AbstractJavaRule {
         return expr.getNumChildren() > pos;
     }
 
-    private boolean anyHasCaseChangingMethodCall(ASTPrimaryExpression ... exprs) {
+    private boolean anyHasCaseChangingMethodCall(ASTPrimaryExpression... exprs) {
         for (ASTPrimaryExpression expr : exprs) {
             if (expr != null && hasCaseChangingMethodCall(expr)) {
                 return true;
