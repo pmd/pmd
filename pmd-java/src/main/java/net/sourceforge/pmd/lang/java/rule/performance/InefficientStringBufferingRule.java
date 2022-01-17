@@ -218,7 +218,7 @@ public class InefficientStringBufferingRule extends AbstractJavaRule {
         // Note: The impl here is technically not correct: The type of a method call
         // chain is the result of the last method called, not the type of the
         // first receiver object (== PrimaryPrefix).
-        boolean isExactlyOfAnyType(Class<?> clazz, Class<?> ... clazzes) {
+        boolean isExactlyOfAnyType(Class<?> clazz, Class<?>... clazzes) {
             ASTPrimaryPrefix typeNode = getTypeNode();
 
             if (TypeTestUtil.isExactlyA(clazz, typeNode)) {

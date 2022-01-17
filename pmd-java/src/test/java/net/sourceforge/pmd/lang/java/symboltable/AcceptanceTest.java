@@ -147,7 +147,7 @@ public class AcceptanceTest extends BaseNonParserTest {
      */
     @Test
     public void testNullPointerEnumValueOfOverloaded() {
-        ASTCompilationUnit acu = parseCode("public enum EsmDcVoltageSensor {\n" + "    A;\n" + "    void bar(int ... args) {\n"
+        ASTCompilationUnit acu = parseCode("public enum EsmDcVoltageSensor {\n" + "    A;\n" + "    void bar(int... args) {\n"
                 + "        int idx;\n" + "        int startIdx;\n"
                 + "        String name = EsmDcVoltageSensor.valueOf((byte) (idx - startIdx)).getName();\n" + "    }\n"
                 // that's the overloaded method
