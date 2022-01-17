@@ -237,7 +237,7 @@ public class SaxonXPathRuleQueryTest {
         return result;
     }
 
-    private static SaxonXPathRuleQuery createQuery(String xpath, PropertyDescriptor<?> ...descriptors) {
+    private static SaxonXPathRuleQuery createQuery(String xpath, PropertyDescriptor<?>... descriptors) {
         SaxonXPathRuleQuery query = new SaxonXPathRuleQuery();
         query.setVersion(XPathRuleQuery.XPATH_2_0);
         if (descriptors != null) {
