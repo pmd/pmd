@@ -2332,7 +2332,7 @@ See the property `annotations`.
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassOrInterfaceDeclaration[@Nested= false()]
+//ClassOrInterfaceDeclaration[@Nested= false() and @Local= false()]
 [
     (: at least one constructor :) ./ClassOrInterfaceBody/ConstructorDeclaration
     and

@@ -33,7 +33,7 @@ public class PMDExecutor {
         // this is a helper class only
     }
 
-    private static ExecutionResult runPMDUnix(Path tempDir, Path reportFile, String ... arguments) throws Exception {
+    private static ExecutionResult runPMDUnix(Path tempDir, Path reportFile, String... arguments) throws Exception {
         String cmd = tempDir.resolve(AbstractBinaryDistributionTest.PMD_BIN_PREFIX + PMDVersion.VERSION + "/bin/run.sh").toAbsolutePath().toString();
         List<String> args = new ArrayList<>();
         args.add("pmd");
@@ -41,7 +41,7 @@ public class PMDExecutor {
         return runPMD(cmd, args, reportFile);
     }
 
-    private static ExecutionResult runPMDWindows(Path tempDir, Path reportFile, String ... arguments) throws Exception {
+    private static ExecutionResult runPMDWindows(Path tempDir, Path reportFile, String... arguments) throws Exception {
         String cmd = tempDir.resolve(AbstractBinaryDistributionTest.PMD_BIN_PREFIX + PMDVersion.VERSION + "/bin/pmd.bat").toAbsolutePath().toString();
         return runPMD(cmd, Arrays.asList(arguments), reportFile);
     }
@@ -122,7 +122,7 @@ public class PMDExecutor {
      * @return collected result of the execution
      * @throws Exception if the execution fails for any reason (executable not found, ...)
      */
-    public static ExecutionResult runPMD(Path tempDir, String ... arguments) throws Exception {
+    public static ExecutionResult runPMD(Path tempDir, String... arguments) throws Exception {
         if (SystemUtils.IS_OS_WINDOWS) {
             return runPMDWindows(tempDir, null, arguments);
         } else {
