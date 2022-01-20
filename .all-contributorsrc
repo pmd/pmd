@@ -6529,6 +6529,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "gredler",
+      "name": "Daniel Gredler",
+      "avatar_url": "https://avatars.githubusercontent.com/u/178883?v=4",
+      "profile": "https://github.com/gredler",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,

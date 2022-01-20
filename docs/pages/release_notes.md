@@ -57,8 +57,11 @@ not support all features of the latest EcmaScript standard.
     *   [#3644](https://github.com/pmd/pmd/issues/3644): \[java] InvalidLogMessageFormat: false positives with logstash structured logging
     *   [#3686](https://github.com/pmd/pmd/issues/3686): \[java] ReturnEmptyCollectionRatherThanNull - false negative with conditioned returns
     *   [#3701](https://github.com/pmd/pmd/issues/3701): \[java] MissingStaticMethodInNonInstantiatableClass false positive with method inner classes
+    *   [#3721](https://github.com/pmd/pmd/issues/3721): \[java] ReturnEmptyCollectionRatherThanNull - false positive with stream and lambda
 *   java-performance
     *   [#3492](https://github.com/pmd/pmd/issues/3492): \[java] UselessStringValueOf: False positive when there is no initial String to append to
+    *   [#3639](https://github.com/pmd/pmd/issues/3639): \[java] UseStringBufferLength: false negative with empty string variable
+    *   [#3712](https://github.com/pmd/pmd/issues/3712): \[java] InsufficientStringBufferDeclaration false positive with StringBuilder.setLength(0)
 *   javascript
     *   [#3703](https://github.com/pmd/pmd/issues/3703): \[javascript] Error - no Node adapter class registered for XmlPropRef
 
@@ -74,9 +77,11 @@ not support all features of the latest EcmaScript standard.
 *   [#3713](https://github.com/pmd/pmd/pull/3713): \[java] Enhance UnnecessaryModifier to support records - [Vincent Galloy](https://github.com/vgalloy)
 *   [#3719](https://github.com/pmd/pmd/pull/3719): \[java] Upgrade log4j to 2.17.1 - [Daniel Paul Searles](https://github.com/squaresurf)
 *   [#3720](https://github.com/pmd/pmd/pull/3720): \[java] New rule: FinalParameterInAbstractMethod - [Vincent Galloy](https://github.com/vgalloy)
-*   [#3724](https://github.com/pmd/pmd/pull/3724): \[java] Fix for #3686 - fix FinalFieldCouldBeStatic - [Oleksii Dykov](https://github.com/dykov)
+*   [#3724](https://github.com/pmd/pmd/pull/3724): \[java] Fix for #3679 - fix FinalFieldCouldBeStatic - [Oleksii Dykov](https://github.com/dykov)
+*   [#3727](https://github.com/pmd/pmd/pull/3727): \[java] #3724 - fix FinalFieldCouldBeStatic: triggers only if the referenced name is static - [Oleksii Dykov](https://github.com/dykov)
 *   [#3742](https://github.com/pmd/pmd/pull/3742): \[java] Fix #3701 - fix MissingStaticMethodInNonInstantiatableClass for method local classes - [Oleksii Dykov](https://github.com/dykov)
 *   [#3744](https://github.com/pmd/pmd/pull/3744): \[core] Updated SaxonXPathRuleQueryTest.java - [Vyom Yadav](https://github.com/Vyom-Yadav)
+*   [#3745](https://github.com/pmd/pmd/pull/3745): \[java] Fix #3712: InsufficientStringBufferDeclaration setLength false positive - [Daniel Gredler](https://github.com/gredler)
 
 {% endtocmaker %}
 

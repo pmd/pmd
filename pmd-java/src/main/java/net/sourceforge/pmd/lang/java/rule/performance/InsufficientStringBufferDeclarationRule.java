@@ -141,7 +141,7 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRulecha
             } else if (usage.getParent() instanceof ASTAssignmentExpression) {
                 ASTAssignmentExpression assignment = (ASTAssignmentExpression) usage.getParent();
                 State newState = getConstructorCapacity(node, assignment.getRightOperand());
-                
+
                 if (newState.rootNode != null) {
                     if (state.isInsufficient()) {
                         addViolation(data, state.rootNode, state.getParamsForViolation());
