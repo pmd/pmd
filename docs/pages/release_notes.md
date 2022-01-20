@@ -14,6 +14,13 @@ This is a {{ site.pmd.release_type }} release.
 
 ### New and noteworthy
 
+#### Javascript: Rhino updated to latest version 1.7.14
+
+[Rhino](https://github.com/mozilla/rhino), the implementation of JavaScript we use
+for parsing JavaScript code, has been updated to the latest version 1.7.14.
+Now language features like template strings can be parsed. However Rhino does
+not support all features of the latest EcmaScript standard.
+
 #### New rules
 
 *   The new Java rule {% rule "java/codestyle/FinalParameterInAbstractMethod" %} detects parameters that are
@@ -46,6 +53,8 @@ This is a {{ site.pmd.release_type }} release.
     *   [#3701](https://github.com/pmd/pmd/issues/3701): \[java] MissingStaticMethodInNonInstantiatableClass false positive with method inner classes
 *   java-performance
     *   [#3492](https://github.com/pmd/pmd/issues/3492): \[java] UselessStringValueOf: False positive when there is no initial String to append to
+*   javascript
+    *   [#3703](https://github.com/pmd/pmd/issues/3703): \[javascript] Error - no Node adapter class registered for XmlPropRef
 
 ### API Changes
 

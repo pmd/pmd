@@ -26,17 +26,17 @@ indicative of the bug where the assignment operator '=' was used instead of the 
             <property name="xpath">
                 <value>
 <![CDATA[
-    //IfStatement[$allowIf = false()]/child::node()[1]/descendant-or-self::node()[self::Assignment or self::UnaryExpression[$allowIncrementDecrement = false() and (@Image = "--" or @Image = "++")]]
+    //IfStatement[$allowIf = false()]/child::node()[1]/descendant-or-self::node()[self::Assignment or self::UpdateExpression[$allowIncrementDecrement = false() and @Operator = ('--', '++')]]
 |
-    //WhileLoop[$allowWhile = false()]/child::node()[1]/descendant-or-self::node()[self::Assignment or self::UnaryExpression[$allowIncrementDecrement = false() and (@Image = "--" or @Image = "++")]]
+    //WhileLoop[$allowWhile = false()]/child::node()[1]/descendant-or-self::node()[self::Assignment or self::UpdateExpression[$allowIncrementDecrement = false() and @Operator = ('--', '++')]]
 |
-    //DoLoop[$allowWhile = false()]/child::node()[2]/descendant-or-self::node()[self::Assignment or self::UnaryExpression[$allowIncrementDecrement = false() and (@Image = "--" or @Image = "++")]]
+    //DoLoop[$allowWhile = false()]/child::node()[2]/descendant-or-self::node()[self::Assignment or self::UpdateExpression[$allowIncrementDecrement = false() and @Operator = ('--', '++')]]
 |
-    //ForLoop[$allowFor = false()]/child::node()[2]/descendant-or-self::node()[self::Assignment or self::UnaryExpression[$allowIncrementDecrement = false() and (@Image = "--" or @Image = "++")]]
+    //ForLoop[$allowFor = false()]/child::node()[2]/descendant-or-self::node()[self::Assignment or self::UpdateExpression[$allowIncrementDecrement = false() and @Operator = ('--', '++')]]
 |
-   //ConditionalExpression[$allowTernary = false()]/child::node()[1]/descendant-or-self::node()[self::Assignment or self::UnaryExpression[$allowIncrementDecrement = false() and (@Image = "--" or @Image = "++")]]
+   //ConditionalExpression[$allowTernary = false()]/child::node()[1]/descendant-or-self::node()[self::Assignment or self::UpdateExpression[$allowIncrementDecrement = false() and @Operator = ('--', '++')]]
 |
-   //ConditionalExpression[$allowTernaryResults = false()]/child::node()[position() = 2 or position() = 3]/descendant-or-self::node()[self::Assignment or self::UnaryExpression[$allowIncrementDecrement = false() and (@Image = "--" or @Image = "++")]]
+   //ConditionalExpression[$allowTernaryResults = false()]/child::node()[position() = 2 or position() = 3]/descendant-or-self::node()[self::Assignment or self::UpdateExpression[$allowIncrementDecrement = false() and @Operator = ('--', '++')]]
 ]]>
                 </value>
             </property>
