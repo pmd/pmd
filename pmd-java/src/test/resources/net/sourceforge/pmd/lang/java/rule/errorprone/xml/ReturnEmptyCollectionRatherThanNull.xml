@@ -183,10 +183,12 @@ public class Foo {
   <test-code>
     <description>[java] ReturnEmptyCollectionRatherThanNull - false positive with stream and lambda #3721</description>
     <expected-problems>1</expected-problems>
-    <expected-linenumbers>37</expected-linenumbers>
+    <expected-linenumbers>39</expected-linenumbers>
     <code><![CDATA[
 import java.util.*;
-import java.util.concurrent.Callable;
+import java.util.stream.*;
+import java.util.concurrent.*;
+import java.nio.file.Path;
 
 public class Foo {
     private Map<Path, List<String>> joinFutures(Map<String, List<Future<String>>> map) {

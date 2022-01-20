@@ -2655,7 +2655,6 @@ See Effective Java, 3rd Edition, Item 54: Return empty collections or arrays ins
         or pmd-java:typeIs('java.util.Map')]]
 ]
 [not(./ancestor::LambdaExpression)]
-[not(./ancestor::AnonymousClassDeclaration)]
 ]]>
                 </value>
             </property>

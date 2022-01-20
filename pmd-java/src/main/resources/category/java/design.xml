@@ -783,8 +783,9 @@ in each object at runtime.
     [pmd-java:modifiers() = 'final']
     [not(pmd-java:modifiers() = 'static')]
     [not(.//Annotation[pmd-java:typeIs('lombok.Builder.Default')])]
-    /VariableDeclarator[NumericLiteral or StringLiteral or CharLiteral or BooleanLiteral or NullLiteral
-         or VariableAccess or FieldAccess]
+    /VariableDeclarator[*[pmd-java:nodeIs('Literal')]
+         or VariableAccess[@Name = //FieldDeclaration[pmd-java:modifiers() = 'static']/VariableDeclarator/VariableDeclaratorId/@Name]
+         or FieldAccess]
     /VariableDeclaratorId
 ]]>
                 </value>

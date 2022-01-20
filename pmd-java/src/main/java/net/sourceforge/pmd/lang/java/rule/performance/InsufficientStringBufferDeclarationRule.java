@@ -197,7 +197,7 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRulecha
             }
         } else if ("setLength".equals(methodCall.getMethodName())) {
             int newLength = calculateExpression(methodCall.getArguments().get(0));
-            if (newLength > state.capacity) {
+            if (state.capacity != -1 && newLength > state.capacity) {
                 state.capacity = newLength; // a bigger setLength increases capacity
                 state.rootNode = methodCall;
             }
