@@ -1220,13 +1220,14 @@ public class FalsePositive {
 
     <test-code>
         <description>Calculated initial size in constructor</description>
-        <expected-problems>4</expected-problems>
-        <expected-linenumbers>10,34,44,61</expected-linenumbers>
+        <expected-problems>5</expected-problems>
+        <expected-linenumbers>10,34,44,61,88</expected-linenumbers>
         <expected-messages>
             <message>StringBuilder has been initialized with size 4, but has at least 5 characters appended.</message>
             <message>StringBuilder has been initialized with size 5, but has at least 6 characters appended.</message>
             <message>StringBuilder has been initialized with size 8, but has at least 10 characters appended.</message>
             <message>StringBuilder has been initialized with size 8, but has at least 9 characters appended.</message>
+            <message>StringBuilder has been initialized with size 7, but has at least 8 characters appended.</message>
         </expected-messages>
         <code><![CDATA[
 public class InsufficientStringBufferDeclaration {
@@ -1294,6 +1295,30 @@ public class InsufficientStringBufferDeclaration {
         sb.append("bb"); // length is 6
         sb.append("cc"); // length is 8
         sb.append('d'); // length is now 9
+        return sb.toString();
+    }
+
+    public String case9_sufficient_setLength() {
+        StringBuilder sb = new StringBuilder(4);
+        sb.append("xxxx");
+        sb.setLength(0); // length is 0, capacity is still 4
+        sb.append("aaaa");
+        return sb.toString();
+    }
+
+    public String case10_unknown_setLength(String in) {
+        StringBuilder sb = new StringBuilder(in.length()); // unknown
+        sb.append("xxxx");
+        sb.setLength(0); // length is 0, capacity is still unknown
+        sb.append("aaaa");
+        return sb.toString();
+    }
+
+    public String case11_unknown_ensureCapacity(String in) {
+        StringBuilder sb = new StringBuilder(in.length()); // unknown
+        sb.append("xxxx"); // length is 4
+        sb.ensureCapacity(7); // line 88 - length is still 4, new capacity now at least 7 -> violation here
+        sb.append("aaaa"); // length is 8
         return sb.toString();
     }
 }
