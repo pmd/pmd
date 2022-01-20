@@ -2923,14 +2923,15 @@ See Effective Java, 3rd Edition, Item 54: Return empty collections or arrays ins
             <property name="xpath">
                 <value>
 <![CDATA[
-//MethodDeclaration
-[
+//ReturnStatement/Expression/PrimaryExpression/PrimaryPrefix/Literal/NullLiteral
+[ancestor::MethodDeclaration[1]
+  [
     (./ResultType/Type[pmd-java:typeIs('java.util.Collection')
     or pmd-java:typeIs('java.util.Map')
     or @ArrayType=true()])
+  ]
 ]
-//ReturnStatement/Expression/PrimaryExpression/PrimaryPrefix/Literal/NullLiteral
-[not(./ancestor::StatementExpression)]
+[not(./ancestor::LambdaExpression)]
 ]]>
                 </value>
             </property>
