@@ -66,7 +66,7 @@ Novice as much as advanced readers may want to [read on on Refactoring Guru](htt
                description="List of files and directories to process"
                required="yes"
     %}
-    {% include custom/cli_option_row.html options="--filelist"
+    {% include custom/cli_option_row.html options="--file-list"
                description="Path to file containing a comma delimited list of files to analyze. If this is given, then you don't need to provide `--files`."
     %}
     {% include custom/cli_option_row.html options="--language"
@@ -95,10 +95,10 @@ Novice as much as advanced readers may want to [read on on Refactoring Guru](htt
                description="Report format."
                default="text"
     %}
-    {% include custom/cli_option_row.html options="--failOnViolation"
+    {% include custom/cli_option_row.html options="--fail-on-violation"
                option_arg="bool"
                description="By default CPD exits with status 4 if code duplications are found.
-                            Disable this option with `--failOnViolation false` to exit with 0 instead and just write the report."
+                            Disable this option with `--fail-on-violation false` to exit with 0 instead and just write the report."
                default="true"
     %}
     {% include custom/cli_option_row.html options="--ignore-literals"
@@ -206,7 +206,7 @@ This behavior has been introduced to ease CPD integration into scripts or hooks,
 <table>
 <tr><td>0</td><td>Everything is fine, no code duplications found</td></tr>
 <tr><td>1</td><td>Couldn't understand command line parameters or CPD exited with an exception</td></tr>
-<tr><td>4</td><td>At least one code duplication has been detected unless '--failOnViolation false' is used.</td></tr>
+<tr><td>4</td><td>At least one code duplication has been detected unless '--fail-on-violation false' is used.</td></tr>
 </table>
 
 

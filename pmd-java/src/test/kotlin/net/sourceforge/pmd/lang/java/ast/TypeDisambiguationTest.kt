@@ -124,8 +124,10 @@ class TypeDisambiguationTest : ParserTestSpec({
            }
         """)
 
-        val (refInFoo, refInScratch) = acu.descendants(ASTFieldDeclaration::class.java).map { it.typeNode as ASTClassOrInterfaceType }.toList()
-        val (_, _, aMem) = acu.descendants(ASTClassOrInterfaceDeclaration::class.java).toList { it.symbol }
+        val (refInFoo, refInScratch) = acu.descendants(ASTFieldDeclaration::class.java)
+            .crossFindBoundaries().map { it.typeNode as ASTClassOrInterfaceType }.toList()
+        val (_, _, aMem) = acu.descendants(ASTClassOrInterfaceDeclaration::class.java)
+            .crossFindBoundaries().toList { it.symbol }
 
 
         doTest("Ambiguous inner type should produce an error (ref in Foo)") {

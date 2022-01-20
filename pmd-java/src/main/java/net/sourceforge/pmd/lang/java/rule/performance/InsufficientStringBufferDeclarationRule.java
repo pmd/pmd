@@ -187,7 +187,7 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRulecha
             if (ifStatement != null) {
                 if (ifStatement.getThenBranch().descendants().any(n -> n == methodCall)) {
                     state.addBranch(ifStatement.getThenBranch(), counter);
-                } else {
+                } else if (ifStatement.getElseBranch() != null) {
                     state.addBranch(ifStatement.getElseBranch(), counter);
                 }
             } else if (switchStatement != null) {

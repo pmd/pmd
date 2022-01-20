@@ -43,7 +43,7 @@ public class Records {
         public void foo() { }
     }
 
-    public record VarRec(@Nullable @Deprecated String @Nullable ... x) {}
+    public record VarRec(@Nullable @Deprecated String @Nullable... x) {}
 
     public record ArrayRec(int[] x) {}
 

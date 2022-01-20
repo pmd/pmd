@@ -154,7 +154,7 @@ public abstract class PropertyDescriptorBuilderConversionWrapper<E, T extends Pr
 
 
         /**
-         * For single-value packaged properties.
+         * For multi-value packaged properties.
          *
          * @param <V> Element type of the list
          * @param <T> Concrete type of the underlying builder
@@ -223,6 +223,7 @@ public abstract class PropertyDescriptorBuilderConversionWrapper<E, T extends Pr
             }
 
 
+            // CPD-OFF - same code in the multi-valued variant
             @Override
             protected void populate(T builder, Map<PropertyDescriptorField, String> fields) {
                 super.populate(builder, fields);
@@ -230,6 +231,7 @@ public abstract class PropertyDescriptorBuilderConversionWrapper<E, T extends Pr
                 V max = parser.valueOf(fields.get(PropertyDescriptorField.MAX));
                 builder.range(min, max);
             }
+            // CPD-ON
         }
 
 

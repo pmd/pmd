@@ -85,7 +85,6 @@ public abstract class AbstractPLSQLRule extends AbstractRule implements PLSQLPar
         return false;
     }
 
-
     @Override
     public boolean dependsOn(AstProcessingStage<?> stage) {
         if (!(stage instanceof PlsqlProcessingStage)) {

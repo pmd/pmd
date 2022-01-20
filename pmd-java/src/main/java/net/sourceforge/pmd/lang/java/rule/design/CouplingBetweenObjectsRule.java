@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.rule.design;
 import static net.sourceforge.pmd.properties.constraints.NumericConstraints.positive;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import net.sourceforge.pmd.lang.ast.Node;
@@ -54,22 +55,14 @@ public class CouplingBetweenObjectsRule extends AbstractJavaRule {
         typesFoundSoFar = new HashSet<>();
         couplingCount = 0;
 
-        cu.children().forEach(it -> it.acceptVisitor(this, data));
+        Object returnObj = super.visit(cu, data);
 
         if (couplingCount > getProperty(THRESHOLD_DESCRIPTOR)) {
             addViolation(data, cu,
                     "A value of " + couplingCount + " may denote a high amount of coupling within the class");
         }
 
-        return data;
-    }
-
-    @Override
-    public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
-        if (node.isInterface()) {
-            return data;
-        }
-        return super.visit(node, data);
+        return returnObj;
     }
 
     @Override
@@ -138,10 +131,18 @@ public class CouplingBetweenObjectsRule extends AbstractJavaRule {
      *            The variable type.
      */
     private void checkVariableType(Node nameNode, String variableType) {
+        List<ASTClassOrInterfaceDeclaration> parentTypes = nameNode.getParentsOfType(ASTClassOrInterfaceDeclaration.class);
+
         // TODO - move this into the symbol table somehow?
-        if (nameNode.getParentsOfType(ASTClassOrInterfaceDeclaration.class).isEmpty()) {
+        if (parentTypes.isEmpty()) {
             return;
         }
+
+        // skip interfaces
+        if (parentTypes.get(0).isInterface()) {
+            return;
+        }
+
         // if the field is of any type other than the class type
         // increment the count
         ClassScope clzScope = ((JavaNode) nameNode).getScope().getEnclosingScope(ClassScope.class);

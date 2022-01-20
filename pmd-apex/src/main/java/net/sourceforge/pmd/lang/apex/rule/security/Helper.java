@@ -4,15 +4,8 @@
 
 package net.sourceforge.pmd.lang.apex.rule.security;
 
-import java.util.Arrays;
 import java.util.List;
 
-import net.sourceforge.pmd.lang.apex.ast.ASTDmlDeleteStatement;
-import net.sourceforge.pmd.lang.apex.ast.ASTDmlInsertStatement;
-import net.sourceforge.pmd.lang.apex.ast.ASTDmlMergeStatement;
-import net.sourceforge.pmd.lang.apex.ast.ASTDmlUndeleteStatement;
-import net.sourceforge.pmd.lang.apex.ast.ASTDmlUpdateStatement;
-import net.sourceforge.pmd.lang.apex.ast.ASTDmlUpsertStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTField;
 import net.sourceforge.pmd.lang.apex.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethodCallExpression;
@@ -62,17 +55,7 @@ public final class Helper {
      * @return true if found DML operations in node descendants
      */
     static boolean foundAnyDML(final ApexNode<?> node) {
-
-        final List<ASTDmlUpsertStatement> dmlUpsertStatement = node.findDescendantsOfType(ASTDmlUpsertStatement.class);
-        final List<ASTDmlUpdateStatement> dmlUpdateStatement = node.findDescendantsOfType(ASTDmlUpdateStatement.class);
-        final List<ASTDmlUndeleteStatement> dmlUndeleteStatement = node
-                .findDescendantsOfType(ASTDmlUndeleteStatement.class);
-        final List<ASTDmlMergeStatement> dmlMergeStatement = node.findDescendantsOfType(ASTDmlMergeStatement.class);
-        final List<ASTDmlInsertStatement> dmlInsertStatement = node.findDescendantsOfType(ASTDmlInsertStatement.class);
-        final List<ASTDmlDeleteStatement> dmlDeleteStatement = node.findDescendantsOfType(ASTDmlDeleteStatement.class);
-
-        return !dmlUpsertStatement.isEmpty() || !dmlUpdateStatement.isEmpty() || !dmlUndeleteStatement.isEmpty()
-                || !dmlMergeStatement.isEmpty() || !dmlInsertStatement.isEmpty() || !dmlDeleteStatement.isEmpty();
+        return net.sourceforge.pmd.lang.apex.rule.internal.Helper.foundAnyDML(node);
     }
 
     static boolean isMethodName(final ASTMethodCallExpression methodNode, final String className,
@@ -89,25 +72,7 @@ public final class Helper {
     }
 
     static boolean isMethodCallChain(final ASTMethodCallExpression methodNode, final String... methodNames) {
-        String methodName = methodNames[methodNames.length - 1];
-        if (Helper.isMethodName(methodNode, methodName)) {
-            final ASTReferenceExpression reference = methodNode.getFirstChildOfType(ASTReferenceExpression.class);
-            if (reference != null) {
-                final ASTMethodCallExpression nestedMethod = reference
-                        .getFirstChildOfType(ASTMethodCallExpression.class);
-                if (nestedMethod != null) {
-                    String[] newMethodNames = Arrays.copyOf(methodNames, methodNames.length - 1);
-                    return isMethodCallChain(nestedMethod, newMethodNames);
-                } else {
-                    String[] newClassName = Arrays.copyOf(methodNames, methodNames.length - 1);
-                    if (newClassName.length == 1) {
-                        return Helper.isMethodName(methodNode, newClassName[0], methodName);
-                    }
-                }
-            }
-        }
-
-        return false;
+        return net.sourceforge.pmd.lang.apex.rule.internal.Helper.isMethodCallChain(methodNode, methodNames);
     }
 
     static String getFQVariableName(final ASTVariableExpression variable) {

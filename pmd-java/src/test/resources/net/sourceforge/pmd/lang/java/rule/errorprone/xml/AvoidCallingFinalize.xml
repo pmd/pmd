@@ -79,6 +79,8 @@ public class Foo {
             }
         });
     }
+
+    interface FooOtherInterface { }
 }
         ]]></code>
     </test-code>

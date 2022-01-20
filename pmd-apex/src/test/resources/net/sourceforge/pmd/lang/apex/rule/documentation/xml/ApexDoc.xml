@@ -574,4 +574,108 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#3566 [apex] ApexDoc: Verify use of reportMissingDescription, negative test unspecified/default</description>
+        <!-- reportMissingDescription unspecified; should default to true -->
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+/**
+ * No at-description tag provided.
+ */
+public class Foo {
+
+    /**
+     * No at-description tag provided.
+     */
+    public Foo() {
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#3566 [apex] ApexDoc: Verify use of reportMissingDescription, negative test specified</description>
+        <rule-property name="reportMissingDescription">true</rule-property>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+/**
+ * No at-description tag provided.
+ */
+public class Foo {
+
+    /**
+     * No at-description tag provided.
+     */
+    public Foo() {
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#3566 [apex] ApexDoc: Verify use of reportMissingDescription, positive test</description>
+        <rule-property name="reportMissingDescription">false</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+/**
+ * No at-description tag provided.
+ */
+public class Foo {
+
+    /**
+     * No at-description tag provided.
+     */
+    public Foo() {
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>property should have comment</description>
+        <rule-property name="reportProperty">true</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+/**
+ * @description Foo
+ */
+public class Foo {
+    global Object Bar { get; set; }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>property with missing description</description>
+        <rule-property name="reportProperty">false</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>8</expected-linenumbers>
+        <code><![CDATA[
+/**
+ * @description Foo
+ */
+public class Foo {
+    /**
+     * the property bar
+     */
+    global Object Bar { get; set; }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>property does not need comment</description>
+        <rule-property name="reportProperty">false</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+/**
+ * @description Foo
+ */
+public class Foo {
+    global Object Bar { get; set; }
+}
+        ]]></code>
+    </test-code>
 </test-data>

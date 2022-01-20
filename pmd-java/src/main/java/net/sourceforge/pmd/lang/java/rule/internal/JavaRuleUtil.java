@@ -30,6 +30,7 @@ import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTArrayAccess;
+import net.sourceforge.pmd.lang.java.ast.ASTArrayAllocation;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.AccessType;
@@ -41,6 +42,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTExpressionStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
@@ -246,7 +248,7 @@ public final class JavaRuleUtil {
      * custom definition.
      */
     public static boolean isUtilityClass(ASTAnyTypeDeclaration node) {
-        if (node.isInterface() || node.isEnum()) {
+        if (!node.isRegularClass()) {
             return false;
         }
 
@@ -368,7 +370,8 @@ public final class JavaRuleUtil {
         ASTAnyTypeDeclaration enclosing = node.getEnclosingType();
         if (startsWithCamelCaseWord(node.getName(), "get")) {
             return hasField(enclosing, node.getName().substring(3));
-        } else if (startsWithCamelCaseWord(node.getName(), "is")) {
+        } else if (startsWithCamelCaseWord(node.getName(), "is")
+                && TypeTestUtil.isA(boolean.class, node.getResultTypeNode())) {
             return hasField(enclosing, node.getName().substring(2));
         }
 
@@ -466,9 +469,9 @@ public final class JavaRuleUtil {
 
     private static boolean isReadUsage(ASTNamedReferenceExpr expr) {
         return expr.getAccessType() == AccessType.READ
-            // foo(x++)
+            // x++ as a method argument or used in other expression
             || expr.getParent() instanceof ASTUnaryExpression
-            && expr.getParent().getParent() instanceof ASTArgumentList;
+            && !(expr.getParent().getParent() instanceof ASTExpressionStatement);
     }
 
     /**
@@ -653,6 +656,10 @@ public final class JavaRuleUtil {
             lastKind = o1.kind;
         }
         return !thatIt.hasNext();
+    }
+
+    public static boolean isNullLiteral(ASTExpression node) {
+        return node instanceof ASTNullLiteral;
     }
 
     public static boolean isBooleanLiteral(ASTExpression e) {
@@ -980,6 +987,13 @@ public final class JavaRuleUtil {
                     return matcher.matches(getOtherOperandIfInInfixExpr(nullLit));
                 }
             }
+        }
+        return false;
+    }
+
+    public static boolean isArrayInitializer(ASTExpression expr) {
+        if (expr instanceof ASTArrayAllocation) {
+            return ((ASTArrayAllocation) expr).getArrayInitializer() != null;
         }
         return false;
     }

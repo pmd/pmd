@@ -1,75 +1,53 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
 package net.sourceforge.pmd.cpd;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Properties;
-import java.util.ServiceConfigurationError;
-import java.util.ServiceLoader;
 
-public final class LanguageFactory {
+import net.sourceforge.pmd.internal.LanguageServiceBase;
+
+public final class LanguageFactory extends LanguageServiceBase<Language> {
 
     public static final String EXTENSION = "extension";
     public static final String BY_EXTENSION = "by_extension";
 
-    private static LanguageFactory instance = new LanguageFactory();
+    private static final Comparator<Language> LANGUAGE_COMPARATOR = new Comparator<Language>() {
+        @Override
+        public int compare(Language o1, Language o2) {
+            return o1.getTerseName().compareToIgnoreCase(o2.getTerseName());
+        }
+    };
+
+    private static final NameExtractor<Language> NAME_EXTRACTOR = new NameExtractor<Language>() {
+        @Override
+        public String getName(Language language) {
+            return language.getName().toLowerCase(Locale.ROOT);
+        }
+    };
+
+    private static final NameExtractor<Language> TERSE_NAME_EXTRACTOR = new NameExtractor<Language>() {
+        @Override
+        public String getName(Language language) {
+            return language.getTerseName().toLowerCase(Locale.ROOT);
+        }
+    };
+
+    // Important: the "instance" needs to be defined *after* LANGUAGE_COMPARATOR and *NAME_EXTRACTOR
+    // as these are needed in the constructor.
+    private static final LanguageFactory INSTANCE = new LanguageFactory();
 
     public static String[] supportedLanguages;
 
     static {
-        supportedLanguages = instance.languages.keySet().toArray(new String[instance.languages.size()]);
+        supportedLanguages = INSTANCE.languagesByTerseName.keySet().toArray(new String[INSTANCE.languages.size()]);
     }
 
-    private Map<String, Language> languages = new HashMap<>();
-
     private LanguageFactory() {
-        List<Language> languagesList = new ArrayList<>();
-        // Use current class' classloader instead of the threads context classloader, see https://github.com/pmd/pmd/issues/1788
-        ServiceLoader<Language> languageLoader = ServiceLoader.load(Language.class, getClass().getClassLoader());
-        Iterator<Language> iterator = languageLoader.iterator();
-
-        while (true) {
-            // this loop is weird, but both hasNext and next may throw ServiceConfigurationError,
-            // it's more robust that way
-            try {
-                if (iterator.hasNext()) {
-                    Language language = iterator.next();
-                    languagesList.add(language);
-                } else {
-                    break;
-                }
-            } catch (UnsupportedClassVersionError | ServiceConfigurationError e) {
-                // Some languages require java8 and are therefore only available
-                // if java8 or later is used as runtime.
-                System.err.println("Ignoring language for PMD: " + e.toString());
-            }
-        }
-
-        // sort languages by terse name. Avoiding differences in the order of languages
-        // across JVM versions / OS.
-        Collections.sort(languagesList, new Comparator<Language>() {
-            @Override
-            public int compare(Language o1, Language o2) {
-                return o1.getTerseName().compareToIgnoreCase(o2.getTerseName());
-            }
-        });
-
-        // using a linked hash map to maintain insertion order
-        languages = new LinkedHashMap<>();
-        for (Language language : languagesList) {
-            languages.put(language.getTerseName().toLowerCase(Locale.ROOT), language);
-        }
-
+        super(Language.class, LANGUAGE_COMPARATOR, NAME_EXTRACTOR, TERSE_NAME_EXTRACTOR);
     }
 
     public static Language createLanguage(String language) {
@@ -79,9 +57,9 @@ public final class LanguageFactory {
     public static Language createLanguage(String language, Properties properties) {
         Language implementation;
         if (BY_EXTENSION.equals(language)) {
-            implementation = instance.getLanguageByExtension(properties.getProperty(EXTENSION));
+            implementation = INSTANCE.getLanguageByExtension(properties.getProperty(EXTENSION));
         } else {
-            implementation = instance.languages.get(instance.languageAliases(language).toLowerCase(Locale.ROOT));
+            implementation = INSTANCE.languagesByTerseName.get(INSTANCE.languageAliases(language).toLowerCase(Locale.ROOT));
         }
         if (implementation == null) {
             // No proper implementation
@@ -103,7 +81,7 @@ public final class LanguageFactory {
     private Language getLanguageByExtension(String extension) {
         Language result = null;
 
-        for (Language language : languages.values()) {
+        for (Language language : languages) {
             if (language.getExtensions().contains(extension)) {
                 result = language;
                 break;

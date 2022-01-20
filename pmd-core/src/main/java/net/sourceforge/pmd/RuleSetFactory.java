@@ -31,6 +31,7 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import net.sourceforge.pmd.RuleSet.RuleSetBuilder;
+import net.sourceforge.pmd.internal.DOMUtils;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.rules.RuleFactory;
 import net.sourceforge.pmd.util.ResourceLoader;
@@ -156,7 +157,7 @@ final class RuleSetFactory {
                 Node node = nodeList.item(i);
                 if (node.getNodeType() == Node.ELEMENT_NODE) {
                     String nodeName = node.getNodeName();
-                    String text = parseTextNode(node);
+                    String text = DOMUtils.parseTextNode(node);
                     if (DESCRIPTION.equals(nodeName)) {
                         ruleSetBuilder.withDescription(text);
                     } else if ("include-pattern".equals(nodeName)) {
@@ -302,7 +303,7 @@ final class RuleSetFactory {
                     excludedRulesCheck.add(excludedRuleName);
                 }
             } else if (isElementNode(child, PRIORITY)) {
-                priority = parseTextNode(child).trim();
+                priority = DOMUtils.parseTextNode(child).trim();
             }
         }
         final RuleSetReference ruleSetReference = new RuleSetReference(ref, true, excludedRulesCheck);
@@ -531,32 +532,6 @@ final class RuleSetFactory {
     private static boolean isElementNode(Node node, String name) {
         return node.getNodeType() == Node.ELEMENT_NODE && node.getNodeName().equals(name);
     }
-
-    /**
-     * Parse a String from a textually type node.
-     *
-     * @param node
-     *            The node.
-     * @return The String.
-     */
-    private static String parseTextNode(Node node) {
-
-        final int nodeCount = node.getChildNodes().getLength();
-        if (nodeCount == 0) {
-            return "";
-        }
-
-        StringBuilder buffer = new StringBuilder();
-
-        for (int i = 0; i < nodeCount; i++) {
-            Node childNode = node.getChildNodes().item(i);
-            if (childNode.getNodeType() == Node.CDATA_SECTION_NODE || childNode.getNodeType() == Node.TEXT_NODE) {
-                buffer.append(childNode.getNodeValue());
-            }
-        }
-        return buffer.toString();
-    }
-
 
     /**
      * Determine if the specified rule element will represent a Rule with the

@@ -15,6 +15,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.logging.Logger;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -23,6 +24,7 @@ import org.junit.contrib.java.lang.system.RestoreSystemProperties;
 import org.junit.rules.TemporaryFolder;
 
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.junit.JavaUtilLoggingRule;
 
 /**
  *
@@ -36,6 +38,9 @@ public class CoreCliTest {
     public TemporaryFolder tempDir = new TemporaryFolder();
     @Rule
     public RestoreSystemProperties restoreSystemProperties = new RestoreSystemProperties();
+    @Rule
+    public JavaUtilLoggingRule loggingRule = new JavaUtilLoggingRule(PMD.class.getPackage().getName()).mute();
+
     private Path srcDir;
 
     @Before
@@ -47,6 +52,8 @@ public class CoreCliTest {
         // create a few files
         srcDir = Files.createDirectories(root.resolve("src"));
         writeString(srcDir.resolve("someSource.dummy"), "dummy text");
+        
+        Logger.getLogger("net.sourceforge.pmd");
     }
 
 
@@ -65,14 +72,58 @@ public class CoreCliTest {
     }
 
     @Test
-    public void testNonExistentReportFile() {
+    public void testPreExistingReportFileLongOption() throws IOException {
+        Path reportFile = tempRoot().resolve("out/reportFile.txt");
+        // now we create the file
+        Files.createDirectories(reportFile.getParent());
+        writeString(reportFile, STRING_TO_REPLACE);
+
+        assertTrue("Report file should exist", Files.exists(reportFile));
+
+        runPmdSuccessfully("--no-cache", "--dir", srcDir, "--rulesets", DUMMY_RULESET, "--report-file", reportFile);
+
+        assertNotEquals("Report file should have been overwritten", readString(reportFile), STRING_TO_REPLACE);
+    }
+
+    @Test
+    public void testNonExistentReportFile() throws IOException {
         Path reportFile = tempRoot().resolve("out/reportFile.txt");
 
         assertFalse("Report file should not exist", Files.exists(reportFile));
 
-        runPmdSuccessfully("-no-cache", "-d", srcDir, "-R", DUMMY_RULESET, "-r", reportFile);
+        try {
+            runPmdSuccessfully("-no-cache", "-d", srcDir, "-R", DUMMY_RULESET, "-r", reportFile);
+            assertTrue("Report file should have been created", Files.exists(reportFile));
+        } finally {
+            Files.deleteIfExists(reportFile);
+        }
+    }
+
+    @Test
+    public void testNonExistentReportFileLongOption() {
+        Path reportFile = tempRoot().resolve("out/reportFile.txt");
+
+        assertFalse("Report file should not exist", Files.exists(reportFile));
+
+        runPmdSuccessfully("--no-cache", "--dir", srcDir, "--rulesets", DUMMY_RULESET, "--report-file", reportFile);
 
         assertTrue("Report file should have been created", Files.exists(reportFile));
+    }
+
+    @Test
+    public void testNonExistentReportFileDeprecatedOptions() {
+        Path reportFile = tempRoot().resolve("out/reportFile.txt");
+
+        assertFalse("Report file should not exist", Files.exists(reportFile));
+
+        runPmdSuccessfully("-no-cache", "-dir", srcDir, "-rulesets", DUMMY_RULESET, "-reportfile", reportFile);
+
+        assertTrue("Report file should have been created", Files.exists(reportFile));
+        assertTrue(loggingRule.getLog().contains("Some deprecated options were used on the command-line, including -rulesets"));
+        assertTrue(loggingRule.getLog().contains("Consider replacing it with --rulesets (or -R)"));
+        // only one parameter is logged
+        assertFalse(loggingRule.getLog().contains("Some deprecated options were used on the command-line, including -reportfile"));
+        assertFalse(loggingRule.getLog().contains("Consider replacing it with --report-file"));
     }
 
     /**
@@ -91,6 +142,21 @@ public class CoreCliTest {
 
         try {
             runPmdSuccessfully("-no-cache", "-d", srcDir, "-R", DUMMY_RULESET, "-r", reportFile);
+            assertTrue("Report file should have been created", Files.exists(absoluteReportFile));
+        } finally {
+            Files.deleteIfExists(absoluteReportFile);
+        }
+    }
+
+    @Test
+    public void testRelativeReportFileLongOption() throws IOException {
+        String reportFile = "reportFile.txt";
+        Path absoluteReportFile = FileSystems.getDefault().getPath(reportFile).toAbsolutePath();
+        // verify the file doesn't exist yet - we will delete the file at the end!
+        assertFalse("Report file must not exist yet!", Files.exists(absoluteReportFile));
+
+        try {
+            runPmdSuccessfully("--no-cache", "--dir", srcDir, "--rulesets", DUMMY_RULESET, "--report-file", reportFile);
             assertTrue("Report file should have been created", Files.exists(absoluteReportFile));
         } finally {
             Files.deleteIfExists(absoluteReportFile);

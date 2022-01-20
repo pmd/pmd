@@ -45,6 +45,20 @@ public class CPDCommandLineInterfaceTest extends BaseCPDCLITest {
     }
 
     /**
+     * Test ignore identifiers argument with failOnViolation=false with changed long options
+     */
+    @Test
+    public void testIgnoreIdentifiersFailOnViolationFalseLongOption() throws Exception {
+        runCPD("--minimum-tokens", "34", "--language", "java", "--files",
+                "src/test/resources/net/sourceforge/pmd/cpd/clitest/", "--ignore-identifiers", "--fail-on-violation",
+                "false");
+
+        String out = getOutput();
+        Assert.assertTrue(out.contains("Found a 7 line (36 tokens) duplication"));
+        Assert.assertEquals(0, Integer.parseInt(System.getProperty(CPDCommandLineInterface.STATUS_CODE_PROPERTY)));
+    }
+
+    /**
      * Test excludes option.
      */
     @Test

@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 
@@ -13,6 +14,7 @@ import net.sourceforge.pmd.lang.java.types.JTypeMirror;
  * An anonymous class declaration. This can occur in a {@linkplain ASTConstructorCall class instance creation
  * expression}
  * or in an {@linkplain ASTEnumConstant enum constant declaration}.
+ * This is a {@linkplain Node#isFindBoundary() find boundary} for tree traversal methods.
  *
  *
  * <pre class="grammar">

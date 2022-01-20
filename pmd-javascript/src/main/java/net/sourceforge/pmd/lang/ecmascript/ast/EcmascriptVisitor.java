@@ -36,6 +36,10 @@ public interface EcmascriptVisitor<P, R> extends AstVisitor<P, R> {
         return visitJsNode(node, data);
     }
 
+    default R visit(ASTBigIntLiteral node, P data) {
+        return visitJsNode(node, data);
+    }
+
     default R visit(ASTBlock node, P data) {
         return visitJsNode(node, data);
     }
@@ -76,6 +80,10 @@ public interface EcmascriptVisitor<P, R> extends AstVisitor<P, R> {
         return visitJsNode(node, data);
     }
 
+    default R visit(ASTErrorNode node, P data) {
+        return visitJsNode(node, data);
+    }
+
     default R visit(ASTExpressionStatement node, P data) {
         return visitJsNode(node, data);
     }
@@ -93,6 +101,14 @@ public interface EcmascriptVisitor<P, R> extends AstVisitor<P, R> {
     }
 
     default R visit(ASTFunctionNode node, P data) {
+        return visitJsNode(node, data);
+    }
+
+    default R visit(ASTGeneratorExpression node, P data) {
+        return visitJsNode(node, data);
+    }
+
+    default R visit(ASTGeneratorExpressionLoop node, P data) {
         return visitJsNode(node, data);
     }
 
@@ -160,6 +176,10 @@ public interface EcmascriptVisitor<P, R> extends AstVisitor<P, R> {
         return visitJsNode(node, data);
     }
 
+    default R visit(ASTScriptNode node, P data) {
+        return visitJsNode(node, data);
+    }
+
     default R visit(ASTStringLiteral node, P data) {
         return visitJsNode(node, data);
     }
@@ -172,6 +192,18 @@ public interface EcmascriptVisitor<P, R> extends AstVisitor<P, R> {
         return visitJsNode(node, data);
     }
 
+    default R visit(ASTTaggedTemplateLiteral node, P data) {
+        return visitJsNode(node, data);
+    }
+
+    default R visit(ASTTemplateCharacters node, P data) {
+        return visitJsNode(node, data);
+    }
+
+    default R visit(ASTTemplateLiteral node, P data) {
+        return visitJsNode(node, data);
+    }
+
     default R visit(ASTThrowStatement node, P data) {
         return visitJsNode(node, data);
     }
@@ -181,6 +213,10 @@ public interface EcmascriptVisitor<P, R> extends AstVisitor<P, R> {
     }
 
     default R visit(ASTUnaryExpression node, P data) {
+        return visitJsNode(node, data);
+    }
+
+    default R visit(ASTUpdateExpression node, P data) {
         return visitJsNode(node, data);
     }
 
@@ -204,7 +240,15 @@ public interface EcmascriptVisitor<P, R> extends AstVisitor<P, R> {
         return visitJsNode(node, data);
     }
 
+    default R visit(ASTXmlElemRef node, P data) {
+        return visitJsNode(node, data);
+    }
+
     default R visit(ASTXmlExpression node, P data) {
+        return visitJsNode(node, data);
+    }
+
+    default R visit(ASTXmlLiteral node, P data) {
         return visitJsNode(node, data);
     }
 
@@ -212,7 +256,15 @@ public interface EcmascriptVisitor<P, R> extends AstVisitor<P, R> {
         return visitJsNode(node, data);
     }
 
+    default R visit(ASTXmlPropRef node, P data) {
+        return visitJsNode(node, data);
+    }
+
     default R visit(ASTXmlString node, P data) {
+        return visitJsNode(node, data);
+    }
+
+    default R visit(ASTYield node, P data) {
         return visitJsNode(node, data);
     }
 }

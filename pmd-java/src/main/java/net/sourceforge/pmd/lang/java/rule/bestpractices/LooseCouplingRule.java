@@ -45,7 +45,8 @@ public class LooseCouplingRule extends AbstractJavaRulechainRule {
         if (isConcreteCollectionType(node)
             && !isInOverriddenMethodSignature(node)
             && !isInAllowedSyntacticCtx(node)
-            && !isAllowedType(node)) {
+            && !isAllowedType(node)
+            && !isTypeParameter(node)) {
             addViolation(data, node, node.getSimpleName());
         }
         return null;
@@ -86,5 +87,9 @@ public class LooseCouplingRule extends AbstractJavaRulechainRule {
             return ((ASTMethodDeclaration) ancestor).isOverridden();
         }
         return false;
+    }
+
+    private boolean isTypeParameter(ASTClassOrInterfaceType node) {
+        return node.getTypeMirror().isTypeVariable();
     }
 }

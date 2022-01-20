@@ -68,6 +68,18 @@ public class PMDCommandLineInterfaceTest {
     }
 
     @Test
+    public void testNoCacheSwitchLongOption() {
+        PMDParameters params = new PMDParameters();
+        String[] args = {"-d", "source_folder", "-f", "ideaj", "-R", "java-empty", "--cache", "/home/user/.pmd/cache", "--no-cache", };
+        PMDCommandLineInterface.extractParameters(params, args, "PMD");
+
+        assertTrue(params.isIgnoreIncrementalAnalysis());
+        PMDConfiguration config = params.toConfiguration();
+        assertTrue(config.isIgnoreIncrementalAnalysis());
+        assertTrue(config.getAnalysisCache() instanceof NoopAnalysisCache);
+    }
+
+    @Test
     public void testSetStatusCodeOrExitDoExit() {
         exit.expectSystemExitWithStatus(0);
 

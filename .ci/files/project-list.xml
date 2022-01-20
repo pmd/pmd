@@ -8,10 +8,11 @@ xsi:noNamespaceSchemaLocation="projectlist_1_1_0.xsd">
     <name>checkstyle</name>
     <type>git</type>
     <connection>https://github.com/checkstyle/checkstyle</connection>
-    <tag>checkstyle-8.10</tag>
+    <tag>checkstyle-9.1</tag>
 
     <exclude-pattern>.*/target/test-classes/com/puppycrawl/tools/checkstyle/.*</exclude-pattern>
     <exclude-pattern>.*/target/generated-sources/.*</exclude-pattern>
+    <exclude-pattern>.*/src/test/resources-noncompilable/com/puppycrawl/tools/checkstyle/javaparser/InputJavaParserNoFreezeOnDeeplyNestedLambdas.java</exclude-pattern>
 
     <build-command><![CDATA[#!/usr/bin/env bash
 if test -e classpath.txt; then
@@ -19,6 +20,10 @@ if test -e classpath.txt; then
 fi
 
 set -e
+
+# Make sure to use java11. This is already installed by build.sh
+export JAVA_HOME=${HOME}/openjdk11
+export PATH=$JAVA_HOME/bin:$PATH
 
 mvn test-compile -B
 mvn dependency:build-classpath -DincludeScope=test -Dmdep.outputFile=classpath.txt -B
@@ -30,7 +35,7 @@ mvn dependency:build-classpath -DincludeScope=test -Dmdep.outputFile=classpath.t
     <name>spring-framework</name>
     <type>git</type>
     <connection>https://github.com/spring-projects/spring-framework</connection>
-    <tag>v5.0.6.RELEASE</tag>
+    <tag>v5.3.13</tag>
 
     <exclude-pattern>.*/build/generated-sources/.*</exclude-pattern>
 
@@ -41,55 +46,95 @@ fi
 
 set -e
 
-# Note: openjdk8 will be installed by "before_install.sh"
-export JAVA_HOME=${HOME}/openjdk8
+# Make sure to use java11. This is already installed by build.sh
+export JAVA_HOME=${HOME}/openjdk11
 export PATH=$JAVA_HOME/bin:$PATH
 
+## Patches
 # keep the tabs!!
+# Patch 1: See https://github.com/spring-projects/spring-framework/commit/381b7d035a16d430b8783b7390c1677c9e7d1f68
+#          and https://github.com/spring-projects/spring-framework/commit/9e1ed6c7718d38c4b9fe5f75921abad33264307c
 (cat <<EOF
---- build.gradle	2020-11-14 09:43:51.705417551 +0000
-+++ build.gradle.patched	2020-11-14 09:43:27.265215303 +0000
-@@ -1,5 +1,6 @@
- buildscript {
- 	repositories {
-+		mavenCentral()
- 		maven { url "https://repo.spring.io/plugins-release" }
- 	}
- 	dependencies {
-@@ -138,6 +139,7 @@
- 	}
- 
- 	repositories {
-+		mavenCentral()
- 		maven { url "https://repo.spring.io/libs-release" }
+diff --git a/spring-beans/src/main/java/org/springframework/beans/factory/annotation/AutowiredAnnotationBeanPostProcessor.java b/spring-beans/src/main/java/org/springframework/beans/factory/annotation/AutowiredAnnotationBeanPostProcessor.java
+index 37f5884e67..53022443ee 100644
+--- a/spring-beans/src/main/java/org/springframework/beans/factory/annotation/AutowiredAnnotationBeanPostProcessor.java
++++ b/spring-beans/src/main/java/org/springframework/beans/factory/annotation/AutowiredAnnotationBeanPostProcessor.java
+@@ -539,7 +539,9 @@ public class AutowiredAnnotationBeanPostProcessor implements SmartInstantiationA
+ 	 */
+ 	@SuppressWarnings({"deprecation", "cast"})
+ 	protected boolean determineRequiredStatus(MergedAnnotation<?> ann) {
+-		return determineRequiredStatus(
++		// Cast to (AnnotationAttributes) is required. Otherwise, the :spring-beans:compileGroovy
++		// task fails in the Gradle build.
++		return determineRequiredStatus((AnnotationAttributes)
+ 				ann.asMap(mergedAnnotation -> new AnnotationAttributes(mergedAnnotation.getType())));
  	}
  
-@@ -314,3 +316,20 @@
+EOF
+) | patch --strip=1
+
+# Patch 2: Ignore compiler warnings
+(cat <<EOF
+diff --git a/buildSrc/src/main/java/org/springframework/build/compile/CompilerConventionsPlugin.java b/buildSrc/src/main/java/org/springframework/build/compile/CompilerConventionsPlugin.java
+index f2424c549e..b6ec8b04da 100644
+--- a/buildSrc/src/main/java/org/springframework/build/compile/CompilerConventionsPlugin.java
++++ b/buildSrc/src/main/java/org/springframework/build/compile/CompilerConventionsPlugin.java
+@@ -51,7 +51,7 @@ public class CompilerConventionsPlugin implements Plugin<Project> {
+ 		COMPILER_ARGS.addAll(commonCompilerArgs);
+ 		COMPILER_ARGS.addAll(Arrays.asList(
+ 				"-Xlint:varargs", "-Xlint:fallthrough", "-Xlint:rawtypes", "-Xlint:deprecation",
+-				"-Xlint:unchecked", "-Werror"
++				"-Xlint:unchecked"//, "-Werror"
+ 		));
+ 		TEST_COMPILER_ARGS = new ArrayList<>();
+ 		TEST_COMPILER_ARGS.addAll(commonCompilerArgs);
+diff --git a/spring-beans/spring-beans.gradle b/spring-beans/spring-beans.gradle
+index e3f6f73b76..48c4d9e3fb 100644
+--- a/spring-beans/spring-beans.gradle
++++ b/spring-beans/spring-beans.gradle
+@@ -23,7 +23,7 @@ sourceSets {
+ }
+ 
+ compileGroovy {
+-	options.compilerArgs += "-Werror"
++//	options.compilerArgs += "-Werror"
+ }
+ 
+ // This module also builds Kotlin code and the compileKotlin task naturally depends on
+EOF
+) | patch --strip=1
+
+# Patch 3: Add task createSquishClasspath
+(cat <<EOF
+diff --git a/build.gradle b/build.gradle
+index 6021fa574d..15d29ed699 100644
+--- a/build.gradle
++++ b/build.gradle
+@@ -431,3 +431,19 @@ configure(rootProject) {
+ 		}
  	}
- 	return version
  }
 +
++// see https://stackoverflow.com/questions/28986968/generate-classpath-from-all-multiproject-gradle-build-dependencies
 +task createSquishClasspath {
 +  doLast {
-+    def dependencies = new HashSet()
-+    dependencies.addAll(subprojects.configurations.compile.resolvedConfiguration.resolvedArtifacts.file.flatten())
-+    dependencies.addAll(subprojects.configurations.optional.resolvedConfiguration.resolvedArtifacts.file.flatten())
-+    dependencies.addAll(subprojects.configurations.testCompile.resolvedConfiguration.resolvedArtifacts.file.flatten())
-+    dependencies.addAll(subprojects.configurations.testRuntime.resolvedConfiguration.resolvedArtifacts.file.flatten())
++    def dependencies = new LinkedHashSet()
++    dependencies.addAll(moduleProjects.configurations.compileClasspath.resolvedConfiguration.resolvedArtifacts.file.flatten())
++    dependencies.addAll(moduleProjects.configurations.testCompileClasspath.resolvedConfiguration.resolvedArtifacts.file.flatten())
 +
 +    def paths = new ArrayList()
-+    paths.addAll(subprojects.jar.outputs.files.asPath)
-+    paths.addAll(subprojects.sourceSets.test.output.resourcesDir)
-+    paths.addAll(subprojects.sourceSets.test.output.classesDirs.files.flatten())
++    paths.addAll(moduleProjects.jar.outputs.files.asPath)
++    paths.addAll(moduleProjects.sourceSets.test.output.resourcesDir)
++    paths.addAll(moduleProjects.sourceSets.test.output.classesDirs.files.flatten())
 +    paths.addAll(dependencies)
 +    println paths.join(File.pathSeparator)
 +  }
 +}
 EOF
-) | patch
+) | patch --strip=1
 
-./gradlew build testClasses -x javadoc -x dokka -x asciidoctor -x test -x testNG -x api -x distZip
-./gradlew createSquishClasspath -q > classpath.txt
+./gradlew --console=plain --build-cache --no-daemon --max-workers=4 build testClasses -x test -x javadoc -x api -x asciidoctor -x asciidoctorPdf
+./gradlew --console=plain --build-cache --no-daemon --max-workers=4 createSquishClasspath -q > classpath.txt
 ]]></build-command>
     <auxclasspath-command>cat classpath.txt</auxclasspath-command>
   </project>

@@ -18,6 +18,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Level;
@@ -507,7 +508,17 @@ public class PMD {
      */
     public static StatusCode runPmd(String... args) {
         PmdParametersParseResult parseResult = PmdParametersParseResult.extractParameters(args);
-        if (parseResult.isHelp()) {
+
+        if (!parseResult.getDeprecatedOptionsUsed().isEmpty()) {
+            Entry<String, String> first = parseResult.getDeprecatedOptionsUsed().entrySet().iterator().next();
+            LOG.warning("Some deprecated options were used on the command-line, including " + first.getKey());
+            LOG.warning("Consider replacing it with " + first.getValue());
+        }
+
+        if (parseResult.isVersion()) {
+            System.out.println("PMD " + PMDVersion.VERSION);
+            return StatusCode.OK;
+        } else if (parseResult.isHelp()) {
             PMDCommandLineInterface.printJcommanderUsageOnConsole();
             System.out.println(PMDCommandLineInterface.buildUsageText());
             return StatusCode.OK;
