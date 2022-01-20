@@ -4763,14 +4763,15 @@ inadvertent NullPointerExceptions.</p>
 <p>See Effective Java, 3rd Edition, Item 54: Return empty collections or arrays instead of null</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
-<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">MethodDeclaration</span><span class="w">
-</span><span class="p">[</span><span class="w">
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">ReturnStatement</span><span class="o">/</span><span class="nt">Expression</span><span class="o">/</span><span class="nt">PrimaryExpression</span><span class="o">/</span><span class="nt">PrimaryPrefix</span><span class="o">/</span><span class="nt">Literal</span><span class="o">/</span><span class="nt">NullLiteral</span><span class="w">
+</span><span class="p">[</span><span class="kn">ancestor::</span><span class="nt">MethodDeclaration</span><span class="p">[</span><span class="m">1</span><span class="p">]</span><span class="w">
+  </span><span class="p">[</span><span class="w">
     </span><span class="p">(.</span><span class="o">/</span><span class="nt">ResultType</span><span class="o">/</span><span class="nt">Type</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.util.Collection'</span><span class="p">)</span><span class="w">
     </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.util.Map'</span><span class="p">)</span><span class="w">
     </span><span class="ow">or</span><span class="w"> </span><span class="na">@ArrayType</span><span class="err">=</span><span class="nf">true</span><span class="p">()])</span><span class="w">
+  </span><span class="p">]</span><span class="w">
 </span><span class="p">]</span><span class="w">
-</span><span class="o">//</span><span class="nt">ReturnStatement</span><span class="o">/</span><span class="nt">Expression</span><span class="o">/</span><span class="nt">PrimaryExpression</span><span class="o">/</span><span class="nt">PrimaryPrefix</span><span class="o">/</span><span class="nt">Literal</span><span class="o">/</span><span class="nt">NullLiteral</span><span class="w">
-</span><span class="p">[</span><span class="ow">not</span><span class="p">(.</span><span class="o">/</span><span class="kn">ancestor::</span><span class="nt">StatementExpression</span><span class="p">)]</span><span class="w">
+</span><span class="p">[</span><span class="ow">not</span><span class="p">(.</span><span class="o">/</span><span class="kn">ancestor::</span><span class="nt">LambdaExpression</span><span class="p">)]</span><span class="w">
 </span></code></pre></div></div>
 
 <p><strong>Example(s):</strong></p>

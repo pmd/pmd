@@ -2536,12 +2536,18 @@ in each object at runtime.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">FieldDeclaration</span><span class="w">
- </span><span class="p">[</span><span class="na">@Final</span><span class="err">=</span><span class="w"> </span><span class="nf">true</span><span class="p">()</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="na">@Static</span><span class="err">=</span><span class="w"> </span><span class="nf">false</span><span class="p">()]</span><span class="w">
+ </span><span class="p">[</span><span class="na">@Final</span><span class="err">=</span><span class="nf">true</span><span class="p">()</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="na">@Static</span><span class="err">=</span><span class="nf">false</span><span class="p">()]</span><span class="w">
  </span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="kn">preceding-sibling::</span><span class="nt">Annotation</span><span class="o">/</span><span class="nt">MarkerAnnotation</span><span class="o">/</span><span class="nt">Name</span><span class="p">[</span><span class="na">@Image</span><span class="err">=</span><span class="s2">"Builder.Default"</span><span class="p">]</span><span class="w">
     </span><span class="ow">and</span><span class="w"> </span><span class="o">//</span><span class="nt">ImportDeclaration</span><span class="o">/</span><span class="nt">Name</span><span class="p">[</span><span class="na">@Image</span><span class="err">=</span><span class="s2">"lombok.Builder"</span><span class="p">])]</span><span class="w">
 </span><span class="o">/</span><span class="nt">VariableDeclarator</span><span class="w">
  </span><span class="p">[</span><span class="nt">VariableInitializer</span><span class="o">/</span><span class="nt">Expression</span><span class="o">/</span><span class="nt">PrimaryExpression</span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="nt">PrimarySuffix</span><span class="p">)]</span><span class="w">
-  </span><span class="o">/</span><span class="nt">PrimaryPrefix</span><span class="err">/</span><span class="o">*</span><span class="p">[</span><span class="kn">self::</span><span class="nt">Literal</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="kn">self::</span><span class="nt">Name</span><span class="p">]</span><span class="w">
+  </span><span class="o">/</span><span class="nt">PrimaryPrefix</span><span class="err">/</span><span class="o">*</span><span class="w">
+    </span><span class="p">[</span><span class="w">
+        </span><span class="kn">self::</span><span class="nf">Literal</span><span class="w"> </span><span class="c">(: literal :)</span><span class="w">
+        </span><span class="ow">or</span><span class="w">
+        </span><span class="c">(: another static field :)</span><span class="w">
+        </span><span class="kn">self::</span><span class="nt">Name</span><span class="p">[</span><span class="na">@Image</span><span class="err">=</span><span class="o">//</span><span class="nt">FieldDeclaration</span><span class="p">[</span><span class="na">@Static</span><span class="err">=</span><span class="nf">true</span><span class="p">()]</span><span class="o">/</span><span class="nt">VariableDeclarator</span><span class="err">/</span><span class="na">@Name</span><span class="p">]</span><span class="w">
+    </span><span class="p">]</span><span class="w">
  </span><span class="p">]</span><span class="w">
 </span><span class="o">/</span><span class="nt">VariableDeclaratorId</span><span class="w">
 </span></code></pre></div></div>

@@ -1500,11 +1500,14 @@ It allows you to enforce ApexDoc comments for classes and methods without requir
       <li><a href="https://github.com/pmd/pmd/issues/3644">#3644</a>: [java] InvalidLogMessageFormat: false positives with logstash structured logging</li>
       <li><a href="https://github.com/pmd/pmd/issues/3686">#3686</a>: [java] ReturnEmptyCollectionRatherThanNull - false negative with conditioned returns</li>
       <li><a href="https://github.com/pmd/pmd/issues/3701">#3701</a>: [java] MissingStaticMethodInNonInstantiatableClass false positive with method inner classes</li>
+      <li><a href="https://github.com/pmd/pmd/issues/3721">#3721</a>: [java] ReturnEmptyCollectionRatherThanNull - false positive with stream and lambda</li>
     </ul>
   </li>
   <li>java-performance
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/3492">#3492</a>: [java] UselessStringValueOf: False positive when there is no initial String to append to</li>
+      <li><a href="https://github.com/pmd/pmd/issues/3639">#3639</a>: [java] UseStringBufferLength: false negative with empty string variable</li>
+      <li><a href="https://github.com/pmd/pmd/issues/3712">#3712</a>: [java] InsufficientStringBufferDeclaration false positive with StringBuilder.setLength(0)</li>
     </ul>
   </li>
   <li>javascript
@@ -1527,9 +1530,11 @@ It allows you to enforce ApexDoc comments for classes and methods without requir
   <li><a href="https://github.com/pmd/pmd/pull/3713">#3713</a>: [java] Enhance UnnecessaryModifier to support records - <a href="https://github.com/vgalloy">Vincent Galloy</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/3719">#3719</a>: [java] Upgrade log4j to 2.17.1 - <a href="https://github.com/squaresurf">Daniel Paul Searles</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/3720">#3720</a>: [java] New rule: FinalParameterInAbstractMethod - <a href="https://github.com/vgalloy">Vincent Galloy</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/3724">#3724</a>: [java] Fix for #3686 - fix FinalFieldCouldBeStatic - <a href="https://github.com/dykov">Oleksii Dykov</a></li>
+  <li><a href="https://github.com/pmd/pmd/pull/3724">#3724</a>: [java] Fix for #3679 - fix FinalFieldCouldBeStatic - <a href="https://github.com/dykov">Oleksii Dykov</a></li>
+  <li><a href="https://github.com/pmd/pmd/pull/3727">#3727</a>: [java] #3724 - fix FinalFieldCouldBeStatic: triggers only if the referenced name is static - <a href="https://github.com/dykov">Oleksii Dykov</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/3742">#3742</a>: [java] Fix #3701 - fix MissingStaticMethodInNonInstantiatableClass for method local classes - <a href="https://github.com/dykov">Oleksii Dykov</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/3744">#3744</a>: [core] Updated SaxonXPathRuleQueryTest.java - <a href="https://github.com/Vyom-Yadav">Vyom Yadav</a></li>
+  <li><a href="https://github.com/pmd/pmd/pull/3745">#3745</a>: [java] Fix #3712: InsufficientStringBufferDeclaration setLength false positive - <a href="https://github.com/gredler">Daniel Gredler</a></li>
 </ul>
 
 
