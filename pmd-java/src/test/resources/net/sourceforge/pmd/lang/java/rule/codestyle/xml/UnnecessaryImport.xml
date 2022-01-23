@@ -751,22 +751,97 @@ class NPEImport {}
     </test-code>
 
     <test-code>
-        <description>[java] DuplicateImports reported for the same import... and import static... #2546</description>
+        <description>[java]  similar imports static/nonstatic with method #2546</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>4</expected-linenumbers>
+        <expected-linenumbers>2</expected-linenumbers>
         <expected-messages>
-            <message>Unused import 'java.util.Collections.*'</message>
+            <message>Unused import 'net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryimport.NonStaticContainer.*'</message>
         </expected-messages>
         <code><![CDATA[
-            // See
-            // https://github.com/pmd/pmd/issues/2546#issuecomment-1019531092
-            // the first import is unused, even though both imports are not duplicates.
-            import java.util.Collections.*;
-            import static java.util.Collections.*;
+            // imports NonStatic -- unused
+            import net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryimport.NonStaticContainer.*;
+            // imports foo -- used
+            import static net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryimport.NonStaticContainer.*;
 
             public class DuplicateImports {
                 static {
-                    emptyList();
+                    foo();
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>[java] #2546 -- similar imports static/nonstatic - static is used</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <expected-messages>
+            <message>Unused import 'net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryimport.NonStaticContainer.*'</message>
+        </expected-messages>
+        <code><![CDATA[
+            // imports NonStatic -- unused
+            import net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryimport.NonStaticContainer.*;
+            // imports Static
+            import static net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryimport.NonStaticContainer.*;
+
+            public class DuplicateImports {
+                static {
+                    Static b;
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>[java] #2546 -- similar imports static/nonstatic - static is unused</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <expected-messages>
+            <message>Unused static import 'net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryimport.NonStaticContainer.*'</message>
+        </expected-messages>
+        <code><![CDATA[
+            // imports NonStatic
+            import net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryimport.NonStaticContainer.*;
+            // imports Static -- unused
+            import static net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryimport.NonStaticContainer.*;
+
+            public class DuplicateImports {
+                static {
+                    NonStatic b;
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>[java] #2546 -- similar imports static/nonstatic - both are used</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            // imports NonStatic
+            import net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryimport.NonStaticContainer.*;
+            // imports Static
+            import static net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryimport.NonStaticContainer.*;
+
+            public class DuplicateImports {
+                static {
+                    // both are used
+                    NonStatic a;
+                    Static b;
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>[java] #2546 -- similar imports static/nonstatic - both are used (method)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            // imports NonStatic
+            import net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryimport.NonStaticContainer.*;
+            // imports foo()
+            import static net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryimport.NonStaticContainer.*;
+
+            public class DuplicateImports {
+                static {
+                    // both are used
+                    NonStatic a;
+                    foo();
                 }
             }
             ]]></code>

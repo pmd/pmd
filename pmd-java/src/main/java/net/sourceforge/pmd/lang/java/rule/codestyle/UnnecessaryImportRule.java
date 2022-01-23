@@ -53,6 +53,7 @@ import net.sourceforge.pmd.util.CollectionUtil;
 public class UnnecessaryImportRule extends AbstractJavaRule {
 
     private static final String UNUSED_IMPORT_MESSAGE = "Unused import ''{0}''";
+    private static final String UNUSED_STATIC_IMPORT_MESSAGE = "Unused static import ''{0}''";
     private static final String DUPLICATE_IMPORT_MESSAGE = "Duplicate import ''{0}''";
     private static final String IMPORT_FROM_SAME_PACKAGE_MESSAGE = "Unnecessary import from the current package ''{0}''";
     private static final String IMPORT_FROM_JAVA_LANG_MESSAGE = "Unnecessary import from the java.lang package ''{0}''";
@@ -122,10 +123,12 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
 
     private void doReporting(Object data) {
         for (ImportWrapper wrapper : allSingleNameImports) {
-            reportWithMessage(wrapper.node, data, UNUSED_IMPORT_MESSAGE);
+            String message = wrapper.isStatic() ? UNUSED_STATIC_IMPORT_MESSAGE : UNUSED_IMPORT_MESSAGE;
+            reportWithMessage(wrapper.node, data, message);
         }
         for (ImportWrapper wrapper : allImportsOnDemand) {
-            reportWithMessage(wrapper.node, data, UNUSED_IMPORT_MESSAGE);
+            String message = wrapper.isStatic() ? UNUSED_STATIC_IMPORT_MESSAGE : UNUSED_IMPORT_MESSAGE;
+            reportWithMessage(wrapper.node, data, message);
         }
 
         // remove unused ones, they have already been reported
@@ -286,14 +289,14 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
                 if (scopeIter.getScopeTag() == ScopeInfo.SINGLE_IMPORT) {
 
                     allSingleNameImports.removeIf(
-                        it -> (it.node.isStatic() || !onlyStatic)
+                        it -> (it.isStatic() || !onlyStatic)
                             && symbol.getSimpleName().equals(it.node.getImportedSimpleName())
                     );
 
                 } else if (scopeIter.getScopeTag() == ScopeInfo.IMPORT_ON_DEMAND) {
 
                     allImportsOnDemand.removeIf(it -> {
-                        if (!it.node.isStatic() && onlyStatic) {
+                        if (!it.isStatic() && onlyStatic) {
                             return false;
                         }
                         // This is the class that contains the symbol 
@@ -307,7 +310,7 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
                         } else {
                             if (it.node.getImportedName().equals(symbolOwner.getCanonicalName())) {
                                 // importing the container directly
-                                return true;
+                                return it.isStatic() == symbol.isStatic();
                             }
                             // maybe we're importing a subclass of the container.
                             TypeSystem ts = symbolOwner.getTypeSystem();
@@ -357,7 +360,7 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
             ImportWrapper that = (ImportWrapper) o;
             return node.getImportedName().equals(that.node.getImportedName())
                 && node.isImportOnDemand() == that.node.isImportOnDemand()
-                && node.isStatic() == that.node.isStatic();
+                && this.isStatic() == that.isStatic();
         }
 
         @Override
@@ -365,6 +368,10 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
             return node.getImportedName().hashCode() * 31
                 + Boolean.hashCode(node.isStatic())
                 + 37 * Boolean.hashCode(node.isImportOnDemand());
+        }
+
+        private boolean isStatic() {
+            return this.node.isStatic();
         }
     }
 }
