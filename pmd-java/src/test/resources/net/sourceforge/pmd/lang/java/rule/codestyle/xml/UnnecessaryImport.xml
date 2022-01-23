@@ -753,8 +753,14 @@ class NPEImport {}
     <test-code>
         <description>[java] DuplicateImports reported for the same import... and import static... #2546</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>1</expected-linenumbers>
+        <expected-linenumbers>4</expected-linenumbers>
+        <expected-messages>
+            <message>Unused import 'java.util.Collections.*'</message>
+        </expected-messages>
         <code><![CDATA[
+            // See
+            // https://github.com/pmd/pmd/issues/2546#issuecomment-1019531092
+            // the first import is unused, even though both imports are not duplicates.
             import java.util.Collections.*;
             import static java.util.Collections.*;
 
@@ -840,7 +846,7 @@ class NPEImport {}
             package net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryimport.javalang;
 
             import java.lang.String;
-            public class Foo { 
+            public class Foo {
                 String foo;
             }
             ]]></code>
@@ -959,6 +965,27 @@ import net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryimport.package2.*
 public class U {
     private void g() {
         String k = C.V;
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>static import of a type</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryimport;
+
+import static net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryimport.ConcFlow.Subscriber;
+import net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryimport.ConcFlow.Publisher;
+import static net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryimport.ConcFlow.Subscription;
+
+/**
+ * {@link Flow.Subscription#request(long) request}
+ * {@link Flow.Subscription}
+ */
+public class SubmissionPublisher<T> implements Publisher<T> {
+    static final class ConsumerSubscriber<T> implements Subscriber<T> {
+        Subscription subscription;
     }
 }
         ]]></code>

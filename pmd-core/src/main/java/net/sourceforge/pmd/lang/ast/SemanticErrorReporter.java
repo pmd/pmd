@@ -73,7 +73,7 @@ public interface SemanticErrorReporter {
             private boolean hasError = false;
 
             private String locPrefix(Node loc) {
-                return "[" + loc.getBeginLine() + "," + loc.getBeginColumn() + "] ";
+                return "at " + loc.getAstInfo().getFileName() + " :" + loc.getBeginLine() + ":" + loc.getBeginColumn() + ": ";
             }
 
             private String makeMessage(Node location, String message, Object[] args) {

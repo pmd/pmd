@@ -58,8 +58,8 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
     private static final String IMPORT_FROM_JAVA_LANG_MESSAGE = "Unnecessary import from the java.lang package ''{0}''";
 
     private final Set<ImportWrapper> staticImports = new HashSet<>();
-    private final Set<ImportWrapper> singleImports = new HashSet<>();
-    private final Set<ImportWrapper> importsOnDemand = new HashSet<>();
+    private final Set<ImportWrapper> allSingleNameImports = new HashSet<>();
+    private final Set<ImportWrapper> allImportsOnDemand = new HashSet<>();
     private final Set<ImportWrapper> staticImportsOnDemand = new HashSet<>();
     private final Set<ImportWrapper> unnecessaryJavaLangImports = new HashSet<>();
     private final Set<ImportWrapper> unnecessaryImportsFromSamePackage = new HashSet<>();
@@ -91,10 +91,10 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTCompilationUnit node, Object data) {
-        this.singleImports.clear();
+        this.allSingleNameImports.clear();
         this.staticImports.clear();
         this.staticImportsOnDemand.clear();
-        this.importsOnDemand.clear();
+        this.allImportsOnDemand.clear();
         this.unnecessaryJavaLangImports.clear();
         this.unnecessaryImportsFromSamePackage.clear();
         String packageName = node.getPackageName();
@@ -103,7 +103,7 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
             visitImport(importDecl, data, packageName);
         }
 
-        for (ImportWrapper wrapper : singleImports) {
+        for (ImportWrapper wrapper : allSingleNameImports) {
             if ("java.lang".equals(wrapper.node.getPackageName())) {
                 if (!isJavaLangImportNecessary(node, wrapper)) {
                     // the import is not shadowing something
@@ -121,25 +121,18 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
     }
 
     private void doReporting(Object data) {
-        for (ImportWrapper wrapper : singleImports) {
+        for (ImportWrapper wrapper : allSingleNameImports) {
             reportWithMessage(wrapper.node, data, UNUSED_IMPORT_MESSAGE);
         }
-
-        for (ImportWrapper wrapper : staticImports) {
-            reportWithMessage(wrapper.node, data, UNUSED_IMPORT_MESSAGE);
-        }
-        for (ImportWrapper wrapper : staticImportsOnDemand) {
-            reportWithMessage(wrapper.node, data, UNUSED_IMPORT_MESSAGE);
-        }
-        for (ImportWrapper wrapper : importsOnDemand) {
+        for (ImportWrapper wrapper : allImportsOnDemand) {
             reportWithMessage(wrapper.node, data, UNUSED_IMPORT_MESSAGE);
         }
 
         // remove unused ones, they have already been reported
-        unnecessaryJavaLangImports.removeAll(singleImports);
-        unnecessaryJavaLangImports.removeAll(importsOnDemand);
-        unnecessaryImportsFromSamePackage.removeAll(singleImports);
-        unnecessaryImportsFromSamePackage.removeAll(importsOnDemand);
+        unnecessaryJavaLangImports.removeAll(allSingleNameImports);
+        unnecessaryJavaLangImports.removeAll(allImportsOnDemand);
+        unnecessaryImportsFromSamePackage.removeAll(allSingleNameImports);
+        unnecessaryImportsFromSamePackage.removeAll(allImportsOnDemand);
         for (ImportWrapper wrapper : unnecessaryJavaLangImports) {
             reportWithMessage(wrapper.node, data, IMPORT_FROM_JAVA_LANG_MESSAGE);
         }
@@ -188,7 +181,7 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
                         }
                     }
 
-                    if (singleImports.isEmpty()) {
+                    if (allSingleNameImports.isEmpty()) {
                         return;
                     }
                 }
@@ -202,14 +195,19 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
         }
 
         Set<ImportWrapper> container =
-              node.isStatic() && node.isImportOnDemand() ? staticImportsOnDemand
-            : node.isStatic() ? staticImports
-            : node.isImportOnDemand() ? importsOnDemand
-            : singleImports;
+            node.isImportOnDemand() ? allImportsOnDemand
+                                    : allSingleNameImports;
+
 
         if (!container.add(new ImportWrapper(node))) {
             // duplicate
             reportWithMessage(node, data, DUPLICATE_IMPORT_MESSAGE);
+        }
+
+        if (node.isStatic()) {
+            container = node.isImportOnDemand() ? staticImportsOnDemand
+                                                : staticImports;
+            container.add(new ImportWrapper(node));
         }
     }
 
@@ -276,7 +274,7 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
                                      JAccessibleElementSymbol symbol,
                                      ShadowChainIterator<T, ScopeInfo> scopeIter,
                                      Predicate<List<T>> containsTarget,
-                                     boolean isStatic) {
+                                     boolean onlyStatic) {
         while (scopeIter.hasNext()) {
             scopeIter.next();
             // must be the first result
@@ -286,13 +284,18 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
                 // If it's an import, then it's used. However, maybe it's from java.lang.
 
                 if (scopeIter.getScopeTag() == ScopeInfo.SINGLE_IMPORT) {
-                    Set<ImportWrapper> container = isStatic ? staticImports : singleImports;
-                    container.removeIf(it -> symbol.getSimpleName().equals(it.node.getImportedSimpleName()));
+
+                    allSingleNameImports.removeIf(
+                        it -> (it.node.isStatic() || !onlyStatic)
+                            && symbol.getSimpleName().equals(it.node.getImportedSimpleName())
+                    );
 
                 } else if (scopeIter.getScopeTag() == ScopeInfo.IMPORT_ON_DEMAND) {
 
-                    Set<ImportWrapper> container = isStatic ? staticImportsOnDemand : importsOnDemand;
-                    container.removeIf(it -> {
+                    allImportsOnDemand.removeIf(it -> {
+                        if (!it.node.isStatic() && onlyStatic) {
+                            return false;
+                        }
                         // This is the class that contains the symbol 
                         // we're looking for.
                         // We have to test whether this symbol is contained
@@ -331,7 +334,7 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
     /** We found a reference to the type given by the name. */
     private void removeReferenceSingleImport(String referenceName) {
         String expectedImport = StringUtils.substringBefore(referenceName, ".");
-        singleImports.removeIf(it -> expectedImport.equals(it.node.getImportedSimpleName()));
+        allSingleNameImports.removeIf(it -> expectedImport.equals(it.node.getImportedSimpleName()));
     }
 
     /** Override the equal behaviour of ASTImportDeclaration to put it into a set. */
@@ -353,12 +356,15 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
             }
             ImportWrapper that = (ImportWrapper) o;
             return node.getImportedName().equals(that.node.getImportedName())
-                && node.isImportOnDemand() == that.node.isImportOnDemand();
+                && node.isImportOnDemand() == that.node.isImportOnDemand()
+                && node.isStatic() == that.node.isStatic();
         }
 
         @Override
         public int hashCode() {
-            return node.getImportedName().hashCode() * 31 + Boolean.hashCode(node.isImportOnDemand());
+            return node.getImportedName().hashCode() * 31
+                + Boolean.hashCode(node.isStatic())
+                + 37 * Boolean.hashCode(node.isImportOnDemand());
         }
     }
 }
