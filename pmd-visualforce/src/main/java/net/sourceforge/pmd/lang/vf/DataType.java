@@ -121,7 +121,7 @@ public enum DataType {
         this(requiresEscaping, null);
     }
 
-    DataType(boolean requiresEscaping, BasicType...basicTypes) {
+    DataType(boolean requiresEscaping, BasicType... basicTypes) {
         this.requiresEscaping = requiresEscaping;
         this.basicTypes = new HashSet<>();
         if (basicTypes != null) {

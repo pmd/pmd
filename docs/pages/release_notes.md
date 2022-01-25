@@ -82,6 +82,7 @@ not support all features of the latest EcmaScript standard.
 *   [#3742](https://github.com/pmd/pmd/pull/3742): \[java] Fix #3701 - fix MissingStaticMethodInNonInstantiatableClass for method local classes - [Oleksii Dykov](https://github.com/dykov)
 *   [#3744](https://github.com/pmd/pmd/pull/3744): \[core] Updated SaxonXPathRuleQueryTest.java - [Vyom Yadav](https://github.com/Vyom-Yadav)
 *   [#3745](https://github.com/pmd/pmd/pull/3745): \[java] Fix #3712: InsufficientStringBufferDeclaration setLength false positive - [Daniel Gredler](https://github.com/gredler)
+*   [#3747](https://github.com/pmd/pmd/pull/3747): \[visualforce] Updated DataType.java - [Vyom Yadav](https://github.com/Vyom-Yadav)
 
 {% endtocmaker %}
 
