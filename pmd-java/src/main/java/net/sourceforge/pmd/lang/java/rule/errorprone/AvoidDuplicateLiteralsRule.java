@@ -9,23 +9,24 @@ import static net.sourceforge.pmd.properties.PropertyFactory.intProperty;
 import static net.sourceforge.pmd.properties.PropertyFactory.stringListProperty;
 import static net.sourceforge.pmd.properties.constraints.NumericConstraints.positive;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
+import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
-import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
-import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
-import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.ast.ASTStringLiteral;
+import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 
-@SuppressWarnings("PMD")
-public class AvoidDuplicateLiteralsRule extends AbstractJavaRule {
+public class AvoidDuplicateLiteralsRule extends AbstractJavaRulechainRule {
 
     public static final PropertyDescriptor<Integer> THRESHOLD_DESCRIPTOR
             = intProperty("maxDuplicateLiterals")
@@ -47,11 +48,12 @@ public class AvoidDuplicateLiteralsRule extends AbstractJavaRule {
                          .delim(',')
                          .build();
 
-    private Map<String, List<ASTLiteral>> literals = new HashMap<>();
+    private Map<String, SortedSet<ASTStringLiteral>> literals = new HashMap<>();
     private Set<String> exceptions = new HashSet<>();
     private int minLength;
 
     public AvoidDuplicateLiteralsRule() {
+        super(ASTStringLiteral.class);
         definePropertyDescriptor(THRESHOLD_DESCRIPTOR);
         definePropertyDescriptor(MINIMUM_LENGTH_DESCRIPTOR);
         definePropertyDescriptor(SKIP_ANNOTATIONS_DESCRIPTOR);
@@ -59,7 +61,9 @@ public class AvoidDuplicateLiteralsRule extends AbstractJavaRule {
     }
 
     @Override
-    public Object visit(ASTCompilationUnit node, Object data) {
+    public void start(RuleContext ctx) {
+        super.start(ctx);
+
         literals.clear();
 
         if (getProperty(EXCEPTION_LIST_DESCRIPTOR) != null) {
@@ -68,34 +72,31 @@ public class AvoidDuplicateLiteralsRule extends AbstractJavaRule {
 
         minLength = 2 + getProperty(MINIMUM_LENGTH_DESCRIPTOR);
 
-        super.visit(node, data);
+    }
 
-        processResults(data);
-
-        return data;
+    @Override
+    public void end(RuleContext ctx) {
+        processResults(ctx);
+        super.end(ctx);
     }
 
     private void processResults(Object data) {
 
         int threshold = getProperty(THRESHOLD_DESCRIPTOR);
 
-        for (Map.Entry<String, List<ASTLiteral>> entry : literals.entrySet()) {
-            List<ASTLiteral> occurrences = entry.getValue();
+        for (Map.Entry<String, SortedSet<ASTStringLiteral>> entry : literals.entrySet()) {
+            SortedSet<ASTStringLiteral> occurrences = entry.getValue();
             if (occurrences.size() >= threshold) {
-                ASTLiteral first = occurrences.get(0);
-                //  FIXME - REVERT ME
-                //                String rawImage = first.getEscapedStringLiteral();
-                //                Object[] args = {rawImage, occurrences.size(), first.getBeginLine(), };
-                //                addViolation(data, first, args);
+                ASTStringLiteral first = occurrences.first();
+                String rawImage = first.getImage();
+                Object[] args = {rawImage, occurrences.size(), first.getBeginLine(), };
+                addViolation(data, first, args);
             }
         }
     }
 
     @Override
-    public Object visit(ASTLiteral node, Object data) {
-        if (!node.isStringLiteral()) {
-            return data;
-        }
+    public Object visit(ASTStringLiteral node, Object data) {
         String image = node.getImage();
 
         // just catching strings of 'minLength' chars or more (including the
@@ -110,18 +111,14 @@ public class AvoidDuplicateLiteralsRule extends AbstractJavaRule {
         }
 
         // Skip literals in annotations
-        if (getProperty(SKIP_ANNOTATIONS_DESCRIPTOR) && node.getFirstParentOfType(ASTAnnotation.class) != null) {
+        if (getProperty(SKIP_ANNOTATIONS_DESCRIPTOR) && node.ancestors(ASTAnnotation.class).nonEmpty()) {
             return data;
         }
 
-        if (literals.containsKey(image)) {
-            List<ASTLiteral> occurrences = literals.get(image);
-            occurrences.add(node);
-        } else {
-            List<ASTLiteral> occurrences = new ArrayList<>();
-            occurrences.add(node);
-            literals.put(image, occurrences);
-        }
+        // This is a rulechain rule - the nodes might be visited out of order. Therefore sort the occurrences.
+        SortedSet<ASTStringLiteral> occurrences = literals.computeIfAbsent(image,
+                key -> new TreeSet<>(Node.COORDS_COMPARATOR));
+        occurrences.add(node);
 
         return data;
     }
