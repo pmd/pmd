@@ -11,11 +11,7 @@ import org.mozilla.javascript.ast.UnaryExpression;
 public final class ASTUnaryExpression extends AbstractEcmascriptNode<UnaryExpression> {
     ASTUnaryExpression(UnaryExpression unaryExpression) {
         super(unaryExpression);
-        if (unaryExpression.getOperator() == Token.VOID) {
-            super.setImage("void");
-        } else {
-            super.setImage(AstRoot.operatorToString(unaryExpression.getOperator()));
-        }
+        super.setImage(AstRoot.operatorToString(unaryExpression.getOperator()));
     }
 
     @Override
@@ -28,10 +24,10 @@ public final class ASTUnaryExpression extends AbstractEcmascriptNode<UnaryExpres
     }
 
     public boolean isPrefix() {
-        return node.isPrefix();
+        return !isPostfix();
     }
 
     public boolean isPostfix() {
-        return node.isPostfix();
+        return node.getOperator() == Token.INC || node.getOperator() == Token.DEC;
     }
 }

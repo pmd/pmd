@@ -370,7 +370,8 @@ public final class JavaRuleUtil {
         ASTAnyTypeDeclaration enclosing = node.getEnclosingType();
         if (startsWithCamelCaseWord(node.getName(), "get")) {
             return hasField(enclosing, node.getName().substring(3));
-        } else if (startsWithCamelCaseWord(node.getName(), "is")) {
+        } else if (startsWithCamelCaseWord(node.getName(), "is")
+                && TypeTestUtil.isA(boolean.class, node.getResultTypeNode())) {
             return hasField(enclosing, node.getName().substring(2));
         }
 
@@ -655,6 +656,10 @@ public final class JavaRuleUtil {
             lastKind = o1.kind;
         }
         return !thatIt.hasNext();
+    }
+
+    public static boolean isNullLiteral(ASTExpression node) {
+        return node instanceof ASTNullLiteral;
     }
 
     public static boolean isBooleanLiteral(ASTExpression e) {

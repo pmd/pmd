@@ -189,7 +189,7 @@ for (int i = 0; i < 10; i++) {
           language="java"
           since="3.0"
           message="Avoid calling finalize() explicitly"
-          class="net.sourceforge.pmd.lang.java.rule.errorprone.AvoidCallingFinalizeRule"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#avoidcallingfinalize">
         <description>
 The method Object.finalize() is called by the garbage collector on an object when garbage collection determines
@@ -198,6 +198,17 @@ that there are no more references to the object. It should not be invoked by app
 Note that Oracle has declared Object.finalize() as deprecated since JDK 9.
         </description>
         <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//MethodCall[pmd-java:matchesSig("java.lang.Object#finalize()")]
+    (: it's ok inside finalize :)
+    [not(SuperExpression and ancestor::*[self::MethodDeclaration or self::Initializer][1][@Name = 'finalize'][@Arity = 0][VoidType])]
+]]>
+                </value>
+            </property>
+        </properties>
         <example>
 <![CDATA[
 void foo() {
@@ -563,17 +574,12 @@ only add to code size.  Either remove the invocation, or use the return result.
             <property name="xpath">
                 <value>
 <![CDATA[
-//CatchStatement/Block/BlockStatement/Statement/StatementExpression/PrimaryExpression/PrimaryPrefix/Name
-[
-   @Image = concat(../../../../../../../FormalParameter/VariableDeclaratorId/@Name, '.getMessage')
-   or
-   @Image = concat(../../../../../../../FormalParameter/VariableDeclaratorId/@Name, '.getLocalizedMessage')
-   or
-   @Image = concat(../../../../../../../FormalParameter/VariableDeclaratorId/@Name, '.getCause')
-   or
-   @Image = concat(../../../../../../../FormalParameter/VariableDeclaratorId/@Name, '.getStackTrace')
-   or
-   @Image = concat(../../../../../../../FormalParameter/VariableDeclaratorId/@Name, '.toString')
+//CatchClause/Block/ExpressionStatement/MethodCall[
+    pmd-java:matchesSig("java.lang.Throwable#getMessage()")
+    or pmd-java:matchesSig("java.lang.Throwable#getLocalizedMessage()")
+    or pmd-java:matchesSig("java.lang.Throwable#getCause()")
+    or pmd-java:matchesSig("java.lang.Throwable#getStackTrace()")
+    or pmd-java:matchesSig("java.lang.Object#toString()")
 ]
 ]]>
                 </value>
@@ -1321,11 +1327,11 @@ This rule was called *DoNotCallSystemExit* until PMD 6.29.0.
             <property name="xpath">
                 <value>
 <![CDATA[
-//Name[
-    starts-with(@Image,'System.exit')
-    or
-    (starts-with(@Image,'Runtime.getRuntime') and ../../PrimarySuffix[ends-with(@Image,'exit') or ends-with(@Image,'halt')])
-][not(ancestor::MethodDeclaration[1][@Name="main" and @Static = true()])]
+//(MethodDeclaration[@MainMethod = false()] | Initializer)//MethodCall[
+    pmd-java:matchesSig("java.lang.System#exit(int)")
+    or pmd-java:matchesSig("java.lang.Runtime#exit(int)")
+    or pmd-java:matchesSig("java.lang.Runtime#halt(int)")
+]
 ]]>
                 </value>
             </property>
@@ -2173,13 +2179,23 @@ public class Foo extends TestCase {
     <rule name="MethodWithSameNameAsEnclosingClass"
           language="java"
           since="1.5"
-          message="Classes should not have non-constructor methods with the same name as the class"
-          class="net.sourceforge.pmd.lang.java.rule.errorprone.MethodWithSameNameAsEnclosingClassRule"
+          message="A method should not have the same name as its containing class"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#methodwithsamenameasenclosingclass">
         <description>
-Non-constructor methods should not have the same name as the enclosing class.
+A method should not have the same name as its containing class.
+This would be confusing as it would look like a constructor. 
         </description>
         <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//MethodDeclaration[@Name = ancestor::ClassOrInterfaceDeclaration/@SimpleName]
+]]>
+                </value>
+            </property>
+        </properties>
         <example>
 <![CDATA[
 public class MyClass {
@@ -2316,7 +2332,7 @@ See the property `annotations`.
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassOrInterfaceDeclaration[@Nested= false()]
+//ClassOrInterfaceDeclaration[@Nested= false() and @Local= false()]
 [
     (: at least one constructor :) ./ClassOrInterfaceBody/ConstructorDeclaration
     and
@@ -2632,9 +2648,13 @@ See Effective Java, 3rd Edition, Item 54: Return empty collections or arrays ins
             <property name="xpath">
                 <value>
 <![CDATA[
-//MethodDeclaration
-    [ArrayType or ClassOrInterfaceType[pmd-java:typeIs('java.util.Collection') or pmd-java:typeIs('java.util.Map')]]
-    [Block/ReturnStatement/NullLiteral]
+//ReturnStatement/NullLiteral
+[ancestor::MethodDeclaration[1]
+    [ArrayType
+     or ClassOrInterfaceType[pmd-java:typeIs('java.util.Collection')
+        or pmd-java:typeIs('java.util.Map')]]
+]
+[not(./ancestor::LambdaExpression)]
 ]]>
                 </value>
             </property>

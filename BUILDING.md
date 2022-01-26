@@ -4,7 +4,7 @@ PMD uses [Maven](https://maven.apache.org/) and requires at least Java 11 for bu
 You can get Java 11 from [Oracle](http://www.oracle.com/technetwork/java/javase/downloads/index.html)
 or from [AdoptOpenJdk](https://adoptopenjdk.net/).
 
-PMD uses the [maven wrapper](https://github.com/takari/maven-wrapper), so you can simply build PMD as following:
+PMD uses the [maven wrapper](https://maven.apache.org/wrapper/), so you can simply build PMD as following:
 
 *   `./mvnw clean verify` (on Unix-like platform such as Linux and Mac OS X)
 *   `mvnw.cmd clean verify` (on Windows)

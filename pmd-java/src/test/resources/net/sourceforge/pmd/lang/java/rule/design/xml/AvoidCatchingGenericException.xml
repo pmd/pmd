@@ -31,6 +31,21 @@ public class Foo {
         }
     }
 }
+class FooException extends RuntimeException {}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>catching subclass of NPE, ok</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+        try {
+        } catch (FooException e) {
+        }
+    }
+}
+class FooException extends NullPointerException {}
         ]]></code>
     </test-code>
 
@@ -43,6 +58,21 @@ public class Foo {
         throw new NullPointerException();
     }
 }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>failure case with multi-catch</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+        try {
+        } catch (NullPointerException | RuntimeException | FooException e) {
+        }
+    }
+}
+class FooException extends Exception {}
         ]]></code>
     </test-code>
 </test-data>

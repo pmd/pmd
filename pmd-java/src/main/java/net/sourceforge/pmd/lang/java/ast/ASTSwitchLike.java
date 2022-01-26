@@ -93,6 +93,15 @@ public interface ASTSwitchLike extends JavaNode, Iterable<ASTSwitchBranch> {
         return false;
     }
 
+    /**
+     * Returns true if this switch statement tests an expression
+     * having an enum type.
+     */
+    default boolean isEnumSwitch() {
+        JTypeDeclSymbol type = getTestedExpression().getTypeMirror().getSymbol();
+        return type instanceof JClassSymbol && ((JClassSymbol) type).isEnum();
+    }
+
 
     @Override
     default Iterator<ASTSwitchBranch> iterator() {
