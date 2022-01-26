@@ -560,10 +560,9 @@ public class HelloWorldBean {
             <property name="xpath">
                 <value>
                     <![CDATA[
-//MethodDeclaration[
-    MethodDeclarator/FormalParameters/FormalParameter[@Final = true()] and
-    not(Block)
-]
+//MethodDeclaration
+    [FormalParameters/FormalParameter[@Final = true()]]
+    [not(Block)]
 ]]>
                 </value>
             </property>
