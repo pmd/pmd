@@ -106,7 +106,7 @@ public class CouplingBetweenObjectsRule extends AbstractJavaRule {
      * @param typeNode The variable type.
      */
     private void checkVariableType(ASTType typeNode) {
-        if (inInterface) {
+        if (inInterface || typeNode == null) {
             return;
         }
         // if the field is of any type other than the class type
