@@ -67,7 +67,9 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import java.math.*;
-public class Foo {
+public class Bar {
+    class C { BigInteger n; }
+    C getBigIntContainer() { return null; }
     public String toString() {
         Bar _b;
         java.math.BigInteger n = _b.getBigIntContainer().n;
@@ -82,6 +84,7 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import java.math.*;
+import java.util.*;
 public class Foo {
     List<BigDecimal> getSolution() {
         List<BigDecimal> result = new ArrayList<BigDecimal>();
@@ -168,6 +171,7 @@ public class Foo {
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 import java.math.*;
+@interface NotNull {}
 public class Foo {
     public void foo() {
         @NotNull

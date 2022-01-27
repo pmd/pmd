@@ -33,5 +33,4 @@ public abstract class AbstractModelicaRule extends AbstractRule implements Model
         }
         return true;
     }
-
 }

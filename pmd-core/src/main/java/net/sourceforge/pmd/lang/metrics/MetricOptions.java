@@ -21,7 +21,7 @@ public class MetricOptions {
 
     private static final Map<MetricOptions, MetricOptions> POOL = new HashMap<>();
     private static final MetricOptions EMPTY_OPTIONS;
-    private Set<MetricOption> options;
+    private final Set<MetricOption> options;
 
 
     static {

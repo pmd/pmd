@@ -21,5 +21,4 @@ public abstract class AbstractVmRule extends AbstractRule implements VmParserVis
     public void apply(Node target, RuleContext ctx) {
         target.acceptVisitor(this, ctx);
     }
-
 }

@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
@@ -167,20 +166,6 @@ public final class ASTClassOrInterfaceType extends AbstractJavaTypeNode implemen
      */
     public String getSimpleName() {
         return simpleName;
-    }
-
-    /**
-     * For now this returns the name of the type with all the segments,
-     * without annotations or type parameters.
-     *
-     * @deprecated This is useless and won't be implemented. We can use the
-     *     symbol, or better the upcoming type API to pretty print the type.
-     */
-    @Override
-    @Experimental
-    @Deprecated
-    public String getTypeImage() {
-        return children(ASTType.class).firstOpt().map(s -> s.getTypeImage() + ".").orElse("") + getSimpleName();
     }
 
     /**

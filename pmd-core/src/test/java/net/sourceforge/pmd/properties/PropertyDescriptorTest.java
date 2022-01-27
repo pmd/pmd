@@ -32,7 +32,6 @@ import org.junit.rules.ExpectedException;
 import net.sourceforge.pmd.FooRule;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.RulesetsFactoryUtils;
 import net.sourceforge.pmd.properties.constraints.PropertyConstraint;
 
 
@@ -59,7 +58,7 @@ public class PropertyDescriptorTest {
         FooRule rule = new FooRule();
         rule.definePropertyDescriptor(intProperty);
         rule.setProperty(intProperty, 1000);
-        RuleSet ruleSet = RulesetsFactoryUtils.defaultFactory().createSingleRuleRuleSet(rule);
+        RuleSet ruleSet = RuleSet.forSingleRule(rule);
 
         List<Rule> dysfunctional = new ArrayList<>();
         ruleSet.removeDysfunctionalRules(dysfunctional);
@@ -80,7 +79,7 @@ public class PropertyDescriptorTest {
         FooRule rule = new FooRule();
         rule.definePropertyDescriptor(descriptor);
         rule.setProperty(descriptor, Collections.singletonList(1000d)); // not in range
-        RuleSet ruleSet = RulesetsFactoryUtils.defaultFactory().createSingleRuleRuleSet(rule);
+        RuleSet ruleSet = RuleSet.forSingleRule(rule);
 
         List<Rule> dysfunctional = new ArrayList<>();
         ruleSet.removeDysfunctionalRules(dysfunctional);
@@ -160,6 +159,7 @@ public class PropertyDescriptorTest {
         assertEquals("hello", descriptor.description());
         assertEquals(Integer.valueOf(1), descriptor.defaultValue());
         assertEquals(Integer.valueOf(5), descriptor.valueFrom("5"));
+        assertEquals(Integer.valueOf(5), descriptor.valueFrom(" 5 "));
 
         PropertyDescriptor<List<Integer>> listDescriptor = PropertyFactory.intListProperty("intListProp")
                 .desc("hello")
@@ -169,6 +169,7 @@ public class PropertyDescriptorTest {
         assertEquals("hello", listDescriptor.description());
         assertEquals(Arrays.asList(1, 2), listDescriptor.defaultValue());
         assertEquals(Arrays.asList(5, 7), listDescriptor.valueFrom("5,7"));
+        assertEquals(Arrays.asList(5, 7), listDescriptor.valueFrom(" 5 , 7 "));
     }
 
     @Test
@@ -192,6 +193,7 @@ public class PropertyDescriptorTest {
         assertEquals("hello", descriptor.description());
         assertEquals(Double.valueOf(1.0), descriptor.defaultValue());
         assertEquals(Double.valueOf(2.0), descriptor.valueFrom("2.0"));
+        assertEquals(Double.valueOf(2.0), descriptor.valueFrom("  2.0  "));
 
         PropertyDescriptor<List<Double>> listDescriptor = PropertyFactory.doubleListProperty("doubleListProp")
                 .desc("hello")
@@ -201,6 +203,7 @@ public class PropertyDescriptorTest {
         assertEquals("hello", listDescriptor.description());
         assertEquals(Arrays.asList(1.0, 2.0), listDescriptor.defaultValue());
         assertEquals(Arrays.asList(2.0, 3.0), listDescriptor.valueFrom("2.0,3.0"));
+        assertEquals(Arrays.asList(2.0, 3.0), listDescriptor.valueFrom(" 2.0 , 3.0 "));
     }
 
     @Test
@@ -224,6 +227,7 @@ public class PropertyDescriptorTest {
         assertEquals("hello", descriptor.description());
         assertEquals("default value", descriptor.defaultValue());
         assertEquals("foo", descriptor.valueFrom("foo"));
+        assertEquals("foo", descriptor.valueFrom("  foo   "));
 
         PropertyDescriptor<List<String>> listDescriptor = PropertyFactory.stringListProperty("stringListProp")
                 .desc("hello")
@@ -233,6 +237,7 @@ public class PropertyDescriptorTest {
         assertEquals("hello", listDescriptor.description());
         assertEquals(Arrays.asList("v1", "v2"), listDescriptor.defaultValue());
         assertEquals(Arrays.asList("foo", "bar"), listDescriptor.valueFrom("foo|bar"));
+        assertEquals(Arrays.asList("foo", "bar"), listDescriptor.valueFrom("  foo |  bar  "));
     }
 
     private enum SampleEnum { A, B, C }

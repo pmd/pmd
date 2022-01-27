@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 
 import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.internal.util.AssertionUtil;
 
 /**
  * A number of String-specific utility methods for use by PMD or its IDE
@@ -408,6 +409,51 @@ public final class StringUtil {
         return sb.toString();
     }
 
+    /**
+     * If the string starts and ends with the delimiter, returns the substring
+     * within the delimiters. Otherwise returns the original string. The
+     * start and end delimiter must be 2 separate instances.
+     * <pre>{@code
+     * removeSurrounding("",     _ )  = ""
+     * removeSurrounding("q",   'q')  = "q"
+     * removeSurrounding("qq",  'q')  = ""
+     * removeSurrounding("q_q", 'q')  = "_"
+     * }</pre>
+     */
+    public static String removeSurrounding(String string, char delimiter) {
+        if (string.length() >= 2
+            && string.charAt(0) == delimiter
+            && string.charAt(string.length() - 1) == delimiter) {
+            return string.substring(1, string.length() - 1);
+        }
+        return string;
+    }
+
+    /**
+     * Like {@link #removeSurrounding(String, char) removeSurrounding} with
+     * a double quote as a delimiter.
+     */
+    public static String removeDoubleQuotes(String string) {
+        return removeSurrounding(string, '"');
+    }
+
+    /**
+     * Truncate the given string to some maximum length. If it needs
+     * truncation, the ellipsis string is appended. The length of the
+     * returned string is always lower-or-equal to the maxOutputLength,
+     * even when truncation occurs.
+     */
+    public static String elide(String string, int maxOutputLength, String ellipsis) {
+        AssertionUtil.requireNonNegative("maxOutputLength", maxOutputLength);
+        if (ellipsis.length() > maxOutputLength) {
+            throw new IllegalArgumentException("Ellipsis too long '" + ellipsis + "', maxOutputLength=" + maxOutputLength);
+        }
+        if (string.length() <= maxOutputLength) {
+            return string;
+        }
+        String truncated = string.substring(0, maxOutputLength - ellipsis.length());
+        return truncated + ellipsis;
+    }
 
     /**
      * Returns an empty array of string

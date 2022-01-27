@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.symbols;
 
 import java.lang.reflect.Modifier;
 import java.util.List;
+import java.util.Set;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -158,6 +159,15 @@ public interface JClassSymbol extends JTypeDeclSymbol,
                 return field;
             }
         }
+        return null;
+    }
+
+    /**
+     * Returns a set with all enum constant names. If this symbol does
+     * not represent an enum, returns null.
+     */
+    @SuppressWarnings("PMD.ReturnEmptyCollectionRatherThanNull")
+    default @Nullable Set<String> getEnumConstantNames() {
         return null;
     }
 

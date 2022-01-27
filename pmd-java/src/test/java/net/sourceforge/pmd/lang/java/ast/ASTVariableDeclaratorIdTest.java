@@ -10,6 +10,8 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
+import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
+
 public class ASTVariableDeclaratorIdTest extends BaseParserTest {
 
 
@@ -43,7 +45,7 @@ public class ASTVariableDeclaratorIdTest extends BaseParserTest {
         ASTCompilationUnit acu = java8.parse(TEST_LAMBDA_WITH_TYPE);
         ASTLambdaExpression lambda = acu.getFirstDescendantOfType(ASTLambdaExpression.class);
         ASTVariableDeclaratorId f = lambda.getFirstDescendantOfType(ASTVariableDeclaratorId.class);
-        assertEquals("File", f.getTypeNode().getTypeImage());
+        assertEquals("File", PrettyPrintingUtil.prettyPrintType(f.getTypeNode()));
     }
 
     @Test

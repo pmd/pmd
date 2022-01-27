@@ -8,10 +8,9 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTInfixExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
-import net.sourceforge.pmd.lang.java.ast.BinaryOp;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 
@@ -25,8 +24,7 @@ public class UselessStringValueOfRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTMethodCall node, Object data) {
-        if (node.getParent() instanceof ASTInfixExpression
-            && ((ASTInfixExpression) node.getParent()).getOperator() == BinaryOp.ADD) {
+        if (JavaRuleUtil.isStringConcatExpr(node.getParent())) {
             ASTExpression valueOfArg = getValueOfArg(node);
             if (valueOfArg == null) {
                 return data; //not a valueOf call
@@ -35,7 +33,7 @@ public class UselessStringValueOfRule extends AbstractJavaRule {
                 return data;
             }
 
-            ASTExpression sibling = (ASTExpression) node.getParent().getChild(1 - node.getIndexInParent());
+            ASTExpression sibling = JavaRuleUtil.getOtherOperandIfInInfixExpr(node);
             if (TypeTestUtil.isExactlyA(String.class, sibling)
                 && !valueOfArg.getTypeMirror().isArray()
                 // In `String.valueOf(a) + String.valueOf(b)`,

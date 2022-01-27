@@ -143,8 +143,7 @@ abstract class TypeVarImpl implements JTypeVar {
 
         private static final int PRIME = 997;  // largest prime less than 1000
 
-        private final JWildcardType wildcard;
-        private final int captureId = hashCode() % PRIME;
+        private final @NonNull JWildcardType wildcard;
 
         private JTypeMirror upperBound;
         private JTypeMirror lowerBound;
@@ -158,10 +157,6 @@ abstract class TypeVarImpl implements JTypeVar {
             this.upperBound = upper;
             this.lowerBound = lower;
             this.wildcard = wild;
-        }
-
-        public JWildcardType getWildcard() {
-            return wildcard;
         }
 
         void setUpperBound(@NonNull JTypeMirror upperBound) {
@@ -195,7 +190,7 @@ abstract class TypeVarImpl implements JTypeVar {
         }
 
         @Override
-        public @Nullable JWildcardType getCapturedOrigin() {
+        public JWildcardType getCapturedOrigin() {
             return wildcard;
         }
 
@@ -232,7 +227,7 @@ abstract class TypeVarImpl implements JTypeVar {
 
         @Override
         public @NonNull String getName() {
-            return "capture#" + captureId + " of " + wildcard;
+            return "capture#" + hashCode() % PRIME + " of " + wildcard;
         }
     }
 }

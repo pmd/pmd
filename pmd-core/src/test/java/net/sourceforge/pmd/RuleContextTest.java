@@ -22,7 +22,7 @@ import net.sourceforge.pmd.lang.ast.RootNode;
 import junit.framework.JUnit4TestAdapter;
 
 public class RuleContextTest {
-    public static Report getReport(Consumer<RuleContext> sideEffects) throws Exception {
+    public static Report getReport(Consumer<RuleContext> sideEffects) {
         Report report = new Report();
         RuleContext ctx = new RuleContext();
         ctx.setSourceCodeFile(new File("test.dummy"));
@@ -58,8 +58,9 @@ public class RuleContextTest {
     public void testSourceCodeFilename() {
         RuleContext ctx = new RuleContext();
         assertEquals("filename should be empty", "", ctx.getSourceCodeFilename());
-        ctx.setSourceCodeFile(new File("dir/foo.java"));
-        assertEquals("filename mismatch", "foo.java", ctx.getSourceCodeFilename());
+        File file = new File("dir/foo.java");
+        ctx.setSourceCodeFile(file);
+        assertEquals("filename mismatch", file.getAbsolutePath(), ctx.getSourceCodeFilename());
     }
 
     @Test

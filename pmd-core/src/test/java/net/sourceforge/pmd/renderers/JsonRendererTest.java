@@ -79,6 +79,7 @@ public class JsonRendererTest extends AbstractRendererTest {
     public String filter(String expected) {
         String result = expected
                 .replaceAll("\"timestamp\":\\s*\"[^\"]+\"", "\"timestamp\": \"--replaced--\"")
+                .replaceAll("\"pmdVersion\":\\s*\"[^\"]+\"", "\"pmdVersion\": \"unknown\"")
                 .replaceAll("\r\n", "\n"); // make the test run on Windows, too
         return result;
     }

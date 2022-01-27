@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>No debug statements</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public static void bar() {
+        System.enqueueJob(new MayQueueable());
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Debug statements with a purpose</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+@SuppressWarnings('PMD.AvoidDebugStatements') //logging classes may need the debugs
+public class LoggingManager {
+    public static void log(LoggingLevel leve, Object data) {
+        System.debug(level, data);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Unnecesary debug statements</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public static void bar() {
+        System.debug(LoggingLevel.INFO, 'Testing ' + new List<Account>{new Account(Name = 'Test')});
+        system.debug('simple');
+    }
+}
+        ]]></code>
+    </test-code>
+
+</test-data>

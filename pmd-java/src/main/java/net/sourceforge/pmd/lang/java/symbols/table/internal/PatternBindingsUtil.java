@@ -21,7 +21,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTSynchronizedStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTTypeTestPattern;
+import net.sourceforge.pmd.lang.java.ast.ASTTypePattern;
 import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
@@ -99,7 +99,7 @@ final class PatternBindingsUtil {
         } else if (stmt instanceof ASTWhileStatement) {
 
             ASTWhileStatement loop = (ASTWhileStatement) stmt;
-            if (JavaRuleUtil.isBooleanLit(loop.getCondition(), true)) {
+            if (JavaRuleUtil.isBooleanLiteral(loop.getCondition(), true)) {
                 // todo this does not really work
                 //  should be "may complete abruptly", here it's "must complete abruptly"
                 return !canCompleteNormallyImpl(loop.getBody(), new State(state.labelsInScope, true, true));
@@ -143,8 +143,8 @@ final class PatternBindingsUtil {
     }
 
     static BindSet collectBindings(ASTPattern pattern) {
-        if (pattern instanceof ASTTypeTestPattern) {
-            return BindSet.EMPTY.addBinding(((ASTTypeTestPattern) pattern).getVarId());
+        if (pattern instanceof ASTTypePattern) {
+            return BindSet.EMPTY.addBinding(((ASTTypePattern) pattern).getVarId());
         } else {
             throw AssertionUtil.shouldNotReachHere("no other instances of pattern should exist");
         }

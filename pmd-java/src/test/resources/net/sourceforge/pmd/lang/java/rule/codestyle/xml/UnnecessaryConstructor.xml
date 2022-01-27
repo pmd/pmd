@@ -51,7 +51,7 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-    public Foo() throws IOException {
+    public Foo() throws java.io.IOException {
     }
 }
         ]]></code>

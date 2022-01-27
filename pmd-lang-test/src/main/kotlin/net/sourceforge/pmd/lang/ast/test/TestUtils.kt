@@ -9,6 +9,7 @@ import io.kotest.matchers.equalityMatcher
 import io.kotest.matchers.should
 import net.sourceforge.pmd.Report
 import net.sourceforge.pmd.RuleViolation
+import net.sourceforge.pmd.lang.ast.Node
 import kotlin.reflect.KCallable
 import kotlin.reflect.jvm.isAccessible
 import kotlin.test.assertEquals
@@ -90,4 +91,12 @@ fun assertSize(report: Report, size: Int): List<RuleViolation> {
 fun assertSuppressed(report: Report, size: Int): List<Report.SuppressedViolation> {
     assertEquals(size, report.suppressedViolations.size, message = "Wrong number of suppressed violations!")
     return report.suppressedViolations
+}
+
+/** Checks the coordinates of this node. */
+fun Node.assertPosition(bline: Int, bcol: Int, eline: Int, ecol: Int) {
+    this::getBeginLine shouldBe bline
+    this::getBeginColumn shouldBe bcol
+    this::getEndLine shouldBe eline
+    this::getEndColumn shouldBe ecol
 }

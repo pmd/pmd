@@ -73,4 +73,46 @@ private class C2_Assignment_Report_Job_Test {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#1089 [apex] ApexUnitTestClassShouldHaveAsserts: Verify use of additionalAssertMethodPattern, positive test</description>
+        <rule-property name="additionalAssertMethodPattern">(Assert\.\w+|verify\w+)</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+@isTest
+public class Foo {
+   public static testMethod void testAssertIsTrue() {
+      Assert.isTrue(someCondition);
+   }
+
+   public static testMethod void testLocalVerify() {
+      verifyState();
+   }
+
+   private static void verifyState() {
+   }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1089 [apex] ApexUnitTestClassShouldHaveAsserts: Verify use of additionalAssertMethodPattern, negative test</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,7</expected-linenumbers>
+        <code><![CDATA[
+@isTest
+public class Foo {
+   public static testMethod void testAssertIsTrue() {
+      Assert.isTrue(someCondition);
+   }
+
+   public static testMethod void testLocalVerify() {
+      verifyState();
+   }
+
+   private static void verifyState() {
+   }
+}
+        ]]></code>
+    </test-code>
 </test-data>

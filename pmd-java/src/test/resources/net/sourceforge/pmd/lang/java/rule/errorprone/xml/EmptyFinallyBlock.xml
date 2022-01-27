@@ -50,7 +50,7 @@ public class EmptyFinallyBlock3 {
 public class EmptyFinallyBlock4 {
     public void foo() {
         try {
-        } catch (IOException e ){
+        } catch (java.io.IOException e){
         } catch (Exception e ) {
         } catch (Throwable t ) {
         } finally{

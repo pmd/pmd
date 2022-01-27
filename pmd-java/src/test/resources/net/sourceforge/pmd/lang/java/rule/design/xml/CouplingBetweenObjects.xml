@@ -8,6 +8,7 @@
         <description>lots of coupling</description>
         <rule-property name="threshold">2</rule-property>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>1</expected-linenumbers>
         <code><![CDATA[
 import java.util.*;
 public class Foo {
@@ -34,7 +35,26 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public interface Foo {
-    public static final int FOO = 2;
+    List foo();
+    ArrayList foo();
+    Vector foo();
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>lots of coupling in inner class in interfaces</description>
+        <rule-property name="threshold">2</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>1</expected-linenumbers>
+        <code><![CDATA[
+import java.util.*;
+public interface Foo {
+    class Inner {
+        public List foo() {return null;}
+        public ArrayList foo() {return null;}
+        public Vector foo() {return null;}
+    }
 }
         ]]></code>
     </test-code>

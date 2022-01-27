@@ -6,7 +6,7 @@
 
     <test-code>
         <description>bad, local variable of type Hashtable</description>
-        <expected-problems>1</expected-problems>
+        <expected-problems>2</expected-problems>
         <code><![CDATA[
 import java.util.Hashtable;
 public class Foo {

@@ -37,6 +37,7 @@ import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.MethodRefMi
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.PolyExprMirror;
 import net.sourceforge.pmd.util.CollectionUtil;
 
+@SuppressWarnings("PMD.CompareObjectsWithEquals")
 final class ExprCheckHelper {
 
     private final InferenceContext infCtx;
@@ -94,6 +95,7 @@ final class ExprCheckHelper {
             if (standalone != null) {
                 if (mayMutateExpr()) {
                     expr.setInferredType(standalone);
+                    expr.finishStandaloneInference(standalone);
                 }
                 isStandalone = true;
 
@@ -173,7 +175,7 @@ final class ExprCheckHelper {
             // else it's ts.UNRESOLVED
             if (mayMutateExpr()) {
                 invoc.setInferredType(fallback);
-                invoc.setMethodType(infer.NO_CTDECL);
+                invoc.setCtDecl(infer.NO_CTDECL);
             }
         }
 
@@ -198,7 +200,7 @@ final class ExprCheckHelper {
                 solved -> {
                     JMethodSig ground = solved.ground(mostSpecific);
                     invoc.setInferredType(ground.getReturnType());
-                    invoc.setMethodType(argCtDecl.withMethod(ground));
+                    invoc.setCtDecl(argCtDecl.withMethod(ground));
                 }
             );
         }
@@ -442,7 +444,7 @@ final class ExprCheckHelper {
 
     JMethodSig inferMethodRefInvocation(MethodRefMirror mref, JMethodSig targetType, MethodCtDecl ctdecl) {
         InvocationMirror wrapper = methodRefAsInvocation(mref, targetType, false);
-        wrapper.setMethodType(ctdecl);
+        wrapper.setCtDecl(ctdecl);
         MethodCallSite mockSite = infer.newCallSite(wrapper, /* expected */ targetType.getReturnType(), site, infCtx, isSpecificityCheck());
         return infer.determineInvocationTypeOrFail(mockSite).getMethodType();
     }
@@ -473,6 +475,7 @@ final class ExprCheckHelper {
         if (mayMutateExpr()) {
             lambda.setInferredType(groundTargetType);
             lambda.setFunctionalMethod(groundFun);
+            lambda.updateTypingContext(groundFun);
 
             // set the final type when done
             if (phase.isInvocation()) {
@@ -552,7 +555,9 @@ final class ExprCheckHelper {
                 solvedCtx -> {
                     if (mayMutateExpr()) {
                         lambda.setInferredType(solvedCtx.ground(groundTargetType));
-                        lambda.setFunctionalMethod(solvedCtx.ground(groundFun));
+                        JMethodSig solvedGroundFun = solvedCtx.ground(groundFun);
+                        lambda.setFunctionalMethod(solvedGroundFun);
+                        lambda.updateTypingContext(solvedGroundFun);
                     }
                     JTypeMirror groundResult = solvedCtx.ground(result);
                     for (ExprMirror expr : lambda.getResultExpressions()) {

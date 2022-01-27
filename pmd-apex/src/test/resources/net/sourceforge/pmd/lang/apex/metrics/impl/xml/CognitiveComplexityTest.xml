@@ -13,7 +13,7 @@
             <![CDATA[
             class Foo {
               string foo(integer n) {
-                if (n == 1) {
+                if (n == 1) {       // +1
                   return 'one';
                 }
 
@@ -35,7 +35,7 @@
             class Foo {
               string foo(integer n) {
                 if (n > 0) {           // +1
-                  if (n == 1) {        // +2
+                  if (n == 1) {        // +2 (nesting = 1)
                     return 'one';
                   }
 
@@ -110,7 +110,7 @@
             class Foo {
               string foo() {
                 for (integer i = 0; i < 10; i++) { // +1
-                  if (i == 3) {                    // +2
+                  if (i == 3) {                    // +2 (nesting = 1)
                     return 'three';
                   }
                 }
@@ -134,7 +134,7 @@
               string foo() {
                 Integer[] myInts = new Integer[] {1, 2, 3};
                 for (Integer i : myInts) {         // +1
-                  if (i == 3) {                    // +2
+                  if (i == 3) {                    // +2 (nesting = 1)
                     return 'three';
                   }
                 }
@@ -147,10 +147,10 @@
     </test-code>
 
     <test-code>
-        <description>Continue statements increase complexity</description>
+        <description>Continue statements don't increase complexity</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'c__Foo#foo()' has value 4.</message>
+            <message>'c__Foo#foo()' has value 3.</message>
         </expected-messages>
         <code>
             <![CDATA[
@@ -158,8 +158,8 @@
               string foo() {
                 Integer[] myInts = new Integer[] {1, 2, 3};
                 for (Integer i : myInts) {         // +1
-                  if (i == 3) {                    // +2
-                    continue;                      // +1
+                  if (i == 3) {                    // +2 (nesting = 1)
+                    continue;                      // would only increase with a label
                   }
                 }
 
@@ -171,10 +171,10 @@
     </test-code>
 
     <test-code>
-        <description>Break statements increase complexity</description>
+        <description>Break statements don't increase complexity</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'c__Foo#foo()' has value 4.</message>
+            <message>'c__Foo#foo()' has value 3.</message>
         </expected-messages>
         <code>
             <![CDATA[
@@ -182,8 +182,8 @@
               string foo() {
                 Integer[] myInts = new Integer[] {1, 2, 3};
                 for (Integer i : myInts) {         // +1
-                  if (i == 3) {                    // +2
-                    break;                      // +1
+                  if (i == 3) {                    // +2 (nesting = 1)
+                    break;                         // would only increase with a label
                   }
                 }
 
@@ -208,7 +208,7 @@
                 Integer n = 0;
                 while (n < 100) {  // +1
                   i = i * n;
-                  if (i > 1000) {  // +2
+                  if (i > 1000) {  // +2 (nesting = 1)
                     return 'big';
                   }
                 }
@@ -237,7 +237,7 @@
                     return;
                   }
                 } catch(DmlException e) {                          // +1
-                  if (someCondition()) {                           // +2
+                  if (someCondition()) {                           // +2 (nesting = 1)
                     return;
                   }
                 }
@@ -251,7 +251,7 @@
         <description>Do-while loops cause nesting</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'c__Foo#foo()' has value 5.</message>
+            <message>'c__Foo#foo()' has value 4.</message>
         </expected-messages>
         <code>
             <![CDATA[
@@ -259,9 +259,9 @@
               void foo() {
                 Integer n = 0;
                 do {                            // +1
-                  if (n == 3) {                 // +2
+                  if (n == 3) {                 // +2 (nesting = 1)
                     System.debug('n is 3');
-                  } else {                      // +2
+                  } else {                      // +1
                     System.debug('n is not 3');
                   }
                   n++;
@@ -283,7 +283,7 @@
             class Foo {
               Integer foo(Integer n) {
                 return n < 0 ?          // +1
-                  -1 : n > 0 ?          // +2
+                  -1 : n > 0 ?          // +2 (nesting = 1)
                   1 : 0;
               }
             }
@@ -298,8 +298,8 @@
             <message>'c__Foo#a(Integer)' has value 1.</message>
             <message>'c__Foo#b(Integer)' has value 1.</message>
             <message>'c__Foo#c(Integer)' has value 1.</message>
-            <message>'c__Foo#d(Boolean,Boolean,Boolean,Boolean,Boolean,Boolean)' has value 3.</message>
-            <message>'c__Foo#e(Boolean,Boolean,Boolean)' has value 2.</message>
+            <message>'c__Foo#d(Boolean, Boolean, Boolean, Boolean, Boolean, Boolean)' has value 3.</message>
+            <message>'c__Foo#e(Boolean, Boolean, Boolean)' has value 2.</message>
             <message>'c__Foo#f()' has value 2.</message>
         </expected-messages>
         <code>
@@ -375,7 +375,7 @@
                     System.debug('when block 1');
                   }
                   when 2, 3, 4, 5 {
-                    if (n <= 3) {                   // +2
+                    if (n <= 3) {                   // +2 (nesting = 1)
                       System.debug('n <= 3');
                     }
 
@@ -385,6 +385,33 @@
                     System.debug('default');
                   }
                 }
+              }
+            }
+            ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>Nested else-if statements don't receive nesting increment</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'c__Foo#foo(Integer)' has value 4.</message>
+        </expected-messages>
+        <code>
+            <![CDATA[
+            class Foo {
+              string foo(integer n) {
+                if (n > 0) {           // +1
+                  if (n == 1) {        // +2 (nesting = 1)
+                    return 'one';
+                  } else if (n == 2) { // +1
+                    return 'two';
+                  }
+
+                  return 'positive';
+                }
+
+                return 'negative or 0';
               }
             }
             ]]>

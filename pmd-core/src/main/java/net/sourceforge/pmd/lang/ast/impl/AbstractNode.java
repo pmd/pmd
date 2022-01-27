@@ -183,4 +183,20 @@ public abstract class AbstractNode<B extends AbstractNode<B, N>, N extends Gener
         return getXPathNodeName();
     }
 
+    @Override
+    @SuppressWarnings("unchecked")
+    public final <R extends Node> @Nullable R firstChild(Class<? extends R> rClass) {
+        // This operation is extremely common so we give it an optimal
+        // implementation, based directly on the array. This will never
+        // create a node stream object, and array bounds are not checked.
+        // It's final so it can be inlined.
+        for (Node child : children) {
+            if (rClass.isInstance(child)) {
+                // rClass.cast(child) is more expensive than this
+                // unchecked cast, which we know is safe.
+                return (R) child;
+            }
+        }
+        return null;
+    }
 }

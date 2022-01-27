@@ -30,10 +30,10 @@ class StandaloneTypesTest : ProcessorTestSpec({
                                 val t = compType()
                                 val tArray = t.toArray()
                                 it.methodType.shouldMatchMethod(named = "clone", declaredIn = tArray, withFormals = emptyList(), returning = tArray)
-                                it.typeMirror shouldBe tArray
+                                it shouldHaveType tArray
 
                                 it::getQualifier shouldBe child<ASTArrayAllocation>(ignoreChildren = true) {
-                                    it.typeMirror shouldBe tArray
+                                    it shouldHaveType tArray
                                 }
 
                                 it::getArguments shouldBe argList(0)
@@ -55,12 +55,12 @@ class StandaloneTypesTest : ProcessorTestSpec({
             fun matchArrayLength(compType: TypeDslMixin.() -> JTypeMirror) =
                     parseAs {
                         fieldAccess("length") {
-                            it.typeMirror shouldBe it.typeSystem.INT
+                            it shouldHaveType it.typeSystem.INT
 
                             val component = with (it.typeDsl) { compType() }
 
                             it::getQualifier shouldBe child<ASTArrayAllocation>(ignoreChildren = true) {
-                                it.typeMirror shouldBe it.typeSystem.arrayType(component) // t[]
+                                it shouldHaveType it.typeSystem.arrayType(component) // t[]
                             }
                         }
                     }
@@ -75,11 +75,13 @@ class StandaloneTypesTest : ProcessorTestSpec({
 
         inContext(ExpressionParsingCtx) {
 
-            listOf(ADD, MUL, SUB, MOD, DIV)
+            listOf(ADD, MUL, SUB, MOD, DIV, OR, AND, XOR)
                     .forEach {
 
                         val op = it.token
 
+                        "(byte) 1 $op (byte) 2" should haveType { int }
+                        "1 $op (byte) 2" should haveType { int }
                         "1  $op 2" should haveType { int }
                         "1  $op 2d" should haveType { double }
                         "1d $op 2" should haveType { double }
@@ -99,11 +101,11 @@ class StandaloneTypesTest : ProcessorTestSpec({
         val block = StatementParsingCtx.parseNode("{ int[] is = { a }; int[][] iis = { { } }; }", ctx = this)
         val (oneDim, twoDim, nested) = block.descendants(ASTArrayInitializer::class.java).toList()
         with(block.typeDsl) {
-            oneDim.typeMirror shouldBe int.toArray()
+            oneDim shouldHaveType int.toArray()
 
             withClue("Multi dim array") {
-                twoDim.typeMirror shouldBe int.toArray(2)
-                nested.typeMirror shouldBe int.toArray()
+                twoDim shouldHaveType int.toArray(2)
+                nested shouldHaveType int.toArray()
             }
         }
     }
@@ -113,8 +115,8 @@ class StandaloneTypesTest : ProcessorTestSpec({
         val block = StatementParsingCtx.parseNode("{ Object is = new int[0]; is = new String[0][]; }", ctx = this)
         val (intArray, stringArray) = block.descendants(ASTArrayAllocation::class.java).toList()
         with(block.typeDsl) {
-            intArray.typeMirror shouldBe int.toArray()
-            stringArray.typeMirror shouldBe ts.STRING.toArray(2)
+            intArray shouldHaveType int.toArray()
+            stringArray shouldHaveType ts.STRING.toArray(2)
         }
     }
 
@@ -136,9 +138,9 @@ class StandaloneTypesTest : ProcessorTestSpec({
                                 unaryExpr(unaryOp) {
                                     val t = it.typeSystem.getPrimitive(kind)
 
-                                    it::getTypeMirror shouldBe t
+                                    it shouldHaveType t
                                     variableAccess("v") {
-                                        it::getTypeMirror shouldBe t
+                                        it shouldHaveType t
                                     }
                                 }
                             }
@@ -220,22 +222,22 @@ class StandaloneTypesTest : ProcessorTestSpec({
                             val captFirst = captureMatcher(`?` extends gen.t_Number)
 
                             assignmentExpr(AssignmentOp.ASSIGN) {
-                                it.typeMirror shouldBe gen.t_List[captEnd]
+                                it shouldHaveType gen.t_List[captEnd]
 
                                 variableAccess("l") {
                                     // write access: not captured
-                                    it.typeMirror shouldBe gen.`t_List{? extends Number}`
+                                    it shouldHaveType gen.`t_List{? extends Number}`
                                 }
 
                                 assignmentExpr(AssignmentOp.ASSIGN) {
-                                    it.typeMirror shouldBe gen.t_List[captMid]
+                                    it shouldHaveType gen.t_List[captMid]
 
                                     variableAccess("l") {
                                         // write access: not captured
-                                        it.typeMirror shouldBe gen.`t_List{? extends Number}`
+                                        it shouldHaveType gen.`t_List{? extends Number}`
                                     }
                                     variableAccess("l") {
-                                        it.typeMirror shouldBe gen.t_List[captFirst]
+                                        it shouldHaveType gen.t_List[captFirst]
                                     }
                                 }
                             }.also {
@@ -261,9 +263,9 @@ class StandaloneTypesTest : ProcessorTestSpec({
         fieldAccess.shouldMatchN {
             fieldAccess("length") {
                 variableAccess("t") {
-                    it.typeMirror shouldBe tvar
+                    it shouldHaveType tvar
                 }
-                it.typeMirror shouldBe it.typeSystem.INT
+                it shouldHaveType it.typeSystem.INT
                 it.referencedSym shouldNotBe null
                 it.referencedSym!!.enclosingClass shouldBe it.typeSystem.getClassSymbol(IntArray::class.java)
             }
@@ -301,10 +303,10 @@ class StandaloneTypesTest : ProcessorTestSpec({
                             modifiers { }
                             unionType {
                                 classType("IllegalArgumentException") {
-                                    it::getTypeMirror shouldBe with(it.typeDsl) { IllegalArgumentException::class.decl }
+                                    it shouldHaveType with(it.typeDsl) { IllegalArgumentException::class.decl }
                                 }
                                 classType("IllegalStateException") {
-                                    it::getTypeMirror shouldBe with(it.typeDsl) { IllegalStateException::class.decl }
+                                    it shouldHaveType with(it.typeDsl) { IllegalStateException::class.decl }
                                 }
 
 

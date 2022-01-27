@@ -229,6 +229,69 @@ public final class IteratorUtil {
         return list;
     }
 
+    /**
+     * Remove the last n elements of the iterator. This uses n elements as a lookahead.
+     */
+    public static <T> Iterator<@NonNull T> dropLast(Iterator<? extends @Nullable T> it, final int n) {
+        AssertionUtil.requireNonNegative("n", n);
+        if (n == 0) {
+            return coerceWildcard(it); // noop
+        } else if (n == 1) { // i guess this will be common
+            if (!it.hasNext()) {
+                return Collections.emptyIterator();
+            }
+            return new AbstractIterator<T>() {
+                T next = it.next();
+
+                @Override
+                protected void computeNext() {
+                    if (it.hasNext()) {
+                        setNext(next);
+                        next = it.next();
+                    } else {
+                        done();
+                    }
+                }
+            };
+        }
+
+        // fill a circular lookahead buffer
+        Object[] ringBuffer = new Object[n];
+        for (int i = 0; i < n && it.hasNext(); i++) {
+            ringBuffer[i] = it.next();
+        }
+        if (!it.hasNext()) {
+            // the original iterator has less than n elements
+            return Collections.emptyIterator();
+        }
+
+        return new AbstractIterator<T>() {
+            private int idx = 0;
+
+            @Override
+            protected void computeNext() {
+                if (it.hasNext()) {
+                    setNext((T) ringBuffer[idx]); // yield element X from the buffer
+                    ringBuffer[idx] = it.next();  // overwrite with the element X+n
+                    idx = (idx + 1) % ringBuffer.length; // compute idx of element X+1
+                } else {
+                    // that's it: our buffer contains the n tail elements
+                    // that we don't want to see.
+                    done();
+                }
+            }
+        };
+    }
+
+    /**
+     * Coerce an iterator with a wildcard. This is safe because the Iterator
+     * interface is covariant (not {@link ListIterator} though).
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> Iterator<T> coerceWildcard(final Iterator<? extends T> it) {
+        return (Iterator<T>) it;
+    }
+
     public static <T> Iterable<T> toIterable(final Iterator<T> it) {
         return () -> it;
     }

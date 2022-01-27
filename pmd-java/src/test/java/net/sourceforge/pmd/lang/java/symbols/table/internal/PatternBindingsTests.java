@@ -26,7 +26,7 @@ import net.sourceforge.pmd.util.CollectionUtil;
 
 public class PatternBindingsTests extends BaseNonParserTest {
 
-    private final JavaParsingHelper java15p = java.withDefaultVersion("15-preview");
+    private final JavaParsingHelper java15p = java.withDefaultVersion("17");
 
     private Executable declares(String expr, Set<String> trueVars, Set<String> falseVars) {
         return () -> {

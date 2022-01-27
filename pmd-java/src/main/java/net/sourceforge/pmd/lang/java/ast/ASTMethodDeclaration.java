@@ -9,6 +9,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
+import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.lang.rule.xpath.DeprecatedAttribute;
 
 
@@ -49,7 +50,6 @@ public final class ASTMethodDeclaration extends AbstractMethodOrConstructorDecla
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
-
 
     /**
      * Returns true if this method is overridden.
@@ -146,4 +146,14 @@ public final class ASTMethodDeclaration extends AbstractMethodOrConstructorDecla
         return children(ASTArrayDimensions.class).first();
     }
 
+    /**
+     * Returns whether this is a main method declaration.
+     */
+    public boolean isMainMethod() {
+        return this.hasModifiers(JModifier.PUBLIC, JModifier.STATIC)
+            && "main".equals(this.getName())
+            && this.isVoid()
+            && this.getArity() == 1
+            && TypeTestUtil.isExactlyA(String[].class, this.getFormalParameters().get(0));
+    }
 }

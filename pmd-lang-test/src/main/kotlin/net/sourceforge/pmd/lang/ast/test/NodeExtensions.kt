@@ -24,8 +24,8 @@ fun Node.safeGetChild(i: Int): Node? = when {
     else -> null
 }
 
-inline fun <reified T : Node> Node.getDescendantsOfType(): List<T> = findDescendantsOfType(T::class.java)
-inline fun <reified T : Node> Node.getFirstDescendantOfType(): T = getFirstDescendantOfType(T::class.java)
+inline fun <reified T : Node> Node.getDescendantsOfType(): List<T> = descendants(T::class.java).toList()
+inline fun <reified T : Node> Node.getFirstDescendantOfType(): T = descendants(T::class.java).firstOrThrow()
 
 val Node.textRange: TextRange
     get() = TextRange(beginPosition, endPosition)

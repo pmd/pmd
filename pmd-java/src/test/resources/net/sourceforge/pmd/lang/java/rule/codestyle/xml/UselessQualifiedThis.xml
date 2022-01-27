@@ -31,10 +31,11 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
+    interface ActionListener { void actionPerformed(); }
     private ActionListener returnListener() {
         return new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed() {
                 doSomethingWithQualifiedThis(Foo.this);
             }
         };
@@ -81,7 +82,7 @@ public class Foo {
     private ActionListener returnListener() {
         return new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed() {
                 doSomethingWithQualifiedThis(Foo.this);
             }
         };
@@ -94,6 +95,8 @@ public class Foo {
     private class Foo2 {
         final Foo2 myFoo2 = Foo2.this;
     }
+
+    interface ActionListener { void actionPerformed(); }
 }
         ]]></code>
     </test-code>
@@ -102,8 +105,11 @@ public class Foo {
         <description>#1422 UselessQualifiedThis: False positive with Java 8 Function</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.util.Optional;
+import java.util.List;
+import java.util.stream.Collectors;
 public class ApiExceptionCtrlAdvice {
-    public final List<ApiError> handleApiAggregateException(final ApiAggregateException e) {
+    public final List<ApiError> handleApiAggregateException(final ApiError e) {
         return e.getCauses().stream().map(
             ApiExceptionCtrlAdvice::toApiError
         ).collect(Collectors.toList());
@@ -111,8 +117,14 @@ public class ApiExceptionCtrlAdvice {
     private static ApiError toApiError(final Throwable e) {
         return new ApiError()
                 .withException(e.getClass().getName())
-                .withCause(Optional.ofNullable(e.getCause()).map(Throwable::getClass).map(Class::getName).orElse(EMPTY))
-                .withMessage(Optional.ofNullable(e.getMessage()).orElse(EMPTY));
+                .withCause(Optional.ofNullable(e.getCause()).map(Throwable::getClass).map(Class::getName).orElse(""))
+                .withMessage(Optional.ofNullable(e.getMessage()).orElse(""));
+    }
+    class ApiError {
+        List<Throwable> getCauses() {return List.of(); }
+        ApiError withException(String s) { return this; }
+        ApiError withCause(String s) { return this; }
+        ApiError withMessage(String s) { return this; }
     }
 }
         ]]></code>

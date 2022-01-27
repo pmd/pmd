@@ -22,7 +22,7 @@ import net.sourceforge.pmd.lang.java.types.JTypeMirror;
  *
  * </pre>
  */
-public final class ASTLambdaExpression extends AbstractJavaExpr {
+public final class ASTLambdaExpression extends AbstractJavaExpr implements FunctionalExpression {
 
     private JMethodSig functionalMethod;
 
@@ -50,6 +50,7 @@ public final class ASTLambdaExpression extends AbstractJavaExpr {
      *
      * @see #getTypeMirror()
      */
+    @Override
     public JMethodSig getFunctionalMethod() {
         forceTypeResolution();
         return assertNonNullAfterTypeRes(functionalMethod);

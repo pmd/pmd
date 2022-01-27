@@ -210,9 +210,13 @@ public class ClassScope extends AbstractJavaScope {
             result.add(finder.getDecl());
         }
 
-        // search inner classes
+        // search references to inner classes
         Map<ClassNameDeclaration, List<NameOccurrence>> classDeclarations = getClassDeclarations();
         if (result.isEmpty() && !classDeclarations.isEmpty()) {
+            Applier.apply(finder, classDeclarations.keySet().iterator());
+            if (finder.getDecl() != null) {
+                result.add(finder.getDecl());
+            }
             for (ClassNameDeclaration innerClass : getClassDeclarations().keySet()) {
                 Applier.apply(finder, innerClass.getScope().getDeclarations(VariableNameDeclaration.class).keySet().iterator());
                 if (finder.getDecl() != null) {
@@ -445,9 +449,10 @@ public class ClassScope extends AbstractJavaScope {
                     type = convertToSimpleType(classInterface);
                 }
             }
-            if (type == null && !parameterTypes.isEmpty()) {
+            if ((type == null || "lombok.val".equals(type.getTypeImage())) && !parameterTypes.isEmpty()) {
                 // replace the unknown type with the correct parameter type
-                // of the method.
+                // of the method. unknown type could be a "var" (local variable type inference)
+                // or a lombok.val type.
                 // in case the argument is itself a method call, we can't
                 // determine the result type of the called
                 // method. Therefore the parameter type is used.

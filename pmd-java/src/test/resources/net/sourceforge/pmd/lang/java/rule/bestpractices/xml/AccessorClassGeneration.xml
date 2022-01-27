@@ -171,4 +171,24 @@ public class Foo {
         ]]></code>
         <source-type>java 10</source-type>
     </test-code>
+    <test-code>
+        <description>AccessorClassGeneration false positive for private constructors #755</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class Outer {
+                public static class Inner {
+                    private Inner(int x) { }
+                    public Inner(Object x) { }
+                }
+
+                public static void main(String[] args)
+                {
+                    // PMD.AccessorClassGeneration
+                    // Avoid instantiation through private constructors from outside of the constructors class.
+                    new Inner(null); // complains as if Inner(int) is was called
+                }
+            }
+        ]]></code>
+        <source-type>java 10</source-type>
+    </test-code>
 </test-data>

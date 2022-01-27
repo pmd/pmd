@@ -11,7 +11,7 @@ import net.sourceforge.pmd.lang.ast.ParseException;
 /**
  * @author sergey.gorbaty
  */
-public class VfParserTest extends AbstractVfNodesTest {
+public class VfParserTest extends AbstractVfTest {
 
     @Test
     public void testSingleDoubleQuoteAndEL() {

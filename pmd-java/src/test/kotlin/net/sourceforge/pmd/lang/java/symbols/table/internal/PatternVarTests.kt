@@ -13,7 +13,7 @@ import net.sourceforge.pmd.lang.java.ast.*
  */
 class PatternVarTests : ProcessorTestSpec({
 
-    parserTest("Bindings with if/else", javaVersion = JavaVersion.J15__PREVIEW) {
+    parserTest("Bindings with if/else", javaVersion = JavaVersion.J17) {
 
         fun checkVars(firstIsPattern: Boolean, secondIsPattern: Boolean, code: () -> String) {
             val exprCode = code().trimIndent()

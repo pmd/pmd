@@ -5,8 +5,8 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import static net.sourceforge.pmd.lang.java.symbols.table.internal.SemanticChecksLogger.CANNOT_RESOLVE_AMBIGUOUS_NAME;
-import static net.sourceforge.pmd.lang.java.symbols.table.internal.SemanticChecksLogger.CANNOT_RESOLVE_SYMBOL;
+import static net.sourceforge.pmd.lang.java.symbols.table.internal.JavaSemanticErrors.CANNOT_RESOLVE_AMBIGUOUS_NAME;
+import static net.sourceforge.pmd.lang.java.symbols.table.internal.JavaSemanticErrors.CANNOT_RESOLVE_SYMBOL;
 
 import java.util.Iterator;
 
@@ -21,12 +21,13 @@ import net.sourceforge.pmd.lang.java.internal.JavaAstProcessor;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
+import net.sourceforge.pmd.lang.java.symbols.table.internal.JavaSemanticErrors;
 import net.sourceforge.pmd.lang.java.symbols.table.internal.ReferenceCtx;
-import net.sourceforge.pmd.lang.java.symbols.table.internal.SemanticChecksLogger;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.JVariableSig;
 import net.sourceforge.pmd.lang.java.types.JVariableSig.FieldSig;
+import net.sourceforge.pmd.lang.java.types.ast.LazyTypeResolver;
 
 /**
  * This implements name disambiguation following <a href="https://docs.oracle.com/javase/specs/jls/se8/html/jls-6.html#jls-6.5.2">JLS§6.5.2</a>.
@@ -211,7 +212,7 @@ final class AstDisambiguationPass {
             JTypeDeclSymbol sym = type.getReferencedSym();
             if (type.getParent() instanceof ASTAnnotation) {
                 if (!(sym instanceof JClassSymbol && (sym.isUnresolved() || ((JClassSymbol) sym).isAnnotation()))) {
-                    ctx.getLogger().error(type, SemanticChecksLogger.EXPECTED_ANNOTATION_TYPE);
+                    ctx.getLogger().error(type, JavaSemanticErrors.EXPECTED_ANNOTATION_TYPE);
                 }
                 return;
             }
@@ -219,7 +220,7 @@ final class AstDisambiguationPass {
             int actualArity = ASTList.sizeOrZero(type.getTypeArguments());
             int expectedArity = sym instanceof JClassSymbol ? ((JClassSymbol) sym).getTypeParameterCount() : 0;
             if (actualArity != 0 && actualArity != expectedArity) {
-                ctx.getLogger().error(type, SemanticChecksLogger.MALFORMED_GENERIC_TYPE, expectedArity, actualArity);
+                ctx.getLogger().error(type, JavaSemanticErrors.MALFORMED_GENERIC_TYPE, expectedArity, actualArity);
             }
         }
 

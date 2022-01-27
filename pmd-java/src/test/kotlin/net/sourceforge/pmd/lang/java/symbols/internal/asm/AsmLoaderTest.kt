@@ -11,6 +11,7 @@ import io.kotest.matchers.collections.shouldBeSingleton
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
+import javasymbols.testdata.Enums
 import javasymbols.testdata.NestedClasses
 import javasymbols.testdata.Statics
 import javasymbols.testdata.impls.GenericClass
@@ -33,10 +34,11 @@ class AsmLoaderTest : FunSpec({
 
     //   method reference with static ctdecl & zero formal parameters (asInstanceMethod)
 
+    val contextClasspath = Classpath {  Thread.currentThread().contextClassLoader.getResource(it) }
 
     test("First ever ASM test") {
 
-        val symLoader = AsmSymbolResolver(testTypeSystem, Thread.currentThread().contextClassLoader)
+        val symLoader = AsmSymbolResolver(testTypeSystem, contextClasspath)
 
         val loaded = symLoader.resolveClassFromBinaryName("javasymbols.testdata.StaticNameCollision")!!
 
@@ -48,7 +50,7 @@ class AsmLoaderTest : FunSpec({
     }
 
     val ts = testTypeSystem
-    val symLoader = AsmSymbolResolver(ts, Thread.currentThread().contextClassLoader)
+    val symLoader = AsmSymbolResolver(ts, contextClasspath)
 
     test("Generic class") {
 
@@ -126,5 +128,29 @@ class AsmLoaderTest : FunSpec({
         val second = symLoader.resolveClassFromBinaryName("$outerName\$ProtectedStatic")!!
 
         assertSame(inner, second)
+    }
+
+    test("Unresolved class should have object as superclass") {
+
+        val inner = symLoader.resolveFromInternalNameCannotFail("does/not/exist")!!
+        val second = symLoader.resolveFromInternalNameCannotFail("does/not/exist")!!
+
+        assertSame(inner, second)
+
+        inner.superclass shouldBe ts.OBJECT.symbol
+    }
+
+    test("Enum constants") {
+
+        val outerName = Enums::class.java.name
+
+        val emptyEnum = symLoader.resolveClassFromBinaryName("$outerName\$Empty")!!
+        emptyEnum::getEnumConstantNames shouldBe emptySet()
+
+        val withConstants = symLoader.resolveClassFromBinaryName("$outerName\$SomeConstants")!!
+        withConstants::getEnumConstantNames shouldBe setOf("A", "B")
+
+        val notAnEnum = symLoader.resolveClassFromBinaryName(outerName)!!
+        notAnEnum::getEnumConstantNames shouldBe null
     }
 })

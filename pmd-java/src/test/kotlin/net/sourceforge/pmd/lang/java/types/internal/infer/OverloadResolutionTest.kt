@@ -87,7 +87,7 @@ class OverloadResolutionTest : ProcessorTestSpec({
                 methodCall("of") {
                     with (it.typeDsl) {
                         val t_SomeEnum = typeOf(t_SomeEnum_name)
-                        it::getTypeMirror shouldBe gen.t_EnumSet[t_SomeEnum] // EnumSet<SomeEnum>
+                        it shouldHaveType gen.t_EnumSet[t_SomeEnum] // EnumSet<SomeEnum>
                         it.methodType.shouldMatchMethod(
                                 named = "of",
                                 declaredIn = typeOf(t_Overloads_name),
@@ -113,7 +113,7 @@ class OverloadResolutionTest : ProcessorTestSpec({
                 methodCall("of") {
                     with (it.typeDsl) {
                         // EnumSet</*unresolved*/>
-                        it::getTypeMirror shouldBe gen.t_EnumSet[ts.UNKNOWN]
+                        it shouldHaveType gen.t_EnumSet[ts.UNKNOWN]
                         // Overloads::of(/*unresolved*/) -> java.util.EnumSet</*unresolved*/>
                         it.methodType.shouldMatchMethod(
                                 named = "of",
@@ -140,7 +140,7 @@ class OverloadResolutionTest : ProcessorTestSpec({
                 methodCall("of") {
                     with (it.typeDsl) {
                         val t_SomeEnum = typeOf(t_SomeEnum_name)
-                        it::getTypeMirror shouldBe gen.t_EnumSet[t_SomeEnum] // EnumSet<SomeEnum>
+                        it shouldHaveType gen.t_EnumSet[t_SomeEnum] // EnumSet<SomeEnum>
                         it.methodType.shouldMatchMethod(
                                 named = "of",
                                 declaredIn = typeOf(t_Overloads_name),
@@ -166,7 +166,7 @@ class OverloadResolutionTest : ProcessorTestSpec({
                 methodCall("of") {
                     with (it.typeDsl) {
                         val t_SomeEnum = typeOf(t_SomeEnum_name)
-                        it::getTypeMirror shouldBe gen.t_EnumSet[t_SomeEnum] // EnumSet<SomeEnum>
+                        it shouldHaveType gen.t_EnumSet[t_SomeEnum] // EnumSet<SomeEnum>
 
                         it.overloadSelectionInfo::isVarargsCall shouldBe true
                         // Overloads::of(SomeEnum, SomeEnum...) -> EnumSet<SomeEnum>
@@ -202,7 +202,7 @@ class OverloadResolutionTest : ProcessorTestSpec({
                     val t_SomeEnumArray = with(it.typeDsl) { t_SomeEnum.toArray() }
 
                     with (it.typeDsl) {
-                        it::getTypeMirror shouldBe gen.t_EnumSet[t_SomeEnum] // EnumSet<SomeEnum>
+                        it shouldHaveType gen.t_EnumSet[t_SomeEnum] // EnumSet<SomeEnum>
 
                         it.overloadSelectionInfo::isVarargsCall shouldBe false // selected in strict phase
                         // Overloads::of(SomeEnum, SomeEnum...) -> EnumSet<SomeEnum>
@@ -217,18 +217,18 @@ class OverloadResolutionTest : ProcessorTestSpec({
                     it::getArguments shouldBe child {
                         fieldAccess("FOO")
                         child<ASTArrayAllocation> {
-                            it::getTypeMirror shouldBe t_SomeEnumArray
+                            it shouldHaveType t_SomeEnumArray
                             unspecifiedChild()
                             child<ASTArrayInitializer> {
-                                it::getTypeMirror shouldBe t_SomeEnumArray
+                                it shouldHaveType t_SomeEnumArray
                                 fieldAccess("BAR") {
-                                    it::getTypeMirror shouldBe t_SomeEnum
+                                    it shouldHaveType t_SomeEnum
                                     typeExpr {
                                         qualClassType(t_SomeEnum_name)
                                     }
                                 }
                                 fieldAccess("BAR") {
-                                    it::getTypeMirror shouldBe t_SomeEnum
+                                    it shouldHaveType t_SomeEnum
                                     typeExpr {
                                         qualClassType(t_SomeEnum_name)
                                     }
@@ -262,12 +262,12 @@ class OverloadResolutionTest : ProcessorTestSpec({
 
         call.shouldMatchN {
             methodCall("foo") {
-                it::getTypeMirror shouldBe it.typeSystem.INT
+                it shouldHaveType it.typeSystem.INT
                 it.methodType.symbol shouldBe fooClass.symbol
 
                 argList {
                     variableAccess("k") {
-                        it::getTypeMirror shouldBe with (it.typeDsl) { Class::class.raw }
+                        it shouldHaveType with (it.typeDsl) { Class::class.raw }
                     }
                 }
             }
@@ -339,19 +339,19 @@ class Scratch {
             methodCall("foo") {
                 argList {
                     methodCall("collect") {
-                        it.typeMirror shouldBe with(it.typeDsl) { gen.t_String }
+                        it shouldHaveType with(it.typeDsl) { gen.t_String }
 
                         methodCall("map") {
 
-                            it.typeMirror shouldBe with(it.typeDsl) { gen.t_Stream[gen.t_String] }
+                            it shouldHaveType with(it.typeDsl) { gen.t_Stream[gen.t_String] }
 
                             it::getQualifier shouldBe methodCall("stream") {
                                 it.overloadSelectionInfo.isVarargsCall shouldBe false
-                                it.typeMirror shouldBe with(it.typeDsl) { gen.t_Stream[Class::class[`?`]] }
+                                it shouldHaveType with(it.typeDsl) { gen.t_Stream[Class::class[`?`]] }
                                 unspecifiedChild()
                                 argList {
                                     variableAccess("genArray") {
-                                        it.typeMirror shouldBe with(it.typeDsl) { Class::class[`?`].toArray() }
+                                        it shouldHaveType with(it.typeDsl) { Class::class[`?`].toArray() }
                                     }
                                 }
                             }
@@ -360,7 +360,7 @@ class Scratch {
                             argList {
                                 methodRef("getTypeName") {
                                     with(it.typeDsl) {
-                                        it.typeMirror shouldBe gen.t_Function[Class::class[`?`], gen.t_String]
+                                        it shouldHaveType gen.t_Function[Class::class[`?`], gen.t_String]
                                     }
 
                                     skipQualifier()

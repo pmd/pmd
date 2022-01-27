@@ -29,6 +29,7 @@ import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
  *
  * <p>https://docs.oracle.com/javase/specs/jls/se8/html/jls-4.html#jls-4.9
  */
+@SuppressWarnings("PMD.CompareObjectsWithEquals")
 public final class JIntersectionType implements JTypeMirror {
 
 
@@ -185,7 +186,7 @@ public final class JIntersectionType implements JTypeMirror {
                 }
             } else if (ci instanceof JClassType) {
                 // must be an interface, as per isExclusiveBlabla
-                assert ci.isInterface();
+                assert ci.isInterface() || TypeOps.hasUnresolvedSymbol(ci);
             } else {
                 throw malformedIntersection(primary, flattened);
             }

@@ -22,6 +22,7 @@ class Foo {
     private void test(@AnnotatedUsage Foo this) {
     }
 }
+@interface AnnotatedUsage {}
         ]]></code>
     </test-code>
 
@@ -75,6 +76,7 @@ class Foo {
         <description>flag public methods if checkall property is set</description>
         <rule-property name="checkAll">true</rule-property>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
         <code-ref id="public-methods"/>
     </test-code>
 
@@ -95,8 +97,8 @@ class Foo {
         <code><![CDATA[
 class Foo {
     void bar() {
-        ActionListener a  = new ActionListener() {
-            public void event(Event e) {}
+        Runnable a  = new Runnable() {
+            public void run() {}
         };
     }
 }
@@ -232,6 +234,7 @@ abstract class Foo {
         <description>#1159 false positive UnusedFormalParameter readObject(ObjectInputStream) if not used</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.io.*;
 public class Foo {
     private void readObject(ObjectInputStream stream) throws InvalidObjectException{
        throw new InvalidObjectException("Proxy required");
@@ -244,7 +247,8 @@ public class Foo {
         <description>#1159 correct UnusedFormalParameter for readObject(foo) if not used</description>
         <rule-property name="checkAll">true</rule-property>
         <expected-problems>5</expected-problems>
-        <code><![CDATA[
+        <code><![CDATA[import java.io.*;
+
 public class Foo {
     // throws declaration is missing - so not the serialization readObject method
     private void readObject(ObjectInputStream stream) {
@@ -258,9 +262,11 @@ public class Foo {
     private void readObject(ObjectInputStream stream, Object o) throws InvalidObjectException{
        throw new InvalidObjectException("Proxy required");
     }
+}
+class Other {
     // it's public
-    public void readObject(ObjectInputStream stream) throws InvalidObjectException{
-       throw new InvalidObjectException("Proxy required");
+    public void readObject(ObjectInputStream stream) throws InvalidObjectException {
+        throw new InvalidObjectException("Proxy required");
     }
 }
         ]]></code>
@@ -287,6 +293,47 @@ class Imp2 extends Base {
   public int badMethod(int arg1, String arg2) {
     return arg2.length() + arg1;
   }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#2957 Unused rules should ignore some names</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>2,3</expected-linenumbers>
+        <code><![CDATA[
+class Imp1 {
+  private void m(int arg1,
+                String arg2,
+                int unusedArg1,
+                int ignoredArg2,
+                int unused,
+                String ignored) {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>anonymous classes defined in methods should be considered</description>
+        <rule-property name="checkAll">false</rule-property>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>4,12</expected-linenumbers>
+        <code><![CDATA[
+class Impl {
+    public void m1() {
+        class Local {
+            private void m2(int arg1) { }
+            private void m3() { m2(0); }
+        }
+        Local l = new Local();
+        l.m3();
+    }
+    public void m4() {
+        Object o = new Object() {
+            private void m5(int arg1) { }
+            public boolean equals(Object other) { m5(0); return false; }
+        };
+        o.equals(o);
+    }
 }
         ]]></code>
     </test-code>

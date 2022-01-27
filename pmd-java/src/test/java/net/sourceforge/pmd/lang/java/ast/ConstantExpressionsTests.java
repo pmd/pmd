@@ -17,9 +17,7 @@ public class ConstantExpressionsTests extends BaseNonParserTest {
 
     private Executable isConst(String expr, Object value) {
         return () -> {
-            ASTCompilationUnit ast = java.parse("class Foo {{ Object o = (" + expr + "); }}");
-
-            ASTExpression e = ast.descendants(ASTExpression.class).crossFindBoundaries().firstOrThrow();
+            ASTExpression e = parseExpr(expr);
 
             assertEquals(value, e.getConstValue(), "Constant value of '" + expr + "'");
 

@@ -94,7 +94,7 @@ enum ReductionStep {
         public boolean accepts(InferenceVar t, InferenceContext inferenceContext) {
             Set<JTypeMirror> ubounds = t.getBounds(BoundKind.UPPER);
             Set<InferenceVar> freeVars = inferenceContext.freeVarsIn(ubounds);
-            return CollectionUtil.asSingle(freeVars) == t; // contains only itself in its upper bounds
+            return CollectionUtil.asSingle(freeVars) == t; // NOPMD - contains only itself in its upper bounds
         }
 
         @Override
@@ -132,7 +132,7 @@ enum ReductionStep {
     }
 
     protected boolean acceptsBound(JTypeMirror bound, InferenceContext infCtx) {
-        return infCtx.isGround(bound) && bound != infCtx.ts.NULL_TYPE;
+        return infCtx.isGround(bound) && bound != infCtx.ts.NULL_TYPE; // NOPMD CompareObjectsWithEquals
     }
 
     /**

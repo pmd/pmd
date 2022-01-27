@@ -26,7 +26,7 @@ public class ClassNamingConventionsRule extends AbstractNamingConventionRule<AST
     private final PropertyDescriptor<Pattern> interfaceRegex = defaultProp("interface").build();
     private final PropertyDescriptor<Pattern> enumerationRegex = defaultProp("enum").build();
     private final PropertyDescriptor<Pattern> annotationRegex = defaultProp("annotation").build();
-    private final PropertyDescriptor<Pattern> utilityClassRegex = defaultProp("utility class").defaultValue("[A-Z][a-zA-Z0-9]+(Utils?|Helper|Constants)").build();
+    private final PropertyDescriptor<Pattern> utilityClassRegex = defaultProp("utility class").build();
 
 
     public ClassNamingConventionsRule() {
@@ -91,6 +91,6 @@ public class ClassNamingConventionsRule extends AbstractNamingConventionRule<AST
 
     @Override
     String kindDisplayName(ASTAnyTypeDeclaration node, PropertyDescriptor<Pattern> descriptor) {
-        return JavaRuleUtil.isUtilityClass(node) ? "utility class" : PrettyPrintingUtil.kindName(node);
+        return JavaRuleUtil.isUtilityClass(node) ? "utility class" : PrettyPrintingUtil.getPrintableNodeKind(node);
     }
 }

@@ -4,10 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
 
@@ -24,7 +22,7 @@ import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
  * of the {@linkplain #getMethodType() compile-time declaration}
  * of this node.
  */
-public interface InvocationNode extends TypeNode {
+public interface InvocationNode extends TypeNode, MethodUsage {
 
     /**
      * Returns the node representing the list of arguments
@@ -57,12 +55,5 @@ public interface InvocationNode extends TypeNode {
      */
     OverloadSelectionResult getOverloadSelectionInfo();
 
-    /**
-     * Returns the name of the called method. If this is a constructor
-     * call, returns {@link JConstructorSymbol#CTOR_NAME}.
-     */
-    default @NonNull String getMethodName() {
-        return JConstructorSymbol.CTOR_NAME;
-    }
 
 }

@@ -25,6 +25,7 @@ public class UnnecessaryFullyQualifiedNameTest extends PmdRuleTst {
     // #1546 part 1 UnnecessaryFullyQualifiedName doesn't take into consideration conflict resolution
     // #1546 part 2 UnnecessaryFullyQualifiedName doesn't take into consideration conflict resolution
     public static class PhonyMockito {
+
         public static final int TWO = 2;
 
         public static <T> T mock(Class<T> clazz) {
@@ -32,9 +33,13 @@ public class UnnecessaryFullyQualifiedNameTest extends PmdRuleTst {
         }
     }
 
-    public static class PhonyPowerMockito {
-        public static <T> T mock(Class<T> clazz) {
-            return null;
+    static class Container {
+
+        public static class PhonyMockito {
+
+            public static <T> T mock(Class<T> clazz) {
+                return null;
+            }
         }
     }
 

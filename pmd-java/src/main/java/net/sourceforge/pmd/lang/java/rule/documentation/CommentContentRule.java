@@ -16,11 +16,10 @@ import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 
-import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.Comment;
-import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertySource;
 
@@ -31,7 +30,7 @@ import net.sourceforge.pmd.properties.PropertySource;
  *
  * @author Brian Remedios
  */
-public class CommentContentRule extends AbstractJavaRule {
+public class CommentContentRule extends AbstractJavaRulechainRule {
 
     private boolean caseSensitive;
     private List<String> originalBadWords;
@@ -53,6 +52,7 @@ public class CommentContentRule extends AbstractJavaRule {
     }
 
     public CommentContentRule() {
+        super(ASTCompilationUnit.class);
         definePropertyDescriptor(CASE_SENSITIVE_DESCRIPTOR);
         definePropertyDescriptor(DISSALLOWED_TERMS_DESCRIPTOR);
     }
@@ -72,15 +72,6 @@ public class CommentContentRule extends AbstractJavaRule {
                 currentBadWords.add(badWord.toUpperCase(Locale.ROOT));
             }
         }
-    }
-
-    /**
-     * .
-     * @see Rule#end(RuleContext)
-     */
-    @Override
-    public void end(RuleContext ctx) {
-        // Override as needed
     }
 
     private List<String> illegalTermsIn(Comment comment) {
@@ -141,7 +132,7 @@ public class CommentContentRule extends AbstractJavaRule {
             addViolationWithMessage(data, cUnit, errorMsgFor(badWords), comment.getBeginLine(), comment.getEndLine());
         }
 
-        return super.visit(cUnit, data);
+        return null;
     }
 
     private boolean hasDisallowedTerms() {

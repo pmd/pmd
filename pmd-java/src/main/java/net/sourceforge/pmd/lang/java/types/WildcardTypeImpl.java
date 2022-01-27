@@ -28,7 +28,7 @@ final class WildcardTypeImpl implements JWildcardType {
     @Override
     public JWildcardType subst(Function<? super SubstVar, ? extends @NonNull JTypeMirror> subst) {
         JTypeMirror newBound = getBound().subst(subst);
-        return newBound == getBound() ? this : ts.wildcard(isUpperBound(), newBound);
+        return newBound == getBound() ? this : ts.wildcard(isUpperBound(), newBound); // NOPMD CompareObjectsWithEquals
     }
 
     @Override

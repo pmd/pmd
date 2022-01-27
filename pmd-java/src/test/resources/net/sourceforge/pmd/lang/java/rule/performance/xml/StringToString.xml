@@ -114,15 +114,15 @@ public class Foo {
         <description>#959 StringToString False Positive</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-public class Foo {
+public class MyObject {
     public static String toString(MyObject o) {
         return "MyObject: " + o;
     }
 
-    public static vod main(String[] args) {
+    public static void main(String[] args) {
         //in your code
         MyObject o = new MyObject(); //MyObject has no relation with String
-        System.out.println(Foo.toString(o)); //PMD violation false positive
+        System.out.println(MyObject.toString(o)); //PMD violation false positive
     }
 }
         ]]></code>
@@ -133,7 +133,7 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-    private void log(Supplier<String> msg) { }
+    private void log(java.util.function.Supplier<String> msg) { }
     public void run() {
         String abc = "abc";
         log(abc::toString); // fails rule
@@ -206,15 +206,15 @@ public class Foo {
         <description>getString().toString(), object false-positive test</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-public class Foo {
+public class Person {
     public String value() {
         return "test";
     }
 
     public void bar() {
         Person p = new Person();
-        int val = p.value();
-        if (val == 0) {
+        String val = p.value();
+        if (val == null) {
             throw new RuntimeException();
         }
     }
@@ -228,7 +228,7 @@ public class Foo {
         <expected-linenumbers>10</expected-linenumbers>
         <code><![CDATA[
 import java.util.Properties;
-public class Foo {
+public class User {
     public Long getData(User usr) {
         return usr.getId();
     }
@@ -248,7 +248,7 @@ public class Foo {
         <expected-linenumbers>5,6,7</expected-linenumbers>
         <code><![CDATA[
 import java.io.*;
-class B {
+class A {
     public void foo() {
         String s = new A().str().toString(); // not detected because str() is from another class
         s = getString().toString(); // detected

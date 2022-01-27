@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+        xmlns="http://pmd.sourceforge.net/rule-tests"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>equality operators with Double.NaN</description>
+        <expected-problems>4</expected-problems>
+        <code><![CDATA[
+            public class Foo {
+
+                {
+                    boolean x;
+                    x = (Double.NaN == y);
+                    x = (Double.NaN != y);
+
+                    x = (y == Double.NaN);
+                    x = (y != Double.NaN);
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>equality operators with Float.NaN</description>
+        <expected-problems>4</expected-problems>
+        <code><![CDATA[
+            public class Foo {
+                {
+                    boolean x;
+                    x = (Float.NaN == y);
+                    x = (Float.NaN != y);
+
+                    x = (y == Float.NaN);
+                    x = (y != Float.NaN);
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>relational operators with Double.NaN</description>
+        <expected-problems>8</expected-problems>
+        <code><![CDATA[
+            public class Foo {
+
+                {
+                    boolean x;
+                    x = (y <= Double.NaN);
+                    x = (y >= Double.NaN);
+                    x = (y > Double.NaN);
+                    x = (y < Double.NaN);
+
+                    x = (Double.NaN <= y);
+                    x = (Double.NaN >= y);
+                    x = (Double.NaN > y);
+                    x = (Double.NaN < y);
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>relational operators with Float.NaN</description>
+        <expected-problems>8</expected-problems>
+        <code><![CDATA[
+            public class Foo {
+
+                {
+                    boolean x;
+                    x = (y <= Float.NaN);
+                    x = (y >= Float.NaN);
+                    x = (y > Float.NaN);
+                    x = (y < Float.NaN);
+
+                    x = (Float.NaN <= y);
+                    x = (Float.NaN >= y);
+                    x = (Float.NaN > y);
+                    x = (Float.NaN < y);
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>ok equality comparison with something else</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class Foo {
+
+                {
+                    boolean x = (y == z);
+                    x = y != z;
+                }
+
+
+            }
+            ]]></code>
+    </test-code>
+</test-data>

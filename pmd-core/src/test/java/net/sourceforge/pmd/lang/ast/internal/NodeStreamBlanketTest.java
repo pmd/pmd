@@ -130,6 +130,17 @@ public class NodeStreamBlanketTest<T extends Node> {
     }
 
     @Test
+    public void testDropLast() {
+        assertImplication(
+            stream,
+            prop("nonEmpty", NodeStream::nonEmpty),
+            prop("dropLast(0) == this", it -> it.dropLast(0) == it),
+            prop("dropLast(1).count() == count() - 1", it -> it.dropLast(1).count() == it.count() - 1),
+            prop("dropLast(1).toList() == toList().init()", it -> it.dropLast(1).toList().equals(init(it.toList())))
+        );
+    }
+
+    @Test
     public void testDropMoreThan1() {
         assertImplication(
             stream,
@@ -268,6 +279,10 @@ public class NodeStreamBlanketTest<T extends Node> {
 
     static <T> List<T> tail(List<T> ts) {
         return ts.subList(1, ts.size());
+    }
+
+    static <T> List<T> init(List<T> ts) {
+        return ts.subList(0, ts.size() - 1);
     }
 
     static class Prop<T> {

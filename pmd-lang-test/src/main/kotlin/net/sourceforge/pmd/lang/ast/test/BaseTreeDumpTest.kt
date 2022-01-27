@@ -32,9 +32,13 @@ abstract class BaseTreeDumpTest(
      */
     @JvmOverloads
     fun doTest(fileBaseName: String, parser: BaseParsingHelper<*, *> = this.parser) {
-        super.doTest(fileBaseName, "") { sourceText ->
+        super.doTest(fileBaseName, "") { fileData ->
             buildString {
-                printer.renderSubtree(parser.parse(sourceText), this)
+                val ast = parser.parse(
+                    sourceCode = fileData.fileText,
+                    fileName = fileData.fileName
+                )
+                printer.renderSubtree(ast, this)
             }
         }
     }

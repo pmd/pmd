@@ -219,15 +219,18 @@ public class SaxonXPathRuleQuery {
         boolean useRuleChain = true;
 
         // First step: Split the union venn expressions into single expressions
-        Iterable<Expression> subexpressions = RuleChainAnalyzer.splitUnions(expr);
+        Iterable<Expression> subexpressions = SaxonExprTransformations.splitUnions(expr);
 
         // Second step: Analyze each expression separately
-        for (Expression subexpression : subexpressions) {
+        for (final Expression subexpression : subexpressions) { // final because of checkstyle
+            Expression modified = subexpression;
+            modified = SaxonExprTransformations.hoistFilters(modified);
+            modified = SaxonExprTransformations.reduceRoot(modified);
             RuleChainAnalyzer rca = new RuleChainAnalyzer(xpathEvaluator.getConfiguration());
-            Expression modified = rca.visit(subexpression);
+            final Expression finalExpr = rca.visit(modified); // final because of lambda
 
             if (!rca.getRootElements().isEmpty()) {
-                rca.getRootElements().forEach(it -> addExpressionForNode(it, modified));
+                rca.getRootElements().forEach(it -> addExpressionForNode(it, finalExpr));
             } else {
                 // couldn't find a root element for the expression, that means, we can't use rule chain at all
                 // even though, it would be possible for part of the expression.

@@ -14,8 +14,10 @@ import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol
 import net.sourceforge.pmd.lang.java.symbols.JFormalParamSymbol
 import net.sourceforge.pmd.lang.java.symbols.JLocalVariableSymbol
+import net.sourceforge.pmd.lang.java.types.shouldHaveType
 import java.lang.reflect.Modifier
 
+@Suppress("UNUSED_VARIABLE")
 class VarScopingTest : ProcessorTestSpec({
 
     parserTest("Shadowing of variables") {
@@ -59,10 +61,12 @@ class VarScopingTest : ProcessorTestSpec({
                 acu.descendants(ASTClassOrInterfaceDeclaration::class.java).toList()
 
         val (outerField, localInInit, foreachParam, methodParam, localInBlock, innerField) =
-                acu.descendants(ASTVariableDeclaratorId::class.java).toList()
+                acu.descendants(ASTVariableDeclaratorId::class.java)
+                   .crossFindBoundaries().toList()
 
         val (inInitializer, inForeachInit, inForeach, inMethod, inLocalBlock, inInnerClass) =
-                acu.descendants(ASTMethodCall::class.java).toList()
+                acu.descendants(ASTMethodCall::class.java)
+                   .crossFindBoundaries().toList()
 
 
         doTest("Inside outer initializer: f is outerField") {
@@ -339,7 +343,8 @@ class VarScopingTest : ProcessorTestSpec({
         val (_, t_SomeEnum) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
 
         val (enumA, enumB) =
-                acu.descendants(ASTVariableDeclaratorId::class.java).toList()
+                acu.descendants(ASTEnumDeclaration::class.java)
+                   .descendants(ASTVariableDeclaratorId::class.java).toList()
 
         val (e, caseA, caseB) =
                 acu.descendants(ASTVariableAccess::class.java).toList()
@@ -352,17 +357,17 @@ class VarScopingTest : ProcessorTestSpec({
 
         qualifiedA.referencedSym shouldBe enumA.symbol
         qualifiedA.referencedSym!!.tryGetNode() shouldBe enumA
-        qualifiedA.typeMirror shouldBe t_SomeEnum
+        qualifiedA shouldHaveType t_SomeEnum
 
         caseA.referencedSym shouldBe enumA.symbol
         caseA.referencedSym!!.tryGetNode() shouldBe enumA
-        caseA.typeMirror shouldBe t_SomeEnum
+        caseA shouldHaveType t_SomeEnum
 
         caseB.referencedSym shouldBe enumB.symbol
         caseB.referencedSym!!.tryGetNode() shouldBe enumB
-        caseB.typeMirror shouldBe t_SomeEnum
+        caseB shouldHaveType t_SomeEnum
 
-        e.typeMirror shouldBe t_SomeEnum
+        e shouldHaveType t_SomeEnum
 
         // symbol tables don't carry that info, this is documented on JSymbolTable#variables()
         caseB.symbolTable.variables().resolve("A").shouldBeEmpty()

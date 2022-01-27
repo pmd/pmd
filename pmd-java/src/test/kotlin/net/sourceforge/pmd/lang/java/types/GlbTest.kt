@@ -4,19 +4,14 @@
 
 package net.sourceforge.pmd.lang.java.types
 
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldContainExactly
-import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.shouldBe
-import io.kotest.property.PropTestConfig
 import io.kotest.property.checkAll
-import io.kotest.property.forAll
-import io.mockk.InternalPlatformDsl.toArray
 import net.sourceforge.pmd.lang.ast.test.shouldBeA
-import net.sourceforge.pmd.lang.java.types.testdata.LubTestData
-import net.sourceforge.pmd.lang.java.types.testdata.LubTestData.*
-import java.io.Serializable
+import net.sourceforge.pmd.lang.java.symbols.internal.asm.createUnresolvedAsmSymbol
 
 /**
  * Tests "the greatest lower bound" (glb).
@@ -31,12 +26,12 @@ class GlbTest : FunSpec({
 
             test("Test intersection minimization") {
 
-                forAll(ts.subtypesArb()) { (t, s) ->
-                    glb(t, s) == t
+                checkAll(ts.subtypesArb()) { (t, s) ->
+                    glb(t, s) shouldBe t
                 }
 
                 // in particular
-                checkAll(ts.allTypesGen) { t ->
+                checkAll(ts.refTypeGen) { t ->
                     glb(t, t) shouldBe t // regardless of what kind of type t is
                 }
             }
@@ -76,6 +71,24 @@ class GlbTest : FunSpec({
 
             }
 
+
+            test("Test lub of zero types") {
+                shouldThrow<IllegalArgumentException> {
+                    ts.glb(emptyList())
+                }
+            }
+
+
+            test("Test GLB errors") {
+
+                shouldThrow<IllegalArgumentException> {
+                    glb(int, t_Number)
+                }
+                shouldThrow<IllegalArgumentException> {
+                    glb(int, ts.OBJECT)
+                }
+            }
+
             test("Test GLB corner cases") {
 
                 glb(t_Iterable[`?` extends t_Number], t_Iterable[t_String]).shouldBeA<JIntersectionType> {
@@ -97,6 +110,20 @@ class GlbTest : FunSpec({
                 glb(`t_List{? extends Number}`, `t_Collection{Integer}`, `t_ArrayList{Integer}`) shouldBe `t_ArrayList{Integer}`
                 glb(`t_List{? extends Number}`, `t_List{String}`, `t_Enum{JPrimitiveType}`).shouldBeA<JIntersectionType> {
                     it.components.shouldContainExactly(`t_Enum{JPrimitiveType}`, `t_List{String}`, `t_List{? extends Number}`)
+                }
+            }
+
+            test("Test GLB with unresolved things") {
+                val tA = ts.declaration(ts.createUnresolvedAsmSymbol("a.A"))
+                val tB = ts.declaration(ts.createUnresolvedAsmSymbol("a.B"))
+
+                tA shouldBeSubtypeOf tB
+                tB shouldBeSubtypeOf tA
+
+                TypeOps.mostSpecific(setOf(tA, tB)) shouldBe setOf(tA, tB)
+
+                glb(tA, tB).shouldBeA<JIntersectionType> {
+                    it.components.shouldContainExactly(tA, tB)
                 }
             }
         }

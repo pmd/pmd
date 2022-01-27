@@ -16,9 +16,7 @@ import java.util.function.*
 import java.util.stream.Collector
 import java.util.function.Function as JavaFunction
 
-/**
- *
- */
+@Suppress("UNUSED_VARIABLE")
 class MethodRefInferenceTest : ProcessorTestSpec({
 
 
@@ -342,10 +340,7 @@ class MethodRefInferenceTest : ProcessorTestSpec({
 
             package scratch;
 
-            import static java.util.stream.Collectors.joining;
-
             import java.util.Comparator;
-            import java.util.Deque;
 
             class Archive {
 
@@ -553,7 +548,7 @@ class Scratch {
         """.trimIndent())
 
         val (_, t_Sink) = acu.descendants(ASTClassOrInterfaceDeclaration::class.java).toList { it.typeMirror }
-        val (_, acceptInt, acceptLong) = acu.descendants(ASTMethodDeclaration::class.java).toList()
+        val (_, acceptInt, acceptLong) = acu.descendants(ASTMethodDeclaration::class.java).crossFindBoundaries().toList()
         val (castRef, returnRef) = acu.descendants(ASTMethodReference::class.java).toList()
 
         doTest("In cast context") {
@@ -941,7 +936,7 @@ class Scratch {
         """.trimIndent())
 
         val (_, t_NodeStream) = acu.descendants(ASTClassOrInterfaceDeclaration::class.java).toList { it.typeMirror }
-        val (_, tvar) = acu.descendants(ASTTypeParameter::class.java).toList { it.typeMirror }
+        val (_, tvar) = acu.descendants(ASTTypeParameter::class.java).crossFindBoundaries().toList { it.typeMirror }
         val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
 
         call.shouldMatchN {
@@ -1123,7 +1118,7 @@ class Scratch {
             mref.functionalMethod shouldBe plus
             val rvar = plus.typeParameters[0]!!
             mref.referencedMethod shouldBe abstractColl[rvar].getDeclaredMethod(inAbstractColl.symbol)
-            mref.typeMirror shouldBe t_Additioner
+            mref shouldHaveType t_Additioner
         }
     }
 

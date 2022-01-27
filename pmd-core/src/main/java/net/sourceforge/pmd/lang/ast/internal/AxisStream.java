@@ -472,6 +472,15 @@ abstract class AxisStream<T extends Node> extends IteratorBasedNStream<T> {
         }
 
         @Override
+        public NodeStream<Node> dropLast(int n) {
+            AssertionUtil.requireNonNegative("n", n);
+            if (n == 0) {
+                return this;
+            }
+            return take(max(len - n, 0));
+        }
+
+        @Override
         public boolean nonEmpty() {
             return len > 0;
         }

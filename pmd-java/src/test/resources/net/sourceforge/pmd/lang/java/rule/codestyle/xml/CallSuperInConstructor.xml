@@ -47,6 +47,7 @@ public class Foo {
         <description>Enum</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+class Buz {}
 public class Bar extends Buz {
     public static enum Foo {
         ;

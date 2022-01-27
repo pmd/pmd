@@ -21,9 +21,9 @@ import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Report.ConfigurationError;
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.RuleSetFactory;
+import net.sourceforge.pmd.RuleSetLoader;
+import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.RulesetsFactoryUtils;
 import net.sourceforge.pmd.ThreadSafeReportListener;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
@@ -36,13 +36,12 @@ public class MultiThreadProcessorTest {
 
     private RuleContext ctx;
     private MultiThreadProcessor processor;
-    private RuleSetFactory ruleSetFactory;
+    private RuleSets ruleSets;
     private List<DataSource> files;
     private SimpleReportListener reportListener;
 
     public void setUpForTest(final String ruleset) {
         PMDConfiguration configuration = new PMDConfiguration();
-        configuration.setRuleSets(ruleset);
         configuration.setThreads(2);
         files = new ArrayList<>();
         files.add(new StringDataSource("file1-violation.dummy", "ABC"));
@@ -53,7 +52,7 @@ public class MultiThreadProcessorTest {
         ctx.getReport().addListener(reportListener);
 
         processor = new MultiThreadProcessor(configuration);
-        ruleSetFactory = RulesetsFactoryUtils.defaultFactory();
+        ruleSets = new RuleSets(new RuleSetLoader().loadFromResources(ruleset));
     }
 
     @Test
@@ -61,7 +60,7 @@ public class MultiThreadProcessorTest {
         setUpForTest("rulesets/MultiThreadProcessorTest/dysfunctional.xml");
         final SimpleRenderer renderer = new SimpleRenderer(null, null);
         renderer.start();
-        processor.processFiles(ruleSetFactory, files, ctx, Collections.<Renderer>singletonList(renderer));
+        processor.processFiles(ruleSets, files, ctx, Collections.<Renderer>singletonList(renderer));
         renderer.end();
 
         final Iterator<ConfigurationError> configErrors = renderer.getReport().getConfigurationErrors().iterator();
@@ -77,7 +76,7 @@ public class MultiThreadProcessorTest {
     @Test
     public void testRulesThreadSafety() {
         setUpForTest("rulesets/MultiThreadProcessorTest/basic.xml");
-        processor.processFiles(ruleSetFactory, files, ctx, Collections.<Renderer>emptyList());
+        processor.processFiles(ruleSets, files, ctx, Collections.<Renderer>emptyList());
 
         // if the rule is not executed, then maybe a
         // ConcurrentModificationException happened

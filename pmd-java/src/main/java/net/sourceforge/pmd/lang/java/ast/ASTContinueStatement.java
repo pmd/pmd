@@ -22,7 +22,7 @@ import net.sourceforge.pmd.lang.ast.NodeStream;
  */
 public final class ASTContinueStatement extends AbstractStatement {
 
-    private static final Function<JavaNode, ASTLoopStatement> CONTINUE_TARGET_MAPPER =
+    private static final Function<Object, ASTLoopStatement> CONTINUE_TARGET_MAPPER =
         NodeStream.asInstanceOf(ASTLoopStatement.class);
 
     ASTContinueStatement(int id) {

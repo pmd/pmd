@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.modelica.ast;
 
+import net.sourceforge.pmd.lang.ast.AstInfo;
+import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.modelica.resolver.CompositeName;
 
@@ -12,6 +14,7 @@ import net.sourceforge.pmd.lang.modelica.resolver.CompositeName;
  */
 public class ASTStoredDefinition extends AbstractModelicaNode implements RootNode {
     private boolean hasBOM = false;
+    private AstInfo<ASTStoredDefinition> astInfo;
 
     ASTStoredDefinition(int id) {
         super(id);
@@ -25,6 +28,17 @@ public class ASTStoredDefinition extends AbstractModelicaNode implements RootNod
     void markHasBOM() {
         hasBOM = true;
     }
+
+    @Override
+    public AstInfo<ASTStoredDefinition> getAstInfo() {
+        return astInfo;
+    }
+
+    ASTStoredDefinition makeTaskInfo(ParserTask task) {
+        this.astInfo = new AstInfo<>(task, this);
+        return this;
+    }
+
 
     /**
      * Returns whether this source file contains Byte Order Mark.

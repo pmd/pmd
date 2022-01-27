@@ -26,7 +26,7 @@ public class MyTestCase extends TestCase {
 import junit.framework.TestCase;
 public class MyTestCase extends TestCase {
     //negative on rule
-    @Test
+    @org.junit.Test
     public void myCaseWithNoAssert() {
         boolean myVar = false;
         //no assert here
@@ -229,6 +229,8 @@ public class MyTestCase {
             package unknown;
             import static org.junit.jupiter.api.Assertions.*;
             import org.junit.jupiter.api.Test;
+            import my.MutableInteger;
+            import my.SomeClass;
 
             public class SomeClassTest {
 
@@ -251,12 +253,14 @@ public class MyTestCase {
             package unknown;
             import static org.junit.jupiter.api.Assertions.*;
             import org.junit.jupiter.api.Test;
+            import my.Point;
+            import java.util.List;
 
             class SampleTest {
                 @Test
-                void sampleTestCase() {
+                void sampleTestCase(List<Point> ps) {
                     final Point input = new Point(1, 2);
-                    final Point result = p.add(p);
+                    final Point result = ps.add(input);
                     assertAll(
                             () -> assertEquals(2, result.x),
                             () -> assertEquals(4, result.y)

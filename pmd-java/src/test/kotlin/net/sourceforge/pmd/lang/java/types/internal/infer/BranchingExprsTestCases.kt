@@ -33,12 +33,12 @@ class BranchingExprsTestCases : ProcessorTestSpec({
                         ternaryExpr {
                             boolean(true)
                             child<ASTLambdaExpression> {
-                                it.typeMirror shouldBe it.typeSystem.stringSupplier()
+                                it shouldHaveType it.typeSystem.stringSupplier()
                                 child<ASTLambdaParameterList> { }
                                 stringLit("\"foo\"")
                             }
                             child<ASTLambdaExpression> {
-                                it.typeMirror shouldBe it.typeSystem.stringSupplier()
+                                it shouldHaveType it.typeSystem.stringSupplier()
                                 child<ASTLambdaParameterList> { }
                                 stringLit("\"bar\"")
                             }
@@ -61,7 +61,7 @@ class BranchingExprsTestCases : ProcessorTestSpec({
                 methodCall("makeThree") {
                     argList {
                         ternaryExpr {
-                            it.typeMirror shouldBe it.typeSystem.stringSupplier()
+                            it shouldHaveType it.typeSystem.stringSupplier()
 
                             boolean(true)
                             child<ASTLambdaExpression> {
@@ -98,14 +98,14 @@ class BranchingExprsTestCases : ProcessorTestSpec({
                         }
 
                         ternaryExpr {
-                            it.typeMirror shouldBe lubOfBothLists
+                            it shouldHaveType lubOfBothLists
                             boolean(true)
                             with(it.typeDsl) {
                                 child<ASTConstructorCall>(ignoreChildren = true) {
-                                    it.typeMirror shouldBe gen.`t_ArrayList{String}`
+                                    it shouldHaveType gen.`t_ArrayList{String}`
                                 }
                                 child<ASTConstructorCall>(ignoreChildren = true) {
-                                    it.typeMirror shouldBe gen.`t_LinkedList{String}`
+                                    it shouldHaveType gen.`t_LinkedList{String}`
                                 }
                             }
                         }
@@ -135,7 +135,7 @@ class BranchingExprsTestCases : ProcessorTestSpec({
 
                     variableDeclarator("ter") {
                         child<ASTSwitchExpression> {
-                            it::getTypeMirror shouldBe it.typeDsl.gen.`t_List{String}`
+                            it shouldHaveType it.typeDsl.gen.`t_List{String}`
                             unspecifiedChildren(4)
                         }
                     }
@@ -154,7 +154,7 @@ class BranchingExprsTestCases : ProcessorTestSpec({
 
                     variableDeclarator("ter") {
                         child<ASTSwitchExpression> {
-                            it::getTypeMirror shouldBe it.typeSystem.DOUBLE
+                            it shouldHaveType it.typeSystem.DOUBLE
                             unspecifiedChildren(4)
                         }
                     }
@@ -175,7 +175,7 @@ class BranchingExprsTestCases : ProcessorTestSpec({
                     child<ASTVariableDeclarator> {
                         variableId("ter") {
                             it::isTypeInferred shouldBe true
-                            it::getTypeMirror shouldBe it.typeSystem.DOUBLE
+                            it shouldHaveType it.typeSystem.DOUBLE
                         }
                         unspecifiedChild()
                     }
@@ -195,7 +195,7 @@ class BranchingExprsTestCases : ProcessorTestSpec({
                     variableDeclarator("ter") {
 
                         ternaryExpr {
-                            it::getTypeMirror shouldBe it.typeSystem.INT
+                            it shouldHaveType it.typeSystem.INT
                             boolean(true)
                             int(1)
                             int(3)
@@ -211,7 +211,7 @@ class BranchingExprsTestCases : ProcessorTestSpec({
                     variableDeclarator("ter") {
 
                         ternaryExpr {
-                            it::getTypeMirror shouldBe it.typeSystem.DOUBLE
+                            it shouldHaveType it.typeSystem.DOUBLE
                             boolean(true)
                             int(1)
                             number(DOUBLE)
@@ -227,7 +227,7 @@ class BranchingExprsTestCases : ProcessorTestSpec({
                     variableDeclarator("ter") {
 
                         ternaryExpr {
-                            it::getTypeMirror shouldBe it.typeSystem.INT
+                            it shouldHaveType it.typeSystem.INT
                             boolean(true)
                             int(1)
                             char('c')
@@ -265,6 +265,63 @@ class Scratch {
     }
 
 
+
+    parserTest("Cast context doesn't provide target type (only for lambdas)") {
+
+        val (acu, spy) = parser.parseWithTypeInferenceSpy("""
+            import java.util.Collection;
+            import java.util.List;
+            import java.util.Set;
+
+            class Test {
+
+                Collection<String> fun(boolean messageSelector) {
+                    Collection<String> textFromMessage =
+                            // compile error: a cast doesn't contribute a target type,
+                            // the ternary is inferred to Collection<Object>
+                            (Collection<String>) (messageSelector ? emptyList() : emptySet());
+
+                    // ok
+                    return (messageSelector ? emptyList() : emptySet());
+                }
+
+                // target-type dependent methods
+                <T> List<T> emptyList() {return null;}
+                <T> Set<T> emptySet() {return null;}
+            }
+        """.trimIndent())
+
+        val (ternary1, ternary2) = acu.descendants(ASTConditionalExpression::class.java).toList()
+
+        spy.shouldBeOk {
+            ternary1 shouldHaveType java.util.Collection::class[ts.OBJECT]
+            ternary2 shouldHaveType java.util.Collection::class[ts.STRING]
+        }
+    }
+
+    parserTest("Null branches produce null type") {
+
+        val (acu, spy) = parser.parseWithTypeInferenceSpy("""
+            import java.util.Collection;
+            class Test {
+                Collection<String> fun(boolean messageSelector) {
+                    // reference ternary in assignment ctx so it takes the target type (Collection<String>)
+                    return (messageSelector ? null : null);
+                    // cast context isn't a target type so it has NULL_TYPE
+                    return (Collection<String>) (messageSelector ? null : null);
+                }
+            }
+        """.trimIndent())
+
+        val (ternary1, ternary2) = acu.descendants(ASTConditionalExpression::class.java).toList()
+
+        spy.shouldBeOk {
+            ternary1 shouldHaveType java.util.Collection::class[ts.STRING]
+            ternary2 shouldHaveType ts.NULL_TYPE
+        }
+    }
+
+
     parserTest("Assignment context doesn't influence standalone ternary") {
 
 
@@ -298,7 +355,7 @@ class Scratch {
 
                             boolean(true)
                             constructorCall {
-                                it.typeMirror shouldBe it.typeSystem.INT.box()
+                                it shouldHaveType it.typeSystem.INT.box()
 
                                 unspecifiedChildren(2)
                             }
@@ -355,16 +412,16 @@ class Scratch {
                     variableDeclarator("ter") {
 
                         ternaryExpr {
-                            it.typeMirror shouldBe it.typeSystem.OBJECT // not String
+                            it shouldHaveType it.typeSystem.OBJECT // not String
 
                             boolean(true)
                             methodCall("valueOf") {
-                                it.typeMirror shouldBe it.typeSystem.STRING
+                                it shouldHaveType it.typeSystem.STRING
 
                                 unspecifiedChildren(2)
                             }
                             methodCall("valueOf") {
-                                it.typeMirror shouldBe it.typeSystem.STRING
+                                it shouldHaveType it.typeSystem.STRING
 
                                 unspecifiedChildren(2)
                             }
@@ -373,6 +430,8 @@ class Scratch {
                 }
             }
 
+            // note: a cast context is not a target type, which makes the conditional
+            // use the LUB rule to determine its type.
             "String ter = (String) (Object) (true ? String.valueOf(1) : 2);" should parseAs {
                 localVarDecl {
                     modifiers { }
@@ -385,11 +444,11 @@ class Scratch {
                                 unspecifiedChild()
 
                                 ternaryExpr {
-                                    it.typeMirror shouldBe it.typeSystem.OBJECT
+                                    it shouldHaveType it.typeSystem.lub(it.typeSystem.STRING, it.typeSystem.INT)
 
                                     boolean(true)
                                     methodCall("valueOf") {
-                                        it.typeMirror shouldBe it.typeSystem.STRING
+                                        it shouldHaveType it.typeSystem.STRING
 
                                         unspecifiedChildren(2)
                                     }

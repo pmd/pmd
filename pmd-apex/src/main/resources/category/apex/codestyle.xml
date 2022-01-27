@@ -282,7 +282,7 @@ can lead to quite messy code. This rule looks for several declarations on the sa
                 <value>
 <![CDATA[
 //VariableDeclarationStatements
-  [count(VariableDeclaration) > 1]
+  [count(VariableDeclaration) > 1 and ($reportInForLoopInitializer = true() or name(parent::*) != 'ForLoopStatement')]
   [$strictMode or count(distinct-values(VariableDeclaration/@BeginLine)) != count(VariableDeclaration)]
 |
 //FieldDeclarationStatements
@@ -293,6 +293,7 @@ can lead to quite messy code. This rule looks for several declarations on the sa
             </property>
             <property name="strictMode" type="Boolean" value="false"
                       description="If true, mark combined declaration even if the declarations are on separate lines."/>
+            <property name="reportInForLoopInitializer" type="Boolean" value="true" description="If false, multiple declarations in a for loop initializer are not flagged."/>
         </properties>
         <example>
 <![CDATA[

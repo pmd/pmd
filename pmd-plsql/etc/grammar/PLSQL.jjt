@@ -27,6 +27,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 /**
+ * Add support for Select statement within OPEN FOR Statements
+ *
+ * Andreas Dangel 09/2021
+ *====================================================================
  * Add support for XMLROOT, improve ExtractExpression to support xml
  *
  * Piotr Szymanski 03/2020
@@ -84,7 +88,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  * Andreas Dangel 07/2018
  *====================================================================
- * Added ASTIsOfTypeCondition node, added support for USING IN|OUT|IN_OUT
+ * Added ASTIsOfTypeCondition node, added support for USING IN|OUT|IN OUT
  * See PMD Bug #1520
  *
  * Andreas Dangel 11/2016
@@ -130,6 +134,7 @@ options {
     VISITOR = true;
 }
 
+
 PARSER_BEGIN(PLSQLParserImpl)
 
 /* Copyright (C) 2002 Albert Tumanov
@@ -153,9 +158,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 package net.sourceforge.pmd.lang.plsql.ast;
 
 import java.io.*;
+import java.util.List;
+import java.util.ArrayList;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.CharStream;
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
+import net.sourceforge.pmd.lang.plsql.ast.internal.ParsingExclusion;
 
 public class PLSQLParserImpl {
 
@@ -215,6 +223,14 @@ public class PLSQLParserImpl {
 }
 
 PARSER_END(PLSQLParserImpl)
+
+
+
+TOKEN_MGR_DECLS : {
+
+  List<ParsingExclusion> exclusions = new ArrayList<ParsingExclusion>();
+}
+
 /**
  * 2006-05-22 - Matthias Hendler - Added parsing of triggers and global functions/procedures
  *                                 Refactored printing of custom tags into the XML/DOM.
@@ -225,7 +241,10 @@ PARSER_END(PLSQLParserImpl)
 /**
  * 2006-05-22 - Matthias Hendler - added globalBody()
  */
-ASTInput Input() : {}
+ASTInput Input() :
+{
+  token_source.exclusions.clear();
+}
 {
 	// SRT 2011-04-17 This syntax breaks the parser when fields of record.attach* are referenced (attachLibrary())*
 	(
@@ -251,7 +270,22 @@ ASTInput Input() : {}
 	 ("/")*
 	)*
 	<EOF>
-	{ return jjtThis; }
+      {
+        List<ParsingExclusion> exclusions = token_source.exclusions;
+        if (exclusions != null) {
+          // System.err.println("ParsingExclusions:");
+          for (ParsingExclusion ex : exclusions) {
+            // System.err.print("  Lines " + ex.getBeginLine() + " - " + ex.getEndLine());
+            // if (ex.getReason() != null) {
+            //   System.err.println(": " + ex.getReason());
+            // } else {
+            //   System.err.println("");
+            // }
+            jjtThis.addExcludedLineRange(ex.getBeginLine(), ex.getEndLine());
+          }
+        }
+        return jjtThis ;
+      }
 }
 
 ASTDDLCommand DDLCommand() :
@@ -273,59 +307,87 @@ ASTDDLCommand DDLCommand() :
   { jjtThis.setImage(simpleNode.getImage()) ;  return jjtThis ; }
 }
 
+/*
+ * See https://docs.oracle.com/en/database/oracle/oracle-database/21/sqpug/SQL-Plus-reference.html#GUID-C3D4A718-56AD-4872-ADFF-A216FF70EDF2
+ */
 ASTSqlPlusCommand SqlPlusCommand() :
 {
- StringBuilder sb = new StringBuilder() ;
+  StringBuilder sb = new StringBuilder();
 }
 {
   (
   // e.g. SHOW ERRORS, GRANT EXECUTE ON ... TO ...
   // SQLPLUS commands
-  ( "@"
-  | <ACCEPT>
+  ( "@@" ( <_CHARACTER> | <SPECIAL_CHARACTERS> | <DELIMITER> ) *
+  | "@" ( <_CHARACTER> | <SPECIAL_CHARACTERS> | <DELIMITER> ) *
+  | LOOKAHEAD({isKeyword("ACCEPT")}) KEYWORD("ACCEPT")
+  | LOOKAHEAD({isKeyword("ACC")}) KEYWORD("ACC")
+  | LOOKAHEAD({isKeyword("ARCHIVE")}) KEYWORD("ARCHIVE") {sb.append(token.getImage()).append(' ');} "LOG" {sb.append(token.getImage()).append(' ');} KEYWORD("LIST")
+  | <ATTRIBUTE>
+  | LOOKAHEAD({isKeyword("BREAK")}) KEYWORD("BREAK")
+  | LOOKAHEAD({isKeyword("BTITLE")}) KEYWORD("BTITLE")
+  | LOOKAHEAD({isKeyword("CLEAR")}) KEYWORD("CLEAR")
   | <COLUMN>
+  | LOOKAHEAD({isKeyword("COL")}) KEYWORD("COL")
+  | LOOKAHEAD({isKeyword("COMPUTE")}) KEYWORD("COMPUTE")
+  | LOOKAHEAD({isKeyword("COMP")}) KEYWORD("COMP")
   | <CONNECT>
-  | <COPY>
-  | <DEFINE>
-  | <DISCONNECT>
+  | LOOKAHEAD({isKeyword("CONN")}) KEYWORD("CONN")
+  | LOOKAHEAD({isKeyword("COPY")}) KEYWORD("COPY")
+  | LOOKAHEAD({isKeyword("DEFINE")}) KEYWORD("DEFINE")
+  | LOOKAHEAD({isKeyword("DEF")}) KEYWORD("DEF")
+  | LOOKAHEAD({isKeyword("DESCRIBE")}) KEYWORD("DESCRIBE")
+  | LOOKAHEAD({isKeyword("DESCR")}) KEYWORD("DESCR")
+  | LOOKAHEAD({isKeyword("DESC")}) KEYWORD("DESC")
+  | LOOKAHEAD({isKeyword("DISCONNECT")}) KEYWORD("DISCONNECT")
+  | LOOKAHEAD({isKeyword("DISC")}) KEYWORD("DISC")
   | <EXECUTE>
+  | LOOKAHEAD({isKeyword("EXEC")}) KEYWORD("EXEC")
   | <EXIT>
-  | <HOST>
-  | <PRINT>
-  | <PROMPT>
-  | <QUIT>
-  | <REMARK>
+  | LOOKAHEAD({isKeyword("HOST")}) KEYWORD("HOST") ( <_CHARACTER> | <SPECIAL_CHARACTERS> | <DELIMITER> ) *
+  | "$"    ( <_CHARACTER> | <SPECIAL_CHARACTERS> | <DELIMITER> ) * // only works with a blank after the dollar
+  | "!"    ( <_CHARACTER> | <SPECIAL_CHARACTERS> | <DELIMITER> ) * // only works with a blank after the exclamation mark
+  // These characters are platform-specific, anyway...
+  | LOOKAHEAD({isKeyword("INPUT")}) KEYWORD("INPUT")
+  | LOOKAHEAD({isKeyword("PASSWORD")}) KEYWORD("PASSWORD")
+  | LOOKAHEAD({isKeyword("PASSW")}) KEYWORD("PASSW")
+  | LOOKAHEAD({isKeyword("PAUSE")}) KEYWORD("PAUSE")
+  | LOOKAHEAD({isKeyword("PRINT")}) KEYWORD("PRINT")
+  | LOOKAHEAD({isKeyword("PROMPT")}) KEYWORD("PROMPT") ( <_CHARACTER> | <SPECIAL_CHARACTERS> | <DELIMITER> ) *
+  | LOOKAHEAD({isKeyword("QUIT")}) KEYWORD("QUIT")
+  | LOOKAHEAD({isKeyword("RECOVER")}) KEYWORD("RECOVER")
+  | LOOKAHEAD({isKeyword("REMARK")}) KEYWORD("REMARK") ( <_CHARACTER> | <SPECIAL_CHARACTERS> | <DELIMITER> ) *
+  | LOOKAHEAD({isKeyword("REM")}) KEYWORD("REM") ( <_CHARACTER> | <SPECIAL_CHARACTERS> | <DELIMITER> ) *
   | <SET>
-  | <SHOW>
-  | <SPOOL>
-  | <START>
-  | <UNDEFINE>
-  | <VARIABLE>
-  | <WHENEVER>
+  | LOOKAHEAD({isKeyword("SHOW")}) KEYWORD("SHOW")
+  | LOOKAHEAD({isKeyword("SHO")}) KEYWORD("SHO")
+  | <SHUTDOWN>
+  | LOOKAHEAD({isKeyword("SPOOL")}) KEYWORD("SPOOL")
+  | <START> ( <_CHARACTER> | <SPECIAL_CHARACTERS> | <DELIMITER> ) *
+  | <STARTUP>
+  | LOOKAHEAD({isKeyword("STORE")}) KEYWORD("STORE")
+  | LOOKAHEAD({isKeyword("TIMING")}) KEYWORD("TIMING")
+  | LOOKAHEAD({isKeyword("TTITLE")}) KEYWORD("TTITLE")
+  | LOOKAHEAD({isKeyword("UNDEFINE")}) KEYWORD("UNDEFINE")
+  | LOOKAHEAD({isKeyword("VARIABLE")}) KEYWORD("VARIABLE")
+  | LOOKAHEAD({isKeyword("VAR")}) KEYWORD("VAR")
+  | LOOKAHEAD({isKeyword("WHENEVER")}) KEYWORD("WHENEVER")
+  // XQUERY is not yet supported, because it is not a single-line command
+  // It should be handled as unknown, skipping to the next stand-alone "/".
   // DDL that might be encountered
   | LOOKAHEAD({isKeyword("COMMENT")}) KEYWORD("COMMENT")
   | <GRANT>
   | <REVOKE>
   | <DROP>
-  | <IDENTIFIER>
   // Attach Library
   | "." <ATTACH>
   )
-  { sb.append(token.getImage()) ; sb.append(" ...") ; }
-  Skip2NextTokenOccurrence(EOL) //Tracker Issue 1433480 skip until next EOL Special Token
-  //[";" | "-"]
+  {
+    sb.append(token.getImage()) ; sb.append(" ") ; sb.append(Read2NextTokenOccurrence(EOL)) ;
+  }
   )
-  { jjtThis.setImage(sb.toString()) ;  return jjtThis ; }
+  { jjtThis.setImage(sb.toString()) ; return jjtThis ; }
 }
-
-/*
-SRT 2011-04-17 This syntax breaks the parser when fields of record.attach* are referenced  in PL/SQL
-void attachLibrary() :
-{}
-{
-	<".attach"> <IDENTIFIER> <IDENTIFIER> <END> <IDENTIFIER>
-}
-*/
 
 /**
  * All global definitions of triggers, functions and procedures are evaluated here.
@@ -1112,6 +1174,26 @@ ASTRead2NextOccurrence Read2NextOccurrence(String target) :
 }
 {
 	{ jjtThis.setImage(sb.toString()) ;  jjtThis.value = sb.toString(); return jjtThis ;}
+}
+
+JAVACODE
+/*
+ Read Tokens up to but not including the target token.
+*/
+String Read2NextTokenOccurrence(int target) #void {
+  StringBuilder sb = new StringBuilder();
+  Token nextToken = getToken(1);
+  while (nextToken.kind!=target
+        && (null == nextToken.specialToken || nextToken.specialToken.kind!=target ) //In case the target is a Special Token
+        && nextToken.kind!=EOF
+        )
+  {
+    nextToken = getNextToken();
+    sb.append(nextToken.getImage());
+    sb.append(' ');
+    nextToken = getToken(1);
+  }
+  return sb.toString();
 }
 
 /*
@@ -1918,10 +2000,13 @@ ASTIntoClause IntoClause() :
     { return jjtThis; }
 }
 
+// This might also be a associative array dereference...
+// see https://github.com/pmd/pmd/issues/3515
 ASTVariableName VariableName() :
-{ ASTID id; StringBuilder name = new StringBuilder(); }
+{ ASTID id; ASTLiteral lit; StringBuilder name = new StringBuilder(); }
 {
     id = ID() { name.append(id.getImage()); }
+    [ "(" lit = Literal() ")" { name.append('(').append(lit.getImage()).append(')'); } ]
     [ "." id = ID() { name.append('.').append(id.getImage()); } ]
     [ "." id = ID() { name.append('.').append(id.getImage()); } ]
     {
@@ -2635,13 +2720,17 @@ ASTCloseStatement CloseStatement()  :
       { jjtThis.setImage(cursor.getImage()) ; return jjtThis ; }
 }
 
+/*
+ * See https://docs.oracle.com/en/database/oracle/oracle-database/18/lnpls/OPEN-statement.html#GUID-FB5A9CC3-655F-4AF4-8105-14CB39F2FEA8
+ * and https://docs.oracle.com/en/database/oracle/oracle-database/18/lnpls/OPEN-FOR-statement.html#GUID-EB7AF439-FDD3-4461-9E3F-B621E8ABFB96
+ */
 ASTOpenStatement OpenStatement()  :
 {}
 {
-	 <OPEN> [Expression()]
-		//[LOOKAHEAD(functionCall()) functionCall() | QualifiedName()]
-		[<FOR> Expression() [<USING> (<IN> | <OUT> | <IN_OUT>)? Expression() ("," (<IN> | <OUT> | <IN_OUT>)? Expression())*]]
-      { return jjtThis ; }
+    <OPEN> [Expression()]
+    [<FOR> ( SelectStatement() | Expression() ) [ UsingClause() ] ]
+
+    { return jjtThis ; }
 }
 
 /*
@@ -2660,12 +2749,18 @@ ASTFetchStatement FetchStatement()  :
 ASTEmbeddedSqlStatement EmbeddedSqlStatement()  :
 {}
 {
-   <EXECUTE> <IMMEDIATE> (StringLiteral() | Expression())
+   <EXECUTE> <IMMEDIATE> StringExpression()
 	[ <INTO> Name() ("," Name())* ]
-	[ <USING> [ <IN> [ <OUT> ] | <OUT> ]  Expression() ("," [ <IN> [ <OUT> ] | <OUT> ] Expression())* ]
+	[ UsingClause() ]
 	[ ( <RETURN> | <RETURNING> )  <INTO> Expression() ("," Expression())*] ";"
 	// PIPELINED FUNCTION OUTPUT
       { return jjtThis ; }
+}
+
+void UsingClause() #void :
+{}
+{
+    <USING> [ <IN> [ <OUT> ] | <OUT> ]  Expression() ("," [ <IN> [ <OUT> ] | <OUT> ] Expression())*
 }
 
 ASTPipelineStatement PipelineStatement()  :
@@ -3353,7 +3448,6 @@ ASTPrimaryPrefix PrimaryPrefix() :
 | LOOKAHEAD(Literal()) ( simpleNode = Literal() ) { sb.append(simpleNode.getImage()) ; }
 | LOOKAHEAD(SimpleExpression()) ( simpleNode = SimpleExpression() ) { sb.append(simpleNode.getImage()); }
 | ( simpleNode =Name() ) { sb.append(simpleNode.getImage()) ; }
-| SelectStatement()
 | LOOKAHEAD("(" <SELECT>) "(" SelectStatement() ")"
 | LOOKAHEAD(<WITH>) (<WITH>) {sb.append("WITH ..."); }  Skip2NextTerminator(null,";")
 | LOOKAHEAD(("(")+ <WITH>) ("(") {sb.append("(WITH ..."); }  Skip2NextTerminator("(",")") ")"
@@ -4530,6 +4624,28 @@ SKIP :
 	" " | "\t" | "\f"
 }
 
+/*
+This Grammar (or JavaCC) has several bugs.
+
+Currently (2021-02-26) it fails for things like
+- dbms_lob.trim(...),
+- scalar subqueries in the WHERE-clause,
+- TREAT(object AS type),
+just to name a few.
+
+Running PMD over a code base of approx. 1100 DDL scripts
+from a commercial product, the parser failed for 182 files.
+About 10% of these parsing errors actually showed flaws in the code,
+e.g. "\u2013" instead of "-", or utf-8 encoding instead of windows-1252
+(which is the standard for the product's scripts).
+Still, ~ 15% of perfectly valid DDL scripts could not be parsed by PMD.
+
+Nevertheless it should be best practice to call PMD for _every_ DDL script.
+
+See /docs/pages/languages/plsql.md for further explanations on how
+to use PMD-EXCLUDE-BEGIN and PMD-EXCLUDE-END.
+*/
+
 /* COMMENTS */
 
 MORE :
@@ -4537,6 +4653,18 @@ MORE :
 	<"/**" ~["/"]> : IN_FORMAL_COMMENT
 |
 	"/*" : IN_MULTI_LINE_COMMENT
+|
+  <"--" (" ")* "PMD-EXCLUDE-BEGIN" (" ")* (":")? (" ")* (~["\n", "\r"])*> : IN_PARSING_EXCLUSION
+}
+
+<IN_PARSING_EXCLUSION>
+SPECIAL_TOKEN :
+{
+  	<PARSING_EXCLUSION: "--" (" ")* "PMD-EXCLUDE-END" (~["\n", "\r"])* >
+    {
+      String excluded_source = matchedToken.getImage();
+      exclusions.add(new ParsingExclusion(matchedToken.getBeginLine(), matchedToken.getEndLine(), excluded_source));
+    } : DEFAULT
 }
 
 SPECIAL_TOKEN :
@@ -4572,7 +4700,7 @@ SKIP :
 */
 
 <IN_FORMAL_COMMENT, IN_MULTI_LINE_COMMENT,
- IN_SQL_STATEMENT_ENDED_SEMICOLON>
+ IN_SQL_STATEMENT_ENDED_SEMICOLON, IN_PARSING_EXCLUSION>
 MORE :
 {
 	< ~[] >
@@ -4761,7 +4889,6 @@ TOKEN [IGNORE_CASE]:
 <HOUR: "HOUR"> |
 <IMMEDIATE: "IMMEDIATE"> |
 <INNER: "INNER"> |
-<IN_OUT: "IN_OUT"> |
 <INDICES: "INDICES"> |
 <INCLUDING: "INCLUDING"> |
 <INDEXTYPE: "INDEXTYPE"> |
@@ -4840,7 +4967,6 @@ TOKEN [IGNORE_CASE]:
 <PRAGMA: "PRAGMA"> |
 <PRESERVE: "PRESERVE"> |
 <PRIOR: "PRIOR"> |
-<PROMPT: "PROMPT"> |
 <PRIMARY: "PRIMARY"> |
 <PRIVATE: "PRIVATE"> |
 //<QQUOTE_START: "Q'">  |  // Mark the start of a Q-quoted string, e.g. Q'[ This string contains a single-quote(') ]'
@@ -4903,9 +5029,6 @@ TOKEN [IGNORE_CASE]:
 <USING: "USING"> |
 <WHILE: "WHILE"> |
 <YES: "YES"> | //SRT 2011-04-17
-
-<SHOW: "SHOW"> |
-<SPOOL: "SPOOL"> |
 
 // are they reserved or not ?
 // most are not reserved, but cannot use just define them - might be resolved as identifiers
@@ -4994,18 +5117,7 @@ TOKEN [IGNORE_CASE]:
 | <CHARSETID: "CHARSETID"> //XE testing non-PLSQL functions
 | <CHARSETFORM: "CHARSETFORM"> //XE testing non-PLSQL functions
 //SQLPlus Commands
-| <ACCEPT : "ACCEPT">
 | <ACCESSIBLE : "ACCESSIBLE">
-| <COPY : "COPY">
-| <DEFINE : "DEFINE">
-| <DISCONNECT : "DISCONNECT">
-| <HOST : "HOST">
-| <PRINT : "PRINT">
-| <QUIT : "QUIT">
-| <REMARK : "REMARK">
-| <UNDEFINE : "UNDEFINE">
-| <VARIABLE : "VARIABLE">
-| <WHENEVER : "WHENEVER">
 | <ATTACH : "ATTACH">
 | <CAST : "CAST">
 | <TREAT : "TREAT">
@@ -5041,22 +5153,13 @@ TOKEN [IGNORE_CASE]:
  */
 TOKEN :
 {
-< #GERMAN_SPECIAL_CHARACTERS: "Ä" | "Ö" | "Ü" | "ä" | "ü" | "ö" | "ß" >
+<ESCAPED_AMPERSAND:
+  "\\&"
+>
 |
-< #LETTER: ["A"-"Z"] | ["a"-"z"] | <GERMAN_SPECIAL_CHARACTERS> >
-|
-< #DIGIT: ["0"-"9"]>
-|
-< #_CHARACTER: <_CHARACTER_WO_ASTERISK> | "'" >
-|
-< #_CHARACTER_WO_ASTERISK: <LETTER> | <DIGIT> | "(" | ")" | "+" | "-" | "*" | "/" | "<" | ">"
- | "=" | "!" | "~" | "^" | ";" | ":" | "." | "@" | "%" | "," | "\"" | "#"
- | "$" | "&" | "_" | "|" | "{" | "}" | "?" | "[" | "]"
- | " " | "\t" >
-|
-< #SPECIAL_CHARACTERS: "á" | "Ž" | "™" | "š" | "„" | "”" | "ý" | "²" | "€" | "³" | "µ">
-|
-< #DELIMITER: "+" | "%" | "'" | "\"" | "." | "/" | "(" | ")" | ":" | "," | "*" | "=" | "<" | ">" | "@" | ";" | "-">
+<BACKSLASH:
+  "\\"
+>
 |
 < IDENTIFIER:
 	( ("$" | ":" | <LETTER>) ( <LETTER> | <DIGIT> | "$" | "_" | "#" )* ) // 2006-05-17 - Matthias Hendler - Bind variablen werden nun als Identifier akzeptiert.
@@ -5065,11 +5168,24 @@ TOKEN :
 	//( <LETTER> ( "$" ) )
 	//( <LETTER> ( "_" ) )
 	//( <LETTER> ( "#" ) )
+  |
+  (
+    <LEXICAL_PARAMETER> ( <LETTER> | <DIGIT> | "$" | "_" | "#" )*
+  )
 	|
 	( (<LETTER> | "$" ) ( <LETTER> | <DIGIT> | "$" | "_" | "#" )* )
 	|
-//SRT	( "\"" (<_CHARACTER_WO_ASTERISK>)* "\"" )
 	( "\""  <LETTER> ( <LETTER> | <DIGIT> | "$" | "_" | "#" )* "\"" )
+>
+|
+< LEXICAL_PARAMETER:
+  (
+    ("&&" | "&")
+    (
+      ( <LETTER> | <DIGIT> | "$" | "_" | "#" )+
+      (".")?
+    )?
+  )
 >
 |
 < UNSIGNED_NUMERIC_LITERAL: <FLOAT_LITERAL> ( ["e","E"] (["-","+"])? <FLOAT_LITERAL> )? (["f","F","d","D"])? >
@@ -5095,6 +5211,23 @@ TOKEN :
 < JAVA_INTERFACE_CLASS: ( "SQLData" | "CustomDatum" | "OraData" ) >
 //|
 //< #BOOLEAN_LITERAL: "TRUE" | "FALSE" >
+|
+< #GERMAN_SPECIAL_CHARACTERS: "Ä" | "Ö" | "Ü" | "ä" | "ü" | "ö" | "ß" >
+|
+< #LETTER: ["A"-"Z"] | ["a"-"z"] | <GERMAN_SPECIAL_CHARACTERS> >
+|
+< #DIGIT: ["0"-"9"]>
+|
+< _CHARACTER: <_CHARACTER_WO_ASTERISK> | "'" >
+|
+< #_CHARACTER_WO_ASTERISK: <LETTER> | <DIGIT> | "(" | ")" | "+" | "-" | "*" | "/" | "<" | ">"
+ | "=" | "!" | "~" | "^" | ";" | ":" | "." | "@" | "%" | "," | "\"" | "#"
+ | "$" | "_" | "|" | "{" | "}" | "?" | "[" | "]"
+ | " " | "\t" >
+|
+< SPECIAL_CHARACTERS: "á" | "Ž" | "™" | "š" | "„" | "”" | "ý" | "²" | "€" | "³" | "µ">
+|
+< DELIMITER: "+" | "%" | "'" | "\"" | "." | "/" | "(" | ")" | ":" | "," | "*" | "=" | "<" | ">" | "@" | ";" | "-">
 }
 
 /**
@@ -5253,7 +5386,6 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
  | <TRUE>
  | <A>
 //| <ABORT>
-| <ACCEPT>
 //| <ACCESS>
 //| <ACCESSED>test_unreserved_keyword.pks
 //| <ACCOUNT>
@@ -5398,7 +5530,6 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 | <CONTINUE>
 //| <CONTROLFILE>
 | <CONVERT>
-| <COPY>
 //| <CORRUPTION>
 //| <COST>
 //| <CPU_COSTING>
@@ -5439,7 +5570,6 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 //| <DECRYPT>
 | <DEFERRABLE>
 | <DEFERRED>
-| <DEFINE>// SQL*Plus command
 //| <DEFINED>
 | <DEFINER>
 | <DEFINITION>
@@ -5457,7 +5587,6 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 | <DISABLE>
 //| <DISABLE_RPKE>
 | <DISASSOCIATE>
-| <DISCONNECT>
 //| <DISK>
 //| <DISKGROUP>
 //| <DISKS>
@@ -5573,7 +5702,6 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 //| <HIGH>
 //| <HINTSET_BEGIN>
 //| <HINTSET_END>
-| <HOST>
 | <HOUR>
 //| <HWM_BROKERED>
 //| <ID>
@@ -5968,7 +6096,6 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 | <PRESERVE>
 //| <PRESERVE_OID>
 | <PRIMARY>
-| <PRINT>
 //| <PRIVATE>
 //| <PRIVATE_SGA>
 //| <PRIVILEGE>
@@ -5990,7 +6117,6 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 //| <QUEUE>
 //| <QUEUE_CURR>
 //| <QUEUE_ROWP>
-| <QUIT>
 //| <QUIESCE>
 //| <QUOTA>
 //| <RANDOM>
@@ -6024,7 +6150,6 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 //| <RELATIONAL>
 //| <RELY>
 | <RELIES_ON>
-| <REMARK>
 //| <REMOTE_MAPPED>
 //| <REPAIR>
 //| <REQUIRED>
@@ -6232,7 +6357,6 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 //| <UNARCHIVED>
 //| <UNBOUND>
 //| <UNBOUNDED>
-| <UNDEFINE>
 | <UNDER>
 //| <UNDO>
 //| <UNDROP>
@@ -6275,7 +6399,6 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 //| <VALIDATE>
 //| <VALIDATION>
 | <VARRAY>
-| <VARIABLE>
 | <VARYING>
 //| <VECTOR_READ>
 //| <VECTOR_READ_TRACE>
@@ -6284,7 +6407,6 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 //| <WALLET>
 //| <WELLFORMED>
 //| <WHEN>
-| <WHENEVER>
 //| <WHITESPACE>
 //| <WITHIN>
 //| <WORK>
@@ -6309,7 +6431,6 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 | <YEAR>
 | <YES>
 | <ZONE>
-| <SHOW>  // APEX_0400000.WWW_CALCUATOR.SHOW
 | <WRAPPED>  // APEX_0400000.WWW_CALCUATOR.SHOW
 | <SYS_REFCURSOR> //Not a keyword - just a type defined in standard
 | <EDITIONABLE>
@@ -6443,8 +6564,6 @@ ASTID ID(): {}
 		// <PRAGMA> |<PARTITION> | <RANGE> | <NEW> | <OLD> |
 		| <PRIOR>  //RESERVED WORD
 		| <PRIVATE>
-		| <PROMPT> //SYNTAX
-
 		| <PUBLIC>  //RESERVED WORD
 		| <RAISE> //SYNTAX
 		| <RAW>  //RESERVED WORD
@@ -6462,7 +6581,6 @@ ASTID ID(): {}
 		| <SMALLINT>  //RESERVED WORD
 		| <SQL>
 		| <SQLCODE> | <SQLERRM>
-		//| <START>  //RESERVED WORD
 		//| <STDDEV> // <SUBTYPE> |
 		//20120501 | <SUCCESSFUL>
 		//| <SUM>
@@ -6691,7 +6809,6 @@ ASTQualifiedID QualifiedID(): {}
 		| <PRAGMA>
 		| <PRIOR>
 		| <PRIVATE>
-		| <PROMPT>
 		//<PUBLIC>
 		| <RAISE>
 		//| <RANGE>
@@ -6715,7 +6832,6 @@ ASTQualifiedID QualifiedID(): {}
 		//<SQL>
 		| <SQLCODE>
 		| <SQLERRM>
-		//<START>
 		//| <STDDEV>
 		//| <SUBTYPE>
 		//20120501 | <SUCCESSFUL>
@@ -6805,4 +6921,3 @@ ASTJavaInterfaceClass JavaInterfaceClass(): {}
         )
 	{ jjtThis.setImage(token.getImage()) ; jjtThis.value = token ; return jjtThis ; }
 }
-

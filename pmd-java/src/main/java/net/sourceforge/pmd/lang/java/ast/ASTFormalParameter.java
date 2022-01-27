@@ -8,6 +8,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.lang.java.ast.InternalInterfaces.VariableIdOwner;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
+import net.sourceforge.pmd.lang.java.types.TypingContext;
 
 
 /**
@@ -68,30 +69,25 @@ public final class ASTFormalParameter extends AbstractJavaNode
      * Returns the declarator ID of this formal parameter.
      */
     @Override
-    @NonNull
-    public ASTVariableDeclaratorId getVarId() {
-        return getFirstChildOfType(ASTVariableDeclaratorId.class);
+    public @NonNull ASTVariableDeclaratorId getVarId() {
+        return firstChild(ASTVariableDeclaratorId.class);
     }
 
 
     /**
      * Returns the type node of this formal parameter.
-     * The type of that node is not necessarily the type
-     * of the parameter itself, see {@link ASTVariableDeclaratorId#getType()}.
      *
-     * <p>In particular, the type of the returned node
-     * doesn't take into account whether this formal
-     * parameter is varargs or not.
+     * <p>If this formal parameter is varargs, the type node is an {@link ASTArrayType}.
      */
     public ASTType getTypeNode() {
-        return getFirstChildOfType(ASTType.class);
+        return firstChild(ASTType.class);
     }
 
     // Honestly FormalParameter shouldn't be a TypeNode.
     // The node that represents the variable is the variable ID.
 
     @Override
-    public @NonNull JTypeMirror getTypeMirror() {
-        return getVarId().getTypeMirror();
+    public @NonNull JTypeMirror getTypeMirror(TypingContext ctx) {
+        return getVarId().getTypeMirror(ctx);
     }
 }

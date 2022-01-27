@@ -1,0 +1,108 @@
+{
+  "$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json",
+  "version": "2.1.0",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "PMD",
+          "version": "unknown",
+          "informationUri": "https://pmd.github.io/pmd/",
+          "rules": [
+            {
+              "id": "Boo",
+              "shortDescription": {
+                "text": "blah"
+              },
+              "fullDescription": {
+                "text": "desc"
+              },
+              "help": {
+                "text": "desc"
+              },
+              "properties": {
+                "ruleset": "RuleSet",
+                "priority": 1,
+                "tags": [
+                  "RuleSet"
+                ]
+              }
+            },
+            {
+              "id": "Foo",
+              "shortDescription": {
+                "text": "blah"
+              },
+              "fullDescription": {
+                "text": "desc"
+              },
+              "help": {
+                "text": "desc"
+              },
+              "properties": {
+                "ruleset": "RuleSet",
+                "priority": 5,
+                "tags": [
+                  "RuleSet"
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "results": [
+        {
+          "ruleId": "Boo",
+          "ruleIndex": 0,
+          "message": {
+            "text": "blah"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "notAvailable.ext"
+                },
+                "region": {
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 2
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "Foo",
+          "ruleIndex": 1,
+          "message": {
+            "text": "blah"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "notAvailable.ext"
+                },
+                "region": {
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 1
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "invocations": [
+        {
+          "executionSuccessful": true,
+          "toolConfigurationNotifications": [],
+          "toolExecutionNotifications": []
+        }
+      ]
+    }
+  ]
+}

@@ -17,8 +17,10 @@ import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.ShadowChain
 import net.sourceforge.pmd.lang.java.types.JClassType
 import net.sourceforge.pmd.lang.java.types.JVariableSig
+import net.sourceforge.pmd.lang.java.types.shouldHaveType
 import net.sourceforge.pmd.lang.java.types.typeDsl
 
+@Suppress("UNUSED_VARIABLE")
 class MemberInheritanceTest : ParserTestSpec({
 
     parserTest("Test problem with values scope in enum") {
@@ -99,7 +101,10 @@ class MemberInheritanceTest : ParserTestSpec({
         """)
 
         val (supF, supG, supK, sup2F, outerF, outerG, outerK, innerF) =
-                acu.descendants(ASTMethodDeclaration::class.java).toList { it.genericSignature }
+                acu
+                    .descendants(ASTMethodDeclaration::class.java)
+                    .crossFindBoundaries()
+                    .toList { it.genericSignature }
 
         val (sup, _, outer, inner) =
                 acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.body!! }
@@ -159,7 +164,10 @@ class MemberInheritanceTest : ParserTestSpec({
         """)
 
         val (outerF, staticOuter, innerF) =
-                acu.descendants(ASTMethodDeclaration::class.java).toList { it.genericSignature }
+                acu
+                    .descendants(ASTMethodDeclaration::class.java)
+                    .crossFindBoundaries()
+                    .toList { it.genericSignature }
 
         val (outer, inner) =
                 acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.body!! }
@@ -193,7 +201,9 @@ class MemberInheritanceTest : ParserTestSpec({
         """)
 
         val (outerF, staticOuter, innerF) =
-                acu.descendants(ASTMethodDeclaration::class.java).toList { it.genericSignature }
+                acu.descendants(ASTMethodDeclaration::class.java)
+                    .crossFindBoundaries()
+                    .toList { it.genericSignature }
 
         val (outer, inner) =
                 acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.body!! }
@@ -258,7 +268,8 @@ class MemberInheritanceTest : ParserTestSpec({
                 acu.descendants(ASTClassOrInterfaceDeclaration::class.java).toList { it.typeMirror }
 
         val insideFoo =
-                acu.descendants(ASTClassOrInterfaceBody::class.java).get(2)!!
+                acu.descendants(ASTClassOrInterfaceBody::class.java)
+                    .crossFindBoundaries().get(2)!!
 
         val `t_Scratch{String}Inner` = with (acu.typeDsl) {
             t_Scratch[gen.t_String].selectInner(t_Inner.symbol, emptyList())
@@ -272,7 +283,7 @@ class MemberInheritanceTest : ParserTestSpec({
 
         typeNode.shouldMatchN {
             classType("Inner") {
-                it.typeMirror shouldBe `t_Scratch{String}Inner`
+                it shouldHaveType `t_Scratch{String}Inner`
             }
         }
 
@@ -714,6 +725,44 @@ class Impl extends Sup {
             }
         }
 
+    }
+
+
+    parserTest("Import of member defined in the file should not fail") {
+
+        val acu = parser.withProcessing().parse("""
+package p;
+
+import static p.Top.ClassValueMap.importedMethod;
+import static p.Top.ClassValueMap.importedField;
+
+class Top {
+  static class Identity { }
+  static class Entry<E> { }
+  static class WeakHashMap<K, V> { }
+
+  static class ClassValueMap extends WeakHashMap<Top.Identity, Entry<?>> {
+     static int importedField;
+     static <T> T importedMethod(Identity t) {}
+  }
+  
+  static {
+    importedMethod(new Identity());
+    int i = importedField;
+  }
+}
+        """)
+
+        val importedFieldAccess = acu.descendants(ASTVariableAccess::class.java).firstOrThrow()
+        val importedFieldSym = acu.descendants(ASTVariableDeclaratorId::class.java)
+            .crossFindBoundaries().firstOrThrow().symbol
+
+        val importedMethodCall = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
+        val importedMethodSym = acu.descendants(ASTMethodDeclaration::class.java)
+            .crossFindBoundaries().firstOrThrow().symbol
+
+        importedFieldAccess.referencedSym shouldBe importedFieldSym
+        importedMethodCall.methodType.symbol shouldBe importedMethodSym
     }
 
 })

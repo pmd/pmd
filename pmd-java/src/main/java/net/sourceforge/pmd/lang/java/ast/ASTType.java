@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.lang.java.types.TypePrettyPrint;
+import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
 import net.sourceforge.pmd.lang.rule.xpath.NoAttribute;
 
 
@@ -20,6 +20,7 @@ import net.sourceforge.pmd.lang.rule.xpath.NoAttribute;
  *
  * Type ::= {@link ASTReferenceType ReferenceType}
  *        | {@link ASTPrimitiveType PrimitiveType}
+ *        | {@link ASTVoidType VoidType}
  *
  * </pre>
  *
@@ -34,10 +35,12 @@ public interface ASTType extends TypeNode, Annotatable, LeftRecursiveNode {
      * because we need to specify it, eg it would be more useful to have
      * a method return a qualified name with help of the symbol table.
      *
-     * @deprecated This is not meaningful. Use {@link #getText()}, or {@link TypePrettyPrint}
+     * @deprecated This is not meaningful. Use {@link PrettyPrintingUtil}
      */
     @Deprecated
-    String getTypeImage();
+    default String getTypeImage() {
+        return PrettyPrintingUtil.prettyPrintType(this);
+    }
 
     /**
      * Returns the number of array dimensions of this type.

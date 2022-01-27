@@ -7,7 +7,6 @@ package net.sourceforge.pmd.cli;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.regex.Pattern;
 
 import org.junit.Assert;
@@ -39,7 +38,13 @@ public class CLITest extends BaseCLITest {
     }
 
     @Test
-    public void changeJavaVersion() throws IOException {
+    public void usingDebugLongOption() {
+        String[] args = { "-d", SOURCE_FOLDER, "-f", "text", "-R", "category/java/design.xml", "--debug", };
+        runTest(args, "minimalArgsWithDebug");
+    }
+
+    @Test
+    public void changeJavaVersion() {
         String[] args = { "-d", SOURCE_FOLDER, "-f", "text", "-R", "category/java/design.xml", "-version", "1.5", "-language",
             "java", "-debug", };
         String resultFilename = runTest(args, "chgJavaVersion");
@@ -54,15 +59,22 @@ public class CLITest extends BaseCLITest {
     }
 
     @Test
-    public void exitStatusWithViolations() throws IOException {
+    public void exitStatusWithViolations() {
         String[] args = { "-d", SOURCE_FOLDER, "-f", "text", "-R", "category/java/errorprone.xml", };
         String resultFilename = runTest(args, "exitStatusWithViolations", 4);
         assertTrue(FileUtil.findPatternInFile(new File(resultFilename), "Avoid empty if"));
     }
 
     @Test
-    public void exitStatusWithViolationsAndWithoutFailOnViolations() throws IOException {
+    public void exitStatusWithViolationsAndWithoutFailOnViolations() {
         String[] args = { "-d", SOURCE_FOLDER, "-f", "text", "-R", "category/java/errorprone.xml", "-failOnViolation", "false", };
+        String resultFilename = runTest(args, "exitStatusWithViolationsAndWithoutFailOnViolations", 0);
+        assertTrue(FileUtil.findPatternInFile(new File(resultFilename), "Avoid empty if"));
+    }
+
+    @Test
+    public void exitStatusWithViolationsAndWithoutFailOnViolationsLongOption() {
+        String[] args = { "-d", SOURCE_FOLDER, "-f", "text", "-R", "category/java/errorprone.xml", "--fail-on-violation", "false", };
         String resultFilename = runTest(args, "exitStatusWithViolationsAndWithoutFailOnViolations", 0);
         assertTrue(FileUtil.findPatternInFile(new File(resultFilename), "Avoid empty if"));
     }
@@ -71,7 +83,7 @@ public class CLITest extends BaseCLITest {
      * See https://sourceforge.net/p/pmd/bugs/1231/
      */
     @Test
-    public void testWrongRuleset() throws Exception {
+    public void testWrongRuleset() {
         String[] args = { "-d", SOURCE_FOLDER, "-f", "text", "-R", "category/java/designn.xml", };
         String filename = TEST_OUPUT_DIRECTORY + "testWrongRuleset.txt";
         createTestOutputFile(filename);
@@ -85,7 +97,7 @@ public class CLITest extends BaseCLITest {
      * See https://sourceforge.net/p/pmd/bugs/1231/
      */
     @Test
-    public void testWrongRulesetWithRulename() throws Exception {
+    public void testWrongRulesetWithRulename() {
         String[] args = { "-d", SOURCE_FOLDER, "-f", "text", "-R", "category/java/designn.xml/UseCollectionIsEmpty", };
         String filename = TEST_OUPUT_DIRECTORY + "testWrongRuleset.txt";
         createTestOutputFile(filename);
@@ -99,7 +111,7 @@ public class CLITest extends BaseCLITest {
      * See https://sourceforge.net/p/pmd/bugs/1231/
      */
     @Test
-    public void testWrongRulename() throws Exception {
+    public void testWrongRulename() {
         String[] args = { "-d", SOURCE_FOLDER, "-f", "text", "-R", "category/java/design.xml/ThisRuleDoesNotExist", };
         String filename = TEST_OUPUT_DIRECTORY + "testWrongRuleset.txt";
         createTestOutputFile(filename);

@@ -43,21 +43,21 @@ public final class ValueParserConstants {
     static final ValueParser<String> STRING_PARSER = new ValueParser<String>() {
         @Override
         public String valueOf(String value) {
-            return value;
+            return StringUtils.trim(value);
         }
     };
     /** Extracts integers. */
     static final ValueParser<Integer> INTEGER_PARSER = new ValueParser<Integer>() {
         @Override
         public Integer valueOf(String value) {
-            return Integer.valueOf(value);
+            return Integer.valueOf(StringUtils.trim(value));
         }
     };
     /** Extracts booleans. */
     static final ValueParser<Boolean> BOOLEAN_PARSER = new ValueParser<Boolean>() {
         @Override
         public Boolean valueOf(String value) {
-            return Boolean.valueOf(value);
+            return Boolean.valueOf(StringUtils.trim(value));
         }
     };
     /** Extracts floats. */
@@ -71,7 +71,7 @@ public final class ValueParserConstants {
     static final ValueParser<Long> LONG_PARSER = new ValueParser<Long>() {
         @Override
         public Long valueOf(String value) {
-            return Long.valueOf(value);
+            return Long.valueOf(StringUtils.trim(value));
         }
     };
     /** Extracts doubles. */
@@ -85,7 +85,7 @@ public final class ValueParserConstants {
     static final ValueParser<File> FILE_PARSER = new ValueParser<File>() {
         @Override
         public File valueOf(String value) throws IllegalArgumentException {
-            return new File(value);
+            return new File(StringUtils.trim(value));
         }
     };
 
@@ -112,10 +112,11 @@ public final class ValueParserConstants {
         return new ValueParser<T>() {
             @Override
             public T valueOf(String value) throws IllegalArgumentException {
-                if (!mappings.containsKey(value)) {
-                    throw new IllegalArgumentException("Value was not in the set " + mappings.keySet());
+                String trimmedValue = StringUtils.trim(value);
+                if (!mappings.containsKey(trimmedValue)) {
+                    throw new IllegalArgumentException("Value " + value + " was not in the set " + mappings.keySet());
                 }
-                return mappings.get(value);
+                return mappings.get(trimmedValue);
             }
         };
     }

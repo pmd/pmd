@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.ast;
 
 import java.util.Iterator;
 
+import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.internal.util.IteratorUtil;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 
@@ -138,4 +139,16 @@ public interface GenericToken<T extends GenericToken<T>> {
         return () -> IteratorUtil.generate(from.getPreviousComment(), JavaccToken::getPreviousComment);
     }
 
+    /**
+     * Gets a unique integer representing the kind of token this is.
+     * The semantics of this kind depend on the language.
+     *
+     * <p><strong>Note:</strong> This is an experimental API.
+     *
+     * <p>The returned constants can be looked up in the language's "*ParserConstants",
+     * e.g. CppParserConstants or JavaParserConstants. These constants are considered
+     * internal API and may change at any time when the language's grammar is changed.
+     */
+    @Experimental
+    int getKind();
 }

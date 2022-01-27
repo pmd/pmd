@@ -24,18 +24,11 @@ public final class ASTWhileStatement extends AbstractStatement implements ASTLoo
      * Returns the node that represents the guard of this loop.
      * This may be any expression of type boolean.
      */
+    @Override
     public ASTExpression getCondition() {
         return (ASTExpression) getChild(0);
     }
 
-
-    /**
-     * Returns the statement that will be run while the guard
-     * evaluates to true.
-     */
-    public ASTStatement getBody() {
-        return (ASTStatement) getChild(1);
-    }
 
 
     @Override

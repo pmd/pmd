@@ -4,10 +4,12 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import org.apache.commons.lang3.exception.ContextedRuntimeException;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
+import net.sourceforge.pmd.lang.java.types.TypingContext;
+import net.sourceforge.pmd.lang.java.types.ast.LazyTypeResolver;
 
 /**
  * An extension of the SimpleJavaNode which implements the TypeNode interface.
@@ -34,22 +36,30 @@ abstract class AbstractJavaTypeNode extends AbstractJavaNode implements TypeNode
 
     @Override
     public @NonNull JTypeMirror getTypeMirror() {
-        if (typeMirror == null) {
-            try {
-                LazyTypeResolver resolver = getRoot().getLazyTypeResolver();
-                typeMirror = this.acceptVisitor(resolver, null);
-                assert typeMirror != null : "LazyTypeResolver returned null";
-            } catch (Exception | AssertionError e) {
-                // this will add every type in the chain
-                throw addContextValue(e, "Resolving type of", this);
-            }
-        }
-        return typeMirror;
+        return getTypeMirror(TypingContext.DEFAULT);
     }
 
-    private static ContextedRuntimeException addContextValue(Throwable e, String label, Object value) {
-        return e instanceof ContextedRuntimeException ? ((ContextedRuntimeException) e).addContextValue(label, value)
-                                                      : new ContextedRuntimeException(e).addContextValue(label, value);
+    @Override
+    public @NonNull JTypeMirror getTypeMirror(TypingContext context) {
+        if (context.isEmpty() && typeMirror != null) {
+            return typeMirror;
+        }
+
+        LazyTypeResolver resolver = getRoot().getLazyTypeResolver();
+        JTypeMirror result;
+        try {
+            result = this.acceptVisitor(resolver, context);
+            assert result != null : "LazyTypeResolver returned null";
+        } catch (RuntimeException e) {
+            throw AssertionUtil.contexted(e).addContextValue("Resolving type of", this);
+        } catch (AssertionError e) {
+            throw AssertionUtil.contexted(e).addContextValue("Resolving type of", this);
+        }
+
+        if (context.isEmpty() && typeMirror == null) {
+            typeMirror = result; // cache it
+        }
+        return result;
     }
 
     JTypeMirror getTypeMirrorInternal() {

@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import java.util.Iterator;
+import net.sourceforge.pmd.lang.java.ast.ASTList.ASTNonEmptyList;
 
 /**
  * A list of statement expressions. Statement expressions are those
@@ -20,20 +20,15 @@ import java.util.Iterator;
  *
  * </pre>
  */
-public final class ASTStatementExpressionList extends AbstractStatement implements Iterable<ASTExpression> {
+public final class ASTStatementExpressionList extends ASTNonEmptyList<ASTExpression> implements ASTStatement {
 
     ASTStatementExpressionList(int id) {
-        super(id);
+        super(id, ASTExpression.class);
     }
 
 
     @Override
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
-    }
-
-    @Override
-    public Iterator<ASTExpression> iterator() {
-        return children(ASTExpression.class).iterator();
     }
 }

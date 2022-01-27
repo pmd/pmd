@@ -182,7 +182,7 @@ public final class JjtreeBuilder<N extends AbstractJjtreeNode<N, ?>> {
 
 
     private void closeImpl(N n, JavaccToken lastToken) {
-        if (lastToken.getNext() == n.getFirstToken()) {
+        if (lastToken.getNext() == n.getFirstToken()) { // NOPMD CompareObjectsWithEquals
             // this means, that the node has zero length.
             // create an implicit token to represent this case.
             JavaccToken implicit = JavaccToken.implicitBefore(lastToken.getNext());

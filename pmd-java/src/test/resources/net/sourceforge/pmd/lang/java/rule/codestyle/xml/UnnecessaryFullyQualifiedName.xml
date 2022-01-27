@@ -286,7 +286,7 @@ public class Test {}
     <test-code>
         <description>#1404 Java8 'Unnecessary use of fully qualified name' in Streams Collector</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>18</expected-linenumbers>
+        <expected-linenumbers>15</expected-linenumbers>
         <expected-messages>
             <message>Unnecessary qualifier 'Collectors': 'toList' is already in scope</message>
         </expected-messages>
@@ -294,21 +294,18 @@ public class Test {}
 // https://github.com/FenixEdu/fenixedu-learning/blob/master/src/main/java/org/fenixedu/learning/domain/executionCourse/components/InitialPageComponent.java#L50
 import java.util.Comparator;
 import java.util.List;
+import java.util.ArrayList;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 
-public class InitialPageComponent extends BaseExecutionCourseComponent {
-    public void handle(Page page, TemplateContext componentContext, TemplateContext globalContext) {
-        ExecutionCourse executionCourse = ((ExecutionCourseSite) page.getSite()).getExecutionCourse();
-        globalContext.put(
-                "professorships",
-                executionCourse
-                        .getProfessorshipsSet()
-                        .stream()
-                        .sorted(Comparator.comparing(Professorship::isResponsibleFor).reversed()
-                                .thenComparing(Professorship.COMPARATOR_BY_PERSON_NAME))
-                                .collect(Collectors.toList()));
+public class InitialPageComponent {
+    public void handle(Map<String, List<String>> globalContext) {
+        List<String> lst = new ArrayList<>();
+        globalContext.put("professorships",
+                lst.stream().sorted(Comparator.comparingInt(String::length).reversed()
+                            .collect(Collectors.toList())));
     }
 }
         ]]></code>
@@ -338,10 +335,10 @@ public class UnnecessaryFullyQualifiedName {
         <code><![CDATA[
 import net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryFullyQualifiedNameTest.PhonyMockito;
 import static net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryFullyQualifiedNameTest.PhonyMockito.*;
-import static net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryFullyQualifiedNameTest.PhonyPowerMockito.*;
+import static net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryFullyQualifiedNameTest.Container.PhonyMockito.*;
 
 public class Foo {
-    private Bar bar = Mockito.mock(Bar.class); // doing simply mock(Bar.class) is ambiguous (compile error)
+    private Foo bar = PhonyMockito.mock(Foo.class); // doing simply mock(Foo.class) is ambiguous (compile error)
 }
         ]]></code>
     </test-code>
@@ -352,10 +349,10 @@ public class Foo {
         <code><![CDATA[
 import net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryFullyQualifiedNameTest.PhonyMockito;
 import static net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryFullyQualifiedNameTest.PhonyMockito.*;
-import static net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryFullyQualifiedNameTest.PhonyPowerMockito.mock;
+import static net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryFullyQualifiedNameTest.Container.PhonyMockito.mock;
 
 public class Foo {
-    private Bar bar = Mockito.mock(Bar.class); // doing simply mock(Bar.class) would use a differen method than intended
+    private Foo bar = PhonyMockito.mock(Foo.class); // doing simply mock(Foo.class) would use a differen method than intended
 }
         ]]></code>
     </test-code>
@@ -388,13 +385,12 @@ final class Test {
         <description>#1114 - Star import overwritten by explicit import is not correctly handled</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-import One.*;
-import Two.Problem;
-
+import net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryfullyqualifiedname.subpackage.*;
+import net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryfullyqualifiedname.MyClass;
 
 public class CauseProblem {
-    public Problem convert(One.Problem original) {
-        return new Problem();
+    public MyClass convert(net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryfullyqualifiedname.subpackage.MyClass original) { // necessary
+        return new MyClass();
     }
 }
             ]]></code>
@@ -724,7 +720,7 @@ public class SomeClass {
 package ohio;
 
 public class InnerClass<RuntimeException extends ClassCastException> {
-    public void method1() throws RuntimeException, RE,
+    public void method1() throws RuntimeException,
                                  java.lang.RuntimeException {
     }
 }
@@ -818,7 +814,7 @@ class Assert {
     <test-code>
         <description>Just the Map prefix is a violation</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>6</expected-linenumbers>
+        <expected-linenumbers>7</expected-linenumbers>
         <expected-messages>
             <message>Unnecessary qualifier 'java.util': 'Map' is already in scope because it is imported in this file</message>
         </expected-messages>
@@ -826,8 +822,9 @@ class Assert {
             package a;
 
             import java.util.Map;
+            import java.util.Set;
 
-            class A {
+            class A<K, V> {
                 public Set<java.util.Map.Entry<K, V>> entrySet() {return null;}
             }
             ]]></code>

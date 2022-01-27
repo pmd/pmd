@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.FactoryConfigurationError;
@@ -104,12 +105,12 @@ public class RuleSetWriter {
         Element descriptionElement = createDescriptionElement(ruleSet.getDescription());
         ruleSetElement.appendChild(descriptionElement);
 
-        for (String excludePattern : ruleSet.getExcludePatterns()) {
-            Element excludePatternElement = createExcludePatternElement(excludePattern);
+        for (Pattern excludePattern : ruleSet.getFileExclusions()) {
+            Element excludePatternElement = createExcludePatternElement(excludePattern.pattern());
             ruleSetElement.appendChild(excludePatternElement);
         }
-        for (String includePattern : ruleSet.getIncludePatterns()) {
-            Element includePatternElement = createIncludePatternElement(includePattern);
+        for (Pattern includePattern : ruleSet.getFileInclusions()) {
+            Element includePatternElement = createIncludePatternElement(includePattern.pattern());
             ruleSetElement.appendChild(includePatternElement);
         }
         for (Rule rule : ruleSet.getRules()) {

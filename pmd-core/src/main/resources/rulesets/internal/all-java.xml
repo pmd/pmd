@@ -23,6 +23,9 @@
     <exclude-pattern>.*/net/sourceforge/pmd/lang/java/ast/jdkversiontests/java10/LocalVariableTypeInference_varAsEnumName.java</exclude-pattern>
     <exclude-pattern>.*/net/sourceforge/pmd/lang/java/ast/jdkversiontests/java10/LocalVariableTypeInference_varAsTypeIdentifier.java</exclude-pattern>
 
+    <!-- this file contains are parse error explicitly -->
+    <exclude-pattern>.*/net/sourceforge/pmd/lang/java/ast/InfiniteLoopInLookahead.java</exclude-pattern>
+
     <rule ref="category/java/bestpractices.xml" />
     <rule ref="category/java/codestyle.xml" />
     <rule ref="category/java/design.xml" />

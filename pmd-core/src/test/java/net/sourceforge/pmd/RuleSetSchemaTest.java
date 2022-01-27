@@ -106,7 +106,7 @@ public class RuleSetSchemaTest {
     }
 
     public static class PMDRuleSetEntityResolver implements EntityResolver {
-        private static URL schema2 = RuleSetFactory.class.getResource("/ruleset_2_0_0.xsd");
+        private static URL schema2 = PMDRuleSetEntityResolver.class.getResource("/ruleset_2_0_0.xsd");
         private static SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
 
         @Override

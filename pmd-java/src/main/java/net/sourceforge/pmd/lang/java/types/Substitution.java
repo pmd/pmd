@@ -15,7 +15,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.function.Function;
 
-import org.apache.commons.lang3.Validate;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.internal.util.AssertionUtil;
@@ -101,16 +100,21 @@ public final class Substitution extends MapFunction<@NonNull SubstVar, @NonNull 
     /**
      * Builds a substitution where the mapping from vars to types is
      * defined by the correspondence between the two lists.
+     * <p>
+     * If there are no vars to be mapped, then no substitution is returned
+     * even though some types might have been supplied.
      *
      * @throws IllegalArgumentException If the two lists are of different lengths
      * @throws NullPointerException     If any of the two lists is null
      */
     public static Substitution mapping(List<? extends SubstVar> from, List<? extends JTypeMirror> to) {
-        if (from != null && from.isEmpty()) {
-            AssertionUtil.requireParamNotNull("to", to);
-            Validate.isTrue(to.isEmpty(), "Mismatched list sizes %s to %s", from, to);
+        AssertionUtil.requireParamNotNull("from", from);
+        AssertionUtil.requireParamNotNull("to", to);
+
+        if (from.isEmpty()) {
             return EMPTY;
         }
+        // zip throws IllegalArgumentException if the lists are of different lengths
         return new Substitution(zip(from, to));
     }
 

@@ -64,7 +64,7 @@ public final class JPrimitiveType implements JTypeMirror {
      * The returned type {@link Class#isPrimitive()} is true.
      */
     @Override
-    public JClassSymbol getSymbol() {
+    public @NonNull JClassSymbol getSymbol() {
         return type;
     }
 

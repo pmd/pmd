@@ -6,6 +6,8 @@
 package net.sourceforge.pmd.lang.java.ast
 
 import net.sourceforge.pmd.lang.ast.test.shouldBe
+import net.sourceforge.pmd.lang.java.types.JPrimitiveType
+import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind.INT
 
 class ASTStatementsTest : ParserTestSpec({
 
@@ -24,7 +26,11 @@ class ASTStatementsTest : ParserTestSpec({
 
                         it::getTypeNode shouldBe classType("Integer")
                         fromChild<ASTVariableDeclarator, ASTVariableDeclaratorId> {
-                            variableId("i")
+                            variableId("i") {
+                                it::isLocalVariable shouldBe false
+                                it::isForLoopVariable shouldBe false
+                                it::isForeachVariable shouldBe true
+                            }
                         }
                     }
 
@@ -85,7 +91,18 @@ class ASTStatementsTest : ParserTestSpec({
             "for (int i = 0; i < 2; i++);" should parseAs {
                 forLoop {
                     it::getInit shouldBe forInit {
-                        localVarDecl()
+                        localVarDecl {
+                            localVarModifiers()
+                            primitiveType(INT)
+                            varDeclarator {
+                                variableId("i") {
+                                    it::isLocalVariable shouldBe true // different from foreach too
+                                    it::isForLoopVariable shouldBe true
+                                    it::isForeachVariable shouldBe false
+                                }
+                                int(0)
+                            }
+                        }
                     }
                     it::getCondition shouldBe infixExpr(BinaryOp.LT) {
                         variableAccess("i")

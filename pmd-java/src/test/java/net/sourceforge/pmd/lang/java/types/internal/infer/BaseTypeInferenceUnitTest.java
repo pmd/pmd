@@ -50,15 +50,19 @@ public class BaseTypeInferenceUnitTest {
     }
 
     protected InferenceContext emptyCtx(TypeInferenceLogger log) {
-        return new InferenceContext(ts, Collections.emptyList(), log);
+        return new InferenceContext(ts, new SupertypeCheckCache(), Collections.emptyList(), log);
     }
 
 
     protected InferenceVar newIvar(InferenceContext ctx) {
+        return newIvar(ctx, ts.OBJECT);
+    }
+
+    protected InferenceVar newIvar(InferenceContext ctx, JTypeMirror upperBound) {
         JTypeVar mock = mock(JTypeVar.class);
         when(mock.getTypeSystem()).thenReturn(ts);
         when(mock.getLowerBound()).thenReturn(ts.NULL_TYPE);
-        when(mock.getUpperBound()).thenReturn(ts.OBJECT);
+        when(mock.getUpperBound()).thenReturn(upperBound);
 
         return ctx.addVar(mock);
     }
@@ -157,10 +161,13 @@ public class BaseTypeInferenceUnitTest {
                 // use Set::contains
 
 
+                // caller may omit OBJECT for conciseness
                 boolean expectTop = Arrays.stream(bounds).anyMatch(it -> it.kind == BoundKind.UPPER && it.t == top);
+                // may not have top if it has a different default bound
+                boolean hasTop = actualBounds.get(BoundKind.UPPER).contains(top);
 
                 int numToTest = actualBounds.values().stream().mapToInt(Set::size).sum();
-                if (!expectTop) {
+                if (!expectTop && hasTop) {
                     numToTest--;
                 }
 
@@ -188,8 +195,8 @@ public class BaseTypeInferenceUnitTest {
 
         for (BoundKind kind : BoundKind.values()) {
             Set<JTypeMirror> bounds = actual.getBounds(kind);
+            actualBounds.put(kind, bounds);
             if (!bounds.isEmpty()) {
-                actualBounds.put(kind, bounds);
             }
         }
 
@@ -219,7 +226,7 @@ public class BaseTypeInferenceUnitTest {
 
         @Override
         public void describeTo(Description description) {
-            description.appendText("_" + kind.getSym() + t);
+            description.appendText(toString());
         }
 
         public static Bound lower(JTypeMirror t) {
@@ -236,6 +243,11 @@ public class BaseTypeInferenceUnitTest {
 
         public static Description describeList(Description description, Collection<Bound> bounds) {
             return description.appendList("{", ", ", "}", bounds);
+        }
+
+        @Override
+        public String toString() {
+            return "_" + kind.getSym() + t;
         }
     }
 

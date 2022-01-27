@@ -16,6 +16,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.test.TestUtilsKt;
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 
 @Ignore("This test is Java specific even though parts of it should apply to any language implementation")
@@ -26,19 +27,19 @@ public class SimpleNodeTest extends BaseParserTest {
     @Test
     public void testMethodDiffLines() {
         List<ASTMethodDeclaration> methods = java.getNodes(ASTMethodDeclaration.class, METHOD_DIFF_LINES);
-        verifyNode(methods.iterator().next(), 2, 9, 4, 3);
+        TestUtilsKt.assertPosition(methods.iterator().next(), 2, 9, 4, 3);
     }
 
     @Test
     public void testMethodSameLine() {
         List<ASTMethodDeclaration> methods = java.getNodes(ASTMethodDeclaration.class, METHOD_SAME_LINE);
-        verifyNode(methods.iterator().next(), 2, 9, 2, 22);
+        TestUtilsKt.assertPosition(methods.iterator().next(), 2, 9, 2, 22);
     }
 
     @Test
     public void testNoLookahead() {
         List<ASTClassOrInterfaceDeclaration> uCD = java.getNodes(ASTClassOrInterfaceDeclaration.class, NO_LOOKAHEAD);
-        verifyNode(uCD.iterator().next(), 1, 8, 1, 21);
+        TestUtilsKt.assertPosition(uCD.iterator().next(), 1, 8, 1, 21);
     }
 
     @Test
@@ -69,7 +70,7 @@ public class SimpleNodeTest extends BaseParserTest {
     public void testColumnsOnQualifiedName() {
         for (Node node : java.getNodes(ASTName.class, QUALIFIED_NAME)) {
             if (node.getImage().equals("java.io.File")) {
-                verifyNode(node, 1, 8, 1, 20);
+                TestUtilsKt.assertPosition(node, 1, 8, 1, 20);
             }
         }
     }
@@ -78,10 +79,10 @@ public class SimpleNodeTest extends BaseParserTest {
     public void testLineNumbersForNameSplitOverTwoLines() {
         for (Node node : java.getNodes(ASTName.class, BROKEN_LINE_IN_NAME)) {
             if (node.getImage().equals("java.io.File")) {
-                verifyNode(node, 1, 8, 2, 5);
+                TestUtilsKt.assertPosition(node, 1, 8, 2, 5);
             }
             if (node.getImage().equals("Foo")) {
-                verifyNode(node, 2, 15, 2, 19);
+                TestUtilsKt.assertPosition(node, 2, 15, 2, 19);
             }
         }
     }
@@ -254,13 +255,6 @@ public class SimpleNodeTest extends BaseParserTest {
         List<Node> nodes = c.findChildNodesWithXPath("//FieldDeclaration");
         assertEquals(2, nodes.size());
         assertTrue(nodes.get(0) instanceof ASTFieldDeclaration);
-    }
-
-    private void verifyNode(Node node, int beginLine, int beginCol, int endLine, int endCol) {
-        assertEquals("Unexpected beginning line: ", beginLine, node.getBeginLine());
-        assertEquals("Unexpected beginning column: ", beginCol, node.getBeginColumn());
-        assertEquals("Unexpected ending line:", endLine, node.getEndLine());
-        assertEquals("Unexpected ending column:", endCol, node.getEndColumn());
     }
 
     private static final String HAS_EXPLICIT_EXTENDS = "public class Test extends Foo {}";

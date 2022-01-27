@@ -13,6 +13,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.test.RelevantAttributePrinter;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTModifierList;
 import net.sourceforge.pmd.lang.java.ast.JModifier;
 import net.sourceforge.pmd.lang.rule.xpath.Attribute;
@@ -40,7 +41,13 @@ public class JavaAttributesPrinter extends RelevantAttributePrinter {
             // everytime. OTOH failing dump tests would warn us that we removed
             // something that wasn't deprecated
             || attribute.isDeprecated()
-            || attribute.getName().equals("Expression") && node instanceof ASTExpression;
+            || "MainMethod".equals(attribute.getName()) && node instanceof ASTMethodDeclaration && !isBooleanTrue(attribute.getValue())
+            || "Expression".equals(attribute.getName()) && node instanceof ASTExpression;
+    }
+
+    private boolean isBooleanTrue(Object o) {
+        // for some reason Boolean::new is called somewhere in the reflection layer
+        return o instanceof Boolean && (Boolean) o;
     }
 
     private AttributeInfo getModifierAttr(String name, Set<JModifier> mods) {

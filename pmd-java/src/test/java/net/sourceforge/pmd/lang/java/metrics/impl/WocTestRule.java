@@ -4,23 +4,15 @@
 
 package net.sourceforge.pmd.lang.java.metrics.impl;
 
-import net.sourceforge.pmd.lang.java.metrics.api.JavaClassMetricKey;
-import net.sourceforge.pmd.lang.java.metrics.api.JavaOperationMetricKey;
+import net.sourceforge.pmd.lang.java.metrics.JavaMetrics;
 
 /**
  * @author Clément Fournier
  * @since 6.0.0
  */
-public class WocTestRule extends AbstractMetricTestRule {
+public class WocTestRule extends JavaDoubleMetricTestRule {
 
-    @Override
-    protected JavaClassMetricKey getClassKey() {
-        return JavaClassMetricKey.WOC;
-    }
-
-
-    @Override
-    protected JavaOperationMetricKey getOpKey() {
-        return null;
+    public WocTestRule() {
+        super(JavaMetrics.WEIGHT_OF_CLASS);
     }
 }

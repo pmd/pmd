@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.vf.ast;
 
-public final class ASTIdentifier extends AbstractVfNode {
+public final class ASTIdentifier extends AbstractVFDataNode {
 
     ASTIdentifier(int id) {
         super(id);

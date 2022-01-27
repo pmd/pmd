@@ -14,6 +14,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
 import net.sourceforge.pmd.lang.ast.test.BaseParsingHelper;
 import net.sourceforge.pmd.lang.java.BaseJavaTreeDumpTest;
@@ -39,8 +40,8 @@ public class ParserCornersTest extends BaseJavaTreeDumpTest {
     @Test
     public void testInvalidUnicodeEscape() {
         expect.expect(TokenMgrError.class); // previously Error
-        expect.expectMessage("Lexical error at line 1, column 2.  Encountered: Invalid unicode escape");
-        java.parse("\\u00k0");
+        expect.expectMessage("Lexical error in file x/filename.java at line 1, column 2.  Encountered: Invalid unicode escape");
+        java.parse("\\u00k0", null, "x/filename.java");
     }
 
     /**
@@ -164,7 +165,7 @@ public class ParserCornersTest extends BaseJavaTreeDumpTest {
     public void testGitHubBug2767() {
         // PMD fails to parse an initializer block.
         // PMD 6.26.0 parses this code just fine.
-        java.withDefaultVersion("15-preview")
+        java.withDefaultVersion("16")
             .parse("class Foo {\n"
                        + "    {final int I;}\n"
                        + "}\n");
@@ -183,6 +184,21 @@ public class ParserCornersTest extends BaseJavaTreeDumpTest {
     @Test
     public void testGitHubBug309() {
         doTest("GitHubBug309", java8);
+    }
+
+    @Test(timeout = 30000)
+    public void testInfiniteLoopInLookahead() {
+        expect.expect(ParseException.class);
+        // https://github.com/pmd/pmd/issues/3117
+        java8.parseResource("InfiniteLoopInLookahead.java");
+    }
+
+    @Test
+    public void stringConcatentationShouldNotBeCast() {
+        // https://github.com/pmd/pmd/issues/1484
+        String code = "public class Test {\n" + "    public static void main(String[] args) {\n"
+            + "        System.out.println(\"X\" + (args) + \"Y\");\n" + "    }\n" + "}";
+        Assert.assertEquals(0, java8.parse(code).findDescendantsOfType(ASTCastExpression.class).size());
     }
 
 
@@ -256,4 +272,9 @@ public class ParserCornersTest extends BaseJavaTreeDumpTest {
 
     private static final String CAST_LOOKAHEAD_PROBLEM =
         "public class BadClass {\n  public Class foo() {\n    return (byte[].class);\n  }\n}";
+
+    @Test
+    public void testGithubBug3101UnresolvedTypeParams() {
+        java.parseResource("GitHubBug3101.java");
+    }
 }

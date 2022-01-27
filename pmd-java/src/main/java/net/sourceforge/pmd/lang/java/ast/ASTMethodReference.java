@@ -22,7 +22,12 @@ import net.sourceforge.pmd.lang.java.types.TypeSystem;
  *
  * </pre>
  */
-public final class ASTMethodReference extends AbstractJavaExpr implements ASTPrimaryExpression, QualifiableExpression, LeftRecursiveNode {
+public final class ASTMethodReference extends AbstractJavaExpr
+    implements ASTPrimaryExpression,
+               QualifiableExpression,
+               LeftRecursiveNode,
+               MethodUsage,
+               FunctionalExpression {
 
     private JMethodSig functionalMethod;
     private JMethodSig compileTimeDecl;
@@ -90,6 +95,7 @@ public final class ASTMethodReference extends AbstractJavaExpr implements ASTPri
      * Returns the method name, or an {@link JConstructorSymbol#CTOR_NAME}
      * if this is a {@linkplain #isConstructorReference() constructor reference}.
      */
+    @Override
     public @NonNull String getMethodName() {
         return super.getImage();
     }
@@ -126,6 +132,7 @@ public final class ASTMethodReference extends AbstractJavaExpr implements ASTPri
      * @see #getReferencedMethod()
      * @see #getTypeMirror()
      */
+    @Override
     public JMethodSig getFunctionalMethod() {
         forceTypeResolution();
         return assertNonNullAfterTypeRes(functionalMethod);

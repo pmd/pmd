@@ -22,7 +22,8 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 public final class ASTMethodCall extends AbstractInvocationExpr
     implements ASTPrimaryExpression,
                QualifiableExpression,
-               InvocationNode {
+               InvocationNode,
+               MethodUsage {
 
     ASTMethodCall(int id) {
         super(id);

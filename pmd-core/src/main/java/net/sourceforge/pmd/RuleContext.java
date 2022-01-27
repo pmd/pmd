@@ -100,7 +100,7 @@ public class RuleContext {
      */
     public String getSourceCodeFilename() {
         if (sourceCodeFile != null) {
-            return sourceCodeFile.getName();
+            return sourceCodeFile.getAbsolutePath();
         }
         return "";
     }

@@ -43,10 +43,12 @@ class TypeParamScopingTest : ParserTestSpec({
         """)
 
         val (fooT, inner2T) =
-                acu.descendants(ASTTypeParameter::class.java).toList()
+                acu.descendants(ASTTypeParameter::class.java)
+                   .crossFindBoundaries().toList()
 
         val (insideFoo, insideInner, insideInner2, insideOther) =
-                acu.descendants(ASTFieldDeclaration::class.java).toList()
+                acu.descendants(ASTFieldDeclaration::class.java)
+                   .crossFindBoundaries().toList()
 
         doTest("Inside Foo: T is Foo#T") {
 
@@ -155,7 +157,7 @@ class TypeParamScopingTest : ParserTestSpec({
             """)
 
         // type parameters
-        val (x, t, t2, y2) = acu.descendants(ASTTypeParameter::class.java).toList()
+        val (x, _, t2, _) = acu.descendants(ASTTypeParameter::class.java).toList()
 
         // parameters
         val (pt, px) = acu.descendants(ASTFormalParameter::class.java).map { it.typeNode }.toList()
@@ -164,7 +166,7 @@ class TypeParamScopingTest : ParserTestSpec({
         val (vt, vx, vx2) = acu.descendants(ASTLocalVariableDeclaration::class.java).map { it.typeNode }.toList()
 
         // classes
-        val (_, localX, annotY) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList()
+        val (_, localX, annotY) = acu.descendants(ASTAnyTypeDeclaration::class.java).crossFindBoundaries().toList()
 
         doTest("TParams of class are in scope inside method tparam declaration") {
 
@@ -225,7 +227,8 @@ class TypeParamScopingTest : ParserTestSpec({
         val (tparam) = fooClass.symbol.typeParameters
 
         val (insideFoo, insideT) =
-                acu.descendants(ASTFormalParameter::class.java).toList()
+                acu.descendants(ASTFormalParameter::class.java)
+                   .crossFindBoundaries().toList()
 
         doTest("Inside Foo: T is Foo#T") {
             insideFoo.symbolTable.shouldResolveTypeTo("T", tparam)

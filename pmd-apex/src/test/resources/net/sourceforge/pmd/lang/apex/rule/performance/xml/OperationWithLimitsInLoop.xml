@@ -410,4 +410,113 @@ public class Foo {
         ]]></code>
     </test-code>
     <!-- End Sosl method invocations -->
+
+    <!-- Begin approval method invocations -->
+    <test-code>
+        <description>Problematic approval actions in loop</description>
+        <expected-problems>3</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void test1() {
+        Account a = new Account();
+        Approval.ProcessSubmitRequest req = new Approval.ProcessSubmitRequest();
+        req.setObjectId(a.id);
+        do {
+            Approval.process(req);
+            Approval.unlock(a);
+            Approval.lock(a);
+        } while(true);
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Best Practice: Batch up data into a list and invoke your Approval actions once on that list of data.</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo() {
+        List<Account> accounts = new List<Account>();
+        List<Approval.ProcessSubmitRequest> reqs = new List<Approval.ProcessSubmitRequest>();
+        while(true) {
+            Account account = new Account();
+            accounts.add(account);
+
+            Approval.ProcessSubmitRequest req = new Approval.ProcessSubmitRequest();
+            req.setObjectId(account.id);
+            reqs.add(req);
+        }
+
+        Approval.process(reqs, true);
+        Approval.unlock(accounts);
+        Approval.lock(accounts);
+    }
+}
+        ]]></code>
+    </test-code>
+    <!-- End approval method invocations -->
+
+    <!-- Begin messaging method invocations -->
+    <test-code>
+        <description>Problematic messaging actions in loop</description>
+        <expected-problems>3</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void test1() {
+        
+        Contact cont = new Contact();
+        Account acc = new Account();
+
+        do {
+            Messaging.SingleEmailMessage email = new Messaging.SingleEmailMessage();
+            List<Messaging.RenderEmailTemplateBodyResult> renderedRes = Messaging.renderEmailTemplate(cont.Id, acc.Id, new List<String>());
+            Messaging.SingleEmailMessage renderedMail = Messaging.renderStoredEmailTemplate(null, cont.Id, acc.Id);
+
+            Messaging.sendEmail(new Messaging.SingleEmailMessage[]{email});
+        } while(true);
+    }
+}
+        ]]></code>
+    </test-code>
+    <!-- End messaging method invocations -->
+
+    <!-- Begin system method invocations -->
+    <test-code>
+        <description>Problematic system actions in loop</description>
+        <expected-problems>3</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void test1() {
+
+        do {
+            System.enqueueJob(new MyQueueable());
+            System.schedule('x', '0 0 0 1 1 ?', new MySchedule());
+            System.scheduleBatch(new MyBatch(), 'x', 1);
+            System.debug(LoggingLevel.INFO, 'X');
+            System.assertEquals(1, 1);
+        } while(true);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Problematic system.runAs action in loop</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void test1() {
+
+        do {
+            System.runAs(new User()) {
+                System.debug(LoggingLevel.INFO, 'X');
+                System.assertEquals(1, 1);
+            }
+
+        } while(true);
+    }
+}
+        ]]></code>
+    </test-code>
+    <!-- End system method invocations -->
 </test-data>

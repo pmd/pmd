@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.util;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
@@ -70,5 +72,21 @@ public class StringUtilTest {
         String test = "é";
         StringUtil.appendXmlEscaped(sb, test, true);
         assertEquals("é", sb.toString());
+    }
+
+    @Test
+    public void testRemoveSurrounding() {
+        assertThat(StringUtil.removeSurrounding("", 'q'), equalTo(""));
+        assertThat(StringUtil.removeSurrounding("q", 'q'), equalTo("q"));
+        assertThat(StringUtil.removeSurrounding("qq", 'q'), equalTo(""));
+        assertThat(StringUtil.removeSurrounding("qqq", 'q'), equalTo("q"));
+    }
+
+    @Test
+    public void testElide() {
+        assertThat(StringUtil.elide("abc", 2, ""), equalTo("ab"));
+        assertThat(StringUtil.elide("abc", 2, "."), equalTo("a."));
+        assertThat(StringUtil.elide("abc", 2, ".."), equalTo(".."));
+        assertThat(StringUtil.elide("abc", 3, ".."), equalTo("abc"));
     }
 }

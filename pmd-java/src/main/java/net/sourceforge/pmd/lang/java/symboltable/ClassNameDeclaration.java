@@ -20,7 +20,7 @@ public class ClassNameDeclaration extends AbstractNameDeclaration implements Typ
     @Override
     public String toString() {
         if (node instanceof ASTAnyTypeDeclaration) {
-            return PrettyPrintingUtil.kindName((ASTAnyTypeDeclaration) node) + node.getImage();
+            return PrettyPrintingUtil.getPrintableNodeKind((ASTAnyTypeDeclaration) node) + node.getImage();
         }
         return "anonymous";
     }

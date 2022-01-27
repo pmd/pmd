@@ -1,0 +1,11 @@
+<apex:page controller="ApexController" tabStyle="Account">
+    <!-- Safe -->
+    <apex:outputText value="{!AccountIdProp}" escape="false" />
+    <apex:outputText value="{!AccountId}" escape="false" />
+    <apex:outputText value="{!InnerController.InnerAccountId}" escape="false" />
+    <apex:outputText value="{!InnerController.InnerAccountIdProp}" escape="false" />
+
+    <!-- Unsafe -->
+    <apex:outputText value="{!AccountName}" escape="false" />
+    <apex:outputText value="{!InnerController.InnerAccountName}" escape="false" />
+</apex:page>

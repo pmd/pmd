@@ -4,21 +4,15 @@
 
 package net.sourceforge.pmd.test.lang;
 
-import java.io.Reader;
+import java.util.Collections;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
-
-import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.lang.AbstractParser;
 import net.sourceforge.pmd.lang.AbstractPmdLanguageVersionHandler;
 import net.sourceforge.pmd.lang.BaseLanguageModule;
-import net.sourceforge.pmd.lang.Parser;
-import net.sourceforge.pmd.lang.ParserOptions;
-import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.ast.ParseException;
+import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.ast.AstInfo;
+import net.sourceforge.pmd.lang.ast.Parser;
 import net.sourceforge.pmd.lang.ast.RootNode;
-import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 import net.sourceforge.pmd.lang.rule.impl.DefaultRuleViolationFactory;
 import net.sourceforge.pmd.test.lang.ast.DummyNode;
 
@@ -50,35 +44,42 @@ public class DummyLanguageModule extends BaseLanguageModule {
         }
 
         @Override
-        public Parser getParser(ParserOptions parserOptions) {
-            return new AbstractParser(parserOptions) {
-                @Override
-                public DummyRootNode parse(String fileName, Reader source) throws ParseException {
-                    DummyRootNode node = new DummyRootNode();
-                    node.setCoords(1, 1, 1, 2);
-                    node.setImage("Foo");
-                    return node;
-                }
-
+        public Parser getParser() {
+            return task -> {
+                DummyRootNode node = new DummyRootNode();
+                node.setCoords(1, 1, 1, 2);
+                node.setLanguageVersion(task.getLanguageVersion());
+                node.setImage("Foo");
+                return node;
             };
         }
     }
 
     public static class DummyRootNode extends DummyNode implements RootNode {
 
+
+        private LanguageVersion languageVersion = LanguageRegistry.findLanguageByTerseName(DummyLanguageModule.TERSE_NAME).getDefaultVersion();
+
+        public void setLanguageVersion(LanguageVersion languageVersion) {
+            this.languageVersion = languageVersion;
+        }
+
+        @Override
+        public AstInfo<DummyRootNode> getAstInfo() {
+            return new AstInfo<>(
+                "sample.dummy",
+                languageVersion,
+                "dummy text",
+                this,
+                Collections.emptyMap()
+            );
+        }
+
+
     }
 
 
     public static class RuleViolationFactory extends DefaultRuleViolationFactory {
-        @Override
-        public RuleViolation createViolation(Rule rule, @NonNull Node location, @NonNull String filename, @NonNull String formattedMessage) {
-            return new ParametricRuleViolation<Node>(rule, filename, location, formattedMessage) {
-                @Override
-                public String getPackageName() {
-                    this.packageName = "foo"; // just for testing variable expansion
-                    return super.getPackageName();
-                }
-            };
-        }
+
     }
 }

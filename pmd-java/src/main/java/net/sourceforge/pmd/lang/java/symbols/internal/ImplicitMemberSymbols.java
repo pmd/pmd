@@ -13,7 +13,9 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
@@ -115,7 +117,7 @@ public final class ImplicitMemberSymbols {
             modifiers,
             CollectionUtil.map(
                 recordComponents,
-                f -> c -> new FakeFormalParamSym(c, f.getSimpleName(), (ts, sym) -> f.getTypeMirror(Substitution.EMPTY))
+                f -> c -> new FakeFormalParamSym(c, f.getSimpleName(), f.tryGetNode(), (ts, sym) -> f.getTypeMirror(Substitution.EMPTY))
             )
         );
     }
@@ -279,12 +281,23 @@ public final class ImplicitMemberSymbols {
 
         private final JExecutableSymbol owner;
         private final String name;
+        private final ASTVariableDeclaratorId node;
         private final BiFunction<? super TypeSystem, ? super JFormalParamSymbol, ? extends JTypeMirror> type;
 
         private FakeFormalParamSym(JExecutableSymbol owner, String name, BiFunction<? super TypeSystem, ? super JFormalParamSymbol, ? extends JTypeMirror> type) {
+            this(owner, name, null, type);
+        }
+
+        private FakeFormalParamSym(JExecutableSymbol owner, String name, @Nullable ASTVariableDeclaratorId node, BiFunction<? super TypeSystem, ? super JFormalParamSymbol, ? extends JTypeMirror> type) {
             this.owner = owner;
             this.name = name;
+            this.node = node;
             this.type = type;
+        }
+
+        @Override
+        public @Nullable ASTVariableDeclaratorId tryGetNode() {
+            return node;
         }
 
         @Override

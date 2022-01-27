@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 import net.sourceforge.pmd.lang.ast.AstVisitorBase;
+import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 
 /**
  * Base implementation of {@link JavaVisitor}. This adds delegation logic
@@ -186,11 +187,6 @@ public class JavaVisitorBase<P, R> extends AstVisitorBase<P, R> implements JavaV
     }
 
     @Override
-    public R visit(ASTFieldAccess node, P data) {
-        return visitPrimaryExpr(node, data);
-    }
-
-    @Override
     public R visit(ASTConstructorCall node, P data) {
         return visitPrimaryExpr(node, data);
     }
@@ -207,10 +203,18 @@ public class JavaVisitorBase<P, R> extends AstVisitorBase<P, R> implements JavaV
         return visitPrimaryExpr(node, data);
     }
 
+    public R visitNamedExpr(ASTNamedReferenceExpr node, P data) {
+        return visitPrimaryExpr(node, data);
+    }
 
     @Override
     public R visit(ASTVariableAccess node, P data) {
-        return visitPrimaryExpr(node, data);
+        return visitNamedExpr(node, data);
+    }
+
+    @Override
+    public R visit(ASTFieldAccess node, P data) {
+        return visitNamedExpr(node, data);
     }
 
 

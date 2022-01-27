@@ -1,0 +1,420 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>simple failure case</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>2,3</expected-linenumbers>
+        <expected-messages>
+            <message>Do not use `new Boolean("true")`, prefer `Boolean.TRUE`</message>
+            <message>Do not use `new Boolean("false")`, prefer `Boolean.FALSE`</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    Boolean b1 = new Boolean("true");
+    Boolean b2 = new Boolean("false");
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>new java.lang.Boolean</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <expected-messages>
+            <message>Do not use `new Boolean("true")`, prefer `Boolean.TRUE`</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    Boolean b = new java.lang.Boolean("true");
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>ok with Boolean.TRUE constant</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    Boolean b = Boolean.TRUE;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Boolean.valueOf - not constructors</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>2,3</expected-linenumbers>
+        <expected-messages>
+            <message>Do not use `Boolean.valueOf(true)`, prefer `Boolean.TRUE`</message>
+            <message>Do not use `Boolean.valueOf(false)`, prefer `Boolean.FALSE`</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    Boolean b = Boolean.valueOf(true); // Boolean.TRUE
+    Boolean b1 = Boolean.valueOf(false); // Boolean.FALSE
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Boolean.valueOf() with variable is fine</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    boolean x;
+    Boolean b = Boolean.valueOf(x);
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>don't use Boolean.valueOf() with string literal</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <expected-messages>
+            <message>Do not use `Boolean.valueOf("true")`, prefer `Boolean.TRUE`</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    Boolean b = Boolean.valueOf("true");
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>don't use new Boolean() in method call</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <expected-messages>
+            <message>Do not use `new Boolean("true")`, prefer `Boolean.TRUE`</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    public void go(){
+        foo(new Boolean("true"));
+    }
+    private void foo(Boolean b) { }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>don't use Boolean.valueOf() in method call</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    public void go(){
+        foo(Boolean.valueOf("true"));
+    }
+    private void foo(Boolean b) { }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>ok, Boolean.TRUE and Boolean.FALSE as method arguments</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void go() {
+        foo(Boolean.TRUE);
+    }
+    static {
+        foo(Boolean.TRUE);
+    }
+    private static void foo(Boolean b) {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>don't use Boolean.valueOf() or new Boolean() in static block</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,4</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    static {
+        foo(Boolean.valueOf("true"));
+        foo(new Boolean("false"));
+    }
+    private static void foo(Boolean b) {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Bug 1744065, should be ok</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import my.own.Boolean;
+
+public class Foo {
+    public void Bar() {
+        Boolean b = new Boolean("true"); // not java.lang.Boolean!!
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Test for failure after rule with custom Boolean, should report failure if rule reset done correctly</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    Boolean b = Boolean.valueOf("true");
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1533 [java] BooleanInstantiation: ClassCastException with Annotation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar() {
+        Object o = new @Interned MyObject();
+    }
+}
+
+@interface Interned { }
+class MyObject { }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Arrays are ok</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    Boolean[] a = new Boolean[]{};
+}
+        ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>new Short(), bad</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <expected-messages>
+            <message>Do not use `new Short(...)`, prefer `Short.valueOf(...)`</message>
+        </expected-messages>
+        <code><![CDATA[
+            public class Foo {
+                public void f(short b){
+                    Short i = new Short(b);
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Short.valueOf(), ok</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class Foo {
+                public void f(short b){
+                    Short i = Short.valueOf(b);
+                }
+            }
+            ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>new Integer(), bad</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <expected-messages>
+            <message>Do not use `new Integer(...)`, prefer `Integer.valueOf(...)`</message>
+        </expected-messages>
+        <code><![CDATA[
+            public class Foo {
+                Integer i = new Integer(42);
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Integer.valueOf(), ok</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class Foo {
+                Integer i1 = Integer.valueOf("42");
+                Integer i2 = Integer.valueOf(42);
+            }
+            ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>new Long(), bad</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <expected-messages>
+            <message>Do not use `new Long(...)`, prefer `Long.valueOf(...)`</message>
+        </expected-messages>
+        <code><![CDATA[
+            public class Foo {
+                public void f(long l){
+                    Long i = new Long(l);
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Long.valueOf(), ok</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class Foo {
+                public void f(long l){
+                    Long i = Long.valueOf(l);
+                }
+            }
+            ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>new Double(), bad</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <expected-messages>
+            <message>Do not use `new Double(...)`, prefer `Double.valueOf(...)`</message>
+        </expected-messages>
+        <code><![CDATA[
+            public class Foo {
+                public void f(double d){
+                    Double i = new Double(d);
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Double.valueOf(), ok</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class Foo {
+                public void f(double d){
+                    Double i = Double.valueOf(d);
+                }
+            }
+            ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>new Float(), bad</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <expected-messages>
+            <message>Do not use `new Float(...)`, prefer `Float.valueOf(...)`</message>
+        </expected-messages>
+        <code><![CDATA[
+            public class Foo {
+                public void f(float f){
+                    Float i = new Float(f);
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Float.valueOf(), ok</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class Foo {
+                public void f(float f){
+                    Float i = Float.valueOf(f);
+                }
+            }
+            ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>new Byte(), bad</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <expected-messages>
+            <message>Do not use `new Byte(...)`, prefer `Byte.valueOf(...)`</message>
+        </expected-messages>
+        <code><![CDATA[
+            public class Foo {
+                public void f(byte b){
+                    Byte i = new Byte(b);
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Byte.valueOf(), ok</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class Foo {
+                public void f(byte b){
+                    Byte i = Byte.valueOf(b);
+                }
+            }
+            ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>new Character(), bad</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <expected-messages>
+            <message>Do not use `new Character(...)`, prefer `Character.valueOf(...)`</message>
+        </expected-messages>
+        <code><![CDATA[
+            public class Foo {
+                public void f(char c){
+                    Character i = new Character(c);
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Character.valueOf(), ok</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class Foo {
+                public void f(char c){
+                    Character i = Character.valueOf(c);
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] PrimitiveWrapperInstantiation: no violation on 'new Boolean(val)' #3595</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>5,6</expected-linenumbers>
+        <expected-messages>
+            <message>Do not use `new Boolean(...)`, prefer `Boolean.valueOf`</message>
+            <message>Do not use `new Boolean("...")`, prefer `Boolean.valueOf`</message>
+        </expected-messages>
+        <code><![CDATA[
+public class SomeClass {
+      private Boolean bar;
+
+      public void method(String s) {
+            this.bar = new Boolean(s);      //violation for the BooleanInstantiation
+            this.bar = new Boolean("some arbitrary string is just false"); //violation
+            this.bar = Boolean.valueOf(s);  //use this instead of Boolean#new
+      }
+}
+        ]]></code>
+    </test-code>
+</test-data>

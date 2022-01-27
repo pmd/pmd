@@ -119,7 +119,7 @@ public final class StreamImpl {
 
         if (length == 0) {
             return empty();
-        } else if (filtermap == Filtermap.NODE_IDENTITY) {
+        } else if (filtermap == Filtermap.NODE_IDENTITY) { // NOPMD CompareObjectsWithEquals
             @SuppressWarnings("unchecked")
             NodeStream<T> res = length == 1 ? (NodeStream<T>) singleton(parent.getChild(from))
                                            : (NodeStream<T>) new ChildrenStream(parent, from, length);
@@ -144,7 +144,7 @@ public final class StreamImpl {
             return empty();
         }
 
-        if (target == Filtermap.NODE_IDENTITY) {
+        if (target == Filtermap.NODE_IDENTITY) { // NOPMD CompareObjectsWithEquals
             return (NodeStream<T>) new AncestorOrSelfStream(node);
         }
 

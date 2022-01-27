@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -52,7 +52,6 @@ public abstract class AbstractJavaRule extends AbstractRule implements JavaParse
         return false;
     }
 
-
     @Override
     public boolean dependsOn(AstProcessingStage<?> stage) {
         if (!(stage instanceof JavaProcessingStage)) {
@@ -61,5 +60,4 @@ public abstract class AbstractJavaRule extends AbstractRule implements JavaParse
 
         return true;
     }
-
 }

@@ -193,6 +193,8 @@ public class MyException extends RuntimeException {
         <description>Exclude serialPersistentFields by default</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.io.*;
+import java.util.*;
 public class Foo implements Serializable {
 
     List next;
