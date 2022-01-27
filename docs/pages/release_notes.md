@@ -41,6 +41,8 @@ not support all features of the latest EcmaScript standard.
 
 ### Fixed Issues
 
+*   core
+    *   [#3328](https://github.com/pmd/pmd/issues/3328): \[core] designer.bat errors when JAVAFX_HOME contains spaces
 *   java
     *   [#3698](https://github.com/pmd/pmd/issues/3698): \[java] Error resolving Symbol Table
 *   java-bestpractices
