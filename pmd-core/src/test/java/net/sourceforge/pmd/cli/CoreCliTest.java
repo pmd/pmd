@@ -21,10 +21,10 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.contrib.java.lang.system.RestoreSystemProperties;
+import org.junit.contrib.java.lang.system.SystemErrRule;
 import org.junit.rules.TemporaryFolder;
 
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.junit.JavaUtilLoggingRule;
 
 /**
  *
@@ -39,7 +39,7 @@ public class CoreCliTest {
     @Rule
     public RestoreSystemProperties restoreSystemProperties = new RestoreSystemProperties();
     @Rule
-    public JavaUtilLoggingRule loggingRule = new JavaUtilLoggingRule(PMD.class.getPackage().getName()).mute();
+    public SystemErrRule loggingRule = new SystemErrRule().enableLog().muteForSuccessfulTests();
 
     private Path srcDir;
 
@@ -161,6 +161,18 @@ public class CoreCliTest {
         } finally {
             Files.deleteIfExists(absoluteReportFile);
         }
+    }
+
+    @Test
+    public void debugLogging() {
+        runPmdSuccessfully("--debug", "--no-cache", "--dir", srcDir, "--rulesets", DUMMY_RULESET);
+        loggingRule.getLog().contains("[main] DEBUG net.sourceforge.pmd.PMD - Loglevel is at DEBUG");
+    }
+
+    @Test
+    public void defaultLogging() {
+        runPmdSuccessfully("--no-cache", "--dir", srcDir, "--rulesets", DUMMY_RULESET);
+        loggingRule.getLog().contains("[main] INFO net.sourceforge.pmd.PMD - Loglevel is at INFO");
     }
 
 
