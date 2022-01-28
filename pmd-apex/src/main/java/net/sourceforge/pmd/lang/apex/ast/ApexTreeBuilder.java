@@ -7,13 +7,14 @@ package net.sourceforge.pmd.lang.apex.ast;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.AbstractList;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.RandomAccess;
-import java.util.Stack;
 
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.Token;
@@ -239,10 +240,10 @@ final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
     }
 
     // The nodes having children built.
-    private final Stack<AbstractApexNode<?>> nodes = new Stack<>();
+    private final Deque<AbstractApexNode<?>> nodes = new ArrayDeque<>();
 
     // The Apex nodes with children to build.
-    private final Stack<AstNode> parents = new Stack<>();
+    private final Deque<AstNode> parents = new ArrayDeque<>();
 
     private final AdditionalPassScope scope = new AdditionalPassScope(Errors.createErrors());
 
@@ -393,6 +394,7 @@ final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
         ANTLRStringStream stream = new ANTLRStringStream(source);
         ApexLexer lexer = new ApexLexer(stream);
 
+        @SuppressWarnings("PMD.LooseCoupling") // allCommentTokens must be ArrayList explicitly to guarantee RandomAccess
         ArrayList<TokenLocation> allCommentTokens = new ArrayList<>();
         List<ApexDocTokenLocation> tokenLocations = new ArrayList<>();
         Map<Integer, String> suppressMap = new HashMap<>();
@@ -441,6 +443,7 @@ final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
 
         final Map<Integer, String> suppressMap;
         final List<TokenLocation> allCommentTokens;
+        @SuppressWarnings("PMD.LooseCoupling") // must be concrete class in order to guarantee RandomAccess
         final TokenListByStartIndex allCommentTokensByStartIndex;
         final List<ApexDocTokenLocation> docTokenLocations;
 

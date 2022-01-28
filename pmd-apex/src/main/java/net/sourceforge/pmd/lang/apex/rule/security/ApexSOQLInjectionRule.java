@@ -220,7 +220,7 @@ public class ApexSOQLInjectionRule extends AbstractApexRule {
     }
 
     private void reportStrings(ASTMethodCallExpression m, Object data) {
-        final HashSet<ASTVariableExpression> setOfSafeVars = new HashSet<>();
+        final Set<ASTVariableExpression> setOfSafeVars = new HashSet<>();
         final List<ASTStandardCondition> conditions = m.findDescendantsOfType(ASTStandardCondition.class);
         for (ASTStandardCondition c : conditions) {
             List<ASTVariableExpression> vars = c.findDescendantsOfType(ASTVariableExpression.class);
