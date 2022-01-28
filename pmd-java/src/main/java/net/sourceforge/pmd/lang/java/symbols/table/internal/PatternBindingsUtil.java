@@ -29,12 +29,22 @@ import net.sourceforge.pmd.lang.java.ast.BinaryOp;
 import net.sourceforge.pmd.lang.java.ast.UnaryOp;
 import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 
+/**
+ * Utilities to resolve scope of pattern binding variables.
+ *
+ * @see <a href="https://docs.oracle.com/javase/specs/jls/se17/html/jls-6.html#jls-6.3.1">Java Language Specification</a>
+ */
 final class PatternBindingsUtil {
 
     private PatternBindingsUtil() {
         // util class
     }
 
+    /**
+     * Returns whether the statement can complete normally. For instance,
+     * an expression statement may complete normally, while a return or throw
+     * always complete abruptly.
+     */
     static boolean canCompleteNormally(ASTStatement stmt) {
         if (stmt instanceof ASTLabeledStatement) {
             // we need to remove labels
@@ -58,10 +68,13 @@ final class PatternBindingsUtil {
 
             return false;
 
-        } else if (stmt instanceof ASTBreakStatement) {
+        }
+
+        if (stmt instanceof ASTBreakStatement) {
 
             String label = ((ASTBreakStatement) stmt).getLabel();
-            return label == null && state.isBreakAllowed() || label != null && state.getLabelsInScope().contains(label);
+            return label == null && state.isBreakAllowed()
+                || label != null && state.getLabelsInScope().contains(label);
 
         } else if (stmt instanceof ASTContinueStatement) {
 
@@ -70,6 +83,14 @@ final class PatternBindingsUtil {
                 || label != null && state.getLabelsInScope().contains(label);
 
         } else if (stmt instanceof ASTBlock) {
+            // A block can complete normally if all of its statements
+            // in sequence can complete normally.
+            // Since if a statement CANNOT complete normally, anything
+            // that follows is dead code (and would be a compile-time
+            // error if there is any), we could optimize this branch
+            // by just checking that the last statement of the block
+            // may complete normally, under the assumption that we're
+            // handling only valid java source code. Let's do this later.
 
             for (ASTStatement child : (ASTBlock) stmt) {
                 if (!canCompleteNormallyImpl(child, state)) {
@@ -118,10 +139,20 @@ final class PatternBindingsUtil {
      * are not processed).
      */
     static BindSet bindersOfExpr(ASTExpression e) {
+        /*
+           JLS 17§6.3.1
+           If an expression is not a conditional-and expression, conditional-or
+           expression, logical complement expression, conditional expression,
+           instanceof expression, switch expression, or parenthesized
+           expression, then no scope rules apply.
+         */
+
         if (e instanceof ASTUnaryExpression) {
             ASTUnaryExpression unary = (ASTUnaryExpression) e;
-            return unary.getOperator() == UnaryOp.NEGATION ? bindersOfExpr(unary.getOperand()).negate()
-                                                           : BindSet.EMPTY;
+            return unary.getOperator() == UnaryOp.NEGATION
+                   ? bindersOfExpr(unary.getOperand()).negate()
+                   : BindSet.EMPTY;
+
         } else if (e instanceof ASTInfixExpression) {
             BinaryOp op = ((ASTInfixExpression) e).getOperator();
             ASTExpression left = ((ASTInfixExpression) e).getLeftOperand();
@@ -150,6 +181,11 @@ final class PatternBindingsUtil {
         }
     }
 
+    /**
+     * A set of bindings contributed by a (boolean) expression. Different
+     * bindings are introduced if the expr evaluates to false or true, which
+     * is relevant for the scope of bindings introduced in if stmt conditions.
+     */
     static final class BindSet {
 
         static final BindSet EMPTY = new BindSet(HashTreePSet.empty(),
@@ -199,6 +235,9 @@ final class PatternBindingsUtil {
         }
     }
 
+    /**
+     * Tracks exploration state of an expression.
+     */
     private static class State {
 
         private final PSet<String> labelsInScope;
