@@ -159,13 +159,27 @@ final class PatternBindingsUtil {
             ASTExpression right = ((ASTInfixExpression) e).getRightOperand();
 
             if (op == BinaryOp.INSTANCEOF && right instanceof ASTPatternExpression) {
+
                 return collectBindings(((ASTPatternExpression) right).getPattern());
+
             } else if (op == BinaryOp.CONDITIONAL_AND) { // &&
-                return BindSet.union(bindersOfExpr(left), bindersOfExpr(right));
+                // A pattern variable is introduced by a && b when true iff either
+                // (i) it is introduced by a when true or
+                // (ii) it is introduced by b when true.
+
+                return BindSet.whenTrue(
+                    bindersOfExpr(left).trueBindings.plusAll(bindersOfExpr(right).trueBindings)
+                );
+
             } else if (op == BinaryOp.CONDITIONAL_OR) { // ||
-                // actually compute !( !left && !right )
-                return BindSet.union(bindersOfExpr(left).negate(),
-                                     bindersOfExpr(right).negate()).negate();
+                // A pattern variable is introduced by a || b when false iff either
+                // (i) it is introduced by a when false or
+                // (ii) it is introduced by b when false.
+
+                return BindSet.whenFalse(
+                    bindersOfExpr(left).falseBindings.plusAll(bindersOfExpr(right).falseBindings)
+                );
+
             } else {
                 return BindSet.EMPTY;
             }
@@ -222,6 +236,14 @@ final class PatternBindingsUtil {
 
         BindSet addBinding(ASTVariableDeclaratorId e) {
             return new BindSet(trueBindings.plus(e), falseBindings);
+        }
+
+        static BindSet whenTrue(PSet<ASTVariableDeclaratorId> bindings) {
+            return new BindSet(bindings, HashTreePSet.empty());
+        }
+
+        static BindSet whenFalse(PSet<ASTVariableDeclaratorId> bindings) {
+            return new BindSet(HashTreePSet.empty(), bindings);
         }
 
         static BindSet union(BindSet first, BindSet other) {
