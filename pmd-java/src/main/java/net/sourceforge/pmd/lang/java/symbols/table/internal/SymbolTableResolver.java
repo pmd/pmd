@@ -18,7 +18,6 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.NotImplementedException;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.pcollections.PSet;
@@ -35,12 +34,14 @@ import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTCompactConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
+import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTForeachStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTInfixExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTInitializer;
 import net.sourceforge.pmd.lang.java.ast.ASTLabeledStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
@@ -59,10 +60,12 @@ import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTTryStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
+import net.sourceforge.pmd.lang.java.ast.BinaryOp;
 import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.JavaVisitorBase;
 import net.sourceforge.pmd.lang.java.internal.JavaAstProcessor;
+import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
 import net.sourceforge.pmd.lang.java.symbols.table.internal.PatternBindingsUtil.BindSet;
 import net.sourceforge.pmd.lang.java.types.JClassType;
@@ -432,6 +435,40 @@ public final class SymbolTableResolver {
             return null;
         }
 
+        @Override
+        public Void visit(ASTInfixExpression node, @NonNull ReferenceCtx ctx) {
+            // need to account for pattern bindings.
+            // visit left operand first. Maybe it introduces bindings in the rigt operand.
+
+            node.getLeftOperand().acceptVisitor(this, ctx);
+
+            BinaryOp op = node.getOperator();
+            if (op == BinaryOp.CONDITIONAL_AND) {
+
+                PSet<ASTVariableDeclaratorId> trueBindings = bindersOfExpr(node.getLeftOperand()).getTrueBindings();
+                if (!trueBindings.isEmpty()) {
+                    int pushed = pushOnStack(f.localVarSymTable(top(), enclosing(), trueBindings));
+                    setTopSymbolTableAndRecurse(node.getRightOperand(), ctx);
+                    popStack(pushed);
+                    return null;
+                }
+
+            } else if (op == BinaryOp.CONDITIONAL_OR) {
+
+                PSet<ASTVariableDeclaratorId> falseBindings = bindersOfExpr(node.getLeftOperand()).getFalseBindings();
+                if (!falseBindings.isEmpty()) {
+                    int pushed = pushOnStack(f.localVarSymTable(top(), enclosing(), falseBindings));
+                    setTopSymbolTableAndRecurse(node.getRightOperand(), ctx);
+                    popStack(pushed);
+                    return null;
+                }
+
+            }
+
+            // not a special case, finish visiting right operand
+            return node.getRightOperand().acceptVisitor(this, ctx);
+        }
+
         // non-static
         // Every visit method returns the set of variables that are introduced by the statement
         // as defined in the JLS:
@@ -460,17 +497,24 @@ public final class SymbolTableResolver {
                 ASTStatement thenBranch = node.getThenBranch();
                 ASTStatement elseBranch = node.getElseBranch();
 
-                int pushed = pushOnStack(f.localVarSymTable(top(), enclosing(), NodeStream.fromIterable(bindSet.getTrueBindings())));
+                node.getCondition().acceptVisitor(MyVisitor.this, ctx);
+
+                // the true bindings of the condition are in scope in the then branch
+                int pushed = pushOnStack(f.localVarSymTable(top(), enclosing(), bindSet.getTrueBindings()));
                 setTopSymbolTableAndRecurse(thenBranch, ctx);
                 popStack(pushed);
+
                 if (elseBranch != null) {
-                    pushed = pushOnStack(f.localVarSymTable(top(), enclosing(), NodeStream.fromIterable(bindSet.getFalseBindings())));
+                    // if there is an else, the false bindings are in scope in the else branch
+                    pushed = pushOnStack(f.localVarSymTable(top(), enclosing(), bindSet.getFalseBindings()));
                     setTopSymbolTableAndRecurse(elseBranch, ctx);
                     popStack(pushed);
 
                     boolean thenCanCompleteNormally = canCompleteNormally(thenBranch);
                     boolean elseCanCompleteNormally = canCompleteNormally(elseBranch);
 
+                    // the bindings are visible in the statements following this if/else
+                    // if one of those conditions match
                     if (thenCanCompleteNormally && !elseCanCompleteNormally) {
                         return bindSet.getTrueBindings();
                     } else if (!thenCanCompleteNormally && elseCanCompleteNormally) {
@@ -489,6 +533,8 @@ public final class SymbolTableResolver {
                     return super.visit(node, ctx);
                 }
 
+                node.getCondition().acceptVisitor(MyVisitor.this, ctx);
+
                 int pushed = pushOnStack(f.localVarSymTable(top(), enclosing(), NodeStream.fromIterable(bindSet.getTrueBindings())));
                 setTopSymbolTableAndRecurse(node.getBody(), ctx);
                 popStack(pushed);
@@ -505,15 +551,36 @@ public final class SymbolTableResolver {
 
             @Override
             public PSet<ASTVariableDeclaratorId> visit(ASTForStatement node, @NonNull ReferenceCtx ctx) {
-                BindSet bindSet = bindersOfExpr(node.getCondition());
-                if (bindSet.isEmpty()) {
-                    int pushed = pushOnStack(f.localVarSymTable(top(), enclosing(), varsOfInit(node)));
-                    setTopSymbolTableAndRecurse(node, ctx);
-                    popStack(pushed);
-                    return BindSet.noBindings();
-                }
+                int pushed = pushOnStack(f.localVarSymTable(top(), enclosing(), varsOfInit(node)));
 
-                throw new NotImplementedException("TODO - for with pattern bindings in condition");
+                ASTExpression condition = node.getCondition();
+                setTopSymbolTableAndRecurse(condition, ctx);
+
+                BindSet bindSet = bindersOfExpr(condition);
+                pushed += pushOnStack(f.localVarSymTable(top(), enclosing(), bindSet.getTrueBindings()));
+                setTopSymbolTableAndRecurse(node.getUpdate(), ctx);
+                setTopSymbolTableAndRecurse(node.getBody(), ctx);
+                popStack(pushed);
+
+                if (bindSet.getFalseBindings().isEmpty()) {
+                    return BindSet.noBindings();
+                } else {
+                    // A pattern variable is introduced by a basic for statement iff
+                    // (i) it is introduced by the condition expression when false and
+                    // (ii) the contained statement, S, does not contain a reachable
+                    // break statement whose break target contains S (§14.15).
+                    Set<JavaNode> containingStatements = node.ancestorsOrSelf()
+                                                             .filter(JavaRuleUtil::mayBeBreakTarget)
+                                                             .collect(Collectors.toSet());
+                    boolean hasNoBreaks = node.getBody()
+                                              .descendants(ASTBreakStatement.class)
+                                              .none(it -> containingStatements.contains(it.getTarget()));
+                    if (hasNoBreaks) {
+                        return bindSet.getFalseBindings();
+                    } else {
+                        return BindSet.noBindings();
+                    }
+                }
             }
 
             @Override
