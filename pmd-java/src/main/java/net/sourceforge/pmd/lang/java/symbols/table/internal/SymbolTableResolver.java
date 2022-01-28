@@ -33,6 +33,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTCatchClause;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTCompactConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
@@ -467,6 +468,27 @@ public final class SymbolTableResolver {
 
             // not a special case, finish visiting right operand
             return node.getRightOperand().acceptVisitor(this, ctx);
+        }
+
+        @Override
+        public Void visit(ASTConditionalExpression node, @NonNull ReferenceCtx ctx) {
+            // need to account for pattern bindings.
+
+            ASTExpression condition = node.getCondition();
+            condition.acceptVisitor(this, ctx);
+            BindSet binders = bindersOfExpr(condition);
+            if (binders.isEmpty()) {
+                node.getThenBranch().acceptVisitor(this, ctx);
+                node.getElseBranch().acceptVisitor(this, ctx);
+            } else {
+                int pushed = pushOnStack(f.localVarSymTable(top(), enclosing(), binders.getTrueBindings()));
+                setTopSymbolTableAndRecurse(node.getThenBranch(), ctx);
+                popStack(pushed);
+                pushed = pushOnStack(f.localVarSymTable(top(), enclosing(), binders.getFalseBindings()));
+                setTopSymbolTableAndRecurse(node.getElseBranch(), ctx);
+                popStack(pushed);
+            }
+            return null;
         }
 
         // non-static

@@ -270,7 +270,7 @@ final class PatternBindingsUtil {
          * @param labelsInScope Labels to which breaking is ok, because they're
          *                      in a strict descendant of the toplevel node.
          */
-        public State(PSet<String> labelsInScope, boolean breakAllowed, boolean continueAllowed) {
+        State(PSet<String> labelsInScope, boolean breakAllowed, boolean continueAllowed) {
             this.labelsInScope = labelsInScope;
             this.breakAllowed = breakAllowed;
             this.continueAllowed = continueAllowed;

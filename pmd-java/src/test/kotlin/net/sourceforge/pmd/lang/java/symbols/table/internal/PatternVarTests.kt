@@ -14,30 +14,33 @@ import net.sourceforge.pmd.lang.java.ast.*
  */
 class PatternVarTests : ProcessorTestSpec({
 
-    parserTest("Bindings with if/else", javaVersion = JavaVersion.J17) {
 
-        fun checkVars(firstIsPattern: Boolean, secondIsPattern: Boolean, code: () -> String) {
-            val exprCode = code().trimIndent()
-            val sourceCode = """
+    fun ParserTestCtx.checkVars(firstIsPattern: Boolean, secondIsPattern: Boolean, code: () -> String) {
+        val exprCode = code().trimIndent()
+        val sourceCode = """
                 class Foo {
                     int var; // a field
                     {
-                        someFun( $exprCode );
+                        someFun( $exprCode
+                         ); // move that out so it doesn't get commented out
                     }
                 }
             """.trimIndent()
-            val acu = parser.parse(sourceCode)
+        val acu = this.parser.parse(sourceCode)
 
 
-            val expr = acu.descendants(ASTArgumentList::class.java)[0]!!
-            val (var1, var2) = expr.descendants(ASTMethodCall::class.java).crossFindBoundaries().map { it.qualifier as ASTVariableAccess }.toList()
-            withClue("First var in\n$exprCode") {
-                var1.referencedSym!!.tryGetNode()!!::isPatternBinding shouldBe firstIsPattern
-            }
-            withClue("Second var in\n$exprCode") {
-                var2.referencedSym!!.tryGetNode()!!::isPatternBinding shouldBe secondIsPattern
-            }
+        val expr = acu.descendants(ASTArgumentList::class.java)[0]!!
+        val (var1, var2) = expr.descendants(ASTMethodCall::class.java).crossFindBoundaries()
+            .map { it.qualifier as ASTVariableAccess }.toList()
+        withClue("First var in\n$exprCode") {
+            var1.referencedSym!!.tryGetNode()!!::isPatternBinding shouldBe firstIsPattern
         }
+        withClue("Second var in\n$exprCode") {
+            var2.referencedSym!!.tryGetNode()!!::isPatternBinding shouldBe secondIsPattern
+        }
+    }
+
+    parserTest("Bindings with if/else", javaVersion = JavaVersion.J17) {
 
         doTest("If with then that falls through") {
 
@@ -113,29 +116,6 @@ class PatternVarTests : ProcessorTestSpec({
 
     parserTest("Bindings within condition", javaVersion = JavaVersion.J17) {
 
-        fun checkVars(firstIsPattern: Boolean, secondIsPattern: Boolean, code: () -> String) {
-            val exprCode = code().trimIndent()
-            val sourceCode = """
-                class Foo {
-                    int var; // a field
-                    {
-                        someFun( $exprCode );
-                    }
-                }
-            """.trimIndent()
-            val acu = parser.parse(sourceCode)
-
-
-            val expr = acu.descendants(ASTArgumentList::class.java)[0]!!
-            val (var1, var2) = expr.descendants(ASTMethodCall::class.java).crossFindBoundaries()
-                .map { it.qualifier as ASTVariableAccess }.toList()
-            withClue("First var in\n$exprCode") {
-                var1.referencedSym!!.tryGetNode()!!::isPatternBinding shouldBe firstIsPattern
-            }
-            withClue("Second var in\n$exprCode") {
-                var2.referencedSym!!.tryGetNode()!!::isPatternBinding shouldBe secondIsPattern
-            }
-        }
 
         doTest("Condition with and") {
 
@@ -177,31 +157,50 @@ class PatternVarTests : ProcessorTestSpec({
     }
 
 
-    parserTest("Bindings within for loop", javaVersion = JavaVersion.J17) {
-
-        fun checkVars(firstIsPattern: Boolean, secondIsPattern: Boolean, code: () -> String) {
-            val exprCode = code().trimIndent()
-            val sourceCode = """
-                class Foo {
-                    int var; // a field
-                    {
-                        someFun( $exprCode );
-                    }
-                }
-            """.trimIndent()
-            val acu = parser.parse(sourceCode)
+    parserTest("Bindings within ternary", javaVersion = JavaVersion.J17) {
 
 
-            val expr = acu.descendants(ASTArgumentList::class.java)[0]!!
-            val (var1, var2) = expr.descendants(ASTMethodCall::class.java).crossFindBoundaries()
-                .map { it.qualifier as ASTVariableAccess }.toList()
-            withClue("First var in\n$exprCode") {
-                var1.referencedSym!!.tryGetNode()!!::isPatternBinding shouldBe firstIsPattern
-            }
-            withClue("Second var in\n$exprCode") {
-                var2.referencedSym!!.tryGetNode()!!::isPatternBinding shouldBe secondIsPattern
+        doTest("Positive cond") {
+
+            checkVars(firstIsPattern = true, secondIsPattern = false) {
+                """
+                a -> a instanceof String var ? var.isEmpty() // the binding
+                                             : var.isEmpty() // the field
+                """
             }
         }
+        doTest("Negative cond") {
+
+            checkVars(firstIsPattern = false, secondIsPattern = true) {
+                """
+                a -> !(a instanceof String var) ? var.isEmpty() // the field
+                                                : var.isEmpty() // the binding
+                """
+            }
+        }
+
+    }
+
+
+
+    parserTest("Bindings within for labeled stmt", javaVersion = JavaVersion.J17) {
+
+        checkVars(firstIsPattern = false, secondIsPattern = true) {
+            """
+                a -> {
+                    label:
+                        if (!(a instanceof String var)) {
+                            var.toString(); // the field
+                            return;
+                        }
+                    var.toString(); // the binding
+                }
+                """
+        }
+    }
+
+    parserTest("Bindings within for loop", javaVersion = JavaVersion.J17) {
+
 
         doTest("Positive cond") {
 
@@ -209,7 +208,7 @@ class PatternVarTests : ProcessorTestSpec({
                 """
                 a -> {
                     for (; a instanceof String var; var = var.substring(1)) { // the binding
-                        
+
                     }
                     var.toString(); // the field
                 }
@@ -222,7 +221,7 @@ class PatternVarTests : ProcessorTestSpec({
                 """
                 a -> {
                     for (; !(a instanceof String var); var = var.substring(1)) { // the field
-                        
+
                     }
                     var.toString(); // the binding though it is unreachable
                 }
