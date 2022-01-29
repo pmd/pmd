@@ -364,6 +364,9 @@ public final class SymbolTableResolver {
                     continue;
                 }
 
+                // visit guarded patterns in label
+                setTopSymbolTableAndVisit(label, ctx);
+
                 if (branch instanceof ASTSwitchArrowBranch) {
                     int pushed = pushOnStack(f.localVarSymTable(top(), enclosing(), bindings.getTrueBindings()));
                     setTopSymbolTableAndVisit(((ASTSwitchArrowBranch) branch).getRightHandSide(), ctx);
