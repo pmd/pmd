@@ -20,6 +20,7 @@ import org.pcollections.HashTreePSet;
 import org.pcollections.PSet;
 
 import net.sourceforge.pmd.internal.util.AssertionUtil;
+import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTBreakStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTContinueStatement;
@@ -31,6 +32,11 @@ import net.sourceforge.pmd.lang.java.ast.ASTPattern;
 import net.sourceforge.pmd.lang.java.ast.ASTPatternExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTSwitchArrowBranch;
+import net.sourceforge.pmd.lang.java.ast.ASTSwitchArrowRHS;
+import net.sourceforge.pmd.lang.java.ast.ASTSwitchBranch;
+import net.sourceforge.pmd.lang.java.ast.ASTSwitchFallthroughBranch;
+import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTSynchronizedStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTTypePattern;
@@ -90,26 +96,9 @@ final class PatternBindingsUtil {
             return NO;
 
         } else if (stmt instanceof ASTBlock) {
-            // A block can complete normally if all of its statements
-            // in sequence can complete normally.
-            // Since if a statement CANNOT complete normally, anything
-            // that follows is dead code (and would be a compile-time
-            // error if there is any), we could optimize this branch
-            // by just checking that the last statement of the block
-            // may complete normally, under the assumption that we're
-            // handling only valid java source code. Let's do this later.
 
-            OptionalBool total = YES; // empty block completes normally
-            for (ASTStatement child : (ASTBlock) stmt) {
-                OptionalBool childCompletesNormally = completesNormally(child, state);
-                total = min(total, childCompletesNormally);
-                if (total == NO) {
-                    // note: short circuit implement a liveness analysis
-                    // following statements are unreachable
-                    return NO;
-                }
-            }
-            return total;
+            return handleBlockLike(((ASTBlock) stmt).toStream(), state);
+
         } else if (stmt instanceof ASTIfStatement) {
             ASTIfStatement ifStmt = (ASTIfStatement) stmt;
 
@@ -120,7 +109,10 @@ final class PatternBindingsUtil {
                 // yes -> yes
                 // unk -> unk
                 // no -> unk
-                return max(completesNormally(thenBranch, state), UNKNOWN);
+
+                // this max accounts for the case when the branch
+                // is never executed, which is a normal completion
+                return max(UNKNOWN, completesNormally(thenBranch, state));
             } else {
                 // yes, yes -> yes
                 // yes, unk -> unk
@@ -141,6 +133,10 @@ final class PatternBindingsUtil {
         } else if (stmt instanceof ASTSynchronizedStatement) {
 
             return completesNormally(((ASTSynchronizedStatement) stmt).getBody(), state);
+
+        } else if (stmt instanceof ASTSwitchStatement) {
+
+            return handleSwitch(state, (ASTSwitchStatement) stmt);
 
         } else if (stmt instanceof ASTWhileStatement) {
 
@@ -188,6 +184,75 @@ final class PatternBindingsUtil {
         }
     }
 
+    private static OptionalBool handleSwitch(State state, ASTSwitchStatement switchStmt) {
+
+        boolean isExhaustive = switchStmt.isExhaustiveEnumSwitch() || switchStmt.hasDefaultCase();
+
+        OptionalBool completesNormally = YES;
+        boolean first = true;
+        State switchState = new State(state);
+        for (ASTSwitchBranch branch : switchStmt.getBranches()) {
+            OptionalBool branchCompletesNormally;
+
+            if (branch instanceof ASTSwitchArrowBranch) {
+                ASTSwitchArrowRHS rhs = ((ASTSwitchArrowBranch) branch).getRightHandSide();
+                branchCompletesNormally = switchArrowBranchCompletesNormally(state, switchStmt, rhs);
+
+            } else if (branch instanceof ASTSwitchFallthroughBranch) {
+                NodeStream<ASTStatement> statements = ((ASTSwitchFallthroughBranch) branch).getStatements();
+                State branchState = new State(switchState);
+                branchCompletesNormally = handleBlockLike(statements, branchState);
+                branchCompletesNormally = handleBreaks(switchStmt, branchState, branchCompletesNormally);
+
+            } else {
+                throw AssertionUtil.shouldNotReachHere("Not a branch type :" + branch);
+            }
+
+            if (isExhaustive && first) {
+                completesNormally = branchCompletesNormally;
+                first = false;
+            } else {
+                // if non-exhaustive, mix with YES on the first iteration,
+                // which will produce at most UNKNOWN.
+
+                // mix because it either/or, not a sequence (cf if/else treatment)
+                completesNormally = mix(completesNormally, branchCompletesNormally);
+            }
+        }
+
+        return handleBreaks(switchStmt, switchState, completesNormally);
+    }
+
+    private static OptionalBool switchArrowBranchCompletesNormally(State state, ASTSwitchStatement switchStmt, ASTSwitchArrowRHS rhs) {
+        if (rhs instanceof ASTExpression) {
+            return YES;
+        }
+        if (rhs instanceof ASTThrowStatement) {
+            state.setReturnOrThrow(true);
+            return NO;
+        } else if (rhs instanceof ASTBlock) {
+            State subState = new State(state);
+            OptionalBool branchCompletesNormally = completesNormally((ASTStatement) rhs, subState);
+            return handleBreaks(switchStmt, subState, branchCompletesNormally);
+        } else {
+            throw AssertionUtil.shouldNotReachHere("not a branch RHS: " + rhs);
+        }
+    }
+
+    private static OptionalBool handleBlockLike(NodeStream<ASTStatement> stmts, State state) {
+        OptionalBool total = YES; // empty block completes normally
+        for (ASTStatement child : stmts) {
+            OptionalBool childCompletesNormally = completesNormally(child, state);
+            total = min(total, childCompletesNormally);
+            if (total == NO) {
+                // note: short circuit implement a liveness analysis
+                // following statements are unreachable
+                return NO;
+            }
+        }
+        return total;
+    }
+
     private static OptionalBool handleBreaks(ASTStatement breakTarget, State state, OptionalBool completesNormally) {
         if (state.isReturnOrThrow()) {
             return min(completesNormally, UNKNOWN);
@@ -196,7 +261,7 @@ final class PatternBindingsUtil {
 
             boolean onlyBreaksWithinSubTree =
                 state.breakTargets.stream().allMatch(it -> isAncestor(breakTarget, it))
-                && state.continueTargets.stream().allMatch(it -> isAncestor(breakTarget, it));
+                    && state.continueTargets.stream().allMatch(it -> isAncestor(breakTarget, it));
 
             if (onlyBreaksWithinSubTree) {
                 return YES;

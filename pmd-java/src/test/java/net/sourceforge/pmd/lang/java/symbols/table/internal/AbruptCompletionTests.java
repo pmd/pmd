@@ -47,7 +47,7 @@ public class AbruptCompletionTests extends BaseNonParserTest {
     private Executable mustCompleteNormally(String stmt) {
         return canCompleteNormally(stmt, actual -> {
             if (actual != OptionalBool.YES) {
-                throw new AssertionFailedError("Code MUST complete normally: `" + stmt + "`");
+                throw new AssertionFailedError("Code MUST complete normally, got " + actual + ": `" + stmt + "`");
             }
         });
     }
@@ -55,7 +55,7 @@ public class AbruptCompletionTests extends BaseNonParserTest {
     private Executable mustCompleteAbruptly(String stmt) {
         return canCompleteNormally(stmt, actual -> {
             if (actual != OptionalBool.NO) {
-                throw new AssertionFailedError("Code MUST complete abruptly: `" + stmt + "`");
+                throw new AssertionFailedError("Code MUST complete abruptly, got " + actual + ": `" + stmt + "`");
             }
         });
     }
@@ -109,6 +109,28 @@ public class AbruptCompletionTests extends BaseNonParserTest {
                                     + "else throw e;"),
 
             mustCompleteAbruptly("while(true) { continue; }")
+        );
+    }
+
+    @Test
+    public void testSwitchFallthrough() {
+        Assertions.assertAll(
+            mustCompleteNormally("switch(foo) {}"),
+            mustCompleteNormally("switch(foo) { case 1: break; }"),
+            mustCompleteNormally("switch(foo) { case 1: break; case 2: foo(); }"),
+            canCompleteNormally("switch(foo) { case 1: return; case 2: foo(); }")
+        );
+    }
+    @Test
+    public void testSwitchArrow() {
+        Assertions.assertAll(
+            mustCompleteNormally("switch(foo) {}"),
+            mustCompleteNormally("switch(foo) { case 1 -> X; default->  X;}"),
+
+            canCompleteNormally("switch(foo) { case 1 -> throw X; }"),
+            canCompleteNormally("switch(foo) { case 1 -> throw X; }"),
+
+            mustCompleteAbruptly("switch(foo) { case 1 -> throw X; default-> throw X;}")
         );
     }
 
