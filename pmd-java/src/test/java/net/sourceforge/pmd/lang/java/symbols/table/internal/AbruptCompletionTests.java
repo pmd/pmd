@@ -70,8 +70,7 @@ public class AbruptCompletionTests extends BaseNonParserTest {
 
             // this is trivial, but the condition may have side-effects
             canCompleteNormally("while(foo) { continue; }"),
-
-            mustCompleteAbruptly("if (foo) while(foo) { continue; } "
+            canCompleteNormally("if (foo) while(foo) { continue; } "
                                      + "else throw e;"),
 
             canCompleteNormally("while(true) { if (foo) break; }"),
@@ -80,6 +79,14 @@ public class AbruptCompletionTests extends BaseNonParserTest {
             mustCompleteAbruptly("while(true) { }"),
             mustCompleteAbruptly("while(true) { continue; }"),
             mustCompleteAbruptly("while(true) { if (print()) return; }")
+        );
+    }
+
+    @Test
+    public void testLabeledStmt() {
+        Assertions.assertAll(
+            canCompleteNormally("l: if (foo) break l; else break l;"),
+            mustCompleteAbruptly("if (foo) break l; else break l;")
         );
     }
 

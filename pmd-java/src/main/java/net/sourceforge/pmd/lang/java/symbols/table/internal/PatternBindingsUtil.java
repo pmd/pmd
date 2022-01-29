@@ -18,7 +18,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTInfixExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTLabeledStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTLoopStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTPattern;
 import net.sourceforge.pmd.lang.java.ast.ASTPatternExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
@@ -56,11 +55,23 @@ final class PatternBindingsUtil {
 
     static OptionalBool completesNormally(ASTStatement stmt) {
         if (stmt instanceof ASTLabeledStatement) {
+            State state = new State();
+            OptionalBool completesNormally = completesNormally(((ASTLabeledStatement) stmt).getStatement(), state);
+            if (state.containsBreak(stmt)) {
+                return OptionalBool.max(completesNormally, OptionalBool.UNKNOWN);
+            }
             // we need to remove labels
-            return completesNormally(((ASTLabeledStatement) stmt).getStatement());
+            return completesNormally;
         }
 
-        return completesNormally(stmt, new State(stmt));
+        State state = new State();
+        OptionalBool completesNormally = completesNormally(stmt, state);
+        if (state.returnOrThrow) {
+            return OptionalBool.min(completesNormally, OptionalBool.UNKNOWN);
+        } else if (state.containsBreak(stmt)) {
+            return OptionalBool.max(completesNormally, OptionalBool.UNKNOWN);
+        }
+        return completesNormally;
     }
 
     static OptionalBool completesNormally(ASTStatement stmt, State state) {
@@ -76,8 +87,6 @@ final class PatternBindingsUtil {
             return OptionalBool.NO;
 
         } else if (stmt instanceof ASTBreakStatement) {
-
-            state.loop.
 
             state.addBreak((ASTBreakStatement) stmt);
             return OptionalBool.NO;
@@ -102,6 +111,8 @@ final class PatternBindingsUtil {
                 OptionalBool childCompletesNormally = completesNormally(child, state);
                 total = OptionalBool.min(total, childCompletesNormally);
                 if (total == OptionalBool.NO) {
+                    // note: short circuit implement a liveness analysis
+                    // following statements are unreachable
                     return OptionalBool.NO;
                 }
             }
@@ -148,16 +159,24 @@ final class PatternBindingsUtil {
             // a while(not true) statement may always complete normally (false condition).
             // if the body always completes normally, then it always completes normally.
 
-            State loopState = new State(loop);
+            State loopState = new State();
             OptionalBool bodyCompletesNormally = completesNormally(loop.getBody(), loopState);
 
             if (JavaRuleUtil.isBooleanLiteral(loop.getCondition(), true)) {
                 if (loopState.containsBreak(loop)) {
                     return OptionalBool.UNKNOWN;
                 }
+
                 if (bodyCompletesNormally == OptionalBool.YES) {
+                    // then this is an infinite loop.
+                    // todo maybe it would be worth setting an attribute on the node.
+                    return OptionalBool.NO;
+                } else if (loopState.returnOrThrow) {
+                    // then a return or throw is reachable: this ends
+                    // the while(true) abruptly
                     return OptionalBool.NO;
                 }
+                // unknown or NO
                 return bodyCompletesNormally;
             } else {
                 return (bodyCompletesNormally == OptionalBool.YES) ? OptionalBool.YES : OptionalBool.UNKNOWN;
@@ -297,16 +316,14 @@ final class PatternBindingsUtil {
      */
     private static class State {
 
-        private final ASTStatement loop;
         private boolean returnOrThrow;
         private Set<ASTStatement> breakTargets = null;
         private Set<ASTStatement> continueTargets = null;
 
-        public State(ASTStatement loop) {
-            this.loop = loop;
+        State() {
         }
 
-        boolean containsBreak(ASTLoopStatement stmt) {
+        boolean containsBreak(ASTStatement stmt) {
             return breakTargets != null && breakTargets.contains(stmt);
         }
 
