@@ -337,7 +337,9 @@ public final class SymbolTableResolver {
 
         @Override
         public Void visit(ASTBlock node, @NonNull ReferenceCtx ctx) {
-            return visitBlockLike(node, ctx);
+            int pushed = visitBlockLike(node, ctx);
+            popStack(pushed);
+            return null;
         }
 
         @Override
@@ -350,40 +352,42 @@ public final class SymbolTableResolver {
             return visitSwitch(node, ctx);
         }
 
+
         private Void visitSwitch(ASTSwitchLike node, @NonNull ReferenceCtx ctx) {
             setTopSymbolTable(node);
             node.getTestedExpression().acceptVisitor(this, ctx);
+
+            int pushed = 0;
+
             for (ASTSwitchBranch branch : node.getBranches()) {
                 ASTSwitchLabel label = branch.getLabel();
                 // collect all bindings. Maybe it's illegal to use composite label with bindings, idk
                 BindSet bindings =
                     label.getExprList().reduce(BindSet.EMPTY,
                                                (bindSet, expr) -> bindSet.union(bindersOfExpr(expr)));
-                if (bindings.isEmpty()) {
-                    visitChildren(branch, ctx);
-                    continue;
-                }
 
                 // visit guarded patterns in label
                 setTopSymbolTableAndVisit(label, ctx);
 
                 if (branch instanceof ASTSwitchArrowBranch) {
-                    int pushed = pushOnStack(f.localVarSymTable(top(), enclosing(), bindings.getTrueBindings()));
+                    pushed = pushOnStack(f.localVarSymTable(top(), enclosing(), bindings.getTrueBindings()));
                     setTopSymbolTableAndVisit(((ASTSwitchArrowBranch) branch).getRightHandSide(), ctx);
                     popStack(pushed);
+                    pushed = 0;
                 } else if (branch instanceof ASTSwitchFallthroughBranch) {
-                    int pushed = pushOnStack(f.localVarSymTable(top(), enclosing(), bindings.getTrueBindings()));
-                    for (ASTStatement stmt : ((ASTSwitchFallthroughBranch) branch).getStatements()) {
-                        setTopSymbolTableAndVisit(stmt, ctx);
-                    }
-                    popStack(pushed);
+                    pushed += pushOnStack(f.localVarSymTable(top(), enclosing(), bindings.getTrueBindings()));
+                    pushed += visitBlockLike(((ASTSwitchFallthroughBranch) branch).getStatements(), ctx);
                 }
             }
+            popStack(pushed);
             return null;
         }
 
 
-        private Void visitBlockLike(Iterable<? extends ASTStatement> node, @NonNull ReferenceCtx ctx) {
+        /**
+         * Note: caller is responsible for popping.
+         */
+        private int visitBlockLike(Iterable<? extends ASTStatement> node, @NonNull ReferenceCtx ctx) {
             /*
              * Process the statements of a block in a sequence. Each local
              * var/class declaration is only in scope for the following
@@ -405,8 +409,7 @@ public final class SymbolTableResolver {
                 pushed += pushOnStack(f.localVarSymTable(top(), enclosing(), newVars));
             }
 
-            popStack(pushed);
-            return null;
+            return pushed;
         }
 
         @Override
@@ -445,7 +448,7 @@ public final class SymbolTableResolver {
                         // that it has the correct symbol table too
                         NodeStream.of(node.getBody())
                     );
-                visitBlockLike(union, ctx);
+                popStack(visitBlockLike(union, ctx));
 
                 for (Node child : node.getBody().asStream().followingSiblings()) {
                     child.acceptVisitor(this, ctx);
