@@ -471,6 +471,15 @@ public final class SymbolTableResolver {
         }
 
         @Override
+        public Void visit(ASTGuardedPattern node, @NonNull ReferenceCtx ctx) {
+            BindSet bindSet = PatternBindingsUtil.bindersOfPattern(node.getPattern());
+            int pushed = pushOnStack(f.localVarSymTable(top(), enclosing(), bindSet.getTrueBindings()));
+            setTopSymbolTableAndVisit(node.getGuard(), ctx);
+            popStack(pushed);
+            return null;
+        }
+
+        @Override
         public Void visit(ASTConditionalExpression node, @NonNull ReferenceCtx ctx) {
             // need to account for pattern bindings.
 

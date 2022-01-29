@@ -1717,8 +1717,8 @@ void GuardedPatternCondition() #void:
 void PrimaryPattern() #void:
 {}
 {
-    TypePattern()
-    | "(" Pattern() ")" { AstImplUtil.bumpParenDepth((ASTPattern) jjtree.peekNode()); }
+      "(" Pattern() ")" { AstImplUtil.bumpParenDepth((ASTPattern) jjtree.peekNode()); }
+    | LOOKAHEAD({true}) TypePattern()
 }
 
 void TypePattern():
@@ -1734,17 +1734,14 @@ void InstanceOfExpression() #void:
     LOOKAHEAD(1)
     ("instanceof"
         (
-              AnnotatedRefType() [ VariableDeclaratorId() #TypePattern(2) ]
-            |
-              LOOKAHEAD("final" | "@") PrimaryPattern()
-            |
-              LOOKAHEAD("(") Pattern()
+              LOOKAHEAD(1, "(" | "final" | "@") PrimaryPattern()
+            | LOOKAHEAD(1) AnnotatedRefType() [ VariableDeclaratorId() #TypePattern(2) ]
         )
         {
             jjtThis.setOp(BinaryOp.INSTANCEOF);
             AbstractJavaNode top = jjtree.popNode();
             if (top instanceof ASTPattern) {
-               if (top.getNumChildren() == 2) {
+               if (top instanceof ASTTypePattern) {
                    insertEmptyModifierListWithAnnotations(top, (AbstractJavaNode) top.getChild(0));
                }
                top = new ASTPatternExpression((ASTPattern) top);

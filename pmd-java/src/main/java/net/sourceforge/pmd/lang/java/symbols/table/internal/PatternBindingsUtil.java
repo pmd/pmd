@@ -9,6 +9,7 @@ import org.pcollections.PSet;
 
 import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTGuardedPattern;
 import net.sourceforge.pmd.lang.java.ast.ASTInfixExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPattern;
 import net.sourceforge.pmd.lang.java.ast.ASTPatternExpression;
@@ -86,9 +87,13 @@ final class PatternBindingsUtil {
 
     static BindSet collectBindings(ASTPattern pattern) {
         if (pattern instanceof ASTTypePattern) {
-            return BindSet.EMPTY.addBinding(((ASTTypePattern) pattern).getVarId());
+            return BindSet.whenTrue(HashTreePSet.singleton(((ASTTypePattern) pattern).getVarId()));
+        } else if (pattern instanceof ASTGuardedPattern) {
+            BindSet patternBindings = collectBindings(((ASTGuardedPattern) pattern).getPattern());
+            BindSet guardBindings = bindersOfExpr(((ASTGuardedPattern) pattern).getGuard());
+            return patternBindings.union(guardBindings);
         } else {
-            throw AssertionUtil.shouldNotReachHere("no other instances of pattern should exist");
+            throw AssertionUtil.shouldNotReachHere("no other instances of pattern should exist: " + pattern);
         }
     }
 
@@ -104,6 +109,13 @@ final class PatternBindingsUtil {
 
         private final PSet<ASTVariableDeclaratorId> trueBindings;
         private final PSet<ASTVariableDeclaratorId> falseBindings;
+
+        public BindSet union(BindSet bindSet) {
+            return new BindSet(
+                trueBindings.plusAll(bindSet.trueBindings),
+                falseBindings.plusAll(bindSet.falseBindings)
+            );
+        }
 
         static PSet<ASTVariableDeclaratorId> noBindings() {
             return HashTreePSet.empty();
