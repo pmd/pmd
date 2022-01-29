@@ -694,7 +694,7 @@ public final class JavaRuleUtil {
                 // not inherited
                 && ((JFieldSymbol) sym).getEnclosingClass().equals(e.getEnclosingType().getSymbol())
                 // correct syntactic form
-                && e instanceof ASTVariableAccess || isSyntacticThisFieldAccess(e);
+                && (e instanceof ASTVariableAccess || isSyntacticThisFieldAccess(e));
         }
         return false;
     }
