@@ -19,11 +19,11 @@ import net.sourceforge.pmd.lang.java.symboltable.BaseNonParserTest;
 
 public class AbruptCompletionTests extends BaseNonParserTest {
 
-    private final JavaParsingHelper java15p = java.withDefaultVersion("15-preview");
+    private final JavaParsingHelper java17 = java.withDefaultVersion("17");
 
     private Executable canCompleteNormally(String stmt, boolean expected) {
         return () -> {
-            ASTCompilationUnit ast = java15p.parse("class Foo {{ " + stmt + "; }}");
+            ASTCompilationUnit ast = java17.parse("class Foo {{ " + stmt + "; }}");
 
             ASTStatement e = ast.descendants(ASTBlock.class).crossFindBoundaries().firstOrThrow();
 
