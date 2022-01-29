@@ -1734,14 +1734,15 @@ void InstanceOfExpression() #void:
     LOOKAHEAD(1)
     ("instanceof"
         (
-              LOOKAHEAD(1, "(" | "final" | "@") PrimaryPattern()
-            | LOOKAHEAD(1) AnnotatedRefType() [ VariableDeclaratorId() #TypePattern(2) ]
+
+              AnnotatedRefType() [ VariableDeclaratorId() #TypePattern(2) ]
+            | PrimaryPattern()
         )
         {
             jjtThis.setOp(BinaryOp.INSTANCEOF);
             AbstractJavaNode top = jjtree.popNode();
             if (top instanceof ASTPattern) {
-               if (top instanceof ASTTypePattern) {
+               if (top instanceof ASTTypePattern && !(top.getChild(0) instanceof ASTModifierList)) {
                    insertEmptyModifierListWithAnnotations(top, (AbstractJavaNode) top.getChild(0));
                }
                top = new ASTPatternExpression((ASTPattern) top);
