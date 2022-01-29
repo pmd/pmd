@@ -625,6 +625,9 @@ public final class SymbolTableResolver {
         }
 
         private void setTopSymbolTableAndRecurse(JavaNode node, @NonNull ReferenceCtx ctx) {
+            if (node == null) {
+                return;
+            }
             setTopSymbolTable(node);
             visitChildren(node, ctx);
         }

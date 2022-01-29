@@ -5,7 +5,7 @@
 package net.sourceforge.pmd.lang.java.symbols.table.internal;
 
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import java.util.function.Consumer;
 
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
@@ -16,28 +16,48 @@ import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTStatement;
 import net.sourceforge.pmd.lang.java.symboltable.BaseNonParserTest;
+import net.sourceforge.pmd.util.OptionalBool;
+
+import junit.framework.AssertionFailedError;
 
 public class AbruptCompletionTests extends BaseNonParserTest {
 
     private final JavaParsingHelper java17 = java.withDefaultVersion("17");
 
-    private Executable canCompleteNormally(String stmt, boolean expected) {
+    private Executable canCompleteNormally(String stmt, Consumer<OptionalBool> expected) {
         return () -> {
             ASTCompilationUnit ast = java17.parse("class Foo {{ " + stmt + "; }}");
 
             ASTStatement e = ast.descendants(ASTBlock.class).crossFindBoundaries().firstOrThrow();
 
-            boolean actual = PatternBindingsUtil.canCompleteNormally(e);
-            assertEquals(expected, actual, "Can '" + stmt + "' complete normally?");
+
+            OptionalBool actual = PatternBindingsUtil.completesNormally(e);
+            expected.accept(actual);
         };
     }
 
     private Executable canCompleteNormally(String stmt) {
-        return canCompleteNormally(stmt, true);
+        return canCompleteNormally(stmt, actual -> {
+            if (actual == OptionalBool.NO) {
+                throw new AssertionFailedError("Code can complete normally: `" + stmt + "`");
+            }
+        });
+    }
+
+    private Executable mustCompleteNormally(String stmt) {
+        return canCompleteNormally(stmt, actual -> {
+            if (actual != OptionalBool.YES) {
+                throw new AssertionFailedError("Code MUST complete normally: `" + stmt + "`");
+            }
+        });
     }
 
     private Executable mustCompleteAbruptly(String stmt) {
-        return canCompleteNormally(stmt, false);
+        return canCompleteNormally(stmt, actual -> {
+            if (actual != OptionalBool.NO) {
+                throw new AssertionFailedError("Code MUST complete abruptly: `" + stmt + "`");
+            }
+        });
     }
 
     @Test
@@ -62,23 +82,41 @@ public class AbruptCompletionTests extends BaseNonParserTest {
     public void testWhileStmt() {
         Assertions.assertAll(
             canCompleteNormally("while(foo) { return; }"),
-            canCompleteNormally("while(foo) { break; }"),
-            canCompleteNormally("l: while(foo) { break; }"),
-            canCompleteNormally("l: while(foo) { break l; }"),
-            canCompleteNormally("l: while(foo) { if (x) break l; }"),
-            canCompleteNormally("while(foo) { if (x) continue; }"),
-
-            // this is trivial, but the condition may have side-effects
-            canCompleteNormally("while(foo) { continue; }"),
-            canCompleteNormally("if (foo) while(foo) { continue; } "
-                                     + "else throw e;"),
+            mustCompleteNormally("while(foo) { break; }"),
+            mustCompleteNormally("l: while(foo) { break; }"),
+            mustCompleteNormally("l: while(foo) { break l; }"),
+            mustCompleteNormally("l: while(foo) { if (x) break l; }"),
 
             canCompleteNormally("while(true) { if (foo) break; }"),
 
             mustCompleteAbruptly("while(true) { return; }"),
             mustCompleteAbruptly("while(true) { }"),
-            mustCompleteAbruptly("while(true) { continue; }"),
+            mustCompleteNormally("while(true) { break; }"),
+            mustCompleteAbruptly("while(true) { while(foo) break; }"),
+            mustCompleteNormally("x: while(true) { while(foo) break x; }"),
             mustCompleteAbruptly("while(true) { if (print()) return; }")
+        );
+    }
+
+    @Test
+    public void testWhileContinue() {
+        Assertions.assertAll(
+            mustCompleteNormally("while(foo) { if (x) continue; }"),
+
+            // this is trivial, but the condition may have side-effects
+            canCompleteNormally("while(foo) { continue; }"),
+            canCompleteNormally("if (foo) while(foo) { continue; } "
+                                    + "else throw e;"),
+
+            mustCompleteAbruptly("while(true) { continue; }")
+        );
+    }
+
+    @Test
+    public void testFalseLoopIsUnreachable() {
+        Assertions.assertAll(
+            mustCompleteNormally("while(false) { }"),
+            mustCompleteNormally("for(;false;) { }")
         );
     }
 

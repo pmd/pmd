@@ -4,9 +4,18 @@
 
 package net.sourceforge.pmd.lang.java.symbols.table.internal;
 
+import static net.sourceforge.pmd.util.OptionalBool.NO;
+import static net.sourceforge.pmd.util.OptionalBool.UNKNOWN;
+import static net.sourceforge.pmd.util.OptionalBool.YES;
+import static net.sourceforge.pmd.util.OptionalBool.max;
+import static net.sourceforge.pmd.util.OptionalBool.min;
+import static net.sourceforge.pmd.util.OptionalBool.mix;
+
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.pcollections.HashTreePSet;
 import org.pcollections.PSet;
 
@@ -50,29 +59,13 @@ final class PatternBindingsUtil {
      * always complete abruptly.
      */
     static boolean canCompleteNormally(ASTStatement stmt) {
-        return completesNormally(stmt) != OptionalBool.NO;
+        return completesNormally(stmt) != NO;
     }
 
     static OptionalBool completesNormally(ASTStatement stmt) {
-        if (stmt instanceof ASTLabeledStatement) {
-            State state = new State();
-            OptionalBool completesNormally = completesNormally(((ASTLabeledStatement) stmt).getStatement(), state);
-            if (state.containsBreak(stmt)) {
-                return OptionalBool.max(completesNormally, OptionalBool.UNKNOWN);
-            }
-            // we need to remove labels
-            return completesNormally;
-        }
-
-        State state = new State();
-        OptionalBool completesNormally = completesNormally(stmt, state);
-        if (state.returnOrThrow) {
-            return OptionalBool.min(completesNormally, OptionalBool.UNKNOWN);
-        } else if (state.containsBreak(stmt)) {
-            return OptionalBool.max(completesNormally, OptionalBool.UNKNOWN);
-        }
-        return completesNormally;
+        return completesNormally(stmt, new State(null));
     }
+
 
     static OptionalBool completesNormally(ASTStatement stmt, State state) {
         /*
@@ -83,18 +76,18 @@ final class PatternBindingsUtil {
          */
         if (stmt instanceof ASTThrowStatement || stmt instanceof ASTReturnStatement) {
 
-            state.returnOrThrow = true;
-            return OptionalBool.NO;
+            state.setReturnOrThrow(true);
+            return NO;
 
         } else if (stmt instanceof ASTBreakStatement) {
 
             state.addBreak((ASTBreakStatement) stmt);
-            return OptionalBool.NO;
+            return NO;
 
         } else if (stmt instanceof ASTContinueStatement) {
 
             state.addContinue((ASTContinueStatement) stmt);
-            return OptionalBool.NO;
+            return NO;
 
         } else if (stmt instanceof ASTBlock) {
             // A block can complete normally if all of its statements
@@ -106,14 +99,14 @@ final class PatternBindingsUtil {
             // may complete normally, under the assumption that we're
             // handling only valid java source code. Let's do this later.
 
-            OptionalBool total = OptionalBool.YES; // empty block completes normally
+            OptionalBool total = YES; // empty block completes normally
             for (ASTStatement child : (ASTBlock) stmt) {
                 OptionalBool childCompletesNormally = completesNormally(child, state);
-                total = OptionalBool.min(total, childCompletesNormally);
-                if (total == OptionalBool.NO) {
+                total = min(total, childCompletesNormally);
+                if (total == NO) {
                     // note: short circuit implement a liveness analysis
                     // following statements are unreachable
-                    return OptionalBool.NO;
+                    return NO;
                 }
             }
             return total;
@@ -127,20 +120,23 @@ final class PatternBindingsUtil {
                 // yes -> yes
                 // unk -> unk
                 // no -> unk
-                return OptionalBool.max(completesNormally(thenBranch, state), OptionalBool.UNKNOWN);
+                return max(completesNormally(thenBranch, state), UNKNOWN);
             } else {
                 // yes, yes -> yes
                 // yes, unk -> unk
                 // no, unk -> unk
                 // no, no -> no
 
-                return OptionalBool.mix(completesNormally(thenBranch, state),
-                                        completesNormally(elseBranch, state));
+                return mix(completesNormally(thenBranch, state),
+                           completesNormally(elseBranch, state));
             }
 
         } else if (stmt instanceof ASTLabeledStatement) {
 
-            return completesNormally(((ASTLabeledStatement) stmt).getStatement());
+            State subState = new State(state);
+            OptionalBool completesNormally = completesNormally(((ASTLabeledStatement) stmt).getStatement(), subState);
+            // note: here we pass the labeled statement while completesNormally was computed with the enclosed statement.
+            return handleBreaks(stmt, subState, completesNormally);
 
         } else if (stmt instanceof ASTSynchronizedStatement) {
 
@@ -150,40 +146,67 @@ final class PatternBindingsUtil {
 
             ASTWhileStatement loop = (ASTWhileStatement) stmt;
 
-            // a while(true) statement completes normally
-            // iff it contains a break which targets it.
+            if (JavaRuleUtil.isBooleanLiteral(loop.getCondition(), false)) {
+                return YES; // body is unreachable
+            }
 
-            // a while(true) statement always completes abruptly if its
-            // body always or never completes abruptly.
-
-            // a while(not true) statement may always complete normally (false condition).
-            // if the body always completes normally, then it always completes normally.
-
-            State loopState = new State();
+            State loopState = new State(state);
             OptionalBool bodyCompletesNormally = completesNormally(loop.getBody(), loopState);
 
             if (JavaRuleUtil.isBooleanLiteral(loop.getCondition(), true)) {
                 if (loopState.containsBreak(loop)) {
-                    return OptionalBool.UNKNOWN;
+                    if (!loopState.isReturnOrThrow()) {
+                        return handleBreaks(stmt, loopState, bodyCompletesNormally);
+                    }
+
+                    // normal completion of the while
+                    return max(UNKNOWN, bodyCompletesNormally);
                 }
 
-                if (bodyCompletesNormally == OptionalBool.YES) {
+                if (bodyCompletesNormally == YES) {
                     // then this is an infinite loop.
                     // todo maybe it would be worth setting an attribute on the node.
-                    return OptionalBool.NO;
-                } else if (loopState.returnOrThrow) {
+                    return NO;
+                } else if (loopState.isReturnOrThrow()) {
                     // then a return or throw is reachable: this ends
                     // the while(true) abruptly
-                    return OptionalBool.NO;
+                    return NO;
                 }
                 // unknown or NO
                 return bodyCompletesNormally;
             } else {
-                return (bodyCompletesNormally == OptionalBool.YES) ? OptionalBool.YES : OptionalBool.UNKNOWN;
+                // no -> unk
+                // unk -> unk
+                // yes -> yes
+
+                // this max accounts for the case when the body
+                // is never executed, which is a normal completion
+                return max(UNKNOWN, handleBreaks(loop, loopState, bodyCompletesNormally));
             }
         } else {
-            return OptionalBool.YES;
+            return YES;
         }
+    }
+
+    private static OptionalBool handleBreaks(ASTStatement breakTarget, State state, OptionalBool completesNormally) {
+        if (state.isReturnOrThrow()) {
+            return min(completesNormally, UNKNOWN);
+        } else if (!state.breakTargets.isEmpty()
+            || !state.continueTargets.isEmpty()) {
+
+            boolean onlyBreaksWithinSubTree =
+                state.breakTargets.stream().allMatch(it -> isAncestor(breakTarget, it))
+                && state.continueTargets.stream().allMatch(it -> isAncestor(breakTarget, it));
+
+            if (onlyBreaksWithinSubTree) {
+                return YES;
+            }
+        }
+        return completesNormally;
+    }
+
+    private static boolean isAncestor(ASTStatement breakTarget, ASTStatement it) {
+        return it.ancestorsOrSelf().any(parent -> parent == breakTarget);
     }
 
     /**
@@ -300,15 +323,6 @@ final class PatternBindingsUtil {
             return new BindSet(HashTreePSet.empty(), bindings);
         }
 
-        static BindSet union(BindSet first, BindSet other) {
-            if (first.isEmpty()) {
-                return other;
-            } else if (other.isEmpty()) {
-                return first;
-            }
-            return new BindSet(first.trueBindings.plusAll(other.trueBindings),
-                               first.falseBindings.plusAll(other.falseBindings));
-        }
     }
 
     /**
@@ -316,30 +330,48 @@ final class PatternBindingsUtil {
      */
     private static class State {
 
+        private final @Nullable State parent;
         private boolean returnOrThrow;
-        private Set<ASTStatement> breakTargets = null;
-        private Set<ASTStatement> continueTargets = null;
+        private Set<ASTStatement> breakTargets = Collections.emptySet();
+        private Set<ASTStatement> continueTargets = Collections.emptySet();
 
-        State() {
+        public State(State parent) {
+            this.parent = parent;
         }
 
         boolean containsBreak(ASTStatement stmt) {
-            return breakTargets != null && breakTargets.contains(stmt);
+            return breakTargets.contains(stmt);
         }
 
         void addBreak(ASTBreakStatement breakStatement) {
-            if (breakTargets == null) {
+            if (breakTargets.isEmpty()) {
                 breakTargets = new HashSet<>();
             }
             breakTargets.add(breakStatement.getTarget());
+            if (parent != null) {
+                parent.addBreak(breakStatement);
+            }
         }
 
         void addContinue(ASTContinueStatement continueStatement) {
-            if (continueTargets == null) {
+            if (continueTargets.isEmpty()) {
                 continueTargets = new HashSet<>();
             }
             continueTargets.add(continueStatement.getTarget());
+            if (parent != null) {
+                parent.addContinue(continueStatement);
+            }
         }
 
+        public boolean isReturnOrThrow() {
+            return returnOrThrow;
+        }
+
+        public void setReturnOrThrow(boolean returnOrThrow) {
+            this.returnOrThrow = this.isReturnOrThrow() | returnOrThrow;
+            if (parent != null) {
+                parent.setReturnOrThrow(returnOrThrow);
+            }
+        }
     }
 }
