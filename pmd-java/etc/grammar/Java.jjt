@@ -2429,7 +2429,11 @@ void CaseLabelElement(ASTSwitchLabel label) #void:
 {
     "default" {label.setDefault();}
     |
-    LOOKAHEAD(Pattern()) Pattern()
+    LOOKAHEAD(Pattern()) Pattern() {
+        AbstractJavaNode top = jjtree.popNode();
+        top = new ASTPatternExpression((ASTPattern) top);
+        jjtree.pushNode(top);
+    }
     |
     ConditionalExpression()
 }

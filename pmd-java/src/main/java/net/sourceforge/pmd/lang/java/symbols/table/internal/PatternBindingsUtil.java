@@ -58,7 +58,7 @@ final class PatternBindingsUtil {
 
             if (op == BinaryOp.INSTANCEOF && right instanceof ASTPatternExpression) {
 
-                return collectBindings(((ASTPatternExpression) right).getPattern());
+                return bindersOfPattern(((ASTPatternExpression) right).getPattern());
 
             } else if (op == BinaryOp.CONDITIONAL_AND) { // &&
                 // A pattern variable is introduced by a && b when true iff either
@@ -81,15 +81,17 @@ final class PatternBindingsUtil {
             } else {
                 return BindSet.EMPTY;
             }
+        } else if (e instanceof ASTPatternExpression) {
+            return bindersOfPattern(((ASTPatternExpression) e).getPattern());
         }
         return BindSet.EMPTY;
     }
 
-    static BindSet collectBindings(ASTPattern pattern) {
+    static BindSet bindersOfPattern(ASTPattern pattern) {
         if (pattern instanceof ASTTypePattern) {
             return BindSet.whenTrue(HashTreePSet.singleton(((ASTTypePattern) pattern).getVarId()));
         } else if (pattern instanceof ASTGuardedPattern) {
-            BindSet patternBindings = collectBindings(((ASTGuardedPattern) pattern).getPattern());
+            BindSet patternBindings = bindersOfPattern(((ASTGuardedPattern) pattern).getPattern());
             BindSet guardBindings = bindersOfExpr(((ASTGuardedPattern) pattern).getGuard());
             return patternBindings.union(guardBindings);
         } else {
@@ -111,6 +113,11 @@ final class PatternBindingsUtil {
         private final PSet<ASTVariableDeclaratorId> falseBindings;
 
         public BindSet union(BindSet bindSet) {
+            if (this.isEmpty()) {
+                return bindSet;
+            } else if (bindSet.isEmpty()) {
+                return this;
+            }
             return new BindSet(
                 trueBindings.plusAll(bindSet.trueBindings),
                 falseBindings.plusAll(bindSet.falseBindings)

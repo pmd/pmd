@@ -40,6 +40,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTForeachStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
+import net.sourceforge.pmd.lang.java.ast.ASTGuardedPattern;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTInfixExpression;
@@ -54,8 +55,11 @@ import net.sourceforge.pmd.lang.java.ast.ASTModifierList;
 import net.sourceforge.pmd.lang.java.ast.ASTResource;
 import net.sourceforge.pmd.lang.java.ast.ASTResourceList;
 import net.sourceforge.pmd.lang.java.ast.ASTStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTSwitchArrowBranch;
+import net.sourceforge.pmd.lang.java.ast.ASTSwitchBranch;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchFallthroughBranch;
+import net.sourceforge.pmd.lang.java.ast.ASTSwitchLabel;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchLike;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTTryStatement;
@@ -348,8 +352,30 @@ public final class SymbolTableResolver {
 
         private Void visitSwitch(ASTSwitchLike node, @NonNull ReferenceCtx ctx) {
             setTopSymbolTable(node);
-            visitChildren(node.getTestedExpression(), ctx);
-            visitBlockLike(stmtsOfSwitchBlock(node), ctx);
+            node.getTestedExpression().acceptVisitor(this, ctx);
+            for (ASTSwitchBranch branch : node.getBranches()) {
+                ASTSwitchLabel label = branch.getLabel();
+                // collect all bindings. Maybe it's illegal to use composite label with bindings, idk
+                BindSet bindings =
+                    label.getExprList().reduce(BindSet.EMPTY,
+                                               (bindSet, expr) -> bindSet.union(bindersOfExpr(expr)));
+                if (bindings.isEmpty()) {
+                    visitChildren(branch, ctx);
+                    continue;
+                }
+
+                if (branch instanceof ASTSwitchArrowBranch) {
+                    int pushed = pushOnStack(f.localVarSymTable(top(), enclosing(), bindings.getTrueBindings()));
+                    setTopSymbolTableAndVisit(((ASTSwitchArrowBranch) branch).getRightHandSide(), ctx);
+                    popStack(pushed);
+                } else if (branch instanceof ASTSwitchFallthroughBranch) {
+                    int pushed = pushOnStack(f.localVarSymTable(top(), enclosing(), bindings.getTrueBindings()));
+                    for (ASTStatement stmt : ((ASTSwitchFallthroughBranch) branch).getStatements()) {
+                        setTopSymbolTableAndVisit(stmt, ctx);
+                    }
+                    popStack(pushed);
+                }
+            }
             return null;
         }
 
@@ -677,13 +703,6 @@ public final class SymbolTableResolver {
         // </editor-fold>
 
         // <editor-fold defaultstate="collapsed" desc="Convenience methods">
-
-
-        static NodeStream<ASTStatement> stmtsOfSwitchBlock(ASTSwitchLike node) {
-            return node.getBranches()
-                       .filterIs(ASTSwitchFallthroughBranch.class)
-                       .flatMap(ASTSwitchFallthroughBranch::getStatements);
-        }
 
 
         static NodeStream<ASTLocalVariableDeclaration> stmtsOfResources(ASTResourceList node) {
