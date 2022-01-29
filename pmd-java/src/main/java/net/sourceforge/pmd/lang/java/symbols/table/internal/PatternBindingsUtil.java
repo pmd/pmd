@@ -4,6 +4,9 @@
 
 package net.sourceforge.pmd.lang.java.symbols.table.internal;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.pcollections.HashTreePSet;
 import org.pcollections.PSet;
 
@@ -15,6 +18,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTInfixExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTLabeledStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTLoopStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTPattern;
 import net.sourceforge.pmd.lang.java.ast.ASTPatternExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
@@ -28,6 +32,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
 import net.sourceforge.pmd.lang.java.ast.BinaryOp;
 import net.sourceforge.pmd.lang.java.ast.UnaryOp;
 import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
+import net.sourceforge.pmd.util.OptionalBool;
 
 /**
  * Utilities to resolve scope of pattern binding variables.
@@ -46,18 +51,19 @@ final class PatternBindingsUtil {
      * always complete abruptly.
      */
     static boolean canCompleteNormally(ASTStatement stmt) {
-        if (stmt instanceof ASTLabeledStatement) {
-            // we need to remove labels
-            return canCompleteNormally(((ASTLabeledStatement) stmt).getStatement());
-        }
-
-        return canCompleteNormallyImpl(stmt, new State(HashTreePSet.empty(), true, true));
+        return completesNormally(stmt) != OptionalBool.NO;
     }
 
-    /**
-     * @param stmt Statement
-     */
-    private static boolean canCompleteNormallyImpl(ASTStatement stmt, State state) {
+    static OptionalBool completesNormally(ASTStatement stmt) {
+        if (stmt instanceof ASTLabeledStatement) {
+            // we need to remove labels
+            return completesNormally(((ASTLabeledStatement) stmt).getStatement());
+        }
+
+        return completesNormally(stmt, new State(stmt));
+    }
+
+    static OptionalBool completesNormally(ASTStatement stmt, State state) {
         /*
             TODO:
                 - switches
@@ -66,21 +72,20 @@ final class PatternBindingsUtil {
          */
         if (stmt instanceof ASTThrowStatement || stmt instanceof ASTReturnStatement) {
 
-            return false;
+            state.returnOrThrow = true;
+            return OptionalBool.NO;
 
-        }
+        } else if (stmt instanceof ASTBreakStatement) {
 
-        if (stmt instanceof ASTBreakStatement) {
+            state.loop.
 
-            String label = ((ASTBreakStatement) stmt).getLabel();
-            return label == null && state.isBreakAllowed()
-                || label != null && state.getLabelsInScope().contains(label);
+            state.addBreak((ASTBreakStatement) stmt);
+            return OptionalBool.NO;
 
         } else if (stmt instanceof ASTContinueStatement) {
 
-            String label = ((ASTContinueStatement) stmt).getLabel();
-            return label == null && state.isContinueAllowed()
-                || label != null && state.getLabelsInScope().contains(label);
+            state.addContinue((ASTContinueStatement) stmt);
+            return OptionalBool.NO;
 
         } else if (stmt instanceof ASTBlock) {
             // A block can complete normally if all of its statements
@@ -92,43 +97,73 @@ final class PatternBindingsUtil {
             // may complete normally, under the assumption that we're
             // handling only valid java source code. Let's do this later.
 
+            OptionalBool total = OptionalBool.YES; // empty block completes normally
             for (ASTStatement child : (ASTBlock) stmt) {
-                if (!canCompleteNormallyImpl(child, state)) {
-                    return false;
+                OptionalBool childCompletesNormally = completesNormally(child, state);
+                total = OptionalBool.min(total, childCompletesNormally);
+                if (total == OptionalBool.NO) {
+                    return OptionalBool.NO;
                 }
             }
-            return true;
+            return total;
         } else if (stmt instanceof ASTIfStatement) {
             ASTIfStatement ifStmt = (ASTIfStatement) stmt;
 
             ASTStatement thenBranch = ifStmt.getThenBranch();
             ASTStatement elseBranch = ifStmt.getElseBranch();
 
-            return elseBranch == null
-                || canCompleteNormallyImpl(thenBranch, state)
-                || canCompleteNormallyImpl(elseBranch, state);
+            if (elseBranch == null) {
+                // yes -> yes
+                // unk -> unk
+                // no -> unk
+                return OptionalBool.max(completesNormally(thenBranch, state), OptionalBool.UNKNOWN);
+            } else {
+                // yes, yes -> yes
+                // yes, unk -> unk
+                // no, unk -> unk
+                // no, no -> no
+
+                return OptionalBool.mix(completesNormally(thenBranch, state),
+                                        completesNormally(elseBranch, state));
+            }
 
         } else if (stmt instanceof ASTLabeledStatement) {
-            ASTLabeledStatement labeledStmt = (ASTLabeledStatement) stmt;
 
-            return canCompleteNormallyImpl(labeledStmt.getStatement(), state.withLabel(labeledStmt.getLabel()));
+            return completesNormally(((ASTLabeledStatement) stmt).getStatement());
 
         } else if (stmt instanceof ASTSynchronizedStatement) {
 
-            return canCompleteNormallyImpl(((ASTSynchronizedStatement) stmt).getBody(), state);
+            return completesNormally(((ASTSynchronizedStatement) stmt).getBody(), state);
 
         } else if (stmt instanceof ASTWhileStatement) {
 
             ASTWhileStatement loop = (ASTWhileStatement) stmt;
-            if (JavaRuleUtil.isBooleanLiteral(loop.getCondition(), true)) {
-                // todo this does not really work
-                //  should be "may complete abruptly", here it's "must complete abruptly"
-                return !canCompleteNormallyImpl(loop.getBody(), new State(state.labelsInScope, true, true));
-            }
 
-            return true;
+            // a while(true) statement completes normally
+            // iff it contains a break which targets it.
+
+            // a while(true) statement always completes abruptly if its
+            // body always or never completes abruptly.
+
+            // a while(not true) statement may always complete normally (false condition).
+            // if the body always completes normally, then it always completes normally.
+
+            State loopState = new State(loop);
+            OptionalBool bodyCompletesNormally = completesNormally(loop.getBody(), loopState);
+
+            if (JavaRuleUtil.isBooleanLiteral(loop.getCondition(), true)) {
+                if (loopState.containsBreak(loop)) {
+                    return OptionalBool.UNKNOWN;
+                }
+                if (bodyCompletesNormally == OptionalBool.YES) {
+                    return OptionalBool.NO;
+                }
+                return bodyCompletesNormally;
+            } else {
+                return (bodyCompletesNormally == OptionalBool.YES) ? OptionalBool.YES : OptionalBool.UNKNOWN;
+            }
         } else {
-            return true;
+            return OptionalBool.YES;
         }
     }
 
@@ -262,34 +297,32 @@ final class PatternBindingsUtil {
      */
     private static class State {
 
-        private final PSet<String> labelsInScope;
-        private final boolean breakAllowed;
-        private final boolean continueAllowed;
+        private final ASTStatement loop;
+        private boolean returnOrThrow;
+        private Set<ASTStatement> breakTargets = null;
+        private Set<ASTStatement> continueTargets = null;
 
-        /**
-         * @param labelsInScope Labels to which breaking is ok, because they're
-         *                      in a strict descendant of the toplevel node.
-         */
-        State(PSet<String> labelsInScope, boolean breakAllowed, boolean continueAllowed) {
-            this.labelsInScope = labelsInScope;
-            this.breakAllowed = breakAllowed;
-            this.continueAllowed = continueAllowed;
+        public State(ASTStatement loop) {
+            this.loop = loop;
         }
 
-        public PSet<String> getLabelsInScope() {
-            return labelsInScope;
+        boolean containsBreak(ASTLoopStatement stmt) {
+            return breakTargets != null && breakTargets.contains(stmt);
         }
 
-        public boolean isBreakAllowed() {
-            return breakAllowed;
+        void addBreak(ASTBreakStatement breakStatement) {
+            if (breakTargets == null) {
+                breakTargets = new HashSet<>();
+            }
+            breakTargets.add(breakStatement.getTarget());
         }
 
-        public boolean isContinueAllowed() {
-            return continueAllowed;
+        void addContinue(ASTContinueStatement continueStatement) {
+            if (continueTargets == null) {
+                continueTargets = new HashSet<>();
+            }
+            continueTargets.add(continueStatement.getTarget());
         }
 
-        public State withLabel(String label) {
-            return new State(labelsInScope.plus(label), breakAllowed, continueAllowed);
-        }
     }
 }
