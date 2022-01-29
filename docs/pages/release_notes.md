@@ -64,6 +64,8 @@ not support all features of the latest EcmaScript standard.
 
 ### API Changes
 
+No changes.
+
 ### External Contributions
 
 *   [#3631](https://github.com/pmd/pmd/pull/3631): \[java] Fixed False positive for UselessStringValueOf when there is no initial String to append to - [John Armgardt](https://github.com/johnra2)
@@ -80,6 +82,11 @@ not support all features of the latest EcmaScript standard.
 *   [#3744](https://github.com/pmd/pmd/pull/3744): \[core] Updated SaxonXPathRuleQueryTest.java - [Vyom Yadav](https://github.com/Vyom-Yadav)
 *   [#3745](https://github.com/pmd/pmd/pull/3745): \[java] Fix #3712: InsufficientStringBufferDeclaration setLength false positive - [Daniel Gredler](https://github.com/gredler)
 *   [#3747](https://github.com/pmd/pmd/pull/3747): \[visualforce] Updated DataType.java - [Vyom Yadav](https://github.com/Vyom-Yadav)
+
+### Stats
+* 88 commits
+* 35 closed tickets & PRs
+* Days since last release: 62
 
 {% endtocmaker %}
 
