@@ -31,7 +31,7 @@ public class AbruptCompletionTests extends BaseNonParserTest {
             ASTStatement e = ast.descendants(ASTBlock.class).crossFindBoundaries().firstOrThrow();
 
 
-            OptionalBool actual = PatternBindingsUtil.completesNormally(e);
+            OptionalBool actual = AbruptCompletionAnalysis.completesNormally(e);
             expected.accept(actual);
         };
     }
@@ -121,6 +121,7 @@ public class AbruptCompletionTests extends BaseNonParserTest {
             canCompleteNormally("switch(foo) { case 1: return; case 2: foo(); }")
         );
     }
+
     @Test
     public void testSwitchArrow() {
         Assertions.assertAll(

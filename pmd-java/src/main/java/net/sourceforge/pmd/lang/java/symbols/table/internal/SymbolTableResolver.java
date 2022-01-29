@@ -5,8 +5,8 @@
 
 package net.sourceforge.pmd.lang.java.symbols.table.internal;
 
+import static net.sourceforge.pmd.lang.java.symbols.table.internal.AbruptCompletionAnalysis.canCompleteNormally;
 import static net.sourceforge.pmd.lang.java.symbols.table.internal.PatternBindingsUtil.bindersOfExpr;
-import static net.sourceforge.pmd.lang.java.symbols.table.internal.PatternBindingsUtil.canCompleteNormally;
 
 import java.util.ArrayDeque;
 import java.util.Collections;

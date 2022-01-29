@@ -8,6 +8,13 @@ package net.sourceforge.pmd.util;
 public enum OptionalBool {
     NO, UNKNOWN, YES;
 
+    /**
+     * <pre>{@code
+     * yes -> no
+     * unk -> unk
+     * no -> yes
+     * }</pre>
+     */
     public OptionalBool complement() {
         switch (this) {
         case YES:
@@ -27,6 +34,16 @@ public enum OptionalBool {
         return a.compareTo(b) < 0 ? a : b;
     }
 
+    /**
+     * <pre>{@code
+     * yes, yes -> yes
+     * yes, unk -> unk
+     * unk, unk -> unk
+     * no, unk -> unk
+     * no, yes -> unk
+     * no, no -> no
+     * }</pre>
+     */
     public static OptionalBool mix(OptionalBool a, OptionalBool b) {
         return a != b ? UNKNOWN : a;
     }
