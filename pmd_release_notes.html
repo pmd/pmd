@@ -173,7 +173,7 @@
 
 
 <ul id="mysidebar" class="nav">
-    <li class="sidebarTitle">PMD 6.42.0</li>
+    <li class="sidebarTitle">PMD 6.43.0-SNAPSHOT</li>
     
     
     
@@ -1440,117 +1440,19 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 
     
 
-  <h2 id="29-january-2022---6420">29-January-2022 - 6.42.0</h2>
+  <h2 id="26-february-2022---6430-snapshot">26-February-2022 - 6.43.0-SNAPSHOT</h2>
 
-<p>The PMD team is pleased to announce PMD 6.42.0.</p>
+<p>The PMD team is pleased to announce PMD 6.43.0-SNAPSHOT.</p>
 
 <p>This is a minor release.</p>
 
 <h3 id="new-and-noteworthy">New and noteworthy</h3>
 
-<h4 id="javascript-rhino-updated-to-latest-version-1714">Javascript: Rhino updated to latest version 1.7.14</h4>
-
-<p><a href="https://github.com/mozilla/rhino">Rhino</a>, the implementation of JavaScript we use
-for parsing JavaScript code, has been updated to the latest version 1.7.14.
-Now language features like template strings can be parsed. However Rhino does
-not support all features of the latest EcmaScript standard.</p>
-
-<h4 id="new-rules">New rules</h4>
-
-<ul>
-  <li>The new Java rule <a href="pmd_rules_java_codestyle.html#finalparameterinabstractmethod"><code class="language-plaintext highlighter-rouge">FinalParameterInAbstractMethod</code></a> detects parameters that are
-declared as final in interfaces or abstract methods. Declaring the parameters as final is useless
-because the implementation may choose to not respect it.</li>
-</ul>
-
-<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/codestyle.xml/FinalParameterInAbstractMethod"</span> <span class="nt">/&gt;</span>
-</code></pre></div></div>
-
-<p>The rule is part of the quickstart.xml ruleset.</p>
-
-<h4 id="modified-rules">Modified rules</h4>
-
-<ul>
-  <li>The Apex rule <a href="pmd_rules_apex_documentation.html#apexdoc"><code class="language-plaintext highlighter-rouge">ApexDoc</code></a> has a new property <code class="language-plaintext highlighter-rouge">reportProperty</code>.
-If set to <code class="language-plaintext highlighter-rouge">false</code> (default is <code class="language-plaintext highlighter-rouge">true</code> if unspecified) doesn’t report missing ApexDoc comments on properties.
-It allows you to enforce ApexDoc comments for classes and methods without requiring them for properties.</li>
-</ul>
-
 <h3 id="fixed-issues">Fixed Issues</h3>
-
-<ul>
-  <li>core
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/3328">#3328</a>: [core] designer.bat errors when JAVAFX_HOME contains spaces</li>
-    </ul>
-  </li>
-  <li>java
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/3698">#3698</a>: [java] Error resolving Symbol Table</li>
-    </ul>
-  </li>
-  <li>java-bestpractices
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/3209">#3209</a>: [java] UnusedPrivateMethod false positive with static method and cast expression</li>
-      <li><a href="https://github.com/pmd/pmd/issues/3468">#3468</a>: [java] UnusedPrivateMethod false positive when outer class calls private static method on inner class</li>
-    </ul>
-  </li>
-  <li>java-design
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/3679">#3679</a>: [java] Make FinalFieldCouldBeStatic detect constant variable</li>
-    </ul>
-  </li>
-  <li>java-errorprone
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/3644">#3644</a>: [java] InvalidLogMessageFormat: false positives with logstash structured logging</li>
-      <li><a href="https://github.com/pmd/pmd/issues/3686">#3686</a>: [java] ReturnEmptyCollectionRatherThanNull - false negative with conditioned returns</li>
-      <li><a href="https://github.com/pmd/pmd/issues/3701">#3701</a>: [java] MissingStaticMethodInNonInstantiatableClass false positive with method inner classes</li>
-      <li><a href="https://github.com/pmd/pmd/issues/3721">#3721</a>: [java] ReturnEmptyCollectionRatherThanNull - false positive with stream and lambda</li>
-    </ul>
-  </li>
-  <li>java-performance
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/3492">#3492</a>: [java] UselessStringValueOf: False positive when there is no initial String to append to</li>
-      <li><a href="https://github.com/pmd/pmd/issues/3639">#3639</a>: [java] UseStringBufferLength: false negative with empty string variable</li>
-      <li><a href="https://github.com/pmd/pmd/issues/3712">#3712</a>: [java] InsufficientStringBufferDeclaration false positive with StringBuilder.setLength(0)</li>
-    </ul>
-  </li>
-  <li>javascript
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/3703">#3703</a>: [javascript] Error - no Node adapter class registered for XmlPropRef</li>
-    </ul>
-  </li>
-</ul>
 
 <h3 id="api-changes">API Changes</h3>
 
-<p>No changes.</p>
-
 <h3 id="external-contributions">External Contributions</h3>
-
-<ul>
-  <li><a href="https://github.com/pmd/pmd/pull/3631">#3631</a>: [java] Fixed False positive for UselessStringValueOf when there is no initial String to append to - <a href="https://github.com/johnra2">John Armgardt</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/3683">#3683</a>: [java] Fixed 3468 UnusedPrivateMethod false positive when outer class calls private static method on inner class - <a href="https://github.com/johnra2">John Armgardt</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/3688">#3688</a>: [java] Bump log4j to 2.16.0 - <a href="https://github.com/snuyanzin">Sergey Nuyanzin</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/3693">#3693</a>: [apex] ApexDoc: Add reportProperty property - <a href="https://github.com/babula">Steve Babula</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/3704">#3704</a>: [java] Fix for #3686 - Fix ReturnEmptyCollectionRatherThanNull - <a href="https://github.com/dykov">Oleksii Dykov</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/3713">#3713</a>: [java] Enhance UnnecessaryModifier to support records - <a href="https://github.com/vgalloy">Vincent Galloy</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/3719">#3719</a>: [java] Upgrade log4j to 2.17.1 - <a href="https://github.com/squaresurf">Daniel Paul Searles</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/3720">#3720</a>: [java] New rule: FinalParameterInAbstractMethod - <a href="https://github.com/vgalloy">Vincent Galloy</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/3724">#3724</a>: [java] Fix for #3679 - fix FinalFieldCouldBeStatic - <a href="https://github.com/dykov">Oleksii Dykov</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/3727">#3727</a>: [java] #3724 - fix FinalFieldCouldBeStatic: triggers only if the referenced name is static - <a href="https://github.com/dykov">Oleksii Dykov</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/3742">#3742</a>: [java] Fix #3701 - fix MissingStaticMethodInNonInstantiatableClass for method local classes - <a href="https://github.com/dykov">Oleksii Dykov</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/3744">#3744</a>: [core] Updated SaxonXPathRuleQueryTest.java - <a href="https://github.com/Vyom-Yadav">Vyom Yadav</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/3745">#3745</a>: [java] Fix #3712: InsufficientStringBufferDeclaration setLength false positive - <a href="https://github.com/gredler">Daniel Gredler</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/3747">#3747</a>: [visualforce] Updated DataType.java - <a href="https://github.com/Vyom-Yadav">Vyom Yadav</a></li>
-</ul>
-
-<h3 id="stats">Stats</h3>
-<ul>
-  <li>88 commits</li>
-  <li>35 closed tickets &amp; PRs</li>
-  <li>Days since last release: 62</li>
-</ul>
 
 
 
