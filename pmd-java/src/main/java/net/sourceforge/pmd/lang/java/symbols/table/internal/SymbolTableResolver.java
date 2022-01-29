@@ -50,6 +50,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTLambdaParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalClassStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTLoopStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTModifierList;
 import net.sourceforge.pmd.lang.java.ast.ASTResource;
@@ -602,11 +603,7 @@ public final class SymbolTableResolver {
                 setTopSymbolTableAndVisit(node.getBody(), ctx);
                 popStack(pushed);
 
-                if (node.descendants(ASTBreakStatement.class).isEmpty()) {
-                    // todo this is a bit too restrictive, we need to check the break target,
-                    //  because if we break to after the following code, it's ok
-                    //  JLS:
-                    //  > V is introduced by while (e) S iff V is introduced by e when false, and S does not contains a reachable break statement whose break target contains S.
+                if (hasNoBreakContainingStmt(node)) {
                     return bindSet.getFalseBindings();
                 }
                 return BindSet.noBindings();
@@ -632,18 +629,21 @@ public final class SymbolTableResolver {
                     // (i) it is introduced by the condition expression when false and
                     // (ii) the contained statement, S, does not contain a reachable
                     // break statement whose break target contains S (§14.15).
-                    Set<JavaNode> containingStatements = node.ancestorsOrSelf()
-                                                             .filter(JavaRuleUtil::mayBeBreakTarget)
-                                                             .collect(Collectors.toSet());
-                    boolean hasNoBreaks = node.getBody()
-                                              .descendants(ASTBreakStatement.class)
-                                              .none(it -> containingStatements.contains(it.getTarget()));
-                    if (hasNoBreaks) {
+                    if (hasNoBreakContainingStmt(node)) {
                         return bindSet.getFalseBindings();
                     } else {
                         return BindSet.noBindings();
                     }
                 }
+            }
+
+            private boolean hasNoBreakContainingStmt(ASTLoopStatement node) {
+                Set<JavaNode> containingStatements = node.ancestorsOrSelf()
+                                                         .filter(JavaRuleUtil::mayBeBreakTarget)
+                                                         .collect(Collectors.toSet());
+                return node.getBody()
+                           .descendants(ASTBreakStatement.class)
+                           .none(it -> containingStatements.contains(it.getTarget()));
             }
 
             @Override

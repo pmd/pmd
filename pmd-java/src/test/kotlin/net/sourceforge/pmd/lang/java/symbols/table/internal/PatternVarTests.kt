@@ -274,5 +274,65 @@ class PatternVarTests : ProcessorTestSpec({
             }
         }
     }
+    parserTest("Bindings within while loop", javaVersion = JavaVersion.J17) {
+
+
+        doTest("Positive cond") {
+
+            checkVars(firstIsPattern = true, secondIsPattern = false) {
+                """
+                a -> {
+                    while(a instanceof String var) {
+                        var.toString(); // the binding
+                    }
+                    var.toString(); // the field
+                }
+                """
+            }
+        }
+        doTest("Negated cond") {
+
+            checkVars(firstIsPattern = false, secondIsPattern = true) {
+                """
+                a -> {
+                    while(!(a instanceof String var)) {
+                        var.toString(); // the field
+                    }
+                    var.toString(); // the binding though it is unreachable
+                }
+                """
+            }
+        }
+        doTest("Negated cond, body doesn't break") {
+
+            checkVars(firstIsPattern = false, secondIsPattern = true) {
+                """
+                a -> {
+                    while(!(a instanceof String var)) {
+                        var.toString(); // the field
+                        while (true) {
+                            break;
+                        }
+                    }
+                    var.toString(); // the binding
+                }
+                """
+            }
+        }
+        doTest("Negated cond, body does break") {
+
+            checkVars(firstIsPattern = false, secondIsPattern = false) {
+                """
+                a -> {
+                    while(!(a instanceof String var)) {
+                        var.toString(); // the field
+                        break;
+                    }
+                    var.toString(); // the field
+                }
+                """
+            }
+        }
+    }
 
 })
