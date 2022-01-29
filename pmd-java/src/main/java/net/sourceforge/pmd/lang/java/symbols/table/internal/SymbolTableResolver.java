@@ -383,7 +383,7 @@ public final class SymbolTableResolver {
         @Override
         public Void visit(ASTForeachStatement node, @NonNull ReferenceCtx ctx) {
             // the varId is only in scope in the body and not the iterable expr
-            setTopSymbolTableAndRecurse(node.getIterableExpr(), ctx);
+            setTopSymbolTableAndVisit(node.getIterableExpr(), ctx);
 
             ASTVariableDeclaratorId varId = node.getVarId();
             acceptIfNotNull(varId.getTypeNode(), ctx);
@@ -393,7 +393,7 @@ public final class SymbolTableResolver {
             // unless it's a block the body statement may never set a
             // symbol table that would have this table as parent,
             // so the table would be dangling
-            setTopSymbolTableAndRecurse(body, ctx);
+            setTopSymbolTableAndVisit(body, ctx);
             popStack(pushed);
             return null;
         }
@@ -449,7 +449,7 @@ public final class SymbolTableResolver {
                 PSet<ASTVariableDeclaratorId> trueBindings = bindersOfExpr(node.getLeftOperand()).getTrueBindings();
                 if (!trueBindings.isEmpty()) {
                     int pushed = pushOnStack(f.localVarSymTable(top(), enclosing(), trueBindings));
-                    setTopSymbolTableAndRecurse(node.getRightOperand(), ctx);
+                    setTopSymbolTableAndVisit(node.getRightOperand(), ctx);
                     popStack(pushed);
                     return null;
                 }
@@ -459,7 +459,7 @@ public final class SymbolTableResolver {
                 PSet<ASTVariableDeclaratorId> falseBindings = bindersOfExpr(node.getLeftOperand()).getFalseBindings();
                 if (!falseBindings.isEmpty()) {
                     int pushed = pushOnStack(f.localVarSymTable(top(), enclosing(), falseBindings));
-                    setTopSymbolTableAndRecurse(node.getRightOperand(), ctx);
+                    setTopSymbolTableAndVisit(node.getRightOperand(), ctx);
                     popStack(pushed);
                     return null;
                 }
@@ -482,10 +482,10 @@ public final class SymbolTableResolver {
                 node.getElseBranch().acceptVisitor(this, ctx);
             } else {
                 int pushed = pushOnStack(f.localVarSymTable(top(), enclosing(), binders.getTrueBindings()));
-                setTopSymbolTableAndRecurse(node.getThenBranch(), ctx);
+                setTopSymbolTableAndVisit(node.getThenBranch(), ctx);
                 popStack(pushed);
                 pushed = pushOnStack(f.localVarSymTable(top(), enclosing(), binders.getFalseBindings()));
-                setTopSymbolTableAndRecurse(node.getElseBranch(), ctx);
+                setTopSymbolTableAndVisit(node.getElseBranch(), ctx);
                 popStack(pushed);
             }
             return null;
@@ -523,13 +523,13 @@ public final class SymbolTableResolver {
 
                 // the true bindings of the condition are in scope in the then branch
                 int pushed = pushOnStack(f.localVarSymTable(top(), enclosing(), bindSet.getTrueBindings()));
-                setTopSymbolTableAndRecurse(thenBranch, ctx);
+                setTopSymbolTableAndVisit(thenBranch, ctx);
                 popStack(pushed);
 
                 if (elseBranch != null) {
                     // if there is an else, the false bindings are in scope in the else branch
                     pushed = pushOnStack(f.localVarSymTable(top(), enclosing(), bindSet.getFalseBindings()));
-                    setTopSymbolTableAndRecurse(elseBranch, ctx);
+                    setTopSymbolTableAndVisit(elseBranch, ctx);
                     popStack(pushed);
 
                     boolean thenCanCompleteNormally = canCompleteNormally(thenBranch);
@@ -558,7 +558,7 @@ public final class SymbolTableResolver {
                 node.getCondition().acceptVisitor(MyVisitor.this, ctx);
 
                 int pushed = pushOnStack(f.localVarSymTable(top(), enclosing(), NodeStream.fromIterable(bindSet.getTrueBindings())));
-                setTopSymbolTableAndRecurse(node.getBody(), ctx);
+                setTopSymbolTableAndVisit(node.getBody(), ctx);
                 popStack(pushed);
 
                 if (node.descendants(ASTBreakStatement.class).isEmpty()) {
@@ -576,12 +576,12 @@ public final class SymbolTableResolver {
                 int pushed = pushOnStack(f.localVarSymTable(top(), enclosing(), varsOfInit(node)));
 
                 ASTExpression condition = node.getCondition();
-                setTopSymbolTableAndRecurse(condition, ctx);
+                setTopSymbolTableAndVisit(condition, ctx);
 
                 BindSet bindSet = bindersOfExpr(condition);
                 pushed += pushOnStack(f.localVarSymTable(top(), enclosing(), bindSet.getTrueBindings()));
-                setTopSymbolTableAndRecurse(node.getUpdate(), ctx);
-                setTopSymbolTableAndRecurse(node.getBody(), ctx);
+                setTopSymbolTableAndVisit(node.getUpdate(), ctx);
+                setTopSymbolTableAndVisit(node.getBody(), ctx);
                 popStack(pushed);
 
                 if (bindSet.getFalseBindings().isEmpty()) {
@@ -624,12 +624,21 @@ public final class SymbolTableResolver {
             return enclosingType.getFirst().getTypeMirror();
         }
 
+        // this does not visit the given node, only its children
         private void setTopSymbolTableAndRecurse(JavaNode node, @NonNull ReferenceCtx ctx) {
             if (node == null) {
                 return;
             }
             setTopSymbolTable(node);
             visitChildren(node, ctx);
+        }
+
+        private void setTopSymbolTableAndVisit(JavaNode node, @NonNull ReferenceCtx ctx) {
+            if (node == null) {
+                return;
+            }
+            setTopSymbolTable(node);
+            node.acceptVisitor(this, ctx);
         }
 
         private int pushOnStack(JSymbolTable table) {

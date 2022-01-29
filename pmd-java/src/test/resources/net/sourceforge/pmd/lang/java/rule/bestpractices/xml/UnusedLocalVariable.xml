@@ -445,14 +445,14 @@ public class UsedLocalVar {
         <code><![CDATA[
 public class Foo {
     public void run1(String ...args) {
-        int i;
+        int i = 0;
         for (String a : args) {
             String id = a + " -> " + i++;
             System.out.println(id);
         }
     }
     public void run2(String ...args) {
-        int x;
+        int x = 0;
         for (String a : args) {
             String id = a + " -> " + (++x);
             System.out.println(id);
