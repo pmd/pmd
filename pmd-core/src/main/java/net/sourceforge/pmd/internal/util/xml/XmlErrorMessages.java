@@ -11,6 +11,7 @@ public final class XmlErrorMessages {
     public static final String ERR__UNEXPECTED_ELEMENT = "Unexpected element ''{0}'', expecting {1}";
     public static final String ERR__UNEXPECTED_ELEMENT_IN = "Unexpected element ''{0}'' in {1}, expecting {1}";
     public static final String ERR__MISSING_REQUIRED_ATTRIBUTE = "Required attribute ''{0}'' is missing";
+    public static final String ERR__BLANK_REQUIRED_ATTRIBUTE = "Required attribute ''{0}'' is blank";
     public static final String ERR__MISSING_REQUIRED_ELEMENT = "Required child element named {0} is missing";
 
     public static final String IGNORED__UNEXPECTED_ELEMENT = ERR__UNEXPECTED_ELEMENT + THIS_WILL_BE_IGNORED;
@@ -21,8 +22,12 @@ public final class XmlErrorMessages {
     public static final String ERR__PROPERTY_DOES_NOT_EXIST = "Cannot set non-existent property ''{0}'' on rule {1}";
     public static final String ERR__CONSTRAINT_NOT_SATISFIED = "Property constraint(s) not satisfied: {0}";
     public static final String ERR__LIST_CONSTRAINT_NOT_SATISFIED = "Property constraint(s) not satisfied on items";
+    public static final String ERR__INVALID_VERSION_RANGE = "Invalid language version range, minimum version ''{0}'' is greater than maximum version ''{1}''";
+    public static final String ERR__INVALID_LANG_VERSION_NO_NAMED_VERSION = "Invalid language version ''{0}'' for language ''{1}'', the language has no named versions";
+    public static final String ERR__INVALID_LANG_VERSION = "Invalid language version ''{0}'' for language ''{1}'', supported versions are {2}";
 
     public static final String WARN__DEPRECATED_USE_OF_ATTRIBUTE = "The use of the ''{0}'' attribute is deprecated. Use a nested element, e.g. {1}";
+    public static final String WARN__INVALID_PRIORITY_VALUE = "Not a valid priority ''{}'', expected a number in [1,5]";
 
     private XmlErrorMessages() {
         // utility class

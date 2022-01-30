@@ -94,4 +94,19 @@ public enum RulePriority {
             return LOW;
         }
     }
+
+    /**
+     * Returns the priority which corresponds to the given number as returned by
+     * {@link RulePriority#getPriority()}. If the number is an invalid value,
+     * then null will be returned.
+     *
+     * @param priority The numeric priority value.
+     */
+    public static RulePriority valueOfNullable(int priority) {
+        try {
+            return RulePriority.values()[priority - 1];
+        } catch (ArrayIndexOutOfBoundsException e) {
+            return null;
+        }
+    }
 }

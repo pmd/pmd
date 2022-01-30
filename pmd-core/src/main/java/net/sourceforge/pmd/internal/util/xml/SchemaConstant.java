@@ -9,6 +9,7 @@ import static net.sourceforge.pmd.util.CollectionUtil.setOf;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.w3c.dom.Attr;
@@ -32,28 +33,39 @@ public class SchemaConstant {
 
     public boolean getAsBooleanAttr(Element e, boolean defaultValue) {
         String attr = e.getAttribute(name);
-        return attr != null ? Boolean.parseBoolean(attr) : defaultValue;
+        return e.hasAttribute(name) ? Boolean.parseBoolean(attr) : defaultValue;
     }
 
-    @NonNull
-    public String getAttributeOrThrow(Element element, XmlErrorReporter err) {
+    public @NonNull String getAttributeOrThrow(Element element, XmlErrorReporter err) {
         String attribute = element.getAttribute(name);
-        if (attribute == null) {
+        if (!element.hasAttribute(name)) {
             throw err.error(element, XmlErrorMessages.ERR__MISSING_REQUIRED_ATTRIBUTE, name);
         }
 
         return attribute;
     }
 
-    @Nullable
-    public String getAttributeOpt(Element element) {
+    public @NonNull String getNonBlankAttributeOrThrow(Element element, XmlErrorReporter err) {
+        String attribute = element.getAttribute(name);
+        if (!element.hasAttribute(name)) {
+            throw err.error(element, XmlErrorMessages.ERR__MISSING_REQUIRED_ATTRIBUTE, name);
+        } else if (StringUtils.isBlank(attribute)) {
+            throw err.error(element, XmlErrorMessages.ERR__BLANK_REQUIRED_ATTRIBUTE, name);
+        }
+        return attribute;
+    }
+
+    public @Nullable String getAttributeOpt(Element element) {
         String attr = element.getAttribute(name);
         return attr.isEmpty() ? null : attr;
     }
 
-    @Nullable
-    public Attr getAttributeNode(Element element) {
+    public @Nullable Attr getAttributeNode(Element element) {
         return element.getAttributeNode(name);
+    }
+
+    public boolean hasAttribute(Element element) {
+        return element.hasAttribute(name);
     }
 
     public List<Element> getChildrenIn(Element elt) {

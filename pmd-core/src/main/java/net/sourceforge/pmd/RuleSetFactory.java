@@ -134,7 +134,7 @@ final class RuleSetFactory {
      *
      * @return The new RuleSet.
      *
-     * @throws RulesetParseException If the ruleset cannot be parsed (eg IO exception, malformed XML, validation errors)
+     * @throws RuleSetLoadException If the ruleset cannot be parsed (eg IO exception, malformed XML, validation errors)
      */
     private RuleSet readDocument(RuleSetReferenceId ruleSetReferenceId, boolean withDeprecatedRuleReferences) {
 
@@ -163,27 +163,12 @@ final class RuleSetFactory {
                 err.close(e.getSeverity(), Severity.ERROR);
                 throw e;
             }
-        } catch (ParserConfigurationException | IOException | XmlException ex) {
-            if (!(ex instanceof XmlException)) { // NOPMD would already have been reported
-                ex.printStackTrace();
-            }
-            throw new RulesetParseException("Couldn't read the ruleset " + ruleSetReferenceId, ex);
+        } catch (ParserConfigurationException | IOException ex) {
+            throw new RuleSetLoadException("Couldn't read the ruleset " + ruleSetReferenceId, ex);
         }
     }
 
-    static class RulesetParseException extends RuntimeException {
-
-        RulesetParseException(String message, Throwable cause) {
-            super(message, cause);
-        }
-
-        RulesetParseException(Throwable cause) {
-            super(cause);
-        }
-    }
-
-    @NonNull
-    private AccumulatingErrorReporter makeReporter(LoggerMessageHandler handler, PositionedXmlDoc parsed) {
+    private @NonNull AccumulatingErrorReporter makeReporter(LoggerMessageHandler handler, PositionedXmlDoc parsed) {
         return new AccumulatingErrorReporter(handler, parsed.getPositioner(), Severity.WARNING) {
             @Override
             protected String template(String message, Object... args) {
