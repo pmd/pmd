@@ -12,6 +12,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.java.ast.AccessNode.Visibility;
+import net.sourceforge.pmd.lang.java.ast.JModifier;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
@@ -50,7 +52,7 @@ public final class TestFrameworksUtil {
      * True if this is a junit @Test method (or a junit 3 method).
      */
     public static boolean isJUnitMethod(ASTMethodDeclaration method) {
-        if (method.isStatic() || method.getBody() == null) {
+        if (method.hasModifiers(JModifier.STATIC) || method.getBody() == null) {
             return false; // skip various inapplicable method variations
         }
 
@@ -68,12 +70,26 @@ public final class TestFrameworksUtil {
         return isJUnitMethod(method) || isTestNgMethod(method);
     }
 
+    /**
+     * Returns true if this is a Before/setUp method or After/tearDown.
+     */
+    public static boolean isTestConfigurationMethod(ASTMethodDeclaration method) {
+        return method.isAnnotationPresent("org.junit.Before")
+                || method.isAnnotationPresent("org.junit.BeforeClass")
+                || method.isAnnotationPresent("org.junit.After")
+                || method.isAnnotationPresent("org.junit.AfterClass")
+                || isJUnit3Class(method.getEnclosingType())
+                        && ("setUp".equals(method.getName())
+                            || "tearDown".equals(method.getName()));
+    }
+
     private static boolean isTestNgMethod(ASTMethodDeclaration method) {
         return method.isAnnotationPresent(TESTNG_TEST_ANNOT);
     }
 
     public static boolean isJUnit4Method(ASTMethodDeclaration method) {
-        return method.isAnnotationPresent(JUNIT4_TEST_ANNOT) && method.isPublic();
+        return method.isAnnotationPresent(JUNIT4_TEST_ANNOT)
+                && method.getVisibility() == Visibility.V_PUBLIC;
     }
 
     public static boolean isJUnit5Method(ASTMethodDeclaration method) {
@@ -86,7 +102,7 @@ public final class TestFrameworksUtil {
     }
 
     public static boolean isJUnit3Method(ASTMethodDeclaration method) {
-        return TypeTestUtil.isA("junit.framework.TestCase", method.getEnclosingType())
+        return isJUnit3Class(method.getEnclosingType())
             && isJunit3MethodSignature(method);
     }
 
@@ -99,7 +115,7 @@ public final class TestFrameworksUtil {
      */
     public static boolean isJunit3MethodSignature(ASTMethodDeclaration method) {
         return method.isVoid()
-            && method.isPublic()
+            && method.getVisibility() == Visibility.V_PUBLIC
             && method.getName().startsWith("test");
     }
 

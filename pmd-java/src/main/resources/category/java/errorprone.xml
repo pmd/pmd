@@ -1327,11 +1327,11 @@ This rule was called *DoNotCallSystemExit* until PMD 6.29.0.
             <property name="xpath">
                 <value>
 <![CDATA[
-//Name[
-    starts-with(@Image,'System.exit')
-    or
-    (starts-with(@Image,'Runtime.getRuntime') and ../../PrimarySuffix[ends-with(@Image,'exit') or ends-with(@Image,'halt')])
-][not(ancestor::MethodDeclaration[1][@Name="main" and @Static = true()])]
+//(MethodDeclaration[@MainMethod = false()] | Initializer)//MethodCall[
+    pmd-java:matchesSig("java.lang.System#exit(int)")
+    or pmd-java:matchesSig("java.lang.Runtime#exit(int)")
+    or pmd-java:matchesSig("java.lang.Runtime#halt(int)")
+]
 ]]>
                 </value>
             </property>
@@ -2332,7 +2332,7 @@ See the property `annotations`.
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassOrInterfaceDeclaration[@Nested= false()]
+//ClassOrInterfaceDeclaration[@Nested= false() and @Local= false()]
 [
     (: at least one constructor :) ./ClassOrInterfaceBody/ConstructorDeclaration
     and
@@ -2648,13 +2648,13 @@ See Effective Java, 3rd Edition, Item 54: Return empty collections or arrays ins
             <property name="xpath">
                 <value>
 <![CDATA[
-//MethodDeclaration
+//ReturnStatement/NullLiteral
+[ancestor::MethodDeclaration[1]
     [ArrayType
      or ClassOrInterfaceType[pmd-java:typeIs('java.util.Collection')
         or pmd-java:typeIs('java.util.Map')]]
-//ReturnStatement/NullLiteral
+]
 [not(./ancestor::LambdaExpression)]
-[not(./ancestor::AnonymousClassDeclaration)]
 ]]>
                 </value>
             </property>

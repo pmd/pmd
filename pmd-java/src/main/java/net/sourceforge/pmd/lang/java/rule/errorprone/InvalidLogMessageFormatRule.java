@@ -12,6 +12,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTArrayAllocation;
@@ -39,6 +40,13 @@ public class InvalidLogMessageFormatRule extends AbstractJavaRulechainRule {
     private static final Set<String> SLF4J = immutableSetOf("trace", "debug", "info", "warn", "error");
     private static final Set<String> APACHE_SLF4J = immutableSetOf("trace", "debug", "info", "warn", "error", "fatal", "all");
 
+    /**
+     * Whitelisted methods of net.logstash.logback.argument.StructuredArguments
+     */
+    private static final Set<String> STRUCTURED_ARGUMENTS_METHODS = immutableSetOf(
+                    "a", "array", "defer", "e",
+                    "entries", "f", "fields", "keyValue",
+                    "kv", "r", "raw", "v", "value");
 
     public InvalidLogMessageFormatRule() {
         super(ASTMethodCall.class);
@@ -71,6 +79,12 @@ public class InvalidLogMessageFormatRule extends AbstractJavaRulechainRule {
                 // Remove throwable param, since it is shown separately.
                 // But only, if it is not used as a placeholder argument
                 providedArguments--;
+            }
+            // remove any logstash structured arguments at the end
+            // but only, if there are not enough placeholders
+            if (providedArguments > expectedArguments) {
+                int removed = removePotentialStructuredArguments(providedArguments - expectedArguments, args);
+                providedArguments -= removed;
             }
 
             if (providedArguments < expectedArguments) {
@@ -133,4 +147,37 @@ public class InvalidLogMessageFormatRule extends AbstractJavaRulechainRule {
             + "but found " + providedArguments;
     }
 
+    /**
+     * Removes up to {@code maxArgumentsToRemove} arguments from the end of the {@code argumentList},
+     * if the argument is a method call to one of the whitelisted StructuredArguments methods.
+     *
+     * @param maxArgumentsToRemove
+     * @param argumentList
+     */
+    private int removePotentialStructuredArguments(int maxArgumentsToRemove, ASTArgumentList argumentList) {
+        int removed = 0;
+        int lastIndex = argumentList.size() - 1;
+        while (argumentList.size() > 0 && removed < maxArgumentsToRemove) {
+            ASTExpression argument = argumentList.get(lastIndex);
+            if (isStructuredArgumentMethodCall(argument)) {
+                removed++;
+            } else {
+                // stop if something else is encountered
+                break;
+            }
+            lastIndex--;
+        }
+        return removed;
+    }
+
+    private boolean isStructuredArgumentMethodCall(ASTExpression argument) {
+        if (argument instanceof ASTMethodCall) {
+            ASTMethodCall methodCall = (ASTMethodCall) argument;
+            @Nullable
+            ASTExpression qualifier = methodCall.getQualifier();
+            return TypeTestUtil.isA("net.logstash.logback.argument.StructuredArguments", qualifier)
+                    || STRUCTURED_ARGUMENTS_METHODS.contains(methodCall.getMethodName());
+        }
+        return false;
+    }
 }
