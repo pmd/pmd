@@ -39,9 +39,10 @@ import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 import net.sourceforge.pmd.util.OptionalBool;
 
 /**
- * Utilities to resolve scope of pattern binding variables.
+ * Implementation of {@link #completesNormally(ASTStatement)}, which
+ * is used to implement scoping of pattern variables.
  *
- * @see <a href="https://docs.oracle.com/javase/specs/jls/se17/html/jls-6.html#jls-6.3.1">Java Language Specification</a>
+ * @see <a href="https://docs.oracle.com/javase/specs/jls/se17/html/jls-14.html#jls-14.1">Java Language Specification</a>
  */
 final class AbruptCompletionAnalysis {
 
