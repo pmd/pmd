@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.java.ast
 
 import net.sourceforge.pmd.lang.ast.Node
+import net.sourceforge.pmd.lang.java.JavaParsingHelper
 
 /**
  * Describes a kind of node that can be found commonly in the same contexts.
@@ -28,8 +29,8 @@ abstract class NodeParsingCtx<T : Node>(val constructName: String) {
      *
      * @throws ParseException If the argument is no valid construct of this kind (mind the language version)
      */
-    fun parseNode(construct: String, ctx: ParserTestCtx): T {
-        val root = ctx.javaVersion.parser.parse(getTemplate(construct, ctx))
+    fun parseNode(construct: String, ctx: ParserTestCtx, parser: JavaParsingHelper = ctx.parser): T {
+        val root = parser.parse(getTemplate(construct, ctx))
 
         return retrieveNode(root)
     }
@@ -69,8 +70,8 @@ abstract class NodeParsingCtx<T : Node>(val constructName: String) {
 fun <N : Node> Node.findFirstNodeOnStraightLine(klass: Class<N>): N? {
     return when {
         klass.isInstance(this) -> klass.cast(this)
-        this.numChildren == 1  -> getChild(0).findFirstNodeOnStraightLine(klass)
-        else                   -> null
+        this.numChildren == 1 -> getChild(0).findFirstNodeOnStraightLine(klass)
+        else -> null
     }
 }
 
@@ -82,23 +83,23 @@ object ExpressionParsingCtx : NodeParsingCtx<ASTExpression>("expression") {
 
     override fun retrieveNode(acu: ASTCompilationUnit): ASTExpression =
             StatementParsingCtx.retrieveNode(acu)
-                    .getFirstDescendantOfType(ASTExpression::class.java)!!
+                    .descendants(ASTExpression::class.java)
+                    .firstOrThrow()
 }
 
-object StatementParsingCtx : NodeParsingCtx<JavaNode>("statement") {
+object StatementParsingCtx : NodeParsingCtx<ASTStatement>("statement") {
 
     override fun getTemplate(construct: String, ctx: ParserTestCtx): String =
-            EnclosedDeclarationParsingCtx.getTemplate("{\n$construct}", ctx)
+            TypeBodyParsingCtx.getTemplate("  {\n    $construct\n  }", ctx)
 
 
-    override fun retrieveNode(acu: ASTCompilationUnit): JavaNode =
-            EnclosedDeclarationParsingCtx.retrieveNode(acu)
+    override fun retrieveNode(acu: ASTCompilationUnit): ASTStatement =
+            TypeBodyParsingCtx.retrieveNode(acu)
                     .descendants(ASTBlock::class.java)
-                    .children()
-                    .get(0) as JavaNode
+                    .firstOrThrow().getChild(0)
 }
 
-object EnclosedDeclarationParsingCtx : NodeParsingCtx<JavaNode>("enclosed declaration") {
+object TypeBodyParsingCtx : NodeParsingCtx<ASTBodyDeclaration>("body declaration") {
 
     override fun getTemplate(construct: String, ctx: ParserTestCtx): String {
         val source = ctx.fullSource
@@ -113,8 +114,8 @@ $construct
                         """
     }
 
-    override fun retrieveNode(acu: ASTCompilationUnit): JavaNode =
-            acu.getFirstDescendantOfType(ASTAnyTypeBodyDeclaration::class.java).declarationNode
+    override fun retrieveNode(acu: ASTCompilationUnit): ASTBodyDeclaration =
+            acu.typeDeclarations.firstOrThrow().getDeclarations().firstOrThrow()
 }
 
 object TopLevelTypeDeclarationParsingCtx : NodeParsingCtx<ASTAnyTypeDeclaration>("top-level declaration") {
@@ -124,7 +125,7 @@ object TopLevelTypeDeclarationParsingCtx : NodeParsingCtx<ASTAnyTypeDeclaration>
             $construct
             """.trimIndent()
 
-    override fun retrieveNode(acu: ASTCompilationUnit): ASTAnyTypeDeclaration = acu.getFirstDescendantOfType(ASTAnyTypeDeclaration::class.java)!!
+    override fun retrieveNode(acu: ASTCompilationUnit): ASTAnyTypeDeclaration = acu.typeDeclarations.firstOrThrow()
 }
 
 object TypeParsingCtx : NodeParsingCtx<ASTType>("type") {
@@ -145,17 +146,16 @@ object AnnotationParsingCtx : NodeParsingCtx<ASTAnnotation>("annotation") {
 
     override fun retrieveNode(acu: ASTCompilationUnit): ASTAnnotation =
             StatementParsingCtx.retrieveNode(acu)
-                    .getFirstDescendantOfType(ASTAnnotation::class.java)!!
+                    .descendants(ASTAnnotation::class.java).firstOrThrow()
 }
 
 object TypeParametersParsingCtx : NodeParsingCtx<ASTTypeParameters>("type parameters") {
     override fun getTemplate(construct: String, ctx: ParserTestCtx): String =
-            EnclosedDeclarationParsingCtx.getTemplate("public $construct void f() {}", ctx)
+            TypeBodyParsingCtx.getTemplate("public $construct void f() {}", ctx)
 
-    override fun retrieveNode(acu: ASTCompilationUnit): ASTTypeParameters =
-            EnclosedDeclarationParsingCtx.retrieveNode(acu)
+    override fun retrieveNode(acu: ASTCompilationUnit) =
+            TypeBodyParsingCtx.retrieveNode(acu)
                     .descendantsOrSelf()
                     .last(ASTMethodDeclaration::class.java)!!
-                    .children(ASTTypeParameters::class.java)
-                    .first()!!
+                    .typeParameters!!
 }

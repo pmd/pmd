@@ -20,6 +20,7 @@ import net.sourceforge.pmd.lang.apex.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethodCallExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTModifierNode;
 import net.sourceforge.pmd.lang.apex.ast.ASTNewKeyValueObjectExpression;
+import net.sourceforge.pmd.lang.apex.ast.ASTNewObjectExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTParameter;
 import net.sourceforge.pmd.lang.apex.ast.ASTReferenceExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTSoqlExpression;
@@ -38,6 +39,7 @@ import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 @InternalApi
 public final class Helper {
     public static final String ANY_METHOD = "*";
+    private static final String DATABASE_CLASS_NAME = "Database";
 
     private Helper() {
         throw new AssertionError("Can't instantiate helper classes");
@@ -163,12 +165,19 @@ public final class Helper {
         return sb.toString();
     }
 
-    public static boolean isSystemLevelClass(ASTUserClass node) {
-        List<String> interfaces = node.getInterfaceNames();
-        return interfaces.stream().anyMatch(Helper::isWhitelisted);
+    public static String getFQVariableName(final ASTNewObjectExpression variable) {
+        StringBuilder sb = new StringBuilder()
+                .append(variable.getDefiningType()).append(":")
+                .append(variable.getType());
+        return sb.toString();
     }
 
-    private static boolean isWhitelisted(String identifier) {
+    public static boolean isSystemLevelClass(ASTUserClass node) {
+        List<String> interfaces = node.getInterfaceNames();
+        return interfaces.stream().anyMatch(Helper::isAllowed);
+    }
+
+    private static boolean isAllowed(String identifier) {
         switch (identifier.toLowerCase(Locale.ROOT)) {
         case "queueable":
         case "database.batchable":
@@ -186,4 +195,10 @@ public final class Helper {
         return sb.toString();
     }
 
+    /**
+     * @return true if {@code node} is an invocation of a {@code Database} method.
+     */
+    public static boolean isAnyDatabaseMethodCall(ASTMethodCallExpression node) {
+        return isMethodName(node, DATABASE_CLASS_NAME, ANY_METHOD);
+    }
 }

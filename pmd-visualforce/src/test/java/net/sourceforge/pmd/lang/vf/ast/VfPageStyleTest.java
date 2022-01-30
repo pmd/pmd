@@ -10,7 +10,7 @@ import java.util.List;
 
 import org.junit.Test;
 
-public class VfPageStyleTest extends AbstractVfNodesTest {
+public class VfPageStyleTest extends AbstractVfTest {
 
     /**
      * Test parsing of a EL expression.

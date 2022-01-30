@@ -4,8 +4,8 @@ package foo.bar.baz;
 // another irrelevant comment
 @ MyAnnotation ("ugh")
 @NamedQueries({
-                  @NamedQuery(
-                  )})
+    @NamedQuery(
+        )})
 
 public class Foo {// CPD-ON
 

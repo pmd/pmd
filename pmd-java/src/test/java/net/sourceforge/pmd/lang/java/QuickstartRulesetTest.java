@@ -14,11 +14,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.contrib.java.lang.system.SystemErrRule;
 
-import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.RuleSetFactory;
-import net.sourceforge.pmd.RuleSetNotFoundException;
-import net.sourceforge.pmd.util.ResourceLoader;
+import net.sourceforge.pmd.RuleSetLoader;
 
 public class QuickstartRulesetTest {
 
@@ -27,15 +24,15 @@ public class QuickstartRulesetTest {
 
     @After
     public void cleanup() {
-        Handler[] handlers = Logger.getLogger(RuleSetFactory.class.getName()).getHandlers();
+        Handler[] handlers = Logger.getLogger(RuleSetLoader.class.getName()).getHandlers();
         for (Handler handler : handlers) {
-            Logger.getLogger(RuleSetFactory.class.getName()).removeHandler(handler);
+            Logger.getLogger(RuleSetLoader.class.getName()).removeHandler(handler);
         }
     }
 
     @Test
-    public void noDeprecations() throws RuleSetNotFoundException {
-        Logger.getLogger(RuleSetFactory.class.getName()).addHandler(new Handler() {
+    public void noDeprecations() {
+        Logger.getLogger(RuleSetLoader.class.getName()).addHandler(new Handler() {
             @Override
             public void publish(LogRecord record) {
                 Assert.fail("No Logging expected: " + record.getMessage());
@@ -50,8 +47,8 @@ public class QuickstartRulesetTest {
             }
         });
 
-        RuleSetFactory ruleSetFactory = new RuleSetFactory(new ResourceLoader(), RulePriority.LOW, true, false);
-        RuleSet quickstart = ruleSetFactory.createRuleSet("rulesets/java/quickstart.xml");
+        RuleSetLoader ruleSetLoader = new RuleSetLoader().enableCompatibility(false);
+        RuleSet quickstart = ruleSetLoader.loadFromResource("rulesets/java/quickstart.xml");
         Assert.assertFalse(quickstart.getRules().isEmpty());
     }
 }

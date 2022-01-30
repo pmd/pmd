@@ -80,9 +80,10 @@ public class Foo {
         <description>Not a new String</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import my.String;
 public class Foo {
-    STRING foo() {
-        return new STRING("foo");
+    String foo() {
+        return new String("foo");
     }
 }
         ]]></code>

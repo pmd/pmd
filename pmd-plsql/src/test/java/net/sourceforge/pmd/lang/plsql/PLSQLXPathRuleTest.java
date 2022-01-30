@@ -7,9 +7,8 @@ package net.sourceforge.pmd.lang.plsql;
 import org.junit.Assert;
 import org.junit.Test;
 
-import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.lang.LanguageRegistry;
-import net.sourceforge.pmd.lang.plsql.ast.ASTInput;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
 
@@ -18,10 +17,10 @@ import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
  */
 public class PLSQLXPathRuleTest extends AbstractPLSQLParserTst {
 
-    private final ASTInput node = plsql.parse(
+    private static final String SOURCE =
         "create or replace\n" + "package pkg_xpath_problem\n" + "AS\n" + "    PROCEDURE pkg_minimal\n" + "    IS\n"
             + "        a_variable VARCHAR2(1);\n" + "    BEGIN \n" + "        --PRAGMA INLINE(output,'YES');\n"
-            + "        a_variable := 'Y' ;\n" + "    END ;\n" + "end pkg_xpath_problem;\n" + "/\n" + "");
+            + "        a_variable := 'Y' ;\n" + "    END ;\n" + "end pkg_xpath_problem;\n" + "/\n";
 
     public PLSQLXPathRuleTest() {
     }
@@ -56,11 +55,8 @@ public class PLSQLXPathRuleTest extends AbstractPLSQLParserTst {
         rule.setLanguage(LanguageRegistry.getLanguage(PLSQLLanguageModule.NAME));
         rule.setMessage("Test Violation");
 
-        RuleContext ctx = new RuleContext();
-        ctx.setLanguageVersion(plsql.getDefaultVersion());
-
-        rule.apply(node, ctx);
-        Assert.assertEquals(2, ctx.getReport().getViolations().size());
+        Report report = plsql.executeRule(rule, SOURCE);
+        Assert.assertEquals(2, report.getViolations().size());
     }
 
 

@@ -1,0 +1,18 @@
+<apex:page controller="ApexController" tabStyle="Account">
+    <apex:outputText value="{!AccountIdProp}" escape="false" />
+    {!AccountIdProp}
+    <apex:outputText value="{!AccountId}" escape="false" />
+    {!AccountId}
+    <apex:outputText value="{!InnerController.InnerAccountId}" escape="false" />
+    {!InnerController.InnerAccountId}
+    <apex:outputText value="{!InnerController.InnerAccountIdProp}" escape="false" />
+    {!InnerController.InnerAccountIdProp}
+    <apex:outputText value="{!AccountName}" escape="false" />
+    {!AccountName}
+    <apex:outputText value="{!InnerController.InnerAccountName}" escape="false" />
+    {!InnerController.InnerAccountName}
+    <apex:outputText value="{!ConflictingProp}" escape="false" />
+    {!ConflictingProp}
+    <apex:outputText value="{!NotFoundProp}" escape="false" />
+    {!NotFoundProp}
+</apex:page>

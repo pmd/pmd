@@ -216,8 +216,18 @@ RuleTag with full category and without quotes: Use {% rule java/sample/RenamedRu
  </properties>
  </rule>
 
-<rule name="RenamedRule" ref="JumbledIncrementer"/>
+    <rule name="RenamedRule1" ref="JumbledIncrementer"/>
 
-<rule name="MovedRule" ref="rulesets/ruledoctest/sample2.xml/JumbledIncrementer"/>
+    <rule name="RenamedRule2" ref="rulesets/ruledoctest/sample.xml/JumbledIncrementer"/>
+
+    <!-- variant 1 of a renamed rule. This is definitively within the same ruleset. -->
+    <rule name="RenamedRule3" ref="JumbledIncrementer" deprecated="true" />
+
+    <!-- see Rule deprecation policy: /docs/pages/pmd/devdocs/rule_deprecation.md -->
+    <!-- variant 2 of a renamed and/or moved rule. This could also keep the rule name but
+         move the rule into a different rule or do any combination of both -->
+    <rule name="RenamedRule4" ref="rulesets/ruledoctest/sample.xml/JumbledIncrementer" deprecated="true" />
+
+    <rule name="MovedRule" ref="rulesets/ruledoctest/sample2.xml/JumbledIncrementer"/>
 
 </ruleset>

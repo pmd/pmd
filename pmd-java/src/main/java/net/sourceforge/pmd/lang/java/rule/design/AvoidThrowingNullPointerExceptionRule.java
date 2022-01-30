@@ -4,17 +4,17 @@
 
 package net.sourceforge.pmd.lang.java.rule.design;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import net.sourceforge.pmd.lang.java.ast.ASTAssignmentOperator;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
-import net.sourceforge.pmd.lang.java.ast.ASTName;
+import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
-import net.sourceforge.pmd.lang.java.ast.ASTVariableInitializer;
-import net.sourceforge.pmd.lang.java.ast.JavaNode;
-import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
+import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
+import net.sourceforge.pmd.lang.java.rule.internal.DataflowPass;
+import net.sourceforge.pmd.lang.java.rule.internal.DataflowPass.AssignmentEntry;
+import net.sourceforge.pmd.lang.java.rule.internal.DataflowPass.DataflowResult;
+import net.sourceforge.pmd.lang.java.rule.internal.DataflowPass.ReachingDefinitionSet;
+import net.sourceforge.pmd.lang.java.symbols.JLocalVariableSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
+import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 
 /**
  * Finds <code>throw</code> statements containing <code>NullPointerException</code>
@@ -22,82 +22,40 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
  *
  * @author <a href="mailto:michaeller.2012@gmail.com">Mykhailo Palahuta</a>
  */
-public class AvoidThrowingNullPointerExceptionRule extends AbstractJavaRule {
+public class AvoidThrowingNullPointerExceptionRule extends AbstractJavaRulechainRule {
 
-    private final Set<String> npeInstances = new HashSet<>();
-
-    @Override
-    public Object visit(ASTVariableInitializer varInitializer, Object data) {
-        String initialedVarName = getInitializedVariableName(varInitializer);
-        processAssignmentToVariable(varInitializer, initialedVarName);
-        return super.visit(varInitializer, data);
-    }
-
-    private String getInitializedVariableName(ASTVariableInitializer initializer) {
-        ASTVariableDeclaratorId varDeclaratorId = initializer.getParent()
-                .getFirstDescendantOfType(ASTVariableDeclaratorId.class);
-        return varDeclaratorId != null ? varDeclaratorId.getName() : null;
+    public AvoidThrowingNullPointerExceptionRule() {
+        super(ASTThrowStatement.class);
     }
 
     @Override
-    public Object visit(ASTAssignmentOperator assignment, Object data) {
-        String assignedVarName = getAssignedVariableName(assignment);
-        processAssignmentToVariable(assignment, assignedVarName);
-        return super.visit(assignment, data);
-    }
-
-    private String getAssignedVariableName(ASTAssignmentOperator assignment) {
-        ASTName varName = assignment.getParent().getFirstDescendantOfType(ASTName.class);
-        return varName != null ? varName.getImage() : null;
-    }
-
-    private void processAssignmentToVariable(JavaNode assignment, String varName) {
-        Class<?> assignedValueType = getAssignedValueType(assignment);
-        if (isNullPointerException(assignedValueType)) {
-            npeInstances.add(varName);
-        } else {
-            npeInstances.remove(varName);
+    public Object visit(ASTThrowStatement throwStmt, Object data) {
+        ASTExpression thrown = throwStmt.getExpr();
+        if (TypeTestUtil.isA(NullPointerException.class, thrown)) {
+            addViolation(data, throwStmt);
+        } else if (thrown instanceof ASTVariableAccess) {
+            JVariableSymbol sym = ((ASTVariableAccess) thrown).getReferencedSym();
+            if (sym instanceof JLocalVariableSymbol && hasNpeValue((ASTVariableAccess) thrown)) {
+                addViolation(data, throwStmt);
+            }
         }
+        return null;
     }
 
-    private Class<?> getAssignedValueType(JavaNode assignment) {
-        ASTClassOrInterfaceType assignedValueType = assignment.getParent()
-                .getFirstDescendantOfType(ASTClassOrInterfaceType.class);
-        return assignedValueType != null ? assignedValueType.getType() : null;
-    }
-
-    @Override
-    public Object visit(ASTThrowStatement throwStatement, Object data) {
-        if (throwsNullPointerException(throwStatement)) {
-            addViolation(data, throwStatement);
+    private boolean hasNpeValue(ASTVariableAccess thrown) {
+        DataflowResult dataflow = DataflowPass.getDataflowResult(thrown.getRoot());
+        ReachingDefinitionSet reaching = dataflow.getReachingDefinitions(thrown);
+        if (reaching == null || reaching.isNotFullyKnown()) {
+            // we lean towards false negatives... maybe we should be able
+            // to report this with a lower priority
+            return false;
         }
-        return super.visit(throwStatement, data);
-    }
 
-    private boolean throwsNullPointerException(ASTThrowStatement throwStatement) {
-        return throwsNullPointerExceptionType(throwStatement)
-                || throwsNullPointerExceptionVariable(throwStatement);
-    }
-
-    private boolean throwsNullPointerExceptionType(ASTThrowStatement throwStatement) {
-        ASTClassOrInterfaceType thrownType = throwStatement.getFirstDescendantOfType(ASTClassOrInterfaceType.class);
-        if (thrownType != null) {
-            Class<?> thrownException = thrownType.getType();
-            return isNullPointerException(thrownException);
+        for (AssignmentEntry it : reaching.getReaching()) {
+            if (!TypeTestUtil.isExactlyA(NullPointerException.class, it.getRhsType())) {
+                return false;
+            }
         }
-        return false;
-    }
-
-    private boolean isNullPointerException(Class<?> clazz) {
-        return NullPointerException.class.equals(clazz);
-    }
-
-    private boolean throwsNullPointerExceptionVariable(ASTThrowStatement throwStatement) {
-        ASTName thrownVar = throwStatement.getFirstDescendantOfType(ASTName.class);
-        if (thrownVar != null) {
-            String thrownVarName = thrownVar.getImage();
-            return npeInstances.contains(thrownVarName);
-        }
-        return false;
+        return true;
     }
 }

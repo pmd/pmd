@@ -155,7 +155,7 @@ public final class XmlSyntaxUtils {
     ) {
         String delim = "" + delimiter;
         return ValueSyntax.create(
-            coll -> IteratorUtil.stream(coll.iterator()).map(toString).collect(Collectors.joining(delim)),
+            coll -> IteratorUtil.toStream(coll.iterator()).map(toString).collect(Collectors.joining(delim)),
             string -> parseListWithEscapes(string, delimiter, fromString).stream().collect(collector)
         );
     }

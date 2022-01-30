@@ -54,13 +54,21 @@ public class EmptyTryBlock3 {
         <description>#432 false positive for empty try-with-resource</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+class ClientResponse implements AutoCloseable {
+    @Override
+    public void close() throws Exception {
+
+    }
+}
+
 class X {
+    static ClientResponse get() { return null; }
     void method() {
-        try (ClientResponse response = execute(() -> target.request(mediaTypes).delete(), DELETE, new ExpectedResponse(status, required))) {
+        try (ClientResponse response = get()) {
             // false positive
         }
     }
 }
-        ]]></code>
+            ]]></code>
     </test-code>
 </test-data>

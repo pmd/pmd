@@ -4,28 +4,29 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.annotation.InternalApi;
-import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.AstInfo;
+import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.ast.impl.GenericNode;
+import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
 import net.sourceforge.pmd.lang.java.typeresolution.ClassTypeResolver;
+import net.sourceforge.pmd.lang.java.types.TypeSystem;
+import net.sourceforge.pmd.lang.java.types.ast.LazyTypeResolver;
 
 // FUTURE Change this class to extend from SimpleJavaNode, as TypeNode is not appropriate (unless I'm wrong)
-public class ASTCompilationUnit extends AbstractJavaTypeNode implements JavaNode, GenericNode<JavaNode>, RootNode {
+public final class ASTCompilationUnit extends AbstractJavaTypeNode implements JavaNode, GenericNode<JavaNode>, RootNode {
 
-    private ClassTypeResolver classTypeResolver;
+    private LazyTypeResolver lazyTypeResolver;
     private List<Comment> comments;
-    private Map<Integer, String> noPmdComments = Collections.emptyMap();
+    private AstInfo<ASTCompilationUnit> astInfo;
 
-    @InternalApi
-    @Deprecated
-    public ASTCompilationUnit(int id) {
+    ASTCompilationUnit(int id) {
         super(id);
     }
 
@@ -33,11 +34,19 @@ public class ASTCompilationUnit extends AbstractJavaTypeNode implements JavaNode
         return comments;
     }
 
-    @InternalApi
-    @Deprecated
-    public void setComments(List<Comment> comments) {
+    public void setAstInfo(AstInfo<ASTCompilationUnit> task) {
+        this.astInfo = task;
+    }
+
+    @Override
+    public AstInfo<ASTCompilationUnit> getAstInfo() {
+        return astInfo;
+    }
+
+    void setComments(List<Comment> comments) {
         this.comments = comments;
     }
+
 
     @Override
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
@@ -52,12 +61,9 @@ public class ASTCompilationUnit extends AbstractJavaTypeNode implements JavaNode
         return getPackageDeclaration() == null;
     }
 
+    @Nullable
     public ASTPackageDeclaration getPackageDeclaration() {
-        if (getNumChildren() > 0) {
-            Node n = getChild(0);
-            return n instanceof ASTPackageDeclaration ? (ASTPackageDeclaration) n : null;
-        }
-        return null;
+        return AstImplUtil.getChildAs(this, 0, ASTPackageDeclaration.class);
     }
 
     @Override
@@ -66,33 +72,51 @@ public class ASTCompilationUnit extends AbstractJavaTypeNode implements JavaNode
     }
 
     /**
-     * Returns the package name of this compilation unit. If this is in
-     * the default package, returns the empty string.
+     * Returns the package name of this compilation unit. If there is no
+     * package declaration, then returns the empty string.
      */
     @NonNull
     public String getPackageName() {
-        ASTPackageDeclaration pdecl = getPackageDeclaration();
-        return pdecl == null ? "" : pdecl.getPackageNameImage();
+        ASTPackageDeclaration pack = getPackageDeclaration();
+        return pack == null ? "" : pack.getName();
     }
+
+    /**
+     * Returns the type declarations declared in this compilation unit.
+     * This may be empty if this a package-info.java, or a modular
+     * compilation unit. Note that this only cares for top-level types
+     */
+    public NodeStream<ASTAnyTypeDeclaration> getTypeDeclarations() {
+        return children(ASTAnyTypeDeclaration.class);
+    }
+
 
     @InternalApi
     @Deprecated
     public ClassTypeResolver getClassTypeResolver() {
-        return classTypeResolver;
-    }
-
-    @InternalApi
-    @Deprecated
-    public void setClassTypeResolver(ClassTypeResolver classTypeResolver) {
-        this.classTypeResolver = classTypeResolver;
+        return new ClassTypeResolver();
     }
 
     @Override
-    public Map<Integer, String> getNoPmdComments() {
-        return noPmdComments;
+    public @NonNull JSymbolTable getSymbolTable() {
+        assert symbolTable != null : "Symbol table wasn't set";
+        return symbolTable;
     }
 
-    void setNoPmdComments(Map<Integer, String> noPmdComments) {
-        this.noPmdComments = noPmdComments;
+
+    @Override
+    public TypeSystem getTypeSystem() {
+        assert lazyTypeResolver != null : "Type resolution not initialized";
+        return lazyTypeResolver.getTypeSystem();
     }
+
+    void setTypeResolver(LazyTypeResolver typeResolver) {
+        this.lazyTypeResolver = typeResolver;
+    }
+
+    @NonNull LazyTypeResolver getLazyTypeResolver() {
+        assert lazyTypeResolver != null : "Type resolution not initialized";
+        return lazyTypeResolver;
+    }
+
 }

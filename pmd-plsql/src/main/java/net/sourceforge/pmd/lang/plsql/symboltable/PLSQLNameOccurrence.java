@@ -169,7 +169,7 @@ public class PLSQLNameOccurrence implements NameOccurrence {
      * @return return true if image equal to 'this' or 'super'.
      */
     public boolean isThisOrSuper() {
-        return image.equals(THIS) || image.equals(SUPER);
+        return THIS.equals(image) || SUPER.equals(image);
     }
 
     /**

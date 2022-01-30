@@ -31,6 +31,6 @@ public class XPathRuleTest extends BaseScalaTest {
         XPathRule rule = new XPathRule(XPathVersion.XPATH_2_0, xpath);
         rule.setLanguage(LanguageRegistry.getLanguage(ScalaLanguageModule.NAME));
         rule.setMessage("XPath Rule Failed");
-        return scala.getReportForResource(rule, testSource);
+        return scala.executeRuleOnResource(rule, testSource);
     }
 }

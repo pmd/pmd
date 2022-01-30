@@ -6,25 +6,17 @@ package net.sourceforge.pmd.lang.java.metrics.impl;
 
 import java.util.Map;
 
-import net.sourceforge.pmd.lang.java.metrics.api.JavaClassMetricKey;
-import net.sourceforge.pmd.lang.java.metrics.api.JavaOperationMetricKey;
-import net.sourceforge.pmd.lang.java.metrics.internal.ClassFanOutMetric.ClassFanOutOption;
+import net.sourceforge.pmd.lang.java.metrics.JavaMetrics;
+import net.sourceforge.pmd.lang.java.metrics.JavaMetrics.ClassFanOutOption;
 import net.sourceforge.pmd.lang.metrics.MetricOption;
 
 /**
  * @author Andreas Pabst
  */
-public class CfoTestRule extends AbstractMetricTestRule {
+public class CfoTestRule extends JavaIntMetricTestRule {
 
-    @Override
-    protected JavaClassMetricKey getClassKey() {
-        return JavaClassMetricKey.CLASS_FAN_OUT;
-    }
-
-
-    @Override
-    protected JavaOperationMetricKey getOpKey() {
-        return JavaOperationMetricKey.CLASS_FAN_OUT;
+    public CfoTestRule() {
+        super(JavaMetrics.FAN_OUT);
     }
 
     @Override

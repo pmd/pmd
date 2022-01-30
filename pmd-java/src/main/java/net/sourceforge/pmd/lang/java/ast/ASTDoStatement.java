@@ -4,24 +4,19 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
-
 /**
  * Represents a {@code do ... while} statement.
  *
  *
- * <pre>
+ * <pre class="grammar">
  *
  * DoStatement ::= "do" {@linkplain ASTStatement Statement} "while" "(" {@linkplain ASTExpression Expression} ")" ";"
  *
  * </pre>
  */
-public class ASTDoStatement extends AbstractJavaNode {
+public final class ASTDoStatement extends AbstractStatement implements ASTLoopStatement {
 
-    @InternalApi
-    @Deprecated
-    public ASTDoStatement(int id) {
+    ASTDoStatement(int id) {
         super(id);
     }
 
@@ -29,18 +24,8 @@ public class ASTDoStatement extends AbstractJavaNode {
     /**
      * Returns the node that represents the guard of this loop.
      * This may be any expression of type boolean.
-     *
-     * @deprecated Use {@link #getCondition()}
      */
-    @Deprecated
-    public ASTExpression getGuardExpressionNode() {
-        return getCondition();
-    }
-
-    /**
-     * Returns the node that represents the guard of this loop.
-     * This may be any expression of type boolean.
-     */
+    @Override
     public ASTExpression getCondition() {
         return (ASTExpression) getChild(1);
     }
@@ -50,6 +35,7 @@ public class ASTDoStatement extends AbstractJavaNode {
      * Returns the statement that will be run while the guard
      * evaluates to true.
      */
+    @Override
     public ASTStatement getBody() {
         return (ASTStatement) getChild(0);
     }

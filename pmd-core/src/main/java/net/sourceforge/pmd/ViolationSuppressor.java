@@ -6,15 +6,14 @@ package net.sourceforge.pmd;
 
 import java.util.Map;
 import java.util.Optional;
-import java.util.Optional;
 import java.util.regex.Pattern;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.Report.SuppressedViolation;
+import net.sourceforge.pmd.lang.ast.AstInfo;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
 import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
 import net.sourceforge.pmd.lang.rule.xpath.internal.DeprecatedAttrLogger;
@@ -78,7 +77,7 @@ public interface ViolationSuppressor {
                 DeprecatedAttrLogger.createForSuppression(rv.getRule())
             );
             if (!rq.evaluate(node).isEmpty()) {
-                return new SuppressedViolation(rv, this, xpath);
+                return new SuppressedViolation(rv, this, xpath.get());
             }
             return null;
         }
@@ -87,8 +86,8 @@ public interface ViolationSuppressor {
     /**
      * Suppressor for regular NOPMD comments.
      *
-     * @implNote This requires special support from the language, namely
-     *     an implementation of {@link RootNode#getNoPmdComments()}.
+     * @implNote This requires special support from the language, namely,
+     *     the parser must fill-in {@link AstInfo#getSuppressionComments()}.
      */
     ViolationSuppressor NOPMD_COMMENT_SUPPRESSOR = new ViolationSuppressor() {
         @Override
@@ -98,7 +97,7 @@ public interface ViolationSuppressor {
 
         @Override
         public @Nullable SuppressedViolation suppressOrNull(RuleViolation rv, @NonNull Node node) {
-            Map<Integer, String> noPmd = node.getRoot().getNoPmdComments();
+            Map<Integer, String> noPmd = node.getAstInfo().getSuppressionComments();
             if (noPmd.containsKey(rv.getBeginLine())) {
                 return new SuppressedViolation(rv, this, noPmd.get(rv.getBeginLine()));
             }

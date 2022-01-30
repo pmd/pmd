@@ -20,7 +20,7 @@ public class ASTFunctionNodeTest extends EcmascriptParserTestBase {
 
     @Test
     public void testGetBodyFunctionClosureExpression() {
-        ASTAstRoot node = js18.parse("(function(x) x*x)");
+        ASTAstRoot node = js.parse("(function(x) x*x)");
         ASTFunctionNode fn = node.getFirstDescendantOfType(ASTFunctionNode.class);
         Assert.assertTrue(fn.isClosure());
         EcmascriptNode<?> body = fn.getBody();

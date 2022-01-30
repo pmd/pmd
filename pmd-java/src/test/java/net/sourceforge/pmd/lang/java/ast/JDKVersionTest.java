@@ -279,7 +279,7 @@ public class JDKVersionTest {
         List<ASTMethodDeclaration> methods = acu.findDescendantsOfType(ASTMethodDeclaration.class, true);
         assertEquals(3, methods.size());
         for (ASTMethodDeclaration method : methods) {
-            assertFalse(method.isInterfaceMember());
+            assertFalse(method.getEnclosingType().isInterface());
         }
     }
 

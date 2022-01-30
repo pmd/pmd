@@ -12,18 +12,17 @@ import net.sourceforge.pmd.util.StringUtil;
 /**
  * An error thrown during lexical analysis of a file.
  */
-public final class TokenMgrError extends RuntimeException {
+public final class TokenMgrError extends FileAnalysisException {
 
     private final int line;
     private final int column;
-    private final String filename;
 
     /**
      * Create a new exception.
      *
      * @param line     Line number
      * @param column   Column number
-     * @param filename Filename. If unknown, it can be completed with {@link #withFileName(String)} later
+     * @param filename Filename. If unknown, it can be completed with {@link #setFileName(String)} later
      * @param message  Message of the error
      * @param cause    Cause of the error, if any
      */
@@ -31,7 +30,9 @@ public final class TokenMgrError extends RuntimeException {
         super(message, cause);
         this.line = line;
         this.column = column;
-        this.filename = filename;
+        if (filename != null) {
+            super.setFileName(filename);
+        }
     }
 
     /**
@@ -42,7 +43,6 @@ public final class TokenMgrError extends RuntimeException {
         super(makeReason(eofSeen, lexStateName, errorAfter, curChar));
         line = errorLine;
         column = errorColumn;
-        filename = null; // may be replaced with #withFileName
     }
 
     public int getLine() {
@@ -53,14 +53,11 @@ public final class TokenMgrError extends RuntimeException {
         return column;
     }
 
-    public @Nullable String getFilename() {
-        return filename;
-    }
 
 
     @Override
     public String getMessage() {
-        String leader = filename != null ? "Lexical error in file " + filename : "Lexical error";
+        String leader = hasFileName() ? "Lexical error in file " + getFileName() : "Lexical error";
         return leader + " at line " + line + ", column " + column + ".  Encountered: " + super.getMessage();
     }
 
@@ -71,8 +68,10 @@ public final class TokenMgrError extends RuntimeException {
      *
      * @return A new exception
      */
-    public TokenMgrError withFileName(String filename) {
-        return new TokenMgrError(this.line, this.column, filename, this.getMessage(), this.getCause());
+    @Override
+    public TokenMgrError setFileName(String filename) {
+        super.setFileName(filename);
+        return this;
     }
 
     private static String makeReason(boolean eofseen, String lexStateName, String errorAfter, char curChar) {

@@ -19,7 +19,9 @@ import java.nio.charset.StandardCharsets;
 import java.util.Properties;
 
 import org.junit.Assert;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
 import net.sourceforge.pmd.cache.FileAnalysisCache;
 import net.sourceforge.pmd.cache.NoopAnalysisCache;
@@ -28,6 +30,9 @@ import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.util.ClasspathClassLoader;
 
 public class ConfigurationTest {
+
+    @Rule
+    public TemporaryFolder folder = new TemporaryFolder();
 
     @Test
     public void testSuppressMarker() {
@@ -106,13 +111,6 @@ public class ConfigurationTest {
         Assert.assertArrayEquals(expectedUris, uris);
     }
 
-    @Test
-    public void testRuleSets() {
-        PMDConfiguration configuration = new PMDConfiguration();
-        assertEquals("Default RuleSets", null, configuration.getRuleSets());
-        configuration.setRuleSets("/rulesets/basic.xml");
-        assertEquals("Changed RuleSets", "/rulesets/basic.xml", configuration.getRuleSets());
-    }
 
     @Test
     public void testMinimumPriority() {
@@ -227,8 +225,7 @@ public class ConfigurationTest {
         configuration.setAnalysisCache(null);
         assertNotNull("Default cache was set to null", configuration.getAnalysisCache());
 
-        final File cacheFile = File.createTempFile("pmd-", ".cache");
-        cacheFile.deleteOnExit();
+        final File cacheFile = folder.newFile();
         final FileAnalysisCache analysisCache = new FileAnalysisCache(cacheFile);
         configuration.setAnalysisCache(analysisCache);
         assertSame("Configured cache not stored", analysisCache, configuration.getAnalysisCache());
@@ -254,8 +251,7 @@ public class ConfigurationTest {
         final PMDConfiguration configuration = new PMDConfiguration();
 
         // set dummy cache location
-        final File cacheFile = File.createTempFile("pmd-", ".cache");
-        cacheFile.deleteOnExit();
+        final File cacheFile = folder.newFile();
         final FileAnalysisCache analysisCache = new FileAnalysisCache(cacheFile);
         configuration.setAnalysisCache(analysisCache);
         assertNotNull("Null cache location accepted", configuration.getAnalysisCache());

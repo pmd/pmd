@@ -1,12 +1,5 @@
-
-<!-- this handles the automatic toc. use ## for subheads to auto-generate the on-page minitoc. if you use html tags, you must supply an ID for the heading element in order for it to appear in the minitoc. -->
-<script>
-$( document ).ready(function() {
-  // Handler for .ready() called.
-
-$('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3,h4' });
-
-});
-</script>
+{% comment %}
+Note: The content of the div-element is filled by javascript. See customscripts.js.
+{% endcomment %}
 
 <div id="toc"></div>

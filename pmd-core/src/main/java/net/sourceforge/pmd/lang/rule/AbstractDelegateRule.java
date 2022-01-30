@@ -12,7 +12,6 @@ import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
-import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertySource;
@@ -179,11 +178,6 @@ public abstract class AbstractDelegateRule implements Rule {
     @Override
     public void setPriority(RulePriority priority) {
         rule.setPriority(priority);
-    }
-
-    @Override
-    public ParserOptions getParserOptions() {
-        return rule.getParserOptions();
     }
 
     @Override

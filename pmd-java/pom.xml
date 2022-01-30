@@ -11,6 +11,10 @@
         <relativePath>../</relativePath>
     </parent>
 
+    <properties>
+        <log4j.version>2.17.1</log4j.version>
+    </properties>
+
     <build>
         <testResources>
             <testResource>
@@ -25,6 +29,12 @@
             <!-- Adding kotlin files to test resources, so that checkstyle verifies the license header -->
             <testResource>
                 <directory>${project.basedir}/src/test/kotlin</directory>
+            </testResource>
+            <testResource>
+                <directory>${basedir}/src/test/kotlin</directory>
+                <includes>
+                    <include>**/testdata/**/*.java</include>
+                </includes>
             </testResource>
         </testResources>
         <resources>
@@ -62,7 +72,7 @@
                         </goals>
                         <configuration>
                             <target>
-                                <ant antfile="${javacc.ant.wrapper}" target="alljavacc-visitor+">
+                                <ant antfile="${javacc.ant.wrapper}" target="alljavacc">
                                     <property name="javacc.jar" value="${javacc.jar}" />
                                     <property name="lang-name" value="Java" />
                                     <property name="lang-terse-name" value="java" />
@@ -107,6 +117,16 @@
                 <artifactId>maven-checkstyle-plugin</artifactId>
                 <configuration>
                     <suppressionsLocation>pmd-java-checkstyle-suppressions.xml</suppressionsLocation>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <excludes>
+                        <exclude>**/net/sourceforge/pmd/coverage/PMDCoverageTest.java</exclude>
+                    </excludes>
                 </configuration>
             </plugin>
         </plugins>
@@ -186,8 +206,18 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>io.kotest</groupId>
             <artifactId>kotest-assertions-core-jvm</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.kotest</groupId>
+            <artifactId>kotest-property-jvm</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -226,19 +256,25 @@
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-api</artifactId>
-            <version>2.13.3</version>
+            <version>${log4j.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-core</artifactId>
-            <version>2.13.3</version>
+            <version>${log4j.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
             <version>3.11.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+            <version>1.2</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

@@ -30,7 +30,7 @@ public class CSVRendererTest extends AbstractRendererTest {
     public String getExpectedMultiple() {
         return getHeader()
                 + "\"1\",\"\",\"" + getSourceCodeFilename() + "\",\"5\",\"1\",\"blah\",\"RuleSet\",\"Foo\"" + PMD.EOL
-                + "\"2\",\"\",\"" + getSourceCodeFilename() + "\",\"5\",\"1\",\"blah\",\"RuleSet\",\"Foo\"" + PMD.EOL;
+                + "\"2\",\"\",\"" + getSourceCodeFilename() + "\",\"1\",\"1\",\"blah\",\"RuleSet\",\"Foo\"" + PMD.EOL;
     }
 
     @Override

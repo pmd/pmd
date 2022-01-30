@@ -6,11 +6,12 @@ package net.sourceforge.pmd.internal.util;
 
 
 import static java.util.Collections.emptyIterator;
+import static java.util.Collections.emptyList;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsIterableContainingInOrder.contains;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
@@ -23,6 +24,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -171,6 +173,17 @@ public class IteratorUtilTest {
 
 
     @Test
+    public void testFlatmapWithSelf() {
+        Iterator<String> iter = iterOf("ab", "e", null, "f");
+        Function<String, Iterator<String>> fun = s -> s == null ? null // test null safety
+                                                                : iterOf(s + "1", s + "2");
+
+        Iterator<String> mapped = IteratorUtil.flatMapWithSelf(iter, fun);
+
+        assertThat(IteratorUtil.toList(mapped), contains("ab", "ab1", "ab2", "e", "e1", "e2", null, "f", "f1", "f2"));
+    }
+
+    @Test
     public void testMapNotNull() {
         Iterator<String> iter = iterOf("ab", "cdde", "e", "", "f", "fe");
         Function<String, Integer> fun = s -> s.length() < 2 ? null : s.length();
@@ -235,6 +248,16 @@ public class IteratorUtilTest {
         Iterator<String> mapped = IteratorUtil.takeWhile(iter, predicate);
 
         assertThat(() -> mapped, contains("ab", "null", "e"));
+        assertExhausted(mapped);
+    }
+
+    @Test
+    public void testTakeWhileWithEmpty() {
+        Iterator<String> iter = iterOf();
+        Predicate<String> predicate = Objects::nonNull;
+
+        Iterator<String> mapped = IteratorUtil.takeWhile(iter, predicate);
+
         assertExhausted(mapped);
     }
 
@@ -436,6 +459,50 @@ public class IteratorUtilTest {
         assertThat(mapped, contains("c", "b", "a"));
         assertThat(mapped, contains("c", "b", "a"));
         assertThat(mapped, contains("c", "b", "a"));
+    }
+
+
+    @Test
+    public void testDropLast() {
+        Iterator<String> iter = iterOf("ab", "cdde", "e", "", "f", "fe");
+
+        Iterator<String> dropped = IteratorUtil.dropLast(iter, 2);
+
+        assertEquals(listOf("ab", "cdde", "e", ""), IteratorUtil.toList(dropped));
+    }
+
+    @Test
+    public void testDropLastOne() {
+        Iterator<String> iter = iterOf("ab", "cdde", "e", "", "f", "fe");
+
+        Iterator<String> dropped = IteratorUtil.dropLast(iter, 1);
+
+        assertEquals(listOf("ab", "cdde", "e", "", "f"), IteratorUtil.toList(dropped));
+    }
+
+    @Test
+    public void testDropMoreThanSize() {
+        Iterator<String> iter = iterOf("ab", "c");
+
+        Iterator<String> dropped = IteratorUtil.dropLast(iter, 4);
+
+        assertEquals(emptyList(), IteratorUtil.toList(dropped));
+    }
+
+    @Test
+    public void testDropLastZero() {
+        Iterator<String> iter = iterOf("ab", "c");
+
+        Iterator<String> dropped = IteratorUtil.dropLast(iter, 0);
+
+        assertEquals(listOf("ab", "c"), IteratorUtil.toList(dropped));
+    }
+
+    @Test
+    public void testDropLastNegative() {
+        Iterator<String> iter = iterOf("ab", "c");
+
+        Assert.assertThrows(IllegalArgumentException.class, () -> IteratorUtil.dropLast(iter, -3));
     }
 
     private void assertExhausted(Iterator<?> mapped) {

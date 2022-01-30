@@ -13,12 +13,16 @@ import java.util.concurrent.Executors;
 
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.Report;
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.renderers.Renderer;
 
 
 /**
  * @author Romain Pelisse &lt;belaran@gmail.com&gt;
+ * @deprecated Is internal API
  */
+@Deprecated
+@InternalApi
 public class MultiThreadProcessor extends AbstractPMDProcessor {
     private final ExecutorService executor;
     private final CompletionService<Report> completionService;

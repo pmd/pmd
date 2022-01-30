@@ -26,6 +26,7 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.RuleSetReference;
 import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.internal.DOMUtils;
 import net.sourceforge.pmd.internal.util.xml.SchemaConstants;
 import net.sourceforge.pmd.internal.util.xml.XmlErrorMessages;
 import net.sourceforge.pmd.lang.rule.RuleReference;
@@ -107,13 +108,13 @@ public class RuleFactory {
         for (Element node : DomUtils.elementsIn(ruleElement)) {
             switch (node.getNodeName()) {
             case DESCRIPTION:
-                ruleReference.setDescription(parseTextNode(node));
+                ruleReference.setDescription(DOMUtils.parseTextNode(node));
                 break;
             case EXAMPLE:
-                ruleReference.addExample(parseTextNode(node));
+                ruleReference.addExample(DOMUtils.parseTextNode(node));
                 break;
             case PRIORITY:
-                ruleReference.setPriority(RulePriority.valueOf(Integer.parseInt(parseTextNode(node))));
+                ruleReference.setPriority(RulePriority.valueOf(Integer.parseInt(DOMUtils.parseTextNode(node))));
                 break;
             case PROPERTIES:
                 setPropertyValues(ruleReference, node, err);
@@ -164,13 +165,13 @@ public class RuleFactory {
         for (Element node : DomUtils.elementsIn(ruleElement)) {
             switch (node.getNodeName()) {
             case DESCRIPTION:
-                builder.description(parseTextNode(node));
+                builder.description(DOMUtils.parseTextNode(node));
                 break;
             case EXAMPLE:
-                builder.addExample(parseTextNode(node));
+                builder.addExample(DOMUtils.parseTextNode(node));
                 break;
             case PRIORITY:
-                builder.priority(Integer.parseInt(parseTextNode(node).trim()));
+                builder.priority(Integer.parseInt(DOMUtils.parseTextNode(node).trim()));
                 break;
             case PROPERTIES:
                 parsePropertiesForDefinitions(builder, node, err);

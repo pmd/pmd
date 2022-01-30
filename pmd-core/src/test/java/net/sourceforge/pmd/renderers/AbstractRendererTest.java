@@ -6,8 +6,6 @@ package net.sourceforge.pmd.renderers;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.File;
-
 import org.junit.Test;
 
 import net.sourceforge.pmd.FooRule;
@@ -15,7 +13,7 @@ import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Report.ConfigurationError;
 import net.sourceforge.pmd.Report.ProcessingError;
 import net.sourceforge.pmd.ReportTest;
-import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.RuleWithProperties;
 import net.sourceforge.pmd.lang.ast.DummyNode;
@@ -69,16 +67,18 @@ public abstract class AbstractRendererTest {
 
     private Report reportTwoViolations() {
         Report report = new Report();
-        report.addRuleViolation(newRuleViolation(1));
-        report.addRuleViolation(newRuleViolation(2));
+        RuleViolation informationalRuleViolation = newRuleViolation(1);
+        informationalRuleViolation.getRule().setPriority(RulePriority.LOW);
+        report.addRuleViolation(informationalRuleViolation);
+        RuleViolation severeRuleViolation = newRuleViolation(2);
+        severeRuleViolation.getRule().setPriority(RulePriority.HIGH);
+        report.addRuleViolation(severeRuleViolation);
         return report;
     }
 
     protected RuleViolation newRuleViolation(int endColumn) {
         DummyNode node = createNode(endColumn);
-        RuleContext ctx = new RuleContext();
-        ctx.setSourceCodeFile(new File(getSourceCodeFilename()));
-        return new ParametricRuleViolation<Node>(new FooRule(), ctx, node, "blah");
+        return new ParametricRuleViolation<Node>(new FooRule(), getSourceCodeFilename(), node, "blah");
     }
 
     protected static DummyNode createNode(int endColumn) {
@@ -90,13 +90,11 @@ public abstract class AbstractRendererTest {
     @Test
     public void testRuleWithProperties() throws Exception {
         DummyNode node = createNode(1);
-        RuleContext ctx = new RuleContext();
-        ctx.setSourceCodeFile(new File(getSourceCodeFilename()));
         Report report = new Report();
         RuleWithProperties theRule = new RuleWithProperties();
         theRule.setProperty(RuleWithProperties.STRING_PROPERTY_DESCRIPTOR,
                 "the string value\nsecond line with \"quotes\"");
-        report.addRuleViolation(new ParametricRuleViolation<Node>(theRule, ctx, node, "blah"));
+        report.addRuleViolation(new ParametricRuleViolation<Node>(theRule, getSourceCodeFilename(), node, "blah"));
         String rendered = ReportTest.render(getRenderer(), report);
         assertEquals(filter(getExpectedWithProperties()), filter(rendered));
     }

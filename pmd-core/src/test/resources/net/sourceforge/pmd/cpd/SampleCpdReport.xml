@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pmd-cpd>
+   <duplication lines="60" tokens="75">
+      <file column="2" endcolumn="3" endline="6" line="1" path="/var/Foo.java"/>
+      <file column="4" endcolumn="5" endline="78" line="73" path="/var/Foo.java"/>
+      <codefragment><![CDATA[code
+fragment]]></codefragment>
+   </duplication>
+</pmd-cpd>

@@ -15,18 +15,18 @@ import org.junit.runners.Suite.SuiteClasses;
  */
 @RunWith(Suite.class)
 @SuiteClasses({
-        CodeClimateRendererTest.class,
-        CSVRendererTest.class,
-        EmacsRendererTest.class,
-        HTMLRendererTest.class,
-        IDEAJRendererTest.class,
-        PapariTextRendererTest.class,
-        SummaryHTMLRendererTest.class,
-        TextPadRendererTest.class,
-        VBHTMLRendererTest.class,
-        XMLRendererTest.class,
-        XSLTRendererTest.class,
-        YAHTMLRendererTest.class
+    CodeClimateRendererTest.class,
+    CSVRendererTest.class,
+    EmacsRendererTest.class,
+    HTMLRendererTest.class,
+    IDEAJRendererTest.class,
+    PapariTextRendererTest.class,
+    SummaryHTMLRendererTest.class,
+    TextPadRendererTest.class,
+    VBHTMLRendererTest.class,
+    XMLRendererTest.class,
+    XSLTRendererTest.class,
+    YAHTMLRendererTest.class
 })
 public class RenderersTests {
 }

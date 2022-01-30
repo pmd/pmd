@@ -22,10 +22,10 @@ public class RuleSetFactoryDuplicatedRuleLoggingTest {
     public LocaleRule localeRule = LocaleRule.en();
 
     @org.junit.Rule
-    public JavaUtilLoggingRule logging = new JavaUtilLoggingRule(RuleSetFactory.class.getName());
+    public JavaUtilLoggingRule logging = new JavaUtilLoggingRule(RuleSetLoader.class.getName());
 
     @Test
-    public void duplicatedRuleReferenceShouldWarn() throws RuleSetNotFoundException {
+    public void duplicatedRuleReferenceShouldWarn() {
         RuleSet ruleset = loadRuleSet("duplicatedRuleReference.xml");
 
         assertEquals(1, ruleset.getRules().size());
@@ -37,7 +37,7 @@ public class RuleSetFactoryDuplicatedRuleLoggingTest {
     }
 
     @Test
-    public void duplicatedRuleReferenceWithOverrideShouldNotWarn() throws RuleSetNotFoundException {
+    public void duplicatedRuleReferenceWithOverrideShouldNotWarn() {
         RuleSet ruleset = loadRuleSet("duplicatedRuleReferenceWithOverride.xml");
 
         assertEquals(2, ruleset.getRules().size());
@@ -49,7 +49,7 @@ public class RuleSetFactoryDuplicatedRuleLoggingTest {
     }
 
     @Test
-    public void duplicatedRuleReferenceWithOverrideBeforeShouldNotWarn() throws RuleSetNotFoundException {
+    public void duplicatedRuleReferenceWithOverrideBeforeShouldNotWarn() {
         RuleSet ruleset = loadRuleSet("duplicatedRuleReferenceWithOverrideBefore.xml");
 
         assertEquals(2, ruleset.getRules().size());
@@ -61,7 +61,7 @@ public class RuleSetFactoryDuplicatedRuleLoggingTest {
     }
 
     @Test
-    public void multipleDuplicates() throws RuleSetNotFoundException {
+    public void multipleDuplicates() {
         RuleSet ruleset = loadRuleSet("multipleDuplicates.xml");
 
         assertEquals(2, ruleset.getRules().size());
@@ -74,8 +74,7 @@ public class RuleSetFactoryDuplicatedRuleLoggingTest {
         assertTrue(logging.getLog().contains("The ruleset rulesets/dummy/basic.xml is referenced multiple times in \"Custom Rules\"."));
     }
 
-    private RuleSet loadRuleSet(String ruleSetFilename) throws RuleSetNotFoundException {
-        RuleSetFactory rsf = RulesetsFactoryUtils.defaultFactory();
-        return rsf.createRuleSet("net/sourceforge/pmd/rulesets/duplicatedRuleLoggingTest/" + ruleSetFilename);
+    private RuleSet loadRuleSet(String ruleSetFilename) {
+        return new RuleSetLoader().loadFromResource("net/sourceforge/pmd/rulesets/duplicatedRuleLoggingTest/" + ruleSetFilename);
     }
 }

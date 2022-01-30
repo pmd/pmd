@@ -17,7 +17,6 @@ import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
-import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.properties.AbstractPropertySource;
@@ -93,7 +92,7 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
 
     @Override
     public void setLanguage(Language language) {
-        if (this.language != null && this instanceof ImmutableLanguage && !this.language.equals(language)) {
+        if (this.language != null && !this.language.equals(language)) {
             throw new UnsupportedOperationException("The Language for Rule class " + this.getClass().getName()
                     + " is immutable and cannot be changed.");
         }
@@ -107,6 +106,9 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
 
     @Override
     public void setMinimumLanguageVersion(LanguageVersion minimumLanguageVersion) {
+        if (minimumLanguageVersion != null && !minimumLanguageVersion.getLanguage().equals(getLanguage())) {
+            throw new IllegalArgumentException("Version " + minimumLanguageVersion + " does not belong to language " + getLanguage());
+        }
         this.minimumLanguageVersion = minimumLanguageVersion;
     }
 
@@ -117,6 +119,9 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
 
     @Override
     public void setMaximumLanguageVersion(LanguageVersion maximumLanguageVersion) {
+        if (maximumLanguageVersion != null && !maximumLanguageVersion.getLanguage().equals(getLanguage())) {
+            throw new IllegalArgumentException("Version " + maximumLanguageVersion + " does not belong to language " + getLanguage());
+        }
         this.maximumLanguageVersion = maximumLanguageVersion;
     }
 
@@ -221,18 +226,6 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
         this.priority = priority;
     }
 
-    /**
-     * This implementation returns a new instance of {@link ParserOptions} using
-     * default settings.
-     *
-     * @see Rule#setPriority(RulePriority)
-     */
-    @Override
-    @Deprecated
-    public ParserOptions getParserOptions() {
-        return new ParserOptions();
-    }
-
 
     private Set<Class<? extends Node>> getClassRuleChainVisits() {
         if (classRuleChainVisits.isEmpty() && ruleChainVisits.isEmpty()) {
@@ -288,7 +281,7 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
     public void addViolation(Object data, Node node) {
         RuleContext ruleContext = (RuleContext) data;
         ruleContext.getLanguageVersion().getLanguageVersionHandler().getRuleViolationFactory().addViolation(ruleContext,
-                this, node, this.getMessage(), null);
+                this, node, this.getMessage(), new Object[0]);
     }
 
     /**
@@ -318,7 +311,7 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
     public void addViolationWithMessage(Object data, Node node, String message) {
         RuleContext ruleContext = (RuleContext) data;
         ruleContext.getLanguageVersion().getLanguageVersionHandler().getRuleViolationFactory().addViolation(ruleContext,
-                this, node, message, null);
+                this, node, message, new Object[0]);
     }
 
     /**
@@ -328,7 +321,7 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
     public void addViolationWithMessage(Object data, Node node, String message, int beginLine, int endLine) {
         RuleContext ruleContext = (RuleContext) data;
         ruleContext.getLanguageVersion().getLanguageVersionHandler().getRuleViolationFactory().addViolation(ruleContext,
-                this, node, message, beginLine, endLine, null);
+                this, node, message, beginLine, endLine, new Object[0]);
     }
 
     /**

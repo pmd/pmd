@@ -4,28 +4,34 @@
 
 package net.sourceforge.pmd.lang.java.ast
 
-import io.kotest.core.config.Project
-import io.kotest.core.spec.style.DslDrivenSpec
+import io.kotest.core.config.configuration
+import io.kotest.core.spec.DslDrivenSpec
 import io.kotest.core.spec.style.scopes.Lifecycle
 import io.kotest.core.spec.style.scopes.RootScope
 import io.kotest.core.spec.style.scopes.RootTestRegistration
+import io.kotest.core.test.createTestName
 import io.kotest.core.test.TestCaseConfig
 import io.kotest.core.test.TestContext
-import io.kotest.core.test.TestName
 import io.kotest.core.test.TestType
-import io.kotest.runner.junit.platform.IntelliMarker
-import io.kotest.matchers.should as kotlintestShould
 import io.kotest.matchers.Matcher
+import io.kotest.matchers.should as kotlintestShould
 import net.sourceforge.pmd.lang.ast.Node
 import net.sourceforge.pmd.lang.ast.ParseException
 import net.sourceforge.pmd.lang.ast.test.Assertions
 import net.sourceforge.pmd.lang.ast.test.ValuedNodeSpec
-import net.sourceforge.pmd.lang.ast.test.matchNode
+import net.sourceforge.pmd.lang.ast.test.shouldBe
+import net.sourceforge.pmd.lang.ast.test.shouldMatchN
+import net.sourceforge.pmd.lang.java.types.JTypeMirror
+import net.sourceforge.pmd.lang.java.types.TypeDslMixin
+import net.sourceforge.pmd.lang.java.types.TypeDslOf
+import net.sourceforge.pmd.lang.ast.test.IntelliMarker
+import net.sourceforge.pmd.lang.java.types.shouldHaveType
+
 /**
  * Base class for grammar tests that use the DSL. Tests are layered into
  * containers that make it easier to browse in the IDE. Layout is group name,
  * then java version, then test case. Test cases are "should" assertions matching
- * a string against a matcher defined in [ParserTestCtx], e.g. [ParserTestCtx.matchExpr].
+ * a string against a matcher defined in [ParserTestCtx].
  *
  * @author Clément Fournier
  */
@@ -37,11 +43,15 @@ abstract class ParserTestSpec(body: ParserTestSpec.() -> Unit) : DslDrivenSpec()
 
     override fun lifecycle(): Lifecycle = Lifecycle.from(this)
     override fun defaultConfig(): TestCaseConfig = actualDefaultConfig()
+    override fun defaultTestCaseConfig(): TestCaseConfig? = defaultTestConfig
     override fun registration(): RootTestRegistration = RootTestRegistration.from(this)
+
+    private fun actualDefaultConfig() =
+            defaultTestConfig ?: defaultTestCaseConfig() ?: configuration.defaultTestConfig
 
     fun test(name: String, disabled: Boolean = false, test: suspend TestContext.() -> Unit) =
             registration().addTest(
-                    name = TestName(name),
+                    name = createTestName(name),
                     xdisabled = disabled,
                     test = test,
                     config = actualDefaultConfig()
@@ -67,7 +77,7 @@ abstract class ParserTestSpec(body: ParserTestSpec.() -> Unit) : DslDrivenSpec()
                         disabled: Boolean = false,
                         spec: suspend GroupTestCtx.() -> Unit) =
             registration().addContainerTest(
-                    name = TestName(name),
+                    name = createTestName(name),
                     test = { GroupTestCtx(this).spec() },
                     xdisabled = disabled
             )
@@ -120,19 +130,23 @@ abstract class ParserTestSpec(body: ParserTestSpec.() -> Unit) : DslDrivenSpec()
             context: TestContext,
             name: String,
             javaVersion: JavaVersion,
-            assertions: ParserTestCtx.() -> Unit) {
+            assertions: suspend ParserTestCtx.() -> Unit) {
 
         context.registerTestCase(
-                name = TestName(name),
-                test = { ParserTestCtx(javaVersion).assertions() },
+                name = createTestName(name),
+                test = { ParserTestCtx(javaVersion).apply { setup() }.assertions() },
                 config = actualDefaultConfig(),
                 type = TestType.Test
         )
     }
 
-    private fun actualDefaultConfig() =
-            defaultTestConfig ?: defaultTestCaseConfig()
-            ?: Project.testCaseConfig()
+    /**
+     * Setup to apply to spawned [ParserTestCtx]. By default, AST
+     * processing is disabled beyond the parser.
+     */
+    protected open fun ParserTestCtx.setup() {
+
+    }
 
     inner class GroupTestCtx(private val context: TestContext) {
 
@@ -140,8 +154,8 @@ abstract class ParserTestSpec(body: ParserTestSpec.() -> Unit) : DslDrivenSpec()
             javaVersions.forEach { javaVersion ->
 
                 context.registerTestCase(
-                        name = TestName("Java ${javaVersion.pmdName}"),
-                        test = { VersionedTestCtx(this, javaVersion).spec() },
+                        name = createTestName("Java ${javaVersion.pmdName}"),
+                        test = { VersionedTestCtx(this, javaVersion).apply { setup() }.spec() },
                         config = actualDefaultConfig(),
                         type = TestType.Container
                 )
@@ -149,6 +163,12 @@ abstract class ParserTestSpec(body: ParserTestSpec.() -> Unit) : DslDrivenSpec()
         }
 
         inner class VersionedTestCtx(private val context: TestContext, javaVersion: JavaVersion) : ParserTestCtx(javaVersion) {
+
+            suspend fun doTest(name: String, assertions: suspend VersionedTestCtx.() -> Unit) {
+                containedParserTestImpl(context, name, javaVersion = javaVersion) {
+                    assertions()
+                }
+            }
 
             suspend infix fun String.should(matcher: Assertions<String>) {
                 containedParserTestImpl(context, "'$this'", javaVersion = javaVersion) {
@@ -165,11 +185,23 @@ abstract class ParserTestSpec(body: ParserTestSpec.() -> Unit) : DslDrivenSpec()
             suspend infix fun String.shouldNot(matcher: Matcher<String>) =
                     should(matcher.invert())
 
-            suspend fun inContext(nodeParsingCtx: NodeParsingCtx<*>, assertions: suspend ImplicitNodeParsingCtx.() -> Unit) {
+            suspend fun <T : Node> inContext(nodeParsingCtx: NodeParsingCtx<T>, assertions: suspend ImplicitNodeParsingCtx<T>.() -> Unit) {
                 ImplicitNodeParsingCtx(nodeParsingCtx).assertions()
             }
 
-            inner class ImplicitNodeParsingCtx(private val nodeParsingCtx: NodeParsingCtx<*>) {
+            inner class ImplicitNodeParsingCtx<T : Node>(private val nodeParsingCtx: NodeParsingCtx<T>) {
+
+                fun haveType(type: TypeDslMixin.() -> JTypeMirror): Assertions<String> = {
+
+                    val node = doParse(it)
+                    if (node is TypeNode) node shouldHaveType TypeDslOf(node.typeSystem).type()
+                    else throw AssertionError("Not a TypeNode: $node")
+
+                }
+
+
+                fun doParse(s: String): T =
+                        nodeParsingCtx.parseNode(s, this@VersionedTestCtx)
 
                 /**
                  * A matcher that succeeds if the string parses correctly.
@@ -183,21 +215,20 @@ abstract class ParserTestSpec(body: ParserTestSpec.() -> Unit) : DslDrivenSpec()
                         this@VersionedTestCtx.notParseIn(nodeParsingCtx, expected)
 
 
-                fun parseAs(matcher: ValuedNodeSpec<Node, Any>): Assertions<String> = { str ->
-                    val node = nodeParsingCtx.parseNode(str, this@VersionedTestCtx)
-                    val idx = node.indexInParent
-                    node.parent kotlintestShould matchNode<Node> {
-                        if (idx > 0) {
-                            unspecifiedChildren(idx)
-                        }
-                        matcher()
-                        val left = it.numChildren - 1 - idx
-                        if (left > 0) {
-                            unspecifiedChildren(left)
-                        }
-                    }
+                fun parseAs(matcher: ValuedNodeSpec<Node, out Any>): Assertions<String> = { str ->
+                    nodeParsingCtx.parseNode(str, this@VersionedTestCtx)
+                            .shouldMatchN(matcher)
                 }
             }
         }
+    }
+}
+
+/**
+ * A spec for which AST processing beyond the parser is enabled.
+ */
+abstract class ProcessorTestSpec(body: ParserTestSpec.() -> Unit) : ParserTestSpec(body) {
+    override fun ParserTestCtx.setup() {
+        enableProcessing(true)
     }
 }

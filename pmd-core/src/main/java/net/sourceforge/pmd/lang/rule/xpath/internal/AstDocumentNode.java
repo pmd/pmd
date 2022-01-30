@@ -23,7 +23,7 @@ import net.sf.saxon.type.Type;
 /**
  *  See {@link AstTreeInfo#getRootNode()}.
  */
-class AstDocumentNode extends BaseNodeInfo {
+class AstDocumentNode extends BaseNodeInfo implements AstNodeOwner {
 
     private final AstElementNode rootElement;
     private final List<AstElementNode> children;
@@ -68,12 +68,14 @@ class AstDocumentNode extends BaseNodeInfo {
 
     @Override
     public Node getUnderlyingNode() {
+        // this is a concession to the model, so that the expression "/"
+        // may be interpreted as the root node
         return rootElement.getUnderlyingNode();
     }
 
     @Override
     public int compareOrder(NodeInfo other) {
-        return other == this ? 0 : -1;
+        return other == this ? 0 : -1; // NOPMD CompareObjectsWithEquals - only a single root per tree
     }
 
     @Override

@@ -8,6 +8,7 @@
         <description>JUnit 3 Test contains no assert</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import junit.framework.TestCase;
 public class MyTestCase extends TestCase {
     //negative on rule
     public void testMyCaseWithNoAssert() {
@@ -22,9 +23,10 @@ public class MyTestCase extends TestCase {
         <description>JUnit 4 Test contains no assert</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import junit.framework.TestCase;
 public class MyTestCase extends TestCase {
     //negative on rule
-    @Test
+    @org.junit.Test
     public void myCaseWithNoAssert() {
         boolean myVar = false;
         //no assert here
@@ -37,6 +39,7 @@ public class MyTestCase extends TestCase {
         <description>JUnit 3 Test contains one assert</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import junit.framework.TestCase;
 public class MyTestCase extends TestCase {
     //negative on rule
     public void testMyCaseWithOneAssert() {
@@ -51,7 +54,8 @@ public class MyTestCase extends TestCase {
         <description>JUnit 4 Test contains one assert</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-public class MyTestCase extends TestCase {
+import org.junit.Test;
+public class MyTestCase {
     //negative on rule
     @Test
     public void myCaseWithOneAssert() {
@@ -66,6 +70,7 @@ public class MyTestCase extends TestCase {
         <description>JUnit 3 Test contains more than one assert</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
+import junit.framework.TestCase;
 public class MyTestCase extends TestCase {
     //positive on rule
     public void testMyCaseWithMoreAsserts() {
@@ -81,7 +86,8 @@ public class MyTestCase extends TestCase {
         <description>JUnit 4 Test contains more than one assert</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
-public class MyTestCase extends TestCase {
+import org.junit.Test;
+public class MyTestCase {
     //positive on rule
     @Test
     public void myCaseWithMoreAsserts() {
@@ -98,6 +104,7 @@ public class MyTestCase extends TestCase {
         <rule-property name="maximumAsserts">2</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import junit.framework.TestCase;
 public class MyTestCase extends TestCase {
     //positive on rule
     public void testMyCaseWithMoreAsserts() {
@@ -114,7 +121,8 @@ public class MyTestCase extends TestCase {
         <rule-property name="maximumAsserts">2</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-public class MyTestCase extends TestCase {
+import org.junit.Test;
+public class MyTestCase {
     //positive on rule
     @Test
     public void myCaseWithMoreAsserts() {
@@ -129,7 +137,7 @@ public class MyTestCase extends TestCase {
     <test-code>
         <description>JUnit 5 Test contains more than one assert</description>
         <expected-problems>5</expected-problems>
-        <expected-linenumbers>10,17,24,31,39</expected-linenumbers>
+        <expected-linenumbers>11,18,25,32,40</expected-linenumbers>
         <code><![CDATA[
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.RepeatedTest;
@@ -137,6 +145,7 @@ import org.junit.jupiter.api.TestFactory;
 import org.junit.jupiter.api.TestTemplate;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class MyTestCase {
     @Test
@@ -194,5 +203,70 @@ public class MyTestCase {
     }
 }
         ]]></code>
+    </test-code>
+    <test-code>
+        <description>Should not count unrelated asserts</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.testng.annotations.Test;
+
+public class MyTestCase {
+    @Test
+    public void testRegular() {
+        assertFalse("myVar should be false",false);
+    }
+    @Test
+    public void testRegular2() {
+        assertFalse("myVar should be false",false);
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#1212 [java] Don't raise JUnitTestContainsTooManyAsserts on JUnit 5's assertAll</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            package unknown;
+            import static org.junit.jupiter.api.Assertions.*;
+            import org.junit.jupiter.api.Test;
+            import my.MutableInteger;
+            import my.SomeClass;
+
+            public class SomeClassTest {
+
+                @Test
+                public void testSomeMethod() {
+                    MutableInteger mutableInteger = new MutableInteger(2);
+                    SomeClass instance = new SomeClass();
+                    int expResult = -1;
+                    int result = instance.someMethod(mutableInteger);
+                    assertAll(() -> assertEquals(expResult, result),
+                              () -> assertEquals(3, mutableInteger.getValue()));
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>#2374 [java] False positive JUnitTestContainsTooManyAsserts for JUnit 5 assertAll()</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            package unknown;
+            import static org.junit.jupiter.api.Assertions.*;
+            import org.junit.jupiter.api.Test;
+            import my.Point;
+            import java.util.List;
+
+            class SampleTest {
+                @Test
+                void sampleTestCase(List<Point> ps) {
+                    final Point input = new Point(1, 2);
+                    final Point result = ps.add(input);
+                    assertAll(
+                            () -> assertEquals(2, result.x),
+                            () -> assertEquals(4, result.y)
+                    );
+                }
+            }
+            ]]></code>
     </test-code>
 </test-data>

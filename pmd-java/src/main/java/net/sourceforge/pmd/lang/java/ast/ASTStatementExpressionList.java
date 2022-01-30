@@ -4,14 +4,26 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.lang.java.ast.ASTList.ASTNonEmptyList;
 
-public class ASTStatementExpressionList extends AbstractJavaNode {
+/**
+ * A list of statement expressions. Statement expressions are those
+ * expressions which can appear in an {@linkplain ASTExpressionStatement expression statement}.
+ *
+ *
+ * <p>Statement expression lists occur only {@link ASTForInit} and {@link ASTForUpdate}.
+ * To improve the API of {@link ASTForInit}, however, this node implements {@link ASTStatement}.
+ *
+ * <pre class="grammar">
+ *
+ * StatementExpressionList ::= {@link ASTExpression Expression} ( "," {@link ASTExpression Expression} )*
+ *
+ * </pre>
+ */
+public final class ASTStatementExpressionList extends ASTNonEmptyList<ASTExpression> implements ASTStatement {
 
-    @InternalApi
-    @Deprecated
-    public ASTStatementExpressionList(int id) {
-        super(id);
+    ASTStatementExpressionList(int id) {
+        super(id, ASTExpression.class);
     }
 
 

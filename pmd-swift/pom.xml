@@ -35,7 +35,7 @@
                         </goals>
                         <configuration>
                             <target>
-                                <ant antfile="${antlr4.ant.wrapper}">
+                                <ant antfile="${antlr4.ant.wrapper}" target="pmd-language">
                                     <property name="lang-name" value="Swift" />
                                     <property name="lang-terse-name" value="swift" />
                                     <property name="root-node-name" value="TopLevel" />

@@ -123,6 +123,12 @@ abstract class IteratorBasedNStream<T extends Node> implements NodeStream<T> {
     }
 
     @Override
+    public NodeStream<T> dropLast(int n) {
+        AssertionUtil.requireNonNegative("n", n);
+        return n == 0 ? this : mapIter(iter -> IteratorUtil.dropLast(iter, n));
+    }
+
+    @Override
     public NodeStream<T> takeWhile(Predicate<? super T> predicate) {
         return mapIter(iter -> IteratorUtil.takeWhile(iter, predicate));
     }

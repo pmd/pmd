@@ -46,7 +46,7 @@ public class ModelicaResolverTest {
 
     private ModelicaNode findNodeByClassAndImage(ASTStoredDefinition ast, Class<?> clazz, String image) {
         NodeFinder vis = new NodeFinder(clazz, image);
-        ast.jjtAccept(vis, null);
+        ast.acceptVisitor(vis, null);
         return vis.getResult();
     }
 

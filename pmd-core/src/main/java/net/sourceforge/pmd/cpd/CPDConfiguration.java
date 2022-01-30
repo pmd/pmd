@@ -91,6 +91,9 @@ public class CPDConfiguration extends AbstractConfiguration {
     @Parameter(names = "--ignore-usings", description = "Ignore using directives in C#", required = false)
     private boolean ignoreUsings;
 
+    @Parameter(names = "--ignore-literal-sequences", description = "Ignore sequences of literals", required = false)
+    private boolean ignoreLiteralSequences = false;
+
     @Parameter(names = "--skip-lexical-errors",
             description = "Skip files which can't be tokenized due to invalid characters instead of aborting CPD",
             required = false)
@@ -111,7 +114,7 @@ public class CPDConfiguration extends AbstractConfiguration {
             required = false, converter = FileConverter.class)
     private List<File> files;
 
-    @Parameter(names = "--filelist", description = "Path to a file containing a list of files to analyze.",
+    @Parameter(names = { "--filelist", "--file-list" }, description = "Path to a file containing a list of files to analyze.",
             required = false)
     private String fileListPath;
 
@@ -128,7 +131,7 @@ public class CPDConfiguration extends AbstractConfiguration {
     @Parameter(names = { "--help", "-h" }, description = "Print help text", required = false, help = true)
     private boolean help;
 
-    @Parameter(names = { "--failOnViolation", "-failOnViolation" }, arity = 1,
+    @Parameter(names = { "--fail-on-violation", "--failOnViolation", "-failOnViolation" }, arity = 1,
             description = "By default CPD exits with status 4 if code duplications are found. Disable this option with '-failOnViolation false' to exit with 0 instead and just write the report.")
     private boolean failOnViolation = true;
 
@@ -273,6 +276,11 @@ public class CPDConfiguration extends AbstractConfiguration {
         } else {
             properties.remove(Tokenizer.IGNORE_USINGS);
         }
+        if (configuration.isIgnoreLiteralSequences()) {
+            properties.setProperty(Tokenizer.OPTION_IGNORE_LITERAL_SEQUENCES, "true");
+        } else {
+            properties.remove(Tokenizer.OPTION_IGNORE_LITERAL_SEQUENCES);
+        }
         properties.setProperty(Tokenizer.OPTION_SKIP_BLOCKS, Boolean.toString(!configuration.isNoSkipBlocks()));
         properties.setProperty(Tokenizer.OPTION_SKIP_BLOCKS_PATTERN, configuration.getSkipBlocksPattern());
         configuration.getLanguage().setProperties(properties);
@@ -409,6 +417,14 @@ public class CPDConfiguration extends AbstractConfiguration {
 
     public void setIgnoreUsings(boolean ignoreUsings) {
         this.ignoreUsings = ignoreUsings;
+    }
+
+    public boolean isIgnoreLiteralSequences() {
+        return ignoreLiteralSequences;
+    }
+
+    public void setIgnoreLiteralSequences(boolean ignoreLiteralSequences) {
+        this.ignoreLiteralSequences = ignoreLiteralSequences;
     }
 
     public boolean isSkipLexicalErrors() {

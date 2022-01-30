@@ -15,27 +15,28 @@ import net.sourceforge.pmd.lang.java.ast.ASTMemberSelector;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodReference;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
 @Deprecated
 @InternalApi
+@SuppressWarnings("PMD")
 public class NameFinder {
 
     private List<JavaNameOccurrence> names = new ArrayList<>();
 
     public NameFinder(ASTPrimaryExpression node) {
-        ASTPrimaryPrefix prefix = (ASTPrimaryPrefix) node.getChild(0);
-        if (prefix.usesSuperModifier()) {
-            add(new JavaNameOccurrence(prefix, "super"));
-        } else if (prefix.usesThisModifier()) {
-            add(new JavaNameOccurrence(prefix, "this"));
-        }
-        for (int i = 0; i < node.getNumChildren(); i++) {
-            checkForNameChild((JavaNode) node.getChild(i));
-        }
+
+        //        ASTPrimaryPrefix prefix = (ASTPrimaryPrefix) node.getChild(0);
+        //        if (prefix.usesSuperModifier()) {
+        //            add(new JavaNameOccurrence(prefix, "super"));
+        //        } else if (prefix.usesThisModifier()) {
+        //            add(new JavaNameOccurrence(prefix, "this"));
+        //        }
+        //        for (int i = 0; i < node.getNumChildren(); i++) {
+        //            checkForNameChild((JavaNode) node.getChild(i));
+        //        }
     }
 
     public List<JavaNameOccurrence> getNames() {
@@ -59,10 +60,12 @@ public class NameFinder {
         if (node instanceof ASTPrimarySuffix) {
             ASTPrimarySuffix suffix = (ASTPrimarySuffix) node;
             if (suffix.isArguments()) {
-                JavaNameOccurrence occurrence = names.get(names.size() - 1);
-                occurrence.setIsMethodOrConstructorInvocation();
-                ASTArguments args = (ASTArguments) ((ASTPrimarySuffix) node).getChild(0);
-                occurrence.setArgumentCount(args.size());
+                if (!names.isEmpty()) {
+                    JavaNameOccurrence occurrence = names.get(names.size() - 1);
+                    occurrence.setIsMethodOrConstructorInvocation();
+                    ASTArguments args = (ASTArguments) ((ASTPrimarySuffix) node).getChild(0);
+                    occurrence.setArgumentCount(args.size());
+                }
             } else if (suffix.getNumChildren() == 1 && suffix.getChild(0) instanceof ASTMemberSelector) {
                 ASTMemberSelector member = (ASTMemberSelector) suffix.getChild(0);
                 if (member.getNumChildren() == 1 && member.getChild(0) instanceof ASTMethodReference) {

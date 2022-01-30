@@ -6,15 +6,15 @@
 
     <test-code>
         <description>failure case</description>
-        <expected-problems>1</expected-problems>
-        <expected-linenumbers>7</expected-linenumbers>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>6,7</expected-linenumbers>
         <code><![CDATA[
 package xxx;
 public class Foo {
     public void bar() {
         String x;
         x = "foo";
-        x += "bar"; // note, this won't be detected anymore due to #1736
+        x += "bar";
         x += "baz";
     }
 }
@@ -26,7 +26,7 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-    public boolean bar(Fiddle x) {
+    public boolean bar(String x) {
         return x.startsWith("abc");
     }
 }
@@ -62,14 +62,14 @@ public class Foo {
 
     <test-code>
         <description>failure case, constructor</description>
-        <expected-problems>1</expected-problems>
-        <expected-linenumbers>6</expected-linenumbers>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>5,6</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     public Foo() {
         String x;
         x = "foo";
-        x += "bar"; // note, due to #1736 one concatenation is not enough
+        x += "bar";
         x += "baz";
     }
 }
@@ -78,14 +78,14 @@ public class Foo {
 
     <test-code>
         <description>static failure case</description>
-        <expected-problems>1</expected-problems>
-        <expected-linenumbers>6</expected-linenumbers>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>5,6</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     static {
         String x;
         x = "foo";
-        x += "bar"; // note, due to #1736 one concatenation is not enough
+        x += "bar";
         x += "baz";
     }
 }
@@ -156,6 +156,7 @@ public class UseStringBuffer {
         <description>#1340 UseStringBufferForStringAppends False Positive with ternary operator (used both in condition and options)</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.util.Properties;
 public class UseStringBuffer {
     public void foo() {
         String country = "";
@@ -163,9 +164,12 @@ public class UseStringBuffer {
                 ? ((String) getCountry())
                 : country;
     }
-    public void foo2() {
-        String country = request.getParameter("country");
+    public void foo2(Properties request) {
+        String country = request.getProperty("country");
         country = (country == null) ? "USA" : country;
+    }
+    public Object getCountry() {
+        return "";
     }
 }
         ]]></code>
@@ -175,9 +179,10 @@ public class UseStringBuffer {
         <description>#222 False positive when inverting ternary expression arguments</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.util.Properties;
 public class Foo {
-    public void bar() {
-        String country = request.getParameter("country");
+    public void bar(Properties request) {
+        String country = request.getProperty("country");
         country = (country != null) ? country : "USA";
     }
 }
@@ -534,6 +539,97 @@ public class UseStringBufferForStringAppendsFP {
     public void doSomething(String s1) {
         String s2 = "a";
         s2 += s1;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>FP if variable is overwritten with dependent value</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class UseStringBufferForStringAppendsFP {
+
+                private String transformString(String s) {
+                    return s.toLowerCase();
+                }
+
+                public String doSomething() {
+                    String s2 = "a";
+                    s2 = transformString("a" + s2);
+                    s2 = transformString(s2 + "a");
+                    return s2;
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>False positive with simple assignment instead of compound</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.*;
+import java.text.MessageFormat;
+public class UseStringBufferForStringAppendsFP {
+    public void bar() {
+        String checkMessage = null;
+        List<String> messages = new ArrayList<>();
+        for (String m : messages) {
+            checkMessage = m; // FP here
+            checkMessage = "a"; // FP here
+            checkMessage = "b"; // FP here
+            final MessageFormat formatter = new MessageFormat(m, Locale.ROOT);
+            checkMessage = formatter.format(null); // FP here
+            int lastDotIndex = checkMessage.lastIndexOf('.');
+            checkMessage = checkMessage.substring(lastDotIndex + 1, checkMessage.length()); // FP here
+        }
+        return checkMessage;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>False positive with simple assignment in for-loop</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.io.*;
+public class UseStringBufferForStringAppendsFP {
+    public void bar(BufferedReader br) throws IOException {
+        for (String line = br.readLine(); line != null; line = br.readLine()) { // FP here
+            String parse = extract(line);
+            parse = parse.substring(parse.indexOf(':') + 1); // FP here
+            parse = parse.substring(0, parse.indexOf(':')); // FP here
+            final int lineNumber = Integer.parseInt(parse);
+        }
+    }
+    private String extract(String s) { return s; }
+
+    private void logMessage(int lineNumber, String message) {
+        String msg;
+        msg = message;
+        if (lineNumber >= 10) {
+            msg = "TEST" + msg; // FP here
+        }
+        log(lineNumber, msg);
+    }
+    private void log(int lineNumber, String msg) { }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>False positive for assignments</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>5,6</expected-linenumbers>
+        <code><![CDATA[
+public class UseStringBufferForStringAppendsFP {
+    public void bar() {
+        String result;
+        result = "a";
+        result += "b"; // violation
+        result += "c"; // violation
+        result = "d"; // FP
     }
 }
         ]]></code>

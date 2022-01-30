@@ -16,6 +16,7 @@ import apex.jorje.data.Location;
 import apex.jorje.data.Locations;
 import apex.jorje.semantic.ast.AstNode;
 import apex.jorje.semantic.exception.UnexpectedCodePathException;
+import apex.jorje.semantic.symbol.type.TypeInfo;
 
 abstract class AbstractApexNode<T extends AstNode> extends AbstractNodeWithTextCoordinates<AbstractApexNode<?>, ApexNode<?>> implements ApexNode<T> {
 
@@ -42,11 +43,12 @@ abstract class AbstractApexNode<T extends AstNode> extends AbstractNodeWithTextC
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public final <P, R> R acceptVisitor(AstVisitor<? super P, ? extends R> visitor, P data) {
         if (visitor instanceof ApexVisitor) {
             return this.acceptApexVisitor((ApexVisitor<? super P, ? extends R>) visitor, data);
         }
-        return super.acceptVisitor(visitor, data);
+        return visitor.cannotVisit(this, data);
     }
 
     protected abstract <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data);
@@ -165,18 +167,28 @@ abstract class AbstractApexNode<T extends AstNode> extends AbstractNodeWithTextC
         }
     }
 
+    private TypeInfo getDefiningTypeOrNull() {
+        try {
+            return node.getDefiningType();
+        } catch (UnsupportedOperationException e) {
+            return null;
+        }
+    }
+
     @Override
     public String getDefiningType() {
-        if (node.getDefiningType() != null) {
-            return node.getDefiningType().getApexName();
+        TypeInfo definingType = getDefiningTypeOrNull();
+        if (definingType != null) {
+            return definingType.getApexName();
         }
         return null;
     }
 
     @Override
     public String getNamespace() {
-        if (node.getDefiningType() != null) {
-            return node.getDefiningType().getNamespace().toString();
+        TypeInfo definingType = getDefiningTypeOrNull();
+        if (definingType != null) {
+            return definingType.getNamespace().toString();
         }
         return null;
     }

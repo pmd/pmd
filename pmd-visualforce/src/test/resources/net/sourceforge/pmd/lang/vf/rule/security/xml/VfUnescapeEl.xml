@@ -437,21 +437,125 @@
     </test-code>
 
     <test-code>
-        <description>NOT method evaluates to safe boolean</description>
+        <description>IF() with literals in returns is safe</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 <apex:page>
     <script>
-        if({!NOT(yes)}) { maskFormEls(); }
-        if({!NOT foo(yes)}) { maskFormEls(); }
+        console.log({!IF(SomeObj.Field=='1', '2', '3')});
     </script>
 </apex:page>
         ]]></code>
     </test-code>
 
     <test-code>
-        <description>JSON.parse method evaluates quoted EL to safe JSON</description>
+        <description>IF() with escaped XSS in returns is safe</description>
         <expected-problems>0</expected-problems>
+        <code><![CDATA[
+<apex:page>
+    <script>
+        console.log({!IF(SomeObj.Field=='1', JSENCODE(SomeObj.Text__c), '2')});
+        console.log({!IF(SomeObj.Field=='1', 'foo', JSENCODE(SomeObj.Text__c))});
+    </script>
+</apex:page>
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>IF() with unescaped XSS in returns is unsafe</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+<apex:page>
+    <script>
+        console.log({!IF(SomeObj.Field=='1', SomeObj.Text__c, '2')});
+        console.log({!IF(SomeObj.Field=='1', 'foo', SomeObj.Text__c)});
+    </script>
+</apex:page>
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>CASE() with XSS in conditions is safe</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+<apex:page>
+    <script>
+        console.log({!CASE(SomeObj.Name, SomeObj.text__c, 'res1', SomeObj.Text2__c, 'res2', 'else-res')});
+    </script>
+</apex:page>
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>CASE() with escaped XSS in results is safe</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+<apex:page>
+    <script>
+        console.log({!CASE(SomeObj.Name, 'val1', JSENCODE(SomeObj.Text__c), JSENCODE(SomeObj.Text2__c))});
+    </script>
+</apex:page>
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>CASE() with unescaped XSS in results is unsafe</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+<apex:page>
+    <script>
+        console.log({!CASE(SomeObj.Name, 'val1', SomeObj.Text__c, SomeObj.Text2__c)});
+    </script>
+</apex:page>
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>LPAD() is not inherently safe</description>
+        <expected-problems>3</expected-problems>
+        <code><![CDATA[
+<apex:page>
+    <script>
+        console.log({!LPAD(SomeObj.Text__c, 100)});
+        console.log({!LPAD(SomeObj.Text__c, 100, JSENCODE(SomeObj.OtherText__c))});
+        console.log({!LPAD(JSENCODE(SomeObj.Text__c), 100, SomeObj.OtherText__c)});
+    </script>
+</apex:page>
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Escaped LPAD() call is fine</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+<apex:page>
+    <script>
+        console.log({!JSENCODE(LPAD(SomeObj.Text__c, 100))});
+        console.log({!LPAD(JSENCODE(SomeObj.Text__c), 100)});
+        console.log({!LPAD(JSENCODE(SomeObj.Text__c), 100, JSENCODE(SomeObj.OtherText__c))});
+    </script>
+</apex:page>
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>NOT, ISBLANK, BEGINS evaluate to safe booleans</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+<apex:page>
+    <script>
+        if({!NOT(yes)}) { maskFormEls(); }
+        if({!NOT foo(yes)}) { maskFormEls(); }
+        console.log({!ISBLANK(safeXss)});
+        console.log({!BEGINS(safeXss, 'foo')});
+    </script>
+</apex:page>
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>JSON.parse method evaluates quoted EL to unsafe XSS</description>
+        <expected-problems>3</expected-problems>
         <code><![CDATA[
 <apex:page>
     <script>

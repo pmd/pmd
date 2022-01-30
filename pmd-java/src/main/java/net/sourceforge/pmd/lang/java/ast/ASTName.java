@@ -11,6 +11,19 @@ public class ASTName extends AbstractJavaTypeNode {
 
     private NameDeclaration nd;
 
+
+    /**
+     * Constructor for a synthetic node.
+     * @param image Image of the new node
+     */
+    @InternalApi
+    @Deprecated
+    public ASTName(String image, AbstractJavaNode parent) {
+        super(JavaParserImplTreeConstants.JJTNAME);
+        setImage(image);
+        setParent(parent);
+    }
+
     ASTName(int id) {
         super(id);
     }

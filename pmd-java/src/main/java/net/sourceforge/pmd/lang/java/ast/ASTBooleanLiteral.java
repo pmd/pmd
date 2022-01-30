@@ -4,21 +4,22 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
-public class ASTBooleanLiteral extends AbstractJavaTypeNode {
+/**
+ * The boolean literal, either "true" or "false".
+ */
+public final class ASTBooleanLiteral extends AbstractLiteral implements ASTLiteral {
 
     private boolean isTrue;
 
-    @InternalApi
-    @Deprecated
-    public ASTBooleanLiteral(int id) {
+
+    ASTBooleanLiteral(int id) {
         super(id);
     }
 
-    @InternalApi
-    @Deprecated
-    public void setTrue() {
+
+    void setTrue() {
         isTrue = true;
     }
 
@@ -26,6 +27,10 @@ public class ASTBooleanLiteral extends AbstractJavaTypeNode {
         return this.isTrue;
     }
 
+    @Override
+    public @NonNull Boolean getConstValue() {
+        return isTrue;
+    }
 
     @Override
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {

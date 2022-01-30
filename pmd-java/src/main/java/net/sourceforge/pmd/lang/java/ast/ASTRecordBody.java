@@ -5,22 +5,19 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.annotation.Experimental;
-
 /**
- * Defines the body of a {@linkplain ASTRecordDeclaration RecordDeclaration} (JDK 14 and JDK 15 preview feature).
+ * Defines the body of a {@linkplain ASTRecordDeclaration RecordDeclaration} (JDK 16 feature).
  * This can contain additional methods and or constructors.
  *
  * <pre class="grammar">
  *
- * RecordBody ::= "{" (   {@linkplain ASTRecordConstructorDeclaration RecordConstructorDeclaration}
+ * RecordBody ::= "{" (   {@linkplain ASTCompactConstructorDeclaration CompactConstructorDeclaration}
  *                      | {@linkplain ASTClassOrInterfaceBodyDeclaration ClassOrInterfaceBodyDeclaration} )* "}"
  *
  * </pre>
  *
  */
-@Experimental
-public final class ASTRecordBody extends AbstractJavaNode {
+public final class ASTRecordBody extends ASTTypeBody {
     ASTRecordBody(int id) {
         super(id);
     }

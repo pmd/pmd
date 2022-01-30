@@ -50,11 +50,11 @@ abstract class AbstractEcmascriptNode<T extends AstNode> extends AbstractNodeWit
 
     @Override
     @SuppressWarnings("unchecked")
-    public <P, R> R acceptVisitor(AstVisitor<? super P, ? extends R> visitor, P data) {
-        if (!(visitor instanceof EcmascriptVisitor)) {
-            return super.acceptVisitor(visitor, data);
+    public final <P, R> R acceptVisitor(AstVisitor<? super P, ? extends R> visitor, P data) {
+        if (visitor instanceof EcmascriptVisitor) {
+            return acceptJsVisitor((EcmascriptVisitor<? super P, ? extends R>) visitor, data);
         }
-        return acceptJsVisitor((EcmascriptVisitor<? super P, ? extends R>) visitor, data);
+        return visitor.cannotVisit(this, data);
     }
 
     protected abstract <P, R> R acceptJsVisitor(EcmascriptVisitor<? super P, ? extends R> visitor, P data);

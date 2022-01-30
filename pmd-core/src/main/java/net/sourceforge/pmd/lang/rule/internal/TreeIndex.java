@@ -34,7 +34,7 @@ public class TreeIndex {
             TopoOrder.TYPE_HIERARCHY_ORDERING,
             classesToIndex,
             Class::getSimpleName,
-            Collectors.toList()
+            Collectors.toSet()
         );
         this.interestingNames = namesToIndex;
         byName = new HashMap<>();

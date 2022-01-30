@@ -7,5 +7,5 @@ package net.sourceforge.pmd.lang.java.rule.errorprone;
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
 public class AvoidDuplicateLiteralsTest extends PmdRuleTst {
-
+    // no additional unit tests
 }

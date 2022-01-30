@@ -1,0 +1,522 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <!-- Begin DML Statements -->
+    <test-code>
+        <description>Problematic Dml Statement in for each</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo() {
+        for(Integer i : new List<Integer>{1,2}) {
+            Account account = new Account();
+            insert account;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Problematic Dml Statement in for loop</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo() {
+        for(;;) {
+            Account account = new Account();
+            insert account;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Problematic Dml Statement in While loop</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo() {
+        while(true) {
+            Account account = new Account();
+            insert account;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Problematic Dml Statement in do loop</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo() {
+        do {
+            Account account = new Account();
+            insert account;
+        } while(true);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Best Practice: Batch up data into a list and invoke your DML once on that list of data.</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo() {
+        List<Account> accounts = new List<Account>();
+
+        while(true) {
+            Account account = new Account();
+            accounts.add(account);
+        }
+
+        insert accounts;
+    }
+}
+        ]]></code>
+    </test-code>
+    <!-- End DML Statements -->
+
+    <!-- Begin Database method invocations -->
+    <test-code>
+        <description>Problematic Database Statement in for each</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo() {
+        for(Integer i : new List<Integer>{1,2}) {
+            Account account = new Account();
+            Database.insert(new Account[]{account}, true);
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Problematic Database Statement in for loop</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo() {
+        for(;;) {
+            Account account = new Account();
+            Database.insert(new Account[]{account}, true);
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Problematic Database Statement in While loop</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo() {
+        while(true) {
+            Account account = new Account();
+            Database.insert(new Account[]{account}, true);
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Problematic Database Statement in do loop</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo() {
+        do {
+            Account account = new Account();
+            Database.insert(new Account[]{account}, true);
+        } while(true);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Best Practice: Batch up data into a list and invoke your Database method once on that list of data.</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo() {
+        List<Account> accounts = new List<Account>();
+
+        while(true) {
+            Account account = new Account();
+            accounts.add(account);
+        }
+
+        Database.insert(accounts, true);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Return database method call is even ok in loop.</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public Database.SaveResult[] foo() {
+        List<Account> accounts = new List<Account>();
+
+        while(true) {
+            Account account = new Account();
+            return Database.insert(accounts, true);
+        }
+
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Database statement as foreach iterator is allowed.</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo() {
+        for (SObject sobject : Database.query('SELECT Id, Name FROM Account')) {
+            System.debug(sobject.id);
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+    <!-- End Database method invocations -->
+    <!-- Begin Soql method invocations -->
+    <test-code>
+        <description>Problematic Soql in for each</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void test1() {
+        for(Integer i : new List<Integer>{1,2}) {
+            List<Account> accounts = [SELECT Id FROM Account];
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Problematic Soql in for loop</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void test1() {
+        for(;;) {
+            List<Account> accounts = [SELECT Id FROM Account];
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Problematic Soql in While loop</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void test1() {
+        while(true) {
+            List<Account> accounts = [SELECT Id FROM Account];
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Problematic Soql in do loop</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void test1() {
+        do {
+            List<Account> accounts = [SELECT Id FROM Account];
+        } while(true);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Multiple problematic Soql expressions</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void test1() {
+        do {
+            List<Account> accounts = [SELECT Id FROM Account];
+            List<Contact> accounts = [SELECT Id FROM Contact];
+        } while(true);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Return Soql is even ok in loop</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public List<Account> test1() {
+        for(;;) {
+            return [SELECT Id FROM Account];
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#29 SOQL For Loops should not throw an Avoid Soql queries inside loops issue</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void test1() {
+        for(Account a : [SELECT Id FROM Account]) {
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[apex] AvoidSoqlInLoops false positive for SOQL with in For-Loop #2598</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar() {
+        for(NAMESPACE__CustomObject__c customObject : DatabaseUtility.query([Select Id FROM NAMESPACE__CustomObject__c where id IN :setIds])) // <-- violation is reported here
+        {
+            // …
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+    <!-- End Soql method invocations -->
+    <!-- Begin Sosl method invocations -->
+    <test-code>
+        <description>Problematic Sosl in for each</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void test1() {
+        for(Integer i : new List<Integer>{1,2}) {
+            List<List<SObject>> searchList = [FIND 'map*' IN ALL FIELDS RETURNING Account (Id, Name), Contact, Opportunity, Lead];
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Problematic Sosl in for loop</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void test1() {
+        for(;;) {
+            List<List<SObject>> searchList = [FIND 'map*' IN ALL FIELDS RETURNING Account (Id, Name), Contact, Opportunity, Lead];
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Problematic Sosl in While loop</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void test1() {
+        while(true) {
+            List<List<SObject>> searchList = [FIND 'map*' IN ALL FIELDS RETURNING Account (Id, Name), Contact, Opportunity, Lead];
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Problematic Sosl in do loop</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void test1() {
+        do {
+            List<List<SObject>> searchList = [FIND 'map*' IN ALL FIELDS RETURNING Account (Id, Name), Contact, Opportunity, Lead];
+        } while(true);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Multiple problematic Sosl expressions</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void test1() {
+        do {
+            List<List<SObject>> searchList = [FIND 'map*' IN ALL FIELDS RETURNING Account (Id, Name), Contact, Opportunity, Lead];
+            List<List<SObject>> searchList = [FIND 'map*' IN ALL FIELDS RETURNING Account (Id, Name)];
+        } while(true);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Return Sosl is even ok in loop</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public List<Account> test1() {
+        for(;;) {
+            return [FIND 'map*' IN ALL FIELDS RETURNING Account (Id, Name), Contact, Opportunity, Lead];
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#29 SOSL For Loops should not throw an Avoid Sosl queries inside loops issue</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void test1() {
+        for(List<sObject> a : [FIND 'map*' IN ALL FIELDS RETURNING Account (Id, Name), Contact, Opportunity]) {
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+    <!-- End Sosl method invocations -->
+
+    <!-- Begin approval method invocations -->
+    <test-code>
+        <description>Problematic approval actions in loop</description>
+        <expected-problems>3</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void test1() {
+        Account a = new Account();
+        Approval.ProcessSubmitRequest req = new Approval.ProcessSubmitRequest();
+        req.setObjectId(a.id);
+        do {
+            Approval.process(req);
+            Approval.unlock(a);
+            Approval.lock(a);
+        } while(true);
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Best Practice: Batch up data into a list and invoke your Approval actions once on that list of data.</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo() {
+        List<Account> accounts = new List<Account>();
+        List<Approval.ProcessSubmitRequest> reqs = new List<Approval.ProcessSubmitRequest>();
+        while(true) {
+            Account account = new Account();
+            accounts.add(account);
+
+            Approval.ProcessSubmitRequest req = new Approval.ProcessSubmitRequest();
+            req.setObjectId(account.id);
+            reqs.add(req);
+        }
+
+        Approval.process(reqs, true);
+        Approval.unlock(accounts);
+        Approval.lock(accounts);
+    }
+}
+        ]]></code>
+    </test-code>
+    <!-- End approval method invocations -->
+
+    <!-- Begin messaging method invocations -->
+    <test-code>
+        <description>Problematic messaging actions in loop</description>
+        <expected-problems>3</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void test1() {
+        
+        Contact cont = new Contact();
+        Account acc = new Account();
+
+        do {
+            Messaging.SingleEmailMessage email = new Messaging.SingleEmailMessage();
+            List<Messaging.RenderEmailTemplateBodyResult> renderedRes = Messaging.renderEmailTemplate(cont.Id, acc.Id, new List<String>());
+            Messaging.SingleEmailMessage renderedMail = Messaging.renderStoredEmailTemplate(null, cont.Id, acc.Id);
+
+            Messaging.sendEmail(new Messaging.SingleEmailMessage[]{email});
+        } while(true);
+    }
+}
+        ]]></code>
+    </test-code>
+    <!-- End messaging method invocations -->
+
+    <!-- Begin system method invocations -->
+    <test-code>
+        <description>Problematic system actions in loop</description>
+        <expected-problems>3</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void test1() {
+
+        do {
+            System.enqueueJob(new MyQueueable());
+            System.schedule('x', '0 0 0 1 1 ?', new MySchedule());
+            System.scheduleBatch(new MyBatch(), 'x', 1);
+            System.debug(LoggingLevel.INFO, 'X');
+            System.assertEquals(1, 1);
+        } while(true);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Problematic system.runAs action in loop</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void test1() {
+
+        do {
+            System.runAs(new User()) {
+                System.debug(LoggingLevel.INFO, 'X');
+                System.assertEquals(1, 1);
+            }
+
+        } while(true);
+    }
+}
+        ]]></code>
+    </test-code>
+    <!-- End system method invocations -->
+</test-data>

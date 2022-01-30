@@ -9,8 +9,8 @@ import net.sourceforge.pmd.lang.plsql.ast.ASTInput;
 public class SymbolFacade {
     public void initializeWith(ASTInput node) {
         ScopeAndDeclarationFinder sc = new ScopeAndDeclarationFinder();
-        node.jjtAccept(sc, null);
+        node.acceptVisitor(sc, null);
         OccurrenceFinder of = new OccurrenceFinder();
-        node.jjtAccept(of, null);
+        node.acceptVisitor(of, null);
     }
 }

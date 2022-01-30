@@ -20,16 +20,16 @@ import net.sourceforge.pmd.properties.PropertySource;
  * The loose package coupling Rule can be used to ensure coupling outside of a
  * package hierarchy is minimized to all but an allowed set of classes from
  * within the package hierarchy.
- * <p>
- * For example, supposed you have the following package hierarchy:
+ *
+ * <p>For example, supposed you have the following package hierarchy:
  * <ul>
  * <li><code>org.sample</code></li>
  * <li><code>org.sample.impl</code></li>
  * <li><code>org.sample.util</code></li>
  * </ul>
  * And the allowed class <code>org.sample.SampleInterface</code>.
- * <p>
- * This rule can be used to ensure that all classes within the
+ *
+ * <p>This rule can be used to ensure that all classes within the
  * <code>org.sample</code> package and its sub-packages are not used outside of
  * the <code>org.sample</code> package hierarchy. Further, the only allowed
  * usage outside of a class in the <code>org.sample</code> hierarchy would be
@@ -37,11 +37,11 @@ import net.sourceforge.pmd.properties.PropertySource;
  */
 public class LoosePackageCouplingRule extends AbstractJavaRule {
 
-    public static final PropertyDescriptor<List<String>> PACKAGES_DESCRIPTOR =
-            stringListProperty("packages").desc("Restricted packages").emptyDefaultValue().build();
+    private static final PropertyDescriptor<List<String>> PACKAGES_DESCRIPTOR =
+            stringListProperty("packages").desc("Restricted packages").emptyDefaultValue().delim(',').build();
 
-    public static final PropertyDescriptor<List<String>> CLASSES_DESCRIPTOR =
-            stringListProperty("classes").desc("Allowed classes").emptyDefaultValue().build();
+    private static final PropertyDescriptor<List<String>> CLASSES_DESCRIPTOR =
+            stringListProperty("classes").desc("Allowed classes").emptyDefaultValue().delim(',').build();
 
     // The package of this source file
     private String thisPackage;
@@ -63,7 +63,7 @@ public class LoosePackageCouplingRule extends AbstractJavaRule {
 
         this.thisPackage = node.getPackageName();
 
-        node.children(ASTImportDeclaration.class).forEach(it -> it.jjtAccept(this, data));
+        node.children(ASTImportDeclaration.class).forEach(it -> it.acceptVisitor(this, data));
 
         return data;
     }

@@ -28,8 +28,9 @@ public class Foo {
     </test-code>
 
     <test-code>
+        <!-- Note: this changed in PMD 7. -->
         <description>StringBuffer.toString.equals(""), bad</description>
-        <expected-problems>2</expected-problems>
+        <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
     void bar() {
@@ -187,6 +188,28 @@ public class Ineffecient
     public String toString()
     {
         return "Ineffecient";
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] UseStringBufferLength: false negative with empty string variable #3639</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    public void foo() {
+        StringBuffer sb = new StringBuffer("any_string");
+        final String nullStr = "";
+        if (sb.toString().equals(nullStr)) { // PMD should report a warning here
+            System.out.println("Buffer is empty");
+        }
+
+        // the preferred way
+        if (sb.length() == 0) {
+            System.out.println("Buffer is empty");
+        }
     }
 }
         ]]></code>

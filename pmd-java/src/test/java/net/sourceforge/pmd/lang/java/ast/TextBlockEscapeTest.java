@@ -13,11 +13,11 @@ public class TextBlockEscapeTest extends BaseParserTest {
     @Test
     public void testTextBlockContent() {
         assertEquals("empty text block", "",
-                     ASTLiteral.determineTextBlockContent("\"\"\"\n                       \"\"\""));
+                     ASTStringLiteral.determineTextBlockContent("\"\"\"\n                       \"\"\""));
         assertEquals("single line text block", "winter",
-                     ASTLiteral.determineTextBlockContent("\"\"\"\n                winter\"\"\""));
+                     ASTStringLiteral.determineTextBlockContent("\"\"\"\n                winter\"\"\""));
         assertEquals("single line text block with LF", "winter\n",
-                     ASTLiteral.determineTextBlockContent("\"\"\"\n"
+                     ASTStringLiteral.determineTextBlockContent("\"\"\"\n"
                                                               + "                        winter\n"
                                                               + "                        \"\"\""));
         assertEquals("basic text block example with html",
@@ -26,7 +26,7 @@ public class TextBlockEscapeTest extends BaseParserTest {
                          + "        <p>Hello, world</p>\n"
                          + "    </body>\n"
                          + "</html>\n",
-                     ASTLiteral.determineTextBlockContent("\"\"\"\n"
+                     ASTStringLiteral.determineTextBlockContent("\"\"\"\n"
                                                               + "                      <html>   \n"
                                                               + "                          <body>\n"
                                                               + "                              <p>Hello, world</p>    \n"
@@ -39,7 +39,7 @@ public class TextBlockEscapeTest extends BaseParserTest {
                          + "        <p>Hello, world</p>\r\n"
                          + "    </body>\r\n"
                          + "</html>\r\n",
-                     ASTLiteral.determineTextBlockContent("\"\"\"\n"
+                     ASTStringLiteral.determineTextBlockContent("\"\"\"\n"
                                                               + "                      <html>\\r\n"
                                                               + "                          <body>\\r\n"
                                                               + "                              <p>Hello, world</p>\\r\n"
@@ -50,7 +50,7 @@ public class TextBlockEscapeTest extends BaseParserTest {
                      "String text = \"\"\"\n"
                          + "    A text block inside a text block\n"
                          + "\"\"\";\n",
-                     ASTLiteral.determineTextBlockContent("\"\"\"\n"
+                     ASTStringLiteral.determineTextBlockContent("\"\"\"\n"
                                                               + "            String text = \\\"\"\"\n"
                                                               + "                A text block inside a text block\n"
                                                               + "            \\\"\"\";\n"
@@ -59,7 +59,7 @@ public class TextBlockEscapeTest extends BaseParserTest {
                      "Lorem ipsum dolor sit amet, consectetur adipiscing "
                          + "elit, sed do eiusmod tempor incididunt ut labore "
                          + "et dolore magna aliqua.",
-                     ASTLiteral.determineTextBlockContent("\"\"\"\n"
+                     ASTStringLiteral.determineTextBlockContent("\"\"\"\n"
                                                               + "                      Lorem ipsum dolor sit amet, consectetur adipiscing \\\n"
                                                               + "                      elit, sed do eiusmod tempor incididunt ut labore \\\n"
                                                               + "                      et dolore magna aliqua.\\\n"
@@ -68,7 +68,7 @@ public class TextBlockEscapeTest extends BaseParserTest {
                      "red   \n"
                          + "green \n"
                          + "blue  \n",
-                     ASTLiteral.determineTextBlockContent("\"\"\"\n"
+                     ASTStringLiteral.determineTextBlockContent("\"\"\"\n"
                                                               + "                        red  \\s\n"
                                                               + "                        green\\s\n"
                                                               + "                        blue \\s\n"
@@ -78,7 +78,7 @@ public class TextBlockEscapeTest extends BaseParserTest {
                          + "    <body>\n"
                          + "        <p>Hello, world</p>\n"
                          + "    </body>\n"
-                         + "</html>\n", ASTLiteral.determineTextBlockContent("\"\"\"\r\n"
+                         + "</html>\n", ASTStringLiteral.determineTextBlockContent("\"\"\"\r\n"
                                                                                  + "                      <html>   \r\n"
                                                                                  + "                          <body>\r\n"
                                                                                  + "                              <p>Hello, world</p>    \r\n"
@@ -90,7 +90,7 @@ public class TextBlockEscapeTest extends BaseParserTest {
                          + "    <body>\n"
                          + "        <p>Hello, world</p>\n"
                          + "    </body>\n"
-                         + "</html>\n", ASTLiteral.determineTextBlockContent("\"\"\"\r"
+                         + "</html>\n", ASTStringLiteral.determineTextBlockContent("\"\"\"\r"
                                                                                  + "                      <html>   \r"
                                                                                  + "                          <body>\r"
                                                                                  + "                              <p>Hello, world</p>    \r"
@@ -98,26 +98,26 @@ public class TextBlockEscapeTest extends BaseParserTest {
                                                                                  + "                      </html>   \r"
                                                                                  + "                      \"\"\""));
         assertEquals("empty line directly after opening",
-                     "\ntest\n", ASTLiteral.determineTextBlockContent("\"\"\"\n"
+                     "\ntest\n", ASTStringLiteral.determineTextBlockContent("\"\"\"\n"
                                                                           + "    \n"
                                                                           + "    test\n"
                                                                           + "    \"\"\""));
         assertEquals("empty crlf line directly after opening",
-                     "\ntest\n", ASTLiteral.determineTextBlockContent("\"\"\"\r\n"
+                     "\ntest\n", ASTStringLiteral.determineTextBlockContent("\"\"\"\r\n"
                                                                           + "    \r\n"
                                                                           + "    test\r\n"
                                                                           + "    \"\"\""));
         assertEquals("empty line directly after opening without indentation",
-                     "\ntest\n", ASTLiteral.determineTextBlockContent("\"\"\"\n"
+                     "\ntest\n", ASTStringLiteral.determineTextBlockContent("\"\"\"\n"
                                                                           + "\n"
                                                                           + "test\n"
                                                                           + "\"\"\""));
         assertEquals("empty crlf line directly after opening without indentation",
-                     "\ntest\n", ASTLiteral.determineTextBlockContent("\"\"\"\r\n"
+                     "\ntest\n", ASTStringLiteral.determineTextBlockContent("\"\"\"\r\n"
                                                                           + "\r\n"
                                                                           + "test\r\n"
                                                                           + "\"\"\""));
         assertEquals("text block with backslash escape", "\\test\n",
-                     ASTLiteral.determineTextBlockContent("\"\"\"\n                \\\\test\n                \"\"\""));
+                     ASTStringLiteral.determineTextBlockContent("\"\"\"\n                \\\\test\n                \"\"\""));
     }
 }

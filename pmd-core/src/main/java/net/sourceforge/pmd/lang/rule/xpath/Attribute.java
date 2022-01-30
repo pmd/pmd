@@ -97,6 +97,10 @@ public class Attribute {
         }
     }
 
+    public boolean isDeprecated() {
+        return replacementIfDeprecated() != null;
+    }
+
     public Object getValue() {
         if (value != null) {
             return value.get(0);

@@ -10,12 +10,14 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 
+@Ignore
 public class NameOccurrencesTest extends BaseNonParserTest {
 
     @Test

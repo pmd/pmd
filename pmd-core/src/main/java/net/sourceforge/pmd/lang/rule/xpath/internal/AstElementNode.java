@@ -37,7 +37,7 @@ import net.sf.saxon.type.Type;
  * A wrapper for Saxon around a Node. Note: the {@link RootNode} of a tree
  * corresponds to both a document node and an element node that is its child.
  */
-public final class AstElementNode extends BaseNodeInfo implements SiblingCountingNode {
+public final class AstElementNode extends BaseNodeInfo implements SiblingCountingNode, AstNodeOwner {
 
     private final Node wrappedNode;
     /** The index of the node in the tree according to document order */

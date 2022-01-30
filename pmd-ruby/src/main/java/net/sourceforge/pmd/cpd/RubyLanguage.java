@@ -15,6 +15,6 @@ public class RubyLanguage extends AbstractLanguage {
      * Creates a new Ruby Language instance.
      */
     public RubyLanguage() {
-        super("Ruby", "ruby", new RubyTokenizer(), ".rb", ".cgi", ".class");
+        super("Ruby", "ruby", new AnyTokenizer("#"), ".rb", ".cgi", ".class");
     }
 }

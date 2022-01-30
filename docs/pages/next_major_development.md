@@ -18,6 +18,8 @@ the logo in anywhere without offense.
 
 The current tasks are listed here: [Integrate new PMD logo #1931](https://github.com/pmd/pmd/issues/1931)
 
+The new logo is available from the [Logo Project Page](pmd_projectdocs_logo.html).
+
 ### API
 
 The API of PMD has been growing over the years and needs to be cleaned up. The goal is, to
@@ -62,12 +64,131 @@ API change.
 Some first results of the Java AST changes are for now documented in the Wiki:
 [Java clean changes](https://github.com/pmd/pmd/wiki/Java_clean_changes).
 
+{% jdoc_nspace :jast java::lang.java.ast %}
+
+* {% jdoc jast::ASTType %} and {% jdoc jast::ASTReferenceType %} have been turned into
+interfaces, implemented by {% jdoc jast::ASTPrimitiveType %}, {% jdoc jast::ASTClassOrInterfaceType %},
+and the new node {% jdoc jast::ASTArrayType %}. This reduces the depth of the relevant
+subtrees, and allows to explore them more easily and consistently.
+
+* {% jdoc jast::ASTClassOrInterfaceType %} appears to be left recursive now.
+TODO document that when we're done discussing the semantic rewrite phase.
+
+* **Migrating**:
+  * There is currently no way to match abstract types (or interfaces) with XPath, so `Type`
+  and `ReferenceType` name tests won't match anything anymore.
+  * `Type/ReferenceType/ClassOrInterfaceType` -> `ClassOrInterfaceType`
+  * `Type/PrimitiveType` -> `PrimitiveType`.
+  * `Type/ReferenceType[@ArrayDepth>1]/ClassOrInterfaceType` -> `ArrayType/ClassOrInterfaceType`.
+  * `Type/ReferenceType/PrimitiveType` -> `ArrayType/PrimitiveType`.
+  * Note that in most cases you should check the type of a variable with e.g.
+  `VariableDeclaratorId[pmd-java:typeIs("java.lang.String[]")]` because it
+  considers the additional dimensions on declarations like `String foo[];`.
+  The Java equivalent is `TypeHelper.isA(id, String[].class);`
+
+
+#### Expression grammar changes
+
+* {% jdoc jast::ASTExpression %} and {% jdoc jast::ASTPrimaryExpression %} have
+been turned into interfaces. These added no information to the AST and increased
+its depth unnecessarily. All expressions implement the first interface. Both of
+those nodes can no more be found in ASTs.
+
+* **Migrating**:
+  * Basically, `Expression/X` or `Expression/PrimaryExpression/X`, just becomes `X`
+  * There is currently no way to match abstract or interface types with XPath, so `Expression` or `PrimaryExpression`  name tests won't match anything anymore. However, the axis step *[@Expression=true()] matches any expression.
+
+* {% jdoc jast::ASTLiteral %} has been turned into an interface. The fact that {% jdoc jast::ASTNullLiteral %}
+and {% jdoc jast::ASTBooleanLiteral %} were nested within it but other literals types were all directly represented
+by it was inconsistent, and ultimately that level of nesting was unnecessary.
+  * {% jdoc jast::ASTNumericLiteral %}, {% jdoc jast::ASTCharLiteral %}, {% jdoc jast::ASTStringLiteral %},
+  and {% jdoc jast::ASTClassLiteral %} are new nodes that implement that interface.
+  * ASTLiteral implements {% jdoc jast::ASTPrimaryExpression %}
+
+* **Migrating**:
+  * Remove all `/Literal/` segments from your XPath expressions
+  * If you tested several types of literals, you can e.g. do it like `/*[self::StringLiteral or self::CharLiteral]/`
+  * As is usual, use the designer to explore the new AST structure
+
+* The nodes {% jdoc_old jast::ASTPrimaryPrefix %} and {% jdoc_old jast::ASTPrimarySuffix %} are removed from the grammar.
+Subtrees for primary expressions appear to be left-recursive now. For example,
+
+```java
+new Foo().bar.foo(1)
+```
+used to be parsed as
+```
+Expression
++ PrimaryExpression
+  + PrimaryPrefix
+    + AllocationExpression
+      + ClassOrInterfaceType[@Image="Foo"]
+  + PrimarySuffix
+    + Arguments
+  + PrimarySuffix
+    + Name[@Image="bar.foo"]
+  + PrimarySuffix
+    + Arguments
+      + ArgumentsList
+        + Expression
+          + PrimaryExpression
+            + Literal[@ValueAsInt=1]
+```
+It's now parsed as
+```
+MethodCall[@MethodName="foo"]
++ FieldAccess[@FieldName="bar"]
+  + ConstructorCall
+    + ClassOrInterfaceType[@TypeImage="Foo"]
+    + ArgumentsList
++ ArgumentsList
+  + NumericLiteral[@ValueAsInt=1]
+```
+Instead of being flat, the subexpressions are now nested within one another.
+The nesting follows the naturally recursive structure of expressions:
+
+```java
+new Foo().bar.foo(1)
+---------            ConstructorCall
+-------------        FieldAccess
+-------------------- MethodCall
+```
+This makes the AST more regular and easier to navigate. Each node contains 
+the other nodes that are relevant to it (e.g. arguments) instead of them 
+being spread out over several siblings. The API of all nodes has been 
+enriched with high-level accessors to query the AST in a semantic way,
+without bothering with the placement details.
+
+The amount of changes in the grammar that this change entails is enormous, 
+but hopefully firing up the designer to inspect the new structure should 
+give you the information you need quickly.
+
+TODO write a summary of changes in the javadoc of the package, will be more
+accessible.
+
+Note: this doesn't affect binary expressions like {% jdoc jast::ASTAdditiveExpression %}.
+E.g. `a+b+c` is not parsed as
+```
+AdditiveExpression
++ AdditiveExpression
+  + (a)
+  + (b)
++ (c)  
+``` 
+It's still
+```
+AdditiveExpression
++ (a)
++ (b)
++ (c)  
+``` 
+which is easier to navigate, especially from XPath.
+
 ### Miscellaneous
 
 There are also some small improvements, refactoring and internal tasks that are planned for PMD 7.
 
 The current tasks are listed here: [PMD 7 Miscellaneous Tasks #2524](https://github.com/pmd/pmd/issues/2524)
-
 
 ## New API support guidelines
 
@@ -124,6 +245,297 @@ the breaking API changes will be performed in 7.0.0.
 {% include warning.html content="This list is not exhaustive. The ultimate reference is whether
 an API is tagged as `@Deprecated` or not in the latest minor release. During the development of 7.0.0,
 we may decide to remove some APIs that were not tagged as deprecated, though we'll try to avoid it." %}
+
+#### 6.42.0
+
+No changes.
+
+#### 6.41.0
+
+##### Command Line Interface
+
+The command line options for PMD and CPD now use GNU-syle long options format. E.g. instead of `-rulesets` the
+preferred usage is now `--rulesets`. Alternatively one can still use the short option `-R`.
+Some options also have been renamed to a more consistent casing pattern at the same time
+(`--fail-on-violation` instead of `-failOnViolation`).
+The old single-dash options are still supported but are deprecated and will be removed with PMD 7.
+This change makes the command line interface more consistent within PMD and also less surprising
+compared to other cli tools.
+
+The changes in detail for PMD:
+
+|old option                     |new option|
+|-------------------------------|----------|
+| `-rulesets`                   | `--rulesets` (or `-R`) |
+| `-uri`                        | `--uri` |
+| `-dir`                        | `--dir` (or `-d`) |
+| `-filelist`                   | `--file-list` |
+| `-ignorelist`                 | `--ignore-list` |
+| `-format`                     | `--format` (or `-f`) |
+| `-debug`                      | `--debug` |
+| `-verbose`                    | `--verbose` |
+| `-help`                       | `--help` |
+| `-encoding`                   | `--encoding` |
+| `-threads`                    | `--threads` |
+| `-benchmark`                  | `--benchmark` |
+| `-stress`                     | `--stress` |
+| `-shortnames`                 | `--short-names` |
+| `-showsuppressed`             | `--show-suppressed` |
+| `-suppressmarker`             | `--suppress-marker` |
+| `-minimumpriority`            | `--minimum-priority` |
+| `-property`                   | `--property` |
+| `-reportfile`                 | `--report-file` |
+| `-force-language`             | `--force-language` |
+| `-auxclasspath`               | `--aux-classpath` |
+| `-failOnViolation`            | `--fail-on-violation` |
+| `--failOnViolation`           | `--fail-on-violation` |
+| `-norulesetcompatibility`     | `--no-ruleset-compatibility` |
+| `-cache`                      | `--cache` |
+| `-no-cache`                   | `--no-cache` |
+
+The changes in detail for CPD:
+
+|old option             |new option|
+|-----------------------|----------|
+| `--failOnViolation`   | `--fail-on-violation` |
+| `-failOnViolation`    | `--fail-on-violation` |
+| `--filelist`          | `--file-list` |
+
+#### 6.40.0
+
+##### Experimental APIs
+
+*   The interface {% jdoc apex::lang.apex.ast.ASTCommentContainer %} has been added to the Apex AST.
+    It provides a way to check whether a node contains at least one comment. Currently this is only implemented for
+    {% jdoc apex::lang.apex.ast.ASTCatchBlockStatement %} and used by the rule
+    {% rule apex/errorprone/EmptyCatchBlock %}.
+    This information is also available via XPath attribute `@ContainsComment`.
+
+#### 6.39.0
+
+No changes.
+
+#### 6.38.0
+
+No changes.
+
+#### 6.37.0
+
+##### PMD CLI
+
+*   PMD has a new CLI option `-force-language`. With that a language can be forced to be used for all input files,
+    irrespective of filenames. When using this option, the automatic language selection by extension is disabled
+    and all files are tried to be parsed with the given language. Parsing errors are ignored and unparsable files
+    are skipped.
+    
+    This option allows to use the xml language for files, that don't use xml as extension.
+    See also the examples on [PMD CLI reference](pmd_userdocs_cli_reference.html#analyze-other-xml-formats).
+
+##### Experimental APIs
+
+*   The AST types and APIs around Sealed Classes are not experimental anymore:
+    *   {% jdoc !!java::lang.java.ast.ASTClassOrInterfaceDeclaration#isSealed() %},
+        {% jdoc !!java::lang.java.ast.ASTClassOrInterfaceDeclaration#isNonSealed() %},
+        {% jdoc !!java::lang.java.ast.ASTClassOrInterfaceDeclaration#getPermittedSubclasses() %}
+    *   {% jdoc java::lang.java.ast.ASTPermitsList %}
+
+##### Internal API
+
+Those APIs are not intended to be used by clients, and will be hidden or removed with PMD 7.0.0.
+You can identify them with the `@InternalApi` annotation. You'll also get a deprecation warning.
+
+*   The inner class {% jdoc !!core::cpd.TokenEntry.State %} is considered to be internal API.
+    It will probably be moved away with PMD 7.
+
+#### 6.36.0
+
+No changes.
+
+#### 6.35.0
+
+##### Deprecated API
+
+*   {% jdoc !!core::PMD#doPMD(net.sourceforge.pmd.PMDConfiguration) %} is deprecated.
+    Use {% jdoc !!core::PMD#runPMD(net.sourceforge.pmd.PMDConfiguration) %} instead.
+*   {% jdoc !!core::PMD#run(java.lang.String[]) %} is deprecated.
+    Use {% jdoc !!core::PMD#runPMD(java.lang.String...) %} instead.
+*   {% jdoc core::ThreadSafeReportListener %} and the methods to use them in {% jdoc core::Report %}
+    ({% jdoc core::Report#addListener(net.sourceforge.pmd.ThreadSafeReportListener) %},
+    {% jdoc core::Report#getListeners() %}, {% jdoc core::Report#addListeners(java.util.List) %})
+    are deprecated. This functionality will be replaced by another TBD mechanism in PMD 7.
+
+#### 6.34.0
+
+No changes.
+
+#### 6.33.0
+
+No changes.
+
+#### 6.32.0
+
+##### Experimental APIs
+
+*   The experimental class `ASTTypeTestPattern` has been renamed to {% jdoc java::lang.java.ast.ASTTypePattern %}
+    in order to align the naming to the JLS.
+*   The experimental class `ASTRecordConstructorDeclaration` has been renamed to {% jdoc java::lang.java.ast.ASTCompactConstructorDeclaration %}
+    in order to align the naming to the JLS.
+*   The AST types and APIs around Pattern Matching and Records are not experimental anymore:
+    *   {% jdoc !!java::lang.java.ast.ASTVariableDeclaratorId#isPatternBinding() %}
+    *   {% jdoc java::lang.java.ast.ASTPattern %}
+    *   {% jdoc java::lang.java.ast.ASTTypePattern %}
+    *   {% jdoc java::lang.java.ast.ASTRecordDeclaration %}
+    *   {% jdoc java::lang.java.ast.ASTRecordComponentList %}
+    *   {% jdoc java::lang.java.ast.ASTRecordComponent %}
+    *   {% jdoc java::lang.java.ast.ASTRecordBody %}
+    *   {% jdoc java::lang.java.ast.ASTCompactConstructorDeclaration %}
+
+##### Internal API
+
+Those APIs are not intended to be used by clients, and will be hidden or removed with PMD 7.0.0.
+You can identify them with the `@InternalApi` annotation. You'll also get a deprecation warning.
+
+*   The protected or public member of the Java rule {% jdoc java::lang.java.rule.bestpractices.AvoidUsingHardCodedIPRule %}
+    are deprecated and considered to be internal API. They will be removed with PMD 7.
+
+#### 6.31.0
+
+##### Deprecated API
+
+*   {% jdoc xml::lang.xml.rule.AbstractDomXmlRule %}
+*   {% jdoc xml::lang.wsdl.rule.AbstractWsdlRule %}
+*   A few methods of {% jdoc xml::lang.xml.rule.AbstractXmlRule %}
+
+##### Experimental APIs
+
+*   The method {% jdoc !!core::lang.ast.GenericToken#getKind() %} has been added as experimental. This
+    unifies the token interface for both JavaCC and Antlr. The already existing method
+    {% jdoc !!core::cpd.token.AntlrToken#getKind() %} is therefore experimental as well. The
+    returned constant depends on the actual language and might change whenever the grammar
+    of the language is changed.
+
+#### 6.30.0
+
+##### Deprecated API
+
+###### Around RuleSet parsing
+
+* {% jdoc core::RuleSetFactory %} and {% jdoc core::RulesetsFactoryUtils %} have been deprecated in favor of {% jdoc core::RuleSetLoader %}. This is easier to configure, and more maintainable than the multiple overloads of `RulesetsFactoryUtils`.
+* Some static creation methods have been added to {% jdoc core::RuleSet %} for simple cases, eg {% jdoc core::RuleSet#forSingleRule(core::Rule) %}. These replace some counterparts in {% jdoc core::RuleSetFactory %}
+* Since {% jdoc core::RuleSets %} is also deprecated, many APIs that require a RuleSets instance now are deprecated, and have a counterpart that expects a `List<RuleSet>`.
+* {% jdoc core::RuleSetReferenceId %}, {% jdoc core::RuleSetReference %}, {% jdoc core::RuleSetFactoryCompatibility %} are deprecated. They are most likely not relevant outside of the implementation of pmd-core.
+
+###### Around the `PMD` class
+
+Many classes around PMD's entry point ({% jdoc core::PMD %}) have been deprecated as internal, including:
+* The contents of the packages {% jdoc_package core::cli %}, {% jdoc_package core::processor %}
+* {% jdoc core::SourceCodeProcessor %}
+* The constructors of {% jdoc core::PMD %} (the class will be made a utility class)
+
+###### Miscellaneous
+
+*   {% jdoc !!java::lang.java.ast.ASTPackageDeclaration#getPackageNameImage() %},
+    {% jdoc !!java::lang.java.ast.ASTTypeParameter#getParameterName() %}
+    and the corresponding XPath attributes. In both cases they're replaced with a new method `getName`,
+    the attribute is `@Name`.
+*   {% jdoc !!java::lang.java.ast.ASTClassOrInterfaceBody#isAnonymousInnerClass() %},
+    and {% jdoc !!java::lang.java.ast.ASTClassOrInterfaceBody#isEnumChild() %},
+    refs [#905](https://github.com/pmd/pmd/issues/905)
+
+##### Internal API
+
+Those APIs are not intended to be used by clients, and will be hidden or removed with PMD 7.0.0.
+You can identify them with the `@InternalApi` annotation. You'll also get a deprecation warning.
+
+*   {% jdoc !!javascript::lang.ecmascript.Ecmascript3Handler %}
+*   {% jdoc !!javascript::lang.ecmascript.Ecmascript3Parser %}
+*   {% jdoc !!javascript::lang.ecmascript.ast.EcmascriptParser#parserOptions %}
+*   {% jdoc !!javascript::lang.ecmascript.ast.EcmascriptParser#getSuppressMap() %}
+*   {% jdoc !!core::lang.rule.ParametricRuleViolation %}
+*   {% jdoc !!core::lang.ParserOptions#suppressMarker %}
+*   {% jdoc !!modelica::lang.modelica.rule.ModelicaRuleViolationFactory %}
+
+#### 6.29.0
+
+No changes.
+
+#### 6.28.0
+
+##### Deprecated API
+
+###### For removal
+
+* {% jdoc !!core::RuleViolationComparator %}. Use {% jdoc !!core::RuleViolation#DEFAULT_COMPARATOR %} instead.
+* {% jdoc !!core::cpd.AbstractTokenizer %}. Use {% jdoc !!core::cpd.AnyTokenizer %} instead.
+* {% jdoc !!fortran::cpd.FortranTokenizer %}. Was replaced by an {% jdoc core::cpd.AnyTokenizer %}. Use {% jdoc !!fortran::cpd.FortranLanguage#getTokenizer() %} anyway.
+* {% jdoc !!perl::cpd.PerlTokenizer %}. Was replaced by an {% jdoc core::cpd.AnyTokenizer %}. Use {% jdoc !!perl::cpd.PerlLanguage#getTokenizer() %} anyway.
+* {% jdoc !!ruby::cpd.RubyTokenizer %}. Was replaced by an {% jdoc core::cpd.AnyTokenizer %}. Use {% jdoc !!ruby::cpd.RubyLanguage#getTokenizer() %} anyway.
+* {% jdoc !!core::lang.rule.RuleReference#getOverriddenLanguage() %} and
+  {% jdoc !!core::lang.rule.RuleReference#setLanguage(net.sourceforge.pmd.lang.Language) %}
+* Antlr4 generated lexers:
+    * {% jdoc !!cs::lang.cs.antlr4.CSharpLexer %} will be moved to package `net.sourceforge.pmd.lang.cs.ast` with PMD 7.
+    * {% jdoc !!dart::lang.dart.antlr4.Dart2Lexer %} will be renamed to `DartLexer` and moved to package 
+      `net.sourceforge.pmd.lang.dart.ast` with PMD 7. All other classes in the old package will be removed.
+    * {% jdoc !!go::lang.go.antlr4.GolangLexer %} will be moved to package
+      `net.sourceforge.pmd.lang.go.ast` with PMD 7. All other classes in the old package will be removed.
+    * {% jdoc !!kotlin::lang.kotlin.antlr4.Kotlin %} will be renamed to `KotlinLexer` and moved to package 
+      `net.sourceforge.pmd.lang.kotlin.ast` with PMD 7.
+    * {% jdoc !!lua::lang.lua.antlr4.LuaLexer %} will be moved to package
+      `net.sourceforge.pmd.lang.lua.ast` with PMD 7. All other classes in the old package will be removed.
+
+#### 6.27.0
+
+*   XML rule definition in rulesets: In PMD 7, the `language` attribute will be required on all `rule`
+    elements that declare a new rule. Some base rule classes set the language implicitly in their
+    constructor, and so this is not required in all cases for the rule to work. But this
+    behavior will be discontinued in PMD 7, so missing `language` attributes are now
+    reported as a forward compatibility warning.
+
+##### Deprecated API
+
+###### For removal
+
+*   {% jdoc !!core::Rule#getParserOptions() %}
+*   {% jdoc !!core::lang.Parser#getParserOptions() %}
+*   {% jdoc core::lang.AbstractParser %}
+*   {% jdoc !!core::RuleContext#removeAttribute(java.lang.String) %}
+*   {% jdoc !!core::RuleContext#getAttribute(java.lang.String) %}
+*   {% jdoc !!core::RuleContext#setAttribute(java.lang.String, java.lang.Object) %}
+*   {% jdoc apex::lang.apex.ApexParserOptions %}
+*   {% jdoc !!java::lang.java.ast.ASTThrowStatement#getFirstClassOrInterfaceTypeImage() %}
+*   {% jdoc javascript::lang.ecmascript.EcmascriptParserOptions %}
+*   {% jdoc javascript::lang.ecmascript.rule.EcmascriptXPathRule %}
+*   {% jdoc xml::lang.xml.XmlParserOptions %}
+*   {% jdoc xml::lang.xml.rule.XmlXPathRule %}
+*   Properties of {% jdoc xml::lang.xml.rule.AbstractXmlRule %}
+
+*   {% jdoc !!core::Report.ReadableDuration %}
+*   Many methods of {% jdoc !!core::Report %}. They are replaced by accessors
+  that produce a List. For example, {% jdoc !a!core::Report#iterator() %} 
+  (and implementing Iterable) and {% jdoc !a!core::Report#isEmpty() %} are both
+  replaced by {% jdoc !a!core::Report#getViolations() %}.
+
+*   The dataflow codebase is deprecated for removal in PMD 7. This
+    includes all code in the following packages, and their subpackages:
+    *   {% jdoc_package plsql::lang.plsql.dfa %}
+    *   {% jdoc_package java::lang.java.dfa %}
+    *   {% jdoc_package core::lang.dfa %}
+    *   and the class {% jdoc plsql::lang.plsql.PLSQLDataFlowHandler %}
+
+*   {% jdoc visualforce::lang.vf.VfSimpleCharStream %}
+
+*   {% jdoc jsp::lang.jsp.ast.ASTJspDeclarations %}
+*   {% jdoc jsp::lang.jsp.ast.ASTJspDocument %}
+*   {% jdoc !!scala::lang.scala.ast.ScalaParserVisitorAdapter#zero() %}
+*   {% jdoc !!scala::lang.scala.ast.ScalaParserVisitorAdapter#combine(Object, Object) %}
+*   {% jdoc apex::lang.apex.ast.ApexParserVisitorReducedAdapter %}
+*   {% jdoc java::lang.java.ast.JavaParserVisitorReducedAdapter %}
+
+* {% jdoc java::lang.java.typeresolution.TypeHelper %} is deprecated in
+ favor of {% jdoc java::lang.java.types.TypeTestUtil %}, which has the
+same functionality, but a slightly changed API.
+* Many of the classes in {% jdoc_package java::lang.java.symboltable %}
+are deprecated as internal API.
 
 #### 6.26.0
 
@@ -989,8 +1401,8 @@ large projects, with many duplications, it was causing `OutOfMemoryError`s (see 
     will be removed with PMD 7.0.0. The rule is replaced by the more general
     {% rule "java/multithreading/UnsynchronizedStaticFormatter" %}.
 
-*   The two Java rules {% rule "java/bestpractices/PositionLiteralsFirstInComparisons" %}
-    and {% rule "java/bestpractices/PositionLiteralsFirstInCaseInsensitiveComparisons" %} (ruleset `java-bestpractices`)
+*   The two Java rules [`PositionLiteralsFirstInComparisons`](https://pmd.github.io/pmd-6.29.0/pmd_rules_java_bestpractices.html#positionliteralsfirstincomparisons)
+    and [`PositionLiteralsFirstInCaseInsensitiveComparisons`](https://pmd.github.io/pmd-6.29.0/pmd_rules_java_bestpractices.html#positionliteralsfirstincaseinsensitivecomparisons) (ruleset `java-bestpractices`)
     have been deprecated in favor of the new rule {% rule "java/bestpractices/LiteralsFirstInComparisons" %}.
 
 *   The Java rule [`AvoidFinalLocalVariable`](https://pmd.github.io/pmd-6.16.0/pmd_rules_java_codestyle.html#avoidfinallocalvariable) (`java-codestyle`) has been deprecated
@@ -1008,3 +1420,41 @@ large projects, with many duplications, it was causing `OutOfMemoryError`s (see 
 
 *   The Java rule [`LoggerIsNotStaticFinal`](https://pmd.github.io/pmd-6.15.0/pmd_rules_java_errorprone.html#loggerisnotstaticfinal) (`java-errorprone`) has been deprecated
     and will be removed with PMD 7.0.0. The rule is replaced by [`ProperLogger`](https://pmd.github.io/pmd-6.15.0/pmd_rules_java_errorprone.html#properlogger).
+
+*   The Java rule [`DataflowAnomalyAnalysis`](https://pmd.github.io/pmd-6.27.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis) (`java-errorprone`)
+    is deprecated in favour of {% rule "java/bestpractices/UnusedAssignment" %} (`java-bestpractices`),
+    which was introduced in PMD 6.26.0.
+
+*   The java rule `DefaultPackage` (java-codestyle) has been deprecated in favor of
+    {% rule "java/codestyle/CommentDefaultAccessModifier" %}.
+
+*   The Java rule `CloneThrowsCloneNotSupportedException` (java-errorprone) has been deprecated without
+    replacement.
+
+*   The following Java rules are deprecated and removed from the quickstart ruleset,
+    as the new rule {% rule java/bestpractices/SimplifiableTestAssertion %} merges
+    their functionality:
+    * `UseAssertEqualsInsteadOfAssertTrue` (java-bestpractices)
+    * `UseAssertNullInsteadOfAssertTrue` (java-bestpractices)
+    * `UseAssertSameInsteadOfAssertTrue` (java-bestpractices)
+    * `UseAssertTrueInsteadOfAssertEquals` (java-bestpractices)
+    * `SimplifyBooleanAssertion` (java-design)
+
+*   The Java rule `ReturnEmptyArrayRatherThanNull` (java-errorprone) is deprecated and removed from
+    the quickstart ruleset, as the new rule {% rule java/errorprone/ReturnEmptyCollectionRatherThanNull %}
+    supersedes it.
+
+*   The following Java rules are deprecated and removed from the quickstart ruleset,
+    as the new rule {% rule java/bestpractices/PrimitiveWrapperInstantiation %} merges
+    their functionality:
+    * java/performance/BooleanInstantiation
+    * java/performance/ByteInstantiation
+    * java/performance/IntegerInstantiation
+    * java/performance/LongInstantiation
+    * java/performance/ShortInstantiation
+
+*   The Java rule java/performance/UnnecessaryWrapperObjectCreation is deprecated
+    with no planned replacement before PMD 7. In it's current state, the rule is not useful
+    as it finds only contrived cases of creating a primitive wrapper and unboxing it explicitly
+    in the same expression. In PMD 7 this and more cases will be covered by a
+    new rule `UnnecessaryBoxing`.

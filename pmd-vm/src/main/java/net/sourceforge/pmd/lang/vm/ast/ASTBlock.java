@@ -14,7 +14,7 @@ public final class ASTBlock extends AbstractVmNode {
 
 
     @Override
-    public Object jjtAccept(VmParserVisitor visitor, Object data) {
+    protected <P, R> R acceptVmVisitor(VmVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 

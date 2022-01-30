@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.properties;
 
+import static java.util.Arrays.asList;
 import static net.sourceforge.pmd.properties.xml.XmlSyntaxUtils.enumerationParser;
 
 import java.util.Arrays;
@@ -375,6 +376,23 @@ public final class PropertyFactory {
      */
     public static <T> GenericCollectionPropertyBuilder<T, List<T>> enumListProperty(String name, Map<String, T> nameToValue) {
         return enumProperty(name, nameToValue).toList();
+    }
+
+
+    /**
+     * Returns a builder for a property having as value a list of {@code <T>}. The
+     * format of the individual items is the same as for {@linkplain #enumProperty(String, Map)}.
+     *
+     * @param name       Name of the property to build
+     * @param enumClass  Class of the values
+     * @param labelMaker Function that associates enum constants to their label
+     * @param <T>        Value type of the property
+     *
+     * @return A new builder
+     */
+    public static <T extends Enum<T>> GenericCollectionPropertyBuilder<T, List<T>> enumListProperty(String name, Class<T> enumClass, Function<? super T, String> labelMaker) {
+        Map<String, T> enumMap = CollectionUtil.associateBy(asList(enumClass.getEnumConstants()), labelMaker);
+        return enumListProperty(name, enumMap);
     }
 
 

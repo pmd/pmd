@@ -12,6 +12,10 @@ public interface Tokenizer {
     String IGNORE_ANNOTATIONS = "ignore_annotations";
 
     /**
+     * Ignore sequences of literals (e.g, <code>0,0,0,0...</code>).
+     */
+    String OPTION_IGNORE_LITERAL_SEQUENCES = "net.sourceforge.pmd.cpd.Tokenizer.skipLiteralSequences";
+    /**
      * Ignore using directives in C#. The default value is <code>false</code>.
      */
     String IGNORE_USINGS = "ignore_usings";

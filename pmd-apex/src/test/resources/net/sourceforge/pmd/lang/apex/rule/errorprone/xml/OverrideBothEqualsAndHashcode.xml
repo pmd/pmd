@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>hash code only</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public Integer hashCode() {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>nested hash code only</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public class Bar {
+        public Integer hashCode() {}
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>equals only</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public boolean equals(Object other) {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>nested equals only, checking case insensitiveness</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public class Bar {
+        public Integer eQuAlS(Object other) {}
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>overrides both</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public boolean equals(Object other) {}
+    public Integer hashCode() {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>nested overrides both</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public class Bar {
+        public boolean equals(Object other) {}
+        public Integer hashCode() {}
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>overrides neither</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>equals sig uses String, not Object</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public boolean equals(String o) {
+        return true;
+    }
+    public Integer hashCode() {
+        return 0;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>interface</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public interface Foo {
+    boolean equals(Object o);
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>implements equals but with 2 args, hashCode overloaded as well</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public boolean equals(java.lang.Object o1, java.lang.Object o2) {
+        return true;
+    }
+    public Integer hashCode(java.lang.Object o) {
+        return 0;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>overloaded hashCode</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo  {
+    public Integer hashCode(Object o1) { return false; }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>overloaded both</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo  {
+    public boolean equals(Object o1, Object o2) { return false; }
+    public Integer hashCode(Object o1) { return false; }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>overloaded hashCode, should fail on equals</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo  {
+    public boolean equals(Object o1) { return false; }
+    public Integer hashCode(Object o1) { return false; }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>implements hashCode but with args</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public Integer hashCode(List<Decimal> a) {
+        return 0;
+    }
+}
+        ]]></code>
+    </test-code>
+</test-data>

@@ -70,7 +70,7 @@ public class PmdExample {
         configuration.setReportFormat("xml");
         configuration.setReportFile("/home/workspace/pmd-report.xml");
 
-        PMD.doPMD(configuration);
+        PMD.runPMD(configuration);
     }
 }
 ```
@@ -78,7 +78,7 @@ public class PmdExample {
 ## Programmatically, variant 2
 
 This gives you more control over which files are processed, but is also more complicated.
-You can also provide your own listeners and renderers.
+You can also provide your own custom renderers.
 
 1.  First we create a `PMDConfiguration`. This is currently the only way to specify a ruleset:
     
@@ -96,11 +96,12 @@ You can also provide your own listeners and renderers.
     configuration.prependClasspath("/home/workspace/target/classes:/home/.m2/repository/my/dependency.jar");
     ```
     
-3.  Then we need a ruleset factory. This is created using the configuration, taking the minimum priority into
+3.  Then we need to load the rulesets. This is done by using the configuration, taking the minimum priority into
     account:
     
     ```java
-    RuleSetFactory ruleSetFactory = RulesetsFactoryUtils.createFactory(configuration);
+    RuleSetLoader ruleSetLoader = RuleSetLoader.fromPmdConfig(configuration);
+    List<RuleSet> ruleSets = ruleSetLoader.loadFromResources(Arrays.asList(configuration.getRuleSets().split(",")));
     ```
     
 4.  PMD operates on a list of `DataSource`. You can assemble a own list of `FileDataSource`, e.g.
@@ -109,7 +110,8 @@ You can also provide your own listeners and renderers.
     List<DataSource> files = Arrays.asList(new FileDataSource(new File("/path/to/src/MyClass.java")));
     ```
     
-5.  For reporting, you can use a built-in renderer, e.g. `XMLRenderer`. Note, that you must manually initialize
+5.  For reporting, you can use a built-in renderer, e.g. `XMLRenderer` or a custom renderer implementing
+    `Renderer`. Note, that you must manually initialize
     the renderer by setting a suitable `Writer` and calling `start()`. After the PMD run, you need to call
     `end()` and `flush()`. Then your writer should have received all output.
     
@@ -120,36 +122,15 @@ You can also provide your own listeners and renderers.
     xmlRenderer.start();
     ```
     
-6.  Create a `RuleContext`. This is the context instance, that is available then in the rule implementations.
-    Note: when running in multi-threaded mode (which is the default), the rule context instance is cloned for
-    each thread.
-    
-    ```java
-    RuleContext ctx = new RuleContext();
-    ```
-    
-7.  Optionally register a report listener. This allows you to react immediately on found violations. You could also
-    use such a listener to implement your own renderer. The listener must implement the interface
-    `ThreadSafeReportListener` and can be registered via `ctx.getReport().addListener(...)`.
-    
-    ```java
-    ctx.getReport().addListener(new ThreadSafeReportListener() {
-        public void ruleViolationAdded(RuleViolation ruleViolation) {
-        }
-        public void metricAdded(Metric metric) {
-        }
-    ```
-    
-8.  Now, all the preparations are done, and PMD can be executed. This is done by calling
-    `PMD.processFiles(...)`. This method call takes the configuration, the ruleset factory, the files
-    to process, the rule context and the list of renderers. Provide an empty list, if you don't want to use
+6.  Now, all the preparations are done, and PMD can be executed. This is done by calling
+    `PMD.processFiles(...)`. This method call takes the configuration, the rulesets, the files
+    to process, and the list of renderers. Provide an empty list, if you don't want to use
     any renderer. Note: The auxclasspath needs to be closed explicitly. Otherwise the class or jar files may
     remain open and file resources are leaked.
     
     ```java
     try {
-        PMD.processFiles(configuration, ruleSetFactory, files, ctx,
-                Collections.singletonList(renderer));
+        PMD.processFiles(configuration, ruleSets, files, Collections.singletonList(renderer));
     } finally {
         ClassLoader auxiliaryClassLoader = configuration.getClassLoader();
         if (auxiliaryClassLoader instanceof ClasspathClassLoader) {
@@ -158,7 +139,7 @@ You can also provide your own listeners and renderers.
     }
     ```
     
-9.  After the call, you need to finish the renderer via `end()` and `flush()`.
+7.  After the call, you need to finish the renderer via `end()` and `flush()`.
     Then you can check the rendered output.
     
     ``` java
@@ -182,20 +163,17 @@ import java.nio.file.PathMatcher;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMDConfiguration;
-import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RulePriority;
-import net.sourceforge.pmd.RuleSetFactory;
-import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.RulesetsFactoryUtils;
-import net.sourceforge.pmd.ThreadSafeReportListener;
+import net.sourceforge.pmd.RuleSet;
+import net.sourceforge.pmd.RuleSetLoader;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.renderers.XMLRenderer;
-import net.sourceforge.pmd.stat.Metric;
 import net.sourceforge.pmd.util.ClasspathClassLoader;
 import net.sourceforge.pmd.util.datasource.DataSource;
 import net.sourceforge.pmd.util.datasource.FileDataSource;
@@ -207,7 +185,8 @@ public class PmdExample2 {
         configuration.setMinimumPriority(RulePriority.MEDIUM);
         configuration.setRuleSets("rulesets/java/quickstart.xml");
         configuration.prependClasspath("/home/workspace/target/classes");
-        RuleSetFactory ruleSetFactory = RulesetsFactoryUtils.createFactory(configuration);
+        RuleSetLoader ruleSetLoader = RuleSetLoader.fromPmdConfig(configuration);
+        List<RuleSet> ruleSets = ruleSetLoader.loadFromResources(Arrays.asList(configuration.getRuleSets().split(",")));
 
         List<DataSource> files = determineFiles("/home/workspace/src/main/java/code");
 
@@ -215,13 +194,8 @@ public class PmdExample2 {
         Renderer renderer = createRenderer(rendererOutput);
         renderer.start();
 
-        RuleContext ctx = new RuleContext();
-
-        ctx.getReport().addListener(createReportListener()); // alternative way to collect violations
-
         try {
-            PMD.processFiles(configuration, ruleSetFactory, files, ctx,
-                Collections.singletonList(renderer));
+            PMD.processFiles(configuration, ruleSets, files, Collections.singletonList(renderer));
         } finally {
             ClassLoader auxiliaryClassLoader = configuration.getClassLoader();
             if (auxiliaryClassLoader instanceof ClasspathClassLoader) {
@@ -235,21 +209,6 @@ public class PmdExample2 {
         System.out.println(rendererOutput.toString());
     }
 
-    private static ThreadSafeReportListener createReportListener() {
-        return new ThreadSafeReportListener() {
-            @Override
-            public void ruleViolationAdded(RuleViolation ruleViolation) {
-                System.out.printf("%-20s:%d %s%n", ruleViolation.getFilename(),
-                        ruleViolation.getBeginLine(), ruleViolation.getDescription());
-            }
-
-            @Override
-            public void metricAdded(Metric metric) {
-                // ignored
-            }
-        };
-    }
-
     private static Renderer createRenderer(Writer writer) {
         XMLRenderer xml = new XMLRenderer("UTF-8");
         xml.setWriter(writer);
@@ -258,9 +217,9 @@ public class PmdExample2 {
 
     private static List<DataSource> determineFiles(String basePath) throws IOException {
         Path dirPath = FileSystems.getDefault().getPath(basePath);
-        PathMatcher matcher = FileSystems.getDefault().getPathMatcher("glob:*.java");
+        final PathMatcher matcher = FileSystems.getDefault().getPathMatcher("glob:*.java");
 
-        List<DataSource> files = new ArrayList<>();
+        final List<DataSource> files = new ArrayList<>();
 
         Files.walkFileTree(dirPath, new SimpleFileVisitor<Path>() {
             @Override

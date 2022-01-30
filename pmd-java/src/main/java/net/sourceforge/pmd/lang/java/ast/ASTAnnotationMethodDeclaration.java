@@ -4,25 +4,22 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
+/**
+ * @deprecated Represented directly by {@link ASTMethodDeclaration MethodDeclaration}.
+ *     An annotation method is just {@link ASTMethodDeclaration MethodDeclaration} whose
+ *     enclosing type is an annotation.
+ */
+@Deprecated
+public final class ASTAnnotationMethodDeclaration extends AbstractJavaNode implements AccessNode {
 
-public class ASTAnnotationMethodDeclaration extends AbstractMethodLikeNode {
-
-    @InternalApi
-    @Deprecated
-    public ASTAnnotationMethodDeclaration(int id) {
+    ASTAnnotationMethodDeclaration(int id) {
         super(id);
     }
 
 
     @Override
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
-        return visitor.visit(this, data);
+        throw new UnsupportedOperationException("Node was removed from grammar");
     }
 
-
-    @Override
-    public MethodLikeKind getKind() {
-        return MethodLikeKind.METHOD;
-    }
 }

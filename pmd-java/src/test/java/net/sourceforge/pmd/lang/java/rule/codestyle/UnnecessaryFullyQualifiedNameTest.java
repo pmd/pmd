@@ -20,19 +20,32 @@ public class UnnecessaryFullyQualifiedNameTest extends PmdRuleTst {
         C, D;
     }
 
-    // Do not delete these two classes - it is needed for a test case
+    // Do not delete these classes - it is needed for a test case
     // see: /pmd-java/src/test/resources/net/sourceforge/pmd/lang/java/rule/codestyle/xml/UnnecessaryFullyQualifiedName.xml
     // #1546 part 1 UnnecessaryFullyQualifiedName doesn't take into consideration conflict resolution
     // #1546 part 2 UnnecessaryFullyQualifiedName doesn't take into consideration conflict resolution
     public static class PhonyMockito {
+
+        public static final int TWO = 2;
+
         public static <T> T mock(Class<T> clazz) {
             return null;
         }
     }
 
-    public static class PhonyPowerMockito {
-        public static <T> T mock(Class<T> clazz) {
-            return null;
+    static class Container {
+
+        public static class PhonyMockito {
+
+            public static <T> T mock(Class<T> clazz) {
+                return null;
+            }
         }
     }
+
+    public static class MockitoInherited extends PhonyMockito {
+        // static method PhonyMockito::mock is static imported
+        // if MockitoInherited is imported on demand
+    }
+
 }

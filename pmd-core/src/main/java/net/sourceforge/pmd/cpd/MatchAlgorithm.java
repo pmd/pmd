@@ -94,7 +94,7 @@ public class MatchAlgorithm {
         Map<TokenEntry, Object> markGroups = new HashMap<>(tokens.size());
         for (int i = code.size() - 1; i >= 0; i--) {
             TokenEntry token = code.get(i);
-            if (token != TokenEntry.EOF) {
+            if (!TokenEntry.EOF.equals(token)) {
                 int last = tokenAt(min, token).getIdentifier();
                 lastHash = MOD * lastHash + token.getIdentifier() - lastMod * last;
                 token.setHashCode(lastHash);
@@ -120,7 +120,7 @@ public class MatchAlgorithm {
                 for (int end = Math.max(0, i - min + 1); i > end; i--) {
                     token = code.get(i - 1);
                     lastHash = MOD * lastHash + token.getIdentifier();
-                    if (token == TokenEntry.EOF) {
+                    if (TokenEntry.EOF.equals(token)) {
                         break;
                     }
                 }

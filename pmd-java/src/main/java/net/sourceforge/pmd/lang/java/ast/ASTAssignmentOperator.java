@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 /**
  * Represents an assignment operator in an {@linkplain ASTExpression assignment expression}.
  *
@@ -14,23 +12,17 @@ import net.sourceforge.pmd.annotation.InternalApi;
  *  AssignmentOperator ::= "=" | "*=" | "/=" | "%=" | "+=" | "-=" | "<<=" | ">>=" | ">>>=" | "&=" | "^=" | "|="
  *
  * </pre>
+ * @deprecated Superseded by {@link ASTAssignmentExpression}
  */
+@Deprecated
 public class ASTAssignmentOperator extends AbstractJavaNode {
 
     private boolean isCompound;
 
-    @InternalApi
-    @Deprecated
-    public ASTAssignmentOperator(int id) {
+    ASTAssignmentOperator(int id) {
         super(id);
     }
 
-    // TODO this could be determined from the image of the operator, no need to set it in the parser...
-    @InternalApi
-    @Deprecated
-    public void setCompound() {
-        isCompound = true;
-    }
 
     public boolean isCompound() {
         return this.isCompound;
@@ -39,6 +31,6 @@ public class ASTAssignmentOperator extends AbstractJavaNode {
 
     @Override
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
-        return visitor.visit(this, data);
+        throw new UnsupportedOperationException("Node was removed from grammar");
     }
 }
