@@ -70,7 +70,7 @@ final class OptionalSyntax<T> extends XmlMapper<Optional<T>> {
 
     @Override
     public Optional<T> fromXml(Element element, XmlErrorReporter err) {
-        if (element.getTagName().equals(EMPTY_NAME)) {
+        if (EMPTY_NAME.equals(element.getTagName())) {
             return Optional.empty();
         } else {
             return Optional.ofNullable(itemSyntax.fromXml(element, err));

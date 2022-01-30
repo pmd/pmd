@@ -27,9 +27,9 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.RuleSetReference;
 import net.sourceforge.pmd.annotation.InternalApi;
-import net.sourceforge.pmd.internal.DOMUtils;
 import net.sourceforge.pmd.internal.util.xml.SchemaConstants;
 import net.sourceforge.pmd.internal.util.xml.XmlErrorMessages;
+import net.sourceforge.pmd.internal.util.xml.XmlUtil;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
@@ -112,13 +112,13 @@ public class RuleFactory {
         for (Element node : DomUtils.elementsIn(ruleElement)) {
             switch (node.getNodeName()) {
             case DESCRIPTION:
-                ruleReference.setDescription(DOMUtils.parseTextNode(node));
+                ruleReference.setDescription(XmlUtil.parseTextNode(node));
                 break;
             case EXAMPLE:
-                ruleReference.addExample(DOMUtils.parseTextNode(node));
+                ruleReference.addExample(XmlUtil.parseTextNode(node));
                 break;
             case PRIORITY:
-                ruleReference.setPriority(RulePriority.valueOf(Integer.parseInt(DOMUtils.parseTextNode(node))));
+                ruleReference.setPriority(RulePriority.valueOf(Integer.parseInt(XmlUtil.parseTextNode(node))));
                 break;
             case PROPERTIES:
                 setPropertyValues(ruleReference, node, err);
@@ -176,13 +176,13 @@ public class RuleFactory {
         for (Element node : DomUtils.elementsIn(ruleElement)) {
             switch (node.getNodeName()) {
             case DESCRIPTION:
-                rule.setDescription(DOMUtils.parseTextNode(node));
+                rule.setDescription(XmlUtil.parseTextNode(node));
                 break;
             case EXAMPLE:
-                rule.addExample(DOMUtils.parseTextNode(node));
+                rule.addExample(XmlUtil.parseTextNode(node));
                 break;
             case PRIORITY:
-                RulePriority rp = parsePriority(err, node, DOMUtils.parseTextNode(node));
+                RulePriority rp = parsePriority(err, node, XmlUtil.parseTextNode(node));
                 rule.setPriority(rp);
                 break;
             case PROPERTIES:
