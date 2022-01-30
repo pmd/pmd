@@ -39,7 +39,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTForeachStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTGuardedPattern;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
@@ -64,6 +63,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTSwitchLabel;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchLike;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTTryStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
 import net.sourceforge.pmd.lang.java.ast.BinaryOp;
@@ -397,7 +397,8 @@ public final class SymbolTableResolver {
             int pushed = 0;
             for (ASTStatement st : node) {
                 if (st instanceof ASTLocalVariableDeclaration) {
-                    pushed += pushOnStack(f.localVarSymTable(top(), enclosing(), ((ASTLocalVariableDeclaration) st).getVarIds()));
+                    pushed += processLocalVarDecl((ASTLocalVariableDeclaration) st, ctx);
+                    // note we don't pop here, all those variables will be popped at the end of the block
                 } else if (st instanceof ASTLocalClassStatement) {
                     ASTAnyTypeDeclaration local = ((ASTLocalClassStatement) st).getDeclaration();
                     pushed += pushOnStack(f.localTypeSymTable(top(), local.getTypeMirror()));
@@ -405,11 +406,23 @@ public final class SymbolTableResolver {
                 }
 
                 setTopSymbolTable(st);
-                // those vars are the one produced by pattern bindings
+                // those vars are the one produced by pattern bindings/ local var decls
                 PSet<ASTVariableDeclaratorId> newVars = st.acceptVisitor(this.stmtVisitor, ctx);
                 pushed += pushOnStack(f.localVarSymTable(top(), enclosing(), newVars));
             }
 
+            return pushed;
+        }
+
+        private int processLocalVarDecl(ASTLocalVariableDeclaration st, @NonNull ReferenceCtx ctx) {
+            // each variable is visible in its own initializer and the ones of the following variables
+            int pushed = 0;
+            for (ASTVariableDeclarator declarator : st.children(ASTVariableDeclarator.class)) {
+                ASTVariableDeclaratorId varId = declarator.getVarId();
+                pushed += pushOnStack(f.localVarSymTable(top(), enclosing(), varId.getSymbol()));
+                // visit initializer
+                setTopSymbolTableAndVisit(declarator.getInitializer(), ctx);
+            }
             return pushed;
         }
 
@@ -611,7 +624,13 @@ public final class SymbolTableResolver {
 
             @Override
             public PSet<ASTVariableDeclaratorId> visit(ASTForStatement node, @NonNull ReferenceCtx ctx) {
-                int pushed = pushOnStack(f.localVarSymTable(top(), enclosing(), varsOfInit(node)));
+                int pushed = 0;
+                ASTStatement init = node.getInit();
+                if (init instanceof ASTLocalVariableDeclaration) {
+                    pushed += processLocalVarDecl((ASTLocalVariableDeclaration) init, ctx);
+                } else {
+                    setTopSymbolTableAndVisit(init, ctx);
+                }
 
                 ASTExpression condition = node.getCondition();
                 setTopSymbolTableAndVisit(condition, ctx);
@@ -716,19 +735,10 @@ public final class SymbolTableResolver {
         }
 
 
-        static NodeStream<ASTVariableDeclaratorId> varsOfInit(ASTForStatement node) {
-            return NodeStream.of(node.getInit())
-                             .filterIs(ASTLocalVariableDeclaration.class)
-                             .flatMap(ASTLocalVariableDeclaration::getVarIds);
-        }
-
         static NodeStream<ASTVariableDeclaratorId> formalsOf(ASTLambdaExpression node) {
             return node.getParameters().toStream().map(ASTLambdaParameter::getVarId);
         }
 
-        static NodeStream<ASTVariableDeclaratorId> formalsOf(ASTMethodOrConstructorDeclaration node) {
-            return node.getFormalParameters().toStream().map(ASTFormalParameter::getVarId);
-        }
         // </editor-fold>
 
 
