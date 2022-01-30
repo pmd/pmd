@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -87,8 +88,8 @@ import net.sourceforge.pmd.util.CollectionUtil;
 public final class PropertyFactory {
 
 
-    /** Default delimiter for multi-valued properties other than numeric ones. */
-    static final char DEFAULT_DELIMITER = ',';
+    /** Default delimiter for all multi-valued properties. */
+    public static final char DEFAULT_DELIMITER = ',';
 
 
     private PropertyFactory() {
@@ -207,9 +208,6 @@ public final class PropertyFactory {
      * as pattern compilation, including syntax errors, are handled transparently to
      * the rule.
      *
-     * <p>This type of property is not available as a list, because the delimiters
-     * could be part of the regex. This restriction will be lifted with 7.0.0.
-     *
      * @param name Name of the property to build
      *
      * @return A new builder
@@ -218,12 +216,27 @@ public final class PropertyFactory {
         return new RegexPropertyBuilder(name);
     }
 
+    /**
+     * Returns a builder for a property having as value a list of regex patterns.
+     * The format of the individual items is the same as for {@linkplain #regexProperty(String) regexProperty}.
+     * This property may only be written with the structured {@code <seq>} syntax
+     * in an XML ruleset.
+     *
+     * @param name Name of the property to build
+     *
+     * @return A new builder
+     */
+    public static GenericCollectionPropertyBuilder<Pattern, List<Pattern>> regexListProperty(String name) {
+        return regexProperty(name).toList().onlyAllowSeqSyntax();
+    }
+
 
     /**
      * Returns a builder for a string property. The property descriptor
      * will accept any string, and performs no expansion of escape
      * sequences (e.g. {@code \n} in the XML will be represented as the
      * character sequence '\' 'n' and not the line-feed character '\n').
+     * The value of a string attribute is trimmed.
      * This behaviour could be changed with PMD 7.0.0.
      *
      * @param name Name of the property to build
@@ -312,9 +325,6 @@ public final class PropertyFactory {
      *
      * @return A new builder
      */
-    // Note: there is a bug, whereby the default value can be set on
-    // the builder, even if it wasn't registered in the constants
-    // This is fixed in the framework refactoring
     public static <T> GenericPropertyBuilder<T> enumProperty(String name, Map<String, T> nameToValue) {
         XmlMapper<T> parser = enumerationParser(
             nameToValue,

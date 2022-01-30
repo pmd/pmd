@@ -412,6 +412,8 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
         private XmlMapper<V> itemParser;
         private final Collector<? super V, ?, ? extends C> collector;
         private final List<PropertyConstraint<? super C>> collectionConstraints = new ArrayList<>();
+        private char multiValueDelimiter = PropertyFactory.DEFAULT_DELIMITER;
+        private boolean allowsStringSyntaxIfPossible = true;
 
 
         /**
@@ -446,6 +448,30 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
          */
         public GenericCollectionPropertyBuilder<V, C> defaultValue(Iterable<? extends V> val) {
             super.defaultValue(getDefaultValue(val));
+            return this;
+        }
+
+        /**
+         * Specify a delimiter character. By default it's {@value PropertyFactory#DEFAULT_DELIMITER}.
+         * This is only used for properties that are parsed from a value attribute.
+         * If the item type is not parsable from a string, then the delimiter
+         * is ignored as the property can only be parsed using the {@code <seq>} syntax.
+         *
+         * @param delim Delimiter
+         *
+         * @return The same builder
+         */
+        public GenericCollectionPropertyBuilder<V, C> delim(char delim) {
+            this.multiValueDelimiter = delim;
+            return this;
+        }
+
+        /**
+         * Specify that this property may not be parsed from a string.
+         * This is the case for lists of patterns, for instance.
+         */
+        GenericCollectionPropertyBuilder<V, C> onlyAllowSeqSyntax() {
+            this.allowsStringSyntaxIfPossible = false;
             return this;
         }
 
@@ -489,11 +515,10 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
             return this;
         }
 
-
         @Override
         public PropertyDescriptor<C> build() {
-            XmlMapper<C> syntax = itemParser.supportsStringMapping()
-                                  ? XmlSyntaxUtils.seqAndDelimited(itemParser, collector, false, PropertyFactory.DEFAULT_DELIMITER)
+            XmlMapper<C> syntax = itemParser.supportsStringMapping() && allowsStringSyntaxIfPossible
+                                  ? XmlSyntaxUtils.seqAndDelimited(itemParser, collector, false, multiValueDelimiter)
                                   : XmlSyntaxUtils.onlySeq(itemParser, collector);
 
             syntax = XmlSyntaxUtils.withAllConstraints(syntax, collectionConstraints);

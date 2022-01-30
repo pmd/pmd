@@ -329,6 +329,7 @@ final class RuleSetFactory {
      *            The RuleSet reference.
      * @param rulesetReferences keeps track of already processed complete ruleset references in order to log a warning
      */
+    // todo error reporting
     private void parseRuleSetReferenceNode(RuleSetBuilder ruleSetBuilder, Element ruleElement, String ref, Set<String> rulesetReferences) {
         String priority = null;
         NodeList childNodes = ruleElement.getChildNodes();

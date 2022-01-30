@@ -228,6 +228,10 @@ public class PropertyDescriptorTest {
         assertEquals("foo", descriptor.valueFrom("foo"));
         assertEquals("foo", descriptor.valueFrom("  foo   "));
 
+    }
+
+    @Test
+    public void testStringListProperty() {
         PropertyDescriptor<List<String>> listDescriptor = PropertyFactory.stringListProperty("stringListProp")
                 .desc("hello")
                 .defaultValues("v1", "v2")
@@ -236,7 +240,7 @@ public class PropertyDescriptorTest {
         assertEquals("hello", listDescriptor.description());
         assertEquals(Arrays.asList("v1", "v2"), listDescriptor.defaultValue());
         assertEquals(Arrays.asList("foo", "bar"), listDescriptor.valueFrom("foo,bar"));
-        assertEquals(Arrays.asList("foo", "bar"), listDescriptor.valueFrom("  foo |  bar  "));
+        assertEquals(Arrays.asList("foo |  bar"), listDescriptor.valueFrom("  foo |  bar  "));
     }
 
     private enum SampleEnum { A, B, C }

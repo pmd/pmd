@@ -20,6 +20,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.internal.util.IteratorUtil;
 import net.sourceforge.pmd.internal.util.xml.XmlUtil;
+import net.sourceforge.pmd.properties.PropertyFactory;
 import net.sourceforge.pmd.properties.constraints.PropertyConstraint;
 
 /**
@@ -28,7 +29,7 @@ import net.sourceforge.pmd.properties.constraints.PropertyConstraint;
 @InternalApi
 public final class XmlSyntaxUtils {
 
-    public static final ValueSyntax<String> STRING = ValueSyntax.withDefaultToString(Function.identity());
+    public static final ValueSyntax<String> STRING = ValueSyntax.withDefaultToString(String::trim);
     public static final ValueSyntax<Character> CHARACTER =
         ValueSyntax.partialFunction(
             c -> Character.toString(c),
@@ -39,10 +40,10 @@ public final class XmlSyntaxUtils {
             ));
 
     public static final ValueSyntax<Pattern> REGEX = ValueSyntax.withDefaultToString(Pattern::compile);
-    public static final ValueSyntax<Integer> INTEGER = ValueSyntax.withDefaultToString(Integer::valueOf);
-    public static final ValueSyntax<Long> LONG = ValueSyntax.withDefaultToString(Long::valueOf);
-    public static final ValueSyntax<Boolean> BOOLEAN = ValueSyntax.withDefaultToString(Boolean::valueOf);
-    public static final ValueSyntax<Double> DOUBLE = ValueSyntax.withDefaultToString(Double::valueOf);
+    public static final ValueSyntax<Integer> INTEGER = ValueSyntax.withDefaultToString(preTrim(Integer::valueOf));
+    public static final ValueSyntax<Long> LONG = ValueSyntax.withDefaultToString(preTrim(Long::valueOf));
+    public static final ValueSyntax<Boolean> BOOLEAN = ValueSyntax.withDefaultToString(preTrim(Boolean::valueOf));
+    public static final ValueSyntax<Double> DOUBLE = ValueSyntax.withDefaultToString(preTrim(Double::valueOf));
 
 
     public static final XmlMapper<List<Integer>> INTEGER_LIST = numberList(INTEGER);
@@ -58,11 +59,15 @@ public final class XmlSyntaxUtils {
 
 
     private static <T extends Number> XmlMapper<List<T>> numberList(ValueSyntax<T> valueSyntax) {
-        return seqAndDelimited(valueSyntax, Collectors.toList(), true, ',');
+        return seqAndDelimited(valueSyntax, Collectors.toList(), true, PropertyFactory.DEFAULT_DELIMITER);
     }
 
     private static <T> XmlMapper<List<T>> otherList(ValueSyntax<T> valueSyntax) {
-        return seqAndDelimited(valueSyntax, Collectors.toList(), true /* for now */, '|');
+        return seqAndDelimited(valueSyntax, Collectors.toList(), /* prefer old syntax for now */ true, PropertyFactory.DEFAULT_DELIMITER);
+    }
+
+    private static <T> Function<String, ? extends T> preTrim(Function<? super String, ? extends T> parser) {
+        return parser.compose(String::trim);
     }
 
     public static <T> XmlMapper<Optional<T>> toOptional(XmlMapper<T> itemSyntax) {

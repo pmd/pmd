@@ -395,7 +395,7 @@ public class RuleSetFactoryTest {
         Rule r = loadFirstRule(XPATH);
         PropertyDescriptor<String> xpathProperty = (PropertyDescriptor<String>) r.getPropertyDescriptor("xpath");
         assertNotNull("xpath property descriptor", xpathProperty);
-        assertNotSame(r.getProperty(xpathProperty).indexOf(" //Block "), -1);
+        assertNotSame(r.getProperty(xpathProperty).indexOf("//Block"), -1);
     }
 
     @Test
