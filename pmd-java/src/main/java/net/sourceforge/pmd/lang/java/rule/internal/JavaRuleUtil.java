@@ -997,4 +997,12 @@ public final class JavaRuleUtil {
         }
         return false;
     }
+
+    public static boolean isCloneMethod(ASTMethodDeclaration node) {
+        // this is enough as in valid code, this signature overrides Object#clone
+        // and the other things like visibility are checked by the compiler
+        return "clone".equals(node.getName())
+            && node.getArity() == 0
+            && !node.isStatic();
+    }
 }
