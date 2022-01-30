@@ -158,7 +158,7 @@ public class CommentRequiredRule extends AbstractJavaRulechainRule {
 
     @Override
     public Object visit(ASTMethodDeclaration decl, Object data) {
-        if (isAnnotatedOverride(decl)) {
+        if (decl.isOverridden()) {
             checkCommentMeetsRequirement(data, decl, OVERRIDE_CMT_DESCRIPTOR);
         } else if (JavaRuleUtil.isGetterOrSetter(decl)) {
             checkCommentMeetsRequirement(data, decl, ACCESSOR_CMT_DESCRIPTOR);
@@ -175,11 +175,6 @@ public class CommentRequiredRule extends AbstractJavaRulechainRule {
         } else if (decl.isProtected()) {
             checkCommentMeetsRequirement(data, decl, PROT_METHOD_CMT_REQUIREMENT_DESCRIPTOR);
         }
-    }
-
-
-    private boolean isAnnotatedOverride(ASTMethodDeclaration decl) {
-        return decl.isAnnotationPresent(Override.class);
     }
 
 
