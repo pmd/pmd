@@ -76,10 +76,13 @@ public class UselessOverridingMethodRule extends AbstractJavaRulechainRule {
             // merely calling super.foo() or returning super.foo()
             ASTMethodCall methodCall = (ASTMethodCall) statement.getChild(0);
             if (methodCall.getQualifier() instanceof ASTSuperExpression
-                && methodCall.getArguments().size() == node.getArity()) {
+                && methodCall.getArguments().size() == node.getArity()
+                // might be disambiguating: Interface.super.foo()
+                && JavaRuleUtil.isUnqualifiedSuper(methodCall.getQualifier())) {
 
                 OverloadSelectionResult overload = methodCall.getOverloadSelectionInfo();
                 if (!overload.isFailed()
+                    // note: don't compare symbols, as the equals method for method symbols is broken for now
                     && overload.getMethodType().equals(node.getOverriddenMethod())
                     && sameModifiers(node.getOverriddenMethod().getSymbol(), node.getSymbol())
                     && argumentsAreUnchanged(node, methodCall)) {
