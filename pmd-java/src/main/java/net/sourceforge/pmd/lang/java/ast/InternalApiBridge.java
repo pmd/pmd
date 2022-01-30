@@ -143,6 +143,7 @@ public final class InternalApiBridge {
                 }
             });
     }
+
     public static void overrideResolution(JavaAstProcessor processor, ASTCompilationUnit root) {
         root.descendants(ASTAnyTypeDeclaration.class)
             .crossFindBoundaries()
