@@ -253,7 +253,7 @@ public final class DataflowPass {
         }
 
 
-        public @Nullable ReachingDefinitionSet getReachingDefinitions(ASTNamedReferenceExpr expr) {
+        public @NonNull ReachingDefinitionSet getReachingDefinitions(ASTNamedReferenceExpr expr) {
             return expr.getUserMap().computeIfAbsent(REACHING_DEFS, () -> reachingFallback(expr));
         }
 

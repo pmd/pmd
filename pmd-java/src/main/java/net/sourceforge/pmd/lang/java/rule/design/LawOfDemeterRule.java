@@ -5,6 +5,8 @@
 package net.sourceforge.pmd.lang.java.rule.design;
 
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -12,6 +14,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTForeachStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.rule.internal.DataflowPass;
 import net.sourceforge.pmd.lang.java.rule.internal.DataflowPass.AssignmentEntry;
@@ -68,7 +71,8 @@ public class LawOfDemeterRule extends AbstractJavaRulechainRule {
         if (qualifier instanceof ASTMethodCall) {
             return "method chaining";
         } else if (qualifier instanceof ASTNamedReferenceExpr) {
-            if (isForeign((ASTNamedReferenceExpr) qualifier).isTrue()) {
+            RecursionGuard guard = new RecursionGuard();
+            if (isForeign((ASTNamedReferenceExpr) qualifier, guard).isTrue()) {
                 return "call on foreign value";
             }
         }
@@ -80,28 +84,33 @@ public class LawOfDemeterRule extends AbstractJavaRulechainRule {
             && qualifier.getTypeMirror().getSymbol().getSimpleName().endsWith("Builder");
     }
 
-    private OptionalBool isForeign(ASTNamedReferenceExpr acc) {
+    private OptionalBool isForeign(ASTNamedReferenceExpr acc, RecursionGuard guard) {
         ReachingDefinitionSet reaching = DataflowPass.getDataflowResult(acc.getRoot()).getReachingDefinitions(acc);
         if (reaching.isNotFullyKnown()) {
             return OptionalBool.UNKNOWN;
         }
 
-        return OptionalBool.definitely(CollectionUtil.any(reaching.getReaching(), this::isForeign));
+        return OptionalBool.definitely(CollectionUtil.any(reaching.getReaching(), it -> isForeign(it, guard)));
     }
 
-    private boolean isForeign(AssignmentEntry def) {
+    private boolean isForeign(AssignmentEntry def, RecursionGuard guard) {
+        if (!guard.explored.add(def.getVarId())) {
+            // recursion!
+            return false;
+        }
+
         if (def.isForeachVar()) {
             ASTForeachStatement foreach = def.getVarId().ancestors(ASTForeachStatement.class).firstOrThrow();
-            return isForeign(foreach.getIterableExpr());
+            return isForeign(foreach.getIterableExpr(), guard);
         }
         // formal parameters are not foreign otherwise we couldn't call any methods on them
         // if (def.getVarId().isFormalParameter()) {
         //     return true;
         // }
-        return isForeign(def.getRhsAsExpression());
+        return isForeign(def.getRhsAsExpression(), guard);
     }
 
-    private boolean isForeign(@Nullable ASTExpression expr) {
+    private boolean isForeign(@Nullable ASTExpression expr, RecursionGuard guard) {
         if (expr == null) {
             return false;
         }
@@ -111,7 +120,7 @@ public class LawOfDemeterRule extends AbstractJavaRulechainRule {
                 // an iterator.next() is as foreign as the qualifier
                 // a list call is as foreign as the list
                 // ie, pure data containers are "transparent"
-                return isForeign(((ASTMethodCall) expr).getQualifier());
+                return isForeign(((ASTMethodCall) expr).getQualifier(), guard);
             }
             // static methods are taken to be construction methods.
             return !((ASTMethodCall) expr).getMethodType().isStatic();
@@ -123,9 +132,15 @@ public class LawOfDemeterRule extends AbstractJavaRulechainRule {
                 return !JavaRuleUtil.isRefToFieldOfThisInstance(expr);
             }
 
-            return CollectionUtil.any(reaching.getReaching(), this::isForeign);
+            return CollectionUtil.any(reaching.getReaching(), it -> isForeign(it, guard));
         }
         return false;
+    }
+
+    private static final class RecursionGuard {
+
+        private final Set<ASTVariableDeclaratorId> explored = new HashSet<>();
+
     }
 
 }
