@@ -12,7 +12,7 @@ import net.sourceforge.pmd.lang.java.ast.*
 /**
  *
  */
-class PatternVarTests : ProcessorTestSpec({
+class PatternVarScopingTests : ProcessorTestSpec({
 
 
     fun ParserTestCtx.checkVars(firstIsPattern: Boolean, secondIsPattern: Boolean, code: () -> String) {
