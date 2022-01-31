@@ -171,7 +171,11 @@ final class AbruptCompletionAnalysis {
 
     private static OptionalBool handleSwitch(State state, ASTSwitchStatement switchStmt) {
 
-        boolean isExhaustive = switchStmt.isExhaustiveEnumSwitch() || switchStmt.hasDefaultCase();
+        // note: exhaustive enum switches are NOT considered exhaustive
+        // for the purposes of liveness analysis, only the presence of a
+        // default case matters. Otherwise liveness analysis would depend
+        // on type resolution and bad things would happen.
+        boolean isExhaustive = switchStmt.hasDefaultCase();
 
         OptionalBool completesNormally = YES;
         boolean first = true;

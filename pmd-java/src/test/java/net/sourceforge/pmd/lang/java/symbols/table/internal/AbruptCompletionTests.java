@@ -136,6 +136,17 @@ public class AbruptCompletionTests extends BaseNonParserTest {
     }
 
     @Test
+    public void testSwitchExhaustive() {
+        Assertions.assertAll(
+            // no default, even with exhaustive enum, means it can complete normally
+            canCompleteNormally("enum Local { A } Local a = Local.A;\n"
+                                    + "switch(a) { case A: return; }"),
+            mustCompleteAbruptly("enum Local { A } Local a = Local.A;\n"
+                                    + "switch(a) { case A: return; default: return; }")
+        );
+    }
+
+    @Test
     public void testFalseLoopIsUnreachable() {
         Assertions.assertAll(
             mustCompleteNormally("while(false) { }"),
