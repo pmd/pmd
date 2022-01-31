@@ -7,9 +7,9 @@ package net.sourceforge.pmd.lang.java.symbols.table.internal;
 import static net.sourceforge.pmd.util.OptionalBool.NO;
 import static net.sourceforge.pmd.util.OptionalBool.UNKNOWN;
 import static net.sourceforge.pmd.util.OptionalBool.YES;
+import static net.sourceforge.pmd.util.OptionalBool.join;
 import static net.sourceforge.pmd.util.OptionalBool.max;
 import static net.sourceforge.pmd.util.OptionalBool.min;
-import static net.sourceforge.pmd.util.OptionalBool.join;
 
 import java.util.Collections;
 import java.util.HashSet;
