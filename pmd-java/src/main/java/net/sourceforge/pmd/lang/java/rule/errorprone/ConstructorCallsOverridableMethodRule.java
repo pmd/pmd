@@ -67,8 +67,8 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
             JMethodSymbol unsafetyReason = getUnsafetyReason(call, TreePVector.empty());
             if (unsafetyReason != null) {
                 JMethodSig overload = call.getOverloadSelectionInfo().getMethodType();
-                JMethodSig usafety = call.getTypeSystem().sigOf(unsafetyReason);
-                String message = usafety.equals(overload) ? MESSAGE : MESSAGE_TRANSITIVE;
+                JMethodSig unsafeMethod = call.getTypeSystem().sigOf(unsafetyReason);
+                String message = unsafeMethod.equals(overload) ? MESSAGE : MESSAGE_TRANSITIVE;
                 addViolationWithMessage(data, call, message, new Object[] { PrettyPrintingUtil.prettyPrintOverload(unsafetyReason) });
             }
         }

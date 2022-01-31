@@ -35,7 +35,7 @@ public class UselessOverridingMethodRule extends AbstractJavaRulechainRule {
     private static final PropertyDescriptor<Boolean> IGNORE_ANNOTATIONS_DESCRIPTOR =
         booleanProperty("ignoreAnnotations")
             .defaultValue(false)
-            .desc("Ignore methods that have annotation")
+            .desc("Ignore methods that have annotations (except @Override)")
             .build();
 
 

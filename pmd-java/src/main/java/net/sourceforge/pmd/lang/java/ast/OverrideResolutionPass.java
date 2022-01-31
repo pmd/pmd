@@ -21,7 +21,7 @@ import net.sourceforge.pmd.lang.java.types.TypeOps;
  * Populates method declarations with the method they override.
  *
  * @author Clément Fournier
- * @since 6.2.0
+ * @since 7.0.0
  */
 class OverrideResolutionPass {
 
