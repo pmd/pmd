@@ -9,6 +9,7 @@ public enum OptionalBool {
     NO, UNKNOWN, YES;
 
     /**
+     * Returns the logical complement.
      * <pre>{@code
      * yes -> no
      * unk -> unk
@@ -35,27 +36,28 @@ public enum OptionalBool {
     }
 
     /**
+     * If both values are the same, return it. Otherwise return UNKNOWN.
      * <pre>{@code
      * yes, yes -> yes
-     * yes, unk -> unk
-     * unk, unk -> unk
-     * no, unk -> unk
-     * no, yes -> unk
      * no, no -> no
+     * everything else -> unk
      * }</pre>
      */
-    public static OptionalBool mix(OptionalBool a, OptionalBool b) {
+    public static OptionalBool join(OptionalBool a, OptionalBool b) {
         return a != b ? UNKNOWN : a;
     }
 
+    /** Returns true this is not {@link #UNKNOWN}. */
     public boolean isKnown() {
         return this != UNKNOWN;
     }
 
+    /** Returns true if this is {@link #YES}. */
     public boolean isTrue() {
         return this == YES;
     }
 
+    /** Returns either YES or NO depending on the given boolean. */
     public static OptionalBool definitely(boolean a) {
         return a ? YES : NO;
     }

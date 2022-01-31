@@ -9,7 +9,7 @@ import static net.sourceforge.pmd.util.OptionalBool.UNKNOWN;
 import static net.sourceforge.pmd.util.OptionalBool.YES;
 import static net.sourceforge.pmd.util.OptionalBool.max;
 import static net.sourceforge.pmd.util.OptionalBool.min;
-import static net.sourceforge.pmd.util.OptionalBool.mix;
+import static net.sourceforge.pmd.util.OptionalBool.join;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -116,8 +116,8 @@ final class AbruptCompletionAnalysis {
                 // no, unk -> unk
                 // no, no -> no
 
-                return mix(completesNormally(thenBranch, state),
-                           completesNormally(elseBranch, state));
+                return join(completesNormally(thenBranch, state),
+                            completesNormally(elseBranch, state));
             }
 
         } else if (stmt instanceof ASTLabeledStatement) {
@@ -217,7 +217,7 @@ final class AbruptCompletionAnalysis {
                 // which will produce at most UNKNOWN.
 
                 // mix because it either/or, not a sequence (cf if/else treatment)
-                completesNormally = mix(completesNormally, branchCompletesNormally);
+                completesNormally = join(completesNormally, branchCompletesNormally);
             }
         }
 
