@@ -5,7 +5,9 @@
 package net.sourceforge.pmd.lang.java.symbols.table.internal;
 
 
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
@@ -14,6 +16,7 @@ import org.junit.jupiter.api.function.Executable;
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTStatement;
 import net.sourceforge.pmd.lang.java.symboltable.BaseNonParserTest;
 import net.sourceforge.pmd.util.OptionalBool;
@@ -25,15 +28,28 @@ public class AbruptCompletionTests extends BaseNonParserTest {
     private final JavaParsingHelper java17 = java.withDefaultVersion("17");
 
     private Executable canCompleteNormally(String stmt, Consumer<OptionalBool> expected) {
+        return canCompleteNormally(stmt, (actual, ignored) -> expected.accept(actual), it -> it);
+    }
+
+    private Executable canCompleteNormally(String stmtText, BiConsumer<OptionalBool, ASTStatement> expected, Function<ASTBlock, ASTStatement> getNode) {
         return () -> {
-            ASTCompilationUnit ast = java17.parse("class Foo {{ " + stmt + "; }}");
+            ASTCompilationUnit ast = java17.parse("class Foo {{ " + stmtText + "; }}");
 
-            ASTStatement e = ast.descendants(ASTBlock.class).crossFindBoundaries().firstOrThrow();
+            ASTBlock block = ast.descendants(ASTBlock.class).crossFindBoundaries().firstOrThrow();
+            ASTStatement stmt = getNode.apply(block);
 
-
-            OptionalBool actual = AbruptCompletionAnalysis.completesNormally(e);
-            expected.accept(actual);
+            OptionalBool actual = AbruptCompletionAnalysis.completesNormally(stmt);
+            expected.accept(actual, stmt);
         };
+    }
+
+    private Executable completesNormally(String stmtText, OptionalBool expected, Function<ASTBlock, ASTStatement> getNode) {
+        return canCompleteNormally(
+            stmtText,
+            (actual, stmt) -> Assertions.assertEquals(expected, actual,
+                                                      "Can " + stmt.getText() + " complete normally?"),
+            getNode
+        );
     }
 
     private Executable canCompleteNormally(String stmt) {
@@ -142,7 +158,31 @@ public class AbruptCompletionTests extends BaseNonParserTest {
             canCompleteNormally("enum Local { A } Local a = Local.A;\n"
                                     + "switch(a) { case A: return; }"),
             mustCompleteAbruptly("enum Local { A } Local a = Local.A;\n"
-                                    + "switch(a) { case A: return; default: return; }")
+                                     + "switch(a) { case A: return; default: return; }")
+        );
+    }
+
+    @Test
+    public void testYield() {
+        Assertions.assertAll(
+            mustCompleteNormally("int i = switch(1) {"
+                                     + "  case 1 -> { yield 1; }"
+                                     + "  default -> { yield 2; }"
+                                     + "}"),
+            canCompleteNormally("int i = switch(1) {"
+                                    + "  case 1 -> { return; }"
+                                    + "  default -> { yield 2; }"
+                                    + "}"),
+
+            completesNormally(
+                "int i = switch(1) {"
+                    + "  case 1 -> { return; }"
+                    + "  default -> { if (x) yield 2; else yield 3; }"
+                    + "}",
+                OptionalBool.NO, // the if stmt must return abruptly because of yield
+                n -> n.descendants(ASTIfStatement.class).firstOrThrow()
+            )
+
         );
     }
 

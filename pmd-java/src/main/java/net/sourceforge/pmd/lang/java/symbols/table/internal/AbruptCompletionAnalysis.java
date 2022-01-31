@@ -35,6 +35,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTSynchronizedStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTYieldStatement;
+import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 import net.sourceforge.pmd.util.OptionalBool;
 
@@ -73,6 +75,16 @@ final class AbruptCompletionAnalysis {
         } else if (stmt instanceof ASTBreakStatement) {
 
             state.addBreak((ASTBreakStatement) stmt);
+            return NO;
+
+        } else if (stmt instanceof ASTYieldStatement) {
+
+            // note that switch expressions MUST complete normally and
+            // this is enforced by the compiler (which is why this routine
+            // only applies to statements). However, the individual
+            // cases may contain blocks, and within them, yield statements
+            // are similar to a break statement.
+            state.addYield((ASTYieldStatement) stmt);
             return NO;
 
         } else if (stmt instanceof ASTContinueStatement) {
@@ -259,7 +271,7 @@ final class AbruptCompletionAnalysis {
         return completesNormally;
     }
 
-    private static boolean isAncestor(ASTStatement breakTarget, ASTStatement it) {
+    private static boolean isAncestor(ASTStatement breakTarget, JavaNode it) {
         return it.ancestorsOrSelf().any(parent -> parent == breakTarget);
     }
 
@@ -270,7 +282,7 @@ final class AbruptCompletionAnalysis {
 
         private final @Nullable State parent;
         private boolean returnOrThrow;
-        private Set<ASTStatement> breakTargets = Collections.emptySet();
+        private Set<JavaNode> breakTargets = Collections.emptySet();
         private Set<ASTStatement> continueTargets = Collections.emptySet();
 
         State(State parent) {
@@ -282,12 +294,20 @@ final class AbruptCompletionAnalysis {
         }
 
         void addBreak(ASTBreakStatement breakStatement) {
+            addBreakImpl(breakStatement.getTarget());
+        }
+
+        void addYield(ASTYieldStatement yieldStmt) {
+            addBreakImpl(yieldStmt.getYieldTarget());
+        }
+
+        private void addBreakImpl(JavaNode breakTargetStatement) {
             if (breakTargets.isEmpty()) {
                 breakTargets = new HashSet<>();
             }
-            breakTargets.add(breakStatement.getTarget());
+            breakTargets.add(breakTargetStatement);
             if (parent != null) {
-                parent.addBreak(breakStatement);
+                parent.addBreakImpl(breakTargetStatement);
             }
         }
 
