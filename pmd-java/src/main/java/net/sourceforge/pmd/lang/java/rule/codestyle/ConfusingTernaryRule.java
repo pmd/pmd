@@ -103,13 +103,8 @@ public class ConfusingTernaryRule extends AbstractJavaRulechainRule {
         // look for "match && match" or "match || match"
         if (node instanceof ASTInfixExpression) {
             ASTInfixExpression infix = (ASTInfixExpression) node;
-            if (infix.getOperator() != BinaryOp.CONDITIONAL_AND
-                && infix.getOperator() != BinaryOp.CONDITIONAL_OR) {
-                return false;
-            }
-
-            return isMatch(infix.getLeftOperand())
-                && isMatch(infix.getRightOperand());
+            return (infix.getOperator() == BinaryOp.CONDITIONAL_AND || infix.getOperator() == BinaryOp.CONDITIONAL_OR)
+                    && isMatch(infix.getLeftOperand()) && isMatch(infix.getRightOperand());
         }
 
         return false;

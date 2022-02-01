@@ -200,13 +200,13 @@ public final class JavaAstProcessor {
     }
 
     public static void bench(String label, Runnable runnable) {
-        try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.LANGUAGE_SPECIFIC_PROCESSING, label)) {
+        try (TimedOperation ignored = TimeTracker.startOperation(TimedOperationCategory.LANGUAGE_SPECIFIC_PROCESSING, label)) {
             runnable.run();
         }
     }
 
     public static <T> T bench(String label, Supplier<T> runnable) {
-        try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.LANGUAGE_SPECIFIC_PROCESSING, label)) {
+        try (TimedOperation ignored = TimeTracker.startOperation(TimedOperationCategory.LANGUAGE_SPECIFIC_PROCESSING, label)) {
             return runnable.get();
         }
     }
