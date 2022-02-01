@@ -137,6 +137,24 @@ public class AbruptCompletionTests extends BaseNonParserTest {
     }
 
     @Test
+    public void testDoLoop() {
+        Assertions.assertAll(
+            mustCompleteNormally("do { } while(foo);"),
+            mustCompleteNormally("do { continue; } while(foo);"),
+            mustCompleteNormally("do { break; } while(foo);"),
+
+            mustCompleteNormally("do { break; } while(true);"),
+
+            mustCompleteAbruptly("do { return; } while(true);"),
+            mustCompleteAbruptly("do { if(foo) return; } while(true);"),
+            mustCompleteAbruptly("do { continue; } while(true);"),
+
+            // todo actually should be mustCompleteAbruptly
+            canCompleteNormally("do { return; } while(foo);")
+        );
+    }
+
+    @Test
     public void testWhileContinue() {
         Assertions.assertAll(
             mustCompleteNormally("while(foo) { if (x) continue; }"),

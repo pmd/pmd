@@ -22,6 +22,7 @@ import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTBreakStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTContinueStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTDoStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
@@ -64,11 +65,11 @@ final class AbruptCompletionAnalysis {
     }
 
     static OptionalBool completesNormally(ASTStatement stmt) {
-        return completesNormally(stmt, new State(null));
+        return completesNormally(stmt, new SubtreeState(null));
     }
 
 
-    static OptionalBool completesNormally(ASTStatement stmt, State state) {
+    static OptionalBool completesNormally(ASTStatement stmt, SubtreeState state) {
         if (stmt instanceof ASTThrowStatement || stmt instanceof ASTReturnStatement) {
 
             state.setReturnOrThrow(true);
@@ -124,10 +125,7 @@ final class AbruptCompletionAnalysis {
 
         } else if (stmt instanceof ASTLabeledStatement) {
 
-            State subState = new State(state);
-            OptionalBool completesNormally = completesNormally(((ASTLabeledStatement) stmt).getStatement(), subState);
-            // note: here we pass the labeled statement while completesNormally was computed with the enclosed statement.
-            return doesBreakTargetCompleteNormally(stmt, subState, completesNormally);
+            return doesBreakTargetCompleteNormally(stmt, state, ((ASTLabeledStatement) stmt).getStatement());
 
         } else if (stmt instanceof ASTSynchronizedStatement) {
 
@@ -145,33 +143,41 @@ final class AbruptCompletionAnalysis {
 
             return doesLoopCompleteNormally(state, (ASTForStatement) stmt);
 
+        } else if (stmt instanceof ASTDoStatement) {
+
+            ASTDoStatement loop = (ASTDoStatement) stmt;
+
+            return doesLoopCompleteNormally(state, loop);
+
         } else {
             return YES;
         }
     }
 
-    private static OptionalBool doesLoopCompleteNormally(State state, ASTLoopStatement loop) {
+    private static OptionalBool doesLoopCompleteNormally(SubtreeState state, ASTLoopStatement loop) {
         if (JavaRuleUtil.isBooleanLiteral(loop.getCondition(), false)) {
+            if (loop instanceof ASTDoStatement) {
+                return doesBreakTargetCompleteNormally(loop, state, loop.getBody());
+            }
             return YES;
         }
 
-        State loopState = new State(state);
-        OptionalBool bodyCompletesNormally = completesNormally(loop.getBody(), loopState);
+        OptionalBool bodyCompletesNormally = completesNormally(loop.getBody(), state);
 
         if (JavaRuleUtil.isBooleanLiteral(loop.getCondition(), true)) {
-            return loopState.containsBreak(loop)
+            return state.containsBreak(loop)
                    // then the loop may complete normally via break
-                   ? doesBreakTargetCompleteNormally(loop, loopState, bodyCompletesNormally)
+                   ? doesBreakTargetCompleteNormally(loop, state, bodyCompletesNormally)
                    // then the loop may only end through exception or return, ie abruptly
                    : NO;
         } else {
             // this max accounts for the case when the body
             // is never executed, which is a normal completion
-            return max(UNKNOWN, doesBreakTargetCompleteNormally(loop, loopState, bodyCompletesNormally));
+            return max(UNKNOWN, doesBreakTargetCompleteNormally(loop, state, bodyCompletesNormally));
         }
     }
 
-    private static OptionalBool handleSwitch(State state, ASTSwitchStatement switchStmt) {
+    private static OptionalBool handleSwitch(SubtreeState state, ASTSwitchStatement switchStmt) {
 
         // note: exhaustive enum switches are NOT considered exhaustive
         // for the purposes of liveness analysis, only the presence of a
@@ -181,20 +187,18 @@ final class AbruptCompletionAnalysis {
 
         OptionalBool completesNormally = YES;
         boolean first = true;
-        State switchState = new State(state);
         for (ASTSwitchBranch branch : switchStmt.getBranches()) {
             OptionalBool branchCompletesNormally;
 
             if (branch instanceof ASTSwitchArrowBranch) {
                 ASTSwitchArrowRHS rhs = ((ASTSwitchArrowBranch) branch).getRightHandSide();
-                branchCompletesNormally = switchArrowBranchCompletesNormally(state, switchStmt, rhs);
+                branchCompletesNormally = switchArrowBranchCompletesNormally(new SubtreeState(state), switchStmt, rhs);
 
             } else if (branch instanceof ASTSwitchFallthroughBranch) {
                 NodeStream<ASTStatement> statements = ((ASTSwitchFallthroughBranch) branch).getStatements();
-                State branchState = new State(switchState);
+                SubtreeState branchState = new SubtreeState(state);
                 branchCompletesNormally = handleBlockLike(statements, branchState);
                 branchCompletesNormally = doesBreakTargetCompleteNormally(switchStmt, branchState, branchCompletesNormally);
-
             } else {
                 throw AssertionUtil.shouldNotReachHere("Not a branch type :" + branch);
             }
@@ -211,29 +215,26 @@ final class AbruptCompletionAnalysis {
             }
         }
 
-        return doesBreakTargetCompleteNormally(switchStmt, switchState, completesNormally);
+        return doesBreakTargetCompleteNormally(switchStmt, state, completesNormally);
     }
 
-    private static OptionalBool switchArrowBranchCompletesNormally(State state, ASTSwitchStatement switchStmt, ASTSwitchArrowRHS rhs) {
+    private static OptionalBool switchArrowBranchCompletesNormally(SubtreeState state, ASTSwitchStatement switchStmt, ASTSwitchArrowRHS rhs) {
         if (rhs instanceof ASTExpression) {
             return YES;
         } else if (rhs instanceof ASTThrowStatement) {
             state.setReturnOrThrow(true);
             return NO;
         } else if (rhs instanceof ASTBlock) {
-            State subState = new State(state);
-            OptionalBool branchCompletesNormally = completesNormally((ASTStatement) rhs, subState);
-            return doesBreakTargetCompleteNormally(switchStmt, subState, branchCompletesNormally);
+            return doesBreakTargetCompleteNormally(switchStmt, state, (ASTStatement) rhs);
         } else {
             throw AssertionUtil.shouldNotReachHere("not a branch RHS: " + rhs);
         }
     }
 
-    private static OptionalBool handleBlockLike(NodeStream<ASTStatement> stmts, State state) {
+    private static OptionalBool handleBlockLike(NodeStream<ASTStatement> stmts, SubtreeState state) {
         OptionalBool total = YES; // empty block completes normally
         for (ASTStatement child : stmts) {
-            OptionalBool childCompletesNormally = completesNormally(child, state);
-            total = min(total, childCompletesNormally);
+            total = min(total, completesNormally(child, new SubtreeState(state)));
             if (total == NO) {
                 // note: short circuit implement a liveness analysis
                 // following statements are unreachable
@@ -254,7 +255,7 @@ final class AbruptCompletionAnalysis {
      * that target a statement outside of the `breakTarget` cause abrupt
      * completion of the `breakTarget`.
      */
-    private static OptionalBool doesBreakTargetCompleteNormally(ASTStatement breakTarget, State state, OptionalBool bodyCompletesNormally) {
+    private static OptionalBool doesBreakTargetCompleteNormally(ASTStatement breakTarget, SubtreeState state, OptionalBool bodyCompletesNormally) {
         if (bodyCompletesNormally == YES
             || state.breakTargets.isEmpty()
             && state.continueTargets.isEmpty()
@@ -265,7 +266,11 @@ final class AbruptCompletionAnalysis {
         return onlyBreaksWithinSubTree(breakTarget, state) ? YES : bodyCompletesNormally;
     }
 
-    private static boolean onlyBreaksWithinSubTree(ASTStatement breakTarget, State state) {
+    private static OptionalBool doesBreakTargetCompleteNormally(ASTStatement breakTarget, SubtreeState state, ASTStatement body) {
+        return doesBreakTargetCompleteNormally(breakTarget, state, completesNormally(body, state));
+    }
+
+    private static boolean onlyBreaksWithinSubTree(ASTStatement breakTarget, SubtreeState state) {
         return state.breakTargets.stream().allMatch(it -> isAncestor(breakTarget, it))
             && state.continueTargets.stream().allMatch(it -> isAncestor(breakTarget, it));
     }
@@ -277,14 +282,14 @@ final class AbruptCompletionAnalysis {
     /**
      * Tracks exploration state of an expression.
      */
-    private static class State {
+    private static class SubtreeState {
 
-        private final @Nullable State parent;
+        private final @Nullable SubtreeState parent;
         private boolean returnOrThrow;
         private Set<JavaNode> breakTargets = Collections.emptySet();
         private Set<ASTStatement> continueTargets = Collections.emptySet();
 
-        State(State parent) {
+        SubtreeState(SubtreeState parent) {
             this.parent = parent;
         }
 
