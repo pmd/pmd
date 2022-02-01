@@ -104,6 +104,7 @@ public class AbruptCompletionTests extends BaseNonParserTest {
             mustCompleteNormally("l: while(foo) { if (x) break l; }"),
 
             canCompleteNormally("while(true) { if (foo) break; }"),
+            mustCompleteNormally("while(false) { return; }"),
 
             mustCompleteAbruptly("while(true) { return; }"),
             mustCompleteAbruptly("while(true) { }"),
@@ -111,6 +112,27 @@ public class AbruptCompletionTests extends BaseNonParserTest {
             mustCompleteAbruptly("while(true) { while(foo) break; }"),
             mustCompleteNormally("x: while(true) { while(foo) break x; }"),
             mustCompleteAbruptly("while(true) { if (print()) return; }")
+        );
+    }
+
+    @Test
+    public void testForLoop() {
+        Assertions.assertAll(
+            canCompleteNormally("for(; foo; ) { return; }"),
+            mustCompleteNormally("for(;foo;) { break; }"),
+            mustCompleteNormally("l: for(;foo;) { break; }"),
+            mustCompleteNormally("l: for(;foo;) { break l; }"),
+            mustCompleteNormally("l: for(;foo;) { if (x) break l; }"),
+
+            canCompleteNormally("for(;true;) { if (foo) break; }"),
+            mustCompleteNormally("for(;false;) { return; }"),
+
+            mustCompleteAbruptly("for(;true;) { return; }"),
+            mustCompleteAbruptly("for(;true;) { }"),
+            mustCompleteNormally("for(;true;) { break; }"),
+            mustCompleteAbruptly("for(;true;) { while(foo) break; }"),
+            mustCompleteNormally("x: for(;true;) { while(foo) break x; }"),
+            mustCompleteAbruptly("for(;true;) { if (print()) return; }")
         );
     }
 

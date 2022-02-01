@@ -23,8 +23,10 @@ import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTBreakStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTContinueStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTLabeledStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTLoopStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchArrowBranch;
@@ -137,28 +139,35 @@ final class AbruptCompletionAnalysis {
 
         } else if (stmt instanceof ASTWhileStatement) {
 
-            ASTWhileStatement loop = (ASTWhileStatement) stmt;
+            return doesLoopCompleteNormally(state, (ASTWhileStatement) stmt);
 
-            if (JavaRuleUtil.isBooleanLiteral(loop.getCondition(), false)) {
-                return YES; // body is unreachable
-            }
+        } else if (stmt instanceof ASTForStatement) {
 
-            State loopState = new State(state);
-            OptionalBool bodyCompletesNormally = completesNormally(loop.getBody(), loopState);
+            return doesLoopCompleteNormally(state, (ASTForStatement) stmt);
 
-            if (JavaRuleUtil.isBooleanLiteral(loop.getCondition(), true)) {
-                return loopState.containsBreak(loop)
-                       // then the loop may complete normally via break
-                       ? doesBreakTargetCompleteNormally(loop, loopState, bodyCompletesNormally)
-                       // then the loop may only end through exception or return, ie abruptly
-                       : NO;
-            } else {
-                // this max accounts for the case when the body
-                // is never executed, which is a normal completion
-                return max(UNKNOWN, doesBreakTargetCompleteNormally(loop, loopState, bodyCompletesNormally));
-            }
         } else {
             return YES;
+        }
+    }
+
+    private static OptionalBool doesLoopCompleteNormally(State state, ASTLoopStatement loop) {
+        if (JavaRuleUtil.isBooleanLiteral(loop.getCondition(), false)) {
+            return YES;
+        }
+
+        State loopState = new State(state);
+        OptionalBool bodyCompletesNormally = completesNormally(loop.getBody(), loopState);
+
+        if (JavaRuleUtil.isBooleanLiteral(loop.getCondition(), true)) {
+            return loopState.containsBreak(loop)
+                   // then the loop may complete normally via break
+                   ? doesBreakTargetCompleteNormally(loop, loopState, bodyCompletesNormally)
+                   // then the loop may only end through exception or return, ie abruptly
+                   : NO;
+        } else {
+            // this max accounts for the case when the body
+            // is never executed, which is a normal completion
+            return max(UNKNOWN, doesBreakTargetCompleteNormally(loop, loopState, bodyCompletesNormally));
         }
     }
 
