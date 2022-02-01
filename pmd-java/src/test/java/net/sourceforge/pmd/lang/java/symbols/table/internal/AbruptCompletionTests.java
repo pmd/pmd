@@ -155,6 +155,16 @@ public class AbruptCompletionTests extends BaseNonParserTest {
     }
 
     @Test
+    public void testForeachLoop() {
+        Assertions.assertAll(
+            mustCompleteNormally("for (int i : new int[]{}) { }"),
+            mustCompleteNormally("for (int i : new int[]{}) { continue; }"),
+            mustCompleteNormally("for (int i : new int[]{}) { break; }"),
+            canCompleteNormally("for (int i : new int[]{}) { return; }")
+        );
+    }
+
+    @Test
     public void testWhileContinue() {
         Assertions.assertAll(
             mustCompleteNormally("while(foo) { if (x) continue; }"),

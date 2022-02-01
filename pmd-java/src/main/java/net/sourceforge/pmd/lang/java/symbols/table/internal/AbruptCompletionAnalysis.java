@@ -25,6 +25,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTContinueStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTDoStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTForeachStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTLabeledStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTLoopStatement;
@@ -148,6 +149,10 @@ final class AbruptCompletionAnalysis {
             ASTDoStatement loop = (ASTDoStatement) stmt;
 
             return doesLoopCompleteNormally(state, loop);
+
+        } else if (stmt instanceof ASTForeachStatement) {
+
+            return doesLoopCompleteNormally(state, (ASTLoopStatement) stmt);
 
         } else {
             return YES;
