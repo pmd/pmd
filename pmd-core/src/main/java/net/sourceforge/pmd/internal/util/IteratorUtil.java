@@ -366,7 +366,6 @@ public final class IteratorUtil {
         }
 
         return new AbstractIterator<T>() {
-            @SuppressWarnings("PMD.SingularField") // false positive, see #3754
             private int yielded = 0;
 
             @Override
