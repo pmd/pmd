@@ -168,9 +168,9 @@ public final class DataflowPass {
      */
     public static final class ReachingDefinitionSet {
 
-        private final Set<AssignmentEntry> reaching;
-        private final boolean isNotFullyKnown;
-        private final boolean containsInitialFieldValue;
+        private Set<AssignmentEntry> reaching;
+        private boolean isNotFullyKnown;
+        private boolean containsInitialFieldValue;
 
         ReachingDefinitionSet(/*Mutable*/Set<AssignmentEntry> reaching) {
             this.reaching = reaching;
@@ -198,6 +198,12 @@ public final class DataflowPass {
          */
         public boolean containsInitialFieldValue() {
             return containsInitialFieldValue;
+        }
+
+        void absorb(ReachingDefinitionSet reaching) {
+            this.containsInitialFieldValue |= reaching.containsInitialFieldValue;
+            this.isNotFullyKnown |= reaching.isNotFullyKnown;
+            this.reaching.addAll(reaching.reaching);
         }
     }
 
@@ -811,7 +817,6 @@ public final class DataflowPass {
 
         @Override
         public SpanInfo visit(ASTUnaryExpression node, SpanInfo data) {
-            super.visit(node, data);
             data = acceptOpt(node.getOperand(), data);
 
             if (node.getOperator().isPure()) {
@@ -1183,7 +1188,15 @@ public final class DataflowPass {
                 global.usedAssignments.addAll(info.reachingDefs);
                 if (reachingDefSink != null) {
                     ReachingDefinitionSet reaching = new ReachingDefinitionSet(new HashSet<>(info.reachingDefs));
-                    reachingDefSink.getUserMap().set(REACHING_DEFS, reaching);
+                    // need to merge into previous to account for cyclic control flow
+                    reachingDefSink.getUserMap().compute(REACHING_DEFS, current -> {
+                        if (current != null) {
+                            current.absorb(reaching);
+                            return current;
+                        } else {
+                            return reaching;
+                        }
+                    });
                 }
             }
         }

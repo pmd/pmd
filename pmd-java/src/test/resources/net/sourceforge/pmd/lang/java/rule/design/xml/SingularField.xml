@@ -802,4 +802,58 @@ public class Foo {
 }
             ]]></code>
     </test-code>
+    <test-code>
+        <description>#3754: failure case with field used in loop</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class SingularFieldFP {
+                public Object case1() {
+                    return new Object() {
+                        private int field; // <---------- false positive
+                        public boolean foo() {
+                            while (field++ < 10);
+                            return false;
+                        }
+                    };
+                }
+                public Object case2() {
+                    return new Object() {
+                        private int field; // <---------- false positive
+                        public boolean foo() {
+                            while (field < 10) {
+                                field++;
+                            }
+                            return false;
+                        }
+                    };
+                }
+                public Object case3() {
+                    return new Object() {
+                        private int field;
+                        public boolean foo() {
+                            if (field < 10) {
+                                field++;
+                            }
+                            while (field < 10) {
+                                field++;
+                            }
+                            return false;
+                        }
+                    };
+                }
+                public Object case4() {
+                    return new Object() {
+                        private int field;
+                        public boolean foo() {
+                            if (field > 10) {
+                                return true;
+                            }
+                            field++;
+                            return false;
+                        }
+                    };
+                }
+            }
+            ]]></code>
+    </test-code>
 </test-data>

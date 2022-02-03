@@ -6,6 +6,7 @@ package net.sourceforge.pmd.util;
 
 import java.util.IdentityHashMap;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -65,6 +66,21 @@ public final class DataMap<K> {
     @SuppressWarnings("unchecked")
     public <T> T computeIfAbsent(DataKey<? extends K, T> key, Supplier<? extends T> supplier) {
         return (T) getMap().computeIfAbsent(key, k -> supplier.get());
+    }
+
+    /**
+     * Create or replace a mapping with a value computed from the current
+     * value (or null if missing).
+     *
+     * @param key      Key
+     * @param function Supplier for a value
+     * @param <T>      Type of the data
+     *
+     * @return Value returned by the parameter function
+     */
+    @SuppressWarnings("unchecked")
+    public <T> T compute(DataKey<? extends K, T> key, Function<? super @Nullable T, ? extends T> function) {
+        return (T) getMap().compute(key, (k, v) -> function.apply((T) v));
     }
 
     private Map<DataKey<? extends K, ?>, Object> getMap() {
