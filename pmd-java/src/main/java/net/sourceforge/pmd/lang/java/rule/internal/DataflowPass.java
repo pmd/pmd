@@ -296,7 +296,7 @@ public final class DataflowPass {
         }
     }
 
-    private static class ReachingDefsVisitor extends JavaVisitorBase<SpanInfo, SpanInfo> {
+    private static final class ReachingDefsVisitor extends JavaVisitorBase<SpanInfo, SpanInfo> {
 
 
         static final ReachingDefsVisitor ONLY_LOCALS = new ReachingDefsVisitor(null, false);
@@ -862,11 +862,9 @@ public final class DataflowPass {
         }
 
         private boolean isRelevantField(ASTExpression lhs) {
-            if (!(lhs instanceof ASTNamedReferenceExpr)) {
-                return false;
-            }
-            return trackThisInstance() && JavaRuleUtil.isThisFieldAccess(lhs)
-                || trackStaticFields() && isStaticFieldOfThisClass(((ASTNamedReferenceExpr) lhs).getReferencedSym());
+            return (lhs instanceof ASTNamedReferenceExpr)
+                && (trackThisInstance() && JavaRuleUtil.isThisFieldAccess(lhs)
+                        || trackStaticFields() && isStaticFieldOfThisClass(((ASTNamedReferenceExpr) lhs).getReferencedSym()));
         }
 
         private boolean isStaticFieldOfThisClass(JVariableSymbol var) {
@@ -1022,7 +1020,7 @@ public final class DataflowPass {
      * The shared state for all {@link SpanInfo} instances in the same
      * toplevel class.
      */
-    private static class GlobalAlgoState {
+    private static final class GlobalAlgoState {
 
         final Set<AssignmentEntry> allAssignments;
         final Set<AssignmentEntry> usedAssignments;
@@ -1082,7 +1080,7 @@ public final class DataflowPass {
     /**
      * Information about a span of code.
      */
-    private static class SpanInfo {
+    private static final class SpanInfo {
 
         // spans are arranged in a tree, to look for enclosing finallies
         // when abrupt completion occurs. Blocks that have non-local

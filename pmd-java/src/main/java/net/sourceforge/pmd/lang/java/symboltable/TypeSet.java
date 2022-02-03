@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.java.typeresolution.PMDASMClassLoader;
@@ -291,7 +292,7 @@ public class TypeSet {
          * cache to have ~90% hit ratio unless abusing star imports (import on
          * demand)
          */
-        private static final ConcurrentHashMap<String, Class<?>> CLASS_CACHE = new ConcurrentHashMap<>();
+        private static final ConcurrentMap<String, Class<?>> CLASS_CACHE = new ConcurrentHashMap<>();
 
         /**
          * Creates a {@link ImplicitImportResolver}

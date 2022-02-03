@@ -81,11 +81,7 @@ final class AnnotationSuppressionUtil {
      */
     private static boolean suppresses(final Node node, Rule rule) {
         Annotatable suppressor = getSuppressor(node);
-        if (suppressor == null) {
-            return false;
-        }
-
-        return hasSuppressWarningsAnnotationFor(suppressor, rule);
+        return suppressor != null && hasSuppressWarningsAnnotationFor(suppressor, rule);
     }
 
     @Nullable

@@ -47,10 +47,8 @@ public class CloneMethodMustImplementCloneableRule extends AbstractJavaRulechain
     }
 
     private static boolean justThrowsCloneNotSupported(ASTBlock body) {
-        if (body.size() != 1) {
-            return false;
-        }
-        return body.getChild(0)
+        return body.size() == 1
+                && body.getChild(0)
                    .asStream()
                    .filterIs(ASTThrowStatement.class)
                    .map(ASTThrowStatement::getExpr)

@@ -60,12 +60,8 @@ public final class TypeTestUtil {
      */
     public static boolean isA(final @NonNull Class<?> clazz, final @Nullable TypeNode node) {
         AssertionUtil.requireParamNotNull("class", clazz);
-        if (node == null) {
-            return false;
-        }
-
-        return hasNoSubtypes(clazz) ? isExactlyA(clazz, node)
-                                    : isA(clazz, node.getTypeMirror());
+        return node != null && (hasNoSubtypes(clazz) ? isExactlyA(clazz, node)
+                                    : isA(clazz, node.getTypeMirror()));
     }
 
     /**
@@ -127,11 +123,7 @@ public final class TypeTestUtil {
 
     public static boolean isA(@NonNull String canonicalName, @Nullable JTypeMirror thisType) {
         AssertionUtil.requireParamNotNull("canonicalName", (Object) canonicalName);
-        if (thisType == null) {
-            return false;
-        }
-
-        return isA(canonicalName, thisType, null);
+        return thisType != null && isA(canonicalName, thisType, null);
     }
 
     public static boolean isA(@NonNull JTypeMirror t1, @Nullable TypeNode t2) {
@@ -208,19 +200,12 @@ public final class TypeTestUtil {
      */
     public static boolean isExactlyA(final @NonNull Class<?> clazz, final @Nullable TypeNode node) {
         AssertionUtil.requireParamNotNull("class", clazz);
-        if (node == null) {
-            return false;
-        }
-
-        return isExactlyA(clazz, node.getTypeMirror().getSymbol());
+        return node != null && isExactlyA(clazz, node.getTypeMirror().getSymbol());
     }
 
     public static boolean isExactlyA(@NonNull Class<?> klass, @Nullable JTypeMirror type) {
         AssertionUtil.requireParamNotNull("class", klass);
-        if (type == null) {
-            return false;
-        }
-        return isExactlyA(klass, type.getSymbol());
+        return type != null && isExactlyA(klass, type.getSymbol());
     }
 
     public static boolean isExactlyA(@NonNull Class<?> klass, @Nullable JTypeDeclSymbol type) {
@@ -272,10 +257,7 @@ public final class TypeTestUtil {
      */
     public static boolean isExactlyA(@NonNull String canonicalName, final @Nullable TypeNode node) {
         AssertionUtil.assertValidJavaBinaryName(canonicalName);
-        if (node == null) {
-            return false;
-        }
-        return isExactlyAOrAnon(canonicalName, node.getTypeMirror()) == OptionalBool.YES;
+        return node != null && isExactlyAOrAnon(canonicalName, node.getTypeMirror()) == OptionalBool.YES;
     }
 
     static OptionalBool isExactlyAOrAnon(@NonNull String canonicalName, final @NonNull JTypeMirror node) {

@@ -132,7 +132,7 @@ public class CouplingBetweenObjectsRule extends AbstractJavaRule {
         }
         JTypeDeclSymbol symbol = t.getSymbol();
         return symbol == null
-            || symbol.getPackageName().equals(JAccessibleElementSymbol.PRIMITIVE_PACKAGE)
+            || JAccessibleElementSymbol.PRIMITIVE_PACKAGE.equals(symbol.getPackageName())
             || t.isPrimitive()
             || t.isBoxedPrimitive();
     }
