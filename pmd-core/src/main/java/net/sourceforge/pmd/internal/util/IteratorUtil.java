@@ -536,14 +536,20 @@ public final class IteratorUtil {
         }
 
         protected final void setNext(T t) {
+            assert state == null : "Must call exactly one of setNext or done";
             next = t;
             state = State.READY;
         }
 
         protected final void done() {
+            assert state == null : "Must call exactly one of setNext or done";
             state = State.DONE;
         }
 
+        /**
+         * Compute the next element. Implementations must call either
+         * {@link #done()} or {@link #setNext(Object)} exactly once.
+         */
         protected abstract void computeNext();
 
         enum State {

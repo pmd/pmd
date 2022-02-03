@@ -9,6 +9,8 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
+import net.sourceforge.pmd.lang.java.types.JMethodSig;
+import net.sourceforge.pmd.lang.java.types.TypeSystem;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.lang.rule.xpath.DeprecatedAttribute;
 
@@ -41,10 +43,14 @@ import net.sourceforge.pmd.lang.rule.xpath.DeprecatedAttribute;
  */
 public final class ASTMethodDeclaration extends AbstractMethodOrConstructorDeclaration<JMethodSymbol> {
 
+    /**
+     * Populated by {@link OverrideResolutionPass}.
+     */
+    private JMethodSig overriddenMethod = null;
+
     ASTMethodDeclaration(int id) {
         super(id);
     }
-
 
     @Override
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
@@ -53,13 +59,26 @@ public final class ASTMethodDeclaration extends AbstractMethodOrConstructorDecla
 
     /**
      * Returns true if this method is overridden.
-     * TODO for now, this just checks for an @Override annotation,
-     *   but this should definitely do what MissingOverride does.
-     *   This could be useful in UnusedPrivateMethod (to check not only private methods),
-     *   and also UselessOverridingMethod, and overall many many rules.
      */
     public boolean isOverridden() {
-        return isAnnotationPresent(Override.class);
+        return overriddenMethod != null;
+    }
+
+    /**
+     * Returns the signature of the method this method overrides in a
+     * supertype. Note that this method may be implementing several methods
+     * of super-interfaces at once, in that case, an arbitrary one is returned.
+     *
+     * <p>If the method has an {@link Override} annotation, but we couldn't
+     * resolve any method that is actually implemented, this will return
+     * {@link TypeSystem#UNRESOLVED_METHOD}.
+     */
+    public JMethodSig getOverriddenMethod() {
+        return overriddenMethod;
+    }
+
+    void setOverriddenMethod(JMethodSig overriddenMethod) {
+        this.overriddenMethod = overriddenMethod;
     }
 
     @Override

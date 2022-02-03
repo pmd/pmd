@@ -754,6 +754,10 @@ public final class JavaRuleUtil {
         return e instanceof ASTThisExpression && ((ASTThisExpression) e).getQualifier() == null;
     }
 
+    public static boolean isUnqualifiedSuper(ASTExpression e) {
+        return e instanceof ASTSuperExpression && ((ASTSuperExpression) e).getQualifier() == null;
+    }
+
     /**
      * Returns true if the expression is a {@link ASTNamedReferenceExpr}
      * that references any of the symbol in the set.
@@ -996,5 +1000,13 @@ public final class JavaRuleUtil {
             return ((ASTArrayAllocation) expr).getArrayInitializer() != null;
         }
         return false;
+    }
+
+    public static boolean isCloneMethod(ASTMethodDeclaration node) {
+        // this is enough as in valid code, this signature overrides Object#clone
+        // and the other things like visibility are checked by the compiler
+        return "clone".equals(node.getName())
+            && node.getArity() == 0
+            && !node.isStatic();
     }
 }
