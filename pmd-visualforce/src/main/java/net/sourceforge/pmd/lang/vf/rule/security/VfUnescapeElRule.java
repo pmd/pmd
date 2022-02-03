@@ -46,8 +46,8 @@ public class VfUnescapeElRule extends AbstractVfRule {
     private static final String FALSE = "false";
     private static final Pattern ON_EVENT = Pattern.compile("^on(\\w)+$");
     private static final Pattern PLACEHOLDERS = Pattern.compile("\\{(\\w|,|\\.|'|:|\\s)*\\}");
-    private static final EnumSet<ElEscapeDetector.Escaping> JSENCODE_JSINHTMLENCODE = EnumSet.of(ElEscapeDetector.Escaping.JSENCODE, ElEscapeDetector.Escaping.JSINHTMLENCODE);
-    private static final EnumSet<ElEscapeDetector.Escaping> ANY_ENCODE = EnumSet.of(ElEscapeDetector.Escaping.ANY);
+    private static final Set<ElEscapeDetector.Escaping> JSENCODE_JSINHTMLENCODE = EnumSet.of(ElEscapeDetector.Escaping.JSENCODE, ElEscapeDetector.Escaping.JSINHTMLENCODE);
+    private static final Set<ElEscapeDetector.Escaping> ANY_ENCODE = EnumSet.of(ElEscapeDetector.Escaping.ANY);
 
     @Override
     public Object visit(ASTHtmlScript node, Object data) {
@@ -78,12 +78,9 @@ public class VfUnescapeElRule extends AbstractVfRule {
         ASTExpression expression = el.getFirstChildOfType(ASTExpression.class);
 
         // If no such node was found, then there's nothing to escape, so we're fine.
-        if (expression == null) {
-            return true;
-        }
-
-        // Otherwise, we should pass the expression node into our recursive checker.
-        return ElEscapeDetector.expressionRecursivelyValid(expression, JSENCODE_JSINHTMLENCODE);
+        return expression == null
+                // Otherwise, we should pass the expression node into our recursive checker.
+                || ElEscapeDetector.expressionRecursivelyValid(expression, JSENCODE_JSINHTMLENCODE);
     }
 
     @Override
