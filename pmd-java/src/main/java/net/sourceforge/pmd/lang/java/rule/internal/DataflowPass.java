@@ -862,7 +862,7 @@ public final class DataflowPass {
         }
 
         private boolean isRelevantField(ASTExpression lhs) {
-            return (lhs instanceof ASTNamedReferenceExpr)
+            return lhs instanceof ASTNamedReferenceExpr
                 && (trackThisInstance() && JavaRuleUtil.isThisFieldAccess(lhs)
                         || trackStaticFields() && isStaticFieldOfThisClass(((ASTNamedReferenceExpr) lhs).getReferencedSym()));
         }
