@@ -241,7 +241,7 @@ final class MostlySingularMultimap<K, V> {
         public @Nullable Map<K, V> buildAsSingular() {
             consume();
             if (!isSingular) {
-                return Collections.emptyMap();
+                return null; // NOPMD: returning null as in the spec (Nullable)
             }
             return (Map<K, V>) map;
         }
