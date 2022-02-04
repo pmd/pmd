@@ -139,6 +139,7 @@ public final class RuleContext {
      * 
      * @param rv A violation
      */
+    @InternalApi
     public void addViolationNoSuppress(RuleViolation rv) {
         listener.onRuleViolation(rv);
     }

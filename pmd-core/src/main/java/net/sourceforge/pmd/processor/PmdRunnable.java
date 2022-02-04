@@ -34,21 +34,21 @@ abstract class PmdRunnable implements Runnable {
 
     private final DataSource dataSource;
     private final File file;
-    private final GlobalAnalysisListener ruleContext;
+    private final GlobalAnalysisListener globalListener;
 
     private final PMDConfiguration configuration;
 
     private final RulesetStageDependencyHelper dependencyHelper;
 
     PmdRunnable(DataSource dataSource,
-                GlobalAnalysisListener ruleContext,
+                GlobalAnalysisListener globalListener,
                 PMDConfiguration configuration) {
         this.dataSource = dataSource;
         // this is the real, canonical and absolute filename (not shortened)
         String realFileName = dataSource.getNiceFileName(false, null);
 
         this.file = new File(realFileName);
-        this.ruleContext = ruleContext;
+        this.globalListener = globalListener;
         this.configuration = configuration;
         this.dependencyHelper = new RulesetStageDependencyHelper(configuration);
     }
@@ -66,7 +66,7 @@ abstract class PmdRunnable implements Runnable {
 
         RuleSets ruleSets = getRulesets();
 
-        try (FileAnalysisListener listener = ruleContext.startFileAnalysis(dataSource)) {
+        try (FileAnalysisListener listener = globalListener.startFileAnalysis(dataSource)) {
 
             LanguageVersion langVersion = configuration.getLanguageVersionOfFile(file.getPath());
 

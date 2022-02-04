@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.util;
 
+import java.io.Closeable;
 import java.util.function.Consumer;
 
 /**
@@ -14,7 +15,7 @@ import java.util.function.Consumer;
  */
 public abstract class BaseResultProducingCloseable<T> implements AutoCloseable {
 
-    private boolean closed;
+    private volatile boolean closed;
 
     protected final void ensureOpen() {
         if (closed) {
@@ -39,13 +40,25 @@ public abstract class BaseResultProducingCloseable<T> implements AutoCloseable {
     protected abstract T getResultImpl();
 
     /**
-     * @implNote Call super
+     * Close this object. Idempotent.
+     *
+     * @implNote Override {@link #closeImpl()} instead.
      */
     @Override
-    public void close() {
-        closed = true;
+    public final void close() {
+        if (!closed) {
+            closed = true;
+            closeImpl();
+        }
     }
 
+    /**
+     * Close this closeable as per the contract of {@link Closeable#close()}.
+     * Called exactly once. By default does nothing.
+     */
+    protected void closeImpl() {
+        // override
+    }
 
     public static <U, C extends BaseResultProducingCloseable<U>> U using(C closeable, Consumer<? super C> it) {
         try {

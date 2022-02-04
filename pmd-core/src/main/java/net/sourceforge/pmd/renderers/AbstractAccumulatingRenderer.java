@@ -44,8 +44,7 @@ public abstract class AbstractAccumulatingRenderer extends AbstractRenderer {
     }
 
     @Override
-    public final void startFileAnalysis(DataSource dataSource) {
-        // do nothing, final because it will never be called by the listener
+    public void startFileAnalysis(DataSource dataSource) {
         Objects.requireNonNull(dataSource);
     }
 
@@ -74,6 +73,7 @@ public abstract class AbstractAccumulatingRenderer extends AbstractRenderer {
 
             @Override
             public FileAnalysisListener startFileAnalysis(DataSource file) {
+                AbstractAccumulatingRenderer.this.startFileAnalysis(file);
                 return reportBuilder.startFileAnalysis(file);
             }
 
