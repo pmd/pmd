@@ -65,7 +65,7 @@ public abstract class AbstractAccumulatingRenderer extends AbstractRenderer {
 
     @Override
     public GlobalAnalysisListener newListener() throws IOException {
-        try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.REPORTING)) {
+        try (TimedOperation ignored = TimeTracker.startOperation(TimedOperationCategory.REPORTING)) {
             this.start();
         }
 
@@ -85,7 +85,7 @@ public abstract class AbstractAccumulatingRenderer extends AbstractRenderer {
             @Override
             public void close() throws Exception {
                 reportBuilder.close();
-                try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.REPORTING)) {
+                try (TimedOperation ignored = TimeTracker.startOperation(TimedOperationCategory.REPORTING)) {
                     outputReport(reportBuilder.getResult());
                     end();
                     flush();
