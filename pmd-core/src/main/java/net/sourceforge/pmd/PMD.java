@@ -154,7 +154,7 @@ public final class PMD {
                                                                                      violationCounter))) {
 
 
-                try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.FILE_PROCESSING)) {
+                try (TimedOperation ignored = TimeTracker.startOperation(TimedOperationCategory.FILE_PROCESSING)) {
                     processFiles(configuration, ruleSets, files, listener);
                 }
             }
