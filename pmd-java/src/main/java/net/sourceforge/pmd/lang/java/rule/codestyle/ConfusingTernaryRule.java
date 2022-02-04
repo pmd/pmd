@@ -52,7 +52,8 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
  */
 public class ConfusingTernaryRule extends AbstractJavaRulechainRule {
 
-    private static final PropertyDescriptor<Boolean> IGNORE_ELSE_IF = booleanProperty("ignoreElseIf").desc("Ignore conditions with an else-if case").defaultValue(false).build();
+    private static final PropertyDescriptor<Boolean> IGNORE_ELSE_IF = booleanProperty("ignoreElseIf")
+            .desc("Ignore conditions with an else-if case").defaultValue(false).build();
 
     public ConfusingTernaryRule() {
         super(ASTIfStatement.class, ASTConditionalExpression.class);
@@ -70,7 +71,7 @@ public class ConfusingTernaryRule extends AbstractJavaRulechainRule {
                 addViolation(data, node);
             }
         }
-        return super.visit(node, data);
+        return data;
     }
 
     @Override
@@ -79,7 +80,7 @@ public class ConfusingTernaryRule extends AbstractJavaRulechainRule {
         if (isMatch(node.getCondition())) {
             addViolation(data, node);
         }
-        return super.visit(node, data);
+        return data;
     }
 
     // recursive!

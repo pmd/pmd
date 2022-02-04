@@ -66,7 +66,7 @@ public class UselessOverridingMethodRule extends AbstractJavaRulechainRule {
         ASTStatement statement = ASTList.singleOrNull(node.getBody());
         // Only process functions with one statement
         if (statement == null) {
-            return super.visit(node, data);
+            return null;
         }
 
         if ((statement instanceof ASTExpressionStatement || statement instanceof ASTReturnStatement)

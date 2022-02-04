@@ -41,7 +41,7 @@ public class MethodNamingConventionsRule extends AbstractNamingConventionRule<AS
     public Object visit(ASTMethodDeclaration node, Object data) {
 
         if (node.isOverridden()) {
-            return super.visit(node, data);
+            return data;
         }
 
         if (node.hasModifiers(JModifier.NATIVE)) {
@@ -58,7 +58,7 @@ public class MethodNamingConventionsRule extends AbstractNamingConventionRule<AS
             checkMatches(node, instanceRegex, data);
         }
 
-        return super.visit(node, data);
+        return data;
     }
 
 
