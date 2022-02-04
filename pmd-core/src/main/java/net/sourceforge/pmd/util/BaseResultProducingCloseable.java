@@ -9,13 +9,13 @@ import java.util.function.Consumer;
 
 /**
  * Base class for an autocloseable that produce a result once it has
- * been closed.
+ * been closed. None of the methods of this class are synchronized.
  *
  * @param <T> Type of the result
  */
 public abstract class BaseResultProducingCloseable<T> implements AutoCloseable {
 
-    private volatile boolean closed;
+    private boolean closed;
 
     protected final void ensureOpen() {
         if (closed) {
