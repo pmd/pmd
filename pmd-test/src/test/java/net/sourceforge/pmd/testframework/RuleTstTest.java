@@ -55,6 +55,7 @@ public class RuleTstTest {
     public void shouldAssertLinenumbersSorted() {
         when(rule.getLanguage()).thenReturn(dummyLanguage.getLanguage());
         when(rule.getName()).thenReturn("test rule");
+        when(rule.getMessage()).thenReturn("test rule");
         when(rule.getTargetSelector()).thenReturn(RuleTargetSelector.forRootOnly());
         when(rule.deepCopy()).thenReturn(rule);
 
@@ -68,7 +69,7 @@ public class RuleTstTest {
 
         TestDescriptor testDescriptor = new TestDescriptor("the code", "sample test", 2, rule, dummyLanguage);
         testDescriptor.setReinitializeRule(false);
-        testDescriptor.setExpectedLineNumbers(Arrays.asList(5, 15));
+        testDescriptor.setExpectedLineNumbers(Arrays.asList(1, 15));
 
         ruleTester.runTest(testDescriptor);
     }
