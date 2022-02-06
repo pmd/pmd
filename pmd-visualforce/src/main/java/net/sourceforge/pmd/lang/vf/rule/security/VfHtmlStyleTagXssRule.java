@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.vf.rule.security;
 
 import java.util.EnumSet;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import net.sourceforge.pmd.lang.vf.ast.ASTContent;
@@ -19,8 +20,8 @@ import net.sourceforge.pmd.lang.vf.rule.security.internal.ElEscapeDetector;
 public class VfHtmlStyleTagXssRule extends AbstractVfRule {
     private static final String STYLE_TAG = "style";
     private static final String APEX_PREFIX = "apex";
-    private static final EnumSet<ElEscapeDetector.Escaping> URLENCODE_JSINHTMLENCODE = EnumSet.of(ElEscapeDetector.Escaping.URLENCODE, ElEscapeDetector.Escaping.JSINHTMLENCODE);
-    private static final EnumSet<ElEscapeDetector.Escaping> ANY_ENCODE = EnumSet.of(ElEscapeDetector.Escaping.ANY);
+    private static final Set<ElEscapeDetector.Escaping> URLENCODE_JSINHTMLENCODE = EnumSet.of(ElEscapeDetector.Escaping.URLENCODE, ElEscapeDetector.Escaping.JSINHTMLENCODE);
+    private static final Set<ElEscapeDetector.Escaping> ANY_ENCODE = EnumSet.of(ElEscapeDetector.Escaping.ANY);
     private static final Pattern URL_METHOD_PATTERN = Pattern.compile("url\\s*\\([^)]*$", Pattern.CASE_INSENSITIVE);
 
     public VfHtmlStyleTagXssRule() {

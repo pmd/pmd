@@ -34,7 +34,6 @@ import org.apache.commons.lang3.Validate;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.pcollections.HashTreePSet;
-import org.pcollections.MapPSet;
 import org.pcollections.PMap;
 import org.pcollections.PSet;
 
@@ -95,12 +94,8 @@ public final class CollectionUtil {
      */
     @Deprecated
     public static boolean isCollectionType(String typeName, boolean includeInterfaces) {
-
-        if (COLLECTION_CLASSES_BY_NAMES.contains(typeName)) {
-            return true;
-        }
-
-        return includeInterfaces && COLLECTION_INTERFACES_BY_NAMES.contains(typeName);
+        return COLLECTION_CLASSES_BY_NAMES.contains(typeName)
+                || includeInterfaces && COLLECTION_INTERFACES_BY_NAMES.contains(typeName);
     }
 
     /**
@@ -303,7 +298,7 @@ public final class CollectionUtil {
         if (m.isEmpty()) {
             return Collections.singletonMap(k, v);
         }
-        HashMap<K, V> newM = new HashMap<>(m);
+        Map<K, V> newM = new HashMap<>(m);
         newM.put(k, v);
         return newM;
     }
@@ -525,7 +520,7 @@ public final class CollectionUtil {
     public static <T> Collector<T, ?, PSet<T>> toPersistentSet() {
         class Holder {
 
-            MapPSet<T> set = HashTreePSet.empty();
+            PSet<T> set = HashTreePSet.empty();
         }
 
         return Collector.of(

@@ -96,23 +96,11 @@ public class JavaNameOccurrence implements NameOccurrence {
                             + " (location line " + location.getBeginLine() + " col " + location.getBeginColumn() + ")");
         }
 
-        if (isStandAlonePostfix(primaryExpression)) {
-            return true;
-        }
-
-        if (primaryExpression.getNumChildren() <= 1) {
-            return false;
-        }
-
-        if (!(primaryExpression.getChild(1) instanceof ASTAssignmentOperator)) {
-            return false;
-        }
-
-        if (isPartOfQualifiedName() /* or is an array type */) {
-            return false;
-        }
-
-        return !isCompoundAssignment(primaryExpression);
+        return isStandAlonePostfix(primaryExpression)
+                || primaryExpression.getNumChildren() > 1
+                    && primaryExpression.getChild(1) instanceof ASTAssignmentOperator
+                    && !isPartOfQualifiedName() /* and is not an array type */
+                    && !isCompoundAssignment(primaryExpression);
     }
 
     private boolean isCompoundAssignment(Node primaryExpression) {
@@ -134,11 +122,8 @@ public class JavaNameOccurrence implements NameOccurrence {
 
         ASTPrimaryPrefix pf = (ASTPrimaryPrefix) ((ASTPrimaryExpression) primaryExpression.getChild(0))
             .getChild(0);
-        if (pf.usesThisModifier()) {
-            return true;
-        }
 
-        return thirdChildHasDottedName(primaryExpression);
+        return pf.usesThisModifier() || thirdChildHasDottedName(primaryExpression);
     }
 
     private boolean thirdChildHasDottedName(Node primaryExpression) {

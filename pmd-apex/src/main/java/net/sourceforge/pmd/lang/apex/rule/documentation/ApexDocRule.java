@@ -183,7 +183,7 @@ public class ApexDocRule extends AbstractApexRule {
             boolean hasDescription = DESCRIPTION_PATTERN.matcher(token).find();
             boolean hasReturn = RETURN_PATTERN.matcher(token).find();
 
-            ArrayList<String> params = new ArrayList<>();
+            List<String> params = new ArrayList<>();
             Matcher paramMatcher = PARAM_PATTERN.matcher(token);
             while (paramMatcher.find()) {
                 params.add(paramMatcher.group(1));

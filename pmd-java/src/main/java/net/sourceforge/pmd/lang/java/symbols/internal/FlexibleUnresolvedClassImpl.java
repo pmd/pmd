@@ -49,7 +49,7 @@ final class FlexibleUnresolvedClassImpl extends UnresolvedClassImpl {
     void setTypeParameterCount(int newArity) {
         if (arity == UNKNOWN_ARITY) {
             this.arity = newArity;
-            ArrayList<JTypeVar> newParams = new ArrayList<>(newArity);
+            List<JTypeVar> newParams = new ArrayList<>(newArity);
             for (int i = 0; i < newArity; i++) {
                 newParams.add(new FakeTypeParam("T" + i, getTypeSystem(), this).getTypeMirror());
             }
@@ -83,7 +83,7 @@ final class FlexibleUnresolvedClassImpl extends UnresolvedClassImpl {
         return tparams;
     }
 
-    private static class FakeTypeParam implements JTypeParameterSymbol {
+    private static final class FakeTypeParam implements JTypeParameterSymbol {
 
         private final String name;
         private final JTypeParameterOwnerSymbol owner;

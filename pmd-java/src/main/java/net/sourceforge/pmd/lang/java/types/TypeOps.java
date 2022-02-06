@@ -117,7 +117,7 @@ public final class TypeOps {
         return true;
     }
 
-    private static class SameTypeVisitor implements JTypeVisitor<Boolean, JTypeMirror> {
+    private static final class SameTypeVisitor implements JTypeVisitor<Boolean, JTypeMirror> {
 
         static final SameTypeVisitor INFERENCE = new SameTypeVisitor(true);
         static final SameTypeVisitor PURE = new SameTypeVisitor(false);
@@ -222,10 +222,8 @@ public final class TypeOps {
 
         @Override
         public Boolean visitArray(JArrayType t, JTypeMirror s) {
-            if (s instanceof JArrayType) {
-                return isSameType(t.getComponentType(), ((JArrayType) s).getComponentType(), inInference);
-            }
-            return false;
+            return s instanceof JArrayType
+                    && isSameType(t.getComponentType(), ((JArrayType) s).getComponentType(), inInference);
         }
     }
 
@@ -1168,15 +1166,8 @@ public final class TypeOps {
         }
 
         JMethodSig m1Prime = adaptForTypeParameters(m1, m2);
-        if (m1Prime != null && isConvertible(m1Prime.getReturnType(), r2) != Convertibility.NEVER) {
-            return true;
-        }
-
-        if (!haveSameSignature(m1, m2)) {
-            return isSameType(r1, r2.getErasure());
-        }
-
-        return false;
+        return m1Prime != null && isConvertible(m1Prime.getReturnType(), r2) != Convertibility.NEVER
+                || !haveSameSignature(m1, m2) && isSameType(r1, r2.getErasure());
     }
 
     /**
@@ -1291,15 +1282,10 @@ public final class TypeOps {
      * Thrown exceptions are not part of the signature of a method.
      */
     private static boolean haveSameSignature(JMethodSig m1, JMethodSig m2) {
-        if (!m1.getName().equals(m2.getName()) || m1.getArity() != m2.getArity()) {
-            return false;
-        }
-
-        if (!haveSameTypeParams(m1, m2)) {
-            return false;
-        }
-
-        return areSameTypes(m1.getFormalParameters(),
+        return m1.getName().equals(m2.getName())
+                && m1.getArity() == m2.getArity()
+                && haveSameTypeParams(m1, m2)
+                && areSameTypes(m1.getFormalParameters(),
                             m2.getFormalParameters(),
                             Substitution.mapping(m2.getTypeParameters(), m1.getTypeParameters()));
     }

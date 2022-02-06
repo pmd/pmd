@@ -10,6 +10,7 @@ import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import org.junit.After;
 import org.junit.Before;
@@ -34,7 +35,7 @@ import net.sourceforge.pmd.Rule;
  * @author Andreas Dangel
  */
 public class RuleTestRunner extends ParentRunner<TestDescriptor> {
-    private ConcurrentHashMap<TestDescriptor, Description> testDescriptions = new ConcurrentHashMap<>();
+    private ConcurrentMap<TestDescriptor, Description> testDescriptions = new ConcurrentHashMap<>();
     private final RuleTst instance;
 
     /* default */ RuleTestRunner(final Class<? extends RuleTst> testClass) throws InitializationError {

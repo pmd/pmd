@@ -89,7 +89,7 @@ public final class ASTModifierList extends AbstractJavaNode {
 
         if (effectiveModifiers == null) {
 
-            EnumSet<JModifier> mods =
+            Set<JModifier> mods =
                 explicitModifiers.isEmpty()
                 ? EnumSet.noneOf(JModifier.class)
                 : EnumSet.copyOf(explicitModifiers);
@@ -161,7 +161,7 @@ public final class ASTModifierList extends AbstractJavaNode {
     /**
      * Populates effective modifiers from the declared ones.
      */
-    private static class EffectiveModifierVisitor extends JavaVisitorBase<Set<JModifier>, Void> {
+    private static final class EffectiveModifierVisitor extends JavaVisitorBase<Set<JModifier>, Void> {
 
 
         private static final EffectiveModifierVisitor INSTANCE = new EffectiveModifierVisitor();

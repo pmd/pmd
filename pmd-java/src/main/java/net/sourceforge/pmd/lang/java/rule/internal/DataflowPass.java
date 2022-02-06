@@ -168,11 +168,9 @@ public final class DataflowPass {
      */
     public static final class ReachingDefinitionSet {
 
-        private static final ReachingDefinitionSet UNKNOWN = new ReachingDefinitionSet();
-
-        private final Set<AssignmentEntry> reaching;
-        private final boolean isNotFullyKnown;
-        private final boolean containsInitialFieldValue;
+        private Set<AssignmentEntry> reaching;
+        private boolean isNotFullyKnown;
+        private boolean containsInitialFieldValue;
 
         private ReachingDefinitionSet() {
             this.reaching = Collections.emptySet();
@@ -206,6 +204,20 @@ public final class DataflowPass {
          */
         public boolean containsInitialFieldValue() {
             return containsInitialFieldValue;
+        }
+
+        void absorb(ReachingDefinitionSet reaching) {
+            this.containsInitialFieldValue |= reaching.containsInitialFieldValue;
+            this.isNotFullyKnown |= reaching.isNotFullyKnown;
+            if (this.reaching.isEmpty()) { // unmodifiable
+                this.reaching = new HashSet<>(reaching.reaching);
+            } else {
+                this.reaching.addAll(reaching.reaching);
+            }
+        }
+
+        public static ReachingDefinitionSet unknown() {
+            return new ReachingDefinitionSet();
         }
     }
 
@@ -264,12 +276,12 @@ public final class DataflowPass {
         private @NonNull ReachingDefinitionSet reachingFallback(ASTNamedReferenceExpr expr) {
             JVariableSymbol sym = expr.getReferencedSym();
             if (sym == null || !sym.isField() || !sym.isFinal()) {
-                return ReachingDefinitionSet.UNKNOWN;
+                return ReachingDefinitionSet.unknown();
             }
 
             ASTVariableDeclaratorId node = sym.tryGetNode();
             if (node == null) {
-                return ReachingDefinitionSet.UNKNOWN; // we don't care about non-local declarations
+                return ReachingDefinitionSet.unknown(); // we don't care about non-local declarations
             }
             Set<AssignmentEntry> assignments = node.getLocalUsages()
                                                    .stream()
@@ -298,7 +310,7 @@ public final class DataflowPass {
         }
     }
 
-    private static class ReachingDefsVisitor extends JavaVisitorBase<SpanInfo, SpanInfo> {
+    private static final class ReachingDefsVisitor extends JavaVisitorBase<SpanInfo, SpanInfo> {
 
 
         static final ReachingDefsVisitor ONLY_LOCALS = new ReachingDefsVisitor(null, false);
@@ -819,7 +831,6 @@ public final class DataflowPass {
 
         @Override
         public SpanInfo visit(ASTUnaryExpression node, SpanInfo data) {
-            super.visit(node, data);
             data = acceptOpt(node.getOperand(), data);
 
             if (node.getOperator().isPure()) {
@@ -865,11 +876,9 @@ public final class DataflowPass {
         }
 
         private boolean isRelevantField(ASTExpression lhs) {
-            if (!(lhs instanceof ASTNamedReferenceExpr)) {
-                return false;
-            }
-            return trackThisInstance() && JavaRuleUtil.isThisFieldAccess(lhs)
-                || trackStaticFields() && isStaticFieldOfThisClass(((ASTNamedReferenceExpr) lhs).getReferencedSym());
+            return lhs instanceof ASTNamedReferenceExpr
+                && (trackThisInstance() && JavaRuleUtil.isThisFieldAccess(lhs)
+                || trackStaticFields() && isStaticFieldOfThisClass(((ASTNamedReferenceExpr) lhs).getReferencedSym()));
         }
 
         private boolean isStaticFieldOfThisClass(JVariableSymbol var) {
@@ -1025,7 +1034,7 @@ public final class DataflowPass {
      * The shared state for all {@link SpanInfo} instances in the same
      * toplevel class.
      */
-    private static class GlobalAlgoState {
+    private static final class GlobalAlgoState {
 
         final Set<AssignmentEntry> allAssignments;
         final Set<AssignmentEntry> usedAssignments;
@@ -1085,7 +1094,7 @@ public final class DataflowPass {
     /**
      * Information about a span of code.
      */
-    private static class SpanInfo {
+    private static final class SpanInfo {
 
         // spans are arranged in a tree, to look for enclosing finallies
         // when abrupt completion occurs. Blocks that have non-local
@@ -1191,7 +1200,15 @@ public final class DataflowPass {
                 global.usedAssignments.addAll(info.reachingDefs);
                 if (reachingDefSink != null) {
                     ReachingDefinitionSet reaching = new ReachingDefinitionSet(new HashSet<>(info.reachingDefs));
-                    reachingDefSink.getUserMap().set(REACHING_DEFS, reaching);
+                    // need to merge into previous to account for cyclic control flow
+                    reachingDefSink.getUserMap().compute(REACHING_DEFS, current -> {
+                        if (current != null) {
+                            current.absorb(reaching);
+                            return current;
+                        } else {
+                            return reaching;
+                        }
+                    });
                 }
             }
         }

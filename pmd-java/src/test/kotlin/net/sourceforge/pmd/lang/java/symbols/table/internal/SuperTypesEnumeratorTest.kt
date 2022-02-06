@@ -38,18 +38,18 @@ class SuperTypesEnumeratorTest : ParserTestSpec({
         doTest("ALL_SUPERTYPES_INCLUDING_SELF") {
             with(acu.typeDsl) {
                 ALL_SUPERTYPES_INCLUDING_SELF.list(i1) should containExactly(i1, ts.OBJECT)
-                ALL_SUPERTYPES_INCLUDING_SELF.list(i2) should containExactly(i2, i1, ts.OBJECT)
-                ALL_SUPERTYPES_INCLUDING_SELF.list(sup) should containExactly(sup, i2, i1, ts.OBJECT)
-                ALL_SUPERTYPES_INCLUDING_SELF.list(sub) should containExactly(sub, i1, sup, i2, ts.OBJECT)
+                ALL_SUPERTYPES_INCLUDING_SELF.list(i2) should containExactly(i2, ts.OBJECT, i1)
+                ALL_SUPERTYPES_INCLUDING_SELF.list(sup) should containExactly(sup, ts.OBJECT, i2, i1)
+                ALL_SUPERTYPES_INCLUDING_SELF.list(sub) should containExactly(sub, sup, ts.OBJECT, i1, i2)
             }
         }
 
         doTest("ALL_STRICT_SUPERTYPES") {
             with(acu.typeDsl) {
                 ALL_STRICT_SUPERTYPES.list(i1) should containExactly(ts.OBJECT)
-                ALL_STRICT_SUPERTYPES.list(i2) should containExactly(i1, ts.OBJECT)
-                ALL_STRICT_SUPERTYPES.list(sup) should containExactly(i2, i1, ts.OBJECT)
-                ALL_STRICT_SUPERTYPES.list(sub) should containExactly(i1, sup, i2, ts.OBJECT)
+                ALL_STRICT_SUPERTYPES.list(i2) should containExactly(ts.OBJECT, i1)
+                ALL_STRICT_SUPERTYPES.list(sup) should containExactly(ts.OBJECT, i2, i1)
+                ALL_STRICT_SUPERTYPES.list(sub) should containExactly(sup, ts.OBJECT, i1, i2)
             }
         }
 
