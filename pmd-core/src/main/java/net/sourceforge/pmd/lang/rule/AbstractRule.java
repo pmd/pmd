@@ -374,6 +374,15 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
     /**
      * @see RuleContext#addViolation(Node, Object[])
      *
+     * @deprecated Replace with {@code asCtx(data).addViolation(node, arg)}.
+     */
+    public void addViolation(Object data, Node node, String arg) {
+        asCtx(data).addViolation(node, arg);
+    }
+
+    /**
+     * @see RuleContext#addViolation(Node, Object[])
+     *
      * @deprecated Replace with {@code asCtx(data).addViolation(node, arg1, arg2)}.
      */
     public void addViolation(Object data, Node node, Object... args) {
