@@ -20,6 +20,7 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.cache.ChecksumAware;
 import net.sourceforge.pmd.internal.util.PredicateUtil;
 import net.sourceforge.pmd.lang.LanguageVersion;
@@ -619,7 +620,12 @@ public class RuleSet implements ChecksumAware {
      *
      * @return <code>true</code> if the given rule matches the given language,
      *         which means, that the rule would be executed.
+     *
+     * @deprecated This is internal API, removed in PMD 7. You should
+     * not use a ruleset directly.
      */
+    @Deprecated
+    @InternalApi
     public static boolean applies(Rule rule, LanguageVersion languageVersion) {
         final LanguageVersion min = rule.getMinimumLanguageVersion();
         final LanguageVersion max = rule.getMaximumLanguageVersion();
@@ -690,7 +696,12 @@ public class RuleSet implements ChecksumAware {
      *
      * @param collector
      *            the removed rules will be added to this collection
+     *
+     * @deprecated This is internal API, removed in PMD 7. You should
+     * not use a ruleset directly.
      */
+    @Deprecated
+    @InternalApi
     public void removeDysfunctionalRules(Collection<Rule> collector) {
         Iterator<Rule> iter = rules.iterator();
 

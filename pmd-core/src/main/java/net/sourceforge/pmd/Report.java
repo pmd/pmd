@@ -165,6 +165,8 @@ public final class Report {
      * Adds a new rule violation to the report and notify the listeners.
      *
      * @param violation the violation to add
+     *
+     * @deprecated PMD's way of creating a report is internal and may be changed in pmd 7.
      */
     private void addRuleViolation(RuleViolation violation) {
         synchronized (violations) {
@@ -184,6 +186,8 @@ public final class Report {
      * Adds a new configuration error to the report.
      *
      * @param error the error to add
+     *
+     * @deprecated PMD's way of creating a report is internal and may be changed in pmd 7.
      */
     private void addConfigError(ConfigurationError error) {
         configErrors.add(error);
@@ -194,6 +198,7 @@ public final class Report {
      *
      * @param error
      *            the error to add
+     * @deprecated PMD's way of creating a report is internal and may be changed in pmd 7.
      */
     private void addError(ProcessingError error) {
         errors.add(error);

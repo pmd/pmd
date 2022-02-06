@@ -13,6 +13,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import net.sourceforge.pmd.Report.SuppressedViolation;
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.rule.AbstractRule;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
 import net.sourceforge.pmd.processor.AbstractPMDProcessor;
@@ -44,6 +45,15 @@ public final class RuleContext {
         Objects.requireNonNull(rule, "Rule was null");
         this.listener = listener;
         this.rule = rule;
+    }
+
+    /**
+     * @deprecated Used in {@link AbstractRule#asCtx(Object)}, when that is gone, will be removed.
+     */
+    @Deprecated
+    @InternalApi
+    public Rule getRule() {
+        return rule;
     }
 
     private String getDefaultMessage() {
