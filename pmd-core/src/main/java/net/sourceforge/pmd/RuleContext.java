@@ -9,7 +9,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.logging.Logger;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.ast.Node;
 
 /**
  * The RuleContext provides access to Rule processing state. This information
@@ -39,7 +41,11 @@ public class RuleContext {
 
     /**
      * Default constructor.
+     *
+     * @deprecated Internal API, removed in PMD 7
      */
+    @Deprecated
+    @InternalApi
     public RuleContext() {
         attributes = new ConcurrentHashMap<>();
     }
@@ -48,9 +54,12 @@ public class RuleContext {
      * Constructor which shares attributes and report listeners with the given
      * RuleContext.
      *
-     * @param ruleContext
-     *            the context from which the values are shared
+     * @param ruleContext the context from which the values are shared
+     *
+     * @deprecated Internal API, removed in PMD 7
      */
+    @Deprecated
+    @InternalApi
     public RuleContext(RuleContext ruleContext) {
         this.attributes = ruleContext.attributes;
         this.report.addListeners(ruleContext.getReport().getListeners());
@@ -60,7 +69,11 @@ public class RuleContext {
      * Get the Report to which Rule Violations are sent.
      *
      * @return The Report.
+     *
+     * @deprecated Internal API, removed in PMD 7
      */
+    @Deprecated
+    @InternalApi
     public Report getReport() {
         return report;
     }
@@ -68,9 +81,12 @@ public class RuleContext {
     /**
      * Set the Report to which Rule Violations are sent.
      *
-     * @param report
-     *            The Report.
+     * @param report The Report.
+     *
+     * @deprecated Internal API, removed in PMD 7
      */
+    @Deprecated
+    @InternalApi
     public void setReport(Report report) {
         this.report = report;
     }
@@ -79,7 +95,11 @@ public class RuleContext {
      * Get the File associated with the current source file.
      *
      * @return The File.
+     *
+     * @deprecated Internal API, removed in PMD 7
      */
+    @Deprecated
+    @InternalApi
     public File getSourceCodeFile() {
         return sourceCodeFile;
     }
@@ -89,9 +109,12 @@ public class RuleContext {
      * set to <code>null</code>, the exclude/include facilities will not work
      * properly without a File.
      *
-     * @param sourceCodeFile
-     *            The File.
+     * @param sourceCodeFile The File.
+     *
+     * @deprecated Internal API, removed in PMD 7
      */
+    @Deprecated
+    @InternalApi
     public void setSourceCodeFile(File sourceCodeFile) {
         this.sourceCodeFile = sourceCodeFile;
     }
@@ -101,7 +124,11 @@ public class RuleContext {
      * If there is no source file, then an empty string is returned.
      *
      * @return The file name.
+     *
+     * @deprecated Internal API, removed in PMD 7
      */
+    @Deprecated
+    @InternalApi
     public String getSourceCodeFilename() {
         if (sourceCodeFile != null) {
             return sourceCodeFile.getName();
@@ -129,7 +156,14 @@ public class RuleContext {
      * Get the LanguageVersion associated with the current source file.
      *
      * @return The LanguageVersion, <code>null</code> if unknown.
+     *
+     * @deprecated Will be removed in PMD 7, as the nodes have access
+     *     to their language version. In PMD 6, this is still the only way
+     *     to access the language version within a rule, and cannot be replaced.
+     *     The deprecation warning hints that the method should be replaced
+     *     in PMD 7.
      */
+    @Deprecated
     public LanguageVersion getLanguageVersion() {
         return this.languageVersion;
     }
@@ -139,9 +173,12 @@ public class RuleContext {
      * be set to <code>null</code> to indicate the version is unknown and should
      * be automatically determined.
      *
-     * @param languageVersion
-     *            The LanguageVersion.
+     * @param languageVersion The LanguageVersion.
+     *
+     * @deprecated Internal API, removed in PMD 7
      */
+    @Deprecated
+    @InternalApi
     public void setLanguageVersion(LanguageVersion languageVersion) {
         this.languageVersion = languageVersion;
     }
@@ -241,9 +278,12 @@ public class RuleContext {
      * exception. This is especially useful during unit tests, in order to not
      * oversee any exceptions.
      *
-     * @param ignoreExceptions
-     *            if <code>true</code> simply skip failing rules (default).
+     * @param ignoreExceptions if <code>true</code> simply skip failing rules (default).
+     *
+     * @deprecated Internal API, removed in PMD 7
      */
+    @Deprecated
+    @InternalApi
     public void setIgnoreExceptions(boolean ignoreExceptions) {
         this.ignoreExceptions = ignoreExceptions;
     }
@@ -254,8 +294,12 @@ public class RuleContext {
      * first failing rule.
      *
      * @return <code>true</code> when failing rules are skipped,
-     *         <code>false</code> otherwise.
+     *     <code>false</code> otherwise.
+     *
+     * @deprecated Internal API, removed in PMD 7
      */
+    @Deprecated
+    @InternalApi
     public boolean isIgnoreExceptions() {
         return ignoreExceptions;
     }
