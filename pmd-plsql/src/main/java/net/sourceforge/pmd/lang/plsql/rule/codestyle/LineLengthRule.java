@@ -43,7 +43,7 @@ public class LineLengthRule extends AbstractPLSQLRule {
             while ((line = in.readLine()) != null) {
                 lineNumber++;
                 if (line.length() > maxLineLength) {
-                    addViolationWithMessage(data, null, "The line is too long. Only " + maxLineLength + " characters are allowed.",
+                    addViolationWithMessage(data, node, "The line is too long. Only " + maxLineLength + " characters are allowed.",
                             lineNumber, lineNumber);
 
                     if (!eachLine) {
