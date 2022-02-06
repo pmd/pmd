@@ -355,7 +355,8 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
      */
     protected final RuleContext asCtx(Object ctx) {
         if (ctx instanceof RuleContext) {
-            assert ((RuleContext) ctx).getCurrentRule() == this: "not an appropriate rule context!";
+            assert ((RuleContext) ctx).getCurrentRule() == this // NOPMD CompareObjectsWithEquals
+                : "not an appropriate rule context!";
             return (RuleContext) ctx;
         } else {
             throw new ClassCastException("Unexpected context object! " + ctx);

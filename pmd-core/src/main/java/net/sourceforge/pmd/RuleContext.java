@@ -11,13 +11,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.logging.Logger;
 
-import org.apache.commons.lang3.StringUtils;
-
-import net.sourceforge.pmd.Report.SuppressedViolation;
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
 
 /**
@@ -170,7 +166,11 @@ public class RuleContext {
         Objects.requireNonNull(formatArgs, "Format arguments were null, use an empty array");
 
         RuleViolationFactory fact = getLanguageVersion().getLanguageVersionHandler().getRuleViolationFactory();
-        fact.addViolation(this, getCurrentRule(), location,message, beginLine, endLine, formatArgs);
+        if (beginLine != -1 && endLine != -1) {
+            fact.addViolation(this, getCurrentRule(), location, message, beginLine, endLine, formatArgs);
+        } else {
+            fact.addViolation(this, getCurrentRule(), location, message, formatArgs);
+        }
     }
 
 
