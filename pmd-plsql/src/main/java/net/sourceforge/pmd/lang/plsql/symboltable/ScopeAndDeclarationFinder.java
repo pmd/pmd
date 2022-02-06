@@ -4,7 +4,8 @@
 
 package net.sourceforge.pmd.lang.plsql.symboltable;
 
-import java.util.Stack;
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -47,7 +48,7 @@ public class ScopeAndDeclarationFinder extends PLSQLParserVisitorAdapter {
      * A stack of scopes reflecting the scope hierarchy when a node is visited.
      * This is used to set the parents of the created scopes correctly.
      */
-    private Stack<Scope> scopes = new Stack<>();
+    private Deque<Scope> scopes = new ArrayDeque<>();
 
     /**
      * Sets the scope of a node and adjusts the scope stack accordingly. The

@@ -56,7 +56,7 @@ public class FileAnalysisCache extends AbstractAnalysisCache {
      * @param cacheFile The file which backs the file analysis cache.
      */
     private void loadFromFile(final File cacheFile) {
-        try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.ANALYSIS_CACHE, "load")) {
+        try (TimedOperation ignored = TimeTracker.startOperation(TimedOperationCategory.ANALYSIS_CACHE, "load")) {
             if (cacheExists()) {
                 try (
                     DataInputStream inputStream = new DataInputStream(
@@ -103,7 +103,7 @@ public class FileAnalysisCache extends AbstractAnalysisCache {
 
     @Override
     public void persist() {
-        try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.ANALYSIS_CACHE, "persist")) {
+        try (TimedOperation ignored = TimeTracker.startOperation(TimedOperationCategory.ANALYSIS_CACHE, "persist")) {
             if (cacheFile.isDirectory()) {
                 LOG.severe("Cannot persist the cache, the given path points to a directory.");
                 return;

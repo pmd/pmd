@@ -356,7 +356,7 @@ public class LanguageLevelChecker<T> {
         String errorMessage(int jdk, boolean preview);
     }
 
-    private class CheckVisitor extends JavaVisitorBase<T, Void> {
+    private final class CheckVisitor extends JavaVisitorBase<T, Void> {
 
         @Override
         protected Void visitChildren(Node node, T data) {

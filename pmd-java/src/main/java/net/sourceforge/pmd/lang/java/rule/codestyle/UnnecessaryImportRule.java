@@ -315,12 +315,8 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
                             // maybe we're importing a subclass of the container.
                             TypeSystem ts = symbolOwner.getTypeSystem();
                             JClassSymbol importedContainer = ts.getClassSymbol(it.node.getImportedName());
-                            if (importedContainer != null) {
-                                return TypeTestUtil.isA(ts.rawType(symbolOwner), ts.rawType(importedContainer));
-                            } else {
-                                // insufficient classpath, err towards FNs
-                                return true;
-                            }
+                            return importedContainer == null // insufficient classpath, err towards FNs
+                                    || TypeTestUtil.isA(ts.rawType(symbolOwner), ts.rawType(importedContainer));
                         }
                     });
                 }

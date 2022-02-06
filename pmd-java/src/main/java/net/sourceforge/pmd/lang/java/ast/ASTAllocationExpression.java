@@ -28,11 +28,8 @@ public class ASTAllocationExpression extends AbstractJavaTypeNode {
      * returns {@code null}.
      */
     public boolean isAnonymousClass() {
-        if (getNumChildren() > 1) {
-            // check the last child
-            return getChild(getNumChildren() - 1) instanceof ASTClassOrInterfaceBody;
-        }
-        return false;
+        // check the last child
+        return getNumChildren() > 1 && getChild(getNumChildren() - 1) instanceof ASTClassOrInterfaceBody;
     }
 
 

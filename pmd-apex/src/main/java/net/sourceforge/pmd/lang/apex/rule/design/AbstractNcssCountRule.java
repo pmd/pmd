@@ -55,7 +55,7 @@ public abstract class AbstractNcssCountRule<T extends ApexNode<?>> extends Abstr
         return node.acceptVisitor(NcssVisitor.INSTANCE, null) + 1;
     }
 
-    private static class NcssVisitor extends ApexVisitorBase<Void, Integer> {
+    private static final class NcssVisitor extends ApexVisitorBase<Void, Integer> {
         // todo this would be better with a <MutableInt, Void> signature
 
         static final NcssVisitor INSTANCE = new NcssVisitor();

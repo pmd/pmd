@@ -141,12 +141,15 @@ public final class JavaAstProcessor {
         // Now symbols are on the relevant nodes
         this.symResolver = SymbolResolver.layer(knownSyms, this.symResolver);
 
+        // this needs to be initialized before the symbol table resolution
+        // as scopes depend on type resolution in some cases.
         InternalApiBridge.initTypeResolver(acu, this, typeInferenceLogger);
 
         bench("2. Symbol table resolution", () -> SymbolTableResolver.traverse(this, acu));
         bench("3. AST disambiguation", () -> InternalApiBridge.disambigWithCtx(NodeStream.of(acu), ReferenceCtx.root(this, acu)));
         bench("4. Comment assignment", () -> InternalApiBridge.assignComments(acu));
         bench("5. Usage resolution", () -> InternalApiBridge.usageResolution(this, acu));
+        bench("6. Override resolution", () -> InternalApiBridge.overrideResolution(this, acu));
     }
 
     public TypeSystem getTypeSystem() {
@@ -200,13 +203,13 @@ public final class JavaAstProcessor {
     }
 
     public static void bench(String label, Runnable runnable) {
-        try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.LANGUAGE_SPECIFIC_PROCESSING, label)) {
+        try (TimedOperation ignored = TimeTracker.startOperation(TimedOperationCategory.LANGUAGE_SPECIFIC_PROCESSING, label)) {
             runnable.run();
         }
     }
 
     public static <T> T bench(String label, Supplier<T> runnable) {
-        try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.LANGUAGE_SPECIFIC_PROCESSING, label)) {
+        try (TimedOperation ignored = TimeTracker.startOperation(TimedOperationCategory.LANGUAGE_SPECIFIC_PROCESSING, label)) {
             return runnable.get();
         }
     }

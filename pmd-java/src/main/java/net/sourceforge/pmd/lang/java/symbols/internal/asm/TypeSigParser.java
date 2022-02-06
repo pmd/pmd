@@ -8,6 +8,7 @@ import static java.util.Collections.emptyList;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.List;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -276,8 +277,8 @@ final class TypeSigParser {
     abstract static class TypeScanner extends SignatureScanner {
 
         // those stacks usually are 0..1
-        private final ArrayDeque<JTypeMirror> typeStack = new ArrayDeque<>(0);
-        private final ArrayDeque<List<JTypeMirror>> listStack = new ArrayDeque<>(0);
+        private final Deque<JTypeMirror> typeStack = new ArrayDeque<>(0);
+        private final Deque<List<JTypeMirror>> listStack = new ArrayDeque<>(0);
 
         private final TypeSystem ts;
         private final LexicalScope lexicalScope;

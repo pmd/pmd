@@ -6,7 +6,8 @@ package net.sourceforge.pmd.lang.apex.rule.design;
 
 import static net.sourceforge.pmd.properties.constraints.NumericConstraints.positive;
 
-import java.util.Stack;
+import java.util.ArrayDeque;
+import java.util.Deque;
 
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
@@ -33,7 +34,7 @@ public class CognitiveComplexityRule extends AbstractApexRule {
             .defaultValue(15)
             .build();
 
-    private Stack<String> classNames = new Stack<>();
+    private Deque<String> classNames = new ArrayDeque<>();
     private boolean inTrigger;
 
 

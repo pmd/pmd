@@ -102,7 +102,7 @@ public final class SymbolTableResolver {
         } while (!todo.isEmpty());
     }
 
-    private static class DeferredNode {
+    private static final class DeferredNode {
 
         final JavaNode node;
         // this is data used to resume the traversal

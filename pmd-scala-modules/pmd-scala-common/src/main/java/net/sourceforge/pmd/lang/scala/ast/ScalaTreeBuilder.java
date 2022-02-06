@@ -6,9 +6,10 @@ package net.sourceforge.pmd.lang.scala.ast;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Stack;
 
 import scala.meta.Case;
 import scala.meta.Ctor;
@@ -171,7 +172,7 @@ class ScalaTreeBuilder {
     }
 
     // The nodes having children built.
-    private final Stack<AbstractScalaNode<?>> nodes = new Stack<>();
+    private final Deque<AbstractScalaNode<?>> nodes = new ArrayDeque<>();
 
     private static <T extends Tree> void register(Class<T> nodeType,
             Class<? extends ScalaNode<T>> nodeAdapterType) {
