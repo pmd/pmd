@@ -31,7 +31,7 @@ import net.sourceforge.pmd.util.document.TextFile;
 abstract class PmdRunnable implements Runnable {
 
     private final TextFile textFile;
-    private final GlobalAnalysisListener ruleContext;
+    private final GlobalAnalysisListener globalListener;
 
     private final AnalysisCache analysisCache;
     /** @deprecated Get rid of this */
@@ -41,10 +41,10 @@ abstract class PmdRunnable implements Runnable {
     private final RulesetStageDependencyHelper dependencyHelper;
 
     PmdRunnable(TextFile textFile,
-                GlobalAnalysisListener ruleContext,
+                GlobalAnalysisListener globalListener,
                 PMDConfiguration configuration) {
         this.textFile = textFile;
-        this.ruleContext = ruleContext;
+        this.globalListener = globalListener;
         this.analysisCache = configuration.getAnalysisCache();
         this.configuration = configuration;
         this.dependencyHelper = new RulesetStageDependencyHelper(configuration);
@@ -63,7 +63,7 @@ abstract class PmdRunnable implements Runnable {
 
         RuleSets ruleSets = getRulesets();
 
-        try (FileAnalysisListener listener = ruleContext.startFileAnalysis(textFile)) {
+        try (FileAnalysisListener listener = globalListener.startFileAnalysis(textFile)) {
 
             // Coarse check to see if any RuleSet applies to file, will need to do a finer RuleSet specific check later
             if (ruleSets.applies(textFile)) {

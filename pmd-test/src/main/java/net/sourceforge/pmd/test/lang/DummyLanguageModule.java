@@ -65,6 +65,12 @@ public class DummyLanguageModule extends BaseLanguageModule {
             this.languageVersion = languageVersion;
         }
 
+        public DummyRootNode withCoords(int bline, int bcol, int eline, int ecol) {
+            super.setCoords(bline, bcol, eline, ecol);
+            return this;
+        }
+
+
         @Override
         public AstInfo<DummyRootNode> getAstInfo() {
             return new AstInfo<>(

@@ -20,6 +20,7 @@ import net.sourceforge.pmd.util.document.TextFile;
  *
  * @author Romain Pelisse &lt;belaran@gmail.com&gt;
  */
+@InternalApi
 public abstract class AbstractPMDProcessor implements AutoCloseable {
 
     protected final PMDConfiguration configuration;

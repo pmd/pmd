@@ -81,6 +81,9 @@ public interface GlobalAnalysisListener extends AutoCloseable {
         // do nothing
     }
 
+    /**
+     * A listener that does nothing.
+     */
     static GlobalAnalysisListener noop() {
         return new GlobalAnalysisListener() {
             @Override

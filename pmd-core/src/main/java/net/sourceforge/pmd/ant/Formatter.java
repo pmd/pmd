@@ -27,12 +27,14 @@ import org.apache.tools.ant.Project;
 import org.apache.tools.ant.types.Parameter;
 
 import net.sourceforge.pmd.Report;
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.renderers.RendererFactory;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
 import net.sourceforge.pmd.util.document.TextFile;
 
+@InternalApi
 public class Formatter {
 
     private File toFile;
@@ -236,6 +238,7 @@ public class Formatter {
         return null;
     }
 
+    @InternalApi
     public GlobalAnalysisListener newListener(Project project) throws IOException {
         start(project.getBaseDir().toString());
         Renderer renderer = getRenderer();
