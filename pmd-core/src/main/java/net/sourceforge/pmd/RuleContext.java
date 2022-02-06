@@ -5,17 +5,28 @@
 package net.sourceforge.pmd;
 
 import java.io.File;
+import java.text.MessageFormat;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.logging.Logger;
 
+import org.apache.commons.lang3.StringUtils;
+
+import net.sourceforge.pmd.Report.SuppressedViolation;
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
+import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
 
 /**
- * The RuleContext provides access to Rule processing state. This information
- * includes the following global information:
+ * The API for rules to report violations or errors during analysis.
+ * The non-deprecated API of this class represents what will be left
+ * in PMD 7.
+ *
+ * In PMD 6, the RuleContext provides access to Rule processing state.
+ * This information includes the following global information:
  * <ul>
  * <li>The Report to which Rule Violations are sent.</li>
  * <li>Named attributes.</li>
@@ -32,12 +43,15 @@ import net.sourceforge.pmd.lang.ast.Node;
 public class RuleContext {
 
     private static final Logger LOG = Logger.getLogger(RuleContext.class.getName());
+    private static final Object[] NO_ARGS = new Object[0];
 
     private Report report = new Report();
     private File sourceCodeFile;
     private LanguageVersion languageVersion;
     private final ConcurrentMap<String, Object> attributes;
     private boolean ignoreExceptions = true;
+
+    private Rule currentRule;
 
     /**
      * Default constructor.
@@ -64,6 +78,101 @@ public class RuleContext {
         this.attributes = ruleContext.attributes;
         this.report.addListeners(ruleContext.getReport().getListeners());
     }
+
+    private String getDefaultMessage() {
+        return Objects.requireNonNull(getCurrentRule().getMessage(), "rule has no message");
+    }
+
+
+    /**
+     * @deprecated Internal API.
+     */
+    @InternalApi
+    @Deprecated
+    public Rule getCurrentRule() {
+        return Objects.requireNonNull(currentRule, "rule was not set");
+    }
+
+    /**
+     * @deprecated Internal API.
+     */
+    @InternalApi
+    @Deprecated
+    public void setCurrentRule(Rule currentRule) {
+        this.currentRule = currentRule;
+    }
+
+
+    /**
+     * Record a new violation of the contextual rule, at the given node.
+     *
+     * @param location Location of the violation
+     */
+    public void addViolation(Node location) {
+        addViolationWithMessage(location, getDefaultMessage(), NO_ARGS);
+    }
+
+    /**
+     * Record a new violation of the contextual rule, at the given node.
+     * The default violation message ({@link Rule#getMessage()}) is formatted
+     * using the given format arguments.
+     *
+     * @param location   Location of the violation
+     * @param formatArgs Format arguments for the message
+     *
+     * @see MessageFormat
+     */
+    public void addViolation(Node location, Object... formatArgs) {
+        addViolationWithMessage(location, getDefaultMessage(), formatArgs);
+    }
+
+    /**
+     * Record a new violation of the contextual rule, at the given node.
+     * The given violation message ({@link Rule#getMessage()}) is treated
+     * as a format string for a {@link MessageFormat} and should hence use
+     * appropriate escapes. No formatting arguments are provided.
+     *
+     * @param location Location of the violation
+     * @param message  Violation message
+     */
+    public void addViolationWithMessage(Node location, String message) {
+        addViolationWithPosition(location, -1, -1, message, NO_ARGS);
+    }
+
+    /**
+     * Record a new violation of the contextual rule, at the given node.
+     * The given violation message ({@link Rule#getMessage()}) is treated
+     * as a format string for a {@link MessageFormat} and should hence use
+     * appropriate escapes. The given formatting arguments are used.
+     *
+     * @param location   Location of the violation
+     * @param message    Violation message
+     * @param formatArgs Format arguments for the message
+     */
+    public void addViolationWithMessage(Node location, String message, Object... formatArgs) {
+        addViolationWithPosition(location, -1, -1, message, formatArgs);
+    }
+
+    /**
+     * Record a new violation of the contextual rule, at the given node.
+     * The position is refined using the given begin and end line numbers.
+     * The given violation message ({@link Rule#getMessage()}) is treated
+     * as a format string for a {@link MessageFormat} and should hence use
+     * appropriate escapes. The given formatting arguments are used.
+     *
+     * @param location   Location of the violation
+     * @param message    Violation message
+     * @param formatArgs Format arguments for the message
+     */
+    public void addViolationWithPosition(Node location, int beginLine, int endLine, String message, Object... formatArgs) {
+        Objects.requireNonNull(location, "Node was null");
+        Objects.requireNonNull(message, "Message was null");
+        Objects.requireNonNull(formatArgs, "Format arguments were null, use an empty array");
+
+        RuleViolationFactory fact = getLanguageVersion().getLanguageVersionHandler().getRuleViolationFactory();
+        fact.addViolation(this, getCurrentRule(), location,message, beginLine, endLine, formatArgs);
+    }
+
 
     /**
      * Get the Report to which Rule Violations are sent.
