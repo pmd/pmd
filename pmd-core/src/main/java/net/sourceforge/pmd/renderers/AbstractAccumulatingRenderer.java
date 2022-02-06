@@ -44,8 +44,7 @@ public abstract class AbstractAccumulatingRenderer extends AbstractRenderer {
     }
 
     @Override
-    public final void startFileAnalysis(TextFile dataSource) {
-        // do nothing, final because it will never be called by the listener
+    public void startFileAnalysis(TextFile dataSource) {
         Objects.requireNonNull(dataSource);
     }
 
@@ -65,7 +64,7 @@ public abstract class AbstractAccumulatingRenderer extends AbstractRenderer {
 
     @Override
     public GlobalAnalysisListener newListener() throws IOException {
-        try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.REPORTING)) {
+        try (TimedOperation ignored = TimeTracker.startOperation(TimedOperationCategory.REPORTING)) {
             this.start();
         }
 
@@ -74,6 +73,7 @@ public abstract class AbstractAccumulatingRenderer extends AbstractRenderer {
 
             @Override
             public FileAnalysisListener startFileAnalysis(TextFile file) {
+                AbstractAccumulatingRenderer.this.startFileAnalysis(file);
                 return reportBuilder.startFileAnalysis(file);
             }
 
@@ -85,7 +85,7 @@ public abstract class AbstractAccumulatingRenderer extends AbstractRenderer {
             @Override
             public void close() throws Exception {
                 reportBuilder.close();
-                try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.REPORTING)) {
+                try (TimedOperation ignored = TimeTracker.startOperation(TimedOperationCategory.REPORTING)) {
                     outputReport(reportBuilder.getResult());
                     end();
                     flush();
