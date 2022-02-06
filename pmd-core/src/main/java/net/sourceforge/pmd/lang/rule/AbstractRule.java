@@ -355,7 +355,7 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
      */
     protected final RuleContext asCtx(Object ctx) {
         if (ctx instanceof RuleContext) {
-            assert ((RuleContext) ctx).getCurrentRule() == this // NOPMD CompareObjectsWithEquals
+            assert isThisRule(((RuleContext) ctx).getCurrentRule())
                 : "not an appropriate rule context!";
             return (RuleContext) ctx;
         } else {
@@ -363,9 +363,13 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
         }
     }
 
+    private boolean isThisRule(Rule rule) {
+        return rule == this // NOPMD CompareObjectsWithEquals
+            || rule instanceof AbstractDelegateRule && this.isThisRule(((AbstractDelegateRule) rule).getRule());
+    }
+
     /**
      * @see RuleContext#addViolation(Node)
-     *
      * @deprecated Replace with {@code asCtx(data).addViolation(node)}.
      */
     public void addViolation(Object data, Node node) {
