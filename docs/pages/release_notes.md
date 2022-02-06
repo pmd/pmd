@@ -35,6 +35,9 @@ It is now forbidden to report a violation:
 - With a `null` message
 - With a `null` set of format arguments (prefer a zero-length array)
 
+Note that the message is set from the XML rule declaration, so this is only relevant
+if you instantiate rules manually.
+
 {% jdoc core::RuleContext %} now requires setting the current rule before calling
 {% jdoc core::lang.rule.Rule#apply(java.util.List, core::RuleContext)}. This is
 done automatically by `RuleSet#apply` and such. Creating and configuring a
