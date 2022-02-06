@@ -11,7 +11,6 @@ import net.sourceforge.pmd.lang.apex.ast.ASTDoLoopStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTForEachStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTForLoopStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTIfBlockStatement;
-import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
 import net.sourceforge.pmd.lang.apex.ast.ASTStandardCondition;
 import net.sourceforge.pmd.lang.apex.ast.ASTTernaryExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTThrowStatement;
@@ -22,12 +21,6 @@ import net.sourceforge.pmd.lang.apex.ast.ApexVisitorBase;
  * @author Clément Fournier
  */
 public class StandardCycloVisitor extends ApexVisitorBase<MutableInt, Void> {
-
-    @Override
-    public Void visit(ASTMethod node, MutableInt data) {
-        return super.visit(node, data);
-    }
-
 
     @Override
     public Void visit(ASTIfBlockStatement node, MutableInt data) {

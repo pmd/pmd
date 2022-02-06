@@ -141,7 +141,7 @@ public class RuleSets {
             this.ruleApplicator = prepareApplicator();
         }
 
-        try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.RULE_AST_INDEXATION)) {
+        try (TimedOperation ignored = TimeTracker.startOperation(TimedOperationCategory.RULE_AST_INDEXATION)) {
             ruleApplicator.index(acuList);
         }
 

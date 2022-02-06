@@ -36,7 +36,7 @@ public class AnalysisResult {
     }
 
     public AnalysisResult(final File sourceFile) {
-        this(computeFileChecksum(sourceFile), new ArrayList<RuleViolation>());
+        this(computeFileChecksum(sourceFile), new ArrayList<>());
     }
 
     private static long computeFileChecksum(final File sourceFile) {

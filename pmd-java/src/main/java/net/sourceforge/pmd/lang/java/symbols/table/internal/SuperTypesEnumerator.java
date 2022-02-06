@@ -59,6 +59,7 @@ public enum SuperTypesEnumerator {
             @Nullable JClassType sup = t.getSuperClass();
             List<JClassType> superItfs = t.getSuperInterfaces();
 
+            @SuppressWarnings("PMD.LooseCoupling") // the set should keep insertion order
             LinkedHashSet<JClassType> set;
             if (sup != null) {
                 set = new LinkedHashSet<>(superItfs.size() + 1);

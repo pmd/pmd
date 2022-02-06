@@ -90,7 +90,7 @@ public class LawOfDemeterRule extends AbstractJavaRule {
      * Collects the information of one identified method call. The method call
      * might be a violation of the Law of Demeter or not.
      */
-    private static class MethodCall {
+    private static final class MethodCall {
         private static final String METHOD_CALL_CHAIN = "result from previous method call";
         private static final String SIMPLE_ASSIGNMENT_OPERATOR = "=";
         private static final String SCOPE_METHOD_CHAINING = "method-chaining";
@@ -193,10 +193,8 @@ public class LawOfDemeterRule extends AbstractJavaRule {
 
         private static boolean isNotLiteral(ASTPrimaryExpression expression) {
             ASTPrimaryPrefix prefix = expression.getFirstDescendantOfType(ASTPrimaryPrefix.class);
-            if (prefix != null) {
-                return !prefix.hasDescendantOfType(ASTLiteral.class);
-            }
-            return true;
+            return prefix == null
+                    || !prefix.hasDescendantOfType(ASTLiteral.class);
         }
 
         private boolean isNotBuilder() {
@@ -275,7 +273,7 @@ public class LawOfDemeterRule extends AbstractJavaRule {
             violationReason = null;
 
             if (baseNameInWhitelist) {
-                return;
+                violation = false;
             } else if (SCOPE_LOCAL.equals(baseScope)) {
                 Assignment lastAssignment = determineLastAssignment();
                 if (lastAssignment != null && !lastAssignment.allocation && !lastAssignment.iterator

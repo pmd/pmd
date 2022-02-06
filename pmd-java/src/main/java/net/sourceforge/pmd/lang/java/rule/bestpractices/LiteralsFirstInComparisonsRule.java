@@ -49,10 +49,8 @@ public class LiteralsFirstInComparisonsRule extends AbstractJavaRulechainRule {
     }
 
     private boolean isEqualsObjectAndNotAnOverload(ASTMethodCall call) {
-        if (call.getOverloadSelectionInfo().isFailed()) {
-            return true; // failed selection is considered probably equals(Object)
-        }
-        return call.getMethodType().getFormalParameters().equals(listOf(call.getTypeSystem().OBJECT));
+        return call.getOverloadSelectionInfo().isFailed() // failed selection is considered probably equals(Object)
+                || call.getMethodType().getFormalParameters().equals(listOf(call.getTypeSystem().OBJECT));
     }
 
     private boolean isConstantString(JavaNode node) {

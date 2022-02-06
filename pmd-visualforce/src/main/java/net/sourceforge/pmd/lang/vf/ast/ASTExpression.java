@@ -91,6 +91,7 @@ public final class ASTExpression extends AbstractVfNode {
         int numChildren = getNumChildren();
         List<ASTIdentifier> identifiers = findChildrenOfType(ASTIdentifier.class);
         for (ASTIdentifier identifier : identifiers) {
+            @SuppressWarnings("PMD.LooseCoupling") // see #1218 - we are calling getLast() which is LinkedList specific
             LinkedList<VfTypedNode> identifierNodes = new LinkedList<>();
 
             // The Identifier is the first item that makes up the string

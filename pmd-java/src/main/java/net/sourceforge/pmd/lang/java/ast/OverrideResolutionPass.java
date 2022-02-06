@@ -23,7 +23,7 @@ import net.sourceforge.pmd.lang.java.types.TypeOps;
  * @author Clément Fournier
  * @since 7.0.0
  */
-class OverrideResolutionPass {
+final class OverrideResolutionPass {
 
     private OverrideResolutionPass() {
 

@@ -119,7 +119,7 @@ public final class TypePrettyPrint {
         }
     }
 
-    private static class PrettyPrintVisitor implements JTypeVisitor<Void, TypePrettyPrinter> {
+    private static final class PrettyPrintVisitor implements JTypeVisitor<Void, TypePrettyPrinter> {
 
         static final PrettyPrintVisitor INSTANCE = new PrettyPrintVisitor();
 

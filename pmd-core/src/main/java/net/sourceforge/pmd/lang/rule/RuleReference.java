@@ -262,7 +262,7 @@ public class RuleReference extends AbstractDelegateRule {
 
     @Override
     public Map<PropertyDescriptor<?>, Object> getOverriddenPropertiesByPropertyDescriptor() {
-        return propertyValues == null ? new HashMap<PropertyDescriptor<?>, Object>() : new HashMap<>(propertyValues);
+        return propertyValues == null ? new HashMap<>() : new HashMap<>(propertyValues);
     }
 
     @Override

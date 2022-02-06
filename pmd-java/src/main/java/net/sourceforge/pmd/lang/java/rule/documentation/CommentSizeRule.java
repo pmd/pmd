@@ -48,12 +48,7 @@ public class CommentSizeRule extends AbstractJavaRulechainRule {
     }
 
     private static boolean hasRealText(String line) {
-
-        if (StringUtils.isBlank(line)) {
-            return false;
-        }
-
-        return !IGNORED_LINES.contains(line.trim());
+        return !StringUtils.isBlank(line) && !IGNORED_LINES.contains(line.trim());
     }
 
     private boolean hasTooManyLines(Comment comment) {

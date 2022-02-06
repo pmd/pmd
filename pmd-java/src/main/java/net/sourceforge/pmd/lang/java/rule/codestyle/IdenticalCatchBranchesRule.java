@@ -96,8 +96,7 @@ public class IdenticalCatchBranchesRule extends AbstractJavaRulechainRule {
             }
         }
 
-        return super.visit(node, data);
+        return data;
     }
-
 
 }

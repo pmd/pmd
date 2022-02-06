@@ -6,11 +6,11 @@ package net.sourceforge.pmd.lang.plsql.rule.design;
 
 import static net.sourceforge.pmd.properties.constraints.NumericConstraints.positive;
 
-import java.util.Stack;
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.plsql.ast.ASTCaseStatement;
 import net.sourceforge.pmd.lang.plsql.ast.ASTCaseWhenClause;
 import net.sourceforge.pmd.lang.plsql.ast.ASTConditionalOrExpression;
@@ -65,15 +65,10 @@ public class CyclomaticComplexityRule extends AbstractPLSQLRule {
     private boolean showClassesComplexity = true;
     private boolean showMethodsComplexity = true;
 
-    private static class Entry {
-        private Node node;
+    private static final class Entry {
         private int decisionPoints = 1;
         public int highestDecisionPoints;
         public int methodCount;
-
-        private Entry(Node node) {
-            this.node = node;
-        }
 
         public void bumpDecisionPoints() {
             decisionPoints++;
@@ -88,7 +83,7 @@ public class CyclomaticComplexityRule extends AbstractPLSQLRule {
         }
     }
 
-    private Stack<Entry> entryStack = new Stack<>();
+    private Deque<Entry> entryStack = new ArrayDeque<>();
 
     public CyclomaticComplexityRule() {
         definePropertyDescriptor(REPORT_LEVEL_DESCRIPTOR);
@@ -231,7 +226,7 @@ public class CyclomaticComplexityRule extends AbstractPLSQLRule {
     public Object visit(ASTPackageBody node, Object data) {
         LOGGER.entering(CLASS_NAME, "visit(ASTPackageBody)");
 
-        entryStack.push(new Entry(node));
+        entryStack.push(new Entry());
         super.visit(node, data);
         Entry classEntry = entryStack.pop();
         if (LOGGER.isLoggable(Level.FINEST)) {
@@ -252,7 +247,7 @@ public class CyclomaticComplexityRule extends AbstractPLSQLRule {
     public Object visit(ASTTriggerUnit node, Object data) {
         LOGGER.entering(CLASS_NAME, "visit(ASTTriggerUnit)");
 
-        entryStack.push(new Entry(node));
+        entryStack.push(new Entry());
         super.visit(node, data);
         Entry classEntry = entryStack.pop();
         if (LOGGER.isLoggable(Level.FINEST)) {
@@ -282,7 +277,7 @@ public class CyclomaticComplexityRule extends AbstractPLSQLRule {
     @Override
     public Object visit(ASTProgramUnit node, Object data) {
         LOGGER.entering(CLASS_NAME, "visit(ASTProgramUnit)");
-        entryStack.push(new Entry(node));
+        entryStack.push(new Entry());
         super.visit(node, data);
         Entry methodEntry = entryStack.pop();
         if (LOGGER.isLoggable(Level.FINEST)) {
@@ -324,7 +319,7 @@ public class CyclomaticComplexityRule extends AbstractPLSQLRule {
     @Override
     public Object visit(ASTTypeMethod node, Object data) {
         LOGGER.entering(CLASS_NAME, "visit(ASTTypeMethod)");
-        entryStack.push(new Entry(node));
+        entryStack.push(new Entry());
         super.visit(node, data);
         Entry methodEntry = entryStack.pop();
         if (LOGGER.isLoggable(Level.FINEST)) {
@@ -357,7 +352,7 @@ public class CyclomaticComplexityRule extends AbstractPLSQLRule {
     @Override
     public Object visit(ASTTriggerTimingPointSection node, Object data) {
         LOGGER.entering(CLASS_NAME, "visit(ASTTriggerTimingPointSection)");
-        entryStack.push(new Entry(node));
+        entryStack.push(new Entry());
         super.visit(node, data);
         Entry methodEntry = entryStack.pop();
         if (LOGGER.isLoggable(Level.FINE)) {

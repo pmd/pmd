@@ -21,6 +21,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
+import net.sourceforge.pmd.lang.java.ast.AccessNode.Visibility;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.JavadocCommentOwner;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
@@ -145,14 +146,14 @@ public class CommentRequiredRule extends AbstractJavaRulechainRule {
     @Override
     public Object visit(ASTClassOrInterfaceDeclaration decl, Object data) {
         checkCommentMeetsRequirement(data, decl, CLASS_CMT_REQUIREMENT_DESCRIPTOR);
-        return super.visit(decl, data);
+        return data;
     }
 
 
     @Override
     public Object visit(ASTConstructorDeclaration decl, Object data) {
         checkMethodOrConstructorComment(decl, data);
-        return super.visit(decl, data);
+        return data;
     }
 
 
@@ -165,14 +166,14 @@ public class CommentRequiredRule extends AbstractJavaRulechainRule {
         } else {
             checkMethodOrConstructorComment(decl, data);
         }
-        return super.visit(decl, data);
+        return data;
     }
 
 
     private void checkMethodOrConstructorComment(ASTMethodOrConstructorDeclaration decl, Object data) {
-        if (decl.isPublic()) {
+        if (decl.getVisibility() == Visibility.V_PUBLIC) {
             checkCommentMeetsRequirement(data, decl, PUB_METHOD_CMT_REQUIREMENT_DESCRIPTOR);
-        } else if (decl.isProtected()) {
+        } else if (decl.getVisibility() == Visibility.V_PROTECTED) {
             checkCommentMeetsRequirement(data, decl, PROT_METHOD_CMT_REQUIREMENT_DESCRIPTOR);
         }
     }
@@ -188,14 +189,14 @@ public class CommentRequiredRule extends AbstractJavaRulechainRule {
             checkCommentMeetsRequirement(data, decl, FIELD_CMT_REQUIREMENT_DESCRIPTOR);
         }
 
-        return super.visit(decl, data);
+        return data;
     }
 
 
     @Override
     public Object visit(ASTEnumDeclaration decl, Object data) {
         checkCommentMeetsRequirement(data, decl, ENUM_CMT_REQUIREMENT_DESCRIPTOR);
-        return super.visit(decl, data);
+        return data;
     }
 
     private boolean allCommentsAreIgnored() {

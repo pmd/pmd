@@ -53,7 +53,7 @@ public abstract class AbstractNcssCountRule<T extends PLSQLNode> extends Abstrac
         return 1 + (Integer) node.jjtAccept(new NcssVisitor(), null);
     }
 
-    private static class NcssVisitor extends PLSQLParserVisitorAdapter {
+    private static final class NcssVisitor extends PLSQLParserVisitorAdapter {
 
         @Override
         public Object visitPlsqlNode(PLSQLNode node, Object data) {
