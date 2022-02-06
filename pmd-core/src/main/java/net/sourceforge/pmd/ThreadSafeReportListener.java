@@ -14,7 +14,8 @@ import net.sourceforge.pmd.stat.Metric;
  * Same file violations are guaranteed to be reported serially.
  *
  * @deprecated All entry points of PMD that allowed usage of this are now deprecated.
- *     This will be replaced by another TBD mechanism in PMD 7.
+ *     This will be replaced by analysis listeners in PMD 7, a more general event
+ *     handling mechanism (see <a href="https://github.com/pmd/pmd/pull/3692">#3692</a>)
  */
 @Deprecated
 public interface ThreadSafeReportListener {
