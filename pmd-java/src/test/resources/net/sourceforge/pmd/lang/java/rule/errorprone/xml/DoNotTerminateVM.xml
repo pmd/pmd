@@ -7,6 +7,7 @@
     <test-code>
         <description>basic violations</description>
         <expected-problems>2</expected-problems>
+        <expected-linenumbers>5,10</expected-linenumbers>
         <code><![CDATA[
 public class Bar {
 
@@ -28,10 +29,14 @@ public class Bar {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class SystemCall {
+    private App application;
     public void methode() {
         // OK
         application.exit(0);
     }
+}
+abstract class App {
+    void exit(int i);
 }
         ]]></code>
     </test-code>
@@ -39,6 +44,7 @@ public class SystemCall {
     <test-code>
         <description>basic violations with Runtime</description>
         <expected-problems>2</expected-problems>
+        <expected-linenumbers>4,5</expected-linenumbers>
         <code><![CDATA[
 public class Bar {
     public void foo() {
@@ -66,6 +72,7 @@ public class SystemCall {
     <test-code>
         <description>system exit in anonymous class inside main</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
         <code><![CDATA[
 public class SystemCall {
     public static void main(String[] args) {

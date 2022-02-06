@@ -40,12 +40,10 @@ public class SimplifyBooleanReturnsRule extends AbstractJavaRulechainRule {
         if (node.getParent() instanceof ASTIfStatement) {
             return node.getIndexInParent() == 1;
         }
-        if (node.getParent() instanceof ASTBlock
+        return node.getParent() instanceof ASTBlock
             && ((ASTBlock) node.getParent()).size() == 1
-            && node.getParent().getParent() instanceof ASTIfStatement) {
-            return node.getParent().getIndexInParent() == 1;
-        }
-        return false;
+            && node.getParent().getParent() instanceof ASTIfStatement
+            && node.getParent().getIndexInParent() == 1;
     }
 
     private Object checkIf(ASTIfStatement node, Object data, ASTExpression thenExpr) {

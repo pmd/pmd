@@ -182,7 +182,7 @@ public final class PMD {
     }
 
     private static List<RuleSet> getRuleSetsWithBenchmark(List<String> rulesetPaths, RuleSetLoader factory) {
-        try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.LOAD_RULES)) {
+        try (TimedOperation ignored = TimeTracker.startOperation(TimedOperationCategory.LOAD_RULES)) {
             List<RuleSet> ruleSets;
             try {
                 ruleSets = factory.loadFromResources(rulesetPaths);
@@ -387,7 +387,7 @@ public final class PMD {
      * @return List of {@link DataSource} of files
      */
     public static List<DataSource> getApplicableFiles(PMDConfiguration configuration, Set<Language> languages) throws IOException {
-        try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.COLLECT_FILES)) {
+        try (TimedOperation ignored = TimeTracker.startOperation(TimedOperationCategory.COLLECT_FILES)) {
             return internalGetApplicableFiles(configuration, languages);
         }
     }
@@ -616,7 +616,7 @@ public final class PMD {
 
     }
 
-    private static class AcceptAllFilenames implements FilenameFilter {
+    private static final class AcceptAllFilenames implements FilenameFilter {
         @Override
         public boolean accept(File dir, String name) {
             return true;

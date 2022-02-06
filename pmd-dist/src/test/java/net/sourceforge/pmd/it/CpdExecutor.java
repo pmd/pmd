@@ -25,7 +25,7 @@ public class CpdExecutor {
         // this is a helper class only
     }
 
-    private static ExecutionResult runCpdUnix(Path tempDir, String ... arguments) throws Exception {
+    private static ExecutionResult runCpdUnix(Path tempDir, String... arguments) throws Exception {
         String cmd = tempDir.resolve(PMD_BIN_PREFIX + PMDVersion.VERSION + "/bin/run.sh").toAbsolutePath().toString();
         ProcessBuilder pb = new ProcessBuilder(cmd, "cpd");
         pb.command().addAll(Arrays.asList(arguments));
@@ -37,7 +37,7 @@ public class CpdExecutor {
         return new ExecutionResult(result, output, null, null);
     }
 
-    private static ExecutionResult runCpdWindows(Path tempDir, String ... arguments) throws Exception {
+    private static ExecutionResult runCpdWindows(Path tempDir, String... arguments) throws Exception {
         String cmd = tempDir.resolve(PMD_BIN_PREFIX + PMDVersion.VERSION + "/bin/cpd.bat").toAbsolutePath().toString();
         ProcessBuilder pb = new ProcessBuilder(cmd);
         pb.command().addAll(Arrays.asList(arguments));
@@ -56,7 +56,7 @@ public class CpdExecutor {
      * @return collected result of the execution
      * @throws Exception if the execution fails for any reason (executable not found, ...)
      */
-    public static ExecutionResult runCpd(Path tempDir, String ... arguments) throws Exception {
+    public static ExecutionResult runCpd(Path tempDir, String... arguments) throws Exception {
         if (SystemUtils.IS_OS_WINDOWS) {
             return runCpdWindows(tempDir, arguments);
         } else {

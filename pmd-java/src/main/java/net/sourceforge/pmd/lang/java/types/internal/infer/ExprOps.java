@@ -143,26 +143,21 @@ final class ExprOps {
             //  not provide explicit type arguments, an explicitly typed
             //  lambda expression for which the corresponding target type
             //  (as derived from the signature of m) is a type parameter of m.
-            if (m.isGeneric() && invoc.getExplicitTypeArguments().isEmpty()) {
-                return !formalType.isTypeVariable();
-            }
-
-            return true;
+            return !m.isGeneric()
+                    || !invoc.getExplicitTypeArguments().isEmpty()
+                    || !formalType.isTypeVariable();
         }
 
         if (arg instanceof MethodRefMirror) {
             // An inexact method reference expression(§ 15.13 .1).
-            if (getExactMethod((MethodRefMirror) arg) == null) {
-                return false;
-            }
-            //  If m is a generic method and the method invocation does
-            //  not provide explicit type arguments, an exact method
-            //  reference expression for which the corresponding target type
-            //  (as derived from the signature of m) is a type parameter of m.
-            if (m.isGeneric() && invoc.getExplicitTypeArguments().isEmpty()) {
-                return !formalType.isTypeVariable();
-            }
-            return true;
+            return getExactMethod((MethodRefMirror) arg) != null
+                    //  If m is a generic method and the method invocation does
+                    //  not provide explicit type arguments, an exact method
+                    //  reference expression for which the corresponding target type
+                    //  (as derived from the signature of m) is a type parameter of m.
+                    && (!m.isGeneric()
+                        || !invoc.getExplicitTypeArguments().isEmpty()
+                        || !formalType.isTypeVariable());
         }
 
         if (arg instanceof BranchingMirror) {

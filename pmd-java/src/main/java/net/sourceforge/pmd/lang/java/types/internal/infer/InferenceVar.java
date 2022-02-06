@@ -9,6 +9,7 @@ import java.util.Collections;
 import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.LinkedHashSet;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.function.Function;
@@ -149,7 +150,7 @@ public final class InferenceVar implements JTypeMirror, SubstVar {
 
 
             // put the new bounds before updating
-            LinkedHashSet<JTypeMirror> newBounds = new LinkedHashSet<>();
+            Set<JTypeMirror> newBounds = new LinkedHashSet<>();
             boundSet.bounds.put(kind, newBounds);
 
             for (JTypeMirror prev : prevBounds) {
@@ -335,7 +336,7 @@ public final class InferenceVar implements JTypeMirror, SubstVar {
     private static final class BoundSet {
 
         JTypeMirror inst;
-        EnumMap<BoundKind, Set<JTypeMirror>> bounds = new EnumMap<>(BoundKind.class);
+        Map<BoundKind, Set<JTypeMirror>> bounds = new EnumMap<>(BoundKind.class);
 
     }
 }

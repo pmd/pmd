@@ -35,6 +35,7 @@ public class MyClass {
     <test-code>
         <description>Public method with 4 String parameters</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
         <code><![CDATA[
 public class MyClass {
     public void connect(String username,

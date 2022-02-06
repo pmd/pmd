@@ -204,6 +204,7 @@ public final class AstElementNode extends BaseNodeInfo implements SiblingCountin
 
     private static class IteratorAdapter implements AxisIterator, LookaheadIterator {
 
+        @SuppressWarnings("PMD.LooseCoupling") // getProperties() below has to return EnumSet
         private static final EnumSet<Property> PROPERTIES = EnumSet.of(Property.LOOKAHEAD);
         private final Iterator<? extends NodeInfo> it;
 

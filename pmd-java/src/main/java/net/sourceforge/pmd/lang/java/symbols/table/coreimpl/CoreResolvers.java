@@ -55,7 +55,7 @@ public final class CoreResolvers {
         return new SingularMapResolver<>(singular);
     }
 
-    private static class SingularMapResolver<S> implements SingleNameResolver<S> {
+    private static final class SingularMapResolver<S> implements SingleNameResolver<S> {
 
         private final Map<String, S> map;
 
@@ -127,7 +127,7 @@ public final class CoreResolvers {
         return EmptyResolver.INSTANCE;
     }
 
-    private static class EmptyResolver<S> implements SingleNameResolver<S> {
+    private static final class EmptyResolver<S> implements SingleNameResolver<S> {
 
         private static final EmptyResolver INSTANCE = new EmptyResolver<>();
 

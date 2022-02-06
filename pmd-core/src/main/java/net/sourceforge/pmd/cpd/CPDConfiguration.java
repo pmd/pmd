@@ -245,7 +245,7 @@ public class CPDConfiguration extends AbstractConfiguration {
     }
 
     public static String[] getRenderers() {
-        String[] result = RENDERERS.keySet().toArray(new String[RENDERERS.size()]);
+        String[] result = RENDERERS.keySet().toArray(new String[0]);
         Arrays.sort(result);
         return result;
     }

@@ -11,7 +11,7 @@
    |     |  |     +- ClassOrInterfaceType[@ArrayDepth = "0", @ArrayType = "false", @ClassOrInterfaceType = "true", @FullyQualified = "false", @PrimitiveType = "false", @ReferenceToClassSameCompilationUnit = "false", @SimpleName = "Object", @TypeImage = "Object"]
    |     |  |     +- VariableDeclaratorId[@Abstract = "false", @ArrayType = "false", @EffectiveVisibility = "local", @EnumConstant = "false", @ExceptionBlockParameter = "false", @Field = "false", @Final = "false", @ForLoopVariable = "false", @ForeachVariable = "false", @FormalParameter = "true", @Image = "o", @LambdaParameter = "false", @LocalVariable = "false", @Name = "o", @Native = "false", @PackagePrivate = "false", @PatternBinding = "false", @Private = "false", @Protected = "false", @Public = "false", @RecordComponent = "false", @ResourceDeclaration = "false", @Static = "false", @Strictfp = "false", @Synchronized = "false", @SyntacticallyAbstract = "false", @SyntacticallyFinal = "false", @SyntacticallyPublic = "false", @SyntacticallyStatic = "false", @Transient = "false", @TypeInferred = "false", @VariableName = "o", @Visibility = "local", @Volatile = "false"]
    |     |  +- Block[@Size = "1", @containsComment = "false"]
-   |     |     +- SwitchStatement[@DefaultCase = "true", @ExhaustiveEnumSwitch = "false"]
+   |     |     +- SwitchStatement[@DefaultCase = "true", @EnumSwitch = "false", @ExhaustiveEnumSwitch = "false"]
    |     |        +- VariableAccess[@AccessType = "READ", @CompileTimeConstant = "false", @Expression = "true", @Image = "o", @Name = "o", @ParenthesisDepth = "0", @Parenthesized = "false"]
    |     |        +- SwitchArrowBranch[@Default = "false"]
    |     |        |  +- SwitchLabel[@Default = "false"]

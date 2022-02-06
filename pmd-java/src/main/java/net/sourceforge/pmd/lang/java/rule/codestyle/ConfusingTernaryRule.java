@@ -52,7 +52,8 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
  */
 public class ConfusingTernaryRule extends AbstractJavaRulechainRule {
 
-    private static final PropertyDescriptor<Boolean> IGNORE_ELSE_IF = booleanProperty("ignoreElseIf").desc("Ignore conditions with an else-if case").defaultValue(false).build();
+    private static final PropertyDescriptor<Boolean> IGNORE_ELSE_IF = booleanProperty("ignoreElseIf")
+            .desc("Ignore conditions with an else-if case").defaultValue(false).build();
 
     public ConfusingTernaryRule() {
         super(ASTIfStatement.class, ASTConditionalExpression.class);
@@ -70,7 +71,7 @@ public class ConfusingTernaryRule extends AbstractJavaRulechainRule {
                 addViolation(data, node);
             }
         }
-        return super.visit(node, data);
+        return data;
     }
 
     @Override
@@ -79,7 +80,7 @@ public class ConfusingTernaryRule extends AbstractJavaRulechainRule {
         if (isMatch(node.getCondition())) {
             addViolation(data, node);
         }
-        return super.visit(node, data);
+        return data;
     }
 
     // recursive!
@@ -103,13 +104,8 @@ public class ConfusingTernaryRule extends AbstractJavaRulechainRule {
         // look for "match && match" or "match || match"
         if (node instanceof ASTInfixExpression) {
             ASTInfixExpression infix = (ASTInfixExpression) node;
-            if (infix.getOperator() != BinaryOp.CONDITIONAL_AND
-                && infix.getOperator() != BinaryOp.CONDITIONAL_OR) {
-                return false;
-            }
-
-            return isMatch(infix.getLeftOperand())
-                && isMatch(infix.getRightOperand());
+            return (infix.getOperator() == BinaryOp.CONDITIONAL_AND || infix.getOperator() == BinaryOp.CONDITIONAL_OR)
+                    && isMatch(infix.getLeftOperand()) && isMatch(infix.getRightOperand());
         }
 
         return false;
