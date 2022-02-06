@@ -54,7 +54,7 @@ public class AbruptCompletionTests extends BaseNonParserTest {
     private Executable canCompleteNormally(String stmt) {
         return canCompleteNormally(stmt, actual -> {
             if (!actual) {
-                throw new AssertionFailedError("Code can complete normally: `" + stmt + "`");
+                throw new AssertionFailedError("Code CAN complete normally: `" + stmt + "`");
             }
         });
     }
@@ -62,7 +62,7 @@ public class AbruptCompletionTests extends BaseNonParserTest {
     private Executable mustCompleteAbruptly(String stmt) {
         return canCompleteNormally(stmt, actual -> {
             if (actual) {
-                throw new AssertionFailedError("Code MUST complete abruptly, got " + actual + ": `" + stmt + "`");
+                throw new AssertionFailedError("Code MUST complete abruptly: `" + stmt + "`");
             }
         });
     }

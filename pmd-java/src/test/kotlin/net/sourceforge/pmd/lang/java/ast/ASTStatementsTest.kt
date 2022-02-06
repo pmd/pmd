@@ -179,19 +179,19 @@ class ASTStatementsTest : ParserTestSpec({
             """ should parseAs {
                 block {
                     labeledStatement("l") {
+                        val labeledL = it
                         forLoop {
-                            val loopL = it
                             block {
                                 labeledStatement("i") {
+                                    val labeledI = it
                                     forLoop {
-                                        val loopI = it;
                                         ifStatement {
                                             it::getCondition shouldBe unspecifiedChild()
                                             it::getThenBranch shouldBe breakStatement("l") {
-                                                it::getTarget shouldBe loopL
+                                                it::getTarget shouldBe labeledL
                                             }
                                             it::getElseBranch shouldBe continueStatement("i") {
-                                                it::getTarget shouldBe loopI
+                                                it::getTarget shouldBe labeledI
                                             }
                                         }
                                     }
