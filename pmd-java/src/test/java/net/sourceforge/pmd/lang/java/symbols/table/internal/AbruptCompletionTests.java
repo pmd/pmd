@@ -140,8 +140,7 @@ public class AbruptCompletionTests extends BaseNonParserTest {
             mustCompleteAbruptly("do { if(foo) return; } while(true);"),
             mustCompleteAbruptly("do { continue; } while(true);"),
 
-            // todo actually should be mustCompleteAbruptly
-            canCompleteNormally("do { return; } while(foo);")
+            mustCompleteAbruptly("do { return; } while(foo);")
         );
     }
 
