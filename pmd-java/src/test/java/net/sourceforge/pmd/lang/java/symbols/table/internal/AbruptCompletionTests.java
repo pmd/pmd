@@ -192,6 +192,30 @@ public class AbruptCompletionTests extends BaseNonParserTest {
     }
 
     @Test
+    public void testTry() {
+        Assertions.assertAll(
+            canCompleteNormally("try {}"),
+            canCompleteNormally("try { foo(); }"),
+            canCompleteNormally("try {{}}"),
+            canCompleteNormally("try { } catch (Exception e) { }"),
+            canCompleteNormally("try { throw x; } catch (Exception e) { }"),
+            canCompleteNormally("try { return; } catch (Exception e) { }"),
+            canCompleteNormally("try { } catch (Exception e) { return; }"),
+            mustCompleteAbruptly("try { return; } catch (Exception e) { return; }"),
+            mustCompleteAbruptly("try { } catch (Exception e) { } finally { return; }"),
+            mustCompleteAbruptly("try { } catch (Exception e) { throw x; } finally { throw x; }"),
+
+            mustCompleteAbruptly("while(true) { "
+                                     + "try { } finally { throw x; } "
+                                     + "}"),
+
+            mustCompleteAbruptly("try {} finally { throw x; }"),
+            mustCompleteAbruptly("try { throw x; } finally { }"),
+            mustCompleteAbruptly("try { throw x; } finally { throw x; }")
+        );
+    }
+
+    @Test
     public void testSwitchExhaustive() {
         Assertions.assertAll(
             // no default, even with exhaustive enum, means it can complete normally

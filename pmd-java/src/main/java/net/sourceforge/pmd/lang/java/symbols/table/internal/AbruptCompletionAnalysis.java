@@ -271,7 +271,7 @@ final class AbruptCompletionAnalysis {
             ASTFinallyClause finallyClause = node.getFinallyClause();
             boolean finallyCompletesNormally = true;
             if (finallyClause != null) {
-                finallyCompletesNormally = finallyClause.acceptVisitor(this, new SubtreeState(data));
+                finallyCompletesNormally = finallyClause.getBody().acceptVisitor(this, new SubtreeState(data));
             }
 
             SubtreeState bodyState = tryClauseState(data, finallyCompletesNormally);
