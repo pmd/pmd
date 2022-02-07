@@ -603,19 +603,24 @@ public final class SymbolTableResolver {
                     pushed = pushOnStack(f.localVarSymTable(top(), enclosing(), bindSet.getFalseBindings()));
                     setTopSymbolTableAndVisit(elseBranch, ctx);
                     popStack(pushed);
+                }
 
-                    boolean thenCanCompleteNormally = canCompleteNormally(thenBranch);
-                    boolean elseCanCompleteNormally = canCompleteNormally(elseBranch);
+                if (!bindSet.isEmpty()) {
+                    // avoid computing canCompleteNormally if possible
+                    if (elseBranch != null) {
+                        boolean thenCanCompleteNormally = canCompleteNormally(thenBranch);
+                        boolean elseCanCompleteNormally = canCompleteNormally(elseBranch);
 
-                    // the bindings are visible in the statements following this if/else
-                    // if one of those conditions match
-                    if (thenCanCompleteNormally && !elseCanCompleteNormally) {
-                        return bindSet.getTrueBindings();
-                    } else if (!thenCanCompleteNormally && elseCanCompleteNormally) {
+                        // the bindings are visible in the statements following this if/else
+                        // if one of those conditions match
+                        if (thenCanCompleteNormally && !elseCanCompleteNormally) {
+                            return bindSet.getTrueBindings();
+                        } else if (!thenCanCompleteNormally && elseCanCompleteNormally) {
+                            return bindSet.getFalseBindings();
+                        }
+                    } else if (!canCompleteNormally(thenBranch)) {
                         return bindSet.getFalseBindings();
                     }
-                } else if (!canCompleteNormally(thenBranch)) {
-                    return bindSet.getFalseBindings();
                 }
                 return BindSet.noBindings();
             }
