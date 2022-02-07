@@ -114,7 +114,7 @@ abstract class PmdRunnable implements Runnable {
     }
 
     private RootNode parse(Parser parser, ParserTask task) {
-        try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.PARSER)) {
+        try (TimedOperation ignored = TimeTracker.startOperation(TimedOperationCategory.PARSER)) {
             return parser.parse(task);
         }
     }

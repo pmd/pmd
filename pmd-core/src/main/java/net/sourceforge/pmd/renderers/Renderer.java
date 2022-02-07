@@ -198,7 +198,7 @@ public interface Renderer extends PropertySource {
     //  when the file is done. Many renderers could directly handle
     //  violations as they come though.
     default GlobalAnalysisListener newListener() throws IOException {
-        try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.REPORTING)) {
+        try (TimedOperation ignored = TimeTracker.startOperation(TimedOperationCategory.REPORTING)) {
             this.start();
         }
 
@@ -242,7 +242,7 @@ public interface Renderer extends PropertySource {
                         reportBuilder.close();
                         synchronized (reportMergeLock) {
                             // TODO renderFileReport should be thread-safe instead
-                            try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.REPORTING)) {
+                            try (TimedOperation ignored = TimeTracker.startOperation(TimedOperationCategory.REPORTING)) {
                                 renderer.renderFileReport(reportBuilder.getResult());
                             }
                         }
@@ -259,7 +259,7 @@ public interface Renderer extends PropertySource {
             public void close() throws Exception {
                 configErrorReport.close();
                 Renderer.this.renderFileReport(configErrorReport.getResult());
-                try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.REPORTING)) {
+                try (TimedOperation ignored = TimeTracker.startOperation(TimedOperationCategory.REPORTING)) {
                     end();
                     flush();
                 }
