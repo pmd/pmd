@@ -607,18 +607,14 @@ public final class SymbolTableResolver {
 
                 if (!bindSet.isEmpty()) {
                     // avoid computing canCompleteNormally if possible
-                    if (elseBranch != null) {
-                        boolean thenCanCompleteNormally = canCompleteNormally(thenBranch);
-                        boolean elseCanCompleteNormally = canCompleteNormally(elseBranch);
+                    boolean thenCanCompleteNormally = canCompleteNormally(thenBranch);
+                    boolean elseCanCompleteNormally = elseBranch == null || canCompleteNormally(elseBranch);
 
-                        // the bindings are visible in the statements following this if/else
-                        // if one of those conditions match
-                        if (thenCanCompleteNormally && !elseCanCompleteNormally) {
-                            return bindSet.getTrueBindings();
-                        } else if (!thenCanCompleteNormally && elseCanCompleteNormally) {
-                            return bindSet.getFalseBindings();
-                        }
-                    } else if (!canCompleteNormally(thenBranch)) {
+                    // the bindings are visible in the statements following this if/else
+                    // if one of those conditions match
+                    if (thenCanCompleteNormally && !elseCanCompleteNormally) {
+                        return bindSet.getTrueBindings();
+                    } else if (!thenCanCompleteNormally && elseCanCompleteNormally) {
                         return bindSet.getFalseBindings();
                     }
                 }
