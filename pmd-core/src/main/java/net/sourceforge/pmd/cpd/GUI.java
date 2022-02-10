@@ -170,7 +170,7 @@ public class GUI implements CPDListener {
                     if (terseName == null) {
                         return false;
                     }
-                    switch(terseName) {
+                    switch (terseName) {
                         case "cpp":
                         case "cs":
                             return true;
