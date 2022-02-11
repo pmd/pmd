@@ -20,5 +20,7 @@ This is a {{ site.pmd.release_type }} release.
 
 ### External Contributions
 
+*   [#3767](https://github.com/pmd/pmd/pull/3767): \[core] Update GUI.java
+
 {% endtocmaker %}
 
