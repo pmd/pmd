@@ -2406,7 +2406,7 @@ void Resources() :
 void Resource() :
 {}
 {
-   LOOKAHEAD("this" | Name() ")") (
+   LOOKAHEAD("this" | Name() (")" | ";")) (
        {checkForBadConciseTryWithResourcesUsage();}
        Name()
        // replaced with Expression in PMD 7, do the bare minimum
