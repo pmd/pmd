@@ -2406,9 +2406,15 @@ void Resources() :
 void Resource() :
 {}
 {
-   LOOKAHEAD(2) ( ( "final" {jjtThis.setFinal(true);} | Annotation() )* LocalVariableType() VariableDeclaratorId() "=" Expression() )
-   |
-   Name() {checkForBadConciseTryWithResourcesUsage();}
+   LOOKAHEAD("this" | Name() ")") (
+       {checkForBadConciseTryWithResourcesUsage();}
+       Name()
+       // replaced with Expression in PMD 7, do the bare minimum
+       | "this" "." Name() // possible pmd6 improvement: add a isThisModifier() or so
+   )
+   | ( "final" {jjtThis.setFinal(true);} | Annotation() )*
+     LocalVariableType() VariableDeclaratorId() "=" Expression()
+
 }
 
 void CatchStatement() :
