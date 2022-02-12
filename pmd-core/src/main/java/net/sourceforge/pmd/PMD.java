@@ -35,6 +35,7 @@ import net.sourceforge.pmd.benchmark.TimingReportRenderer;
 import net.sourceforge.pmd.cache.NoopAnalysisCache;
 import net.sourceforge.pmd.cli.PMDCommandLineInterface;
 import net.sourceforge.pmd.cli.PmdParametersParseResult;
+import net.sourceforge.pmd.cli.internal.CliMessages;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageFilenameFilter;
 import net.sourceforge.pmd.lang.LanguageVersion;
@@ -252,18 +253,24 @@ public class PMD {
             try (TimedOperation rto = TimeTracker.startOperation(TimedOperationCategory.REPORTING)) {
                 renderer.end();
                 renderer.flush();
-                return report.getViolations().size();
             }
+
+            if (!report.getProcessingErrors().isEmpty()) {
+                printErrorDetected(report.getProcessingErrors().size());
+            }
+
+            return report.getViolations().size();
+
         } catch (Exception e) {
             String message = e.getMessage();
             if (message != null) {
                 LOG.severe(message);
+                LOG.log(Level.FINE, "Exception during processing", e);
             } else {
                 LOG.log(Level.SEVERE, "Exception during processing", e);
             }
-            LOG.log(Level.FINE, "Exception during processing", e);
-            LOG.info(PMDCommandLineInterface.buildUsageText());
-            return PMDCommandLineInterface.NO_ERRORS_STATUS;
+            printErrorDetected(1);
+            return PMDCommandLineInterface.NO_ERRORS_STATUS; // fixme?
         } finally {
             /*
              * Make sure it's our own classloader before attempting to close it....
@@ -552,11 +559,16 @@ public class PMD {
             System.out.println(PMDCommandLineInterface.buildUsageText());
             return StatusCode.OK;
         } else if (parseResult.isError()) {
-            System.out.println(PMDCommandLineInterface.buildUsageText());
             System.err.println(parseResult.getError().getMessage());
+            System.err.println(CliMessages.runWithHelpFlagMessage());
             return StatusCode.ERROR;
         }
         return runPmd(parseResult.toConfiguration());
+    }
+
+    private static void printErrorDetected(int errors) {
+        String msg = CliMessages.errorDetectedMessage(errors, "PMD");
+        LOG.severe(msg);
     }
 
     /**
@@ -591,8 +603,6 @@ public class PMD {
                 status = StatusCode.OK;
             }
         } catch (Exception e) {
-            System.out.println(PMDCommandLineInterface.buildUsageText());
-            System.out.println();
             System.err.println(e.getMessage());
             status = StatusCode.ERROR;
         } finally {
