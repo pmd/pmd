@@ -8,37 +8,43 @@ import java.io.StringReader;
 import java.util.Objects;
 
 import net.sourceforge.pmd.annotation.Experimental;
+import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.util.datasource.DataSource;
 import net.sourceforge.pmd.util.datasource.ReaderDataSource;
 
 /**
- * Collects files to analyse before a PMD run. This API allows opening
- * zip files and makes sure they will be closed at the end of a run.
+ * Read-only view on a string.
  *
  * @author Clément Fournier
  */
 @Experimental
-public final class StringTextFile implements TextFile {
+class StringTextFile implements TextFile {
 
-    private final String contents;
+    private final String content;
     private final String pathId;
     private final String displayName;
     private final LanguageVersion languageVersion;
 
-    public StringTextFile(String contents,
-                          String pathId,
-                          String displayName,
-                          LanguageVersion languageVersion) {
-        this.contents = contents;
+    StringTextFile(String content,
+                   String pathId,
+                   String displayName,
+                   LanguageVersion languageVersion) {
+        AssertionUtil.requireParamNotNull("source text", content);
+        AssertionUtil.requireParamNotNull("file name", displayName);
+        AssertionUtil.requireParamNotNull("file ID", pathId);
+        AssertionUtil.requireParamNotNull("language version", languageVersion);
+
+        this.languageVersion = languageVersion;
+        this.content = content;
         this.pathId = pathId;
         this.displayName = displayName;
-        this.languageVersion = languageVersion;
     }
 
+
     @Override
-    public String getPathId() {
-        return pathId;
+    public LanguageVersion getLanguageVersion() {
+        return languageVersion;
     }
 
     @Override
@@ -47,23 +53,22 @@ public final class StringTextFile implements TextFile {
     }
 
     @Override
-    public String readContents() {
-        return contents;
+    public String getPathId() {
+        return pathId;
     }
 
     @Override
-    public LanguageVersion getLanguageVersion() {
-        return languageVersion;
+    public String readContents() {
+        return content;
     }
 
     @Override
     public DataSource toDataSourceCompat() {
         return new ReaderDataSource(
-            new StringReader(contents),
+            new StringReader(content),
             pathId
         );
     }
-
 
     @Override
     public boolean equals(Object o) {

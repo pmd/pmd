@@ -22,6 +22,8 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
@@ -48,6 +50,7 @@ import net.sourceforge.pmd.util.log.SimplePmdLogger;
  * @author Clément Fournier
  */
 @Experimental
+@SuppressWarnings("PMD.CloseResource")
 public final class FileCollector implements AutoCloseable {
 
     private static final Logger DEFAULT_LOG = Logger.getLogger(FileCollector.class.getName());
@@ -136,7 +139,7 @@ public final class FileCollector implements AutoCloseable {
         }
         LanguageVersion languageVersion = discoverLanguage(file.toString());
         if (languageVersion != null) {
-            allFilesToProcess.add(new NioTextFile(file, charset, getDisplayName(file), languageVersion));
+            allFilesToProcess.add(new NioTextFile(file, charset, languageVersion, getDisplayName(file)));
             return true;
         }
         return false;
@@ -158,7 +161,7 @@ public final class FileCollector implements AutoCloseable {
             log.error("Not a regular file {}", file);
             return false;
         }
-        NioTextFile nioTextFile = new NioTextFile(file, charset, getDisplayName(file), discoverer.getDefaultLanguageVersion(language));
+        NioTextFile nioTextFile = new NioTextFile(file, charset, discoverer.getDefaultLanguageVersion(language), getDisplayName(file));
         addFileImpl(nioTextFile);
         return true;
     }
@@ -198,8 +201,9 @@ public final class FileCollector implements AutoCloseable {
         return false;
     }
 
-    private boolean addFileImpl(TextFile textFile) {
-        return allFilesToProcess.add(textFile);
+    private void addFileImpl(TextFile textFile) {
+        log.trace("Adding file {0}", textFile.getPathId());
+        allFilesToProcess.add(textFile);
     }
 
     private LanguageVersion discoverLanguage(String file) {
@@ -360,7 +364,14 @@ public final class FileCollector implements AutoCloseable {
      * Remove all files collected by the given collector from this one.
      */
     public void exclude(FileCollector excludeCollector) {
-        allFilesToProcess.removeAll(excludeCollector.allFilesToProcess);
+        HashSet<TextFile> toExclude = new HashSet<>(excludeCollector.allFilesToProcess);
+        for (Iterator<TextFile> iterator = allFilesToProcess.iterator(); iterator.hasNext(); ) {
+            TextFile file = iterator.next();
+            if (toExclude.contains(file)) {
+                log.trace("Excluding file {0}", file.getPathId());
+                iterator.remove();
+            }
+        }
     }
 
     /**

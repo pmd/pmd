@@ -61,6 +61,9 @@ public final class FileCollectionUtil {
     }
 
     public static void collectFiles(PMDConfiguration configuration, FileCollector collector) {
+        if (configuration.getSourceEncoding() != null) {
+            collector.setCharset(configuration.getSourceEncoding());
+        }
 
         if (configuration.getInputPaths() != null) {
             collectFiles(collector, configuration.getInputPaths());
@@ -75,6 +78,7 @@ public final class FileCollectionUtil {
         }
 
         if (null != configuration.getIgnoreFilePath()) {
+            // todo disable trace logs for this secondary collector
             try (FileCollector excludeCollector = FileCollector.newCollector(configuration.getLanguageVersionDiscoverer(), collector.getLog())) {
                 collectFileList(excludeCollector, configuration.getIgnoreFilePath());
                 collector.exclude(excludeCollector);

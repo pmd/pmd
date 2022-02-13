@@ -31,8 +31,8 @@ import net.sourceforge.pmd.util.log.SimplePmdLogger;
  * Main programmatic API of PMD. Create and configure a {@link PMDConfiguration},
  * then use {@link #create(PMDConfiguration)} to obtain an instance.
  * You can perform additional configuration on the instance, eg adding
- * files to process, or additional rulesets and renderers.
- *
+ * files to process, or additional rulesets and renderers. Then, call
+ * {@link #performAnalysis()}. Example:
  * <pre>{@code
  *   PMDConfiguration config = new PMDConfiguration();
  *   config.setDefaultLanguageVersion(LanguageRegistry.findLanguageVersionByTerseName("java 11"));
