@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.util.document;
 
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
+import static net.sourceforge.pmd.util.document.FileCollector.newCollector;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -25,7 +26,6 @@ import org.junit.rules.TemporaryFolder;
 
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
-import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
 import net.sourceforge.pmd.util.document.FileCollector.FileWithLanguage;
 
 /**
@@ -101,10 +101,6 @@ public class FileCollectorTest {
         collector.addDirectory(root.resolve("src"));
 
         assertCollected(collector, listOf("src/foo.dummy", "src/x/bar.dummy"));
-    }
-
-    private FileCollector newCollector() {
-        return new FileCollector(new LanguageVersionDiscoverer());
     }
 
     private Path newFile(Path root, String path) throws IOException {

@@ -8,37 +8,56 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.file.FileSystem;
+import java.nio.file.FileSystemNotFoundException;
 import java.nio.file.FileSystems;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.ProviderNotFoundException;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.lang.Language;
-import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
 import net.sourceforge.pmd.util.IOUtil;
+import net.sourceforge.pmd.util.document.internal.LanguageDiscoverer;
+import net.sourceforge.pmd.util.log.PmdLogger;
+import net.sourceforge.pmd.util.log.SimplePmdLogger;
 
 /**
+ * Collects files to analyse before a PMD run. This API allows opening
+ * zip files and makes sure they will be closed at the end of a run.
+ *
  * @author Clément Fournier
  */
 public final class FileCollector implements AutoCloseable {
 
-    private static final Logger LOG = Logger.getLogger(FileCollector.class.getName());
+    private static final Logger DEFAULT_LOG = Logger.getLogger(FileCollector.class.getName());
     private final List<FileWithLanguage> allFilesToProcess = new ArrayList<>();
     private final List<Closeable> resourcesToClose = new ArrayList<>();
-    private final LanguageVersionDiscoverer discoverer;
+    private final LanguageDiscoverer discoverer;
+    private final PmdLogger log;
 
-    public FileCollector(LanguageVersionDiscoverer discoverer) {
+    private FileCollector(LanguageDiscoverer discoverer, PmdLogger logger) {
         this.discoverer = discoverer;
+        this.log = logger;
+    }
+
+    public PmdLogger getLog() {
+        return log;
+    }
+
+    public static FileCollector newCollector() {
+        return newCollector(new LanguageDiscoverer(null), new SimplePmdLogger(DEFAULT_LOG));
+    }
+
+    public static FileCollector newCollector(LanguageDiscoverer discoverer, PmdLogger logger) {
+        return new FileCollector(discoverer, logger);
     }
 
     List<FileWithLanguage> getAllFilesToProcess() {
@@ -54,7 +73,8 @@ public final class FileCollector implements AutoCloseable {
      */
     public boolean addFile(Path file) {
         if (!Files.isRegularFile(file)) {
-            throw new IllegalArgumentException("Not a regular file: " + file);
+            log.error("Not a regular file {}", file);
+            return false;
         }
         Language language = discoverLanguage(file);
         if (language != null) {
@@ -70,7 +90,8 @@ public final class FileCollector implements AutoCloseable {
     public boolean addFile(Path file, Language language) {
         AssertionUtil.requireParamNotNull("language", language);
         if (!Files.isRegularFile(file)) {
-            throw new IllegalArgumentException("Not a regular file: " + file);
+            log.error("Not a regular file {}", file);
+            return false;
         }
         allFilesToProcess.add(new FileWithLanguage(file, language));
         return true;
@@ -83,9 +104,10 @@ public final class FileCollector implements AutoCloseable {
      *
      * @param dir Directory path
      */
-    public void addDirectory(Path dir) throws IOException {
+    public boolean addDirectory(Path dir) throws IOException {
         if (!Files.isDirectory(dir)) {
-            throw new IllegalArgumentException("Not a directory: " + dir);
+            log.error("Not a directory {}", dir);
+            return false;
         }
         Files.walkFileTree(dir, new SimpleFileVisitor<Path>() {
             @Override
@@ -96,18 +118,20 @@ public final class FileCollector implements AutoCloseable {
                 return super.visitFile(file, attrs);
             }
         });
+        return true;
     }
 
 
     // Add a file or directory recursively. Language is determined automatically
     // from the extension/file patterns.
-    public void addFileOrDirectory(Path file) throws IOException {
+    public boolean addFileOrDirectory(Path file) throws IOException {
         if (Files.isDirectory(file)) {
-            addDirectory(file);
+            return addDirectory(file);
         } else if (Files.isRegularFile(file)) {
-            addFile(file);
+            return addFile(file);
         } else {
-            throw new IllegalArgumentException("Not a file or directory " + file);
+            log.error("Not a file or directory {}", file);
+            return false;
         }
     }
 
@@ -122,9 +146,14 @@ public final class FileCollector implements AutoCloseable {
             throw new IllegalArgumentException("Not a regular file: " + zipFile);
         }
         URI zipUri = URI.create("zip:" + zipFile.toUri());
-        FileSystem fs = FileSystems.getFileSystem(zipUri);
-        resourcesToClose.add(fs);
-        return fs;
+        try {
+            FileSystem fs = FileSystems.getFileSystem(zipUri);
+            resourcesToClose.add(fs);
+            return fs;
+        } catch (FileSystemNotFoundException | ProviderNotFoundException e) {
+            log.error("Cannot open zip file " + zipFile, e);
+            return null;
+        }
     }
 
     /**
@@ -139,25 +168,23 @@ public final class FileCollector implements AutoCloseable {
     }
 
     private Language discoverLanguage(Path file) {
-        List<Language> languages = discoverer.getLanguagesForFile(file.toFile());
+        List<Language> languages = discoverer.getLanguagesForFile(file);
         Language lang = languages.isEmpty() ? null : languages.get(0);
-        if (LOG.isLoggable(Level.FINE)) {
-            if (languages.isEmpty()) {
-                LOG.fine(MessageFormat.format("File {0} matches no known language, ignoring", file));
-            } else if (languages.size() > 1) {
-                LOG.fine(MessageFormat.format(
-                    "File {0} matches multiple languages ({1}), selecting {2}",
-                    file,
-                    languages,
-                    lang
-                ));
-            }
+
+        if (languages.isEmpty()) {
+            log.trace("File {0} matches no known language, ignoring", file);
+        } else if (languages.size() > 1) {
+            log.trace("File {0} matches multiple languages ({1}), selecting {2}", file, languages, lang);
         }
         return lang;
     }
 
 
-    // todo(textdocuments): replace with TextFile
+    /**
+     * Note: we store language and not language version so that every
+     * file of the same language gets the same version language version.
+     * The version is attributed later.
+     */
     static final class FileWithLanguage implements Comparable<FileWithLanguage> {
 
         final Path path;

@@ -54,6 +54,7 @@ import net.sourceforge.pmd.util.database.DBURI;
 import net.sourceforge.pmd.util.database.SourceObject;
 import net.sourceforge.pmd.util.datasource.DataSource;
 import net.sourceforge.pmd.util.datasource.ReaderDataSource;
+import net.sourceforge.pmd.util.document.FileCollector;
 import net.sourceforge.pmd.util.log.ScopedLogHandlersManager;
 
 /**
@@ -224,6 +225,11 @@ public class PMD {
      */
     @Deprecated
     public static int doPMD(PMDConfiguration configuration) {
+
+
+    }
+
+    private static int doPMD(PMDConfiguration configuration, FileCollector collector) {
 
         // Load the RuleSets
         final RuleSetFactory ruleSetFactory = RuleSetLoader.fromPmdConfig(configuration).toFactory();
@@ -418,10 +424,11 @@ public class PMD {
         }
     }
 
-    private static List<DataSource> internalGetApplicableFiles(PMDConfiguration configuration,
-                                                               Set<Language> languages) {
-        FilenameFilter fileSelector = configuration.isForceLanguageVersion() ? new AcceptAllFilenames() : new LanguageFilenameFilter(languages);
-        List<DataSource> files = new ArrayList<>();
+    private static FileCollector collectApplicableFiles(PMDConfiguration configuration, Set<Language> languages) {
+        FileCollector collector = FileCollector.newCollector();
+
+        FilenameFilter fileSelector = configuration.isForceLanguageVersion() ? new AcceptAllFilenames()
+                                                                             : new LanguageFilenameFilter(languages);
 
         if (null != configuration.getInputPaths()) {
             files.addAll(FileUtil.collectFiles(configuration.getInputPaths(), fileSelector));
