@@ -11,6 +11,8 @@ package net.sourceforge.pmd.util.log;
  */
 public interface PmdLogger {
 
+    void info(String message, Object... formatArgs);
+
     void trace(String message, Object... formatArgs);
 
     void debug(String message, Object... formatArgs);

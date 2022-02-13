@@ -22,6 +22,10 @@ public class SimplePmdLogger implements PmdLogger {
         this.backend = backend;
     }
 
+    public Logger getBackend() {
+        return backend;
+    }
+
     @Override
     public void trace(String message, Object... formatArgs) {
         if (backend.isLoggable(Level.FINER)) {
@@ -33,6 +37,13 @@ public class SimplePmdLogger implements PmdLogger {
     public void debug(String message, Object... formatArgs) {
         if (backend.isLoggable(Level.FINE)) {
             backend.fine(MessageFormat.format(message, formatArgs));
+        }
+    }
+
+    @Override
+    public void info(String message, Object... formatArgs) {
+        if (backend.isLoggable(Level.INFO)) {
+            backend.info(MessageFormat.format(message, formatArgs));
         }
     }
 

@@ -27,7 +27,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import java.util.logging.Logger;
 
 import net.sourceforge.pmd.PmdAnalysisBuilder;
 import net.sourceforge.pmd.annotation.Experimental;
@@ -48,7 +47,6 @@ import net.sourceforge.pmd.util.log.PmdLogger;
 @SuppressWarnings("PMD.CloseResource")
 public final class FileCollector implements AutoCloseable {
 
-    private static final Logger DEFAULT_LOG = Logger.getLogger(FileCollector.class.getName());
     private final List<TextFile> allFilesToProcess = new ArrayList<>();
     private final List<Closeable> resourcesToClose = new ArrayList<>();
     private Charset charset = StandardCharsets.UTF_8;
@@ -134,7 +132,7 @@ public final class FileCollector implements AutoCloseable {
         }
         LanguageVersion languageVersion = discoverLanguage(file.toString());
         if (languageVersion != null) {
-            allFilesToProcess.add(new NioTextFile(file, charset, languageVersion, getDisplayName(file)));
+            addFileImpl(new NioTextFile(file, charset, languageVersion, getDisplayName(file)));
             return true;
         }
         return false;
@@ -197,7 +195,7 @@ public final class FileCollector implements AutoCloseable {
     }
 
     private void addFileImpl(TextFile textFile) {
-        log.trace("Adding file {0}", textFile.getPathId());
+        log.trace("Adding file {0} (lang: {1}) ", textFile.getPathId(), textFile.getLanguageVersion().getTerseName());
         allFilesToProcess.add(textFile);
     }
 

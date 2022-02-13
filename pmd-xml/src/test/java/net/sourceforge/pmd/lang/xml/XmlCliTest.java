@@ -37,21 +37,21 @@ public class XmlCliTest extends BaseCLITest {
 
     @Test
     public void analyzeSingleXmlWithoutForceLanguage() {
-        String resultFilename = runTest(createArgs("/src/file1.ext"), "analyzeSingleXmlWithoutForceLanguage", 0);
+        String resultFilename = runTest(createArgs("/src/file1.ext"), 0);
         assertRuleMessage(0, resultFilename);
     }
 
     @Test
     public void analyzeSingleXmlWithForceLanguage() {
         String resultFilename = runTest(createArgs("/src/file1.ext", "-force-language", "xml"),
-            "analyzeSingleXmlWithForceLanguage", 4);
+                                        4);
         assertRuleMessage(1, resultFilename);
     }
 
     @Test
     public void analyzeDirectoryWithForceLanguage() {
         String resultFilename = runTest(createArgs("/src/", "-force-language", "xml"),
-            "analyzeDirectoryWithForceLanguage", 4);
+                                        4);
         assertRuleMessage(3, resultFilename);
     }
 

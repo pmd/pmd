@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.sourceforge.pmd.annotation.InternalApi;
@@ -50,12 +51,11 @@ import net.sourceforge.pmd.util.log.SimplePmdLogger;
  */
 public final class PmdAnalysisBuilder implements AutoCloseable {
 
-    private final PmdLogger fileCollectionLogger = new SimplePmdLogger(Logger.getLogger("pmd-file-collection"));
-    private final PmdLogger renderingLogger = new SimplePmdLogger(Logger.getLogger("pmd-rendering"));
     private final FileCollector collector;
     private final List<Renderer> renderers = new ArrayList<>();
     private final List<RuleSet> ruleSets = new ArrayList<>();
     private final PMDConfiguration configuration;
+    private final SimplePmdLogger logger = new SimplePmdLogger(Logger.getLogger("net.sourceforge.pmd"));
 
     /**
      * Constructs a new instance. The files paths (input files, filelist,
@@ -67,8 +67,10 @@ public final class PmdAnalysisBuilder implements AutoCloseable {
         this.configuration = config;
         this.collector = FileCollector.newCollector(
             config.getLanguageVersionDiscoverer(),
-            fileCollectionLogger
+            logger
         );
+        final Level logLevel = configuration.isDebug() ? Level.FINER : Level.INFO;
+        this.logger.getBackend().setLevel(logLevel);
     }
 
     /**
@@ -180,7 +182,7 @@ public final class PmdAnalysisBuilder implements AutoCloseable {
                 try {
                     renderer.start();
                 } catch (IOException e) {
-                    renderingLogger.errorEx("Error while starting renderer " + renderer.getName(), e);
+                    logger.errorEx("Error while starting renderer " + renderer.getName(), e);
                 }
             }
         }
@@ -193,7 +195,7 @@ public final class PmdAnalysisBuilder implements AutoCloseable {
                     renderer.end();
                     renderer.flush();
                 } catch (IOException e) {
-                    renderingLogger.errorEx("Error while finishing renderer " + renderer.getName(), e);
+                    logger.errorEx("Error while finishing renderer " + renderer.getName(), e);
                 }
             }
         }
@@ -204,10 +206,14 @@ public final class PmdAnalysisBuilder implements AutoCloseable {
                                               : new MonoThreadProcessor(configuration);
     }
 
+    public PmdLogger getLog() {
+        return logger;
+    }
 
     @Override
     public void close() {
         collector.close();
+
         /*
          * Make sure it's our own classloader before attempting to close it....
          * Maven + Jacoco provide us with a cloaseable classloader that if closed

@@ -235,19 +235,14 @@ public class PMD {
             if (pmd.getRulesets().isEmpty()) {
                 return PMDCommandLineInterface.NO_ERRORS_STATUS;
             }
-
-            Report report = pmd.performAnalysis();
-            return report.getViolations().size();
-        } catch (Exception e) {
-            String message = e.getMessage();
-            if (message != null) {
-                LOG.severe(message);
-            } else {
-                LOG.log(Level.SEVERE, "Exception during processing", e);
+            try {
+                Report report = pmd.performAnalysis();
+                return report.getViolations().size();
+            } catch (Exception e) {
+                pmd.getLog().errorEx("Exception during processing", e);
+                pmd.getLog().info(PMDCommandLineInterface.buildUsageText());
+                return PMDCommandLineInterface.NO_ERRORS_STATUS;
             }
-            LOG.log(Level.FINE, "Exception during processing", e);
-            LOG.info(PMDCommandLineInterface.buildUsageText());
-            return PMDCommandLineInterface.NO_ERRORS_STATUS;
         }
     }
 

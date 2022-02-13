@@ -69,15 +69,15 @@ public final class FileCollectionUtil {
             collectFiles(collector, configuration.getInputPaths());
         }
 
-        if (null != configuration.getInputUri()) {
+        if (configuration.getInputUri() != null) {
             collectDB(collector, configuration.getInputUri());
         }
 
-        if (null != configuration.getInputFilePath()) {
+        if (configuration.getInputFilePath() != null) {
             collectFileList(collector, configuration.getInputFilePath());
         }
 
-        if (null != configuration.getIgnoreFilePath()) {
+        if (configuration.getIgnoreFilePath() != null) {
             // todo disable trace logs for this secondary collector
             try (FileCollector excludeCollector = FileCollector.newCollector(configuration.getLanguageVersionDiscoverer(), collector.getLog())) {
                 collectFileList(excludeCollector, configuration.getIgnoreFilePath());
