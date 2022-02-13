@@ -80,6 +80,8 @@ public class PMD {
 
     /**
      * Contains the configuration with which this PMD instance has been created.
+     *
+     * @deprecated Create a {@link PMDConfiguration} directly
      */
     @Deprecated
     protected final PMDConfiguration configuration;
