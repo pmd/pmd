@@ -29,6 +29,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.logging.Logger;
 
+import net.sourceforge.pmd.PmdAnalysisBuilder;
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.internal.util.AssertionUtil;
@@ -37,18 +38,13 @@ import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
 import net.sourceforge.pmd.util.IOUtil;
 import net.sourceforge.pmd.util.log.PmdLogger;
-import net.sourceforge.pmd.util.log.SimplePmdLogger;
 
 /**
  * Collects files to analyse before a PMD run. This API allows opening
  * zip files and makes sure they will be closed at the end of a run.
  *
- * <p>This API is provided for forward compatibility with PMD 7. In
- * PMD 6.43.0, it is still experimental.
- *
  * @author Clément Fournier
  */
-@Experimental
 @SuppressWarnings("PMD.CloseResource")
 public final class FileCollector implements AutoCloseable {
 
@@ -68,10 +64,10 @@ public final class FileCollector implements AutoCloseable {
         this.log = logger;
     }
 
-    public static FileCollector newCollector() {
-        return newCollector(new LanguageVersionDiscoverer(), new SimplePmdLogger(DEFAULT_LOG));
-    }
-
+    /**
+     * Experimental: please use {@link PmdAnalysisBuilder#files()} instead of this
+     */
+    @Experimental
     public static FileCollector newCollector(LanguageVersionDiscoverer discoverer, PmdLogger logger) {
         return new FileCollector(discoverer, logger);
     }
