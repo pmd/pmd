@@ -45,40 +45,41 @@ public final class FileCollectionUtil {
         return result;
     }
 
-    public static FileCollector collectApplicableFiles(PMDConfiguration configuration, Set<Language> languages, PmdLogger logger) {
-        FileCollector collector = collectApplicableFilesImpl(configuration, logger);
+    public static FileCollector collectFiles(PMDConfiguration configuration, Set<Language> languages, PmdLogger logger) {
+        FileCollector collector = collectFiles(configuration, logger);
         collector.filterLanguages(languages);
         return collector;
     }
 
-    private static FileCollector collectApplicableFilesImpl(PMDConfiguration configuration, PmdLogger logger) {
+    private static FileCollector collectFiles(PMDConfiguration configuration, PmdLogger logger) {
         FileCollector collector = FileCollector.newCollector(
             configuration.getLanguageVersionDiscoverer(),
             logger
         );
+        collectFiles(configuration, collector);
+        return collector;
+    }
+
+    public static void collectFiles(PMDConfiguration configuration, FileCollector collector) {
 
         if (configuration.getInputPaths() != null) {
-            FileCollectionUtil.collectFiles(collector, configuration.getInputPaths());
+            collectFiles(collector, configuration.getInputPaths());
         }
 
         if (null != configuration.getInputUri()) {
-            FileCollectionUtil.collectDB(collector, configuration.getInputUri());
+            collectDB(collector, configuration.getInputUri());
         }
 
         if (null != configuration.getInputFilePath()) {
-            FileCollectionUtil.collectFileList(collector, configuration.getInputFilePath());
+            collectFileList(collector, configuration.getInputFilePath());
         }
 
         if (null != configuration.getIgnoreFilePath()) {
-            try (FileCollector excludeCollector = FileCollector.newCollector(configuration.getLanguageVersionDiscoverer(), logger);) {
-                FileCollectionUtil.collectFileList(excludeCollector, configuration.getInputFilePath());
+            try (FileCollector excludeCollector = FileCollector.newCollector(configuration.getLanguageVersionDiscoverer(), collector.getLog())) {
+                collectFileList(excludeCollector, configuration.getInputFilePath());
                 collector.exclude(excludeCollector);
-            } catch (IOException e) {
-                collector.getLog().errorEx("Error reading ignore file", e);
             }
         }
-
-        return collector;
     }
 
 

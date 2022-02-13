@@ -56,8 +56,8 @@ public final class FileCollector implements AutoCloseable {
     private Charset charset = StandardCharsets.UTF_8;
     private final LanguageVersionDiscoverer discoverer;
     private final PmdLogger log;
-
     private final List<String> relativizeRoots = new ArrayList<>();
+    private boolean closed;
 
     // construction
 
@@ -83,6 +83,9 @@ public final class FileCollector implements AutoCloseable {
      */
     @InternalApi
     public List<TextFile> getCollectedFiles() {
+        if (closed) {
+            throw new IllegalStateException("Collector was closed!");
+        }
         Collections.sort(allFilesToProcess, new Comparator<TextFile>() {
             @Override
             public int compare(TextFile o1, TextFile o2) {
@@ -104,10 +107,14 @@ public final class FileCollector implements AutoCloseable {
      * Close registered resources like zip files.
      */
     @Override
-    public void close() throws IOException {
+    public void close() {
+        if (closed) {
+            return;
+        }
+        closed = true;
         IOException exception = IOUtil.closeAll(resourcesToClose);
         if (exception != null) {
-            throw exception;
+            log.errorEx("Error while closing resources", exception);
         }
     }
 

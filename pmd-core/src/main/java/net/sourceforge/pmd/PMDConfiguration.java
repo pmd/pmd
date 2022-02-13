@@ -5,9 +5,9 @@
 package net.sourceforge.pmd;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.Properties;
 
 import net.sourceforge.pmd.cache.AnalysisCache;
@@ -83,8 +83,12 @@ import net.sourceforge.pmd.util.ClasspathClassLoader;
  * </ul>
  */
 public class PMDConfiguration extends AbstractConfiguration {
+
+    /** The default suppress marker string. */
+    public static final String SUPPRESS_MARKER = "NOPMD";
+
     // General behavior options
-    private String suppressMarker = PMD.SUPPRESS_MARKER;
+    private String suppressMarker = SUPPRESS_MARKER;
     private int threads = Runtime.getRuntime().availableProcessors();
     private ClassLoader classLoader = getClass().getClassLoader();
     private LanguageVersionDiscoverer languageVersionDiscoverer = new LanguageVersionDiscoverer();
@@ -187,12 +191,12 @@ public class PMDConfiguration extends AbstractConfiguration {
      *
      * @param classpath
      *            The prepended classpath.
-     * @throws IOException
+     * @throws IllegalArgumentException
      *             if the given classpath is invalid (e.g. does not exist)
      * @see PMDConfiguration#setClassLoader(ClassLoader)
      * @see ClasspathClassLoader
      */
-    public void prependClasspath(String classpath) throws IOException {
+    public void prependClasspath(String classpath) {
         if (classLoader == null) {
             classLoader = PMDConfiguration.class.getClassLoader();
         }
@@ -248,6 +252,7 @@ public class PMDConfiguration extends AbstractConfiguration {
      *            the LanguageVersion
      */
     public void setDefaultLanguageVersion(LanguageVersion languageVersion) {
+        Objects.requireNonNull(languageVersion);
         setDefaultLanguageVersions(Arrays.asList(languageVersion));
     }
 
@@ -260,6 +265,7 @@ public class PMDConfiguration extends AbstractConfiguration {
      */
     public void setDefaultLanguageVersions(List<LanguageVersion> languageVersions) {
         for (LanguageVersion languageVersion : languageVersions) {
+            Objects.requireNonNull(languageVersion);
             languageVersionDiscoverer.setDefaultLanguageVersion(languageVersion);
         }
     }

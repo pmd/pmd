@@ -12,6 +12,8 @@ import java.util.Objects;
 
 import org.apache.commons.lang3.StringUtils;
 
+import net.sourceforge.pmd.internal.util.AssertionUtil;
+
 /**
  * This class can discover the LanguageVersion of a source file. Further, every
  * Language has a default LanguageVersion, which can be temporarily overridden
@@ -45,6 +47,7 @@ public class LanguageVersionDiscoverer {
      * @return The previous default version for the language.
      */
     public LanguageVersion setDefaultLanguageVersion(LanguageVersion languageVersion) {
+        AssertionUtil.requireParamNotNull("languageVersion", languageVersion);
         LanguageVersion currentLanguageVersion = languageToLanguageVersion.put(languageVersion.getLanguage(),
                 languageVersion);
         if (currentLanguageVersion == null) {

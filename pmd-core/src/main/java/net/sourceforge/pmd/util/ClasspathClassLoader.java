@@ -20,6 +20,7 @@ import java.util.logging.Logger;
 import org.apache.commons.lang3.StringUtils;
 
 import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.internal.util.AssertionUtil;
 
 /**
  * Create a ClassLoader which loads classes using a CLASSPATH like String. If
@@ -43,7 +44,7 @@ public class ClasspathClassLoader extends URLClassLoader {
         super(fileToURL(files), parent);
     }
 
-    public ClasspathClassLoader(String classpath, ClassLoader parent) throws IOException {
+    public ClasspathClassLoader(String classpath, ClassLoader parent) {
         super(initURLs(classpath), parent);
     }
 
@@ -57,17 +58,19 @@ public class ClasspathClassLoader extends URLClassLoader {
         return urlList.toArray(new URL[0]);
     }
 
-    private static URL[] initURLs(String classpath) throws IOException {
-        if (classpath == null) {
-            throw new IllegalArgumentException("classpath argument cannot be null");
-        }
+    private static URL[] initURLs(String classpath) {
+        AssertionUtil.requireParamNotNull("classpath", classpath);
         final List<URL> urls = new ArrayList<>();
-        if (classpath.startsWith("file:")) {
-            // Treat as file URL
-            addFileURLs(urls, new URL(classpath));
-        } else {
-            // Treat as classpath
-            addClasspathURLs(urls, classpath);
+        try {
+            if (classpath.startsWith("file:")) {
+                // Treat as file URL
+                addFileURLs(urls, new URL(classpath));
+            } else {
+                // Treat as classpath
+                addClasspathURLs(urls, classpath);
+            }
+        } catch (IOException e) {
+            throw new IllegalArgumentException("Cannot prepend classpath " + classpath + "\n" + e.getMessage(), e);
         }
         return urls.toArray(new URL[0]);
     }
