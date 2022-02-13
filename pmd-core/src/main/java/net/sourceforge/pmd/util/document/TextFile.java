@@ -8,6 +8,7 @@ import java.io.IOException;
 
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.util.datasource.DataSource;
 
 /**
  * Collects files to analyse before a PMD run. This API allows opening
@@ -25,4 +26,6 @@ public interface TextFile {
     String readContents() throws IOException;
 
     LanguageVersion getLanguageVersion();
+
+    DataSource toDataSourceCompat();
 }

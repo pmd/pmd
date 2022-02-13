@@ -37,6 +37,7 @@ import net.sourceforge.pmd.cli.PMDCommandLineInterface;
 import net.sourceforge.pmd.cli.PmdParametersParseResult;
 import net.sourceforge.pmd.internal.util.FileCollectionUtil;
 import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.lang.LanguageFilenameFilter;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
@@ -58,6 +59,7 @@ import net.sourceforge.pmd.util.document.FileCollector;
 import net.sourceforge.pmd.util.document.internal.LanguageDiscoverer;
 import net.sourceforge.pmd.util.log.PmdLogger;
 import net.sourceforge.pmd.util.log.ScopedLogHandlersManager;
+import net.sourceforge.pmd.util.log.SimplePmdLogger;
 
 /**
  * This is the main class for interacting with PMD. The primary flow of all Rule
@@ -227,18 +229,14 @@ public class PMD {
      */
     @Deprecated
     public static int doPMD(PMDConfiguration configuration) {
-
-
-    }
-
-    private static int doPMD(PMDConfiguration configuration, FileCollector collector) {
-
         // Load the RuleSets
         final RuleSetFactory ruleSetFactory = RuleSetLoader.fromPmdConfig(configuration).toFactory();
         final RuleSets ruleSets = RulesetsFactoryUtils.getRuleSetsWithBenchmark(configuration.getRuleSets(), ruleSetFactory);
         if (ruleSets == null) {
             return PMDCommandLineInterface.NO_ERRORS_STATUS;
         }
+
+        final List<DataSource> files = getApplicableFiles(configuration, getApplicableLanguages(configuration, ruleSets));
 
         try {
             Renderer renderer;
@@ -420,41 +418,9 @@ public class PMD {
      */
     public static List<DataSource> getApplicableFiles(PMDConfiguration configuration, Set<Language> languages) {
         try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.COLLECT_FILES)) {
-            return internalGetApplicableFiles(configuration, languages);
+            FileCollector collector = FileCollectionUtil.collectApplicableFiles(configuration, languages, new SimplePmdLogger(LOG));
+            return FileCollectionUtil.collectorToDataSource(collector);
         }
-    }
-
-    private static FileCollector collectApplicableFiles(PMDConfiguration configuration, Set<Language> languages, PmdLogger logger) {
-        try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.COLLECT_FILES)) {
-            return collectApplicableFilesImpl(configuration, languages, logger);
-        }
-    }
-
-    private static FileCollector collectApplicableFilesImpl(PMDConfiguration configuration, Set<Language> languages, PmdLogger logger) {
-        FileCollector collector = FileCollector.newCollector(
-            configuration.getLanguageVersionDiscoverer(),
-            logger
-        );
-
-        if (configuration.getInputPaths() != null) {
-            FileCollectionUtil.collectFiles(collector, configuration.getInputPaths());
-        }
-
-        if (null != configuration.getInputUri()) {
-            FileCollectionUtil.collectDB(collector, configuration.getInputUri());
-        }
-
-        if (null != configuration.getInputFilePath()) {
-            FileCollectionUtil.collectFileList(collector, configuration.getInputFilePath());
-        }
-
-        if (null != configuration.getIgnoreFilePath()) {
-            FileCollector excludeCollector = FileCollector.newCollector(configuration.getLanguageVersionDiscoverer(), logger);
-            FileCollectionUtil.collectFileList(excludeCollector, configuration.getInputFilePath());
-            collector.exclude(excludeCollector);
-        }
-
-        return collector;
     }
 
     private static Set<Language> getApplicableLanguages(final PMDConfiguration configuration, final RuleSets ruleSets) {

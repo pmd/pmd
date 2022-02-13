@@ -11,20 +11,73 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.io.IOUtils;
 
+import net.sourceforge.pmd.PMDConfiguration;
+import net.sourceforge.pmd.benchmark.TimeTracker;
+import net.sourceforge.pmd.benchmark.TimedOperation;
+import net.sourceforge.pmd.benchmark.TimedOperationCategory;
+import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.util.FileUtil;
 import net.sourceforge.pmd.util.database.DBMSMetadata;
 import net.sourceforge.pmd.util.database.DBURI;
 import net.sourceforge.pmd.util.database.SourceObject;
+import net.sourceforge.pmd.util.datasource.DataSource;
 import net.sourceforge.pmd.util.document.FileCollector;
+import net.sourceforge.pmd.util.document.TextFile;
+import net.sourceforge.pmd.util.log.PmdLogger;
 
 /**
  * @author Clément Fournier
  */
 public class FileCollectionUtil {
+
+
+    public static List<DataSource> collectorToDataSource(FileCollector collector) {
+        List<DataSource> result = new ArrayList<>();
+        for (TextFile file : collector.getAllFilesToProcess()) {
+            result.add(file.toDataSourceCompat());
+        }
+        return result;
+    }
+
+    public static FileCollector collectApplicableFiles(PMDConfiguration configuration, Set<Language> languages, PmdLogger logger) {
+        FileCollector collector = collectApplicableFilesImpl(configuration, logger);
+        collector.filterLanguages(languages);
+        return collector;
+    }
+
+    private static FileCollector collectApplicableFilesImpl(PMDConfiguration configuration, PmdLogger logger) {
+        FileCollector collector = FileCollector.newCollector(
+            configuration.getLanguageVersionDiscoverer(),
+            logger
+        );
+
+        if (configuration.getInputPaths() != null) {
+            FileCollectionUtil.collectFiles(collector, configuration.getInputPaths());
+        }
+
+        if (null != configuration.getInputUri()) {
+            FileCollectionUtil.collectDB(collector, configuration.getInputUri());
+        }
+
+        if (null != configuration.getInputFilePath()) {
+            FileCollectionUtil.collectFileList(collector, configuration.getInputFilePath());
+        }
+
+        if (null != configuration.getIgnoreFilePath()) {
+            FileCollector excludeCollector = FileCollector.newCollector(configuration.getLanguageVersionDiscoverer(), logger);
+            FileCollectionUtil.collectFileList(excludeCollector, configuration.getInputFilePath());
+            collector.exclude(excludeCollector);
+        }
+
+        return collector;
+    }
+
 
     public static void collectFiles(FileCollector collector, String fileLocations) {
         for (String rootLocation : fileLocations.split(",")) {

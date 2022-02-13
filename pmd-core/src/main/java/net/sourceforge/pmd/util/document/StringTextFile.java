@@ -4,8 +4,12 @@
 
 package net.sourceforge.pmd.util.document;
 
+import java.io.StringReader;
+
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.util.datasource.DataSource;
+import net.sourceforge.pmd.util.datasource.ReaderDataSource;
 
 /**
  * Collects files to analyse before a PMD run. This API allows opening
@@ -49,5 +53,13 @@ public final class StringTextFile implements TextFile {
     @Override
     public LanguageVersion getLanguageVersion() {
         return languageVersion;
+    }
+
+    @Override
+    public DataSource toDataSourceCompat() {
+        return new ReaderDataSource(
+            new StringReader(contents),
+            pathId
+        );
     }
 }

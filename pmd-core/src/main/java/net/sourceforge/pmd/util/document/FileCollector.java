@@ -21,8 +21,10 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import net.sourceforge.pmd.internal.util.AssertionUtil;
@@ -62,6 +64,21 @@ public final class FileCollector implements AutoCloseable {
      */
     public void exclude(FileCollector excludeCollector) {
         allFilesToProcess.removeAll(excludeCollector.allFilesToProcess);
+    }
+
+    /**
+     * Exclude all collected files whose language is not part of the given
+     * collection.
+     */
+    public void filterLanguages(Set<Language> languages) {
+        for (Iterator<TextFile> iterator = allFilesToProcess.iterator(); iterator.hasNext(); ) {
+            TextFile file = iterator.next();
+            Language lang = file.getLanguageVersion().getLanguage();
+            if (!languages.contains(lang)) {
+                log.trace("Filtering out {0}, no rules for language {1}", file.getPathId(), lang);
+                iterator.remove();
+            }
+        }
     }
 
     public static FileCollector newCollector() {
