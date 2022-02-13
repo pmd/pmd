@@ -5,10 +5,10 @@
 package net.sourceforge.pmd.lang;
 
 import java.io.File;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -61,6 +61,7 @@ public class LanguageVersionDiscoverer {
      * @return The current default version for the language.
      */
     public LanguageVersion getDefaultLanguageVersion(Language language) {
+        Objects.requireNonNull(language);
         LanguageVersion languageVersion = languageToLanguageVersion.get(language);
         if (languageVersion == null) {
             languageVersion = language.getDefaultVersion();

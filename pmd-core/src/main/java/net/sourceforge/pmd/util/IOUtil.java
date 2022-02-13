@@ -26,8 +26,6 @@ import org.apache.commons.lang3.StringUtils;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 
-import com.beust.jcommander.internal.Nullable;
-
 /**
  *
  * @author Brian Remedios

@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.util.document;
 
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
-import static net.sourceforge.pmd.util.document.FileCollector.newCollector;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -13,22 +12,20 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.junit.rules.TemporaryFolder;
 
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
-import net.sourceforge.pmd.util.document.FileCollector.FileWithLanguage;
-import net.sourceforge.pmd.util.log.SimplePmdLogger;
 
 /**
  * @author Clément Fournier
@@ -37,8 +34,6 @@ public class FileCollectorTest {
 
     @Rule
     public TemporaryFolder tempFolder = new TemporaryFolder();
-    @Rule
-    public ExpectedException exception = ExpectedException.none();
 
     @Test
     public void testAddFile() throws IOException {
@@ -61,10 +56,8 @@ public class FileCollectorTest {
 
         Language dummy = LanguageRegistry.findLanguageByTerseName("dummy");
 
-        FileCollector collector = newCollector(new LanguageVersionDiscoverer(dummy.getDefaultVersion()), new TestPmdLogger());
+        FileCollector collector = newCollector(dummy.getDefaultVersion());
 
-        assertFalse("should be unknown language", collector.addFile(bar));
-        assertCollected(collector, Collections.<String>emptyList());
         assertTrue("should be unknown language", collector.addFile(bar, dummy));
         assertCollected(collector, listOf("bar.unknown"));
         assertNoErrors(collector);
@@ -76,8 +69,8 @@ public class FileCollectorTest {
 
         FileCollector collector = newCollector();
 
-        exception.expect(IllegalArgumentException.class);
-        collector.addFile(root.resolve("does_not_exist.dummy"));
+        assertFalse(collector.addFile(root.resolve("does_not_exist.dummy")));
+        assertEquals(1, collector.getLog().numErrors());
     }
 
     @Test
@@ -87,9 +80,8 @@ public class FileCollectorTest {
         Files.createDirectories(dir);
 
         FileCollector collector = newCollector();
-
-        exception.expect(IllegalArgumentException.class);
-        collector.addFile(dir);
+        assertFalse(collector.addFile(dir));
+        assertEquals(1, collector.getLog().numErrors());
     }
 
     @Test
@@ -106,6 +98,12 @@ public class FileCollectorTest {
         assertCollected(collector, listOf("src/foo.dummy", "src/x/bar.dummy"));
     }
 
+    @Test
+    public void testRelativize() throws IOException {
+        String displayName = FileCollector.getDisplayName(Paths.get("a", "b", "c"), listOf(Paths.get("a").toString()));
+        assertEquals(displayName, Paths.get("b", "c").toString());
+    }
+
     private Path newFile(Path root, String path) throws IOException {
         Path resolved = root.resolve(path);
         Files.createDirectories(resolved.getParent());
@@ -115,14 +113,25 @@ public class FileCollectorTest {
 
     private void assertCollected(FileCollector collector, List<String> relPaths) {
         Map<String, String> actual = new LinkedHashMap<>();
-        for (TextFile file : collector.getAllFilesToProcess()) {
+        for (TextFile file : collector.getCollectedFiles()) {
             actual.put(file.getDisplayName(), file.getLanguageVersion().getTerseName());
         }
 
-        assertEquals(new ArrayList<>(actual.keySet()), relPaths);
+        assertEquals(relPaths, new ArrayList<>(actual.keySet()));
     }
 
     private void assertNoErrors(FileCollector collector) {
         assertEquals("No errors expected", 0, collector.getLog().numErrors());
+    }
+
+    private FileCollector newCollector() {
+        return newCollector(null);
+    }
+
+    private FileCollector newCollector(LanguageVersion forcedVersion) {
+        LanguageVersionDiscoverer discoverer = new LanguageVersionDiscoverer(forcedVersion);
+        FileCollector collector = FileCollector.newCollector(discoverer, new PmdTestLogger());
+        collector.relativizeWith(tempFolder.getRoot().getAbsolutePath());
+        return collector;
     }
 }

@@ -12,7 +12,7 @@ import net.sourceforge.pmd.util.log.SimplePmdLogger;
 /**
  * @author Clément Fournier
  */
-public class TestPmdLogger extends SimplePmdLogger {
+public class PmdTestLogger extends SimplePmdLogger {
 
     private static final Logger LOG = Logger.getLogger("testlogger");
 
@@ -20,7 +20,7 @@ public class TestPmdLogger extends SimplePmdLogger {
         LOG.setLevel(Level.OFF);
     }
 
-    public TestPmdLogger() {
+    public PmdTestLogger() {
         super(LOG);
     }
 }

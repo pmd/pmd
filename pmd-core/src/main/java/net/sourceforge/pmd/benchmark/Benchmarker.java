@@ -4,15 +4,11 @@
 
 package net.sourceforge.pmd.benchmark;
 
-import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -31,15 +27,12 @@ import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RulesetsFactoryUtils;
 import net.sourceforge.pmd.SourceCodeProcessor;
-import net.sourceforge.pmd.internal.util.FileCollectionUtil;
 import net.sourceforge.pmd.lang.AbstractParser;
 import net.sourceforge.pmd.lang.Language;
-import net.sourceforge.pmd.lang.LanguageFilenameFilter;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
 import net.sourceforge.pmd.lang.Parser;
-import net.sourceforge.pmd.util.datasource.DataSource;
 import net.sourceforge.pmd.util.document.FileCollector;
 import net.sourceforge.pmd.util.document.TextFile;
 import net.sourceforge.pmd.util.log.SimplePmdLogger;
@@ -109,36 +102,36 @@ public final class Benchmarker {
         }
 
         String srcDir = findOptionalStringValue(args, "--source-directory", "/usr/local/java/src/java/lang/");
-        FileCollector collector = FileCollector.newCollector(discoverer, new SimplePmdLogger(LOGGER));
-        FileCollectionUtil.collectFiles(collector, srcDir);
 
-        boolean debug = findBooleanSwitch(args, "--debug");
-        boolean parseOnly = findBooleanSwitch(args, "--parse-only");
+        try (FileCollector collector = FileCollector.newCollector(discoverer, new SimplePmdLogger(LOGGER))) {
+            boolean debug = findBooleanSwitch(args, "--debug");
+            boolean parseOnly = findBooleanSwitch(args, "--parse-only");
 
-        if (debug) {
-            System.out.println("Using " + language.getName() + " " + languageVersion.getVersion());
-        }
-        if (parseOnly) {
-            Parser parser = PMD.parserFor(languageVersion, null);
-            parseStress(parser, collector, debug);
-        } else {
-            String ruleset = findOptionalStringValue(args, "--ruleset", "");
             if (debug) {
-                System.out.println("Checking directory " + srcDir);
+                System.out.println("Using " + language.getName() + " " + languageVersion.getVersion());
             }
-            Set<RuleDuration> results = new TreeSet<>();
-            RuleSetFactory factory = RulesetsFactoryUtils.defaultFactory();
-            if (StringUtils.isNotBlank(ruleset)) {
-                stress(languageVersion, factory.createRuleSet(ruleset), collector, results, debug);
+            if (parseOnly) {
+                Parser parser = PMD.parserFor(languageVersion, null);
+                parseStress(parser, collector, debug);
             } else {
-                Iterator<RuleSet> i = factory.getRegisteredRuleSets();
-                while (i.hasNext()) {
-                    stress(languageVersion, i.next(), collector, results, debug);
+                String ruleset = findOptionalStringValue(args, "--ruleset", "");
+                if (debug) {
+                    System.out.println("Checking directory " + srcDir);
                 }
-            }
+                Set<RuleDuration> results = new TreeSet<>();
+                RuleSetFactory factory = RulesetsFactoryUtils.defaultFactory();
+                if (StringUtils.isNotBlank(ruleset)) {
+                    stress(languageVersion, factory.createRuleSet(ruleset), collector, results, debug);
+                } else {
+                    Iterator<RuleSet> i = factory.getRegisteredRuleSets();
+                    while (i.hasNext()) {
+                        stress(languageVersion, i.next(), collector, results, debug);
+                    }
+                }
 
-            TextReport report = new TextReport();
-            report.generate(results, System.err);
+                TextReport report = new TextReport();
+                report.generate(results, System.err);
+            }
         }
     }
 
@@ -155,7 +148,7 @@ public final class Benchmarker {
 
         long start = System.currentTimeMillis();
 
-        for (TextFile ds : dataSources.getAllFilesToProcess()) {
+        for (TextFile ds : dataSources.getCollectedFiles()) {
             String contents = ds.readContents();
             AbstractParser.doParse(parser, ds.getDisplayName(), new StringReader(contents));
         }
@@ -197,7 +190,7 @@ public final class Benchmarker {
 
             RuleContext ctx = new RuleContext();
             long start = System.currentTimeMillis();
-            for (TextFile ds : files.getAllFilesToProcess()) {
+            for (TextFile ds : files.getCollectedFiles()) {
                 String source = ds.readContents();
                 ctx.setSourceCodeFile(new File(ds.getPathId()));
                 new SourceCodeProcessor(config).processSourceCode(new StringReader(source), ruleSets, ctx);

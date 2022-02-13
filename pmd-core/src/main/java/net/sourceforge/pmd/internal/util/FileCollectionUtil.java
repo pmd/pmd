@@ -18,9 +18,6 @@ import java.util.Set;
 import org.apache.commons.io.IOUtils;
 
 import net.sourceforge.pmd.PMDConfiguration;
-import net.sourceforge.pmd.benchmark.TimeTracker;
-import net.sourceforge.pmd.benchmark.TimedOperation;
-import net.sourceforge.pmd.benchmark.TimedOperationCategory;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.util.FileUtil;
 import net.sourceforge.pmd.util.database.DBMSMetadata;
@@ -34,12 +31,15 @@ import net.sourceforge.pmd.util.log.PmdLogger;
 /**
  * @author Clément Fournier
  */
-public class FileCollectionUtil {
+public final class FileCollectionUtil {
 
+    private FileCollectionUtil() {
+
+    }
 
     public static List<DataSource> collectorToDataSource(FileCollector collector) {
         List<DataSource> result = new ArrayList<>();
-        for (TextFile file : collector.getAllFilesToProcess()) {
+        for (TextFile file : collector.getCollectedFiles()) {
             result.add(file.toDataSourceCompat());
         }
         return result;
@@ -70,9 +70,12 @@ public class FileCollectionUtil {
         }
 
         if (null != configuration.getIgnoreFilePath()) {
-            FileCollector excludeCollector = FileCollector.newCollector(configuration.getLanguageVersionDiscoverer(), logger);
-            FileCollectionUtil.collectFileList(excludeCollector, configuration.getInputFilePath());
-            collector.exclude(excludeCollector);
+            try (FileCollector excludeCollector = FileCollector.newCollector(configuration.getLanguageVersionDiscoverer(), logger);) {
+                FileCollectionUtil.collectFileList(excludeCollector, configuration.getInputFilePath());
+                collector.exclude(excludeCollector);
+            } catch (IOException e) {
+                collector.getLog().errorEx("Error reading ignore file", e);
+            }
         }
 
         return collector;
@@ -116,6 +119,7 @@ public class FileCollectionUtil {
         if (Files.isDirectory(path)) {
             collector.addDirectory(path);
         } else if (rootLocation.endsWith(".zip") || rootLocation.endsWith(".jar")) {
+            @SuppressWarnings("PMD.CloseResource")
             FileSystem fs = collector.addZipFile(path);
             if (fs == null) {
                 return;

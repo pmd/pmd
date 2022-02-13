@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.util.document;
 
 import java.io.Closeable;
+import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.charset.Charset;
@@ -27,6 +28,8 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.logging.Logger;
 
+import net.sourceforge.pmd.annotation.Experimental;
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
@@ -39,8 +42,12 @@ import net.sourceforge.pmd.util.log.SimplePmdLogger;
  * Collects files to analyse before a PMD run. This API allows opening
  * zip files and makes sure they will be closed at the end of a run.
  *
+ * <p>This API is provided for forward compatibility with PMD 7. In
+ * PMD 6.43.0, it is still experimental.
+ *
  * @author Clément Fournier
  */
+@Experimental
 public final class FileCollector implements AutoCloseable {
 
     private static final Logger DEFAULT_LOG = Logger.getLogger(FileCollector.class.getName());
@@ -50,35 +57,13 @@ public final class FileCollector implements AutoCloseable {
     private final LanguageVersionDiscoverer discoverer;
     private final PmdLogger log;
 
+    private final List<String> relativizeRoots = new ArrayList<>();
+
+    // construction
+
     private FileCollector(LanguageVersionDiscoverer discoverer, PmdLogger logger) {
         this.discoverer = discoverer;
         this.log = logger;
-    }
-
-    public PmdLogger getLog() {
-        return log;
-    }
-
-    /**
-     * Remove all files collected by the given collector from this one.
-     */
-    public void exclude(FileCollector excludeCollector) {
-        allFilesToProcess.removeAll(excludeCollector.allFilesToProcess);
-    }
-
-    /**
-     * Exclude all collected files whose language is not part of the given
-     * collection.
-     */
-    public void filterLanguages(Set<Language> languages) {
-        for (Iterator<TextFile> iterator = allFilesToProcess.iterator(); iterator.hasNext(); ) {
-            TextFile file = iterator.next();
-            Language lang = file.getLanguageVersion().getLanguage();
-            if (!languages.contains(lang)) {
-                log.trace("Filtering out {0}, no rules for language {1}", file.getPathId(), lang);
-                iterator.remove();
-            }
-        }
     }
 
     public static FileCollector newCollector() {
@@ -89,7 +74,15 @@ public final class FileCollector implements AutoCloseable {
         return new FileCollector(discoverer, logger);
     }
 
-    public List<TextFile> getAllFilesToProcess() {
+    // public behaviour
+
+    /**
+     * Returns an unmodifiable list of all files that have been collected.
+     *
+     * <p>Internal: This might be unstable until PMD 7, but it's internal.
+     */
+    @InternalApi
+    public List<TextFile> getCollectedFiles() {
         Collections.sort(allFilesToProcess, new Comparator<TextFile>() {
             @Override
             public int compare(TextFile o1, TextFile o2) {
@@ -98,6 +91,27 @@ public final class FileCollector implements AutoCloseable {
         });
         return Collections.unmodifiableList(allFilesToProcess);
     }
+
+
+    /**
+     * Returns the logger for the file collection phase.
+     */
+    public PmdLogger getLog() {
+        return log;
+    }
+
+    /**
+     * Close registered resources like zip files.
+     */
+    @Override
+    public void close() throws IOException {
+        IOException exception = IOUtil.closeAll(resourcesToClose);
+        if (exception != null) {
+            throw exception;
+        }
+    }
+
+    // collection
 
     /**
      * Add a file, language is determined automatically from
@@ -181,6 +195,23 @@ public final class FileCollector implements AutoCloseable {
         return allFilesToProcess.add(textFile);
     }
 
+    private LanguageVersion discoverLanguage(String file) {
+        if (discoverer.getForcedVersion() != null) {
+            return discoverer.getForcedVersion();
+        }
+        List<Language> languages = discoverer.getLanguagesForFile(file);
+
+        if (languages.isEmpty()) {
+            log.trace("File {0} matches no known language, ignoring", file);
+            return null;
+        }
+        Language lang = languages.get(0);
+        if (languages.size() > 1) {
+            log.trace("File {0} matches multiple languages ({1}), selecting {2}", file, languages, lang);
+        }
+        return discoverer.getDefaultLanguageVersion(lang);
+    }
+
     /**
      * Whether the LanguageVersion of the file matches the one set in
      * the {@link LanguageVersionDiscoverer}. This is required to ensure
@@ -202,11 +233,26 @@ public final class FileCollector implements AutoCloseable {
         return true;
     }
 
-    /**
-     * Return the textfile's display name. TODO relativize to implement renderer's useShortFileNames.
-     */
     private String getDisplayName(Path file) {
-        return file.toString();
+        return getDisplayName(file, relativizeRoots);
+    }
+
+    /**
+     * Return the textfile's display name.
+     * test only
+     */
+    static String getDisplayName(Path file, List<String> relativizeRoots) {
+        String fileName = file.toString();
+        for (String root : relativizeRoots) {
+            if (file.startsWith(root)) {
+                if (fileName.startsWith(File.separator, root.length())) {
+                    // remove following '/'
+                    return fileName.substring(root.length() + 1);
+                }
+                return fileName.substring(root.length());
+            }
+        }
+        return fileName;
     }
 
 
@@ -274,80 +320,56 @@ public final class FileCollector implements AutoCloseable {
         }
     }
 
+    // configuration
+
+    /**
+     * Sets the charset to use for subsequent calls to {@link #addFile(Path)}
+     * and other overloads using a {@link Path}.
+     *
+     * @param charset A charset
+     */
     public void setCharset(Charset charset) {
         this.charset = Objects.requireNonNull(charset);
     }
 
     /**
-     * Close registered resources like zip files.
+     * Add a prefix that is used to relativize file paths as their display name.
+     * For instance, when adding a file {@code /tmp/src/main/java/org/foo.java},
+     * and relativizing with {@code /tmp/src/}, the registered {@link  TextFile}
+     * will have a path id of {@code /tmp/src/main/java/org/foo.java}, and a
+     * display name of {@code main/java/org/foo.java}.
+     *
+     * This only matters for files added from a {@link Path} object.
+     *
+     * @param prefix Prefix to relativize (if a directory, include a trailing slash)
      */
-    @Override
-    public void close() throws IOException {
-        IOException exception = IOUtil.closeAll(resourcesToClose);
-        if (exception != null) {
-            throw exception;
-        }
+    public void relativizeWith(String prefix) {
+        this.relativizeRoots.add(Objects.requireNonNull(prefix));
     }
 
-    private LanguageVersion discoverLanguage(String file) {
-        if (discoverer.getForcedVersion() != null) {
-            return discoverer.getForcedVersion();
-        }
-        List<Language> languages = discoverer.getLanguagesForFile(file);
-        Language lang = languages.isEmpty() ? null : languages.get(0);
-
-        if (languages.isEmpty()) {
-            log.trace("File {0} matches no known language, ignoring", file);
-        } else if (languages.size() > 1) {
-            log.trace("File {0} matches multiple languages ({1}), selecting {2}", file, languages, lang);
-        }
-        return discoverer.getDefaultLanguageVersion(lang);
-    }
-
+    // filtering
 
     /**
-     * Note: we store language and not language version so that every
-     * file of the same language gets the same version language version.
-     * The version is attributed later.
+     * Remove all files collected by the given collector from this one.
      */
-    static final class FileWithLanguage implements Comparable<FileWithLanguage> {
+    public void exclude(FileCollector excludeCollector) {
+        allFilesToProcess.removeAll(excludeCollector.allFilesToProcess);
+    }
 
-        final Path path;
-        final Language language;
-
-        FileWithLanguage(Path path, Language language) {
-            this.path = Objects.requireNonNull(path);
-            this.language = Objects.requireNonNull(language);
-        }
-
-        public Path getPath() {
-            return path;
-        }
-
-        public Language getLanguage() {
-            return language;
-        }
-
-        @Override
-        public int compareTo(FileWithLanguage o) {
-            return this.path.compareTo(o.path);
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) {
-                return true;
+    /**
+     * Exclude all collected files whose language is not part of the given
+     * collection.
+     */
+    public void filterLanguages(Set<Language> languages) {
+        for (Iterator<TextFile> iterator = allFilesToProcess.iterator(); iterator.hasNext();) {
+            TextFile file = iterator.next();
+            Language lang = file.getLanguageVersion().getLanguage();
+            if (!languages.contains(lang)) {
+                log.trace("Filtering out {0}, no rules for language {1}", file.getPathId(), lang);
+                iterator.remove();
             }
-            if (o == null || getClass() != o.getClass()) {
-                return false;
-            }
-            FileWithLanguage that = (FileWithLanguage) o;
-            return path.equals(that.path);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(path);
         }
     }
+
+
 }

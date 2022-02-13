@@ -24,7 +24,6 @@ import java.util.logging.ConsoleHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.benchmark.TextTimingReportRenderer;
 import net.sourceforge.pmd.benchmark.TimeTracker;
@@ -37,7 +36,6 @@ import net.sourceforge.pmd.cli.PMDCommandLineInterface;
 import net.sourceforge.pmd.cli.PmdParametersParseResult;
 import net.sourceforge.pmd.internal.util.FileCollectionUtil;
 import net.sourceforge.pmd.lang.Language;
-import net.sourceforge.pmd.lang.LanguageFilenameFilter;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
@@ -48,7 +46,6 @@ import net.sourceforge.pmd.processor.MonoThreadProcessor;
 import net.sourceforge.pmd.processor.MultiThreadProcessor;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.util.ClasspathClassLoader;
-import net.sourceforge.pmd.util.FileUtil;
 import net.sourceforge.pmd.util.IOUtil;
 import net.sourceforge.pmd.util.database.DBMSMetadata;
 import net.sourceforge.pmd.util.database.DBURI;
@@ -56,8 +53,6 @@ import net.sourceforge.pmd.util.database.SourceObject;
 import net.sourceforge.pmd.util.datasource.DataSource;
 import net.sourceforge.pmd.util.datasource.ReaderDataSource;
 import net.sourceforge.pmd.util.document.FileCollector;
-import net.sourceforge.pmd.util.document.internal.LanguageDiscoverer;
-import net.sourceforge.pmd.util.log.PmdLogger;
 import net.sourceforge.pmd.util.log.ScopedLogHandlersManager;
 import net.sourceforge.pmd.util.log.SimplePmdLogger;
 
@@ -236,9 +231,11 @@ public class PMD {
             return PMDCommandLineInterface.NO_ERRORS_STATUS;
         }
 
-        final List<DataSource> files = getApplicableFiles(configuration, getApplicableLanguages(configuration, ruleSets));
+        Set<Language> applicableLanguages = getApplicableLanguages(configuration, ruleSets);
 
-        try {
+        try (FileCollector collector = FileCollectionUtil.collectApplicableFiles(configuration, applicableLanguages, new SimplePmdLogger(LOG))) {
+            final List<DataSource> files = FileCollectionUtil.collectorToDataSource(collector);
+
             Renderer renderer;
             List<Renderer> renderers;
             try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.REPORTING)) {
@@ -415,9 +412,15 @@ public class PMD {
      * @param languages
      *            used to filter by file extension
      * @return List of {@link DataSource} of files
+     *
+     * @deprecated This may leak resources and should not be used directly.
+     *     {@link #runPmd(PMDConfiguration)} and other non-deprecated methods of
+     *     this class do this file collection internally and safely.
      */
+    @Deprecated
     public static List<DataSource> getApplicableFiles(PMDConfiguration configuration, Set<Language> languages) {
         try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.COLLECT_FILES)) {
+            @SuppressWarnings("PMD.CloseResource") // if we close the collector, data sources become invalid
             FileCollector collector = FileCollectionUtil.collectApplicableFiles(configuration, languages, new SimplePmdLogger(LOG));
             return FileCollectionUtil.collectorToDataSource(collector);
         }
