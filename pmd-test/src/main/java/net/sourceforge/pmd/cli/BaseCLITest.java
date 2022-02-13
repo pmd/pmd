@@ -13,8 +13,12 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.file.Files;
+import java.util.regex.Pattern;
 
 import org.apache.commons.io.IOUtils;
+import org.hamcrest.BaseMatcher;
+import org.hamcrest.Description;
+import org.hamcrest.Matcher;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -92,10 +96,16 @@ public abstract class BaseCLITest {
         return filename;
     }
 
+    /**
+     * Returns the log output.
+     */
     protected String runTest(String... args) {
         return runTest(0, args);
     }
 
+    /**
+     * Returns the log output.
+     */
     protected String runTest(int expectedExitCode, String... args) {
         ByteArrayOutputStream console = new ByteArrayOutputStream();
         PrintStream out = new PrintStream(console);
@@ -123,5 +133,21 @@ public abstract class BaseCLITest {
     @Deprecated
     protected int getStatusCode() {
         return Integer.parseInt(System.getProperty(PMDCommandLineInterface.STATUS_CODE_PROPERTY));
+    }
+
+    public static Matcher<String> containsPattern(final String regex) {
+        return new BaseMatcher<String>() {
+            final Pattern pattern = Pattern.compile(regex);
+
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("a string containing the pattern '" + this.pattern + "'");
+            }
+
+            @Override
+            public boolean matches(Object o) {
+                return o instanceof String && pattern.matcher((String) o).find();
+            }
+        };
     }
 }

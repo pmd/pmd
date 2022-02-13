@@ -4,13 +4,9 @@
 
 package net.sourceforge.pmd.cli;
 
-import static org.junit.Assert.assertTrue;
-
-import java.io.File;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import org.junit.Test;
-
-import net.sourceforge.pmd.util.FileUtil;
 
 /**
  * @author Romain Pelisse &lt;belaran@gmail.com&gt;
@@ -21,8 +17,7 @@ public class CLITest extends BaseCLITest {
     public void useEcmaScript() {
         String[] args = { "-d", SOURCE_FOLDER, "-f", "xml", "-R", "ecmascript-basic", "-version", "3", "-l",
             "ecmascript", "-debug", };
-        String resultFilename = runTest(args);
-        assertTrue("Invalid JavaScript version",
-                FileUtil.findPatternInFile(new File(resultFilename), "Using Ecmascript version: Ecmascript 3"));
+        String log = runTest(args);
+        assertThat(log, containsPattern("Adding file .*\\.js \\(lang: ecmascript 3\\)"));
     }
 }

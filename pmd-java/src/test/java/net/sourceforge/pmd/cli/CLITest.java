@@ -6,10 +6,6 @@ package net.sourceforge.pmd.cli;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
-import static org.junit.Assert.assertTrue;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.junit.Test;
 
@@ -44,8 +40,7 @@ public class CLITest extends BaseCLITest {
         String[] args = { "-d", SOURCE_FOLDER, "-f", "text", "-R", "category/java/design.xml", "-version", "1.5", "-language",
                           "java", "--debug", };
         String log = runTest(args);
-        Matcher matcher = Pattern.compile("Adding file .*\\.java \\(lang: java 1\\.5\\)").matcher(log);
-        assertTrue(matcher.find());
+        assertThat(log, containsPattern("Adding file .*\\.java \\(lang: java 1\\.5\\)"));
     }
 
     @Test
