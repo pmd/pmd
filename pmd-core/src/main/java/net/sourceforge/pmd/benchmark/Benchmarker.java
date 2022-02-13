@@ -9,12 +9,14 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.logging.Logger;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -29,14 +31,18 @@ import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RulesetsFactoryUtils;
 import net.sourceforge.pmd.SourceCodeProcessor;
+import net.sourceforge.pmd.internal.util.FileCollectionUtil;
 import net.sourceforge.pmd.lang.AbstractParser;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageFilenameFilter;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
 import net.sourceforge.pmd.lang.Parser;
-import net.sourceforge.pmd.util.FileUtil;
 import net.sourceforge.pmd.util.datasource.DataSource;
+import net.sourceforge.pmd.util.document.FileCollector;
+import net.sourceforge.pmd.util.document.TextFile;
+import net.sourceforge.pmd.util.log.SimplePmdLogger;
 
 /**
  * @deprecated use {@link TimeTracker} instead
@@ -44,6 +50,7 @@ import net.sourceforge.pmd.util.datasource.DataSource;
 @Deprecated
 public final class Benchmarker {
 
+    private static final Logger LOGGER = Logger.getLogger(Benchmarker.class.getName());
     private static final Map<String, BenchmarkResult> BENCHMARKS_BY_NAME = new HashMap<>();
 
     private Benchmarker() { }
@@ -96,12 +103,14 @@ public final class Benchmarker {
         String targetjdk = findOptionalStringValue(args, "--targetjdk", "1.4");
         Language language = LanguageRegistry.getLanguage("Java");
         LanguageVersion languageVersion = language.getVersion(targetjdk);
-        if (languageVersion == null) {
-            languageVersion = language.getDefaultVersion();
+        LanguageVersionDiscoverer discoverer = new LanguageVersionDiscoverer();
+        if (languageVersion != null) {
+            discoverer.setDefaultLanguageVersion(languageVersion);
         }
 
         String srcDir = findOptionalStringValue(args, "--source-directory", "/usr/local/java/src/java/lang/");
-        List<DataSource> dataSources = FileUtil.collectFiles(srcDir, new LanguageFilenameFilter(language));
+        FileCollector collector = FileCollector.newCollector(discoverer, new SimplePmdLogger(LOGGER));
+        FileCollectionUtil.collectFiles(collector, srcDir);
 
         boolean debug = findBooleanSwitch(args, "--debug");
         boolean parseOnly = findBooleanSwitch(args, "--parse-only");
@@ -111,7 +120,7 @@ public final class Benchmarker {
         }
         if (parseOnly) {
             Parser parser = PMD.parserFor(languageVersion, null);
-            parseStress(parser, dataSources, debug);
+            parseStress(parser, collector, debug);
         } else {
             String ruleset = findOptionalStringValue(args, "--ruleset", "");
             if (debug) {
@@ -120,11 +129,11 @@ public final class Benchmarker {
             Set<RuleDuration> results = new TreeSet<>();
             RuleSetFactory factory = RulesetsFactoryUtils.defaultFactory();
             if (StringUtils.isNotBlank(ruleset)) {
-                stress(languageVersion, factory.createRuleSet(ruleset), dataSources, results, debug);
+                stress(languageVersion, factory.createRuleSet(ruleset), collector, results, debug);
             } else {
                 Iterator<RuleSet> i = factory.getRegisteredRuleSets();
                 while (i.hasNext()) {
-                    stress(languageVersion, i.next(), dataSources, results, debug);
+                    stress(languageVersion, i.next(), collector, results, debug);
                 }
             }
 
@@ -142,14 +151,13 @@ public final class Benchmarker {
      *            boolean
      * @throws IOException
      */
-    private static void parseStress(Parser parser, List<DataSource> dataSources, boolean debug) throws IOException {
+    private static void parseStress(Parser parser, FileCollector dataSources, boolean debug) throws IOException {
 
         long start = System.currentTimeMillis();
 
-        for (DataSource ds : dataSources) {
-            try (DataSource dataSource = ds; InputStreamReader reader = new InputStreamReader(dataSource.getInputStream())) {
-                AbstractParser.doParse(parser, dataSource.getNiceFileName(false, null), reader);
-            }
+        for (TextFile ds : dataSources.getAllFilesToProcess()) {
+            String contents = ds.readContents();
+            AbstractParser.doParse(parser, ds.getDisplayName(), new StringReader(contents));
         }
 
         if (debug) {
@@ -164,7 +172,7 @@ public final class Benchmarker {
      *            LanguageVersion
      * @param ruleSet
      *            RuleSet
-     * @param dataSources
+     * @param files
      *            List<DataSource>
      * @param results
      *            Set<RuleDuration>
@@ -173,7 +181,7 @@ public final class Benchmarker {
      * @throws PMDException
      * @throws IOException
      */
-    private static void stress(LanguageVersion languageVersion, RuleSet ruleSet, List<DataSource> dataSources,
+    private static void stress(LanguageVersion languageVersion, RuleSet ruleSet, FileCollector files,
             Set<RuleDuration> results, boolean debug) throws PMDException, IOException {
 
         for (Rule rule: ruleSet.getRules()) {
@@ -189,11 +197,10 @@ public final class Benchmarker {
 
             RuleContext ctx = new RuleContext();
             long start = System.currentTimeMillis();
-            for (DataSource ds : dataSources) {
-                try (DataSource dataSource = ds; InputStream stream = new BufferedInputStream(dataSource.getInputStream())) {
-                    ctx.setSourceCodeFile(new File(dataSource.getNiceFileName(false, null)));
-                    new SourceCodeProcessor(config).processSourceCode(stream, ruleSets, ctx);
-                }
+            for (TextFile ds : files.getAllFilesToProcess()) {
+                String source = ds.readContents();
+                ctx.setSourceCodeFile(new File(ds.getPathId()));
+                new SourceCodeProcessor(config).processSourceCode(new StringReader(source), ruleSets, ctx);
             }
             long end = System.currentTimeMillis();
             long elapsed = end - start;

@@ -35,8 +35,8 @@ import net.sourceforge.pmd.benchmark.TimingReportRenderer;
 import net.sourceforge.pmd.cache.NoopAnalysisCache;
 import net.sourceforge.pmd.cli.PMDCommandLineInterface;
 import net.sourceforge.pmd.cli.PmdParametersParseResult;
+import net.sourceforge.pmd.internal.util.FileCollectionUtil;
 import net.sourceforge.pmd.lang.Language;
-import net.sourceforge.pmd.lang.LanguageFilenameFilter;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
@@ -55,6 +55,8 @@ import net.sourceforge.pmd.util.database.SourceObject;
 import net.sourceforge.pmd.util.datasource.DataSource;
 import net.sourceforge.pmd.util.datasource.ReaderDataSource;
 import net.sourceforge.pmd.util.document.FileCollector;
+import net.sourceforge.pmd.util.document.internal.LanguageDiscoverer;
+import net.sourceforge.pmd.util.log.PmdLogger;
 import net.sourceforge.pmd.util.log.ScopedLogHandlersManager;
 
 /**
@@ -237,8 +239,6 @@ public class PMD {
         if (ruleSets == null) {
             return PMDCommandLineInterface.NO_ERRORS_STATUS;
         }
-
-        final List<DataSource> files = getApplicableFiles(configuration, getApplicableLanguages(configuration, ruleSets));
 
         try {
             Renderer renderer;
@@ -424,63 +424,37 @@ public class PMD {
         }
     }
 
-    private static FileCollector collectApplicableFiles(PMDConfiguration configuration, Set<Language> languages) {
-        FileCollector collector = FileCollector.newCollector();
+    private static FileCollector collectApplicableFiles(PMDConfiguration configuration, Set<Language> languages, PmdLogger logger) {
+        try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.COLLECT_FILES)) {
+            return collectApplicableFilesImpl(configuration, languages, logger);
+        }
+    }
 
-        FilenameFilter fileSelector = configuration.isForceLanguageVersion() ? new AcceptAllFilenames()
-                                                                             : new LanguageFilenameFilter(languages);
+    private static FileCollector collectApplicableFilesImpl(PMDConfiguration configuration, Set<Language> languages, PmdLogger logger) {
+        FileCollector collector = FileCollector.newCollector(
+            configuration.getLanguageVersionDiscoverer(),
+            logger
+        );
 
-        if (null != configuration.getInputPaths()) {
-            files.addAll(FileUtil.collectFiles(configuration.getInputPaths(), fileSelector));
+        if (configuration.getInputPaths() != null) {
+            FileCollectionUtil.collectFiles(collector, configuration.getInputPaths());
         }
 
         if (null != configuration.getInputUri()) {
-            String uriString = configuration.getInputUri();
-            try {
-                List<DataSource> dataSources = getURIDataSources(uriString);
-
-                files.addAll(dataSources);
-            } catch (PMDException ex) {
-                LOG.log(Level.SEVERE, "Problem with Input URI", ex);
-                throw new RuntimeException("Problem with DBURI: " + uriString, ex);
-            }
+            FileCollectionUtil.collectDB(collector, configuration.getInputUri());
         }
 
         if (null != configuration.getInputFilePath()) {
-            String inputFilePath = configuration.getInputFilePath();
-            File file = new File(inputFilePath);
-            try {
-                if (!file.exists()) {
-                    LOG.log(Level.SEVERE, "Problem with Input File Path", inputFilePath);
-                    throw new RuntimeException("Problem with Input File Path: " + inputFilePath);
-                } else {
-                    String filePaths = FileUtil.readFilelist(new File(inputFilePath));
-                    files.addAll(FileUtil.collectFiles(filePaths, fileSelector));
-                }
-            } catch (IOException ex) {
-                LOG.log(Level.SEVERE, "Problem with Input File", ex);
-                throw new RuntimeException("Problem with Input File Path: " + inputFilePath, ex);
-            }
-
+            FileCollectionUtil.collectFileList(collector, configuration.getInputFilePath());
         }
 
         if (null != configuration.getIgnoreFilePath()) {
-            String ignoreFilePath = configuration.getIgnoreFilePath();
-            File file = new File(ignoreFilePath);
-            try {
-                if (!file.exists()) {
-                    LOG.log(Level.SEVERE, "Problem with Ignore File Path", ignoreFilePath);
-                    throw new RuntimeException("Problem with Ignore File Path: " + ignoreFilePath);
-                } else {
-                    String filePaths = FileUtil.readFilelist(new File(ignoreFilePath));
-                    files.removeAll(FileUtil.collectFiles(filePaths, fileSelector));
-                }
-            } catch (IOException ex) {
-                LOG.log(Level.SEVERE, "Problem with Ignore File", ex);
-                throw new RuntimeException("Problem with Ignore File Path: " + ignoreFilePath, ex);
-            }
+            FileCollector excludeCollector = FileCollector.newCollector(configuration.getLanguageVersionDiscoverer(), logger);
+            FileCollectionUtil.collectFileList(excludeCollector, configuration.getInputFilePath());
+            collector.exclude(excludeCollector);
         }
-        return files;
+
+        return collector;
     }
 
     private static Set<Language> getApplicableLanguages(final PMDConfiguration configuration, final RuleSets ruleSets) {

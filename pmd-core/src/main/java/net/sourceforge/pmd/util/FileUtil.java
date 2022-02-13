@@ -9,10 +9,7 @@ import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.FileSystem;
 import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -30,7 +27,6 @@ import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.util.datasource.DataSource;
 import net.sourceforge.pmd.util.datasource.FileDataSource;
 import net.sourceforge.pmd.util.datasource.ZipDataSource;
-import net.sourceforge.pmd.util.document.FileCollector;
 import net.sourceforge.pmd.util.filter.AndFilter;
 import net.sourceforge.pmd.util.filter.Filter;
 import net.sourceforge.pmd.util.filter.Filters;
@@ -101,37 +97,6 @@ public final class FileUtil {
             collect(dataSources, fileLocation, filenameFilter);
         }
         return dataSources;
-    }
-
-
-    public static void collectFiles(FileCollector collector, String fileLocations) throws IOException {
-        for (String rootLocation : fileLocations.split(",")) {
-            addRoot(collector, rootLocation);
-        }
-    }
-
-    private static void addRoot(FileCollector collector, String rootLocation) throws IOException {
-        Path path = Paths.get(rootLocation);
-        if (!Files.exists(path)) {
-            collector.getLog().error("No such file {0}", path);
-            return;
-        }
-
-        if (Files.isDirectory(path)) {
-            collector.addDirectory(path);
-        } else if (rootLocation.endsWith(".zip") || rootLocation.endsWith(".jar")) {
-            FileSystem fs = collector.addZipFile(path);
-            if (fs == null) {
-                return;
-            }
-            for (Path zipRoot : fs.getRootDirectories()) {
-                collector.addFileOrDirectory(zipRoot);
-            }
-        } else if (Files.isRegularFile(path)) {
-            collector.addFile(path);
-        } else {
-            collector.getLog().trace("Ignoring {0}: not a regular file or directory", path);
-        }
     }
 
     private static List<DataSource> collect(List<DataSource> dataSources, String fileLocation,

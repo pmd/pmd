@@ -26,7 +26,9 @@ import org.junit.rules.TemporaryFolder;
 
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
 import net.sourceforge.pmd.util.document.FileCollector.FileWithLanguage;
+import net.sourceforge.pmd.util.log.SimplePmdLogger;
 
 /**
  * @author Clément Fournier
@@ -59,12 +61,13 @@ public class FileCollectorTest {
 
         Language dummy = LanguageRegistry.findLanguageByTerseName("dummy");
 
-        FileCollector collector = newCollector();
+        FileCollector collector = newCollector(new LanguageVersionDiscoverer(dummy.getDefaultVersion()), new TestPmdLogger());
 
         assertFalse("should be unknown language", collector.addFile(bar));
         assertCollected(collector, Collections.<String>emptyList());
         assertTrue("should be unknown language", collector.addFile(bar, dummy));
         assertCollected(collector, listOf("bar.unknown"));
+        assertNoErrors(collector);
     }
 
     @Test
@@ -112,11 +115,14 @@ public class FileCollectorTest {
 
     private void assertCollected(FileCollector collector, List<String> relPaths) {
         Map<String, String> actual = new LinkedHashMap<>();
-        for (FileWithLanguage file : collector.getAllFilesToProcess()) {
-            String relPath = tempFolder.getRoot().toPath().relativize(file.getPath()).toString();
-            actual.put(relPath, file.getLanguage().getTerseName());
+        for (TextFile file : collector.getAllFilesToProcess()) {
+            actual.put(file.getDisplayName(), file.getLanguageVersion().getTerseName());
         }
 
         assertEquals(new ArrayList<>(actual.keySet()), relPaths);
+    }
+
+    private void assertNoErrors(FileCollector collector) {
+        assertEquals("No errors expected", 0, collector.getLog().numErrors());
     }
 }

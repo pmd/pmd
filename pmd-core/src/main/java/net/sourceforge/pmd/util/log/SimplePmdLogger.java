@@ -44,6 +44,22 @@ public class SimplePmdLogger implements PmdLogger {
     }
 
     @Override
+    public void warningEx(String message, Throwable error) {
+        warningEx(message, new Object[0], error);
+    }
+
+    @Override
+    public void warningEx(String message, Object[] formatArgs, Throwable error) {
+        if (backend.isLoggable(Level.WARNING)) {
+            message = MessageFormat.format(message, formatArgs);
+            backend.severe(message + ": " + error.getMessage());
+            if (backend.isLoggable(Level.FINE)) {
+                backend.fine(ExceptionUtils.getStackTrace(error));
+            }
+        }
+    }
+
+    @Override
     public void error(String message, Object... formatArgs) {
         this.numErrors++;
         if (backend.isLoggable(Level.SEVERE)) {
@@ -52,9 +68,15 @@ public class SimplePmdLogger implements PmdLogger {
     }
 
     @Override
-    public void error(String message, Throwable error) {
+    public void errorEx(String message, Throwable error) {
+        errorEx(message, new Object[0], error);
+    }
+
+    @Override
+    public void errorEx(String message, Object[] formatArgs, Throwable error) {
         this.numErrors++;
         if (backend.isLoggable(Level.SEVERE)) {
+            message = MessageFormat.format(message, formatArgs);
             backend.severe(message + ": " + error.getMessage());
             if (backend.isLoggable(Level.FINE)) {
                 backend.fine(ExceptionUtils.getStackTrace(error));

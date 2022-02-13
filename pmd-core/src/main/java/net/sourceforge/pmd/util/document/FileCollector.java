@@ -7,6 +7,8 @@ package net.sourceforge.pmd.util.document;
 import java.io.Closeable;
 import java.io.IOException;
 import java.net.URI;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystemNotFoundException;
 import java.nio.file.FileSystems;
@@ -18,14 +20,16 @@ import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.logging.Logger;
 
 import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
 import net.sourceforge.pmd.util.IOUtil;
-import net.sourceforge.pmd.util.document.internal.LanguageDiscoverer;
 import net.sourceforge.pmd.util.log.PmdLogger;
 import net.sourceforge.pmd.util.log.SimplePmdLogger;
 
@@ -38,12 +42,13 @@ import net.sourceforge.pmd.util.log.SimplePmdLogger;
 public final class FileCollector implements AutoCloseable {
 
     private static final Logger DEFAULT_LOG = Logger.getLogger(FileCollector.class.getName());
-    private final List<FileWithLanguage> allFilesToProcess = new ArrayList<>();
+    private final List<TextFile> allFilesToProcess = new ArrayList<>();
     private final List<Closeable> resourcesToClose = new ArrayList<>();
-    private final LanguageDiscoverer discoverer;
+    private Charset charset = StandardCharsets.UTF_8;
+    private final LanguageVersionDiscoverer discoverer;
     private final PmdLogger log;
 
-    private FileCollector(LanguageDiscoverer discoverer, PmdLogger logger) {
+    private FileCollector(LanguageVersionDiscoverer discoverer, PmdLogger logger) {
         this.discoverer = discoverer;
         this.log = logger;
     }
@@ -52,33 +57,48 @@ public final class FileCollector implements AutoCloseable {
         return log;
     }
 
-    public static FileCollector newCollector() {
-        return newCollector(new LanguageDiscoverer(null), new SimplePmdLogger(DEFAULT_LOG));
+    /**
+     * Remove all files collected by the given collector from this one.
+     */
+    public void exclude(FileCollector excludeCollector) {
+        allFilesToProcess.removeAll(excludeCollector.allFilesToProcess);
     }
 
-    public static FileCollector newCollector(LanguageDiscoverer discoverer, PmdLogger logger) {
+    public static FileCollector newCollector() {
+        return newCollector(new LanguageVersionDiscoverer(), new SimplePmdLogger(DEFAULT_LOG));
+    }
+
+    public static FileCollector newCollector(LanguageVersionDiscoverer discoverer, PmdLogger logger) {
         return new FileCollector(discoverer, logger);
     }
 
-    List<FileWithLanguage> getAllFilesToProcess() {
-        Collections.sort(allFilesToProcess);
+    public List<TextFile> getAllFilesToProcess() {
+        Collections.sort(allFilesToProcess, new Comparator<TextFile>() {
+            @Override
+            public int compare(TextFile o1, TextFile o2) {
+                return o1.getPathId().compareTo(o2.getPathId());
+            }
+        });
         return Collections.unmodifiableList(allFilesToProcess);
     }
 
     /**
      * Add a file, language is determined automatically from
-     * the extension/file patterns.
+     * the extension/file patterns. The encoding is the current
+     * encoding ({@link #setCharset(Charset)}).
      *
      * @param file File to add
+     *
+     * @return True if the file has been added
      */
     public boolean addFile(Path file) {
         if (!Files.isRegularFile(file)) {
             log.error("Not a regular file {}", file);
             return false;
         }
-        Language language = discoverLanguage(file);
-        if (language != null) {
-            allFilesToProcess.add(new FileWithLanguage(file, language));
+        LanguageVersion languageVersion = discoverLanguage(file.toString());
+        if (languageVersion != null) {
+            allFilesToProcess.add(new NioTextFile(file, charset, getDisplayName(file), languageVersion));
             return true;
         }
         return false;
@@ -86,6 +106,13 @@ public final class FileCollector implements AutoCloseable {
 
     /**
      * Add a file with the given language (which overrides the file patterns).
+     * The encoding is the current encoding ({@link #setCharset(Charset)}).
+     *
+     * @param file     Path to a file
+     * @param language A language. The language version will be taken to be the
+     *                 contextual default version.
+     *
+     * @return True if the file has been added
      */
     public boolean addFile(Path file, Language language) {
         AssertionUtil.requireParamNotNull("language", language);
@@ -93,8 +120,76 @@ public final class FileCollector implements AutoCloseable {
             log.error("Not a regular file {}", file);
             return false;
         }
-        allFilesToProcess.add(new FileWithLanguage(file, language));
+        NioTextFile nioTextFile = new NioTextFile(file, charset, getDisplayName(file), discoverer.getDefaultLanguageVersion(language));
+        addFileImpl(nioTextFile);
         return true;
+    }
+
+    /**
+     * Add a pre-configured text file. The language version will be checked
+     * to match the contextual default for the language (the file cannot be added
+     * if it has a different version).
+     *
+     * @return True if the file has been added
+     */
+    public boolean addFile(TextFile textFile) {
+        AssertionUtil.requireParamNotNull("textFile", textFile);
+        if (checkContextualVersion(textFile)) {
+            addFileImpl(textFile);
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Add a text file given its contents and a name. The language version
+     * will be determined from the name as usual.
+     *
+     * @return True if the file has been added
+     */
+    public boolean addSourceFile(String sourceContents, String pathId) {
+        AssertionUtil.requireParamNotNull("sourceContents", sourceContents);
+        AssertionUtil.requireParamNotNull("pathId", pathId);
+
+        LanguageVersion version = discoverLanguage(pathId);
+        if (version != null) {
+            addFileImpl(new StringTextFile(sourceContents, pathId, pathId, version));
+            return true;
+        }
+
+        return false;
+    }
+
+    private boolean addFileImpl(TextFile textFile) {
+        return allFilesToProcess.add(textFile);
+    }
+
+    /**
+     * Whether the LanguageVersion of the file matches the one set in
+     * the {@link LanguageVersionDiscoverer}. This is required to ensure
+     * that all files for a given language have the same language version.
+     */
+    private boolean checkContextualVersion(TextFile textFile) {
+        LanguageVersion fileVersion = textFile.getLanguageVersion();
+        Language language = fileVersion.getLanguage();
+        LanguageVersion contextVersion = discoverer.getDefaultLanguageVersion(language);
+        if (!fileVersion.equals(contextVersion)) {
+            log.error(
+                "Cannot add file {0}: version ''{2}'' does not match ''{1}''",
+                textFile.getPathId(),
+                contextVersion,
+                fileVersion
+            );
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Return the textfile's display name. TODO relativize to implement renderer's useShortFileNames.
+     */
+    private String getDisplayName(Path file) {
+        return file.toString();
     }
 
 
@@ -103,6 +198,8 @@ public final class FileCollector implements AutoCloseable {
      * all regular files.
      *
      * @param dir Directory path
+     *
+     * @return True if the directory has been added
      */
     public boolean addDirectory(Path dir) throws IOException {
         if (!Files.isDirectory(dir)) {
@@ -122,8 +219,12 @@ public final class FileCollector implements AutoCloseable {
     }
 
 
-    // Add a file or directory recursively. Language is determined automatically
-    // from the extension/file patterns.
+    /**
+     * Add a file or directory recursively. Language is determined automatically
+     * from the extension/file patterns.
+     *
+     * @return True if the file or directory has been added
+     */
     public boolean addFileOrDirectory(Path file) throws IOException {
         if (Files.isDirectory(file)) {
             return addDirectory(file);
@@ -151,9 +252,13 @@ public final class FileCollector implements AutoCloseable {
             resourcesToClose.add(fs);
             return fs;
         } catch (FileSystemNotFoundException | ProviderNotFoundException e) {
-            log.error("Cannot open zip file " + zipFile, e);
+            log.errorEx("Cannot open zip file " + zipFile, e);
             return null;
         }
+    }
+
+    public void setCharset(Charset charset) {
+        this.charset = Objects.requireNonNull(charset);
     }
 
     /**
@@ -167,7 +272,10 @@ public final class FileCollector implements AutoCloseable {
         }
     }
 
-    private Language discoverLanguage(Path file) {
+    private LanguageVersion discoverLanguage(String file) {
+        if (discoverer.getForcedVersion() != null) {
+            return discoverer.getForcedVersion();
+        }
         List<Language> languages = discoverer.getLanguagesForFile(file);
         Language lang = languages.isEmpty() ? null : languages.get(0);
 
@@ -176,7 +284,7 @@ public final class FileCollector implements AutoCloseable {
         } else if (languages.size() > 1) {
             log.trace("File {0} matches multiple languages ({1}), selecting {2}", file, languages, lang);
         }
-        return lang;
+        return discoverer.getDefaultLanguageVersion(lang);
     }
 
 
@@ -206,6 +314,23 @@ public final class FileCollector implements AutoCloseable {
         @Override
         public int compareTo(FileWithLanguage o) {
             return this.path.compareTo(o.path);
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
+            FileWithLanguage that = (FileWithLanguage) o;
+            return path.equals(that.path);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(path);
         }
     }
 }

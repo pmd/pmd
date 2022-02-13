@@ -238,6 +238,7 @@ public class PMDConfiguration extends AbstractConfiguration {
      */
     public void setForceLanguageVersion(LanguageVersion forceLanguageVersion) {
         this.forceLanguageVersion = forceLanguageVersion;
+        languageVersionDiscoverer.setForcedVersion(forceLanguageVersion);
     }
 
     /**

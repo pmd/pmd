@@ -17,9 +17,15 @@ public interface PmdLogger {
 
     void warning(String message, Object... formatArgs);
 
+    void warningEx(String message, Throwable error);
+
+    void warningEx(String message, Object[] formatArgs, Throwable error);
+
     void error(String message, Object... formatArgs);
 
-    void error(String message, Throwable error);
+    void errorEx(String message, Throwable error);
+
+    void errorEx(String message, Object[] formatArgs, Throwable error);
 
     int numErrors();
 
