@@ -378,5 +378,8 @@ public final class FileCollector implements AutoCloseable {
         }
     }
 
-
+    @Override
+    public String toString() {
+        return "FileCollector{filesToProcess=" + allFilesToProcess + '}';
+    }
 }

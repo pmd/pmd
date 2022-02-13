@@ -76,7 +76,7 @@ public final class FileCollectionUtil {
 
         if (null != configuration.getIgnoreFilePath()) {
             try (FileCollector excludeCollector = FileCollector.newCollector(configuration.getLanguageVersionDiscoverer(), collector.getLog())) {
-                collectFileList(excludeCollector, configuration.getInputFilePath());
+                collectFileList(excludeCollector, configuration.getIgnoreFilePath());
                 collector.exclude(excludeCollector);
             }
         }
@@ -86,6 +86,7 @@ public final class FileCollectionUtil {
     public static void collectFiles(FileCollector collector, String fileLocations) {
         for (String rootLocation : fileLocations.split(",")) {
             try {
+                collector.relativizeWith(rootLocation);
                 addRoot(collector, rootLocation);
             } catch (IOException e) {
                 collector.getLog().errorEx("Error collecting " + rootLocation, e);

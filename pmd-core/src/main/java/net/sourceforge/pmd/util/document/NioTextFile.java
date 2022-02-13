@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Objects;
 
 import org.apache.commons.io.IOUtils;
 
@@ -65,5 +66,27 @@ public final class NioTextFile implements TextFile {
     @Override
     public DataSource toDataSourceCompat() {
         return new FileDataSource(path.toFile());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        NioTextFile that = (NioTextFile) o;
+        return Objects.equals(pathId, that.pathId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(pathId);
+    }
+
+    @Override
+    public String toString() {
+        return getPathId();
     }
 }

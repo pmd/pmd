@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.util.document;
 
 import java.io.StringReader;
+import java.util.Objects;
 
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.LanguageVersion;
@@ -61,5 +62,28 @@ public final class StringTextFile implements TextFile {
             new StringReader(contents),
             pathId
         );
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        StringTextFile that = (StringTextFile) o;
+        return Objects.equals(pathId, that.pathId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(pathId);
+    }
+
+    @Override
+    public String toString() {
+        return getPathId();
     }
 }
