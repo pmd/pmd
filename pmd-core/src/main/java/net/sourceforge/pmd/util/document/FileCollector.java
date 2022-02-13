@@ -22,7 +22,6 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -365,7 +364,7 @@ public final class FileCollector implements AutoCloseable {
      */
     public void exclude(FileCollector excludeCollector) {
         HashSet<TextFile> toExclude = new HashSet<>(excludeCollector.allFilesToProcess);
-        for (Iterator<TextFile> iterator = allFilesToProcess.iterator(); iterator.hasNext(); ) {
+        for (Iterator<TextFile> iterator = allFilesToProcess.iterator(); iterator.hasNext();) {
             TextFile file = iterator.next();
             if (toExclude.contains(file)) {
                 log.trace("Excluding file {0}", file.getPathId());

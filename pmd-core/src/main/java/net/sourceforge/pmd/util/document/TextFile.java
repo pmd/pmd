@@ -71,8 +71,9 @@ public interface TextFile {
     /**
      * Returns a display name for the file. This name is used for
      * reporting and should not be interpreted. It may be relative
-     * to a directory or so, it may also not be normalized. Use
-     * {@link #getPathId()} when you want an identifier.
+     * to a directory, may use platform-specific path separators,
+     * may not be normalized. Use {@link #getPathId()} when you
+     * want an identifier.
      */
     String getDisplayName();
 

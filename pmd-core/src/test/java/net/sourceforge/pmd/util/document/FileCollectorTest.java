@@ -9,6 +9,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -115,6 +116,11 @@ public class FileCollectorTest {
         Map<String, String> actual = new LinkedHashMap<>();
         for (TextFile file : collector.getCollectedFiles()) {
             actual.put(file.getDisplayName(), file.getLanguageVersion().getTerseName());
+        }
+
+        for (int i = 0; i < relPaths.size(); i++) {
+            // normalize, we want display names to be platform-specific
+            relPaths.set(i, relPaths.get(i).replace('/', File.separatorChar));
         }
 
         assertEquals(relPaths, new ArrayList<>(actual.keySet()));
