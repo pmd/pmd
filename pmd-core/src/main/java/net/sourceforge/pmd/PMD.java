@@ -55,7 +55,7 @@ import net.sourceforge.pmd.util.log.SimplePmdLogger;
 /**
  * Entry point for PMD's CLI. Use {@link #runPmd(PMDConfiguration)}
  * or {@link #runPmd(String...)} to mimic a CLI run. This class is
- * not a supported programmatic API anymore, use {@link PmdAnalysisBuilder}
+ * not a supported programmatic API anymore, use {@link PmdAnalysis}
  * for fine control over the PMD execution.
  */
 public class PMD {
@@ -235,12 +235,12 @@ public class PMD {
     @Deprecated
     @InternalApi
     public static int doPMD(PMDConfiguration configuration) {
-        try (PmdAnalysisBuilder pmd = PmdAnalysisBuilder.create(configuration)) {
+        try (PmdAnalysis pmd = PmdAnalysis.create(configuration)) {
             if (pmd.getRulesets().isEmpty()) {
                 return PMDCommandLineInterface.NO_ERRORS_STATUS;
             }
             try {
-                Report report = pmd.performAnalysis();
+                Report report = pmd.performAnalysisAndCollectReport();
                 return report.getViolations().size();
             } catch (Exception e) {
                 pmd.getLog().errorEx("Exception during processing", e);
@@ -285,7 +285,7 @@ public class PMD {
      * @param renderers
      *            List of {@link Renderer}s
      *
-     * @deprecated Use {@link PmdAnalysisBuilder}
+     * @deprecated Use {@link PmdAnalysis}
      */
     @Deprecated
     public static void processFiles(final PMDConfiguration configuration, final RuleSetFactory ruleSetFactory,
@@ -318,7 +318,7 @@ public class PMD {
      *
      * @throws RuntimeException If processing fails
      *
-     * @deprecated Use {@link PmdAnalysisBuilder}
+     * @deprecated Use {@link PmdAnalysis}
      */
     @Deprecated
     public static Report processFiles(final PMDConfiguration configuration,
@@ -326,7 +326,7 @@ public class PMD {
                                       final Collection<? extends DataSource> files,
                                       final List<Renderer> renderers) {
         @SuppressWarnings("PMD.CloseResource")
-        PmdAnalysisBuilder builder = PmdAnalysisBuilder.createWithoutCollectingFiles(configuration);
+        PmdAnalysis builder = PmdAnalysis.createWithoutCollectingFiles(configuration);
         for (RuleSet ruleset : rulesets) {
             builder.addRuleSet(ruleset);
         }
@@ -388,7 +388,7 @@ public class PMD {
      * @return List of {@link DataSource} of files
      *
      * @deprecated This may leak resources and should not be used directly.
-     *     Use {@link PmdAnalysisBuilder}.
+     *     Use {@link PmdAnalysis}.
      */
     @Deprecated
     public static List<DataSource> getApplicableFiles(PMDConfiguration configuration, Set<Language> languages) {

@@ -19,7 +19,7 @@ This is a {{ site.pmd.release_type }} release.
 
 This release introduces a new programmatic API to replace the inflexible {% jdoc core::PMD %} class.
 Programmatic execution of PMD should now be done with a {% jdoc core::PMDConfiguration %}
-and a {% jdoc core::PmdAnalysisBuilder %}, for instance:
+and a {% jdoc core::PmdAnalysis %}, for instance:
 ```java
 PMDConfiguration config = new PMDConfiguration();
 config.setDefaultLanguageVersion(LanguageRegistry.findLanguageVersionByTerseName("java 11"));
@@ -29,7 +29,7 @@ config.setMinimumPriority(RulePriority.HIGH);
 config.setRuleSets("rulesets/java/quickstart.xml");
 config.setReportFormat("xml");
 
-try (PmdAnalysisBuilder pmd = PmdAnalysisBuilder.create(config)) {
+try (PmdAnalysis pmd = PmdAnalysis.create(config)) {
     pmd.performAnalysis();
 }
 ```

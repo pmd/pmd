@@ -48,13 +48,13 @@ import net.sourceforge.pmd.util.log.SimplePmdLogger;
  *   config.setRuleSets("rulesets/java/quickstart.xml");
  *   config.setReportFormat("xml");
  *
- *   try (PmdAnalysisBuilder pmd = PmdAnalysisBuilder.create(config)) {
+ *   try (PmdAnalysis pmd = PmdAnalysis.create(config)) {
  *     pmd.performAnalysis();
  *   }
  * }</pre>
  *
  */
-public final class PmdAnalysisBuilder implements AutoCloseable {
+public final class PmdAnalysis implements AutoCloseable {
 
     private final FileCollector collector;
     private final List<Renderer> renderers = new ArrayList<>();
@@ -68,7 +68,7 @@ public final class PmdAnalysisBuilder implements AutoCloseable {
      * the file collector ({@link #files()}), but more can be added
      * programmatically using the file collector.
      */
-    private PmdAnalysisBuilder(PMDConfiguration config) {
+    private PmdAnalysis(PMDConfiguration config) {
         this.configuration = config;
         this.collector = FileCollector.newCollector(
             config.getLanguageVersionDiscoverer(),
@@ -91,8 +91,8 @@ public final class PmdAnalysisBuilder implements AutoCloseable {
      * is created and added (but not started).
      * </ul>
      */
-    public static PmdAnalysisBuilder create(PMDConfiguration config) {
-        PmdAnalysisBuilder builder = new PmdAnalysisBuilder(config);
+    public static PmdAnalysis create(PMDConfiguration config) {
+        PmdAnalysis builder = new PmdAnalysis(config);
 
         // note: do not filter files by language
         // they could be ignored later. The problem is if you call
@@ -116,8 +116,8 @@ public final class PmdAnalysisBuilder implements AutoCloseable {
     }
 
     @InternalApi
-    static PmdAnalysisBuilder createWithoutCollectingFiles(PMDConfiguration config) {
-        return new PmdAnalysisBuilder(config);
+    static PmdAnalysis createWithoutCollectingFiles(PMDConfiguration config) {
+        return new PmdAnalysis(config);
     }
 
     /**
@@ -153,10 +153,21 @@ public final class PmdAnalysisBuilder implements AutoCloseable {
     /**
      * Run PMD with the current state of this instance. This will start
      * and finish the registered renderers. All files collected in the
+     * {@linkplain #files() file collector} are processed. This does not
+     * return a report, for compatibility with PMD 7.
+     */
+    public void performAnalysis() {
+        performAnalysisAndCollectReport();
+    }
+
+    /**
+     * Run PMD with the current state of this instance. This will start
+     * and finish the registered renderers. All files collected in the
      * {@linkplain #files() file collector} are processed. Returns the
      * output report.
      */
-    public Report performAnalysis() {
+    // TODO PMD 7 @DeprecatedUntil700
+    public Report performAnalysisAndCollectReport() {
         try (FileCollector files = collector) {
             files.filterLanguages(getApplicableLanguages());
             List<DataSource> dataSources = FileCollectionUtil.collectorToDataSource(files);

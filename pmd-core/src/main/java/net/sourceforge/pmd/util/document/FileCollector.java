@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
-import net.sourceforge.pmd.PmdAnalysisBuilder;
+import net.sourceforge.pmd.PmdAnalysis;
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.internal.util.AssertionUtil;
@@ -63,7 +63,7 @@ public final class FileCollector implements AutoCloseable {
     }
 
     /**
-     * Experimental: please use {@link PmdAnalysisBuilder#files()} instead of this
+     * Experimental: please use {@link PmdAnalysis#files()} instead of this
      */
     @Experimental
     public static FileCollector newCollector(LanguageVersionDiscoverer discoverer, PmdLogger logger) {
