@@ -11,7 +11,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.sourceforge.pmd.annotation.InternalApi;
@@ -31,6 +30,7 @@ import net.sourceforge.pmd.util.IOUtil;
 import net.sourceforge.pmd.util.datasource.DataSource;
 import net.sourceforge.pmd.util.document.FileCollector;
 import net.sourceforge.pmd.util.log.PmdLogger;
+import net.sourceforge.pmd.util.log.PmdLogger.Level;
 import net.sourceforge.pmd.util.log.SimplePmdLogger;
 
 /**
@@ -74,8 +74,8 @@ public final class PmdAnalysisBuilder implements AutoCloseable {
             config.getLanguageVersionDiscoverer(),
             logger
         );
-        final Level logLevel = configuration.isDebug() ? Level.FINER : Level.INFO;
-        this.logger.getBackend().setLevel(logLevel);
+        final Level logLevel = configuration.isDebug() ? Level.TRACE : Level.INFO;
+        this.logger.setLevel(logLevel);
     }
 
     /**

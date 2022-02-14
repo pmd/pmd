@@ -27,6 +27,8 @@ import net.sourceforge.pmd.util.datasource.DataSource;
 import net.sourceforge.pmd.util.document.FileCollector;
 import net.sourceforge.pmd.util.document.TextFile;
 import net.sourceforge.pmd.util.log.PmdLogger;
+import net.sourceforge.pmd.util.log.PmdLogger.Level;
+import net.sourceforge.pmd.util.log.PmdLoggerScope;
 
 /**
  * @author Clément Fournier
@@ -78,8 +80,10 @@ public final class FileCollectionUtil {
         }
 
         if (configuration.getIgnoreFilePath() != null) {
-            // todo disable trace logs for this secondary collector
-            try (FileCollector excludeCollector = FileCollector.newCollector(configuration.getLanguageVersionDiscoverer(), collector.getLog())) {
+            // disable trace logs for this secondary collector (would report 'adding xxx')
+            PmdLoggerScope mutedLog = new PmdLoggerScope("exclude list", collector.getLog());
+            mutedLog.setLevel(Level.ERROR);
+            try (FileCollector excludeCollector = FileCollector.newCollector(configuration.getLanguageVersionDiscoverer(), mutedLog)) {
                 collectFileList(excludeCollector, configuration.getIgnoreFilePath());
                 collector.exclude(excludeCollector);
             }

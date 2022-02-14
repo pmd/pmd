@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.util.document;
 
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.sourceforge.pmd.util.log.SimplePmdLogger;
@@ -16,11 +15,8 @@ public class PmdTestLogger extends SimplePmdLogger {
 
     private static final Logger LOG = Logger.getLogger("testlogger");
 
-    static {
-        LOG.setLevel(Level.OFF);
-    }
-
     public PmdTestLogger() {
         super(LOG);
+        setLevel(null);
     }
 }
