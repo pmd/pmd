@@ -11,6 +11,7 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.net.URISyntaxException;
 import java.sql.SQLException;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -187,6 +188,9 @@ public class PMD {
 
         // TODO Handle Rules having different parser options.
         LanguageVersionHandler languageVersionHandler = languageVersion.getLanguageVersionHandler();
+        if (languageVersionHandler == null) {
+            throw new IllegalArgumentException(MessageFormat.format("Language version ''{0}'' does not support parsing!", languageVersion.getTerseName()));
+        }
         ParserOptions options = languageVersionHandler.getDefaultParserOptions();
         if (configuration != null) {
             options.setSuppressMarker(configuration.getSuppressMarker());

@@ -7,8 +7,10 @@ package net.sourceforge.pmd;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -17,6 +19,9 @@ import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.benchmark.TimedOperation;
 import net.sourceforge.pmd.benchmark.TimedOperationCategory;
 import net.sourceforge.pmd.internal.util.FileCollectionUtil;
+import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
 import net.sourceforge.pmd.processor.AbstractPMDProcessor;
 import net.sourceforge.pmd.processor.MonoThreadProcessor;
 import net.sourceforge.pmd.processor.MultiThreadProcessor;
@@ -153,6 +158,7 @@ public final class PmdAnalysisBuilder implements AutoCloseable {
      */
     public Report performAnalysis() {
         try (FileCollector files = collector) {
+            files.filterLanguages(getApplicableLanguages());
             List<DataSource> dataSources = FileCollectionUtil.collectorToDataSource(files);
             startRenderers();
             Report report = performAnalysisImpl(dataSources);
@@ -200,6 +206,26 @@ public final class PmdAnalysisBuilder implements AutoCloseable {
             }
         }
     }
+
+    private Set<Language> getApplicableLanguages() {
+        final Set<Language> languages = new HashSet<>();
+        final LanguageVersionDiscoverer discoverer = configuration.getLanguageVersionDiscoverer();
+
+        for (RuleSet ruleSet : ruleSets) {
+            for (final Rule rule : ruleSet.getRules()) {
+                final Language ruleLanguage = rule.getLanguage();
+                if (!languages.contains(ruleLanguage)) {
+                    final LanguageVersion version = discoverer.getDefaultLanguageVersion(ruleLanguage);
+                    if (RuleSet.applies(rule, version)) {
+                        languages.add(ruleLanguage);
+                        logger.trace("Using {0} version ''{1}''", version.getLanguage().getName(), version.getTerseName());
+                    }
+                }
+            }
+        }
+        return languages;
+    }
+
 
     private static AbstractPMDProcessor newFileProcessor(final PMDConfiguration configuration) {
         return configuration.getThreads() > 0 ? new MultiThreadProcessor(configuration)
