@@ -8,6 +8,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
@@ -51,6 +52,9 @@ public class LawOfDemeterRule extends AbstractJavaRulechainRule {
     public LawOfDemeterRule() {
         super(ASTMethodCall.class);
     }
+
+    private Set<ASTExpression> explored = new HashSet<>();
+    private Set<ASTExpression> known = new HashSet<>();
 
     @Override
     public Object visit(ASTMethodCall node, Object data) {
@@ -115,15 +119,13 @@ public class LawOfDemeterRule extends AbstractJavaRulechainRule {
             return false;
         }
         if (expr instanceof ASTMethodCall) {
-            if (ITERATOR_NEXT.matchesCall(expr)
-                || TypeTestUtil.isA(Collection.class, ((ASTMethodCall) expr).getQualifier())) {
+            if (isAsForeignAsQualifier(expr)) {
                 // an iterator.next() is as foreign as the qualifier
                 // a list call is as foreign as the list
                 // ie, pure data containers are "transparent"
                 return isForeign(((ASTMethodCall) expr).getQualifier(), guard);
             }
-            // static methods are taken to be construction methods.
-            return !((ASTMethodCall) expr).getMethodType().isStatic();
+            return isDirectlyForeign((ASTMethodCall) expr);
         } else if (expr instanceof ASTNamedReferenceExpr) {
             DataflowResult dataflow = DataflowPass.getDataflowResult(expr.getRoot());
             ReachingDefinitionSet reaching = dataflow.getReachingDefinitions((ASTNamedReferenceExpr) expr);
@@ -135,6 +137,34 @@ public class LawOfDemeterRule extends AbstractJavaRulechainRule {
             return CollectionUtil.any(reaching.getReaching(), it -> isForeign(it, guard));
         }
         return false;
+    }
+
+    /**
+     * Directly foreign methods "contaminate" other methods, while other
+     * methods only transmit the infection.
+     */
+    private boolean isDirectlyForeign(ASTMethodCall expr) {
+        // static methods are taken to be construction methods.
+        return !expr.getMethodType().isStatic();
+    }
+
+    /**
+     * Returns whether the infection can pass through the expression.
+     * The expression is not directly foreign. These expressions should
+     * be known useful on some types and not useful on others.
+     */
+    private boolean isAsForeignAsQualifier(@NonNull ASTExpression expr) {
+        return ITERATOR_NEXT.matchesCall(expr)
+            || TypeTestUtil.isA(Collection.class, ((ASTMethodCall) expr).getQualifier());
+    }
+
+    enum Foreignity {
+        /** These are the ones we don't want to call. */
+        FOREIGN,
+        /** Forwards foreignity. */
+        TRANSPARENT,
+        /** Einheimisch. These ones are known good. */
+        NATIVE
     }
 
     private static final class RecursionGuard {
