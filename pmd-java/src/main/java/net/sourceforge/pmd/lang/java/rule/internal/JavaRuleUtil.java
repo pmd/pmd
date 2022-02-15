@@ -842,20 +842,14 @@ public final class JavaRuleUtil {
     }
 
     public static boolean isCallOnThisInstance(ASTMethodCall call) {
-        ASTExpression receiver = call.getQualifier();
         // syntactic approach.
-        if (JavaRuleUtil.isThisOrSuper(call)) {
-            return JavaRuleUtil.getThisOrSuperQualifier(call) == null;
-        }
-
         if (call.getQualifier() != null) {
-            return call.getQualifier() instanceof ASTSuperExpression;
+            return JavaRuleUtil.isUnqualifiedThisOrSuper(call.getQualifier());
         }
 
         // unqualified call
         JMethodSig mtype = call.getMethodType();
-        return mtype != mtype.getTypeSystem().UNRESOLVED_METHOD
-            && !mtype.isStatic()
+        return !mtype.getSymbol().isUnresolved()
             && mtype.getSymbol().getEnclosingClass().equals(call.getEnclosingType().getSymbol());
     }
 

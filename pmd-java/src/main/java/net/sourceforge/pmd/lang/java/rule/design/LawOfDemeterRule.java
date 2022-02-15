@@ -14,12 +14,12 @@ import java.util.Map;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.lang.java.ast.ASTArrayAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTForeachStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
-import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.rule.internal.DataflowPass;
 import net.sourceforge.pmd.lang.java.rule.internal.DataflowPass.AssignmentEntry;
@@ -79,17 +79,8 @@ public class LawOfDemeterRule extends AbstractJavaRulechainRule {
         return degree > 1;
     }
 
-
-    private boolean isMethodCall(JavaNode node) {
-        return node instanceof ASTMethodCall;
-    }
-
     @Override
     public Object visit(ASTMethodCall node, Object data) {
-        if (isMethodCall(node.getParent())) {
-            // in a call chain, the outermost will be reported
-            return null;
-        }
         String reason = getViolationReason(node);
         if (reason != null) {
             addViolation(data, node, reason);
@@ -115,23 +106,23 @@ public class LawOfDemeterRule extends AbstractJavaRulechainRule {
     }
 
     private boolean isBuilderPattern(ASTExpression qualifier) {
-        return qualifier.getTypeMirror() instanceof JClassType
-            && qualifier.getTypeMirror().getSymbol().getSimpleName().endsWith("Builder");
+        return typeEndsWith(qualifier, "Builder");
     }
-    //
-    //    private int foreignDegree(ASTNamedReferenceExpr acc, RecursionGuard guard) {
-    //        if (acc instanceof ASTFieldAccess) {
-    //            // those are not tracked except if they're on this instance.
-    //            // If they're not on this instance then they're foreign!
-    //            return unless(isAllowedFieldAccess((ASTFieldAccess) acc));
-    //        }
-    //        ReachingDefinitionSet reaching = DataflowPass.getDataflowResult(acc.getRoot()).getReachingDefinitions(acc);
-    //        if (reaching.isNotFullyKnown()) {
-    //            return UNKNOWN;
-    //        }
-    //
-    //        return definitely(CollectionUtil.any(reaching.getReaching(), it -> foreignDegree(it, guard)));
-    //    }
+
+    private boolean isFactoryMethod(ASTExpression expr) {
+        return typeEndsWith(expr, "Factory")
+            || nameEndsWith(expr);
+    }
+
+    private boolean nameEndsWith(ASTExpression expr) {
+        return expr instanceof ASTNamedReferenceExpr
+            && ((ASTNamedReferenceExpr) expr).getName().endsWith("Factory");
+    }
+
+    private boolean typeEndsWith(ASTExpression qualifier, String suffix) {
+        return qualifier.getTypeMirror() instanceof JClassType
+            && qualifier.getTypeMirror().getSymbol().getSimpleName().endsWith(suffix);
+    }
 
     private boolean isLocalFieldAccess(ASTFieldAccess access) {
         return JavaRuleUtil.isUnqualifiedThisOrSuper(access) // field of this instance
@@ -183,21 +174,10 @@ public class LawOfDemeterRule extends AbstractJavaRulechainRule {
 
     private int foreignDegreeImpl(ASTExpression expr) {
         if (expr instanceof ASTMethodCall) {
-            if (isAsForeignAsQualifier((ASTMethodCall) expr)) {
-                // an iterator.next() is as foreign as the qualifier
-                // a list call is as foreign as the list
-                // ie, pure data containers are "transparent"
-                return foreignDegree(((ASTMethodCall) expr).getQualifier());
-            }
-            return 1 + foreignDegree(((ASTMethodCall) expr).getQualifier());
+            return methodForeignDegreeImpl((ASTMethodCall) expr);
         } else if (expr instanceof ASTNamedReferenceExpr) {
             if (expr instanceof ASTFieldAccess) {
-                if (isLocalFieldAccess((ASTFieldAccess) expr)) {
-                    return 0;
-                } else if (JavaRuleUtil.isArrayLengthFieldAccess(expr)) {
-                    foreignDegree(((ASTFieldAccess) expr).getQualifier());
-                }
-                return 1 + foreignDegree(((ASTFieldAccess) expr).getQualifier());
+                return fieldForeignDegreeImpl(expr);
             }
             // a variable access
 
@@ -208,18 +188,44 @@ public class LawOfDemeterRule extends AbstractJavaRulechainRule {
             }
 
             return reaching.getReaching().stream().mapToInt(this::foreignDegree).max().orElse(0);
+        } else if (expr instanceof ASTArrayAccess) {
+            return foreignDegree(((ASTArrayAccess) expr).getQualifier());
         }
         return 0;
     }
 
-    /**
-     * Directly foreign methods "contaminate" other methods, while other
-     * methods only transmit the infection.
-     */
-    private boolean isDirectlyForeign(ASTMethodCall expr) {
+    private int fieldForeignDegreeImpl(ASTExpression expr) {
+        if (isLocalFieldAccess((ASTFieldAccess) expr)) {
+            return 0;
+        } else if (JavaRuleUtil.isArrayLengthFieldAccess(expr)) {
+            return foreignDegree(((ASTFieldAccess) expr).getQualifier());
+        }
+        return 1 + foreignDegree(((ASTFieldAccess) expr).getQualifier());
+    }
+
+    private int methodForeignDegreeImpl(ASTMethodCall expr) {
+        if (isLocalMethod(expr)) {
+            return 0;
+        } else if (increasesDegree(expr)) {
+            return 1 + foreignDegree(expr.getQualifier());
+        }
+        return foreignDegree(expr.getQualifier());
+    }
+
+    private boolean isLocalMethod(ASTMethodCall expr) {
         // static methods are taken to be construction methods.
-        return !expr.getMethodType().isStatic()
-            && !JavaRuleUtil.isCallOnThisInstance(expr);
+        return expr.getMethodType().isStatic()
+            || JavaRuleUtil.isCallOnThisInstance(expr);
+    }
+
+    private boolean increasesDegree(ASTMethodCall expr) {
+        return isGetterLike(expr)
+            && !isNeverForeignMethod(expr);
+    }
+
+    private boolean isGetterLike(ASTMethodCall expr) {
+        return JavaRuleUtil.isGetterCall(expr)
+            || expr.getArguments().isEmpty();
     }
 
     /**
@@ -227,10 +233,13 @@ public class LawOfDemeterRule extends AbstractJavaRulechainRule {
      * The expression is not directly foreign. These expressions should
      * be known useful on some types and not useful on others.
      */
-    private boolean isAsForeignAsQualifier(@NonNull ASTMethodCall expr) {
+    private boolean isNeverForeignMethod(@NonNull ASTMethodCall expr) {
         return ITERATOR_NEXT.matchesCall(expr)
             || TypeTestUtil.isA(Collection.class, expr.getQualifier())
-            || isBuilderPattern(expr);
+            || TypeTestUtil.isA(StringBuilder.class, expr.getQualifier())
+            || TypeTestUtil.isA(StringBuffer.class, expr.getQualifier())
+            || isBuilderPattern(expr)
+            || isFactoryMethod(expr);
     }
 
 
