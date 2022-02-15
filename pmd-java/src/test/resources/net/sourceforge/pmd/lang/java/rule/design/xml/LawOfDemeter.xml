@@ -185,15 +185,16 @@ public class Foo {
     </test-code>
     <test-code>
         <description>Instance methods on fields</description>
-        <expected-problems>1</expected-problems>
-        <expected-linenumbers>17</expected-linenumbers>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>18,21</expected-linenumbers>
         <code><![CDATA[
 public class B {
     public A a = new A();
 }
 
 public class A {
-    public void doSomething() {
+    public boolean doSomething() {
+        return false;
     }
 }
 
@@ -203,8 +204,15 @@ public class Foo {
     A a;
 
     public void example() {
-        a.doSomething(); // direct static - allowed
-        b.a.doSomething(); // static chain - violation
+        a.doSomething(); // direct field allowed
+        b.a.doSomething(); // foreign field access
+        foo(a); // direct field allowed
+        foo(b.a); // foreign field access
+        foo(b.a.doSomething()); // foreign field access
+    }
+
+    void foo(boolean b) {
+        return false;
     }
 }
         ]]></code>
@@ -466,7 +474,8 @@ public final class Util {
         try {
             final String[] parts = hashed.split("\\$");
 
-            if (parts.length != 5 || !parts[1].equals("s0")) {      // wrong violation - method chain calls
+            if (parts.length != 5
+                    || !parts[1].equals("s0")) {      // wrong violation - method chain calls
                 throw new IllegalArgumentException("Invalid hashed value");
             }
         } catch (Exception e) { }

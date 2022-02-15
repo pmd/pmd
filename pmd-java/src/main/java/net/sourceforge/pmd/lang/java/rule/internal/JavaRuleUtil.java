@@ -1036,8 +1036,13 @@ public final class JavaRuleUtil {
             && !node.isStatic();
     }
 
-    public static boolean isStaticFieldReference(ASTFieldAccess access) {
-        JFieldSymbol sym = access.getReferencedSym();
-        return sym != null && sym.isStatic();
+    public static boolean isArrayLengthFieldAccess(ASTExpression node) {
+        if (node instanceof ASTFieldAccess) {
+            ASTFieldAccess field = (ASTFieldAccess) node;
+            return "length".equals(field.getName())
+                && field.getQualifier().getTypeMirror().isArray();
+        }
+        return false;
     }
+
 }
