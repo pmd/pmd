@@ -80,6 +80,7 @@ import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.internal.ast.AstLocalVarSym;
 import net.sourceforge.pmd.lang.java.types.InvocationMatcher;
 import net.sourceforge.pmd.lang.java.types.InvocationMatcher.CompoundInvocationMatcher;
+import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
@@ -738,7 +739,7 @@ public final class JavaRuleUtil {
      */
     public static boolean isReferenceToVar(@Nullable ASTExpression expression, @NonNull JVariableSymbol symbol) {
         return expression instanceof ASTNamedReferenceExpr
-                && symbol.equals(((ASTNamedReferenceExpr) expression).getReferencedSym());
+            && symbol.equals(((ASTNamedReferenceExpr) expression).getReferencedSym());
     }
 
     public static boolean isUnqualifiedThis(ASTExpression e) {
@@ -749,13 +750,17 @@ public final class JavaRuleUtil {
         return e instanceof ASTSuperExpression && ((ASTSuperExpression) e).getQualifier() == null;
     }
 
+    public static boolean isUnqualifiedThisOrSuper(ASTExpression e) {
+        return isUnqualifiedSuper(e) || isUnqualifiedThis(e);
+    }
+
     /**
      * Returns true if the expression is a {@link ASTNamedReferenceExpr}
      * that references any of the symbol in the set.
      */
     public static boolean isReferenceToVar(@Nullable ASTExpression expression, @NonNull Set<? extends JVariableSymbol> symbols) {
         return expression instanceof ASTNamedReferenceExpr
-                && symbols.contains(((ASTNamedReferenceExpr) expression).getReferencedSym());
+            && symbols.contains(((ASTNamedReferenceExpr) expression).getReferencedSym());
     }
 
     /**
@@ -831,10 +836,49 @@ public final class JavaRuleUtil {
             return true;
         } else if (usage instanceof ASTFieldAccess) {
             ASTExpression qualifier = ((ASTFieldAccess) usage).getQualifier();
-            return qualifier instanceof ASTThisExpression
-                || qualifier instanceof ASTSuperExpression;
+            return getThisOrSuperQualifier(qualifier) == null;
         }
         return false;
+    }
+
+    public static boolean isCallOnThisInstance(ASTMethodCall call) {
+        ASTExpression receiver = call.getQualifier();
+        // syntactic approach.
+        if (JavaRuleUtil.isThisOrSuper(call)) {
+            return JavaRuleUtil.getThisOrSuperQualifier(call) == null;
+        }
+
+        if (call.getQualifier() != null) {
+            return call.getQualifier() instanceof ASTSuperExpression;
+        }
+
+        // unqualified call
+        JMethodSig mtype = call.getMethodType();
+        return mtype != mtype.getTypeSystem().UNRESOLVED_METHOD
+            && !mtype.isStatic()
+            && mtype.getSymbol().getEnclosingClass().equals(call.getEnclosingType().getSymbol());
+    }
+
+    public static ASTClassOrInterfaceType getThisOrSuperQualifier(ASTExpression expr) {
+        if (expr instanceof ASTThisExpression) {
+            return ((ASTThisExpression) expr).getQualifier();
+        } else if (expr instanceof ASTSuperExpression) {
+            return ((ASTSuperExpression) expr).getQualifier();
+        }
+        return null;
+    }
+
+    public static ASTClassOrInterfaceType isUnqual(ASTExpression expr) {
+        if (expr instanceof ASTThisExpression) {
+            return ((ASTThisExpression) expr).getQualifier();
+        } else if (expr instanceof ASTSuperExpression) {
+            return ((ASTSuperExpression) expr).getQualifier();
+        }
+        return null;
+    }
+
+    public static boolean isThisOrSuper(ASTExpression expr) {
+        return expr instanceof ASTThisExpression || expr instanceof ASTSuperExpression;
     }
 
     /**
@@ -990,5 +1034,10 @@ public final class JavaRuleUtil {
         return "clone".equals(node.getName())
             && node.getArity() == 0
             && !node.isStatic();
+    }
+
+    public static boolean isStaticFieldReference(ASTFieldAccess access) {
+        JFieldSymbol sym = access.getReferencedSym();
+        return sym != null && sym.isStatic();
     }
 }

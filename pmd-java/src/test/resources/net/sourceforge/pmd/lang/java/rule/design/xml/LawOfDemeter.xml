@@ -161,9 +161,10 @@ class Bar { C getC() {} }
         ]]></code>
     </test-code>
 
-    <test-code regressionTest="false">
+    <test-code>
         <description>Static methods</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>13</expected-linenumbers>
         <code><![CDATA[
 public class B {
     public static A a = new A();
@@ -178,6 +179,32 @@ public class Foo {
     public void example() {
         A.doStatic(); // direct static - allowed
         B.a.doStatic(); // static chain - violation
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Instance methods on fields</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>17</expected-linenumbers>
+        <code><![CDATA[
+public class B {
+    public A a = new A();
+}
+
+public class A {
+    public void doSomething() {
+    }
+}
+
+public class Foo {
+
+    B b;
+    A a;
+
+    public void example() {
+        a.doSomething(); // direct static - allowed
+        b.a.doSomething(); // static chain - violation
     }
 }
         ]]></code>
@@ -361,6 +388,38 @@ public class Foo {
 
     public void method(Foo this, String... args) {
         System.out.println(this.i);     // wrong violation: method chain calls
+        for (String arg: args) {
+            System.out.println(arg);
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>System out println</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package pmdtests;
+
+public class Foo {
+    private final int i;
+
+    public Foo(int i) {
+        this.i = i;
+    }
+
+    public void meth() {
+        System.out.println("");     // wrong violation: method chain calls
+        System.out.println("");    // wrong violation: method chain calls
+        System.out.println("");          // no violation
+    }
+
+    public void method(Foo this) {      // receiver param!!
+        System.out.println("");     // wrong violation: method chain calls
+    }
+
+    public void method(Foo this, String... args) {
+        System.out.println("");     // wrong violation: method chain calls
         for (String arg: args) {
             System.out.println(arg);
         }

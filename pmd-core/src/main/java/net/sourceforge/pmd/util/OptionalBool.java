@@ -27,4 +27,8 @@ public enum OptionalBool {
     public static OptionalBool definitely(boolean a) {
         return a ? YES : NO;
     }
+
+    public static OptionalBool unless(boolean a) {
+        return a ? NO : YES;
+    }
 }

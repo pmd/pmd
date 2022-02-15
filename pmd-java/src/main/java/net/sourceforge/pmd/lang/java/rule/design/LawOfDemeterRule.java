@@ -4,8 +4,11 @@
 
 package net.sourceforge.pmd.lang.java.rule.design;
 
+import static net.sourceforge.pmd.util.CollectionUtil.listOf;
+
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -13,6 +16,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTFieldAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTForeachStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
@@ -22,9 +26,12 @@ import net.sourceforge.pmd.lang.java.rule.internal.DataflowPass.AssignmentEntry;
 import net.sourceforge.pmd.lang.java.rule.internal.DataflowPass.DataflowResult;
 import net.sourceforge.pmd.lang.java.rule.internal.DataflowPass.ReachingDefinitionSet;
 import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
+import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.types.InvocationMatcher;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.properties.PropertyFactory;
 import net.sourceforge.pmd.util.CollectionUtil;
 import net.sourceforge.pmd.util.OptionalBool;
 
@@ -49,12 +56,16 @@ public class LawOfDemeterRule extends AbstractJavaRulechainRule {
 
     private static final InvocationMatcher ITERATOR_NEXT = InvocationMatcher.parse("java.util.Iterator#next()");
 
-    public LawOfDemeterRule() {
-        super(ASTMethodCall.class);
-    }
+    private static final PropertyDescriptor<List<String>> ALLOWED_STATIC_CONTAINERS =
+        PropertyFactory.stringListProperty("allowedStaticContainers")
+                       .desc("List of binary names of types whose static fields are safe to access everywhere")
+                       .defaultValue(listOf("java.lang.System"))
+                       .build();
 
-    private Set<ASTExpression> explored = new HashSet<>();
-    private Set<ASTExpression> known = new HashSet<>();
+    public LawOfDemeterRule() {
+        super(ASTMethodCall.class, ASTFieldAccess.class);
+        definePropertyDescriptor(ALLOWED_STATIC_CONTAINERS);
+    }
 
     @Override
     public Object visit(ASTMethodCall node, Object data) {
@@ -80,6 +91,8 @@ public class LawOfDemeterRule extends AbstractJavaRulechainRule {
                 return "call on foreign value";
             }
         }
+        // the qualifier could be a TypeExpression, we don't count static
+        // methods as foreign though
         return null;
     }
 
@@ -89,6 +102,11 @@ public class LawOfDemeterRule extends AbstractJavaRulechainRule {
     }
 
     private OptionalBool isForeign(ASTNamedReferenceExpr acc, RecursionGuard guard) {
+        if (acc instanceof ASTFieldAccess) {
+            // those are not tracked except if they're on this instance.
+            // If they're not on this instance then they're foreign!
+            return OptionalBool.unless(isAllowedFieldAccess((ASTFieldAccess) acc));
+        }
         ReachingDefinitionSet reaching = DataflowPass.getDataflowResult(acc.getRoot()).getReachingDefinitions(acc);
         if (reaching.isNotFullyKnown()) {
             return OptionalBool.UNKNOWN;
@@ -96,6 +114,23 @@ public class LawOfDemeterRule extends AbstractJavaRulechainRule {
 
         return OptionalBool.definitely(CollectionUtil.any(reaching.getReaching(), it -> isForeign(it, guard)));
     }
+
+    private boolean isAllowedFieldAccess(ASTFieldAccess access) {
+        return JavaRuleUtil.isUnqualifiedThisOrSuper(access) // field of this instance
+            || isAllowedStaticFieldAccess(access);
+    }
+
+    private boolean isAllowedStaticFieldAccess(ASTFieldAccess access) {
+        JFieldSymbol sym = access.getReferencedSym();
+        if (sym == null || !sym.isStatic()) {
+            return false;
+        }
+        // the field is static
+
+        String containerName = sym.getEnclosingClass().getBinaryName();
+        return getProperty(ALLOWED_STATIC_CONTAINERS).contains(containerName);
+    }
+
 
     private boolean isForeign(AssignmentEntry def, RecursionGuard guard) {
         if (!guard.explored.add(def.getVarId())) {
@@ -145,7 +180,8 @@ public class LawOfDemeterRule extends AbstractJavaRulechainRule {
      */
     private boolean isDirectlyForeign(ASTMethodCall expr) {
         // static methods are taken to be construction methods.
-        return !expr.getMethodType().isStatic();
+        return !expr.getMethodType().isStatic()
+            && !JavaRuleUtil.isCallOnThisInstance(expr);
     }
 
     /**
