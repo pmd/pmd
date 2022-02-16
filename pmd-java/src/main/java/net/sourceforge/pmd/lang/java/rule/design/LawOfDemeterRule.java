@@ -226,9 +226,10 @@ public class LawOfDemeterRule extends AbstractJavaRulechainRule {
     }
 
     private boolean isGetterLike(ASTMethodCall expr) {
-        return (isGetterCall(expr)
-            || expr.getArguments().isEmpty())
-            && !(expr.getParent() instanceof ASTExpressionStatement);
+        if (isGetterCall(expr) || expr.getArguments().isEmpty()) { // NOPMD SimplifyBooleanReturns
+            return !(expr.getParent() instanceof ASTExpressionStatement); // result is used
+        }
+        return false;
     }
 
     /**
