@@ -203,6 +203,8 @@ public class LawOfDemeterRule extends AbstractJavaRulechainRule {
                 return 0;
             }
 
+            // note this max could be changed to min to get a more conservative
+            // strategy, trading recall for precision.
             return reaching.getReaching().stream().mapToInt(this::foreignDegree).max().orElse(0);
         } else if (expr instanceof ASTArrayAccess) {
             return foreignDegree(((ASTArrayAccess) expr).getQualifier());
