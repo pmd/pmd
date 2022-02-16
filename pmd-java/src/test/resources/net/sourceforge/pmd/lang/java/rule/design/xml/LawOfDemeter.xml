@@ -184,8 +184,13 @@ public class Foo {
     </test-code>
     <test-code>
         <description>Instance methods on fields</description>
-        <expected-problems>2</expected-problems>
-        <expected-linenumbers>18,21</expected-linenumbers>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>18,20,21</expected-linenumbers>
+        <expected-messages>
+            <message>Access to field `a` on foreign value `b` (degree 2)</message>
+            <message>Access to field `a` on foreign value `b` (degree 2)</message>
+            <message>Access to field `a` on foreign value `b` (degree 2)</message>
+        </expected-messages>
         <code><![CDATA[
 public class B {
     public A a = new A();
@@ -219,8 +224,7 @@ public class Foo {
 
     <test-code>
         <description>Exclude iterator and list elements</description>
-        <expected-problems>1</expected-problems>
-        <expected-linenumbers>24</expected-linenumbers>
+        <expected-problems>0</expected-problems>
         <code><![CDATA[
 import java.util.List;
 import java.util.ArrayList;
@@ -245,10 +249,13 @@ public class Foo {
 
         List<String> anotherList = calcList();
         for (String s : anotherList) {
-            if (!s.isEmpty()) { // here
+            if (!s.isEmpty()) {
                 System.out.println(s);
             }
         }
+    }
+    List<String> calcList() {
+        return null;
     }
 }
         ]]></code>
@@ -381,6 +388,34 @@ class BarBuilder {
     </test-code>
 
     <test-code>
+        <description>Method chain is reset when someone produces trusted data</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Test {
+    A getA() {}
+    public void bar() {
+
+        // Inner Builder pattern chained
+        final Bar bar = Bar.newBuilder()
+                .withFoo("foo")
+                .build();
+    }
+}
+interface A {
+    B getB();
+    String foo();
+}
+class Bar {
+    static BarBuilder newBuilder() { }
+}
+class BarBuilder {
+    BarBuilder withFoo(String s) {}
+    Bar build() {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
         <description>[java] LawOfDemeter: False positive with 'this' pointer #2174</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
@@ -479,14 +514,35 @@ class TaskManager {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public final class Util {
-    public static boolean check(String passwd, String hashed) {
+    public static boolean check(String hashed) { // degree 1
         try {
-            final String[] parts = hashed.split("\\$");
+            final String[] parts = hashed.split("\\$"); // degree 1: string is pure data
 
-            if (parts.length != 5
-                    || parts.isEmpty()               // wrong violation - method chain calls
+            if (parts.length != 5                    // array length is ok
+                    || parts.clone()                 // wrong violation - method chain calls
                     || parts[1].isEmpty()            // wrong violation - method chain calls
                     || parts[1].equals("s0")) {      // wrong violation - method chain calls
+                throw new IllegalArgumentException("Invalid hashed value");
+            }
+        } catch (Exception e) { }
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>List access</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.List;
+public final class Util {
+    public static boolean check(String hashed) { // degree 1
+        try {
+            final List<String> parts = hashed.split("\\$"); // degree 1: string is pure data
+
+            if (parts.size() != 5
+                    || parts.isEmpty()
+                    || parts.get(1).isEmpty()
+                    || parts.get(1).equals("s0")) {
                 throw new IllegalArgumentException("Invalid hashed value");
             }
         } catch (Exception e) { }
@@ -581,7 +637,11 @@ public final class ControlEvent {
     <test-code>
         <description>Stackoverflow with cyclic data flow</description>
         <expected-problems>2</expected-problems>
-        <expected-linenumbers>11,15</expected-linenumbers>
+        <expected-linenumbers>10,12</expected-linenumbers>
+        <expected-messages>
+            <message>Access to field `attributes` on foreign value `h` (degree 2)</message>
+            <message>Access to field `attributes` on foreign value `h` (degree 2)</message>
+        </expected-messages>
         <code><![CDATA[
             import java.nio.ByteBuffer;
             import java.util.Iterator;
@@ -592,15 +652,18 @@ public final class ControlEvent {
 
                 void writeAttributes(int ctype, Attribute.Holder h) throws IOException {
                     ByteBuffer buf, out, bufOut;
-                    for (Attribute a : h.attributes) {
-                        if (a.layout() == h.attributes) { // warn
+                    for (Attribute a : h.attributes) { // warn(h.attributes)
+                        if (a.layout()
+                                == h.attributes) { // warn(h.attributes)
                             DataOutputStream savedOut = out;
                             out = savedOut;
                         } else {
-                            out.write(a.bytes()); // warn
+                            out.write(a.bytes());
                         }
                     }
                 }
+
+                byte[] bytes() {}
 
                 class Holder {
 

@@ -11,17 +11,21 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import net.sourceforge.pmd.lang.java.ast.ASTAmbiguousName;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotationTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTArrayAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTArrayType;
+import net.sourceforge.pmd.lang.java.ast.ASTClassLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTFieldAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameters;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTIntersectionType;
 import net.sourceforge.pmd.lang.java.ast.ASTList;
+import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
@@ -29,13 +33,18 @@ import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType;
 import net.sourceforge.pmd.lang.java.ast.ASTRecordDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTReferenceType;
 import net.sourceforge.pmd.lang.java.ast.ASTResource;
+import net.sourceforge.pmd.lang.java.ast.ASTSuperExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTThisExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeArguments;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTUnionType;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.ASTVoidType;
 import net.sourceforge.pmd.lang.java.ast.ASTWildcardType;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
+import net.sourceforge.pmd.lang.java.ast.JavaVisitorBase;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.TypePrettyPrint;
@@ -222,4 +231,91 @@ public final class PrettyPrintingUtil {
     private static TypePrettyPrinter overloadPrinter() {
         return new TypePrettyPrinter().useSimpleNames(true).printMethodResult(false);
     }
+
+
+    public static CharSequence prettyPrint(JavaNode node) {
+        StringBuilder sb = new StringBuilder();
+        node.acceptVisitor(new ExprPrinter(), sb);
+        return sb;
+    }
+
+    static class ExprPrinter extends JavaVisitorBase<StringBuilder, Void> {
+
+        @Override
+        public Void visit(ASTTypeExpression node, StringBuilder data) {
+            data.append(prettyPrintType(node.getTypeNode()));
+            return null;
+        }
+        @Override
+        public Void visit(ASTClassLiteral node, StringBuilder data) {
+            data.append(prettyPrintType(node.getTypeNode()));
+            data.append(".class");
+            return null;
+        }
+
+        @Override
+        public Void visitLiteral(ASTLiteral node, StringBuilder data) {
+            data.append(node.getText());
+            return null;
+        }
+
+        @Override
+        public Void visit(ASTFieldAccess node, StringBuilder data) {
+            node.getQualifier().acceptVisitor(this, data);
+            data.append('.').append(node.getName());
+            return null;
+        }
+
+        @Override
+        public Void visit(ASTVariableAccess node, StringBuilder data) {
+            data.append(node.getName());
+            return null;
+        }
+
+        @Override
+        public Void visit(ASTThisExpression node, StringBuilder data) {
+            if (node.getQualifier() != null) {
+                node.getQualifier().acceptVisitor(this, data);
+                data.append('.');
+            }
+            data.append("this");
+            return null;
+        }
+
+        @Override
+        public Void visit(ASTSuperExpression node, StringBuilder data) {
+            if (node.getQualifier() != null) {
+                node.getQualifier().acceptVisitor(this, data);
+                data.append('.');
+            }
+            data.append("super");
+            return null;
+        }
+
+        @Override
+        public Void visit(ASTArrayAccess node, StringBuilder data) {
+            node.getQualifier().acceptVisitor(this, data);
+            data.append('[');
+            node.getIndexExpression().acceptVisitor(this, data);
+            data.append(']');
+            return null;
+        }
+
+        @Override
+        public Void visit(ASTMethodCall node, StringBuilder data) {
+            if (node.getQualifier() != null) {
+                node.getQualifier().acceptVisitor(this, data);
+                data.append('.');
+            }
+            data.append(node.getMethodName());
+            if (node.getArguments().isEmpty()) {
+                data.append("()");
+            } else {
+                data.append("(...)");
+            }
+            return null;
+        }
+    }
+
+
 }

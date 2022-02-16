@@ -817,25 +817,22 @@ public final class JavaRuleUtil {
 
     /**
      * Returns true if the expression has the form `field`, or `this.field`,
-     * where `field` is a field declared in the enclosing class.
-     * Assumes we're not in a static context.
+     * where `field` is a field declared in the enclosing class. Considers
+     * inherited fields. Assumes we're not in a static context.
      */
     public static boolean isRefToFieldOfThisInstance(ASTExpression usage) {
         if (!(usage instanceof ASTNamedReferenceExpr)) {
             return false;
         }
         JVariableSymbol symbol = ((ASTNamedReferenceExpr) usage).getReferencedSym();
-        if (!(symbol instanceof JFieldSymbol)
-            || !((JFieldSymbol) symbol).getEnclosingClass().equals(usage.getEnclosingType().getSymbol())
-            || Modifier.isStatic(((JFieldSymbol) symbol).getModifiers())) {
+        if (!(symbol instanceof JFieldSymbol)) {
             return false;
         }
 
         if (usage instanceof ASTVariableAccess) {
-            return true;
+            return !Modifier.isStatic(((JFieldSymbol) symbol).getModifiers());
         } else if (usage instanceof ASTFieldAccess) {
-            ASTExpression qualifier = ((ASTFieldAccess) usage).getQualifier();
-            return getThisOrSuperQualifier(qualifier) == null;
+            return isUnqualifiedThisOrSuper(((ASTFieldAccess) usage).getQualifier());
         }
         return false;
     }
