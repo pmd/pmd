@@ -21,6 +21,8 @@ import net.sourceforge.pmd.benchmark.TimedOperationCategory;
 import net.sourceforge.pmd.internal.SystemProps;
 import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.RootNode;
+import net.sourceforge.pmd.reporting.FileAnalysisListener;
 import net.sourceforge.pmd.util.StringUtil;
 
 /** Applies a set of rules to a set of ASTs. */
@@ -41,64 +43,73 @@ public class RuleApplicator {
     }
 
 
-    public void index(Collection<? extends Node> nodes) {
+    public void index(RootNode root) {
         idx.reset();
-        for (Node root : nodes) {
-            indexTree(root, idx);
-        }
+        indexTree(root, idx);
     }
 
-    public void apply(Collection<? extends Rule> rules, RuleContext ctx) {
-        applyOnIndex(idx, rules, ctx);
+    public void apply(Collection<? extends Rule> rules, FileAnalysisListener listener) {
+        applyOnIndex(idx, rules, listener);
     }
 
-    private void applyOnIndex(TreeIndex idx, Collection<? extends Rule> rules, RuleContext ctx) {
+    private void applyOnIndex(TreeIndex idx, Collection<? extends Rule> rules, FileAnalysisListener listener) {
         for (Rule rule : rules) {
-            if (!RuleSet.applies(rule, ctx.getLanguageVersion())) {
-                continue;
-            }
+            RuleContext ctx = RuleContext.create(listener, rule);
+            rule.start(ctx);
+            try {
 
-            Iterator<? extends Node> targets = rule.getTargetSelector().getVisitedNodes(idx);
-            while (targets.hasNext()) {
-                Node node = targets.next();
+                Iterator<? extends Node> targets = rule.getTargetSelector().getVisitedNodes(idx);
+                while (targets.hasNext()) {
+                    Node node = targets.next();
+                    if (!RuleSet.applies(rule, node.getAstInfo().getLanguageVersion())) {
+                        continue;
+                    }
 
-                try (TimedOperation rcto = TimeTracker.startOperation(TimedOperationCategory.RULE, rule.getName())) {
-                    rule.apply(node, ctx);
-                    rcto.close(1);
-                } catch (RuntimeException e) {
-                    reportOrRethrow(ctx, rule, node, AssertionUtil.contexted(e), ctx.isIgnoreExceptions());
-                } catch (StackOverflowError e) {
-                    reportOrRethrow(ctx, rule, node, AssertionUtil.contexted(e), SystemProps.isErrorRecoveryMode());
-                } catch (AssertionError e) {
-                    reportOrRethrow(ctx, rule, node, AssertionUtil.contexted(e), SystemProps.isErrorRecoveryMode());
+                    try (TimedOperation rcto = TimeTracker.startOperation(TimedOperationCategory.RULE, rule.getName())) {
+                        rule.apply(node, ctx);
+                        rcto.close(1);
+                    } catch (RuntimeException e) {
+                        reportOrRethrow(listener, rule, node, AssertionUtil.contexted(e), true);
+                    } catch (StackOverflowError e) {
+                        reportOrRethrow(listener, rule, node, AssertionUtil.contexted(e), SystemProps.isErrorRecoveryMode());
+                    } catch (AssertionError e) {
+                        reportOrRethrow(listener, rule, node, AssertionUtil.contexted(e), SystemProps.isErrorRecoveryMode());
+                    }
                 }
+            } finally {
+                rule.end(ctx);
             }
         }
     }
 
-    private <E extends Throwable> void reportOrRethrow(RuleContext ctx, Rule rule, Node node, E e, boolean reportAndDontThrow) throws E {
+
+    private <E extends Throwable> void reportOrRethrow(FileAnalysisListener listener, Rule rule, Node node, E e, boolean reportAndDontThrow) throws E {
         if (e instanceof ExceptionContext) {
             ((ExceptionContext) e).addContextValue("Rule applied on node", node);
         }
 
         if (reportAndDontThrow) {
-            reportException(ctx, rule, node, e);
+            reportException(listener, rule, node, e);
         } else {
             throw e;
         }
     }
 
-    private void reportException(RuleContext ctx, Rule rule, Node node, Throwable e) {
-        ctx.getReport().addError(new ProcessingError(e, String.valueOf(ctx.getSourceCodeFile())));
 
-        if (LOG.isLoggable(Level.WARNING)) {
+    private void reportException(FileAnalysisListener listener, Rule rule, Node node, Throwable e) {
+        // The listener handles logging if needed,
+        // it may also rethrow the error.
+        listener.onError(new ProcessingError(e, node.getAstInfo().getFileName()));
+
+        if (LOG.isLoggable(Level.WARNING)) { //fixme
             LOG.log(Level.WARNING, "Exception applying rule " + rule.getName() + " on file "
-                + ctx.getSourceCodeFile() + ", continuing with next rule", e);
+                + node.getAstInfo().getFileName() + ", continuing with next rule", e);
 
             String nodeToString = StringUtil.elide(node.toString(), 600, " ... (truncated)");
             LOG.log(Level.WARNING, "Exception occurred on node " + nodeToString);
         }
     }
+
 
     private void indexTree(Node top, TreeIndex idx) {
         idx.indexNode(top);

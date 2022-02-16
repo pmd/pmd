@@ -150,7 +150,7 @@ public class DBURI {
      *            URL string
      * @throws URISyntaxException
      */
-    public DBURI(String string) throws URISyntaxException {
+    public DBURI(String string) throws URISyntaxException, IOException {
         /*
          * A JDBC URL is an opaque URL and does not have a query.
          *
@@ -219,8 +219,6 @@ public class DBURI {
             URISyntaxException uriException = new URISyntaxException(string, "Problem generating DBURI.");
             uriException.initCause(ex);
             throw uriException;
-        } catch (IOException e) {
-            throw new RuntimeException(e);
         }
     }
 

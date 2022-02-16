@@ -17,6 +17,7 @@ import java.util.Comparator;
  * @see Rule
  */
 public interface RuleViolation {
+    // todo move to package reporting
 
     /**
      * A comparator for rule violations. This compares all exposed attributes

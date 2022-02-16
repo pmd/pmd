@@ -110,18 +110,17 @@ You can also provide your own custom renderers.
     List<DataSource> files = Arrays.asList(new FileDataSource(new File("/path/to/src/MyClass.java")));
     ```
     
-5.  For reporting, you can use a built-in renderer, e.g. `XMLRenderer` or a custom renderer implementing
-    `Renderer`. Note, that you must manually initialize
-    the renderer by setting a suitable `Writer` and calling `start()`. After the PMD run, you need to call
-    `end()` and `flush()`. Then your writer should have received all output.
-    
+5.  For reporting, you can use `GlobalAnalysisListener`, which receives events like violations and errors.
+    Useful implementations are provided by `Renderer` instances. To use a renderer, eg the built-in `XMLRenderer`,
+    create it and configure it with a suitable `Writer`.
+
     ```java
     StringWriter rendererOutput = new StringWriter();
     Renderer xmlRenderer = new XMLRenderer("UTF-8");
     xmlRenderer.setWriter(rendererOutput);
-    xmlRenderer.start();
+    // The listener is created from the renderer in the next listing
     ```
-    
+
 6.  Now, all the preparations are done, and PMD can be executed. This is done by calling
     `PMD.processFiles(...)`. This method call takes the configuration, the rulesets, the files
     to process, and the list of renderers. Provide an empty list, if you don't want to use
@@ -129,8 +128,8 @@ You can also provide your own custom renderers.
     remain open and file resources are leaked.
     
     ```java
-    try {
-        PMD.processFiles(configuration, ruleSets, files, Collections.singletonList(renderer));
+    try (GlobalAnalysisListener listener = xmlRenderer.newListener()) {
+        PMD.processFiles(configuration, ruleSets, files, listener);
     } finally {
         ClassLoader auxiliaryClassLoader = configuration.getClassLoader();
         if (auxiliaryClassLoader instanceof ClasspathClassLoader) {
@@ -139,12 +138,10 @@ You can also provide your own custom renderers.
     }
     ```
     
-7.  After the call, you need to finish the renderer via `end()` and `flush()`.
+7.  After the call, the renderer will have been flushed by PMD (through its `GlobalAnalysisListener`).
     Then you can check the rendered output.
     
     ``` java
-    renderer.end();
-    renderer.flush();
     System.out.println("Rendered Report:");
     System.out.println(rendererOutput.toString());
     ```
@@ -192,10 +189,9 @@ public class PmdExample2 {
 
         Writer rendererOutput = new StringWriter();
         Renderer renderer = createRenderer(rendererOutput);
-        renderer.start();
 
-        try {
-            PMD.processFiles(configuration, ruleSets, files, Collections.singletonList(renderer));
+        try (GlobalAnalysisListener listener = renderer.newListener()) {
+            PMD.processFiles(configuration, ruleSets, files, listener);
         } finally {
             ClassLoader auxiliaryClassLoader = configuration.getClassLoader();
             if (auxiliaryClassLoader instanceof ClasspathClassLoader) {
@@ -203,8 +199,6 @@ public class PmdExample2 {
             }
         }
 
-        renderer.end();
-        renderer.flush();
         System.out.println("Rendered Report:");
         System.out.println(rendererOutput.toString());
     }
