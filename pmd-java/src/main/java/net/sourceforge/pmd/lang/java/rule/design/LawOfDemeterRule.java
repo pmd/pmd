@@ -7,7 +7,7 @@ package net.sourceforge.pmd.lang.java.rule.design;
 import static net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil.isArrayLengthFieldAccess;
 import static net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil.isCallOnThisInstance;
 import static net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil.isGetterCall;
-import static net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil.isRefToFieldOfThisInstance;
+import static net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil.isRefToFieldOfThisClass;
 import static net.sourceforge.pmd.properties.constraints.NumericConstraints.positive;
 
 import java.util.Collection;
@@ -179,7 +179,7 @@ public class LawOfDemeterRule extends AbstractJavaRulechainRule {
     }
 
     private Foreignity fieldForeignity(ASTFieldAccess expr) {
-        if (isRefToFieldOfThisInstance(expr)) {
+        if (isRefToFieldOfThisClass(expr)) {
             return Foreignity.NOT_FOREIGN;
         } else if (isArrayLengthFieldAccess(expr)) {
             return Foreignity.AS_FOREIGN_AS_QUALIFIER;
@@ -277,8 +277,8 @@ public class LawOfDemeterRule extends AbstractJavaRulechainRule {
     }
 
 
-    private boolean isBuilderPattern(ASTExpression qualifier) {
-        return typeEndsWith(qualifier, "Builder");
+    private boolean isBuilderPattern(ASTExpression expr) {
+        return typeEndsWith(expr, "Builder");
     }
 
     private boolean isFactoryMethod(ASTMethodCall expr) {
@@ -301,9 +301,10 @@ public class LawOfDemeterRule extends AbstractJavaRulechainRule {
             && ((ASTNamedReferenceExpr) expr).getName().equals(name);
     }
 
-    private boolean typeEndsWith(ASTExpression qualifier, String suffix) {
-        return qualifier.getTypeMirror() instanceof JClassType
-            && qualifier.getTypeMirror().getSymbol().getSimpleName().endsWith(suffix);
+    private boolean typeEndsWith(ASTExpression expr, String suffix) {
+        return expr != null
+            && expr.getTypeMirror() instanceof JClassType
+            && expr.getTypeMirror().getSymbol().getSimpleName().endsWith(suffix);
     }
 
 

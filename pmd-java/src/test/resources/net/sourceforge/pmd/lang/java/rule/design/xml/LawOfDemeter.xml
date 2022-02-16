@@ -696,7 +696,7 @@ public final class ControlEvent {
             ]]></code>
     </test-code>
     <test-code>
-        <description>FP with enum</description>
+        <description>FP with enum - #1605</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
             import java.nio.charset.StandardCharsets;
@@ -731,6 +731,170 @@ public final class ControlEvent {
                         }
                     }
                 }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Field access on call</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            import java.util.*;
+            import java.text.MessageFormat;
+
+            public final class Token {
+                int kind;
+                Token getLastToken() {
+
+                }
+            }
+            class Q {
+                void foo(Token t) {
+                    int checkMessage = t.getLastToken().kind;
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>#2175 - False positive for chained methods with generic method call </description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import java.util.Arrays;
+            import java.util.List;
+
+            public enum Containment {
+                ;
+
+                public static void main(String... args) {
+                    Object obj = "one";
+                    List<Object> objs = Arrays.asList("one", 2, Math.PI, 4);
+                    List<Integer> ints = Arrays.asList(2, 4);
+                    assert objs.contains(obj);     // wrong violation: object not created locally
+                    assert objs.containsAll(ints); // wrong violation: object not created locally
+                    assert !ints.contains(obj);    // wrong violation: object not created locally
+                    assert !ints.containsAll(objs);// wrong violation: object not created locally
+
+                    obj = 1;
+                    objs = Arrays.<Object>asList(1, 3); // wrong violation: method chain calls
+                    ints = Arrays.asList(1, 2, 3, 4);
+                    assert ints.contains(obj);          // wrong violation: object not created locally
+                    assert ints.containsAll(objs);      // wrong violation: object not created locally
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>#2180 - False positive for thread.currentThread</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+
+            import java.util.concurrent.ThreadLocalRandom;
+            import static java.lang.System.out;
+
+            public class TaskLocalRandom implements Runnable {
+
+                @Override
+                public void run() {
+                    StringBuilder sb = new StringBuilder(40);
+                    sb.append(Thread.currentThread().getName()).append(" with priority ")
+                      .append(Thread.currentThread().getPriority())
+                      .append(": %d %n");
+                    String str = sb.toString();
+                    for (int i = 0; i < 10; i++)
+                        out.printf(
+                                str,
+                                ThreadLocalRandom.current().nextInt(10) );
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>#2179 - False positive (Law of Demeter): Static property access should treat class-level property as global object, not dot-accessed property. #2179</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+
+            import java.util.concurrent.TimeUnit;
+            import static java.util.concurrent.TimeUnit.SECONDS;
+
+            public enum Test {
+                ;
+
+                public static void main(String[] args) {
+                    try {
+
+                        TimeUnit.MILLISECONDS.sleep(300);
+                        SECONDS.sleep(2);
+
+
+                    } catch (InterruptedException ie) {
+                        System.err.println(ie);
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>#2182 - access to field of other instance in this class</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import java.time.LocalDate;
+
+            public class Person {
+                LocalDate birthday;
+
+                public static int compareByAge(Person a, Person b) {
+                    return a.birthday.compareTo(b.birthday);
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>False positive with lambda expression #1014</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import java.util.function.Consumer;
+
+            public class SimpleClass{
+                public void simpleMethod() {
+                    anotherSimpleMethod(System.out::println, 10);
+                }
+
+                public <T> void anotherSimpleMethod(Consumer<T> consumer, T value) {
+                    consumer.accept(value);
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>False positive with fields assigned to local vars #2188</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Access to field `street` on foreign value `local` (degree 2)</message>
+        </expected-messages>
+        <code><![CDATA[
+
+            public class AddressUsingCopyOnWrite {
+                private volatile AddressValue addressValue;
+
+                public AddressUsingCopyOnWrite(String street, String city, String phone) {
+                    this.addressValue = new AddressValue(street, city, phone);
+                }
+
+
+                // thread-safe method
+                @Override
+                public String toString() {
+                    AddressValue local = addressValue;
+                    return "street=" + local.street + ",city=" + local.getCity()
+                            + ",phoneNumber=" + local.getPhoneNumber();
+                }
+
+                static class AddressValue {
+                    String street;
+                    String getStreet() {}
+                    String getCity() {}
+                    String getPhoneNumber() {}
+                }
+
             }
             ]]></code>
     </test-code>

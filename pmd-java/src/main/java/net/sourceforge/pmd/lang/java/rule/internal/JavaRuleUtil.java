@@ -16,6 +16,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -833,6 +834,28 @@ public final class JavaRuleUtil {
             return !Modifier.isStatic(((JFieldSymbol) symbol).getModifiers());
         } else if (usage instanceof ASTFieldAccess) {
             return isUnqualifiedThisOrSuper(((ASTFieldAccess) usage).getQualifier());
+        }
+        return false;
+    }
+
+    /**
+     * Returns true if the expression is a reference to a field declared
+     * in this class (not a superclass), on any instance (not just `this`).
+     */
+    public static boolean isRefToFieldOfThisClass(ASTExpression usage) {
+        if (!(usage instanceof ASTNamedReferenceExpr)) {
+            return false;
+        }
+        JVariableSymbol symbol = ((ASTNamedReferenceExpr) usage).getReferencedSym();
+        if (!(symbol instanceof JFieldSymbol)) {
+            return false;
+        }
+
+        if (usage instanceof ASTVariableAccess) {
+            return !Modifier.isStatic(((JFieldSymbol) symbol).getModifiers());
+        } else if (usage instanceof ASTFieldAccess) {
+            return Objects.equals(((JFieldSymbol) symbol).getEnclosingClass(),
+                                  usage.getEnclosingType().getSymbol());
         }
         return false;
     }
