@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.util;
 
+import static net.sourceforge.pmd.util.StringUtil.getCommonPrefix;
+import static net.sourceforge.pmd.util.StringUtil.getCommonSuffix;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
@@ -88,5 +90,35 @@ public class StringUtilTest {
         assertThat(StringUtil.elide("abc", 2, "."), equalTo("a."));
         assertThat(StringUtil.elide("abc", 2, ".."), equalTo(".."));
         assertThat(StringUtil.elide("abc", 3, ".."), equalTo("abc"));
+    }
+
+    @Test
+    public void testCommonSuffix() {
+        assertThat(getCommonSuffix("a", "a"), equalTo("a"));
+        assertThat(getCommonSuffix("a", ""), equalTo(""));
+        assertThat(getCommonSuffix("", "a"), equalTo(""));
+        assertThat(getCommonSuffix("abc", ""), equalTo(""));
+        assertThat(getCommonSuffix("", "abc"), equalTo(""));
+        assertThat(getCommonSuffix("abc", "ab"), equalTo(""));
+        assertThat(getCommonSuffix("abc", "abc"), equalTo("abc"));
+        assertThat(getCommonSuffix("abc", "bc"), equalTo("bc"));
+        assertThat(getCommonSuffix("bc", "abc"), equalTo("bc"));
+        assertThat(getCommonSuffix("abc", "xbc"), equalTo("bc"));
+        assertThat(getCommonSuffix("xbc", "abc"), equalTo("bc"));
+    }
+
+    @Test
+    public void testCommonPrefix() {
+        assertThat(getCommonPrefix("a", "a"), equalTo("a"));
+        assertThat(getCommonPrefix("a", ""), equalTo(""));
+        assertThat(getCommonPrefix("", "a"), equalTo(""));
+        assertThat(getCommonPrefix("abc", ""), equalTo(""));
+        assertThat(getCommonPrefix("", "abc"), equalTo(""));
+        assertThat(getCommonPrefix("abc", "ab"), equalTo("ab"));
+        assertThat(getCommonPrefix("abc", "abc"), equalTo("abc"));
+        assertThat(getCommonPrefix("abc", "bc"), equalTo(""));
+        assertThat(getCommonPrefix("bc", "abc"), equalTo(""));
+        assertThat(getCommonPrefix("abc", "abcx"), equalTo("abc"));
+        assertThat(getCommonPrefix("abcx", "abc"), equalTo("abc"));
     }
 }
