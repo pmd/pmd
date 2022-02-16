@@ -87,12 +87,12 @@
         <kotlin.compiler.jvmTarget>${maven.compiler.test.target}</kotlin.compiler.jvmTarget>
         <kotlin.version>1.4.10</kotlin.version>
         <kotest.version>4.3.1</kotest.version>
-        <dokka.version>1.4.30</dokka.version>
+        <dokka.version>1.4.32</dokka.version>
 
 
         <javacc.version>5.0</javacc.version>
         <surefire.version>3.0.0-M5</surefire.version>
-        <checkstyle.version>8.42</checkstyle.version>
+        <checkstyle.version>9.3</checkstyle.version>
         <checkstyle.plugin.version>3.1.2</checkstyle.plugin.version>
         <pmd.plugin.version>3.15.0</pmd.plugin.version>
         <ant.version>1.10.12</ant.version>
@@ -938,19 +938,6 @@
             <snapshots>
                 <enabled>true</enabled>
             </snapshots>
-        </pluginRepository>
-        <pluginRepository>
-            <!-- needed for dokka-maven-plugin in pmd-lang-test -->
-            <id>jcenter</id>
-            <name>JCenter</name>
-            <releases>
-                <enabled>true</enabled>
-                <updatePolicy>never</updatePolicy>
-            </releases>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-            <url>https://jcenter.bintray.com/</url>
         </pluginRepository>
     </pluginRepositories>
 

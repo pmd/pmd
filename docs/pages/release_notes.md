@@ -21,6 +21,9 @@ This is a {{ site.pmd.release_type }} release.
 
 ### Fixed Issues
 
+*   misc
+    *   [#3759](https://github.com/pmd/pmd/issues/3759): \[lang-test] Upgrade dokka maven plugin to 1.4.32
+
 ### API Changes
 
 #### Deprecated API
@@ -50,6 +53,8 @@ done automatically by `RuleSet#apply` and such. Creating and configuring a
 will change drastically in PMD 7.
 
 ### External Contributions
+
+*   [#3767](https://github.com/pmd/pmd/pull/3767): \[core] Update GUI.java - [Vyom Yadav](https://github.com/Vyom-Yadav)
 
 {% endtocmaker %}
 
