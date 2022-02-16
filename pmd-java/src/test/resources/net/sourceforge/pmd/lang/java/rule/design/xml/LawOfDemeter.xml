@@ -389,30 +389,49 @@ class BarBuilder {
 
     <test-code>
         <description>Method chain is reset when someone produces trusted data</description>
-        <expected-problems>0</expected-problems>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <expected-messages>
+            <message>Call to `getB` on foreign value `this.getA()` (degree 2)</message>
+        </expected-messages>
         <code><![CDATA[
 public class Test {
     A getA() {}
     public void bar() {
-
-        // Inner Builder pattern chained
-        final Bar bar = Bar.newBuilder()
-                .withFoo("foo")
-                .build();
+        this.getA().foo("").getA(); // fine
+        this.getA().getB().getA().getB().getA(); // not ok
+        //          ^^^^ only report this
     }
 }
 interface A {
     B getB();
-    String foo();
+    B foo(String s);
 }
-class Bar {
-    static BarBuilder newBuilder() { }
-}
-class BarBuilder {
-    BarBuilder withFoo(String s) {}
-    Bar build() {}
-}
+interface B { A getA(); }
         ]]></code>
+    </test-code>
+    <test-code>
+        <description>Test trust radius</description>
+        <rule-property name="trustRadius">2</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <expected-messages>
+            <message>Call to `getA` on foreign value `this.getA().getB()` (degree 3)</message>
+        </expected-messages>
+        <code><![CDATA[
+            public class Test {
+                A getA() {}
+                public void bar() {
+                    this.getA().getB().getA().getB().getA(); // not ok
+                    //                 ^^^^ only report this
+                }
+            }
+            interface A {
+                B getB();
+                B foo(String s);
+            }
+            interface B { A getA(); }
+            ]]></code>
     </test-code>
 
     <test-code>

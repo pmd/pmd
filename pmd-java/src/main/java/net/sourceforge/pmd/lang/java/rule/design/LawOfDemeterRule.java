@@ -9,6 +9,7 @@ import static net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil.isCallOnT
 import static net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil.isGetterCall;
 import static net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil.isRefToFieldOfThisInstance;
 import static net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil.isUnqualifiedThisOrSuper;
+import static net.sourceforge.pmd.properties.constraints.NumericConstraints.positive;
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 
 import java.util.Collection;
@@ -70,9 +71,17 @@ public class LawOfDemeterRule extends AbstractJavaRulechainRule {
                        .defaultValue(listOf("java.lang.System"))
                        .build();
 
+    private static final PropertyDescriptor<Integer> TRUST_RADIUS =
+        PropertyFactory.intProperty("trustRadius")
+                       .desc("TODO")
+                       .require(positive())
+                       .defaultValue(1)
+                       .build();
+
     public LawOfDemeterRule() {
         super(ASTMethodCall.class, ASTFieldAccess.class);
         definePropertyDescriptor(ALLOWED_STATIC_CONTAINERS);
+        definePropertyDescriptor(TRUST_RADIUS);
     }
 
     /**
@@ -92,7 +101,7 @@ public class LawOfDemeterRule extends AbstractJavaRulechainRule {
     @Override
     public Object visit(ASTFieldAccess node, Object data) {
         int degree = foreignDegree(node);
-        if (isTooHighDegree(degree)) {
+        if (isReportedDegree(degree)) {
             addViolationWithMessage(
                 data, node,
                 "Access to field `{0}` on foreign value `{1}` (degree {2})",
@@ -106,8 +115,12 @@ public class LawOfDemeterRule extends AbstractJavaRulechainRule {
         return null;
     }
 
-    private boolean isTooHighDegree(int degree) {
-        return degree > 1; // todo make that configurable
+    /**
+     * Only report the first occurrences of a breach of trust. Those are
+     * the ones that need to be fixed.
+     */
+    private boolean isReportedDegree(int degree) {
+        return degree == getProperty(TRUST_RADIUS) + 1;
     }
 
     @Override
@@ -115,18 +128,15 @@ public class LawOfDemeterRule extends AbstractJavaRulechainRule {
         ASTExpression qualifier = node.getQualifier();
         if (qualifier != null) {
             int degree = foreignDegree(node);
-            if (isTooHighDegree(degree)) {
-                // qualifier will be reported
-                if (!isTooHighDegree(foreignDegree(node.getQualifier()))) {
-                    addViolationWithMessage(
-                        data, node,
-                        "Call to `{0}` on foreign value `{1}` (degree {2})",
-                        new Object[] {
-                            node.getMethodName(),
-                            PrettyPrintingUtil.prettyPrint(node.getQualifier()),
-                            degree
-                        });
-                }
+            if (isReportedDegree(degree)) {
+                addViolationWithMessage(
+                    data, node,
+                    "Call to `{0}` on foreign value `{1}` (degree {2})",
+                    new Object[] {
+                        node.getMethodName(),
+                        PrettyPrintingUtil.prettyPrint(node.getQualifier()),
+                        degree
+                    });
             }
         }
         return null;
