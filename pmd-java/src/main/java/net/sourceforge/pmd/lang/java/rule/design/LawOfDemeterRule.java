@@ -232,7 +232,7 @@ public class LawOfDemeterRule extends AbstractJavaRulechainRule {
 
     private boolean isPureDataContainer(JTypeMirror type) {
         JTypeDeclSymbol symbol = type.getSymbol();
-        if (symbol instanceof JClassSymbol) {
+        if (symbol instanceof JClassSymbol) { // NOPMD
             return "java.util".equals(symbol.getPackageName()) // collection, map, iterator, etc
                 || TypeTestUtil.isA(Stream.class, type)
                 || TypeTestUtil.isA(Class.class, type)
@@ -243,7 +243,7 @@ public class LawOfDemeterRule extends AbstractJavaRulechainRule {
 
     // a dangerous getter is one that may be used later to call another getter
     private boolean isDangerousGetter(ASTMethodCall expr) {
-        if (JavaRuleUtil.isGetterCall(expr)) {
+        if (JavaRuleUtil.isGetterCall(expr)) { // NOPMD
             return expr.getParent() instanceof QualifiableExpression
                 || expr.getParent() instanceof ASTVariableDeclarator;
         }
