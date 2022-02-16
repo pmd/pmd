@@ -109,9 +109,12 @@ public class LawOfDemeterRule extends AbstractJavaRulechainRule {
         return typeEndsWith(qualifier, "Builder");
     }
 
-    private boolean isFactoryMethod(ASTExpression expr) {
-        return typeEndsWith(expr, "Factory")
-            || nameEndsWith(expr);
+    private boolean isFactoryMethod(ASTMethodCall expr) {
+        if (expr.getQualifier() != null) {
+            return typeEndsWith(expr.getQualifier(), "Factory")
+                || nameEndsWith(expr.getQualifier());
+        }
+        return false;
     }
 
     private boolean nameEndsWith(ASTExpression expr) {
@@ -212,12 +215,19 @@ public class LawOfDemeterRule extends AbstractJavaRulechainRule {
         return foreignDegree(expr.getQualifier());
     }
 
+    /**
+     * Method that produces trusted data.
+     */
     private boolean isLocalMethod(ASTMethodCall expr) {
         // static methods are taken to be construction methods.
         return expr.getMethodType().isStatic()
-            || JavaRuleUtil.isCallOnThisInstance(expr);
+            || JavaRuleUtil.isCallOnThisInstance(expr)
+            || isFactoryMethod(expr);
     }
 
+    /**
+     * Method that produces untrusted data.
+     */
     private boolean increasesDegree(ASTMethodCall expr) {
         return isGetterLike(expr)
             && !isNeverForeignMethod(expr);
@@ -229,9 +239,7 @@ public class LawOfDemeterRule extends AbstractJavaRulechainRule {
     }
 
     /**
-     * Returns whether the infection can pass through the expression.
-     * The expression is not directly foreign. These expressions should
-     * be known useful on some types and not useful on others.
+     * Method that is as trusted as its receiver.
      */
     private boolean isNeverForeignMethod(@NonNull ASTMethodCall expr) {
         return ITERATOR_NEXT.matchesCall(expr)

@@ -322,8 +322,7 @@ public class Test {
         ]]></code>
     </test-code>
 
-    <test-code regressionTest="false">
-        <!-- todo to me this is not a false positive -->
+    <test-code>
         <description>#1245 False Positive for Law of Demeter</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
