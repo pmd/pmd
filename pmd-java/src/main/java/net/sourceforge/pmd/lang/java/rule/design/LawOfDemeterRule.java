@@ -14,6 +14,7 @@ import java.util.Map;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.java.ast.ASTArrayAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
@@ -66,6 +67,11 @@ public class LawOfDemeterRule extends AbstractJavaRulechainRule {
     }
 
     private final Map<ASTExpression, Integer> degreeCache = new LinkedHashMap<>();
+
+    @Override
+    public void end(RuleContext ctx) {
+        degreeCache.clear();
+    }
 
     @Override
     public Object visit(ASTFieldAccess node, Object data) {
