@@ -819,7 +819,6 @@ public final class JavaRuleUtil {
      * Returns true if the expression has the form `field`, or `this.field`,
      * where `field` is a field declared in the enclosing class.
      * Assumes we're not in a static context.
-     * todo this should probs consider super.field and superclass
      */
     public static boolean isRefToFieldOfThisInstance(ASTExpression usage) {
         if (!(usage instanceof ASTNamedReferenceExpr)) {
