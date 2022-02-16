@@ -110,16 +110,23 @@ public class LawOfDemeterRule extends AbstractJavaRulechainRule {
     }
 
     private boolean isFactoryMethod(ASTMethodCall expr) {
-        if (expr.getQualifier() != null) {
-            return typeEndsWith(expr.getQualifier(), "Factory")
-                || nameEndsWith(expr.getQualifier());
+        ASTExpression qualifier = expr.getQualifier();
+        if (qualifier != null) { // NOPMD SimplifyBooleanReturns https://github.com/pmd/pmd/issues/3786
+            return typeEndsWith(qualifier, "Factory")
+                || nameEndsWith(qualifier, "Factory")
+                || nameIs(qualifier, "factory");
         }
         return false;
     }
 
-    private boolean nameEndsWith(ASTExpression expr) {
+    private boolean nameEndsWith(ASTExpression expr, String suffix) {
         return expr instanceof ASTNamedReferenceExpr
-            && ((ASTNamedReferenceExpr) expr).getName().endsWith("Factory");
+            && ((ASTNamedReferenceExpr) expr).getName().endsWith(suffix);
+    }
+
+    private boolean nameIs(ASTExpression expr, String name) {
+        return expr instanceof ASTNamedReferenceExpr
+            && ((ASTNamedReferenceExpr) expr).getName().equals(name);
     }
 
     private boolean typeEndsWith(ASTExpression qualifier, String suffix) {
