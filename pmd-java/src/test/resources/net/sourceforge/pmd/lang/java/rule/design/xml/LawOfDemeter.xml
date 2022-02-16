@@ -949,7 +949,7 @@ public final class ControlEvent {
             class Bar {
 
                 public String toString(Foo foo) {
-                    var a = foo.stream()
+                    Foo a = foo.stream()
                                .filter(a -> true)
                                .filter(a -> true)
                                .filter(a -> true)
@@ -958,10 +958,11 @@ public final class ControlEvent {
                     a.getSomething().foo();
                 }
 
+                void foo() {}
             }
 
             public class Foo {
-                List<Foo> getSomething() { }
+                Bar getSomething() { }
                 Stream<Foo> stream() { }
             }
             ]]></code>
@@ -1007,6 +1008,19 @@ public final class ControlEvent {
 
             public interface Node {
                 RootNode getRoot();
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Ignore class</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            class Foo {
+                void foo(Foo f) {}
+
+                public String toString(JavaNode foo) {
+                    int p = foo.getClass().getModifiers();
+                }
             }
             ]]></code>
     </test-code>

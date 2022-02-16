@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.java.types;
 
 import java.lang.reflect.Modifier;
+import java.util.Objects;
 
 import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -85,10 +86,10 @@ public final class TypeTestUtil {
 
         JTypeMirror otherType = TypesFromReflection.fromReflect(clazz, type.getTypeSystem());
 
-        if (otherType == null || TypeOps.isUnresolved(type) || otherType.isPrimitive()) {
+        if (otherType == null || TypeOps.isUnresolved(type) || hasNoSubtypes(clazz)) {
             // We'll return true if the types have equal symbols (same binary name),
             // but we ignore subtyping.
-            return isExactlyA(clazz, type.getSymbol());
+            return otherType != null && Objects.equals(otherType.getSymbol(), type.getSymbol());
         }
 
         return isA(otherType, type);

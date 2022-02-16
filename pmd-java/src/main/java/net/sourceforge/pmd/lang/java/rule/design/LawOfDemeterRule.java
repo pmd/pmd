@@ -17,15 +17,14 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.internal.util.AssertionUtil;
-import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTArrayAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTExpressionStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTForeachStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.ast.QualifiableExpression;
 import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
@@ -198,6 +197,7 @@ public class LawOfDemeterRule extends AbstractJavaRulechainRule {
             || isPureData(expr.getTypeMirror())) {
             return Foreignity.NOT_FOREIGN;
         } else if (isPureDataContainer(expr.getMethodType().getDeclaringType())
+            || isPureDataContainer(expr.getTypeMirror())
             || isTransformationMethod(expr)) {
             return Foreignity.AS_FOREIGN_AS_QUALIFIER;
         }
@@ -233,8 +233,9 @@ public class LawOfDemeterRule extends AbstractJavaRulechainRule {
     private boolean isPureDataContainer(JTypeMirror type) {
         JTypeDeclSymbol symbol = type.getSymbol();
         if (symbol instanceof JClassSymbol) {
-            return "java.util".equals(symbol.getPackageName()) // collection map, etc
+            return "java.util".equals(symbol.getPackageName()) // collection, map, iterator, etc
                 || TypeTestUtil.isA(Stream.class, type)
+                || TypeTestUtil.isA(Class.class, type)
                 || type.isArray();
         }
         return false;
@@ -242,9 +243,11 @@ public class LawOfDemeterRule extends AbstractJavaRulechainRule {
 
     // a dangerous getter is one that may be used later to call another getter
     private boolean isDangerousGetter(ASTMethodCall expr) {
-        return JavaRuleUtil.isGetterCall(expr)
-            && !(expr.getParent() instanceof ASTExpressionStatement)
-            && !(expr.getParent() instanceof ASTArgumentList);
+        if (JavaRuleUtil.isGetterCall(expr)) {
+            return expr.getParent() instanceof QualifiableExpression
+                || expr.getParent() instanceof ASTVariableDeclarator;
+        }
+        return false;
     }
 
 
