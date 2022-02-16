@@ -47,7 +47,7 @@ Note that the message is set from the XML rule declaration, so this is only rele
 if you instantiate rules manually.
 
 {% jdoc core::RuleContext %} now requires setting the current rule before calling
-{% jdoc core::lang.rule.Rule#apply(java.util.List, core::RuleContext)}. This is
+{% jdoc core::Rule#apply(java.util.List, core::RuleContext) %}. This is
 done automatically by `RuleSet#apply` and such. Creating and configuring a
 `RuleContext` manually is strongly advised against, as the lifecycle of `RuleContext`
 will change drastically in PMD 7.
