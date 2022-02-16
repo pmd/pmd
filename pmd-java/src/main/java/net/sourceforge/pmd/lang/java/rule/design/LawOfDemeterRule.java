@@ -221,6 +221,7 @@ public class LawOfDemeterRule extends AbstractJavaRulechainRule {
 
     private boolean isPureDataContainer(JTypeMirror type) {
         return TypeTestUtil.isA(Collection.class, type)
+            || TypeTestUtil.isA(Map.class, type)
             || type.isArray();
     }
 

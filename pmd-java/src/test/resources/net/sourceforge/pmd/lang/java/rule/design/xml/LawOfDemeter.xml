@@ -695,4 +695,43 @@ public final class ControlEvent {
             }
             ]]></code>
     </test-code>
+    <test-code>
+        <description>FP with enum</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import java.nio.charset.StandardCharsets;
+
+            public final class FileText {
+
+                void FileText(String fileToProcess, String charset) {
+                    final FileText fileText = FileText(fileToProcess,
+                                                       StandardCharsets.UTF_8.name());
+
+                }
+
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>FP with map iteration</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import java.util.*;
+            import java.text.MessageFormat;
+
+            public final class FileText {
+
+                void foo(Map<String, String> messages, String messageKey) {
+                    String checkMessage;
+                    for (Map.Entry<String, String> entry : messages.entrySet()) {
+                        if (messageKey.equals(entry.getKey())) {
+                            final MessageFormat formatter = new MessageFormat(entry.getValue(), Locale.ROOT);
+                            checkMessage = formatter.format(arguments);
+                            break;
+                        }
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
 </test-data>
