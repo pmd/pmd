@@ -898,4 +898,72 @@ public final class ControlEvent {
             }
             ]]></code>
     </test-code>
+    <test-code>
+        <description>Not a getter if it has arguments</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class AddressUsingCopyOnWrite {
+
+                AddressUsingCopyOnWrite getSomething(String a) { }
+
+                public String toString() {
+                    getSomething("")
+                            .getSomething("")
+                            .getSomething("")
+                            .getSomething("")
+                            .getSomething("")
+                            .getSomething("");
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>FP with stream</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class AddressUsingCopyOnWrite {
+
+                AddressUsingCopyOnWrite getSomething(String a) { }
+
+                public String toString(java.util.List<String> foo) {
+                    var a = foo.stream()
+                       .filter(a -> true)
+                       .filter(a -> true)
+                       .filter(a -> true)
+                       .filter(a -> true)
+                       .findFirst().get();
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Foreign stream</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Call to `getSomething` on foreign value `a` (degree 2)</message>
+        </expected-messages>
+        <code><![CDATA[
+            import java.util.*;
+            import java.util.stream.Stream;
+
+            class Bar {
+
+                public String toString(Foo foo) {
+                    var a = foo.stream()
+                               .filter(a -> true)
+                               .filter(a -> true)
+                               .filter(a -> true)
+                               .filter(a -> true)
+                               .findFirst().get();
+                    a.getSomething().foo();
+                }
+
+            }
+
+            public class Foo {
+                List<Foo> getSomething() { }
+                Stream<Foo> stream() { }
+            }
+            ]]></code>
+    </test-code>
 </test-data>

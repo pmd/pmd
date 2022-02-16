@@ -6,13 +6,13 @@ package net.sourceforge.pmd.lang.java.rule.design;
 
 import static net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil.isArrayLengthFieldAccess;
 import static net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil.isCallOnThisInstance;
-import static net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil.isGetterCall;
 import static net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil.isRefToFieldOfThisClass;
 import static net.sourceforge.pmd.properties.constraints.NumericConstraints.positive;
 
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -35,6 +35,8 @@ import net.sourceforge.pmd.lang.java.rule.internal.DataflowPass.AssignmentEntry;
 import net.sourceforge.pmd.lang.java.rule.internal.DataflowPass.DataflowResult;
 import net.sourceforge.pmd.lang.java.rule.internal.DataflowPass.ReachingDefinitionSet;
 import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
+import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.types.InvocationMatcher;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
@@ -194,14 +196,12 @@ public class LawOfDemeterRule extends AbstractJavaRulechainRule {
             || isFactoryMethod(expr)
             || isBuilderPattern(expr.getQualifier())
             || !isGetterLike(expr) // action methods are not dangerous
-            || isNeverForeignMethod(expr)
-            || isPureData(expr.getTypeMirror())
-            || isPureDataContainer(expr.getMethodType().getDeclaringType())) {
+            || isPureData(expr.getTypeMirror())) {
             return Foreignity.NOT_FOREIGN;
-        } else if (isGetterLike(expr)) {
-            return Foreignity.MORE_FOREIGN_THAN_QUALIFIER;
+        } else if (isPureDataContainer(expr.getMethodType().getDeclaringType())) {
+            return Foreignity.AS_FOREIGN_AS_QUALIFIER;
         }
-        return Foreignity.AS_FOREIGN_AS_QUALIFIER;
+        return Foreignity.MORE_FOREIGN_THAN_QUALIFIER;
     }
 
 
@@ -220,16 +220,18 @@ public class LawOfDemeterRule extends AbstractJavaRulechainRule {
     }
 
     private boolean isPureDataContainer(JTypeMirror type) {
-        return TypeTestUtil.isA(Collection.class, type)
-            || TypeTestUtil.isA(Map.class, type)
-            || type.isArray();
+        JTypeDeclSymbol symbol = type.getSymbol();
+        if (symbol instanceof JClassSymbol) {
+            return symbol.getPackageName().equals("java.util") // collection map, etc
+                || TypeTestUtil.isA(Stream.class, type)
+                || type.isArray();
+        }
+        return false;
     }
 
     private boolean isGetterLike(ASTMethodCall expr) {
-        if (isGetterCall(expr) || expr.getArguments().isEmpty()) { // NOPMD SimplifyBooleanReturns
-            return !(expr.getParent() instanceof ASTExpressionStatement); // result is used
-        }
-        return false;
+        return JavaRuleUtil.isGetterCall(expr)
+            && !(expr.getParent() instanceof ASTExpressionStatement); // result is used
     }
 
     /**

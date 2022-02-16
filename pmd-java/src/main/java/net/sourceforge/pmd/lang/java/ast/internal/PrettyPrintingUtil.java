@@ -245,6 +245,11 @@ public final class PrettyPrintingUtil {
         private static final int MAX_ARG_LENGTH = 20;
 
         @Override
+        public Void visitJavaNode(JavaNode node, StringBuilder data) {
+            return null; // don't recurse
+        }
+
+        @Override
         public Void visit(ASTTypeExpression node, StringBuilder data) {
             node.getTypeNode().acceptVisitor(this, data);
             return null;
