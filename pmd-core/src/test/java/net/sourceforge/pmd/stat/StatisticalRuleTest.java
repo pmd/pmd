@@ -860,6 +860,7 @@ public class StatisticalRuleTest {
         ctx.setReport(report);
         ctx.setSourceCodeFile(new File(testName));
         ctx.setLanguageVersion(LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getDefaultVersion());
+        ctx.setCurrentRule(rule);
 
         rule.apply(list, ctx);
 
