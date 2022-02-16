@@ -966,4 +966,48 @@ public final class ControlEvent {
             }
             ]]></code>
     </test-code>
+    <test-code>
+        <description>Can pass property of object to other method</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+
+            class Bar {
+
+                void foo(String f) {}
+
+                public String toString(Foo foo) {
+                    foo(foo.getSomething());
+                }
+
+            }
+
+            public class Foo {
+                String getSomething() { }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Can get properties if their type is related</description>
+        <!-- If the types are related, this means we're not crossing a boundary of abstraction. -->
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+
+            class Foo {
+
+                void foo(Foo f) {}
+
+                public String toString(JavaNode foo) {
+                    Node p = foo.getRoot();
+                }
+
+            }
+
+            interface JavaNode extends Node {}
+            interface RootNode extends Node {}
+
+            public interface Node {
+                RootNode getRoot();
+            }
+            ]]></code>
+    </test-code>
 </test-data>

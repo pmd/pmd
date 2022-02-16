@@ -1923,6 +1923,28 @@ public final class TypeOps {
      *
      * @throws NullPointerException if the parameter is null
      */
+    public static boolean areRelated(@NonNull JTypeMirror t, JTypeMirror s) {
+        if (t.isPrimitive() || s.isPrimitive()) {
+            return t.equals(s);
+        }
+        if (t.equals(s)) {
+            return true;
+        }
+        // todo inefficient
+        // maybe they have a common supertype
+        Set<JTypeMirror> tSupertypes = new HashSet<>(t.getSuperTypeSet());
+        tSupertypes.retainAll(s.getSuperTypeSet());
+        return !tSupertypes.equals(Collections.singleton(t.getTypeSystem().OBJECT));
+    }
+
+    /**
+     * Returns true if the type is {@link TypeSystem#UNKNOWN},
+     * {@link TypeSystem#ERROR}, or its symbol is unresolved.
+     *
+     * @param t Non-null type
+     *
+     * @throws NullPointerException if the parameter is null
+     */
     public static boolean isUnresolved(@NonNull JTypeMirror t) {
         return isSpecialUnresolved(t) || hasUnresolvedSymbol(t);
     }

@@ -9,16 +9,15 @@ import static net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil.isCallOnT
 import static net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil.isRefToFieldOfThisClass;
 import static net.sourceforge.pmd.properties.constraints.NumericConstraints.positive;
 
-import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.stream.Stream;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.internal.util.AssertionUtil;
+import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTArrayAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
@@ -37,9 +36,9 @@ import net.sourceforge.pmd.lang.java.rule.internal.DataflowPass.ReachingDefiniti
 import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
-import net.sourceforge.pmd.lang.java.types.InvocationMatcher;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
+import net.sourceforge.pmd.lang.java.types.TypeOps;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
@@ -58,12 +57,12 @@ import net.sourceforge.pmd.properties.PropertyFactory;
  * programs. Software, IEEE, 6(5):38–48, 1989.</li>
  * </ul>
  *
+ * @author Clément Fournier
  * @since 5.0
  *
  */
 public class LawOfDemeterRule extends AbstractJavaRulechainRule {
 
-    private static final InvocationMatcher ITERATOR_NEXT = InvocationMatcher.parse("java.util.Iterator#next()");
 
     private static final PropertyDescriptor<Integer> TRUST_RADIUS =
         PropertyFactory.intProperty("trustRadius")
@@ -195,13 +194,23 @@ public class LawOfDemeterRule extends AbstractJavaRulechainRule {
             || isCallOnThisInstance(expr)
             || isFactoryMethod(expr)
             || isBuilderPattern(expr.getQualifier())
-            || !isGetterLike(expr) // action methods are not dangerous
+            || !isDangerousGetter(expr)
             || isPureData(expr.getTypeMirror())) {
             return Foreignity.NOT_FOREIGN;
-        } else if (isPureDataContainer(expr.getMethodType().getDeclaringType())) {
+        } else if (isPureDataContainer(expr.getMethodType().getDeclaringType())
+            || isTransformationMethod(expr)) {
             return Foreignity.AS_FOREIGN_AS_QUALIFIER;
         }
         return Foreignity.MORE_FOREIGN_THAN_QUALIFIER;
+    }
+
+    private boolean isTransformationMethod(ASTMethodCall expr) {
+        if (expr.getQualifier() == null) {
+            return false;
+        }
+        JTypeMirror qualType = expr.getQualifier().getTypeMirror();
+        JTypeMirror returnType = expr.getTypeMirror();
+        return TypeOps.areRelated(qualType, returnType);
     }
 
 
@@ -222,29 +231,18 @@ public class LawOfDemeterRule extends AbstractJavaRulechainRule {
     private boolean isPureDataContainer(JTypeMirror type) {
         JTypeDeclSymbol symbol = type.getSymbol();
         if (symbol instanceof JClassSymbol) {
-            return symbol.getPackageName().equals("java.util") // collection map, etc
+            return "java.util".equals(symbol.getPackageName()) // collection map, etc
                 || TypeTestUtil.isA(Stream.class, type)
                 || type.isArray();
         }
         return false;
     }
 
-    private boolean isGetterLike(ASTMethodCall expr) {
+    // a dangerous getter is one that may be used later to call another getter
+    private boolean isDangerousGetter(ASTMethodCall expr) {
         return JavaRuleUtil.isGetterCall(expr)
-            && !(expr.getParent() instanceof ASTExpressionStatement); // result is used
-    }
-
-    /**
-     * Method that is as trusted as its receiver.
-     */
-    private boolean isNeverForeignMethod(@NonNull ASTMethodCall expr) {
-        return ITERATOR_NEXT.matchesCall(expr)
-            || TypeTestUtil.isA(Collection.class, expr.getQualifier())
-            || TypeTestUtil.isA(StringBuilder.class, expr.getQualifier())
-            || TypeTestUtil.isA(StringBuffer.class, expr.getQualifier())
-            || TypeTestUtil.isA(String.class, expr.getQualifier())
-            || isBuilderPattern(expr)
-            || isFactoryMethod(expr);
+            && !(expr.getParent() instanceof ASTExpressionStatement)
+            && !(expr.getParent() instanceof ASTArgumentList);
     }
 
 
