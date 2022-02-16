@@ -42,7 +42,6 @@ import net.sourceforge.pmd.lang.java.types.TypeOps;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
-import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * This rule can detect possible violations of the Law of Demeter. The Law of
@@ -211,23 +210,9 @@ public class LawOfDemeterRule extends AbstractJavaRulechainRule {
         }
         JTypeMirror qualType = expr.getQualifier().getTypeMirror();
         JTypeMirror returnType = expr.getTypeMirror();
-        if (qualType.getSymbol() == null ||
-            returnType.getSymbol() == null
-            || returnType.isPrimitive()) {
-            return false;
-        }
-        // optimization: only test if types are related if they have similar names
-        String commonSuffix = StringUtil.getCommonSuffix(qualType.getSymbol().getSimpleName(),
-                                                         returnType.getSymbol().getSimpleName());
-        String commonPrefix = StringUtil.getCommonPrefix(qualType.getSymbol().getSimpleName(),
-                                                         returnType.getSymbol().getSimpleName());
-        if (!commonSuffix.isEmpty()
-            // needs to be a proper camel-case suffix
-            && Character.isUpperCase(commonSuffix.charAt(0))
-            || !commonPrefix.isEmpty()) {
-            return TypeOps.areRelated(qualType, returnType);
-        }
-        return false;
+        // note: there is a possible optimization that only tests
+        // if types are related when their names are similar, look into history.
+        return TypeOps.areRelated(qualType, returnType);
     }
 
 

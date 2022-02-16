@@ -446,49 +446,13 @@ public final class StringUtil {
     public static String elide(String string, int maxOutputLength, String ellipsis) {
         AssertionUtil.requireNonNegative("maxOutputLength", maxOutputLength);
         if (ellipsis.length() > maxOutputLength) {
-            throw new IllegalArgumentException(
-                "Ellipsis too long '" + ellipsis + "', maxOutputLength=" + maxOutputLength);
+            throw new IllegalArgumentException("Ellipsis too long '" + ellipsis + "', maxOutputLength=" + maxOutputLength);
         }
         if (string.length() <= maxOutputLength) {
             return string;
         }
         String truncated = string.substring(0, maxOutputLength - ellipsis.length());
         return truncated + ellipsis;
-    }
-
-    /**
-     * Returns the longest common suffix of both strings.
-     */
-    public static String getCommonSuffix(String s1, String s2) {
-        int j = 0;
-        while (true) {
-            if (j >= s1.length()) {
-                return s1;
-            } else if (j >= s2.length()) {
-                return s2;
-            } else if (s1.charAt(s1.length() - j - 1)
-                != s2.charAt(s2.length() - j - 1)) {
-                return s1.substring(s1.length() - j);
-            }
-            j++;
-        }
-    }
-
-    /**
-     * Returns the longest common prefix of both strings.
-     */
-    public static String getCommonPrefix(String s1, String s2) {
-        int j = 0;
-        while (true) {
-            if (j >= s1.length()) {
-                return s1;
-            } else if (j >= s2.length()) {
-                return s2;
-            } else if (s1.charAt(j) != s2.charAt(j)) {
-                return s1.substring(0, j);
-            }
-            j++;
-        }
     }
 
     /**
