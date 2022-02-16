@@ -8,13 +8,10 @@ import static net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil.isArrayLe
 import static net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil.isCallOnThisInstance;
 import static net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil.isGetterCall;
 import static net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil.isRefToFieldOfThisInstance;
-import static net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil.isUnqualifiedThisOrSuper;
 import static net.sourceforge.pmd.properties.constraints.NumericConstraints.positive;
-import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 
 import java.util.Collection;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -36,7 +33,6 @@ import net.sourceforge.pmd.lang.java.rule.internal.DataflowPass.AssignmentEntry;
 import net.sourceforge.pmd.lang.java.rule.internal.DataflowPass.DataflowResult;
 import net.sourceforge.pmd.lang.java.rule.internal.DataflowPass.ReachingDefinitionSet;
 import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
-import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.types.InvocationMatcher;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
@@ -65,12 +61,6 @@ public class LawOfDemeterRule extends AbstractJavaRulechainRule {
 
     private static final InvocationMatcher ITERATOR_NEXT = InvocationMatcher.parse("java.util.Iterator#next()");
 
-    private static final PropertyDescriptor<List<String>> ALLOWED_STATIC_CONTAINERS =
-        PropertyFactory.stringListProperty("allowedStaticContainers")
-                       .desc("List of binary names of types whose static fields are safe to access everywhere")
-                       .defaultValue(listOf("java.lang.System"))
-                       .build();
-
     private static final PropertyDescriptor<Integer> TRUST_RADIUS =
         PropertyFactory.intProperty("trustRadius")
                        .desc("TODO")
@@ -80,7 +70,6 @@ public class LawOfDemeterRule extends AbstractJavaRulechainRule {
 
     public LawOfDemeterRule() {
         super(ASTMethodCall.class, ASTFieldAccess.class);
-        definePropertyDescriptor(ALLOWED_STATIC_CONTAINERS);
         definePropertyDescriptor(TRUST_RADIUS);
     }
 
@@ -108,7 +97,7 @@ public class LawOfDemeterRule extends AbstractJavaRulechainRule {
                 new Object[] {
                     node.getName(),
                     PrettyPrintingUtil.prettyPrint(node.getQualifier()),
-                    degree
+                    degree,
                 }
             );
         }
@@ -135,7 +124,7 @@ public class LawOfDemeterRule extends AbstractJavaRulechainRule {
                     new Object[] {
                         node.getMethodName(),
                         PrettyPrintingUtil.prettyPrint(node.getQualifier()),
-                        degree
+                        degree,
                     });
             }
         }
@@ -171,22 +160,6 @@ public class LawOfDemeterRule extends AbstractJavaRulechainRule {
             && qualifier.getTypeMirror().getSymbol().getSimpleName().endsWith(suffix);
     }
 
-    private boolean isLocalFieldAccess(ASTFieldAccess access) {
-        return isUnqualifiedThisOrSuper(access) // field of this instance
-            || isAllowedStaticFieldAccess(access);
-    }
-
-    private boolean isAllowedStaticFieldAccess(ASTFieldAccess access) {
-        JFieldSymbol sym = access.getReferencedSym();
-        if (sym == null || !sym.isStatic()) {
-            return false;
-        }
-        // the field is static
-
-        String containerName = sym.getEnclosingClass().getBinaryName();
-        return getProperty(ALLOWED_STATIC_CONTAINERS).contains(containerName);
-    }
-
 
     private int foreignDegree(AssignmentEntry def) {
 
@@ -213,7 +186,7 @@ public class LawOfDemeterRule extends AbstractJavaRulechainRule {
             degreeCache.put(expr, computed);
             return computed;
         } else if (cachedValue == -1) {
-            return 0; // recursion
+            return cachedValue; // recursion
         } else {
             return cachedValue;
         }

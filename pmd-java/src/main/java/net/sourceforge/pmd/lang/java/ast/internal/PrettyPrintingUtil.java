@@ -18,6 +18,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
@@ -241,14 +242,17 @@ public final class PrettyPrintingUtil {
 
     static class ExprPrinter extends JavaVisitorBase<StringBuilder, Void> {
 
+        private static final int MAX_ARG_LENGTH = 20;
+
         @Override
         public Void visit(ASTTypeExpression node, StringBuilder data) {
-            data.append(prettyPrintType(node.getTypeNode()));
+            node.getTypeNode().acceptVisitor(this, data);
             return null;
         }
+
         @Override
         public Void visit(ASTClassLiteral node, StringBuilder data) {
-            data.append(prettyPrintType(node.getTypeNode()));
+            node.getTypeNode().acceptVisitor(this, data);
             data.append(".class");
             return null;
         }
@@ -302,16 +306,35 @@ public final class PrettyPrintingUtil {
         }
 
         @Override
-        public Void visit(ASTMethodCall node, StringBuilder data) {
+        public Void visitType(ASTType node, StringBuilder data) {
+            prettyPrintTypeNode(data, node);
+            return null;
+        }
+
+        @Override
+        public Void visit(ASTMethodCall node, StringBuilder sb) {
             if (node.getQualifier() != null) {
-                node.getQualifier().acceptVisitor(this, data);
-                data.append('.');
+                node.getQualifier().acceptVisitor(this, sb);
+                sb.append('.');
             }
-            data.append(node.getMethodName());
+            sb.append(node.getMethodName());
             if (node.getArguments().isEmpty()) {
-                data.append("()");
+                sb.append("()");
             } else {
-                data.append("(...)");
+                final int argStart = sb.length();
+                sb.append('(');
+                boolean first = true;
+                for (ASTExpression arg : node.getArguments()) {
+                    if (sb.length() - argStart >= MAX_ARG_LENGTH) {
+                        sb.append("...");
+                        break;
+                    } else if (!first) {
+                        sb.append(", ");
+                    }
+                    arg.acceptVisitor(this, sb);
+                    first = false;
+                }
+                sb.append(')');
             }
             return null;
         }
