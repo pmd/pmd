@@ -15,6 +15,7 @@ import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
+import net.sourceforge.pmd.FooRule;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Report.ConfigurationError;
 import net.sourceforge.pmd.Report.ProcessingError;
@@ -90,7 +91,7 @@ public class JsonRendererTest extends AbstractRendererTest {
         Map<Integer, String> suppressedLines = new HashMap<>();
         suppressedLines.put(1, "test");
         rep.suppress(suppressedLines);
-        rep.addRuleViolation(newRuleViolation(1));
+        rep.addRuleViolation(newRuleViolation(1, 1, 1, 1, new FooRule()));
         String actual = ReportTest.render(getRenderer(), rep);
         String expected = readFile("expected-suppressed.json");
         Assert.assertEquals(filter(expected), filter(actual));
