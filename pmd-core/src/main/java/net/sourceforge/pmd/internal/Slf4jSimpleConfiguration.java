@@ -19,7 +19,7 @@ public final class Slf4jSimpleConfiguration {
 
         // Call SimpleLogger.init() by reflection.
         // Alternatively: move the CLI related classes into an own module, add
-        // slf4j-simple as a runtime dependency and create a PmdSlf4jSimpleFriend class in
+        // slf4j-simple as a compile dependency and create a PmdSlf4jSimpleFriend class in
         // the package org.slf4j.simple to gain access to this package-private init method.
         ILoggerFactory loggerFactory = LoggerFactory.getILoggerFactory();
         Class<? extends ILoggerFactory> loggerFactoryClass = loggerFactory.getClass();
