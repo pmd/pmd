@@ -4,8 +4,7 @@
 
 package net.sourceforge.pmd.renderers;
 
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertEquals;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,11 +12,14 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
 import org.apache.commons.io.IOUtils;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.junit.Test;
 
 import net.sourceforge.pmd.FooRule;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.ReportTest;
+import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.RuleViolation;
@@ -80,19 +82,9 @@ public class SarifRendererTest extends AbstractRendererTest {
     @Override
     @Test
     public void testRendererMultiple() throws Exception {
-        // Setup
         Report rep = reportTwoViolations();
-
-        // Exercise
         String actual = ReportTest.render(getRenderer(), rep);
-
-        // Verify that both rules are and rule ids are linked in the results 
-        // Initially was comparing whole files but order of rules rendered can't be guaranteed when the report is being rendered
-        // Refer to pmd-core/src/test/resources/net/sourceforge/pmd/renderers/sarif/expected-multiple.sarif.json to see an example data structure
-        assertThat(filter(actual), containsString("\"ruleId\": \"Foo\""));
-        assertThat(filter(actual), containsString("\"ruleId\": \"Boo\""));
-        assertThat(filter(actual), containsString("\"id\": \"Foo\""));
-        assertThat(filter(actual), containsString("\"id\": \"Boo\""));
+        assertEquals(filter(getExpectedMultiple()), filter(actual));
     }
 
     private Report reportTwoViolations() {
@@ -104,6 +96,44 @@ public class SarifRendererTest extends AbstractRendererTest {
         severeRuleViolation.getRule().setPriority(RulePriority.HIGH);
         report.addRuleViolation(severeRuleViolation);
         return report;
+    }
+
+    @Test
+    public void testRendererMultipleLocations() throws Exception {
+        Report rep = reportThreeViolationsTwoRules();
+        String actual = ReportTest.render(getRenderer(), rep);
+
+        JSONObject json = new JSONObject(actual);
+        JSONArray results = json.getJSONArray("runs").getJSONObject(0).getJSONArray("results");
+        assertEquals(3, results.length());
+        assertEquals(filter(readFile("expected-multiple-locations.sarif.json")), filter(actual));
+    }
+
+    private Report reportThreeViolationsTwoRules() {
+        Rule fooRule = new FooRule();
+        fooRule.setName("Foo");
+        fooRule.setPriority(RulePriority.LOW);
+        Rule booRule = new FooRule();
+        booRule.setName("Boo");
+        booRule.setPriority(RulePriority.HIGH);
+
+        Report report = new Report();
+        report.addRuleViolation(newRuleViolation(1, 1, 1, 10, fooRule));
+        report.addRuleViolation(newRuleViolation(5, 1, 5, 11, fooRule));
+        report.addRuleViolation(newRuleViolation(2, 2, 3, 1, booRule));
+        return report;
+    }
+
+    private RuleViolation newRuleViolation(int beginLine, int beginColumn, int endLine, int endColumn, Rule rule) {
+        DummyNode node = new DummyNode(1);
+        node.testingOnlySetBeginLine(beginLine);
+        node.testingOnlySetBeginColumn(beginColumn);
+        node.testingOnlySetEndLine(endLine);
+        node.testingOnlySetEndColumn(endColumn);
+
+        RuleContext ctx = new RuleContext();
+        ctx.setSourceCodeFile(new File(getSourceCodeFilename()));
+        return new ParametricRuleViolation<Node>(rule, ctx, node, "blah");
     }
 
     private RuleViolation newRuleViolation(int endColumn, String ruleName) {

@@ -4,38 +4,36 @@
 
 package net.sourceforge.pmd.renderers.internal.sarif;
 
-import static net.sourceforge.pmd.renderers.internal.sarif.SarifLog.ArtifactLocation;
-import static net.sourceforge.pmd.renderers.internal.sarif.SarifLog.AssociatedRule;
-import static net.sourceforge.pmd.renderers.internal.sarif.SarifLog.Component;
-import static net.sourceforge.pmd.renderers.internal.sarif.SarifLog.Exception;
-import static net.sourceforge.pmd.renderers.internal.sarif.SarifLog.Invocation;
-import static net.sourceforge.pmd.renderers.internal.sarif.SarifLog.Location;
-import static net.sourceforge.pmd.renderers.internal.sarif.SarifLog.Message;
-import static net.sourceforge.pmd.renderers.internal.sarif.SarifLog.MultiformatMessage;
-import static net.sourceforge.pmd.renderers.internal.sarif.SarifLog.PhysicalLocation;
-import static net.sourceforge.pmd.renderers.internal.sarif.SarifLog.PropertyBag;
-import static net.sourceforge.pmd.renderers.internal.sarif.SarifLog.Region;
-import static net.sourceforge.pmd.renderers.internal.sarif.SarifLog.ReportingDescriptor;
-import static net.sourceforge.pmd.renderers.internal.sarif.SarifLog.Result;
-import static net.sourceforge.pmd.renderers.internal.sarif.SarifLog.Run;
-import static net.sourceforge.pmd.renderers.internal.sarif.SarifLog.Tool;
-import static net.sourceforge.pmd.renderers.internal.sarif.SarifLog.ToolConfigurationNotification;
-import static net.sourceforge.pmd.renderers.internal.sarif.SarifLog.ToolExecutionNotification;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 
 import net.sourceforge.pmd.PMDVersion;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.renderers.internal.sarif.SarifLog.ArtifactLocation;
+import net.sourceforge.pmd.renderers.internal.sarif.SarifLog.AssociatedRule;
+import net.sourceforge.pmd.renderers.internal.sarif.SarifLog.Component;
+import net.sourceforge.pmd.renderers.internal.sarif.SarifLog.Exception;
+import net.sourceforge.pmd.renderers.internal.sarif.SarifLog.Invocation;
+import net.sourceforge.pmd.renderers.internal.sarif.SarifLog.Location;
+import net.sourceforge.pmd.renderers.internal.sarif.SarifLog.Message;
+import net.sourceforge.pmd.renderers.internal.sarif.SarifLog.MultiformatMessage;
+import net.sourceforge.pmd.renderers.internal.sarif.SarifLog.PhysicalLocation;
+import net.sourceforge.pmd.renderers.internal.sarif.SarifLog.PropertyBag;
+import net.sourceforge.pmd.renderers.internal.sarif.SarifLog.Region;
+import net.sourceforge.pmd.renderers.internal.sarif.SarifLog.ReportingDescriptor;
+import net.sourceforge.pmd.renderers.internal.sarif.SarifLog.Result;
+import net.sourceforge.pmd.renderers.internal.sarif.SarifLog.Run;
+import net.sourceforge.pmd.renderers.internal.sarif.SarifLog.Tool;
+import net.sourceforge.pmd.renderers.internal.sarif.SarifLog.ToolConfigurationNotification;
+import net.sourceforge.pmd.renderers.internal.sarif.SarifLog.ToolExecutionNotification;
 
 public class SarifLogBuilder {
-    private final Map<ReportingDescriptor, List<Location>> locationsByRule = new HashMap<>();
+    private final List<ReportingDescriptor> rules = new ArrayList<>();
+    private final List<Result> results = new ArrayList<>();
     private final List<ToolConfigurationNotification> toolConfigurationNotifications = new ArrayList<>();
     private final List<ToolExecutionNotification> toolExecutionNotifications = new ArrayList<>();
 
@@ -45,11 +43,15 @@ public class SarifLogBuilder {
 
     public SarifLogBuilder add(RuleViolation violation) {
         final ReportingDescriptor ruleDescriptor = getReportingDescriptor(violation);
-        final Location location = getRuleViolationLocation(violation);
+        int ruleIndex = rules.indexOf(ruleDescriptor);
+        if (ruleIndex == -1) {
+            rules.add(ruleDescriptor);
+            ruleIndex = rules.size() - 1;
+        }
 
-        final List<Location> ruleLocation = locationsByRule.containsKey(ruleDescriptor) ? locationsByRule.get(ruleDescriptor) : new ArrayList<Location>();
-        ruleLocation.add(location);
-        locationsByRule.put(ruleDescriptor, ruleLocation);
+        final Location location = getRuleViolationLocation(violation);
+        final Result result = resultFrom(ruleDescriptor, ruleIndex, location);
+        results.add(result);
 
         return this;
     }
@@ -105,15 +107,6 @@ public class SarifLogBuilder {
     }
 
     public SarifLog build() {
-        final List<ReportingDescriptor> rules = new ArrayList<>(locationsByRule.keySet());
-
-        final List<Result> results = new ArrayList<>();
-        for (int i = 0, size = rules.size(); i < size; i++) {
-            ReportingDescriptor rule = rules.get(i);
-            List<Location> locations = locationsByRule.get(rule);
-            results.add(resultFrom(rule, i, locations));
-        }
-
         final Component driver = getDriverComponent().toBuilder().rules(rules).build();
         final Tool tool = Tool.builder().driver(driver).build();
         final Invocation invocation = Invocation.builder()
@@ -136,7 +129,7 @@ public class SarifLogBuilder {
         return toolExecutionNotifications.isEmpty() && toolConfigurationNotifications.isEmpty();
     }
 
-    private Result resultFrom(ReportingDescriptor rule, Integer ruleIndex, List<Location> locations) {
+    private Result resultFrom(ReportingDescriptor rule, Integer ruleIndex, Location location) {
         final Result result = Result.builder()
                 .ruleId(rule.getId())
                 .ruleIndex(ruleIndex)
@@ -147,7 +140,7 @@ public class SarifLogBuilder {
                 .build();
 
         result.setMessage(message);
-        result.setLocations(locations);
+        result.setLocations(Collections.singletonList(location));
 
         return result;
     }
