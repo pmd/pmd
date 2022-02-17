@@ -9,11 +9,11 @@ import net.sourceforge.pmd.lang.LanguageRegistry
 import net.sourceforge.pmd.lang.LanguageVersion
 import net.sourceforge.pmd.lang.LanguageVersionHandler
 import net.sourceforge.pmd.lang.ast.*
+import net.sourceforge.pmd.processor.AbstractPMDProcessor
+import net.sourceforge.pmd.reporting.GlobalAnalysisListener
 import net.sourceforge.pmd.util.datasource.DataSource
 import org.apache.commons.io.IOUtils
-import java.io.File
 import java.io.InputStream
-import java.io.StringReader
 import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 import java.nio.file.Path
@@ -220,6 +220,7 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
         return consume(input)
     }
 
+
     /**
      * Execute the given [rule] on the [code]. Produce a report with the violations
      * found by the rule. The language version of the piece of code is determined by the [params].
@@ -232,21 +233,22 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
     ): Report {
         val config = PMDConfiguration().apply {
             suppressMarker = params.suppressMarker
+            setDefaultLanguageVersion(defaultVersion)
         }
-        val processor = SourceCodeProcessor(config)
-        val ctx = RuleContext()
-        val report = Report()
-        ctx.report = report
-        ctx.sourceCodeFile = File(fileName)
-        ctx.isIgnoreExceptions = false
 
-        val rules = RuleSet.forSingleRule(rule)
-        try {
-            processor.processSourceCode(StringReader(code), RuleSets(rules), ctx)
-        } catch (e: PMDException) {
-            throw e.cause!!
-        }
-        return report
+        val reportBuilder = Report.GlobalReportBuilderListener()
+        val fullListener = GlobalAnalysisListener.tee(listOf(GlobalAnalysisListener.exceptionThrower(), reportBuilder))
+
+
+        AbstractPMDProcessor.runSingleFile(
+            listOf(RuleSet.forSingleRule(rule)),
+            DataSource.forString(code, fileName),
+            fullListener,
+            config
+        )
+
+        fullListener.close()
+        return reportBuilder.result
     }
 
     fun executeRuleOnResource(rule: Rule, resourcePath: String): Report =

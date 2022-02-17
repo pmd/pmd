@@ -7,11 +7,12 @@ package net.sourceforge.pmd.cpd;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.Reader;
 
+import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 
 /**
@@ -54,17 +55,9 @@ public class FileReporterTest {
     }
 
     private String readFile(File file) throws IOException {
-        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
-            StringBuilder buffer = new StringBuilder();
-            String line = reader.readLine();
-            while (line != null) {
-                buffer.append(line);
-                line = reader.readLine();
-                if (line != null) {
-                    buffer.append('\n');
-                }
-            }
-            return buffer.toString();
+        try (Reader reader = new FileReader(file)) {
+            String text = IOUtils.toString(reader);
+            return text.replaceAll("\\R", "\n");
         }
     }
 

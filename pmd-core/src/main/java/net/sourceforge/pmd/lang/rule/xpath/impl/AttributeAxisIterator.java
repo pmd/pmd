@@ -44,6 +44,7 @@ public class AttributeAxisIterator implements Iterator<Attribute> {
                                       "getIndexInParent",
                                       "getParent",
                                       "getClass",
+                                      "getSourceCodeFile",
                                       "isFindBoundary",
                                       "getRuleIndex",
                                       "getXPathNodeName",

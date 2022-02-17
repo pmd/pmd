@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.Properties;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -133,6 +134,7 @@ public class PMDConfiguration extends AbstractConfiguration {
      *            The suppress marker to use.
      */
     public void setSuppressMarker(String suppressMarker) {
+        Objects.requireNonNull(suppressMarker, "Suppress marker was null");
         this.suppressMarker = suppressMarker;
     }
 
@@ -283,6 +285,13 @@ public class PMDConfiguration extends AbstractConfiguration {
     // Failure to determine the LanguageVersion for a file should be a hard
     // error, or simply cause the file to be skipped?
     public LanguageVersion getLanguageVersionOfFile(String fileName) {
+        LanguageVersion forcedVersion = getForceLanguageVersion();
+        if (forcedVersion != null) {
+            // use force language if given
+            return forcedVersion;
+        }
+
+        // otherwise determine by file extension
         LanguageVersion languageVersion = languageVersionDiscoverer.getDefaultLanguageVersionForFile(fileName);
         if (languageVersion == null) {
             // For compatibility with older code that does not always pass in

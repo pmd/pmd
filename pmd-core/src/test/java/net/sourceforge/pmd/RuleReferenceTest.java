@@ -118,7 +118,7 @@ public class RuleReferenceTest {
     }
 
     private void validateOverriddenValues(final PropertyDescriptor<String> propertyDescriptor1,
-                                          final PropertyDescriptor<String> propertyDescriptor2, RuleReference ruleReference) {
+            final PropertyDescriptor<String> propertyDescriptor2, RuleReference ruleReference) {
         assertEquals("Override failed", LanguageRegistry.getLanguage(DummyLanguageModule.NAME),
                 ruleReference.getLanguage());
 

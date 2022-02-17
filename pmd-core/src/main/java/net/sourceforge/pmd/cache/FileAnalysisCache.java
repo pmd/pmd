@@ -151,6 +151,10 @@ public class FileAnalysisCache extends AbstractAnalysisCache {
         }
     }
 
+    @Override
+    public void close() throws Exception {
+         // nothing to do, PMD calls persist explicitly
+    }
 
     @Override
     protected boolean cacheExists() {
