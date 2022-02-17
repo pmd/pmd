@@ -13,6 +13,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTAnnotationTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTArrayAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTArrayType;
+import net.sourceforge.pmd.lang.java.ast.ASTCastExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTClassLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
@@ -30,6 +31,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType;
 import net.sourceforge.pmd.lang.java.ast.ASTRecordDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTReferenceType;
@@ -46,6 +48,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTVoidType;
 import net.sourceforge.pmd.lang.java.ast.ASTWildcardType;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.JavaVisitorBase;
+import net.sourceforge.pmd.lang.java.ast.QualifiableExpression;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.TypePrettyPrint;
@@ -256,6 +259,13 @@ public final class PrettyPrintingUtil {
         }
 
         @Override
+        public Void visit(ASTCastExpression node, StringBuilder data) {
+            ppInParens(data, node.getCastType()).append(' ');
+            node.getOperand().acceptVisitor(this, data);
+            return null;
+        }
+
+        @Override
         public Void visit(ASTClassLiteral node, StringBuilder data) {
             node.getTypeNode().acceptVisitor(this, data);
             data.append(".class");
@@ -270,8 +280,8 @@ public final class PrettyPrintingUtil {
 
         @Override
         public Void visit(ASTFieldAccess node, StringBuilder data) {
-            node.getQualifier().acceptVisitor(this, data);
-            data.append('.').append(node.getName());
+            addQualifier(node, data);
+            data.append(node.getName());
             return null;
         }
 
@@ -318,10 +328,7 @@ public final class PrettyPrintingUtil {
 
         @Override
         public Void visit(ASTMethodCall node, StringBuilder sb) {
-            if (node.getQualifier() != null) {
-                node.getQualifier().acceptVisitor(this, sb);
-                sb.append('.');
-            }
+            addQualifier(node, sb);
             sb.append(node.getMethodName());
             if (node.getArguments().isEmpty()) {
                 sb.append("()");
@@ -343,6 +350,27 @@ public final class PrettyPrintingUtil {
             }
             return null;
         }
+
+
+        private void addQualifier(QualifiableExpression node, StringBuilder data) {
+            ASTExpression qualifier = node.getQualifier();
+            if (qualifier != null) {
+                if (!(qualifier instanceof ASTPrimaryExpression)) {
+                    ppInParens(data, qualifier);
+                } else {
+                    qualifier.acceptVisitor(this, data);
+                }
+                data.append('.');
+            }
+
+        }
+
+        private StringBuilder ppInParens(StringBuilder data, JavaNode qualifier) {
+            data.append('(');
+            qualifier.acceptVisitor(this, data);
+            return data.append(')');
+        }
+
     }
 
 

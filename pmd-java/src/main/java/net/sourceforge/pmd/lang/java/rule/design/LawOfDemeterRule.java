@@ -4,9 +4,12 @@
 
 package net.sourceforge.pmd.lang.java.rule.design;
 
+import static net.sourceforge.pmd.lang.java.ast.BinaryOp.INSTANCEOF;
+import static net.sourceforge.pmd.lang.java.ast.BinaryOp.isInfixExprWithOperator;
 import static net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil.isArrayLengthFieldAccess;
 import static net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil.isCallOnThisInstance;
 import static net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil.isGetterCall;
+import static net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil.isNullChecked;
 import static net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil.isRefToFieldOfThisClass;
 import static net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil.isThisOrSuper;
 import static net.sourceforge.pmd.properties.constraints.NumericConstraints.positive;
@@ -37,7 +40,6 @@ import net.sourceforge.pmd.lang.java.rule.internal.DataflowPass;
 import net.sourceforge.pmd.lang.java.rule.internal.DataflowPass.AssignmentEntry;
 import net.sourceforge.pmd.lang.java.rule.internal.DataflowPass.DataflowResult;
 import net.sourceforge.pmd.lang.java.rule.internal.DataflowPass.ReachingDefinitionSet;
-import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
@@ -216,7 +218,8 @@ public class LawOfDemeterRule extends AbstractJavaRulechainRule {
             || TypeTestUtil.isA(StringBuffer.class, expr)
             || expr.getTypeMirror().isPrimitive()
             || expr.getTypeMirror().isBoxedPrimitive()
-            || JavaRuleUtil.isNullChecked(expr);
+            || isNullChecked(expr)
+            || isInfixExprWithOperator(expr.getParent(), INSTANCEOF);
     }
 
     private boolean isPureDataContainer(JTypeMirror type) {
