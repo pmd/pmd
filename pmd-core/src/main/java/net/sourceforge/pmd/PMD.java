@@ -237,7 +237,7 @@ public final class PMD {
     @SuppressWarnings("PMD.CloseResource")
     public static Report processFiles(PMDConfiguration configuration,
                                       List<RuleSet> ruleSets,
-                                      List<DataSource> files,
+                                      Collection<? extends DataSource> files,
                                       List<Renderer> renderers) throws Exception {
 
 
@@ -247,7 +247,7 @@ public final class PMD {
         List<GlobalAnalysisListener> allListeners = listOf(reportBuilder, rendererListeners);
 
         try (GlobalAnalysisListener listener = GlobalAnalysisListener.tee(allListeners)) {
-            processFiles(configuration, ruleSets, files, listener);
+            processFiles(configuration, ruleSets, new ArrayList<>(files), listener);
         }
 
         return reportBuilder.getResult();
