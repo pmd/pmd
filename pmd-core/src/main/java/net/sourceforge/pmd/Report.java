@@ -14,6 +14,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
 
+import net.sourceforge.pmd.annotation.DeprecatedUntil700;
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.renderers.AbstractAccumulatingRenderer;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
@@ -37,8 +39,10 @@ public final class Report {
     private final List<ProcessingError> errors = synchronizedList(new ArrayList<>());
     private final List<ConfigurationError> configErrors = synchronizedList(new ArrayList<>());
 
-    Report() {
-        // package-private, you have to use a listener to build a report.
+    @DeprecatedUntil700
+    @InternalApi
+    public Report() { // NOPMD - UnnecessaryConstructor
+        // TODO: should be package-private, you have to use a listener to build a report.
     }
 
     /**
@@ -168,7 +172,10 @@ public final class Report {
      *
      * @deprecated PMD's way of creating a report is internal and may be changed in pmd 7.
      */
-    private void addRuleViolation(RuleViolation violation) {
+    @DeprecatedUntil700
+    @Deprecated
+    @InternalApi
+    public void addRuleViolation(RuleViolation violation) {
         synchronized (violations) {
             int index = Collections.binarySearch(violations, violation, RuleViolation.DEFAULT_COMPARATOR);
             violations.add(index < 0 ? -index - 1 : index, violation);
@@ -177,8 +184,13 @@ public final class Report {
 
     /**
      * Adds a new suppressed violation.
+     *
+     * @deprecated PMD's way of creating a report is internal and may be changed in pmd 7.
      */
-    private void addSuppressedViolation(SuppressedViolation sv) {
+    @DeprecatedUntil700
+    @Deprecated
+    @InternalApi
+    public void addSuppressedViolation(SuppressedViolation sv) {
         suppressedRuleViolations.add(sv);
     }
 
@@ -189,7 +201,10 @@ public final class Report {
      *
      * @deprecated PMD's way of creating a report is internal and may be changed in pmd 7.
      */
-    private void addConfigError(ConfigurationError error) {
+    @DeprecatedUntil700
+    @Deprecated
+    @InternalApi
+    public void addConfigError(ConfigurationError error) {
         configErrors.add(error);
     }
 
@@ -200,7 +215,10 @@ public final class Report {
      *            the error to add
      * @deprecated PMD's way of creating a report is internal and may be changed in pmd 7.
      */
-    private void addError(ProcessingError error) {
+    @DeprecatedUntil700
+    @Deprecated
+    @InternalApi
+    public void addError(ProcessingError error) {
         errors.add(error);
     }
 
