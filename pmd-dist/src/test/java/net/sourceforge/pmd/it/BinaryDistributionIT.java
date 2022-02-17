@@ -94,6 +94,25 @@ public class BinaryDistributionIT extends AbstractBinaryDistributionTest {
     }
 
     @Test
+    public void logging() throws Exception {
+        String srcDir = new File(".", "src/test/resources/sample-source/java/").getAbsolutePath();
+
+        ExecutionResult result;
+
+        result = PMDExecutor.runPMD(tempDir, "-d", srcDir, "-R", "src/test/resources/rulesets/sample-ruleset.xml",
+                "-r", folder.newFile().toString());
+        result.assertExecutionResult(4);
+        result.assertErrorOutputContains("[main] INFO net.sourceforge.pmd.PMD - Loglevel is at INFO");
+
+
+        // now with debug
+        result = PMDExecutor.runPMD(tempDir, "-d", srcDir, "-R", "src/test/resources/rulesets/sample-ruleset.xml",
+                "-r", folder.newFile().toString(), "--debug");
+        result.assertExecutionResult(4);
+        result.assertErrorOutputContains("[main] DEBUG net.sourceforge.pmd.PMD - Loglevel is at DEBUG");
+    }
+
+    @Test
     public void runCPD() throws Exception {
         String srcDir = new File(".", "src/test/resources/sample-source-cpd/").getAbsolutePath();
 

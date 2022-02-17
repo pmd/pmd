@@ -105,6 +105,10 @@ public class ExecutionResult {
                 report.contains(errorMessage));
     }
 
+    public void assertErrorOutputContains(String message) {
+        assertTrue("erroroutput didn't contain " + message, errorOutput.contains(message));
+    }
+
     static class Builder {
         private int exitCode;
         private String output;
