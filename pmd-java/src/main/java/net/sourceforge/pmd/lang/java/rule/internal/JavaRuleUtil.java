@@ -1037,6 +1037,19 @@ public final class JavaRuleUtil {
         return false;
     }
 
+    /**
+     * Returns true if the expr is in a null check (its parent is a null check).
+     */
+    public static boolean isNullChecked(ASTExpression expr) {
+        if (expr.getParent() instanceof ASTInfixExpression) {
+            ASTInfixExpression infx = (ASTInfixExpression) expr.getParent();
+            if (infx.getOperator().hasSamePrecedenceAs(BinaryOp.EQ)) {
+                return getOtherOperandIfInInfixExpr(expr) instanceof ASTNullLiteral;
+            }
+        }
+        return false;
+    }
+
     public static boolean isArrayInitializer(ASTExpression expr) {
         return expr instanceof ASTArrayAllocation && ((ASTArrayAllocation) expr).getArrayInitializer() != null;
     }

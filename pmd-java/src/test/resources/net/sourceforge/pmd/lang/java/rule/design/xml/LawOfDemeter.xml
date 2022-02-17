@@ -55,6 +55,9 @@ class Bar { C getC() {} }
     <test-code>
         <description>Simple Method calls with chaining</description>
         <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Call to `getC` on foreign value `b` (degree 2)</message>
+        </expected-messages>
         <code><![CDATA[
 public class Foo {
     public void example(Bar b) {
@@ -63,6 +66,20 @@ public class Foo {
 }
 class C { void doIt() {} }
 class Bar { C getC() {} }
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Simple Method calls with chaining, starts with this method</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void example() {
+        getC().doIt(); // no qualifier = this
+        this.getC().doIt();
+    }
+    C getC() {}
+}
+class C { void doIt() {} }
         ]]></code>
     </test-code>
 
@@ -184,12 +201,15 @@ public class Foo {
     </test-code>
     <test-code>
         <description>Instance methods on fields</description>
-        <expected-problems>3</expected-problems>
-        <expected-linenumbers>18,20,21</expected-linenumbers>
+        <expected-problems>6</expected-problems>
+        <expected-linenumbers>18,19,22,23,24,25</expected-linenumbers>
         <expected-messages>
             <message>Access to field `a` on foreign value `b` (degree 2)</message>
+            <message>Access to field `a` on foreign value `this.b` (degree 2)</message>
             <message>Access to field `a` on foreign value `b` (degree 2)</message>
+            <message>Access to field `a` on foreign value `this.b` (degree 2)</message>
             <message>Access to field `a` on foreign value `b` (degree 2)</message>
+            <message>Access to field `a` on foreign value `this.b` (degree 2)</message>
         </expected-messages>
         <code><![CDATA[
 public class B {
@@ -208,11 +228,15 @@ public class Foo {
     A a;
 
     public void example() {
-        a.doSomething(); // direct field allowed
-        b.a.doSomething(); // foreign field access
-        foo(a); // direct field allowed
-        foo(b.a); // foreign field access
-        foo(b.a.doSomething()); // foreign field access
+        a.doSomething();             // ok: self field
+        b.a.doSomething();           // warn
+        this.b.a.doSomething();      // warn
+        foo(a);                      // ok: self field
+        foo(this.a);                 // ok: self field
+        foo(b.a);                    // warn
+        foo(this.b.a);               // warn
+        foo(b.a.doSomething());      // warn
+        foo(this.b.a.doSomething()); // warn
     }
 
     void foo(boolean b) {
@@ -737,19 +761,25 @@ public final class ControlEvent {
     <test-code>
         <description>Field access on call</description>
         <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Access to field `manager` on foreign value `t.getLastToken()` (degree 2)</message>
+        </expected-messages>
         <code><![CDATA[
             import java.util.*;
             import java.text.MessageFormat;
 
+            class Manager {
+
+            }
             public final class Token {
-                int kind;
+                Manager manager;
                 Token getLastToken() {
 
                 }
             }
             class Q {
                 void foo(Token t) {
-                    int checkMessage = t.getLastToken().kind;
+                    Manager checkMessage = t.getLastToken().manager;
                 }
             }
             ]]></code>
@@ -866,10 +896,7 @@ public final class ControlEvent {
     </test-code>
     <test-code>
         <description>False positive with fields assigned to local vars #2188</description>
-        <expected-problems>1</expected-problems>
-        <expected-messages>
-            <message>Access to field `street` on foreign value `local` (degree 2)</message>
-        </expected-messages>
+        <expected-problems>0</expected-problems>
         <code><![CDATA[
 
             public class AddressUsingCopyOnWrite {
@@ -879,8 +906,6 @@ public final class ControlEvent {
                     this.addressValue = new AddressValue(street, city, phone);
                 }
 
-
-                // thread-safe method
                 @Override
                 public String toString() {
                     AddressValue local = addressValue;
@@ -1016,11 +1041,30 @@ public final class ControlEvent {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
             class Foo {
-                void foo(Foo f) {}
-
-                public String toString(JavaNode foo) {
+                public String toString(Foo foo) {
                     int p = foo.getClass().getModifiers();
                 }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Null check means pure data</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+            class Foo {
+                public String toString(Rule rule) {
+                    if (rule.getLanguage() == null)
+                        throw new IllegalArgumentException();
+                    System.out.println(rule.getLanguage());
+                    System.getProperty(rule.getLanguage().getName());
+                }
+            }
+            interface Language {
+                String getName();
+            }
+            interface Rule {
+                Language getLanguage();
             }
             ]]></code>
     </test-code>
