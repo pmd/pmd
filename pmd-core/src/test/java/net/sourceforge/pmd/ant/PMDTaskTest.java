@@ -18,11 +18,18 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.contrib.java.lang.system.RestoreSystemProperties;
+import org.junit.rules.TestRule;
 
 public class PMDTaskTest {
 
     @Rule
     public final BuildFileRule buildRule = new BuildFileRule();
+
+    // restoring system properties: PMDTask might change logging properties
+    // See Slf4jSimpleConfigurationForAnt
+    @Rule
+    public final TestRule restoreSystemProperties = new RestoreSystemProperties();
 
     @Before
     public void setUp() {

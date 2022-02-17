@@ -535,11 +535,7 @@ public final class PMD {
         Slf4jSimpleConfiguration.reconfigureDefaultLogLevel(logLevel);
         // need to reload the logger with the new configuration
         log = LoggerFactory.getLogger(PMD.class);
-        if (configuration.isDebug()) {
-            log.debug("Loglevel is at {}", logLevel);
-        } else {
-            log.info("Loglevel is at {}", logLevel);
-        }
+        log.atLevel(logLevel).log("Loglevel is at {}", logLevel);
 
         StatusCode status;
         try {
