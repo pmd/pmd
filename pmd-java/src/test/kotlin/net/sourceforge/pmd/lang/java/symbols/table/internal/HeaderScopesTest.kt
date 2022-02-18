@@ -9,6 +9,9 @@ package net.sourceforge.pmd.lang.java.symbols.table.internal
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.collections.haveSize
+import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
+import io.kotest.matchers.maps.shouldBeEmpty
+import io.kotest.matchers.maps.shouldContain
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
@@ -20,7 +23,6 @@ import net.sourceforge.pmd.lang.java.ast.ProcessorTestSpec
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol
-import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol
 import net.sourceforge.pmd.lang.java.symbols.internal.classSym
 import net.sourceforge.pmd.lang.java.symbols.internal.getDeclaredMethods
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable
@@ -282,6 +284,49 @@ class HeaderScopesTest : ProcessorTestSpec({
                 }
             }
         }
+    }
+
+
+    parserTest("#3768 static imported type shadows java.lang") {
+        assertNoSemanticErrorsOrWarnings()
+
+        val acu = parser.parse(
+            """
+            import static javasymbols.testdata.deep.StaticContainer.Exception;
+
+            class Foo {
+                static {
+                    Exception e;
+                }
+            }
+            """
+        )
+
+        acu.symbolTable.types()
+            .shouldResolveToClass("Exception", "javasymbols.testdata.deep.StaticContainer\$Exception")
+    }
+
+    parserTest("#3768 static imported type does not shadow non-static imported type") {
+
+        val acu = parser.parse(
+            """
+            import static javasymbols.testdata.deep.StaticContainer.Exception;
+            import java.lang.Exception;
+
+            class Foo {
+                static {
+                    Exception e;
+                }
+            }
+            """
+        )
+
+        acu.symbolTable.types().resolve("Exception")
+            .map { (it.symbol as JClassSymbol).binaryName }
+            .shouldContainExactlyInAnyOrder(
+                "javasymbols.testdata.deep.StaticContainer\$Exception",
+                "java.lang.Exception"
+            )
     }
 })
 

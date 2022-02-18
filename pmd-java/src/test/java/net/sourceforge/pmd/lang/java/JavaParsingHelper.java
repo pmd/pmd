@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.java;
 
 import java.io.PrintStream;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -12,6 +13,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jetbrains.annotations.NotNull;
 
@@ -124,6 +126,43 @@ public class JavaParsingHelper extends BaseParsingHelper<JavaParsingHelper, ASTC
         @Override
         public boolean hasError() {
             return baseLogger.hasError();
+        }
+    }
+
+    /**
+     * Will throw on the first semantic error or warning.
+     * Useful because it produces a stack trace for that warning/error.
+     */
+    public static class UnforgivingSemanticLogger implements SemanticErrorReporter {
+
+        private static final int MAX_NODE_TEXT_WIDTH = 100;
+        public static final UnforgivingSemanticLogger INSTANCE = new UnforgivingSemanticLogger();
+
+        private UnforgivingSemanticLogger() {
+
+        }
+
+        @Override
+        public void warning(Node location, String message, Object... formatArgs) {
+            String warning = MessageFormat.format(message, formatArgs);
+            throw new AssertionError(
+                "Expected no warnings, but got: " + warning + "\n"
+                    + "at " + StringUtils.truncate(location.toString(), 100)
+            );
+        }
+
+        @Override
+        public SemanticException error(Node location, String message, Object... formatArgs) {
+            String error = MessageFormat.format(message, formatArgs);
+            throw new AssertionError(
+                "Expected no errors, but got: " + error + "\n"
+                    + "at " + StringUtils.truncate(location.toString(), MAX_NODE_TEXT_WIDTH)
+            );
+        }
+
+        @Override
+        public boolean hasError() {
+            return false;
         }
     }
 }
