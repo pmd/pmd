@@ -11,7 +11,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.logging.Level;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -227,7 +226,7 @@ public class GuardLogStatementRule extends AbstractJavaRulechainRule {
 
     private @Nullable String getJutilLogLevelInFirstArg(ASTMethodCall methodCall) {
         ASTExpression firstArg = methodCall.getArguments().toStream().get(0);
-        if (TypeTestUtil.isA(Level.class, firstArg) && firstArg instanceof ASTNamedReferenceExpr) {
+        if (TypeTestUtil.isA("java.util.logging.Level", firstArg) && firstArg instanceof ASTNamedReferenceExpr) {
             return ((ASTNamedReferenceExpr) firstArg).getName().toLowerCase(Locale.ROOT);
         }
         return null;

@@ -9,12 +9,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import net.sourceforge.pmd.internal.Slf4jSimpleConfiguration;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.ast.Node;
@@ -99,10 +100,10 @@ public class JavaParsingHelper extends BaseParsingHelper<JavaParsingHelper, ASTC
         }
 
         public TestCheckLogger(boolean doLogOnConsole) {
-            Logger consoleLogger = Logger.getAnonymousLogger();
             if (!doLogOnConsole) {
-                consoleLogger.setLevel(Level.OFF);
+                Slf4jSimpleConfiguration.disableLogging(TestCheckLogger.class);
             }
+            Logger consoleLogger = LoggerFactory.getLogger(TestCheckLogger.class);
             baseLogger = SemanticErrorReporter.reportToLogger(consoleLogger);
         }
 
