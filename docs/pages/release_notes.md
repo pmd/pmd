@@ -24,12 +24,21 @@ This is a {{ site.pmd.release_type }} release.
 #### Deprecated API
 
 Some API deprecations were performed in core PMD classes, to improve compatibility with PMD 7.
-- {% jdoc core::Report %}: construction methods like addViolation or createReport
+- {% jdoc core::Report %}: the constructor and other construction methods like addViolation or createReport
 - {% jdoc core::RuleContext %}: all constructors, getters and setters. A new set
 of stable methods, matching those in PMD 7, was added to replace the `addViolation`
 overloads of {% jdoc core::lang.rule.AbstractRule %}. In PMD 7, `RuleContext` will
 be the API to report violations, and it can already be used as such in PMD 6.
+- The field {% jdoc core::PMD#configuration %} is unused and will be removed.
+
+#### Internal API
+
+Those APIs are not intended to be used by clients, and will be hidden or removed with PMD 7.0.0.
+You can identify them with the `@InternalApi` annotation. You'll also get a deprecation warning.
+
 - {% jdoc core::RuleSet %}: methods that serve to apply rules, including `apply`, `start`, `end`, `removeDysfunctionalRules`
+- {% jdoc !!core::renderers.AbstractAccumulatingRenderer#renderFileReport(Report) %} is internal API
+  and should not be overridden in own renderers.
 
 #### Changed API
 

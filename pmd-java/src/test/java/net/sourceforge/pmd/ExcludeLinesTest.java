@@ -34,15 +34,17 @@ public class ExcludeLinesTest extends RuleTst {
 
     @Test
     public void testAlternateMarker() throws Exception {
-        PMD p = new PMD();
-        p.getConfiguration().setSuppressMarker("FOOBAR");
+        PMDConfiguration configuration = new PMDConfiguration();
+        configuration.setSuppressMarker("FOOBAR");
         RuleContext ctx = new RuleContext();
         Report r = new Report();
         ctx.setReport(r);
         ctx.setSourceCodeFile(new File("n/a"));
         ctx.setLanguageVersion(LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getDefaultVersion());
         RuleSet rules = RuleSet.forSingleRule(rule);
-        p.getSourceCodeProcessor().processSourceCode(new StringReader(TEST3), new RuleSets(rules), ctx);
+        
+        SourceCodeProcessor sourceCodeProcessor = new SourceCodeProcessor(configuration);
+        sourceCodeProcessor.processSourceCode(new StringReader(TEST3), new RuleSets(rules), ctx);
         assertTrue(r.isEmpty());
         assertEquals(r.getSuppressedRuleViolations().size(), 1);
     }

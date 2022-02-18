@@ -59,6 +59,17 @@ public class Report implements Iterable<RuleViolation> {
     private final List<SuppressedViolation> suppressedRuleViolations = new ArrayList<>();
 
     /**
+     * @deprecated {@link Report} instances are created by PMD. There is no need
+     * to create a own report. This constructor will be hidden
+     * in PMD7.
+     */
+    @Deprecated
+    @InternalApi
+    public Report() { // NOPMD - UnnecessaryConstructor
+        // TODO: should be package-private, you have to use a listener to build a report.
+    }
+
+    /**
      * Creates a new, initialized, empty report for the given file name.
      *
      * @param ctx      The context to use to connect to the report

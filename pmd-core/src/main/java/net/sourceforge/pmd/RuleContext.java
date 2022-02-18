@@ -250,15 +250,13 @@ public class RuleContext {
      *
      * @param filename
      *            The file name.
-     * @deprecated This method will be removed. The file should only be
-     * set with {@link #setSourceCodeFile(File)}. Setting the filename here
-     * has no effect.
+     * @deprecated Internal API, removed in PMD 7
      */
     @Deprecated
+    @InternalApi
     public void setSourceCodeFilename(String filename) {
         // ignored, does nothing.
-        LOG.warning("The method RuleContext::setSourceCodeFilename(String) has been deprecated and will be removed."
-                + "Setting the filename here has no effect. Use RuleContext::setSourceCodeFile(File) instead.");
+        LOG.warning("The method RuleContext::setSourceCodeFilename(String) has been deprecated and will be removed.");
     }
 
     /**
