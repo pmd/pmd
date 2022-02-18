@@ -103,7 +103,7 @@ public class SimplifyBooleanReturnsRule extends AbstractJavaRulechainRule {
             return null;
         }
 
-        BinaryOp op = (thenFalse || elseFalse) ? CONDITIONAL_AND : CONDITIONAL_OR;
+        BinaryOp op = thenFalse || elseFalse ? CONDITIONAL_AND : CONDITIONAL_OR;
         // the branch that is not a literal, if both are literals, prefers elseExpr
         ASTExpression branch = thenFalse || thenTrue ? elseExpr : thenExpr;
 
@@ -124,13 +124,16 @@ public class SimplifyBooleanReturnsRule extends AbstractJavaRulechainRule {
     }
 
     private static boolean needsNewParensWhenNegating(ASTExpression e) {
-        return !(e instanceof ASTPrimaryExpression || e instanceof ASTCastExpression);
+        return !(e instanceof ASTPrimaryExpression || e instanceof ASTCastExpression
+            // parenthesized expressions are primary
+            || e.isParenthesized());
     }
 
     private static boolean doesNotNeedNewParensUnderInfix(ASTExpression e, BinaryOp op) {
         if (e instanceof ASTPrimaryExpression
             || e instanceof ASTCastExpression
-            || e instanceof ASTUnaryExpression) {
+            || e instanceof ASTUnaryExpression
+            || e.isParenthesized()) {
             return true;
         } else {
             return isInfixExprWithOperator(e, opsWithGeqPrecedence(op))
