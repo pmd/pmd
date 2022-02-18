@@ -206,6 +206,10 @@ public final class JavaRuleUtil {
         return index >= 0 && camelCaseString.length() == index + capitalizedWord.length();
     }
 
+    public static boolean isGetterOrSetter(ASTMethodDeclaration node) {
+        return JavaRuleUtil.isGetter(node) || JavaRuleUtil.isSetter(node);
+    }
+
     public static boolean isGetterOrSetterCall(ASTMethodCall call) {
         return isGetterCall(call) || isSetterCall(call);
     }

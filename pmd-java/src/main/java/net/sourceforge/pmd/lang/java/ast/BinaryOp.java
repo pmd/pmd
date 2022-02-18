@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.Comparator;
+import java.util.EnumSet;
 import java.util.Set;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -133,6 +134,14 @@ public enum BinaryOp implements InternalInterfaces.OperatorLike {
      */
     public boolean hasSamePrecedenceAs(@NonNull BinaryOp other) {
         return comparePrecedence(other) == 0;
+    }
+
+
+    /**
+     * Returns the ops with higher or equal precedence to the given op.
+     */
+    public static EnumSet<BinaryOp> opsWithGeqPrecedence(BinaryOp op) {
+        return EnumSet.range(op, MOD);
     }
 
     private int precedenceClass() {

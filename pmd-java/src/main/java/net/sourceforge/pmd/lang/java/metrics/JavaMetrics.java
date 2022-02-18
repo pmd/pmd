@@ -34,7 +34,7 @@ import net.sourceforge.pmd.lang.java.metrics.internal.CognitiveComplexityVisitor
 import net.sourceforge.pmd.lang.java.metrics.internal.CycloVisitor;
 import net.sourceforge.pmd.lang.java.metrics.internal.NcssVisitor;
 import net.sourceforge.pmd.lang.java.metrics.internal.NpathBaseVisitor;
-import net.sourceforge.pmd.lang.java.rule.internal.JavaAstUtil;
+import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
@@ -428,7 +428,7 @@ public final class JavaMetrics {
     private static int computeNoam(ASTAnyTypeDeclaration node, MetricOptions ignored) {
         return node.getDeclarations()
                    .filterIs(ASTMethodDeclaration.class)
-                   .filter(JavaAstUtil::isGetterOrSetter)
+                   .filter(JavaRuleUtil::isGetterOrSetter)
                    .count();
     }
 
@@ -605,7 +605,7 @@ public final class JavaMetrics {
                 .filterIs(ASTMethodDeclaration.class)
                 .filter(it -> !it.isPrivate());
 
-        int notSetter = methods.filter(it -> !JavaAstUtil.isGetterOrSetter(it)).count();
+        int notSetter = methods.filter(it -> !JavaRuleUtil.isGetterOrSetter(it)).count();
         int total = methods.count();
         if (total == 0) {
             return 0;

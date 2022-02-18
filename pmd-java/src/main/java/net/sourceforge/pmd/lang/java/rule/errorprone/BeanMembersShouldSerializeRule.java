@@ -21,7 +21,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.Annotatable;
 import net.sourceforge.pmd.lang.java.ast.JModifier;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
-import net.sourceforge.pmd.lang.java.rule.internal.JavaAstUtil;
 import net.sourceforge.pmd.lang.java.rule.internal.JavaPropertyUtil;
 import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
@@ -66,7 +65,7 @@ public class BeanMembersShouldSerializeRule extends AbstractJavaRulechainRule {
 
         Set<String> accessors =
             node.getDeclarations(ASTMethodDeclaration.class)
-                .filter(JavaAstUtil::isGetterOrSetter)
+                .filter(JavaRuleUtil::isGetterOrSetter)
                 .collect(Collectors.mapping(ASTMethodDeclaration::getName, Collectors.toSet()));
 
         NodeStream<ASTVariableDeclaratorId> fields =

@@ -4,6 +4,10 @@
 
 package net.sourceforge.pmd.lang.java.rule.design;
 
+import static net.sourceforge.pmd.lang.java.ast.BinaryOp.CONDITIONAL_AND;
+import static net.sourceforge.pmd.lang.java.ast.BinaryOp.CONDITIONAL_OR;
+import static net.sourceforge.pmd.lang.java.ast.BinaryOp.isInfixExprWithOperator;
+import static net.sourceforge.pmd.lang.java.ast.BinaryOp.opsWithGeqPrecedence;
 import static net.sourceforge.pmd.lang.java.rule.internal.JavaAstUtil.areComplements;
 import static net.sourceforge.pmd.lang.java.rule.internal.JavaAstUtil.isBooleanLiteral;
 
@@ -11,12 +15,15 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
+import net.sourceforge.pmd.lang.java.ast.ASTCastExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpression;
+import net.sourceforge.pmd.lang.java.ast.BinaryOp;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
-import net.sourceforge.pmd.lang.java.rule.internal.JavaAstUtil;
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind;
 
 public class SimplifyBooleanReturnsRule extends AbstractJavaRulechainRule {
@@ -57,11 +64,14 @@ public class SimplifyBooleanReturnsRule extends AbstractJavaRulechainRule {
         }
 
         if (isBooleanLiteral(thenExpr) || isBooleanLiteral(elseExpr)) {
-            data.addViolation(node);
+            String fix = needsToBeReportedWhenOneBranchIsBoolean(node.getCondition(), thenExpr, elseExpr);
+            if (fix != null) {
+                data.addViolation(node, fix);
+            }
         } else if (areComplements(thenExpr, elseExpr)) {
             // if (foo) return !a;
             // else return a;
-            data.addViolation(node);
+            data.addViolation(node, "return {condition};");
         }
     }
 
@@ -73,29 +83,59 @@ public class SimplifyBooleanReturnsRule extends AbstractJavaRulechainRule {
      * if (cond) false  else expr      -> !cond && expr
      * if (cond) expr   else true      -> !cond || expr
      * if (cond) expr   else false     ->  cond && expr
-     * if (!cond) false else expr      -> cond && expr
-     * if (!cond) expr  else true     ->  cond || expr
      * }</pre>
      * Note that both the `expr` and the `condition` may require parentheses
-     * (if the cond has to be negated). Note that the `expr` and `condition` may
-     * themselves be literals, or a negated expr.
+     * (if the cond has to be negated).
      */
-    private Result needsToBeReported(ASTExpression condition,
-                                     ASTExpression thenExpr,
-                                     ASTExpression elseExpr) {
+    private String needsToBeReportedWhenOneBranchIsBoolean(ASTExpression condition,
+                                                           ASTExpression thenExpr,
+                                                           ASTExpression elseExpr) {
+        // at least one of these is true
+        boolean thenFalse = isBooleanLiteral(thenExpr, false);
+        boolean thenTrue = isBooleanLiteral(thenExpr, true);
+        boolean elseTrue = isBooleanLiteral(elseExpr, true);
+        boolean elseFalse = isBooleanLiteral(elseExpr, false);
+        assert thenFalse || elseFalse || thenTrue || elseTrue
+            : "expected boolean branch";
 
-        if (JavaAstUtil.isBooleanLiteral(condition)
-        && ) {
-
+        boolean conditionNegated = thenFalse || elseTrue;
+        if (conditionNegated && needsNewParensWhenNegating(condition)) {
+            return null;
         }
 
+        BinaryOp op = (thenFalse || elseFalse) ? CONDITIONAL_AND : CONDITIONAL_OR;
+        // the branch that is not a literal, if both are literals, prefers elseExpr
+        ASTExpression branch = thenFalse || thenTrue ? elseExpr : thenExpr;
 
-        boolean isAndOp = JavaAstUtil.isBooleanLiteral(thenExpr, true)
-            || JavaAstUtil.isBooleanLiteral(elseExpr, true);
 
+        if (doesNotNeedNewParensUnderInfix(condition, op)
+            && doesNotNeedNewParensUnderInfix(branch, op)) {
+            if (thenTrue) {
+                return "return {condition} || {elseBranch};";
+            } else if (thenFalse) {
+                return "return !{condition} || {elseBranch};";
+            } else if (elseTrue) {
+                return "return !{condition} && {thenBranch};";
+            } else {
+                return "return {condition} && {thenBranch};";
+            }
+        }
+        return null;
     }
-    enum Result {
-        LITERAL_CONDITION
+
+    private static boolean needsNewParensWhenNegating(ASTExpression e) {
+        return !(e instanceof ASTPrimaryExpression || e instanceof ASTCastExpression);
+    }
+
+    private static boolean doesNotNeedNewParensUnderInfix(ASTExpression e, BinaryOp op) {
+        if (e instanceof ASTPrimaryExpression
+            || e instanceof ASTCastExpression
+            || e instanceof ASTUnaryExpression) {
+            return true;
+        } else {
+            return isInfixExprWithOperator(e, opsWithGeqPrecedence(op))
+                && !isInfixExprWithOperator(e, op); // no need for parens here
+        }
     }
 
     private @Nullable ASTExpression getReturnExpr(JavaNode node) {
