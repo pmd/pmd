@@ -256,20 +256,20 @@ public abstract class RuleTst {
 
     public Report runTestFromString(String code, Rule rule, LanguageVersion languageVersion, boolean isUseAuxClasspath) {
         try {
-            PMDConfiguration config = new PMDConfiguration();
-            config.setIgnoreIncrementalAnalysis(true);
-            config.setDefaultLanguageVersion(languageVersion);
-            config.setThreads(1);
+            PMDConfiguration configuration = new PMDConfiguration();
+            configuration.setIgnoreIncrementalAnalysis(true);
+            configuration.setDefaultLanguageVersion(languageVersion);
+            configuration.setThreads(1);
 
             if (isUseAuxClasspath) {
                 // configure the "auxclasspath" option for unit testing
-                config.prependClasspath(".");
+                configuration.prependClasspath(".");
             } else {
                 // simple class loader, that doesn't delegate to parent.
                 // this allows us in the tests to simulate PMD run without
                 // auxclasspath, not even the classes from the test dependencies
                 // will be found.
-                config.setClassLoader(new ClassLoader() {
+                configuration.setClassLoader(new ClassLoader() {
                     @Override
                     protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
                         if (name.startsWith("java.") || name.startsWith("javax.")) {
@@ -289,7 +289,7 @@ public abstract class RuleTst {
                     listOf(RuleSet.forSingleRule(rule)),
                     DataSource.forString(code, "test." + languageVersion.getLanguage().getExtensions().get(0)),
                     listener,
-                    config
+                    configuration
                 );
 
                 listener.close();
