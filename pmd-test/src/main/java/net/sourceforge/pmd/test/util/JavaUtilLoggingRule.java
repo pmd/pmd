@@ -18,6 +18,7 @@ import java.util.logging.Logger;
 import java.util.logging.StreamHandler;
 
 import org.apache.commons.io.output.ByteArrayOutputStream;
+import org.junit.contrib.java.lang.system.SystemErrRule;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.MultipleFailureException;
@@ -30,7 +31,11 @@ import org.junit.runners.model.Statement;
  * @author Andreas Dangel
  * @author Clément Fournier
  * @see <a href="http://blog.diabol.se/?p=474">Testing the presence of log messages with java.util.logging</a>
+ *
+ * @deprecated Use {@link SystemErrRule} instead. With the switch to slf4j, the log output appears on System.err.
  */
+@Deprecated
+@SuppressWarnings("PMD.DoNotUseJavaUtilLogging")
 public class JavaUtilLoggingRule implements TestRule {
     // copied from pmd core test sources
 
