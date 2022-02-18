@@ -184,13 +184,8 @@ public final class Report {
 
     /**
      * Adds a new suppressed violation.
-     *
-     * @deprecated PMD's way of creating a report is internal and may be changed in pmd 7.
      */
-    @DeprecatedUntil700
-    @Deprecated
-    @InternalApi
-    public void addSuppressedViolation(SuppressedViolation sv) {
+    private void addSuppressedViolation(SuppressedViolation sv) {
         suppressedRuleViolations.add(sv);
     }
 
