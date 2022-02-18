@@ -42,6 +42,7 @@ public final class Slf4jSimpleConfiguration {
 
     public static void installJulBridge() {
         if (!SLF4JBridgeHandler.isInstalled()) {
+            SLF4JBridgeHandler.removeHandlersForRootLogger(); // removes any existing ConsoleLogger
             SLF4JBridgeHandler.install();
         }
     }
