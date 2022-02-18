@@ -35,6 +35,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.QualifiableExpression;
 import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
@@ -45,6 +47,7 @@ import net.sourceforge.pmd.lang.java.rule.internal.DataflowPass.ReachingDefiniti
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.TypeOps;
@@ -111,38 +114,62 @@ public class LawOfDemeterRule extends AbstractJavaRulechainRule {
 
     @Override
     public Object visit(ASTFieldAccess node, Object data) {
-        int degree = foreignDegree(node);
-        if (isReportedDegree(degree)) {
+        if (shouldReport(node)) {
             addViolationWithMessage(
                 data, node,
                 FIELD_ACCESS_ON_FOREIGN_VALUE,
                 new Object[] {
                     node.getName(),
                     PrettyPrintingUtil.prettyPrint(node.getQualifier()),
-                    degree,
-                }
-            );
+                    foreignDegree(node.getQualifier()),
+                });
         }
         return null;
     }
 
     @Override
     public Object visit(ASTMethodCall node, Object data) {
-        ASTExpression qualifier = node.getQualifier();
-        if (qualifier != null) {
-            int degree = foreignDegree(node);
-            if (isReportedDegree(degree)) {
-                addViolationWithMessage(
-                    data, node,
-                    METHOD_CALL_ON_FOREIGN_VALUE,
-                    new Object[] {
-                        node.getMethodName(),
-                        PrettyPrintingUtil.prettyPrint(node.getQualifier()),
-                        degree,
-                    });
-            }
+        if (shouldReport(node)) {
+            addViolationWithMessage(
+                data, node,
+                METHOD_CALL_ON_FOREIGN_VALUE,
+                new Object[] {
+                    node.getMethodName(),
+                    PrettyPrintingUtil.prettyPrint(node.getQualifier()),
+                    foreignDegree(node.getQualifier()),
+                });
         }
         return null;
+    }
+
+    private boolean shouldReport(QualifiableExpression expr) {
+        ASTExpression qualifier = expr.getQualifier();
+        if (qualifier == null) {
+            return false;
+        }
+        int degree = foreignDegree(expr);
+        if (isReportedDegree(degree) && isUsedAsGetter(expr)) {
+            if (expr.getParent() instanceof ASTVariableDeclarator) { // NOPMD #3786
+                // Stored in local var, don't report if some usages escape.
+                // In that case, usage sites with non-escaping usage will be reported.
+                return isAllowedStore(((ASTVariableDeclarator) expr.getParent()).getVarId());
+            } else {
+                return true;
+            }
+        }
+        // Reported degree may be higher if LHS is a local var with the reported degree.
+        // If some usages of that local escape, the local hasn't been reported. Those usages
+        // that don't escape need to be reported.
+        if (qualifier instanceof ASTVariableAccess
+            && isReportedDegree(foreignDegree(qualifier))) {
+            JVariableSymbol sym = ((ASTVariableAccess) qualifier).getReferencedSym();
+            return sym != null && !isAllowedStore(sym.tryGetNode());
+        }
+        return false;
+    }
+
+    private boolean isAllowedStore(ASTVariableDeclaratorId varId) {
+        return varId != null && varId.getLocalUsages().stream().noneMatch(this::escapesMethod);
     }
 
     private int foreignDegree(@Nullable ASTExpression expr) {
@@ -192,11 +219,11 @@ public class LawOfDemeterRule extends AbstractJavaRulechainRule {
             || call.getQualifier() == null // either static or call on this. Prevents NPE when unresolved
             || isFactoryMethod(call)
             || isBuilderPattern(call.getQualifier())
-            || !isDangerousGetter(call)
             || isPureData(call)) {
             return ACCESSIBLE;
         } else if (isPureDataContainer(call.getMethodType().getDeclaringType())
             || isPureDataContainer(call.getTypeMirror())
+            || !isGetterCall(call)
             || isTransformationMethod(call)) {
             return asForeignAsQualifier(call);
         }
@@ -237,16 +264,15 @@ public class LawOfDemeterRule extends AbstractJavaRulechainRule {
         return false;
     }
 
-    // a dangerous getter is one that may be used later to call another getter
-    private boolean isDangerousGetter(ASTMethodCall expr) {
-        return isGetterCall(expr) && isUsedInThisMethod(expr);
+
+    private boolean escapesMethod(ASTExpression expr) {
+        return expr.getParent() instanceof ASTArgumentList
+            || expr.getParent() instanceof ASTReturnStatement
+            || expr.getParent() instanceof ASTThrowStatement;
     }
 
-    private boolean isUsedInThisMethod(ASTExpression expr) {
-        return !(expr.getParent() instanceof ASTExpressionStatement)
-            && !(expr.getParent() instanceof ASTArgumentList)
-            && !(expr.getParent() instanceof ASTReturnStatement)
-            && !(expr.getParent() instanceof ASTThrowStatement);
+    private boolean isUsedAsGetter(ASTExpression expr) {
+        return !escapesMethod(expr) && !(expr.getParent() instanceof ASTExpressionStatement);
     }
 
 
@@ -266,9 +292,7 @@ public class LawOfDemeterRule extends AbstractJavaRulechainRule {
     }
 
     private int fieldAccessDegree(ASTNamedReferenceExpr expr) {
-        if (isRefToFieldOfThisClass(expr)
-            || isPureData(expr)
-            || !isUsedInThisMethod(expr)) {
+        if (isRefToFieldOfThisClass(expr) || isPureData(expr)) {
             return ACCESSIBLE;
         } else if (isArrayLengthFieldAccess(expr)) {
             return asForeignAsQualifier((ASTFieldAccess) expr);
@@ -344,7 +368,7 @@ public class LawOfDemeterRule extends AbstractJavaRulechainRule {
      * ctors, etc).
      * </ul>
      * You can use any method, but you can't use yourself the result of
-     * a getter, or a field (though you can pass it as an argument to a method).
+     * a getter, or field (though you can let it escape).
      */
     private static final int ACCESSIBLE = 1;
 

@@ -56,7 +56,7 @@ class Bar { C getC() {} }
         <description>Simple Method calls with chaining</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>Call to `getC` on foreign value `b` (degree 2)</message>
+            <message>Call to `getC` on foreign value `b` (degree 1)</message>
         </expected-messages>
         <code><![CDATA[
 public class Foo {
@@ -204,10 +204,10 @@ public class Foo {
         <expected-problems>4</expected-problems>
         <expected-linenumbers>18,19,24,25</expected-linenumbers>
         <expected-messages>
-            <message>Access to field `a` on foreign value `b` (degree 2)</message>
-            <message>Access to field `a` on foreign value `this.b` (degree 2)</message>
-            <message>Access to field `a` on foreign value `b` (degree 2)</message>
-            <message>Access to field `a` on foreign value `this.b` (degree 2)</message>
+            <message>Access to field `a` on foreign value `b` (degree 1)</message>
+            <message>Access to field `a` on foreign value `this.b` (degree 1)</message>
+            <message>Access to field `a` on foreign value `b` (degree 1)</message>
+            <message>Access to field `a` on foreign value `this.b` (degree 1)</message>
         </expected-messages>
         <code><![CDATA[
 public class B {
@@ -414,7 +414,7 @@ class BarBuilder {
         <expected-problems>1</expected-problems>
         <expected-linenumbers>5</expected-linenumbers>
         <expected-messages>
-            <message>Call to `getB` on foreign value `this.getA()` (degree 2)</message>
+            <message>Call to `getB` on foreign value `this.getA()` (degree 1)</message>
         </expected-messages>
         <code><![CDATA[
 public class Test {
@@ -438,7 +438,7 @@ interface B { A getA(); }
         <expected-problems>1</expected-problems>
         <expected-linenumbers>4</expected-linenumbers>
         <expected-messages>
-            <message>Call to `getA` on foreign value `this.getA().getB()` (degree 3)</message>
+            <message>Call to `getA` on foreign value `this.getA().getB()` (degree 2)</message>
         </expected-messages>
         <code><![CDATA[
             public class Test {
@@ -680,8 +680,8 @@ public final class ControlEvent {
         <expected-problems>2</expected-problems>
         <expected-linenumbers>10,12</expected-linenumbers>
         <expected-messages>
-            <message>Access to field `attributes` on foreign value `h` (degree 2)</message>
-            <message>Access to field `attributes` on foreign value `h` (degree 2)</message>
+            <message>Access to field `attributes` on foreign value `h` (degree 1)</message>
+            <message>Access to field `attributes` on foreign value `h` (degree 1)</message>
         </expected-messages>
         <code><![CDATA[
             import java.nio.ByteBuffer;
@@ -760,7 +760,7 @@ public final class ControlEvent {
         <description>Field access on call</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>Access to field `manager` on foreign value `t.getLastToken()` (degree 2)</message>
+            <message>Access to field `manager` on foreign value `t.getLastToken()` (degree 1)</message>
         </expected-messages>
         <code><![CDATA[
             import java.util.*;
@@ -777,7 +777,8 @@ public final class ControlEvent {
             }
             class Q {
                 void foo(Token t) {
-                    Manager checkMessage = t.getLastToken().manager;
+                    Manager m = t.getLastToken().manager;
+                    m.doSomethn();
                 }
             }
             ]]></code>
@@ -963,7 +964,7 @@ public final class ControlEvent {
         <description>Foreign stream</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>Call to `getSomething` on foreign value `a` (degree 2)</message>
+            <message>Call to `getSomething` on foreign value `a` (degree 1)</message>
         </expected-messages>
         <code><![CDATA[
             import java.util.*;
@@ -1067,11 +1068,11 @@ public final class ControlEvent {
             ]]></code>
     </test-code>
     <test-code>
-        <description>Return and throw mean not used here</description>
+        <description>Return and throw escape</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>3</expected-linenumbers>
         <expected-messages>
-            <message>Call to `getLanguage` on foreign value `rule` (degree 2)</message>
+            <message>Call to `getLanguage` on foreign value `rule` (degree 1)</message>
         </expected-messages>
         <code><![CDATA[
             class Foo {
@@ -1079,10 +1080,38 @@ public final class ControlEvent {
                     rule.getLanguage().doSomething(); // warn
 
                     println(rule.getLanguage()); // no warning
-                    if (foo)
+                    if (foo())
                         return rule.getLanguage(); // no warning
                     else
                         throw rule.getLanguage(); // no warning
+                }
+            }
+            interface Language {
+                String getName();
+                void doSomething();
+            }
+            interface Rule {
+                Language getLanguage();
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Local var is fine until used, if some of them escape</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <expected-messages>
+            <message>Call to `doSomething` on foreign value `l` (degree 2)</message>
+        </expected-messages>
+        <code><![CDATA[
+            class Foo {
+                public String toString(Rule rule) {
+                    Language l = rule.getLanguage(); // no warning
+                    l.doSomething(); // warn: degree 3
+                    println(l); // no warning
+                    if (foo())
+                        return l; // no warning
+                    else
+                        throw l; // no warning
                 }
             }
             interface Language {
