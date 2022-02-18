@@ -7,7 +7,7 @@ package net.sourceforge.pmd.lang.java.rule.performance;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
-import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
+import net.sourceforge.pmd.lang.java.rule.internal.JavaAstUtil;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 
 /**
@@ -60,7 +60,7 @@ public class InefficientEmptyStringCheckRule extends AbstractJavaRulechainRule {
     private static boolean isLengthZeroCheck(ASTMethodCall call) {
         return "length".equals(call.getMethodName())
             && call.getArguments().size() == 0
-            && JavaRuleUtil.isZeroChecked(call);
+            && JavaAstUtil.isZeroChecked(call);
     }
 
     private static boolean isTrimCall(ASTExpression expr) {

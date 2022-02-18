@@ -10,7 +10,7 @@ import io.kotest.matchers.shouldBe
 import net.sourceforge.pmd.lang.ast.test.component6
 import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.java.ast.*
-import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil
+import net.sourceforge.pmd.lang.java.rule.internal.JavaAstUtil
 import net.sourceforge.pmd.lang.java.types.STRING
 import net.sourceforge.pmd.lang.java.types.parseWithTypeInferenceSpy
 import net.sourceforge.pmd.lang.java.types.shouldHaveType
@@ -239,7 +239,9 @@ class ConversionContextTests : ProcessorTestSpec({
         spy.shouldBeOk {
             concats.forEach {
                 withClue(it) {
-                    JavaRuleUtil.isStringConcatExpr(it) shouldBe true
+                    JavaAstUtil.isStringConcatExpr(
+                        it
+                    ) shouldBe true
                     it.leftOperand.conversionContext::getTargetType shouldBe ts.STRING
                     it.rightOperand.conversionContext::getTargetType shouldBe ts.STRING
                 }

@@ -4,17 +4,19 @@
 
 package net.sourceforge.pmd.lang.java.rule.design;
 
-import static net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil.areComplements;
-import static net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil.isBooleanLiteral;
+import static net.sourceforge.pmd.lang.java.rule.internal.JavaAstUtil.areComplements;
+import static net.sourceforge.pmd.lang.java.rule.internal.JavaAstUtil.isBooleanLiteral;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
+import net.sourceforge.pmd.lang.java.rule.internal.JavaAstUtil;
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind;
 
 public class SimplifyBooleanReturnsRule extends AbstractJavaRulechainRule {
@@ -31,7 +33,8 @@ public class SimplifyBooleanReturnsRule extends AbstractJavaRulechainRule {
             || !isThenBranchOfSomeIf(node)) {
             return null;
         }
-        return checkIf(node.ancestors(ASTIfStatement.class).firstOrThrow(), data, expr);
+        checkIf(node.ancestors(ASTIfStatement.class).firstOrThrow(), asCtx(data), expr);
+        return null;
     }
 
     // Only explore the then branch. If we explore the else, then we'll report twice.
@@ -46,21 +49,53 @@ public class SimplifyBooleanReturnsRule extends AbstractJavaRulechainRule {
             && node.getParent().getIndexInParent() == 1;
     }
 
-    private Object checkIf(ASTIfStatement node, Object data, ASTExpression thenExpr) {
+    private void checkIf(ASTIfStatement node, RuleContext data, ASTExpression thenExpr) {
         // that's the case: if..then..return; return;
         ASTExpression elseExpr = getElseExpr(node);
         if (elseExpr == null) {
-            return data;
+            return;
         }
 
         if (isBooleanLiteral(thenExpr) || isBooleanLiteral(elseExpr)) {
-            addViolation(data, node);
+            data.addViolation(node);
         } else if (areComplements(thenExpr, elseExpr)) {
             // if (foo) return !a;
             // else return a;
-            addViolation(data, node);
+            data.addViolation(node);
         }
-        return data;
+    }
+
+    /**
+     * Whether refactoring an if-then-else to use shortcut operators
+     * would require adding parentheses to respect operator precedence.
+     * <pre>{@code
+     * if (cond) true   else expr      ->  cond || expr
+     * if (cond) false  else expr      -> !cond && expr
+     * if (cond) expr   else true      -> !cond || expr
+     * if (cond) expr   else false     ->  cond && expr
+     * if (!cond) false else expr      -> cond && expr
+     * if (!cond) expr  else true     ->  cond || expr
+     * }</pre>
+     * Note that both the `expr` and the `condition` may require parentheses
+     * (if the cond has to be negated). Note that the `expr` and `condition` may
+     * themselves be literals, or a negated expr.
+     */
+    private Result needsToBeReported(ASTExpression condition,
+                                     ASTExpression thenExpr,
+                                     ASTExpression elseExpr) {
+
+        if (JavaAstUtil.isBooleanLiteral(condition)
+        && ) {
+
+        }
+
+
+        boolean isAndOp = JavaAstUtil.isBooleanLiteral(thenExpr, true)
+            || JavaAstUtil.isBooleanLiteral(elseExpr, true);
+
+    }
+    enum Result {
+        LITERAL_CONDITION
     }
 
     private @Nullable ASTExpression getReturnExpr(JavaNode node) {

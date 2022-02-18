@@ -15,6 +15,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.AccessNode.Visibility;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
+import net.sourceforge.pmd.lang.java.rule.internal.JavaAstUtil;
 import net.sourceforge.pmd.lang.java.rule.internal.JavaPropertyUtil;
 import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
@@ -48,7 +49,7 @@ public class UnusedPrivateFieldRule extends AbstractJavaRulechainRule {
     public Object visitJavaNode(JavaNode node, Object data) {
         if (node instanceof ASTAnyTypeDeclaration) {
             ASTAnyTypeDeclaration type = (ASTAnyTypeDeclaration) node;
-            if (JavaRuleUtil.hasAnyAnnotation(type, INVALIDATING_CLASS_ANNOT)) {
+            if (JavaAstUtil.hasAnyAnnotation(type, INVALIDATING_CLASS_ANNOT)) {
                 return null;
             }
 
@@ -69,7 +70,7 @@ public class UnusedPrivateFieldRule extends AbstractJavaRulechainRule {
         return field.getVisibility() != Visibility.V_PRIVATE
             || JavaRuleUtil.isSerialPersistentFields(field)
             || JavaRuleUtil.isSerialVersionUID(field)
-            || JavaRuleUtil.hasAnyAnnotation(field, getProperty(IGNORED_FIELD_ANNOTATIONS));
+            || JavaAstUtil.hasAnyAnnotation(field, getProperty(IGNORED_FIELD_ANNOTATIONS));
     }
 
 }

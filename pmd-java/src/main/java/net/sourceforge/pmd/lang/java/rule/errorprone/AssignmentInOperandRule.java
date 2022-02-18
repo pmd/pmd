@@ -16,7 +16,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
-import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
+import net.sourceforge.pmd.lang.java.rule.internal.JavaAstUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertySource;
 
@@ -69,7 +69,7 @@ public class AssignmentInOperandRule extends AbstractJavaRulechainRule {
     }
 
     private void checkAssignment(ASTExpression impureExpr, RuleContext ctx) {
-        ASTExpression toplevel = JavaRuleUtil.getTopLevelExpr(impureExpr);
+        ASTExpression toplevel = JavaAstUtil.getTopLevelExpr(impureExpr);
         JavaNode parent = toplevel.getParent();
         if (parent instanceof ASTExpressionStatement) {
             // that's ok

@@ -9,9 +9,9 @@ import static net.sourceforge.pmd.lang.java.ast.BinaryOp.CONDITIONAL_OR;
 import static net.sourceforge.pmd.lang.java.ast.BinaryOp.INSTANCEOF;
 import static net.sourceforge.pmd.lang.java.ast.BinaryOp.NE;
 import static net.sourceforge.pmd.lang.java.ast.BinaryOp.isInfixExprWithOperator;
-import static net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil.getOtherOperandIfInInfixExpr;
-import static net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil.isBooleanNegation;
-import static net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil.isNullCheck;
+import static net.sourceforge.pmd.lang.java.rule.internal.JavaAstUtil.getOtherOperandIfInInfixExpr;
+import static net.sourceforge.pmd.lang.java.rule.internal.JavaAstUtil.isBooleanNegation;
+import static net.sourceforge.pmd.lang.java.rule.internal.JavaAstUtil.isNullCheck;
 
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTInfixExpression;

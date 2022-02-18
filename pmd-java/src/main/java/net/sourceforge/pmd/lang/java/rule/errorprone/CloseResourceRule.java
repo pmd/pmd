@@ -48,7 +48,7 @@ import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
+import net.sourceforge.pmd.lang.java.rule.internal.JavaAstUtil;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.types.InvocationMatcher;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
@@ -339,7 +339,7 @@ public class CloseResourceRule extends AbstractJavaRule {
             for (ASTFormalParameter param : methodParams) {
                 if ((isResourceTypeOrSubtype(param) || wrappedVarName.getParent() instanceof ASTVariableDeclarator
                         || wrappedVarName.getParent() instanceof ASTAssignmentExpression)
-                    && JavaRuleUtil.isReferenceToVar(wrappedVarName, param.getVarId().getSymbol())) {
+                    && JavaAstUtil.isReferenceToVar(wrappedVarName, param.getVarId().getSymbol())) {
                     return true;
                 }
             }
@@ -494,7 +494,7 @@ public class CloseResourceRule extends AbstractJavaRule {
 
         List<ASTVariableAccess> usedVars = getResourcesSpecifiedInTryWith(tryWithResource);
         for (ASTVariableAccess res : usedVars) {
-            if (JavaRuleUtil.isReferenceToVar(res, varId.getSymbol())) {
+            if (JavaAstUtil.isReferenceToVar(res, varId.getSymbol())) {
                 return true;
             }
         }
@@ -530,7 +530,7 @@ public class CloseResourceRule extends AbstractJavaRule {
     private boolean isMethodCallOnVariable(ASTExpression expr, ASTVariableDeclaratorId variable) {
         if (expr instanceof ASTMethodCall) {
             ASTMethodCall methodCall = (ASTMethodCall) expr;
-            return JavaRuleUtil.isReferenceToVar(methodCall.getQualifier(), variable.getSymbol());
+            return JavaAstUtil.isReferenceToVar(methodCall.getQualifier(), variable.getSymbol());
         }
         return false;
     }
@@ -558,8 +558,8 @@ public class CloseResourceRule extends AbstractJavaRule {
                     ASTExpression left = equalityExpr.getLeftOperand();
                     ASTExpression right = equalityExpr.getRightOperand();
 
-                    if (JavaRuleUtil.isReferenceToVar(left, var.getSymbol()) && isNullLiteral(right)
-                            || JavaRuleUtil.isReferenceToVar(right, var.getSymbol()) && isNullLiteral(left)) {
+                    if (JavaAstUtil.isReferenceToVar(left, var.getSymbol()) && isNullLiteral(right)
+                            || JavaAstUtil.isReferenceToVar(right, var.getSymbol()) && isNullLiteral(left)) {
                         return true;
                     }
                 }
@@ -575,7 +575,7 @@ public class CloseResourceRule extends AbstractJavaRule {
         InvocationMatcher matcher = InvocationMatcher.parse("java.util.Objects#nonNull(_)");
         if (matcher.matchesCall(expression)) {
             ASTMethodCall methodCall = (ASTMethodCall) expression;
-            return JavaRuleUtil.isReferenceToVar(methodCall.getArguments().get(0), var.getSymbol());
+            return JavaAstUtil.isReferenceToVar(methodCall.getArguments().get(0), var.getSymbol());
         }
 
         return false;
@@ -648,7 +648,7 @@ public class CloseResourceRule extends AbstractJavaRule {
                 .descendants(ASTReturnStatement.class).crossFindBoundaries()
                 .descendants(ASTVariableAccess.class)
                 .filter(access -> !(access.getParent() instanceof ASTMethodCall))
-                .filter(access -> JavaRuleUtil.isReferenceToVar(access, variable.getSymbol()))
+                .filter(access -> JavaAstUtil.isReferenceToVar(access, variable.getSymbol()))
                 .nonEmpty();
     }
 
@@ -729,7 +729,7 @@ public class CloseResourceRule extends AbstractJavaRule {
 
     private boolean isNotSelfAssignment(ASTAssignmentExpression assignment) {
         return assignment.getRightOperand().descendantsOrSelf().filterIs(ASTVariableAccess.class).filter(access -> {
-            return JavaRuleUtil.isReferenceToSameVar(access, assignment.getLeftOperand());
+            return JavaAstUtil.isReferenceToSameVar(access, assignment.getLeftOperand());
         }).isEmpty();
     }
 
@@ -737,7 +737,7 @@ public class CloseResourceRule extends AbstractJavaRule {
         Node grandparent = statement.ancestors().get(1);
         if (grandparent instanceof ASTIfStatement) {
             ASTIfStatement ifStatement = (ASTIfStatement) grandparent;
-            if (JavaRuleUtil.isNullCheck(ifStatement.getCondition(), variable.getSymbol())) {
+            if (JavaAstUtil.isNullCheck(ifStatement.getCondition(), variable.getSymbol())) {
                 return false;
             }
         }
@@ -762,6 +762,6 @@ public class CloseResourceRule extends AbstractJavaRule {
         }
 
         ASTAssignmentExpression assignment = (ASTAssignmentExpression) statement.getExpr();
-        return JavaRuleUtil.isReferenceToVar(assignment.getLeftOperand(), variable.getSymbol());
+        return JavaAstUtil.isReferenceToVar(assignment.getLeftOperand(), variable.getSymbol());
     }
 }

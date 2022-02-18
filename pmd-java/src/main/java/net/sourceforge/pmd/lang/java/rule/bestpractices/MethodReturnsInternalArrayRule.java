@@ -18,7 +18,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.AccessNode.Visibility;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
-import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
+import net.sourceforge.pmd.lang.java.rule.internal.JavaAstUtil;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 
@@ -44,7 +44,7 @@ public class MethodReturnsInternalArrayRule extends AbstractJavaRulechainRule {
             if (expr instanceof ASTNamedReferenceExpr) {
                 ASTNamedReferenceExpr reference = (ASTNamedReferenceExpr) expr;
 
-                if (JavaRuleUtil.isRefToFieldOfThisInstance(reference)) {
+                if (JavaAstUtil.isRefToFieldOfThisInstance(reference)) {
                     addViolation(data, returnStmt, reference.getName());
                 } else {
                     // considers static, non-final fields
@@ -87,7 +87,7 @@ public class MethodReturnsInternalArrayRule extends AbstractJavaRulechainRule {
                 // new int[0]
                 ASTArrayTypeDim lastChild = ((ASTArrayAllocation) expr).getTypeNode().getDimensions().getLastChild();
                 if (lastChild instanceof ASTArrayDimExpr) {
-                    return JavaRuleUtil.isLiteralInt(((ASTArrayDimExpr) lastChild).getLengthExpression(), 0);
+                    return JavaAstUtil.isLiteralInt(((ASTArrayDimExpr) lastChild).getLengthExpression(), 0);
                 }
             }
         }

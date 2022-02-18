@@ -27,6 +27,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.InvocationNode;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
+import net.sourceforge.pmd.lang.java.rule.internal.JavaAstUtil;
 import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.types.InvocationMatcher;
@@ -82,7 +83,7 @@ public class PreserveStackTraceRule extends AbstractJavaRulechainRule {
 
         } else if (expr instanceof ASTCastExpression) {
 
-            ASTExpression innermost = JavaRuleUtil.peelCasts(expr);
+            ASTExpression innermost = JavaAstUtil.peelCasts(expr);
             return exprConsumesException(exceptionParam, innermost, mayBeSelf);
 
         } else if (expr instanceof ASTConditionalExpression) {
@@ -121,7 +122,7 @@ public class PreserveStackTraceRule extends AbstractJavaRulechainRule {
                     return true;
                 }
 
-                if (JavaRuleUtil.followingCallChain(usage).any(it -> consumesExceptionNonRecursive(exceptionParam, it))) {
+                if (JavaAstUtil.followingCallChain(usage).any(it -> consumesExceptionNonRecursive(exceptionParam, it))) {
                     return true;
                 }
             }
@@ -135,12 +136,12 @@ public class PreserveStackTraceRule extends AbstractJavaRulechainRule {
 
     private boolean assignmentRhsConsumesException(ASTVariableDeclaratorId exceptionParam, ASTVariableDeclaratorId lhsVariable, ASTNamedReferenceExpr usage) {
         if (usage.getIndexInParent() == 0) {
-            ASTExpression assignmentRhs = JavaRuleUtil.getOtherOperandIfInAssignmentExpr(usage);
+            ASTExpression assignmentRhs = JavaAstUtil.getOtherOperandIfInAssignmentExpr(usage);
             boolean rhsIsSelfReferential =
                 NodeStream.of(assignmentRhs)
                           .descendantsOrSelf()
                           .filterIs(ASTVariableAccess.class)
-                          .any(it -> JavaRuleUtil.isReferenceToVar(it, lhsVariable.getSymbol()));
+                          .any(it -> JavaAstUtil.isReferenceToVar(it, lhsVariable.getSymbol()));
             return !rhsIsSelfReferential && exprConsumesException(exceptionParam, assignmentRhs, true);
         }
         return false;
