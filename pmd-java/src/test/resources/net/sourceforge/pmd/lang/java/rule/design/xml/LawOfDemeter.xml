@@ -1068,4 +1068,32 @@ public final class ControlEvent {
             }
             ]]></code>
     </test-code>
+    <test-code>
+        <description>Return and throw mean not used here</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <expected-messages>
+            <message>Call to `getLanguage` on foreign value `rule` (degree 2)</message>
+        </expected-messages>
+        <code><![CDATA[
+            class Foo {
+                public String toString(Rule rule) {
+                    rule.getLanguage().doSomething(); // warn
+
+                    println(rule.getLanguage()); // no warning
+                    if (foo)
+                        return rule.getLanguage(); // no warning
+                    else
+                        throw rule.getLanguage(); // no warning
+                }
+            }
+            interface Language {
+                String getName();
+                void doSomething();
+            }
+            interface Rule {
+                Language getLanguage();
+            }
+            ]]></code>
+    </test-code>
 </test-data>

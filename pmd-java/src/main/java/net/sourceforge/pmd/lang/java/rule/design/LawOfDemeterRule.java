@@ -31,6 +31,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTExpressionStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTForeachStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
+import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
 import net.sourceforge.pmd.lang.java.ast.QualifiableExpression;
@@ -242,7 +244,9 @@ public class LawOfDemeterRule extends AbstractJavaRulechainRule {
 
     private boolean isUsedInThisMethod(ASTExpression expr) {
         return !(expr.getParent() instanceof ASTExpressionStatement)
-            && !(expr.getParent() instanceof ASTArgumentList);
+            && !(expr.getParent() instanceof ASTArgumentList)
+            && !(expr.getParent() instanceof ASTReturnStatement)
+            && !(expr.getParent() instanceof ASTThrowStatement);
     }
 
 
