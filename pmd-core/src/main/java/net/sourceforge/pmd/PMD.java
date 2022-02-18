@@ -59,6 +59,17 @@ import net.sourceforge.pmd.util.log.ScopedLogHandlersManager;
  * process is controlled via interactions with this class. A command line
  * interface is supported, as well as a programmatic API for integrating PMD
  * with other software such as IDEs and Ant.
+ * 
+ * <p>Main entrypoints are:
+ * <ul>
+ *   <li>{@link #main(String[])} which exits the java process</li>
+ *   <li>{@link #runPmd(String...)} which returns a {@link StatusCode}</li>
+ *   <li>{@link #runPmd(PMDConfiguration)}</li>
+ *   <li>{@link #processFiles(PMDConfiguration, List, Collection, List)}</li>
+ * </ul>
+ * 
+ * <p><strong>Warning:</strong> This class is not intended to be instantiated or subclassed. It will
+ * be made final in PMD7.
  */
 public final class PMD {
 
