@@ -1464,12 +1464,23 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 
 <p>Some API deprecations were performed in core PMD classes, to improve compatibility with PMD 7.</p>
 <ul>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.43.0-SNAPSHOT/net/sourceforge/pmd/Report.html#"><code>Report</code></a>: construction methods like addViolation or createReport</li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.43.0-SNAPSHOT/net/sourceforge/pmd/Report.html#"><code>Report</code></a>: the constructor and other construction methods like addViolation or createReport</li>
   <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.43.0-SNAPSHOT/net/sourceforge/pmd/RuleContext.html#"><code>RuleContext</code></a>: all constructors, getters and setters. A new set
 of stable methods, matching those in PMD 7, was added to replace the <code class="language-plaintext highlighter-rouge">addViolation</code>
 overloads of <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.43.0-SNAPSHOT/net/sourceforge/pmd/lang/rule/AbstractRule.html#"><code>AbstractRule</code></a>. In PMD 7, <code class="language-plaintext highlighter-rouge">RuleContext</code> will
 be the API to report violations, and it can already be used as such in PMD 6.</li>
+  <li>The field <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.43.0-SNAPSHOT/net/sourceforge/pmd/PMD.html#configuration"><code>configuration</code></a> is unused and will be removed.</li>
+</ul>
+
+<h4 id="internal-api">Internal API</h4>
+
+<p>Those APIs are not intended to be used by clients, and will be hidden or removed with PMD 7.0.0.
+You can identify them with the <code class="language-plaintext highlighter-rouge">@InternalApi</code> annotation. You’ll also get a deprecation warning.</p>
+
+<ul>
   <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.43.0-SNAPSHOT/net/sourceforge/pmd/RuleSet.html#"><code>RuleSet</code></a>: methods that serve to apply rules, including <code class="language-plaintext highlighter-rouge">apply</code>, <code class="language-plaintext highlighter-rouge">start</code>, <code class="language-plaintext highlighter-rouge">end</code>, <code class="language-plaintext highlighter-rouge">removeDysfunctionalRules</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.43.0-SNAPSHOT/net/sourceforge/pmd/renderers/AbstractAccumulatingRenderer.html#renderFileReport(Report)"><code>AbstractAccumulatingRenderer#renderFileReport</code></a> is internal API
+and should not be overridden in own renderers.</li>
 </ul>
 
 <h4 id="changed-api">Changed API</h4>
@@ -1512,7 +1523,7 @@ will change drastically in PMD 7.</p>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2022 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Feb 17, 2022 <br />
+ Site last generated: Feb 18, 2022 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
