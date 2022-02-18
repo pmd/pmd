@@ -9,6 +9,7 @@ import java.lang.reflect.Method;
 import org.slf4j.ILoggerFactory;
 import org.slf4j.LoggerFactory;
 import org.slf4j.LoggerFactoryFriend;
+import org.slf4j.bridge.SLF4JBridgeHandler;
 import org.slf4j.event.Level;
 
 public final class Slf4jSimpleConfiguration {
@@ -34,8 +35,14 @@ public final class Slf4jSimpleConfiguration {
 
         LoggerFactoryFriend.reset();
     }
-    
+
     public static void disableLogging(Class<?> clazz) {
         System.setProperty("org.slf4j.simpleLogger.log." + clazz.getName(), "off");
+    }
+
+    public static void installJulBridge() {
+        if (!SLF4JBridgeHandler.isInstalled()) {
+            SLF4JBridgeHandler.install();
+        }
     }
 }
