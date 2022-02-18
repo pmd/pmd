@@ -18,6 +18,8 @@ This is a {{ site.pmd.release_type }} release.
 
 *   misc
     *   [#3759](https://github.com/pmd/pmd/issues/3759): \[lang-test] Upgrade dokka maven plugin to 1.4.32
+*   java-codestyle
+    *   [#278](https://github.com/pmd/pmd/issues/278): \[java] ConfusingTernary should treat `!= null` as positive condition
 
 ### API Changes
 

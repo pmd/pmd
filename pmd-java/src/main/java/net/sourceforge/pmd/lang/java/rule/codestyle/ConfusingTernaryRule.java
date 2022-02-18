@@ -6,13 +6,14 @@ package net.sourceforge.pmd.lang.java.rule.codestyle;
 
 import static net.sourceforge.pmd.properties.PropertyFactory.booleanProperty;
 
-import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalAndExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalOrExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTEqualityExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
+import net.sourceforge.pmd.lang.java.ast.ASTNullLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpressionNotPlusMinus;
@@ -55,6 +56,7 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
  * </pre>
  */
 public class ConfusingTernaryRule extends AbstractJavaRule {
+
     private static PropertyDescriptor<Boolean> ignoreElseIfProperty = booleanProperty("ignoreElseIf").desc("Ignore conditions with an else-if case").defaultValue(false).build();
 
     public ConfusingTernaryRule() {
@@ -100,14 +102,33 @@ public class ConfusingTernaryRule extends AbstractJavaRule {
         return isUnaryNot(node) || isNotEquals(node) || isConditionalWithAllMatches(node);
     }
 
-    private static boolean isUnaryNot(Node node) {
+    private static boolean isUnaryNot(JavaNode node) {
         // look for "!x"
         return node instanceof ASTUnaryExpressionNotPlusMinus && "!".equals(node.getImage());
     }
 
-    private static boolean isNotEquals(Node node) {
+    private static boolean isNotEquals(JavaNode node) {
         // look for "x != y"
-        return node instanceof ASTEqualityExpression && "!=".equals(node.getImage());
+        return node instanceof ASTEqualityExpression && "!=".equals(node.getImage())
+            && !isNullLiteral(node.getChild(0))
+            && !isNullLiteral(node.getChild(1));
+    }
+
+    private static boolean isNullLiteral(JavaNode node) {
+        node = unwrapParentheses(node);
+        if (node instanceof ASTExpression && node.getNumChildren() == 1) {
+            node = node.getChild(0);
+        }
+        if (node instanceof ASTPrimaryExpression && node.getNumChildren() == 1) {
+            node = node.getChild(0);
+            if (node instanceof ASTPrimaryPrefix && node.getNumChildren() == 1) {
+                node = node.getChild(0);
+                if (node instanceof ASTLiteral && node.getNumChildren() == 1) {
+                    return node.getChild(0) instanceof ASTNullLiteral;
+                }
+            }
+        }
+        return false;
     }
 
     private static boolean isConditionalWithAllMatches(JavaNode node) {
