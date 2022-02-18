@@ -15,10 +15,9 @@ import org.apache.tools.ant.DefaultLogger;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.XmlLogger;
 import org.apache.tools.ant.taskdefs.RecorderEntry;
-import org.slf4j.ILoggerFactory;
-import org.slf4j.LoggerFactory;
-import org.slf4j.LoggerFactoryFriend;
 import org.slf4j.event.Level;
+
+import net.sourceforge.pmd.internal.Slf4jSimpleConfiguration;
 
 public final class Slf4jSimpleConfigurationForAnt {
     private Slf4jSimpleConfigurationForAnt() { }
@@ -34,78 +33,72 @@ public final class Slf4jSimpleConfigurationForAnt {
         Level.TRACE,   // Project.MSG_DEBUG=4
     };
 
-    private static final Map<String, Integer> ANT_LOG_LEVELS;
-
-    static {
-        ANT_LOG_LEVELS = new HashMap<>();
-        ANT_LOG_LEVELS.put(Level.ERROR.name(), Project.MSG_ERR);
-        ANT_LOG_LEVELS.put(Level.WARN.name(), Project.MSG_WARN);
-        ANT_LOG_LEVELS.put(Level.INFO.name(), Project.MSG_INFO);
-        ANT_LOG_LEVELS.put(Level.DEBUG.name(), Project.MSG_VERBOSE);
-        ANT_LOG_LEVELS.put(Level.TRACE.name(), Project.MSG_DEBUG);
-    }
-
     @SuppressWarnings("PMD.CloseResource")
     public static Level reconfigureLoggingForAnt(Project antProject) {
         PrintStream original = System.err;
         try {
-            PrintStream interceptedStream = new PrintStream(original) {
-                private StringBuilder buffer = new StringBuilder(100);
+            System.setErr(new SimpleLoggerToAntBridge(antProject, original));
 
-                @Override
-                public void println(String x) {
-                    buffer.append(x).append(System.lineSeparator());
-                }
-
-                @Override
-                public void flush() {
-                    String logLevel = determineLogLevel();
-                    int antLogLevel = ANT_LOG_LEVELS.getOrDefault(logLevel, Project.MSG_INFO);
-                    antProject.log(buffer.toString(), antLogLevel);
-                    buffer.setLength(0);
-                }
-
-                private String determineLogLevel() {
-                    int firstSpace = buffer.indexOf(" ");
-                    if (firstSpace != -1) {
-                        String level = buffer.substring(0, firstSpace);
-                        buffer.delete(0, firstSpace + 1);
-                        return level;
-                    }
-                    return DEFAULT_LEVEL.name();
-                }
-            };
-            System.setErr(interceptedStream);
-
-            Level level = getAntLogLevel(antProject);
-            System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", level.toString());
+            // configuring the format so that the log level appears at the beginning of the printed line
             System.setProperty("org.slf4j.simpleLogger.showDateTime", "false");
             System.setProperty("org.slf4j.simpleLogger.showThreadName", "false");
             System.setProperty("org.slf4j.simpleLogger.showThreadId", "false");
             System.setProperty("org.slf4j.simpleLogger.levelInBrackets", "false");
+
+            // using cacheOutputStream so that we can restore System.err after SimpleLogger has been initialized
             System.setProperty("org.slf4j.simpleLogger.cacheOutputStream", "true");
             System.setProperty("org.slf4j.simpleLogger.logFile", "System.err");
 
-            // Call SimpleLogger.init() by reflection.
-            // Alternatively: move the CLI related classes into an own module, add
-            // slf4j-simple as a compile dependency and create a PmdSlf4jSimpleFriend class in
-            // the package org.slf4j.simple to gain access to this package-private init method.
-            ILoggerFactory loggerFactory = LoggerFactory.getILoggerFactory();
-            Class<? extends ILoggerFactory> loggerFactoryClass = loggerFactory.getClass();
-            try {
-                Class<?> simpleLoggerClass = loggerFactoryClass.getClassLoader().loadClass("org.slf4j.simple.SimpleLogger");
-                Method initMethod = simpleLoggerClass.getDeclaredMethod("init");
-                initMethod.setAccessible(true);
-                initMethod.invoke(null);
-            } catch (ReflectiveOperationException ex) {
-                original.println("Error while initializing logging: " + ex);
-            }
-
-            LoggerFactoryFriend.reset();
+            Level level = getAntLogLevel(antProject);
+            Slf4jSimpleConfiguration.reconfigureDefaultLogLevel(level);
 
             return level;
         } finally {
             System.setErr(original);
+        }
+    }
+
+    private static final class SimpleLoggerToAntBridge extends PrintStream {
+        private static final Map<String, Integer> ANT_LOG_LEVELS;
+
+        static {
+            ANT_LOG_LEVELS = new HashMap<>();
+            ANT_LOG_LEVELS.put(Level.ERROR.name(), Project.MSG_ERR);
+            ANT_LOG_LEVELS.put(Level.WARN.name(), Project.MSG_WARN);
+            ANT_LOG_LEVELS.put(Level.INFO.name(), Project.MSG_INFO);
+            ANT_LOG_LEVELS.put(Level.DEBUG.name(), Project.MSG_VERBOSE);
+            ANT_LOG_LEVELS.put(Level.TRACE.name(), Project.MSG_DEBUG);
+        }
+
+        private final StringBuilder buffer = new StringBuilder(100);
+        private final Project antProject;
+
+        SimpleLoggerToAntBridge(Project antProject, PrintStream original) {
+            super(original);
+            this.antProject = antProject;
+        }
+
+        @Override
+        public void println(String x) {
+            buffer.append(x).append(System.lineSeparator());
+        }
+
+        @Override
+        public void flush() {
+            String logLevel = determineLogLevel();
+            int antLogLevel = ANT_LOG_LEVELS.getOrDefault(logLevel, Project.MSG_INFO);
+            antProject.log(buffer.toString(), antLogLevel);
+            buffer.setLength(0);
+        }
+
+        private String determineLogLevel() {
+            int firstSpace = buffer.indexOf(" ");
+            if (firstSpace != -1) {
+                String level = buffer.substring(0, firstSpace);
+                buffer.delete(0, firstSpace + 1);
+                return level;
+            }
+            return DEFAULT_LEVEL.name();
         }
     }
 
