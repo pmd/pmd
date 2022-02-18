@@ -14,10 +14,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.apache.commons.io.FilenameUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
@@ -27,7 +27,7 @@ import net.sourceforge.pmd.util.database.DBURI;
 import net.sourceforge.pmd.util.database.SourceObject;
 
 public class CPD {
-    private static final Logger LOGGER = Logger.getLogger(CPD.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(CPD.class);
 
     private CPDConfiguration configuration;
 
@@ -114,19 +114,19 @@ public class CPD {
             DBMSMetadata dbmsmetadata = new DBMSMetadata(dburi);
 
             List<SourceObject> sourceObjectList = dbmsmetadata.getSourceObjectList();
-            LOGGER.log(Level.FINER, "Located {0} database source objects", sourceObjectList.size());
+            LOG.debug("Located {} database source objects", sourceObjectList.size());
 
             for (SourceObject sourceObject : sourceObjectList) {
                 // Add DBURI as a faux-file
                 String falseFilePath = sourceObject.getPseudoFileName();
-                LOGGER.log(Level.FINEST, "Adding database source object {0}", falseFilePath);
+                LOG.trace("Adding database source object {}", falseFilePath);
 
                 SourceCode sourceCode = configuration.sourceCodeFor(dbmsmetadata.getSourceCode(sourceObject),
                         falseFilePath);
                 add(sourceCode);
             }
         } catch (Exception sqlException) {
-            LOGGER.log(Level.SEVERE, "Problem with Input URI", sqlException);
+            LOG.error("Problem with Input URI", sqlException);
             throw new RuntimeException("Problem with DBURI: " + dburi, sqlException);
         }
     }

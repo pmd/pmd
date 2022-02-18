@@ -15,7 +15,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.logging.Logger;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -52,8 +51,6 @@ public class CoreCliTest {
         // create a few files
         srcDir = Files.createDirectories(root.resolve("src"));
         writeString(srcDir.resolve("someSource.dummy"), "dummy text");
-        
-        Logger.getLogger("net.sourceforge.pmd");
     }
 
 

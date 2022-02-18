@@ -34,4 +34,8 @@ public final class Slf4jSimpleConfiguration {
 
         LoggerFactoryFriend.reset();
     }
+    
+    public static void disableLogging(Class<?> clazz) {
+        System.setProperty("org.slf4j.simpleLogger.log." + clazz.getName(), "off");
+    }
 }
