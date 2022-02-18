@@ -266,7 +266,9 @@ public class LawOfDemeterRule extends AbstractJavaRulechainRule {
     }
 
     private int fieldAccessDegree(ASTNamedReferenceExpr expr) {
-        if (isRefToFieldOfThisClass(expr) || isPureData(expr)) {
+        if (isRefToFieldOfThisClass(expr)
+            || isPureData(expr)
+            || !isUsedInThisMethod(expr)) {
             return ACCESSIBLE;
         } else if (isArrayLengthFieldAccess(expr)) {
             return asForeignAsQualifier((ASTFieldAccess) expr);

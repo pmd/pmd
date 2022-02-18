@@ -201,11 +201,9 @@ public class Foo {
     </test-code>
     <test-code>
         <description>Instance methods on fields</description>
-        <expected-problems>6</expected-problems>
-        <expected-linenumbers>18,19,22,23,24,25</expected-linenumbers>
+        <expected-problems>4</expected-problems>
+        <expected-linenumbers>18,19,24,25</expected-linenumbers>
         <expected-messages>
-            <message>Access to field `a` on foreign value `b` (degree 2)</message>
-            <message>Access to field `a` on foreign value `this.b` (degree 2)</message>
             <message>Access to field `a` on foreign value `b` (degree 2)</message>
             <message>Access to field `a` on foreign value `this.b` (degree 2)</message>
             <message>Access to field `a` on foreign value `b` (degree 2)</message>
@@ -233,8 +231,8 @@ public class Foo {
         this.b.a.doSomething();      // warn
         foo(a);                      // ok: self field
         foo(this.a);                 // ok: self field
-        foo(b.a);                    // warn
-        foo(this.b.a);               // warn
+        foo(b.a);                    // ok: used in external method
+        foo(this.b.a);               // ok: used in external method
         foo(b.a.doSomething());      // warn
         foo(this.b.a.doSomething()); // warn
     }
