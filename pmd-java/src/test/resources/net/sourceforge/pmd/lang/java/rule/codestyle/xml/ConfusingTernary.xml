@@ -29,6 +29,33 @@ public class Foo {
     </test-code>
 
     <test-code>
+        <description>null check, ok (if) - #278</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    String bar2(Object a) {
+        if (a != null)
+            return a.toString();
+        else
+            return null;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>null check, ok (ternary) - #278</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    String bar(Object a) {
+        return a != null ? a.toString() : null;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
         <description>!= inside if, bad</description>
         <expected-problems>2</expected-problems>
         <code><![CDATA[
