@@ -9,7 +9,7 @@ import java.util.Map;
 
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
-import net.sourceforge.pmd.lang.java.rule.internal.JavaAstUtil;
+import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 
 /**
@@ -37,6 +37,6 @@ public class UseCollectionIsEmptyRule extends AbstractJavaRulechainRule {
     private static boolean isSizeZeroCheck(ASTMethodCall call) {
         return "size".equals(call.getMethodName())
             && call.getArguments().size() == 0
-            && JavaAstUtil.isZeroChecked(call);
+            && JavaRuleUtil.isZeroChecked(call);
     }
 }

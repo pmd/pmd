@@ -30,7 +30,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.BinaryOp;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
-import net.sourceforge.pmd.lang.java.rule.internal.JavaAstUtil;
+import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.types.InvocationMatcher;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
@@ -97,7 +97,7 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRulechainRule {
             if (varIds.count() == 1) {
                 ASTVariableDeclaratorId first = varIds.firstOrThrow();
                 if (ITERATOR_CALL.matchesCall(first.getInitializer())
-                    || JavaAstUtil.isLiteralInt(first.getInitializer(), 0)) {
+                    || JavaRuleUtil.isLiteralInt(first.getInitializer(), 0)) {
                     return first;
                 }
             }
@@ -146,7 +146,7 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRulechainRule {
         ASTInfixExpression condition = (ASTInfixExpression) guardCondition;
         BinaryOp op = condition.getOperator();
 
-        if (!JavaAstUtil.isReferenceToVar(condition.getLeftOperand(), indexVar.getSymbol())) {
+        if (!JavaRuleUtil.isReferenceToVar(condition.getLeftOperand(), indexVar.getSymbol())) {
             return null;
         }
 
@@ -159,7 +159,7 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRulechainRule {
             rhs = NodeStream.of(condition.getRightOperand())
                             .filterIs(ASTInfixExpression.class)
                             .filter(it -> it.getOperator() == BinaryOp.SUB)
-                            .filter(it -> JavaAstUtil.isLiteralInt(it.getRightOperand(), 1))
+                            .filter(it -> JavaRuleUtil.isLiteralInt(it.getRightOperand(), 1))
                             .map(ASTInfixExpression::getLeftOperand);
 
         }
@@ -209,14 +209,14 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRulechainRule {
         }
         ASTArrayAccess arrayAccess = (ASTArrayAccess) usage.getParent();
         return arrayAccess.getAccessType() == AccessType.READ
-            && JavaAstUtil.isReferenceToSameVar(arrayAccess.getQualifier(), arrayVar);
+            && JavaRuleUtil.isReferenceToSameVar(arrayAccess.getQualifier(), arrayVar);
     }
 
 
     private boolean isListGetIndex(ASTNamedReferenceExpr usage, ASTNamedReferenceExpr listVar) {
         return usage.getParent() instanceof ASTArgumentList
             && LIST_GET.matchesCall(usage.getParent().getParent())
-            && JavaAstUtil.isReferenceToSameVar(((ASTMethodCall) usage.getParent().getParent()).getQualifier(), listVar);
+            && JavaRuleUtil.isReferenceToSameVar(((ASTMethodCall) usage.getParent().getParent()).getQualifier(), listVar);
     }
 
 
@@ -231,7 +231,7 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRulechainRule {
                                      OccurrenceMatcher getMatcher) {
 
         for (ASTNamedReferenceExpr usage : index.getLocalUsages()) {
-            ASTExpression toplevel = JavaAstUtil.getTopLevelExpr(usage);
+            ASTExpression toplevel = JavaRuleUtil.getTopLevelExpr(usage);
             boolean isInUpdateOrCond =
                 loop.getUpdate() == toplevel.getParent()
                     || loop.getCondition() == toplevel;

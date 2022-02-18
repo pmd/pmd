@@ -31,7 +31,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodReference;
 import net.sourceforge.pmd.lang.java.ast.BinaryOp;
 import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
-import net.sourceforge.pmd.lang.java.rule.internal.JavaAstUtil;
+import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.TypeConversion;
 import net.sourceforge.pmd.lang.java.types.TypeOps;
@@ -157,7 +157,7 @@ public class UnnecessaryCastRule extends AbstractJavaRulechainRule {
         } else if (context.hasKind(ExprContextKind.STRING) && isInfixExprWithOperator(castExpr.getParent(), ADD)) {
 
             // inside string concatenation
-            return !TypeTestUtil.isA(String.class, JavaAstUtil.getOtherOperandIfInInfixExpr(castExpr))
+            return !TypeTestUtil.isA(String.class, JavaRuleUtil.getOtherOperandIfInInfixExpr(castExpr))
                 && !TypeTestUtil.isA(String.class, operandType);
 
         } else if (context.hasKind(ExprContextKind.NUMERIC) && castExpr.getParent() instanceof ASTInfixExpression) {
@@ -170,7 +170,7 @@ public class UnnecessaryCastRule extends AbstractJavaRulechainRule {
                 return castExpr == parent.getLeftOperand()
                         && !TypeOps.isStrictSubtype(operandType.unbox(), operandType.getTypeSystem().INT);
             } else if (isInfixExprWithOperator(parent, BINARY_PROMOTED_OPS)) {
-                ASTExpression otherOperand = JavaAstUtil.getOtherOperandIfInInfixExpr(castExpr);
+                ASTExpression otherOperand = JavaRuleUtil.getOtherOperandIfInInfixExpr(castExpr);
                 JTypeMirror otherType = otherOperand.getTypeMirror();
 
                 // Ie, the type that is taken by the binary promotion

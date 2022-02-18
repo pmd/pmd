@@ -12,7 +12,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTNullLiteral;
 import net.sourceforge.pmd.lang.java.ast.BinaryOp;
 import net.sourceforge.pmd.lang.java.ast.QualifiableExpression;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
-import net.sourceforge.pmd.lang.java.rule.internal.JavaAstUtil;
+import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 import net.sourceforge.pmd.lang.java.rule.internal.StablePathMatcher;
 
 public class BrokenNullCheckRule extends AbstractJavaRulechainRule {
@@ -46,7 +46,7 @@ public class BrokenNullCheckRule extends AbstractJavaRulechainRule {
             return;
         }
 
-        ASTExpression otherChild = JavaAstUtil.getOtherOperandIfInInfixExpr(nullLit);
+        ASTExpression otherChild = JavaRuleUtil.getOtherOperandIfInInfixExpr(nullLit);
         StablePathMatcher pathToNullVar = StablePathMatcher.matching(otherChild);
         if (pathToNullVar == null) {
             // cannot be matched, because it's not stable

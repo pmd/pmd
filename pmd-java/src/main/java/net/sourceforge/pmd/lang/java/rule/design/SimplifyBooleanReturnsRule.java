@@ -8,8 +8,8 @@ import static net.sourceforge.pmd.lang.java.ast.BinaryOp.CONDITIONAL_AND;
 import static net.sourceforge.pmd.lang.java.ast.BinaryOp.CONDITIONAL_OR;
 import static net.sourceforge.pmd.lang.java.ast.BinaryOp.isInfixExprWithOperator;
 import static net.sourceforge.pmd.lang.java.ast.BinaryOp.opsWithGeqPrecedence;
-import static net.sourceforge.pmd.lang.java.rule.internal.JavaAstUtil.areComplements;
-import static net.sourceforge.pmd.lang.java.rule.internal.JavaAstUtil.isBooleanLiteral;
+import static net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil.areComplements;
+import static net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil.isBooleanLiteral;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 

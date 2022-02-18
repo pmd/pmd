@@ -12,7 +12,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTList;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
-import net.sourceforge.pmd.lang.java.rule.internal.JavaAstUtil;
 import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 
 /**
@@ -47,7 +46,7 @@ public class InefficientStringBufferingRule extends AbstractJavaRulechainRule {
     private void checkArgument(ASTArgumentList argList, RuleContext ctx) {
         ASTExpression arg = ASTList.singleOrNull(argList);
 
-        if (JavaAstUtil.isStringConcatExpr(arg)
+        if (JavaRuleUtil.isStringConcatExpr(arg)
             // ignore concatenations that produce constants
             && !arg.isCompileTimeConstant()) {
             addViolation(ctx, arg);

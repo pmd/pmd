@@ -20,7 +20,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTSwitchFallthroughBranch;
 import net.sourceforge.pmd.lang.java.ast.ASTTryStatement;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
-import net.sourceforge.pmd.lang.java.rule.internal.JavaAstUtil;
+import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 
 public class UnnecessaryReturnRule extends AbstractJavaRulechainRule {
 
@@ -63,11 +63,11 @@ public class UnnecessaryReturnRule extends AbstractJavaRulechainRule {
         // test is in the test file.
 
         JavaNode parent = it.getParent();
-        if (JavaAstUtil.isLastChild(it)) {
+        if (JavaRuleUtil.isLastChild(it)) {
             if (parent instanceof ASTSwitchArrowBranch) {
                 return !isBranchOfSwitchExpr((ASTSwitchBranch) parent);
             } else if (parent instanceof ASTSwitchFallthroughBranch) {
-                return JavaAstUtil.isLastChild(parent) && !isBranchOfSwitchExpr((ASTSwitchBranch) parent);
+                return JavaRuleUtil.isLastChild(parent) && !isBranchOfSwitchExpr((ASTSwitchBranch) parent);
             } else {
                 return !(parent instanceof ASTLoopStatement); // returns break the loop so are not unnecessary (though it could be replaced by break)
             }

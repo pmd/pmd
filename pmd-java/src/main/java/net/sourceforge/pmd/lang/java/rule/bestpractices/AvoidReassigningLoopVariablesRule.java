@@ -33,7 +33,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
-import net.sourceforge.pmd.lang.java.rule.internal.JavaAstUtil;
+import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.util.StringUtil.CaseConvention;
 
@@ -92,7 +92,7 @@ public class AvoidReassigningLoopVariablesRule extends AbstractJavaRulechainRule
             return data;
         }
         ASTForUpdate update = loopStmt.getFirstChildOfType(ASTForUpdate.class);
-        NodeStream<ASTVariableDeclaratorId> loopVars = JavaAstUtil.getLoopVariables(loopStmt);
+        NodeStream<ASTVariableDeclaratorId> loopVars = JavaRuleUtil.getLoopVariables(loopStmt);
         if (behavior == ForReassignOption.DENY) {
             for (ASTVariableDeclaratorId loopVar : loopVars) {
                 for (ASTNamedReferenceExpr usage : loopVar.getLocalUsages()) {
@@ -106,7 +106,7 @@ public class AvoidReassigningLoopVariablesRule extends AbstractJavaRulechainRule
             }
         } else {
             Set<String> loopVarNames = loopVars.collect(Collectors.mapping(ASTVariableDeclaratorId::getName, Collectors.toSet()));
-            Set<String> labels = JavaAstUtil.getStatementLabels(loopStmt);
+            Set<String> labels = JavaRuleUtil.getStatementLabels(loopStmt);
             new ControlFlowCtx(false, loopVarNames, (RuleContext) data, labels, false, false).roamStatementsForExit(loopStmt.getBody());
         }
         return null;
@@ -211,8 +211,8 @@ public class AvoidReassigningLoopVariablesRule extends AbstractJavaRulechainRule
             final boolean onlyConsiderWrite = guarded || mayExit;
             node.descendants(ASTNamedReferenceExpr.class)
                 .filter(it -> loopVarNames.contains(it.getName()))
-                .filter(it -> onlyConsiderWrite ? JavaAstUtil.isVarAccessStrictlyWrite(it)
-                                                : JavaAstUtil.isVarAccessReadAndWrite(it))
+                .filter(it -> onlyConsiderWrite ? JavaRuleUtil.isVarAccessStrictlyWrite(it)
+                                                : JavaRuleUtil.isVarAccessReadAndWrite(it))
                 .forEach(it -> addViolation(ruleCtx, it, it.getName()));
         }
     }

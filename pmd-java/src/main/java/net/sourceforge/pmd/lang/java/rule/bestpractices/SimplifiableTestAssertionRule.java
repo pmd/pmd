@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
-import static net.sourceforge.pmd.lang.java.rule.internal.JavaAstUtil.isBooleanLiteral;
+import static net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil.isBooleanLiteral;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -19,7 +19,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpression;
 import net.sourceforge.pmd.lang.java.ast.BinaryOp;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
-import net.sourceforge.pmd.lang.java.rule.internal.JavaAstUtil;
+import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 import net.sourceforge.pmd.lang.java.rule.internal.TestFrameworksUtil;
 import net.sourceforge.pmd.lang.java.types.InvocationMatcher;
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind;
@@ -47,8 +47,8 @@ public class SimplifiableTestAssertionRule extends AbstractJavaRulechainRule {
             if (eq != null) {
                 boolean isPositive = isPositiveEqualityExpr(eq) == isAssertTrue;
                 final String suggestion;
-                if (JavaAstUtil.isNullLiteral(eq.getLeftOperand())
-                    || JavaAstUtil.isNullLiteral(eq.getRightOperand())) {
+                if (JavaRuleUtil.isNullLiteral(eq.getLeftOperand())
+                    || JavaRuleUtil.isNullLiteral(eq.getRightOperand())) {
                     // use assertNull/assertNonNull
                     suggestion = isPositive ? "assertNull" : "assertNonNull";
                 } else {
@@ -140,7 +140,7 @@ public class SimplifiableTestAssertionRule extends AbstractJavaRulechainRule {
     }
 
     private static ASTExpression getNegatedExprOperand(ASTExpression node) {
-        if (JavaAstUtil.isBooleanNegation(node)) {
+        if (JavaRuleUtil.isBooleanNegation(node)) {
             return ((ASTUnaryExpression) node).getOperand();
         }
         return null;

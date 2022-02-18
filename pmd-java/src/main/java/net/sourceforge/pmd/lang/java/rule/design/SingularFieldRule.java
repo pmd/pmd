@@ -29,7 +29,6 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.rule.internal.DataflowPass;
 import net.sourceforge.pmd.lang.java.rule.internal.DataflowPass.DataflowResult;
 import net.sourceforge.pmd.lang.java.rule.internal.DataflowPass.ReachingDefinitionSet;
-import net.sourceforge.pmd.lang.java.rule.internal.JavaAstUtil;
 import net.sourceforge.pmd.lang.java.rule.internal.JavaPropertyUtil;
 import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
@@ -74,14 +73,14 @@ public class SingularFieldRule extends AbstractJavaRulechainRule {
     @Override
     public Object visitJavaNode(JavaNode node, Object data) {
         ASTAnyTypeDeclaration enclosingType = (ASTAnyTypeDeclaration) node;
-        if (JavaAstUtil.hasAnyAnnotation(enclosingType, INVALIDATING_CLASS_ANNOT)) {
+        if (JavaRuleUtil.hasAnyAnnotation(enclosingType, INVALIDATING_CLASS_ANNOT)) {
             return null;
         }
 
         DataflowResult dataflow = null;
         for (ASTFieldDeclaration fieldDecl : enclosingType.getDeclarations(ASTFieldDeclaration.class)) {
             if (!mayBeSingular(fieldDecl)
-                || JavaAstUtil.hasAnyAnnotation(fieldDecl, getProperty(IGNORED_FIELD_ANNOTATIONS))) {
+                || JavaRuleUtil.hasAnyAnnotation(fieldDecl, getProperty(IGNORED_FIELD_ANNOTATIONS))) {
                 continue;
             }
             for (ASTVariableDeclaratorId varId : fieldDecl.getVarIds()) {
@@ -110,7 +109,7 @@ public class SingularFieldRule extends AbstractJavaRulechainRule {
         //They're valid if they don't escape the scope of their method, eg by being in a nested class or lambda
         Map<ASTBodyDeclaration, List<ASTNamedReferenceExpr>> usagesByScope = new HashMap<>();
         for (ASTNamedReferenceExpr usage : varId.getLocalUsages()) {
-            if (usage.getEnclosingType() != fieldOwner || !JavaAstUtil.isThisFieldAccess(usage)) {
+            if (usage.getEnclosingType() != fieldOwner || !JavaRuleUtil.isThisFieldAccess(usage)) {
                 return false; // give up
             }
             ASTBodyDeclaration enclosing = getEnclosingBodyDecl(fieldOwner, usage);

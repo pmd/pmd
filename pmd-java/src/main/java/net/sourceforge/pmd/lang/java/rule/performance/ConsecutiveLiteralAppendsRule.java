@@ -32,7 +32,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
 import net.sourceforge.pmd.lang.java.ast.InvocationNode;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
-import net.sourceforge.pmd.lang.java.rule.internal.JavaAstUtil;
 import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
@@ -227,7 +226,7 @@ public class ConsecutiveLiteralAppendsRule extends AbstractJavaRulechainRule {
      *         Const.WORLD)
      */
     private boolean isAdditive(InvocationNode n) {
-        return JavaAstUtil.isStringConcatExpr(n.getArguments().getFirstChild());
+        return JavaRuleUtil.isStringConcatExpr(n.getArguments().getFirstChild());
     }
 
     /**

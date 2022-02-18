@@ -49,22 +49,22 @@ public class JavaRuleUtilTest extends BaseNonParserTest {
     public void testFlattenConcatOperands() {
         ASTExpression e = parseExpr("s1+s2+s3");
 
-        assertTrue(JavaAstUtil.isStringConcatExpr(e));
+        assertTrue(JavaRuleUtil.isStringConcatExpr(e));
         assertEquals(e.descendants(ASTVariableAccess.class).toList(),
-                     JavaAstUtil.flattenOperands(e).toList());
+                     JavaRuleUtil.flattenOperands(e).toList());
     }
 
     @Test
     public void testFlattenConcatOperandsRespectsTyping() {
         ASTInfixExpression e = (ASTInfixExpression) parseExpr("i+j+s2+s3");
-        assertTrue(JavaAstUtil.isStringConcatExpr(e));
+        assertTrue(JavaRuleUtil.isStringConcatExpr(e));
         ASTInfixExpression left = (ASTInfixExpression) e.getLeftOperand();
-        assertTrue(JavaAstUtil.isStringConcatExpr(left));
+        assertTrue(JavaRuleUtil.isStringConcatExpr(left));
 
         //                      This is (i+j)
         //                  vvvvvvvvvvvvvvvvvvvvv
         assertEquals(listOf(left.getLeftOperand(), left.getRightOperand(), e.getRightOperand()),
-                     JavaAstUtil.flattenOperands(e).toList());
+                     JavaRuleUtil.flattenOperands(e).toList());
     }
 
 }
