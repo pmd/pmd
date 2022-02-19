@@ -18,6 +18,8 @@ This is a {{ site.pmd.release_type }} release.
 
 *   misc
     *   [#3759](https://github.com/pmd/pmd/issues/3759): \[lang-test] Upgrade dokka maven plugin to 1.4.32
+*   plsql
+    *   [#3746](https://github.com/pmd/pmd/issues/3746): \[plsql] Parsing exception "Less than or equal to/Greater than or equal to" operators in DML statements
 
 ### API Changes
 
