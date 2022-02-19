@@ -171,13 +171,13 @@ public class CoreCliTest {
     @Test
     public void debugLogging() {
         runPmdSuccessfully("--debug", "--no-cache", "--dir", srcDir, "--rulesets", DUMMY_RULESET);
-        errStreamCaptor.getLog().contains("[main] DEBUG net.sourceforge.pmd.PMD - Loglevel is at DEBUG");
+        errStreamCaptor.getLog().contains("[main] DEBUG net.sourceforge.pmd.PMD - Log level is at DEBUG");
     }
 
     @Test
     public void defaultLogging() {
         runPmdSuccessfully("--no-cache", "--dir", srcDir, "--rulesets", DUMMY_RULESET);
-        errStreamCaptor.getLog().contains("[main] INFO net.sourceforge.pmd.PMD - Loglevel is at INFO");
+        errStreamCaptor.getLog().contains("[main] INFO net.sourceforge.pmd.PMD - Log level is at INFO");
     }
 
 
