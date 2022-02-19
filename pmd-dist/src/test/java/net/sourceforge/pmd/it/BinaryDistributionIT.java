@@ -15,7 +15,6 @@ import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import net.sourceforge.pmd.PMDVersion;
@@ -70,7 +69,6 @@ public class BinaryDistributionIT extends AbstractBinaryDistributionTest {
     }
 
     @Test
-    @Ignore("Java rules have not been updated yet")
     public void runPMD() throws Exception {
         String srcDir = new File(".", "src/test/resources/sample-source/java/").getAbsolutePath();
 
