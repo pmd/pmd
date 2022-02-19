@@ -4,6 +4,9 @@
 
 package net.sourceforge.pmd.cli;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsStringIgnoringCase;
+import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
@@ -15,16 +18,18 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.logging.Logger;
 
+import org.hamcrest.Matcher;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.contrib.java.lang.system.RestoreSystemProperties;
 import org.junit.contrib.java.lang.system.SystemErrRule;
+import org.junit.contrib.java.lang.system.SystemOutRule;
 import org.junit.rules.TemporaryFolder;
 
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.PMD.StatusCode;
 
 /**
  *
@@ -39,7 +44,9 @@ public class CoreCliTest {
     @Rule
     public RestoreSystemProperties restoreSystemProperties = new RestoreSystemProperties();
     @Rule
-    public SystemErrRule loggingRule = new SystemErrRule().enableLog().muteForSuccessfulTests();
+    public final SystemOutRule outStreamCaptor = new SystemOutRule().muteForSuccessfulTests().enableLog();
+    @Rule
+    public final SystemErrRule errStreamCaptor = new SystemErrRule().muteForSuccessfulTests().enableLog();
 
     private Path srcDir;
 
@@ -52,8 +59,6 @@ public class CoreCliTest {
         // create a few files
         srcDir = Files.createDirectories(root.resolve("src"));
         writeString(srcDir.resolve("someSource.dummy"), "dummy text");
-        
-        Logger.getLogger("net.sourceforge.pmd");
     }
 
 
@@ -119,11 +124,11 @@ public class CoreCliTest {
         runPmdSuccessfully("-no-cache", "-dir", srcDir, "-rulesets", DUMMY_RULESET, "-reportfile", reportFile);
 
         assertTrue("Report file should have been created", Files.exists(reportFile));
-        assertTrue(loggingRule.getLog().contains("Some deprecated options were used on the command-line, including -rulesets"));
-        assertTrue(loggingRule.getLog().contains("Consider replacing it with --rulesets (or -R)"));
+        assertTrue(errStreamCaptor.getLog().contains("Some deprecated options were used on the command-line, including -rulesets"));
+        assertTrue(errStreamCaptor.getLog().contains("Consider replacing it with --rulesets (or -R)"));
         // only one parameter is logged
-        assertFalse(loggingRule.getLog().contains("Some deprecated options were used on the command-line, including -reportfile"));
-        assertFalse(loggingRule.getLog().contains("Consider replacing it with --report-file"));
+        assertFalse(errStreamCaptor.getLog().contains("Some deprecated options were used on the command-line, including -reportfile"));
+        assertFalse(errStreamCaptor.getLog().contains("Consider replacing it with --report-file"));
     }
 
     /**
@@ -166,20 +171,33 @@ public class CoreCliTest {
     @Test
     public void debugLogging() {
         runPmdSuccessfully("--debug", "--no-cache", "--dir", srcDir, "--rulesets", DUMMY_RULESET);
-        loggingRule.getLog().contains("[main] DEBUG net.sourceforge.pmd.PMD - Loglevel is at DEBUG");
+        errStreamCaptor.getLog().contains("[main] DEBUG net.sourceforge.pmd.PMD - Loglevel is at DEBUG");
     }
 
     @Test
     public void defaultLogging() {
         runPmdSuccessfully("--no-cache", "--dir", srcDir, "--rulesets", DUMMY_RULESET);
-        loggingRule.getLog().contains("[main] INFO net.sourceforge.pmd.PMD - Loglevel is at INFO");
+        errStreamCaptor.getLog().contains("[main] INFO net.sourceforge.pmd.PMD - Loglevel is at INFO");
     }
 
 
+    @Test
+    public void testWrongCliOptionsDoNotPrintUsage() {
+        String[] args = { "-invalid" };
+        PmdParametersParseResult params = PmdParametersParseResult.extractParameters(args);
+        assertTrue("Expected invalid args", params.isError());
+
+        StatusCode code = PMD.runPmd(args);
+        assertEquals(StatusCode.ERROR, code);
+        assertThatErrAndOut(not(containsStringIgnoringCase("Available report formats and")));
+    }
 
     // utilities
 
-
+    private void assertThatErrAndOut(Matcher<String> matcher) {
+        assertThat("stdout", outStreamCaptor.getLog(), matcher);
+        assertThat("stderr", errStreamCaptor.getLog(), matcher);
+    }
 
     private Path tempRoot() {
         return tempDir.getRoot().toPath();

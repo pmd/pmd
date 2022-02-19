@@ -231,6 +231,35 @@ TOKEN_MGR_DECLS : {
   List<ParsingExclusion> exclusions = new ArrayList<ParsingExclusion>();
 }
 
+// add names to SINGLE CHARACTER tokens
+// multiple character operators are sequences of tokens.
+TOKEN: {
+  < LPAREN: "(" >
+| < RPAREN: ")" >
+| < LBRACE: "{" >
+| < RBRACE: "}" >
+| < LBRACKET: "[" >
+| < RBRACKET: "]" >
+| < SEMICOLON: ";" >
+| < COMMA: "," >
+| < DOT: "." >
+| < AROBASE: "@" >
+| < ASSIGN: "=" >
+| < LT: "<" >
+| < BANG: "!" >
+| < TILDE: "~" >
+| < HOOK: "?" >
+| < COLON: ":" >
+| < PLUSSIGN: "+" >
+| < MINUSSIGN: "-" >
+| < STAR: "*" >
+| < SLASH: "/" >
+| < BIT_AND: "&" >
+| < BIT_OR: "|" >
+| < XOR: "^" >
+| < REM: "%" >
+}
+
 /**
  * 2006-05-22 - Matthias Hendler - Added parsing of triggers and global functions/procedures
  *                                 Refactored printing of custom tags into the XML/DOM.
@@ -1575,18 +1604,26 @@ ASTInCondition InCondition() :
     { return jjtThis; }
 }
 
-ASTComparisonCondition ComparisonCondition() :
+private String ComparisonOp() #void :
 {}
 {
-    (
-    // SimpleComparisonCondition
-      LOOKAHEAD(3) (SqlExpression() ( "=" | "!=" | "^=" | "<>" | ">" | "<" | ">=" | "<=" ) { jjtThis.setOperator(token.getImage()); } SqlExpression() )
-    | LOOKAHEAD(3) ( "(" SqlExpression() ("," SqlExpression())* ")" ( "=" | "!=" | "^=" | "<>" ) { jjtThis.setOperator(token.getImage()); } "(" ( LOOKAHEAD(3) ExpressionList() | LOOKAHEAD(3) Subquery() ) ")" )
+      "=" {return "=";}
+    | "!" "=" {return "!=";}
+    | "^" "=" {return "^=";}
+    | "<" ( "=" {return "<=";} | ">" {return "<>";} )? {return "<";}
+    | ">" ( "=" {return ">=";} )? {return ">";}
+}
 
-    // GroupComparisonCondition
-    | LOOKAHEAD(3) (SqlExpression() ( "=" | "!=" | "^=" | "<>" | ">" | "<" | ">=" | "<=" ) { jjtThis.setOperator(token.getImage()); } ( <ANY> | <SOME> | <ALL> ) "(" ( LOOKAHEAD(3) ExpressionListSingle() | LOOKAHEAD(3) Subquery() ) ")" )
-    | LOOKAHEAD(3) ( "(" SqlExpression() ("," SqlExpression())* ")" ( "=" | "!=" | "^=" | "<>" ) { jjtThis.setOperator(token.getImage()); } ( <ANY> | <SOME> | <ALL> ) "(" ( LOOKAHEAD(3) ExpressionListMultiple() ("," ExpressionListMultiple())* | LOOKAHEAD(3) Subquery() ) ")" )
-    )
+ASTComparisonCondition ComparisonCondition() :
+{String op;}
+{
+    (LOOKAHEAD(3) SqlExpression() | ExpressionListMultiple() )
+    op=ComparisonOp() { jjtThis.setOperator(op); }
+    ( <ANY> | <SOME> | <ALL> )?
+    (LOOKAHEAD(3) "(" Subquery() ")"
+    |LOOKAHEAD(3) "(" ExpressionListSingle() ")"
+    |LOOKAHEAD(3) "(" ExpressionListMultiple() ("," ExpressionListMultiple())* ")"
+    |LOOKAHEAD(3) SqlExpression())
     { return jjtThis; }
 }
 
@@ -3151,17 +3188,17 @@ ASTEqualityExpression EqualityExpression() #EqualityExpression(>1) :
 {
   //RelationalExpression() ( ( "=" | "!=" | "<>" | <IS>) RelationalExpression() )*
   (
+
+	  simpleNode=RelationalExpression()
+	  {sb.append(simpleNode.getImage());}
 	  (
-	    simpleNode = RelationalExpression()
-	  ) {sb.append(simpleNode.getImage());}
-	  (
-	   ( ("=" ) {sb.append(" = ");}
-	   | ("!" "=" ) {sb.append(" != ");}
+	   ( "=" {sb.append(" = ");}
+	   | "!" "=" {sb.append(" != ");}
 	   // Now unde RelationalExpression | ("<" ">" ) {sb.append(" <> ");}
-	   | (<IS>) {sb.append(" IS ");})
-	   (
-	   simpleNode = RelationalExpression()
-	   ) {sb.append(simpleNode.getImage());}
+	   | <IS> {sb.append(" IS ");}
+	   )
+	   simpleNode=RelationalExpression()
+	   {sb.append(simpleNode.getImage());}
 	  )*
   )
  {
@@ -3181,17 +3218,16 @@ ASTRelationalExpression RelationalExpression() #RelationalExpression(>1) :
   (
     (
 
-      (
-          ("<>" { sb.append(" <> "); } )
-        | ("<=" { sb.append(" <= "); } )
-        | (">=" { sb.append(" >= "); } )
-        | ("!=" { sb.append(" != "); } )
-        | ("~=" { sb.append(" ~= "); } )
-        | ("^=" { sb.append(" ^= "); } )
-        | ("<" { sb.append(" < "); } )
-        | (">" { sb.append(" > "); } )
+      (  LOOKAHEAD(2) "<" ">" { sb.append(" <> "); }
+        |LOOKAHEAD(2) "<" "=" { sb.append(" <= "); }
+        |LOOKAHEAD(2) ">" "=" { sb.append(" >= "); }
+        // then lookahead(1) is enough
+        | "<" { sb.append(" < "); }
+        | ">" { sb.append(" > "); }
+        | "!" "=" { sb.append(" != "); }
+        | "~" "=" { sb.append(" ~= "); }
+        | "^" "=" { sb.append(" ^= "); }
       )
-
       { sb.append(" "); }
       | [(<NOT>) { sb.append(" NOT "); }]
       (
