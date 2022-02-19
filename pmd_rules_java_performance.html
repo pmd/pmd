@@ -2571,13 +2571,22 @@ threadsafe StringBuffer is recommended to avoid this.</p>
 <p><strong>Example(s):</strong></p>
 
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
-    <span class="kt">void</span> <span class="nf">bar</span><span class="o">()</span> <span class="o">{</span>
-        <span class="nc">String</span> <span class="n">a</span><span class="o">;</span>
-        <span class="n">a</span> <span class="o">=</span> <span class="s">"foo"</span><span class="o">;</span>
-        <span class="n">a</span> <span class="o">+=</span> <span class="s">" bar"</span><span class="o">;</span>
-        <span class="c1">// better would be:</span>
-        <span class="c1">// StringBuilder a = new StringBuilder("foo");</span>
-        <span class="c1">// a.append(" bar");</span>
+    <span class="nc">String</span> <span class="nf">inefficientConcatenation</span><span class="o">()</span> <span class="o">{</span>
+        <span class="nc">String</span> <span class="n">result</span> <span class="o">=</span> <span class="s">""</span><span class="o">;</span>
+        <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+            <span class="c1">// warning: this concatenation will create one new StringBuilder per iteration</span>
+            <span class="n">result</span> <span class="o">+=</span> <span class="n">getStringFromSomeWhere</span><span class="o">(</span><span class="n">i</span><span class="o">);</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="n">result</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="nc">String</span> <span class="nf">efficientConcatenation</span><span class="o">()</span> <span class="o">{</span>
+        <span class="c1">// better would be to use one StringBuilder for the entire loop</span>
+        <span class="nc">StringBuilder</span> <span class="n">result</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">StringBuilder</span><span class="o">();</span>
+        <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+            <span class="n">result</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="n">getStringFromSomeWhere</span><span class="o">(</span><span class="n">i</span><span class="o">));</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="n">result</span><span class="o">.</span><span class="na">toString</span><span class="o">();</span>
     <span class="o">}</span>
 <span class="o">}</span>
 </code></pre></div></div>
@@ -2626,7 +2635,7 @@ or StringBuffer.toString().length() == …</p>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2022 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Feb 18, 2022 <br />
+ Site last generated: Feb 19, 2022 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
