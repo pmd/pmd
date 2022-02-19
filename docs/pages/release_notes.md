@@ -16,14 +16,14 @@ This is a {{ site.pmd.release_type }} release.
 
 ### Fixed Issues
 
-*   java-performance
-    *   [#3374](https://github.com/pmd/pmd/issues/3374): \[java] UseStringBufferForStringAppends: Wrong example in documentation
-*   misc
-    *   [#3759](https://github.com/pmd/pmd/issues/3759): \[lang-test] Upgrade dokka maven plugin to 1.4.32
 *   java
     *   [#3698](https://github.com/pmd/pmd/issues/3697): \[java] Parsing error with try-with-resources and qualified resource
 *   java-codestyle
     *   [#278](https://github.com/pmd/pmd/issues/278): \[java] ConfusingTernary should treat `!= null` as positive condition
+*   java-performance
+    *   [#3374](https://github.com/pmd/pmd/issues/3374): \[java] UseStringBufferForStringAppends: Wrong example in documentation
+*   misc
+    *   [#3759](https://github.com/pmd/pmd/issues/3759): \[lang-test] Upgrade dokka maven plugin to 1.4.32
 
 ### API Changes
 
