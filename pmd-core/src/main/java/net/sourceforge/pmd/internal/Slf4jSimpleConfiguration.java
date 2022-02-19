@@ -13,9 +13,17 @@ import org.slf4j.bridge.SLF4JBridgeHandler;
 import org.slf4j.event.Level;
 
 public final class Slf4jSimpleConfiguration {
+    private static final String SIMPLE_LOGGER_FACTORY_CLASS = "org.slf4j.simple.SimpleLoggerFactory";
+    private static final String SIMPLE_LOGGER_CLASS = "org.slf4j.simple.SimpleLogger";
+
     private Slf4jSimpleConfiguration() { }
 
     public static void reconfigureDefaultLogLevel(Level level) {
+        if (!isSimpleLogger()) {
+            // do nothing, not even set system properties, if not Simple Logger is in use
+            return;
+        }
+
         System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", level.toString());
 
         // Call SimpleLogger.init() by reflection.
@@ -25,7 +33,7 @@ public final class Slf4jSimpleConfiguration {
         ILoggerFactory loggerFactory = LoggerFactory.getILoggerFactory();
         Class<? extends ILoggerFactory> loggerFactoryClass = loggerFactory.getClass();
         try {
-            Class<?> simpleLoggerClass = loggerFactoryClass.getClassLoader().loadClass("org.slf4j.simple.SimpleLogger");
+            Class<?> simpleLoggerClass = loggerFactoryClass.getClassLoader().loadClass(SIMPLE_LOGGER_CLASS);
             Method initMethod = simpleLoggerClass.getDeclaredMethod("init");
             initMethod.setAccessible(true);
             initMethod.invoke(null);
@@ -37,7 +45,17 @@ public final class Slf4jSimpleConfiguration {
     }
 
     public static void disableLogging(Class<?> clazz) {
+        if (!isSimpleLogger()) {
+            // do nothing, not even set system properties, if not Simple Logger is in use
+            return;
+        }
+
         System.setProperty("org.slf4j.simpleLogger.log." + clazz.getName(), "off");
+    }
+
+    public static boolean isSimpleLogger() {
+        ILoggerFactory loggerFactory = LoggerFactory.getILoggerFactory();
+        return SIMPLE_LOGGER_FACTORY_CLASS.equals(loggerFactory.getClass().getName());
     }
 
     public static void installJulBridge() {

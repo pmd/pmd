@@ -35,6 +35,11 @@ public final class Slf4jSimpleConfigurationForAnt {
 
     @SuppressWarnings("PMD.CloseResource")
     public static Level reconfigureLoggingForAnt(Project antProject) {
+        if (!Slf4jSimpleConfiguration.isSimpleLogger()) {
+            // do nothing, not even set system properties, if not Simple Logger is in use
+            return DEFAULT_LEVEL;
+        }
+
         PrintStream original = System.err;
         try {
             System.setErr(new SimpleLoggerToAntBridge(antProject, original));
