@@ -16,6 +16,8 @@ This is a {{ site.pmd.release_type }} release.
 
 ### Fixed Issues
 
+*   core
+    *   [#3427](https://github.com/pmd/pmd/issues/3427): \[core] Stop printing CLI usage text when exiting due to invalid parameters
 *   java
     *   [#3698](https://github.com/pmd/pmd/issues/3697): \[java] Parsing error with try-with-resources and qualified resource
 *   java-codestyle

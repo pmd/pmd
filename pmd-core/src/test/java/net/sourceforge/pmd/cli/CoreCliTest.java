@@ -4,6 +4,9 @@
 
 package net.sourceforge.pmd.cli;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsStringIgnoringCase;
+import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
@@ -17,13 +20,17 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.logging.Logger;
 
+import org.hamcrest.Matcher;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.contrib.java.lang.system.RestoreSystemProperties;
+import org.junit.contrib.java.lang.system.SystemErrRule;
+import org.junit.contrib.java.lang.system.SystemOutRule;
 import org.junit.rules.TemporaryFolder;
 
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.PMD.StatusCode;
 import net.sourceforge.pmd.junit.JavaUtilLoggingRule;
 
 /**
@@ -40,6 +47,10 @@ public class CoreCliTest {
     public RestoreSystemProperties restoreSystemProperties = new RestoreSystemProperties();
     @Rule
     public JavaUtilLoggingRule loggingRule = new JavaUtilLoggingRule(PMD.class.getPackage().getName()).mute();
+    @Rule
+    public final SystemOutRule outStreamCaptor = new SystemOutRule();
+    @Rule
+    public final SystemErrRule errStreamCaptor = new SystemErrRule();
 
     private Path srcDir;
 
@@ -164,6 +175,29 @@ public class CoreCliTest {
     }
 
 
+    @Test
+    public void testWrongCliOptionsDoNotPrintUsage() {
+        String[] args = { "-invalid" };
+        PmdParametersParseResult params = PmdParametersParseResult.extractParameters(args);
+        assertTrue("Expected invalid args", params.isError());
+
+        startCapturingErrAndOut();
+        StatusCode code = PMD.runPmd(args);
+        assertEquals(StatusCode.ERROR, code);
+        assertThatErrAndOut(not(containsStringIgnoringCase("Available report formats and")));
+    }
+
+    private void assertThatErrAndOut(Matcher<String> matcher) {
+        assertThat("stdout", outStreamCaptor.getLog(), matcher);
+        assertThat("stderr", errStreamCaptor.getLog(), matcher);
+    }
+
+    private void startCapturingErrAndOut() {
+        outStreamCaptor.enableLog();
+        errStreamCaptor.enableLog();
+        outStreamCaptor.mute();
+        errStreamCaptor.mute();
+    }
 
     // utilities
 
