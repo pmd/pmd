@@ -118,8 +118,8 @@ public final class CPDCommandLineInterface {
                 setStatusCodeOrExit(NO_ERRORS_STATUS);
             }
         } catch (IOException | RuntimeException e) {
-            e.printStackTrace();
-            LOGGER.severe(CliMessages.errorDetectedMessage(1, "CPD"));
+            LOG.debug(e.toString(), e);
+            LOG.error(CliMessages.errorDetectedMessage(1, "CPD"));
             setStatusCodeOrExit(ERROR_STATUS);
         }
     }
