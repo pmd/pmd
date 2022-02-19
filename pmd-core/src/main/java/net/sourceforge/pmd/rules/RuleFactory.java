@@ -13,10 +13,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -46,7 +46,7 @@ import net.sourceforge.pmd.util.ResourceLoader;
 @Deprecated
 public class RuleFactory {
 
-    private static final Logger LOG = Logger.getLogger(RuleFactory.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(RuleFactory.class);
 
     private static final String DEPRECATED = "deprecated";
     private static final String NAME = "name";
@@ -207,7 +207,7 @@ public class RuleFactory {
         try {
             rule = builder.build();
         } catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
-            LOG.log(Level.SEVERE, "Error instantiating a rule", e);
+            LOG.error("Error instantiating a rule", e);
             throw new RuntimeException(e);
         }
 

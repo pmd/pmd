@@ -32,6 +32,7 @@ import net.sourceforge.pmd.RuleSetLoader;
 import net.sourceforge.pmd.ant.Formatter;
 import net.sourceforge.pmd.ant.PMDTask;
 import net.sourceforge.pmd.ant.SourceLanguage;
+import net.sourceforge.pmd.internal.Slf4jSimpleConfiguration;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
@@ -241,6 +242,7 @@ public class PMDTaskImpl {
 
     public void execute() throws BuildException {
         Level level = Slf4jSimpleConfigurationForAnt.reconfigureLoggingForAnt(project);
+        Slf4jSimpleConfiguration.installJulBridge();
         // need to reload the logger with the new configuration
         Logger log = LoggerFactory.getLogger(PMDTaskImpl.class);
         log.atLevel(level).log("Logging is at {}", level);

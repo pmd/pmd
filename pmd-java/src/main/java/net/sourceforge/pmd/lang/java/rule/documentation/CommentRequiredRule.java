@@ -11,7 +11,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.java.ast.ASTBodyDeclaration;
@@ -35,7 +37,7 @@ import net.sourceforge.pmd.properties.PropertyFactory;
  * @author Brian Remedios
  */
 public class CommentRequiredRule extends AbstractJavaRulechainRule {
-    private static final Logger LOG = Logger.getLogger(CommentRequiredRule.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(CommentRequiredRule.class);
 
     // Used to pretty print a message
     private static final Map<String, String> DESCRIPTOR_NAME_TO_COMMENT_TYPE = new HashMap<>();
@@ -101,7 +103,7 @@ public class CommentRequiredRule extends AbstractJavaRulechainRule {
         boolean classCommentRequirementValueOverridden = classCommentRequirementValue != CommentRequirement.Required;
 
         if (headerCommentRequirementValueOverridden && !classCommentRequirementValueOverridden) {
-            LOG.warning("Rule CommentRequired uses deprecated property 'headerCommentRequirement'. "
+            LOG.warn("Rule CommentRequired uses deprecated property 'headerCommentRequirement'. "
                     + "Future versions of PMD will remove support for this property. "
                     + "Please use 'classCommentRequirement' instead!");
             propertyValues.put(CLASS_CMT_REQUIREMENT_DESCRIPTOR, headerCommentRequirementValue);

@@ -4,11 +4,6 @@
 
 package net.sourceforge.pmd.lang.apex;
 
-import java.util.logging.Handler;
-import java.util.logging.LogRecord;
-import java.util.logging.Logger;
-
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
@@ -27,32 +22,11 @@ public class DefaultRulesetTest {
         Assert.assertNotNull(ruleset);
     }
 
-    @After
-    public void cleanup() {
-        Handler[] handlers = Logger.getLogger(RuleSetLoader.class.getName()).getHandlers();
-        for (Handler handler : handlers) {
-            Logger.getLogger(RuleSetLoader.class.getName()).removeHandler(handler);
-        }
-    }
-
     @Test
     public void loadQuickstartRuleset() {
-        Logger.getLogger(RuleSetLoader.class.getName()).addHandler(new Handler() {
-            @Override
-            public void publish(LogRecord record) {
-                Assert.fail("No Logging expected: " + record.getMessage());
-            }
-
-            @Override
-            public void flush() {
-            }
-
-            @Override
-            public void close() throws SecurityException {
-            }
-        });
         RuleSet ruleset = rulesetLoader().loadFromResource("rulesets/apex/quickstart.xml");
         Assert.assertNotNull(ruleset);
+        Assert.assertTrue("No Logging expected", systemErrRule.getLog().isEmpty());
     }
 
     private RuleSetLoader rulesetLoader() {

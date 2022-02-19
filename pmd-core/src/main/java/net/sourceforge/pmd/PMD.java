@@ -559,6 +559,7 @@ public final class PMD {
 
         final Level logLevel = configuration.isDebug() ? Level.DEBUG : Level.INFO;
         Slf4jSimpleConfiguration.reconfigureDefaultLogLevel(logLevel);
+        Slf4jSimpleConfiguration.installJulBridge();
         // need to reload the logger with the new configuration
         log = LoggerFactory.getLogger(PMD.class);
         log.atLevel(logLevel).log("Log level is at {}", logLevel);

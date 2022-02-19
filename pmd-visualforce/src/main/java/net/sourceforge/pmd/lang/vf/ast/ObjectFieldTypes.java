@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Logger;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -25,6 +24,8 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
 import org.apache.commons.lang3.exception.ContextedRuntimeException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -36,7 +37,7 @@ import net.sourceforge.pmd.lang.vf.DataType;
  * Responsible for storing a mapping of Fields that can be referenced from Visualforce to the type of the field.
  */
 class ObjectFieldTypes extends SalesforceFieldTypes {
-    private static final Logger LOGGER = Logger.getLogger(ObjectFieldTypes.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(ObjectFieldTypes.class);
 
     public static final String CUSTOM_OBJECT_SUFFIX = "__c";
     private static final String FIELDS_DIRECTORY = "fields";
@@ -142,7 +143,7 @@ class ObjectFieldTypes extends SalesforceFieldTypes {
             }
         } else {
             // TODO: Support cross object relationships, these are expressions that contain "__r"
-            LOGGER.fine("Expression does not have two parts: " + expression);
+            LOG.debug("Expression does not have two parts: {}", expression);
         }
     }
 

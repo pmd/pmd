@@ -4,7 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.symbols.internal.asm;
 
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A simple double-checked initializer, that parses something (a class,
@@ -13,7 +14,7 @@ import java.util.logging.Logger;
 @SuppressWarnings({"PMD.AvoidUsingVolatile", "PMD.AvoidCatchingThrowable"})
 abstract class ParseLock {
 
-    private static final Logger LOG = Logger.getLogger(ParseLock.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(ParseLock.class);
 
     private volatile ParseStatus status = ParseStatus.NOT_PARSED;
 
@@ -36,8 +37,7 @@ abstract class ParseLock {
                     } catch (Throwable t) {
                         status = ParseStatus.FAILED;
                         this.status = status;
-                        LOG.severe(t.toString());
-                        t.printStackTrace();
+                        LOG.error(t.toString(), t);
                         finishParse(true);
                     }
                     assert status.isFinished : "Inconsistent status " + status;
