@@ -101,14 +101,14 @@ public class BinaryDistributionIT extends AbstractBinaryDistributionTest {
         result = PMDExecutor.runPMD(tempDir, "-d", srcDir, "-R", "src/test/resources/rulesets/sample-ruleset.xml",
                 "-r", folder.newFile().toString());
         result.assertExecutionResult(4);
-        result.assertErrorOutputContains("[main] INFO net.sourceforge.pmd.PMD - Loglevel is at INFO");
+        result.assertErrorOutputContains("[main] INFO net.sourceforge.pmd.PMD - Log level is at INFO");
 
 
         // now with debug
         result = PMDExecutor.runPMD(tempDir, "-d", srcDir, "-R", "src/test/resources/rulesets/sample-ruleset.xml",
                 "-r", folder.newFile().toString(), "--debug");
         result.assertExecutionResult(4);
-        result.assertErrorOutputContains("[main] DEBUG net.sourceforge.pmd.PMD - Loglevel is at DEBUG");
+        result.assertErrorOutputContains("[main] DEBUG net.sourceforge.pmd.PMD - Log level is at DEBUG");
     }
 
     @Test
