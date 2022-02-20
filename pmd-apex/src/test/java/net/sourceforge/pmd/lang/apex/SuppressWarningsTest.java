@@ -21,6 +21,12 @@ import net.sourceforge.pmd.testframework.RuleTst;
 public class SuppressWarningsTest extends RuleTst {
 
     private static class BarRule extends AbstractApexRule {
+
+        @Override
+        public String getMessage() {
+            return "a message";
+        }
+
         @Override
         public Object visit(ASTUserClass clazz, Object ctx) {
             if (clazz.getImage().equalsIgnoreCase("bar")) {

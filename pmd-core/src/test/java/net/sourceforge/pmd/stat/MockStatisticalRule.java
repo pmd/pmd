@@ -60,6 +60,6 @@ public class MockStatisticalRule extends FooRule implements StatisticalRule {
 
     @Override
     public Object[] getViolationParameters(DataPoint point) {
-        return null;
+        return new Object[0];
     }
 }

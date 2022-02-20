@@ -110,6 +110,7 @@ public class AbstractRuleTest {
         ctx.setLanguageVersion(LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getDefaultVersion());
         ctx.setReport(new Report());
         ctx.setSourceCodeFile(new File("filename"));
+        ctx.setCurrentRule(r);
         DummyNode s = new DummyNode(1);
         s.testingOnlySetBeginColumn(5);
         s.testingOnlySetBeginLine(5);

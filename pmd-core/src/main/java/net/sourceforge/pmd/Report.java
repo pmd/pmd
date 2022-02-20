@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -19,6 +20,7 @@ import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.dfa.report.ReportTree;
 import net.sourceforge.pmd.lang.rule.stat.StatisticalRule;
 import net.sourceforge.pmd.renderers.AbstractAccumulatingRenderer;
@@ -27,9 +29,12 @@ import net.sourceforge.pmd.util.DateTimeUtil;
 import net.sourceforge.pmd.util.NumericConstants;
 
 /**
- * A {@link Report} collects all informations during a PMD execution. This
- * includes violations, suppressed violations, metrics, error during processing
- * and configuration errors.
+ * A {@link Report} is the output of a PMD execution. This
+ * includes violations, suppressed violations, metrics, error
+ * during processing and configuration errors. PMD's entry point creates
+ * a report (see {@link PMD#processFiles(PMDConfiguration, List, Collection, List)}).
+ * The mutation methods on this class are deprecated, as they will be
+ * internalized in PMD 7.
  */
 public class Report implements Iterable<RuleViolation> {
 
@@ -54,14 +59,28 @@ public class Report implements Iterable<RuleViolation> {
     private final List<SuppressedViolation> suppressedRuleViolations = new ArrayList<>();
 
     /**
+     * @deprecated {@link Report} instances are created by PMD. There is no need
+     * to create a own report. This constructor will be hidden
+     * in PMD7.
+     */
+    @Deprecated
+    @InternalApi
+    public Report() { // NOPMD - UnnecessaryConstructor
+        // TODO: should be package-private, you have to use a listener to build a report.
+    }
+
+    /**
      * Creates a new, initialized, empty report for the given file name.
      *
-     * @param ctx
-     *            The context to use to connect to the report
-     * @param fileName
-     *            the filename used to report any violations
+     * @param ctx      The context to use to connect to the report
+     * @param fileName the filename used to report any violations
+     *
      * @return the new report
+     *
+     * @deprecated Is internal API
      */
+    @Deprecated
+    @InternalApi
     public static Report createReport(RuleContext ctx, String fileName) {
         Report report = new Report();
 
@@ -330,9 +349,12 @@ public class Report implements Iterable<RuleViolation> {
     /**
      * Adds a new rule violation to the report and notify the listeners.
      *
-     * @param violation
-     *            the violation to add
+     * @param violation the violation to add
+     *
+     * @deprecated PMD's way of creating a report is internal and may be changed in pmd 7.
      */
+    @Deprecated
+    @InternalApi
     public void addRuleViolation(RuleViolation violation) {
 
         // NOPMD suppress
@@ -376,7 +398,11 @@ public class Report implements Iterable<RuleViolation> {
      *
      * @param error
      *            the error to add
+     *
+     * @deprecated PMD's way of creating a report is internal and may be changed in pmd 7.
      */
+    @Deprecated
+    @InternalApi
     public void addConfigError(ConfigurationError error) {
         configErrors.add(error);
     }
@@ -386,7 +412,10 @@ public class Report implements Iterable<RuleViolation> {
      *
      * @param error
      *            the error to add
+     * @deprecated PMD's way of creating a report is internal and may be changed in pmd 7.
      */
+    @Deprecated
+    @InternalApi
     public void addError(ProcessingError error) {
         errors.add(error);
     }
@@ -402,7 +431,11 @@ public class Report implements Iterable<RuleViolation> {
      * @param r the report to be merged into this.
      *
      * @see AbstractAccumulatingRenderer
+     *
+     * @deprecated Internal API
      */
+    @Deprecated
+    @InternalApi
     public void merge(Report r) {
         synchronized (lock) {
             errors.addAll(r.errors);

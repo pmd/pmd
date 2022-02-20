@@ -25,6 +25,7 @@ public class ParserCornersTest {
     private static final String MULTICATCH = "public class Foo { public void bar() { "
         + "try { System.out.println(); } catch (RuntimeException | IOException e) {} } }";
     private final JavaParsingHelper java = JavaParsingHelper.WITH_PROCESSING.withResourceContext(ParserCornersTest.class);
+    private final JavaParsingHelper java9 = java.withDefaultVersion("9");
     private final JavaParsingHelper java8 = java.withDefaultVersion("1.8");
     private final JavaParsingHelper java4 = java.withDefaultVersion("1.4");
     private final JavaParsingHelper java5 = java.withDefaultVersion("1.5");
@@ -88,6 +89,33 @@ public class ParserCornersTest {
     @Test
     public final void testCastLookaheadProblem() {
         java4.parse(CAST_LOOKAHEAD_PROBLEM);
+    }
+
+    @Test
+    public final void testTryWithResourcesConcise() {
+        // https://github.com/pmd/pmd/issues/3697
+        java9.parse("import java.io.InputStream;\n"
+                        + "public class Foo {\n"
+                        + "    public InputStream in;\n"
+                        + "    public void bar() {\n"
+                        + "        Foo f = this;\n"
+                        + "        try (f.in) {\n"
+                        + "        }\n"
+                        + "    }\n"
+                        + "}");
+    }
+
+    @Test
+    public final void testTryWithResourcesThis() {
+        // https://github.com/pmd/pmd/issues/3697
+        java9.parse("import java.io.InputStream;\n"
+                        + "public class Foo {\n"
+                        + "    public InputStream in;\n"
+                        + "    public void bar() {\n"
+                        + "        try (this.in) {\n"
+                        + "        }\n"
+                        + "    }\n"
+                        + "}");
     }
 
     /**

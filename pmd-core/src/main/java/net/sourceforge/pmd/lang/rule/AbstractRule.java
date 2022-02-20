@@ -342,63 +342,80 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
     }
 
     /**
-     * @see RuleViolationFactory#addViolation(RuleContext, Rule, Node, String,
-     * Object[])
+     * Cast the argument to a {@link RuleContext}. Use it to report violations:
+     * <pre>{@code
+     *  asCtx(data).addViolation(node);
+     *  asCtx(data).addViolationWithMessage(node, "Some message");
+     * }</pre>
+     *
+     * In PMD 7, rules will have type-safe access to a RuleContext, and
+     * this will be deprecated as useless. In PMD 6, you can use this to
+     * stop using the deprecated {@link #addViolation(Object, Node)} overloads
+     * of this class.
+     */
+    protected final RuleContext asCtx(Object ctx) {
+        if (ctx instanceof RuleContext) {
+            assert isThisRule(((RuleContext) ctx).getCurrentRule())
+                : "not an appropriate rule context!";
+            return (RuleContext) ctx;
+        } else {
+            throw new ClassCastException("Unexpected context object! " + ctx);
+        }
+    }
+
+    private boolean isThisRule(Rule rule) {
+        return rule == this // NOPMD CompareObjectsWithEquals
+            || rule instanceof AbstractDelegateRule && this.isThisRule(((AbstractDelegateRule) rule).getRule());
+    }
+
+    /**
+     * @see RuleContext#addViolation(Node)
+     * @deprecated Replace with {@code asCtx(data).addViolation(node)}.
      */
     public void addViolation(Object data, Node node) {
-        RuleContext ruleContext = (RuleContext) data;
-        ruleContext.getLanguageVersion().getLanguageVersionHandler().getRuleViolationFactory().addViolation(ruleContext,
-                this, node, this.getMessage(), null);
+        asCtx(data).addViolation(node);
     }
 
     /**
-     * @see RuleViolationFactory#addViolation(RuleContext, Rule, Node, String,
-     * Object[])
+     * @see RuleContext#addViolation(Node, Object[])
+     *
+     * @deprecated Replace with {@code asCtx(data).addViolation(node, arg)}.
      */
     public void addViolation(Object data, Node node, String arg) {
-        RuleContext ruleContext = (RuleContext) data;
-        ruleContext.getLanguageVersion().getLanguageVersionHandler().getRuleViolationFactory().addViolation(ruleContext,
-                this, node, this.getMessage(), new Object[]{arg});
+        asCtx(data).addViolation(node, arg);
     }
 
     /**
-     * @see RuleViolationFactory#addViolation(RuleContext, Rule, Node, String,
-     * Object[])
+     * @see RuleContext#addViolation(Node, Object[])
+     *
+     * @deprecated Replace with {@code asCtx(data).addViolation(node, arg1, arg2)}.
      */
-    public void addViolation(Object data, Node node, Object[] args) {
-        RuleContext ruleContext = (RuleContext) data;
-        ruleContext.getLanguageVersion().getLanguageVersionHandler().getRuleViolationFactory().addViolation(ruleContext,
-                this, node, this.getMessage(), args);
+    public void addViolation(Object data, Node node, Object... args) {
+        asCtx(data).addViolation(node, args);
     }
 
     /**
-     * @see RuleViolationFactory#addViolation(RuleContext, Rule, Node, String,
-     * Object[])
+     * @see RuleContext#addViolationWithMessage(Node, String)
+     * @deprecated Replace with {@code asCtx(data).addViolationWithMessage(node, message)}.
      */
     public void addViolationWithMessage(Object data, Node node, String message) {
-        RuleContext ruleContext = (RuleContext) data;
-        ruleContext.getLanguageVersion().getLanguageVersionHandler().getRuleViolationFactory().addViolation(ruleContext,
-                this, node, message, null);
+        asCtx(data).addViolationWithMessage(node, message);
     }
 
     /**
-     * @see RuleViolationFactory#addViolation(RuleContext, Rule, Node, String,
-     * Object[])
+     * @see RuleContext#addViolationWithPosition(Node, int, int, String, Object...)
+     * @deprecated Replace with {@code asCtx(data).addViolationWithPosition(node, beginLine, endLine, message)}.
      */
     public void addViolationWithMessage(Object data, Node node, String message, int beginLine, int endLine) {
-        RuleContext ruleContext = (RuleContext) data;
-        ruleContext.getLanguageVersion().getLanguageVersionHandler().getRuleViolationFactory().addViolation(ruleContext,
-                this, node, message, beginLine, endLine, null);
+        asCtx(data).addViolationWithPosition(node, beginLine, endLine, message);
     }
 
     /**
-     * @see RuleViolationFactory#addViolation(RuleContext, Rule, Node, String,
-     * Object[])
+     * @see RuleContext#addViolationWithMessage(Node, String, Object...)
+     * @deprecated Replace with {@code asCtx(data).addViolationWithMessage(node, message, args)}.
      */
     public void addViolationWithMessage(Object data, Node node, String message, Object[] args) {
-        RuleContext ruleContext = (RuleContext) data;
-        ruleContext.getLanguageVersion().getLanguageVersionHandler().getRuleViolationFactory().addViolation(ruleContext,
-                this, node, message, args);
+        asCtx(data).addViolationWithMessage(node, message, args);
     }
 
     /**

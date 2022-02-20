@@ -155,7 +155,9 @@ public class XPathRuleTest {
     }
 
     public void eval(RuleContext ctx, net.sourceforge.pmd.Rule rule, DummyNode node) {
+        ctx.setCurrentRule(rule);
         rule.apply(singletonList(node), ctx);
+        ctx.setCurrentRule(null);
     }
 
     public DummyNode newNode() {
