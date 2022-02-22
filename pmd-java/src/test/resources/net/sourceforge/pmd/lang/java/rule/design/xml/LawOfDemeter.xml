@@ -1123,4 +1123,39 @@ public final class ControlEvent {
             }
             ]]></code>
     </test-code>
+    <test-code>
+        <description>Rule example</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
+        <expected-messages>
+            <message>Call to `getC` on foreign value `b` (degree 1)</message>
+        </expected-messages>
+        <code><![CDATA[
+            public class Foo {
+                /**
+                 * This example will result in one violation.
+                 */
+                public void example(Bar b) { // b has degree 1
+                    // `b.getC()` has degree 2, it's breaking a boundary of abstraction and so is reported.
+                    b.getC().doIt();
+                    // To respect the law of Demeter, Bar should encapsulate its
+                    // C member more properly, eg by exposing a method like this:
+                    b.callDoItOnC();
+
+                    // a constructor call, not a method call.
+                    D d = new D();
+                    // this method call is ok, because we have create the new
+                    // instance of D locally.
+                    d.doSomethingElse();
+                }
+            }
+            interface Bar {
+                C getC();
+            }
+            class D {
+                void doSomethingElse() {}
+            }
+            interface C { void doIt(); }
+            ]]></code>
+    </test-code>
 </test-data>
