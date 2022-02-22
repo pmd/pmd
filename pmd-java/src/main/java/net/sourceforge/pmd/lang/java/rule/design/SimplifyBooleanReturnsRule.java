@@ -7,7 +7,7 @@ package net.sourceforge.pmd.lang.java.rule.design;
 import static net.sourceforge.pmd.lang.java.ast.BinaryOp.CONDITIONAL_AND;
 import static net.sourceforge.pmd.lang.java.ast.BinaryOp.CONDITIONAL_OR;
 import static net.sourceforge.pmd.lang.java.ast.BinaryOp.isInfixExprWithOperator;
-import static net.sourceforge.pmd.lang.java.ast.BinaryOp.opsWithGeqPrecedence;
+import static net.sourceforge.pmd.lang.java.ast.BinaryOp.opsWithGreaterPrecedence;
 import static net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil.areComplements;
 import static net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil.isBooleanLiteral;
 
@@ -130,15 +130,12 @@ public class SimplifyBooleanReturnsRule extends AbstractJavaRulechainRule {
     }
 
     private static boolean doesNotNeedNewParensUnderInfix(ASTExpression e, BinaryOp op) {
-        if (e instanceof ASTPrimaryExpression
+        // those nodes have greater precedence than infix
+        return e instanceof ASTPrimaryExpression
             || e instanceof ASTCastExpression
             || e instanceof ASTUnaryExpression
-            || e.isParenthesized()) {
-            return true;
-        } else {
-            return isInfixExprWithOperator(e, opsWithGeqPrecedence(op))
-                && !isInfixExprWithOperator(e, op); // no need for parens here
-        }
+            || e.isParenthesized()
+            || isInfixExprWithOperator(e, opsWithGreaterPrecedence(op));
     }
 
     private @Nullable ASTExpression getReturnExpr(JavaNode node) {

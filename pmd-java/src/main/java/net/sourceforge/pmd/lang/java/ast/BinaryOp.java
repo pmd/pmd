@@ -138,10 +138,13 @@ public enum BinaryOp implements InternalInterfaces.OperatorLike {
 
 
     /**
-     * Returns the ops with higher or equal precedence to the given op.
+     * Returns the ops with strictly greater precedence than the given op.
+     * This may return an empty set.
      */
-    public static EnumSet<BinaryOp> opsWithGeqPrecedence(BinaryOp op) {
-        return EnumSet.range(op, MOD);
+    public static Set<BinaryOp> opsWithGreaterPrecedence(BinaryOp op) {
+        Set<BinaryOp> range = EnumSet.range(op, MOD);
+        range.remove(op);
+        return range;
     }
 
     private int precedenceClass() {
