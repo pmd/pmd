@@ -6,10 +6,19 @@ package net.sourceforge.pmd.lang.java.rule.design;
 
 import static net.sourceforge.pmd.lang.java.ast.BinaryOp.CONDITIONAL_AND;
 import static net.sourceforge.pmd.lang.java.ast.BinaryOp.CONDITIONAL_OR;
+import static net.sourceforge.pmd.lang.java.ast.BinaryOp.EQ;
+import static net.sourceforge.pmd.lang.java.ast.BinaryOp.GE;
+import static net.sourceforge.pmd.lang.java.ast.BinaryOp.GT;
+import static net.sourceforge.pmd.lang.java.ast.BinaryOp.LE;
+import static net.sourceforge.pmd.lang.java.ast.BinaryOp.LT;
+import static net.sourceforge.pmd.lang.java.ast.BinaryOp.NE;
 import static net.sourceforge.pmd.lang.java.ast.BinaryOp.isInfixExprWithOperator;
 import static net.sourceforge.pmd.lang.java.ast.BinaryOp.opsWithGreaterPrecedence;
 import static net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil.areComplements;
 import static net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil.isBooleanLiteral;
+
+import java.util.EnumSet;
+import java.util.Set;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -18,15 +27,19 @@ import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTCastExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTInfixExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpression;
 import net.sourceforge.pmd.lang.java.ast.BinaryOp;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
+import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind;
 
 public class SimplifyBooleanReturnsRule extends AbstractJavaRulechainRule {
+
+    private static final Set<BinaryOp> NEGATABLE_OPS = EnumSet.of(EQ, NE, GT, LT, GE, LE);
 
     public SimplifyBooleanReturnsRule() {
         super(ASTReturnStatement.class);
@@ -98,6 +111,19 @@ public class SimplifyBooleanReturnsRule extends AbstractJavaRulechainRule {
         assert thenFalse || elseFalse || thenTrue || elseTrue
             : "expected boolean branch";
 
+        if (isBooleanLiteral(thenExpr) && isBooleanLiteral(elseExpr)) {
+            // both are boolean
+            if (thenTrue && elseFalse) {
+                return "return {condition};";
+            } else if (thenFalse && elseTrue) {
+                return "return !{condition};";
+            } else if (thenTrue) { // both are true
+                return "return true;";
+            } else { // both are false
+                return "return false;";
+            }
+        }
+
         boolean conditionNegated = thenFalse || elseTrue;
         if (conditionNegated && needsNewParensWhenNegating(condition)) {
             return null;
@@ -124,9 +150,24 @@ public class SimplifyBooleanReturnsRule extends AbstractJavaRulechainRule {
     }
 
     private static boolean needsNewParensWhenNegating(ASTExpression e) {
-        return !(e instanceof ASTPrimaryExpression || e instanceof ASTCastExpression
+        if (e instanceof ASTPrimaryExpression
+            || e instanceof ASTCastExpression
             // parenthesized expressions are primary
-            || e.isParenthesized());
+            || e.isParenthesized()
+            // == -> !=
+            || isInfixExprWithOperator(e, NEGATABLE_OPS)
+            // !! ->
+            || JavaRuleUtil.isBooleanNegation(e)) {
+            return false;
+        } else if (isInfixExprWithOperator(e, CONDITIONAL_OR)
+            || isInfixExprWithOperator(e, CONDITIONAL_AND)) {
+            // negating these ops can be replaced with complement op
+            // and the negation pushed down branches using De Morgan's laws
+            ASTInfixExpression infix = (ASTInfixExpression) e;
+            return needsNewParensWhenNegating(infix.getLeftOperand())
+                || needsNewParensWhenNegating(infix.getRightOperand());
+        }
+        return true;
     }
 
     private static boolean doesNotNeedNewParensUnderInfix(ASTExpression e, BinaryOp op) {
