@@ -33,6 +33,7 @@ body {
     .container {
         margin-left: 15px;
         margin-right: 15px;
+        width: 75%;
     }
 
     .container-toc-wrapper {
@@ -52,6 +53,7 @@ body {
     .container {
         margin-left: 15px;
         margin-right: 15px;
+        width: 75%;
     }
 
     .container-toc-wrapper {
