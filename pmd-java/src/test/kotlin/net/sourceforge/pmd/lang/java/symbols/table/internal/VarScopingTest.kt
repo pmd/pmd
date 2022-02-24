@@ -236,6 +236,92 @@ class VarScopingTest : ProcessorTestSpec({
         }
     }
 
+    parserTest("For init variables") {
+
+        val acu = parser.withProcessing().parse("""
+            class Outer extends Sup {
+                {
+                    for (int i = 0, x = i; i < 20; i++) {
+                        i++;
+                        for (i++; false;) {}
+                    }
+                }
+            }
+        """.trimIndent())
+
+        val (ivar, _) =
+                acu.descendants(ASTVariableDeclaratorId::class.java).toList()
+
+        val iUsages = acu.descendants(ASTVariableAccess::class.java).toList()
+        val (initAccess, condAccess, updateAccess, bodyAccess, innerLoopAccess) =
+                iUsages
+
+        doTest("Usages") {
+            ivar.localUsages shouldBe iUsages
+        }
+        doTest("Inside init") {
+            initAccess shouldResolveToLocal ivar
+        }
+        doTest("Inside condition") {
+            condAccess shouldResolveToLocal ivar
+        }
+
+        doTest("Inside update") {
+            updateAccess shouldResolveToLocal ivar
+        }
+
+        doTest("Inside body") {
+            bodyAccess shouldResolveToLocal ivar
+        }
+
+        doTest("Inside init of nested loop") {
+            innerLoopAccess shouldResolveToLocal ivar
+        }
+    }
+    parserTest("If stmt without a block") {
+
+        val acu = parser.withProcessing().parse("""
+            class Outer extends Sup {
+                {
+                    if ("" !=null)
+                    for (int i = 0, x = i; i < 20; i++) {
+                        i++;
+                        for (i++; false;) {}
+                    }
+                }
+            }
+        """.trimIndent())
+
+        val (ivar, _) =
+                acu.descendants(ASTVariableDeclaratorId::class.java).toList()
+
+        val iUsages = acu.descendants(ASTVariableAccess::class.java).toList()
+        val (initAccess, condAccess, updateAccess, bodyAccess, innerLoopAccess) =
+                iUsages
+
+        doTest("Usages") {
+            ivar.localUsages shouldBe iUsages
+        }
+        doTest("Inside init") {
+            initAccess shouldResolveToLocal ivar
+        }
+        doTest("Inside condition") {
+            condAccess shouldResolveToLocal ivar
+        }
+
+        doTest("Inside update") {
+            updateAccess shouldResolveToLocal ivar
+        }
+
+        doTest("Inside body") {
+            bodyAccess shouldResolveToLocal ivar
+        }
+
+        doTest("Inside init of nested loop") {
+            innerLoopAccess shouldResolveToLocal ivar
+        }
+    }
+
     parserTest("Record constructors") {
 
         val acu = parser.withProcessing().parse("""

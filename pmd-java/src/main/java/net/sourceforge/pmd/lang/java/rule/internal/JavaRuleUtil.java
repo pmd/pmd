@@ -38,6 +38,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.AccessType;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTBooleanLiteral;
+import net.sourceforge.pmd.lang.java.ast.ASTBreakStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTCastExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
@@ -54,6 +55,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTInitializer;
 import net.sourceforge.pmd.lang.java.ast.ASTLabeledStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTList;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTLoopStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
@@ -61,6 +63,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTNullLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTNumericLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTSuperExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTThisExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpression;
@@ -659,8 +662,14 @@ public final class JavaRuleUtil {
         return node instanceof ASTNullLiteral;
     }
 
+    /** Returns true if the node is a boolean literal with any value. */
     public static boolean isBooleanLiteral(ASTExpression e) {
         return e instanceof ASTBooleanLiteral;
+    }
+
+    /** Returns true if the node is a boolean literal with the given constant value. */
+    public static boolean isBooleanLiteral(ASTExpression e, boolean value) {
+        return e instanceof ASTBooleanLiteral && ((ASTBooleanLiteral) e).isTrue() == value;
     }
 
     public static boolean isBooleanNegation(JavaNode e) {
@@ -1071,4 +1080,13 @@ public final class JavaRuleUtil {
         return false;
     }
 
+
+    /**
+     * @see {@link ASTBreakStatement#getTarget()}
+     */
+    public static boolean mayBeBreakTarget(JavaNode it) {
+        return it instanceof ASTLoopStatement
+            || it instanceof ASTSwitchStatement
+            || it instanceof ASTLabeledStatement;
+    }
 }

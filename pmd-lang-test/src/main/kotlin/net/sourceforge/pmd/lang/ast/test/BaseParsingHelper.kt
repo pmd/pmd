@@ -75,8 +75,8 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
     protected abstract fun clone(params: Params): Self
 
     @JvmOverloads
-    fun withProcessing(boolean: Boolean = true): Self =
-            clone(params.copy(doProcess = boolean))
+    fun withProcessing(doProcess: Boolean = true): Self =
+            clone(params.copy(doProcess = doProcess))
 
     /**
      * Returns an instance of [Self] for which all parsing methods

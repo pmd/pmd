@@ -22,6 +22,7 @@ import java.util.logging.Logger;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMDVersion;
+import net.sourceforge.pmd.cli.internal.CliMessages;
 import net.sourceforge.pmd.util.FileUtil;
 import net.sourceforge.pmd.util.database.DBURI;
 
@@ -76,9 +77,8 @@ public final class CPDCommandLineInterface {
                 return;
             }
         } catch (ParameterException e) {
-            jcommander.usage();
-            System.out.println(buildUsageText());
-            System.err.println(" " + e.getMessage());
+            System.err.println(e.getMessage());
+            System.err.println(CliMessages.runWithHelpFlagMessage());
             setStatusCodeOrExit(ERROR_STATUS);
             return;
         }
@@ -117,6 +117,7 @@ public final class CPDCommandLineInterface {
             }
         } catch (IOException | RuntimeException e) {
             e.printStackTrace();
+            LOGGER.severe(CliMessages.errorDetectedMessage(1, "CPD"));
             setStatusCodeOrExit(ERROR_STATUS);
         }
     }

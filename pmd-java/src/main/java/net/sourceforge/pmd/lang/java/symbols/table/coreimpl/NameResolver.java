@@ -99,6 +99,11 @@ public interface NameResolver<S> {
                 }
                 return null;
             }
+
+            @Override
+            public String toString() {
+                return "Composite[" + resolvers + "]";
+            }
         };
     }
 

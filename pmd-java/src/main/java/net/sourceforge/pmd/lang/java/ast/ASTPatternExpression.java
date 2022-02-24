@@ -36,7 +36,7 @@ public final class ASTPatternExpression extends AbstractJavaTypeNode implements 
         return visitor.visit(this, data);
     }
 
-    /** Gets the wrapped type node. */
+    /** Gets the wrapped pattern. */
     public ASTPattern getPattern() {
         return (ASTPattern) getChild(0);
     }

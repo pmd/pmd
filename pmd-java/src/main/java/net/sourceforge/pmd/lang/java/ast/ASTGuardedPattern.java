@@ -7,17 +7,16 @@ package net.sourceforge.pmd.lang.java.ast;
 import net.sourceforge.pmd.annotation.Experimental;
 
 /**
- * A guarded pattern (JDK17 Preview). This can be found
- * in {@link ASTSwitchLabel}s.
+ * A guarded pattern (JDK17 Preview). This can be found in {@link ASTSwitchLabel}s.
  *
  * <pre class="grammar">
  *
- * GuardedPattern ::= {@linkplain ASTPattern Pattern} "&amp;&amp;" {@linkplain ASTConditionalAndExpression ConditionalAndExpression}
+ * GuardedPattern ::= {@linkplain ASTPattern Pattern} "&amp;&amp;" {@linkplain ASTExpression Expression}
  *
  * </pre>
  *
  * @see <a href="https://openjdk.java.net/jeps/406">JEP 406: Pattern Matching for switch (Preview)</a>
-*/
+ */
 @Experimental
 public final class ASTGuardedPattern extends AbstractJavaNode implements ASTPattern {
 
@@ -32,12 +31,14 @@ public final class ASTGuardedPattern extends AbstractJavaNode implements ASTPatt
         return visitor.visit(this, data);
     }
 
+    /** Returns the guarded pattern. */
     public ASTPattern getPattern() {
         return (ASTPattern) getChild(0);
     }
 
-    public JavaNode getGuard() {
-        return getChild(1);
+    /** Returns the boolean expression guarding the pattern. */
+    public ASTExpression getGuard() {
+        return (ASTExpression) getChild(1);
     }
 
     void bumpParenDepth() {

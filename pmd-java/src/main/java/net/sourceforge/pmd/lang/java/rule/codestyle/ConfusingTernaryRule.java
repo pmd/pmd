@@ -10,6 +10,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTInfixExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTNullLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpression;
 import net.sourceforge.pmd.lang.java.ast.BinaryOp;
 import net.sourceforge.pmd.lang.java.ast.UnaryOp;
@@ -95,9 +96,14 @@ public class ConfusingTernaryRule extends AbstractJavaRulechainRule {
     }
 
     private static boolean isNotEquals(ASTExpression node) {
+        if (!(node instanceof ASTInfixExpression)) {
+            return false;
+        }
+        ASTInfixExpression infix = (ASTInfixExpression) node;
         // look for "x != y"
-        return node instanceof ASTInfixExpression
-            && ((ASTInfixExpression) node).getOperator().equals(BinaryOp.NE);
+        return infix.getOperator().equals(BinaryOp.NE)
+            && !(infix.getLeftOperand() instanceof ASTNullLiteral)
+            && !(infix.getRightOperand() instanceof ASTNullLiteral);
     }
 
     private static boolean isConditionalWithAllMatches(ASTExpression node) {

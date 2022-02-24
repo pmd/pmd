@@ -36,13 +36,15 @@ public final class ASTSwitchLabel extends AbstractJavaNode implements Iterable<A
     }
 
     /** Returns true if this is the {@code default} label. */
+    // todo `case default`
     public boolean isDefault() {
         return isDefault;
     }
 
     /**
      * Returns the expressions of this label, or an empty list if this
-     * is the default label.
+     * is the default label. This may contain {@linkplain  ASTPatternExpression pattern expressions}
+     * to represent patterns.
      */
     public NodeStream<ASTExpression> getExprList() {
         return children(ASTExpression.class);
