@@ -48,7 +48,7 @@ public final class ASTForStatement extends AbstractStatement implements ASTLoopS
      * Returns the statement nested within the update clause, if it exists.
      */
     public @Nullable ASTStatementExpressionList getUpdate() {
-        ASTForUpdate update = getFirstChildOfType(ASTForUpdate.class);
+        ASTForUpdate update = firstChild(ASTForUpdate.class);
         return update == null ? null : update.getExprList();
     }
 
