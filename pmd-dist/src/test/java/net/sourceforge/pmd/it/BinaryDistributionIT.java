@@ -27,7 +27,7 @@ public class BinaryDistributionIT extends AbstractBinaryDistributionTest {
 
     static {
         SUPPORTED_LANGUAGES_CPD = "Supported languages: [apex, cpp, cs, dart, ecmascript, fortran, go, groovy, java, jsp, kotlin, lua, matlab, modelica, objectivec, perl, php, plsql, python, ruby, scala, swift, vf, xml]";
-        SUPPORTED_LANGUAGES_PMD = "apex, ecmascript, java, jsp, modelica, plsql, pom, scala, swift, vf, vm, wsdl, xml, xsl";
+        SUPPORTED_LANGUAGES_PMD = "apex, ecmascript, java, jsp, kotlin, modelica, plsql, pom, scala, swift, vf, vm, wsdl, xml, xsl";
     }
 
     @Test
