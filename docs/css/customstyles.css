@@ -1246,3 +1246,7 @@ h4.panel-title {
     width: 100px;
     height: 100px;
 }
+
+.post-content h2 {
+    display: inline-block;
+}

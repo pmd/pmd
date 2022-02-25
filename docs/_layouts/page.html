@@ -33,11 +33,8 @@ layout: default
    {% if page.summary %}
     <div class="summary">{{page.summary}}</div>
    {% endif %}
-
-    <div id="inline-toc"><!-- empty, move TOC here when screen size too small --></div>
-
-
-    {% if site.github_editme_path %}
+   
+   {% if site.github_editme_path %}
 
         {% assign editmepath = page.path %}
         {% if page.editmepath %}
@@ -49,6 +46,8 @@ layout: default
 
     {% endif %}
 
+    <div id="inline-toc"><!-- empty, move TOC here when screen size too small --></div>
+    
   {{content}}
 
     <div class="tags">
@@ -64,9 +63,16 @@ layout: default
     </div>
 
     {% if site.github_editme_path %}
-        This documentation is written in markdown. If there is something missing or can be improved, edit this page on github and create a PR:
+        This documentation is written in markdown. If there is something missing or can be improved, edit this page on github and create a PR: 
         {% unless page.editmepath == false %}
         <a target="_blank" href="https://github.com/{{site.github_editme_path}}{{editmepath}}" class="btn btn-default githubEditButton" role="button"><i class="fa fa-github fa-lg"></i> Edit me</a>
+        <script>
+            $(document).ready ( function(){
+                $('div.post-content').find('h2').after(
+                '  <a target="_blank" href="https://github.com/{{site.github_editme_path}}{{editmepath}}" class="btn btn-default btn-xs githubEditButton" role="button"><i class="fa fa-github fa-lg"></i></a>'
+            );
+            });
+        </script>
         {% endunless %}
     {% endif %}
 
