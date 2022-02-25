@@ -89,4 +89,40 @@ public class Foo {
         ]]></code>
     </test-code>
 
+    <test-code>
+        <description>No describer options on SObjectField</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    public void bar(Case case) {
+        String fieldName = Case.Subject.getDescribe().getName();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>False positive on SObjectField with FieldDescribeOptions.FULL_DESCRIBE</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar(Case case) {
+        String fieldName = Case.Subject.getDescribe(FieldDescribeOptions.FULL_DESCRIBE).getName();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>False positive on SObjectField with FieldDescribeOptions.DEFAULT</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar(Case case) {
+        String fieldName = Case.Subject.getDescribe(FieldDescribeOptions.DEFAULT).getName();
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
