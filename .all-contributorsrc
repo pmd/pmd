@@ -6538,6 +6538,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "karel1980",
+      "name": "Karel Vervaeke",
+      "avatar_url": "https://avatars.githubusercontent.com/u/153021?v=4",
+      "profile": "https://github.com/karel1980",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,
