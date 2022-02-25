@@ -20,6 +20,7 @@ This is a {{ site.pmd.release_type }} release.
     *   [#3427](https://github.com/pmd/pmd/issues/3427): \[core] Stop printing CLI usage text when exiting due to invalid parameters
 *   doc
     *   [#2502](https://github.com/pmd/pmd/issues/2502): \[doc] Add floating table-of-contents (toc) on the right
+    *   [#3807](https://github.com/pmd/pmd/pull/3807): \[doc] Document Ant Task parameter `threads`
 *   java
     *   [#3698](https://github.com/pmd/pmd/issues/3697): \[java] Parsing error with try-with-resources and qualified resource
 *   java-codestyle
