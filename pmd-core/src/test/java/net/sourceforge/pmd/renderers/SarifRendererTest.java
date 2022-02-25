@@ -7,24 +7,15 @@ package net.sourceforge.pmd.renderers;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
+import java.util.function.Consumer;
 
-import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 
-import net.sourceforge.pmd.FooRule;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.ReportTest;
-import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.lang.ast.DummyNode;
-import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.rule.AbstractRule;
-import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
+import net.sourceforge.pmd.reporting.FileAnalysisListener;
 
 public class SarifRendererTest extends AbstractRendererTest {
     @Override
@@ -80,11 +71,8 @@ public class SarifRendererTest extends AbstractRendererTest {
     @Override
     @Test
     public void testRendererMultiple() throws Exception {
-        // Setup
-        Report rep = reportTwoViolations();
-
         // Exercise
-        String actual = ReportTest.render(getRenderer(), rep);
+        String actual = ReportTest.render(getRenderer(), reportTwoViolations());
 
         // Verify that both rules are and rule ids are linked in the results 
         // Initially was comparing whole files but order of rules rendered can't be guaranteed when the report is being rendered
@@ -95,32 +83,18 @@ public class SarifRendererTest extends AbstractRendererTest {
         assertThat(filter(actual), containsString("\"id\": \"Boo\""));
     }
 
-    private Report reportTwoViolations() {
-        Report report = new Report();
-        RuleViolation informationalRuleViolation = newRuleViolation(1, "Foo");
-        informationalRuleViolation.getRule().setPriority(RulePriority.LOW);
-        report.addRuleViolation(informationalRuleViolation);
-        RuleViolation severeRuleViolation = newRuleViolation(2, "Boo");
-        severeRuleViolation.getRule().setPriority(RulePriority.HIGH);
-        report.addRuleViolation(severeRuleViolation);
-        return report;
+    private Consumer<FileAnalysisListener> reportTwoViolations() {
+        return reportBuilder -> {
+            RuleViolation informationalRuleViolation = newRuleViolation(1, "Foo");
+            informationalRuleViolation.getRule().setPriority(RulePriority.LOW);
+            reportBuilder.onRuleViolation(informationalRuleViolation);
+            RuleViolation severeRuleViolation = newRuleViolation(2, "Boo");
+            severeRuleViolation.getRule().setPriority(RulePriority.HIGH);
+            reportBuilder.onRuleViolation(severeRuleViolation);
+        };
     }
 
-    private RuleViolation newRuleViolation(int endColumn, String ruleName) {
-        DummyNode node = createNode(endColumn);
-        RuleContext ctx = new RuleContext();
-        ctx.setSourceCodeFile(new File(getSourceCodeFilename()));
-        AbstractRule fooRule = new FooRule();
-        fooRule.setName(ruleName);
-        return new ParametricRuleViolation<Node>(fooRule, ctx, node, "blah");
-    }
-
-    private String readFile(String name) {
-        try (InputStream in = SarifRendererTest.class.getResourceAsStream("sarif/" + name)) {
-            String asd = IOUtils.toString(in, StandardCharsets.UTF_8);
-            return asd;
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    protected String readFile(String relativePath) {
+        return super.readFile("sarif/" + relativePath);
     }
 }

@@ -20,10 +20,10 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.cache.ChecksumAware;
 import net.sourceforge.pmd.internal.util.PredicateUtil;
 import net.sourceforge.pmd.lang.LanguageVersion;
-import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 
@@ -609,34 +609,6 @@ public class RuleSet implements ChecksumAware {
     }
 
     /**
-     * Triggers that start lifecycle event on each rule in this ruleset. Some
-     * rules perform initialization tasks on start.
-     *
-     * @param ctx
-     *            the current context
-     */
-    public void start(RuleContext ctx) {
-        for (Rule rule : rules) {
-            rule.start(ctx);
-        }
-    }
-
-    /**
-     * Executes the rules in this ruleset against each of the given nodes.
-     *
-     * @param acuList
-     *            the node list, usually the root nodes like compilation units
-     * @param ctx
-     *            the current context
-     *
-     * @deprecated Use {@link RuleSets#apply(List, RuleContext)}
-     */
-    @Deprecated
-    public void apply(List<? extends Node> acuList, RuleContext ctx) {
-        new RuleSets(this).apply(acuList, ctx);
-    }
-
-    /**
      * Does the given Rule apply to the given LanguageVersion? If so, the
      * Language must be the same and be between the minimum and maximums
      * versions on the Rule.
@@ -648,26 +620,18 @@ public class RuleSet implements ChecksumAware {
      *
      * @return <code>true</code> if the given rule matches the given language,
      *         which means, that the rule would be executed.
+     *
+     * @deprecated This is internal API, removed in PMD 7. You should
+     * not use a ruleset directly.
      */
+    @Deprecated
+    @InternalApi
     public static boolean applies(Rule rule, LanguageVersion languageVersion) {
         final LanguageVersion min = rule.getMinimumLanguageVersion();
         final LanguageVersion max = rule.getMaximumLanguageVersion();
         return rule.getLanguage().equals(languageVersion.getLanguage())
                 && (min == null || min.compareTo(languageVersion) <= 0)
                 && (max == null || max.compareTo(languageVersion) >= 0);
-    }
-
-    /**
-     * Triggers the end lifecycle event on each rule in the ruleset. Some rules
-     * perform a final summary calculation or cleanup in the end.
-     *
-     * @param ctx
-     *            the current context
-     */
-    public void end(RuleContext ctx) {
-        for (Rule rule : rules) {
-            rule.end(ctx);
-        }
     }
 
     /**
@@ -727,10 +691,17 @@ public class RuleSet implements ChecksumAware {
 
     /**
      * Remove and collect any misconfigured rules.
+     * TODO remove this method. This mutates rulesets for nothing. Whether
+     *  a rule is dysfunctional or not should be checked when it is initialized.
      *
      * @param collector
      *            the removed rules will be added to this collection
+     *
+     * @deprecated This is internal API, removed in PMD 7. You should
+     * not use a ruleset directly.
      */
+    @Deprecated
+    @InternalApi
     public void removeDysfunctionalRules(Collection<Rule> collector) {
         Iterator<Rule> iter = rules.iterator();
 

@@ -4,7 +4,10 @@
 
 package net.sourceforge.pmd;
 
+import static net.sourceforge.pmd.util.CollectionUtil.listOf;
+
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -12,17 +15,17 @@ import java.io.Writer;
 import java.net.URISyntaxException;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import net.sourceforge.pmd.Report.GlobalReportBuilderListener;
 import net.sourceforge.pmd.benchmark.TextTimingReportRenderer;
 import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.benchmark.TimedOperation;
@@ -32,14 +35,16 @@ import net.sourceforge.pmd.benchmark.TimingReportRenderer;
 import net.sourceforge.pmd.cache.NoopAnalysisCache;
 import net.sourceforge.pmd.cli.PMDCommandLineInterface;
 import net.sourceforge.pmd.cli.PmdParametersParseResult;
+import net.sourceforge.pmd.cli.internal.CliMessages;
+import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageFilenameFilter;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
 import net.sourceforge.pmd.processor.AbstractPMDProcessor;
-import net.sourceforge.pmd.processor.MonoThreadProcessor;
-import net.sourceforge.pmd.processor.MultiThreadProcessor;
 import net.sourceforge.pmd.renderers.Renderer;
+import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
+import net.sourceforge.pmd.reporting.GlobalAnalysisListener.ViolationCounterListener;
 import net.sourceforge.pmd.util.ClasspathClassLoader;
 import net.sourceforge.pmd.util.FileUtil;
 import net.sourceforge.pmd.util.IOUtil;
@@ -55,8 +60,19 @@ import net.sourceforge.pmd.util.log.ScopedLogHandlersManager;
  * process is controlled via interactions with this class. A command line
  * interface is supported, as well as a programmatic API for integrating PMD
  * with other software such as IDEs and Ant.
+ * 
+ * <p>Main entrypoints are:
+ * <ul>
+ *   <li>{@link #main(String[])} which exits the java process</li>
+ *   <li>{@link #runPmd(String...)} which returns a {@link StatusCode}</li>
+ *   <li>{@link #runPmd(PMDConfiguration)}</li>
+ *   <li>{@link #processFiles(PMDConfiguration, List, Collection, List)}</li>
+ * </ul>
+ * 
+ * <p><strong>Warning:</strong> This class is not intended to be instantiated or subclassed. It will
+ * be made final in PMD7.
  */
-public class PMD {
+public final class PMD {
 
     private static final Logger LOG = Logger.getLogger(PMD.class.getName());
 
@@ -69,59 +85,25 @@ public class PMD {
     /** The default suppress marker string. */
     public static final String SUPPRESS_MARKER = "NOPMD";
 
-    /**
-     * Contains the configuration with which this PMD instance has been created.
-     */
-    protected final PMDConfiguration configuration;
-
-    private final SourceCodeProcessor rulesetsFileProcessor;
-
-    /**
-     * Constant that contains always the current version of PMD.
-     * @deprecated Use {@link PMDVersion#VERSION} instead.
-     */
-    @Deprecated // to be removed with PMD 7.0.0.
-    public static final String VERSION = PMDVersion.VERSION;
-
-    /**
-     * Create a PMD instance using a default Configuration. Changes to the
-     * configuration may be required.
-     *
-     * @deprecated Just use the static methods, and maintain your {@link PMDConfiguration} separately.
-     */
-    @Deprecated
-    public PMD() {
-        this(new PMDConfiguration());
+    private PMD() {
     }
 
-    /**
-     * Create a PMD instance using the specified Configuration.
-     *
-     * @param configuration The runtime Configuration of PMD to use.
-     *
-     * @deprecated Just use the static methods, and maintain your {@link PMDConfiguration} separately.
-     */
-    @Deprecated
-    public PMD(PMDConfiguration configuration) {
-        this.configuration = configuration;
-        this.rulesetsFileProcessor = new SourceCodeProcessor(configuration);
-    }
 
     /**
      * Parses the given string as a database uri and returns a list of
      * datasources.
      *
-     * @param uriString
-     *            the URI to parse
+     * @param uriString the URI to parse
+     *
      * @return list of data sources
-     * @throws PMDException
-     *             if the URI couldn't be parsed
+     *
+     * @throws IOException if the URI couldn't be parsed
      * @see DBURI
      *
      * @deprecated Will be hidden as part of the parsing of {@link PMD#getApplicableFiles(PMDConfiguration, Set)}
      */
     @Deprecated
-    public static List<DataSource> getURIDataSources(String uriString) throws PMDException {
+    public static List<DataSource> getURIDataSources(String uriString) throws IOException {
         List<DataSource> dataSources = new ArrayList<>();
 
         try {
@@ -143,43 +125,15 @@ public class PMD {
                 }
             }
         } catch (URISyntaxException e) {
-            throw new PMDException("Cannot get DataSources from DBURI - \"" + uriString + "\"", e);
+            throw new IOException("Cannot get DataSources from DBURI - \"" + uriString + "\"", e);
         } catch (SQLException e) {
-            throw new PMDException(
-                    "Cannot get DataSources from DBURI, couldn't access the database - \"" + uriString + "\"", e);
+            throw new IOException("Cannot get DataSources from DBURI, couldn't access the database - \"" + uriString + "\"", e);
         } catch (ClassNotFoundException e) {
-            throw new PMDException(
-                    "Cannot get DataSources from DBURI, probably missing database jdbc driver - \"" + uriString + "\"",
-                    e);
+            throw new IOException("Cannot get DataSources from DBURI, probably missing database jdbc driver - \"" + uriString + "\"", e);
         } catch (Exception e) {
-            throw new PMDException("Encountered unexpected problem with URI \"" + uriString + "\"", e);
+            throw new IOException("Encountered unexpected problem with URI \"" + uriString + "\"", e);
         }
         return dataSources;
-    }
-
-    /**
-     * Get the runtime configuration. The configuration can be modified to
-     * affect how PMD behaves.
-     *
-     * @return The configuration.
-     * @see PMDConfiguration
-     *
-     * @deprecated Don't create a PMD instance just to create a {@link PMDConfiguration}
-     */
-    @Deprecated
-    public PMDConfiguration getConfiguration() {
-        return configuration;
-    }
-
-    /**
-     * Gets the source code processor.
-     *
-     * @return SourceCodeProcessor
-     * @deprecated Source code processor is internal
-     */
-    @Deprecated
-    public SourceCodeProcessor getSourceCodeProcessor() {
-        return rulesetsFileProcessor;
     }
 
     /**
@@ -196,41 +150,46 @@ public class PMD {
 
         // Load the RuleSets
         final RuleSetLoader ruleSetFactory = RuleSetLoader.fromPmdConfig(configuration);
-        final RuleSets ruleSets = new RuleSets(getRuleSetsWithBenchmark(configuration.getRuleSetPaths(), ruleSetFactory));
+        final List<RuleSet> ruleSets = getRuleSetsWithBenchmark(configuration.getRuleSetPaths(), ruleSetFactory);
 
         final Set<Language> languages = getApplicableLanguages(configuration, ruleSets);
-        final List<DataSource> files = getApplicableFiles(configuration, languages);
 
         try {
-            Renderer renderer;
-            final List<Renderer> renderers;
-            try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.REPORTING)) {
-                renderer = configuration.createRenderer();
-                renderers = Collections.singletonList(renderer);
-                renderer.setReportFile(configuration.getReportFile());
-                renderer.start();
+
+            final List<DataSource> files = getApplicableFiles(configuration, languages);
+            Renderer renderer = configuration.createRenderer(true);
+
+            @SuppressWarnings("PMD.CloseResource")
+            ViolationCounterListener violationCounter = new ViolationCounterListener();
+            @SuppressWarnings("PMD.CloseResource")
+            GlobalReportBuilderListener reportBuilder = new GlobalReportBuilderListener();
+
+            List<GlobalAnalysisListener> allListeners = listOf(
+                    reportBuilder,
+                    renderer.newListener(),
+                    violationCounter);
+            try (GlobalAnalysisListener listener = GlobalAnalysisListener.tee(allListeners)) {
+                try (TimedOperation ignored = TimeTracker.startOperation(TimedOperationCategory.FILE_PROCESSING)) {
+                    processFiles(configuration, ruleSets, files, listener);
+                }
             }
 
-            Report report;
-            try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.FILE_PROCESSING)) {
-                report = processFiles(configuration, Arrays.asList(ruleSets.getAllRuleSets()), files, renderers);
+            Report report = reportBuilder.getResult();
+            if (!report.getProcessingErrors().isEmpty()) {
+                printErrorDetected(report.getProcessingErrors().size());
             }
 
-            try (TimedOperation rto = TimeTracker.startOperation(TimedOperationCategory.REPORTING)) {
-                renderer.end();
-                renderer.flush();
-                return report.getViolations().size();
-            }
+            return violationCounter.getResult();
         } catch (final Exception e) {
             String message = e.getMessage();
             if (message == null) {
                 LOG.log(Level.SEVERE, "Exception during processing", e);
             } else {
                 LOG.severe(message);
+                LOG.log(Level.FINE, "Exception during processing", e);
             }
-            LOG.log(Level.FINE, "Exception during processing", e);
-            LOG.info(PMDCommandLineInterface.buildUsageText());
-            return PMDCommandLineInterface.NO_ERRORS_STATUS;
+            printErrorDetected(1);
+            return PMDCommandLineInterface.NO_ERRORS_STATUS; // fixme?
         } finally {
             /*
              * Make sure it's our own classloader before attempting to close it....
@@ -244,7 +203,7 @@ public class PMD {
     }
 
     private static List<RuleSet> getRuleSetsWithBenchmark(List<String> rulesetPaths, RuleSetLoader factory) {
-        try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.LOAD_RULES)) {
+        try (TimedOperation ignored = TimeTracker.startOperation(TimedOperationCategory.LOAD_RULES)) {
             List<RuleSet> ruleSets;
             try {
                 ruleSets = factory.loadFromResources(rulesetPaths);
@@ -283,24 +242,56 @@ public class PMD {
     }
 
     /**
-     * Creates a new rule context, initialized with a new, empty report.
+     * Run PMD using the given configuration. This replaces the other overload.
      *
-     * @param sourceCodeFilename
-     *            the source code filename
-     * @param sourceCodeFile
-     *            the source code file
-     * @return the rule context
+     * @param configuration Configuration for the run. Note that the files,
+     *                      and rulesets, are ignored, as they are supplied
+     *                      as parameters
+     * @param ruleSets      Parsed rulesets
+     * @param files         Files to process, will be closed by this method.
+     * @param renderers     Renderers that render the report (may be empty)
      *
-     * @deprecated Not useful
+     * @return Report in which violations are accumulated
+     *
+     * @throws Exception If there was a problem when opening or closing the renderers
      */
-    @Deprecated
-    public static RuleContext newRuleContext(String sourceCodeFilename, File sourceCodeFile) {
+    @SuppressWarnings("PMD.CloseResource")
+    public static Report processFiles(PMDConfiguration configuration,
+                                      List<RuleSet> ruleSets,
+                                      Collection<? extends DataSource> files,
+                                      List<Renderer> renderers) throws Exception {
 
-        RuleContext context = new RuleContext();
-        context.setSourceCodeFile(sourceCodeFile);
-        context.setReport(new Report());
-        return context;
+
+        GlobalAnalysisListener rendererListeners = createComposedRendererListener(renderers);
+        GlobalReportBuilderListener reportBuilder = new GlobalReportBuilderListener();
+
+        List<GlobalAnalysisListener> allListeners = listOf(reportBuilder, rendererListeners);
+
+        try (GlobalAnalysisListener listener = GlobalAnalysisListener.tee(allListeners)) {
+            processFiles(configuration, ruleSets, new ArrayList<>(files), listener);
+        }
+
+        return reportBuilder.getResult();
     }
+
+    private static GlobalAnalysisListener createComposedRendererListener(List<Renderer> renderers) throws Exception {
+        if (renderers.isEmpty()) {
+            return GlobalAnalysisListener.noop();
+        }
+
+        List<GlobalAnalysisListener> rendererListeners = new ArrayList<>(renderers.size());
+        for (Renderer renderer : renderers) {
+            try {
+                rendererListeners.add(renderer.newListener());
+            } catch (IOException ioe) {
+                // close listeners so far, throw their close exception or the ioe
+                IOUtil.ensureClosed(rendererListeners, ioe);
+                throw AssertionUtil.shouldNotReachHere("ensureClosed should have thrown");
+            }
+        }
+        return GlobalAnalysisListener.tee(rendererListeners);
+    }
+
 
     /**
      * Run PMD using the given configuration. This replaces the other overload.
@@ -308,48 +299,91 @@ public class PMD {
      * @param configuration Configuration for the run. Note that the files,
      *                      and rulesets, are ignored, as they are supplied
      *                      as parameters
-     * @param rulesets      Parsed rulesets
+     * @param ruleSets      Parsed rulesets
      * @param files         Files to process, will be closed by this method.
-     * @param renderers     Renderers that render the report
+     * @param listener      Listener to which analysis events are forwarded.
+     *                      The listener is NOT closed by this routine and should
+     *                      be closed by the caller.
      *
-     * @return Report in which violations are accumulated
-     *
-     * @throws RuntimeException If processing fails
+     * @throws Exception If there was a problem when opening or closing the renderers
      */
-    public static Report processFiles(final PMDConfiguration configuration,
-                                      final List<RuleSet> rulesets,
-                                      final Collection<? extends DataSource> files,
-                                      final List<Renderer> renderers) {
+    public static void processFiles(PMDConfiguration configuration,
+                                    List<RuleSet> ruleSets,
+                                    List<DataSource> files,
+                                    GlobalAnalysisListener listener) throws Exception {
+
+        final RuleSets rs = new RuleSets(ruleSets);
+
+        // todo Just like we throw for invalid properties, "broken rules"
+        // shouldn't be a "config error". This is the only instance of
+        // config errors...
+
+        for (final Rule rule : removeBrokenRules(rs)) {
+            listener.onConfigError(new Report.ConfigurationError(rule, rule.dysfunctionReason()));
+        }
+
         encourageToUseIncrementalAnalysis(configuration);
-        Report report = new Report();
-        report.addListener(configuration.getAnalysisCache());
 
-        List<DataSource> sortedFiles = new ArrayList<>(files);
-        sortFiles(configuration, sortedFiles);
+        List<DataSource> sortedFiles = sortFiles(configuration, files);
 
-        RuleContext ctx = new RuleContext();
-        ctx.setReport(report);
-        newFileProcessor(configuration).processFiles(new RuleSets(rulesets), sortedFiles, ctx, renderers);
-        configuration.getAnalysisCache().persist();
-        return report;
+        // Make sure the cache is listening for analysis results
+        listener = GlobalAnalysisListener.tee(listOf(listener, configuration.getAnalysisCache()));
+
+        configuration.getAnalysisCache().checkValidity(rs, configuration.getClassLoader());
+
+        Exception ex = null;
+        try (AbstractPMDProcessor processor = AbstractPMDProcessor.newFileProcessor(configuration)) {
+            processor.processFiles(rs, sortedFiles, listener);
+        } catch (Exception e) {
+            ex = e;
+        } finally {
+            configuration.getAnalysisCache().persist();
+            IOUtil.ensureClosed(sortedFiles, ex);
+        }
     }
 
-    private static void sortFiles(final PMDConfiguration configuration, final List<DataSource> files) {
+
+    /**
+     * Remove and return the misconfigured rules from the rulesets and log them
+     * for good measure.
+     *
+     * @param ruleSets RuleSets to prune of broken rules.
+     *
+     * @return Set<Rule>
+     */
+    private static Set<Rule> removeBrokenRules(final RuleSets ruleSets) {
+        final Set<Rule> brokenRules = new HashSet<>();
+        ruleSets.removeDysfunctionalRules(brokenRules);
+
+        for (final Rule rule : brokenRules) {
+            if (LOG.isLoggable(Level.WARNING)) {
+                LOG.log(Level.WARNING,
+                        "Removed misconfigured rule: " + rule.getName() + "  cause: " + rule.dysfunctionReason());
+            }
+        }
+
+        return brokenRules;
+    }
+
+
+    private static List<DataSource> sortFiles(final PMDConfiguration configuration, Collection<? extends DataSource> files) {
+        // the input collection may be unmodifiable
+        List<DataSource> result = new ArrayList<>(files);
+
         if (configuration.isStressTest()) {
             // randomize processing order
-            Collections.shuffle(files);
+            Collections.shuffle(result);
         } else {
             final boolean useShortNames = configuration.isReportShortNames();
             final String inputPaths = configuration.getInputPaths();
-            Collections.sort(files, new Comparator<DataSource>() {
-                @Override
-                public int compare(DataSource left, DataSource right) {
-                    String leftString = left.getNiceFileName(useShortNames, inputPaths);
-                    String rightString = right.getNiceFileName(useShortNames, inputPaths);
-                    return leftString.compareTo(rightString);
-                }
+            result.sort((left, right) -> {
+                String leftString = left.getNiceFileName(useShortNames, inputPaths);
+                String rightString = right.getNiceFileName(useShortNames, inputPaths);
+                return leftString.compareTo(rightString);
             });
         }
+
+        return result;
     }
 
     private static void encourageToUseIncrementalAnalysis(final PMDConfiguration configuration) {
@@ -363,15 +397,6 @@ public class PMD {
         }
     }
 
-    /*
-     * Check if multithreaded support is available. ExecutorService can also
-     * be disabled if threadCount is not positive, e.g. using the
-     * "-threads 0" command line option.
-     */
-    private static AbstractPMDProcessor newFileProcessor(final PMDConfiguration configuration) {
-        return configuration.getThreads() > 0 ? new MultiThreadProcessor(configuration) : new MonoThreadProcessor(configuration);
-    }
-
     /**
      * Determines all the files, that should be analyzed by PMD.
      *
@@ -382,14 +407,14 @@ public class PMD {
      *            used to filter by file extension
      * @return List of {@link DataSource} of files
      */
-    public static List<DataSource> getApplicableFiles(PMDConfiguration configuration, Set<Language> languages) {
-        try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.COLLECT_FILES)) {
+    public static List<DataSource> getApplicableFiles(PMDConfiguration configuration, Set<Language> languages) throws IOException {
+        try (TimedOperation ignored = TimeTracker.startOperation(TimedOperationCategory.COLLECT_FILES)) {
             return internalGetApplicableFiles(configuration, languages);
         }
     }
 
     private static List<DataSource> internalGetApplicableFiles(PMDConfiguration configuration,
-                                                               Set<Language> languages) {
+                                                               Set<Language> languages) throws IOException {
         FilenameFilter fileSelector = configuration.isForceLanguageVersion() ? new AcceptAllFilenames() : new LanguageFilenameFilter(languages);
         List<DataSource> files = new ArrayList<>();
 
@@ -399,30 +424,21 @@ public class PMD {
 
         if (null != configuration.getInputUri()) {
             String uriString = configuration.getInputUri();
-            try {
-                List<DataSource> dataSources = getURIDataSources(uriString);
-
-                files.addAll(dataSources);
-            } catch (PMDException ex) {
-                LOG.log(Level.SEVERE, "Problem with Input URI", ex);
-                throw new RuntimeException("Problem with DBURI: " + uriString, ex);
-            }
+            files.addAll(getURIDataSources(uriString));
         }
 
         if (null != configuration.getInputFilePath()) {
             String inputFilePath = configuration.getInputFilePath();
             File file = new File(inputFilePath);
+            if (!file.exists()) {
+                throw new FileNotFoundException(inputFilePath);
+            }
+
             try {
-                if (!file.exists()) {
-                    LOG.log(Level.SEVERE, "Problem with Input File Path", inputFilePath);
-                    throw new RuntimeException("Problem with Input File Path: " + inputFilePath);
-                } else {
-                    String filePaths = FileUtil.readFilelist(new File(inputFilePath));
-                    files.addAll(FileUtil.collectFiles(filePaths, fileSelector));
-                }
+                String filePaths = FileUtil.readFilelist(file);
+                files.addAll(FileUtil.collectFiles(filePaths, fileSelector));
             } catch (IOException ex) {
-                LOG.log(Level.SEVERE, "Problem with Input File", ex);
-                throw new RuntimeException("Problem with Input File Path: " + inputFilePath, ex);
+                throw new IOException("Problem with Input File Path: " + inputFilePath, ex);
             }
 
         }
@@ -430,14 +446,13 @@ public class PMD {
         if (null != configuration.getIgnoreFilePath()) {
             String ignoreFilePath = configuration.getIgnoreFilePath();
             File file = new File(ignoreFilePath);
+            if (!file.exists()) {
+                throw new FileNotFoundException(ignoreFilePath);
+            }
+
             try {
-                if (!file.exists()) {
-                    LOG.log(Level.SEVERE, "Problem with Ignore File Path", ignoreFilePath);
-                    throw new RuntimeException("Problem with Ignore File Path: " + ignoreFilePath);
-                } else {
-                    String filePaths = FileUtil.readFilelist(new File(ignoreFilePath));
-                    files.removeAll(FileUtil.collectFiles(filePaths, fileSelector));
-                }
+                String filePaths = FileUtil.readFilelist(file);
+                files.removeAll(FileUtil.collectFiles(filePaths, fileSelector));
             } catch (IOException ex) {
                 LOG.log(Level.SEVERE, "Problem with Ignore File", ex);
                 throw new RuntimeException("Problem with Ignore File Path: " + ignoreFilePath, ex);
@@ -446,18 +461,20 @@ public class PMD {
         return files;
     }
 
-    private static Set<Language> getApplicableLanguages(final PMDConfiguration configuration, final RuleSets ruleSets) {
+    private static Set<Language> getApplicableLanguages(final PMDConfiguration configuration, final List<RuleSet> ruleSets) {
         final Set<Language> languages = new HashSet<>();
         final LanguageVersionDiscoverer discoverer = configuration.getLanguageVersionDiscoverer();
 
-        for (final Rule rule : ruleSets.getAllRules()) {
-            final Language ruleLanguage = rule.getLanguage();
-            if (!languages.contains(ruleLanguage)) {
-                final LanguageVersion version = discoverer.getDefaultLanguageVersion(ruleLanguage);
-                if (RuleSet.applies(rule, version)) {
-                    languages.add(ruleLanguage);
-                    if (LOG.isLoggable(Level.FINE)) {
-                        LOG.fine("Using " + ruleLanguage.getShortName() + " version: " + version.getShortName());
+        for (final RuleSet ruleSet : ruleSets) {
+            for (Rule rule : ruleSet.getRules()) {
+                final Language ruleLanguage = rule.getLanguage();
+                if (!languages.contains(ruleLanguage)) {
+                    final LanguageVersion version = discoverer.getDefaultLanguageVersion(ruleLanguage);
+                    if (RuleSet.applies(rule, version)) {
+                        languages.add(ruleLanguage);
+                        if (LOG.isLoggable(Level.FINE)) {
+                            LOG.fine("Using " + ruleLanguage.getShortName() + " version: " + version.getShortName());
+                        }
                     }
                 }
             }
@@ -507,16 +524,31 @@ public class PMD {
      */
     public static StatusCode runPmd(String... args) {
         PmdParametersParseResult parseResult = PmdParametersParseResult.extractParameters(args);
-        if (parseResult.isHelp()) {
+
+        if (!parseResult.getDeprecatedOptionsUsed().isEmpty()) {
+            Entry<String, String> first = parseResult.getDeprecatedOptionsUsed().entrySet().iterator().next();
+            LOG.warning("Some deprecated options were used on the command-line, including " + first.getKey());
+            LOG.warning("Consider replacing it with " + first.getValue());
+        }
+
+        if (parseResult.isVersion()) {
+            System.out.println("PMD " + PMDVersion.VERSION);
+            return StatusCode.OK;
+        } else if (parseResult.isHelp()) {
             PMDCommandLineInterface.printJcommanderUsageOnConsole();
             System.out.println(PMDCommandLineInterface.buildUsageText());
             return StatusCode.OK;
         } else if (parseResult.isError()) {
-            System.out.println(PMDCommandLineInterface.buildUsageText());
             System.err.println(parseResult.getError().getMessage());
+            System.err.println(CliMessages.runWithHelpFlagMessage());
             return StatusCode.ERROR;
         }
         return runPmd(parseResult.toConfiguration());
+    }
+
+    private static void printErrorDetected(int errors) {
+        String msg = CliMessages.errorDetectedMessage(errors, "PMD");
+        LOG.severe(msg);
     }
 
     /**
@@ -551,8 +583,6 @@ public class PMD {
                 status = StatusCode.OK;
             }
         } catch (Exception e) {
-            System.out.println(PMDCommandLineInterface.buildUsageText());
-            System.out.println();
             System.err.println(e.getMessage());
             status = StatusCode.ERROR;
         } finally {
@@ -610,7 +640,7 @@ public class PMD {
 
     }
 
-    private static class AcceptAllFilenames implements FilenameFilter {
+    private static final class AcceptAllFilenames implements FilenameFilter {
         @Override
         public boolean accept(File dir, String name) {
             return true;

@@ -27,7 +27,7 @@ public class SuppressWarningsTest extends ApexParserTestBase {
 
         @Override
         public String getMessage() {
-            return "someMessage";
+            return "a message";
         }
 
         @Override

@@ -33,6 +33,8 @@ import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.benchmark.TimedOperation;
 import net.sourceforge.pmd.benchmark.TimedOperationCategory;
 import net.sourceforge.pmd.cache.internal.ClasspathFingerprinter;
+import net.sourceforge.pmd.reporting.FileAnalysisListener;
+import net.sourceforge.pmd.util.datasource.DataSource;
 
 /**
  * Abstract implementation of the analysis cache. Handles all operations, except for persistence.
@@ -46,8 +48,8 @@ public abstract class AbstractAnalysisCache implements AnalysisCache {
     protected static final Logger LOG = Logger.getLogger(AbstractAnalysisCache.class.getName());
     protected static final ClasspathFingerprinter FINGERPRINTER = new ClasspathFingerprinter();
     protected final String pmdVersion;
-    protected final ConcurrentMap<String, AnalysisResult> fileResultsCache;
-    protected final ConcurrentMap<String, AnalysisResult> updatedResultsCache;
+    protected final ConcurrentMap<String, AnalysisResult> fileResultsCache = new ConcurrentHashMap<>();
+    protected final ConcurrentMap<String, AnalysisResult> updatedResultsCache = new ConcurrentHashMap<>();
     protected final CachedRuleMapper ruleMapper = new CachedRuleMapper();
     protected long rulesetChecksum;
     protected long auxClassPathChecksum;
@@ -58,13 +60,11 @@ public abstract class AbstractAnalysisCache implements AnalysisCache {
      */
     public AbstractAnalysisCache() {
         pmdVersion = PMDVersion.VERSION;
-        fileResultsCache = new ConcurrentHashMap<>();
-        updatedResultsCache = new ConcurrentHashMap<>();
     }
 
     @Override
     public boolean isUpToDate(final File sourceFile) {
-        try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.ANALYSIS_CACHE, "up-to-date check")) {
+        try (TimedOperation ignored = TimeTracker.startOperation(TimedOperationCategory.ANALYSIS_CACHE, "up-to-date check")) {
             // There is a new file being analyzed, prepare entry in updated cache
             final AnalysisResult updatedResult = new AnalysisResult(sourceFile);
             updatedResultsCache.put(sourceFile.getPath(), updatedResult);
@@ -116,7 +116,7 @@ public abstract class AbstractAnalysisCache implements AnalysisCache {
 
     @Override
     public void checkValidity(final RuleSets ruleSets, final ClassLoader auxclassPathClassLoader) {
-        try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.ANALYSIS_CACHE, "validity check")) {
+        try (TimedOperation ignored = TimeTracker.startOperation(TimedOperationCategory.ANALYSIS_CACHE, "validity check")) {
             boolean cacheIsValid = cacheExists();
 
             if (cacheIsValid && ruleSets.getChecksum() != rulesetChecksum) {
@@ -212,10 +212,14 @@ public abstract class AbstractAnalysisCache implements AnalysisCache {
     }
 
     @Override
-    public void ruleViolationAdded(final RuleViolation ruleViolation) {
-        final AnalysisResult analysisResult = updatedResultsCache.get(ruleViolation.getFilename());
+    public FileAnalysisListener startFileAnalysis(DataSource filename) {
+        return violation -> {
+            final AnalysisResult analysisResult = 
+                updatedResultsCache.get(violation.getFilename());
 
-        analysisResult.addViolation(ruleViolation);
+            synchronized (analysisResult) {
+                analysisResult.addViolation(violation);
+            }
+        };
     }
-
 }

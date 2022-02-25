@@ -42,7 +42,7 @@ public class ScalaRuleTest extends BaseScalaTest {
         ScalaRule rule = new ScalaRule() {
             @Override
             public String getMessage() {
-                return "message";
+                return "a message";
             }
 
             @Override

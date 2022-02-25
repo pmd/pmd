@@ -65,7 +65,7 @@ public class DocumentOperationsApplierForNonOverlappingRegions {
         }
     }
 
-    private static class DocumentOperationNonOverlappingRegionsComparator implements Comparator<DocumentOperation> {
+    private static final class DocumentOperationNonOverlappingRegionsComparator implements Comparator<DocumentOperation> {
 
         @Override
         public int compare(final DocumentOperation o1, final DocumentOperation o2) {

@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.java.types;
 
 import java.lang.reflect.Modifier;
+import java.util.Objects;
 
 import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -60,12 +61,8 @@ public final class TypeTestUtil {
      */
     public static boolean isA(final @NonNull Class<?> clazz, final @Nullable TypeNode node) {
         AssertionUtil.requireParamNotNull("class", clazz);
-        if (node == null) {
-            return false;
-        }
-
-        return hasNoSubtypes(clazz) ? isExactlyA(clazz, node)
-                                    : isA(clazz, node.getTypeMirror());
+        return node != null && (hasNoSubtypes(clazz) ? isExactlyA(clazz, node)
+                                    : isA(clazz, node.getTypeMirror()));
     }
 
     /**
@@ -89,10 +86,10 @@ public final class TypeTestUtil {
 
         JTypeMirror otherType = TypesFromReflection.fromReflect(clazz, type.getTypeSystem());
 
-        if (otherType == null || TypeOps.isUnresolved(type) || otherType.isPrimitive()) {
+        if (otherType == null || TypeOps.isUnresolved(type) || hasNoSubtypes(clazz)) {
             // We'll return true if the types have equal symbols (same binary name),
             // but we ignore subtyping.
-            return isExactlyA(clazz, type.getSymbol());
+            return otherType != null && Objects.equals(otherType.getSymbol(), type.getSymbol());
         }
 
         return isA(otherType, type);
@@ -127,11 +124,7 @@ public final class TypeTestUtil {
 
     public static boolean isA(@NonNull String canonicalName, @Nullable JTypeMirror thisType) {
         AssertionUtil.requireParamNotNull("canonicalName", (Object) canonicalName);
-        if (thisType == null) {
-            return false;
-        }
-
-        return isA(canonicalName, thisType, null);
+        return thisType != null && isA(canonicalName, thisType, null);
     }
 
     public static boolean isA(@NonNull JTypeMirror t1, @Nullable TypeNode t2) {
@@ -139,7 +132,7 @@ public final class TypeTestUtil {
     }
 
     /**
-     * Checks whether the first type is a subtype of the second. This
+     * Checks whether the second type is a subtype of the first. This
      * removes some behavior of isSubtypeOf that we don't want (eg, that
      * unresolved types are subtypes of everything).
      *
@@ -148,7 +141,7 @@ public final class TypeTestUtil {
      *
      * @return Whether t1 is a subtype of t2
      */
-    private static boolean isA(@Nullable JTypeMirror t1, @NonNull JTypeMirror t2) {
+    public static boolean isA(@Nullable JTypeMirror t1, @NonNull JTypeMirror t2) {
         if (t1 == null) {
             return false;
         } else if (t2.isPrimitive() || t1.isPrimitive()) {
@@ -208,19 +201,12 @@ public final class TypeTestUtil {
      */
     public static boolean isExactlyA(final @NonNull Class<?> clazz, final @Nullable TypeNode node) {
         AssertionUtil.requireParamNotNull("class", clazz);
-        if (node == null) {
-            return false;
-        }
-
-        return isExactlyA(clazz, node.getTypeMirror().getSymbol());
+        return node != null && isExactlyA(clazz, node.getTypeMirror().getSymbol());
     }
 
     public static boolean isExactlyA(@NonNull Class<?> klass, @Nullable JTypeMirror type) {
         AssertionUtil.requireParamNotNull("class", klass);
-        if (type == null) {
-            return false;
-        }
-        return isExactlyA(klass, type.getSymbol());
+        return type != null && isExactlyA(klass, type.getSymbol());
     }
 
     public static boolean isExactlyA(@NonNull Class<?> klass, @Nullable JTypeDeclSymbol type) {
@@ -272,10 +258,7 @@ public final class TypeTestUtil {
      */
     public static boolean isExactlyA(@NonNull String canonicalName, final @Nullable TypeNode node) {
         AssertionUtil.assertValidJavaBinaryName(canonicalName);
-        if (node == null) {
-            return false;
-        }
-        return isExactlyAOrAnon(canonicalName, node.getTypeMirror()) == OptionalBool.YES;
+        return node != null && isExactlyAOrAnon(canonicalName, node.getTypeMirror()) == OptionalBool.YES;
     }
 
     static OptionalBool isExactlyAOrAnon(@NonNull String canonicalName, final @NonNull JTypeMirror node) {

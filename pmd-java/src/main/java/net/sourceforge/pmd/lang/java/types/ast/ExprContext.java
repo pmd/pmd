@@ -58,14 +58,12 @@ public abstract class ExprContext {
         AssertionUtil.requireParamNotNull("type", type);
 
         JTypeMirror targetType = getTargetType();
-        if (targetType == null) {
-            return true;
-        }
 
-        // todo there's a gritty detail about compound assignment operators
-        //  with a primitive LHS, see https://github.com/pmd/pmd/issues/2023
-        return kind == CAST ? TypeConversion.isConvertibleInCastContext(type, targetType)
-                            : TypeConversion.isConvertibleUsingBoxing(type, targetType);
+        return targetType == null
+                // todo there's a gritty detail about compound assignment operators
+                //  with a primitive LHS, see https://github.com/pmd/pmd/issues/2023
+                || (kind == CAST ? TypeConversion.isConvertibleInCastContext(type, targetType)
+                            : TypeConversion.isConvertibleUsingBoxing(type, targetType));
     }
 
     /**

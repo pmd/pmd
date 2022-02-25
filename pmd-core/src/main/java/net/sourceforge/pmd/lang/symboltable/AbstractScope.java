@@ -67,7 +67,7 @@ public abstract class AbstractScope implements Scope {
             declarationsPerClass = new LinkedHashMap<>();
             nameDeclarations.put(declaration.getClass(), declarationsPerClass);
         }
-        declarationsPerClass.put(declaration, new ArrayList<NameOccurrence>());
+        declarationsPerClass.put(declaration, new ArrayList<>());
     }
 
     @SuppressWarnings("unchecked")

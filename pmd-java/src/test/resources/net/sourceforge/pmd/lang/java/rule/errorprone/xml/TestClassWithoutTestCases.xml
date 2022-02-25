@@ -28,6 +28,7 @@ public class FooTest extends TestCase {
     <test-code>
         <description>inner class should get checked</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
         <code><![CDATA[
 import junit.framework.TestCase;
 public class FooTest extends TestCase {
@@ -123,6 +124,44 @@ class JUnit5Test {
     void myTest() {
     }
 }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>false positive with anonymous class inside test class</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.junit.Assert;
+import org.junit.Test;
+
+public class MyTest {
+    @Test
+    public void testSomething() {
+        Object check = new Object() { // false positive
+            @Override
+            public boolean equals(Object o) { return false; }
+        };
+        Assert.assertTrue(check.equals(null));
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] TestClassWithoutTestCases reports wrong classes in a file #3624</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.junit.Test;
+
+public class MyTest {
+    @Test
+    public void myTest() {
+    }
+
+    class NestedHelper { }
+}
+
+class Helper { }
         ]]></code>
     </test-code>
 </test-data>

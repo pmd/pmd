@@ -118,8 +118,9 @@ public class TextColorRenderer extends AbstractAccumulatingRenderer {
         return property != null && !("0".equals(property) || "false".equalsIgnoreCase(property));
     }
 
+
     @Override
-    public void end() throws IOException {
+    public void outputReport(Report report) throws IOException {
         StringBuilder buf = new StringBuilder(500);
         buf.append(PMD.EOL);
         initializeColorsIfSupported();

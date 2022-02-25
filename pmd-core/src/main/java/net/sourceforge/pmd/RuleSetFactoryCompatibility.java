@@ -140,7 +140,7 @@ final class RuleSetFactoryCompatibility {
         return result;
     }
 
-    private static class RuleSetFilter {
+    private static final class RuleSetFilter {
 
         private static final String MOVED_MESSAGE = "The rule \"{1}\" has been moved from ruleset \"{0}\" to \"{2}\". Please change your ruleset!";
         private static final String RENAMED_MESSAGE = "The rule \"{1}\" has been renamed to \"{3}\". Please change your ruleset!";

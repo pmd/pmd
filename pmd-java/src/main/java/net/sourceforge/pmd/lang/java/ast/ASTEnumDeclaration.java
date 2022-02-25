@@ -7,8 +7,8 @@ package net.sourceforge.pmd.lang.java.ast;
 import net.sourceforge.pmd.lang.ast.Node;
 
 /**
- * Represents an enum declaration. This is a {@linkplain Node#isFindBoundary() find boundary}
- * for tree traversal methods.
+ * Represents an enum declaration.
+ * This is a {@linkplain Node#isFindBoundary() find boundary} for tree traversal methods.
  *
  * <p>An enum declaration is implicitly final <i>unless it contains at
  * least one enum constant that has a class body</i>. A nested enum type

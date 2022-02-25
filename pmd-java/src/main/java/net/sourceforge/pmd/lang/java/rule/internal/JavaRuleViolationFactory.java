@@ -12,7 +12,6 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Report.SuppressedViolation;
 import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.ViolationSuppressor;
 import net.sourceforge.pmd.lang.ast.Node;
@@ -51,18 +50,14 @@ public final class JavaRuleViolationFactory extends DefaultRuleViolationFactory 
     }
 
     @Override
-    public void addViolation(RuleContext ruleContext, Rule rule, @NonNull Node node, @NonNull String message, Object[] args) {
-        JavaccToken preferredLoc = InternalApiBridge.getReportLocation((JavaNode) node);
+    public RuleViolation createViolation(Rule rule, @NonNull Node location, @NonNull String formattedMessage) {
+        JavaNode javaNode = (JavaNode) location;
+        JavaRuleViolation violation = new JavaRuleViolation(rule, javaNode, formattedMessage);
+        JavaccToken preferredLoc = InternalApiBridge.getReportLocation(javaNode);
         if (preferredLoc != null) {
-            addViolation(ruleContext, rule, node, message, preferredLoc.getBeginLine(), preferredLoc.getEndLine(), args);
-        } else {
-            addViolation(ruleContext, rule, node, message, node.getBeginLine(), node.getEndLine(), args);
+            violation.setLines(preferredLoc.getBeginLine(), preferredLoc.getEndLine());
         }
-    }
-
-    @Override
-    public RuleViolation createViolation(Rule rule, @NonNull Node location, @NonNull String filename, @NonNull String formattedMessage) {
-        return new JavaRuleViolation(rule, (JavaNode) location, filename, formattedMessage);
+        return violation;
     }
 
 }

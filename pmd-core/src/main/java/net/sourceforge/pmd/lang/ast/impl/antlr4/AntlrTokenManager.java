@@ -62,7 +62,7 @@ public class AntlrTokenManager implements TokenManager<AntlrToken> {
         lexer.addErrorListener(new ErrorHandler());
     }
 
-    private class ErrorHandler extends BaseErrorListener {
+    private final class ErrorHandler extends BaseErrorListener {
 
         @Override
         public void syntaxError(final Recognizer<?, ?> recognizer,

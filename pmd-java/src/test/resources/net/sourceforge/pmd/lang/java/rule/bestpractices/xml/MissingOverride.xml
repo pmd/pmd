@@ -189,10 +189,10 @@ public class ConcreteClassArrayParams extends AbstractClass {
         ]]></code>
     </test-code>
 
-    <test-code regressionTest="false">  <!-- FIXME bug in typeres, anon constants are not resolved -->
-        <description>Consider enum anon class</description>
-        <expected-problems>1</expected-problems>
-        <expected-linenumbers>10</expected-linenumbers>
+    <test-code>
+        <description>Consider enum anon class (#3542)</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>6,11</expected-linenumbers>
         <code><![CDATA[
 package net.sourceforge.pmd.lang.java.rule.bestpractices.missingoverride;
 
@@ -203,13 +203,11 @@ public enum EnumWithAnonClass {
             return super.toString();
         }
 
-
         // missing
         public String getSomething() {
             return null;
         }
     };
-
 
     public Object getSomething() {
         return null;
@@ -551,6 +549,7 @@ public record Point(int x, int y) {
         ]]></code>
         <source-type>java 16</source-type>
     </test-code>
+
     <test-code>
         <description>Package private method cannot be overridden outside of its package #1969 (1)</description>
         <expected-problems>1</expected-problems>
@@ -568,6 +567,7 @@ public record Point(int x, int y) {
             }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>Package private method cannot be overridden outside of its package #1969 (2)</description>
         <expected-problems>0</expected-problems>
@@ -583,6 +583,73 @@ public record Point(int x, int y) {
                     System.out.println("Click");
                 }
             }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] MissingOverride: False negative for enum method #3542</description>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>6,11,17</expected-linenumbers>
+        <code><![CDATA[
+package net.sourceforge.pmd.lang.java.rule.bestpractices.missingoverride;
+
+public enum EnumToString {
+    sub_EnumClazz {
+        // missing @Override
+        public String toString() {
+            return "test";
+        }
+
+        // missing @Override
+        public void notOverride() {
+            System.out.println("test");
+        }
+    };
+
+    // missing @Override
+    public String toString() {
+        return "test";
+    }
+
+    public void notOverride() {
+        System.out.println("test");
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>False positive with generic erasure #3675</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>23</expected-linenumbers>
+        <code><![CDATA[
+package test;
+
+import java.util.Collection;
+
+public abstract class AbstractBuilderMixedTypeVarOverride<B extends AbstractBuilderMixedTypeVarOverride<B, T>, T> {
+    @SuppressWarnings("unchecked")
+    public B defaultValue(T val) {
+        return (B) this;
+    }
+
+    @SuppressWarnings("unchecked")
+    public B defaultValue2(T val) {
+        return (B) this;
+    }
+
+    public static final class ConcreteBuilder<V, C extends Collection<V>> extends AbstractBuilderMixedTypeVarOverride<ConcreteBuilder<V, C>, C> {
+        //@Override is wrong here: method does not override or implement a method from a supertype
+        public ConcreteBuilder<V, C> defaultValue(Collection<? extends V> val) {
+            return this;
+        }
+
+        //@Override is indeed missing here
+        public ConcreteBuilder<V, C> defaultValue2(C val) {
+            return this;
+        }
+    }
+}
         ]]></code>
     </test-code>
 </test-data>

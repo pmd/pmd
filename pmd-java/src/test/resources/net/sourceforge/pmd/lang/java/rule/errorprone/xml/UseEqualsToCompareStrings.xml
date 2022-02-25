@@ -144,6 +144,8 @@ public class O {
         <description>#2979 UseEqualsToCompareStrings: FP with "var" variables</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.util.regex.Matcher;
+
 public class O {
     boolean f(String s) {
         final Matcher matcher = null;
@@ -164,6 +166,8 @@ public class O {
         <description>#2979 UseEqualsToCompareStrings: FP with "var" variables (control, types are explicit)</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.util.regex.Matcher;
+
 public class O {
     boolean f(String s) {
         final Matcher matcher = null;
@@ -178,6 +182,16 @@ public class O {
         }
     }
 }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>False positive with string concatentation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {{
+    String a = "b" + "c";
+}}
         ]]></code>
     </test-code>
 </test-data>

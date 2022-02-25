@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.Comparator;
+import java.util.EnumSet;
 import java.util.Set;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -85,8 +86,11 @@ public enum BinaryOp implements InternalInterfaces.OperatorLike {
     /** Modulo {@code "%"} operator. */
     MOD("%");
 
-    /** Use with {@link #isInfixExprWithOperator(JavaNode, Set)}. */
+    /** Set of {@code <}, {@code <=}, {@code >=} and {@code >}. Use with {@link #isInfixExprWithOperator(JavaNode, Set)}. */
     public static final Set<BinaryOp> COMPARISON_OPS = CollectionUtil.immutableEnumSet(LE, GE, GT, LT);
+    /** Set of {@code ==} and {@code !=}. Use with {@link #isInfixExprWithOperator(JavaNode, Set)}. */
+    public static final Set<BinaryOp> EQUALITY_OPS = CollectionUtil.immutableEnumSet(EQ, NE);
+    /** Set of {@code <<}, {@code >>} and {@code >>>}. Use with {@link #isInfixExprWithOperator(JavaNode, Set)}. */
     public static final Set<BinaryOp> SHIFT_OPS = CollectionUtil.immutableEnumSet(LEFT_SHIFT, RIGHT_SHIFT, UNSIGNED_RIGHT_SHIFT);
 
     private final String code;
@@ -130,6 +134,17 @@ public enum BinaryOp implements InternalInterfaces.OperatorLike {
      */
     public boolean hasSamePrecedenceAs(@NonNull BinaryOp other) {
         return comparePrecedence(other) == 0;
+    }
+
+
+    /**
+     * Returns the ops with strictly greater precedence than the given op.
+     * This may return an empty set.
+     */
+    public static Set<BinaryOp> opsWithGreaterPrecedence(BinaryOp op) {
+        Set<BinaryOp> range = EnumSet.range(op, MOD);
+        range.remove(op);
+        return range;
     }
 
     private int precedenceClass() {

@@ -7,8 +7,11 @@ package net.sourceforge.pmd.lang.java.rule.security;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTArrayAllocation;
 import net.sourceforge.pmd.lang.java.ast.ASTArrayInitializer;
+import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.AccessType;
+import net.sourceforge.pmd.lang.java.ast.ASTAssignmentExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTStringLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
@@ -46,27 +49,47 @@ abstract class AbstractHardCodedConstructorArgsVisitor extends AbstractJavaRulec
             return;
         }
 
-        // named variable
-        if (firstArgumentExpression instanceof ASTVariableAccess) {
-            ASTVariableAccess varAccess = (ASTVariableAccess) firstArgumentExpression;
-            if (varAccess.getSignature() != null && varAccess.getSignature().getSymbol() != null) {
-                ASTVariableDeclaratorId varDecl = varAccess.getSignature().getSymbol().tryGetNode();
-                validateProperKeyArgument(data, varDecl.getInitializer());
+        ASTVariableAccess varAccess = null;
+
+        if (firstArgumentExpression instanceof ASTMethodCall) {
+            // check for method call on a named variable
+            ASTExpression expr = ((ASTMethodCall) firstArgumentExpression).getQualifier();
+            if (expr instanceof ASTVariableAccess) {
+                varAccess = (ASTVariableAccess) expr;
             }
+        } else if (firstArgumentExpression instanceof ASTVariableAccess) {
+            // check for named variable
+            varAccess = (ASTVariableAccess) firstArgumentExpression;
         }
 
-        // hard coded array
-        if (firstArgumentExpression instanceof ASTArrayAllocation) {
+        if (varAccess != null && varAccess.getSignature() != null && varAccess.getSignature().getSymbol() != null) {
+            // named variable or method call on named variable found
+            ASTVariableDeclaratorId varDecl = varAccess.getSignature().getSymbol().tryGetNode();
+            validateProperKeyArgument(data, varDecl.getInitializer());
+            validateVarUsages(data, varDecl);
+        } else if (firstArgumentExpression instanceof ASTArrayAllocation) {
+            // hard coded array
             ASTArrayInitializer arrayInit = ((ASTArrayAllocation) firstArgumentExpression).getArrayInitializer();
             if (arrayInit != null) {
                 addViolation(data, arrayInit);
             }
+        } else {
+            // string literal
+            ASTStringLiteral literal = firstArgumentExpression.descendantsOrSelf()
+                    .filterIs(ASTStringLiteral.class).first();
+            if (literal != null) {
+                addViolation(data, literal);
+            }
         }
+    }
 
-        // string literal
-        ASTStringLiteral literal = firstArgumentExpression.descendants(ASTStringLiteral.class).first();
-        if (literal != null) {
-            addViolation(data, literal);
-        }
+    private void validateVarUsages(Object data, ASTVariableDeclaratorId varDecl) {
+        varDecl.getLocalUsages().stream()
+            .filter(u -> u.getAccessType() == AccessType.WRITE)
+            .filter(u -> u.getParent() instanceof ASTAssignmentExpression)
+            .forEach(usage -> {
+                ASTAssignmentExpression assignment = (ASTAssignmentExpression) usage.getParent();
+                validateProperKeyArgument(data, assignment.getRightOperand());
+            });
     }
 }

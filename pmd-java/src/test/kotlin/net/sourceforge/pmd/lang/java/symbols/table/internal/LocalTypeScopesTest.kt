@@ -41,8 +41,8 @@ class LocalTypeScopesTest : ParserTestSpec({
         val (foo, inner, other) =
                 acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
 
-        val (insideFoo, insideInner, insideOther) =
-                acu.descendants(ASTFieldDeclaration::class.java).toList()
+        val (insideFoo, _, insideOther) =
+                acu.descendants(ASTFieldDeclaration::class.java).crossFindBoundaries().toList()
 
         doTest("Inside a type: other toplevel types and inner classes are in scope") {
 
@@ -119,7 +119,7 @@ class LocalTypeScopesTest : ParserTestSpec({
                 acu.descendants(ASTClassOrInterfaceDeclaration::class.java).toList()
 
         val (insideFoo, insideInner, insideOther) =
-                acu.descendants(ASTFieldDeclaration::class.java).toList()
+                acu.descendants(ASTFieldDeclaration::class.java).crossFindBoundaries().toList()
 
         doTest("Inside Foo/Inner: Inner is the inner class") {
 

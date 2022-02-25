@@ -254,8 +254,16 @@ public class Foo extends Bar{
             specific kind (e.g. enum or interface). Each regex can be configured through
             properties.
 
-            By default this rule uses the standard Java naming convention (Pascal case),
-            and reports utility class names not ending with 'Util'.
+            By default this rule uses the standard Java naming convention (Pascal case).
+            
+            The rule can detect utility classes and enforce a different naming convention
+            on those. E.g. setting the property `utilityClassPattern` to
+            `[A-Z][a-zA-Z0-9]+(Utils?|Helper|Constants)` reports any utility class, whose name
+            does not end in "Util(s)", "Helper" or "Constants".
+            
+            For this rule, a utility class is defined as: a concrete class that does not
+            inherit from a super class or implement any interface and only has static fields
+            or methods.
         </description>
         <priority>1</priority>
         <example>
@@ -533,6 +541,38 @@ public class HelloWorldBean {
                 }
             }
             ]]>
+        </example>
+    </rule>
+
+    <rule name="FinalParameterInAbstractMethod"
+          language="java"
+          since="6.42.0"
+          message="Final parameter in abstract method"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          typeResolution="true"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#finalparameterinabstractmethod">
+        <description>
+            Declaring a method parameter as final for an interface method is useless because the implementation may choose to not respect it.
+        </description>
+        <priority>1</priority>
+        <properties>
+            <property name="version" value="2.0"/>
+            <property name="xpath">
+                <value>
+                    <![CDATA[
+//MethodDeclaration
+    [FormalParameters/FormalParameter[@Final = true()]]
+    [not(Block)]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+            <![CDATA[
+public interface MyInterface {
+  void process(final Object arg); // Avoid using final here
+}
+]]>
         </example>
     </rule>
 
@@ -1447,14 +1487,19 @@ public class Foo {
         </description>
         <priority>3</priority>
         <example><![CDATA[
-            {
-                    // Instead of
-                    Integer integer = Integer.valueOf(2);
-                    // you may just write
-                    Integer integer = 2;
+{
+        // Instead of
+        Integer integer = Integer.valueOf(2);
+        // you may just write
+        Integer integer = 2;
 
-                    int i = integer.intValue(); // similarly for unboxing
-            }
+        int i = integer.intValue(); // similarly for unboxing
+
+        // Instead of
+        int x = Integer.valueOf("42");
+        // you may just write
+        int x = Integer.parseInt("42");
+}
             ]]>
         </example>
     </rule>
@@ -1663,6 +1708,12 @@ public class Bar {
     public static enum FoorBar {    // static ignored
         FOO;
     }
+}
+public class FooClass {
+    static record BarRecord() {}     // static ignored
+}
+public interface FooInterface {
+    static record BarRecord() {}     // static ignored
 }
 ]]>
         </example>

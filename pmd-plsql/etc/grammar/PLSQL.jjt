@@ -27,6 +27,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 /**
+ * Add support for Select statement within OPEN FOR Statements
+ *
+ * Andreas Dangel 09/2021
+ *====================================================================
  * Add support for XMLROOT, improve ExtractExpression to support xml
  *
  * Piotr Szymanski 03/2020
@@ -84,7 +88,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  * Andreas Dangel 07/2018
  *====================================================================
- * Added ASTIsOfTypeCondition node, added support for USING IN|OUT|IN_OUT
+ * Added ASTIsOfTypeCondition node, added support for USING IN|OUT|IN OUT
  * See PMD Bug #1520
  *
  * Andreas Dangel 11/2016
@@ -225,6 +229,35 @@ PARSER_END(PLSQLParserImpl)
 TOKEN_MGR_DECLS : {
 
   List<ParsingExclusion> exclusions = new ArrayList<ParsingExclusion>();
+}
+
+// add names to SINGLE CHARACTER tokens
+// multiple character operators are sequences of tokens.
+TOKEN: {
+  < LPAREN: "(" >
+| < RPAREN: ")" >
+| < LBRACE: "{" >
+| < RBRACE: "}" >
+| < LBRACKET: "[" >
+| < RBRACKET: "]" >
+| < SEMICOLON: ";" >
+| < COMMA: "," >
+| < DOT: "." >
+| < AROBASE: "@" >
+| < ASSIGN: "=" >
+| < LT: "<" >
+| < BANG: "!" >
+| < TILDE: "~" >
+| < HOOK: "?" >
+| < COLON: ":" >
+| < PLUSSIGN: "+" >
+| < MINUSSIGN: "-" >
+| < STAR: "*" >
+| < SLASH: "/" >
+| < BIT_AND: "&" >
+| < BIT_OR: "|" >
+| < XOR: "^" >
+| < REM: "%" >
 }
 
 /**
@@ -1571,18 +1604,26 @@ ASTInCondition InCondition() :
     { return jjtThis; }
 }
 
-ASTComparisonCondition ComparisonCondition() :
+private String ComparisonOp() #void :
 {}
 {
-    (
-    // SimpleComparisonCondition
-      LOOKAHEAD(3) (SqlExpression() ( "=" | "!=" | "^=" | "<>" | ">" | "<" | ">=" | "<=" ) { jjtThis.setOperator(token.getImage()); } SqlExpression() )
-    | LOOKAHEAD(3) ( "(" SqlExpression() ("," SqlExpression())* ")" ( "=" | "!=" | "^=" | "<>" ) { jjtThis.setOperator(token.getImage()); } "(" ( LOOKAHEAD(3) ExpressionList() | LOOKAHEAD(3) Subquery() ) ")" )
+      "=" {return "=";}
+    | "!" "=" {return "!=";}
+    | "^" "=" {return "^=";}
+    | "<" ( "=" {return "<=";} | ">" {return "<>";} )? {return "<";}
+    | ">" ( "=" {return ">=";} )? {return ">";}
+}
 
-    // GroupComparisonCondition
-    | LOOKAHEAD(3) (SqlExpression() ( "=" | "!=" | "^=" | "<>" | ">" | "<" | ">=" | "<=" ) { jjtThis.setOperator(token.getImage()); } ( <ANY> | <SOME> | <ALL> ) "(" ( LOOKAHEAD(3) ExpressionListSingle() | LOOKAHEAD(3) Subquery() ) ")" )
-    | LOOKAHEAD(3) ( "(" SqlExpression() ("," SqlExpression())* ")" ( "=" | "!=" | "^=" | "<>" ) { jjtThis.setOperator(token.getImage()); } ( <ANY> | <SOME> | <ALL> ) "(" ( LOOKAHEAD(3) ExpressionListMultiple() ("," ExpressionListMultiple())* | LOOKAHEAD(3) Subquery() ) ")" )
-    )
+ASTComparisonCondition ComparisonCondition() :
+{String op;}
+{
+    (LOOKAHEAD(3) SqlExpression() | ExpressionListMultiple() )
+    op=ComparisonOp() { jjtThis.setOperator(op); }
+    ( <ANY> | <SOME> | <ALL> )?
+    (LOOKAHEAD(3) "(" Subquery() ")"
+    |LOOKAHEAD(3) "(" ExpressionListSingle() ")"
+    |LOOKAHEAD(3) "(" ExpressionListMultiple() ("," ExpressionListMultiple())* ")"
+    |LOOKAHEAD(3) SqlExpression())
     { return jjtThis; }
 }
 
@@ -1996,10 +2037,13 @@ ASTIntoClause IntoClause() :
     { return jjtThis; }
 }
 
+// This might also be a associative array dereference...
+// see https://github.com/pmd/pmd/issues/3515
 ASTVariableName VariableName() :
-{ ASTID id; StringBuilder name = new StringBuilder(); }
+{ ASTID id; ASTLiteral lit; StringBuilder name = new StringBuilder(); }
 {
     id = ID() { name.append(id.getImage()); }
+    [ "(" lit = Literal() ")" { name.append('(').append(lit.getImage()).append(')'); } ]
     [ "." id = ID() { name.append('.').append(id.getImage()); } ]
     [ "." id = ID() { name.append('.').append(id.getImage()); } ]
     {
@@ -2713,13 +2757,17 @@ ASTCloseStatement CloseStatement()  :
       { jjtThis.setImage(cursor.getImage()) ; return jjtThis ; }
 }
 
+/*
+ * See https://docs.oracle.com/en/database/oracle/oracle-database/18/lnpls/OPEN-statement.html#GUID-FB5A9CC3-655F-4AF4-8105-14CB39F2FEA8
+ * and https://docs.oracle.com/en/database/oracle/oracle-database/18/lnpls/OPEN-FOR-statement.html#GUID-EB7AF439-FDD3-4461-9E3F-B621E8ABFB96
+ */
 ASTOpenStatement OpenStatement()  :
 {}
 {
-	 <OPEN> [Expression()]
-		//[LOOKAHEAD(functionCall()) functionCall() | QualifiedName()]
-		[<FOR> Expression() [<USING> (<IN> | <OUT> | <IN_OUT>)? Expression() ("," (<IN> | <OUT> | <IN_OUT>)? Expression())*]]
-      { return jjtThis ; }
+    <OPEN> [Expression()]
+    [<FOR> ( SelectStatement() | Expression() ) [ UsingClause() ] ]
+
+    { return jjtThis ; }
 }
 
 /*
@@ -2740,10 +2788,16 @@ ASTEmbeddedSqlStatement EmbeddedSqlStatement()  :
 {
    <EXECUTE> <IMMEDIATE> StringExpression()
 	[ <INTO> Name() ("," Name())* ]
-	[ <USING> [ <IN> [ <OUT> ] | <OUT> ]  Expression() ("," [ <IN> [ <OUT> ] | <OUT> ] Expression())* ]
+	[ UsingClause() ]
 	[ ( <RETURN> | <RETURNING> )  <INTO> Expression() ("," Expression())*] ";"
 	// PIPELINED FUNCTION OUTPUT
       { return jjtThis ; }
+}
+
+void UsingClause() #void :
+{}
+{
+    <USING> [ <IN> [ <OUT> ] | <OUT> ]  Expression() ("," [ <IN> [ <OUT> ] | <OUT> ] Expression())*
 }
 
 ASTPipelineStatement PipelineStatement()  :
@@ -3134,17 +3188,17 @@ ASTEqualityExpression EqualityExpression() #EqualityExpression(>1) :
 {
   //RelationalExpression() ( ( "=" | "!=" | "<>" | <IS>) RelationalExpression() )*
   (
+
+	  simpleNode=RelationalExpression()
+	  {sb.append(simpleNode.getImage());}
 	  (
-	    simpleNode = RelationalExpression()
-	  ) {sb.append(simpleNode.getImage());}
-	  (
-	   ( ("=" ) {sb.append(" = ");}
-	   | ("!" "=" ) {sb.append(" != ");}
+	   ( "=" {sb.append(" = ");}
+	   | "!" "=" {sb.append(" != ");}
 	   // Now unde RelationalExpression | ("<" ">" ) {sb.append(" <> ");}
-	   | (<IS>) {sb.append(" IS ");})
-	   (
-	   simpleNode = RelationalExpression()
-	   ) {sb.append(simpleNode.getImage());}
+	   | <IS> {sb.append(" IS ");}
+	   )
+	   simpleNode=RelationalExpression()
+	   {sb.append(simpleNode.getImage());}
 	  )*
   )
  {
@@ -3164,17 +3218,16 @@ ASTRelationalExpression RelationalExpression() #RelationalExpression(>1) :
   (
     (
 
-      (
-          ("<>" { sb.append(" <> "); } )
-        | ("<=" { sb.append(" <= "); } )
-        | (">=" { sb.append(" >= "); } )
-        | ("!=" { sb.append(" != "); } )
-        | ("~=" { sb.append(" ~= "); } )
-        | ("^=" { sb.append(" ^= "); } )
-        | ("<" { sb.append(" < "); } )
-        | (">" { sb.append(" > "); } )
+      (  LOOKAHEAD(2) "<" ">" { sb.append(" <> "); }
+        |LOOKAHEAD(2) "<" "=" { sb.append(" <= "); }
+        |LOOKAHEAD(2) ">" "=" { sb.append(" >= "); }
+        // then lookahead(1) is enough
+        | "<" { sb.append(" < "); }
+        | ">" { sb.append(" > "); }
+        | "!" "=" { sb.append(" != "); }
+        | "~" "=" { sb.append(" ~= "); }
+        | "^" "=" { sb.append(" ^= "); }
       )
-
       { sb.append(" "); }
       | [(<NOT>) { sb.append(" NOT "); }]
       (
@@ -4872,7 +4925,6 @@ TOKEN [IGNORE_CASE]:
 <HOUR: "HOUR"> |
 <IMMEDIATE: "IMMEDIATE"> |
 <INNER: "INNER"> |
-<IN_OUT: "IN_OUT"> |
 <INDICES: "INDICES"> |
 <INCLUDING: "INCLUDING"> |
 <INDEXTYPE: "INDEXTYPE"> |

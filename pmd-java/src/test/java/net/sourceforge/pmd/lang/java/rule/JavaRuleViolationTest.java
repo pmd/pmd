@@ -59,7 +59,7 @@ public class JavaRuleViolationTest {
 
     @NonNull
     public RuleViolation violationAt(JavaNode md) {
-        return new JavaRuleViolation(new FooRule(), md, "", "");
+        return new JavaRuleViolation(new FooRule(), md, "");
     }
 
     /**

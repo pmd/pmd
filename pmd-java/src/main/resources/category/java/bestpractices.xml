@@ -528,7 +528,6 @@ return a;
         </example>
     </rule>
 
-
     <rule name="ForLoopCanBeForeach"
           language="java"
           since="6.0.0"

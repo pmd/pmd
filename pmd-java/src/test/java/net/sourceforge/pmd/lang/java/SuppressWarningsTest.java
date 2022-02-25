@@ -19,9 +19,11 @@ public class SuppressWarningsTest {
 
     private final JavaParsingHelper java = JavaParsingHelper.WITH_PROCESSING;
 
-    public static class BarRule extends AbstractJavaRule {
-        public BarRule() {
-            setMessage("fooMessage");
+    private static class BarRule extends AbstractJavaRule {
+
+        @Override
+        public String getMessage() {
+            return "a message";
         }
 
         @Override

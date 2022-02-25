@@ -21,7 +21,7 @@ public interface NullableClassLoader {
     Class<?> loadClassOrNull(String binaryName);
 
 
-    class ClassLoaderWrapper implements NullableClassLoader {
+    final class ClassLoaderWrapper implements NullableClassLoader {
 
         private final ClassLoader classLoader;
 

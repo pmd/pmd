@@ -179,10 +179,7 @@ public class PreserveStackTraceRule extends AbstractJavaRulechainRule {
     }
 
     private boolean isInitCauseWithTargetInArg(ASTVariableDeclaratorId exceptionSym, JavaNode expr) {
-        if (INIT_CAUSE.matchesCall(expr)) {
-            return anArgumentConsumesException(exceptionSym, (ASTMethodCall) expr);
-        }
-        return false;
+        return INIT_CAUSE.matchesCall(expr) && anArgumentConsumesException(exceptionSym, (ASTMethodCall) expr);
     }
 
     private boolean anArgumentConsumesException(@NonNull ASTVariableDeclaratorId exceptionParam, InvocationNode thrownExpr) {

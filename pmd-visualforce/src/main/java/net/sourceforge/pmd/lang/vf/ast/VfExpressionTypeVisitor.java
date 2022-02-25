@@ -158,8 +158,8 @@ class VfExpressionTypeVisitor extends VfParserVisitorAdapter {
      * Invoke {@link ASTExpression#getDataNodes()} for all {@link ASTExpression} children of {@code node} and return
      * the consolidated results.
      */
-    private IdentityHashMap<VfTypedNode, String> getDataNodeNames(ASTElExpression node) {
-        IdentityHashMap<VfTypedNode, String> dataNodeToName = new IdentityHashMap<>();
+    private Map<VfTypedNode, String> getDataNodeNames(ASTElExpression node) {
+        Map<VfTypedNode, String> dataNodeToName = new IdentityHashMap<>();
 
         for (ASTExpression expression : node.findChildrenOfType(ASTExpression.class)) {
             try {

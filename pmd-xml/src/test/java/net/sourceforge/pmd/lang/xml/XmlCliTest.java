@@ -22,7 +22,7 @@ public class XmlCliTest extends BaseCLITest {
     private static final String BASE_DIR = "src/test/resources/net/sourceforge/pmd/lang/xml/cli-tests/sampleproject";
     private static final String RULE_MESSAGE = "A tags are not allowed";
 
-    private String[] createArgs(String directory, String ... args) {
+    private String[] createArgs(String directory, String... args) {
         List<String> arguments = new ArrayList<>();
         arguments.add("-f");
         arguments.add("text");

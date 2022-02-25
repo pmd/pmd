@@ -74,15 +74,10 @@ public class DummyLanguageModule extends BaseLanguageModule {
     public static class RuleViolationFactory extends DefaultRuleViolationFactory {
 
         @Override
-        public RuleViolation createViolation(Rule rule, @NonNull Node location, @NonNull String filename, @NonNull String formattedMessage) {
-            return new ParametricRuleViolation<Node>(rule, filename, location, formattedMessage) {
+        public RuleViolation createViolation(Rule rule, @NonNull Node location, @NonNull String formattedMessage) {
+            return new ParametricRuleViolation<Node>(rule, location, formattedMessage) {
                 {
                     this.packageName = "foo"; // just for testing variable expansion
-                }
-
-                @Override
-                public String getPackageName() {
-                    return super.getPackageName();
                 }
             };
         }

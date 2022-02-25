@@ -22,12 +22,14 @@ public class Foo {
         <description>3 fields, reduced max to 2</description>
         <rule-property name="maxfields">2</rule-property>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>1</expected-linenumbers>
         <code-ref id="id-3-fields"/>
     </test-code>
 
     <test-code>
         <description>16 fields, bad</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>1</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     int a1;
@@ -116,6 +118,7 @@ public interface Foo {
     <test-code>
         <description>2 inner classes, each with > 10 fields</description>
         <expected-problems>2</expected-problems>
+        <expected-linenumbers>2,20</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     public class Bar1 {

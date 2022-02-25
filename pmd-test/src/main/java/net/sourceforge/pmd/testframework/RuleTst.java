@@ -4,13 +4,12 @@
 
 package net.sourceforge.pmd.testframework;
 
+import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -34,21 +33,22 @@ import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
-import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.PMDException;
+import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.Report;
+import net.sourceforge.pmd.Report.GlobalReportBuilderListener;
 import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetLoadException;
 import net.sourceforge.pmd.RuleSetLoader;
-import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.processor.AbstractPMDProcessor;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.renderers.TextRenderer;
+import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
+import net.sourceforge.pmd.util.datasource.DataSource;
 
 /**
  * Advanced methods for test cases
@@ -100,7 +100,8 @@ public abstract class RuleTst {
      */
     public Rule findRule(String ruleSet, String ruleName) {
         try {
-            Rule rule = new RuleSetLoader().warnDeprecated(false).loadFromResource(ruleSet).getRuleByName(ruleName);
+            RuleSet parsedRset = new RuleSetLoader().warnDeprecated(false).loadFromResource(ruleSet);
+            Rule rule = parsedRset.getRuleByName(ruleName);
             if (rule == null) {
                 fail("Rule " + ruleName + " not found in ruleset " + ruleSet);
             } else {
@@ -249,25 +250,26 @@ public abstract class RuleTst {
         System.out.println("--------------------------------------------------------------");
     }
 
-    private Report processUsingStringReader(TestDescriptor test, Rule rule) throws PMDException {
+    private Report processUsingStringReader(TestDescriptor test, Rule rule) {
         return runTestFromString(test.getCode(), rule, test.getLanguageVersion(), test.isUseAuxClasspath());
     }
 
     public Report runTestFromString(String code, Rule rule, LanguageVersion languageVersion, boolean isUseAuxClasspath) {
-        Report report = new Report();
         try {
-            PMD p = new PMD();
-            p.getConfiguration().setDefaultLanguageVersion(languageVersion);
-            p.getConfiguration().setIgnoreIncrementalAnalysis(true);
+            PMDConfiguration configuration = new PMDConfiguration();
+            configuration.setIgnoreIncrementalAnalysis(true);
+            configuration.setDefaultLanguageVersion(languageVersion);
+            configuration.setThreads(1);
+
             if (isUseAuxClasspath) {
                 // configure the "auxclasspath" option for unit testing
-                p.getConfiguration().prependClasspath(".");
+                configuration.prependClasspath(".");
             } else {
                 // simple class loader, that doesn't delegate to parent.
                 // this allows us in the tests to simulate PMD run without
                 // auxclasspath, not even the classes from the test dependencies
                 // will be found.
-                p.getConfiguration().setClassLoader(new ClassLoader() {
+                configuration.setClassLoader(new ClassLoader() {
                     @Override
                     protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
                         if (name.startsWith("java.") || name.startsWith("javax.")) {
@@ -277,14 +279,22 @@ public abstract class RuleTst {
                     }
                 });
             }
-            RuleContext ctx = new RuleContext();
-            ctx.setReport(report);
-            ctx.setSourceCodeFile(new File("n/a"));
-            ctx.setLanguageVersion(languageVersion);
-            ctx.setIgnoreExceptions(false);
-            RuleSet rules = RuleSet.forSingleRule(rule);
-            p.getSourceCodeProcessor().processSourceCode(new StringReader(code), new RuleSets(rules), ctx);
-            return report;
+
+            try (GlobalReportBuilderListener reportBuilder = new GlobalReportBuilderListener();
+                 // Add a listener that throws when an error occurs:
+                 //  this replaces ruleContext.setIgnoreExceptions(false)
+                 GlobalAnalysisListener listener = GlobalAnalysisListener.tee(listOf(GlobalAnalysisListener.exceptionThrower(), reportBuilder))) {
+
+                AbstractPMDProcessor.runSingleFile(
+                    listOf(RuleSet.forSingleRule(rule)),
+                    DataSource.forString(code, "test." + languageVersion.getLanguage().getExtensions().get(0)),
+                    listener,
+                    configuration
+                );
+
+                listener.close();
+                return reportBuilder.getResult();
+            }
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

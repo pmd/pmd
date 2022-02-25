@@ -27,6 +27,7 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.RuleSetReference;
 import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.internal.DOMUtils;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyDescriptorField;
@@ -113,13 +114,13 @@ public class RuleFactory {
             if (node.getNodeType() == Node.ELEMENT_NODE) {
                 switch (node.getNodeName()) {
                 case DESCRIPTION:
-                    ruleReference.setDescription(parseTextNode(node));
+                    ruleReference.setDescription(DOMUtils.parseTextNode(node));
                     break;
                 case EXAMPLE:
-                    ruleReference.addExample(parseTextNode(node));
+                    ruleReference.addExample(DOMUtils.parseTextNode(node));
                     break;
                 case PRIORITY:
-                    ruleReference.setPriority(RulePriority.valueOf(Integer.parseInt(parseTextNode(node))));
+                    ruleReference.setPriority(RulePriority.valueOf(Integer.parseInt(DOMUtils.parseTextNode(node))));
                     break;
                 case PROPERTIES:
                     setPropertyValues(ruleReference, (Element) node);
@@ -183,13 +184,13 @@ public class RuleFactory {
 
             switch (node.getNodeName()) {
             case DESCRIPTION:
-                builder.description(parseTextNode(node));
+                builder.description(DOMUtils.parseTextNode(node));
                 break;
             case EXAMPLE:
-                builder.addExample(parseTextNode(node));
+                builder.addExample(DOMUtils.parseTextNode(node));
                 break;
             case PRIORITY:
-                builder.priority(Integer.parseInt(parseTextNode(node).trim()));
+                builder.priority(Integer.parseInt(DOMUtils.parseTextNode(node).trim()));
                 break;
             case PROPERTIES:
                 parsePropertiesForDefinitions(builder, node);
@@ -363,7 +364,7 @@ public class RuleFactory {
         for (int i = 0; i < nodeList.getLength(); i++) {
             Node node = nodeList.item(i);
             if (node.getNodeType() == Node.ELEMENT_NODE && "value".equals(node.getNodeName())) {
-                return parseTextNode(node);
+                return DOMUtils.parseTextNode(node);
             }
         }
         return null;
@@ -371,29 +372,5 @@ public class RuleFactory {
 
     private static boolean hasAttributeSetTrue(Element element, String attributeId) {
         return element.hasAttribute(attributeId) && "true".equalsIgnoreCase(element.getAttribute(attributeId));
-    }
-
-    /**
-     * Parse a String from a textually type node.
-     *
-     * @param node The node.
-     *
-     * @return The String.
-     */
-    private static String parseTextNode(Node node) {
-        final int nodeCount = node.getChildNodes().getLength();
-        if (nodeCount == 0) {
-            return "";
-        }
-
-        StringBuilder buffer = new StringBuilder();
-
-        for (int i = 0; i < nodeCount; i++) {
-            Node childNode = node.getChildNodes().item(i);
-            if (childNode.getNodeType() == Node.CDATA_SECTION_NODE || childNode.getNodeType() == Node.TEXT_NODE) {
-                buffer.append(childNode.getNodeValue());
-            }
-        }
-        return buffer.toString();
     }
 }
