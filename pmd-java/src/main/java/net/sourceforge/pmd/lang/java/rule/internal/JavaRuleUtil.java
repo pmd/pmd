@@ -662,13 +662,14 @@ public final class JavaRuleUtil {
         return node instanceof ASTNullLiteral;
     }
 
+
     /** Returns true if the node is a boolean literal with any value. */
-    public static boolean isBooleanLiteral(ASTExpression e) {
+    public static boolean isBooleanLiteral(JavaNode e) {
         return e instanceof ASTBooleanLiteral;
     }
 
     /** Returns true if the node is a boolean literal with the given constant value. */
-    public static boolean isBooleanLiteral(ASTExpression e, boolean value) {
+    public static boolean isBooleanLiteral(JavaNode e, boolean value) {
         return e instanceof ASTBooleanLiteral && ((ASTBooleanLiteral) e).isTrue() == value;
     }
 

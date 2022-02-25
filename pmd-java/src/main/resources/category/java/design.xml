@@ -1211,7 +1211,7 @@ public class Bar {
     <rule name="SimplifyBooleanReturns"
           language="java"
           since="0.9"
-          message="Avoid unnecessary if..then..else statements when returning booleans"
+          message="This if statement can be replaced by `{0}`"
           class="net.sourceforge.pmd.lang.java.rule.design.SimplifyBooleanReturnsRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#simplifybooleanreturns">
         <description>
