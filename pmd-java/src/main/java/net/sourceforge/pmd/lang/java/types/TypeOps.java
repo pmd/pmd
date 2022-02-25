@@ -1916,6 +1916,28 @@ public final class TypeOps {
     // <editor-fold  defaultstate="collapsed" desc="Miscellaneous">
 
     /**
+     * Returns true if both types have a common supertype that is not Object.
+     * Primitive types are only related to themselves.
+     *
+     * @param t Non-null type
+     * @param s Non-null type
+     *
+     * @throws NullPointerException if a parameter is null
+     */
+    public static boolean areRelated(@NonNull JTypeMirror t, JTypeMirror s) {
+        if (t.isPrimitive() || s.isPrimitive()) {
+            return s.equals(t);
+        }
+        if (t.equals(s)) {
+            return true;
+        }
+        // maybe they have a common supertype
+        Set<JTypeMirror> tSupertypes = new HashSet<>(t.getSuperTypeSet());
+        tSupertypes.retainAll(s.getSuperTypeSet());
+        return !tSupertypes.equals(Collections.singleton(t.getTypeSystem().OBJECT));
+    }
+
+    /**
      * Returns true if the type is {@link TypeSystem#UNKNOWN},
      * {@link TypeSystem#ERROR}, or its symbol is unresolved.
      *

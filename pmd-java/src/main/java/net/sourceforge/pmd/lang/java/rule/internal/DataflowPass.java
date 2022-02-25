@@ -172,6 +172,12 @@ public final class DataflowPass {
         private boolean isNotFullyKnown;
         private boolean containsInitialFieldValue;
 
+        private ReachingDefinitionSet() {
+            this.reaching = Collections.emptySet();
+            this.containsInitialFieldValue = false;
+            this.isNotFullyKnown = true;
+        }
+
         ReachingDefinitionSet(/*Mutable*/Set<AssignmentEntry> reaching) {
             this.reaching = reaching;
             this.containsInitialFieldValue = reaching.removeIf(AssignmentEntry::isFieldAssignmentAtStartOfMethod);
@@ -203,7 +209,15 @@ public final class DataflowPass {
         void absorb(ReachingDefinitionSet reaching) {
             this.containsInitialFieldValue |= reaching.containsInitialFieldValue;
             this.isNotFullyKnown |= reaching.isNotFullyKnown;
-            this.reaching.addAll(reaching.reaching);
+            if (this.reaching.isEmpty()) { // unmodifiable
+                this.reaching = new HashSet<>(reaching.reaching);
+            } else {
+                this.reaching.addAll(reaching.reaching);
+            }
+        }
+
+        public static ReachingDefinitionSet unknown() {
+            return new ReachingDefinitionSet();
         }
     }
 
@@ -251,7 +265,7 @@ public final class DataflowPass {
         }
 
 
-        public @Nullable ReachingDefinitionSet getReachingDefinitions(ASTNamedReferenceExpr expr) {
+        public @NonNull ReachingDefinitionSet getReachingDefinitions(ASTNamedReferenceExpr expr) {
             return expr.getUserMap().computeIfAbsent(REACHING_DEFS, () -> reachingFallback(expr));
         }
 
@@ -259,15 +273,15 @@ public final class DataflowPass {
         // that are not tracked by the tree exploration. Final fields
         // indeed have a fully known set of reaching definitions.
         // TODO maybe they should actually be tracked?
-        private @Nullable ReachingDefinitionSet reachingFallback(ASTNamedReferenceExpr expr) {
+        private @NonNull ReachingDefinitionSet reachingFallback(ASTNamedReferenceExpr expr) {
             JVariableSymbol sym = expr.getReferencedSym();
             if (sym == null || !sym.isField() || !sym.isFinal()) {
-                return null;
+                return ReachingDefinitionSet.unknown();
             }
 
             ASTVariableDeclaratorId node = sym.tryGetNode();
             if (node == null) {
-                return null; // we don't care about non-local declarations
+                return ReachingDefinitionSet.unknown(); // we don't care about non-local declarations
             }
             Set<AssignmentEntry> assignments = node.getLocalUsages()
                                                    .stream()
@@ -864,7 +878,7 @@ public final class DataflowPass {
         private boolean isRelevantField(ASTExpression lhs) {
             return lhs instanceof ASTNamedReferenceExpr
                 && (trackThisInstance() && JavaRuleUtil.isThisFieldAccess(lhs)
-                        || trackStaticFields() && isStaticFieldOfThisClass(((ASTNamedReferenceExpr) lhs).getReferencedSym()));
+                || trackStaticFields() && isStaticFieldOfThisClass(((ASTNamedReferenceExpr) lhs).getReferencedSym()));
         }
 
         private boolean isStaticFieldOfThisClass(JVariableSymbol var) {

@@ -45,7 +45,7 @@ public class AvoidThrowingNullPointerExceptionRule extends AbstractJavaRulechain
     private boolean hasNpeValue(ASTVariableAccess thrown) {
         DataflowResult dataflow = DataflowPass.getDataflowResult(thrown.getRoot());
         ReachingDefinitionSet reaching = dataflow.getReachingDefinitions(thrown);
-        if (reaching == null || reaching.isNotFullyKnown()) {
+        if (reaching.isNotFullyKnown()) {
             // we lean towards false negatives... maybe we should be able
             // to report this with a lower priority
             return false;
