@@ -23,8 +23,14 @@ This is a {{ site.pmd.release_type }} release.
 
 *   core
     *   [#3427](https://github.com/pmd/pmd/issues/3427): \[core] Stop printing CLI usage text when exiting due to invalid parameters
+    *   [#3768](https://github.com/pmd/pmd/issues/3768): \[core] SARIF formatter reports multiple locations when it should report multiple results
+*   doc
+    *   [#2502](https://github.com/pmd/pmd/issues/2502): \[doc] Add floating table-of-contents (toc) on the right
+    *   [#3807](https://github.com/pmd/pmd/pull/3807): \[doc] Document Ant Task parameter `threads`
 *   java
     *   [#3698](https://github.com/pmd/pmd/issues/3697): \[java] Parsing error with try-with-resources and qualified resource
+*   java-bestpractices
+    *   [#3605](https://github.com/pmd/pmd/issues/3605): \[java] SwitchStmtsShouldHaveDefault triggered when default case is present
 *   java-codestyle
     *   [#278](https://github.com/pmd/pmd/issues/278): \[java] ConfusingTernary should treat `!= null` as positive condition
 *   java-performance
@@ -74,6 +80,7 @@ will change drastically in PMD 7.
 ### External Contributions
 
 *   [#3767](https://github.com/pmd/pmd/pull/3767): \[core] Update GUI.java - [Vyom Yadav](https://github.com/Vyom-Yadav)
+*   [#3804](https://github.com/pmd/pmd/pull/3804): \[doc] Add floating table of contents (issue #2502) - [JerritEic](https://github.com/JerritEic)
 
 {% endtocmaker %}
 

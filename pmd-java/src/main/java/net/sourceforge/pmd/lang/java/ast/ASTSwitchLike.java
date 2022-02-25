@@ -107,4 +107,14 @@ public interface ASTSwitchLike extends JavaNode, Iterable<ASTSwitchBranch> {
     default Iterator<ASTSwitchBranch> iterator() {
         return children(ASTSwitchBranch.class).iterator();
     }
+
+    /**
+     * Returns true if this a switch which uses fallthrough branches
+     * (old school {@code case label: break;}) and not arrow branches.
+     * If the switch has no branches, returns false.
+     */
+    default boolean isFallthroughSwitch() {
+        return getBranches().filterIs(ASTSwitchFallthroughBranch.class).nonEmpty();
+    }
+
 }

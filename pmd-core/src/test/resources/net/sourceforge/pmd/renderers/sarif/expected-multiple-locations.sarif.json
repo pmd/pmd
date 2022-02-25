@@ -67,7 +67,7 @@
                   "startLine": 1,
                   "startColumn": 1,
                   "endLine": 1,
-                  "endColumn": 1
+                  "endColumn": 10
                 }
               }
             }
@@ -86,10 +86,32 @@
                   "uri": "notAvailable.ext"
                 },
                 "region": {
-                  "startLine": 1,
+                  "startLine": 2,
+                  "startColumn": 2,
+                  "endLine": 3,
+                  "endColumn": 1
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "Foo",
+          "ruleIndex": 0,
+          "message": {
+            "text": "blah"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "notAvailable.ext"
+                },
+                "region": {
+                  "startLine": 5,
                   "startColumn": 1,
-                  "endLine": 1,
-                  "endColumn": 2
+                  "endLine": 5,
+                  "endColumn": 11
                 }
               }
             }
