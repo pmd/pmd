@@ -194,7 +194,9 @@ public class A {
 public class Foo {
     public void example() {
         A.doStatic(); // direct static - allowed
-        B.a.doStatic(); // static chain - violation
+
+        // Note: in PMD6, this was reported, in PMD7 not anymore. See #3510
+        B.a.doStatic(); // static chain - no violation anymore
     }
 }
         ]]></code>
