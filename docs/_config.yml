@@ -1,7 +1,7 @@
 repository: pmd/pmd
 
 pmd:
-    version: 7.0.0-kotlin-SNAPSHOT
+    version: 7.0.0-SNAPSHOT
     previous_version: 6.38.0
     date: ??-?????-2021
     release_type: major
