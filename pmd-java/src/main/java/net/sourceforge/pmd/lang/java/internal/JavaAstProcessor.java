@@ -7,7 +7,6 @@ package net.sourceforge.pmd.lang.java.internal;
 import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.lang.LanguageVersion;
@@ -36,8 +35,6 @@ import net.sourceforge.pmd.lang.java.types.internal.infer.TypeInferenceLogger.Ve
  * is held in a {@link TypeSystem} instance.
  */
 public final class JavaAstProcessor {
-
-    private static final Logger DEFAULT_LOG = Logger.getLogger(JavaAstProcessor.class.getName());
 
     private static final Map<ClassLoader, TypeSystem> TYPE_SYSTEMS = new IdentityHashMap<>();
     private static final Level INFERENCE_LOG_LEVEL;
@@ -151,10 +148,6 @@ public final class JavaAstProcessor {
 
     public TypeSystem getTypeSystem() {
         return typeSystem;
-    }
-
-    public static SemanticErrorReporter defaultLogger() {
-        return SemanticErrorReporter.reportToLogger(DEFAULT_LOG);
     }
 
     public static JavaAstProcessor create(SymbolResolver symResolver,
