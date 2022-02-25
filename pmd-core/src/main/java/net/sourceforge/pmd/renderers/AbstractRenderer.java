@@ -123,4 +123,5 @@ public abstract class AbstractRenderer extends AbstractPropertySource implements
     public void setReportFile(String reportFilename) {
         this.setWriter(IOUtil.createWriter(reportFilename));
     }
+
 }

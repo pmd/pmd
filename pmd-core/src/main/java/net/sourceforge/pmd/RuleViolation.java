@@ -6,6 +6,8 @@ package net.sourceforge.pmd;
 
 import java.util.Comparator;
 
+import net.sourceforge.pmd.annotation.Experimental;
+
 /**
  * A RuleViolation is created by a Rule when it identifies a violation of the
  * Rule constraints. RuleViolations are simple data holders that are collected
@@ -117,4 +119,13 @@ public interface RuleViolation {
      * @return The variable name.
      */
     String getVariableName();
+
+    /**
+     * Retrieve source code snippet associated with violation.
+     *
+     * @param encoding - source code file encoding
+     * @return code snippet captured in a RuleViolation
+     */
+    @Experimental
+    String getSourceCode(String encoding);
 }

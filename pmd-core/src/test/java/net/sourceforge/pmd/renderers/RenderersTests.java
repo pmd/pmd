@@ -25,6 +25,7 @@ import org.junit.runners.Suite.SuiteClasses;
     TextPadRendererTest.class,
     VBHTMLRendererTest.class,
     XMLRendererTest.class,
+    XMLVerboseRendererTest.class,
     XSLTRendererTest.class,
     YAHTMLRendererTest.class
 })

@@ -65,6 +65,11 @@ public class XMLRenderer extends AbstractIncrementingRenderer {
         return "xml";
     }
 
+
+    protected XMLStreamWriter getXmlWriter() {
+        return xmlWriter;
+    }
+
     @Override
     public void start() throws IOException {
         String encoding = getProperty(ENCODING);
@@ -115,7 +120,7 @@ public class XMLRenderer extends AbstractIncrementingRenderer {
      * @throws XMLStreamException if XMLStreamWriter couldn't be flushed.
      * @throws IOException if an I/O error occurs.
      */
-    private void writeNewLine() throws XMLStreamException, IOException {
+    protected void writeNewLine() throws XMLStreamException, IOException {
         /*
          * Note: we are not using xmlWriter.writeCharacters(PMD.EOL), because some
          * XMLStreamWriter implementations might do extra encoding for \r and/or \n.
@@ -157,25 +162,7 @@ public class XMLRenderer extends AbstractIncrementingRenderer {
                     xmlWriter.writeAttribute("name", filename);
                     writeNewLine();
                 }
-
-                xmlWriter.writeStartElement("violation");
-                xmlWriter.writeAttribute("beginline", String.valueOf(rv.getBeginLine()));
-                xmlWriter.writeAttribute("endline", String.valueOf(rv.getEndLine()));
-                xmlWriter.writeAttribute("begincolumn", String.valueOf(rv.getBeginColumn()));
-                xmlWriter.writeAttribute("endcolumn", String.valueOf(rv.getEndColumn()));
-                xmlWriter.writeAttribute("rule", rv.getRule().getName());
-                xmlWriter.writeAttribute("ruleset", rv.getRule().getRuleSetName());
-                maybeAdd("package", rv.getPackageName());
-                maybeAdd("class", rv.getClassName());
-                maybeAdd("method", rv.getMethodName());
-                maybeAdd("variable", rv.getVariableName());
-                maybeAdd("externalInfoUrl", rv.getRule().getExternalInfoUrl());
-                xmlWriter.writeAttribute("priority", String.valueOf(rv.getRule().getPriority().getPriority()));
-                writeNewLine();
-                xmlWriter.writeCharacters(StringUtil.removedInvalidXml10Characters(rv.getDescription()));
-                writeNewLine();
-                xmlWriter.writeEndElement();
-                writeNewLine();
+                renderFileViolationsBody(rv);
             }
             if (filename != null) { // Not first file ?
                 xmlWriter.writeEndElement();
@@ -183,6 +170,28 @@ public class XMLRenderer extends AbstractIncrementingRenderer {
         } catch (XMLStreamException e) {
             throw new IOException(e);
         }
+    }
+
+    protected void renderFileViolationsBody(RuleViolation rv) throws XMLStreamException, IOException {
+
+        xmlWriter.writeStartElement("violation");
+        xmlWriter.writeAttribute("beginline", String.valueOf(rv.getBeginLine()));
+        xmlWriter.writeAttribute("endline", String.valueOf(rv.getEndLine()));
+        xmlWriter.writeAttribute("begincolumn", String.valueOf(rv.getBeginColumn()));
+        xmlWriter.writeAttribute("endcolumn", String.valueOf(rv.getEndColumn()));
+        xmlWriter.writeAttribute("rule", rv.getRule().getName());
+        xmlWriter.writeAttribute("ruleset", rv.getRule().getRuleSetName());
+        maybeAdd("package", rv.getPackageName());
+        maybeAdd("class", rv.getClassName());
+        maybeAdd("method", rv.getMethodName());
+        maybeAdd("variable", rv.getVariableName());
+        maybeAdd("externalInfoUrl", rv.getRule().getExternalInfoUrl());
+        xmlWriter.writeAttribute("priority", String.valueOf(rv.getRule().getPriority().getPriority()));
+        writeNewLine();
+        xmlWriter.writeCharacters(StringUtil.removedInvalidXml10Characters(rv.getDescription()));
+        writeNewLine();
+        xmlWriter.writeEndElement();
+        writeNewLine();
     }
 
     @Override
@@ -229,6 +238,8 @@ public class XMLRenderer extends AbstractIncrementingRenderer {
             throw new IOException(e);
         }
     }
+
+
 
     private void maybeAdd(String attr, String value) throws XMLStreamException {
         if (value != null && value.length() > 0) {
