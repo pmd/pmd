@@ -18,7 +18,7 @@ import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 
 public class JDKVersionTest {
 
-    private final JavaParsingHelper java3 = JavaParsingHelper.JUST_PARSE
+    private final JavaParsingHelper java3 = JavaParsingHelper.DEFAULT
         .withDefaultVersion("1.3")
         .withResourceContext(JDKVersionTest.class, "jdkversiontests/");
 

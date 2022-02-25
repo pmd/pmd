@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.commons.lang3.StringUtils;
@@ -42,11 +41,13 @@ public class JavaParsingHelper extends BaseParsingHelper<JavaParsingHelper, ASTC
      */
     public static final TypeSystem TEST_TYPE_SYSTEM = TypeSystem.usingClassLoaderClasspath(JavaParsingHelper.class.getClassLoader());
 
-    /** This just runs the parser and no processing stages. */
-    public static final JavaParsingHelper JUST_PARSE = new JavaParsingHelper(Params.getDefaultNoProcess(), SemanticErrorReporter.noop(), TEST_TYPE_SYSTEM, TypeInferenceLogger.noop());
-
     /** This runs all processing stages when parsing. */
-    public static final JavaParsingHelper WITH_PROCESSING = new JavaParsingHelper(Params.getDefaultProcess(), SemanticErrorReporter.noop(), TEST_TYPE_SYSTEM, TypeInferenceLogger.noop());
+    public static final JavaParsingHelper DEFAULT = new JavaParsingHelper(
+        Params.getDefault(),
+        SemanticErrorReporter.noop(), // todo change this to unforgiving logger, need to update a lot of tests
+        TEST_TYPE_SYSTEM,
+        TypeInferenceLogger.noop()
+    );
 
     private final SemanticErrorReporter semanticLogger;
     private final TypeSystem ts;
@@ -108,11 +109,12 @@ public class JavaParsingHelper extends BaseParsingHelper<JavaParsingHelper, ASTC
         }
 
         public TestCheckLogger(boolean doLogOnConsole) {
-            Logger consoleLogger = Logger.getAnonymousLogger();
-            if (!doLogOnConsole) {
-                consoleLogger.setLevel(Level.OFF);
+            if (doLogOnConsole) {
+                Logger consoleLogger = Logger.getAnonymousLogger();
+                baseLogger = SemanticErrorReporter.reportToLogger(consoleLogger);
+            } else {
+                baseLogger = SemanticErrorReporter.noop();
             }
-            baseLogger = SemanticErrorReporter.reportToLogger(consoleLogger);
         }
 
         @Override

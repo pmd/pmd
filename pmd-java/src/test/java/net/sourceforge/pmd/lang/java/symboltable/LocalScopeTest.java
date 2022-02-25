@@ -21,7 +21,7 @@ import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
 @Ignore
-public class LocalScopeTest extends BaseNonParserTest {
+public class LocalScopeTest extends BaseParserTest {
 
     @Test
     public void testLocalVariableDeclarationFound() {

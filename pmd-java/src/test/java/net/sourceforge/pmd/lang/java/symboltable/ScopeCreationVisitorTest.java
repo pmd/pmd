@@ -15,7 +15,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 
 @Ignore
-public class ScopeCreationVisitorTest extends BaseNonParserTest {
+public class ScopeCreationVisitorTest extends BaseParserTest {
 
     @Test
     public void testScopesAreCreated() {

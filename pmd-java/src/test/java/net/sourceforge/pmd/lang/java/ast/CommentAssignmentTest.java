@@ -13,9 +13,9 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 
-import net.sourceforge.pmd.lang.java.symboltable.BaseNonParserTest;
+import net.sourceforge.pmd.lang.java.symboltable.BaseParserTest;
 
-public class CommentAssignmentTest extends BaseNonParserTest {
+public class CommentAssignmentTest extends BaseParserTest {
 
     /**
      * Blank lines in comments should not raise an exception. See bug #1048.

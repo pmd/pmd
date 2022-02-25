@@ -18,11 +18,11 @@ import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTStatement;
-import net.sourceforge.pmd.lang.java.symboltable.BaseNonParserTest;
+import net.sourceforge.pmd.lang.java.symboltable.BaseParserTest;
 
 import junit.framework.AssertionFailedError;
 
-public class AbruptCompletionTests extends BaseNonParserTest {
+public class AbruptCompletionTests extends BaseParserTest {
 
     private final JavaParsingHelper java17 = java.withDefaultVersion("17");
 

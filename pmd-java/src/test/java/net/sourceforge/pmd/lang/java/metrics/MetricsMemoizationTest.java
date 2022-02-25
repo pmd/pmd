@@ -20,7 +20,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JavaVisitorBase;
 import net.sourceforge.pmd.lang.java.metrics.testdata.MetricsVisitorTestData;
-import net.sourceforge.pmd.lang.java.symboltable.BaseNonParserTest;
+import net.sourceforge.pmd.lang.java.symboltable.BaseParserTest;
 import net.sourceforge.pmd.lang.metrics.Metric;
 import net.sourceforge.pmd.lang.metrics.MetricOptions;
 import net.sourceforge.pmd.lang.metrics.MetricsUtil;
@@ -28,7 +28,7 @@ import net.sourceforge.pmd.lang.metrics.MetricsUtil;
 /**
  * @author Clément Fournier
  */
-public class MetricsMemoizationTest extends BaseNonParserTest {
+public class MetricsMemoizationTest extends BaseParserTest {
 
     private final Metric<Node, Integer> randomMetric = randomMetric();
 

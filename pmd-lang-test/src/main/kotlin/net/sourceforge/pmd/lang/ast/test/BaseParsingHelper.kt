@@ -38,10 +38,7 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
         companion object {
 
             @JvmStatic
-            val defaultNoProcess = Params(false, null, null, "")
-
-            @JvmStatic
-            val defaultProcess = Params(true, null, null, "")
+            val default = Params(true, null, null, "")
 
         }
     }

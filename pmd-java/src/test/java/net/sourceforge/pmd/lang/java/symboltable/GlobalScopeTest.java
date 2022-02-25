@@ -19,7 +19,7 @@ import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 import net.sourceforge.pmd.lang.symboltable.Scope;
 
 @Ignore
-public class GlobalScopeTest extends BaseNonParserTest {
+public class GlobalScopeTest extends BaseParserTest {
 
     @Test
     public void testClassDeclAppears() {

@@ -14,9 +14,9 @@ import org.junit.Test;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.InvocationNode;
-import net.sourceforge.pmd.lang.java.symboltable.BaseNonParserTest;
+import net.sourceforge.pmd.lang.java.symboltable.BaseParserTest;
 
-public class InvocationMatcherTest extends BaseNonParserTest {
+public class InvocationMatcherTest extends BaseParserTest {
 
     @Test
     public void testSimpleMatcher() {

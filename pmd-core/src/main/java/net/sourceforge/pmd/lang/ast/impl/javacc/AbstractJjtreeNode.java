@@ -38,6 +38,7 @@ public abstract class AbstractJjtreeNode<B extends AbstractJjtreeNode<B, N>, N e
     }
 
     @Override
+    // @Deprecated // todo deprecate, will change tree dump tests
     public String getImage() {
         return image;
     }

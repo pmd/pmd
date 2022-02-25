@@ -17,9 +17,9 @@ import org.junit.Test;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTInfixExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
-import net.sourceforge.pmd.lang.java.symboltable.BaseNonParserTest;
+import net.sourceforge.pmd.lang.java.symboltable.BaseParserTest;
 
-public class JavaRuleUtilTest extends BaseNonParserTest {
+public class JavaRuleUtilTest extends BaseParserTest {
 
     @Test
     public void testCamelCaseWords() {

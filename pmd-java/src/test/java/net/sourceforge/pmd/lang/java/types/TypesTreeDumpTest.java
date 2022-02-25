@@ -31,7 +31,7 @@ public class TypesTreeDumpTest extends BaseTreeDumpTest {
 
     @Override
     public @NonNull BaseParsingHelper<?, ?> getParser() {
-        return JavaParsingHelper.WITH_PROCESSING.withResourceContext(getClass());
+        return JavaParsingHelper.DEFAULT.withResourceContext(getClass());
     }
 
     @Test

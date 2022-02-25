@@ -28,7 +28,7 @@ import kotlin.test.assertTrue
     is done lazily.
  */
 
-val javaParser: JavaParsingHelper = JavaParsingHelper.WITH_PROCESSING
+val javaParser: JavaParsingHelper = JavaParsingHelper.DEFAULT
 
 val testTypeSystem: TypeSystem get() = JavaParsingHelper.TEST_TYPE_SYSTEM
 

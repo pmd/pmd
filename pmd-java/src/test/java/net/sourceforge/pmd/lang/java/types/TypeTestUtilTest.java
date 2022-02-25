@@ -23,10 +23,10 @@ import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
-import net.sourceforge.pmd.lang.java.symboltable.BaseNonParserTest;
+import net.sourceforge.pmd.lang.java.symboltable.BaseParserTest;
 import net.sourceforge.pmd.lang.java.types.testdata.SomeClassWithAnon;
 
-public class TypeTestUtilTest extends BaseNonParserTest {
+public class TypeTestUtilTest extends BaseParserTest {
 
     @Rule
     public final ExpectedException expect = ExpectedException.none();

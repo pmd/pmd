@@ -15,7 +15,7 @@ import net.sourceforge.pmd.lang.swift.ast.SwiftParser.SwTopLevel;
  */
 public class SwiftParsingHelper extends BaseParsingHelper<SwiftParsingHelper, SwTopLevel> {
 
-    public static final SwiftParsingHelper DEFAULT = new SwiftParsingHelper(Params.getDefaultNoProcess());
+    public static final SwiftParsingHelper DEFAULT = new SwiftParsingHelper(Params.getDefault());
 
 
     public SwiftParsingHelper(@NotNull Params params) {

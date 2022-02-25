@@ -32,7 +32,7 @@ import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
 @Ignore
-public class ClassScopeTest extends BaseNonParserTest {
+public class ClassScopeTest extends BaseParserTest {
 
     @Test
     public void testEnumsClassScope() {

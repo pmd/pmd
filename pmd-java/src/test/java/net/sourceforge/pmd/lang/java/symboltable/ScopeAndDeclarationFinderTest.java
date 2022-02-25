@@ -21,7 +21,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 
 @Ignore
-public class ScopeAndDeclarationFinderTest extends BaseNonParserTest {
+public class ScopeAndDeclarationFinderTest extends BaseParserTest {
 
     /**
      * Unit test for https://sourceforge.net/p/pmd/bugs/1317/

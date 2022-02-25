@@ -21,7 +21,7 @@ import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.Scope;
 
 @Ignore
-public class VariableNameDeclarationTest extends BaseNonParserTest {
+public class VariableNameDeclarationTest extends BaseParserTest {
 
     @Test
     public void testConstructor() {

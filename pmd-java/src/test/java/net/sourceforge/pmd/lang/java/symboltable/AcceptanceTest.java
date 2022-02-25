@@ -30,7 +30,7 @@ import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 import net.sourceforge.pmd.lang.symboltable.Scope;
 
 @Ignore
-public class AcceptanceTest extends BaseNonParserTest {
+public class AcceptanceTest extends BaseParserTest {
 
     @Test
     public void testClashingSymbols() {

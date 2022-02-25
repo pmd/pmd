@@ -23,7 +23,7 @@ import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
 public class ParserCornersTest extends BaseJavaTreeDumpTest {
-    private final JavaParsingHelper java = JavaParsingHelper.WITH_PROCESSING.withResourceContext(getClass());
+    private final JavaParsingHelper java = JavaParsingHelper.DEFAULT.withResourceContext(getClass());
 
     private final JavaParsingHelper java4 = java.withDefaultVersion("1.4");
     private final JavaParsingHelper java5 = java.withDefaultVersion("1.5");

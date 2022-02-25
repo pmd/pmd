@@ -20,10 +20,10 @@ import org.junit.Test;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.lang.java.symboltable.BaseNonParserTest;
+import net.sourceforge.pmd.lang.java.symboltable.BaseParserTest;
 import net.sourceforge.pmd.util.StringUtil;
 
-public class PrettyPrintingUtilTest extends BaseNonParserTest {
+public class PrettyPrintingUtilTest extends BaseParserTest {
 
     @Test
     public void displaySignatureTestWithExtraDimensions() {

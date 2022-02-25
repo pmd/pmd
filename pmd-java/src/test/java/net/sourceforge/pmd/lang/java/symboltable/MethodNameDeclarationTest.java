@@ -20,7 +20,7 @@ import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
 @Ignore
-public class MethodNameDeclarationTest extends BaseNonParserTest {
+public class MethodNameDeclarationTest extends BaseParserTest {
 
     @Test
     public void testEquality() {
