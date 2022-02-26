@@ -14,6 +14,7 @@ import java.nio.charset.StandardCharsets;
 import org.apache.commons.io.IOUtils;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.BuildFileRule;
+import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
@@ -21,15 +22,22 @@ import org.junit.Test;
 import org.junit.contrib.java.lang.system.RestoreSystemProperties;
 import org.junit.rules.TestRule;
 
+import net.sourceforge.pmd.internal.Slf4jSimpleConfiguration;
+
 public class PMDTaskTest {
 
     @Rule
     public final BuildFileRule buildRule = new BuildFileRule();
 
     // restoring system properties: PMDTask might change logging properties
-    // See Slf4jSimpleConfigurationForAnt
+    // See Slf4jSimpleConfigurationForAnt and resetLogging
     @Rule
     public final TestRule restoreSystemProperties = new RestoreSystemProperties();
+
+    @AfterClass
+    public static void resetLogging() {
+        Slf4jSimpleConfiguration.reconfigureDefaultLogLevel(null);
+    }
 
     @Before
     public void setUp() {

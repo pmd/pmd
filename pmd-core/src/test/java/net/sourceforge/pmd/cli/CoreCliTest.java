@@ -20,6 +20,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 import org.hamcrest.Matcher;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -30,6 +31,7 @@ import org.junit.rules.TemporaryFolder;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMD.StatusCode;
+import net.sourceforge.pmd.internal.Slf4jSimpleConfiguration;
 
 /**
  *
@@ -41,12 +43,19 @@ public class CoreCliTest {
 
     @Rule
     public TemporaryFolder tempDir = new TemporaryFolder();
+    // restoring system properties: -debug might change logging properties
+    // See Slf4jSimpleConfigurationForAnt and resetLogging
     @Rule
     public RestoreSystemProperties restoreSystemProperties = new RestoreSystemProperties();
     @Rule
     public final SystemOutRule outStreamCaptor = new SystemOutRule().muteForSuccessfulTests().enableLog();
     @Rule
     public final SystemErrRule errStreamCaptor = new SystemErrRule().muteForSuccessfulTests().enableLog();
+
+    @AfterClass
+    public static void resetLogging() {
+        Slf4jSimpleConfiguration.reconfigureDefaultLogLevel(null);
+    }
 
     private Path srcDir;
 

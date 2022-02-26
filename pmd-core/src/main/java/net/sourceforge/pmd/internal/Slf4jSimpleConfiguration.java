@@ -27,7 +27,9 @@ public final class Slf4jSimpleConfiguration {
             return;
         }
 
-        System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", level.toString());
+        if (level != null) {
+            System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", level.toString());
+        }
 
         // Call SimpleLogger.init() by reflection.
         // Alternatively: move the CLI related classes into an own module, add
