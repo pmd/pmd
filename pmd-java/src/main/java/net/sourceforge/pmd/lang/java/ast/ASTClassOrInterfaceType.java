@@ -140,17 +140,15 @@ public final class ASTClassOrInterfaceType extends AbstractJavaTypeNode implemen
      *
      * @return A type, or null if this is a base type
      */
-    @Nullable
-    public ASTClassOrInterfaceType getQualifier() {
-        return getFirstChildOfType(ASTClassOrInterfaceType.class);
+    public @Nullable ASTClassOrInterfaceType getQualifier() {
+        return firstChild(ASTClassOrInterfaceType.class);
     }
 
     /**
      * Returns the type arguments of this segment if some are specified.
      */
-    @Nullable
-    public ASTTypeArguments getTypeArguments() {
-        return getFirstChildOfType(ASTTypeArguments.class);
+    public @Nullable ASTTypeArguments getTypeArguments() {
+        return firstChild(ASTTypeArguments.class);
     }
 
 
@@ -159,39 +157,12 @@ public final class ASTClassOrInterfaceType extends AbstractJavaTypeNode implemen
         return visitor.visit(this, data);
     }
 
-
     /**
      * Returns the simple name of this type. Use the {@linkplain #getReferencedSym() symbol}
      * to get more information.
      */
     public String getSimpleName() {
         return simpleName;
-    }
-
-    /**
-     * Checks whether the type this node is referring to is declared within the
-     * same compilation unit - either a class/interface or a enum type. You want
-     * to check this, if {@link #getType()} is null.
-     *
-     * @return {@code true} if this node referencing a type in the same
-     * compilation unit, {@code false} otherwise.
-     *
-     * @deprecated This may be removed once type resolution is afoot
-     */
-    @Deprecated
-    public boolean isReferenceToClassSameCompilationUnit() {
-        ASTCompilationUnit root = getFirstParentOfType(ASTCompilationUnit.class);
-        for (ASTClassOrInterfaceDeclaration c : root.findDescendantsOfType(ASTClassOrInterfaceDeclaration.class, true)) {
-            if (c.hasImageEqualTo(getImage())) {
-                return true;
-            }
-        }
-        for (ASTEnumDeclaration e : root.findDescendantsOfType(ASTEnumDeclaration.class, true)) {
-            if (e.hasImageEqualTo(getImage())) {
-                return true;
-            }
-        }
-        return false;
     }
 
     void setFullyQualified() {

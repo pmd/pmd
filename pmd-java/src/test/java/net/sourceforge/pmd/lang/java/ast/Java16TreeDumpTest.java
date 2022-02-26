@@ -9,12 +9,14 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 
+import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.test.BaseParsingHelper;
 import net.sourceforge.pmd.lang.java.BaseJavaTreeDumpTest;
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 import net.sourceforge.pmd.lang.java.symbols.JElementSymbol;
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType;
+import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 
 public class Java16TreeDumpTest extends BaseJavaTreeDumpTest {
     private final JavaParsingHelper java16 =
@@ -34,14 +36,12 @@ public class Java16TreeDumpTest extends BaseJavaTreeDumpTest {
         doTest("PatternMatchingInstanceof");
 
         // extended tests for type resolution etc.
-        ASTCompilationUnit compilationUnit = java16.parseResource("PatternMatchingInstanceof.java");
-        List<ASTInstanceOfExpression> instanceOfExpressions = compilationUnit.findDescendantsOfType(ASTInstanceOfExpression.class);
-        for (ASTInstanceOfExpression expr : instanceOfExpressions) {
-            ASTVariableDeclaratorId variable = expr.getChild(1).getFirstChildOfType(ASTVariableDeclaratorId.class);
-            Assert.assertEquals(String.class, variable.getType());
-            // Note: these variables are not part of the symbol table
-            // See ScopeAndDeclarationFinder#visit(ASTVariableDeclaratorId, Object)
-            Assert.assertNull(variable.getNameDeclaration());
+        ASTCompilationUnit ast = java16.parseResource("PatternMatchingInstanceof.java");
+        NodeStream<ASTTypePattern> patterns =
+            ast.descendants(ASTTypePattern.class)
+               .filter(it -> BinaryOp.isInfixExprWithOperator(it, BinaryOp.INSTANCEOF));
+        for (ASTTypePattern expr : patterns) {
+            Assert.assertTrue(TypeTestUtil.isA(String.class, expr.getVarId()));
         }
     }
 
