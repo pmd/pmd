@@ -24,10 +24,9 @@ public class ASTSwitchStatementTest extends BaseParserTest {
 
     @Test
     public void defaultCaseWithArrowBlock() {
-        ASTSwitchStatement switchStatement = getNodes(ASTSwitchStatement.class,
-                "class Foo { void bar(int x) {"
-                + "switch (x) { default -> { } } } }")
-                .get(0);
+        ASTSwitchStatement switchStatement =
+            java.parse("class Foo { void bar(int x) {switch (x) { default -> { } } } }")
+                .descendants(ASTSwitchStatement.class).firstOrThrow();
         Assert.assertFalse(switchStatement.isExhaustiveEnumSwitch());
         Assert.assertTrue(switchStatement.iterator().hasNext());
         Assert.assertTrue(switchStatement.hasDefaultCase());
@@ -36,10 +35,9 @@ public class ASTSwitchStatementTest extends BaseParserTest {
 
     @Test
     public void emptySwitch() {
-        ASTSwitchStatement switchStatement = getNodes(ASTSwitchStatement.class,
-                "class Foo { void bar(int x) {"
-                + "switch (x) { } } }")
-                .get(0);
+        ASTSwitchStatement switchStatement =
+            java.parse("class Foo { void bar(int x) {switch (x) { } } }")
+                .descendants(ASTSwitchStatement.class).firstOrThrow();
         Assert.assertFalse(switchStatement.isExhaustiveEnumSwitch());
         Assert.assertFalse(switchStatement.iterator().hasNext());
         Assert.assertFalse(switchStatement.hasDefaultCase());
@@ -49,7 +47,7 @@ public class ASTSwitchStatementTest extends BaseParserTest {
     @Test
     public void defaultCaseWithArrowExprs() {
         ASTSwitchStatement switchStatement =
-            getNodes(ASTSwitchStatement.class,
+            java.parse(
                     "import net.sourceforge.pmd.lang.java.rule.bestpractices.switchstmtsshouldhavedefault.SimpleEnum;\n"
                         + "\n"
                         + "            public class Foo {\n"
@@ -61,7 +59,7 @@ public class ASTSwitchStatementTest extends BaseParserTest {
                         + "                    }\n"
                         + "                }\n"
                         + "            }")
-                .get(0);
+                .descendants(ASTSwitchStatement.class).firstOrThrow();
         Assert.assertFalse(switchStatement.isExhaustiveEnumSwitch());
         Assert.assertTrue(switchStatement.iterator().hasNext());
         Assert.assertFalse(switchStatement.isFallthroughSwitch());
