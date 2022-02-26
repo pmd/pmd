@@ -159,13 +159,13 @@ public final class TimeTracker {
     }
 
     public static void bench(String label, Runnable runnable) {
-        try (TimedOperation to = startOperation(TimedOperationCategory.LANGUAGE_SPECIFIC_PROCESSING, label)) {
+        try (TimedOperation ignored = startOperation(TimedOperationCategory.LANGUAGE_SPECIFIC_PROCESSING, label)) {
             runnable.run();
         }
     }
 
     public static <T> T bench(String label, Supplier<T> runnable) {
-        try (TimedOperation to = startOperation(TimedOperationCategory.LANGUAGE_SPECIFIC_PROCESSING, label)) {
+        try (TimedOperation ignored = startOperation(TimedOperationCategory.LANGUAGE_SPECIFIC_PROCESSING, label)) {
             return runnable.get();
         }
     }

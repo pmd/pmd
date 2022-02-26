@@ -130,7 +130,7 @@ public final class JavaAstProcessor {
      */
     public void process(ASTCompilationUnit acu) {
 
-        SymbolResolver knownSyms = TimeTracker.bench("Symbol resolution", () -> SymbolResolutionPass.traverse(this, acu));
+        SymbolResolver knownSyms = TimeTracker.bench("1. Symbol resolution", () -> SymbolResolutionPass.traverse(this, acu));
 
         // Now symbols are on the relevant nodes
         this.symResolver = SymbolResolver.layer(knownSyms, this.symResolver);

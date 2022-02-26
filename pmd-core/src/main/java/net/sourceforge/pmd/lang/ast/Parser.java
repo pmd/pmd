@@ -57,7 +57,7 @@ public interface Parser {
             this.filepath = Objects.requireNonNull(filepath, "filepath was null");
             this.sourceText = Objects.requireNonNull(sourceText, "sourceText was null");
             this.reporter = Objects.requireNonNull(reporter, "reporter was null");
-            this.auxclasspathClassLoader = Objects.requireNonNull(auxclasspathClassLoader);
+            this.auxclasspathClassLoader = Objects.requireNonNull(auxclasspathClassLoader, "auxclasspathClassLoader was null");
 
             this.propertySource = new ParserTaskProperties();
             propertySource.definePropertyDescriptor(COMMENT_MARKER);
