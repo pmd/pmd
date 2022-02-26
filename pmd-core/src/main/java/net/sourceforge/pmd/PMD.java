@@ -557,12 +557,18 @@ public final class PMD {
             TimeTracker.startGlobalTracking();
         }
 
-        final Level logLevel = configuration.isDebug() ? Level.DEBUG : Level.INFO;
-        Slf4jSimpleConfiguration.reconfigureDefaultLogLevel(logLevel);
+        // only reconfigure logging, if debug flag was used on command line
+        // otherwise just use whatever is in conf/simplelogger.properties which happens automatically
+        if (configuration.isDebug()) {
+            Slf4jSimpleConfiguration.reconfigureDefaultLogLevel(Level.DEBUG);
+            // need to reload the logger with the new configuration
+            log = LoggerFactory.getLogger(PMD.class);
+        }
+        // always install java.util.logging to slf4j bridge
         Slf4jSimpleConfiguration.installJulBridge();
-        // need to reload the logger with the new configuration
-        log = LoggerFactory.getLogger(PMD.class);
-        log.atLevel(logLevel).log("Log level is at {}", logLevel);
+        // logging, mostly for testing purposes
+        Level defaultLogLevel = Slf4jSimpleConfiguration.getDefaultLogLevel();
+        log.atLevel(defaultLogLevel).log("Log level is at {}", defaultLogLevel);
 
         StatusCode status;
         try {

@@ -5,8 +5,11 @@
 package net.sourceforge.pmd.internal;
 
 import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.Optional;
 
 import org.slf4j.ILoggerFactory;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.LoggerFactoryFriend;
 import org.slf4j.bridge.SLF4JBridgeHandler;
@@ -42,6 +45,13 @@ public final class Slf4jSimpleConfiguration {
         }
 
         LoggerFactoryFriend.reset();
+    }
+
+    public static Level getDefaultLogLevel() {
+        Logger rootLogger = LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
+        Optional<Level> defaultLogLevel = Arrays.asList(Level.values()).stream()
+                .filter(rootLogger::isEnabledForLevel).findFirst();
+        return defaultLogLevel.orElse(Level.INFO);
     }
 
     public static void disableLogging(Class<?> clazz) {
