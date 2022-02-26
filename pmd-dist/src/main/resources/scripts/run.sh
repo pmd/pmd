@@ -68,11 +68,10 @@ set_lib_dir() {
       local script_real_loc=$0
     fi
     local script_dir=$(dirname "${script_real_loc}")
-    local cwd="${PWD}"
 
-    cd "${script_dir}/../lib"
+    pushd "${script_dir}/../lib" >/dev/null
     readonly LIB_DIR=$(pwd -P)
-    cd "${cwd}"
+    popd >/dev/null
   fi
 }
 
@@ -92,9 +91,9 @@ set_conf_dir() {
     fi
     local script_dir=$(dirname "${script_real_loc}")
 
-    pushd "${script_dir}/../conf"
+    pushd "${script_dir}/../conf" >/dev/null
     readonly CONF_DIR=$(pwd -P)
-    popd
+    popd >/dev/null
   fi
 }
 
