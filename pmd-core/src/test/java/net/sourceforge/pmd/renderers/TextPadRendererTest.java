@@ -25,10 +25,6 @@ public class TextPadRendererTest extends AbstractRendererTest {
 
     @Override
     public String getExpectedMultiple() {
-        return getSourceCodeFilename() + "(1,  Foo):  blah" + PMD.EOL + getSourceCodeFilename() + "(1,  Foo):  blah" + PMD.EOL;
-    }
-
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(TextPadRendererTest.class);
+        return getSourceCodeFilename() + "(1,  Foo):  blah" + PMD.EOL + getSourceCodeFilename() + "(1,  Boo):  blah" + PMD.EOL;
     }
 }

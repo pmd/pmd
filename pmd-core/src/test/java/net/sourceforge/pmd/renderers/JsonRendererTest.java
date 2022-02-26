@@ -10,6 +10,7 @@ import java.io.IOException;
 import org.junit.Assert;
 import org.junit.Test;
 
+import net.sourceforge.pmd.FooRule;
 import net.sourceforge.pmd.Report.ConfigurationError;
 import net.sourceforge.pmd.Report.ProcessingError;
 import net.sourceforge.pmd.Report.SuppressedViolation;
@@ -79,7 +80,7 @@ public class JsonRendererTest extends AbstractRendererTest {
     @Test
     public void suppressedViolations() throws IOException {
         SuppressedViolation suppressed = new SuppressedViolation(
-            newRuleViolation(1),
+            newRuleViolation(1, 1, 1, 1, new FooRule()),
             ViolationSuppressor.NOPMD_COMMENT_SUPPRESSOR,
             "test"
         );
