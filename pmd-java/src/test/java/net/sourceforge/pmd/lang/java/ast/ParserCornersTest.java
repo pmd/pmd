@@ -136,11 +136,11 @@ public class ParserCornersTest extends BaseJavaTreeDumpTest {
      */
     @Test
     public void testGenericsProblem() {
-        String code = "public class Test {\n" +
-            " public void test() {\n" +
-            "   String o = super.<String> doStuff(\"\");\n" +
-            " }\n" +
-            "}";
+        String code = "public class Test {\n"
+            + " public void test() {\n"
+            + "   String o = super.<String> doStuff(\"\");\n"
+            + " }\n"
+            + "}";
         java5.parse(code);
         java7.parse(code);
     }

@@ -37,10 +37,9 @@ public class TypeTestUtilTest extends BaseParserTest {
         ASTClassOrInterfaceDeclaration klass =
             java.parse("package org; import java.io.Serializable; "
                            + "class FooBar implements Serializable {}")
-                .getFirstDescendantOfType(ASTClassOrInterfaceDeclaration.class);
+                .descendants(ASTClassOrInterfaceDeclaration.class).firstOrThrow();
 
 
-        Assert.assertNull(klass.getType());
         Assert.assertTrue(TypeTestUtil.isA("org.FooBar", klass));
         Assert.assertTrue(TypeTestUtil.isA("java.io.Serializable", klass));
         Assert.assertTrue(TypeTestUtil.isA(Serializable.class, klass));
@@ -52,7 +51,7 @@ public class TypeTestUtilTest extends BaseParserTest {
         ASTAnnotation annot =
             java.parse("import a.b.Test;"
                            + "class FooBar { @Test void bar() {} }")
-                .getFirstDescendantOfType(ASTAnnotation.class);
+                .descendants(ASTAnnotation.class).firstOrThrow();
 
         Assert.assertTrue(TypeTestUtil.isA("a.b.Test", annot));
         Assert.assertTrue(TypeOps.isUnresolved(annot.getTypeMirror()));
@@ -70,10 +69,9 @@ public class TypeTestUtilTest extends BaseParserTest {
         ASTEnumDeclaration klass =
             java.parse("package org; "
                            + "enum FooBar implements Iterable {}")
-                .getFirstDescendantOfType(ASTEnumDeclaration.class);
+                .descendants(ASTEnumDeclaration.class).firstOrThrow();
 
 
-        Assert.assertNull(klass.getType());
         Assert.assertTrue(TypeTestUtil.isA("org.FooBar", klass));
         assertIsStrictSubtype(klass, Iterable.class);
         assertIsStrictSubtype(klass, Enum.class);
@@ -88,7 +86,7 @@ public class TypeTestUtilTest extends BaseParserTest {
         ASTType arrayT =
             java.parse("import java.io.ObjectStreamField; "
                            + "class Foo { private static final ObjectStreamField[] serialPersistentFields; }")
-                .getFirstDescendantOfType(ASTType.class);
+                .descendants(ASTType.class).firstOrThrow();
 
 
         assertIsExactlyA(arrayT, ObjectStreamField[].class);
@@ -103,7 +101,7 @@ public class TypeTestUtilTest extends BaseParserTest {
 
         ASTType arrayT =
             java.parse("class Foo { org.junit.Test field; }")
-                .getFirstDescendantOfType(ASTType.class);
+                .descendants(ASTType.class).firstOrThrow();
 
 
         assertIsExactlyA(arrayT, Test.class);
@@ -117,7 +115,7 @@ public class TypeTestUtilTest extends BaseParserTest {
         ASTType arrayT =
             java.parse("import java.io.ObjectStreamField; "
                            + "class Foo { private static final int[] serialPersistentFields; }")
-                .getFirstDescendantOfType(ASTType.class);
+                .descendants(ASTType.class).firstOrThrow();
 
 
         assertIsExactlyA(arrayT, int[].class);
@@ -134,7 +132,7 @@ public class TypeTestUtilTest extends BaseParserTest {
         ASTType arrayT =
             java.parse("import java.io.ObjectStreamField; "
                            + "class Foo { private static final int serialPersistentFields; }")
-                .getFirstDescendantOfType(ASTType.class);
+                .descendants(ASTType.class).firstOrThrow();
 
 
         assertIsExactlyA(arrayT, int.class);
@@ -151,10 +149,9 @@ public class TypeTestUtilTest extends BaseParserTest {
         ASTAnnotationTypeDeclaration klass =
             java.parse("package org; import foo.Stuff;"
                            + "public @interface FooBar {}")
-                .getFirstDescendantOfType(ASTAnnotationTypeDeclaration.class);
+                .descendants(ASTAnnotationTypeDeclaration.class).firstOrThrow();
 
 
-        Assert.assertNull(klass.getType());
         Assert.assertTrue(TypeTestUtil.isA("org.FooBar", klass));
         assertIsA(klass, Annotation.class);
         assertIsA(klass, Object.class);
@@ -182,7 +179,7 @@ public class TypeTestUtilTest extends BaseParserTest {
         ASTAnyTypeDeclaration klass =
             java.parse("package org;"
                            + "public class FooBar {}")
-                .getFirstDescendantOfType(ASTAnyTypeDeclaration.class);
+                .descendants(ASTAnyTypeDeclaration.class).firstOrThrow();
 
 
         expect.expect(IllegalArgumentException.class);
@@ -195,7 +192,7 @@ public class TypeTestUtilTest extends BaseParserTest {
         ASTAnyTypeDeclaration klass =
             java.parse("package org;"
                            + "public @interface FooBar {}")
-                .getFirstDescendantOfType(ASTAnyTypeDeclaration.class);
+                .descendants(ASTAnyTypeDeclaration.class).firstOrThrow();
 
 
         expect.expect(IllegalArgumentException.class);
@@ -208,7 +205,7 @@ public class TypeTestUtilTest extends BaseParserTest {
 
         ASTAnonymousClassDeclaration anon =
             java.parseClass(SomeClassWithAnon.class)
-                .getFirstDescendantOfType(ASTAnonymousClassDeclaration.class);
+                .descendants(ASTAnonymousClassDeclaration.class).firstOrThrow();
 
 
         Assert.assertTrue("Anon class", anon.getSymbol().isAnonymousClass());
@@ -234,9 +231,8 @@ public class TypeTestUtilTest extends BaseParserTest {
     @Test
     public void testIsAFallbackAnnotationSimpleNameImport() {
         ASTAnnotation annotation = java.parse("package org; import foo.Stuff; @Stuff public class FooBar {}")
-                                       .getFirstDescendantOfType(ASTAnnotation.class);
+                                       .descendants(ASTAnnotation.class).firstOrThrow();
 
-        Assert.assertNull(annotation.getType());
         Assert.assertTrue(TypeTestUtil.isA("foo.Stuff", annotation));
         Assert.assertFalse(TypeTestUtil.isA("other.Stuff", annotation));
         // we know it's not Stuff, it's foo.Stuff

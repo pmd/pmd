@@ -8,6 +8,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.annotation.DeprecatedUntil700;
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
 import net.sourceforge.pmd.lang.java.types.TypingContext;
@@ -37,11 +38,14 @@ public interface TypeNode extends JavaNode {
      * @return The type mirror. Never returns null; if the type is unresolved, returns
      *     {@link TypeSystem#UNKNOWN}.
      */
-    @NonNull
-    default JTypeMirror getTypeMirror() {
+    default @NonNull JTypeMirror getTypeMirror() {
         return getTypeMirror(TypingContext.DEFAULT);
     }
 
+    /**
+     * Internal implementation method for {@link #getTypeMirror()}.
+     */
+    @InternalApi
     JTypeMirror getTypeMirror(TypingContext typing);
 
 

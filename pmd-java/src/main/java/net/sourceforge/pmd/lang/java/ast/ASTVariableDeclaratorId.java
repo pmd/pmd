@@ -11,9 +11,9 @@ import java.util.List;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
+import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.rule.xpath.DeprecatedAttribute;
 
 // @formatter:off
@@ -80,14 +80,12 @@ public final class ASTVariableDeclaratorId extends AbstractTypedSymbolDeclarator
      * returns {@code int}, and this method returns the dimensions that follow
      * the variable ID. Returns null if there are no such dimensions.
      */
-    @Nullable
-    public ASTArrayDimensions getExtraDimensions() {
+    public @Nullable ASTArrayDimensions getExtraDimensions() {
         return children(ASTArrayDimensions.class).first();
     }
 
-    @NonNull
     @Override
-    public ASTModifierList getModifiers() {
+    public @NonNull ASTModifierList getModifiers() {
         // delegates modifiers
         return getModifierOwnerParent().getModifiers();
     }
@@ -259,23 +257,11 @@ public final class ASTVariableDeclaratorId extends AbstractTypedSymbolDeclarator
     /**
      * Returns the initializer of the variable, or null if it doesn't exist.
      */
-    @Nullable
-    public ASTExpression getInitializer() {
+    public @Nullable ASTExpression getInitializer() {
         if (getParent() instanceof ASTVariableDeclarator) {
             return ((ASTVariableDeclarator) getParent()).getInitializer();
         }
         return null;
-    }
-
-    /**
-     * Returns the first child of the node returned by {@link #getTypeNode()}.
-     * The image of that node can usually be interpreted as the image of the
-     * type.
-     */
-    // TODO unreliable, not typesafe and not useful, should be deprecated
-    @Nullable
-    public Node getTypeNameNode() {
-        return getTypeNode();
     }
 
 
@@ -285,13 +271,12 @@ public final class ASTVariableDeclaratorId extends AbstractTypedSymbolDeclarator
      * FormalParameter, LocalVariableDeclaration or FieldDeclaration).
      *
      * <p>The type of the returned node is not necessarily the type of this
-     * node. See {@link #getType()} for an explanation.
+     * node. See {@link #getTypeMirror()} for an explanation.
      *
      * @return the type node, or {@code null} if there is no explicit type,
      *     e.g. if {@link #isTypeInferred()} returns true.
      */
-    @Nullable
-    public ASTType getTypeNode() {
+    public @Nullable ASTType getTypeNode() {
         AccessNode parent = getModifierOwnerParent();
         return parent.children(ASTType.class).first();
     }
@@ -319,10 +304,9 @@ public final class ASTVariableDeclaratorId extends AbstractTypedSymbolDeclarator
      * <p>The type of the declarator ID is thus always the real type of
      * the variable.
      */
-    // @formatter:on
     @Override
     @SuppressWarnings("PMD.UselessOverridingMethod")
-    public Class<?> getType() {
-        return super.getType();
+    public @NonNull JTypeMirror getTypeMirror() {
+        return super.getTypeMirror();
     }
 }

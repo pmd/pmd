@@ -13,9 +13,9 @@ import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
  * but the node is also used in {@linkplain ASTForInit for-loop initialisers} and
  * {@linkplain ASTForStatement foreach statements}.
  *
- * <p>This statement may define several variables, possibly of different types
- * (see {@link ASTVariableDeclaratorId#getType()}). The nodes corresponding to
- * the declared variables are accessible through {@link #getVarIds()}.
+ * <p>This statement may define several variables, possibly of different types.
+ * The nodes corresponding to the declared variables are accessible
+ * through {@link #getVarIds()}.
  *
  * <pre class="grammar">
  *
@@ -53,7 +53,7 @@ public final class ASTLocalVariableDeclaration extends AbstractJavaNode
     /**
      * If true, this local variable declaration represents a declaration,
      * which makes use of local variable type inference, e.g. java10 "var".
-     * You can receive the inferred type via {@link ASTVariableDeclarator#getType()}.
+     * You can receive the inferred type via {@link ASTVariableDeclarator#getTypeMirror()}.
      *
      * @see ASTVariableDeclaratorId#isTypeInferred()
      */
