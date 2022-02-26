@@ -174,7 +174,7 @@
 
 
 <ul id="mysidebar" class="nav">
-    <li class="sidebarTitle">PMD 6.43.0</li>
+    <li class="sidebarTitle">PMD 6.44.0-SNAPSHOT</li>
     
     
     
@@ -1427,9 +1427,9 @@
 
     
 
-  <h2 id="26-february-2022---6430">26-February-2022 - 6.43.0</h2>
+  <h2 id="26-march-2022---6440-snapshot">26-March-2022 - 6.44.0-SNAPSHOT</h2>
 
-<p>The PMD team is pleased to announce PMD 6.43.0.</p>
+<p>The PMD team is pleased to announce PMD 6.44.0-SNAPSHOT.</p>
 
 <p>This is a minor release.</p>
 
@@ -1437,107 +1437,9 @@
 
 <h3 id="fixed-issues">Fixed Issues</h3>
 
-<ul>
-  <li>core
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/3427">#3427</a>: [core] Stop printing CLI usage text when exiting due to invalid parameters</li>
-      <li><a href="https://github.com/pmd/pmd/issues/3768">#3768</a>: [core] SARIF formatter reports multiple locations when it should report multiple results</li>
-    </ul>
-  </li>
-  <li>doc
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/2502">#2502</a>: [doc] Add floating table-of-contents (toc) on the right</li>
-      <li><a href="https://github.com/pmd/pmd/pull/3807">#3807</a>: [doc] Document Ant Task parameter <code class="language-plaintext highlighter-rouge">threads</code></li>
-    </ul>
-  </li>
-  <li>java
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/3697">#3698</a>: [java] Parsing error with try-with-resources and qualified resource</li>
-    </ul>
-  </li>
-  <li>java-bestpractices
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/3605">#3605</a>: [java] SwitchStmtsShouldHaveDefault triggered when default case is present</li>
-    </ul>
-  </li>
-  <li>java-codestyle
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/278">#278</a>: [java] ConfusingTernary should treat <code class="language-plaintext highlighter-rouge">!= null</code> as positive condition</li>
-    </ul>
-  </li>
-  <li>java-performance
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/3374">#3374</a>: [java] UseStringBufferForStringAppends: Wrong example in documentation</li>
-    </ul>
-  </li>
-  <li>misc
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/3759">#3759</a>: [lang-test] Upgrade dokka maven plugin to 1.4.32</li>
-    </ul>
-  </li>
-  <li>plsql
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/3746">#3746</a>: [plsql] Parsing exception “Less than or equal to/Greater than or equal to” operators in DML statements</li>
-    </ul>
-  </li>
-</ul>
-
 <h3 id="api-changes">API Changes</h3>
 
-<h4 id="deprecated-api">Deprecated API</h4>
-
-<p>Some API deprecations were performed in core PMD classes, to improve compatibility with PMD 7.</p>
-<ul>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.43.0/net/sourceforge/pmd/Report.html#"><code>Report</code></a>: the constructor and other construction methods like addViolation or createReport</li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.43.0/net/sourceforge/pmd/RuleContext.html#"><code>RuleContext</code></a>: all constructors, getters and setters. A new set
-of stable methods, matching those in PMD 7, was added to replace the <code class="language-plaintext highlighter-rouge">addViolation</code>
-overloads of <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.43.0/net/sourceforge/pmd/lang/rule/AbstractRule.html#"><code>AbstractRule</code></a>. In PMD 7, <code class="language-plaintext highlighter-rouge">RuleContext</code> will
-be the API to report violations, and it can already be used as such in PMD 6.</li>
-  <li>The field <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.43.0/net/sourceforge/pmd/PMD.html#configuration"><code>configuration</code></a> is unused and will be removed.</li>
-</ul>
-
-<h4 id="internal-api">Internal API</h4>
-
-<p>Those APIs are not intended to be used by clients, and will be hidden or removed with PMD 7.0.0.
-You can identify them with the <code class="language-plaintext highlighter-rouge">@InternalApi</code> annotation. You’ll also get a deprecation warning.</p>
-
-<ul>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.43.0/net/sourceforge/pmd/RuleSet.html#"><code>RuleSet</code></a>: methods that serve to apply rules, including <code class="language-plaintext highlighter-rouge">apply</code>, <code class="language-plaintext highlighter-rouge">start</code>, <code class="language-plaintext highlighter-rouge">end</code>, <code class="language-plaintext highlighter-rouge">removeDysfunctionalRules</code></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.43.0/net/sourceforge/pmd/renderers/AbstractAccumulatingRenderer.html#renderFileReport(Report)"><code>AbstractAccumulatingRenderer#renderFileReport</code></a> is internal API
-and should not be overridden in own renderers.</li>
-</ul>
-
-<h4 id="changed-api">Changed API</h4>
-
-<p>It is now forbidden to report a violation:</p>
-<ul>
-  <li>With a <code class="language-plaintext highlighter-rouge">null</code> node</li>
-  <li>With a <code class="language-plaintext highlighter-rouge">null</code> message</li>
-  <li>With a <code class="language-plaintext highlighter-rouge">null</code> set of format arguments (prefer a zero-length array)</li>
-</ul>
-
-<p>Note that the message is set from the XML rule declaration, so this is only relevant
-if you instantiate rules manually.</p>
-
-<p><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.43.0/net/sourceforge/pmd/RuleContext.html#"><code>RuleContext</code></a> now requires setting the current rule before calling
-<a href="https://docs.pmd-code.org/apidocs/pmd-core/6.43.0/net/sourceforge/pmd/Rule.html#apply(java.util.List,net.sourceforge.pmd.RuleContext)"><code>apply</code></a>. This is
-done automatically by <code class="language-plaintext highlighter-rouge">RuleSet#apply</code> and such. Creating and configuring a
-<code class="language-plaintext highlighter-rouge">RuleContext</code> manually is strongly advised against, as the lifecycle of <code class="language-plaintext highlighter-rouge">RuleContext</code>
-will change drastically in PMD 7.</p>
-
 <h3 id="external-contributions">External Contributions</h3>
-
-<ul>
-  <li><a href="https://github.com/pmd/pmd/pull/3767">#3767</a>: [core] Update GUI.java - <a href="https://github.com/Vyom-Yadav">Vyom Yadav</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/3804">#3804</a>: [doc] Add floating table of contents (issue #2502) - <a href="https://github.com/JerritEic">JerritEic</a></li>
-</ul>
-
-<h3 id="stats">Stats</h3>
-<ul>
-  <li>49 commits</li>
-  <li>22 closed tickets &amp; PRs</li>
-  <li>Days since last release: 27</li>
-</ul>
 
 
 
