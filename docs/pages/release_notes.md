@@ -77,5 +77,10 @@ will change drastically in PMD 7.
 *   [#3767](https://github.com/pmd/pmd/pull/3767): \[core] Update GUI.java - [Vyom Yadav](https://github.com/Vyom-Yadav)
 *   [#3804](https://github.com/pmd/pmd/pull/3804): \[doc] Add floating table of contents (issue #2502) - [JerritEic](https://github.com/JerritEic)
 
+### Stats
+* 49 commits
+* 22 closed tickets & PRs
+* Days since last release: 27
+
 {% endtocmaker %}
 
