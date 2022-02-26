@@ -27,6 +27,28 @@ class ASTInstanceOfExpressionTest : ParserTestSpec({
         }
     }
 
+    parserTest("Instanceof with pattern") {
+
+        inContext(ExpressionParsingCtx) {
+
+            "o instanceof (String s && s.length() > 4)" should parseAs {
+                infixExpr(BinaryOp.INSTANCEOF) {
+                    it::getLeftOperand shouldBe variableAccess("o")
+                    it::getRightOperand shouldBe patternExpr {
+                        guardedPattern {
+                            it::getPattern shouldBe typePattern {
+                                modifiers()
+                                classType("String")
+                                variableId("s")
+                            }
+                            it::getGuard shouldBe infixExpr(BinaryOp.GT)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     parserTest("InstanceofExpression cannot test primitive types") {
 
         inContext(ExpressionParsingCtx) {

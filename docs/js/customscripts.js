@@ -1,13 +1,23 @@
+
+// Detect small devices and move the TOC in line
+function moveToc(){
+    if(window.innerWidth < 1350){
+        $( "#toc" ).detach().appendTo("#inline-toc").removeClass("position-fixed");
+    } else {
+        $( "#toc" ).detach().appendTo(".toc-col").addClass("position-fixed");
+    }
+}
+
 $( document ).ready(function() {
 
     $('#mysidebar').height($(".nav").height());
 
-    // this script says, if the height of the viewport is greater than 800px, then insert position-fixed class,
+    // this script says, if the height of the viewport is greater than 600px, then insert position-fixed class,
     // which makes the nav bar float in a fixed position as your scroll. If you have a lot of nav items,
     // this height may not work for you.
     var h = $(window).height();
     //console.log (h);
-    if (h > 800) {
+    if (h > 600) {
         $( "#mysidebar" ).attr("class", "nav position-fixed");
     }
 
@@ -20,6 +30,8 @@ $( document ).ready(function() {
      * AnchorJS
      */
     anchors.add('h2,h3,h4,h5');
+    // Check if TOC needs to be moved on page load
+    moveToc();
 
     // This highlights the active parent class in the navgoco sidebar. This is critical so that the parent expands
     // when you're viewing a page.
@@ -71,3 +83,6 @@ $( document ).ready(function() {
         event.preventDefault();
     });
 });
+
+// Check if TOC needs to be moved on window resizing
+$(window).resize(function () {moveToc();});

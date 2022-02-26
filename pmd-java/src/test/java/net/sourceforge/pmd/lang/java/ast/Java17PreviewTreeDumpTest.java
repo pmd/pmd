@@ -4,6 +4,9 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.function.ThrowingRunnable;
@@ -81,8 +84,7 @@ public class Java17PreviewTreeDumpTest extends BaseTreeDumpTest {
                 java17.parseResource("GuardedAndParenthesizedPatterns.java");
             }
         });
-        Assert.assertTrue("Unexpected message: " + thrown.getMessage(),
-                thrown.getMessage().contains("Guarded patterns is a preview feature of JDK 17, you should select your language version accordingly"));
+        assertThat(thrown.getMessage(), containsString("Pattern matching for switch is a preview feature of JDK 17, you should select your language version accordingly"));
     }
 
     @Test

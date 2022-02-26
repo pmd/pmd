@@ -44,17 +44,16 @@ public final class ASTContinueStatement extends AbstractStatement {
     }
 
     /**
-     * Returns the statement that is the target of this break. This must
-     * be a loop.
+     * Returns the statement that is the target of this break. This can
+     * be a loop, or an {@link ASTLabeledStatement}.
      */
-    public ASTLoopStatement getTarget() {
+    public ASTStatement getTarget() {
         String myLabel = this.getLabel();
         if (myLabel == null) {
             return ancestors().map(CONTINUE_TARGET_MAPPER).first();
         }
-        return (ASTLoopStatement) ancestors(ASTLabeledStatement.class)
+        return ancestors(ASTLabeledStatement.class)
             .filter(it -> it.getLabel().equals(myLabel))
-            .map(ASTLabeledStatement::getStatement)
             .first();
     }
 
