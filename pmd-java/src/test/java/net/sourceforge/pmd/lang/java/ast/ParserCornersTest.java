@@ -136,11 +136,11 @@ public class ParserCornersTest extends BaseJavaTreeDumpTest {
      */
     @Test
     public void testGenericsProblem() {
-        String code = "public class Test {\n" +
-            " public void test() {\n" +
-            "   String o = super.<String> doStuff(\"\");\n" +
-            " }\n" +
-            "}";
+        String code = "public class Test {\n"
+            + " public void test() {\n"
+            + "   String o = super.<String> doStuff(\"\");\n"
+            + " }\n"
+            + "}";
         java5.parse(code);
         java7.parse(code);
     }
@@ -266,10 +266,10 @@ public class ParserCornersTest extends BaseJavaTreeDumpTest {
     @Test
     public void testMethodReferenceConfused() {
         ASTCompilationUnit ast = java.parseResource("MethodReferenceConfused.java", "10");
-        ASTVariableDeclaratorId someVarNameSameAsMethodReference = AstTestUtil.varId(ast, "someVarNameSameAsMethodReference");
+        ASTVariableDeclaratorId varWithMethodName = AstTestUtil.varId(ast, "method");
         ASTVariableDeclaratorId someObject = AstTestUtil.varId(ast, "someObject");
 
-        assertThat(someVarNameSameAsMethodReference.getLocalUsages(), empty());
+        assertThat(varWithMethodName.getLocalUsages(), empty());
         assertThat(someObject.getLocalUsages(), hasSize(1));
         ASTNamedReferenceExpr usage = someObject.getLocalUsages().get(0);
         assertThat(usage.getParent(), instanceOf(ASTCastExpression.class));
