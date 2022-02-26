@@ -4,16 +4,10 @@
 
 package net.sourceforge.pmd.lang.java.rule;
 
-import java.util.List;
-
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.JavaLanguageModule;
-import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
-import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitor;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
 
@@ -22,7 +16,6 @@ import net.sourceforge.pmd.lang.rule.AbstractRule;
  * Base class for Java rules. Any rule written in Java to analyse Java source should extend from
  * this base class.
  *
- * TODO add documentation
  *
  */
 public abstract class AbstractJavaRule extends AbstractRule implements JavaParserVisitor {
@@ -36,18 +29,5 @@ public abstract class AbstractJavaRule extends AbstractRule implements JavaParse
         target.acceptVisitor(this, ctx);
     }
 
-    public static boolean isQualifiedName(@Nullable String node) {
-        return node != null && node.indexOf('.') != -1;
-    }
-
-    public static boolean importsPackage(ASTCompilationUnit node, String packageName) {
-        List<ASTImportDeclaration> nodes = node.findChildrenOfType(ASTImportDeclaration.class);
-        for (ASTImportDeclaration n : nodes) {
-            if (n.getPackageName().startsWith(packageName)) {
-                return true;
-            }
-        }
-        return false;
-    }
 
 }

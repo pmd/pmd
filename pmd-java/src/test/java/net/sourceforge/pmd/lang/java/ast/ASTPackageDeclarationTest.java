@@ -12,14 +12,12 @@ import net.sourceforge.pmd.lang.java.BaseParserTest;
 
 public class ASTPackageDeclarationTest extends BaseParserTest {
 
-    private static final String PACKAGE_INFO_ANNOTATED = "@Deprecated\npackage net.sourceforge.pmd.foobar;\n";
-
     /**
      * Regression test for bug 3524607.
      */
     @Test
     public void testPackageName() {
-        ASTCompilationUnit nodes = java.parse(PACKAGE_INFO_ANNOTATED);
+        ASTCompilationUnit nodes = java.parse("@Deprecated package net.sourceforge.pmd.foobar;");
 
         assertEquals("net.sourceforge.pmd.foobar", nodes.getPackageDeclaration().getName());
         assertEquals("net.sourceforge.pmd.foobar", nodes.getPackageName());

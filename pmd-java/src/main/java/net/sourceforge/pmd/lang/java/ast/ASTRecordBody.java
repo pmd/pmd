@@ -11,8 +11,7 @@ package net.sourceforge.pmd.lang.java.ast;
  *
  * <pre class="grammar">
  *
- * RecordBody ::= "{" (   {@linkplain ASTCompactConstructorDeclaration CompactConstructorDeclaration}
- *                      | {@linkplain ASTClassOrInterfaceBodyDeclaration ClassOrInterfaceBodyDeclaration} )* "}"
+ * RecordBody ::= "{" {@linkplain ASTBodyDeclaration BodyDeclaration}* "}"
  *
  * </pre>
  *
