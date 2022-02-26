@@ -3,15 +3,16 @@
  */
 
 /**
- * Prototype of a new symbol resolution framework
- * that inter-operates cleanly with type resolution.
+ * Symbols represent Java declarations on a more abstract level than the AST.
+ * The {@linkplain net.sourceforge.pmd.lang.java.types.TypeSystem Java type resolver}
+ * uses symbols to reason about types in the analysed program. Symbols
+ * are otherwise used to perform reference resolution internally, and
+ * reference searches ({@link net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId#getLocalUsages()}).
+ * See also the main interfaces, listed below.
  *
  * @see net.sourceforge.pmd.lang.java.symbols.JElementSymbol
  * @see net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable
  * @see net.sourceforge.pmd.lang.java.symbols.SymbolResolver
  */
-
-@Experimental
 package net.sourceforge.pmd.lang.java.symbols;
 
-import net.sourceforge.pmd.annotation.Experimental;

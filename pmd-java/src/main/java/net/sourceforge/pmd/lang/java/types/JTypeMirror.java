@@ -32,7 +32,9 @@ import net.sourceforge.pmd.lang.java.types.internal.infer.InferenceVar;
  *
  * <p>Type mirrors can be obtained {@linkplain TypesFromReflection from reflected types},
  * directly {@linkplain TypeNode#getTypeMirror() from nodes}, or from
- * arbitrary symbols (see {@link TypeSystem}).
+ * arbitrary symbols (see {@link TypeSystem}). Note that testing types
+ * within rules can be done easily with {@link TypeTestUtil}, and direct
+ * manipulation of {@link JTypeMirror} is usually not required.
  *
  * <p>Type mirrors are primarily divided between {@linkplain JPrimitiveType primitive types}
  * and reference types. Reference types can be of one of those kinds:

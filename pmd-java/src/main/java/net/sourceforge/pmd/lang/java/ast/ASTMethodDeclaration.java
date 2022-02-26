@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import java.util.Objects;
+
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -140,20 +142,12 @@ public final class ASTMethodDeclaration extends AbstractMethodOrConstructorDecla
     }
 
     /**
-     * Returns the result type node of the method.
-     *
-     * @deprecated todo When removed from java-grammar, rename the other to this good name
-     */
-    @Deprecated
-    public ASTResultType getResultType() {
-        return getFirstChildOfType(ASTResultType.class);
-    }
-
-    /**
      * Returns the result type node of the method. This may be a {@link ASTVoidType}.
+     * TODO that node does not consider extra dimensions following parameter list.
+     *  Create new JTypeMirror getResultType() method.
      */
     public @NonNull ASTType getResultTypeNode() {
-        return getFirstChildOfType(ASTType.class);
+        return Objects.requireNonNull(firstChild(ASTType.class));
     }
 
     /**
@@ -162,7 +156,7 @@ public final class ASTMethodDeclaration extends AbstractMethodOrConstructorDecla
      */
     @Nullable
     public ASTArrayDimensions getExtraDimensions() {
-        return children(ASTArrayDimensions.class).first();
+        return firstChild(ASTArrayDimensions.class);
     }
 
     /**

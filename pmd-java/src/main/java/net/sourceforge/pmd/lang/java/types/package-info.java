@@ -4,6 +4,13 @@
 
 /**
  * Support for compile-time type resolution on the AST.
+ * Types are represented by {@link net.sourceforge.pmd.lang.java.types.JTypeMirror},
+ * backed by {@link net.sourceforge.pmd.lang.java.symbols.JElementSymbol} instances.
+ * Note that testing types * within rules can be done easily with {@link net.sourceforge.pmd.lang.java.types.TypeTestUtil},
+ * and direct manipulation of {@link net.sourceforge.pmd.lang.java.types.JTypeMirror} is usually not required.
+ *
+ * @see net.sourceforge.pmd.lang.java.types.JTypeMirror
+ * @see net.sourceforge.pmd.lang.java.types.TypeTestUtil
  */
 package net.sourceforge.pmd.lang.java.types;
 /*

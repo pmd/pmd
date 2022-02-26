@@ -21,7 +21,22 @@ import net.sourceforge.pmd.lang.java.symbols.internal.UnresolvedClassStore;
 import net.sourceforge.pmd.util.OptionalBool;
 
 /**
- * Public utilities to test the type of nodes.
+ * Public utilities to test the type of nodes. For instance
+ *
+ * <pre>{@code
+ *      void typeTest(ASTMethodDeclaration method) {
+ *          if (TypeTestUtil.isA(String.class, method.getResultTypeNode())) {
+ *              // method returns string
+ *          }
+ *          if (TypeTestUtil.isA("my.Class", method.getResultTypeNode())) {
+ *              // method returns instance of my.Class
+ *          }
+ *      }
+ * }</pre>
+ *
+ * <p>Note that by convention all methods return false when a node parameter
+ * is null, and require that the other parameter (the one describing the expected
+ * type) be non-null.
  *
  * @see InvocationMatcher
  */
