@@ -76,7 +76,7 @@
     </issueManagement>
 
     <properties>
-        <project.build.outputTimestamp>2022-01-29T08:53:37Z</project.build.outputTimestamp>
+        <project.build.outputTimestamp>2022-02-26T09:01:07Z</project.build.outputTimestamp>
 
         <java.version>8</java.version>
 
@@ -416,12 +416,12 @@
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-core</artifactId>
-                            <version>6.42.0</version> <!-- pmd.dogfood.version -->
+                            <version>6.43.0</version> <!-- pmd.dogfood.version -->
                         </dependency>
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-java</artifactId>
-                            <version>6.42.0</version> <!-- pmd.dogfood.version -->
+                            <version>6.43.0</version> <!-- pmd.dogfood.version -->
                         </dependency>
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
