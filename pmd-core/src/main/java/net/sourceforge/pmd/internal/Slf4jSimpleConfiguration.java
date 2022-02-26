@@ -6,7 +6,8 @@ package net.sourceforge.pmd.internal;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
-import java.util.Optional;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.slf4j.ILoggerFactory;
 import org.slf4j.Logger;
@@ -51,9 +52,13 @@ public final class Slf4jSimpleConfiguration {
 
     public static Level getDefaultLogLevel() {
         Logger rootLogger = LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
-        Optional<Level> defaultLogLevel = Arrays.asList(Level.values()).stream()
-                .filter(rootLogger::isEnabledForLevel).findFirst();
-        return defaultLogLevel.orElse(Level.INFO);
+        List<Level> enabledLogLevels = Arrays.asList(Level.values()).stream()
+                .filter(rootLogger::isEnabledForLevel).collect(Collectors.toList());
+        if (enabledLogLevels.isEmpty()) {
+            return Level.INFO;
+        }
+        // return the lowest (last) level
+        return enabledLogLevels.get(enabledLogLevels.size() - 1);
     }
 
     public static void disableLogging(Class<?> clazz) {
