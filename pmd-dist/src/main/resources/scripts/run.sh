@@ -91,17 +91,16 @@ set_conf_dir() {
       local script_real_loc=$0
     fi
     local script_dir=$(dirname "${script_real_loc}")
-    local cwd="${PWD}"
 
-    cd "${script_dir}/../conf"
+    pushd "${script_dir}/../conf"
     readonly CONF_DIR=$(pwd -P)
-    cd "${cwd}"
+    popd
   fi
 }
 
 check_conf_dir() {
   if [ ! -e "${CONF_DIR}" ]; then
-    echo "The configurtaion directory [${CONF_DIR}] does not exist"
+    echo "The configuration directory [${CONF_DIR}] does not exist"
   fi
 }
 
