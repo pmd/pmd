@@ -8,7 +8,7 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import net.sourceforge.pmd.lang.java.symboltable.BaseParserTest;
+import net.sourceforge.pmd.lang.java.BaseParserTest;
 
 public class ASTPackageDeclarationTest extends BaseParserTest {
 

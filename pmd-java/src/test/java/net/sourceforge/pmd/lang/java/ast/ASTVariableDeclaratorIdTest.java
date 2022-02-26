@@ -10,8 +10,8 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
+import net.sourceforge.pmd.lang.java.BaseParserTest;
 import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
-import net.sourceforge.pmd.lang.java.symboltable.BaseParserTest;
 
 public class ASTVariableDeclaratorIdTest extends BaseParserTest {
 

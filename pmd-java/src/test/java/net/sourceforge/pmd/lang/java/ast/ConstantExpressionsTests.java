@@ -11,7 +11,7 @@ import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.function.Executable;
 
-import net.sourceforge.pmd.lang.java.symboltable.BaseParserTest;
+import net.sourceforge.pmd.lang.java.BaseParserTest;
 
 public class ConstantExpressionsTests extends BaseParserTest {
 

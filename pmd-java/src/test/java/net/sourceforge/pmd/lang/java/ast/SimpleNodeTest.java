@@ -17,7 +17,7 @@ import org.junit.Test;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.test.TestUtilsKt;
-import net.sourceforge.pmd.lang.java.symboltable.BaseParserTest;
+import net.sourceforge.pmd.lang.java.BaseParserTest;
 
 @Ignore("This test is Java specific even though parts of it should apply to any language implementation")
 // The Java specific parts depend on the grammar and are subject to breaking during the grammar update process

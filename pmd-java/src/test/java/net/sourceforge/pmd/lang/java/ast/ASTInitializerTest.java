@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import org.junit.Test;
 
-import net.sourceforge.pmd.lang.java.symboltable.BaseParserTest;
+import net.sourceforge.pmd.lang.java.BaseParserTest;
 
 public class ASTInitializerTest extends BaseParserTest {
 

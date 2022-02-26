@@ -9,7 +9,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.lang.java.symboltable.BaseParserTest;
+import net.sourceforge.pmd.lang.java.BaseParserTest;
 
 public class CommentTest extends BaseParserTest {
     @Test

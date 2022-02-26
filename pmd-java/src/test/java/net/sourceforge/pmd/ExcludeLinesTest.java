@@ -9,9 +9,9 @@ import static net.sourceforge.pmd.lang.ast.test.TestUtilsKt.assertSuppressed;
 
 import org.junit.Test;
 
+import net.sourceforge.pmd.lang.java.BaseParserTest;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-import net.sourceforge.pmd.lang.java.symboltable.BaseParserTest;
 
 public class ExcludeLinesTest extends BaseParserTest {
 

@@ -11,10 +11,10 @@ import org.hamcrest.MatcherAssert;
 import org.junit.Assert;
 import org.junit.Test;
 
+import net.sourceforge.pmd.lang.java.BaseParserTest;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.InvocationNode;
-import net.sourceforge.pmd.lang.java.symboltable.BaseParserTest;
 
 public class InvocationMatcherTest extends BaseParserTest {
 
