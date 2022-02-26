@@ -12,13 +12,12 @@ import net.sourceforge.pmd.lang.ast.AstVisitor;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JjtreeNode;
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
-import net.sourceforge.pmd.lang.symboltable.ScopedNode;
 
 
 /**
  * Root interface for all Nodes of the Java AST.
  */
-public interface JavaNode extends JjtreeNode<JavaNode>, ScopedNode {
+public interface JavaNode extends JjtreeNode<JavaNode> {
 
     /**
      * Calls back the visitor's visit method corresponding to the runtime type of this Node.
