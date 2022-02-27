@@ -78,10 +78,10 @@ public class PMD {
     /**
      * The default suppress marker string.
      *
-     * @deprecated Use {@link PMDConfiguration#SUPPRESS_MARKER}
+     * @deprecated Use {@link PMDConfiguration#DEFAULT_SUPPRESS_MARKER}
      */
     @Deprecated
-    public static final String SUPPRESS_MARKER = PMDConfiguration.SUPPRESS_MARKER;
+    public static final String SUPPRESS_MARKER = PMDConfiguration.DEFAULT_SUPPRESS_MARKER;
 
     /**
      * Contains the configuration with which this PMD instance has been created.

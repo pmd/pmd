@@ -5,6 +5,7 @@
 package net.sourceforge.pmd;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -39,7 +40,7 @@ import net.sourceforge.pmd.util.ClasspathClassLoader;
  * {@link #getClassLoader()}</li>
  * <li>A means to configure a ClassLoader using a prepended classpath String,
  * instead of directly setting it programmatically.
- * {@link #prependClasspath(String)}</li>
+ * {@link #prependAuxClasspath(String)}</li>
  * <li>A LanguageVersionDiscoverer instance, which defaults to using the default
  * LanguageVersion of each Language. Means are provided to change the
  * LanguageVersion for each Language.
@@ -85,10 +86,10 @@ import net.sourceforge.pmd.util.ClasspathClassLoader;
 public class PMDConfiguration extends AbstractConfiguration {
 
     /** The default suppress marker string. */
-    public static final String SUPPRESS_MARKER = "NOPMD";
+    public static final String DEFAULT_SUPPRESS_MARKER = "NOPMD";
 
     // General behavior options
-    private String suppressMarker = SUPPRESS_MARKER;
+    private String suppressMarker = DEFAULT_SUPPRESS_MARKER;
     private int threads = Runtime.getRuntime().availableProcessors();
     private ClassLoader classLoader = getClass().getClassLoader();
     private LanguageVersionDiscoverer languageVersionDiscoverer = new LanguageVersionDiscoverer();
@@ -191,17 +192,44 @@ public class PMDConfiguration extends AbstractConfiguration {
      *
      * @param classpath
      *            The prepended classpath.
-     * @throws IllegalArgumentException
+     * @throws IOException
      *             if the given classpath is invalid (e.g. does not exist)
      * @see PMDConfiguration#setClassLoader(ClassLoader)
      * @see ClasspathClassLoader
+     *
+     * @deprecated Use {@link #prependAuxClasspath(String)}, which doesn't
+     * throw a checked {@link IOException}
      */
-    public void prependClasspath(String classpath) {
+    @Deprecated
+    public void prependClasspath(String classpath) throws IOException {
         if (classLoader == null) {
             classLoader = PMDConfiguration.class.getClassLoader();
         }
         if (classpath != null) {
             classLoader = new ClasspathClassLoader(classpath, classLoader);
+        }
+    }
+
+    /**
+     * Prepend the specified classpath like string to the current ClassLoader of
+     * the configuration. If no ClassLoader is currently configured, the
+     * ClassLoader used to load the {@link PMDConfiguration} class will be used
+     * as the parent ClassLoader of the created ClassLoader.
+     *
+     * <p>If the classpath String looks like a URL to a file (i.e. starts with
+     * <code>file://</code>) the file will be read with each line representing
+     * an entry on the classpath.</p>
+     *
+     * @param classpath The prepended classpath.
+     *
+     * @throws IllegalArgumentException if the given classpath is invalid (e.g. does not exist)
+     * @see PMDConfiguration#setClassLoader(ClassLoader)
+     */
+    public void prependAuxClasspath(String classpath) {
+        try {
+            prependClasspath(classpath);
+        } catch (IOException e) {
+            throw new IllegalArgumentException(e);
         }
     }
 

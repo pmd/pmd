@@ -232,7 +232,7 @@ public class PMDParameters {
         }
 
         try {
-            configuration.prependClasspath(this.getAuxclasspath());
+            configuration.prependAuxClasspath(this.getAuxclasspath());
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("Invalid auxiliary classpath: " + e.getMessage(), e);
         }

@@ -44,7 +44,7 @@ public class ClasspathClassLoader extends URLClassLoader {
         super(fileToURL(files), parent);
     }
 
-    public ClasspathClassLoader(String classpath, ClassLoader parent) {
+    public ClasspathClassLoader(String classpath, ClassLoader parent) throws IOException {
         super(initURLs(classpath), parent);
     }
 

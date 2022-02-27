@@ -44,10 +44,12 @@ All other members are now deprecated for removal.
 #### Deprecated API
 
 * Several members of {% jdoc core::PMD %} have been newly deprecated, including:
-  - `PMD#EOL`
-  - `PMD#SUPPRESS_MARKER`
-  - `PMD#processFiles`
-  - `PMD#getApplicableFiles`
+  - `PMD#EOL`: use `System#lineSeparator()`
+  - `PMD#SUPPRESS_MARKER`: use {% jdoc core::PMDConfiguration#DEFAULT_SUPPRESS_MARKER %}
+  - `PMD#processFiles`: use the [new programmatic API](#new-programmatic-api)
+  - `PMD#getApplicableFiles`: is internal
+* {% jdoc !!core::PMDConfiguration#prependClasspath(java.lang.String) %} is deprecated
+in favour of {% jdoc core::PMDConfiguration#prependAuxClasspath(java.lang.String) %}.
 
 ### External Contributions
 
