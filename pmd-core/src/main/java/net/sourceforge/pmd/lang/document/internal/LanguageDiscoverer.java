@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.util.document.internal;
+package net.sourceforge.pmd.lang.document.internal;
 
 import java.nio.file.Path;
 import java.util.Collections;

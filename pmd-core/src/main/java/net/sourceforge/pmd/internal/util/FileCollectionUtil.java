@@ -19,13 +19,13 @@ import org.apache.commons.io.IOUtils;
 
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.lang.document.FileCollector;
+import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.util.FileUtil;
 import net.sourceforge.pmd.util.database.DBMSMetadata;
 import net.sourceforge.pmd.util.database.DBURI;
 import net.sourceforge.pmd.util.database.SourceObject;
 import net.sourceforge.pmd.util.datasource.DataSource;
-import net.sourceforge.pmd.util.document.FileCollector;
-import net.sourceforge.pmd.util.document.TextFile;
 import net.sourceforge.pmd.util.log.PmdLogger;
 import net.sourceforge.pmd.util.log.PmdLogger.Level;
 import net.sourceforge.pmd.util.log.PmdLoggerScope;

@@ -33,8 +33,8 @@ import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
 import net.sourceforge.pmd.lang.Parser;
-import net.sourceforge.pmd.util.document.FileCollector;
-import net.sourceforge.pmd.util.document.TextFile;
+import net.sourceforge.pmd.lang.document.FileCollector;
+import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.util.log.SimplePmdLogger;
 
 /**
