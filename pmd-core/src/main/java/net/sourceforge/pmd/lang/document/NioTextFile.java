@@ -86,7 +86,7 @@ class NioTextFile implements TextFile {
             return false;
         }
         NioTextFile that = (NioTextFile) o;
-        return Objects.equals(pathId, that.pathId);
+        return Objects.equals(path, that.path);
     }
 
     @Override
