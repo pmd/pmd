@@ -42,9 +42,9 @@ if %_needjfxlib% EQU 1 (
         pause
         exit
     )
-    set classpath=%TOPDIR%\lib\*;%JAVAFX_HOME%\lib\*
+    set classpath=%TOPDIR%\conf;%TOPDIR%\lib\*;%JAVAFX_HOME%\lib\*
 ) else (
-    set classpath=%TOPDIR%\lib\*
+    set classpath=%TOPDIR%\conf;%TOPDIR%\lib\*
 )
 
 

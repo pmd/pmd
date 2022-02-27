@@ -9,11 +9,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Logger;
 
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.apex.ast.ApexParser;
@@ -37,7 +37,7 @@ import com.nawforce.common.diagnostics.Issue;
 public final class ApexMultifileAnalysis {
 
     // test only
-    static final Logger LOG = Logger.getLogger(ApexMultifileAnalysis.class.getName());
+    static final Logger LOG = LoggerFactory.getLogger(ApexMultifileAnalysis.class);
 
     /**
      * Instances of the apexlink index and data structures ({@link Org})
@@ -61,7 +61,7 @@ public final class ApexMultifileAnalysis {
     }
 
     private ApexMultifileAnalysis(String multiFileAnalysisDirectory) {
-        LOG.fine("MultiFile Analysis created for " + multiFileAnalysisDirectory);
+        LOG.debug("MultiFile Analysis created for {}", multiFileAnalysisDirectory);
         org = Org.newOrg();
         if (multiFileAnalysisDirectory != null && !multiFileAnalysisDirectory.isEmpty()) {
             // Load the package into the org, this can take some time!
@@ -117,9 +117,8 @@ public final class ApexMultifileAnalysis {
                 try {
                     return new ApexMultifileAnalysis(dir);
                 } catch (Exception e) {
-                    LOG.severe("Exception while initializing Apexlink (" + e.getMessage() + ")");
-                    LOG.severe(ExceptionUtils.getStackTrace(e));
-                    LOG.severe("PMD will not attempt to initialize Apexlink further, this can cause rules like UnusedMethod to be dysfunctional");
+                    LOG.error("Exception while initializing Apexlink ({})", e.getMessage(), e);
+                    LOG.error("PMD will not attempt to initialize Apexlink further, this can cause rules like UnusedMethod to be dysfunctional");
                     return FAILED_INSTANCE;
                 }
             });
@@ -132,7 +131,7 @@ public final class ApexMultifileAnalysis {
 
         @Override
         public void error(String message) {
-            LOG.severe(message);
+            LOG.error(message);
         }
 
         @Override
@@ -142,7 +141,7 @@ public final class ApexMultifileAnalysis {
 
         @Override
         public void debug(String message) {
-            LOG.fine(message);
+            LOG.debug(message);
         }
     }
 }

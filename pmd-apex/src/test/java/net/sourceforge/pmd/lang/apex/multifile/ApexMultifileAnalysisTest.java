@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.apex.multifile;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsStringIgnoringCase;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -17,17 +19,13 @@ import org.apache.commons.io.IOUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.contrib.java.lang.system.SystemErrRule;
 import org.junit.rules.TemporaryFolder;
 
-import net.sourceforge.pmd.test.util.JavaUtilLoggingRule;
-
-/**
- *
- */
 public class ApexMultifileAnalysisTest {
 
     @Rule
-    public final JavaUtilLoggingRule loggingRule = new JavaUtilLoggingRule(ApexMultifileAnalysis.LOG);
+    public final SystemErrRule systemErrRule = new SystemErrRule().muteForSuccessfulTests().enableLog();
 
     @Rule
     public final TemporaryFolder tempFolder = new TemporaryFolder();
@@ -38,7 +36,7 @@ public class ApexMultifileAnalysisTest {
 
         assertTrue(analysisInstance.isFailed());
         assertTrue(analysisInstance.getFileIssues("any file").isEmpty());
-        loggingRule.assertContainsIgnoringCase("Missing project file");
+        assertThat(systemErrRule.getLog(), containsStringIgnoringCase("Missing project file"));
     }
 
     @Test
@@ -49,7 +47,8 @@ public class ApexMultifileAnalysisTest {
 
         assertTrue(analysisInstance.isFailed());
         assertTrue(analysisInstance.getFileIssues("any file").isEmpty());
-        loggingRule.assertContainsIgnoringCase("error: 'path' is required for all 'packageDirectories' elements");
+        assertThat(systemErrRule.getLog(),
+                containsStringIgnoringCase("error: 'path' is required for all 'packageDirectories' elements"));
     }
 
     @Test
@@ -59,7 +58,7 @@ public class ApexMultifileAnalysisTest {
         ApexMultifileAnalysis analysisInstance = getAnalysisForTempFolder();
 
         assertFalse(analysisInstance.isFailed());
-        loggingRule.assertEmpty();
+        assertTrue(systemErrRule.getLog().isEmpty());
     }
 
     private @NonNull ApexMultifileAnalysis getAnalysisForTempFolder() {

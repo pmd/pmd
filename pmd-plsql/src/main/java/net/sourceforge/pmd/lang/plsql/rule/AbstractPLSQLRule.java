@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.plsql.rule;
 
-import java.util.logging.Logger;
 
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.LanguageRegistry;
@@ -23,8 +22,6 @@ import net.sourceforge.pmd.lang.plsql.ast.PLSQLParserVisitor;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
 
 public abstract class AbstractPLSQLRule extends AbstractRule implements PLSQLParserVisitor {
-    private static final Logger LOGGER = Logger.getLogger(AbstractPLSQLRule.class.getName());
-    private static final String CLASS_NAME = AbstractPLSQLRule.class.getName();
 
     public AbstractPLSQLRule() {
         super.setLanguage(LanguageRegistry.getLanguage(PLSQLLanguageModule.NAME));
@@ -97,7 +94,6 @@ public abstract class AbstractPLSQLRule extends AbstractRule implements PLSQLPar
      * Treat all Executable Code
      */
     public Object visit(ExecutableCode node, Object data) {
-        LOGGER.entering(CLASS_NAME, "visit(ExecutableCode)");
         return visitPlsqlNode(node, data);
     }
 }

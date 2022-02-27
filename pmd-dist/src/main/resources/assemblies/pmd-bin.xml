@@ -41,6 +41,16 @@
             <directoryMode>0755</directoryMode>
             <fileMode>0644</fileMode>
         </fileSet>
+
+        <fileSet>
+            <includes>
+                <include>simplelogger.properties</include>
+            </includes>
+            <directory>target/extra-resources/conf</directory>
+            <outputDirectory>conf</outputDirectory>
+            <directoryMode>0755</directoryMode>
+            <fileMode>0644</fileMode>
+        </fileSet>
     </fileSets>
 
     <dependencySets>

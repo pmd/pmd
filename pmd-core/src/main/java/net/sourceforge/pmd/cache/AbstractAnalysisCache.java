@@ -20,10 +20,10 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.apache.commons.io.FilenameUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.PMDVersion;
 import net.sourceforge.pmd.RuleSets;
@@ -45,7 +45,7 @@ import net.sourceforge.pmd.util.datasource.DataSource;
 @InternalApi
 public abstract class AbstractAnalysisCache implements AnalysisCache {
 
-    protected static final Logger LOG = Logger.getLogger(AbstractAnalysisCache.class.getName());
+    protected static final Logger LOG = LoggerFactory.getLogger(AbstractAnalysisCache.class);
     protected static final ClasspathFingerprinter FINGERPRINTER = new ClasspathFingerprinter();
     protected final String pmdVersion;
     protected final ConcurrentMap<String, AnalysisResult> fileResultsCache = new ConcurrentHashMap<>();
@@ -76,13 +76,11 @@ public abstract class AbstractAnalysisCache implements AnalysisCache {
             final boolean result = analysisResult != null
                     && analysisResult.getFileChecksum() == updatedResult.getFileChecksum();
 
-            if (LOG.isLoggable(Level.FINE)) {
-                if (result) {
-                    LOG.fine("Incremental Analysis cache HIT");
-                } else {
-                    LOG.fine("Incremental Analysis cache MISS - "
-                            + (analysisResult != null ? "file changed" : "no previous result found"));
-                }
+            if (result) {
+                LOG.debug("Incremental Analysis cache HIT");
+            } else {
+                LOG.debug("Incremental Analysis cache MISS - {}",
+                        analysisResult != null ? "file changed" : "no previous result found");
             }
 
             return result;
@@ -204,7 +202,7 @@ public abstract class AbstractAnalysisCache implements AnalysisCache {
                 }
             }
         } catch (final IOException e) {
-            LOG.log(Level.SEVERE, "Incremental analysis can't check execution classpath contents", e);
+            LOG.error("Incremental analysis can't check execution classpath contents", e);
             throw new RuntimeException(e);
         }
 

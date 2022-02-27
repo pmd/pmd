@@ -9,12 +9,13 @@ import java.net.URL;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.zip.Adler32;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class ClasspathFingerprinter {
-    private static final Logger LOG = Logger.getLogger(ClasspathFingerprinter.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(ClasspathFingerprinter.class);
 
     // TODO : With Java 9 we could use List.of()…
     private static final List<ClasspathEntryFingerprinter> FINGERPRINTERS = Collections.unmodifiableList(Arrays.asList(
@@ -39,7 +40,7 @@ public class ClasspathFingerprinter {
             }
         } catch (final IOException e) {
             // Can this even happen?
-            LOG.log(Level.SEVERE, "Incremental analysis can't fingerprint classpath contents", e);
+            LOG.error("Incremental analysis can't fingerprint classpath contents", e);
             throw new RuntimeException(e);
         }
 

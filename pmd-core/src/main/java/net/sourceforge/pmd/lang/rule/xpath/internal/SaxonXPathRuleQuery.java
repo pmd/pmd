@@ -10,10 +10,10 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.apache.commons.lang3.exception.ContextedRuntimeException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.RootNode;
@@ -54,7 +54,7 @@ public class SaxonXPathRuleQuery {
      */
     static final String AST_ROOT = "_AST_ROOT_";
 
-    private static final Logger LOG = Logger.getLogger(SaxonXPathRuleQuery.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(SaxonXPathRuleQuery.class);
 
     private static final NamePool NAME_POOL = new NamePool();
 
@@ -243,9 +243,7 @@ public class SaxonXPathRuleQuery {
             rulechainQueries.addAll(nodeNameToXPaths.keySet());
         } else {
             nodeNameToXPaths.clear();
-            if (LOG.isLoggable(Level.FINE)) {
-                LOG.log(Level.FINE, "Unable to use RuleChain for XPath: " + xpathExpr);
-            }
+            LOG.debug("Unable to use RuleChain for XPath: {}", xpathExpr);
         }
 
         // always add fallback expression

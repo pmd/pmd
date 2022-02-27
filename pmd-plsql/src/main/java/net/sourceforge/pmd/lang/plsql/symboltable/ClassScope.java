@@ -9,8 +9,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.plsql.ast.ASTName;
@@ -23,7 +24,7 @@ import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
 public class ClassScope extends AbstractScope {
-    private static final Logger LOGGER = Logger.getLogger(ClassScope.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(ClassScope.class);
 
     // FIXME - this breaks given sufficiently nested code
     private static ThreadLocal<Integer> anonymousInnerClassCounter = new ThreadLocal<Integer>() {
@@ -170,10 +171,10 @@ public class ClassScope extends AbstractScope {
         images.add(occurrence.getImage());
 
         if (null == occurrence.getImage()) {
-            if (LOGGER.isLoggable(Level.FINEST)) {
-                LOGGER.finest("occurrence==" + occurrence.toString() + "with Argument Count == "
-                        + occurrence.getArgumentCount() + " for className=" + className);
-            }
+            LOG.trace("occurrence=={} with Argument Count == {} for className={}",
+                    occurrence.toString(),
+                    occurrence.getArgumentCount(),
+                    className);
         }
 
         if (occurrence.getImage().startsWith(className)) {
