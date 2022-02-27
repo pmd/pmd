@@ -1,6 +1,14 @@
 
 $('#mysidebar').height($(".nav").height());
 
+// Detect small devices and move the TOC in line
+function moveToc(){
+    if(window.innerWidth < 1350){
+        $( "#toc" ).detach().appendTo("#inline-toc").removeClass("affix");
+    } else {
+        $( "#toc" ).detach().appendTo(".toc-col").addClass("affix");
+    }
+}
 
 $( document ).ready(function() {
 
@@ -8,7 +16,7 @@ $( document ).ready(function() {
     // position as your scroll. if you have a lot of nav items, this height may not work for you.
     var h = $(window).height();
     //console.log (h);
-    if (h > 800) {
+    if (h > 600) {
         $( "#mysidebar" ).attr("class", "nav affix");
     }
     // activate tooltips. although this is a bootstrap js function, it must be activated this way in your theme.
@@ -20,6 +28,8 @@ $( document ).ready(function() {
      * AnchorJS
      */
     anchors.add('h2,h3,h4,h5');
+    // Check if TOC needs to be moved on page load
+    moveToc();
 
 });
 
@@ -53,3 +63,6 @@ $(function() {
         }
     });
 });
+
+// Check if TOC needs to be moved on window resizing
+$(window).resize(function () {moveToc();});

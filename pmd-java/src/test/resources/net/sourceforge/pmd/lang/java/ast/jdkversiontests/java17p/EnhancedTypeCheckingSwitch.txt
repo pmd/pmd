@@ -15,7 +15,7 @@
    |        |     +- Block[@containsComment = false]
    |        |        +- BlockStatement[@Allocation = false]
    |        |           +- Statement[]
-   |        |              +- SwitchStatement[@DefaultCase = false, @ExhaustiveEnumSwitch = false]
+   |        |              +- SwitchStatement[@DefaultCase = true, @ExhaustiveEnumSwitch = false, @FallthroughSwitch = false]
    |        |                 +- Expression[@StandAlonePrimitive = false]
    |        |                 |  +- PrimaryExpression[]
    |        |                 |     +- PrimaryPrefix[@SuperModifier = false, @ThisModifier = false]
