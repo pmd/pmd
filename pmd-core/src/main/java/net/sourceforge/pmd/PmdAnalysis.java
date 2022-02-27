@@ -49,6 +49,7 @@ import net.sourceforge.pmd.util.log.SimplePmdLogger;
  *   config.setReportFormat("xml");
  *
  *   try (PmdAnalysis pmd = PmdAnalysis.create(config)) {
+ *     // here you can add more rulesets or files
  *     pmd.performAnalysis();
  *   }
  * }</pre>
@@ -128,7 +129,8 @@ public final class PmdAnalysis implements AutoCloseable {
     }
 
     /**
-     * Add a new renderer. The given renderer must already be started.
+     * Add a new renderer. The given renderer must not already be started,
+     * it will be started by {@link #performAnalysis()}.
      *
      * @throws NullPointerException If the parameter is null
      */

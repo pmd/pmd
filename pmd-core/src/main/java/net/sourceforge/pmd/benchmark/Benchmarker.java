@@ -4,15 +4,17 @@
 
 package net.sourceforge.pmd.benchmark;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.StringReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.logging.Logger;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -29,13 +31,12 @@ import net.sourceforge.pmd.RulesetsFactoryUtils;
 import net.sourceforge.pmd.SourceCodeProcessor;
 import net.sourceforge.pmd.lang.AbstractParser;
 import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.lang.LanguageFilenameFilter;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
-import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
 import net.sourceforge.pmd.lang.Parser;
-import net.sourceforge.pmd.lang.document.FileCollector;
-import net.sourceforge.pmd.lang.document.TextFile;
-import net.sourceforge.pmd.util.log.SimplePmdLogger;
+import net.sourceforge.pmd.util.FileUtil;
+import net.sourceforge.pmd.util.datasource.DataSource;
 
 /**
  * @deprecated use {@link TimeTracker} instead
@@ -43,7 +44,6 @@ import net.sourceforge.pmd.util.log.SimplePmdLogger;
 @Deprecated
 public final class Benchmarker {
 
-    private static final Logger LOGGER = Logger.getLogger(Benchmarker.class.getName());
     private static final Map<String, BenchmarkResult> BENCHMARKS_BY_NAME = new HashMap<>();
 
     private Benchmarker() { }
@@ -96,42 +96,40 @@ public final class Benchmarker {
         String targetjdk = findOptionalStringValue(args, "--targetjdk", "1.4");
         Language language = LanguageRegistry.getLanguage("Java");
         LanguageVersion languageVersion = language.getVersion(targetjdk);
-        LanguageVersionDiscoverer discoverer = new LanguageVersionDiscoverer();
-        if (languageVersion != null) {
-            discoverer.setDefaultLanguageVersion(languageVersion);
+        if (languageVersion == null) {
+            languageVersion = language.getDefaultVersion();
         }
 
         String srcDir = findOptionalStringValue(args, "--source-directory", "/usr/local/java/src/java/lang/");
+        List<DataSource> dataSources = FileUtil.collectFiles(srcDir, new LanguageFilenameFilter(language));
 
-        try (FileCollector collector = FileCollector.newCollector(discoverer, new SimplePmdLogger(LOGGER))) {
-            boolean debug = findBooleanSwitch(args, "--debug");
-            boolean parseOnly = findBooleanSwitch(args, "--parse-only");
+        boolean debug = findBooleanSwitch(args, "--debug");
+        boolean parseOnly = findBooleanSwitch(args, "--parse-only");
 
+        if (debug) {
+            System.out.println("Using " + language.getName() + " " + languageVersion.getVersion());
+        }
+        if (parseOnly) {
+            Parser parser = PMD.parserFor(languageVersion, null);
+            parseStress(parser, dataSources, debug);
+        } else {
+            String ruleset = findOptionalStringValue(args, "--ruleset", "");
             if (debug) {
-                System.out.println("Using " + language.getName() + " " + languageVersion.getVersion());
+                System.out.println("Checking directory " + srcDir);
             }
-            if (parseOnly) {
-                Parser parser = PMD.parserFor(languageVersion, null);
-                parseStress(parser, collector, debug);
+            Set<RuleDuration> results = new TreeSet<>();
+            RuleSetFactory factory = RulesetsFactoryUtils.defaultFactory();
+            if (StringUtils.isNotBlank(ruleset)) {
+                stress(languageVersion, factory.createRuleSet(ruleset), dataSources, results, debug);
             } else {
-                String ruleset = findOptionalStringValue(args, "--ruleset", "");
-                if (debug) {
-                    System.out.println("Checking directory " + srcDir);
+                Iterator<RuleSet> i = factory.getRegisteredRuleSets();
+                while (i.hasNext()) {
+                    stress(languageVersion, i.next(), dataSources, results, debug);
                 }
-                Set<RuleDuration> results = new TreeSet<>();
-                RuleSetFactory factory = RulesetsFactoryUtils.defaultFactory();
-                if (StringUtils.isNotBlank(ruleset)) {
-                    stress(languageVersion, factory.createRuleSet(ruleset), collector, results, debug);
-                } else {
-                    Iterator<RuleSet> i = factory.getRegisteredRuleSets();
-                    while (i.hasNext()) {
-                        stress(languageVersion, i.next(), collector, results, debug);
-                    }
-                }
-
-                TextReport report = new TextReport();
-                report.generate(results, System.err);
             }
+
+            TextReport report = new TextReport();
+            report.generate(results, System.err);
         }
     }
 
@@ -144,13 +142,14 @@ public final class Benchmarker {
      *            boolean
      * @throws IOException
      */
-    private static void parseStress(Parser parser, FileCollector dataSources, boolean debug) throws IOException {
+    private static void parseStress(Parser parser, List<DataSource> dataSources, boolean debug) throws IOException {
 
         long start = System.currentTimeMillis();
 
-        for (TextFile ds : dataSources.getCollectedFiles()) {
-            String contents = ds.readContents();
-            AbstractParser.doParse(parser, ds.getDisplayName(), new StringReader(contents));
+        for (DataSource ds : dataSources) {
+            try (DataSource dataSource = ds; InputStreamReader reader = new InputStreamReader(dataSource.getInputStream())) {
+                AbstractParser.doParse(parser, dataSource.getNiceFileName(false, null), reader);
+            }
         }
 
         if (debug) {
@@ -165,7 +164,7 @@ public final class Benchmarker {
      *            LanguageVersion
      * @param ruleSet
      *            RuleSet
-     * @param files
+     * @param dataSources
      *            List<DataSource>
      * @param results
      *            Set<RuleDuration>
@@ -174,7 +173,7 @@ public final class Benchmarker {
      * @throws PMDException
      * @throws IOException
      */
-    private static void stress(LanguageVersion languageVersion, RuleSet ruleSet, FileCollector files,
+    private static void stress(LanguageVersion languageVersion, RuleSet ruleSet, List<DataSource> dataSources,
             Set<RuleDuration> results, boolean debug) throws PMDException, IOException {
 
         for (Rule rule: ruleSet.getRules()) {
@@ -190,10 +189,11 @@ public final class Benchmarker {
 
             RuleContext ctx = new RuleContext();
             long start = System.currentTimeMillis();
-            for (TextFile ds : files.getCollectedFiles()) {
-                String source = ds.readContents();
-                ctx.setSourceCodeFile(new File(ds.getPathId()));
-                new SourceCodeProcessor(config).processSourceCode(new StringReader(source), ruleSets, ctx);
+            for (DataSource ds : dataSources) {
+                try (DataSource dataSource = ds; InputStream stream = new BufferedInputStream(dataSource.getInputStream())) {
+                    ctx.setSourceCodeFile(new File(dataSource.getNiceFileName(false, null)));
+                    new SourceCodeProcessor(config).processSourceCode(stream, ruleSets, ctx);
+                }
             }
             long end = System.currentTimeMillis();
             long elapsed = end - start;

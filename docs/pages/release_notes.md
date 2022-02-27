@@ -36,6 +36,7 @@ try (PmdAnalysis pmd = PmdAnalysis.create(config)) {
 
 The `PMD` class still supports methods related to CLI execution: `runPmd` and `main`.
 All other members are now deprecated for removal.
+The CLI itself remains compatible, if you run PMD via command-line, no action is required on your part.
 
 ### Fixed Issues
 

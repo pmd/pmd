@@ -56,7 +56,7 @@ import net.sourceforge.pmd.util.log.SimplePmdLogger;
  * Entry point for PMD's CLI. Use {@link #runPmd(PMDConfiguration)}
  * or {@link #runPmd(String...)} to mimic a CLI run. This class is
  * not a supported programmatic API anymore, use {@link PmdAnalysis}
- * for fine control over the PMD execution.
+ * for fine control over the PMD integration and execution.
  *
  * <p><strong>Warning:</strong> This class is not intended to be instantiated or subclassed. It will
  * be made final in PMD7.
