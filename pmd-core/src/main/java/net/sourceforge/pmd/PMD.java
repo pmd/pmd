@@ -5,7 +5,6 @@
 package net.sourceforge.pmd;
 
 import java.io.File;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
@@ -568,10 +567,4 @@ public class PMD {
 
     }
 
-    private static class AcceptAllFilenames implements FilenameFilter {
-        @Override
-        public boolean accept(File dir, String name) {
-            return true;
-        }
-    }
 }

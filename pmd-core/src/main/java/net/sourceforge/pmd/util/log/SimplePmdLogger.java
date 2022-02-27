@@ -7,11 +7,14 @@ package net.sourceforge.pmd.util.log;
 import java.text.MessageFormat;
 import java.util.logging.Logger;
 
+import net.sourceforge.pmd.annotation.InternalApi;
+
 /**
  * A {@link Logger} (java.util) based logger impl.
  *
  * @author Clément Fournier
  */
+@InternalApi
 public class SimplePmdLogger extends PmdLoggerBase implements PmdLogger {
 
     private final Logger backend;

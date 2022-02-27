@@ -4,12 +4,15 @@
 
 package net.sourceforge.pmd.util.log;
 
+import net.sourceforge.pmd.annotation.InternalApi;
+
 /**
  * A logger that prefixes a scope name to log messages. Also keeps a
  * separate error count.
  *
  * @author Clément Fournier
  */
+@InternalApi
 public final class PmdLoggerScope extends PmdLoggerBase {
 
     private final PmdLogger backend;
