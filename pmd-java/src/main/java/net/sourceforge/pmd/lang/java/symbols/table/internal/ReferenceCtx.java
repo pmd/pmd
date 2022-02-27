@@ -46,6 +46,10 @@ public final class ReferenceCtx {
         this.enclosingClass = enclosingClass;
     }
 
+    public void reportCannotResolveSymbol(JavaNode location, String simpleName) {
+        processor.reportCannotResolveSymbol(location, simpleName);
+    }
+
     public static ReferenceCtx root(JavaAstProcessor processor, ASTCompilationUnit root) {
         return new ReferenceCtx(processor, root.getPackageName(), null);
     }

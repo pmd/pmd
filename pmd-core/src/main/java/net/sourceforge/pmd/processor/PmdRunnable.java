@@ -6,6 +6,7 @@ package net.sourceforge.pmd.processor;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.logging.Logger;
 
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.Report;
@@ -31,6 +32,7 @@ import net.sourceforge.pmd.util.datasource.DataSource;
  */
 abstract class PmdRunnable implements Runnable {
 
+    private static final Logger LOGGER = Logger.getLogger(PmdRunnable.class.getName());
     private final DataSource dataSource;
     private final File file;
     private final GlobalAnalysisListener globalListener;
@@ -126,7 +128,7 @@ abstract class PmdRunnable implements Runnable {
             languageVersion,
             filename,
             sourceCode,
-            SemanticErrorReporter.noop() // TODO
+            SemanticErrorReporter.reportToLogger(LOGGER)
         );
 
 

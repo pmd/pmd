@@ -4,9 +4,15 @@
 
 package net.sourceforge.pmd.lang.java.internal;
 
+import static net.sourceforge.pmd.lang.java.symbols.table.internal.JavaSemanticErrors.CANNOT_RESOLVE_MEMBER;
+import static net.sourceforge.pmd.lang.java.symbols.table.internal.JavaSemanticErrors.CANNOT_RESOLVE_SYMBOL;
+
 import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.logging.Level;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.lang.LanguageVersion;
@@ -14,12 +20,14 @@ import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.ast.SemanticErrorReporter;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
+import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolResolver;
 import net.sourceforge.pmd.lang.java.symbols.internal.UnresolvedClassStore;
 import net.sourceforge.pmd.lang.java.symbols.internal.ast.SymbolResolutionPass;
 import net.sourceforge.pmd.lang.java.symbols.table.internal.ReferenceCtx;
+import net.sourceforge.pmd.lang.java.symbols.table.internal.ReferenceCtx.Fallback;
 import net.sourceforge.pmd.lang.java.symbols.table.internal.SymbolTableResolver;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
 import net.sourceforge.pmd.lang.java.types.internal.infer.TypeInferenceLogger;
@@ -92,10 +100,31 @@ public final class JavaAstProcessor {
     }
 
 
-    public JClassSymbol findSymbolCannotFail(String name) {
-        JClassSymbol found = getSymResolver().resolveClassFromCanonicalName(name);
-        return found == null ? makeUnresolvedReference(name, 0)
-                             : found;
+    /**
+     * Find a symbol from the auxclasspath. If not found, will create
+     * an unresolved symbol.
+     */
+    public @NonNull JClassSymbol findSymbolCannotFail(String name) {
+        return findSymbolCannotFail(null, name);
+    }
+
+    /**
+     * Find a symbol from the auxclasspath. If not found, will create
+     * an unresolved symbol, and may report the failure if the location is non-null.
+     */
+    public @NonNull JClassSymbol findSymbolCannotFail(@Nullable JavaNode location, String canoName) {
+        JClassSymbol found = getSymResolver().resolveClassFromCanonicalName(canoName);
+        if (found == null) {
+            if (location != null) {
+                reportCannotResolveSymbol(location, canoName);
+            }
+            return makeUnresolvedReference(canoName, 0);
+        }
+        return found;
+    }
+
+    public void reportCannotResolveSymbol(@NonNull JavaNode location, String canoName) {
+        getLogger().warning(location, CANNOT_RESOLVE_SYMBOL, canoName);
     }
 
     public JClassSymbol makeUnresolvedReference(String canonicalName, int typeArity) {

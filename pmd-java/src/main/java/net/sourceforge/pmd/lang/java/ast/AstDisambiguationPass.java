@@ -6,7 +6,6 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 import static net.sourceforge.pmd.lang.java.symbols.table.internal.JavaSemanticErrors.CANNOT_RESOLVE_AMBIGUOUS_NAME;
-import static net.sourceforge.pmd.lang.java.symbols.table.internal.JavaSemanticErrors.CANNOT_RESOLVE_SYMBOL;
 
 import java.util.Iterator;
 
@@ -196,7 +195,7 @@ final class AstDisambiguationPass {
             final JTypeMirror resolved = ctx.resolveSingleTypeName(type.getSymbolTable(), type.getSimpleName(), type);
             JTypeDeclSymbol sym;
             if (resolved == null) {
-                ctx.getLogger().warning(type, CANNOT_RESOLVE_SYMBOL, type.getSimpleName());
+                ctx.reportCannotResolveSymbol(type, type.getSimpleName());
                 sym = setArity(type, ctx, type.getSimpleName());
             } else {
                 sym = resolved.getSymbol();
