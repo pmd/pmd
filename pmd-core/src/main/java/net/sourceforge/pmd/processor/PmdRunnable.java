@@ -128,7 +128,8 @@ abstract class PmdRunnable implements Runnable {
             languageVersion,
             filename,
             sourceCode,
-            SemanticErrorReporter.reportToLogger(LOGGER)
+            SemanticErrorReporter.reportToLogger(LOGGER),
+            configuration.getClassLoader()
         );
 
 
