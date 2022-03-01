@@ -7,8 +7,9 @@ package net.sourceforge.pmd.lang.plsql.symboltable;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.lang.plsql.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.plsql.ast.PLSQLParserVisitorAdapter;
@@ -16,7 +17,7 @@ import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.Scope;
 
 public class OccurrenceFinder extends PLSQLParserVisitorAdapter {
-    private static final Logger LOGGER = Logger.getLogger(OccurrenceFinder.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(OccurrenceFinder.class);
 
     @Override
     public Object visit(ASTPrimaryExpression node, Object data) {
@@ -47,10 +48,8 @@ public class OccurrenceFinder extends PLSQLParserVisitorAdapter {
                     // there
                     Scope scope = decl.getScope();
                     if (null == scope) {
-                        if (LOGGER.isLoggable(Level.FINEST)) {
-                            LOGGER.finest("NameOccurrence has no Scope:" + decl.getClass().getCanonicalName() + "=>"
-                                    + decl.getImage());
-                        }
+                        LOG.trace("NameOccurrence has no Scope:{}=>{}",
+                                decl.getClass().getCanonicalName(), decl.getImage());
                         break;
                     }
                     search.execute(scope);

@@ -7,8 +7,9 @@ package net.sourceforge.pmd.lang.java.internal;
 import static net.sourceforge.pmd.lang.java.symbols.table.internal.JavaSemanticErrors.CANNOT_RESOLVE_SYMBOL;
 
 import java.util.IdentityHashMap;
+import java.util.Locale;
 import java.util.Map;
-import java.util.logging.Level;
+import org.slf4j.event.Level;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -49,9 +50,9 @@ public final class JavaAstProcessor {
     static {
         Level level;
         try {
-            level = Level.parse(System.getenv("PMD_DEBUG_LEVEL"));
+            level = Level.valueOf(System.getenv("PMD_DEBUG_LEVEL").toLowerCase(Locale.ROOT));
         } catch (IllegalArgumentException | NullPointerException ignored) {
-            level = Level.OFF;
+            level = null;
         }
         INFERENCE_LOG_LEVEL = level;
     }
@@ -86,11 +87,10 @@ public final class JavaAstProcessor {
         return unresolvedTypes;
     }
 
-    @SuppressWarnings("PMD.LiteralsFirstInComparisons") // see #3315
     static TypeInferenceLogger defaultTypeInfLogger() {
-        if (Level.FINEST.equals(INFERENCE_LOG_LEVEL)) {
+        if (INFERENCE_LOG_LEVEL == Level.TRACE) {
             return new VerboseLogger(System.err);
-        } else if (Level.FINE.equals(INFERENCE_LOG_LEVEL)) {
+        } else if (INFERENCE_LOG_LEVEL == Level.DEBUG) {
             return new SimpleLogger(System.err);
         } else {
             return TypeInferenceLogger.noop();

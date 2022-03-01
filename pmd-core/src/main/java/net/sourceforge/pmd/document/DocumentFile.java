@@ -18,10 +18,10 @@ import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Implementation that handles a Document as a file in the filesystem and receives operations in a sorted manner
@@ -30,7 +30,7 @@ import org.apache.commons.io.IOUtils;
  */
 public class DocumentFile implements Document, Closeable {
 
-    private static final Logger LOG = Logger.getLogger(DocumentFile.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(DocumentFile.class);
 
     private List<Integer> lineToOffset = new ArrayList<>();
 
@@ -80,7 +80,7 @@ public class DocumentFile implements Document, Closeable {
         try {
             tryToInsertIntoFile(beginLine, beginColumn, textToInsert);
         } catch (final IOException e) {
-            LOG.log(Level.WARNING, "An exception occurred when inserting into file " + filePath);
+            LOG.warn("An exception occurred when inserting into file {}", filePath);
         }
     }
 
@@ -114,7 +114,7 @@ public class DocumentFile implements Document, Closeable {
         try {
             tryToReplaceInFile(mapToRegionByOffset(regionByLine), textToReplace);
         } catch (final IOException e) {
-            LOG.log(Level.WARNING, "An exception occurred when replacing in file " + filePath.toAbsolutePath());
+            LOG.warn("An exception occurred when replacing in file {}", filePath.toAbsolutePath());
         }
     }
 
@@ -137,7 +137,7 @@ public class DocumentFile implements Document, Closeable {
         try {
             tryToDeleteFromFile(mapToRegionByOffset(regionByOffset));
         } catch (final IOException e) {
-            LOG.log(Level.WARNING, "An exception occurred when deleting from file " + filePath.toAbsolutePath());
+            LOG.warn("An exception occurred when deleting from file {}", filePath.toAbsolutePath());
         }
     }
 

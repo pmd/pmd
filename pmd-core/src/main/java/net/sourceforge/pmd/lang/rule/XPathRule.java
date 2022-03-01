@@ -9,12 +9,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ContextedRuntimeException;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
@@ -33,7 +33,7 @@ import net.sourceforge.pmd.properties.PropertyFactory;
  */
 public final class XPathRule extends AbstractRule {
 
-    private static final Logger LOG = Logger.getLogger(XPathRule.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(XPathRule.class);
 
     // TODO move to XPath subpackage
 
@@ -177,12 +177,11 @@ public final class XPathRule extends AbstractRule {
 
 
     private void logXPathRuleChainUsage(boolean usesRuleChain) {
-        if (LOG.isLoggable(Level.FINE)) {
-            String message = (usesRuleChain ? "Using " : "no ")
-                + "rule chain for XPath " + getProperty(XPathRule.VERSION_DESCRIPTOR)
-                + " rule: " + getName() + " (" + getRuleSetName() + ")";
-            LOG.fine(message);
-        }
+        LOG.debug("{} rule chain for XPath {} rule: {} ({})",
+                usesRuleChain ? "Using" : "no",
+                getProperty(XPathRule.VERSION_DESCRIPTOR),
+                getName(),
+                getRuleSetName());
     }
 
 

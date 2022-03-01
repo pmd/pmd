@@ -9,9 +9,14 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.util.regex.Pattern;
 
+import org.junit.AfterClass;
 import org.junit.Assert;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.contrib.java.lang.system.RestoreSystemProperties;
+import org.junit.rules.TestRule;
 
+import net.sourceforge.pmd.internal.Slf4jSimpleConfiguration;
 import net.sourceforge.pmd.util.FileUtil;
 
 /**
@@ -19,6 +24,17 @@ import net.sourceforge.pmd.util.FileUtil;
  *
  */
 public class CLITest extends BaseCLITest {
+
+    // restoring system properties: -debug might change logging properties
+    // See Slf4jSimpleConfigurationForAnt and resetLogging
+    @Rule
+    public final TestRule restoreSystemProperties = new RestoreSystemProperties();
+
+    @AfterClass
+    public static void resetLogging() {
+        Slf4jSimpleConfiguration.reconfigureDefaultLogLevel(null);
+    }
+
     @Test
     public void minimalArgs() {
         String[] args = { "-d", SOURCE_FOLDER, "-f", "text", "-R", "category/java/bestpractices.xml,category/java/design.xml", };

@@ -6,7 +6,9 @@ package net.sourceforge.pmd.processor;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.Report;
@@ -32,7 +34,7 @@ import net.sourceforge.pmd.util.datasource.DataSource;
  */
 abstract class PmdRunnable implements Runnable {
 
-    private static final Logger LOGGER = Logger.getLogger(PmdRunnable.class.getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(PmdRunnable.class);
     private final DataSource dataSource;
     private final File file;
     private final GlobalAnalysisListener globalListener;
