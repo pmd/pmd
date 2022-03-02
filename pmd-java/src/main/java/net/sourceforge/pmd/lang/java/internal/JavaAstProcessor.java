@@ -9,10 +9,10 @@ import static net.sourceforge.pmd.lang.java.symbols.table.internal.JavaSemanticE
 import java.util.IdentityHashMap;
 import java.util.Locale;
 import java.util.Map;
-import org.slf4j.event.Level;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.slf4j.event.Level;
 
 import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.lang.LanguageVersion;
