@@ -16,7 +16,6 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 import net.sourceforge.pmd.Report.GlobalReportBuilderListener;
-import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.benchmark.TimedOperation;
 import net.sourceforge.pmd.benchmark.TimedOperationCategory;
@@ -125,11 +124,6 @@ public final class PmdAnalysis implements AutoCloseable {
         return builder;
     }
 
-    @InternalApi
-    static PmdAnalysis createWithoutCollectingFiles(PMDConfiguration config) {
-        return new PmdAnalysis(config);
-    }
-
     /**
      * Returns the file collector for the analysed sources.
      */
@@ -199,9 +193,9 @@ public final class PmdAnalysis implements AutoCloseable {
             files.filterLanguages(getApplicableLanguages());
             List<DataSource> dataSources = FileCollectionUtil.collectorToDataSource(files);
 
-            GlobalAnalysisListener composedListener;
+            GlobalAnalysisListener listener;
             try {
-                composedListener = GlobalAnalysisListener.tee(listOf(
+                listener = GlobalAnalysisListener.tee(listOf(
                     createComposedRendererListener(renderers),
                     GlobalAnalysisListener.tee(extraListeners),
                     configuration.getAnalysisCache()
@@ -212,12 +206,21 @@ public final class PmdAnalysis implements AutoCloseable {
             }
 
             try (TimedOperation ignored = TimeTracker.startOperation(TimedOperationCategory.FILE_PROCESSING)) {
+                // todo Just like we throw for invalid properties, "broken rules"
+                // shouldn't be a "config error". This is the only instance of
+                // config errors...
+
+                RuleSets ruleSets = new RuleSets(this.ruleSets);
+                for (final Rule rule : removeBrokenRules(ruleSets)) {
+                    listener.onConfigError(new Report.ConfigurationError(rule, rule.dysfunctionReason()));
+                }
+
                 PMD.encourageToUseIncrementalAnalysis(configuration);
-                AbstractPMDProcessor.newFileProcessor(configuration).processFiles(new RuleSets(ruleSets), dataSources, composedListener);
+                AbstractPMDProcessor.newFileProcessor(configuration).processFiles(ruleSets, dataSources, listener);
                 configuration.getAnalysisCache().persist();
             } finally {
                 try {
-                    composedListener.close();
+                    listener.close();
                 } catch (Exception e) {
                     logger.errorEx("Exception while initializing analysis listeners", e);
                     throw new RuntimeException("Exception while initializing analysis listeners", e);
@@ -262,6 +265,22 @@ public final class PmdAnalysis implements AutoCloseable {
             }
         }
         return languages;
+    }
+
+    /**
+     * Remove and return the misconfigured rules from the rulesets and log them
+     * for good measure.
+     */
+    private Set<Rule> removeBrokenRules(final RuleSets ruleSets) {
+        final Set<Rule> brokenRules = new HashSet<>();
+        ruleSets.removeDysfunctionalRules(brokenRules);
+
+        for (final Rule rule : brokenRules) {
+            logger.warning("Removed misconfigured rule: {} cause: {}",
+                           rule.getName(), rule.dysfunctionReason());
+        }
+
+        return brokenRules;
     }
 
 

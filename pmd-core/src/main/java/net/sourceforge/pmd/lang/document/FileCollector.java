@@ -108,7 +108,7 @@ public final class FileCollector implements AutoCloseable {
             return;
         }
         closed = true;
-        IOException exception = IOUtil.closeAll(resourcesToClose);
+        Exception exception = IOUtil.closeAll(resourcesToClose);
         if (exception != null) {
             log.errorEx("Error while closing resources", exception);
         }

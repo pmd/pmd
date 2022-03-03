@@ -7,15 +7,8 @@ package net.sourceforge.pmd;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.net.URISyntaxException;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map.Entry;
-import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,15 +25,6 @@ import net.sourceforge.pmd.cli.PMDCommandLineInterface;
 import net.sourceforge.pmd.cli.PmdParametersParseResult;
 import net.sourceforge.pmd.cli.internal.CliMessages;
 import net.sourceforge.pmd.internal.Slf4jSimpleConfiguration;
-import net.sourceforge.pmd.internal.util.FileCollectionUtil;
-import net.sourceforge.pmd.lang.Language;
-import net.sourceforge.pmd.lang.document.FileCollector;
-import net.sourceforge.pmd.util.database.DBMSMetadata;
-import net.sourceforge.pmd.util.database.DBURI;
-import net.sourceforge.pmd.util.database.SourceObject;
-import net.sourceforge.pmd.util.datasource.DataSource;
-import net.sourceforge.pmd.util.datasource.ReaderDataSource;
-import net.sourceforge.pmd.util.log.SimplePmdLogger;
 
 /**
  * Entry point for PMD's CLI. Use {@link #runPmd(PMDConfiguration)}
@@ -76,51 +60,6 @@ public final class PMD {
     private PMD() {
     }
 
-
-    /**
-     * Parses the given string as a database uri and returns a list of
-     * datasources.
-     *
-     * @param uriString the URI to parse
-     *
-     * @return list of data sources
-     *
-     * @throws IOException if the URI couldn't be parsed
-     * @see DBURI
-     *
-     * @deprecated Will be hidden as part of the parsing of {@link PMD#getApplicableFiles(PMDConfiguration, Set)}
-     */
-    @Deprecated
-    public static List<DataSource> getURIDataSources(String uriString) throws IOException {
-        List<DataSource> dataSources = new ArrayList<>();
-
-        try {
-            DBURI dbUri = new DBURI(uriString);
-            DBMSMetadata dbmsMetadata = new DBMSMetadata(dbUri);
-            log.debug("DBMSMetadata retrieved");
-            List<SourceObject> sourceObjectList = dbmsMetadata.getSourceObjectList();
-            log.debug("Located {} database source objects", sourceObjectList.size());
-            for (SourceObject sourceObject : sourceObjectList) {
-                String falseFilePath = sourceObject.getPseudoFileName();
-                log.trace("Adding database source object {}", falseFilePath);
-
-                try {
-                    dataSources.add(new ReaderDataSource(dbmsMetadata.getSourceCode(sourceObject), falseFilePath));
-                } catch (SQLException ex) {
-                    log.warn("Cannot get SourceCode for {} - skipping ...", falseFilePath, ex);
-                }
-            }
-        } catch (URISyntaxException e) {
-            throw new IOException("Cannot get DataSources from DBURI - \"" + uriString + "\"", e);
-        } catch (SQLException e) {
-            throw new IOException("Cannot get DataSources from DBURI, couldn't access the database - \"" + uriString + "\"", e);
-        } catch (ClassNotFoundException e) {
-            throw new IOException("Cannot get DataSources from DBURI, probably missing database jdbc driver - \"" + uriString + "\"", e);
-        } catch (Exception e) {
-            throw new IOException("Encountered unexpected problem with URI \"" + uriString + "\"", e);
-        }
-        return dataSources;
-    }
 
     /**
      * This method is the main entry point for command line usage.
@@ -189,46 +128,6 @@ public final class PMD {
     }
 
 
-    /**
-     * Remove and return the misconfigured rules from the rulesets and log them
-     * for good measure.
-     *
-     * @param ruleSets RuleSets to prune of broken rules.
-     *
-     * @return Set<Rule>
-     */
-    private static Set<Rule> removeBrokenRules(final RuleSets ruleSets) {
-        final Set<Rule> brokenRules = new HashSet<>();
-        ruleSets.removeDysfunctionalRules(brokenRules);
-
-        for (final Rule rule : brokenRules) {
-            log.warn("Removed misconfigured rule: {} cause: {}", rule.getName(), rule.dysfunctionReason());
-        }
-
-        return brokenRules;
-    }
-
-
-    private static List<DataSource> sortFiles(final PMDConfiguration configuration, Collection<? extends DataSource> files) {
-        // the input collection may be unmodifiable
-        List<DataSource> result = new ArrayList<>(files);
-
-        if (configuration.isStressTest()) {
-            // randomize processing order
-            Collections.shuffle(result);
-        } else {
-            final boolean useShortNames = configuration.isReportShortNames();
-            final String inputPaths = configuration.getInputPaths();
-            result.sort((left, right) -> {
-                String leftString = left.getNiceFileName(useShortNames, inputPaths);
-                String rightString = right.getNiceFileName(useShortNames, inputPaths);
-                return leftString.compareTo(rightString);
-            });
-        }
-
-        return result;
-    }
-
     static void encourageToUseIncrementalAnalysis(final PMDConfiguration configuration) {
         if (!configuration.isIgnoreIncrementalAnalysis()
             && configuration.getAnalysisCache() instanceof NoopAnalysisCache
@@ -237,28 +136,6 @@ public final class PMD {
                 PMDVersion.isUnknown() || PMDVersion.isSnapshot() ? "latest" : "pmd-" + PMDVersion.VERSION;
             log.warn("This analysis could be faster, please consider using Incremental Analysis: "
                             + "https://pmd.github.io/{}/pmd_userdocs_incremental_analysis.html", version);
-        }
-    }
-
-    /**
-     * Determines all the files, that should be analyzed by PMD.
-     *
-     * @param configuration
-     *            contains either the file path or the DB URI, from where to
-     *            load the files
-     * @param languages
-     *            used to filter by file extension
-     * @return List of {@link DataSource} of files
-     *
-     * @deprecated This may leak resources and should not be used directly.
-     *     Use {@link PmdAnalysis}.
-     */
-    @Deprecated
-    public static List<DataSource> getApplicableFiles(PMDConfiguration configuration, Set<Language> languages) {
-        try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.COLLECT_FILES)) {
-            @SuppressWarnings("PMD.CloseResource") // if we close the collector, data sources become invalid
-            FileCollector collector = FileCollectionUtil.collectFiles(configuration, languages, new SimplePmdLogger(LOG));
-            return FileCollectionUtil.collectorToDataSource(collector);
         }
     }
 
