@@ -1435,6 +1435,38 @@
 
 <h3 id="new-and-noteworthy">New and noteworthy</h3>
 
+<h4 id="new-programmatic-api">New programmatic API</h4>
+
+<p>This release introduces a new programmatic API to replace the inflexible <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.44.0-SNAPSHOT/net/sourceforge/pmd/PMD.html#"><code>PMD</code></a> class.
+Programmatic execution of PMD should now be done with a <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.44.0-SNAPSHOT/net/sourceforge/pmd/PMDConfiguration.html#"><code>PMDConfiguration</code></a>
+and a <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.44.0-SNAPSHOT/net/sourceforge/pmd/PmdAnalysis.html#"><code>PmdAnalysis</code></a>, for instance:</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">PMDConfiguration</span> <span class="n">config</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">PMDConfiguration</span><span class="o">();</span>
+<span class="n">config</span><span class="o">.</span><span class="na">setDefaultLanguageVersion</span><span class="o">(</span><span class="nc">LanguageRegistry</span><span class="o">.</span><span class="na">findLanguageByTerseName</span><span class="o">(</span><span class="s">"java"</span><span class="o">).</span><span class="na">getVersion</span><span class="o">(</span><span class="s">"11"</span><span class="o">));</span>
+<span class="n">config</span><span class="o">.</span><span class="na">setInputPaths</span><span class="o">(</span><span class="s">"src/main/java"</span><span class="o">);</span>
+<span class="n">config</span><span class="o">.</span><span class="na">prependAuxClasspath</span><span class="o">(</span><span class="s">"target/classes"</span><span class="o">);</span>
+<span class="n">config</span><span class="o">.</span><span class="na">setMinimumPriority</span><span class="o">(</span><span class="nc">RulePriority</span><span class="o">.</span><span class="na">HIGH</span><span class="o">);</span>
+<span class="n">config</span><span class="o">.</span><span class="na">setRuleSets</span><span class="o">(</span><span class="s">"rulesets/java/quickstart.xml"</span><span class="o">);</span>
+<span class="n">config</span><span class="o">.</span><span class="na">setReportFormat</span><span class="o">(</span><span class="s">"xml"</span><span class="o">);</span>
+<span class="n">config</span><span class="o">.</span><span class="na">setReportFile</span><span class="o">(</span><span class="s">"target/pmd-report.xml"</span><span class="o">);</span>
+
+<span class="k">try</span> <span class="o">(</span><span class="nc">PmdAnalysis</span> <span class="n">pmd</span> <span class="o">=</span> <span class="nc">PmdAnalysis</span><span class="o">.</span><span class="na">create</span><span class="o">(</span><span class="n">config</span><span class="o">))</span> <span class="o">{</span>
+    <span class="c1">// optional: add more rulesets</span>
+    <span class="n">pmd</span><span class="o">.</span><span class="na">addRuleSet</span><span class="o">(</span><span class="nc">RuleSetLoader</span><span class="o">.</span><span class="na">fromPmdConfig</span><span class="o">(</span><span class="n">configuration</span><span class="o">).</span><span class="na">loadFromResource</span><span class="o">(</span><span class="s">"custom-ruleset.xml"</span><span class="o">));</span>
+    <span class="c1">// optional: add more files</span>
+    <span class="n">pmd</span><span class="o">.</span><span class="na">files</span><span class="o">().</span><span class="na">addFile</span><span class="o">(</span><span class="nc">Paths</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="s">"src"</span><span class="o">,</span> <span class="s">"main"</span><span class="o">,</span> <span class="s">"more-java"</span><span class="o">,</span> <span class="s">"ExtraSource.java"</span><span class="o">));</span>
+    <span class="c1">// optional: add more renderers</span>
+    <span class="n">pmd</span><span class="o">.</span><span class="na">addRenderer</span><span class="o">(</span><span class="n">renderer</span><span class="o">);</span>
+
+    <span class="c1">// or just call PMD</span>
+    <span class="n">pmd</span><span class="o">.</span><span class="na">performAnalysis</span><span class="o">();</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>The <code class="language-plaintext highlighter-rouge">PMD</code> class still supports methods related to CLI execution: <code class="language-plaintext highlighter-rouge">runPmd</code> and <code class="language-plaintext highlighter-rouge">main</code>.
+All other members are now deprecated for removal.
+The CLI itself remains compatible, if you run PMD via command-line, no action is required on your part.</p>
+
 <h3 id="fixed-issues">Fixed Issues</h3>
 
 <ul>
@@ -1446,6 +1478,35 @@
 </ul>
 
 <h3 id="api-changes">API Changes</h3>
+
+<h4 id="deprecated-api">Deprecated API</h4>
+
+<ul>
+  <li>Several members of <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.44.0-SNAPSHOT/net/sourceforge/pmd/PMD.html#"><code>PMD</code></a> have been newly deprecated, including:
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">PMD#EOL</code>: use <code class="language-plaintext highlighter-rouge">System#lineSeparator()</code></li>
+      <li><code class="language-plaintext highlighter-rouge">PMD#SUPPRESS_MARKER</code>: use <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.44.0-SNAPSHOT/net/sourceforge/pmd/PMDConfiguration.html#DEFAULT_SUPPRESS_MARKER"><code>DEFAULT_SUPPRESS_MARKER</code></a></li>
+      <li><code class="language-plaintext highlighter-rouge">PMD#processFiles</code>: use the <a href="#new-programmatic-api">new programmatic API</a></li>
+      <li><code class="language-plaintext highlighter-rouge">PMD#getApplicableFiles</code>: is internal</li>
+    </ul>
+  </li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.44.0-SNAPSHOT/net/sourceforge/pmd/PMDConfiguration.html#prependClasspath(java.lang.String)"><code>PMDConfiguration#prependClasspath</code></a> is deprecated
+in favour of <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.44.0-SNAPSHOT/net/sourceforge/pmd/PMDConfiguration.html#prependAuxClasspath(java.lang.String)"><code>prependAuxClasspath</code></a>.</li>
+</ul>
+
+<h4 id="experimental-apis">Experimental APIs</h4>
+
+<ul>
+  <li>
+    <p>Together with the <a href="#new-programmatic-api">new programmatic API</a> the interface
+<a href="https://docs.pmd-code.org/apidocs/pmd-core/6.44.0-SNAPSHOT/net/sourceforge/pmd/lang/document/TextFile.html#"><code>TextFile</code></a> has been added as <em>experimental</em>. It intends
+to replace <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.44.0-SNAPSHOT/net/sourceforge/pmd/util/datasource/DataSource.html#"><code>DataSource</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.44.0-SNAPSHOT/net/sourceforge/pmd/cpd/SourceCode.html#"><code>SourceCode</code></a> in the long term.</p>
+
+    <p>This interface will change in PMD 7 to support read/write operations
+and other things. You don’t need to use it in PMD 6, as <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.44.0-SNAPSHOT/net/sourceforge/pmd/lang/document/FileCollector.html#"><code>FileCollector</code></a>
+decouples you from this. A file collector is available through <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.44.0-SNAPSHOT/net/sourceforge/pmd/PmdAnalysis.html#files()"><code>PmdAnalysis#files</code></a>.</p>
+  </li>
+</ul>
 
 <h3 id="external-contributions">External Contributions</h3>
 
