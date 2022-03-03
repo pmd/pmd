@@ -63,7 +63,7 @@ public class ASTReferenceExpression extends AbstractApexNode<ReferenceExpression
     public boolean isSObjectType() {
         List<Identifier> identifiers = node.getNames();
         if (identifiers != null) {
-            return identifiers.stream().anyMatch(id -> id.getValue().equalsIgnoreCase("sobjecttype"));
+            return identifiers.stream().anyMatch(id -> "sobjecttype".equalsIgnoreCase(id.getValue()));
         }
         return false;
     }
