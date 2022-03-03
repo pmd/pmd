@@ -202,11 +202,10 @@ public class PMDConfiguration extends AbstractConfiguration {
      */
     @Deprecated
     public void prependClasspath(String classpath) throws IOException {
-        if (classLoader == null) {
-            classLoader = PMDConfiguration.class.getClassLoader();
-        }
-        if (classpath != null) {
-            classLoader = new ClasspathClassLoader(classpath, classLoader);
+        try {
+            prependAuxClasspath(classpath);
+        } catch (IllegalArgumentException e) {
+            throw new IOException(e);
         }
     }
 
@@ -227,8 +226,15 @@ public class PMDConfiguration extends AbstractConfiguration {
      */
     public void prependAuxClasspath(String classpath) {
         try {
-            prependClasspath(classpath);
+            if (classLoader == null) {
+                classLoader = PMDConfiguration.class.getClassLoader();
+            }
+            if (classpath != null) {
+                classLoader = new ClasspathClassLoader(classpath, classLoader);
+            }
         } catch (IOException e) {
+            // Note: IOExceptions shouldn't appear anymore, they should already be converted
+            // to IllegalArgumentException in ClasspathClassLoader.
             throw new IllegalArgumentException(e);
         }
     }

@@ -72,7 +72,7 @@ public class PMD {
      * @deprecated Use {@link System#lineSeparator()}
      */
     @Deprecated
-    public static final String EOL = System.getProperty("line.separator", "\n");
+    public static final String EOL = System.lineSeparator();
 
     /**
      * The default suppress marker string.
