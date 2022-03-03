@@ -4,20 +4,27 @@
 
 package net.sourceforge.pmd.cli;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.file.Files;
+import java.util.regex.Pattern;
 
 import org.apache.commons.io.IOUtils;
+import org.hamcrest.BaseMatcher;
+import org.hamcrest.Description;
+import org.hamcrest.Matcher;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.PMD.StatusCode;
 
 /**
  * @author Romain Pelisse &lt;belaran@gmail.com&gt;
@@ -72,25 +79,49 @@ public abstract class BaseCLITest {
         }
     }
 
+    @Deprecated
     protected String runTest(String[] args, String testname) {
-        return runTest(args, testname, 0);
+        return runTest(args);
     }
 
+    @Deprecated
     protected String runTest(String[] args, String testname, int expectedExitCode) {
         String filename = TEST_OUPUT_DIRECTORY + testname + ".txt";
         long start = System.currentTimeMillis();
         createTestOutputFile(filename);
         System.out.println("Start running test " + testname);
-        runPMDWith(args);
-        checkStatusCode(expectedExitCode);
+        StatusCode statusCode = PMD.runPmd(args);
+        assertEquals(expectedExitCode, statusCode.toInt());
         System.out.println("Test finished successfully after " + (System.currentTimeMillis() - start) + "ms.");
         return filename;
     }
 
+    /**
+     * Returns the log output.
+     */
+    protected String runTest(String... args) {
+        return runTest(0, args);
+    }
+
+    /**
+     * Returns the log output.
+     */
+    protected String runTest(int expectedExitCode, String... args) {
+        ByteArrayOutputStream console = new ByteArrayOutputStream();
+        PrintStream out = new PrintStream(console);
+        System.setOut(out);
+        System.setErr(out);
+        StatusCode statusCode = PMD.runPmd(args);
+        assertEquals(expectedExitCode, statusCode.toInt());
+        return console.toString();
+    }
+
+    @Deprecated
     protected void runPMDWith(String[] args) {
         PMD.main(args);
     }
 
+    @Deprecated
     protected void checkStatusCode(int expectedExitCode) {
         int statusCode = getStatusCode();
         if (statusCode != expectedExitCode) {
@@ -98,7 +129,24 @@ public abstract class BaseCLITest {
         }
     }
 
+    @Deprecated
     protected int getStatusCode() {
         return Integer.parseInt(System.getProperty(PMDCommandLineInterface.STATUS_CODE_PROPERTY));
+    }
+
+    public static Matcher<String> containsPattern(final String regex) {
+        return new BaseMatcher<String>() {
+            final Pattern pattern = Pattern.compile(regex);
+
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("a string containing the pattern '" + this.pattern + "'");
+            }
+
+            @Override
+            public boolean matches(Object o) {
+                return o instanceof String && pattern.matcher((String) o).find();
+            }
+        };
     }
 }

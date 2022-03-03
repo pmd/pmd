@@ -51,10 +51,10 @@ public class ConfigurationTest {
     }
 
     @Test
-    public void testClassLoader() throws IOException {
+    public void testClassLoader() {
         PMDConfiguration configuration = new PMDConfiguration();
         assertEquals("Default ClassLoader", PMDConfiguration.class.getClassLoader(), configuration.getClassLoader());
-        configuration.prependClasspath("some.jar");
+        configuration.prependAuxClasspath("some.jar");
         assertEquals("Prepended ClassLoader class", ClasspathClassLoader.class,
                 configuration.getClassLoader().getClass());
         URL[] urls = ((ClasspathClassLoader) configuration.getClassLoader()).getURLs();
@@ -68,31 +68,31 @@ public class ConfigurationTest {
     }
 
     @Test
-    public void auxClasspathWithRelativeFileEmpty() throws IOException {
+    public void auxClasspathWithRelativeFileEmpty() {
         String relativeFilePath = "src/test/resources/net/sourceforge/pmd/cli/auxclasspath-empty.cp";
         PMDConfiguration configuration = new PMDConfiguration();
-        configuration.prependClasspath("file:" + relativeFilePath);
+        configuration.prependAuxClasspath("file:" + relativeFilePath);
         URL[] urls = ((ClasspathClassLoader) configuration.getClassLoader()).getURLs();
         Assert.assertEquals(0, urls.length);
     }
 
     @Test
-    public void auxClasspathWithRelativeFileEmpty2() throws IOException {
+    public void auxClasspathWithRelativeFileEmpty2() {
         String relativeFilePath = "./src/test/resources/net/sourceforge/pmd/cli/auxclasspath-empty.cp";
         PMDConfiguration configuration = new PMDConfiguration();
-        configuration.prependClasspath("file:" + relativeFilePath);
+        configuration.prependAuxClasspath("file:" + relativeFilePath);
         URL[] urls = ((ClasspathClassLoader) configuration.getClassLoader()).getURLs();
         Assert.assertEquals(0, urls.length);
     }
 
     @Test
-    public void auxClasspathWithRelativeFile() throws IOException, URISyntaxException {
+    public void auxClasspathWithRelativeFile() throws URISyntaxException {
         final String FILE_SCHEME = "file";
 
         String currentWorkingDirectory = new File("").getAbsoluteFile().toURI().getPath();
         String relativeFilePath = "src/test/resources/net/sourceforge/pmd/cli/auxclasspath.cp";
         PMDConfiguration configuration = new PMDConfiguration();
-        configuration.prependClasspath("file:" + relativeFilePath);
+        configuration.prependAuxClasspath("file:" + relativeFilePath);
         URL[] urls = ((ClasspathClassLoader) configuration.getClassLoader()).getURLs();
         URI[] uris = new URI[urls.length];
         for (int i = 0; i < urls.length; i++) {
@@ -232,7 +232,7 @@ public class ConfigurationTest {
     }
 
     @Test
-    public void testAnalysisCacheLocation() throws IOException {
+    public void testAnalysisCacheLocation() {
         final PMDConfiguration configuration = new PMDConfiguration();
 
         configuration.setAnalysisCacheLocation(null);

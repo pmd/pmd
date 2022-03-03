@@ -4,11 +4,6 @@
 
 package net.sourceforge.pmd;
 
-import static net.sourceforge.pmd.util.CollectionUtil.listOf;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
@@ -26,7 +21,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.event.Level;
 
-import net.sourceforge.pmd.Report.GlobalReportBuilderListener;
 import net.sourceforge.pmd.benchmark.TextTimingReportRenderer;
 import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.benchmark.TimedOperation;
@@ -38,38 +32,23 @@ import net.sourceforge.pmd.cli.PMDCommandLineInterface;
 import net.sourceforge.pmd.cli.PmdParametersParseResult;
 import net.sourceforge.pmd.cli.internal.CliMessages;
 import net.sourceforge.pmd.internal.Slf4jSimpleConfiguration;
-import net.sourceforge.pmd.internal.util.AssertionUtil;
+import net.sourceforge.pmd.internal.util.FileCollectionUtil;
 import net.sourceforge.pmd.lang.Language;
-import net.sourceforge.pmd.lang.LanguageFilenameFilter;
-import net.sourceforge.pmd.lang.LanguageVersion;
-import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
-import net.sourceforge.pmd.processor.AbstractPMDProcessor;
+import net.sourceforge.pmd.lang.document.FileCollector;
 import net.sourceforge.pmd.renderers.Renderer;
-import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
-import net.sourceforge.pmd.reporting.GlobalAnalysisListener.ViolationCounterListener;
-import net.sourceforge.pmd.util.ClasspathClassLoader;
-import net.sourceforge.pmd.util.FileUtil;
-import net.sourceforge.pmd.util.IOUtil;
 import net.sourceforge.pmd.util.database.DBMSMetadata;
 import net.sourceforge.pmd.util.database.DBURI;
 import net.sourceforge.pmd.util.database.SourceObject;
 import net.sourceforge.pmd.util.datasource.DataSource;
 import net.sourceforge.pmd.util.datasource.ReaderDataSource;
+import net.sourceforge.pmd.util.log.SimplePmdLogger;
 
 /**
- * This is the main class for interacting with PMD. The primary flow of all Rule
- * process is controlled via interactions with this class. A command line
- * interface is supported, as well as a programmatic API for integrating PMD
- * with other software such as IDEs and Ant.
- * 
- * <p>Main entrypoints are:
- * <ul>
- *   <li>{@link #main(String[])} which exits the java process</li>
- *   <li>{@link #runPmd(String...)} which returns a {@link StatusCode}</li>
- *   <li>{@link #runPmd(PMDConfiguration)}</li>
- *   <li>{@link #processFiles(PMDConfiguration, List, Collection, List)}</li>
- * </ul>
- * 
+ * Entry point for PMD's CLI. Use {@link #runPmd(PMDConfiguration)}
+ * or {@link #runPmd(String...)} to mimic a CLI run. This class is
+ * not a supported programmatic API anymore, use {@link PmdAnalysis}
+ * for fine control over the PMD integration and execution.
+ *
  * <p><strong>Warning:</strong> This class is not intended to be instantiated or subclassed. It will
  * be made final in PMD7.
  */
@@ -81,11 +60,19 @@ public final class PMD {
     /**
      * The line delimiter used by PMD in outputs. Usually the platform specific
      * line separator.
+     *
+     * @deprecated Use {@link System#lineSeparator()}
      */
-    public static final String EOL = System.getProperty("line.separator", "\n");
+    @Deprecated
+    public static final String EOL = System.lineSeparator();
 
-    /** The default suppress marker string. */
-    public static final String SUPPRESS_MARKER = "NOPMD";
+    /**
+     * The default suppress marker string.
+     *
+     * @deprecated Use {@link PMDConfiguration#DEFAULT_SUPPRESS_MARKER}
+     */
+    @Deprecated
+    public static final String SUPPRESS_MARKER = PMDConfiguration.DEFAULT_SUPPRESS_MARKER;
 
     private PMD() {
     }
@@ -146,53 +133,25 @@ public final class PMD {
      * @deprecated Use {@link #runPmd(PMDConfiguration)}.
      */
     @Deprecated
-    public static int doPMD(final PMDConfiguration configuration) {
-
-        // Load the RuleSets
-        final RuleSetLoader ruleSetFactory = RuleSetLoader.fromPmdConfig(configuration);
-        final List<RuleSet> ruleSets = getRuleSetsWithBenchmark(configuration.getRuleSetPaths(), ruleSetFactory);
-
-        final Set<Language> languages = getApplicableLanguages(configuration, ruleSets);
-
-        try {
-
-            final List<DataSource> files = getApplicableFiles(configuration, languages);
-            Renderer renderer = configuration.createRenderer(true);
-
-            @SuppressWarnings("PMD.CloseResource")
-            ViolationCounterListener violationCounter = new ViolationCounterListener();
-            @SuppressWarnings("PMD.CloseResource")
-            GlobalReportBuilderListener reportBuilder = new GlobalReportBuilderListener();
-
-            List<GlobalAnalysisListener> allListeners = listOf(
-                    reportBuilder,
-                    renderer.newListener(),
-                    violationCounter);
-            try (GlobalAnalysisListener listener = GlobalAnalysisListener.tee(allListeners)) {
-                try (TimedOperation ignored = TimeTracker.startOperation(TimedOperationCategory.FILE_PROCESSING)) {
-                    processFiles(configuration, ruleSets, files, listener);
-                }
+    @InternalApi
+    public static int doPMD(PMDConfiguration configuration) {
+        try (PmdAnalysis pmd = PmdAnalysis.create(configuration)) {
+            if (pmd.getRulesets().isEmpty()) {
+                return PMDCommandLineInterface.NO_ERRORS_STATUS;
             }
+            try {
+                Report report = pmd.performAnalysisAndCollectReport();
 
-            Report report = reportBuilder.getResult();
+                Report report = reportBuilder.getResult();
             if (!report.getProcessingErrors().isEmpty()) {
                 printErrorDetected(report.getProcessingErrors().size());
             }
 
-            return violationCounter.getResult();
-        } catch (final Exception e) {
-            log.error("Exception during processing: {}", e.toString()); // only exception without stacktrace
-            log.debug("Exception during processing", e); // with stacktrace
-            printErrorDetected(1);
-            return PMDCommandLineInterface.NO_ERRORS_STATUS; // fixme?
-        } finally {
-            /*
-             * Make sure it's our own classloader before attempting to close it....
-             * Maven + Jacoco provide us with a cloaseable classloader that if closed
-             * will throw a ClassNotFoundException.
-             */
-            if (configuration.getClassLoader() instanceof ClasspathClassLoader) {
-                IOUtil.tryCloseClassLoader(configuration.getClassLoader());
+                return report.getViolations().size();
+            } catch (Exception e) {
+                pmd.getLog().errorEx("Exception during processing", e);
+                printErrorDetected(1);
+                return PMDCommandLineInterface.NO_ERRORS_STATUS; // fixme?
             }
         }
     }
@@ -249,92 +208,27 @@ public final class PMD {
      * @return Report in which violations are accumulated
      *
      * @throws Exception If there was a problem when opening or closing the renderers
+     * @throws RuntimeException If processing fails
+     *
+     * @deprecated Use {@link PmdAnalysis}
      */
-    @SuppressWarnings("PMD.CloseResource")
-    public static Report processFiles(PMDConfiguration configuration,
-                                      List<RuleSet> ruleSets,
-                                      Collection<? extends DataSource> files,
-                                      List<Renderer> renderers) throws Exception {
-
-
-        GlobalAnalysisListener rendererListeners = createComposedRendererListener(renderers);
-        GlobalReportBuilderListener reportBuilder = new GlobalReportBuilderListener();
-
-        List<GlobalAnalysisListener> allListeners = listOf(reportBuilder, rendererListeners);
-
-        try (GlobalAnalysisListener listener = GlobalAnalysisListener.tee(allListeners)) {
-            processFiles(configuration, ruleSets, new ArrayList<>(files), listener);
+    @Deprecated
+    public static Report processFiles(final PMDConfiguration configuration,
+                                      final List<RuleSet> rulesets,
+                                      final Collection<? extends DataSource> files,
+                                      final List<Renderer> renderers) {
+        @SuppressWarnings("PMD.CloseResource")
+        PmdAnalysis builder = PmdAnalysis.createWithoutCollectingFiles(configuration);
+        for (RuleSet ruleset : rulesets) {
+            builder.addRuleSet(ruleset);
         }
-
-        return reportBuilder.getResult();
-    }
-
-    private static GlobalAnalysisListener createComposedRendererListener(List<Renderer> renderers) throws Exception {
-        if (renderers.isEmpty()) {
-            return GlobalAnalysisListener.noop();
-        }
-
-        List<GlobalAnalysisListener> rendererListeners = new ArrayList<>(renderers.size());
         for (Renderer renderer : renderers) {
-            try {
-                rendererListeners.add(renderer.newListener());
-            } catch (IOException ioe) {
-                // close listeners so far, throw their close exception or the ioe
-                IOUtil.ensureClosed(rendererListeners, ioe);
-                throw AssertionUtil.shouldNotReachHere("ensureClosed should have thrown");
-            }
+            builder.addRenderer(renderer);
         }
-        return GlobalAnalysisListener.tee(rendererListeners);
-    }
+        List<DataSource> sortedFiles = new ArrayList<>(files);
+        sortFiles(configuration, sortedFiles);
 
-
-    /**
-     * Run PMD using the given configuration. This replaces the other overload.
-     *
-     * @param configuration Configuration for the run. Note that the files,
-     *                      and rulesets, are ignored, as they are supplied
-     *                      as parameters
-     * @param ruleSets      Parsed rulesets
-     * @param files         Files to process, will be closed by this method.
-     * @param listener      Listener to which analysis events are forwarded.
-     *                      The listener is NOT closed by this routine and should
-     *                      be closed by the caller.
-     *
-     * @throws Exception If there was a problem when opening or closing the renderers
-     */
-    public static void processFiles(PMDConfiguration configuration,
-                                    List<RuleSet> ruleSets,
-                                    List<DataSource> files,
-                                    GlobalAnalysisListener listener) throws Exception {
-
-        final RuleSets rs = new RuleSets(ruleSets);
-
-        // todo Just like we throw for invalid properties, "broken rules"
-        // shouldn't be a "config error". This is the only instance of
-        // config errors...
-
-        for (final Rule rule : removeBrokenRules(rs)) {
-            listener.onConfigError(new Report.ConfigurationError(rule, rule.dysfunctionReason()));
-        }
-
-        encourageToUseIncrementalAnalysis(configuration);
-
-        List<DataSource> sortedFiles = sortFiles(configuration, files);
-
-        // Make sure the cache is listening for analysis results
-        listener = GlobalAnalysisListener.tee(listOf(listener, configuration.getAnalysisCache()));
-
-        configuration.getAnalysisCache().checkValidity(rs, configuration.getClassLoader());
-
-        Exception ex = null;
-        try (AbstractPMDProcessor processor = AbstractPMDProcessor.newFileProcessor(configuration)) {
-            processor.processFiles(rs, sortedFiles, listener);
-        } catch (Exception e) {
-            ex = e;
-        } finally {
-            configuration.getAnalysisCache().persist();
-            IOUtil.ensureClosed(sortedFiles, ex);
-        }
+        return builder.performAnalysisImpl(sortedFiles);
     }
 
 
@@ -378,14 +272,14 @@ public final class PMD {
         return result;
     }
 
-    private static void encourageToUseIncrementalAnalysis(final PMDConfiguration configuration) {
+    static void encourageToUseIncrementalAnalysis(final PMDConfiguration configuration) {
         if (!configuration.isIgnoreIncrementalAnalysis()
-                && configuration.getAnalysisCache() instanceof NoopAnalysisCache
-                && log.isWarnEnabled()) {
+            && configuration.getAnalysisCache() instanceof NoopAnalysisCache
+            && log.isWarnEnabled()) {
             final String version =
-                    PMDVersion.isUnknown() || PMDVersion.isSnapshot() ? "latest" : "pmd-" + PMDVersion.VERSION;
+                PMDVersion.isUnknown() || PMDVersion.isSnapshot() ? "latest" : "pmd-" + PMDVersion.VERSION;
             log.warn("This analysis could be faster, please consider using Incremental Analysis: "
-                    + "https://pmd.github.io/{}/pmd_userdocs_incremental_analysis.html", version);
+                            + "https://pmd.github.io/{}/pmd_userdocs_incremental_analysis.html", version);
         }
     }
 
@@ -398,78 +292,17 @@ public final class PMD {
      * @param languages
      *            used to filter by file extension
      * @return List of {@link DataSource} of files
+     *
+     * @deprecated This may leak resources and should not be used directly.
+     *     Use {@link PmdAnalysis}.
      */
-    public static List<DataSource> getApplicableFiles(PMDConfiguration configuration, Set<Language> languages) throws IOException {
-        try (TimedOperation ignored = TimeTracker.startOperation(TimedOperationCategory.COLLECT_FILES)) {
-            return internalGetApplicableFiles(configuration, languages);
+    @Deprecated
+    public static List<DataSource> getApplicableFiles(PMDConfiguration configuration, Set<Language> languages) {
+        try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.COLLECT_FILES)) {
+            @SuppressWarnings("PMD.CloseResource") // if we close the collector, data sources become invalid
+            FileCollector collector = FileCollectionUtil.collectFiles(configuration, languages, new SimplePmdLogger(LOG));
+            return FileCollectionUtil.collectorToDataSource(collector);
         }
-    }
-
-    private static List<DataSource> internalGetApplicableFiles(PMDConfiguration configuration,
-                                                               Set<Language> languages) throws IOException {
-        FilenameFilter fileSelector = configuration.isForceLanguageVersion() ? new AcceptAllFilenames() : new LanguageFilenameFilter(languages);
-        List<DataSource> files = new ArrayList<>();
-
-        if (null != configuration.getInputPaths()) {
-            files.addAll(FileUtil.collectFiles(configuration.getInputPaths(), fileSelector));
-        }
-
-        if (null != configuration.getInputUri()) {
-            String uriString = configuration.getInputUri();
-            files.addAll(getURIDataSources(uriString));
-        }
-
-        if (null != configuration.getInputFilePath()) {
-            String inputFilePath = configuration.getInputFilePath();
-            File file = new File(inputFilePath);
-            if (!file.exists()) {
-                throw new FileNotFoundException(inputFilePath);
-            }
-
-            try {
-                String filePaths = FileUtil.readFilelist(file);
-                files.addAll(FileUtil.collectFiles(filePaths, fileSelector));
-            } catch (IOException ex) {
-                throw new IOException("Problem with Input File Path: " + inputFilePath, ex);
-            }
-
-        }
-
-        if (null != configuration.getIgnoreFilePath()) {
-            String ignoreFilePath = configuration.getIgnoreFilePath();
-            File file = new File(ignoreFilePath);
-            if (!file.exists()) {
-                throw new FileNotFoundException(ignoreFilePath);
-            }
-
-            try {
-                String filePaths = FileUtil.readFilelist(file);
-                files.removeAll(FileUtil.collectFiles(filePaths, fileSelector));
-            } catch (IOException ex) {
-                log.error("Problem with Ignore File", ex);
-                throw new RuntimeException("Problem with Ignore File Path: " + ignoreFilePath, ex);
-            }
-        }
-        return files;
-    }
-
-    private static Set<Language> getApplicableLanguages(final PMDConfiguration configuration, final List<RuleSet> ruleSets) {
-        final Set<Language> languages = new HashSet<>();
-        final LanguageVersionDiscoverer discoverer = configuration.getLanguageVersionDiscoverer();
-
-        for (final RuleSet ruleSet : ruleSets) {
-            for (Rule rule : ruleSet.getRules()) {
-                final Language ruleLanguage = rule.getLanguage();
-                if (!languages.contains(ruleLanguage)) {
-                    final LanguageVersion version = discoverer.getDefaultLanguageVersion(ruleLanguage);
-                    if (RuleSet.applies(rule, version)) {
-                        languages.add(ruleLanguage);
-                        log.debug("Using {} version: {}", ruleLanguage.getShortName(), version.getShortName());
-                    }
-                }
-            }
-        }
-        return languages;
     }
 
     /**
@@ -633,10 +466,4 @@ public final class PMD {
 
     }
 
-    private static final class AcceptAllFilenames implements FilenameFilter {
-        @Override
-        public boolean accept(File dir, String name) {
-            return true;
-        }
-    }
 }

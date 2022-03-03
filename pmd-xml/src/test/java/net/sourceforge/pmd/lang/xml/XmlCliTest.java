@@ -4,14 +4,12 @@
 
 package net.sourceforge.pmd.lang.xml;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
+import static net.sourceforge.pmd.util.CollectionUtil.listOf;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Assert;
 import org.junit.Test;
@@ -23,44 +21,38 @@ public class XmlCliTest extends BaseCLITest {
     private static final String RULE_MESSAGE = "A tags are not allowed";
 
     private String[] createArgs(String directory, String... args) {
-        List<String> arguments = new ArrayList<>();
-        arguments.add("-f");
-        arguments.add("text");
-        arguments.add("-no-cache");
-        arguments.add("-R");
-        arguments.add(BASE_DIR + "/ruleset.xml");
-        arguments.add("-d");
-        arguments.add(BASE_DIR + directory);
+        List<String> arguments = new ArrayList<>(listOf(
+            "-f",
+            "text",
+            "-no-cache",
+            "-R",
+            BASE_DIR + "/ruleset.xml",
+            "-d",
+            BASE_DIR + directory
+        ));
         arguments.addAll(Arrays.asList(args));
         return arguments.toArray(new String[0]);
     }
 
     @Test
     public void analyzeSingleXmlWithoutForceLanguage() {
-        String resultFilename = runTest(createArgs("/src/file1.ext"), "analyzeSingleXmlWithoutForceLanguage", 0);
-        assertRuleMessage(0, resultFilename);
+        String log = runTest(0, createArgs("/src/file1.ext"));
+        assertRuleMessage(0, log);
     }
 
     @Test
     public void analyzeSingleXmlWithForceLanguage() {
-        String resultFilename = runTest(createArgs("/src/file1.ext", "-force-language", "xml"),
-            "analyzeSingleXmlWithForceLanguage", 4);
-        assertRuleMessage(1, resultFilename);
+        String log = runTest(4, createArgs("/src/file1.ext", "-force-language", "xml"));
+        assertRuleMessage(1, log);
     }
 
     @Test
     public void analyzeDirectoryWithForceLanguage() {
-        String resultFilename = runTest(createArgs("/src/", "-force-language", "xml"),
-            "analyzeDirectoryWithForceLanguage", 4);
-        assertRuleMessage(3, resultFilename);
+        String log = runTest(4, createArgs("/src/", "-force-language", "xml"));
+        assertRuleMessage(3, log);
     }
 
-    private void assertRuleMessage(int expectedCount, String resultFilename) {
-        try {
-            String result = FileUtils.readFileToString(new File(resultFilename), StandardCharsets.UTF_8);
-            Assert.assertEquals(expectedCount, StringUtils.countMatches(result, RULE_MESSAGE));
-        } catch (IOException e) {
-            throw new AssertionError(e);
-        }
+    private void assertRuleMessage(int expectedCount, String log) {
+        Assert.assertEquals(expectedCount, StringUtils.countMatches(log, RULE_MESSAGE));
     }
 }

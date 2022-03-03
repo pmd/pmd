@@ -233,9 +233,9 @@ public class PMDTaskImpl {
         try {
             if (auxClasspath != null) {
                 project.log("Using auxclasspath: " + auxClasspath, Project.MSG_VERBOSE);
-                configuration.prependClasspath(auxClasspath.toString());
+                configuration.prependAuxClasspath(auxClasspath.toString());
             }
-        } catch (IOException ioe) {
+        } catch (IllegalArgumentException ioe) {
             throw new BuildException(ioe.getMessage(), ioe);
         }
     }
