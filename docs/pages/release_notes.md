@@ -65,6 +65,11 @@ The CLI itself remains compatible, if you run PMD via command-line, no action is
 * {% jdoc !!core::PMDConfiguration#prependClasspath(java.lang.String) %} is deprecated
   in favour of {% jdoc core::PMDConfiguration#prependAuxClasspath(java.lang.String) %}.
 
+* In modelica, the rule classes {% jdoc modelica::lang.modelica.rule.AmbiguousResolutionRule %}
+  and {% jdoc modelica::lang.modelica.rule.ConnectUsingNonConnector %} have been deprecated,
+  since they didn't comply to the usual rule class naming conventions yet.
+  The replacements are in the subpackage `bestpractices`.
+
 #### Experimental APIs
 
 *   Together with the [new programmatic API](#new-programmatic-api) the interface
