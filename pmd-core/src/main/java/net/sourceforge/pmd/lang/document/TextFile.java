@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.document;
 import java.io.File;
 import java.io.IOException;
 
+import net.sourceforge.pmd.PmdAnalysis;
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.cpd.SourceCode;
 import net.sourceforge.pmd.lang.LanguageVersion;
@@ -29,7 +30,7 @@ import net.sourceforge.pmd.util.datasource.DataSource;
  * <h2>Experimental</h2>
  * This interface will change in PMD 7 to support read/write operations
  * and other things. You don't need to use it in PMD 6, as {@link FileCollector}
- * decouples you from this.
+ * decouples you from this. A file collector is available through {@link PmdAnalysis#files()}.
  */
 @Experimental
 public interface TextFile {
