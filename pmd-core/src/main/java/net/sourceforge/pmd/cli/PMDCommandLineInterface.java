@@ -160,14 +160,6 @@ public final class PMDCommandLineInterface {
         return buf.toString();
     }
 
-    /**
-     * @deprecated Use {@link PMD#main(String[])}
-     */
-    @Deprecated
-    public static void run(String[] args) {
-        setStatusCodeOrExit(PMD.run(args));
-    }
-
     public static void setStatusCodeOrExit(int status) {
         if (isExitAfterRunSet()) {
             System.exit(status);

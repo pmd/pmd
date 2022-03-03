@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.ant.internal;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,8 +21,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.event.Level;
 
-import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMDConfiguration;
+import net.sourceforge.pmd.PmdAnalysis;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.RuleSet;
@@ -42,7 +41,6 @@ import net.sourceforge.pmd.reporting.GlobalAnalysisListener.ViolationCounterList
 import net.sourceforge.pmd.util.ClasspathClassLoader;
 import net.sourceforge.pmd.util.IOUtil;
 import net.sourceforge.pmd.util.datasource.DataSource;
-import net.sourceforge.pmd.util.datasource.FileDataSource;
 
 public class PMDTaskImpl {
 
@@ -113,30 +111,29 @@ public class PMDTaskImpl {
 
         @SuppressWarnings("PMD.CloseResource")
         ViolationCounterListener reportSizeListener = new ViolationCounterListener();
-
-        final List<DataSource> files = new ArrayList<>();
         final List<String> reportShortNamesPaths = new ArrayList<>();
         StringJoiner fullInputPath = new StringJoiner(",");
 
-        for (FileSet fs : filesets) {
-            DirectoryScanner ds = fs.getDirectoryScanner(project);
-            for (String srcFile : ds.getIncludedFiles()) {
-                File file = new File(ds.getBasedir() + File.separator + srcFile);
-                files.add(new FileDataSource(file));
+        try (PmdAnalysis pmd = PmdAnalysis.create(configuration)) {
+            for (RuleSet ruleSet : rules) {
+                pmd.addRuleSet(ruleSet);
             }
 
-            final String commonInputPath = ds.getBasedir().getPath();
-            fullInputPath.add(commonInputPath);
-            if (configuration.isReportShortNames()) {
-                reportShortNamesPaths.add(commonInputPath);
-            }
-        }
-        configuration.setInputPaths(fullInputPath.toString());
+            for (FileSet fileset : filesets) {
+                DirectoryScanner ds = fileset.getDirectoryScanner(project);
+                for (String srcFile : ds.getIncludedFiles()) {
+                    pmd.files().addFile(ds.getBasedir().toPath().resolve(srcFile));
+                }
 
-        try (GlobalAnalysisListener listener = getListener(reportSizeListener, reportShortNamesPaths)) {
-            PMD.processFiles(configuration, rules, files, listener);
-        } catch (Exception e) {
-            throw new BuildException("Exception while closing data sources", e);
+                final String commonInputPath = ds.getBasedir().getPath();
+                fullInputPath.add(commonInputPath);
+                if (configuration.isReportShortNames()) {
+                    reportShortNamesPaths.add(commonInputPath);
+                }
+            }
+
+            pmd.addListener(getListener(reportSizeListener, reportShortNamesPaths, fullInputPath.toString()));
+            pmd.performAnalysis();
         }
 
         int problemCount = reportSizeListener.getResult();
@@ -170,10 +167,10 @@ public class PMDTaskImpl {
         }
     }
 
-    private @NonNull GlobalAnalysisListener getListener(ViolationCounterListener reportSizeListener, List<String> reportShortNamesPaths) {
+    private @NonNull GlobalAnalysisListener getListener(ViolationCounterListener reportSizeListener, List<String> reportShortNamesPaths, String inputPaths) {
         List<GlobalAnalysisListener> renderers = new ArrayList<>(formatters.size() + 1);
         try {
-            renderers.add(makeLogListener(configuration.getInputPaths()));
+            renderers.add(makeLogListener(inputPaths));
             renderers.add(reportSizeListener);
             for (Formatter formatter : formatters) {
                 project.log("Sending a report to " + formatter, Project.MSG_VERBOSE);

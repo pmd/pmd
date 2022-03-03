@@ -8,7 +8,7 @@ import java.util.Objects;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.properties.AbstractPropertySource;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
@@ -64,7 +64,7 @@ public interface Parser {
         public static final PropertyDescriptor<String> COMMENT_MARKER =
             PropertyFactory.stringProperty("suppressionCommentMarker")
                            .desc("deprecated! NOPMD")
-                           .defaultValue(PMD.SUPPRESS_MARKER)
+                           .defaultValue(PMDConfiguration.DEFAULT_SUPPRESS_MARKER)
                            .build();
 
         @Deprecated // transitional until language properties are implemented

@@ -35,7 +35,6 @@ import net.sourceforge.pmd.internal.Slf4jSimpleConfiguration;
 import net.sourceforge.pmd.internal.util.FileCollectionUtil;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.document.FileCollector;
-import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.util.database.DBMSMetadata;
 import net.sourceforge.pmd.util.database.DBURI;
 import net.sourceforge.pmd.util.database.SourceObject;
@@ -129,12 +128,8 @@ public final class PMD {
      * @param configuration the configuration to use
      *
      * @return number of violations found.
-     *
-     * @deprecated Use {@link #runPmd(PMDConfiguration)}.
      */
-    @Deprecated
-    @InternalApi
-    public static int doPMD(PMDConfiguration configuration) {
+    private static int doPMD(PMDConfiguration configuration) {
         try (PmdAnalysis pmd = PmdAnalysis.create(configuration)) {
             if (pmd.getRulesets().isEmpty()) {
                 return PMDCommandLineInterface.NO_ERRORS_STATUS;
@@ -142,10 +137,9 @@ public final class PMD {
             try {
                 Report report = pmd.performAnalysisAndCollectReport();
 
-                Report report = reportBuilder.getResult();
-            if (!report.getProcessingErrors().isEmpty()) {
-                printErrorDetected(report.getProcessingErrors().size());
-            }
+                if (!report.getProcessingErrors().isEmpty()) {
+                    printErrorDetected(report.getProcessingErrors().size());
+                }
 
                 return report.getViolations().size();
             } catch (Exception e) {
@@ -156,11 +150,10 @@ public final class PMD {
         }
     }
 
-    private static List<RuleSet> getRuleSetsWithBenchmark(List<String> rulesetPaths, RuleSetLoader factory) {
+    static List<RuleSet> getRuleSetsWithBenchmark(List<String> rulesetPaths, RuleSetLoader factory) {
         try (TimedOperation ignored = TimeTracker.startOperation(TimedOperationCategory.LOAD_RULES)) {
-            List<RuleSet> ruleSets;
             try {
-                ruleSets = factory.loadFromResources(rulesetPaths);
+                List<RuleSet> ruleSets = factory.loadFromResources(rulesetPaths);
                 printRuleNamesInDebug(ruleSets);
                 if (isEmpty(ruleSets)) {
                     String msg = "No rules found. Maybe you misspelled a rule name? ("
@@ -168,11 +161,11 @@ public final class PMD {
                     log.error(msg);
                     throw new IllegalArgumentException(msg);
                 }
+                return ruleSets;
             } catch (RuleSetLoadException rsnfe) {
                 log.error("Ruleset not found", rsnfe);
                 throw rsnfe;
             }
-            return ruleSets;
         }
     }
 
@@ -193,42 +186,6 @@ public final class PMD {
                 }
             }
         }
-    }
-
-    /**
-     * Run PMD using the given configuration. This replaces the other overload.
-     *
-     * @param configuration Configuration for the run. Note that the files,
-     *                      and rulesets, are ignored, as they are supplied
-     *                      as parameters
-     * @param ruleSets      Parsed rulesets
-     * @param files         Files to process, will be closed by this method.
-     * @param renderers     Renderers that render the report (may be empty)
-     *
-     * @return Report in which violations are accumulated
-     *
-     * @throws Exception If there was a problem when opening or closing the renderers
-     * @throws RuntimeException If processing fails
-     *
-     * @deprecated Use {@link PmdAnalysis}
-     */
-    @Deprecated
-    public static Report processFiles(final PMDConfiguration configuration,
-                                      final List<RuleSet> rulesets,
-                                      final Collection<? extends DataSource> files,
-                                      final List<Renderer> renderers) {
-        @SuppressWarnings("PMD.CloseResource")
-        PmdAnalysis builder = PmdAnalysis.createWithoutCollectingFiles(configuration);
-        for (RuleSet ruleset : rulesets) {
-            builder.addRuleSet(ruleset);
-        }
-        for (Renderer renderer : renderers) {
-            builder.addRenderer(renderer);
-        }
-        List<DataSource> sortedFiles = new ArrayList<>(files);
-        sortFiles(configuration, sortedFiles);
-
-        return builder.performAnalysisImpl(sortedFiles);
     }
 
 
@@ -314,23 +271,6 @@ public final class PMD {
     public static void main(String[] args) {
         StatusCode exitCode = runPmd(args);
         PMDCommandLineInterface.setStatusCodeOrExit(exitCode.toInt());
-    }
-
-    /**
-     * Parses the command line arguments and executes PMD. Returns the
-     * exit code without exiting the VM.
-     *
-     * @param args command line arguments
-     *
-     * @return the exit code, where <code>0</code> means successful execution,
-     *     <code>1</code> means error, <code>4</code> means there have been
-     *     violations found.
-     *
-     * @deprecated Use {@link #runPmd(String...)}.
-     */
-    @Deprecated
-    public static int run(final String[] args) {
-        return runPmd(args).toInt();
     }
 
     /**

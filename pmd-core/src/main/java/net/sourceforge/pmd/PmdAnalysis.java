@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd;
 
+import static net.sourceforge.pmd.util.CollectionUtil.listOf;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -13,19 +15,20 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.logging.Logger;
 
+import net.sourceforge.pmd.Report.GlobalReportBuilderListener;
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.benchmark.TimedOperation;
 import net.sourceforge.pmd.benchmark.TimedOperationCategory;
+import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.internal.util.FileCollectionUtil;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
 import net.sourceforge.pmd.lang.document.FileCollector;
 import net.sourceforge.pmd.processor.AbstractPMDProcessor;
-import net.sourceforge.pmd.processor.MonoThreadProcessor;
-import net.sourceforge.pmd.processor.MultiThreadProcessor;
 import net.sourceforge.pmd.renderers.Renderer;
+import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
 import net.sourceforge.pmd.util.ClasspathClassLoader;
 import net.sourceforge.pmd.util.IOUtil;
 import net.sourceforge.pmd.util.datasource.DataSource;
@@ -66,6 +69,7 @@ public final class PmdAnalysis implements AutoCloseable {
 
     private final FileCollector collector;
     private final List<Renderer> renderers = new ArrayList<>();
+    private final List<GlobalAnalysisListener> listeners = new ArrayList<>();
     private final List<RuleSet> ruleSets = new ArrayList<>();
     private final PMDConfiguration configuration;
     private final SimplePmdLogger logger = new SimplePmdLogger(Logger.getLogger("net.sourceforge.pmd"));
@@ -113,11 +117,9 @@ public final class PmdAnalysis implements AutoCloseable {
         builder.addRenderer(renderer);
 
         final RuleSetLoader ruleSetLoader = RuleSetLoader.fromPmdConfig(config);
-        final RuleSets ruleSets = RulesetsFactoryUtils.getRuleSetsWithBenchmark(config.getRuleSets(), ruleSetLoader.toFactory());
-        if (ruleSets != null) {
-            for (RuleSet ruleSet : ruleSets.getAllRuleSets()) {
-                builder.addRuleSet(ruleSet);
-            }
+        final List<RuleSet> ruleSets = PMD.getRuleSetsWithBenchmark(config.getRuleSetPaths(), ruleSetLoader);
+        for (RuleSet ruleSet : ruleSets) {
+            builder.addRuleSet(ruleSet);
         }
 
         return builder;
@@ -146,6 +148,16 @@ public final class PmdAnalysis implements AutoCloseable {
     }
 
     /**
+     * Add a new listener. The given renderer must not already be closed,
+     * it will be closed by {@link #performAnalysis()}.
+     *
+     * @throws NullPointerException If the parameter is null
+     */
+    public void addListener(GlobalAnalysisListener listener) {
+        this.listeners.add(Objects.requireNonNull(listener));
+    }
+
+    /**
      * Add a new ruleset.
      *
      * @throws NullPointerException If the parameter is null
@@ -166,7 +178,7 @@ public final class PmdAnalysis implements AutoCloseable {
      * return a report, for compatibility with PMD 7.
      */
     public void performAnalysis() {
-        performAnalysisAndCollectReport();
+        performAnalysisImpl(Collections.emptyList());
     }
 
     /**
@@ -175,56 +187,62 @@ public final class PmdAnalysis implements AutoCloseable {
      * {@linkplain #files() file collector} are processed. Returns the
      * output report.
      */
-    // TODO PMD 7 @DeprecatedUntil700
     public Report performAnalysisAndCollectReport() {
+        try (GlobalReportBuilderListener reportBuilder = new GlobalReportBuilderListener()) {
+            performAnalysisImpl(listOf(reportBuilder)); // closes the report builder
+            return reportBuilder.getResultImpl();
+        }
+    }
+
+    void performAnalysisImpl(List<? extends GlobalReportBuilderListener> extraListeners) {
         try (FileCollector files = collector) {
             files.filterLanguages(getApplicableLanguages());
             List<DataSource> dataSources = FileCollectionUtil.collectorToDataSource(files);
-            startRenderers();
-            Report report = performAnalysisImpl(dataSources);
-            finishRenderers();
-            return report;
-        }
-    }
 
+            GlobalAnalysisListener composedListener;
+            try {
+                composedListener = GlobalAnalysisListener.tee(listOf(
+                    createComposedRendererListener(renderers),
+                    GlobalAnalysisListener.tee(extraListeners),
+                    configuration.getAnalysisCache()
+                ));
+            } catch (Exception e) {
+                logger.errorEx("Exception while initializing analysis listeners", e);
+                throw new RuntimeException("Exception while initializing analysis listeners", e);
+            }
 
-    Report performAnalysisImpl(List<DataSource> sortedFiles) {
-        try (TimedOperation ignored = TimeTracker.startOperation(TimedOperationCategory.FILE_PROCESSING)) {
-            PMD.encourageToUseIncrementalAnalysis(configuration);
-            Report report = new Report();
-            report.addListener(configuration.getAnalysisCache());
-
-            RuleContext ctx = new RuleContext();
-            ctx.setReport(report);
-            newFileProcessor(configuration).processFiles(new RuleSets(ruleSets), sortedFiles, ctx, renderers);
-            configuration.getAnalysisCache().persist();
-            return report;
-        }
-    }
-
-    private void startRenderers() {
-        try (TimedOperation ignored = TimeTracker.startOperation(TimedOperationCategory.REPORTING)) {
-            for (Renderer renderer : renderers) {
+            try (TimedOperation ignored = TimeTracker.startOperation(TimedOperationCategory.FILE_PROCESSING)) {
+                PMD.encourageToUseIncrementalAnalysis(configuration);
+                AbstractPMDProcessor.newFileProcessor(configuration).processFiles(new RuleSets(ruleSets), dataSources, composedListener);
+                configuration.getAnalysisCache().persist();
+            } finally {
                 try {
-                    renderer.start();
-                } catch (IOException e) {
-                    logger.errorEx("Error while starting renderer " + renderer.getName(), e);
+                    composedListener.close();
+                } catch (Exception e) {
+                    logger.errorEx("Exception while initializing analysis listeners", e);
+                    throw new RuntimeException("Exception while initializing analysis listeners", e);
                 }
             }
         }
     }
 
-    private void finishRenderers() {
-        try (TimedOperation ignored = TimeTracker.startOperation(TimedOperationCategory.REPORTING)) {
-            for (Renderer renderer : renderers) {
-                try {
-                    renderer.end();
-                    renderer.flush();
-                } catch (IOException e) {
-                    logger.errorEx("Error while finishing renderer " + renderer.getName(), e);
-                }
+
+    private static GlobalAnalysisListener createComposedRendererListener(List<Renderer> renderers) throws Exception {
+        if (renderers.isEmpty()) {
+            return GlobalAnalysisListener.noop();
+        }
+
+        List<GlobalAnalysisListener> rendererListeners = new ArrayList<>(renderers.size());
+        for (Renderer renderer : renderers) {
+            try {
+                rendererListeners.add(renderer.newListener());
+            } catch (IOException ioe) {
+                // close listeners so far, throw their close exception or the ioe
+                IOUtil.ensureClosed(rendererListeners, ioe);
+                throw AssertionUtil.shouldNotReachHere("ensureClosed should have thrown");
             }
         }
+        return GlobalAnalysisListener.tee(rendererListeners);
     }
 
     private Set<Language> getApplicableLanguages() {
@@ -246,11 +264,6 @@ public final class PmdAnalysis implements AutoCloseable {
         return languages;
     }
 
-
-    private static AbstractPMDProcessor newFileProcessor(final PMDConfiguration configuration) {
-        return configuration.getThreads() > 0 ? new MultiThreadProcessor(configuration)
-                                              : new MonoThreadProcessor(configuration);
-    }
 
     public PmdLogger getLog() {
         return logger;
