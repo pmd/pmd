@@ -373,6 +373,9 @@ entries:
     - title: JSP
       url: /pmd_languages_jsp.html
       output: web, pdf
+    - title: Kotlin
+      url: /pmd_languages_kotlin.html
+      output: web, pdf
     - title: PLSQL
       url: /pmd_languages_plsql.html
       output: web, pdf
