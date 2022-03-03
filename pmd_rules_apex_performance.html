@@ -1701,16 +1701,18 @@ by the more general rule <a href="pmd_rules_apex_performance.html#operationwithl
 
 <p>This rule finds <code class="language-plaintext highlighter-rouge">DescribeSObjectResult</code>s which could have been loaded eagerly via <code class="language-plaintext highlighter-rouge">SObjectType.getDescribe()</code>.</p>
 
-<p>When using <code class="language-plaintext highlighter-rouge">SObjectType.getDescribe()</code> or <code class="language-plaintext highlighter-rouge">Schema.describeSObjects()</code> without supplying a <code class="language-plaintext highlighter-rouge">SObjectDescribeOptions</code>, implicitely it will be using <code class="language-plaintext highlighter-rouge">SObjectDescribeOptions.DEFAULT</code> then all
+<p>When using <code class="language-plaintext highlighter-rouge">SObjectType.getDescribe()</code> or <code class="language-plaintext highlighter-rouge">Schema.describeSObjects()</code> without supplying a <code class="language-plaintext highlighter-rouge">SObjectDescribeOptions</code>,
+implicitly it will be using <code class="language-plaintext highlighter-rouge">SObjectDescribeOptions.DEFAULT</code> and then all
 child relationships will be loaded eagerly regardless whether this information is needed or not.
 This has a potential negative performance impact. Instead <a href="https://developer.salesforce.com/docs/atlas.en-us.apexref.meta/apexref/apex_class_Schema_SObjectType.htm#unique_346834793"><code class="language-plaintext highlighter-rouge">SObjectType.getDescribe(options)</code></a>
-or <a href="https://developer.salesforce.com/docs/atlas.en-us.apexref.meta/apexref/apex_methods_system_schema.htm#apex_System_Schema_describeSObjects"><code class="language-plaintext highlighter-rouge">Schema.describeSObjects(SObjectTypes, options)</code></a> should be used and a <code class="language-plaintext highlighter-rouge">SObjectDescribeOptions</code> should be supplied. By using
+or <a href="https://developer.salesforce.com/docs/atlas.en-us.apexref.meta/apexref/apex_methods_system_schema.htm#apex_System_Schema_describeSObjects"><code class="language-plaintext highlighter-rouge">Schema.describeSObjects(SObjectTypes, options)</code></a>
+should be used and a <code class="language-plaintext highlighter-rouge">SObjectDescribeOptions</code> should be supplied. By using
 <code class="language-plaintext highlighter-rouge">SObjectDescribeOptions.DEFERRED</code> the describe attributes will be lazily initialized at first use.</p>
 
-<p>Lazy loading <code class="language-plaintext highlighter-rouge">DescribeSObjectResult</code> on picklist fields is not recommended. The lazy loaded
+<p>Lazy loading <code class="language-plaintext highlighter-rouge">DescribeSObjectResult</code> on picklist fields is not always recommended. The lazy loaded
 describe objects might not be 100% accurate. It might be safer to explicitly use
-<code class="language-plaintext highlighter-rouge">SObjectDescribeOptions.FULL</code> in such a case. The same applies when you need the same <code class="language-plaintext highlighter-rouge">DescribeSObjectResult</code> to be consistent
-accross different contexts and API versions.</p>
+<code class="language-plaintext highlighter-rouge">SObjectDescribeOptions.FULL</code> in such a case. The same applies when you need the same <code class="language-plaintext highlighter-rouge">DescribeSObjectResult</code>
+to be consistent across different contexts and API versions.</p>
 
 <p>Properties:</p>
 
@@ -1718,14 +1720,27 @@ accross different contexts and API versions.</p>
   <li><code class="language-plaintext highlighter-rouge">noDefault</code>: The behavior of <code class="language-plaintext highlighter-rouge">SObjectDescribeOptions.DEFAULT</code> changes from API Version 43 to 44:
   With API Version 43, the attributes are loaded eagerly. With API Version 44, they are loaded lazily.
   Simply using <code class="language-plaintext highlighter-rouge">SObjectDescribeOptions.DEFAULT</code> doesn’t automatically make use of lazy loading.
-  (unless “Use Improved Schema Caching” critical update is applied, <code class="language-plaintext highlighter-rouge">SObjectDescribeOptions.DEFAULT</code> do fallback to lazy loading)
+  (unless “Use Improved Schema Caching” critical update is applied, <code class="language-plaintext highlighter-rouge">SObjectDescribeOptions.DEFAULT</code> does fallback
+  to lazy loading)
   With this property enabled, such usages are found.
   You might ignore this, if you can make sure, that you don’t run a mix of API Versions.</li>
 </ul>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
-<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">MethodCallExpression</span><span class="p">[(</span><span class="nf">lower-case</span><span class="p">(</span><span class="na">@MethodName</span><span class="p">)</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s2">"getdescribe"</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="nf">lower-case</span><span class="p">(</span><span class="na">@MethodName</span><span class="p">)</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s2">"describesobjects"</span><span class="p">)</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="ow">not</span><span class="p">(</span><span class="nt">VariableExpression</span><span class="o">/</span><span class="nt">ReferenceExpression</span><span class="p">[</span><span class="nf">lower-case</span><span class="p">(</span><span class="na">@Image</span><span class="p">)</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s2">"sobjectdescribeoptions"</span><span class="w"> </span><span class="p">])]</span><span class="w"> </span><span class="p">|</span><span class="w">
-</span><span class="o">//</span><span class="nt">ReferenceExpression</span><span class="p">[</span><span class="nv">$noDefault</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">true</span><span class="p">()</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="nf">lower-case</span><span class="p">(</span><span class="na">@Image</span><span class="p">)</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s2">"sobjectdescribeoptions"</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="kn">parent::</span><span class="nt">VariableExpression</span><span class="p">[</span><span class="nf">lower-case</span><span class="p">(</span><span class="na">@Image</span><span class="p">)</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s2">"default"</span><span class="p">]]</span><span class="w">
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">MethodCallExpression</span><span class="w">
+    </span><span class="p">[</span><span class="w">
+        </span><span class="nf">lower-case</span><span class="p">(</span><span class="na">@MethodName</span><span class="p">)</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s2">"getdescribe"</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="nt">ReferenceExpression</span><span class="p">[</span><span class="na">@SObjectType</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">true</span><span class="p">()]</span><span class="w">
+        </span><span class="ow">or</span><span class="w"> </span><span class="nf">lower-case</span><span class="p">(</span><span class="na">@MethodName</span><span class="p">)</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s2">"describesobjects"</span><span class="w">
+    </span><span class="p">]</span><span class="w">
+    </span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="nt">VariableExpression</span><span class="o">/</span><span class="nt">ReferenceExpression</span><span class="w">
+            </span><span class="p">[</span><span class="nf">lower-case</span><span class="p">(</span><span class="na">@Image</span><span class="p">)</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="p">(</span><span class="s2">"sobjectdescribeoptions"</span><span class="p">,</span><span class="w"> </span><span class="s2">"fielddescribeoptions"</span><span class="p">)]</span><span class="w">
+         </span><span class="p">)</span><span class="w">
+    </span><span class="p">]</span><span class="w">
+</span><span class="p">|</span><span class="w">
+</span><span class="o">//</span><span class="nt">ReferenceExpression</span><span class="w">
+    </span><span class="p">[</span><span class="nv">$noDefault</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">true</span><span class="p">()]</span><span class="w">
+    </span><span class="p">[</span><span class="nf">lower-case</span><span class="p">(</span><span class="na">@Image</span><span class="p">)</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s2">"sobjectdescribeoptions"</span><span class="p">]</span><span class="w">
+    </span><span class="p">[</span><span class="kn">parent::</span><span class="nt">VariableExpression</span><span class="p">[</span><span class="nf">lower-case</span><span class="p">(</span><span class="na">@Image</span><span class="p">)</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s2">"default"</span><span class="p">]]</span><span class="w">
 </span></code></pre></div></div>
 
 <p><strong>Example(s):</strong></p>
@@ -1910,7 +1925,7 @@ accross different contexts and API versions.</p>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2022 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Mar 1, 2022 <br />
+ Site last generated: Mar 3, 2022 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
