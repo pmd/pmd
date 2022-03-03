@@ -8,7 +8,7 @@
         - lang-name: matches the grammar name (eg "Swift")
         - lang-terse-name: uncapitalized package name (eg "swift")
         - node-prefix: prefix for generated AST nodes (eg "Sw")
-        - root-node-name: name of the root node (eg "TopLevel"), will be made to implement RootNode
+        - root-node-name: name of the root node without prefix (eg "TopLevel"), will be made to implement RootNode
 
         See AntlrGeneratedParserBase
 
