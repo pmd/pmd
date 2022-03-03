@@ -32,7 +32,7 @@ options {
 
 // SECTION: general
 
-file
+kotlinFile
     : shebangLine? NL* fileAnnotation* packageHeader importList topLevelObject* EOF
     ;
 

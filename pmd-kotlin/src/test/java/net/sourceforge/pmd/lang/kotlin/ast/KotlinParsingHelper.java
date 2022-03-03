@@ -12,13 +12,13 @@ import net.sourceforge.pmd.lang.kotlin.KotlinLanguageModule;
 /**
  *
  */
-public class KotlinParsingHelper extends BaseParsingHelper<KotlinParsingHelper, KotlinParser.KtFile> {
+public class KotlinParsingHelper extends BaseParsingHelper<KotlinParsingHelper, KotlinParser.KtKotlinFile> {
 
     public static final KotlinParsingHelper DEFAULT = new KotlinParsingHelper(Params.getDefaultNoProcess());
 
 
     public KotlinParsingHelper(@NotNull Params params) {
-        super(KotlinLanguageModule.NAME, KotlinParser.KtFile.class, params);
+        super(KotlinLanguageModule.NAME, KotlinParser.KtKotlinFile.class, params);
     }
 
     @NotNull

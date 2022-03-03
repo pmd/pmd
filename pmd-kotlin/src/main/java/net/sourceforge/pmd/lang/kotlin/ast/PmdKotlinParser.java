@@ -9,17 +9,17 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.Lexer;
 
 import net.sourceforge.pmd.lang.ast.impl.antlr4.AntlrBaseParser;
-import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtFile;
+import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtKotlinFile;
 
 /**
  * Adapter for the KotlinParser.
  */
-public final class PmdKotlinParser extends AntlrBaseParser<KotlinNode, KtFile> {
+public final class PmdKotlinParser extends AntlrBaseParser<KotlinNode, KtKotlinFile> {
 
     @Override
-    protected KtFile parse(final Lexer lexer, ParserTask task) {
+    protected KtKotlinFile parse(final Lexer lexer, ParserTask task) {
         KotlinParser parser = new KotlinParser(new CommonTokenStream(lexer));
-        return parser.file().makeAstInfo(task);
+        return parser.kotlinFile().makeAstInfo(task);
     }
 
     @Override

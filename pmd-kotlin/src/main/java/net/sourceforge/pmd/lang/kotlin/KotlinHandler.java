@@ -13,17 +13,10 @@ import net.sourceforge.pmd.lang.rule.xpath.impl.XPathHandler;
 
 public class KotlinHandler extends AbstractPmdLanguageVersionHandler {
 
-    private final String kotlinRelease;
-
     private static final XPathHandler XPATH_HANDLER =
         XPathHandler.getHandlerForFunctionDefs(
             BaseContextNodeTestFun.HAS_CHILDREN
         );
-
-    public KotlinHandler(String release) {
-        kotlinRelease = release;
-        // check language version?
-    }
 
     @Override
     public XPathHandler getXPathHandler() {
@@ -33,9 +26,5 @@ public class KotlinHandler extends AbstractPmdLanguageVersionHandler {
     @Override
     public Parser getParser() {
         return new PmdKotlinParser();
-    }
-
-    public String getKotlinRelease() {
-        return kotlinRelease;
     }
 }

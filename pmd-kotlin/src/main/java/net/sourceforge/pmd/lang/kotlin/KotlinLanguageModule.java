@@ -21,8 +21,6 @@ public class KotlinLanguageModule extends BaseLanguageModule {
      */
     public KotlinLanguageModule() {
         super(NAME, null, TERSE_NAME, "kt", "ktm");
-        addVersion("1.3", new KotlinHandler("1.3"));
-        addVersion("1.4", new KotlinHandler("1.4"));
-        addDefaultVersion("1.5", new KotlinHandler("1.5"));
+        addDefaultVersion("1.6-rfc+0.1", new KotlinHandler(), "1.6");
     }
 }
