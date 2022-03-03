@@ -137,7 +137,7 @@ You can also provide your own custom renderers.
         // optional: add more rulesets
         pmd.addRuleSet(RuleSetLoader.fromPmdConfig(configuration).loadFromResource("custom-ruleset.xml"));
         // optional: add more files
-        pmd.files().addFile(FileSystems.getDefault().getPath("src", "main", "more-java", "ExtraSource.java"));
+        pmd.files().addFile(Paths.get("src", "main", "more-java", "ExtraSource.java"));
         // optional: add more renderers
         pmd.addRenderer(renderer);
         
@@ -161,7 +161,7 @@ Here is a complete example:
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.nio.file.FileSystems;
+import java.nio.file.Paths;
 
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.PmdAnalysis;
@@ -175,11 +175,14 @@ public class PmdExample2 {
 
     public static void main(String[] args) throws IOException {
         PMDConfiguration configuration = new PMDConfiguration();
-        configuration.setDefaultLanguageVersion(LanguageRegistry.findLanguageByTerseName("java").getVersion("11"));
-        configuration.setInputPaths("/home/workspace/src/main/java/code");
-        configuration.prependAuxClasspath("/home/workspace/target/classes");
         configuration.setMinimumPriority(RulePriority.MEDIUM);
         configuration.setRuleSets("rulesets/java/quickstart.xml");
+
+        configuration.setInputPaths("/home/workspace/src/main/java/code");
+
+        configuration.setDefaultLanguageVersion(LanguageRegistry.findLanguageByTerseName("java").getVersion("11"));
+        configuration.prependAuxClasspath("/home/workspace/target/classes");
+
         configuration.setReportFormat("xml");
         configuration.setReportFile("/home/workspace/pmd-report.xml");
 
@@ -190,7 +193,7 @@ public class PmdExample2 {
             // optional: add more rulesets
             pmd.addRuleSet(RuleSetLoader.fromPmdConfig(configuration).loadFromResource("custom-ruleset.xml"));
             // optional: add more files
-            pmd.files().addFile(FileSystems.getDefault().getPath("src", "main", "more-java", "ExtraSource.java"));
+            pmd.files().addFile(Paths.get("src", "main", "more-java", "ExtraSource.java"));
             // optional: add more renderers
             pmd.addRenderer(renderer);
 

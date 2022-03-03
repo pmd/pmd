@@ -53,7 +53,7 @@ import net.sourceforge.pmd.util.log.SimplePmdLogger;
  *     // optional: add more rulesets
  *     pmd.addRuleSet(RuleSetLoader.fromPmdConfig(configuration).loadFromResource("custom-ruleset.xml"));
  *     // optional: add more files
- *     pmd.files().addFile(FileSystems.getDefault().getPath("src", "main", "more-java", "ExtraSource.java"));
+ *     pmd.files().addFile(Paths.get("src", "main", "more-java", "ExtraSource.java"));
  *     // optional: add more renderers
  *     pmd.addRenderer(renderer);
  *
