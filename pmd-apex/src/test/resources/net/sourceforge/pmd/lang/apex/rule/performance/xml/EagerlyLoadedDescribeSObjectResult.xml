@@ -7,6 +7,7 @@
     <test-code>
         <description>No describer options</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     public void bar(List<Account> accounts) {
@@ -21,6 +22,7 @@ public class Foo {
     <test-code>
         <description>No describer options using Schema class</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     public void bar(List<Account> accounts) {
@@ -90,9 +92,8 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>No describer options on SObjectField</description>
-        <expected-problems>1</expected-problems>
-        <expected-linenumbers>3</expected-linenumbers>
+        <description>False positive with no describer options on SObjectField</description>
+        <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
     public void bar(Case case) {
@@ -116,6 +117,19 @@ public class Foo {
 
     <test-code>
         <description>False positive on SObjectField with FieldDescribeOptions.DEFAULT</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar(Case case) {
+        String fieldName = Case.Subject.getDescribe(FieldDescribeOptions.DEFAULT).getName();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>False positive on SObjectField with FieldDescribeOptions.DEFAULT with noDefault=true</description>
+        <rule-property name="noDefault">true</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {

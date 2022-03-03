@@ -176,8 +176,20 @@ Properties:
             <property name="xpath">
                 <value>
 <![CDATA[
-//MethodCallExpression[(lower-case(@MethodName) = "getdescribe" or lower-case(@MethodName) = "describesobjects") and not(VariableExpression/ReferenceExpression[lower-case(@Image) = "sobjectdescribeoptions" or lower-case(@Image) = "fielddescribeoptions"])] |
-//ReferenceExpression[$noDefault = true() and (lower-case(@Image) = "sobjectdescribeoptions" or lower-case(@Image) = "fielddescribeoptions") and parent::VariableExpression[lower-case(@Image) = "default"]]
+//MethodCallExpression
+    [
+        lower-case(@MethodName) = "getdescribe" and ReferenceExpression[@SObjectType = true()]
+        or lower-case(@MethodName) = "describesobjects"
+    ]
+    [not(VariableExpression/ReferenceExpression
+            [lower-case(@Image) = ("sobjectdescribeoptions", "fielddescribeoptions")]
+         )
+    ]
+|
+//ReferenceExpression
+    [$noDefault = true()]
+    [lower-case(@Image) = "sobjectdescribeoptions"]
+    [parent::VariableExpression[lower-case(@Image) = "default"]]
 ]]>
                 </value>
             </property>
