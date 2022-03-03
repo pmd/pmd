@@ -62,12 +62,12 @@ The CLI itself remains compatible, if you run PMD via command-line, no action is
 #### Experimental APIs
 
 *   Together with the [new programmatic API](#new-programmatic-api) the interface
-    {% jdoc lang.document.TextFile %} has been added as *experimental*. It intends
-    to replace {% jdoc util.DataSource %} and {% jdoc cpd.SourceCode %} in the long term.
+    {% jdoc core::lang.document.TextFile %} has been added as *experimental*. It intends
+    to replace {% jdoc core::util.datasource.DataSource %} and {% jdoc core::cpd.SourceCode %} in the long term.
     
     This interface will change in PMD 7 to support read/write operations
-    and other things. You don't need to use it in PMD 6, as {% jdoc lang.document.FileCollector %}
-    decouples you from this. A file collector is available through {% jdoc !!PmdAnalysis#files() %}.
+    and other things. You don't need to use it in PMD 6, as {% jdoc core::lang.document.FileCollector %}
+    decouples you from this. A file collector is available through {% jdoc !!core::PmdAnalysis#files() %}.
 
 
 ### External Contributions
