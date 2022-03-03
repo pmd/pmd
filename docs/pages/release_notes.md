@@ -23,18 +23,21 @@ and a {% jdoc core::PmdAnalysis %}, for instance:
 
 ```java
 PMDConfiguration config = new PMDConfiguration();
-config.setDefaultLanguageVersion(LanguageRegistry.findLanguageVersionByTerseName("java 11"));
+config.setDefaultLanguageVersion(LanguageRegistry.findLanguageByTerseName("java").getVersion("11"));
 config.setInputPaths("src/main/java");
-config.prependClasspath("target/classes");
+config.prependAuxClasspath("target/classes");
 config.setMinimumPriority(RulePriority.HIGH);
 config.setRuleSets("rulesets/java/quickstart.xml");
 config.setReportFormat("xml");
+config.setReportFile("target/pmd-report.xml");
 
 try (PmdAnalysis pmd = PmdAnalysis.create(config)) {
-    // optional: here you can add more rulesets
-    pmd.addRuleset(RuleSetLoader.fromPmdConfig(config).loadFromResource("custom-ruleset.xml");
-    // optional: or you can add more files
-    pmd.files().addFile(FileSystems.getDefault().getPath("src", "main", "more-java", "ExtraSource.java");
+    // optional: add more rulesets
+    pmd.addRuleSet(RuleSetLoader.fromPmdConfig(configuration).loadFromResource("custom-ruleset.xml"));
+    // optional: add more files
+    pmd.files().addFile(FileSystems.getDefault().getPath("src", "main", "more-java", "ExtraSource.java"));
+    // optional: add more renderers
+    pmd.addRenderer(renderer);
 
     // or just call PMD
     pmd.performAnalysis();

@@ -41,15 +41,22 @@ import net.sourceforge.pmd.util.log.SimplePmdLogger;
  * {@link #performAnalysis()}. Example:
  * <pre>{@code
  *   PMDConfiguration config = new PMDConfiguration();
- *   config.setDefaultLanguageVersion(LanguageRegistry.findLanguageVersionByTerseName("java 11"));
+ *   config.setDefaultLanguageVersion(LanguageRegistry.findLanguageByTerseName("java").getVersion("11"));
  *   config.setInputPaths("src/main/java");
  *   config.prependClasspath("target/classes");
  *   config.setMinimumPriority(RulePriority.HIGH);
  *   config.setRuleSets("rulesets/java/quickstart.xml");
  *   config.setReportFormat("xml");
+ *   config.setReportFile("target/pmd-report.xml");
  *
  *   try (PmdAnalysis pmd = PmdAnalysis.create(config)) {
- *     // here you can add more rulesets or files
+ *     // optional: add more rulesets
+ *     pmd.addRuleSet(RuleSetLoader.fromPmdConfig(configuration).loadFromResource("custom-ruleset.xml"));
+ *     // optional: add more files
+ *     pmd.files().addFile(FileSystems.getDefault().getPath("src", "main", "more-java", "ExtraSource.java"));
+ *     // optional: add more renderers
+ *     pmd.addRenderer(renderer);
+ *
  *     pmd.performAnalysis();
  *   }
  * }</pre>
