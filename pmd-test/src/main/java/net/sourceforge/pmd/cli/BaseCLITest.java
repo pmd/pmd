@@ -107,20 +107,13 @@ public abstract class BaseCLITest {
      * Returns the log output.
      */
     protected String runTest(int expectedExitCode, String... args) {
-        PrintStream oldOut = System.out;
-        PrintStream oldErr = System.err;
-        try {
-            ByteArrayOutputStream console = new ByteArrayOutputStream();
-            PrintStream out = new PrintStream(console);
-            System.setOut(out);
-            System.setErr(out);
-            StatusCode statusCode = PMD.runPmd(args);
-            assertEquals(expectedExitCode, statusCode.toInt());
-            return console.toString();
-        } finally {
-            System.setOut(oldOut);
-            System.setOut(oldErr);
-        }
+        ByteArrayOutputStream console = new ByteArrayOutputStream();
+        PrintStream out = new PrintStream(console);
+        System.setOut(out);
+        System.setErr(out);
+        StatusCode statusCode = PMD.runPmd(args);
+        assertEquals(expectedExitCode, statusCode.toInt());
+        return console.toString();
     }
 
     @Deprecated
