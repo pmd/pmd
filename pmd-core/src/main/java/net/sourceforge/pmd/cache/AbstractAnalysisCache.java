@@ -210,13 +210,17 @@ public abstract class AbstractAnalysisCache implements AnalysisCache {
     }
 
     @Override
-    public FileAnalysisListener startFileAnalysis(DataSource filename) {
-        return violation -> {
-            final AnalysisResult analysisResult = 
-                updatedResultsCache.get(violation.getFilename());
+    public FileAnalysisListener startFileAnalysis(DataSource dataSource) {
+        String fileName = dataSource.getNiceFileName(false, "");
+        AnalysisResult analysisResult = updatedResultsCache.get(fileName);
+        if (analysisResult == null) {
+            analysisResult = new AnalysisResult(new File(fileName));
+        }
+        final AnalysisResult nonNullAnalysisResult = analysisResult;
 
-            synchronized (analysisResult) {
-                analysisResult.addViolation(violation);
+        return violation -> {
+            synchronized (nonNullAnalysisResult) {
+                nonNullAnalysisResult.addViolation(violation);
             }
         };
     }

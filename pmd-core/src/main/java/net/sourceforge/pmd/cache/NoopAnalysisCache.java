@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.cache;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
@@ -53,8 +54,4 @@ public class NoopAnalysisCache implements AnalysisCache {
         return FileAnalysisListener.noop();
     }
 
-    @Override
-    public void close() throws Exception {
-        // noop
-    }
 }

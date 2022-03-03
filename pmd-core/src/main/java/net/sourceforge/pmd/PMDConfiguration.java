@@ -100,7 +100,7 @@ public class PMDConfiguration extends AbstractConfiguration {
     private LanguageVersion forceLanguageVersion;
 
     // Rule and source file options
-    private List<String> ruleSets;
+    private List<String> ruleSets = new ArrayList<>();
     private RulePriority minimumPriority = RulePriority.LOW;
     private String inputPaths;
     private String inputUri;

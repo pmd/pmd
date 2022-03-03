@@ -118,6 +118,7 @@ public class FileCollectorTest {
             actual.put(file.getDisplayName(), file.getLanguageVersion().getTerseName());
         }
 
+        relPaths = new ArrayList<>(relPaths);
         for (int i = 0; i < relPaths.size(); i++) {
             // normalize, we want display names to be platform-specific
             relPaths.set(i, relPaths.get(i).replace('/', File.separatorChar));

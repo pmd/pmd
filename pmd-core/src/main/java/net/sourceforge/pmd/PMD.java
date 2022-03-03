@@ -94,22 +94,12 @@ public final class PMD {
             try {
                 List<RuleSet> ruleSets = factory.loadFromResources(rulesetPaths);
                 printRuleNamesInDebug(ruleSets);
-                if (isEmpty(ruleSets)) {
-                    String msg = "No rules found. Maybe you misspelled a rule name? ("
-                        + String.join(",", rulesetPaths) + ')';
-                    log.error(msg);
-                    throw new IllegalArgumentException(msg);
-                }
                 return ruleSets;
             } catch (RuleSetLoadException rsnfe) {
                 log.error("Ruleset not found", rsnfe);
                 throw rsnfe;
             }
         }
-    }
-
-    private static boolean isEmpty(List<RuleSet> rsets) {
-        return rsets.stream().noneMatch(it -> it.size() > 0);
     }
 
     /**

@@ -19,6 +19,7 @@ import net.sourceforge.pmd.Report.GlobalReportBuilderListener;
 import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.benchmark.TimedOperation;
 import net.sourceforge.pmd.benchmark.TimedOperationCategory;
+import net.sourceforge.pmd.cache.AnalysisCacheListener;
 import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.internal.util.FileCollectionUtil;
 import net.sourceforge.pmd.lang.Language;
@@ -111,9 +112,11 @@ public final class PmdAnalysis implements AutoCloseable {
         // So the files should not be pruned in advance
         FileCollectionUtil.collectFiles(config, builder.files());
 
-        Renderer renderer = config.createRenderer();
-        renderer.setReportFile(config.getReportFile());
-        builder.addRenderer(renderer);
+        if (config.getReportFormat() != null) {
+            Renderer renderer = config.createRenderer();
+            renderer.setReportFile(config.getReportFile());
+            builder.addRenderer(renderer);
+        }
 
         final RuleSetLoader ruleSetLoader = RuleSetLoader.fromPmdConfig(config);
         final List<RuleSet> ruleSets = PMD.getRuleSetsWithBenchmark(config.getRuleSetPaths(), ruleSetLoader);
@@ -192,13 +195,20 @@ public final class PmdAnalysis implements AutoCloseable {
         try (FileCollector files = collector) {
             files.filterLanguages(getApplicableLanguages());
             List<DataSource> dataSources = FileCollectionUtil.collectorToDataSource(files);
+            RuleSets rulesets = new RuleSets(this.ruleSets);
 
             GlobalAnalysisListener listener;
             try {
+                AnalysisCacheListener cacheListener = new AnalysisCacheListener(
+                    configuration.getAnalysisCache(),
+                    rulesets,
+                    configuration.getClassLoader()
+                );
                 listener = GlobalAnalysisListener.tee(listOf(
                     createComposedRendererListener(renderers),
+                    GlobalAnalysisListener.tee(listeners),
                     GlobalAnalysisListener.tee(extraListeners),
-                    configuration.getAnalysisCache()
+                    cacheListener
                 ));
             } catch (Exception e) {
                 logger.errorEx("Exception while initializing analysis listeners", e);
@@ -210,14 +220,25 @@ public final class PmdAnalysis implements AutoCloseable {
                 // shouldn't be a "config error". This is the only instance of
                 // config errors...
 
-                RuleSets ruleSets = new RuleSets(this.ruleSets);
-                for (final Rule rule : removeBrokenRules(ruleSets)) {
+                if (isEmpty(this.ruleSets)) {
+                    if (!configuration.getRuleSetPaths().isEmpty()) {
+                        logger.error("No rules found. Maybe you misspelled a rule name? ({0})",
+                                     String.join(",", configuration.getRuleSetPaths()));
+
+                    } else {
+                        logger.error("No rules found.");
+                    }
+                    return;
+                }
+
+                for (final Rule rule : removeBrokenRules(rulesets)) {
                     listener.onConfigError(new Report.ConfigurationError(rule, rule.dysfunctionReason()));
                 }
 
                 PMD.encourageToUseIncrementalAnalysis(configuration);
-                AbstractPMDProcessor.newFileProcessor(configuration).processFiles(ruleSets, dataSources, listener);
-                configuration.getAnalysisCache().persist();
+                try (AbstractPMDProcessor processor = AbstractPMDProcessor.newFileProcessor(configuration)) {
+                    processor.processFiles(rulesets, dataSources, listener);
+                }
             } finally {
                 try {
                     listener.close();
@@ -281,6 +302,10 @@ public final class PmdAnalysis implements AutoCloseable {
         }
 
         return brokenRules;
+    }
+
+    private static boolean isEmpty(List<RuleSet> rsets) {
+        return rsets.stream().noneMatch(it -> it.size() > 0);
     }
 
 

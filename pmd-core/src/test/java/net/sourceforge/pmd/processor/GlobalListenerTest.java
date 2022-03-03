@@ -77,7 +77,7 @@ public class GlobalListenerTest {
         runPmd(config, GlobalAnalysisListener.noop(), rule);
 
         verify(mockCache).checkValidity(any(), any());
-        verify(mockCache).persist();
+        verify(mockCache, times(1)).persist();
         verify(mockCache, times(NUM_DATA_SOURCES)).isUpToDate(any());
     }
 
@@ -93,7 +93,7 @@ public class GlobalListenerTest {
 
         // cache methods are called regardless
         verify(mockCache).checkValidity(any(), any());
-        verify(mockCache).persist();
+        verify(mockCache, times(1)).persist();
         verify(mockCache, times(NUM_DATA_SOURCES)).isUpToDate(any());
     }
 
@@ -115,7 +115,7 @@ public class GlobalListenerTest {
 
         // cache methods are called regardless
         verify(mockCache).checkValidity(any(), any());
-        verify(mockCache).persist();
+        verify(mockCache, times(1)).persist();
         verify(mockCache, times(1)).isUpToDate(any());
     }
 
@@ -145,7 +145,7 @@ public class GlobalListenerTest {
         @Override
         public void apply(Node node, RuleContext ctx) {
             if (node.getAstInfo().getFileName().contains("1")) {
-                addViolation(ctx, node);
+                ctx.addViolation(node);
             }
         }
     }
