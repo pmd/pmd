@@ -16,7 +16,6 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
@@ -26,6 +25,7 @@ import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Report.ConfigurationError;
 import net.sourceforge.pmd.Report.ProcessingError;
 import net.sourceforge.pmd.ReportTest;
+import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.ast.DummyNode;
@@ -36,7 +36,7 @@ public class YAHTMLRendererTest extends AbstractRendererTest {
 
     private File outputDir;
 
-    @Rule
+    @org.junit.Rule
     public TemporaryFolder folder = new TemporaryFolder();
 
     @Before
@@ -44,8 +44,8 @@ public class YAHTMLRendererTest extends AbstractRendererTest {
         outputDir = folder.newFolder("pmdtest");
     }
 
-    private RuleViolation newRuleViolation(int endColumn, final String packageNameArg, final String classNameArg) {
-        DummyNode node = createNode(endColumn);
+    private RuleViolation newRuleViolation(int beginLine, int beginColumn, int endLine, int endColumn, final String packageNameArg, final String classNameArg) {
+        DummyNode node = createNode(beginLine, beginColumn, endLine, endColumn);
         RuleContext ctx = new RuleContext();
         ctx.setSourceCodeFile(new File(getSourceCodeFilename()));
         return new ParametricRuleViolation<Node>(new FooRule(), ctx, node, "blah") {
@@ -57,16 +57,16 @@ public class YAHTMLRendererTest extends AbstractRendererTest {
     }
 
     @Override
-    protected RuleViolation newRuleViolation(int endColumn) {
-        return newRuleViolation(endColumn, "net.sf.pmd.test", "YAHTMLSampleClass");
+    protected RuleViolation newRuleViolation(int beginLine, int beginColumn, int endLine, int endColumn, Rule rule) {
+        return newRuleViolation(beginLine, beginColumn, endLine, endColumn, "net.sf.pmd.test", "YAHTMLSampleClass");
     }
 
     @Test
     public void testReportMultipleViolations() throws Exception {
         Report report = new Report();
-        report.addRuleViolation(newRuleViolation(1, "net.sf.pmd.test", "YAHTMLSampleClass1"));
-        report.addRuleViolation(newRuleViolation(2, "net.sf.pmd.test", "YAHTMLSampleClass1"));
-        report.addRuleViolation(newRuleViolation(1, "net.sf.pmd.other", "YAHTMLSampleClass2"));
+        report.addRuleViolation(newRuleViolation(1, 1, 1, 1, "net.sf.pmd.test", "YAHTMLSampleClass1"));
+        report.addRuleViolation(newRuleViolation(1, 1, 1, 2, "net.sf.pmd.test", "YAHTMLSampleClass1"));
+        report.addRuleViolation(newRuleViolation(1, 1, 1, 1, "net.sf.pmd.other", "YAHTMLSampleClass2"));
         String actual = ReportTest.render(getRenderer(), report);
         assertEquals(filter(getExpected()), filter(actual));
 

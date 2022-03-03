@@ -4,7 +4,9 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang3.EnumUtils;
@@ -99,9 +101,28 @@ public class ASTSwitchStatement extends AbstractJavaNode implements Iterable<AST
         return false;
     }
 
+    /**
+     * Returns true if this a switch which uses fallthrough branches
+     * (old school {@code case label: break;}) and not arrow branches.
+     * If the switch has no branches, returns false.
+     */
+    public boolean isFallthroughSwitch() {
+        return getFirstChildOfType(ASTSwitchLabel.class) != null
+            && getNumChildren() != 1;
+    }
 
     @Override
     public Iterator<ASTSwitchLabel> iterator() {
-        return new NodeChildrenIterator<>(this, ASTSwitchLabel.class);
+        List<ASTSwitchLabel> result = new ArrayList<>(findChildrenOfType(ASTSwitchLabel.class));
+        for (ASTSwitchLabeledBlock labeled : findChildrenOfType(ASTSwitchLabeledBlock.class)) {
+            result.add((ASTSwitchLabel) labeled.getChild(0));
+        }
+        for (ASTSwitchLabeledExpression labeled : findChildrenOfType(ASTSwitchLabeledExpression.class)) {
+            result.add((ASTSwitchLabel) labeled.getChild(0));
+        }
+        for (ASTSwitchLabeledThrowStatement labeled : findChildrenOfType(ASTSwitchLabeledThrowStatement.class)) {
+            result.add((ASTSwitchLabel) labeled.getChild(0));
+        }
+        return result.iterator();
     }
 }

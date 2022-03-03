@@ -60,7 +60,7 @@ public class PMDParameters {
 
     @Parameter(names = { "--threads", "-threads", "-t" }, description = "Sets the number of threads used by PMD.",
             validateWith = PositiveInteger.class)
-    private int threads = 1;
+    private int threads = 1; // see also default in PMDTask (Ant)
 
     @Parameter(names = { "--benchmark", "-benchmark", "-b" },
             description = "Benchmark mode - output a benchmark report upon completion; default to System.err.")

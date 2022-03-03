@@ -7,6 +7,7 @@ package net.sourceforge.pmd.renderers;
 import java.io.IOException;
 
 import net.sourceforge.pmd.Report;
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.util.datasource.DataSource;
 
 /**
@@ -16,8 +17,8 @@ import net.sourceforge.pmd.util.datasource.DataSource;
  * quite large in some scenarios. Consider using
  * {@link AbstractIncrementingRenderer} which can use significantly less memory.
  *
- * Subclasses should implement the {@link #end()} method to output the
- * {@link #report}.
+ * <p>Subclasses should only implement the {@link #end()} method to output the
+ * complete {@link #report}.
  *
  * @see AbstractIncrementingRenderer
  */
@@ -42,7 +43,15 @@ public abstract class AbstractAccumulatingRenderer extends AbstractRenderer {
         // does nothing - override if necessary
     }
 
+    /**
+     * {@inheritDoc}
+     * 
+     * @deprecated This is internal API. Do not override when extending {@link AbstractAccumulatingRenderer}.
+     * In PMD7 this method will be made final.
+     */
     @Override
+    @InternalApi
+    @Deprecated
     public void renderFileReport(Report report) throws IOException {
         this.report.merge(report);
     }

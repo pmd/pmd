@@ -19,6 +19,12 @@ import net.sourceforge.pmd.testframework.RuleTst;
 public class SuppressWarningsTest extends RuleTst {
 
     private static class BarRule extends AbstractJavaRule {
+
+        @Override
+        public String getMessage() {
+            return "a message";
+        }
+
         @Override
         public Object visit(ASTCompilationUnit cu, Object ctx) {
             // Convoluted rule to make sure the violation is reported for the

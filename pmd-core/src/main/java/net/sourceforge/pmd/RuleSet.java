@@ -20,6 +20,7 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.benchmark.TimedOperation;
 import net.sourceforge.pmd.benchmark.TimedOperationCategory;
@@ -633,9 +634,13 @@ public class RuleSet implements ChecksumAware {
      * Triggers that start lifecycle event on each rule in this ruleset. Some
      * rules perform initialization tasks on start.
      *
-     * @param ctx
-     *            the current context
+     * @param ctx the current context
+     *
+     * @deprecated This is internal API, removed in PMD 7. You should
+     *     not use a ruleset directly.
      */
+    @Deprecated
+    @InternalApi
     public void start(RuleContext ctx) {
         for (Rule rule : rules) {
             rule.start(ctx);
@@ -649,13 +654,19 @@ public class RuleSet implements ChecksumAware {
      *            the node list, usually the root nodes like compilation units
      * @param ctx
      *            the current context
+     *
+     * @deprecated This is internal API, removed in PMD 7. You should
+     * not use a ruleset directly.
      */
+    @Deprecated
+    @InternalApi
     public void apply(List<? extends Node> acuList, RuleContext ctx) {
         try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.RULE)) {
             for (Rule rule : rules) {
                 if (!rule.isRuleChain() && applies(rule, ctx.getLanguageVersion())) {
 
                     try (TimedOperation rto = TimeTracker.startOperation(TimedOperationCategory.RULE, rule.getName())) {
+                        ctx.setCurrentRule(rule);
                         rule.apply(acuList, ctx);
                     } catch (RuntimeException e) {
                         if (ctx.isIgnoreExceptions()) {
@@ -668,6 +679,8 @@ public class RuleSet implements ChecksumAware {
                         } else {
                             throw e;
                         }
+                    } finally {
+                        ctx.setCurrentRule(null);
                     }
                 }
             }
@@ -686,7 +699,12 @@ public class RuleSet implements ChecksumAware {
      *
      * @return <code>true</code> if the given rule matches the given language,
      *         which means, that the rule would be executed.
+     *
+     * @deprecated This is internal API, removed in PMD 7. You should
+     * not use a ruleset directly.
      */
+    @Deprecated
+    @InternalApi
     public static boolean applies(Rule rule, LanguageVersion languageVersion) {
         final LanguageVersion min = rule.getMinimumLanguageVersion();
         final LanguageVersion max = rule.getMaximumLanguageVersion();
@@ -701,7 +719,11 @@ public class RuleSet implements ChecksumAware {
      *
      * @param ctx
      *            the current context
+     * @deprecated This is internal API, removed in PMD 7. You should
+     * not use a ruleset directly.
      */
+    @Deprecated
+    @InternalApi
     public void end(RuleContext ctx) {
         for (Rule rule : rules) {
             rule.end(ctx);
@@ -838,7 +860,12 @@ public class RuleSet implements ChecksumAware {
      *
      * @param collector
      *            the removed rules will be added to this collection
+     *
+     * @deprecated This is internal API, removed in PMD 7. You should
+     * not use a ruleset directly.
      */
+    @Deprecated
+    @InternalApi
     public void removeDysfunctionalRules(Collection<Rule> collector) {
         Iterator<Rule> iter = rules.iterator();
 

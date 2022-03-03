@@ -59,6 +59,7 @@ public class PLSQLXPathRuleTest extends AbstractPLSQLParserTst {
         rule.setMessage("Test Violation");
 
         RuleContext ctx = new RuleContext();
+        ctx.setCurrentRule(rule);
         ctx.setLanguageVersion(plsql.getDefaultVersion());
 
         rule.apply(singletonList(node), ctx);

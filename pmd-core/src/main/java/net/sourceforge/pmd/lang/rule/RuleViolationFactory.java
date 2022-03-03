@@ -16,6 +16,10 @@ import net.sourceforge.pmd.lang.ast.Node;
  * <p>Since PMD 6.21.0, implementations of this interface are considered internal
  * API and hence deprecated. Clients should exclusively use this interface and obtain
  * instances through {@link LanguageVersionHandler#getRuleViolationFactory()}.
+ *
+ * <p>Since PMD 6.43.0, {@link RuleContext} has been enriched with methods that should
+ * be strongly preferred to using this interface directly. The interface will change a
+ * lot in PMD 7.
  */
 public interface RuleViolationFactory {
     /**

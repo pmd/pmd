@@ -45,14 +45,21 @@ public class AbstractApexRuleTest extends ApexParserTestBase {
 
     private void run(String code) {
         ApexNode<Compilation> node = parse(code);
+        TopLevelRule rule = new TopLevelRule();
         RuleContext ctx = new RuleContext();
         ctx.setLanguageVersion(apex.getDefaultVersion());
-        TopLevelRule rule = new TopLevelRule();
+        ctx.setCurrentRule(rule);
         rule.apply(Collections.singletonList(node), ctx);
         assertEquals(1, ctx.getReport().size());
     }
 
     private static class TopLevelRule extends AbstractApexRule {
+
+        @Override
+        public String getMessage() {
+            return "a message";
+        }
+
         @Override
         public Object visit(ASTUserClass node, Object data) {
             addViolation(data, node);

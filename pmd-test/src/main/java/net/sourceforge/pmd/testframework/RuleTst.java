@@ -34,7 +34,7 @@ import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
-import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.PMDException;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Rule;
@@ -44,6 +44,7 @@ import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.RulesetsFactoryUtils;
+import net.sourceforge.pmd.SourceCodeProcessor;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
@@ -268,18 +269,18 @@ public abstract class RuleTst {
     public void runTestFromString(String code, Rule rule, Report report, LanguageVersion languageVersion,
             boolean isUseAuxClasspath) {
         try {
-            PMD p = new PMD();
-            p.getConfiguration().setDefaultLanguageVersion(languageVersion);
-            p.getConfiguration().setIgnoreIncrementalAnalysis(true);
+            PMDConfiguration configuration = new PMDConfiguration();
+            configuration.setDefaultLanguageVersion(languageVersion);
+            configuration.setIgnoreIncrementalAnalysis(true);
             if (isUseAuxClasspath) {
                 // configure the "auxclasspath" option for unit testing
-                p.getConfiguration().prependClasspath(".");
+                configuration.prependClasspath(".");
             } else {
                 // simple class loader, that doesn't delegate to parent.
                 // this allows us in the tests to simulate PMD run without
                 // auxclasspath, not even the classes from the test dependencies
                 // will be found.
-                p.getConfiguration().setClassLoader(new ClassLoader() {
+                configuration.setClassLoader(new ClassLoader() {
                     @Override
                     protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
                         if (name.startsWith("java.") || name.startsWith("javax.")) {
@@ -295,7 +296,8 @@ public abstract class RuleTst {
             ctx.setLanguageVersion(languageVersion);
             ctx.setIgnoreExceptions(false);
             RuleSet rules = RuleSet.forSingleRule(rule);
-            p.getSourceCodeProcessor().processSourceCode(new StringReader(code), new RuleSets(rules), ctx);
+            SourceCodeProcessor sourceCodeProcessor = new SourceCodeProcessor(configuration);
+            sourceCodeProcessor.processSourceCode(new StringReader(code), new RuleSets(rules), ctx);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
