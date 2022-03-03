@@ -94,6 +94,8 @@ public class Foo {
     <test-code>
         <description>False positive with no describer options on SObjectField</description>
         <expected-problems>0</expected-problems>
+        <!-- note, this is not a violation. The default behaviour for SObjectField.getDescribe()
+            doesn't seem to be a performance problem. #3773 -->
         <code><![CDATA[
 public class Foo {
     public void bar(Case case) {
