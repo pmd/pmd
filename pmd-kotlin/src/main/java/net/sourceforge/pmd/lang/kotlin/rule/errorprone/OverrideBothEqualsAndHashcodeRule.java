@@ -8,7 +8,6 @@ package net.sourceforge.pmd.lang.kotlin.rule.errorprone;
 import java.util.List;
 
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.lang.ast.AstVisitor;
 import net.sourceforge.pmd.lang.kotlin.AbstractKotlinRule;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtClassDeclaration;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtClassMemberDeclaration;
@@ -20,6 +19,7 @@ import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtFunctionValueParameter
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtModifiers;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtSimpleIdentifier;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinTerminalNode;
+import net.sourceforge.pmd.lang.kotlin.ast.KotlinVisitor;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinVisitorBase;
 
 public class OverrideBothEqualsAndHashcodeRule extends AbstractKotlinRule {
@@ -27,7 +27,7 @@ public class OverrideBothEqualsAndHashcodeRule extends AbstractKotlinRule {
     private static final Visitor INSTANCE = new Visitor();
 
     @Override
-    public AstVisitor<RuleContext, ?> buildVisitor() {
+    public KotlinVisitor<RuleContext, ?> buildVisitor() {
         return INSTANCE;
     }
 
