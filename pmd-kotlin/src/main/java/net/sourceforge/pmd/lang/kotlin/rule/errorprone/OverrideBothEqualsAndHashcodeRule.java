@@ -7,6 +7,8 @@ package net.sourceforge.pmd.lang.kotlin.rule.errorprone;
 
 import java.util.List;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.kotlin.AbstractKotlinRule;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtClassDeclaration;
@@ -17,6 +19,7 @@ import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtFunctionDeclaration;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinTerminalNode;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinVisitor;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinVisitorBase;
+import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 
 public class OverrideBothEqualsAndHashcodeRule extends AbstractKotlinRule {
 
@@ -25,6 +28,11 @@ public class OverrideBothEqualsAndHashcodeRule extends AbstractKotlinRule {
     @Override
     public KotlinVisitor<RuleContext, ?> buildVisitor() {
         return INSTANCE;
+    }
+
+    @Override
+    protected @NonNull RuleTargetSelector buildTargetSelector() {
+        return RuleTargetSelector.forTypes(KtClassMemberDeclarations.class);
     }
 
     private static class Visitor extends KotlinVisitorBase<RuleContext, Void> {
