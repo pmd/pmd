@@ -7,17 +7,15 @@ package net.sourceforge.pmd;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.util.List;
 import java.util.Map.Entry;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.event.Level;
 
+import net.sourceforge.pmd.ReportStatsListener.ReportStats;
 import net.sourceforge.pmd.benchmark.TextTimingReportRenderer;
 import net.sourceforge.pmd.benchmark.TimeTracker;
-import net.sourceforge.pmd.benchmark.TimedOperation;
-import net.sourceforge.pmd.benchmark.TimedOperationCategory;
 import net.sourceforge.pmd.benchmark.TimingReport;
 import net.sourceforge.pmd.benchmark.TimingReportRenderer;
 import net.sourceforge.pmd.cache.NoopAnalysisCache;
@@ -25,6 +23,8 @@ import net.sourceforge.pmd.cli.PMDCommandLineInterface;
 import net.sourceforge.pmd.cli.PmdParametersParseResult;
 import net.sourceforge.pmd.cli.internal.CliMessages;
 import net.sourceforge.pmd.internal.Slf4jSimpleConfiguration;
+import net.sourceforge.pmd.util.log.PmdLogger;
+import net.sourceforge.pmd.util.log.SimplePmdLogger;
 
 /**
  * Entry point for PMD's CLI. Use {@link #runPmd(PMDConfiguration)}
@@ -61,60 +61,31 @@ public final class PMD {
     }
 
 
-    /**
-     * This method is the main entry point for command line usage.
-     *
-     * @param configuration the configuration to use
-     *
-     * @return number of violations found.
-     */
-    private static int doPMD(PMDConfiguration configuration) {
-        try (PmdAnalysis pmd = PmdAnalysis.create(configuration)) {
-            if (pmd.getRulesets().isEmpty()) {
-                return PMDCommandLineInterface.NO_ERRORS_STATUS;
-            }
-            try {
-                Report report = pmd.performAnalysisAndCollectReport();
-
-                if (!report.getProcessingErrors().isEmpty()) {
-                    printErrorDetected(report.getProcessingErrors().size());
-                }
-
-                return report.getViolations().size();
-            } catch (Exception e) {
-                pmd.getLog().errorEx("Exception during processing", e);
-                printErrorDetected(1);
-                return PMDCommandLineInterface.NO_ERRORS_STATUS; // fixme?
-            }
+    private static ReportStatsListener.ReportStats runAndReturnStats(PmdAnalysis pmd) {
+        if (pmd.getRulesets().isEmpty()) {
+            return ReportStats.empty();
         }
-    }
 
-    static List<RuleSet> getRuleSetsWithBenchmark(List<String> rulesetPaths, RuleSetLoader factory) {
-        try (TimedOperation ignored = TimeTracker.startOperation(TimedOperationCategory.LOAD_RULES)) {
-            try {
-                List<RuleSet> ruleSets = factory.loadFromResources(rulesetPaths);
-                printRuleNamesInDebug(ruleSets);
-                return ruleSets;
-            } catch (RuleSetLoadException rsnfe) {
-                log.error("Ruleset not found", rsnfe);
-                throw rsnfe;
-            }
-        }
-    }
+        @SuppressWarnings("PMD.CloseResource")
+        ReportStatsListener listener = new ReportStatsListener();
 
-    /**
-     * If in debug modus, print the names of the rules.
-     *
-     * @param rulesets the RuleSets to print
-     */
-    private static void printRuleNamesInDebug(List<RuleSet> rulesets) {
-        if (log.isDebugEnabled()) {
-            for (RuleSet rset : rulesets) {
-                for (Rule r : rset.getRules()) {
-                    log.debug("Loaded rule {}", r.getName());
-                }
-            }
+        pmd.addListener(listener);
+
+        try {
+            pmd.performAnalysis();
+        } catch (Exception e) {
+            pmd.getLog().errorEx("Exception during processing", e);
+            ReportStats stats = listener.getResult();
+            printErrorDetected(1 + stats.getNumErrors());
+            return stats; // should have been closed
         }
+        ReportStats stats = listener.getResult();
+
+        if (stats.getNumViolations() > 0) {
+            printErrorDetected(stats.getNumViolations());
+        }
+
+        return stats;
     }
 
 
@@ -200,44 +171,63 @@ public final class PMD {
         // only reconfigure logging, if debug flag was used on command line
         // otherwise just use whatever is in conf/simplelogger.properties which happens automatically
         if (configuration.isDebug()) {
-            Slf4jSimpleConfiguration.reconfigureDefaultLogLevel(Level.DEBUG);
+            Slf4jSimpleConfiguration.reconfigureDefaultLogLevel(Level.TRACE);
             // need to reload the logger with the new configuration
             log = LoggerFactory.getLogger(PMD.class);
         }
+        PmdLogger pmdLogger = new SimplePmdLogger(log);
         // always install java.util.logging to slf4j bridge
         Slf4jSimpleConfiguration.installJulBridge();
         // logging, mostly for testing purposes
         Level defaultLogLevel = Slf4jSimpleConfiguration.getDefaultLogLevel();
         log.atLevel(defaultLogLevel).log("Log level is at {}", defaultLogLevel);
 
-        StatusCode status;
         try {
-            int violations = PMD.doPMD(configuration);
-            if (violations > 0 && configuration.isFailOnViolation()) {
-                status = StatusCode.VIOLATIONS_FOUND;
-            } else {
-                status = StatusCode.OK;
+            PmdAnalysis pmd;
+            try {
+                pmd = PmdAnalysis.create(configuration, pmdLogger);
+            } catch (Exception e) {
+                pmdLogger.errorEx("Could not initialize analysis", e);
+                return StatusCode.ERROR;
             }
-        } catch (Exception e) {
-            System.err.println(e.getMessage());
-            status = StatusCode.ERROR;
-        } finally {
-            if (configuration.isBenchmark()) {
-                final TimingReport timingReport = TimeTracker.stopGlobalTracking();
-
-                // TODO get specified report format from config
-                final TimingReportRenderer renderer = new TextTimingReportRenderer();
-                try {
-                    // Don't close this writer, we don't want to close stderr
-                    @SuppressWarnings("PMD.CloseResource")
-                    final Writer writer = new OutputStreamWriter(System.err);
-                    renderer.render(timingReport, writer);
-                } catch (final IOException e) {
-                    System.err.println(e.getMessage());
+            try {
+                ReportStats stats;
+                stats = PMD.runAndReturnStats(pmd);
+                if (stats.getNumErrors() > 0 || pmdLogger.numErrors() > 0) {
+                    return StatusCode.ERROR;
+                } else if (stats.getNumViolations() > 0 && configuration.isFailOnViolation()) {
+                    return StatusCode.VIOLATIONS_FOUND;
+                } else {
+                    return StatusCode.OK;
                 }
+            } finally {
+                pmd.close();
+            }
+
+        } catch (Exception e) {
+            pmdLogger.errorEx("Exception while running PMD.", e);
+            printErrorDetected(1);
+            return StatusCode.ERROR;
+        } finally {
+            finishBenchmarker(configuration);
+        }
+    }
+
+    private static void finishBenchmarker(PMDConfiguration configuration) {
+        if (configuration.isBenchmark()) {
+            final TimingReport timingReport = TimeTracker.stopGlobalTracking();
+
+            // TODO get specified report format from config
+            final TimingReportRenderer renderer = new TextTimingReportRenderer();
+            try {
+                // Don't close this writer, we don't want to close stderr
+                @SuppressWarnings("PMD.CloseResource")
+                final Writer writer = new OutputStreamWriter(System.err);
+                renderer.render(timingReport, writer);
+            } catch (final IOException e) {
+                System.err.println(e.getMessage());
             }
         }
-        return status;
     }
 
     /**

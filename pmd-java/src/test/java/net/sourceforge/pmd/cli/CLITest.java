@@ -8,6 +8,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 
 import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.contrib.java.lang.system.RestoreSystemProperties;
@@ -30,6 +31,12 @@ public class CLITest extends BaseCLITest {
     public static void resetLogging() {
         Slf4jSimpleConfiguration.reconfigureDefaultLogLevel(null);
     }
+
+    @Before
+    public void setupLogging() {
+        Slf4jSimpleConfiguration.reconfigureDefaultLogLevel(null);
+    }
+
 
     @Test
     public void minimalArgs() {

@@ -14,10 +14,11 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.event.Level;
 
 import net.sourceforge.pmd.Report.GlobalReportBuilderListener;
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.benchmark.TimedOperation;
 import net.sourceforge.pmd.benchmark.TimedOperationCategory;
@@ -68,12 +69,15 @@ import net.sourceforge.pmd.util.log.SimplePmdLogger;
  */
 public final class PmdAnalysis implements AutoCloseable {
 
+    private static final Logger LOG = LoggerFactory.getLogger(PmdAnalysis.class);
+
     private final FileCollector collector;
     private final List<Renderer> renderers = new ArrayList<>();
     private final List<GlobalAnalysisListener> listeners = new ArrayList<>();
     private final List<RuleSet> ruleSets = new ArrayList<>();
     private final PMDConfiguration configuration;
-    private final SimplePmdLogger logger = new SimplePmdLogger(LoggerFactory.getLogger(getClass()));
+    private final PmdLogger logger;
+
 
     /**
      * Constructs a new instance. The files paths (input files, filelist,
@@ -81,14 +85,13 @@ public final class PmdAnalysis implements AutoCloseable {
      * the file collector ({@link #files()}), but more can be added
      * programmatically using the file collector.
      */
-    private PmdAnalysis(PMDConfiguration config) {
+    private PmdAnalysis(PMDConfiguration config, PmdLogger logger) {
         this.configuration = config;
+        this.logger = logger;
         this.collector = FileCollector.newCollector(
             config.getLanguageVersionDiscoverer(),
             logger
         );
-        final Level logLevel = configuration.isDebug() ? Level.TRACE : Level.INFO;
-        this.logger.setLevel(logLevel);
     }
 
     /**
@@ -105,7 +108,15 @@ public final class PmdAnalysis implements AutoCloseable {
      * </ul>
      */
     public static PmdAnalysis create(PMDConfiguration config) {
-        PmdAnalysis builder = new PmdAnalysis(config);
+        return create(
+            config,
+            new SimplePmdLogger(LoggerFactory.getLogger(PmdAnalysis.class))
+        );
+    }
+
+    @InternalApi
+    static PmdAnalysis create(PMDConfiguration config, PmdLogger logger) {
+        PmdAnalysis builder = new PmdAnalysis(config, logger);
 
         // note: do not filter files by language
         // they could be ignored later. The problem is if you call
@@ -120,7 +131,7 @@ public final class PmdAnalysis implements AutoCloseable {
         }
 
         final RuleSetLoader ruleSetLoader = RuleSetLoader.fromPmdConfig(config);
-        final List<RuleSet> ruleSets = PMD.getRuleSetsWithBenchmark(config.getRuleSetPaths(), ruleSetLoader);
+        final List<RuleSet> ruleSets = loadRulesets(config.getRuleSetPaths(), ruleSetLoader, logger);
         for (RuleSet ruleSet : ruleSets) {
             builder.addRuleSet(ruleSet);
         }
@@ -332,6 +343,40 @@ public final class PmdAnalysis implements AutoCloseable {
          */
         if (configuration.getClassLoader() instanceof ClasspathClassLoader) {
             IOUtil.tryCloseClassLoader(configuration.getClassLoader());
+        }
+    }
+
+    /**
+     * TODO move that to RuleSetLoader
+     */
+    static List<RuleSet> loadRulesets(List<String> rulesetPaths, RuleSetLoader factory, PmdLogger logger) {
+
+        try (TimedOperation ignored = TimeTracker.startOperation(TimedOperationCategory.LOAD_RULES)) {
+            List<RuleSet> ruleSets = new ArrayList<>(rulesetPaths.size());
+            boolean anyRules = false;
+            for (String path : rulesetPaths) {
+                try {
+                    RuleSet ruleset = factory.loadFromResource(path);
+                    anyRules |= !ruleset.getRules().isEmpty();
+                    printRulesInDebug(ruleset);
+                    ruleSets.add(ruleset);
+                } catch (RuleSetLoadException e) {
+                    logger.errorEx("Cannot load ruleset {}", new Object[] { path }, e);
+                }
+            }
+            if (!anyRules) {
+                logger.error("No rules found. Maybe you misspelled a rule name? ({})",
+                             String.join(",", rulesetPaths));
+            }
+            return ruleSets;
+        }
+    }
+
+    static void printRulesInDebug(RuleSet ruleset) {
+        if (LOG.isDebugEnabled()) {
+            for (Rule rule : ruleset.getRules()) {
+                LOG.debug("Loaded rule {}", rule);
+            }
         }
     }
 }

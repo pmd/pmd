@@ -29,7 +29,7 @@ abstract class PmdLoggerBase implements PmdLogger {
     @Override
     public final boolean isLoggable(Level level) {
         return minLevel != null
-            && minLevel.compareTo(level) <= 0
+            && minLevel.compareTo(level) >= 0
             && isLoggableImpl(level);
     }
 
