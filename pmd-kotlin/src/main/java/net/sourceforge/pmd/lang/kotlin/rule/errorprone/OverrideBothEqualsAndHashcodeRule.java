@@ -14,10 +14,6 @@ import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtClassMemberDeclaration
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtClassMemberDeclarations;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtDeclaration;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtFunctionDeclaration;
-import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtFunctionValueParameter;
-import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtFunctionValueParameters;
-import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtModifiers;
-import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtSimpleIdentifier;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinTerminalNode;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinVisitor;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinVisitorBase;
@@ -51,23 +47,27 @@ public class OverrideBothEqualsAndHashcodeRule extends AbstractKotlinRule {
 
         private boolean isEqualsMethod(KtFunctionDeclaration fun) {
             String name = getFunctionName(fun);
-            int arity = fun.children(KtFunctionValueParameters.class).children(KtFunctionValueParameter.class).count();
+            int arity = getArity(fun);
             return "equals".equals(name) && hasOverrideModifier(fun) && arity == 1;
         }
 
         private boolean isHashCodeMethod(KtFunctionDeclaration fun) {
             String name = getFunctionName(fun);
-            int arity = fun.children(KtFunctionValueParameters.class).children(KtFunctionValueParameter.class).count();
+            int arity = getArity(fun);
             return "hashCode".equals(name) && hasOverrideModifier(fun) && arity == 0;
         }
 
         private String getFunctionName(KtFunctionDeclaration fun) {
-            return fun.children(KtSimpleIdentifier.class).children(KotlinTerminalNode.class).first().getText();
+            return fun.simpleIdentifier().children(KotlinTerminalNode.class).first().getText();
         }
 
         private boolean hasOverrideModifier(KtFunctionDeclaration fun) {
-            return fun.children(KtModifiers.class).descendants(KotlinTerminalNode.class)
+            return fun.modifiers().descendants(KotlinTerminalNode.class)
                     .any(t -> "override".equals(t.getText()));
+        }
+
+        private int getArity(KtFunctionDeclaration fun) {
+            return fun.functionValueParameters().functionValueParameter().size();
         }
     }
 }
