@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.cache;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 

@@ -4,8 +4,9 @@
 
 package net.sourceforge.pmd.util.log;
 
+import org.slf4j.event.Level;
+
 import net.sourceforge.pmd.annotation.InternalApi;
-import net.sourceforge.pmd.internal.util.AssertionUtil;
 
 /**
  * Logger façade. Can probably be converted to just SLF4J logger in PMD 7.
@@ -21,50 +22,43 @@ public interface PmdLogger {
 
     void logEx(Level level, String message, Object[] formatArgs, Throwable error);
 
-    void info(String message, Object... formatArgs);
+    default void info(String message, Object... formatArgs) {
+        log(Level.INFO, message, formatArgs);
+    }
 
-    void trace(String message, Object... formatArgs);
+    // todo trace and debug should be on SLF4J logger directly
+    default void trace(String message, Object... formatArgs) {
+        log(Level.TRACE, message, formatArgs);
+    }
 
-    void debug(String message, Object... formatArgs);
+    default void debug(String message, Object... formatArgs) {
+        log(Level.DEBUG, message, formatArgs);
+    }
 
-    void warning(String message, Object... formatArgs);
+    default void warning(String message, Object... formatArgs) {
+        log(Level.WARN, message, formatArgs);
+    }
 
-    void warningEx(String message, Throwable error);
+    default void warningEx(String message, Throwable error) {
+        logEx(Level.WARN, message, new Object[0], error);
+    }
 
-    void warningEx(String message, Object[] formatArgs, Throwable error);
+    default void warningEx(String message, Object[] formatArgs, Throwable error) {
+        logEx(Level.WARN, message, formatArgs, error);
+    }
 
-    void error(String message, Object... formatArgs);
+    default void error(String message, Object... formatArgs) {
+        log(Level.ERROR, message, formatArgs);
+    }
 
-    void errorEx(String message, Throwable error);
+    default void errorEx(String message, Throwable error) {
+        logEx(Level.ERROR, message, new Object[0], error);
+    }
 
-    void errorEx(String message, Object[] formatArgs, Throwable error);
+    default void errorEx(String message, Object[] formatArgs, Throwable error) {
+        logEx(Level.ERROR, message, formatArgs, error);
+    }
 
     int numErrors();
-
-    // levels, in sync with SLF4J levels
-    enum Level {
-        TRACE,
-        DEBUG,
-        INFO,
-        WARN,
-        ERROR;
-
-        java.util.logging.Level toJutilLevel() {
-            switch (this) {
-            case DEBUG:
-                return java.util.logging.Level.FINE;
-            case ERROR:
-                return java.util.logging.Level.SEVERE;
-            case INFO:
-                return java.util.logging.Level.INFO;
-            case TRACE:
-                return java.util.logging.Level.FINER;
-            case WARN:
-                return java.util.logging.Level.WARNING;
-            default:
-                throw AssertionUtil.shouldNotReachHere("exhaustive");
-            }
-        }
-    }
 
 }

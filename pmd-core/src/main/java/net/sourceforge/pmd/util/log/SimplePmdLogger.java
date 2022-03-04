@@ -4,8 +4,8 @@
 
 package net.sourceforge.pmd.util.log;
 
-import java.text.MessageFormat;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.event.Level;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 
@@ -25,11 +25,11 @@ public class SimplePmdLogger extends PmdLoggerBase implements PmdLogger {
 
     @Override
     protected boolean isLoggableImpl(Level level) {
-        return backend.isLoggable(level.toJutilLevel());
+        return backend.isEnabledForLevel(level);
     }
 
     @Override
     protected void logImpl(Level level, String message, Object[] formatArgs) {
-        backend.log(level.toJutilLevel(), MessageFormat.format(message, formatArgs));
+        backend.atLevel(level).log(message, formatArgs);
     }
 }

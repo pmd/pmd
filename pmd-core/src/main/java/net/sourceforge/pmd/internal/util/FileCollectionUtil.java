@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.io.IOUtils;
+import org.slf4j.event.Level;
 
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.lang.Language;
@@ -27,7 +28,6 @@ import net.sourceforge.pmd.util.database.DBURI;
 import net.sourceforge.pmd.util.database.SourceObject;
 import net.sourceforge.pmd.util.datasource.DataSource;
 import net.sourceforge.pmd.util.log.PmdLogger;
-import net.sourceforge.pmd.util.log.PmdLogger.Level;
 import net.sourceforge.pmd.util.log.PmdLoggerScope;
 
 /**
@@ -105,7 +105,7 @@ public final class FileCollectionUtil {
     public static void collectFileList(FileCollector collector, String fileListLocation) {
         Path path = Paths.get(fileListLocation);
         if (!Files.exists(path)) {
-            collector.getLog().error("No such file {0}", fileListLocation);
+            collector.getLog().error("No such file {}", fileListLocation);
             return;
         }
 
@@ -113,7 +113,7 @@ public final class FileCollectionUtil {
         try {
             filePaths = FileUtil.readFilelist(path.toFile());
         } catch (IOException e) {
-            collector.getLog().errorEx("Error reading {0}", new Object[] { fileListLocation }, e);
+            collector.getLog().errorEx("Error reading {}", new Object[] { fileListLocation }, e);
             return;
         }
         collectFiles(collector, filePaths);
@@ -122,7 +122,7 @@ public final class FileCollectionUtil {
     private static void addRoot(FileCollector collector, String rootLocation) throws IOException {
         Path path = Paths.get(rootLocation);
         if (!Files.exists(path)) {
-            collector.getLog().error("No such file {0}", path);
+            collector.getLog().error("No such file {}", path);
             return;
         }
 
@@ -140,27 +140,27 @@ public final class FileCollectionUtil {
         } else if (Files.isRegularFile(path)) {
             collector.addFile(path);
         } else {
-            collector.getLog().trace("Ignoring {0}: not a regular file or directory", path);
+            collector.getLog().trace("Ignoring {}: not a regular file or directory", path);
         }
     }
 
     public static void collectDB(FileCollector collector, String uriString) {
         try {
-            collector.getLog().trace("Connecting to {0}", uriString);
+            collector.getLog().trace("Connecting to {}", uriString);
             DBURI dbUri = new DBURI(uriString);
             DBMSMetadata dbmsMetadata = new DBMSMetadata(dbUri);
             collector.getLog().trace("DBMSMetadata retrieved");
             List<SourceObject> sourceObjectList = dbmsMetadata.getSourceObjectList();
-            collector.getLog().trace("Located {0} database source objects", sourceObjectList.size());
+            collector.getLog().trace("Located {} database source objects", sourceObjectList.size());
             for (SourceObject sourceObject : sourceObjectList) {
                 String falseFilePath = sourceObject.getPseudoFileName();
-                collector.getLog().trace("Adding database source object {0}", falseFilePath);
+                collector.getLog().trace("Adding database source object {}", falseFilePath);
 
                 try (Reader sourceCode = dbmsMetadata.getSourceCode(sourceObject)) {
                     String source = IOUtils.toString(sourceCode);
                     collector.addSourceFile(source, falseFilePath);
                 } catch (SQLException ex) {
-                    collector.getLog().warningEx("Cannot get SourceCode for {0}  - skipping ...",
+                    collector.getLog().warningEx("Cannot get SourceCode for {}  - skipping ...",
                                                  new Object[] { falseFilePath},
                                                  ex);
                 }
@@ -168,7 +168,7 @@ public final class FileCollectionUtil {
         } catch (ClassNotFoundException e) {
             collector.getLog().errorEx("Cannot get files from DB - probably missing database JDBC driver", e);
         } catch (Exception e) {
-            collector.getLog().errorEx("Cannot get files from DB - ''{0}''", new Object[] { uriString }, e);
+            collector.getLog().errorEx("Cannot get files from DB - ''{}''", new Object[] { uriString }, e);
         }
     }
 }

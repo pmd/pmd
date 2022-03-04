@@ -9,7 +9,7 @@ import net.sourceforge.pmd.util.datasource.DataSource;
 /**
  * @author Clément Fournier
  */
-class NoopAnalysisListener implements GlobalAnalysisListener {
+final class NoopAnalysisListener implements GlobalAnalysisListener {
 
     static final NoopAnalysisListener INSTANCE = new NoopAnalysisListener();
 

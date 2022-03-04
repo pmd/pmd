@@ -127,7 +127,7 @@ public final class FileCollector implements AutoCloseable {
      */
     public boolean addFile(Path file) {
         if (!Files.isRegularFile(file)) {
-            log.error("Not a regular file {0}", file);
+            log.error("Not a regular file {}", file);
             return false;
         }
         LanguageVersion languageVersion = discoverLanguage(file.toString());
@@ -151,7 +151,7 @@ public final class FileCollector implements AutoCloseable {
     public boolean addFile(Path file, Language language) {
         AssertionUtil.requireParamNotNull("language", language);
         if (!Files.isRegularFile(file)) {
-            log.error("Not a regular file {0}", file);
+            log.error("Not a regular file {}", file);
             return false;
         }
         NioTextFile nioTextFile = new NioTextFile(file, charset, discoverer.getDefaultLanguageVersion(language), getDisplayName(file));
@@ -195,7 +195,7 @@ public final class FileCollector implements AutoCloseable {
     }
 
     private void addFileImpl(TextFile textFile) {
-        log.trace("Adding file {0} (lang: {1}) ", textFile.getPathId(), textFile.getLanguageVersion().getTerseName());
+        log.trace("Adding file {} (lang: {}) ", textFile.getPathId(), textFile.getLanguageVersion().getTerseName());
         allFilesToProcess.add(textFile);
     }
 
@@ -206,12 +206,12 @@ public final class FileCollector implements AutoCloseable {
         List<Language> languages = discoverer.getLanguagesForFile(file);
 
         if (languages.isEmpty()) {
-            log.trace("File {0} matches no known language, ignoring", file);
+            log.trace("File {} matches no known language, ignoring", file);
             return null;
         }
         Language lang = languages.get(0);
         if (languages.size() > 1) {
-            log.trace("File {0} matches multiple languages ({1}), selecting {2}", file, languages, lang);
+            log.trace("File {} matches multiple languages ({}), selecting {}", file, languages, lang);
         }
         return discoverer.getDefaultLanguageVersion(lang);
     }
@@ -227,10 +227,10 @@ public final class FileCollector implements AutoCloseable {
         LanguageVersion contextVersion = discoverer.getDefaultLanguageVersion(language);
         if (!fileVersion.equals(contextVersion)) {
             log.error(
-                "Cannot add file {0}: version ''{2}'' does not match ''{1}''",
+                "Cannot add file {}: version ''{}'' does not match ''{}''",
                 textFile.getPathId(),
-                contextVersion,
-                fileVersion
+                fileVersion,
+                contextVersion
             );
             return false;
         }
@@ -270,7 +270,7 @@ public final class FileCollector implements AutoCloseable {
      */
     public boolean addDirectory(Path dir) throws IOException {
         if (!Files.isDirectory(dir)) {
-            log.error("Not a directory {0}", dir);
+            log.error("Not a directory {}", dir);
             return false;
         }
         Files.walkFileTree(dir, new SimpleFileVisitor<Path>() {
@@ -298,7 +298,7 @@ public final class FileCollector implements AutoCloseable {
         } else if (Files.isRegularFile(file)) {
             return addFile(file);
         } else {
-            log.error("Not a file or directory {0}", file);
+            log.error("Not a file or directory {}", file);
             return false;
         }
     }
@@ -361,7 +361,7 @@ public final class FileCollector implements AutoCloseable {
         for (Iterator<TextFile> iterator = allFilesToProcess.iterator(); iterator.hasNext();) {
             TextFile file = iterator.next();
             if (toExclude.contains(file)) {
-                log.trace("Excluding file {0}", file.getPathId());
+                log.trace("Excluding file {}", file.getPathId());
                 iterator.remove();
             }
         }
@@ -376,7 +376,7 @@ public final class FileCollector implements AutoCloseable {
             TextFile file = iterator.next();
             Language lang = file.getLanguageVersion().getLanguage();
             if (!languages.contains(lang)) {
-                log.trace("Filtering out {0}, no rules for language {1}", file.getPathId(), lang);
+                log.trace("Filtering out {}, no rules for language {}", file.getPathId(), lang);
                 iterator.remove();
             }
         }

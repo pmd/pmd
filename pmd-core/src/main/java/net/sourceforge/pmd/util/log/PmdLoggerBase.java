@@ -5,12 +5,12 @@
 package net.sourceforge.pmd.util.log;
 
 import java.text.MessageFormat;
-import java.util.logging.Logger;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.slf4j.event.Level;
 
 /**
- * A logger based on a {@link Logger}.
+ * Base implementation.
  *
  * @author Clément Fournier
  */
@@ -63,50 +63,6 @@ abstract class PmdLoggerBase implements PmdLogger {
      */
     protected abstract void logImpl(Level level, String message, Object[] formatArgs);
 
-    @Override
-    public void trace(String message, Object... formatArgs) {
-        log(Level.TRACE, message, formatArgs);
-    }
-
-    @Override
-    public void debug(String message, Object... formatArgs) {
-        log(Level.DEBUG, message, formatArgs);
-    }
-
-    @Override
-    public void info(String message, Object... formatArgs) {
-        log(Level.INFO, message, formatArgs);
-    }
-
-    @Override
-    public void warning(String message, Object... formatArgs) {
-        log(Level.WARN, message, formatArgs);
-    }
-
-    @Override
-    public final void warningEx(String message, Throwable error) {
-        warningEx(message, new Object[0], error);
-    }
-
-    @Override
-    public void warningEx(String message, Object[] formatArgs, Throwable error) {
-        logEx(Level.WARN, message, formatArgs, error);
-    }
-
-    @Override
-    public void error(String message, Object... formatArgs) {
-        log(Level.ERROR, message, formatArgs);
-    }
-
-    @Override
-    public final void errorEx(String message, Throwable error) {
-        errorEx(message, new Object[0], error);
-    }
-
-    @Override
-    public void errorEx(String message, Object[] formatArgs, Throwable error) {
-        logEx(Level.ERROR, message, formatArgs, error);
-    }
 
     @Override
     public int numErrors() {

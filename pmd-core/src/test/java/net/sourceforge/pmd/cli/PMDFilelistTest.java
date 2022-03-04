@@ -24,7 +24,7 @@ import net.sourceforge.pmd.util.log.NoopPmdLogger;
 public class PMDFilelistTest {
 
     private static @NonNull FileCollector newCollector() {
-        return FileCollector.newCollector(new LanguageVersionDiscoverer(), NoopPmdLogger.INSTANCE);
+        return FileCollector.newCollector(new LanguageVersionDiscoverer(), new NoopPmdLogger());
     }
 
     @Test

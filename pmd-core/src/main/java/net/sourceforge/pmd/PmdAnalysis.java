@@ -13,7 +13,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import java.util.logging.Logger;
+
+import org.slf4j.LoggerFactory;
+import org.slf4j.event.Level;
 
 import net.sourceforge.pmd.Report.GlobalReportBuilderListener;
 import net.sourceforge.pmd.benchmark.TimeTracker;
@@ -33,7 +35,6 @@ import net.sourceforge.pmd.util.ClasspathClassLoader;
 import net.sourceforge.pmd.util.IOUtil;
 import net.sourceforge.pmd.util.datasource.DataSource;
 import net.sourceforge.pmd.util.log.PmdLogger;
-import net.sourceforge.pmd.util.log.PmdLogger.Level;
 import net.sourceforge.pmd.util.log.SimplePmdLogger;
 
 /**
@@ -72,7 +73,7 @@ public final class PmdAnalysis implements AutoCloseable {
     private final List<GlobalAnalysisListener> listeners = new ArrayList<>();
     private final List<RuleSet> ruleSets = new ArrayList<>();
     private final PMDConfiguration configuration;
-    private final SimplePmdLogger logger = new SimplePmdLogger(Logger.getLogger("net.sourceforge.pmd"));
+    private final SimplePmdLogger logger = new SimplePmdLogger(LoggerFactory.getLogger(getClass()));
 
     /**
      * Constructs a new instance. The files paths (input files, filelist,
@@ -199,6 +200,7 @@ public final class PmdAnalysis implements AutoCloseable {
 
             GlobalAnalysisListener listener;
             try {
+                @SuppressWarnings("PMD.CloseResource")
                 AnalysisCacheListener cacheListener = new AnalysisCacheListener(
                     configuration.getAnalysisCache(),
                     rulesets,
@@ -216,22 +218,14 @@ public final class PmdAnalysis implements AutoCloseable {
             }
 
             try (TimedOperation ignored = TimeTracker.startOperation(TimedOperationCategory.FILE_PROCESSING)) {
-                // todo Just like we throw for invalid properties, "broken rules"
-                // shouldn't be a "config error". This is the only instance of
-                // config errors...
-
-                if (isEmpty(this.ruleSets)) {
-                    if (!configuration.getRuleSetPaths().isEmpty()) {
-                        logger.error("No rules found. Maybe you misspelled a rule name? ({0})",
-                                     String.join(",", configuration.getRuleSetPaths()));
-
-                    } else {
-                        logger.error("No rules found.");
-                    }
+                if (checkNoRulesRegistered()) {
                     return;
                 }
 
                 for (final Rule rule : removeBrokenRules(rulesets)) {
+                    // todo Just like we throw for invalid properties, "broken rules"
+                    // shouldn't be a "config error". This is the only instance of
+                    // config errors...
                     listener.onConfigError(new Report.ConfigurationError(rule, rule.dysfunctionReason()));
                 }
 
@@ -248,6 +242,20 @@ public final class PmdAnalysis implements AutoCloseable {
                 }
             }
         }
+    }
+
+    private boolean checkNoRulesRegistered() {
+        if (isEmpty(this.ruleSets)) {
+            if (!configuration.getRuleSetPaths().isEmpty()) {
+                logger.error("No rules found. Maybe you misspelled a rule name? ({})",
+                             String.join(",", configuration.getRuleSetPaths()));
+
+            } else {
+                logger.error("No rules found.");
+            }
+            return true;
+        }
+        return false;
     }
 
 

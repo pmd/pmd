@@ -102,7 +102,7 @@ public class FileAnalysisCache extends AbstractAnalysisCache {
     }
 
     @Override
-    public void persist() throws IOException {
+    public void persist() {
         try (TimedOperation ignored = TimeTracker.startOperation(TimedOperationCategory.ANALYSIS_CACHE, "persist")) {
             if (cacheFile.isDirectory()) {
                 LOG.error("Cannot persist the cache, the given path points to a directory.");
@@ -145,6 +145,8 @@ public class FileAnalysisCache extends AbstractAnalysisCache {
                 } else {
                     LOG.info("Analysis cache updated");
                 }
+            } catch (final IOException e) {
+                LOG.error("Could not persist analysis cache to file: {}", e.getMessage());
             }
         }
     }

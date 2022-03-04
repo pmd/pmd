@@ -89,7 +89,7 @@ public class FileAnalysisCacheTest {
     }
 
     @Test
-    public void testStoreOnUnwritableFileShouldntThrow() throws Exception {
+    public void testStoreOnUnwritableFileShouldntThrow() throws IOException {
         emptyCacheFile.setWritable(false);
         final FileAnalysisCache cache = new FileAnalysisCache(emptyCacheFile);
         cache.persist();

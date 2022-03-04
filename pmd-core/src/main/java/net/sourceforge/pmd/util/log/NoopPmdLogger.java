@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.util.log;
 
+import org.slf4j.event.Level;
+
 import net.sourceforge.pmd.annotation.InternalApi;
 
 /**
@@ -14,11 +16,7 @@ import net.sourceforge.pmd.annotation.InternalApi;
 @InternalApi
 public final class NoopPmdLogger extends PmdLoggerBase implements PmdLogger {
 
-    public static final NoopPmdLogger INSTANCE = new NoopPmdLogger();
-
-    private NoopPmdLogger() {
-
-    }
+    // note: not singleton because PmdLogger accumulates error count.
 
     @Override
     protected boolean isLoggableImpl(Level level) {

@@ -4,7 +4,8 @@
 
 package net.sourceforge.pmd.lang.document;
 
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.util.log.SimplePmdLogger;
 
@@ -13,7 +14,7 @@ import net.sourceforge.pmd.util.log.SimplePmdLogger;
  */
 public class PmdTestLogger extends SimplePmdLogger {
 
-    private static final Logger LOG = Logger.getLogger("testlogger");
+    private static final Logger LOG = LoggerFactory.getLogger(PmdTestLogger.class.getName());
 
     public PmdTestLogger() {
         super(LOG);
