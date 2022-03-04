@@ -15,14 +15,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.input.CloseShieldInputStream;
 import org.apache.commons.lang3.StringEscapeUtils;
 
 import net.sourceforge.pmd.annotation.Experimental;
+import net.sourceforge.pmd.internal.Slf4jSimpleConfiguration;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
@@ -179,7 +178,7 @@ public class TreeExportCli {
         }
 
         // disable warnings for deprecated attributes
-        Logger.getLogger(Attribute.class.getName()).setLevel(Level.OFF);
+        Slf4jSimpleConfiguration.disableLogging(Attribute.class);
 
         try {
             String fullSource = IOUtils.toString(source);

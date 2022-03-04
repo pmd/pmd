@@ -68,17 +68,38 @@ set_lib_dir() {
       local script_real_loc=$0
     fi
     local script_dir=$(dirname "${script_real_loc}")
-    local cwd="${PWD}"
 
-    cd "${script_dir}/../lib"
+    pushd "${script_dir}/../lib" >/dev/null
     readonly LIB_DIR=$(pwd -P)
-    cd "${cwd}"
+    popd >/dev/null
   fi
 }
 
 check_lib_dir() {
   if [ ! -e "${LIB_DIR}" ]; then
     echo "The jar directory [${LIB_DIR}] does not exist"
+  fi
+}
+
+set_conf_dir() {
+  if [ -z ${CONF_DIR} ]; then
+    # Allow for symlinks to this script
+    if [ -L $0 ]; then
+      local script_real_loc=$(readlink "$0")
+    else
+      local script_real_loc=$0
+    fi
+    local script_dir=$(dirname "${script_real_loc}")
+
+    pushd "${script_dir}/../conf" >/dev/null
+    readonly CONF_DIR=$(pwd -P)
+    popd >/dev/null
+  fi
+}
+
+check_conf_dir() {
+  if [ ! -e "${CONF_DIR}" ]; then
+    echo "The configuration directory [${CONF_DIR}] does not exist"
   fi
 }
 
@@ -138,9 +159,9 @@ jre_specific_vm_options() {
 
 function add_pmd_classpath() {
     if [ -n "$classpath" ]; then
-        classpath="$classpath:${LIB_DIR}/*"
+        classpath="$classpath:${CONF_DIR}:${LIB_DIR}/*"
     else
-        classpath="${LIB_DIR}/*"
+        classpath="${CONF_DIR}:${LIB_DIR}/*"
     fi
 }
 
@@ -199,6 +220,8 @@ is_cygwin
 
 set_lib_dir
 check_lib_dir
+set_conf_dir
+check_conf_dir
 
 convert_cygwin_vars
 

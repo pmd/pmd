@@ -28,7 +28,7 @@ public class TextRendererTest extends AbstractRendererTest {
     @Override
     public String getExpectedMultiple() {
         return getSourceCodeFilename() + ":1:\tFoo:\tblah" + PMD.EOL
-                + getSourceCodeFilename() + ":1:\tFoo:\tblah" + PMD.EOL;
+                + getSourceCodeFilename() + ":1:\tBoo:\tblah" + PMD.EOL;
     }
 
     @Override

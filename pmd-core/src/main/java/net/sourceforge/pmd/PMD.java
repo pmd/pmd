@@ -21,9 +21,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.logging.ConsoleHandler;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.event.Level;
 
 import net.sourceforge.pmd.Report.GlobalReportBuilderListener;
 import net.sourceforge.pmd.benchmark.TextTimingReportRenderer;
@@ -36,6 +37,7 @@ import net.sourceforge.pmd.cache.NoopAnalysisCache;
 import net.sourceforge.pmd.cli.PMDCommandLineInterface;
 import net.sourceforge.pmd.cli.PmdParametersParseResult;
 import net.sourceforge.pmd.cli.internal.CliMessages;
+import net.sourceforge.pmd.internal.Slf4jSimpleConfiguration;
 import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageFilenameFilter;
@@ -53,7 +55,6 @@ import net.sourceforge.pmd.util.database.DBURI;
 import net.sourceforge.pmd.util.database.SourceObject;
 import net.sourceforge.pmd.util.datasource.DataSource;
 import net.sourceforge.pmd.util.datasource.ReaderDataSource;
-import net.sourceforge.pmd.util.log.ScopedLogHandlersManager;
 
 /**
  * This is the main class for interacting with PMD. The primary flow of all Rule
@@ -74,7 +75,8 @@ import net.sourceforge.pmd.util.log.ScopedLogHandlersManager;
  */
 public final class PMD {
 
-    private static final Logger LOG = Logger.getLogger(PMD.class.getName());
+    // not final, in order to re-initialize logging
+    private static Logger log = LoggerFactory.getLogger(PMD.class);
 
     /**
      * The line delimiter used by PMD in outputs. Usually the platform specific
@@ -109,19 +111,17 @@ public final class PMD {
         try {
             DBURI dbUri = new DBURI(uriString);
             DBMSMetadata dbmsMetadata = new DBMSMetadata(dbUri);
-            LOG.log(Level.FINE, "DBMSMetadata retrieved");
+            log.debug("DBMSMetadata retrieved");
             List<SourceObject> sourceObjectList = dbmsMetadata.getSourceObjectList();
-            LOG.log(Level.FINE, "Located {0} database source objects", sourceObjectList.size());
+            log.debug("Located {} database source objects", sourceObjectList.size());
             for (SourceObject sourceObject : sourceObjectList) {
                 String falseFilePath = sourceObject.getPseudoFileName();
-                LOG.log(Level.FINEST, "Adding database source object {0}", falseFilePath);
+                log.trace("Adding database source object {}", falseFilePath);
 
                 try {
                     dataSources.add(new ReaderDataSource(dbmsMetadata.getSourceCode(sourceObject), falseFilePath));
                 } catch (SQLException ex) {
-                    if (LOG.isLoggable(Level.WARNING)) {
-                        LOG.log(Level.WARNING, "Cannot get SourceCode for " + falseFilePath + "  - skipping ...", ex);
-                    }
+                    log.warn("Cannot get SourceCode for {} - skipping ...", falseFilePath, ex);
                 }
             }
         } catch (URISyntaxException e) {
@@ -181,13 +181,8 @@ public final class PMD {
 
             return violationCounter.getResult();
         } catch (final Exception e) {
-            String message = e.getMessage();
-            if (message == null) {
-                LOG.log(Level.SEVERE, "Exception during processing", e);
-            } else {
-                LOG.severe(message);
-                LOG.log(Level.FINE, "Exception during processing", e);
-            }
+            log.error("Exception during processing: {}", e.toString()); // only exception without stacktrace
+            log.debug("Exception during processing", e); // with stacktrace
             printErrorDetected(1);
             return PMDCommandLineInterface.NO_ERRORS_STATUS; // fixme?
         } finally {
@@ -211,11 +206,11 @@ public final class PMD {
                 if (isEmpty(ruleSets)) {
                     String msg = "No rules found. Maybe you misspelled a rule name? ("
                         + String.join(",", rulesetPaths) + ')';
-                    LOG.log(Level.SEVERE, msg);
+                    log.error(msg);
                     throw new IllegalArgumentException(msg);
                 }
             } catch (RuleSetLoadException rsnfe) {
-                LOG.log(Level.SEVERE, "Ruleset not found", rsnfe);
+                log.error("Ruleset not found", rsnfe);
                 throw rsnfe;
             }
             return ruleSets;
@@ -232,10 +227,10 @@ public final class PMD {
      * @param rulesets the RuleSets to print
      */
     private static void printRuleNamesInDebug(List<RuleSet> rulesets) {
-        if (LOG.isLoggable(Level.FINER)) {
+        if (log.isDebugEnabled()) {
             for (RuleSet rset : rulesets) {
                 for (Rule r : rset.getRules()) {
-                    LOG.finer("Loaded rule " + r.getName());
+                    log.debug("Loaded rule {}", r.getName());
                 }
             }
         }
@@ -356,10 +351,7 @@ public final class PMD {
         ruleSets.removeDysfunctionalRules(brokenRules);
 
         for (final Rule rule : brokenRules) {
-            if (LOG.isLoggable(Level.WARNING)) {
-                LOG.log(Level.WARNING,
-                        "Removed misconfigured rule: " + rule.getName() + "  cause: " + rule.dysfunctionReason());
-            }
+            log.warn("Removed misconfigured rule: {} cause: {}", rule.getName(), rule.dysfunctionReason());
         }
 
         return brokenRules;
@@ -389,11 +381,11 @@ public final class PMD {
     private static void encourageToUseIncrementalAnalysis(final PMDConfiguration configuration) {
         if (!configuration.isIgnoreIncrementalAnalysis()
                 && configuration.getAnalysisCache() instanceof NoopAnalysisCache
-                && LOG.isLoggable(Level.WARNING)) {
+                && log.isWarnEnabled()) {
             final String version =
                     PMDVersion.isUnknown() || PMDVersion.isSnapshot() ? "latest" : "pmd-" + PMDVersion.VERSION;
-            LOG.warning("This analysis could be faster, please consider using Incremental Analysis: "
-                    + "https://pmd.github.io/" + version + "/pmd_userdocs_incremental_analysis.html");
+            log.warn("This analysis could be faster, please consider using Incremental Analysis: "
+                    + "https://pmd.github.io/{}/pmd_userdocs_incremental_analysis.html", version);
         }
     }
 
@@ -454,7 +446,7 @@ public final class PMD {
                 String filePaths = FileUtil.readFilelist(file);
                 files.removeAll(FileUtil.collectFiles(filePaths, fileSelector));
             } catch (IOException ex) {
-                LOG.log(Level.SEVERE, "Problem with Ignore File", ex);
+                log.error("Problem with Ignore File", ex);
                 throw new RuntimeException("Problem with Ignore File Path: " + ignoreFilePath, ex);
             }
         }
@@ -472,9 +464,7 @@ public final class PMD {
                     final LanguageVersion version = discoverer.getDefaultLanguageVersion(ruleLanguage);
                     if (RuleSet.applies(rule, version)) {
                         languages.add(ruleLanguage);
-                        if (LOG.isLoggable(Level.FINE)) {
-                            LOG.fine("Using " + ruleLanguage.getShortName() + " version: " + version.getShortName());
-                        }
+                        log.debug("Using {} version: {}", ruleLanguage.getShortName(), version.getShortName());
                     }
                 }
             }
@@ -527,8 +517,8 @@ public final class PMD {
 
         if (!parseResult.getDeprecatedOptionsUsed().isEmpty()) {
             Entry<String, String> first = parseResult.getDeprecatedOptionsUsed().entrySet().iterator().next();
-            LOG.warning("Some deprecated options were used on the command-line, including " + first.getKey());
-            LOG.warning("Consider replacing it with " + first.getValue());
+            log.warn("Some deprecated options were used on the command-line, including {}", first.getKey());
+            log.warn("Consider replacing it with {}", first.getValue());
         }
 
         if (parseResult.isVersion()) {
@@ -548,7 +538,7 @@ public final class PMD {
 
     private static void printErrorDetected(int errors) {
         String msg = CliMessages.errorDetectedMessage(errors, "PMD");
-        LOG.severe(msg);
+        log.error(msg);
     }
 
     /**
@@ -567,12 +557,18 @@ public final class PMD {
             TimeTracker.startGlobalTracking();
         }
 
-        final Level logLevel = configuration.isDebug() ? Level.FINER : Level.INFO;
-        final ScopedLogHandlersManager logHandlerManager = new ScopedLogHandlersManager(logLevel, new ConsoleHandler());
-        final Level oldLogLevel = LOG.getLevel();
-        // Need to do this, since the static logger has already been initialized
-        // at this point
-        LOG.setLevel(logLevel);
+        // only reconfigure logging, if debug flag was used on command line
+        // otherwise just use whatever is in conf/simplelogger.properties which happens automatically
+        if (configuration.isDebug()) {
+            Slf4jSimpleConfiguration.reconfigureDefaultLogLevel(Level.DEBUG);
+            // need to reload the logger with the new configuration
+            log = LoggerFactory.getLogger(PMD.class);
+        }
+        // always install java.util.logging to slf4j bridge
+        Slf4jSimpleConfiguration.installJulBridge();
+        // logging, mostly for testing purposes
+        Level defaultLogLevel = Slf4jSimpleConfiguration.getDefaultLogLevel();
+        log.atLevel(defaultLogLevel).log("Log level is at {}", defaultLogLevel);
 
         StatusCode status;
         try {
@@ -586,9 +582,6 @@ public final class PMD {
             System.err.println(e.getMessage());
             status = StatusCode.ERROR;
         } finally {
-            logHandlerManager.close();
-            LOG.setLevel(oldLogLevel);
-
             if (configuration.isBenchmark()) {
                 final TimingReport timingReport = TimeTracker.stopGlobalTracking();
 

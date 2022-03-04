@@ -22,9 +22,8 @@ import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Assert;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.junit.contrib.java.lang.system.SystemErrRule;
 
-import net.sourceforge.pmd.junit.JavaUtilLoggingRule;
 import net.sourceforge.pmd.junit.LocaleRule;
 import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.LanguageRegistry;
@@ -36,13 +35,10 @@ import net.sourceforge.pmd.util.ResourceLoader;
 public class RuleSetFactoryTest {
 
     @org.junit.Rule
-    public ExpectedException ex = ExpectedException.none();
-
-    @org.junit.Rule
     public LocaleRule localeRule = LocaleRule.en();
 
     @org.junit.Rule
-    public JavaUtilLoggingRule logging = new JavaUtilLoggingRule(RuleSetLoader.class.getName());
+    public final SystemErrRule systemErrRule = new SystemErrRule().muteForSuccessfulTests().enableLog();
 
     @Test
     public void testRuleSetFileName() {
@@ -227,7 +223,7 @@ public class RuleSetFactoryTest {
         assertNotNull(rule);
         assertNull(rs.getRuleByName("OldName"));
 
-        assertTrue(logging.getLog().isEmpty());
+        assertTrue(systemErrRule.getLog().isEmpty());
     }
 
     /**
@@ -271,8 +267,8 @@ public class RuleSetFactoryTest {
         assertNotNull(rule);
 
         assertEquals(1,
-                     StringUtils.countMatches(logging.getLog(),
-                                              "WARNING: Use Rule name rulesets/dummy/basic.xml/DummyBasicMockRule instead of the deprecated Rule name rulesets/dummy/basic.xml/OldNameOfDummyBasicMockRule."));
+                     StringUtils.countMatches(systemErrRule.getLog(),
+                                              "WARN net.sourceforge.pmd.RuleSetFactory - Use Rule name rulesets/dummy/basic.xml/DummyBasicMockRule instead of the deprecated Rule name rulesets/dummy/basic.xml/OldNameOfDummyBasicMockRule."));
     }
 
     /**
@@ -299,7 +295,7 @@ public class RuleSetFactoryTest {
         assertNotNull(rs.getRuleByName("DummyBasicMockRule"));
         assertNotNull(rs.getRuleByName("SampleXPathRule"));
 
-        assertTrue(logging.getLog().isEmpty());
+        assertTrue(systemErrRule.getLog().isEmpty());
     }
 
     /**
@@ -328,7 +324,7 @@ public class RuleSetFactoryTest {
         assertNotNull(rs.getRuleByName("DummyBasicMockRule"));
         assertNotNull(rs.getRuleByName("SampleXPathRule"));
 
-        assertTrue(logging.getLog().isEmpty());
+        assertTrue(systemErrRule.getLog().isEmpty());
     }
 
     /**
@@ -354,11 +350,11 @@ public class RuleSetFactoryTest {
         assertNotNull(rs.getRuleByName("SampleXPathRule"));
 
         assertEquals(0,
-                     StringUtils.countMatches(logging.getLog(),
-                                              "WARNING: Discontinue using Rule rulesets/dummy/basic.xml/DeprecatedRule as it is scheduled for removal from PMD."));
+                     StringUtils.countMatches(systemErrRule.getLog(),
+                                              "WARN net.sourceforge.pmd.RuleSetFactory - Discontinue using Rule rulesets/dummy/basic.xml/DeprecatedRule as it is scheduled for removal from PMD."));
         assertEquals(1,
-                StringUtils.countMatches(logging.getLog(),
-                    "WARNING: Unable to exclude rules [NonExistingRule] from ruleset reference rulesets/dummy/basic.xml; perhaps the rule name is misspelled or the rule doesn't exist anymore?"));
+                StringUtils.countMatches(systemErrRule.getLog(),
+                    "WARN net.sourceforge.pmd.RuleSetFactory - Unable to exclude rules [NonExistingRule] from ruleset reference rulesets/dummy/basic.xml; perhaps the rule name is misspelled or the rule doesn't exist anymore?"));
     }
 
     /**
@@ -376,8 +372,8 @@ public class RuleSetFactoryTest {
         assertNotNull(rs.getRuleByName("SampleXPathRule"));
 
         assertEquals(1,
-                     StringUtils.countMatches(logging.getLog(),
-                                              "WARNING: The RuleSet rulesets/dummy/deprecated.xml has been deprecated and will be removed in PMD"));
+                     StringUtils.countMatches(systemErrRule.getLog(),
+                                              "WARN net.sourceforge.pmd.RuleSetFactory - The RuleSet rulesets/dummy/deprecated.xml has been deprecated and will be removed in PMD"));
     }
 
     /**
@@ -395,8 +391,8 @@ public class RuleSetFactoryTest {
         assertNotNull(rs.getRuleByName("DummyBasic2MockRule"));
 
         assertEquals(0,
-                     StringUtils.countMatches(logging.getLog(),
-                                              "WARNING: Use Rule name rulesets/dummy/basic.xml/DummyBasicMockRule instead of the deprecated Rule name rulesets/dummy/basic2.xml/DummyBasicMockRule. PMD"));
+                     StringUtils.countMatches(systemErrRule.getLog(),
+                                              "WARN net.sourceforge.pmd.RuleSetFactory - Use Rule name rulesets/dummy/basic.xml/DummyBasicMockRule instead of the deprecated Rule name rulesets/dummy/basic2.xml/DummyBasicMockRule. PMD"));
     }
 
     @Test
@@ -760,7 +756,7 @@ public class RuleSetFactoryTest {
             + "</ruleset>\n");
         assertEquals(0, ruleset.getRules().size());
 
-        assertTrue(logging.getLog().isEmpty());
+        assertTrue(systemErrRule.getLog().isEmpty());
     }
 
     /**
@@ -879,7 +875,7 @@ public class RuleSetFactoryTest {
                 + "  </ruleset>\n"
         );
 
-        assertTrue(logging.getLog().contains("RuleSet name is missing."));
+        assertTrue(systemErrRule.getLog().contains("RuleSet name is missing."));
     }
 
     @Test
@@ -892,7 +888,7 @@ public class RuleSetFactoryTest {
                 + "  <rule ref=\"rulesets/dummy/basic.xml\"/>\n"
                 + "  </ruleset>\n"
         );
-        assertTrue(logging.getLog().contains("RuleSet description is missing."));
+        assertTrue(systemErrRule.getLog().contains("RuleSet description is missing."));
     }
 
     private static final String REF_OVERRIDE_ORIGINAL_NAME = "<?xml version=\"1.0\"?>\n"

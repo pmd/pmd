@@ -59,7 +59,7 @@ The tool comes with a rather extensive help text, simply running with `--help`!
                             This can greatly improve analysis performance and is **highly recommended**."
     %}
     {% include custom/cli_option_row.html options="--debug,--verbose,-D,-V"
-               description="Debug mode. Prints more log output."
+               description="Debug mode. Prints more log output. See also [Logging](#logging)."
     %}
     {% include custom/cli_option_row.html options="--encoding,-e"
                option_arg="charset"
@@ -179,6 +179,15 @@ This behavior has been introduced to ease PMD integration into scripts or hooks,
 <tr><td>4</td><td>At least one violation has been detected, unless <code>--fail-on-violation false</code> is set.</td></tr>
 </table>
 
+## Logging
+
+PMD internally uses [slf4j](https://www.slf4j.org/) and ships with slf4j-simple as the logging implementation.
+Logging messages are printed to System.err, that's why you should use `--report-file` to specify an output for
+the report and not rely on redirecting the console output.
+
+The configuration for slf4j-simple is in the file `conf/simplelogger.properties`. There you can enable
+logging of specific classes if needed. The `--debug` command line option configures the default log level
+to be "debug".
 
 ## Supported Languages
 

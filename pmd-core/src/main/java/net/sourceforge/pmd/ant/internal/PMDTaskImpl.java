@@ -18,6 +18,9 @@ import org.apache.tools.ant.Project;
 import org.apache.tools.ant.types.FileSet;
 import org.apache.tools.ant.types.Path;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.event.Level;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMDConfiguration;
@@ -29,6 +32,7 @@ import net.sourceforge.pmd.RuleSetLoader;
 import net.sourceforge.pmd.ant.Formatter;
 import net.sourceforge.pmd.ant.PMDTask;
 import net.sourceforge.pmd.ant.SourceLanguage;
+import net.sourceforge.pmd.internal.Slf4jSimpleConfiguration;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
@@ -39,8 +43,6 @@ import net.sourceforge.pmd.util.ClasspathClassLoader;
 import net.sourceforge.pmd.util.IOUtil;
 import net.sourceforge.pmd.util.datasource.DataSource;
 import net.sourceforge.pmd.util.datasource.FileDataSource;
-import net.sourceforge.pmd.util.log.AntLogHandler;
-import net.sourceforge.pmd.util.log.ScopedLogHandlersManager;
 
 public class PMDTaskImpl {
 
@@ -239,12 +241,14 @@ public class PMDTaskImpl {
     }
 
     public void execute() throws BuildException {
-        final AntLogHandler antLogHandler = new AntLogHandler(project);
-        final ScopedLogHandlersManager logManager = new ScopedLogHandlersManager(antLogHandler.getAntLogLevel(), antLogHandler);
+        Level level = Slf4jSimpleConfigurationForAnt.reconfigureLoggingForAnt(project);
+        Slf4jSimpleConfiguration.installJulBridge();
+        // need to reload the logger with the new configuration
+        Logger log = LoggerFactory.getLogger(PMDTaskImpl.class);
+        log.atLevel(level).log("Logging is at {}", level);
         try {
             doTask();
         } finally {
-            logManager.close();
             // only close the classloader, if it is ours. Otherwise we end up with class not found
             // exceptions
             if (configuration.getClassLoader() instanceof ClasspathClassLoader) {

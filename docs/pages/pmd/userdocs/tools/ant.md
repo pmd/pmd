@@ -122,6 +122,14 @@ The examples below won't repeat this taskdef element, as this is always required
       </td>
       <td>No</td>
     </tr>
+    <tr>
+      <td>threads</td>
+      <td>
+        Sets the number of threads used by PMD. Set threads to <code>0</code> to disable multi-threading processing.
+        Default: 1
+      </td>
+      <td>No</td>
+    </tr>
 </table>
 
 
