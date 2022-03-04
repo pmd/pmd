@@ -229,9 +229,6 @@ public final class PmdAnalysis implements AutoCloseable {
             }
 
             try (TimedOperation ignored = TimeTracker.startOperation(TimedOperationCategory.FILE_PROCESSING)) {
-                if (checkNoRulesRegistered()) {
-                    return;
-                }
 
                 for (final Rule rule : removeBrokenRules(rulesets)) {
                     // todo Just like we throw for invalid properties, "broken rules"
@@ -249,24 +246,11 @@ public final class PmdAnalysis implements AutoCloseable {
                     listener.close();
                 } catch (Exception e) {
                     logger.errorEx("Exception while initializing analysis listeners", e);
+                    // todo better exception
                     throw new RuntimeException("Exception while initializing analysis listeners", e);
                 }
             }
         }
-    }
-
-    private boolean checkNoRulesRegistered() {
-        if (isEmpty(this.ruleSets)) {
-            if (!configuration.getRuleSetPaths().isEmpty()) {
-                logger.error("No rules found. Maybe you misspelled a rule name? ({})",
-                             String.join(",", configuration.getRuleSetPaths()));
-
-            } else {
-                logger.error("No rules found.");
-            }
-            return true;
-        }
-        return false;
     }
 
 
@@ -299,7 +283,7 @@ public final class PmdAnalysis implements AutoCloseable {
                     final LanguageVersion version = discoverer.getDefaultLanguageVersion(ruleLanguage);
                     if (RuleSet.applies(rule, version)) {
                         languages.add(ruleLanguage);
-                        logger.trace("Using {0} version ''{1}''", version.getLanguage().getName(), version.getTerseName());
+                        logger.trace("Using {} version ''{}''", version.getLanguage().getName(), version.getTerseName());
                     }
                 }
             }
@@ -321,10 +305,6 @@ public final class PmdAnalysis implements AutoCloseable {
         }
 
         return brokenRules;
-    }
-
-    private static boolean isEmpty(List<RuleSet> rsets) {
-        return rsets.stream().noneMatch(it -> it.size() > 0);
     }
 
 

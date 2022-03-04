@@ -193,7 +193,8 @@ public final class PMD {
             try {
                 ReportStats stats;
                 stats = PMD.runAndReturnStats(pmd);
-                if (stats.getNumErrors() > 0 || pmdLogger.numErrors() > 0) {
+                if (pmdLogger.numErrors() > 0) {
+                    // processing errors are ignored
                     return StatusCode.ERROR;
                 } else if (stats.getNumViolations() > 0 && configuration.isFailOnViolation()) {
                     return StatusCode.VIOLATIONS_FOUND;

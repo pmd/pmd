@@ -16,8 +16,8 @@ public class CLITest extends BaseCLITest {
     @Test
     public void useEcmaScript() {
         String[] args = { "-d", SOURCE_FOLDER, "-f", "xml", "-R", "ecmascript-basic", "-l",
-            "ecmascript", "-debug", };
+            "ecmascript", "--debug", };
         String log = runTest(args);
-        assertThat(log, containsPattern("Adding file .*\\.js \\(lang: ecmascript 3\\)"));
+        assertThat(log, containsPattern("Adding file .*\\.js \\(lang: ecmascript ES6\\)"));
     }
 }
