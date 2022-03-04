@@ -244,6 +244,9 @@ entries:
         - title: Best Practices
           output: web, pdf
           url: /pmd_rules_kotlin_bestpractices.html
+        - title: Error Prone
+          output: web, pdf
+          url: /pmd_rules_kotlin_errorprone.html
     - title: null
       output: web, pdf
       subfolders:
