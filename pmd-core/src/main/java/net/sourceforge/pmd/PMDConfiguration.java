@@ -342,6 +342,9 @@ public class PMDConfiguration extends AbstractConfiguration {
      */
     @Deprecated
     public String getRuleSets() {
+        if (ruleSets.isEmpty()) {
+            return null;
+        }
         return StringUtils.join(ruleSets, ",");
     }
 
