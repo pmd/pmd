@@ -212,13 +212,13 @@ public final class RuleSetLoader {
 
     void printRulesInDebug(String path, RuleSet ruleset) {
         if (LOG.isLoggable(Level.FINE)) {
-            LOG.fine(MessageFormat.format("Rules loaded from {1}:", path));
+            LOG.fine(MessageFormat.format("Rules loaded from {0}:", path));
             for (Rule rule : ruleset.getRules()) {
                 LOG.fine(MessageFormat.format("- {0} ({1})", rule.getName(), rule.getLanguage().getName()));
             }
         }
         if (ruleset.getRules().isEmpty()) {
-            reporter.warning(MessageFormat.format("No rules found in ruleset {0}", path));
+            reporter.warning("No rules found in ruleset {0}", path);
         }
 
     }
