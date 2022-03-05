@@ -4,8 +4,7 @@
 
 package net.sourceforge.pmd.processor;
 
-import java.io.File;
-import java.io.IOException;
+import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +17,6 @@ import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.benchmark.TimedOperation;
 import net.sourceforge.pmd.benchmark.TimedOperationCategory;
 import net.sourceforge.pmd.cache.AnalysisCache;
-import net.sourceforge.pmd.internal.RulesetStageDependencyHelper;
 import net.sourceforge.pmd.internal.SystemProps;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.ast.FileAnalysisException;
@@ -26,10 +24,10 @@ import net.sourceforge.pmd.lang.ast.Parser;
 import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.ast.SemanticErrorReporter;
-import net.sourceforge.pmd.reporting.FileAnalysisListener;
-import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
 import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.lang.document.TextFile;
+import net.sourceforge.pmd.reporting.FileAnalysisListener;
+import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
 
 /**
  * A processing task for a single file.
@@ -71,22 +69,27 @@ abstract class PmdRunnable implements Runnable {
 
             // Coarse check to see if any RuleSet applies to file, will need to do a finer RuleSet specific check later
             if (ruleSets.applies(textFile)) {
-                try (TextDocument textDocument = TextDocument.create(textFile)) {
+                try (TextDocument textDocument = TextDocument.create(textFile);
+                     FileAnalysisListener cacheListener = analysisCache.startFileAnalysis(textDocument)) {
+
+                    @SuppressWarnings("PMD.CloseResource")
+                    FileAnalysisListener completeListener = FileAnalysisListener.tee(listOf(listener, cacheListener));
 
                     if (analysisCache.isUpToDate(textDocument)) {
+                        // note: no cache listener here
+                        //                         vvvvvvvv
                         reportCachedRuleViolations(listener, textDocument);
                     } else {
                         try {
-                            processSource(listener, textDocument, ruleSets);
+                            processSource(completeListener, textDocument, ruleSets);
                         } catch (Exception | StackOverflowError | AssertionError e) {
                             if (e instanceof Error && !SystemProps.isErrorRecoveryMode()) { // NOPMD:
                                 throw e;
                             }
-                            analysisCache.analysisFailed(textDocument);
 
                             // The listener handles logging if needed,
                             // it may also rethrow the error, as a FileAnalysisException (which we let through below)
-                            listener.onError(new Report.ProcessingError(e, textFile.getDisplayName()));
+                            completeListener.onError(new Report.ProcessingError(e, textFile.getDisplayName()));
                         }
                     }
                 }

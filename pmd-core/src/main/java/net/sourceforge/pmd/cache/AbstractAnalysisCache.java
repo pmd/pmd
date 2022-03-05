@@ -34,9 +34,8 @@ import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.benchmark.TimedOperation;
 import net.sourceforge.pmd.benchmark.TimedOperationCategory;
 import net.sourceforge.pmd.cache.internal.ClasspathFingerprinter;
-import net.sourceforge.pmd.reporting.FileAnalysisListener;
 import net.sourceforge.pmd.lang.document.TextDocument;
-import net.sourceforge.pmd.lang.document.TextFile;
+import net.sourceforge.pmd.reporting.FileAnalysisListener;
 
 /**
  * Abstract implementation of the analysis cache. Handles all operations, except for persistence.
@@ -211,12 +210,11 @@ public abstract class AbstractAnalysisCache implements AnalysisCache {
     }
 
     @Override
-    public FileAnalysisListener startFileAnalysis(TextFile file) {
-        String fileName = dataSource.getNiceFileName(false, "");
-        File sourceFile = new File(fileName);
+    public FileAnalysisListener startFileAnalysis(TextDocument file) {
+        String fileName = file.getPathId();
         AnalysisResult analysisResult = updatedResultsCache.get(fileName);
         if (analysisResult == null) {
-            analysisResult = new AnalysisResult(sourceFile);
+            analysisResult = new AnalysisResult(file.getContent().getCheckSum());
         }
         final AnalysisResult nonNullAnalysisResult = analysisResult;
 
@@ -230,7 +228,7 @@ public abstract class AbstractAnalysisCache implements AnalysisCache {
 
             @Override
             public void onError(ProcessingError error) {
-                analysisFailed(sourceFile);
+                analysisFailed(file);
             }
         };
     }
