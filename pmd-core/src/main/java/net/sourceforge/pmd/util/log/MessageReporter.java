@@ -58,7 +58,12 @@ public interface MessageReporter {
      */
     int numErrors();
 
-    // levels, in sync with SLF4J levels
+    /**
+     * Message severity level. This maps to SLF4J levels transparently.
+     *
+     * @deprecated Will be replaced with SLF4J Level in PMD 7
+     */
+    @Deprecated
     enum Level {
         ERROR,
         WARN,
@@ -66,10 +71,8 @@ public interface MessageReporter {
         DEBUG,
         TRACE;
 
-        java.util.logging.Level toJutilLevel() {
+        public java.util.logging.Level toJutilLevel() {
             switch (this) {
-            case DEBUG:
-                return java.util.logging.Level.FINE;
             case ERROR:
                 return java.util.logging.Level.SEVERE;
             case INFO:

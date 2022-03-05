@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.document;
 
 import java.util.logging.Logger;
 
-import net.sourceforge.pmd.util.log.SimpleMessageReporter;
+import net.sourceforge.pmd.util.log.internal.SimpleMessageReporter;
 
 /**
  * @author Clément Fournier

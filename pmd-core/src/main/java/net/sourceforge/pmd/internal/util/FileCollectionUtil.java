@@ -28,7 +28,7 @@ import net.sourceforge.pmd.util.database.SourceObject;
 import net.sourceforge.pmd.util.datasource.DataSource;
 import net.sourceforge.pmd.util.log.MessageReporter;
 import net.sourceforge.pmd.util.log.MessageReporter.Level;
-import net.sourceforge.pmd.util.log.MessageReporterScope;
+import net.sourceforge.pmd.util.log.internal.MessageReporterScope;
 
 /**
  * @author Clément Fournier

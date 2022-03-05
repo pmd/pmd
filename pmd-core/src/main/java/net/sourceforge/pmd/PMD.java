@@ -50,7 +50,7 @@ import net.sourceforge.pmd.util.database.SourceObject;
 import net.sourceforge.pmd.util.datasource.DataSource;
 import net.sourceforge.pmd.util.datasource.ReaderDataSource;
 import net.sourceforge.pmd.util.log.ScopedLogHandlersManager;
-import net.sourceforge.pmd.util.log.SimpleMessageReporter;
+import net.sourceforge.pmd.util.log.internal.SimpleMessageReporter;
 
 /**
  * Entry point for PMD's CLI. Use {@link #runPmd(PMDConfiguration)}

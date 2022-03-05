@@ -32,7 +32,7 @@ import net.sourceforge.pmd.util.IOUtil;
 import net.sourceforge.pmd.util.datasource.DataSource;
 import net.sourceforge.pmd.util.log.MessageReporter;
 import net.sourceforge.pmd.util.log.MessageReporter.Level;
-import net.sourceforge.pmd.util.log.SimpleMessageReporter;
+import net.sourceforge.pmd.util.log.internal.SimpleMessageReporter;
 
 /**
  * Main programmatic API of PMD. Create and configure a {@link PMDConfiguration},

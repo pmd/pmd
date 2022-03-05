@@ -24,7 +24,7 @@ import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.util.CollectionUtil;
 import net.sourceforge.pmd.util.ResourceLoader;
 import net.sourceforge.pmd.util.log.MessageReporter;
-import net.sourceforge.pmd.util.log.NoopReporter;
+import net.sourceforge.pmd.util.log.internal.NoopReporter;
 
 /**
  * Configurable object to load rulesets from XML resources.

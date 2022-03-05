@@ -2,12 +2,13 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.util.log;
+package net.sourceforge.pmd.util.log.internal;
 
 import java.text.MessageFormat;
 import java.util.logging.Logger;
 
 import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.util.log.MessageReporter;
 
 /**
  * A {@link Logger} (java.util) based logger impl.
