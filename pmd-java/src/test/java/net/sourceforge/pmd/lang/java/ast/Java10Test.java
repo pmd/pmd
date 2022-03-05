@@ -26,8 +26,8 @@ import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 public class Java10Test {
 
     private final JavaParsingHelper java10 =
-        JavaParsingHelper.WITH_PROCESSING.withDefaultVersion("10")
-                                         .withResourceContext(Java10Test.class, "jdkversiontests/java10/");
+        JavaParsingHelper.DEFAULT.withDefaultVersion("10")
+                                 .withResourceContext(Java10Test.class, "jdkversiontests/java10/");
 
     private final JavaParsingHelper java9 = java10.withDefaultVersion("9");
 

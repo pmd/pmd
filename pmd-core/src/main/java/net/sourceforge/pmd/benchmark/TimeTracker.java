@@ -12,6 +12,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.Supplier;
 
 /**
  * A time tracker class to measure time spent on different sections of PMD analysis.
@@ -154,6 +155,18 @@ public final class TimeTracker {
         final long delta = result.accumulate(timerEntry, extraDataCounter);
         if (!queue.isEmpty()) {
             queue.peek().inNestedOperationsNanos += delta;
+        }
+    }
+
+    public static void bench(String label, Runnable runnable) {
+        try (TimedOperation ignored = startOperation(TimedOperationCategory.LANGUAGE_SPECIFIC_PROCESSING, label)) {
+            runnable.run();
+        }
+    }
+
+    public static <T> T bench(String label, Supplier<T> runnable) {
+        try (TimedOperation ignored = startOperation(TimedOperationCategory.LANGUAGE_SPECIFIC_PROCESSING, label)) {
+            return runnable.get();
         }
     }
 

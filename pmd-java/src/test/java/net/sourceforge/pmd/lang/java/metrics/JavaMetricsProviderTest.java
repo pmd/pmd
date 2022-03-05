@@ -24,7 +24,7 @@ import net.sourceforge.pmd.lang.metrics.Metric;
  */
 public class JavaMetricsProviderTest {
 
-    private final JavaParsingHelper java8 = JavaParsingHelper.WITH_PROCESSING.withDefaultVersion("1.8");
+    private final JavaParsingHelper java8 = JavaParsingHelper.DEFAULT.withDefaultVersion("1.8");
 
     @Test
     public void testComputeAllMetrics() {

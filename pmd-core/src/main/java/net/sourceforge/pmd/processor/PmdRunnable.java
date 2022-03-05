@@ -7,6 +7,9 @@ package net.sourceforge.pmd.processor;
 import java.io.File;
 import java.io.IOException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleSets;
@@ -14,7 +17,6 @@ import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.benchmark.TimedOperation;
 import net.sourceforge.pmd.benchmark.TimedOperationCategory;
-import net.sourceforge.pmd.internal.RulesetStageDependencyHelper;
 import net.sourceforge.pmd.internal.SystemProps;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
@@ -32,13 +34,12 @@ import net.sourceforge.pmd.util.datasource.DataSource;
  */
 abstract class PmdRunnable implements Runnable {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(PmdRunnable.class);
     private final DataSource dataSource;
     private final File file;
     private final GlobalAnalysisListener globalListener;
 
     private final PMDConfiguration configuration;
-
-    private final RulesetStageDependencyHelper dependencyHelper;
 
     PmdRunnable(DataSource dataSource,
                 GlobalAnalysisListener globalListener,
@@ -50,7 +51,6 @@ abstract class PmdRunnable implements Runnable {
         this.file = new File(realFileName);
         this.globalListener = globalListener;
         this.configuration = configuration;
-        this.dependencyHelper = new RulesetStageDependencyHelper(configuration);
     }
 
     /**
@@ -129,7 +129,8 @@ abstract class PmdRunnable implements Runnable {
             languageVersion,
             filename,
             sourceCode,
-            SemanticErrorReporter.noop() // TODO
+            SemanticErrorReporter.reportToLogger(LOGGER),
+            configuration.getClassLoader()
         );
 
 
@@ -141,8 +142,6 @@ abstract class PmdRunnable implements Runnable {
         Parser parser = handler.getParser();
 
         RootNode rootNode = parse(parser, task);
-
-        dependencyHelper.runLanguageSpecificStages(ruleSets, languageVersion, rootNode);
 
         ruleSets.apply(rootNode, listener);
     }

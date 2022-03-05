@@ -17,7 +17,7 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 
 public class SuppressWarningsTest {
 
-    private final JavaParsingHelper java = JavaParsingHelper.WITH_PROCESSING;
+    private final JavaParsingHelper java = JavaParsingHelper.DEFAULT;
 
     private static class BarRule extends AbstractJavaRule {
 

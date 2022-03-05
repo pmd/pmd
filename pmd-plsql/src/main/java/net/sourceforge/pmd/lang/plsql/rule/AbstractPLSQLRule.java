@@ -7,10 +7,8 @@ package net.sourceforge.pmd.lang.plsql.rule;
 
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.LanguageRegistry;
-import net.sourceforge.pmd.lang.ast.AstProcessingStage;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.plsql.PLSQLLanguageModule;
-import net.sourceforge.pmd.lang.plsql.PlsqlProcessingStage;
 import net.sourceforge.pmd.lang.plsql.ast.ASTInput;
 import net.sourceforge.pmd.lang.plsql.ast.ASTPackageBody;
 import net.sourceforge.pmd.lang.plsql.ast.ASTPackageSpecification;
@@ -80,14 +78,6 @@ public abstract class AbstractPLSQLRule extends AbstractRule implements PLSQLPar
 
     public static boolean importsPackage(ASTInput node, String packageName) {
         return false;
-    }
-
-    @Override
-    public boolean dependsOn(AstProcessingStage<?> stage) {
-        if (!(stage instanceof PlsqlProcessingStage)) {
-            throw new IllegalArgumentException("Processing stage wasn't a " + PLSQLLanguageModule.NAME + " one: " + stage);
-        }
-        return true;
     }
 
     /*

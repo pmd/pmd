@@ -18,7 +18,12 @@ public final class ASTAnnotation extends AbstractApexNode<Annotation> {
         return visitor.visit(this, data);
     }
 
+    public String getName() {
+        return node.getType().getApexName();
+    }
+
     @Override
+    @Deprecated
     public String getImage() {
         return node.getType().getApexName();
     }

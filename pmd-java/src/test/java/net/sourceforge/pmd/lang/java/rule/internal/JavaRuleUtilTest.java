@@ -14,12 +14,12 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.Test;
 
+import net.sourceforge.pmd.lang.java.BaseParserTest;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTInfixExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
-import net.sourceforge.pmd.lang.java.symboltable.BaseNonParserTest;
 
-public class JavaRuleUtilTest extends BaseNonParserTest {
+public class JavaRuleUtilTest extends BaseParserTest {
 
     @Test
     public void testCamelCaseWords() {

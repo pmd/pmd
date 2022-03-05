@@ -17,7 +17,7 @@ import org.junit.Test;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.test.TestUtilsKt;
-import net.sourceforge.pmd.lang.java.JavaParsingHelper;
+import net.sourceforge.pmd.lang.java.BaseParserTest;
 
 @Ignore("This test is Java specific even though parts of it should apply to any language implementation")
 // The Java specific parts depend on the grammar and are subject to breaking during the grammar update process
@@ -174,7 +174,7 @@ public class SimpleNodeTest extends BaseParserTest {
 
     @Test
     public void testParentMethods() {
-        ASTCompilationUnit u = JavaParsingHelper.JUST_PARSE.parse(TEST1);
+        ASTCompilationUnit u = java.parse(TEST1);
 
         ASTMethodDeclarator d = u.getFirstDescendantOfType(ASTMethodDeclarator.class);
         assertSame("getFirstParentOfType ASTMethodDeclaration", d.getParent(),

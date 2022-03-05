@@ -15,13 +15,14 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.lang.java.BaseParserTest;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.Scope;
 
 @Ignore
-public class VariableNameDeclarationTest extends BaseNonParserTest {
+public class VariableNameDeclarationTest extends BaseParserTest {
 
     @Test
     public void testConstructor() {

@@ -12,18 +12,18 @@ import java.util.List;
 
 import org.junit.Test;
 
+import net.sourceforge.pmd.lang.java.BaseParserTest;
+
 public class ASTModuleDeclarationTest extends BaseParserTest {
 
     @Test
     public final void jdk9ModuleInfo() {
         ASTCompilationUnit ast = java9.parseResource("jdkversiontests/jdk9_module_info.java");
-        List<ASTModuleDeclaration> modules = ast.findDescendantsOfType(ASTModuleDeclaration.class);
-        assertEquals(1, modules.size());
-        ASTModuleDeclaration module = modules.get(0);
+        ASTModuleDeclaration module = ast.descendants(ASTModuleDeclaration.class).firstOrThrow();
         assertTrue(module.isOpen());
         assertEquals("com.example.foo", module.getImage());
         assertEquals(7, module.getNumChildren());
-        List<ASTModuleDirective> directives = module.findChildrenOfType(ASTModuleDirective.class);
+        List<ASTModuleDirective> directives = module.children(ASTModuleDirective.class).toList();
         assertEquals(7, directives.size());
 
         // requires com.example.foo.http;
