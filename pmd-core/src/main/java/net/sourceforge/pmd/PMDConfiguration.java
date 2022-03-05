@@ -15,10 +15,13 @@ import java.util.Properties;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.annotation.DeprecatedUntil700;
+import org.apache.commons.lang3.StringUtils;
+
 import net.sourceforge.pmd.cache.AnalysisCache;
 import net.sourceforge.pmd.cache.FileAnalysisCache;
 import net.sourceforge.pmd.cache.NoopAnalysisCache;
 import net.sourceforge.pmd.cli.PmdParametersParseResult;
+import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
@@ -351,7 +354,7 @@ public class PMDConfiguration extends AbstractConfiguration {
     @Deprecated
     @DeprecatedUntil700
     public String getRuleSets() {
-        return String.join(",", ruleSets);
+        return StringUtils.join(ruleSets, ",");
     }
 
     /**
@@ -364,12 +367,27 @@ public class PMDConfiguration extends AbstractConfiguration {
     }
 
     /**
-     * Sets the rulesets.
+     * Sets the list of ruleset paths to load when starting the analysis.
+     *
+     * @param ruleSetPaths A list of ruleset paths, understandable by {@link RuleSetLoader#loadFromResource(String)}.
      *
      * @throws NullPointerException If the parameter is null
      */
-    public void setRuleSets(@NonNull List<String> ruleSets) {
-        this.ruleSets = new ArrayList<>(ruleSets);
+    public void setRuleSets(List<String> ruleSetPaths) {
+        this.ruleSets = new ArrayList<>(ruleSetPaths);
+    }
+
+    /**
+     * Add a new ruleset paths to load when starting the analysis.
+     * This list is initially empty.
+     *
+     * @param rulesetPath A ruleset path, understandable by {@link RuleSetLoader#loadFromResource(String)}.
+     *
+     * @throws NullPointerException If the parameter is null
+     */
+    public void addRuleSet(String rulesetPath) {
+        AssertionUtil.requireParamNotNull("rulesetPath", rulesetPath);
+        this.ruleSets.add(rulesetPath);
     }
 
     /**
@@ -377,7 +395,7 @@ public class PMDConfiguration extends AbstractConfiguration {
      *
      * @param ruleSets the rulesets to set
      *
-     * @deprecated Use {@link #setRuleSets(List)}
+     * @deprecated Use {@link #setRuleSets(List)} or {@link #addRuleSet(String)}.
      */
     @Deprecated
     @DeprecatedUntil700

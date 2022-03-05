@@ -8,6 +8,8 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.text.MessageFormat;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -17,10 +19,14 @@ import java.util.Properties;
 import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import org.apache.commons.lang3.StringUtils;
+
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.util.CollectionUtil;
 import net.sourceforge.pmd.util.ResourceLoader;
+import net.sourceforge.pmd.util.log.NoopPmdLogger;
+import net.sourceforge.pmd.util.log.PmdLogger;
 
 /**
  * Configurable object to load rulesets from XML resources.
@@ -35,6 +41,19 @@ public final class RuleSetLoader {
     private boolean warnDeprecated = true;
     private @NonNull RuleSetFactoryCompatibility compatFilter = RuleSetFactoryCompatibility.DEFAULT;
     private boolean includeDeprecatedRuleReferences = false;
+    private PmdLogger reporter = new NoopPmdLogger(); // non-null
+
+    /**
+     * Create a new RuleSetLoader with a default configuration.
+     * The defaults are described on each configuration method of this class.
+     */
+    public RuleSetLoader() { // NOPMD UnnecessaryConstructor
+        // default
+    }
+
+    void setReporter(PmdLogger reporter) {
+        this.reporter = reporter;
+    }
 
     /**
      * Specify that the given classloader should be used to resolve
@@ -145,7 +164,7 @@ public final class RuleSetLoader {
      *
      * @throws RuleSetLoadException If any error occurs (eg, invalid syntax)
      */
-    public RuleSet loadFromString(String filename, String rulesetXmlContent) {
+    public RuleSet loadFromString(String filename, final String rulesetXmlContent) {
         return loadFromResource(new RuleSetReferenceId(filename) {
             @Override
             public InputStream getInputStream(ResourceLoader rl) {
@@ -169,6 +188,43 @@ public final class RuleSetLoader {
             ruleSets.add(loadFromResource(path));
         }
         return ruleSets;
+    }
+
+    /**
+     * Loads a list of rulesets, if any has an error, report it on the contextual
+     * error reporter instead of aborting, and continue loading the rest.
+     */
+    List<RuleSet> loadRuleSetsWithoutException(List<String> rulesetPaths) {
+        List<RuleSet> ruleSets = new ArrayList<>(rulesetPaths.size());
+        boolean anyRules = false;
+        for (String path : rulesetPaths) {
+            try {
+                RuleSet ruleset = this.loadFromResource(path);
+                anyRules |= !ruleset.getRules().isEmpty();
+                printRulesInDebug(path, ruleset);
+                ruleSets.add(ruleset);
+            } catch (RuleSetLoadException e) {
+                reporter.errorEx("Cannot load ruleset {0}", new Object[] { path }, e);
+            }
+        }
+        if (!anyRules) {
+            reporter.warning("No rules found. Maybe you misspelled a rule name? ({0})",
+                             StringUtils.join(rulesetPaths, ','));
+        }
+        return ruleSets;
+    }
+
+    void printRulesInDebug(String path, RuleSet ruleset) {
+        if (LOG.isLoggable(Level.FINE)) {
+            LOG.fine(MessageFormat.format("Rules loaded from {1}:", path));
+            for (Rule rule : ruleset.getRules()) {
+                LOG.fine(MessageFormat.format("- {0} ({1})", rule.getName(), rule.getLanguage().getName()));
+            }
+        }
+        if (ruleset.getRules().isEmpty()) {
+            reporter.warning(MessageFormat.format("No rules found in ruleset {0}", path));
+        }
+
     }
 
     /**

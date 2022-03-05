@@ -8,6 +8,7 @@ import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -55,8 +56,9 @@ import net.sourceforge.pmd.util.log.SimplePmdLogger;
  *   config.setReportFile("target/pmd-report.xml");
  *
  *   try (PmdAnalysis pmd = PmdAnalysis.create(config)) {
+ *     // note: don't use `config` once a PmdAnalysis has been created.
  *     // optional: add more rulesets
- *     pmd.addRuleSet(RuleSetLoader.fromPmdConfig(configuration).loadFromResource("custom-ruleset.xml"));
+ *     pmd.addRuleSet(pmd.newRuleSetLoader().loadFromResource("custom-ruleset.xml"));
  *     // optional: add more files
  *     pmd.files().addFile(Paths.get("src", "main", "more-java", "ExtraSource.java"));
  *     // optional: add more renderers
@@ -90,7 +92,7 @@ public final class PmdAnalysis implements AutoCloseable {
         this.logger = logger;
         this.collector = FileCollector.newCollector(
             config.getLanguageVersionDiscoverer(),
-            logger
+            reporter
         );
     }
 
@@ -116,27 +118,26 @@ public final class PmdAnalysis implements AutoCloseable {
 
     @InternalApi
     static PmdAnalysis create(PMDConfiguration config, PmdLogger logger) {
-        PmdAnalysis builder = new PmdAnalysis(config, logger);
+        PmdAnalysis pmd = new PmdAnalysis(config, logger);
 
         // note: do not filter files by language
         // they could be ignored later. The problem is if you call
         // addRuleSet later, then you could be enabling new languages
         // So the files should not be pruned in advance
-        FileCollectionUtil.collectFiles(config, builder.files());
+        FileCollectionUtil.collectFiles(config, pmd.files());
 
         if (config.getReportFormat() != null) {
             Renderer renderer = config.createRenderer();
             renderer.setReportFile(config.getReportFile());
-            builder.addRenderer(renderer);
+            pmd.addRenderer(renderer);
         }
 
-        final RuleSetLoader ruleSetLoader = RuleSetLoader.fromPmdConfig(config);
-        final List<RuleSet> ruleSets = loadRulesets(config.getRuleSetPaths(), ruleSetLoader, logger);
-        for (RuleSet ruleSet : ruleSets) {
-            builder.addRuleSet(ruleSet);
+        if (!config.getRuleSetPaths().isEmpty()) {
+            final RuleSetLoader ruleSetLoader = pmd.newRuleSetLoader();
+            final List<RuleSet> ruleSets = ruleSetLoader.loadRuleSetsWithoutException(config.getRuleSetPaths());
+            pmd.addRuleSets(ruleSets);
         }
-
-        return builder;
+        return pmd;
     }
 
     /**
@@ -144,6 +145,22 @@ public final class PmdAnalysis implements AutoCloseable {
      */
     public FileCollector files() {
         return collector; // todo user can close collector programmatically
+    }
+
+    /**
+     * Returns a new ruleset loader, which can be used to create new
+     * rulesets (add them then with {@link #addRuleSet(RuleSet)}).
+     *
+     * <pre>{@code
+     * try (PmdAnalysis pmd = create(config)) {
+     *     pmd.addRuleSet(pmd.newRuleSetLoader().loadFromResource("custom-ruleset.xml"));
+     * }
+     * }</pre>
+     */
+    public RuleSetLoader newRuleSetLoader() {
+        RuleSetLoader loader = RuleSetLoader.fromPmdConfig(configuration);
+        loader.setReporter(this.reporter);
+        return loader;
     }
 
     /**
@@ -175,6 +192,17 @@ public final class PmdAnalysis implements AutoCloseable {
      */
     public void addRuleSet(RuleSet ruleSet) {
         this.ruleSets.add(Objects.requireNonNull(ruleSet));
+    }
+
+    /**
+     * Add several rulesets at once.
+     *
+     * @throws NullPointerException If the parameter is null, or any of its items is null.
+     */
+    public void addRuleSets(Collection<RuleSet> ruleSets) {
+        for (RuleSet rs : ruleSets) {
+            this.ruleSets.add(Objects.requireNonNull(rs));
+        }
     }
 
     public List<RuleSet> getRulesets() {
@@ -250,7 +278,7 @@ public final class PmdAnalysis implements AutoCloseable {
                 try {
                     listener.close();
                 } catch (Exception e) {
-                    logger.errorEx("Exception while initializing analysis listeners", e);
+                    reporter.errorEx("Exception while initializing analysis listeners", e);
                     // todo better exception
                     throw new RuntimeException("Exception while initializing analysis listeners", e);
                 }
@@ -314,7 +342,7 @@ public final class PmdAnalysis implements AutoCloseable {
 
 
     public PmdLogger getLog() {
-        return logger;
+        return reporter;
     }
 
     @Override
