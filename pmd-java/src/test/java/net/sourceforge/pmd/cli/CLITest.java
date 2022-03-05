@@ -14,9 +14,8 @@ import org.junit.Test;
 import org.junit.contrib.java.lang.system.RestoreSystemProperties;
 import org.junit.rules.TestRule;
 
-import net.sourceforge.pmd.internal.Slf4jSimpleConfiguration;
-
 import net.sourceforge.pmd.PMD.StatusCode;
+import net.sourceforge.pmd.internal.Slf4jSimpleConfiguration;
 
 /**
  * @author Romain Pelisse &lt;belaran@gmail.com&gt;
