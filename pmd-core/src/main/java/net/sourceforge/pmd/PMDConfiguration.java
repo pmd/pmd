@@ -405,7 +405,7 @@ public class PMDConfiguration extends AbstractConfiguration {
     @DeprecatedUntil700
     public void setRuleSets(@Nullable String ruleSets) {
         if (ruleSets == null) {
-            this.ruleSets= new ArrayList<>();
+            this.ruleSets = new ArrayList<>();
         } else {
             this.ruleSets = new ArrayList<>(Arrays.asList(ruleSets.split(",")));
         }
