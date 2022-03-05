@@ -233,16 +233,18 @@ public class PMD {
      *
      * @param configuration the configuration to use
      *
-     * @return number of violations found.
+     * @return number of violations found. Returns -1 in case of error.
      *
-     * @deprecated Use {@link #runPmd(PMDConfiguration)}.
+     * @deprecated Use {@link #runPmd(PMDConfiguration)}. Note that the return
+     *     value of doPMD changed in PMD 6.44.0 to return -1 in case of error.
+     *     Previously zero was returned in that case.
      */
     @Deprecated
     @InternalApi
     public static int doPMD(PMDConfiguration configuration) {
         try (PmdAnalysis pmd = PmdAnalysis.create(configuration)) {
             if (pmd.getRulesets().isEmpty()) {
-                return PMDCommandLineInterface.NO_ERRORS_STATUS;
+                return pmd.getLog().numErrors() > 0 ? -1 : 0;
             }
             try {
                 Report report = pmd.performAnalysisAndCollectReport();
@@ -255,7 +257,7 @@ public class PMD {
             } catch (Exception e) {
                 pmd.getLog().errorEx("Exception during processing", e);
                 printErrorDetected(1);
-                return PMDCommandLineInterface.NO_ERRORS_STATUS; // fixme?
+                return -1;
             }
         }
     }
@@ -504,7 +506,9 @@ public class PMD {
         StatusCode status;
         try {
             int violations = PMD.doPMD(configuration);
-            if (violations > 0 && configuration.isFailOnViolation()) {
+            if (violations < 0) {
+                status = StatusCode.ERROR;
+            } else if (violations > 0 && configuration.isFailOnViolation()) {
                 status = StatusCode.VIOLATIONS_FOUND;
             } else {
                 status = StatusCode.OK;

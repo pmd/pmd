@@ -200,7 +200,12 @@ public final class RuleSetLoader {
                 printRulesInDebug(path, ruleset);
                 ruleSets.add(ruleset);
             } catch (RuleSetLoadException e) {
-                reporter.errorEx("Cannot load ruleset {0}", new Object[] { path }, e);
+                if (e.getCause() != null) {
+                    // eg RuleSetNotFoundException
+                    reporter.errorEx("Cannot load ruleset {0}", new Object[] { path }, e.getCause());
+                } else {
+                    reporter.errorEx("Cannot load ruleset {0}", new Object[] { path }, e);
+                }
             }
         }
         if (!anyRules) {
