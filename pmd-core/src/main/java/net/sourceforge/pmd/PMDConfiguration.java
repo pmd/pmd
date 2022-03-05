@@ -13,10 +13,9 @@ import java.util.Objects;
 import java.util.Properties;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.annotation.DeprecatedUntil700;
-import org.apache.commons.lang3.StringUtils;
-
 import net.sourceforge.pmd.cache.AnalysisCache;
 import net.sourceforge.pmd.cache.FileAnalysisCache;
 import net.sourceforge.pmd.cache.NoopAnalysisCache;
@@ -353,11 +352,11 @@ public class PMDConfiguration extends AbstractConfiguration {
      */
     @Deprecated
     @DeprecatedUntil700
-    public String getRuleSets() {
+    public @Nullable String getRuleSets() {
         if (ruleSets.isEmpty()) {
             return null;
         }
-        return StringUtils.join(ruleSets, ",");
+        return String.join(",", ruleSets);
     }
 
     /**
@@ -365,7 +364,7 @@ public class PMDConfiguration extends AbstractConfiguration {
      *
      * @see RuleSetLoader#loadFromResource(String)
      */
-    public List<String> getRuleSetPaths() {
+    public @NonNull List<@NonNull String> getRuleSetPaths() {
         return ruleSets;
     }
 
@@ -376,7 +375,9 @@ public class PMDConfiguration extends AbstractConfiguration {
      *
      * @throws NullPointerException If the parameter is null
      */
-    public void setRuleSets(List<String> ruleSetPaths) {
+    public void setRuleSets(@NonNull List<@NonNull String> ruleSetPaths) {
+        AssertionUtil.requireParamNotNull("ruleSetPaths", ruleSetPaths);
+        AssertionUtil.requireContainsNoNullValue("ruleSetPaths", ruleSetPaths);
         this.ruleSets = new ArrayList<>(ruleSetPaths);
     }
 
@@ -388,7 +389,7 @@ public class PMDConfiguration extends AbstractConfiguration {
      *
      * @throws NullPointerException If the parameter is null
      */
-    public void addRuleSet(String rulesetPath) {
+    public void addRuleSet(@NonNull String rulesetPath) {
         AssertionUtil.requireParamNotNull("rulesetPath", rulesetPath);
         this.ruleSets.add(rulesetPath);
     }
@@ -402,8 +403,12 @@ public class PMDConfiguration extends AbstractConfiguration {
      */
     @Deprecated
     @DeprecatedUntil700
-    public void setRuleSets(String ruleSets) {
-        this.ruleSets = Arrays.asList(ruleSets.split(","));
+    public void setRuleSets(@Nullable String ruleSets) {
+        if (ruleSets == null) {
+            this.ruleSets.clear();
+        } else {
+            this.ruleSets = Arrays.asList(ruleSets.split(","));
+        }
     }
 
     /**

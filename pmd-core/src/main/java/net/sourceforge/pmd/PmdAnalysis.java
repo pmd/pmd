@@ -313,6 +313,7 @@ public final class PmdAnalysis implements AutoCloseable {
         List<GlobalAnalysisListener> rendererListeners = new ArrayList<>(renderers.size());
         for (Renderer renderer : renderers) {
             try {
+                @SuppressWarnings("PMD.CloseResource")
                 GlobalAnalysisListener listener =
                     Objects.requireNonNull(renderer.newListener(), "Renderer should provide non-null listener");
                 rendererListeners.add(listener);

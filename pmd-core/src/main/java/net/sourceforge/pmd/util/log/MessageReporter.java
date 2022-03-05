@@ -4,9 +4,9 @@
 
 package net.sourceforge.pmd.util.log;
 
-import org.slf4j.event.Level;
-
 import java.text.MessageFormat;
+
+import org.slf4j.event.Level;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 

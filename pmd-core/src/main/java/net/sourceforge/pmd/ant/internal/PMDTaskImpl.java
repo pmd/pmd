@@ -131,6 +131,7 @@ public class PMDTaskImpl {
                 }
             }
 
+            @SuppressWarnings("PMD.CloseResource")
             ReportStatsListener reportStatsListener = new ReportStatsListener();
             pmd.addListener(getListener(reportStatsListener, reportShortNamesPaths, fullInputPath.toString()));
 
