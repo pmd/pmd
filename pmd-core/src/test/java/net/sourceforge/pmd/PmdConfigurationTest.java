@@ -136,6 +136,9 @@ public class PmdConfigurationTest {
         assertEquals(listOf("/rulesets/basic.xml", "foo.xml"), configuration.getRuleSetPaths());
         configuration.setRuleSets(Collections.<String>emptyList());
         assertThat(configuration.getRuleSetPaths(), empty());
+        // should be addable even though we set it to an unmodifiable empty list
+        configuration.addRuleSet("foo.xml");
+        assertEquals(listOf("foo.xml"), configuration.getRuleSetPaths());
     }
 
     @Test
