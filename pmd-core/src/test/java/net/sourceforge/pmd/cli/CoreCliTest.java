@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.cli;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.containsStringIgnoringCase;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertEquals;
@@ -194,13 +195,13 @@ public class CoreCliTest {
     @Test
     public void debugLogging() {
         runPmdSuccessfully("--debug", "--no-cache", "--dir", srcDir, "--rulesets", DUMMY_RULESET);
-        errStreamCaptor.getLog().contains("[main] DEBUG net.sourceforge.pmd.PMD - Log level is at DEBUG");
+        assertThat(errStreamCaptor.getLog(), containsString("[main] INFO net.sourceforge.pmd.PMD - Log level is at TRACE"));
     }
 
     @Test
     public void defaultLogging() {
         runPmdSuccessfully("--no-cache", "--dir", srcDir, "--rulesets", DUMMY_RULESET);
-        errStreamCaptor.getLog().contains("[main] INFO net.sourceforge.pmd.PMD - Log level is at INFO");
+        assertThat(errStreamCaptor.getLog(), containsString("[main] INFO net.sourceforge.pmd.PMD - Log level is at INFO"));
     }
 
 

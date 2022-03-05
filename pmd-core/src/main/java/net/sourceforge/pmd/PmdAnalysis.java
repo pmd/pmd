@@ -157,8 +157,10 @@ public final class PmdAnalysis implements AutoCloseable {
     }
 
     /**
-     * Add a new listener. The given renderer must not already be closed,
-     * it will be closed by {@link #performAnalysis()}.
+     * Add a new listener. As per the contract of {@link GlobalAnalysisListener},
+     * this object must be ready for interaction. Nothing will be done
+     * with the listener until {@link #performAnalysis()} is called.
+     * The listener will be closed by {@link #performAnalysis()}.
      *
      * @throws NullPointerException If the parameter is null
      */
@@ -182,9 +184,12 @@ public final class PmdAnalysis implements AutoCloseable {
 
     /**
      * Run PMD with the current state of this instance. This will start
-     * and finish the registered renderers. All files collected in the
-     * {@linkplain #files() file collector} are processed. This does not
-     * return a report, for compatibility with PMD 7.
+     * and finish the registered renderers, and close all
+     * {@linkplain #addListener(GlobalAnalysisListener) registered listeners}.
+     * All files collected in the {@linkplain #files() file collector} are
+     * processed. This does not return a report, as the analysis results
+     * are consumed by {@link GlobalAnalysisListener} instances (of which
+     * Renderers are a special case).
      */
     public void performAnalysis() {
         performAnalysisImpl(Collections.emptyList());
@@ -355,7 +360,7 @@ public final class PmdAnalysis implements AutoCloseable {
     static void printRulesInDebug(RuleSet ruleset) {
         if (LOG.isDebugEnabled()) {
             for (Rule rule : ruleset.getRules()) {
-                LOG.debug("Loaded rule {}", rule);
+                LOG.debug("Loaded {} rule {}", rule.getLanguage().getName(), rule.getName());
             }
         }
     }

@@ -86,10 +86,7 @@ final class ReportStatsListener extends BaseResultProducingCloseable<ReportStats
 
         @Override
         public String toString() {
-            return "ReportStats{" +
-                "numErrors=" + numErrors +
-                ", numViolations=" + numViolations +
-                '}';
+            return "ReportStats{numErrors=" + numErrors + ", numViolations=" + numViolations + '}';
         }
     }
 }

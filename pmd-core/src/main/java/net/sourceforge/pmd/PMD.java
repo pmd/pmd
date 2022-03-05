@@ -126,6 +126,7 @@ public final class PMD {
     public static StatusCode runPmd(String... args) {
         PmdParametersParseResult parseResult = PmdParametersParseResult.extractParameters(args);
 
+        // todo these warnings/errors should be output on a PmdRenderer
         if (!parseResult.getDeprecatedOptionsUsed().isEmpty()) {
             Entry<String, String> first = parseResult.getDeprecatedOptionsUsed().entrySet().iterator().next();
             log.warn("Some deprecated options were used on the command-line, including {}", first.getKey());
@@ -184,7 +185,7 @@ public final class PMD {
         Slf4jSimpleConfiguration.installJulBridge();
         // logging, mostly for testing purposes
         Level defaultLogLevel = Slf4jSimpleConfiguration.getDefaultLogLevel();
-        log.atLevel(defaultLogLevel).log("Log level is at {}", defaultLogLevel);
+        log.info("Log level is at {}", defaultLogLevel);
 
         try {
             PmdAnalysis pmd;
