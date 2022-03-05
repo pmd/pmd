@@ -34,7 +34,7 @@ import net.sourceforge.pmd.renderers.CSVRenderer;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.util.ClasspathClassLoader;
 
-public class ConfigurationTest {
+public class PmdConfigurationTest {
 
     @Rule
     public TemporaryFolder folder = new TemporaryFolder();
@@ -42,7 +42,7 @@ public class ConfigurationTest {
     @Test
     public void testSuppressMarker() {
         PMDConfiguration configuration = new PMDConfiguration();
-        assertEquals("Default suppress marker", PMD.SUPPRESS_MARKER, configuration.getSuppressMarker());
+        assertEquals("Default suppress marker", PMDConfiguration.DEFAULT_SUPPRESS_MARKER, configuration.getSuppressMarker());
         configuration.setSuppressMarker("CUSTOM_MARKER");
         assertEquals("Changed suppress marker", "CUSTOM_MARKER", configuration.getSuppressMarker());
     }
@@ -122,6 +122,8 @@ public class ConfigurationTest {
         assertNull("Default RuleSets", configuration.getRuleSets());
         configuration.setRuleSets("/rulesets/basic.xml");
         assertEquals("Changed RuleSets", "/rulesets/basic.xml", configuration.getRuleSets());
+        configuration.setRuleSets((String) null);
+        assertNull(configuration.getRuleSets());
     }
 
     @Test
