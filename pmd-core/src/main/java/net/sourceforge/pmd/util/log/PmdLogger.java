@@ -23,15 +23,17 @@ public interface PmdLogger {
 
     void info(String message, Object... formatArgs);
 
+    @Deprecated
     void trace(String message, Object... formatArgs);
 
+    @Deprecated
     void debug(String message, Object... formatArgs);
 
-    void warning(String message, Object... formatArgs);
+    void warn(String message, Object... formatArgs);
 
-    void warningEx(String message, Throwable error);
+    void warnEx(String message, Throwable error);
 
-    void warningEx(String message, Object[] formatArgs, Throwable error);
+    void warnEx(String message, Object[] formatArgs, Throwable error);
 
     void error(String message, Object... formatArgs);
 
@@ -49,11 +51,11 @@ public interface PmdLogger {
 
     // levels, in sync with SLF4J levels
     enum Level {
-        TRACE,
-        DEBUG,
-        INFO,
+        ERROR,
         WARN,
-        ERROR;
+        INFO,
+        DEBUG,
+        TRACE;
 
         java.util.logging.Level toJutilLevel() {
             switch (this) {

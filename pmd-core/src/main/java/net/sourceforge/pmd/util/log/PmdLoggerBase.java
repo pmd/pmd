@@ -31,7 +31,7 @@ abstract class PmdLoggerBase implements PmdLogger {
     @Override
     public final boolean isLoggable(Level level) {
         return minLevel != null
-            && minLevel.compareTo(level) <= 0
+            && minLevel.compareTo(level) >= 0
             && isLoggableImpl(level);
     }
 
@@ -87,17 +87,17 @@ abstract class PmdLoggerBase implements PmdLogger {
     }
 
     @Override
-    public void warning(String message, Object... formatArgs) {
+    public void warn(String message, Object... formatArgs) {
         log(Level.WARN, message, formatArgs);
     }
 
     @Override
-    public final void warningEx(String message, Throwable error) {
-        warningEx(message, new Object[0], error);
+    public final void warnEx(String message, Throwable error) {
+        warnEx(message, new Object[0], error);
     }
 
     @Override
-    public void warningEx(String message, Object[] formatArgs, Throwable error) {
+    public void warnEx(String message, Object[] formatArgs, Throwable error) {
         logEx(Level.WARN, message, formatArgs, error);
     }
 
