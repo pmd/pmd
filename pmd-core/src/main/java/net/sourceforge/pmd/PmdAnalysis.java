@@ -108,18 +108,21 @@ public final class PmdAnalysis implements AutoCloseable {
         // So the files should not be pruned in advance
         FileCollectionUtil.collectFiles(config, builder.files());
 
-        Renderer renderer = config.createRenderer();
-        renderer.setReportFile(config.getReportFile());
-        builder.addRenderer(renderer);
-
-        final RuleSetLoader ruleSetLoader = RuleSetLoader.fromPmdConfig(config);
-        final RuleSets ruleSets = RulesetsFactoryUtils.getRuleSetsWithBenchmark(config.getRuleSets(), ruleSetLoader.toFactory());
-        if (ruleSets != null) {
-            for (RuleSet ruleSet : ruleSets.getAllRuleSets()) {
-                builder.addRuleSet(ruleSet);
-            }
+        if (config.getReportFormat() != null) {
+            Renderer renderer = config.createRenderer();
+            renderer.setReportFile(config.getReportFile());
+            builder.addRenderer(renderer);
         }
 
+        if (config.getRuleSets() != null) {
+            final RuleSetLoader ruleSetLoader = RuleSetLoader.fromPmdConfig(config);
+            final RuleSets ruleSets = RulesetsFactoryUtils.getRuleSetsWithBenchmark(config.getRuleSets(), ruleSetLoader.toFactory());
+            if (ruleSets != null) {
+                for (RuleSet ruleSet : ruleSets.getAllRuleSets()) {
+                    builder.addRuleSet(ruleSet);
+                }
+            }
+        }
         return builder;
     }
 
@@ -127,6 +130,17 @@ public final class PmdAnalysis implements AutoCloseable {
     static PmdAnalysis createWithoutCollectingFiles(PMDConfiguration config) {
         return new PmdAnalysis(config);
     }
+
+    // test only
+    List<RuleSet> rulesets() {
+        return ruleSets;
+    }
+
+    // test only
+    List<Renderer> renderers() {
+        return renderers;
+    }
+
 
     /**
      * Returns the file collector for the analysed sources.
