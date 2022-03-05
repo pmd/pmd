@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java;
 
+import static net.sourceforge.pmd.lang.ast.Parser.ParserTask;
+
 import java.io.PrintStream;
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -13,19 +15,17 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.sourceforge.pmd.internal.Slf4jSimpleConfiguration;
-import net.sourceforge.pmd.lang.LanguageVersion;
-import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.SemanticErrorReporter;
 import net.sourceforge.pmd.lang.ast.SemanticException;
 import net.sourceforge.pmd.lang.ast.test.BaseParsingHelper;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.lang.java.ast.JavaParser;
 import net.sourceforge.pmd.lang.java.internal.JavaAstProcessor;
+import net.sourceforge.pmd.lang.java.internal.JavaLanguageHandler;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
 import net.sourceforge.pmd.lang.java.types.internal.infer.TypeInferenceLogger;
 import net.sourceforge.pmd.lang.java.types.internal.infer.TypeInferenceLogger.SimpleLogger;
@@ -42,11 +42,13 @@ public class JavaParsingHelper extends BaseParsingHelper<JavaParsingHelper, ASTC
      */
     public static final TypeSystem TEST_TYPE_SYSTEM = TypeSystem.usingClassLoaderClasspath(JavaParsingHelper.class.getClassLoader());
 
-    /** This just runs the parser and no processing stages. */
-    public static final JavaParsingHelper JUST_PARSE = new JavaParsingHelper(Params.getDefaultNoProcess(), SemanticErrorReporter.noop(), TEST_TYPE_SYSTEM, TypeInferenceLogger.noop());
-
     /** This runs all processing stages when parsing. */
-    public static final JavaParsingHelper WITH_PROCESSING = new JavaParsingHelper(Params.getDefaultProcess(), SemanticErrorReporter.noop(), TEST_TYPE_SYSTEM, TypeInferenceLogger.noop());
+    public static final JavaParsingHelper DEFAULT = new JavaParsingHelper(
+        Params.getDefault(),
+        SemanticErrorReporter.noop(), // todo change this to unforgiving logger, need to update a lot of tests
+        TEST_TYPE_SYSTEM,
+        TypeInferenceLogger.noop()
+    );
 
     private final SemanticErrorReporter semanticLogger;
     private final TypeSystem ts;
@@ -60,9 +62,15 @@ public class JavaParsingHelper extends BaseParsingHelper<JavaParsingHelper, ASTC
     }
 
     @Override
-    protected void postProcessing(@NotNull LanguageVersionHandler handler, @NotNull LanguageVersion lversion, @NotNull ASTCompilationUnit rootNode) {
-        JavaAstProcessor.create(ts, lversion, semanticLogger, typeInfLogger)
-                        .process(rootNode);
+    protected @NonNull ASTCompilationUnit doParse(@NonNull Params params, @NonNull ParserTask task) {
+        JavaLanguageHandler handler = (JavaLanguageHandler) task.getLanguageVersion().getLanguageVersionHandler();
+        JavaParser parser = handler.getParserWithoutProcessing();
+        ASTCompilationUnit rootNode = parser.parse(task);
+        if (params.getDoProcess()) {
+            JavaAstProcessor.create(ts, task.getLanguageVersion(), semanticLogger, typeInfLogger)
+                            .process(rootNode);
+        }
+        return rootNode;
     }
 
     public TypeInferenceLogger getTypeInfLogger() {
@@ -102,11 +110,12 @@ public class JavaParsingHelper extends BaseParsingHelper<JavaParsingHelper, ASTC
         }
 
         public TestCheckLogger(boolean doLogOnConsole) {
-            if (!doLogOnConsole) {
-                Slf4jSimpleConfiguration.disableLogging(TestCheckLogger.class);
+            if (doLogOnConsole) {
+                Logger consoleLogger = LoggerFactory.getLogger(TestCheckLogger.class);
+                baseLogger = SemanticErrorReporter.reportToLogger(consoleLogger);
+            } else {
+                baseLogger = SemanticErrorReporter.noop();
             }
-            Logger consoleLogger = LoggerFactory.getLogger(TestCheckLogger.class);
-            baseLogger = SemanticErrorReporter.reportToLogger(consoleLogger);
         }
 
         @Override

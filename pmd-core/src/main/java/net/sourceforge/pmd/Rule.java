@@ -6,10 +6,8 @@ package net.sourceforge.pmd;
 
 import java.util.List;
 
-import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
-import net.sourceforge.pmd.lang.ast.AstProcessingStage;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 import net.sourceforge.pmd.properties.PropertySource;
@@ -249,31 +247,6 @@ public interface Rule extends PropertySource {
      *            the priority
      */
     void setPriority(RulePriority priority);
-
-
-    /**
-     * Returns true if this rule depends on the given processing stage
-     * to run. If so, any ruleset including this rule, in which the rule
-     * is not misconfigured, will execute the analysis reified in the
-     * given stage before applying rules on the AST.
-     *
-     * <p>The default returns false. Each language should implement this
-     * method in its abstract rule base class, and probably mark its
-     * implementation as final for consistency within the language
-     * implementation. AST processing stages are language-specific, and
-     * any non-trivial implementation should throw an {@link IllegalArgumentException}
-     * when given a stage that isn't defined on the language of the rule.
-     *
-     * @param stage Processing stage for which to check for a dependency.
-     *
-     * @return True if this rule depends on the given processing stage.
-     *
-     * @since 7.0.0
-     */
-    @Experimental
-    default boolean dependsOn(AstProcessingStage<?> stage) {
-        return true;
-    }
 
 
     /**

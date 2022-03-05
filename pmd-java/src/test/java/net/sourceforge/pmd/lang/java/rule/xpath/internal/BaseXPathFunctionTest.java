@@ -18,8 +18,8 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.ast.FileAnalysisException;
 import net.sourceforge.pmd.lang.ast.test.TestUtilsKt;
+import net.sourceforge.pmd.lang.java.BaseParserTest;
 import net.sourceforge.pmd.lang.java.JavaLanguageModule;
-import net.sourceforge.pmd.lang.java.symboltable.BaseNonParserTest;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.lang.rule.xpath.PmdXPathException;
 import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
@@ -28,7 +28,7 @@ import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
  * @author Clément Fournier
  * @since 7.0.0
  */
-public class BaseXPathFunctionTest extends BaseNonParserTest {
+public class BaseXPathFunctionTest extends BaseParserTest {
 
     private static final String VIOLATION_MESSAGE = "violation";
     private static final String RULE_NAME_PLACEHOLDER = "$rule_name";

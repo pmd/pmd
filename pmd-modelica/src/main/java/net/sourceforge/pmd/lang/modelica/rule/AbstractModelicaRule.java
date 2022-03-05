@@ -6,11 +6,9 @@ package net.sourceforge.pmd.lang.modelica.rule;
 
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.LanguageRegistry;
-import net.sourceforge.pmd.lang.ast.AstProcessingStage;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.modelica.ModelicaLanguageModule;
 import net.sourceforge.pmd.lang.modelica.ast.ModelicaParserVisitor;
-import net.sourceforge.pmd.lang.modelica.internal.ModelicaProcessingStage;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
 
 /**
@@ -26,11 +24,4 @@ public abstract class AbstractModelicaRule extends AbstractRule implements Model
         target.acceptVisitor(this, ctx);
     }
 
-    @Override
-    public boolean dependsOn(AstProcessingStage<?> stage) {
-        if (!(stage instanceof ModelicaProcessingStage)) {
-            throw new IllegalArgumentException("Processing stage wasn't a Modelica one: " + stage);
-        }
-        return true;
-    }
 }

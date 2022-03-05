@@ -19,7 +19,6 @@ import org.slf4j.LoggerFactory;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.annotation.DeprecatedUntil700;
-import net.sourceforge.pmd.lang.ast.AstProcessingStage;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.xpath.PmdXPathException;
 import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
@@ -194,12 +193,6 @@ public final class XPathRule extends AbstractRule {
             return "Missing XPath expression";
         }
         return null;
-    }
-
-    @Override
-    public boolean dependsOn(AstProcessingStage<?> stage) {
-        // FIXME must be made language-specific
-        return true;
     }
 
     private static Map<String, XPathVersion> getXPathVersions() {

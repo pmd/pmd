@@ -19,7 +19,7 @@ public class UselessParenthesesTest extends PmdRuleTst {
     Executable testImpl(String expression, Necessity necessity) {
         return () -> {
             String file = "class Foo {{ int a,b,c,d; float f1, f2, f3; String s; Object e = " + expression + ";}}";
-            ASTCompilationUnit acu = JavaParsingHelper.WITH_PROCESSING.parse(file);
+            ASTCompilationUnit acu = JavaParsingHelper.DEFAULT.parse(file);
 
             ASTExpression paren = acu.descendants(ASTExpression.class).crossFindBoundaries().first(ASTExpression::isParenthesized);
 

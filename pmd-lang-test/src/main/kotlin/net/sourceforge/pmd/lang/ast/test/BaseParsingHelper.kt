@@ -38,10 +38,7 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
         companion object {
 
             @JvmStatic
-            val defaultNoProcess = Params(false, null, null, "")
-
-            @JvmStatic
-            val defaultProcess = Params(true, null, null, "")
+            val default = Params(true, null, null, "")
 
         }
     }
@@ -124,7 +121,6 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
     ): T {
         val lversion = if (version == null) defaultVersion else getVersion(version)
         val handler = lversion.languageVersionHandler
-        val parser = handler.parser
         val source = DataSource.forString(sourceCode, fileName)
         val toString = DataSource.readToString(source, StandardCharsets.UTF_8) // this removed the BOM
         val task = Parser.ParserTask(lversion, fileName, toString, SemanticErrorReporter.noop())
@@ -132,35 +128,12 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
             handler.declareParserTaskProperties(it)
             it.setProperty(Parser.ParserTask.COMMENT_MARKER, params.suppressMarker)
         }
-        val rootNode = rootClass.cast(parser.parse(task))
-        if (params.doProcess) {
-            postProcessing(handler, lversion, rootNode)
-        }
-        return rootNode
+        return doParse(params, task)
     }
 
-    /**
-     * Select the processing stages that this should run in [postProcessing],
-     * by default runs everything.
-     */
-    protected open fun selectProcessingStages(handler: LanguageVersionHandler): List<AstProcessingStage<*>> =
-            handler.processingStages
-
-    /**
-     * Called only if [Params.doProcess] is true.
-     */
-    protected open fun postProcessing(handler: LanguageVersionHandler, lversion: LanguageVersion, rootNode: T) {
-        val astAnalysisContext = object : AstAnalysisContext {
-            override fun getTypeResolutionClassLoader(): ClassLoader = javaClass.classLoader
-
-            override fun getLanguageVersion(): LanguageVersion = lversion
-        }
-
-        val stages = selectProcessingStages(handler).sortedWith { o1, o2 -> o1.compare(o2) }
-
-        stages.forEach {
-            it.processAST(rootNode, astAnalysisContext)
-        }
+    protected open fun doParse(params: Params, task: Parser.ParserTask): T {
+        val parser = task.languageVersion.languageVersionHandler.parser
+        return rootClass.cast(parser.parse(task))
     }
 
     /**
