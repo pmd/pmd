@@ -19,12 +19,12 @@ import net.sourceforge.pmd.internal.util.FileCollectionUtil;
 import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
 import net.sourceforge.pmd.lang.document.FileCollector;
 import net.sourceforge.pmd.lang.document.TextFile;
-import net.sourceforge.pmd.util.log.NoopPmdLogger;
+import net.sourceforge.pmd.util.log.internal.NoopReporter;
 
 public class PMDFilelistTest {
 
     private static @NonNull FileCollector newCollector() {
-        return FileCollector.newCollector(new LanguageVersionDiscoverer(), new NoopPmdLogger());
+        return FileCollector.newCollector(new LanguageVersionDiscoverer(), new NoopReporter());
     }
 
     @Test
@@ -85,11 +85,4 @@ public class PMDFilelistTest {
         assertThat(applicableFiles.get(3).getPathId(), endsWith("somefile4.dummy"));
     }
 
-    private void collectWithIgnores(FileCollector collector, String include, String exclude) {
-        FileCollectionUtil.collectFileList(collector, include);
-        try (FileCollector excludeCollector = newCollector()) {
-            FileCollectionUtil.collectFileList(excludeCollector, exclude);
-            collector.exclude(excludeCollector);
-        }
-    }
 }

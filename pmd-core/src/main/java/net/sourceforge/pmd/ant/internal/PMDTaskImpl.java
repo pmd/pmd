@@ -4,8 +4,8 @@
 
 package net.sourceforge.pmd.ant.internal;
 
-import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.StringJoiner;
@@ -47,7 +47,6 @@ public class PMDTaskImpl {
     private final List<Formatter> formatters = new ArrayList<>();
     private final List<FileSet> filesets = new ArrayList<>();
     private final PMDConfiguration configuration = new PMDConfiguration();
-    private final String rulesetPaths;
     private boolean failOnError;
     private boolean failOnRuleViolation;
     private int maxRuleViolations = 0;
@@ -65,7 +64,10 @@ public class PMDTaskImpl {
         if (this.maxRuleViolations > 0) {
             this.failOnRuleViolation = true;
         }
-        this.rulesetPaths = task.getRulesetFiles() == null ? "" : task.getRulesetFiles();
+        if (task.getRulesetFiles() != null) {
+            configuration.setRuleSets(Arrays.asList(task.getRulesetFiles().split(",")));
+        }
+
         configuration.setRuleSetFactoryCompatibilityEnabled(!task.isNoRuleSetCompatibility());
         if (task.getEncoding() != null) {
             configuration.setSourceEncoding(task.getEncoding());
@@ -106,7 +108,7 @@ public class PMDTaskImpl {
         @SuppressWarnings("PMD.CloseResource") final List<String> reportShortNamesPaths = new ArrayList<>();
         StringJoiner fullInputPath = new StringJoiner(",");
 
-        List<String> ruleSetPaths = expandRuleSetPaths();
+        List<String> ruleSetPaths = expandRuleSetPaths(configuration.getRuleSetPaths());
         // don't let PmdAnalysis.create create rulesets itself.
         configuration.setRuleSets(Collections.emptyList());
 
@@ -152,8 +154,8 @@ public class PMDTaskImpl {
         }
     }
 
-    private List<String> expandRuleSetPaths() {
-        List<String> paths = new ArrayList<>(configuration.getRuleSetPaths());
+    private List<String> expandRuleSetPaths(List<String> ruleSetPaths) {
+        List<String> paths = new ArrayList<>(ruleSetPaths);
         for (int i = 0; i < paths.size(); i++) {
             paths.set(i, project.replaceProperties(paths.get(i)));
         }
@@ -171,7 +173,8 @@ public class PMDTaskImpl {
                 project.log("Sending a report to " + formatter, Project.MSG_VERBOSE);
                 renderers.add(formatter.newListener(project, reportShortNamesPaths));
             }
-        } catch (IOException e) {
+            return GlobalAnalysisListener.tee(renderers);
+        } catch (Exception e) {
             // close those opened so far
             Exception e2 = IOUtil.closeAll(renderers);
             if (e2 != null) {
@@ -179,8 +182,6 @@ public class PMDTaskImpl {
             }
             throw new BuildException("Exception while initializing renderers", e);
         }
-
-        return GlobalAnalysisListener.tee(renderers);
     }
 
     private GlobalAnalysisListener makeLogListener(String commonInputPath) {

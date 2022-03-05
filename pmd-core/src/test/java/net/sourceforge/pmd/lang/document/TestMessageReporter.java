@@ -14,7 +14,7 @@ import net.sourceforge.pmd.util.log.internal.SimpleMessageReporter;
  */
 public class TestMessageReporter extends SimpleMessageReporter {
 
-    private static final Logger LOG = LoggerFactory.getLogger(PmdTestLogger.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(TestMessageReporter.class.getName());
 
     public TestMessageReporter() {
         super(LOG);
