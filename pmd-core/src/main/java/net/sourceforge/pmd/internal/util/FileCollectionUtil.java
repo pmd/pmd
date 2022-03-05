@@ -90,7 +90,6 @@ public final class FileCollectionUtil {
     public static void collectFiles(FileCollector collector, List<String> filePaths) {
         for (String rootLocation : filePaths) {
             try {
-                collector.relativizeWith(rootLocation);
                 addRoot(collector, rootLocation);
             } catch (IOException e) {
                 collector.getReporter().errorEx("Error collecting " + rootLocation, e);

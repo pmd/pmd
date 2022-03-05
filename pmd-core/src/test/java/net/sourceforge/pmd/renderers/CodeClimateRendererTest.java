@@ -86,7 +86,7 @@ public class CodeClimateRendererTest extends AbstractRendererTest {
 
     @Test
     public void testXPathRule() throws Exception {
-        DummyNode node = createNode(1);
+        DummyNode node = createNode(1, 1, 1, 1);
         XPathRule theRule = new XPathRule(XPathVersion.XPATH_3_1, "//dummyNode");
 
         // Setup as FooRule

@@ -121,7 +121,7 @@ public class FileAnalysisCacheTest {
         when(rule.getLanguage()).thenReturn(mock(Language.class));
         when(rv.getRule()).thenReturn(rule);
 
-        cache.startFileAnalysis(sourceFileBackend).onRuleViolation(rv);
+        cache.startFileAnalysis(sourceFile).onRuleViolation(rv);
         cache.persist();
 
         final FileAnalysisCache reloadedCache = new FileAnalysisCache(newCacheFile);

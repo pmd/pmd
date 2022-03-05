@@ -9,7 +9,6 @@ import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
@@ -29,9 +28,11 @@ import net.sourceforge.pmd.cli.PMDCommandLineInterface;
 import net.sourceforge.pmd.cli.PmdParametersParseResult;
 import net.sourceforge.pmd.cli.internal.CliMessages;
 import net.sourceforge.pmd.internal.Slf4jSimpleConfiguration;
+import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.reporting.ReportStats;
 import net.sourceforge.pmd.reporting.ReportStatsListener;
+import net.sourceforge.pmd.util.CollectionUtil;
 import net.sourceforge.pmd.util.datasource.DataSource;
 import net.sourceforge.pmd.util.log.MessageReporter;
 import net.sourceforge.pmd.util.log.internal.SimpleMessageReporter;
@@ -137,9 +138,9 @@ public final class PMD {
             pmd.addRenderers(renderers);
             @SuppressWarnings("PMD.CloseResource")
             GlobalReportBuilderListener reportBuilder = new GlobalReportBuilderListener();
-            List<DataSource> sortedFiles = new ArrayList<>(files);
-            sortedFiles.sort(Comparator.comparing(ds -> ds.getNiceFileName(false, "")));
-            pmd.performAnalysisImpl(listOf(reportBuilder), sortedFiles);
+            List<TextFile> textFiles = CollectionUtil.map(files, ds -> TextFile.dataSourceCompat(ds, configuration));
+            textFiles.sort(Comparator.comparing(TextFile::getPathId));
+            pmd.performAnalysisImpl(listOf(reportBuilder), textFiles);
             return reportBuilder.getResult();
         }
     }

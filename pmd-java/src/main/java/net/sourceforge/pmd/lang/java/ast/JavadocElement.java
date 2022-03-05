@@ -5,8 +5,8 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
-import net.sourceforge.pmd.lang.java.javadoc.JavadocTag;
 import net.sourceforge.pmd.lang.document.FileLocation;
+import net.sourceforge.pmd.lang.java.javadoc.JavadocTag;
 
 public class JavadocElement extends Comment {
 

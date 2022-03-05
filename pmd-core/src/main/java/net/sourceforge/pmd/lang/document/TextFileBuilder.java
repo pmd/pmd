@@ -30,7 +30,6 @@ public abstract class TextFileBuilder {
 
         private final Path path;
         private final Charset charset;
-        private @Nullable ReferenceCountedCloseable fs;
 
         ForNio(LanguageVersion languageVersion, Path path, Charset charset) {
             super(languageVersion);
@@ -39,14 +38,8 @@ public abstract class TextFileBuilder {
         }
 
         @Override
-        public TextFileBuilder belongingTo(@Nullable ReferenceCountedCloseable fs) {
-            this.fs = fs;
-            return this;
-        }
-
-        @Override
         public TextFile build() {
-            return new NioTextFile(path, charset, languageVersion, displayName, fs);
+            return new NioTextFile(path, charset, languageVersion, displayName);
         }
     }
 
@@ -96,23 +89,6 @@ public abstract class TextFileBuilder {
     public TextFileBuilder withDisplayName(@Nullable String displayName) {
         this.displayName = displayName;
         return this;
-    }
-
-    /**
-     * Register a closeable that must be closed after the new file is closed itself.
-     * This is used to close zip archives after all the textfiles within them
-     * are closed. In this case, the reference counted closeable tracks a ZipFileSystem.
-     * If null, then the new text file doesn't have a dependency. This
-     * is also a noop unless the file was build with {@link TextFile#forPath(Path, Charset, LanguageVersion) forPath}.
-     *
-     * <p>Note at most one of those is expected. The last one wins.
-     *
-     * @param fs A closeable for the filesystem
-     *
-     * @return This builder
-     */
-    public TextFileBuilder belongingTo(@Nullable ReferenceCountedCloseable fs) {
-        return this; // noop
     }
 
     /**

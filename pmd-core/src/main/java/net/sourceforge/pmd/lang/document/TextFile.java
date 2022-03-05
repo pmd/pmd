@@ -22,10 +22,10 @@ import net.sourceforge.pmd.annotation.DeprecatedUntil700;
 import net.sourceforge.pmd.cpd.SourceCode;
 import net.sourceforge.pmd.internal.util.BaseCloseable;
 import net.sourceforge.pmd.lang.LanguageVersion;
-import net.sourceforge.pmd.util.datasource.DataSource;
 import net.sourceforge.pmd.lang.document.TextFileBuilder.ForCharSeq;
 import net.sourceforge.pmd.lang.document.TextFileBuilder.ForNio;
 import net.sourceforge.pmd.lang.document.TextFileBuilder.ForReader;
+import net.sourceforge.pmd.util.datasource.DataSource;
 
 /**
  * Represents some location containing character data. Despite the name,
@@ -245,6 +245,7 @@ public interface TextFile extends Closeable {
 
             @Override
             public TextFileContent readContents() throws IOException {
+                ensureOpen();
                 try (InputStream is = ds.getInputStream();
                      Reader reader = new BufferedReader(new InputStreamReader(is, config.getSourceEncoding()))) {
                     String contents = IOUtils.toString(reader);

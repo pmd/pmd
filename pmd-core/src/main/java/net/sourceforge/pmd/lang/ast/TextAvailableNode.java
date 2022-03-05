@@ -4,8 +4,8 @@
 
 package net.sourceforge.pmd.lang.ast;
 
-import net.sourceforge.pmd.lang.rule.xpath.NoAttribute;
 import net.sourceforge.pmd.lang.document.TextRegion;
+import net.sourceforge.pmd.lang.rule.xpath.NoAttribute;
 
 /**
  * Refinement of {@link Node} for nodes that can provide the underlying

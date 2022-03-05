@@ -25,11 +25,10 @@ class NioTextFile extends BaseCloseable implements TextFile {
 
     private final Path path;
     private final Charset charset;
-    private final @Nullable ReferenceCountedCloseable fs;
     private final LanguageVersion languageVersion;
     private final @Nullable String displayName;
 
-    NioTextFile(Path path, Charset charset, LanguageVersion languageVersion, @Nullable String displayName, @Nullable ReferenceCountedCloseable fs) {
+    NioTextFile(Path path, Charset charset, LanguageVersion languageVersion, @Nullable String displayName) {
         AssertionUtil.requireParamNotNull("path", path);
         AssertionUtil.requireParamNotNull("charset", charset);
         AssertionUtil.requireParamNotNull("language version", languageVersion);
@@ -38,10 +37,6 @@ class NioTextFile extends BaseCloseable implements TextFile {
         this.path = path;
         this.charset = charset;
         this.languageVersion = languageVersion;
-        this.fs = fs;
-        if (fs != null) {
-            fs.addDependent();
-        }
     }
 
     @Override
@@ -93,9 +88,25 @@ class NioTextFile extends BaseCloseable implements TextFile {
 
     @Override
     protected void doClose() throws IOException {
-        if (fs != null) {
-            fs.closeDependent();
+        // nothing to do.
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
         }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        @SuppressWarnings("PMD.CloseResource")
+        NioTextFile that = (NioTextFile) o;
+        return path.equals(that.path);
+    }
+
+    @Override
+    public int hashCode() {
+        return path.hashCode();
     }
 
     @Override

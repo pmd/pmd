@@ -121,6 +121,7 @@ public final class FileUtil {
     public static List<String> readFilelistEntries(Path filelist) throws IOException {
         return Files.readAllLines(filelist).stream()
                     .flatMap(it -> Arrays.stream(it.split(",")))
+                    .map(String::trim)
                     .filter(StringUtils::isNotBlank)
                     .collect(Collectors.toList());
     }

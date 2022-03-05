@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.reporting;
 
-import net.sourceforge.pmd.util.datasource.DataSource;
+import net.sourceforge.pmd.lang.document.TextFile;
 
 /**
  * @author Clément Fournier
@@ -18,7 +18,7 @@ final class NoopAnalysisListener implements GlobalAnalysisListener {
     }
 
     @Override
-    public FileAnalysisListener startFileAnalysis(DataSource file) {
+    public FileAnalysisListener startFileAnalysis(TextFile file) {
         return FileAnalysisListener.noop();
     }
 

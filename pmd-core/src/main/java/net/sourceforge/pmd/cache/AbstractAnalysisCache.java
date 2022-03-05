@@ -80,8 +80,8 @@ public abstract class AbstractAnalysisCache implements AnalysisCache {
             if (result) {
                 LOG.debug("Incremental Analysis cache HIT");
             } else {
-                LOG.debug("Incremental Analysis cache MISS - {}" ,analysisResult != null ? "file changed"
-                                                                                            : "no previous result found");
+                LOG.debug("Incremental Analysis cache MISS - {}",
+                          analysisResult != null ? "file changed" : "no previous result found");
             }
 
             return result;
