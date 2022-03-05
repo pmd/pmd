@@ -7,8 +7,8 @@ package net.sourceforge.pmd;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.hasSize;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -38,7 +38,7 @@ public class PmdAnalysisTest {
     public void testRendererInteractions() throws IOException {
         PMDConfiguration config = new PMDConfiguration();
         config.setInputPaths("sample-source/dummy");
-        Renderer renderer = mock(Renderer.class);
+        Renderer renderer = spy(Renderer.class);
         try (PmdAnalysis pmd = PmdAnalysis.create(config)) {
             pmd.addRenderer(renderer);
             verify(renderer, never()).start();

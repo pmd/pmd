@@ -8,8 +8,6 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.text.MessageFormat;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -18,8 +16,8 @@ import java.util.Properties;
 
 import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
-
-import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
@@ -35,6 +33,7 @@ import net.sourceforge.pmd.util.log.PmdLogger;
  * or some such overload.
  */
 public final class RuleSetLoader {
+    private static final Logger LOG = LoggerFactory.getLogger(RuleSetLoader.class);
 
     private ResourceLoader resourceLoader = new ResourceLoader(RuleSetLoader.class.getClassLoader());
     private RulePriority minimumPriority = RulePriority.LOW;
@@ -215,14 +214,14 @@ public final class RuleSetLoader {
     }
 
     void printRulesInDebug(String path, RuleSet ruleset) {
-        if (LOG.isLoggable(Level.FINE)) {
-            LOG.fine(MessageFormat.format("Rules loaded from {1}:", path));
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Rules loaded from {}:", path);
             for (Rule rule : ruleset.getRules()) {
-                LOG.fine(MessageFormat.format("- {0} ({1})", rule.getName(), rule.getLanguage().getName()));
+                LOG.debug("- {} ({})", rule.getName(), rule.getLanguage().getName());
             }
         }
         if (ruleset.getRules().isEmpty()) {
-            reporter.warning(MessageFormat.format("No rules found in ruleset {0}", path));
+            reporter.warning("No rules found in ruleset {0}", path);
         }
 
     }

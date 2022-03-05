@@ -6,7 +6,6 @@ package net.sourceforge.pmd;
 
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -78,7 +77,7 @@ public final class PmdAnalysis implements AutoCloseable {
     private final List<GlobalAnalysisListener> listeners = new ArrayList<>();
     private final List<RuleSet> ruleSets = new ArrayList<>();
     private final PMDConfiguration configuration;
-    private final PmdLogger logger;
+    private final PmdLogger reporter;
 
 
     /**
@@ -87,9 +86,9 @@ public final class PmdAnalysis implements AutoCloseable {
      * the file collector ({@link #files()}), but more can be added
      * programmatically using the file collector.
      */
-    private PmdAnalysis(PMDConfiguration config, PmdLogger logger) {
+    private PmdAnalysis(PMDConfiguration config, PmdLogger reporter) {
         this.configuration = config;
-        this.logger = logger;
+        this.reporter = reporter;
         this.collector = FileCollector.newCollector(
             config.getLanguageVersionDiscoverer(),
             reporter
@@ -117,8 +116,8 @@ public final class PmdAnalysis implements AutoCloseable {
     }
 
     @InternalApi
-    static PmdAnalysis create(PMDConfiguration config, PmdLogger logger) {
-        PmdAnalysis pmd = new PmdAnalysis(config, logger);
+    static PmdAnalysis create(PMDConfiguration config, PmdLogger reporter) {
+        PmdAnalysis pmd = new PmdAnalysis(config, reporter);
 
         // note: do not filter files by language
         // they could be ignored later. The problem is if you call
@@ -139,6 +138,17 @@ public final class PmdAnalysis implements AutoCloseable {
         }
         return pmd;
     }
+
+    // test only
+    List<RuleSet> rulesets() {
+        return ruleSets;
+    }
+
+    // test only
+    List<Renderer> renderers() {
+        return renderers;
+    }
+
 
     /**
      * Returns the file collector for the analysed sources.
@@ -257,7 +267,7 @@ public final class PmdAnalysis implements AutoCloseable {
                     cacheListener
                 ));
             } catch (Exception e) {
-                logger.errorEx("Exception while initializing analysis listeners", e);
+                reporter.errorEx("Exception while initializing analysis listeners", e);
                 throw new RuntimeException("Exception while initializing analysis listeners", e);
             }
 
@@ -295,8 +305,10 @@ public final class PmdAnalysis implements AutoCloseable {
         List<GlobalAnalysisListener> rendererListeners = new ArrayList<>(renderers.size());
         for (Renderer renderer : renderers) {
             try {
-                rendererListeners.add(renderer.newListener());
-            } catch (IOException ioe) {
+                GlobalAnalysisListener listener =
+                    Objects.requireNonNull(renderer.newListener(), "Renderer should provide non-null listener");
+                rendererListeners.add(listener);
+            } catch (Exception ioe) {
                 // close listeners so far, throw their close exception or the ioe
                 IOUtil.ensureClosed(rendererListeners, ioe);
                 throw AssertionUtil.shouldNotReachHere("ensureClosed should have thrown");
@@ -333,7 +345,7 @@ public final class PmdAnalysis implements AutoCloseable {
         ruleSets.removeDysfunctionalRules(brokenRules);
 
         for (final Rule rule : brokenRules) {
-            logger.warning("Removed misconfigured rule: {} cause: {}",
+            reporter.warning("Removed misconfigured rule: {} cause: {}",
                            rule.getName(), rule.dysfunctionReason());
         }
 
@@ -359,37 +371,4 @@ public final class PmdAnalysis implements AutoCloseable {
         }
     }
 
-    /**
-     * TODO move that to RuleSetLoader
-     */
-    static List<RuleSet> loadRulesets(List<String> rulesetPaths, RuleSetLoader factory, PmdLogger logger) {
-
-        try (TimedOperation ignored = TimeTracker.startOperation(TimedOperationCategory.LOAD_RULES)) {
-            List<RuleSet> ruleSets = new ArrayList<>(rulesetPaths.size());
-            boolean anyRules = false;
-            for (String path : rulesetPaths) {
-                try {
-                    RuleSet ruleset = factory.loadFromResource(path);
-                    anyRules |= !ruleset.getRules().isEmpty();
-                    printRulesInDebug(ruleset);
-                    ruleSets.add(ruleset);
-                } catch (RuleSetLoadException e) {
-                    logger.errorEx("Cannot load ruleset {}", new Object[] { path }, e);
-                }
-            }
-            if (!anyRules) {
-                logger.error("No rules found. Maybe you misspelled a rule name? ({})",
-                             String.join(",", rulesetPaths));
-            }
-            return ruleSets;
-        }
-    }
-
-    static void printRulesInDebug(RuleSet ruleset) {
-        if (LOG.isDebugEnabled()) {
-            for (Rule rule : ruleset.getRules()) {
-                LOG.debug("Loaded {} rule {}", rule.getLanguage().getName(), rule.getName());
-            }
-        }
-    }
 }
