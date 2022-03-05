@@ -77,6 +77,7 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import foo.TestInterfaceTwo;
+import java.util.*;
 public class Foo {
     private List<TestInterfaceTwo> x = new ArrayList<TestInterfaceTwo>();
 }
@@ -157,7 +158,8 @@ public class Foo {
         ]]></code>
     </test-code>
 
-    <test-code>
+    <test-code regressionTest="false">
+        <!-- This doesn't work anymore since the import is unresolved -->
         <description>Used static import</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
@@ -411,7 +413,7 @@ public class Foo {
         <description>#925 [java] UnusedImports false positive for static import</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-            package net.sourceforge.pmd.lang.java.rule.bestpractices.unusedimports;
+            package net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryimport;
 
             import static net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryimport.ClassWithConstants.*;
 
@@ -429,7 +431,7 @@ public class Foo {
         <description>#1404 [java] UnusedImports false positive for static import</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-            package net.sourceforge.pmd.lang.java.rule.bestpractices.unusedimports;
+            package net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryimport;
 
             import static net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryimport.ClassWithStringConstants.*;
 
@@ -448,9 +450,9 @@ public class Foo {
         <description>#1209 [java] UnusedImports false positive for static import with package-private method usage</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-            package net.sourceforge.pmd.lang.java.rule.bestpractices.unusedimports;
+            package net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryimport;
 
-            import static net.sourceforge.pmd.lang.java.rule.bestpractices.unusedimports.PackagePrivateUtils.*;
+            import static net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryimport.PackagePrivateUtils.*;
             import static net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryimport.PublicUtils.*;
 
             public class Imports {
@@ -473,7 +475,7 @@ public class Foo {
         <description>#1625 [java] UnusedImports false positive for method parameter type in @see Javadoc</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-package net.sourceforge.pmd.lang.java.rule.bestpractices.unusedimports;
+package net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryimport;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -489,7 +491,7 @@ public class Derived extends FileInputStream {
         <description>#1720 False Positive in UnusedImports for Javadoc @see with array type</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-package net.sourceforge.pmd.lang.java.rule.bestpractices.unusedimports;
+package net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryimport;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -533,7 +535,7 @@ public class VendingV2PaymentRequest {
         <description>#2016 [java] UnusedImports: False positive if wildcard is used and only static methods</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-package net.sourceforge.pmd.lang.java.rule.bestpractices.unusedimports;
+package net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryimport;
 
 // star import is important here for the test case!!
 import java.util.*;
@@ -578,12 +580,29 @@ public class Foo {
         <description>[java] UnusedImports with static imports on subclasses #3132</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-package net.sourceforge.pmd.lang.java.rule.bestpractices.unusedimports;
+package net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryimport;
 
-import static net.sourceforge.pmd.lang.java.rule.bestpractices.unusedimports.HelloMore.*; // flagged as unused
+import static net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryimport.HelloMore.*; // flagged as unused
 
 public class Test {
     public static void main(String... args) {
+        sayHello();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Unused import with member inherited AND imported</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+package net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryimport;
+
+import static net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryimport.HelloMore.sayHello;
+
+public class Test extends HelloMore {
+    public static void main(String... args) {
+        // import is unused as the method is inherited here
         sayHello();
     }
 }
@@ -732,16 +751,97 @@ class NPEImport {}
     </test-code>
 
     <test-code>
-        <description>[java] DuplicateImports reported for the same import... and import static... #2546</description>
+        <description>[java]  similar imports static/nonstatic with method #2546</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>1</expected-linenumbers>
+        <expected-linenumbers>2</expected-linenumbers>
+        <expected-messages>
+            <message>Unused import 'net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryimport.NonStaticContainer.*'</message>
+        </expected-messages>
         <code><![CDATA[
-            import java.util.Collections.*;
-            import static java.util.Collections.*;
+            // imports NonStatic -- unused
+            import net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryimport.NonStaticContainer.*;
+            // imports foo -- used
+            import static net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryimport.NonStaticContainer.*;
 
             public class DuplicateImports {
                 static {
-                    emptyList();
+                    foo();
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>[java] #2546 -- similar imports static/nonstatic - static is used</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <expected-messages>
+            <message>Unused import 'net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryimport.NonStaticContainer.*'</message>
+        </expected-messages>
+        <code><![CDATA[
+            // imports NonStatic -- unused
+            import net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryimport.NonStaticContainer.*;
+            // imports Static
+            import static net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryimport.NonStaticContainer.*;
+
+            public class DuplicateImports {
+                static {
+                    Static b;
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>[java] #2546 -- similar imports static/nonstatic - static is unused</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <expected-messages>
+            <message>Unused static import 'net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryimport.NonStaticContainer.*'</message>
+        </expected-messages>
+        <code><![CDATA[
+            // imports NonStatic
+            import net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryimport.NonStaticContainer.*;
+            // imports Static -- unused
+            import static net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryimport.NonStaticContainer.*;
+
+            public class DuplicateImports {
+                static {
+                    NonStatic b;
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>[java] #2546 -- similar imports static/nonstatic - both are used</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            // imports NonStatic
+            import net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryimport.NonStaticContainer.*;
+            // imports Static
+            import static net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryimport.NonStaticContainer.*;
+
+            public class DuplicateImports {
+                static {
+                    // both are used
+                    NonStatic a;
+                    Static b;
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>[java] #2546 -- similar imports static/nonstatic - both are used (method)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            // imports NonStatic
+            import net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryimport.NonStaticContainer.*;
+            // imports foo()
+            import static net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryimport.NonStaticContainer.*;
+
+            public class DuplicateImports {
+                static {
+                    // both are used
+                    NonStatic a;
+                    foo();
                 }
             }
             ]]></code>
@@ -776,7 +876,7 @@ class NPEImport {}
         <description>ImportFromSamePackage: importing all from same package</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>Unnecessary import from the current package 'foo.bar.*'</message>
+            <message>Unused import 'foo.bar.*'</message>
         </expected-messages>
         <code><![CDATA[
             package foo.bar;
@@ -808,6 +908,34 @@ class NPEImport {}
             <message>Unused import 'java.lang.String'</message>
         </expected-messages>
         <code><![CDATA[
+            import java.lang.String;
+            public class Foo { }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>import java.lang type when it shadows a same package type</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            // this package redefines a String type
+            package net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryimport.javalang;
+
+            import java.lang.String;
+            public class Foo {
+                String foo;
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>import java.lang type when it shadows a same package type (unused)</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Unused import 'java.lang.String'</message>
+        </expected-messages>
+        <code><![CDATA[
+            // this package redefines a String type
+            package net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryimport.javalang;
+
             import java.lang.String;
             public class Foo { }
             ]]></code>
@@ -912,6 +1040,27 @@ import net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryimport.package2.*
 public class U {
     private void g() {
         String k = C.V;
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>static import of a type</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryimport;
+
+import static net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryimport.ConcFlow.Subscriber;
+import net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryimport.ConcFlow.Publisher;
+import static net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryimport.ConcFlow.Subscription;
+
+/**
+ * {@link Flow.Subscription#request(long) request}
+ * {@link Flow.Subscription}
+ */
+public class SubmissionPublisher<T> implements Publisher<T> {
+    static final class ConsumerSubscriber<T> implements Subscriber<T> {
+        Subscription subscription;
     }
 }
         ]]></code>

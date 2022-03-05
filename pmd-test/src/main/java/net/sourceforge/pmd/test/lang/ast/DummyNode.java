@@ -5,7 +5,7 @@
 package net.sourceforge.pmd.test.lang.ast;
 
 import net.sourceforge.pmd.lang.ast.impl.AbstractNode;
-import net.sourceforge.pmd.util.document.FileLocation;
+import net.sourceforge.pmd.lang.document.FileLocation;
 
 public class DummyNode extends AbstractNode<DummyNode, DummyNode> {
 

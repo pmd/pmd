@@ -26,10 +26,12 @@ public final class AssertionUtil {
 
     /** @throws NullPointerException if $name */
     public static void requireContainsNoNullValue(String name, Collection<?> c) {
+        int i = 0;
         for (Object o : c) {
             if (o == null) {
-                throw new NullPointerException(name + " contains null elements");
+                throw new NullPointerException(name + " contains a null element at index " + i);
             }
+            i++;
         }
     }
 

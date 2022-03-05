@@ -12,6 +12,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.Supplier;
 
 /**
  * A time tracker class to measure time spent on different sections of PMD analysis.
@@ -157,6 +158,18 @@ public final class TimeTracker {
         }
     }
 
+    public static void bench(String label, Runnable runnable) {
+        try (TimedOperation ignored = startOperation(TimedOperationCategory.LANGUAGE_SPECIFIC_PROCESSING, label)) {
+            runnable.run();
+        }
+    }
+
+    public static <T> T bench(String label, Supplier<T> runnable) {
+        try (TimedOperation ignored = startOperation(TimedOperationCategory.LANGUAGE_SPECIFIC_PROCESSING, label)) {
+            return runnable.get();
+        }
+    }
+
     /**
      * An entry in the open timers queue. Defines an operation that has started and hasn't finished yet.
      */
@@ -245,10 +258,7 @@ public final class TimeTracker {
                 return false;
             }
             TimedOperationKey other = (TimedOperationKey) obj;
-            if (category != other.category) {
-                return false;
-            }
-            return Objects.equals(label, other.label);
+            return category == other.category && Objects.equals(label, other.label);
         }
 
         @Override
@@ -260,7 +270,7 @@ public final class TimeTracker {
     /**
      * A standard timed operation implementation.
      */
-    private static class TimedOperationImpl implements TimedOperation {
+    private static final class TimedOperationImpl implements TimedOperation {
         private boolean closed = false;
 
         @Override

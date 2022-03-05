@@ -12,9 +12,7 @@ layout: default
     <div class="summary">{{page.summary}}</div>
    {% endif %}
 
-    {% unless page.toc == false %}
-    {% include toc.html %}
-    {% endunless %}
+    <div id="inline-toc"><!-- empty, move TOC here when screen size too small --></div>
 
 
     {% if site.github_editme_path %}

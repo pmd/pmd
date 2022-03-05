@@ -4,8 +4,8 @@
 
 package net.sourceforge.pmd.lang.ast.impl.javacc.io;
 
-import net.sourceforge.pmd.util.document.Chars;
-import net.sourceforge.pmd.util.document.TextDocument;
+import net.sourceforge.pmd.lang.document.Chars;
+import net.sourceforge.pmd.lang.document.TextDocument;
 
 /**
  * An implementation of {@link EscapeTranslator} that translates Java

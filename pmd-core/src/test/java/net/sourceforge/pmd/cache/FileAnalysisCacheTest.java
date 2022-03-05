@@ -37,10 +37,10 @@ import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
-import net.sourceforge.pmd.util.document.FileLocation;
-import net.sourceforge.pmd.util.document.TextDocument;
-import net.sourceforge.pmd.util.document.TextFile;
-import net.sourceforge.pmd.util.document.TextFileContent;
+import net.sourceforge.pmd.lang.document.FileLocation;
+import net.sourceforge.pmd.lang.document.TextDocument;
+import net.sourceforge.pmd.lang.document.TextFile;
+import net.sourceforge.pmd.lang.document.TextFileContent;
 
 @SuppressWarnings("deprecation")
 public class FileAnalysisCacheTest {
@@ -95,21 +95,21 @@ public class FileAnalysisCacheTest {
     }
 
     @Test
-    public void testStoreCreatesFile() {
+    public void testStoreCreatesFile() throws Exception {
         final FileAnalysisCache cache = new FileAnalysisCache(unexistingCacheFile);
         cache.persist();
         assertTrue("Cache file doesn't exist after store", unexistingCacheFile.exists());
     }
 
     @Test
-    public void testStoreOnUnwritableFileShouldntThrow() {
+    public void testStoreOnUnwritableFileShouldntThrow() throws IOException {
         emptyCacheFile.setWritable(false);
         final FileAnalysisCache cache = new FileAnalysisCache(emptyCacheFile);
         cache.persist();
     }
 
     @Test
-    public void testStorePersistsFilesWithViolations() {
+    public void testStorePersistsFilesWithViolations() throws IOException {
         final FileAnalysisCache cache = new FileAnalysisCache(newCacheFile);
         cache.checkValidity(mock(RuleSets.class), mock(ClassLoader.class));
         cache.isUpToDate(sourceFile);
@@ -121,7 +121,7 @@ public class FileAnalysisCacheTest {
         when(rule.getLanguage()).thenReturn(mock(Language.class));
         when(rv.getRule()).thenReturn(rule);
 
-        cache.startFileAnalysis(mock(TextFile.class)).onRuleViolation(rv);
+        cache.startFileAnalysis(sourceFile).onRuleViolation(rv);
         cache.persist();
 
         final FileAnalysisCache reloadedCache = new FileAnalysisCache(newCacheFile);
@@ -134,7 +134,7 @@ public class FileAnalysisCacheTest {
     }
 
     @Test
-    public void testCacheValidityWithNoChanges() {
+    public void testCacheValidityWithNoChanges() throws IOException {
         final RuleSets rs = mock(RuleSets.class);
         final ClassLoader cl = mock(ClassLoader.class);
 
@@ -164,7 +164,7 @@ public class FileAnalysisCacheTest {
     }
 
     @Test
-    public void testRulesetChangeInvalidatesCache() {
+    public void testRulesetChangeInvalidatesCache() throws IOException {
         final RuleSets rs = mock(RuleSets.class);
         final ClassLoader cl = mock(ClassLoader.class);
 
@@ -385,7 +385,7 @@ public class FileAnalysisCacheTest {
     private void setupCacheWithFiles(final File cacheFile,
                                      final RuleSets ruleSets,
                                      final ClassLoader classLoader,
-                                     final TextDocument... files) {
+                                     final TextDocument... files) throws IOException {
         // Setup a cache file with an entry for an empty Source.java with no violations
         final FileAnalysisCache cache = new FileAnalysisCache(cacheFile);
         cache.checkValidity(ruleSets, classLoader);

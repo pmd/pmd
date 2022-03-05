@@ -6,6 +6,8 @@ package net.sourceforge.pmd.lang.java.symbols.table.internal;
 
 import static java.util.Collections.emptySet;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -17,6 +19,7 @@ import java.util.stream.StreamSupport;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.internal.util.IteratorUtil;
+import net.sourceforge.pmd.internal.util.IteratorUtil.AbstractIterator;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 
 /**
@@ -56,6 +59,7 @@ public enum SuperTypesEnumerator {
             @Nullable JClassType sup = t.getSuperClass();
             List<JClassType> superItfs = t.getSuperInterfaces();
 
+            @SuppressWarnings("PMD.LooseCoupling") // the set should keep insertion order
             LinkedHashSet<JClassType> set;
             if (sup != null) {
                 set = new LinkedHashSet<>(superItfs.size() + 1);
@@ -87,6 +91,7 @@ public enum SuperTypesEnumerator {
         }
     },
 
+
     /**
      * Walks supertypes depth-first, without duplicates. This includes
      * Object if the search starts on an interface. For example for the following:
@@ -94,32 +99,18 @@ public enum SuperTypesEnumerator {
      *
      * interface I1 { } // yields I1, Object
      *
-     * interface I2 extends I1 { }  // yields I2, I1, Object
+     * interface I2 extends I1 { }  // yields I2, Object, I1
      *
-     * class Sup implements I2 { }  // yields Sup, I2, I1, Object
+     * class Sup implements I2 { }  // yields Sup, Object, I2, I1
      *
-     * class Sub extends Sup implements I1 { } // yields Sub, I1, Sup, I2, Object
+     * class Sub extends Sup implements I1 { } // yields Sub, Sup, Object, I2, I1
      *
      * }</pre>
      */
     ALL_SUPERTYPES_INCLUDING_SELF {
         @Override
         public Iterator<JClassType> iterator(JClassType t) {
-            final Set<JClassType> seenInterfaces = new HashSet<>();
-            return IteratorUtil.flatMapWithSelf(SUPERCLASSES_AND_SELF.iterator(t), type -> {
-                final Set<JClassType> currentInterfaces = new LinkedHashSet<>();
-                walkInterfaces(seenInterfaces, currentInterfaces, type);
-                return currentInterfaces.iterator();
-            });
-        }
-
-        private void walkInterfaces(final Set<JClassType> seen, final Set<JClassType> addTo, final JClassType c) {
-            for (final JClassType iface : c.getSuperInterfaces()) {
-                if (seen.add(iface)) {
-                    addTo.add(iface);
-                    walkInterfaces(seen, addTo, iface); // Recurses into all super itfs
-                }
-            }
+            return new SuperTypeWalker(t);
         }
     };
 
@@ -128,10 +119,42 @@ public enum SuperTypesEnumerator {
 
     public Stream<JClassType> stream(JClassType t) {
         return StreamSupport.stream(iterable(t).spliterator(), false);
-
     }
 
     public Iterable<JClassType> iterable(JClassType t) {
         return () -> iterator(t);
+    }
+
+    private static class SuperTypeWalker extends AbstractIterator<JClassType> {
+
+        final Set<JClassType> seen = new HashSet<>();
+        final Deque<JClassType> todo = new ArrayDeque<>(2);
+
+        SuperTypeWalker(JClassType start) {
+            todo.push(start);
+        }
+
+        @Override
+        protected void computeNext() {
+            if (todo.isEmpty()) {
+                done();
+            } else {
+                JClassType top = todo.pollFirst();
+                setNext(top);
+                enqueue(top);
+            }
+        }
+
+        private void enqueue(final JClassType c) {
+            JClassType sup = c.getSuperClass();
+            if (sup != null && seen.add(sup)) {
+                todo.addFirst(sup);
+            }
+            for (final JClassType iface : c.getSuperInterfaces()) {
+                if (seen.add(iface)) {
+                    todo.addLast(iface);
+                }
+            }
+        }
     }
 }

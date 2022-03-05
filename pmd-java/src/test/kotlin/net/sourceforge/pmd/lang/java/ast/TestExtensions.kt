@@ -400,6 +400,19 @@ fun TreeNodeWrapper<Node, *>.typeExpr(contents: ValuedNodeSpec<ASTTypeExpression
             it::getTypeNode shouldBe contents()
         }
 
+fun TreeNodeWrapper<Node, *>.patternExpr(contents: ValuedNodeSpec<ASTPatternExpression, ASTPattern>) =
+        child<ASTPatternExpression>(ignoreChildren = contents == EmptyAssertions) {
+            it::getPattern shouldBe contents()
+        }
+fun TreeNodeWrapper<Node, *>.typePattern(contents: NodeSpec<ASTTypePattern>) =
+        child<ASTTypePattern>(ignoreChildren = contents == EmptyAssertions) {
+            contents()
+        }
+fun TreeNodeWrapper<Node, *>.guardedPattern(contents: NodeSpec<ASTGuardedPattern>) =
+        child<ASTGuardedPattern>(ignoreChildren = contents == EmptyAssertions) {
+            contents()
+        }
+
 
 fun TreeNodeWrapper<Node, *>.arrayType(contents: NodeSpec<ASTArrayType> = EmptyAssertions) =
         child<ASTArrayType>(ignoreChildren = contents == EmptyAssertions) {

@@ -276,7 +276,7 @@ public class ConsecutiveLiteralAppendsRule extends AbstractJavaRulechainRule {
             || TypeTestUtil.isA(StringBuilder.class, node);
     }
 
-    private static class ConsecutiveCounter {
+    private static final class ConsecutiveCounter {
         private int threshold;
         private int counter;
         private Node reportNode;

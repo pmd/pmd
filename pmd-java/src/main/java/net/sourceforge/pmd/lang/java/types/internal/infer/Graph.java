@@ -7,15 +7,16 @@ package net.sourceforge.pmd.lang.java.types.internal.infer;
 import static java.lang.Math.min;
 import static net.sourceforge.pmd.util.CollectionUtil.union;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.Stack;
 
 import net.sourceforge.pmd.internal.GraphUtils;
 import net.sourceforge.pmd.internal.GraphUtils.DotColor;
@@ -164,14 +165,14 @@ class Graph<T> {
         );
     }
 
-    private static class TarjanState<T> {
+    private static final class TarjanState<T> {
 
         int index;
-        Stack<Vertex<T>> stack = new Stack<>();
+        Deque<Vertex<T>> stack = new ArrayDeque<>();
 
     }
 
-    static class Vertex<T> {
+    static final class Vertex<T> {
 
         private final Graph<T> owner;
         private final Set<T> data;

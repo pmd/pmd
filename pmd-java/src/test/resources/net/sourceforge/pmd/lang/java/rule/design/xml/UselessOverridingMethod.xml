@@ -543,7 +543,7 @@ public class DirectSubclass2 extends DirectSubclass {
     public void doBase() {
         super.doBase();
     }
- 
+
     @Override
     public void doBaseWithArg(String foo) {
         super.doBaseWithArg(foo);
@@ -615,5 +615,77 @@ public class OtherSubclass extends BaseClass {
     }
 }
         ]]></code>
+    </test-code>
+    <test-code>
+        <description>Overriding with call to super interface default</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            interface Foo {
+                default void foo() {
+
+                }
+            }
+
+            public class AClass implements Foo {
+
+                public void foo() {
+                    // technically useless, but this form might be required
+                    // by the compiler if there are several unrelated default
+                    // methods that are inherited.
+                    Foo.super.foo();
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Overriding with call to super interface default, required by compiler</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            interface Foo {
+                default void foo() {
+
+                }
+            }
+
+            interface Bar {
+                default void foo() {
+
+                }
+            }
+
+            public class AClass implements Foo, Bar {
+
+                public void foo() {
+                    Foo.super.foo();
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Overriding with call to superclass, useless</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            interface Foo {
+                default void foo() {
+
+                }
+            }
+
+            interface Bar {
+                default void foo() {
+
+                }
+            }
+
+            class Sup {
+                public void foo() {}
+            }
+
+            public class AClass extends Sup implements Foo, Bar {
+                public void foo() {
+                    super.foo(); // useless
+                }
+            }
+            ]]></code>
     </test-code>
 </test-data>

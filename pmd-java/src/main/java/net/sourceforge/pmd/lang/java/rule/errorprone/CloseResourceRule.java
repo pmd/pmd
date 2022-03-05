@@ -210,12 +210,7 @@ public class CloseResourceRule extends AbstractJavaRule {
 
     private TypeNode getTypeOfVariable(ASTVariableDeclaratorId var) {
         TypeNode runtimeType = getRuntimeTypeOfVariable(var);
-        return runtimeType != null ? runtimeType : getDeclaredTypeOfVariable(var);
-    }
-
-    private TypeNode getDeclaredTypeOfVariable(ASTVariableDeclaratorId var) {
-        ASTLocalVariableDeclaration localVar = (ASTLocalVariableDeclaration) var.getParent().getParent();
-        return localVar.getTypeNode(); // note: can be null, if type is inferred (var)
+        return runtimeType != null ? runtimeType : var.getTypeNode();
     }
 
     private TypeNode getRuntimeTypeOfVariable(ASTVariableDeclaratorId var) {

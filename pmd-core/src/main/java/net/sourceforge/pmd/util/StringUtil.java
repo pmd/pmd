@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.util;
 
+import java.text.MessageFormat;
 import java.util.List;
 import java.util.Locale;
 import java.util.regex.Matcher;
@@ -14,7 +15,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.internal.util.AssertionUtil;
-import net.sourceforge.pmd.util.document.Chars;
+import net.sourceforge.pmd.lang.document.Chars;
 
 /**
  * A number of String-specific utility methods for use by PMD or its IDE
@@ -529,6 +530,13 @@ public final class StringUtil {
         return retval.toString();
     }
 
+    /**
+     * Escape the string so that it appears literally when interpreted
+     * by a {@link MessageFormat}.
+     */
+    public static String quoteMessageFormat(String str) {
+        return str.replaceAll("'", "''");
+    }
 
     /**
      * Truncate the string to the given maximum length. If it is truncated,

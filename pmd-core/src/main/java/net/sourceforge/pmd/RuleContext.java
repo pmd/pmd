@@ -13,10 +13,11 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import net.sourceforge.pmd.Report.SuppressedViolation;
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.document.FileLocation;
+import net.sourceforge.pmd.lang.rule.AbstractRule;
 import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
 import net.sourceforge.pmd.processor.AbstractPMDProcessor;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
-import net.sourceforge.pmd.util.document.FileLocation;
 
 /**
  * The API for rules to report violations or errors during analysis.
@@ -44,6 +45,15 @@ public final class RuleContext {
         Objects.requireNonNull(rule, "Rule was null");
         this.listener = listener;
         this.rule = rule;
+    }
+
+    /**
+     * @deprecated Used in {@link AbstractRule#asCtx(Object)}, when that is gone, will be removed.
+     */
+    @Deprecated
+    @InternalApi
+    public Rule getRule() {
+        return rule;
     }
 
     private String getDefaultMessage() {
@@ -141,6 +151,7 @@ public final class RuleContext {
      * 
      * @param rv A violation
      */
+    @InternalApi
     public void addViolationNoSuppress(RuleViolation rv) {
         listener.onRuleViolation(rv);
     }

@@ -12,14 +12,15 @@ import java.nio.charset.Charset;
 import java.util.Locale;
 
 import org.apache.commons.io.FileUtils;
-import org.junit.Ignore;
+import org.junit.AfterClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.contrib.java.lang.system.RestoreSystemProperties;
 import org.junit.rules.ExternalResource;
 import org.junit.rules.TestRule;
 
-@Ignore("This uses rules that have not been ported yet.. let's do this later")
+import net.sourceforge.pmd.internal.Slf4jSimpleConfiguration;
+
 public class PMDTaskTest extends AbstractAntTestHelper {
 
     public PMDTaskTest() {
@@ -94,8 +95,15 @@ public class PMDTaskTest extends AbstractAntTestHelper {
         executeTarget("testClasspath");
     }
 
+    // restoring system properties: PMDTask might change logging properties
+    // See Slf4jSimpleConfigurationForAnt and resetLogging
     @Rule
     public final TestRule restoreSystemProperties = new RestoreSystemProperties();
+
+    @AfterClass
+    public static void resetLogging() {
+        Slf4jSimpleConfiguration.reconfigureDefaultLogLevel(null);
+    }
 
     @Rule
     public final TestRule restoreLocale = new ExternalResource() {

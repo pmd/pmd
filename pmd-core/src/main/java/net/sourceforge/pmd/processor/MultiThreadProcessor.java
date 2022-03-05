@@ -11,8 +11,8 @@ import java.util.concurrent.TimeUnit;
 
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.RuleSets;
+import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
-import net.sourceforge.pmd.util.document.TextFile;
 
 
 /**

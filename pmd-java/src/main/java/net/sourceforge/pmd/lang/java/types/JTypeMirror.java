@@ -216,11 +216,9 @@ public interface JTypeMirror extends JTypeVisitable {
             return true;
         } else if (this instanceof JArrayType) {
             return ((JArrayType) this).getElementType().isReifiable();
-        } else if (this instanceof JClassType) {
-            return TypeOps.allArgsAreUnboundedWildcards(((JClassType) this).getTypeArgs());
-        } else {
-            return false;
         }
+
+        return this instanceof JClassType && TypeOps.allArgsAreUnboundedWildcards(((JClassType) this).getTypeArgs());
     }
 
 

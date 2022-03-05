@@ -12,8 +12,9 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 
@@ -21,7 +22,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
  * Helper class to analyze {@link ASTImportDeclaration}s.
  */
 public final class ImportWrapper {
-    private static final Logger LOG = Logger.getLogger(ImportWrapper.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(ImportWrapper.class);
 
     private final ASTImportDeclaration node;
     private final String name;
@@ -78,7 +79,7 @@ public final class ImportWrapper {
             return names;
         } catch (LinkageError e) {
             // This is an incomplete classpath, report the missing class
-            LOG.log(Level.FINE, "Possible incomplete auxclasspath: Error while processing imports", e);
+            LOG.debug("Possible incomplete auxclasspath: Error while processing imports", e);
             return Collections.emptySet();
         }
     }

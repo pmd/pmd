@@ -69,6 +69,7 @@ final class Lub {
      *
      * @return null if G is not a generic type, otherwise Relevant(G)
      */
+    @SuppressWarnings("PMD.ReturnEmptyCollectionRatherThanNull") // null is explicit mentioned as a possible return value
     static @Nullable List<JClassType> relevant(JClassType g, Set<JTypeMirror> stunion) {
         if (!g.isRaw()) {
             return null;
@@ -87,7 +88,7 @@ final class Lub {
     }
 
     private static Set<JTypeMirror> erasedSuperTypes(Set<JTypeMirror> stui) {
-        LinkedHashSet<JTypeMirror> erased = new LinkedHashSet<>();
+        Set<JTypeMirror> erased = new LinkedHashSet<>();
         for (JTypeMirror it : stui) {
             JTypeMirror t = it instanceof JTypeVar ? it : it.getErasure();
             erased.add(t);

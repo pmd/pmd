@@ -333,7 +333,7 @@ public final class Infer {
         subst(t.getReturnType(), var -> {
             assert !(var instanceof InferenceVar)
                 : "Expected a ground type " + t;
-            assert !(var instanceof JTypeVar) || !(t.getTypeParameters().contains(var))
+            assert !(var instanceof JTypeVar) || !t.getTypeParameters().contains(var)
                 : "Some type parameters have not been instantiated";
             return var;
         });

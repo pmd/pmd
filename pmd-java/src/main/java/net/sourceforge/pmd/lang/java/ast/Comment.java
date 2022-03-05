@@ -10,15 +10,15 @@ import net.sourceforge.pmd.internal.util.IteratorUtil;
 import net.sourceforge.pmd.lang.ast.GenericToken;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JjtreeNode;
-import net.sourceforge.pmd.util.document.Chars;
-import net.sourceforge.pmd.util.document.FileLocation;
-import net.sourceforge.pmd.util.document.Reportable;
+import net.sourceforge.pmd.lang.document.Chars;
+import net.sourceforge.pmd.lang.document.FileLocation;
+import net.sourceforge.pmd.lang.document.Reportable;
 
 /**
  * Wraps a comment token to provide some utilities.
  * This is not a node, it's not part of the tree anywhere,
  * just convenient.
- * 
+ *
  * <p>This class represents any kind of comment. A specialized subclass
  * provides more API for Javadoc comments, see {@link JavadocComment}.
  */
@@ -67,7 +67,7 @@ public class Comment implements Reportable {
      * of a comment token (there are three such kinds).
      */
     public static boolean isComment(JavaccToken token) {
-        return JavaTokenDocument.isComment(token);
+        return JavaTokenDocumentBehavior.isComment(token);
     }
 
     /**

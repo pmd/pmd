@@ -232,7 +232,7 @@ public class RuleSetReferenceId {
     private boolean checkRulesetExists(final String name) {
         boolean resourceFound = false;
         if (name != null) {
-            try (InputStream resource = new ResourceLoader().loadClassPathResourceAsStreamOrThrow(name)) {
+            try (InputStream ignored = new ResourceLoader().loadClassPathResourceAsStreamOrThrow(name)) {
                 resourceFound = true;
             } catch (Exception ignored) {
                 // ignored
@@ -295,11 +295,7 @@ public class RuleSetReferenceId {
 
     private static boolean isHttpUrl(String name) {
         String stripped = StringUtils.strip(name);
-        if (stripped == null) {
-            return false;
-        }
-
-        return stripped.startsWith("http://") || stripped.startsWith("https://");
+        return stripped != null && (stripped.startsWith("http://") || stripped.startsWith("https://"));
     }
 
     private static boolean isValidUrl(String name) {

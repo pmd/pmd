@@ -18,8 +18,8 @@ import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 
 public class Java16PreviewTreeDumpTest extends BaseTreeDumpTest {
     private final JavaParsingHelper java16p =
-            JavaParsingHelper.WITH_PROCESSING.withDefaultVersion("16-preview")
-                    .withResourceContext(Java16PreviewTreeDumpTest.class, "jdkversiontests/java16p/");
+            JavaParsingHelper.DEFAULT.withDefaultVersion("16-preview")
+                                     .withResourceContext(Java16PreviewTreeDumpTest.class, "jdkversiontests/java16p/");
     private final JavaParsingHelper java16 = java16p.withDefaultVersion("16");
 
     public Java16PreviewTreeDumpTest() {

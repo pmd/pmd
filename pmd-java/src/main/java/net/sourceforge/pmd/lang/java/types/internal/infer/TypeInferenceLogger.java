@@ -6,9 +6,10 @@
 package net.sourceforge.pmd.lang.java.types.internal.infer;
 
 import java.io.PrintStream;
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -314,7 +315,7 @@ public interface TypeInferenceLogger {
     class VerboseLogger extends SimpleLogger {
 
 
-        private final Stack<Integer> marks = new Stack<>();
+        private final Deque<Integer> marks = new ArrayDeque<>();
 
         public VerboseLogger(PrintStream out) {
             super(out);

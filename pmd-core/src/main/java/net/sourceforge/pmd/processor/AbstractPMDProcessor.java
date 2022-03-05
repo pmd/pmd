@@ -12,14 +12,15 @@ import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
-import net.sourceforge.pmd.util.document.TextFile;
 
 /**
  * This is internal API!
  *
  * @author Romain Pelisse &lt;belaran@gmail.com&gt;
  */
+@InternalApi
 public abstract class AbstractPMDProcessor implements AutoCloseable {
 
     protected final PMDConfiguration configuration;

@@ -13,12 +13,12 @@ import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 
+import net.sourceforge.pmd.lang.document.Chars;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.Comment;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
-import net.sourceforge.pmd.util.document.Chars;
 
 /**
  * A rule to manage those who just can't shut up...
@@ -81,12 +81,7 @@ public class CommentSizeRule extends AbstractJavaRulechainRule {
     }
 
     private static boolean hasRealText(Chars line) {
-
-        if (StringUtils.isBlank(line)) {
-            return false;
-        }
-
-        return !IGNORED_LINES.contains(line.trim());
+        return !StringUtils.isBlank(line) && !IGNORED_LINES.contains(line.trim());
     }
 
     private boolean hasTooManyLines(Comment comment) {

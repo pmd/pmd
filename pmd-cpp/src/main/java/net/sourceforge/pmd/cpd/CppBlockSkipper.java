@@ -9,8 +9,8 @@ import java.util.regex.Pattern;
 
 import net.sourceforge.pmd.lang.ast.impl.javacc.io.EscapeTranslator;
 import net.sourceforge.pmd.lang.ast.impl.javacc.io.MalformedSourceException;
-import net.sourceforge.pmd.util.document.Chars;
-import net.sourceforge.pmd.util.document.TextDocument;
+import net.sourceforge.pmd.lang.document.Chars;
+import net.sourceforge.pmd.lang.document.TextDocument;
 
 /**
  *

@@ -7,7 +7,7 @@ package net.sourceforge.pmd.lang.ast.impl.javacc.io;
 import java.util.Objects;
 
 import net.sourceforge.pmd.lang.ast.FileAnalysisException;
-import net.sourceforge.pmd.util.document.FileLocation;
+import net.sourceforge.pmd.lang.document.FileLocation;
 
 /**
  * A {@link FileAnalysisException} thrown when the source format is invalid,

@@ -25,4 +25,9 @@ public final class ASTThrowsList extends ASTNonEmptyList<ASTClassOrInterfaceType
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
+
+    /** Returns the method or constructor that owns this throws clause. */
+    public ASTMethodOrConstructorDeclaration getOwner() {
+        return (ASTMethodOrConstructorDeclaration) getParent();
+    }
 }

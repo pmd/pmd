@@ -144,7 +144,7 @@ public class SingularFieldRule extends AbstractJavaRulechainRule {
     private boolean usagesDontObserveValueBeforeMethodCall(List<ASTNamedReferenceExpr> usages, DataflowResult dataflow) {
         for (ASTNamedReferenceExpr usage : usages) {
             ReachingDefinitionSet reaching = dataflow.getReachingDefinitions(usage);
-            if (reaching != null && reaching.containsInitialFieldValue()) {
+            if (reaching.containsInitialFieldValue()) {
                 return false;
             }
         }

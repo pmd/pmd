@@ -49,7 +49,6 @@ public class HTMLRenderer extends AbstractIncrementingRenderer {
     private String linePrefix;
     private boolean replaceHtmlExtension;
 
-    private int violationCount = 1;
     boolean colorize = true;
 
     public HTMLRenderer() {
@@ -121,6 +120,7 @@ public class HTMLRenderer extends AbstractIncrementingRenderer {
     }
 
     private void glomRuleViolations(Writer writer, Iterator<RuleViolation> violations) throws IOException {
+        int violationCount = 1;
 
         StringBuilder buf = new StringBuilder(500);
 

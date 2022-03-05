@@ -13,9 +13,9 @@ import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.AstInfo;
 import net.sourceforge.pmd.lang.ast.Parser;
 import net.sourceforge.pmd.lang.ast.RootNode;
+import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.lang.rule.impl.DefaultRuleViolationFactory;
 import net.sourceforge.pmd.test.lang.ast.DummyNode;
-import net.sourceforge.pmd.util.document.TextDocument;
 
 /**
  * Dummy language used for testing PMD.
@@ -64,6 +64,12 @@ public class DummyLanguageModule extends BaseLanguageModule {
         public void setLanguageVersion(LanguageVersion languageVersion) {
             this.languageVersion = languageVersion;
         }
+
+        public DummyRootNode withCoords(int bline, int bcol, int eline, int ecol) {
+            super.setCoords(bline, bcol, eline, ecol);
+            return this;
+        }
+
 
         @Override
         public AstInfo<DummyRootNode> getAstInfo() {

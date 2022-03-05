@@ -46,7 +46,7 @@ public class ApexHandler extends AbstractPmdLanguageVersionHandler {
         return myMetricsProvider;
     }
 
-    private static class ApexMetricsProvider implements LanguageMetricsProvider {
+    private static final class ApexMetricsProvider implements LanguageMetricsProvider {
 
         private final Set<Metric<?, ?>> metrics = setOf(
             ApexMetrics.COGNITIVE_COMPLEXITY,

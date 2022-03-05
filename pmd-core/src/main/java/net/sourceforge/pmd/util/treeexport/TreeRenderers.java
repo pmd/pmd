@@ -84,10 +84,8 @@ public final class TreeRenderers {
 
                         @Override
                         protected boolean takeAttribute(Node node, Attribute attribute) {
-                            if (!properties.getProperty(XML_RENDER_COMMON_ATTRIBUTES)) {
-                                return !excluded.contains(attribute.getName());
-                            }
-                            return true;
+                            return properties.getProperty(XML_RENDER_COMMON_ATTRIBUTES)
+                                    || !excluded.contains(attribute.getName());
                         }
                     }
                         .singleQuoteAttributes(properties.getProperty(XML_USE_SINGLE_QUOTES))

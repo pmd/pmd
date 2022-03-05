@@ -52,7 +52,8 @@ public class CommentDefaultAccessModifierRule extends AbstractJavaRulechainRule 
     private final Set<Integer> interestingLineNumberComments = new HashSet<>();
 
     public CommentDefaultAccessModifierRule() {
-        super(ASTCompilationUnit.class, ASTMethodDeclaration.class, ASTAnyTypeDeclaration.class, ASTConstructorDeclaration.class, ASTFieldDeclaration.class);
+        super(ASTCompilationUnit.class, ASTMethodDeclaration.class, ASTAnyTypeDeclaration.class,
+                ASTConstructorDeclaration.class, ASTFieldDeclaration.class);
         definePropertyDescriptor(IGNORED_ANNOTS);
         definePropertyDescriptor(REGEX_DESCRIPTOR);
         definePropertyDescriptor(TOP_LEVEL_TYPES);
@@ -66,7 +67,7 @@ public class CommentDefaultAccessModifierRule extends AbstractJavaRulechainRule 
                 interestingLineNumberComments.add(comment.getBeginLine());
             }
         }
-        return super.visit(node, data);
+        return data;
     }
 
     @Override
@@ -74,7 +75,7 @@ public class CommentDefaultAccessModifierRule extends AbstractJavaRulechainRule 
         if (shouldReport(decl)) {
             report((RuleContext) data, decl, "method", PrettyPrintingUtil.displaySignature(decl));
         }
-        return super.visit(decl, data);
+        return data;
     }
 
     @Override
@@ -82,7 +83,7 @@ public class CommentDefaultAccessModifierRule extends AbstractJavaRulechainRule 
         if (shouldReport(decl)) {
             report((RuleContext) data, decl, "field", decl.getVarIds().firstOrThrow().getName());
         }
-        return super.visit(decl, data);
+        return data;
     }
 
     @Override
@@ -90,7 +91,7 @@ public class CommentDefaultAccessModifierRule extends AbstractJavaRulechainRule 
         if (!decl.isNested() && shouldReportTypeDeclaration(decl)) { // check for top-level annotation declarations
             report((RuleContext) data, decl, "top-level annotation", decl.getSimpleName());
         }
-        return super.visit(decl, data);
+        return data;
     }
 
     @Override
@@ -98,7 +99,7 @@ public class CommentDefaultAccessModifierRule extends AbstractJavaRulechainRule 
         if (!decl.isNested() && shouldReportTypeDeclaration(decl)) { // check for top-level enums
             report((RuleContext) data, decl, "top-level enum", decl.getSimpleName());
         }
-        return super.visit(decl, data);
+        return data;
     }
 
     @Override
@@ -108,7 +109,7 @@ public class CommentDefaultAccessModifierRule extends AbstractJavaRulechainRule 
         } else if (!decl.isNested() && shouldReportTypeDeclaration(decl)) { // and for top-level ones
             report((RuleContext) data, decl, "top-level class", decl.getSimpleName());
         }
-        return super.visit(decl, data);
+        return data;
     }
 
     @Override
@@ -116,7 +117,7 @@ public class CommentDefaultAccessModifierRule extends AbstractJavaRulechainRule 
         if (shouldReport(decl)) {
             report((RuleContext) data, decl, "constructor", PrettyPrintingUtil.displaySignature(decl));
         }
-        return super.visit(decl, data);
+        return data;
     }
 
     private void report(RuleContext data, AccessNode decl, String kind, String description) {

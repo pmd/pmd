@@ -77,10 +77,8 @@ public final class StablePathMatcher {
             return Objects.equals(((ASTVariableAccess) e).getReferencedSym(), owner);
         } else if (e instanceof ASTFieldAccess) {
             ASTFieldAccess fieldAccess = (ASTFieldAccess) e;
-            if (!JavaRuleUtil.isUnqualifiedThis(fieldAccess.getQualifier())) {
-                return false;
-            }
-            return Objects.equals(fieldAccess.getReferencedSym(), owner);
+            return JavaRuleUtil.isUnqualifiedThis(fieldAccess.getQualifier())
+                    && Objects.equals(fieldAccess.getReferencedSym(), owner);
         }
         return false;
     }

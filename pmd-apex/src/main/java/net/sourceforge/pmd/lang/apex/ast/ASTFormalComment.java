@@ -6,8 +6,8 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 
 import net.sourceforge.pmd.lang.apex.ast.ASTFormalComment.AstComment;
-import net.sourceforge.pmd.util.document.Chars;
-import net.sourceforge.pmd.util.document.TextRegion;
+import net.sourceforge.pmd.lang.document.Chars;
+import net.sourceforge.pmd.lang.document.TextRegion;
 
 import apex.jorje.data.Location;
 import apex.jorje.data.Locations;

@@ -23,11 +23,14 @@ import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
 public class ParserCornersTest extends BaseJavaTreeDumpTest {
-    private final JavaParsingHelper java = JavaParsingHelper.WITH_PROCESSING.withResourceContext(getClass());
+    private final JavaParsingHelper java = JavaParsingHelper.DEFAULT.withResourceContext(getClass());
+
     private final JavaParsingHelper java4 = java.withDefaultVersion("1.4");
+    private final JavaParsingHelper java5 = java.withDefaultVersion("1.5");
     private final JavaParsingHelper java7 = java.withDefaultVersion("1.7");
     private final JavaParsingHelper java8 = java.withDefaultVersion("1.8");
-    private final JavaParsingHelper java5 = java.withDefaultVersion("1.7");
+    private final JavaParsingHelper java9 = java.withDefaultVersion("9");
+
     @Rule
     public ExpectedException expect = ExpectedException.none();
 
@@ -131,6 +134,33 @@ public class ParserCornersTest extends BaseJavaTreeDumpTest {
     @Test
     public final void testCastLookaheadProblem() {
         java4.parse(CAST_LOOKAHEAD_PROBLEM);
+    }
+
+    @Test
+    public final void testTryWithResourcesConcise() {
+        // https://github.com/pmd/pmd/issues/3697
+        java9.parse("import java.io.InputStream;\n"
+                        + "public class Foo {\n"
+                        + "    public InputStream in;\n"
+                        + "    public void bar() {\n"
+                        + "        Foo f = this;\n"
+                        + "        try (f.in) {\n"
+                        + "        }\n"
+                        + "    }\n"
+                        + "}");
+    }
+
+    @Test
+    public final void testTryWithResourcesThis() {
+        // https://github.com/pmd/pmd/issues/3697
+        java9.parse("import java.io.InputStream;\n"
+                        + "public class Foo {\n"
+                        + "    public InputStream in;\n"
+                        + "    public void bar() {\n"
+                        + "        try (this.in) {\n"
+                        + "        }\n"
+                        + "    }\n"
+                        + "}");
     }
 
     /**

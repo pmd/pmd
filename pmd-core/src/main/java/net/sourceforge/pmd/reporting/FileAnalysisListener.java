@@ -87,12 +87,14 @@ public interface FileAnalysisListener extends AutoCloseable {
         AssertionUtil.requireNotEmpty("Listeners", listeners);
         AssertionUtil.requireContainsNoNullValue("Listeners", listeners);
 
-        if (listeners.size() == 1) {
-            return listeners.iterator().next();
-        }
-
         List<FileAnalysisListener> list = new ArrayList<>(listeners);
         list.removeIf(it -> it == NoopFileListener.INSTANCE);
+
+        if (listeners.isEmpty()) {
+            return noop();
+        } else if (listeners.size() == 1) {
+            return listeners.iterator().next();
+        }
 
         class TeeListener implements FileAnalysisListener {
 

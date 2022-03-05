@@ -5,8 +5,9 @@
 package net.sourceforge.pmd.lang.ast;
 
 import java.text.MessageFormat;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.event.Level;
 
 /**
  * Reports errors that occur after parsing. This may be used to implement
@@ -73,7 +74,7 @@ public interface SemanticErrorReporter {
             private boolean hasError = false;
 
             private String locPrefix(Node loc) {
-                return "[" + loc.getBeginLine() + "," + loc.getBeginColumn() + "] ";
+                return "at " + loc.getReportLocation() + ": ";
             }
 
             private String makeMessage(Node location, String message, Object[] args) {
@@ -82,19 +83,19 @@ public interface SemanticErrorReporter {
 
             private String logMessage(Level level, Node location, String message, Object[] args) {
                 String fullMessage = makeMessage(location, message, args);
-                logger.log(level, fullMessage);
+                logger.atLevel(level).log(fullMessage);
                 return fullMessage;
             }
 
             @Override
             public void warning(Node location, String message, Object... args) {
-                logMessage(Level.WARNING, location, message, args);
+                logMessage(Level.WARN, location, message, args);
             }
 
             @Override
             public SemanticException error(Node location, String message, Object... args) {
                 hasError = true;
-                String fullMessage = logMessage(Level.SEVERE, location, message, args);
+                String fullMessage = logMessage(Level.ERROR, location, message, args);
                 return new SemanticException(fullMessage);
             }
 

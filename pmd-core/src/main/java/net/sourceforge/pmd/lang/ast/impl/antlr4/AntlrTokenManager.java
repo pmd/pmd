@@ -11,7 +11,7 @@ import org.antlr.v4.runtime.Recognizer;
 
 import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
-import net.sourceforge.pmd.util.document.TextDocument;
+import net.sourceforge.pmd.lang.document.TextDocument;
 
 /**
  * Generic token manager implementation for all Antlr lexers.
@@ -58,7 +58,7 @@ public class AntlrTokenManager implements TokenManager<AntlrToken> {
         lexer.addErrorListener(new ErrorHandler());
     }
 
-    private class ErrorHandler extends BaseErrorListener {
+    private final class ErrorHandler extends BaseErrorListener {
 
         @Override
         public void syntaxError(final Recognizer<?, ?> recognizer,

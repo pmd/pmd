@@ -93,6 +93,11 @@ public abstract class AbstractRenderer extends AbstractPropertySource implements
 
     @Override
     public void flush() {
+        if (writer == null) {
+            // might happen, if no writer is set. E.g. in maven-pmd-plugin's PmdCollectingRenderer
+            return;
+        }
+
         try {
             this.writer.flush();
         } catch (IOException e) {

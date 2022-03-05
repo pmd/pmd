@@ -9,9 +9,10 @@ import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.logging.Logger;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
 import net.sourceforge.pmd.lang.vf.DataType;
@@ -23,7 +24,7 @@ import net.sourceforge.pmd.lang.vf.VfHandler;
  * IdentifierDotted is of the form {@code MyObject__c.MyField__c}.
  */
 class VfExpressionTypeVisitor extends VfParserVisitorAdapter {
-    private static final Logger LOGGER = Logger.getLogger(VfExpressionTypeVisitor.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(VfExpressionTypeVisitor.class);
 
     private static final String APEX_PAGE = "apex:page";
     private static final String CONTROLLER_ATTRIBUTE = "controller";
@@ -148,7 +149,7 @@ class VfExpressionTypeVisitor extends VfParserVisitorAdapter {
             if (type != null) {
                 VfAstInternals.setDataType(entry.getKey(), type);
             } else {
-                LOGGER.fine("Unable to determine type for: " + name);
+                LOG.debug("Unable to determine type for: {}", name);
             }
         }
         return super.visit(node, data);
@@ -158,8 +159,8 @@ class VfExpressionTypeVisitor extends VfParserVisitorAdapter {
      * Invoke {@link ASTExpression#getDataNodes()} for all {@link ASTExpression} children of {@code node} and return
      * the consolidated results.
      */
-    private IdentityHashMap<VfTypedNode, String> getDataNodeNames(ASTElExpression node) {
-        IdentityHashMap<VfTypedNode, String> dataNodeToName = new IdentityHashMap<>();
+    private Map<VfTypedNode, String> getDataNodeNames(ASTElExpression node) {
+        Map<VfTypedNode, String> dataNodeToName = new IdentityHashMap<>();
 
         for (ASTExpression expression : node.findChildrenOfType(ASTExpression.class)) {
             try {

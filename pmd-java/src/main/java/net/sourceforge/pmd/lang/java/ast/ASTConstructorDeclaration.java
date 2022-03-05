@@ -6,8 +6,8 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
-import net.sourceforge.pmd.util.document.FileLocation;
 
 /**
  * A constructor of a {@linkplain ASTConstructorDeclaration class} or

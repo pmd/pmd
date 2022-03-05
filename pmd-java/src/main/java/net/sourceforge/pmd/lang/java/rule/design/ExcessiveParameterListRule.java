@@ -33,10 +33,8 @@ public class ExcessiveParameterListRule extends AbstractJavaCounterCheckRule<AST
 
     private boolean areParametersOfPrivateConstructor(ASTFormalParameters params) {
         Node parent = params.getParent();
-        if (parent instanceof ASTConstructorDeclaration) {
-            return ((ASTConstructorDeclaration) parent).getVisibility() == Visibility.V_PRIVATE;
-        }
-        return false;
+        return parent instanceof ASTConstructorDeclaration
+                && ((ASTConstructorDeclaration) parent).getVisibility() == Visibility.V_PRIVATE;
     }
 
     @Override

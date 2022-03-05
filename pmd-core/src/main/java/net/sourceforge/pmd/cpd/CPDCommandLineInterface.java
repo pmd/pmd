@@ -19,12 +19,14 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.logging.Logger;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMDVersion;
+import net.sourceforge.pmd.cli.internal.CliMessages;
 import net.sourceforge.pmd.util.FileUtil;
 import net.sourceforge.pmd.util.database.DBURI;
 
@@ -32,7 +34,7 @@ import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 
 public final class CPDCommandLineInterface {
-    private static final Logger LOGGER = Logger.getLogger(CPDCommandLineInterface.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(CPDCommandLineInterface.class);
 
     private static final int NO_ERRORS_STATUS = 0;
     private static final int ERROR_STATUS = 1;
@@ -79,9 +81,8 @@ public final class CPDCommandLineInterface {
                 return;
             }
         } catch (ParameterException e) {
-            jcommander.usage();
-            System.out.println(buildUsageText());
-            System.err.println(" " + e.getMessage());
+            System.err.println(e.getMessage());
+            System.err.println(CliMessages.runWithHelpFlagMessage());
             setStatusCodeOrExit(ERROR_STATUS);
             return;
         }
@@ -89,8 +90,8 @@ public final class CPDCommandLineInterface {
         Map<String, String> deprecatedOptions = filterDeprecatedOptions(args);
         if (!deprecatedOptions.isEmpty()) {
             Entry<String, String> first = deprecatedOptions.entrySet().iterator().next();
-            LOGGER.warning("Some deprecated options were used on the command-line, including " + first.getKey());
-            LOGGER.warning("Consider replacing it with " + first.getValue());
+            LOG.warn("Some deprecated options were used on the command-line, including {}", first.getKey());
+            LOG.warn("Consider replacing it with {}", first.getValue());
         }
 
         arguments.postContruct();
@@ -119,7 +120,8 @@ public final class CPDCommandLineInterface {
                 setStatusCodeOrExit(NO_ERRORS_STATUS);
             }
         } catch (IOException | RuntimeException e) {
-            e.printStackTrace();
+            LOG.debug(e.toString(), e);
+            LOG.error(CliMessages.errorDetectedMessage(1, "CPD"));
             setStatusCodeOrExit(ERROR_STATUS);
         }
     }
@@ -194,11 +196,10 @@ public final class CPDCommandLineInterface {
 
     private static void addSourceURIToCPD(String uri, CPD cpd) {
         try {
-            LOGGER.fine(String.format("Attempting DBURI=%s", uri));
+            LOG.debug("Attempting DBURI={}", uri);
             DBURI dburi = new DBURI(uri);
-            LOGGER.fine(String.format("Initialised DBURI=%s", dburi));
-            LOGGER.fine(
-                    String.format("Adding DBURI=%s with DBType=%s", dburi.toString(), dburi.getDbType().toString()));
+            LOG.debug("Initialised DBURI={}", dburi);
+            LOG.debug("Adding DBURI={} with DBType={}", dburi, dburi.getDbType());
             cpd.add(dburi);
         } catch (IOException | URISyntaxException e) {
             throw new IllegalStateException("uri=" + uri, e);

@@ -11,7 +11,7 @@ import java.io.IOException;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.annotation.InternalApi;
-import net.sourceforge.pmd.util.document.FileLocation;
+import net.sourceforge.pmd.lang.document.FileLocation;
 
 /**
  * A {@link RuleViolation} implementation that is immutable, and therefore cache friendly

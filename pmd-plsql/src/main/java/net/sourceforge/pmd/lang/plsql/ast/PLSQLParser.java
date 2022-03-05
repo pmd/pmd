@@ -4,10 +4,12 @@
 
 package net.sourceforge.pmd.lang.plsql.ast;
 
+import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.impl.javacc.CharStream;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument.TokenDocumentBehavior;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JjtreeParserAdapter;
+import net.sourceforge.pmd.lang.plsql.symboltable.SymbolFacade;
 
 public class PLSQLParser extends JjtreeParserAdapter<ASTInput> {
 
@@ -20,7 +22,9 @@ public class PLSQLParser extends JjtreeParserAdapter<ASTInput> {
 
     @Override
     protected ASTInput parseImpl(CharStream cs, ParserTask task) throws ParseException {
-        return new PLSQLParserImpl(cs).Input().addTaskInfo(task);
+        ASTInput root = new PLSQLParserImpl(cs).Input().addTaskInfo(task);
+        TimeTracker.bench("PLSQL symbols", () -> SymbolFacade.process(root));
+        return root;
     }
 
 }

@@ -5,42 +5,65 @@
 package net.sourceforge.pmd.lang.java.rule.codestyle;
 
 import java.util.HashSet;
-import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang3.tuple.Pair;
+import org.apache.commons.lang3.StringUtils;
 
-import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTName;
-import net.sourceforge.pmd.lang.java.ast.ASTPackageDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
-import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
+import net.sourceforge.pmd.lang.java.ast.ASTSwitchLabel;
+import net.sourceforge.pmd.lang.java.ast.ASTSwitchLike;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
 import net.sourceforge.pmd.lang.java.ast.Comment;
-import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.JavadocComment;
-import net.sourceforge.pmd.lang.java.ast.TypeNode;
-import net.sourceforge.pmd.lang.java.ast.internal.ImportWrapper;
 import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.symbols.JAccessibleElementSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
+import net.sourceforge.pmd.lang.java.symbols.table.ScopeInfo;
+import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.ShadowChainIterator;
+import net.sourceforge.pmd.lang.java.types.JClassType;
+import net.sourceforge.pmd.lang.java.types.JMethodSig;
+import net.sourceforge.pmd.lang.java.types.JTypeMirror;
+import net.sourceforge.pmd.lang.java.types.JVariableSig;
+import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
+import net.sourceforge.pmd.lang.java.types.TypeSystem;
+import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
+import net.sourceforge.pmd.util.CollectionUtil;
 
+/**
+ * Detects unnecessary imports.
+ *
+ * <p>For PMD 7 I had hoped this rule could be rewritten to use the
+ * symbol table implementation directly instead of reimplementing a
+ * symbol table (with less care). This would be good for performance
+ * and correctness. Modifying the symbol table chain to track which
+ * import is used is hard though, mostly because the API to expose
+ * is unclear (we wouldn't want symbol tables to expose a mutable API).
+ */
 public class UnnecessaryImportRule extends AbstractJavaRule {
-    // todo: java lang imports may be necessary if they're shadowed by a
-    //  member of the same package.
 
     private static final String UNUSED_IMPORT_MESSAGE = "Unused import ''{0}''";
+    private static final String UNUSED_STATIC_IMPORT_MESSAGE = "Unused static import ''{0}''";
     private static final String DUPLICATE_IMPORT_MESSAGE = "Duplicate import ''{0}''";
     private static final String IMPORT_FROM_SAME_PACKAGE_MESSAGE = "Unnecessary import from the current package ''{0}''";
     private static final String IMPORT_FROM_JAVA_LANG_MESSAGE = "Unnecessary import from the java.lang package ''{0}''";
 
-    private final Set<ImportWrapper> imports = new HashSet<>();
-    private String thisPackageName;
+    private final Set<ImportWrapper> staticImports = new HashSet<>();
+    private final Set<ImportWrapper> allSingleNameImports = new HashSet<>();
+    private final Set<ImportWrapper> allImportsOnDemand = new HashSet<>();
+    private final Set<ImportWrapper> staticImportsOnDemand = new HashSet<>();
+    private final Set<ImportWrapper> unnecessaryJavaLangImports = new HashSet<>();
+    private final Set<ImportWrapper> unnecessaryImportsFromSamePackage = new HashSet<>();
 
     /*
      * Patterns to match the following constructs:
@@ -67,35 +90,78 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
 
     private static final Pattern[] PATTERNS = { SEE_PATTERN, LINK_PATTERNS, VALUE_PATTERN, THROWS_PATTERN, EXCEPTION_PATTERN };
 
-    protected boolean justReportUnusedImports() {
-        return false;
-    }
-
     @Override
     public Object visit(ASTCompilationUnit node, Object data) {
-        imports.clear();
-        this.thisPackageName = node.getPackageName();
+        this.allSingleNameImports.clear();
+        this.staticImports.clear();
+        this.staticImportsOnDemand.clear();
+        this.allImportsOnDemand.clear();
+        this.unnecessaryJavaLangImports.clear();
+        this.unnecessaryImportsFromSamePackage.clear();
+        String packageName = node.getPackageName();
+
+        for (ASTImportDeclaration importDecl : node.children(ASTImportDeclaration.class)) {
+            visitImport(importDecl, data, packageName);
+        }
+
+        for (ImportWrapper wrapper : allSingleNameImports) {
+            if ("java.lang".equals(wrapper.node.getPackageName())) {
+                if (!isJavaLangImportNecessary(node, wrapper)) {
+                    // the import is not shadowing something
+                    unnecessaryJavaLangImports.add(wrapper);
+                }
+            }
+        }
+
         super.visit(node, data);
         visitComments(node);
 
-        /*
-         * special handling for Bug 2606609 : False "UnusedImports" positive in
-         * package-info.java package annotations are processed before the import
-         * clauses so they need to be examined again later on.
-         */
-        if (node.getNumChildren() > 0 && node.getChild(0) instanceof ASTPackageDeclaration) {
-            visit((ASTPackageDeclaration) node.getChild(0), data);
-        }
-        for (ImportWrapper wrapper : imports) {
-            reportWithMessage(wrapper.getNode(), data, UNUSED_IMPORT_MESSAGE);
-        }
+        doReporting(data);
+
         return data;
     }
 
-    private void visitComments(ASTCompilationUnit node) {
-        if (imports.isEmpty()) {
-            return;
+    private void doReporting(Object data) {
+        for (ImportWrapper wrapper : allSingleNameImports) {
+            String message = wrapper.isStatic() ? UNUSED_STATIC_IMPORT_MESSAGE : UNUSED_IMPORT_MESSAGE;
+            reportWithMessage(wrapper.node, data, message);
         }
+        for (ImportWrapper wrapper : allImportsOnDemand) {
+            String message = wrapper.isStatic() ? UNUSED_STATIC_IMPORT_MESSAGE : UNUSED_IMPORT_MESSAGE;
+            reportWithMessage(wrapper.node, data, message);
+        }
+
+        // remove unused ones, they have already been reported
+        unnecessaryJavaLangImports.removeAll(allSingleNameImports);
+        unnecessaryJavaLangImports.removeAll(allImportsOnDemand);
+        unnecessaryImportsFromSamePackage.removeAll(allSingleNameImports);
+        unnecessaryImportsFromSamePackage.removeAll(allImportsOnDemand);
+        for (ImportWrapper wrapper : unnecessaryJavaLangImports) {
+            reportWithMessage(wrapper.node, data, IMPORT_FROM_JAVA_LANG_MESSAGE);
+        }
+        for (ImportWrapper wrapper : unnecessaryImportsFromSamePackage) {
+            reportWithMessage(wrapper.node, data, IMPORT_FROM_SAME_PACKAGE_MESSAGE);
+        }
+    }
+
+    private boolean isJavaLangImportNecessary(ASTCompilationUnit node, ImportWrapper wrapper) {
+        ShadowChainIterator<JTypeMirror, ScopeInfo> iter =
+            node.getSymbolTable().types().iterateResults(wrapper.node.getImportedSimpleName());
+        if (iter.hasNext()) {
+            iter.next();
+            if (iter.getScopeTag() == ScopeInfo.SINGLE_IMPORT) {
+                if (iter.hasNext()) {
+                    iter.next();
+                    // the import is shadowing something else
+                    return iter.getScopeTag() != ScopeInfo.JAVA_LANG;
+                }
+            }
+        }
+        return false;
+    }
+
+    private void visitComments(ASTCompilationUnit node) {
+        // todo improve that when we have a javadoc parser
         for (Comment comment : node.getComments()) {
             if (!(comment instanceof JavadocComment)) {
                 continue;
@@ -118,7 +184,7 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
                         }
                     }
 
-                    if (imports.isEmpty()) {
+                    if (allSingleNameImports.isEmpty()) {
                         return;
                     }
                 }
@@ -126,18 +192,26 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
         }
     }
 
-    @Override
-    public Object visit(ASTImportDeclaration node, Object data) {
-        if (thisPackageName.equals(node.getPackageName()) && !justReportUnusedImports()) {
-            // import for the same package
-            reportWithMessage(node, data, IMPORT_FROM_SAME_PACKAGE_MESSAGE);
-        } else if (!imports.add(new ImportWrapper(node))) {
-            if (!justReportUnusedImports()) {
-                // duplicate
-                reportWithMessage(node, data, DUPLICATE_IMPORT_MESSAGE);
-            }
+    private void visitImport(ASTImportDeclaration node, Object data, String thisPackageName) {
+        if (thisPackageName.equals(node.getPackageName())) {
+            unnecessaryImportsFromSamePackage.add(new ImportWrapper(node));
         }
-        return data;
+
+        Set<ImportWrapper> container =
+            node.isImportOnDemand() ? allImportsOnDemand
+                                    : allSingleNameImports;
+
+
+        if (!container.add(new ImportWrapper(node))) {
+            // duplicate
+            reportWithMessage(node, data, DUPLICATE_IMPORT_MESSAGE);
+        }
+
+        if (node.isStatic()) {
+            container = node.isImportOnDemand() ? staticImportsOnDemand
+                                                : staticImports;
+            container.add(new ImportWrapper(node));
+        }
     }
 
     private void reportWithMessage(ASTImportDeclaration node, Object data, String message) {
@@ -146,140 +220,154 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTClassOrInterfaceType node, Object data) {
-        check(node, (RuleContext) data);
+        if (node.getQualifier() == null
+            && !node.isFullyQualified()
+            && node.getTypeMirror().isClassOrInterface()) {
+
+            JClassSymbol symbol = ((JClassType) node.getTypeMirror()).getSymbol();
+            ShadowChainIterator<JTypeMirror, ScopeInfo> scopeIter =
+                node.getSymbolTable().types().iterateResults(node.getSimpleName());
+            checkScopeChain(false, symbol, scopeIter, ts -> true, false);
+        }
         return super.visit(node, data);
     }
 
     @Override
-    public Object visit(ASTName node, Object data) {
-        check(node, (RuleContext) data);
-        return data;
+    public Object visit(ASTMethodCall node, Object data) {
+        if (node.getQualifier() == null) {
+            OverloadSelectionResult overload = node.getOverloadSelectionInfo();
+            if (overload.isFailed()) {
+                return null; // todo we're erring towards FPs
+            }
+
+            ShadowChainIterator<JMethodSig, ScopeInfo> scopeIter =
+                node.getSymbolTable().methods().iterateResults(node.getMethodName());
+
+
+            JExecutableSymbol symbol = overload.getMethodType().getSymbol();
+            checkScopeChain(true,
+                            symbol,
+                            scopeIter,
+                            methods -> CollectionUtil.any(methods, m -> m.getSymbol().equals(symbol)),
+                            true);
+        }
+        return super.visit(node, data);
     }
 
-    /**
-     * Remove the import wrapper that imports the name referenced by the
-     * given node.
-     */
-    protected void check(JavaNode referenceNode, RuleContext ruleCtx) {
-        if (imports.isEmpty()) {
-            return;
+    @Override
+    public Object visit(ASTVariableAccess node, Object data) {
+        JVariableSymbol sym = node.getReferencedSym();
+        if (sym != null
+            && sym.isField()
+            && ((JFieldSymbol) sym).isStatic()) {
+
+            if (node.getParent() instanceof ASTSwitchLabel
+                && node.ancestors(ASTSwitchLike.class).take(1).any(ASTSwitchLike::isEnumSwitch)) {
+                // special scoping rules, see JSymbolTable#variables doc
+                return null;
+            }
+
+            ShadowChainIterator<JVariableSig, ScopeInfo> scopeIter = node.getSymbolTable().variables().iterateResults(node.getName());
+            checkScopeChain(false, (JFieldSymbol) sym, scopeIter, ts -> true, true);
         }
-        Pair<String, String> candidate = splitName(referenceNode);
-        String candFullName = candidate.getLeft();
-        String candName = candidate.getRight();
+        return null;
+    }
 
-        // check exact imports
-        Iterator<ImportWrapper> it = imports.iterator();
-        while (it.hasNext()) {
-            ImportWrapper i = it.next();
-            if (!i.isStaticOnDemand() && i.matches(candFullName, candName)) {
-                it.remove();
+    private <T> void checkScopeChain(boolean recursive,
+                                     JAccessibleElementSymbol symbol,
+                                     ShadowChainIterator<T, ScopeInfo> scopeIter,
+                                     Predicate<List<T>> containsTarget,
+                                     boolean onlyStatic) {
+        while (scopeIter.hasNext()) {
+            scopeIter.next();
+            // must be the first result
+            // todo make sure new Outer().new Inner() does not mark Inner as used
+            if (containsTarget.test(scopeIter.getResults())) {
+                // We found the declaration bringing the symbol in scope
+                // If it's an import, then it's used. However, maybe it's from java.lang.
 
-                if ("java.lang".equals(i.getPackageName()) && !justReportUnusedImports()) {
-                    // import for the same package
-                    reportWithMessage(i.getNode(), ruleCtx, IMPORT_FROM_JAVA_LANG_MESSAGE);
+                if (scopeIter.getScopeTag() == ScopeInfo.SINGLE_IMPORT) {
+
+                    allSingleNameImports.removeIf(
+                        it -> (it.isStatic() || !onlyStatic)
+                            && symbol.getSimpleName().equals(it.node.getImportedSimpleName())
+                    );
+
+                } else if (scopeIter.getScopeTag() == ScopeInfo.IMPORT_ON_DEMAND) {
+
+                    allImportsOnDemand.removeIf(it -> {
+                        if (!it.isStatic() && onlyStatic) {
+                            return false;
+                        }
+                        // This is the class that contains the symbol
+                        // we're looking for.
+                        // We have to test whether this symbol is contained
+                        // by the imported type or package.
+                        JClassSymbol symbolOwner = symbol.getEnclosingClass();
+                        if (symbolOwner == null) {
+                            // package import on demand
+                            return it.node.getImportedName().equals(symbol.getPackageName());
+                        } else {
+                            if (it.node.getImportedName().equals(symbolOwner.getCanonicalName())) {
+                                // importing the container directly
+                                return it.isStatic() == symbol.isStatic();
+                            }
+                            // maybe we're importing a subclass of the container.
+                            TypeSystem ts = symbolOwner.getTypeSystem();
+                            JClassSymbol importedContainer = ts.getClassSymbol(it.node.getImportedName());
+                            return importedContainer == null // insufficient classpath, err towards FNs
+                                    || TypeTestUtil.isA(ts.rawType(symbolOwner), ts.rawType(importedContainer));
+                        }
+                    });
                 }
                 return;
             }
-        }
-
-        // check on-demand imports
-        it = imports.iterator();
-        while (it.hasNext()) {
-            ImportWrapper i = it.next();
-            if (!i.isStaticOnDemand() && i.isOnDemand()) {
-                String possibleClassName = i.getFullName() + "." + candName;
-                Class<?> possibleClazz = referenceNode.getRoot().getClassTypeResolver()
-                        .loadClassOrNull(possibleClassName);
-                if (possibleClazz != null) {
-                    it.remove();
-                }
+            if (!recursive) {
+                break;
             }
         }
-
-        // check static on-demand imports
-        it = imports.iterator();
-        while (it.hasNext()) {
-            ImportWrapper i = it.next();
-            if (i.isStaticOnDemand() && i.matches(candFullName, candName)) {
-                it.remove();
-                return;
-            }
-        }
-
-        if (referenceNode instanceof TypeNode && ((TypeNode) referenceNode).getType() != null) {
-            Class<?> c = ((TypeNode) referenceNode).getType();
-            if (c.getPackage() != null) {
-                removeOnDemandForPackageName(c.getPackage().getName());
-            }
-        }
+        // unknown reference
     }
 
-
-    protected Pair<String, String> splitName(Node node) {
-        String fullName = node.getImage();
-        String name;
-        int firstDot = node.getImage().indexOf('.');
-        if (firstDot == -1) {
-            name = node.getImage();
-        } else {
-            // ASTName could be: MyClass.MyConstant
-            // name -> MyClass
-            // fullName -> MyClass.MyConstant
-            name = node.getImage().substring(0, firstDot);
-            if (isMethodCall(node)) {
-                // ASTName could be: MyClass.MyConstant.method(a, b)
-                // name -> MyClass
-                // fullName -> MyClass.MyConstant
-                fullName = node.getImage().substring(0, node.getImage().lastIndexOf('.'));
-            }
-        }
-
-        return Pair.of(fullName, name);
-    }
-
-    private boolean isMethodCall(Node node) {
-        // PrimaryExpression
-        //     PrimaryPrefix
-        //         Name
-        //     PrimarySuffix
-
-        if (node.getParent() instanceof ASTPrimaryPrefix && node.getNthParent(2) instanceof ASTPrimaryExpression) {
-            Node primaryPrefix = node.getParent();
-            Node expression = primaryPrefix.getParent();
-
-            boolean hasNextSibling = expression.getNumChildren() > primaryPrefix.getIndexInParent() + 1;
-            if (hasNextSibling) {
-                Node nextSibling = expression.getChild(primaryPrefix.getIndexInParent() + 1);
-                if (nextSibling instanceof ASTPrimarySuffix) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
 
     /** We found a reference to the type given by the name. */
     private void removeReferenceSingleImport(String referenceName) {
-        int firstDot = referenceName.indexOf('.');
-        String expectedImport = firstDot < 0 ? referenceName : referenceName.substring(0, firstDot);
-        Iterator<ImportWrapper> iterator = imports.iterator();
-        while (iterator.hasNext()) {
-            ImportWrapper anImport = iterator.next();
-            if (!anImport.isOnDemand() && anImport.getName().equals(expectedImport)) {
-                iterator.remove();
-            }
-        }
+        String expectedImport = StringUtils.substringBefore(referenceName, ".");
+        allSingleNameImports.removeIf(it -> expectedImport.equals(it.node.getImportedSimpleName()));
     }
 
-    private void removeOnDemandForPackageName(String fullName) {
-        Iterator<ImportWrapper> iterator = imports.iterator();
-        while (iterator.hasNext()) {
-            ImportWrapper anImport = iterator.next();
-            if (anImport.isOnDemand() && anImport.getFullName().equals(fullName)) {
-                iterator.remove();
-                break;
+    /** Override the equal behaviour of ASTImportDeclaration to put it into a set. */
+    private static final class ImportWrapper {
+
+        private final ASTImportDeclaration node;
+
+        private ImportWrapper(ASTImportDeclaration node) {
+            this.node = node;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
             }
+            if (getClass() != o.getClass()) {
+                return false;
+            }
+            ImportWrapper that = (ImportWrapper) o;
+            return node.getImportedName().equals(that.node.getImportedName())
+                && node.isImportOnDemand() == that.node.isImportOnDemand()
+                && this.isStatic() == that.isStatic();
+        }
+
+        @Override
+        public int hashCode() {
+            return node.getImportedName().hashCode() * 31
+                + Boolean.hashCode(node.isStatic())
+                + 37 * Boolean.hashCode(node.isImportOnDemand());
+        }
+
+        private boolean isStatic() {
+            return this.node.isStatic();
         }
     }
 }
