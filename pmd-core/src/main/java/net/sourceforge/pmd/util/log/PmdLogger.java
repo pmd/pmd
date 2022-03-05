@@ -28,11 +28,11 @@ public interface PmdLogger {
         log(Level.INFO, message, formatArgs);
     }
 
-    default void warning(String message, Object... formatArgs) {
+    default void warn(String message, Object... formatArgs) {
         log(Level.WARN, message, formatArgs);
     }
 
-    default void warningEx(String message, Throwable error) {
+    default void warnEx(String message, Throwable error) {
         logEx(Level.WARN, message, new Object[0], error);
     }
 
