@@ -383,7 +383,7 @@ public class PMDConfiguration extends AbstractConfiguration {
      *
      * @param ruleSets the rulesets to set
      *
-     * @deprecated Use {@link #setRuleSets(List)}
+     * @deprecated Use {@link #setRuleSets(List)} or {@link #addRuleSet(String)}.
      */
     @Deprecated
     public void setRuleSets(String ruleSets) {

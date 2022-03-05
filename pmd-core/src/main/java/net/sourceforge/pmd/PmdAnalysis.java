@@ -50,6 +50,7 @@ import net.sourceforge.pmd.util.log.SimplePmdLogger;
  *   config.setReportFile("target/pmd-report.xml");
  *
  *   try (PmdAnalysis pmd = PmdAnalysis.create(config)) {
+ *     // note: don't use `config` once a PmdAnalysis has been created.
  *     // optional: add more rulesets
  *     pmd.addRuleSet(pmd.newRuleSetLoader().loadFromResource("custom-ruleset.xml"));
  *     // optional: add more files
