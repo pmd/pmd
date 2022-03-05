@@ -51,7 +51,7 @@ import net.sourceforge.pmd.util.log.SimplePmdLogger;
  *
  *   try (PmdAnalysis pmd = PmdAnalysis.create(config)) {
  *     // optional: add more rulesets
- *     pmd.addRuleSet(RuleSetLoader.fromPmdConfig(configuration).loadFromResource("custom-ruleset.xml"));
+ *     pmd.addRuleSet(pmd.newRuleSetLoader().loadFromResource("custom-ruleset.xml"));
  *     // optional: add more files
  *     pmd.files().addFile(Paths.get("src", "main", "more-java", "ExtraSource.java"));
  *     // optional: add more renderers
@@ -68,7 +68,7 @@ public final class PmdAnalysis implements AutoCloseable {
     private final List<Renderer> renderers = new ArrayList<>();
     private final List<RuleSet> ruleSets = new ArrayList<>();
     private final PMDConfiguration configuration;
-    private final SimplePmdLogger logger = new SimplePmdLogger(Logger.getLogger("net.sourceforge.pmd"));
+    private final SimplePmdLogger reporter = new SimplePmdLogger(Logger.getLogger("net.sourceforge.pmd"));
 
     /**
      * Constructs a new instance. The files paths (input files, filelist,
@@ -80,10 +80,10 @@ public final class PmdAnalysis implements AutoCloseable {
         this.configuration = config;
         this.collector = FileCollector.newCollector(
             config.getLanguageVersionDiscoverer(),
-            logger
+            reporter
         );
         final Level logLevel = configuration.isDebug() ? Level.TRACE : Level.INFO;
-        this.logger.setLevel(logLevel);
+        this.reporter.setLevel(logLevel);
     }
 
     /**
@@ -114,13 +114,11 @@ public final class PmdAnalysis implements AutoCloseable {
             builder.addRenderer(renderer);
         }
 
-        if (config.getRuleSets() != null) {
-            final RuleSetLoader ruleSetLoader = RuleSetLoader.fromPmdConfig(config);
-            final RuleSets ruleSets = RulesetsFactoryUtils.getRuleSetsWithBenchmark(config.getRuleSets(), ruleSetLoader.toFactory());
-            if (ruleSets != null) {
-                for (RuleSet ruleSet : ruleSets.getAllRuleSets()) {
-                    builder.addRuleSet(ruleSet);
-                }
+        if (!config.getRuleSetPaths().isEmpty()) {
+            final RuleSetLoader ruleSetLoader = builder.newRuleSetLoader();
+            final List<RuleSet> ruleSets = ruleSetLoader.loadRuleSetsWithoutException(config.getRuleSetPaths());
+            for (RuleSet ruleSet : ruleSets) {
+                builder.addRuleSet(ruleSet);
             }
         }
         return builder;
@@ -147,6 +145,22 @@ public final class PmdAnalysis implements AutoCloseable {
      */
     public FileCollector files() {
         return collector; // todo user can close collector programmatically
+    }
+
+    /**
+     * Returns a new ruleset loader, which can be used to create new
+     * rulesets (add them then with {@link #addRuleSet(RuleSet)}).
+     *
+     * <pre>{@code
+     * try (PmdAnalysis pmd = create(config)) {
+     *     pmd.addRuleSet(pmd.newRuleSetLoader().loadFromResource("custom-ruleset.xml"));
+     * }
+     * }</pre>
+     */
+    public RuleSetLoader newRuleSetLoader() {
+        RuleSetLoader loader = RuleSetLoader.fromPmdConfig(configuration);
+        loader.setReporter(this.reporter);
+        return loader;
     }
 
     /**
@@ -222,7 +236,7 @@ public final class PmdAnalysis implements AutoCloseable {
                 try {
                     renderer.start();
                 } catch (IOException e) {
-                    logger.errorEx("Error while starting renderer " + renderer.getName(), e);
+                    reporter.errorEx("Error while starting renderer " + renderer.getName(), e);
                 }
             }
         }
@@ -235,7 +249,7 @@ public final class PmdAnalysis implements AutoCloseable {
                     renderer.end();
                     renderer.flush();
                 } catch (IOException e) {
-                    logger.errorEx("Error while finishing renderer " + renderer.getName(), e);
+                    reporter.errorEx("Error while finishing renderer " + renderer.getName(), e);
                 }
             }
         }
@@ -252,7 +266,7 @@ public final class PmdAnalysis implements AutoCloseable {
                     final LanguageVersion version = discoverer.getDefaultLanguageVersion(ruleLanguage);
                     if (RuleSet.applies(rule, version)) {
                         languages.add(ruleLanguage);
-                        logger.trace("Using {0} version ''{1}''", version.getLanguage().getName(), version.getTerseName());
+                        reporter.trace("Using {0} version ''{1}''", version.getLanguage().getName(), version.getTerseName());
                     }
                 }
             }
@@ -267,7 +281,7 @@ public final class PmdAnalysis implements AutoCloseable {
     }
 
     public PmdLogger getLog() {
-        return logger;
+        return reporter;
     }
 
     @Override

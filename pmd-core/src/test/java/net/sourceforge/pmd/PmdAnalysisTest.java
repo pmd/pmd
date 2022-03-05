@@ -54,7 +54,16 @@ public class PmdAnalysisTest {
     @Test
     public void testRulesetLoading() {
         PMDConfiguration config = new PMDConfiguration();
-        config.setRuleSets("rulesets/dummy/basic.xml");
+        config.addRuleSet("rulesets/dummy/basic.xml");
+        try (PmdAnalysis pmd = PmdAnalysis.create(config)) {
+            assertThat(pmd.rulesets(), hasSize(1));
+        }
+    }
+
+    @Test
+    public void testRulesetWhenSomeoneHasAnError() {
+        PMDConfiguration config = new PMDConfiguration();
+        config.addRuleSet("rulesets/dummy/basic.xml");
         try (PmdAnalysis pmd = PmdAnalysis.create(config)) {
             assertThat(pmd.rulesets(), hasSize(1));
         }
