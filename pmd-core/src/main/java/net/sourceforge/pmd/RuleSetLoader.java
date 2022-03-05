@@ -19,6 +19,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.util.CollectionUtil;
@@ -192,8 +193,12 @@ public final class RuleSetLoader {
     /**
      * Loads a list of rulesets, if any has an error, report it on the contextual
      * error reporter instead of aborting, and continue loading the rest.
+     *
+     * <p>Internal API: might be published later, or maybe in PMD 7 this
+     * will be the default behaviour of every method of this class.
      */
-    List<RuleSet> loadRuleSetsWithoutException(List<String> rulesetPaths) {
+    @InternalApi
+    public List<RuleSet> loadRuleSetsWithoutException(List<String> rulesetPaths) {
         List<RuleSet> ruleSets = new ArrayList<>(rulesetPaths.size());
         boolean anyRules = false;
         for (String path : rulesetPaths) {
@@ -203,12 +208,17 @@ public final class RuleSetLoader {
                 printRulesInDebug(path, ruleset);
                 ruleSets.add(ruleset);
             } catch (RuleSetLoadException e) {
-                reporter.errorEx("Cannot load ruleset {0}", new Object[] { path }, e);
+                if (e.getCause() != null) {
+                    // eg RuleSetNotFoundException
+                    reporter.errorEx("Cannot load ruleset {0}", new Object[] { path }, e.getCause());
+                } else {
+                    reporter.errorEx("Cannot load ruleset {0}", new Object[] { path }, e);
+                }
             }
         }
         if (!anyRules) {
-            reporter.warning("No rules found. Maybe you misspelled a rule name? ({0})",
-                             StringUtils.join(rulesetPaths, ','));
+            reporter.warn("No rules found. Maybe you misspelled a rule name? ({0})",
+                          StringUtils.join(rulesetPaths, ','));
         }
         return ruleSets;
     }
@@ -221,7 +231,7 @@ public final class RuleSetLoader {
             }
         }
         if (ruleset.getRules().isEmpty()) {
-            reporter.warning("No rules found in ruleset {0}", path);
+            reporter.warn("No rules found in ruleset {0}", path);
         }
 
     }

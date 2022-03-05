@@ -14,6 +14,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
+import net.sourceforge.pmd.PMD.StatusCode;
 import net.sourceforge.pmd.cli.BaseCLITest;
 
 public class XmlCliTest extends BaseCLITest {
@@ -36,19 +37,19 @@ public class XmlCliTest extends BaseCLITest {
 
     @Test
     public void analyzeSingleXmlWithoutForceLanguage() {
-        String log = runTest(0, createArgs("/src/file1.ext"));
+        String log = runTest(StatusCode.OK, createArgs("/src/file1.ext"));
         assertRuleMessage(0, log);
     }
 
     @Test
     public void analyzeSingleXmlWithForceLanguage() {
-        String log = runTest(4, createArgs("/src/file1.ext", "-force-language", "xml"));
+        String log = runTest(StatusCode.VIOLATIONS_FOUND, createArgs("/src/file1.ext", "-force-language", "xml"));
         assertRuleMessage(1, log);
     }
 
     @Test
     public void analyzeDirectoryWithForceLanguage() {
-        String log = runTest(4, createArgs("/src/", "-force-language", "xml"));
+        String log = runTest(StatusCode.VIOLATIONS_FOUND, createArgs("/src/", "-force-language", "xml"));
         assertRuleMessage(3, log);
     }
 

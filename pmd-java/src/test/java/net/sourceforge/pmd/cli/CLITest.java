@@ -16,6 +16,8 @@ import org.junit.rules.TestRule;
 
 import net.sourceforge.pmd.internal.Slf4jSimpleConfiguration;
 
+import net.sourceforge.pmd.PMD.StatusCode;
+
 /**
  * @author Romain Pelisse &lt;belaran@gmail.com&gt;
  *
@@ -75,21 +77,21 @@ public class CLITest extends BaseCLITest {
     @Test
     public void exitStatusWithViolations() {
         String[] args = { "-d", SOURCE_FOLDER, "-f", "text", "-R", "category/java/errorprone.xml", };
-        String log = runTest(4, args);
+        String log = runTest(StatusCode.VIOLATIONS_FOUND, args);
         assertThat(log, containsString("Avoid empty if"));
     }
 
     @Test
     public void exitStatusWithViolationsAndWithoutFailOnViolations() {
         String[] args = { "-d", SOURCE_FOLDER, "-f", "text", "-R", "category/java/errorprone.xml", "-failOnViolation", "false", };
-        String log = runTest(0, args);
+        String log = runTest(StatusCode.OK, args);
         assertThat(log, containsString("Avoid empty if"));
     }
 
     @Test
     public void exitStatusWithViolationsAndWithoutFailOnViolationsLongOption() {
         String[] args = { "-d", SOURCE_FOLDER, "-f", "text", "-R", "category/java/errorprone.xml", "--fail-on-violation", "false", };
-        String log = runTest(0, args);
+        String log = runTest(StatusCode.OK, args);
         assertThat(log, containsString("Avoid empty if"));
     }
 
@@ -99,7 +101,7 @@ public class CLITest extends BaseCLITest {
     @Test
     public void testWrongRuleset() {
         String[] args = { "-d", SOURCE_FOLDER, "-f", "text", "-R", "category/java/designn.xml", };
-        String log = runTest(1, args);
+        String log = runTest(StatusCode.ERROR, args);
         assertThat(log, containsString("Can't find resource 'category/java/designn.xml' for rule 'null'."
                                            + "  Make sure the resource is a valid file"));
     }
@@ -110,7 +112,7 @@ public class CLITest extends BaseCLITest {
     @Test
     public void testWrongRulesetWithRulename() {
         String[] args = { "-d", SOURCE_FOLDER, "-f", "text", "-R", "category/java/designn.xml/UseCollectionIsEmpty", };
-        String log = runTest(1, args);
+        String log = runTest(StatusCode.ERROR, args);
         assertThat(log, containsString("Can't find resource 'category/java/designn.xml' for rule "
                                            + "'UseCollectionIsEmpty'."));
     }
@@ -121,7 +123,7 @@ public class CLITest extends BaseCLITest {
     @Test
     public void testWrongRulename() {
         String[] args = { "-d", SOURCE_FOLDER, "-f", "text", "-R", "category/java/design.xml/ThisRuleDoesNotExist", };
-        String log = runTest(1, args);
+        String log = runTest(StatusCode.OK, args);
         assertThat(log, containsString("No rules found. Maybe you misspelled a rule name?"
                                            + " (category/java/design.xml/ThisRuleDoesNotExist)"));
     }

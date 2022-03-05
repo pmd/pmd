@@ -2,23 +2,21 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd;
+package net.sourceforge.pmd.reporting;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
 import net.sourceforge.pmd.Report.ProcessingError;
-import net.sourceforge.pmd.ReportStatsListener.ReportStats;
-import net.sourceforge.pmd.reporting.FileAnalysisListener;
-import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
+import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.util.BaseResultProducingCloseable;
 import net.sourceforge.pmd.util.datasource.DataSource;
 
 /**
- * Counts processing errors.
+ * Collects summarized info about a PMD run.
  *
  * @author Clément Fournier
  */
-final class ReportStatsListener extends BaseResultProducingCloseable<ReportStats> implements GlobalAnalysisListener {
+public final class ReportStatsListener extends BaseResultProducingCloseable<ReportStats> implements GlobalAnalysisListener {
 
     private final AtomicInteger numErrors = new AtomicInteger(0);
     private final AtomicInteger numViolations = new AtomicInteger(0);
@@ -62,31 +60,4 @@ final class ReportStatsListener extends BaseResultProducingCloseable<ReportStats
     }
 
 
-    static final class ReportStats {
-
-        private final int numErrors;
-        private final int numViolations;
-
-        ReportStats(int numErrors, int numViolations) {
-            this.numErrors = numErrors;
-            this.numViolations = numViolations;
-        }
-
-        public static ReportStats empty() {
-            return new ReportStats(0, 0);
-        }
-
-        public int getNumErrors() {
-            return numErrors;
-        }
-
-        public int getNumViolations() {
-            return numViolations;
-        }
-
-        @Override
-        public String toString() {
-            return "ReportStats{numErrors=" + numErrors + ", numViolations=" + numViolations + '}';
-        }
-    }
 }

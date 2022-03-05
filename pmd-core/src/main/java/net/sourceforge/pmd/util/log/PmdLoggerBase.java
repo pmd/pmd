@@ -9,6 +9,8 @@ import java.text.MessageFormat;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.event.Level;
 
+import net.sourceforge.pmd.util.StringUtil;
+
 /**
  * Base implementation.
  *
@@ -41,9 +43,15 @@ abstract class PmdLoggerBase implements PmdLogger {
     public void logEx(Level level, String message, Object[] formatArgs, Throwable error) {
         if (isLoggable(level)) {
             message = MessageFormat.format(message, formatArgs);
-            log(level, message + ": " + error.getMessage());
+            String errorMessage = error.getMessage();
+            if (errorMessage == null) {
+                errorMessage = error.getClass().getSimpleName();
+            }
+            errorMessage = StringUtil.quoteMessageFormat(errorMessage);
+            log(level, message + ": " + errorMessage);
             if (isLoggable(Level.DEBUG)) {
-                log(Level.DEBUG, ExceptionUtils.getStackTrace(error));
+                String stackTrace = StringUtil.quoteMessageFormat(ExceptionUtils.getStackTrace(error));
+                log(Level.DEBUG, stackTrace);
             }
         }
     }

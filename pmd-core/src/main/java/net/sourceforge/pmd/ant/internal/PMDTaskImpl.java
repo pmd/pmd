@@ -6,7 +6,7 @@ package net.sourceforge.pmd.ant.internal;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.StringJoiner;
 
@@ -23,10 +23,7 @@ import org.slf4j.event.Level;
 
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.PmdAnalysis;
-import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RulePriority;
-import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.RuleSetLoadException;
 import net.sourceforge.pmd.RuleSetLoader;
 import net.sourceforge.pmd.ant.Formatter;
 import net.sourceforge.pmd.ant.PMDTask;
@@ -37,7 +34,8 @@ import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
-import net.sourceforge.pmd.reporting.GlobalAnalysisListener.ViolationCounterListener;
+import net.sourceforge.pmd.reporting.ReportStats;
+import net.sourceforge.pmd.reporting.ReportStatsListener;
 import net.sourceforge.pmd.util.ClasspathClassLoader;
 import net.sourceforge.pmd.util.IOUtil;
 import net.sourceforge.pmd.util.datasource.DataSource;
@@ -50,6 +48,7 @@ public class PMDTaskImpl {
     private final List<FileSet> filesets = new ArrayList<>();
     private final PMDConfiguration configuration = new PMDConfiguration();
     private final String rulesetPaths;
+    private boolean failOnError;
     private boolean failOnRuleViolation;
     private int maxRuleViolations = 0;
     private String failuresPropertyName;
@@ -60,6 +59,7 @@ public class PMDTaskImpl {
         if (task.getSuppressMarker() != null) {
             configuration.setSuppressMarker(task.getSuppressMarker());
         }
+        this.failOnError = task.isFailOnError();
         this.failOnRuleViolation = task.isFailOnRuleViolation();
         this.maxRuleViolations = task.getMaxRuleViolations();
         if (this.maxRuleViolations > 0) {
@@ -98,26 +98,23 @@ public class PMDTaskImpl {
     private void doTask() {
         setupClassLoader();
 
-        // Setup RuleSetFactory and validate RuleSets
-        RuleSetLoader rulesetLoader = RuleSetLoader.fromPmdConfig(configuration)
-                                                   .loadResourcesWith(setupResourceLoader());
-
-        List<RuleSet> rules = loadRulesets(rulesetLoader);
-
         if (configuration.getSuppressMarker() != null) {
             project.log("Setting suppress marker to be " + configuration.getSuppressMarker(), Project.MSG_VERBOSE);
         }
 
 
-        @SuppressWarnings("PMD.CloseResource")
-        ViolationCounterListener reportSizeListener = new ViolationCounterListener();
-        final List<String> reportShortNamesPaths = new ArrayList<>();
+        @SuppressWarnings("PMD.CloseResource") final List<String> reportShortNamesPaths = new ArrayList<>();
         StringJoiner fullInputPath = new StringJoiner(",");
 
+        List<String> ruleSetPaths = expandRuleSetPaths();
+        // don't let PmdAnalysis.create create rulesets itself.
+        configuration.setRuleSets(Collections.emptyList());
+
+        ReportStats stats;
         try (PmdAnalysis pmd = PmdAnalysis.create(configuration)) {
-            for (RuleSet ruleSet : rules) {
-                pmd.addRuleSet(ruleSet);
-            }
+            RuleSetLoader rulesetLoader =
+                pmd.newRuleSetLoader().loadResourcesWith(setupResourceLoader());
+            pmd.addRuleSets(rulesetLoader.loadRuleSetsWithoutException(ruleSetPaths));
 
             for (FileSet fileset : filesets) {
                 DirectoryScanner ds = fileset.getDirectoryScanner(project);
@@ -132,11 +129,17 @@ public class PMDTaskImpl {
                 }
             }
 
-            pmd.addListener(getListener(reportSizeListener, reportShortNamesPaths, fullInputPath.toString()));
+            ReportStatsListener reportStatsListener = new ReportStatsListener();
+            pmd.addListener(getListener(reportStatsListener, reportShortNamesPaths, fullInputPath.toString()));
+
             pmd.performAnalysis();
+            stats = reportStatsListener.getResult();
+            if (failOnError && pmd.getLog().numErrors() > 0) {
+                throw new BuildException("Some errors occurred while running PMD");
+            }
         }
 
-        int problemCount = reportSizeListener.getResult();
+        int problemCount = stats.getNumViolations();
         project.log(problemCount + " problems found", Project.MSG_VERBOSE);
 
         if (failuresPropertyName != null && problemCount > 0) {
@@ -149,25 +152,17 @@ public class PMDTaskImpl {
         }
     }
 
-    private List<RuleSet> loadRulesets(RuleSetLoader rulesetLoader) {
-        try {
-            // This is just used to validate and display rules. Each thread will create its own ruleset
-            // Substitute env variables/properties
-            String ruleSetString = project.replaceProperties(rulesetPaths);
-
-            List<String> rulesets = Arrays.asList(ruleSetString.split(","));
-            List<RuleSet> rulesetList = rulesetLoader.loadFromResources(rulesets);
-            if (rulesetList.isEmpty()) {
-                throw new BuildException("No rulesets");
-            }
-            logRulesUsed(rulesetList);
-            return rulesetList;
-        } catch (RuleSetLoadException e) {
-            throw new BuildException(e.getMessage(), e);
+    private List<String> expandRuleSetPaths() {
+        List<String> paths = new ArrayList<>(configuration.getRuleSetPaths());
+        for (int i = 0; i < paths.size(); i++) {
+            paths.set(i, project.replaceProperties(paths.get(i)));
         }
+        return paths;
     }
 
-    private @NonNull GlobalAnalysisListener getListener(ViolationCounterListener reportSizeListener, List<String> reportShortNamesPaths, String inputPaths) {
+    private @NonNull GlobalAnalysisListener getListener(ReportStatsListener reportSizeListener,
+                                                        List<String> reportShortNamesPaths,
+                                                        String inputPaths) {
         List<GlobalAnalysisListener> renderers = new ArrayList<>(formatters.size() + 1);
         try {
             renderers.add(makeLogListener(inputPaths));
@@ -254,13 +249,4 @@ public class PMDTaskImpl {
         }
     }
 
-    private void logRulesUsed(List<RuleSet> rulesets) {
-        project.log("Using these rulesets: " + rulesetPaths, Project.MSG_VERBOSE);
-
-        for (RuleSet ruleSet : rulesets) {
-            for (Rule rule : ruleSet.getRules()) {
-                project.log("Using rule " + rule.getName(), Project.MSG_VERBOSE);
-            }
-        }
-    }
 }

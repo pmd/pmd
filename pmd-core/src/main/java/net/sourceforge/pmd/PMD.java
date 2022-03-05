@@ -20,7 +20,8 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.event.Level;
 
 import net.sourceforge.pmd.Report.GlobalReportBuilderListener;
-import net.sourceforge.pmd.ReportStatsListener.ReportStats;
+import net.sourceforge.pmd.reporting.ReportStatsListener;
+import net.sourceforge.pmd.reporting.ReportStats;
 import net.sourceforge.pmd.benchmark.TextTimingReportRenderer;
 import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.benchmark.TimingReport;
@@ -70,7 +71,7 @@ public final class PMD {
     }
 
 
-    private static ReportStatsListener.ReportStats runAndReturnStats(PmdAnalysis pmd) {
+    private static ReportStats runAndReturnStats(PmdAnalysis pmd) {
         if (pmd.getRulesets().isEmpty()) {
             return ReportStats.empty();
         }

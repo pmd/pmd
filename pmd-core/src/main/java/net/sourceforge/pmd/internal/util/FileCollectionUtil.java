@@ -169,9 +169,9 @@ public final class FileCollectionUtil {
                     String source = IOUtils.toString(sourceCode);
                     collector.addSourceFile(source, falseFilePath);
                 } catch (SQLException ex) {
-                    collector.getLog().warningEx("Cannot get SourceCode for {}  - skipping ...",
-                                                 new Object[] { falseFilePath},
-                                                 ex);
+                    collector.getLog().warnEx("Cannot get SourceCode for {}  - skipping ...",
+                                              new Object[] { falseFilePath},
+                                              ex);
                 }
             }
         } catch (ClassNotFoundException e) {

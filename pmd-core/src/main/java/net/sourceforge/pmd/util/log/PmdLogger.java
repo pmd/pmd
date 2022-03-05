@@ -36,7 +36,7 @@ public interface PmdLogger {
         logEx(Level.WARN, message, new Object[0], error);
     }
 
-    default void warningEx(String message, Object[] formatArgs, Throwable error) {
+    default void warnEx(String message, Object[] formatArgs, Throwable error) {
         logEx(Level.WARN, message, formatArgs, error);
     }
 
@@ -52,6 +52,12 @@ public interface PmdLogger {
         logEx(Level.ERROR, message, formatArgs, error);
     }
 
+    /**
+     * Returns the number of errors reported on this instance.
+     * Any call to {@link #log(Level, String, Object...)} or
+     * {@link #logEx(Level, String, Object[], Throwable)} with a level
+     * of {@link Level#ERROR} should increment this number.
+     */
     int numErrors();
 
 }

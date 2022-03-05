@@ -80,6 +80,8 @@ public final class PmdAnalysis implements AutoCloseable {
     private final PmdLogger reporter;
 
 
+    private boolean closed;
+
     /**
      * Constructs a new instance. The files paths (input files, filelist,
      * exclude list, etc) given in the configuration are collected into
@@ -238,7 +240,8 @@ public final class PmdAnalysis implements AutoCloseable {
      * All files collected in the {@linkplain #files() file collector} are
      * processed. This does not return a report, as the analysis results
      * are consumed by {@link GlobalAnalysisListener} instances (of which
-     * Renderers are a special case).
+     * Renderers are a special case). Note that this does
+     * not throw, errors are instead accumulated into a {@link PmdLogger}.
      */
     public void performAnalysis() {
         performAnalysisImpl(Collections.emptyList());
@@ -248,7 +251,8 @@ public final class PmdAnalysis implements AutoCloseable {
      * Run PMD with the current state of this instance. This will start
      * and finish the registered renderers. All files collected in the
      * {@linkplain #files() file collector} are processed. Returns the
-     * output report.
+     * output report. Note that this does not throw, errors are instead
+     * accumulated into a {@link PmdLogger}.
      */
     public Report performAnalysisAndCollectReport() {
         try (GlobalReportBuilderListener reportBuilder = new GlobalReportBuilderListener()) {
@@ -364,6 +368,10 @@ public final class PmdAnalysis implements AutoCloseable {
 
     @Override
     public void close() {
+        if (closed) {
+            return;
+        }
+        closed = true;
         collector.close();
 
         /*
