@@ -6,6 +6,7 @@ package net.sourceforge.pmd;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -64,8 +65,10 @@ public class PmdAnalysisTest {
     public void testRulesetWhenSomeoneHasAnError() {
         PMDConfiguration config = new PMDConfiguration();
         config.addRuleSet("rulesets/dummy/basic.xml");
+        config.addRuleSet("rulesets/xxxe/notaruleset.xml");
         try (PmdAnalysis pmd = PmdAnalysis.create(config)) {
-            assertThat(pmd.rulesets(), hasSize(1));
+            assertThat(pmd.rulesets(), hasSize(1)); // no failure
+            assertThat(pmd.getReporter().numErrors(), equalTo(1));
         }
     }
 
