@@ -5,6 +5,9 @@
 
 package net.sourceforge.pmd.lang.java.symbols.table.internal;
 
+import static net.sourceforge.pmd.lang.java.symbols.table.internal.AbruptCompletionAnalysis.canCompleteNormally;
+import static net.sourceforge.pmd.lang.java.symbols.table.internal.PatternBindingsUtil.bindersOfExpr;
+
 import java.util.ArrayDeque;
 import java.util.Collections;
 import java.util.Deque;
@@ -16,7 +19,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.pcollections.PSet;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.NodeStream;
@@ -24,37 +27,52 @@ import net.sourceforge.pmd.lang.java.ast.ASTAmbiguousName;
 import net.sourceforge.pmd.lang.java.ast.ASTAnonymousClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
+import net.sourceforge.pmd.lang.java.ast.ASTBreakStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTCatchClause;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTCompactConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
+import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTForeachStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
+import net.sourceforge.pmd.lang.java.ast.ASTGuardedPattern;
+import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTInfixExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTInitializer;
+import net.sourceforge.pmd.lang.java.ast.ASTLabeledStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTLambdaParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalClassStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTLoopStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTModifierList;
 import net.sourceforge.pmd.lang.java.ast.ASTResource;
 import net.sourceforge.pmd.lang.java.ast.ASTResourceList;
 import net.sourceforge.pmd.lang.java.ast.ASTStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTSwitchArrowBranch;
+import net.sourceforge.pmd.lang.java.ast.ASTSwitchBranch;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchFallthroughBranch;
+import net.sourceforge.pmd.lang.java.ast.ASTSwitchLabel;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchLike;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTTryStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
+import net.sourceforge.pmd.lang.java.ast.BinaryOp;
 import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.JavaVisitorBase;
 import net.sourceforge.pmd.lang.java.internal.JavaAstProcessor;
+import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
+import net.sourceforge.pmd.lang.java.symbols.table.internal.PatternBindingsUtil.BindSet;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 
 
@@ -84,7 +102,7 @@ public final class SymbolTableResolver {
         } while (!todo.isEmpty());
     }
 
-    private static class DeferredNode {
+    private static final class DeferredNode {
 
         final JavaNode node;
         // this is data used to resume the traversal
@@ -124,6 +142,7 @@ public final class SymbolTableResolver {
 
         private final Set<DeferredNode> deferredInPrevRound;
         private final Set<DeferredNode> newDeferred;
+        private final StatementVisitor stmtVisitor = new StatementVisitor();
 
         MyVisitor(SymTableFactory helper, Set<DeferredNode> deferredInPrevRound, Set<DeferredNode> newDeferred) {
             f = helper;
@@ -284,7 +303,7 @@ public final class SymbolTableResolver {
         public Void visitMethodOrCtor(ASTMethodOrConstructorDeclaration node, @NonNull ReferenceCtx ctx) {
             setTopSymbolTable(node.getModifiers());
             int pushed = pushOnStack(f.bodyDeclaration(top(), enclosing(), node.getFormalParameters(), node.getTypeParameters()));
-            setTopSymbolTableAndRecurse(node, ctx);
+            setTopSymbolTableAndVisitAllChildren(node, ctx);
             popStack(pushed);
             return null;
         }
@@ -292,7 +311,7 @@ public final class SymbolTableResolver {
         @Override
         public Void visit(ASTInitializer node, @NonNull ReferenceCtx ctx) {
             int pushed = pushOnStack(f.bodyDeclaration(top(), enclosing(), null, null));
-            setTopSymbolTableAndRecurse(node, ctx);
+            setTopSymbolTableAndVisitAllChildren(node, ctx);
             popStack(pushed);
             return null;
         }
@@ -302,7 +321,7 @@ public final class SymbolTableResolver {
         public Void visit(ASTCompactConstructorDeclaration node, @NonNull ReferenceCtx ctx) {
             setTopSymbolTable(node.getModifiers());
             int pushed = pushOnStack(f.recordCtor(top(), enclosing(), node.getSymbol()));
-            setTopSymbolTableAndRecurse(node, ctx);
+            setTopSymbolTableAndVisitAllChildren(node, ctx);
             popStack(pushed);
             return null;
         }
@@ -311,14 +330,16 @@ public final class SymbolTableResolver {
         @Override
         public Void visit(ASTLambdaExpression node, @NonNull ReferenceCtx ctx) {
             int pushed = pushOnStack(f.localVarSymTable(top(), enclosing(), formalsOf(node)));
-            setTopSymbolTableAndRecurse(node, ctx);
+            setTopSymbolTableAndVisitAllChildren(node, ctx);
             popStack(pushed);
             return null;
         }
 
         @Override
         public Void visit(ASTBlock node, @NonNull ReferenceCtx ctx) {
-            return visitBlockLike(node, ctx);
+            int pushed = visitBlockLike(node, ctx);
+            popStack(pushed);
+            return null;
         }
 
         @Override
@@ -331,15 +352,42 @@ public final class SymbolTableResolver {
             return visitSwitch(node, ctx);
         }
 
+
         private Void visitSwitch(ASTSwitchLike node, @NonNull ReferenceCtx ctx) {
             setTopSymbolTable(node);
-            visitChildren(node.getTestedExpression(), ctx);
-            visitBlockLike(stmtsOfSwitchBlock(node), ctx);
+            node.getTestedExpression().acceptVisitor(this, ctx);
+
+            int pushed = 0;
+
+            for (ASTSwitchBranch branch : node.getBranches()) {
+                ASTSwitchLabel label = branch.getLabel();
+                // collect all bindings. Maybe it's illegal to use composite label with bindings, idk
+                BindSet bindings =
+                    label.getExprList().reduce(BindSet.EMPTY,
+                                               (bindSet, expr) -> bindSet.union(bindersOfExpr(expr)));
+
+                // visit guarded patterns in label
+                setTopSymbolTableAndVisit(label, ctx);
+
+                if (branch instanceof ASTSwitchArrowBranch) {
+                    pushed = pushOnStack(f.localVarSymTable(top(), enclosing(), bindings.getTrueBindings()));
+                    setTopSymbolTableAndVisit(((ASTSwitchArrowBranch) branch).getRightHandSide(), ctx);
+                    popStack(pushed);
+                    pushed = 0;
+                } else if (branch instanceof ASTSwitchFallthroughBranch) {
+                    pushed += pushOnStack(f.localVarSymTable(top(), enclosing(), bindings.getTrueBindings()));
+                    pushed += visitBlockLike(((ASTSwitchFallthroughBranch) branch).getStatements(), ctx);
+                }
+            }
+            popStack(pushed);
             return null;
         }
 
 
-        private Void visitBlockLike(Iterable<? extends ASTStatement> node, @NonNull ReferenceCtx ctx) {
+        /**
+         * Note: caller is responsible for popping.
+         */
+        private int visitBlockLike(Iterable<? extends ASTStatement> node, @NonNull ReferenceCtx ctx) {
             /*
              * Process the statements of a block in a sequence. Each local
              * var/class declaration is only in scope for the following
@@ -348,7 +396,8 @@ public final class SymbolTableResolver {
             int pushed = 0;
             for (ASTStatement st : node) {
                 if (st instanceof ASTLocalVariableDeclaration) {
-                    pushed += pushOnStack(f.localVarSymTable(top(), enclosing(), ((ASTLocalVariableDeclaration) st).getVarIds()));
+                    pushed += processLocalVarDecl((ASTLocalVariableDeclaration) st, ctx);
+                    // note we don't pop here, all those variables will be popped at the end of the block
                 } else if (st instanceof ASTLocalClassStatement) {
                     ASTAnyTypeDeclaration local = ((ASTLocalClassStatement) st).getDeclaration();
                     pushed += pushOnStack(f.localTypeSymTable(top(), local.getTypeMirror()));
@@ -356,47 +405,45 @@ public final class SymbolTableResolver {
                 }
 
                 setTopSymbolTable(st);
-                st.acceptVisitor(this, ctx);
+                // those vars are the one produced by pattern bindings/ local var decls
+                PSet<ASTVariableDeclaratorId> newVars = st.acceptVisitor(this.stmtVisitor, ctx);
+                pushed += pushOnStack(f.localVarSymTable(top(), enclosing(), newVars));
             }
 
-            popStack(pushed);
-            return null;
+            return pushed;
+        }
+
+        /**
+         * Note: caller is responsible for popping.
+         */
+        private int processLocalVarDecl(ASTLocalVariableDeclaration st, @NonNull ReferenceCtx ctx) {
+            // each variable is visible in its own initializer and the ones of the following variables
+            int pushed = 0;
+            for (ASTVariableDeclarator declarator : st.children(ASTVariableDeclarator.class)) {
+                ASTVariableDeclaratorId varId = declarator.getVarId();
+                pushed += pushOnStack(f.localVarSymTable(top(), enclosing(), varId.getSymbol()));
+                // visit initializer
+                setTopSymbolTableAndVisit(declarator.getInitializer(), ctx);
+            }
+            return pushed;
         }
 
         @Override
         public Void visit(ASTForeachStatement node, @NonNull ReferenceCtx ctx) {
             // the varId is only in scope in the body and not the iterable expr
-            setTopSymbolTableAndRecurse(node.getIterableExpr(), ctx);
+            setTopSymbolTableAndVisit(node.getIterableExpr(), ctx);
 
             ASTVariableDeclaratorId varId = node.getVarId();
-            acceptIfNotNull(varId.getTypeNode(), ctx);
+            setTopSymbolTableAndVisit(varId.getTypeNode(), ctx);
 
             int pushed = pushOnStack(f.localVarSymTable(top(), enclosing(), varId.getSymbol()));
             ASTStatement body = node.getBody();
-            if (body instanceof ASTBlock) { // if it's a block then it will be set
-                body.acceptVisitor(this, ctx);
-            } else {
-                // if not, then the body statement may never set a
-                // symbol table that would have this table as parent,
-                // so the table would be dangling
-                setTopSymbolTableAndRecurse(body, ctx);
-            }
+            // unless it's a block the body statement may never set a
+            // symbol table that would have this table as parent,
+            // so the table would be dangling
+            setTopSymbolTableAndVisit(body, ctx);
             popStack(pushed);
             return null;
-        }
-
-        @Override
-        public Void visit(ASTForStatement node, @NonNull ReferenceCtx ctx) {
-            int pushed = pushOnStack(f.localVarSymTable(top(), enclosing(), varsOfInit(node)));
-            setTopSymbolTableAndRecurse(node, ctx);
-            popStack(pushed);
-            return null;
-        }
-
-        void acceptIfNotNull(@Nullable JavaNode node, ReferenceCtx ctx) {
-            if (node != null) {
-                node.acceptVisitor(this, ctx);
-            }
         }
 
         @Override
@@ -411,7 +458,7 @@ public final class SymbolTableResolver {
                         // that it has the correct symbol table too
                         NodeStream.of(node.getBody())
                     );
-                visitBlockLike(union, ctx);
+                popStack(visitBlockLike(union, ctx));
 
                 for (Node child : node.getBody().asStream().followingSiblings()) {
                     child.acceptVisitor(this, ctx);
@@ -426,9 +473,231 @@ public final class SymbolTableResolver {
         @Override
         public Void visit(ASTCatchClause node, @NonNull ReferenceCtx ctx) {
             int pushed = pushOnStack(f.localVarSymTable(top(), enclosing(), node.getParameter().getVarId().getSymbol()));
-            setTopSymbolTableAndRecurse(node, ctx);
+            setTopSymbolTableAndVisitAllChildren(node, ctx);
             popStack(pushed);
             return null;
+        }
+
+        @Override
+        public Void visit(ASTInfixExpression node, @NonNull ReferenceCtx ctx) {
+            // need to account for pattern bindings.
+            // visit left operand first. Maybe it introduces bindings in the rigt operand.
+
+            node.getLeftOperand().acceptVisitor(this, ctx);
+
+            BinaryOp op = node.getOperator();
+            if (op == BinaryOp.CONDITIONAL_AND) {
+
+                PSet<ASTVariableDeclaratorId> trueBindings = bindersOfExpr(node.getLeftOperand()).getTrueBindings();
+                if (!trueBindings.isEmpty()) {
+                    int pushed = pushOnStack(f.localVarSymTable(top(), enclosing(), trueBindings));
+                    setTopSymbolTableAndVisit(node.getRightOperand(), ctx);
+                    popStack(pushed);
+                    return null;
+                }
+
+            } else if (op == BinaryOp.CONDITIONAL_OR) {
+
+                PSet<ASTVariableDeclaratorId> falseBindings = bindersOfExpr(node.getLeftOperand()).getFalseBindings();
+                if (!falseBindings.isEmpty()) {
+                    int pushed = pushOnStack(f.localVarSymTable(top(), enclosing(), falseBindings));
+                    setTopSymbolTableAndVisit(node.getRightOperand(), ctx);
+                    popStack(pushed);
+                    return null;
+                }
+
+            }
+
+            // not a special case, finish visiting right operand
+            return node.getRightOperand().acceptVisitor(this, ctx);
+        }
+
+        @Override
+        public Void visit(ASTGuardedPattern node, @NonNull ReferenceCtx ctx) {
+            BindSet bindSet = PatternBindingsUtil.bindersOfPattern(node.getPattern());
+            int pushed = pushOnStack(f.localVarSymTable(top(), enclosing(), bindSet.getTrueBindings()));
+            setTopSymbolTableAndVisit(node.getGuard(), ctx);
+            popStack(pushed);
+            return null;
+        }
+
+        @Override
+        public Void visit(ASTConditionalExpression node, @NonNull ReferenceCtx ctx) {
+            // need to account for pattern bindings.
+
+            ASTExpression condition = node.getCondition();
+            condition.acceptVisitor(this, ctx);
+            BindSet binders = bindersOfExpr(condition);
+            if (binders.isEmpty()) {
+                node.getThenBranch().acceptVisitor(this, ctx);
+                node.getElseBranch().acceptVisitor(this, ctx);
+            } else {
+                int pushed = pushOnStack(f.localVarSymTable(top(), enclosing(), binders.getTrueBindings()));
+                setTopSymbolTableAndVisit(node.getThenBranch(), ctx);
+                popStack(pushed);
+                pushed = pushOnStack(f.localVarSymTable(top(), enclosing(), binders.getFalseBindings()));
+                setTopSymbolTableAndVisit(node.getElseBranch(), ctx);
+                popStack(pushed);
+            }
+            return null;
+        }
+
+        /**
+         * Handles statements. Every visit method should
+         * <ul>
+         * <li>Visit the statement and its <i>entire</i> subtree according to the
+         * scoping rules of the statement (eg, a for statement may declare
+         * some variables in its initializers). Note that the subtree should be visited
+         * with the enclosing instance of {@link MyVisitor}, not the statement visitor itself.
+         * <li>Pop any new symbol tables it pushes.
+         * <li>return the set of variables that are <i>introduced</i> by the statement (in following statements)
+         * as defined in the JLS: https://docs.oracle.com/javase/specs/jls/se17/html/jls-6.html#jls-6.3.2
+         * This is used to implement scoping of pat variables in blocks.
+         * <li>
+         * </ul>
+         *
+         * <p>{@link #visitBlockLike(Iterable, ReferenceCtx)} calls this to process a block scope.
+         *
+         * <p>Statements that have no special rules concerning pat bindings can
+         * implement a visit method in the MyVisitor instance, this visitor will
+         * default to that implementation.
+         */
+        class StatementVisitor extends JavaVisitorBase<ReferenceCtx, PSet<ASTVariableDeclaratorId>> {
+
+            @Override
+            public PSet<ASTVariableDeclaratorId> visitJavaNode(JavaNode node, ReferenceCtx ctx) {
+                throw new IllegalStateException("I only expect statements, got " + node);
+            }
+
+            @Override
+            public PSet<ASTVariableDeclaratorId> visitStatement(ASTStatement node, ReferenceCtx ctx) {
+                // Default to calling the method on the outer class,
+                // which will recurse
+                node.acceptVisitor(MyVisitor.this, ctx);
+                return BindSet.noBindings();
+            }
+
+            @Override
+            public PSet<ASTVariableDeclaratorId> visit(ASTLabeledStatement node, @NonNull ReferenceCtx ctx) {
+                // A pattern variable is introduced by a labeled statement
+                // if and only if it is introduced by its immediately contained Statement.
+                return node.getStatement().acceptVisitor(this, ctx);
+            }
+
+            @Override
+            public PSet<ASTVariableDeclaratorId> visit(ASTIfStatement node, ReferenceCtx ctx) {
+                BindSet bindSet = bindersOfExpr(node.getCondition());
+
+                ASTStatement thenBranch = node.getThenBranch();
+                ASTStatement elseBranch = node.getElseBranch();
+
+                MyVisitor.this.setTopSymbolTableAndVisit(node.getCondition(), ctx);
+
+                // the true bindings of the condition are in scope in the then branch
+                int pushed = pushOnStack(f.localVarSymTable(top(), enclosing(), bindSet.getTrueBindings()));
+                setTopSymbolTableAndVisit(thenBranch, ctx);
+                popStack(pushed);
+
+                if (elseBranch != null) {
+                    // if there is an else, the false bindings are in scope in the else branch
+                    pushed = pushOnStack(f.localVarSymTable(top(), enclosing(), bindSet.getFalseBindings()));
+                    setTopSymbolTableAndVisit(elseBranch, ctx);
+                    popStack(pushed);
+                }
+
+                if (!bindSet.isEmpty()) {
+                    // avoid computing canCompleteNormally if possible
+                    boolean thenCanCompleteNormally = canCompleteNormally(thenBranch);
+                    boolean elseCanCompleteNormally = elseBranch == null || canCompleteNormally(elseBranch);
+
+                    // the bindings are visible in the statements following this if/else
+                    // if one of those conditions match
+                    if (thenCanCompleteNormally && !elseCanCompleteNormally) {
+                        return bindSet.getTrueBindings();
+                    } else if (!thenCanCompleteNormally && elseCanCompleteNormally) {
+                        return bindSet.getFalseBindings();
+                    }
+                }
+                return BindSet.noBindings();
+            }
+
+            @Override
+            public PSet<ASTVariableDeclaratorId> visit(ASTWhileStatement node, ReferenceCtx ctx) {
+                BindSet bindSet = bindersOfExpr(node.getCondition());
+
+                MyVisitor.this.setTopSymbolTableAndVisit(node.getCondition(), ctx);
+
+                int pushed = pushOnStack(f.localVarSymTable(top(), enclosing(), NodeStream.fromIterable(bindSet.getTrueBindings())));
+                setTopSymbolTableAndVisit(node.getBody(), ctx);
+                popStack(pushed);
+
+                if (hasNoBreakContainingStmt(node)) {
+                    return bindSet.getFalseBindings();
+                }
+                return BindSet.noBindings();
+            }
+
+            @Override
+            public PSet<ASTVariableDeclaratorId> visit(ASTForStatement node, @NonNull ReferenceCtx ctx) {
+                int pushed = 0;
+                ASTStatement init = node.getInit();
+                if (init instanceof ASTLocalVariableDeclaration) {
+                    pushed += processLocalVarDecl((ASTLocalVariableDeclaration) init, ctx);
+                } else {
+                    setTopSymbolTableAndVisit(init, ctx);
+                }
+
+                ASTExpression condition = node.getCondition();
+                MyVisitor.this.setTopSymbolTableAndVisit(node.getCondition(), ctx);
+
+                BindSet bindSet = bindersOfExpr(condition);
+                pushed += pushOnStack(f.localVarSymTable(top(), enclosing(), bindSet.getTrueBindings()));
+                setTopSymbolTableAndVisit(node.getUpdate(), ctx);
+                setTopSymbolTableAndVisit(node.getBody(), ctx);
+                popStack(pushed);
+
+                if (bindSet.getFalseBindings().isEmpty()) {
+                    return BindSet.noBindings();
+                } else {
+                    // A pattern variable is introduced by a basic for statement iff
+                    // (i) it is introduced by the condition expression when false and
+                    // (ii) the contained statement, S, does not contain a reachable
+                    // break statement whose break target contains S (§14.15).
+                    if (hasNoBreakContainingStmt(node)) {
+                        return bindSet.getFalseBindings();
+                    } else {
+                        return BindSet.noBindings();
+                    }
+                }
+            }
+
+            private boolean hasNoBreakContainingStmt(ASTLoopStatement node) {
+                Set<JavaNode> containingStatements = node.ancestorsOrSelf()
+                                                         .filter(JavaRuleUtil::mayBeBreakTarget)
+                                                         .collect(Collectors.toSet());
+                return node.getBody()
+                           .descendants(ASTBreakStatement.class)
+                           .none(it -> containingStatements.contains(it.getTarget()));
+            }
+
+            // shadow the methods of the outer class to visit with this visitor.
+
+            @SuppressWarnings("PMD.UnusedPrivateMethod")
+            private void setTopSymbolTableAndVisitAllChildren(JavaNode node, @NonNull ReferenceCtx ctx) {
+                if (node == null) {
+                    return;
+                }
+                setTopSymbolTable(node);
+                visitChildren(node, ctx);
+            }
+
+            private void setTopSymbolTableAndVisit(JavaNode node, @NonNull ReferenceCtx ctx) {
+                if (node == null) {
+                    return;
+                }
+                setTopSymbolTable(node);
+                node.acceptVisitor(this, ctx);
+            }
         }
 
 
@@ -442,9 +711,21 @@ public final class SymbolTableResolver {
             return enclosingType.getFirst().getTypeMirror();
         }
 
-        private void setTopSymbolTableAndRecurse(JavaNode node, @NonNull ReferenceCtx ctx) {
+        // this does not visit the given node, only its children
+        private void setTopSymbolTableAndVisitAllChildren(JavaNode node, @NonNull ReferenceCtx ctx) {
+            if (node == null) {
+                return;
+            }
             setTopSymbolTable(node);
             visitChildren(node, ctx);
+        }
+
+        private void setTopSymbolTableAndVisit(JavaNode node, @NonNull ReferenceCtx ctx) {
+            if (node == null) {
+                return;
+            }
+            setTopSymbolTable(node);
+            node.acceptVisitor(this, ctx);
         }
 
         private int pushOnStack(JSymbolTable table) {
@@ -476,31 +757,15 @@ public final class SymbolTableResolver {
         // <editor-fold defaultstate="collapsed" desc="Convenience methods">
 
 
-        static NodeStream<ASTStatement> stmtsOfSwitchBlock(ASTSwitchLike node) {
-            return node.getBranches()
-                       .filterIs(ASTSwitchFallthroughBranch.class)
-                       .flatMap(ASTSwitchFallthroughBranch::getStatements);
-        }
-
-
         static NodeStream<ASTLocalVariableDeclaration> stmtsOfResources(ASTResourceList node) {
             return node.toStream().map(ASTResource::asLocalVariableDeclaration);
         }
 
 
-        static NodeStream<ASTVariableDeclaratorId> varsOfInit(ASTForStatement node) {
-            return NodeStream.of(node.getInit())
-                             .filterIs(ASTLocalVariableDeclaration.class)
-                             .flatMap(ASTLocalVariableDeclaration::getVarIds);
-        }
-
         static NodeStream<ASTVariableDeclaratorId> formalsOf(ASTLambdaExpression node) {
             return node.getParameters().toStream().map(ASTLambdaParameter::getVarId);
         }
 
-        static NodeStream<ASTVariableDeclaratorId> formalsOf(ASTMethodOrConstructorDeclaration node) {
-            return node.getFormalParameters().toStream().map(ASTFormalParameter::getVarId);
-        }
         // </editor-fold>
 
 

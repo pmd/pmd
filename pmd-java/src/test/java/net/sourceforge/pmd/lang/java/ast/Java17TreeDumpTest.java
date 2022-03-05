@@ -16,8 +16,8 @@ import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 
 public class Java17TreeDumpTest extends BaseTreeDumpTest {
     private final JavaParsingHelper java17 =
-            JavaParsingHelper.WITH_PROCESSING.withDefaultVersion("17")
-                    .withResourceContext(Java17TreeDumpTest.class, "jdkversiontests/java17/");
+            JavaParsingHelper.DEFAULT.withDefaultVersion("17")
+                                     .withResourceContext(Java17TreeDumpTest.class, "jdkversiontests/java17/");
     private final JavaParsingHelper java17p = java17.withDefaultVersion("17-preview");
     private final JavaParsingHelper java16 = java17.withDefaultVersion("16");
 
@@ -52,6 +52,12 @@ public class Java17TreeDumpTest extends BaseTreeDumpTest {
     public void nonSealedClass() {
         doTest("geometry/Square");
         java17p.parseResource("geometry/Square.java"); // make sure we can parse it with preview as well
+    }
+
+    @Test
+    public void sealedQualifiedPermitClass() {
+        doTest("SealedInnerClasses");
+        java17p.parseResource("SealedInnerClasses.java"); // make sure we can parse it with preview as well
     }
 
     @Test

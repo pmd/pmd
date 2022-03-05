@@ -8,6 +8,8 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
+import net.sourceforge.pmd.lang.java.BaseParserTest;
+
 public class ASTPackageDeclarationTest extends BaseParserTest {
 
     private static final String PACKAGE_INFO_ANNOTATED = "@Deprecated\npackage net.sourceforge.pmd.foobar;\n";

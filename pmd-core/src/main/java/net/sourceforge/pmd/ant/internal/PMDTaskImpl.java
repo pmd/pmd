@@ -4,10 +4,11 @@
 
 package net.sourceforge.pmd.ant.internal;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.StringJoiner;
 
 import org.apache.tools.ant.AntClassLoader;
 import org.apache.tools.ant.BuildException;
@@ -16,30 +17,28 @@ import org.apache.tools.ant.Project;
 import org.apache.tools.ant.types.FileSet;
 import org.apache.tools.ant.types.Path;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.event.Level;
 
-import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMDConfiguration;
-import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.PmdAnalysis;
 import net.sourceforge.pmd.RulePriority;
-import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.RuleSetLoadException;
 import net.sourceforge.pmd.RuleSetLoader;
 import net.sourceforge.pmd.ant.Formatter;
 import net.sourceforge.pmd.ant.PMDTask;
 import net.sourceforge.pmd.ant.SourceLanguage;
+import net.sourceforge.pmd.internal.Slf4jSimpleConfiguration;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
-import net.sourceforge.pmd.reporting.GlobalAnalysisListener.ViolationCounterListener;
+import net.sourceforge.pmd.reporting.ReportStats;
+import net.sourceforge.pmd.reporting.ReportStatsListener;
 import net.sourceforge.pmd.util.ClasspathClassLoader;
-import net.sourceforge.pmd.util.FileUtil;
 import net.sourceforge.pmd.util.IOUtil;
-import net.sourceforge.pmd.lang.document.TextFile;
-import net.sourceforge.pmd.lang.document.TextFileBuilder;
-import net.sourceforge.pmd.util.log.AntLogHandler;
-import net.sourceforge.pmd.util.log.ScopedLogHandlersManager;
+import net.sourceforge.pmd.util.datasource.DataSource;
 
 public class PMDTaskImpl {
 
@@ -48,7 +47,7 @@ public class PMDTaskImpl {
     private final List<Formatter> formatters = new ArrayList<>();
     private final List<FileSet> filesets = new ArrayList<>();
     private final PMDConfiguration configuration = new PMDConfiguration();
-    private final String rulesetPaths;
+    private boolean failOnError;
     private boolean failOnRuleViolation;
     private int maxRuleViolations = 0;
     private String failuresPropertyName;
@@ -59,12 +58,16 @@ public class PMDTaskImpl {
         if (task.getSuppressMarker() != null) {
             configuration.setSuppressMarker(task.getSuppressMarker());
         }
+        this.failOnError = task.isFailOnError();
         this.failOnRuleViolation = task.isFailOnRuleViolation();
         this.maxRuleViolations = task.getMaxRuleViolations();
         if (this.maxRuleViolations > 0) {
             this.failOnRuleViolation = true;
         }
-        this.rulesetPaths = task.getRulesetFiles() == null ? "" : task.getRulesetFiles();
+        if (task.getRulesetFiles() != null) {
+            configuration.setRuleSets(Arrays.asList(task.getRulesetFiles().split(",")));
+        }
+
         configuration.setRuleSetFactoryCompatibilityEnabled(!task.isNoRuleSetCompatibility());
         if (task.getEncoding() != null) {
             configuration.setSourceEncoding(task.getEncoding());
@@ -97,29 +100,49 @@ public class PMDTaskImpl {
     private void doTask() {
         setupClassLoader();
 
-        // Setup RuleSetFactory and validate RuleSets
-        RuleSetLoader rulesetLoader = RuleSetLoader.fromPmdConfig(configuration)
-                                                   .loadResourcesWith(setupResourceLoader());
-
-        List<RuleSet> rules = loadRulesets(rulesetLoader);
-
         if (configuration.getSuppressMarker() != null) {
             project.log("Setting suppress marker to be " + configuration.getSuppressMarker(), Project.MSG_VERBOSE);
         }
 
 
-        @SuppressWarnings("PMD.CloseResource")
-        ViolationCounterListener reportSizeListener = new ViolationCounterListener();
+        @SuppressWarnings("PMD.CloseResource") final List<String> reportShortNamesPaths = new ArrayList<>();
+        StringJoiner fullInputPath = new StringJoiner(",");
 
-        final List<TextFile> files = collectFiles(filesets, project, configuration.isReportShortNames());
+        List<String> ruleSetPaths = expandRuleSetPaths(configuration.getRuleSetPaths());
+        // don't let PmdAnalysis.create create rulesets itself.
+        configuration.setRuleSets(Collections.emptyList());
 
-        try (GlobalAnalysisListener listener = getListener(reportSizeListener)) {
-            PMD.processTextFiles(configuration, rules, files, listener);
-        } catch (Exception e) {
-            throw new BuildException("Exception while closing data sources", e);
+        ReportStats stats;
+        try (PmdAnalysis pmd = PmdAnalysis.create(configuration)) {
+            RuleSetLoader rulesetLoader =
+                pmd.newRuleSetLoader().loadResourcesWith(setupResourceLoader());
+            pmd.addRuleSets(rulesetLoader.loadRuleSetsWithoutException(ruleSetPaths));
+
+            for (FileSet fileset : filesets) {
+                DirectoryScanner ds = fileset.getDirectoryScanner(project);
+                for (String srcFile : ds.getIncludedFiles()) {
+                    pmd.files().addFile(ds.getBasedir().toPath().resolve(srcFile));
+                }
+
+                final String commonInputPath = ds.getBasedir().getPath();
+                fullInputPath.add(commonInputPath);
+                if (configuration.isReportShortNames()) {
+                    reportShortNamesPaths.add(commonInputPath);
+                }
+            }
+
+            @SuppressWarnings("PMD.CloseResource")
+            ReportStatsListener reportStatsListener = new ReportStatsListener();
+            pmd.addListener(getListener(reportStatsListener, reportShortNamesPaths, fullInputPath.toString()));
+
+            pmd.performAnalysis();
+            stats = reportStatsListener.getResult();
+            if (failOnError && pmd.getReporter().numErrors() > 0) {
+                throw new BuildException("Some errors occurred while running PMD");
+            }
         }
 
-        int problemCount = reportSizeListener.getResult();
+        int problemCount = stats.getNumViolations();
         project.log(problemCount + " problems found", Project.MSG_VERBOSE);
 
         if (failuresPropertyName != null && problemCount > 0) {
@@ -132,52 +155,27 @@ public class PMDTaskImpl {
         }
     }
 
-    private List<RuleSet> loadRulesets(RuleSetLoader rulesetLoader) {
-        try {
-            // This is just used to validate and display rules. Each thread will create its own ruleset
-            // Substitute env variables/properties
-            String ruleSetString = project.replaceProperties(rulesetPaths);
-
-            List<String> rulesets = Arrays.asList(ruleSetString.split(","));
-            List<RuleSet> rulesetList = rulesetLoader.loadFromResources(rulesets);
-            if (rulesetList.isEmpty()) {
-                throw new BuildException("No rulesets");
-            }
-            logRulesUsed(rulesetList);
-            return rulesetList;
-        } catch (RuleSetLoadException e) {
-            throw new BuildException(e.getMessage(), e);
+    private List<String> expandRuleSetPaths(List<String> ruleSetPaths) {
+        List<String> paths = new ArrayList<>(ruleSetPaths);
+        for (int i = 0; i < paths.size(); i++) {
+            paths.set(i, project.replaceProperties(paths.get(i)));
         }
+        return paths;
     }
 
-    private List<TextFile> collectFiles(List<FileSet> filesets, Project project, boolean reportShortNames) {
-        final List<TextFile> files = new ArrayList<>();
-        for (FileSet fs : filesets) {
-            DirectoryScanner ds = fs.getDirectoryScanner(project);
-            java.nio.file.Path baseDir = ds.getBasedir().toPath();
-
-            for (String srcFile : ds.getIncludedFiles()) {
-                java.nio.file.Path filePath = baseDir.resolve(srcFile);
-                TextFileBuilder builder = FileUtil.buildNioTextFile(configuration, filePath);
-                if (reportShortNames) {
-                    builder = builder.withDisplayName(srcFile);
-                }
-                files.add(builder.build());
-            }
-        }
-        return files;
-    }
-
-    private @NonNull GlobalAnalysisListener getListener(ViolationCounterListener reportSizeListener) {
+    private @NonNull GlobalAnalysisListener getListener(ReportStatsListener reportSizeListener,
+                                                        List<String> reportShortNamesPaths,
+                                                        String inputPaths) {
         List<GlobalAnalysisListener> renderers = new ArrayList<>(formatters.size() + 1);
         try {
-            renderers.add(makeLogListener());
+            renderers.add(makeLogListener(inputPaths));
             renderers.add(reportSizeListener);
             for (Formatter formatter : formatters) {
                 project.log("Sending a report to " + formatter, Project.MSG_VERBOSE);
-                renderers.add(formatter.newListener(project));
+                renderers.add(formatter.newListener(project, reportShortNamesPaths));
             }
-        } catch (IOException e) {
+            return GlobalAnalysisListener.tee(renderers);
+        } catch (Exception e) {
             // close those opened so far
             Exception e2 = IOUtil.closeAll(renderers);
             if (e2 != null) {
@@ -185,16 +183,15 @@ public class PMDTaskImpl {
             }
             throw new BuildException("Exception while initializing renderers", e);
         }
-
-        return GlobalAnalysisListener.tee(renderers);
     }
 
-    private GlobalAnalysisListener makeLogListener() {
+    private GlobalAnalysisListener makeLogListener(String commonInputPath) {
         return new GlobalAnalysisListener() {
 
             @Override
-            public FileAnalysisListener startFileAnalysis(TextFile dataSource) {
-                project.log("Processing file " + dataSource.getPathId(), Project.MSG_VERBOSE);
+            public FileAnalysisListener startFileAnalysis(DataSource dataSource) {
+                String name = dataSource.getNiceFileName(false, commonInputPath);
+                project.log("Processing file " + name, Project.MSG_VERBOSE);
                 return FileAnalysisListener.noop();
             }
 
@@ -230,20 +227,22 @@ public class PMDTaskImpl {
         try {
             if (auxClasspath != null) {
                 project.log("Using auxclasspath: " + auxClasspath, Project.MSG_VERBOSE);
-                configuration.prependClasspath(auxClasspath.toString());
+                configuration.prependAuxClasspath(auxClasspath.toString());
             }
-        } catch (IOException ioe) {
+        } catch (IllegalArgumentException ioe) {
             throw new BuildException(ioe.getMessage(), ioe);
         }
     }
 
     public void execute() throws BuildException {
-        final AntLogHandler antLogHandler = new AntLogHandler(project);
-        final ScopedLogHandlersManager logManager = new ScopedLogHandlersManager(antLogHandler.getAntLogLevel(), antLogHandler);
+        Level level = Slf4jSimpleConfigurationForAnt.reconfigureLoggingForAnt(project);
+        Slf4jSimpleConfiguration.installJulBridge();
+        // need to reload the logger with the new configuration
+        Logger log = LoggerFactory.getLogger(PMDTaskImpl.class);
+        log.atLevel(level).log("Logging is at {}", level);
         try {
             doTask();
         } finally {
-            logManager.close();
             // only close the classloader, if it is ours. Otherwise we end up with class not found
             // exceptions
             if (configuration.getClassLoader() instanceof ClasspathClassLoader) {
@@ -252,13 +251,4 @@ public class PMDTaskImpl {
         }
     }
 
-    private void logRulesUsed(List<RuleSet> rulesets) {
-        project.log("Using these rulesets: " + rulesetPaths, Project.MSG_VERBOSE);
-
-        for (RuleSet ruleSet : rulesets) {
-            for (Rule rule : ruleSet.getRules()) {
-                project.log("Using rule " + rule.getName(), Project.MSG_VERBOSE);
-            }
-        }
-    }
 }

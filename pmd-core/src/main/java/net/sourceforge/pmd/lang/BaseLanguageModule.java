@@ -154,7 +154,7 @@ public abstract class BaseLanguageModule implements Language {
 
     @Override
     public String toString() {
-        return "LanguageModule:" + name + '(' + this.getClass().getSimpleName() + ')';
+        return getTerseName();
     }
 
     @Override

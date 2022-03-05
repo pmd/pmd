@@ -17,6 +17,7 @@ import static net.sourceforge.pmd.lang.java.ast.BinaryOp.SUB;
 import static net.sourceforge.pmd.lang.java.ast.BinaryOp.isInfixExprWithOperator;
 
 import java.util.EnumSet;
+import java.util.Set;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -44,7 +45,7 @@ import net.sourceforge.pmd.lang.java.types.ast.ExprContext.ExprContextKind;
  */
 public class UnnecessaryCastRule extends AbstractJavaRulechainRule {
 
-    private static final EnumSet<BinaryOp> BINARY_PROMOTED_OPS =
+    private static final Set<BinaryOp> BINARY_PROMOTED_OPS =
         EnumSet.of(LE, GE, GT, LT, ADD, SUB, MUL, DIV, MOD);
 
     public UnnecessaryCastRule() {
@@ -166,11 +167,8 @@ public class UnnecessaryCastRule extends AbstractJavaRulechainRule {
             if (isInfixExprWithOperator(parent, SHIFT_OPS)) {
                 // if so, then the cast is determining the width of expr
                 // the right operand is always int
-                if (castExpr == parent.getLeftOperand()) {
-                    return !TypeOps.isStrictSubtype(operandType.unbox(), operandType.getTypeSystem().INT);
-                } else {
-                    return false;
-                }
+                return castExpr == parent.getLeftOperand()
+                        && !TypeOps.isStrictSubtype(operandType.unbox(), operandType.getTypeSystem().INT);
             } else if (isInfixExprWithOperator(parent, BINARY_PROMOTED_OPS)) {
                 ASTExpression otherOperand = JavaRuleUtil.getOtherOperandIfInInfixExpr(castExpr);
                 JTypeMirror otherType = otherOperand.getTypeMirror();

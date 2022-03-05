@@ -246,6 +246,47 @@ the breaking API changes will be performed in 7.0.0.
 an API is tagged as `@Deprecated` or not in the latest minor release. During the development of 7.0.0,
 we may decide to remove some APIs that were not tagged as deprecated, though we'll try to avoid it." %}
 
+#### 6.43.0
+
+##### Deprecated API
+
+Some API deprecations were performed in core PMD classes, to improve compatibility with PMD 7.
+- {% jdoc core::Report %}: the constructor and other construction methods like addViolation or createReport
+- {% jdoc core::RuleContext %}: all constructors, getters and setters. A new set
+of stable methods, matching those in PMD 7, was added to replace the `addViolation`
+overloads of {% jdoc core::lang.rule.AbstractRule %}. In PMD 7, `RuleContext` will
+be the API to report violations, and it can already be used as such in PMD 6.
+- The field {% jdoc core::PMD#configuration %} is unused and will be removed.
+
+##### Internal API
+
+Those APIs are not intended to be used by clients, and will be hidden or removed with PMD 7.0.0.
+You can identify them with the `@InternalApi` annotation. You'll also get a deprecation warning.
+
+- {% jdoc core::RuleSet %}: methods that serve to apply rules, including `apply`, `start`, `end`, `removeDysfunctionalRules`
+- {% jdoc !!core::renderers.AbstractAccumulatingRenderer#renderFileReport(Report) %} is internal API
+  and should not be overridden in own renderers.
+
+##### Changed API
+
+It is now forbidden to report a violation:
+- With a `null` node
+- With a `null` message
+- With a `null` set of format arguments (prefer a zero-length array)
+
+Note that the message is set from the XML rule declaration, so this is only relevant
+if you instantiate rules manually.
+
+{% jdoc core::RuleContext %} now requires setting the current rule before calling
+{% jdoc core::Rule#apply(java.util.List, core::RuleContext) %}. This is
+done automatically by `RuleSet#apply` and such. Creating and configuring a
+`RuleContext` manually is strongly advised against, as the lifecycle of `RuleContext`
+will change drastically in PMD 7.
+
+#### 6.42.0
+
+No changes.
+
 #### 6.41.0
 
 ##### Command Line Interface

@@ -15,6 +15,10 @@ import net.sourceforge.pmd.lang.document.FileLocation;
  *
  * TODO split this into violation decorators + violation suppressors.
  * There is no need to have language-specific violation classes.
+ *
+ * <p>Since PMD 6.43.0, {@link RuleContext} has been enriched with methods that should
+ * be strongly preferred to using this interface directly. The interface will change a
+ * lot in PMD 7.
  */
 public interface RuleViolationFactory {
     // todo move to package reporting

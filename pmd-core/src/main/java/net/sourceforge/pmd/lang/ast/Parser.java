@@ -8,7 +8,7 @@ import java.util.Objects;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.properties.AbstractPropertySource;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
@@ -19,9 +19,6 @@ import net.sourceforge.pmd.lang.document.TextDocument;
 /**
  * Produces an AST from a source file. Instances of this interface must
  * be stateless (which makes them trivially threadsafe).
- *
- * TODO
- *  - The reader + filename would be a TextDocument
  */
 public interface Parser {
 
@@ -47,21 +44,27 @@ public interface Parser {
 
         private final TextDocument textDoc;
         private final SemanticErrorReporter reporter;
+        private final ClassLoader auxclasspathClassLoader;
 
         private final PropertySource propertySource;
 
-        public ParserTask(TextDocument textDoc, SemanticErrorReporter reporter) {
+        public ParserTask(TextDocument textDoc, SemanticErrorReporter reporter, ClassLoader auxclasspathClassLoader) {
             this.textDoc = Objects.requireNonNull(textDoc, "Text document was null");
             this.reporter = Objects.requireNonNull(reporter, "reporter was null");
+            this.auxclasspathClassLoader = Objects.requireNonNull(auxclasspathClassLoader, "auxclasspathClassLoader was null");
 
             this.propertySource = new ParserTaskProperties();
             propertySource.definePropertyDescriptor(COMMENT_MARKER);
         }
 
+        public ParserTask(TextDocument textDoc, SemanticErrorReporter reporter) {
+            this(textDoc, reporter, Parser.class.getClassLoader());
+        }
+
         public static final PropertyDescriptor<String> COMMENT_MARKER =
             PropertyFactory.stringProperty("suppressionCommentMarker")
                            .desc("deprecated! NOPMD")
-                           .defaultValue(PMD.SUPPRESS_MARKER)
+                           .defaultValue(PMDConfiguration.DEFAULT_SUPPRESS_MARKER)
                            .build();
 
         @Deprecated // transitional until language properties are implemented
@@ -69,6 +72,10 @@ public interface Parser {
             return propertySource;
         }
 
+        @Deprecated // transitional until language properties are implemented
+        public ClassLoader getAuxclasspathClassLoader() {
+            return auxclasspathClassLoader;
+        }
 
         public LanguageVersion getLanguageVersion() {
             return textDoc.getLanguageVersion();

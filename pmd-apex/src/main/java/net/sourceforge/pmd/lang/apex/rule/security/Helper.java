@@ -64,7 +64,7 @@ public final class Helper {
 
         return reference != null && reference.getNames().size() == 1
                 && reference.getNames().get(0).equalsIgnoreCase(className)
-                && (methodName.equals(ANY_METHOD) || isMethodName(methodNode, methodName));
+                && (ANY_METHOD.equals(methodName) || isMethodName(methodNode, methodName));
     }
 
     static boolean isMethodName(final ASTMethodCallExpression m, final String methodName) {

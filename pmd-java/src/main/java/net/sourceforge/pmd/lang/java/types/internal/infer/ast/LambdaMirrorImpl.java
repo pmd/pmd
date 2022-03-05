@@ -112,11 +112,7 @@ class LambdaMirrorImpl extends BaseFunctionalMirror<ASTLambdaExpression> impleme
     @Override
     public boolean isValueCompatible() {
         ASTBlock block = myNode.getBlock();
-        if (block == null) {
-            return true;
-        } else {
-            return isLambdaBodyCompatible(block, false);
-        }
+        return block == null || isLambdaBodyCompatible(block, false);
     }
 
     @Override

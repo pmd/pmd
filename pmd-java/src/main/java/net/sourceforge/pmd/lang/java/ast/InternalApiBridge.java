@@ -140,6 +140,12 @@ public final class InternalApiBridge {
             });
     }
 
+    public static void overrideResolution(JavaAstProcessor processor, ASTCompilationUnit root) {
+        root.descendants(ASTAnyTypeDeclaration.class)
+            .crossFindBoundaries()
+            .forEach(OverrideResolutionPass::resolveOverrides);
+    }
+
     public static @Nullable JTypeMirror getTypeMirrorInternal(TypeNode node) {
         return ((AbstractJavaTypeNode) node).getTypeMirrorInternal();
     }

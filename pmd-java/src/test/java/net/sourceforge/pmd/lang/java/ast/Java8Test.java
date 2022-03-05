@@ -10,8 +10,8 @@ import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 
 public class Java8Test {
     private final JavaParsingHelper java8 =
-            JavaParsingHelper.WITH_PROCESSING.withDefaultVersion("8")
-                                             .withResourceContext(Java8Test.class);
+            JavaParsingHelper.DEFAULT.withDefaultVersion("8")
+                                     .withResourceContext(Java8Test.class);
 
     @Test
     public void interfaceMethodShouldBeParseable() {

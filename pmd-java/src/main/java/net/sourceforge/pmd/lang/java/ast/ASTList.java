@@ -63,6 +63,10 @@ public abstract class ASTList<N extends JavaNode> extends AbstractJavaNode imple
         return toStream().count();
     }
 
+    public boolean isEmpty() {
+        return toStream().isEmpty();
+    }
+
     /**
      * Returns a list containing the element of this node.
      */

@@ -43,7 +43,7 @@ public final class LanguageFactory extends LanguageServiceBase<Language> {
     public static String[] supportedLanguages;
 
     static {
-        supportedLanguages = INSTANCE.languagesByTerseName.keySet().toArray(new String[INSTANCE.languages.size()]);
+        supportedLanguages = INSTANCE.languagesByTerseName.keySet().toArray(new String[0]);
     }
 
     private LanguageFactory() {

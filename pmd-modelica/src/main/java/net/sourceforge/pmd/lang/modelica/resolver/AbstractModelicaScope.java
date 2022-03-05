@@ -16,7 +16,7 @@ import java.util.Map;
 abstract class AbstractModelicaScope implements ModelicaScope {
     private AbstractModelicaScope parent;
     private final List<ModelicaDeclaration> declarations = new ArrayList<>();
-    private final Map<String, ArrayList<ModelicaDeclaration>> declarationsByName = new HashMap<>();
+    private final Map<String, List<ModelicaDeclaration>> declarationsByName = new HashMap<>();
 
     void setParent(AbstractModelicaScope scope) {
         parent = scope;
@@ -31,7 +31,7 @@ abstract class AbstractModelicaScope implements ModelicaScope {
         String name = declaration.getSimpleDeclarationName();
         declarations.add(declaration);
         if (!declarationsByName.containsKey(name)) {
-            declarationsByName.put(name, new ArrayList<ModelicaDeclaration>());
+            declarationsByName.put(name, new ArrayList<>());
         }
         declarationsByName.get(name).add(declaration);
     }

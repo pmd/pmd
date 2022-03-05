@@ -9,22 +9,15 @@ import com.github.oowekyala.treeutils.printers.KotlintestBeanTreePrinter
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
-import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.collections.shouldContainAll
 import net.sourceforge.pmd.lang.LanguageRegistry
-import net.sourceforge.pmd.lang.ast.Node
-import net.sourceforge.pmd.lang.ast.ParseException
-import net.sourceforge.pmd.lang.ast.TokenMgrError
+import net.sourceforge.pmd.lang.ast.*
 import net.sourceforge.pmd.lang.ast.test.*
 import net.sourceforge.pmd.lang.java.JavaLanguageModule
 import net.sourceforge.pmd.lang.java.JavaParsingHelper
-import net.sourceforge.pmd.lang.java.JavaParsingHelper.TestCheckLogger
-import net.sourceforge.pmd.lang.java.JavaParsingHelper.WITH_PROCESSING
-import org.apache.commons.io.output.TeeOutputStream
+import net.sourceforge.pmd.lang.java.JavaParsingHelper.*
 import java.beans.PropertyDescriptor
-import java.io.ByteArrayOutputStream
 import java.io.PrintStream
-import java.nio.charset.StandardCharsets
 
 /**
  * Represents the different Java language versions.
@@ -43,7 +36,7 @@ enum class JavaVersion : Comparable<JavaVersion> {
 
     val pmdVersion get() = LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion(pmdName)
 
-    val parser: JavaParsingHelper = WITH_PROCESSING.withDefaultVersion(pmdName)
+    val parser: JavaParsingHelper = DEFAULT.withDefaultVersion(pmdName)
 
     operator fun not(): List<JavaVersion> = values().toList() - this
 
@@ -204,6 +197,14 @@ open class ParserTestCtx(val javaVersion: JavaVersion = JavaVersion.Latest,
         return logger
     }
 
+    /**
+     * Will throw on the first semantic error or warning.
+     * Useful because it produces a stack trace for that warning/error.
+     */
+    fun assertNoSemanticErrorsOrWarnings() {
+        parser = parser.withProcessing(true).withLogger(UnforgivingSemanticLogger.INSTANCE)
+    }
+
     /** Returns a function that can retrieve the log*/
     fun logTypeInference(verbose: Boolean = false, to: PrintStream = System.err) {
         parser = parser.withProcessing(true).logTypeInference(verbose, to)
@@ -275,4 +276,3 @@ open class ParserTestCtx(val javaVersion: JavaVersion = JavaVersion.Latest,
     }
 
 }
-

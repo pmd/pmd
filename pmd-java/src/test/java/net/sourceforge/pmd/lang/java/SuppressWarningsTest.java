@@ -17,11 +17,13 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 
 public class SuppressWarningsTest {
 
-    private final JavaParsingHelper java = JavaParsingHelper.WITH_PROCESSING;
+    private final JavaParsingHelper java = JavaParsingHelper.DEFAULT;
 
-    public static class BarRule extends AbstractJavaRule {
-        public BarRule() {
-            setMessage("fooMessage");
+    private static class BarRule extends AbstractJavaRule {
+
+        @Override
+        public String getMessage() {
+            return "a message";
         }
 
         @Override

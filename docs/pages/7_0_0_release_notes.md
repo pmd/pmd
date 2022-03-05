@@ -101,6 +101,8 @@ conversions that may be made implicit.
   properly without a property.
 * {% rule "java/design/SingularField" %}: Properties `checkInnerClasses` and `disallowNotAssignment` are removed. The rule is now more precise and will check these cases properly.
 * {% rule "java/design/UseUtilityClass" %}: The property `ignoredAnnotations` has been removed.
+* {% rule "java/design/LawOfDemeter" %}: the rule has a new property `trustRadius`. This defines the maximum degree
+  of trusted data. The default of 1 is the most restrictive.
 
 #### Deprecated Rules
 
@@ -150,11 +152,12 @@ The following previously deprecated rules have been finally removed:
 
 ### Fixed Issues
 
-*   apex-design
-    *   [#2667](https://github.com/pmd/pmd/issues/2667): \[apex] Integrate nawforce/ApexLink to build robust Unused rule
-*   core
+*   miscellaneous
+    *   [#896](https://github.com/pmd/pmd/issues/896): \[all] Use slf4j
     *   [#1451](https://github.com/pmd/pmd/issues/1451): \[core] RulesetFactoryCompatibility stores the whole ruleset file in memory as a string
 
+*   apex-design
+    *   [#2667](https://github.com/pmd/pmd/issues/2667): \[apex] Integrate nawforce/ApexLink to build robust Unused rule
 *   java-bestpractices
     * [#342](https://github.com/pmd/pmd/issues/342): \[java] AccessorMethodGeneration: Name clash with another public field not properly handled
     * [#755](https://github.com/pmd/pmd/issues/755): \[java] AccessorClassGeneration false positive for private constructors
@@ -198,11 +201,21 @@ The following previously deprecated rules have been finally removed:
     * [#3221](https://github.com/pmd/pmd/issues/3221): \[java] PrematureDeclaration false positive for unused variables
     * [#3238](https://github.com/pmd/pmd/issues/3238): \[java] Improve ExprContext, fix FNs of UnnecessaryCast
 * java-design
+    * [#1014](https://github.com/pmd/pmd/issues/1014): \[java] LawOfDemeter: False positive with lambda expression
+    * [#1605](https://github.com/pmd/pmd/issues/1605): \[java] LawOfDemeter: False positive for standard UTF-8 charset name
+    * [#2175](https://github.com/pmd/pmd/issues/2175): \[java] LawOfDemeter: False positive for chained methods with generic method call
+    * [#2179](https://github.com/pmd/pmd/issues/2179): \[java] LawOfDemeter: False positive with static property access - should treat class-level property as global object, not dot-accessed property
+    * [#2180](https://github.com/pmd/pmd/issues/2180): \[java] LawOfDemeter: False positive with Thread and ThreadLocalRandom
+    * [#2182](https://github.com/pmd/pmd/issues/2182): \[java] LawOfDemeter: False positive with package-private access
+    * [#2188](https://github.com/pmd/pmd/issues/2188): \[java] LawOfDemeter: False positive with fields assigned to local vars
     * [#2536](https://github.com/pmd/pmd/issues/2536): \[java] ClassWithOnlyPrivateConstructorsShouldBeFinal can't detect inner class
+    * [#3786](https://github.com/pmd/pmd/issues/3786): \[java] SimplifyBooleanReturns should consider operator precedence
 * java-errorprone
     * [#659](https://github.com/pmd/pmd/issues/659): \[java] MissingBreakInSwitch - last default case does not contain a break
     * [#1005](https://github.com/pmd/pmd/issues/1005): \[java] CloneMethodMustImplementCloneable triggers for interfaces
+    * [#1669](https://github.com/pmd/pmd/issues/1669): \[java] NullAssignment - FP with ternay and null as constructor argument
     * [#1899](https://github.com/pmd/pmd/issues/1899): \[java] Recognize @SuppressWanings("fallthrough") for MissingBreakInSwitch
+    * [#2320](https://github.com/pmd/pmd/issues/2320): \[java] NullAssignment - FP with ternary and null as method argument
     * [#2532](https://github.com/pmd/pmd/issues/2532): \[java] AvoidDecimalLiteralsInBigDecimalConstructor can not detect the case `new BigDecimal(Expression)`
     * [#2579](https://github.com/pmd/pmd/issues/2579): \[java] MissingBreakInSwitch detects the lack of break in the last case
     * [#2716](https://github.com/pmd/pmd/issues/2716): \[java] CompareObjectsWithEqualsRule: False positive with Enums

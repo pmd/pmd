@@ -18,12 +18,10 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.contrib.java.lang.system.RestoreSystemProperties;
+import org.junit.contrib.java.lang.system.SystemErrRule;
 import org.junit.contrib.java.lang.system.SystemOutRule;
 import org.junit.rules.TemporaryFolder;
 import org.junit.rules.TestRule;
-
-import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.junit.JavaUtilLoggingRule;
 
 public class CPDCommandLineInterfaceTest {
     private static final String SRC_DIR = "src/test/resources/net/sourceforge/pmd/cpd/files/";
@@ -33,7 +31,7 @@ public class CPDCommandLineInterfaceTest {
     @Rule
     public final SystemOutRule log = new SystemOutRule().enableLog().muteForSuccessfulTests();
     @Rule
-    public final JavaUtilLoggingRule loggingRule = new JavaUtilLoggingRule(PMD.class.getPackage().getName()).mute();
+    public final SystemErrRule systemErrRule = new SystemErrRule().muteForSuccessfulTests().enableLog();
     @Rule
     public TemporaryFolder tempDir = new TemporaryFolder();
 
@@ -60,10 +58,10 @@ public class CPDCommandLineInterfaceTest {
         CPDCommandLineInterface.main(new String[] { "--minimum-tokens", "340", "--language", "java", "--filelist",
             filelist.getAbsolutePath(), "--format", "xml", "-failOnViolation", "true" });
         Assert.assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" + "<pmd-cpd/>", log.getLog().trim());
-        assertTrue(loggingRule.getLog().contains("Some deprecated options were used on the command-line, including -failOnViolation"));
-        assertTrue(loggingRule.getLog().contains("Consider replacing it with --fail-on-violation"));
+        assertTrue(systemErrRule.getLog().contains("Some deprecated options were used on the command-line, including -failOnViolation"));
+        assertTrue(systemErrRule.getLog().contains("Consider replacing it with --fail-on-violation"));
         // only one parameter is logged
-        assertFalse(loggingRule.getLog().contains("Some deprecated options were used on the command-line, including --filelist"));
-        assertFalse(loggingRule.getLog().contains("Consider replacing it with --file-list"));
+        assertFalse(systemErrRule.getLog().contains("Some deprecated options were used on the command-line, including --filelist"));
+        assertFalse(systemErrRule.getLog().contains("Consider replacing it with --file-list"));
     }
 }

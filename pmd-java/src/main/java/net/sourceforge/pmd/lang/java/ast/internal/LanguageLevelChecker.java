@@ -20,6 +20,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTCastExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTCatchClause;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTForeachStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTGuardedPattern;
@@ -31,7 +32,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodReference;
 import net.sourceforge.pmd.lang.java.ast.ASTModuleDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTNullLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTNumericLiteral;
-import net.sourceforge.pmd.lang.java.ast.ASTPattern;
+import net.sourceforge.pmd.lang.java.ast.ASTPatternExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTReceiverParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTRecordDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTResource;
@@ -48,6 +49,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.ASTYieldStatement;
 import net.sourceforge.pmd.lang.java.ast.JModifier;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
+import net.sourceforge.pmd.lang.java.ast.JavaTokenKinds;
 import net.sourceforge.pmd.lang.java.ast.JavaVisitorBase;
 
 /**
@@ -354,7 +356,7 @@ public class LanguageLevelChecker<T> {
         String errorMessage(int jdk, boolean preview);
     }
 
-    private class CheckVisitor extends JavaVisitorBase<T, Void> {
+    private final class CheckVisitor extends JavaVisitorBase<T, Void> {
 
         @Override
         protected Void visitChildren(Node node, T data) {
@@ -558,17 +560,18 @@ public class LanguageLevelChecker<T> {
             if (IteratorUtil.count(node.iterator()) > 1) {
                 check(node, RegularLanguageFeature.COMPOSITE_CASE_LABEL, data);
             }
-            if (node.isDefault() && "case".equals(node.getFirstToken().getImage())) {
+            if (node.isDefault() && JavaTokenKinds.CASE == node.getFirstToken().getKind()) {
                 check(node, PreviewFeature.PATTERN_MATCHING_FOR_SWITCH, data);
             }
-            if (node.getFirstChild() instanceof ASTGuardedPattern) {
-                check(node, PreviewFeature.GUARDED_PATTERNS, data);
-            }
-            if (node.getFirstChild() instanceof ASTPattern) {
-                check(node, PreviewFeature.PATTERN_MATCHING_FOR_SWITCH, data);
-            }
-            if (node.getFirstChild() instanceof ASTNullLiteral) {
-                check(node, PreviewFeature.NULL_CASE_LABELS, data);
+            for (ASTExpression expr : node.getExprList()) {
+                if (expr instanceof ASTPatternExpression) {
+                    check(expr, PreviewFeature.PATTERN_MATCHING_FOR_SWITCH, data);
+                    if (((ASTPatternExpression) expr).getPattern() instanceof ASTGuardedPattern) {
+                        check(expr, PreviewFeature.GUARDED_PATTERNS, data);
+                    }
+                } else if (expr instanceof ASTNullLiteral) {
+                    check(expr, PreviewFeature.NULL_CASE_LABELS, data);
+                }
             }
             return null;
         }

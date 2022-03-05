@@ -15,15 +15,12 @@ import static org.junit.Assert.fail;
 import java.util.List;
 
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import net.sourceforge.pmd.junit.JavaUtilLoggingRule;
 import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.lang.ast.DummyRoot;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.rule.xpath.Attribute;
 
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
@@ -36,9 +33,6 @@ import junitparams.Parameters;
 public class AbstractNodeTest {
     private static final int NUM_CHILDREN = 3;
     private static final int NUM_GRAND_CHILDREN = 3;
-
-    @Rule
-    public JavaUtilLoggingRule loggingRule = new JavaUtilLoggingRule(Attribute.class.getName());
 
     // Note that in order to successfully run JUnitParams, we need to explicitly use `Integer` instead of `int`
 

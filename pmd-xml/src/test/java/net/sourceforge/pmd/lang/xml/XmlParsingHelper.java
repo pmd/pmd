@@ -14,9 +14,9 @@ import net.sourceforge.pmd.lang.xml.ast.internal.XmlParserImpl.RootXmlNode;
  */
 public final class XmlParsingHelper extends BaseParsingHelper<XmlParsingHelper, RootXmlNode> {
 
-    public static final XmlParsingHelper XML = new XmlParsingHelper(XmlLanguageModule.NAME, Params.getDefaultProcess());
-    public static final XmlParsingHelper WSDL = new XmlParsingHelper(WsdlLanguageModule.NAME, Params.getDefaultProcess());
-    public static final XmlParsingHelper POM = new XmlParsingHelper(PomLanguageModule.NAME, Params.getDefaultProcess());
+    public static final XmlParsingHelper XML = new XmlParsingHelper(XmlLanguageModule.NAME, Params.getDefault());
+    public static final XmlParsingHelper WSDL = new XmlParsingHelper(WsdlLanguageModule.NAME, Params.getDefault());
+    public static final XmlParsingHelper POM = new XmlParsingHelper(PomLanguageModule.NAME, Params.getDefault());
 
 
     private XmlParsingHelper(String langName, Params params) {

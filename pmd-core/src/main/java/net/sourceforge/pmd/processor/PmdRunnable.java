@@ -4,6 +4,12 @@
 
 package net.sourceforge.pmd.processor;
 
+import java.io.File;
+import java.io.IOException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleSets;
@@ -30,6 +36,7 @@ import net.sourceforge.pmd.lang.document.TextFile;
  */
 abstract class PmdRunnable implements Runnable {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(PmdRunnable.class);
     private final TextFile textFile;
     private final GlobalAnalysisListener globalListener;
 
@@ -38,8 +45,6 @@ abstract class PmdRunnable implements Runnable {
     @Deprecated
     private final PMDConfiguration configuration;
 
-    private final RulesetStageDependencyHelper dependencyHelper;
-
     PmdRunnable(TextFile textFile,
                 GlobalAnalysisListener globalListener,
                 PMDConfiguration configuration) {
@@ -47,7 +52,6 @@ abstract class PmdRunnable implements Runnable {
         this.globalListener = globalListener;
         this.analysisCache = configuration.getAnalysisCache();
         this.configuration = configuration;
-        this.dependencyHelper = new RulesetStageDependencyHelper(configuration);
     }
 
     /**
@@ -103,7 +107,7 @@ abstract class PmdRunnable implements Runnable {
     }
 
     private RootNode parse(Parser parser, ParserTask task) {
-        try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.PARSER)) {
+        try (TimedOperation ignored = TimeTracker.startOperation(TimedOperationCategory.PARSER)) {
             return parser.parse(task);
         }
     }
@@ -115,7 +119,8 @@ abstract class PmdRunnable implements Runnable {
 
         ParserTask task = new ParserTask(
             textDocument,
-            SemanticErrorReporter.noop() // TODO
+            SemanticErrorReporter.reportToLogger(LOGGER),
+            configuration.getClassLoader()
         );
 
 
@@ -127,8 +132,6 @@ abstract class PmdRunnable implements Runnable {
         Parser parser = handler.getParser();
 
         RootNode rootNode = parse(parser, task);
-
-        dependencyHelper.runLanguageSpecificStages(ruleSets, textDocument.getLanguageVersion(), rootNode);
 
         ruleSets.apply(rootNode, listener);
     }

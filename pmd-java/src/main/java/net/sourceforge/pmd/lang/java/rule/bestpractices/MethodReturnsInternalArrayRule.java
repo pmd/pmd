@@ -67,10 +67,8 @@ public class MethodReturnsInternalArrayRule extends AbstractJavaRulechainRule {
     }
 
     private static boolean isZeroLengthArrayConstant(JFieldSymbol sym) {
-        if (!sym.isFinal()) {
-            return false;
-        }
-        return NodeStream.of(sym.tryGetNode())
+        return sym.isFinal()
+                && NodeStream.of(sym.tryGetNode())
                          .map(ASTVariableDeclaratorId::getInitializer)
                          .filter(MethodReturnsInternalArrayRule::isZeroLengthArrayExpr)
                          .nonEmpty();

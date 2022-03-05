@@ -81,16 +81,30 @@ class ShadowChainNodeBase<S, I> implements ShadowChain<S, I>, ShadowChainNode<S,
 
     @Override
     public @NonNull List<S> resolve(String name) {
-        List<S> res = resolver.resolveHere(name);
-        handleResolverKnows(name, !res.isEmpty());
+        List<S> res = this.resolveHere(name);
         if (res.isEmpty()) {
+            // failed, continue
             return getParent().asChain().resolve(name);
-        } else if (!isShadowBarrier()) {
-            // A successful search ends on the first node that is a
-            // shadow barrier, inclusive
-            // A failed search continues regardless
-            return merger.apply(res, getParent().asChain().resolve(name));
+        } else {
+            // successful search: fetch all non-shadowed names
+            // note: we can't call ShadowChain::resolve on the parent
+            // as it would ignore the shadow barriers if the parent
+            // does not know the name.
+            ShadowChainNode<S, I> node = this;
+            while (!node.isShadowBarrier() && node.getParent() != null) {
+                // The search ends on the first node that is a
+                // shadow barrier, inclusive.
+                node = node.getParent();
+                res = merger.apply(res, node.resolveHere(name));
+            }
         }
+        return res;
+    }
+
+    @Override
+    public List<S> resolveHere(String simpleName) {
+        List<S> res = resolver.resolveHere(simpleName);
+        handleResolverKnows(simpleName, !res.isEmpty());
         return res;
     }
 

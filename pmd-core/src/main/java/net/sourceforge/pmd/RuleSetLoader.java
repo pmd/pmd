@@ -16,11 +16,16 @@ import java.util.Properties;
 
 import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.util.CollectionUtil;
 import net.sourceforge.pmd.util.ResourceLoader;
+import net.sourceforge.pmd.util.log.MessageReporter;
+import net.sourceforge.pmd.util.log.internal.NoopReporter;
 
 /**
  * Configurable object to load rulesets from XML resources.
@@ -29,12 +34,26 @@ import net.sourceforge.pmd.util.ResourceLoader;
  * or some such overload.
  */
 public final class RuleSetLoader {
+    private static final Logger LOG = LoggerFactory.getLogger(RuleSetLoader.class);
 
     private ResourceLoader resourceLoader = new ResourceLoader(RuleSetLoader.class.getClassLoader());
     private RulePriority minimumPriority = RulePriority.LOW;
     private boolean warnDeprecated = true;
     private @NonNull RuleSetFactoryCompatibility compatFilter = RuleSetFactoryCompatibility.DEFAULT;
     private boolean includeDeprecatedRuleReferences = false;
+    private MessageReporter reporter = new NoopReporter(); // non-null
+
+    /**
+     * Create a new RuleSetLoader with a default configuration.
+     * The defaults are described on each configuration method of this class.
+     */
+    public RuleSetLoader() { // NOPMD UnnecessaryConstructor
+        // default
+    }
+
+    void setReporter(MessageReporter reporter) {
+        this.reporter = reporter;
+    }
 
     /**
      * Specify that the given classloader should be used to resolve
@@ -145,7 +164,7 @@ public final class RuleSetLoader {
      *
      * @throws RuleSetLoadException If any error occurs (eg, invalid syntax)
      */
-    public RuleSet loadFromString(String filename, String rulesetXmlContent) {
+    public RuleSet loadFromString(String filename, final String rulesetXmlContent) {
         return loadFromResource(new RuleSetReferenceId(filename) {
             @Override
             public InputStream getInputStream(ResourceLoader rl) {
@@ -169,6 +188,52 @@ public final class RuleSetLoader {
             ruleSets.add(loadFromResource(path));
         }
         return ruleSets;
+    }
+
+    /**
+     * Loads a list of rulesets, if any has an error, report it on the contextual
+     * error reporter instead of aborting, and continue loading the rest.
+     *
+     * <p>Internal API: might be published later, or maybe in PMD 7 this
+     * will be the default behaviour of every method of this class.
+     */
+    @InternalApi
+    public List<RuleSet> loadRuleSetsWithoutException(List<String> rulesetPaths) {
+        List<RuleSet> ruleSets = new ArrayList<>(rulesetPaths.size());
+        boolean anyRules = false;
+        for (String path : rulesetPaths) {
+            try {
+                RuleSet ruleset = this.loadFromResource(path);
+                anyRules |= !ruleset.getRules().isEmpty();
+                printRulesInDebug(path, ruleset);
+                ruleSets.add(ruleset);
+            } catch (RuleSetLoadException e) {
+                if (e.getCause() != null) {
+                    // eg RuleSetNotFoundException
+                    reporter.errorEx("Cannot load ruleset {0}", new Object[] { path }, e.getCause());
+                } else {
+                    reporter.errorEx("Cannot load ruleset {0}", new Object[] { path }, e);
+                }
+            }
+        }
+        if (!anyRules) {
+            reporter.warn("No rules found. Maybe you misspelled a rule name? ({})",
+                          StringUtils.join(rulesetPaths, ','));
+        }
+        return ruleSets;
+    }
+
+    void printRulesInDebug(String path, RuleSet ruleset) {
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Rules loaded from {}:", path);
+            for (Rule rule : ruleset.getRules()) {
+                LOG.debug("- {} ({})", rule.getName(), rule.getLanguage().getName());
+            }
+        }
+        if (ruleset.getRules().isEmpty()) {
+            reporter.warn("No rules found in ruleset {}", path);
+        }
+
     }
 
     /**

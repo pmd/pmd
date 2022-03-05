@@ -25,10 +25,13 @@ import net.sourceforge.pmd.lang.java.types.testTypeSystem
 internal fun testProcessor(jdkVersion: JavaVersion = JavaVersion.J13, logger: TestCheckLogger = TestCheckLogger()) =
         JavaAstProcessor.create(testSymResolver, testTypeSystem, jdkVersion.pmdVersion, logger)
 
-inline fun <reified T : JVariableSymbol> JSymbolTable.shouldResolveVarTo(simpleName: String, expected: JVariableSymbol): T =
-        variables().resolveFirst(simpleName)!!.symbol.shouldBeA<T> {
-            it shouldBe expected
+inline fun <reified T : JVariableSymbol> JSymbolTable.shouldResolveVarTo(simpleName: String, expected: JVariableSymbol): T {
+        val resolved = variables().resolveFirst(simpleName)
+                ?: throw AssertionError("Unresolved variable $simpleName, expected $expected")
+        return resolved.symbol.shouldBeA<T> {
+                it shouldBe expected
         }
+}
 
 infix fun JavaNode.shouldResolveToField(fieldId: ASTVariableDeclaratorId): JFieldSymbol =
         symbolTable.shouldResolveVarTo(fieldId.name, fieldId.symbol as JFieldSymbol)

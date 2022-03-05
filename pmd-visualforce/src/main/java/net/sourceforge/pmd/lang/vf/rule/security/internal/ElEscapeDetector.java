@@ -72,7 +72,7 @@ public final class ElEscapeDetector {
      * @param escapes - The escape operations that are acceptable in this context
      * @return - True if the expression is properly escaped, otherwise false.
      */
-    public static boolean expressionRecursivelyValid(final ASTExpression expression, final EnumSet<Escaping> escapes) {
+    public static boolean expressionRecursivelyValid(final ASTExpression expression, final Set<Escaping> escapes) {
         // We'll want to iterate over all of this expression's children.
         int childCount = expression.getNumChildren();
         String prevId = "";
@@ -151,10 +151,10 @@ public final class ElEscapeDetector {
      * @param escapes - A set of acceptable escape functions (e.g., JSENCODE, HTMLENCODE, etc)
      * @return - True if the function is a viable escape.
      */
-    private static boolean functionIsEscape(String functionName, EnumSet<Escaping> escapes) {
+    private static boolean functionIsEscape(String functionName, Set<Escaping> escapes) {
         // If one of the escapes we were passed is ANY, then we should replace the provided set with one that contains
         // all possible escapes.
-        EnumSet<Escaping> handledEscapes = escapes.contains(Escaping.ANY) ? EnumSet.allOf(Escaping.class) : escapes;
+        Set<Escaping> handledEscapes = escapes.contains(Escaping.ANY) ? EnumSet.allOf(Escaping.class) : escapes;
         for (Escaping e : handledEscapes) {
             if (functionName.equalsIgnoreCase(e.toString())) {
                 return true;
@@ -310,7 +310,7 @@ public final class ElEscapeDetector {
     }
 
     public static boolean doesElContainAnyUnescapedIdentifiers(final ASTElExpression elExpression,
-                                                         EnumSet<Escaping> escapes) {
+                                                         Set<Escaping> escapes) {
         if (elExpression == null) {
             return false;
         }

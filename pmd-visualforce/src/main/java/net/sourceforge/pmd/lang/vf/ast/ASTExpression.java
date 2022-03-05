@@ -8,13 +8,15 @@ import java.util.IdentityHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.lang.ast.Node;
 
 public final class ASTExpression extends AbstractVfNode {
-    private static final Logger LOGGER = Logger.getLogger(ASTExpression.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(ASTExpression.class);
 
     ASTExpression(int id) {
         super(id);
@@ -26,11 +28,12 @@ public final class ASTExpression extends AbstractVfNode {
     }
 
     private void logWarning(String warning, Node node) {
-        LOGGER.warning(warning
-                + ". nodeClass=" + node.getClass().getSimpleName()
-                // + ", fileName=" + AbstractTokenManager.getFileName()
-                + ", beginLine=" + node.getBeginLine()
-                + ", image=" + node.getImage());
+        LOG.warn("{}. nodeClass={}, fileName={}, beginLine={}, image={}",
+                warning,
+                node.getClass().getSimpleName(),
+                node.getAstInfo().getFileName(),
+                node.getBeginLine(),
+                node.getImage());
     }
 
     /**
@@ -91,6 +94,7 @@ public final class ASTExpression extends AbstractVfNode {
         int numChildren = getNumChildren();
         List<ASTIdentifier> identifiers = findChildrenOfType(ASTIdentifier.class);
         for (ASTIdentifier identifier : identifiers) {
+            @SuppressWarnings("PMD.LooseCoupling") // see #1218 - we are calling getLast() which is LinkedList specific
             LinkedList<VfTypedNode> identifierNodes = new LinkedList<>();
 
             // The Identifier is the first item that makes up the string

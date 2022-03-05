@@ -236,10 +236,8 @@ public final class TypeConversion {
      * wildcards as type arguments. Capture variables don't count.
      */
     public static boolean isWilcardParameterized(JTypeMirror t) {
-        if (!(t instanceof JClassType)) {
-            return false;
-        }
-        return CollectionUtil.any(((JClassType) t).getTypeArgs(), it -> it instanceof JWildcardType);
+        return t instanceof JClassType
+                && CollectionUtil.any(((JClassType) t).getTypeArgs(), it -> it instanceof JWildcardType);
     }
 
 

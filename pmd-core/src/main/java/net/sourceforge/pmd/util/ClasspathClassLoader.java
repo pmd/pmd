@@ -14,12 +14,13 @@ import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.internal.util.AssertionUtil;
 
 /**
  * Create a ClassLoader which loads classes using a CLASSPATH like String. If
@@ -33,7 +34,7 @@ import net.sourceforge.pmd.annotation.InternalApi;
 @Deprecated
 public class ClasspathClassLoader extends URLClassLoader {
 
-    private static final Logger LOG = Logger.getLogger(ClasspathClassLoader.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(ClasspathClassLoader.class);
 
     static {
         registerAsParallelCapable();
@@ -57,17 +58,19 @@ public class ClasspathClassLoader extends URLClassLoader {
         return urlList.toArray(new URL[0]);
     }
 
-    private static URL[] initURLs(String classpath) throws IOException {
-        if (classpath == null) {
-            throw new IllegalArgumentException("classpath argument cannot be null");
-        }
+    private static URL[] initURLs(String classpath) {
+        AssertionUtil.requireParamNotNull("classpath", classpath);
         final List<URL> urls = new ArrayList<>();
-        if (classpath.startsWith("file:")) {
-            // Treat as file URL
-            addFileURLs(urls, new URL(classpath));
-        } else {
-            // Treat as classpath
-            addClasspathURLs(urls, classpath);
+        try {
+            if (classpath.startsWith("file:")) {
+                // Treat as file URL
+                addFileURLs(urls, new URL(classpath));
+            } else {
+                // Treat as classpath
+                addClasspathURLs(urls, classpath);
+            }
+        } catch (IOException e) {
+            throw new IllegalArgumentException("Cannot prepend classpath " + classpath + "\n" + e.getMessage(), e);
         }
         return urls.toArray(new URL[0]);
     }
@@ -76,7 +79,7 @@ public class ClasspathClassLoader extends URLClassLoader {
         StringTokenizer toker = new StringTokenizer(classpath, File.pathSeparator);
         while (toker.hasMoreTokens()) {
             String token = toker.nextToken();
-            LOG.log(Level.FINE, "Adding classpath entry: <{0}>", token);
+            LOG.debug("Adding classpath entry: <{}>", token);
             urls.add(createURLFromPath(token));
         }
     }
@@ -85,10 +88,10 @@ public class ClasspathClassLoader extends URLClassLoader {
         try (BufferedReader in = new BufferedReader(new InputStreamReader(fileURL.openStream()))) {
             String line;
             while ((line = in.readLine()) != null) {
-                LOG.log(Level.FINE, "Read classpath entry line: <{0}>", line);
+                LOG.debug("Read classpath entry line: <{}>", line);
                 line = line.trim();
                 if (line.length() > 0 && line.charAt(0) != '#') {
-                    LOG.log(Level.FINE, "Adding classpath entry: <{0}>", line);
+                    LOG.debug("Adding classpath entry: <{}>", line);
                     urls.add(createURLFromPath(line));
                 }
             }

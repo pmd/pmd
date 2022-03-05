@@ -56,7 +56,7 @@ public class FileAnalysisCache extends AbstractAnalysisCache {
      * @param cacheFile The file which backs the file analysis cache.
      */
     private void loadFromFile(final File cacheFile) {
-        try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.ANALYSIS_CACHE, "load")) {
+        try (TimedOperation ignored = TimeTracker.startOperation(TimedOperationCategory.ANALYSIS_CACHE, "load")) {
             if (cacheExists()) {
                 try (
                     DataInputStream inputStream = new DataInputStream(
@@ -91,21 +91,21 @@ public class FileAnalysisCache extends AbstractAnalysisCache {
                         LOG.info("Analysis cache invalidated, PMD version changed.");
                     }
                 } catch (final EOFException e) {
-                    LOG.warning("Cache file " + cacheFile.getPath() + " is malformed, will not be used for current analysis");
+                    LOG.warn("Cache file {} is malformed, will not be used for current analysis", cacheFile.getPath());
                 } catch (final IOException e) {
-                    LOG.severe("Could not load analysis cache from file. " + e.getMessage());
+                    LOG.error("Could not load analysis cache from file: {}", e.getMessage());
                 }
             } else if (cacheFile.isDirectory()) {
-                LOG.severe("The configured cache location must be the path to a file, but is a directory.");
+                LOG.error("The configured cache location must be the path to a file, but is a directory.");
             }
         }
     }
 
     @Override
     public void persist() {
-        try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.ANALYSIS_CACHE, "persist")) {
+        try (TimedOperation ignored = TimeTracker.startOperation(TimedOperationCategory.ANALYSIS_CACHE, "persist")) {
             if (cacheFile.isDirectory()) {
-                LOG.severe("Cannot persist the cache, the given path points to a directory.");
+                LOG.error("Cannot persist the cache, the given path points to a directory.");
                 return;
             }
 
@@ -146,14 +146,9 @@ public class FileAnalysisCache extends AbstractAnalysisCache {
                     LOG.info("Analysis cache updated");
                 }
             } catch (final IOException e) {
-                LOG.severe("Could not persist analysis cache to file. " + e.getMessage());
+                LOG.error("Could not persist analysis cache to file: {}", e.getMessage());
             }
         }
-    }
-
-    @Override
-    public void close() throws Exception {
-         // nothing to do, PMD calls persist explicitly
     }
 
     @Override

@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.symbols.internal.asm;
 
 import java.net.URL;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -30,7 +31,7 @@ public class AsmSymbolResolver implements SymbolResolver {
     private final Classpath classLoader;
     private final SignatureParser typeLoader;
 
-    private final ConcurrentHashMap<String, SoftClassReference> knownStubs = new ConcurrentHashMap<>();
+    private final ConcurrentMap<String, SoftClassReference> knownStubs = new ConcurrentHashMap<>();
 
     /**
      * Sentinel for when we fail finding a URL. This allows using a single map,
@@ -124,6 +125,7 @@ public class AsmSymbolResolver implements SymbolResolver {
         knownStubs.put(internalName, softRef);
     }
 
+    @SuppressWarnings("PMD.CompareObjectsWithEquals") // SoftClassReference
     @NonNull JClassSymbol resolveFromInternalNameCannotFail(@NonNull String internalName, int observedArity) {
         return knownStubs.compute(internalName, (iname, prev) -> {
             if (prev != failed && prev != null) {

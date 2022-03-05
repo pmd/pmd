@@ -82,7 +82,7 @@ public class ApexSharingViolationsNestedClassTest extends ApexParserTestBase {
     public void testSharingPermutation() {
         String apexClass = generateClass(outerSharingDeclared, outerOperation, innerSharingDeclared, innerOperation);
         ApexSharingViolationsRule rule = new ApexSharingViolationsRule();
-        rule.setMessage("gotcha!");
+        rule.setMessage("a message");
         Report rpt = apex.executeRule(rule, apexClass);
         List<RuleViolation> violations = rpt.getViolations();
         assertEquals("Unexpected Violation Size\n" + apexClass, expectedViolations, violations.size());

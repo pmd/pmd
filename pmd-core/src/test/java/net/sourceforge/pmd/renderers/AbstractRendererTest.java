@@ -19,6 +19,7 @@ import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Report.ConfigurationError;
 import net.sourceforge.pmd.Report.ProcessingError;
 import net.sourceforge.pmd.ReportTest;
+import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.RuleWithProperties;
@@ -67,29 +68,47 @@ public abstract class AbstractRendererTest {
     }
 
     protected Consumer<FileAnalysisListener> reportOneViolation() {
-        return it -> it.onRuleViolation(newRuleViolation(1));
+        return it -> it.onRuleViolation(newRuleViolation(1, 1, 1, 1, createFooRule()));
     }
 
     private Consumer<FileAnalysisListener> reportTwoViolations() {
         return it -> {
-            RuleViolation informationalRuleViolation = newRuleViolation(1);
-            informationalRuleViolation.getRule().setPriority(RulePriority.LOW);
+            RuleViolation informationalRuleViolation = newRuleViolation(1, 1, 1, 1, createFooRule());
             it.onRuleViolation(informationalRuleViolation);
-            RuleViolation severeRuleViolation = newRuleViolation(2);
-            severeRuleViolation.getRule().setPriority(RulePriority.HIGH);
+            RuleViolation severeRuleViolation = newRuleViolation(1, 1, 1, 2, createBooRule());
             it.onRuleViolation(severeRuleViolation);
         };
     }
 
-    protected RuleViolation newRuleViolation(int endColumn) {
-        return newRuleViolation(endColumn, "Foo");
+    protected DummyNode createNode(int beginLine, int beginColumn, int endLine, int endColumn) {
+        DummyNode node = new DummyRoot().withFileName(getSourceCodeFilename());
+        node.setCoords(beginLine, beginColumn, endLine, endColumn);
+        return node;
     }
 
-    protected RuleViolation newRuleViolation(int endColumn, String ruleName) {
-        DummyNode node = createNode(endColumn);
-        FooRule rule = new FooRule();
-        rule.setName(ruleName);
+    protected RuleViolation newRuleViolation(int beginLine, int beginColumn, int endLine, int endColumn, Rule rule) {
+        DummyNode node = createNode(beginLine, beginColumn, endLine, endColumn);
         return new ParametricRuleViolation(rule, node, "blah");
+    }
+
+    /**
+     * Creates a new rule instance with name "Boo" and priority {@link RulePriority#HIGH}.
+     */
+    protected Rule createBooRule() {
+        Rule booRule = new FooRule();
+        booRule.setName("Boo");
+        booRule.setPriority(RulePriority.HIGH);
+        return booRule;
+    }
+
+    /**
+     * Creates a new rule instance with name "Foo" and priority {@link RulePriority#LOW}.
+     */
+    protected Rule createFooRule() {
+        Rule fooRule = new FooRule();
+        fooRule.setName("Foo");
+        fooRule.setPriority(RulePriority.LOW);
+        return fooRule;
     }
 
     /**
@@ -103,19 +122,14 @@ public abstract class AbstractRendererTest {
         }
     }
 
-    protected DummyNode createNode(int endColumn) {
-        DummyNode node = new DummyRoot().withFileName(getSourceCodeFilename());
-        node.setCoords(1, 1, 1, endColumn);
-        return node;
-    }
-
     @Test
     public void testRuleWithProperties() throws Exception {
-        DummyNode node = createNode(1);
+        DummyNode node = createNode(1, 1, 1, 1);
         RuleWithProperties theRule = new RuleWithProperties();
         theRule.setProperty(RuleWithProperties.STRING_PROPERTY_DESCRIPTOR,
                 "the string value\nsecond line with \"quotes\"");
-        String rendered = ReportTest.render(getRenderer(), it -> it.onRuleViolation(new ParametricRuleViolation(theRule, node, "blah")));
+        String rendered = ReportTest.render(getRenderer(),
+                it -> it.onRuleViolation(new ParametricRuleViolation(theRule, node, "blah")));
         assertEquals(filter(getExpectedWithProperties()), filter(rendered));
     }
 
