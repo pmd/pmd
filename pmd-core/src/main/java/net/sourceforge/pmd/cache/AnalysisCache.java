@@ -68,6 +68,8 @@ public interface AnalysisCache {
 
     /**
      * Returns a listener that will be used like in {@link GlobalAnalysisListener#startFileAnalysis(DataSource)}.
+     * This should record violations, and call {@link #analysisFailed(File)}
+     * upon error.
      */
     FileAnalysisListener startFileAnalysis(DataSource file);
 

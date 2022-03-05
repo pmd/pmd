@@ -81,8 +81,8 @@ public final class PMD {
         }
         ReportStats stats = listener.getResult();
 
-        if (stats.getNumViolations() > 0) {
-            printErrorDetected(stats.getNumViolations());
+        if (stats.getNumErrors() > 0) {
+            printErrorDetected(stats.getNumErrors());
         }
 
         return stats;
@@ -176,7 +176,10 @@ public final class PMD {
             log = LoggerFactory.getLogger(PMD.class);
         }
         // create a top-level reporter
-        PmdLogger pmdLogger = new SimplePmdLogger(log);
+        // TODO CLI errors should also be reported through this
+        // TODO this should not use the logger as backend, otherwise without
+        //  slf4j implementation binding, errors are entirely ignored.
+        PmdLogger pmdReporter = new SimplePmdLogger(log);
         // always install java.util.logging to slf4j bridge
         Slf4jSimpleConfiguration.installJulBridge();
         // logging, mostly for testing purposes
@@ -186,15 +189,15 @@ public final class PMD {
         try {
             PmdAnalysis pmd;
             try {
-                pmd = PmdAnalysis.create(configuration, pmdLogger);
+                pmd = PmdAnalysis.create(configuration, pmdReporter);
             } catch (Exception e) {
-                pmdLogger.errorEx("Could not initialize analysis", e);
+                pmdReporter.errorEx("Could not initialize analysis", e);
                 return StatusCode.ERROR;
             }
             try {
                 ReportStats stats;
                 stats = PMD.runAndReturnStats(pmd);
-                if (pmdLogger.numErrors() > 0) {
+                if (pmdReporter.numErrors() > 0) {
                     // processing errors are ignored
                     return StatusCode.ERROR;
                 } else if (stats.getNumViolations() > 0 && configuration.isFailOnViolation()) {
@@ -207,7 +210,7 @@ public final class PMD {
             }
 
         } catch (Exception e) {
-            pmdLogger.errorEx("Exception while running PMD.", e);
+            pmdReporter.errorEx("Exception while running PMD.", e);
             printErrorDetected(1);
             return StatusCode.ERROR;
         } finally {
