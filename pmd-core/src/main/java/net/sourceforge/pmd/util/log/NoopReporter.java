@@ -12,7 +12,7 @@ import net.sourceforge.pmd.annotation.InternalApi;
  * @author Clément Fournier
  */
 @InternalApi
-public final class NoopPmdLogger extends PmdLoggerBase implements PmdLogger {
+public final class NoopReporter extends MessageReporterBase implements MessageReporter {
 
     // note: not singleton because PmdLogger accumulates error count.
 

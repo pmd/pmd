@@ -6,16 +6,16 @@ package net.sourceforge.pmd.lang.document;
 
 import java.util.logging.Logger;
 
-import net.sourceforge.pmd.util.log.SimplePmdLogger;
+import net.sourceforge.pmd.util.log.SimpleMessageReporter;
 
 /**
  * @author Clément Fournier
  */
-public class PmdTestLogger extends SimplePmdLogger {
+public class TestMessageReporter extends SimpleMessageReporter {
 
     private static final Logger LOG = Logger.getLogger("testlogger");
 
-    public PmdTestLogger() {
+    public TestMessageReporter() {
         super(LOG);
         setLevel(null);
     }

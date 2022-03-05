@@ -16,7 +16,7 @@ import net.sourceforge.pmd.util.StringUtil;
  *
  * @author Clément Fournier
  */
-abstract class PmdLoggerBase implements PmdLogger {
+abstract class MessageReporterBase implements MessageReporter {
 
     private int numErrors;
     private Level minLevel = Level.TRACE;
@@ -74,11 +74,6 @@ abstract class PmdLoggerBase implements PmdLogger {
     @Override
     public void trace(String message, Object... formatArgs) {
         log(Level.TRACE, message, formatArgs);
-    }
-
-    @Override
-    public void debug(String message, Object... formatArgs) {
-        log(Level.DEBUG, message, formatArgs);
     }
 
     @Override

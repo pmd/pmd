@@ -23,8 +23,8 @@ import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.util.CollectionUtil;
 import net.sourceforge.pmd.util.ResourceLoader;
-import net.sourceforge.pmd.util.log.NoopPmdLogger;
-import net.sourceforge.pmd.util.log.PmdLogger;
+import net.sourceforge.pmd.util.log.MessageReporter;
+import net.sourceforge.pmd.util.log.NoopReporter;
 
 /**
  * Configurable object to load rulesets from XML resources.
@@ -41,7 +41,7 @@ public final class RuleSetLoader {
     private boolean warnDeprecated = true;
     private boolean enableCompatibility = true;
     private boolean includeDeprecatedRuleReferences = false;
-    private PmdLogger reporter = new NoopPmdLogger(); // non-null
+    private MessageReporter reporter = new NoopReporter(); // non-null
 
     /**
      * Create a new RuleSetLoader with a default configuration.
@@ -51,7 +51,7 @@ public final class RuleSetLoader {
         // default
     }
 
-    void setReporter(PmdLogger reporter) {
+    void setReporter(MessageReporter reporter) {
         this.reporter = reporter;
     }
 

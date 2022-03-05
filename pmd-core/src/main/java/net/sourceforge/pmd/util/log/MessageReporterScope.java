@@ -13,12 +13,12 @@ import net.sourceforge.pmd.annotation.InternalApi;
  * @author Clément Fournier
  */
 @InternalApi
-public final class PmdLoggerScope extends PmdLoggerBase {
+public final class MessageReporterScope extends MessageReporterBase {
 
-    private final PmdLogger backend;
+    private final MessageReporter backend;
     private final String scopePrefix;
 
-    public PmdLoggerScope(String scopeName, PmdLogger backend) {
+    public MessageReporterScope(String scopeName, MessageReporter backend) {
         this.backend = backend;
         this.scopePrefix = "[" + scopeName + "] ";
     }

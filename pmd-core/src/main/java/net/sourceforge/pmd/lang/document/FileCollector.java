@@ -35,7 +35,7 @@ import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
 import net.sourceforge.pmd.util.IOUtil;
-import net.sourceforge.pmd.util.log.PmdLogger;
+import net.sourceforge.pmd.util.log.MessageReporter;
 
 /**
  * Collects files to analyse before a PMD run. This API allows opening
@@ -50,15 +50,15 @@ public final class FileCollector implements AutoCloseable {
     private final List<Closeable> resourcesToClose = new ArrayList<>();
     private Charset charset = StandardCharsets.UTF_8;
     private final LanguageVersionDiscoverer discoverer;
-    private final PmdLogger log;
+    private final MessageReporter reporter;
     private final List<String> relativizeRoots = new ArrayList<>();
     private boolean closed;
 
     // construction
 
-    private FileCollector(LanguageVersionDiscoverer discoverer, PmdLogger logger) {
+    private FileCollector(LanguageVersionDiscoverer discoverer, MessageReporter reporter) {
         this.discoverer = discoverer;
-        this.log = logger;
+        this.reporter = reporter;
     }
 
     /**
@@ -66,8 +66,8 @@ public final class FileCollector implements AutoCloseable {
      * creating a collector yourself.
      */
     @InternalApi
-    public static FileCollector newCollector(LanguageVersionDiscoverer discoverer, PmdLogger logger) {
-        return new FileCollector(discoverer, logger);
+    public static FileCollector newCollector(LanguageVersionDiscoverer discoverer, MessageReporter reporter) {
+        return new FileCollector(discoverer, reporter);
     }
 
     // public behaviour
@@ -93,10 +93,11 @@ public final class FileCollector implements AutoCloseable {
 
 
     /**
-     * Returns the logger for the file collection phase.
+     * Returns the reporter for the file collection phase.
      */
-    public PmdLogger getLog() {
-        return log;
+    @InternalApi
+    public MessageReporter getReporter() {
+        return reporter;
     }
 
     /**
@@ -110,7 +111,7 @@ public final class FileCollector implements AutoCloseable {
         closed = true;
         IOException exception = IOUtil.closeAll(resourcesToClose);
         if (exception != null) {
-            log.errorEx("Error while closing resources", exception);
+            reporter.errorEx("Error while closing resources", exception);
         }
     }
 
@@ -127,7 +128,7 @@ public final class FileCollector implements AutoCloseable {
      */
     public boolean addFile(Path file) {
         if (!Files.isRegularFile(file)) {
-            log.error("Not a regular file {0}", file);
+            reporter.error("Not a regular file {0}", file);
             return false;
         }
         LanguageVersion languageVersion = discoverLanguage(file.toString());
@@ -151,7 +152,7 @@ public final class FileCollector implements AutoCloseable {
     public boolean addFile(Path file, Language language) {
         AssertionUtil.requireParamNotNull("language", language);
         if (!Files.isRegularFile(file)) {
-            log.error("Not a regular file {0}", file);
+            reporter.error("Not a regular file {0}", file);
             return false;
         }
         NioTextFile nioTextFile = new NioTextFile(file, charset, discoverer.getDefaultLanguageVersion(language), getDisplayName(file));
@@ -195,7 +196,7 @@ public final class FileCollector implements AutoCloseable {
     }
 
     private void addFileImpl(TextFile textFile) {
-        log.trace("Adding file {0} (lang: {1}) ", textFile.getPathId(), textFile.getLanguageVersion().getTerseName());
+        reporter.trace("Adding file {0} (lang: {1}) ", textFile.getPathId(), textFile.getLanguageVersion().getTerseName());
         allFilesToProcess.add(textFile);
     }
 
@@ -206,12 +207,12 @@ public final class FileCollector implements AutoCloseable {
         List<Language> languages = discoverer.getLanguagesForFile(file);
 
         if (languages.isEmpty()) {
-            log.trace("File {0} matches no known language, ignoring", file);
+            reporter.trace("File {0} matches no known language, ignoring", file);
             return null;
         }
         Language lang = languages.get(0);
         if (languages.size() > 1) {
-            log.trace("File {0} matches multiple languages ({1}), selecting {2}", file, languages, lang);
+            reporter.trace("File {0} matches multiple languages ({1}), selecting {2}", file, languages, lang);
         }
         return discoverer.getDefaultLanguageVersion(lang);
     }
@@ -226,7 +227,7 @@ public final class FileCollector implements AutoCloseable {
         Language language = fileVersion.getLanguage();
         LanguageVersion contextVersion = discoverer.getDefaultLanguageVersion(language);
         if (!fileVersion.equals(contextVersion)) {
-            log.error(
+            reporter.error(
                 "Cannot add file {0}: version ''{2}'' does not match ''{1}''",
                 textFile.getPathId(),
                 contextVersion,
@@ -270,7 +271,7 @@ public final class FileCollector implements AutoCloseable {
      */
     public boolean addDirectory(Path dir) throws IOException {
         if (!Files.isDirectory(dir)) {
-            log.error("Not a directory {0}", dir);
+            reporter.error("Not a directory {0}", dir);
             return false;
         }
         Files.walkFileTree(dir, new SimpleFileVisitor<Path>() {
@@ -298,7 +299,7 @@ public final class FileCollector implements AutoCloseable {
         } else if (Files.isRegularFile(file)) {
             return addFile(file);
         } else {
-            log.error("Not a file or directory {0}", file);
+            reporter.error("Not a file or directory {0}", file);
             return false;
         }
     }
@@ -319,7 +320,7 @@ public final class FileCollector implements AutoCloseable {
             resourcesToClose.add(fs);
             return fs;
         } catch (FileSystemNotFoundException | ProviderNotFoundException e) {
-            log.errorEx("Cannot open zip file " + zipFile, e);
+            reporter.errorEx("Cannot open zip file " + zipFile, e);
             return null;
         }
     }
@@ -361,7 +362,7 @@ public final class FileCollector implements AutoCloseable {
         for (Iterator<TextFile> iterator = allFilesToProcess.iterator(); iterator.hasNext();) {
             TextFile file = iterator.next();
             if (toExclude.contains(file)) {
-                log.trace("Excluding file {0}", file.getPathId());
+                reporter.trace("Excluding file {0}", file.getPathId());
                 iterator.remove();
             }
         }
@@ -376,7 +377,7 @@ public final class FileCollector implements AutoCloseable {
             TextFile file = iterator.next();
             Language lang = file.getLanguageVersion().getLanguage();
             if (!languages.contains(lang)) {
-                log.trace("Filtering out {0}, no rules for language {1}", file.getPathId(), lang);
+                reporter.trace("Filtering out {0}, no rules for language {1}", file.getPathId(), lang);
                 iterator.remove();
             }
         }

@@ -30,9 +30,9 @@ import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.util.ClasspathClassLoader;
 import net.sourceforge.pmd.util.IOUtil;
 import net.sourceforge.pmd.util.datasource.DataSource;
-import net.sourceforge.pmd.util.log.PmdLogger;
-import net.sourceforge.pmd.util.log.PmdLogger.Level;
-import net.sourceforge.pmd.util.log.SimplePmdLogger;
+import net.sourceforge.pmd.util.log.MessageReporter;
+import net.sourceforge.pmd.util.log.MessageReporter.Level;
+import net.sourceforge.pmd.util.log.SimpleMessageReporter;
 
 /**
  * Main programmatic API of PMD. Create and configure a {@link PMDConfiguration},
@@ -70,7 +70,7 @@ public final class PmdAnalysis implements AutoCloseable {
     private final List<Renderer> renderers = new ArrayList<>();
     private final List<RuleSet> ruleSets = new ArrayList<>();
     private final PMDConfiguration configuration;
-    private final SimplePmdLogger reporter = new SimplePmdLogger(Logger.getLogger("net.sourceforge.pmd"));
+    private final SimpleMessageReporter reporter = new SimpleMessageReporter(Logger.getLogger("net.sourceforge.pmd"));
 
     private boolean closed;
 
@@ -216,7 +216,7 @@ public final class PmdAnalysis implements AutoCloseable {
      * and finish the registered renderers. All files collected in the
      * {@linkplain #files() file collector} are processed. This does not
      * return a report, for compatibility with PMD 7. Note that this does
-     * not throw, errors are instead accumulated into a {@link PmdLogger}.
+     * not throw, errors are instead accumulated into a {@link MessageReporter}.
      */
     public void performAnalysis() {
         performAnalysisAndCollectReport();
@@ -227,7 +227,7 @@ public final class PmdAnalysis implements AutoCloseable {
      * and finish the registered renderers. All files collected in the
      * {@linkplain #files() file collector} are processed. Returns the
      * output report. Note that this does not throw, errors are instead
-     * accumulated into a {@link PmdLogger}.
+     * accumulated into a {@link MessageReporter}.
      */
     // TODO PMD 7 @DeprecatedUntil700
     public Report performAnalysisAndCollectReport() {
@@ -306,7 +306,7 @@ public final class PmdAnalysis implements AutoCloseable {
                                               : new MonoThreadProcessor(configuration);
     }
 
-    public PmdLogger getLog() {
+    public MessageReporter getReporter() {
         return reporter;
     }
 

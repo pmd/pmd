@@ -50,7 +50,7 @@ import net.sourceforge.pmd.util.database.SourceObject;
 import net.sourceforge.pmd.util.datasource.DataSource;
 import net.sourceforge.pmd.util.datasource.ReaderDataSource;
 import net.sourceforge.pmd.util.log.ScopedLogHandlersManager;
-import net.sourceforge.pmd.util.log.SimplePmdLogger;
+import net.sourceforge.pmd.util.log.SimpleMessageReporter;
 
 /**
  * Entry point for PMD's CLI. Use {@link #runPmd(PMDConfiguration)}
@@ -244,7 +244,7 @@ public class PMD {
     public static int doPMD(PMDConfiguration configuration) {
         try (PmdAnalysis pmd = PmdAnalysis.create(configuration)) {
             if (pmd.getRulesets().isEmpty()) {
-                return pmd.getLog().numErrors() > 0 ? -1 : 0;
+                return pmd.getReporter().numErrors() > 0 ? -1 : 0;
             }
             try {
                 Report report = pmd.performAnalysisAndCollectReport();
@@ -255,7 +255,7 @@ public class PMD {
 
                 return report.getViolations().size();
             } catch (Exception e) {
-                pmd.getLog().errorEx("Exception during processing", e);
+                pmd.getReporter().errorEx("Exception during processing", e);
                 printErrorDetected(1);
                 return -1;
             }
@@ -401,7 +401,7 @@ public class PMD {
     public static List<DataSource> getApplicableFiles(PMDConfiguration configuration, Set<Language> languages) {
         try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.COLLECT_FILES)) {
             @SuppressWarnings("PMD.CloseResource") // if we close the collector, data sources become invalid
-            FileCollector collector = FileCollectionUtil.collectFiles(configuration, languages, new SimplePmdLogger(LOG));
+            FileCollector collector = FileCollectionUtil.collectFiles(configuration, languages, new SimpleMessageReporter(LOG));
             return FileCollectionUtil.collectorToDataSource(collector);
         }
     }

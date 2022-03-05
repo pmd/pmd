@@ -15,11 +15,11 @@ import net.sourceforge.pmd.annotation.InternalApi;
  * @author Clément Fournier
  */
 @InternalApi
-public class SimplePmdLogger extends PmdLoggerBase implements PmdLogger {
+public class SimpleMessageReporter extends MessageReporterBase implements MessageReporter {
 
     private final Logger backend;
 
-    public SimplePmdLogger(Logger backend) {
+    public SimpleMessageReporter(Logger backend) {
         this.backend = backend;
     }
 

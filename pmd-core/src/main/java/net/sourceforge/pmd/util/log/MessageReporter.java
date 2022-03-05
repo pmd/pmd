@@ -4,16 +4,22 @@
 
 package net.sourceforge.pmd.util.log;
 
+import java.text.MessageFormat;
+
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.internal.util.AssertionUtil;
 
 /**
- * Logger façade. Can probably be converted to just SLF4J logger in PMD 7.
+ * Façade to report user-facing messages (info, warning and error).
+ * Note: messages are formatted using {@link MessageFormat}.
+ *
+ * <p>Internal API: this is a transitional API that will be significantly
+ * changed in PMD 7, with the transition to SLF4J. See https://github.com/pmd/pmd/issues/3816
  *
  * @author Clément Fournier
  */
 @InternalApi
-public interface PmdLogger {
+public interface MessageReporter {
 
     boolean isLoggable(Level level);
 
@@ -23,11 +29,14 @@ public interface PmdLogger {
 
     void info(String message, Object... formatArgs);
 
+    /**
+     * @deprecated Trace messages should be reported on a Logger instance.
+     * This is kept because it's simpler to port calls to this method to
+     * SLF4J in PMD 7 than to do the same if these calls were calls to a
+     * java.util.logging.Logger in PMD 6.
+     */
     @Deprecated
     void trace(String message, Object... formatArgs);
-
-    @Deprecated
-    void debug(String message, Object... formatArgs);
 
     void warn(String message, Object... formatArgs);
 
