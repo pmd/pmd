@@ -44,9 +44,10 @@ public final class RuleSetLoader {
 
     /**
      * Create a new RuleSetLoader with a default configuration.
+     * The defaults are described on each configuration method of this class.
      */
-    public RuleSetLoader() {
-
+    public RuleSetLoader() { // NOPMD UnnecessaryConstructor
+        // default
     }
 
     void setReporter(PmdLogger reporter) {

@@ -6,6 +6,7 @@ package net.sourceforge.pmd;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -101,28 +102,26 @@ public final class PmdAnalysis implements AutoCloseable {
      * </ul>
      */
     public static PmdAnalysis create(PMDConfiguration config) {
-        PmdAnalysis builder = new PmdAnalysis(config);
+        PmdAnalysis pmd = new PmdAnalysis(config);
 
         // note: do not filter files by language
         // they could be ignored later. The problem is if you call
         // addRuleSet later, then you could be enabling new languages
         // So the files should not be pruned in advance
-        FileCollectionUtil.collectFiles(config, builder.files());
+        FileCollectionUtil.collectFiles(config, pmd.files());
 
         if (config.getReportFormat() != null) {
             Renderer renderer = config.createRenderer();
             renderer.setReportFile(config.getReportFile());
-            builder.addRenderer(renderer);
+            pmd.addRenderer(renderer);
         }
 
         if (!config.getRuleSetPaths().isEmpty()) {
-            final RuleSetLoader ruleSetLoader = builder.newRuleSetLoader();
+            final RuleSetLoader ruleSetLoader = pmd.newRuleSetLoader();
             final List<RuleSet> ruleSets = ruleSetLoader.loadRuleSetsWithoutException(config.getRuleSetPaths());
-            for (RuleSet ruleSet : ruleSets) {
-                builder.addRuleSet(ruleSet);
-            }
+            pmd.addRuleSets(ruleSets);
         }
-        return builder;
+        return pmd;
     }
 
     @InternalApi
@@ -181,6 +180,17 @@ public final class PmdAnalysis implements AutoCloseable {
      */
     public void addRuleSet(RuleSet ruleSet) {
         this.ruleSets.add(Objects.requireNonNull(ruleSet));
+    }
+
+    /**
+     * Add several rulesets at once.
+     *
+     * @throws NullPointerException If the parameter is null, or any of its items is null.
+     */
+    public void addRuleSets(Collection<RuleSet> ruleSets) {
+        for (RuleSet rs : ruleSets) {
+            this.ruleSets.add(Objects.requireNonNull(rs));
+        }
     }
 
     public List<RuleSet> getRulesets() {
