@@ -39,6 +39,12 @@ public interface PmdLogger {
 
     void errorEx(String message, Object[] formatArgs, Throwable error);
 
+    /**
+     * Returns the number of errors reported on this instance.
+     * Any call to {@link #log(Level, String, Object...)} or
+     * {@link #logEx(Level, String, Object[], Throwable)} with a level
+     * of {@link Level#ERROR} should increment this number.
+     */
     int numErrors();
 
     // levels, in sync with SLF4J levels

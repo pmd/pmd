@@ -215,7 +215,8 @@ public final class PmdAnalysis implements AutoCloseable {
      * Run PMD with the current state of this instance. This will start
      * and finish the registered renderers. All files collected in the
      * {@linkplain #files() file collector} are processed. This does not
-     * return a report, for compatibility with PMD 7.
+     * return a report, for compatibility with PMD 7. Note that this does
+     * not throw, errors are instead accumulated into a {@link PmdLogger}.
      */
     public void performAnalysis() {
         performAnalysisAndCollectReport();
@@ -225,7 +226,8 @@ public final class PmdAnalysis implements AutoCloseable {
      * Run PMD with the current state of this instance. This will start
      * and finish the registered renderers. All files collected in the
      * {@linkplain #files() file collector} are processed. Returns the
-     * output report.
+     * output report. Note that this does not throw, errors are instead
+     * accumulated into a {@link PmdLogger}.
      */
     // TODO PMD 7 @DeprecatedUntil700
     public Report performAnalysisAndCollectReport() {
