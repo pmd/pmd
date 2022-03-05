@@ -7,9 +7,9 @@ package net.sourceforge.pmd.lang.ast.impl.javacc;
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.impl.AbstractNode;
-import net.sourceforge.pmd.util.document.Chars;
-import net.sourceforge.pmd.util.document.FileLocation;
-import net.sourceforge.pmd.util.document.TextRegion;
+import net.sourceforge.pmd.lang.document.Chars;
+import net.sourceforge.pmd.lang.document.FileLocation;
+import net.sourceforge.pmd.lang.document.TextRegion;
 
 /**
  * Base class for node produced by JJTree. JJTree specific functionality
@@ -38,6 +38,7 @@ public abstract class AbstractJjtreeNode<B extends AbstractJjtreeNode<B, N>, N e
     }
 
     @Override
+    // @Deprecated // todo deprecate, will change tree dump tests
     public String getImage() {
         return image;
     }

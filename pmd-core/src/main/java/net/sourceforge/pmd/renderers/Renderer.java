@@ -18,11 +18,11 @@ import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.benchmark.TimedOperation;
 import net.sourceforge.pmd.benchmark.TimedOperationCategory;
+import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertySource;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
-import net.sourceforge.pmd.util.document.TextFile;
 
 /**
  * This is an interface for rendering a Report. When a Renderer is being
@@ -186,7 +186,7 @@ public interface Renderer extends PropertySource {
     //  when the file is done. Many renderers could directly handle
     //  violations as they come though.
     default GlobalAnalysisListener newListener() throws IOException {
-        try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.REPORTING)) {
+        try (TimedOperation ignored = TimeTracker.startOperation(TimedOperationCategory.REPORTING)) {
             this.start();
         }
 
@@ -230,7 +230,7 @@ public interface Renderer extends PropertySource {
                         reportBuilder.close();
                         synchronized (reportMergeLock) {
                             // TODO renderFileReport should be thread-safe instead
-                            try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.REPORTING)) {
+                            try (TimedOperation ignored = TimeTracker.startOperation(TimedOperationCategory.REPORTING)) {
                                 renderer.renderFileReport(reportBuilder.getResult());
                             }
                         }
@@ -247,7 +247,7 @@ public interface Renderer extends PropertySource {
             public void close() throws Exception {
                 configErrorReport.close();
                 Renderer.this.renderFileReport(configErrorReport.getResult());
-                try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.REPORTING)) {
+                try (TimedOperation ignored = TimeTracker.startOperation(TimedOperationCategory.REPORTING)) {
                     end();
                     flush();
                 }

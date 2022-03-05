@@ -15,10 +15,10 @@ import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import net.sourceforge.pmd.PMDVersion;
+import net.sourceforge.pmd.cli.internal.CliMessages;
 
 public class BinaryDistributionIT extends AbstractBinaryDistributionTest {
 
@@ -69,14 +69,13 @@ public class BinaryDistributionIT extends AbstractBinaryDistributionTest {
     }
 
     @Test
-    @Ignore("Java rules have not been updated yet")
     public void runPMD() throws Exception {
         String srcDir = new File(".", "src/test/resources/sample-source/java/").getAbsolutePath();
 
         ExecutionResult result;
 
         result = PMDExecutor.runPMD(tempDir); // without any argument, display usage help and error
-        result.assertExecutionResult(1, SUPPORTED_LANGUAGES_PMD);
+        result.assertExecutionResultErrOutput(1, CliMessages.runWithHelpFlagMessage());
 
         result = PMDExecutor.runPMD(tempDir, "-h");
         result.assertExecutionResult(0, SUPPORTED_LANGUAGES_PMD);
@@ -94,13 +93,40 @@ public class BinaryDistributionIT extends AbstractBinaryDistributionTest {
     }
 
     @Test
+    public void logging() throws Exception {
+        String srcDir = new File(".", "src/test/resources/sample-source/java/").getAbsolutePath();
+
+        ExecutionResult result;
+
+        result = PMDExecutor.runPMD(tempDir, "-d", srcDir, "-R", "src/test/resources/rulesets/sample-ruleset.xml",
+                "-r", folder.newFile().toString());
+        result.assertExecutionResult(4);
+        result.assertErrorOutputContains("[main] INFO net.sourceforge.pmd.PMD - Log level is at INFO");
+
+
+        // now with debug
+        result = PMDExecutor.runPMD(tempDir, "-d", srcDir, "-R", "src/test/resources/rulesets/sample-ruleset.xml",
+                "-r", folder.newFile().toString(), "--debug");
+        result.assertExecutionResult(4);
+        result.assertErrorOutputContains("[main] INFO net.sourceforge.pmd.PMD - Log level is at TRACE");
+    }
+
+    @Test
+    public void runPMDWithError() throws Exception {
+        String srcDir = new File(".", "src/test/resources/sample-source/unparsable/").getAbsolutePath();
+
+        ExecutionResult result = PMDExecutor.runPMDRules(folder.newFile().toPath(), tempDir, srcDir, "src/test/resources/rulesets/sample-ruleset.xml");
+        result.assertExecutionResultErrOutput(0, "Run with --debug to see a stack-trace.");
+    }
+
+    @Test
     public void runCPD() throws Exception {
         String srcDir = new File(".", "src/test/resources/sample-source-cpd/").getAbsolutePath();
 
         ExecutionResult result;
 
         result = CpdExecutor.runCpd(tempDir); // without any argument, display usage help and error
-        result.assertExecutionResult(1, SUPPORTED_LANGUAGES_CPD);
+        result.assertExecutionResultErrOutput(1, CliMessages.runWithHelpFlagMessage());
 
         result = CpdExecutor.runCpd(tempDir, "-h");
         result.assertExecutionResult(0, SUPPORTED_LANGUAGES_CPD);

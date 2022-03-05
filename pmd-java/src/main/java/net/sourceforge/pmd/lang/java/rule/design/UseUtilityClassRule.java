@@ -98,10 +98,8 @@ public class UseUtilityClassRule extends AbstractJavaRulechainRule {
     }
 
     private static boolean isAccessToVarWithName(JavaNode node, String name) {
-        if (node instanceof ASTNamedReferenceExpr) {
-            return ((ASTNamedReferenceExpr) node).getName().equals(name);
-        }
-        return false;
+        return node instanceof ASTNamedReferenceExpr
+                && ((ASTNamedReferenceExpr) node).getName().equals(name);
     }
 
 }

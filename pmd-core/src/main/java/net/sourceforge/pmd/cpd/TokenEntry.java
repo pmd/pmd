@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import net.sourceforge.pmd.annotation.InternalApi;
-import net.sourceforge.pmd.util.document.FileLocation;
+import net.sourceforge.pmd.lang.document.FileLocation;
 
 public class TokenEntry implements Comparable<TokenEntry> {
 

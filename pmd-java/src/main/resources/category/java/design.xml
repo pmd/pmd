@@ -57,10 +57,10 @@ Avoid catching generic exceptions such as NullPointerException, RuntimeException
             <property name="xpath">
                 <value>
 <![CDATA[
-//CatchStatement/FormalParameter/Type/ReferenceType/ClassOrInterfaceType[
-    @Image='NullPointerException' or
-    @Image='Exception' or
-    @Image='RuntimeException']
+//CatchParameter//ClassOrInterfaceType[
+    pmd-java:typeIsExactly('java.lang.NullPointerException') or
+    pmd-java:typeIsExactly('java.lang.Exception') or
+    pmd-java:typeIsExactly('java.lang.RuntimeException')]
 ]]>
                 </value>
             </property>
@@ -163,15 +163,11 @@ code size and runtime complexity.
             <property name="xpath">
                 <value>
 <![CDATA[
-//CatchStatement[
-  count(Block/BlockStatement/Statement) = 1
-  and
-  FormalParameter/Type/ReferenceType/ClassOrInterfaceType/@Image = Block/BlockStatement/Statement/ThrowStatement/Expression/PrimaryExpression/PrimaryPrefix/AllocationExpression/ClassOrInterfaceType/@Image
-  and
-  count(Block/BlockStatement/Statement/ThrowStatement/Expression/PrimaryExpression/PrimaryPrefix/AllocationExpression/Arguments/ArgumentList/Expression) = 1
-  and
-  FormalParameter/VariableDeclaratorId = Block/BlockStatement/Statement/ThrowStatement/Expression/PrimaryExpression/PrimaryPrefix/AllocationExpression/Arguments/ArgumentList/Expression/PrimaryExpression/PrimaryPrefix/Name
-  ]
+//CatchClause
+    [count(Block/*) = 1]
+    [CatchParameter/ClassOrInterfaceType/@SimpleName = Block/ThrowStatement/ConstructorCall/ClassOrInterfaceType/@SimpleName]
+    [Block/ThrowStatement/ConstructorCall/ArgumentList/@Size = 1]
+    /Block/ThrowStatement/ConstructorCall
 ]]>
                 </value>
             </property>
@@ -254,7 +250,7 @@ Exception, or Error, use a subclassed exception or error instead.
             <property name="xpath">
                 <value>
 <![CDATA[
-//ThrowStatement//AllocationExpression
+//ThrowStatement//ConstructorCall
  /ClassOrInterfaceType[
  pmd-java:typeIsExactly('java.lang.Throwable')
 or
@@ -787,7 +783,9 @@ in each object at runtime.
     [pmd-java:modifiers() = 'final']
     [not(pmd-java:modifiers() = 'static')]
     [not(.//Annotation[pmd-java:typeIs('lombok.Builder.Default')])]
-    /VariableDeclarator[NumericLiteral or StringLiteral or CharLiteral or BooleanLiteral or NullLiteral]
+    /VariableDeclarator[*[pmd-java:nodeIs('Literal')]
+         or VariableAccess[@Name = //FieldDeclaration[pmd-java:modifiers() = 'static']/VariableDeclarator/VariableDeclaratorId/@Name]
+         or FieldAccess]
     /VariableDeclaratorId
 ]]>
                 </value>
@@ -870,12 +868,45 @@ public class Foo {
     <rule name="LawOfDemeter"
           language="java"
           since="5.0"
-          message="Potential violation of Law of Demeter"
+          message="Potential violation of the law of Demeter ({0})"
           class="net.sourceforge.pmd.lang.java.rule.design.LawOfDemeterRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#lawofdemeter">
         <description>
-The Law of Demeter is a simple rule, that says "only talk to friends". It helps to reduce coupling between classes
-or objects.
+The law of Demeter is a simple rule that says "only talk to friends". It forbids
+fetching data from "too far away", for some definition of distance, in order to
+reduce coupling between classes or objects of different levels of abstraction.
+
+The rule uses a notion of "degree", that quantifies how "far" an object is.
+Expressions with too high degree can only be used in certain ways. The degree of
+an expression is defined inductively:
+- The degree of `this` is 0
+- The degree of a method parameter is 1
+- The degree of a new object created in a method is 1
+- The degree of a static variable is 1
+- The degree of a field access expression like `expr.field` is the degree of `expr` plus 1
+- The degree of a "getter expression" like `expr.getFoo()` is the degree of `expr` plus 1
+- The degree of a "transformation expression" like `expr.withFoo("")` is the degree of `expr`
+- The degree of a variable is the maximum degree of all the assignments that reach it
+
+Intuitively, the more you call getters, the more the degree increases. Eventually
+the degree reaches the report threshold (property `trustRadius`) and the expression
+is reported. The details of the calculation are more involved and make room for common
+patterns, like usage of collections (objects that are in a list or array have the
+same degree as their container), the builder pattern, and getters that do not appear
+to break a boundary of abstraction.
+
+Be aware that this rule is prone to many false-positives and low-priority warnings.
+You can increase the `trustRadius` property to reduce them drastically. The default
+`trustRadius` of 1 corresponds to the original law of Demeter (you're only allowed
+one getter call on untrusted values). Given some `trustRadius` value:
+- expressions of degree lower or equal to `trustRadius` are not reported
+- expressions of degree exactly `trustRadius + 1` are reported, unless they are only returned
+from the current method, or passed as argument to another method. Without this exception it
+would not be possible to extract any information from e.g. method parameters.
+- values of degree strictly greater than `trustRadius + 1` are not reported. The
+intuition is that to obtain a value of degree `n > 1` then you must use an expression
+of degree `n - 1`, so if you have `n > trustRadius + 1`, there you're using some value
+of degree `trustRadius + 1` that will be reported.
 
 See also the references:
 
@@ -889,26 +920,23 @@ See also the references:
 <![CDATA[
 public class Foo {
     /**
-     * This example will result in two violations.
+     * This example will result in one violation.
      */
-    public void example(Bar b) {
-        // this method call is ok, as b is a parameter of "example"
-        C c = b.getC();
-
-        // this method call is a violation, as we are using c, which we got from B.
-        // We should ask b directly instead, e.g. "b.doItOnC();"
-        c.doIt();
-
-        // this is also a violation, just expressed differently as a method chain without temporary variables.
+    public void example(Bar b) { // b has degree 1
+        // `b.getC()` has degree 2, it's breaking a boundary of abstraction and so is reported.
         b.getC().doIt();
+        // To respect the law of Demeter, Bar should encapsulate its
+        // C member more properly, eg by exposing a method like this:
+        b.callDoItOnC();
 
         // a constructor call, not a method call.
         D d = new D();
-        // this method call is ok, because we have create the new instance of D locally.
+        // this method call is ok, because we have create the new
+        // instance of D locally.
         d.doSomethingElse();
     }
 }
-]]>
+            ]]>
         </example>
     </rule>
 
@@ -1183,7 +1211,7 @@ public class Bar {
     <rule name="SimplifyBooleanReturns"
           language="java"
           since="0.9"
-          message="Avoid unnecessary if..then..else statements when returning booleans"
+          message="This if statement can be replaced by `{0}`"
           class="net.sourceforge.pmd.lang.java.rule.design.SimplifyBooleanReturnsRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#simplifybooleanreturns">
         <description>
@@ -1300,7 +1328,7 @@ public class Foo {
           language="java"
           since="3.0"
           message="Too many fields"
-          class="net.sourceforge.pmd.lang.java.rule.design.TooManyFieldsRule"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#toomanyfields">
         <description>
 Classes that have too many fields can become unwieldy and could be redesigned to have fewer fields,
@@ -1308,6 +1336,20 @@ possibly through grouping related fields in new objects.  For example, a class w
 city/state/zip fields could park them within a single Address field.
         </description>
         <priority>3</priority>
+        <properties>
+            <property name="maxfields" type="Integer" description="Max allowable fields" min="1" max="1000" value="15"/>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//ClassOrInterfaceDeclaration/ClassOrInterfaceBody
+  [count(FieldDeclaration
+            [not(pmd-java:modifiers() = 'final')]
+            [not(pmd-java:modifiers() = 'static')]
+        ) > $maxfields]
+]]>
+                </value>
+            </property>
+        </properties>
         <example>
 <![CDATA[
 public class Person {   // too many separate fields
@@ -1341,30 +1383,10 @@ complexity and find a way to have more fine grained objects.
             <property name="maxmethods" type="Integer" description="The method count reporting threshold" min="1" max="1000" value="10"/>
             <property name="xpath">
                 <value>
-                    <!--  FIXME: Refine XPath to discard 'get' and 'set' methods with Block no more than 3 lines,
-                                something like this:
-                                    not (
-                                            (
-                                                starts-with(@Name,'get')
-                                                or
-                                                starts-with(@Name,'set')
-                                                or
-                                                starts-with(@Name,'is')
-                                            )
-                                            and (
-                                                    (
-                                                        (../Block/attribute::endLine)
-                                                         -
-                                                        (../Block/attribute::beginLine)
-                                                    ) <= 3
-                                            )
-                                        )
-                                This will avoid discarding 'real' methods...
-                     -->
 <![CDATA[
  //ClassOrInterfaceDeclaration/ClassOrInterfaceBody
      [
-      count(./ClassOrInterfaceBodyDeclaration/MethodDeclaration[
+      count(MethodDeclaration[
          not (
                 starts-with(@Name,'get')
                 or
@@ -1427,9 +1449,8 @@ your API.
             <property name="xpath">
                 <value>
 <![CDATA[
-//MethodDeclaration[@Public=true()]/MethodDeclarator/FormalParameters[
-     count(FormalParameter/Type/ReferenceType/ClassOrInterfaceType[@Image = 'String' and @Array=false()]) > 3
-]
+//MethodDeclaration[pmd-java:modifiers() = 'public']
+    [count(FormalParameters/FormalParameter[pmd-java:typeIs('java.lang.String')]) > 3]
 ]]>
                 </value>
             </property>

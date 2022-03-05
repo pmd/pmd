@@ -35,7 +35,7 @@ public class LanguageVersion implements Comparable<LanguageVersion> {
 
     private final Language language;
     private final String version;
-    private final LanguageVersionHandler languageVersionHandler;
+    private final LanguageVersionHandler languageVersionHandler; // note: this is null if this is a cpd-only language...
 
     /**
      * @deprecated Use {@link Language#getVersion(String)}. This is only

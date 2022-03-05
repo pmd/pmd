@@ -5,8 +5,8 @@
 package net.sourceforge.pmd.cpd;
 
 import net.sourceforge.pmd.lang.ast.impl.javacc.io.BackslashEscapeTranslator;
-import net.sourceforge.pmd.util.document.Chars;
-import net.sourceforge.pmd.util.document.TextDocument;
+import net.sourceforge.pmd.lang.document.Chars;
+import net.sourceforge.pmd.lang.document.TextDocument;
 
 public class CppEscapeTranslator extends BackslashEscapeTranslator {
 

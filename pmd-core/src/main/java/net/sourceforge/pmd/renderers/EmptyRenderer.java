@@ -7,7 +7,7 @@ package net.sourceforge.pmd.renderers;
 import java.io.IOException;
 
 import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.util.document.TextFile;
+import net.sourceforge.pmd.lang.document.TextFile;
 
 /**
  * An empty renderer, for when you really don't want a report.

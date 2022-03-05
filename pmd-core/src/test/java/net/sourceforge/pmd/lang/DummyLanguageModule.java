@@ -8,13 +8,12 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.lang.ast.DummyAstStages;
 import net.sourceforge.pmd.lang.ast.DummyRoot;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.Parser;
+import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 import net.sourceforge.pmd.lang.rule.impl.DefaultRuleViolationFactory;
-import net.sourceforge.pmd.util.document.FileLocation;
 
 /**
  * Dummy language used for testing PMD.
@@ -39,9 +38,6 @@ public class DummyLanguageModule extends BaseLanguageModule {
     }
 
     public static class Handler extends AbstractPmdLanguageVersionHandler {
-        public Handler() {
-            super(DummyAstStages.class);
-        }
 
         @Override
         public RuleViolationFactory getRuleViolationFactory() {

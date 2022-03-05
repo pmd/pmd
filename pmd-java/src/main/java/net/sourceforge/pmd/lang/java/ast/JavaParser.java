@@ -10,6 +10,7 @@ import net.sourceforge.pmd.lang.ast.impl.javacc.CharStream;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument.TokenDocumentBehavior;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JjtreeParserAdapter;
 import net.sourceforge.pmd.lang.java.ast.internal.LanguageLevelChecker;
+import net.sourceforge.pmd.lang.java.internal.JavaAstProcessor;
 
 /**
  * Adapter for the JavaParser, using the specified grammar version.
@@ -20,15 +21,17 @@ import net.sourceforge.pmd.lang.java.ast.internal.LanguageLevelChecker;
 public class JavaParser extends JjtreeParserAdapter<ASTCompilationUnit> {
 
     private final LanguageLevelChecker<?> checker;
+    private final boolean postProcess;
 
-    public JavaParser(LanguageLevelChecker<?> checker) {
+    public JavaParser(LanguageLevelChecker<?> checker, boolean postProcess) {
         this.checker = checker;
+        this.postProcess = postProcess;
     }
 
 
     @Override
     protected TokenDocumentBehavior tokenBehavior() {
-        return JavaTokenDocument.INSTANCE;
+        return JavaTokenDocumentBehavior.INSTANCE;
     }
 
     @Override
@@ -38,9 +41,17 @@ public class JavaParser extends JjtreeParserAdapter<ASTCompilationUnit> {
         parser.setJdkVersion(checker.getJdkVersion());
         parser.setPreview(checker.isPreviewEnabled());
 
-        ASTCompilationUnit acu = parser.CompilationUnit();
-        acu.setAstInfo(new AstInfo<>(task, acu, parser.getSuppressMap()));
-        checker.check(acu);
-        return acu;
+        ASTCompilationUnit root = parser.CompilationUnit();
+        root.setAstInfo(new AstInfo<>(task, root, parser.getSuppressMap()));
+        checker.check(root);
+
+        if (postProcess) {
+            JavaAstProcessor processor = JavaAstProcessor.create(task.getAuxclasspathClassLoader(),
+                                                                 task.getLanguageVersion(),
+                                                                 task.getReporter());
+            processor.process(root);
+        }
+
+        return root;
     }
 }

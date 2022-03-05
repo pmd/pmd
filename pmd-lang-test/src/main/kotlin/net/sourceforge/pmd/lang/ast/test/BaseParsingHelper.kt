@@ -11,8 +11,8 @@ import net.sourceforge.pmd.lang.LanguageVersionHandler
 import net.sourceforge.pmd.lang.ast.*
 import net.sourceforge.pmd.processor.AbstractPMDProcessor
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener
-import net.sourceforge.pmd.util.document.TextDocument
-import net.sourceforge.pmd.util.document.TextFile
+import net.sourceforge.pmd.lang.document.TextDocument
+import net.sourceforge.pmd.lang.document.TextFile
 import org.apache.commons.io.IOUtils
 import java.io.InputStream
 import java.nio.charset.StandardCharsets
@@ -39,10 +39,7 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
         companion object {
 
             @JvmStatic
-            val defaultNoProcess = Params(false, null, null, "")
-
-            @JvmStatic
-            val defaultProcess = Params(true, null, null, "")
+            val default = Params(true, null, null, "")
 
         }
     }
@@ -76,8 +73,8 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
     protected abstract fun clone(params: Params): Self
 
     @JvmOverloads
-    fun withProcessing(boolean: Boolean = true): Self =
-            clone(params.copy(doProcess = boolean))
+    fun withProcessing(doProcess: Boolean = true): Self =
+            clone(params.copy(doProcess = doProcess))
 
     /**
      * Returns an instance of [Self] for which all parsing methods
@@ -125,42 +122,18 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
     ): T {
         val lversion = if (version == null) defaultVersion else getVersion(version)
         val handler = lversion.languageVersionHandler
-        val parser = handler.parser
         val textDoc = TextDocument.readOnlyString(sourceCode, fileName, lversion)
         val task = Parser.ParserTask(textDoc, SemanticErrorReporter.noop())
         task.properties.also {
             handler.declareParserTaskProperties(it)
             it.setProperty(Parser.ParserTask.COMMENT_MARKER, params.suppressMarker)
         }
-        val rootNode = rootClass.cast(parser.parse(task))
-        if (params.doProcess) {
-            postProcessing(handler, lversion, rootNode)
-        }
-        return rootNode
+        return doParse(params, task)
     }
 
-    /**
-     * Select the processing stages that this should run in [postProcessing],
-     * by default runs everything.
-     */
-    protected open fun selectProcessingStages(handler: LanguageVersionHandler): List<AstProcessingStage<*>> =
-            handler.processingStages
-
-    /**
-     * Called only if [Params.doProcess] is true.
-     */
-    protected open fun postProcessing(handler: LanguageVersionHandler, lversion: LanguageVersion, rootNode: T) {
-        val astAnalysisContext = object : AstAnalysisContext {
-            override fun getTypeResolutionClassLoader(): ClassLoader = javaClass.classLoader
-
-            override fun getLanguageVersion(): LanguageVersion = lversion
-        }
-
-        val stages = selectProcessingStages(handler).sortedWith { o1, o2 -> o1.compare(o2) }
-
-        stages.forEach {
-            it.processAST(rootNode, astAnalysisContext)
-        }
+    protected open fun doParse(params: Params, task: Parser.ParserTask): T {
+        val parser = task.languageVersion.languageVersionHandler.parser
+        return rootClass.cast(parser.parse(task))
     }
 
     /**
@@ -252,5 +225,12 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
     }
 
     fun executeRuleOnResource(rule: Rule, resourcePath: String): Report =
-            executeRule(rule, readResource(resourcePath))
+        executeRule(rule, code = readResource(resourcePath))
+
+    fun executeRuleOnFile(rule: Rule, path: Path): Report =
+        executeRule(
+            rule,
+            code = Files.newBufferedReader(path).readText(),
+            fileName = path.toString()
+        )
 }

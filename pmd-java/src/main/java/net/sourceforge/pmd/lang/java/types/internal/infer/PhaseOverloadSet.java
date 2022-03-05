@@ -243,11 +243,8 @@ final class PhaseOverloadSet extends OverloadSet<MethodCtDecl> {
 
         JTypeMirror rs = sfun.getReturnType();
         JTypeMirror rt = tfun.getReturnType();
-        if (TypeOps.mentionsAny(rs, sparams) && !ctx.isGround(rt)) {
-            return false;
-        }
-
-        return addGenericExprConstraintsRecursive(ctx, ei, rs, rt, tToS, site);
+        return (!TypeOps.mentionsAny(rs, sparams) || ctx.isGround(rt))
+            && addGenericExprConstraintsRecursive(ctx, ei, rs, rt, tToS, site);
     }
 
     private boolean addGenericExprConstraintsRecursive(InferenceContext ctx, ExprMirror ei, JTypeMirror rs, JTypeMirror rt, Substitution tToS, MethodCallSite site) {

@@ -9,10 +9,11 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.logging.Logger;
 
 import org.apache.commons.lang3.exception.ContextedRuntimeException;
 import org.apache.commons.lang3.tuple.Pair;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
@@ -22,8 +23,8 @@ import net.sourceforge.pmd.lang.ast.Parser;
 import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
 import net.sourceforge.pmd.lang.ast.SemanticErrorReporter;
 import net.sourceforge.pmd.lang.vf.DataType;
-import net.sourceforge.pmd.util.document.TextDocument;
-import net.sourceforge.pmd.util.document.TextFile;
+import net.sourceforge.pmd.lang.document.TextDocument;
+import net.sourceforge.pmd.lang.document.TextFile;
 
 import apex.jorje.semantic.symbol.type.BasicType;
 
@@ -32,7 +33,7 @@ import apex.jorje.semantic.symbol.type.BasicType;
  * property.
  */
 class ApexClassPropertyTypes extends SalesforceFieldTypes {
-    private static final Logger LOGGER = Logger.getLogger(ApexClassPropertyTypes.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(ApexClassPropertyTypes.class);
     private static final String APEX_CLASS_FILE_SUFFIX = ".cls";
 
     /**
@@ -71,7 +72,7 @@ class ApexClassPropertyTypes extends SalesforceFieldTypes {
              TextDocument textDocument = TextDocument.create(file)) {
 
             Parser parser = languageVersion.getLanguageVersionHandler().getParser();
-            ParserTask task = new ParserTask(textDocument, SemanticErrorReporter.noop());
+            ParserTask task = new ParserTask(textDocument, SemanticErrorReporter.noop(), auxclasspathClassLoader);
             languageVersion.getLanguageVersionHandler().declareParserTaskProperties(task.getProperties());
 
             return parser.parse(task);
@@ -99,12 +100,8 @@ class ApexClassPropertyTypes extends SalesforceFieldTypes {
             // but we will allow a false positive in order to let the user know that the code could be refactored to be
             // more clear.
             super.putDataType(name, DataType.Unknown);
-            LOGGER.warning("Conflicting types for "
-                    + name
-                    + ". CurrentType="
-                    + dataType
-                    + ", PreviousType="
-                    + previousType);
+            LOG.warn("Conflicting types for {}. CurrentType={}, PreviousType={}",
+                    name, dataType, previousType);
         }
         return previousType;
     }

@@ -99,13 +99,13 @@ public class CyclomaticComplexityRule extends AbstractJavaRulechainRule {
     @Override
     public final Object visit(ASTMethodDeclaration node, Object data) {
         visitMethodLike(node, data);
-        return super.visit(node, data);
+        return data;
     }
 
     @Override
     public final Object visit(ASTConstructorDeclaration node, Object data) {
         visitMethodLike(node, data);
-        return super.visit(node, data);
+        return data;
     }
 
     private void visitMethodLike(ASTMethodOrConstructorDeclaration node, Object data) {

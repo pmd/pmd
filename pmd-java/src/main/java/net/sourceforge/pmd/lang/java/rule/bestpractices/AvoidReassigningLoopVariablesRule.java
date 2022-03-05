@@ -91,9 +91,9 @@ public class AvoidReassigningLoopVariablesRule extends AbstractJavaRulechainRule
         if (behavior == ForReassignOption.ALLOW) {
             return data;
         }
-        ASTForUpdate update = loopStmt.getFirstChildOfType(ASTForUpdate.class);
         NodeStream<ASTVariableDeclaratorId> loopVars = JavaRuleUtil.getLoopVariables(loopStmt);
         if (behavior == ForReassignOption.DENY) {
+            ASTForUpdate update = loopStmt.firstChild(ASTForUpdate.class);
             for (ASTVariableDeclaratorId loopVar : loopVars) {
                 for (ASTNamedReferenceExpr usage : loopVar.getLocalUsages()) {
                     if (usage.getAccessType() == AccessType.WRITE) {

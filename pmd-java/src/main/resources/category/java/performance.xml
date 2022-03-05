@@ -812,13 +812,22 @@ threadsafe StringBuffer is recommended to avoid this.
         <example>
 <![CDATA[
 public class Foo {
-    void bar() {
-        String a;
-        a = "foo";
-        a += " bar";
-        // better would be:
-        // StringBuilder a = new StringBuilder("foo");
-        // a.append(" bar");
+    String inefficientConcatenation() {
+        String result = "";
+        for (int i = 0; i < 10; i++) {
+            // warning: this concatenation will create one new StringBuilder per iteration
+            result += getStringFromSomeWhere(i);
+        }
+        return result;
+    }
+
+    String efficientConcatenation() {
+        // better would be to use one StringBuilder for the entire loop
+        StringBuilder result = new StringBuilder();
+        for (int i = 0; i < 10; i++) {
+            result.append(getStringFromSomeWhere(i));
+        }
+        return result.toString();
     }
 }
 ]]>
@@ -838,10 +847,16 @@ or StringBuffer.toString().length() == ...
         <priority>3</priority>
         <properties>
             <property name="xpath">
-                <value>
-                    //MethodCall[pmd-java:matchesSig('_#length()')
-                                 and MethodCall[pmd-java:matchesSig('java.lang.CharSequence#toString()')]]
-                </value>
+                <value><![CDATA[
+//MethodCall[pmd-java:matchesSig('_#length()')
+    and MethodCall[pmd-java:matchesSig('java.lang.CharSequence#toString()')]]
+|
+(: finds sb.toString().equals(someVar) where var is a final variable initialized with literal "" :)
+//MethodCall[pmd-java:matchesSig('_#equals(_)')
+  and MethodCall[pmd-java:matchesSig('java.lang.AbstractStringBuilder#toString()')]
+  and ArgumentList/VariableAccess[@Name = //VariableDeclarator[StringLiteral[@Image='""']]
+                                            /VariableDeclaratorId[pmd-java:modifiers() = 'final']/@Name]]
+]]></value>
             </property>
         </properties>
         <example>

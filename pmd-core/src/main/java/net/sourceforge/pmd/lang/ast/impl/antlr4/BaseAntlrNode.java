@@ -12,10 +12,10 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 
 import net.sourceforge.pmd.lang.ast.impl.GenericNode;
 import net.sourceforge.pmd.lang.ast.impl.antlr4.BaseAntlrNode.AntlrToPmdParseTreeAdapter;
+import net.sourceforge.pmd.lang.document.FileLocation;
+import net.sourceforge.pmd.lang.document.TextRegion;
 import net.sourceforge.pmd.util.DataMap;
 import net.sourceforge.pmd.util.DataMap.DataKey;
-import net.sourceforge.pmd.util.document.FileLocation;
-import net.sourceforge.pmd.util.document.TextRegion;
 
 /**
  * Base class for an antlr node. This implements the PMD interfaces only,

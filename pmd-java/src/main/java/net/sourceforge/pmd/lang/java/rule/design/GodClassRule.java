@@ -50,14 +50,12 @@ public class GodClassRule extends AbstractJavaRulechainRule {
     @Override
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
         if (!MetricsUtil.supportsAll(node, WEIGHED_METHOD_COUNT, TIGHT_CLASS_COHESION, ACCESS_TO_FOREIGN_DATA)) {
-            return super.visit(node, data);
+            return data;
         }
 
         int wmc = MetricsUtil.computeMetric(WEIGHED_METHOD_COUNT, node);
         double tcc = MetricsUtil.computeMetric(TIGHT_CLASS_COHESION, node);
         int atfd = MetricsUtil.computeMetric(ACCESS_TO_FOREIGN_DATA, node);
-
-        super.visit(node, data);
 
         if (wmc >= WMC_VERY_HIGH && atfd > FEW_ATFD_THRESHOLD && tcc < TCC_THRESHOLD) {
 

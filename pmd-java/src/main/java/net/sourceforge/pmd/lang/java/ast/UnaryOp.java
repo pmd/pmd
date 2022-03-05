@@ -4,6 +4,10 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import java.util.Set;
+
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 /**
  * A unary operator, either prefix or postfix. This is used by {@link ASTUnaryExpression UnaryExpression}
  * to abstract over the syntactic form of the operator.
@@ -96,4 +100,25 @@ public enum UnaryOp implements InternalInterfaces.OperatorLike {
         return this.code;
     }
 
+    /**
+     * Tests if the node is an {@link ASTUnaryExpression} with one of the given operators.
+     */
+    public static boolean isUnaryExprWithOperator(@Nullable JavaNode e, Set<UnaryOp> operators) {
+        if (e instanceof ASTUnaryExpression) {
+            ASTUnaryExpression unary = (ASTUnaryExpression) e;
+            return operators.contains(unary.getOperator());
+        }
+        return false;
+    }
+
+    /**
+     * Tests if the node is an {@link ASTUnaryExpression} with the given operator.
+     */
+    public static boolean isUnaryExprWithOperator(@Nullable JavaNode e, UnaryOp operator) {
+        if (e instanceof ASTUnaryExpression) {
+            ASTUnaryExpression unary = (ASTUnaryExpression) e;
+            return operator == unary.getOperator();
+        }
+        return false;
+    }
 }

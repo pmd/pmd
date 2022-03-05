@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.util.document.FileLocation;
+import net.sourceforge.pmd.lang.document.FileLocation;
 
 /**
  * Represents a local variable declaration. This is a {@linkplain ASTStatement statement},

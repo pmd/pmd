@@ -137,7 +137,7 @@ public final class JPrimitiveType implements JTypeMirror {
         FLOAT(float.class),
         DOUBLE(double.class);
 
-        static final EnumSet<PrimitiveTypeKind> FLOATING_POINT_TYPES = EnumSet.of(FLOAT, DOUBLE);
+        static final Set<PrimitiveTypeKind> FLOATING_POINT_TYPES = EnumSet.of(FLOAT, DOUBLE);
 
         final String name = name().toLowerCase(Locale.ROOT);
         private final Class<?> jvm;

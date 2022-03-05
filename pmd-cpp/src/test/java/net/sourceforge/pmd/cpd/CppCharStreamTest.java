@@ -12,9 +12,9 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.Test;
 
 import net.sourceforge.pmd.lang.ast.impl.javacc.CharStream;
-import net.sourceforge.pmd.util.document.CpdCompat;
-import net.sourceforge.pmd.util.document.TextDocument;
-import net.sourceforge.pmd.util.document.TextFile;
+import net.sourceforge.pmd.lang.document.CpdCompat;
+import net.sourceforge.pmd.lang.document.TextDocument;
+import net.sourceforge.pmd.lang.document.TextFile;
 
 public class CppCharStreamTest {
 

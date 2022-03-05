@@ -15,11 +15,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Wrap JDBC connection for use by PMD: {@link DBURI} parameters specify the
@@ -28,16 +30,10 @@ import java.util.logging.Logger;
  * @author sturton
  */
 public class DBMSMetadata {
-
-    /**
-     * Classname utility string for use in logging.
-     */
-    private static final String CLASS_NAME = DBMSMetadata.class.getCanonicalName();
-
     /**
      * Local logger.
      */
-    private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
+    private static final Logger LOG = LoggerFactory.getLogger(DBMSMetadata.class);
 
     /**
      * Optional DBType property specifying a query to fetch the Source Objects
@@ -136,9 +132,7 @@ public class DBMSMetadata {
         mergedProperties.put("password", password);
 
         connection = DriverManager.getConnection(urlString, mergedProperties);
-        if (LOGGER.isLoggable(Level.FINE)) {
-            LOGGER.fine("we have a connection=" + connection);
-        }
+        LOG.debug("we have a connection={}", connection);
     }
 
     /**
@@ -166,13 +160,9 @@ public class DBMSMetadata {
         mergedProperties.putAll(dbURIParameters);
         mergedProperties.putAll(properties);
 
-        if (LOGGER.isLoggable(Level.FINE)) {
-            LOGGER.fine("Retrieving connection for urlString" + urlString);
-        }
+        LOG.debug("Retrieving connection for urlString={}", urlString);
         connection = DriverManager.getConnection(urlString, mergedProperties);
-        if (LOGGER.isLoggable(Level.FINE)) {
-            LOGGER.fine("Secured Connection for DBURI" + dbURI);
-        }
+        LOG.debug("Secured Connection for DBURI={}", dbURI);
     }
 
     /**
@@ -223,19 +213,13 @@ public class DBMSMetadata {
                 .getProperty(GET_SOURCE_OBJECTS_STATEMENT);
         this.returnSourceCodeStatement = dbURI.getDbType().getProperties().getProperty(GET_SOURCE_CODE_STATEMENT);
         this.returnType = dbURI.getSourceCodeType();
-        if (LOGGER.isLoggable(Level.FINE)) {
-            LOGGER.fine("returnSourceCodeStatement=" + returnSourceCodeStatement + ", returnType=" + returnType);
-        }
+        LOG.debug("returnSourceCodeStatement={}, returnType={}", returnSourceCodeStatement, returnType);
 
         String driverClass = dbURI.getDriverClass();
         String urlString = dbURI.getURL().toString();
-        if (LOGGER.isLoggable(Level.FINE)) {
-            LOGGER.fine("driverClass=" + driverClass + ", urlString=" + urlString);
-        }
+        LOG.debug("driverClass={}, urlString={}", driverClass, urlString);
         Class.forName(driverClass);
-        if (LOGGER.isLoggable(Level.FINE)) {
-            LOGGER.fine("Located class for driverClass=" + driverClass);
-        }
+        LOG.debug("Located class for driverClass={}", driverClass);
         return urlString;
     }
 
@@ -271,10 +255,8 @@ public class DBMSMetadata {
          * to getSourceCode()
          */
         if (null == callableStatement) {
-            if (LOGGER.isLoggable(Level.FINEST)) {
-                LOGGER.finest("getSourceCode: returnSourceCodeStatement=\"" + returnSourceCodeStatement + "\"");
-                LOGGER.finest("getSourceCode: returnType=\"" + returnType + "\"");
-            }
+            LOG.trace("getSourceCode: returnSourceCodeStatement=\"{}\"", returnSourceCodeStatement);
+            LOG.trace("getSourceCode: returnType=\"{}\"", returnType);
             callableStatement = getConnection().prepareCall(returnSourceCodeStatement);
             callableStatement.registerOutParameter(1, returnType);
         }
@@ -301,8 +283,8 @@ public class DBMSMetadata {
     public List<SourceObject> getSourceObjectList() {
 
         if (null == dburi) {
-            LOGGER.warning("No dbUri defined - no further action possible");
-            return null;
+            LOG.warn("No dbUri defined - no further action possible");
+            return Collections.emptyList();
         } else {
             return getSourceObjectList(dburi.getLanguagesList(), dburi.getSchemasList(), dburi.getSourceCodeTypesList(),
                     dburi.getSourceCodeNamesList());
@@ -385,7 +367,7 @@ public class DBMSMetadata {
         try {
 
             if (null != returnSourceCodeObjectsStatement) {
-                LOGGER.log(Level.FINE, "Have bespoke returnSourceCodeObjectsStatement from DBURI: \"{0}\"",
+                LOG.debug("Have bespoke returnSourceCodeObjectsStatement from DBURI: \"{}\"",
                         returnSourceCodeObjectsStatement);
                 try (PreparedStatement sourceCodeObjectsStatement = getConnection()
                         .prepareStatement(returnSourceCodeObjectsStatement)) {
@@ -402,7 +384,7 @@ public class DBMSMetadata {
                 }
             } else {
                 // Use standard DatabaseMetaData interface
-                LOGGER.fine(
+                LOG.debug(
                         "Have dbUri - no returnSourceCodeObjectsStatement, reverting to DatabaseMetaData.getProcedures(...)");
 
                 DatabaseMetaData metadata = connection.getMetaData();
@@ -414,7 +396,7 @@ public class DBMSMetadata {
                 }
             }
 
-            LOGGER.finer(String.format("Identfied=%d sourceObjects", sourceObjectsList.size()));
+            LOG.trace("Identfied={} sourceObjects", sourceObjectsList.size());
 
             return sourceObjectsList;
         } catch (SQLException sqle) {
@@ -484,10 +466,10 @@ public class DBMSMetadata {
              * procedure or function,1 ... ]
              */
             while (sourceCodeObjects.next()) {
-                LOGGER.finest(String.format("Located schema=%s,object_type=%s,object_name=%s\n",
+                LOG.trace("Located schema={},object_type={},object_name={}",
                         sourceCodeObjects.getString("PROCEDURE_SCHEM"),
                         sourceCodeObjects.getString("PROCEDURE_TYPE"),
-                        sourceCodeObjects.getString("PROCEDURE_NAME")));
+                        sourceCodeObjects.getString("PROCEDURE_NAME"));
 
                 sourceObjectsList.add(new SourceObject(sourceCodeObjects.getString("PROCEDURE_SCHEM"),
                         sourceCodeObjects.getString("PROCEDURE_TYPE"),
@@ -504,9 +486,9 @@ public class DBMSMetadata {
         sourceCodeObjectsStatement.setString(2, schema);
         sourceCodeObjectsStatement.setString(3, sourceCodeType);
         sourceCodeObjectsStatement.setString(4, sourceCodeName);
-        LOGGER.finer(String.format(
-                "searching for language=\"%s\", schema=\"%s\", sourceCodeType=\"%s\", sourceCodeNames=\"%s\" ",
-                language, schema, sourceCodeType, sourceCodeName));
+        LOG.debug(
+                "searching for language=\"{}\", schema=\"{}\", sourceCodeType=\"{}\", sourceCodeNames=\"{}\" ",
+                language, schema, sourceCodeType, sourceCodeName);
 
         /*
          * public ResultSet getProcedures(String catalog
@@ -534,10 +516,10 @@ public class DBMSMetadata {
              * within its schema.
              */
             while (sourceCodeObjects.next()) {
-                LOGGER.finest(String.format("Found schema=%s,object_type=%s,object_name=%s",
+                LOG.trace("Found schema={},object_type={},object_name={}",
                         sourceCodeObjects.getString("PROCEDURE_SCHEM"),
                         sourceCodeObjects.getString("PROCEDURE_TYPE"),
-                        sourceCodeObjects.getString("PROCEDURE_NAME")));
+                        sourceCodeObjects.getString("PROCEDURE_NAME"));
 
                 sourceObjectsList
                         .add(new SourceObject(sourceCodeObjects.getString("PROCEDURE_SCHEM"),

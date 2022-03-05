@@ -44,11 +44,11 @@ import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.processor.AbstractPMDProcessor;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.renderers.TextRenderer;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
-import net.sourceforge.pmd.util.document.TextFile;
 
 /**
  * Advanced methods for test cases
@@ -256,20 +256,20 @@ public abstract class RuleTst {
 
     public Report runTestFromString(String code, Rule rule, LanguageVersion languageVersion, boolean isUseAuxClasspath) {
         try {
-            PMDConfiguration config = new PMDConfiguration();
-            config.setIgnoreIncrementalAnalysis(true);
-            config.setDefaultLanguageVersion(languageVersion);
-            config.setThreads(1);
+            PMDConfiguration configuration = new PMDConfiguration();
+            configuration.setIgnoreIncrementalAnalysis(true);
+            configuration.setDefaultLanguageVersion(languageVersion);
+            configuration.setThreads(1);
 
             if (isUseAuxClasspath) {
                 // configure the "auxclasspath" option for unit testing
-                config.prependClasspath(".");
+                configuration.prependAuxClasspath(".");
             } else {
                 // simple class loader, that doesn't delegate to parent.
                 // this allows us in the tests to simulate PMD run without
                 // auxclasspath, not even the classes from the test dependencies
                 // will be found.
-                config.setClassLoader(new ClassLoader() {
+                configuration.setClassLoader(new ClassLoader() {
                     @Override
                     protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
                         if (name.startsWith("java.") || name.startsWith("javax.")) {
@@ -289,7 +289,7 @@ public abstract class RuleTst {
                     listOf(RuleSet.forSingleRule(rule)),
                     TextFile.forCharSeq(code, "testFile", languageVersion),
                     listener,
-                    config
+                    configuration
                 );
 
                 listener.close();

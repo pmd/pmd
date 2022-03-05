@@ -22,7 +22,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.util.document.FileLocation;
+import net.sourceforge.pmd.lang.document.FileLocation;
 
 public class ApexParserTest extends ApexParserTestBase {
 

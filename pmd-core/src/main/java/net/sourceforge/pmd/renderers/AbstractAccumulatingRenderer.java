@@ -10,12 +10,13 @@ import java.util.Objects;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Report.ConfigurationError;
 import net.sourceforge.pmd.Report.GlobalReportBuilderListener;
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.benchmark.TimedOperation;
 import net.sourceforge.pmd.benchmark.TimedOperationCategory;
+import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
-import net.sourceforge.pmd.util.document.TextFile;
 
 /**
  * Abstract base class for {@link Renderer} implementations which only produce
@@ -23,6 +24,9 @@ import net.sourceforge.pmd.util.document.TextFile;
  * working memory proportional to the number of violations found, which can be
  * quite large in some scenarios. Consider using
  * {@link AbstractIncrementingRenderer} which can use significantly less memory.
+ *
+ * <p>Subclasses should only implement the {@link #end()} method to output the
+ * complete {@link #report}.
  *
  * @see AbstractIncrementingRenderer
  */
@@ -48,7 +52,15 @@ public abstract class AbstractAccumulatingRenderer extends AbstractRenderer {
         Objects.requireNonNull(dataSource);
     }
 
+    /**
+     * {@inheritDoc}
+     * 
+     * @deprecated This is internal API. Do not override when extending {@link AbstractAccumulatingRenderer}.
+     * In PMD7 this method will be made final.
+     */
     @Override
+    @InternalApi
+    @Deprecated
     public final void renderFileReport(Report report) throws IOException {
         // do nothing, final because it will never be called by the listener
         Objects.requireNonNull(report);

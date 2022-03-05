@@ -70,7 +70,6 @@ public class UnusedPrivateMethodRule extends AbstractIgnoredAnnotationRule {
                 .filter(it -> it.getVisibility() == Visibility.V_PRIVATE)
                 .filter(it -> !hasIgnoredAnnotation(it)
                         && !hasExcludedName(it) 
-                        && !it.isAnnotationPresent(Override.class)
                         && !(it.getArity() == 0 && methodsUsedByAnnotations.contains(it.getName())))
                 .toStream()
                 .collect(Collectors.groupingBy(ASTMethodDeclaration::getName, HashMap::new, CollectionUtil.toMutableSet()));

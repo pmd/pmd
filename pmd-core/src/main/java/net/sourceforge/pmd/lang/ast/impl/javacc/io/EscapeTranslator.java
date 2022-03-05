@@ -7,10 +7,10 @@ package net.sourceforge.pmd.lang.ast.impl.javacc.io;
 import static java.lang.Integer.min;
 
 import net.sourceforge.pmd.internal.util.AssertionUtil;
-import net.sourceforge.pmd.util.document.Chars;
-import net.sourceforge.pmd.util.document.FileLocation;
-import net.sourceforge.pmd.util.document.FragmentedDocBuilder;
-import net.sourceforge.pmd.util.document.TextDocument;
+import net.sourceforge.pmd.lang.document.Chars;
+import net.sourceforge.pmd.lang.document.FileLocation;
+import net.sourceforge.pmd.lang.document.FragmentedDocBuilder;
+import net.sourceforge.pmd.lang.document.TextDocument;
 
 /**
  * An object that can translate an input document into an output document,

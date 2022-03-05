@@ -12,27 +12,25 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.apache.commons.io.input.CloseShieldInputStream;
 import org.apache.commons.lang3.StringEscapeUtils;
 
 import net.sourceforge.pmd.annotation.Experimental;
+import net.sourceforge.pmd.internal.Slf4jSimpleConfiguration;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
-import net.sourceforge.pmd.lang.ast.AstAnalysisContext;
 import net.sourceforge.pmd.lang.ast.Parser;
 import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.ast.SemanticErrorReporter;
+import net.sourceforge.pmd.lang.document.TextDocument;
+import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.lang.rule.xpath.Attribute;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertySource;
-import net.sourceforge.pmd.util.document.TextDocument;
-import net.sourceforge.pmd.util.document.TextFile;
 
 import com.beust.jcommander.DynamicParameter;
 import com.beust.jcommander.JCommander;
@@ -174,26 +172,12 @@ public class TreeExportCli {
         }
 
         // disable warnings for deprecated attributes
-        Logger.getLogger(Attribute.class.getName()).setLevel(Level.OFF);
+        Slf4jSimpleConfiguration.disableLogging(Attribute.class);
 
         try (TextDocument textDocument = TextDocument.create(textFile)) {
 
-            ParserTask task = new ParserTask(textDocument, SemanticErrorReporter.noop());
+            ParserTask task = new ParserTask(textDocument, SemanticErrorReporter.noop(), TreeExportCli.class.getClassLoader());
             RootNode root = parser.parse(task);
-
-            AstAnalysisContext ctx = new AstAnalysisContext() {
-                @Override
-                public ClassLoader getTypeResolutionClassLoader() {
-                    return getClass().getClassLoader();
-                }
-
-                @Override
-                public LanguageVersion getLanguageVersion() {
-                    return langVersion;
-                }
-            };
-
-            languageHandler.getProcessingStages().forEach(it -> it.processAST(root, ctx));
 
             renderer.renderSubtree(root, System.out);
         }

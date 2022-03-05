@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.processor;
 
-import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -13,41 +12,26 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.List;
-
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.Test;
 import org.mockito.Mockito;
 
 import net.sourceforge.pmd.FooRule;
-import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMDConfiguration;
+import net.sourceforge.pmd.PmdAnalysis;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.cache.AnalysisCache;
 import net.sourceforge.pmd.cache.NoopAnalysisCache;
-import net.sourceforge.pmd.lang.LanguageRegistry;
-import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.FileAnalysisException;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener.ViolationCounterListener;
-import net.sourceforge.pmd.util.document.TextFile;
 
 public class GlobalListenerTest {
 
-    private final LanguageVersion dummyVersion = LanguageRegistry.getDefaultLanguage().getDefaultVersion();
-
     static final int NUM_DATA_SOURCES = 3;
-
-    List<TextFile> mockDataSources() {
-        return listOf(
-            TextFile.forCharSeq("abc", "fname1.dummy", dummyVersion),
-            TextFile.forCharSeq("abcd", "fname2.dummy", dummyVersion),
-            TextFile.forCharSeq("abcd", "fname21.dummy", dummyVersion)
-        );
-    }
 
     @Test
     public void testViolationCounter() throws Exception {
@@ -93,7 +77,7 @@ public class GlobalListenerTest {
         runPmd(config, GlobalAnalysisListener.noop(), rule);
 
         verify(mockCache).checkValidity(any(), any());
-        verify(mockCache).persist();
+        verify(mockCache, times(1)).persist();
         verify(mockCache, times(NUM_DATA_SOURCES)).isUpToDate(any());
     }
 
@@ -109,7 +93,7 @@ public class GlobalListenerTest {
 
         // cache methods are called regardless
         verify(mockCache).checkValidity(any(), any());
-        verify(mockCache).persist();
+        verify(mockCache, times(1)).persist();
         verify(mockCache, times(NUM_DATA_SOURCES)).isUpToDate(any());
     }
 
@@ -131,7 +115,7 @@ public class GlobalListenerTest {
 
         // cache methods are called regardless
         verify(mockCache).checkValidity(any(), any());
-        verify(mockCache).persist();
+        verify(mockCache, times(1)).persist();
         verify(mockCache, times(1)).isUpToDate(any());
     }
 
@@ -144,16 +128,14 @@ public class GlobalListenerTest {
         return config;
     }
 
-    private void runPmd(PMDConfiguration config, GlobalAnalysisListener listener, Rule rule) throws Exception {
-        try {
-            PMD.processTextFiles(
-                config,
-                listOf(RuleSet.forSingleRule(rule)),
-                mockDataSources(),
-                listener
-            );
-        } finally {
-            listener.close();
+    private void runPmd(PMDConfiguration config, GlobalAnalysisListener listener, Rule rule) {
+        try (PmdAnalysis pmd = PmdAnalysis.create(config)) {
+            pmd.addRuleSet(RuleSet.forSingleRule(rule));
+            pmd.files().addSourceFile("fname1.dummy", "abc");
+            pmd.files().addSourceFile("fname2.dummy", "abcd");
+            pmd.files().addSourceFile("fname21.dummy", "abcd");
+            pmd.addListener(listener);
+            pmd.performAnalysis();
         }
     }
 
@@ -163,7 +145,7 @@ public class GlobalListenerTest {
         @Override
         public void apply(Node node, RuleContext ctx) {
             if (node.getTextDocument().getDisplayName().contains("1")) {
-                addViolation(ctx, node);
+                ctx.addViolation(node);
             }
         }
     }

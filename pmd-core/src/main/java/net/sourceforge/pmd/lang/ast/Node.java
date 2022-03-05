@@ -17,6 +17,10 @@ import net.sourceforge.pmd.annotation.DeprecatedUntil700;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.NodeStream.DescendantNodeStream;
 import net.sourceforge.pmd.lang.ast.internal.StreamImpl;
+import net.sourceforge.pmd.lang.document.FileLocation;
+import net.sourceforge.pmd.lang.document.Reportable;
+import net.sourceforge.pmd.lang.document.TextDocument;
+import net.sourceforge.pmd.lang.document.TextRegion;
 import net.sourceforge.pmd.lang.rule.xpath.Attribute;
 import net.sourceforge.pmd.lang.rule.xpath.NoAttribute;
 import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
@@ -26,10 +30,6 @@ import net.sourceforge.pmd.lang.rule.xpath.internal.DeprecatedAttrLogger;
 import net.sourceforge.pmd.lang.rule.xpath.internal.SaxonXPathRuleQuery;
 import net.sourceforge.pmd.util.DataMap;
 import net.sourceforge.pmd.util.DataMap.DataKey;
-import net.sourceforge.pmd.util.document.FileLocation;
-import net.sourceforge.pmd.util.document.Reportable;
-import net.sourceforge.pmd.util.document.TextDocument;
-import net.sourceforge.pmd.util.document.TextRegion;
 
 
 /**

@@ -5482,7 +5482,8 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/403174?v=4",
       "profile": "https://github.com/snuyanzin",
       "contributions": [
-        "bug"
+        "bug",
+        "code"
       ]
     },
     {
@@ -6482,6 +6483,88 @@
       "profile": "https://github.com/duanyang25",
       "contributions": [
         "code"
+      ]
+    },
+    {
+      "login": "babula",
+      "name": "Steve Babula",
+      "avatar_url": "https://avatars.githubusercontent.com/u/5806843?v=4",
+      "profile": "https://www.linkedin.com/in/sbabula/",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "vgalloy",
+      "name": "Vincent Galloy",
+      "avatar_url": "https://avatars.githubusercontent.com/u/11443605?v=4",
+      "profile": "https://github.com/vgalloy",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "squaresurf",
+      "name": "Daniel Paul Searles",
+      "avatar_url": "https://avatars.githubusercontent.com/u/863076?v=4",
+      "profile": "https://github.com/squaresurf",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "dykov",
+      "name": "Oleksii Dykov",
+      "avatar_url": "https://avatars.githubusercontent.com/u/36415196?v=4",
+      "profile": "https://github.com/dykov",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "Vyom-Yadav",
+      "name": "Vyom Yadav",
+      "avatar_url": "https://avatars.githubusercontent.com/u/73882557?v=4",
+      "profile": "https://www.linkedin.com/in/vyom-yadav-66a97918b/",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "gredler",
+      "name": "Daniel Gredler",
+      "avatar_url": "https://avatars.githubusercontent.com/u/178883?v=4",
+      "profile": "https://github.com/gredler",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "filiprafalowicz",
+      "name": "filiprafalowicz",
+      "avatar_url": "https://avatars.githubusercontent.com/u/24355557?v=4",
+      "profile": "https://github.com/filiprafalowicz",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "JerritEic",
+      "name": "JerritEic",
+      "avatar_url": "https://avatars.githubusercontent.com/u/60690273?v=4",
+      "profile": "https://github.com/JerritEic",
+      "contributions": [
+        "code",
+        "doc"
+      ]
+    },
+    {
+      "login": "karel1980",
+      "name": "Karel Vervaeke",
+      "avatar_url": "https://avatars.githubusercontent.com/u/153021?v=4",
+      "profile": "https://github.com/karel1980",
+      "contributions": [
+        "bug"
       ]
     }
   ],

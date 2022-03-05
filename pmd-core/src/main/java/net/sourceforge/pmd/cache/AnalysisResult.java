@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.cache;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import net.sourceforge.pmd.RuleViolation;
@@ -24,6 +25,10 @@ public class AnalysisResult {
     public AnalysisResult(final long fileChecksum, final List<RuleViolation> violations) {
         this.fileChecksum = fileChecksum;
         this.violations = violations;
+    }
+
+    public AnalysisResult(final long fileChecksum) {
+        this(fileChecksum, new ArrayList<>());
     }
 
     public long getFileChecksum() {

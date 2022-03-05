@@ -1,6 +1,70 @@
 body {
     font-size:15px;
 }
+@media (max-width: 1349px) {
+    /* Small screen, inline TOC*/
+    .container-toc-wrapper {
+        display: block;
+    }
+
+    div.toc-col {
+        display: none;
+    }
+
+    div#toc{
+        margin-top: 15px;
+        margin-left: 0px;
+        margin-right: 0px;
+    }
+
+    .container {
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+
+@media (min-width: 1350px) {
+    /* Medium screens, keep sticky TOC but remove justify-content*/
+    div#toc{
+        margin-top: 60px;
+        margin-left: -15px;
+        margin-right: 15px;
+    }
+    .container {
+        margin-left: 15px;
+        margin-right: 15px;
+        width: 75%;
+    }
+
+    .container-toc-wrapper {
+        display: flex;
+        flex-wrap: wrap;
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+@media (min-width: 1600px) {
+    /* Sticky TOC functionality */
+    div#toc{
+        margin-top: 60px;
+        margin-left: -15px;
+        margin-right: 15px;
+    }
+    .container {
+        margin-left: 15px;
+        margin-right: 15px;
+        width: 75%;
+    }
+
+    .container-toc-wrapper {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+
 
 .bs-callout {
     padding: 20px;

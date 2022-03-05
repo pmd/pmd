@@ -42,7 +42,7 @@ public class JavaRuleViolationTest {
     }
 
     private ASTCompilationUnit parse(final String code) {
-        return JavaParsingHelper.WITH_PROCESSING.parse(code);
+        return JavaParsingHelper.DEFAULT.parse(code);
     }
 
     /**

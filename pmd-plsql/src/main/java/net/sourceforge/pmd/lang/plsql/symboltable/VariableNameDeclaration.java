@@ -4,15 +4,16 @@
 
 package net.sourceforge.pmd.lang.plsql.symboltable;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.lang.plsql.ast.ASTVariableOrConstantDeclaratorId;
 import net.sourceforge.pmd.lang.symboltable.AbstractNameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.Scope;
 
 public class VariableNameDeclaration extends AbstractNameDeclaration {
-    private static final Logger LOGGER = Logger.getLogger(VariableNameDeclaration.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(VariableNameDeclaration.class);
 
     public VariableNameDeclaration(ASTVariableOrConstantDeclaratorId node) {
         super(node);
@@ -23,9 +24,9 @@ public class VariableNameDeclaration extends AbstractNameDeclaration {
         try {
             return node.getScope().getEnclosingScope(ClassScope.class);
         } catch (Exception e) {
-            if (LOGGER.isLoggable(Level.FINEST)) {
-                LOGGER.finest("This Node does not have an enclosing Class: " + node.getReportLocation().startPosToString() + " => " + this.getImage());
-            }
+            LOG.trace("This Node does not have an enclosing Class: {}/{} => {}",
+                    node.getBeginLine(), node.getBeginColumn(),
+                    this.getImage());
             return null; // @TODO SRT a cop-out
         }
     }
@@ -43,13 +44,11 @@ public class VariableNameDeclaration extends AbstractNameDeclaration {
         try {
             return n.getImage().equals(this.getImage());
         } catch (Exception e) {
-            e.printStackTrace(System.err);
-            if (LOGGER.isLoggable(Level.FINEST)) {
-                LOGGER.finest("n.node=" + n.node);
-                LOGGER.finest("n.getImage=" + n.getImage());
-                LOGGER.finest("node=" + node);
-                LOGGER.finest("this.getImage=" + this.getImage());
-            }
+            LOG.error(e.getMessage(), e);
+            LOG.debug("n.node={}", n.node);
+            LOG.debug("n.getImage={}", n.getImage());
+            LOG.debug("node={}", node);
+            LOG.debug("this.getImage={}", this.getImage());
             return false;
         }
     }
@@ -59,10 +58,9 @@ public class VariableNameDeclaration extends AbstractNameDeclaration {
         try {
             return this.getImage().hashCode();
         } catch (Exception e) {
-            if (LOGGER.isLoggable(Level.FINEST)) {
-                LOGGER.finest("VariableNameDeclaration: node=" + node);
-                LOGGER.finest("VariableNameDeclaration: node,getImage=" + this.getImage());
-            }
+            LOG.error(e.getMessage(), e);
+            LOG.debug("VariableNameDeclaration: node={}", node);
+            LOG.debug("VariableNameDeclaration: node,getImage={}", this.getImage());
             return 0;
         }
     }

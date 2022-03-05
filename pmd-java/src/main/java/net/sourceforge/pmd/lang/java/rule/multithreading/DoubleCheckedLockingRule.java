@@ -85,7 +85,7 @@ public class DoubleCheckedLockingRule extends AbstractJavaRule {
         // if the return variable is local and only written with the volatile
         // field, then it's ok, too
         if (isLocalOnlyStoredWithVolatileField(node, returnVariable)) {
-            return super.visit(node, data);
+            return data;
         }
 
         List<ASTIfStatement> isl = node.findDescendantsOfType(ASTIfStatement.class);
@@ -107,7 +107,7 @@ public class DoubleCheckedLockingRule extends AbstractJavaRule {
                 }
             }
         }
-        return super.visit(node, data);
+        return data;
     }
 
     private boolean isLocalOnlyStoredWithVolatileField(ASTMethodDeclaration method, JVariableSymbol local) {

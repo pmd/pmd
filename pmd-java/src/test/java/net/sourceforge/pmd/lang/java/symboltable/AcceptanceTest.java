@@ -17,6 +17,7 @@ import org.junit.Test;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.BaseParserTest;
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTCatchClause;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
@@ -30,7 +31,7 @@ import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 import net.sourceforge.pmd.lang.symboltable.Scope;
 
 @Ignore
-public class AcceptanceTest extends BaseNonParserTest {
+public class AcceptanceTest extends BaseParserTest {
 
     @Test
     public void testClashingSymbols() {
@@ -149,7 +150,7 @@ public class AcceptanceTest extends BaseNonParserTest {
      */
     @Test
     public void testNullPointerEnumValueOfOverloaded() {
-        ASTCompilationUnit acu = parseCode("public enum EsmDcVoltageSensor {\n" + "    A;\n" + "    void bar(int ... args) {\n"
+        ASTCompilationUnit acu = parseCode("public enum EsmDcVoltageSensor {\n" + "    A;\n" + "    void bar(int... args) {\n"
                 + "        int idx;\n" + "        int startIdx;\n"
                 + "        String name = EsmDcVoltageSensor.valueOf((byte) (idx - startIdx)).getName();\n" + "    }\n"
                 // that's the overloaded method

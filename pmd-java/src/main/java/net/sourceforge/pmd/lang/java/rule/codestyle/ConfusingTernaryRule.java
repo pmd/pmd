@@ -10,6 +10,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTInfixExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTNullLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpression;
 import net.sourceforge.pmd.lang.java.ast.BinaryOp;
 import net.sourceforge.pmd.lang.java.ast.UnaryOp;
@@ -52,7 +53,8 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
  */
 public class ConfusingTernaryRule extends AbstractJavaRulechainRule {
 
-    private static final PropertyDescriptor<Boolean> IGNORE_ELSE_IF = booleanProperty("ignoreElseIf").desc("Ignore conditions with an else-if case").defaultValue(false).build();
+    private static final PropertyDescriptor<Boolean> IGNORE_ELSE_IF = booleanProperty("ignoreElseIf")
+            .desc("Ignore conditions with an else-if case").defaultValue(false).build();
 
     public ConfusingTernaryRule() {
         super(ASTIfStatement.class, ASTConditionalExpression.class);
@@ -70,7 +72,7 @@ public class ConfusingTernaryRule extends AbstractJavaRulechainRule {
                 addViolation(data, node);
             }
         }
-        return super.visit(node, data);
+        return data;
     }
 
     @Override
@@ -79,7 +81,7 @@ public class ConfusingTernaryRule extends AbstractJavaRulechainRule {
         if (isMatch(node.getCondition())) {
             addViolation(data, node);
         }
-        return super.visit(node, data);
+        return data;
     }
 
     // recursive!
@@ -94,22 +96,22 @@ public class ConfusingTernaryRule extends AbstractJavaRulechainRule {
     }
 
     private static boolean isNotEquals(ASTExpression node) {
+        if (!(node instanceof ASTInfixExpression)) {
+            return false;
+        }
+        ASTInfixExpression infix = (ASTInfixExpression) node;
         // look for "x != y"
-        return node instanceof ASTInfixExpression
-            && ((ASTInfixExpression) node).getOperator().equals(BinaryOp.NE);
+        return infix.getOperator().equals(BinaryOp.NE)
+            && !(infix.getLeftOperand() instanceof ASTNullLiteral)
+            && !(infix.getRightOperand() instanceof ASTNullLiteral);
     }
 
     private static boolean isConditionalWithAllMatches(ASTExpression node) {
         // look for "match && match" or "match || match"
         if (node instanceof ASTInfixExpression) {
             ASTInfixExpression infix = (ASTInfixExpression) node;
-            if (infix.getOperator() != BinaryOp.CONDITIONAL_AND
-                && infix.getOperator() != BinaryOp.CONDITIONAL_OR) {
-                return false;
-            }
-
-            return isMatch(infix.getLeftOperand())
-                && isMatch(infix.getRightOperand());
+            return (infix.getOperator() == BinaryOp.CONDITIONAL_AND || infix.getOperator() == BinaryOp.CONDITIONAL_OR)
+                    && isMatch(infix.getLeftOperand()) && isMatch(infix.getRightOperand());
         }
 
         return false;

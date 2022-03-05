@@ -39,13 +39,17 @@ public class AbstractApexRuleTest extends ApexParserTestBase {
 
     private void run(String code) {
         TopLevelRule rule = new TopLevelRule();
-        rule.setMessage("Message");
 
         Report report = apex.executeRule(rule, code);
         TestUtilsKt.assertSize(report, 1);
     }
 
     private static class TopLevelRule extends AbstractApexRule {
+
+        @Override
+        public String getMessage() {
+            return "a message";
+        }
 
         @Override
         public Object visit(ASTUserClass node, Object data) {

@@ -14,8 +14,8 @@ import org.apache.commons.lang3.StringUtils;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
-import net.sourceforge.pmd.util.document.FileLocation;
-import net.sourceforge.pmd.util.document.Reportable;
+import net.sourceforge.pmd.lang.document.FileLocation;
+import net.sourceforge.pmd.lang.document.Reportable;
 
 public abstract class Comment implements Reportable {
 

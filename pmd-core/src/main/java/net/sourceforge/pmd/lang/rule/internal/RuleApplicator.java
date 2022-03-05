@@ -6,10 +6,10 @@ package net.sourceforge.pmd.lang.rule.internal;
 
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.apache.commons.lang3.exception.ExceptionContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.Report.ProcessingError;
 import net.sourceforge.pmd.Rule;
@@ -28,7 +28,7 @@ import net.sourceforge.pmd.util.StringUtil;
 /** Applies a set of rules to a set of ASTs. */
 public class RuleApplicator {
 
-    private static final Logger LOG = Logger.getLogger(RuleApplicator.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(RuleApplicator.class);
     // we reuse the type lattice from run to run, eventually it converges
     // towards the final topology (all node types have been encountered)
     // This has excellent performance! Indexing time is insignificant
@@ -101,13 +101,10 @@ public class RuleApplicator {
         // it may also rethrow the error.
         listener.onError(new ProcessingError(e, node.getTextDocument().getDisplayName()));
 
-        if (LOG.isLoggable(Level.WARNING)) { //fixme
-            LOG.log(Level.WARNING, "Exception applying rule " + rule.getName() + " on file "
-                + node.getAstInfo().getTextDocument().getDisplayName() + ", continuing with next rule", e);
-
-            String nodeToString = StringUtil.elide(node.toString(), 600, " ... (truncated)");
-            LOG.log(Level.WARNING, "Exception occurred on node " + nodeToString);
-        }
+        // fixme - maybe duplicated logging
+        LOG.warn("Exception applying rule {} on file {}, continuing with next rule", rule.getName(), node.getTextDocument().getPathId(), e);
+        String nodeToString = StringUtil.elide(node.toString(), 600, " ... (truncated)");
+        LOG.warn("Exception occurred on node {}", nodeToString);
     }
 
 

@@ -6,8 +6,8 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
-import net.sourceforge.pmd.util.document.FileLocation;
 
 /**
  * Represents an enum constant declaration within an {@linkplain ASTEnumDeclaration enum type declaration}.

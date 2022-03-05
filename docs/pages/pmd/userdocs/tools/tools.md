@@ -31,6 +31,17 @@ Codiga uses PMD to check Java and Apex code.
 * Homepage: [https://www.codiga.io](https://www.codiga.io)
 * Documentation: [https://doc.codiga.io](https://doc.codiga.io)
 
+### GitHub Actions
+
+PMD provides its own GitHub Action, that can be integrated in custom workflows.
+
+It can execute PMD with your own ruleset against your project. It creates a [SARIF](https://docs.oasis-open.org/sarif/sarif/v2.1.0/sarif-v2.1.0.html)
+report which is uploaded as a build artifact. Furthermore the build can be failed based on the number of violations.
+
+The action can also be used as a code scanner to create "Code scanning alerts".
+
+* Homepage: [pmd/pmd-github-action](https://github.com/pmd/pmd-github-action)
+
 
 ## IDE Integrations
 

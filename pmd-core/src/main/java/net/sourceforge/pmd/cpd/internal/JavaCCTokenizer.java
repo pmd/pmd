@@ -18,8 +18,8 @@ import net.sourceforge.pmd.lang.ast.impl.javacc.CharStream;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument.TokenDocumentBehavior;
 import net.sourceforge.pmd.lang.ast.impl.javacc.io.MalformedSourceException;
-import net.sourceforge.pmd.util.document.CpdCompat;
-import net.sourceforge.pmd.util.document.TextDocument;
+import net.sourceforge.pmd.lang.document.CpdCompat;
+import net.sourceforge.pmd.lang.document.TextDocument;
 
 public abstract class JavaCCTokenizer implements Tokenizer {
 

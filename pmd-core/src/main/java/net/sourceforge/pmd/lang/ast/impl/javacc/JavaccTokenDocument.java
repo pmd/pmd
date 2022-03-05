@@ -14,7 +14,7 @@ import net.sourceforge.pmd.cpd.internal.JavaCCTokenizer;
 import net.sourceforge.pmd.lang.ast.impl.TokenDocument;
 import net.sourceforge.pmd.lang.ast.impl.javacc.io.EscapeTranslator;
 import net.sourceforge.pmd.lang.ast.impl.javacc.io.MalformedSourceException;
-import net.sourceforge.pmd.util.document.TextDocument;
+import net.sourceforge.pmd.lang.document.TextDocument;
 
 /**
  * Token document for Javacc implementations. This is a helper object
@@ -166,7 +166,7 @@ public final class JavaccTokenDocument extends TokenDocument<JavaccToken> {
     }
 
     /**
-     * @see TokenDocumentBehavior#describeKind(int) 
+     * @see TokenDocumentBehavior#describeKind(int)
      */
     public @NonNull String describeKind(int kind) {
         return behavior.describeKind(kind);

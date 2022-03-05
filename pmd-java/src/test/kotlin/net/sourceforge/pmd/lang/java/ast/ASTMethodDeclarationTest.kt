@@ -220,6 +220,7 @@ class ASTMethodDeclarationTest : ParserTestSpec({
 
                     it::getFormalParameters shouldBe formalsList(1) {
                         child<ASTFormalParameter> {
+                            it::isVarargs shouldBe true
                             it::getModifiers shouldBe modifiers {
                                 annotation("Oha")
                             }

@@ -13,6 +13,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.lang.java.BaseParserTest;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
@@ -21,7 +22,7 @@ import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
 @Ignore
-public class LocalScopeTest extends BaseNonParserTest {
+public class LocalScopeTest extends BaseParserTest {
 
     @Test
     public void testLocalVariableDeclarationFound() {

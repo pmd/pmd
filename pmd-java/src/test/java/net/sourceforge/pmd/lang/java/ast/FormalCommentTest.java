@@ -12,6 +12,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
+import net.sourceforge.pmd.lang.java.BaseParserTest;
 
 public class FormalCommentTest extends BaseParserTest {
 
