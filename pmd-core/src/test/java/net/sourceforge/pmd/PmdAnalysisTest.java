@@ -4,7 +4,9 @@
 
 package net.sourceforge.pmd;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -12,7 +14,6 @@ import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
 
-import org.hamcrest.MatcherAssert;
 import org.junit.Test;
 import org.mockito.ArgumentMatchers;
 
@@ -27,14 +28,14 @@ public class PmdAnalysisTest {
     public void testPmdAnalysisWithEmptyConfig() {
         PMDConfiguration config = new PMDConfiguration();
         try (PmdAnalysis pmd = PmdAnalysis.create(config)) {
-            MatcherAssert.assertThat(pmd.files().getCollectedFiles(), empty());
-            MatcherAssert.assertThat(pmd.rulesets(), empty());
-            MatcherAssert.assertThat(pmd.renderers(), empty());
+            assertThat(pmd.files().getCollectedFiles(), empty());
+            assertThat(pmd.rulesets(), empty());
+            assertThat(pmd.renderers(), empty());
         }
     }
 
     @Test
-    public void testRendererStart() throws IOException {
+    public void testRendererInteractions() throws IOException {
         PMDConfiguration config = new PMDConfiguration();
         config.setInputPaths("sample-source/dummy");
         Renderer renderer = mock(Renderer.class);
@@ -48,6 +49,15 @@ public class PmdAnalysisTest {
         verify(renderer, times(1)).start();
         verify(renderer, times(1)).end();
         verify(renderer, times(1)).flush();
+    }
+
+    @Test
+    public void testRulesetLoading() {
+        PMDConfiguration config = new PMDConfiguration();
+        config.setRuleSets("rulesets/dummy/basic.xml");
+        try (PmdAnalysis pmd = PmdAnalysis.create(config)) {
+            assertThat(pmd.rulesets(), hasSize(1));
+        }
     }
 
 }
