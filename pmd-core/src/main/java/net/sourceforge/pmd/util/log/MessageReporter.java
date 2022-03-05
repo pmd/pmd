@@ -6,17 +6,23 @@ package net.sourceforge.pmd.util.log;
 
 import org.slf4j.event.Level;
 
+import java.text.MessageFormat;
+
 import net.sourceforge.pmd.annotation.InternalApi;
 
 /**
- * Logger façade. Can probably be converted to just SLF4J logger in PMD 7.
+ * Façade to report user-facing messages (info, warning and error).
+ * Note: messages are formatted using {@link MessageFormat}.
+ *
+ * <p>Internal API: this is a transitional API that will be significantly
+ * changed in PMD 7, with the transition to SLF4J. See https://github.com/pmd/pmd/issues/3816
  *
  *  TODO rename to PmdReporter
  *
  * @author Clément Fournier
  */
 @InternalApi
-public interface PmdLogger {
+public interface MessageReporter {
 
     boolean isLoggable(Level level);
 

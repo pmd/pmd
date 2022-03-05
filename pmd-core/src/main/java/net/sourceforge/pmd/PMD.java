@@ -20,8 +20,6 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.event.Level;
 
 import net.sourceforge.pmd.Report.GlobalReportBuilderListener;
-import net.sourceforge.pmd.reporting.ReportStatsListener;
-import net.sourceforge.pmd.reporting.ReportStats;
 import net.sourceforge.pmd.benchmark.TextTimingReportRenderer;
 import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.benchmark.TimingReport;
@@ -32,9 +30,11 @@ import net.sourceforge.pmd.cli.PmdParametersParseResult;
 import net.sourceforge.pmd.cli.internal.CliMessages;
 import net.sourceforge.pmd.internal.Slf4jSimpleConfiguration;
 import net.sourceforge.pmd.renderers.Renderer;
+import net.sourceforge.pmd.reporting.ReportStats;
+import net.sourceforge.pmd.reporting.ReportStatsListener;
 import net.sourceforge.pmd.util.datasource.DataSource;
-import net.sourceforge.pmd.util.log.PmdLogger;
-import net.sourceforge.pmd.util.log.SimplePmdLogger;
+import net.sourceforge.pmd.util.log.MessageReporter;
+import net.sourceforge.pmd.util.log.SimpleMessageReporter;
 
 /**
  * Entry point for PMD's CLI. Use {@link #runPmd(PMDConfiguration)}
@@ -84,7 +84,7 @@ public final class PMD {
         try {
             pmd.performAnalysis();
         } catch (Exception e) {
-            pmd.getLog().errorEx("Exception during processing", e);
+            pmd.getReporter().errorEx("Exception during processing", e);
             ReportStats stats = listener.getResult();
             printErrorDetected(1 + stats.getNumErrors());
             return stats; // should have been closed
@@ -224,7 +224,7 @@ public final class PMD {
         // TODO CLI errors should also be reported through this
         // TODO this should not use the logger as backend, otherwise without
         //  slf4j implementation binding, errors are entirely ignored.
-        PmdLogger pmdReporter = new SimplePmdLogger(log);
+        MessageReporter pmdReporter = new SimpleMessageReporter(log);
         // always install java.util.logging to slf4j bridge
         Slf4jSimpleConfiguration.installJulBridge();
         // logging, mostly for testing purposes

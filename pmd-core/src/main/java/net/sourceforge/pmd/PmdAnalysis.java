@@ -35,8 +35,8 @@ import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
 import net.sourceforge.pmd.util.ClasspathClassLoader;
 import net.sourceforge.pmd.util.IOUtil;
 import net.sourceforge.pmd.util.datasource.DataSource;
-import net.sourceforge.pmd.util.log.PmdLogger;
-import net.sourceforge.pmd.util.log.SimplePmdLogger;
+import net.sourceforge.pmd.util.log.MessageReporter;
+import net.sourceforge.pmd.util.log.SimpleMessageReporter;
 
 /**
  * Main programmatic API of PMD. Create and configure a {@link PMDConfiguration},
@@ -77,8 +77,7 @@ public final class PmdAnalysis implements AutoCloseable {
     private final List<GlobalAnalysisListener> listeners = new ArrayList<>();
     private final List<RuleSet> ruleSets = new ArrayList<>();
     private final PMDConfiguration configuration;
-    private final PmdLogger reporter;
-
+    private final MessageReporter reporter;
 
     private boolean closed;
 
@@ -88,7 +87,7 @@ public final class PmdAnalysis implements AutoCloseable {
      * the file collector ({@link #files()}), but more can be added
      * programmatically using the file collector.
      */
-    private PmdAnalysis(PMDConfiguration config, PmdLogger reporter) {
+    private PmdAnalysis(PMDConfiguration config, MessageReporter reporter) {
         this.configuration = config;
         this.reporter = reporter;
         this.collector = FileCollector.newCollector(
@@ -113,12 +112,12 @@ public final class PmdAnalysis implements AutoCloseable {
     public static PmdAnalysis create(PMDConfiguration config) {
         return create(
             config,
-            new SimplePmdLogger(LoggerFactory.getLogger(PmdAnalysis.class))
+            new SimpleMessageReporter(LoggerFactory.getLogger(PmdAnalysis.class))
         );
     }
 
     @InternalApi
-    static PmdAnalysis create(PMDConfiguration config, PmdLogger reporter) {
+    static PmdAnalysis create(PMDConfiguration config, MessageReporter reporter) {
         PmdAnalysis pmd = new PmdAnalysis(config, reporter);
 
         // note: do not filter files by language
@@ -241,7 +240,7 @@ public final class PmdAnalysis implements AutoCloseable {
      * processed. This does not return a report, as the analysis results
      * are consumed by {@link GlobalAnalysisListener} instances (of which
      * Renderers are a special case). Note that this does
-     * not throw, errors are instead accumulated into a {@link PmdLogger}.
+     * not throw, errors are instead accumulated into a {@link MessageReporter}.
      */
     public void performAnalysis() {
         performAnalysisImpl(Collections.emptyList());
@@ -252,7 +251,7 @@ public final class PmdAnalysis implements AutoCloseable {
      * and finish the registered renderers. All files collected in the
      * {@linkplain #files() file collector} are processed. Returns the
      * output report. Note that this does not throw, errors are instead
-     * accumulated into a {@link PmdLogger}.
+     * accumulated into a {@link MessageReporter}.
      */
     public Report performAnalysisAndCollectReport() {
         try (GlobalReportBuilderListener reportBuilder = new GlobalReportBuilderListener()) {
@@ -362,7 +361,7 @@ public final class PmdAnalysis implements AutoCloseable {
     }
 
 
-    public PmdLogger getLog() {
+    public MessageReporter getReporter() {
         return reporter;
     }
 

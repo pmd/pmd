@@ -38,7 +38,7 @@ import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
 import net.sourceforge.pmd.util.IOUtil;
-import net.sourceforge.pmd.util.log.PmdLogger;
+import net.sourceforge.pmd.util.log.MessageReporter;
 
 /**
  * Collects files to analyse before a PMD run. This API allows opening
@@ -54,15 +54,15 @@ public final class FileCollector implements AutoCloseable {
     private final List<Closeable> resourcesToClose = new ArrayList<>();
     private Charset charset = StandardCharsets.UTF_8;
     private final LanguageVersionDiscoverer discoverer;
-    private final PmdLogger log;
+    private final MessageReporter reporter;
     private final List<String> relativizeRoots = new ArrayList<>();
     private boolean closed;
 
     // construction
 
-    private FileCollector(LanguageVersionDiscoverer discoverer, PmdLogger logger) {
+    private FileCollector(LanguageVersionDiscoverer discoverer, MessageReporter reporter) {
         this.discoverer = discoverer;
-        this.log = logger;
+        this.reporter = reporter;
     }
 
     /**
@@ -70,15 +70,15 @@ public final class FileCollector implements AutoCloseable {
      * creating a collector yourself.
      */
     @InternalApi
-    public static FileCollector newCollector(LanguageVersionDiscoverer discoverer, PmdLogger logger) {
-        return new FileCollector(discoverer, logger);
+    public static FileCollector newCollector(LanguageVersionDiscoverer discoverer, MessageReporter reporter) {
+        return new FileCollector(discoverer, reporter);
     }
 
     /**
      * Returns a new collector using the configuration except for the logger.
      */
     @InternalApi
-    public FileCollector newCollector(PmdLogger logger) {
+    public FileCollector newCollector(MessageReporter logger) {
         FileCollector fileCollector = new FileCollector(discoverer, logger);
         fileCollector.charset = this.charset;
         fileCollector.relativizeRoots.addAll(this.relativizeRoots);
@@ -103,10 +103,11 @@ public final class FileCollector implements AutoCloseable {
 
 
     /**
-     * Returns the logger for the file collection phase.
+     * Returns the reporter for the file collection phase.
      */
-    public PmdLogger getLog() {
-        return log;
+    @InternalApi
+    public MessageReporter getReporter() {
+        return reporter;
     }
 
     /**
@@ -120,7 +121,7 @@ public final class FileCollector implements AutoCloseable {
         closed = true;
         Exception exception = IOUtil.closeAll(resourcesToClose);
         if (exception != null) {
-            log.errorEx("Error while closing resources", exception);
+            reporter.errorEx("Error while closing resources", exception);
         }
     }
 
@@ -137,7 +138,7 @@ public final class FileCollector implements AutoCloseable {
      */
     public boolean addFile(Path file) {
         if (!Files.isRegularFile(file)) {
-            log.error("Not a regular file {}", file);
+            reporter.error("Not a regular file {}", file);
             return false;
         }
         LanguageVersion languageVersion = discoverLanguage(file.toString());
@@ -161,7 +162,7 @@ public final class FileCollector implements AutoCloseable {
     public boolean addFile(Path file, Language language) {
         AssertionUtil.requireParamNotNull("language", language);
         if (!Files.isRegularFile(file)) {
-            log.error("Not a regular file {}", file);
+            reporter.error("Not a regular file {}", file);
             return false;
         }
         NioTextFile nioTextFile = new NioTextFile(file, charset, discoverer.getDefaultLanguageVersion(language), getDisplayName(file));
@@ -236,7 +237,7 @@ public final class FileCollector implements AutoCloseable {
         Language language = fileVersion.getLanguage();
         LanguageVersion contextVersion = discoverer.getDefaultLanguageVersion(language);
         if (!fileVersion.equals(contextVersion)) {
-            log.error(
+            reporter.error(
                 "Cannot add file {}: version ''{}'' does not match ''{}''",
                 textFile.getPathId(),
                 fileVersion,
@@ -280,7 +281,7 @@ public final class FileCollector implements AutoCloseable {
      */
     public boolean addDirectory(Path dir) throws IOException {
         if (!Files.isDirectory(dir)) {
-            log.error("Not a directory {}", dir);
+            reporter.error("Not a directory {}", dir);
             return false;
         }
         Files.walkFileTree(dir, new SimpleFileVisitor<Path>() {
@@ -308,7 +309,7 @@ public final class FileCollector implements AutoCloseable {
         } else if (Files.isRegularFile(file)) {
             return addFile(file);
         } else {
-            log.error("Not a file or directory {}", file);
+            reporter.error("Not a file or directory {}", file);
             return false;
         }
     }
@@ -329,7 +330,7 @@ public final class FileCollector implements AutoCloseable {
             resourcesToClose.add(fs);
             return fs;
         } catch (FileSystemNotFoundException | ProviderNotFoundException e) {
-            log.errorEx("Cannot open zip file " + zipFile, e);
+            reporter.errorEx("Cannot open zip file " + zipFile, e);
             return null;
         }
     }

@@ -28,8 +28,8 @@ import net.sourceforge.pmd.util.database.DBMSMetadata;
 import net.sourceforge.pmd.util.database.DBURI;
 import net.sourceforge.pmd.util.database.SourceObject;
 import net.sourceforge.pmd.util.datasource.DataSource;
-import net.sourceforge.pmd.util.log.PmdErrorsAsWarningsReporter;
-import net.sourceforge.pmd.util.log.PmdLogger;
+import net.sourceforge.pmd.util.log.MessageReporter;
+import net.sourceforge.pmd.util.log.ErrorsAsWarningsReporter;
 
 /**
  * @author Clément Fournier
@@ -50,16 +50,16 @@ public final class FileCollectionUtil {
         return result;
     }
 
-    public static FileCollector collectFiles(PMDConfiguration configuration, Set<Language> languages, PmdLogger logger) {
-        FileCollector collector = collectFiles(configuration, logger);
+    public static FileCollector collectFiles(PMDConfiguration configuration, Set<Language> languages, MessageReporter reporter) {
+        FileCollector collector = collectFiles(configuration, reporter);
         collector.filterLanguages(languages);
         return collector;
     }
 
-    private static FileCollector collectFiles(PMDConfiguration configuration, PmdLogger logger) {
+    private static FileCollector collectFiles(PMDConfiguration configuration, MessageReporter reporter) {
         FileCollector collector = FileCollector.newCollector(
             configuration.getLanguageVersionDiscoverer(),
-            logger
+            reporter
         );
         collectFiles(configuration, collector);
         return collector;
@@ -87,7 +87,7 @@ public final class FileCollectionUtil {
             LOG.debug("Now collecting files to exclude.");
             // errors like "excluded file does not exist" are reported as warnings.
             // todo better reporting of *where* exactly the path is
-            PmdLogger mutedLog = new PmdErrorsAsWarningsReporter(collector.getLog());
+            MessageReporter mutedLog = new ErrorsAsWarningsReporter(collector.getReporter());
             try (FileCollector excludeCollector = collector.newCollector(mutedLog)) {
                 collectFileList(excludeCollector, configuration.getIgnoreFilePath());
                 collector.exclude(excludeCollector);
@@ -102,7 +102,7 @@ public final class FileCollectionUtil {
                 collector.relativizeWith(rootLocation);
                 addRoot(collector, rootLocation);
             } catch (IOException e) {
-                collector.getLog().errorEx("Error collecting " + rootLocation, e);
+                collector.getReporter().errorEx("Error collecting " + rootLocation, e);
             }
         }
     }
@@ -111,7 +111,7 @@ public final class FileCollectionUtil {
         LOG.debug("Reading file list {}.", fileListLocation);
         Path path = Paths.get(fileListLocation);
         if (!Files.exists(path)) {
-            collector.getLog().error("No such file {}", fileListLocation);
+            collector.getReporter().error("No such file {}", fileListLocation);
             return;
         }
 
@@ -119,7 +119,7 @@ public final class FileCollectionUtil {
         try {
             filePaths = FileUtil.readFilelist(path.toFile());
         } catch (IOException e) {
-            collector.getLog().errorEx("Error reading {}", new Object[] { fileListLocation }, e);
+            collector.getReporter().errorEx("Error reading {}", new Object[] { fileListLocation }, e);
             return;
         }
         collectFiles(collector, filePaths);
@@ -128,7 +128,7 @@ public final class FileCollectionUtil {
     private static void addRoot(FileCollector collector, String rootLocation) throws IOException {
         Path path = Paths.get(rootLocation);
         if (!Files.exists(path)) {
-            collector.getLog().error("No such file {}", path);
+            collector.getReporter().error("No such file {}", path);
             return;
         }
 
@@ -169,15 +169,15 @@ public final class FileCollectionUtil {
                     String source = IOUtils.toString(sourceCode);
                     collector.addSourceFile(source, falseFilePath);
                 } catch (SQLException ex) {
-                    collector.getLog().warnEx("Cannot get SourceCode for {}  - skipping ...",
-                                              new Object[] { falseFilePath},
-                                              ex);
+                    collector.getReporter().warnEx("Cannot get SourceCode for {}  - skipping ...",
+                                                   new Object[] { falseFilePath },
+                                                   ex);
                 }
             }
         } catch (ClassNotFoundException e) {
-            collector.getLog().errorEx("Cannot get files from DB - probably missing database JDBC driver", e);
+            collector.getReporter().errorEx("Cannot get files from DB - probably missing database JDBC driver", e);
         } catch (Exception e) {
-            collector.getLog().errorEx("Cannot get files from DB - ''{}''", new Object[] { uriString }, e);
+            collector.getReporter().errorEx("Cannot get files from DB - ''{}''", new Object[] { uriString }, e);
         }
     }
 }

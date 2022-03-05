@@ -71,7 +71,7 @@ public class FileCollectorTest {
         FileCollector collector = newCollector();
 
         assertFalse(collector.addFile(root.resolve("does_not_exist.dummy")));
-        assertEquals(1, collector.getLog().numErrors());
+        assertEquals(1, collector.getReporter().numErrors());
     }
 
     @Test
@@ -82,7 +82,7 @@ public class FileCollectorTest {
 
         FileCollector collector = newCollector();
         assertFalse(collector.addFile(dir));
-        assertEquals(1, collector.getLog().numErrors());
+        assertEquals(1, collector.getReporter().numErrors());
     }
 
     @Test
@@ -128,7 +128,7 @@ public class FileCollectorTest {
     }
 
     private void assertNoErrors(FileCollector collector) {
-        assertEquals("No errors expected", 0, collector.getLog().numErrors());
+        assertEquals("No errors expected", 0, collector.getReporter().numErrors());
     }
 
     private FileCollector newCollector() {
@@ -137,7 +137,7 @@ public class FileCollectorTest {
 
     private FileCollector newCollector(LanguageVersion forcedVersion) {
         LanguageVersionDiscoverer discoverer = new LanguageVersionDiscoverer(forcedVersion);
-        FileCollector collector = FileCollector.newCollector(discoverer, new PmdTestLogger());
+        FileCollector collector = FileCollector.newCollector(discoverer, new TestMessageReporter());
         collector.relativizeWith(tempFolder.getRoot().getAbsolutePath());
         return collector;
     }

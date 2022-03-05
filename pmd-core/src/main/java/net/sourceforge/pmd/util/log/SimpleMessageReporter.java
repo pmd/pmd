@@ -4,27 +4,32 @@
 
 package net.sourceforge.pmd.util.log;
 
+import org.slf4j.Logger;
 import org.slf4j.event.Level;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 
 /**
- * A logger that ignores all messages.
+ * A {@link Logger} (java.util) based logger impl.
  *
  * @author Clément Fournier
  */
 @InternalApi
-public final class NoopPmdLogger extends PmdLoggerBase implements PmdLogger {
+public class SimpleMessageReporter extends MessageReporterBase implements MessageReporter {
 
-    // note: not singleton because PmdLogger accumulates error count.
+    private final Logger backend;
+
+    public SimpleMessageReporter(Logger backend) {
+        this.backend = backend;
+    }
 
     @Override
     protected boolean isLoggableImpl(Level level) {
-        return false;
+        return backend.isEnabledForLevel(level);
     }
 
     @Override
     protected void logImpl(Level level, String message, Object[] formatArgs) {
-        // noop
+        backend.atLevel(level).log(message, formatArgs);
     }
 }

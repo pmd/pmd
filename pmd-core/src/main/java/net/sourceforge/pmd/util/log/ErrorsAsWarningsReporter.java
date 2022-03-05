@@ -14,11 +14,11 @@ import net.sourceforge.pmd.annotation.InternalApi;
  * @author Clément Fournier
  */
 @InternalApi
-public final class PmdErrorsAsWarningsReporter extends PmdLoggerBase {
+public final class ErrorsAsWarningsReporter extends MessageReporterBase {
 
-    private final PmdLogger backend;
+    private final MessageReporter backend;
 
-    public PmdErrorsAsWarningsReporter(PmdLogger backend) {
+    public ErrorsAsWarningsReporter(MessageReporter backend) {
         this.backend = backend;
     }
 

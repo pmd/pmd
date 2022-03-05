@@ -7,16 +7,16 @@ package net.sourceforge.pmd.lang.document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.sourceforge.pmd.util.log.SimplePmdLogger;
+import net.sourceforge.pmd.util.log.SimpleMessageReporter;
 
 /**
  * @author Clément Fournier
  */
-public class PmdTestLogger extends SimplePmdLogger {
+public class TestMessageReporter extends SimpleMessageReporter {
 
     private static final Logger LOG = LoggerFactory.getLogger(PmdTestLogger.class.getName());
 
-    public PmdTestLogger() {
+    public TestMessageReporter() {
         super(LOG);
         setLevel(null);
     }
