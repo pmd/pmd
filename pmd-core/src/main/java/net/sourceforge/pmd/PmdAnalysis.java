@@ -174,6 +174,17 @@ public final class PmdAnalysis implements AutoCloseable {
     }
 
     /**
+     * Add several renderers at once.
+     *
+     * @throws NullPointerException If the parameter is null, or any of its items is null.
+     */
+    public void addRenderers(Collection<Renderer> renderers) {
+        for (Renderer r : renderers) {
+            addRenderer(r);
+        }
+    }
+
+    /**
      * Add a new ruleset.
      *
      * @throws NullPointerException If the parameter is null
@@ -189,7 +200,7 @@ public final class PmdAnalysis implements AutoCloseable {
      */
     public void addRuleSets(Collection<RuleSet> ruleSets) {
         for (RuleSet rs : ruleSets) {
-            this.ruleSets.add(Objects.requireNonNull(rs));
+            addRuleSet(rs);
         }
     }
 
