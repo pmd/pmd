@@ -11,6 +11,8 @@ import net.sourceforge.pmd.annotation.InternalApi;
 /**
  * Logger façade. Can probably be converted to just SLF4J logger in PMD 7.
  *
+ *  TODO rename to PmdReporter
+ *
  * @author Clément Fournier
  */
 @InternalApi
@@ -24,15 +26,6 @@ public interface PmdLogger {
 
     default void info(String message, Object... formatArgs) {
         log(Level.INFO, message, formatArgs);
-    }
-
-    // todo trace and debug should be on SLF4J logger directly
-    default void trace(String message, Object... formatArgs) {
-        log(Level.TRACE, message, formatArgs);
-    }
-
-    default void debug(String message, Object... formatArgs) {
-        log(Level.DEBUG, message, formatArgs);
     }
 
     default void warning(String message, Object... formatArgs) {

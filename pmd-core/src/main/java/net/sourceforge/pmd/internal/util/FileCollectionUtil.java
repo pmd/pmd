@@ -16,7 +16,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.io.IOUtils;
-import org.slf4j.event.Level;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.lang.Language;
@@ -27,13 +28,15 @@ import net.sourceforge.pmd.util.database.DBMSMetadata;
 import net.sourceforge.pmd.util.database.DBURI;
 import net.sourceforge.pmd.util.database.SourceObject;
 import net.sourceforge.pmd.util.datasource.DataSource;
+import net.sourceforge.pmd.util.log.PmdErrorsAsWarningsReporter;
 import net.sourceforge.pmd.util.log.PmdLogger;
-import net.sourceforge.pmd.util.log.PmdLoggerScope;
 
 /**
  * @author Clément Fournier
  */
 public final class FileCollectionUtil {
+
+    private static final Logger LOG = LoggerFactory.getLogger(FileCollectionUtil.class);
 
     private FileCollectionUtil() {
 
@@ -80,10 +83,12 @@ public final class FileCollectionUtil {
         }
 
         if (configuration.getIgnoreFilePath() != null) {
-            // disable trace logs for this secondary collector (would report 'adding xxx')
-            PmdLoggerScope mutedLog = new PmdLoggerScope("exclude list", collector.getLog());
-            mutedLog.setLevel(Level.ERROR);
-            try (FileCollector excludeCollector = FileCollector.newCollector(configuration.getLanguageVersionDiscoverer(), mutedLog)) {
+            // This is to be able to interpret the log (will report 'adding' xxx)
+            LOG.debug("Now collecting files to exclude.");
+            // errors like "excluded file does not exist" are reported as warnings.
+            // todo better reporting of *where* exactly the path is
+            PmdLogger mutedLog = new PmdErrorsAsWarningsReporter(collector.getLog());
+            try (FileCollector excludeCollector = collector.newCollector(mutedLog)) {
                 collectFileList(excludeCollector, configuration.getIgnoreFilePath());
                 collector.exclude(excludeCollector);
             }
@@ -103,6 +108,7 @@ public final class FileCollectionUtil {
     }
 
     public static void collectFileList(FileCollector collector, String fileListLocation) {
+        LOG.debug("Reading file list {}.", fileListLocation);
         Path path = Paths.get(fileListLocation);
         if (!Files.exists(path)) {
             collector.getLog().error("No such file {}", fileListLocation);
@@ -127,8 +133,10 @@ public final class FileCollectionUtil {
         }
 
         if (Files.isDirectory(path)) {
+            LOG.debug("Adding directory {}.", path);
             collector.addDirectory(path);
         } else if (rootLocation.endsWith(".zip") || rootLocation.endsWith(".jar")) {
+            LOG.debug("Adding zip file {}.", path);
             @SuppressWarnings("PMD.CloseResource")
             FileSystem fs = collector.addZipFile(path);
             if (fs == null) {
@@ -138,23 +146,24 @@ public final class FileCollectionUtil {
                 collector.addFileOrDirectory(zipRoot);
             }
         } else if (Files.isRegularFile(path)) {
+            LOG.debug("Adding regular file {}.", path);
             collector.addFile(path);
         } else {
-            collector.getLog().trace("Ignoring {}: not a regular file or directory", path);
+            LOG.debug("Ignoring {}: not a regular file or directory", path);
         }
     }
 
     public static void collectDB(FileCollector collector, String uriString) {
         try {
-            collector.getLog().trace("Connecting to {}", uriString);
+            LOG.debug("Connecting to {}", uriString);
             DBURI dbUri = new DBURI(uriString);
             DBMSMetadata dbmsMetadata = new DBMSMetadata(dbUri);
-            collector.getLog().trace("DBMSMetadata retrieved");
+            LOG.trace("DBMSMetadata retrieved");
             List<SourceObject> sourceObjectList = dbmsMetadata.getSourceObjectList();
-            collector.getLog().trace("Located {} database source objects", sourceObjectList.size());
+            LOG.trace("Located {} database source objects", sourceObjectList.size());
             for (SourceObject sourceObject : sourceObjectList) {
                 String falseFilePath = sourceObject.getPseudoFileName();
-                collector.getLog().trace("Adding database source object {}", falseFilePath);
+                LOG.trace("Adding database source object {}", falseFilePath);
 
                 try (Reader sourceCode = dbmsMetadata.getSourceCode(sourceObject)) {
                     String source = IOUtils.toString(sourceCode);

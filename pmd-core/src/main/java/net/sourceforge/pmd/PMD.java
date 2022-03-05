@@ -175,6 +175,7 @@ public final class PMD {
             // need to reload the logger with the new configuration
             log = LoggerFactory.getLogger(PMD.class);
         }
+        // create a top-level reporter
         PmdLogger pmdLogger = new SimplePmdLogger(log);
         // always install java.util.logging to slf4j bridge
         Slf4jSimpleConfiguration.installJulBridge();

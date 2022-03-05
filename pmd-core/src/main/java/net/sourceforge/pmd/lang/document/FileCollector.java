@@ -28,6 +28,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.sourceforge.pmd.PmdAnalysis;
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.internal.util.AssertionUtil;
@@ -45,6 +48,7 @@ import net.sourceforge.pmd.util.log.PmdLogger;
  */
 @SuppressWarnings("PMD.CloseResource")
 public final class FileCollector implements AutoCloseable {
+    private static final Logger LOG = LoggerFactory.getLogger(FileCollector.class);
 
     private final List<TextFile> allFilesToProcess = new ArrayList<>();
     private final List<Closeable> resourcesToClose = new ArrayList<>();
@@ -70,6 +74,17 @@ public final class FileCollector implements AutoCloseable {
         return new FileCollector(discoverer, logger);
     }
 
+    /**
+     * Returns a new collector using the configuration except for the logger.
+     */
+    @InternalApi
+    public FileCollector newCollector(PmdLogger logger) {
+        FileCollector fileCollector = new FileCollector(discoverer, logger);
+        fileCollector.charset = this.charset;
+        fileCollector.relativizeRoots.addAll(this.relativizeRoots);
+        return fileCollector;
+    }
+
     // public behaviour
 
     /**
@@ -82,12 +97,7 @@ public final class FileCollector implements AutoCloseable {
         if (closed) {
             throw new IllegalStateException("Collector was closed!");
         }
-        Collections.sort(allFilesToProcess, new Comparator<TextFile>() {
-            @Override
-            public int compare(TextFile o1, TextFile o2) {
-                return o1.getPathId().compareTo(o2.getPathId());
-            }
-        });
+        allFilesToProcess.sort(Comparator.comparing(TextFile::getPathId));
         return Collections.unmodifiableList(allFilesToProcess);
     }
 
@@ -195,7 +205,7 @@ public final class FileCollector implements AutoCloseable {
     }
 
     private void addFileImpl(TextFile textFile) {
-        log.trace("Adding file {} (lang: {}) ", textFile.getPathId(), textFile.getLanguageVersion().getTerseName());
+        LOG.trace("Adding file {} (lang: {}) ", textFile.getPathId(), textFile.getLanguageVersion().getTerseName());
         allFilesToProcess.add(textFile);
     }
 
@@ -206,12 +216,12 @@ public final class FileCollector implements AutoCloseable {
         List<Language> languages = discoverer.getLanguagesForFile(file);
 
         if (languages.isEmpty()) {
-            log.trace("File {} matches no known language, ignoring", file);
+            LOG.trace("File {} matches no known language, ignoring", file);
             return null;
         }
         Language lang = languages.get(0);
         if (languages.size() > 1) {
-            log.trace("File {} matches multiple languages ({}), selecting {}", file, languages, lang);
+            LOG.trace("File {} matches multiple languages ({}), selecting {}", file, languages, lang);
         }
         return discoverer.getDefaultLanguageVersion(lang);
     }
@@ -361,7 +371,7 @@ public final class FileCollector implements AutoCloseable {
         for (Iterator<TextFile> iterator = allFilesToProcess.iterator(); iterator.hasNext();) {
             TextFile file = iterator.next();
             if (toExclude.contains(file)) {
-                log.trace("Excluding file {}", file.getPathId());
+                LOG.trace("Excluding file {}", file.getPathId());
                 iterator.remove();
             }
         }
@@ -376,7 +386,7 @@ public final class FileCollector implements AutoCloseable {
             TextFile file = iterator.next();
             Language lang = file.getLanguageVersion().getLanguage();
             if (!languages.contains(lang)) {
-                log.trace("Filtering out {}, no rules for language {}", file.getPathId(), lang);
+                LOG.trace("Filtering out {}, no rules for language {}", file.getPathId(), lang);
                 iterator.remove();
             }
         }

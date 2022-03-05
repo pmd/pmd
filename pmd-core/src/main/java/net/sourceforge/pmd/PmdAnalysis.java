@@ -283,7 +283,7 @@ public final class PmdAnalysis implements AutoCloseable {
                     final LanguageVersion version = discoverer.getDefaultLanguageVersion(ruleLanguage);
                     if (RuleSet.applies(rule, version)) {
                         languages.add(ruleLanguage);
-                        logger.trace("Using {} version ''{}''", version.getLanguage().getName(), version.getTerseName());
+                        LOG.trace("Using {} version ''{}''", version.getLanguage().getName(), version.getTerseName());
                     }
                 }
             }
