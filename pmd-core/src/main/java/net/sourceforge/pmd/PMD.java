@@ -4,15 +4,22 @@
 
 package net.sourceforge.pmd;
 
+import static net.sourceforge.pmd.util.CollectionUtil.listOf;
+
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Map.Entry;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.event.Level;
 
+import net.sourceforge.pmd.Report.GlobalReportBuilderListener;
 import net.sourceforge.pmd.ReportStatsListener.ReportStats;
 import net.sourceforge.pmd.benchmark.TextTimingReportRenderer;
 import net.sourceforge.pmd.benchmark.TimeTracker;
@@ -23,6 +30,8 @@ import net.sourceforge.pmd.cli.PMDCommandLineInterface;
 import net.sourceforge.pmd.cli.PmdParametersParseResult;
 import net.sourceforge.pmd.cli.internal.CliMessages;
 import net.sourceforge.pmd.internal.Slf4jSimpleConfiguration;
+import net.sourceforge.pmd.renderers.Renderer;
+import net.sourceforge.pmd.util.datasource.DataSource;
 import net.sourceforge.pmd.util.log.PmdLogger;
 import net.sourceforge.pmd.util.log.SimplePmdLogger;
 
@@ -97,6 +106,40 @@ public final class PMD {
                 PMDVersion.isUnknown() || PMDVersion.isSnapshot() ? "latest" : "pmd-" + PMDVersion.VERSION;
             log.warn("This analysis could be faster, please consider using Incremental Analysis: "
                             + "https://pmd.github.io/{}/pmd_userdocs_incremental_analysis.html", version);
+        }
+    }
+
+    /**
+     * Run PMD using the given configuration. This replaces the other overload.
+     *
+     * @param configuration Configuration for the run. Note that the files,
+     *                      and rulesets, are ignored, as they are supplied
+     *                      as parameters
+     * @param ruleSets      Parsed rulesets
+     * @param files         Files to process, will be closed by this method.
+     * @param renderers     Renderers that render the report (may be empty)
+     *
+     * @return Report in which violations are accumulated
+     *
+     * @throws Exception If there was a problem when opening or closing the renderers
+     *
+     * @deprecated Use {@link PmdAnalysis}
+     */
+    @Deprecated
+    public static Report processFiles(PMDConfiguration configuration,
+                                      List<RuleSet> ruleSets,
+                                      Collection<? extends DataSource> files,
+                                      List<Renderer> renderers) throws Exception {
+
+        try (PmdAnalysis pmd = PmdAnalysis.create(configuration)) {
+            pmd.addRuleSets(ruleSets);
+            pmd.addRenderers(renderers);
+            @SuppressWarnings("PMD.CloseResource")
+            GlobalReportBuilderListener reportBuilder = new GlobalReportBuilderListener();
+            List<DataSource> sortedFiles = new ArrayList<>(files);
+            sortedFiles.sort(Comparator.comparing(ds -> ds.getNiceFileName(false, "")));
+            pmd.performAnalysisImpl(listOf(reportBuilder), sortedFiles);
+            return reportBuilder.getResult();
         }
     }
 

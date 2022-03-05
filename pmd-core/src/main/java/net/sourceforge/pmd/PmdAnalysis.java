@@ -184,6 +184,17 @@ public final class PmdAnalysis implements AutoCloseable {
     }
 
     /**
+     * Add several renderers at once.
+     *
+     * @throws NullPointerException If the parameter is null, or any of its items is null.
+     */
+    public void addRenderers(Collection<Renderer> renderers) {
+        for (Renderer r : renderers) {
+            addRenderer(r);
+        }
+    }
+
+    /**
      * Add a new listener. As per the contract of {@link GlobalAnalysisListener},
      * this object must be ready for interaction. Nothing will be done
      * with the listener until {@link #performAnalysis()} is called.
@@ -211,7 +222,7 @@ public final class PmdAnalysis implements AutoCloseable {
      */
     public void addRuleSets(Collection<RuleSet> ruleSets) {
         for (RuleSet rs : ruleSets) {
-            this.ruleSets.add(Objects.requireNonNull(rs));
+            addRuleSet(rs);
         }
     }
 
@@ -250,48 +261,42 @@ public final class PmdAnalysis implements AutoCloseable {
         try (FileCollector files = collector) {
             files.filterLanguages(getApplicableLanguages());
             List<DataSource> dataSources = FileCollectionUtil.collectorToDataSource(files);
-            RuleSets rulesets = new RuleSets(this.ruleSets);
+            performAnalysisImpl(extraListeners, dataSources);
+        }
+    }
 
-            GlobalAnalysisListener listener;
-            try {
-                @SuppressWarnings("PMD.CloseResource")
-                AnalysisCacheListener cacheListener = new AnalysisCacheListener(
-                    configuration.getAnalysisCache(),
-                    rulesets,
-                    configuration.getClassLoader()
-                );
-                listener = GlobalAnalysisListener.tee(listOf(
-                    createComposedRendererListener(renderers),
-                    GlobalAnalysisListener.tee(listeners),
-                    GlobalAnalysisListener.tee(extraListeners),
-                    cacheListener
-                ));
-            } catch (Exception e) {
-                reporter.errorEx("Exception while initializing analysis listeners", e);
-                throw new RuntimeException("Exception while initializing analysis listeners", e);
+    void performAnalysisImpl(List<? extends GlobalReportBuilderListener> extraListeners, List<DataSource> dataSources) {
+        RuleSets rulesets = new RuleSets(this.ruleSets);
+
+        GlobalAnalysisListener listener;
+        try {
+            @SuppressWarnings("PMD.CloseResource") AnalysisCacheListener cacheListener = new AnalysisCacheListener(configuration.getAnalysisCache(), rulesets, configuration.getClassLoader());
+            listener = GlobalAnalysisListener.tee(listOf(createComposedRendererListener(renderers), GlobalAnalysisListener.tee(listeners), GlobalAnalysisListener.tee(extraListeners), cacheListener));
+        } catch (Exception e) {
+            reporter.errorEx("Exception while initializing analysis listeners", e);
+            throw new RuntimeException("Exception while initializing analysis listeners", e);
+        }
+
+        try (TimedOperation ignored = TimeTracker.startOperation(TimedOperationCategory.FILE_PROCESSING)) {
+
+            for (final Rule rule : removeBrokenRules(rulesets)) {
+                // todo Just like we throw for invalid properties, "broken rules"
+                // shouldn't be a "config error". This is the only instance of
+                // config errors...
+                listener.onConfigError(new Report.ConfigurationError(rule, rule.dysfunctionReason()));
             }
 
-            try (TimedOperation ignored = TimeTracker.startOperation(TimedOperationCategory.FILE_PROCESSING)) {
-
-                for (final Rule rule : removeBrokenRules(rulesets)) {
-                    // todo Just like we throw for invalid properties, "broken rules"
-                    // shouldn't be a "config error". This is the only instance of
-                    // config errors...
-                    listener.onConfigError(new Report.ConfigurationError(rule, rule.dysfunctionReason()));
-                }
-
-                PMD.encourageToUseIncrementalAnalysis(configuration);
-                try (AbstractPMDProcessor processor = AbstractPMDProcessor.newFileProcessor(configuration)) {
-                    processor.processFiles(rulesets, dataSources, listener);
-                }
-            } finally {
-                try {
-                    listener.close();
-                } catch (Exception e) {
-                    reporter.errorEx("Exception while initializing analysis listeners", e);
-                    // todo better exception
-                    throw new RuntimeException("Exception while initializing analysis listeners", e);
-                }
+            PMD.encourageToUseIncrementalAnalysis(configuration);
+            try (AbstractPMDProcessor processor = AbstractPMDProcessor.newFileProcessor(configuration)) {
+                processor.processFiles(rulesets, dataSources, listener);
+            }
+        } finally {
+            try {
+                listener.close();
+            } catch (Exception e) {
+                reporter.errorEx("Exception while initializing analysis listeners", e);
+                // todo better exception
+                throw new RuntimeException("Exception while initializing analysis listeners", e);
             }
         }
     }
