@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.util.document;
+package net.sourceforge.pmd.lang.document;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;

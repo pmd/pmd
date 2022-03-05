@@ -7,6 +7,6 @@
  * is a low-level, experimental API and is not meant for rule developers.
  */
 @Experimental
-package net.sourceforge.pmd.util.document;
+package net.sourceforge.pmd.lang.document;
 
 import net.sourceforge.pmd.annotation.Experimental;

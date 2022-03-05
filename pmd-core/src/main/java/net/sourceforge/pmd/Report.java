@@ -18,7 +18,7 @@ import net.sourceforge.pmd.renderers.AbstractAccumulatingRenderer;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
 import net.sourceforge.pmd.util.BaseResultProducingCloseable;
-import net.sourceforge.pmd.util.document.TextFile;
+import net.sourceforge.pmd.lang.document.TextFile;
 
 /**
  * A {@link Report} collects all informations during a PMD execution. This

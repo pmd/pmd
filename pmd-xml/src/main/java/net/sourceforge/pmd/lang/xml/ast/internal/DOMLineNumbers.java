@@ -13,8 +13,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.ProcessingInstruction;
 
 import net.sourceforge.pmd.lang.xml.ast.internal.XmlParserImpl.RootXmlNode;
-import net.sourceforge.pmd.util.document.Chars;
-import net.sourceforge.pmd.util.document.TextDocument;
+import net.sourceforge.pmd.lang.document.Chars;
+import net.sourceforge.pmd.lang.document.TextDocument;
 
 /**
  *

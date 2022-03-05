@@ -7,7 +7,7 @@ package net.sourceforge.pmd.lang.modelica.ast;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument;
-import net.sourceforge.pmd.util.document.TextDocument;
+import net.sourceforge.pmd.lang.document.TextDocument;
 
 
 public class ModelicaTokenDocument extends JavaccTokenDocument {

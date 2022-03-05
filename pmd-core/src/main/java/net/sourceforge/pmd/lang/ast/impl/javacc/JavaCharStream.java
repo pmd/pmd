@@ -7,7 +7,7 @@ package net.sourceforge.pmd.lang.ast.impl.javacc;
 import java.io.EOFException;
 import java.io.IOException;
 
-import net.sourceforge.pmd.util.document.Chars;
+import net.sourceforge.pmd.lang.document.Chars;
 
 /**
  * This stream buffers the whole file in memory before parsing,

@@ -13,7 +13,7 @@ import net.sourceforge.pmd.lang.apex.multifile.ApexMultifileAnalysis;
 import net.sourceforge.pmd.lang.ast.AstInfo;
 import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
 import net.sourceforge.pmd.lang.ast.RootNode;
-import net.sourceforge.pmd.util.document.TextRegion;
+import net.sourceforge.pmd.lang.document.TextRegion;
 
 import apex.jorje.semantic.ast.AstNode;
 import apex.jorje.semantic.ast.compilation.Compilation;

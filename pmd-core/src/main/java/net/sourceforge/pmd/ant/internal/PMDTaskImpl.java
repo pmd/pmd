@@ -36,8 +36,8 @@ import net.sourceforge.pmd.reporting.GlobalAnalysisListener.ViolationCounterList
 import net.sourceforge.pmd.util.ClasspathClassLoader;
 import net.sourceforge.pmd.util.FileUtil;
 import net.sourceforge.pmd.util.IOUtil;
-import net.sourceforge.pmd.util.document.TextFile;
-import net.sourceforge.pmd.util.document.TextFileBuilder;
+import net.sourceforge.pmd.lang.document.TextFile;
+import net.sourceforge.pmd.lang.document.TextFileBuilder;
 import net.sourceforge.pmd.util.log.AntLogHandler;
 import net.sourceforge.pmd.util.log.ScopedLogHandlersManager;
 

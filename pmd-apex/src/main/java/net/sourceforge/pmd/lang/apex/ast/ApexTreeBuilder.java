@@ -19,9 +19,9 @@ import java.util.regex.Pattern;
 
 import net.sourceforge.pmd.lang.apex.multifile.ApexMultifileAnalysis;
 import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
-import net.sourceforge.pmd.util.document.Chars;
-import net.sourceforge.pmd.util.document.TextDocument;
-import net.sourceforge.pmd.util.document.TextRegion;
+import net.sourceforge.pmd.lang.document.Chars;
+import net.sourceforge.pmd.lang.document.TextDocument;
+import net.sourceforge.pmd.lang.document.TextRegion;
 
 import apex.jorje.data.Location;
 import apex.jorje.data.Locations;

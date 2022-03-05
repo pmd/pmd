@@ -11,8 +11,8 @@ import net.sourceforge.pmd.lang.LanguageVersionHandler
 import net.sourceforge.pmd.lang.ast.*
 import net.sourceforge.pmd.processor.AbstractPMDProcessor
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener
-import net.sourceforge.pmd.util.document.TextDocument
-import net.sourceforge.pmd.util.document.TextFile
+import net.sourceforge.pmd.lang.document.TextDocument
+import net.sourceforge.pmd.lang.document.TextFile
 import org.apache.commons.io.IOUtils
 import java.io.InputStream
 import java.nio.charset.StandardCharsets

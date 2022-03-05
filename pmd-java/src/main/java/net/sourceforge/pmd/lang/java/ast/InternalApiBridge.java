@@ -34,7 +34,7 @@ import net.sourceforge.pmd.lang.java.types.ast.LazyTypeResolver;
 import net.sourceforge.pmd.lang.java.types.internal.infer.Infer;
 import net.sourceforge.pmd.lang.java.types.internal.infer.TypeInferenceLogger;
 import net.sourceforge.pmd.lang.symboltable.Scope;
-import net.sourceforge.pmd.util.document.TextDocument;
+import net.sourceforge.pmd.lang.document.TextDocument;
 
 /**
  * Acts as a bridge between outer parts of PMD and the restricted access

@@ -26,7 +26,7 @@ import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
-import net.sourceforge.pmd.util.document.Chars;
+import net.sourceforge.pmd.lang.document.Chars;
 
 public class ApexDocRule extends AbstractApexRule {
 

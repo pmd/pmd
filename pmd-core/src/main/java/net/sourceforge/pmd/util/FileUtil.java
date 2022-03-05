@@ -49,9 +49,9 @@ import net.sourceforge.pmd.util.database.DBMSMetadata;
 import net.sourceforge.pmd.util.database.DBURI;
 import net.sourceforge.pmd.util.database.SourceObject;
 import net.sourceforge.pmd.util.datasource.DataSource;
-import net.sourceforge.pmd.util.document.ReferenceCountedCloseable;
-import net.sourceforge.pmd.util.document.TextFile;
-import net.sourceforge.pmd.util.document.TextFileBuilder;
+import net.sourceforge.pmd.lang.document.ReferenceCountedCloseable;
+import net.sourceforge.pmd.lang.document.TextFile;
+import net.sourceforge.pmd.lang.document.TextFileBuilder;
 
 /**
  * This is a utility class for working with Files.

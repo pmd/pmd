@@ -8,8 +8,8 @@ import java.util.Iterator;
 
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.internal.util.IteratorUtil;
-import net.sourceforge.pmd.util.document.Reportable;
-import net.sourceforge.pmd.util.document.TextRegion;
+import net.sourceforge.pmd.lang.document.Reportable;
+import net.sourceforge.pmd.lang.document.TextRegion;
 
 /**
  * Represents a language-independent token such as constants, values language reserved keywords, or comments.
