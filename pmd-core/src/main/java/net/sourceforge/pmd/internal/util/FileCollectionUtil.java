@@ -29,7 +29,7 @@ import net.sourceforge.pmd.util.database.DBURI;
 import net.sourceforge.pmd.util.database.SourceObject;
 import net.sourceforge.pmd.util.datasource.DataSource;
 import net.sourceforge.pmd.util.log.MessageReporter;
-import net.sourceforge.pmd.util.log.ErrorsAsWarningsReporter;
+import net.sourceforge.pmd.util.log.internal.ErrorsAsWarningsReporter;
 
 /**
  * @author Clément Fournier

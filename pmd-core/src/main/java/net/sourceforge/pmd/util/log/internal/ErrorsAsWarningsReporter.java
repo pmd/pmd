@@ -2,11 +2,12 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.util.log;
+package net.sourceforge.pmd.util.log.internal;
 
 import org.slf4j.event.Level;
 
 import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.util.log.MessageReporter;
 
 /**
  * Turns errors into warnings reported on another logger.

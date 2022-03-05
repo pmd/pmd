@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.util.log;
+package net.sourceforge.pmd.util.log.internal;
 
 import java.text.MessageFormat;
 
@@ -10,6 +10,7 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.event.Level;
 
 import net.sourceforge.pmd.util.StringUtil;
+import net.sourceforge.pmd.util.log.MessageReporter;
 
 /**
  * Base implementation.
