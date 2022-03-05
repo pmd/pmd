@@ -70,6 +70,7 @@ The CLI itself remains compatible, if you run PMD via command-line, no action is
   {% jdoc core::PMDConfiguration#setRuleSets(java.util.List) %},
   {% jdoc core::PMDConfiguration#addRuleSet(java.lang.String) %},
   and {% jdoc core::PMDConfiguration#getRuleSetPaths() %}.
+* Several members of {% jdoc test::cli.BaseCLITest %} have been deprecated with replacements.
 
 #### Experimental APIs
 
