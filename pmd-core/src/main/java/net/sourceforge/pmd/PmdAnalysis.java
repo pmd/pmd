@@ -72,6 +72,8 @@ public final class PmdAnalysis implements AutoCloseable {
     private final PMDConfiguration configuration;
     private final SimplePmdLogger reporter = new SimplePmdLogger(Logger.getLogger("net.sourceforge.pmd"));
 
+    private boolean closed;
+
     /**
      * Constructs a new instance. The files paths (input files, filelist,
      * exclude list, etc) given in the configuration are collected into
@@ -308,6 +310,10 @@ public final class PmdAnalysis implements AutoCloseable {
 
     @Override
     public void close() {
+        if (closed) {
+            return;
+        }
+        closed = true;
         collector.close();
 
         /*

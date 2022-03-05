@@ -4,9 +4,6 @@
 
 package net.sourceforge.pmd.ant.internal;
 
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -22,11 +19,8 @@ import org.apache.tools.ant.types.Path;
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.PmdAnalysis;
 import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RulePriority;
-import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetLoader;
-import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.ant.Formatter;
 import net.sourceforge.pmd.ant.PMDTask;
 import net.sourceforge.pmd.ant.SourceLanguage;
@@ -212,32 +206,6 @@ public class PMDTaskImpl {
                                   project, classpath, parentFirst);
     }
 
-    private void handleError(String filename, Report errorReport, RuntimeException pmde) {
-
-        pmde.printStackTrace();
-        project.log(pmde.toString(), Project.MSG_VERBOSE);
-
-        Throwable cause = pmde.getCause();
-
-        if (cause != null) {
-            try (StringWriter strWriter = new StringWriter();
-                 PrintWriter printWriter = new PrintWriter(strWriter)) {
-                cause.printStackTrace(printWriter);
-                project.log(strWriter.toString(), Project.MSG_VERBOSE);
-            } catch (IOException e) {
-                project.log("Error while closing stream", e, Project.MSG_ERR);
-            }
-            if (StringUtils.isNotBlank(cause.getMessage())) {
-                project.log(cause.getMessage(), Project.MSG_VERBOSE);
-            }
-        }
-
-        if (failOnError) {
-            throw new BuildException(pmde);
-        }
-        errorReport.addError(new Report.ProcessingError(pmde, filename));
-    }
-
     private void setupClassLoader() {
         try {
             if (auxClasspath != null) {
@@ -268,14 +236,4 @@ public class PMDTaskImpl {
         }
     }
 
-    private void logRulesUsed(RuleSets rules) {
-        project.log("Using these rulesets: " + configuration.getRuleSets(), Project.MSG_VERBOSE);
-
-        RuleSet[] ruleSets = rules.getAllRuleSets();
-        for (RuleSet ruleSet : ruleSets) {
-            for (Rule rule : ruleSet.getRules()) {
-                project.log("Using rule " + rule.getName(), Project.MSG_VERBOSE);
-            }
-        }
-    }
 }

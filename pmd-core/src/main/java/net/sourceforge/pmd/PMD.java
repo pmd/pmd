@@ -337,18 +337,13 @@ public class PMD {
                                       final List<RuleSet> rulesets,
                                       final Collection<? extends DataSource> files,
                                       final List<Renderer> renderers) {
-        @SuppressWarnings("PMD.CloseResource")
-        PmdAnalysis builder = PmdAnalysis.createWithoutCollectingFiles(configuration);
-        for (RuleSet ruleset : rulesets) {
-            builder.addRuleSet(ruleset);
+        try (PmdAnalysis builder = PmdAnalysis.createWithoutCollectingFiles(configuration)) {
+            builder.addRuleSets(rulesets);
+            builder.addRenderers(renderers);
+            List<DataSource> sortedFiles = new ArrayList<>(files);
+            sortFiles(configuration, sortedFiles);
+            return builder.performAnalysisImpl(sortedFiles);
         }
-        for (Renderer renderer : renderers) {
-            builder.addRenderer(renderer);
-        }
-        List<DataSource> sortedFiles = new ArrayList<>(files);
-        sortFiles(configuration, sortedFiles);
-
-        return builder.performAnalysisImpl(sortedFiles);
     }
 
     private static void sortFiles(final PMDConfiguration configuration, final List<DataSource> files) {
