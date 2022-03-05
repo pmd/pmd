@@ -23,9 +23,11 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.commons.lang3.reflect.MethodUtils;
 import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.Project;
 import org.apache.tools.ant.types.Parameter;
 
 import net.sourceforge.pmd.Report;
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.renderers.RendererFactory;
 
@@ -230,5 +232,13 @@ public class Formatter {
             // fall-through
         }
         return null;
+    }
+
+    @InternalApi
+    public Renderer toRenderer(final Project project, List<String> inputPaths) {
+        this.start(project.getBaseDir().toString());
+        Renderer renderer = getRenderer();
+        renderer.setUseShortNames(inputPaths);
+        return renderer;
     }
 }

@@ -18,6 +18,7 @@ import java.util.logging.Logger;
 
 import org.apache.commons.lang3.StringUtils;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.util.CollectionUtil;
@@ -189,8 +190,12 @@ public final class RuleSetLoader {
     /**
      * Loads a list of rulesets, if any has an error, report it on the contextual
      * error reporter instead of aborting, and continue loading the rest.
+     *
+     * <p>Internal API: might be published later, or maybe in PMD 7 this
+     * will be the default behaviour of every method of this class.
      */
-    List<RuleSet> loadRuleSetsWithoutException(List<String> rulesetPaths) {
+    @InternalApi
+    public List<RuleSet> loadRuleSetsWithoutException(List<String> rulesetPaths) {
         List<RuleSet> ruleSets = new ArrayList<>(rulesetPaths.size());
         boolean anyRules = false;
         for (String path : rulesetPaths) {
