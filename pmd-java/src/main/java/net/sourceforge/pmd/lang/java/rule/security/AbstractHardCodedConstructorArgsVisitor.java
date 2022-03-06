@@ -62,9 +62,9 @@ abstract class AbstractHardCodedConstructorArgsVisitor extends AbstractJavaRulec
             varAccess = (ASTVariableAccess) firstArgumentExpression;
         }
 
-        if (varAccess != null && varAccess.getSignature() != null && varAccess.getSignature().getSymbol() != null) {
+        if (varAccess != null && varAccess.getReferencedSym() != null) {
             // named variable or method call on named variable found
-            ASTVariableDeclaratorId varDecl = varAccess.getSignature().getSymbol().tryGetNode();
+            ASTVariableDeclaratorId varDecl = varAccess.getReferencedSym().tryGetNode();
             validateProperKeyArgument(data, varDecl.getInitializer());
             validateVarUsages(data, varDecl);
         } else if (firstArgumentExpression instanceof ASTArrayAllocation) {

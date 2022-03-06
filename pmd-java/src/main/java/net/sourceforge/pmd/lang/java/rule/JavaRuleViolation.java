@@ -115,11 +115,11 @@ public class JavaRuleViolation extends ParametricRuleViolation<JavaNode> {
         } else if (node instanceof ASTLocalVariableDeclaration) {
             return getVariableNames((ASTLocalVariableDeclaration) node);
         } else if (node instanceof ASTVariableDeclarator) {
-            return ((ASTVariableDeclarator) node).getVarId().getVariableName();
+            return ((ASTVariableDeclarator) node).getVarId().getName();
         } else if (node instanceof ASTVariableDeclaratorId) {
-            return ((ASTVariableDeclaratorId) node).getVariableName();
+            return ((ASTVariableDeclaratorId) node).getName();
         } else if (node instanceof ASTFormalParameter) {
-            return ((ASTFormalParameter) node).getVarId().getVariableName();
+            return ((ASTFormalParameter) node).getVarId().getName();
         } else {
             return "";
         }

@@ -21,10 +21,12 @@ class ASTFieldDeclarationTest : ParserTestSpec({
             "int x @A@B[];" should parseAs {
                 fieldDecl {
 
-                    it::getModifiers shouldBe modifiers { }
+                    it::getModifiers shouldBe modifiers {
+                        it.hasAny(JModifier.PUBLIC) shouldBe false
+                        it.hasAnyExplicitly(JModifier.PUBLIC) shouldBe false
+                    }
 
                     it::isPublic shouldBe false
-                    it::isSyntacticallyPublic shouldBe false
                     it::isPackagePrivate shouldBe true
 
                     primitiveType(INT)

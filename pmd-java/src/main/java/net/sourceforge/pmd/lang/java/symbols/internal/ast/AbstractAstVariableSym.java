@@ -30,7 +30,7 @@ abstract class AbstractAstVariableSym
 
     @Override
     public String getSimpleName() {
-        return node.getVariableName();
+        return node.getName();
     }
 
     @Override

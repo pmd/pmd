@@ -23,8 +23,7 @@ import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
  *
  * </pre>
  */
-// TODO extend AbstractStatement
-public final class ASTLocalVariableDeclaration extends AbstractJavaNode
+public final class ASTLocalVariableDeclaration extends AbstractStatement
     implements Iterable<ASTVariableDeclaratorId>,
                ASTStatement,
                FinalizableNode,

@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import java.math.BigInteger;
 import java.util.Locale;
+import java.util.Objects;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -22,6 +23,8 @@ public final class ASTNumericLiteral extends AbstractLiteral implements ASTLiter
      * false if this is a floating-point literal, ie float OR double.
      */
     private boolean isIntegral;
+    private boolean is64BitsWide;
+    private Number value;
 
 
     ASTNumericLiteral(int id) {
@@ -36,18 +39,7 @@ public final class ASTNumericLiteral extends AbstractLiteral implements ASTLiter
 
     @Override
     public @NonNull Number getConstValue() {
-        // don't use ternaries, the compiler messes up autoboxing.
-        if (isIntegral()) {
-            if (isIntLiteral()) {
-                return getValueAsInt();
-            }
-            return getValueAsLong();
-        } else {
-            if (isFloatLiteral()) {
-                return getValueAsFloat();
-            }
-            return getValueAsDouble();
-        }
+        return Objects.requireNonNull(value);
     }
 
     @Override
@@ -65,37 +57,30 @@ public final class ASTNumericLiteral extends AbstractLiteral implements ASTLiter
     }
 
     @Override
-    public boolean isIntLiteral() {
-        return isIntegral && !isLongLiteral();
-    }
-
-    // TODO all of this can be done once in jjtCloseNodeScope
-
-    @Override
-    public boolean isLongLiteral() {
+    public void jjtClose() {
+        // here, we know whether we're an integral literal or not.
+        String image = getImage();
+        char lastChar = image.charAt(image.length() - 1);
         if (isIntegral) {
-            String image = getImage();
-            char lastChar = image.charAt(image.length() - 1);
-            return lastChar == 'l' || lastChar == 'L';
+            is64BitsWide = lastChar == 'l' || lastChar == 'L';
+            // Using BigInteger to allow parsing 0x8000000000000000+ numbers as negative instead of a NumberFormatException
+            BigInteger bigInt = new BigInteger(stripIntValue(), getBase());
+
+            // tip: be careful of ternary expressions when playing with autoboxing
+            if (is64BitsWide) {
+                value = bigInt.longValue();
+            } else {
+                value = bigInt.intValue();
+            }
+        } else {
+            is64BitsWide = lastChar == 'd' || lastChar == 'D';
+            double d = Double.parseDouble(stripFloatValue());
+            if (is64BitsWide) {
+                value = d;
+            } else {
+                value = (float) d;
+            }
         }
-        return false;
-    }
-
-
-    @Override
-    public boolean isFloatLiteral() {
-        if (!isIntegral) {
-            String image = getImage();
-            char lastChar = image.charAt(image.length() - 1);
-            return lastChar == 'f' || lastChar == 'F';
-        }
-        return false;
-    }
-
-
-    @Override
-    public boolean isDoubleLiteral() {
-        return !isIntegral && !isFloatLiteral();
     }
 
 
@@ -164,38 +149,65 @@ public final class ASTNumericLiteral extends AbstractLiteral implements ASTLiter
         return 10;
     }
 
-    // From 7.0.x, these methods always return a meaningful number, the
-    // closest we can find.
-    // In 6.0.x, eg getValueAsInt was giving up when this was a double.
 
+    /**
+     * Returns whether this is a literal of type {@code int}.
+     */
+    public boolean isIntLiteral() {
+        return isIntegral && !is64BitsWide;
+    }
+
+    /**
+     * Returns whether this is a literal of type {@code long}.
+     */
+    public boolean isLongLiteral() {
+        return isIntegral && is64BitsWide;
+    }
+
+    /**
+     * Returns whether this is a literal of type {@code float}.
+     */
+    public boolean isFloatLiteral() {
+        return !isIntegral && !is64BitsWide;
+    }
+
+
+    /**
+     * Returns whether this is a literal of type {@code double}.
+     */
+    public boolean isDoubleLiteral() {
+        return !isIntegral && is64BitsWide;
+    }
+
+    /**
+     * Returns the int value closest to the actual value of this literal.
+     */
     public int getValueAsInt() {
-        if (isIntegral) {
-            // the downcast allows to parse 0x80000000+ numbers as negative instead of a NumberFormatException
-            return (int) getValueAsLong();
-        } else {
-            return (int) getValueAsDouble();
-        }
+        return value.intValue();
     }
 
 
+    /**
+     * Returns the long value closest to the actual value of this literal.
+     */
     public long getValueAsLong() {
-        if (isIntegral) {
-            // Using BigInteger to allow parsing 0x8000000000000000+ numbers as negative instead of a NumberFormatException
-            BigInteger bigInt = new BigInteger(stripIntValue(), getBase());
-            return bigInt.longValue();
-        } else {
-            return (long) getValueAsDouble();
-        }
+        return value.longValue();
     }
 
 
+    /**
+     * Returns the float value closest to the actual value of this literal.
+     */
     public float getValueAsFloat() {
-        return isIntegral ? (float) getValueAsLong() : (float) getValueAsDouble();
+        return value.floatValue();
     }
 
 
+    /**
+     * Returns the double value closest to the actual value of this literal.
+     */
     public double getValueAsDouble() {
-        return isIntegral ? (double) getValueAsLong() : Double.parseDouble(stripFloatValue());
+        return value.doubleValue();
     }
 
 }

@@ -112,7 +112,7 @@ public final class ASTVariableDeclaratorId extends AbstractTypedSymbolDeclarator
     @DeprecatedAttribute(replaceWith = "@Name")
     @Deprecated
     public String getImage() {
-        return getName();
+        return null;
     }
 
     /** Returns the name of the variable. */
@@ -209,17 +209,6 @@ public final class ASTVariableDeclaratorId extends AbstractTypedSymbolDeclarator
      */
     public boolean isEnumConstant() {
         return getParent() instanceof ASTEnumConstant;
-    }
-
-    /**
-     * Returns the name of the variable.
-     *
-     * @deprecated Use {@link #getName()}
-     */
-    @Deprecated
-    @DeprecatedAttribute(replaceWith = "@Name")
-    public String getVariableName() {
-        return getName();
     }
 
     /**

@@ -37,7 +37,6 @@ class ASTAnnotationTest : ParserTestSpec({
 
                     it::getMemberList shouldBe null
 
-                    it::getAnnotationName shouldBe "F"
                 }
             }
 
@@ -49,7 +48,6 @@ class ASTAnnotationTest : ParserTestSpec({
 
                     it::getMemberList shouldBe null
 
-                    it::getAnnotationName shouldBe "java.lang.Override"
                 }
             }
 
@@ -61,7 +59,6 @@ class ASTAnnotationTest : ParserTestSpec({
 
                     it::getMemberList shouldBe null
 
-                    it::getAnnotationName shouldBe "Override"
                 }
             }
         }

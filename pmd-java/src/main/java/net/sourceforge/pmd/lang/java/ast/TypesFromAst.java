@@ -81,7 +81,7 @@ final class TypesFromAst {
 
             JTypeMirror eltType = fromAst(ts, lexicalSubst, ((ASTArrayType) node).getElementType());
 
-            return ts.arrayType(eltType, node.getArrayDepth());
+            return ts.arrayType(eltType, ((ASTArrayType) node).getDimensions().size());
 
         } else if (node instanceof ASTPrimitiveType) {
 

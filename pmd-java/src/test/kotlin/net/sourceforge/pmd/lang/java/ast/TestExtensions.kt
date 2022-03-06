@@ -112,7 +112,7 @@ fun TreeNodeWrapper<Node, *>.thisExpr(qualifier: ValuedNodeSpec<ASTThisExpressio
 
 fun TreeNodeWrapper<Node, *>.variableId(name: String, otherAssertions: NodeSpec<ASTVariableDeclaratorId> = EmptyAssertions) =
         child<ASTVariableDeclaratorId>(ignoreChildren = otherAssertions == EmptyAssertions) {
-            it::getVariableName shouldBe name
+            it::getName shouldBe name
             otherAssertions()
         }
 
@@ -121,7 +121,7 @@ fun TreeNodeWrapper<Node, *>.simpleLambdaParam(name: String, otherAssertions: No
             it::getModifiers shouldBe modifiers {  }
 
             child<ASTVariableDeclaratorId>(ignoreChildren = otherAssertions == EmptyAssertions) {
-                it::getVariableName shouldBe name
+                it::getName shouldBe name
                 otherAssertions()
             }
         }
@@ -423,7 +423,6 @@ fun TreeNodeWrapper<Node, *>.arrayType(contents: NodeSpec<ASTArrayType> = EmptyA
 fun TreeNodeWrapper<Node, *>.primitiveType(type: PrimitiveTypeKind, assertions: NodeSpec<ASTPrimitiveType> = EmptyAssertions) =
         child<ASTPrimitiveType> {
             it::getKind shouldBe type
-            it::getTypeImage shouldBe type.toString()
             assertions()
         }
 

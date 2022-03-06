@@ -4,7 +4,10 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import net.sourceforge.pmd.lang.ast.NodeStream;
+import net.sourceforge.pmd.lang.java.types.JArrayType;
 
 /**
  * Represents an array type.
@@ -27,16 +30,24 @@ public final class ASTArrayType extends AbstractJavaTypeNode implements ASTRefer
         return getDimensions().getLastChild().getDeclaredAnnotations();
     }
 
-    public ASTArrayDimensions getDimensions() {
+    /**
+     * Returns the list of dimensions of the array type.
+     */
+    public @NonNull ASTArrayDimensions getDimensions() {
         return (ASTArrayDimensions) getChild(1);
     }
 
 
-    public ASTType getElementType() {
+    /**
+     * Returns the element type of the array (see {@link JArrayType#getElementType()}).
+     */
+    public @NonNull ASTType getElementType() {
         return (ASTType) getChild(0);
     }
 
-    @Override
+    /**
+     * Returns the number of dimensions declared by this type.
+     */
     public int getArrayDepth() {
         return getDimensions().size();
     }

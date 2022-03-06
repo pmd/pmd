@@ -44,9 +44,9 @@ public final class ASTUnaryExpression extends AbstractJavaExpr {
     /**
      * Returns true if this is a prefix expression.
      *
-     * @deprecated XPath-attribute only, use {@code getOperator().isPrefix()} in java code.
+     * This is useful as an XPath attribute. Prefer
+     * {@code getOperator().isPrefix()} in java code.
      */
-    @Deprecated
     public boolean isPrefix() {
         return getOperator().isPrefix();
     }

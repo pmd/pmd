@@ -60,13 +60,6 @@ public final class ASTClassOrInterfaceType extends AbstractJavaTypeNode implemen
         assertSimpleNameOk();
     }
 
-    // Just for one usage in Symbol table
-    @Deprecated
-    public ASTClassOrInterfaceType(String simpleName) {
-        super(JavaParserImplTreeConstants.JJTCLASSORINTERFACETYPE);
-        this.simpleName = simpleName;
-    }
-
     ASTClassOrInterfaceType(@Nullable ASTClassOrInterfaceType lhs, boolean isFqcn, JavaccToken firstToken, JavaccToken identifier) {
         super(JavaParserImplTreeConstants.JJTCLASSORINTERFACETYPE);
         this.setImage(identifier.getImage());

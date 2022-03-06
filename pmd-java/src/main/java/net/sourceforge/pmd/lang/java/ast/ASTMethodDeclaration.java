@@ -14,7 +14,6 @@ import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
-import net.sourceforge.pmd.lang.rule.xpath.DeprecatedAttribute;
 
 
 /**
@@ -88,17 +87,6 @@ public final class ASTMethodDeclaration extends AbstractMethodOrConstructorDecla
         return TokenUtils.nthPrevious(getModifiers().getLastToken(), getFormalParameters().getFirstToken(), 1);
     }
 
-    /**
-     * Returns the simple name of the method.
-     *
-     * @deprecated Use {@link #getName()}
-     */
-    @Deprecated
-    @DeprecatedAttribute(replaceWith = "@Name")
-    public String getMethodName() {
-        return getName();
-    }
-
 
     /** Returns the simple name of the method. */
     @Override
@@ -120,7 +108,7 @@ public final class ASTMethodDeclaration extends AbstractMethodOrConstructorDecla
             return null;
         }
 
-        return components.toStream().first(it -> it.getVarId().getVariableName().equals(this.getName()));
+        return components.toStream().first(it -> it.getVarId().getName().equals(this.getName()));
     }
 
 

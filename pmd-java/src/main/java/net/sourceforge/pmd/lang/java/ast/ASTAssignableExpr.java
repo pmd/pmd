@@ -75,7 +75,7 @@ public interface ASTAssignableExpr extends ASTPrimaryExpression {
          * relevant for fields, as they may be inherited from some
          * parameterized supertype.
          */
-        @Nullable JVariableSig getSignature(); // TODO this is probably multiplying the api points for nothing. You have symbol + type with getTypeMirror and getReferencedSym
+        @Nullable JVariableSig getSignature();
 
         /**
          * Returns the symbol referenced by this variable.

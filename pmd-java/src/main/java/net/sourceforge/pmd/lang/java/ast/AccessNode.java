@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import static net.sourceforge.pmd.lang.java.ast.JModifier.STRICTFP;
-
 import java.util.Set;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -20,13 +18,6 @@ import net.sourceforge.pmd.lang.ast.NodeStream;
  * declared inside an interface, regardless of whether the {@code public}
  * modifier was specified explicitly or not. If you want to know whether
  * the modifier was explicitly stated, use {@link #hasExplicitModifiers(JModifier, JModifier...)}.
- *
- * TODO make modifiers accessible from XPath
- *   * Ideally we'd have two attributes, eg @EffectiveModifiers and @ExplicitModifiers,
- *     which would each return a sequence, eg ("public", "static", "final")
- *   * Ideally we'd have a way to add attributes that are not necessarily
- *     getters on the node. It makes no sense in the Java API to expose
- *     those getters on the node, it's more orthogonal to query getModifiers() directly.
  *
  * TODO rename to ModifierOwner, kept out from PR to reduce diff
  */
@@ -53,9 +44,6 @@ public interface AccessNode extends Annotatable {
      * There cannot be any conflict with {@link #hasModifiers(JModifier, JModifier...)}} on
      * well-formed code (e.g. for any {@code n}, {@code (n.getVisibility() == V_PROTECTED) ==
      * n.hasModifiers(PROTECTED)})
-     *
-     * <p>TODO a public method of a private class can be considered to be private
-     * we could probably add another method later on that takes this into account
      */
     default Visibility getVisibility() {
         Set<JModifier> effective = getModifiers().getEffectiveModifiers();
@@ -110,8 +98,6 @@ public interface AccessNode extends Annotatable {
     }
 
 
-    // TODO remove all those, kept only for compatibility with rules
-
     // these are about effective modifiers
 
 
@@ -121,98 +107,38 @@ public interface AccessNode extends Annotatable {
     }
 
 
-    @Deprecated
-    default boolean isAbstract() {
-        return hasModifiers(JModifier.ABSTRACT);
-    }
-
-
-    @Deprecated
-    default boolean isStrictfp() {
-        return hasModifiers(STRICTFP);
-    }
-
-
-    @Deprecated
-    default boolean isSynchronized() {
-        return hasModifiers(JModifier.SYNCHRONIZED);
-    }
-
-
-    @Deprecated
-    default boolean isNative() {
-        return hasModifiers(JModifier.NATIVE);
-    }
-
-
-    @Deprecated
+    /**
+     * Returns true if this declaration has a static modifier, implicitly or explicitly.
+     */
     default boolean isStatic() {
         return hasModifiers(JModifier.STATIC);
-    }
-
-
-    @Deprecated
-    default boolean isVolatile() {
-        return hasModifiers(JModifier.VOLATILE);
-    }
-
-
-    @Deprecated
-    default boolean isTransient() {
-        return hasModifiers(JModifier.TRANSIENT);
     }
 
 
     // these are about visibility
 
 
-    @Deprecated
+    /** Returns true if this node has private visibility. */
     default boolean isPrivate() {
         return getVisibility() == Visibility.V_PRIVATE;
     }
 
 
-    @Deprecated
+    /** Returns true if this node has public visibility. */
     default boolean isPublic() {
         return getVisibility() == Visibility.V_PUBLIC;
     }
 
 
-    @Deprecated
+    /** Returns true if this node has protected visibility. */
     default boolean isProtected() {
         return getVisibility() == Visibility.V_PROTECTED;
     }
 
 
-    @Deprecated
+    /** Returns true if this node has package visibility. */
     default boolean isPackagePrivate() {
         return getVisibility() == Visibility.V_PACKAGE;
-    }
-
-    // these are about explicit modifiers
-
-
-    @Deprecated
-    default boolean isSyntacticallyAbstract() {
-        return hasExplicitModifiers(JModifier.ABSTRACT);
-    }
-
-
-    @Deprecated
-    default boolean isSyntacticallyPublic() {
-        return hasExplicitModifiers(JModifier.PUBLIC);
-    }
-
-
-    @Deprecated
-    default boolean isSyntacticallyStatic() {
-        return hasExplicitModifiers(JModifier.STATIC);
-    }
-
-
-    @Deprecated
-    default boolean isSyntacticallyFinal() {
-        return hasExplicitModifiers(JModifier.FINAL);
     }
 
 

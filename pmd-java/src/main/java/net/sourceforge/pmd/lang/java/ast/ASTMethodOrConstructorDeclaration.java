@@ -62,8 +62,6 @@ public interface ASTMethodOrConstructorDeclaration
      * methods are not abstract though, consistently with the
      * standard reflection API.
      */
-    // TODO is this relevant?
-    @Override
     default boolean isAbstract() {
         return hasModifiers(JModifier.ABSTRACT);
     }

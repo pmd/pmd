@@ -130,7 +130,6 @@ public interface ASTAnyTypeDeclaration
      * Returns true if this is an abstract type. Interfaces and annotations
      * types are implicitly abstract.
      */
-    @Override
     default boolean isAbstract() {
         return hasModifiers(ABSTRACT);
     }
@@ -141,7 +140,7 @@ public interface ASTAnyTypeDeclaration
      * an enum declaration, returns an empty stream.
      */
     default NodeStream<ASTEnumConstant> getEnumConstants() {
-        return getFirstChildOfType(ASTEnumBody.class).children(ASTEnumConstant.class);
+        return firstChild(ASTEnumBody.class).children(ASTEnumConstant.class);
     }
 
 
