@@ -31,19 +31,19 @@ public class AsmSymbolResolver implements SymbolResolver {
     private final Classpath classLoader;
     private final SignatureParser typeLoader;
 
-    private final ConcurrentMap<String, SoftClassReference> knownStubs = new ConcurrentHashMap<>();
+    private final ConcurrentMap<String, ClassStub> knownStubs = new ConcurrentHashMap<>();
 
     /**
      * Sentinel for when we fail finding a URL. This allows using a single map,
      * instead of caching failure cases separately.
      */
-    private final SoftClassReference failed;
+    private final ClassStub failed;
 
     public AsmSymbolResolver(TypeSystem ts, Classpath classLoader) {
         this.ts = ts;
         this.classLoader = classLoader;
         this.typeLoader = new SignatureParser(this);
-        this.failed = new SoftClassReference(this, "/*failed-lookup*/", FailedLoader.INSTANCE, 0);
+        this.failed = new ClassStub(this, "/*failed-lookup*/", FailedLoader.INSTANCE, 0);
     }
 
     @Override
@@ -52,25 +52,23 @@ public class AsmSymbolResolver implements SymbolResolver {
 
         String internalName = getInternalName(binaryName);
 
-        SoftClassReference found = knownStubs.computeIfAbsent(internalName, iname -> {
+        ClassStub found = knownStubs.computeIfAbsent(internalName, iname -> {
             @Nullable URL url = getUrlOfInternalName(iname);
             if (url == null) {
                 return failed;
             }
 
-            return new SoftClassReference(this, iname, new UrlLoader(url), ClassStub.UNKNOWN_ARITY);
+            return new ClassStub(this, iname, new UrlLoader(url), ClassStub.UNKNOWN_ARITY);
         });
 
-        if (found == failed) { // NOPMD CompareObjectsWithEquals
-            return null;
-        }
-        ClassStub stub = found.get();
-        if (!stub.hasCanonicalName()) {
+        if (!found.hasCanonicalName()) {
+            // note: this check needs to be done outside of computeIfAbsent
+            //  to prevent recursive updates of the knownStubs map.
             knownStubs.put(internalName, failed);
-            return null;
+            found = failed;
         }
 
-        return stub;
+        return found == failed ? null : found; // NOPMD CompareObjectsWithEquals
     }
 
     SignatureParser getSigParser() {
@@ -131,7 +129,7 @@ public class AsmSymbolResolver implements SymbolResolver {
             }
             @Nullable URL url = getUrlOfInternalName(iname);
             Loader loader = url == null ? FailedLoader.INSTANCE : new UrlLoader(url);
-            return new SoftClassReference(this, iname, loader, observedArity);
-        }).get();
+            return new ClassStub(this, iname, loader, observedArity);
+        });
     }
 }
