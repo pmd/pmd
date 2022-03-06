@@ -9,6 +9,9 @@ import java.lang.ref.SoftReference;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+/**
+ * A soft reference over a (possibly loaded class stub).
+ */
 final class SoftClassReference {
 
     private final Loader loader;
@@ -22,14 +25,6 @@ final class SoftClassReference {
         this.loader = loader;
         this.internalName = internalName;
         this.observedArity = observedArity;
-    }
-
-    SoftClassReference(AsmSymbolResolver resolver, ClassStub stub, String internalName) {
-        this.resolver = resolver;
-        this.loader = stub.getLoader();
-        this.internalName = internalName;
-        this.observedArity = 0;
-        this.ref = new SoftReference<>(stub);
     }
 
     @SuppressWarnings("PMD.AssignmentInOperand")

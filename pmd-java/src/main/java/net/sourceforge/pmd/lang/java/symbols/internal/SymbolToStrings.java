@@ -61,12 +61,6 @@ public class SymbolToStrings {
             String kind;
             if (sym.isUnresolved()) {
                 kind = "unresolved";
-            } else if (sym.isEnum()) {
-                kind = "enum";
-            } else if (sym.isAnnotation()) {
-                kind = "annot";
-            } else if (sym.isRecord()) {
-                kind = "record";
             } else {
                 kind = "class";
             }

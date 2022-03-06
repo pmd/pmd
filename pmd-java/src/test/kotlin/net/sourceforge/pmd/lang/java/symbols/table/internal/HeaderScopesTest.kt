@@ -329,7 +329,7 @@ class HeaderScopesTest : ProcessorTestSpec({
             )
     }
 
-    parserTest("Import of an unconventional name with dollar") {
+    parserTest("f:Import of an unconventional name with dollar") {
 
         assertNoSemanticErrorsOrWarnings()
 

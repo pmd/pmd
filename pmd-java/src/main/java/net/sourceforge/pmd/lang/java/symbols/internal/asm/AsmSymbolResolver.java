@@ -53,12 +53,7 @@ public class AsmSymbolResolver implements SymbolResolver {
         String internalName = getInternalName(binaryName);
 
         SoftClassReference found = knownStubs.computeIfAbsent(internalName, iname -> {
-            if (!hasCanonicalName(internalName)) {
-                // if the class is anonymous/local, give up
-                return failed;
-            }
-
-            @Nullable URL url = getUrlOfInternalName(internalName);
+            @Nullable URL url = getUrlOfInternalName(iname);
             if (url == null) {
                 return failed;
             }
@@ -66,7 +61,16 @@ public class AsmSymbolResolver implements SymbolResolver {
             return new SoftClassReference(this, iname, new UrlLoader(url), ClassStub.UNKNOWN_ARITY);
         });
 
-        return found == failed ? null : found.get(); // NOPMD CompareObjectsWithEquals
+        if (found == failed) { // NOPMD CompareObjectsWithEquals
+            return null;
+        }
+        ClassStub stub = found.get();
+        if (!stub.hasCanonicalName()) {
+            knownStubs.put(internalName, failed);
+            return null;
+        }
+
+        return stub;
     }
 
     SignatureParser getSigParser() {
@@ -112,21 +116,15 @@ public class AsmSymbolResolver implements SymbolResolver {
        These methods return an unresolved symbol if the url is not found.
      */
 
-    @Nullable JClassSymbol resolveFromInternalNameCannotFail(@Nullable String internalName) {
+    @Nullable ClassStub resolveFromInternalNameCannotFail(@Nullable String internalName) {
         if (internalName == null) {
             return null;
         }
-        return resolveFromInternalNameCannotFail(internalName, 0);
-    }
-
-    // this is for inner + parent classes
-    void registerKnown(@NonNull String internalName, ClassStub innerClass) {
-        SoftClassReference softRef = new SoftClassReference(this, innerClass, internalName);
-        knownStubs.put(internalName, softRef);
+        return resolveFromInternalNameCannotFail(internalName, ClassStub.UNKNOWN_ARITY);
     }
 
     @SuppressWarnings("PMD.CompareObjectsWithEquals") // SoftClassReference
-    @NonNull JClassSymbol resolveFromInternalNameCannotFail(@NonNull String internalName, int observedArity) {
+    @NonNull ClassStub resolveFromInternalNameCannotFail(@NonNull String internalName, int observedArity) {
         return knownStubs.compute(internalName, (iname, prev) -> {
             if (prev != failed && prev != null) {
                 return prev;
