@@ -114,7 +114,7 @@ final class ClassStub implements JClassSymbol, AsmStub {
                 memberClasses = Collections.unmodifiableList(memberClasses);
                 enumConstantNames = enumConstantNames == null ? null : Collections.unmodifiableSet(enumConstantNames);
 
-                if (enclosingInfo == EnclosingInfo.NO_ENCLOSING) {
+                if (EnclosingInfo.NO_ENCLOSING.equals(enclosingInfo)) {
                     if (names.canonicalName == null || names.simpleName == null) {
                         // This happens if the simple name contains dollars,
                         // in which case we might have an enclosing class, and
@@ -385,26 +385,26 @@ final class ClassStub implements JClassSymbol, AsmStub {
     public String getCanonicalName() {
         String canoName = names.canonicalName;
         if (canoName == null) {
-            parseLock.ensureParsed();
-            canoName = names.canonicalName;
-            if (canoName != null) {
-                return canoName;
-            }
-            JClassSymbol enclosing = getEnclosingClass();
-            if (enclosing == null) {
-                canoName = names.packageName + '.' + getSimpleName();
-                names.canonicalName = canoName;
-                return canoName;
-            }
-            String outerName = enclosing.getCanonicalName();
-            if (outerName == null) {
-                return null;
-            }
-            canoName = outerName + '.' + getSimpleName();
+            canoName = computeCanonicalName();
             names.canonicalName = canoName;
-            return canoName;
         }
         return canoName;
+    }
+
+    private @Nullable String computeCanonicalName() {
+        parseLock.ensureParsed();
+        if (names.canonicalName != null) {
+            return names.canonicalName;
+        }
+        JClassSymbol enclosing = getEnclosingClass();
+        if (enclosing == null) {
+            return names.packageName + '.' + getSimpleName();
+        }
+        String outerName = enclosing.getCanonicalName();
+        if (outerName == null) {
+            return null;
+        }
+        return outerName + '.' + getSimpleName();
     }
 
     @Override
@@ -592,6 +592,25 @@ final class ClassStub implements JClassSymbol, AsmStub {
             } else {
                 return getEnclosingClass();
             }
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
+            EnclosingInfo that = (EnclosingInfo) o;
+            return Objects.equals(stub, that.stub)
+                && Objects.equals(methodName, that.methodName)
+                && Objects.equals(methodDescriptor, that.methodDescriptor);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(stub, methodName, methodDescriptor);
         }
     }
 }

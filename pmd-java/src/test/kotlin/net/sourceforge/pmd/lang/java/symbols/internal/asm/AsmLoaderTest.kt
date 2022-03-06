@@ -53,6 +53,11 @@ class AsmLoaderTest : IntelliMarker, FunSpec({
     }
 
     val ts = testTypeSystem
+
+    /**
+     * Note: we don't share a single resolver between all tests because that
+     * could cause issues because of the order of classloading (the order of test execution).
+     */
     fun symLoader() = AsmSymbolResolver(ts, contextClasspath)
 
     test("Generic class") {
