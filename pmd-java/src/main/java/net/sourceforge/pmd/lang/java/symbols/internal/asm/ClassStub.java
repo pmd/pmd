@@ -364,6 +364,9 @@ final class ClassStub implements JClassSymbol, AsmStub {
         return getNames().binaryName;
     }
 
+    /**
+     * Simpler check than computing the canonical name.
+     */
     boolean hasCanonicalName() {
         if (names.canonicalName != null) {
             return true;
@@ -395,7 +398,7 @@ final class ClassStub implements JClassSymbol, AsmStub {
             }
             String outerName = enclosing.getCanonicalName();
             if (outerName == null) {
-                return null; // should not happen
+                return null;
             }
             canoName = outerName + '.' + getSimpleName();
             names.canonicalName = canoName;

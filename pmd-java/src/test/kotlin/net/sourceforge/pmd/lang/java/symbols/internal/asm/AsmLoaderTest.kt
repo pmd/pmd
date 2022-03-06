@@ -16,6 +16,7 @@ import io.kotest.matchers.types.shouldBeSameInstanceAs
 import javasymbols.testdata.Enums
 import javasymbols.testdata.NestedClasses
 import javasymbols.testdata.Statics
+import javasymbols.testdata.deep.AClassWithLocals
 import javasymbols.testdata.deep.`Another$ClassWith$Dollar`
 import javasymbols.testdata.impls.GenericClass
 import net.sourceforge.pmd.lang.ast.test.IntelliMarker
@@ -115,6 +116,23 @@ class AsmLoaderTest : IntelliMarker, FunSpec({
 
         inner.simpleName shouldBe "AnInner\$ClassWithDollar"
         inner.canonicalName shouldBe "javasymbols.testdata.deep.Another\$ClassWith\$Dollar.AnInner\$ClassWithDollar"
+    }
+
+    test("Local classes") {
+
+        val outerClass = AClassWithLocals::class.java
+        val outerName = AClassWithLocals::class.java.name
+
+        val symLoader = symLoader()
+        val outer = symLoader.resolveClassFromBinaryName(outerName).shouldNotBeNull()
+
+        outer.simpleName shouldBe outerClass.simpleName
+        outer.canonicalName shouldBe outerClass.canonicalName!!
+
+        outer.declaredClasses.shouldBeEmpty()
+
+        symLoader.resolveClassFromBinaryName("$outerName$0").shouldBeNull()
+        symLoader.resolveClassFromBinaryName("$outerName$0Local").shouldBeNull()
     }
 
     test("Deeper inner names with dollars") {
