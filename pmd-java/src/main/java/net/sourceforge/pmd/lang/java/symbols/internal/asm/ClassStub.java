@@ -212,12 +212,14 @@ final class ClassStub implements JClassSymbol, AsmStub {
         }
     }
 
-    void setOuterClass(String outerName, @Nullable String methodName, @Nullable String methodDescriptor) {
+    void setOuterClass(ClassStub outer, @Nullable String methodName, @Nullable String methodDescriptor) {
         if (enclosingInfo == null) {
-            if (outerName == null) {
+            if (outer == null) {
+                assert methodName == null && methodDescriptor == null
+                    : "Enclosing method requires enclosing class";
                 this.enclosingInfo = EnclosingInfo.NO_ENCLOSING;
             } else {
-                this.enclosingInfo = new EnclosingInfo(resolver.resolveFromInternalNameCannotFail(outerName), methodName, methodDescriptor);
+                this.enclosingInfo = new EnclosingInfo(outer, methodName, methodDescriptor);
             }
         }
     }
@@ -231,9 +233,7 @@ final class ClassStub implements JClassSymbol, AsmStub {
     }
 
     void addMemberClass(ClassStub classStub) {
-        if (classStub.enclosingInfo == null) {
-            classStub.enclosingInfo = new EnclosingInfo(this, null, null);
-        }
+        classStub.setOuterClass(this, null, null);
         memberClasses.add(classStub);
     }
 
@@ -417,7 +417,7 @@ final class ClassStub implements JClassSymbol, AsmStub {
         String mySimpleName = names.simpleName;
         if (mySimpleName == null) {
             parseLock.ensureParsed();
-            return Objects.requireNonNull(names.simpleName);
+            return Objects.requireNonNull(names.simpleName, "Null simple name after parsing");
         }
         return mySimpleName;
     }

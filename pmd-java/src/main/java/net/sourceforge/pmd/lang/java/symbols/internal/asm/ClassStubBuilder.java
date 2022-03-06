@@ -42,7 +42,8 @@ class ClassStubBuilder extends ClassVisitor {
     public void visitOuterClass(String ownerInternalName, @Nullable String methodName, @Nullable String methodDescriptor) {
         isInnerNonStaticClass = true;
         // only for enclosing method
-        myStub.setOuterClass(ownerInternalName, methodName, methodDescriptor);
+        ClassStub outer = resolver.resolveFromInternalNameCannotFail(ownerInternalName);
+        myStub.setOuterClass(outer, methodName, methodDescriptor);
     }
 
     @Override
@@ -70,14 +71,16 @@ class ClassStubBuilder extends ClassVisitor {
     public void visitInnerClass(String innerInternalName, @Nullable String outerName, @Nullable String innerSimpleName, int access) {
         if (myInternalName.equals(outerName) && innerSimpleName != null) { // not anonymous
             ClassStub member = resolver.resolveFromInternalNameCannotFail(innerInternalName, ClassStub.UNKNOWN_ARITY);
+            member.setSimpleName(innerSimpleName);
             member.setModifiers(access, false);
             myStub.addMemberClass(member);
         } else if (myInternalName.equals(innerInternalName) && outerName != null) {
             // then it's specifying the enclosing class
             // (myStub is the inner class)
+            ClassStub outer = resolver.resolveFromInternalNameCannotFail(outerName);
             myStub.setSimpleName(innerSimpleName);
             myStub.setModifiers(access, false);
-            myStub.setOuterClass(outerName, null, null);
+            myStub.setOuterClass(outer, null, null);
             isInnerNonStaticClass = (Opcodes.ACC_STATIC & access) == 0;
         }
     }

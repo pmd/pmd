@@ -17,6 +17,7 @@ import javasymbols.testdata.Enums
 import javasymbols.testdata.NestedClasses
 import javasymbols.testdata.Statics
 import javasymbols.testdata.deep.AClassWithLocals
+import javasymbols.testdata.deep.OuterWithoutDollar
 import javasymbols.testdata.deep.`Another$ClassWith$Dollar`
 import javasymbols.testdata.impls.GenericClass
 import net.sourceforge.pmd.lang.ast.test.IntelliMarker
@@ -121,6 +122,20 @@ class AsmLoaderTest : IntelliMarker, FunSpec({
 
         inner.simpleName shouldBe "AnInner\$ClassWithDollar"
         inner.canonicalName shouldBe "javasymbols.testdata.deep.Another\$ClassWith\$Dollar.AnInner\$ClassWithDollar"
+    }
+
+    test("Regular inner name not populated") {
+        // this test doesn't reproduce the broken behaviour, it looks like
+        // this is somewhat compiler-dependent what InnerClasses attribute
+        // are in the class file...
+
+        val outerName = OuterWithoutDollar::class.java.name
+
+        val outer = symLoader().resolveClassFromBinaryName(outerName)!!
+        val inner = outer.getDeclaredClass("Inner")!!
+
+        inner.simpleName shouldBe "Inner"
+        inner.canonicalName shouldBe "$outerName.Inner"
     }
 
     test("Local classes") {
