@@ -6,8 +6,9 @@ package net.sourceforge.pmd.lang.java.symbols.internal.asm
 
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
+import net.sourceforge.pmd.lang.ast.test.IntelliMarker
 
-class NamesTest : FunSpec({
+class NamesTest : IntelliMarker, FunSpec({
 
     test("Test inner class names") {
 
@@ -38,6 +39,16 @@ class NamesTest : FunSpec({
         AsmSymbolResolver.hasCanonicalName("a/b/C\$1D\$D") shouldBe false
         AsmSymbolResolver.hasCanonicalName("a/b/C\$D\$1") shouldBe false
         AsmSymbolResolver.hasCanonicalName("a/b/C\$D") shouldBe true
+    }
+
+    test("Test names with trailing dollar") {
+
+        val names = ClassStub.Names("javasymbols/testdata/deep/ClassWithDollar\$")
+
+        names.binaryName shouldBe "javasymbols.testdata.deep.ClassWithDollar\$"
+        names.canonicalName shouldBe "javasymbols.testdata.deep.ClassWithDollar\$"
+        names.simpleName shouldBe "ClassWithDollar\$"
+        names.packageName shouldBe "javasymbols.testdata.deep"
     }
 
 })

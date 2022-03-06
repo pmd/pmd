@@ -12,6 +12,7 @@ import io.kotest.matchers.collections.haveSize
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotest.matchers.maps.shouldBeEmpty
 import io.kotest.matchers.maps.shouldContain
+import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
@@ -19,7 +20,7 @@ import javasymbols.testdata.StaticNameCollision
 import javasymbols.testdata.StaticsSuper
 import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.ast.test.shouldBeA
-import net.sourceforge.pmd.lang.java.ast.ProcessorTestSpec
+import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol
@@ -29,8 +30,7 @@ import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable
 import net.sourceforge.pmd.lang.java.symbols.table.ScopeInfo
 import net.sourceforge.pmd.lang.java.symbols.table.ScopeInfo.*
 import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.ShadowChain
-import net.sourceforge.pmd.lang.java.types.JClassType
-import net.sourceforge.pmd.lang.java.types.JTypeMirror
+import net.sourceforge.pmd.lang.java.types.*
 
 /**
  * Tests the scopes that dominate the whole compilation unit.
@@ -327,6 +327,32 @@ class HeaderScopesTest : ProcessorTestSpec({
                 "javasymbols.testdata.deep.StaticContainer\$Exception",
                 "java.lang.Exception"
             )
+    }
+
+    parserTest("Import of an unconventional name with dollar") {
+
+        assertNoSemanticErrorsOrWarnings()
+
+        val acu = parser.parse(
+            """
+
+            import javasymbols.testdata.deep.ClassWithDollar${'$'};
+
+            public class Foo {
+                public void visit() {
+                    var mod = ClassWithDollar${'$'}.MODULE${'$'};
+                }
+            }
+            """
+        )
+
+        val moduleAccess = acu.descendants(ASTFieldAccess::class.java).first().shouldNotBeNull()
+        with (acu.typeDsl) {
+            moduleAccess shouldHaveType ts.OBJECT
+            moduleAccess.qualifier.shouldBeA<ASTTypeExpression> {
+                it shouldHaveType ts.rawType(ts.getClassSymbol("javasymbols.testdata.deep.ClassWithDollar\$"))
+            }
+        }
     }
 })
 

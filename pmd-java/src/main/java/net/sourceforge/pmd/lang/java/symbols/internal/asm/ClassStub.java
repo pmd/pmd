@@ -441,6 +441,7 @@ final class ClassStub implements JClassSymbol, AsmStub {
 
     static class Names {
 
+        private static final Pattern INNER_DELIMITER = Pattern.compile("\\$(?=\\w)");
         final String binaryName;
         final String canonicalName;
         final String packageName;
@@ -451,7 +452,12 @@ final class ClassStub implements JClassSymbol, AsmStub {
 
             binaryName = internalName.replace('/', '.');
             packageName = binaryName.substring(0, packageEnd);
-            canonicalName = binaryName.replace('$', '.');
+            if (binaryName.indexOf('$') >= 0) { // contains a dollar
+                canonicalName = INNER_DELIMITER.matcher(binaryName).replaceAll(".");
+            } else {
+                // fast path
+                canonicalName = binaryName;
+            }
 
             int lastDot = canonicalName.lastIndexOf('.');
             simpleName = canonicalName.substring(lastDot + 1);
