@@ -22,7 +22,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  *
  * </pre>
  */
-public class ASTVariableDeclarator extends AbstractJavaTypeNode implements InternalInterfaces.VariableIdOwner {
+public class ASTVariableDeclarator extends AbstractJavaNode implements InternalInterfaces.VariableIdOwner {
 
     ASTVariableDeclarator(int id) {
         super(id);

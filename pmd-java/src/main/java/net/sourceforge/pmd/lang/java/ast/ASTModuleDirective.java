@@ -4,6 +4,11 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+/**
+ * A directive of a {@linkplain ASTModuleDeclaration module declaration}.
+ *
+ * TODO(#2701): revisit module declarations
+ */
 public final class ASTModuleDirective extends AbstractJavaNode {
 
     public enum DirectiveType {

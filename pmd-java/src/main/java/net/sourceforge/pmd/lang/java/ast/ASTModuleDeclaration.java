@@ -4,6 +4,11 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+/**
+ * A module declaration in a {@linkplain ASTCompilationUnit modular compilation unit}.
+ *
+ * TODO(#2701): revisit module declarations
+ */
 public final class ASTModuleDeclaration extends AbstractJavaNode {
 
     private boolean open;
