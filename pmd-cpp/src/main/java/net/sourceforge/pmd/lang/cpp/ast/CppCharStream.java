@@ -8,9 +8,9 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.regex.Pattern;
 
+import org.apache.commons.io.IOUtils;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.lang.ast.impl.javacc.CharStreamFactory;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument;
 import net.sourceforge.pmd.lang.ast.impl.javacc.SimpleCharStream;
 import net.sourceforge.pmd.lang.document.CpdCompat;
@@ -67,8 +67,8 @@ public class CppCharStream extends SimpleCharStream {
         return CONTINUATION.matcher(image).replaceAll("");
     }
 
-    public static CppCharStream newCppCharStream(Reader dstream) {
-        String source = CharStreamFactory.toString(dstream);
+    public static CppCharStream newCppCharStream(Reader dstream) throws IOException {
+        String source = IOUtils.toString(dstream);
         JavaccTokenDocument document = new JavaccTokenDocument(TextDocument.readOnlyString(source, CpdCompat.dummyVersion())) {
             @Override
             protected @Nullable String describeKindImpl(int kind) {

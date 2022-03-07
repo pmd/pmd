@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.cpd;
 
+import java.io.IOException;
 import java.io.Reader;
 import java.util.regex.Pattern;
 
@@ -31,7 +32,7 @@ public class PythonTokenizer extends JavaCCTokenizer {
     }
 
     @Override
-    protected CharStream makeCharStream(Reader sourceCode) {
+    protected CharStream makeCharStream(Reader sourceCode) throws IOException {
         return CharStreamFactory.simpleCharStream(sourceCode, PythonTokenDocument::new);
     }
 

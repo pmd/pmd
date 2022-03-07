@@ -44,7 +44,7 @@ public class JavaTokenizer extends JavaCCTokenizer {
     }
 
     @Override
-    protected CharStream makeCharStream(Reader sourceCode) {
+    protected CharStream makeCharStream(Reader sourceCode) throws IOException {
         return CharStreamFactory.javaCharStream(sourceCode, InternalApiBridge::javaTokenDoc);
     }
 

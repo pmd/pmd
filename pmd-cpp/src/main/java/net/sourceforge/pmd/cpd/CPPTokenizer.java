@@ -86,7 +86,7 @@ public class CPPTokenizer extends JavaCCTokenizer {
 
 
     @Override
-    protected CharStream makeCharStream(Reader sourceCode) {
+    protected CharStream makeCharStream(Reader sourceCode) throws IOException {
         return CppCharStream.newCppCharStream(sourceCode);
     }
 
