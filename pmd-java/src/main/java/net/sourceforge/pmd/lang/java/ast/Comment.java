@@ -12,7 +12,7 @@ import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JjtreeNode;
 import net.sourceforge.pmd.lang.document.Chars;
 import net.sourceforge.pmd.lang.document.FileLocation;
-import net.sourceforge.pmd.lang.document.Reportable;
+import net.sourceforge.pmd.reporting.Reportable;
 
 /**
  * Wraps a comment token to provide some utilities.

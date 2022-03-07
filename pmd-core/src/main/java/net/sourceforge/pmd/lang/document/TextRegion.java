@@ -119,8 +119,7 @@ public final class TextRegion implements Comparable<TextRegion> {
      * characters before this region. If the delta is negative, then this
      * shifts the start of the region to the right (but the end stays fixed).
      *
-     * @throws AssertionError If startOffset - delta is negative
-     * @throws AssertionError If delta is negative and the
+     * @throws AssertionError If the parameter cannot produce a valid region
      */
     public TextRegion growLeft(int delta) {
         assert (delta + length) >= 0 : "Left delta " + delta + " would produce a negative length region" + parThis();
@@ -148,8 +147,7 @@ public final class TextRegion implements Comparable<TextRegion> {
      *
      * @return The intersection, if it exists
      */
-    @Nullable
-    public static TextRegion intersect(TextRegion r1, TextRegion r2) {
+    public static @Nullable TextRegion intersect(TextRegion r1, TextRegion r2) {
         int start = Math.max(r1.getStartOffset(), r2.getStartOffset());
         int end = Math.min(r1.getEndOffset(), r2.getEndOffset());
 

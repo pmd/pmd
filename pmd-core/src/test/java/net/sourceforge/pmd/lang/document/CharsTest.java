@@ -5,6 +5,13 @@
 package net.sourceforge.pmd.lang.document;
 
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -13,7 +20,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import net.sourceforge.pmd.internal.util.IteratorUtil;
@@ -27,46 +33,46 @@ public class CharsTest {
     @Test
     public void wrapStringRoundTrip() {
         String s = "ooo";
-        Assert.assertSame(s, Chars.wrap(s).toString());
+        assertSame(s, Chars.wrap(s).toString());
     }
 
     @Test
     public void wrapCharsRoundTrip() {
         Chars s = Chars.wrap("ooo");
-        Assert.assertSame(s, Chars.wrap(s));
+        assertSame(s, Chars.wrap(s));
     }
 
     @Test
     public void appendChars() {
         StringBuilder sb = new StringBuilder();
         Chars bc = Chars.wrap("abcd").slice(1, 2);
-        Assert.assertEquals("bc", bc.toString());
+        assertEquals("bc", bc.toString());
 
         bc.appendChars(sb);
-        Assert.assertEquals("bc", sb.toString());
+        assertEquals("bc", sb.toString());
     }
 
     @Test
     public void appendCharsWithOffsets() {
         StringBuilder sb = new StringBuilder();
         Chars bc = Chars.wrap("abcd").slice(1, 2);
-        Assert.assertEquals("bc", bc.toString());
+        assertEquals("bc", bc.toString());
 
         bc.appendChars(sb, 0, 1);
-        Assert.assertEquals("b", sb.toString());
+        assertEquals("b", sb.toString());
     }
 
     @Test
     public void write() throws IOException {
         StringWriter writer = new StringWriter();
         Chars bc = Chars.wrap("abcd").slice(1, 2);
-        Assert.assertEquals("bc", bc.toString());
+        assertEquals("bc", bc.toString());
 
         bc.write(writer, 0, 1);
-        Assert.assertEquals("b", writer.toString());
+        assertEquals("b", writer.toString());
         writer = new StringWriter();
         bc.writeFully(writer);
-        Assert.assertEquals("bc", writer.toString());
+        assertEquals("bc", writer.toString());
     }
 
     @Test
@@ -75,77 +81,77 @@ public class CharsTest {
         Chars bc = Chars.wrap("abcd").slice(1, 2);
 
         bc.getChars(0, arr, 1, 2);
-        Assert.assertArrayEquals(arr, new char[] {0, 'b', 'c', 0});
+        assertArrayEquals(arr, new char[] {0, 'b', 'c', 0});
 
-        Assert.assertThrows(IndexOutOfBoundsException.class, () -> bc.getChars(2, arr, 0, 1));
-        Assert.assertThrows(IndexOutOfBoundsException.class, () -> bc.getChars(-1, arr, 0, 1));
-        Assert.assertThrows(IndexOutOfBoundsException.class, () -> bc.getChars(0, arr, 0, 3));
-        Assert.assertThrows(IndexOutOfBoundsException.class, () -> bc.getChars(0, arr, 4, 3));
-        Assert.assertThrows(NullPointerException.class, () -> bc.getChars(0, null, 0, 0));
+        assertThrows(IndexOutOfBoundsException.class, () -> bc.getChars(2, arr, 0, 1));
+        assertThrows(IndexOutOfBoundsException.class, () -> bc.getChars(-1, arr, 0, 1));
+        assertThrows(IndexOutOfBoundsException.class, () -> bc.getChars(0, arr, 0, 3));
+        assertThrows(IndexOutOfBoundsException.class, () -> bc.getChars(0, arr, 4, 3));
+        assertThrows(NullPointerException.class, () -> bc.getChars(0, null, 0, 0));
     }
 
     @Test
     public void indexOf() {
         Chars bc = Chars.wrap("aaaaabcdb").slice(5, 2);
         //                          --
-        Assert.assertEquals(0, bc.indexOf('b', 0));
-        Assert.assertEquals(1, bc.indexOf('c', 0));
+        assertEquals(0, bc.indexOf('b', 0));
+        assertEquals(1, bc.indexOf('c', 0));
 
-        Assert.assertEquals(-1, bc.indexOf('b', 1));
-        Assert.assertEquals(-1, bc.indexOf('d', 0));
+        assertEquals(-1, bc.indexOf('b', 1));
+        assertEquals(-1, bc.indexOf('d', 0));
 
-        Assert.assertEquals(-1, bc.indexOf('x', 0));
-        Assert.assertEquals(-1, bc.indexOf('a', -1));
+        assertEquals(-1, bc.indexOf('x', 0));
+        assertEquals(-1, bc.indexOf('a', -1));
     }
 
     @Test
     public void indexOfString() {
         Chars bc = Chars.wrap("aaaaabcdb").slice(5, 2);
         //                          --
-        Assert.assertEquals(0, bc.indexOf("b", 0));
-        Assert.assertEquals(0, bc.indexOf("bc", 0));
-        Assert.assertEquals(1, bc.indexOf("c", 0));
+        assertEquals(0, bc.indexOf("b", 0));
+        assertEquals(0, bc.indexOf("bc", 0));
+        assertEquals(1, bc.indexOf("c", 0));
 
-        Assert.assertEquals(-1, bc.indexOf("b", 1));
-        Assert.assertEquals(-1, bc.indexOf("bc", 1));
-        Assert.assertEquals(-1, bc.indexOf("d", 0));
-        Assert.assertEquals(-1, bc.indexOf("bcd", 0));
+        assertEquals(-1, bc.indexOf("b", 1));
+        assertEquals(-1, bc.indexOf("bc", 1));
+        assertEquals(-1, bc.indexOf("d", 0));
+        assertEquals(-1, bc.indexOf("bcd", 0));
 
-        Assert.assertEquals(-1, bc.indexOf("x", 0));
-        Assert.assertEquals(-1, bc.indexOf("ab", -1));
+        assertEquals(-1, bc.indexOf("x", 0));
+        assertEquals(-1, bc.indexOf("ab", -1));
 
         bc = Chars.wrap("aaaaabcdbxdb").slice(5, 5);
         //                    -----
-        Assert.assertEquals(3, bc.indexOf("bx", 0));
+        assertEquals(3, bc.indexOf("bx", 0));
 
         bc = Chars.wrap("aaaaabcbxdb").slice(5, 5);
         //                    -----
-        Assert.assertEquals(2, bc.indexOf("bx", 0));
+        assertEquals(2, bc.indexOf("bx", 0));
     }
 
     @Test
     public void startsWith() {
         Chars bc = Chars.wrap("abcdb").slice(1, 2);
 
-        Assert.assertTrue(bc.startsWith("bc"));
-        Assert.assertTrue(bc.startsWith("bc", 0));
-        Assert.assertTrue(bc.startsWith("c", 1));
-        Assert.assertTrue(bc.startsWith('c', 1)); //with a char
-        Assert.assertTrue(bc.startsWith("", 1));
-        Assert.assertTrue(bc.startsWith("", 0));
+        assertTrue(bc.startsWith("bc"));
+        assertTrue(bc.startsWith("bc", 0));
+        assertTrue(bc.startsWith("c", 1));
+        assertTrue(bc.startsWith('c', 1)); //with a char
+        assertTrue(bc.startsWith("", 1));
+        assertTrue(bc.startsWith("", 0));
 
 
-        Assert.assertFalse(bc.startsWith("c", 0));
-        Assert.assertFalse(bc.startsWith('c', 0)); //with a char
+        assertFalse(bc.startsWith("c", 0));
+        assertFalse(bc.startsWith('c', 0)); //with a char
 
-        Assert.assertFalse(bc.startsWith("bcd", 0));
-        Assert.assertFalse(bc.startsWith("xcd", 0));
+        assertFalse(bc.startsWith("bcd", 0));
+        assertFalse(bc.startsWith("xcd", 0));
 
-        Assert.assertFalse(bc.startsWith("b", -1));
-        Assert.assertFalse(bc.startsWith('b', -1)); //with a char
+        assertFalse(bc.startsWith("b", -1));
+        assertFalse(bc.startsWith('b', -1)); //with a char
 
-        Assert.assertFalse(bc.startsWith("", -1));
-        Assert.assertFalse(bc.startsWith("", 5));
+        assertFalse(bc.startsWith("", -1));
+        assertFalse(bc.startsWith("", 5));
 
     }
 
@@ -168,20 +174,20 @@ public class CharsTest {
     @Test
     public void trimNoop() {
         Chars bc = Chars.wrap("abcdb").slice(1, 2);
-        Assert.assertEquals("bc", bc.toString());
-        Assert.assertEquals("bc", bc.trimStart().toString());
-        Assert.assertEquals("bc", bc.trimEnd().toString());
-        Assert.assertEquals("bc", bc.trim().toString());
+        assertEquals("bc", bc.toString());
+        assertEquals("bc", bc.trimStart().toString());
+        assertEquals("bc", bc.trimEnd().toString());
+        assertEquals("bc", bc.trim().toString());
     }
 
     @Test
     public void trimStartAndEnd() {
         Chars bc = Chars.wrap("a   bc db").slice(1, 6);
         //                      ------
-        Assert.assertEquals("   bc ", bc.toString());
-        Assert.assertEquals("bc ", bc.trimStart().toString());
-        Assert.assertEquals("   bc", bc.trimEnd().toString());
-        Assert.assertEquals("bc", bc.trim().toString());
+        assertEquals("   bc ", bc.toString());
+        assertEquals("bc ", bc.trimStart().toString());
+        assertEquals("   bc", bc.trimEnd().toString());
+        assertEquals("bc", bc.trim().toString());
     }
 
     @Test
@@ -189,12 +195,12 @@ public class CharsTest {
 
         Chars bc = Chars.wrap("a   bc db").slice(1, 6);
         //                      ------
-        Assert.assertEquals(' ', bc.charAt(0));
-        Assert.assertEquals('b', bc.charAt(3));
-        Assert.assertEquals('c', bc.charAt(4));
-        Assert.assertEquals(' ', bc.charAt(5));
-        Assert.assertThrows(IndexOutOfBoundsException.class, () -> bc.charAt(-1));
-        Assert.assertThrows(IndexOutOfBoundsException.class, () -> bc.charAt(7));
+        assertEquals(' ', bc.charAt(0));
+        assertEquals('b', bc.charAt(3));
+        assertEquals('c', bc.charAt(4));
+        assertEquals(' ', bc.charAt(5));
+        assertThrows(IndexOutOfBoundsException.class, () -> bc.charAt(-1));
+        assertThrows(IndexOutOfBoundsException.class, () -> bc.charAt(7));
     }
 
     @Test
@@ -203,7 +209,14 @@ public class CharsTest {
         Chars bc = Chars.wrap("a \n  \r\nbc db").slice(1, 9);
         //                      ------------
         List<String> lines = CollectionUtil.map(bc.lines(), Chars::toString);
-        Assert.assertEquals(listOf(" ", "  ", "bc "), lines);
+        assertEquals(listOf(" ", "  ", "bc "), lines);
+    }
+
+    @Test
+    public void linesTest2() {
+        Chars bc = Chars.wrap("aa\n");
+        List<String> lines = CollectionUtil.map(bc.lines(), Chars::toString);
+        assertEquals(listOf("aa"), lines);
     }
 
     @Test
@@ -212,14 +225,14 @@ public class CharsTest {
 
         Chars chars = Chars.wrap("a_a_b_c_s").slice(2, 5);
         //                          -----
-        Assert.assertEquals(Chars.wrap("a_b_c"), chars);
-        Assert.assertNotEquals("a_b_c", chars);
+        assertEquals(Chars.wrap("a_b_c"), chars);
+        assertNotEquals("a_b_c", chars);
 
-        Assert.assertEquals(Chars.wrap("a_b_c").hashCode(), chars.hashCode());
-        Assert.assertEquals(chars, chars);
+        assertEquals(Chars.wrap("a_b_c").hashCode(), chars.hashCode());
+        assertEquals(chars, chars);
 
-        Assert.assertEquals("a_b_c".hashCode(), Chars.wrap("a_b_c").hashCode());
-        Assert.assertEquals("a_b_c".hashCode(), chars.hashCode());
+        assertEquals("a_b_c".hashCode(), Chars.wrap("a_b_c").hashCode());
+        assertEquals("a_b_c".hashCode(), chars.hashCode());
 
     }
 
@@ -229,14 +242,14 @@ public class CharsTest {
 
         Chars chars = Chars.wrap("a_a_b_c_s").slice(2, 5);
         //                          -----
-        Assert.assertTrue(chars.contentEquals("a_b_c"));
-        Assert.assertTrue(chars.contentEquals(Chars.wrap("a_b_c")));
+        assertTrue(chars.contentEquals("a_b_c"));
+        assertTrue(chars.contentEquals(Chars.wrap("a_b_c")));
 
-        Assert.assertFalse(chars.contentEquals("a_b_c_--"));
-        Assert.assertFalse(chars.contentEquals(Chars.wrap("a_b_c_")));
-        Assert.assertFalse(chars.contentEquals(Chars.wrap("a_b-c")));
+        assertFalse(chars.contentEquals("a_b_c_--"));
+        assertFalse(chars.contentEquals(Chars.wrap("a_b_c_")));
+        assertFalse(chars.contentEquals(Chars.wrap("a_b-c")));
 
-        Assert.assertTrue(chars.contentEquals(Chars.wrap("A_B_C"), true));
+        assertTrue(chars.contentEquals(Chars.wrap("A_B_C"), true));
     }
 
     @Test

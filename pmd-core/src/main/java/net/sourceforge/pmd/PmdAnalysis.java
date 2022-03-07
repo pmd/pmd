@@ -181,7 +181,8 @@ public final class PmdAnalysis implements AutoCloseable {
      * @throws NullPointerException If the parameter is null
      */
     public void addRenderer(Renderer renderer) {
-        this.renderers.add(Objects.requireNonNull(renderer));
+        AssertionUtil.requireParamNotNull("renderer", renderer);
+        this.renderers.add(renderer);
     }
 
     /**
@@ -190,21 +191,31 @@ public final class PmdAnalysis implements AutoCloseable {
      * @throws NullPointerException If the parameter is null, or any of its items is null.
      */
     public void addRenderers(Collection<Renderer> renderers) {
-        for (Renderer r : renderers) {
-            addRenderer(r);
-        }
+        renderers.forEach(this::addRenderer);
     }
 
     /**
      * Add a new listener. As per the contract of {@link GlobalAnalysisListener},
-     * this object must be ready for interaction. Nothing will be done
-     * with the listener until {@link #performAnalysis()} is called.
-     * The listener will be closed by {@link #performAnalysis()}.
+     * this object must be ready for interaction. However, nothing will
+     * be done with the listener until {@link #performAnalysis()} is called.
+     * The listener will be closed by {@link #performAnalysis()}, or
+     * {@link #close()}, whichever happens first.
      *
      * @throws NullPointerException If the parameter is null
      */
     public void addListener(GlobalAnalysisListener listener) {
-        this.listeners.add(Objects.requireNonNull(listener));
+        AssertionUtil.requireParamNotNull("listener", listener);
+        this.listeners.add(listener);
+    }
+
+    /**
+     * Add several listeners at once.
+     *
+     * @throws NullPointerException If the parameter is null, or any of its items is null.
+     * @see #addListener(GlobalAnalysisListener)
+     */
+    public void addListeners(Collection<? extends GlobalAnalysisListener> listeners) {
+        listeners.forEach(this::addListener);
     }
 
     /**
@@ -213,7 +224,8 @@ public final class PmdAnalysis implements AutoCloseable {
      * @throws NullPointerException If the parameter is null
      */
     public void addRuleSet(RuleSet ruleSet) {
-        this.ruleSets.add(Objects.requireNonNull(ruleSet));
+        AssertionUtil.requireParamNotNull("rule set", ruleSet);
+        this.ruleSets.add(ruleSet);
     }
 
     /**
@@ -222,11 +234,13 @@ public final class PmdAnalysis implements AutoCloseable {
      * @throws NullPointerException If the parameter is null, or any of its items is null.
      */
     public void addRuleSets(Collection<RuleSet> ruleSets) {
-        for (RuleSet rs : ruleSets) {
-            addRuleSet(rs);
-        }
+        ruleSets.forEach(this::addRuleSet);
     }
 
+    /**
+     * Returns an unmodifiable view of the ruleset list. That will be
+     * processed.
+     */
     public List<RuleSet> getRulesets() {
         return Collections.unmodifiableList(ruleSets);
     }
@@ -372,6 +386,9 @@ public final class PmdAnalysis implements AutoCloseable {
         }
         closed = true;
         collector.close();
+
+        // close listeners if analysis is not run.
+        IOUtil.closeAll(listeners);
 
         /*
          * Make sure it's our own classloader before attempting to close it....

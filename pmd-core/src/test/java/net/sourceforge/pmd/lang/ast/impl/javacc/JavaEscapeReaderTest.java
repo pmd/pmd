@@ -2,11 +2,12 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.ast.impl.javacc.io;
+package net.sourceforge.pmd.lang.ast.impl.javacc;
+
+import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import net.sourceforge.pmd.lang.LanguageRegistry;
@@ -27,7 +28,7 @@ public class JavaEscapeReaderTest {
 
         String input = "abcdede";
         try (TextDocument r = readString(input)) {
-            Assert.assertEquals(Chars.wrap(input), r.getText());
+            assertEquals(Chars.wrap(input), r.getText());
         }
     }
 
@@ -36,7 +37,7 @@ public class JavaEscapeReaderTest {
 
         String input = "abc\\dede";
         try (TextDocument r = readString(input)) {
-            Assert.assertEquals(Chars.wrap(input), r.getText());
+            assertEquals(Chars.wrap(input), r.getText());
         }
     }
 
@@ -45,7 +46,7 @@ public class JavaEscapeReaderTest {
 
         String input = "abc\\\\\\dede";
         try (TextDocument r = readString(input)) {
-            Assert.assertEquals(Chars.wrap(input), r.getText());
+            assertEquals(Chars.wrap(input), r.getText());
         }
     }
 
@@ -54,7 +55,7 @@ public class JavaEscapeReaderTest {
 
         String input = "abc\\\\\\u00a0dede";
         try (TextDocument r = readString(input)) {
-            Assert.assertEquals(Chars.wrap("abc\u00a0dede"), r.getText());
+            assertEquals(Chars.wrap("abc\u00a0dede"), r.getText());
         }
     }
 
@@ -63,7 +64,7 @@ public class JavaEscapeReaderTest {
 
         String input = "abc\\\\\\u00a0d\\uu00a0ede";
         try (TextDocument r = readString(input)) {
-            Assert.assertEquals(Chars.wrap("abc\u00a0d\u00a0ede"), r.getText());
+            assertEquals(Chars.wrap("abc\u00a0d\u00a0ede"), r.getText());
         }
     }
 
@@ -72,7 +73,7 @@ public class JavaEscapeReaderTest {
 
         String input = "abc\\\\\\u00a0dede\\u00a0";
         try (TextDocument r = readString(input)) {
-            Assert.assertEquals(Chars.wrap("abc\u00a0dede\u00a0"), r.getText());
+            assertEquals(Chars.wrap("abc\u00a0dede\u00a0"), r.getText());
         }
     }
 }

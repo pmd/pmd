@@ -2,12 +2,13 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.document;
+package net.sourceforge.pmd.reporting;
 
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.annotation.DeprecatedUntil700;
 import net.sourceforge.pmd.lang.ast.GenericToken;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.document.FileLocation;
 
 /**
  * Interface implemented by those objects that can be the target of

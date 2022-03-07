@@ -23,6 +23,11 @@ import net.sourceforge.pmd.util.datasource.DataSource;
  * <p>TextDocument is meant to replace CPD's {@link SourceCode} and PMD's
  * {@link DataSource}, though the abstraction level of {@link DataSource}
  * is the {@link TextFile}.
+ *
+ * <p>Note that the backing {@link TextFile} is purposefully not accessible
+ * from a text document. Exposing it here could lead to files being written
+ * to from within rules, while we want to eventually build an API that allows
+ * file edition based on AST manipulation.
  */
 public interface TextDocument extends Closeable {
     // todo logical sub-documents, to support embedded languages

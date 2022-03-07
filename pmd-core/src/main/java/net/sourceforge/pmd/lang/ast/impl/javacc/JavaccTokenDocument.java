@@ -12,8 +12,6 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.cpd.internal.JavaCCTokenizer;
 import net.sourceforge.pmd.lang.ast.impl.TokenDocument;
-import net.sourceforge.pmd.lang.ast.impl.javacc.io.EscapeTranslator;
-import net.sourceforge.pmd.lang.ast.impl.javacc.io.MalformedSourceException;
 import net.sourceforge.pmd.lang.document.TextDocument;
 
 /**

@@ -17,8 +17,8 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import net.sourceforge.pmd.lang.ast.impl.javacc.CharStream;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument;
-import net.sourceforge.pmd.lang.ast.impl.javacc.io.JavaEscapeTranslator;
-import net.sourceforge.pmd.lang.ast.impl.javacc.io.MalformedSourceException;
+import net.sourceforge.pmd.lang.ast.impl.javacc.JavaEscapeTranslator;
+import net.sourceforge.pmd.lang.ast.impl.javacc.MalformedSourceException;
 import net.sourceforge.pmd.lang.document.TextDocument;
 
 /**

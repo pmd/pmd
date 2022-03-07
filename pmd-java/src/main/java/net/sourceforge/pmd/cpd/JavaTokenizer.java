@@ -43,7 +43,7 @@ public class JavaTokenizer extends JavaCCTokenizer {
     }
 
     @Override
-    protected JavaccTokenDocument.TokenDocumentBehavior tokenBehavior() {
+    protected JavaccTokenDocument.TokenDocumentBehavior tokenBehavior() throws IOException {
         return InternalApiBridge.javaTokenDoc();
     }
 

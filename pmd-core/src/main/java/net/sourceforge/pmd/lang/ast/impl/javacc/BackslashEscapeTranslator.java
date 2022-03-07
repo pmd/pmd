@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.ast.impl.javacc.io;
+package net.sourceforge.pmd.lang.ast.impl.javacc;
 
 import static java.lang.Integer.min;
 

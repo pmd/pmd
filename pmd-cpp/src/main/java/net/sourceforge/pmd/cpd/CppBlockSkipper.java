@@ -7,8 +7,8 @@ package net.sourceforge.pmd.cpd;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import net.sourceforge.pmd.lang.ast.impl.javacc.io.EscapeTranslator;
-import net.sourceforge.pmd.lang.ast.impl.javacc.io.MalformedSourceException;
+import net.sourceforge.pmd.lang.ast.impl.javacc.EscapeTranslator;
+import net.sourceforge.pmd.lang.ast.impl.javacc.MalformedSourceException;
 import net.sourceforge.pmd.lang.document.Chars;
 import net.sourceforge.pmd.lang.document.TextDocument;
 
