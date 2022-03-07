@@ -8,11 +8,16 @@ import java.util.Iterator;
 
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.internal.util.IteratorUtil;
-import net.sourceforge.pmd.lang.document.Reportable;
 import net.sourceforge.pmd.lang.document.TextRegion;
+import net.sourceforge.pmd.reporting.Reportable;
 
 /**
- * Represents a language-independent token such as constants, values language reserved keywords, or comments.
+ * Represents a token, part of a token chain in a source file. Tokens
+ * are the individual "words" of a programming language, such as literals,
+ * identifiers, keywords, or comments. Tokens are produced by a lexer and
+ * are used by a parser implementation to build an AST {@link Node}. Tokens
+ * should generally not be manipulated in rules directly as they have little
+ * to no semantic information.
  */
 public interface GenericToken<T extends GenericToken<T>> extends Comparable<T>, Reportable {
 

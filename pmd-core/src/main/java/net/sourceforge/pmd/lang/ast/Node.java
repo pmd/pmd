@@ -18,7 +18,6 @@ import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.NodeStream.DescendantNodeStream;
 import net.sourceforge.pmd.lang.ast.internal.StreamImpl;
 import net.sourceforge.pmd.lang.document.FileLocation;
-import net.sourceforge.pmd.lang.document.Reportable;
 import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.lang.document.TextRegion;
 import net.sourceforge.pmd.lang.rule.xpath.Attribute;
@@ -28,6 +27,7 @@ import net.sourceforge.pmd.lang.rule.xpath.impl.AttributeAxisIterator;
 import net.sourceforge.pmd.lang.rule.xpath.impl.XPathHandler;
 import net.sourceforge.pmd.lang.rule.xpath.internal.DeprecatedAttrLogger;
 import net.sourceforge.pmd.lang.rule.xpath.internal.SaxonXPathRuleQuery;
+import net.sourceforge.pmd.reporting.Reportable;
 import net.sourceforge.pmd.util.DataMap;
 import net.sourceforge.pmd.util.DataMap.DataKey;
 
@@ -59,11 +59,13 @@ import net.sourceforge.pmd.util.DataMap.DataKey;
  */
 public interface Node extends Reportable {
 
+    /**
+     * Compares nodes according to their location in the file.
+     * Note that this comparator is not <i>consistent with equals</i>
+     * (see {@link Comparator}) as some nodes have the same location.
+     */
     Comparator<Node> COORDS_COMPARATOR =
-        Comparator.comparingInt(Node::getBeginLine)
-                  .thenComparingInt(Node::getBeginColumn)
-                  .thenComparingInt(Node::getEndLine)
-                  .thenComparingInt(Node::getEndColumn);
+        Comparator.comparing(Node::getReportLocation, FileLocation.COMPARATOR);
 
     /**
      * Returns a string token, usually filled-in by the parser, which describes some textual characteristic of this
