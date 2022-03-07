@@ -370,7 +370,7 @@ public final class FileCollector implements AutoCloseable {
      * Remove all files collected by the given collector from this one.
      */
     public void exclude(FileCollector excludeCollector) {
-        HashSet<TextFile> toExclude = new HashSet<>(excludeCollector.allFilesToProcess);
+        Set<TextFile> toExclude = new HashSet<>(excludeCollector.allFilesToProcess);
         for (Iterator<TextFile> iterator = allFilesToProcess.iterator(); iterator.hasNext();) {
             TextFile file = iterator.next();
             if (toExclude.contains(file)) {

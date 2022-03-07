@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.cpd;
 
+import java.io.IOException;
+import java.io.Reader;
 import java.util.regex.Pattern;
 
 import net.sourceforge.pmd.cpd.internal.JavaCCTokenizer;

@@ -48,12 +48,12 @@ final class FragmentedTextDocument extends BaseMappedDocument implements TextDoc
 
     @Override
     protected int localOffsetTransform(int outOffset, boolean inclusive) {
-        // todo this would be pretty slow when we're in the middle of some escapes
-        // we could check save the fragment last accessed to speed it up, and look forwards & backwards
         return inputOffsetAt(outOffset, inclusive);
     }
 
     private int inputOffsetAt(int outputOffset, boolean inclusive) {
+        // caching the last accessed fragment instead of doing
+        // a linear search is critical for performance.
         Fragment f = this.lastAccessedFragment;
         if (f == null) {
             return outputOffset;
@@ -100,9 +100,9 @@ final class FragmentedTextDocument extends BaseMappedDocument implements TextDoc
         final @Nullable Fragment prev;
         @Nullable Fragment next;
 
+        private final int inStart;
         private final int inLength;
         private final int outStart;
-        private final int inStart;
 
         Fragment(@Nullable Fragment prev, int inLength, Chars chars) {
             this.chars = chars;
@@ -147,7 +147,7 @@ final class FragmentedTextDocument extends BaseMappedDocument implements TextDoc
         }
 
         int outToIn(int outOffset) {
-            return inStart() + (outOffset - outStart());
+            return inStart() + outOffset - outStart();
         }
 
         boolean contains(int outOffset) {

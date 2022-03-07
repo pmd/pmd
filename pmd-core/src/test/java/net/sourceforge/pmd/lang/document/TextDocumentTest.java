@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.document;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -137,6 +138,19 @@ public class TextDocumentTest {
         assertEquals(1, withLines.getEndLine());
         assertEquals(1 + "bonjour".length(), withLines.getBeginColumn());
         assertEquals(1 + "bonjour".length(), withLines.getEndColumn());
+    }
+
+    @Test
+    public void testLineRange() {
+        TextDocument doc = TextDocument.readOnlyString("bonjour\noha\ntristesse", dummyVersion);
+
+        assertEquals(Chars.wrap("bonjour\n"), doc.sliceTranslatedText(doc.createLineRange(1, 1)));
+        assertEquals(Chars.wrap("bonjour\noha\n"), doc.sliceTranslatedText(doc.createLineRange(1, 2)));
+        assertEquals(Chars.wrap("oha\n"), doc.sliceTranslatedText(doc.createLineRange(2, 2)));
+        assertEquals(Chars.wrap("oha\ntristesse"), doc.sliceTranslatedText(doc.createLineRange(2, 3)));
+        assertThrows(IndexOutOfBoundsException.class, () -> doc.createLineRange(2, 1));
+        assertThrows(IndexOutOfBoundsException.class, () -> doc.createLineRange(1, 5));
+        assertThrows(IndexOutOfBoundsException.class, () -> doc.createLineRange(0, 2));
     }
 
     @Test
