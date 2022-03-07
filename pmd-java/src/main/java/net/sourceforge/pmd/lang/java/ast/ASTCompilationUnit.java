@@ -23,14 +23,14 @@ import net.sourceforge.pmd.lang.java.types.ast.LazyTypeResolver;
 public final class ASTCompilationUnit extends AbstractJavaTypeNode implements JavaNode, GenericNode<JavaNode>, RootNode {
 
     private LazyTypeResolver lazyTypeResolver;
-    private List<Comment> comments;
+    private List<JavaComment> comments;
     private AstInfo<ASTCompilationUnit> astInfo;
 
     ASTCompilationUnit(int id) {
         super(id);
     }
 
-    public List<Comment> getComments() {
+    public List<JavaComment> getComments() {
         return comments;
     }
 
@@ -43,7 +43,7 @@ public final class ASTCompilationUnit extends AbstractJavaTypeNode implements Ja
         return astInfo;
     }
 
-    void setComments(List<Comment> comments) {
+    void setComments(List<JavaComment> comments) {
         this.comments = comments;
     }
 

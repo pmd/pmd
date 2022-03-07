@@ -10,11 +10,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import net.sourceforge.pmd.lang.document.Chars;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
-import net.sourceforge.pmd.lang.java.ast.Comment;
+import net.sourceforge.pmd.lang.java.ast.JavaComment;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
-import net.sourceforge.pmd.util.document.Chars;
 
 /**
  * A rule that checks for illegal words in the comment text.
@@ -39,7 +39,7 @@ public class CommentContentRule extends AbstractJavaRulechainRule {
 
         Pattern pattern = getProperty(DISSALLOWED_TERMS_DESCRIPTOR);
 
-        for (Comment comment : cUnit.getComments()) {
+        for (JavaComment comment : cUnit.getComments()) {
             List<Integer> lineNumbers = illegalTermsIn(comment, pattern);
             if (lineNumbers.isEmpty()) {
                 continue;
@@ -61,7 +61,7 @@ public class CommentContentRule extends AbstractJavaRulechainRule {
         return null;
     }
 
-    private List<Integer> illegalTermsIn(Comment comment, Pattern violationRegex) {
+    private List<Integer> illegalTermsIn(JavaComment comment, Pattern violationRegex) {
 
         List<Integer> lines = new ArrayList<>();
         int i = 0;

@@ -30,7 +30,7 @@ public class CommentAssignmentTest extends BaseParserTest {
                                                  + "        /** a formal comment with blank lines\n\n\n */"
                                                  + "}");
 
-        Comment comment = node.getComments().get(0);
+        JavaComment comment = node.getComments().get(0);
 
         assertFalse(comment.isSingleLine());
         assertFalse(comment.hasJavadocContent());

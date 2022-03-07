@@ -35,7 +35,7 @@ final class CommentAssignmentPass {
     }
 
     public static void assignCommentsToDeclarations(ASTCompilationUnit root) {
-        final List<Comment> comments = root.getComments();
+        final List<JavaComment> comments = root.getComments();
         if (comments.isEmpty()) {
             return;
         }
@@ -48,7 +48,7 @@ final class CommentAssignmentPass {
                 if (maybeComment.kind == JavaTokenKinds.FORMAL_COMMENT) {
                     JavadocComment comment = new JavadocComment(maybeComment);
                     // deduplicate the comment
-                    int idx = Collections.binarySearch(comments, comment, Comparator.comparing(Comment::getReportLocation, FileLocation.COORDS_COMPARATOR));
+                    int idx = Collections.binarySearch(comments, comment, Comparator.comparing(JavaComment::getReportLocation, FileLocation.COORDS_COMPARATOR));
                     assert idx >= 0 : "Formal comment not found? " + comment;
                     comment = (JavadocComment) comments.get(idx);
 

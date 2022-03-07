@@ -20,7 +20,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchLabel;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchLike;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
-import net.sourceforge.pmd.lang.java.ast.Comment;
+import net.sourceforge.pmd.lang.java.ast.JavaComment;
 import net.sourceforge.pmd.lang.java.ast.JavadocComment;
 import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
@@ -162,7 +162,7 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
 
     private void visitComments(ASTCompilationUnit node) {
         // todo improve that when we have a javadoc parser
-        for (Comment comment : node.getComments()) {
+        for (JavaComment comment : node.getComments()) {
             if (!(comment instanceof JavadocComment)) {
                 continue;
             }

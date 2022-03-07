@@ -20,7 +20,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.AccessNode;
 import net.sourceforge.pmd.lang.java.ast.AccessNode.Visibility;
-import net.sourceforge.pmd.lang.java.ast.Comment;
+import net.sourceforge.pmd.lang.java.ast.JavaComment;
 import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.rule.internal.JavaPropertyUtil;
@@ -62,7 +62,7 @@ public class CommentDefaultAccessModifierRule extends AbstractJavaRulechainRule 
     @Override
     public Object visit(final ASTCompilationUnit node, final Object data) {
         interestingLineNumberComments.clear();
-        for (final Comment comment : node.getComments()) {
+        for (final JavaComment comment : node.getComments()) {
             if (getProperty(REGEX_DESCRIPTOR).matcher(comment.getText()).matches()) {
                 interestingLineNumberComments.add(comment.getBeginLine());
             }
@@ -150,8 +150,8 @@ public class CommentDefaultAccessModifierRule extends AbstractJavaRulechainRule 
 
     private boolean hasOkComment(AccessNode node) {
         Pattern regex = getProperty(REGEX_DESCRIPTOR);
-        return Comment.getLeadingComments(node)
-                      .anyMatch(it -> regex.matcher(it.getImageCs()).matches());
+        return JavaComment.getLeadingComments(node)
+                          .anyMatch(it -> regex.matcher(it.getImageCs()).matches());
     }
 
     private boolean shouldReportTypeDeclaration(ASTAnyTypeDeclaration decl) {

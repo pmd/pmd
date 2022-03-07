@@ -15,7 +15,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import net.sourceforge.pmd.lang.document.Chars;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
-import net.sourceforge.pmd.lang.java.ast.Comment;
+import net.sourceforge.pmd.lang.java.ast.JavaComment;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
@@ -53,7 +53,7 @@ public class CommentSizeRule extends AbstractJavaRulechainRule {
     @Override
     public Object visit(ASTCompilationUnit cUnit, Object data) {
 
-        for (Comment comment : cUnit.getComments()) {
+        for (JavaComment comment : cUnit.getComments()) {
             if (hasTooManyLines(comment)) {
                 addViolationWithMessage(data, cUnit, this.getMessage()
                     + ": Too many lines", comment.getBeginLine(), comment.getEndLine());
@@ -84,7 +84,7 @@ public class CommentSizeRule extends AbstractJavaRulechainRule {
         return !StringUtils.isBlank(line) && !IGNORED_LINES.contains(line.trim());
     }
 
-    private boolean hasTooManyLines(Comment comment) {
+    private boolean hasTooManyLines(JavaComment comment) {
 
         int firstLineWithText = -1;
         int lastLineWithText;
@@ -106,7 +106,7 @@ public class CommentSizeRule extends AbstractJavaRulechainRule {
         return false;
     }
 
-    private List<Integer> overLengthLineIndicesIn(Comment comment) {
+    private List<Integer> overLengthLineIndicesIn(JavaComment comment) {
 
         int maxLength = getProperty(MAX_LINE_LENGTH);
 

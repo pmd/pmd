@@ -9,9 +9,9 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 
 /**
- * A {@link Comment} that has Javadoc content.
+ * A {@link JavaComment} that has Javadoc content.
  */
-public final class JavadocComment extends Comment {
+public final class JavadocComment extends JavaComment {
 
     private JavadocCommentOwner owner;
 
