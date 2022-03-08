@@ -44,11 +44,6 @@ public final class ASTLocalVariableDeclaration extends AbstractStatement
         return visitor.visit(this, data);
     }
 
-    @Override
-    public Visibility getVisibility() {
-        return Visibility.V_LOCAL;
-    }
-
     /**
      * If true, this local variable declaration represents a declaration,
      * which makes use of local variable type inference, e.g. java10 "var".

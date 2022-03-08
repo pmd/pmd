@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import java.util.Objects;
 import java.util.Set;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -11,13 +12,9 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import net.sourceforge.pmd.lang.ast.NodeStream;
 
 /**
- * A node that owns a {@linkplain ASTModifierList modifier list}.
- *
- * <p>{@link AccessNode} methods take into account the syntactic context of the
- * declaration, e.g. {@link #isPublic()} will always return true for a field
- * declared inside an interface, regardless of whether the {@code public}
- * modifier was specified explicitly or not. If you want to know whether
- * the modifier was explicitly stated, use {@link #hasExplicitModifiers(JModifier, JModifier...)}.
+ * A node that owns a {@linkplain ASTModifierList modifier list}. This
+ * interface exposes a few convenience methods. More functionality about
+ * modifiers is exposed directly by {@link ASTModifierList}.
  *
  * TODO rename to ModifierOwner, kept out from PR to reduce diff
  */
@@ -33,7 +30,7 @@ public interface AccessNode extends Annotatable {
      * Returns the node representing the modifier list of this node.
      */
     default @NonNull ASTModifierList getModifiers() {
-        return children(ASTModifierList.class).firstOrThrow();
+        return Objects.requireNonNull(firstChild(ASTModifierList.class));
     }
 
 
@@ -46,6 +43,9 @@ public interface AccessNode extends Annotatable {
      * n.hasModifiers(PROTECTED)})
      */
     default Visibility getVisibility() {
+        if (!(this instanceof NonLocalDeclarationNode)) {
+            return Visibility.V_LOCAL;
+        }
         Set<JModifier> effective = getModifiers().getEffectiveModifiers();
         if (effective.contains(JModifier.PUBLIC)) {
             return Visibility.V_PUBLIC;
@@ -95,12 +95,6 @@ public interface AccessNode extends Annotatable {
      */
     default boolean hasExplicitModifiers(JModifier mod1, JModifier... mod) {
         return getModifiers().hasAllExplicitly(mod1, mod);
-    }
-
-
-    @Deprecated
-    default boolean isFinal() {
-        return hasModifiers(JModifier.FINAL);
     }
 
 

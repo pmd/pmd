@@ -34,11 +34,6 @@ public final class ASTFormalParameter extends AbstractJavaNode
         super(id);
     }
 
-    @Override
-    public Visibility getVisibility() {
-        return Visibility.V_LOCAL;
-    }
-
 
     /**
      * Returns the list of formal parameters containing this param.
