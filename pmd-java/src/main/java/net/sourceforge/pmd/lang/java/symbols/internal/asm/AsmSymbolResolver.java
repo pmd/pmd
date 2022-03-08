@@ -83,28 +83,6 @@ public class AsmSymbolResolver implements SymbolResolver {
         return binaryName.replace('.', '/');
     }
 
-    /**
-     * Test whether an internal name has a canonical name. This means,
-     * every segment of the simple name (part after the last '/'), where
-     * segments are separated by '$', is a valid java identifier. We only
-     * check the first character as anon/local classes are identified with
-     * integers, which are not valid java identifier starts.
-     */
-    static boolean hasCanonicalName(String internalName) {
-        int packageEnd = internalName.lastIndexOf('/');
-        for (int i = packageEnd; i + 1 < internalName.length();) {
-            char firstChar = internalName.charAt(i + 1);
-            if (!Character.isJavaIdentifierStart(firstChar)) {
-                return false;
-            }
-            i = internalName.indexOf('$', i + 1);
-            if (i == -1) {
-                break;
-            }
-        }
-        return !internalName.isEmpty();
-    }
-
     @Nullable
     URL getUrlOfInternalName(String internalName) {
         return classLoader.findResource(internalName + ".class");

@@ -44,7 +44,6 @@ final class ClassStub implements JClassSymbol, AsmStub {
     static final int UNKNOWN_ARITY = 0;
 
     private final AsmSymbolResolver resolver;
-    private final Loader loader;
 
     private final Names names;
 
@@ -76,7 +75,6 @@ final class ClassStub implements JClassSymbol, AsmStub {
 
         this.resolver = resolver;
         this.names = new Names(internalName);
-        this.loader = loader;
 
         this.parseLock = new ParseLock() {
             // note to devs: to debug the parsing logic you might have
@@ -130,10 +128,6 @@ final class ClassStub implements JClassSymbol, AsmStub {
                 return signature != null && enclosingInfo != null;
             }
         };
-    }
-
-    Loader getLoader() {
-        return loader;
     }
 
     @Override
