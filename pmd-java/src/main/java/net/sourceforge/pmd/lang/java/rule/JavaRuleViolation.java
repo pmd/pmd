@@ -22,7 +22,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
-import net.sourceforge.pmd.lang.java.ast.AccessNode;
 import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
@@ -70,7 +69,7 @@ public class JavaRuleViolation extends ParametricRuleViolation<JavaNode> {
         ASTCompilationUnit file = node.getRoot();
         if (enclosing == null) {
             NodeStream<ASTAnyTypeDeclaration> tds = file.getTypeDeclarations();
-            enclosing = tds.first(AccessNode::isPublic);
+            enclosing = tds.first(ASTAnyTypeDeclaration::isPublic);
             if (enclosing == null) {
                 enclosing = tds.first();
             }

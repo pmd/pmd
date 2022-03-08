@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.codestyle;
 
+import static net.sourceforge.pmd.lang.java.ast.JModifier.STATIC;
+
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -50,7 +52,7 @@ public class AtLeastOneConstructorRule extends AbstractIgnoredAnnotationRule {
         NodeStream<AccessNode> members = node.getDeclarations()
                                              .filterIs(AccessNode.class)
                                              .filterNot(it -> it instanceof ASTAnyTypeDeclaration);
-        if (members.isEmpty() || members.any(it -> !it.isStatic())) {
+        if (members.isEmpty() || members.any(it -> !it.hasModifiers(STATIC))) {
             // Do we have any non-static members?
             addViolation(data, node);
         }

@@ -25,7 +25,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
-import net.sourceforge.pmd.lang.java.ast.AccessNode;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.metrics.internal.AtfdBaseVisitor;
 import net.sourceforge.pmd.lang.java.metrics.internal.ClassFanOutVisitor;
@@ -435,7 +434,7 @@ public final class JavaMetrics {
     private static int computeNopa(ASTAnyTypeDeclaration node, MetricOptions ignored) {
         return node.getDeclarations()
                    .filterIs(ASTFieldDeclaration.class)
-                   .filter(AccessNode::isPublic)
+                   .filter(ASTFieldDeclaration::isPublic)
                    .flatMap(ASTFieldDeclaration::getVarIds)
                    .count();
     }

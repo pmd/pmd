@@ -98,47 +98,9 @@ public interface AccessNode extends Annotatable {
     }
 
 
-    // these are about effective modifiers
-
-
     @Deprecated
     default boolean isFinal() {
         return hasModifiers(JModifier.FINAL);
-    }
-
-
-    /**
-     * Returns true if this declaration has a static modifier, implicitly or explicitly.
-     */
-    default boolean isStatic() {
-        return hasModifiers(JModifier.STATIC);
-    }
-
-
-    // these are about visibility
-
-
-    /** Returns true if this node has private visibility. */
-    default boolean isPrivate() {
-        return getVisibility() == Visibility.V_PRIVATE;
-    }
-
-
-    /** Returns true if this node has public visibility. */
-    default boolean isPublic() {
-        return getVisibility() == Visibility.V_PUBLIC;
-    }
-
-
-    /** Returns true if this node has protected visibility. */
-    default boolean isProtected() {
-        return getVisibility() == Visibility.V_PROTECTED;
-    }
-
-
-    /** Returns true if this node has package visibility. */
-    default boolean isPackagePrivate() {
-        return getVisibility() == Visibility.V_PACKAGE;
     }
 
 

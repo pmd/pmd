@@ -5,7 +5,7 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 /**
- * A class or instance initializer. Don't confuse with {@link ASTVariableInitializer}.
+ * A class or instance initializer.
  *
  * <pre class="grammar">
  *
@@ -28,7 +28,9 @@ public final class ASTInitializer extends AbstractJavaNode implements ASTBodyDec
         return visitor.visit(this, data);
     }
 
-
+    /**
+     * Returns true if this is a static initializer.
+     */
     public boolean isStatic() {
         return isStatic;
     }

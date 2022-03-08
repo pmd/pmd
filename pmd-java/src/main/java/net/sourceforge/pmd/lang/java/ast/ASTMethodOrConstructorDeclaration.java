@@ -31,7 +31,8 @@ public interface ASTMethodOrConstructorDeclaration
             ASTBodyDeclaration,
             TypeParamOwnerNode,
             GenericNode<JavaNode>,
-            JavadocCommentOwner {
+            JavadocCommentOwner,
+            NonLocalDeclarationNode {
 
 
     @Override
