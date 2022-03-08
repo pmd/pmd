@@ -176,8 +176,8 @@ public final class JjtreeBuilder<N extends AbstractJjtreeNode<N, ?>> {
             closeImpl(n, lastToken);
         } else {
             mk = marks.remove(marks.size() - 1);
-            nodeCreated = false;
         }
+        nodeCreated = condition;
     }
 
 
@@ -195,6 +195,5 @@ public final class JjtreeBuilder<N extends AbstractJjtreeNode<N, ?>> {
         // note that the last token has been set before jjtClose
         n.jjtClose();
         pushNode(n);
-        nodeCreated = true;
     }
 }

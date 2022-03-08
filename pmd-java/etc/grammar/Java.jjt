@@ -2119,6 +2119,7 @@ void NumericLiteral():
   | <FLOATING_POINT_LITERAL>      { jjtThis.setFloatLiteral(); }
   )
   { setLastTokenImage(jjtThis); }
+  {} // need to set the image before node is closed
 }
 
 void CharLiteral():

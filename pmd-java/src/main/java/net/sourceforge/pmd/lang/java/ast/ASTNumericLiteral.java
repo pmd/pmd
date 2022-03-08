@@ -14,7 +14,8 @@ import net.sourceforge.pmd.lang.java.types.JPrimitiveType;
 
 
 /**
- * A numeric literal of any type (double, int, long, float, etc).
+ * A numeric literal of any type (double, int, long, float). Note that
+ * there are no literals of type short or byte.
  */
 public final class ASTNumericLiteral extends AbstractLiteral implements ASTLiteral {
 
