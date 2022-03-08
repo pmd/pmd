@@ -10,7 +10,6 @@ package net.sourceforge.pmd.lang.rule.xpath;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.List;
@@ -111,20 +110,13 @@ public class Attribute {
         try {
             // some attributes are declared as public methods on package-private
             // interfaces, they need to be accessible.
-            if (isPackagePrivate(method.getDeclaringClass())) {
-                method.setAccessible(true);
-            }
+            method.setAccessible(true);
             value = Collections.singletonList(method.invoke(parent, EMPTY_OBJ_ARRAY));
             return value.get(0);
         } catch (IllegalAccessException | InvocationTargetException iae) {
             iae.printStackTrace(); // todo log
         }
         return null;
-    }
-
-    private static boolean isPackagePrivate(Class<?> klass) {
-        int accessMods = Modifier.PUBLIC | Modifier.PRIVATE | Modifier.PROTECTED;
-        return (klass.getModifiers() & accessMods) == 0;
     }
 
     public String getStringValue() {
