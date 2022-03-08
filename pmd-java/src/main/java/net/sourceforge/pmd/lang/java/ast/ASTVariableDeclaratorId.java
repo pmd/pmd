@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.ast;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -121,7 +122,7 @@ public final class ASTVariableDeclaratorId
 
     /** Returns the name of the variable. */
     public String getName() {
-        return super.getImage();
+        return Objects.requireNonNull(super.getImage());
     }
 
     /**

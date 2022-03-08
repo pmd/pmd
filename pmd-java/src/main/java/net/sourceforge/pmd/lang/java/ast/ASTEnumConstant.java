@@ -49,6 +49,7 @@ public final class ASTEnumConstant extends AbstractJavaTypeNode
     }
 
     @Override
+    @Deprecated
     public String getImage() {
         return getVarId().getImage();
     }
@@ -63,7 +64,7 @@ public final class ASTEnumConstant extends AbstractJavaTypeNode
      * Returns the name of the enum constant.
      */
     public String getName() {
-        return getImage();
+        return getVarId().getName();
     }
 
     /**
