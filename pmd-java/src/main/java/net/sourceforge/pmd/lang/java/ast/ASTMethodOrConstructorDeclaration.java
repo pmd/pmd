@@ -32,7 +32,7 @@ public interface ASTMethodOrConstructorDeclaration
             TypeParamOwnerNode,
             GenericNode<JavaNode>,
             JavadocCommentOwner,
-            NonLocalDeclarationNode {
+            InternalInterfaces.NonLocalDeclarationNode {
 
 
     @Override

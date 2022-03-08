@@ -26,7 +26,7 @@ import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 public final class ASTLocalVariableDeclaration extends AbstractStatement
     implements Iterable<ASTVariableDeclaratorId>,
                ASTStatement,
-               FinalizableNode,
+               InternalInterfaces.FinalizableNode,
                LeftRecursiveNode, // ModifierList is parsed separately in BlockStatement
                InternalInterfaces.MultiVariableIdOwner {
 

@@ -43,7 +43,7 @@ public interface AccessNode extends Annotatable {
      * n.hasModifiers(PROTECTED)})
      */
     default Visibility getVisibility() {
-        if (!(this instanceof NonLocalDeclarationNode)) {
+        if (!(this instanceof InternalInterfaces.NonLocalDeclarationNode)) {
             return Visibility.V_LOCAL;
         }
         Set<JModifier> effective = getModifiers().getEffectiveModifiers();

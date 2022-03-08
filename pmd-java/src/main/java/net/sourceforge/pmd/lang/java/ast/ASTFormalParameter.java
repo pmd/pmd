@@ -25,7 +25,7 @@ import net.sourceforge.pmd.lang.java.types.TypingContext;
  * </pre>
  */
 public final class ASTFormalParameter extends AbstractJavaNode
-    implements FinalizableNode,
+    implements InternalInterfaces.FinalizableNode,
                TypeNode,
                Annotatable,
                VariableIdOwner {

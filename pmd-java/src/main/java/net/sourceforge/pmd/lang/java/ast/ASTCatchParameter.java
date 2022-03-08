@@ -21,7 +21,7 @@ import net.sourceforge.pmd.lang.ast.NodeStream;
  */
 public final class ASTCatchParameter extends AbstractJavaNode
     implements InternalInterfaces.VariableIdOwner,
-               FinalizableNode {
+               InternalInterfaces.FinalizableNode {
 
     ASTCatchParameter(int id) {
         super(id);

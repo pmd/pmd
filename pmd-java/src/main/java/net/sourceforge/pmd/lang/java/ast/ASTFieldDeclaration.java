@@ -29,7 +29,7 @@ public final class ASTFieldDeclaration extends AbstractJavaNode
                ASTBodyDeclaration,
                InternalInterfaces.MultiVariableIdOwner,
                JavadocCommentOwner,
-               NonLocalDeclarationNode {
+               InternalInterfaces.NonLocalDeclarationNode {
 
 
     ASTFieldDeclaration(int id) {

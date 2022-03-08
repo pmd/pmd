@@ -35,9 +35,9 @@ public interface ASTAnyTypeDeclaration
             TypeParamOwnerNode,
             ASTBodyDeclaration,
             ASTTopLevelDeclaration,
-            FinalizableNode,
+            InternalInterfaces.FinalizableNode,
             JavadocCommentOwner,
-            NonLocalDeclarationNode {
+            InternalInterfaces.NonLocalDeclarationNode {
 
     @Override
     @NonNull

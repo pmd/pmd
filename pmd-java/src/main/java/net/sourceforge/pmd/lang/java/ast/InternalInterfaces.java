@@ -11,6 +11,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.NodeStream;
+import net.sourceforge.pmd.lang.rule.xpath.NoAttribute;
 
 /**
  * Those are some interfaces that are not published, but are used to keep
@@ -156,4 +157,64 @@ final class InternalInterfaces {
         ASTType getTypeNode();
     }
 
+    /**
+     * An {@link AccessNode} that is not a local declaration, and can receive
+     * a visibility modifier. Has a couple more convenient methods.
+     */
+    interface NonLocalDeclarationNode extends AccessNode {
+
+
+        /**
+         * Returns true if this declaration has a static modifier, implicitly or explicitly.
+         */
+        default boolean isStatic() {
+            return hasModifiers(JModifier.STATIC);
+        }
+
+
+        // these are about visibility
+
+
+        /** Returns true if this node has private visibility. */
+        @NoAttribute
+        default boolean isPrivate() {
+            return getVisibility() == Visibility.V_PRIVATE;
+        }
+
+
+        /** Returns true if this node has public visibility. */
+        @NoAttribute
+        default boolean isPublic() {
+            return getVisibility() == Visibility.V_PUBLIC;
+        }
+
+
+        /** Returns true if this node has protected visibility. */
+        @NoAttribute
+        default boolean isProtected() {
+            return getVisibility() == Visibility.V_PROTECTED;
+        }
+
+
+        /** Returns true if this node has package visibility. */
+        @NoAttribute
+        default boolean isPackagePrivate() {
+            return getVisibility() == Visibility.V_PACKAGE;
+        }
+    }
+
+    /**
+     * A node that may have the final modifier.
+     */
+    static interface FinalizableNode extends AccessNode {
+
+
+        /**
+         * Returns true if this variable, method or class is final (even implicitly).
+         */
+        default boolean isFinal() {
+            return hasModifiers(JModifier.FINAL);
+        }
+
+    }
 }

@@ -42,7 +42,11 @@ import net.sourceforge.pmd.lang.rule.xpath.DeprecatedAttribute;
  *
  */
 // @formatter:on
-public final class ASTVariableDeclaratorId extends AbstractTypedSymbolDeclarator<JVariableSymbol> implements AccessNode, SymbolDeclaratorNode, FinalizableNode {
+public final class ASTVariableDeclaratorId
+    extends AbstractTypedSymbolDeclarator<JVariableSymbol>
+    implements AccessNode,
+               SymbolDeclaratorNode,
+               InternalInterfaces.FinalizableNode {
 
     private List<ASTNamedReferenceExpr> usages = Collections.emptyList();
 
