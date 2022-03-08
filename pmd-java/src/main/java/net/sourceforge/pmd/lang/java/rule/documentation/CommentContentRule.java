@@ -140,16 +140,11 @@ public class CommentContentRule extends AbstractJavaRulechainRule {
         return !terms.isEmpty();
     }
 
-    @Deprecated
-    public boolean hasDissallowedTerms() {
-        return this.hasDisallowedTerms();
-    }
-
     /**
      * @see PropertySource#dysfunctionReason()
      */
     @Override
     public String dysfunctionReason() {
-        return hasDissallowedTerms() ? null : "No disallowed terms specified";
+        return hasDisallowedTerms() ? null : "No disallowed terms specified";
     }
 }
