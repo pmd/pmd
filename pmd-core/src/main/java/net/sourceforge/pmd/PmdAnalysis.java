@@ -113,8 +113,7 @@ public final class PmdAnalysis implements AutoCloseable {
         FileCollectionUtil.collectFiles(config, pmd.files());
 
         if (config.getReportFormat() != null) {
-            Renderer renderer = config.createRenderer();
-            renderer.setReportFile(config.getReportFile());
+            Renderer renderer = config.createRenderer(true);
             pmd.addRenderer(renderer);
         }
 

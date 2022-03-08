@@ -191,7 +191,7 @@ public class PmdExample2 {
 
         try (PmdAnalysis pmd = PmdAnalysis.create(configuration)) {
             // optional: add more rulesets
-            pmd.addRuleSet(RuleSetLoader.fromPmdConfig(configuration).loadFromResource("custom-ruleset.xml"));
+            pmd.addRuleSet(pmd.newRuleSetLoader().loadFromResource("custom-ruleset.xml"));
             // optional: add more files
             pmd.files().addFile(Paths.get("src", "main", "more-java", "ExtraSource.java"));
             // optional: add more renderers
