@@ -74,7 +74,7 @@ public final class ASTNumericLiteral extends AbstractLiteral implements ASTLiter
                 value = bigInt.intValue();
             }
         } else {
-            is64BitsWide = lastChar == 'd' || lastChar == 'D';
+            is64BitsWide = !(lastChar == 'f' || lastChar == 'F');
             double d = Double.parseDouble(stripFloatValue());
             if (is64BitsWide) {
                 value = d;
