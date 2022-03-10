@@ -529,30 +529,30 @@ public class JavaParser {
   }
 
   private boolean isJEP406Supported() {
-    return jdkVersion == 17 && preview;
+    return (jdkVersion == 17 || jdkVersion == 18) && preview;
   }
 
   private void checkForPatternMatchingInSwitch() {
     if (!isJEP406Supported()) {
-        throwParseException("Pattern Matching in Switch is only supported with JDK 17 Preview.");
+        throwParseException("Pattern Matching in Switch is only supported with JDK 17 Preview or JDK 18 Preview.");
     }
   }
 
   private void checkForNullCaseLabel() {
     if (!isJEP406Supported()) {
-        throwParseException("Null case labels in switch are only supported with JDK 17 Preview.");
+        throwParseException("Null case labels in switch are only supported with JDK 17 Preview or JDK 18 Preview.");
     }
   }
 
   private void checkForDefaultCaseLabel() {
     if (!isJEP406Supported()) {
-        throwParseException("Default case labels in switch are only supported with JDK 17 Preview.");
+        throwParseException("Default case labels in switch are only supported with JDK 17 Preview or JDK 18 Preview.");
     }
   }
 
   private void checkForGuardedPatterns() {
     if (!isJEP406Supported()) {
-        throwParseException("Guarded patterns are only supported with JDK 17 Preview.");
+        throwParseException("Guarded patterns are only supported with JDK 17 Preview or JDK 18 Preview.");
     }
   }
 
