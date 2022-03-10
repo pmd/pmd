@@ -13,7 +13,6 @@ Java Version |Alias | Supported by PMD since |
 18 (default) |      | 6.44.0 |
 17-preview   |      | 6.37.0 |
 17           |      | 6.37.0 |
-16-preview   |      | 6.32.0 |
 16           |      | 6.32.0 |
 15           |      | 6.27.0 |
 14           |      | 6.22.0 |
@@ -32,9 +31,9 @@ Java Version |Alias | Supported by PMD since |
 ## Using Java preview features
 
 In order to analyze a project with PMD that uses preview language features, you'll need to enable
-it via the environment variable `PMD_JAVA_OPTS` and select the new language version, e.g. `17-preview`:
+it via the environment variable `PMD_JAVA_OPTS` and select the new language version, e.g. `18-preview`:
 
     export PMD_JAVA_OPTS=--enable-preview
-    ./run.sh pmd -language java -version 17-preview ...
+    ./run.sh pmd -language java -version 18-preview ...
 
 Note: we only support preview language features for the latest two java versions.

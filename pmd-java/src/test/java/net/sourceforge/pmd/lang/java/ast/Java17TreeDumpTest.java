@@ -39,7 +39,7 @@ public class Java17TreeDumpTest extends BaseTreeDumpTest {
             }
         });
         Assert.assertTrue("Unexpected message: " + thrown.getMessage(),
-                thrown.getMessage().contains("Sealed Classes are only supported with JDK 16 Preview and JDK >= 17."));
+                thrown.getMessage().contains("Sealed Classes are only supported with JDK >= 17."));
     }
 
     @Test
@@ -63,7 +63,7 @@ public class Java17TreeDumpTest extends BaseTreeDumpTest {
             }
         });
         Assert.assertTrue("Unexpected message: " + thrown.getMessage(),
-                thrown.getMessage().contains("Sealed Classes are only supported with JDK 16 Preview and JDK >= 17."));
+                thrown.getMessage().contains("Sealed Classes are only supported with JDK >= 17."));
     }
 
     @Test

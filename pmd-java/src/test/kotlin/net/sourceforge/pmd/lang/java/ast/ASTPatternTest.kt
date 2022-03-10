@@ -13,7 +13,7 @@ import java.io.IOException
 class ASTPatternTest : ParserTestSpec({
 
     parserTest("Test patterns only available on JDK16 or higher (including preview)",
-        javaVersions = JavaVersion.values().asList().minus(J16).minus(J16__PREVIEW)
+        javaVersions = JavaVersion.values().asList().minus(J16)
                                                     .minus(J17).minus(J17__PREVIEW)
                                                     .minus(J18).minus(J18__PREVIEW)) {
 
