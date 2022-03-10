@@ -56,4 +56,10 @@ public final class ASTReferenceExpression extends AbstractApexNode<ReferenceExpr
     public boolean isSafeNav() {
         return node.isSafeNav();
     }
+
+    public boolean isSObjectType() {
+        List<Identifier> identifiers = node.getNames();
+        return identifiers != null
+            && identifiers.stream().anyMatch(id -> "sobjecttype".equalsIgnoreCase(id.getValue()));
+    }
 }

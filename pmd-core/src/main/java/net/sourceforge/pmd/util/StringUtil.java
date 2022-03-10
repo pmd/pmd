@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.util;
 
+import java.text.MessageFormat;
 import java.util.List;
 import java.util.Locale;
 import java.util.regex.Matcher;
@@ -513,6 +514,13 @@ public final class StringUtil {
         return retval.toString();
     }
 
+    /**
+     * Escape the string so that it appears literally when interpreted
+     * by a {@link MessageFormat}.
+     */
+    public static String quoteMessageFormat(String str) {
+        return str.replaceAll("'", "''");
+    }
 
     public enum CaseConvention {
         /** SCREAMING_SNAKE_CASE. */

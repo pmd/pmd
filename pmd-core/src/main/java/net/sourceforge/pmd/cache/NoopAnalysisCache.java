@@ -53,8 +53,4 @@ public class NoopAnalysisCache implements AnalysisCache {
         return FileAnalysisListener.noop();
     }
 
-    @Override
-    public void close() throws Exception {
-        // noop
-    }
 }

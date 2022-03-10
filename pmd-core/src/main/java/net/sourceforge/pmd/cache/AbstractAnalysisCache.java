@@ -26,6 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.PMDVersion;
+import net.sourceforge.pmd.Report.ProcessingError;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.annotation.InternalApi;
@@ -210,13 +211,26 @@ public abstract class AbstractAnalysisCache implements AnalysisCache {
     }
 
     @Override
-    public FileAnalysisListener startFileAnalysis(DataSource filename) {
-        return violation -> {
-            final AnalysisResult analysisResult = 
-                updatedResultsCache.get(violation.getFilename());
+    public FileAnalysisListener startFileAnalysis(DataSource dataSource) {
+        String fileName = dataSource.getNiceFileName(false, "");
+        File sourceFile = new File(fileName);
+        AnalysisResult analysisResult = updatedResultsCache.get(fileName);
+        if (analysisResult == null) {
+            analysisResult = new AnalysisResult(sourceFile);
+        }
+        final AnalysisResult nonNullAnalysisResult = analysisResult;
 
-            synchronized (analysisResult) {
-                analysisResult.addViolation(violation);
+        return new FileAnalysisListener() {
+            @Override
+            public void onRuleViolation(RuleViolation violation) {
+                synchronized (nonNullAnalysisResult) {
+                    nonNullAnalysisResult.addViolation(violation);
+                }
+            }
+
+            @Override
+            public void onError(ProcessingError error) {
+                analysisFailed(sourceFile);
             }
         };
     }
