@@ -11,11 +11,10 @@ import net.sourceforge.pmd.lang.java.ast.JavaVersion.*
 import java.io.IOException
 
 class ASTPatternTest : ParserTestSpec({
+    val typePatternsVersions = JavaVersion.since(J16)
 
     parserTest("Test patterns only available on JDK16 or higher (including preview)",
-        javaVersions = JavaVersion.values().asList().minus(J16)
-                                                    .minus(J17).minus(J17__PREVIEW)
-                                                    .minus(J18).minus(J18__PREVIEW)) {
+        javaVersions = JavaVersion.except(typePatternsVersions)) {
 
         expectParseException("Pattern Matching for instanceof is only supported with JDK >= 16") {
             parseAstExpression("obj instanceof Class c")
@@ -23,7 +22,7 @@ class ASTPatternTest : ParserTestSpec({
 
     }
 
-    parserTest("Test simple patterns", javaVersions = listOf(J16, J17, J18)) {
+    parserTest("Test simple patterns", javaVersions = typePatternsVersions) {
 
         importedTypes += IOException::class.java
 

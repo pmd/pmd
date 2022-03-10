@@ -47,6 +47,13 @@ enum class JavaVersion : Comparable<JavaVersion> {
     companion object {
         val Latest = values().last()
         val Earliest = values().first()
+
+        fun since(v: JavaVersion) = v.rangeTo(Latest)
+
+        fun except(v1: JavaVersion, vararg versions: JavaVersion) =
+                values().toList() - v1 - versions
+
+        fun except(versions: List<JavaVersion>) = values().toList() - versions
     }
 }
 
