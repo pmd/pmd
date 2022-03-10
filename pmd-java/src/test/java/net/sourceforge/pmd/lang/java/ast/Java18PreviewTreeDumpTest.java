@@ -20,7 +20,7 @@ import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 public class Java18PreviewTreeDumpTest extends BaseTreeDumpTest {
     private final JavaParsingHelper java18p =
             JavaParsingHelper.DEFAULT.withDefaultVersion("18-preview")
-                                     .withResourceContext(Java18PreviewTreeDumpTest.class, "jdkversiontests/java17p/");
+                                     .withResourceContext(Java18PreviewTreeDumpTest.class, "jdkversiontests/java18p/");
     private final JavaParsingHelper java18 = java18p.withDefaultVersion("18");
 
     public Java18PreviewTreeDumpTest() {
@@ -41,7 +41,7 @@ public class Java18PreviewTreeDumpTest extends BaseTreeDumpTest {
             }
         });
         Assert.assertTrue("Unexpected message: " + thrown.getMessage(),
-                thrown.getMessage().contains("Null case labels is a preview feature of JDK 17 or JDK 18, you should select your language version accordingly"));
+                thrown.getMessage().contains("Null case labels is a preview feature of JDK 18, you should select your language version accordingly"));
     }
 
     @Test
@@ -67,7 +67,7 @@ public class Java18PreviewTreeDumpTest extends BaseTreeDumpTest {
                 java18.parseResource("GuardedAndParenthesizedPatterns.java");
             }
         });
-        assertThat(thrown.getMessage(), containsString("Pattern matching for switch is a preview feature of JDK 17 or JDK 18, you should select your language version accordingly"));
+        assertThat(thrown.getMessage(), containsString("Pattern matching for switch is a preview feature of JDK 18, you should select your language version accordingly"));
     }
 
     @Test
@@ -84,7 +84,7 @@ public class Java18PreviewTreeDumpTest extends BaseTreeDumpTest {
             }
         });
         Assert.assertTrue("Unexpected message: " + thrown.getMessage(),
-                thrown.getMessage().contains("Pattern matching for switch is a preview feature of JDK 17 or JDK 18, you should select your language version accordingly"));
+                thrown.getMessage().contains("Pattern matching for switch is a preview feature of JDK 18, you should select your language version accordingly"));
     }
 
     @Test
