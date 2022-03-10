@@ -46,7 +46,7 @@ import net.sourceforge.pmd.util.log.internal.SimpleMessageReporter;
  *   config.setInputPaths("src/main/java");
  *   config.prependClasspath("target/classes");
  *   config.setMinimumPriority(RulePriority.HIGH);
- *   config.setRuleSets("rulesets/java/quickstart.xml");
+ *   config.addRuleSet("rulesets/java/quickstart.xml");
  *   config.setReportFormat("xml");
  *   config.setReportFile("target/pmd-report.xml");
  *

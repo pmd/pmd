@@ -66,7 +66,7 @@ public class PmdExample {
     public static void main(String[] args) {
         PMDConfiguration configuration = new PMDConfiguration();
         configuration.setInputPaths("/home/workspace/src/main/java/code");
-        configuration.setRuleSets("rulesets/java/quickstart.xml");
+        configuration.addRuleSet("rulesets/java/quickstart.xml");
         configuration.setReportFormat("xml");
         configuration.setReportFile("/home/workspace/pmd-report.xml");
 
@@ -85,7 +85,7 @@ You can also provide your own custom renderers.
     ```java
     PMDConfiguration configuration = new PMDConfiguration();
     configuration.setMinimumPriority(RulePriority.MEDIUM);
-    configuration.setRuleSets("rulesets/java/quickstart.xml");
+    configuration.addRuleSet("rulesets/java/quickstart.xml");
     ```
     
 2.  Then we configure, which paths to analyze:
@@ -166,7 +166,6 @@ import java.nio.file.Paths;
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.PmdAnalysis;
 import net.sourceforge.pmd.RulePriority;
-import net.sourceforge.pmd.RuleSetLoader;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.renderers.XMLRenderer;
@@ -176,7 +175,7 @@ public class PmdExample2 {
     public static void main(String[] args) throws IOException {
         PMDConfiguration configuration = new PMDConfiguration();
         configuration.setMinimumPriority(RulePriority.MEDIUM);
-        configuration.setRuleSets("rulesets/java/quickstart.xml");
+        configuration.addRuleSet("rulesets/java/quickstart.xml");
 
         configuration.setInputPaths("/home/workspace/src/main/java/code");
 
