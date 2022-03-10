@@ -1446,13 +1446,14 @@ and a <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.44.0-SNAPSHOT/net/so
 <span class="n">config</span><span class="o">.</span><span class="na">setInputPaths</span><span class="o">(</span><span class="s">"src/main/java"</span><span class="o">);</span>
 <span class="n">config</span><span class="o">.</span><span class="na">prependAuxClasspath</span><span class="o">(</span><span class="s">"target/classes"</span><span class="o">);</span>
 <span class="n">config</span><span class="o">.</span><span class="na">setMinimumPriority</span><span class="o">(</span><span class="nc">RulePriority</span><span class="o">.</span><span class="na">HIGH</span><span class="o">);</span>
-<span class="n">config</span><span class="o">.</span><span class="na">setRuleSets</span><span class="o">(</span><span class="s">"rulesets/java/quickstart.xml"</span><span class="o">);</span>
+<span class="n">config</span><span class="o">.</span><span class="na">addRuleSet</span><span class="o">(</span><span class="s">"rulesets/java/quickstart.xml"</span><span class="o">);</span>
 <span class="n">config</span><span class="o">.</span><span class="na">setReportFormat</span><span class="o">(</span><span class="s">"xml"</span><span class="o">);</span>
 <span class="n">config</span><span class="o">.</span><span class="na">setReportFile</span><span class="o">(</span><span class="s">"target/pmd-report.xml"</span><span class="o">);</span>
 
 <span class="k">try</span> <span class="o">(</span><span class="nc">PmdAnalysis</span> <span class="n">pmd</span> <span class="o">=</span> <span class="nc">PmdAnalysis</span><span class="o">.</span><span class="na">create</span><span class="o">(</span><span class="n">config</span><span class="o">))</span> <span class="o">{</span>
+    <span class="c1">// note: don't use `config` once a PmdAnalysis has been created.</span>
     <span class="c1">// optional: add more rulesets</span>
-    <span class="n">pmd</span><span class="o">.</span><span class="na">addRuleSet</span><span class="o">(</span><span class="nc">RuleSetLoader</span><span class="o">.</span><span class="na">fromPmdConfig</span><span class="o">(</span><span class="n">configuration</span><span class="o">).</span><span class="na">loadFromResource</span><span class="o">(</span><span class="s">"custom-ruleset.xml"</span><span class="o">));</span>
+    <span class="n">pmd</span><span class="o">.</span><span class="na">addRuleSet</span><span class="o">(</span><span class="n">pmd</span><span class="o">.</span><span class="na">newRuleSetLoader</span><span class="o">().</span><span class="na">loadFromResource</span><span class="o">(</span><span class="s">"custom-ruleset.xml"</span><span class="o">));</span>
     <span class="c1">// optional: add more files</span>
     <span class="n">pmd</span><span class="o">.</span><span class="na">files</span><span class="o">().</span><span class="na">addFile</span><span class="o">(</span><span class="nc">Paths</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="s">"src"</span><span class="o">,</span> <span class="s">"main"</span><span class="o">,</span> <span class="s">"more-java"</span><span class="o">,</span> <span class="s">"ExtraSource.java"</span><span class="o">));</span>
     <span class="c1">// optional: add more renderers</span>
@@ -1475,6 +1476,11 @@ The CLI itself remains compatible, if you run PMD via command-line, no action is
       <li><a href="https://github.com/pmd/pmd/pull/3773">#3773</a>: [apex] EagerlyLoadedDescribeSObjectResult false positives with SObjectField.getDescribe()</li>
     </ul>
   </li>
+  <li>core
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/3299">#3299</a>: [core] Deprecate system properties of PMDCommandLineInterface</li>
+    </ul>
+  </li>
 </ul>
 
 <h3 id="api-changes">API Changes</h3>
@@ -1492,6 +1498,15 @@ The CLI itself remains compatible, if you run PMD via command-line, no action is
   </li>
   <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.44.0-SNAPSHOT/net/sourceforge/pmd/PMDConfiguration.html#prependClasspath(java.lang.String)"><code>PMDConfiguration#prependClasspath</code></a> is deprecated
 in favour of <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.44.0-SNAPSHOT/net/sourceforge/pmd/PMDConfiguration.html#prependAuxClasspath(java.lang.String)"><code>prependAuxClasspath</code></a>.</li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.44.0-SNAPSHOT/net/sourceforge/pmd/PMDConfiguration.html#setRuleSets(java.lang.String)"><code>PMDConfiguration#setRuleSets</code></a> and
+<a href="https://docs.pmd-code.org/apidocs/pmd-core/6.44.0-SNAPSHOT/net/sourceforge/pmd/PMDConfiguration.html#getRuleSets()"><code>getRuleSets</code></a> are deprecated. Use instead
+<a href="https://docs.pmd-code.org/apidocs/pmd-core/6.44.0-SNAPSHOT/net/sourceforge/pmd/PMDConfiguration.html#setRuleSets(java.util.List)"><code>setRuleSets</code></a>,
+<a href="https://docs.pmd-code.org/apidocs/pmd-core/6.44.0-SNAPSHOT/net/sourceforge/pmd/PMDConfiguration.html#addRuleSet(java.lang.String)"><code>addRuleSet</code></a>,
+and <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.44.0-SNAPSHOT/net/sourceforge/pmd/PMDConfiguration.html#getRuleSetPaths()"><code>getRuleSetPaths</code></a>.</li>
+  <li>Several members of <a href="https://docs.pmd-code.org/apidocs/pmd-test/6.44.0-SNAPSHOT/net/sourceforge/pmd/cli/BaseCLITest.html#"><code>BaseCLITest</code></a> have been deprecated with replacements.</li>
+  <li>Several members of <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.44.0-SNAPSHOT/net/sourceforge/pmd/cli/PMDCommandLineInterface.html#"><code>PMDCommandLineInterface</code></a> have been explicitly deprecated.
+The whole class however was deprecated long ago already with 6.30.0. It is internal API and should
+not be used.</li>
 </ul>
 
 <h4 id="experimental-apis">Experimental APIs</h4>
@@ -1530,7 +1545,7 @@ decouples you from this. A file collector is available through <a href="https://
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2022 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Mar 3, 2022 <br />
+ Site last generated: Mar 10, 2022 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

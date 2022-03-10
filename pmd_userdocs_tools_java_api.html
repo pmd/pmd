@@ -1486,7 +1486,7 @@ as described here.</p>
     <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
         <span class="nc">PMDConfiguration</span> <span class="n">configuration</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">PMDConfiguration</span><span class="o">();</span>
         <span class="n">configuration</span><span class="o">.</span><span class="na">setInputPaths</span><span class="o">(</span><span class="s">"/home/workspace/src/main/java/code"</span><span class="o">);</span>
-        <span class="n">configuration</span><span class="o">.</span><span class="na">setRuleSets</span><span class="o">(</span><span class="s">"rulesets/java/quickstart.xml"</span><span class="o">);</span>
+        <span class="n">configuration</span><span class="o">.</span><span class="na">addRuleSet</span><span class="o">(</span><span class="s">"rulesets/java/quickstart.xml"</span><span class="o">);</span>
         <span class="n">configuration</span><span class="o">.</span><span class="na">setReportFormat</span><span class="o">(</span><span class="s">"xml"</span><span class="o">);</span>
         <span class="n">configuration</span><span class="o">.</span><span class="na">setReportFile</span><span class="o">(</span><span class="s">"/home/workspace/pmd-report.xml"</span><span class="o">);</span>
 
@@ -1506,7 +1506,7 @@ You can also provide your own custom renderers.</p>
 
     <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">PMDConfiguration</span> <span class="n">configuration</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">PMDConfiguration</span><span class="o">();</span>
 <span class="n">configuration</span><span class="o">.</span><span class="na">setMinimumPriority</span><span class="o">(</span><span class="nc">RulePriority</span><span class="o">.</span><span class="na">MEDIUM</span><span class="o">);</span>
-<span class="n">configuration</span><span class="o">.</span><span class="na">setRuleSets</span><span class="o">(</span><span class="s">"rulesets/java/quickstart.xml"</span><span class="o">);</span>
+<span class="n">configuration</span><span class="o">.</span><span class="na">addRuleSet</span><span class="o">(</span><span class="s">"rulesets/java/quickstart.xml"</span><span class="o">);</span>
 </code></pre></div>    </div>
   </li>
   <li>
@@ -1556,7 +1556,7 @@ by adding additional files to analyze or adding additional rulesets or renderers
 
     <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">try</span> <span class="o">(</span><span class="nc">PmdAnalysis</span> <span class="n">pmd</span> <span class="o">=</span> <span class="nc">PmdAnalysis</span><span class="o">.</span><span class="na">create</span><span class="o">(</span><span class="n">configuration</span><span class="o">))</span> <span class="o">{</span>
     <span class="c1">// optional: add more rulesets</span>
-    <span class="n">pmd</span><span class="o">.</span><span class="na">addRuleSet</span><span class="o">(</span><span class="nc">RuleSetLoader</span><span class="o">.</span><span class="na">fromPmdConfig</span><span class="o">(</span><span class="n">configuration</span><span class="o">).</span><span class="na">loadFromResource</span><span class="o">(</span><span class="s">"custom-ruleset.xml"</span><span class="o">));</span>
+    <span class="n">pmd</span><span class="o">.</span><span class="na">addRuleSet</span><span class="o">(</span><span class="n">pmd</span><span class="o">.</span><span class="na">newRuleSetLoader</span><span class="o">().</span><span class="na">loadFromResource</span><span class="o">(</span><span class="s">"custom-ruleset.xml"</span><span class="o">));</span>
     <span class="c1">// optional: add more files</span>
     <span class="n">pmd</span><span class="o">.</span><span class="na">files</span><span class="o">().</span><span class="na">addFile</span><span class="o">(</span><span class="nc">Paths</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="s">"src"</span><span class="o">,</span> <span class="s">"main"</span><span class="o">,</span> <span class="s">"more-java"</span><span class="o">,</span> <span class="s">"ExtraSource.java"</span><span class="o">));</span>
     <span class="c1">// optional: add more renderers</span>
@@ -1588,7 +1588,6 @@ by adding additional files to analyze or adding additional rulesets or renderers
 <span class="kn">import</span> <span class="nn">net.sourceforge.pmd.PMDConfiguration</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">net.sourceforge.pmd.PmdAnalysis</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">net.sourceforge.pmd.RulePriority</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">net.sourceforge.pmd.RuleSetLoader</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">net.sourceforge.pmd.lang.LanguageRegistry</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">net.sourceforge.pmd.renderers.Renderer</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">net.sourceforge.pmd.renderers.XMLRenderer</span><span class="o">;</span>
@@ -1598,7 +1597,7 @@ by adding additional files to analyze or adding additional rulesets or renderers
     <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">IOException</span> <span class="o">{</span>
         <span class="nc">PMDConfiguration</span> <span class="n">configuration</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">PMDConfiguration</span><span class="o">();</span>
         <span class="n">configuration</span><span class="o">.</span><span class="na">setMinimumPriority</span><span class="o">(</span><span class="nc">RulePriority</span><span class="o">.</span><span class="na">MEDIUM</span><span class="o">);</span>
-        <span class="n">configuration</span><span class="o">.</span><span class="na">setRuleSets</span><span class="o">(</span><span class="s">"rulesets/java/quickstart.xml"</span><span class="o">);</span>
+        <span class="n">configuration</span><span class="o">.</span><span class="na">addRuleSet</span><span class="o">(</span><span class="s">"rulesets/java/quickstart.xml"</span><span class="o">);</span>
 
         <span class="n">configuration</span><span class="o">.</span><span class="na">setInputPaths</span><span class="o">(</span><span class="s">"/home/workspace/src/main/java/code"</span><span class="o">);</span>
 
@@ -1613,7 +1612,7 @@ by adding additional files to analyze or adding additional rulesets or renderers
 
         <span class="k">try</span> <span class="o">(</span><span class="nc">PmdAnalysis</span> <span class="n">pmd</span> <span class="o">=</span> <span class="nc">PmdAnalysis</span><span class="o">.</span><span class="na">create</span><span class="o">(</span><span class="n">configuration</span><span class="o">))</span> <span class="o">{</span>
             <span class="c1">// optional: add more rulesets</span>
-            <span class="n">pmd</span><span class="o">.</span><span class="na">addRuleSet</span><span class="o">(</span><span class="nc">RuleSetLoader</span><span class="o">.</span><span class="na">fromPmdConfig</span><span class="o">(</span><span class="n">configuration</span><span class="o">).</span><span class="na">loadFromResource</span><span class="o">(</span><span class="s">"custom-ruleset.xml"</span><span class="o">));</span>
+            <span class="n">pmd</span><span class="o">.</span><span class="na">addRuleSet</span><span class="o">(</span><span class="n">pmd</span><span class="o">.</span><span class="na">newRuleSetLoader</span><span class="o">().</span><span class="na">loadFromResource</span><span class="o">(</span><span class="s">"custom-ruleset.xml"</span><span class="o">));</span>
             <span class="c1">// optional: add more files</span>
             <span class="n">pmd</span><span class="o">.</span><span class="na">files</span><span class="o">().</span><span class="na">addFile</span><span class="o">(</span><span class="nc">Paths</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="s">"src"</span><span class="o">,</span> <span class="s">"main"</span><span class="o">,</span> <span class="s">"more-java"</span><span class="o">,</span> <span class="s">"ExtraSource.java"</span><span class="o">));</span>
             <span class="c1">// optional: add more renderers</span>
@@ -1663,7 +1662,7 @@ by adding additional files to analyze or adding additional rulesets or renderers
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2022 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Mar 3, 2022 <br />
+ Site last generated: Mar 10, 2022 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
