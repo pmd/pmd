@@ -27,13 +27,14 @@ config.setDefaultLanguageVersion(LanguageRegistry.findLanguageByTerseName("java"
 config.setInputPaths("src/main/java");
 config.prependAuxClasspath("target/classes");
 config.setMinimumPriority(RulePriority.HIGH);
-config.setRuleSets("rulesets/java/quickstart.xml");
+config.addRuleSet("rulesets/java/quickstart.xml");
 config.setReportFormat("xml");
 config.setReportFile("target/pmd-report.xml");
 
 try (PmdAnalysis pmd = PmdAnalysis.create(config)) {
+    // note: don't use `config` once a PmdAnalysis has been created.
     // optional: add more rulesets
-    pmd.addRuleSet(RuleSetLoader.fromPmdConfig(configuration).loadFromResource("custom-ruleset.xml"));
+    pmd.addRuleSet(pmd.newRuleSetLoader().loadFromResource("custom-ruleset.xml"));
     // optional: add more files
     pmd.files().addFile(Paths.get("src", "main", "more-java", "ExtraSource.java"));
     // optional: add more renderers
@@ -52,6 +53,8 @@ The CLI itself remains compatible, if you run PMD via command-line, no action is
 
 *   apex-performance
     *   [#3773](https://github.com/pmd/pmd/pull/3773): \[apex] EagerlyLoadedDescribeSObjectResult false positives with SObjectField.getDescribe()
+*   core
+    *   [#3299](https://github.com/pmd/pmd/issues/3299): \[core] Deprecate system properties of PMDCommandLineInterface
 
 ### API Changes
 
@@ -64,6 +67,15 @@ The CLI itself remains compatible, if you run PMD via command-line, no action is
   - `PMD#getApplicableFiles`: is internal
 * {% jdoc !!core::PMDConfiguration#prependClasspath(java.lang.String) %} is deprecated
   in favour of {% jdoc core::PMDConfiguration#prependAuxClasspath(java.lang.String) %}.
+* {% jdoc !!core::PMDConfiguration#setRuleSets(java.lang.String) %} and
+  {% jdoc core::PMDConfiguration#getRuleSets() %} are deprecated. Use instead
+  {% jdoc core::PMDConfiguration#setRuleSets(java.util.List) %},
+  {% jdoc core::PMDConfiguration#addRuleSet(java.lang.String) %},
+  and {% jdoc core::PMDConfiguration#getRuleSetPaths() %}.
+* Several members of {% jdoc test::cli.BaseCLITest %} have been deprecated with replacements.
+* Several members of {% jdoc core::cli.PMDCommandLineInterface %} have been explicitly deprecated.
+  The whole class however was deprecated long ago already with 6.30.0. It is internal API and should
+  not be used.
 
 #### Experimental APIs
 

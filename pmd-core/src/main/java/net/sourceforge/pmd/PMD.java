@@ -50,7 +50,7 @@ import net.sourceforge.pmd.util.database.SourceObject;
 import net.sourceforge.pmd.util.datasource.DataSource;
 import net.sourceforge.pmd.util.datasource.ReaderDataSource;
 import net.sourceforge.pmd.util.log.ScopedLogHandlersManager;
-import net.sourceforge.pmd.util.log.SimplePmdLogger;
+import net.sourceforge.pmd.util.log.internal.SimpleMessageReporter;
 
 /**
  * Entry point for PMD's CLI. Use {@link #runPmd(PMDConfiguration)}
@@ -233,16 +233,18 @@ public class PMD {
      *
      * @param configuration the configuration to use
      *
-     * @return number of violations found.
+     * @return number of violations found. Returns -1 in case of error.
      *
-     * @deprecated Use {@link #runPmd(PMDConfiguration)}.
+     * @deprecated Use {@link #runPmd(PMDConfiguration)}. Note that the return
+     *     value of doPMD changed in PMD 6.44.0 to return -1 in case of error.
+     *     Previously zero was returned in that case.
      */
     @Deprecated
     @InternalApi
     public static int doPMD(PMDConfiguration configuration) {
         try (PmdAnalysis pmd = PmdAnalysis.create(configuration)) {
             if (pmd.getRulesets().isEmpty()) {
-                return PMDCommandLineInterface.NO_ERRORS_STATUS;
+                return pmd.getReporter().numErrors() > 0 ? -1 : 0;
             }
             try {
                 Report report = pmd.performAnalysisAndCollectReport();
@@ -253,9 +255,9 @@ public class PMD {
 
                 return report.getViolations().size();
             } catch (Exception e) {
-                pmd.getLog().errorEx("Exception during processing", e);
+                pmd.getReporter().errorEx("Exception during processing", e);
                 printErrorDetected(1);
-                return PMDCommandLineInterface.NO_ERRORS_STATUS; // fixme?
+                return -1;
             }
         }
     }
@@ -335,18 +337,13 @@ public class PMD {
                                       final List<RuleSet> rulesets,
                                       final Collection<? extends DataSource> files,
                                       final List<Renderer> renderers) {
-        @SuppressWarnings("PMD.CloseResource")
-        PmdAnalysis builder = PmdAnalysis.createWithoutCollectingFiles(configuration);
-        for (RuleSet ruleset : rulesets) {
-            builder.addRuleSet(ruleset);
+        try (PmdAnalysis builder = PmdAnalysis.createWithoutCollectingFiles(configuration)) {
+            builder.addRuleSets(rulesets);
+            builder.addRenderers(renderers);
+            List<DataSource> sortedFiles = new ArrayList<>(files);
+            sortFiles(configuration, sortedFiles);
+            return builder.performAnalysisImpl(sortedFiles);
         }
-        for (Renderer renderer : renderers) {
-            builder.addRenderer(renderer);
-        }
-        List<DataSource> sortedFiles = new ArrayList<>(files);
-        sortFiles(configuration, sortedFiles);
-
-        return builder.performAnalysisImpl(sortedFiles);
     }
 
     private static void sortFiles(final PMDConfiguration configuration, final List<DataSource> files) {
@@ -404,7 +401,7 @@ public class PMD {
     public static List<DataSource> getApplicableFiles(PMDConfiguration configuration, Set<Language> languages) {
         try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.COLLECT_FILES)) {
             @SuppressWarnings("PMD.CloseResource") // if we close the collector, data sources become invalid
-            FileCollector collector = FileCollectionUtil.collectFiles(configuration, languages, new SimplePmdLogger(LOG));
+            FileCollector collector = FileCollectionUtil.collectFiles(configuration, languages, new SimpleMessageReporter(LOG));
             return FileCollectionUtil.collectorToDataSource(collector);
         }
     }
@@ -504,7 +501,9 @@ public class PMD {
         StatusCode status;
         try {
             int violations = PMD.doPMD(configuration);
-            if (violations > 0 && configuration.isFailOnViolation()) {
+            if (violations < 0) {
+                status = StatusCode.ERROR;
+            } else if (violations > 0 && configuration.isFailOnViolation()) {
                 status = StatusCode.VIOLATIONS_FOUND;
             } else {
                 status = StatusCode.OK;

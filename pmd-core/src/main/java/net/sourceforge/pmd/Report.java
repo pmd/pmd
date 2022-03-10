@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -32,7 +31,7 @@ import net.sourceforge.pmd.util.NumericConstants;
  * A {@link Report} is the output of a PMD execution. This
  * includes violations, suppressed violations, metrics, error
  * during processing and configuration errors. PMD's entry point creates
- * a report (see {@link PMD#processFiles(PMDConfiguration, List, Collection, List)}).
+ * a report (see {@link PmdAnalysis#performAnalysisAndCollectReport()})
  * The mutation methods on this class are deprecated, as they will be
  * internalized in PMD 7.
  */

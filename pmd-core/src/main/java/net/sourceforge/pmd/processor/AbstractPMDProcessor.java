@@ -77,13 +77,17 @@ public abstract class AbstractPMDProcessor {
      * @param factory The factory used to create the configured rule sets
      * @param report The base report on which to report any configuration errors
      * @return the rules within a rulesets
+     *
+     * @deprecated Rulesets are created upstream of the PMDProcessor now.
      */
+    @Deprecated
     protected RuleSets createRuleSets(RuleSetFactory factory, Report report) {
         final RuleSets rs = RulesetsFactoryUtils.getRuleSets(configuration.getRuleSets(), factory);
         reportBrokenRules(report, rs);
         return rs;
     }
 
+    @Deprecated
     public static void reportBrokenRules(Report report, RuleSets rs) {
         final Set<Rule> brokenRules = removeBrokenRules(rs);
         for (final Rule rule : brokenRules) {

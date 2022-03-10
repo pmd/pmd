@@ -2,9 +2,10 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.util.log;
+package net.sourceforge.pmd.util.log.internal;
 
 import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.util.log.MessageReporter;
 
 /**
  * A logger that prefixes a scope name to log messages. Also keeps a
@@ -13,12 +14,12 @@ import net.sourceforge.pmd.annotation.InternalApi;
  * @author Clément Fournier
  */
 @InternalApi
-public final class PmdLoggerScope extends PmdLoggerBase {
+public final class MessageReporterScope extends MessageReporterBase {
 
-    private final PmdLogger backend;
+    private final MessageReporter backend;
     private final String scopePrefix;
 
-    public PmdLoggerScope(String scopeName, PmdLogger backend) {
+    public MessageReporterScope(String scopeName, MessageReporter backend) {
         this.backend = backend;
         this.scopePrefix = "[" + scopeName + "] ";
     }

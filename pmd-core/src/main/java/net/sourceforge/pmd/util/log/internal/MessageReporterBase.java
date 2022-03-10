@@ -2,19 +2,22 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.util.log;
+package net.sourceforge.pmd.util.log.internal;
 
 import java.text.MessageFormat;
 import java.util.logging.Logger;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
+import net.sourceforge.pmd.util.StringUtil;
+import net.sourceforge.pmd.util.log.MessageReporter;
+
 /**
  * A logger based on a {@link Logger}.
  *
  * @author Clément Fournier
  */
-abstract class PmdLoggerBase implements PmdLogger {
+abstract class MessageReporterBase implements MessageReporter {
 
     private int numErrors;
     private Level minLevel = Level.TRACE;
@@ -29,7 +32,7 @@ abstract class PmdLoggerBase implements PmdLogger {
     @Override
     public final boolean isLoggable(Level level) {
         return minLevel != null
-            && minLevel.compareTo(level) <= 0
+            && minLevel.compareTo(level) >= 0
             && isLoggableImpl(level);
     }
 
@@ -41,9 +44,15 @@ abstract class PmdLoggerBase implements PmdLogger {
     public void logEx(Level level, String message, Object[] formatArgs, Throwable error) {
         if (isLoggable(level)) {
             message = MessageFormat.format(message, formatArgs);
-            log(level, message + ": " + error.getMessage());
+            String errorMessage = error.getMessage();
+            if (errorMessage == null) {
+                errorMessage = error.getClass().getSimpleName();
+            }
+            errorMessage = StringUtil.quoteMessageFormat(errorMessage);
+            log(level, message + ": " + errorMessage);
             if (isLoggable(Level.DEBUG)) {
-                log(Level.DEBUG, ExceptionUtils.getStackTrace(error));
+                String stackTrace = StringUtil.quoteMessageFormat(ExceptionUtils.getStackTrace(error));
+                log(Level.DEBUG, stackTrace);
             }
         }
     }
@@ -69,27 +78,22 @@ abstract class PmdLoggerBase implements PmdLogger {
     }
 
     @Override
-    public void debug(String message, Object... formatArgs) {
-        log(Level.DEBUG, message, formatArgs);
-    }
-
-    @Override
     public void info(String message, Object... formatArgs) {
         log(Level.INFO, message, formatArgs);
     }
 
     @Override
-    public void warning(String message, Object... formatArgs) {
+    public void warn(String message, Object... formatArgs) {
         log(Level.WARN, message, formatArgs);
     }
 
     @Override
-    public final void warningEx(String message, Throwable error) {
-        warningEx(message, new Object[0], error);
+    public final void warnEx(String message, Throwable error) {
+        warnEx(message, new Object[0], error);
     }
 
     @Override
-    public void warningEx(String message, Object[] formatArgs, Throwable error) {
+    public void warnEx(String message, Object[] formatArgs, Throwable error) {
         logEx(Level.WARN, message, formatArgs, error);
     }
 
