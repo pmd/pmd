@@ -82,7 +82,6 @@ abstract class PmdRunnable implements Runnable {
                         if (e instanceof Error && !SystemProps.isErrorRecoveryMode()) { // NOPMD:
                             throw e;
                         }
-                        configuration.getAnalysisCache().analysisFailed(file);
 
                         // The listener handles logging if needed,
                         // it may also rethrow the error, as a FileAnalysisException (which we let through below)

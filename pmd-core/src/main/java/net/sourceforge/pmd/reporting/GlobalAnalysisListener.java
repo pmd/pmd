@@ -85,17 +85,7 @@ public interface GlobalAnalysisListener extends AutoCloseable {
      * A listener that does nothing.
      */
     static GlobalAnalysisListener noop() {
-        return new GlobalAnalysisListener() {
-            @Override
-            public FileAnalysisListener startFileAnalysis(DataSource file) {
-                return FileAnalysisListener.noop();
-            }
-
-            @Override
-            public void close() {
-                // do nothing
-            }
-        };
+        return NoopAnalysisListener.INSTANCE;
     }
 
     /**
@@ -111,10 +101,11 @@ public interface GlobalAnalysisListener extends AutoCloseable {
      */
     static GlobalAnalysisListener tee(Collection<? extends GlobalAnalysisListener> listeners) {
         AssertionUtil.requireParamNotNull("Listeners", listeners);
-        AssertionUtil.requireNotEmpty("Listeners", listeners);
         AssertionUtil.requireContainsNoNullValue("Listeners", listeners);
 
-        if (listeners.size() == 1) {
+        if (listeners.isEmpty()) {
+            return noop();
+        } else if (listeners.size() == 1) {
             return listeners.iterator().next();
         }
 
@@ -150,6 +141,7 @@ public interface GlobalAnalysisListener extends AutoCloseable {
         List<GlobalAnalysisListener> myList =
             listeners.stream()
                      .flatMap(l -> l instanceof TeeListener ? ((TeeListener) l).myList.stream() : Stream.of(l))
+                     .filter(l -> !(l instanceof NoopAnalysisListener))
                      .collect(CollectionUtil.toUnmodifiableList());
 
 
