@@ -4,6 +4,11 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import static net.sourceforge.pmd.lang.java.types.TestUtilitiesForTypesKt.hasType;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.not;
+
 import java.util.List;
 
 import org.junit.Assert;
@@ -16,7 +21,6 @@ import net.sourceforge.pmd.lang.java.BaseJavaTreeDumpTest;
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 import net.sourceforge.pmd.lang.java.symbols.JElementSymbol;
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType;
-import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 
 public class Java16TreeDumpTest extends BaseJavaTreeDumpTest {
     private final JavaParsingHelper java16 =
@@ -37,11 +41,12 @@ public class Java16TreeDumpTest extends BaseJavaTreeDumpTest {
 
         // extended tests for type resolution etc.
         ASTCompilationUnit ast = java16.parseResource("PatternMatchingInstanceof.java");
-        NodeStream<ASTTypePattern> patterns =
-            ast.descendants(ASTTypePattern.class)
-               .filter(it -> BinaryOp.isInfixExprWithOperator(it, BinaryOp.INSTANCEOF));
+        NodeStream<ASTTypePattern> patterns = ast.descendants(ASTTypePattern.class);
+
+        assertThat(patterns.toList(), not(empty()));
+
         for (ASTTypePattern expr : patterns) {
-            Assert.assertTrue(TypeTestUtil.isA(String.class, expr.getVarId()));
+            assertThat(expr.getVarId(), hasType(String.class));
         }
     }
 
