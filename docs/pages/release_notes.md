@@ -58,6 +58,8 @@ The CLI itself remains compatible, if you run PMD via command-line, no action is
 
 *   apex-performance
     *   [#3773](https://github.com/pmd/pmd/pull/3773): \[apex] EagerlyLoadedDescribeSObjectResult false positives with SObjectField.getDescribe()
+*   core
+    *   [#3299](https://github.com/pmd/pmd/issues/3299): \[core] Deprecate system properties of PMDCommandLineInterface
 
 ### API Changes
 
@@ -76,6 +78,9 @@ The CLI itself remains compatible, if you run PMD via command-line, no action is
   {% jdoc core::PMDConfiguration#addRuleSet(java.lang.String) %},
   and {% jdoc core::PMDConfiguration#getRuleSetPaths() %}.
 * Several members of {% jdoc test::cli.BaseCLITest %} have been deprecated with replacements.
+* Several members of {% jdoc core::cli.PMDCommandLineInterface %} have been explicitly deprecated.
+  The whole class however was deprecated long ago already with 6.30.0. It is internal API and should
+  not be used.
 
 #### Experimental APIs
 
