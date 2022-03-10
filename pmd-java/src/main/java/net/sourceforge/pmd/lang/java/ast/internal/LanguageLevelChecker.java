@@ -148,22 +148,25 @@ public class LanguageLevelChecker<T> {
 
         /**
          * @see <a href="https://openjdk.java.net/jeps/406">JEP 406: Pattern Matching for switch (Preview)</a>
+         * @see <a href="https://openjdk.java.net/jeps/420">JEP 420: Pattern Matching for switch (Second Preview)</a>
          */
-        PATTERN_MATCHING_FOR_SWITCH(17, 17, false),
+        PATTERN_MATCHING_FOR_SWITCH(17, 18, false),
 
         /**
          * Part of pattern matching for switch
          * @see #PATTERN_MATCHING_FOR_SWITCH
          * @see <a href="https://openjdk.java.net/jeps/406">JEP 406: Pattern Matching for switch (Preview)</a>
+         * @see <a href="https://openjdk.java.net/jeps/420">JEP 420: Pattern Matching for switch (Second Preview)</a>
          */
-        GUARDED_PATTERNS(17, 17, false),
+        GUARDED_PATTERNS(17, 18, false),
 
         /**
          * Part of pattern matching for switch
          * @see #PATTERN_MATCHING_FOR_SWITCH
          * @see <a href="https://openjdk.java.net/jeps/406">JEP 406: Pattern Matching for switch (Preview)</a>
+         * @see <a href="https://openjdk.java.net/jeps/420">JEP 420: Pattern Matching for switch (Second Preview)</a>
          */
-        NULL_CASE_LABELS(17, 17, false),
+        NULL_CASE_LABELS(17, 18, false),
 
         ;  // SUPPRESS CHECKSTYLE enum trailing semi is awesome
 

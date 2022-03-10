@@ -12,10 +12,10 @@ import org.junit.runners.Suite.SuiteClasses;
 @SuiteClasses({
     ParserCornersTest.class,
     Java15TreeDumpTest.class,
-    Java16PreviewTreeDumpTest.class,
     Java16TreeDumpTest.class,
     Java17PreviewTreeDumpTest.class,
-    Java17TreeDumpTest.class
+    Java17TreeDumpTest.class,
+    Java18PreviewTreeDumpTest.class
 })
 public class AllJavaAstTreeDumpTest {
 
