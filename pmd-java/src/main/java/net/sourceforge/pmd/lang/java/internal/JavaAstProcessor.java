@@ -43,6 +43,11 @@ import net.sourceforge.pmd.lang.java.types.internal.infer.TypeInferenceLogger.Ve
  */
 public final class JavaAstProcessor {
 
+    /**
+     * FIXME get rid of that, this prevents both ClassLoader and TypeSystem
+     *  to be garbage-collected, which is an important memory leak. Will be
+     *  fixed by https://github.com/pmd/pmd/issues/3782 (Language Lifecycle)
+     */
     private static final Map<ClassLoader, TypeSystem> TYPE_SYSTEMS = new IdentityHashMap<>();
     private static final Level INFERENCE_LOG_LEVEL;
 

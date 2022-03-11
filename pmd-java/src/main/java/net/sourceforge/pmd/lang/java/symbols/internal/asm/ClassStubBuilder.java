@@ -9,10 +9,14 @@ import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.FieldVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.Type;
 
-import net.sourceforge.pmd.lang.java.symbols.internal.asm.Loader.NoUrlLoader;
 
-
+/**
+ * Populates a {@link ClassStub} by reading a class file. Some info is
+ * known by the ClassStub without parsing (like its internal name), so
+ * we defer parsing until later. The class should be parsed only once.
+ */
 class ClassStubBuilder extends ClassVisitor {
 
     private final ClassStub myStub;
@@ -38,7 +42,8 @@ class ClassStubBuilder extends ClassVisitor {
     public void visitOuterClass(String ownerInternalName, @Nullable String methodName, @Nullable String methodDescriptor) {
         isInnerNonStaticClass = true;
         // only for enclosing method
-        myStub.setOuterClass(ownerInternalName, methodName, methodDescriptor);
+        ClassStub outer = resolver.resolveFromInternalNameCannotFail(ownerInternalName);
+        myStub.setOuterClass(outer, methodName, methodDescriptor);
     }
 
     @Override
@@ -48,20 +53,34 @@ class ClassStubBuilder extends ClassVisitor {
         return null;
     }
 
+    /**
+     * Visits information about an inner class. This inner class is not necessarily a member of the
+     * class being visited.
+     *
+     * <p>Spec: https://docs.oracle.com/javase/specs/jvms/se7/html/jvms-4.html#jvms-4.7.6
+     *
+     * @param innerInternalName the internal name of an inner class (see {@link Type#getInternalName()}).
+     * @param outerName         the internal name of the class to which the inner class belongs (see {@link
+     *                          Type#getInternalName()}). May be {@literal null} for not member classes.
+     * @param innerSimpleName   the (simple) name of the inner class inside its enclosing class. May be
+     *                          {@literal null} for anonymous inner classes.
+     * @param access            the access flags of the inner class as originally
+     *                          declared in the enclosing class.
+     */
     @Override
     public void visitInnerClass(String innerInternalName, @Nullable String outerName, @Nullable String innerSimpleName, int access) {
         if (myInternalName.equals(outerName) && innerSimpleName != null) { // not anonymous
-            ClassStub member = new ClassStub(myStub.getResolver(),
-                                             innerInternalName,
-                                             new NoUrlLoader(myStub.getResolver(), innerInternalName),
-                                             ClassStub.UNKNOWN_ARITY);
-            resolver.registerKnown(innerInternalName, member);
+            ClassStub member = resolver.resolveFromInternalNameCannotFail(innerInternalName, ClassStub.UNKNOWN_ARITY);
+            member.setSimpleName(innerSimpleName);
             member.setModifiers(access, false);
             myStub.addMemberClass(member);
         } else if (myInternalName.equals(innerInternalName) && outerName != null) {
             // then it's specifying the enclosing class
+            // (myStub is the inner class)
+            ClassStub outer = resolver.resolveFromInternalNameCannotFail(outerName);
+            myStub.setSimpleName(innerSimpleName);
             myStub.setModifiers(access, false);
-            myStub.setOuterClass(outerName, null, null);
+            myStub.setOuterClass(outer, null, null);
             isInnerNonStaticClass = (Opcodes.ACC_STATIC & access) == 0;
         }
     }
