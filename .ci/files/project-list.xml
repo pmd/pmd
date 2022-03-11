@@ -39,6 +39,13 @@ mvn dependency:build-classpath -DincludeScope=test -Dmdep.outputFile=classpath.t
     <exclude-pattern>.*/build/generated-sources/.*</exclude-pattern>
 
     <build-command><![CDATA[#!/usr/bin/env bash
+echo "----------------------------------------------------"
+echo "current git status"
+git status
+echo "current changes"
+git diff
+echo "----------------------------------------------------"
+
 if test -e classpath.txt; then
   exit
 fi
