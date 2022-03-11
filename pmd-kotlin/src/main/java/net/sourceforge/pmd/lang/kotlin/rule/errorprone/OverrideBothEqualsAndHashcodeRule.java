@@ -35,7 +35,7 @@ public class OverrideBothEqualsAndHashcodeRule extends AbstractKotlinRule {
         return RuleTargetSelector.forTypes(KtClassMemberDeclarations.class);
     }
 
-    private static class Visitor extends KotlinVisitorBase<RuleContext, Void> {
+    private static final class Visitor extends KotlinVisitorBase<RuleContext, Void> {
         @Override
         public Void visitClassMemberDeclarations(KtClassMemberDeclarations node, RuleContext data) {
             List<KtFunctionDeclaration> functions = node.children(KtClassMemberDeclaration.class)
