@@ -17,6 +17,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.lang.java.BaseParserTest;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
@@ -32,7 +33,7 @@ import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
 @Ignore
-public class ClassScopeTest extends BaseNonParserTest {
+public class ClassScopeTest extends BaseParserTest {
 
     @Test
     public void testEnumsClassScope() {

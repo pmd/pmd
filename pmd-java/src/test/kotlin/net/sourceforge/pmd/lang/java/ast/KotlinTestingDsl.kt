@@ -36,7 +36,7 @@ enum class JavaVersion : Comparable<JavaVersion> {
 
     val pmdVersion get() = LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion(pmdName)
 
-    val parser: JavaParsingHelper = WITH_PROCESSING.withDefaultVersion(pmdName)
+    val parser: JavaParsingHelper = DEFAULT.withDefaultVersion(pmdName)
 
     operator fun not(): List<JavaVersion> = values().toList() - this
 

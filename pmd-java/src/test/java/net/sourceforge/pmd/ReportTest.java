@@ -17,7 +17,7 @@ import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 public class ReportTest {
 
 
-    private final JavaParsingHelper java = JavaParsingHelper.WITH_PROCESSING;
+    private final JavaParsingHelper java = JavaParsingHelper.DEFAULT;
 
     @Test
     public void testBasic() {

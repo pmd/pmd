@@ -257,7 +257,7 @@ final class SymTableFactory {
 
             if (!anImport.isStatic()) {
                 // Single-Type-Import Declaration
-                JClassSymbol type = processor.findSymbolCannotFail(anImport.getImportedName());
+                JClassSymbol type = processor.findSymbolCannotFail(anImport, anImport.getImportedName());
                 importedTypes.append(type.getTypeSystem().typeOf(type, false));
             }
         }

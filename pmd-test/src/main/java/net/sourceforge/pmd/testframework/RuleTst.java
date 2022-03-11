@@ -263,7 +263,7 @@ public abstract class RuleTst {
 
             if (isUseAuxClasspath) {
                 // configure the "auxclasspath" option for unit testing
-                configuration.prependClasspath(".");
+                configuration.prependAuxClasspath(".");
             } else {
                 // simple class loader, that doesn't delegate to parent.
                 // this allows us in the tests to simulate PMD run without

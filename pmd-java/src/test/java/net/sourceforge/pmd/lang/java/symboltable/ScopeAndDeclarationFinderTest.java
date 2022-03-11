@@ -12,6 +12,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.lang.java.BaseParserTest;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBody;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
@@ -21,7 +22,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 
 @Ignore
-public class ScopeAndDeclarationFinderTest extends BaseNonParserTest {
+public class ScopeAndDeclarationFinderTest extends BaseParserTest {
 
     /**
      * Unit test for https://sourceforge.net/p/pmd/bugs/1317/

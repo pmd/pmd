@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.cli;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.containsStringIgnoringCase;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertEquals;
@@ -19,6 +20,7 @@ import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import org.apache.commons.io.IOUtils;
 import org.hamcrest.Matcher;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -125,6 +127,19 @@ public class CoreCliTest {
     }
 
     @Test
+    public void testFileCollectionWithUnknownFiles() throws IOException {
+        Path reportFile = tempRoot().resolve("out/reportFile.txt");
+        Files.createFile(srcDir.resolve("foo.not_analysable"));
+        assertFalse("Report file should not exist", Files.exists(reportFile));
+
+        runPmdSuccessfully("--no-cache", "--dir", srcDir, "--rulesets", DUMMY_RULESET, "--report-file", reportFile, "--debug");
+
+        assertTrue("Report file should have been created", Files.exists(reportFile));
+        String reportText = IOUtils.toString(Files.newBufferedReader(reportFile, StandardCharsets.UTF_8));
+        assertThat(reportText, not(containsStringIgnoringCase("error")));
+    }
+
+    @Test
     public void testNonExistentReportFileDeprecatedOptions() {
         Path reportFile = tempRoot().resolve("out/reportFile.txt");
 
@@ -180,13 +195,13 @@ public class CoreCliTest {
     @Test
     public void debugLogging() {
         runPmdSuccessfully("--debug", "--no-cache", "--dir", srcDir, "--rulesets", DUMMY_RULESET);
-        errStreamCaptor.getLog().contains("[main] DEBUG net.sourceforge.pmd.PMD - Log level is at DEBUG");
+        assertThat(errStreamCaptor.getLog(), containsString("[main] INFO net.sourceforge.pmd.PMD - Log level is at TRACE"));
     }
 
     @Test
     public void defaultLogging() {
         runPmdSuccessfully("--no-cache", "--dir", srcDir, "--rulesets", DUMMY_RULESET);
-        errStreamCaptor.getLog().contains("[main] INFO net.sourceforge.pmd.PMD - Log level is at INFO");
+        assertThat(errStreamCaptor.getLog(), containsString("[main] INFO net.sourceforge.pmd.PMD - Log level is at INFO"));
     }
 
 
@@ -240,8 +255,8 @@ public class CoreCliTest {
     }
 
     private static void runPmd(int expectedExitCode, Object[] args) {
-        int actualExitCode = PMD.run(argsToString(args));
-        assertEquals("Exit code", expectedExitCode, actualExitCode);
+        StatusCode actualExitCode = PMD.runPmd(argsToString(args));
+        assertEquals("Exit code", expectedExitCode, actualExitCode.toInt());
     }
 
 

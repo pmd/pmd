@@ -9,9 +9,9 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.lang.java.symboltable.BaseNonParserTest;
+import net.sourceforge.pmd.lang.java.BaseParserTest;
 
-public class CommentTest extends BaseNonParserTest {
+public class CommentTest extends BaseParserTest {
     @Test
     public void testMultiLinesInSingleLine() {
         String comment = "/* single line. */";

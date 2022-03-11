@@ -24,8 +24,8 @@ import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 @Ignore("Needs to be fixed for new AST structure. All of this is already much better tested in Kotlin, I don't want to port these tests...")
 public class Java14Test {
     private final JavaParsingHelper java14 =
-            JavaParsingHelper.WITH_PROCESSING.withDefaultVersion("14")
-                                             .withResourceContext(Java14Test.class, "jdkversiontests/java14/");
+            JavaParsingHelper.DEFAULT.withDefaultVersion("14")
+                                     .withResourceContext(Java14Test.class, "jdkversiontests/java14/");
 
     private final JavaParsingHelper java13 = java14.withDefaultVersion("13");
 

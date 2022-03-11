@@ -19,8 +19,8 @@ import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 
 public class Java17PreviewTreeDumpTest extends BaseTreeDumpTest {
     private final JavaParsingHelper java17p =
-            JavaParsingHelper.WITH_PROCESSING.withDefaultVersion("17-preview")
-                    .withResourceContext(Java17PreviewTreeDumpTest.class, "jdkversiontests/java17p/");
+            JavaParsingHelper.DEFAULT.withDefaultVersion("17-preview")
+                                     .withResourceContext(Java17PreviewTreeDumpTest.class, "jdkversiontests/java17p/");
     private final JavaParsingHelper java17 = java17p.withDefaultVersion("17");
 
     public Java17PreviewTreeDumpTest() {

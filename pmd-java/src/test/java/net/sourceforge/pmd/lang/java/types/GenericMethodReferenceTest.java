@@ -20,7 +20,7 @@ public class GenericMethodReferenceTest {
 
     @Test
     public void typeResolveVariable() {
-        ASTCompilationUnit root = JavaParsingHelper.WITH_PROCESSING.parseClass(GenericMethodReference.class);
+        ASTCompilationUnit root = JavaParsingHelper.DEFAULT.parseClass(GenericMethodReference.class);
 
         root.descendants(ASTVariableDeclaratorId.class).forEach(variable -> {
             Assert.assertTrue(variable.getName().startsWith("supplier"));

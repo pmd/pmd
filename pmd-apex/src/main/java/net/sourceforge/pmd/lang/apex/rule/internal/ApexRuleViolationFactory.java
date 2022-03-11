@@ -98,9 +98,9 @@ public final class ApexRuleViolationFactory extends DefaultRuleViolationFactory 
     private static boolean suppresses(ASTAnnotation annot, Rule rule) {
         final String ruleAnno = "PMD." + rule.getName();
 
-        if (annot.hasImageEqualTo("SuppressWarnings")) {
-            for (ASTAnnotationParameter param : annot.findChildrenOfType(ASTAnnotationParameter.class)) {
-                String image = param.getImage();
+        if ("SuppressWarnings".equals(annot.getName())) {
+            for (ASTAnnotationParameter param : annot.children(ASTAnnotationParameter.class)) {
+                String image = param.getValue();
 
                 if (image != null) {
                     Set<String> paramValues = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);

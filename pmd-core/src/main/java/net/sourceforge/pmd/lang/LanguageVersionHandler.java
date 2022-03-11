@@ -4,12 +4,7 @@
 
 package net.sourceforge.pmd.lang;
 
-import static java.util.Collections.emptyList;
-
-import java.util.List;
-
 import net.sourceforge.pmd.annotation.Experimental;
-import net.sourceforge.pmd.lang.ast.AstProcessingStage;
 import net.sourceforge.pmd.lang.ast.Parser;
 import net.sourceforge.pmd.lang.metrics.LanguageMetricsProvider;
 import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
@@ -34,17 +29,6 @@ public interface LanguageVersionHandler {
      */
     default XPathHandler getXPathHandler() {
         return XPathHandler.noFunctionDefinitions();
-    }
-
-
-    /**
-     * Returns the list of all supported optional processing stages.
-     *
-     * @return A list of all optional processing stages.
-     */
-    @Experimental
-    default List<? extends AstProcessingStage<?>> getProcessingStages() {
-        return emptyList();
     }
 
 

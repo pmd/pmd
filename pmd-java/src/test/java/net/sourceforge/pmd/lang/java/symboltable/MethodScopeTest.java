@@ -13,13 +13,14 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.lang.java.BaseParserTest;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
 @Ignore
-public class MethodScopeTest extends BaseNonParserTest {
+public class MethodScopeTest extends BaseParserTest {
 
     @Test
     public void testMethodParameterOccurrenceRecorded() {
