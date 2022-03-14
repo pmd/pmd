@@ -86,7 +86,7 @@ public final class JavaAstUtils {
 
 
     public static boolean isConditional(JavaNode ifx) {
-        return BinaryOp.isInfixExprWithOperator(ifx, BinaryOp.CONDITIONAL_OPS);
+        return isInfixExprWithOperator(ifx, BinaryOp.CONDITIONAL_OPS);
     }
 
     public static int numAlternatives(ASTSwitchBranch n) {
@@ -692,5 +692,27 @@ public final class JavaAstUtils {
         return it instanceof ASTLoopStatement
             || it instanceof ASTSwitchStatement
             || it instanceof ASTLabeledStatement;
+    }
+
+    /**
+     * Tests if the node is an {@link ASTInfixExpression} with one of the given operators.
+     */
+    public static boolean isInfixExprWithOperator(@Nullable JavaNode e, Set<BinaryOp> operators) {
+        if (e instanceof ASTInfixExpression) {
+            ASTInfixExpression infix = (ASTInfixExpression) e;
+            return operators.contains(infix.getOperator());
+        }
+        return false;
+    }
+
+    /**
+     * Tests if the node is an {@link ASTInfixExpression} with the given operator.
+     */
+    public static boolean isInfixExprWithOperator(@Nullable JavaNode e, BinaryOp operator) {
+        if (e instanceof ASTInfixExpression) {
+            ASTInfixExpression infix = (ASTInfixExpression) e;
+            return operator == infix.getOperator();
+        }
+        return false;
     }
 }

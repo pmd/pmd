@@ -14,7 +14,7 @@ import static net.sourceforge.pmd.lang.java.ast.BinaryOp.MOD;
 import static net.sourceforge.pmd.lang.java.ast.BinaryOp.MUL;
 import static net.sourceforge.pmd.lang.java.ast.BinaryOp.SHIFT_OPS;
 import static net.sourceforge.pmd.lang.java.ast.BinaryOp.SUB;
-import static net.sourceforge.pmd.lang.java.ast.BinaryOp.isInfixExprWithOperator;
+import static net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils.isInfixExprWithOperator;
 
 import java.util.EnumSet;
 import java.util.Set;

@@ -12,10 +12,10 @@ import static net.sourceforge.pmd.lang.java.ast.BinaryOp.GT;
 import static net.sourceforge.pmd.lang.java.ast.BinaryOp.LE;
 import static net.sourceforge.pmd.lang.java.ast.BinaryOp.LT;
 import static net.sourceforge.pmd.lang.java.ast.BinaryOp.NE;
-import static net.sourceforge.pmd.lang.java.ast.BinaryOp.isInfixExprWithOperator;
 import static net.sourceforge.pmd.lang.java.ast.BinaryOp.opsWithGreaterPrecedence;
 import static net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils.areComplements;
 import static net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils.isBooleanLiteral;
+import static net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils.isInfixExprWithOperator;
 
 import java.util.EnumSet;
 import java.util.Set;

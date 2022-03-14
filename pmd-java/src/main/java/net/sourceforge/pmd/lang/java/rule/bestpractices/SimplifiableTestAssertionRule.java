@@ -129,7 +129,7 @@ public class SimplifiableTestAssertionRule extends AbstractJavaRulechainRule {
 
 
     private ASTInfixExpression asEqualityExpr(ASTExpression node) {
-        if (BinaryOp.isInfixExprWithOperator(node, BinaryOp.EQUALITY_OPS)) {
+        if (JavaAstUtils.isInfixExprWithOperator(node, BinaryOp.EQUALITY_OPS)) {
             return (ASTInfixExpression) node;
         }
         return null;

@@ -139,7 +139,7 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRulechainRule {
      * @return The name, or null if it couldn't be found or the guard condition is not safe to refactor (then abort)
      */
     private @Nullable ASTNamedReferenceExpr findIterableFromCondition(ASTExpression guardCondition, ASTVariableDeclaratorId indexVar) {
-        if (!BinaryOp.isInfixExprWithOperator(guardCondition, BinaryOp.COMPARISON_OPS)) {
+        if (!JavaAstUtils.isInfixExprWithOperator(guardCondition, BinaryOp.COMPARISON_OPS)) {
             return null;
         }
 
