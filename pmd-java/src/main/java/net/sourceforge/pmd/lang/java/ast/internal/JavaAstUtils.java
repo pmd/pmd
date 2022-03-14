@@ -65,6 +65,7 @@ import net.sourceforge.pmd.lang.java.ast.JavaTokenKinds;
 import net.sourceforge.pmd.lang.java.ast.QualifiableExpression;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.ast.UnaryOp;
+import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.internal.ast.AstLocalVarSym;
@@ -76,7 +77,10 @@ import net.sourceforge.pmd.util.CollectionUtil;
 import net.sourceforge.pmd.util.OptionalBool;
 
 /**
- *
+ * Common utility functions to work with the Java AST. See also
+ * {@link TypeTestUtil}. Only add here things that are not specific to
+ * rules (use {@link JavaRuleUtil} for that). This API may be eventually
+ * published.
  */
 public final class JavaAstUtils {
 
@@ -602,15 +606,6 @@ public final class JavaAstUtils {
         return null;
     }
 
-    public static ASTClassOrInterfaceType isUnqual(ASTExpression expr) {
-        if (expr instanceof ASTThisExpression) {
-            return ((ASTThisExpression) expr).getQualifier();
-        } else if (expr instanceof ASTSuperExpression) {
-            return ((ASTSuperExpression) expr).getQualifier();
-        }
-        return null;
-    }
-
     public static boolean isThisOrSuper(ASTExpression expr) {
         return expr instanceof ASTThisExpression || expr instanceof ASTSuperExpression;
     }
@@ -640,11 +635,12 @@ public final class JavaAstUtils {
     }
 
     /**
-     * Returns true if the node is the last child of its parent (or is the root node).
+     * Returns true if the node is the last child of its parent. Returns
+     * false if this is the root node.
      */
     public static boolean isLastChild(Node it) {
         Node parent = it.getParent();
-        return parent == null || it.getIndexInParent() == parent.getNumChildren() - 1;
+        return parent != null && it.getIndexInParent() == parent.getNumChildren() - 1;
     }
 
     /**

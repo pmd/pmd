@@ -239,9 +239,7 @@ class ConversionContextTests : ProcessorTestSpec({
         spy.shouldBeOk {
             concats.forEach {
                 withClue(it) {
-                    JavaAstUtils.isStringConcatExpr(
-                        it
-                    ) shouldBe true
+                    JavaAstUtils.isStringConcatExpr(it) shouldBe true
                     it.leftOperand.conversionContext::getTargetType shouldBe ts.STRING
                     it.rightOperand.conversionContext::getTargetType shouldBe ts.STRING
                 }
