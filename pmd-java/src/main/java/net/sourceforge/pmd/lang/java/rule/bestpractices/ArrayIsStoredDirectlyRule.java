@@ -14,8 +14,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.AccessNode.Visibility;
+import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
-import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 
@@ -68,7 +68,7 @@ public class ArrayIsStoredDirectlyRule extends AbstractJavaRulechainRule {
                     // the RHS of an assignment
                     if (usage.getParent() instanceof ASTAssignmentExpression && usage.getIndexInParent() == 1) {
                         ASTAssignableExpr assigned = ((ASTAssignmentExpression) usage.getParent()).getLeftOperand();
-                        if (JavaRuleUtil.isRefToFieldOfThisInstance(assigned)) {
+                        if (JavaAstUtils.isRefToFieldOfThisInstance(assigned)) {
                             addViolation(context, usage.getParent(), usage.getName());
                         }
                     }
