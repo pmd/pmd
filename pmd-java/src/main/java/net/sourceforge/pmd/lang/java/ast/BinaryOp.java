@@ -86,6 +86,9 @@ public enum BinaryOp implements InternalInterfaces.OperatorLike {
     /** Modulo {@code "%"} operator. */
     MOD("%");
 
+    /** Set of {@code &&} and {@code ||}. Use with {@link #isInfixExprWithOperator(JavaNode, Set)}. */
+    public static final Set<BinaryOp> CONDITIONAL_OPS =
+        CollectionUtil.immutableEnumSet(CONDITIONAL_AND, CONDITIONAL_OR);
     /** Set of {@code <}, {@code <=}, {@code >=} and {@code >}. Use with {@link #isInfixExprWithOperator(JavaNode, Set)}. */
     public static final Set<BinaryOp> COMPARISON_OPS = CollectionUtil.immutableEnumSet(LE, GE, GT, LT);
     /** Set of {@code ==} and {@code !=}. Use with {@link #isInfixExprWithOperator(JavaNode, Set)}. */
