@@ -225,5 +225,12 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
     }
 
     fun executeRuleOnResource(rule: Rule, resourcePath: String): Report =
-            executeRule(rule, readResource(resourcePath))
+        executeRule(rule, code = readResource(resourcePath))
+
+    fun executeRuleOnFile(rule: Rule, path: Path): Report =
+        executeRule(
+            rule,
+            code = Files.newBufferedReader(path).readText(),
+            fileName = path.toString()
+        )
 }

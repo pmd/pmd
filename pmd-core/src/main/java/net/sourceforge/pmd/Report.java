@@ -28,7 +28,7 @@ import net.sourceforge.pmd.util.datasource.DataSource;
  * and configuration errors.
  *
  * <p>A report may be created by a {@link GlobalReportBuilderListener} that you
- * use as the {@link GlobalAnalysisListener} in {@linkplain PMD#processFiles(PMDConfiguration, List, List, GlobalAnalysisListener) PMD's entry point}.
+ * use as the {@linkplain GlobalAnalysisListener} in {@link PmdAnalysis#performAnalysisAndCollectReport() PMD's entry point}.
  * You can also create one manually with {@link #buildReport(Consumer)}.
  */
 public final class Report {

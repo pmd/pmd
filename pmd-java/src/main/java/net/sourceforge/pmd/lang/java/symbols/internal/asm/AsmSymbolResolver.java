@@ -99,7 +99,7 @@ public class AsmSymbolResolver implements SymbolResolver {
         return resolveFromInternalNameCannotFail(internalName, ClassStub.UNKNOWN_ARITY);
     }
 
-    @SuppressWarnings("PMD.CompareObjectsWithEquals") // SoftClassReference
+    @SuppressWarnings("PMD.CompareObjectsWithEquals") // ClassStub
     @NonNull ClassStub resolveFromInternalNameCannotFail(@NonNull String internalName, int observedArity) {
         return knownStubs.compute(internalName, (iname, prev) -> {
             if (prev != failed && prev != null) {

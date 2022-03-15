@@ -95,11 +95,7 @@ public abstract class RuleTst {
     private ClassLoader makeClassPathClassLoader() {
         final ClassLoader classpathClassLoader;
         PMDConfiguration config = new PMDConfiguration();
-        try {
-            config.prependClasspath(".");
-        } catch (IOException ignored) {
-
-        }
+        config.prependAuxClasspath(".");
         classpathClassLoader = config.getClassLoader();
         return classpathClassLoader;
     }

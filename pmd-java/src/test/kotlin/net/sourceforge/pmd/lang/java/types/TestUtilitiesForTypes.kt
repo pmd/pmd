@@ -16,6 +16,7 @@ import net.sourceforge.pmd.lang.java.JavaParsingHelper
 import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.java.symbols.internal.asm.AsmSymbolResolver
 import net.sourceforge.pmd.lang.java.types.TypeOps.*
+import org.hamcrest.Description
 import kotlin.String
 import kotlin.streams.toList
 import kotlin.test.assertTrue
@@ -45,15 +46,42 @@ typealias TypePair = Pair<JTypeMirror, JTypeMirror>
 fun JTypeMirror.getMethodsByName(name: String) = streamMethods { it.simpleName == name }.toList()
 
 fun JTypeMirror.shouldBeUnresolvedClass(canonicalName: String) =
-        this.shouldBeA<JClassType> {
-            it.symbol::getCanonicalName shouldBe canonicalName
-        }
+    this.shouldBeA<JClassType> {
+        it.symbol::getCanonicalName shouldBe canonicalName
+    }
 
 infix fun TypeNode.shouldHaveType(expected: JTypeMirror) {
     withClue(this) {
         this.typeMirror shouldBe expected
     }
 }
+
+
+/**
+ * A hamcrest matcher usable from Java.
+ */
+fun hasType(t: JTypeMirror): org.hamcrest.Matcher<TypeNode> =
+    object : org.hamcrest.BaseMatcher<TypeNode>() {
+        override fun describeTo(p0: Description) {
+            p0.appendText("a node with type $t")
+        }
+
+        override fun matches(p0: Any?): Boolean =
+            p0 is TypeNode && TypeTestUtil.isA(t, p0)
+    }
+
+/**
+ * A hamcrest matcher usable from Java.
+ */
+fun hasType(t: Class<*>): org.hamcrest.Matcher<TypeNode> =
+    object : org.hamcrest.BaseMatcher<TypeNode>() {
+        override fun describeTo(p0: Description) {
+            p0.appendText("a node with type ${t.name}")
+        }
+
+        override fun matches(p0: Any?): Boolean =
+            p0 is TypeNode && TypeTestUtil.isA(t, p0)
+    }
 
 // pairs of type param name to value
 fun JMethodSig.subst(vararg mapping: Pair<String, JTypeMirror>): JMethodSig {

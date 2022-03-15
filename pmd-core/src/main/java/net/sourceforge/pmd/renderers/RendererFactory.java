@@ -15,6 +15,7 @@ import java.util.TreeMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 /**
@@ -61,6 +62,7 @@ public final class RendererFactory {
      * @return A Renderer instance.
      */
     public static Renderer createRenderer(String reportFormat, Properties properties) {
+        AssertionUtil.requireParamNotNull("reportFormat", reportFormat);
         Class<? extends Renderer> rendererClass = getRendererClass(reportFormat);
         Constructor<? extends Renderer> constructor = getRendererConstructor(rendererClass);
 
@@ -101,6 +103,7 @@ public final class RendererFactory {
 
     @SuppressWarnings("unchecked")
     private static Class<? extends Renderer> getRendererClass(String reportFormat) {
+        AssertionUtil.requireParamNotNull("reportFormat", reportFormat);
         Class<? extends Renderer> rendererClass = REPORT_FORMAT_TO_RENDERER.get(reportFormat);
 
         // Look up a custom renderer class

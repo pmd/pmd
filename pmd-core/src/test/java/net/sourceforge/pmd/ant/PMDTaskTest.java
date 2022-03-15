@@ -91,7 +91,7 @@ public class PMDTaskTest {
         try (InputStream in = new FileInputStream("target/pmd-ant-test.txt")) {
             String actual = IOUtils.toString(in, StandardCharsets.UTF_8);
             // remove any trailing newline
-            actual = actual.replaceAll("\n|\r", "");
+            actual = actual.trim();
             Assert.assertEquals("sample.dummy:1:\tSampleXPathRule:\tTest Rule 2", actual);
         }
     }
