@@ -57,6 +57,8 @@ The CLI itself remains compatible, if you run PMD via command-line, no action is
     *   [#3299](https://github.com/pmd/pmd/issues/3299): \[core] Deprecate system properties of PMDCommandLineInterface
 *   doc
     *   [#3812](https://github.com/pmd/pmd/issues/3812): \[doc] Documentation website table of contents broken on pages with many subheadings
+*   java-design
+    *   [#3850](https://github.com/pmd/pmd/issues/3850): \[java] ImmutableField - false negative when field assigned in constructor conditionally
 
 ### API Changes
 
