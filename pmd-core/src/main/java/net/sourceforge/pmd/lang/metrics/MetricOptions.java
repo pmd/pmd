@@ -17,7 +17,7 @@ import java.util.Set;
  * @author Clément Fournier
  * @since 6.0.0
  */
-public class MetricOptions {
+public class MetricOptions { // NOPMD: this class should be final, but is public API
 
     private static final Map<MetricOptions, MetricOptions> POOL = new HashMap<>();
     private static final MetricOptions EMPTY_OPTIONS;
