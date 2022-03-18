@@ -548,38 +548,38 @@ public class Report implements Iterable<RuleViolation> {
 
 
     /**
-     * Returns an unmodifiable list of violations that were suppressed.
+     * Returns a list of violations that were suppressed.
      */
     public final List<SuppressedViolation> getSuppressedViolations() {
-        return Collections.unmodifiableList(suppressedRuleViolations);
+        return suppressedRuleViolations;
     }
 
     /**
-     * Returns an unmodifiable list of violations that have been
+     * Returns a list of violations that have been
      * recorded until now. None of those violations were suppressed.
      *
      * <p>The violations list is sorted with {@link RuleViolation#DEFAULT_COMPARATOR}.
      */
     public final List<RuleViolation> getViolations() {
-        return Collections.unmodifiableList(violations);
+        return violations;
     }
 
 
     /**
-     * Returns an unmodifiable list of processing errors that have been
+     * Returns a list of processing errors that have been
      * recorded until now.
      */
     public final List<ProcessingError> getProcessingErrors() {
-        return Collections.unmodifiableList(errors);
+        return errors;
     }
 
 
     /**
-     * Returns an unmodifiable list of configuration errors that have
+     * Returns a list of configuration errors that have
      * been recorded until now.
      */
     public final List<ConfigurationError> getConfigurationErrors() {
-        return Collections.unmodifiableList(configErrors);
+        return configErrors;
     }
 
 
