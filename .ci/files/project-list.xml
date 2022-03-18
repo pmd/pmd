@@ -149,15 +149,23 @@ EOF
   <project>
     <name>Schedul-o-matic-9000</name>
     <type>git</type>
+    <connection>https://github.com/pmd/Schedul-o-matic-9000</connection>
+    <!-- 
     <connection>https://github.com/SalesforceLabs/Schedul-o-matic-9000</connection>
-    <tag>6b1229ba43b38931fbbab5924bc9b9611d19a786</tag>
+    Note: using forked repo from pmd, as original repo doesn't have any useful tags/branches
+    -->
+    <tag>pmd-regression-test</tag>
   </project>
 
   <project>
     <name>fflib-apex-common</name>
     <type>git</type>
+    <connection>https://github.com/pmd/fflib-apex-common</connection>
+    <!-- 
     <connection>https://github.com/apex-enterprise-patterns/fflib-apex-common</connection>
-    <tag>991bcbc20b017935405499c115309cadd1f8af9b</tag>
+    Note: using forked repo from pmd, as original repo doesn't have any useful tags/branches
+     -->
+    <tag>pmd-regression-test</tag>
   </project>
 
   <project>
