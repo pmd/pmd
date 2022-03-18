@@ -145,4 +145,26 @@ EOF
     <tag>jdk-11+28</tag>
     <src-subpath>src/java.base</src-subpath>
   </project>
+
+  <project>
+    <name>Schedul-o-matic-9000</name>
+    <type>git</type>
+    <connection>https://github.com/SalesforceLabs/Schedul-o-matic-9000</connection>
+    <tag>6b1229ba43b38931fbbab5924bc9b9611d19a786</tag>
+  </project>
+
+  <project>
+    <name>fflib-apex-common</name>
+    <type>git</type>
+    <connection>https://github.com/apex-enterprise-patterns/fflib-apex-common</connection>
+    <tag>991bcbc20b017935405499c115309cadd1f8af9b</tag>
+  </project>
+
+  <project>
+    <name>apex-link</name>
+    <type>git</type>
+    <connection>https://github.com/nawforce/apex-link</connection>
+    <tag>v2.3.0</tag>
+    <src-subpath>samples</src-subpath>
+  </project>
 </projectlist>
