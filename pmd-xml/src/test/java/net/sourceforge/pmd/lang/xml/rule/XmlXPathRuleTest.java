@@ -9,9 +9,8 @@ import static net.sourceforge.pmd.lang.ast.test.TestUtilsKt.assertSize;
 import org.junit.Test;
 
 import net.sourceforge.pmd.Report;
+import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.lang.LanguageRegistry;
-import net.sourceforge.pmd.lang.rule.XPathRule;
-import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
 import net.sourceforge.pmd.lang.xml.XmlLanguageModule;
 import net.sourceforge.pmd.lang.xml.XmlParsingHelper;
 
@@ -19,8 +18,8 @@ public class XmlXPathRuleTest {
 
     final XmlParsingHelper xml = XmlParsingHelper.XML;
 
-    private XPathRule makeXPath(String expression) {
-        XPathRule rule = new XPathRule(XPathVersion.XPATH_2_0, expression);
+    private Rule makeXPath(String expression) {
+        DomXPathRule rule = new DomXPathRule(expression);
         rule.setLanguage(LanguageRegistry.getLanguage(XmlLanguageModule.NAME));
         rule.setMessage("XPath Rule Failed");
         return rule;

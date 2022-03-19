@@ -24,6 +24,8 @@ import net.sourceforge.pmd.util.CompoundIterator;
 
 /**
  * Proxy wrapping an XML DOM node ({@link org.w3c.dom.Node}) to implement PMD interfaces.
+ * Note: you should only use it as a PMD {@link Node}, the DOM Node implementation
+ * is inconsistent. If you need a dom node, call {@link #getNode()}.
  *
  * @author Clément Fournier
  * @since 6.1.0
@@ -36,7 +38,12 @@ public class XmlNodeWrapper extends AbstractDomNodeProxy implements XmlNode {
 
     public XmlNodeWrapper(XmlParser parser, org.w3c.dom.Node domNode) {
         super(domNode);
+        domNode.setUserData("pmd.node", this, null);
         this.parser = parser;
+    }
+
+    protected XmlNode wrap(org.w3c.dom.Node domNode) {
+        return parser.wrapDomNode(domNode);
     }
 
 
