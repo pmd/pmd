@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.xpath;
 
+import java.util.Objects;
 import java.util.logging.Logger;
 
 import net.sourceforge.pmd.annotation.InternalApi;
@@ -54,6 +55,16 @@ public final class PMDFunctions {
         Item contextItem = context.getContextItem();
         Node node = itemToNode(contextItem);
         return node == null ? null : FileNameXPathFunction.getFileName(node);
+    }
+
+    public static int beginLine(Item item) {
+        Node node = Objects.requireNonNull(itemToNode(item), "not a node " + item);
+        return node.getBeginLine();
+    }
+
+    public static int endLine(Item item) {
+        Node node = Objects.requireNonNull(itemToNode(item), "not a node " + item);
+        return node.getEndLine();
     }
 
     private static Node itemToNode(Object item) {

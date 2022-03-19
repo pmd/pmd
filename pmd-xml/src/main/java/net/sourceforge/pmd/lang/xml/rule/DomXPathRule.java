@@ -22,10 +22,35 @@ import net.sourceforge.pmd.properties.PropertyFactory;
  * class is strongly recommended over the standard {@link XPathRule}, which
  * is mostly useful in other PMD languages.
  *
- * <p>The XPath expression is namespace-sensitive. If the tested XML documents
- * use a schema ({@code xmlns} attribute on the root), you should set the property
- * {@code defaultNsUri} on the rule with the value of the {@code xmlns} attribute.
- * Otherwise node tests won't match unless you use a wildcard URI prefix ({@code *:nodeName}).
+ * <h3>Differences with {@link XPathRule}</h3>
+ *
+ * This rule and {@link XPathRule} do not accept exactly the same queries,
+ * because {@link XPathRule} implements the XPath spec in an ad-hoc way.
+ * The main differences are:
+ * <ul>
+ * <li>{@link XPathRule} uses <i>elements</i> to represent text nodes.
+ * This is contrary to the XPath spec, in which element and text nodes
+ * are different kinds of nodes. To replace the query {@code //elt/text[@Image="abc"]},
+ * use the XPath function {@code text()}, eg {@code //elt[text()="abc"]}.
+ * <li>{@link XPathRule} adds additional attributes to each element
+ * (eg {@code @BeginLine} and {@code @Image}). These attributes are not
+ * XML attributes, so they are not accessible using DomXPathRule rule.
+ * Instead, use the XPath functions {@code pmd:beginLine(node)} and {@code pmd:beginLine(node)}.
+ * For instance, replace {@code //elt[@EndLine - @BeginLine > 10]} with
+ * {@code elt[pmd:endLine(.) - pmd:beginLine(.) > 10]}.
+ * <li>{@link XPathRule} uses an element called {@code "document"} as the
+ * root node of every XML AST. This node does not have the correct node kind,
+ * as it's an element, not a document. To replace {@code /document/RootNode},
+ * use just {@code /RootNode}.
+ * </ul>
+ *
+ * <h4>Namespace-sensitivity</h4>
+ *
+ * <p>Another large difference is that this rule is namespace-sensitive.
+ * If the tested XML documents use a schema ({@code xmlns} attribute on the root),
+ * you should set the property {@code defaultNsUri} on the rule with
+ * the value of the {@code xmlns} attribute. Otherwise node tests won't
+ * match unless you use a wildcard URI prefix ({@code *:nodeName}).
  *
  * <p>For instance for the document
  * <pre>{@code
