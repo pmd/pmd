@@ -24,7 +24,7 @@ import net.sourceforge.pmd.cpd.CPDReport;
 import net.sourceforge.pmd.cpd.Language;
 import net.sourceforge.pmd.cpd.Tokenizer;
 import net.sourceforge.pmd.internal.LogMessages;
-import net.sourceforge.pmd.util.IOUtil;
+import net.sourceforge.pmd.internal.util.IOUtil;
 
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;

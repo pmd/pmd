@@ -7,7 +7,6 @@ package net.sourceforge.pmd.lang.java.symbols.table.internal;
 import org.pcollections.HashTreePSet;
 import org.pcollections.PSet;
 
-import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTGuardedPattern;
 import net.sourceforge.pmd.lang.java.ast.ASTInfixExpression;
@@ -19,6 +18,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.BinaryOp;
 import net.sourceforge.pmd.lang.java.ast.UnaryOp;
+import net.sourceforge.pmd.util.AssertionUtil;
 
 /**
  * Utilities to resolve scope of pattern binding variables.

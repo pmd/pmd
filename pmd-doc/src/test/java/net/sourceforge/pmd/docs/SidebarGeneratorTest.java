@@ -24,9 +24,9 @@ import org.yaml.snakeyaml.DumperOptions.LineBreak;
 import org.yaml.snakeyaml.Yaml;
 
 import net.sourceforge.pmd.RuleSet;
+import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
-import net.sourceforge.pmd.util.IOUtil;
 
 class SidebarGeneratorTest {
     private MockedFileWriter writer = new MockedFileWriter();

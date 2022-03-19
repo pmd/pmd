@@ -1,8 +1,8 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.util;
+package net.sourceforge.pmd.internal.util;
 
 import java.io.Closeable;
 import java.io.File;
@@ -34,15 +34,10 @@ import java.util.Objects;
 import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 /**
  *
  * @author Brian Remedios
- * @deprecated Is internal API
  */
-@InternalApi
-@Deprecated
 public final class IOUtil {
     /**
      * Unicode BOM character. Replaces commons io ByteOrderMark.

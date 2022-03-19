@@ -33,11 +33,11 @@ import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.PmdAnalysis;
 import net.sourceforge.pmd.annotation.InternalApi;
-import net.sourceforge.pmd.internal.util.AssertionUtil;
+import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
-import net.sourceforge.pmd.util.IOUtil;
+import net.sourceforge.pmd.util.AssertionUtil;
 import net.sourceforge.pmd.util.log.MessageReporter;
 
 /**

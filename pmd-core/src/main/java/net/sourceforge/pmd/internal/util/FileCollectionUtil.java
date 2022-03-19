@@ -18,8 +18,6 @@ import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.lang.document.FileCollector;
-import net.sourceforge.pmd.util.FileUtil;
-import net.sourceforge.pmd.util.IOUtil;
 import net.sourceforge.pmd.util.database.DBMSMetadata;
 import net.sourceforge.pmd.util.database.DBURI;
 import net.sourceforge.pmd.util.database.SourceObject;

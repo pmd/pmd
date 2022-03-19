@@ -1,8 +1,8 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.util;
+package net.sourceforge.pmd.internal.util;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -21,15 +21,9 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 /**
  * This is a utility class for working with Files.
- *
- * @deprecated Is internal API
  */
-@Deprecated
-@InternalApi
 public final class FileUtil {
 
     private FileUtil() {

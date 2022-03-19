@@ -26,7 +26,7 @@ import org.junit.contrib.java.lang.system.SystemOutRule;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMD.StatusCode;
-import net.sourceforge.pmd.internal.util.AssertionUtil;
+import net.sourceforge.pmd.util.AssertionUtil;
 
 /**
  * @author Romain Pelisse &lt;belaran@gmail.com&gt;

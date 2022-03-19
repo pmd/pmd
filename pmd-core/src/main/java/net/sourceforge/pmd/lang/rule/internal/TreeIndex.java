@@ -14,8 +14,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import net.sourceforge.pmd.internal.util.IteratorUtil;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.util.IteratorUtil;
 
 /**
  * Index of an AST, for use by the {@link RuleApplicator}.

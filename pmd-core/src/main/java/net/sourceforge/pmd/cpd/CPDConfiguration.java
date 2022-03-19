@@ -25,8 +25,8 @@ import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.cpd.renderer.CPDRenderer;
 import net.sourceforge.pmd.cpd.renderer.CPDRendererAdapter;
 import net.sourceforge.pmd.cpd.renderer.CPDReportRenderer;
-import net.sourceforge.pmd.util.FileFinder;
-import net.sourceforge.pmd.util.FileUtil;
+import net.sourceforge.pmd.internal.util.FileFinder;
+import net.sourceforge.pmd.internal.util.FileUtil;
 
 import com.beust.jcommander.IStringConverter;
 import com.beust.jcommander.Parameter;

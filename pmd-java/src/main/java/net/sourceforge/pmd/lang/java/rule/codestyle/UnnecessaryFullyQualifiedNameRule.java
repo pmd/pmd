@@ -13,7 +13,6 @@ import java.util.function.Function;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
@@ -31,6 +30,7 @@ import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.ShadowChain;
 import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.ShadowChainIterator;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.util.AssertionUtil;
 
 public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRulechainRule {
 

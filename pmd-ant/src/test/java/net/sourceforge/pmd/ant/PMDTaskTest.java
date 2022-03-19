@@ -19,7 +19,7 @@ import org.apache.tools.ant.BuildException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import net.sourceforge.pmd.util.IOUtil;
+import net.sourceforge.pmd.internal.util.IOUtil;
 
 class PMDTaskTest extends AbstractAntTest {
 

@@ -21,11 +21,11 @@ import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.annotation.DeprecatedUntil700;
 import net.sourceforge.pmd.cpd.SourceCode;
 import net.sourceforge.pmd.internal.util.BaseCloseable;
+import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.document.TextFileBuilder.ForCharSeq;
 import net.sourceforge.pmd.lang.document.TextFileBuilder.ForNio;
 import net.sourceforge.pmd.lang.document.TextFileBuilder.ForReader;
-import net.sourceforge.pmd.util.IOUtil;
 import net.sourceforge.pmd.util.datasource.DataSource;
 
 /**

@@ -1,8 +1,8 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.util;
+package net.sourceforge.pmd.internal.util;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -19,8 +19,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-import net.sourceforge.pmd.internal.util.AssertionUtil;
+import net.sourceforge.pmd.util.AssertionUtil;
 
 /**
  * Create a ClassLoader which loads classes using a CLASSPATH like String. If
@@ -28,10 +27,7 @@ import net.sourceforge.pmd.internal.util.AssertionUtil;
  * the file will be read with each line representing an path on the classpath.
  *
  * @author Edwin Chan
- * @deprecated Is internal API
  */
-@InternalApi
-@Deprecated
 public class ClasspathClassLoader extends URLClassLoader {
 
     private static final Logger LOG = LoggerFactory.getLogger(ClasspathClassLoader.class);
@@ -105,10 +101,10 @@ public class ClasspathClassLoader extends URLClassLoader {
 
     @Override
     public String toString() {
-        return new StringBuilder(getClass().getSimpleName())
-                .append("[[")
-                .append(StringUtils.join(getURLs(), ":"))
-                .append("] parent: ").append(getParent()).append(']').toString();
+        return getClass().getSimpleName()
+            + "[["
+            + StringUtils.join(getURLs(), ":")
+            + "] parent: " + getParent() + ']';
     }
 
     @Override

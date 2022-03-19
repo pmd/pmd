@@ -27,7 +27,7 @@ import org.w3c.dom.Element;
 
 import net.sourceforge.pmd.cpd.renderer.CPDRenderer;
 import net.sourceforge.pmd.cpd.renderer.CPDReportRenderer;
-import net.sourceforge.pmd.internal.util.IteratorUtil;
+import net.sourceforge.pmd.util.IteratorUtil;
 import net.sourceforge.pmd.util.StringUtil;
 
 /**

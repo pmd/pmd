@@ -34,7 +34,7 @@ import org.junit.jupiter.api.io.TempDir;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMD.StatusCode;
 import net.sourceforge.pmd.internal.Slf4jSimpleConfiguration;
-import net.sourceforge.pmd.util.IOUtil;
+import net.sourceforge.pmd.internal.util.IOUtil;
 
 import com.github.stefanbirkner.systemlambda.SystemLambda;
 
