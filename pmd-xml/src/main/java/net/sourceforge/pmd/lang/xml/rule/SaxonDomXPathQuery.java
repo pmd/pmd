@@ -12,7 +12,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ContextedRuntimeException;
 import org.w3c.dom.Document;
 
@@ -58,20 +57,16 @@ final class SaxonDomXPathQuery {
 
     private final String xpath;
     /** Cached xpath expression for URI of "". */
-    private final XPathExpressionWithProperties xpathExpressionDefaultNs;
+    private final XPathExpressionWithProperties xpathExpression;
 
-    /** Cached xpath expression for URI of {@link #lastUri}, overwritten if lastUri changes. */
-    private XPathExpressionWithProperties xpathExpressionLastNs;
-    private String lastUri;
 
     private final Configuration configuration;
 
-    public SaxonDomXPathQuery(String xpath, List<PropertyDescriptor<?>> properties) {
+    public SaxonDomXPathQuery(String xpath, String defaultNsUri, List<PropertyDescriptor<?>> properties) {
         this.xpath = xpath;
         configuration = new Configuration();
         configuration.setNamePool(NAME_POOL);
-
-        xpathExpressionDefaultNs = makeXPathExpression(this.xpath, "", properties);
+        xpathExpression = makeXPathExpression(this.xpath, defaultNsUri, properties);
     }
 
     private XPathExpressionWithProperties makeXPathExpression(String xpath, String defaultUri, List<PropertyDescriptor<?>> properties) {
@@ -124,7 +119,7 @@ final class SaxonDomXPathQuery {
 
     public List<Node> evaluate(RootXmlNode root, PropertySource propertyValues) {
         PmdDocumentWrapper wrapper = getSaxonDomWrapper(root);
-        XPathExpressionWithProperties expression = getCachedXPathExpr(propertyValues, wrapper);
+        XPathExpressionWithProperties expression = this.xpathExpression;
 
         try {
             List<Node> result = new ArrayList<>();
@@ -144,20 +139,6 @@ final class SaxonDomXPathQuery {
                 .addContextValue("XPath", xpath);
         }
 
-    }
-
-    private XPathExpressionWithProperties getCachedXPathExpr(PropertySource propertyValues, PmdDocumentWrapper wrapper) {
-        XPathExpressionWithProperties expression;
-        if (StringUtils.isEmpty(wrapper.getURI())) {
-            expression = this.xpathExpressionDefaultNs;
-        } else if (xpathExpressionLastNs != null && Objects.equals(wrapper.getURI(), lastUri)) {
-            expression = xpathExpressionLastNs;
-        } else {
-            expression = makeXPathExpression(this.xpath, wrapper.getURI(), propertyValues.getPropertyDescriptors());
-            xpathExpressionLastNs = expression;
-            lastUri = wrapper.getURI();
-        }
-        return expression;
     }
 
     private PmdDocumentWrapper getSaxonDomWrapper(RootXmlNode node) {
@@ -228,17 +209,23 @@ final class SaxonDomXPathQuery {
 
             // Set variable values on the dynamic context
             for (final Entry<PropertyDescriptor<?>, XPathVariable> entry : xpathVariables.entrySet()) {
-                Object value = properties.getProperty(entry.getKey());
-                Objects.requireNonNull(value, "null property value for " + entry.getKey());
-                final ValueRepresentation saxonValue = SaxonXPathRuleQuery.getRepresentation(entry.getKey(), entry.getValue());
+                ValueRepresentation saxonValue = getSaxonValue(properties, entry);
+                XPathVariable variable = entry.getValue();
                 try {
-                    dynamicContext.setVariable(entry.getValue(), saxonValue);
+                    dynamicContext.setVariable(variable, saxonValue);
                 } catch (XPathException e) {
                     throw new ContextedRuntimeException(e)
-                        .addContextValue("Variable", entry.getValue());
+                        .addContextValue("Variable", variable);
                 }
             }
             return dynamicContext;
+        }
+
+        private ValueRepresentation getSaxonValue(PropertySource properties, Entry<PropertyDescriptor<?>, XPathVariable> entry) {
+            Object value = properties.getProperty(entry.getKey());
+            Objects.requireNonNull(value, "null property value for " + entry.getKey());
+            final ValueRepresentation saxonValue = SaxonXPathRuleQuery.getRepresentation(entry.getKey(), value);
+            return saxonValue;
         }
     }
 

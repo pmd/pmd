@@ -16,10 +16,15 @@ import net.sourceforge.pmd.lang.xml.XmlParsingHelper;
 
 public class XmlXPathRuleTest {
 
+    private static final String A_URI = "http://soap.sforce.com/2006/04/metadata";
     final XmlParsingHelper xml = XmlParsingHelper.XML;
 
     private Rule makeXPath(String expression) {
-        DomXPathRule rule = new DomXPathRule(expression);
+        return makeXPath(expression, "");
+    }
+
+    private Rule makeXPath(String expression, String nsUri) {
+        DomXPathRule rule = new DomXPathRule(expression, nsUri);
         rule.setLanguage(LanguageRegistry.getLanguage(XmlLanguageModule.NAME));
         rule.setMessage("XPath Rule Failed");
         return rule;
@@ -45,10 +50,8 @@ public class XmlXPathRuleTest {
     }
 
     @Test
-    public void testRootNode() {
+    public void testRootNodeWildcardUri() {
         // https://github.com/pmd/pmd/issues/3413#issuecomment-1072614398
-        // Note that the test is *:Flow, because Saxon DOM is namespace sensitive, and the xmlns
-        // attribute is interpreted as the ns of the document
         Report report = xml.executeRule(makeXPath("/*:Flow"),
                                         "<Flow xmlns=\"http://soap.sforce.com/2006/04/metadata\">\n"
                                         + "</Flow>");
@@ -66,11 +69,56 @@ public class XmlXPathRuleTest {
     }
 
     @Test
-    public void testNamespaceDescendant() {
+    public void testNamespaceDescendantWrongDefaultUri() {
         Report report = xml.executeRule(makeXPath("//a"),
-                                        "<Flow xmlns='http://soap.sforce.com/2006/04/metadata'><a/></Flow>");
+                                        "<Flow xmlns='" + A_URI + "'><a/></Flow>");
+
+        assertSize(report, 0);
+    }
+
+    @Test
+    public void testNamespaceDescendantOkUri() {
+        Report report = xml.executeRule(makeXPath("//a", A_URI),
+                                        "<Flow xmlns='" + A_URI + "'><a/></Flow>");
 
         assertSize(report, 1);
+
+        report = xml.executeRule(makeXPath("//*:a"),
+                                 "<Flow xmlns='" + A_URI + "'><a/></Flow>");
+
+        assertSize(report, 1);
+    }
+
+    @Test
+    public void testNamespaceDescendantWildcardUri() {
+        Report report = xml.executeRule(makeXPath("//*:a"),
+                                        "<Flow xmlns='" + A_URI + "'><a/></Flow>");
+
+        assertSize(report, 1);
+    }
+
+    @Test
+    public void testNamespacePrefixDescendantWildcardUri() {
+        Report report = xml.executeRule(makeXPath("//*:Flow"),
+                                        "<my:Flow xmlns:my='" + A_URI + "'><a/></my:Flow>");
+
+        assertSize(report, 1);
+    }
+
+    @Test
+    public void testNamespacePrefixDescendantOkUri() {
+        Report report = xml.executeRule(makeXPath("//Flow", A_URI),
+                                        "<my:Flow xmlns:my='" + A_URI + "'><a/></my:Flow>");
+
+        assertSize(report, 1);
+    }
+
+    @Test
+    public void testNamespacePrefixDescendantWrongUri() {
+        Report report = xml.executeRule(makeXPath("//Flow", "wrongURI"),
+                                        "<my:Flow xmlns:my='" + A_URI + "'><a/></my:Flow>");
+
+        assertSize(report, 0);
     }
 
 }

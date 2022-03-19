@@ -9,10 +9,55 @@ import java.util.List;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
+import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.lang.xml.ast.XmlParser.RootXmlNode;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 
+/**
+ * XPath rule that executes an expression on the DOM directly, and not
+ * on the PMD AST wrapper. The XPath expressions adheres to the XPath
+ * (2.0) spec, so they can be tested in any existing XPath testing tools
+ * instead of just the PMD designer (google "xpath test"). Usage of this
+ * class is strongly recommended over the standard {@link XPathRule}, which
+ * is mostly useful in other PMD languages.
+ *
+ * <p>The XPath expression is namespace-sensitive. If the tested XML documents
+ * use a schema ({@code xmlns} attribute on the root), you should set the property
+ * {@code defaultNsUri} on the rule with the value of the {@code xmlns} attribute.
+ * Otherwise node tests won't match unless you use a wildcard URI prefix ({@code *:nodeName}).
+ *
+ * <p>For instance for the document
+ * <pre>{@code
+ * <foo xmlns="http://company.com/aschema">
+ * </foo>
+ * }</pre>
+ * the XPath query {@code //foo} will not match anything, while {@code //*:foo}
+ * will. If you set the property {@code defaultNsUri} to {@code "http://company.com/aschema"},
+ * then {@code //foo} will be expanded to {@code //Q{http://company.com/aschema}foo},
+ * and match the {@code foo} node. The behaviour is equivalent in the following
+ * document:
+ * <pre>{@code
+ * <my:foo xmlns:my='http://company.com/aschema'>
+ * </my:foo>
+ * }</pre>
+ *
+ * <p>However, for the document
+ * <pre>{@code
+ * <foo>
+ * </foo>
+ * }</pre>
+ * the XPath queries {@code //foo} and {@code //*:foo} both match, because
+ * {@code //foo} is expanded to {@code //Q{}foo} (local name foo, empty URI),
+ * and the document has no default namespace (= the empty default namespace).
+ *
+ * <p>Note that explicitly specifying URIs with {@code Q{...}localName}
+ * as in this documentation is XPath 3.1 syntax and will only be available
+ * in PMD 7.
+ *
+ * @since PMD 6.44.0
+ * @author Clément Fournier
+ */
 public class DomXPathRule extends AbstractRule {
 
     SaxonDomXPathQuery query;
@@ -23,15 +68,28 @@ public class DomXPathRule extends AbstractRule {
                          .defaultValue("") // no default value
                          .build();
 
+    private static final PropertyDescriptor<String> DEFAULT_NS_URI
+        = PropertyFactory.stringProperty("defaultNsUri")
+                         .desc("A URI for the default namespace of node tests in the XPath expression."
+                               + "This is provided to match documents based on their declared schema.")
+                         .defaultValue("")
+                         .build();
+
 
     public DomXPathRule() {
         definePropertyDescriptor(XPATH_EXPR);
+        definePropertyDescriptor(DEFAULT_NS_URI);
     }
 
 
     public DomXPathRule(String xpath) {
+        this(xpath, "");
+    }
+
+    public DomXPathRule(String xpath, String defaultNsUri) {
         this();
         setProperty(XPATH_EXPR, xpath);
+        setProperty(DEFAULT_NS_URI, defaultNsUri);
     }
 
     @Override
@@ -47,7 +105,9 @@ public class DomXPathRule extends AbstractRule {
 
     private SaxonDomXPathQuery getXPathQuery() {
         if (query == null) {
-            query = new SaxonDomXPathQuery(getProperty(XPATH_EXPR), getPropertyDescriptors());
+            query = new SaxonDomXPathQuery(getProperty(XPATH_EXPR),
+                                           getProperty(DEFAULT_NS_URI),
+                                           getPropertyDescriptors());
         }
         return query;
     }
