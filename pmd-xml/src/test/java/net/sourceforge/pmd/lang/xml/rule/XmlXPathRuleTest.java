@@ -17,6 +17,17 @@ import net.sourceforge.pmd.lang.xml.XmlParsingHelper;
 public class XmlXPathRuleTest {
 
     private static final String A_URI = "http://soap.sforce.com/2006/04/metadata";
+    private static final String FXML_IMPORTS = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+                                               + "\n"
+                                               + "<!--suppress JavaFxDefaultTag -->\n"
+                                               + "\n"
+                                               + "<?import javafx.scene.layout.AnchorPane?>\n"
+                                               + "<?import javafx.scene.layout.BorderPane?>\n"
+                                               + "<?import javafx.scene.control.Tooltip?>\n"
+                                               + "<?import javafx.scene.control.Label?>\n"
+                                               + "<?import org.kordamp.ikonli.javafx.FontIcon?>\n"
+                                               + "<AnchorPane prefHeight=\"750.0\" prefWidth=\"1200.0\" stylesheets=\"@../css/designer.css\" xmlns=\"http://javafx.com/javafx/8\" xmlns:fx=\"http://javafx.com/fxml/1\">\n"
+                                               + "</AnchorPane>";
     final XmlParsingHelper xml = XmlParsingHelper.XML;
 
     private Rule makeXPath(String expression) {
@@ -125,6 +136,42 @@ public class XmlXPathRuleTest {
     public void testRootExpr() {
         Report report = xml.executeRule(makeXPath("/"),
                                         "<Flow><a/></Flow>");
+
+        assertSize(report, 1);
+    }
+
+    @Test
+    public void testProcessingInstructions() {
+        Report report = xml.executeRule(makeXPath("/child::processing-instruction()", "http://javafx.com/javafx/8"),
+                                        FXML_IMPORTS);
+
+        assertSize(report, 5);
+    }
+
+    @Test
+    public void testProcessingInstructionsNamed() {
+        Report report = xml.executeRule(makeXPath("/child::processing-instruction('import')"),
+                                        FXML_IMPORTS);
+
+        assertSize(report, 5);
+    }
+
+    @Test
+    public void testProcessingInstructionXML() {
+        // <?xml ?> does not create a PI
+        Report report = xml.executeRule(makeXPath("/child::processing-instruction('xml')", "http://javafx.com/javafx/8"),
+                                        FXML_IMPORTS);
+
+        assertSize(report, 0);
+    }
+
+    @Test
+    public void testComments() {
+        Report report = xml.executeRule(makeXPath("/child::comment()[fn:starts-with(fn:string(.), 'suppress')]"),
+                                        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+                                        + "<!--suppress JavaFxDefaultTag -->\n"
+                                        + "<AnchorPane prefHeight=\"750.0\" prefWidth=\"1200.0\" stylesheets=\"@../css/designer.css\" xmlns=\"http://javafx.com/javafx/8\" xmlns:fx=\"http://javafx.com/fxml/1\">\n"
+                                        + "</AnchorPane>");
 
         assertSize(report, 1);
     }

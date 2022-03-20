@@ -42,6 +42,26 @@ import net.sourceforge.pmd.properties.PropertyFactory;
  * root node of every XML AST. This node does not have the correct node kind,
  * as it's an element, not a document. To replace {@code /document/RootNode},
  * use just {@code /RootNode}.
+ * <li>{@link XPathRule} ignores comments and processing instructions
+ * (eg FXML's {@code <?import javafx.Node ?>}).
+ * This rule makes them accessible with the regular XPath syntax.
+ * The following finds all comments in the file:
+ * <pre>{@code
+ *  //comment()
+ * }</pre>
+ * The following finds only top-level comments starting with "prefix":
+ * <pre>{@code
+ *  /comment()[fn:starts-with(fn:string(.), "prefix")]
+ * }</pre>
+ * Note the use of {@code fn:string}.
+ *
+ * As an example of matching processing instructions, the following
+ * fetches all {@code <?import ... ?>} processing instructions.
+ * <pre>{@code
+ *  /processing-instruction('import')
+ * }</pre>
+ * The string value of the instruction can be found with {@code fn:string}.
+ * </li>
  * </ul>
  *
  * <p>Additionally, this rule only supports XPath 2.0, with no option

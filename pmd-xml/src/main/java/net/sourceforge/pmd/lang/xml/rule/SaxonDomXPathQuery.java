@@ -29,16 +29,10 @@ import net.sourceforge.pmd.util.DataMap.SimpleDataKey;
 import net.sf.saxon.Configuration;
 import net.sf.saxon.dom.DocumentWrapper;
 import net.sf.saxon.dom.NodeWrapper;
-import net.sf.saxon.om.Axis;
-import net.sf.saxon.om.AxisIterator;
-import net.sf.saxon.om.EmptyIterator;
 import net.sf.saxon.om.Item;
 import net.sf.saxon.om.NamePool;
 import net.sf.saxon.om.NamespaceConstant;
-import net.sf.saxon.om.NodeInfo;
-import net.sf.saxon.om.SingleNodeIterator;
 import net.sf.saxon.om.ValueRepresentation;
-import net.sf.saxon.pattern.NodeTest;
 import net.sf.saxon.sxpath.IndependentContext;
 import net.sf.saxon.sxpath.XPathDynamicContext;
 import net.sf.saxon.sxpath.XPathEvaluator;
@@ -46,13 +40,12 @@ import net.sf.saxon.sxpath.XPathExpression;
 import net.sf.saxon.sxpath.XPathStaticContext;
 import net.sf.saxon.sxpath.XPathVariable;
 import net.sf.saxon.trans.XPathException;
-import net.sf.saxon.type.Type;
 
 final class SaxonDomXPathQuery {
 
     private static final NamePool NAME_POOL = new NamePool();
 
-    private static final SimpleDataKey<PmdDocumentWrapper> SAXON_DOM_WRAPPER
+    private static final SimpleDataKey<DocumentWrapper> SAXON_DOM_WRAPPER
         = DataMap.simpleDataKey("pmd.saxon.dom.wrapper");
 
     /** The XPath expression as a string. */
@@ -119,7 +112,7 @@ final class SaxonDomXPathQuery {
     }
 
     public List<Node> evaluate(RootXmlNode root, PropertySource propertyValues) {
-        PmdDocumentWrapper wrapper = getSaxonDomWrapper(root);
+        DocumentWrapper wrapper = getSaxonDomWrapper(root);
 
         try {
             List<Node> result = new ArrayList<>();
@@ -141,51 +134,17 @@ final class SaxonDomXPathQuery {
 
     }
 
-    private PmdDocumentWrapper getSaxonDomWrapper(RootXmlNode node) {
+    private DocumentWrapper getSaxonDomWrapper(RootXmlNode node) {
         DataMap<DataKey<?, ?>> userMap = node.getUserMap();
         if (userMap.isSet(SAXON_DOM_WRAPPER)) {
             return userMap.get(SAXON_DOM_WRAPPER);
         }
         Document domRoot = node.getNode();
-        PmdDocumentWrapper wrapper = new PmdDocumentWrapper(
+        DocumentWrapper wrapper = new DocumentWrapper(
             domRoot, domRoot.getBaseURI(), configuration
         );
         userMap.set(SAXON_DOM_WRAPPER, wrapper);
         return wrapper;
-    }
-
-    private static final class PmdDocumentWrapper extends DocumentWrapper {
-
-        private final NodeInfo rootNode;
-
-        public PmdDocumentWrapper(org.w3c.dom.Document doc, String baseURI, Configuration config) {
-            super(doc, baseURI, config);
-            this.rootNode = makeWrapper(doc.getDocumentElement(), this, this, 0);
-        }
-
-        @Override
-        public AxisIterator iterateAxis(byte axisNumber) {
-            if (axisNumber == Axis.CHILD) {
-                return SingleNodeIterator.makeIterator(rootNode);
-            }
-            return super.iterateAxis(axisNumber);
-        }
-
-        @Override
-        public AxisIterator iterateAxis(byte axisNumber, NodeTest nodeTest) {
-            if (axisNumber == Axis.CHILD && nodeTest.getPrimitiveType() == Type.ELEMENT) {
-                // need to override this part
-                return nodeTest.matches(rootNode)
-                       ? SingleNodeIterator.makeIterator(rootNode)
-                       : EmptyIterator.getInstance();
-            }
-            return super.iterateAxis(axisNumber, nodeTest);
-        }
-
-        @Override
-        public String getURI() {
-            return rootNode.getURI();
-        }
     }
 
     static final class XPathExpressionWithProperties {
@@ -199,7 +158,7 @@ final class SaxonDomXPathQuery {
         }
 
         @SuppressWarnings("unchecked")
-        private List<Item> evaluate(final PmdDocumentWrapper elementNode, PropertySource properties) throws XPathException {
+        private List<Item> evaluate(final DocumentWrapper elementNode, PropertySource properties) throws XPathException {
             XPathDynamicContext dynamicContext = createDynamicContext(elementNode, properties);
             return (List<Item>) expr.evaluate(dynamicContext);
         }
