@@ -44,6 +44,9 @@ import net.sourceforge.pmd.properties.PropertyFactory;
  * use just {@code /RootNode}.
  * </ul>
  *
+ * <p>Additionally, this rule only supports XPath 2.0, with no option
+ * for configuration. This will be bumped to XPath 3.1 in PMD 7.
+ *
  * <h4>Namespace-sensitivity</h4>
  *
  * <p>Another large difference is that this rule is namespace-sensitive.
