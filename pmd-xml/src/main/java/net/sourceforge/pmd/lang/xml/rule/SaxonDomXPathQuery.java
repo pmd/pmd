@@ -180,11 +180,10 @@ final class SaxonDomXPathQuery {
             return dynamicContext;
         }
 
-        private ValueRepresentation getSaxonValue(PropertySource properties, Entry<PropertyDescriptor<?>, XPathVariable> entry) {
+        private static ValueRepresentation getSaxonValue(PropertySource properties, Entry<PropertyDescriptor<?>, XPathVariable> entry) {
             Object value = properties.getProperty(entry.getKey());
             Objects.requireNonNull(value, "null property value for " + entry.getKey());
-            final ValueRepresentation saxonValue = SaxonXPathRuleQuery.getRepresentation(entry.getKey(), value);
-            return saxonValue;
+            return SaxonXPathRuleQuery.getRepresentation(entry.getKey(), value);
         }
     }
 

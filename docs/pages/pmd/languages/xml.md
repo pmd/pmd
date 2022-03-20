@@ -1,5 +1,5 @@
 ---
-title: XML
+title: Processing XML files
 permalink: pmd_languages_xml.html
 last_updated: March 2021 (6.33.0)
 ---
@@ -18,7 +18,9 @@ table lists the languages currently provided by the `pmd-xml` maven module.
 | wsdl        | Web Services Description Language |
 | xsl         | Extensible Stylesheet Language    |
 
-Each of those languages has a separate rule index.
+Each of those languages has a separate rule index, and may provide domain-specific
+[XPath functions](pmd_userdocs_extending_writing_xpath_rules.html#pmd-extension-functions).
+At their core they use the same parsing facilities though.
 
 ### File attribution
 
@@ -31,7 +33,8 @@ arguments, for instance:
 ```
 $ ./run.sh pmd -d /home/me/src/xml-file.ext -f text -R ruleset.xml --force-language xml
 ```
-Please refer to [PMD CLI reference](pmd_userdocs_cli_reference.html#analyze-other-xml-formats).
+Please refer to [PMD CLI reference](pmd_userdocs_cli_reference.html#analyze-other-xml-formats)
+for more examples.
 
 
 ### XPath rules in XML
@@ -41,13 +44,16 @@ the use of this class is not recommended for XML languages. Instead, since 6.44.
 are advised to use {% xml::lang.xml.rule.DomXPathRule %}. This rule class interprets
 XPath queries exactly as regular XPath, while `XPathRule` works on a wrapper for the
 DOM which is inconsistent with the XPath spec. Since `DomXPathRule` conforms to the
-XPath spec, you can test XML queries in any stock XPath testing tool, or use resources
-like StackOverflow to write XPath queries.
+XPath spec, you can
+- test XML queries in any stock XPath testing tool, or use resources like StackOverflow
+  to help you write XPath queries.
+- match XML comments and processing instructions
+- use standard XPath functions like `text()` or `fn:string`
 
 {% include note.html content="The Rule Designer only works with `XPathRule`, and the tree it prints is inconsistent with the DOM representation used by `DomXPathRule`. You can use an online free XPath testing tool to test your query instead." %}
 
 Here's an example declaration of a `DomXPathRule`:
-```
+```xml
 <rule name="MyXPathRule"
       language="xml"
       message="A message"
