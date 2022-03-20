@@ -55,14 +55,15 @@ final class SaxonDomXPathQuery {
     private static final SimpleDataKey<PmdDocumentWrapper> SAXON_DOM_WRAPPER
         = DataMap.simpleDataKey("pmd.saxon.dom.wrapper");
 
+    /** The XPath expression as a string. */
     private final String xpath;
-    /** Cached xpath expression for URI of "". */
+    /** The executable XPath expression. */
     private final XPathExpressionWithProperties xpathExpression;
 
 
     private final Configuration configuration;
 
-    public SaxonDomXPathQuery(String xpath, String defaultNsUri, List<PropertyDescriptor<?>> properties) {
+    SaxonDomXPathQuery(String xpath, String defaultNsUri, List<PropertyDescriptor<?>> properties) {
         this.xpath = xpath;
         configuration = new Configuration();
         configuration.setNamePool(NAME_POOL);
@@ -119,11 +120,10 @@ final class SaxonDomXPathQuery {
 
     public List<Node> evaluate(RootXmlNode root, PropertySource propertyValues) {
         PmdDocumentWrapper wrapper = getSaxonDomWrapper(root);
-        XPathExpressionWithProperties expression = this.xpathExpression;
 
         try {
             List<Node> result = new ArrayList<>();
-            for (Item item : expression.evaluate(wrapper, propertyValues)) {
+            for (Item item : this.xpathExpression.evaluate(wrapper, propertyValues)) {
                 if (item instanceof NodeWrapper) {
                     NodeWrapper nodeInfo = (NodeWrapper) item;
                     Object domNode = nodeInfo.getUnderlyingNode();

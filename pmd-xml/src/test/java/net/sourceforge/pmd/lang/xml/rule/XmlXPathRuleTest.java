@@ -122,6 +122,14 @@ public class XmlXPathRuleTest {
     }
 
     @Test
+    public void testRootExpr() {
+        Report report = xml.executeRule(makeXPath("/"),
+                                        "<Flow><a/></Flow>");
+
+        assertSize(report, 1);
+    }
+
+    @Test
     public void testLocationFuns() {
         Rule rule = makeXPath("//Flow[pmd:beginLine(.) != pmd:endLine(.)]");
         Report report = xml.executeRule(rule, "<Flow><a/></Flow>");

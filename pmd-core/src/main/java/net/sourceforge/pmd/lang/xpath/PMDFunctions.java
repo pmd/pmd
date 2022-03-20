@@ -22,6 +22,10 @@ import net.sf.saxon.om.Item;
 public final class PMDFunctions {
 
     private static final Logger LOG = Logger.getLogger(PMDFunctions.class.getName());
+    /** Used by the XML module to associate PMD nodes with DOM nodes. */
+    @Deprecated
+    @InternalApi
+    public static final String PMD_NODE_USER_DATA = "pmd.node";
 
     private PMDFunctions() { }
 
@@ -75,7 +79,7 @@ public final class PMDFunctions {
         } else if (item instanceof NodeWrapper) {
             return itemToNode(((NodeWrapper) item).getUnderlyingNode());
         } else if (item instanceof org.w3c.dom.Node) {
-            return itemToNode(((org.w3c.dom.Node) item).getUserData("pmd.node"));
+            return itemToNode(((org.w3c.dom.Node) item).getUserData(PMD_NODE_USER_DATA));
         }
         LOG.fine("Cannot call pmd:filename on " + item);
         return null;
