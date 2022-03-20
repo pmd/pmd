@@ -177,6 +177,36 @@ public class XmlXPathRuleTest {
     }
 
     @Test
+    public void testXmlNsFunctions() {
+        // https://github.com/pmd/pmd/issues/2766
+        Report report = xml.executeRule(
+            makeXPath("/manifest[namespace-uri-for-prefix('android', .) = 'http://schemas.android.com/apk/res/android']"),
+            "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
+            + "<manifest xmlns:android=\"http://schemas.android.com/apk/res/android\"\n"
+            + "         package=\"com.a.b\">\n"
+            + "\n"
+            + "        <application\n"
+            + "             android:allowBackup=\"true\"\n"
+            + "             android:icon=\"@mipmap/ic_launcher\"\n"
+            + "             android:label=\"@string/app_name\"\n"
+            + "             android:roundIcon=\"@mipmap/ic_launcher_round\"\n"
+            + "             android:supportsRtl=\"true\"\n"
+            + "             android:theme=\"@style/AppTheme\">\n"
+            + "         <activity android:name=\".MainActivity\">\n"
+            + "             <intent-filter>\n"
+            + "                 <action android:name=\"android.intent.action.MAIN\" />\n"
+            + "\n"
+            + "                 <category android:name=\"android.intent.category.LAUNCHER\" />\n"
+            + "             </intent-filter>\n"
+            + "         </activity>\n"
+            + "     </application>\n"
+            + "\n"
+            + "</manifest>");
+
+        assertSize(report, 1);
+    }
+
+    @Test
     public void testLocationFuns() {
         Rule rule = makeXPath("//Flow[pmd:beginLine(.) != pmd:endLine(.)]");
         Report report = xml.executeRule(rule, "<Flow><a/></Flow>");
