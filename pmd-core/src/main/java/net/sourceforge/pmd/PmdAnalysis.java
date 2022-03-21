@@ -289,7 +289,7 @@ public final class PmdAnalysis implements AutoCloseable {
         try {
             @SuppressWarnings("PMD.CloseResource") AnalysisCacheListener cacheListener = new AnalysisCacheListener(configuration.getAnalysisCache(), rulesets, configuration.getClassLoader());
             if (configuration.isProgressBar()) {
-                @SuppressWarnings("PMD.CloseResource") ProgressBarListener progressBarListener = new ProgressBarListener(dataSources.size());
+                @SuppressWarnings("PMD.CloseResource") ProgressBarListener progressBarListener = new ProgressBarListener(dataSources.size(), System.out::print);
                 addListener(progressBarListener);
             }
             listener = GlobalAnalysisListener.tee(listOf(createComposedRendererListener(renderers),

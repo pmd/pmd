@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.reporting;
 
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
 
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleViolation;
@@ -23,13 +24,13 @@ public final class ProgressBarListener implements GlobalAnalysisListener {
     private final ProgressBar progressBar;
     private final AtomicInteger numErrors = new AtomicInteger(0);
     private final AtomicInteger numViolations = new AtomicInteger(0);
-
-    public ProgressBarListener(int totalFiles) {
+    
+    public ProgressBarListener(int totalFiles, Consumer<String> loggingFunction) {
         progressBar = new ProgressBarBuilder()
                 .setInitialMax(totalFiles)
                 .setStyle(ProgressBarStyle.ASCII)
                 .continuousUpdate()
-                .setConsumer(new DelegatingProgressBarConsumer(System.out::print))
+                .setConsumer(new DelegatingProgressBarConsumer(loggingFunction))
                 .build();
         progressBar.setExtraMessage(extraMessage() + "\r");
     }
