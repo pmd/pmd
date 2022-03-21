@@ -4,15 +4,16 @@
 
 package net.sourceforge.pmd.reporting;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.util.datasource.DataSource;
 
+import me.tongfei.progressbar.DelegatingProgressBarConsumer;
 import me.tongfei.progressbar.ProgressBar;
 import me.tongfei.progressbar.ProgressBarBuilder;
 import me.tongfei.progressbar.ProgressBarStyle;
-
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Collects runtime analysis statistics and displays them live on command line output.
@@ -28,11 +29,12 @@ public final class ProgressBarListener implements GlobalAnalysisListener {
                 .setInitialMax(totalFiles)
                 .setStyle(ProgressBarStyle.ASCII)
                 .continuousUpdate()
+                .setConsumer(new DelegatingProgressBarConsumer(System.out::print))
                 .build();
         progressBar.setExtraMessage(extraMessage() + "\r");
     }
 
-    private void incrementProgress(){
+    private void incrementProgress() {
         progressBar.step();
         refreshProgressBar();
     }
@@ -40,9 +42,9 @@ public final class ProgressBarListener implements GlobalAnalysisListener {
     /**
      * Updates progress bar string and forces it to be output regardless of its update interval.
      */
-    private void refreshProgressBar(){
+    private void refreshProgressBar() {
         // Use trailing carriage return to interleave with other output
-        if(progressBar.getCurrent() != progressBar.getMax()){
+        if (progressBar.getCurrent() != progressBar.getMax()) {
             progressBar.setExtraMessage(extraMessage() + "\r");
         } else {
             // Don't include trailing carriage return on last draw
@@ -51,14 +53,14 @@ public final class ProgressBarListener implements GlobalAnalysisListener {
         progressBar.refresh();
     }
 
-    private String extraMessage(){
+    private String extraMessage() {
         return String.format("Violations:%d, Errors:%d", numViolations.get(), numErrors.get());
     }
 
     @Override
     public FileAnalysisListener startFileAnalysis(DataSource file) {
         // Refresh progress on file analysis start
-        ProgressBarListener.this.refreshProgressBar();
+        refreshProgressBar();
 
         return new FileAnalysisListener() {
             @Override
