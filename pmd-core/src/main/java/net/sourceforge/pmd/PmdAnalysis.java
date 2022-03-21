@@ -32,6 +32,7 @@ import net.sourceforge.pmd.lang.document.FileCollector;
 import net.sourceforge.pmd.processor.AbstractPMDProcessor;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
+import net.sourceforge.pmd.reporting.ProgressBarListener;
 import net.sourceforge.pmd.util.ClasspathClassLoader;
 import net.sourceforge.pmd.util.IOUtil;
 import net.sourceforge.pmd.util.datasource.DataSource;
@@ -287,7 +288,14 @@ public final class PmdAnalysis implements AutoCloseable {
         GlobalAnalysisListener listener;
         try {
             @SuppressWarnings("PMD.CloseResource") AnalysisCacheListener cacheListener = new AnalysisCacheListener(configuration.getAnalysisCache(), rulesets, configuration.getClassLoader());
-            listener = GlobalAnalysisListener.tee(listOf(createComposedRendererListener(renderers), GlobalAnalysisListener.tee(listeners), GlobalAnalysisListener.tee(extraListeners), cacheListener));
+            if (configuration.isProgressBar()) {
+                @SuppressWarnings("PMD.CloseResource") ProgressBarListener progressBarListener = new ProgressBarListener(dataSources.size());
+                addListener(progressBarListener);
+            }
+            listener = GlobalAnalysisListener.tee(listOf(createComposedRendererListener(renderers),
+                                                         GlobalAnalysisListener.tee(listeners),
+                                                         GlobalAnalysisListener.tee(extraListeners),
+                                                         cacheListener));
         } catch (Exception e) {
             reporter.errorEx("Exception while initializing analysis listeners", e);
             throw new RuntimeException("Exception while initializing analysis listeners", e);
