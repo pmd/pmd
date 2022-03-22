@@ -15,6 +15,7 @@ import net.sourceforge.pmd.lang.ast.xpath.saxon.ElementNode;
 import net.sf.saxon.dom.NodeWrapper;
 import net.sf.saxon.expr.XPathContext;
 import net.sf.saxon.om.Item;
+import net.sf.saxon.om.NodeInfo;
 
 
 @InternalApi
@@ -61,14 +62,24 @@ public final class PMDFunctions {
         return node == null ? null : FileNameXPathFunction.getFileName(node);
     }
 
-    public static int beginLine(Item item) {
+    public static int startLine(NodeInfo item) {
         Node node = Objects.requireNonNull(itemToNode(item), "not a node " + item);
         return node.getBeginLine();
     }
 
-    public static int endLine(Item item) {
+    public static int endLine(NodeInfo item) {
         Node node = Objects.requireNonNull(itemToNode(item), "not a node " + item);
         return node.getEndLine();
+    }
+
+    public static int startColumn(NodeInfo item) {
+        Node node = Objects.requireNonNull(itemToNode(item), "not a node " + item);
+        return node.getBeginColumn();
+    }
+
+    public static int endColumn(NodeInfo item) {
+        Node node = Objects.requireNonNull(itemToNode(item), "not a node " + item);
+        return node.getEndColumn() + 1; // exclusive
     }
 
     private static Node itemToNode(Object item) {
