@@ -41,7 +41,7 @@ for more examples.
 
 While other languages use {% jdoc core::lang.rule.XPathRule %} to create XPath rules,
 the use of this class is not recommended for XML languages. Instead, since 6.44.0, you
-are advised to use {% xml::lang.xml.rule.DomXPathRule %}. This rule class interprets
+are advised to use {% jdoc xml::lang.xml.rule.DomXPathRule %}. This rule class interprets
 XPath queries exactly as regular XPath, while `XPathRule` works on a wrapper for the
 DOM which is inconsistent with the XPath spec. Since `DomXPathRule` conforms to the
 XPath spec, you can
@@ -70,6 +70,6 @@ Here's an example declaration of a `DomXPathRule`:
 </rule>
 ```
 The most important change is the `class` attribute, which doesn't point to `XPathRule`
-but to `DomXPathRule`. Please see the Javadoc for {% xml::lang.xml.rule.DomXPathRule %}
+but to `DomXPathRule`. Please see the Javadoc for {% jdoc xml::lang.xml.rule.DomXPathRule %}
 for more info about the differences with `XPathRule`.
 

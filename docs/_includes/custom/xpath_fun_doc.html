@@ -50,6 +50,10 @@
 
                             <dl>
                                 <dd>{{ fun.description | render_markdown }}</dd>
+                                {% if fun.since %}
+                                <dt>Since</dt>
+                                <dd>PMD {{ fun.since }}</dd>
+                                {% endif %}
                                 <dt>Remarks</dt>
                                 <dd>{{ fun.notes | render_markdown }}</dd>
 
