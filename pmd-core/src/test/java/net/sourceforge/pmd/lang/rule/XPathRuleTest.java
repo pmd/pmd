@@ -199,7 +199,7 @@ public class XPathRuleTest {
 
     @Test
     public void testEndColumn() {
-        Report report = executeRule(makeXPath("//*[pmd:endColumn(.)=1]"),
+        Report report = executeRule(makeXPath("//*[pmd:endColumn(.)>1]"),
                                     newRoot("src/Foo.cls"));
 
         assertThat(report.getViolations(), hasSize(1));
