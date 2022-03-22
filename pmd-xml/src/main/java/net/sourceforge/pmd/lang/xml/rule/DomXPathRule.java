@@ -35,9 +35,9 @@ import net.sourceforge.pmd.properties.PropertyFactory;
  * <li>{@link XPathRule} adds additional attributes to each element
  * (eg {@code @BeginLine} and {@code @Image}). These attributes are not
  * XML attributes, so they are not accessible using DomXPathRule rule.
- * Instead, use the XPath functions {@code pmd:beginLine(node)} and {@code pmd:beginLine(node)}.
+ * Instead, use the XPath functions {@code pmd:startLine(node)}, {@code pmd:endLine(node)} and related.
  * For instance, replace {@code //elt[@EndLine - @BeginLine > 10]} with
- * {@code elt[pmd:endLine(.) - pmd:beginLine(.) > 10]}.
+ * {@code elt[pmd:endLine(.) - pmd:startLine(.) > 10]}.
  * <li>{@link XPathRule} uses an element called {@code "document"} as the
  * root node of every XML AST. This node does not have the correct node kind,
  * as it's an element, not a document. To replace {@code /document/RootNode},

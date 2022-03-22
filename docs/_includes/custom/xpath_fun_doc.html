@@ -4,7 +4,11 @@
 
 ### {{ lang.name }}
 
+{% if lang.header %}
+{{ lang.header | render_markdown }}
+{% else %}
 {{ lang.name }} functions are in the namespace `{{ lang.ns }}`.
+{% endif %}
 
 <div class="table-responsive">
     <table width="100%">

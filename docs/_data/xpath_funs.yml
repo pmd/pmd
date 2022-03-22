@@ -18,8 +18,9 @@ aliases:
   - &needs_node_ctx "The requires the context node to be an element"
 
 langs:
-  - name: "Any language"
+  - name: "All languages"
     ns: "pmd"
+    header: "Functions available to all languages are in the namespace `pmd`."
     funs:
       - name: fileName
         returnType: "xs:string"

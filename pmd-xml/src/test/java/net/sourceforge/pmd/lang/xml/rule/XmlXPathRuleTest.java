@@ -208,7 +208,7 @@ public class XmlXPathRuleTest {
 
     @Test
     public void testLocationFuns() {
-        Rule rule = makeXPath("//Flow[pmd:beginLine(.) != pmd:endLine(.)]");
+        Rule rule = makeXPath("//Flow[pmd:startLine(.) != pmd:endLine(.)]");
         Report report = xml.executeRule(rule, "<Flow><a/></Flow>");
         assertSize(report, 0);
         report = xml.executeRule(rule, "<Flow>\n<a/>\n</Flow>");

@@ -175,7 +175,15 @@ public class XPathRuleTest {
 
     @Test
     public void testBeginLine() {
-        Report report = executeRule(makeXPath("//*[pmd:beginLine(.)=1]"),
+        Report report = executeRule(makeXPath("//*[pmd:startLine(.)=1]"),
+                                    newRoot("src/Foo.cls"));
+
+        assertThat(report.getViolations(), hasSize(1));
+    }
+
+    @Test
+    public void testBeginCol() {
+        Report report = executeRule(makeXPath("//*[pmd:startColumn(.)=1]"),
                                     newRoot("src/Foo.cls"));
 
         assertThat(report.getViolations(), hasSize(1));
@@ -189,6 +197,13 @@ public class XPathRuleTest {
         assertThat(report.getViolations(), hasSize(1));
     }
 
+    @Test
+    public void testEndColumn() {
+        Report report = executeRule(makeXPath("//*[pmd:endColumn(.)=1]"),
+                                    newRoot("src/Foo.cls"));
+
+        assertThat(report.getViolations(), hasSize(1));
+    }
 
     public Report executeRule(net.sourceforge.pmd.Rule rule, DummyNode node) {
         RuleContext ctx = new RuleContext();
