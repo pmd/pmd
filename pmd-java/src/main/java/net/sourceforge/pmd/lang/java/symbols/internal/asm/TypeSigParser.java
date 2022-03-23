@@ -6,15 +6,14 @@ package net.sourceforge.pmd.lang.java.symbols.internal.asm;
 
 import static java.util.Collections.emptyList;
 
-import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Deque;
 import java.util.List;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
+import net.sourceforge.pmd.lang.java.symbols.internal.asm.GenericSigBase.LazyMethodType;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.LexicalScope;
@@ -32,6 +31,7 @@ final class TypeSigParser {
 
     static int classHeader(final int start, TypeScanner b) {
         int cur = classType(start, b); // superclass
+        JTypeMirror superClass = b.pop();
 
         if (b.charAt(cur) == 'L') {
             List<JTypeMirror> superItfs = new ArrayList<>(1);
@@ -43,13 +43,17 @@ final class TypeSigParser {
         } else {
             b.pushList(emptyList());
         }
+        b.push(superClass);
         return cur;
     }
 
-    static int methodType(final int start, TypeScanner b) {
+    static int methodType(LazyMethodType type, final int start, TypeScanner b) {
         int cur = parameterTypes(start, b);
+        type.setParameterTypes(b.popList());
         cur = typeSignature(cur, b, true); // return type
+        type.setReturnType(b.pop());
         cur = throwsSignaturesOpt(cur, b);
+        type.setExceptionTypes(b.popList());
         return cur;
     }
 
@@ -277,9 +281,9 @@ final class TypeSigParser {
 
     abstract static class TypeScanner extends SignatureScanner {
 
-        // those stacks usually are 0..1
-        private final Deque<JTypeMirror> typeStack = new ArrayDeque<>(0);
-        private final Deque<List<JTypeMirror>> listStack = new ArrayDeque<>(0);
+        // 1-element "stacks", push must be followed by pop
+        private @Nullable JTypeMirror type;
+        private @Nullable List<JTypeMirror> list;
 
         private final TypeSystem ts;
         private final LexicalScope lexicalScope;
@@ -297,19 +301,29 @@ final class TypeSigParser {
         }
 
         void pushList(List<JTypeMirror> l) {
-            listStack.push(l);
+            assert this.list == null;
+            assert l != null;
+            this.list = l;
         }
 
         void push(JTypeMirror mirror) {
-            typeStack.push(mirror);
+            assert this.type == null;
+            assert mirror != null;
+            this.type = mirror;
         }
 
         JTypeMirror pop() {
-            return typeStack.pop();
+            assert this.type !=null;
+            JTypeMirror t = this.type;
+            this.type=null;
+            return t;
         }
 
         List<JTypeMirror> popList() {
-            return listStack.pop();
+            assert this.list !=null;
+            List<JTypeMirror> l = this.list;
+            this.list=null;
+            return l;
         }
 
         /**
