@@ -263,6 +263,7 @@ final class TypeSigParser {
         case '/':
         case '<':
         case '>':
+        case 0:
             return false;
         default:
             return true;
