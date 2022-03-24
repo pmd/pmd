@@ -14,7 +14,6 @@ aliases:
   - &needs_typenode "The context node must be a {% jdoc jast::TypeNode %}"
   - &coord_fun_note |
       The function is not context-dependent, but takes a node as its first parameter.
-      The function is only available in XPath 2.0.
   - &needs_node_ctx "The requires the context node to be an element"
 
 langs:
