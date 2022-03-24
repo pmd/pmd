@@ -69,7 +69,7 @@ import net.sourceforge.pmd.properties.PropertyFactory;
  *
  * <h4>Namespace-sensitivity</h4>
  *
- * <p>Another large difference is that this rule is namespace-sensitive.
+ * <p>Another important difference is that this rule is namespace-sensitive.
  * If the tested XML documents use a schema ({@code xmlns} attribute on the root),
  * you should set the property {@code defaultNsUri} on the rule with
  * the value of the {@code xmlns} attribute. Otherwise node tests won't

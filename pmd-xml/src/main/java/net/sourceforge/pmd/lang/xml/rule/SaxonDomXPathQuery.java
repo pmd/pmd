@@ -102,6 +102,7 @@ final class SaxonDomXPathQuery {
 
     private boolean isExcludedProperty(String name) {
         return "xpath".equals(name)
+               || "defaultNsUri".equals(name)
                || "violationSuppressRegex".equals(name)
                || "violationSuppressXPath".equals(name);
     }
