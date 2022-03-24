@@ -20,6 +20,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.logging.Logger;
 
+import org.apache.commons.io.IOUtils;
 import org.hamcrest.Matcher;
 import org.junit.Before;
 import org.junit.Rule;
@@ -119,6 +120,19 @@ public class CoreCliTest {
         runPmdSuccessfully("--no-cache", "--dir", srcDir, "--rulesets", DUMMY_RULESET, "--report-file", reportFile);
 
         assertTrue("Report file should have been created", Files.exists(reportFile));
+    }
+
+    @Test
+    public void testFileCollectionWithUnknownFiles() throws IOException {
+        Path reportFile = tempRoot().resolve("out/reportFile.txt");
+        Files.createFile(srcDir.resolve("foo.not_analysable"));
+        assertFalse("Report file should not exist", Files.exists(reportFile));
+
+        runPmdSuccessfully("--no-cache", "--dir", srcDir, "--rulesets", DUMMY_RULESET, "--report-file", reportFile, "--debug");
+
+        assertTrue("Report file should have been created", Files.exists(reportFile));
+        String reportText = IOUtils.toString(Files.newBufferedReader(reportFile, StandardCharsets.UTF_8));
+        assertThat(reportText, not(containsStringIgnoringCase("error")));
     }
 
     @Test
@@ -235,8 +249,8 @@ public class CoreCliTest {
     }
 
     private static void runPmd(int expectedExitCode, Object[] args) {
-        int actualExitCode = PMD.run(argsToString(args));
-        assertEquals("Exit code", expectedExitCode, actualExitCode);
+        StatusCode actualExitCode = PMD.runPmd(argsToString(args));
+        assertEquals("Exit code", expectedExitCode, actualExitCode.toInt());
     }
 
 

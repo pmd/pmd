@@ -4,6 +4,9 @@
 
 package net.sourceforge.pmd.cli;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.endsWith;
+
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -30,8 +33,8 @@ public class PMDFilelistTest {
 
         List<DataSource> applicableFiles = PMD.getApplicableFiles(configuration, languages);
         Assert.assertEquals(2, applicableFiles.size());
-        Assert.assertTrue(applicableFiles.get(0).getNiceFileName(false, "").endsWith("somefile.dummy"));
-        Assert.assertTrue(applicableFiles.get(1).getNiceFileName(false, "").endsWith("anotherfile.dummy"));
+        assertThat(applicableFiles.get(0).getNiceFileName(false, ""), endsWith("anotherfile.dummy"));
+        assertThat(applicableFiles.get(1).getNiceFileName(false, ""), endsWith("somefile.dummy"));
     }
 
     @Test
@@ -44,9 +47,9 @@ public class PMDFilelistTest {
 
         List<DataSource> applicableFiles = PMD.getApplicableFiles(configuration, languages);
         Assert.assertEquals(3, applicableFiles.size());
-        Assert.assertTrue(applicableFiles.get(0).getNiceFileName(false, "").endsWith("somefile.dummy"));
-        Assert.assertTrue(applicableFiles.get(1).getNiceFileName(false, "").endsWith("anotherfile.dummy"));
-        Assert.assertTrue(applicableFiles.get(2).getNiceFileName(false, "").endsWith("somefile.dummy"));
+        assertThat(applicableFiles.get(0).getNiceFileName(false, ""), endsWith("anotherfile.dummy"));
+        assertThat(applicableFiles.get(1).getNiceFileName(false, ""), endsWith("somefile.dummy"));
+        assertThat(applicableFiles.get(2).getNiceFileName(false, ""), endsWith("somefile.dummy"));
     }
 
     @Test

@@ -14,66 +14,86 @@ This is a {{ site.pmd.release_type }} release.
 
 ### New and noteworthy
 
+
+#### New programmatic API
+
+This release introduces a new programmatic API to replace the inflexible {% jdoc core::PMD %} class.
+Programmatic execution of PMD should now be done with a {% jdoc core::PMDConfiguration %}
+and a {% jdoc core::PmdAnalysis %}, for instance:
+
+```java
+PMDConfiguration config = new PMDConfiguration();
+config.setDefaultLanguageVersion(LanguageRegistry.findLanguageByTerseName("java").getVersion("11"));
+config.setInputPaths("src/main/java");
+config.prependAuxClasspath("target/classes");
+config.setMinimumPriority(RulePriority.HIGH);
+config.addRuleSet("rulesets/java/quickstart.xml");
+config.setReportFormat("xml");
+config.setReportFile("target/pmd-report.xml");
+
+try (PmdAnalysis pmd = PmdAnalysis.create(config)) {
+    // note: don't use `config` once a PmdAnalysis has been created.
+    // optional: add more rulesets
+    pmd.addRuleSet(pmd.newRuleSetLoader().loadFromResource("custom-ruleset.xml"));
+    // optional: add more files
+    pmd.files().addFile(Paths.get("src", "main", "more-java", "ExtraSource.java"));
+    // optional: add more renderers
+    pmd.addRenderer(renderer);
+
+    // or just call PMD
+    pmd.performAnalysis();
+}
+```
+
+The `PMD` class still supports methods related to CLI execution: `runPmd` and `main`.
+All other members are now deprecated for removal.
+The CLI itself remains compatible, if you run PMD via command-line, no action is required on your part.
+
 ### Fixed Issues
 
+*   apex-performance
+    *   [#3773](https://github.com/pmd/pmd/pull/3773): \[apex] EagerlyLoadedDescribeSObjectResult false positives with SObjectField.getDescribe()
 *   core
-    *   [#3427](https://github.com/pmd/pmd/issues/3427): \[core] Stop printing CLI usage text when exiting due to invalid parameters
+    *   [#3299](https://github.com/pmd/pmd/issues/3299): \[core] Deprecate system properties of PMDCommandLineInterface
 *   doc
-    *   [#2502](https://github.com/pmd/pmd/issues/2502): \[doc] Add floating table-of-contents (toc) on the right
-*   java
-    *   [#3698](https://github.com/pmd/pmd/issues/3697): \[java] Parsing error with try-with-resources and qualified resource
-*   java-bestpractices
-    *   [#3605](https://github.com/pmd/pmd/issues/3605): \[java] SwitchStmtsShouldHaveDefault triggered when default case is present
-*   java-codestyle
-    *   [#278](https://github.com/pmd/pmd/issues/278): \[java] ConfusingTernary should treat `!= null` as positive condition
-*   java-performance
-    *   [#3374](https://github.com/pmd/pmd/issues/3374): \[java] UseStringBufferForStringAppends: Wrong example in documentation
-*   misc
-    *   [#3759](https://github.com/pmd/pmd/issues/3759): \[lang-test] Upgrade dokka maven plugin to 1.4.32
-*   plsql
-    *   [#3746](https://github.com/pmd/pmd/issues/3746): \[plsql] Parsing exception "Less than or equal to/Greater than or equal to" operators in DML statements
+    *   [#3812](https://github.com/pmd/pmd/issues/3812): \[doc] Documentation website table of contents broken on pages with many subheadings
 
 ### API Changes
 
 #### Deprecated API
 
-Some API deprecations were performed in core PMD classes, to improve compatibility with PMD 7.
-- {% jdoc core::Report %}: the constructor and other construction methods like addViolation or createReport
-- {% jdoc core::RuleContext %}: all constructors, getters and setters. A new set
-of stable methods, matching those in PMD 7, was added to replace the `addViolation`
-overloads of {% jdoc core::lang.rule.AbstractRule %}. In PMD 7, `RuleContext` will
-be the API to report violations, and it can already be used as such in PMD 6.
-- The field {% jdoc core::PMD#configuration %} is unused and will be removed.
+* Several members of {% jdoc core::PMD %} have been newly deprecated, including:
+  - `PMD#EOL`: use `System#lineSeparator()`
+  - `PMD#SUPPRESS_MARKER`: use {% jdoc core::PMDConfiguration#DEFAULT_SUPPRESS_MARKER %}
+  - `PMD#processFiles`: use the [new programmatic API](#new-programmatic-api)
+  - `PMD#getApplicableFiles`: is internal
+* {% jdoc !!core::PMDConfiguration#prependClasspath(java.lang.String) %} is deprecated
+  in favour of {% jdoc core::PMDConfiguration#prependAuxClasspath(java.lang.String) %}.
+* {% jdoc !!core::PMDConfiguration#setRuleSets(java.lang.String) %} and
+  {% jdoc core::PMDConfiguration#getRuleSets() %} are deprecated. Use instead
+  {% jdoc core::PMDConfiguration#setRuleSets(java.util.List) %},
+  {% jdoc core::PMDConfiguration#addRuleSet(java.lang.String) %},
+  and {% jdoc core::PMDConfiguration#getRuleSetPaths() %}.
+* Several members of {% jdoc test::cli.BaseCLITest %} have been deprecated with replacements.
+* Several members of {% jdoc core::cli.PMDCommandLineInterface %} have been explicitly deprecated.
+  The whole class however was deprecated long ago already with 6.30.0. It is internal API and should
+  not be used.
 
-#### Internal API
+#### Experimental APIs
 
-Those APIs are not intended to be used by clients, and will be hidden or removed with PMD 7.0.0.
-You can identify them with the `@InternalApi` annotation. You'll also get a deprecation warning.
+*   Together with the [new programmatic API](#new-programmatic-api) the interface
+    {% jdoc core::lang.document.TextFile %} has been added as *experimental*. It intends
+    to replace {% jdoc core::util.datasource.DataSource %} and {% jdoc core::cpd.SourceCode %} in the long term.
+    
+    This interface will change in PMD 7 to support read/write operations
+    and other things. You don't need to use it in PMD 6, as {% jdoc core::lang.document.FileCollector %}
+    decouples you from this. A file collector is available through {% jdoc !!core::PmdAnalysis#files() %}.
 
-- {% jdoc core::RuleSet %}: methods that serve to apply rules, including `apply`, `start`, `end`, `removeDysfunctionalRules`
-- {% jdoc !!core::renderers.AbstractAccumulatingRenderer#renderFileReport(Report) %} is internal API
-  and should not be overridden in own renderers.
-
-#### Changed API
-
-It is now forbidden to report a violation:
-- With a `null` node
-- With a `null` message
-- With a `null` set of format arguments (prefer a zero-length array)
-
-Note that the message is set from the XML rule declaration, so this is only relevant
-if you instantiate rules manually.
-
-{% jdoc core::RuleContext %} now requires setting the current rule before calling
-{% jdoc core::Rule#apply(java.util.List, core::RuleContext) %}. This is
-done automatically by `RuleSet#apply` and such. Creating and configuring a
-`RuleContext` manually is strongly advised against, as the lifecycle of `RuleContext`
-will change drastically in PMD 7.
 
 ### External Contributions
 
-*   [#3767](https://github.com/pmd/pmd/pull/3767): \[core] Update GUI.java - [Vyom Yadav](https://github.com/Vyom-Yadav)
-*   [#3804](https://github.com/pmd/pmd/pull/3804): \[doc] Add floating table of contents (issue #2502) - [JerritEic](https://github.com/JerritEic)
+*   [#3773](https://github.com/pmd/pmd/pull/3773): \[apex] EagerlyLoadedDescribeSObjectResult false positives with SObjectField.getDescribe() - [@filiprafalowicz](https://github.com/filiprafalowicz)
+*   [#3836](https://github.com/pmd/pmd/pull/3836): \[doc] Make TOC scrollable when too many subheadings - [@JerritEic](https://github.com/JerritEic)
 
 {% endtocmaker %}
 

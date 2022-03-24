@@ -100,7 +100,7 @@ public final class FileUtil {
     }
 
     private static List<DataSource> collect(List<DataSource> dataSources, String fileLocation,
-            FilenameFilter filenameFilter) {
+                                            FilenameFilter filenameFilter) {
         File file = new File(fileLocation);
         if (!file.exists()) {
             throw new RuntimeException("File " + file.getName() + " doesn't exist");

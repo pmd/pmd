@@ -18,6 +18,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.util.Collection;
+import java.util.List;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -102,6 +104,52 @@ public final class IOUtil {
     public static void tryCloseClassLoader(ClassLoader classLoader) {
         if (classLoader instanceof Closeable) {
             IOUtils.closeQuietly((Closeable) classLoader);
+        }
+    }
+
+    /**
+     * Close all closeable resources in order. If any exception occurs,
+     * it is saved and returned. If more than one exception occurs, the
+     * following are accumulated as suppressed exceptions in the first.
+     *
+     * @param closeables Resources to close
+     *
+     * @return An exception, or null if no 'close' routine threw
+     */
+    @SuppressWarnings("PMD.CloseResource") // false-positive
+    public static IOException closeAll(Collection<? extends AutoCloseable> closeables) {
+        IOException composed = null;
+        for (AutoCloseable it : closeables) {
+            try {
+                it.close();
+            } catch (Exception e) {
+                if (composed == null) {
+                    composed = new IOException("Cannot close resource " + it, e);
+                } else {
+                    composed.addSuppressed(e);
+                }
+            }
+        }
+        return composed;
+    }
+
+    /**
+     * Ensure that the closeables are closed. In the end, throws the
+     * pending exception if not null, or the exception retuned by {@link #closeAll(Collection)}
+     * if not null. If both are non-null, adds one of them to the suppress
+     * list of the other, and throws that one.
+     */
+    public static void ensureClosed(List<? extends AutoCloseable> toClose,
+                                    Exception pendingException) throws Exception {
+        Exception closeException = closeAll(toClose);
+        if (closeException != null) {
+            if (pendingException != null) {
+                closeException.addSuppressed(pendingException);
+                throw closeException;
+            }
+            // else no exception at all
+        } else if (pendingException != null) {
+            throw pendingException;
         }
     }
 

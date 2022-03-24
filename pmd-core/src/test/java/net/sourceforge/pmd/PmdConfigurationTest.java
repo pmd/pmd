@@ -4,9 +4,13 @@
 
 package net.sourceforge.pmd;
 
+import static net.sourceforge.pmd.util.CollectionUtil.listOf;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.empty;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
@@ -16,6 +20,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.Collections;
 import java.util.Properties;
 
 import org.junit.Assert;
@@ -29,7 +34,7 @@ import net.sourceforge.pmd.renderers.CSVRenderer;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.util.ClasspathClassLoader;
 
-public class ConfigurationTest {
+public class PmdConfigurationTest {
 
     @Rule
     public TemporaryFolder folder = new TemporaryFolder();
@@ -37,7 +42,7 @@ public class ConfigurationTest {
     @Test
     public void testSuppressMarker() {
         PMDConfiguration configuration = new PMDConfiguration();
-        assertEquals("Default suppress marker", PMD.SUPPRESS_MARKER, configuration.getSuppressMarker());
+        assertEquals("Default suppress marker", PMDConfiguration.DEFAULT_SUPPRESS_MARKER, configuration.getSuppressMarker());
         configuration.setSuppressMarker("CUSTOM_MARKER");
         assertEquals("Changed suppress marker", "CUSTOM_MARKER", configuration.getSuppressMarker());
     }
@@ -51,10 +56,10 @@ public class ConfigurationTest {
     }
 
     @Test
-    public void testClassLoader() throws IOException {
+    public void testClassLoader() {
         PMDConfiguration configuration = new PMDConfiguration();
         assertEquals("Default ClassLoader", PMDConfiguration.class.getClassLoader(), configuration.getClassLoader());
-        configuration.prependClasspath("some.jar");
+        configuration.prependAuxClasspath("some.jar");
         assertEquals("Prepended ClassLoader class", ClasspathClassLoader.class,
                 configuration.getClassLoader().getClass());
         URL[] urls = ((ClasspathClassLoader) configuration.getClassLoader()).getURLs();
@@ -68,31 +73,31 @@ public class ConfigurationTest {
     }
 
     @Test
-    public void auxClasspathWithRelativeFileEmpty() throws IOException {
+    public void auxClasspathWithRelativeFileEmpty() {
         String relativeFilePath = "src/test/resources/net/sourceforge/pmd/cli/auxclasspath-empty.cp";
         PMDConfiguration configuration = new PMDConfiguration();
-        configuration.prependClasspath("file:" + relativeFilePath);
+        configuration.prependAuxClasspath("file:" + relativeFilePath);
         URL[] urls = ((ClasspathClassLoader) configuration.getClassLoader()).getURLs();
         Assert.assertEquals(0, urls.length);
     }
 
     @Test
-    public void auxClasspathWithRelativeFileEmpty2() throws IOException {
+    public void auxClasspathWithRelativeFileEmpty2() {
         String relativeFilePath = "./src/test/resources/net/sourceforge/pmd/cli/auxclasspath-empty.cp";
         PMDConfiguration configuration = new PMDConfiguration();
-        configuration.prependClasspath("file:" + relativeFilePath);
+        configuration.prependAuxClasspath("file:" + relativeFilePath);
         URL[] urls = ((ClasspathClassLoader) configuration.getClassLoader()).getURLs();
         Assert.assertEquals(0, urls.length);
     }
 
     @Test
-    public void auxClasspathWithRelativeFile() throws IOException, URISyntaxException {
+    public void auxClasspathWithRelativeFile() throws URISyntaxException {
         final String FILE_SCHEME = "file";
 
         String currentWorkingDirectory = new File("").getAbsoluteFile().toURI().getPath();
         String relativeFilePath = "src/test/resources/net/sourceforge/pmd/cli/auxclasspath.cp";
         PMDConfiguration configuration = new PMDConfiguration();
-        configuration.prependClasspath("file:" + relativeFilePath);
+        configuration.prependAuxClasspath("file:" + relativeFilePath);
         URL[] urls = ((ClasspathClassLoader) configuration.getClassLoader()).getURLs();
         URI[] uris = new URI[urls.length];
         for (int i = 0; i < urls.length; i++) {
@@ -112,11 +117,28 @@ public class ConfigurationTest {
     }
 
     @Test
-    public void testRuleSets() {
+    public void testRuleSetsLegacy() {
         PMDConfiguration configuration = new PMDConfiguration();
-        assertEquals("Default RuleSets", null, configuration.getRuleSets());
+        assertNull("Default RuleSets", configuration.getRuleSets());
         configuration.setRuleSets("/rulesets/basic.xml");
         assertEquals("Changed RuleSets", "/rulesets/basic.xml", configuration.getRuleSets());
+        configuration.setRuleSets((String) null);
+        assertNull(configuration.getRuleSets());
+    }
+
+    @Test
+    public void testRuleSets() {
+        PMDConfiguration configuration = new PMDConfiguration();
+        assertThat(configuration.getRuleSetPaths(), empty());
+        configuration.setRuleSets(listOf("/rulesets/basic.xml"));
+        assertEquals(listOf("/rulesets/basic.xml"), configuration.getRuleSetPaths());
+        configuration.addRuleSet("foo.xml");
+        assertEquals(listOf("/rulesets/basic.xml", "foo.xml"), configuration.getRuleSetPaths());
+        configuration.setRuleSets(Collections.<String>emptyList());
+        assertThat(configuration.getRuleSetPaths(), empty());
+        // should be addable even though we set it to an unmodifiable empty list
+        configuration.addRuleSet("foo.xml");
+        assertEquals(listOf("foo.xml"), configuration.getRuleSetPaths());
     }
 
     @Test
@@ -239,7 +261,7 @@ public class ConfigurationTest {
     }
 
     @Test
-    public void testAnalysisCacheLocation() throws IOException {
+    public void testAnalysisCacheLocation() {
         final PMDConfiguration configuration = new PMDConfiguration();
 
         configuration.setAnalysisCacheLocation(null);
