@@ -63,7 +63,6 @@ import net.sourceforge.pmd.util.log.internal.SimpleMessageReporter;
  */
 public class PMD {
 
-
     private static final Logger LOG = Logger.getLogger(PMD.class.getName());
 
     /**
