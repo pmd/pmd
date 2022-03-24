@@ -17,6 +17,7 @@ import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClassOrInterface;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.ast.DumpFacade;
+import net.sourceforge.pmd.lang.apex.internal.ApexDesignerBindings;
 import net.sourceforge.pmd.lang.apex.metrics.ApexMetrics;
 import net.sourceforge.pmd.lang.apex.metrics.api.ApexClassMetricKey;
 import net.sourceforge.pmd.lang.apex.metrics.api.ApexOperationMetricKey;
@@ -25,6 +26,7 @@ import net.sourceforge.pmd.lang.apex.rule.ApexRuleViolationFactory;
 import net.sourceforge.pmd.lang.metrics.LanguageMetricsProvider;
 import net.sourceforge.pmd.lang.metrics.internal.AbstractLanguageMetricsProvider;
 import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
+import net.sourceforge.pmd.util.designerbindings.DesignerBindings;
 
 
 /**
@@ -67,6 +69,11 @@ public class ApexHandler extends AbstractLanguageVersionHandler {
     @Override
     public LanguageMetricsProvider<ASTUserClassOrInterface<?>, ASTMethod> getLanguageMetricsProvider() {
         return myMetricsProvider;
+    }
+
+    @Override
+    public DesignerBindings getDesignerBindings() {
+        return ApexDesignerBindings.INSTANCE;
     }
 
     private static class ApexMetricsProvider extends AbstractLanguageMetricsProvider<ASTUserClassOrInterface<?>, ASTMethod> {
