@@ -178,17 +178,13 @@ public interface Node {
      */
     boolean hasImageEqualTo(String image);
 
-    @DeprecatedAttribute(replaceWith = "pmd:startLine(.)")
     int getBeginLine();
 
-    @DeprecatedAttribute(replaceWith = "pmd:startColumn(.)")
     int getBeginColumn();
 
-    @DeprecatedAttribute(replaceWith = "pmd:endLine(.)")
     int getEndLine();
 
     // FIXME should not be inclusive
-    @DeprecatedAttribute(replaceWith = "pmd:endColumn(.)")
     int getEndColumn();
 
 
