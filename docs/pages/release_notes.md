@@ -51,6 +51,8 @@ The CLI itself remains compatible, if you run PMD via command-line, no action is
 
 ### Fixed Issues
 
+*   apex
+    *   [#3817](https://github.com/pmd/pmd/pull/3817): \[apex] Add designer bindings to display main attributes
 *   apex-performance
     *   [#3773](https://github.com/pmd/pmd/pull/3773): \[apex] EagerlyLoadedDescribeSObjectResult false positives with SObjectField.getDescribe()
 *   core
