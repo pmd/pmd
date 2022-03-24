@@ -84,6 +84,6 @@ Now the source and binary distribution zip files can be found in the folder `pmd
 
 **Notes:**
 
--   The rules that have already been written are specified in the `src/main/resources/rulesets/` directories of
-    the specific languages, e.g. `pmd-java/src/main/resources/rulesets`.
+-   The rules that have already been written are specified in the `src/main/resources/category/` directories of
+    the specific languages, e.g. `pmd-java/src/main/resources/category`.
     They’re also in the jar file that’s included with both the source and binary distributions.

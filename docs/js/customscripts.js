@@ -35,15 +35,16 @@ $(document).ready(function () {
     anchors.add('h2,h3,h4,h5');
 
     // Add an "Edit on GitHub" button to each header (except h1)
-    let url = $('div.post-content').attr('data-github-edit-url');
-
-    $('div.post-content')
-        .find(':header:not(h1)')
-        .append(
-            '  <a class="edit-header" target="_blank" href=' +
-                url +
-                ' role="button">✏️️</a>'
-        );
+    let url = $('div.post-content').data('githubEditUrl');
+    if ( url !== undefined ) {
+        $('div.post-content')
+            .find(':header:not(h1)')
+            .append(
+                '  <a class="edit-header" target="_blank" href=' +
+                    url +
+                    ' role="button">✏️️</a>'
+            );
+    }
 
     // Check if TOC needs to be moved on page load
     moveToc();

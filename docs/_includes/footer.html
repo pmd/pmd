@@ -1,19 +1,18 @@
 <footer>
+    {% if site.github_editme_path and page.editmepath != false %}
     <hr />
     <div>
-        {% if site.github_editme_path %} This documentation is written in
-        markdown. <br />
+        This documentation is written in markdown. <br />
         If there is something missing or can be improved, edit this page on
-        github and create a PR: {% unless page.editmepath == false %}
+        github and create a PR:
         <a
             target="_blank"
             href="https://github.com/{{site.github_editme_path}}{{editmepath}}"
-            class="githubEditButton"
             role="button"
             ><i class="fa fa-github fa-lg"></i> Edit on GitHub</a
         >
-        {% endunless %} {% endif %}
     </div>
+    {% endif %}
     <hr />
     <div class="row">
         <div class="col-lg-12 footer">

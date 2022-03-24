@@ -21,6 +21,10 @@
     width: 100%;
 }
 
+header {
+    margin-top: 40px;
+}
+
 details {
     border-radius: 3px;
     background: #EEE;

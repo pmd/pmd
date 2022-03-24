@@ -30,7 +30,7 @@ layout: default
 
 {% endif %}
 
-<div class="post-content" data-github-edit-url="https://github.com/{{site.github_editme_path}}{{editmepath}}">
+<div class="post-content" {% if site.github_editme_path and page.editmepath != false %}data-github-edit-url="https://github.com/{{site.github_editme_path}}{{editmepath}}"{% endif %}>
 
    {% if page.summary %}
     <div class="summary">{{page.summary}}</div>
