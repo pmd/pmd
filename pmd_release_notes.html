@@ -1481,6 +1481,11 @@ The CLI itself remains compatible, if you run PMD via command-line, no action is
 <h3 id="fixed-issues">Fixed Issues</h3>
 
 <ul>
+  <li>apex
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/pull/3817">#3817</a>: [apex] Add designer bindings to display main attributes</li>
+    </ul>
+  </li>
   <li>apex-performance
     <ul>
       <li><a href="https://github.com/pmd/pmd/pull/3773">#3773</a>: [apex] EagerlyLoadedDescribeSObjectResult false positives with SObjectField.getDescribe()</li>
@@ -1520,9 +1525,15 @@ in favour of <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.44.0-SNAPSHOT
 <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.44.0-SNAPSHOT/net/sourceforge/pmd/PMDConfiguration.html#addRuleSet(java.lang.String)"><code>addRuleSet</code></a>,
 and <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.44.0-SNAPSHOT/net/sourceforge/pmd/PMDConfiguration.html#getRuleSetPaths()"><code>getRuleSetPaths</code></a>.</li>
   <li>Several members of <a href="https://docs.pmd-code.org/apidocs/pmd-test/6.44.0-SNAPSHOT/net/sourceforge/pmd/cli/BaseCLITest.html#"><code>BaseCLITest</code></a> have been deprecated with replacements.</li>
-  <li>Several members of <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.44.0-SNAPSHOT/net/sourceforge/pmd/cli/PMDCommandLineInterface.html#"><code>PMDCommandLineInterface</code></a> have been explicitly deprecated.
+  <li>
+    <p>Several members of <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.44.0-SNAPSHOT/net/sourceforge/pmd/cli/PMDCommandLineInterface.html#"><code>PMDCommandLineInterface</code></a> have been explicitly deprecated.
 The whole class however was deprecated long ago already with 6.30.0. It is internal API and should
-not be used.</li>
+not be used.</p>
+  </li>
+  <li>In modelica, the rule classes <a href="https://docs.pmd-code.org/apidocs/pmd-modelica/6.44.0-SNAPSHOT/net/sourceforge/pmd/lang/modelica/rule/AmbiguousResolutionRule.html#"><code>AmbiguousResolutionRule</code></a>
+and <a href="https://docs.pmd-code.org/apidocs/pmd-modelica/6.44.0-SNAPSHOT/net/sourceforge/pmd/lang/modelica/rule/ConnectUsingNonConnector.html#"><code>ConnectUsingNonConnector</code></a> have been deprecated,
+since they didn’t comply to the usual rule class naming conventions yet.
+The replacements are in the subpackage <code class="language-plaintext highlighter-rouge">bestpractices</code>.</li>
 </ul>
 
 <h4 id="experimental-apis">Experimental APIs</h4>
