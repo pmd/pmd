@@ -29,6 +29,8 @@ body {
         margin-top: 60px;
         margin-left: -15px;
         margin-right: 15px;
+        height: 80%;
+        overflow: auto;
     }
     .container {
         margin-left: 15px;
@@ -49,6 +51,8 @@ body {
         margin-top: 60px;
         margin-left: -15px;
         margin-right: 15px;
+        height: 80%;
+        overflow: auto;
     }
     .container {
         margin-left: 15px;

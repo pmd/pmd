@@ -60,6 +60,8 @@ The CLI itself remains compatible, if you run PMD via command-line, no action is
     *   [#3773](https://github.com/pmd/pmd/pull/3773): \[apex] EagerlyLoadedDescribeSObjectResult false positives with SObjectField.getDescribe()
 *   core
     *   [#3299](https://github.com/pmd/pmd/issues/3299): \[core] Deprecate system properties of PMDCommandLineInterface
+*   doc
+    *   [#3812](https://github.com/pmd/pmd/issues/3812): \[doc] Documentation website table of contents broken on pages with many subheadings
 
 ### API Changes
 
@@ -96,6 +98,7 @@ The CLI itself remains compatible, if you run PMD via command-line, no action is
 ### External Contributions
 
 *   [#3773](https://github.com/pmd/pmd/pull/3773): \[apex] EagerlyLoadedDescribeSObjectResult false positives with SObjectField.getDescribe() - [@filiprafalowicz](https://github.com/filiprafalowicz)
+*   [#3836](https://github.com/pmd/pmd/pull/3836): \[doc] Make TOC scrollable when too many subheadings - [@JerritEic](https://github.com/JerritEic)
 
 {% endtocmaker %}
 
