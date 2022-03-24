@@ -52,7 +52,8 @@ for information about the differences with `XPathRule` and examples.
 The new XPath functions `pmd:startLine`, `pmd:endLine`, `pmd:startColumn`,
 and `pmd:endColumn` are now available in XPath rules for all languages. They
 replace the node attributes `@BeginLine`, `@EndLine` and such. These attributes
-will be deprecated in a future release.
+are now deprecated for removal (from the XPath API, not the Java getter).
+
 
 Please refer to [the documentation](https://pmd.github.io/latest/pmd_userdocs_extending_writing_xpath_rules.html#pmd-extension-functions) of these functions for more information, including usage samples.
 
@@ -123,6 +124,11 @@ The CLI itself remains compatible, if you run PMD via command-line, no action is
 * Several members of {% jdoc core::cli.PMDCommandLineInterface %} have been explicitly deprecated.
   The whole class however was deprecated long ago already with 6.30.0. It is internal API and should
   not be used.
+
+* The XPath attributes `@BeginLine`, `@EndLine`, `@BeginColumn` and `@EndColumn`,
+available on all nodes, are deprecated. They should be replaced with calls to the
+new functions `pmd:startLine`, `pmd:endLine`, `pmd:startColumn`, and `pmd:endColumn`.
+See [New XPath functions](#new-xpath-functions).
 
 #### Experimental APIs
 
