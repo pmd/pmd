@@ -1404,29 +1404,39 @@
 
             <!-- Content Column -->
             <div class="col-md-9" id="tg-sb-content">
-                <div class="post-header">
+                <header>
+    <div class="row">
+        <div class="col-lg-12">
+            <a href="./" role="button"
+                ><i class="fa fa-home fa-lg"></i
+            ></a>
+            » Building PMD from source   
+            <a
+                target="_blank"
+                href="https://github.com/pmd/pmd/blob/master/docs/pages/pmd/devdocs/building.md"
+                class="pull-right"
+                role="button"
+                ><i class="fa fa-github fa-lg"></i> Edit on GitHub</a
+            >
+             
+        </div>
+    </div>
+
+    <hr />
+</header>
+
+
+<div class="post-header">
    <h1 class="post-title-main">Building PMD from source</h1>
 </div>
 
 
 
-<div class="post-content">
+<div class="post-content" data-github-edit-url="https://github.com/pmd/pmd/blob/master/docs/pages/pmd/devdocs/building.md">
 
    
-
     <div id="inline-toc"><!-- empty, move TOC here when screen size too small --></div>
-
-
     
-
-        
-        
-        
-        <a target="_blank" href="https://github.com/pmd/pmd/blob/master/docs/pages/pmd/devdocs/building.md" class="btn btn-default githubEditButton" role="button"><i class="fa fa-github fa-lg"></i> Edit me</a>
-        
-
-    
-
   <!-- Gives visibility -->
 <div class="alert alert-info" role="alert"><i class="fa fa-info-circle"></i> <b>Note:</b> TODO add IDE specific indications</div>
 
@@ -1506,13 +1516,10 @@ total 5716
 <p><strong>Notes:</strong></p>
 
 <ul>
-  <li>The rules that have already been written are specified in the <code class="language-plaintext highlighter-rouge">src/main/resources/rulesets/</code> directories of
-the specific languages, e.g. <code class="language-plaintext highlighter-rouge">pmd-java/src/main/resources/rulesets</code>.
+  <li>The rules that have already been written are specified in the <code class="language-plaintext highlighter-rouge">src/main/resources/category/</code> directories of
+the specific languages, e.g. <code class="language-plaintext highlighter-rouge">pmd-java/src/main/resources/category</code>.
 They’re also in the jar file that’s included with both the source and binary distributions.</li>
 </ul>
-
-<p>A paucity of detail, I’m sure you’d agree. If you think this document can be improved,
-please post <a href="http://sourceforge.net/p/pmd/discussion/188192">here</a> and let me know how. Thanks!</p>
 
 
     <div class="tags">
@@ -1531,16 +1538,34 @@ please post <a href="http://sourceforge.net/p/pmd/discussion/188192">here</a> an
 
 </div>
 
-<hr class="shaded"/>
 
 <footer>
-            <div class="row">
-                <div class="col-lg-12 footer">
-               &copy;2022 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Mar 11, 2022 <br />
-<p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
-                </div>
-            </div>
+    
+    <hr />
+    <div>
+        This documentation is written in markdown. <br />
+        If there is something missing or can be improved, edit this page on
+        github and create a PR:
+        <a
+            target="_blank"
+            href="https://github.com/pmd/pmd/blob/master/docs/pages/pmd/devdocs/building.md"
+            role="button"
+            ><i class="fa fa-github fa-lg"></i> Edit on GitHub</a
+        >
+    </div>
+    
+    <hr />
+    <div class="row">
+        <div class="col-lg-12 footer">
+            &copy;2022 PMD Open Source Project. All rights
+            reserved. <br />
+             Site last generated: Mar 24, 2022 <br />
+            <p>
+                <img src="images/pmd-logo-small.png" alt="Company
+                logo"/>
+            </p>
+        </div>
+    </div>
 </footer>
 
 
@@ -1554,19 +1579,7 @@ please post <a href="http://sourceforge.net/p/pmd/discussion/188192">here</a> an
     
     <!-- Sticky TOC column -->
     <div class="toc-col">
-        
-<!-- this handles the automatic toc. use ## for subheads to auto-generate the on-page minitoc. if you use html tags, you must supply an ID for the heading element in order for it to appear in the minitoc. -->
-<script>
-$( document ).ready(function() {
-  // Handler for .ready() called.
-
-$('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3,h4' });
-
-});
-</script>
-
-<div id="toc"></div>
-
+        <div id="toc"></div>
     </div>
     
     <!-- /.toc-container-wrapper -->

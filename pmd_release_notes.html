@@ -1404,29 +1404,39 @@
 
             <!-- Content Column -->
             <div class="col-md-9" id="tg-sb-content">
-                <div class="post-header">
+                <header>
+    <div class="row">
+        <div class="col-lg-12">
+            <a href="./" role="button"
+                ><i class="fa fa-home fa-lg"></i
+            ></a>
+            » PMD Release Notes   
+            <a
+                target="_blank"
+                href="https://github.com/pmd/pmd/blob/master/docs/pages/release_notes.md"
+                class="pull-right"
+                role="button"
+                ><i class="fa fa-github fa-lg"></i> Edit on GitHub</a
+            >
+             
+        </div>
+    </div>
+
+    <hr />
+</header>
+
+
+<div class="post-header">
    <h1 class="post-title-main">PMD Release Notes</h1>
 </div>
 
 
 
-<div class="post-content">
+<div class="post-content" data-github-edit-url="https://github.com/pmd/pmd/blob/master/docs/pages/release_notes.md">
 
    
-
     <div id="inline-toc"><!-- empty, move TOC here when screen size too small --></div>
-
-
     
-
-        
-        
-        
-        <a target="_blank" href="https://github.com/pmd/pmd/blob/master/docs/pages/release_notes.md" class="btn btn-default githubEditButton" role="button"><i class="fa fa-github fa-lg"></i> Edit me</a>
-        
-
-    
-
   <h2 id="26-march-2022---6440-snapshot">26-March-2022 - 6.44.0-SNAPSHOT</h2>
 
 <p>The PMD team is pleased to announce PMD 6.44.0-SNAPSHOT.</p>
@@ -1483,6 +1493,7 @@ The CLI itself remains compatible, if you run PMD via command-line, no action is
   </li>
   <li>doc
     <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/2504">#2504</a>: [doc] Improve “Edit me on github” button</li>
       <li><a href="https://github.com/pmd/pmd/issues/3812">#3812</a>: [doc] Documentation website table of contents broken on pages with many subheadings</li>
     </ul>
   </li>
@@ -1532,6 +1543,7 @@ decouples you from this. A file collector is available through <a href="https://
 
 <ul>
   <li><a href="https://github.com/pmd/pmd/pull/3773">#3773</a>: [apex] EagerlyLoadedDescribeSObjectResult false positives with SObjectField.getDescribe() - <a href="https://github.com/filiprafalowicz">@filiprafalowicz</a></li>
+  <li><a href="https://github.com/pmd/pmd/pull/3811">#3811</a>: [doc] Improve “Edit me on github” button - <a href="https://github.com/btjiong">@btjiong</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/3836">#3836</a>: [doc] Make TOC scrollable when too many subheadings - <a href="https://github.com/JerritEic">@JerritEic</a></li>
 </ul>
 
@@ -1545,16 +1557,34 @@ decouples you from this. A file collector is available through <a href="https://
 
 </div>
 
-<hr class="shaded"/>
 
 <footer>
-            <div class="row">
-                <div class="col-lg-12 footer">
-               &copy;2022 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Mar 11, 2022 <br />
-<p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
-                </div>
-            </div>
+    
+    <hr />
+    <div>
+        This documentation is written in markdown. <br />
+        If there is something missing or can be improved, edit this page on
+        github and create a PR:
+        <a
+            target="_blank"
+            href="https://github.com/pmd/pmd/blob/master/docs/pages/release_notes.md"
+            role="button"
+            ><i class="fa fa-github fa-lg"></i> Edit on GitHub</a
+        >
+    </div>
+    
+    <hr />
+    <div class="row">
+        <div class="col-lg-12 footer">
+            &copy;2022 PMD Open Source Project. All rights
+            reserved. <br />
+             Site last generated: Mar 24, 2022 <br />
+            <p>
+                <img src="images/pmd-logo-small.png" alt="Company
+                logo"/>
+            </p>
+        </div>
+    </div>
 </footer>
 
 
@@ -1568,19 +1598,7 @@ decouples you from this. A file collector is available through <a href="https://
     
     <!-- Sticky TOC column -->
     <div class="toc-col">
-        
-<!-- this handles the automatic toc. use ## for subheads to auto-generate the on-page minitoc. if you use html tags, you must supply an ID for the heading element in order for it to appear in the minitoc. -->
-<script>
-$( document ).ready(function() {
-  // Handler for .ready() called.
-
-$('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3,h4' });
-
-});
-</script>
-
-<div id="toc"></div>
-
+        <div id="toc"></div>
     </div>
     
     <!-- /.toc-container-wrapper -->

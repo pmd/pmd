@@ -1404,31 +1404,41 @@
 
             <!-- Content Column -->
             <div class="col-md-9" id="tg-sb-content">
-                <div class="post-header">
+                <header>
+    <div class="row">
+        <div class="col-lg-12">
+            <a href="./" role="button"
+                ><i class="fa fa-home fa-lg"></i
+            ></a>
+            » Guidelines for standard rules   
+            <a
+                target="_blank"
+                href="https://github.com/pmd/pmd/blob/master/docs/pages/pmd/devdocs/major_contributions/rule_guidelines.md"
+                class="pull-right"
+                role="button"
+                ><i class="fa fa-github fa-lg"></i> Edit on GitHub</a
+            >
+             
+        </div>
+    </div>
+
+    <hr />
+</header>
+
+
+<div class="post-header">
    <h1 class="post-title-main">Guidelines for standard rules</h1>
 </div>
 
 
 
-<div class="post-content">
+<div class="post-content" data-github-edit-url="https://github.com/pmd/pmd/blob/master/docs/pages/pmd/devdocs/major_contributions/rule_guidelines.md">
 
    
     <div class="summary">Guidelines for rules that are included in the standard distribution</div>
    
-
     <div id="inline-toc"><!-- empty, move TOC here when screen size too small --></div>
-
-
     
-
-        
-        
-        
-        <a target="_blank" href="https://github.com/pmd/pmd/blob/master/docs/pages/pmd/devdocs/major_contributions/rule_guidelines.md" class="btn btn-default githubEditButton" role="button"><i class="fa fa-github fa-lg"></i> Edit me</a>
-        
-
-    
-
   <div class="alert alert-info" role="alert"><i class="fa fa-info-circle"></i> <b>Note:</b> 
 These guidelines are new and most rules don’t follow these guidelines yet.
 The goal is, that eventually all rules are updated.
@@ -1544,16 +1554,35 @@ non-private”).</li>
 
 </div>
 
-<hr class="shaded"/>
 
 <footer>
-            <div class="row">
-                <div class="col-lg-12 footer">
-               &copy;2022 PMD Open Source Project. All rights reserved. <br />
-<span>Page last updated:</span> August, 2021<br/> Site last generated: Mar 11, 2022 <br />
-<p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
-                </div>
-            </div>
+    
+    <hr />
+    <div>
+        This documentation is written in markdown. <br />
+        If there is something missing or can be improved, edit this page on
+        github and create a PR:
+        <a
+            target="_blank"
+            href="https://github.com/pmd/pmd/blob/master/docs/pages/pmd/devdocs/major_contributions/rule_guidelines.md"
+            role="button"
+            ><i class="fa fa-github fa-lg"></i> Edit on GitHub</a
+        >
+    </div>
+    
+    <hr />
+    <div class="row">
+        <div class="col-lg-12 footer">
+            &copy;2022 PMD Open Source Project. All rights
+            reserved. <br />
+            <span>Page last updated:</span>
+            August, 2021<br /> Site last generated: Mar 24, 2022 <br />
+            <p>
+                <img src="images/pmd-logo-small.png" alt="Company
+                logo"/>
+            </p>
+        </div>
+    </div>
 </footer>
 
 
@@ -1567,19 +1596,7 @@ non-private”).</li>
     
     <!-- Sticky TOC column -->
     <div class="toc-col">
-        
-<!-- this handles the automatic toc. use ## for subheads to auto-generate the on-page minitoc. if you use html tags, you must supply an ID for the heading element in order for it to appear in the minitoc. -->
-<script>
-$( document ).ready(function() {
-  // Handler for .ready() called.
-
-$('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3,h4' });
-
-});
-</script>
-
-<div id="toc"></div>
-
+        <div id="toc"></div>
     </div>
     
     <!-- /.toc-container-wrapper -->

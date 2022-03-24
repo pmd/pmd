@@ -1404,29 +1404,39 @@
 
             <!-- Content Column -->
             <div class="col-md-9" id="tg-sb-content">
-                <div class="post-header">
+                <header>
+    <div class="row">
+        <div class="col-lg-12">
+            <a href="./" role="button"
+                ><i class="fa fa-home fa-lg"></i
+            ></a>
+            » PMD Java API   
+            <a
+                target="_blank"
+                href="https://github.com/pmd/pmd/blob/master/docs/pages/pmd/userdocs/tools/java-api.md"
+                class="pull-right"
+                role="button"
+                ><i class="fa fa-github fa-lg"></i> Edit on GitHub</a
+            >
+             
+        </div>
+    </div>
+
+    <hr />
+</header>
+
+
+<div class="post-header">
    <h1 class="post-title-main">PMD Java API</h1>
 </div>
 
 
 
-<div class="post-content">
+<div class="post-content" data-github-edit-url="https://github.com/pmd/pmd/blob/master/docs/pages/pmd/userdocs/tools/java-api.md">
 
    
-
     <div id="inline-toc"><!-- empty, move TOC here when screen size too small --></div>
-
-
     
-
-        
-        
-        
-        <a target="_blank" href="https://github.com/pmd/pmd/blob/master/docs/pages/pmd/userdocs/tools/java-api.md" class="btn btn-default githubEditButton" role="button"><i class="fa fa-github fa-lg"></i> Edit me</a>
-        
-
-    
-
   <p>The easiest way to run PMD is to just use a build plugin in your favorite build tool
 like <a href="pmd_userdocs_tools_ant.html">Apache Ant</a>, <a href="pmd_userdocs_tools_maven.html">Apache Maven</a> or
 <a href="pmd_userdocs_tools_gradle.html">Gradle</a>.</p>
@@ -1656,16 +1666,34 @@ by adding additional files to analyze or adding additional rulesets or renderers
 
 </div>
 
-<hr class="shaded"/>
 
 <footer>
-            <div class="row">
-                <div class="col-lg-12 footer">
-               &copy;2022 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Mar 11, 2022 <br />
-<p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
-                </div>
-            </div>
+    
+    <hr />
+    <div>
+        This documentation is written in markdown. <br />
+        If there is something missing or can be improved, edit this page on
+        github and create a PR:
+        <a
+            target="_blank"
+            href="https://github.com/pmd/pmd/blob/master/docs/pages/pmd/userdocs/tools/java-api.md"
+            role="button"
+            ><i class="fa fa-github fa-lg"></i> Edit on GitHub</a
+        >
+    </div>
+    
+    <hr />
+    <div class="row">
+        <div class="col-lg-12 footer">
+            &copy;2022 PMD Open Source Project. All rights
+            reserved. <br />
+             Site last generated: Mar 24, 2022 <br />
+            <p>
+                <img src="images/pmd-logo-small.png" alt="Company
+                logo"/>
+            </p>
+        </div>
+    </div>
 </footer>
 
 
@@ -1679,19 +1707,7 @@ by adding additional files to analyze or adding additional rulesets or renderers
     
     <!-- Sticky TOC column -->
     <div class="toc-col">
-        
-<!-- this handles the automatic toc. use ## for subheads to auto-generate the on-page minitoc. if you use html tags, you must supply an ID for the heading element in order for it to appear in the minitoc. -->
-<script>
-$( document ).ready(function() {
-  // Handler for .ready() called.
-
-$('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3,h4' });
-
-});
-</script>
-
-<div id="toc"></div>
-
+        <div id="toc"></div>
     </div>
     
     <!-- /.toc-container-wrapper -->
