@@ -1,7 +1,7 @@
 ---
 title: Processing XML files
 permalink: pmd_languages_xml.html
-last_updated: March 2021 (6.33.0)
+last_updated: March 2022 (6.44.0)
 ---
 
 ## The XML language module

@@ -92,7 +92,7 @@ public final class PMDFunctions {
         } else if (item instanceof org.w3c.dom.Node) {
             return itemToNode(((org.w3c.dom.Node) item).getUserData(PMD_NODE_USER_DATA));
         }
-        LOG.fine("Cannot call pmd:filename on " + item);
+        LOG.fine("Cannot call function on " + item);
         return null;
     }
 }
