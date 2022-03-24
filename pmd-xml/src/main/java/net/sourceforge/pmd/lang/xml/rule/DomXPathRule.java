@@ -4,13 +4,11 @@
 
 package net.sourceforge.pmd.lang.xml.rule;
 
-import java.util.List;
-
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
 import net.sourceforge.pmd.lang.rule.XPathRule;
-import net.sourceforge.pmd.lang.xml.ast.XmlParser.RootXmlNode;
+import net.sourceforge.pmd.lang.xml.ast.internal.XmlParserImpl.RootXmlNode;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 
@@ -141,13 +139,11 @@ public class DomXPathRule extends AbstractRule {
     }
 
     @Override
-    public void apply(List<? extends Node> nodes, RuleContext ctx) {
-        for (Node n : nodes) {
-            RootXmlNode root = (RootXmlNode) n;
-            SaxonDomXPathQuery query = getXPathQuery();
-            for (Node foundNode : query.evaluate(root, this)) {
-                ctx.addViolation(foundNode);
-            }
+    public void apply(Node node, RuleContext ctx) {
+        RootXmlNode root = (RootXmlNode) node;
+        SaxonDomXPathQuery query = getXPathQuery();
+        for (Node foundNode : query.evaluate(root, this)) {
+            ctx.addViolation(foundNode);
         }
     }
 
@@ -155,7 +151,8 @@ public class DomXPathRule extends AbstractRule {
         if (query == null) {
             query = new SaxonDomXPathQuery(getProperty(XPATH_EXPR),
                                            getProperty(DEFAULT_NS_URI),
-                                           getPropertyDescriptors());
+                                           getPropertyDescriptors(),
+                                           getLanguage().getDefaultVersion().getLanguageVersionHandler().getXPathHandler());
         }
         return query;
     }

@@ -14,7 +14,6 @@ import net.sf.saxon.lib.ExtensionFunctionCall;
 import net.sf.saxon.om.Sequence;
 import net.sf.saxon.pattern.NodeKindTest;
 import net.sf.saxon.trans.XPathException;
-import net.sf.saxon.tree.wrapper.AbstractNodeWrapper;
 import net.sf.saxon.type.Type;
 import net.sf.saxon.value.Int64Value;
 import net.sf.saxon.value.SequenceType;
@@ -36,9 +35,9 @@ public final class CoordinateXPathFunction extends AbstractXPathFunctionDef {
         new CoordinateXPathFunction("endColumn", Node::getEndColumn);
 
     private static final SequenceType[] A_SINGLE_ELEMENT = {
-        NodeKindTest.makeNodeKindTest(Type.ELEMENT).one()
+        NodeKindTest.makeNodeKindTest(Type.ELEMENT).one(),
     };
-    private static final String PMD_NODE_USER_DATA = "pmd.node";
+    public static final String PMD_NODE_USER_DATA = "pmd.node";
     private final ToIntFunction<Node> getter;
 
     private CoordinateXPathFunction(String localName, ToIntFunction<Node> getter) {
@@ -62,7 +61,7 @@ public final class CoordinateXPathFunction extends AbstractXPathFunctionDef {
 
             @Override
             public Sequence call(XPathContext context, Sequence[] arguments) throws XPathException {
-                Node node = itemToNode(arguments[0]);
+                Node node = XPathElementToNodeHelper.itemToNode(arguments[0]);
                 if (node == null) {
                     throw new XPathException(
                         "Cannot call function '" + getFunctionQName().getLocalPart()
@@ -75,16 +74,4 @@ public final class CoordinateXPathFunction extends AbstractXPathFunctionDef {
     }
 
 
-    private static Node itemToNode(Object item) {
-        if (item instanceof Node) {
-            return (Node) item;
-        } else if (item instanceof AstElementNode) {
-            return itemToNode(((AstElementNode) item).getUnderlyingNode());
-        } else if (item instanceof AbstractNodeWrapper) {
-            return itemToNode(((AbstractNodeWrapper) item).getUnderlyingNode());
-        } else if (item instanceof org.w3c.dom.Node) {
-            return itemToNode(((org.w3c.dom.Node) item).getUserData(PMD_NODE_USER_DATA));
-        }
-        return null;
-    }
 }
