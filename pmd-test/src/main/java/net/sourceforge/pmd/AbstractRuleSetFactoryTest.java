@@ -18,7 +18,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -28,6 +27,7 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.regex.Pattern;
+
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
@@ -285,16 +285,15 @@ public abstract class AbstractRuleSetFactoryTest {
 
     private List<String> getRuleSetFileNames(String language) throws IOException {
         List<String> ruleSetFileNames = new ArrayList<>();
+        ruleSetFileNames.addAll(getRuleSetFileNames(language, "rulesets/" + language + "/rulesets.properties"));
+        ruleSetFileNames.addAll(getRuleSetFileNames(language, "category/" + language + "/categories.properties"));
+        return ruleSetFileNames;
+    }
+
+    private List<String> getRuleSetFileNames(String language, String propertiesPath) throws IOException {
+        List<String> ruleSetFileNames = new ArrayList<>();
         Properties properties = new Properties();
-        @SuppressWarnings("PMD.CloseResource")
-        InputStream input = getClass().getResourceAsStream("rulesets/" + language + "/rulesets.properties");
-        if (input == null) {
-            // this might happen if a language is only support by CPD, but not
-            // by PMD
-            System.err.println("No ruleset found for language " + language);
-            return Collections.emptyList();
-        }
-        try (InputStream is = input) {
+        try (InputStream is = getClass().getResourceAsStream(propertiesPath)) {
             properties.load(is);
         }
         String fileNames = properties.getProperty("rulesets.filenames");
@@ -302,7 +301,6 @@ public abstract class AbstractRuleSetFactoryTest {
         while (st.hasMoreTokens()) {
             ruleSetFileNames.add(st.nextToken());
         }
-
         return ruleSetFileNames;
     }
 

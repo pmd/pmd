@@ -10,6 +10,7 @@ Rules which enforce generally accepted best practices.
 
     <rule name="ClassStartNameEqualsEndName"
           language="modelica"
+          since="6.21.0"
           message="Class ends with an end clause with a different name"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_modelica_bestpractices.html#classstartnameequalsendname"
           class="net.sourceforge.pmd.lang.rule.XPathRule">
@@ -40,9 +41,10 @@ end SomeOtherName /* should be SomeName */;
 
     <rule name="ConnectUsingNonConnector"
           language="modelica"
+          since="6.21.0"
           message="Arguments passed to `connect` should be connectors, not `{0}`"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_modelica_bestpractices.html#connectusingnonconnector"
-          class="net.sourceforge.pmd.lang.modelica.rule.ConnectUsingNonConnector">
+          class="net.sourceforge.pmd.lang.modelica.rule.bestpractices.ConnectUsingNonConnectorRule">
         <description>
             Modelica specification requires passing connectors to the `connect` clause,
             while some implementations tolerate using it on plain variables, etc..
@@ -74,8 +76,9 @@ end Example;
     <rule name="AmbiguousResolution"
           language="modelica"
           message="Type resolution is ambiguous: {0}"
+          since="6.21.0"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_modelica_bestpractices.html#ambiguousresolution"
-          class="net.sourceforge.pmd.lang.modelica.rule.AmbiguousResolutionRule">
+          class="net.sourceforge.pmd.lang.modelica.rule.bestpractices.AmbiguousResolutionRule">
         <description>
             There is multiple candidates for this type resolution. While generally this is not an error,
             this may indicate a bug.
