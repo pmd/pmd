@@ -18,6 +18,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -27,7 +28,6 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.regex.Pattern;
-
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
@@ -293,7 +293,15 @@ public abstract class AbstractRuleSetFactoryTest {
     private List<String> getRuleSetFileNames(String language, String propertiesPath) throws IOException {
         List<String> ruleSetFileNames = new ArrayList<>();
         Properties properties = new Properties();
-        try (InputStream is = getClass().getResourceAsStream(propertiesPath)) {
+        @SuppressWarnings("PMD.CloseResource")
+        InputStream input = getClass().getResourceAsStream(propertiesPath);
+        if (input == null) {
+            // this might happen if a language is only support by CPD, but not
+            // by PMD
+            System.err.println("No ruleset found for language " + language);
+            return Collections.emptyList();
+        }
+        try (InputStream is = input) {
             properties.load(is);
         }
         String fileNames = properties.getProperty("rulesets.filenames");
