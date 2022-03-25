@@ -136,8 +136,8 @@ public class PMDParameters {
     @Parameter(names = { "--no-cache", "-no-cache" }, description = "Explicitly disable incremental analysis. The '-cache' option is ignored if this switch is present in the command line.")
     private boolean noCache = false;
 
-    @Parameter(names = { "--progress-bar", "-progress" }, description = "Enables progress bar indicator of live analysis progress.")
-    private boolean progressBar = false;
+    @Parameter(names = { "--no-progress" }, description = "Disables progress bar indicator of live analysis progress.")
+    private boolean progressBar = true;
 
     // this has to be a public static class, so that JCommander can use it!
     public static class PropertyConverter implements IStringConverter<Properties> {
