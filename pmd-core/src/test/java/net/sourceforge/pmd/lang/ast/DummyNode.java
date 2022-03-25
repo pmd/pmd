@@ -4,7 +4,12 @@
 
 package net.sourceforge.pmd.lang.ast;
 
+import java.nio.file.Paths;
+
+import net.sourceforge.pmd.lang.ast.xpath.internal.FileNameXPathFunction;
+
 public class DummyNode extends AbstractNode {
+
     private final boolean findBoundary;
     private final String xpathName;
 
@@ -54,5 +59,19 @@ public class DummyNode extends AbstractNode {
     @Override
     public boolean isFindBoundary() {
         return findBoundary;
+    }
+
+    public static class DummyRootNode extends DummyNode implements RootNode {
+
+        public DummyRootNode() {
+            this("afile.txt");
+        }
+
+        public DummyRootNode(String fileName) {
+            super(0);
+            // remove prefixed path segments.
+            String simpleFileName = Paths.get(fileName).getFileName().toString();
+            getUserMap().set(FileNameXPathFunction.FILE_NAME_KEY, simpleFileName);
+        }
     }
 }

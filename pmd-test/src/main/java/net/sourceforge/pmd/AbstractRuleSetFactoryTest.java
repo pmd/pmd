@@ -287,9 +287,16 @@ public abstract class AbstractRuleSetFactoryTest {
 
     private List<String> getRuleSetFileNames(String language) throws IOException, RuleSetNotFoundException {
         List<String> ruleSetFileNames = new ArrayList<>();
+        ruleSetFileNames.addAll(getRuleSetFileNames(language, "rulesets/" + language + "/rulesets.properties"));
+        ruleSetFileNames.addAll(getRuleSetFileNames(language, "category/" + language + "/categories.properties"));
+        return ruleSetFileNames;
+    }
+
+    private List<String> getRuleSetFileNames(String language, String propertiesPath) throws IOException, RuleSetNotFoundException {
+        List<String> ruleSetFileNames = new ArrayList<>();
         try {
             Properties properties = new Properties();
-            try (InputStream is = new ResourceLoader().loadClassPathResourceAsStreamOrThrow("rulesets/" + language + "/rulesets.properties")) {
+            try (InputStream is = new ResourceLoader().loadClassPathResourceAsStreamOrThrow(propertiesPath)) {
                 properties.load(is);
             }
             String fileNames = properties.getProperty("rulesets.filenames");
@@ -304,6 +311,8 @@ public abstract class AbstractRuleSetFactoryTest {
         }
         return ruleSetFileNames;
     }
+    
+    
 
     private RuleSet loadRuleSetByFileName(String ruleSetFileName) throws RuleSetNotFoundException {
         RuleSetFactory rsf = RulesetsFactoryUtils.defaultFactory();

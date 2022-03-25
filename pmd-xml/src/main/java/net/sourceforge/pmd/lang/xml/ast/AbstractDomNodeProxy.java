@@ -19,7 +19,10 @@ import net.sourceforge.pmd.lang.ast.AbstractNode;
  *
  * @author Clément Fournier
  * @since 6.1.0
+ *
+ * @deprecated Will be removed in PMD 7, use subclasses as PMD Nodes but not DOM nodes.
  */
+@Deprecated
 public abstract class AbstractDomNodeProxy extends AbstractNode implements org.w3c.dom.Node {
 
     protected final org.w3c.dom.Node node;
