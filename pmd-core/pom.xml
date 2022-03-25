@@ -150,7 +150,6 @@
             <groupId>net.sourceforge.saxon</groupId>
             <artifactId>saxon</artifactId>
             <classifier>dom</classifier>
-            <scope>runtime</scope>
         </dependency>
 
         <dependency>
