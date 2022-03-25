@@ -23,7 +23,6 @@ import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
 import net.sourceforge.pmd.lang.java.symbols.table.internal.ReferenceCtx;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
-import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.JVariableSig;
 import net.sourceforge.pmd.lang.java.types.JVariableSig.FieldSig;
@@ -34,7 +33,6 @@ import net.sourceforge.pmd.lang.java.types.ast.ExprContext;
 import net.sourceforge.pmd.lang.java.types.ast.LazyTypeResolver;
 import net.sourceforge.pmd.lang.java.types.internal.infer.Infer;
 import net.sourceforge.pmd.lang.java.types.internal.infer.TypeInferenceLogger;
-import net.sourceforge.pmd.lang.symboltable.Scope;
 
 /**
  * Acts as a bridge between outer parts of PMD and the restricted access
@@ -61,48 +59,6 @@ public final class InternalApiBridge {
         return varid;
     }
 
-
-    /**
-     * Creates a fake method name declaration for built-in methods from Java
-     * like the Enum Method "valueOf".
-     *
-     * @param methodName     the method name
-     * @param parameterTypes the reference types of each parameter of the method
-     *
-     * @return a method name declaration
-     */
-    public static ASTMethodDeclaration createBuiltInMethodDeclaration(final String methodName, final String... parameterTypes) {
-        ASTMethodDeclaration methodDeclaration = new ASTMethodDeclaration(0);
-        // InternalApiBridge.setModifier(methodDeclaration, JModifier.PUBLIC);
-
-        methodDeclaration.setImage(methodName);
-
-        ASTFormalParameters formalParameters = new ASTFormalParameters(0);
-        methodDeclaration.addChild(formalParameters, 0);
-
-        /*
-         * jjtAddChild resizes it's child node list according to known indexes.
-         * Going backwards makes sure the first time it gets the right size avoiding copies.
-         */
-        for (int i = parameterTypes.length - 1; i >= 0; i--) {
-            ASTFormalParameter formalParameter = new ASTFormalParameter(0);
-            formalParameters.addChild(formalParameter, i);
-
-            ASTVariableDeclaratorId variableDeclaratorId = new ASTVariableDeclaratorId(0);
-            variableDeclaratorId.setImage("arg" + i);
-            formalParameter.addChild(variableDeclaratorId, 1);
-
-            PrimitiveTypeKind primitive = PrimitiveTypeKind.fromName(parameterTypes[i]);
-            // TODO : this could actually be a primitive array...
-            AbstractJavaNode type = primitive != null
-                           ? new ASTPrimitiveType(primitive)
-                           : new ASTClassOrInterfaceType(parameterTypes[i]);
-
-            formalParameter.addChild(type, 0);
-        }
-
-        return methodDeclaration;
-    }
 
     public static JavaccTokenDocument javaTokenDoc(String fullText) {
         return new JavaTokenDocument(fullText);
@@ -214,10 +170,6 @@ public final class InternalApiBridge {
 
     public static void setSymbolTable(JavaNode node, JSymbolTable table) {
         ((AbstractJavaNode) node).setSymbolTable(table);
-    }
-
-    public static void setScope(JavaNode node, Scope scope) {
-        ((AbstractJavaNode) node).setScope(scope);
     }
 
     public static void setQname(ASTAnyTypeDeclaration declaration, String binaryName, @Nullable String canon) {

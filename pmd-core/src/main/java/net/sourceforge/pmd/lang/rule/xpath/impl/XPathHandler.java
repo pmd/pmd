@@ -28,7 +28,7 @@ public interface XPathHandler {
 
 
     static XPathHandler noFunctionDefinitions() {
-        return () -> DefaultXPathFunctions.getDefaultFunctions();
+        return DefaultXPathFunctions::getDefaultFunctions;
     }
 
     /**

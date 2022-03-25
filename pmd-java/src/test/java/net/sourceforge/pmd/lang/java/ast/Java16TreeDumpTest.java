@@ -4,11 +4,17 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import static net.sourceforge.pmd.lang.java.types.TestUtilitiesForTypesKt.hasType;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.not;
+
 import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
 
+import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.test.BaseParsingHelper;
 import net.sourceforge.pmd.lang.java.BaseJavaTreeDumpTest;
@@ -33,14 +39,13 @@ public class Java16TreeDumpTest extends BaseJavaTreeDumpTest {
         doTest("PatternMatchingInstanceof");
 
         // extended tests for type resolution etc.
-        ASTCompilationUnit compilationUnit = java16.parseResource("PatternMatchingInstanceof.java");
-        List<ASTInstanceOfExpression> instanceOfExpressions = compilationUnit.findDescendantsOfType(ASTInstanceOfExpression.class);
-        for (ASTInstanceOfExpression expr : instanceOfExpressions) {
-            ASTVariableDeclaratorId variable = expr.getChild(1).getFirstChildOfType(ASTVariableDeclaratorId.class);
-            Assert.assertEquals(String.class, variable.getType());
-            // Note: these variables are not part of the symbol table
-            // See ScopeAndDeclarationFinder#visit(ASTVariableDeclaratorId, Object)
-            Assert.assertNull(variable.getNameDeclaration());
+        ASTCompilationUnit ast = java16.parseResource("PatternMatchingInstanceof.java");
+        NodeStream<ASTTypePattern> patterns = ast.descendants(ASTTypePattern.class);
+
+        assertThat(patterns.toList(), not(empty()));
+
+        for (ASTTypePattern expr : patterns) {
+            assertThat(expr.getVarId(), hasType(String.class));
         }
     }
 
