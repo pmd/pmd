@@ -125,6 +125,8 @@ public class DomXPathRule extends AbstractRule {
     public DomXPathRule() {
         definePropertyDescriptor(XPATH_EXPR);
         definePropertyDescriptor(DEFAULT_NS_URI);
+        // for compatibility, but is ignored.
+        definePropertyDescriptor(XPathRule.VERSION_DESCRIPTOR);
     }
 
 
