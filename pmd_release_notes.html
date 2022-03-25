@@ -1073,6 +1073,18 @@
 
             
             
+            
+
+            
+
+                
+                <li><a href="pmd_languages_xml.html">XML and XML dialects</a></li>
+                
+
+            
+
+            
+            
         </ul>
      </li>
        
@@ -1445,6 +1457,51 @@
 
 <h3 id="new-and-noteworthy">New and noteworthy</h3>
 
+<h4 id="better-xml-xpath-support">Better XML XPath support</h4>
+
+<p>The new rule class <a href="https://docs.pmd-code.org/apidocs/pmd-xml/6.44.0-SNAPSHOT/net/sourceforge/pmd/lang/xml/rule/DomXPathRule.html#"><code>DomXPathRule</code></a> is intended to replace
+usage of the <code class="language-plaintext highlighter-rouge">XPathRule</code> for XML rules. This rule executes the XPath query in a different
+way, which sticks to the XPath specification. This means the expression is interpreted
+the same way in PMD as in all other XPath development tools that stick to the standard.
+You can for instance test the expression in an online XPath editor.</p>
+
+<p>Prefer using this class to define XPath rules: replace the value of the <code class="language-plaintext highlighter-rouge">class</code>
+attribute with <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.lang.xml.rule.DomXPathRule</code> like so:</p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">name=</span><span class="s">"MyXPathRule"</span>
+      <span class="na">language=</span><span class="s">"xml"</span>
+      <span class="na">message=</span><span class="s">"A message"</span>
+      <span class="na">class=</span><span class="s">"net.sourceforge.pmd.lang.xml.rule.DomXPathRule"</span><span class="nt">&gt;</span>
+
+      <span class="nt">&lt;properties&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"xpath"</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;value&gt;</span><span class="cp">&lt;![CDATA[
+            /a/b/c[@attr = "5"]
+            ]]&gt;</span><span class="nt">&lt;/value&gt;</span>
+        <span class="nt">&lt;/property&gt;</span>
+        <span class="c">&lt;!-- Note: the property "version" is ignored, remove it. The query is XPath 2. --&gt;</span>
+      <span class="nt">&lt;/properties&gt;</span>
+<span class="nt">&lt;/rule&gt;</span>
+</code></pre></div></div>
+
+<p>The rule is more powerful than <code class="language-plaintext highlighter-rouge">XPathRule</code>, as it can now handle XML namespaces,
+comments and processing instructions. Please refer to the Javadoc of <a href="https://docs.pmd-code.org/apidocs/pmd-xml/6.44.0-SNAPSHOT/net/sourceforge/pmd/lang/xml/rule/DomXPathRule.html#"><code>DomXPathRule</code></a>
+for information about the differences with <code class="language-plaintext highlighter-rouge">XPathRule</code> and examples.</p>
+
+<p><code class="language-plaintext highlighter-rouge">XPathRule</code> is still perfectly supported for all other languages, including Apex and Java.</p>
+
+<h4 id="new-xpath-functions">New XPath functions</h4>
+
+<p>The new XPath functions <code class="language-plaintext highlighter-rouge">pmd:startLine</code>, <code class="language-plaintext highlighter-rouge">pmd:endLine</code>, <code class="language-plaintext highlighter-rouge">pmd:startColumn</code>,
+and <code class="language-plaintext highlighter-rouge">pmd:endColumn</code> are now available in XPath rules for all languages. They
+replace the node attributes <code class="language-plaintext highlighter-rouge">@BeginLine</code>, <code class="language-plaintext highlighter-rouge">@EndLine</code> and such. These attributes
+will be deprecated in a future release.</p>
+
+<p>Please refer to <a href="https://pmd.github.io/latest/pmd_userdocs_extending_writing_xpath_rules.html#pmd-extension-functions">the documentation</a> of these functions for more information, including usage samples.</p>
+
+<p>Note that the function <code class="language-plaintext highlighter-rouge">pmd:endColumn</code> returns an exclusive index, while the
+attribute <code class="language-plaintext highlighter-rouge">@EndColumn</code> is inclusive. This is for forward compatibility with PMD 7,
+which uses exclusive end indices.</p>
+
 <h4 id="new-programmatic-api">New programmatic API</h4>
 
 <p>This release introduces a new programmatic API to replace the inflexible <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.44.0-SNAPSHOT/net/sourceforge/pmd/PMD.html#"><code>PMD</code></a> class.
@@ -1500,6 +1557,12 @@ The CLI itself remains compatible, if you run PMD via command-line, no action is
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/2504">#2504</a>: [doc] Improve “Edit me on github” button</li>
       <li><a href="https://github.com/pmd/pmd/issues/3812">#3812</a>: [doc] Documentation website table of contents broken on pages with many subheadings</li>
+    </ul>
+  </li>
+  <li>xml
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/2766">#2766</a>: [xml] XMLNS prefix is not pre-declared in xpath query</li>
+      <li><a href="https://github.com/pmd/pmd/issues/3863">#3863</a>: [xml] Make XPath rules work exactly as in the XPath spec</li>
     </ul>
   </li>
 </ul>
@@ -1589,7 +1652,7 @@ decouples you from this. A file collector is available through <a href="https://
         <div class="col-lg-12 footer">
             &copy;2022 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Mar 24, 2022 <br />
+             Site last generated: Mar 25, 2022 <br />
             <p>
                 <img src="images/pmd-logo-small.png" alt="Company
                 logo"/>

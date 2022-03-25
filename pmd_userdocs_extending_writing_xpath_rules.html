@@ -1073,6 +1073,18 @@
 
             
             
+            
+
+            
+
+                
+                <li><a href="pmd_languages_xml.html">XML and XML dialects</a></li>
+                
+
+            
+
+            
+            
         </ul>
      </li>
        
@@ -1628,9 +1640,9 @@ information from the AST.</p>
 
 <!-- Generates the documentation of XPath functions. -->
 
-<h3 id="any-language">Any language</h3>
+<h3 id="all-languages">All languages</h3>
 
-<p>Any language functions are in the namespace <code class="language-plaintext highlighter-rouge">pmd</code>.</p>
+<p>Functions available to all languages are in the namespace <code>pmd</code>.</p>
 
 <div class="table-responsive">
     <table width="100%">
@@ -1651,7 +1663,7 @@ information from the AST.</p>
         <tr data-toggle="collapse" id="pmd-fileName" data-target="#pmd-fileName-expand" class="accordion-toggle">
 
             <td>fileName</td>
-            <td>Returns the current filename</td>
+            <td>Returns the simple name of the current file</td>
             <td>
                 <button type="button" class="btn btn-link"><i class="fa fa-ellipsis-h"></i></button>
             </td>
@@ -1672,10 +1684,15 @@ information from the AST.</p>
                         <div style="margin-left: 30px">
 
                             <dl>
-                                <dd>Returns the current simple filename without path but including the extension. This can be used to write rules that check filename naming conventions.
-<p>This function is available since PMD 6.38.0.</p></dd>
+                                <dd>Returns the current simple file name, without path but including the extension.
+This can be used to write rules that check file naming conventions.
+</dd>
+                                
+                                <dt>Since</dt>
+                                <dd>PMD 6.38.0</dd>
+                                
                                 <dt>Remarks</dt>
-                                <dd>The function can be called on any node.</dd>
+                                <dd>The requires the context node to be an element</dd>
 
                                 
 
@@ -1688,6 +1705,322 @@ information from the AST.</p>
                                         
                                         <dt><code>//b[pmd:fileName() = 'Foo.xml']</code></dt>
                                         <dd>Matches any <code>&lt;b&gt;</code> tags in files called <code>Foo.xml</code>.</dd>
+                                        
+                                    </dl>
+                                </dd>
+                                
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+
+
+        
+
+        
+
+        <tr data-toggle="collapse" id="pmd-startLine" data-target="#pmd-startLine-expand" class="accordion-toggle">
+
+            <td>startLine</td>
+            <td>Returns the start line of the given node</td>
+            <td>
+                <button type="button" class="btn btn-link"><i class="fa fa-ellipsis-h"></i></button>
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="4" class="hiddenRow">
+                <div class="accordion-body collapse" id="pmd-startLine-expand">
+
+                    <div style="margin-left: 15px" class="xpath-fun-doc">
+
+                        <!-- Yeah the ID is duplicated but it's ok on my browser and makes -->
+                        <!--links somehow work when details are collapsed -->
+                        <h4 class="fun-details-header" id="pmd-startLine">
+                            <span class="fun-ns">pmd:</span><span class="fun-name">startLine</span><span class="fun-ns">(xs:element) as xs:int</span>
+                        </h4>
+
+                        <div style="margin-left: 30px">
+
+                            <dl>
+                                <dd>Returns the line where the node starts in the source file.
+Line numbers are 1-based.
+</dd>
+                                
+                                <dt>Since</dt>
+                                <dd>PMD 6.44.0</dd>
+                                
+                                <dt>Remarks</dt>
+                                <dd>The function is not context-dependent, but takes a node as its first parameter.
+The function is only available in XPath 2.0.
+</dd>
+
+                                
+
+                                <dt>Parameters</dt>
+
+                                <dd>
+                                    <dl>
+                                        
+                                        <dt>
+                                            <span class="param-name">element</span>
+                                            <span class="param-type"> as xs:element</span>
+                                        </dt>
+                                        <dd>Any element node</dd>
+                                        
+                                    </dl>
+                                </dd>
+
+                                
+
+                                
+
+                                <dt>Examples</dt>
+
+                                <dd>
+                                    <dl class="code-examples">
+                                        
+                                        <dt><code>//b[pmd:startLine(.) &gt; 5]</code></dt>
+                                        <dd>Matches any <code>&lt;b&gt;</code> node which starts after the fifth line.</dd>
+                                        
+                                    </dl>
+                                </dd>
+                                
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+
+
+        
+
+        
+
+        <tr data-toggle="collapse" id="pmd-endLine" data-target="#pmd-endLine-expand" class="accordion-toggle">
+
+            <td>endLine</td>
+            <td>Returns the end line of the given node</td>
+            <td>
+                <button type="button" class="btn btn-link"><i class="fa fa-ellipsis-h"></i></button>
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="4" class="hiddenRow">
+                <div class="accordion-body collapse" id="pmd-endLine-expand">
+
+                    <div style="margin-left: 15px" class="xpath-fun-doc">
+
+                        <!-- Yeah the ID is duplicated but it's ok on my browser and makes -->
+                        <!--links somehow work when details are collapsed -->
+                        <h4 class="fun-details-header" id="pmd-endLine">
+                            <span class="fun-ns">pmd:</span><span class="fun-name">endLine</span><span class="fun-ns">(xs:element) as xs:int</span>
+                        </h4>
+
+                        <div style="margin-left: 30px">
+
+                            <dl>
+                                <dd>Returns the line where the node ends in the source file.
+Line numbers are 1-based.
+</dd>
+                                
+                                <dt>Since</dt>
+                                <dd>PMD 6.44.0</dd>
+                                
+                                <dt>Remarks</dt>
+                                <dd>The function is not context-dependent, but takes a node as its first parameter.
+The function is only available in XPath 2.0.
+</dd>
+
+                                
+
+                                <dt>Parameters</dt>
+
+                                <dd>
+                                    <dl>
+                                        
+                                        <dt>
+                                            <span class="param-name">element</span>
+                                            <span class="param-type"> as xs:element</span>
+                                        </dt>
+                                        <dd>Any element node</dd>
+                                        
+                                    </dl>
+                                </dd>
+
+                                
+
+                                
+
+                                <dt>Examples</dt>
+
+                                <dd>
+                                    <dl class="code-examples">
+                                        
+                                        <dt><code>//b[pmd:endLine(.) == pmd:startLine(.)]</code></dt>
+                                        <dd>Matches any <code>&lt;b&gt;</code> node which doesn't span more than one line.</dd>
+                                        
+                                    </dl>
+                                </dd>
+                                
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+
+
+        
+
+        
+
+        <tr data-toggle="collapse" id="pmd-startColumn" data-target="#pmd-startColumn-expand" class="accordion-toggle">
+
+            <td>startColumn</td>
+            <td>Returns the start column of the given node (inclusive)</td>
+            <td>
+                <button type="button" class="btn btn-link"><i class="fa fa-ellipsis-h"></i></button>
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="4" class="hiddenRow">
+                <div class="accordion-body collapse" id="pmd-startColumn-expand">
+
+                    <div style="margin-left: 15px" class="xpath-fun-doc">
+
+                        <!-- Yeah the ID is duplicated but it's ok on my browser and makes -->
+                        <!--links somehow work when details are collapsed -->
+                        <h4 class="fun-details-header" id="pmd-startColumn">
+                            <span class="fun-ns">pmd:</span><span class="fun-name">startColumn</span><span class="fun-ns">(xs:element) as xs:int</span>
+                        </h4>
+
+                        <div style="margin-left: 30px">
+
+                            <dl>
+                                <dd>Returns the column number where the node starts in the source file.
+Column numbers are 1-based. The start column is inclusive.
+</dd>
+                                
+                                <dt>Since</dt>
+                                <dd>PMD 6.44.0</dd>
+                                
+                                <dt>Remarks</dt>
+                                <dd>The function is not context-dependent, but takes a node as its first parameter.
+The function is only available in XPath 2.0.
+</dd>
+
+                                
+
+                                <dt>Parameters</dt>
+
+                                <dd>
+                                    <dl>
+                                        
+                                        <dt>
+                                            <span class="param-name">element</span>
+                                            <span class="param-type"> as xs:element</span>
+                                        </dt>
+                                        <dd>Any element node</dd>
+                                        
+                                    </dl>
+                                </dd>
+
+                                
+
+                                
+
+                                <dt>Examples</dt>
+
+                                <dd>
+                                    <dl class="code-examples">
+                                        
+                                        <dt><code>//b[pmd:startColumn(.) = 1]</code></dt>
+                                        <dd>Matches any <code>&lt;b&gt;</code> node which starts on the first column of a line</dd>
+                                        
+                                    </dl>
+                                </dd>
+                                
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+
+
+        
+
+        
+
+        <tr data-toggle="collapse" id="pmd-endColumn" data-target="#pmd-endColumn-expand" class="accordion-toggle">
+
+            <td>endColumn</td>
+            <td>Returns the end column of the given node (exclusive)</td>
+            <td>
+                <button type="button" class="btn btn-link"><i class="fa fa-ellipsis-h"></i></button>
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="4" class="hiddenRow">
+                <div class="accordion-body collapse" id="pmd-endColumn-expand">
+
+                    <div style="margin-left: 15px" class="xpath-fun-doc">
+
+                        <!-- Yeah the ID is duplicated but it's ok on my browser and makes -->
+                        <!--links somehow work when details are collapsed -->
+                        <h4 class="fun-details-header" id="pmd-endColumn">
+                            <span class="fun-ns">pmd:</span><span class="fun-name">endColumn</span><span class="fun-ns">(xs:element) as xs:int</span>
+                        </h4>
+
+                        <div style="margin-left: 30px">
+
+                            <dl>
+                                <dd>Returns the column number where the node ends in the source file.
+Column numbers are 1-based. The end column is exclusive.
+</dd>
+                                
+                                <dt>Since</dt>
+                                <dd>PMD 6.44.0</dd>
+                                
+                                <dt>Remarks</dt>
+                                <dd>The function is not context-dependent, but takes a node as its first parameter.
+The function is only available in XPath 2.0.
+</dd>
+
+                                
+
+                                <dt>Parameters</dt>
+
+                                <dd>
+                                    <dl>
+                                        
+                                        <dt>
+                                            <span class="param-name">element</span>
+                                            <span class="param-type"> as xs:element</span>
+                                        </dt>
+                                        <dd>Any element node</dd>
+                                        
+                                    </dl>
+                                </dd>
+
+                                
+
+                                
+
+                                <dt>Examples</dt>
+
+                                <dd>
+                                    <dl class="code-examples">
+                                        
+                                        <dt><code>//b[pmd:startLine(.) = pmd:endLine(.) and pmd:endColumn(.) - pmd:startColumn(.) = 1]</code></dt>
+                                        <dd>Matches any <code>&lt;b&gt;</code> node which spans exactly one character</dd>
                                         
                                     </dl>
                                 </dd>
@@ -1753,6 +2086,7 @@ information from the AST.</p>
 
                             <dl>
                                 <dd>Returns true if the context node's static Java type is a subtype of the given type. This tests for the resolved type of the Java construct, not the type of the AST node. For example, the AST node for a literal (e.g. <code>5d</code>) has type ASTLiteral, however this function will compare the type of the literal (eg here, <code>double</code>) against the argument.</dd>
+                                
                                 <dt>Remarks</dt>
                                 <dd>The context node must be a <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.44.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/TypeNode.html#"><code>TypeNode</code></a></dd>
 
@@ -1827,6 +2161,7 @@ information from the AST.</p>
 
                             <dl>
                                 <dd>Returns true if the context node's static type is exactly the given type. In particular, returns false if the context node's type is a subtype of the given type.</dd>
+                                
                                 <dt>Remarks</dt>
                                 <dd>The context node must be a <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.44.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/TypeNode.html#"><code>TypeNode</code></a></dd>
 
@@ -1898,6 +2233,7 @@ information from the AST.</p>
 
                             <dl>
                                 <dd>Returns the value of the metric as evaluated on the context node</dd>
+                                
                                 <dt>Remarks</dt>
                                 <dd>The context node must be a <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.44.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTAnyTypeDeclaration.html#"><code>ASTAnyTypeDeclaration</code></a> or a <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.44.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/MethodLikeNode.html#"><code>MethodLikeNode</code></a></dd>
 
@@ -1982,7 +2318,7 @@ deprecated and whose usages should be replaced with uses of <code class="languag
             &copy;2022 PMD Open Source Project. All rights
             reserved. <br />
             <span>Page last updated:</span>
-            February 2020 (6.22.0)<br /> Site last generated: Mar 24, 2022 <br />
+            February 2020 (6.22.0)<br /> Site last generated: Mar 25, 2022 <br />
             <p>
                 <img src="images/pmd-logo-small.png" alt="Company
                 logo"/>
