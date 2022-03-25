@@ -20,7 +20,7 @@ import me.tongfei.progressbar.ProgressBarStyle;
 
 /**
  * Collects runtime analysis statistics and displays them live on command line output.
- * Toggled through -progress command line argument.
+ * Toggled off through --no-progress command line argument.
  */
 public final class ProgressBarListener implements GlobalAnalysisListener {
     private final ProgressBar progressBar;
@@ -29,6 +29,7 @@ public final class ProgressBarListener implements GlobalAnalysisListener {
     
     public ProgressBarListener(int totalFiles, Consumer<String> loggingFunction) {
         progressBar = new ProgressBarBuilder()
+                .setTaskName("Processing")
                 .setInitialMax(totalFiles)
                 .setStyle(ProgressBarStyle.ASCII)
                 .continuousUpdate()
