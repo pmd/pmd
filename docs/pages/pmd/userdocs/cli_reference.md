@@ -207,7 +207,7 @@ Example:
 
 *   [apex](pmd_rules_apex.html) (Salesforce Apex)
 *   [java](pmd_rules_java.html)
-    *   [Supported Versions](pmd_languages_java.html)
+    *   [Supported Versions](pmd_languages_java_versions.html)
 *   [ecmascript](pmd_rules_ecmascript.html) (JavaScript)
 *   [jsp](pmd_rules_jsp.html)
 *   [modelica](pmd_rules_modelica.html)
