@@ -127,6 +127,9 @@ The CLI itself remains compatible, if you run PMD via command-line, no action is
     *   [#3812](https://github.com/pmd/pmd/issues/3812): \[doc] Documentation website table of contents broken on pages with many subheadings
 *   java
     *   [#3809](https://github.com/pmd/pmd/issues/3809): \[java] Support JDK 18
+*   java-design
+    *   [#3850](https://github.com/pmd/pmd/issues/3850): \[java] ImmutableField - false negative when field assigned in constructor conditionally
+    *   [#3851](https://github.com/pmd/pmd/issues/3851): \[java] ClassWithOnlyPrivateConstructorsShouldBeFinal - false negative when a compilation unit contains two class declarations
 *   xml
     *   [#2766](https://github.com/pmd/pmd/issues/2766): \[xml] XMLNS prefix is not pre-declared in xpath query
     *   [#3863](https://github.com/pmd/pmd/issues/3863): \[xml] Make XPath rules work exactly as in the XPath spec
@@ -166,7 +169,6 @@ The CLI itself remains compatible, if you run PMD via command-line, no action is
     This interface will change in PMD 7 to support read/write operations
     and other things. You don't need to use it in PMD 6, as {% jdoc core::lang.document.FileCollector %}
     decouples you from this. A file collector is available through {% jdoc !!core::PmdAnalysis#files() %}.
-
 
 ### External Contributions
 
