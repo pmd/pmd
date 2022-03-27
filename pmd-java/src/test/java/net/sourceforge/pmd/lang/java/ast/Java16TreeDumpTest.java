@@ -19,7 +19,6 @@ public class Java16TreeDumpTest extends BaseTreeDumpTest {
     private final JavaParsingHelper java16 =
             JavaParsingHelper.WITH_PROCESSING.withDefaultVersion("16")
                     .withResourceContext(Java16TreeDumpTest.class, "jdkversiontests/java16/");
-    private final JavaParsingHelper java16p = java16.withDefaultVersion("16-preview");
     private final JavaParsingHelper java15 = java16.withDefaultVersion("15");
 
     public Java16TreeDumpTest() {
@@ -116,6 +115,5 @@ public class Java16TreeDumpTest extends BaseTreeDumpTest {
     @Test
     public void sealedAndNonSealedIdentifiers() {
         doTest("NonSealedIdentifier");
-        java16p.parseResource("NonSealedIdentifier.java"); // make sure we can parse it with preview as well
     }
 }

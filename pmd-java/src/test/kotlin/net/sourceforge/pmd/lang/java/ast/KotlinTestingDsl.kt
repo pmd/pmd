@@ -22,8 +22,9 @@ enum class JavaVersion : Comparable<JavaVersion> {
     J13,
     J14,
     J15,
-    J16, J16__PREVIEW,
-    J17, J17__PREVIEW;
+    J16,
+    J17, J17__PREVIEW,
+    J18, J18__PREVIEW;
 
     /** Name suitable for use with e.g. [JavaParsingHelper.parse] */
     val pmdName: String = name.removePrefix("J").replaceFirst("__", "-").replace('_', '.').toLowerCase()
@@ -46,6 +47,13 @@ enum class JavaVersion : Comparable<JavaVersion> {
     companion object {
         val Latest = values().last()
         val Earliest = values().first()
+
+        fun since(v: JavaVersion) = v.rangeTo(Latest)
+
+        fun except(v1: JavaVersion, vararg versions: JavaVersion) =
+                values().toList() - v1 - versions
+
+        fun except(versions: List<JavaVersion>) = values().toList() - versions
     }
 }
 
