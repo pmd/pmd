@@ -171,5 +171,10 @@ The CLI itself remains compatible, if you run PMD via command-line, no action is
 *   [#3811](https://github.com/pmd/pmd/pull/3811): \[doc] Improve "Edit me on github" button - [@btjiong](https://github.com/btjiong)
 *   [#3836](https://github.com/pmd/pmd/pull/3836): \[doc] Make TOC scrollable when too many subheadings - [@JerritEic](https://github.com/JerritEic)
 
+### Stats
+* 124 commits
+* 23 closed tickets & PRs
+* Days since last release: 29
+
 {% endtocmaker %}
 
