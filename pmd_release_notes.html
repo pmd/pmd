@@ -1030,7 +1030,26 @@
             
 
                 
-                <li><a href="pmd_java_metrics_index.html">Java code metrics</a></li>
+                
+                <li class="subfolders">
+                    <a href="#">Java Support</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_languages_java.html">Java Versions</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_java_metrics_index.html">Java Code Metrics</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
                 
 
             
@@ -1457,6 +1476,21 @@
 
 <h3 id="new-and-noteworthy">New and noteworthy</h3>
 
+<h4 id="java-18-support">Java 18 Support</h4>
+
+<p>This release of PMD brings support for Java 18. There are no new standard language features.</p>
+
+<p>PMD also supports <a href="https://openjdk.java.net/jeps/420">JEP 420: Pattern Matching for switch (Second Preview)</a> as a
+preview language feature. In order to analyze a project with PMD that uses these language features,
+you’ll need to enable it via the environment variable <code class="language-plaintext highlighter-rouge">PMD_JAVA_OPTS</code> and select the new language
+version <code class="language-plaintext highlighter-rouge">18-preview</code>:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>export PMD_JAVA_OPTS=--enable-preview
+./run.sh pmd -language java -version 18-preview ...
+</code></pre></div></div>
+
+<p>Note: Support for Java 16 preview language features have been removed. The version “16-preview” is no longer available.</p>
+
 <h4 id="better-xml-xpath-support">Better XML XPath support</h4>
 
 <p>The new rule class <a href="https://docs.pmd-code.org/apidocs/pmd-xml/6.44.0-SNAPSHOT/net/sourceforge/pmd/lang/xml/rule/DomXPathRule.html#"><code>DomXPathRule</code></a> is intended to replace
@@ -1550,13 +1584,25 @@ The CLI itself remains compatible, if you run PMD via command-line, no action is
   </li>
   <li>core
     <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/2693">#2693</a>: [ci] Add integration tests with real open-source projects</li>
       <li><a href="https://github.com/pmd/pmd/issues/3299">#3299</a>: [core] Deprecate system properties of PMDCommandLineInterface</li>
+    </ul>
+  </li>
+  <li>java
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/3809">#3809</a>: [java] Support JDK 18</li>
     </ul>
   </li>
   <li>doc
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/2504">#2504</a>: [doc] Improve “Edit me on github” button</li>
       <li><a href="https://github.com/pmd/pmd/issues/3812">#3812</a>: [doc] Documentation website table of contents broken on pages with many subheadings</li>
+    </ul>
+  </li>
+  <li>java-design
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/3850">#3850</a>: [java] ImmutableField - false negative when field assigned in constructor conditionally</li>
+      <li><a href="https://github.com/pmd/pmd/issues/3851">#3851</a>: [java] ClassWithOnlyPrivateConstructorsShouldBeFinal - false negative when a compilation unit contains two class declarations</li>
     </ul>
   </li>
   <li>xml
@@ -1652,7 +1698,7 @@ decouples you from this. A file collector is available through <a href="https://
         <div class="col-lg-12 footer">
             &copy;2022 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Mar 25, 2022 <br />
+             Site last generated: Mar 27, 2022 <br />
             <p>
                 <img src="images/pmd-logo-small.png" alt="Company
                 logo"/>

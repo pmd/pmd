@@ -4,9 +4,9 @@
     <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="Learn how to define your own properties both for Java and XPath rules.">
-<meta name="keywords" content="extendinguserdocs,  ">
-<title>Defining rule properties | PMD Source Code Analyzer</title>
+<meta name="description" content="">
+<meta name="keywords" content=" ">
+<title>Supported Java Versions | PMD Source Code Analyzer</title>
 <link rel="stylesheet" href="css/syntax.css">
 
 
@@ -140,7 +140,7 @@
                                 searchInput: document.getElementById('search-input'),
                                 resultsContainer: document.getElementById('results-container'),
                                 dataSource: 'search.json',
-                                searchResultTemplate: '<li><a href="{url}" title="Defining rule properties">{title}</a></li>',
+                                searchResultTemplate: '<li><a href="{url}" title="Supported Java Versions">{title}</a></li>',
                     noResultsText: 'No results found.',
                             limit: 10,
                             fuzzy: true,
@@ -414,7 +414,7 @@
                         
                         
                         
-                        <li class="active"><a href="pmd_userdocs_extending_defining_properties.html">Defining rule properties</a></li>
+                        <li><a href="pmd_userdocs_extending_defining_properties.html">Defining rule properties</a></li>
                         
                         
                         
@@ -1037,7 +1037,7 @@
                         
                         
                         
-                        <li><a href="pmd_languages_java.html">Java Versions</a></li>
+                        <li class="active"><a href="pmd_languages_java.html">Java Versions</a></li>
                         
                         
                         
@@ -1441,10 +1441,10 @@
             <a href="./" role="button"
                 ><i class="fa fa-home fa-lg"></i
             ></a>
-            » Defining rule properties   
+            » Supported Java Versions   
             <a
                 target="_blank"
-                href="https://github.com/pmd/pmd/blob/master/docs/pages/pmd/userdocs/extending/defining_properties.md"
+                href="https://github.com/pmd/pmd/blob/master/docs/pages/pmd/languages/java.md"
                 class="pull-right"
                 role="button"
                 ><i class="fa fa-github fa-lg"></i> Edit on GitHub</a
@@ -1458,233 +1458,135 @@
 
 
 <div class="post-header">
-   <h1 class="post-title-main">Defining rule properties</h1>
+   <h1 class="post-title-main">Supported Java Versions</h1>
 </div>
 
 
 
-<div class="post-content" data-github-edit-url="https://github.com/pmd/pmd/blob/master/docs/pages/pmd/userdocs/extending/defining_properties.md">
+<div class="post-content" data-github-edit-url="https://github.com/pmd/pmd/blob/master/docs/pages/pmd/languages/java.md">
 
-   
-    <div class="summary">Learn how to define your own properties both for Java and XPath rules.</div>
    
     <div id="inline-toc"><!-- empty, move TOC here when screen size too small --></div>
     
-  
-<p>Rule properties are a way to make your rules configurable directly from the
-ruleset XML. Their usage is described on the <a href="pmd_userdocs_configuring_rules.html#rule-properties">Configuring Rules</a> page.</p>
+  <h2 id="overview-of-supported-java-language-versions">Overview of supported Java language versions</h2>
 
-<p>If you’re a rule developer, you may want to think about what would be useful for
-a user of your rule to parameterise. It could be a numeric report level, a boolean
-flag changing the behaviour of your rule… Chances are there <em>is</em> some detail
-that can be abstracted away from your implementation, and in that case, this
-page can help you squeeze that sweet flexibility out of your rule.</p>
-
-<h2 id="overview-of-properties">Overview of properties</h2>
-
-<p>The basic thing you need to do as a developer is to define a <strong>property descriptor</strong> and declare that your rule uses it. A property descriptor defines a number of attributes for your property:</p>
-<ul>
-  <li>Its <em>name</em>, with which the user will refer to your property;</li>
-  <li>Its <em>description</em>, for documentation purposes;</li>
-  <li>Its <em>default value</em></li>
-</ul>
-
-<p>Don’t worry, all of these attributes can be specified in a single Java statement (or xml element for XPath rules).</p>
-
-<h2 id="for-java-rules">For Java rules</h2>
-
-<p>The procedure to define a property is quite straightforward:</p>
-<ul>
-  <li>Create a property descriptor of the type you want, by using a
-builder from <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.44.0-SNAPSHOT/net/sourceforge/pmd/properties/PropertyFactory.html#"><code>PropertyFactory</code></a></li>
-  <li>Call <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.44.0-SNAPSHOT/net/sourceforge/pmd/properties/PropertySource.html#definePropertyDescriptor(net.sourceforge.pmd.properties.PropertyDescriptor)"><code>definePropertyDescriptor(PropertyDescriptor)</code></a>` in the rule’s noarg constructor.</li>
-</ul>
-
-<p>You can then retrieve the value of the property at any time using <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.44.0-SNAPSHOT/net/sourceforge/pmd/properties/PropertySource.html#getProperty(net.sourceforge.pmd.properties.PropertyDescriptor)"><code>getProperty(PropertyDescriptor)</code></a>.</p>
-
-<h3 id="creating-a-descriptor">Creating a descriptor</h3>
-
-<p>Properties can be built using type-specific <strong>builders</strong>, which can be obtained
-from the factory methods of <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.44.0-SNAPSHOT/net/sourceforge/pmd/properties/PropertyFactory.html#"><code>PropertyFactory</code></a>. For example, to build a
-string property, you’d call</p>
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">PropertyFactory</span><span class="o">.</span><span class="na">stringProperty</span><span class="o">(</span><span class="s">"myProperty"</span><span class="o">)</span>
-               <span class="o">.</span><span class="na">desc</span><span class="o">(</span><span class="s">"This is my property"</span><span class="o">)</span>
-               <span class="o">.</span><span class="na">defaultValue</span><span class="o">(</span><span class="s">"foo"</span><span class="o">)</span>
-               <span class="o">.</span><span class="na">build</span><span class="o">();</span>
-</code></pre></div></div>
-
-<p>This is fairly more readable than a constructor call, but keep in mind the description and the default value are not optional.</p>
-
-<div class="alert alert-info" role="alert"><i class="fa fa-info-circle"></i> <b>Note:</b> As of version 6.10.0, all property concrete classes are deprecated for
-removal in 7.0.0. See the <a href="pmd_next_major_development.html#properties-framework">detailed list of planned removals</a> for
-information about how to migrate.</div>
-
-<p>For <strong>numeric properties</strong>, you can add constraints on the range of acceptable values, e.g.</p>
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">PropertyFactory</span><span class="o">.</span><span class="na">intProperty</span><span class="o">(</span><span class="s">"myIntProperty"</span><span class="o">)</span>
-               <span class="o">.</span><span class="na">desc</span><span class="o">(</span><span class="s">"This is my property"</span><span class="o">)</span>
-               <span class="o">.</span><span class="na">defaultValue</span><span class="o">(</span><span class="mi">3</span><span class="o">)</span>
-               <span class="o">.</span><span class="na">require</span><span class="o">(</span><span class="n">positive</span><span class="o">())</span>
-               <span class="o">.</span><span class="na">range</span><span class="o">(</span><span class="mi">0</span><span class="o">,</span> <span class="mi">100</span><span class="o">)</span>
-               <span class="o">.</span><span class="na">build</span><span class="o">();</span>
-</code></pre></div></div>
-
-<p>The <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.44.0-SNAPSHOT/net/sourceforge/pmd/properties/constraints/NumericConstraints.html#positive()"><code>positive</code></a> method is part of
-the <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.44.0-SNAPSHOT/net/sourceforge/pmd/properties/constraints/NumericConstraints.html#"><code>NumericConstraints</code></a> class, which provides some
-other constraints. The constraint mechanism will be completely unlocked with 7.0.0,
-since we’ll be migrating our API to Java 8.</p>
-
-<p><strong>Enumerated properties</strong> are a bit less straightforward to define, though they are
-arguably more powerful. These properties don’t have a specific value type, instead,
-you can choose any type of value, provided the values are from a closed set. To make
-that actionable, you give string labels to each of the acceptable values, and the user
-will provide one of those labels as a value in the XML. The property will give you back
-the associated value, not the label. Here’s an example:</p>
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">static</span> <span class="nc">Map</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">,</span> <span class="nc">ModeStrategy</span><span class="o">&gt;</span> <span class="n">map</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">HashMap</span><span class="o">&lt;&gt;();</span>
-
-<span class="kd">static</span> <span class="o">{</span>
-  <span class="n">map</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"easyMode"</span><span class="o">,</span> <span class="k">new</span> <span class="nc">EasyStrategy</span><span class="o">());</span>
-  <span class="n">map</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"hardMode"</span><span class="o">,</span> <span class="k">new</span> <span class="nc">HardStrategy</span><span class="o">());</span>
-<span class="o">}</span>
-
-<span class="kd">static</span> <span class="nc">PropertyDescriptor</span><span class="o">&lt;</span><span class="nc">ModeStrategy</span><span class="o">&gt;</span> <span class="n">modeProperty</span>
- <span class="o">=</span> <span class="nc">PropertyFactory</span><span class="o">.</span><span class="na">enumProperty</span><span class="o">(</span><span class="s">"modeProperty"</span><span class="o">,</span> <span class="n">map</span><span class="o">)</span>
-                  <span class="o">.</span><span class="na">desc</span><span class="o">(</span><span class="s">"This is my property"</span><span class="o">)</span>
-                  <span class="o">.</span><span class="na">defaultValue</span><span class="o">(</span><span class="k">new</span> <span class="nc">EasyStrategy</span><span class="o">())</span>
-                  <span class="o">.</span><span class="na">build</span><span class="o">();</span>
-</code></pre></div></div>
-
-<h3 id="example">Example</h3>
-
-<p>You can see an example of properties used in a PMD rule <a href="https://github.com/pmd/pmd/blob/d06b01785a712e61d33f366520f37c2473f5bd1a/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/SingularFieldRule.java#L43-L52">here</a>.
-There are several things to notice here:</p>
-<ul>
-  <li>The property descriptors are declared <code class="language-plaintext highlighter-rouge">static final</code>, which should generally be
-the case, as descriptors are immutable and can be shared between instances of the same rule;</li>
-  <li>The property is declared using <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.44.0-SNAPSHOT/net/sourceforge/pmd/properties/PropertySource.html#definePropertyDescriptor(net.sourceforge.pmd.properties.PropertyDescriptor)"><code>definePropertyDescriptor</code></a>` <em>in the constructor</em>,
-which ensures the property gets recognised by PMD at the time the properties
-are overridden (which happens before rule execution);</li>
-  <li>The value of the property is <em>not retrieved in the constructor</em>, but in one of
-the <code class="language-plaintext highlighter-rouge">visit</code> methods (typically on the highest node in the tree, since the property
-doesn’t change).</li>
-</ul>
-
-<h2 id="for-xpath-rules">For XPath rules</h2>
-
-<p>XPath rules can also define their own properties. To do so, you must add a <code class="language-plaintext highlighter-rouge">property</code> element in the <code class="language-plaintext highlighter-rouge">properties</code> element of your rule, which <strong>declares the <code class="language-plaintext highlighter-rouge">type</code> attribute</strong>. This attribute conditions what type the underlying property has, and can have the following values:</p>
+<p>Usually the latest non-preview Java Version is the default version.</p>
 
 <table>
   <thead>
     <tr>
-      <th><code class="language-plaintext highlighter-rouge">type</code> attribute</th>
-      <th>XSD type</th>
+      <th>Java Version</th>
+      <th>Alias</th>
+      <th>Supported by PMD since</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td>Integer</td>
-      <td>xs:integer</td>
+      <td>18-preview</td>
+      <td> </td>
+      <td>6.44.0</td>
     </tr>
     <tr>
-      <td>Long</td>
-      <td>xs:integer</td>
+      <td>18 (default)</td>
+      <td> </td>
+      <td>6.44.0</td>
     </tr>
     <tr>
-      <td>Double</td>
-      <td>xs:decimal</td>
+      <td>17-preview</td>
+      <td> </td>
+      <td>6.37.0</td>
     </tr>
     <tr>
-      <td>Boolean</td>
-      <td>xs:boolean</td>
+      <td>17</td>
+      <td> </td>
+      <td>6.37.0</td>
     </tr>
     <tr>
-      <td>String</td>
-      <td>xs:string</td>
+      <td>16</td>
+      <td> </td>
+      <td>6.32.0</td>
     </tr>
     <tr>
-      <td>Character</td>
-      <td>xs:string</td>
+      <td>15</td>
+      <td> </td>
+      <td>6.27.0</td>
     </tr>
     <tr>
-      <td>Regex</td>
-      <td>xs:string</td>
+      <td>14</td>
+      <td> </td>
+      <td>6.22.0</td>
+    </tr>
+    <tr>
+      <td>13</td>
+      <td> </td>
+      <td>6.18.0</td>
+    </tr>
+    <tr>
+      <td>12</td>
+      <td> </td>
+      <td>6.13.0</td>
+    </tr>
+    <tr>
+      <td>11</td>
+      <td> </td>
+      <td>6.6.0</td>
+    </tr>
+    <tr>
+      <td>10</td>
+      <td>1.10</td>
+      <td>6.4.0</td>
+    </tr>
+    <tr>
+      <td>9</td>
+      <td>1.9</td>
+      <td>6.0.0</td>
+    </tr>
+    <tr>
+      <td>8</td>
+      <td>1.8</td>
+      <td>5.1.0</td>
+    </tr>
+    <tr>
+      <td>7</td>
+      <td>1.7</td>
+      <td>5.0.0</td>
+    </tr>
+    <tr>
+      <td>6</td>
+      <td>1.6</td>
+      <td>3.9</td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td>1.5</td>
+      <td>3.0</td>
+    </tr>
+    <tr>
+      <td>1.4</td>
+      <td> </td>
+      <td>1.2.2</td>
+    </tr>
+    <tr>
+      <td>1.3</td>
+      <td> </td>
+      <td>1.0.0</td>
     </tr>
   </tbody>
 </table>
 
-<div class="alert alert-info" role="alert"><i class="fa fa-info-circle"></i> <b>Note:</b> In XPath 1.0 mode, all values are actually represented as
-                    string values, which is mostly fine as there is no type
-                    checking. This is a problem when <a href="pmd_userdocs_extending_writing_xpath_rules.html#migrating-from-10-to-20">migrating from XPath 1.0
-                    to 2.0</a> though</div>
+<h2 id="using-java-preview-features">Using Java preview features</h2>
 
-<p>Note that enumerated properties are not available in XPath rules (yet?).</p>
+<p>In order to analyze a project with PMD that uses preview language features, you’ll need to enable
+it via the environment variable <code class="language-plaintext highlighter-rouge">PMD_JAVA_OPTS</code> and select the new language version, e.g. <code class="language-plaintext highlighter-rouge">18-preview</code>:</p>
 
-<p>Properties defined in XPath also <em>must</em> declare the <code class="language-plaintext highlighter-rouge">description</code> attribute.
-Numeric properties also expect the <code class="language-plaintext highlighter-rouge">min</code> and <code class="language-plaintext highlighter-rouge">max</code> attributes for now. Here are
-a few examples to sum it up:</p>
-
-<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"stringProp"</span> <span class="na">type=</span><span class="s">"Boolean"</span> <span class="na">value=</span><span class="s">"true"</span> <span class="na">description=</span><span class="s">"A BooleanProperty."</span><span class="nt">/&gt;</span>
-<span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"intProp"</span> <span class="na">type=</span><span class="s">"Integer"</span> <span class="na">value=</span><span class="s">"3"</span> <span class="na">min=</span><span class="s">"1"</span> <span class="na">max=</span><span class="s">"20"</span> <span class="na">description=</span><span class="s">"An IntegerProperty."</span><span class="nt">/&gt;</span>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>export PMD_JAVA_OPTS=--enable-preview
+./run.sh pmd -language java -version 18-preview ...
 </code></pre></div></div>
 
-<p>You can then use the property in XPath with the syntax <code class="language-plaintext highlighter-rouge">$propertyName</code>, for example:</p>
-
-<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">name=</span><span class="s">"MyXpathRule"</span> <span class="err">...</span><span class="nt">&gt;</span>
-  <span class="nt">&lt;properties&gt;</span>
-    <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"maxStatements"</span> <span class="na">type=</span><span class="s">"Integer"</span> <span class="na">value=</span><span class="s">"10"</span> <span class="na">min=</span><span class="s">"1"</span> <span class="na">max=</span><span class="s">"40"</span>
-              <span class="na">description=</span><span class="s">"Max number of statements per method"</span><span class="nt">/&gt;</span>
-    <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"xpath"</span><span class="nt">&gt;</span>
-    <span class="cp">&lt;![CDATA[
-      //MethodDeclaration/Block[count(//BlockStatement) &gt;</span> $maxStatements]
-    ]]&gt;<span class="nt">&lt;/property&gt;</span>
-  <span class="nt">&lt;/properties&gt;</span>
-<span class="nt">&lt;/rule&gt;</span>
-</code></pre></div></div>
-
-<h3 id="multivalued-properties">Multivalued properties</h3>
-
-<p>Multivalued properties are also allowed and their <code class="language-plaintext highlighter-rouge">type</code> attribute has the form
-<code class="language-plaintext highlighter-rouge">List[Boolean]</code> or <code class="language-plaintext highlighter-rouge">List[Character]</code>, with every above type allowed. These
-properties <strong>require XPath 2.0</strong> to work properly, and make use of the
-<strong>sequence datatype</strong> provided by that language. You thus need to set the
-<code class="language-plaintext highlighter-rouge">version</code> property to <code class="language-plaintext highlighter-rouge">2.0</code> to use them. Properties can also declare the
-<code class="language-plaintext highlighter-rouge">delimiter</code> attribute.</p>
-
-<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">name=</span><span class="s">"MyXpathRule"</span> <span class="err">...</span><span class="nt">&gt;</span>
-  <span class="nt">&lt;properties&gt;</span>
-    <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"version"</span> <span class="na">value=</span><span class="s">"2.0"</span> <span class="nt">/&gt;</span>
-    <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"intProp"</span> <span class="na">type=</span><span class="s">"List[Integer]"</span> <span class="na">value=</span><span class="s">"1,2,5"</span> <span class="na">description=</span><span class="s">"An IntegerMultiProperty."</span> <span class="nt">/&gt;</span>
-    <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"reportedIdentifiers"</span> <span class="na">type=</span><span class="s">"List[String]"</span> <span class="na">value=</span><span class="s">"foo$bar"</span> <span class="na">delimiter=</span><span class="s">"$"</span>
-              <span class="na">description=</span><span class="s">"A StringMultiProperty."</span> <span class="nt">/&gt;</span>
-    <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"xpath"</span><span class="nt">&gt;</span>
-    <span class="cp">&lt;![CDATA[
-      //VariableDeclaratorId[@Image = $reportedIdentifiers]
-    ]]&gt;</span><span class="nt">&lt;/property&gt;</span>
-  <span class="nt">&lt;/properties&gt;</span>
-<span class="nt">&lt;/rule&gt;</span>
-</code></pre></div></div>
-
-<p>Notice that in the example above, <code class="language-plaintext highlighter-rouge">@Image = $reportedIdentifiers</code> doesn’t test
-<code class="language-plaintext highlighter-rouge">@Image</code> for equality with the whole sequence <code class="language-plaintext highlighter-rouge">('foo', 'bar')</code>, it tests whether
-the sequence <em>contains</em> <code class="language-plaintext highlighter-rouge">@Image</code>. That is, the above rule will report all variables
-named <code class="language-plaintext highlighter-rouge">foo</code> or <code class="language-plaintext highlighter-rouge">bar</code>. All other XPath 2.0 <a href="https://www.w3.org/TR/xpath-functions/#sequence-functions">functions operating on sequences</a>
-are supported.</p>
-
-<div class="alert alert-success" role="alert"><i class="fa fa-check-square-o"></i> <b>Tip:</b> You can also <a href="pmd_userdocs_extending_designer_reference.html#rule-properties">define properties directly in the designer</a></div>
+<p>Note: we only support preview language features for the latest two java versions.</p>
 
 
     <div class="tags">
-        
-        <b>Tags: </b>
-        
-        
-        
-        <a href="tag_extending.html" class="btn btn-default navbar-btn cursorNorm" role="button">extending</a>
-        
-        
-        
-        <a href="tag_userdocs.html" class="btn btn-default navbar-btn cursorNorm" role="button">userdocs</a>
-        
-        
         
     </div>
 
@@ -1702,7 +1604,7 @@ are supported.</p>
         github and create a PR:
         <a
             target="_blank"
-            href="https://github.com/pmd/pmd/blob/master/docs/pages/pmd/userdocs/extending/defining_properties.md"
+            href="https://github.com/pmd/pmd/blob/master/docs/pages/pmd/languages/java.md"
             role="button"
             ><i class="fa fa-github fa-lg"></i> Edit on GitHub</a
         >
@@ -1713,8 +1615,7 @@ are supported.</p>
         <div class="col-lg-12 footer">
             &copy;2022 PMD Open Source Project. All rights
             reserved. <br />
-            <span>Page last updated:</span>
-            February 2020 (6.22.0)<br /> Site last generated: Mar 27, 2022 <br />
+             Site last generated: Mar 27, 2022 <br />
             <p>
                 <img src="images/pmd-logo-small.png" alt="Company
                 logo"/>
