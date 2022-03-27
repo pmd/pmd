@@ -174,7 +174,7 @@
 
 
 <ul id="mysidebar" class="nav">
-    <li class="sidebarTitle">PMD 6.44.0-SNAPSHOT</li>
+    <li class="sidebarTitle">PMD 6.44.0</li>
     
     
     
@@ -1468,9 +1468,9 @@
    
     <div id="inline-toc"><!-- empty, move TOC here when screen size too small --></div>
     
-  <h2 id="26-march-2022---6440-snapshot">26-March-2022 - 6.44.0-SNAPSHOT</h2>
+  <h2 id="27-march-2022---6440">27-March-2022 - 6.44.0</h2>
 
-<p>The PMD team is pleased to announce PMD 6.44.0-SNAPSHOT.</p>
+<p>The PMD team is pleased to announce PMD 6.44.0.</p>
 
 <p>This is a minor release.</p>
 
@@ -1493,7 +1493,7 @@ version <code class="language-plaintext highlighter-rouge">18-preview</code>:</p
 
 <h4 id="better-xml-xpath-support">Better XML XPath support</h4>
 
-<p>The new rule class <a href="https://docs.pmd-code.org/apidocs/pmd-xml/6.44.0-SNAPSHOT/net/sourceforge/pmd/lang/xml/rule/DomXPathRule.html#"><code>DomXPathRule</code></a> is intended to replace
+<p>The new rule class <a href="https://docs.pmd-code.org/apidocs/pmd-xml/6.44.0/net/sourceforge/pmd/lang/xml/rule/DomXPathRule.html#"><code>DomXPathRule</code></a> is intended to replace
 usage of the <code class="language-plaintext highlighter-rouge">XPathRule</code> for XML rules. This rule executes the XPath query in a different
 way, which sticks to the XPath specification. This means the expression is interpreted
 the same way in PMD as in all other XPath development tools that stick to the standard.
@@ -1518,7 +1518,7 @@ attribute with <code class="language-plaintext highlighter-rouge">net.sourceforg
 </code></pre></div></div>
 
 <p>The rule is more powerful than <code class="language-plaintext highlighter-rouge">XPathRule</code>, as it can now handle XML namespaces,
-comments and processing instructions. Please refer to the Javadoc of <a href="https://docs.pmd-code.org/apidocs/pmd-xml/6.44.0-SNAPSHOT/net/sourceforge/pmd/lang/xml/rule/DomXPathRule.html#"><code>DomXPathRule</code></a>
+comments and processing instructions. Please refer to the Javadoc of <a href="https://docs.pmd-code.org/apidocs/pmd-xml/6.44.0/net/sourceforge/pmd/lang/xml/rule/DomXPathRule.html#"><code>DomXPathRule</code></a>
 for information about the differences with <code class="language-plaintext highlighter-rouge">XPathRule</code> and examples.</p>
 
 <p><code class="language-plaintext highlighter-rouge">XPathRule</code> is still perfectly supported for all other languages, including Apex and Java.</p>
@@ -1538,9 +1538,9 @@ which uses exclusive end indices.</p>
 
 <h4 id="new-programmatic-api">New programmatic API</h4>
 
-<p>This release introduces a new programmatic API to replace the inflexible <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.44.0-SNAPSHOT/net/sourceforge/pmd/PMD.html#"><code>PMD</code></a> class.
-Programmatic execution of PMD should now be done with a <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.44.0-SNAPSHOT/net/sourceforge/pmd/PMDConfiguration.html#"><code>PMDConfiguration</code></a>
-and a <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.44.0-SNAPSHOT/net/sourceforge/pmd/PmdAnalysis.html#"><code>PmdAnalysis</code></a>, for instance:</p>
+<p>This release introduces a new programmatic API to replace the inflexible <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.44.0/net/sourceforge/pmd/PMD.html#"><code>PMD</code></a> class.
+Programmatic execution of PMD should now be done with a <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.44.0/net/sourceforge/pmd/PMDConfiguration.html#"><code>PMDConfiguration</code></a>
+and a <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.44.0/net/sourceforge/pmd/PmdAnalysis.html#"><code>PmdAnalysis</code></a>, for instance:</p>
 
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">PMDConfiguration</span> <span class="n">config</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">PMDConfiguration</span><span class="o">();</span>
 <span class="n">config</span><span class="o">.</span><span class="na">setDefaultLanguageVersion</span><span class="o">(</span><span class="nc">LanguageRegistry</span><span class="o">.</span><span class="na">findLanguageByTerseName</span><span class="o">(</span><span class="s">"java"</span><span class="o">).</span><span class="na">getVersion</span><span class="o">(</span><span class="s">"11"</span><span class="o">));</span>
@@ -1618,29 +1618,29 @@ The CLI itself remains compatible, if you run PMD via command-line, no action is
 <h4 id="deprecated-api">Deprecated API</h4>
 
 <ul>
-  <li>Several members of <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.44.0-SNAPSHOT/net/sourceforge/pmd/PMD.html#"><code>PMD</code></a> have been newly deprecated, including:
+  <li>Several members of <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.44.0/net/sourceforge/pmd/PMD.html#"><code>PMD</code></a> have been newly deprecated, including:
     <ul>
       <li><code class="language-plaintext highlighter-rouge">PMD#EOL</code>: use <code class="language-plaintext highlighter-rouge">System#lineSeparator()</code></li>
-      <li><code class="language-plaintext highlighter-rouge">PMD#SUPPRESS_MARKER</code>: use <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.44.0-SNAPSHOT/net/sourceforge/pmd/PMDConfiguration.html#DEFAULT_SUPPRESS_MARKER"><code>DEFAULT_SUPPRESS_MARKER</code></a></li>
+      <li><code class="language-plaintext highlighter-rouge">PMD#SUPPRESS_MARKER</code>: use <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.44.0/net/sourceforge/pmd/PMDConfiguration.html#DEFAULT_SUPPRESS_MARKER"><code>DEFAULT_SUPPRESS_MARKER</code></a></li>
       <li><code class="language-plaintext highlighter-rouge">PMD#processFiles</code>: use the <a href="#new-programmatic-api">new programmatic API</a></li>
       <li><code class="language-plaintext highlighter-rouge">PMD#getApplicableFiles</code>: is internal</li>
     </ul>
   </li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.44.0-SNAPSHOT/net/sourceforge/pmd/PMDConfiguration.html#prependClasspath(java.lang.String)"><code>PMDConfiguration#prependClasspath</code></a> is deprecated
-in favour of <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.44.0-SNAPSHOT/net/sourceforge/pmd/PMDConfiguration.html#prependAuxClasspath(java.lang.String)"><code>prependAuxClasspath</code></a>.</li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.44.0-SNAPSHOT/net/sourceforge/pmd/PMDConfiguration.html#setRuleSets(java.lang.String)"><code>PMDConfiguration#setRuleSets</code></a> and
-<a href="https://docs.pmd-code.org/apidocs/pmd-core/6.44.0-SNAPSHOT/net/sourceforge/pmd/PMDConfiguration.html#getRuleSets()"><code>getRuleSets</code></a> are deprecated. Use instead
-<a href="https://docs.pmd-code.org/apidocs/pmd-core/6.44.0-SNAPSHOT/net/sourceforge/pmd/PMDConfiguration.html#setRuleSets(java.util.List)"><code>setRuleSets</code></a>,
-<a href="https://docs.pmd-code.org/apidocs/pmd-core/6.44.0-SNAPSHOT/net/sourceforge/pmd/PMDConfiguration.html#addRuleSet(java.lang.String)"><code>addRuleSet</code></a>,
-and <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.44.0-SNAPSHOT/net/sourceforge/pmd/PMDConfiguration.html#getRuleSetPaths()"><code>getRuleSetPaths</code></a>.</li>
-  <li>Several members of <a href="https://docs.pmd-code.org/apidocs/pmd-test/6.44.0-SNAPSHOT/net/sourceforge/pmd/cli/BaseCLITest.html#"><code>BaseCLITest</code></a> have been deprecated with replacements.</li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.44.0/net/sourceforge/pmd/PMDConfiguration.html#prependClasspath(java.lang.String)"><code>PMDConfiguration#prependClasspath</code></a> is deprecated
+in favour of <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.44.0/net/sourceforge/pmd/PMDConfiguration.html#prependAuxClasspath(java.lang.String)"><code>prependAuxClasspath</code></a>.</li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.44.0/net/sourceforge/pmd/PMDConfiguration.html#setRuleSets(java.lang.String)"><code>PMDConfiguration#setRuleSets</code></a> and
+<a href="https://docs.pmd-code.org/apidocs/pmd-core/6.44.0/net/sourceforge/pmd/PMDConfiguration.html#getRuleSets()"><code>getRuleSets</code></a> are deprecated. Use instead
+<a href="https://docs.pmd-code.org/apidocs/pmd-core/6.44.0/net/sourceforge/pmd/PMDConfiguration.html#setRuleSets(java.util.List)"><code>setRuleSets</code></a>,
+<a href="https://docs.pmd-code.org/apidocs/pmd-core/6.44.0/net/sourceforge/pmd/PMDConfiguration.html#addRuleSet(java.lang.String)"><code>addRuleSet</code></a>,
+and <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.44.0/net/sourceforge/pmd/PMDConfiguration.html#getRuleSetPaths()"><code>getRuleSetPaths</code></a>.</li>
+  <li>Several members of <a href="https://docs.pmd-code.org/apidocs/pmd-test/6.44.0/net/sourceforge/pmd/cli/BaseCLITest.html#"><code>BaseCLITest</code></a> have been deprecated with replacements.</li>
   <li>
-    <p>Several members of <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.44.0-SNAPSHOT/net/sourceforge/pmd/cli/PMDCommandLineInterface.html#"><code>PMDCommandLineInterface</code></a> have been explicitly deprecated.
+    <p>Several members of <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.44.0/net/sourceforge/pmd/cli/PMDCommandLineInterface.html#"><code>PMDCommandLineInterface</code></a> have been explicitly deprecated.
 The whole class however was deprecated long ago already with 6.30.0. It is internal API and should
 not be used.</p>
   </li>
-  <li>In modelica, the rule classes <a href="https://docs.pmd-code.org/apidocs/pmd-modelica/6.44.0-SNAPSHOT/net/sourceforge/pmd/lang/modelica/rule/AmbiguousResolutionRule.html#"><code>AmbiguousResolutionRule</code></a>
-and <a href="https://docs.pmd-code.org/apidocs/pmd-modelica/6.44.0-SNAPSHOT/net/sourceforge/pmd/lang/modelica/rule/ConnectUsingNonConnector.html#"><code>ConnectUsingNonConnector</code></a> have been deprecated,
+  <li>In modelica, the rule classes <a href="https://docs.pmd-code.org/apidocs/pmd-modelica/6.44.0/net/sourceforge/pmd/lang/modelica/rule/AmbiguousResolutionRule.html#"><code>AmbiguousResolutionRule</code></a>
+and <a href="https://docs.pmd-code.org/apidocs/pmd-modelica/6.44.0/net/sourceforge/pmd/lang/modelica/rule/ConnectUsingNonConnector.html#"><code>ConnectUsingNonConnector</code></a> have been deprecated,
 since they didn’t comply to the usual rule class naming conventions yet.
 The replacements are in the subpackage <code class="language-plaintext highlighter-rouge">bestpractices</code>.</li>
 </ul>
@@ -1650,12 +1650,12 @@ The replacements are in the subpackage <code class="language-plaintext highlight
 <ul>
   <li>
     <p>Together with the <a href="#new-programmatic-api">new programmatic API</a> the interface
-<a href="https://docs.pmd-code.org/apidocs/pmd-core/6.44.0-SNAPSHOT/net/sourceforge/pmd/lang/document/TextFile.html#"><code>TextFile</code></a> has been added as <em>experimental</em>. It intends
-to replace <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.44.0-SNAPSHOT/net/sourceforge/pmd/util/datasource/DataSource.html#"><code>DataSource</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.44.0-SNAPSHOT/net/sourceforge/pmd/cpd/SourceCode.html#"><code>SourceCode</code></a> in the long term.</p>
+<a href="https://docs.pmd-code.org/apidocs/pmd-core/6.44.0/net/sourceforge/pmd/lang/document/TextFile.html#"><code>TextFile</code></a> has been added as <em>experimental</em>. It intends
+to replace <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.44.0/net/sourceforge/pmd/util/datasource/DataSource.html#"><code>DataSource</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.44.0/net/sourceforge/pmd/cpd/SourceCode.html#"><code>SourceCode</code></a> in the long term.</p>
 
     <p>This interface will change in PMD 7 to support read/write operations
-and other things. You don’t need to use it in PMD 6, as <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.44.0-SNAPSHOT/net/sourceforge/pmd/lang/document/FileCollector.html#"><code>FileCollector</code></a>
-decouples you from this. A file collector is available through <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.44.0-SNAPSHOT/net/sourceforge/pmd/PmdAnalysis.html#files()"><code>PmdAnalysis#files</code></a>.</p>
+and other things. You don’t need to use it in PMD 6, as <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.44.0/net/sourceforge/pmd/lang/document/FileCollector.html#"><code>FileCollector</code></a>
+decouples you from this. A file collector is available through <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.44.0/net/sourceforge/pmd/PmdAnalysis.html#files()"><code>PmdAnalysis#files</code></a>.</p>
   </li>
 </ul>
 
@@ -1665,6 +1665,13 @@ decouples you from this. A file collector is available through <a href="https://
   <li><a href="https://github.com/pmd/pmd/pull/3773">#3773</a>: [apex] EagerlyLoadedDescribeSObjectResult false positives with SObjectField.getDescribe() - <a href="https://github.com/filiprafalowicz">@filiprafalowicz</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/3811">#3811</a>: [doc] Improve “Edit me on github” button - <a href="https://github.com/btjiong">@btjiong</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/3836">#3836</a>: [doc] Make TOC scrollable when too many subheadings - <a href="https://github.com/JerritEic">@JerritEic</a></li>
+</ul>
+
+<h3 id="stats">Stats</h3>
+<ul>
+  <li>124 commits</li>
+  <li>23 closed tickets &amp; PRs</li>
+  <li>Days since last release: 29</li>
 </ul>
 
 
