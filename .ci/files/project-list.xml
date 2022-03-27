@@ -146,4 +146,34 @@ fi
     <tag>jdk-11+28</tag>
     <src-subpath>src/java.base</src-subpath>
   </project>
+
+  <project>
+    <name>Schedul-o-matic-9000</name>
+    <type>git</type>
+    <connection>https://github.com/pmd/Schedul-o-matic-9000</connection>
+    <!-- 
+    <connection>https://github.com/SalesforceLabs/Schedul-o-matic-9000</connection>
+    Note: using forked repo from pmd, as original repo doesn't have any useful tags/branches
+    -->
+    <tag>pmd-regression-test</tag>
+  </project>
+
+  <project>
+    <name>fflib-apex-common</name>
+    <type>git</type>
+    <connection>https://github.com/pmd/fflib-apex-common</connection>
+    <!-- 
+    <connection>https://github.com/apex-enterprise-patterns/fflib-apex-common</connection>
+    Note: using forked repo from pmd, as original repo doesn't have any useful tags/branches
+     -->
+    <tag>pmd-regression-test</tag>
+  </project>
+
+  <project>
+    <name>apex-link</name>
+    <type>git</type>
+    <connection>https://github.com/nawforce/apex-link</connection>
+    <tag>v2.3.0</tag>
+    <src-subpath>samples</src-subpath>
+  </project>
 </projectlist>
