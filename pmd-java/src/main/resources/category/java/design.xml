@@ -338,11 +338,17 @@ is invoked by a inner class.
             <property name="xpath">
                 <value>
 <![CDATA[
-//TypeDeclaration[count(../TypeDeclaration) = 1]/ClassOrInterfaceDeclaration
-[@Final = false()]
-[ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration[@Private = true()]]
-[not(./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration[(@Public = true()) or (@Protected = true()) or (@PackagePrivate = true())])]
-[not(.//ClassOrInterfaceDeclaration)]
+//TypeDeclaration
+  /ClassOrInterfaceDeclaration
+  [@Final = false()]
+  (: at least one private constructor :)
+  [ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration[@Private = true()]]
+  (: no public constructor :)
+  [not(./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration[(@Public = true()) or (@Protected = true()) or (@PackagePrivate = true())])]
+  (: not a base class in the same compilation unit :)
+  [not(@SimpleName = ../../TypeDeclaration/ClassOrInterfaceDeclaration/ExtendsList/ClassOrInterfaceType/@Image)]
+  (: not a base class for a inner class in the same compilation unit :)
+  [not(@SimpleName = .//ClassOrInterfaceDeclaration/ExtendsList/ClassOrInterfaceType/@Image)]
 ]]>
                 </value>
             </property>
