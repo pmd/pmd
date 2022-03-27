@@ -19,6 +19,20 @@ This is a {{ site.pmd.release_type }} release.
 
 ### New and noteworthy
 
+#### Java 18 Support
+
+This release of PMD brings support for Java 18. There are no new standard language features.
+
+PMD also supports [JEP 420: Pattern Matching for switch (Second Preview)](https://openjdk.java.net/jeps/420) as a
+preview language feature. In order to analyze a project with PMD that uses these language features,
+you'll need to enable it via the environment variable `PMD_JAVA_OPTS` and select the new language
+version `18-preview`:
+
+    export PMD_JAVA_OPTS=--enable-preview
+    ./run.sh pmd -language java -version 18-preview ...
+
+Note: Support for Java 16 preview language features have been removed. The version "16-preview" is no longer available.
+
 #### Better XML XPath support
 
 The new rule class {% jdoc xml::lang.xml.rule.DomXPathRule %} is intended to replace
@@ -111,6 +125,8 @@ The CLI itself remains compatible, if you run PMD via command-line, no action is
 *   doc
     *   [#2504](https://github.com/pmd/pmd/issues/2504): \[doc] Improve "Edit me on github" button
     *   [#3812](https://github.com/pmd/pmd/issues/3812): \[doc] Documentation website table of contents broken on pages with many subheadings
+*   java
+    *   [#3809](https://github.com/pmd/pmd/issues/3809): \[java] Support JDK 18
 *   xml
     *   [#2766](https://github.com/pmd/pmd/issues/2766): \[xml] XMLNS prefix is not pre-declared in xpath query
     *   [#3863](https://github.com/pmd/pmd/issues/3863): \[xml] Make XPath rules work exactly as in the XPath spec

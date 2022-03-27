@@ -1,4 +1,9 @@
 /**
+ * Support "JEP 420: Pattern Matching for switch (Second Preview)" for Java 18 Preview
+ * There were no grammar changes between 18-preview and 17-preview
+ * Remove support for Java 16 preview language features
+ * Andreas Dangel 03/2022
+ *====================================================================
  * Promote "JEP 409: Sealed Classes" as permanent language feature with Java 17.
  * Support "JEP 406: Pattern Matching for switch (Preview)" for Java 17 Preview.
  * Remove support for Java 15 preview language features
@@ -295,15 +300,11 @@ class JavaParserImpl {
 
 
   private boolean isRecordTypeSupported() {
-    return jdkVersion == 15 && preview || jdkVersion >= 16;
+    return jdkVersion >= 16;
   }
 
   private boolean localTypesSupported() {
     return isRecordTypeSupported();
-  }
-
-  private boolean isSealedClassSupported() {
-      return jdkVersion == 16 && preview || jdkVersion >= 17;
   }
 
   /**
