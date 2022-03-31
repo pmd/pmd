@@ -16,6 +16,9 @@ This is a {{ site.pmd.release_type }} release.
 
 ### Fixed Issues
 
+*   core
+    *   [#3884](https://github.com/pmd/pmd/issues/3884): \[core] XML report via ant task contains XML header twice
+
 ### API Changes
 
 ### External Contributions
