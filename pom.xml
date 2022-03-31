@@ -1084,6 +1084,7 @@
         <!-- java8 modules -->
         <module>pmd-apex-jorje</module>
         <module>pmd-apex</module>
+        <module>pmd-html</module>
         <module>pmd-java8</module>
         <module>pmd-javascript</module>
         <module>pmd-doc</module>

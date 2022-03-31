@@ -1,0 +1,22 @@
++- #document[]
+   +- #doctype[@Name = "html", @PublicId = "", @SystemId = ""]
+   +- #text[@Image = " ", @NormalizedText = " ", @Text = "
+"]
+   +- html[]
+   |  +- #text[@Image = " ", @NormalizedText = " ", @Text = "
+    "]
+   |  +- head[]
+   |  |  +- #text[@Image = "hello", @NormalizedText = "hello", @Text = "hello"]
+   |  +- #text[@Image = " ", @NormalizedText = " ", @Text = "
+    "]
+   |  +- body[]
+   |  |  +- #text[@Image = " ", @NormalizedText = " ", @Text = "
+        "]
+   |  |  +- h1[]
+   |  |  |  +- #text[@Image = "world", @NormalizedText = "world", @Text = "world"]
+   |  |  +- #text[@Image = " ", @NormalizedText = " ", @Text = "
+    "]
+   |  +- #text[@Image = " ", @NormalizedText = " ", @Text = "
+"]
+   +- #text[@Image = " ", @NormalizedText = " ", @Text = "
+"]
