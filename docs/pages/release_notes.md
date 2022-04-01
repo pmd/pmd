@@ -17,6 +17,8 @@ This is a {{ site.pmd.release_type }} release.
 ### Fixed Issues
 * core
   * [#3882](https://github.com/pmd/pmd/pull/3882): \[core] Fix AssertionError about exhaustive switch
+* java
+  * [#3889](https://github.com/pmd/pmd/pull/3889): \[java] Catch LinkageError in UselessOverridingMethodRule
 
 ### API Changes
 
