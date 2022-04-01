@@ -125,11 +125,12 @@ abstract class PmdRunnable implements Runnable {
                                LanguageVersion languageVersion,
                                String filename) throws FileAnalysisException {
 
+        SemanticErrorReporter reporter = SemanticErrorReporter.reportToLogger(LOGGER);
         ParserTask task = new ParserTask(
             languageVersion,
             filename,
             sourceCode,
-            SemanticErrorReporter.reportToLogger(LOGGER),
+            reporter,
             configuration.getClassLoader()
         );
 
@@ -142,6 +143,11 @@ abstract class PmdRunnable implements Runnable {
         Parser parser = handler.getParser();
 
         RootNode rootNode = parse(parser, task);
+
+        if (reporter.hasError()) {
+            reporter.info(rootNode, "Errors occurred in file, skipping rule analysis");
+            return;
+        }
 
         ruleSets.apply(rootNode, listener);
     }

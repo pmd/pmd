@@ -18,6 +18,18 @@ public interface SemanticErrorReporter {
 
 
     /**
+     * Report an informational message at the given location.
+     *
+     * @param location   Location where the message should be reported
+     * @param message    Message (rendered using a {@link MessageFormat})
+     * @param formatArgs Format arguments
+     */
+    default void info(Node location, String message, Object... formatArgs) {
+        // noop
+    }
+
+
+    /**
      * Report a warning at the given location. Warnings do not abort
      * the analysis.
      *
@@ -85,6 +97,11 @@ public interface SemanticErrorReporter {
                 String fullMessage = makeMessage(location, message, args);
                 logger.atLevel(level).log(fullMessage);
                 return fullMessage;
+            }
+
+            @Override
+            public void info(Node location, String message, Object... formatArgs) {
+                logMessage(Level.INFO, location, message, formatArgs);
             }
 
             @Override
