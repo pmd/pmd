@@ -7,14 +7,17 @@ package net.sourceforge.pmd.renderers;
 import static org.junit.Assert.assertEquals;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.charset.Charset;
 
+import org.apache.commons.io.FileUtils;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
 import net.sourceforge.pmd.FooRule;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Report.ConfigurationError;
 import net.sourceforge.pmd.Report.ProcessingError;
-import net.sourceforge.pmd.ReportTest;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RulePriority;
@@ -25,6 +28,9 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 
 public abstract class AbstractRendererTest {
+
+    @org.junit.Rule
+    public TemporaryFolder temporaryFolder = new TemporaryFolder();
 
     public abstract Renderer getRenderer();
 
@@ -100,6 +106,7 @@ public abstract class AbstractRendererTest {
     protected Rule createBooRule() {
         Rule booRule = new FooRule();
         booRule.setName("Boo");
+        booRule.setDescription("desc");
         booRule.setPriority(RulePriority.HIGH);
         return booRule;
     }
@@ -130,28 +137,32 @@ public abstract class AbstractRendererTest {
         theRule.setProperty(RuleWithProperties.STRING_PROPERTY_DESCRIPTOR,
                 "the string value\nsecond line with \"quotes\"");
         report.addRuleViolation(newRuleViolation(1, 1, 1, 1, theRule));
-        String rendered = ReportTest.render(getRenderer(), report);
+        String rendered = renderReport(getRenderer(), report);
         assertEquals(filter(getExpectedWithProperties()), filter(rendered));
     }
 
     @Test
     public void testRenderer() throws Exception {
+        testRenderer(Charset.defaultCharset());
+    }
+
+    protected void testRenderer(Charset expectedCharset) throws Exception {
         Report rep = reportOneViolation();
-        String actual = ReportTest.render(getRenderer(), rep);
+        String actual = renderReport(getRenderer(), rep, expectedCharset);
         assertEquals(filter(getExpected()), filter(actual));
     }
 
     @Test
     public void testRendererEmpty() throws Exception {
         Report rep = new Report();
-        String actual = ReportTest.render(getRenderer(), rep);
+        String actual = renderReport(getRenderer(), rep);
         assertEquals(filter(getExpectedEmpty()), filter(actual));
     }
 
     @Test
     public void testRendererMultiple() throws Exception {
         Report rep = reportTwoViolations();
-        String actual = ReportTest.render(getRenderer(), rep);
+        String actual = renderReport(getRenderer(), rep);
         assertEquals(filter(getExpectedMultiple()), filter(actual));
     }
 
@@ -160,7 +171,7 @@ public abstract class AbstractRendererTest {
         Report rep = new Report();
         Report.ProcessingError err = new Report.ProcessingError(new RuntimeException("Error"), "file");
         rep.addError(err);
-        String actual = ReportTest.render(getRenderer(), rep);
+        String actual = renderReport(getRenderer(), rep);
         assertEquals(filter(getExpectedError(err)), filter(actual));
     }
 
@@ -169,7 +180,7 @@ public abstract class AbstractRendererTest {
         Report rep = new Report();
         Report.ProcessingError err = new Report.ProcessingError(new NullPointerException(), "file");
         rep.addError(err);
-        String actual = ReportTest.render(getRenderer(), rep);
+        String actual = renderReport(getRenderer(), rep);
         assertEquals(filter(getExpectedErrorWithoutMessage(err)), filter(actual));
     }
 
@@ -178,7 +189,21 @@ public abstract class AbstractRendererTest {
         Report rep = new Report();
         Report.ConfigurationError err = new Report.ConfigurationError(new FooRule(), "a configuration error");
         rep.addConfigError(err);
-        String actual = ReportTest.render(getRenderer(), rep);
+        String actual = renderReport(getRenderer(), rep);
         assertEquals(filter(getExpectedError(err)), filter(actual));
+    }
+
+    protected String renderReport(Renderer renderer, Report report) throws IOException {
+        return renderReport(renderer, report, Charset.defaultCharset());
+    }
+
+    protected String renderReport(Renderer renderer, Report report, Charset expectedEncoding) throws IOException {
+        File file = temporaryFolder.newFile();
+        renderer.setReportFile(file.getAbsolutePath());
+        renderer.start();
+        renderer.renderFileReport(report);
+        renderer.end();
+        renderer.flush();
+        return FileUtils.readFileToString(file, expectedEncoding);
     }
 }
