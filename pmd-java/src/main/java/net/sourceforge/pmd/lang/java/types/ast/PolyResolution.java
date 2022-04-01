@@ -51,7 +51,7 @@ import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.java.ast.InvocationNode;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
-import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
+import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType;
@@ -541,7 +541,7 @@ final class PolyResolution {
             // numeric contexts, maybe
             BinaryOp op = ((ASTInfixExpression) papa).getOperator();
             JTypeMirror nodeType = ((ASTExpression) node).getTypeMirror();
-            JTypeMirror otherType = JavaRuleUtil.getOtherOperandIfInInfixExpr(node).getTypeMirror();
+            JTypeMirror otherType = JavaAstUtils.getOtherOperandIfInInfixExpr(node).getTypeMirror();
             JTypeMirror ctxType = ((ASTInfixExpression) papa).getTypeMirror();
             switch (op) {
             case CONDITIONAL_OR:

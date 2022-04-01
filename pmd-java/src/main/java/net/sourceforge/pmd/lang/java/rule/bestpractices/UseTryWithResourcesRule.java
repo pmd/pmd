@@ -13,8 +13,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTFinallyClause;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTTryStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeExpression;
+import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
-import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
@@ -45,7 +45,7 @@ public final class UseTryWithResourcesRule extends AbstractJavaRulechainRule {
                 ASTExpression closeTarget = method.getQualifier();
                 if (!(closeTarget instanceof ASTTypeExpression) // ignore static method calls
                         && TypeTestUtil.isA(AutoCloseable.class, closeTarget)
-                        && (isJava9OrLater || JavaRuleUtil.isReferenceToLocal(closeTarget))
+                        && (isJava9OrLater || JavaAstUtils.isReferenceToLocal(closeTarget))
                         || hasAutoClosableArguments(method)) {
                     addViolation(data, node);
                     break; // only report the first closeable

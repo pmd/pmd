@@ -39,7 +39,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTYieldStatement;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.JavaVisitorBase;
-import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
+import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.symbols.table.internal.AbruptCompletionAnalysis.ReachabilityVisitor.VisitResult;
 
 /**
@@ -184,7 +184,7 @@ final class AbruptCompletionAnalysis {
             recordReachableNode(node, data);
             boolean bodyCompletesNormally = node.getBody().acceptVisitor(this, data);
 
-            boolean isNotDoWhileTrue = !JavaRuleUtil.isBooleanLiteral(node.getCondition(), true);
+            boolean isNotDoWhileTrue = !JavaAstUtils.isBooleanLiteral(node.getCondition(), true);
 
             return isNotDoWhileTrue && (bodyCompletesNormally || data.containsContinue(node))
                 || data.containsBreak(node);
@@ -246,7 +246,7 @@ final class AbruptCompletionAnalysis {
             recordReachableNode(node, data);
 
             node.getBody().acceptVisitor(this, data);
-            boolean isNotWhileTrue = !JavaRuleUtil.isBooleanLiteral(node.getCondition(), true);
+            boolean isNotWhileTrue = !JavaAstUtils.isBooleanLiteral(node.getCondition(), true);
 
             return isNotWhileTrue || data.containsBreak(node);
         }
@@ -258,7 +258,7 @@ final class AbruptCompletionAnalysis {
 
             node.getBody().acceptVisitor(this, data);
             boolean isNotForTrue = node.getCondition() != null
-                && !JavaRuleUtil.isBooleanLiteral(node.getCondition(), true);
+                && !JavaAstUtils.isBooleanLiteral(node.getCondition(), true);
 
             return isNotForTrue || data.containsBreak(node);
         }

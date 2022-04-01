@@ -11,6 +11,7 @@ import java.util.Set;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.util.CollectionUtil;
 
 /**
@@ -86,11 +87,14 @@ public enum BinaryOp implements InternalInterfaces.OperatorLike {
     /** Modulo {@code "%"} operator. */
     MOD("%");
 
-    /** Set of {@code <}, {@code <=}, {@code >=} and {@code >}. Use with {@link #isInfixExprWithOperator(JavaNode, Set)}. */
+    /** Set of {@code &&} and {@code ||}. Use with {@link JavaAstUtils#isInfixExprWithOperator(JavaNode, Set)}. */
+    public static final Set<BinaryOp> CONDITIONAL_OPS =
+        CollectionUtil.immutableEnumSet(CONDITIONAL_AND, CONDITIONAL_OR);
+    /** Set of {@code <}, {@code <=}, {@code >=} and {@code >}. Use with {@link JavaAstUtils#isInfixExprWithOperator(JavaNode, Set)}. */
     public static final Set<BinaryOp> COMPARISON_OPS = CollectionUtil.immutableEnumSet(LE, GE, GT, LT);
-    /** Set of {@code ==} and {@code !=}. Use with {@link #isInfixExprWithOperator(JavaNode, Set)}. */
+    /** Set of {@code ==} and {@code !=}. Use with {@link JavaAstUtils#isInfixExprWithOperator(JavaNode, Set)}. */
     public static final Set<BinaryOp> EQUALITY_OPS = CollectionUtil.immutableEnumSet(EQ, NE);
-    /** Set of {@code <<}, {@code >>} and {@code >>>}. Use with {@link #isInfixExprWithOperator(JavaNode, Set)}. */
+    /** Set of {@code <<}, {@code >>} and {@code >>>}. Use with {@link JavaAstUtils#isInfixExprWithOperator(JavaNode, Set)}. */
     public static final Set<BinaryOp> SHIFT_OPS = CollectionUtil.immutableEnumSet(LEFT_SHIFT, RIGHT_SHIFT, UNSIGNED_RIGHT_SHIFT);
 
     private final String code;
@@ -209,25 +213,4 @@ public enum BinaryOp implements InternalInterfaces.OperatorLike {
     }
 
 
-    /**
-     * Tests if the node is an {@link ASTInfixExpression} with one of the given operators.
-     */
-    public static boolean isInfixExprWithOperator(@Nullable JavaNode e, Set<BinaryOp> operators) {
-        if (e instanceof ASTInfixExpression) {
-            ASTInfixExpression infix = (ASTInfixExpression) e;
-            return operators.contains(infix.getOperator());
-        }
-        return false;
-    }
-
-    /**
-     * Tests if the node is an {@link ASTInfixExpression} with the given operator.
-     */
-    public static boolean isInfixExprWithOperator(@Nullable JavaNode e, BinaryOp operator) {
-        if (e instanceof ASTInfixExpression) {
-            ASTInfixExpression infix = (ASTInfixExpression) e;
-            return operator == infix.getOperator();
-        }
-        return false;
-    }
 }

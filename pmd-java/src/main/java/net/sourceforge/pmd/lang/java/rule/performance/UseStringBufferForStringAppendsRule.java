@@ -13,8 +13,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.AccessType;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTLoopStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
-import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 
 public class UseStringBufferForStringAppendsRule extends AbstractJavaRulechainRule {
@@ -56,7 +56,7 @@ public class UseStringBufferForStringAppendsRule extends AbstractJavaRulechainRu
                 }
 
                 int usageOnRightHandSide =
-                    JavaRuleUtil.flattenOperands(assignment.getRightOperand())
+                    JavaAstUtils.flattenOperands(assignment.getRightOperand())
                                 .filterIs(ASTNamedReferenceExpr.class)
                                 .filterMatching(ASTNamedReferenceExpr::getReferencedSym, node.getSymbol())
                                 .count();

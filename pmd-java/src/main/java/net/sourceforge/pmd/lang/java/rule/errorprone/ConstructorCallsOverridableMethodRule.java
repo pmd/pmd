@@ -17,9 +17,9 @@ import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
-import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
@@ -133,7 +133,7 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
 
     private static boolean isCallOnThisInstance(ASTMethodCall call) {
         ASTExpression qualifier = call.getQualifier();
-        return qualifier == null || JavaRuleUtil.isUnqualifiedThis(qualifier);
+        return qualifier == null || JavaAstUtils.isUnqualifiedThis(qualifier);
     }
 
     private static boolean isOverridable(JExecutableSymbol method) {
