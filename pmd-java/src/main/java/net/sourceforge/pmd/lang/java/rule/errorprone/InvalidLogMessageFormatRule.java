@@ -19,12 +19,12 @@ import net.sourceforge.pmd.lang.java.ast.ASTArrayAllocation;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
+import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.rule.internal.DataflowPass;
 import net.sourceforge.pmd.lang.java.rule.internal.DataflowPass.AssignmentEntry;
 import net.sourceforge.pmd.lang.java.rule.internal.DataflowPass.DataflowResult;
 import net.sourceforge.pmd.lang.java.rule.internal.DataflowPass.ReachingDefinitionSet;
-import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.util.CollectionUtil;
 
@@ -72,7 +72,7 @@ public class InvalidLogMessageFormatRule extends AbstractJavaRulechainRule {
 
             int providedArguments = args.size() - (messageParam.getIndexInParent() + 1);
 
-            if (providedArguments == 1 && JavaRuleUtil.isArrayInitializer(args.getLastChild())) {
+            if (providedArguments == 1 && JavaAstUtils.isArrayInitializer(args.getLastChild())) {
                 providedArguments = ((ASTArrayAllocation) args.getLastChild()).getArrayInitializer().length();
             } else if (TypeTestUtil.isA(Throwable.class, args.getLastChild())
                 && providedArguments > expectedArguments) {

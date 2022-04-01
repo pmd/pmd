@@ -91,7 +91,7 @@ public final class XmlParserImpl {
 
         private final AstInfo<RootXmlNode> astInfo;
 
-        RootXmlNode(XmlParserImpl parser, Node domNode, ParserTask task) {
+        RootXmlNode(XmlParserImpl parser, Document domNode, ParserTask task) {
             super(parser, domNode);
             this.astInfo = new AstInfo<>(task, this);
         }
@@ -99,6 +99,16 @@ public final class XmlParserImpl {
         @Override
         public AstInfo<RootXmlNode> getAstInfo() {
             return astInfo;
+        }
+
+        @Override
+        public XmlNode wrap(Node domNode) {
+            return super.wrap(domNode);
+        }
+
+        @Override
+        public Document getNode() {
+            return (Document) super.getNode();
         }
     }
 

@@ -20,8 +20,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTSuperExpression;
+import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
-import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
@@ -53,7 +53,7 @@ public class UselessOverridingMethodRule extends AbstractJavaRulechainRule {
             // We can also skip the 'clone' method as they are generally
             // 'useless' but as it is considered a 'good practice' to
             // implement them anyway ( see bug 1522517)
-            || JavaRuleUtil.isCloneMethod(node)) {
+            || JavaAstUtils.isCloneMethod(node)) {
             return null;
         }
 
@@ -78,7 +78,7 @@ public class UselessOverridingMethodRule extends AbstractJavaRulechainRule {
             if (methodCall.getQualifier() instanceof ASTSuperExpression
                 && methodCall.getArguments().size() == node.getArity()
                 // might be disambiguating: Interface.super.foo()
-                && JavaRuleUtil.isUnqualifiedSuper(methodCall.getQualifier())) {
+                && JavaAstUtils.isUnqualifiedSuper(methodCall.getQualifier())) {
 
                 OverloadSelectionResult overload = methodCall.getOverloadSelectionInfo();
                 if (!overload.isFailed()
@@ -97,7 +97,7 @@ public class UselessOverridingMethodRule extends AbstractJavaRulechainRule {
         ASTArgumentList arg = methodCall.getArguments();
         int i = 0;
         for (ASTFormalParameter formal : node.getFormalParameters()) {
-            if (!JavaRuleUtil.isReferenceToVar(arg.getChild(i), formal.getVarId().getSymbol())) {
+            if (!JavaAstUtils.isReferenceToVar(arg.getChild(i), formal.getVarId().getSymbol())) {
                 return false;
             }
             i++;

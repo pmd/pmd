@@ -27,6 +27,12 @@ abstract class Loader {
         @Nullable InputStream getInputStream() {
             return null;
         }
+
+        @Override
+        public String toString() {
+            return "(failed loader)";
+        }
+
     }
 
     static class UrlLoader extends Loader {
@@ -44,23 +50,10 @@ abstract class Loader {
         InputStream getInputStream() throws IOException {
             return url.openStream();
         }
-    }
-
-    static class NoUrlLoader extends Loader {
-
-        private final AsmSymbolResolver resolver;
-        private final String internalName;
-
-        NoUrlLoader(AsmSymbolResolver resolver, String internalName) {
-            this.resolver = resolver;
-            this.internalName = internalName;
-        }
 
         @Override
-        @Nullable
-        InputStream getInputStream() throws IOException {
-            URL url = resolver.getUrlOfInternalName(internalName);
-            return url != null ? url.openStream() : null;
+        public String toString() {
+            return "(URL loader)";
         }
     }
 

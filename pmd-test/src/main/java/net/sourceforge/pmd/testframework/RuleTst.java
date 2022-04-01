@@ -56,7 +56,12 @@ import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
 public abstract class RuleTst {
     private final DocumentBuilder documentBuilder;
 
+    /** Use a single classloader for all tests. */
+    private final ClassLoader classpathClassLoader;
+
     public RuleTst() {
+        classpathClassLoader = makeClassPathClassLoader();
+
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
         Schema schema;
@@ -86,6 +91,15 @@ public abstract class RuleTst {
             throw new RuntimeException(e);
         }
     }
+
+    private ClassLoader makeClassPathClassLoader() {
+        final ClassLoader classpathClassLoader;
+        PMDConfiguration config = new PMDConfiguration();
+        config.prependAuxClasspath(".");
+        classpathClassLoader = config.getClassLoader();
+        return classpathClassLoader;
+    }
+
 
     protected void setUp() {
         // This method is intended to be overridden by subclasses.
@@ -263,7 +277,10 @@ public abstract class RuleTst {
 
             if (isUseAuxClasspath) {
                 // configure the "auxclasspath" option for unit testing
-                configuration.prependAuxClasspath(".");
+                // we share a single classloader so that pmd-java doesn't create
+                // a new TypeSystem for every test. This problem will go
+                // away when languages have a lifecycle.
+                configuration.setClassLoader(classpathClassLoader);
             } else {
                 // simple class loader, that doesn't delegate to parent.
                 // this allows us in the tests to simulate PMD run without

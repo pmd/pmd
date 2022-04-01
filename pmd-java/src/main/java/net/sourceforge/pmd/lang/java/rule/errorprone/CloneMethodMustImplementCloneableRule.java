@@ -9,8 +9,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
+import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
-import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 
 /**
@@ -30,7 +30,7 @@ public class CloneMethodMustImplementCloneableRule extends AbstractJavaRulechain
 
     @Override
     public Object visit(final ASTMethodDeclaration node, final Object data) {
-        if (!JavaRuleUtil.isCloneMethod(node)) {
+        if (!JavaAstUtils.isCloneMethod(node)) {
             return data;
         }
         ASTBlock body = node.getBody();

@@ -1,14 +1,21 @@
-
 // Detect small devices and move the TOC in line
 function moveToc(){
     if(window.innerWidth < 1350){
-        $( "#toc" ).detach().appendTo("#inline-toc").removeClass("position-fixed");
+        $( '#toc' ).detach().appendTo('#inline-toc').removeClass('position-fixed');
     } else {
-        $( "#toc" ).detach().appendTo(".toc-col").addClass("position-fixed");
+        $( '#toc' ).detach().appendTo('.toc-col').addClass('position-fixed');
     }
 }
 
-$( document ).ready(function() {
+$(document).ready(function () {
+    // This handles the automatic toc. Use ## for subheads to auto-generate the on-page minitoc.
+    // If you use html tags, you must supply an ID for the heading element in order for it to appear in the minitoc.
+    $('#toc').toc({
+        minimumHeaders: 0,
+        listType: 'ul',
+        showSpeed: 0,
+        headers: 'h2,h3,h4',
+    });
 
     $('#mysidebar').height($(".nav").height());
 
@@ -18,18 +25,31 @@ $( document ).ready(function() {
     var h = $(window).height();
     //console.log (h);
     if (h > 600) {
-        $( "#mysidebar" ).attr("class", "nav position-fixed");
+        $( '#mysidebar' ).attr('class', 'nav position-fixed');
     }
 
     // activate tooltips. although this is a bootstrap js function, it must be activated this way in your theme.
     $('[data-toggle="tooltip"]').tooltip({
-        placement : 'top'
+        placement: 'top',
     });
 
     /**
      * AnchorJS
      */
     anchors.add('h2,h3,h4,h5');
+
+    // Add an "Edit on GitHub" button to each header (except h1)
+    let url = $('div.post-content').data('githubEditUrl');
+    if ( url !== undefined ) {
+        $('div.post-content')
+            .find(':header:not(h1)')
+            .append(
+                '  <a class="edit-header" target="_blank" href=' +
+                    url +
+                    ' role="button">✏️️</a>'
+            );
+    }
+
     // Check if TOC needs to be moved on page load
     moveToc();
 
@@ -37,10 +57,10 @@ $( document ).ready(function() {
     // when you're viewing a page.
     // Note: the class needs to be added before navgoco is initialized. Navgoco uses then this information
     // to expand the menus.
-    $("li.active").parents('li').toggleClass("active");
+    $( 'li.active' ).parents('li').toggleClass('active');
 
     // Initialize navgoco with default options
-    $("#mysidebar").navgoco({
+    $( '#mysidebar' ).navgoco({
         caretHtml: '',
         accordion: true,
         openClass: 'active',
@@ -50,10 +70,6 @@ $( document ).ready(function() {
             easing: 'swing'
         }
     });
-
-    // This handles the automatic toc. Use ## for subheads to auto-generate the on-page minitoc.
-    // If you use html tags, you must supply an ID for the heading element in order for it to appear in the minitoc.
-    $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3,h4' });
 
     // Initialize jekyll search in topnav.
     SimpleJekyllSearch.init({
@@ -85,4 +101,6 @@ $( document ).ready(function() {
 });
 
 // Check if TOC needs to be moved on window resizing
-$(window).resize(function () {moveToc();});
+$(window).resize(function () {
+    moveToc();
+});

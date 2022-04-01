@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.regex.Pattern;
 
@@ -43,10 +44,8 @@ final class ClassStub implements JClassSymbol, AsmStub {
     static final int UNKNOWN_ARITY = 0;
 
     private final AsmSymbolResolver resolver;
-    private final String internalName;
-    private final Loader loader;
 
-    private Names names;        // lazy (doesn't need parsing)
+    private final Names names;
 
     // all the following are lazy and depend on the parse lock
 
@@ -75,10 +74,14 @@ final class ClassStub implements JClassSymbol, AsmStub {
         assert isValidInternalName(internalName) : internalName;
 
         this.resolver = resolver;
-        this.internalName = internalName;
-        this.loader = loader;
+        this.names = new Names(internalName);
 
         this.parseLock = new ParseLock() {
+            // note to devs: to debug the parsing logic you might have
+            // to replace the implementation of toString temporarily,
+            // otherwise an IDE could call toString just to show the item
+            // in the debugger view (which could cause parsing of the class file).
+
             @Override
             protected boolean doParse() throws IOException {
                 try (InputStream instream = loader.getInputStream()) {
@@ -108,6 +111,16 @@ final class ClassStub implements JClassSymbol, AsmStub {
                 fields = Collections.unmodifiableList(fields);
                 memberClasses = Collections.unmodifiableList(memberClasses);
                 enumConstantNames = enumConstantNames == null ? null : Collections.unmodifiableSet(enumConstantNames);
+
+                if (EnclosingInfo.NO_ENCLOSING.equals(enclosingInfo)) {
+                    if (names.canonicalName == null || names.simpleName == null) {
+                        // This happens if the simple name contains dollars,
+                        // in which case we might have an enclosing class, and
+                        // we can only tell now (no enclosingInfo) that that's
+                        // not the case.
+                        names.finishOuterClass();
+                    }
+                }
             }
 
             @Override
@@ -115,10 +128,6 @@ final class ClassStub implements JClassSymbol, AsmStub {
                 return signature != null && enclosingInfo != null;
             }
         };
-    }
-
-    Loader getLoader() {
-        return loader;
     }
 
     @Override
@@ -132,6 +141,15 @@ final class ClassStub implements JClassSymbol, AsmStub {
                    @Nullable String superName,
                    String[] interfaces) {
         this.signature = new LazyClassSignature(this, signature, superName, interfaces);
+    }
+
+    /**
+     * Called if this is an inner class (their simple name cannot be
+     * derived from splitting the internal/binary name on dollars, as
+     * the simple name may itself contain dollars).
+     */
+    void setSimpleName(String simpleName) {
+        this.names.simpleName = simpleName;
     }
 
     void setModifiers(int accessFlags, boolean fromClassInfo) {
@@ -188,12 +206,14 @@ final class ClassStub implements JClassSymbol, AsmStub {
         }
     }
 
-    void setOuterClass(String outerName, @Nullable String methodName, @Nullable String methodDescriptor) {
+    void setOuterClass(ClassStub outer, @Nullable String methodName, @Nullable String methodDescriptor) {
         if (enclosingInfo == null) {
-            if (outerName == null) {
+            if (outer == null) {
+                assert methodName == null && methodDescriptor == null
+                    : "Enclosing method requires enclosing class";
                 this.enclosingInfo = EnclosingInfo.NO_ENCLOSING;
             } else {
-                this.enclosingInfo = new EnclosingInfo(resolver.resolveFromInternalNameCannotFail(outerName), methodName, methodDescriptor);
+                this.enclosingInfo = new EnclosingInfo(outer, methodName, methodDescriptor);
             }
         }
     }
@@ -207,9 +227,7 @@ final class ClassStub implements JClassSymbol, AsmStub {
     }
 
     void addMemberClass(ClassStub classStub) {
-        if (classStub.enclosingInfo == null) {
-            classStub.enclosingInfo = new EnclosingInfo(this, null, null);
-        }
+        classStub.setOuterClass(this, null, null);
         memberClasses.add(classStub);
     }
 
@@ -328,13 +346,10 @@ final class ClassStub implements JClassSymbol, AsmStub {
     // <editor-fold  defaultstate="collapsed" desc="Names">
 
     public String getInternalName() {
-        return internalName;
+        return getNames().internalName;
     }
 
     private Names getNames() {
-        if (names == null) {
-            this.names = new Names(internalName);
-        }
         return names;
     }
 
@@ -343,10 +358,47 @@ final class ClassStub implements JClassSymbol, AsmStub {
         return getNames().binaryName;
     }
 
-    @Nullable
+    /**
+     * Simpler check than computing the canonical name.
+     */
+    boolean hasCanonicalName() {
+        if (names.canonicalName != null) {
+            return true;
+        }
+        parseLock.ensureParsed();
+        if (isAnonymousClass() || isLocalClass()) {
+            return false;
+        }
+        JClassSymbol enclosing = getEnclosingClass();
+        return enclosing == null // top-level class
+            || enclosing instanceof ClassStub
+            && ((ClassStub) enclosing).hasCanonicalName();
+    }
+
     @Override
     public String getCanonicalName() {
-        return getNames().canonicalName;
+        String canoName = names.canonicalName;
+        if (canoName == null) {
+            canoName = computeCanonicalName();
+            names.canonicalName = canoName;
+        }
+        return canoName;
+    }
+
+    private @Nullable String computeCanonicalName() {
+        parseLock.ensureParsed();
+        if (names.canonicalName != null) {
+            return names.canonicalName;
+        }
+        JClassSymbol enclosing = getEnclosingClass();
+        if (enclosing == null) {
+            return names.packageName + '.' + getSimpleName();
+        }
+        String outerName = enclosing.getCanonicalName();
+        if (outerName == null) {
+            return null;
+        }
+        return outerName + '.' + getSimpleName();
     }
 
     @Override
@@ -356,7 +408,12 @@ final class ClassStub implements JClassSymbol, AsmStub {
 
     @Override
     public @NonNull String getSimpleName() {
-        return getNames().simpleName;
+        String mySimpleName = names.simpleName;
+        if (mySimpleName == null) {
+            parseLock.ensureParsed();
+            return Objects.requireNonNull(names.simpleName, "Null simple name after parsing");
+        }
+        return mySimpleName;
     }
 
     @Override
@@ -428,7 +485,7 @@ final class ClassStub implements JClassSymbol, AsmStub {
 
     @Override
     public boolean isLocalClass() {
-        return false; // local classes are not reachable, technically someone can try to fetch them
+        return enclosingInfo.isLocal();
     }
 
     @Override
@@ -442,19 +499,47 @@ final class ClassStub implements JClassSymbol, AsmStub {
     static class Names {
 
         final String binaryName;
-        final String canonicalName;
+        final String internalName;
         final String packageName;
-        final String simpleName;
+        /** If null, the class requires parsing to find out the actual canonical name. */
+        @Nullable String canonicalName;
+        /** If null, the class requires parsing to find out the actual simple name. */
+        @Nullable String simpleName;
 
         Names(String internalName) {
-            int packageEnd = Integer.max(0, internalName.lastIndexOf('/'));
+            assert isValidInternalName(internalName) : internalName;
+            int packageEnd = internalName.lastIndexOf('/');
 
-            binaryName = internalName.replace('/', '.');
-            packageName = binaryName.substring(0, packageEnd);
-            canonicalName = binaryName.replace('$', '.');
+            this.internalName = internalName;
+            this.binaryName = internalName.replace('/', '.');
+            if (packageEnd == -1) {
+                this.packageName = "";
+            } else {
+                this.packageName = binaryName.substring(0, packageEnd);
+            }
 
-            int lastDot = canonicalName.lastIndexOf('.');
-            simpleName = canonicalName.substring(lastDot + 1);
+            if (binaryName.indexOf('$', packageEnd + 1) >= 0) {
+                // Contains a dollar in class name (after package)
+                // Requires parsing to find out the actual simple name,
+                // this might be an inner class, or simply a class with
+                // a dollar in its name.
+
+                // ASSUMPTION: all JVM languages use the $ convention
+                // to separate inner classes. Java compilers do so but
+                // not necessarily true of all compilers/languages.
+                this.canonicalName = null;
+                this.simpleName = null;
+            } else {
+                // fast path
+                this.canonicalName = binaryName;
+                this.simpleName = binaryName.substring(packageEnd + 1);
+            }
+        }
+
+        public void finishOuterClass() {
+            int packageEnd = internalName.lastIndexOf('/');
+            this.simpleName = binaryName.substring(packageEnd + 1); // if -1, start from 0
+            this.canonicalName = binaryName;
         }
     }
 
@@ -472,6 +557,9 @@ final class ClassStub implements JClassSymbol, AsmStub {
             this.methodDescriptor = methodDescriptor;
         }
 
+        boolean isLocal() {
+            return methodName != null || methodDescriptor != null;
+        }
 
         public @Nullable JClassSymbol getEnclosingClass() {
             return stub;
@@ -498,6 +586,25 @@ final class ClassStub implements JClassSymbol, AsmStub {
             } else {
                 return getEnclosingClass();
             }
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
+            EnclosingInfo that = (EnclosingInfo) o;
+            return Objects.equals(stub, that.stub)
+                && Objects.equals(methodName, that.methodName)
+                && Objects.equals(methodDescriptor, that.methodDescriptor);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(stub, methodName, methodDescriptor);
         }
     }
 }

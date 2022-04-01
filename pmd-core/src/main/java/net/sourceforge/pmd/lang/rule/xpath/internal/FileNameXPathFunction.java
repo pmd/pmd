@@ -47,7 +47,13 @@ public final class FileNameXPathFunction extends AbstractXPathFunctionDef {
 
             @Override
             public Sequence call(XPathContext context, Sequence[] arguments) throws XPathException {
-                Node node = ((AstElementNode) context.getContextItem()).getUnderlyingNode();
+                Node node = XPathElementToNodeHelper.itemToNode(context.getContextItem());
+                if (node == null) {
+                    throw new XPathException(
+                        "Cannot call function '" + getFunctionQName().getLocalPart()
+                            + "' with context item " + context.getContextItem()
+                    );
+                }
                 RootNode root = node.getRoot();
                 Objects.requireNonNull(root, "No root node in tree?");
 

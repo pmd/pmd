@@ -1147,7 +1147,7 @@ public final class TypeOps {
     // <editor-fold  defaultstate="collapsed" desc="Overriding">
 
     /**
-     * Returns true if m1 is return-type substitutable with m2. . The notion of return-type-substitutability
+     * Returns true if m1 is return-type substitutable with m2. The notion of return-type-substitutability
      * supports covariant returns, that is, the specialization of the return type to a subtype.
      *
      * https://docs.oracle.com/javase/specs/jls/se9/html/jls-8.html#jls-8.4.5
