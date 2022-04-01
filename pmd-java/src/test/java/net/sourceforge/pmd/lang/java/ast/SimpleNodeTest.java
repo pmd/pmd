@@ -6,8 +6,6 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
@@ -64,27 +62,6 @@ public class SimpleNodeTest extends BaseParserTest {
     public void testNoExplicitImplements() {
         ASTClassOrInterfaceDeclaration ucd = java.getNodes(ASTClassOrInterfaceDeclaration.class, NO_EXPLICIT_IMPLEMENTS).iterator().next();
         assertFalse(ucd.getChild(0) instanceof ASTImplementsList);
-    }
-
-    @Test
-    public void testColumnsOnQualifiedName() {
-        for (Node node : java.getNodes(ASTName.class, QUALIFIED_NAME)) {
-            if (node.getImage().equals("java.io.File")) {
-                TestUtilsKt.assertPosition(node, 1, 8, 1, 20);
-            }
-        }
-    }
-
-    @Test
-    public void testLineNumbersForNameSplitOverTwoLines() {
-        for (Node node : java.getNodes(ASTName.class, BROKEN_LINE_IN_NAME)) {
-            if (node.getImage().equals("java.io.File")) {
-                TestUtilsKt.assertPosition(node, 1, 8, 2, 5);
-            }
-            if (node.getImage().equals("Foo")) {
-                TestUtilsKt.assertPosition(node, 2, 15, 2, 19);
-            }
-        }
     }
 
     //    @Test
@@ -171,22 +148,6 @@ public class SimpleNodeTest extends BaseParserTest {
     //        assertTrue(n instanceof ASTName);
     //        assertEquals(x2, n);
     //    }
-
-    @Test
-    public void testParentMethods() {
-        ASTCompilationUnit u = java.parse(TEST1);
-
-        ASTMethodDeclarator d = u.getFirstDescendantOfType(ASTMethodDeclarator.class);
-        assertSame("getFirstParentOfType ASTMethodDeclaration", d.getParent(),
-                d.getFirstParentOfType(ASTMethodDeclaration.class));
-        assertNull("getFirstParentOfType ASTName", d.getFirstParentOfType(ASTName.class));
-
-        assertSame("getNthParent 1", d.getParent(), d.getNthParent(1));
-        assertSame("getNthParent 2", d.getParent().getParent(), d.getNthParent(2));
-        assertSame("getNthParent 6", u, d.getNthParent(6));
-        assertNull("getNthParent 7", d.getNthParent(7));
-        assertNull("getNthParent 8", d.getNthParent(8));
-    }
 
     private static final String TEST1 = "public class Test {\n  void bar(String s) {\n   s = s.toLowerCase();\n  }\n}";
 

@@ -4,44 +4,47 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-public final class ASTModuleDirective extends AbstractJavaNode {
 
+import net.sourceforge.pmd.lang.rule.xpath.NoAttribute;
+
+/**
+ * A directive of a {@linkplain ASTModuleDeclaration module declaration}.
+ * Implementations provide more specific attributes.
+ *
+ * <pre class="grammar">
+ *
+ * ModuleDirective ::= {@linkplain ASTModuleRequiresDirective ModuleRequiresDirective}
+ *                   | {@linkplain ASTModuleOpensDirective ModuleOpensDirective}
+ *                   | {@linkplain ASTModuleExportsDirective ModuleExportsDirective}
+ *                   | {@linkplain ASTModuleProvidesDirective ModuleProvidesDirective}
+ *                   | {@linkplain ASTModuleUsesDirective ModuleUsesDirective}
+ *
+ * </pre>
+ */
+public abstract class ASTModuleDirective extends AbstractJavaNode {
+
+    private final DirectiveType type;
+
+
+    ASTModuleDirective(int id, DirectiveType type) {
+        super(id);
+        this.type = type;
+    }
+
+    /**
+     * Returns the kind of the directive.
+     */
+    @NoAttribute
+    public DirectiveType getType() {
+        return type;
+    }
+
+    /**
+     * Kind of a module directive. Specific kinds are represented by
+     * specific subclasses.
+     */
     public enum DirectiveType {
         REQUIRES, EXPORTS, OPENS, USES, PROVIDES
     }
 
-    public enum RequiresModifier {
-        STATIC, TRANSITIVE
-    }
-
-    private DirectiveType type;
-
-    private RequiresModifier requiresModifier;
-
-    ASTModuleDirective(int id) {
-        super(id);
-    }
-
-
-    @Override
-    protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
-        return visitor.visit(this, data);
-    }
-
-
-    void setType(DirectiveType type) {
-        this.type = type;
-    }
-
-    public String getType() {
-        return String.valueOf(type);
-    }
-
-    void setRequiresModifier(RequiresModifier requiresModifier) {
-        this.requiresModifier = requiresModifier;
-    }
-
-    public String getRequiresModifier() {
-        return requiresModifier == null ? null : requiresModifier.name();
-    }
 }

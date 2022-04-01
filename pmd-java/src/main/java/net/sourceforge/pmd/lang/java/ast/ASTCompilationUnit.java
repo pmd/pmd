@@ -73,8 +73,7 @@ public final class ASTCompilationUnit extends AbstractJavaTypeNode implements Ja
      * Returns the package name of this compilation unit. If there is no
      * package declaration, then returns the empty string.
      */
-    @NonNull
-    public String getPackageName() {
+    public @NonNull String getPackageName() {
         ASTPackageDeclaration pack = getPackageDeclaration();
         return pack == null ? "" : pack.getName();
     }
@@ -86,6 +85,13 @@ public final class ASTCompilationUnit extends AbstractJavaTypeNode implements Ja
      */
     public NodeStream<ASTAnyTypeDeclaration> getTypeDeclarations() {
         return children(ASTAnyTypeDeclaration.class);
+    }
+
+    /**
+     * Returns the module declaration, if this is a modular compilation unit.
+     */
+    public @Nullable ASTModuleDeclaration getModuleDeclaration() {
+        return firstChild(ASTModuleDeclaration.class);
     }
 
     @Override
