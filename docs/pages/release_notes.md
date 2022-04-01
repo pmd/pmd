@@ -15,6 +15,8 @@ This is a {{ site.pmd.release_type }} release.
 ### New and noteworthy
 
 ### Fixed Issues
+* core
+  * [#3882](https://github.com/pmd/pmd/pull/3882): \[core] Fix AssertionError about exhaustive switch
 
 ### API Changes
 
