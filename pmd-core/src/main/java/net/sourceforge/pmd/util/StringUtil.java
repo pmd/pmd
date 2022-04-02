@@ -522,31 +522,6 @@ public final class StringUtil {
         return str.replaceAll("'", "''");
     }
 
-    /**
-     * Truncate the string to the given maximum length. If it is truncated,
-     * the ellipsis string is appended to it.
-     *
-     * @param str      String to truncate
-     * @param maxWidth Maximum width
-     * @param ellipsis Ellipsis to append to the string when the string
-     *                 is truncated (eg {@code ...})
-     *
-     * @return A truncated string, with at most length {@code maxWidth}
-     */
-    public static String truncate(String str, int maxWidth, String ellipsis) {
-        AssertionUtil.requireParamNotNull("str", str);
-        AssertionUtil.requireParamNotNull("ellipsis", ellipsis);
-        AssertionUtil.requireNonNegative("maximum width", maxWidth);
-        if (maxWidth < ellipsis.length()) {
-            throw AssertionUtil.mustBe("Ellipsis length", ellipsis, "smaller than maxWidth (" + maxWidth + ")");
-        }
-
-        if (str.length() > maxWidth) {
-            final int ix = Math.max(maxWidth - ellipsis.length(), 0);
-            return str.substring(0, ix) + ellipsis;
-        }
-        return str;
-    }
 
 
     public enum CaseConvention {

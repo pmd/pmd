@@ -56,7 +56,7 @@ class StringTextFile implements TextFile {
 
     @Override
     public String toString() {
-        return "ReadOnlyString[" + StringUtil.truncate(content.getNormalizedText().toString(), 40, "...") + "]";
+        return "ReadOnlyString[" + StringUtil.elide(content.getNormalizedText().toString(), 40, "...") + "]";
     }
 
 }
