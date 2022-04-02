@@ -4,12 +4,12 @@
 
 package net.sourceforge.pmd.lang.plsql.rule.codestyle;
 
+import net.sourceforge.pmd.lang.document.Chars;
 import net.sourceforge.pmd.lang.plsql.ast.ASTInput;
 import net.sourceforge.pmd.lang.plsql.rule.AbstractPLSQLRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 import net.sourceforge.pmd.properties.constraints.NumericConstraints;
-import net.sourceforge.pmd.lang.document.Chars;
 
 public class LineLengthRule extends AbstractPLSQLRule {
 

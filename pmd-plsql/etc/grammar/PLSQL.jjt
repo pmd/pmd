@@ -158,7 +158,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 package net.sourceforge.pmd.lang.plsql.ast;
 
 import java.util.List;
+import java.util.ArrayList;
 import net.sourceforge.pmd.lang.plsql.ast.internal.ParsingExclusion;
+import net.sourceforge.pmd.lang.ast.TokenMgrError;
 
 public class PLSQLParserImpl {
 
@@ -215,7 +217,7 @@ public class PLSQLParserImpl {
   private boolean isKeyword(String keyword) {
     return getToken(1).kind == IDENTIFIER && getToken(1).getImage().equalsIgnoreCase(keyword);
   }
-}}
+
 }
 
 PARSER_END(PLSQLParserImpl)
