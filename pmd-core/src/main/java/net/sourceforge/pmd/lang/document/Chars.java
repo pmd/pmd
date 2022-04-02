@@ -464,7 +464,7 @@ public final class Chars implements CharSequence {
 
     /**
      * Split this slice into subslices, like {@link String#split(String)},
-     * except it's iterated lazily. Like splits the
+     * except it's iterated lazily.
      */
     public Iterable<Chars> splits(Pattern regex) {
         return () -> new AbstractIterator<Chars>() {

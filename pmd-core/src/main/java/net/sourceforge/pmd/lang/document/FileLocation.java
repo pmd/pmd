@@ -13,14 +13,15 @@ import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.lang.ast.GenericToken;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.reporting.Reportable;
 
 /**
- * A kind of {@link TextRegion} used for reporting. This provides access
+ * Represents the coordinates of a text region, used for reporting. This provides access
  * to the line and column positions, as well as the text file. Instances
  * can be obtained from a {@link TextRegion} with {@link TextDocument#toLocation(TextRegion) TextDocument::toLocation}.
  *
- * <p>This admittedly should replace the text coordinates methods in {@link Node},
- * {@link GenericToken}, and {@link RuleViolation} at least.
+ * <p>This should replace the text coordinates methods in {@link Node},
+ * {@link GenericToken}, and {@link RuleViolation} at least (see {@link Reportable}).
  *
  * TODO the end line/end column are barely used, mostly ignored even by
  *  renderers. Maybe these could be optional, or replaced by just a length
@@ -69,7 +70,8 @@ public final class FileLocation {
     }
 
     /**
-     * File name of this position.
+     * File name of this position. This is a display name, it shouldn't
+     * be parsed as a Path.
      */
     public String getFileName() {
         return fileName;

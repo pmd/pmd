@@ -107,7 +107,7 @@ public class RuleSets {
      */
     public boolean applies(TextFile file) {
         for (RuleSet ruleSet : ruleSets) {
-            if (ruleSet.applies(file.getPathId())) {
+            if (ruleSet.applies(file)) {
                 return true;
             }
         }

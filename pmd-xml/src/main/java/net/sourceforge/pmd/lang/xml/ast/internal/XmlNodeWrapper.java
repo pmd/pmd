@@ -23,6 +23,7 @@ import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.lang.document.TextRegion;
 import net.sourceforge.pmd.lang.rule.xpath.Attribute;
+import net.sourceforge.pmd.lang.rule.xpath.internal.CoordinateXPathFunction;
 import net.sourceforge.pmd.lang.xml.ast.XmlNode;
 import net.sourceforge.pmd.util.DataMap;
 import net.sourceforge.pmd.util.DataMap.DataKey;
@@ -49,7 +50,14 @@ class XmlNodeWrapper implements XmlNode {
         super();
         this.node = domNode;
         this.parser = parser;
+
+        domNode.setUserData(CoordinateXPathFunction.PMD_NODE_USER_DATA, this, null);
     }
+
+    protected XmlNode wrap(org.w3c.dom.Node domNode) {
+        return parser.wrapDomNode(domNode);
+    }
+
 
     @Override
     public FileLocation getReportLocation() {

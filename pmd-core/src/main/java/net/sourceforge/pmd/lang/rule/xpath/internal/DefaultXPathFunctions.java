@@ -16,11 +16,20 @@ import net.sf.saxon.lib.ExtensionFunctionDefinition;
  */
 public final class DefaultXPathFunctions {
 
+    private static final Set<ExtensionFunctionDefinition> DEFAULTS =
+        CollectionUtil.immutableSetOf(
+            FileNameXPathFunction.INSTANCE,
+            CoordinateXPathFunction.START_LINE,
+            CoordinateXPathFunction.START_COLUMN,
+            CoordinateXPathFunction.END_LINE,
+            CoordinateXPathFunction.END_COLUMN
+        );
+
     private DefaultXPathFunctions() {
         // utility class
     }
 
     public static Set<ExtensionFunctionDefinition> getDefaultFunctions() {
-        return CollectionUtil.setOf(FileNameXPathFunction.INSTANCE);
+        return DEFAULTS;
     }
 }

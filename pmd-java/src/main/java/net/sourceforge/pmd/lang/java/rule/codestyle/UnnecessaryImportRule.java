@@ -68,19 +68,23 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
     /*
      * Patterns to match the following constructs:
      *
-     * @see package.class#member(param, param) label {@linkplain
-     * package.class#member(param, param) label} {@link
-     * package.class#member(param, param) label} {@link package.class#field}
+     * @see package.class#member(param, param) label
+     * {@linkplain package.class#member(param, param) label}
+     * {@link package.class#member(param, param) label}
+     * {@link package.class#field}
      * {@value package.class#field}
      *
      * @throws package.class label
      * @exception package.class label
      */
-    private static final Pattern SEE_PATTERN = Pattern
-        .compile("@see\\s+((?:\\p{Alpha}\\w*\\.)*(?:\\p{Alpha}\\w*))?(?:#\\w*(?:\\(([.\\w\\s,\\[\\]]*)\\))?)?");
 
-    private static final Pattern LINK_PATTERNS = Pattern
-        .compile("\\{@link(?:plain)?\\s+((?:\\p{Alpha}\\w*\\.)*(?:\\p{Alpha}\\w*))?(?:#\\w*(?:\\(([.\\w\\s,\\[\\]]*)\\))?)?[\\s\\}]");
+    /* package.class#member(param, param) */
+    private static final String TYPE_PART_GROUP = "((?:\\p{Alpha}\\w*\\.)*(?:\\p{Alpha}\\w*))?(?:#\\w*(?:\\(([.\\w\\s,\\[\\]]*)\\))?)?";
+
+    private static final Pattern SEE_PATTERN = Pattern.compile("@see\\s+" + TYPE_PART_GROUP);
+
+
+    private static final Pattern LINK_PATTERNS = Pattern.compile("\\{@link(?:plain)?\\s+" + TYPE_PART_GROUP + "[\\s\\}]");
 
     private static final Pattern VALUE_PATTERN = Pattern.compile("\\{@value\\s+(\\p{Alpha}\\w*)[\\s#\\}]");
 
@@ -88,7 +92,11 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
 
     private static final Pattern EXCEPTION_PATTERN = Pattern.compile("@exception\\s+(\\p{Alpha}\\w*)");
 
-    private static final Pattern[] PATTERNS = { SEE_PATTERN, LINK_PATTERNS, VALUE_PATTERN, THROWS_PATTERN, EXCEPTION_PATTERN };
+    /* // @link substring="a" target="package.class#member(param, param)" */
+    private static final Pattern LINK_IN_SNIPPET = Pattern
+        .compile("//\\s*@link\\s+(?:.*?)?target=[\"']?" + TYPE_PART_GROUP + "[\"']?");
+
+    private static final Pattern[] PATTERNS = { SEE_PATTERN, LINK_PATTERNS, VALUE_PATTERN, THROWS_PATTERN, EXCEPTION_PATTERN, LINK_IN_SNIPPET };
 
     @Override
     public Object visit(ASTCompilationUnit node, Object data) {

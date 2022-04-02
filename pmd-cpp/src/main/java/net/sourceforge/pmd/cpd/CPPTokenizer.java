@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.cpd;
 
-import java.io.IOException;
 import java.util.Properties;
 import java.util.regex.Pattern;
 
@@ -31,12 +30,6 @@ public class CPPTokenizer extends JavaCCTokenizer {
 
     public CPPTokenizer() {
         setProperties(new Properties()); // set the defaults
-    }
-
-    // override to make it visible in tests
-    @Override
-    protected TokenManager<JavaccToken> getLexerForSource(SourceCode sourceCode) throws IOException {
-        return super.getLexerForSource(sourceCode);
     }
 
     /**

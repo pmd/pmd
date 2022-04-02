@@ -15,15 +15,15 @@ import net.sourceforge.pmd.lang.ast.impl.DummyTreeUtil;
 
 public class RuleContextTest {
 
-    public static Report getReport(Rule rule, BiConsumer<Rule, RuleContext> sideEffects) throws Exception {
+    public static Report getReport(Rule rule, BiConsumer<Rule, RuleContext> sideEffects) {
         return Report.buildReport(listener -> sideEffects.accept(rule, RuleContext.create(listener, rule)));
     }
 
-    public static Report getReportForRuleApply(Rule rule, Node node) throws Exception {
+    public static Report getReportForRuleApply(Rule rule, Node node) {
         return getReport(rule, (r, ctx) -> r.apply(node, ctx));
     }
 
-    public static Report getReportForRuleSetApply(RuleSet ruleset, RootNode node) throws Exception {
+    public static Report getReportForRuleSetApply(RuleSet ruleset, RootNode node) {
         return Report.buildReport(listener -> new RuleSets(ruleset).apply(node, listener));
     }
 

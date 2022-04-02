@@ -11,9 +11,9 @@ import java.util.Set;
 
 import net.sourceforge.pmd.lang.java.ast.ASTCatchClause;
 import net.sourceforge.pmd.lang.java.ast.ASTTryStatement;
+import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
-import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 
 
 /**
@@ -33,7 +33,7 @@ public class IdenticalCatchBranchesRule extends AbstractJavaRulechainRule {
         String e1Name = st1.getParameter().getName();
         String e2Name = st2.getParameter().getName();
 
-        return JavaRuleUtil.tokenEquals(st1.getBody(), st2.getBody(), name -> name.equals(e1Name) ? e2Name : name);
+        return JavaAstUtils.tokenEquals(st1.getBody(), st2.getBody(), name -> name.equals(e1Name) ? e2Name : name);
     }
 
 

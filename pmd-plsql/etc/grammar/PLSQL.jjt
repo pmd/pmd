@@ -161,8 +161,8 @@ import java.util.List;
 import java.util.ArrayList;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.impl.javacc.CharStream;
-import net.sourceforge.pmd.lang.ast.TokenMgrError;
 import net.sourceforge.pmd.lang.plsql.ast.internal.ParsingExclusion;
+import net.sourceforge.pmd.lang.ast.TokenMgrError;
 
 public class PLSQLParserImpl {
 
@@ -219,7 +219,7 @@ public class PLSQLParserImpl {
   private boolean isKeyword(String keyword) {
     return getToken(1).kind == IDENTIFIER && getToken(1).getImage().equalsIgnoreCase(keyword);
   }
-}}
+
 }
 
 PARSER_END(PLSQLParserImpl)

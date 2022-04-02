@@ -2,30 +2,18 @@
 layout: default
 ---
 
+{% include header.html %}
+
 <div class="post-header">
    <h1 class="post-title-main">{{ page.title }}</h1>
 </div>
 
-<div class="post-content">
+<div class="post-content" {% if site.github_editme_path and page.editmepath != false %}data-github-edit-url="https://github.com/{{site.github_editme_path}}{{editmepath}}"{% endif %}>
 
    {% if page.summary %}
     <div class="summary">{{page.summary}}</div>
    {% endif %}
-
     <div id="inline-toc"><!-- empty, move TOC here when screen size too small --></div>
-
-
-    {% if site.github_editme_path %}
-
-        {% assign editmepath = page.path %}
-        {% if page.editmepath %}
-            {% assign editmepath = page.editmepath %}
-        {% endif %}
-        {% unless page.editmepath == false %}
-        <a target="_blank" href="https://github.com/{{site.github_editme_path}}{{editmepath}}" class="btn btn-outline-secondary githubEditButton" role="button"><i class="fab fa-github fa-lg"></i> Edit me</a>
-        {% endunless %}
-
-    {% endif %}
 
   {{content}}
 
@@ -43,6 +31,5 @@ layout: default
 
 </div>
 
-{{site.data.alerts.hr_shaded}}
 
 {% include footer.html %}

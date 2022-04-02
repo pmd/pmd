@@ -672,6 +672,9 @@ public interface Node extends Reportable {
         return (RootNode) r;
     }
 
+    /**
+     * Returns the language version of this node.
+     */
     default LanguageVersion getLanguageVersion() {
         return getTextDocument().getLanguageVersion();
     }

@@ -69,8 +69,8 @@ import net.sourceforge.pmd.lang.java.ast.BinaryOp;
 import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.JavaVisitorBase;
+import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.internal.JavaAstProcessor;
-import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
 import net.sourceforge.pmd.lang.java.symbols.table.internal.PatternBindingsUtil.BindSet;
 import net.sourceforge.pmd.lang.java.types.JClassType;
@@ -673,7 +673,7 @@ public final class SymbolTableResolver {
 
             private boolean hasNoBreakContainingStmt(ASTLoopStatement node) {
                 Set<JavaNode> containingStatements = node.ancestorsOrSelf()
-                                                         .filter(JavaRuleUtil::mayBeBreakTarget)
+                                                         .filter(JavaAstUtils::mayBeBreakTarget)
                                                          .collect(Collectors.toSet());
                 return node.getBody()
                            .descendants(ASTBreakStatement.class)

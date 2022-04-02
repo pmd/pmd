@@ -14,7 +14,7 @@ class ASTPatternTest : ProcessorTestSpec({
 
     val typePatternsVersions = JavaVersion.since(J16)
 
-    parserTest("Test patterns only available on JDK16 and JDK16 (preview) and JDK17 and JDK 17 (preview)",
+    parserTest("Test patterns only available on JDK16 or higher (including preview)",
         javaVersions = JavaVersion.except(typePatternsVersions)) {
 
         inContext(ExpressionParsingCtx) {

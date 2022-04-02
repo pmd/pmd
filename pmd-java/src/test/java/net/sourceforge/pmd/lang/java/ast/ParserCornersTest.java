@@ -4,12 +4,13 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import java.util.List;
-import java.util.Map;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.collection.IsEmptyCollection.empty;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -19,8 +20,8 @@ import net.sourceforge.pmd.lang.ast.impl.javacc.MalformedSourceException;
 import net.sourceforge.pmd.lang.ast.test.BaseParsingHelper;
 import net.sourceforge.pmd.lang.java.BaseJavaTreeDumpTest;
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
-import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
-import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
+import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
+import net.sourceforge.pmd.lang.java.types.AstTestUtil;
 
 public class ParserCornersTest extends BaseJavaTreeDumpTest {
     private final JavaParsingHelper java = JavaParsingHelper.DEFAULT.withResourceContext(getClass());
@@ -128,12 +129,17 @@ public class ParserCornersTest extends BaseJavaTreeDumpTest {
 
     @Test
     public final void testGetFirstASTNameImageNull() {
-        java4.parse(ABSTRACT_METHOD_LEVEL_CLASS_DECL);
+        java4.parse("public class Test {\n"
+            + "  void bar() {\n"
+            + "   abstract class X { public abstract void f(); }\n"
+            + "   class Y extends X { public void f() { new Y().f(); } }\n"
+            + "  }\n"
+            + "}");
     }
 
     @Test
     public final void testCastLookaheadProblem() {
-        java4.parse(CAST_LOOKAHEAD_PROBLEM);
+        java4.parse("public class BadClass {\n  public Class foo() {\n    return (byte[].class);\n  }\n}");
     }
 
     @Test
@@ -169,8 +175,13 @@ public class ParserCornersTest extends BaseJavaTreeDumpTest {
      */
     @Test
     public void testGenericsProblem() {
-        java5.parse(GENERICS_PROBLEM);
-        java7.parse(GENERICS_PROBLEM);
+        String code = "public class Test {\n"
+            + " public void test() {\n"
+            + "   String o = super.<String> doStuff(\"\");\n"
+            + " }\n"
+            + "}";
+        java5.parse(code);
+        java7.parse(code);
     }
 
     @Test
@@ -267,7 +278,7 @@ public class ParserCornersTest extends BaseJavaTreeDumpTest {
         // https://github.com/pmd/pmd/issues/1484
         String code = "public class Test {\n" + "    public static void main(String[] args) {\n"
             + "        System.out.println(\"X\" + (args) + \"Y\");\n" + "    }\n" + "}";
-        Assert.assertEquals(0, java8.parse(code).findDescendantsOfType(ASTCastExpression.class).size());
+        Assert.assertEquals(0, java8.parse(code).descendants(ASTCastExpression.class).count());
     }
 
 
@@ -292,24 +303,15 @@ public class ParserCornersTest extends BaseJavaTreeDumpTest {
     }
 
     @Test
-    @Ignore("this test depends on usage resolution")
     public void testMethodReferenceConfused() {
-        ASTCompilationUnit compilationUnit = java.parseResource("MethodReferenceConfused.java", "10");
-        Assert.assertNotNull(compilationUnit);
-        ASTBlock firstBlock = compilationUnit.getFirstDescendantOfType(ASTBlock.class);
-        Map<NameDeclaration, List<NameOccurrence>> declarations = firstBlock.getScope().getDeclarations();
-        boolean foundVariable = false;
-        for (Map.Entry<NameDeclaration, List<NameOccurrence>> declaration : declarations.entrySet()) {
-            String varName = declaration.getKey().getImage();
-            if ("someVarNameSameAsMethodReference".equals(varName)) {
-                foundVariable = true;
-                Assert.assertTrue("no usages expected", declaration.getValue().isEmpty());
-            } else if ("someObject".equals(varName)) {
-                Assert.assertEquals("1 usage expected", 1, declaration.getValue().size());
-                Assert.assertEquals(6, declaration.getValue().get(0).getLocation().getBeginLine());
-            }
-        }
-        Assert.assertTrue("Test setup wrong - variable 'someVarNameSameAsMethodReference' not found anymore!", foundVariable);
+        ASTCompilationUnit ast = java.parseResource("MethodReferenceConfused.java", "10");
+        ASTVariableDeclaratorId varWithMethodName = AstTestUtil.varId(ast, "method");
+        ASTVariableDeclaratorId someObject = AstTestUtil.varId(ast, "someObject");
+
+        assertThat(varWithMethodName.getLocalUsages(), empty());
+        assertThat(someObject.getLocalUsages(), hasSize(1));
+        ASTNamedReferenceExpr usage = someObject.getLocalUsages().get(0);
+        assertThat(usage.getParent(), instanceOf(ASTCastExpression.class));
     }
 
     @Test
@@ -327,20 +329,6 @@ public class ParserCornersTest extends BaseJavaTreeDumpTest {
         doTest("SynchronizedStmts");
     }
 
-
-    private static final String GENERICS_PROBLEM =
-        "public class Test {\n public void test() {\n   String o = super.<String> doStuff(\"\");\n }\n}";
-
-    private static final String ABSTRACT_METHOD_LEVEL_CLASS_DECL =
-        "public class Test {\n"
-            + "  void bar() {\n"
-            + "   abstract class X { public abstract void f(); }\n"
-            + "   class Y extends X { public void f() { new Y().f(); } }\n"
-            + "  }\n"
-            + "}";
-
-    private static final String CAST_LOOKAHEAD_PROBLEM =
-        "public class BadClass {\n  public Class foo() {\n    return (byte[].class);\n  }\n}";
 
     @Test
     public void testGithubBug3101UnresolvedTypeParams() {
