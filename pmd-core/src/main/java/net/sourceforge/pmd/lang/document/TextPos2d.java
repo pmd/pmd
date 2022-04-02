@@ -60,10 +60,24 @@ public final class TextPos2d implements Comparable<TextPos2d> {
     }
 
     /**
-     * Returns a string looking like {@code (line=2, column=4)}.
+     * Returns a string looking like {@code "(line=2, column=4)"}.
      */
     public String toTupleString() {
         return "(line=" + line + ", column=" + column + ")";
+    }
+
+    /**
+     * Returns a string looking like {@code "line 2, column 4")}.
+     */
+    public String toDisplayStringInEnglish() {
+        return "line " + line + ", column " + column;
+    }
+
+    /**
+     * Returns a string looking like {@code "2:4")}.
+     */
+    public String toDisplayStringWithColon() {
+        return line + ":" + column;
     }
 
     @Override

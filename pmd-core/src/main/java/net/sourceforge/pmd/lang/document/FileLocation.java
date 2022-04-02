@@ -30,10 +30,8 @@ import net.sourceforge.pmd.reporting.Reportable;
 public final class FileLocation {
 
     public static final Comparator<FileLocation> COORDS_COMPARATOR =
-        Comparator.comparingInt(FileLocation::getBeginLine)
-                  .thenComparingInt(FileLocation::getBeginColumn)
-                  .thenComparingInt(FileLocation::getEndLine)
-                  .thenComparingInt(FileLocation::getEndColumn);
+        Comparator.comparing(FileLocation::getStartPos)
+                  .thenComparing(FileLocation::getEndPos);
 
 
     public static final Comparator<FileLocation> COMPARATOR =
@@ -77,16 +75,6 @@ public final class FileLocation {
         return fileName;
     }
 
-    /**
-     * Inclusive, 1-based line number.
-     *
-     * @deprecated Use {@link #getStartLine()}.
-     */
-    @Deprecated
-    public int getBeginLine() { // todo rename to getStartLine
-        return getStartLine();
-    }
-
     /** Inclusive, 1-based line number. */
     public int getStartLine() {
         return beginLine;
@@ -95,16 +83,6 @@ public final class FileLocation {
     /** Inclusive, 1-based line number. */
     public int getEndLine() {
         return endLine;
-    }
-
-    /**
-     * Inclusive, 1-based column number.
-     *
-     * @deprecated Use {@link #getStartColumn()}.
-     */
-    @Deprecated
-    public int getBeginColumn() { // todo rename to getStartLine
-        return getStartColumn();
     }
 
     /** Inclusive, 1-based column number. */
@@ -117,12 +95,26 @@ public final class FileLocation {
         return endColumn;
     }
 
+    /**
+     * Returns the start position.
+     */
     public TextPos2d getStartPos() {
         return TextPos2d.pos2d(beginLine, beginColumn);
     }
 
+
+    /**
+     * Returns the end position.
+     */
     public TextPos2d getEndPos() {
         return TextPos2d.pos2d(endLine, endColumn);
+    }
+
+    /**
+     * Turn this into a range country.
+     */
+    public TextRange2d toRange2d() {
+        return TextRange2d.range2d(beginLine, beginColumn, endLine, endColumn);
     }
 
     /** Returns the region in the file, or null if this was not available. */
@@ -134,7 +126,7 @@ public final class FileLocation {
      * Formats the start position as e.g. {@code "line 1, column 2"}.
      */
     public String startPosToString() {
-        return "line " + getBeginLine() + ", column " + getBeginColumn();
+        return getStartPos().toDisplayStringInEnglish();
     }
 
 
@@ -142,7 +134,7 @@ public final class FileLocation {
      * Formats the start position as e.g. {@code "/path/to/file:1:2"}.
      */
     public String startPosToStringWithFile() {
-        return getFileName() + ":" + getBeginLine() + ":" + getBeginColumn();
+        return getFileName() + ":" + getStartPos().toDisplayStringWithColon();
     }
 
     /**

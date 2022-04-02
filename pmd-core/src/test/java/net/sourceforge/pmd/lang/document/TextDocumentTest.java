@@ -32,11 +32,14 @@ public class TextDocumentTest {
 
         FileLocation withLines = doc.toLocation(region);
 
-        assertEquals(1, withLines.getBeginLine());
+        // todo rename to getStartLine
+        assertEquals(1, withLines.getStartLine());
         assertEquals(1, withLines.getEndLine());
-        assertEquals(1, withLines.getBeginColumn());
+        // todo rename to getStartLine
+        assertEquals(1, withLines.getStartColumn());
         assertEquals(1 + "bonjour".length(), withLines.getEndColumn());
-        assertEquals("bonjour".length(), withLines.getEndColumn() - withLines.getBeginColumn());
+        // todo rename to getStartLine
+        assertEquals("bonjour".length(), withLines.getEndColumn() - withLines.getStartColumn());
     }
 
     @Test
@@ -47,11 +50,14 @@ public class TextDocumentTest {
         assertEquals("bonjour\n", doc.sliceText(region).toString());
         FileLocation withLines = doc.toLocation(region);
 
-        assertEquals(1, withLines.getBeginLine());
+        // todo rename to getStartLine
+        assertEquals(1, withLines.getStartLine());
         assertEquals(1, withLines.getEndLine());
-        assertEquals(1, withLines.getBeginColumn());
+        // todo rename to getStartLine
+        assertEquals(1, withLines.getStartColumn());
         assertEquals(1 + "bonjour\n".length(), withLines.getEndColumn());
-        assertEquals("bonjour\n".length(), withLines.getEndColumn() - withLines.getBeginColumn());
+        // todo rename to getStartLine
+        assertEquals("bonjour\n".length(), withLines.getEndColumn() - withLines.getStartColumn());
     }
 
     @Test
@@ -65,9 +71,11 @@ public class TextDocumentTest {
 
         FileLocation withLines = doc.toLocation(region);
 
-        assertEquals(2, withLines.getBeginLine());
+        // todo rename to getStartLine
+        assertEquals(2, withLines.getStartLine());
         assertEquals(2, withLines.getEndLine());
-        assertEquals(1, withLines.getBeginColumn());
+        // todo rename to getStartLine
+        assertEquals(1, withLines.getStartColumn());
         assertEquals(1, withLines.getEndColumn());
     }
 
@@ -83,9 +91,11 @@ public class TextDocumentTest {
 
         FileLocation withLines = doc.toLocation(region);
 
-        assertEquals(1, withLines.getBeginLine());
+        // todo rename to getStartLine
+        assertEquals(1, withLines.getStartLine());
         assertEquals(1, withLines.getEndLine());
-        assertEquals(1 + "bonjour".length(), withLines.getBeginColumn());
+        // todo rename to getStartLine
+        assertEquals(1 + "bonjour".length(), withLines.getStartColumn());
         assertEquals(1 + "bonjour\n".length(), withLines.getEndColumn());
     }
 
@@ -98,9 +108,11 @@ public class TextDocumentTest {
 
         FileLocation withLines = doc.toLocation(region);
 
-        assertEquals(1, withLines.getBeginLine());
+        // todo rename to getStartLine
+        assertEquals(1, withLines.getStartLine());
         assertEquals(1, withLines.getEndLine());
-        assertEquals(1, withLines.getBeginColumn());
+        // todo rename to getStartLine
+        assertEquals(1, withLines.getStartColumn());
         assertEquals(1 + doc.getLength(), withLines.getEndColumn());
     }
 
@@ -116,9 +128,11 @@ public class TextDocumentTest {
 
         FileLocation withLines = doc.toLocation(region);
 
-        assertEquals(1, withLines.getBeginLine());
+        // todo rename to getStartLine
+        assertEquals(1, withLines.getStartLine());
         assertEquals(3, withLines.getEndLine());
-        assertEquals(1 + "bonjou".length(), withLines.getBeginColumn());
+        // todo rename to getStartLine
+        assertEquals(1 + "bonjou".length(), withLines.getStartColumn());
         assertEquals(1 + "tri".length(), withLines.getEndColumn());
     }
 
@@ -134,9 +148,11 @@ public class TextDocumentTest {
 
         FileLocation withLines = doc.toLocation(region);
 
-        assertEquals(1, withLines.getBeginLine());
+        // todo rename to getStartLine
+        assertEquals(1, withLines.getStartLine());
         assertEquals(1, withLines.getEndLine());
-        assertEquals(1 + "bonjour".length(), withLines.getBeginColumn());
+        // todo rename to getStartLine
+        assertEquals(1 + "bonjour".length(), withLines.getStartColumn());
         assertEquals(1 + "bonjour".length(), withLines.getEndColumn());
     }
 

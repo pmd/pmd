@@ -451,7 +451,8 @@ public final class JavaMetrics {
         // the report location is now not necessarily the entire node.
         FileLocation loc = node.getTextDocument().toLocation(node.getTextRegion());
 
-        return 1 + loc.getEndLine() - loc.getBeginLine();
+        // todo rename to getStartLine
+        return 1 + loc.getEndLine() - loc.getStartLine();
     }
 
 

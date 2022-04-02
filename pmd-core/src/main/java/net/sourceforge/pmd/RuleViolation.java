@@ -71,7 +71,7 @@ public interface RuleViolation {
      * @return Begin line number.
      */
     default int getBeginLine() {
-        return getLocation().getBeginLine();
+        return getLocation().getStartPos().getLine();
     }
 
     /**
@@ -81,7 +81,7 @@ public interface RuleViolation {
      * @return Begin column number.
      */
     default int getBeginColumn() {
-        return getLocation().getBeginColumn();
+        return getLocation().getStartPos().getColumn();
     }
 
     /**
@@ -91,7 +91,7 @@ public interface RuleViolation {
      * @return End line number.
      */
     default int getEndLine() {
-        return getLocation().getEndLine();
+        return getLocation().getEndPos().getLine();
     }
 
     /**
@@ -101,7 +101,7 @@ public interface RuleViolation {
      * @return End column number.
      */
     default int getEndColumn() {
-        return getLocation().getEndColumn();
+        return getLocation().getEndPos().getColumn();
     }
 
     /**

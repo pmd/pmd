@@ -133,8 +133,8 @@ public interface Node extends Reportable {
         @SuppressWarnings("PMD.CloseResource")
         TextDocument document = getAstInfo().getTextDocument();
         FileLocation loc = getReportLocation();
-        int startOffset = document.offsetAtLineColumn(loc.getStartLine(), loc.getStartColumn());
-        int endOffset = document.offsetAtLineColumn(loc.getEndLine(), loc.getEndColumn());
+        int startOffset = document.offsetAtLineColumn(loc.getStartPos());
+        int endOffset = document.offsetAtLineColumn(loc.getStartPos());
         return TextRegion.fromBothOffsets(startOffset, endOffset);
     }
 
@@ -144,22 +144,22 @@ public interface Node extends Reportable {
 
     @Override
     default int getBeginLine() {
-        return getReportLocation().getBeginLine();
+        return Reportable.super.getBeginLine();
     }
 
     @Override
     default int getBeginColumn() {
-        return getReportLocation().getBeginColumn();
+        return Reportable.super.getBeginColumn();
     }
 
     @Override
     default int getEndLine() {
-        return getReportLocation().getEndLine();
+        return Reportable.super.getEndLine();
     }
 
     @Override
     default int getEndColumn() {
-        return getReportLocation().getEndColumn();
+        return Reportable.super.getEndColumn();
     }
 
 
