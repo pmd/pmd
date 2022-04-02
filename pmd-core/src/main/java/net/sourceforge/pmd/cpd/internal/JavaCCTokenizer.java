@@ -40,8 +40,8 @@ public abstract class JavaCCTokenizer implements Tokenizer {
         return new JavaCCTokenFilter(tokenManager);
     }
 
-    protected TokenEntry processToken(Tokens tokenEntries, JavaccToken currentToken, String filename) {
-        return new TokenEntry(getImage(currentToken), filename, currentToken.getReportLocation());
+    protected TokenEntry processToken(Tokens tokenEntries, JavaccToken currentToken) {
+        return new TokenEntry(getImage(currentToken), currentToken.getReportLocation());
     }
 
     protected String getImage(JavaccToken token) {
@@ -55,7 +55,7 @@ public abstract class JavaCCTokenizer implements Tokenizer {
             final TokenFilter<JavaccToken> tokenFilter = getTokenFilter(tokenManager);
             JavaccToken currentToken = tokenFilter.getNextToken();
             while (currentToken != null) {
-                tokenEntries.add(processToken(tokenEntries, currentToken, sourceCode.getFileName()));
+                tokenEntries.add(processToken(tokenEntries, currentToken));
                 currentToken = tokenFilter.getNextToken();
             }
         } catch (TokenMgrError e) {

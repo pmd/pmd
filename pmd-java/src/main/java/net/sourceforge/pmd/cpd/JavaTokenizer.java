@@ -59,7 +59,7 @@ public class JavaTokenizer extends JavaCCTokenizer {
     }
 
     @Override
-    protected TokenEntry processToken(Tokens tokenEntries, JavaccToken javaToken, String fileName) {
+    protected TokenEntry processToken(Tokens tokenEntries, JavaccToken javaToken) {
         String image = javaToken.getImage();
 
         constructorDetector.restoreConstructorToken(tokenEntries, javaToken);
@@ -76,7 +76,7 @@ public class JavaTokenizer extends JavaCCTokenizer {
 
         constructorDetector.processToken(javaToken);
 
-        return new TokenEntry(image, fileName, javaToken.getReportLocation());
+        return new TokenEntry(image, javaToken.getReportLocation());
     }
 
     public void setIgnoreLiterals(boolean ignore) {
