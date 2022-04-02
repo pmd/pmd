@@ -49,10 +49,6 @@ public class AntlrTokenManager implements TokenManager<AntlrToken> {
         return currentToken;
     }
 
-    public String getFileName() {
-        return textDoc.getDisplayName();
-    }
-
     private void resetListeners() {
         lexer.removeErrorListeners();
         lexer.addErrorListener(new ErrorHandler());
@@ -67,7 +63,7 @@ public class AntlrTokenManager implements TokenManager<AntlrToken> {
                                 final int charPositionInLine,
                                 final String msg,
                                 final RecognitionException ex) {
-            throw new TokenMgrError(line, charPositionInLine, getFileName(), msg, ex);
+            throw new TokenMgrError(line, charPositionInLine, textDoc.getDisplayName(), msg, ex);
         }
     }
 

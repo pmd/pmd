@@ -8,9 +8,6 @@ package net.sourceforge.pmd.internal.util;
 import static net.sourceforge.pmd.internal.util.AssertionUtil.requireOver1;
 import static net.sourceforge.pmd.internal.util.AssertionUtil.requireParamNotNull;
 
-import java.io.File;
-import java.io.FilenameFilter;
-import java.nio.file.Path;
 import java.util.Collection;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
@@ -41,7 +38,7 @@ public final class PredicateUtil {
      *
      * @throws NullPointerException If the extensions array is null
      */
-    public static Predicate<File> getFileExtensionFilter(String... extensions) {
+    public static Predicate<String> getFileExtensionFilter(String... extensions) {
         requireParamNotNull("extensions", extensions);
         // TODO add first parameter to mandate that. This affects a
         //  constructor of AbstractLanguage and should be done later
@@ -58,34 +55,11 @@ public final class PredicateUtil {
      *
      * @return A predicate on files
      */
-    public static Predicate<File> toNormalizedFileFilter(final Predicate<? super String> filter) {
-        return file -> {
-            String path = file.getPath();
+    public static Predicate<String> toNormalizedFileFilter(final Predicate<? super String> filter) {
+        return path -> {
             path = path.replace('\\', '/');
             return filter.test(path);
         };
-    }
-
-    /**
-     * Given a File Filter, expose as a FilenameFilter.
-     *
-     * @param filter The File Filter.
-     *
-     * @return A FilenameFilter.
-     */
-    public static FilenameFilter toFilenameFilter(final Predicate<? super File> filter) {
-        return (dir, name) -> filter.test(new File(dir, name));
-    }
-
-    /**
-     * Given a FilenameFilter, expose as a File Filter.
-     *
-     * @param filter The FilenameFilter.
-     *
-     * @return A File Filter.
-     */
-    public static Predicate<Path> toFileFilter(final FilenameFilter filter) {
-        return path -> filter.accept(path.getParent().toFile(), path.getFileName().toString());
     }
 
     /**

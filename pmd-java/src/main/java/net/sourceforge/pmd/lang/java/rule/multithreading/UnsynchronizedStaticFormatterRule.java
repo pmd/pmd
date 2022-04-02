@@ -18,8 +18,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTSynchronizedStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.JModifier;
+import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
-import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
@@ -89,7 +89,7 @@ public class UnsynchronizedStaticFormatterRule extends AbstractJavaRulechainRule
             ASTSynchronizedStatement syncStatement = ref.ancestors(ASTSynchronizedStatement.class).first();
             if (syncStatement != null) {
                 ASTExpression lockExpression = syncStatement.getLockExpression();
-                if (JavaRuleUtil.isReferenceToSameVar(lockExpression, methodCall.getQualifier())) {
+                if (JavaAstUtils.isReferenceToSameVar(lockExpression, methodCall.getQualifier())) {
                     continue;
                 }
             }

@@ -235,9 +235,10 @@ nested element. Possible values are:
     <sourceLanguage name="java" version="14"/>
     <sourceLanguage name="java" version="15"/>
     <sourceLanguage name="java" version="16"/>
-    <sourceLanguage name="java" version="16-preview"/>
-    <sourceLanguage name="java" version="17"/> <!-- this is the default -->
+    <sourceLanguage name="java" version="17"/>
     <sourceLanguage name="java" version="17-preview"/>
+    <sourceLanguage name="java" version="18"/> <!-- this is the default -->
+    <sourceLanguage name="java" version="18-preview"/>
     <sourceLanguage name="jsp" version=""/>
     <sourceLanguage name="modelica" version=""/>
     <sourceLanguage name="pom" version=""/>

@@ -246,6 +246,42 @@ the breaking API changes will be performed in 7.0.0.
 an API is tagged as `@Deprecated` or not in the latest minor release. During the development of 7.0.0,
 we may decide to remove some APIs that were not tagged as deprecated, though we'll try to avoid it." %}
 
+#### 6.44.0
+
+##### Deprecated API
+
+* Several members of {% jdoc core::PMD %} have been newly deprecated, including:
+  - `PMD#EOL`: use `System#lineSeparator()`
+  - `PMD#SUPPRESS_MARKER`: use {% jdoc core::PMDConfiguration#DEFAULT_SUPPRESS_MARKER %}
+  - `PMD#processFiles`: use the new programmatic API
+  - `PMD#getApplicableFiles`: is internal
+* {% jdoc !!core::PMDConfiguration#prependClasspath(java.lang.String) %} is deprecated
+  in favour of {% jdoc core::PMDConfiguration#prependAuxClasspath(java.lang.String) %}.
+* {% jdoc !!core::PMDConfiguration#setRuleSets(java.lang.String) %} and
+  {% jdoc core::PMDConfiguration#getRuleSets() %} are deprecated. Use instead
+  {% jdoc core::PMDConfiguration#setRuleSets(java.util.List) %},
+  {% jdoc core::PMDConfiguration#addRuleSet(java.lang.String) %},
+  and {% jdoc core::PMDConfiguration#getRuleSetPaths() %}.
+* Several members of {% jdoc test::cli.BaseCLITest %} have been deprecated with replacements.
+* Several members of {% jdoc core::cli.PMDCommandLineInterface %} have been explicitly deprecated.
+  The whole class however was deprecated long ago already with 6.30.0. It is internal API and should
+  not be used.
+
+* In modelica, the rule classes {% jdoc modelica::lang.modelica.rule.AmbiguousResolutionRule %}
+  and {% jdoc modelica::lang.modelica.rule.ConnectUsingNonConnector %} have been deprecated,
+  since they didn't comply to the usual rule class naming conventions yet.
+  The replacements are in the subpackage `bestpractices`.
+
+##### Experimental APIs
+
+*   Together with the new programmatic API the interface
+    {% jdoc core::lang.document.TextFile %} has been added as *experimental*. It intends
+    to replace {% jdoc core::util.datasource.DataSource %} and {% jdoc core::cpd.SourceCode %} in the long term.
+    
+    This interface will change in PMD 7 to support read/write operations
+    and other things. You don't need to use it in PMD 6, as {% jdoc core::lang.document.FileCollector %}
+    decouples you from this. A file collector is available through {% jdoc !!core::PmdAnalysis#files() %}.
+
 #### 6.43.0
 
 ##### Deprecated API

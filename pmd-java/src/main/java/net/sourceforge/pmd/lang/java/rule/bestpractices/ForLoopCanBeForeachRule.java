@@ -29,8 +29,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.BinaryOp;
+import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
-import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.types.InvocationMatcher;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
@@ -97,7 +97,7 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRulechainRule {
             if (varIds.count() == 1) {
                 ASTVariableDeclaratorId first = varIds.firstOrThrow();
                 if (ITERATOR_CALL.matchesCall(first.getInitializer())
-                    || JavaRuleUtil.isLiteralInt(first.getInitializer(), 0)) {
+                    || JavaAstUtils.isLiteralInt(first.getInitializer(), 0)) {
                     return first;
                 }
             }
@@ -139,14 +139,14 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRulechainRule {
      * @return The name, or null if it couldn't be found or the guard condition is not safe to refactor (then abort)
      */
     private @Nullable ASTNamedReferenceExpr findIterableFromCondition(ASTExpression guardCondition, ASTVariableDeclaratorId indexVar) {
-        if (!BinaryOp.isInfixExprWithOperator(guardCondition, BinaryOp.COMPARISON_OPS)) {
+        if (!JavaAstUtils.isInfixExprWithOperator(guardCondition, BinaryOp.COMPARISON_OPS)) {
             return null;
         }
 
         ASTInfixExpression condition = (ASTInfixExpression) guardCondition;
         BinaryOp op = condition.getOperator();
 
-        if (!JavaRuleUtil.isReferenceToVar(condition.getLeftOperand(), indexVar.getSymbol())) {
+        if (!JavaAstUtils.isReferenceToVar(condition.getLeftOperand(), indexVar.getSymbol())) {
             return null;
         }
 
@@ -159,7 +159,7 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRulechainRule {
             rhs = NodeStream.of(condition.getRightOperand())
                             .filterIs(ASTInfixExpression.class)
                             .filter(it -> it.getOperator() == BinaryOp.SUB)
-                            .filter(it -> JavaRuleUtil.isLiteralInt(it.getRightOperand(), 1))
+                            .filter(it -> JavaAstUtils.isLiteralInt(it.getRightOperand(), 1))
                             .map(ASTInfixExpression::getLeftOperand);
 
         }
@@ -209,14 +209,14 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRulechainRule {
         }
         ASTArrayAccess arrayAccess = (ASTArrayAccess) usage.getParent();
         return arrayAccess.getAccessType() == AccessType.READ
-            && JavaRuleUtil.isReferenceToSameVar(arrayAccess.getQualifier(), arrayVar);
+            && JavaAstUtils.isReferenceToSameVar(arrayAccess.getQualifier(), arrayVar);
     }
 
 
     private boolean isListGetIndex(ASTNamedReferenceExpr usage, ASTNamedReferenceExpr listVar) {
         return usage.getParent() instanceof ASTArgumentList
             && LIST_GET.matchesCall(usage.getParent().getParent())
-            && JavaRuleUtil.isReferenceToSameVar(((ASTMethodCall) usage.getParent().getParent()).getQualifier(), listVar);
+            && JavaAstUtils.isReferenceToSameVar(((ASTMethodCall) usage.getParent().getParent()).getQualifier(), listVar);
     }
 
 
@@ -231,7 +231,7 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRulechainRule {
                                      OccurrenceMatcher getMatcher) {
 
         for (ASTNamedReferenceExpr usage : index.getLocalUsages()) {
-            ASTExpression toplevel = JavaRuleUtil.getTopLevelExpr(usage);
+            ASTExpression toplevel = JavaAstUtils.getTopLevelExpr(usage);
             boolean isInUpdateOrCond =
                 loop.getUpdate() == toplevel.getParent()
                     || loop.getCondition() == toplevel;

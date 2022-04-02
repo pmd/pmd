@@ -60,7 +60,8 @@ public interface TextFile extends Closeable {
      *
      * @return A language version
      */
-    @NonNull LanguageVersion getLanguageVersion();
+    @NonNull
+    LanguageVersion getLanguageVersion();
 
 
     /**

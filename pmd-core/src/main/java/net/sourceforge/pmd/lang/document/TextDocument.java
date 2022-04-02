@@ -153,6 +153,12 @@ public interface TextDocument extends Closeable {
         return getText().length();
     }
 
+    /**
+     * Returns a text region that corresponds to the entire document.
+     */
+    default TextRegion getEntireRegion() {
+        return TextRegion.fromOffsetLength(0, getLength());
+    }
 
     /**
      * Returns a region that spans the text of all the given lines.

@@ -10,9 +10,9 @@ gem 'danger'
 # this happens during release (.ci/build.sh and do-release.sh)
 # but also during regular builds (.ci/build.sh)
 group :release_notes_preprocessing do
-  gem 'liquid', '>=4.0.0'
-  gem 'safe_yaml', '>=1.0'
-  gem 'rouge', '>= 1.7', '< 4'
+  gem 'liquid'
+  gem 'safe_yaml'
+  gem 'rouge'
 end
 
 # vim: syntax=ruby

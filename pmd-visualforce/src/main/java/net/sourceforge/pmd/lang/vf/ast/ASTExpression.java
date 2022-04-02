@@ -28,12 +28,10 @@ public final class ASTExpression extends AbstractVfNode {
     }
 
     private void logWarning(String warning, Node node) {
-        LOG.warn("{}. nodeClass={}, fileName={}, beginLine={}, image={}",
+        LOG.warn("{}: {}\n{}",
+                node.getReportLocation().startPosToStringWithFile(),
                 warning,
-                node.getClass().getSimpleName(),
-                node.getAstInfo().getFileName(),
-                node.getBeginLine(),
-                node.getImage());
+                node);
     }
 
     /**

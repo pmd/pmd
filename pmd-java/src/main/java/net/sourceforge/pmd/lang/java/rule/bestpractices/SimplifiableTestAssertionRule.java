@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
-import static net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil.isBooleanLiteral;
+import static net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils.isBooleanLiteral;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -18,8 +18,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpression;
 import net.sourceforge.pmd.lang.java.ast.BinaryOp;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
+import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
-import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 import net.sourceforge.pmd.lang.java.rule.internal.TestFrameworksUtil;
 import net.sourceforge.pmd.lang.java.types.InvocationMatcher;
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind;
@@ -47,8 +47,8 @@ public class SimplifiableTestAssertionRule extends AbstractJavaRulechainRule {
             if (eq != null) {
                 boolean isPositive = isPositiveEqualityExpr(eq) == isAssertTrue;
                 final String suggestion;
-                if (JavaRuleUtil.isNullLiteral(eq.getLeftOperand())
-                    || JavaRuleUtil.isNullLiteral(eq.getRightOperand())) {
+                if (JavaAstUtils.isNullLiteral(eq.getLeftOperand())
+                    || JavaAstUtils.isNullLiteral(eq.getRightOperand())) {
                     // use assertNull/assertNonNull
                     suggestion = isPositive ? "assertNull" : "assertNonNull";
                 } else {
@@ -129,7 +129,7 @@ public class SimplifiableTestAssertionRule extends AbstractJavaRulechainRule {
 
 
     private ASTInfixExpression asEqualityExpr(ASTExpression node) {
-        if (BinaryOp.isInfixExprWithOperator(node, BinaryOp.EQUALITY_OPS)) {
+        if (JavaAstUtils.isInfixExprWithOperator(node, BinaryOp.EQUALITY_OPS)) {
             return (ASTInfixExpression) node;
         }
         return null;
@@ -140,7 +140,7 @@ public class SimplifiableTestAssertionRule extends AbstractJavaRulechainRule {
     }
 
     private static ASTExpression getNegatedExprOperand(ASTExpression node) {
-        if (JavaRuleUtil.isBooleanNegation(node)) {
+        if (JavaAstUtils.isBooleanNegation(node)) {
             return ((ASTUnaryExpression) node).getOperand();
         }
         return null;

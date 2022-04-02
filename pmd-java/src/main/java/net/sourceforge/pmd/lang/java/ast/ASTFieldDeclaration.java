@@ -12,8 +12,8 @@ import net.sourceforge.pmd.lang.rule.xpath.DeprecatedAttribute;
  * Represents a field declaration in the body of a type declaration.
  *
  * <p>This declaration may define several variables, possibly of different
- * types (see {@link ASTVariableDeclaratorId#getType()}). The nodes
- * corresponding to the declared variables are accessible through {@link #iterator()}.
+ * types. The nodes corresponding to the declared variables are accessible
+ * through {@link #iterator()}.
  *
  * <pre class="grammar">
  *

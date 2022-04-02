@@ -76,7 +76,7 @@
     </issueManagement>
 
     <properties>
-        <project.build.outputTimestamp>2022-02-26T09:01:07Z</project.build.outputTimestamp>
+        <project.build.outputTimestamp>2022-03-27T15:01:59Z</project.build.outputTimestamp>
 
         <java.version>8</java.version>
 
@@ -99,6 +99,7 @@
         <javadoc.plugin.version>3.2.0</javadoc.plugin.version>
         <antlr.version>4.8</antlr.version>
         <slf4j.version>2.0.0-alpha6</slf4j.version>
+        <saxon.version>10.7</saxon.version>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -693,7 +694,7 @@
             <dependency>
                 <groupId>net.sf.saxon</groupId>
                 <artifactId>Saxon-HE</artifactId>
-                <version>10.2</version>
+                <version>${saxon.version}</version>
             </dependency>
             <dependency>
                 <groupId>net.java.dev.javacc</groupId>

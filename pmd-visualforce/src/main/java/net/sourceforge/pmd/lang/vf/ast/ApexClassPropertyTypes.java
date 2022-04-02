@@ -22,9 +22,9 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.Parser;
 import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
 import net.sourceforge.pmd.lang.ast.SemanticErrorReporter;
-import net.sourceforge.pmd.lang.vf.DataType;
 import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.lang.document.TextFile;
+import net.sourceforge.pmd.lang.vf.DataType;
 
 import apex.jorje.semantic.symbol.type.BasicType;
 
@@ -72,7 +72,7 @@ class ApexClassPropertyTypes extends SalesforceFieldTypes {
              TextDocument textDocument = TextDocument.create(file)) {
 
             Parser parser = languageVersion.getLanguageVersionHandler().getParser();
-            ParserTask task = new ParserTask(textDocument, SemanticErrorReporter.noop(), auxclasspathClassLoader);
+            ParserTask task = new ParserTask(textDocument, SemanticErrorReporter.noop(), ApexClassPropertyTypes.class.getClassLoader());
             languageVersion.getLanguageVersionHandler().declareParserTaskProperties(task.getProperties());
 
             return parser.parse(task);

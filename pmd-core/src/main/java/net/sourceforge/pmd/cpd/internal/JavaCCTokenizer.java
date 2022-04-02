@@ -17,16 +17,14 @@ import net.sourceforge.pmd.lang.ast.FileAnalysisException;
 import net.sourceforge.pmd.lang.ast.impl.javacc.CharStream;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument.TokenDocumentBehavior;
-import net.sourceforge.pmd.lang.ast.impl.javacc.MalformedSourceException;
 import net.sourceforge.pmd.lang.document.CpdCompat;
 import net.sourceforge.pmd.lang.document.TextDocument;
 
 public abstract class JavaCCTokenizer implements Tokenizer {
 
     @SuppressWarnings("PMD.CloseResource")
-    protected TokenManager<JavaccToken> getLexerForSource(SourceCode sourceCode) throws IOException, MalformedSourceException {
-        TextDocument textDocument = TextDocument.create(CpdCompat.cpdCompat(sourceCode));
-        return makeLexerImpl(CharStream.create(textDocument, tokenBehavior()));
+    protected TokenManager<JavaccToken> getLexerForSource(TextDocument sourceCode) throws IOException {
+        return makeLexerImpl(CharStream.create(sourceCode, tokenBehavior()));
     }
 
     protected TokenDocumentBehavior tokenBehavior() {
@@ -39,8 +37,8 @@ public abstract class JavaCCTokenizer implements Tokenizer {
         return new JavaCCTokenFilter(tokenManager);
     }
 
-    protected TokenEntry processToken(Tokens tokenEntries, JavaccToken currentToken, String filename) {
-        return new TokenEntry(getImage(currentToken), filename, currentToken.getReportLocation());
+    protected TokenEntry processToken(Tokens tokenEntries, JavaccToken currentToken) {
+        return new TokenEntry(getImage(currentToken), currentToken.getReportLocation());
     }
 
     protected String getImage(JavaccToken token) {
@@ -49,12 +47,12 @@ public abstract class JavaCCTokenizer implements Tokenizer {
 
     @Override
     public void tokenize(SourceCode sourceCode, Tokens tokenEntries) throws IOException {
-        try {
-            TokenManager<JavaccToken> tokenManager = getLexerForSource(sourceCode);
+        try (TextDocument textDoc = TextDocument.create(CpdCompat.cpdCompat(sourceCode))) {
+            TokenManager<JavaccToken> tokenManager = getLexerForSource(textDoc);
             final TokenFilter<JavaccToken> tokenFilter = getTokenFilter(tokenManager);
             JavaccToken currentToken = tokenFilter.getNextToken();
             while (currentToken != null) {
-                tokenEntries.add(processToken(tokenEntries, currentToken, sourceCode.getFileName()));
+                tokenEntries.add(processToken(tokenEntries, currentToken));
                 currentToken = tokenFilter.getNextToken();
             }
         } catch (FileAnalysisException e) {

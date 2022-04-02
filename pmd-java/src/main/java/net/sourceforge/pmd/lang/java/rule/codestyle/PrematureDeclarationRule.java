@@ -21,6 +21,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
@@ -58,7 +59,7 @@ public class PrematureDeclarationRule extends AbstractJavaRulechainRule {
         for (ASTVariableDeclaratorId id : node) {
             ASTExpression initializer = id.getInitializer();
 
-            if (JavaRuleUtil.isNeverUsed(id) // avoid the duplicate with unused variables
+            if (JavaAstUtils.isNeverUsed(id) // avoid the duplicate with unused variables
                 || cannotBeMoved(initializer)
                 || JavaRuleUtil.hasSideEffect(initializer, emptySet())) {
                 continue;

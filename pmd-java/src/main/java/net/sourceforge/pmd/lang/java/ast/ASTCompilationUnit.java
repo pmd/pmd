@@ -9,13 +9,11 @@ import java.util.List;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.AstInfo;
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.ast.impl.GenericNode;
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
-import net.sourceforge.pmd.lang.java.typeresolution.ClassTypeResolver;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
 import net.sourceforge.pmd.lang.java.types.ast.LazyTypeResolver;
 
@@ -88,13 +86,6 @@ public final class ASTCompilationUnit extends AbstractJavaTypeNode implements Ja
      */
     public NodeStream<ASTAnyTypeDeclaration> getTypeDeclarations() {
         return children(ASTAnyTypeDeclaration.class);
-    }
-
-
-    @InternalApi
-    @Deprecated
-    public ClassTypeResolver getClassTypeResolver() {
-        return new ClassTypeResolver();
     }
 
     @Override
