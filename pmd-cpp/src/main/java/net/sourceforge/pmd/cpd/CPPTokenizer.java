@@ -57,7 +57,12 @@ public class CPPTokenizer extends JavaCCTokenizer {
                 Boolean.FALSE.toString()));
     }
 
-    private String maybeSkipBlocks(String test) throws IOException {
+    /**
+     * Unused method, will be fixed in followup branch.
+     * FIXME un-ignore tests
+     */
+    @Deprecated
+    public String maybeSkipBlocks(String test) throws IOException {
         if (!skipBlocks) {
             return test;
         }
