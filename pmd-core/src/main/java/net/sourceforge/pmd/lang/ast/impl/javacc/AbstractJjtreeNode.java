@@ -10,6 +10,7 @@ import net.sourceforge.pmd.lang.ast.impl.AbstractNode;
 import net.sourceforge.pmd.lang.document.Chars;
 import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.document.TextRegion;
+import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * Base class for node produced by JJTree. JJTree specific functionality
@@ -156,6 +157,7 @@ public abstract class AbstractJjtreeNode<B extends AbstractJjtreeNode<B, N>, N e
     @Override
     public String toString() {
         FileLocation loc = getReportLocation();
-        return "[" + getXPathNodeName() + ":" + loc.getBeginLine() + ":" + loc.getBeginColumn() + "]" + getText();
+        return "!debug only! [" + getXPathNodeName() + ":" + loc.getBeginLine() + ":" + loc.getBeginColumn() + "]"
+            + StringUtil.elide(getText().toString(), 150, "(truncated)");
     }
 }

@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.cpd;
 
-import java.io.IOException;
 import java.util.regex.Pattern;
 
 import org.junit.Assert;
@@ -21,7 +20,7 @@ public class CPDCommandLineInterfaceTest extends BaseCPDCLITest {
      * Test ignore identifiers argument.
      */
     @Test
-    public void testIgnoreIdentifiers() throws Exception {
+    public void testIgnoreIdentifiers() {
         runCPD("--minimum-tokens", "34", "--language", "java", "--files",
                 "src/test/resources/net/sourceforge/pmd/cpd/clitest/", "--ignore-identifiers");
 
@@ -34,7 +33,7 @@ public class CPDCommandLineInterfaceTest extends BaseCPDCLITest {
      * Test ignore identifiers argument with failOnViolation=false
      */
     @Test
-    public void testIgnoreIdentifiersFailOnViolationFalse() throws Exception {
+    public void testIgnoreIdentifiersFailOnViolationFalse() {
         runCPD("--minimum-tokens", "34", "--language", "java", "--files",
                 "src/test/resources/net/sourceforge/pmd/cpd/clitest/", "--ignore-identifiers", "--failOnViolation",
                 "false");
@@ -48,7 +47,7 @@ public class CPDCommandLineInterfaceTest extends BaseCPDCLITest {
      * Test ignore identifiers argument with failOnViolation=false with changed long options
      */
     @Test
-    public void testIgnoreIdentifiersFailOnViolationFalseLongOption() throws Exception {
+    public void testIgnoreIdentifiersFailOnViolationFalseLongOption() {
         runCPD("--minimum-tokens", "34", "--language", "java", "--files",
                 "src/test/resources/net/sourceforge/pmd/cpd/clitest/", "--ignore-identifiers", "--fail-on-violation",
                 "false");
@@ -62,7 +61,7 @@ public class CPDCommandLineInterfaceTest extends BaseCPDCLITest {
      * Test excludes option.
      */
     @Test
-    public void testExcludes() throws Exception {
+    public void testExcludes() {
         runCPD("--minimum-tokens", "34", "--language", "java", "--ignore-identifiers", "--files",
                 "src/test/resources/net/sourceforge/pmd/cpd/clitest/", "--exclude",
                 "src/test/resources/net/sourceforge/pmd/cpd/clitest/File2.java");
@@ -76,7 +75,7 @@ public class CPDCommandLineInterfaceTest extends BaseCPDCLITest {
      * #1144 CPD encoding argument has no effect
      */
     @Test
-    public void testEncodingOption() throws Exception {
+    public void testEncodingOption() {
         String origEncoding = System.getProperty("file.encoding");
 
         // set the default encoding under Windows
@@ -98,11 +97,9 @@ public class CPDCommandLineInterfaceTest extends BaseCPDCLITest {
     /**
      * See: https://sourceforge.net/p/pmd/bugs/1178/
      *
-     * @throws IOException
-     *             any error
      */
     @Test
-    public void testBrokenAndValidFile() throws IOException {
+    public void testBrokenAndValidFile() {
         runCPD("--minimum-tokens", "10", "--language", "java", "--files",
                 "src/test/resources/net/sourceforge/pmd/cpd/badandgood/", "--format", "text", "--skip-lexical-errors");
         String out = getOutput();
@@ -113,7 +110,7 @@ public class CPDCommandLineInterfaceTest extends BaseCPDCLITest {
     }
 
     @Test
-    public void testFormatXmlWithoutEncoding() throws Exception {
+    public void testFormatXmlWithoutEncoding() {
         runCPD("--minimum-tokens", "10", "--language", "java", "--files",
                 "src/test/resources/net/sourceforge/pmd/cpd/clitest/", "--format", "xml");
         String out = getOutput();
@@ -122,7 +119,7 @@ public class CPDCommandLineInterfaceTest extends BaseCPDCLITest {
     }
 
     @Test
-    public void testCSVFormat() throws Exception {
+    public void testCSVFormat() {
         runCPD("--minimum-tokens", "100", "--files", "src/test/resources/net/sourceforge/pmd/cpd/badandgood/",
                 "--language", "c", "--format", "csv");
         String out = getOutput();
