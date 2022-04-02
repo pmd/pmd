@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.document.FileLocation;
+import net.sourceforge.pmd.lang.document.TextRange2d;
 import net.sourceforge.pmd.lang.java.javadoc.JavadocTag;
 
 public class JavadocElement extends Comment {
@@ -16,7 +17,7 @@ public class JavadocElement extends Comment {
     public JavadocElement(JavaccToken t, int theBeginLine, int theEndLine, int theBeginColumn, int theEndColumn, JavadocTag theTag) {
         super(t);
         this.tag = theTag;
-        this.reportLoc = FileLocation.location("TODO", theBeginLine, theBeginColumn, theEndLine, theEndColumn);
+        this.reportLoc = FileLocation.location("TODO", TextRange2d.range2d(theBeginLine, theBeginColumn, theEndLine, theEndColumn));
     }
 
     public JavadocTag tag() {

@@ -6,6 +6,7 @@ package net.sourceforge.pmd.test.lang.ast;
 
 import net.sourceforge.pmd.lang.ast.impl.AbstractNode;
 import net.sourceforge.pmd.lang.document.FileLocation;
+import net.sourceforge.pmd.lang.document.TextRange2d;
 
 public class DummyNode extends AbstractNode<DummyNode, DummyNode> {
 
@@ -13,7 +14,7 @@ public class DummyNode extends AbstractNode<DummyNode, DummyNode> {
     private FileLocation location;
 
     public void setCoords(int bline, int bcol, int eline, int ecol) {
-        this.location = FileLocation.location(":dummyFile:", bline, bcol, eline, ecol);
+        this.location = FileLocation.location(":dummyFile:", TextRange2d.range2d(bline, bcol, eline, ecol));
     }
 
     @Override

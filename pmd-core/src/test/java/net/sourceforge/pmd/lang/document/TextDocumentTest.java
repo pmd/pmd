@@ -161,6 +161,33 @@ public class TextDocumentTest {
     }
 
     @Test
+    public void testCoordinateRoundTripWithEndOfLine() {
+        TextDocument doc = TextDocument.readOnlyString("bonjour\noa\n", dummyVersion);
+        TextRange2d inputRange = TextRange2d.fullLine(1, "bonjour\n".length());
+
+        TextRegion lineRange = doc.createLineRange(1, 1);
+        TextRegion region = doc.toRegion(inputRange);
+
+        assertEquals(TextRegion.fromOffsetLength(0, "bonjour\n".length()), region);
+        assertEquals(TextRegion.fromOffsetLength(0, "bonjour\n".length()), lineRange);
+        TextRange2d roundTrip = doc.toRange2d(region);
+        assertEquals(inputRange, roundTrip);
+
+    }
+
+    @Test
+    public void testCoordinateRoundTripSimple() {
+        TextDocument doc = TextDocument.readOnlyString("bonjour\noa\n", dummyVersion);
+        TextRange2d inputRange = TextRange2d.fullLine(1, "bonjour".length());
+
+        TextRegion region = doc.toRegion(inputRange);
+        assertEquals(TextRegion.fromOffsetLength(0, "bonjour".length()), region);
+
+        TextRange2d roundTrip = doc.toRange2d(region);
+        assertEquals(inputRange, roundTrip);
+    }
+
+    @Test
     public void testLineRange() {
         TextDocument doc = TextDocument.readOnlyString("bonjour\noha\ntristesse", dummyVersion);
 

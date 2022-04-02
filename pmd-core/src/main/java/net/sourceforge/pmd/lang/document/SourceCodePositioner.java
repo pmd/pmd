@@ -131,6 +131,9 @@ final class SourceCodePositioner {
      */
     public int offsetFromLineColumn(final int line, final int column) {
         if (!isValidLine(line)) {
+            if (line == lineOffsets.length && column == 1) {
+                return sourceCodeLength;
+            }
             return -1;
         }
 
@@ -170,6 +173,10 @@ final class SourceCodePositioner {
      */
     public int getLastLine() {
         return lineOffsets.length - 1;
+    }
+
+    public int getNumLines() {
+        return getLastLine();
     }
 
     /**

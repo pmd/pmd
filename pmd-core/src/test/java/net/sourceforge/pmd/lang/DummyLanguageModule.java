@@ -49,7 +49,7 @@ public class DummyLanguageModule extends BaseLanguageModule {
         public Parser getParser() {
             return task -> {
                 DummyRoot node = new DummyRoot();
-                node.setCoords(1, 1, 2, 10);
+                node.setCoords(1, 1, 1, 1);
                 node.setImage("Foo");
                 node.withFileName(task.getFileDisplayName());
                 node.withLanguage(task.getLanguageVersion());

@@ -81,8 +81,8 @@ public abstract class AbstractRendererTest {
     }
 
     protected DummyNode createNode(int beginLine, int beginColumn, int endLine, int endColumn) {
-        DummyNode node = new DummyRoot().withFileName(getSourceCodeFilename());
-        node.setCoords(beginLine, beginColumn, endLine, endColumn);
+        DummyRoot node = new DummyRoot().withFileName(getSourceCodeFilename());
+        node.setCoordsReplaceText(beginLine, beginColumn, endLine, endColumn);
         return node;
     }
 

@@ -144,10 +144,10 @@ public class SummaryHTMLRendererTest extends AbstractRendererTest {
         assertEquals(getExpectedEmpty(), actual);
     }
 
-    private Consumer<FileAnalysisListener> createEmptyReportWithSuppression() throws Exception {
+    private Consumer<FileAnalysisListener> createEmptyReportWithSuppression() {
         return listener -> {
             DummyRoot root = new DummyRoot().withNoPmdComments(Collections.singletonMap(1, "test")).withFileName(getSourceCodeFilename());
-            root.setCoords(1, 10, 4, 5);
+            root.setCoordsReplaceText(1, 10, 4, 5);
 
             RuleContext ruleContext = RuleContext.create(listener, new FooRule());
             ruleContext.addViolationWithPosition(root, 1, 1, "suppress test");

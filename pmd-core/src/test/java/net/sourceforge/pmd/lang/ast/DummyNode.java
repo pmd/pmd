@@ -10,6 +10,7 @@ import java.util.Map;
 import net.sourceforge.pmd.lang.ast.impl.AbstractNode;
 import net.sourceforge.pmd.lang.ast.impl.GenericNode;
 import net.sourceforge.pmd.lang.document.FileLocation;
+import net.sourceforge.pmd.lang.document.TextRange2d;
 
 public class DummyNode extends AbstractNode<DummyNode, DummyNode> implements GenericNode<DummyNode> {
     private final boolean findBoundary;
@@ -58,7 +59,7 @@ public class DummyNode extends AbstractNode<DummyNode, DummyNode> implements Gen
 
     @Override
     public FileLocation getReportLocation() {
-        return getTextDocument().createLocation(bline, bcol, eline, ecol);
+        return getTextDocument().toLocation(TextRange2d.range2d(bline, bcol, eline, ecol));
     }
 
     public void setImage(String image) {

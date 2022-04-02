@@ -24,8 +24,8 @@ public class RuleViolationTest {
     @Test
     public void testConstructor1() {
         Rule rule = new MockRule("name", "desc", "msg", "rulesetname");
-        DummyNode s = new DummyRoot().withFileName("filename");
-        s.setCoords(2, 1, 2, 3);
+        DummyRoot s = new DummyRoot().withFileName("filename");
+        s.setCoordsReplaceText(2, 1, 2, 3);
         RuleViolation r = new ParametricRuleViolation(rule, s, rule.getMessage());
         assertEquals("object mismatch", rule, r.getRule());
         assertEquals("line number is wrong", 2, r.getBeginLine());
@@ -35,8 +35,8 @@ public class RuleViolationTest {
     @Test
     public void testConstructor2() {
         Rule rule = new MockRule("name", "desc", "msg", "rulesetname");
-        DummyNode s = new DummyRoot().withFileName("filename");
-        s.setCoords(2, 1, 2, 3);
+        DummyRoot s = new DummyRoot().withFileName("filename");
+        s.setCoordsReplaceText(2, 1, 2, 3);
         RuleViolation r = new ParametricRuleViolation(rule, s, "description");
         assertEquals("object mismatch", rule, r.getRule());
         assertEquals("line number is wrong", 2, r.getBeginLine());
@@ -48,11 +48,11 @@ public class RuleViolationTest {
     public void testComparatorWithDifferentFilenames() {
         Rule rule = new MockRule("name", "desc", "msg", "rulesetname");
         Comparator<RuleViolation> comp = RuleViolation.DEFAULT_COMPARATOR;
-        DummyNode s = new DummyRoot().withFileName("filename1");
-        s.setCoords(10, 1, 11, 3);
+        DummyRoot s = new DummyRoot().withFileName("filename1");
+        s.setCoordsReplaceText(10, 1, 11, 3);
         RuleViolation r1 = new ParametricRuleViolation(rule, s, "description");
-        DummyNode s1 = new DummyRoot().withFileName("filename2");
-        s1.setCoords(10, 1, 11, 3);
+        DummyRoot s1 = new DummyRoot().withFileName("filename2");
+        s1.setCoordsReplaceText(10, 1, 11, 3);
         RuleViolation r2 = new ParametricRuleViolation(rule, s1, "description");
         assertEquals(-1, comp.compare(r1, r2));
         assertEquals(1, comp.compare(r2, r1));
@@ -62,10 +62,10 @@ public class RuleViolationTest {
     public void testComparatorWithSameFileDifferentLines() {
         Rule rule = new MockRule("name", "desc", "msg", "rulesetname");
         Comparator<RuleViolation> comp = RuleViolation.DEFAULT_COMPARATOR;
-        DummyNode s = new DummyRoot().withFileName("filename1");
-        s.setCoords(10, 1, 15, 10);
-        DummyNode s1 = new DummyRoot().withFileName("filename1");
-        s1.setCoords(20, 1, 25, 10);
+        DummyRoot s = new DummyRoot().withFileName("filename1");
+        s.setCoordsReplaceText(10, 1, 15, 10);
+        DummyRoot s1 = new DummyRoot().withFileName("filename1");
+        s1.setCoordsReplaceText(20, 1, 25, 10);
         RuleViolation r1 = new ParametricRuleViolation(rule, s, "description");
         RuleViolation r2 = new ParametricRuleViolation(rule, s1, "description");
         assertTrue(comp.compare(r1, r2) < 0);

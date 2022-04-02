@@ -475,7 +475,7 @@ public class RuleSetTest {
 
     private RootNode makeCompilationUnits(String filename) {
         DummyRoot node = new DummyRoot();
-        node.setCoords(1, 1, 10, 1);
+        node.setCoordsReplaceText(1, 1, 2, 1);
         node.setImage("Foo");
         node.withFileName(filename);
         return node;

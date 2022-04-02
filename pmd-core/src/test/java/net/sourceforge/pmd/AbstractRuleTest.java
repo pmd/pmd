@@ -14,7 +14,6 @@ import java.util.Collections;
 import org.junit.Test;
 
 import net.sourceforge.pmd.Report.SuppressedViolation;
-import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.lang.ast.DummyRoot;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
@@ -70,8 +69,8 @@ public class AbstractRuleTest {
     public void testCreateRV() {
         MyRule r = new MyRule();
         r.setRuleSetName("foo");
-        DummyNode s = new DummyRoot().withFileName("filename");
-        s.setCoords(5, 5, 5, 10);
+        DummyRoot s = new DummyRoot().withFileName("filename");
+        s.setCoordsReplaceText(5, 5, 5, 10);
         RuleViolation rv = new ParametricRuleViolation(r, s, r.getMessage());
         assertEquals("Line number mismatch!", 5, rv.getBeginLine());
         assertEquals("Filename mismatch!", "filename", rv.getFilename());
@@ -83,8 +82,8 @@ public class AbstractRuleTest {
     @Test
     public void testCreateRV2() {
         MyRule r = new MyRule();
-        DummyNode s = new DummyRoot().withFileName("filename");
-        s.setCoords(5, 5, 5, 10);
+        DummyRoot s = new DummyRoot().withFileName("filename");
+        s.setCoordsReplaceText(5, 5, 5, 10);
         RuleViolation rv = new ParametricRuleViolation(r, s, "specificdescription");
         assertEquals("Line number mismatch!", 5, rv.getBeginLine());
         assertEquals("Filename mismatch!", "filename", rv.getFilename());
@@ -103,8 +102,8 @@ public class AbstractRuleTest {
         r.definePropertyDescriptor(PropertyFactory.intProperty("testInt").desc("description").require(inRange(0, 100)).defaultValue(10).build());
         r.setMessage("Message ${packageName} ${className} ${methodName} ${variableName} ${testInt} ${noSuchProperty}");
 
-        DummyNode s = new DummyRoot().withFileName("filename");
-        s.setCoords(5, 1, 6, 1);
+        DummyRoot s = new DummyRoot().withFileName("filename");
+        s.setCoordsReplaceText(5, 1, 6, 1);
         s.setImage("TestImage");
 
         RuleViolation rv = RuleContextTest.getReportForRuleApply(r, s).getViolations().get(0);
@@ -114,7 +113,7 @@ public class AbstractRuleTest {
     @Test
     public void testRuleSuppress() {
         DummyRoot n = new DummyRoot().withNoPmdComments(Collections.singletonMap(5, ""));
-        n.setCoords(5, 1, 6, 1);
+        n.setCoordsReplaceText(5, 1, 6, 1);
         RuleViolation violation = DefaultRuleViolationFactory.defaultInstance().createViolation(new MyRule(), n, n.getReportLocation(), "specificdescription");
         SuppressedViolation suppressed = DefaultRuleViolationFactory.defaultInstance().suppressOrNull(n, violation);
 

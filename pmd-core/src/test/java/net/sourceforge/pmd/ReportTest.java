@@ -76,7 +76,8 @@ public class ReportTest {
     }
 
     private static DummyNode getNode(int line, int column) {
-        DummyNode parent = new DummyRoot();
+        DummyRoot parent = new DummyRoot();
+        parent.fakeTextWithNLines(line + 10, column);
         DummyNode s = new DummyNode();
         parent.setCoords(line, column, line, column + 1);
         parent.addChild(s, 0);

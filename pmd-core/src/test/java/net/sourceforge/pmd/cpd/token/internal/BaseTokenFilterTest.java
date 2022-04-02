@@ -19,6 +19,7 @@ import org.junit.Test;
 import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.ast.GenericToken;
 import net.sourceforge.pmd.lang.document.FileLocation;
+import net.sourceforge.pmd.lang.document.TextRange2d;
 import net.sourceforge.pmd.lang.document.TextRegion;
 
 public class BaseTokenFilterTest {
@@ -58,7 +59,7 @@ public class BaseTokenFilterTest {
 
         @Override
         public FileLocation getReportLocation() {
-            return FileLocation.location("n/a", 0, 0, 0, 0);
+            return FileLocation.location("n/a", TextRange2d.range2d(0, 0, 0, 0));
         }
 
         @Override
