@@ -141,6 +141,26 @@ public class TextDocumentTest {
     }
 
     @Test
+    public void testOffsetFromLineColumn() {
+        TextDocument doc = TextDocument.readOnlyString("bonjour\noa\n", dummyVersion);
+
+        assertEquals(0, doc.offsetAtLineColumn(1, 1));
+        assertEquals(1, doc.offsetAtLineColumn(1, 2));
+        assertEquals(2, doc.offsetAtLineColumn(1, 3));
+        assertEquals(3, doc.offsetAtLineColumn(1, 4));
+        assertEquals(4, doc.offsetAtLineColumn(1, 5));
+        assertEquals(5, doc.offsetAtLineColumn(1, 6));
+        assertEquals(6, doc.offsetAtLineColumn(1, 7));
+        assertEquals(7, doc.offsetAtLineColumn(1, 8));
+        assertEquals(8, doc.offsetAtLineColumn(1, 9));
+        assertEquals(8, doc.offsetAtLineColumn(2, 1));
+        assertEquals(9, doc.offsetAtLineColumn(2, 2));
+        assertEquals(10, doc.offsetAtLineColumn(2, 3));
+        assertEquals(11, doc.offsetAtLineColumn(2, 4));
+        assertEquals(11, doc.offsetAtLineColumn(3, 1));
+    }
+
+    @Test
     public void testLineRange() {
         TextDocument doc = TextDocument.readOnlyString("bonjour\noha\ntristesse", dummyVersion);
 

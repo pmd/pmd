@@ -195,6 +195,17 @@ public final class TextRegion implements Comparable<TextRegion> {
     }
 
     /**
+     * Builds a new region with zero length and placed at the given offset.
+     *
+     * @param startOffset Offset for start and end of the position.
+     *
+     * @throws AssertionError If the offset is negative
+     */
+    public static TextRegion caretAt(int startOffset) {
+        return new TextRegion(startOffset, 0);
+    }
+
+    /**
      * Checks that the parameters are a valid region, this is provided
      * to debug, will be a noop unless assertions are enabled.
      */

@@ -77,8 +77,18 @@ public final class FileLocation {
         return fileName;
     }
 
+    /**
+     * Inclusive, 1-based line number.
+     *
+     * @deprecated Use {@link #getStartLine()}.
+     */
+    @Deprecated
+    public int getBeginLine() { // todo rename to getStartLine
+        return getStartLine();
+    }
+
     /** Inclusive, 1-based line number. */
-    public int getBeginLine() {
+    public int getStartLine() {
         return beginLine;
     }
 
@@ -87,8 +97,18 @@ public final class FileLocation {
         return endLine;
     }
 
+    /**
+     * Inclusive, 1-based column number.
+     *
+     * @deprecated Use {@link #getStartColumn()}.
+     */
+    @Deprecated
+    public int getBeginColumn() { // todo rename to getStartLine
+        return getStartColumn();
+    }
+
     /** Inclusive, 1-based column number. */
-    public int getBeginColumn() {
+    public int getStartColumn() {
         return beginColumn;
     }
 

@@ -121,6 +121,23 @@ public interface Node extends Reportable {
     @Override
     FileLocation getReportLocation();
 
+    /**
+     * Returns a region of text delimiting the node in the underlying
+     * text document. This does not necessarily match the
+     * {@link #getReportLocation() report location}.
+     *
+     * @implNote The default implementation uses the {@link #getReportLocation()}
+     *     to create a region.
+     */
+    default TextRegion getTextRegion() {
+        @SuppressWarnings("PMD.CloseResource")
+        TextDocument document = getAstInfo().getTextDocument();
+        FileLocation loc = getReportLocation();
+        int startOffset = document.offsetAtLineColumn(loc.getStartLine(), loc.getStartColumn());
+        int endOffset = document.offsetAtLineColumn(loc.getEndLine(), loc.getEndColumn());
+        return TextRegion.fromBothOffsets(startOffset, endOffset);
+    }
+
 
     // Those are kept here because they're handled specially as XPath
     // attributes

@@ -111,7 +111,9 @@ public interface TextDocument extends Closeable {
 
 
     /**
-     * Turn a text region into a {@link FileLocation}.
+     * Turn a text region into a {@link FileLocation}. This computes
+     * the line/column information for both start and end offset of
+     * the region.
      *
      * @return A new file position
      *
@@ -119,8 +121,15 @@ public interface TextDocument extends Closeable {
      */
     FileLocation toLocation(TextRegion region);
 
-
-    // todo doc
+    /**
+     * Create a location from its positions as lines/columns. The file
+     * name is the display name of this document.
+     *
+     * @param bline Start line
+     * @param bcol  Start column
+     * @param eline End line
+     * @param ecol  End column
+     */
     default FileLocation createLocation(int bline, int bcol, int eline, int ecol) {
         return FileLocation.location(getDisplayName(), bline, bcol, eline, ecol);
     }
@@ -135,6 +144,17 @@ public interface TextDocument extends Closeable {
     default int lineNumberAt(int offset) {
         return toLocation(TextRegion.fromOffsetLength(offset, 0)).getBeginLine();
     }
+
+    /**
+     * Returns the offset at the given line and column number. This is
+     * the dual of
+     *
+     * @param line   Line number (1-based)
+     * @param column Column number (1-based)
+     *
+     * @return an offset (0-based)
+     */
+    int offsetAtLineColumn(int line, int column);
 
     /**
      * Closing a document closes the underlying {@link TextFile}.

@@ -39,7 +39,8 @@ abstract class AbstractEcmascriptNode<T extends AstNode> extends AbstractNode<Ab
         return getTextDocument().toLocation(getTextRegion());
     }
 
-    private TextRegion getTextRegion() {
+    @Override
+    public TextRegion getTextRegion() {
         return TextRegion.fromOffsetLength(node.getAbsolutePosition(), node.getLength());
     }
 
