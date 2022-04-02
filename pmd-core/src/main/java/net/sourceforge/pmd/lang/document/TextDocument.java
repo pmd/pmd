@@ -134,20 +134,9 @@ public interface TextDocument extends Closeable {
         return FileLocation.location(getDisplayName(), bline, bcol, eline, ecol);
     }
 
-    /**
-     * Determines the line number at the given offset (inclusive).
-     *
-     * @return the line number at the given index
-     *
-     * @throws IndexOutOfBoundsException If the argument is not a valid offset in this document
-     */
-    default int lineNumberAt(int offset) {
-        return toLocation(TextRegion.fromOffsetLength(offset, 0)).getBeginLine();
-    }
 
     /**
-     * Returns the offset at the given line and column number. This is
-     * the dual of
+     * Returns the offset at the given line and column number.
      *
      * @param line   Line number (1-based)
      * @param column Column number (1-based)
@@ -155,6 +144,50 @@ public interface TextDocument extends Closeable {
      * @return an offset (0-based)
      */
     int offsetAtLineColumn(int line, int column);
+
+    /**
+     * Returns the offset at the line and number.
+     */
+    default int offsetAtLineColumn(TextPos2d pos2d) {
+        return offsetAtLineColumn(pos2d.getLine(), pos2d.getColumn());
+    }
+
+    /**
+     * Returns the line and column at the given offset (inclusive).
+     *
+     * @param offset A source offset (0-based), can range in {@code [0, length]}.
+     *
+     * @throws IndexOutOfBoundsException if the offset is out of bounds
+     */
+    TextPos2d lineColumnAtOffset(int offset);
+
+    /**
+     * Determines the line number at the given offset (inclusive).
+     *
+     * @return the line number at the given index
+     *
+     * @throws IndexOutOfBoundsException If the argument is not a valid offset in this document
+     */
+    default int lineAtOffset(int offset) {
+        return lineColumnAtOffset(offset).getLine();
+    }
+
+    /**
+     * Returns the region that spans from the given position to the other.
+     *
+     * @throws IllegalArgumentException if start > end
+     * @throws NullPointerException     If either argument is null
+     */
+    default TextRegion rangeBetween(TextPos2d start, TextPos2d end) {
+        if (start.compareTo(end) > 0) {
+            throw new IllegalArgumentException(start.toTupleString() + " comes after " + end.toTupleString());
+        }
+
+        int startPos = offsetAtLineColumn(start);
+        int endPos = offsetAtLineColumn(end) + 1;
+
+        return TextRegion.fromBothOffsets(startPos, endPos);
+    }
 
     /**
      * Closing a document closes the underlying {@link TextFile}.

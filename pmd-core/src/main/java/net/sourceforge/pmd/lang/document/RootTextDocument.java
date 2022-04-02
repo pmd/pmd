@@ -90,6 +90,15 @@ final class RootTextDocument extends BaseCloseable implements TextDocument {
     }
 
     @Override
+    public TextPos2d lineColumnAtOffset(int offset) {
+        long longPos = content.getPositioner().lineColFromOffset(offset, true);
+        return TextPos2d.pos2d(
+            SourceCodePositioner.unmaskLine(longPos),
+            SourceCodePositioner.unmaskCol(longPos)
+        );
+    }
+
+    @Override
     public TextRegion createLineRange(int startLineInclusive, int endLineInclusive) {
         SourceCodePositioner positioner = content.getPositioner();
 

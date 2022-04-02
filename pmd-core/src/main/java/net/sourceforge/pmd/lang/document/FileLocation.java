@@ -117,6 +117,14 @@ public final class FileLocation {
         return endColumn;
     }
 
+    public TextPos2d getStartPos() {
+        return TextPos2d.pos2d(beginLine, beginColumn);
+    }
+
+    public TextPos2d getEndPos() {
+        return TextPos2d.pos2d(endLine, endColumn);
+    }
+
     /** Returns the region in the file, or null if this was not available. */
     public @Nullable TextRegion getRegionInFile() {
         return region;

@@ -88,7 +88,7 @@ public final class TextRegion implements Comparable<TextRegion> {
      *
      * @param offset Offset of a character
      */
-    public boolean containsOffset(int offset) {
+    public boolean contains(int offset) {
         return getStartOffset() <= offset && offset < getEndOffset();
     }
 
