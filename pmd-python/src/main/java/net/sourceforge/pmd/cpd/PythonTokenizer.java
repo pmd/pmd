@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.cpd;
 
-import java.io.IOException;
-import java.io.Reader;
 import java.util.regex.Pattern;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -32,7 +30,7 @@ public class PythonTokenizer extends JavaCCTokenizer {
     }
 
     @Override
-    protected CharStream makeCharStream(Reader sourceCode) throws IOException {
+    protected CharStream makeCharStream(TextDocument sourceCode) {
         return CharStreamFactory.simpleCharStream(sourceCode, PythonTokenDocument::new);
     }
 

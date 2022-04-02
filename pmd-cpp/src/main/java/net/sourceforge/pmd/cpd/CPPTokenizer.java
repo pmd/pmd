@@ -6,11 +6,9 @@ package net.sourceforge.pmd.cpd;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.Reader;
 import java.io.StringReader;
 import java.util.Properties;
 
-import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.cpd.internal.JavaCCTokenizer;
 import net.sourceforge.pmd.cpd.token.JavaCCTokenFilter;
 import net.sourceforge.pmd.cpd.token.TokenFilter;
@@ -19,7 +17,7 @@ import net.sourceforge.pmd.lang.ast.CharStream;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.cpp.ast.CppCharStream;
 import net.sourceforge.pmd.lang.cpp.ast.CppTokenKinds;
-import net.sourceforge.pmd.util.IOUtil;
+import net.sourceforge.pmd.lang.document.TextDocument;
 
 /**
  * The C++ tokenizer.
@@ -78,7 +76,7 @@ public class CPPTokenizer extends JavaCCTokenizer {
                     filtered.append(line);
                 }
                 // always add a new line to keep the line-numbering
-                filtered.append(PMD.EOL);
+                filtered.append(System.lineSeparator());
             }
             return filtered.toString();
         }
@@ -86,7 +84,7 @@ public class CPPTokenizer extends JavaCCTokenizer {
 
 
     @Override
-    protected CharStream makeCharStream(Reader sourceCode) throws IOException {
+    protected CharStream makeCharStream(TextDocument sourceCode) {
         return CppCharStream.newCppCharStream(sourceCode);
     }
 
@@ -97,9 +95,8 @@ public class CPPTokenizer extends JavaCCTokenizer {
 
     @SuppressWarnings("PMD.CloseResource")
     @Override
-    protected TokenManager<JavaccToken> getLexerForSource(SourceCode sourceCode) throws IOException {
-        Reader reader = IOUtil.skipBOM(new StringReader(maybeSkipBlocks(sourceCode.getCodeBuffer().toString())));
-        CharStream charStream = makeCharStream(reader);
+    protected TokenManager<JavaccToken> getLexerForSource(TextDocument sourceCode) {
+        CharStream charStream = makeCharStream(sourceCode);
         return makeLexerImpl(charStream);
     }
 

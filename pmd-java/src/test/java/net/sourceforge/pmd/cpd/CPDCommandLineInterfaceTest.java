@@ -4,6 +4,10 @@
 
 package net.sourceforge.pmd.cpd;
 
+import static net.sourceforge.pmd.cli.BaseCLITest.containsPattern;
+import static org.hamcrest.CoreMatchers.startsWith;
+import static org.hamcrest.MatcherAssert.assertThat;
+
 import java.util.regex.Pattern;
 
 import org.junit.Assert;
@@ -89,8 +93,8 @@ public class CPDCommandLineInterfaceTest extends BaseCPDCLITest {
         System.setProperty("file.encoding", origEncoding);
 
         String out = getOutput();
-        Assert.assertTrue(out.startsWith("<?xml version=\"1.0\" encoding=\"UTF-8\"?>"));
-        Assert.assertTrue(Pattern.compile("System\\.out\\.println\\([ij] \\+ \"ä\"\\);").matcher(out).find());
+        assertThat(out, startsWith("<?xml version=\"1.0\" encoding=\"UTF-8\"?>"));
+        assertThat(out, containsPattern("System\\.out\\.println\\([ij] \\+ \"ä\"\\);"));
         Assert.assertEquals(4, Integer.parseInt(System.getProperty(CPDCommandLineInterface.STATUS_CODE_PROPERTY)));
     }
 
