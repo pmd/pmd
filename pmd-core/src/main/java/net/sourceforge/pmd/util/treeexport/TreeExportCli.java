@@ -162,20 +162,23 @@ public class TreeExportCli {
 
         @SuppressWarnings("PMD.CloseResource")
         Reader source;
+        String fileName;
         if (file == null && !readStdin) {
             throw bail("One of --file or --read-stdin must be mentioned");
         } else if (readStdin) {
             System.err.println("Reading from stdin...");
             source = new StringReader(readFromSystemIn());
+            fileName = "stdin";
         } else {
             source = Files.newBufferedReader(new File(file).toPath(), Charset.forName(encoding));
+            fileName = file;
         }
 
         // disable warnings for deprecated attributes
         Logger.getLogger(Attribute.class.getName()).setLevel(Level.OFF);
 
         try (Reader reader = source) {
-            Node root = AbstractParser.doParse(parser, file, reader);
+            Node root = AbstractParser.doParse(parser, fileName, reader);
             languageHandler.getQualifiedNameResolutionFacade(this.getClass().getClassLoader()).start(root);
 
             renderer.renderSubtree(root, System.out);
