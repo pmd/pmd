@@ -42,9 +42,13 @@ public abstract class AbstractParser implements Parser {
     @Deprecated
     public static Node doParse(Parser parser, String fileName, Reader source) {
         Node rootNode = parser.parse(fileName, source);
+        setFileName(fileName, rootNode);
+        return rootNode;
+    }
+
+    public static void setFileName(String fileName, Node rootNode) {
         // remove prefixed path segments.
         String simpleFileName = Paths.get(fileName).getFileName().toString();
         rootNode.getUserMap().set(FileNameXPathFunction.FILE_NAME_KEY, simpleFileName);
-        return rootNode;
     }
 }

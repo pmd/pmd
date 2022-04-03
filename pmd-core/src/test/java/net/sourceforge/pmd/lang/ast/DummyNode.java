@@ -31,12 +31,29 @@ public class DummyNode extends AbstractNode {
         this.xpathName = xpathName;
     }
 
+    @Override
+    public DummyNode getParent() {
+        return (DummyNode) super.getParent();
+    }
+
+    public void setParent(DummyNode node) {
+        jjtSetParent(node);
+    }
+
     public void setBeginColumn(int i) {
         beginColumn = i;
     }
 
     public void setBeginLine(int i) {
         beginLine = i;
+    }
+
+    public void setEndLine(int i) {
+        super.testingOnlySetEndColumn(i);
+    }
+
+    public void setEndColumn(int i) {
+        super.testingOnlySetEndColumn(i);
     }
 
     public void setCoords(int bline, int bcol, int eline, int ecol) {
