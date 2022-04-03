@@ -54,12 +54,27 @@ public class DummyLanguageModule extends BaseLanguageModule {
         addVersion("1.8", new Handler(), "8");
     }
 
+    public static Language getInstance() {
+        return LanguageRegistry.getLanguage(NAME);
+    }
+
+    public static DummyRootNode parse(String code) {
+        return parse(code, "nofilename");
+    }
+
+    public static DummyRootNode parse(String code, String filename) {
+        DummyRootNode rootNode = readLispNode(code);
+        AbstractParser.setFileName(filename, rootNode);
+        return rootNode;
+    }
+
     /**
      * @deprecated for removal with PMD 7. A language dependent rule chain visitor is not needed anymore.
-     *      See {@link RuleChainVisitor}.
+     *     See {@link RuleChainVisitor}.
      */
     @Deprecated
     public static class DummyRuleChainVisitor extends AbstractRuleChainVisitor {
+
         @Override
         protected void visit(Rule rule, Node node, RuleContext ctx) {
             rule.apply(Arrays.asList(node), ctx);

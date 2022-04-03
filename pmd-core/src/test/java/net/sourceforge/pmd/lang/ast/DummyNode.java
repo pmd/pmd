@@ -5,13 +5,18 @@
 package net.sourceforge.pmd.lang.ast;
 
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
+import net.sourceforge.pmd.lang.ast.xpath.Attribute;
 import net.sourceforge.pmd.lang.ast.xpath.internal.FileNameXPathFunction;
 
 public class DummyNode extends AbstractNode {
 
     private final boolean findBoundary;
     private final String xpathName;
+    private final List<Attribute> attributes = new ArrayList<>();
 
     public DummyNode(int id) {
         this(id, false);
@@ -29,11 +34,21 @@ public class DummyNode extends AbstractNode {
         super(id);
         this.findBoundary = findBoundary;
         this.xpathName = xpathName;
+
+        Iterator<Attribute> iter = super.getXPathAttributesIterator();
+        while (iter.hasNext()) {
+            attributes.add(iter.next());
+        }
     }
 
     @Override
     public DummyNode getParent() {
         return (DummyNode) super.getParent();
+    }
+
+    @Override
+    public DummyNode getChild(int index) {
+        return (DummyNode) super.getChild(index);
     }
 
     public void setParent(DummyNode node) {
@@ -76,6 +91,20 @@ public class DummyNode extends AbstractNode {
     @Override
     public boolean isFindBoundary() {
         return findBoundary;
+    }
+
+    public void setXPathAttribute(String name, String value) {
+        attributes.add(new Attribute(this, name, value));
+    }
+
+
+    public void clearXPathAttributes() {
+        attributes.clear();
+    }
+
+    @Override
+    public Iterator<Attribute> getXPathAttributesIterator() {
+        return attributes.iterator();
     }
 
     public static class DummyRootNode extends DummyNode implements RootNode {
