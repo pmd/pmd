@@ -60,7 +60,6 @@ class SpecialMethodsTest : ProcessorTestSpec({
                     }
                 }
             }
-            spy.resetInteractions()
         }
 
         doTest("Test Scratch<K>::getClass") {
@@ -83,7 +82,6 @@ class SpecialMethodsTest : ProcessorTestSpec({
                     }
                 }
             }
-            spy.resetInteractions()
         }
 
         doTest("Test method call") {
