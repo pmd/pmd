@@ -19,9 +19,7 @@ final class Io {
     public final PrintStream stderr;
     public final InputStream stdin;
 
-    public Io(PrintStream stdout,
-              PrintStream stderr,
-              InputStream stdin) {
+    Io(PrintStream stdout, PrintStream stderr, InputStream stdin) {
         this.stdout = stdout;
         this.stderr = stderr;
         this.stdin = stdin;
