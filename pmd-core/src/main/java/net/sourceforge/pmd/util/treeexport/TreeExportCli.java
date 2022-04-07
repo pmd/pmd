@@ -47,16 +47,14 @@ public class TreeExportCli {
     private String encoding = StandardCharsets.UTF_8.name();
     @DynamicParameter(names = "-P", description = "Properties for the renderer.")
     private Map<String, String> properties = new HashMap<>();
-    private final Io io;
-
     @Parameter(names = { "--help", "-h" }, description = "Display usage.", help = true)
     private boolean help;
-
     @Parameter(names = "--file", description = "The file to dump")
     private String file;
-
     @Parameter(names = { "--read-stdin", "-i" }, description = "Read source from standard input")
     private boolean readStdin;
+
+    private final Io io;
 
     TreeExportCli(Io io) {
         this.io = io;
