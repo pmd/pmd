@@ -763,4 +763,11 @@ public class Report implements Iterable<RuleViolation> {
 
         return copy;
     }
+
+    /**
+     * Creates an empty report.
+     */
+    public static Report empty() {
+        return new Report();
+    }
 }
