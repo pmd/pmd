@@ -17,6 +17,8 @@ This is a {{ site.pmd.release_type }} release.
 ### Fixed Issues
 * core
   * [#3882](https://github.com/pmd/pmd/pull/3882): \[core] Fix AssertionError about exhaustive switch
+* java-performance
+  * [#3867](https://github.com/pmd/pmd/issues/3867): \[java] UseArraysAsList with method call
 
 ### API Changes
 
