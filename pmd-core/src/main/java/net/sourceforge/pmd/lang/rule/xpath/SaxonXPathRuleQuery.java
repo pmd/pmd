@@ -177,7 +177,11 @@ public class SaxonXPathRuleQuery extends AbstractXPathRuleQuery {
     }
 
 
-    private ValueRepresentation getRepresentation(final PropertyDescriptor<?> descriptor, final Object value) {
+    /**
+     * Internal: this has been moved in PMD 7.
+     */
+    @InternalApi
+    public static ValueRepresentation getRepresentation(final PropertyDescriptor<?> descriptor, final Object value) {
         if (descriptor.isMultiValue()) {
             return getSequenceRepresentation((List<?>) value);
         } else {

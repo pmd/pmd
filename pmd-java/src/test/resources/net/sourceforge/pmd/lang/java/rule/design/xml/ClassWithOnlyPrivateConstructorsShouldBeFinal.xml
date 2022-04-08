@@ -173,4 +173,19 @@ public class Outer {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>[java] ClassWithOnlyPrivateConstructorsShouldBeFinal - false negative when a compilation unit contains two class declarations #3851</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>1</expected-linenumbers>
+        <code><![CDATA[
+public class Example { // false-negative here
+    private Example() {
+    }
+}
+
+class Another {
+}
+        ]]></code>
+    </test-code>
 </test-data>
