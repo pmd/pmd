@@ -82,6 +82,7 @@ public class MatchAlgorithm {
                 mark.setLineCount(lineCount);
                 mark.setEndToken(endToken);
                 SourceCode sourceCode = source.get(token.getTokenSrcID());
+                assert sourceCode != null : token.getTokenSrcID() + " is not registered in " + source.keySet();
                 mark.setSourceCode(sourceCode);
             }
         }

@@ -91,7 +91,7 @@ public class UseDiamondOperatorRule extends AbstractJavaRulechainRule {
     }
 
     private static boolean supportsDiamondOnAnonymousClass(ASTConstructorCall ctorCall) {
-        return ctorCall.getAstInfo().getLanguageVersion().compareToVersion("9") >= 0;
+        return ctorCall.getLanguageVersion().compareToVersion("9") >= 0;
     }
 
 

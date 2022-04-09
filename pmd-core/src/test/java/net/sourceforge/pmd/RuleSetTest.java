@@ -18,7 +18,8 @@ import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import java.io.File;
+import java.nio.charset.Charset;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -43,6 +44,7 @@ import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.ast.DummyRoot;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.RootNode;
+import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 
@@ -377,7 +379,7 @@ public class RuleSetTest {
 
     @Test
     public void testIncludeExcludeApplies() {
-        File file = new File("C:\\myworkspace\\project\\some\\random\\package\\RandomClass.java");
+        TextFile file = TextFile.forPath(Paths.get("C:\\myworkspace\\project\\some\\random\\package\\RandomClass.java"), Charset.defaultCharset(), dummyLang.getDefaultVersion());
 
         RuleSet ruleSet = createRuleSetBuilder("ruleset").build();
         assertTrue("No patterns", ruleSet.applies(file));
@@ -473,7 +475,7 @@ public class RuleSetTest {
 
     private RootNode makeCompilationUnits(String filename) {
         DummyRoot node = new DummyRoot();
-        node.setCoords(1, 1, 10, 1);
+        node.setCoordsReplaceText(1, 1, 2, 1);
         node.setImage("Foo");
         node.withFileName(filename);
         return node;

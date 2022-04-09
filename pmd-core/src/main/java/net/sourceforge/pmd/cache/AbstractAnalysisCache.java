@@ -34,8 +34,8 @@ import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.benchmark.TimedOperation;
 import net.sourceforge.pmd.benchmark.TimedOperationCategory;
 import net.sourceforge.pmd.cache.internal.ClasspathFingerprinter;
+import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
-import net.sourceforge.pmd.util.datasource.DataSource;
 
 /**
  * Abstract implementation of the analysis cache. Handles all operations, except for persistence.
@@ -64,24 +64,24 @@ public abstract class AbstractAnalysisCache implements AnalysisCache {
     }
 
     @Override
-    public boolean isUpToDate(final File sourceFile) {
+    public boolean isUpToDate(final TextDocument document) {
         try (TimedOperation ignored = TimeTracker.startOperation(TimedOperationCategory.ANALYSIS_CACHE, "up-to-date check")) {
             // There is a new file being analyzed, prepare entry in updated cache
-            final AnalysisResult updatedResult = new AnalysisResult(sourceFile);
-            updatedResultsCache.put(sourceFile.getPath(), updatedResult);
+            final AnalysisResult updatedResult = new AnalysisResult(document.getContent().getCheckSum(), new ArrayList<>());
+            updatedResultsCache.put(document.getPathId(), updatedResult);
 
             // Now check the old cache
-            final AnalysisResult analysisResult = fileResultsCache.get(sourceFile.getPath());
+            final AnalysisResult analysisResult = fileResultsCache.get(document.getPathId());
 
             // is this a known file? has it changed?
             final boolean result = analysisResult != null
-                    && analysisResult.getFileChecksum() == updatedResult.getFileChecksum();
+                && analysisResult.getFileChecksum() == updatedResult.getFileChecksum();
 
             if (result) {
                 LOG.debug("Incremental Analysis cache HIT");
             } else {
                 LOG.debug("Incremental Analysis cache MISS - {}",
-                        analysisResult != null ? "file changed" : "no previous result found");
+                          analysisResult != null ? "file changed" : "no previous result found");
             }
 
             return result;
@@ -89,8 +89,8 @@ public abstract class AbstractAnalysisCache implements AnalysisCache {
     }
 
     @Override
-    public List<RuleViolation> getCachedViolations(final File sourceFile) {
-        final AnalysisResult analysisResult = fileResultsCache.get(sourceFile.getPath());
+    public List<RuleViolation> getCachedViolations(final TextDocument sourceFile) {
+        final AnalysisResult analysisResult = fileResultsCache.get(sourceFile.getPathId());
 
         if (analysisResult == null) {
             // new file, avoid nulls
@@ -101,8 +101,8 @@ public abstract class AbstractAnalysisCache implements AnalysisCache {
     }
 
     @Override
-    public void analysisFailed(final File sourceFile) {
-        updatedResultsCache.remove(sourceFile.getPath());
+    public void analysisFailed(final TextDocument sourceFile) {
+        updatedResultsCache.remove(sourceFile.getPathId());
     }
 
 
@@ -126,8 +126,7 @@ public abstract class AbstractAnalysisCache implements AnalysisCache {
             final long currentAuxClassPathChecksum;
             if (auxclassPathClassLoader instanceof URLClassLoader) {
                 // we don't want to close our aux classpath loader - we still need it...
-                @SuppressWarnings("PMD.CloseResource")
-                final URLClassLoader urlClassLoader = (URLClassLoader) auxclassPathClassLoader;
+                @SuppressWarnings("PMD.CloseResource") final URLClassLoader urlClassLoader = (URLClassLoader) auxclassPathClassLoader;
                 currentAuxClassPathChecksum = FINGERPRINTER.fingerprint(urlClassLoader.getURLs());
 
                 if (cacheIsValid && currentAuxClassPathChecksum != auxClassPathChecksum) {
@@ -170,7 +169,7 @@ public abstract class AbstractAnalysisCache implements AnalysisCache {
         final SimpleFileVisitor<Path> fileVisitor = new SimpleFileVisitor<Path>() {
             @Override
             public FileVisitResult visitFile(final Path file,
-                    final BasicFileAttributes attrs) throws IOException {
+                                             final BasicFileAttributes attrs) throws IOException {
                 if (!attrs.isSymbolicLink()) { // Broken link that can't be followed
                     entries.add(file.toUri().toURL());
                 }
@@ -180,7 +179,7 @@ public abstract class AbstractAnalysisCache implements AnalysisCache {
         final SimpleFileVisitor<Path> jarFileVisitor = new SimpleFileVisitor<Path>() {
             @Override
             public FileVisitResult visitFile(final Path file,
-                    final BasicFileAttributes attrs) throws IOException {
+                                             final BasicFileAttributes attrs) throws IOException {
                 String extension = FilenameUtils.getExtension(file.toString());
                 if ("jar".equalsIgnoreCase(extension)) {
                     fileVisitor.visitFile(file, attrs);
@@ -194,12 +193,12 @@ public abstract class AbstractAnalysisCache implements AnalysisCache {
                 final File f = new File(entry);
                 if (isClassPathWildcard(entry)) {
                     Files.walkFileTree(new File(entry.substring(0, entry.length() - 1)).toPath(),
-                            EnumSet.of(FileVisitOption.FOLLOW_LINKS), 1, jarFileVisitor);
+                                       EnumSet.of(FileVisitOption.FOLLOW_LINKS), 1, jarFileVisitor);
                 } else if (f.isFile()) {
                     entries.add(f.toURI().toURL());
                 } else if (f.exists()) { // ignore non-existing directories
                     Files.walkFileTree(f.toPath(), EnumSet.of(FileVisitOption.FOLLOW_LINKS), Integer.MAX_VALUE,
-                            fileVisitor);
+                                       fileVisitor);
                 }
             }
         } catch (final IOException e) {
@@ -211,12 +210,11 @@ public abstract class AbstractAnalysisCache implements AnalysisCache {
     }
 
     @Override
-    public FileAnalysisListener startFileAnalysis(DataSource dataSource) {
-        String fileName = dataSource.getNiceFileName(false, "");
-        File sourceFile = new File(fileName);
+    public FileAnalysisListener startFileAnalysis(TextDocument file) {
+        String fileName = file.getPathId();
         AnalysisResult analysisResult = updatedResultsCache.get(fileName);
         if (analysisResult == null) {
-            analysisResult = new AnalysisResult(sourceFile);
+            analysisResult = new AnalysisResult(file.getContent().getCheckSum());
         }
         final AnalysisResult nonNullAnalysisResult = analysisResult;
 
@@ -230,7 +228,7 @@ public abstract class AbstractAnalysisCache implements AnalysisCache {
 
             @Override
             public void onError(ProcessingError error) {
-                analysisFailed(sourceFile);
+                analysisFailed(file);
             }
         };
     }

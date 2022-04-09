@@ -11,6 +11,7 @@ import java.util.List;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
 import net.sourceforge.pmd.util.datasource.DataSource;
@@ -37,29 +38,29 @@ public interface AnalysisCache {
      * updated cache, which allows {@link FileAnalysisListener#onRuleViolation(RuleViolation)}
      * to add a rule violation to the file. TODO is this really best behaviour? This side-effects seems counter-intuitive.
      *
-     * @param sourceFile The file to check in the cache
+     * @param document The file to check in the cache
      * @return True if the cache is a hit, false otherwise
      */
-    boolean isUpToDate(File sourceFile);
+    boolean isUpToDate(TextDocument document);
 
     /**
-     * Retrieves cached violations for the given file. Make sure to call {@link #isUpToDate(File)} first.
+     * Retrieves cached violations for the given file. Make sure to call {@link #isUpToDate(TextDocument)} first.
      * @param sourceFile The file to check in the cache
      * @return The list of cached violations.
      */
-    List<RuleViolation> getCachedViolations(File sourceFile);
+    List<RuleViolation> getCachedViolations(TextDocument sourceFile);
 
     /**
      * Notifies the cache that analysis of the given file has failed and should not be cached.
      * @param sourceFile The file whose analysis failed
      */
-    void analysisFailed(File sourceFile);
+    void analysisFailed(TextDocument sourceFile);
 
     /**
      * Checks if the cache is valid for the configured rulesets and class loader.
      * If the provided rulesets and classpath don't match those of the cache, the
      * cache is invalidated. This needs to be called before analysis, as it
-     * conditions the good behaviour of {@link #isUpToDate(File)}.
+     * conditions the good behaviour of {@link #isUpToDate(TextDocument)}.
      *
      * @param ruleSets                The rulesets configured for this analysis.
      * @param auxclassPathClassLoader The class loader for auxclasspath configured for this analysis.
@@ -71,6 +72,6 @@ public interface AnalysisCache {
      * This should record violations, and call {@link #analysisFailed(File)}
      * upon error.
      */
-    FileAnalysisListener startFileAnalysis(DataSource file);
+    FileAnalysisListener startFileAnalysis(TextDocument file);
 
 }

@@ -11,7 +11,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.SQLException;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -22,12 +22,10 @@ import org.slf4j.LoggerFactory;
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.document.FileCollector;
-import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.util.FileUtil;
 import net.sourceforge.pmd.util.database.DBMSMetadata;
 import net.sourceforge.pmd.util.database.DBURI;
 import net.sourceforge.pmd.util.database.SourceObject;
-import net.sourceforge.pmd.util.datasource.DataSource;
 import net.sourceforge.pmd.util.log.MessageReporter;
 import net.sourceforge.pmd.util.log.internal.ErrorsAsWarningsReporter;
 
@@ -40,14 +38,6 @@ public final class FileCollectionUtil {
 
     private FileCollectionUtil() {
 
-    }
-
-    public static List<DataSource> collectorToDataSource(FileCollector collector) {
-        List<DataSource> result = new ArrayList<>();
-        for (TextFile file : collector.getCollectedFiles()) {
-            result.add(file.toDataSourceCompat());
-        }
-        return result;
     }
 
     public static FileCollector collectFiles(PMDConfiguration configuration, Set<Language> languages, MessageReporter reporter) {
@@ -71,7 +61,8 @@ public final class FileCollectionUtil {
         }
 
         if (configuration.getInputPaths() != null) {
-            collectFiles(collector, configuration.getInputPaths());
+            List<String> paths = Arrays.asList(configuration.getInputPaths().split(","));
+            collectFiles(collector, paths);
         }
 
         if (configuration.getInputUri() != null) {
@@ -96,10 +87,9 @@ public final class FileCollectionUtil {
     }
 
 
-    public static void collectFiles(FileCollector collector, String fileLocations) {
-        for (String rootLocation : fileLocations.split(",")) {
+    public static void collectFiles(FileCollector collector, List<String> filePaths) {
+        for (String rootLocation : filePaths) {
             try {
-                collector.relativizeWith(rootLocation);
                 addRoot(collector, rootLocation);
             } catch (IOException e) {
                 collector.getReporter().errorEx("Error collecting " + rootLocation, e);
@@ -115,9 +105,9 @@ public final class FileCollectionUtil {
             return;
         }
 
-        String filePaths;
+        List<String> filePaths;
         try {
-            filePaths = FileUtil.readFilelist(path.toFile());
+            filePaths = FileUtil.readFilelistEntries(path);
         } catch (IOException e) {
             collector.getReporter().errorEx("Error reading {}", new Object[] { fileListLocation }, e);
             return;

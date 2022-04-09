@@ -144,7 +144,7 @@ public class GlobalListenerTest {
 
         @Override
         public void apply(Node node, RuleContext ctx) {
-            if (node.getAstInfo().getFileName().contains("1")) {
+            if (node.getTextDocument().getDisplayName().contains("1")) {
                 ctx.addViolation(node);
             }
         }

@@ -11,7 +11,8 @@ import net.sourceforge.pmd.lang.LanguageVersionHandler
 import net.sourceforge.pmd.lang.ast.*
 import net.sourceforge.pmd.processor.AbstractPMDProcessor
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener
-import net.sourceforge.pmd.util.datasource.DataSource
+import net.sourceforge.pmd.lang.document.TextDocument
+import net.sourceforge.pmd.lang.document.TextFile
 import org.apache.commons.io.IOUtils
 import java.io.InputStream
 import java.nio.charset.StandardCharsets
@@ -127,13 +128,12 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
     open fun parse(
         sourceCode: String,
         version: String? = null,
-        fileName: String = "src/a/test-file-name.${language.extensions[0]}"
+        fileName: String = TextFile.UNKNOWN_FILENAME
     ): T {
         val lversion = if (version == null) defaultVersion else getVersion(version)
         val handler = lversion.languageVersionHandler
-        val source = DataSource.forString(sourceCode, fileName)
-        val toString = DataSource.readToString(source, StandardCharsets.UTF_8) // this removed the BOM
-        val task = Parser.ParserTask(lversion, fileName, toString, SemanticErrorReporter.noop())
+        val textDoc = TextDocument.readOnlyString(sourceCode, fileName, lversion)
+        val task = Parser.ParserTask(textDoc, SemanticErrorReporter.noop())
         task.properties.also {
             handler.declareParserTaskProperties(it)
             it.setProperty(Parser.ParserTask.COMMENT_MARKER, params.suppressMarker)
@@ -225,7 +225,7 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
 
         AbstractPMDProcessor.runSingleFile(
             listOf(RuleSet.forSingleRule(rule)),
-            DataSource.forString(code, fileName),
+            TextFile.forCharSeq(code, fileName, defaultVersion),
             fullListener,
             config
         )

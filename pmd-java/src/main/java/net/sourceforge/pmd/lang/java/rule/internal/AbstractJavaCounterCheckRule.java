@@ -7,7 +7,9 @@ package net.sourceforge.pmd.lang.java.rule.internal;
 import static net.sourceforge.pmd.properties.constraints.NumericConstraints.positive;
 
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
+import net.sourceforge.pmd.lang.java.metrics.JavaMetrics;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
+import net.sourceforge.pmd.lang.metrics.MetricOptions;
 import net.sourceforge.pmd.lang.rule.internal.CommonPropertyDescriptors;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
@@ -68,7 +70,7 @@ public abstract class AbstractJavaCounterCheckRule<T extends JavaNode> extends A
 
         @Override
         protected final boolean isViolation(T node, int reportLevel) {
-            return node.getEndLine() - node.getBeginLine() > reportLevel;
+            return JavaMetrics.LINES_OF_CODE.computeFor(node, MetricOptions.emptyOptions()) > reportLevel;
         }
     }
 

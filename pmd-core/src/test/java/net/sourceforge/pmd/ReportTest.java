@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd;
 
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -13,16 +15,18 @@ import java.util.function.Consumer;
 
 import org.junit.Test;
 
+import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.lang.ast.DummyRoot;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.lang.rule.MockRule;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.renderers.XMLRenderer;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
-import net.sourceforge.pmd.util.datasource.DataSource;
 
 public class ReportTest {
 
@@ -33,11 +37,13 @@ public class ReportTest {
         String result = render(rend, r -> {
             Node s = getNode(10, 5).withFileName("foo");
             Rule rule1 = new MockRule("name", "desc", "msg", "rulesetname");
-            r.onRuleViolation(new ParametricRuleViolation<>(rule1, s, rule1.getMessage()));
+            r.onRuleViolation(new ParametricRuleViolation(rule1, s, rule1.getMessage()));
             Node s1 = getNode(10, 5).withFileName("bar");
             Rule rule2 = new MockRule("name", "desc", "msg", "rulesetname");
-            r.onRuleViolation(new ParametricRuleViolation<>(rule2, s1, rule2.getMessage()));
+            r.onRuleViolation(new ParametricRuleViolation(rule2, s1, rule2.getMessage()));
         });
+        assertThat(result, containsString("bar"));
+        assertThat(result, containsString("foo"));
         assertTrue("sort order wrong", result.indexOf("bar") < result.indexOf("foo"));
     }
 
@@ -47,11 +53,11 @@ public class ReportTest {
         String result = render(rend, r -> {
             Node node1 = getNode(20, 5).withFileName("foo1"); // line 20: after rule2 violation
             Rule rule1 = new MockRule("rule1", "rule1", "msg", "rulesetname");
-            r.onRuleViolation(new ParametricRuleViolation<>(rule1, node1, rule1.getMessage()));
+            r.onRuleViolation(new ParametricRuleViolation(rule1, node1, rule1.getMessage()));
 
             Node node2 = getNode(10, 5).withFileName("foo1"); // line 10: before rule1 violation
             Rule rule2 = new MockRule("rule2", "rule2", "msg", "rulesetname");
-            r.onRuleViolation(new ParametricRuleViolation<>(rule2, node2, rule2.getMessage())); // same file!!
+            r.onRuleViolation(new ParametricRuleViolation(rule2, node2, rule2.getMessage())); // same file!!
         });
         assertTrue("sort order wrong", result.indexOf("rule2") < result.indexOf("rule1"));
     }
@@ -62,15 +68,16 @@ public class ReportTest {
         Node node1 = getNode(5, 5, true);
         Node node2 = getNode(5, 6, true);
         Report r = Report.buildReport(it -> {
-            it.onRuleViolation(new ParametricRuleViolation<>(rule, node1, rule.getMessage()));
-            it.onRuleViolation(new ParametricRuleViolation<>(rule, node2, rule.getMessage()));
+            it.onRuleViolation(new ParametricRuleViolation(rule, node1, rule.getMessage()));
+            it.onRuleViolation(new ParametricRuleViolation(rule, node2, rule.getMessage()));
         });
 
         assertEquals(2, r.getViolations().size());
     }
 
     private static DummyNode getNode(int line, int column) {
-        DummyNode parent = new DummyRoot();
+        DummyRoot parent = new DummyRoot();
+        parent.fakeTextWithNLines(line + 10, column);
         DummyNode s = new DummyNode();
         parent.setCoords(line, column, line, column + 1);
         parent.addChild(s, 0);
@@ -88,7 +95,9 @@ public class ReportTest {
 
     public static String render(Renderer renderer, Consumer<? super FileAnalysisListener> listenerEffects) throws IOException {
         return renderGlobal(renderer, globalListener -> {
-            DataSource dummyFile = DataSource.forString("dummyText", "file");
+            LanguageVersion dummyVersion = LanguageRegistry.getDefaultLanguage().getDefaultVersion();
+
+            TextFile dummyFile = TextFile.forCharSeq("dummyText", "file", dummyVersion);
             try (FileAnalysisListener fal = globalListener.startFileAnalysis(dummyFile)) {
                 listenerEffects.accept(fal);
             } catch (Exception e) {

@@ -9,7 +9,6 @@ import net.sourceforge.pmd.lang.apex.ApexJorjeLogging;
 import net.sourceforge.pmd.lang.apex.multifile.ApexMultifileAnalysis;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.Parser;
-import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 
@@ -35,8 +34,8 @@ public final class ApexParser implements Parser {
     @Override
     public ASTApexFile parse(final ParserTask task) {
         try {
-            String sourceCode = task.getSourceText();
-            final Compilation astRoot = CompilerService.INSTANCE.parseApex(task.getFileDisplayName(), sourceCode);
+
+            final Compilation astRoot = CompilerService.INSTANCE.parseApex(task.getTextDocument());
 
             if (astRoot == null) {
                 throw new ParseException("Couldn't parse the source - there is not root node - Syntax Error??");
@@ -45,10 +44,9 @@ public final class ApexParser implements Parser {
             String property = task.getProperties().getProperty(MULTIFILE_DIRECTORY);
             ApexMultifileAnalysis analysisHandler = ApexMultifileAnalysis.getAnalysisInstance(property);
 
-            SourceCodePositioner positioner = new SourceCodePositioner(sourceCode);
-            final ApexTreeBuilder treeBuilder = new ApexTreeBuilder(sourceCode, task.getCommentMarker(), positioner);
-            AbstractApexNode<Compilation> treeRoot = treeBuilder.build(astRoot);
-            return new ASTApexFile(positioner, task, treeRoot, treeBuilder.getSuppressMap(), analysisHandler);
+
+            final ApexTreeBuilder treeBuilder = new ApexTreeBuilder(task);
+            return treeBuilder.buildTree(astRoot, analysisHandler);
         } catch (apex.jorje.services.exception.ParseException e) {
             throw new ParseException(e);
         }

@@ -4,11 +4,13 @@
 
 package net.sourceforge.pmd.lang.ast.impl.javacc;
 
-import java.util.Comparator;
-
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.impl.AbstractNode;
+import net.sourceforge.pmd.lang.document.Chars;
+import net.sourceforge.pmd.lang.document.FileLocation;
+import net.sourceforge.pmd.lang.document.TextRegion;
+import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * Base class for node produced by JJTree. JJTree specific functionality
@@ -20,7 +22,6 @@ import net.sourceforge.pmd.lang.ast.impl.AbstractNode;
  */
 @Experimental
 public abstract class AbstractJjtreeNode<B extends AbstractJjtreeNode<B, N>, N extends JjtreeNode<N>> extends AbstractNode<B, N> implements JjtreeNode<N> {
-
     protected final int id;
     private JavaccToken firstToken;
     private JavaccToken lastToken;
@@ -48,19 +49,25 @@ public abstract class AbstractJjtreeNode<B extends AbstractJjtreeNode<B, N>, N e
     }
 
     @Override
-    public CharSequence getText() {
-        String fullText = getFirstToken().getDocument().getFullText();
-        return fullText.substring(getStartOffset(), getEndOffset());
+    public final Chars getText() {
+        return getTextDocument().sliceText(getTextRegion());
     }
 
-    private static final Comparator<JjtreeNode<?>> JJT_COMPARATOR =
-        Comparator.<JjtreeNode<?>, JavaccToken>comparing(JjtreeNode::getFirstToken)
-            .thenComparing(JjtreeNode::getLastToken);
+    @Override
+    public final TextRegion getTextRegion() {
+        return TextRegion.fromBothOffsets(getFirstToken().getStartOffset(),
+                                          getLastToken().getEndOffset());
+    }
+
+    @Override
+    public FileLocation getReportLocation() {
+        return getTextDocument().toLocation(getTextRegion());
+    }
 
     @Override
     public final int compareLocation(Node other) {
         if (other instanceof JjtreeNode<?>) {
-            return JJT_COMPARATOR.compare(this, (JjtreeNode<?>) other);
+            return getTextRegion().compareTo(((JjtreeNode<?>) other).getTextRegion());
         }
         return super.compareLocation(other);
     }
@@ -84,6 +91,7 @@ public abstract class AbstractJjtreeNode<B extends AbstractJjtreeNode<B, N>, N e
     protected void addChild(B child, int index) {
         super.addChild(child, index);
     }
+
 
     @Override
     protected void insertChild(B child, int index) {
@@ -143,39 +151,13 @@ public abstract class AbstractJjtreeNode<B extends AbstractJjtreeNode<B, N>, N e
         this.firstToken = token;
     }
 
-    @Override
-    public int getBeginLine() {
-        return firstToken.getBeginLine();
-    }
-
-    @Override
-    public int getBeginColumn() {
-        return firstToken.getBeginColumn();
-    }
-
-    @Override
-    public int getEndLine() {
-        return lastToken.getEndLine();
-    }
-
-    @Override
-    public int getEndColumn() {
-        return lastToken.getEndColumn();
-    }
-
     /**
      * This toString implementation is only meant for debugging purposes.
      */
     @Override
     public String toString() {
-        return "[" + getXPathNodeName() + ":" + getBeginLine() + ":" + getBeginColumn() + "]" + getText();
-    }
-
-    private int getStartOffset() {
-        return this.getFirstToken().getStartInDocument();
-    }
-
-    private int getEndOffset() {
-        return this.getLastToken().getEndInDocument();
+        FileLocation loc = getReportLocation();
+        return "!debug only! [" + getXPathNodeName() + ":" + loc.getStartPos().toDisplayStringWithColon() + "]"
+            + StringUtil.elide(getText().toString(), 150, "(truncated)");
     }
 }

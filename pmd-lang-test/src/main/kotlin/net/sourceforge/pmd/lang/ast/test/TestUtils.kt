@@ -10,6 +10,7 @@ import io.kotest.matchers.should
 import net.sourceforge.pmd.Report
 import net.sourceforge.pmd.RuleViolation
 import net.sourceforge.pmd.lang.ast.Node
+import net.sourceforge.pmd.lang.document.Chars
 import kotlin.reflect.KCallable
 import kotlin.reflect.jvm.isAccessible
 import kotlin.test.assertEquals
@@ -95,8 +96,16 @@ fun assertSuppressed(report: Report, size: Int): List<Report.SuppressedViolation
 
 /** Checks the coordinates of this node. */
 fun Node.assertPosition(bline: Int, bcol: Int, eline: Int, ecol: Int) {
-    this::getBeginLine shouldBe bline
-    this::getBeginColumn shouldBe bcol
-    this::getEndLine shouldBe eline
-    this::getEndColumn shouldBe ecol
+    reportLocation.apply {
+        this::getStartLine shouldBe bline
+        this::getStartColumn shouldBe bcol
+        this::getEndLine shouldBe eline
+        this::getEndColumn shouldBe ecol
+    }
+}
+
+fun Chars.shouldEqual(charSeq:CharSequence) {
+    // note there is also Chars.contentEquals
+    // but the following gives a better error message
+    assertEquals(toString(), charSeq.toString())
 }

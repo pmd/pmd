@@ -44,11 +44,11 @@ import net.sourceforge.pmd.RuleSetLoader;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.processor.AbstractPMDProcessor;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.renderers.TextRenderer;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
-import net.sourceforge.pmd.util.datasource.DataSource;
 
 /**
  * Advanced methods for test cases
@@ -304,7 +304,7 @@ public abstract class RuleTst extends PmdContextualizedTest {
 
                 AbstractPMDProcessor.runSingleFile(
                     listOf(RuleSet.forSingleRule(rule)),
-                    DataSource.forString(code, "test." + languageVersion.getLanguage().getExtensions().get(0)),
+                    TextFile.forCharSeq(code, "testFile", languageVersion),
                     listener,
                     configuration
                 );
@@ -312,6 +312,8 @@ public abstract class RuleTst extends PmdContextualizedTest {
                 listener.close();
                 return reportBuilder.getResult();
             }
+        } catch (RuntimeException e) {
+            throw e;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

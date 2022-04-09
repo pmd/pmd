@@ -7,14 +7,21 @@ package net.sourceforge.pmd.lang.ast;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.sourceforge.pmd.lang.ast.impl.AbstractNodeWithTextCoordinates;
+import net.sourceforge.pmd.lang.ast.impl.AbstractNode;
 import net.sourceforge.pmd.lang.ast.impl.GenericNode;
+import net.sourceforge.pmd.lang.document.FileLocation;
+import net.sourceforge.pmd.lang.document.TextRange2d;
 
-public class DummyNode extends AbstractNodeWithTextCoordinates<DummyNode, DummyNode> implements GenericNode<DummyNode> {
+public class DummyNode extends AbstractNode<DummyNode, DummyNode> implements GenericNode<DummyNode> {
     private final boolean findBoundary;
     private final String xpathName;
     private final Map<String, String> userData = new HashMap<>();
     private String image;
+
+    private int bline = 1;
+    private int bcol = 1;
+    private int eline = 1;
+    private int ecol = 1;
 
     public DummyNode(String xpathName) {
         super();
@@ -42,9 +49,17 @@ public class DummyNode extends AbstractNodeWithTextCoordinates<DummyNode, DummyN
         }
     }
 
+    public DummyNode setCoords(int bline, int bcol, int eline, int ecol) {
+        this.bline = bline;
+        this.bcol = bcol;
+        this.eline = eline;
+        this.ecol = ecol;
+        return this;
+    }
+
     @Override
-    public void setCoords(int bline, int bcol, int eline, int ecol) {
-        super.setCoords(bline, bcol, eline, ecol);
+    public FileLocation getReportLocation() {
+        return getTextDocument().toLocation(TextRange2d.range2d(bline, bcol, eline, ecol));
     }
 
     public void setImage(String image) {

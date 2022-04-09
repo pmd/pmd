@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.util;
 
-import java.io.BufferedReader;
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
@@ -21,6 +20,7 @@ import java.security.PrivilegedAction;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.commons.io.ByteOrderMark;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -88,18 +88,31 @@ public final class IOUtil {
         }
     }
 
-    public static Reader skipBOM(Reader source) {
-        Reader in = new BufferedReader(source);
-        try {
-            in.mark(1);
-            int firstCharacter = in.read();
-            if (firstCharacter != '\ufeff') {
-                in.reset();
-            }
-        } catch (IOException e) {
-            throw new RuntimeException("Error while trying to skip BOM marker", e);
+    public static Reader skipBOM(Reader source) throws IOException {
+        int firstCharacter = source.read();
+        if (firstCharacter == ByteOrderMark.UTF_BOM) {
+            return source; // with one less char
         }
-        return in;
+        return new Reader() {
+            boolean done;
+
+            @Override
+            public int read(char[] cbuf, int off, int len) throws IOException {
+                if (done) {
+                    return source.read(cbuf, off, len);
+                } else if (len > 0) {
+                    done = true;
+                    cbuf[off] = (char) firstCharacter;
+                    return 1;
+                }
+                return 0;
+            }
+
+            @Override
+            public void close() throws IOException {
+                source.close();
+            }
+        };
     }
 
     public static void tryCloseClassLoader(ClassLoader classLoader) {

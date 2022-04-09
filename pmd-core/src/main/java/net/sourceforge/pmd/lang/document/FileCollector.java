@@ -143,7 +143,9 @@ public final class FileCollector implements AutoCloseable {
         }
         LanguageVersion languageVersion = discoverLanguage(file.toString());
         if (languageVersion != null) {
-            addFileImpl(new NioTextFile(file, charset, languageVersion, getDisplayName(file)));
+            addFileImpl(TextFile.builderForPath(file, charset, languageVersion)
+                                .withDisplayName(getDisplayName(file))
+                                .build());
             return true;
         }
         return false;
@@ -198,7 +200,7 @@ public final class FileCollector implements AutoCloseable {
 
         LanguageVersion version = discoverLanguage(pathId);
         if (version != null) {
-            addFileImpl(new StringTextFile(sourceContents, pathId, pathId, version));
+            addFileImpl(TextFile.builderForCharSeq(sourceContents, pathId, version).build());
             return true;
         }
 

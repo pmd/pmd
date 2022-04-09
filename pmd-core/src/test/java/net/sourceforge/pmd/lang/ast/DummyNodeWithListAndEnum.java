@@ -11,10 +11,7 @@ import java.util.List;
 public class DummyNodeWithListAndEnum extends DummyRoot {
     public DummyNodeWithListAndEnum() {
         super();
-        beginLine = 1;
-        beginColumn = 1;
-        endLine = 1;
-        endColumn = 2;
+        setCoords(1, 1, 1, 2);
     }
 
     public enum MyEnum {

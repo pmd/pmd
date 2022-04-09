@@ -4,19 +4,15 @@
 
 package net.sourceforge.pmd.util.treeexport;
 
-import java.io.File;
 import java.io.IOException;
-import java.io.Reader;
-import java.io.StringReader;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.input.CloseShieldInputStream;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -31,6 +27,8 @@ import net.sourceforge.pmd.lang.ast.Parser;
 import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.ast.SemanticErrorReporter;
+import net.sourceforge.pmd.lang.document.TextDocument;
+import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.lang.rule.xpath.Attribute;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertySource;
@@ -176,30 +174,25 @@ public class TreeExportCli {
         LanguageVersionHandler languageHandler = langVersion.getLanguageVersionHandler();
         Parser parser = languageHandler.getParser();
 
-        @SuppressWarnings("PMD.CloseResource") final Reader source;
-        final String filename;
+        @SuppressWarnings("PMD.CloseResource") TextFile textFile;
         if (file == null && !readStdin) {
             throw bail("One of --file or --read-stdin must be mentioned");
         } else if (readStdin) {
             System.err.println("Reading from stdin...");
-            source = new StringReader(readFromSystemIn());
-            filename = "stdin";
+            textFile = TextFile.forCharSeq(readFromSystemIn(), "stdin", langVersion);
         } else {
-            source = Files.newBufferedReader(new File(file).toPath(), Charset.forName(encoding));
-            filename = file;
+            textFile = TextFile.forPath(Paths.get(file), Charset.forName(encoding), langVersion);
         }
 
         // disable warnings for deprecated attributes
         Slf4jSimpleConfiguration.disableLogging(Attribute.class);
 
-        try {
-            String fullSource = IOUtils.toString(source);
-            ParserTask task = new ParserTask(langVersion, filename, fullSource, SemanticErrorReporter.noop());
+        try (TextDocument textDocument = TextDocument.create(textFile)) {
+
+            ParserTask task = new ParserTask(textDocument, SemanticErrorReporter.noop(), TreeExportCli.class.getClassLoader());
             RootNode root = parser.parse(task);
 
             renderer.renderSubtree(root, System.out);
-        } finally {
-            source.close();
         }
     }
 

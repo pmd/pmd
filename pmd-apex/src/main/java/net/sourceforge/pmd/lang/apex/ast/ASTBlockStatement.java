@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
+import net.sourceforge.pmd.lang.document.TextDocument;
+
 import apex.jorje.semantic.ast.statement.BlockStatement;
 
 public final class ASTBlockStatement extends AbstractApexNode<BlockStatement> {
@@ -24,7 +26,8 @@ public final class ASTBlockStatement extends AbstractApexNode<BlockStatement> {
     }
 
     @Override
-    protected void handleSourceCode(final String source) {
+    void closeNode(TextDocument document) {
+        super.closeNode(document);
         if (!hasRealLoc()) {
             return;
         }
@@ -32,7 +35,11 @@ public final class ASTBlockStatement extends AbstractApexNode<BlockStatement> {
         // check, whether the this block statement really begins with a curly brace
         // unfortunately, for-loop and if-statements always contain a block statement,
         // regardless whether curly braces where present or not.
-        char firstChar = source.charAt(node.getLoc().getStartIndex());
-        curlyBrace = firstChar == '{';
+        curlyBrace = document.getText().startsWith('{', node.getLoc().getStartIndex());
+    }
+
+    @Override
+    public boolean hasRealLoc() {
+        return super.hasRealLoc() && node.getLoc() != getParent().getNode().getLoc();
     }
 }

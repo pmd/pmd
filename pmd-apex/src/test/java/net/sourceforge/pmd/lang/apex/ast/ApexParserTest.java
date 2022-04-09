@@ -18,9 +18,11 @@ import java.util.List;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.document.FileLocation;
 
 public class ApexParserTest extends ApexParserTestBase {
 
@@ -49,7 +51,7 @@ public class ApexParserTest extends ApexParserTestBase {
 
         ASTUserClass rootNode = (ASTUserClass) parse(code, "src/filename.cls");
 
-        assertEquals("src/filename.cls", rootNode.getAstInfo().getFileName());
+        assertEquals("src/filename.cls", rootNode.getTextDocument().getDisplayName());
     }
 
     private final String testCodeForLineNumbers =
@@ -58,7 +60,7 @@ public class ApexParserTest extends ApexParserTestBase {
             + "        System.out.println('abc');\n" // line 3
             + "        // this is a comment\n" // line 4
             + "    }\n" // line 5
-            + "}\n"; // line 6
+            + "}"; // line 6
 
     @Test
     public void verifyLineColumnNumbers() {
@@ -80,11 +82,11 @@ public class ApexParserTest extends ApexParserTestBase {
         // assertPosition(rootNode.getChild(0), 1, 1, 1, 6);
 
         // "public"
-        assertPosition(rootNode, 1, 14, 6, 2);
+        assertPosition(rootNode, 1, 14, 1, 25);
 
         // "method1" - starts with identifier until end of its block statement
         Node method1 = rootNode.getChild(1);
-        assertPosition(method1, 2, 17, 5, 5);
+        assertPosition(method1, 2, 17, 2, 24);
         // Modifier of method1 - doesn't work. This node just sees the
         // identifier ("method1")
         // assertPosition(method1.getChild(0), 2, 17, 2, 20); // "public" for
@@ -92,12 +94,12 @@ public class ApexParserTest extends ApexParserTestBase {
 
         // BlockStatement - the whole method body
         Node blockStatement = method1.getChild(1);
-        assertTrue(((ASTBlockStatement) blockStatement).hasCurlyBrace());
-        assertPosition(blockStatement, 2, 27, 5, 5);
+        assertTrue("should detect curly brace", ((ASTBlockStatement) blockStatement).hasCurlyBrace());
+        assertPosition(blockStatement, 2, 27, 5, 6);
 
         // the expression ("System.out...")
         Node expressionStatement = blockStatement.getChild(0);
-        assertPosition(expressionStatement, 3, 9, 3, 34);
+        assertPosition(expressionStatement, 3, 20, 3, 35);
     }
 
     @Test
@@ -113,12 +115,10 @@ public class ApexParserTest extends ApexParserTestBase {
         ASTUserClassOrInterface<?> rootNode = parse(code);
 
         Node method1 = rootNode.getChild(1);
-        assertEquals("Wrong begin line", 2, method1.getBeginLine());
-        assertEquals("Wrong end line", 3, method1.getEndLine());
+        assertPosition(method1, 2, 17, 2, 24);
 
         Node method2 = rootNode.getChild(2);
-        assertEquals("Wrong begin line", 4, method2.getBeginLine());
-        assertEquals("Wrong end line", 5, method2.getEndLine());
+        assertPosition(method2, 4, 17, 4, 24);
     }
 
     @Test
@@ -138,15 +138,15 @@ public class ApexParserTest extends ApexParserTestBase {
         ApexNode<?> comment = root.getChild(0);
         assertThat(comment, instanceOf(ASTFormalComment.class));
 
-        assertPosition(comment, 1, 9, 1, 31);
-        assertEquals("/** Comment on Class */", ((ASTFormalComment) comment).getToken());
+        assertPosition(comment, 1, 9, 1, 32);
+        assertEquals("/** Comment on Class */", ((ASTFormalComment) comment).getToken().toString());
 
         ApexNode<?> m1 = root.getChild(2);
         assertThat(m1, instanceOf(ASTMethod.class));
 
         ApexNode<?> comment2 = m1.getChild(0);
         assertThat(comment2, instanceOf(ASTFormalComment.class));
-        assertEquals("/** Comment on m1 */", ((ASTFormalComment) comment2).getToken());
+        assertEquals("/** Comment on m1 */", ((ASTFormalComment) comment2).getToken().toString());
     }
 
     @Test
@@ -189,15 +189,14 @@ public class ApexParserTest extends ApexParserTestBase {
     }
 
     @Test
+    @Ignore("This is buggy, I'd like to stop pretending our reportLocation is a real node position")
     public void verifyLineColumnNumbersInnerClasses() throws Exception {
-        String source = IOUtils.toString(ApexParserTest.class.getResourceAsStream("InnerClassLocations.cls"),
-                StandardCharsets.UTF_8);
-        source = source.replaceAll("\r\n", "\n");
-        ASTUserClassOrInterface<?> rootNode = parse(source);
+        ASTApexFile rootNode = apex.parseResource("InnerClassLocations.cls");
+        Assert.assertNotNull(rootNode);
 
         visitPosition(rootNode, 0);
 
-        Assert.assertEquals("InnerClassLocations", rootNode.getSimpleName());
+        Assert.assertEquals("InnerClassLocations", rootNode.getMainNode().getSimpleName());
         // Note: Apex parser doesn't provide positions for "public class" keywords. The
         // position of the UserClass node is just the identifier. So, the node starts
         // with the identifier and not with the first keyword in the file...
@@ -206,7 +205,7 @@ public class ApexParserTest extends ApexParserTestBase {
         List<ASTUserClass> classes = rootNode.descendants(ASTUserClass.class).toList();
         Assert.assertEquals(2, classes.size());
         Assert.assertEquals("bar1", classes.get(0).getSimpleName());
-        List<ASTMethod> methods = classes.get(0).findChildrenOfType(ASTMethod.class);
+        List<ASTMethod> methods = classes.get(0).children(ASTMethod.class).toList();
         Assert.assertEquals(2, methods.size()); // m() and synthetic clone()
         Assert.assertEquals("m", methods.get(0).getImage());
         assertPosition(methods.get(0), 4, 21, 7, 9);
@@ -226,10 +225,13 @@ public class ApexParserTest extends ApexParserTestBase {
 
     private int visitPosition(Node node, int count) {
         int result = count + 1;
-        Assert.assertTrue(node.getBeginLine() > 0);
-        Assert.assertTrue(node.getBeginColumn() > 0);
-        Assert.assertTrue(node.getEndLine() > 0);
-        Assert.assertTrue(node.getEndColumn() > 0);
+        FileLocation loc = node.getReportLocation();
+        // todo rename to getStartLine
+        Assert.assertTrue(loc.getStartLine() > 0);
+        // todo rename to getStartLine
+        Assert.assertTrue(loc.getStartColumn() > 0);
+        Assert.assertTrue(loc.getEndLine() > 0);
+        Assert.assertTrue(loc.getEndColumn() > 0);
         for (int i = 0; i < node.getNumChildren(); i++) {
             result = visitPosition(node.getChild(i), result);
         }

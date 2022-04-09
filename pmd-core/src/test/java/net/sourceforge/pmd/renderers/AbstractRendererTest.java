@@ -25,7 +25,6 @@ import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.RuleWithProperties;
 import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.lang.ast.DummyRoot;
-import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
 
@@ -82,14 +81,14 @@ public abstract class AbstractRendererTest {
     }
 
     protected DummyNode createNode(int beginLine, int beginColumn, int endLine, int endColumn) {
-        DummyNode node = new DummyRoot().withFileName(getSourceCodeFilename());
-        node.setCoords(beginLine, beginColumn, endLine, endColumn);
+        DummyRoot node = new DummyRoot().withFileName(getSourceCodeFilename());
+        node.setCoordsReplaceText(beginLine, beginColumn, endLine, endColumn);
         return node;
     }
 
     protected RuleViolation newRuleViolation(int beginLine, int beginColumn, int endLine, int endColumn, Rule rule) {
         DummyNode node = createNode(beginLine, beginColumn, endLine, endColumn);
-        return new ParametricRuleViolation<Node>(rule, node, "blah");
+        return new ParametricRuleViolation(rule, node, "blah");
     }
 
     /**
@@ -130,7 +129,7 @@ public abstract class AbstractRendererTest {
         theRule.setProperty(RuleWithProperties.STRING_PROPERTY_DESCRIPTOR,
                 "the string value\nsecond line with \"quotes\"");
         String rendered = ReportTest.render(getRenderer(),
-                it -> it.onRuleViolation(new ParametricRuleViolation<Node>(theRule, node, "blah")));
+                it -> it.onRuleViolation(new ParametricRuleViolation(theRule, node, "blah")));
         assertEquals(filter(getExpectedWithProperties()), filter(rendered));
     }
 

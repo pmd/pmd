@@ -20,6 +20,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.NodeStream;
+import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
@@ -447,7 +448,11 @@ public final class JavaMetrics {
     }
 
     private static int computeLoc(JavaNode node, MetricOptions ignored) {
-        return 1 + node.getEndLine() - node.getBeginLine();
+        // the report location is now not necessarily the entire node.
+        FileLocation loc = node.getTextDocument().toLocation(node.getTextRegion());
+
+        // todo rename to getStartLine
+        return 1 + loc.getEndLine() - loc.getStartLine();
     }
 
 

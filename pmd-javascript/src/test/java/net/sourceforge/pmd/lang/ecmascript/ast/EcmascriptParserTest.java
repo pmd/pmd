@@ -32,19 +32,19 @@ public class EcmascriptParserTest extends EcmascriptParserTestBase {
         assertEquals(1, node.getBeginLine());
         assertEquals(1, node.getBeginColumn());
         assertEquals(3, node.getEndLine());
-        assertEquals(1, node.getEndColumn());
+        assertEquals(2, node.getEndColumn());
 
         Node child = node.getFirstChildOfType(ASTFunctionNode.class);
         assertEquals(1, child.getBeginLine());
         assertEquals(1, child.getBeginColumn());
         assertEquals(3, child.getEndLine());
-        assertEquals(1, child.getEndColumn());
+        assertEquals(2, child.getEndColumn());
 
         child = node.getFirstDescendantOfType(ASTFunctionCall.class);
         assertEquals(2, child.getBeginLine());
         assertEquals(3, child.getBeginColumn());
         assertEquals(2, child.getEndLine());
-        assertEquals(16, child.getEndColumn());
+        assertEquals(17, child.getEndColumn());
     }
 
     /**

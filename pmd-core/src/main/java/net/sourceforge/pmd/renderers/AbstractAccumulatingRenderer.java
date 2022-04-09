@@ -14,9 +14,9 @@ import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.benchmark.TimedOperation;
 import net.sourceforge.pmd.benchmark.TimedOperationCategory;
+import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
-import net.sourceforge.pmd.util.datasource.DataSource;
 
 /**
  * Abstract base class for {@link Renderer} implementations which only produce
@@ -48,7 +48,7 @@ public abstract class AbstractAccumulatingRenderer extends AbstractRenderer {
     }
 
     @Override
-    public void startFileAnalysis(DataSource dataSource) {
+    public void startFileAnalysis(TextFile dataSource) {
         Objects.requireNonNull(dataSource);
     }
 
@@ -84,7 +84,7 @@ public abstract class AbstractAccumulatingRenderer extends AbstractRenderer {
             final GlobalReportBuilderListener reportBuilder = new GlobalReportBuilderListener();
 
             @Override
-            public FileAnalysisListener startFileAnalysis(DataSource file) {
+            public FileAnalysisListener startFileAnalysis(TextFile file) {
                 AbstractAccumulatingRenderer.this.startFileAnalysis(file);
                 return reportBuilder.startFileAnalysis(file);
             }

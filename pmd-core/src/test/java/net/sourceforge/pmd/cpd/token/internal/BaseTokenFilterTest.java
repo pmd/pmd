@@ -18,6 +18,9 @@ import org.junit.Test;
 
 import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.ast.GenericToken;
+import net.sourceforge.pmd.lang.document.FileLocation;
+import net.sourceforge.pmd.lang.document.TextRange2d;
+import net.sourceforge.pmd.lang.document.TextRegion;
 
 public class BaseTokenFilterTest {
 
@@ -45,28 +48,23 @@ public class BaseTokenFilterTest {
         }
 
         @Override
-        public String getImage() {
+        public String getImageCs() {
             return text;
         }
 
         @Override
-        public int getBeginLine() {
-            return 0;
+        public TextRegion getRegion() {
+            return TextRegion.fromBothOffsets(0, text.length());
         }
 
         @Override
-        public int getEndLine() {
-            return 0;
+        public FileLocation getReportLocation() {
+            return FileLocation.location("n/a", TextRange2d.range2d(0, 0, 0, 0));
         }
 
         @Override
-        public int getBeginColumn() {
-            return 0;
-        }
-
-        @Override
-        public int getEndColumn() {
-            return 0;
+        public int compareTo(StringToken o) {
+            return text.compareTo(o.text);
         }
 
         @Override

@@ -203,7 +203,7 @@ public class PLSQLNameOccurrence implements NameOccurrence {
 
     @Override
     public String toString() {
-        return getImage() + ":" + location.getBeginLine() + ":" + location.getClass()
+        return getImage() + ":" + location.getReportLocation().startPosToString() + ":" + location.getClass()
                 + (this.isMethodOrConstructorInvocation() ? "(method call)" : "");
     }
 }

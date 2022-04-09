@@ -62,7 +62,7 @@ public final class ASTConditionalExpression extends AbstractJavaExpr {
      */
     // very internal
     boolean isStandalone() {
-        assert getAstInfo().getLanguageVersion().compareToVersion("8") >= 0
+        assert getLanguageVersion().compareToVersion("8") >= 0
             : "This method's result is undefined in pre java 8 code";
         return this.isStandalone;
     }

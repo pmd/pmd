@@ -522,6 +522,8 @@ public final class StringUtil {
         return str.replaceAll("'", "''");
     }
 
+
+
     public enum CaseConvention {
         /** SCREAMING_SNAKE_CASE. */
         SCREAMING_SNAKE_CASE {
