@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.reporting;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,19 +24,18 @@ public interface ViolationDecorator {
      * reflected in {@link RuleViolation#getAdditionalInfo()}. This extra
      * info should be accumulated into the {@code extraData} parameter.
      *
-     * @param violation     Violation
      * @param violationNode The node on which the violation was reported
      * @param extraData     Accumulator
      */
-    void decorate(RuleViolation violation, Node violationNode, Map<String, String> extraData);
+    void decorate(Node violationNode, Map<String, String> extraData);
 
-    static RuleViolation apply(ViolationDecorator decorator, RuleViolation violation, Node violationNode) {
+    static Map<String, String> apply(ViolationDecorator decorator, Node violationNode) {
         Map<String, String> extraData = new HashMap<>();
-        decorator.decorate(violation, violationNode, extraData);
+        decorator.decorate(violationNode, extraData);
         if (!extraData.isEmpty()) {
-            return new DecoratedRuleViolation(violation, extraData);
+            return Collections.unmodifiableMap(extraData);
         } else {
-            return violation;
+            return Collections.emptyMap();
         }
     }
 
@@ -43,14 +43,14 @@ public interface ViolationDecorator {
      * Apply several decorators in a chain.
      */
     static ViolationDecorator chain(List<? extends ViolationDecorator> list) {
-        return (rv, node, map) -> {
+        return (node, map) -> {
             for (ViolationDecorator decorator : list) {
-                decorator.decorate(rv, node, map);
+                decorator.decorate(node, map);
             }
         };
     }
 
     static ViolationDecorator noop() {
-        return (rv, node, map) -> { };
+        return (node, map) -> { };
     }
 }

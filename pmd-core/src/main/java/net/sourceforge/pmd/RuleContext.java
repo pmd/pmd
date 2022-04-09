@@ -8,6 +8,7 @@ import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 
 import java.text.MessageFormat;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import org.apache.commons.lang3.StringUtils;
@@ -23,6 +24,7 @@ import net.sourceforge.pmd.lang.document.TextRange2d;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 import net.sourceforge.pmd.processor.AbstractPMDProcessor;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
 import net.sourceforge.pmd.reporting.ViolationDecorator;
 
@@ -143,10 +145,11 @@ public final class RuleContext {
             location = FileLocation.location(location.getFileName(), TextRange2d.range2d(beginLine, 1, endLine, 1));
         }
 
-        RuleViolation violation = new ParametricRuleViolation(rule, location, makeMessage(message, formatArgs));
-        violation = ViolationDecorator.apply(handler.getViolationDecorator(), violation, node);
+        final Map<String, String> extraVariables = ViolationDecorator.apply(handler.getViolationDecorator(), node);
+        final String description = makeMessage(message, formatArgs, extraVariables);
+        final RuleViolation violation = new ParametricRuleViolation(rule, location, description, extraVariables);
 
-        SuppressedViolation suppressed = suppressOrNull(node, violation, handler);
+        final SuppressedViolation suppressed = suppressOrNull(node, violation, handler);
 
         if (suppressed != null) {
             listener.onSuppressedRuleViolation(suppressed);
@@ -174,12 +177,45 @@ public final class RuleContext {
         listener.onRuleViolation(rv);
     }
 
-    private static String makeMessage(@NonNull String message, Object[] args) {
+    private String makeMessage(@NonNull String message, Object[] args, Map<String, String> extraVars) {
         // Escape PMD specific variable message format, specifically the {
         // in the ${, so MessageFormat doesn't bitch.
         final String escapedMessage = StringUtils.replace(message, "${", "$'{'");
-        return MessageFormat.format(escapedMessage, args);
+        String formatted = MessageFormat.format(escapedMessage, args);
+        return expandVariables(formatted, extraVars);
     }
+
+
+    private String expandVariables(String message, Map<String, String> extraVars) {
+
+        if (!message.contains("${")) {
+            return message;
+        }
+
+        StringBuilder buf = new StringBuilder(message);
+        int startIndex = -1;
+        while ((startIndex = buf.indexOf("${", startIndex + 1)) >= 0) {
+            final int endIndex = buf.indexOf("}", startIndex);
+            if (endIndex >= 0) {
+                final String name = buf.substring(startIndex + 2, endIndex);
+                String variableValue = getVariableValue(name, extraVars);
+                if (variableValue != null) {
+                    buf.replace(startIndex, endIndex + 1, variableValue);
+                }
+            }
+        }
+        return buf.toString();
+    }
+
+    private String getVariableValue(String name, Map<String, String> extraVars) {
+        String value = extraVars.get(name);
+        if (value != null) {
+            return value;
+        }
+        final PropertyDescriptor<?> propertyDescriptor = rule.getPropertyDescriptor(name);
+        return propertyDescriptor == null ? null : String.valueOf(rule.getProperty(propertyDescriptor));
+    }
+
 
     /**
      * Create a new RuleContext. This is internal API owned by {@link AbstractPMDProcessor}

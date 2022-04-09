@@ -12,7 +12,6 @@ import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.lang.document.FileLocation;
-import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.reporting.Reportable;
 
 /**
@@ -28,58 +27,28 @@ public class ParametricRuleViolation implements RuleViolation {
 
     private final FileLocation location;
 
-    protected String packageName = "";
-    protected String className = "";
-    protected String methodName = "";
-    protected String variableName = "";
+    private final Map<String, String> extraData;
 
 
-    public ParametricRuleViolation(Rule theRule, Reportable node, String message) {
-        this(theRule, node.getReportLocation(), message);
+    public ParametricRuleViolation(Rule theRule, Reportable node, String message, Map<String, String> extraData) {
+        this(theRule, node.getReportLocation(), message, extraData);
     }
 
-    public ParametricRuleViolation(Rule theRule, FileLocation location, String message) {
+    public ParametricRuleViolation(Rule theRule, FileLocation location, String message, Map<String, String> extraData) {
         this.rule = AssertionUtil.requireParamNotNull("rule", theRule);
         this.description = AssertionUtil.requireParamNotNull("message", message);
-
         this.location = location;
-    }
 
-    protected String expandVariables(String message) {
-        // TODO move that to RuleContext with the rest of the formatting logic
-
-        if (!message.contains("${")) {
-            return message;
-        }
-
-        StringBuilder buf = new StringBuilder(message);
-        int startIndex = -1;
-        while ((startIndex = buf.indexOf("${", startIndex + 1)) >= 0) {
-            final int endIndex = buf.indexOf("}", startIndex);
-            if (endIndex >= 0) {
-                final String name = buf.substring(startIndex + 2, endIndex);
-                String variableValue = getVariableValue(name);
-                if (variableValue != null) {
-                    buf.replace(startIndex, endIndex + 1, variableValue);
-                }
-            }
-        }
-        return buf.toString();
-    }
-
-    protected String getVariableValue(String name) {
-        if ("variableName".equals(name)) {
-            return variableName;
-        } else if ("methodName".equals(name)) {
-            return methodName;
-        } else if ("className".equals(name)) {
-            return className;
-        } else if ("packageName".equals(name)) {
-            return packageName;
+        if (!extraData.isEmpty()) {
+            this.extraData = Collections.unmodifiableMap(extraData);
         } else {
-            final PropertyDescriptor<?> propertyDescriptor = rule.getPropertyDescriptor(name);
-            return propertyDescriptor == null ? null : String.valueOf(rule.getProperty(propertyDescriptor));
+            this.extraData = Collections.emptyMap();
         }
+    }
+
+    @Override
+    public Map<String, String> getAdditionalInfo() {
+        return extraData;
     }
 
     @Override
@@ -89,17 +58,12 @@ public class ParametricRuleViolation implements RuleViolation {
 
     @Override
     public String getDescription() {
-        return expandVariables(description);
+        return description;
     }
 
     @Override
     public FileLocation getLocation() {
         return location;
-    }
-
-    @Override
-    public Map<String, String> getAdditionalInfo() {
-        return Collections.emptyMap();
     }
 
     @Override

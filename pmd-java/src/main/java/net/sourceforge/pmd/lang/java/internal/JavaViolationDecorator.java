@@ -30,7 +30,7 @@ final class JavaViolationDecorator implements ViolationDecorator {
     static final ViolationDecorator INSTANCE = new JavaViolationDecorator();
 
     @Override
-    public void decorate(RuleViolation violation, Node violationNode, Map<String, String> extraData) {
+    public void decorate(Node violationNode, Map<String, String> extraData) {
         JavaNode javaNode = (JavaNode) violationNode;
 
         String packageName = javaNode.getRoot().getPackageName();
