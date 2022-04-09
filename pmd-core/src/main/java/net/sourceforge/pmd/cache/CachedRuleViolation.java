@@ -7,6 +7,12 @@ package net.sourceforge.pmd.cache;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleViolation;
@@ -30,26 +36,20 @@ public final class CachedRuleViolation implements RuleViolation {
     private final String ruleClassName;
     private final String ruleName;
     private final String ruleTargetLanguage;
-    private final String packageName;
-    private final String className;
-    private final String methodName;
-    private final String variableName;
+    private final Map<String, String> extraData;
 
     private CachedRuleViolation(final CachedRuleMapper mapper, final String description,
-            final String fileName, final String ruleClassName, final String ruleName,
-            final String ruleTargetLanguage, final int beginLine, final int beginColumn,
-            final int endLine, final int endColumn, final String packageName,
-            final String className, final String methodName, final String variableName) {
+                                final String fileName, final String ruleClassName, final String ruleName,
+                                final String ruleTargetLanguage, final int beginLine, final int beginColumn,
+                                final int endLine, final int endColumn,
+                                final Map<String, String> extraData) {
         this.mapper = mapper;
         this.description = description;
         this.location = FileLocation.location(fileName, TextRange2d.range2d(beginLine, beginColumn, endLine, endColumn));
         this.ruleClassName = ruleClassName;
         this.ruleName = ruleName;
         this.ruleTargetLanguage = ruleTargetLanguage;
-        this.packageName = packageName;
-        this.className = className;
-        this.methodName = methodName;
-        this.variableName = variableName;
+        this.extraData = extraData;
     }
 
     @Override
@@ -69,23 +69,8 @@ public final class CachedRuleViolation implements RuleViolation {
     }
 
     @Override
-    public String getPackageName() {
-        return packageName;
-    }
-
-    @Override
-    public String getClassName() {
-        return className;
-    }
-
-    @Override
-    public String getMethodName() {
-        return methodName;
-    }
-
-    @Override
-    public String getVariableName() {
-        return variableName;
+    public Map<String, String> getAdditionalInfo() {
+        return extraData;
     }
 
     /**
@@ -107,22 +92,32 @@ public final class CachedRuleViolation implements RuleViolation {
         final int beginColumn = stream.readInt();
         final int endLine = stream.readInt();
         final int endColumn = stream.readInt();
-        final String packageName = stream.readUTF();
-        final String className = stream.readUTF();
-        final String methodName = stream.readUTF();
-        final String variableName = stream.readUTF();
-
+        Map<String, String> extraData = readExtraData(stream);
         return new CachedRuleViolation(mapper, description, fileName, ruleClassName, ruleName, ruleTargetLanguage,
-                beginLine, beginColumn, endLine, endColumn, packageName, className, methodName, variableName);
+                                       beginLine, beginColumn, endLine, endColumn, extraData);
+    }
+
+    private static @NonNull Map<String, String> readExtraData(DataInputStream stream) throws IOException {
+        int numExtraKvps = stream.readInt();
+        if (numExtraKvps == 0) {
+            return Collections.emptyMap();
+        }
+
+        Map<String, String> extraData = new LinkedHashMap<>();
+        while (numExtraKvps-- > 0) {
+            final String key = stream.readUTF();
+            final String value = stream.readUTF();
+            extraData.put(key, value);
+        }
+        return Collections.unmodifiableMap(extraData);
     }
 
     /**
      * Helper method to store a {@link RuleViolation} in an output stream to be later
      * retrieved as a {@link CachedRuleViolation}
      *
-     * @param stream The stream on which to store the violation.
+     * @param stream    The stream on which to store the violation.
      * @param violation The rule violation to cache.
-     * @throws IOException
      */
     /* package */ static void storeToStream(final DataOutputStream stream,
             final RuleViolation violation) throws IOException {
@@ -135,10 +130,13 @@ public final class CachedRuleViolation implements RuleViolation {
         stream.writeInt(location.getStartPos().getColumn());
         stream.writeInt(location.getEndPos().getColumn());
         stream.writeInt(location.getEndPos().getColumn());
-        stream.writeUTF(getValueOrEmpty(violation.getPackageName()));
-        stream.writeUTF(getValueOrEmpty(violation.getClassName()));
-        stream.writeUTF(getValueOrEmpty(violation.getMethodName()));
-        stream.writeUTF(getValueOrEmpty(violation.getVariableName()));
+        Map<String, String> extraData = violation.getAdditionalInfo();
+        stream.writeInt(extraData.size());
+        for (Entry<String, String> entry : extraData.entrySet()) {
+            stream.writeUTF(entry.getKey());
+            stream.writeUTF(getValueOrEmpty(entry.getValue()));
+
+        }
     }
 
     private static String getValueOrEmpty(final String value) {
