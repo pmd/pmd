@@ -34,7 +34,7 @@ import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
  */
 abstract class PmdRunnable implements Runnable {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(PmdRunnable.class);
+    private static final Logger LOG = LoggerFactory.getLogger(PmdRunnable.class);
     private final TextFile textFile;
     private final GlobalAnalysisListener globalListener;
 
@@ -76,10 +76,12 @@ abstract class PmdRunnable implements Runnable {
                     FileAnalysisListener completeListener = FileAnalysisListener.tee(listOf(listener, cacheListener));
 
                     if (analysisCache.isUpToDate(textDocument)) {
+                        LOG.trace("Skipping file (lang: {}) because it was found in the cache: {}", textFile.getLanguageVersion(), textFile.getPathId());
                         // note: no cache listener here
                         //                         vvvvvvvv
                         reportCachedRuleViolations(listener, textDocument);
                     } else {
+                        LOG.trace("Processing file (lang: {}): {}", textFile.getLanguageVersion(), textFile.getPathId());
                         try {
                             processSource(completeListener, textDocument, ruleSets);
                         } catch (Exception | StackOverflowError | AssertionError e) {
@@ -93,6 +95,8 @@ abstract class PmdRunnable implements Runnable {
                         }
                     }
                 }
+            } else {
+                LOG.trace("Skipping file (lang: {}) because no rule applies: {}", textFile.getLanguageVersion(), textFile.getPathId());
             }
         } catch (FileAnalysisException e) {
             throw e; // bubble managed exceptions, they were already reported
@@ -122,7 +126,7 @@ abstract class PmdRunnable implements Runnable {
 
         ParserTask task = new ParserTask(
             textDocument,
-            SemanticErrorReporter.reportToLogger(LOGGER),
+            SemanticErrorReporter.reportToLogger(LOG),
             configuration.getClassLoader()
         );
 
