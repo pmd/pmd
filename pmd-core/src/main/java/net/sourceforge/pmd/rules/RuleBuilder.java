@@ -72,11 +72,12 @@ public class RuleBuilder {
             return;
         }
 
-        Language lang = LanguageRegistry.findLanguageByTerseName(languageName);
+        LanguageRegistry registry = LanguageRegistry.PMD;
+        Language lang = registry.findLanguageByTerseName(languageName);
         if (lang == null) {
             throw new IllegalArgumentException(
                     "Unknown Language '" + languageName + "' for rule " + name + ", supported Languages are "
-                    + LanguageRegistry.getLanguages().stream().map(Language::getTerseName).collect(Collectors.joining(", "))
+                    + registry.commaSeparatedList(Language::getId)
             );
         }
         language = lang;

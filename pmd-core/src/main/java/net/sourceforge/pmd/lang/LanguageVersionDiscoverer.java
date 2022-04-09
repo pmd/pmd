@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import org.apache.commons.lang3.StringUtils;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.internal.util.AssertionUtil;
 
@@ -99,7 +100,7 @@ public class LanguageVersionDiscoverer {
      *         <code>null</code> if there are no supported Languages for the
      *         file.
      */
-    public LanguageVersion getDefaultLanguageVersionForFile(String fileName) {
+    public @Nullable LanguageVersion getDefaultLanguageVersionForFile(String fileName) {
         List<Language> languages = getLanguagesForFile(fileName);
         LanguageVersion languageVersion = null;
         if (!languages.isEmpty()) {

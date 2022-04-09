@@ -11,6 +11,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 
@@ -18,7 +19,7 @@ public class TextDocumentTest {
 
     @Rule
     public ExpectedException expect = ExpectedException.none();
-    private final LanguageVersion dummyVersion = LanguageRegistry.getDefaultLanguage().getDefaultVersion();
+    private final LanguageVersion dummyVersion = DummyLanguageModule.INSTANCE.getDefaultVersion();
 
     @Test
     public void testSingleLineRegion() {

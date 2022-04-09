@@ -34,6 +34,7 @@ import org.mockito.Mockito;
 
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
@@ -59,7 +60,7 @@ public class FileAnalysisCacheTest {
     private TextDocument sourceFile;
     private TextFile sourceFileBackend;
 
-    private final LanguageVersion dummyVersion = LanguageRegistry.getDefaultLanguage().getDefaultVersion();
+    private final LanguageVersion dummyVersion = DummyLanguageModule.INSTANCE.getDefaultVersion();
 
 
     @Before

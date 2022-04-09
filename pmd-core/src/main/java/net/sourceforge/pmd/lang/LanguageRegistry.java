@@ -115,6 +115,24 @@ public final class LanguageRegistry implements Iterable<Language> {
     }
 
     /**
+     * Returns a language version from its {@linkplain Language#getId() language ID}
+     * (eg {@code "java"}). This is case-sensitive.
+     *
+     * @param langId  Language ID
+     * @param version Version ID
+     *
+     * @return A language, or null if the name is unknown
+     */
+    public @Nullable LanguageVersion getLanguageVersionById(@Nullable String langId, @Nullable String version) {
+        Language lang = languagesById.get(langId);
+        if (lang == null) {
+            return null;
+        }
+        return version == null ? lang.getDefaultVersion()
+                               : lang.getVersion(version);
+    }
+
+    /**
      * Returns a language from its {@linkplain Language#getName() full name}
      * (eg {@code "Java"}). This is case sensitive.
      *
@@ -124,17 +142,6 @@ public final class LanguageRegistry implements Iterable<Language> {
      */
     public @Nullable Language getLanguageByFullName(String languageName) {
         return languagesByFullName.get(languageName);
-    }
-
-    /**
-     * Returns a "default language" known to the service loader. This
-     * is the Java language if available, otherwise an arbitrary one.
-     * If no languages are loaded, returns null.
-     *
-     * @return A language, or null if the name is unknown
-     */
-    public static @Nullable Language getDefaultLanguage() {
-        return null;
     }
 
     /**
@@ -168,7 +175,7 @@ public final class LanguageRegistry implements Iterable<Language> {
     }
 
     public @NonNull String commaSeparatedList(Function<Language, String> getter) {
-        return getLanguages().stream().map(getter).collect(Collectors.joining(", "));
+        return getLanguages().stream().map(getter).sorted().collect(Collectors.joining(", "));
     }
 
 

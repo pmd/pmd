@@ -339,7 +339,7 @@ public class PMDConfiguration extends AbstractConfiguration {
     // FUTURE Delete this? I can't think of a good reason to keep it around.
     // Failure to determine the LanguageVersion for a file should be a hard
     // error, or simply cause the file to be skipped?
-    public LanguageVersion getLanguageVersionOfFile(String fileName) {
+    public @Nullable LanguageVersion getLanguageVersionOfFile(String fileName) {
         LanguageVersion forcedVersion = getForceLanguageVersion();
         if (forcedVersion != null) {
             // use force language if given
@@ -347,13 +347,11 @@ public class PMDConfiguration extends AbstractConfiguration {
         }
 
         // otherwise determine by file extension
-        LanguageVersion languageVersion = languageVersionDiscoverer.getDefaultLanguageVersionForFile(fileName);
-        if (languageVersion == null) {
-            // For compatibility with older code that does not always pass in
-            // a correct filename.
-            languageVersion = languageVersionDiscoverer.getDefaultLanguageVersion(LanguageRegistry.getLanguage("Java"));
-        }
-        return languageVersion;
+        return languageVersionDiscoverer.getDefaultLanguageVersionForFile(fileName);
+    }
+
+    public LanguageRegistry languages() {
+        return langRegistry;
     }
 
     /**

@@ -11,14 +11,6 @@ import net.sourceforge.pmd.PmdContextualizedTest;
 
 public class LanguageRegistryTest extends PmdContextualizedTest {
 
-    @Test
-    public void getDefaultLanguageTest() {
-        Language defaultLanguage = languageRegistry().getDefaultLanguage();
-        Assert.assertNotNull(defaultLanguage);
-        // as we don't have java language in this test, we get the first
-        // available language now -> DummyLanguage
-        Assert.assertSame(DummyLanguageModule.class, defaultLanguage.getClass());
-    }
 
     @Test
     public void getDefaultVersionLanguageTest() {

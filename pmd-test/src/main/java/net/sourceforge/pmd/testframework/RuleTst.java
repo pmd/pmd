@@ -521,15 +521,7 @@ public abstract class RuleTst extends PmdContextualizedTest {
             version = null;
             terseName = terseNameAndVersion;
         }
-        Language language = languageRegistry().findLanguageByTerseName(terseName);
-        if (language != null) {
-            if (version == null) {
-                return language.getDefaultVersion();
-            } else {
-                return language.getVersion(version);
-            }
-        }
-        return null;
+        return languageRegistry().getLanguageVersionById(terseName, version);
     }
 
     private String getNodeValue(Element parentElm, String nodeName, boolean required) {

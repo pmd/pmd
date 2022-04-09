@@ -26,6 +26,7 @@ import net.sourceforge.pmd.cache.AnalysisCacheListener;
 import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.internal.util.FileCollectionUtil;
 import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
 import net.sourceforge.pmd.lang.document.FileCollector;
@@ -155,6 +156,13 @@ public final class PmdAnalysis implements AutoCloseable {
      */
     public FileCollector files() {
         return collector; // todo user can close collector programmatically
+    }
+
+    /**
+     * Returns the language registry for this analysis.
+     */
+    public LanguageRegistry languages() {
+        return configuration.languages();
     }
 
     /**

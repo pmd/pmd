@@ -44,7 +44,7 @@ public class PmdRunnableTest {
 
 
     static {
-        Language dummyLanguage = LanguageRegistry.findLanguageByTerseName(DummyLanguageModule.TERSE_NAME);
+        Language dummyLanguage = DummyLanguageModule.INSTANCE;
         DUMMY_DEFAULT = dummyLanguage.getDefaultVersion();
         DUMMY_THROWS = dummyLanguage.getVersion("1.9-throws");
     }
@@ -104,7 +104,7 @@ public class PmdRunnableTest {
     private static class RuleThatThrows extends AbstractRule {
 
         RuleThatThrows() {
-            Language dummyLanguage = LanguageRegistry.findLanguageByTerseName(DummyLanguageModule.TERSE_NAME);
+            Language dummyLanguage = DummyLanguageModule.INSTANCE;
             setLanguage(dummyLanguage);
         }
 
