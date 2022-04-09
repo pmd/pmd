@@ -4,13 +4,6 @@
 
 package net.sourceforge.pmd;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.allOf;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.hasProperty;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.isA;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -23,11 +16,17 @@ import java.io.InputStream;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Predicate;
 
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.contrib.java.lang.system.SystemErrRule;
+import org.mockito.Mockito;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.event.Level;
 
 import net.sourceforge.pmd.junit.LocaleRule;
 import net.sourceforge.pmd.lang.DummyLanguageModule;
@@ -36,16 +35,26 @@ import net.sourceforge.pmd.lang.rule.MockRule;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.util.ResourceLoader;
-
-import com.github.oowekyala.ooxml.messages.XmlException;
+import net.sourceforge.pmd.util.log.MessageReporter;
 
 public class RuleSetFactoryTest {
+
+    private static final Logger LOG = LoggerFactory.getLogger(RuleSetFactoryTest.class);
 
     @org.junit.Rule
     public LocaleRule localeRule = LocaleRule.en();
 
     @org.junit.Rule
     public final SystemErrRule systemErrRule = new SystemErrRule().muteForSuccessfulTests().enableLog();
+
+    private MessageReporter mockReporter;
+
+
+    @Before
+    public void setup() {
+        // mockReporter = Mockito.spy(new SimpleMessageReporter(LOG));
+        mockReporter = Mockito.mock(MessageReporter.class);
+    }
 
     @Test
     public void testRuleSetFileName() {
@@ -256,9 +265,10 @@ public class RuleSetFactoryTest {
         Rule rule = rs.getRuleByName("OldNameOfDummyBasicMockRule");
         assertNotNull(rule);
 
-        assertEquals(1,
-                     StringUtils.countMatches(systemErrRule.getLog(),
-                                              "WARN net.sourceforge.pmd.RuleSetFactory - Use Rule name rulesets/dummy/basic.xml/DummyBasicMockRule instead of the deprecated Rule name rulesets/dummy/basic.xml/OldNameOfDummyBasicMockRule."));
+        verifyFoundAWarningWithMessage(
+            containing("Use Rule name rulesets/dummy/basic.xml/DummyBasicMockRule "
+                           + "instead of the deprecated Rule name rulesets/dummy/basic.xml/OldNameOfDummyBasicMockRule")
+        );
     }
 
     /**
@@ -413,10 +423,11 @@ public class RuleSetFactoryTest {
 
     @Test
     public void testExternalReferenceOverrideNonExistent() {
-        ex.expect(RuleSetLoadException.class);
-        ex.expectCause(allOf(isA(XmlException.class),
-                             hasProperty("simpleMessage", is("Cannot set non-existent property 'test4' on rule TestNameOverride"))));
-        loadFirstRule(REF_OVERRIDE_NONEXISTENT);
+        assertThrows(RuleSetLoadException.class,
+                     () -> loadFirstRule(REF_OVERRIDE_NONEXISTENT));
+        verifyFoundAnErrorWithMessage(
+            containing("Cannot set non-existent property 'test4' on rule TestNameOverride")
+        );
     }
 
     @Test
@@ -596,32 +607,32 @@ public class RuleSetFactoryTest {
 
     @Test
     public void testIncorrectMinimumLanguageVersion() {
-        RuleSetLoadException ex = assertCannotParse(INCORRECT_MINIMUM_LANGUAGE_VERSION);
-        Throwable cause = ex.getCause();
-        assertThat(cause, instanceOf(XmlException.class));
-        assertThat(cause.getMessage(), containsString("valid language version"));
-        assertThat(cause.getMessage(), containsString("'1.0', '1.1', '1.2'")); // and not "dummy 1.0, dummy 1.1, ..."
+        assertCannotParse(INCORRECT_MINIMUM_LANGUAGE_VERSION);
+        verifyFoundAnErrorWithMessage(
+            containing("valid language version")
+                .and(containing("'1.0', '1.1', '1.2'")) // and not "dummy 1.0, dummy 1.1, ..."
+        );
     }
 
     @Test
     public void testIncorrectMinimumLanguageVersionWithLanguageSetInJava() {
-        RuleSetLoadException ex =
-            assertCannotParse("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-                                  + "<ruleset name=\"TODO\">\n"
-                                  + "    <description>TODO</description>\n"
-                                  + "\n"
-                                  + "    <rule name=\"TODO\"\n"
-                                  + "          message=\"TODO\"\n"
-                                  + "          class=\"net.sourceforge.pmd.util.FooRuleWithLanguageSetInJava\"\n"
-                                  + "          minimumLanguageVersion=\"12\">\n"
-                                  + "        <description>TODO</description>\n"
-                                  + "        <priority>2</priority>\n"
-                                  + "    </rule>\n"
-                                  + "\n"
-                                  + "</ruleset>");
-        Throwable cause = ex.getCause();
-        assertThat(cause, instanceOf(XmlException.class));
-        assertThat(cause.getMessage(), containsString("valid language version"));
+        assertCannotParse("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+                              + "<ruleset name=\"TODO\">\n"
+                              + "    <description>TODO</description>\n"
+                              + "\n"
+                              + "    <rule name=\"TODO\"\n"
+                              + "          message=\"TODO\"\n"
+                              + "          class=\"net.sourceforge.pmd.util.FooRuleWithLanguageSetInJava\"\n"
+                              + "          minimumLanguageVersion=\"12\">\n"
+                              + "        <description>TODO</description>\n"
+                              + "        <priority>2</priority>\n"
+                              + "    </rule>\n"
+                              + "\n"
+                              + "</ruleset>");
+
+        verifyFoundAnErrorWithMessage(
+            containing("valid language version")
+        );
     }
 
     @Test
@@ -633,19 +644,31 @@ public class RuleSetFactoryTest {
 
     @Test
     public void testIncorrectMaximumLanguageVersion() {
-        RuleSetLoadException ex = assertCannotParse(INCORRECT_MAXIMUM_LANGUAGE_VERSION);
-        Throwable cause = ex.getCause();
-        assertThat(cause, instanceOf(XmlException.class));
-        assertThat(cause.getMessage(), containsString("valid language version"));
-        assertThat(cause.getMessage(), containsString("'1.0', '1.1', '1.2'")); // and not "dummy 1.0, dummy 1.1, ..."
+        assertCannotParse(INCORRECT_MAXIMUM_LANGUAGE_VERSION);
+        verifyFoundAnErrorWithMessage(
+            containing("valid language version")
+                .and(containing("'1.0', '1.1', '1.2'"))
+        );
     }
 
     @Test
     public void testInvertedMinimumMaximumLanguageVersions() {
-        RuleSetLoadException ex = assertCannotParse(INVERTED_MINIMUM_MAXIMUM_LANGUAGE_VERSIONS);
-        Throwable cause = ex.getCause();
-        assertThat(cause, instanceOf(XmlException.class));
-        assertThat(cause.getMessage(), containsString("version range"));
+        assertCannotParse(INVERTED_MINIMUM_MAXIMUM_LANGUAGE_VERSIONS);
+        verifyFoundAnErrorWithMessage(containing("versionRange"));
+    }
+
+    private void verifyFoundAnErrorWithMessage(Predicate<String> messageTest) {
+        Mockito.verify(mockReporter, Mockito.times(1))
+               .log(Mockito.eq(Level.ERROR), Mockito.argThat(messageTest::test), Mockito.any());
+    }
+
+    private void verifyFoundAWarningWithMessage(Predicate<String> messageTest) {
+        Mockito.verify(mockReporter, Mockito.times(1))
+               .log(Mockito.eq(Level.WARN), Mockito.argThat(messageTest::test), Mockito.any());
+    }
+
+    private static Predicate<String> containing(String part) {
+        return it -> it.contains(part);
     }
 
     @Test
@@ -872,7 +895,7 @@ public class RuleSetFactoryTest {
                 + "  </ruleset>\n"
         );
 
-        assertTrue(systemErrRule.getLog().contains("RuleSet name is missing."));
+        verifyFoundAWarningWithMessage(containing("RuleSet name is missing."));
     }
 
     @Test
@@ -885,7 +908,7 @@ public class RuleSetFactoryTest {
                 + "  <rule ref=\"rulesets/dummy/basic.xml\"/>\n"
                 + "  </ruleset>\n"
         );
-        assertTrue(systemErrRule.getLog().contains("RuleSet description is missing."));
+        verifyFoundAWarningWithMessage(containing("RuleSet description is missing."));
     }
 
     private static final String REF_OVERRIDE_ORIGINAL_NAME = "<?xml version=\"1.0\"?>\n"
@@ -1225,15 +1248,22 @@ public class RuleSetFactoryTest {
     }
 
     private RuleSet loadRuleSet(String ruleSetXml) {
-        return new RuleSetLoader().loadFromString("dummyRuleset.xml", ruleSetXml);
+        try (PmdAnalysis pmd = PmdAnalysis.create(new PMDConfiguration(), mockReporter)) {
+            return pmd.newRuleSetLoader()
+                      .loadFromString("dummyRuleset.xml", ruleSetXml);
+        }
     }
 
     private RuleSet loadRuleSetWithDeprecationWarnings(String ruleSetXml) {
-        return new RuleSetLoader().warnDeprecated(true).enableCompatibility(false).loadFromString("testRuleset.xml", ruleSetXml);
+        try (PmdAnalysis pmd = PmdAnalysis.create(new PMDConfiguration(), mockReporter)) {
+            return pmd.newRuleSetLoader()
+                      .warnDeprecated(true)
+                      .enableCompatibility(false).loadFromString("dummyRuleset.xml", ruleSetXml);
+        }
     }
 
-    private RuleSetLoadException assertCannotParse(String xmlContent) {
-        return assertThrows(RuleSetLoadException.class, () -> loadFirstRule(xmlContent));
+    private void assertCannotParse(String xmlContent) {
+        assertThrows(RuleSetLoadException.class, () -> loadFirstRule(xmlContent));
     }
 
 }

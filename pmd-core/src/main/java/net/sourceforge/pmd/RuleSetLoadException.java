@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import net.sourceforge.pmd.annotation.InternalApi;
 
 /**
@@ -16,14 +18,14 @@ public final class RuleSetLoadException extends RuntimeException {
 
     /** Constructors are internal. */
     @InternalApi
-    public RuleSetLoadException(String message, Throwable cause) {
-        super(message, cause);
+    public RuleSetLoadException(RuleSetReferenceId rsetId, @NonNull Throwable cause) {
+        super("Cannot load ruleset " + rsetId + ": " + cause.getMessage(), cause);
     }
 
     /** Constructors are internal. */
     @InternalApi
-    public RuleSetLoadException(String message) {
-        super(message);
+    public RuleSetLoadException(RuleSetReferenceId rsetId, String message) {
+        super("Cannot load ruleset " + rsetId + ": " + message);
     }
 
 }
