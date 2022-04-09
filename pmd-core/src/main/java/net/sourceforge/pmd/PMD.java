@@ -29,6 +29,7 @@ import net.sourceforge.pmd.cli.PMDCommandLineInterface;
 import net.sourceforge.pmd.cli.PmdParametersParseResult;
 import net.sourceforge.pmd.cli.internal.CliMessages;
 import net.sourceforge.pmd.internal.Slf4jSimpleConfiguration;
+import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.reporting.ReportStats;
 import net.sourceforge.pmd.reporting.ReportStatsListener;
@@ -189,7 +190,7 @@ public final class PMD {
             System.err.println(CliMessages.runWithHelpFlagMessage());
             return StatusCode.ERROR;
         }
-        return runPmd(parseResult.toConfiguration());
+        return runPmd(parseResult.toConfiguration(LanguageRegistry.PMD));
     }
 
     private static void printErrorDetected(int errors) {

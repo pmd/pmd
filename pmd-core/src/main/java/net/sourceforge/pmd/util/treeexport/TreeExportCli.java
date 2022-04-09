@@ -19,6 +19,7 @@ import java.util.Scanner;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.input.CloseShieldInputStream;
 import org.apache.commons.lang3.StringEscapeUtils;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.internal.Slf4jSimpleConfiguration;
@@ -41,10 +42,12 @@ import com.beust.jcommander.ParameterException;
 
 @Experimental
 public class TreeExportCli {
+
     @Parameter(names = { "--format", "-f" }, description = "The output format.")
     private String format = "xml";
     @Parameter(names = { "--language", "-l" }, description = "Specify the language to use.")
-    private String language = LanguageRegistry.getDefaultLanguage().getTerseName();
+    // todo there is also a @Nullable from Jcommander, investigate
+    private @Nullable String language = null;
     @Parameter(names = { "--encoding", "-e" }, description = "Encoding of the source file.")
     private String encoding = StandardCharsets.UTF_8.name();
     @DynamicParameter(names = "-P", description = "Properties for the renderer.")
@@ -110,7 +113,7 @@ public class TreeExportCli {
         sb.append(System.lineSeparator());
 
         sb.append("Available languages: ");
-        for (Language l : LanguageRegistry.getLanguages()) {
+        for (Language l : LanguageRegistry.PMD) {
             sb.append(l.getTerseName()).append(' ');
         }
         sb.append(System.lineSeparator());
@@ -156,14 +159,24 @@ public class TreeExportCli {
     }
 
     private void run(TreeRenderer renderer) throws IOException {
+        run(LanguageRegistry.PMD, renderer);
+    }
+
+    private void run(LanguageRegistry registry, TreeRenderer renderer) throws IOException {
         printWarning();
 
-        LanguageVersion langVersion = LanguageRegistry.findLanguageByTerseName(language).getDefaultVersion();
+        Language lang = registry.getLanguageById(language);
+        if (lang == null) {
+            throw bail("Unknown language '" + language + "', one of ["
+                           + registry.commaSeparatedList(Language::getId)
+                           + "] was expected");
+        }
+
+        LanguageVersion langVersion = lang.getDefaultVersion();
         LanguageVersionHandler languageHandler = langVersion.getLanguageVersionHandler();
         Parser parser = languageHandler.getParser();
 
-        @SuppressWarnings("PMD.CloseResource")
-        final Reader source;
+        @SuppressWarnings("PMD.CloseResource") final Reader source;
         final String filename;
         if (file == null && !readStdin) {
             throw bail("One of --file or --read-stdin must be mentioned");

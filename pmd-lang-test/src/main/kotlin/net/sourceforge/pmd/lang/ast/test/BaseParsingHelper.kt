@@ -29,11 +29,12 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
 ) {
 
     data class Params(
-            val doProcess: Boolean,
-            val defaultVerString: String?,
-            val resourceLoader: Class<*>?,
-            val resourcePrefix: String,
-            val suppressMarker: String = PMD.SUPPRESS_MARKER,
+        val doProcess: Boolean,
+        val defaultVerString: String?,
+        val resourceLoader: Class<*>?,
+        val resourcePrefix: String,
+        val languageRegistry: LanguageRegistry = LanguageRegistry.PMD,
+        val suppressMarker: String = PMD.SUPPRESS_MARKER,
     ) {
         companion object {
 
@@ -62,8 +63,13 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
     }
 
     val language: Language
-        get() = LanguageRegistry.getLanguage(langName)
-                ?: throw AssertionError("'$langName' is not a supported language (available ${LanguageRegistry.getLanguages()})")
+        get() =
+            params.languageRegistry.getLanguageByFullName(langName)
+                ?: run {
+                    val langNames = params.languageRegistry.commaSeparatedList { it.name }
+                    throw AssertionError("'$langName' is not a supported language (available $langNames")
+                }
+
 
     val defaultVersion: LanguageVersion
         get() = getVersion(params.defaultVerString)
@@ -73,7 +79,7 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
 
     @JvmOverloads
     fun withProcessing(doProcess: Boolean = true): Self =
-            clone(params.copy(doProcess = doProcess))
+        clone(params.copy(doProcess = doProcess))
 
     /**
      * Returns an instance of [Self] for which all parsing methods
@@ -82,7 +88,7 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
      * defined by the language module is used instead.
      */
     fun withDefaultVersion(version: String?): Self =
-            clone(params.copy(defaultVerString = version))
+        clone(params.copy(defaultVerString = version))
 
     /**
      * Returns an instance of [Self] for which [parseResource] uses
@@ -91,6 +97,10 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
     @JvmOverloads
     fun withResourceContext(contextClass: Class<*>, resourcePrefix: String = ""): Self =
             clone(params.copy(resourceLoader = contextClass, resourcePrefix = resourcePrefix))
+
+
+    fun withLanguageRegistry(languageRegistry: LanguageRegistry): Self =
+            clone(params.copy(languageRegistry = languageRegistry))
 
 
     fun withSuppressMarker(marker: String): Self =

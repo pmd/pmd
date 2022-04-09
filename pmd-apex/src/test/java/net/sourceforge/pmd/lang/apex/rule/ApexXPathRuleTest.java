@@ -9,7 +9,6 @@ import static net.sourceforge.pmd.lang.ast.test.TestUtilsKt.assertSize;
 import org.junit.Test;
 
 import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.apex.ApexLanguageModule;
 import net.sourceforge.pmd.lang.apex.ast.ApexParserTestBase;
 import net.sourceforge.pmd.lang.rule.XPathRule;
@@ -22,7 +21,7 @@ public class ApexXPathRuleTest extends ApexParserTestBase {
 
     private XPathRule makeXPath(String expression) {
         XPathRule rule = new XPathRule(XPathVersion.XPATH_2_0, expression);
-        rule.setLanguage(LanguageRegistry.getLanguage(ApexLanguageModule.NAME));
+        rule.setLanguage(ApexLanguageModule.INSTANCE);
         rule.setMessage("XPath Rule Failed");
         return rule;
     }

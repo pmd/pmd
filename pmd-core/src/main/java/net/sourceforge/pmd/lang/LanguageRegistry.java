@@ -5,64 +5,113 @@
 package net.sourceforge.pmd.lang;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.ServiceConfigurationError;
+import java.util.ServiceLoader;
 import java.util.Set;
+import java.util.TreeSet;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
-import net.sourceforge.pmd.internal.LanguageServiceBase;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
+import net.sourceforge.pmd.util.CollectionUtil;
 
 /**
- * Provides access to the registered PMD languages. These are found
- * from the classpath of the {@link ClassLoader} of this class.
+ * A set of languages with convenient methods. In the PMD CLI, languages
+ * are loaded from the classloader of this class. These are in the registry
+ * {@link #PMD}. You can otherwise create different registries with different
+ * languages, eg filter some out.
  */
-public final class LanguageRegistry extends LanguageServiceBase<Language> {
-
-    // sort languages by name. Avoiding differences in the order of languages
-    // across JVM versions / OS.
-    private static final Comparator<Language> LANGUAGE_COMPARATOR = new Comparator<Language>() {
-        @Override
-        public int compare(Language o1, Language o2) {
-            return o1.getTerseName().compareToIgnoreCase(o2.getTerseName());
-        }
-    };
-
-    private static final NameExtractor<Language> NAME_EXTRACTOR = new NameExtractor<Language>() {
-        @Override
-        public String getName(Language language) {
-            return language.getName();
-        }
-    };
-
-    private static final NameExtractor<Language> TERSE_NAME_EXTRACTOR = new NameExtractor<Language>() {
-        @Override
-        public String getName(Language language) {
-            return language.getTerseName();
-        }
-    };
-
-    // Important: the INSTANCE needs to be defined *after* LANGUAGE_COMPARATOR and *NAME_EXTRACTOR
-    // as these are needed in the constructor.
-    private static final LanguageRegistry INSTANCE = new LanguageRegistry();
-
-    private LanguageRegistry() {
-        super(Language.class, LANGUAGE_COMPARATOR, NAME_EXTRACTOR, TERSE_NAME_EXTRACTOR);
-    }
+public final class LanguageRegistry implements Iterable<Language> {
 
     /**
-     * @deprecated Use the static methods instead, will be made private
+     * Contains the languages that support PMD and are found on the classpath
+     * of the classloader of this class. This can be used as a "default" registry.
      */
-    @Deprecated
-    public static LanguageRegistry getInstance() {
-        return INSTANCE;
+    public static final LanguageRegistry PMD = loadLanguages(LanguageRegistry.class.getClassLoader());
+
+    private final Set<Language> languages;
+
+    private final Map<String, Language> languagesById;
+    private final Map<String, Language> languagesByFullName;
+
+    public LanguageRegistry(Set<Language> languages) {
+        this.languages = languages.stream()
+                                  .sorted(Comparator.comparing(Language::getTerseName, String::compareToIgnoreCase))
+                                  .collect(CollectionUtil.toUnmodifiableSet());
+        this.languagesById = CollectionUtil.associateBy(languages, Language::getTerseName);
+        this.languagesByFullName = CollectionUtil.associateBy(languages, Language::getName);
+    }
+
+    @Override
+    public @NonNull Iterator<Language> iterator() {
+        return languages.iterator();
+    }
+
+
+    public static @NonNull LanguageRegistry loadLanguages(ClassLoader classLoader) {
+        // sort languages by terse name. Avoiding differences in the order of languages
+        // across JVM versions / OS.
+        Set<Language> languages = new TreeSet<>(Comparator.comparing(Language::getTerseName, String::compareToIgnoreCase));
+        ServiceLoader<Language> languageLoader = ServiceLoader.load(Language.class, classLoader);
+        Iterator<Language> iterator = languageLoader.iterator();
+        while (true) {
+            // this loop is weird, but both hasNext and next may throw ServiceConfigurationError,
+            // it's more robust that way
+            try {
+                if (iterator.hasNext()) {
+                    Language language = iterator.next();
+                    languages.add(language);
+                } else {
+                    break;
+                }
+            } catch (UnsupportedClassVersionError | ServiceConfigurationError e) {
+                // Some languages require java8 and are therefore only available
+                // if java8 or later is used as runtime.
+                System.err.println("Ignoring language for PMD: " + e);
+            }
+        }
+        return new LanguageRegistry(languages);
     }
 
     /**
      * Returns a set of all the known languages. The ordering of the languages
      * is by terse name.
      */
-    public static Set<Language> getLanguages() {
-        return INSTANCE.languages;
+    public Set<Language> getLanguages() {
+        return languages;
+    }
+
+    /**
+     * Returns a language from its {@linkplain Language#getName() full name}
+     * (eg {@code "Java"}). This is case sensitive.
+     *
+     * @param languageName Language name
+     *
+     * @return A language, or null if the name is unknown
+     *
+     * @deprecated Use {@link #getLanguageByFullName(String)}
+     */
+    @Deprecated
+    public Language getLanguage(String languageName) {
+        return languagesByFullName.get(languageName);
+    }
+
+    /**
+     * Returns a language from its {@linkplain Language#getId() ID}
+     * (eg {@code "java"}). This is case-sensitive.
+     *
+     * @param langId Language ID
+     *
+     * @return A language, or null if the name is unknown, or the parameter is null
+     */
+    public @Nullable Language getLanguageById(@Nullable String langId) {
+        return languagesById.get(langId);
     }
 
     /**
@@ -73,8 +122,8 @@ public final class LanguageRegistry extends LanguageServiceBase<Language> {
      *
      * @return A language, or null if the name is unknown
      */
-    public static Language getLanguage(String languageName) {
-        return INSTANCE.languagesByName.get(languageName);
+    public @Nullable Language getLanguageByFullName(String languageName) {
+        return languagesByFullName.get(languageName);
     }
 
     /**
@@ -84,15 +133,8 @@ public final class LanguageRegistry extends LanguageServiceBase<Language> {
      *
      * @return A language, or null if the name is unknown
      */
-    public static Language getDefaultLanguage() {
-        Language defaultLanguage = getLanguage("Java");
-        if (defaultLanguage == null) {
-            Collection<Language> allLanguages = getInstance().languagesByName.values();
-            if (!allLanguages.isEmpty()) {
-                defaultLanguage = allLanguages.iterator().next();
-            }
-        }
-        return defaultLanguage;
+    public static @Nullable Language getDefaultLanguage() {
+        return null;
     }
 
     /**
@@ -102,9 +144,12 @@ public final class LanguageRegistry extends LanguageServiceBase<Language> {
      * @param terseName Language terse name
      *
      * @return A language, or null if the name is unknown
+     *
+     * @deprecated Use {@link #getLanguageById(String)}.
      */
-    public static Language findLanguageByTerseName(String terseName) {
-        return INSTANCE.languagesByTerseName.get(terseName);
+    @Deprecated
+    public @Nullable Language findLanguageByTerseName(@Nullable String terseName) {
+        return languagesById.get(terseName);
     }
 
     /**
@@ -112,7 +157,7 @@ public final class LanguageRegistry extends LanguageServiceBase<Language> {
      *
      * @param extensionWithoutDot A file extension (without '.' prefix)
      */
-    public static List<Language> findByExtension(String extensionWithoutDot) {
+    public List<Language> findByExtension(String extensionWithoutDot) {
         List<Language> languages = new ArrayList<>();
         for (Language language : getLanguages()) {
             if (language.hasExtension(extensionWithoutDot)) {
@@ -121,5 +166,10 @@ public final class LanguageRegistry extends LanguageServiceBase<Language> {
         }
         return languages;
     }
+
+    public @NonNull String commaSeparatedList(Function<Language, String> getter) {
+        return getLanguages().stream().map(getter).collect(Collectors.joining(", "));
+    }
+
 
 }

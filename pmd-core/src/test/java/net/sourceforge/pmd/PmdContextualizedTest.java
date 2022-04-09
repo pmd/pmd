@@ -17,7 +17,7 @@ public class PmdContextualizedTest {
     private final LanguageRegistry registry;
 
     public PmdContextualizedTest() {
-        this.registry = LanguageRegistry.STATIC;
+        this.registry = LanguageRegistry.PMD;
     }
 
     public final LanguageRegistry languageRegistry() {
@@ -25,7 +25,7 @@ public class PmdContextualizedTest {
     }
 
     public Language dummyLanguage() {
-        return registry.getLanguage(DummyLanguageModule.NAME);
+        return registry.getLanguageByFullName(DummyLanguageModule.NAME);
     }
 
     public <T extends Rule> T dummyRule(T rule) {

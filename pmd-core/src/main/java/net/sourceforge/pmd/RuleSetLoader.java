@@ -36,6 +36,7 @@ import net.sourceforge.pmd.util.log.internal.NoopReporter;
 public final class RuleSetLoader {
     private static final Logger LOG = LoggerFactory.getLogger(RuleSetLoader.class);
 
+    private LanguageRegistry languageRegistry = LanguageRegistry.PMD;
     private ResourceLoader resourceLoader = new ResourceLoader(RuleSetLoader.class.getClassLoader());
     private RulePriority minimumPriority = RulePriority.LOW;
     private boolean warnDeprecated = true;
@@ -68,6 +69,11 @@ public final class RuleSetLoader {
     // internal
     RuleSetLoader loadResourcesWith(ResourceLoader loader) {
         this.resourceLoader = loader;
+        return this;
+    }
+
+    public RuleSetLoader withLanguages(LanguageRegistry languageRegistry) {
+        this.languageRegistry = languageRegistry;
         return this;
     }
 
@@ -285,7 +291,7 @@ public final class RuleSetLoader {
     public List<RuleSet> getStandardRuleSets() {
         String rulesetsProperties;
         List<String> ruleSetReferenceIds = new ArrayList<>();
-        for (Language language : LanguageRegistry.getLanguages()) {
+        for (Language language : languageRegistry.getLanguages()) {
             Properties props = new Properties();
             rulesetsProperties = "category/" + language.getTerseName() + "/categories.properties";
             try (InputStream inputStream = resourceLoader.loadClassPathResourceAsStreamOrThrow(rulesetsProperties)) {

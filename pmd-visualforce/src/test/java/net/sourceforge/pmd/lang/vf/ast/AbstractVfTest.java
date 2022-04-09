@@ -4,8 +4,13 @@
 
 package net.sourceforge.pmd.lang.vf.ast;
 
-public abstract class AbstractVfTest {
+import net.sourceforge.pmd.PmdContextualizedTest;
 
-    protected final VfParsingHelper vf = VfParsingHelper.DEFAULT.withResourceContext(getClass());
+public abstract class AbstractVfTest extends PmdContextualizedTest {
+
+    protected final VfParsingHelper vf =
+        VfParsingHelper.DEFAULT
+            .withResourceContext(getClass())
+            .withLanguageRegistry(languageRegistry());
 
 }

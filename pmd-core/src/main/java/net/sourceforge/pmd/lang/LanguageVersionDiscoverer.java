@@ -23,16 +23,8 @@ public class LanguageVersionDiscoverer {
 
     private final LanguageRegistry languageRegistry;
     private final Map<Language, LanguageVersion> languageToLanguageVersion = new HashMap<>();
-
-    public LanguageVersionDiscoverer(LanguageRegistry languageRegistry) {
-        this.languageRegistry = languageRegistry;
-    }
-
     private LanguageVersion forcedVersion;
 
-    public LanguageVersionDiscoverer() {
-        this(null);
-    }
 
     /**
      * Build a new instance.
@@ -41,8 +33,13 @@ public class LanguageVersionDiscoverer {
      *                      The methods of this class still work as usual and do not
      *                      care about the forced language version.
      */
-    public LanguageVersionDiscoverer(LanguageVersion forcedVersion) {
+    public LanguageVersionDiscoverer(LanguageRegistry registry, LanguageVersion forcedVersion) {
+        this.languageRegistry = registry;
         this.forcedVersion = forcedVersion;
+    }
+
+    public LanguageVersionDiscoverer(LanguageRegistry registry) {
+        this(registry, null);
     }
 
     /**

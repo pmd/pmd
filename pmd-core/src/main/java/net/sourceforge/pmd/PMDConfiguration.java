@@ -90,6 +90,7 @@ import net.sourceforge.pmd.util.ClasspathClassLoader;
  * </ul>
  */
 public class PMDConfiguration extends AbstractConfiguration {
+    private static final LanguageRegistry DEFAULT_REGISTRY = LanguageRegistry.PMD;
 
     /** The default suppress marker string. */
     public static final String DEFAULT_SUPPRESS_MARKER = "NOPMD";
@@ -98,7 +99,7 @@ public class PMDConfiguration extends AbstractConfiguration {
     private String suppressMarker = DEFAULT_SUPPRESS_MARKER;
     private int threads = Runtime.getRuntime().availableProcessors();
     private ClassLoader classLoader = getClass().getClassLoader();
-    private LanguageVersionDiscoverer languageVersionDiscoverer = new LanguageVersionDiscoverer();
+    private LanguageVersionDiscoverer languageVersionDiscoverer;
     private LanguageVersion forceLanguageVersion;
 
     // Rule and source file options
@@ -122,6 +123,16 @@ public class PMDConfiguration extends AbstractConfiguration {
     private boolean benchmark;
     private AnalysisCache analysisCache = new NoopAnalysisCache();
     private boolean ignoreIncrementalAnalysis;
+    private final LanguageRegistry langRegistry;
+
+    public PMDConfiguration() {
+        this(DEFAULT_REGISTRY);
+    }
+
+    public PMDConfiguration(@NonNull LanguageRegistry languageRegistry) {
+        this.langRegistry = Objects.requireNonNull(languageRegistry);
+        this.languageVersionDiscoverer = new LanguageVersionDiscoverer(languageRegistry, null);
+    }
 
     /**
      * Get the suppress marker. This is the source level marker used to indicate

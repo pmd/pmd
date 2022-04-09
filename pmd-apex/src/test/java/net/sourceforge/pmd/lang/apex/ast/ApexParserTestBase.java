@@ -4,7 +4,9 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-public class ApexParserTestBase {
+import net.sourceforge.pmd.PmdContextualizedTest;
+
+public class ApexParserTestBase extends PmdContextualizedTest {
 
     protected final ApexParsingHelper apex = ApexParsingHelper.DEFAULT.withResourceContext(getClass());
 

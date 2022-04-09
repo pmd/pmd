@@ -23,10 +23,11 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
+import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.Language;
-import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
+import net.sourceforge.pmd.lang.LanguageVersionDiscovererTest;
 
 /**
  * @author Clément Fournier
@@ -55,7 +56,7 @@ public class FileCollectorTest {
         Path root = tempFolder.getRoot().toPath();
         Path bar = newFile(root, "bar.unknown");
 
-        Language dummy = LanguageRegistry.findLanguageByTerseName("dummy");
+        Language dummy = DummyLanguageModule.INSTANCE;
 
         FileCollector collector = newCollector(dummy.getDefaultVersion());
 
@@ -136,7 +137,7 @@ public class FileCollectorTest {
     }
 
     private FileCollector newCollector(LanguageVersion forcedVersion) {
-        LanguageVersionDiscoverer discoverer = new LanguageVersionDiscoverer(forcedVersion);
+        LanguageVersionDiscoverer discoverer = LanguageVersionDiscovererTest.createForcedDiscoverer(forcedVersion);
         FileCollector collector = FileCollector.newCollector(discoverer, new TestMessageReporter());
         collector.relativizeWith(tempFolder.getRoot().getAbsolutePath());
         return collector;

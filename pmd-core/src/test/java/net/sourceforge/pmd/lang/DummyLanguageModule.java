@@ -21,8 +21,9 @@ public class DummyLanguageModule extends BaseLanguageModule {
 
     public static final String NAME = "Dummy";
     public static final String TERSE_NAME = "dummy";
+    public static final DummyLanguageModule INSTANCE = new DummyLanguageModule();
 
-    public DummyLanguageModule() {
+    private DummyLanguageModule() {
         super(NAME, null, TERSE_NAME, "dummy");
         addVersion("1.0", new Handler());
         addVersion("1.1", new Handler());
