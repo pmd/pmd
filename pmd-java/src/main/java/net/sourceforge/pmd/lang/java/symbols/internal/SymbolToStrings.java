@@ -32,7 +32,7 @@ public class SymbolToStrings {
         return symbol.acceptVisitor(visitor, new StringBuilder()).toString();
     }
 
-    private static class ToStringVisitor implements SymbolVisitor<StringBuilder, StringBuilder> {
+    private static final class ToStringVisitor implements SymbolVisitor<StringBuilder, StringBuilder> {
 
         private final String impl;
 

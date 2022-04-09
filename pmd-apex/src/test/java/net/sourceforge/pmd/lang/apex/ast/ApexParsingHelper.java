@@ -9,7 +9,7 @@ import net.sourceforge.pmd.lang.ast.test.BaseParsingHelper;
 
 public class ApexParsingHelper extends BaseParsingHelper<ApexParsingHelper, ASTApexFile> {
 
-    public static final ApexParsingHelper DEFAULT = new ApexParsingHelper(Params.getDefaultProcess());
+    public static final ApexParsingHelper DEFAULT = new ApexParsingHelper(Params.getDefault());
 
 
     private ApexParsingHelper(Params p) {

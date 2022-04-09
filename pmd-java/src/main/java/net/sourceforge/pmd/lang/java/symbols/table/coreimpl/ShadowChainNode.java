@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.symbols.table.coreimpl;
 
+import java.util.List;
+
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.util.OptionalBool;
@@ -36,6 +38,13 @@ public interface ShadowChainNode<S, I> {
      */
     NameResolver<S> getResolver();
 
+    /**
+     * Wraps {@link #getResolver()}{@code .resolveHere()}, may do
+     * additional stuff like caching.
+     */
+    default List<S> resolveHere(String simpleName) {
+        return getResolver().resolveHere(simpleName);
+    }
 
     /**
      * Returns whether this node knows the given symbol (without asking

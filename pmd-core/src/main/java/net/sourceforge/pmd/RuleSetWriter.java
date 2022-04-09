@@ -8,8 +8,6 @@ import java.io.OutputStream;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -23,6 +21,8 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.w3c.dom.CDATASection;
@@ -45,7 +45,7 @@ import net.sourceforge.pmd.properties.xml.XmlMapper;
  * file.
  */
 public class RuleSetWriter {
-    private static final Logger LOG = Logger.getLogger(RuleSetWriter.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(RuleSetWriter.class);
 
     public static final String RULESET_2_0_0_NS_URI = "http://pmd.sourceforge.net/ruleset/2.0.0";
 
@@ -83,7 +83,7 @@ public class RuleSetWriter {
                 transformerFactory.setAttribute("indent-number", 3);
             } catch (IllegalArgumentException iae) {
                 // ignore it, specific to one parser
-                LOG.log(Level.FINE, "Couldn't set indentation", iae);
+                LOG.debug("Couldn't set indentation", iae);
             }
             Transformer transformer = transformerFactory.newTransformer();
             transformer.setOutputProperty(OutputKeys.METHOD, "xml");

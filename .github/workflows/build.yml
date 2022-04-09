@@ -23,7 +23,7 @@ jobs:
         os: [ ubuntu-latest, windows-latest, macos-latest ]
     if: ${{ !contains(github.event.head_commit.message, '[skip ci]') }}
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         fetch-depth: 2
     - uses: actions/cache@v2
@@ -34,9 +34,9 @@ jobs:
           ~/.cache
           ~/work/pmd/target/repositories
           vendor/bundle
-        key: v2-${{ runner.os }}-${{ hashFiles('**/pom.xml') }}
+        key: v3-${{ runner.os }}-${{ hashFiles('**/pom.xml') }}
         restore-keys: |
-          v2-${{ runner.os }}-
+          v3-${{ runner.os }}-
     - name: Set up Ruby 2.7
       uses: ruby/setup-ruby@v1
       with:

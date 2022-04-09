@@ -5,12 +5,15 @@
 package net.sourceforge.pmd.cache;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.ThreadSafeReportListener;
 import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.reporting.FileAnalysisListener;
+import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
+import net.sourceforge.pmd.util.datasource.DataSource;
 
 /**
  * An analysis cache for incremental analysis.
@@ -21,18 +24,18 @@ import net.sourceforge.pmd.annotation.InternalApi;
  */
 @Deprecated
 @InternalApi
-public interface AnalysisCache extends ThreadSafeReportListener {
+public interface AnalysisCache {
 
     /**
      * Persists the updated analysis results on whatever medium is used by the cache.
      */
-    void persist();
+    void persist() throws IOException;
 
     /**
      * Checks if a given file is up to date in the cache and can be skipped from analysis.
      * Regardless of the return value of this method, each call adds the parameter to the
-     * updated cache, which allows {@link #ruleViolationAdded(RuleViolation)} to add a rule
-     * violation to the file. TODO is this really best behaviour? This side-effects seems counter-intuitive.
+     * updated cache, which allows {@link FileAnalysisListener#onRuleViolation(RuleViolation)}
+     * to add a rule violation to the file. TODO is this really best behaviour? This side-effects seems counter-intuitive.
      *
      * @param sourceFile The file to check in the cache
      * @return True if the cache is a hit, false otherwise
@@ -58,8 +61,16 @@ public interface AnalysisCache extends ThreadSafeReportListener {
      * cache is invalidated. This needs to be called before analysis, as it
      * conditions the good behaviour of {@link #isUpToDate(File)}.
      *
-     * @param ruleSets The rulesets configured for this analysis.
+     * @param ruleSets                The rulesets configured for this analysis.
      * @param auxclassPathClassLoader The class loader for auxclasspath configured for this analysis.
      */
     void checkValidity(RuleSets ruleSets, ClassLoader auxclassPathClassLoader);
+
+    /**
+     * Returns a listener that will be used like in {@link GlobalAnalysisListener#startFileAnalysis(DataSource)}.
+     * This should record violations, and call {@link #analysisFailed(File)}
+     * upon error.
+     */
+    FileAnalysisListener startFileAnalysis(DataSource file);
+
 }

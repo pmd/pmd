@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.internal.util;
 
+
+import java.util.Collection;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
@@ -18,6 +20,25 @@ public final class AssertionUtil {
 
     private AssertionUtil() {
         // utility class
+    }
+
+
+    /** @throws NullPointerException if $name */
+    public static void requireContainsNoNullValue(String name, Collection<?> c) {
+        int i = 0;
+        for (Object o : c) {
+            if (o == null) {
+                throw new NullPointerException(name + " contains a null element at index " + i);
+            }
+            i++;
+        }
+    }
+
+    /** @throws IllegalArgumentException if empty */
+    public static void requireNotEmpty(String name, Collection<?> c) {
+        if (c.isEmpty()) {
+            throw new IllegalArgumentException(name + " is empty");
+        }
     }
 
     public static boolean isValidJavaPackageName(CharSequence name) {

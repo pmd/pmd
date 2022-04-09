@@ -22,6 +22,7 @@ import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetLoader;
 
 public final class GenerateRuleDocsCmd {
+
     private GenerateRuleDocsCmd() {
         // Utility class
     }
@@ -47,12 +48,13 @@ public final class GenerateRuleDocsCmd {
         System.out.println("Generated docs in " + (System.currentTimeMillis() - start) + " ms");
     }
 
+
     public static List<String> findAdditionalRulesets(Path basePath) {
         try {
             List<String> additionalRulesets = new ArrayList<>();
             Pattern rulesetPattern = Pattern.compile("^.+" + Pattern.quote(File.separator) + "pmd-\\w+"
-                    + Pattern.quote(FilenameUtils.normalize("/src/main/resources/rulesets/"))
-                    + "\\w+" + Pattern.quote(File.separator) + "\\w+.xml$");
+                                                         + Pattern.quote(FilenameUtils.normalize("/src/main/resources/rulesets/"))
+                                                         + "\\w+" + Pattern.quote(File.separator) + "\\w+.xml$");
             Files.walkFileTree(basePath, new SimpleFileVisitor<Path>() {
                 @Override
                 public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {

@@ -17,6 +17,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTSuperExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTThisExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
+import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 
 /**
@@ -77,10 +78,8 @@ public final class StablePathMatcher {
             return Objects.equals(((ASTVariableAccess) e).getReferencedSym(), owner);
         } else if (e instanceof ASTFieldAccess) {
             ASTFieldAccess fieldAccess = (ASTFieldAccess) e;
-            if (!JavaRuleUtil.isUnqualifiedThis(fieldAccess.getQualifier())) {
-                return false;
-            }
-            return Objects.equals(fieldAccess.getReferencedSym(), owner);
+            return JavaAstUtils.isUnqualifiedThis(fieldAccess.getQualifier())
+                    && Objects.equals(fieldAccess.getReferencedSym(), owner);
         }
         return false;
     }

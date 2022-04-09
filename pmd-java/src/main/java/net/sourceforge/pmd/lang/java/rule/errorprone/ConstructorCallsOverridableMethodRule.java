@@ -17,11 +17,12 @@ import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
-import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
+import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
 
 /**
@@ -65,12 +66,9 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
         for (ASTMethodCall call : node.getBody().descendants(ASTMethodCall.class)) {
             JMethodSymbol unsafetyReason = getUnsafetyReason(call, TreePVector.empty());
             if (unsafetyReason != null) {
-                String message;
-                if (unsafetyReason.equals(call.getOverloadSelectionInfo().getMethodType().getSymbol())) {
-                    message = MESSAGE;
-                } else {
-                    message = MESSAGE_TRANSITIVE;
-                }
+                JMethodSig overload = call.getOverloadSelectionInfo().getMethodType();
+                JMethodSig unsafeMethod = call.getTypeSystem().sigOf(unsafetyReason);
+                String message = unsafeMethod.equals(overload) ? MESSAGE : MESSAGE_TRANSITIVE;
                 addViolationWithMessage(data, call, message, new Object[] { PrettyPrintingUtil.prettyPrintOverload(unsafetyReason) });
             }
         }
@@ -135,7 +133,7 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
 
     private static boolean isCallOnThisInstance(ASTMethodCall call) {
         ASTExpression qualifier = call.getQualifier();
-        return qualifier == null || JavaRuleUtil.isUnqualifiedThis(qualifier);
+        return qualifier == null || JavaAstUtils.isUnqualifiedThis(qualifier);
     }
 
     private static boolean isOverridable(JExecutableSymbol method) {

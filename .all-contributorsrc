@@ -6538,6 +6538,52 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "filiprafalowicz",
+      "name": "filiprafalowicz",
+      "avatar_url": "https://avatars.githubusercontent.com/u/24355557?v=4",
+      "profile": "https://github.com/filiprafalowicz",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "JerritEic",
+      "name": "JerritEic",
+      "avatar_url": "https://avatars.githubusercontent.com/u/60690273?v=4",
+      "profile": "https://github.com/JerritEic",
+      "contributions": [
+        "code",
+        "doc"
+      ]
+    },
+    {
+      "login": "karel1980",
+      "name": "Karel Vervaeke",
+      "avatar_url": "https://avatars.githubusercontent.com/u/153021?v=4",
+      "profile": "https://github.com/karel1980",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "MetaBF",
+      "name": "MetaBF",
+      "avatar_url": "https://avatars.githubusercontent.com/u/101029254?v=4",
+      "profile": "https://github.com/MetaBF",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "btjiong",
+      "name": "Bailey Tjiong",
+      "avatar_url": "https://avatars.githubusercontent.com/u/15816011?v=4",
+      "profile": "https://github.com/btjiong",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,

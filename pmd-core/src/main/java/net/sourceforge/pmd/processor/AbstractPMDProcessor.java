@@ -4,130 +4,58 @@
 
 package net.sourceforge.pmd.processor;
 
-import java.io.IOException;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.exception.ContextedRuntimeException;
+import java.util.List;
 
 import net.sourceforge.pmd.PMDConfiguration;
-import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSets;
-import net.sourceforge.pmd.SourceCodeProcessor;
 import net.sourceforge.pmd.annotation.InternalApi;
-import net.sourceforge.pmd.benchmark.TimeTracker;
-import net.sourceforge.pmd.benchmark.TimedOperation;
-import net.sourceforge.pmd.benchmark.TimedOperationCategory;
-import net.sourceforge.pmd.renderers.Renderer;
+import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
 import net.sourceforge.pmd.util.datasource.DataSource;
 
 /**
- * @author Romain Pelisse &lt;belaran@gmail.com&gt;
+ * This is internal API!
  *
- * @deprecated Is internal API
+ * @author Romain Pelisse &lt;belaran@gmail.com&gt;
  */
-@Deprecated
 @InternalApi
-public abstract class AbstractPMDProcessor {
-
-    private static final Logger LOG = Logger.getLogger(AbstractPMDProcessor.class.getName());
+public abstract class AbstractPMDProcessor implements AutoCloseable {
 
     protected final PMDConfiguration configuration;
 
-    public AbstractPMDProcessor(PMDConfiguration configuration) {
+    AbstractPMDProcessor(PMDConfiguration configuration) {
         this.configuration = configuration;
     }
 
-    public void renderReports(final List<Renderer> renderers, final Report report) {
+    /**
+     * Analyse all files. Each text file is closed.
+     */
+    public abstract void processFiles(RuleSets rulesets, List<DataSource> files, GlobalAnalysisListener listener);
 
-        try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.REPORTING)) {
-            for (Renderer r : renderers) {
-                r.renderFileReport(report);
-            }
-        } catch (IOException ioe) {
-            throw new RuntimeException(ioe);
-        }
+    /**
+     * Joins tasks and await completion of the analysis.
+     */
+    @Override
+    public abstract void close();
+
+    /**
+     * Returns a new file processor. The strategy used for threading is
+     * determined by {@link PMDConfiguration#getThreads()}.
+     */
+    public static AbstractPMDProcessor newFileProcessor(final PMDConfiguration configuration) {
+        return configuration.getThreads() > 1 ? new MultiThreadProcessor(configuration)
+                                              : new MonoThreadProcessor(configuration);
     }
 
     /**
-     *
-     * @deprecated this method will be removed. It was once used to determine a short filename
-     * for the file being analyzed, so that shortnames can be reported. But the logic has
-     * been moved to the renderers.
+     * This is provided as convenience for tests. The listener is not closed.
+     * It executes the rulesets on this thread, without copying the rulesets.
      */
-    @Deprecated
-    protected String filenameFrom(DataSource dataSource) {
-        return dataSource.getNiceFileName(configuration.isReportShortNames(), configuration.getInputPaths());
+    @InternalApi
+    public static void runSingleFile(List<RuleSet> ruleSets, DataSource file, GlobalAnalysisListener listener, PMDConfiguration configuration) {
+        RuleSets rsets = new RuleSets(ruleSets);
+        new MonoThreadProcessor(configuration).processFiles(rsets, listOf(file), listener);
     }
-
-    public static void reportBrokenRules(Report report, RuleSets rs) {
-        final Set<Rule> brokenRules = removeBrokenRules(rs);
-        for (final Rule rule : brokenRules) {
-            report.addConfigError(new Report.ConfigurationError(rule, rule.dysfunctionReason()));
-        }
-    }
-
-    /**
-     * Remove and return the misconfigured rules from the rulesets and log them
-     * for good measure.
-     *
-     * @param ruleSets RuleSets to prune of broken rules.
-     * @return Set<Rule>
-     */
-    private static Set<Rule> removeBrokenRules(final RuleSets ruleSets) {
-        final Set<Rule> brokenRules = new HashSet<>();
-        ruleSets.removeDysfunctionalRules(brokenRules);
-
-        for (final Rule rule : brokenRules) {
-            if (LOG.isLoggable(Level.WARNING)) {
-                LOG.log(Level.WARNING,
-                        "Removed misconfigured rule: " + rule.getName() + "  cause: " + rule.dysfunctionReason());
-            }
-        }
-
-        return brokenRules;
-    }
-
-    @SuppressWarnings("PMD.CloseResource")
-    // the data sources must only be closed after the threads are finished
-    // this is done manually without a try-with-resources
-    public void processFiles(RuleSets rulesets, List<DataSource> files, RuleContext ctx, List<Renderer> renderers) {
-        try {
-            reportBrokenRules(ctx.getReport(), rulesets);
-
-            // render base report first - general errors
-            renderReports(renderers, ctx.getReport());
-
-            configuration.getAnalysisCache().checkValidity(rulesets, configuration.getClassLoader());
-            final SourceCodeProcessor processor = new SourceCodeProcessor(configuration);
-
-            for (final DataSource dataSource : files) {
-                // this is the real, canonical and absolute filename (not shortened)
-                String realFileName = dataSource.getNiceFileName(false, null);
-
-                runAnalysis(new PmdRunnable(dataSource, realFileName, renderers, ctx, rulesets, processor));
-            }
-
-            // then add analysis results per file
-            collectReports(renderers);
-        } catch (RuntimeException e) {
-            throw new ContextedRuntimeException(e).addContextValue("filename", String.valueOf(ctx.getSourceCodeFile()));
-        } finally {
-            // in case we analyzed files within Zip Files/Jars, we need to close them after
-            // the analysis is finished
-            for (DataSource dataSource : files) {
-                IOUtils.closeQuietly(dataSource);
-            }
-        }
-    }
-
-    protected abstract void runAnalysis(PmdRunnable runnable);
-
-    protected abstract void collectReports(List<Renderer> renderers);
 }

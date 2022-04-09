@@ -23,7 +23,7 @@ import net.sourceforge.pmd.internal.util.AssertionUtil;
  * An unmodifiable multimap type, efficient if the single-value case is the
  * most common.
  */
-class MostlySingularMultimap<K, V> {
+final class MostlySingularMultimap<K, V> {
 
     @SuppressWarnings("rawtypes")
     private static final MostlySingularMultimap EMPTY = new MostlySingularMultimap<>(Collections.emptyMap());
@@ -111,7 +111,7 @@ class MostlySingularMultimap<K, V> {
     /**
      * Builder for a multimap. Can only be used once.
      */
-    public static class Builder<K, V> {
+    public static final class Builder<K, V> {
 
         private final MapMaker<K> mapMaker;
         private @Nullable Map<K, Object> map;
@@ -225,7 +225,7 @@ class MostlySingularMultimap<K, V> {
                 if (noDuplicate && vs.equals(v)) {
                     return vs;
                 }
-                VList<V> vs2 = new VList<>(2);
+                List<V> vs2 = new VList<>(2);
                 isSingular = false;
                 vs2.add((V) vs);
                 vs2.add(v);
@@ -241,7 +241,7 @@ class MostlySingularMultimap<K, V> {
         public @Nullable Map<K, V> buildAsSingular() {
             consume();
             if (!isSingular) {
-                return null;
+                return null; // NOPMD: returning null as in the spec (Nullable)
             }
             return (Map<K, V>) map;
         }

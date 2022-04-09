@@ -14,12 +14,12 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -27,6 +27,7 @@ import org.junit.Test;
  */
 @Ignore
 public class DBMSMetadataTest {
+    private static final Logger LOG = LoggerFactory.getLogger(DBMSMetadataTest.class);
 
     static final String C_ORACLE_THIN_1 = "jdbc:oracle:thin:scott/tiger@//192.168.100.21:5521/customer_db?characterset=utf8&schemas=scott,hr,sh,system&objectTypes=procedures,functions,triggers,package,types&languages=plsql,java&name=PKG_%25%7C%7CPRC_%25";
 
@@ -106,7 +107,7 @@ public class DBMSMetadataTest {
             }
 
         } catch (SQLException ex) {
-            Logger.getLogger(DBMSMetadataTest.class.getName()).log(Level.SEVERE, null, ex);
+            LOG.error(ex.getMessage(), ex);
         }
         System.out.format("...\n]\n");
     }

@@ -83,10 +83,7 @@ public class MatchCollector {
     }
 
     private boolean hasPreviousDupe(TokenEntry mark1, TokenEntry mark2) {
-        if (mark1.getIndex() == 0) {
-            return false;
-        }
-        return !matchEnded(ma.tokenAt(-1, mark1), ma.tokenAt(-1, mark2));
+        return mark1.getIndex() != 0 && !matchEnded(ma.tokenAt(-1, mark1), ma.tokenAt(-1, mark2));
     }
 
     private int countDuplicateTokens(TokenEntry mark1, TokenEntry mark2) {

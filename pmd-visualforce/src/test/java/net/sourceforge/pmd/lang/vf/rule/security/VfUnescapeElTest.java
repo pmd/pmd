@@ -4,28 +4,20 @@
 
 package net.sourceforge.pmd.lang.vf.rule.security;
 
-import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Collections;
 import java.util.List;
 
 import org.junit.Test;
 
-import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.vf.VFTestUtils;
 import net.sourceforge.pmd.lang.vf.ast.VfParsingHelper;
 import net.sourceforge.pmd.testframework.PmdRuleTst;
-import net.sourceforge.pmd.util.datasource.FileDataSource;
 
 public class VfUnescapeElTest extends PmdRuleTst {
     public static final String EXPECTED_RULE_MESSAGE = "Avoid unescaped user controlled content in EL";
@@ -47,7 +39,7 @@ public class VfUnescapeElTest extends PmdRuleTst {
             RuleViolation ruleViolation = ruleViolations.get(i);
             assertEquals(EXPECTED_RULE_MESSAGE, ruleViolation.getDescription());
             int expectedLineNumber = firstLineWithErrors + i;
-            if ((ruleViolations.size() + firstLineWithErrors - 1) == expectedLineNumber) {
+            if (ruleViolations.size() + firstLineWithErrors - 1 == expectedLineNumber) {
                 // The last line has two errors on the same page
                 expectedLineNumber = expectedLineNumber - 1;
             }
@@ -115,31 +107,7 @@ public class VfUnescapeElTest extends PmdRuleTst {
      * Runs a rule against a Visualforce page on the file system.
      */
     private Report runRule(Path vfPagePath) {
-        Node node = VfParsingHelper.DEFAULT.parseFile(vfPagePath);
-        assertNotNull(node);
-
-        PMDConfiguration config = new PMDConfiguration();
-        config.setIgnoreIncrementalAnalysis(true);
-        // simple class loader, that doesn't delegate to parent.
-        // this allows us in the tests to simulate PMD run without
-        // auxclasspath, not even the classes from the test dependencies
-        // will be found.
-        config.setClassLoader(new ClassLoader() {
-            @Override
-            protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
-                if (name.startsWith("java.") || name.startsWith("javax.")) {
-                    return super.loadClass(name, resolve);
-                }
-                throw new ClassNotFoundException(name);
-            }
-        });
         Rule rule = findRule("category/vf/security.xml", "VfUnescapeEl");
-
-        return PMD.processFiles(
-            config,
-            listOf(RuleSet.forSingleRule(rule)),
-            listOf(new FileDataSource(vfPagePath.toAbsolutePath().toFile())),
-            Collections.emptyList()
-        );
+        return VfParsingHelper.DEFAULT.executeRuleOnFile(rule, vfPagePath);
     }
 }

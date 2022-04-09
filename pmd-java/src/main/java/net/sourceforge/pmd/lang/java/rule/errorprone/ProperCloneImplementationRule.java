@@ -11,6 +11,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JModifier;
+import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 
@@ -22,21 +23,13 @@ public class ProperCloneImplementationRule extends AbstractJavaRulechainRule {
 
     @Override
     public Object visit(ASTMethodDeclaration method, Object data) {
-        if (isCloneMethod(method) && isNotAbstractMethod(method)) {
+        if (JavaAstUtils.isCloneMethod(method) && !method.isAbstract()) {
             ASTAnyTypeDeclaration enclosingType = method.getEnclosingType();
             if (isNotFinal(enclosingType) && hasAnyAllocationOfClass(method, enclosingType)) {
                 addViolation(data, method);
             }
         }
         return data;
-    }
-
-    private boolean isCloneMethod(ASTMethodDeclaration method) {
-        return "clone".equals(method.getName()) && method.getArity() == 0;
-    }
-
-    private boolean isNotAbstractMethod(ASTMethodDeclaration method) {
-        return !method.isAbstract();
     }
 
     private boolean isNotFinal(ASTAnyTypeDeclaration classOrInterfaceDecl) {

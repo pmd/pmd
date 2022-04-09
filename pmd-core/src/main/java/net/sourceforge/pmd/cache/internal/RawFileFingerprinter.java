@@ -10,18 +10,19 @@ import java.net.URL;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.logging.Logger;
 import java.util.zip.CheckedInputStream;
 import java.util.zip.Checksum;
 
 import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Base fingerprinter for raw files.
  */
 public class RawFileFingerprinter implements ClasspathEntryFingerprinter {
     
-    private static final Logger LOG = Logger.getLogger(RawFileFingerprinter.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(RawFileFingerprinter.class);
     
     private static final Set<String> SUPPORTED_EXTENSIONS;
     
@@ -44,7 +45,7 @@ public class RawFileFingerprinter implements ClasspathEntryFingerprinter {
                 // just loop
             }
         } catch (final FileNotFoundException ignored) {
-            LOG.warning("Classpath entry " + entry.toString() + " doesn't exist, ignoring it");
+            LOG.warn("Classpath entry {} doesn't exist, ignoring it", entry);
         }
     }
 

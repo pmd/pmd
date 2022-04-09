@@ -23,12 +23,18 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.commons.lang3.reflect.MethodUtils;
 import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.Project;
 import org.apache.tools.ant.types.Parameter;
 
 import net.sourceforge.pmd.Report;
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.renderers.RendererFactory;
+import net.sourceforge.pmd.reporting.FileAnalysisListener;
+import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
+import net.sourceforge.pmd.util.datasource.DataSource;
 
+@InternalApi
 public class Formatter {
 
     private File toFile;
@@ -134,8 +140,7 @@ public class Formatter {
     }
 
     private static String[] validRendererCodes() {
-        return RendererFactory.REPORT_FORMAT_TO_RENDERER.keySet()
-                .toArray(new String[RendererFactory.REPORT_FORMAT_TO_RENDERER.size()]);
+        return RendererFactory.REPORT_FORMAT_TO_RENDERER.keySet().toArray(new String[0]);
     }
 
     private static String unknownRendererMessage(String userSpecifiedType) {
@@ -230,5 +235,29 @@ public class Formatter {
             // fall-through
         }
         return null;
+    }
+
+    @InternalApi
+    public GlobalAnalysisListener newListener(Project project, List<String> inputPaths) throws IOException {
+        start(project.getBaseDir().toString());
+        Renderer renderer = getRenderer();
+        renderer.setUseShortNames(inputPaths);
+
+        return new GlobalAnalysisListener() {
+            final GlobalAnalysisListener listener = renderer.newListener();
+
+            @Override
+            public FileAnalysisListener startFileAnalysis(DataSource file) {
+                return listener.startFileAnalysis(file);
+            }
+
+            @Override
+            public void close() throws Exception {
+                listener.close();
+                if (!toConsole) {
+                    writer.close();
+                }
+            }
+        };
     }
 }

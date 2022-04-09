@@ -27,6 +27,6 @@ public class JUnitTestsShouldIncludeAssertRule extends AbstractJavaRulechainRule
                    .none(TestFrameworksUtil::isProbableAssertCall)) {
             addViolation(data, method);
         }
-        return super.visit(method, data);
+        return data;
     }
 }

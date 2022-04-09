@@ -9,9 +9,20 @@ import java.io.Writer;
 import java.util.List;
 
 import net.sourceforge.pmd.Report;
+import net.sourceforge.pmd.Report.ConfigurationError;
+import net.sourceforge.pmd.Report.GlobalReportBuilderListener;
+import net.sourceforge.pmd.Report.ProcessingError;
+import net.sourceforge.pmd.Report.ReportBuilderListener;
+import net.sourceforge.pmd.Report.SuppressedViolation;
+import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.annotation.Experimental;
+import net.sourceforge.pmd.benchmark.TimeTracker;
+import net.sourceforge.pmd.benchmark.TimedOperation;
+import net.sourceforge.pmd.benchmark.TimedOperationCategory;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertySource;
+import net.sourceforge.pmd.reporting.FileAnalysisListener;
+import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
 import net.sourceforge.pmd.util.datasource.DataSource;
 
 /**
@@ -158,8 +169,6 @@ public interface Renderer extends PropertySource {
     /**
      * This method is at the very end of the Rendering process, after
      * {@link Renderer#renderFileReport(Report)}.
-     *
-     * @throws IOException
      */
     void end() throws IOException;
 
@@ -177,4 +186,84 @@ public interface Renderer extends PropertySource {
      */
     @Experimental
     void setReportFile(String reportFilename);
+
+
+
+    /**
+     * Returns a new analysis listener, that handles violations by rendering
+     * them in an implementation-defined way.
+     */
+    // TODO the default implementation matches the current behavior,
+    //  ie violations are batched by file and forwarded to the renderer
+    //  when the file is done. Many renderers could directly handle
+    //  violations as they come though.
+    default GlobalAnalysisListener newListener() throws IOException {
+        try (TimedOperation ignored = TimeTracker.startOperation(TimedOperationCategory.REPORTING)) {
+            this.start();
+        }
+
+        return new GlobalAnalysisListener() {
+
+            // guard for the close routine
+            final Object reportMergeLock = new Object();
+
+            final GlobalReportBuilderListener configErrorReport = new GlobalReportBuilderListener();
+
+            @Override
+            public void onConfigError(ConfigurationError error) {
+                configErrorReport.onConfigError(error);
+            }
+
+            @Override
+            public FileAnalysisListener startFileAnalysis(DataSource file) {
+                Renderer renderer = Renderer.this;
+
+                renderer.startFileAnalysis(file); // this routine is thread-safe by contract
+                return new FileAnalysisListener() {
+                    final ReportBuilderListener reportBuilder = new ReportBuilderListener();
+
+                    @Override
+                    public void onRuleViolation(RuleViolation violation) {
+                        reportBuilder.onRuleViolation(violation);
+                    }
+
+                    @Override
+                    public void onSuppressedRuleViolation(SuppressedViolation violation) {
+                        reportBuilder.onSuppressedRuleViolation(violation);
+                    }
+
+                    @Override
+                    public void onError(ProcessingError error) {
+                        reportBuilder.onError(error);
+                    }
+
+                    @Override
+                    public void close() throws Exception {
+                        reportBuilder.close();
+                        synchronized (reportMergeLock) {
+                            // TODO renderFileReport should be thread-safe instead
+                            try (TimedOperation ignored = TimeTracker.startOperation(TimedOperationCategory.REPORTING)) {
+                                renderer.renderFileReport(reportBuilder.getResult());
+                            }
+                        }
+                    }
+
+                    @Override
+                    public String toString() {
+                        return "FileRendererListener[" + Renderer.this + "]";
+                    }
+                };
+            }
+
+            @Override
+            public void close() throws Exception {
+                configErrorReport.close();
+                Renderer.this.renderFileReport(configErrorReport.getResult());
+                try (TimedOperation ignored = TimeTracker.startOperation(TimedOperationCategory.REPORTING)) {
+                    end();
+                    flush();
+                }
+            }
+        };
+    }
 }

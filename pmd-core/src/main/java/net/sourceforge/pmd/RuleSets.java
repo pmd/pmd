@@ -17,8 +17,9 @@ import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.benchmark.TimedOperation;
 import net.sourceforge.pmd.benchmark.TimedOperationCategory;
-import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.rule.internal.RuleApplicator;
+import net.sourceforge.pmd.reporting.FileAnalysisListener;
 
 /**
  * Grouping of Rules per Language in a RuleSet.
@@ -48,7 +49,7 @@ public class RuleSets {
         this.ruleSets = Collections.unmodifiableList(rsets);
     }
 
-    public RuleSets(Collection<RuleSet> ruleSets) {
+    public RuleSets(Collection<? extends RuleSet> ruleSets) {
         this.ruleSets = Collections.unmodifiableList(new ArrayList<>(ruleSets));
     }
 
@@ -114,26 +115,15 @@ public class RuleSets {
     }
 
     /**
-     * Notify all rules of the start of processing.
-     */
-    public void start(RuleContext ctx) {
-        for (RuleSet ruleSet : ruleSets) {
-            ruleSet.start(ctx);
-        }
-    }
-
-    /**
      * Apply all applicable rules to the compilation units. Applicable means the
      * language of the rules must match the language of the source (@see
      * applies).
-     *
-     * @param acuList
+     *  @param root
      *            the List of compilation units; the type these must have,
      *            depends on the source language
-     * @param ctx
-     *            the RuleContext
+     * @param listener
      */
-    public void apply(List<? extends Node> acuList, RuleContext ctx) {
+    public void apply(RootNode root, FileAnalysisListener listener) {
         if (ruleApplicator == null) {
             // initialize here instead of ctor, because some rules properties
             // are set after creating the ruleset, and jaxen xpath queries
@@ -141,23 +131,15 @@ public class RuleSets {
             this.ruleApplicator = prepareApplicator();
         }
 
-        try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.RULE_AST_INDEXATION)) {
-            ruleApplicator.index(acuList);
+        try (TimedOperation ignored = TimeTracker.startOperation(TimedOperationCategory.RULE_AST_INDEXATION)) {
+            ruleApplicator.index(root);
         }
 
+        File file = new File(root.getAstInfo().getFileName());
         for (RuleSet ruleSet : ruleSets) {
-            if (ruleSet.applies(ctx.getSourceCodeFile())) {
-                ruleApplicator.apply(ruleSet.getRules(), ctx);
+            if (ruleSet.applies(file)) {
+                ruleApplicator.apply(ruleSet.getRules(), listener);
             }
-        }
-    }
-
-    /**
-     * Notify all rules of the end of processing.
-     */
-    public void end(RuleContext ctx) {
-        for (RuleSet ruleSet : ruleSets) {
-            ruleSet.end(ctx);
         }
     }
 

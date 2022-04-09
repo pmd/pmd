@@ -11,9 +11,11 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Properties;
 import java.util.TreeMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 /**
@@ -23,7 +25,7 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
  */
 public final class RendererFactory {
 
-    private static final Logger LOG = Logger.getLogger(RendererFactory.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(RendererFactory.class);
 
     public static final Map<String, Class<? extends Renderer>> REPORT_FORMAT_TO_RENDERER;
 
@@ -60,13 +62,14 @@ public final class RendererFactory {
      * @return A Renderer instance.
      */
     public static Renderer createRenderer(String reportFormat, Properties properties) {
+        AssertionUtil.requireParamNotNull("reportFormat", reportFormat);
         Class<? extends Renderer> rendererClass = getRendererClass(reportFormat);
         Constructor<? extends Renderer> constructor = getRendererConstructor(rendererClass);
 
         Renderer renderer;
         try {
             if (constructor.getParameterTypes().length > 0) {
-                LOG.warning(
+                LOG.warn(
                         "The renderer uses a deprecated mechanism to use the properties. Please define the needed properties with this.definePropertyDescriptor(..).");
                 renderer = constructor.newInstance(properties);
             } else {
@@ -91,17 +94,16 @@ public final class RendererFactory {
         }
         // Warn about legacy report format usages
         if (REPORT_FORMAT_TO_RENDERER.containsKey(reportFormat) && !reportFormat.equals(renderer.getName())) {
-            if (LOG.isLoggable(Level.WARNING)) {
-                LOG.warning("Report format '" + reportFormat + "' is deprecated, and has been replaced with '"
-                        + renderer.getName()
-                        + "'. Future versions of PMD will remove support for this deprecated Report format usage.");
-            }
+            LOG.warn("Report format '{}' is deprecated, and has been replaced with '{}'. "
+                    + "Future versions of PMD will remove support for this deprecated Report format usage.",
+                    reportFormat, renderer.getName());
         }
         return renderer;
     }
 
     @SuppressWarnings("unchecked")
     private static Class<? extends Renderer> getRendererClass(String reportFormat) {
+        AssertionUtil.requireParamNotNull("reportFormat", reportFormat);
         Class<? extends Renderer> rendererClass = REPORT_FORMAT_TO_RENDERER.get(reportFormat);
 
         // Look up a custom renderer class

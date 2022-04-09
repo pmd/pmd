@@ -1,4 +1,9 @@
 /**
+ * Support "JEP 420: Pattern Matching for switch (Second Preview)" for Java 18 Preview
+ * There were no grammar changes between 18-preview and 17-preview
+ * Remove support for Java 16 preview language features
+ * Andreas Dangel 03/2022
+ *====================================================================
  * Promote "JEP 409: Sealed Classes" as permanent language feature with Java 17.
  * Support "JEP 406: Pattern Matching for switch (Preview)" for Java 17 Preview.
  * Remove support for Java 15 preview language features
@@ -295,15 +300,11 @@ class JavaParserImpl {
 
 
   private boolean isRecordTypeSupported() {
-    return jdkVersion == 15 && preview || jdkVersion >= 16;
+    return jdkVersion >= 16;
   }
 
   private boolean localTypesSupported() {
     return isRecordTypeSupported();
-  }
-
-  private boolean isSealedClassSupported() {
-      return jdkVersion == 16 && preview || jdkVersion >= 17;
   }
 
   /**
@@ -1717,8 +1718,8 @@ void GuardedPatternCondition() #void:
 void PrimaryPattern() #void:
 {}
 {
-    TypePattern()
-    | "(" Pattern() ")" { AstImplUtil.bumpParenDepth((ASTPattern) jjtree.peekNode()); }
+      "(" Pattern() ")" { AstImplUtil.bumpParenDepth((ASTPattern) jjtree.peekNode()); }
+    | LOOKAHEAD({true}) TypePattern()
 }
 
 void TypePattern():
@@ -1734,17 +1735,15 @@ void InstanceOfExpression() #void:
     LOOKAHEAD(1)
     ("instanceof"
         (
+
               AnnotatedRefType() [ VariableDeclaratorId() #TypePattern(2) ]
-            |
-              LOOKAHEAD("final" | "@") PrimaryPattern()
-            |
-              LOOKAHEAD("(") Pattern()
+            | PrimaryPattern()
         )
         {
             jjtThis.setOp(BinaryOp.INSTANCEOF);
             AbstractJavaNode top = jjtree.popNode();
             if (top instanceof ASTPattern) {
-               if (top.getNumChildren() == 2) {
+               if (top instanceof ASTTypePattern && !(top.getChild(0) instanceof ASTModifierList)) {
                    insertEmptyModifierListWithAnnotations(top, (AbstractJavaNode) top.getChild(0));
                }
                top = new ASTPatternExpression((ASTPattern) top);
@@ -2432,7 +2431,11 @@ void CaseLabelElement(ASTSwitchLabel label) #void:
 {
     "default" {label.setDefault();}
     |
-    LOOKAHEAD(Pattern()) Pattern()
+    LOOKAHEAD(Pattern()) Pattern() {
+        AbstractJavaNode top = jjtree.popNode();
+        top = new ASTPatternExpression((ASTPattern) top);
+        jjtree.pushNode(top);
+    }
     |
     ConditionalExpression()
 }

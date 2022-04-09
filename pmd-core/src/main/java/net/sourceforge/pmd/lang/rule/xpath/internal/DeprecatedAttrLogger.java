@@ -6,8 +6,9 @@ package net.sourceforge.pmd.lang.rule.xpath.internal;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.lang.rule.XPathRule;
@@ -19,7 +20,7 @@ import net.sourceforge.pmd.lang.rule.xpath.Attribute;
  */
 public abstract class DeprecatedAttrLogger {
 
-    private static final Logger LOG = Logger.getLogger(Attribute.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(Attribute.class);
 
 
     public abstract void recordUsageOf(Attribute attribute);
@@ -37,7 +38,7 @@ public abstract class DeprecatedAttrLogger {
     }
 
     private static DeprecatedAttrLogger doCreate(Rule rule, boolean isSuppressionQuery) {
-        if (LOG.isLoggable(Level.WARNING)) {
+        if (LOG.isWarnEnabled()) {
             return new AttrLoggerImpl(rule, isSuppressionQuery);
         } else {
             return noop();
@@ -45,7 +46,7 @@ public abstract class DeprecatedAttrLogger {
     }
 
     public static DeprecatedAttrLogger createAdHocLogger() {
-        if (LOG.isLoggable(Level.WARNING)) {
+        if (LOG.isWarnEnabled()) {
             return new AdhocLoggerImpl();
         } else {
             return noop();
@@ -60,7 +61,7 @@ public abstract class DeprecatedAttrLogger {
         return attr.getParent().getXPathNodeName() + "/@" + attr.getName();
     }
 
-    private static class Noop extends DeprecatedAttrLogger {
+    private static final class Noop extends DeprecatedAttrLogger {
 
         static final Noop INSTANCE = new Noop();
 
@@ -70,7 +71,7 @@ public abstract class DeprecatedAttrLogger {
         }
     }
 
-    private static class AttrLoggerImpl extends DeprecatedAttrLogger {
+    private static final class AttrLoggerImpl extends DeprecatedAttrLogger {
 
         private final ConcurrentMap<String, Boolean> deprecated = new ConcurrentHashMap<>();
         private final Rule rule;
@@ -96,7 +97,7 @@ public abstract class DeprecatedAttrLogger {
                     if (!replacement.isEmpty()) {
                         msg += ", please use " + replacement + " instead";
                     }
-                    LOG.warning(msg);
+                    LOG.warn(msg);
                 }
             }
         }
@@ -112,7 +113,7 @@ public abstract class DeprecatedAttrLogger {
         }
     }
 
-    private static class AdhocLoggerImpl extends DeprecatedAttrLogger {
+    private static final class AdhocLoggerImpl extends DeprecatedAttrLogger {
         @Override
         public void recordUsageOf(Attribute attribute) {
             String replacement = attribute.replacementIfDeprecated();
@@ -124,7 +125,7 @@ public abstract class DeprecatedAttrLogger {
                     msg += ", please use " + replacement + " instead";
                 }
                 // log with exception stack trace to help figure out where exactly the xpath is used.
-                LOG.log(Level.WARNING, msg, new RuntimeException(msg));
+                LOG.warn(msg, new RuntimeException(msg));
             }
         }
     }

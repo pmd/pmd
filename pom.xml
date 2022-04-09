@@ -76,7 +76,7 @@
     </issueManagement>
 
     <properties>
-        <project.build.outputTimestamp>2022-01-29T08:53:37Z</project.build.outputTimestamp>
+        <project.build.outputTimestamp>2022-03-27T15:01:59Z</project.build.outputTimestamp>
 
         <java.version>8</java.version>
 
@@ -87,17 +87,19 @@
         <kotlin.compiler.jvmTarget>${maven.compiler.test.target}</kotlin.compiler.jvmTarget>
         <kotlin.version>1.4.10</kotlin.version>
         <kotest.version>4.3.1</kotest.version>
-        <dokka.version>1.4.30</dokka.version>
+        <dokka.version>1.4.32</dokka.version>
 
 
         <javacc.version>5.0</javacc.version>
         <surefire.version>3.0.0-M5</surefire.version>
-        <checkstyle.version>8.42</checkstyle.version>
+        <checkstyle.version>9.3</checkstyle.version>
         <checkstyle.plugin.version>3.1.2</checkstyle.plugin.version>
-        <pmd.plugin.version>3.15.0</pmd.plugin.version>
+        <pmd.plugin.version>3.16.0</pmd.plugin.version>
         <ant.version>1.10.12</ant.version>
         <javadoc.plugin.version>3.2.0</javadoc.plugin.version>
         <antlr.version>4.8</antlr.version>
+        <slf4j.version>2.0.0-alpha6</slf4j.version>
+        <saxon.version>10.7</saxon.version>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -400,6 +402,7 @@
                         <targetJdk>1.${java.version}</targetJdk>
                         <rulesets>
                             <ruleset>/net/sourceforge/pmd/pmd-dogfood-config.xml</ruleset>
+                            <ruleset>/net/sourceforge/pmd/pmd7-dogfood-config.xml</ruleset>
                         </rulesets>
                         <excludeRoots>
                             <excludeRoot>target/generated-sources/javacc</excludeRoot>
@@ -416,11 +419,21 @@
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-core</artifactId>
-                            <version>6.41.0</version> <!-- pmd.dogfood.version -->
+                            <version>6.43.0</version> <!-- pmd.dogfood.version -->
                         </dependency>
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-java</artifactId>
+                            <version>6.43.0</version> <!-- pmd.dogfood.version -->
+                        </dependency>
+                        <dependency>
+                            <groupId>net.sourceforge.pmd</groupId>
+                            <artifactId>pmd-jsp</artifactId>
+                            <version>6.41.0</version> <!-- pmd.dogfood.version -->
+                        </dependency>
+                        <dependency>
+                            <groupId>net.sourceforge.pmd</groupId>
+                            <artifactId>pmd-javascript</artifactId>
                             <version>6.41.0</version> <!-- pmd.dogfood.version -->
                         </dependency>
                         <!-- This contains the dogfood ruleset -->
@@ -681,7 +694,7 @@
             <dependency>
                 <groupId>net.sf.saxon</groupId>
                 <artifactId>Saxon-HE</artifactId>
-                <version>10.2</version>
+                <version>${saxon.version}</version>
             </dependency>
             <dependency>
                 <groupId>net.java.dev.javacc</groupId>
@@ -707,7 +720,17 @@
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>
-                <version>1.7.32</version>
+                <version>${slf4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-simple</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
+            <dependency>
+              <groupId>org.slf4j</groupId>
+              <artifactId>jul-to-slf4j</artifactId>
+              <version>${slf4j.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.codehaus.groovy</groupId>
@@ -928,19 +951,6 @@
             <snapshots>
                 <enabled>true</enabled>
             </snapshots>
-        </pluginRepository>
-        <pluginRepository>
-            <!-- needed for dokka-maven-plugin in pmd-lang-test -->
-            <id>jcenter</id>
-            <name>JCenter</name>
-            <releases>
-                <enabled>true</enabled>
-                <updatePolicy>never</updatePolicy>
-            </releases>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-            <url>https://jcenter.bintray.com/</url>
         </pluginRepository>
     </pluginRepositories>
 

@@ -80,6 +80,7 @@ final class InferenceContext {
      *                            into ivars
      * @param logger              Logger for events related to ivar bounds
      */
+    @SuppressWarnings("PMD.AssignmentToNonFinalStatic") // ctxId
     InferenceContext(TypeSystem ts, SupertypeCheckCache supertypeCheckCache, List<JTypeVar> tvars, TypeInferenceLogger logger) {
         this.ts = ts;
         this.supertypeCheckCache = supertypeCheckCache;

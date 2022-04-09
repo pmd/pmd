@@ -5,26 +5,27 @@
 package net.sourceforge.pmd.lang.rule;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertEquals;
 
 import org.hamcrest.Matchers;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.contrib.java.lang.system.SystemErrRule;
 
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleContextTest;
-import net.sourceforge.pmd.junit.JavaUtilLoggingRule;
+import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.lang.ast.DummyNodeWithDeprecatedAttribute;
 import net.sourceforge.pmd.lang.ast.DummyRoot;
-import net.sourceforge.pmd.lang.rule.xpath.Attribute;
 import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
 
 public class XPathRuleTest {
 
     @Rule
-    public JavaUtilLoggingRule loggingRule = new JavaUtilLoggingRule(Attribute.class.getName());
+    public final SystemErrRule systemErrRule = new SystemErrRule().muteForSuccessfulTests().enableLog();
 
     @Test
     public void testAttributeDeprecation10() throws Exception {
@@ -40,7 +41,7 @@ public class XPathRuleTest {
     public void testDeprecation(XPathVersion version) throws Exception {
         XPathRule xpr = makeRule(version, "SomeRule");
 
-        loggingRule.clear();
+        systemErrRule.clearLog();
 
         DummyNode firstNode = newNode();
 
@@ -48,19 +49,19 @@ public class XPathRuleTest {
         Report report = RuleContextTest.getReportForRuleApply(xpr, firstNode);
         assertEquals(1, report.getViolations().size());
 
-        String log = loggingRule.getLog();
+        String log = systemErrRule.getLog();
         assertThat(log, Matchers.containsString("Use of deprecated attribute 'dummyNode/@Size' by XPath rule 'SomeRule'"));
         assertThat(log, Matchers.containsString("Use of deprecated attribute 'dummyNode/@Name' by XPath rule 'SomeRule', please use @Image instead"));
 
 
-        loggingRule.clear();
+        systemErrRule.clearLog();
 
         // with another node
         report = RuleContextTest.getReportForRuleApply(xpr, newNode());
 
         assertEquals(1, report.getViolations().size());
 
-        assertEquals("", loggingRule.getLog()); // no additional warnings
+        assertEquals("", systemErrRule.getLog()); // no additional warnings
 
 
         // with another rule forked from the same one (in multithreaded processor)
@@ -68,7 +69,7 @@ public class XPathRuleTest {
 
         assertEquals(1, report.getViolations().size());
 
-        assertEquals("", loggingRule.getLog()); // no additional warnings
+        assertEquals("", systemErrRule.getLog()); // no additional warnings
 
         // with another rule on the same node, new warnings
         XPathRule otherRule = makeRule(version, "OtherRule");
@@ -78,7 +79,7 @@ public class XPathRuleTest {
 
         assertEquals(1, report.getViolations().size());
 
-        log = loggingRule.getLog();
+        log = systemErrRule.getLog();
         assertThat(log, Matchers.containsString("Use of deprecated attribute 'dummyNode/@Size' by XPath rule 'OtherRule' (in ruleset 'rset.xml')"));
         assertThat(log, Matchers.containsString("Use of deprecated attribute 'dummyNode/@Name' by XPath rule 'OtherRule' (in ruleset 'rset.xml'), please use @Image instead"));
 
@@ -92,11 +93,73 @@ public class XPathRuleTest {
         return xpr;
     }
 
-    public DummyNode newNode() {
+
+    public XPathRule makeXPath(String xpathExpr) {
+        XPathRule xpr = new XPathRule(XPathVersion.XPATH_2_0, xpathExpr);
+        xpr.setLanguage(LanguageRegistry.getLanguage(DummyLanguageModule.NAME));
+        xpr.setName("name");
+        xpr.setMessage("gotcha");
+        return xpr;
+    }
+
+    @Test
+    public void testFileNameInXpath() {
+        Report report = executeRule(makeXPath("//*[pmd:fileName() = 'Foo.cls']"),
+                                    newRoot("src/Foo.cls"));
+
+        assertThat(report.getViolations(), hasSize(1));
+    }
+
+    @Test
+    public void testBeginLine() {
+        Report report = executeRule(makeXPath("//*[pmd:startLine(.)=1]"),
+                                    newRoot("src/Foo.cls"));
+
+        assertThat(report.getViolations(), hasSize(1));
+    }
+
+    @Test
+    public void testBeginCol() {
+        Report report = executeRule(makeXPath("//*[pmd:startColumn(.)=1]"),
+                                    newRoot("src/Foo.cls"));
+
+        assertThat(report.getViolations(), hasSize(1));
+    }
+
+    @Test
+    public void testEndLine() {
+        Report report = executeRule(makeXPath("//*[pmd:endLine(.)=1]"),
+                                    newRoot("src/Foo.cls"));
+
+        assertThat(report.getViolations(), hasSize(1));
+    }
+
+    @Test
+    public void testEndColumn() {
+        Report report = executeRule(makeXPath("//*[pmd:endColumn(.)>1]"),
+                                    newRoot("src/Foo.cls"));
+
+        assertThat(report.getViolations(), hasSize(1));
+    }
+
+    public Report executeRule(net.sourceforge.pmd.Rule rule, DummyNode node) {
+        return RuleContextTest.getReportForRuleApply(rule, node);
+    }
+
+
+    public DummyRoot newNode() {
         DummyRoot root = new DummyRoot();
         DummyNode dummy = new DummyNodeWithDeprecatedAttribute(2);
         dummy.setCoords(1, 1, 1, 2);
         root.addChild(dummy, 0);
         return root;
     }
+
+    public DummyRoot newRoot(String fileName) {
+        DummyRoot dummy = new DummyRoot().withFileName(fileName);
+        dummy.setCoords(1, 1, 1, 2);
+        return dummy;
+    }
+
+
 }

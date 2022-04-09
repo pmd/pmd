@@ -8,7 +8,6 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.lang.ast.DummyAstStages;
 import net.sourceforge.pmd.lang.ast.DummyRoot;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.Parser;
@@ -38,9 +37,6 @@ public class DummyLanguageModule extends BaseLanguageModule {
     }
 
     public static class Handler extends AbstractPmdLanguageVersionHandler {
-        public Handler() {
-            super(DummyAstStages.class);
-        }
 
         @Override
         public RuleViolationFactory getRuleViolationFactory() {
@@ -74,15 +70,10 @@ public class DummyLanguageModule extends BaseLanguageModule {
     public static class RuleViolationFactory extends DefaultRuleViolationFactory {
 
         @Override
-        public RuleViolation createViolation(Rule rule, @NonNull Node location, @NonNull String filename, @NonNull String formattedMessage) {
-            return new ParametricRuleViolation<Node>(rule, filename, location, formattedMessage) {
+        public RuleViolation createViolation(Rule rule, @NonNull Node location, @NonNull String formattedMessage) {
+            return new ParametricRuleViolation<Node>(rule, location, formattedMessage) {
                 {
                     this.packageName = "foo"; // just for testing variable expansion
-                }
-
-                @Override
-                public String getPackageName() {
-                    return super.getPackageName();
                 }
             };
         }

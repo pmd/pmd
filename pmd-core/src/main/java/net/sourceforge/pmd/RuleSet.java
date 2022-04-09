@@ -15,15 +15,16 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Predicate;
-import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.cache.ChecksumAware;
 import net.sourceforge.pmd.internal.util.PredicateUtil;
 import net.sourceforge.pmd.lang.LanguageVersion;
-import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 
@@ -35,7 +36,7 @@ import net.sourceforge.pmd.lang.rule.XPathRule;
  */
 public class RuleSet implements ChecksumAware {
 
-    private static final Logger LOG = Logger.getLogger(RuleSet.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(RuleSet.class);
     private static final String MISSING_RULE = "Missing rule";
     private static final String MISSING_RULESET_DESCRIPTION = "RuleSet description must not be null";
     private static final String MISSING_RULESET_NAME = "RuleSet name must not be null";
@@ -217,8 +218,9 @@ public class RuleSet implements ChecksumAware {
             // be problematic - see #RuleSet.getRuleByName(String)
             for (Rule rule : rules) {
                 if (rule.getName().equals(newRule.getName()) && rule.getLanguage().equals(newRule.getLanguage())) {
-                    LOG.warning("The rule with name " + newRule.getName() + " is duplicated. "
-                            + "Future versions of PMD will reject to load such rulesets.");
+                    LOG.warn("The rule with name {} is duplicated. "
+                            + "Future versions of PMD will reject to load such rulesets.",
+                            newRule.getName());
                     break;
                 }
             }
@@ -546,7 +548,8 @@ public class RuleSet implements ChecksumAware {
             while (iterator.hasNext()) {
                 Rule rule = iterator.next();
                 if (rule.getPriority().compareTo(minimumPriority) > 0) {
-                    LOG.fine("Removing rule " + rule.getName() + " due to priority: " + rule.getPriority() + " required: " + minimumPriority);
+                    LOG.debug("Removing rule {} due to priority: {} required: {}",
+                            rule.getName(), rule.getPriority(), minimumPriority);
                     iterator.remove();
                 }
             }
@@ -609,34 +612,6 @@ public class RuleSet implements ChecksumAware {
     }
 
     /**
-     * Triggers that start lifecycle event on each rule in this ruleset. Some
-     * rules perform initialization tasks on start.
-     *
-     * @param ctx
-     *            the current context
-     */
-    public void start(RuleContext ctx) {
-        for (Rule rule : rules) {
-            rule.start(ctx);
-        }
-    }
-
-    /**
-     * Executes the rules in this ruleset against each of the given nodes.
-     *
-     * @param acuList
-     *            the node list, usually the root nodes like compilation units
-     * @param ctx
-     *            the current context
-     *
-     * @deprecated Use {@link RuleSets#apply(List, RuleContext)}
-     */
-    @Deprecated
-    public void apply(List<? extends Node> acuList, RuleContext ctx) {
-        new RuleSets(this).apply(acuList, ctx);
-    }
-
-    /**
      * Does the given Rule apply to the given LanguageVersion? If so, the
      * Language must be the same and be between the minimum and maximums
      * versions on the Rule.
@@ -648,26 +623,18 @@ public class RuleSet implements ChecksumAware {
      *
      * @return <code>true</code> if the given rule matches the given language,
      *         which means, that the rule would be executed.
+     *
+     * @deprecated This is internal API, removed in PMD 7. You should
+     * not use a ruleset directly.
      */
+    @Deprecated
+    @InternalApi
     public static boolean applies(Rule rule, LanguageVersion languageVersion) {
         final LanguageVersion min = rule.getMinimumLanguageVersion();
         final LanguageVersion max = rule.getMaximumLanguageVersion();
         return rule.getLanguage().equals(languageVersion.getLanguage())
                 && (min == null || min.compareTo(languageVersion) <= 0)
                 && (max == null || max.compareTo(languageVersion) >= 0);
-    }
-
-    /**
-     * Triggers the end lifecycle event on each rule in the ruleset. Some rules
-     * perform a final summary calculation or cleanup in the end.
-     *
-     * @param ctx
-     *            the current context
-     */
-    public void end(RuleContext ctx) {
-        for (Rule rule : rules) {
-            rule.end(ctx);
-        }
     }
 
     /**
@@ -727,10 +694,17 @@ public class RuleSet implements ChecksumAware {
 
     /**
      * Remove and collect any misconfigured rules.
+     * TODO remove this method. This mutates rulesets for nothing. Whether
+     *  a rule is dysfunctional or not should be checked when it is initialized.
      *
      * @param collector
      *            the removed rules will be added to this collection
+     *
+     * @deprecated This is internal API, removed in PMD 7. You should
+     * not use a ruleset directly.
      */
+    @Deprecated
+    @InternalApi
     public void removeDysfunctionalRules(Collection<Rule> collector) {
         Iterator<Rule> iter = rules.iterator();
 

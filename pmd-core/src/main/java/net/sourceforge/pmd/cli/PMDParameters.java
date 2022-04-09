@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.cli;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -64,7 +63,7 @@ public class PMDParameters {
 
     @Parameter(names = { "--threads", "-threads", "-t" }, description = "Sets the number of threads used by PMD.",
             validateWith = PositiveInteger.class)
-    private int threads = 1;
+    private int threads = 1; // see also default in PMDTask (Ant)
 
     @Parameter(names = { "--benchmark", "-benchmark", "-b" },
             description = "Benchmark mode - output a benchmark report upon completion; default to System.err.")
@@ -235,8 +234,8 @@ public class PMDParameters {
         }
 
         try {
-            configuration.prependClasspath(this.getAuxclasspath());
-        } catch (IOException e) {
+            configuration.prependAuxClasspath(this.getAuxclasspath());
+        } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("Invalid auxiliary classpath: " + e.getMessage(), e);
         }
         return configuration;

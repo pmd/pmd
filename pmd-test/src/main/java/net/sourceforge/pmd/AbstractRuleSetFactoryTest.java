@@ -285,9 +285,16 @@ public abstract class AbstractRuleSetFactoryTest {
 
     private List<String> getRuleSetFileNames(String language) throws IOException {
         List<String> ruleSetFileNames = new ArrayList<>();
+        ruleSetFileNames.addAll(getRuleSetFileNames(language, "rulesets/" + language + "/rulesets.properties"));
+        ruleSetFileNames.addAll(getRuleSetFileNames(language, "category/" + language + "/categories.properties"));
+        return ruleSetFileNames;
+    }
+
+    private List<String> getRuleSetFileNames(String language, String propertiesPath) throws IOException {
+        List<String> ruleSetFileNames = new ArrayList<>();
         Properties properties = new Properties();
         @SuppressWarnings("PMD.CloseResource")
-        InputStream input = getClass().getResourceAsStream("rulesets/" + language + "/rulesets.properties");
+        InputStream input = getClass().getResourceAsStream(propertiesPath);
         if (input == null) {
             // this might happen if a language is only support by CPD, but not
             // by PMD
@@ -302,7 +309,6 @@ public abstract class AbstractRuleSetFactoryTest {
         while (st.hasMoreTokens()) {
             ruleSetFileNames.add(st.nextToken());
         }
-
         return ruleSetFileNames;
     }
 
@@ -352,7 +358,7 @@ public abstract class AbstractRuleSetFactoryTest {
         file = file.replaceAll("xsi:schemaLocation=\"" + rulesetNamespace
                 + " https://pmd.sourceforge.io/ruleset_\\d_0_0.xsd\"", "");
 
-        if (rulesetNamespace.equals(RuleSetWriter.RULESET_2_0_0_NS_URI)) {
+        if (RuleSetWriter.RULESET_2_0_0_NS_URI.equals(rulesetNamespace)) {
             file = "<?xml version=\"1.0\"?>" + PMD.EOL + "<!DOCTYPE ruleset SYSTEM "
                     + "\"https://pmd.sourceforge.io/ruleset_2_0_0.dtd\">" + PMD.EOL + file;
         } else {

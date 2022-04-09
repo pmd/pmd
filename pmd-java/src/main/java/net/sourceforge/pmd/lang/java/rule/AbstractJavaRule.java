@@ -10,13 +10,11 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.LanguageRegistry;
-import net.sourceforge.pmd.lang.ast.AstProcessingStage;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitor;
-import net.sourceforge.pmd.lang.java.internal.JavaProcessingStage;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
 
 
@@ -52,12 +50,4 @@ public abstract class AbstractJavaRule extends AbstractRule implements JavaParse
         return false;
     }
 
-    @Override
-    public boolean dependsOn(AstProcessingStage<?> stage) {
-        if (!(stage instanceof JavaProcessingStage)) {
-            throw new IllegalArgumentException("Processing stage wasn't a Java one: " + stage);
-        }
-
-        return true;
-    }
 }

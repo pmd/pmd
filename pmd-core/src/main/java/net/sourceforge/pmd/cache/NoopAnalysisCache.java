@@ -11,6 +11,8 @@ import java.util.List;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.reporting.FileAnalysisListener;
+import net.sourceforge.pmd.util.datasource.DataSource;
 
 /**
  * A NOOP analysis cache. Easier / safer than null-checking.
@@ -20,11 +22,6 @@ import net.sourceforge.pmd.annotation.InternalApi;
 @Deprecated
 @InternalApi
 public class NoopAnalysisCache implements AnalysisCache {
-
-    @Override
-    public void ruleViolationAdded(final RuleViolation ruleViolation) {
-        // noop
-    }
 
     @Override
     public void persist() {
@@ -50,4 +47,10 @@ public class NoopAnalysisCache implements AnalysisCache {
     public List<RuleViolation> getCachedViolations(File sourceFile) {
         return Collections.emptyList();
     }
+
+    @Override
+    public FileAnalysisListener startFileAnalysis(DataSource filename) {
+        return FileAnalysisListener.noop();
+    }
+
 }

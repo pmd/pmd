@@ -102,7 +102,7 @@ public final class TypeSystem {
      * The set of all primitive types. See {@link #getPrimitive(PrimitiveTypeKind)}.
      */
     public final Set<JPrimitiveType> allPrimitives;
-    private final EnumMap<PrimitiveTypeKind, JPrimitiveType> primitivesByKind;
+    private final Map<PrimitiveTypeKind, JPrimitiveType> primitivesByKind;
 
     /**
      * A constant to represent the normal absence of a type. The

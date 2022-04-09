@@ -6,12 +6,13 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import org.junit.Test;
 
+import net.sourceforge.pmd.lang.java.BaseParserTest;
+
 public class ASTInitializerTest extends BaseParserTest {
 
     @Test
     public void testDontCrashOnBlockStatement() {
-        java.parse(TEST1);
+        java.parse("public class Foo { { x = 5; } }");
     }
 
-    private static final String TEST1 = "public class Foo {\n {\n   x = 5;\n }\n}";
 }

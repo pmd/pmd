@@ -6,10 +6,11 @@ package net.sourceforge.pmd.lang.ecmascript.ast;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Stack;
 
 import org.mozilla.javascript.ScriptRuntime;
 import org.mozilla.javascript.ast.ArrayComprehension;
@@ -156,10 +157,10 @@ final class EcmascriptTreeBuilder implements NodeVisitor {
     private final Map<ParseProblem, AbstractEcmascriptNode<?>> parseProblemToNode = new HashMap<>();
 
     // The nodes having children built.
-    private final Stack<AbstractEcmascriptNode<?>> nodes = new Stack<>();
+    private final Deque<AbstractEcmascriptNode<?>> nodes = new ArrayDeque<>();
 
     // The Rhino nodes with children to build.
-    private final Stack<AstNode> parents = new Stack<>();
+    private final Deque<AstNode> parents = new ArrayDeque<>();
 
     private final SourceCodePositioner sourceCodePositioner;
 

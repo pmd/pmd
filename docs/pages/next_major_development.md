@@ -246,6 +246,79 @@ the breaking API changes will be performed in 7.0.0.
 an API is tagged as `@Deprecated` or not in the latest minor release. During the development of 7.0.0,
 we may decide to remove some APIs that were not tagged as deprecated, though we'll try to avoid it." %}
 
+#### 6.44.0
+
+##### Deprecated API
+
+* Several members of {% jdoc core::PMD %} have been newly deprecated, including:
+  - `PMD#EOL`: use `System#lineSeparator()`
+  - `PMD#SUPPRESS_MARKER`: use {% jdoc core::PMDConfiguration#DEFAULT_SUPPRESS_MARKER %}
+  - `PMD#processFiles`: use the new programmatic API
+  - `PMD#getApplicableFiles`: is internal
+* {% jdoc !!core::PMDConfiguration#prependClasspath(java.lang.String) %} is deprecated
+  in favour of {% jdoc core::PMDConfiguration#prependAuxClasspath(java.lang.String) %}.
+* {% jdoc !!core::PMDConfiguration#setRuleSets(java.lang.String) %} and
+  {% jdoc core::PMDConfiguration#getRuleSets() %} are deprecated. Use instead
+  {% jdoc core::PMDConfiguration#setRuleSets(java.util.List) %},
+  {% jdoc core::PMDConfiguration#addRuleSet(java.lang.String) %},
+  and {% jdoc core::PMDConfiguration#getRuleSetPaths() %}.
+* Several members of {% jdoc test::cli.BaseCLITest %} have been deprecated with replacements.
+* Several members of {% jdoc core::cli.PMDCommandLineInterface %} have been explicitly deprecated.
+  The whole class however was deprecated long ago already with 6.30.0. It is internal API and should
+  not be used.
+
+* In modelica, the rule classes {% jdoc modelica::lang.modelica.rule.AmbiguousResolutionRule %}
+  and {% jdoc modelica::lang.modelica.rule.ConnectUsingNonConnector %} have been deprecated,
+  since they didn't comply to the usual rule class naming conventions yet.
+  The replacements are in the subpackage `bestpractices`.
+
+##### Experimental APIs
+
+*   Together with the new programmatic API the interface
+    {% jdoc core::lang.document.TextFile %} has been added as *experimental*. It intends
+    to replace {% jdoc core::util.datasource.DataSource %} and {% jdoc core::cpd.SourceCode %} in the long term.
+    
+    This interface will change in PMD 7 to support read/write operations
+    and other things. You don't need to use it in PMD 6, as {% jdoc core::lang.document.FileCollector %}
+    decouples you from this. A file collector is available through {% jdoc !!core::PmdAnalysis#files() %}.
+
+#### 6.43.0
+
+##### Deprecated API
+
+Some API deprecations were performed in core PMD classes, to improve compatibility with PMD 7.
+- {% jdoc core::Report %}: the constructor and other construction methods like addViolation or createReport
+- {% jdoc core::RuleContext %}: all constructors, getters and setters. A new set
+of stable methods, matching those in PMD 7, was added to replace the `addViolation`
+overloads of {% jdoc core::lang.rule.AbstractRule %}. In PMD 7, `RuleContext` will
+be the API to report violations, and it can already be used as such in PMD 6.
+- The field {% jdoc core::PMD#configuration %} is unused and will be removed.
+
+##### Internal API
+
+Those APIs are not intended to be used by clients, and will be hidden or removed with PMD 7.0.0.
+You can identify them with the `@InternalApi` annotation. You'll also get a deprecation warning.
+
+- {% jdoc core::RuleSet %}: methods that serve to apply rules, including `apply`, `start`, `end`, `removeDysfunctionalRules`
+- {% jdoc !!core::renderers.AbstractAccumulatingRenderer#renderFileReport(Report) %} is internal API
+  and should not be overridden in own renderers.
+
+##### Changed API
+
+It is now forbidden to report a violation:
+- With a `null` node
+- With a `null` message
+- With a `null` set of format arguments (prefer a zero-length array)
+
+Note that the message is set from the XML rule declaration, so this is only relevant
+if you instantiate rules manually.
+
+{% jdoc core::RuleContext %} now requires setting the current rule before calling
+{% jdoc core::Rule#apply(java.util.List, core::RuleContext) %}. This is
+done automatically by `RuleSet#apply` and such. Creating and configuring a
+`RuleContext` manually is strongly advised against, as the lifecycle of `RuleContext`
+will change drastically in PMD 7.
+
 #### 6.42.0
 
 No changes.

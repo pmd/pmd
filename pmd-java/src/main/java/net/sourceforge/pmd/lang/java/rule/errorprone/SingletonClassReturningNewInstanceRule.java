@@ -10,8 +10,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
+import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
-import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 
 public class SingletonClassReturningNewInstanceRule extends AbstractJavaRulechainRule {
 
@@ -37,6 +37,6 @@ public class SingletonClassReturningNewInstanceRule extends AbstractJavaRulechai
     }
 
     private boolean returnsLocalVariables(NodeStream<ASTReturnStatement> returns) {
-        return returns.children(ASTVariableAccess.class).filter(JavaRuleUtil::isReferenceToLocal).nonEmpty();
+        return returns.children(ASTVariableAccess.class).filter(JavaAstUtils::isReferenceToLocal).nonEmpty();
     }
 }

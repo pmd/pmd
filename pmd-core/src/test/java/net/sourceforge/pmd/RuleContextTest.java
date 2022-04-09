@@ -4,75 +4,53 @@
 
 package net.sourceforge.pmd;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-
-import java.io.File;
-import java.util.Collections;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 
+import org.junit.Assert;
 import org.junit.Test;
 
-import net.sourceforge.pmd.lang.DummyLanguageModule;
-import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.RootNode;
-
-import junit.framework.JUnit4TestAdapter;
+import net.sourceforge.pmd.lang.ast.impl.DummyTreeUtil;
 
 public class RuleContextTest {
-    public static Report getReport(Consumer<RuleContext> sideEffects) {
-        Report report = new Report();
-        RuleContext ctx = new RuleContext();
-        ctx.setSourceCodeFile(new File("test.dummy"));
-        ctx.setReport(report);
-        ctx.setLanguageVersion(LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getDefaultVersion());
-        sideEffects.accept(ctx);
-        return report;
+
+    public static Report getReport(Rule rule, BiConsumer<Rule, RuleContext> sideEffects) {
+        return Report.buildReport(listener -> sideEffects.accept(rule, RuleContext.create(listener, rule)));
     }
 
-    public static Report getReport(Rule rule, BiConsumer<Rule, RuleContext> sideEffects) throws Exception {
-        return getReport(ctx -> sideEffects.accept(rule, ctx));
-    }
-
-    public static Report getReportForRuleApply(Rule rule, Node node) throws Exception {
+    public static Report getReportForRuleApply(Rule rule, Node node) {
         return getReport(rule, (r, ctx) -> r.apply(node, ctx));
     }
 
-    public static Report getReportForRuleSetApply(RuleSet ruleset, RootNode node) throws Exception {
-        return getReport(ctx -> new RuleSets(ruleset).apply(Collections.singletonList(node), ctx));
+    public static Report getReportForRuleSetApply(RuleSet ruleset, RootNode node) {
+        return Report.buildReport(listener -> new RuleSets(ruleset).apply(node, listener));
     }
 
     @Test
-    public void testReport() {
-        RuleContext ctx = new RuleContext();
-        assertEquals(0, ctx.getReport().getViolations().size());
-        Report r = new Report();
-        ctx.setReport(r);
-        Report r2 = ctx.getReport();
-        assertEquals("report object mismatch", r, r2);
+    public void testMessage() throws Exception {
+        Report report = getReport(new FooRule(), (r, ctx) -> ctx.addViolationWithMessage(DummyTreeUtil.tree(DummyTreeUtil::root), "message with \"'{'\""));
+
+        Assert.assertEquals("message with \"{\"", report.getViolations().get(0).getDescription());
     }
 
     @Test
-    public void testSourceCodeFilename() {
-        RuleContext ctx = new RuleContext();
-        assertEquals("filename should be empty", "", ctx.getSourceCodeFilename());
-        File file = new File("dir/foo.java");
-        ctx.setSourceCodeFile(file);
-        assertEquals("filename mismatch", file.getAbsolutePath(), ctx.getSourceCodeFilename());
+    public void testMessageEscaping() throws Exception {
+        RuleViolation violation = makeViolation("message with \"'{'\"");
+
+        Assert.assertEquals("message with \"{\"", violation.getDescription());
     }
 
     @Test
-    public void testSourceCodeFile() {
-        RuleContext ctx = new RuleContext();
-        assertNull("file should be null", ctx.getSourceCodeFile());
-        ctx.setSourceCodeFile(new File("somefile.java"));
-        assertEquals("filename mismatch", new File("somefile.java"), ctx.getSourceCodeFile());
+    public void testMessageEscaping2() throws Exception {
+        RuleViolation violation = makeViolation("message with ${ohio}");
+
+        Assert.assertEquals("message with ${ohio}", violation.getDescription());
     }
 
-
-    public static junit.framework.Test suite() {
-        return new JUnit4TestAdapter(RuleContextTest.class);
+    private RuleViolation makeViolation(String unescapedMessage, Object... args) throws Exception {
+        Report report = getReport(new FooRule(), (r, ctx) -> ctx.addViolationWithMessage(DummyTreeUtil.tree(DummyTreeUtil::root), unescapedMessage, args));
+        return report.getViolations().get(0);
     }
+
 }

@@ -16,8 +16,8 @@ import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 
 public class Java17TreeDumpTest extends BaseTreeDumpTest {
     private final JavaParsingHelper java17 =
-            JavaParsingHelper.WITH_PROCESSING.withDefaultVersion("17")
-                    .withResourceContext(Java17TreeDumpTest.class, "jdkversiontests/java17/");
+            JavaParsingHelper.DEFAULT.withDefaultVersion("17")
+                                     .withResourceContext(Java17TreeDumpTest.class, "jdkversiontests/java17/");
     private final JavaParsingHelper java17p = java17.withDefaultVersion("17-preview");
     private final JavaParsingHelper java16 = java17.withDefaultVersion("16");
 
@@ -39,7 +39,7 @@ public class Java17TreeDumpTest extends BaseTreeDumpTest {
             }
         });
         Assert.assertTrue("Unexpected message: " + thrown.getMessage(),
-                thrown.getMessage().contains("Sealed classes is a preview feature of JDK 16, you should select your language version accordingly"));
+                thrown.getMessage().contains("Sealed classes are a feature of Java 17, you should select your language version accordingly"));
     }
 
     @Test
@@ -69,7 +69,7 @@ public class Java17TreeDumpTest extends BaseTreeDumpTest {
             }
         });
         Assert.assertTrue("Unexpected message: " + thrown.getMessage(),
-                thrown.getMessage().contains("Sealed classes is a preview feature of JDK 16, you should select your language version accordingly"));
+                thrown.getMessage().contains("Sealed classes are a feature of Java 17, you should select your language version accordingly"));
     }
 
     @Test

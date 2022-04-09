@@ -42,7 +42,7 @@ public class JavaRuleViolationTest {
     }
 
     private ASTCompilationUnit parse(final String code) {
-        return JavaParsingHelper.WITH_PROCESSING.parse(code);
+        return JavaParsingHelper.DEFAULT.parse(code);
     }
 
     /**
@@ -59,7 +59,7 @@ public class JavaRuleViolationTest {
 
     @NonNull
     public RuleViolation violationAt(JavaNode md) {
-        return new JavaRuleViolation(new FooRule(), md, "", "");
+        return new JavaRuleViolation(new FooRule(), md, "");
     }
 
     /**

@@ -9,6 +9,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
+import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 
@@ -29,7 +30,7 @@ public class CloneMethodMustImplementCloneableRule extends AbstractJavaRulechain
 
     @Override
     public Object visit(final ASTMethodDeclaration node, final Object data) {
-        if (!isCloneMethod(node)) {
+        if (!JavaAstUtils.isCloneMethod(node)) {
             return data;
         }
         ASTBlock body = node.getBody();
@@ -46,10 +47,8 @@ public class CloneMethodMustImplementCloneableRule extends AbstractJavaRulechain
     }
 
     private static boolean justThrowsCloneNotSupported(ASTBlock body) {
-        if (body.size() != 1) {
-            return false;
-        }
-        return body.getChild(0)
+        return body.size() == 1
+                && body.getChild(0)
                    .asStream()
                    .filterIs(ASTThrowStatement.class)
                    .map(ASTThrowStatement::getExpr)
@@ -57,7 +56,4 @@ public class CloneMethodMustImplementCloneableRule extends AbstractJavaRulechain
                    .nonEmpty();
     }
 
-    private static boolean isCloneMethod(final ASTMethodDeclaration method) {
-        return "clone".equals(method.getName()) && method.getFormalParameters().size() == 0;
-    }
 }

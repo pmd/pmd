@@ -10,8 +10,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.JModifier;
+import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
-import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 
 /**
  * Detects redundant field initializers, i.e. the field initializer expressions
@@ -32,7 +32,7 @@ public class RedundantFieldInitializerRule extends AbstractJavaRulechainRule {
             for (ASTVariableDeclaratorId varId : fieldDeclaration.getVarIds()) {
                 ASTExpression init = varId.getInitializer();
                 if (init != null) {
-                    if (!isWhitelisted(init) && JavaRuleUtil.isDefaultValue(varId.getTypeMirror(), init)) {
+                    if (!isWhitelisted(init) && JavaAstUtils.isDefaultValue(varId.getTypeMirror(), init)) {
                         addViolation(data, varId);
                     }
                 }

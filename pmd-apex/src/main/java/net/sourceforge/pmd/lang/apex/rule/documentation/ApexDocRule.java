@@ -89,20 +89,20 @@ public class ApexDocRule extends AbstractApexRule {
         ApexDocComment comment = getApexDocComment(node);
         if (comment == null) {
             if (shouldHaveApexDocs(node)) {
-                addViolationWithMessage(data, node, MISSING_COMMENT_MESSAGE);
+                asCtx(data).addViolationWithMessage(node, MISSING_COMMENT_MESSAGE);
             }
         } else {
             if (getProperty(REPORT_MISSING_DESCRIPTION_DESCRIPTOR) && !comment.hasDescription) {
-                addViolationWithMessage(data, node, MISSING_DESCRIPTION_MESSAGE);
+                asCtx(data).addViolationWithMessage(node, MISSING_DESCRIPTION_MESSAGE);
             }
 
             String returnType = node.getReturnType();
             boolean shouldHaveReturn = !(returnType.isEmpty() || "void".equalsIgnoreCase(returnType));
             if (comment.hasReturn != shouldHaveReturn) {
                 if (shouldHaveReturn) {
-                    addViolationWithMessage(data, node, MISSING_RETURN_MESSAGE);
+                    asCtx(data).addViolationWithMessage(node, MISSING_RETURN_MESSAGE);
                 } else {
-                    addViolationWithMessage(data, node, UNEXPECTED_RETURN_MESSAGE);
+                    asCtx(data).addViolationWithMessage(node, UNEXPECTED_RETURN_MESSAGE);
                 }
             }
 
@@ -111,7 +111,7 @@ public class ApexDocRule extends AbstractApexRule {
                     .stream().map(p -> p.getImage()).collect(Collectors.toList());
 
             if (!comment.params.equals(params)) {
-                addViolationWithMessage(data, node, MISMATCHED_PARAM_MESSAGE);
+                asCtx(data).addViolationWithMessage(node, MISMATCHED_PARAM_MESSAGE);
             }
         }
 
@@ -124,11 +124,11 @@ public class ApexDocRule extends AbstractApexRule {
 
         if (comment == null) {
             if (shouldHaveApexDocs(node)) {
-                addViolationWithMessage(data, node, MISSING_COMMENT_MESSAGE);
+                asCtx(data).addViolationWithMessage(node, MISSING_COMMENT_MESSAGE);
             }
         } else {
             if (getProperty(REPORT_MISSING_DESCRIPTION_DESCRIPTOR) && !comment.hasDescription) {
-                addViolationWithMessage(data, node, MISSING_DESCRIPTION_MESSAGE);
+                asCtx(data).addViolationWithMessage(node, MISSING_DESCRIPTION_MESSAGE);
             }
         }
 
@@ -139,11 +139,11 @@ public class ApexDocRule extends AbstractApexRule {
         ApexDocComment comment = getApexDocComment(node);
         if (comment == null) {
             if (shouldHaveApexDocs(node)) {
-                addViolationWithMessage(data, node, MISSING_COMMENT_MESSAGE);
+                asCtx(data).addViolationWithMessage(node, MISSING_COMMENT_MESSAGE);
             }
         } else {
             if (getProperty(REPORT_MISSING_DESCRIPTION_DESCRIPTOR) && !comment.hasDescription) {
-                addViolationWithMessage(data, node, MISSING_DESCRIPTION_MESSAGE);
+                asCtx(data).addViolationWithMessage(node, MISSING_DESCRIPTION_MESSAGE);
             }
         }
     }
@@ -183,7 +183,7 @@ public class ApexDocRule extends AbstractApexRule {
             boolean hasDescription = DESCRIPTION_PATTERN.matcher(token).find();
             boolean hasReturn = RETURN_PATTERN.matcher(token).find();
 
-            ArrayList<String> params = new ArrayList<>();
+            List<String> params = new ArrayList<>();
             Matcher paramMatcher = PARAM_PATTERN.matcher(token);
             while (paramMatcher.find()) {
                 params.add(paramMatcher.group(1));

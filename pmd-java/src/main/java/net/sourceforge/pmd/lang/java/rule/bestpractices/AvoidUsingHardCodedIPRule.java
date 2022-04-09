@@ -8,6 +8,7 @@ import static java.util.Arrays.asList;
 
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -51,7 +52,7 @@ public class AvoidUsingHardCodedIPRule extends AbstractJavaRulechainRule {
     private static final Pattern IPV4_PATTERN = Pattern.compile("^" + IPV4_REGEXP + "$");
     private static final Pattern IPV6_PATTERN = Pattern.compile("^" + IPV6_REGEXP + "$");
 
-    private final EnumSet<AddressKinds> kindsToCheck = EnumSet.noneOf(AddressKinds.class);
+    private final Set<AddressKinds> kindsToCheck = EnumSet.noneOf(AddressKinds.class);
 
     public AvoidUsingHardCodedIPRule() {
         super(ASTStringLiteral.class);

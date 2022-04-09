@@ -93,8 +93,4 @@ public class VBHTMLRendererTest extends AbstractRendererTest {
                 + "--></style><body><center><br><table border=\"0\" width=\"80%\"><tr id=TableHeader><td colspan=\"2\"><font class=title>&nbsp;Configuration problems found</font></td></tr><tr id=RowColor2><td><font class=body>"
                 + error.rule().getName() + "</font></td><td><font class=body>" + error.issue() + "</font></td></tr></table></center></body></html>" + PMD.EOL;
     }
-
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(VBHTMLRendererTest.class);
-    }
 }

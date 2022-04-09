@@ -4,11 +4,13 @@
 
 package net.sourceforge.pmd.lang.ast;
 
+import static net.sourceforge.pmd.internal.util.AssertionUtil.requireParamNotNull;
+
 import java.util.Objects;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.properties.AbstractPropertySource;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
@@ -48,23 +50,29 @@ public interface Parser {
         private final String filepath;
         private final String sourceText;
         private final SemanticErrorReporter reporter;
+        private final ClassLoader auxclasspathClassLoader;
 
         private final PropertySource propertySource;
 
-        public ParserTask(LanguageVersion lv, String filepath, String sourceText, SemanticErrorReporter reporter) {
-            this.lv = Objects.requireNonNull(lv, "lv was null");
-            this.filepath = Objects.requireNonNull(filepath, "filepath was null");
-            this.sourceText = Objects.requireNonNull(sourceText, "sourceText was null");
-            this.reporter = Objects.requireNonNull(reporter, "reporter was null");
+        public ParserTask(LanguageVersion lv, String filepath, String sourceText, SemanticErrorReporter reporter, ClassLoader auxclasspathClassLoader) {
+            this.lv = requireParamNotNull("language version", lv);
+            this.filepath = requireParamNotNull("filepath", filepath);
+            this.sourceText = requireParamNotNull("sourceText", sourceText);
+            this.reporter = requireParamNotNull("reporter", reporter);
+            this.auxclasspathClassLoader = requireParamNotNull("auxclasspathClassLoader", auxclasspathClassLoader);
 
             this.propertySource = new ParserTaskProperties();
             propertySource.definePropertyDescriptor(COMMENT_MARKER);
         }
 
+        public ParserTask(LanguageVersion lv, String filepath, String sourceText, SemanticErrorReporter reporter) {
+            this(lv, filepath, sourceText, reporter, Parser.class.getClassLoader());
+        }
+
         public static final PropertyDescriptor<String> COMMENT_MARKER =
             PropertyFactory.stringProperty("suppressionCommentMarker")
                            .desc("deprecated! NOPMD")
-                           .defaultValue(PMD.SUPPRESS_MARKER)
+                           .defaultValue(PMDConfiguration.DEFAULT_SUPPRESS_MARKER)
                            .build();
 
         @Deprecated // transitional until language properties are implemented
@@ -72,6 +80,10 @@ public interface Parser {
             return propertySource;
         }
 
+        @Deprecated // transitional until language properties are implemented
+        public ClassLoader getAuxclasspathClassLoader() {
+            return auxclasspathClassLoader;
+        }
 
         public LanguageVersion getLanguageVersion() {
             return lv;

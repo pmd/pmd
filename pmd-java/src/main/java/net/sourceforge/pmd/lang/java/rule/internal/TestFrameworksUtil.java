@@ -136,11 +136,9 @@ public final class TestFrameworksUtil {
     public static boolean isCallOnAssertionContainer(ASTMethodCall call) {
         JTypeMirror declaring = call.getMethodType().getDeclaringType();
         JTypeDeclSymbol sym = declaring.getSymbol();
-        if (sym instanceof JClassSymbol) {
-            return ASSERT_CONTAINERS.contains(((JClassSymbol) sym).getBinaryName())
-                || TypeTestUtil.isA("junit.framework.Assert", declaring);
-        }
-        return false;
+        return sym instanceof JClassSymbol
+                && (ASSERT_CONTAINERS.contains(((JClassSymbol) sym).getBinaryName())
+                        || TypeTestUtil.isA("junit.framework.Assert", declaring));
     }
 
     public static boolean isProbableAssertCall(ASTMethodCall call) {

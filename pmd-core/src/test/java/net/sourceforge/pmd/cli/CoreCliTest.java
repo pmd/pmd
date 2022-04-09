@@ -4,6 +4,10 @@
 
 package net.sourceforge.pmd.cli;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.containsStringIgnoringCase;
+import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
@@ -15,16 +19,21 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.logging.Logger;
 
+import org.apache.commons.io.IOUtils;
+import org.hamcrest.Matcher;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.contrib.java.lang.system.RestoreSystemProperties;
+import org.junit.contrib.java.lang.system.SystemErrRule;
+import org.junit.contrib.java.lang.system.SystemOutRule;
 import org.junit.rules.TemporaryFolder;
 
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.junit.JavaUtilLoggingRule;
+import net.sourceforge.pmd.PMD.StatusCode;
+import net.sourceforge.pmd.internal.Slf4jSimpleConfiguration;
 
 /**
  *
@@ -36,10 +45,19 @@ public class CoreCliTest {
 
     @Rule
     public TemporaryFolder tempDir = new TemporaryFolder();
+    // restoring system properties: -debug might change logging properties
+    // See Slf4jSimpleConfigurationForAnt and resetLogging
     @Rule
     public RestoreSystemProperties restoreSystemProperties = new RestoreSystemProperties();
     @Rule
-    public JavaUtilLoggingRule loggingRule = new JavaUtilLoggingRule(PMD.class.getPackage().getName()).mute();
+    public final SystemOutRule outStreamCaptor = new SystemOutRule().muteForSuccessfulTests().enableLog();
+    @Rule
+    public final SystemErrRule errStreamCaptor = new SystemErrRule().muteForSuccessfulTests().enableLog();
+
+    @AfterClass
+    public static void resetLogging() {
+        Slf4jSimpleConfiguration.reconfigureDefaultLogLevel(null);
+    }
 
     private Path srcDir;
 
@@ -52,8 +70,6 @@ public class CoreCliTest {
         // create a few files
         srcDir = Files.createDirectories(root.resolve("src"));
         writeString(srcDir.resolve("someSource.dummy"), "dummy text");
-        
-        Logger.getLogger("net.sourceforge.pmd");
     }
 
 
@@ -111,6 +127,19 @@ public class CoreCliTest {
     }
 
     @Test
+    public void testFileCollectionWithUnknownFiles() throws IOException {
+        Path reportFile = tempRoot().resolve("out/reportFile.txt");
+        Files.createFile(srcDir.resolve("foo.not_analysable"));
+        assertFalse("Report file should not exist", Files.exists(reportFile));
+
+        runPmdSuccessfully("--no-cache", "--dir", srcDir, "--rulesets", DUMMY_RULESET, "--report-file", reportFile, "--debug");
+
+        assertTrue("Report file should have been created", Files.exists(reportFile));
+        String reportText = IOUtils.toString(Files.newBufferedReader(reportFile, StandardCharsets.UTF_8));
+        assertThat(reportText, not(containsStringIgnoringCase("error")));
+    }
+
+    @Test
     public void testNonExistentReportFileDeprecatedOptions() {
         Path reportFile = tempRoot().resolve("out/reportFile.txt");
 
@@ -119,11 +148,11 @@ public class CoreCliTest {
         runPmdSuccessfully("-no-cache", "-dir", srcDir, "-rulesets", DUMMY_RULESET, "-reportfile", reportFile);
 
         assertTrue("Report file should have been created", Files.exists(reportFile));
-        assertTrue(loggingRule.getLog().contains("Some deprecated options were used on the command-line, including -rulesets"));
-        assertTrue(loggingRule.getLog().contains("Consider replacing it with --rulesets (or -R)"));
+        assertTrue(errStreamCaptor.getLog().contains("Some deprecated options were used on the command-line, including -rulesets"));
+        assertTrue(errStreamCaptor.getLog().contains("Consider replacing it with --rulesets (or -R)"));
         // only one parameter is logged
-        assertFalse(loggingRule.getLog().contains("Some deprecated options were used on the command-line, including -reportfile"));
-        assertFalse(loggingRule.getLog().contains("Consider replacing it with --report-file"));
+        assertFalse(errStreamCaptor.getLog().contains("Some deprecated options were used on the command-line, including -reportfile"));
+        assertFalse(errStreamCaptor.getLog().contains("Consider replacing it with --report-file"));
     }
 
     /**
@@ -163,11 +192,36 @@ public class CoreCliTest {
         }
     }
 
+    @Test
+    public void debugLogging() {
+        runPmdSuccessfully("--debug", "--no-cache", "--dir", srcDir, "--rulesets", DUMMY_RULESET);
+        assertThat(errStreamCaptor.getLog(), containsString("[main] INFO net.sourceforge.pmd.PMD - Log level is at TRACE"));
+    }
 
+    @Test
+    public void defaultLogging() {
+        runPmdSuccessfully("--no-cache", "--dir", srcDir, "--rulesets", DUMMY_RULESET);
+        assertThat(errStreamCaptor.getLog(), containsString("[main] INFO net.sourceforge.pmd.PMD - Log level is at INFO"));
+    }
+
+
+    @Test
+    public void testWrongCliOptionsDoNotPrintUsage() {
+        String[] args = { "-invalid" };
+        PmdParametersParseResult params = PmdParametersParseResult.extractParameters(args);
+        assertTrue("Expected invalid args", params.isError());
+
+        StatusCode code = PMD.runPmd(args);
+        assertEquals(StatusCode.ERROR, code);
+        assertThatErrAndOut(not(containsStringIgnoringCase("Available report formats and")));
+    }
 
     // utilities
 
-
+    private void assertThatErrAndOut(Matcher<String> matcher) {
+        assertThat("stdout", outStreamCaptor.getLog(), matcher);
+        assertThat("stderr", errStreamCaptor.getLog(), matcher);
+    }
 
     private Path tempRoot() {
         return tempDir.getRoot().toPath();
@@ -201,8 +255,8 @@ public class CoreCliTest {
     }
 
     private static void runPmd(int expectedExitCode, Object[] args) {
-        int actualExitCode = PMD.run(argsToString(args));
-        assertEquals("Exit code", expectedExitCode, actualExitCode);
+        StatusCode actualExitCode = PMD.runPmd(argsToString(args));
+        assertEquals("Exit code", expectedExitCode, actualExitCode.toInt());
     }
 
 

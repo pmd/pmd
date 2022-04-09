@@ -11,11 +11,13 @@ import java.util.List;
 
 import org.junit.Test;
 
+import net.sourceforge.pmd.lang.java.BaseParserTest;
+
 public class ASTSwitchLabelTest extends BaseParserTest {
 
     @Test
     public void testDefaultOff() {
-        List<ASTSwitchLabel> ops = java.getNodes(ASTSwitchLabel.class, TEST1);
+        List<ASTSwitchLabel> ops = java.getNodes(ASTSwitchLabel.class, "public class Foo {\n void bar() {\n  switch (x) {\n   case 1: y = 2;\n  }\n }\n}");
         assertFalse(ops.get(0).isDefault());
     }
 

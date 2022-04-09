@@ -13,8 +13,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 import java.util.zip.Adler32;
@@ -24,6 +22,8 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -53,7 +53,7 @@ import com.github.oowekyala.ooxml.messages.XmlMessageUtils;
  */
 final class RuleSetFactory {
 
-    private static final Logger LOG = Logger.getLogger(RuleSetLoader.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(RuleSetFactory.class);
 
     private final ResourceLoader resourceLoader;
     private final RulePriority minimumPriority;
@@ -277,7 +277,7 @@ final class RuleSetFactory {
             dbf.setExpandEntityReferences(false);
         } catch (final ParserConfigurationException e) {
             // an unsupported feature... too bad, but won't fail execution due to this
-            LOG.log(Level.WARNING, "Ignored unsupported XML Parser Feature for parsing rulesets", e);
+            LOG.warn("Ignored unsupported XML Parser Feature for parsing rulesets", e);
         }
 
         return dbf.newDocumentBuilder();
@@ -375,7 +375,8 @@ final class RuleSetFactory {
         if (!potentialRules.isEmpty() && potentialRules.size() == countDeprecated) {
             // all rules in the ruleset have been deprecated - the ruleset itself is considered to be deprecated
             rulesetDeprecated = true;
-            LOG.warning("The RuleSet " + ref + " has been deprecated and will be removed in PMD " + PMDVersion.getNextMajorRelease());
+            LOG.warn("The RuleSet {} has been deprecated and will be removed in PMD {}",
+                    ref, PMDVersion.getNextMajorRelease());
         }
 
         for (RuleReference r : potentialRules) {
@@ -388,16 +389,14 @@ final class RuleSetFactory {
         }
 
         if (!excludedRulesCheck.isEmpty()) {
-            if (LOG.isLoggable(Level.WARNING)) {
-                LOG.warning(
-                    "Unable to exclude rules " + excludedRulesCheck + " from ruleset reference " + ref
-                    + "; perhaps the rule name is misspelled or the rule doesn't exist anymore?");
-            }
+            LOG.warn(
+                "Unable to exclude rules {} from ruleset reference {}"
+                + "; perhaps the rule name is misspelled or the rule doesn't exist anymore?",
+                excludedRulesCheck, ref);
         }
 
         if (rulesetReferences.contains(ref)) {
-            LOG.warning("The ruleset " + ref + " is referenced multiple times in \""
-                    + ruleSetBuilder.getName() + "\".");
+            LOG.warn("The ruleset {} is referenced multiple times in \"{}\".", ref, ruleSetBuilder.getName());
         }
         rulesetReferences.add(ref);
     }
@@ -427,9 +426,10 @@ final class RuleSetFactory {
         rule.setRuleSetName(ruleSetBuilder.getName());
 
         if (warnDeprecated && StringUtils.isBlank(ruleElement.getAttribute("language"))) {
-            LOG.warning("Rule " + ruleSetReferenceId.getRuleSetFileName() + "/" + rule.getName() + " does not mention attribute"
-                            + " language='" + rule.getLanguage().getTerseName() + "',"
-                            + " please mention it explicitly to be compatible with PMD 7");
+            LOG.warn("Rule {}/{} does not mention attribute language='{}',"
+                        + " please mention it explicitly to be compatible with PMD 7",
+                        ruleSetReferenceId.getRuleSetFileName(), rule.getName(),
+                        rule.getLanguage().getTerseName());
         }
 
         ruleSetBuilder.addRule(rule);
@@ -489,20 +489,15 @@ final class RuleSetFactory {
         if (warnDeprecated && referencedRule.isDeprecated()) {
             if (referencedRule instanceof RuleReference) {
                 RuleReference ruleReference = (RuleReference) referencedRule;
-                if (LOG.isLoggable(Level.WARNING)) {
-                    LOG.warning("Use Rule name " + ruleReference.getRuleSetReference().getRuleSetFileName() + '/'
-                            + ruleReference.getOriginalName() + " instead of the deprecated Rule name "
-                            + otherRuleSetReferenceId
-                            + ". PMD " + PMDVersion.getNextMajorRelease()
-                            + " will remove support for this deprecated Rule name usage.");
-                }
+                LOG.warn("Use Rule name {}/{} instead of the deprecated Rule name {}. PMD {}"
+                        + " will remove support for this deprecated Rule name usage.",
+                        ruleReference.getRuleSetReference().getRuleSetFileName(),
+                        ruleReference.getOriginalName(), otherRuleSetReferenceId,
+                        PMDVersion.getNextMajorRelease());
             } else {
-                if (LOG.isLoggable(Level.WARNING)) {
-                    LOG.warning("Discontinue using Rule name " + otherRuleSetReferenceId
-                            + " as it is scheduled for removal from PMD."
-                            + " PMD " + PMDVersion.getNextMajorRelease()
-                            + " will remove support for this Rule.");
-                }
+                LOG.warn("Discontinue using Rule name {} as it is scheduled for removal from PMD."
+                        + " PMD {} will remove support for this Rule.",
+                        otherRuleSetReferenceId, PMDVersion.getNextMajorRelease());
             }
         }
 
@@ -511,13 +506,13 @@ final class RuleSetFactory {
         RuleReference ruleReference = new RuleFactory(resourceLoader).decorateRule(referencedRule, ruleSetReference, ruleElement, err);
 
         if (warnDeprecated && ruleReference.isDeprecated() && !isSameRuleSet) {
-            if (LOG.isLoggable(Level.WARNING)) {
-                LOG.warning("Use Rule name " + ruleReference.getRuleSetReference().getRuleSetFileName() + '/'
-                        + ruleReference.getOriginalName() + " instead of the deprecated Rule name "
-                        + ruleSetReferenceId.getRuleSetFileName() + '/' + ruleReference.getName()
-                        + ". PMD " + PMDVersion.getNextMajorRelease()
-                        + " will remove support for this deprecated Rule name usage.");
-            }
+            LOG.warn("Use Rule name {}/{} instead of the deprecated Rule name {}/{}. PMD {}"
+                    + " will remove support for this deprecated Rule name usage.",
+                    ruleReference.getRuleSetReference().getRuleSetFileName(),
+                    ruleReference.getOriginalName(),
+                    ruleSetReferenceId.getRuleSetFileName(),
+                    ruleReference.getName(),
+                    PMDVersion.getNextMajorRelease());
         }
 
         if (withDeprecatedRuleReferences || !isSameRuleSet || !ruleReference.isDeprecated()) {
@@ -528,9 +523,10 @@ final class RuleSetFactory {
                 // which means, it is a plain reference. And the new reference overrides.
                 // for all other cases, we should log a warning
                 if (existingRuleReference.hasOverriddenAttributes() || !ruleReference.hasOverriddenAttributes()) {
-                    LOG.warning("The rule " + ruleReference.getName() + " is referenced multiple times in \""
-                            + ruleSetBuilder.getName() + "\". "
-                            + "Only the last rule configuration is used.");
+                    LOG.warn("The rule {} is referenced multiple times in \"{}\". "
+                            + "Only the last rule configuration is used.",
+                            ruleReference.getName(),
+                            ruleSetBuilder.getName());
                 }
             }
 

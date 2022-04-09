@@ -7,10 +7,10 @@ package net.sourceforge.pmd;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Provides a simple filter mechanism to avoid failing to parse an old ruleset,
@@ -76,7 +76,7 @@ final class RuleSetFactoryCompatibility {
     }
 
 
-    private static final Logger LOG = Logger.getLogger(RuleSetFactoryCompatibility.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(RuleSetFactoryCompatibility.class);
 
     private final List<RuleSetFilter> filters = new ArrayList<>();
 
@@ -140,7 +140,7 @@ final class RuleSetFactoryCompatibility {
         return result;
     }
 
-    private static class RuleSetFilter {
+    private static final class RuleSetFilter {
 
         private static final String MOVED_MESSAGE = "The rule \"{1}\" has been moved from ruleset \"{0}\" to \"{2}\". Please change your ruleset!";
         private static final String RENAMED_MESSAGE = "The rule \"{1}\" has been renamed to \"{3}\". Please change your ruleset!";
@@ -218,9 +218,9 @@ final class RuleSetFactoryCompatibility {
         }
 
         private void warn() {
-            if (LOG.isLoggable(Level.WARNING)) {
+            if (LOG.isWarnEnabled()) {
                 String log = MessageFormat.format(logMessage, oldRuleset, oldName, newRuleset, newName);
-                LOG.warning("Applying rule set filter: " + log);
+                LOG.warn("Applying rule set filter: {}", log);
             }
         }
     }

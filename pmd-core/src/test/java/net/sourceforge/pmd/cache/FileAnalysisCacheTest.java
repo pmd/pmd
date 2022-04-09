@@ -34,6 +34,7 @@ import org.mockito.Mockito;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.util.datasource.DataSource;
 
 public class FileAnalysisCacheTest {
 
@@ -81,21 +82,21 @@ public class FileAnalysisCacheTest {
     }
 
     @Test
-    public void testStoreCreatesFile() {
+    public void testStoreCreatesFile() throws Exception {
         final FileAnalysisCache cache = new FileAnalysisCache(unexistingCacheFile);
         cache.persist();
         assertTrue("Cache file doesn't exist after store", unexistingCacheFile.exists());
     }
 
     @Test
-    public void testStoreOnUnwritableFileShouldntThrow() {
+    public void testStoreOnUnwritableFileShouldntThrow() throws IOException {
         emptyCacheFile.setWritable(false);
         final FileAnalysisCache cache = new FileAnalysisCache(emptyCacheFile);
         cache.persist();
     }
 
     @Test
-    public void testStorePersistsFilesWithViolations() {
+    public void testStorePersistsFilesWithViolations() throws IOException {
         final FileAnalysisCache cache = new FileAnalysisCache(newCacheFile);
         cache.checkValidity(mock(RuleSets.class), mock(ClassLoader.class));
         cache.isUpToDate(sourceFile);
@@ -106,7 +107,9 @@ public class FileAnalysisCacheTest {
         when(rule.getLanguage()).thenReturn(mock(Language.class));
         when(rv.getRule()).thenReturn(rule);
 
-        cache.ruleViolationAdded(rv);
+        DataSource ds = mock(DataSource.class);
+        when(ds.getNiceFileName(false, "")).thenReturn(sourceFile.getPath());
+        cache.startFileAnalysis(ds).onRuleViolation(rv);
         cache.persist();
 
         final FileAnalysisCache reloadedCache = new FileAnalysisCache(newCacheFile);
@@ -119,7 +122,7 @@ public class FileAnalysisCacheTest {
     }
 
     @Test
-    public void testCacheValidityWithNoChanges() {
+    public void testCacheValidityWithNoChanges() throws IOException {
         final RuleSets rs = mock(RuleSets.class);
         final ClassLoader cl = mock(ClassLoader.class);
 
@@ -149,7 +152,7 @@ public class FileAnalysisCacheTest {
     }
 
     @Test
-    public void testRulesetChangeInvalidatesCache() {
+    public void testRulesetChangeInvalidatesCache() throws IOException {
         final RuleSets rs = mock(RuleSets.class);
         final ClassLoader cl = mock(ClassLoader.class);
 
@@ -366,7 +369,7 @@ public class FileAnalysisCacheTest {
     }
 
     private void setupCacheWithFiles(final File cacheFile, final RuleSets ruleSets,
-            final ClassLoader classLoader, final File... files) {
+            final ClassLoader classLoader, final File... files) throws IOException {
         // Setup a cache file with an entry for an empty Source.java with no violations
         final FileAnalysisCache cache = new FileAnalysisCache(cacheFile);
         cache.checkValidity(ruleSets, classLoader);

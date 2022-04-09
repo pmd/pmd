@@ -126,7 +126,7 @@ public class XPathRuleTest extends RuleTst {
     @Test
     public void testFollowingSibling() throws Exception {
         final String source = "public interface dummy extends Foo, Bar, Baz {}";
-        ASTCompilationUnit cu = JavaParsingHelper.WITH_PROCESSING.parse(source);
+        ASTCompilationUnit cu = JavaParsingHelper.DEFAULT.parse(source);
 
         String xpath = "//ExtendsList/ClassOrInterfaceType/following-sibling::ClassOrInterfaceType";
 
@@ -143,7 +143,7 @@ public class XPathRuleTest extends RuleTst {
     }
 
     private static Report getReportForTestString(Rule r, String test) {
-        return JavaParsingHelper.WITH_PROCESSING.executeRule(r, test);
+        return JavaParsingHelper.DEFAULT.executeRule(r, test);
     }
 
 
