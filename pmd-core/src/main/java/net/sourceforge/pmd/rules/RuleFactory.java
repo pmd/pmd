@@ -43,6 +43,7 @@ import net.sourceforge.pmd.util.StringUtil;
 
 import com.github.oowekyala.ooxml.DomUtils;
 import com.github.oowekyala.ooxml.messages.XmlErrorReporter;
+import com.github.oowekyala.ooxml.messages.XmlException;
 
 
 /**
@@ -154,7 +155,7 @@ public class RuleFactory {
             String clazz = getNonBlankAttribute(ruleElement, err, CLASS);
             rule = resourceLoader.loadRuleFromClassPath(clazz);
         } catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
-            throw err.fatal(ruleElement.getAttributeNode(CLASS), e);
+            throw err.error(ruleElement.getAttributeNode(CLASS), e);
         }
 
         rule.setName(getNonBlankAttribute(ruleElement, err, NAME));
@@ -305,6 +306,7 @@ public class RuleFactory {
     private void setPropertyValues(Rule rule, Element propertiesElt, XmlErrorReporter err) {
         Set<String> overridden = new HashSet<>();
 
+        XmlException exception = null;
         for (Element element : SchemaConstants.PROPERTY_ELT.getElementChildrenNamedReportOthers(propertiesElt, err)) {
             String name = SchemaConstants.NAME.getAttributeOrThrow(element, err);
             if (!overridden.add(name)) {
@@ -317,7 +319,18 @@ public class RuleFactory {
                 // todo just warn and ignore
                 throw err.error(element, ERR__PROPERTY_DOES_NOT_EXIST, name, rule.getName());
             }
-            setRulePropertyCapture(rule, desc, element, err);
+            try {
+                setRulePropertyCapture(rule, desc, element, err);
+            } catch (XmlException e) {
+                if (exception == null) {
+                    exception = e;
+                } else {
+                    exception.addSuppressed(e);
+                }
+            }
+        }
+        if (exception != null) {
+            throw exception;
         }
     }
 
