@@ -7,7 +7,6 @@ package net.sourceforge.pmd.ant;
 import static org.junit.Assert.fail;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -15,15 +14,30 @@ import java.nio.charset.StandardCharsets;
 import org.apache.commons.io.IOUtils;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.BuildFileRule;
+import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.contrib.java.lang.system.RestoreSystemProperties;
+import org.junit.rules.TestRule;
+
+import net.sourceforge.pmd.internal.Slf4jSimpleConfiguration;
 
 public class PMDTaskTest {
 
     @Rule
     public final BuildFileRule buildRule = new BuildFileRule();
+
+    // restoring system properties: PMDTask might change logging properties
+    // See Slf4jSimpleConfigurationForAnt and resetLogging
+    @Rule
+    public final TestRule restoreSystemProperties = new RestoreSystemProperties();
+
+    @AfterClass
+    public static void resetLogging() {
+        Slf4jSimpleConfiguration.reconfigureDefaultLogLevel(null);
+    }
 
     @Before
     public void setUp() {
@@ -71,14 +85,14 @@ public class PMDTaskTest {
     }
 
     @Test
-    public void testWithShortFilenames() throws FileNotFoundException, IOException {
+    public void testWithShortFilenames() throws IOException {
         buildRule.executeTarget("testWithShortFilenames");
 
         try (InputStream in = new FileInputStream("target/pmd-ant-test.txt")) {
             String actual = IOUtils.toString(in, StandardCharsets.UTF_8);
             // remove any trailing newline
-            actual = actual.replaceAll("\n|\r", "");
-            Assert.assertEquals("sample.dummy:0:\tTest Rule 2", actual);
+            actual = actual.trim();
+            Assert.assertEquals("sample.dummy:1:\tSampleXPathRule:\tTest Rule 2", actual);
         }
     }
 }

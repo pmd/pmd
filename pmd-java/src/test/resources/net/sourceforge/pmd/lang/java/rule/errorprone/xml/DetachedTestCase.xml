@@ -168,6 +168,7 @@ public class MyTest {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import org.junit.Test;
+import org.junit.After;
 
 public class MyTest {
     @Test

@@ -18,7 +18,7 @@ import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 
 public class JDKVersionTest {
 
-    private final JavaParsingHelper java3 = JavaParsingHelper.JUST_PARSE
+    private final JavaParsingHelper java3 = JavaParsingHelper.DEFAULT
         .withDefaultVersion("1.3")
         .withResourceContext(JDKVersionTest.class, "jdkversiontests/");
 
@@ -279,7 +279,7 @@ public class JDKVersionTest {
         List<ASTMethodDeclaration> methods = acu.findDescendantsOfType(ASTMethodDeclaration.class, true);
         assertEquals(3, methods.size());
         for (ASTMethodDeclaration method : methods) {
-            assertFalse(method.isInterfaceMember());
+            assertFalse(method.getEnclosingType().isInterface());
         }
     }
 

@@ -19,6 +19,7 @@ public class Foo {
     <test-code>
         <description>bad, Foo.clone() calls new Foo();</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     void clone() {
@@ -43,6 +44,7 @@ public class Foo {
     <test-code>
         <description>bad, Foo.clone() calls new Foo();</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
         <code><![CDATA[
 public class Bar {
     class Foo {
@@ -62,6 +64,18 @@ public class Foo {
     void clone() {
         super.clone();
         byte[] array = new byte[6];
+    }
+}
+        ]]></code>
+    </test-code>
+    
+    <test-code>
+        <description>ok, final class false-positive</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+final class Foo {
+    Foo clone() {
+        return new Foo();
     }
 }
         ]]></code>

@@ -5,15 +5,19 @@
 package net.sourceforge.pmd.renderers;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.StringReader;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.contrib.java.lang.system.RestoreSystemProperties;
+import org.junit.rules.TemporaryFolder;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
@@ -24,16 +28,18 @@ import net.sourceforge.pmd.PMDVersion;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Report.ConfigurationError;
 import net.sourceforge.pmd.Report.ProcessingError;
-import net.sourceforge.pmd.ReportTest;
-import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.ast.DummyNode;
+import net.sourceforge.pmd.lang.ast.DummyRoot;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 
 public class XMLRendererTest extends AbstractRendererTest {
     @Rule // Restores system properties after test
     public final RestoreSystemProperties restoreSystemProperties = new RestoreSystemProperties();
+
+    @Rule
+    public TemporaryFolder folder = new TemporaryFolder();
 
     @Override
     public Renderer getRenderer() {
@@ -57,7 +63,7 @@ public class XMLRendererTest extends AbstractRendererTest {
         return getHeader() + "<file name=\"" + getSourceCodeFilename() + "\">" + PMD.EOL
                 + "<violation beginline=\"1\" endline=\"1\" begincolumn=\"1\" endcolumn=\"1\" rule=\"Foo\" ruleset=\"RuleSet\" priority=\"5\">"
                 + PMD.EOL + "blah" + PMD.EOL + "</violation>" + PMD.EOL
-                + "<violation beginline=\"1\" endline=\"1\" begincolumn=\"1\" endcolumn=\"2\" rule=\"Foo\" ruleset=\"RuleSet\" priority=\"5\">"
+                + "<violation beginline=\"1\" endline=\"1\" begincolumn=\"1\" endcolumn=\"2\" rule=\"Boo\" ruleset=\"RuleSet\" priority=\"1\">"
                 + PMD.EOL + "blah" + PMD.EOL + "</violation>" + PMD.EOL + "</file>" + PMD.EOL + "</pmd>" + PMD.EOL;
     }
 
@@ -85,20 +91,17 @@ public class XMLRendererTest extends AbstractRendererTest {
     }
 
     private RuleViolation createRuleViolation(String description) {
-        DummyNode node = new DummyNode();
+        DummyNode node = new DummyRoot().withFileName(getSourceCodeFilename());
         node.setCoords(1, 1, 1, 1);
-        RuleContext ctx = new RuleContext();
-        ctx.setSourceCodeFile(new File(getSourceCodeFilename()));
-        return new ParametricRuleViolation<Node>(new FooRule(), ctx, node, description);
+        return new ParametricRuleViolation<Node>(new FooRule(), node, description);
     }
 
     private void verifyXmlEscaping(Renderer renderer, String shouldContain, Charset charset) throws Exception {
         renderer.setProperty(XMLRenderer.ENCODING, charset.name());
-        Report report = new Report();
         String surrogatePair = "\ud801\udc1c";
         String msg = "The String 'literal' \"TokénizĀr " + surrogatePair + "\" appears...";
-        report.addRuleViolation(createRuleViolation(msg));
-        String actual = ReportTest.renderTempFile(renderer, report, charset);
+        Report report = Report.buildReport(it -> it.onRuleViolation(createRuleViolation(msg)));
+        String actual = renderTempFile(renderer, report, charset);
         Assert.assertTrue(actual.contains(shouldContain));
         Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder()
                 .parse(new InputSource(new StringReader(actual)));
@@ -111,6 +114,12 @@ public class XMLRendererTest extends AbstractRendererTest {
     public void testXMLEscapingWithUTF8() throws Exception {
         Renderer renderer = getRenderer();
         verifyXmlEscaping(renderer, "\ud801\udc1c", StandardCharsets.UTF_8);
+    }
+
+    @Test
+    public void testXMLEscapingWithUTF16() throws Exception {
+        Renderer renderer = getRenderer();
+        verifyXmlEscaping(renderer, "&#x1041c;", StandardCharsets.UTF_16);
     }
 
     @Test
@@ -133,15 +142,14 @@ public class XMLRendererTest extends AbstractRendererTest {
 
         Renderer renderer = getRenderer();
 
-        Report report = new Report();
         String formFeed = "\u000C";
         // é = U+00E9 : can be represented in ISO-8859-1 as is
         // Ā = U+0100 : cannot be represented in ISO-8859-1 -> would be a unmappable character, needs to be escaped
         String specialChars = "éĀ";
         String originalChars = formFeed + specialChars; // u000C should be removed, é should be encoded correctly as UTF-8
         String msg = "The String literal \"" + originalChars + "\" appears...";
-        report.addRuleViolation(createRuleViolation(msg));
-        String actual = ReportTest.renderTempFile(renderer, report, StandardCharsets.UTF_8);
+        Report report = Report.buildReport(it -> it.onRuleViolation(createRuleViolation(msg)));
+        String actual = renderTempFile(renderer, report, StandardCharsets.UTF_8);
         Assert.assertTrue(actual.contains(specialChars));
         Assert.assertFalse(actual.contains(formFeed));
         Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder()
@@ -149,5 +157,19 @@ public class XMLRendererTest extends AbstractRendererTest {
         NodeList violations = doc.getElementsByTagName("violation");
         Assert.assertEquals(1, violations.getLength());
         Assert.assertEquals(msg.replaceAll(formFeed, ""), violations.item(0).getTextContent().trim());
+    }
+
+    private String renderTempFile(Renderer renderer, Report report, Charset expectedCharset) throws IOException {
+        File reportFile = folder.newFile();
+
+        renderer.setReportFile(reportFile.getAbsolutePath());
+        renderer.start();
+        renderer.renderFileReport(report);
+        renderer.end();
+        renderer.flush();
+
+        try (FileInputStream input = new FileInputStream(reportFile)) {
+            return IOUtils.toString(input, expectedCharset);
+        }
     }
 }

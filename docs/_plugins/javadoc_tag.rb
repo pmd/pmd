@@ -239,7 +239,8 @@ class JavadocTag < Liquid::Tag
 
     src_dirs = [
         File.join(artifact_dir, "src", "main", "java"),
-        File.join(artifact_dir, "target", "generated-sources", "javacc")
+        File.join(artifact_dir, "target", "generated-sources", "javacc"),
+        File.join(artifact_dir, "target", "generated-sources", "antlr4")
     ].select {|dir| File.exist?(dir)}
 
     targets = src_dirs

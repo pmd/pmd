@@ -26,6 +26,8 @@ author: Tom Copeland <tom@infoether.org>
 
 ### PMD in general and other Language Modules
 
+*   February 2021 - Artem Krosheninnikov's talk about Quality Assurance Automation: [Artem Krosheninnikov, Wrike - How static analysis can help in QAA processes](https://www.youtube.com/watch?v=L42zH5ne074)
+
 *   May 2019 - [Code quality assurance with PMD – An extensible static code analyser for Java and other languages](https://www.datarespons.com/code-quality-assurance-with-pmd/)
 
 *   February 2012 - Romain Pelisse's lightning talk at FOSDEM 2012 about "PMD5: What can it do for you?".

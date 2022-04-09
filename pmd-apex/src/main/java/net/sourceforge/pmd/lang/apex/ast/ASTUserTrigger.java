@@ -10,24 +10,15 @@ import java.util.stream.Collectors;
 import apex.jorje.data.Identifier;
 import apex.jorje.semantic.ast.compilation.UserTrigger;
 
-public final class ASTUserTrigger extends AbstractApexNode<UserTrigger> {
+public final class ASTUserTrigger extends BaseApexClass<UserTrigger> {
 
     ASTUserTrigger(UserTrigger userTrigger) {
         super(userTrigger);
     }
 
     @Override
-    public Object jjtAccept(ApexParserVisitor visitor, Object data) {
+    protected <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
-    }
-
-    @Override
-    public String getImage() {
-        return getDefiningType();
-    }
-
-    public ASTModifierNode getModifiers() {
-        return getFirstChildOfType(ASTModifierNode.class);
     }
 
     public String getTargetName() {

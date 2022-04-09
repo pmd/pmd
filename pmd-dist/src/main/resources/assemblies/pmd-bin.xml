@@ -12,10 +12,7 @@
     <fileSets>
         <fileSet>
             <includes>
-                <include>cpd.bat</include>
-                <include>cpdgui.bat</include>
-                <include>designer.bat</include>
-                <include>pmd.bat</include>
+                <include>*.bat</include>
             </includes>
             <directory>target/extra-resources/scripts</directory>
             <outputDirectory>bin</outputDirectory>
@@ -41,6 +38,16 @@
             </includes>
             <directory>target/extra-resources</directory>
             <outputDirectory>.</outputDirectory>
+            <directoryMode>0755</directoryMode>
+            <fileMode>0644</fileMode>
+        </fileSet>
+
+        <fileSet>
+            <includes>
+                <include>simplelogger.properties</include>
+            </includes>
+            <directory>target/extra-resources/conf</directory>
+            <outputDirectory>conf</outputDirectory>
             <directoryMode>0755</directoryMode>
             <fileMode>0644</fileMode>
         </fileSet>

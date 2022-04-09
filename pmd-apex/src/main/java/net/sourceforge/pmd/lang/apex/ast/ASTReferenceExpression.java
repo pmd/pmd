@@ -21,8 +21,9 @@ public final class ASTReferenceExpression extends AbstractApexNode<ReferenceExpr
     }
 
 
+
     @Override
-    public Object jjtAccept(ApexParserVisitor visitor, Object data) {
+    protected <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 
@@ -50,5 +51,15 @@ public final class ASTReferenceExpression extends AbstractApexNode<ReferenceExpr
             return identifiers.stream().map(id -> id.getValue()).collect(Collectors.toList());
         }
         return Collections.emptyList();
+    }
+
+    public boolean isSafeNav() {
+        return node.isSafeNav();
+    }
+
+    public boolean isSObjectType() {
+        List<Identifier> identifiers = node.getNames();
+        return identifiers != null
+            && identifiers.stream().anyMatch(id -> "sobjecttype".equalsIgnoreCase(id.getValue()));
     }
 }

@@ -11,7 +11,7 @@ import net.sourceforge.pmd.lang.modelica.ast.ASTStoredDefinition;
 public class ModelicaParsingHelper extends BaseParsingHelper<ModelicaParsingHelper, ASTStoredDefinition> {
 
     /** This runs all processing stages when parsing. */
-    public static final ModelicaParsingHelper DEFAULT = new ModelicaParsingHelper(Params.getDefaultProcess());
+    public static final ModelicaParsingHelper DEFAULT = new ModelicaParsingHelper(Params.getDefault());
 
     private ModelicaParsingHelper(Params params) {
         super(ModelicaLanguageModule.NAME, ASTStoredDefinition.class, params);

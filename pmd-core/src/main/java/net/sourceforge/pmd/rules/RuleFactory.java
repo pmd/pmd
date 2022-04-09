@@ -13,10 +13,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -27,7 +27,7 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.RuleSetReference;
 import net.sourceforge.pmd.annotation.InternalApi;
-import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.internal.DOMUtils;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyDescriptorField;
@@ -46,7 +46,7 @@ import net.sourceforge.pmd.util.ResourceLoader;
 @Deprecated
 public class RuleFactory {
 
-    private static final Logger LOG = Logger.getLogger(RuleFactory.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(RuleFactory.class);
 
     private static final String DEPRECATED = "deprecated";
     private static final String NAME = "name";
@@ -65,14 +65,20 @@ public class RuleFactory {
     private static final List<String> REQUIRED_ATTRIBUTES = Collections.unmodifiableList(Arrays.asList(NAME, CLASS));
 
     private final ResourceLoader resourceLoader;
-    private final LanguageRegistry languageRegistry;
+
+    /**
+     * @deprecated Use {@link #RuleFactory(ResourceLoader)} instead.
+     */
+    @Deprecated
+    public RuleFactory() {
+        this(new ResourceLoader());
+    }
 
     /**
      * @param resourceLoader The resource loader to load the rule from jar
      */
-    public RuleFactory(final ResourceLoader resourceLoader, LanguageRegistry languageRegistry) {
+    public RuleFactory(final ResourceLoader resourceLoader) {
         this.resourceLoader = resourceLoader;
-        this.languageRegistry = languageRegistry;
     }
 
     /**
@@ -108,13 +114,13 @@ public class RuleFactory {
             if (node.getNodeType() == Node.ELEMENT_NODE) {
                 switch (node.getNodeName()) {
                 case DESCRIPTION:
-                    ruleReference.setDescription(parseTextNode(node));
+                    ruleReference.setDescription(DOMUtils.parseTextNode(node));
                     break;
                 case EXAMPLE:
-                    ruleReference.addExample(parseTextNode(node));
+                    ruleReference.addExample(DOMUtils.parseTextNode(node));
                     break;
                 case PRIORITY:
-                    ruleReference.setPriority(RulePriority.valueOf(Integer.parseInt(parseTextNode(node))));
+                    ruleReference.setPriority(RulePriority.valueOf(Integer.parseInt(DOMUtils.parseTextNode(node))));
                     break;
                 case PROPERTIES:
                     setPropertyValues(ruleReference, (Element) node);
@@ -146,8 +152,7 @@ public class RuleFactory {
 
         String name = ruleElement.getAttribute(NAME);
 
-        RuleBuilder builder = new RuleBuilder(languageRegistry,
-                                              name,
+        RuleBuilder builder = new RuleBuilder(name,
                                               resourceLoader,
                                               ruleElement.getAttribute(CLASS),
                                               ruleElement.getAttribute("language"));
@@ -179,13 +184,13 @@ public class RuleFactory {
 
             switch (node.getNodeName()) {
             case DESCRIPTION:
-                builder.description(parseTextNode(node));
+                builder.description(DOMUtils.parseTextNode(node));
                 break;
             case EXAMPLE:
-                builder.addExample(parseTextNode(node));
+                builder.addExample(DOMUtils.parseTextNode(node));
                 break;
             case PRIORITY:
-                builder.priority(Integer.parseInt(parseTextNode(node).trim()));
+                builder.priority(Integer.parseInt(DOMUtils.parseTextNode(node).trim()));
                 break;
             case PROPERTIES:
                 parsePropertiesForDefinitions(builder, node);
@@ -202,7 +207,7 @@ public class RuleFactory {
         try {
             rule = builder.build();
         } catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
-            LOG.log(Level.SEVERE, "Error instantiating a rule", e);
+            LOG.error("Error instantiating a rule", e);
             throw new RuntimeException(e);
         }
 
@@ -231,17 +236,17 @@ public class RuleFactory {
      * @return A map of property names to their value
      */
     private Map<String, String> getPropertyValuesFrom(Element propertiesNode) {
-        Map<String, String> overridenProperties = new HashMap<>();
+        Map<String, String> overriddenProperties = new HashMap<>();
 
         for (int i = 0; i < propertiesNode.getChildNodes().getLength(); i++) {
             Node node = propertiesNode.getChildNodes().item(i);
             if (node.getNodeType() == Node.ELEMENT_NODE && PROPERTY.equals(node.getNodeName())) {
                 Entry<String, String> overridden = getPropertyValue((Element) node);
-                overridenProperties.put(overridden.getKey(), overridden.getValue());
+                overriddenProperties.put(overridden.getKey(), overridden.getValue());
             }
         }
 
-        return overridenProperties;
+        return overriddenProperties;
     }
 
     /**
@@ -359,7 +364,7 @@ public class RuleFactory {
         for (int i = 0; i < nodeList.getLength(); i++) {
             Node node = nodeList.item(i);
             if (node.getNodeType() == Node.ELEMENT_NODE && "value".equals(node.getNodeName())) {
-                return parseTextNode(node);
+                return DOMUtils.parseTextNode(node);
             }
         }
         return null;
@@ -367,29 +372,5 @@ public class RuleFactory {
 
     private static boolean hasAttributeSetTrue(Element element, String attributeId) {
         return element.hasAttribute(attributeId) && "true".equalsIgnoreCase(element.getAttribute(attributeId));
-    }
-
-    /**
-     * Parse a String from a textually type node.
-     *
-     * @param node The node.
-     *
-     * @return The String.
-     */
-    private static String parseTextNode(Node node) {
-        final int nodeCount = node.getChildNodes().getLength();
-        if (nodeCount == 0) {
-            return "";
-        }
-
-        StringBuilder buffer = new StringBuilder();
-
-        for (int i = 0; i < nodeCount; i++) {
-            Node childNode = node.getChildNodes().item(i);
-            if (childNode.getNodeType() == Node.CDATA_SECTION_NODE || childNode.getNodeType() == Node.TEXT_NODE) {
-                buffer.append(childNode.getNodeValue());
-            }
-        }
-        return buffer.toString();
     }
 }

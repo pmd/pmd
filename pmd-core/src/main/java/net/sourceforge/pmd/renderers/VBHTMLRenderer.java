@@ -68,9 +68,8 @@ public class VBHTMLRenderer extends AbstractIncrementingRenderer {
             }
 
             colorize = !colorize;
-            sb.append("<td width=\"50\" align=\"right\"><font class=body>" + rv.getBeginLine()
-                    + "&nbsp;&nbsp;&nbsp;</font></td>");
-            sb.append("<td><font class=body>" + rv.getDescription() + "</font></td>");
+            sb.append("<td width=\"50\" align=\"right\"><font class=body>").append(rv.getBeginLine()).append("&nbsp;&nbsp;&nbsp;</font></td>");
+            sb.append("<td><font class=body>").append(rv.getDescription()).append("</font></td>");
             sb.append("</tr>");
             sb.append(lineSep);
             writer.write(sb.toString());
@@ -130,7 +129,7 @@ public class VBHTMLRenderer extends AbstractIncrementingRenderer {
 
     private String header() {
         StringBuilder sb = new StringBuilder(600).append("<html><head><title>PMD</title></head>")
-                .append("<style type=\"text/css\">").append("<!--" + PMD.EOL)
+                .append("<style type=\"text/css\">").append("<!--").append(PMD.EOL)
                 .append("body { background-color: white; font-family:verdana, arial, helvetica, geneva; font-size: 16px; font-style: italic; color: black; }")
                 .append(PMD.EOL)
                 .append(".title { font-family: verdana, arial, helvetica,geneva; font-size: 12px; font-weight:bold; color: white; }")

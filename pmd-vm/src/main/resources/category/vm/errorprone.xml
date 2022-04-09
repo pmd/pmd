@@ -10,6 +10,7 @@ Rules to detect constructs that are either broken, extremely confusing or prone 
     </description>
 
     <rule name="EmptyForeachStmt"
+          language="vm"
           since="5.1"
           message="Avoid empty foreach loops"
           class="net.sourceforge.pmd.lang.vm.rule.errorprone.EmptyForeachStmtRule"
@@ -21,6 +22,7 @@ Empty foreach statements should be deleted.
     </rule>
 
     <rule name="EmptyIfStmt"
+          language="vm"
           since="5.1"
           message="Avoid empty if statements"
           class="net.sourceforge.pmd.lang.vm.rule.errorprone.EmptyIfStmtRule"

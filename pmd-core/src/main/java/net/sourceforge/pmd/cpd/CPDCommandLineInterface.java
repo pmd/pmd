@@ -12,11 +12,19 @@ import java.io.OutputStreamWriter;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.logging.Logger;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMDVersion;
+import net.sourceforge.pmd.cli.internal.CliMessages;
 import net.sourceforge.pmd.util.FileUtil;
 import net.sourceforge.pmd.util.database.DBURI;
 
@@ -24,7 +32,7 @@ import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 
 public final class CPDCommandLineInterface {
-    private static final Logger LOGGER = Logger.getLogger(CPDCommandLineInterface.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(CPDCommandLineInterface.class);
 
     private static final int NO_ERRORS_STATUS = 0;
     private static final int ERROR_STATUS = 1;
@@ -71,12 +79,19 @@ public final class CPDCommandLineInterface {
                 return;
             }
         } catch (ParameterException e) {
-            jcommander.usage();
-            System.out.println(buildUsageText());
-            System.err.println(" " + e.getMessage());
+            System.err.println(e.getMessage());
+            System.err.println(CliMessages.runWithHelpFlagMessage());
             setStatusCodeOrExit(ERROR_STATUS);
             return;
         }
+
+        Map<String, String> deprecatedOptions = filterDeprecatedOptions(args);
+        if (!deprecatedOptions.isEmpty()) {
+            Entry<String, String> first = deprecatedOptions.entrySet().iterator().next();
+            LOG.warn("Some deprecated options were used on the command-line, including {}", first.getKey());
+            LOG.warn("Consider replacing it with {}", first.getValue());
+        }
+
         arguments.postContruct();
         // Pass extra parameters as System properties to allow language
         // implementation to retrieve their associate values...
@@ -103,9 +118,28 @@ public final class CPDCommandLineInterface {
                 setStatusCodeOrExit(NO_ERRORS_STATUS);
             }
         } catch (IOException | RuntimeException e) {
-            e.printStackTrace();
+            LOG.debug(e.toString(), e);
+            LOG.error(CliMessages.errorDetectedMessage(1, "CPD"));
             setStatusCodeOrExit(ERROR_STATUS);
         }
+    }
+
+    private static Map<String, String> filterDeprecatedOptions(String... args) {
+        Map<String, String> argSet = new LinkedHashMap<>(SUGGESTED_REPLACEMENT);
+        argSet.keySet().retainAll(new HashSet<>(Arrays.asList(args)));
+        return Collections.unmodifiableMap(argSet);
+    }
+
+    /** Map of deprecated option to suggested replacement. */
+    private static final Map<String, String> SUGGESTED_REPLACEMENT;
+
+    static {
+        Map<String, String> m = new LinkedHashMap<>();
+
+        m.put("--failOnViolation", "--fail-on-violation");
+        m.put("-failOnViolation", "--fail-on-violation");
+        m.put("--filelist", "--file-list");
+        SUGGESTED_REPLACEMENT = Collections.unmodifiableMap(m);
     }
 
     public static void addSourceFilesToCPD(CPD cpd, CPDConfiguration arguments) {
@@ -168,11 +202,10 @@ public final class CPDCommandLineInterface {
 
     private static void addSourceURIToCPD(String uri, CPD cpd) {
         try {
-            LOGGER.fine(String.format("Attempting DBURI=%s", uri));
+            LOG.debug("Attempting DBURI={}", uri);
             DBURI dburi = new DBURI(uri);
-            LOGGER.fine(String.format("Initialised DBURI=%s", dburi));
-            LOGGER.fine(
-                    String.format("Adding DBURI=%s with DBType=%s", dburi.toString(), dburi.getDbType().toString()));
+            LOG.debug("Initialised DBURI={}", dburi);
+            LOG.debug("Adding DBURI={} with DBType={}", dburi, dburi.getDbType());
             cpd.add(dburi);
         } catch (IOException | URISyntaxException e) {
             throw new IllegalStateException("uri=" + uri, e);

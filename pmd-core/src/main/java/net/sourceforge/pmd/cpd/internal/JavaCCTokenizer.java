@@ -59,7 +59,7 @@ public abstract class JavaCCTokenizer implements Tokenizer {
                 currentToken = tokenFilter.getNextToken();
             }
         } catch (TokenMgrError e) {
-            throw e.withFileName(sourceCode.getFileName());
+            throw e.setFileName(sourceCode.getFileName());
         } finally {
             tokenEntries.add(TokenEntry.getEOF());
         }

@@ -11,7 +11,6 @@ import org.junit.Test;
 
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.internal.util.IteratorUtil;
 import net.sourceforge.pmd.lang.scala.ast.ASTSource;
 import net.sourceforge.pmd.lang.scala.ast.ASTTermApply;
 import net.sourceforge.pmd.lang.scala.ast.ASTTermName;
@@ -42,6 +41,11 @@ public class ScalaRuleTest extends BaseScalaTest {
     public void testDummyRule() {
         ScalaRule rule = new ScalaRule() {
             @Override
+            public String getMessage() {
+                return "a message";
+            }
+
+            @Override
             public RuleContext visit(ASTTermApply node, RuleContext data) {
                 ASTTermName child = node.getFirstChildOfType(ASTTermName.class);
                 if (child != null && child.hasImageEqualTo("println")) {
@@ -50,8 +54,8 @@ public class ScalaRuleTest extends BaseScalaTest {
                 return data;
             }
         };
-        Report report = scala.getReportForResource(rule, SCALA_TEST);
+        Report report = scala.executeRuleOnResource(rule, SCALA_TEST);
 
-        Assert.assertEquals(1, IteratorUtil.count(report.iterator()));
+        Assert.assertEquals(1, report.getViolations().size());
     }
 }

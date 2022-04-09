@@ -13,8 +13,9 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Provide a single parameter to specify database objects to process.
@@ -58,9 +59,7 @@ import java.util.logging.Logger;
  */
 public class DBURI {
 
-    private static final String CLASS_NAME = DBURI.class.getCanonicalName();
-
-    private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
+    private static final Logger LOG = LoggerFactory.getLogger(DBURI.class);
 
     /**
      * A JDBC URL with an associated query.
@@ -150,7 +149,7 @@ public class DBURI {
      *            URL string
      * @throws URISyntaxException
      */
-    public DBURI(String string) throws URISyntaxException {
+    public DBURI(String string) throws URISyntaxException, IOException {
         /*
          * A JDBC URL is an opaque URL and does not have a query.
          *
@@ -172,7 +171,7 @@ public class DBURI {
                 url = string;
             }
 
-            LOGGER.log(Level.FINE, "Extracted URL={0}", url);
+            LOG.debug("Extracted URL={}", url);
 
             // Explode URL into its separate components
             setFields();
@@ -183,13 +182,13 @@ public class DBURI {
                 // Generate a fake HTTP URI to allow easy extraction of the
                 // query parameters
                 String chimeraString = "http://local?" + string.substring(url.length() + 1);
-                LOGGER.log(Level.FINEST, "chimeraString={0}", chimeraString);
+                LOG.trace("chimeraString={}", chimeraString);
                 URI chimeraURI = new URI(chimeraString);
                 dump("chimeraURI", chimeraURI);
 
                 parameters = getParameterMap(chimeraURI);
 
-                LOGGER.log(Level.FINEST, "parameterMap=={0}", parameters);
+                LOG.trace("parameterMap=={}", parameters);
 
                 characterSet = parameters.get("characterset");
                 sourceCodeTypes = parameters.get("sourcecodetypes");
@@ -219,8 +218,6 @@ public class DBURI {
             URISyntaxException uriException = new URISyntaxException(string, "Problem generating DBURI.");
             uriException.initCause(ex);
             throw uriException;
-        } catch (IOException e) {
-            throw new RuntimeException(e);
         }
     }
 
@@ -273,7 +270,7 @@ public class DBURI {
 
         Map<String, String> map = new HashMap<>();
         String query = dburi.getRawQuery();
-        LOGGER.log(Level.FINEST, "dburi,getQuery()={0}", query);
+        LOG.trace("dburi,getQuery()={}", query);
         if (null != query && !"".equals(query)) {
             String[] params = query.split("&");
             for (String param : params) {
@@ -297,12 +294,9 @@ public class DBURI {
      */
     static void dump(String description, URI dburi) {
 
-        String dumpString = String.format(
-                "dump (%s)\n: isOpaque=%s, isAbsolute=%s Scheme=%s,\n SchemeSpecificPart=%s,\n Host=%s,\n Port=%s,\n Path=%s,\n Fragment=%s,\n Query=%s\n",
+        LOG.debug("dump ({})\n: isOpaque={}, isAbsolute={} Scheme={},\n SchemeSpecificPart={},\n Host={},\n Port={},\n Path={},\n Fragment={},\n Query={}",
                 description, dburi.isOpaque(), dburi.isAbsolute(), dburi.getScheme(), dburi.getSchemeSpecificPart(),
                 dburi.getHost(), dburi.getPort(), dburi.getPath(), dburi.getFragment(), dburi.getQuery());
-
-        LOGGER.fine(dumpString);
 
         String query = dburi.getQuery();
         if (null != query && !"".equals(query)) {
@@ -316,7 +310,7 @@ public class DBURI {
                     value = splits[1];
                 }
                 map.put(name, value);
-                LOGGER.fine(String.format("name=%s,value=%s\n", name, value));
+                LOG.debug("name={},value={}", name, value);
             }
         }
         // return map;
@@ -444,13 +438,13 @@ public class DBURI {
             // java.net.URI is intended for "normal" URLs
             URI jdbcURI = new URI(getURL().substring(5));
 
-            LOGGER.log(Level.FINE, "setFields - substr(jdbcURL,5):{0}", getURL().substring(5));
+            LOG.debug("setFields - substr(jdbcURL,5):{}", getURL().substring(5));
             dump("substr(jdbcURL,5)", jdbcURI);
 
             // jdbc:subprotocol:subname
             String[] uriParts = url.split(":");
             for (String part : uriParts) {
-                LOGGER.log(Level.FINEST, "JDBCpart={0}", part);
+                LOG.trace("JDBCpart={}", part);
             }
 
             /*
@@ -469,15 +463,15 @@ public class DBURI {
                 throw new URISyntaxException(getURL(), "Could not understand JDBC URL", 1);
             }
 
-            LOGGER.log(Level.FINE, "subprotocol={0}'' subnamePrefix={1}", new Object[] { subprotocol, subnamePrefix });
+            LOG.debug("subprotocol={}'' subnamePrefix={}", subprotocol, subnamePrefix);
 
             // Set values from DBType defaults
             this.dbType = new DBType(subprotocol, subnamePrefix);
 
-            LOGGER.log(Level.FINER, "DBType properties found at {0} with {1} properties.",
-                    new Object[] { dbType.getPropertiesSource(), dbType.getProperties().size() });
+            LOG.debug("DBType properties found at {} with {} properties.",
+                    dbType.getPropertiesSource(), dbType.getProperties().size());
 
-            LOGGER.log(Level.FINEST, "DBType properties are:- {0}", dbType.getProperties());
+            LOG.trace("DBType properties are:- {}", dbType.getProperties());
 
             if (null != dbType.getDriverClass()) {
                 this.driverClass = dbType.getDriverClass();
@@ -495,20 +489,22 @@ public class DBURI {
                 sourceCodeTypes = dbType.getSourceCodeTypes();
             }
 
-            LOGGER.finer("DBType other properties follow  ...");
+            LOG.debug("DBType other properties follow  ...");
 
             if (null != dbType.getProperties().getProperty("schemas")) {
                 schemasList = Arrays.asList(dbType.getProperties().getProperty("schemas").split(","));
             }
 
-            sourceCodeNames = dbType.getProperties().getProperty("sourcecodenames");
+            if (null != dbType.getProperties().getProperty("sourcecodenames")) {
+                sourceCodeNames = dbType.getProperties().getProperty("sourcecodenames");
+            }
 
             String returnType = dbType.getProperties().getProperty("returnType");
             if (null != returnType) {
                 sourceCodeType = Integer.parseInt(returnType);
             }
 
-            LOGGER.finer("DBType populating lists ");
+            LOG.debug("DBType populating lists ");
             // Populate the lists
             if (null != sourceCodeNames) {
                 sourceCodeNamesList = Arrays.asList(sourceCodeNames.split(","));
@@ -522,7 +518,7 @@ public class DBURI {
                 sourceCodeTypesList = Arrays.asList(sourceCodeTypes.split(","));
             }
 
-            LOGGER.finer("DBType lists generated");
+            LOG.debug("DBType lists generated");
         }
 
     }

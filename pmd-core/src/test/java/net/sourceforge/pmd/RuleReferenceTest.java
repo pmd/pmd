@@ -9,15 +9,19 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import net.sourceforge.pmd.lang.Dummy2LanguageModule;
+import net.sourceforge.pmd.lang.DummyLanguageModule;
+import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.rule.MockRule;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 
-public class RuleReferenceTest extends PmdContextualizedTest {
+public class RuleReferenceTest {
 
     @Test
     public void testRuleSetReference() {
@@ -32,7 +36,8 @@ public class RuleReferenceTest extends PmdContextualizedTest {
         final PropertyDescriptor<String> PROPERTY1_DESCRIPTOR = PropertyFactory.stringProperty("property1").desc("Test property").defaultValue("").build();
         MockRule rule = new MockRule();
         rule.definePropertyDescriptor(PROPERTY1_DESCRIPTOR);
-        rule.setLanguage(languageRegistry().getLanguage(Dummy2LanguageModule.NAME));
+        Language dummyLang = LanguageRegistry.getLanguage(DummyLanguageModule.NAME);
+        rule.setLanguage(dummyLang);
         rule.setName("name1");
         rule.setProperty(PROPERTY1_DESCRIPTOR, "value1");
         rule.setMessage("message1");
@@ -45,9 +50,8 @@ public class RuleReferenceTest extends PmdContextualizedTest {
         RuleReference ruleReference = new RuleReference();
         ruleReference.setRule(rule);
         ruleReference.definePropertyDescriptor(PROPERTY2_DESCRIPTOR);
-        ruleReference.setLanguage(dummyLanguage());
-        ruleReference.setMinimumLanguageVersion(dummyLanguage().getVersion("1.3"));
-        ruleReference.setMaximumLanguageVersion(dummyLanguage().getVersion("1.7"));
+        ruleReference.setMinimumLanguageVersion(dummyLang.getVersion("1.3"));
+        ruleReference.setMaximumLanguageVersion(dummyLang.getVersion("1.7"));
         ruleReference.setDeprecated(true);
         ruleReference.setName("name2");
         ruleReference.setProperty(PROPERTY1_DESCRIPTOR, "value2");
@@ -58,7 +62,24 @@ public class RuleReferenceTest extends PmdContextualizedTest {
         ruleReference.setExternalInfoUrl("externalInfoUrl2");
         ruleReference.setPriority(RulePriority.MEDIUM_HIGH);
 
-        validateOverridenValues(PROPERTY1_DESCRIPTOR, PROPERTY2_DESCRIPTOR, ruleReference);
+        validateOverriddenValues(PROPERTY1_DESCRIPTOR, PROPERTY2_DESCRIPTOR, ruleReference);
+    }
+
+    @Test
+    public void testLanguageOverrideDisallowed() {
+        MockRule rule = new MockRule();
+        Language dummyLang = LanguageRegistry.getLanguage(DummyLanguageModule.NAME);
+        rule.setLanguage(dummyLang);
+
+        RuleReference ruleReference = new RuleReference();
+        ruleReference.setRule(rule);
+
+        Assert.assertThrows(UnsupportedOperationException.class, () -> ruleReference.setLanguage(LanguageRegistry.getLanguage(Dummy2LanguageModule.NAME)));
+        Assert.assertEquals(dummyLang, ruleReference.getLanguage());
+        Assert.assertThrows(IllegalArgumentException.class, () -> ruleReference.setMaximumLanguageVersion(LanguageRegistry.getLanguage(Dummy2LanguageModule.NAME).getVersion("1.0")));
+        Assert.assertEquals(rule.getMaximumLanguageVersion(), ruleReference.getOverriddenMaximumLanguageVersion());
+        Assert.assertThrows(IllegalArgumentException.class, () -> ruleReference.setMinimumLanguageVersion(LanguageRegistry.getLanguage(Dummy2LanguageModule.NAME).getVersion("1.0")));
+        Assert.assertEquals(rule.getMinimumLanguageVersion(), ruleReference.getMinimumLanguageVersion());
     }
 
     @Test
@@ -66,7 +87,8 @@ public class RuleReferenceTest extends PmdContextualizedTest {
         final PropertyDescriptor<String> PROPERTY1_DESCRIPTOR = PropertyFactory.stringProperty("property1").desc("Test property").defaultValue("").build();
         MockRule rule = new MockRule();
         rule.definePropertyDescriptor(PROPERTY1_DESCRIPTOR);
-        rule.setLanguage(languageRegistry().getLanguage(Dummy2LanguageModule.NAME));
+        Language dummyLang = LanguageRegistry.getLanguage(DummyLanguageModule.NAME);
+        rule.setLanguage(dummyLang);
         rule.setName("name1");
         rule.setProperty(PROPERTY1_DESCRIPTOR, "value1");
         rule.setMessage("message1");
@@ -79,9 +101,9 @@ public class RuleReferenceTest extends PmdContextualizedTest {
         RuleReference ruleReference = new RuleReference();
         ruleReference.setRule(rule);
         ruleReference.definePropertyDescriptor(PROPERTY2_DESCRIPTOR);
-        ruleReference.setLanguage(dummyLanguage());
-        ruleReference.setMinimumLanguageVersion(dummyLanguage().getVersion("1.3"));
-        ruleReference.setMaximumLanguageVersion(dummyLanguage().getVersion("1.7"));
+        ruleReference.setLanguage(dummyLang);
+        ruleReference.setMinimumLanguageVersion(dummyLang.getVersion("1.3"));
+        ruleReference.setMaximumLanguageVersion(dummyLang.getVersion("1.7"));
         ruleReference.setDeprecated(true);
         ruleReference.setName("name2");
         ruleReference.setProperty(PROPERTY1_DESCRIPTOR, "value2");
@@ -92,22 +114,22 @@ public class RuleReferenceTest extends PmdContextualizedTest {
         ruleReference.setExternalInfoUrl("externalInfoUrl2");
         ruleReference.setPriority(RulePriority.MEDIUM_HIGH);
 
-        validateOverridenValues(PROPERTY1_DESCRIPTOR, PROPERTY2_DESCRIPTOR, (RuleReference) ruleReference.deepCopy());
+        validateOverriddenValues(PROPERTY1_DESCRIPTOR, PROPERTY2_DESCRIPTOR, (RuleReference) ruleReference.deepCopy());
     }
 
-    private void validateOverridenValues(final PropertyDescriptor<String> propertyDescriptor1,
+    private void validateOverriddenValues(final PropertyDescriptor<String> propertyDescriptor1,
             final PropertyDescriptor<String> propertyDescriptor2, RuleReference ruleReference) {
-        assertEquals("Override failed", dummyLanguage(), ruleReference.getLanguage());
-        assertEquals("Override failed", dummyLanguage(), ruleReference.getOverriddenLanguage());
+        assertEquals("Override failed", LanguageRegistry.getLanguage(DummyLanguageModule.NAME),
+                ruleReference.getLanguage());
 
-        assertEquals("Override failed", dummyLanguage().getVersion("1.3"),
+        assertEquals("Override failed", LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getVersion("1.3"),
                 ruleReference.getMinimumLanguageVersion());
-        assertEquals("Override failed", dummyLanguage().getVersion("1.3"),
+        assertEquals("Override failed", LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getVersion("1.3"),
                 ruleReference.getOverriddenMinimumLanguageVersion());
 
-        assertEquals("Override failed", dummyLanguage().getVersion("1.7"),
+        assertEquals("Override failed", LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getVersion("1.7"),
                 ruleReference.getMaximumLanguageVersion());
-        assertEquals("Override failed", dummyLanguage().getVersion("1.7"),
+        assertEquals("Override failed", LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getVersion("1.7"),
                 ruleReference.getOverriddenMaximumLanguageVersion());
 
         assertEquals("Override failed", false, ruleReference.getRule().isDeprecated());
@@ -155,9 +177,9 @@ public class RuleReferenceTest extends PmdContextualizedTest {
         final PropertyDescriptor<String> PROPERTY1_DESCRIPTOR = PropertyFactory.stringProperty("property1").desc("Test property").defaultValue("").build();
         MockRule rule = new MockRule();
         rule.definePropertyDescriptor(PROPERTY1_DESCRIPTOR);
-        rule.setLanguage(dummyLanguage());
-        rule.setMinimumLanguageVersion(dummyLanguage().getVersion("1.3"));
-        rule.setMaximumLanguageVersion(dummyLanguage().getVersion("1.7"));
+        rule.setLanguage(LanguageRegistry.getLanguage(DummyLanguageModule.NAME));
+        rule.setMinimumLanguageVersion(LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getVersion("1.3"));
+        rule.setMaximumLanguageVersion(LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getVersion("1.7"));
         rule.setName("name1");
         rule.setProperty(PROPERTY1_DESCRIPTOR, "value1");
         rule.setMessage("message1");
@@ -168,11 +190,10 @@ public class RuleReferenceTest extends PmdContextualizedTest {
 
         RuleReference ruleReference = new RuleReference();
         ruleReference.setRule(rule);
-        ruleReference.setLanguage(dummyLanguage());
         ruleReference
-                .setMinimumLanguageVersion(dummyLanguage().getVersion("1.3"));
+                .setMinimumLanguageVersion(LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getVersion("1.3"));
         ruleReference
-                .setMaximumLanguageVersion(dummyLanguage().getVersion("1.7"));
+                .setMaximumLanguageVersion(LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getVersion("1.7"));
         ruleReference.setDeprecated(false);
         ruleReference.setName("name1");
         ruleReference.setProperty(PROPERTY1_DESCRIPTOR, "value1");
@@ -182,15 +203,12 @@ public class RuleReferenceTest extends PmdContextualizedTest {
         ruleReference.setExternalInfoUrl("externalInfoUrl1");
         ruleReference.setPriority(RulePriority.HIGH);
 
-        assertEquals("Override failed", dummyLanguage(),
-                ruleReference.getLanguage());
-        assertNull("Override failed", ruleReference.getOverriddenLanguage());
 
-        assertEquals("Override failed", dummyLanguage().getVersion("1.3"),
+        assertEquals("Override failed", LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getVersion("1.3"),
                 ruleReference.getMinimumLanguageVersion());
         assertNull("Override failed", ruleReference.getOverriddenMinimumLanguageVersion());
 
-        assertEquals("Override failed", dummyLanguage().getVersion("1.7"),
+        assertEquals("Override failed", LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getVersion("1.7"),
                 ruleReference.getMaximumLanguageVersion());
         assertNull("Override failed", ruleReference.getOverriddenMaximumLanguageVersion());
 

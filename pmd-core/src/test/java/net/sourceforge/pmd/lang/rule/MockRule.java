@@ -2,17 +2,15 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-/*
- * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
- */
-
 package net.sourceforge.pmd.lang.rule;
 
 import static net.sourceforge.pmd.properties.constraints.NumericConstraints.inRange;
 
 import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.properties.PropertyFactory;
+
 
 /**
  * This is a Rule implementation which can be used in scenarios where an actual
@@ -25,6 +23,11 @@ public class MockRule extends AbstractRule {
     public MockRule() {
         super();
         definePropertyDescriptor(PropertyFactory.intProperty("testIntProperty").desc("testIntProperty").require(inRange(1, 100)).defaultValue(1).build());
+    }
+
+    public MockRule(String name, String description, String message, String ruleSetName, RulePriority priority) {
+        this(name, description, message, ruleSetName);
+        setPriority(priority);
     }
 
     public MockRule(String name, String description, String message, String ruleSetName) {

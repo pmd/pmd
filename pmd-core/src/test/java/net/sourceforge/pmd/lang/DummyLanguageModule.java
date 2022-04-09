@@ -4,21 +4,15 @@
 
 package net.sourceforge.pmd.lang;
 
-import java.io.Reader;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.lang.ast.DummyAstStages;
 import net.sourceforge.pmd.lang.ast.DummyRoot;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.ast.ParseException;
-import net.sourceforge.pmd.lang.ast.xpath.DefaultASTXPathHandler;
+import net.sourceforge.pmd.lang.ast.Parser;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 import net.sourceforge.pmd.lang.rule.impl.DefaultRuleViolationFactory;
-
-import net.sf.saxon.expr.XPathContext;
-import net.sf.saxon.sxpath.IndependentContext;
 
 /**
  * Dummy language used for testing PMD.
@@ -39,32 +33,10 @@ public class DummyLanguageModule extends BaseLanguageModule {
         addVersion("1.6", new Handler(), "6");
         addDefaultVersion("1.7", new Handler(), "7");
         addVersion("1.8", new Handler(), "8");
+        addVersion("1.9-throws", new HandlerWithParserThatThrows());
     }
 
     public static class Handler extends AbstractPmdLanguageVersionHandler {
-        public Handler() {
-            super(DummyAstStages.class);
-        }
-
-        public static class TestFunctions {
-            public static boolean typeIs(final XPathContext context, final String fullTypeName) {
-                return false;
-            }
-        }
-
-        @Override
-        public XPathHandler getXPathHandler() {
-            return new DefaultASTXPathHandler() {
-                @Override
-                public void initialize(IndependentContext context) {
-                    super.initialize(context, LanguageRegistry.STATIC.getLanguage(DummyLanguageModule.NAME), TestFunctions.class);
-                }
-
-                @Override
-                public void initialize() {
-                }
-            };
-        }
 
         @Override
         public RuleViolationFactory getRuleViolationFactory() {
@@ -73,38 +45,37 @@ public class DummyLanguageModule extends BaseLanguageModule {
 
 
         @Override
-        public Parser getParser(ParserOptions parserOptions) {
-            return new AbstractParser(parserOptions) {
-                @Override
-                public DummyRoot parse(String fileName, Reader source) throws ParseException {
-                    DummyRoot node = new DummyRoot();
-                    node.setCoords(1, 1, 2, 10);
-                    node.setImage("Foo");
-                    return node;
-                }
+        public Parser getParser() {
+            return task -> {
+                DummyRoot node = new DummyRoot();
+                node.setCoords(1, 1, 2, 10);
+                node.setImage("Foo");
+                node.withFileName(task.getFileDisplayName());
+                node.withLanguage(task.getLanguageVersion());
+                node.withSourceText(task.getSourceText());
+                return node;
+            };
+        }
+    }
 
+    public static class HandlerWithParserThatThrows extends Handler {
+        @Override
+        public Parser getParser() {
+            return task -> {
+                throw new AssertionError("test error while parsing");
             };
         }
     }
 
     public static class RuleViolationFactory extends DefaultRuleViolationFactory {
-        @Override
-        protected RuleViolation createRuleViolation(Rule rule, RuleContext ruleContext, Node node, String message) {
-            return createRuleViolation(rule, ruleContext, node, message, 0, 0);
-        }
 
         @Override
-        protected RuleViolation createRuleViolation(Rule rule, RuleContext ruleContext, Node node, String message,
-                int beginLine, int endLine) {
-            ParametricRuleViolation<Node> rv = new ParametricRuleViolation<Node>(rule, ruleContext, node, message) {
-                @Override
-                public String getPackageName() {
+        public RuleViolation createViolation(Rule rule, @NonNull Node location, @NonNull String formattedMessage) {
+            return new ParametricRuleViolation<Node>(rule, location, formattedMessage) {
+                {
                     this.packageName = "foo"; // just for testing variable expansion
-                    return super.getPackageName();
                 }
             };
-            rv.setLines(beginLine, endLine);
-            return rv;
         }
     }
 }

@@ -9,6 +9,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -123,8 +124,8 @@ public abstract class BaseLanguageModule implements Language {
     }
 
     @Override
-    public boolean hasExtension(String extension) {
-        return extensions != null && extensions.contains(extension);
+    public boolean hasExtension(String extensionWithoutDot) {
+        return extensions != null && extensions.contains(extensionWithoutDot);
     }
 
     @Override
@@ -153,24 +154,7 @@ public abstract class BaseLanguageModule implements Language {
 
     @Override
     public String toString() {
-        return "LanguageModule:" + name + '(' + this.getClass().getSimpleName() + ')';
-    }
-
-    @Override
-    public int hashCode() {
-        return name.hashCode();
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (!(obj instanceof BaseLanguageModule)) {
-            return false;
-        }
-        BaseLanguageModule other = (BaseLanguageModule) obj;
-        return name.equals(other.name);
+        return getTerseName();
     }
 
     @Override
@@ -178,5 +162,23 @@ public abstract class BaseLanguageModule implements Language {
         return getName().compareTo(o.getName());
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(name);
+    }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        BaseLanguageModule other = (BaseLanguageModule) obj;
+        return Objects.equals(name, other.name);
+    }
 }

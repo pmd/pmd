@@ -7,12 +7,14 @@ package net.sourceforge.pmd.lang.ast;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.ToIntFunction;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -57,7 +59,7 @@ import net.sourceforge.pmd.lang.ast.internal.StreamImpl;
  *               {@linkplain #followingSiblings() .followingSiblings}()                    <i>// the stream here contains only the siblings, not the original node</i>
  *               {@linkplain #take(int) .take}(1)                                <i>// the stream here contains only the first sibling, if it exists</i>
  *               {@linkplain #filterIs(Class) .filterIs}(ASTNumericLiteral.class)
- *               {@linkplain #filter(Predicate) .filter}(it -> !it.isFloatingPoint() && it.getValueAsInt() == 0)
+ *               {@linkplain #filter(Predicate) .filter}(it -&gt; !it.isFloatingPoint() &amp;&amp; it.getValueAsInt() == 0)
  *               {@linkplain #nonEmpty() .nonEmpty}(); <i>// If the stream is non empty here, then all the pipeline matched</i>
  * </pre>
  *
@@ -128,7 +130,7 @@ import net.sourceforge.pmd.lang.ast.internal.StreamImpl;
  *
  * @since 7.0.0
  */
-public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
+public interface NodeStream<@NonNull T extends Node> extends Iterable<@NonNull T> {
 
     /**
      * Returns a node stream consisting of the results of replacing each
@@ -209,6 +211,8 @@ public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
      * @param right Other stream
      *
      * @return A concatenated stream
+     *
+     * @see #union(NodeStream[])
      */
     NodeStream<T> append(NodeStream<? extends T> right);
 
@@ -220,6 +224,8 @@ public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
      * @param right Other stream
      *
      * @return A concatenated stream
+     *
+     * @see #union(NodeStream[])
      */
     NodeStream<T> prepend(NodeStream<? extends T> right);
 
@@ -280,8 +286,24 @@ public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
      * @throws IllegalArgumentException if n is negative
      * @see Stream#skip(long)
      * @see #take(int)
+     * @see #dropLast(int)
      */
     NodeStream<T> drop(int n);
+
+    /**
+     * Returns a stream consisting of the elements of this stream except
+     * the n tail elements. If n is greater than the number of elements
+     * of this stream, returns an empty stream. This requires a lookahead
+     * buffer in general.
+     *
+     * @param n the number of trailing elements to skip
+     *
+     * @return A new node stream
+     *
+     * @throws IllegalArgumentException if n is negative
+     * @see #drop(int)
+     */
+    NodeStream<T> dropLast(int n);
 
 
     /**
@@ -343,7 +365,7 @@ public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
      * Returns a node stream containing all the (first-degree) parents of the nodes
      * contained in this stream.
      *
-     * <p>This is equivalent to {@code map(Node::jjtGetParent)}.
+     * <p>This is equivalent to {@code map(Node::getParent)}.
      *
      * @return A stream of parents
      *
@@ -599,6 +621,23 @@ public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
         return result;
     }
 
+    /**
+     * Sum the elements of this stream by associating them to an integer.
+     *
+     * @param toInt Map an element to an integer, which will be added
+     *              to the running sum
+     *              returns the next intermediate result
+     *
+     * @return The sum, zero if the stream is empty.
+     */
+    default int sumBy(ToIntFunction<? super T> toInt) {
+        int result = 0;
+        for (T node : this) {
+            result += toInt.applyAsInt(node);
+        }
+        return result;
+    }
+
 
     /**
      * Returns the number of nodes in this stream.
@@ -697,7 +736,7 @@ public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
      * Returns the first element of this stream, or {@code null} if the
      * stream is empty.
      *
-     * <p>If you'd rather continue processingthe first element as a node
+     * <p>If you'd rather continue processing the first element as a node
      * stream, you can use {@link #take(int) take(1)}.
      *
      * <p>This is equivalent to {@link #get(int) get(0)}.
@@ -709,6 +748,26 @@ public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
      * @see #firstOpt()
      */
     @Nullable T first();
+
+
+    /**
+     * Returns the first element of this stream, or throws a {@link NoSuchElementException}
+     * if the stream is empty.
+     *
+     * @return the first element of this stream
+     *
+     * @see #first(Predicate)
+     * @see #first(Class)
+     * @see #firstOpt()
+     */
+    @NonNull
+    default T firstOrThrow() {
+        T first = first();
+        if (first == null) {
+            throw new NoSuchElementException("Empty node stream");
+        }
+        return first;
+    }
 
 
     /**
@@ -1021,6 +1080,7 @@ public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
         return upstream.cached().flatMap(aggregate);
     }
 
+
     /**
      * Returns a map function, that checks whether the parameter is an
      * instance of any of the given classes. If so, it returns the parameter,
@@ -1053,14 +1113,13 @@ public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
      *
      * @param c1   First type to test
      * @param rest Other types to test
-     * @param <I>  Input type (this method does not care about it)
      * @param <O>  Output type
      *
      * @see #firstNonNull(Function)
      */
     @SafeVarargs // this method is static because of the generic varargs
     @SuppressWarnings("unchecked")
-    static <I, O> Function<? super @Nullable I, ? extends @Nullable O> asInstanceOf(Class<? extends O> c1, Class<? extends O>... rest) {
+    static <O> Function<@Nullable Object, @Nullable O> asInstanceOf(Class<? extends O> c1, Class<? extends O>... rest) {
         if (rest.length == 0) {
             return obj -> c1.isInstance(obj) ? (O) obj : null;
         }
@@ -1077,6 +1136,7 @@ public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
             return null;
         };
     }
+
 
     /**
      * A specialization of {@link NodeStream} that allows configuring

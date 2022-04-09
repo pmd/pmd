@@ -34,6 +34,10 @@ public class ApexBadCryptoRule extends AbstractApexRule {
 
     private final Set<String> potentiallyStaticBlob = new HashSet<>();
 
+    public ApexBadCryptoRule() {
+        addRuleChainVisit(ASTUserClass.class);
+    }
+
     @Override
     public Object visit(ASTUserClass node, Object data) {
         if (Helper.isTestMethodOrClass(node)) {

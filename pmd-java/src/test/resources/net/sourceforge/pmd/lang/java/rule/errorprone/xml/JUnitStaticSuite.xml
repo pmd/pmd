@@ -9,6 +9,8 @@
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 import junit.framework.TestCase;
+import junit.framework.TestSuite;
+
 public class Foo extends TestCase {
     public TestSuite suite() {}
 }
@@ -20,6 +22,8 @@ public class Foo extends TestCase {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import junit.framework.TestCase;
+import junit.framework.TestSuite;
+
 public class Foo extends TestCase {
     public static TestSuite suite() {}
 }
@@ -31,6 +35,7 @@ public class Foo extends TestCase {
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 import junit.framework.TestCase;
+import junit.framework.TestSuite;
 public class Foo extends TestCase {
     private static TestSuite suite() {}
 }
@@ -42,6 +47,7 @@ public class Foo extends TestCase {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import junit.framework.TestCase;
+import junit.framework.Test;
 public class Foo extends TestCase {
     protected static Test suite(Foo foo) {}
 }
@@ -52,6 +58,7 @@ public class Foo extends TestCase {
         <description>Not a JUnit test (nonstatic is bad)</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import junit.framework.TestSuite;
 public class Foo {
     public TestSuite suite() {}
 }

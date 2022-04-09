@@ -5,7 +5,9 @@
 package net.sourceforge.pmd.util.database;
 
 import java.util.Locale;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.cpd.SourceCode;
 import net.sourceforge.pmd.lang.Language;
@@ -17,8 +19,7 @@ import net.sourceforge.pmd.lang.Language;
  */
 public class SourceObject {
 
-    private static final String CLASS_NAME = SourceObject.class.getName();
-    private static final Logger LOG = Logger.getLogger(CLASS_NAME);
+    private static final Logger LOG = LoggerFactory.getLogger(SourceObject.class);
 
     /**
      * Database Schema/Owner - SYS,SYSTEM,SCOTT
@@ -128,24 +129,24 @@ public class SourceObject {
      * @return inferred suffix
      */
     public String getSuffixFromType() {
-        LOG.entering(CLASS_NAME, "getSuffixFromType", this);
+        LOG.trace("Entering getSuffixFromType");
         if (null == type || type.isEmpty()) {
             return "";
-        } else if (type.toUpperCase(Locale.ROOT).indexOf("JAVA") >= 0) {
+        } else if (type.toUpperCase(Locale.ROOT).contains("JAVA")) {
             return ".java";
-        } else if (type.toUpperCase(Locale.ROOT).indexOf("TRIGGER") >= 0) {
+        } else if (type.toUpperCase(Locale.ROOT).contains("TRIGGER")) {
             return ".trg";
-        } else if (type.toUpperCase(Locale.ROOT).indexOf("FUNCTION") >= 0) {
+        } else if (type.toUpperCase(Locale.ROOT).contains("FUNCTION")) {
             return ".fnc";
-        } else if (type.toUpperCase(Locale.ROOT).indexOf("PROCEDURE") >= 0) {
+        } else if (type.toUpperCase(Locale.ROOT).contains("PROCEDURE")) {
             return ".prc";
-        } else if (type.toUpperCase(Locale.ROOT).indexOf("PACKAGE_BODY") >= 0) {
+        } else if (type.toUpperCase(Locale.ROOT).contains("PACKAGE_BODY")) {
             return ".pkb";
-        } else if (type.toUpperCase(Locale.ROOT).indexOf("PACKAGE") >= 0) {
+        } else if (type.toUpperCase(Locale.ROOT).contains("PACKAGE")) {
             return ".pks";
-        } else if (type.toUpperCase(Locale.ROOT).indexOf("TYPE_BODY") >= 0) {
+        } else if (type.toUpperCase(Locale.ROOT).contains("TYPE_BODY")) {
             return ".tpb";
-        } else if (type.toUpperCase(Locale.ROOT).indexOf("TYPE") >= 0) {
+        } else if (type.toUpperCase(Locale.ROOT).contains("TYPE")) {
             return ".tps";
         } else {
             return "";

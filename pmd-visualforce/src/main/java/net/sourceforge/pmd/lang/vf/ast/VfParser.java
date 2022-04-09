@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.vf.ast;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.ast.CharStream;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument;
@@ -16,10 +15,6 @@ import net.sourceforge.pmd.lang.ast.impl.javacc.JjtreeParserAdapter;
  * Parser for the VisualForce language.
  */
 public final class VfParser extends JjtreeParserAdapter<ASTCompilationUnit> {
-
-    public VfParser(ParserOptions parserOptions) {
-        super(parserOptions);
-    }
 
     @Override
     protected JavaccTokenDocument newDocument(String fullText) {
@@ -32,8 +27,14 @@ public final class VfParser extends JjtreeParserAdapter<ASTCompilationUnit> {
     }
 
     @Override
-    protected ASTCompilationUnit parseImpl(CharStream cs, ParserOptions options) throws ParseException {
-        return new VfParserImpl(cs).CompilationUnit();
+    protected ASTCompilationUnit parseImpl(CharStream cs, ParserTask task) throws ParseException {
+        ASTCompilationUnit root = new VfParserImpl(cs).CompilationUnit().makeTaskInfo(task);
+
+        // Add type information to the AST
+        VfExpressionTypeVisitor visitor = new VfExpressionTypeVisitor(task);
+        visitor.visit(root, null);
+
+        return root;
     }
 
 }

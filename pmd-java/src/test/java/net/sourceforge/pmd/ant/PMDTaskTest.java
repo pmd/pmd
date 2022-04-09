@@ -12,11 +12,14 @@ import java.nio.charset.Charset;
 import java.util.Locale;
 
 import org.apache.commons.io.FileUtils;
+import org.junit.AfterClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.contrib.java.lang.system.RestoreSystemProperties;
 import org.junit.rules.ExternalResource;
 import org.junit.rules.TestRule;
+
+import net.sourceforge.pmd.internal.Slf4jSimpleConfiguration;
 
 public class PMDTaskTest extends AbstractAntTestHelper {
 
@@ -92,8 +95,15 @@ public class PMDTaskTest extends AbstractAntTestHelper {
         executeTarget("testClasspath");
     }
 
+    // restoring system properties: PMDTask might change logging properties
+    // See Slf4jSimpleConfigurationForAnt and resetLogging
     @Rule
     public final TestRule restoreSystemProperties = new RestoreSystemProperties();
+
+    @AfterClass
+    public static void resetLogging() {
+        Slf4jSimpleConfiguration.reconfigureDefaultLogLevel(null);
+    }
 
     @Rule
     public final TestRule restoreLocale = new ExternalResource() {
@@ -136,7 +146,7 @@ public class PMDTaskTest extends AbstractAntTestHelper {
 
         executeTarget("testFormatterEncodingWithXML");
         String report = FileUtils.readFileToString(currentTempFile(), "UTF-8");
-        assertTrue(report.contains("unusedVariableWithÜmlaut"));
+        assertTrue(report.contains("someVariableWithÜmlaut"));
     }
 
     private static String convert(String report) {
@@ -160,7 +170,7 @@ public class PMDTaskTest extends AbstractAntTestHelper {
         executeTarget("testFormatterEncodingWithXMLConsole");
         String report = convert(buildRule.getOutput());
         assertTrue(report.startsWith("<?xml version=\"1.0\" encoding=\"windows-1252\"?>"));
-        assertTrue(report.contains("unusedVariableWithÜmlaut"));
+        assertTrue(report.contains("someVariableWithÜmlaut"));
     }
 
     @Test

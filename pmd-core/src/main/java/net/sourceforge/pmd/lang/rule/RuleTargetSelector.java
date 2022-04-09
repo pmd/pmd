@@ -13,6 +13,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.rule.internal.TargetSelectorInternal;
@@ -83,6 +84,11 @@ public abstract class RuleTargetSelector extends TargetSelectorInternal {
      */
     public static RuleTargetSelector forRootOnly() {
         return ClassRulechainVisits.ROOT_ONLY;
+    }
+
+    @InternalApi
+    public boolean isRuleChain() {
+        return this != ClassRulechainVisits.ROOT_ONLY; // NOPMD #3205
     }
 
     private static final class StringRulechainVisits extends RuleTargetSelector {

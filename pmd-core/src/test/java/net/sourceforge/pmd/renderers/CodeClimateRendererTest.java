@@ -6,18 +6,12 @@ package net.sourceforge.pmd.renderers;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.File;
-
 import org.junit.Test;
 
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.ReportTest;
-import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.lang.ast.DummyNode;
-import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 import net.sourceforge.pmd.lang.rule.XPathRule;
+import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
 
 public class CodeClimateRendererTest extends AbstractRendererTest {
 
@@ -75,8 +69,8 @@ public class CodeClimateRendererTest extends AbstractRendererTest {
                 + "violationSuppressRegex | | Suppress violations with messages matching a regular expression\\n"
                 + "violationSuppressXPath | | Suppress violations on nodes which match a given relative XPath expression.\\n"
                 + "\"},\"categories\":[\"Style\"],\"location\":{\"path\":\"" + getSourceCodeFilename() + "\",\"lines\":{\"begin\":1,\"end\":1}},\"severity\":\"info\",\"remediation_points\":50000}"
-                + "\u0000" + PMD.EOL + "{\"type\":\"issue\",\"check_name\":\"Foo\",\"description\":\"blah\","
-                + "\"content\":{\"body\":\"## Foo\\n\\nSince: PMD null\\n\\nPriority: Low\\n\\n"
+                + "\u0000" + PMD.EOL + "{\"type\":\"issue\",\"check_name\":\"Boo\",\"description\":\"blah\","
+                + "\"content\":{\"body\":\"## Boo\\n\\nSince: PMD null\\n\\nPriority: High\\n\\n"
                 + "[Categories](https://github.com/codeclimate/platform/blob/master/spec/analyzers/SPEC.md#categories): Style\\n\\n"
                 + "[Remediation Points](https://github.com/codeclimate/platform/blob/master/spec/analyzers/SPEC.md#remediation-points): 50000\\n\\n"
                 + "desc\\n\\n"
@@ -84,25 +78,19 @@ public class CodeClimateRendererTest extends AbstractRendererTest {
                 + "Name | Value | Description\\n" + "--- | --- | ---\\n"
                 + "violationSuppressRegex | | Suppress violations with messages matching a regular expression\\n"
                 + "violationSuppressXPath | | Suppress violations on nodes which match a given relative XPath expression.\\n"
-                + "\"},\"categories\":[\"Style\"],\"location\":{\"path\":\"" + getSourceCodeFilename() + "\",\"lines\":{\"begin\":1,\"end\":1}},\"severity\":\"info\",\"remediation_points\":50000}"
+                + "\"},\"categories\":[\"Style\"],\"location\":{\"path\":\"" + getSourceCodeFilename() + "\",\"lines\":{\"begin\":1,\"end\":1}},\"severity\":\"blocker\",\"remediation_points\":50000}"
                 + "\u0000" + PMD.EOL;
     }
 
     @Test
     public void testXPathRule() throws Exception {
-        DummyNode node = createNode(1);
-        RuleContext ctx = new RuleContext();
-        ctx.setSourceCodeFile(new File(getSourceCodeFilename()));
-        Report report = new Report();
-        XPathRule theRule = new XPathRule();
-        theRule.setProperty(XPathRule.XPATH_DESCRIPTOR, "//dummyNode");
+        XPathRule theRule = new XPathRule(XPathVersion.XPATH_3_1, "//dummyNode");
 
         // Setup as FooRule
         theRule.setDescription("desc");
         theRule.setName("Foo");
 
-        report.addRuleViolation(new ParametricRuleViolation<Node>(theRule, ctx, node, "blah"));
-        String rendered = ReportTest.render(getRenderer(), report);
+        String rendered = ReportTest.render(getRenderer(), it -> it.onRuleViolation(newRuleViolation(1, 1, 1, 2, theRule)));
 
         // Output should be the exact same as for non xpath rules
         assertEquals(filter(getExpected()), filter(rendered));

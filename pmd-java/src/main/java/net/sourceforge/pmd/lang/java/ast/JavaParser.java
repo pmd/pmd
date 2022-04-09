@@ -4,13 +4,14 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.lang.ParserOptions;
+import net.sourceforge.pmd.lang.ast.AstInfo;
 import net.sourceforge.pmd.lang.ast.CharStream;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaCharStream;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JjtreeParserAdapter;
 import net.sourceforge.pmd.lang.java.ast.internal.LanguageLevelChecker;
+import net.sourceforge.pmd.lang.java.internal.JavaAstProcessor;
 
 /**
  * Adapter for the JavaParser, using the specified grammar version.
@@ -21,10 +22,11 @@ import net.sourceforge.pmd.lang.java.ast.internal.LanguageLevelChecker;
 public class JavaParser extends JjtreeParserAdapter<ASTCompilationUnit> {
 
     private final LanguageLevelChecker<?> checker;
+    private final boolean postProcess;
 
-    public JavaParser(LanguageLevelChecker<?> checker, ParserOptions parserOptions) {
-        super(parserOptions);
+    public JavaParser(LanguageLevelChecker<?> checker, boolean postProcess) {
         this.checker = checker;
+        this.postProcess = postProcess;
     }
 
 
@@ -39,18 +41,23 @@ public class JavaParser extends JjtreeParserAdapter<ASTCompilationUnit> {
     }
 
     @Override
-    protected ASTCompilationUnit parseImpl(CharStream cs, ParserOptions options) throws ParseException {
+    protected ASTCompilationUnit parseImpl(CharStream cs, ParserTask task) throws ParseException {
         JavaParserImpl parser = new JavaParserImpl(cs);
-        String suppressMarker = options.getSuppressMarker();
-        if (suppressMarker != null) {
-            parser.setSuppressMarker(suppressMarker);
-        }
+        parser.setSuppressMarker(task.getCommentMarker());
         parser.setJdkVersion(checker.getJdkVersion());
         parser.setPreview(checker.isPreviewEnabled());
 
-        ASTCompilationUnit acu = parser.CompilationUnit();
-        acu.setNoPmdComments(parser.getSuppressMap());
-        checker.check(acu);
-        return acu;
+        ASTCompilationUnit root = parser.CompilationUnit();
+        root.setAstInfo(new AstInfo<>(task, root, parser.getSuppressMap()));
+        checker.check(root);
+
+        if (postProcess) {
+            JavaAstProcessor processor = JavaAstProcessor.create(task.getAuxclasspathClassLoader(),
+                                                                 task.getLanguageVersion(),
+                                                                 task.getReporter());
+            processor.process(root);
+        }
+
+        return root;
     }
 }

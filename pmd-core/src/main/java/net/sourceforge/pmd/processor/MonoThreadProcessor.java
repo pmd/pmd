@@ -4,38 +4,48 @@
 
 package net.sourceforge.pmd.processor;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import net.sourceforge.pmd.PMDConfiguration;
-import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.renderers.Renderer;
+import net.sourceforge.pmd.RuleSets;
+import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
+import net.sourceforge.pmd.util.datasource.DataSource;
 
 /**
  * @author Romain Pelisse &lt;belaran@gmail.com&gt;
  *
  */
-public final class MonoThreadProcessor extends AbstractPMDProcessor {
+final class MonoThreadProcessor extends AbstractPMDProcessor {
 
-    private final List<Report> reports = new ArrayList<>();
-
-    public MonoThreadProcessor(PMDConfiguration configuration) {
+    MonoThreadProcessor(PMDConfiguration configuration) {
         super(configuration);
     }
 
     @Override
-    protected void runAnalysis(PmdRunnable runnable) {
-        // single thread execution, run analysis on same thread
-        reports.add(runnable.call());
+    @SuppressWarnings("PMD.CloseResource") // closed by the PMDRunnable
+    public void processFiles(RuleSets rulesets, List<DataSource> files, GlobalAnalysisListener listener) {
+        for (DataSource file : files) {
+            new MonothreadRunnable(rulesets, file, listener, configuration).run();
+        }
     }
 
     @Override
-    protected void collectReports(List<Renderer> renderers) {
-        for (Report r : reports) {
-            super.renderReports(renderers, r);
+    public void close() {
+        // nothing to do
+    }
+
+    static final class MonothreadRunnable extends PmdRunnable {
+
+        private final RuleSets ruleSets;
+
+        MonothreadRunnable(RuleSets ruleSets, DataSource dataSource, GlobalAnalysisListener ruleContext, PMDConfiguration configuration) {
+            super(dataSource, ruleContext, configuration);
+            this.ruleSets = ruleSets;
         }
 
-        // Since this thread may run PMD again, clean up the runnable
-        PmdRunnable.reset();
+        @Override
+        protected RuleSets getRulesets() {
+            return ruleSets;
+        }
     }
 }

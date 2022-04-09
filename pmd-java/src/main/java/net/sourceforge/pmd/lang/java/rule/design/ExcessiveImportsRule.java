@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -11,7 +11,7 @@ import net.sourceforge.pmd.lang.java.rule.internal.AbstractJavaCounterCheckRule;
 /**
  * ExcessiveImports attempts to count all unique imports a class contains. This
  * rule will count a "import com.something.*;" as a single import. This is a
- * unqiue situation and I'd like to create an audit type rule that captures
+ * unique situation and I'd like to create an audit type rule that captures
  * those.
  *
  * @author aglover
@@ -30,6 +30,6 @@ public class ExcessiveImportsRule extends AbstractJavaCounterCheckRule<ASTCompil
 
     @Override
     protected boolean isViolation(ASTCompilationUnit node, int reportLevel) {
-        return node.findChildrenOfType(ASTImportDeclaration.class).size() >= reportLevel;
+        return node.children(ASTImportDeclaration.class).count() >= reportLevel;
     }
 }

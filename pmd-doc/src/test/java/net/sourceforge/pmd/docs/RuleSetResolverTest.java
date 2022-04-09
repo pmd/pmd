@@ -4,28 +4,22 @@
 
 package net.sourceforge.pmd.docs;
 
-import static org.junit.Assert.fail;
+import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.io.FilenameUtils;
 import org.junit.Test;
 
-import net.sourceforge.pmd.RuleSetFactory;
-import net.sourceforge.pmd.RuleSetNotFoundException;
-import net.sourceforge.pmd.RulesetsFactoryUtils;
+import net.sourceforge.pmd.RuleSetLoader;
 
 public class RuleSetResolverTest {
 
-    private static List<String> excludedRulesets = new ArrayList<>();
-
-    static {
-        excludedRulesets.add(FilenameUtils.normalize("pmd-test/src/main/resources/rulesets/dummy/basic.xml"));
-    }
+    private static final List<String> EXCLUDED_RULESETS = listOf(
+        FilenameUtils.normalize("pmd-test/src/main/resources/rulesets/dummy/basic.xml")
+    );
 
     @Test
     public void resolveAllRulesets() {
@@ -34,26 +28,16 @@ public class RuleSetResolverTest {
 
         filterRuleSets(additionalRulesets);
 
-        RuleSetFactory ruleSetFactory = RulesetsFactoryUtils.defaultFactory();
         for (String filename : additionalRulesets) {
-            try {
-                ruleSetFactory.createRuleSet(filename);
-            } catch (RuntimeException | RuleSetNotFoundException e) {
-                fail("Couldn't load ruleset " + filename + ": " + e.getMessage());
-            }
+            new RuleSetLoader().warnDeprecated(false).loadFromResource(filename); // will throw if invalid
         }
     }
 
     private void filterRuleSets(List<String> additionalRulesets) {
-        Iterator<String> it = additionalRulesets.iterator();
-        while (it.hasNext()) {
-            String filename = it.next();
-            for (String exclusion : excludedRulesets) {
-                if (filename.endsWith(exclusion)) {
-                    it.remove();
-                    break;
-                }
-            }
-        }
+        additionalRulesets.removeIf(this::isExcluded);
+    }
+
+    private boolean isExcluded(String fileName) {
+        return EXCLUDED_RULESETS.stream().anyMatch(fileName::endsWith);
     }
 }

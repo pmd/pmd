@@ -6,14 +6,12 @@ package net.sourceforge.pmd.lang.rule;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
-import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.properties.MultiValuePropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
@@ -91,11 +89,6 @@ public abstract class AbstractDelegateRule implements Rule {
     @Override
     public String dysfunctionReason() {
         return rule.dysfunctionReason();
-    }
-
-    @Override
-    public Set<PropertyDescriptor<?>> ignoredProperties() {
-        return rule.ignoredProperties();
     }
 
     @Override
@@ -186,11 +179,6 @@ public abstract class AbstractDelegateRule implements Rule {
     @Override
     public void setPriority(RulePriority priority) {
         rule.setPriority(priority);
-    }
-
-    @Override
-    public ParserOptions getParserOptions() {
-        return rule.getParserOptions();
     }
 
     @Override

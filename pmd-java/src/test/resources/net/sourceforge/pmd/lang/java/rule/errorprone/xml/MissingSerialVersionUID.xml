@@ -17,6 +17,8 @@ public class Foo {
         <description>Simple failure case</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
+import java.io.Serializable;
+
 public class Foo implements Serializable {
 }
         ]]></code>

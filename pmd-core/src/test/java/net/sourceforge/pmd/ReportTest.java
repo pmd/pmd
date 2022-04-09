@@ -7,143 +7,71 @@ package net.sourceforge.pmd;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.StringWriter;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.function.Consumer;
 
-import org.apache.commons.io.IOUtils;
-import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.Test;
 
 import net.sourceforge.pmd.lang.ast.DummyNode;
+import net.sourceforge.pmd.lang.ast.DummyRoot;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.MockRule;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.renderers.XMLRenderer;
+import net.sourceforge.pmd.reporting.FileAnalysisListener;
+import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
+import net.sourceforge.pmd.util.datasource.DataSource;
 
-public class ReportTest extends PmdContextualizedTest {
-
-    static class ViolationSemaphore implements ThreadSafeReportListener {
-        private boolean hadViolation;
-
-        @Override
-        public void ruleViolationAdded(RuleViolation ruleViolation) {
-            hadViolation = true;
-        }
-    }
-
+public class ReportTest {
 
     // Files are grouped together now.
     @Test
     public void testSortedReportFile() throws IOException {
-        Report r = new Report();
-        RuleContext ctx = new RuleContext();
-        ctx.setSourceCodeFile(new File("foo"));
-        Node s = getNode(10, 5);
-        Rule rule1 = makeMockRule("name", "desc");
-        r.addRuleViolation(new ParametricRuleViolation<>(rule1, ctx, s, rule1.getMessage()));
-        ctx.setSourceCodeFile(new File("bar"));
-        Node s1 = getNode(10, 5);
-        Rule rule2 = makeMockRule("name", "desc");
-        r.addRuleViolation(new ParametricRuleViolation<>(rule2, ctx, s1, rule2.getMessage()));
         Renderer rend = new XMLRenderer();
-        String result = render(rend, r);
+        String result = render(rend, r -> {
+            Node s = getNode(10, 5).withFileName("foo");
+            Rule rule1 = new MockRule("name", "desc", "msg", "rulesetname");
+            r.onRuleViolation(new ParametricRuleViolation<>(rule1, s, rule1.getMessage()));
+            Node s1 = getNode(10, 5).withFileName("bar");
+            Rule rule2 = new MockRule("name", "desc", "msg", "rulesetname");
+            r.onRuleViolation(new ParametricRuleViolation<>(rule2, s1, rule2.getMessage()));
+        });
         assertTrue("sort order wrong", result.indexOf("bar") < result.indexOf("foo"));
-    }
-
-    @NonNull
-    public MockRule makeMockRule(String name, String desc) {
-        return dummyRule(new MockRule(name, desc, "msg", "rulesetname"));
     }
 
     @Test
     public void testSortedReportLine() throws IOException {
-        Report r = new Report();
-        RuleContext ctx = new RuleContext();
-        ctx.setSourceCodeFile(new File("foo1")); // same file!!
-        Node node1 = getNode(20, 5); // line 20: after rule2 violation
-        Rule rule1 = makeMockRule("rule1", "rule1");
-        r.addRuleViolation(new ParametricRuleViolation<>(rule1, ctx, node1, rule1.getMessage()));
-
-        ctx.setSourceCodeFile(new File("foo1")); // same file!!
-        Node node2 = getNode(10, 5); // line 10: before rule1 violation
-        Rule rule2 = makeMockRule("rule2", "rule2");
-        r.addRuleViolation(new ParametricRuleViolation<>(rule2, ctx, node2, rule2.getMessage()));
         Renderer rend = new XMLRenderer();
-        String result = render(rend, r);
+        String result = render(rend, r -> {
+            Node node1 = getNode(20, 5).withFileName("foo1"); // line 20: after rule2 violation
+            Rule rule1 = new MockRule("rule1", "rule1", "msg", "rulesetname");
+            r.onRuleViolation(new ParametricRuleViolation<>(rule1, node1, rule1.getMessage()));
+
+            Node node2 = getNode(10, 5).withFileName("foo1"); // line 10: before rule1 violation
+            Rule rule2 = new MockRule("rule2", "rule2", "msg", "rulesetname");
+            r.onRuleViolation(new ParametricRuleViolation<>(rule2, node2, rule2.getMessage())); // same file!!
+        });
         assertTrue("sort order wrong", result.indexOf("rule2") < result.indexOf("rule1"));
     }
 
     @Test
-    public void testListener() {
-        Report rpt = new Report();
-        ViolationSemaphore listener = new ViolationSemaphore();
-        rpt.addListener(listener);
-        RuleContext ctx = new RuleContext();
-        ctx.setSourceCodeFile(new File("file"));
-        Node s = getNode(5, 5);
-        Rule rule1 = makeMockRule("name", "desc");
-        rpt.addRuleViolation(new ParametricRuleViolation<>(rule1, ctx, s, rule1.getMessage()));
-        assertTrue(listener.hadViolation);
-    }
-
-    @Test
-    public void testSummary() {
-        Report r = new Report();
-        RuleContext ctx = new RuleContext();
-        ctx.setSourceCodeFile(new File("foo1"));
-        Node s = getNode(5, 5);
-        Rule rule = makeMockRule("name", "desc");
-        r.addRuleViolation(new ParametricRuleViolation<>(rule, ctx, s, rule.getMessage()));
-        ctx.setSourceCodeFile(new File("foo2"));
-        Rule mr = makeMockRule("rule1", "rule1");
-        Node s1 = getNode(20, 5);
-        Node s2 = getNode(30, 5);
-        r.addRuleViolation(new ParametricRuleViolation<>(mr, ctx, s1, mr.getMessage()));
-        r.addRuleViolation(new ParametricRuleViolation<>(mr, ctx, s2, mr.getMessage()));
-        Map<String, Integer> summary = r.getSummary();
-        assertEquals(summary.keySet().size(), 2);
-        assertTrue(summary.containsValue(1));
-        assertTrue(summary.containsValue(2));
-    }
-
-    @Test
-    public void testTreeIterator() {
-        Report r = new Report();
-        RuleContext ctx = new RuleContext();
-        Rule rule = makeMockRule("name", "desc");
+    public void testIterator() {
+        Rule rule = new MockRule("name", "desc", "msg", "rulesetname");
         Node node1 = getNode(5, 5, true);
-        r.addRuleViolation(new ParametricRuleViolation<>(rule, ctx, node1, rule.getMessage()));
         Node node2 = getNode(5, 6, true);
-        r.addRuleViolation(new ParametricRuleViolation<>(rule, ctx, node2, rule.getMessage()));
+        Report r = Report.buildReport(it -> {
+            it.onRuleViolation(new ParametricRuleViolation<>(rule, node1, rule.getMessage()));
+            it.onRuleViolation(new ParametricRuleViolation<>(rule, node2, rule.getMessage()));
+        });
 
-        Iterator<RuleViolation> violations = r.iterator();
-        int violationCount = 0;
-        while (violations.hasNext()) {
-            violations.next();
-            violationCount++;
-        }
-        assertEquals(2, violationCount);
-
-        Iterator<RuleViolation> treeIterator = r.treeIterator();
-        int treeCount = 0;
-        while (treeIterator.hasNext()) {
-            treeIterator.next();
-            treeCount++;
-        }
-        assertEquals(2, treeCount);
+        assertEquals(2, r.getViolations().size());
     }
 
-    private static Node getNode(int line, int column) {
+    private static DummyNode getNode(int line, int column) {
+        DummyNode parent = new DummyRoot();
         DummyNode s = new DummyNode();
-        DummyNode parent = new DummyNode();
         parent.setCoords(line, column, line, column + 1);
         parent.addChild(s, 0);
         s.setCoords(line, column, line, column + 1);
@@ -151,11 +79,35 @@ public class ReportTest extends PmdContextualizedTest {
     }
 
     private static Node getNode(int line, int column, boolean nextLine) {
-        DummyNode s = (DummyNode) getNode(line, column);
+        DummyNode s = getNode(line, column);
         if (nextLine) {
             s.setCoords(line + 1, column + 4, line + 4, 1);
         }
         return s;
+    }
+
+    public static String render(Renderer renderer, Consumer<? super FileAnalysisListener> listenerEffects) throws IOException {
+        return renderGlobal(renderer, globalListener -> {
+            DataSource dummyFile = DataSource.forString("dummyText", "file");
+            try (FileAnalysisListener fal = globalListener.startFileAnalysis(dummyFile)) {
+                listenerEffects.accept(fal);
+            } catch (Exception e) {
+                throw new AssertionError(e);
+            }
+        });
+    }
+
+    public static String renderGlobal(Renderer renderer, Consumer<? super GlobalAnalysisListener> listenerEffects) throws IOException {
+        StringWriter writer = new StringWriter();
+        renderer.setWriter(writer);
+
+        try (GlobalAnalysisListener listener = renderer.newListener()) {
+            listenerEffects.accept(listener);
+        } catch (Exception e) {
+            throw new AssertionError(e);
+        }
+
+        return writer.toString();
     }
 
     public static String render(Renderer renderer, Report report) throws IOException {
@@ -165,22 +117,5 @@ public class ReportTest extends PmdContextualizedTest {
         renderer.renderFileReport(report);
         renderer.end();
         return writer.toString();
-    }
-
-    public static String renderTempFile(Renderer renderer, Report report, Charset expectedCharset) throws IOException {
-        Path tempFile = Files.createTempFile("pmd-report-test", null);
-        String absolutePath = tempFile.toAbsolutePath().toString();
-
-        renderer.setReportFile(absolutePath);
-        renderer.start();
-        renderer.renderFileReport(report);
-        renderer.end();
-        renderer.flush();
-
-        try (FileInputStream input = new FileInputStream(absolutePath)) {
-            return IOUtils.toString(input, expectedCharset);
-        } finally {
-            Files.delete(tempFile);
-        }
     }
 }

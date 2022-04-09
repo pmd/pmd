@@ -4,13 +4,18 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
+/**
+ * An empty statement (useless).
+ *
+ * <pre class="grammar">
+ *
+ * EmptyStatement ::= ";"
+ *
+ * </pre>
+ */
+public final class ASTEmptyStatement extends AbstractStatement {
 
-public class ASTEmptyStatement extends AbstractJavaNode {
-
-    @InternalApi
-    @Deprecated
-    public ASTEmptyStatement(int id) {
+    ASTEmptyStatement(int id) {
         super(id);
     }
 

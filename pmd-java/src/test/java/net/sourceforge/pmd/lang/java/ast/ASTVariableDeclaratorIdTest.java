@@ -10,6 +10,9 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
+import net.sourceforge.pmd.lang.java.BaseParserTest;
+import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
+
 public class ASTVariableDeclaratorIdTest extends BaseParserTest {
 
 
@@ -25,8 +28,8 @@ public class ASTVariableDeclaratorIdTest extends BaseParserTest {
         ASTCompilationUnit acu = java.parse(TYPE_NAME_NODE);
         ASTVariableDeclaratorId id = acu.findDescendantsOfType(ASTVariableDeclaratorId.class).get(0);
 
-        ASTClassOrInterfaceType name = (ASTClassOrInterfaceType) id.getTypeNameNode().getChild(0);
-        assertEquals("String", name.getImage());
+        ASTClassOrInterfaceType name = (ASTClassOrInterfaceType) id.getTypeNameNode();
+        assertEquals("String", name.getSimpleName());
     }
 
     @Test
@@ -34,8 +37,8 @@ public class ASTVariableDeclaratorIdTest extends BaseParserTest {
         ASTCompilationUnit acu = java.parse(TEST_ANNOTATIONS);
         ASTVariableDeclaratorId id = acu.findDescendantsOfType(ASTVariableDeclaratorId.class).get(0);
 
-        ASTClassOrInterfaceType name = (ASTClassOrInterfaceType) id.getTypeNameNode().getChild(0);
-        assertEquals("String", name.getImage());
+        ASTClassOrInterfaceType name = (ASTClassOrInterfaceType) id.getTypeNode();
+        assertEquals("String", name.getSimpleName());
     }
 
     @Test
@@ -43,8 +46,7 @@ public class ASTVariableDeclaratorIdTest extends BaseParserTest {
         ASTCompilationUnit acu = java8.parse(TEST_LAMBDA_WITH_TYPE);
         ASTLambdaExpression lambda = acu.getFirstDescendantOfType(ASTLambdaExpression.class);
         ASTVariableDeclaratorId f = lambda.getFirstDescendantOfType(ASTVariableDeclaratorId.class);
-        assertEquals("File", f.getTypeNode().getTypeImage());
-        assertEquals("File", f.getTypeNameNode().getChild(0).getImage());
+        assertEquals("File", PrettyPrintingUtil.prettyPrintType(f.getTypeNode()));
     }
 
     @Test
@@ -53,7 +55,6 @@ public class ASTVariableDeclaratorIdTest extends BaseParserTest {
         ASTLambdaExpression lambda = acu.getFirstDescendantOfType(ASTLambdaExpression.class);
         ASTVariableDeclaratorId f = lambda.getFirstDescendantOfType(ASTVariableDeclaratorId.class);
         assertNull(f.getTypeNode());
-        assertNull(f.getTypeNameNode());
     }
 
     private static final String TYPE_NAME_NODE = "public class Test {\n  private String bar;\n}";

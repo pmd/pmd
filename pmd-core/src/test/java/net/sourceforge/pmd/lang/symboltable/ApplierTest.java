@@ -8,14 +8,13 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 
 import org.junit.Test;
 
-import net.sourceforge.pmd.util.SearchFunction;
-
 public class ApplierTest {
 
-    private static class MyFunction implements SearchFunction<Object> {
+    private static class MyFunction implements Predicate<Object> {
         private int numCallbacks = 0;
         private final int maxCallbacks;
 
@@ -24,7 +23,7 @@ public class ApplierTest {
         }
 
         @Override
-        public boolean applyTo(Object o) {
+        public boolean test(Object o) {
             this.numCallbacks++;
             return numCallbacks < maxCallbacks;
         }

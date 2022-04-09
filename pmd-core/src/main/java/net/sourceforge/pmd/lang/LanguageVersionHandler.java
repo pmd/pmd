@@ -4,15 +4,13 @@
 
 package net.sourceforge.pmd.lang;
 
-import java.util.Collections;
-import java.util.List;
-
 import net.sourceforge.pmd.annotation.Experimental;
-import net.sourceforge.pmd.lang.ast.AstProcessingStage;
-import net.sourceforge.pmd.lang.ast.xpath.DefaultASTXPathHandler;
+import net.sourceforge.pmd.lang.ast.Parser;
 import net.sourceforge.pmd.lang.metrics.LanguageMetricsProvider;
 import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
 import net.sourceforge.pmd.lang.rule.impl.DefaultRuleViolationFactory;
+import net.sourceforge.pmd.lang.rule.xpath.impl.XPathHandler;
+import net.sourceforge.pmd.properties.PropertySource;
 import net.sourceforge.pmd.util.designerbindings.DesignerBindings;
 import net.sourceforge.pmd.util.designerbindings.DesignerBindings.DefaultDesignerBindings;
 
@@ -30,28 +28,16 @@ public interface LanguageVersionHandler {
      * Get the XPathHandler.
      */
     default XPathHandler getXPathHandler() {
-        return new DefaultASTXPathHandler();
+        return XPathHandler.noFunctionDefinitions();
     }
 
 
     /**
-     * Returns the list of all supported optional processing stages.
-     *
-     * @return A list of all optional processing stages.
+     * @deprecated This is transitional
      */
-    @Experimental
-    default List<? extends AstProcessingStage<?>> getProcessingStages() {
-        return Collections.emptyList();
-    }
-
-
-    /**
-     * Get the default ParserOptions.
-     *
-     * @return ParserOptions
-     */
-    default ParserOptions getDefaultParserOptions() {
-        return new ParserOptions();
+    @Deprecated
+    default void declareParserTaskProperties(PropertySource source) {
+        // do nothing
     }
 
 
@@ -60,7 +46,8 @@ public interface LanguageVersionHandler {
      *
      * @return Parser
      */
-    Parser getParser(ParserOptions parserOptions);
+    Parser getParser();
+
 
 
     /**
@@ -80,7 +67,7 @@ public interface LanguageVersionHandler {
      * instance the return type will probably be changed to an Optional.
      */
     @Experimental
-    default LanguageMetricsProvider<?, ?> getLanguageMetricsProvider() {
+    default LanguageMetricsProvider getLanguageMetricsProvider() {
         return null;
     }
 

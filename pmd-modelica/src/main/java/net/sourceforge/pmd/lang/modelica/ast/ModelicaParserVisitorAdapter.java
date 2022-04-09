@@ -4,5 +4,10 @@
 
 package net.sourceforge.pmd.lang.modelica.ast;
 
-public class ModelicaParserVisitorAdapter implements ModelicaParserVisitor {
+import net.sourceforge.pmd.annotation.DeprecatedUntil700;
+
+
+@Deprecated
+@DeprecatedUntil700
+public class ModelicaParserVisitorAdapter extends ModelicaVisitorBase<Object, Object> implements ModelicaParserVisitor {
 }

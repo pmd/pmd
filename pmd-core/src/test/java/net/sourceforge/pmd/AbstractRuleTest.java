@@ -7,14 +7,13 @@ package net.sourceforge.pmd;
 import static net.sourceforge.pmd.properties.constraints.NumericConstraints.inRange;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotNull;
 
-import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Collections;
 
 import org.junit.Test;
 
+import net.sourceforge.pmd.Report.SuppressedViolation;
 import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.lang.ast.DummyRoot;
 import net.sourceforge.pmd.lang.ast.Node;
@@ -25,7 +24,7 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 
 
-public class AbstractRuleTest extends PmdContextualizedTest {
+public class AbstractRuleTest {
 
     public static class MyRule extends AbstractRule {
         private static final PropertyDescriptor<String> FOO_PROPERTY = PropertyFactory.stringProperty("foo").desc("foo property").defaultValue("x").build();
@@ -71,11 +70,9 @@ public class AbstractRuleTest extends PmdContextualizedTest {
     public void testCreateRV() {
         MyRule r = new MyRule();
         r.setRuleSetName("foo");
-        RuleContext ctx = new RuleContext();
-        ctx.setSourceCodeFile(new File("filename"));
-        DummyNode s = new DummyNode();
+        DummyNode s = new DummyRoot().withFileName("filename");
         s.setCoords(5, 5, 5, 10);
-        RuleViolation rv = new ParametricRuleViolation(r, ctx, s, r.getMessage());
+        RuleViolation rv = new ParametricRuleViolation<>(r, s, r.getMessage());
         assertEquals("Line number mismatch!", 5, rv.getBeginLine());
         assertEquals("Filename mismatch!", "filename", rv.getFilename());
         assertEquals("Rule object mismatch!", r, rv.getRule());
@@ -86,11 +83,9 @@ public class AbstractRuleTest extends PmdContextualizedTest {
     @Test
     public void testCreateRV2() {
         MyRule r = new MyRule();
-        RuleContext ctx = new RuleContext();
-        ctx.setSourceCodeFile(new File("filename"));
-        DummyNode s = new DummyNode();
+        DummyNode s = new DummyRoot().withFileName("filename");
         s.setCoords(5, 5, 5, 10);
-        RuleViolation rv = new ParametricRuleViolation<>(r, ctx, s, "specificdescription");
+        RuleViolation rv = new ParametricRuleViolation<>(r, s, "specificdescription");
         assertEquals("Line number mismatch!", 5, rv.getBeginLine());
         assertEquals("Filename mismatch!", "filename", rv.getFilename());
         assertEquals("Rule object mismatch!", r, rv.getRule());
@@ -98,34 +93,32 @@ public class AbstractRuleTest extends PmdContextualizedTest {
     }
 
     @Test
-    public void testRuleWithVariableInMessage() {
-        MyRule r = new MyRule();
+    public void testRuleWithVariableInMessage() throws Exception {
+        MyRule r = new MyRule() {
+            @Override
+            public void apply(Node target, RuleContext ctx) {
+                ctx.addViolation(target);
+            }
+        };
         r.definePropertyDescriptor(PropertyFactory.intProperty("testInt").desc("description").require(inRange(0, 100)).defaultValue(10).build());
         r.setMessage("Message ${packageName} ${className} ${methodName} ${variableName} ${testInt} ${noSuchProperty}");
-        RuleContext ctx = new RuleContext();
-        ctx.setLanguageVersion(dummyLanguage().getDefaultVersion());
-        ctx.setReport(new Report());
-        ctx.setSourceCodeFile(new File("filename"));
-        DummyNode s = new DummyRoot();
+
+        DummyNode s = new DummyRoot().withFileName("filename");
         s.setCoords(5, 1, 6, 1);
         s.setImage("TestImage");
-        r.addViolation(ctx, s);
-        RuleViolation rv = ctx.getReport().getViolationTree().iterator().next();
+
+        RuleViolation rv = RuleContextTest.getReportForRuleApply(r, s).getViolations().get(0);
         assertEquals("Message foo    10 ${noSuchProperty}", rv.getDescription());
     }
 
     @Test
     public void testRuleSuppress() {
-        MyRule r = new MyRule();
-        RuleContext ctx = new RuleContext();
-        Map<Integer, String> m = new HashMap<>();
-        m.put(5, "");
-        ctx.setSourceCodeFile(new File("filename"));
-        DummyRoot n = new DummyRoot(m);
+        DummyRoot n = new DummyRoot().withNoPmdComments(Collections.singletonMap(5, ""));
         n.setCoords(5, 1, 6, 1);
-        DefaultRuleViolationFactory.defaultInstance().addViolation(ctx, r, n, "specificdescription", new Object[0]);
+        RuleViolation violation = DefaultRuleViolationFactory.defaultInstance().createViolation(new MyRule(), n, "specificdescription");
+        SuppressedViolation suppressed = DefaultRuleViolationFactory.defaultInstance().suppressOrNull(n, violation);
 
-        assertTrue(ctx.getReport().isEmpty());
+        assertNotNull(suppressed);
     }
 
     @Test

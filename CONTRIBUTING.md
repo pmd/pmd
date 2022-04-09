@@ -45,7 +45,7 @@ There are various channels, on which you can ask questions:
 
 *   On [StackOverflow](https://stackoverflow.com/questions/tagged/pmd): Make sure, to tag your question with "pmd".
 
-*   Create a issue for your question at <https://github.com/pmd/pmd/issues>.
+*   Create a new discussion for your question at <https://github.com/pmd/pmd/discussions>.
 
 *   Ask your question on Gitter <https://gitter.im/pmd/pmd>.
 
@@ -57,4 +57,20 @@ See [pmd-checkstyle-config.xml](https://github.com/pmd/build-tools/blob/master/s
 [the eclipse configuration files](https://github.com/pmd/build-tools/tree/master/eclipse) that can
 be imported into a fresh workspace.
 
+## Add yourself as contributor
 
+We use [All Contributors](https://allcontributors.org/en).
+
+To add yourself to the table of contributors, follow the
+[bot usage instructions](https://allcontributors.org/docs/en/bot/usage) ;).
+
+Or use the CLI:
+
+1. Install the CLI: `npm i` (in PMD's top level directory)
+2. Add yourself: `npx all-contributors add <username> <contribution>`
+
+Where `username` is your GitHub username and `contribution` is a `,`-separated list
+of contributions. See [Emoji Key](https://allcontributors.org/docs/en/emoji-key) for a list
+of valid types. Common types are: "code", "doc", "bug", "blog", "talk", "test", "tutorial".
+
+See also [cli documentation](https://allcontributors.org/docs/en/cli/usage)

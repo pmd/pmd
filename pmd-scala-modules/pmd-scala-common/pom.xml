@@ -28,6 +28,10 @@
             <testResource>
                 <directory>../pmd-scala-common/src/test/resources</directory>
             </testResource>
+            <!-- Adding kotlin files to test resources, so that checkstyle verifies the license header -->
+            <testResource>
+                <directory>../pmd-scala-common/src/test/kotlin</directory>
+            </testResource>
         </testResources>
 
         <pluginManagement>
@@ -140,13 +144,8 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>io.kotlintest</groupId>
-            <artifactId>kotlintest-assertions</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>io.kotlintest</groupId>
-            <artifactId>kotlintest-core</artifactId>
+            <groupId>io.kotest</groupId>
+            <artifactId>kotest-assertions-core-jvm</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -156,7 +155,7 @@
         </dependency>
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
-            <artifactId>kotlin-test</artifactId>
+            <artifactId>kotlin-test-junit</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>

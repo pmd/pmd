@@ -4,11 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import java.util.List;
-
-import net.sourceforge.pmd.annotation.InternalApi;
-
-
 /**
  * Represents a type bound on a {@linkplain ASTTypeParameter type parameter}.
  * Type bounds specify the type of the type variable to which they apply as
@@ -16,16 +11,16 @@ import net.sourceforge.pmd.annotation.InternalApi;
  * The first bound type is a class or interface type, while the additional
  * bounds are necessarily interface types.
  *
- * <pre>
+ * <pre class="grammar">
  *
- * TypeBound ::= "extends" {@linkplain ASTAnnotation Annotation}* {@linkplain ASTClassOrInterfaceType ClassOrInterfaceType} ( "&" {@linkplain ASTAnnotation Annotation}* {@linkplain ASTClassOrInterfaceType ClassOrInterfaceType} )*
+ * TypeBound ::= "extends" {@linkplain ASTAnnotation Annotation}* {@linkplain ASTType Type}
  *
  * </pre>
+ *
+ * @deprecated Since the annotations now nest inside the type, this is just replaced by the type node alone.
  */
-public class ASTTypeBound extends AbstractJavaTypeNode {
-
-    @InternalApi
-    @Deprecated
+@Deprecated
+public final class ASTTypeBound extends AbstractJavaTypeNode {
     public ASTTypeBound(int id) {
         super(id);
     }
@@ -35,13 +30,13 @@ public class ASTTypeBound extends AbstractJavaTypeNode {
      * Returns a list with the type bounds of this node.
      * The returned list has at least one element.
      */
-    public List<ASTClassOrInterfaceType> getBoundTypeNodes() {
-        return findChildrenOfType(ASTClassOrInterfaceType.class);
+    public ASTType getTypeNode() {
+        return getFirstChildOfType(ASTType.class);
     }
 
 
     @Override
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
-        return visitor.visit(this, data);
+        throw new UnsupportedOperationException("Node was removed from grammar");
     }
 }

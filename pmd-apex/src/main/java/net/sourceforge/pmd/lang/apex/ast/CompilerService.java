@@ -88,5 +88,4 @@ class CompilerService {
         return new CompilationInput(sourceFiles, symbolProvider, accessEvaluator, queryValidator, null,
                                     NoopCompilerProgressCallback.get());
     }
-
 }

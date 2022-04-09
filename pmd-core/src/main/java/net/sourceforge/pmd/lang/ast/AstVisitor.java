@@ -21,6 +21,22 @@ package net.sourceforge.pmd.lang.ast;
  */
 public interface AstVisitor<P, R> {
 
+
+    /**
+     * Called by a node when it detects that the visitor is not of the
+     * language it is used to visiting. If a visitor wants to visit nodes
+     * for several languages, it should provide a useful implementation
+     * of this method. The default implementation throws
+     *
+     * @param node  Node calling back this method
+     * @param param Parameter of the visit
+     *
+     * @return A value (or may throw)
+     */
+    default R cannotVisit(Node node, P param) {
+        throw new UnsupportedOperationException("Cannot visit " + node);
+    }
+
     /**
      * Visit a node. This method is dispatched statically, you should
      * use {@link Node#acceptVisitor(AstVisitor, Object)} if you want

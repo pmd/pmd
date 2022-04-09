@@ -204,11 +204,11 @@ public class XMLRendererTest {
 
     @Test
     public void testRendererXMLEscaping() throws IOException {
-        String codefragment = "code fragment" + FORM_FEED + "\nline2\nline3";
+        String codefragment = "code fragment" + FORM_FEED + "\nline2\nline3\nno & escaping necessary in CDATA\nx=\"]]>\";";
         CPDRenderer renderer = new XMLRenderer();
         List<Match> list = new ArrayList<>();
-        Mark mark1 = createMark("public", "file1", 1, 2, codefragment);
-        Mark mark2 = createMark("public", "file2", 5, 2, codefragment);
+        Mark mark1 = createMark("public", "file1", 1, 5, codefragment);
+        Mark mark2 = createMark("public", "file2", 5, 5, codefragment);
         Match match1 = new Match(75, mark1, mark2);
         list.add(match1);
 
@@ -217,6 +217,9 @@ public class XMLRendererTest {
         String report = sw.toString();
         assertFalse(report.contains(FORM_FEED));
         assertFalse(report.contains(FORM_FEED_ENTITY));
+        assertTrue(report.contains("no & escaping necessary in CDATA"));
+        assertFalse(report.contains("x=\"]]>\";")); // must be escaped
+        assertTrue(report.contains("x=\"]]]]><![CDATA[>\";"));
     }
 
     private Mark createMark(String image, String tokenSrcID, int beginLine, int lineCount, String code) {

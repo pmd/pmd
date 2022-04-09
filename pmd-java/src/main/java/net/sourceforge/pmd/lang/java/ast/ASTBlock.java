@@ -4,16 +4,23 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
+import net.sourceforge.pmd.lang.java.ast.ASTList.ASTMaybeEmptyListOf;
 
-public class ASTBlock extends AbstractJavaNode {
+/**
+ * A block of code. This is a {@linkplain ASTStatement statement} that
+ * contains other statements.
+ *
+ * <pre class="grammar">
+ *
+ * Block ::=  "{" {@link ASTStatement Statement}* "}"
+ *
+ * </pre>
+ */
+public final class ASTBlock extends ASTMaybeEmptyListOf<ASTStatement> implements Iterable<ASTStatement>, ASTSwitchArrowRHS, ASTStatement {
 
-    private boolean containsComment;
-
-    @InternalApi
-    @Deprecated
-    public ASTBlock(int id) {
-        super(id);
+    ASTBlock(int id) {
+        super(id, ASTStatement.class);
     }
 
 
@@ -24,13 +31,14 @@ public class ASTBlock extends AbstractJavaNode {
 
 
     public boolean containsComment() {
-        return this.containsComment;
-    }
+        JavaccToken t = getLastToken().getPreviousComment();
+        while (t != null) {
+            if (JavaTokenDocument.isComment(t)) {
+                return true;
+            }
+            t = t.getPreviousComment();
+        }
 
-    @InternalApi
-    @Deprecated
-    public void setContainsComment() {
-        this.containsComment = true;
+        return false;
     }
-
 }

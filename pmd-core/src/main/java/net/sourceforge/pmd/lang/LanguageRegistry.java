@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -6,78 +6,88 @@ package net.sourceforge.pmd.lang;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedHashMap;
+import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
-import java.util.ServiceLoader;
 import java.util.Set;
 
+import net.sourceforge.pmd.internal.LanguageServiceBase;
+
 /**
- * A registry of languages, which are dynamically loaded through a
- * {@link ServiceLoader}. Language registries have a lifecycle:
- * they're initially created using one of the factory methods, and
- * need to be closed when the analysis is done. Languages of different
- * language registries are different instances, and can be parameterized
- * differently (todo). This allows Language instances to be configured
- * independently, or to use heavyweight resources like external language
- * servers and be sure those will be reclaimed.
+ * Provides access to the registered PMD languages. These are found
+ * from the classpath of the {@link ClassLoader} of this class.
  */
-public final class LanguageRegistry implements AutoCloseable {
+public final class LanguageRegistry extends LanguageServiceBase<Language> {
+
+    // sort languages by name. Avoiding differences in the order of languages
+    // across JVM versions / OS.
+    private static final Comparator<Language> LANGUAGE_COMPARATOR = new Comparator<Language>() {
+        @Override
+        public int compare(Language o1, Language o2) {
+            return o1.getTerseName().compareToIgnoreCase(o2.getTerseName());
+        }
+    };
+
+    private static final NameExtractor<Language> NAME_EXTRACTOR = new NameExtractor<Language>() {
+        @Override
+        public String getName(Language language) {
+            return language.getName();
+        }
+    };
+
+    private static final NameExtractor<Language> TERSE_NAME_EXTRACTOR = new NameExtractor<Language>() {
+        @Override
+        public String getName(Language language) {
+            return language.getTerseName();
+        }
+    };
+
+    // Important: the INSTANCE needs to be defined *after* LANGUAGE_COMPARATOR and *NAME_EXTRACTOR
+    // as these are needed in the constructor.
+    private static final LanguageRegistry INSTANCE = new LanguageRegistry();
+
+    private LanguageRegistry() {
+        super(Language.class, LANGUAGE_COMPARATOR, NAME_EXTRACTOR, TERSE_NAME_EXTRACTOR);
+    }
 
     /**
-     * The "static" language registry instance, which uses the classloader
-     * of this class to load modules. It uses default language property values.
-     * This is only provided for compatibility, as language registries should be
-     * closed after usage.
+     * @deprecated Use the static methods instead, will be made private
      */
     @Deprecated
-    // @DeprecatedUntil700
-    public static final LanguageRegistry STATIC = LanguageLoader.DEFAULT.load();
-
-    private final Map<String, Language> languagesByName;
-    private final Map<String, Language> languagesByTerseName;
-    private final Set<Language> languages;
-
-
-    LanguageRegistry(Set<Language> sortedLanguages) {
-        this.languages = sortedLanguages;
-
-        // using a linked hash map to maintain insertion order
-        Map<String, Language> byName = new LinkedHashMap<>();
-        Map<String, Language> byTerseName = new LinkedHashMap<>();
-        for (Language language : sortedLanguages) {
-            byName.put(language.getName(), language);
-            byTerseName.put(language.getTerseName(), language);
-        }
-        languagesByName = Collections.unmodifiableMap(byName);
-        languagesByTerseName = Collections.unmodifiableMap(byTerseName);
+    public static LanguageRegistry getInstance() {
+        return INSTANCE;
     }
-
-    @Override
-    public void close() throws Exception {
-        // Do nothing for now
-        // Later we can make Language Closeable and close them here to drop resources if needed
-        // This allows eg to shutdown a language server used by the language module
-    }
-
 
     /**
-     * Returns the registered languages, as un unmodifiable set.
+     * Returns a set of all the known languages. The ordering of the languages
+     * is by terse name.
      */
-    public Set<Language> getLanguages() {
-        return languages;
+    public static Set<Language> getLanguages() {
+        return INSTANCE.languages;
     }
 
-    /** Gets a language from its full name ({@link Language#getName()}). */
-    public Language getLanguage(String languageName) {
-        return languagesByName.get(languageName);
+    /**
+     * Returns a language from its {@linkplain Language#getName() full name}
+     * (eg {@code "Java"}). This is case sensitive.
+     *
+     * @param languageName Language name
+     *
+     * @return A language, or null if the name is unknown
+     */
+    public static Language getLanguage(String languageName) {
+        return INSTANCE.languagesByName.get(languageName);
     }
 
-    public Language getDefaultLanguage() {
+    /**
+     * Returns a "default language" known to the service loader. This
+     * is the Java language if available, otherwise an arbitrary one.
+     * If no languages are loaded, returns null.
+     *
+     * @return A language, or null if the name is unknown
+     */
+    public static Language getDefaultLanguage() {
         Language defaultLanguage = getLanguage("Java");
         if (defaultLanguage == null) {
-            Collection<Language> allLanguages = languagesByName.values();
+            Collection<Language> allLanguages = getInstance().languagesByName.values();
             if (!allLanguages.isEmpty()) {
                 defaultLanguage = allLanguages.iterator().next();
             }
@@ -85,14 +95,27 @@ public final class LanguageRegistry implements AutoCloseable {
         return defaultLanguage;
     }
 
-    public Language findLanguageByTerseName(String terseName) {
-        return languagesByTerseName.get(terseName);
+    /**
+     * Returns a language from its {@linkplain Language#getTerseName() terse name}
+     * (eg {@code "java"}). This is case sensitive.
+     *
+     * @param terseName Language terse name
+     *
+     * @return A language, or null if the name is unknown
+     */
+    public static Language findLanguageByTerseName(String terseName) {
+        return INSTANCE.languagesByTerseName.get(terseName);
     }
 
-    public List<Language> findByExtension(String extension) {
+    /**
+     * Returns all languages that support the given extension.
+     *
+     * @param extensionWithoutDot A file extension (without '.' prefix)
+     */
+    public static List<Language> findByExtension(String extensionWithoutDot) {
         List<Language> languages = new ArrayList<>();
         for (Language language : getLanguages()) {
-            if (language.hasExtension(extension)) {
+            if (language.hasExtension(extensionWithoutDot)) {
                 languages.add(language);
             }
         }

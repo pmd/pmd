@@ -5,52 +5,42 @@
 
 package net.sourceforge.pmd.lang.java.rule.errorprone;
 
-import java.util.List;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
-import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTBlock;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
+import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.ast.JModifier;
+import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
+import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
+import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 
-public class ProperCloneImplementationRule extends AbstractJavaRule {
+public class ProperCloneImplementationRule extends AbstractJavaRulechainRule {
 
     public ProperCloneImplementationRule() {
-        addRuleChainVisit(ASTMethodDeclaration.class);
+        super(ASTMethodDeclaration.class);
     }
 
     @Override
-    public Object visit(ASTMethodDeclaration node, Object data) {
-        if (!"clone".equals(node.getName()) || node.getArity() > 0) {
-            return data;
+    public Object visit(ASTMethodDeclaration method, Object data) {
+        if (JavaAstUtils.isCloneMethod(method) && !method.isAbstract()) {
+            ASTAnyTypeDeclaration enclosingType = method.getEnclosingType();
+            if (isNotFinal(enclosingType) && hasAnyAllocationOfClass(method, enclosingType)) {
+                addViolation(data, method);
+            }
         }
-
-        ASTBlock block = node.getFirstChildOfType(ASTBlock.class);
-        if (block == null) {
-            return data;
-        }
-
-        String enclosingClassName = node.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class).getSimpleName();
-        if (blockHasAllocations(block, enclosingClassName)) {
-            addViolation(data, node);
-        }
-
         return data;
     }
 
-    private boolean blockHasAllocations(ASTBlock block, String enclosingClassName) {
-        List<ASTAllocationExpression> allocations = block.findDescendantsOfType(ASTAllocationExpression.class);
-        for (ASTAllocationExpression alloc : allocations) {
-            ASTClassOrInterfaceType type = alloc.getFirstChildOfType(ASTClassOrInterfaceType.class);
-            if (typeHasImage(type, enclosingClassName)) {
-                return true;
-            }
-        }
-        return false;
+    private boolean isNotFinal(ASTAnyTypeDeclaration classOrInterfaceDecl) {
+        return !classOrInterfaceDecl.hasModifiers(JModifier.FINAL);
     }
 
-    private boolean typeHasImage(ASTClassOrInterfaceType type, String image) {
-        return type != null && type.hasImageEqualTo(image);
+    private boolean hasAnyAllocationOfClass(ASTMethodDeclaration method, ASTAnyTypeDeclaration enclosingType) {
+        @NonNull
+        JClassSymbol typeSymbol = enclosingType.getTypeMirror().getSymbol();
+        return method.descendants(ASTConstructorCall.class)
+            .filter(ctor -> ctor.getTypeMirror().getSymbol().equals(typeSymbol))
+            .nonEmpty();
     }
 }

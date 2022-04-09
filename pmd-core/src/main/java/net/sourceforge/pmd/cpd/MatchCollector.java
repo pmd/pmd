@@ -83,10 +83,7 @@ public class MatchCollector {
     }
 
     private boolean hasPreviousDupe(TokenEntry mark1, TokenEntry mark2) {
-        if (mark1.getIndex() == 0) {
-            return false;
-        }
-        return !matchEnded(ma.tokenAt(-1, mark1), ma.tokenAt(-1, mark2));
+        return mark1.getIndex() != 0 && !matchEnded(ma.tokenAt(-1, mark1), ma.tokenAt(-1, mark2));
     }
 
     private int countDuplicateTokens(TokenEntry mark1, TokenEntry mark2) {
@@ -98,6 +95,8 @@ public class MatchCollector {
     }
 
     private boolean matchEnded(TokenEntry token1, TokenEntry token2) {
-        return token1.getIdentifier() != token2.getIdentifier() || token1 == TokenEntry.EOF || token2 == TokenEntry.EOF;
+        return token1.getIdentifier() != token2.getIdentifier()
+                || TokenEntry.EOF.equals(token1)
+                || TokenEntry.EOF.equals(token2);
     }
 }

@@ -4,247 +4,172 @@
 
 package net.sourceforge.pmd;
 
-import java.io.File;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-import java.util.logging.Logger;
+import java.text.MessageFormat;
+import java.util.Objects;
 
-import net.sourceforge.pmd.lang.LanguageVersion;
+import org.apache.commons.lang3.StringUtils;
+import org.checkerframework.checker.nullness.qual.NonNull;
+
+import net.sourceforge.pmd.Report.SuppressedViolation;
+import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.rule.AbstractRule;
+import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
+import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
+import net.sourceforge.pmd.processor.AbstractPMDProcessor;
+import net.sourceforge.pmd.reporting.FileAnalysisListener;
 
 /**
- * The RuleContext provides access to Rule processing state. This information
- * includes the following global information:
- * <ul>
- * <li>The Report to which Rule Violations are sent.</li>
- * <li>Named attributes.</li>
- * </ul>
- * As well as the following source file specific information:
- * <ul>
- * <li>A File for the source file.</li>
- * <li>The Language Version of the source file.</li>
- * </ul>
- * It is <strong>required</strong> that all source file specific options be set
- * between calls to difference source files. Failure to do so, may result in
- * undefined behavior.
+ * The API for rules to report violations or errors during analysis.
+ * This forwards events to a {@link FileAnalysisListener}. It implements
+ * violation suppression by filtering some violations out, according to
+ * the {@link ViolationSuppressor}s for the language.
+ *
+ * A RuleContext contains a Rule instance and violation reporting methods
+ * implicitly report only for that rule. Contrary to PMD 6, RuleContext is
+ * not unique throughout the analysis, a separate one is used per file and rule.
  */
-public class RuleContext {
+public final class RuleContext {
+    // todo move to package reporting
 
-    private static final Logger LOG = Logger.getLogger(RuleContext.class.getName());
+    // Rule contexts do not need to be thread-safe, within PmdRunnable
+    // they are stack-local
 
-    private Report report = new Report();
-    private File sourceCodeFile;
-    private LanguageVersion languageVersion;
-    private final ConcurrentMap<String, Object> attributes;
-    private boolean ignoreExceptions = true;
+    private static final Object[] NO_ARGS = new Object[0];
 
-    /**
-     * Default constructor.
-     */
-    public RuleContext() {
-        attributes = new ConcurrentHashMap<>();
+    private final FileAnalysisListener listener;
+    private final Rule rule;
+
+    private RuleContext(FileAnalysisListener listener, Rule rule) {
+        Objects.requireNonNull(listener, "Listener was null");
+        Objects.requireNonNull(rule, "Rule was null");
+        this.listener = listener;
+        this.rule = rule;
     }
 
     /**
-     * Constructor which shares attributes and report listeners with the given
-     * RuleContext.
-     *
-     * @param ruleContext
-     *            the context from which the values are shared
-     */
-    public RuleContext(RuleContext ruleContext) {
-        this.attributes = ruleContext.attributes;
-        this.report.addListeners(ruleContext.getReport().getListeners());
-    }
-
-    /**
-     * Get the Report to which Rule Violations are sent.
-     *
-     * @return The Report.
-     */
-    public Report getReport() {
-        return report;
-    }
-
-    /**
-     * Set the Report to which Rule Violations are sent.
-     *
-     * @param report
-     *            The Report.
-     */
-    public void setReport(Report report) {
-        this.report = report;
-    }
-
-    /**
-     * Get the File associated with the current source file.
-     *
-     * @return The File.
-     */
-    public File getSourceCodeFile() {
-        return sourceCodeFile;
-    }
-
-    /**
-     * Set the File associated with the current source file. While this may be
-     * set to <code>null</code>, the exclude/include facilities will not work
-     * properly without a File.
-     *
-     * @param sourceCodeFile
-     *            The File.
-     */
-    public void setSourceCodeFile(File sourceCodeFile) {
-        this.sourceCodeFile = sourceCodeFile;
-    }
-
-    /**
-     * Get the file name associated with the current source file.
-     * If there is no source file, then an empty string is returned.
-     *
-     * @return The file name.
-     */
-    public String getSourceCodeFilename() {
-        if (sourceCodeFile != null) {
-            return sourceCodeFile.getName();
-        }
-        return "";
-    }
-
-    /**
-     * Set the file name associated with the current source file.
-     *
-     * @param filename
-     *            The file name.
-     * @deprecated This method will be removed. The file should only be
-     * set with {@link #setSourceCodeFile(File)}. Setting the filename here
-     * has no effect.
+     * @deprecated Used in {@link AbstractRule#asCtx(Object)}, when that is gone, will be removed.
      */
     @Deprecated
-    public void setSourceCodeFilename(String filename) {
-        // ignored, does nothing.
-        LOG.warning("The method RuleContext::setSourceCodeFilename(String) has been deprecated and will be removed."
-                + "Setting the filename here has no effect. Use RuleContext::setSourceCodeFile(File) instead.");
+    @InternalApi
+    public Rule getRule() {
+        return rule;
+    }
+
+    private String getDefaultMessage() {
+        return rule.getMessage();
     }
 
     /**
-     * Get the LanguageVersion associated with the current source file.
+     * Record a new violation of the contextual rule, at the given node.
      *
-     * @return The LanguageVersion, <code>null</code> if unknown.
+     * @param location Location of the violation
      */
-    public LanguageVersion getLanguageVersion() {
-        return this.languageVersion;
+    public void addViolation(Node location) {
+        addViolationWithMessage(location, getDefaultMessage(), NO_ARGS);
     }
 
     /**
-     * Set the LanguageVersion associated with the current source file. This may
-     * be set to <code>null</code> to indicate the version is unknown and should
-     * be automatically determined.
+     * Record a new violation of the contextual rule, at the given node.
+     * The default violation message ({@link Rule#getMessage()}) is formatted
+     * using the given format arguments.
      *
-     * @param languageVersion
-     *            The LanguageVersion.
+     * @param location   Location of the violation
+     * @param formatArgs Format arguments for the message
+     *
+     * @see MessageFormat
      */
-    public void setLanguageVersion(LanguageVersion languageVersion) {
-        this.languageVersion = languageVersion;
+    public void addViolation(Node location, Object... formatArgs) {
+        addViolationWithMessage(location, getDefaultMessage(), formatArgs);
     }
 
     /**
-     * Set an attribute value on the RuleContext, if it does not already exist.
-     * <p>
-     * Attributes can be shared between RuleContext instances. This operation is
-     * thread-safe.
-     * <p>
-     * Attribute values should be modified directly via the reference provided.
-     * It is not necessary to call <code>setAttribute(String, Object)</code> to
-     * update an attribute value. Modifications made to the attribute value will
-     * automatically be seen by other threads. Because of this, you must ensure
-     * the attribute values are themselves thread safe.
+     * Record a new violation of the contextual rule, at the given node.
+     * The given violation message ({@link Rule#getMessage()}) is treated
+     * as a format string for a {@link MessageFormat} and should hence use
+     * appropriate escapes. No formatting arguments are provided.
      *
-     * @param name
-     *            The attribute name.
-     * @param value
-     *            The attribute value.
-     * @exception IllegalArgumentException
-     *                if <code>name</code> or <code> value</code> are
-     *                <code>null</code>
-     * @return <code>true</code> if the attribute was set, <code>false</code>
-     *         otherwise.
+     * @param location Location of the violation
+     * @param message  Violation message
      */
-    public boolean setAttribute(String name, Object value) {
-        if (name == null) {
-            throw new IllegalArgumentException("Parameter 'name' cannot be null.");
+    public void addViolationWithMessage(Node location, String message) {
+        addViolationWithPosition(location, -1, -1, message, NO_ARGS);
+    }
+
+    /**
+     * Record a new violation of the contextual rule, at the given node.
+     * The given violation message ({@link Rule#getMessage()}) is treated
+     * as a format string for a {@link MessageFormat} and should hence use
+     * appropriate escapes. The given formatting arguments are used.
+     *
+     * @param location   Location of the violation
+     * @param message    Violation message
+     * @param formatArgs Format arguments for the message
+     */
+    public void addViolationWithMessage(Node location, String message, Object... formatArgs) {
+        addViolationWithPosition(location, -1, -1, message, formatArgs);
+    }
+
+    /**
+     * Record a new violation of the contextual rule, at the given node.
+     * The position is refined using the given begin and end line numbers.
+     * The given violation message ({@link Rule#getMessage()}) is treated
+     * as a format string for a {@link MessageFormat} and should hence use
+     * appropriate escapes. The given formatting arguments are used.
+     *
+     * @param location   Location of the violation
+     * @param message    Violation message
+     * @param formatArgs Format arguments for the message
+     */
+    public void addViolationWithPosition(Node location, int beginLine, int endLine, String message, Object... formatArgs) {
+        Objects.requireNonNull(location, "Node was null");
+        Objects.requireNonNull(message, "Message was null");
+        Objects.requireNonNull(formatArgs, "Format arguments were null, use an empty array");
+
+        RuleViolationFactory fact = location.getAstInfo().getLanguageVersion().getLanguageVersionHandler().getRuleViolationFactory();
+
+        RuleViolation violation = fact.createViolation(rule, location, makeMessage(message, formatArgs));
+        if (beginLine != -1 && endLine != -1) {
+            // fixme, this is needed until we have actual Location objects
+            ((ParametricRuleViolation<?>) violation).setLines(beginLine, endLine);
         }
-        if (value == null) {
-            throw new IllegalArgumentException("Parameter 'value' cannot be null.");
+
+        SuppressedViolation suppressed = fact.suppressOrNull(location, violation);
+
+        if (suppressed != null) {
+            listener.onSuppressedRuleViolation(suppressed);
+        } else {
+            listener.onRuleViolation(violation);
         }
-        return this.attributes.putIfAbsent(name, value) == null;
     }
 
     /**
-     * Get an attribute value on the RuleContext.
-     * <p>
-     * Attributes can be shared between RuleContext instances. This operation is
-     * thread-safe.
-     * <p>
-     * Attribute values should be modified directly via the reference provided.
-     * It is not necessary to call <code>setAttribute(String, Object)</code> to
-     * update an attribute value. Modifications made to the attribute value will
-     * automatically be seen by other threads. Because of this, you must ensure
-     * the attribute values are themselves thread safe.
-     *
-     * @param name
-     *            The attribute name.
-     * @return The current attribute value, or <code>null</code> if the
-     *         attribute does not exist.
+     * Force the recording of a violation, ignoring the violation
+     * suppression mechanism ({@link ViolationSuppressor}).
+     * 
+     * @param rv A violation
      */
-    public Object getAttribute(String name) {
-        return this.attributes.get(name);
+    @InternalApi
+    public void addViolationNoSuppress(RuleViolation rv) {
+        listener.onRuleViolation(rv);
+    }
+
+    private static String makeMessage(@NonNull String message, Object[] args) {
+        // Escape PMD specific variable message format, specifically the {
+        // in the ${, so MessageFormat doesn't bitch.
+        final String escapedMessage = StringUtils.replace(message, "${", "$'{'");
+        return MessageFormat.format(escapedMessage, args);
     }
 
     /**
-     * Remove an attribute value on the RuleContext.
-     * <p>
-     * Attributes can be shared between RuleContext instances. This operation is
-     * thread-safe.
-     * <p>
-     * Attribute values should be modified directly via the reference provided.
-     * It is not necessary to call <code>setAttribute(String, Object)</code> to
-     * update an attribute value. Modifications made to the attribute value will
-     * automatically be seen by other threads. Because of this, you must ensure
-     * the attribute values are themselves thread safe.
+     * Create a new RuleContext. This is internal API owned by {@link AbstractPMDProcessor}
+     * (can likely be hidden when everything relevant is moved into rule package).
      *
-     * @param name
-     *            The attribute name.
-     * @return The current attribute value, or <code>null</code> if the
-     *         attribute does not exist.
+     * The listener must be closed by its creator.
      */
-    public Object removeAttribute(String name) {
-        return this.attributes.remove(name);
+    @InternalApi
+    public static RuleContext create(FileAnalysisListener listener, Rule rule) {
+        return new RuleContext(listener, rule);
     }
 
-    /**
-     * Configure whether exceptions during applying a rule should be ignored or
-     * not. If set to <code>true</code> then such exceptions are logged as
-     * warnings and the processing is continued with the next rule - the failing
-     * rule is simply skipped. This is the default behavior. <br>
-     * If set to <code>false</code> then the processing will be aborted with the
-     * exception. This is especially useful during unit tests, in order to not
-     * oversee any exceptions.
-     *
-     * @param ignoreExceptions
-     *            if <code>true</code> simply skip failing rules (default).
-     */
-    public void setIgnoreExceptions(boolean ignoreExceptions) {
-        this.ignoreExceptions = ignoreExceptions;
-    }
-
-    /**
-     * Gets the configuration whether to skip failing rules (<code>true</code>)
-     * or whether to throw a a RuntimeException and abort the processing for the
-     * first failing rule.
-     *
-     * @return <code>true</code> when failing rules are skipped,
-     *         <code>false</code> otherwise.
-     */
-    public boolean isIgnoreExceptions() {
-        return ignoreExceptions;
-    }
 }

@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 /**
  * Represents a non-shortcut boolean OR-expression. This has a precedence
  * greater than {@link ASTConditionalAndExpression}, and lower than
@@ -15,23 +13,24 @@ import net.sourceforge.pmd.annotation.InternalApi;
  * rather, they are expressions with an operator precedence greater or equal to ExclusiveOrExpression.
  *
  *
- * <pre>
+ * <pre class="grammar">
  *
  * InclusiveOrExpression ::=  {@linkplain ASTExclusiveOrExpression ExclusiveOrExpression} ( "|" {@linkplain ASTExclusiveOrExpression ExclusiveOrExpression} )+
  *
  * </pre>
+ *
+ * @deprecated Replaced with {@link ASTInfixExpression}
  */
-public class ASTInclusiveOrExpression extends AbstractJavaTypeNode {
+@Deprecated
+public final class ASTInclusiveOrExpression extends AbstractJavaExpr implements ASTExpression {
 
-    @InternalApi
-    @Deprecated
-    public ASTInclusiveOrExpression(int id) {
+    ASTInclusiveOrExpression(int id) {
         super(id);
     }
 
 
     @Override
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
-        return visitor.visit(this, data);
+        throw new UnsupportedOperationException("Node was removed from grammar");
     }
 }

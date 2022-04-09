@@ -34,11 +34,12 @@ abstract class AbstractScalaNode<T extends Tree> extends AbstractNode<AbstractSc
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public <P, R> R acceptVisitor(AstVisitor<? super P, ? extends R> visitor, P data) {
         if (visitor instanceof ScalaParserVisitor) {
             return this.acceptVisitor((ScalaParserVisitor<P, R>) visitor, data);
         }
-        return super.acceptVisitor(visitor, data);
+        return visitor.cannotVisit(this, data);
     }
 
     protected abstract <P, R> R acceptVisitor(ScalaParserVisitor<? super P, ? extends R> visitor, P data);
@@ -71,7 +72,7 @@ abstract class AbstractScalaNode<T extends Tree> extends AbstractNode<AbstractSc
 
     @Override
     public int getEndColumn() {
-        return pos.endColumn(); // no +1
+        return pos.endColumn() + 1;
     }
 
     @Override

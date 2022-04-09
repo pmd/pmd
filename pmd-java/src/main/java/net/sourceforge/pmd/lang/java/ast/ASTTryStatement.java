@@ -4,22 +4,27 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import java.util.List;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.lang.ast.NodeStream;
 
 
 /**
  * Try statement node.
- * <pre>
- * TryStatement ::= "try" ( ResourceSpecification )? Block ( CatchStatement )* [ FinallyStatement ]
+ *
+ *
+ * <pre class="grammar">
+ *
+ * TryStatement ::= "try" {@link ASTResourceList ResourceList}?
+ *                  {@link ASTBlock Block}
+ *                  {@link ASTCatchClause CatchClause}*
+ *                  {@link ASTFinallyClause FinallyClause}?
+ *
  * </pre>
  */
-public class ASTTryStatement extends AbstractJavaNode {
+public final class ASTTryStatement extends AbstractStatement {
 
-    @InternalApi
-    @Deprecated
-    public ASTTryStatement(int id) {
+    ASTTryStatement(int id) {
         super(id);
     }
 
@@ -35,7 +40,16 @@ public class ASTTryStatement extends AbstractJavaNode {
      * has a ResourceSpecification child node.
      */
     public boolean isTryWithResources() {
-        return getFirstChildOfType(ASTResourceSpecification.class) != null;
+        return getChild(0) instanceof ASTResourceList;
+    }
+
+    /**
+     * Returns the node for the resource list. This is null if this is
+     * not a try-with-resources.
+     */
+    @Nullable
+    public ASTResourceList getResources() {
+        return AstImplUtil.getChildAs(this, 0, ASTResourceList.class);
     }
 
 
@@ -43,59 +57,26 @@ public class ASTTryStatement extends AbstractJavaNode {
      * Returns the body of this try statement.
      */
     public ASTBlock getBody() {
-        return (ASTBlock) getFirstChildOfType(ASTBlock.class);
+        return children(ASTBlock.class).first();
     }
 
     /**
      * Returns the catch statement nodes of this try statement.
      * If there are none, returns an empty list.
-     *
-     * @deprecated Use {@link #getCatchClauses()}
      */
-    @Deprecated
-    public List<ASTCatchStatement> getCatchStatements() {
-        return findChildrenOfType(ASTCatchStatement.class);
+    public NodeStream<ASTCatchClause> getCatchClauses() {
+        return children(ASTCatchClause.class);
     }
 
-    /**
-     * Returns the catch clauses of this try statement.
-     * If there are none, returns an empty list.
-     */
-    public List<ASTCatchStatement> getCatchClauses() {
-        return findChildrenOfType(ASTCatchStatement.class);
-    }
-
-
-    /**
-     * Returns true if this try statement has a  {@code finally} statement,
-     * in which case {@link #getFinallyClause()} won't return {@code null}.
-     *
-     * @deprecated Check for nullity of {@link #getFinallyClause()}
-     */
-    @Deprecated
-    public boolean hasFinally() {
-        return getFirstChildOfType(ASTFinallyStatement.class) != null;
-    }
-
-
-    /**
-     * Returns the {@code finally} statement of this try statement, if any.
-     *
-     * @return The finally statement, or null if there is none
-     *
-     * @deprecated Use {@link #getFinallyClause()}
-     */
-    public ASTFinallyStatement getFinally() {
-        return getFirstChildOfType(ASTFinallyStatement.class);
-    }
 
     /**
      * Returns the {@code finally} clause of this try statement, if any.
      *
      * @return The finally statement, or null if there is none
      */
-    public ASTFinallyStatement getFinallyClause() {
-        return getFirstChildOfType(ASTFinallyStatement.class);
+    @Nullable
+    public ASTFinallyClause getFinallyClause() {
+        return getFirstChildOfType(ASTFinallyClause.class);
     }
 
 }

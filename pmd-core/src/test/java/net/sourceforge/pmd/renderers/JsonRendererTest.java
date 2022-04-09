@@ -6,14 +6,11 @@
 package net.sourceforge.pmd.renderers;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 
-import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
-import net.sourceforge.pmd.Report;
+import net.sourceforge.pmd.FooRule;
 import net.sourceforge.pmd.Report.ConfigurationError;
 import net.sourceforge.pmd.Report.ProcessingError;
 import net.sourceforge.pmd.Report.SuppressedViolation;
@@ -67,29 +64,27 @@ public class JsonRendererTest extends AbstractRendererTest {
         return expected;
     }
 
-    private String readFile(String name) {
-        try (InputStream in = JsonRendererTest.class.getResourceAsStream("json/" + name)) {
-            return IOUtils.toString(in, StandardCharsets.UTF_8);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    @Override
+    protected String readFile(String relativePath) {
+        return super.readFile("json/" + relativePath);
     }
 
     @Override
     public String filter(String expected) {
-        String result = expected
+        return expected
                 .replaceAll("\"timestamp\":\\s*\"[^\"]+\"", "\"timestamp\": \"--replaced--\"")
+                .replaceAll("\"pmdVersion\":\\s*\"[^\"]+\"", "\"pmdVersion\": \"unknown\"")
                 .replaceAll("\r\n", "\n"); // make the test run on Windows, too
-        return result;
     }
 
     @Test
     public void suppressedViolations() throws IOException {
-        Report rep = new Report();
-        SuppressedViolation suppressed = new SuppressedViolation(newRuleViolation(1),
-                ViolationSuppressor.NOPMD_COMMENT_SUPPRESSOR, "test");
-        rep.addSuppressedViolation(suppressed);
-        String actual = ReportTest.render(getRenderer(), rep);
+        SuppressedViolation suppressed = new SuppressedViolation(
+            newRuleViolation(1, 1, 1, 1, new FooRule()),
+            ViolationSuppressor.NOPMD_COMMENT_SUPPRESSOR,
+            "test"
+        );
+        String actual = ReportTest.render(getRenderer(), it -> it.onSuppressedRuleViolation(suppressed));
         String expected = readFile("expected-suppressed.json");
         Assert.assertEquals(filter(expected), filter(actual));
     }

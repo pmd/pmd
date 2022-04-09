@@ -33,9 +33,8 @@ public class VSRenderer implements Renderer, CPDRenderer {
             for (Iterator<Mark> iterator = match.iterator(); iterator.hasNext();) {
                 mark = iterator.next();
                 writer.append(mark.getFilename())
-                    .append('(').append(String.valueOf(mark.getBeginLine())).append("):")
-                    .append(" Between lines " + mark.getBeginLine() + " and "
-                        + (mark.getBeginLine() + match.getLineCount()) + PMD.EOL);
+                        .append('(').append(String.valueOf(mark.getBeginLine())).append("):")
+                        .append(" Between lines ").append(String.valueOf(mark.getBeginLine())).append(" and ").append(String.valueOf(mark.getBeginLine() + match.getLineCount())).append(PMD.EOL);
             }
         }
         writer.flush();

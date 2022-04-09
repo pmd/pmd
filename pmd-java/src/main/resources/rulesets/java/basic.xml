@@ -34,7 +34,7 @@ The Basic ruleset contains a collection of good practices which should be follow
     <rule ref="category/java/codestyle.xml/ForLoopShouldBeWhileLoop" deprecated="true" />
 
     <rule ref="category/java/performance.xml/BigIntegerInstantiation" deprecated="true" />
-    <rule ref="category/java/performance.xml/BooleanInstantiation" deprecated="true" />
+<!--    <rule ref="category/java/performance.xml/BooleanInstantiation" deprecated="true" />-->
 
     <rule ref="category/java/design.xml/CollapsibleIfStatements" deprecated="true" />
     <rule ref="category/java/design.xml/SimplifiedTernary" deprecated="true" />

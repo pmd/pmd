@@ -7,6 +7,9 @@
     <test-code>
         <description>should be utility class since all static, public constructor</description>
         <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>This utility class has a non-private constructor</message>
+        </expected-messages>
         <code><![CDATA[
 public class Foo {
     public Foo() { }
@@ -100,15 +103,32 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>junit 'suite' method is OK</description>
+        <description>junit 3 'suite' method is OK</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-public class FooTest {
+import junit.framework.TestSuite;
+import junit.framework.Test;
+
+public class FooTest extends TestSuite {
     public static Test suite() {
         return new TestSuite();
     }
 }
         ]]></code>
+    </test-code>
+    <test-code>
+        <description>junit 4 'suite' method is OK</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
+
+@RunWith(Suite.class)
+@SuiteClasses(FooTest.class)
+public class FooTest {
+}
+            ]]></code>
     </test-code>
 
     <test-code>
@@ -206,19 +226,17 @@ public class MyException extends RuntimeException {
         <description>#1467 UseUtilityClass can't correctly check functions with multiple annotations</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-public class AccountFragment extends Fragment {
+public class AccountFragment {
 
     public static AccountFragment newInstance() {
-        AccountFragment instance = new AccountFragment();
-        //OTHER STUFF
-        return instance;
+        // ...
+        return new AccountFragment();
     }
 
-    @Nullable
+    @SafeVarargs
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-        Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.mylayout, container, false);
+    public void onCreateView() {
+        // ...
     }
 }
         ]]></code>
@@ -249,21 +267,6 @@ import static lombok.AccessLevel.PRIVATE;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = PRIVATE)
-public class Foo {
-    public static Foo get() {
-        return null;
-    }
-}
-        ]]></code>
-    </test-code>
-
-    <test-code>
-        <description>Lombok NoArgsConstructor no import- ok</description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-import lombok.NoArgsConstructor;
-
-@NoArgsConstructor(access = lombok.AccessLevel.PRIVATE)
 public class Foo {
     public static Foo get() {
         return null;
@@ -352,9 +355,21 @@ public class MyUtil {
     <test-code>
         <description>Inner class in abstract class false-negative</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
         <code><![CDATA[
 public abstract class Outer {
-    private static class Inner {
+    static class Inner { // no violation if private
+        public static int getInt() { return 42; }
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Private inner class in abstract class</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public abstract class Outer {
+    private static class Inner { // no violation if private
         public static int getInt() { return 42; }
     }
 }
@@ -366,7 +381,7 @@ public abstract class Outer {
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public abstract class Outer {
-    private static class Inner {
+    static class Inner {
         private static int answer;
         public static int getInt() { return answer; }
     }
@@ -379,7 +394,7 @@ public abstract class Outer {
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public interface Outer {
-    private static class Inner {
+    static class Inner {
         public static int getInt() { return 42; }
     }
 }
@@ -389,9 +404,10 @@ public interface Outer {
     <test-code>
         <description>Inner class in sub-class false-negative</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
         <code><![CDATA[
 public class Outer extends Object {
-    private static class Inner {
+    static class Inner {
         public static boolean isYes(int a) {
             return a != 0;
         }

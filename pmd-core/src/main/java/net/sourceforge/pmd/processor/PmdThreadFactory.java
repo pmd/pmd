@@ -7,7 +7,7 @@ package net.sourceforge.pmd.processor;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class PmdThreadFactory implements ThreadFactory {
+class PmdThreadFactory implements ThreadFactory {
 
     private final AtomicInteger counter = new AtomicInteger();
 

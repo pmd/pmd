@@ -13,23 +13,21 @@ import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Pattern;
 
 import org.apache.commons.io.FilenameUtils;
 
 import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.RuleSetFactory;
-import net.sourceforge.pmd.RuleSetNotFoundException;
-import net.sourceforge.pmd.RulesetsFactoryUtils;
+import net.sourceforge.pmd.RuleSetLoader;
 
 public final class GenerateRuleDocsCmd {
+
     private GenerateRuleDocsCmd() {
         // Utility class
     }
 
-    public static void main(String[] args) throws RuleSetNotFoundException {
+    public static void main(String[] args) throws IOException {
         if (args.length != 1) {
             System.err.println("One argument is required: The base directory of the module pmd-doc.");
             System.exit(1);
@@ -39,8 +37,9 @@ public final class GenerateRuleDocsCmd {
         Path output = FileSystems.getDefault().getPath(args[0]).resolve("..").toAbsolutePath().normalize();
         System.out.println("Generating docs into " + output);
 
-        RuleSetFactory ruleSetFactory = RulesetsFactoryUtils.defaultFactory();
-        Iterator<RuleSet> registeredRuleSets = ruleSetFactory.getRegisteredRuleSets();
+        // important: use a RuleSetFactory that includes all rules, e.g. deprecated rule references
+        List<RuleSet> registeredRuleSets = new RuleSetLoader().includeDeprecatedRuleReferences(true)
+                .getStandardRuleSets();
         List<String> additionalRulesets = findAdditionalRulesets(output);
 
         RuleDocGenerator generator = new RuleDocGenerator(new DefaultFileWriter(), output);
@@ -49,12 +48,13 @@ public final class GenerateRuleDocsCmd {
         System.out.println("Generated docs in " + (System.currentTimeMillis() - start) + " ms");
     }
 
+
     public static List<String> findAdditionalRulesets(Path basePath) {
         try {
             List<String> additionalRulesets = new ArrayList<>();
             Pattern rulesetPattern = Pattern.compile("^.+" + Pattern.quote(File.separator) + "pmd-\\w+"
-                    + Pattern.quote(FilenameUtils.normalize("/src/main/resources/rulesets/"))
-                    + "\\w+" + Pattern.quote(File.separator) + "\\w+.xml$");
+                                                         + Pattern.quote(FilenameUtils.normalize("/src/main/resources/rulesets/"))
+                                                         + "\\w+" + Pattern.quote(File.separator) + "\\w+.xml$");
             Files.walkFileTree(basePath, new SimpleFileVisitor<Path>() {
                 @Override
                 public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {

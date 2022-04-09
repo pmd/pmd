@@ -17,8 +17,36 @@
     </parent>
 
     <build>
-        <sourceDirectory>${project.basedir}/src/main/kotlin</sourceDirectory>
+        <testResources>
+            <testResource>
+                <directory>${project.basedir}/src/test/resources</directory>
+            </testResource>
+            <!-- Adding kotlin files to test resources, so that checkstyle verifies the license header -->
+            <testResource>
+                <directory>${project.basedir}/src/main/kotlin</directory>
+            </testResource>
+        </testResources>
         <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>add-kotlin-sources</id>
+                        <!-- This is needed because otherwise that directory is      -->
+                        <!-- added as a test resource by the <testResources> above   -->
+                        <goals>
+                            <goal>add-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>${project.basedir}/src/main/kotlin</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
             <!-- The kotlin plugin has to run before the java plugin-->
             <plugin>
                 <artifactId>kotlin-maven-plugin</artifactId>
@@ -31,9 +59,21 @@
                             <goal>compile</goal>
                         </goals>
                         <phase>process-sources</phase>
+                        <configuration>
+                            <sourceDirs>
+                                <sourceDir>${project.basedir}/src/main/java</sourceDir>
+                                <sourceDir>${project.basedir}/src/main/kotlin</sourceDir>
+                            </sourceDirs>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+            </plugin>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
@@ -53,29 +93,8 @@
                     <execution>
                         <phase>package</phase>
                         <goals>
-                            <!--
-                              once https://github.com/Kotlin/dokka/issues/294 is fixed, use goal javadocJar instead
-                              and remove the additional jar plugin execution
-                             -->
-                            <goal>dokka</goal>
+                            <goal>javadocJar</goal>
                         </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>kotlin-javadoc</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                        <configuration>
-                            <classesDirectory>${project.build.directory}/dokka/pmd-lang-test</classesDirectory>
-                            <classifier>javadoc</classifier>
-                        </configuration>
                     </execution>
                 </executions>
             </plugin>
@@ -105,13 +124,19 @@
              of the pmd-lang-test module
         -->
         <dependency>
-            <groupId>io.kotlintest</groupId>
-            <artifactId>kotlintest-assertions</artifactId>
+            <groupId>io.kotest</groupId>
+            <artifactId>kotest-assertions-core-jvm</artifactId>
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>org.jetbrains.kotlin</groupId>
-            <artifactId>kotlin-test</artifactId>
+            <groupId>io.kotest</groupId>
+            <artifactId>kotest-property-jvm</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <!-- Contains stuff like FunSpec, etc -->
+            <groupId>io.kotest</groupId>
+            <artifactId>kotest-runner-junit5-jvm</artifactId>
             <scope>compile</scope>
         </dependency>
 

@@ -4,30 +4,34 @@
 
 package net.sourceforge.pmd.lang.java;
 
-import static org.junit.Assert.assertEquals;
+import static net.sourceforge.pmd.lang.ast.test.TestUtilsKt.assertSize;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.Test;
 
 import net.sourceforge.pmd.FooRule;
 import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.lang.Language;
-import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-import net.sourceforge.pmd.test.lang.DummyLanguageModule;
-import net.sourceforge.pmd.testframework.RuleTst;
 
-public class SuppressWarningsTest extends RuleTst {
+public class SuppressWarningsTest {
+
+    private final JavaParsingHelper java = JavaParsingHelper.DEFAULT;
 
     private static class BarRule extends AbstractJavaRule {
+
+        @Override
+        public String getMessage() {
+            return "a message";
+        }
+
         @Override
         public Object visit(ASTCompilationUnit cu, Object ctx) {
             // Convoluted rule to make sure the violation is reported for the
             // ASTCompilationUnit node
-            for (ASTClassOrInterfaceDeclaration c : cu.findDescendantsOfType(ASTClassOrInterfaceDeclaration.class)) {
-                if (c.getImage().equalsIgnoreCase("bar")) {
+            for (ASTClassOrInterfaceDeclaration c : cu.descendants(ASTClassOrInterfaceDeclaration.class)) {
+                if ("bar".equalsIgnoreCase(c.getSimpleName())) {
                     addViolation(ctx, cu);
                 }
             }
@@ -42,145 +46,118 @@ public class SuppressWarningsTest extends RuleTst {
 
     @Test
     public void testClassLevelSuppression() {
-        Report rpt = new Report();
-        runTestFromString(TEST1, newFooRule(), rpt, java5Version());
-        assertEquals(0, rpt.size());
-        runTestFromString(TEST2, newFooRule(), rpt, java5Version());
-        assertEquals(0, rpt.size());
-    }
-
-    @NonNull
-    public FooRule newFooRule() {
-        FooRule rule = new FooRule();
-        rule.setLanguage(languageRegistry().getLanguage(DummyLanguageModule.NAME));
-        return rule;
-    }
-
-    private Language javaLanguage() {
-        return languageRegistry().getLanguage(JavaLanguageModule.NAME);
+        Report rpt = java.executeRule(new FooRule(), TEST1);
+        assertSize(rpt, 0);
+        rpt = java.executeRule(new FooRule(), TEST2);
+        assertSize(rpt, 0);
     }
 
     @Test
     public void testInheritedSuppression() {
-        Report rpt = new Report();
-        runTestFromString(TEST3, newFooRule(), rpt, java5Version());
-        assertEquals(0, rpt.size());
+        Report rpt = java.executeRule(new FooRule(), TEST3);
+        assertSize(rpt, 0);
     }
 
     @Test
     public void testMethodLevelSuppression() {
-        Report rpt = new Report();
-        runTestFromString(TEST4, newFooRule(), rpt, java5Version());
-        assertEquals(1, rpt.size());
+        Report rpt;
+        rpt = java.executeRule(new FooRule(), TEST4);
+        assertSize(rpt, 1);
     }
 
     @Test
     public void testConstructorLevelSuppression() {
-        Report rpt = new Report();
-        runTestFromString(TEST5, newFooRule(), rpt, java5Version());
-        assertEquals(0, rpt.size());
+        Report rpt = java.executeRule(new FooRule(), TEST5);
+        assertSize(rpt, 0);
     }
 
     @Test
     public void testFieldLevelSuppression() {
-        Report rpt = new Report();
-        runTestFromString(TEST6, newFooRule(), rpt,
-                          java5Version());
-        assertEquals(1, rpt.size());
+        Report rpt = java.executeRule(new FooRule(), TEST6);
+        assertSize(rpt, 1);
     }
 
     @Test
     public void testParameterLevelSuppression() {
-        Report rpt = new Report();
-        runTestFromString(TEST7, newFooRule(), rpt,
-                          java5Version());
-        assertEquals(1, rpt.size());
+        Report rpt = java.executeRule(new FooRule(), TEST7);
+        assertSize(rpt, 1);
     }
 
     @Test
     public void testLocalVariableLevelSuppression() {
-        Report rpt = new Report();
-        runTestFromString(TEST8, newFooRule(), rpt,
-                          java5Version());
-        assertEquals(1, rpt.size());
+        Report rpt = java.executeRule(new FooRule(), TEST8);
+        assertSize(rpt, 1);
     }
 
     @Test
     public void testSpecificSuppression() {
-        Report rpt = new Report();
-        runTestFromString(TEST9, newFooRule(), rpt,
-                          java5Version());
-        assertEquals(1, rpt.size());
+        Report rpt = java.executeRule(new FooRule(), TEST9);
+        assertSize(rpt, 1);
     }
 
     @Test
     public void testSpecificSuppressionValue1() {
-        Report rpt = new Report();
-        runTestFromString(TEST9_VALUE1, newFooRule(), rpt,
-                          java5Version());
-        assertEquals(1, rpt.size());
+        Report rpt = java.executeRule(new FooRule(), TEST9_VALUE1);
+        assertSize(rpt, 1);
     }
 
     @Test
     public void testSpecificSuppressionValue2() {
-        Report rpt = new Report();
-        runTestFromString(TEST9_VALUE2, newFooRule(), rpt,
-                          java5Version());
-        assertEquals(1, rpt.size());
+        Report rpt = java.executeRule(new FooRule(), TEST9_VALUE2);
+        assertSize(rpt, 1);
     }
 
     @Test
     public void testSpecificSuppressionValue3() {
-        Report rpt = new Report();
-        runTestFromString(TEST9_VALUE3, newFooRule(), rpt, java5Version());
-        assertEquals(1, rpt.size());
-    }
-
-    public LanguageVersion java5Version() {
-        return javaLanguage().getVersion("1.5");
+        Report rpt = java.executeRule(new FooRule(), TEST9_VALUE3);
+        assertSize(rpt, 1);
     }
 
     @Test
     public void testSpecificSuppressionMulitpleValues1() {
-        Report rpt = new Report();
-        runTestFromString(TEST9_MULTIPLE_VALUES_1, newFooRule(), rpt, java5Version());
-        assertEquals(0, rpt.size());
+        Report rpt = java.executeRule(new FooRule(), TEST9_MULTIPLE_VALUES_1);
+        assertSize(rpt, 0);
     }
 
     @Test
     public void testSpecificSuppressionMulitpleValues2() {
-        Report rpt = new Report();
-        runTestFromString(TEST9_MULTIPLE_VALUES_2, newFooRule(), rpt, java5Version());
-        assertEquals(0, rpt.size());
+        Report rpt = java.executeRule(new FooRule(), TEST9_MULTIPLE_VALUES_2);
+        assertSize(rpt, 0);
     }
 
     @Test
     public void testNoSuppressionBlank() {
-        Report rpt = new Report();
-        runTestFromString(TEST10, newFooRule(), rpt, java5Version());
-        assertEquals(2, rpt.size());
+        Report rpt = java.executeRule(new FooRule(), TEST10);
+        assertSize(rpt, 2);
     }
 
     @Test
     public void testNoSuppressionSomethingElseS() {
-        Report rpt = new Report();
-        runTestFromString(TEST11, newFooRule(), rpt, java5Version());
-        assertEquals(2, rpt.size());
+        Report rpt = java.executeRule(new FooRule(), TEST11);
+        assertSize(rpt, 2);
     }
 
     @Test
     public void testSuppressAll() {
-        Report rpt = new Report();
-        runTestFromString(TEST12, newFooRule(), rpt, java5Version());
-        assertEquals(0, rpt.size());
+        Report rpt = java.executeRule(new FooRule(), TEST12);
+        assertSize(rpt, 0);
     }
 
     @Test
     public void testSpecificSuppressionAtTopLevel() {
-        Report rpt = new Report();
-        runTestFromString(TEST13, new BarRule(), rpt,
-                          java5Version());
-        assertEquals(0, rpt.size());
+        Report rpt = java.executeRule(new BarRule(), TEST13);
+        assertSize(rpt, 0);
+    }
+
+    @Test
+    public void testConstExpr() {
+        testAboutConstExpr(true, 0); // with the annotation, we should get no violation
+        testAboutConstExpr(false, 1); // without the annotation, we should get a violation
+    }
+
+    private void testAboutConstExpr(boolean hasAnnotation, int numExpectedViolations) {
+        Report rpt = java.executeRule(new FooRule(), constExprTest(hasAnnotation));
+        assertSize(rpt, numExpectedViolations);
     }
 
     private static final String TEST1 = "@SuppressWarnings(\"PMD\")\npublic class Foo {}";
@@ -218,4 +195,15 @@ public class SuppressWarningsTest extends RuleTst {
     private static final String TEST12 = "public class Bar {\n @SuppressWarnings(\"all\") int foo;\n}";
 
     private static final String TEST13 = "@SuppressWarnings(\"PMD.NoBar\")\npublic class Bar {\n}";
+
+    private static @NonNull String constExprTest(boolean withAnnot) {
+        return "public class NewClass {\n"
+            + "    private final static String SUPPRESS_PMD = \"PMD.\";\n"
+            + "\n"
+            + (withAnnot ? "    @SuppressWarnings(SUPPRESS_PMD + \"NoFoo\")\n" : "")
+            + "    public void someMethod1(Object Foo) {\n"
+            + "        System.out.println(\"someMethod1\");\n"
+            + "    }\n"
+            + "}";
+    }
 }

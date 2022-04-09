@@ -37,4 +37,7 @@
     auto hex_literal = 0x0F00'abcd'6f3d;
     auto silly_example = 1'0'0'000'00;
 
+    // boolean literals
+    int b1 = 0B001101; // C++ 14 binary literal
+    int b2 = 0b000001; // C++ 14 binary literal
 }

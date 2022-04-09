@@ -4,24 +4,26 @@
 
 package net.sourceforge.pmd.util;
 
+import static java.util.Arrays.asList;
+import static java.util.Collections.emptyIterator;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
 import static java.util.Collections.singletonList;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
+import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collector;
@@ -32,7 +34,7 @@ import org.apache.commons.lang3.Validate;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.pcollections.HashTreePSet;
-import org.pcollections.MapPSet;
+import org.pcollections.PMap;
 import org.pcollections.PSet;
 
 import net.sourceforge.pmd.annotation.InternalApi;
@@ -50,58 +52,32 @@ import net.sourceforge.pmd.internal.util.IteratorUtil;
 @Deprecated
 @InternalApi
 public final class CollectionUtil {
+
     private static final int UNKNOWN_SIZE = -1;
 
     @SuppressWarnings("PMD.UnnecessaryFullyQualifiedName")
-    public static final TypeMap COLLECTION_INTERFACES_BY_NAMES = new TypeMap(List.class, Collection.class, Map.class, Set.class);
+    public static final Set<String> COLLECTION_INTERFACES_BY_NAMES = collectionTypes(List.class, Collection.class, Map.class, Set.class);
 
-    @SuppressWarnings({"PMD.LooseCoupling", "PMD.UnnecessaryFullyQualifiedName" })
-    public static final TypeMap COLLECTION_CLASSES_BY_NAMES
-        = new TypeMap(ArrayList.class, java.util.LinkedList.class, java.util.Vector.class, HashMap.class,
-                      java.util.LinkedHashMap.class, java.util.TreeMap.class, java.util.TreeSet.class,
-                      HashSet.class, java.util.LinkedHashSet.class, java.util.Hashtable.class);
+    @SuppressWarnings({"PMD.LooseCoupling", "PMD.UnnecessaryFullyQualifiedName"})
+    public static final Set<String> COLLECTION_CLASSES_BY_NAMES
+        = collectionTypes(ArrayList.class, java.util.LinkedList.class, java.util.Vector.class, HashMap.class,
+                          java.util.LinkedHashMap.class, java.util.TreeMap.class, java.util.TreeSet.class,
+                          HashSet.class, java.util.LinkedHashSet.class, java.util.Hashtable.class);
 
 
     private CollectionUtil() {
     }
 
-    /**
-     * Add elements from the source to the target as long as they don't already
-     * exist there. Return the number of items actually added.
-     *
-     * @param source
-     * @param target
-     * @return int
-     */
-    public static <T> int addWithoutDuplicates(Collection<T> source, Collection<T> target) {
+    private static Set<String> collectionTypes(Class<?>... types) {
+        Set<String> set = new HashSet<>();
 
-        int added = 0;
-
-        for (T item : source) {
-            if (target.contains(item)) {
-                continue;
+        for (Class<?> type : types) {
+            if (!set.add(type.getSimpleName()) || !set.add(type.getName())) {
+                throw new IllegalArgumentException("Duplicate or name collision for " + type);
             }
-            target.add(item);
-            added++;
         }
 
-        return added;
-    }
-
-    /**
-     * Returns the collection type if we recognize it by its short name.
-     *
-     * @param shortName
-     *            String
-     * @return Class
-     */
-    public static Class<?> getCollectionTypeFor(String shortName) {
-        Class<?> cls = COLLECTION_CLASSES_BY_NAMES.typeFor(shortName);
-        if (cls != null) {
-            return cls;
-        }
-
-        return COLLECTION_INTERFACES_BY_NAMES.typeFor(shortName);
+        return set;
     }
 
     /**
@@ -113,45 +89,13 @@ public final class CollectionUtil {
      * @param includeInterfaces
      *            boolean
      * @return boolean
+     *
+     * @deprecated Will be replaced with type resolution
      */
+    @Deprecated
     public static boolean isCollectionType(String typeName, boolean includeInterfaces) {
-
-        if (COLLECTION_CLASSES_BY_NAMES.contains(typeName)) {
-            return true;
-        }
-
-        return includeInterfaces && COLLECTION_INTERFACES_BY_NAMES.contains(typeName);
-    }
-
-    /**
-     * Return whether we can identify the typeName as a java.util collection
-     * class or interface as specified.
-     *
-     * @param clazzType
-     *            Class
-     * @param includeInterfaces
-     *            boolean
-     * @return boolean
-     */
-    public static boolean isCollectionType(Class<?> clazzType, boolean includeInterfaces) {
-
-        if (COLLECTION_CLASSES_BY_NAMES.contains(clazzType)) {
-            return true;
-        }
-
-        return includeInterfaces && COLLECTION_INTERFACES_BY_NAMES.contains(clazzType);
-    }
-
-    /**
-     * Returns the items as a populated set.
-     *
-     * @param items
-     *            Object[]
-     * @return Set
-     */
-    public static <T> Set<T> asSet(T[] items) {
-
-        return new HashSet<>(Arrays.asList(items));
+        return COLLECTION_CLASSES_BY_NAMES.contains(typeName)
+                || includeInterfaces && COLLECTION_INTERFACES_BY_NAMES.contains(typeName);
     }
 
     /**
@@ -163,7 +107,10 @@ public final class CollectionUtil {
      * @param values
      *            V[]
      * @return Map
+     *
+     * @deprecated Used by deprecated property types
      */
+    @Deprecated
     public static <K, V> Map<K, V> mapFrom(K[] keys, V[] values) {
         if (keys.length != values.length) {
             throw new RuntimeException("mapFrom keys and values arrays have different sizes");
@@ -181,7 +128,10 @@ public final class CollectionUtil {
      * @param source
      *            Map
      * @return Map
+     *
+     * @deprecated Used by deprecated property types
      */
+    @Deprecated
     public static <K, V> Map<V, K> invertedMapFrom(Map<K, V> source) {
         Map<V, K> map = new HashMap<>(source.size());
         for (Map.Entry<K, V> entry : source.entrySet()) {
@@ -192,123 +142,27 @@ public final class CollectionUtil {
 
 
     /**
-     * Consumes all the elements of the iterator and
-     * returns a list containing them. The iterator is
-     * then unusable
+     * Returns a list view that pretends it is the concatenation of
+     * both lists. The returned view is unmodifiable. The implementation
+     * is pretty stupid and not optimized for repeated concatenation,
+     * but should be ok for smallish chains of random-access lists.
      *
-     * @param it An iterator
+     * @param head Head elements (to the left)
+     * @param tail Tail elements (to the right)
+     * @param <T>  Type of elements in both lists
      *
-     * @return a list containing the elements remaining
-     * on the iterator
+     * @return A concatenated view
      */
-    public static <T> List<T> toList(Iterator<T> it) {
-        List<T> list = new ArrayList<>();
-        while (it.hasNext()) {
-            list.add(it.next());
+    public static <T> List<T> concatView(List<? extends T> head, List<? extends T> tail) {
+        if (head.isEmpty()) {
+            return Collections.unmodifiableList(tail);
+        } else if (tail.isEmpty()) {
+            return Collections.unmodifiableList(head);
+        } else {
+            return new ConsList<>(head, tail);
         }
-        return list;
     }
 
-    /**
-     * Returns true if the objects are array instances and each of their
-     * elements compares via equals as well.
-     *
-     * @param value
-     *            Object
-     * @param otherValue
-     *            Object
-     * @return boolean
-     * @deprecated {@link Objects#deepEquals(Object, Object)}
-     */
-    @Deprecated
-    public static boolean arraysAreEqual(Object value, Object otherValue) {
-        if (value instanceof Object[]) {
-            if (otherValue instanceof Object[]) {
-                return valuesAreTransitivelyEqual((Object[]) value, (Object[]) otherValue);
-            }
-            return false;
-        }
-        return false;
-    }
-
-    /**
-     * Returns whether the arrays are equal by examining each of their elements,
-     * even if they are arrays themselves.
-     *
-     * @param thisArray
-     *            Object[]
-     * @param thatArray
-     *            Object[]
-     * @return boolean
-     * @deprecated {@link Arrays#deepEquals(Object[], Object[])}
-     */
-    @Deprecated
-    public static boolean valuesAreTransitivelyEqual(Object[] thisArray, Object[] thatArray) {
-        if (thisArray == thatArray) {
-            return true;
-        }
-        if (thisArray == null || thatArray == null) {
-            return false;
-        }
-        if (thisArray.length != thatArray.length) {
-            return false;
-        }
-        for (int i = 0; i < thisArray.length; i++) {
-            if (!areEqual(thisArray[i], thatArray[i])) {
-                return false; // recurse if req'd
-            }
-        }
-        return true;
-    }
-
-    /**
-     * A comprehensive isEqual method that handles nulls and arrays safely.
-     *
-     * @param value
-     *            Object
-     * @param otherValue
-     *            Object
-     * @return boolean
-     * @deprecated {@link Objects#deepEquals(Object, Object)}
-     */
-    @Deprecated
-    @SuppressWarnings("PMD.CompareObjectsWithEquals")
-    public static boolean areEqual(Object value, Object otherValue) {
-        if (value == otherValue) {
-            return true;
-        }
-        if (value == null) {
-            return false;
-        }
-        if (otherValue == null) {
-            return false;
-        }
-
-        if (value.getClass().getComponentType() != null) {
-            return arraysAreEqual(value, otherValue);
-        }
-        return value.equals(otherValue);
-    }
-
-    /**
-     * Returns whether the items array is null or has zero length.
-     *
-     * @param items
-     * @return boolean
-     */
-    public static boolean isEmpty(Object[] items) {
-        return items == null || items.length == 0;
-    }
-
-    /**
-     * Returns whether the items array is non-null and has at least one entry.
-     *
-     * @param items
-     * @return boolean
-     */
-    public static boolean isNotEmpty(Object[] items) {
-        return !isEmpty(items);
-    }
 
     /**
      * Returns the set union of the given collections.
@@ -395,6 +249,17 @@ public final class CollectionUtil {
         return Collections.unmodifiableSet(union);
     }
 
+    /**
+     * Returns an unmodifiable set containing the given elements.
+     *
+     * @param first First element
+     * @param rest  Following elements
+     */
+    @SafeVarargs
+    public static <T extends Enum<T>> Set<T> immutableEnumSet(T first, T... rest) {
+        return Collections.unmodifiableSet(EnumSet.of(first, rest));
+    }
+
 
     @SafeVarargs
     public static <T> List<T> listOf(T first, T... rest) {
@@ -403,7 +268,7 @@ public final class CollectionUtil {
         }
         List<T> union = new ArrayList<>();
         union.add(first);
-        union.addAll(Arrays.asList(rest));
+        union.addAll(asList(rest));
         return Collections.unmodifiableList(union);
     }
 
@@ -427,12 +292,32 @@ public final class CollectionUtil {
      * mapping. The returned map may be unmodifiable.
      */
     public static <K, V> Map<K, V> plus(Map<K, V> m, K k, V v) {
+        if (m instanceof PMap) {
+            return ((PMap<K, V>) m).plus(k, v);
+        }
         if (m.isEmpty()) {
             return Collections.singletonMap(k, v);
         }
-        HashMap<K, V> newM = new HashMap<>(m);
+        Map<K, V> newM = new HashMap<>(m);
         newM.put(k, v);
         return newM;
+    }
+
+    /**
+     * Returns an unmodifiable set containing the set union of the collection,
+     * and the new elements.
+     */
+    @SafeVarargs
+    @SuppressWarnings("unchecked")
+    public static <V> Set<V> setUnion(Collection<? extends V> set, V first, V... newElements) {
+        if (set instanceof PSet) {
+            return ((PSet<V>) set).plus(first).plusAll(asList(newElements));
+        }
+        Set<V> newSet = new LinkedHashSet<>(set.size() + 1 + newElements.length);
+        newSet.addAll(set);
+        newSet.add(first);
+        Collections.addAll(newSet, newElements);
+        return Collections.unmodifiableSet(newSet);
     }
 
 
@@ -449,7 +334,7 @@ public final class CollectionUtil {
         AssertionUtil.requireParamNotNull("values", to);
         Validate.isTrue(from.size() == to.size(), "Mismatched list sizes %s to %s", from, to);
 
-        if (from.isEmpty()) {
+        if (from.isEmpty()) { //NOPMD: we really want to compare references here
             return emptyMap();
         }
 
@@ -513,6 +398,9 @@ public final class CollectionUtil {
      * and accumulates it into an unmodifiable list.
      */
     public static <T, R> List<R> map(Collection<? extends T> from, Function<? super T, ? extends R> f) {
+        if (from == null) {
+            return emptyList();
+        }
         return map(from.iterator(), from.size(), f);
     }
 
@@ -521,6 +409,9 @@ public final class CollectionUtil {
      * and accumulates it into an unmodifiable list.
      */
     public static <T, R> List<R> map(Iterable<? extends T> from, Function<? super T, ? extends R> f) {
+        if (from == null) {
+            return emptyList();
+        }
         return map(from.iterator(), UNKNOWN_SIZE, f);
     }
 
@@ -529,7 +420,10 @@ public final class CollectionUtil {
      * and accumulates it into an unmodifiable list.
      */
     public static <T, R> List<R> map(T[] from, Function<? super T, ? extends R> f) {
-        return map(Arrays.asList(from), f);
+        if (from == null) {
+            return emptyList();
+        }
+        return map(asList(from), f);
     }
 
     /**
@@ -537,12 +431,15 @@ public final class CollectionUtil {
      * and accumulates it into an unmodifiable list.
      */
     public static <T, R> List<R> map(Iterator<? extends T> from, Function<? super T, ? extends R> f) {
+        if (from == null) {
+            return emptyList();
+        }
         return map(from, UNKNOWN_SIZE, f);
     }
 
     private static <T, R> List<R> map(Iterator<? extends T> from, int sizeHint, Function<? super T, ? extends R> f) {
         if (!from.hasNext()) {
-            return Collections.emptyList();
+            return emptyList();
         } else if (sizeHint == 1) {
             return Collections.singletonList(f.apply(from.next()));
         }
@@ -560,6 +457,9 @@ public final class CollectionUtil {
     public static <T, U, A, C> C map(Collector<? super U, A, ? extends C> collector,
                                      Iterable<? extends T> from,
                                      Function<? super T, ? extends U> f) {
+        if (from == null) {
+            return map(collector, emptyIterator(), f);
+        }
         return map(collector, from.iterator(), f);
     }
 
@@ -585,16 +485,19 @@ public final class CollectionUtil {
      * @param <T> Type of accumulated values
      */
     public static <T> Collector<T, ?, List<T>> toMutableList() {
-        return Collector.<T, ArrayList<T>, List<T>>of(
-            ArrayList::new,
-            ArrayList::add,
-            (left, right) -> {
-                left.addAll(right);
-                return left;
-            },
-            a -> a,
-            Characteristics.IDENTITY_FINISH
-        );
+        return Collectors.toCollection(ArrayList::new);
+    }
+
+
+    /**
+     * A collector that returns a mutable set. This contrasts with
+     * {@link Collectors#toSet()}, which makes no guarantee about the
+     * mutability of the set.
+     *
+     * @param <T> Type of accumulated values
+     */
+    public static <T> Collector<T, ?, Set<T>> toMutableSet() {
+        return Collectors.toCollection(HashSet::new);
     }
 
     /**
@@ -616,7 +519,8 @@ public final class CollectionUtil {
      */
     public static <T> Collector<T, ?, PSet<T>> toPersistentSet() {
         class Holder {
-            MapPSet<T> set = HashTreePSet.empty();
+
+            PSet<T> set = HashTreePSet.empty();
         }
 
         return Collector.of(
@@ -644,7 +548,7 @@ public final class CollectionUtil {
     public static <T> List<T> drop(List<T> list, int n) {
         AssertionUtil.requireNonNegative("n", n);
 
-        return list.size() <= n ? Collections.emptyList()
+        return list.size() <= n ? emptyList()
                                 : list.subList(n, list.size());
     }
 
@@ -654,95 +558,6 @@ public final class CollectionUtil {
                                 : list.subList(0, n);
     }
 
-    /**
-     * Returns true if both arrays are if both are null or have zero-length,
-     * otherwise return the false if their respective elements are not equal by
-     * position.
-     *
-     * @param <T>
-     * @param a
-     * @param b
-     * @return boolean
-     * @deprecated {@link Arrays#deepEquals(Object[], Object[])}
-     */
-    @Deprecated
-    public static <T> boolean areSemanticEquals(T[] a, T[] b) {
-        if (a == null) {
-            return b == null || b.length == 0;
-        }
-        if (b == null) {
-            return a.length == 0;
-        }
-
-        if (a.length != b.length) {
-            return false;
-        }
-
-        for (int i = 0; i < a.length; i++) {
-            if (!areEqual(a[i], b[i])) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-
-    /**
-     * If the newValue is already held within the values array then the values
-     * array is returned, otherwise a new array is created appending the
-     * newValue to the end.
-     *
-     * @param <T>
-     * @param values
-     * @param newValue
-     * @return an array containing the union of values and newValue
-     */
-    @Deprecated
-    public static <T> T[] addWithoutDuplicates(T[] values, T newValue) {
-
-        for (T value : values) {
-            if (value.equals(newValue)) {
-                return values;
-            }
-        }
-
-        T[] largerOne = (T[]) Array.newInstance(values.getClass().getComponentType(), values.length + 1);
-        System.arraycopy(values, 0, largerOne, 0, values.length);
-        largerOne[values.length] = newValue;
-        return largerOne;
-    }
-
-    /**
-     * Returns an array of values as a union set of the two input arrays.
-     *
-     * @param <T>
-     * @param values
-     * @param newValues
-     * @return the union of the two arrays
-     */
-    @Deprecated
-    public static <T> T[] addWithoutDuplicates(T[] values, T[] newValues) {
-
-        Set<T> originals = new HashSet<>(values.length);
-        for (T value : values) {
-            originals.add(value);
-        }
-        List<T> newOnes = new ArrayList<>(newValues.length);
-        for (T value : newValues) {
-            if (originals.contains(value)) {
-                continue;
-            }
-            newOnes.add(value);
-        }
-
-        T[] largerOne = (T[]) Array.newInstance(values.getClass().getComponentType(), values.length + newOnes.size());
-        System.arraycopy(values, 0, largerOne, 0, values.length);
-        for (int i = values.length; i < largerOne.length; i++) {
-            largerOne[i] = newOnes.get(i - values.length);
-        }
-        return largerOne;
-    }
 
     public static <T> List<T> listOfNotNull(T t) {
         return t == null ? emptyList() : singletonList(t);
@@ -781,6 +596,53 @@ public final class CollectionUtil {
             return set.iterator().next();
         } else {
             return null;
+        }
+    }
+
+    /**
+     * Returns an unmodifiable copy of the list. This is to be preferred
+     * to {@link Collections#unmodifiableList(List)} if you don't trust
+     * the source of the list, because no one holds a reference to the buffer
+     * except the returned unmodifiable list.
+     *
+     * @param list A list
+     * @param <T>  Type of items
+     */
+    public static <T> List<T> defensiveUnmodifiableCopy(List<? extends T> list) {
+        if (list.isEmpty()) {
+            return emptyList();
+        }
+        return Collections.unmodifiableList(new ArrayList<>(list));
+    }
+
+    /**
+     * Like {@link String#join(CharSequence, Iterable)}, except it appends
+     * on a preexisting {@link StringBuilder}. The result value is that StringBuilder.
+     */
+    public static <T> StringBuilder joinOn(StringBuilder sb,
+                                           Iterable<? extends T> iterable,
+                                           BiConsumer<? super StringBuilder, ? super T> appendItem,
+                                           String delimiter) {
+        boolean first = true;
+        for (T t : iterable) {
+            appendItem.accept(sb, t);
+            if (first) {
+                first = false;
+            } else {
+                sb.append(delimiter);
+            }
+        }
+        return sb;
+    }
+
+    /**
+     * Merge the second map into the first. If some keys are in common,
+     * merge them using the merge function, like {@link Map#merge(Object, Object, BiFunction)}.
+     */
+    public static <K, V> void mergeMaps(Map<K, V> result, Map<K, V> other, BinaryOperator<V> mergeFun) {
+        for (K otherKey : other.keySet()) {
+            V otherInfo = other.get(otherKey); // non-null
+            result.merge(otherKey, otherInfo, mergeFun);
         }
     }
 }

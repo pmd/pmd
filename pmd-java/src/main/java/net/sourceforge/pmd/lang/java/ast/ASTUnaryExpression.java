@@ -5,34 +5,29 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 /**
- * Represents a unary prefix operation on a value.
- * This has a precedence greater than {@link ASTMultiplicativeExpression}.
+ * Represents a unary operation on a value. The syntactic form may be
+ * prefix or postfix, which are represented with the same nodes, even
+ * though they have different precedences.
  *
- * <p>UnaryExpression has the same precedence as {@linkplain ASTPreIncrementExpression PreIncrementExpression},
- * {@linkplain ASTPreDecrementExpression PreDecrementExpression} and
- * {@linkplain ASTUnaryExpressionNotPlusMinus UnaryExpressionNotPlusMinus}.
+ * <pre class="grammar">
  *
- * <p>Note that the child of this node is not necessarily a UnaryExpression,
- * rather, it can be an expression with an operator precedence greater or equal
- * to a UnaryExpression.
+ * UnaryExpression ::= PrefixExpression | PostfixExpression
  *
+ * PrefixExpression  ::= {@link UnaryOp PrefixOp} {@link ASTExpression Expression}
  *
- * <pre>
- *
- * UnaryExpression ::= ( "+" | "-" ) UnaryExpression
+ * PostfixExpression ::= {@link ASTExpression Expression} {@link UnaryOp PostfixOp}
  *
  * </pre>
  */
-public class ASTUnaryExpression extends AbstractJavaTypeNode {
+public final class ASTUnaryExpression extends AbstractJavaExpr {
 
-    @InternalApi
-    @Deprecated
-    public ASTUnaryExpression(int id) {
+    private UnaryOp operator;
+
+    ASTUnaryExpression(int id) {
         super(id);
     }
+
 
     @Override
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
@@ -47,10 +42,22 @@ public class ASTUnaryExpression extends AbstractJavaTypeNode {
 
 
     /**
-     * Returns the image of this unary operator, i.e. "+" or "-".
+     * Returns true if this is a prefix expression.
+     *
+     * @deprecated XPath-attribute only, use {@code getOperator().isPrefix()} in java code.
      */
-    public String getOperator() {
-        return getImage();
+    @Deprecated
+    public boolean isPrefix() {
+        return getOperator().isPrefix();
+    }
+
+    /** Returns the constant representing the operator of this expression. */
+    public UnaryOp getOperator() {
+        return operator;
+    }
+
+    void setOp(UnaryOp op) {
+        this.operator = op;
     }
 
 }

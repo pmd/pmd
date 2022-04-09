@@ -35,7 +35,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>#1343 MethodNamingConventions for overriden methods</description>
+        <description>#1343 MethodNamingConventions for overridden methods</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class MethodNamingConventions implements SomeInterface {

@@ -47,6 +47,11 @@ public class ApexTokenizerTest extends CpdTextComparisonTest {
         doTest("comments");
     }
 
+    @Test
+    public void testTabWidth() {
+        doTest("tabWidth");
+    }
+
     private Properties caseSensitive() {
         return properties(true);
     }

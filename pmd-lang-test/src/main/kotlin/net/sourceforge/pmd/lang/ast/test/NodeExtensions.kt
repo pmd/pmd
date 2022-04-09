@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.ast.test
 
-import io.kotlintest.matchers.string.shouldContain
+import io.kotest.matchers.string.shouldContain
 import net.sourceforge.pmd.lang.ast.impl.AbstractNode
 import net.sourceforge.pmd.lang.ast.GenericToken
 import net.sourceforge.pmd.lang.ast.Node
@@ -24,8 +24,8 @@ fun Node.safeGetChild(i: Int): Node? = when {
     else -> null
 }
 
-inline fun <reified T : Node> Node.getDescendantsOfType(): List<T> = findDescendantsOfType(T::class.java)
-inline fun <reified T : Node> Node.getFirstDescendantOfType(): T = getFirstDescendantOfType(T::class.java)
+inline fun <reified T : Node> Node.getDescendantsOfType(): List<T> = descendants(T::class.java).toList()
+inline fun <reified T : Node> Node.getFirstDescendantOfType(): T = descendants(T::class.java).firstOrThrow()
 
 val Node.textRange: TextRange
     get() = TextRange(beginPosition, endPosition)
@@ -78,7 +78,7 @@ data class TextRange(val beginPos: TextPosition, val endPos: TextPosition) {
     // fixme, the end column should be exclusive
     fun isEmpty(): Boolean =
             beginPos.line == endPos.line
-                    && beginPos.column - 1 == endPos.column
+                    && beginPos.column == endPos.column
 
     fun assertOrdered() {
         assert(beginPos <= endPos || isEmpty()) {
@@ -93,5 +93,6 @@ data class TextRange(val beginPos: TextPosition, val endPos: TextPosition) {
     operator fun contains(other: TextRange): Boolean =
             other.beginPos in this && other.endPos in this
                     || this.isEmpty() && other == this
+                    || other.isEmpty() && other.beginPos in this
 
 }

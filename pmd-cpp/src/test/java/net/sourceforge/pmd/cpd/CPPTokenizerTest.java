@@ -124,9 +124,23 @@ public class CPPTokenizerTest extends CpdTextComparisonTest {
         doTest("issue-1784");
     }
 
+    @Test
+    public void testTabWidth() {
+        doTest("tabWidth");
+    }
+
+    @Test
+    public void testLongListsOfNumbersAreNotIgnored() {
+        doTest("listOfNumbers");
+    }
+
+    @Test
+    public void testLongListsOfNumbersAreIgnored() {
+        doTest("listOfNumbers", "_ignored", skipLiteralSequences());
+    }
 
     private static Properties skipBlocks(String skipPattern) {
-        return properties(true, skipPattern);
+        return properties(true, skipPattern, false);
     }
 
     private static Properties skipBlocks() {
@@ -134,15 +148,20 @@ public class CPPTokenizerTest extends CpdTextComparisonTest {
     }
 
     private static Properties dontSkipBlocks() {
-        return properties(false, null);
+        return properties(false, null, false);
     }
 
-    private static Properties properties(boolean skipBlocks, String skipPattern) {
+    private static Properties skipLiteralSequences() {
+        return properties(false, null, true);
+    }
+
+    private static Properties properties(boolean skipBlocks, String skipPattern, boolean skipLiteralSequences) {
         Properties properties = new Properties();
         properties.setProperty(Tokenizer.OPTION_SKIP_BLOCKS, Boolean.toString(skipBlocks));
         if (skipPattern != null) {
             properties.setProperty(Tokenizer.OPTION_SKIP_BLOCKS_PATTERN, skipPattern);
         }
+        properties.setProperty(Tokenizer.OPTION_IGNORE_LITERAL_SEQUENCES, Boolean.toString(skipLiteralSequences));
         return properties;
     }
 }

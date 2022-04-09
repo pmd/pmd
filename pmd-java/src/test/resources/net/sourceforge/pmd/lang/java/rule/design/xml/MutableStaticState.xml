@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data xmlns="http://pmd.sourceforge.net/rule-tests"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description>Public fields</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    public static Foo foo = new Foo();
+    public static final Foo FOO = new Foo();
+}
+        ]]></code>
+        <source-type>java 11</source-type>
+    </test-code>
+
+    <test-code>
+        <description>Default fields</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    static Foo foo = new Foo();
+    static final Foo FOO = new Foo();
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Protected fields</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    protected static Foo foo = new Foo();
+    protected static final Foo FOO = new Foo();
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Private fields</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private static Foo foo = new Foo();
+    private static final Foo FOO = new Foo();
+}
+        ]]></code>
+    </test-code>
+
+</test-data>

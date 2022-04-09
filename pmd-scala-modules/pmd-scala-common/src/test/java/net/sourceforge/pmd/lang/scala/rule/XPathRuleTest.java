@@ -23,7 +23,7 @@ public class XPathRuleTest extends BaseScalaTest {
     @Test
     public void testPrintHelloWorld() {
         Report report = evaluate(SCALA_TEST, "//TermApply/TermName[@Image=\"println\"]");
-        RuleViolation rv = report.iterator().next();
+        RuleViolation rv = report.getViolations().get(0);
         assertEquals(2, rv.getBeginLine());
     }
 
@@ -31,6 +31,6 @@ public class XPathRuleTest extends BaseScalaTest {
         XPathRule rule = new XPathRule(XPathVersion.XPATH_2_0, xpath);
         rule.setLanguage(LanguageRegistry.getLanguage(ScalaLanguageModule.NAME));
         rule.setMessage("XPath Rule Failed");
-        return scala.getReportForResource(rule, testSource);
+        return scala.executeRuleOnResource(rule, testSource);
     }
 }

@@ -79,10 +79,41 @@
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-failsafe-plugin</artifactId>
-                <version>2.19.1</version>
+                <artifactId>maven-dependency-plugin</artifactId>
                 <executions>
                     <execution>
+                        <id>copy-ant</id>
+                        <phase>pre-integration-test</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <!-- note: ant 1.9.x is still compatible with java7,
+                                 ant 1.10.x requires java8 -->
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>org.apache.ant</groupId>
+                                    <artifactId>ant</artifactId>
+                                    <version>1.9.16</version>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.apache.ant</groupId>
+                                    <artifactId>ant-launcher</artifactId>
+                                    <version>1.9.16</version>
+                                </artifactItem>
+                            </artifactItems>
+                            <outputDirectory>${project.build.directory}/ant</outputDirectory>
+                            <stripVersion>true</stripVersion>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>failsafe-default</id>
                         <goals>
                             <goal>integration-test</goal>
                             <goal>verify</goal>
@@ -93,6 +124,11 @@
         </plugins>
     </build>
     <dependencies>
+        <dependency>
+            <groupId>net.sourceforge.pmd</groupId>
+            <artifactId>pmd-apex</artifactId>
+            <version>${project.version}</version>
+        </dependency>
         <dependency>
             <groupId>net.sourceforge.pmd</groupId>
             <artifactId>pmd-core</artifactId>
@@ -146,11 +182,6 @@
         <dependency>
             <groupId>net.sourceforge.pmd</groupId>
             <artifactId>pmd-jsp</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>net.sourceforge.pmd</groupId>
-            <artifactId>pmd-visualforce</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
@@ -210,6 +241,16 @@
         </dependency>
         <dependency>
             <groupId>net.sourceforge.pmd</groupId>
+            <artifactId>pmd-ui</artifactId>
+            <version>${pmd-designer.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>net.sourceforge.pmd</groupId>
+            <artifactId>pmd-visualforce</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>net.sourceforge.pmd</groupId>
             <artifactId>pmd-vm</artifactId>
             <version>${project.version}</version>
         </dependency>
@@ -219,6 +260,11 @@
             <version>${project.version}</version>
         </dependency>
 
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>commons-io</groupId>
@@ -242,29 +288,73 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-compress</artifactId>
-            <version>1.19</version>
+            <version>1.21</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
 
     <profiles>
         <profile>
-            <id>jdk8-modules</id>
+            <id>jdk8-compat-it</id>
             <activation>
-                <jdk>[1.8,</jdk>
+                <property>
+                    <name>java8.home</name>
+                </property>
             </activation>
-            <dependencies>
-                <dependency>
-                    <groupId>net.sourceforge.pmd</groupId>
-                    <artifactId>pmd-apex</artifactId>
-                    <version>${project.version}</version>
-                </dependency>
-                <dependency>
-                    <groupId>net.sourceforge.pmd</groupId>
-                    <artifactId>pmd-ui</artifactId>
-                    <version>${pmd-designer.version}</version>
-                </dependency>
-            </dependencies>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>jdk8-compat-it</id>
+                                <goals>
+                                    <goal>integration-test</goal>
+                                    <goal>verify</goal>
+                                </goals>
+                                <configuration>
+                                    <environmentVariables>
+                                        <JAVA_HOME>${java8.home}</JAVA_HOME>
+                                        <PATH>${java8.home}/bin:${env.PATH}</PATH>
+                                    </environmentVariables>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>jdk17-compat-it</id>
+            <activation>
+                <property>
+                    <name>java17.home</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>jdk17-compat-it</id>
+                                <goals>
+                                    <goal>integration-test</goal>
+                                    <goal>verify</goal>
+                                </goals>
+                                <configuration>
+                                    <environmentVariables>
+                                        <JAVA_HOME>${java17.home}</JAVA_HOME>
+                                        <PATH>${java17.home}/bin:${env.PATH}</PATH>
+                                    </environmentVariables>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
         </profile>
     </profiles>
 </project>

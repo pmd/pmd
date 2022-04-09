@@ -32,7 +32,7 @@ public final class ASTStringLiteral extends AbstractVmNode {
     }
 
     @Override
-    public Object jjtAccept(final VmParserVisitor visitor, final Object data) {
+    protected <P, R> R acceptVmVisitor(VmVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 

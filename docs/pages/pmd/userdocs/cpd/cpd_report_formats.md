@@ -66,7 +66,7 @@ Starting at line 68 of /home/pmd/source/pmd-core/src/test/java/net/sourceforge/p
         ruleReference.setExternalInfoUrl("externalInfoUrl2");
         ruleReference.setPriority(RulePriority.MEDIUM_HIGH);
 
-        validateOverridenValues(PROPERTY1_DESCRIPTOR, PROPERTY2_DESCRIPTOR, ruleReference);
+        validateOverriddenValues(PROPERTY1_DESCRIPTOR, PROPERTY2_DESCRIPTOR, ruleReference);
 =====================================================================
 Found a 16 line (110 tokens) duplication in the following files: 
 Starting at line 66 of /home/pmd/source/pmd-core/src/test/java/net/sourceforge/pmd/lang/rule/xpath/JaxenXPathRuleQueryTest.java
@@ -138,7 +138,7 @@ Example:
         ruleReference.setExternalInfoUrl("externalInfoUrl2");
         ruleReference.setPriority(RulePriority.MEDIUM_HIGH);
 
-        validateOverridenValues(PROPERTY1_DESCRIPTOR, PROPERTY2_DESCRIPTOR, ruleReference);]]></codefragment>
+        validateOverriddenValues(PROPERTY1_DESCRIPTOR, PROPERTY2_DESCRIPTOR, ruleReference);]]></codefragment>
    </duplication>
    <duplication lines="16" tokens="110">
       <file column="9" endcolumn="28" endline="81" line="66"

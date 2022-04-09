@@ -45,7 +45,7 @@ public final class ASTDoctypeExternalId extends AbstractVfNode {
     }
 
     @Override
-    public Object jjtAccept(VfParserVisitor visitor, Object data) {
+    protected <P, R> R acceptVfVisitor(VfVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 }

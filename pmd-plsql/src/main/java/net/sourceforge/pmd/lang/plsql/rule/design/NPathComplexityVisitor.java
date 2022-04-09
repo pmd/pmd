@@ -27,7 +27,6 @@ import net.sourceforge.pmd.lang.plsql.ast.ASTWhileStatement;
 import net.sourceforge.pmd.lang.plsql.ast.ExecutableCode;
 import net.sourceforge.pmd.lang.plsql.ast.PLSQLNode;
 import net.sourceforge.pmd.lang.plsql.ast.PLSQLParserVisitorAdapter;
-import net.sourceforge.pmd.util.NumericConstants;
 
 /**
  * @author Clément Fournier
@@ -78,7 +77,7 @@ class NPathComplexityVisitor extends PLSQLParserVisitorAdapter {
     }
 
     @Override
-    public Object visit(PLSQLNode node, Object data) {
+    public Object visitPlsqlNode(PLSQLNode node, Object data) {
         return complexityMultipleOf(node, data);
     }
 
@@ -220,7 +219,7 @@ class NPathComplexityVisitor extends PLSQLParserVisitorAdapter {
         ASTExpression expr = node.getFirstChildOfType(ASTExpression.class);
 
         if (expr == null) {
-            return NumericConstants.ONE;
+            return 1;
         }
 
         int boolCompReturn = NPathComplexityRule.sumExpressionComplexity(expr);
@@ -233,7 +232,7 @@ class NPathComplexityVisitor extends PLSQLParserVisitorAdapter {
         if (boolCompReturn > 0) {
             return boolCompReturn;
         }
-        return NumericConstants.ONE;
+        return 1;
     }
 
     @Override
@@ -278,7 +277,7 @@ class NPathComplexityVisitor extends PLSQLParserVisitorAdapter {
 
     @Override
     public Object visit(ASTConditionalOrExpression node, Object data) {
-        return NumericConstants.ONE;
+        return 1;
     }
 
 }

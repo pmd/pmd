@@ -63,4 +63,9 @@ public class EcmascriptTokenizerTest extends CpdTextComparisonTest {
     public void testTemplateStrings() {
         doTest("templateStrings");
     }
+
+    @Test
+    public void testTabWidth() {
+        doTest("tabWidth");
+    }
 }

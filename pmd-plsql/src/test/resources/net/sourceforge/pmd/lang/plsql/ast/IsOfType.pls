@@ -17,7 +17,7 @@ IF ioFPOobj IS NOT OF TYPE (ONLY FPOGE_OBJ) THEN
 loFPOGE_OBJ:=treat(ioFPOobj AS FPOGE_OBJ);
 end if;
 
-loFPOGE_OBJ:=SELECT A FROM persons p WHERE VALUE(p) IS OF TYPE (employee_t);
-loFPOGE_OBJ:=SELECT A FROM persons p WHERE VALUE(p) IS NOT OF TYPE (ONLY employee_t, other_t);
+SELECT A into lo_FPOGE_OBJ FROM persons p WHERE VALUE(p) IS OF TYPE (employee_t);
+SELECT A into lo_FPOGE_OBJ FROM persons p WHERE VALUE(p) IS NOT OF TYPE (ONLY employee_t, other_t);
 
 end;

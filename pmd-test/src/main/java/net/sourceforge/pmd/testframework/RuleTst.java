@@ -4,17 +4,15 @@
 
 package net.sourceforge.pmd.testframework;
 
+import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -35,21 +33,22 @@ import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
-import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.PMDException;
+import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.PmdContextualizedTest;
 import net.sourceforge.pmd.Report;
+import net.sourceforge.pmd.Report.GlobalReportBuilderListener;
 import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.RuleSetNotFoundException;
-import net.sourceforge.pmd.RuleSets;
+import net.sourceforge.pmd.RuleSetLoadException;
+import net.sourceforge.pmd.RuleSetLoader;
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.RulesetsFactoryUtils;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.processor.AbstractPMDProcessor;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.renderers.TextRenderer;
+import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
+import net.sourceforge.pmd.util.datasource.DataSource;
 
 /**
  * Advanced methods for test cases
@@ -57,7 +56,12 @@ import net.sourceforge.pmd.renderers.TextRenderer;
 public abstract class RuleTst extends PmdContextualizedTest {
     private final DocumentBuilder documentBuilder;
 
+    /** Use a single classloader for all tests. */
+    private final ClassLoader classpathClassLoader;
+
     public RuleTst() {
+        classpathClassLoader = makeClassPathClassLoader();
+
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
         Schema schema;
@@ -88,6 +92,15 @@ public abstract class RuleTst extends PmdContextualizedTest {
         }
     }
 
+    private ClassLoader makeClassPathClassLoader() {
+        final ClassLoader classpathClassLoader;
+        PMDConfiguration config = new PMDConfiguration();
+        config.prependAuxClasspath(".");
+        classpathClassLoader = config.getClassLoader();
+        return classpathClassLoader;
+    }
+
+
     protected void setUp() {
         // This method is intended to be overridden by subclasses.
     }
@@ -101,14 +114,15 @@ public abstract class RuleTst extends PmdContextualizedTest {
      */
     public Rule findRule(String ruleSet, String ruleName) {
         try {
-            Rule rule = RulesetsFactoryUtils.defaultFactory().createRuleSets(ruleSet).getRuleByName(ruleName);
+            RuleSet parsedRset = new RuleSetLoader().warnDeprecated(false).loadFromResource(ruleSet);
+            Rule rule = parsedRset.getRuleByName(ruleName);
             if (rule == null) {
                 fail("Rule " + ruleName + " not found in ruleset " + ruleSet);
             } else {
                 rule.setRuleSetName(ruleSet);
             }
             return rule;
-        } catch (RuleSetNotFoundException e) {
+        } catch (RuleSetLoadException e) {
             e.printStackTrace();
             fail("Couldn't find ruleset " + ruleSet);
             return null;
@@ -148,7 +162,7 @@ public abstract class RuleTst extends PmdContextualizedTest {
                 }
 
                 report = processUsingStringReader(test, rule);
-                res = report.size();
+                res = report.getViolations().size();
             } catch (Exception e) {
                 e.printStackTrace();
                 throw new RuntimeException('"' + test.getDescription() + "\" failed", e);
@@ -187,15 +201,13 @@ public abstract class RuleTst extends PmdContextualizedTest {
         }
 
         List<String> expectedMessages = test.getExpectedMessages();
-        if (report.size() != expectedMessages.size()) {
+        if (report.getViolations().size() != expectedMessages.size()) {
             throw new RuntimeException("Test setup error: number of expected messages doesn't match "
                     + "number of violations for test case '" + test.getDescription() + "'");
         }
 
-        Iterator<RuleViolation> it = report.iterator();
         int index = 0;
-        while (it.hasNext()) {
-            RuleViolation violation = it.next();
+        for (RuleViolation violation : report.getViolations()) {
             String actual = violation.getDescription();
             if (!expectedMessages.get(index).equals(actual)) {
                 printReport(test, report);
@@ -213,16 +225,14 @@ public abstract class RuleTst extends PmdContextualizedTest {
         }
 
         List<Integer> expected = test.getExpectedLineNumbers();
-        if (report.size() != expected.size()) {
+        if (report.getViolations().size() != expected.size()) {
             throw new RuntimeException("Test setup error: number of expected line numbers " + expected.size()
-                    + " doesn't match number of violations " + report.size() + " for test case '"
+                    + " doesn't match number of violations " + report.getViolations().size() + " for test case '"
                     + test.getDescription() + "'");
         }
 
-        Iterator<RuleViolation> it = report.iterator();
         int index = 0;
-        while (it.hasNext()) {
-            RuleViolation violation = it.next();
+        for (RuleViolation violation : report.getViolations()) {
             Integer actual = violation.getBeginLine();
             if (expected.get(index) != actual.intValue()) {
                 printReport(test, report);
@@ -236,7 +246,7 @@ public abstract class RuleTst extends PmdContextualizedTest {
     private void printReport(TestDescriptor test, Report report) {
         System.out.println("--------------------------------------------------------------");
         System.out.println("Test Failure: " + test.getDescription());
-        System.out.println(" -> Expected " + test.getNumberOfProblemsExpected() + " problem(s), " + report.size()
+        System.out.println(" -> Expected " + test.getNumberOfProblemsExpected() + " problem(s), " + report.getViolations().size()
                 + " problem(s) found.");
         System.out.println(" -> Expected messages: " + test.getExpectedMessages());
         System.out.println(" -> Expected line numbers: " + test.getExpectedLineNumbers());
@@ -254,34 +264,29 @@ public abstract class RuleTst extends PmdContextualizedTest {
         System.out.println("--------------------------------------------------------------");
     }
 
-    private Report processUsingStringReader(TestDescriptor test, Rule rule) throws PMDException {
-        Report report = new Report();
-        runTestFromString(test, rule, report);
-        return report;
+    private Report processUsingStringReader(TestDescriptor test, Rule rule) {
+        return runTestFromString(test.getCode(), rule, test.getLanguageVersion(), test.isUseAuxClasspath());
     }
 
-    /**
-     * Run the rule on the given code and put the violations in the report.
-     */
-    public void runTestFromString(String code, Rule rule, Report report, LanguageVersion languageVersion) {
-        runTestFromString(code, rule, report, languageVersion, true);
-    }
-
-    public void runTestFromString(String code, Rule rule, Report report, LanguageVersion languageVersion,
-            boolean isUseAuxClasspath) {
+    public Report runTestFromString(String code, Rule rule, LanguageVersion languageVersion, boolean isUseAuxClasspath) {
         try {
-            PMD p = new PMD();
-            p.getConfiguration().setDefaultLanguageVersion(languageVersion);
-            p.getConfiguration().setIgnoreIncrementalAnalysis(true);
+            PMDConfiguration configuration = new PMDConfiguration();
+            configuration.setIgnoreIncrementalAnalysis(true);
+            configuration.setDefaultLanguageVersion(languageVersion);
+            configuration.setThreads(1);
+
             if (isUseAuxClasspath) {
                 // configure the "auxclasspath" option for unit testing
-                p.getConfiguration().prependClasspath(".");
+                // we share a single classloader so that pmd-java doesn't create
+                // a new TypeSystem for every test. This problem will go
+                // away when languages have a lifecycle.
+                configuration.setClassLoader(classpathClassLoader);
             } else {
                 // simple class loader, that doesn't delegate to parent.
                 // this allows us in the tests to simulate PMD run without
                 // auxclasspath, not even the classes from the test dependencies
                 // will be found.
-                p.getConfiguration().setClassLoader(new ClassLoader() {
+                configuration.setClassLoader(new ClassLoader() {
                     @Override
                     protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
                         if (name.startsWith("java.") || name.startsWith("javax.")) {
@@ -291,20 +296,25 @@ public abstract class RuleTst extends PmdContextualizedTest {
                     }
                 });
             }
-            RuleContext ctx = new RuleContext();
-            ctx.setReport(report);
-            ctx.setSourceCodeFile(new File("n/a"));
-            ctx.setLanguageVersion(languageVersion);
-            ctx.setIgnoreExceptions(false);
-            RuleSet rules = RulesetsFactoryUtils.defaultFactory().createSingleRuleRuleSet(rule);
-            p.getSourceCodeProcessor().processSourceCode(new StringReader(code), new RuleSets(rules), ctx);
+
+            try (GlobalReportBuilderListener reportBuilder = new GlobalReportBuilderListener();
+                 // Add a listener that throws when an error occurs:
+                 //  this replaces ruleContext.setIgnoreExceptions(false)
+                 GlobalAnalysisListener listener = GlobalAnalysisListener.tee(listOf(GlobalAnalysisListener.exceptionThrower(), reportBuilder))) {
+
+                AbstractPMDProcessor.runSingleFile(
+                    listOf(RuleSet.forSingleRule(rule)),
+                    DataSource.forString(code, "test." + languageVersion.getLanguage().getExtensions().get(0)),
+                    listener,
+                    configuration
+                );
+
+                listener.close();
+                return reportBuilder.getResult();
+            }
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-    }
-
-    public void runTestFromString(TestDescriptor test, Rule rule, Report report) {
-        runTestFromString(test.getCode(), rule, report, test.getLanguageVersion(), test.isUseAuxClasspath());
     }
 
     /**
@@ -381,8 +391,8 @@ public abstract class RuleTst extends PmdContextualizedTest {
      * Run a set of tests of a certain sourceType.
      */
     public void runTests(TestDescriptor[] tests) {
-        for (int i = 0; i < tests.length; i++) {
-            runTest(tests[i]);
+        for (TestDescriptor test : tests) {
+            runTest(test);
         }
     }
 
@@ -534,7 +544,7 @@ public abstract class RuleTst extends PmdContextualizedTest {
     }
 
     private static String parseTextNode(Node exampleNode) {
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
         for (int i = 0; i < exampleNode.getChildNodes().getLength(); i++) {
             Node node = exampleNode.getChildNodes().item(i);
             if (node.getNodeType() == Node.CDATA_SECTION_NODE || node.getNodeType() == Node.TEXT_NODE) {

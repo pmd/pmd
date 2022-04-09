@@ -14,9 +14,12 @@ import java.util.ListIterator;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Set;
+import java.util.Spliterators;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -40,12 +43,14 @@ public final class IteratorUtil {
         return new AbstractIterator<T>() {
             @Override
             protected void computeNext() {
-                T next = iter.next();
-                if (predicate.test(next)) {
-                    setNext(next);
-                } else {
-                    done();
+                if (iter.hasNext()) {
+                    T next = iter.next();
+                    if (predicate.test(next)) {
+                        setNext(next);
+                        return;
+                    }
                 }
+                done();
             }
         };
     }
@@ -74,6 +79,35 @@ public final class IteratorUtil {
                         }
                     }
                     done();
+                }
+            }
+        };
+    }
+
+    /**
+     * Like flatMap, but yields each element of the input iterator before
+     * yielding the results of the mapper function. Null elements of the
+     * input iterator are both yielded by the returned iterator and passed
+     * to the stepper. If the stepper returns null, that result is ignored.
+     */
+    public static <R> Iterator<R> flatMapWithSelf(Iterator<? extends R> iter, Function<? super R, ? extends @Nullable Iterator<? extends R>> f) {
+        return new AbstractIterator<R>() {
+            private Iterator<? extends R> current = null;
+
+            @Override
+            protected void computeNext() {
+                if (current != null && current.hasNext()) {
+                    setNext(current.next());
+                } else {
+                    // current is exhausted
+                    current = null;
+                    if (iter.hasNext()) {
+                        R next = iter.next();
+                        setNext(next);
+                        current = f.apply(next);
+                    } else {
+                        done();
+                    }
                 }
             }
         };
@@ -139,6 +173,13 @@ public final class IteratorUtil {
         };
     }
 
+    /**
+     * Apply a transform on the iterator of an iterable.
+     */
+    public static <T, R> Iterable<R> mapIterator(Iterable<? extends T> iter, Function<? super Iterator<? extends T>, ? extends Iterator<R>> mapper) {
+        return () -> mapper.apply(iter.iterator());
+    }
+
     @SafeVarargs
     public static <T> Iterator<T> iterate(T... elements) {
         return Arrays.asList(elements).iterator();
@@ -188,6 +229,69 @@ public final class IteratorUtil {
         return list;
     }
 
+    /**
+     * Remove the last n elements of the iterator. This uses n elements as a lookahead.
+     */
+    public static <T> Iterator<@NonNull T> dropLast(Iterator<? extends @Nullable T> it, final int n) {
+        AssertionUtil.requireNonNegative("n", n);
+        if (n == 0) {
+            return coerceWildcard(it); // noop
+        } else if (n == 1) { // i guess this will be common
+            if (!it.hasNext()) {
+                return Collections.emptyIterator();
+            }
+            return new AbstractIterator<T>() {
+                T next = it.next();
+
+                @Override
+                protected void computeNext() {
+                    if (it.hasNext()) {
+                        setNext(next);
+                        next = it.next();
+                    } else {
+                        done();
+                    }
+                }
+            };
+        }
+
+        // fill a circular lookahead buffer
+        Object[] ringBuffer = new Object[n];
+        for (int i = 0; i < n && it.hasNext(); i++) {
+            ringBuffer[i] = it.next();
+        }
+        if (!it.hasNext()) {
+            // the original iterator has less than n elements
+            return Collections.emptyIterator();
+        }
+
+        return new AbstractIterator<T>() {
+            private int idx = 0;
+
+            @Override
+            protected void computeNext() {
+                if (it.hasNext()) {
+                    setNext((T) ringBuffer[idx]); // yield element X from the buffer
+                    ringBuffer[idx] = it.next();  // overwrite with the element X+n
+                    idx = (idx + 1) % ringBuffer.length; // compute idx of element X+1
+                } else {
+                    // that's it: our buffer contains the n tail elements
+                    // that we don't want to see.
+                    done();
+                }
+            }
+        };
+    }
+
+    /**
+     * Coerce an iterator with a wildcard. This is safe because the Iterator
+     * interface is covariant (not {@link ListIterator} though).
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> Iterator<T> coerceWildcard(final Iterator<? extends T> it) {
+        return (Iterator<T>) it;
+    }
+
     public static <T> Iterable<T> toIterable(final Iterator<T> it) {
         return () -> it;
     }
@@ -220,6 +324,7 @@ public final class IteratorUtil {
         advance(iterator, n);
         return iterator.hasNext() ? iterator.next() : null;
     }
+
 
     /** Advance {@code n} times. */
     public static void advance(Iterator<?> iterator, int n) {
@@ -394,6 +499,10 @@ public final class IteratorUtil {
         };
     }
 
+    public static <T> Stream<T> toStream(Iterator<? extends T> iter) {
+        return StreamSupport.stream(Spliterators.spliteratorUnknownSize(iter, 0), false);
+    }
+
     public abstract static class AbstractIterator<T> implements Iterator<T> {
 
         private State state = State.NOT_READY;
@@ -427,14 +536,20 @@ public final class IteratorUtil {
         }
 
         protected final void setNext(T t) {
+            assert state == null : "Must call exactly one of setNext or done";
             next = t;
             state = State.READY;
         }
 
         protected final void done() {
+            assert state == null : "Must call exactly one of setNext or done";
             state = State.DONE;
         }
 
+        /**
+         * Compute the next element. Implementations must call either
+         * {@link #done()} or {@link #setNext(Object)} exactly once.
+         */
         protected abstract void computeNext();
 
         enum State {
@@ -447,5 +562,39 @@ public final class IteratorUtil {
             throw new UnsupportedOperationException();
         }
 
+    }
+
+    public abstract static class AbstractPausingIterator<T> extends AbstractIterator<T> {
+
+        private int numYielded = 0;
+        private T currentValue;
+
+        @Override
+        public T next() {
+            T next = super.next();
+            currentValue = next;
+            prepareViewOn(next);
+            numYielded++;
+            return next;
+        }
+
+        protected void prepareViewOn(T current) {
+            // to be overridden
+        }
+
+        protected final int getIterationCount() {
+            return numYielded;
+        }
+
+        protected T getCurrentValue() {
+            ensureReadable();
+            return currentValue;
+        }
+
+        protected void ensureReadable() {
+            if (numYielded == 0) {
+                throw new IllegalStateException("No values were yielded, should have called next");
+            }
+        }
     }
 }

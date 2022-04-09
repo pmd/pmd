@@ -4,6 +4,13 @@
 
 package net.sourceforge.pmd.lang.ecmascript.ast;
 
-public class EcmascriptParserVisitorAdapter implements EcmascriptParserVisitor {
+import net.sourceforge.pmd.annotation.DeprecatedUntil700;
+
+/**
+ * @deprecated Use {@link EcmascriptVisitorBase}
+ */
+@Deprecated
+@DeprecatedUntil700
+public class EcmascriptParserVisitorAdapter extends EcmascriptVisitorBase<Object, Object> implements EcmascriptParserVisitor {
 
 }

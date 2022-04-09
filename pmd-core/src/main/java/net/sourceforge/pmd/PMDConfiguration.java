@@ -6,13 +6,21 @@ package net.sourceforge.pmd;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.Properties;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
+import net.sourceforge.pmd.annotation.DeprecatedUntil700;
 import net.sourceforge.pmd.cache.AnalysisCache;
 import net.sourceforge.pmd.cache.FileAnalysisCache;
 import net.sourceforge.pmd.cache.NoopAnalysisCache;
+import net.sourceforge.pmd.cli.PmdParametersParseResult;
+import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
@@ -21,8 +29,11 @@ import net.sourceforge.pmd.renderers.RendererFactory;
 import net.sourceforge.pmd.util.ClasspathClassLoader;
 
 /**
- * This class contains the details for the runtime configuration of PMD. There
- * are several aspects to the configuration of PMD.
+ * This class contains the details for the runtime configuration of a PMD run.
+ * You can either create one and set individual fields, or mimic a CLI run by
+ * using {@link PmdParametersParseResult#extractParameters(String...) extractParameters}.
+ *
+ * <p>There are several aspects to the configuration of PMD.
  *
  * <p>The aspects related to generic PMD behavior:</p>
  * <ul>
@@ -35,7 +46,7 @@ import net.sourceforge.pmd.util.ClasspathClassLoader;
  * {@link #getClassLoader()}</li>
  * <li>A means to configure a ClassLoader using a prepended classpath String,
  * instead of directly setting it programmatically.
- * {@link #prependClasspath(String)}</li>
+ * {@link #prependAuxClasspath(String)}</li>
  * <li>A LanguageVersionDiscoverer instance, which defaults to using the default
  * LanguageVersion of each Language. Means are provided to change the
  * LanguageVersion for each Language.
@@ -44,7 +55,7 @@ import net.sourceforge.pmd.util.ClasspathClassLoader;
  *
  * <p>The aspects related to Rules and Source files are:</p>
  * <ul>
- * <li>A comma separated list of RuleSets URIs. {@link #getRuleSets()}</li>
+ * <li>RuleSets URIs: {@link #getRuleSetPaths()}</li>
  * <li>A minimum priority threshold when loading Rules from RuleSets, defaults
  * to {@link RulePriority#LOW}. {@link #getMinimumPriority()}</li>
  * <li>The character encoding of source files, defaults to the system default as
@@ -53,7 +64,7 @@ import net.sourceforge.pmd.util.ClasspathClassLoader;
  * <li>A comma separated list of input paths to process for source files. This
  * may include files, directories, archives (e.g. ZIP files), etc.
  * {@link #getInputPaths()}</li>
- * <li>A flag which controls, whether {@link RuleSetFactoryCompatibility} filter
+ * <li>A flag which controls, whether {@link RuleSetLoader#enableCompatibility(boolean)} filter
  * should be used or not: #isRuleSetFactoryCompatibilityEnabled;
  * </ul>
  *
@@ -79,14 +90,19 @@ import net.sourceforge.pmd.util.ClasspathClassLoader;
  * </ul>
  */
 public class PMDConfiguration extends AbstractConfiguration {
+
+    /** The default suppress marker string. */
+    public static final String DEFAULT_SUPPRESS_MARKER = "NOPMD";
+
     // General behavior options
-    private String suppressMarker = PMD.SUPPRESS_MARKER;
+    private String suppressMarker = DEFAULT_SUPPRESS_MARKER;
     private int threads = Runtime.getRuntime().availableProcessors();
     private ClassLoader classLoader = getClass().getClassLoader();
-    private final LanguageVersionDiscoverer languageVersionDiscoverer;
+    private LanguageVersionDiscoverer languageVersionDiscoverer = new LanguageVersionDiscoverer();
+    private LanguageVersion forceLanguageVersion;
 
     // Rule and source file options
-    private String ruleSets;
+    private List<String> ruleSets = new ArrayList<>();
     private RulePriority minimumPriority = RulePriority.LOW;
     private String inputPaths;
     private String inputUri;
@@ -107,17 +123,6 @@ public class PMDConfiguration extends AbstractConfiguration {
     private AnalysisCache analysisCache = new NoopAnalysisCache();
     private boolean ignoreIncrementalAnalysis;
 
-    private final LanguageRegistry languageRegistry;
-
-    public PMDConfiguration(LanguageRegistry languageRegistry) {
-        this.languageRegistry = languageRegistry;
-        languageVersionDiscoverer = new LanguageVersionDiscoverer(languageRegistry);
-    }
-
-    public LanguageRegistry getLanguageRegistry() {
-        return languageRegistry;
-    }
-
     /**
      * Get the suppress marker. This is the source level marker used to indicate
      * a RuleViolation should be suppressed.
@@ -135,6 +140,7 @@ public class PMDConfiguration extends AbstractConfiguration {
      *            The suppress marker to use.
      */
     public void setSuppressMarker(String suppressMarker) {
+        Objects.requireNonNull(suppressMarker, "Suppress marker was null");
         this.suppressMarker = suppressMarker;
     }
 
@@ -197,13 +203,46 @@ public class PMDConfiguration extends AbstractConfiguration {
      *             if the given classpath is invalid (e.g. does not exist)
      * @see PMDConfiguration#setClassLoader(ClassLoader)
      * @see ClasspathClassLoader
+     *
+     * @deprecated Use {@link #prependAuxClasspath(String)}, which doesn't
+     * throw a checked {@link IOException}
      */
+    @Deprecated
     public void prependClasspath(String classpath) throws IOException {
-        if (classLoader == null) {
-            classLoader = PMDConfiguration.class.getClassLoader();
+        try {
+            prependAuxClasspath(classpath);
+        } catch (IllegalArgumentException e) {
+            throw new IOException(e);
         }
-        if (classpath != null) {
-            classLoader = new ClasspathClassLoader(classpath, classLoader);
+    }
+
+    /**
+     * Prepend the specified classpath like string to the current ClassLoader of
+     * the configuration. If no ClassLoader is currently configured, the
+     * ClassLoader used to load the {@link PMDConfiguration} class will be used
+     * as the parent ClassLoader of the created ClassLoader.
+     *
+     * <p>If the classpath String looks like a URL to a file (i.e. starts with
+     * <code>file://</code>) the file will be read with each line representing
+     * an entry on the classpath.</p>
+     *
+     * @param classpath The prepended classpath.
+     *
+     * @throws IllegalArgumentException if the given classpath is invalid (e.g. does not exist)
+     * @see PMDConfiguration#setClassLoader(ClassLoader)
+     */
+    public void prependAuxClasspath(String classpath) {
+        try {
+            if (classLoader == null) {
+                classLoader = PMDConfiguration.class.getClassLoader();
+            }
+            if (classpath != null) {
+                classLoader = new ClasspathClassLoader(classpath, classLoader);
+            }
+        } catch (IOException e) {
+            // Note: IOExceptions shouldn't appear anymore, they should already be converted
+            // to IllegalArgumentException in ClasspathClassLoader.
+            throw new IllegalArgumentException(e);
         }
     }
 
@@ -218,12 +257,43 @@ public class PMDConfiguration extends AbstractConfiguration {
     }
 
     /**
+     * Get the LanguageVersion specified by the force-language parameter. This overrides detection based on file
+     * extensions
+     *
+     * @return The LanguageVersion.
+     */
+    public LanguageVersion getForceLanguageVersion() {
+        return forceLanguageVersion;
+    }
+
+    /**
+     * Is the force-language parameter set to anything?
+     *
+     * @return true if ${@link #getForceLanguageVersion()} is not null
+     */
+    public boolean isForceLanguageVersion() {
+        return forceLanguageVersion != null;
+    }
+
+    /**
+     * Set the LanguageVersion specified by the force-language parameter. This overrides detection based on file
+     * extensions
+     *
+     * @param forceLanguageVersion the language version
+     */
+    public void setForceLanguageVersion(LanguageVersion forceLanguageVersion) {
+        this.forceLanguageVersion = forceLanguageVersion;
+        languageVersionDiscoverer.setForcedVersion(forceLanguageVersion);
+    }
+
+    /**
      * Set the given LanguageVersion as the current default for it's Language.
      *
      * @param languageVersion
      *            the LanguageVersion
      */
     public void setDefaultLanguageVersion(LanguageVersion languageVersion) {
+        Objects.requireNonNull(languageVersion);
         setDefaultLanguageVersions(Arrays.asList(languageVersion));
     }
 
@@ -236,6 +306,7 @@ public class PMDConfiguration extends AbstractConfiguration {
      */
     public void setDefaultLanguageVersions(List<LanguageVersion> languageVersions) {
         for (LanguageVersion languageVersion : languageVersions) {
+            Objects.requireNonNull(languageVersion);
             languageVersionDiscoverer.setDefaultLanguageVersion(languageVersion);
         }
     }
@@ -256,11 +327,18 @@ public class PMDConfiguration extends AbstractConfiguration {
     // Failure to determine the LanguageVersion for a file should be a hard
     // error, or simply cause the file to be skipped?
     public LanguageVersion getLanguageVersionOfFile(String fileName) {
+        LanguageVersion forcedVersion = getForceLanguageVersion();
+        if (forcedVersion != null) {
+            // use force language if given
+            return forcedVersion;
+        }
+
+        // otherwise determine by file extension
         LanguageVersion languageVersion = languageVersionDiscoverer.getDefaultLanguageVersionForFile(fileName);
         if (languageVersion == null) {
             // For compatibility with older code that does not always pass in
             // a correct filename.
-            languageVersion = languageVersionDiscoverer.getDefaultLanguageVersion(languageRegistry.getLanguage("Java"));
+            languageVersion = languageVersionDiscoverer.getDefaultLanguageVersion(LanguageRegistry.getLanguage("Java"));
         }
         return languageVersion;
     }
@@ -269,19 +347,68 @@ public class PMDConfiguration extends AbstractConfiguration {
      * Get the comma separated list of RuleSet URIs.
      *
      * @return The RuleSet URIs.
+     *
+     * @deprecated Use {@link #getRuleSetPaths()}
      */
-    public String getRuleSets() {
+    @Deprecated
+    @DeprecatedUntil700
+    public @Nullable String getRuleSets() {
+        if (ruleSets.isEmpty()) {
+            return null;
+        }
+        return String.join(",", ruleSets);
+    }
+
+    /**
+     * Returns the list of ruleset URIs.
+     *
+     * @see RuleSetLoader#loadFromResource(String)
+     */
+    public @NonNull List<@NonNull String> getRuleSetPaths() {
         return ruleSets;
+    }
+
+    /**
+     * Sets the list of ruleset paths to load when starting the analysis.
+     *
+     * @param ruleSetPaths A list of ruleset paths, understandable by {@link RuleSetLoader#loadFromResource(String)}.
+     *
+     * @throws NullPointerException If the parameter is null
+     */
+    public void setRuleSets(@NonNull List<@NonNull String> ruleSetPaths) {
+        AssertionUtil.requireParamNotNull("ruleSetPaths", ruleSetPaths);
+        AssertionUtil.requireContainsNoNullValue("ruleSetPaths", ruleSetPaths);
+        this.ruleSets = new ArrayList<>(ruleSetPaths);
+    }
+
+    /**
+     * Add a new ruleset paths to load when starting the analysis.
+     * This list is initially empty.
+     *
+     * @param rulesetPath A ruleset path, understandable by {@link RuleSetLoader#loadFromResource(String)}.
+     *
+     * @throws NullPointerException If the parameter is null
+     */
+    public void addRuleSet(@NonNull String rulesetPath) {
+        AssertionUtil.requireParamNotNull("rulesetPath", rulesetPath);
+        this.ruleSets.add(rulesetPath);
     }
 
     /**
      * Set the comma separated list of RuleSet URIs.
      *
-     * @param ruleSets
-     *            the rulesets to set
+     * @param ruleSets the rulesets to set
+     *
+     * @deprecated Use {@link #setRuleSets(List)} or {@link #addRuleSet(String)}.
      */
-    public void setRuleSets(String ruleSets) {
-        this.ruleSets = ruleSets;
+    @Deprecated
+    @DeprecatedUntil700
+    public void setRuleSets(@Nullable String ruleSets) {
+        if (ruleSets == null) {
+            this.ruleSets = new ArrayList<>();
+        } else {
+            this.ruleSets = new ArrayList<>(Arrays.asList(ruleSets.split(",")));
+        }
     }
 
     /**
@@ -572,7 +699,7 @@ public class PMDConfiguration extends AbstractConfiguration {
      *
      * @return true, if the rule set factory compatibility feature is enabled
      *
-     * @see RuleSetFactoryCompatibility
+     * @see RuleSetLoader#enableCompatibility(boolean)
      */
     public boolean isRuleSetFactoryCompatibilityEnabled() {
         return ruleSetFactoryCompatibilityEnabled;
@@ -583,7 +710,7 @@ public class PMDConfiguration extends AbstractConfiguration {
      *
      * @param ruleSetFactoryCompatibilityEnabled {@code true} if the feature should be enabled
      *
-     * @see RuleSetFactoryCompatibility
+     * @see RuleSetLoader#enableCompatibility(boolean)
      */
     public void setRuleSetFactoryCompatibilityEnabled(boolean ruleSetFactoryCompatibilityEnabled) {
         this.ruleSetFactoryCompatibilityEnabled = ruleSetFactoryCompatibilityEnabled;

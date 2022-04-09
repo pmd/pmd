@@ -66,11 +66,11 @@ public class PmdExample {
     public static void main(String[] args) {
         PMDConfiguration configuration = new PMDConfiguration();
         configuration.setInputPaths("/home/workspace/src/main/java/code");
-        configuration.setRuleSets("rulesets/java/quickstart.xml");
+        configuration.addRuleSet("rulesets/java/quickstart.xml");
         configuration.setReportFormat("xml");
         configuration.setReportFile("/home/workspace/pmd-report.xml");
 
-        PMD.doPMD(configuration);
+        PMD.runPmd(configuration);
     }
 }
 ```
@@ -78,92 +78,79 @@ public class PmdExample {
 ## Programmatically, variant 2
 
 This gives you more control over which files are processed, but is also more complicated.
-You can also provide your own listeners and renderers.
+You can also provide your own custom renderers.
 
-1.  First we create a `PMDConfiguration`. This is currently the only way to specify a ruleset:
+1.  First we create a `PMDConfiguration` and configure it, first the rules:
     
     ```java
     PMDConfiguration configuration = new PMDConfiguration();
     configuration.setMinimumPriority(RulePriority.MEDIUM);
-    configuration.setRuleSets("rulesets/java/quickstart.xml");
+    configuration.addRuleSet("rulesets/java/quickstart.xml");
     ```
     
-2.  In order to support type resolution, PMD needs to have access to the compiled classes and dependencies
-    as well. This is called "auxclasspath" and is also configured here.
+2.  Then we configure, which paths to analyze:
+    
+    ```java
+    configuration.setInputPaths("/home/workspace/src/main/java/code");
+    ```
+    
+3.  The we configure the default language version for Java. And in order to support type resolution,
+    PMD needs to have access to the compiled classes and dependencies as well. This is called
+    "auxclasspath" and is also configured here.
+
     Note: you can specify multiple class paths separated by `:` on Unix-systems or `;` under Windows.
     
     ```java
-    configuration.prependClasspath("/home/workspace/target/classes:/home/.m2/repository/my/dependency.jar");
+    configuration.setDefaultLanguageVersion(LanguageRegistry.findLanguageByTerseName("java").getVersion("11"));
+    configuration.prependAuxClasspath("/home/workspace/target/classes:/home/.m2/repository/my/dependency.jar");
     ```
     
-3.  Then we need a ruleset factory. This is created using the configuration, taking the minimum priority into
-    account:
+4.  Then we configure the reporting. Configuring the report file is optional. If not specified, the report
+    will be written to `stdout`.
     
     ```java
-    RuleSetFactory ruleSetFactory = RulesetsFactoryUtils.createFactory(configuration);
+    configuration.setReportFormat("xml");
+    configuration.setReportFile("/home/workspace/pmd-report.xml");
     ```
     
-4.  PMD operates on a list of `DataSource`. You can assemble a own list of `FileDataSource`, e.g.
+5.  Now an optional step: If you want to use additional renderers as in the example, set them up before
+    calling PMD. You can use a built-in renderer, e.g. `XMLRenderer` or a custom renderer implementing
+    `Renderer`. Note, that you must manually initialize the renderer by setting a suitable `Writer`:
     
     ```java
-    List<DataSource> files = Arrays.asList(new FileDataSource(new File("/path/to/src/MyClass.java")));
+    Writer rendererOutput = new StringWriter();
+    Renderer renderer = createRenderer(rendererOutput);
+
+    // ...
+    private static Renderer createRenderer(Writer writer) {
+        XMLRenderer xml = new XMLRenderer("UTF-8");
+        xml.setWriter(writer);
+        return xml;
+    }
     ```
-    
-5.  For reporting, you can use a built-in renderer, e.g. `XMLRenderer`. Note, that you must manually initialize
-    the renderer by setting a suitable `Writer` and calling `start()`. After the PMD run, you need to call
-    `end()` and `flush()`. Then your writer should have received all output.
-    
-    ```java
-    StringWriter rendererOutput = new StringWriter();
-    Renderer xmlRenderer = new XMLRenderer("UTF-8");
-    xmlRenderer.setWriter(rendererOutput);
-    xmlRenderer.start();
-    ```
-    
-6.  Create a `RuleContext`. This is the context instance, that is available then in the rule implementations.
-    Note: when running in multi-threaded mode (which is the default), the rule context instance is cloned for
-    each thread.
+
+6.  Finally we can start the PMD analysis. There is the possibility to fine-tune the configuration
+    by adding additional files to analyze or adding additional rulesets or renderers:
     
     ```java
-    RuleContext ctx = new RuleContext();
-    ```
-    
-7.  Optionally register a report listener. This allows you to react immediately on found violations. You could also
-    use such a listener to implement your own renderer. The listener must implement the interface
-    `ThreadSafeReportListener` and can be registered via `ctx.getReport().addListener(...)`.
-    
-    ```java
-    ctx.getReport().addListener(new ThreadSafeReportListener() {
-        public void ruleViolationAdded(RuleViolation ruleViolation) {
-        }
-        public void metricAdded(Metric metric) {
-        }
-    ```
-    
-8.  Now, all the preparations are done, and PMD can be executed. This is done by calling
-    `PMD.processFiles(...)`. This method call takes the configuration, the ruleset factory, the files
-    to process, the rule context and the list of renderers. Provide an empty list, if you don't want to use
-    any renderer. Note: The auxclasspath needs to be closed explicitly. Otherwise the class or jar files may
-    remain open and file resources are leaked.
-    
-    ```java
-    try {
-        PMD.processFiles(configuration, ruleSetFactory, files, ctx,
-                Collections.singletonList(renderer));
-    } finally {
-        ClassLoader auxiliaryClassLoader = configuration.getClassLoader();
-        if (auxiliaryClassLoader instanceof ClasspathClassLoader) {
-            ((ClasspathClassLoader) auxiliaryClassLoader).close();
-        }
+    try (PmdAnalysis pmd = PmdAnalysis.create(configuration)) {
+        // optional: add more rulesets
+        pmd.addRuleSet(pmd.newRuleSetLoader().loadFromResource("custom-ruleset.xml"));
+        // optional: add more files
+        pmd.files().addFile(Paths.get("src", "main", "more-java", "ExtraSource.java"));
+        // optional: add more renderers
+        pmd.addRenderer(renderer);
+
+        // or just call PMD
+        pmd.performAnalysis();
     }
     ```
     
-9.  After the call, you need to finish the renderer via `end()` and `flush()`.
-    Then you can check the rendered output.
+    The renderer will be automatically flushed and closed at the end of the analysis.
+
+7.  Then you can check the rendered output.
     
     ``` java
-    renderer.end();
-    renderer.flush();
     System.out.println("Rendered Report:");
     System.out.println(rendererOutput.toString());
     ```
@@ -174,108 +161,53 @@ Here is a complete example:
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.nio.file.FileSystems;
-import java.nio.file.FileVisitResult;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.PathMatcher;
-import java.nio.file.SimpleFileVisitor;
-import java.nio.file.attribute.BasicFileAttributes;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.nio.file.Paths;
 
-import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMDConfiguration;
-import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.PmdAnalysis;
 import net.sourceforge.pmd.RulePriority;
-import net.sourceforge.pmd.RuleSetFactory;
-import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.RulesetsFactoryUtils;
-import net.sourceforge.pmd.ThreadSafeReportListener;
+import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.renderers.XMLRenderer;
-import net.sourceforge.pmd.stat.Metric;
-import net.sourceforge.pmd.util.ClasspathClassLoader;
-import net.sourceforge.pmd.util.datasource.DataSource;
-import net.sourceforge.pmd.util.datasource.FileDataSource;
 
 public class PmdExample2 {
 
     public static void main(String[] args) throws IOException {
         PMDConfiguration configuration = new PMDConfiguration();
         configuration.setMinimumPriority(RulePriority.MEDIUM);
-        configuration.setRuleSets("rulesets/java/quickstart.xml");
-        configuration.prependClasspath("/home/workspace/target/classes");
-        RuleSetFactory ruleSetFactory = RulesetsFactoryUtils.createFactory(configuration);
+        configuration.addRuleSet("rulesets/java/quickstart.xml");
 
-        List<DataSource> files = determineFiles("/home/workspace/src/main/java/code");
+        configuration.setInputPaths("/home/workspace/src/main/java/code");
+
+        configuration.setDefaultLanguageVersion(LanguageRegistry.findLanguageByTerseName("java").getVersion("11"));
+        configuration.prependAuxClasspath("/home/workspace/target/classes");
+
+        configuration.setReportFormat("xml");
+        configuration.setReportFile("/home/workspace/pmd-report.xml");
 
         Writer rendererOutput = new StringWriter();
         Renderer renderer = createRenderer(rendererOutput);
-        renderer.start();
 
-        RuleContext ctx = new RuleContext();
+        try (PmdAnalysis pmd = PmdAnalysis.create(configuration)) {
+            // optional: add more rulesets
+            pmd.addRuleSet(pmd.newRuleSetLoader().loadFromResource("custom-ruleset.xml"));
+            // optional: add more files
+            pmd.files().addFile(Paths.get("src", "main", "more-java", "ExtraSource.java"));
+            // optional: add more renderers
+            pmd.addRenderer(renderer);
 
-        ctx.getReport().addListener(createReportListener()); // alternative way to collect violations
-
-        try {
-            PMD.processFiles(configuration, ruleSetFactory, files, ctx,
-                Collections.singletonList(renderer));
-        } finally {
-            ClassLoader auxiliaryClassLoader = configuration.getClassLoader();
-            if (auxiliaryClassLoader instanceof ClasspathClassLoader) {
-                ((ClasspathClassLoader) auxiliaryClassLoader).close();
-            }
+            // or just call PMD
+            pmd.performAnalysis();
         }
 
-        renderer.end();
-        renderer.flush();
         System.out.println("Rendered Report:");
         System.out.println(rendererOutput.toString());
-    }
-
-    private static ThreadSafeReportListener createReportListener() {
-        return new ThreadSafeReportListener() {
-            @Override
-            public void ruleViolationAdded(RuleViolation ruleViolation) {
-                System.out.printf("%-20s:%d %s%n", ruleViolation.getFilename(),
-                        ruleViolation.getBeginLine(), ruleViolation.getDescription());
-            }
-
-            @Override
-            public void metricAdded(Metric metric) {
-                // ignored
-            }
-        };
     }
 
     private static Renderer createRenderer(Writer writer) {
         XMLRenderer xml = new XMLRenderer("UTF-8");
         xml.setWriter(writer);
         return xml;
-    }
-
-    private static List<DataSource> determineFiles(String basePath) throws IOException {
-        Path dirPath = FileSystems.getDefault().getPath(basePath);
-        PathMatcher matcher = FileSystems.getDefault().getPathMatcher("glob:*.java");
-
-        List<DataSource> files = new ArrayList<>();
-
-        Files.walkFileTree(dirPath, new SimpleFileVisitor<Path>() {
-            @Override
-            public FileVisitResult visitFile(Path path, BasicFileAttributes attrs) throws IOException {
-                if (matcher.matches(path.getFileName())) {
-                    System.out.printf("Using %s%n", path);
-                    files.add(new FileDataSource(path.toFile()));
-                } else {
-                    System.out.printf("Ignoring %s%n", path);
-                }
-                return super.visitFile(path, attrs);
-            }
-        });
-        System.out.printf("Analyzing %d files in %s%n", files.size(), basePath);
-        return files;
     }
 }
 ```

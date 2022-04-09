@@ -4,9 +4,7 @@
 
 package net.sourceforge.pmd.util;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
+import java.text.MessageFormat;
 import java.util.List;
 import java.util.Locale;
 import java.util.regex.Matcher;
@@ -14,9 +12,9 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.text.StringEscapeUtils;
 
 import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.internal.util.AssertionUtil;
 
 /**
  * A number of String-specific utility methods for use by PMD or its IDE
@@ -149,6 +147,20 @@ public final class StringUtil {
     }
 
     /**
+     * Returns the substring following the last occurrence of the
+     * given character. If the character doesn't occur, returns
+     * the whole string. This contrasts with {@link StringUtils#substringAfterLast(String, String)},
+     * which returns the empty string in that case.
+     *
+     * @param str String to cut
+     * @param c   Delimiter
+     */
+    public static String substringAfterLast(String str, int c) {
+        int i = str.lastIndexOf(c);
+        return i < 0 ? str : str.substring(i + 1);
+    }
+
+    /**
      * Formats a double to a percentage, keeping {@code numDecimal} decimal places.
      *
      * @param val         a double value between 0 and 1
@@ -164,44 +176,6 @@ public final class StringUtil {
         }
 
         return String.format(Locale.ROOT, "%." + numDecimals + "f%%", 100 * val);
-    }
-
-
-    /**
-     * Return whether the non-null text arg starts with any of the prefix
-     * values.
-     *
-     * @return boolean
-     *
-     * @deprecated {@link StringUtils#startsWithAny(CharSequence, CharSequence...)}
-     */
-    @Deprecated
-    public static boolean startsWithAny(String text, String... prefixes) {
-
-        for (String prefix : prefixes) {
-            if (text.startsWith(prefix)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-
-    /**
-     * Returns whether the non-null text arg matches any of the test values.
-     *
-     * @return boolean
-     */
-    public static boolean isAnyOf(String text, String... tests) {
-
-        for (String test : tests) {
-            if (text.equals(test)) {
-                return true;
-            }
-        }
-
-        return false;
     }
 
 
@@ -224,103 +198,11 @@ public final class StringUtil {
 
 
     /**
-     * @param value String
-     *
-     * @return boolean
-     *
-     * @deprecated {@link StringUtils#isNotBlank(CharSequence)}
-     */
-    @Deprecated
-    public static boolean isNotEmpty(String value) {
-        return !isEmpty(value);
-    }
-
-
-    /**
-     * Returns true if the value arg is either null, empty, or full of
-     * whitespace characters. More efficient that calling
-     * (string).trim().length() == 0.
-     *
-     * @param value String to test
-     *
-     * @return <code>true</code> if the value is empty, <code>false</code> otherwise.
-     *
-     * @deprecated {@link StringUtils#isBlank(CharSequence)}
-     */
-    @Deprecated
-    public static boolean isEmpty(String value) {
-        return StringUtils.isBlank(value);
-    }
-
-
-    /**
-     * Returns true if the argument is null or the empty string.
-     *
-     * @param value String to test
-     *
-     * @return True if the argument is null or the empty string
-     *
-     * @deprecated {@link StringUtils#isEmpty(CharSequence)}
-     */
-    @Deprecated
-    public static boolean isMissing(String value) {
-        return StringUtils.isEmpty(value);
-    }
-
-
-    /**
-     * Returns true if both strings are effectively null or whitespace, returns
-     * false otherwise if they have actual text that differs.
-     *
-     * @return boolean
-     */
-    @Deprecated
-    public static boolean areSemanticEquals(String a, String b) {
-
-        if (a == null) {
-            return isEmpty(b);
-        }
-        if (b == null) {
-            return isEmpty(a);
-        }
-
-        return a.equals(b);
-    }
-
-
-    /**
-     * @param original  String
-     * @param oldString String
-     * @param newString String
-     *
-     * @return String
-     *
-     * @deprecated {@link StringUtils#replace(String, String, String)}
-     */
-    @Deprecated
-    public static String replaceString(final String original, final String oldString, final String newString) {
-        int index = original.indexOf(oldString);
-        if (index < 0) {
-            return original;
-        } else {
-            final String replace = newString == null ? "" : newString;
-            final StringBuilder buf = new StringBuilder(Math.max(16, original.length() + replace.length()));
-            int last = 0;
-            while (index != -1) {
-                buf.append(original.substring(last, index));
-                buf.append(replace);
-                last = index + oldString.length();
-                index = original.indexOf(oldString, last);
-            }
-            buf.append(original.substring(last));
-            return buf.toString();
-        }
-    }
-
-    /**
      * @param supportUTF8 override the default setting, whether special characters should be replaced with entities (
      *                    <code>false</code>) or should be included as is ( <code>true</code>).
-     * @deprecated for removal. Use {@link StringEscapeUtils#escapeXml10(String)} instead.
+     * @deprecated for removal. Use Java's XML implementations, that do the escaping,
+     *             use {@link #removedInvalidXml10Characters(String)} for fixing invalid characters in XML 1.0
+     *             documents or use {@code StringEscapeUtils#escapeXml10(String)} from apache commons-text instead.
      */
     @Deprecated
     public static void appendXmlEscaped(StringBuilder buf, String src, boolean supportUTF8) {
@@ -387,174 +269,6 @@ public final class StringUtil {
         return s;
     }
 
-    /**
-     * @param original  String
-     * @param oldChar   char
-     * @param newString String
-     *
-     * @return String
-     *
-     * @deprecated {@link StringUtils#replace(String, String, String)} or {@link StringUtils#replaceChars(String, char, char)}
-     */
-    @Deprecated
-    public static String replaceString(final String original, char oldChar, final String newString) {
-        int index = original.indexOf(oldChar);
-        if (index < 0) {
-            return original;
-        } else {
-            final String replace = newString == null ? "" : newString;
-            final StringBuilder buf = new StringBuilder(Math.max(16, original.length() + replace.length()));
-            int last = 0;
-            while (index != -1) {
-                buf.append(original.substring(last, index));
-                buf.append(replace);
-                last = index + 1;
-                index = original.indexOf(oldChar, last);
-            }
-            buf.append(original.substring(last));
-            return buf.toString();
-        }
-    }
-
-
-    /**
-     * Parses the input source using the delimiter specified. This method is
-     * much faster than using the StringTokenizer or String.split(char) approach
-     * and serves as a replacement for String.split() for JDK1.3 that doesn't
-     * have it.
-     *
-     * @param source    String
-     * @param delimiter char
-     *
-     * @return String[]
-     *
-     * @deprecated {@link StringUtils#split(String, char)}
-     */
-    @Deprecated
-    public static String[] substringsOf(String source, char delimiter) {
-
-        if (source == null || source.length() == 0) {
-            return EMPTY_STRINGS;
-        }
-
-        int delimiterCount = 0;
-        int length = source.length();
-        char[] chars = source.toCharArray();
-
-        for (int i = 0; i < length; i++) {
-            if (chars[i] == delimiter) {
-                delimiterCount++;
-            }
-        }
-
-        if (delimiterCount == 0) {
-            return new String[] {source};
-        }
-
-        String[] results = new String[delimiterCount + 1];
-
-        int i = 0;
-        int offset = 0;
-
-        while (offset <= length) {
-            int pos = source.indexOf(delimiter, offset);
-            if (pos < 0) {
-                pos = length;
-            }
-            results[i++] = pos == offset ? "" : source.substring(offset, pos);
-            offset = pos + 1;
-        }
-
-        return results;
-    }
-
-
-    /**
-     * Much more efficient than StringTokenizer.
-     *
-     * @param str       String
-     * @param separator char
-     *
-     * @return String[]
-     *
-     * @deprecated {@link StringUtils#split(String, String)}
-     */
-    @Deprecated
-    public static String[] substringsOf(String str, String separator) {
-
-        if (str == null || str.length() == 0) {
-            return EMPTY_STRINGS;
-        }
-
-        int index = str.indexOf(separator);
-        if (index == -1) {
-            return new String[] {str};
-        }
-
-        List<String> list = new ArrayList<>();
-        int currPos = 0;
-        int len = separator.length();
-        while (index != -1) {
-            list.add(str.substring(currPos, index));
-            currPos = index + len;
-            index = str.indexOf(separator, currPos);
-        }
-        list.add(str.substring(currPos));
-        return list.toArray(new String[0]);
-    }
-
-
-    /**
-     * Copies the elements returned by the iterator onto the string buffer each
-     * delimited by the separator.
-     *
-     * @param sb        StringBuffer
-     * @param iter      Iterator
-     * @param separator String
-     *
-     * @deprecated {@link StringUtils#join(Iterator, String)}
-     */
-    @Deprecated
-    public static void asStringOn(StringBuffer sb, Iterator<?> iter, String separator) {
-
-        if (!iter.hasNext()) {
-            return;
-        }
-
-        sb.append(iter.next());
-
-        while (iter.hasNext()) {
-            sb.append(separator);
-            sb.append(iter.next());
-        }
-    }
-
-
-    /**
-     * Copies the array items onto the string builder each delimited by the
-     * separator. Does nothing if the array is null or empty.
-     *
-     * @param sb        StringBuilder
-     * @param items     Object[]
-     * @param separator String
-     *
-     * @deprecated {@link StringUtils#join(Iterable, String)}
-     */
-    @Deprecated
-    public static void asStringOn(StringBuilder sb, Object[] items, String separator) {
-
-        if (items == null || items.length == 0) {
-            return;
-        }
-
-        sb.append(items[0]);
-
-        for (int i = 1; i < items.length; i++) {
-            sb.append(separator);
-            sb.append(items[i]);
-        }
-    }
-
 
     /**
      * Determine the maximum number of common leading whitespace characters the
@@ -562,9 +276,7 @@ public final class StringUtil {
      * leading characters can be removed to shift all the text in the strings to
      * the left without misaligning them.
      *
-     * @param strings String[]
-     *
-     * @return int
+     * @throws NullPointerException If the parameter is null
      */
     public static int maxCommonLeadingWhitespaceForAll(String[] strings) {
 
@@ -575,14 +287,12 @@ public final class StringUtil {
 
         char[] matches = new char[shortest];
 
-        String str;
         for (int m = 0; m < matches.length; m++) {
             matches[m] = strings[0].charAt(m);
             if (!Character.isWhitespace(matches[m])) {
                 return m;
             }
-            for (int i = 0; i < strings.length; i++) {
-                str = strings[i];
+            for (String str : strings) {
                 if (str.charAt(m) != matches[m]) {
                     return m;
                 }
@@ -597,13 +307,11 @@ public final class StringUtil {
      * Return the length of the shortest string in the array. If the collection
      * is empty or any one of them is null then it returns 0.
      *
-     * @param strings String[]
-     *
-     * @return int
+     * @throws NullPointerException If the parameter is null
      */
     public static int lengthOfShortestIn(String[] strings) {
 
-        if (CollectionUtil.isEmpty(strings)) {
+        if (strings.length == 0) {
             return 0;
         }
 
@@ -637,28 +345,6 @@ public final class StringUtil {
             results[i] = strings[i].substring(trimDepth);
         }
         return results;
-    }
-
-
-    /**
-     * Left pads a string.
-     *
-     * @param s      The String to pad
-     * @param length The desired minimum length of the resulting padded String
-     *
-     * @return The resulting left padded String
-     *
-     * @deprecated {@link StringUtils#leftPad(String, int)}
-     */
-    @Deprecated
-    public static String lpad(String s, int length) {
-        String res = s;
-        if (length - s.length() > 0) {
-            char[] arr = new char[length - s.length()];
-            Arrays.fill(arr, ' ');
-            res = new StringBuilder(length).append(arr).append(s).toString();
-        }
-        return res;
     }
 
 
@@ -724,6 +410,51 @@ public final class StringUtil {
         return sb.toString();
     }
 
+    /**
+     * If the string starts and ends with the delimiter, returns the substring
+     * within the delimiters. Otherwise returns the original string. The
+     * start and end delimiter must be 2 separate instances.
+     * <pre>{@code
+     * removeSurrounding("",     _ )  = ""
+     * removeSurrounding("q",   'q')  = "q"
+     * removeSurrounding("qq",  'q')  = ""
+     * removeSurrounding("q_q", 'q')  = "_"
+     * }</pre>
+     */
+    public static String removeSurrounding(String string, char delimiter) {
+        if (string.length() >= 2
+            && string.charAt(0) == delimiter
+            && string.charAt(string.length() - 1) == delimiter) {
+            return string.substring(1, string.length() - 1);
+        }
+        return string;
+    }
+
+    /**
+     * Like {@link #removeSurrounding(String, char) removeSurrounding} with
+     * a double quote as a delimiter.
+     */
+    public static String removeDoubleQuotes(String string) {
+        return removeSurrounding(string, '"');
+    }
+
+    /**
+     * Truncate the given string to some maximum length. If it needs
+     * truncation, the ellipsis string is appended. The length of the
+     * returned string is always lower-or-equal to the maxOutputLength,
+     * even when truncation occurs.
+     */
+    public static String elide(String string, int maxOutputLength, String ellipsis) {
+        AssertionUtil.requireNonNegative("maxOutputLength", maxOutputLength);
+        if (ellipsis.length() > maxOutputLength) {
+            throw new IllegalArgumentException("Ellipsis too long '" + ellipsis + "', maxOutputLength=" + maxOutputLength);
+        }
+        if (string.length() <= maxOutputLength) {
+            return string;
+        }
+        String truncated = string.substring(0, maxOutputLength - ellipsis.length());
+        return truncated + ellipsis;
+    }
 
     /**
      * Returns an empty array of string
@@ -734,61 +465,6 @@ public final class StringUtil {
         return EMPTY_STRINGS;
     }
 
-
-    /**
-     * Converts the given string to Camel case,
-     * that is, removing all spaces, and capitalising
-     * the first letter of each word except the first.
-     *
-     * <p>If the first word starts with an uppercase
-     * letter, it's kept as is. This method can thus
-     * be used for Pascal case too.
-     *
-     * @param name The string to convert
-     *
-     * @return The string converted to Camel case
-     *
-     * @deprecated Use {@link CaseConvention}
-     */
-    @Deprecated
-    public static String toCamelCase(String name) {
-        return toCamelCase(name, false);
-    }
-
-
-    /**
-     * Converts the given string to Camel case,
-     * that is, removing all spaces, and capitalising
-     * the first letter of each word except the first.
-     *
-     * <p>The second parameter can be used to force the
-     * words to be converted to lowercase before capitalising.
-     * This can be useful if eg the first word contains
-     * several uppercase letters.
-     *
-     * @param name           The string to convert
-     * @param forceLowerCase Whether to force removal of all upper
-     *                       case letters except on word start
-     *
-     * @return The string converted to Camel case
-     *
-     * @deprecated Use {@link CaseConvention}
-     */
-    @Deprecated
-    public static String toCamelCase(String name, boolean forceLowerCase) {
-        StringBuilder sb = new StringBuilder();
-        boolean isFirst = true;
-        for (String word : name.trim().split("\\s++")) {
-            String pretreated = forceLowerCase ? word.toLowerCase(Locale.ROOT) : word;
-            if (isFirst) {
-                sb.append(pretreated);
-                isFirst = false;
-            } else {
-                sb.append(StringUtils.capitalize(pretreated));
-            }
-        }
-        return sb.toString();
-    }
 
     /**
      * Replaces unprintable characters by their escaped (or unicode escaped)
@@ -838,6 +514,13 @@ public final class StringUtil {
         return retval.toString();
     }
 
+    /**
+     * Escape the string so that it appears literally when interpreted
+     * by a {@link MessageFormat}.
+     */
+    public static String quoteMessageFormat(String str) {
+        return str.replaceAll("'", "''");
+    }
 
     public enum CaseConvention {
         /** SCREAMING_SNAKE_CASE. */

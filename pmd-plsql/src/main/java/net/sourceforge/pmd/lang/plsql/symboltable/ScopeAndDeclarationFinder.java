@@ -4,9 +4,11 @@
 
 package net.sourceforge.pmd.lang.plsql.symboltable;
 
-import java.util.Stack;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.ArrayDeque;
+import java.util.Deque;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.lang.plsql.ast.ASTBlock;
 import net.sourceforge.pmd.lang.plsql.ast.ASTDeclarativeUnit;
@@ -41,13 +43,13 @@ import net.sourceforge.pmd.lang.symboltable.Scope;
  * the next embedding syntactic entity that has a scope.
  */
 public class ScopeAndDeclarationFinder extends PLSQLParserVisitorAdapter {
-    private static final Logger LOGGER = Logger.getLogger(ScopeAndDeclarationFinder.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(ScopeAndDeclarationFinder.class);
 
     /**
      * A stack of scopes reflecting the scope hierarchy when a node is visited.
      * This is used to set the parents of the created scopes correctly.
      */
-    private Stack<Scope> scopes = new Stack<>();
+    private Deque<Scope> scopes = new ArrayDeque<>();
 
     /**
      * Sets the scope of a node and adjusts the scope stack accordingly. The
@@ -124,7 +126,7 @@ public class ScopeAndDeclarationFinder extends PLSQLParserVisitorAdapter {
         // When we do full symbol resolution, we'll need to add a truly
         // top-level GlobalScope.
         Scope scope;
-        // %TODO generate a SchemaScope, based on inferred or explcitly
+        // %TODO generate a SchemaScope, based on inferred or explicitly
         // specified SchemaName
         ASTObjectDeclaration n = null; // node.getPackageDeclaration();
         if (n != null) {
@@ -261,34 +263,27 @@ public class ScopeAndDeclarationFinder extends PLSQLParserVisitorAdapter {
      * } } } cont(node); return data; }
      */
 
-    @Override
-    public Object visit(ASTTypeMethod node, Object data) {
+    private Object visitMethodLike(PLSQLNode node, Object data) {
         createMethodScope(node);
-        ASTMethodDeclarator md = node.getFirstChildOfType(ASTMethodDeclarator.class);
+        final ASTMethodDeclarator md = node.getFirstChildOfType(ASTMethodDeclarator.class);
         // A PLSQL Method (FUNCTION|PROCEDURE) may be schema-level
         try {
             node.getScope().getEnclosingScope(ClassScope.class).addDeclaration(new MethodNameDeclaration(md));
         } catch (Exception e) {
             // @TODO possibly add to a pseudo-ClassScope equivalent to the
             // Schema name
-            if (LOGGER.isLoggable(Level.FINEST)) {
-                LOGGER.finest("ProgramUnit getEnclosingClassScope Exception string=\"" + e.getMessage() + "\"");
-            }
+            LOG.trace("ProgramUnit getEnclosingClassScope Exception string=\"{}\"", e.getMessage());
             if ("getEnclosingClassScope() called on SourceFileScope".equals(e.getMessage())) {
-                if (LOGGER.isLoggable(Level.FINEST)) {
-                    LOGGER.finest("ClassScope skipped for Schema-level method: methodName=" + node.getMethodName()
-                            + "; Image=" + node.getImage());
-                }
+                LOG.trace("ClassScope skipped for Schema-level method: methodName={}; Image={}",
+                        md.getImage(), node.getImage());
 
                 // A File-level/Schema-level object may have a Schema-name
                 // explicitly specified in the declaration
                 ASTObjectNameDeclaration on = md.getFirstChildOfType(ASTObjectNameDeclaration.class);
                 if (1 < on.getNumChildren()) {
                     ASTID schemaName = on.getFirstChildOfType(ASTID.class);
-                    if (LOGGER.isLoggable(Level.FINEST)) {
-                        LOGGER.finest("SchemaName for Schema-level method: methodName=" + node.getMethodName()
-                                + "; Image=" + node.getImage() + "is " + schemaName.getImage());
-                    }
+                    LOG.trace("SchemaName for Schema-level method: methodName={}; Image={} is {}",
+                            md.getImage(), node.getImage(), schemaName.getImage());
 
                 }
             }
@@ -296,41 +291,15 @@ public class ScopeAndDeclarationFinder extends PLSQLParserVisitorAdapter {
         cont(node);
         return data;
     }
+    
+    @Override
+    public Object visit(ASTTypeMethod node, Object data) {
+        return visitMethodLike(node, data);
+    }
 
     @Override
     public Object visit(ASTProgramUnit node, Object data) {
-        createMethodScope(node);
-        ASTMethodDeclarator md = node.getFirstChildOfType(ASTMethodDeclarator.class);
-        // A PLSQL Method (FUNCTION|PROCEDURE) may be schema-level
-        try {
-            node.getScope().getEnclosingScope(ClassScope.class).addDeclaration(new MethodNameDeclaration(md));
-        } catch (Exception e) {
-            // @TODO possibly add to a pseudo-ClassScope equivalent to the
-            // Schema name
-            if (LOGGER.isLoggable(Level.FINEST)) {
-                LOGGER.finest("ProgramUnit getEnclosingClassScope Exception string=\"" + e.getMessage() + "\"");
-            }
-            if ("getEnclosingClassScope() called on SourceFileScope".equals(e.getMessage())) {
-                if (LOGGER.isLoggable(Level.FINEST)) {
-                    LOGGER.finest("ClassScope skipped for Schema-level method: methodName=" + node.getMethodName()
-                            + "; Image=" + node.getImage());
-                }
-
-                // A File-level/Schema-level object may have a Schema-name
-                // explicitly specified in the declaration
-                ASTObjectNameDeclaration on = md.getFirstChildOfType(ASTObjectNameDeclaration.class);
-                if (1 < on.getNumChildren()) {
-                    ASTID schemaName = on.getFirstChildOfType(ASTID.class);
-                    if (LOGGER.isLoggable(Level.FINEST)) {
-                        LOGGER.finest("SchemaName for Schema-level method: methodName=" + node.getMethodName()
-                                + "; Image=" + node.getImage() + "is " + schemaName.getImage());
-                    }
-
-                }
-            }
-        }
-        cont(node);
-        return data;
+        return visitMethodLike(node, data);
     }
 
     // TODO - what about while loops and do loops?
@@ -364,7 +333,7 @@ public class ScopeAndDeclarationFinder extends PLSQLParserVisitorAdapter {
     // }
 
     private void cont(PLSQLNode node) {
-        super.visit(node, null);
+        super.visitPlsqlNode(node, null);
         scopes.pop();
     }
 }

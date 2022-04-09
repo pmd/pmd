@@ -83,4 +83,14 @@ public interface GenericNode<N extends GenericNode<N>> extends Node {
     default NodeStream<N> ancestors() {
         return (NodeStream<N>) Node.super.ancestors();
     }
+
+    @Override
+    default @Nullable N getPreviousSibling() {
+        return (N) Node.super.getPreviousSibling();
+    }
+
+    @Override
+    default @Nullable N getNextSibling() {
+        return (N) Node.super.getNextSibling();
+    }
 }

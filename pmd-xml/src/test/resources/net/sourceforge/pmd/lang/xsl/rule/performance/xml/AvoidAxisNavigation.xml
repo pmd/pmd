@@ -12,7 +12,7 @@
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
     <xsl:variable select="descendant::book"/>
     <xsl:variable select="following::book"/>
-    <xsl:variable select="preceeding::book"/>
+    <xsl:variable select="preceding::book"/>
 </xsl:stylesheet>
         ]]></code>
     </test-code>

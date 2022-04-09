@@ -18,6 +18,7 @@ public class Foo {
     <test-code>
         <description>two loggers</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
         <code><![CDATA[
 import org.apache.log4j.Logger;
 public class Foo {
@@ -65,6 +66,7 @@ public class Foo {
     <test-code>
         <description>https://github.com/pmd/pmd/pull/42: Add SLF4j Logger type: Two Loggers</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
         <code><![CDATA[
 import org.slf4j.Logger;
 public class Foo {
@@ -88,11 +90,30 @@ public class Foo {
     <test-code>
         <description>Logger type log4j2: Two Loggers</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
         <code><![CDATA[
 import org.apache.logging.log4j.Logger;
 public class Foo {
     Logger log;
     Logger log2;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>issue 3304 - rule robustness</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.ArrayList;
+import java.util.List;
+
+public record Reproducer(List<String> smsIds) {
+
+  public Reproducer createMe(final String smsId) {
+    final List<String> newList = new ArrayList<>(smsIds);
+    newList.add(smsId);
+    return new Reproducer(newList);
+  }
 }
         ]]></code>
     </test-code>

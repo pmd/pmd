@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.apex.ast;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.lang.ast.AstVisitor;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
 import net.sourceforge.pmd.lang.ast.impl.AbstractNodeWithTextCoordinates;
@@ -15,6 +16,7 @@ import apex.jorje.data.Location;
 import apex.jorje.data.Locations;
 import apex.jorje.semantic.ast.AstNode;
 import apex.jorje.semantic.exception.UnexpectedCodePathException;
+import apex.jorje.semantic.symbol.type.TypeInfo;
 
 abstract class AbstractApexNode<T extends AstNode> extends AbstractNodeWithTextCoordinates<AbstractApexNode<?>, ApexNode<?>> implements ApexNode<T> {
 
@@ -39,6 +41,17 @@ abstract class AbstractApexNode<T extends AstNode> extends AbstractNodeWithTextC
     protected void setCoords(int bline, int bcol, int eline, int ecol) {
         super.setCoords(bline, bcol, eline, ecol);
     }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public final <P, R> R acceptVisitor(AstVisitor<? super P, ? extends R> visitor, P data) {
+        if (visitor instanceof ApexVisitor) {
+            return this.acceptApexVisitor((ApexVisitor<? super P, ? extends R>) visitor, data);
+        }
+        return visitor.cannotVisit(this, data);
+    }
+
+    protected abstract <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data);
 
     @Override
     public @NonNull ASTApexFile getRoot() {
@@ -154,18 +167,28 @@ abstract class AbstractApexNode<T extends AstNode> extends AbstractNodeWithTextC
         }
     }
 
+    private TypeInfo getDefiningTypeOrNull() {
+        try {
+            return node.getDefiningType();
+        } catch (UnsupportedOperationException e) {
+            return null;
+        }
+    }
+
     @Override
     public String getDefiningType() {
-        if (node.getDefiningType() != null) {
-            return node.getDefiningType().getApexName();
+        TypeInfo definingType = getDefiningTypeOrNull();
+        if (definingType != null) {
+            return definingType.getApexName();
         }
         return null;
     }
 
     @Override
     public String getNamespace() {
-        if (node.getDefiningType() != null) {
-            return node.getDefiningType().getNamespace().toString();
+        TypeInfo definingType = getDefiningTypeOrNull();
+        if (definingType != null) {
+            return definingType.getNamespace().toString();
         }
         return null;
     }

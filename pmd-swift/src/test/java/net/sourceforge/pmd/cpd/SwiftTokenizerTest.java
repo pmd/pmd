@@ -51,4 +51,9 @@ public class SwiftTokenizerTest extends CpdTextComparisonTest {
     public void testStackoverflowOnLongLiteral() {
         doTest("Issue628");
     }
+
+    @Test
+    public void testTabWidth() {
+        doTest("tabWidth");
+    }
 }

@@ -12,7 +12,8 @@ author: Tom Copeland, Xavier Le Vourch <xlv@users.sourceforge.net>
 
 *   JDK 11 or higher
 
-{% include note.html content="While Java 11 is required for building, running PMD only requires Java 7 (or Java 8 for Apex and the Designer)." %}
+{% include note.html content="While Java 11 is required for building, running PMD only requires Java 7
+(or Java 8 for Apex, JavaScript, Scala, Visualforce, and the Designer)." %}
 
 You’ll need to either check out the source code or download the latest source release. Assuming you’ve got the latest source release, unzip it to a directory:
 
@@ -83,9 +84,6 @@ Now the source and binary distribution zip files can be found in the folder `pmd
 
 **Notes:**
 
-*   The rules that have already been written are specified in the `src/main/resources/rulesets/` directories of
-the specific languages, e.g. `pmd-java/src/main/resources/rulesets`.
-They’re also in the jar file that’s included with both the source and binary distributions.
-
-A paucity of detail, I’m sure you’d agree. If you think this document can be improved,
-please post [here](http://sourceforge.net/p/pmd/discussion/188192) and let me know how. Thanks!
+-   The rules that have already been written are specified in the `src/main/resources/category/` directories of
+    the specific languages, e.g. `pmd-java/src/main/resources/category`.
+    They’re also in the jar file that’s included with both the source and binary distributions.

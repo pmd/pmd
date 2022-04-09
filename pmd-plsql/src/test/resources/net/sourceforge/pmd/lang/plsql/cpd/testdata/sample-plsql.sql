@@ -208,7 +208,7 @@ PROCEDURE Upd (
 /** Update a table
 * @param p_data     new data 
 * @throws ORA-20001 if some error was recognized
-* @throws ORA-xxxxx if some unexpected error occured
+* @throws ORA-xxxxx if some unexpected error occurred
 */
 PROCEDURE Upd_Table (
   p_data            IN bank_table);

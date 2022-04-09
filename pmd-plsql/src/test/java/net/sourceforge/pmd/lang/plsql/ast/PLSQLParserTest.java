@@ -73,4 +73,15 @@ public class PLSQLParserTest extends AbstractPLSQLParserTst {
     public void testCaseIssue1454() {
         plsql.parseResource("CaseIssue1454.pls");
     }
+
+    @Test
+    public void testRelationalOperators() {
+        // https://github.com/pmd/pmd/issues/3746
+        plsql.parseResource("RelationalOperators.pls");
+    }
+
+    @Test
+    public void testExecuteImmediateIssue3106() {
+        plsql.parseResource("ExecuteImmediateIssue3106.pls");
+    }
 }

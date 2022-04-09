@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.ast
 
-import io.kotlintest.matchers.string.shouldContain
+import io.kotest.matchers.string.shouldContain
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.Companion.Earliest
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.Companion.Latest
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.J10
@@ -25,7 +25,7 @@ class LanguageLevelCheckTests : ParserTestSpec({
                 }
             }
 
-            inContext(EnclosedDeclarationParsingCtx) {
+            inContext(TypeBodyParsingCtx) {
 
                 "public enum var { A }" should throwParseException { ex ->
                     ex.message.shouldContain("'var' is reserved and cannot be used as a type name")

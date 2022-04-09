@@ -6,6 +6,8 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import net.sourceforge.pmd.annotation.DeprecatedUntil700;
+import net.sourceforge.pmd.lang.ast.AstVisitor;
 import net.sourceforge.pmd.lang.ast.impl.GenericNode;
 
 import apex.jorje.semantic.ast.AstNode;
@@ -22,8 +24,14 @@ public interface ApexNode<T extends AstNode> extends GenericNode<ApexNode<?>> {
 
     /**
      * Accept the visitor.
+     *
+     * @deprecated Use {@link #acceptVisitor(AstVisitor, Object)}
      */
-    Object jjtAccept(ApexParserVisitor visitor, Object data);
+    @Deprecated
+    @DeprecatedUntil700
+    default Object jjtAccept(ApexParserVisitor visitor, Object data) {
+        return acceptVisitor(visitor, data);
+    }
 
 
     /**

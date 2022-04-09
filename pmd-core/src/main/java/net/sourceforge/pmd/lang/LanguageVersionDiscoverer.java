@@ -8,6 +8,11 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+
+import org.apache.commons.lang3.StringUtils;
+
+import net.sourceforge.pmd.internal.util.AssertionUtil;
 
 /**
  * This class can discover the LanguageVersion of a source file. Further, every
@@ -23,6 +28,23 @@ public class LanguageVersionDiscoverer {
         this.languageRegistry = languageRegistry;
     }
 
+    private LanguageVersion forcedVersion;
+
+    public LanguageVersionDiscoverer() {
+        this(null);
+    }
+
+    /**
+     * Build a new instance.
+     *
+     * @param forcedVersion If non-null, all files should be assigned this version.
+     *                      The methods of this class still work as usual and do not
+     *                      care about the forced language version.
+     */
+    public LanguageVersionDiscoverer(LanguageVersion forcedVersion) {
+        this.forcedVersion = forcedVersion;
+    }
+
     /**
      * Set the given LanguageVersion as the current default for it's Language.
      *
@@ -31,6 +53,7 @@ public class LanguageVersionDiscoverer {
      * @return The previous default version for the language.
      */
     public LanguageVersion setDefaultLanguageVersion(LanguageVersion languageVersion) {
+        AssertionUtil.requireParamNotNull("languageVersion", languageVersion);
         LanguageVersion currentLanguageVersion = languageToLanguageVersion.put(languageVersion.getLanguage(),
                 languageVersion);
         if (currentLanguageVersion == null) {
@@ -47,6 +70,7 @@ public class LanguageVersionDiscoverer {
      * @return The current default version for the language.
      */
     public LanguageVersion getDefaultLanguageVersion(Language language) {
+        Objects.requireNonNull(language);
         LanguageVersion languageVersion = languageToLanguageVersion.get(language);
         if (languageVersion == null) {
             languageVersion = language.getDefaultVersion();
@@ -87,6 +111,14 @@ public class LanguageVersionDiscoverer {
         return languageVersion;
     }
 
+    public LanguageVersion getForcedVersion() {
+        return forcedVersion;
+    }
+
+    public void setForcedVersion(LanguageVersion forceLanguageVersion) {
+        this.forcedVersion = forceLanguageVersion;
+    }
+
     /**
      * Get the Languages of a given source file.
      *
@@ -112,11 +144,8 @@ public class LanguageVersionDiscoverer {
 
     // Get the extensions from a file
     private String getExtension(String fileName) {
-        String extension = null;
-        int extensionIndex = 1 + fileName.lastIndexOf('.');
-        if (extensionIndex > 0) {
-            extension = fileName.substring(extensionIndex);
-        }
-        return extension;
+        return StringUtils.substringAfterLast(fileName, ".");
     }
+
+
 }

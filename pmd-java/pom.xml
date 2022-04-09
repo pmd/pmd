@@ -11,13 +11,27 @@
         <relativePath>../</relativePath>
     </parent>
 
+    <properties>
+        <log4j.version>2.17.1</log4j.version>
+    </properties>
+
     <build>
         <testResources>
             <testResource>
-                <directory>${basedir}/src/test/resources</directory>
+                <directory>${project.basedir}/src/test/resources</directory>
             </testResource>
             <testResource>
-                <directory>${basedir}/src/test/java</directory>
+                <directory>${project.basedir}/src/test/java</directory>
+                <includes>
+                    <include>**/testdata/**/*.java</include>
+                </includes>
+            </testResource>
+            <!-- Adding kotlin files to test resources, so that checkstyle verifies the license header -->
+            <testResource>
+                <directory>${project.basedir}/src/test/kotlin</directory>
+            </testResource>
+            <testResource>
+                <directory>${basedir}/src/test/kotlin</directory>
                 <includes>
                     <include>**/testdata/**/*.java</include>
                 </includes>
@@ -25,7 +39,7 @@
         </testResources>
         <resources>
             <resource>
-                <directory>${basedir}/src/main/resources</directory>
+                <directory>${project.basedir}/src/main/resources</directory>
                 <filtering>true</filtering>
             </resource>
         </resources>
@@ -58,7 +72,7 @@
                         </goals>
                         <configuration>
                             <target>
-                                <ant antfile="${javacc.ant.wrapper}" target="alljavacc-visitor+">
+                                <ant antfile="${javacc.ant.wrapper}" target="alljavacc">
                                     <property name="javacc.jar" value="${javacc.jar}" />
                                     <property name="lang-name" value="Java" />
                                     <property name="lang-terse-name" value="java" />
@@ -105,16 +119,22 @@
                     <suppressionsLocation>pmd-java-checkstyle-suppressions.xml</suppressionsLocation>
                 </configuration>
             </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <excludes>
+                        <exclude>**/net/sourceforge/pmd/coverage/PMDCoverageTest.java</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
     <dependencies>
         <dependency>
             <groupId>net.sourceforge.pmd</groupId>
             <artifactId>pmd-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>net.sourceforge.saxon</groupId>
-            <artifactId>saxon</artifactId>
         </dependency>
         <dependency>
             <groupId>org.ow2.asm</groupId>
@@ -128,6 +148,19 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.checkerframework</groupId>
+            <artifactId>checker-qual</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>net.sf.saxon</groupId>
+            <artifactId>Saxon-HE</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.pcollections</groupId>
+            <artifactId>pcollections</artifactId>
+        </dependency>
+
 
         <!-- TEST DEPENDENCIES -->
         <dependency>
@@ -173,13 +206,24 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>io.kotlintest</groupId>
-            <artifactId>kotlintest-assertions</artifactId>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>io.kotlintest</groupId>
-            <artifactId>kotlintest-core</artifactId>
+            <groupId>io.kotest</groupId>
+            <artifactId>kotest-assertions-core-jvm</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.kotest</groupId>
+            <artifactId>kotest-property-jvm</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <!-- Contains stuff like FunSpec, etc -->
+            <groupId>io.kotest</groupId>
+            <artifactId>kotest-runner-junit5-jvm</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -194,7 +238,7 @@
         </dependency>
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
-            <artifactId>kotlin-test</artifactId>
+            <artifactId>kotlin-test-junit</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -205,26 +249,27 @@
 
         <!-- the following dependencies are there to support typeresolution in test cases -->
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-api</artifactId>
-            <version>2.13.3</version>
+            <version>${log4j.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-core</artifactId>
-            <version>2.13.3</version>
+            <version>${log4j.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
             <version>3.11.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+            <version>1.2</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

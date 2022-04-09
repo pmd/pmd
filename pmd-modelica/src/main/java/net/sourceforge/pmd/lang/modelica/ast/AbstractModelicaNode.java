@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.modelica.ast;
 
+import net.sourceforge.pmd.lang.ast.AstVisitor;
 import net.sourceforge.pmd.lang.ast.impl.javacc.AbstractJjtreeNode;
 import net.sourceforge.pmd.lang.modelica.resolver.ModelicaScope;
 
@@ -30,8 +31,17 @@ abstract class AbstractModelicaNode extends AbstractJjtreeNode<AbstractModelicaN
         super.setImage(image);
     }
 
+
     @Override
-    public abstract Object jjtAccept(ModelicaParserVisitor visitor, Object data);
+    @SuppressWarnings("unchecked")
+    public final <P, R> R acceptVisitor(AstVisitor<? super P, ? extends R> visitor, P data) {
+        if (visitor instanceof ModelicaVisitor) {
+            return acceptModelicaVisitor((ModelicaVisitor<? super P, ? extends R>) visitor, data);
+        }
+        return visitor.cannotVisit(this, data);
+    }
+
+    protected abstract <P, R> R acceptModelicaVisitor(ModelicaVisitor<? super P, ? extends R> visitor, P data);
 
     @Override
     public String getXPathNodeName() {

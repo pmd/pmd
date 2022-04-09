@@ -48,7 +48,7 @@ public class AvoidDeeplyNestedIfStmtsRule extends AbstractVmRule {
 
     private Object handleIf(VmNode node, Object data) {
         depth++;
-        super.visit(node, data);
+        super.visitVmNode(node, data);
         if (depth == depthLimit) {
             addViolation(data, node);
         }

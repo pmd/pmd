@@ -14,6 +14,6 @@
 
 - [ ] Added unit tests for fixed bug/feature
 - [ ] Passing all unit tests
-- [ ] Complete build `./mvnw clean verify` passes (checked automatically by travis)
+- [ ] Complete build `./mvnw clean verify` passes (checked automatically by github actions)
 - [ ] Added (in-code) documentation (if needed)
 

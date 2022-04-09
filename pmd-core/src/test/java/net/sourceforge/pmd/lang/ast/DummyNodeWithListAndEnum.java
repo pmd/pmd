@@ -8,8 +8,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class DummyNodeWithListAndEnum extends DummyNode {
-    public DummyNodeWithListAndEnum(int id) {
+public class DummyNodeWithListAndEnum extends DummyRoot {
+    public DummyNodeWithListAndEnum() {
         super();
         beginLine = 1;
         beginColumn = 1;

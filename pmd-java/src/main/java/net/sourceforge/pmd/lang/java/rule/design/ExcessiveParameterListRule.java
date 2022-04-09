@@ -1,10 +1,13 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
 package net.sourceforge.pmd.lang.java.rule.design;
 
+import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameters;
+import net.sourceforge.pmd.lang.java.ast.AccessNode.Visibility;
 import net.sourceforge.pmd.lang.java.rule.internal.AbstractJavaCounterCheckRule;
 
 /**
@@ -13,6 +16,7 @@ import net.sourceforge.pmd.lang.java.rule.internal.AbstractJavaCounterCheckRule;
  * topcount and sigma should work.)
  */
 public class ExcessiveParameterListRule extends AbstractJavaCounterCheckRule<ASTFormalParameters> {
+
     public ExcessiveParameterListRule() {
         super(ASTFormalParameters.class);
     }
@@ -23,8 +27,18 @@ public class ExcessiveParameterListRule extends AbstractJavaCounterCheckRule<AST
     }
 
     @Override
-    protected boolean isViolation(ASTFormalParameters node, int reportLevel) {
-        return node.getParameterCount() > reportLevel;
+    protected boolean isIgnored(ASTFormalParameters node) {
+        return areParametersOfPrivateConstructor(node);
     }
 
+    private boolean areParametersOfPrivateConstructor(ASTFormalParameters params) {
+        Node parent = params.getParent();
+        return parent instanceof ASTConstructorDeclaration
+                && ((ASTConstructorDeclaration) parent).getVisibility() == Visibility.V_PRIVATE;
+    }
+
+    @Override
+    protected boolean isViolation(ASTFormalParameters node, int reportLevel) {
+        return node.size() > reportLevel;
+    }
 }

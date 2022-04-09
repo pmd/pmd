@@ -4,19 +4,20 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
+/**
+ * @deprecated Use {@link ASTExpression} inside {@link ASTStatementExpressionList},
+ *     or {@link ASTExpressionStatement} inside {@link ASTBlock}
+ */
+@Deprecated
+public final class ASTStatementExpression extends AbstractJavaTypeNode {
 
-public class ASTStatementExpression extends AbstractJavaTypeNode {
-
-    @InternalApi
-    @Deprecated
-    public ASTStatementExpression(int id) {
+    ASTStatementExpression(int id) {
         super(id);
     }
 
 
     @Override
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
-        return visitor.visit(this, data);
+        throw new UnsupportedOperationException("Node was removed from grammar");
     }
 }

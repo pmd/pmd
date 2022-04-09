@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.apex.rule.documentation;
 
+import static net.sourceforge.pmd.properties.PropertyFactory.booleanProperty;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -23,8 +25,10 @@ import net.sourceforge.pmd.lang.apex.ast.ASTUserInterface;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 public class ApexDocRule extends AbstractApexRule {
+
     private static final Pattern DESCRIPTION_PATTERN = Pattern.compile("@description\\s");
     private static final Pattern RETURN_PATTERN = Pattern.compile("@return\\s");
     private static final Pattern PARAM_PATTERN = Pattern.compile("@param\\s+(\\w+)\\s");
@@ -35,11 +39,33 @@ public class ApexDocRule extends AbstractApexRule {
     private static final String UNEXPECTED_RETURN_MESSAGE = "Unexpected ApexDoc @return";
     private static final String MISMATCHED_PARAM_MESSAGE = "Missing or mismatched ApexDoc @param";
 
+    private static final PropertyDescriptor<Boolean> REPORT_PRIVATE_DESCRIPTOR =
+            booleanProperty("reportPrivate")
+                    .desc("Report private classes, methods and properties").defaultValue(false).build();
+
+    private static final PropertyDescriptor<Boolean> REPORT_PROTECTED_DESCRIPTOR =
+            booleanProperty("reportProtected")
+                    .desc("Report protected classes, methods and properties").defaultValue(false).build();
+
+    private static final PropertyDescriptor<Boolean> REPORT_MISSING_DESCRIPTION_DESCRIPTOR =
+            booleanProperty("reportMissingDescription")
+                .desc("Report missing @description").defaultValue(true).build();
+
+    private static final PropertyDescriptor<Boolean> REPORT_PROPERTY_DESCRIPTOR =
+            booleanProperty("reportProperty")
+                .desc("Report properties without comments").defaultValue(true).build();
+
+    public ApexDocRule() {
+        definePropertyDescriptor(REPORT_PRIVATE_DESCRIPTOR);
+        definePropertyDescriptor(REPORT_PROTECTED_DESCRIPTOR);
+        definePropertyDescriptor(REPORT_MISSING_DESCRIPTION_DESCRIPTOR);
+        definePropertyDescriptor(REPORT_PROPERTY_DESCRIPTOR);
+    }
+
     @Override
     protected @NonNull RuleTargetSelector buildTargetSelector() {
         return RuleTargetSelector.forTypes(ASTUserClass.class, ASTUserInterface.class, ASTMethod.class, ASTProperty.class);
     }
-
 
     @Override
     public Object visit(ASTUserClass node, Object data) {
@@ -63,20 +89,20 @@ public class ApexDocRule extends AbstractApexRule {
         ApexDocComment comment = getApexDocComment(node);
         if (comment == null) {
             if (shouldHaveApexDocs(node)) {
-                addViolationWithMessage(data, node, MISSING_COMMENT_MESSAGE);
+                asCtx(data).addViolationWithMessage(node, MISSING_COMMENT_MESSAGE);
             }
         } else {
-            if (!comment.hasDescription) {
-                addViolationWithMessage(data, node, MISSING_DESCRIPTION_MESSAGE);
+            if (getProperty(REPORT_MISSING_DESCRIPTION_DESCRIPTOR) && !comment.hasDescription) {
+                asCtx(data).addViolationWithMessage(node, MISSING_DESCRIPTION_MESSAGE);
             }
 
             String returnType = node.getReturnType();
             boolean shouldHaveReturn = !(returnType.isEmpty() || "void".equalsIgnoreCase(returnType));
             if (comment.hasReturn != shouldHaveReturn) {
                 if (shouldHaveReturn) {
-                    addViolationWithMessage(data, node, MISSING_RETURN_MESSAGE);
+                    asCtx(data).addViolationWithMessage(node, MISSING_RETURN_MESSAGE);
                 } else {
-                    addViolationWithMessage(data, node, UNEXPECTED_RETURN_MESSAGE);
+                    asCtx(data).addViolationWithMessage(node, UNEXPECTED_RETURN_MESSAGE);
                 }
             }
 
@@ -85,7 +111,7 @@ public class ApexDocRule extends AbstractApexRule {
                     .stream().map(p -> p.getImage()).collect(Collectors.toList());
 
             if (!comment.params.equals(params)) {
-                addViolationWithMessage(data, node, MISMATCHED_PARAM_MESSAGE);
+                asCtx(data).addViolationWithMessage(node, MISMATCHED_PARAM_MESSAGE);
             }
         }
 
@@ -95,13 +121,14 @@ public class ApexDocRule extends AbstractApexRule {
     @Override
     public Object visit(ASTProperty node, Object data) {
         ApexDocComment comment = getApexDocComment(node);
+
         if (comment == null) {
             if (shouldHaveApexDocs(node)) {
-                addViolationWithMessage(data, node, MISSING_COMMENT_MESSAGE);
+                asCtx(data).addViolationWithMessage(node, MISSING_COMMENT_MESSAGE);
             }
         } else {
-            if (!comment.hasDescription) {
-                addViolationWithMessage(data, node, MISSING_DESCRIPTION_MESSAGE);
+            if (getProperty(REPORT_MISSING_DESCRIPTION_DESCRIPTOR) && !comment.hasDescription) {
+                asCtx(data).addViolationWithMessage(node, MISSING_DESCRIPTION_MESSAGE);
             }
         }
 
@@ -112,11 +139,11 @@ public class ApexDocRule extends AbstractApexRule {
         ApexDocComment comment = getApexDocComment(node);
         if (comment == null) {
             if (shouldHaveApexDocs(node)) {
-                addViolationWithMessage(data, node, MISSING_COMMENT_MESSAGE);
+                asCtx(data).addViolationWithMessage(node, MISSING_COMMENT_MESSAGE);
             }
         } else {
-            if (!comment.hasDescription) {
-                addViolationWithMessage(data, node, MISSING_DESCRIPTION_MESSAGE);
+            if (getProperty(REPORT_MISSING_DESCRIPTION_DESCRIPTOR) && !comment.hasDescription) {
+                asCtx(data).addViolationWithMessage(node, MISSING_DESCRIPTION_MESSAGE);
             }
         }
     }
@@ -133,10 +160,18 @@ public class ApexDocRule extends AbstractApexRule {
             }
         }
 
+        // is it a property?
+        if (node instanceof ASTProperty && !getProperty(REPORT_PROPERTY_DESCRIPTOR)) {
+            return false;
+        }
+
         ASTModifierNode modifier = node.getFirstChildOfType(ASTModifierNode.class);
         if (modifier != null) {
-            return (modifier.isPublic() || modifier.isGlobal()) && !modifier.isOverride();
+            boolean flagPrivate = getProperty(REPORT_PRIVATE_DESCRIPTOR) && modifier.isPrivate();
+            boolean flagProtected = getProperty(REPORT_PROTECTED_DESCRIPTOR) && modifier.isProtected();
+            return (modifier.isPublic() || modifier.isGlobal() || flagPrivate || flagProtected) && !modifier.isOverride();
         }
+
         return false;
     }
 
@@ -148,7 +183,7 @@ public class ApexDocRule extends AbstractApexRule {
             boolean hasDescription = DESCRIPTION_PATTERN.matcher(token).find();
             boolean hasReturn = RETURN_PATTERN.matcher(token).find();
 
-            ArrayList<String> params = new ArrayList<>();
+            List<String> params = new ArrayList<>();
             Matcher paramMatcher = PARAM_PATTERN.matcher(token);
             while (paramMatcher.find()) {
                 params.add(paramMatcher.group(1));

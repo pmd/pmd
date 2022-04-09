@@ -42,7 +42,7 @@ public final class ASTReference extends AbstractVmNode {
     }
 
     @Override
-    public Object jjtAccept(final VmParserVisitor visitor, final Object data) {
+    protected <P, R> R acceptVmVisitor(VmVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 
@@ -59,7 +59,7 @@ public final class ASTReference extends AbstractVmNode {
      * Routine to allow the literal representation to be externally overridden.
      * Used now in the VM system to override a reference in a VM tree with the
      * literal of the calling arg to make it work nicely when calling arg is
-     * null. It seems a bit much, but does keep things consistant.
+     * null. It seems a bit much, but does keep things consistent.
      *
      * <p>Note, you can only set the literal once...
      *

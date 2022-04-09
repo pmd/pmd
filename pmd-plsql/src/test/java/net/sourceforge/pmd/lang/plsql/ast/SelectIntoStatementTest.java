@@ -4,8 +4,11 @@
 
 package net.sourceforge.pmd.lang.plsql.ast;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import org.junit.Test;
 
+import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.plsql.AbstractPLSQLParserTst;
 
 public class SelectIntoStatementTest extends AbstractPLSQLParserTst {
@@ -38,6 +41,11 @@ public class SelectIntoStatementTest extends AbstractPLSQLParserTst {
     @Test
     public void testParsingExample5() {
         plsql.parseResource("SelectIntoStatementExample5.pls");
+    }
+
+    @Test
+    public void testParsingExample6Invalid() {
+        assertThrows(ParseException.class, () -> plsql.parseResource("SelectIntoStatementExample6Invalid.pls"));
     }
 
     @Test

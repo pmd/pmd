@@ -4,14 +4,14 @@
 
 package net.sourceforge.pmd.lang.vf.ast;
 
-public final class ASTLiteral extends AbstractVfNode {
+public final class ASTLiteral extends AbstractVFDataNode {
 
     ASTLiteral(int id) {
         super(id);
     }
 
     @Override
-    public Object jjtAccept(VfParserVisitor visitor, Object data) {
+    protected <P, R> R acceptVfVisitor(VfVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 }

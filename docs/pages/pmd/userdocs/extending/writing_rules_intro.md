@@ -120,6 +120,11 @@ Example:
 </rule>
 ```
 
+{% include note.html content="In PMD 7, the `language` attribute will be required on all `rule`
+    elements that declare a new rule. Some base rule classes set the language implicitly in their
+    constructor, and so this is not required in all cases for the rule to work. But this
+    behavior will be discontinued in PMD 7, so missing `language` attributes are
+    reported beginning with PMD 6.27.0 as a forward compatibility warning." %}
 
 ## Resource index
 

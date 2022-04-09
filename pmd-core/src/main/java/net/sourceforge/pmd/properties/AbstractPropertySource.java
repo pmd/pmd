@@ -10,10 +10,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-
-import net.sourceforge.pmd.util.CollectionUtil;
 
 
 /**
@@ -79,12 +75,6 @@ public abstract class AbstractPropertySource implements PropertySource {
     @Deprecated
     protected Map<PropertyDescriptor<?>, Object> copyPropertyValues() {
         return new HashMap<>(propertyValuesByDescriptor);
-    }
-
-    @Override
-    @Deprecated
-    public Set<PropertyDescriptor<?>> ignoredProperties() {
-        return Collections.emptySet();
     }
 
 
@@ -210,32 +200,6 @@ public abstract class AbstractPropertySource implements PropertySource {
     }
 
 
-    @Override
-    @Deprecated
-    public boolean usesDefaultValues() {
-
-        Map<PropertyDescriptor<?>, Object> valuesByProperty = getPropertiesByPropertyDescriptor();
-        if (valuesByProperty.isEmpty()) {
-            return true;
-        }
-
-        for (Entry<PropertyDescriptor<?>, Object> entry : valuesByProperty.entrySet()) {
-            if (!CollectionUtil.areEqual(entry.getKey().defaultValue(), entry.getValue())) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-
-    @Override
-    @Deprecated
-    public void useDefaultValueFor(PropertyDescriptor<?> desc) {
-        propertyValuesByDescriptor.remove(desc);
-    }
-
-
     // todo Java 8 move up to interface
     @Override
     public String dysfunctionReason() {
@@ -252,4 +216,5 @@ public abstract class AbstractPropertySource implements PropertySource {
     private <T> String errorForPropCapture(PropertyDescriptor<T> descriptor) {
         return descriptor.errorFor(getProperty(descriptor));
     }
+
 }

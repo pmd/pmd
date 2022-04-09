@@ -4,13 +4,11 @@
 
 package net.sourceforge.pmd.lang.plsql.rule;
 
-import java.util.logging.Logger;
 
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.lang.ast.AstProcessingStage;
+import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.plsql.PLSQLLanguageModule;
-import net.sourceforge.pmd.lang.plsql.PlsqlProcessingStage;
 import net.sourceforge.pmd.lang.plsql.ast.ASTInput;
 import net.sourceforge.pmd.lang.plsql.ast.ASTPackageBody;
 import net.sourceforge.pmd.lang.plsql.ast.ASTPackageSpecification;
@@ -18,18 +16,18 @@ import net.sourceforge.pmd.lang.plsql.ast.ASTProgramUnit;
 import net.sourceforge.pmd.lang.plsql.ast.ASTTriggerUnit;
 import net.sourceforge.pmd.lang.plsql.ast.ASTTypeSpecification;
 import net.sourceforge.pmd.lang.plsql.ast.ExecutableCode;
-import net.sourceforge.pmd.lang.plsql.ast.PLSQLNode;
 import net.sourceforge.pmd.lang.plsql.ast.PLSQLParserVisitor;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
-import net.sourceforge.pmd.lang.rule.ImmutableLanguage;
 
-public abstract class AbstractPLSQLRule extends AbstractRule implements PLSQLParserVisitor, ImmutableLanguage {
-    private static final Logger LOGGER = Logger.getLogger(AbstractPLSQLRule.class.getName());
-    private static final String CLASS_NAME = AbstractPLSQLRule.class.getName();
+public abstract class AbstractPLSQLRule extends AbstractRule implements PLSQLParserVisitor {
+
+    public AbstractPLSQLRule() {
+        super.setLanguage(LanguageRegistry.getLanguage(PLSQLLanguageModule.NAME));
+    }
 
     @Override
     public void apply(Node target, RuleContext ctx) {
-        ((PLSQLNode) target).jjtAccept(this, ctx);
+        target.acceptVisitor(this, ctx);
     }
 
     /**
@@ -82,20 +80,10 @@ public abstract class AbstractPLSQLRule extends AbstractRule implements PLSQLPar
         return false;
     }
 
-
-    @Override
-    public boolean dependsOn(AstProcessingStage<?> stage) {
-        if (!(stage instanceof PlsqlProcessingStage)) {
-            throw new IllegalArgumentException("Processing stage wasn't a " + PLSQLLanguageModule.NAME + " one: " + stage);
-        }
-        return stage != PlsqlProcessingStage.DFA;
-    }
-
     /*
      * Treat all Executable Code
      */
     public Object visit(ExecutableCode node, Object data) {
-        LOGGER.entering(CLASS_NAME, "visit(ExecutableCode)");
-        return visit((PLSQLNode) node, data);
+        return visitPlsqlNode(node, data);
     }
 }

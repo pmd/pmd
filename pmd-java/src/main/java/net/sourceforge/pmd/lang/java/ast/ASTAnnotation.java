@@ -4,97 +4,99 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.Iterator;
 
-import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.annotation.InternalApi;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.annotation.DeprecatedUntil700;
+import net.sourceforge.pmd.lang.ast.NodeStream;
+import net.sourceforge.pmd.lang.java.types.JClassType;
 
 /**
- * Represents an annotation. This node has three possible children,
- * that correspond to specific syntactic variants.
+ * Represents an annotation.
  *
- * <pre>
+ * <pre class="grammar">
  *
- * Annotation ::= {@linkplain ASTNormalAnnotation NormalAnnotation}
- *              | {@linkplain ASTSingleMemberAnnotation SingleMemberAnnotation}
- *              | {@linkplain ASTMarkerAnnotation MarkerAnnotation}
+ * Annotation ::= "@" {@link ASTClassOrInterfaceType ClassName} {@link ASTAnnotationMemberList AnnotationMemberList}?
  *
  * </pre>
  */
-public class ASTAnnotation extends AbstractJavaTypeNode {
+public final class ASTAnnotation extends AbstractJavaTypeNode implements TypeNode, ASTMemberValue, Iterable<ASTMemberValuePair> {
 
-    private static final List<String> UNUSED_RULES
-        = Arrays.asList("UnusedPrivateField", "UnusedLocalVariable", "UnusedPrivateMethod", "UnusedFormalParameter", "UnusedAssignment");
-
-    private static final List<String> SERIAL_RULES = Arrays.asList("BeanMembersShouldSerialize", "MissingSerialVersionUID");
-
-    @InternalApi
-    @Deprecated
-    public ASTAnnotation(int id) {
+    ASTAnnotation(int id) {
         super(id);
     }
 
 
     /**
+     * Returns the node that represents the name of the annotation.
+     */
+    public ASTClassOrInterfaceType getTypeNode() {
+        return (ASTClassOrInterfaceType) getChild(0);
+    }
+
+    @Override
+    public @NonNull JClassType getTypeMirror() {
+        return (JClassType) super.getTypeMirror();
+    }
+
+    /**
      * Returns the name of the annotation as it is used,
      * eg {@code java.lang.Override} or {@code Override}.
+     *
+     * @deprecated Use {@link #getTypeMirror()} instead
      */
+    @Deprecated
+    @DeprecatedUntil700
     public String getAnnotationName() {
-        return getChild(0).getChild(0).getImage();
+        return (String) getTypeNode().getText();
     }
 
-    // @formatter:off
     /**
-     * Returns true if this annotation suppresses the given rule.
-     * The suppression annotation is {@link SuppressWarnings}.
-     * This method returns true if this annotation is a SuppressWarnings,
-     * and if the set of suppressed warnings ({@link SuppressWarnings#value()})
-     * contains at least one of those:
-     * <ul>
-     *     <li>"PMD" (suppresses all rules);
-     *     <li>"PMD.rulename", where rulename is the name of the given rule;
-     *     <li>"all" (conventional value to suppress all warnings).
-     * </ul>
-     *
-     * <p>Additionally, the following values suppress a specific set of rules:
-     * <ul>
-     *     <li>{@code "unused"}: suppresses rules like UnusedLocalVariable or UnusedPrivateField;
-     *     <li>{@code "serial"}: suppresses BeanMembersShouldSerialize and MissingSerialVersionUID;
-     * </ul>
-     *
-     * @param rule The rule for which to check for suppression
-     *
-     * @return True if this annotation suppresses the given rule
+     * Returns the simple name of the annotation.
      */
-    // @formatter:on
-    public boolean suppresses(Rule rule) {
-
-        if (getChild(0) instanceof ASTMarkerAnnotation) {
-            return false;
-        }
-
-        // if (SuppressWarnings.class.equals(getType())) { // typeres is not always on
-        if (isSuppressWarnings()) {
-            for (ASTLiteral element : findDescendantsOfType(ASTLiteral.class)) {
-                if (element.hasImageEqualTo("\"PMD\"") || element.hasImageEqualTo("\"PMD." + rule.getName() + "\"")
-                    // Check for standard annotations values
-                    || element.hasImageEqualTo("\"all\"")
-                    || element.hasImageEqualTo("\"serial\"") && SERIAL_RULES.contains(rule.getName())
-                    || element.hasImageEqualTo("\"unused\"") && UNUSED_RULES.contains(rule.getName())) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
+    public String getSimpleName() {
+        return getTypeNode().getSimpleName();
     }
 
 
-    private boolean isSuppressWarnings() {
-        return "SuppressWarnings".equals(getAnnotationName())
-            || "java.lang.SuppressWarnings".equals(getAnnotationName());
+    /**
+     * Returns the list of members, or null if there is none.
+     */
+    public @Nullable ASTAnnotationMemberList getMemberList() {
+        return children().first(ASTAnnotationMemberList.class);
+    }
+
+    /**
+     * Returns the stream of explicit members for this annotation.
+     */
+    public NodeStream<ASTMemberValuePair> getMembers() {
+        return children(ASTAnnotationMemberList.class).children(ASTMemberValuePair.class);
+    }
+
+
+    @Override
+    public Iterator<ASTMemberValuePair> iterator() {
+        return children(ASTMemberValuePair.class).iterator();
+    }
+
+    /**
+     * Return the expression values for the attribute with the given name.
+     * This may flatten an array initializer. For example, for the attribute
+     * named "value":
+     * <pre>{@code
+     * - @SuppressWarnings -> returns empty node stream
+     * - @SuppressWarning("fallthrough") -> returns ["fallthrough"]
+     * - @SuppressWarning(value={"fallthrough"}) -> returns ["fallthrough"]
+     * - @SuppressWarning({"fallthrough", "rawtypes"}) -> returns ["fallthrough", "rawtypes"]
+     * }</pre>
+     */
+    public NodeStream<ASTMemberValue> getValuesForName(String attrName) {
+        return getMembers().filter(pair -> pair.getName().equals(attrName))
+                           .map(ASTMemberValuePair::getValue)
+                           .flatMap(v -> v instanceof ASTMemberValueArrayInitializer ? v.children(ASTMemberValue.class)
+                                                                                     : NodeStream.of(v));
     }
 
 
@@ -102,4 +104,5 @@ public class ASTAnnotation extends AbstractJavaTypeNode {
     public <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
+
 }

@@ -4,36 +4,32 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import java.util.Collections;
 import java.util.List;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-import net.sourceforge.pmd.internal.util.IteratorUtil;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.ast.NodeStream;
 
 
 /**
- * Represents class and interface declarations. This is a {@linkplain Node#isFindBoundary() find boundary}
- * for tree traversal methods.
+ * Represents class and interface declarations.
+ * This is a {@linkplain Node#isFindBoundary() find boundary} for tree traversal methods.
  *
  * <pre class="grammar">
  *
- * ClassOrInterfaceDeclaration ::= ( "class" | "interface" )
+ * ClassOrInterfaceDeclaration ::= {@link ASTModifierList ModifierList}
+ *                                 ( "class" | "interface" )
  *                                 &lt;IDENTIFIER&gt;
- *                                 {@linkplain ASTTypeParameters TypeParameters}?
- *                                 {@linkplain ASTExtendsList ExtendsList}?
- *                                 {@linkplain ASTImplementsList ImplementsList}?
- *                                 {@linkplain ASTClassOrInterfaceBody ClassOrInterfaceBody}
+ *                                 {@link ASTTypeParameters TypeParameters}?
+ *                                 {@link ASTExtendsList ExtendsList}?
+ *                                 {@link ASTImplementsList ImplementsList}?
+ *                                 {@link ASTClassOrInterfaceBody ClassOrInterfaceBody}
+ *
  * </pre>
  */
-public class ASTClassOrInterfaceDeclaration extends AbstractAnyTypeDeclaration {
+public final class ASTClassOrInterfaceDeclaration extends AbstractAnyTypeDeclaration {
 
     private boolean isInterface;
 
-    @InternalApi
-    @Deprecated
-    public ASTClassOrInterfaceDeclaration(int id) {
+    ASTClassOrInterfaceDeclaration(int id) {
         super(id);
     }
 
@@ -47,25 +43,23 @@ public class ASTClassOrInterfaceDeclaration extends AbstractAnyTypeDeclaration {
         return super.isPackagePrivate() && !isLocal();
     }
 
+    @Override
     public boolean isInterface() {
         return this.isInterface;
     }
 
-    @InternalApi
-    @Deprecated
-    public void setInterface() {
+    @Override
+    public boolean isRegularClass() {
+        return !isInterface;
+    }
+
+    @Override
+    public boolean isRegularInterface() {
+        return isInterface;
+    }
+
+    void setInterface() {
         this.isInterface = true;
-    }
-
-    @Override
-    public TypeKind getTypeKind() {
-        return isInterface() ? TypeKind.INTERFACE : TypeKind.CLASS;
-    }
-
-
-    @Override
-    public NodeStream<ASTAnyTypeBodyDeclaration> getDeclarations() {
-        return children(ASTClassOrInterfaceBody.class).children(ASTAnyTypeBodyDeclaration.class);
     }
 
 
@@ -86,18 +80,7 @@ public class ASTClassOrInterfaceDeclaration extends AbstractAnyTypeDeclaration {
     }
 
 
-    /**
-     * Returns the interfaces implemented by this class, or
-     * extended by this interface. Returns an empty list if
-     * none is specified.
-     */
-    public List<ASTClassOrInterfaceType> getSuperInterfacesTypeNodes() {
-
-        Iterable<ASTClassOrInterfaceType> it = isInterface()
-                                               ? getFirstChildOfType(ASTExtendsList.class)
-                                               : getFirstChildOfType(ASTImplementsList.class);
-
-        return it == null ? Collections.emptyList() : IteratorUtil.toList(it.iterator());
+    public List<ASTClassOrInterfaceType> getPermittedSubclasses() {
+        return ASTList.orEmpty(children(ASTPermitsList.class).first());
     }
-
 }

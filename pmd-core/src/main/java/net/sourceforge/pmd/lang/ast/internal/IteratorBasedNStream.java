@@ -104,6 +104,9 @@ abstract class IteratorBasedNStream<T extends Node> implements NodeStream<T> {
 
     @Override
     public @Nullable T get(int n) {
+        if (n == 0) {
+            return first();
+        }
         return IteratorUtil.getNth(iterator(), n);
     }
 
@@ -117,6 +120,12 @@ abstract class IteratorBasedNStream<T extends Node> implements NodeStream<T> {
     public NodeStream<T> take(int maxSize) {
         AssertionUtil.requireNonNegative("maxSize", maxSize);
         return maxSize == 0 ? NodeStream.empty() : mapIter(iter -> IteratorUtil.take(iter, maxSize));
+    }
+
+    @Override
+    public NodeStream<T> dropLast(int n) {
+        AssertionUtil.requireNonNegative("n", n);
+        return n == 0 ? this : mapIter(iter -> IteratorUtil.dropLast(iter, n));
     }
 
     @Override
@@ -231,7 +240,7 @@ abstract class IteratorBasedNStream<T extends Node> implements NodeStream<T> {
             + "]";
     }
 
-    private class IteratorMapping<S extends Node> extends IteratorBasedNStream<S> {
+    private final class IteratorMapping<S extends Node> extends IteratorBasedNStream<S> {
 
         private final Function<Iterator<T>, Iterator<S>> fun;
 

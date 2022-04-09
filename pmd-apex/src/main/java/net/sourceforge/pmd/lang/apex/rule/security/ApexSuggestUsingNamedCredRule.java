@@ -118,7 +118,7 @@ public class ApexSuggestUsingNamedCredRule extends AbstractApexRule {
     private boolean isAuthorizationLiteral(final ASTLiteralExpression literal) {
         if (literal.isString()) {
             String lit = literal.getImage();
-            if (lit.equalsIgnoreCase(AUTHORIZATION)) {
+            if (AUTHORIZATION.equalsIgnoreCase(lit)) {
                 return true;
             }
         }

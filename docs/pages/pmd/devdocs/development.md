@@ -18,7 +18,7 @@ The complete source code can be found on github:
 
 ## Continuous Integration
 
-We use [Travis CI](https://travis-ci.org/pmd) as our ci service. The main repo and the eclipse plugin are built for
+We use [Travis CI](https://travis-ci.com/pmd) as our ci service. The main repo and the eclipse plugin are built for
 every push. Each pull request is built as well.
 
 The maven snapshot artifacts are deployed at [Sonatypes OSS snapshot repository](https://oss.sonatype.org/content/repositories/snapshots/net/sourceforge/pmd/pmd/).

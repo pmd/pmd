@@ -7,7 +7,7 @@ package net.sourceforge.pmd.lang.java.rule.codestyle;
 import java.util.regex.Pattern;
 
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
-import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.properties.PropertyBuilder.RegexPropertyBuilder;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
@@ -24,10 +24,15 @@ import net.sourceforge.pmd.util.StringUtil.CaseConvention;
  * @author Clément Fournier
  * @since 6.5.0
  */
-abstract class AbstractNamingConventionRule<T extends JavaNode> extends AbstractJavaRule {
+abstract class AbstractNamingConventionRule<T extends JavaNode> extends AbstractJavaRulechainRule {
 
     static final String CAMEL_CASE = "[a-z][a-zA-Z0-9]*";
     static final String PASCAL_CASE = "[A-Z][a-zA-Z0-9]*";
+
+    @SafeVarargs
+    protected AbstractNamingConventionRule(Class<? extends JavaNode> first, Class<? extends JavaNode>... visits) {
+        super(first, visits);
+    }
 
     /** The argument is interpreted as the display name, and is converted to camel case to get the property name. */
     RegexPropertyBuilder defaultProp(String displayName) {
@@ -49,9 +54,7 @@ abstract class AbstractNamingConventionRule<T extends JavaNode> extends Abstract
     abstract String kindDisplayName(T node, PropertyDescriptor<Pattern> descriptor);
 
     /** Extracts the name that should be pattern matched. */
-    String nameExtractor(T node) {
-        return node.getImage();
-    }
+    abstract String nameExtractor(T node);
 
 
     void checkMatches(T node, PropertyDescriptor<Pattern> regex, Object data) {

@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 /**
  * Represents a boolean AND-expression. This has a precedence greater than {@link ASTConditionalOrExpression},
  * and lower than {@link ASTInclusiveOrExpression}.
@@ -14,23 +12,23 @@ import net.sourceforge.pmd.annotation.InternalApi;
  * rather, they are expressions with an operator precedence greater or equal to InclusiveOrExpression.
  *
  *
- * <pre>
+ * <pre class="grammar">
  *
- * ConditionalAndExpression ::=  {@linkplain ASTInclusiveOrExpression InclusiveOrExpression} ( "&&" {@linkplain ASTInclusiveOrExpression InclusiveOrExpression} )+
+ * ConditionalAndExpression ::=  {@linkplain ASTInclusiveOrExpression InclusiveOrExpression} ( "&amp;&amp;" {@linkplain ASTInclusiveOrExpression InclusiveOrExpression} )+
  *
  * </pre>
+ *
+ * @deprecated Replaced with {@link ASTInfixExpression}
  */
-public class ASTConditionalAndExpression extends AbstractJavaTypeNode {
-
-    @InternalApi
-    @Deprecated
-    public ASTConditionalAndExpression(int id) {
+@Deprecated
+public final class ASTConditionalAndExpression extends AbstractJavaExpr implements ASTExpression {
+    ASTConditionalAndExpression(int id) {
         super(id);
     }
 
 
     @Override
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
-        return visitor.visit(this, data);
+        throw new UnsupportedOperationException("Node was removed from grammar");
     }
 }

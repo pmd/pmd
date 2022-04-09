@@ -31,14 +31,14 @@ import net.sourceforge.pmd.lang.ast.internal.GreedyNStream.GreedyKnownNStream;
 
 public final class StreamImpl {
 
-    @SuppressWarnings("rawtypes")
+    @SuppressWarnings({"rawtypes", "PMD.UseDiamondOperator"})
     private static final DescendantNodeStream EMPTY = new EmptyNodeStream();
 
     private StreamImpl() {
         // utility class
     }
 
-    public static <T extends Node> NodeStream<T> singleton(@NonNull T node) {
+    public static <T extends Node> DescendantNodeStream<T> singleton(@NonNull T node) {
         return new SingletonNodeStream<>(node);
     }
 
@@ -88,7 +88,7 @@ public final class StreamImpl {
     }
 
     public static DescendantNodeStream<Node> descendantsOrSelf(@NonNull Node node) {
-        return node.getNumChildren() == 0 ? empty() : new DescendantOrSelfStream(node, TreeWalker.DEFAULT);
+        return node.getNumChildren() == 0 ? singleton(node) : new DescendantOrSelfStream(node, TreeWalker.DEFAULT);
     }
 
     public static NodeStream<Node> followingSiblings(@NonNull Node node) {
@@ -119,7 +119,7 @@ public final class StreamImpl {
 
         if (length == 0) {
             return empty();
-        } else if (filtermap == Filtermap.NODE_IDENTITY) {
+        } else if (filtermap == Filtermap.NODE_IDENTITY) { // NOPMD CompareObjectsWithEquals
             @SuppressWarnings("unchecked")
             NodeStream<T> res = length == 1 ? (NodeStream<T>) singleton(parent.getChild(from))
                                            : (NodeStream<T>) new ChildrenStream(parent, from, length);
@@ -142,12 +142,18 @@ public final class StreamImpl {
     static <T extends Node> NodeStream<T> ancestorsOrSelf(@Nullable Node node, Filtermap<Node, ? extends T> target) {
         if (node == null) {
             return empty();
-        } else if (node.getParent() == null) {
-            T apply = target.apply(node);
-            return apply != null ? singleton(apply) : empty();
         }
-        return target == Filtermap.NODE_IDENTITY ? (NodeStream<T>) new AncestorOrSelfStream(node)
-                                                 : new FilteredAncestorOrSelfStream<>(node, target);
+
+        if (target == Filtermap.NODE_IDENTITY) { // NOPMD CompareObjectsWithEquals
+            return (NodeStream<T>) new AncestorOrSelfStream(node);
+        }
+
+        T first = TraversalUtils.getFirstParentOrSelfMatching(node, target);
+        if (first == null) {
+            return empty();
+        }
+
+        return new FilteredAncestorOrSelfStream<>(first, target);
     }
 
     public static NodeStream<Node> ancestors(@NonNull Node node) {
@@ -173,7 +179,7 @@ public final class StreamImpl {
     }
 
 
-    private static class EmptyNodeStream<N extends Node> extends IteratorBasedNStream<N> implements DescendantNodeStream<N> {
+    private static final class EmptyNodeStream<N extends Node> extends IteratorBasedNStream<N> implements DescendantNodeStream<N> {
 
         @Override
         protected <R extends Node> NodeStream<R> mapIter(Function<Iterator<N>, Iterator<R>> fun) {

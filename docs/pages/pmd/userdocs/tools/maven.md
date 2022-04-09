@@ -26,17 +26,17 @@ report additionally in `<reporting><plugins/></reporting>` elements. Here's an e
 section:
 
 ```xml
-    <build>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-pmd-plugin</artifactId>
-                    <version>{{ page.mpmd_version }}</version>
-                </plugin>
-            </plugins>
-        </pluginManagement>
-    </build>
+<build>
+    <pluginManagement>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-pmd-plugin</artifactId>
+                <version>{{ page.mpmd_version }}</version>
+            </plugin>
+        </plugins>
+    </pluginManagement>
+</build>
 ```
 
 When defining the version in the pluginManagment section, then it doesn't need to be specified in the normal plugins
@@ -123,22 +123,22 @@ To specify a ruleset, simply edit the previous configuration:
 
 
 ``` xml
-    <reporting>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-pmd-plugin</artifactId>
-                <version>{{ page.mpmd_version }}</version>
-                <configuration>
-                    <rulesets>
-                        <ruleset>/rulesets/java/quickstart.xml</ruleset>
-                        <ruleset>d:\rulesets\my-ruleset.xml</ruleset>
-                        <ruleset>http://localhost/design.xml</ruleset>
-                    </rulesets>
-                </configuration>
-            </plugin>
-        </plugins>
-    </reporting>
+<reporting>
+    <plugins>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-pmd-plugin</artifactId>
+            <version>{{ page.mpmd_version }}</version>
+            <configuration>
+                <rulesets>
+                    <ruleset>/rulesets/java/quickstart.xml</ruleset>
+                    <ruleset>d:\rulesets\my-ruleset.xml</ruleset>
+                    <ruleset>http://localhost/design.xml</ruleset>
+                </rulesets>
+            </configuration>
+        </plugin>
+    </plugins>
+</reporting>
 ```
 
 The value of the 'ruleset' element can either be a relative address, an absolute address or even an url.
@@ -156,17 +156,17 @@ When using the Maven PMD plugin 3.8 or later along with PMD 5.6.0 or later, you 
 speed up PMD's execution while retaining the quality of the analysis. You can additionally customize where the cache is stored::
 
 ```xml
-    <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-pmd-plugin</artifactId>
-        <version>{{ page.mpmd_version }}</version> <!-- or use version from pluginManagement -->
-        <configuration>
-            <!-- enable incremental analysis -->
-            <analysisCache>true</analysisCache>
-            <!-- analysisCacheLocation: optional - points to the following location by default -->
-            <analysisCacheLocation>${project.build.directory}/pmd/pmd.cache</analysisCacheLocation>
-        </configuration>
-    </plugin>
+<plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-pmd-plugin</artifactId>
+    <version>{{ page.mpmd_version }}</version> <!-- or use version from pluginManagement -->
+    <configuration>
+        <!-- enable incremental analysis -->
+        <analysisCache>true</analysisCache>
+        <!-- analysisCacheLocation: optional - points to the following location by default -->
+        <analysisCacheLocation>${project.build.directory}/pmd/pmd.cache</analysisCacheLocation>
+    </configuration>
+</plugin>
 ```
 
 #### Other configurations
@@ -175,17 +175,17 @@ The Maven PMD plugin allows you to configure CPD, targetJDK, and the use of XRef
 the report to html source files, and the file encoding:
 
 ```xml
-    <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-pmd-plugin</artifactId>
-        <version>{{ page.mpmd_version }}</version> <!-- or use version from pluginManagement -->
-        <configuration>
-            <linkXRef>true</linkXRef>
-            <sourceEncoding>ISO-8859-1</sourceEncoding>
-            <minimumTokens>30</minimumTokens>
-            <targetJdk>1.4</targetJdk>
-        </configuration>
-    </plugin>
+<plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-pmd-plugin</artifactId>
+    <version>{{ page.mpmd_version }}</version> <!-- or use version from pluginManagement -->
+    <configuration>
+        <linkXRef>true</linkXRef>
+        <sourceEncoding>ISO-8859-1</sourceEncoding>
+        <minimumTokens>30</minimumTokens>
+        <targetJdk>1.4</targetJdk>
+    </configuration>
+</plugin>
 ```
 
 #### Upgrading the PMD version at runtime

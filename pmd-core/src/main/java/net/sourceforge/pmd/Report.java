@@ -1,102 +1,55 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
 package net.sourceforge.pmd;
 
-import java.io.File;
+import static java.util.Collections.synchronizedList;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
+import java.util.function.Consumer;
 
-import org.apache.commons.lang3.StringUtils;
-
-import net.sourceforge.pmd.lang.dfa.report.ReportTree;
+import net.sourceforge.pmd.annotation.DeprecatedUntil700;
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.renderers.AbstractAccumulatingRenderer;
-import net.sourceforge.pmd.util.DateTimeUtil;
-import net.sourceforge.pmd.util.NumericConstants;
+import net.sourceforge.pmd.reporting.FileAnalysisListener;
+import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
+import net.sourceforge.pmd.util.BaseResultProducingCloseable;
+import net.sourceforge.pmd.util.datasource.DataSource;
 
 /**
  * A {@link Report} collects all informations during a PMD execution. This
  * includes violations, suppressed violations, metrics, error during processing
  * and configuration errors.
+ *
+ * <p>A report may be created by a {@link GlobalReportBuilderListener} that you
+ * use as the {@linkplain GlobalAnalysisListener} in {@link PmdAnalysis#performAnalysisAndCollectReport() PMD's entry point}.
+ * You can also create one manually with {@link #buildReport(Consumer)}.
  */
-public class Report implements Iterable<RuleViolation> {
+public final class Report {
+    // todo move to package reporting
 
-    /*
-     * The idea is to store the violations in a tree instead of a list, to do
-     * better and faster sort and filter mechanism and to visualize the result
-     * as tree. (ide plugins).
-     */
-    private final ReportTree violationTree = new ReportTree();
+    private final List<RuleViolation> violations = synchronizedList(new ArrayList<>());
+    private final List<SuppressedViolation> suppressedRuleViolations = synchronizedList(new ArrayList<>());
+    private final List<ProcessingError> errors = synchronizedList(new ArrayList<>());
+    private final List<ConfigurationError> configErrors = synchronizedList(new ArrayList<>());
 
-    // Note that this and the above data structure are both being maintained for
-    // a bit
-    private final List<RuleViolation> violations = new ArrayList<>();
-    private final List<ThreadSafeReportListener> listeners = new ArrayList<>();
-    private List<ProcessingError> errors;
-    private List<ConfigurationError> configErrors;
-    private long start;
-    private long end;
-    private List<SuppressedViolation> suppressedRuleViolations = new ArrayList<>();
-
-    /**
-     * Creates a new, initialized, empty report for the given file name.
-     *
-     * @param ctx
-     *            The context to use to connect to the report
-     * @param fileName
-     *            the filename used to report any violations
-     * @return the new report
-     */
-    public static Report createReport(RuleContext ctx, String fileName) {
-        Report report = new Report();
-
-        // overtake the listener
-        report.addListeners(ctx.getReport().getListeners());
-
-        ctx.setReport(report);
-        ctx.setSourceCodeFile(new File(fileName));
-        return report;
-    }
-
-    /**
-     * Represents a duration. Useful for reporting processing time.
-     */
-    public static class ReadableDuration {
-        private final long duration;
-
-        /**
-         * Creates a new duration.
-         *
-         * @param duration
-         *            the duration in milliseconds.
-         */
-        public ReadableDuration(long duration) {
-            this.duration = duration;
-        }
-
-        /**
-         * Gets a human readable representation of the duration, such as "1h 3m
-         * 5s".
-         *
-         * @return human readable representation of the duration
-         */
-        public String getTime() {
-            return DateTimeUtil.asHoursMinutesSeconds(duration);
-        }
+    @DeprecatedUntil700
+    @InternalApi
+    public Report() { // NOPMD - UnnecessaryConstructor
+        // TODO: should be package-private, you have to use a listener to build a report.
     }
 
     /**
      * Represents a configuration error.
      */
     public static class ConfigurationError {
+
         private final Rule rule;
         private final String issue;
 
@@ -136,6 +89,7 @@ public class Report implements Iterable<RuleViolation> {
      * Represents a processing error, such as a parse error.
      */
     public static class ProcessingError {
+
         private final Throwable error;
         private final String file;
 
@@ -158,7 +112,7 @@ public class Report implements Iterable<RuleViolation> {
 
         public String getDetail() {
             try (StringWriter stringWriter = new StringWriter();
-                    PrintWriter writer = new PrintWriter(stringWriter)) {
+                 PrintWriter writer = new PrintWriter(stringWriter)) {
                 error.printStackTrace(writer);
                 return stringWriter.toString();
             } catch (IOException e) {
@@ -176,69 +130,11 @@ public class Report implements Iterable<RuleViolation> {
         }
     }
 
-
-    private static String keyFor(RuleViolation rv) {
-
-        return StringUtils.isNotBlank(rv.getPackageName()) ? rv.getPackageName() + '.' + rv.getClassName() : "";
-    }
-
-    /**
-     * Calculate a summary of violation counts per fully classified class name.
-     *
-     * @return violations per class name
-     */
-    public Map<String, Integer> getCountSummary() {
-        Map<String, Integer> summary = new HashMap<>();
-        for (RuleViolation rv : violationTree) {
-            String key = keyFor(rv);
-            Integer o = summary.get(key);
-            summary.put(key, o == null ? NumericConstants.ONE : o + 1);
-        }
-        return summary;
-    }
-
-    public ReportTree getViolationTree() {
-        return this.violationTree;
-    }
-
-    /**
-     * Calculate a summary of violations per rule.
-     *
-     * @return a Map summarizing the Report: String (rule name) -&gt; Integer (count
-     *         of violations)
-     */
-    public Map<String, Integer> getSummary() {
-        Map<String, Integer> summary = new HashMap<>();
-        for (RuleViolation rv : violations) {
-            String name = rv.getRule().getName();
-            if (!summary.containsKey(name)) {
-                summary.put(name, NumericConstants.ZERO);
-            }
-            Integer count = summary.get(name);
-            summary.put(name, count + 1);
-        }
-        return summary;
-    }
-
-    /**
-     * Registers a report listener
-     *
-     * @param listener
-     *            the listener
-     */
-    public void addListener(ThreadSafeReportListener listener) {
-        listeners.add(listener);
-    }
-
-    public List<SuppressedViolation> getSuppressedRuleViolations() {
-        return suppressedRuleViolations;
-    }
-
     /**
      * Represents a violation, that has been suppressed.
-     * TODO this should implement RuleViolation
      */
     public static class SuppressedViolation {
+
         private final RuleViolation rv;
         private final String userMessage;
         private final ViolationSuppressor suppressor;
@@ -269,36 +165,41 @@ public class Report implements Iterable<RuleViolation> {
         }
     }
 
-
-    public void addSuppressedViolation(SuppressedViolation sv) {
-        suppressedRuleViolations.add(sv);
-    }
-
     /**
      * Adds a new rule violation to the report and notify the listeners.
      *
-     * @param violation
-     *            the violation to add
+     * @param violation the violation to add
+     *
+     * @deprecated PMD's way of creating a report is internal and may be changed in pmd 7.
      */
+    @DeprecatedUntil700
+    @Deprecated
+    @InternalApi
     public void addRuleViolation(RuleViolation violation) {
-        int index = Collections.binarySearch(violations, violation, RuleViolationComparator.INSTANCE);
-        violations.add(index < 0 ? -index - 1 : index, violation);
-        violationTree.addRuleViolation(violation);
-        for (ThreadSafeReportListener listener : listeners) {
-            listener.ruleViolationAdded(violation);
+        synchronized (violations) {
+            int index = Collections.binarySearch(violations, violation, RuleViolation.DEFAULT_COMPARATOR);
+            violations.add(index < 0 ? -index - 1 : index, violation);
         }
+    }
+
+    /**
+     * Adds a new suppressed violation.
+     */
+    private void addSuppressedViolation(SuppressedViolation sv) {
+        suppressedRuleViolations.add(sv);
     }
 
     /**
      * Adds a new configuration error to the report.
      *
-     * @param error
-     *            the error to add
+     * @param error the error to add
+     *
+     * @deprecated PMD's way of creating a report is internal and may be changed in pmd 7.
      */
+    @DeprecatedUntil700
+    @Deprecated
+    @InternalApi
     public void addConfigError(ConfigurationError error) {
-        if (configErrors == null) {
-            configErrors = new ArrayList<>();
-        }
         configErrors.add(error);
     }
 
@@ -307,11 +208,12 @@ public class Report implements Iterable<RuleViolation> {
      *
      * @param error
      *            the error to add
+     * @deprecated PMD's way of creating a report is internal and may be changed in pmd 7.
      */
+    @DeprecatedUntil700
+    @Deprecated
+    @InternalApi
     public void addError(ProcessingError error) {
-        if (errors == null) {
-            errors = new ArrayList<>();
-        }
         errors.add(error);
     }
 
@@ -320,150 +222,134 @@ public class Report implements Iterable<RuleViolation> {
      * summary over all violations is needed as PMD creates one report per file
      * by default.
      *
-     * @param r
-     *            the report to be merged into this.
+     * <p>This is synchronized on an internal lock (note that other mutation
+     * operations are not synchronized, todo for pmd 7).
+     *
+     * @param r the report to be merged into this.
+     *
      * @see AbstractAccumulatingRenderer
+     *
+     * @deprecated Convert Renderer to use the reports.
      */
+    @Deprecated
     public void merge(Report r) {
-        Iterator<ProcessingError> i = r.errors();
-        while (i.hasNext()) {
-            addError(i.next());
-        }
-        Iterator<ConfigurationError> ce = r.configErrors();
-        while (ce.hasNext()) {
-            addConfigError(ce.next());
-        }
-        Iterator<RuleViolation> v = r.iterator();
-        while (v.hasNext()) {
-            RuleViolation violation = v.next();
-            int index = Collections.binarySearch(violations, violation, RuleViolationComparator.INSTANCE);
-            violations.add(index < 0 ? -index - 1 : index, violation);
-            violationTree.addRuleViolation(violation);
-        }
-        Iterator<SuppressedViolation> s = r.getSuppressedRuleViolations().iterator();
-        while (s.hasNext()) {
-            suppressedRuleViolations.add(s.next());
+        errors.addAll(r.errors);
+        configErrors.addAll(r.configErrors);
+        suppressedRuleViolations.addAll(r.suppressedRuleViolations);
+
+        for (RuleViolation violation : r.getViolations()) {
+            addRuleViolation(violation);
         }
     }
 
-    public boolean isEmpty() {
-        return !violations.iterator().hasNext() && !hasErrors();
+
+    /**
+     * Returns an unmodifiable list of violations that were suppressed.
+     */
+    public List<SuppressedViolation> getSuppressedViolations() {
+        return Collections.unmodifiableList(suppressedRuleViolations);
     }
 
     /**
-     * Checks whether any processing errors have been reported.
+     * Returns an unmodifiable list of violations that have been
+     * recorded until now. None of those violations were suppressed.
      *
-     * @return <code>true</code> if there were any processing errors,
-     *         <code>false</code> otherwise
+     * <p>The violations list is sorted with {@link RuleViolation#DEFAULT_COMPARATOR}.
      */
-    public boolean hasErrors() {
-        return errors != null && !errors.isEmpty();
+    public List<RuleViolation> getViolations() {
+        return Collections.unmodifiableList(violations);
+    }
+
+
+    /**
+     * Returns an unmodifiable list of processing errors that have been
+     * recorded until now.
+     */
+    public List<ProcessingError> getProcessingErrors() {
+        return Collections.unmodifiableList(errors);
+    }
+
+
+    /**
+     * Returns an unmodifiable list of configuration errors that have
+     * been recorded until now.
+     */
+    public List<ConfigurationError> getConfigurationErrors() {
+        return Collections.unmodifiableList(configErrors);
     }
 
     /**
-     * Checks whether any configuration errors have been reported.
-     *
-     * @return <code>true</code> if there were any configuration errors,
-     *         <code>false</code> otherwise
+     * Create a report by making side effects on a {@link FileAnalysisListener}.
+     * This wraps a {@link ReportBuilderListener}.
      */
-    public boolean hasConfigErrors() {
-        return configErrors != null && !configErrors.isEmpty();
+    public static Report buildReport(Consumer<? super FileAnalysisListener> lambda) {
+        return BaseResultProducingCloseable.using(new ReportBuilderListener(), lambda);
     }
 
     /**
-     * Checks whether no violations have been reported.
-     *
-     * @return <code>true</code> if no violations have been reported,
-     *         <code>false</code> otherwise
+     * A {@link FileAnalysisListener} that accumulates events into a
+     * {@link Report}.
      */
-    public boolean treeIsEmpty() {
-        return !violationTree.iterator().hasNext();
+    public static final class ReportBuilderListener extends BaseResultProducingCloseable<Report> implements FileAnalysisListener {
+
+        private final Report report;
+
+        public ReportBuilderListener() {
+            this(new Report());
+        }
+
+        ReportBuilderListener(Report report) {
+            this.report = report;
+        }
+
+        @Override
+        protected Report getResultImpl() {
+            return report;
+        }
+
+        @Override
+        public void onRuleViolation(RuleViolation violation) {
+            report.addRuleViolation(violation);
+        }
+
+        @Override
+        public void onSuppressedRuleViolation(SuppressedViolation violation) {
+            report.addSuppressedViolation(violation);
+        }
+
+        @Override
+        public void onError(ProcessingError error) {
+            report.addError(error);
+        }
+
+        @Override
+        public String toString() {
+            return "ReportBuilderListener";
+        }
     }
 
     /**
-     * Returns an iteration over the reported violations.
-     *
-     * @return an iterator
+     * A {@link GlobalAnalysisListener} that accumulates the events of
+     * all files into a {@link Report}.
      */
-    public Iterator<RuleViolation> treeIterator() {
-        return violationTree.iterator();
-    }
+    public static final class GlobalReportBuilderListener extends BaseResultProducingCloseable<Report> implements GlobalAnalysisListener {
 
-    @Override
-    public Iterator<RuleViolation> iterator() {
-        return violations.iterator();
-    }
+        private final Report report = new Report();
 
-    /**
-     * Returns an iterator of the reported processing errors.
-     *
-     * @return the iterator
-     */
-    public Iterator<ProcessingError> errors() {
-        return errors == null ? Collections.<ProcessingError>emptyIterator() : errors.iterator();
-    }
+        @Override
+        public FileAnalysisListener startFileAnalysis(DataSource file) {
+            // note that the report is shared, but Report is now thread-safe
+            return new ReportBuilderListener(this.report);
+        }
 
-    /**
-     * Returns an iterator of the reported configuration errors.
-     *
-     * @return the iterator
-     */
-    public Iterator<ConfigurationError> configErrors() {
-        return configErrors == null ? Collections.<ConfigurationError>emptyIterator() : configErrors.iterator();
-    }
+        @Override
+        public void onConfigError(ConfigurationError error) {
+            report.addConfigError(error);
+        }
 
-    /**
-     * The number of violations.
-     *
-     * @return number of violations.
-     */
-    public int treeSize() {
-        return violationTree.size();
-    }
-
-    /**
-     * The number of violations.
-     *
-     * @return number of violations.
-     */
-    public int size() {
-        return violations.size();
-    }
-
-    /**
-     * Mark the start time of the report. This is used to get the elapsed time
-     * in the end.
-     *
-     * @see #getElapsedTimeInMillis()
-     */
-    public void start() {
-        start = System.currentTimeMillis();
-    }
-
-    /**
-     * Mark the end time of the report. This is ued to get the elapsed time.
-     *
-     * @see #getElapsedTimeInMillis()
-     */
-    public void end() {
-        end = System.currentTimeMillis();
-    }
-
-    public long getElapsedTimeInMillis() {
-        return end - start;
-    }
-
-    public List<ThreadSafeReportListener> getListeners() {
-        return listeners;
-    }
-
-    /**
-     * Adds all given listeners to this report
-     *
-     * @param allListeners
-     *            the report listeners
-     */
-    public void addListeners(List<ThreadSafeReportListener> allListeners) {
-        listeners.addAll(allListeners);
+        @Override
+        protected Report getResultImpl() {
+            return report;
+        }
     }
 }

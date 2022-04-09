@@ -8,7 +8,7 @@
 This ruleset contains links to rules that are new in PMD v3.3
   </description>
 
-  <rule ref="rulesets/java/design.xml/PositionLiteralsFirstInComparisons"/>
+  <!-- <rule ref="rulesets/java/design.xml/PositionLiteralsFirstInComparisons"/> -->
   <rule ref="rulesets/java/design.xml/UnnecessaryLocalBeforeReturn"/>
 
   <rule ref="rulesets/java/logging-jakarta-commons.xml/ProperLogger"/>

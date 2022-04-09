@@ -1,7 +1,7 @@
 ---
 title: Merging pull requests
 permalink: pmd_projectdocs_committers_merging_pull_requests.html
-last_updated: August 2017
+last_updated: October 2021
 author: Andreas Dangel <andreas.dangel@adangel.org>
 ---
 
@@ -9,10 +9,14 @@ author: Andreas Dangel <andreas.dangel@adangel.org>
 
 1.  Review the pull request
 
-    *   Compilation and checkstyle is verified already by travis build: PRs are automatically checked.
-    *   If it is a bug fix, a new unit test, that reproduces the bug, is mandatory. Without such a test, we might accidentally reintroduce the bug again.
-    *   Add the appropriate labels on the github issue: If the PR fixes a bug, the label "a:bug" should be used.
-    *   Make sure, the PR is added to the appropriate milestone. If the PR fixes a bug, make sure, that the bug issue is added to the same milestone.
+    *   Compilation and checkstyle is verified already by github actions build:
+        PRs are automatically checked.
+    *   If it is a bug fix, a new unit test, that reproduces the bug, is mandatory.
+        Without such a test, we might accidentally reintroduce the bug again.
+    *   Add the appropriate labels on the github issue: If the PR fixes a bug, the label "a:bug"
+        should be used.
+    *   Make sure, the PR is added to the appropriate milestone.
+        If the PR fixes a bug, make sure, that the bug issue is added to the same milestone.
 
 2.  The actual merge commands:
 
@@ -21,41 +25,62 @@ author: Andreas Dangel <andreas.dangel@adangel.org>
 
     ```
     git checkout master && git pull origin master                    # make sure, you have the latest code
-    git fetch origin pull/123/head:pr-123 && git checkout pr-123     # creates a new temporary branch
+    git fetch origin pull/123/head:pr-123 && git checkout pr-123     # creates a new temporary branch "pr-123"
     ```
 
 3.  Update the [release notes](https://github.com/pmd/pmd/blob/master/docs/pages/release_notes.md):
-
+    
     *   Are there any API changes, that need to be documented? (Section "API Changes")
     *   Are there any significant changes to existing rules, that should be mentioned?
         (Section "Modified Rules" / "New Rules" / "Removed Rules")
+        
+        Changes for modified rules are e.g. new properties or changed default values for properties.
+        
     *   If the PR fixes a bug, make sure, it is listed under the section "Fixed Issues".
-    *   In any case, add the PR to the section "External Contributions"
+        Also make sure, that the PR description mentions this (e.g. "- fixes #issue-number") and
+        the this PR is linked with the issue. Merging this PR will then automatically close the issue.
+    *   In any case, add the PR to the section "External Contributions".
     *   Commit these changes with the message:
-
-            git add docs/pages/release_notes.md
-            git commit -m "Update release notes, refs #123"
-
+        
+        ```
+        git add docs/pages/release_notes.md
+        git commit -m "[doc] Update release notes (#123)"
+        ```
+    
     {% include note.html content="If the PR fixes a bug, verify, that we have a commit with the message
     \"Fixes #issue-number\". If this doesn't exist, you can add it to the commit message when
-    updating the release notes: `Update release notes, refs #123, fixes #issue-number`.
+    updating the release notes: `[doc] Update release notes (#123, fixes #issue-number)`.
     This will automatically close the github issue." %}
 
-4.  Now merge the pull request into the master branch:
+4.  Add the contributor to `.all-contributorsrc`:
+    
+    ```
+    npx all-contributors add
+    ```
+    
+    And follow the instructions. This will create a new commit into to the current branch (pr-123) updating both
+    the file `.all-contributorsrc` and `docs/pages/pmd/projectdocs/credits.md`.
+
+5.  Now merge the pull request into the master branch:
 
     ```
     git checkout master
-    git merge --no-ff pr-123
+    git merge --no-ff pr-123 -m "Merge pull request #123 from xyz:branch
+    
+    Full-title-of-the-pr #123" --log
     ```
 
     {%include note.html content="If there are merge conflicts, you'll need to deal with them here." %}
 
-5.  Run the complete build: `./mvnw clean verify`
+6.  Run the complete build: `./mvnw clean verify -Pgenerate-rule-docs`
 
     {% include note.html content="This will execute all the unit tests and the checkstyle tests. It ensures,
     that the complete project can be build and is functioning on top of the current master." %}
+    
+    {% include note.html content="The profile `generate-rule-docs` will run the doc checks, that would
+    otherwise only run on github actions and fail the build, if e.g. a jdoc or rule reference is wrong." %}
 
-6.  If the build was successful, you are ready to push:
+7.  If the build was successful, you are ready to push:
 
     ```
     git push origin master
@@ -87,8 +112,8 @@ PMD version 5.8.0, so that we can create a bugfix release 5.8.1.
 
     ```
     ./mvnw versions:set -DnewVersion=5.8.1-SNAPSHOT
-    git add pom.xml \*/pom.xml
-    git commit -m "prepare next version 5.8.1-SNAPSHOT"
+    git add pom.xml \*/pom.xml pmd-scala-modules/\*/pom.xml
+    git commit -m "Prepare next version 5.8.1-SNAPSHOT"
     ```
 
 ### Merging the PR
@@ -112,10 +137,12 @@ PMD version 5.8.0, so that we can create a bugfix release 5.8.1.
 
     ```
     git checkout pmd/5.8.x
-    git merge --no-ff pr-124
+    git merge --no-ff pr-124 -m "Merge pull request #124 from xyz:branch
+    
+    Full-title-of-the-pr #124" --log
     ```
 
-5.  Just to be sure, run the complete build again: `./mvnw clean verify`.
+5.  Just to be sure, run the complete build again: `./mvnw clean verify -Pgenerate-rule-docs`.
 
 6.  If the build was successful, you are ready to push:
 

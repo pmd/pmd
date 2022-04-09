@@ -41,4 +41,9 @@ public class ObjectiveCTokenizerTest extends CpdTextComparisonTest {
     public void testUnicodeCharInIdent() {
         doTest("unicodeCharInIdent");
     }
+
+    @Test
+    public void testTabWidth() {
+        doTest("tabWidth");
+    }
 }

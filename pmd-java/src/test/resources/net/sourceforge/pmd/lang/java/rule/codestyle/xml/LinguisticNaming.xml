@@ -553,7 +553,7 @@ public class AtomicBooleanFN {
     </test-code>
 
     <test-code>
-        <description>#1543 [java] LinguisticNaming should ignore overriden methods</description>
+        <description>#1543 [java] LinguisticNaming should ignore overridden methods</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>4</expected-linenumbers>
         <code><![CDATA[

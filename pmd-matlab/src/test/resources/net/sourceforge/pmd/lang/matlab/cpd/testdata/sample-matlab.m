@@ -624,7 +624,7 @@ function [op, dom, data, pref] = parseInputs(op, varargin)
             fclose(fid);
         else
             error('CHEBFUN:parseInputs:unknown', ...
-                'Unknow command %s.', op);
+                'Unknown command %s.', op);
         end
         op = 'done';
         dom = [];

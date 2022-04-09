@@ -65,9 +65,10 @@ public class ExecutorServiceUsage {
 
     <test-code>
         <description>Using Executors directly is not allowed</description>
-        <expected-problems>2</expected-problems>
+        <expected-problems>4</expected-problems>
         <code><![CDATA[
 import java.util.concurrent.Executors;
+import java.util.concurrent.Callable;
 
 public class ExecutorsUsage {
     public void static_usage_of_Executors() {
@@ -108,6 +109,15 @@ public class Violation {
                 }
             };
     }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>getContextClassLoader is ok</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Ok {
+    ClassLoader cl = Thread.currentThread().getContextClassLoader();
 }
         ]]></code>
     </test-code>

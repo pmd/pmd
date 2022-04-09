@@ -47,7 +47,9 @@ public class NodeStreamBlanketTest<T extends Node> {
                     node(
                         node(),
                         nodeB(
-                            node()
+                            node(
+                                nodeB()
+                            )
                         ),
                         node(),
                         nodeB()
@@ -128,11 +130,23 @@ public class NodeStreamBlanketTest<T extends Node> {
     }
 
     @Test
+    public void testDropLast() {
+        assertImplication(
+            stream,
+            prop("nonEmpty", NodeStream::nonEmpty),
+            prop("dropLast(0) == this", it -> it.dropLast(0) == it),
+            prop("dropLast(1).count() == count() - 1", it -> it.dropLast(1).count() == it.count() - 1),
+            prop("dropLast(1).toList() == toList().init()", it -> it.dropLast(1).toList().equals(init(it.toList())))
+        );
+    }
+
+    @Test
     public void testDropMoreThan1() {
         assertImplication(
             stream,
             prop("count() > 1", it -> it.count() > 1),
-            prop("drop(2).toList() == toList().tail().tail()", it -> it.drop(2).toList().equals(tail(tail(it.toList()))))
+            prop("drop(2).toList() == toList().tail().tail()", it -> it.drop(2).toList().equals(tail(tail(it.toList())))),
+            prop("drop(1).drop(1) == drop(2)", it -> it.drop(1).drop(1).toList().equals(it.drop(2).toList()))
         );
     }
 
@@ -265,6 +279,10 @@ public class NodeStreamBlanketTest<T extends Node> {
 
     static <T> List<T> tail(List<T> ts) {
         return ts.subList(1, ts.size());
+    }
+
+    static <T> List<T> init(List<T> ts) {
+        return ts.subList(0, ts.size() - 1);
     }
 
     static class Prop<T> {

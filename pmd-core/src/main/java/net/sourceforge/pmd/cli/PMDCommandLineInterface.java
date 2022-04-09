@@ -8,7 +8,9 @@ import java.util.Properties;
 import java.util.stream.Collectors;
 
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.PMD.StatusCode;
 import net.sourceforge.pmd.PMDVersion;
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
@@ -20,21 +22,56 @@ import com.beust.jcommander.ParameterException;
 
 /**
  * @author Romain Pelisse &lt;belaran@gmail.com&gt;
- *
+ * @deprecated Internal API. Use {@link PMD#runPmd(String...)} or {@link PMD#main(String[])},
+ *     or {@link PmdParametersParseResult} if you just want to produce a configuration.
  */
+@Deprecated
+@InternalApi
 public final class PMDCommandLineInterface {
 
+    @Deprecated
     public static final String PROG_NAME = "pmd";
 
+    /**
+     * @deprecated This is used for testing, but support for it will be removed in PMD 7.
+     * Use {@link PMD#runPmd(String...)} or an overload to avoid exiting the VM. In PMD 7,
+     * {@link PMD#main(String[])} will call {@link System#exit(int)} always.
+     */
+    @Deprecated
     public static final String NO_EXIT_AFTER_RUN = "net.sourceforge.pmd.cli.noExit";
+
+    /**
+     * @deprecated This is used for testing, but support for it will be removed in PMD 7.
+     * Use {@link PMD#runPmd(String...)} or an overload to avoid exiting the VM. In PMD 7,
+     * {@link PMD#main(String[])} will call {@link System#exit(int)} always.
+     */
+    @Deprecated
     public static final String STATUS_CODE_PROPERTY = "net.sourceforge.pmd.cli.status";
 
+    /**
+     * @deprecated Use {@link StatusCode#OK}
+     */
+    @Deprecated
     public static final int NO_ERRORS_STATUS = 0;
+    /**
+     * @deprecated Use {@link StatusCode#ERROR}
+     */
+    @Deprecated
     public static final int ERROR_STATUS = 1;
+    /**
+     * @deprecated Use {@link StatusCode#VIOLATIONS_FOUND}
+     */
+    @Deprecated
     public static final int VIOLATIONS_FOUND = 4;
 
     private PMDCommandLineInterface() { }
 
+    /**
+     * Note: this may terminate the VM.
+     *
+     * @deprecated Use {@link PmdParametersParseResult#extractParameters(String...)}
+     */
+    @Deprecated
     public static PMDParameters extractParameters(PMDParameters arguments, String[] args, String progName) {
         JCommander jcommander = new JCommander(arguments);
         jcommander.setProgramName(progName);
@@ -43,12 +80,12 @@ public final class PMDCommandLineInterface {
             jcommander.parse(args);
             if (arguments.isHelp()) {
                 jcommander.usage();
-                System.out.println(buildUsageText(jcommander));
+                System.out.println(buildUsageText());
                 setStatusCodeOrExit(NO_ERRORS_STATUS);
             }
         } catch (ParameterException e) {
             jcommander.usage();
-            System.out.println(buildUsageText(jcommander));
+            System.out.println(buildUsageText());
             System.err.println(e.getMessage());
             setStatusCodeOrExit(ERROR_STATUS);
         }
@@ -56,19 +93,6 @@ public final class PMDCommandLineInterface {
     }
 
     public static String buildUsageText() {
-        return buildUsageText(null);
-    }
-
-    public static String buildUsageText(JCommander jcommander) {
-        StringBuilder usage = new StringBuilder();
-
-        String allCommandsDescription = null;
-        if (jcommander != null && jcommander.getCommands() != null) {
-            for (String command : jcommander.getCommands().keySet()) {
-                allCommandsDescription += jcommander.getCommandDescription(command) + PMD.EOL;
-            }
-        }
-
         // TODO: Externalize that to a file available within the classpath ? -
         // with a poor's man templating ?
         String fullText = PMD.EOL + "Mandatory arguments:" + PMD.EOL + "1) A java source code filename or directory"
@@ -79,16 +103,15 @@ public final class PMDCommandLineInterface {
 
         fullText += supportedVersions() + PMD.EOL;
 
-        if (allCommandsDescription != null) {
-            fullText += "Optional arguments that may be put before or after the mandatory arguments: " + PMD.EOL
-                    + allCommandsDescription + PMD.EOL;
-        }
-
         fullText += "Available report formats and their configuration properties are:" + PMD.EOL + getReports()
                 + PMD.EOL + getExamples() + PMD.EOL + PMD.EOL + PMD.EOL;
 
-        fullText += usage.toString();
         return fullText;
+    }
+
+    @Deprecated
+    public static String buildUsageText(JCommander jcommander) {
+        return buildUsageText();
     }
 
     private static String getExamples() {
@@ -130,7 +153,10 @@ public final class PMDCommandLineInterface {
      * For testing purpose only...
      *
      * @param args
+     *
+     * @deprecated Use {@link PMD#runPmd(String...)}
      */
+    @Deprecated
     public static void main(String[] args) {
         System.out.println(PMDCommandLineInterface.buildUsageText());
     }
@@ -145,7 +171,7 @@ public final class PMDCommandLineInterface {
             Renderer renderer = RendererFactory.createRenderer(reportName, new Properties());
             buf.append("   ").append(reportName).append(": ");
             if (!reportName.equals(renderer.getName())) {
-                buf.append(" Deprecated alias for '" + renderer.getName()).append(PMD.EOL);
+                buf.append(" Deprecated alias for '").append(renderer.getName()).append(PMD.EOL);
                 continue;
             }
             buf.append(renderer.getDescription()).append(PMD.EOL);
@@ -162,10 +188,6 @@ public final class PMDCommandLineInterface {
 
         }
         return buf.toString();
-    }
-
-    public static void run(String[] args) {
-        setStatusCodeOrExit(PMD.run(args));
     }
 
     public static void setStatusCodeOrExit(int status) {
@@ -188,4 +210,7 @@ public final class PMDCommandLineInterface {
         System.setProperty(STATUS_CODE_PROPERTY, Integer.toString(statusCode));
     }
 
+    public static void printJcommanderUsageOnConsole() {
+        new JCommander(new PMDParameters()).usage();
+    }
 }

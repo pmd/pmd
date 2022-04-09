@@ -39,8 +39,7 @@ public class ZipFileExtractor {
      * @throws Exception if any error happens during extraction
      */
     public static void extractZipFile(Path zipPath, Path tempDir) throws Exception {
-        ZipFile zip = new ZipFile(zipPath.toFile());
-        try {
+        try (ZipFile zip = new ZipFile(zipPath.toFile())) {
             Enumeration<ZipArchiveEntry> entries = zip.getEntries();
             while (entries.hasMoreElements()) {
                 ZipArchiveEntry entry = entries.nextElement();
@@ -57,8 +56,6 @@ public class ZipFileExtractor {
                     }
                 }
             }
-        } finally {
-            zip.close();
         }
     }
 
@@ -70,15 +67,12 @@ public class ZipFileExtractor {
      */
     public static List<String> readZipFile(Path zipPath) throws Exception {
         List<String> result = new ArrayList<>();
-        ZipFile zip = new ZipFile(zipPath.toFile());
-        try {
+        try (ZipFile zip = new ZipFile(zipPath.toFile())) {
             Enumeration<ZipArchiveEntry> entries = zip.getEntries();
             while (entries.hasMoreElements()) {
                 ZipArchiveEntry entry = entries.nextElement();
                 result.add(entry.getName());
             }
-        } finally {
-            zip.close();
         }
         return result;
     }

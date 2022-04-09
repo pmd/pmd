@@ -11,39 +11,45 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.internal.util.IteratorUtil;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAssertStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTBreakStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTCastExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTCatchStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTCatchClause;
+import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTForeachStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
+import net.sourceforge.pmd.lang.java.ast.ASTGuardedPattern;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTIntersectionType;
 import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodReference;
 import net.sourceforge.pmd.lang.java.ast.ASTModuleDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTName;
+import net.sourceforge.pmd.lang.java.ast.ASTNullLiteral;
+import net.sourceforge.pmd.lang.java.ast.ASTNumericLiteral;
+import net.sourceforge.pmd.lang.java.ast.ASTPatternExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTReceiverParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTRecordDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTReferenceType;
 import net.sourceforge.pmd.lang.java.ast.ASTResource;
-import net.sourceforge.pmd.lang.java.ast.ASTResourceSpecification;
-import net.sourceforge.pmd.lang.java.ast.ASTResources;
+import net.sourceforge.pmd.lang.java.ast.ASTStringLiteral;
+import net.sourceforge.pmd.lang.java.ast.ASTSwitchArrowBranch;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchLabel;
 import net.sourceforge.pmd.lang.java.ast.ASTTryStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeArguments;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeParameters;
-import net.sourceforge.pmd.lang.java.ast.ASTTypeTestPattern;
+import net.sourceforge.pmd.lang.java.ast.ASTTypePattern;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.ASTYieldStatement;
+import net.sourceforge.pmd.lang.java.ast.JModifier;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
+import net.sourceforge.pmd.lang.java.ast.JavaTokenKinds;
 import net.sourceforge.pmd.lang.java.ast.JavaVisitorBase;
 
 /**
@@ -106,21 +112,35 @@ public class LanguageLevelChecker<T> {
     }
 
 
-    /** Those are just for the preview features. */
+    /**
+     * Those are just for the preview features.
+     * They are implemented in at least one preview language version.
+     * They might be also be standardized.
+     */
     private enum PreviewFeature implements LanguageFeature {
-        BREAK__WITH__VALUE_STATEMENTS(12, 12, false),
+        /**
+         * @see <a href="https://openjdk.java.net/jeps/406">JEP 406: Pattern Matching for switch (Preview)</a> (Java 17)
+         * @see <a href="https://openjdk.java.net/jeps/420">JEP 420: Pattern Matching for switch (Second Preview)</a> (Java 18)
+         */
+        PATTERN_MATCHING_FOR_SWITCH(17, 18, false),
 
-        COMPOSITE_CASE_LABEL(12, 13, true),
-        SWITCH_EXPRESSIONS(12, 13, true),
-        SWITCH_RULES(12, 13, true),
+        /**
+         * Part of pattern matching for switch
+         * @see #PATTERN_MATCHING_FOR_SWITCH
+         * @see <a href="https://openjdk.java.net/jeps/406">JEP 406: Pattern Matching for switch (Preview)</a> (Java 17)
+         * @see <a href="https://openjdk.java.net/jeps/420">JEP 420: Pattern Matching for switch (Second Preview)</a> (Java 18)
+         */
+        GUARDED_PATTERNS(17, 18, false),
 
-        TEXT_BLOCK_LITERALS(13, 14, false),
-        YIELD_STATEMENTS(13, 13, true),
+        /**
+         * Part of pattern matching for switch
+         * @see #PATTERN_MATCHING_FOR_SWITCH
+         * @see <a href="https://openjdk.java.net/jeps/406">JEP 406: Pattern Matching for switch (Preview)</a> (Java 17)
+         * @see <a href="https://openjdk.java.net/jeps/420">JEP 420: Pattern Matching for switch (Second Preview)</a> (Java 18)
+         */
+        NULL_CASE_LABELS(17, 18, false),
 
-        /** \s */
-        SPACE_STRING_ESCAPES(14, 14, false),
-        RECORD_DECLARATIONS(14, 14, false),
-        TYPE_TEST_PATTERNS_IN_INSTANCEOF(14, 14, false);
+        ;  // SUPPRESS CHECKSTYLE enum trailing semi is awesome
 
 
         private final int minPreviewVersion;
@@ -158,18 +178,55 @@ public class LanguageLevelChecker<T> {
         }
     }
 
-    /** Those use a max valid version. */
-    private enum ReservedIdentifiers implements LanguageFeature {
+    /**
+     * Those use a max valid version.
+     *
+     * @see <a href="http://cr.openjdk.java.net/~gbierman/jep397/jep397-20201204/specs/contextual-keywords-jls.html">Contextual Keywords</a>
+     */
+    private enum Keywords implements LanguageFeature {
+        /**
+         * ReservedKeyword since Java 1.4.
+         */
         ASSERT_AS_AN_IDENTIFIER(4, "assert"),
+        /**
+         * ReservedKeyword since Java 1.5.
+         */
         ENUM_AS_AN_IDENTIFIER(5, "enum"),
+        /**
+         * ReservedKeyword since Java 9.
+         */
         UNDERSCORE_AS_AN_IDENTIFIER(9, "_"),
+        /**
+         * ContextualKeyword since Java 10.
+         */
         VAR_AS_A_TYPE_NAME(10, "var"),
-        RECORD_AS_A_TYPE_NAME(14, "record");
+
+        /**
+         * ContextualKeyword since Java 13 Preview.
+         */
+        YIELD_AS_A_TYPE_NAME(13, "yield"),
+
+        /**
+         * ContextualKeyword since Java 14 Preview.
+         */
+        RECORD_AS_A_TYPE_NAME(14, "record"),
+
+        /**
+         * ContextualKeyword since Java 15 Preview.
+         */
+        SEALED_AS_A_TYPE_NAME(15, "sealed"),
+
+        /**
+         * ContextualKeyword since Java 15 Preview.
+         */
+        PERMITS_AS_A_TYPE_NAME(15, "permits"),
+
+        ;  // SUPPRESS CHECKSTYLE enum trailing semi is awesome
 
         private final int maxJdkVersion;
         private final String reserved;
 
-        ReservedIdentifiers(int minJdkVersion, String reserved) {
+        Keywords(int minJdkVersion, String reserved) {
             this.maxJdkVersion = minJdkVersion;
             this.reserved = reserved;
         }
@@ -215,7 +272,67 @@ public class LanguageLevelChecker<T> {
         MODULE_DECLARATIONS(9),
         DIAMOND_TYPE_ARGUMENTS_FOR_ANONYMOUS_CLASSES(9),
         PRIVATE_METHODS_IN_INTERFACES(9),
-        CONCISE_RESOURCE_SYNTAX(9);
+        CONCISE_RESOURCE_SYNTAX(9),
+
+        /**
+         * @see <a href="https://openjdk.java.net/jeps/361">JEP 361: Switch Expressions</a>
+         */
+        COMPOSITE_CASE_LABEL(14),
+        /**
+         * @see <a href="https://openjdk.java.net/jeps/361">JEP 361: Switch Expressions</a>
+         */
+        SWITCH_EXPRESSIONS(14),
+        /**
+         * @see <a href="https://openjdk.java.net/jeps/361">JEP 361: Switch Expressions</a>
+         */
+        SWITCH_RULES(14),
+        /**
+         * @see #SWITCH_EXPRESSIONS
+         * @see <a href="https://openjdk.java.net/jeps/361">JEP 361: Switch Expressions</a>
+         */
+        YIELD_STATEMENTS(14),
+
+        /**
+         * @see <a href="https://openjdk.java.net/jeps/378">JEP 378: Text Blocks</a>
+         */
+        TEXT_BLOCK_LITERALS(15),
+        /**
+         * The new escape sequence {@code \s} simply translates to a single space {@code \u0020}.
+         *
+         * @see #TEXT_BLOCK_LITERALS
+         * @see <a href="https://openjdk.java.net/jeps/378">JEP 378: Text Blocks</a>
+         */
+        SPACE_STRING_ESCAPES(15),
+
+        /**
+         * @see <a href="https://openjdk.java.net/jeps/359">JEP 359: Records (Preview)</a> (Java 14)
+         * @see <a href="https://openjdk.java.net/jeps/384">JEP 384: Records (Second Preview)</a> (Java 15)
+         * @see <a href="https://openjdk.java.net/jeps/395">JEP 395: Records</a> (Java 16)
+         */
+        RECORD_DECLARATIONS(16),
+
+        /**
+         * @see <a href="https://openjdk.java.net/jeps/305">JEP 305: Pattern Matching for instanceof (Preview)</a> (Java 14)
+         * @see <a href="https://openjdk.java.net/jeps/375">JEP 375: Pattern Matching for instanceof (Second Preview)</a> (Java 15)
+         * @see <a href="https://openjdk.java.net/jeps/394">JEP 394: Pattern Matching for instanceof</a> (Java 16)
+         */
+        TYPE_PATTERNS_IN_INSTANCEOF(16),
+
+        /**
+         * Part of the records JEP 394.
+         * @see #RECORD_DECLARATIONS
+         * @see <a href="https://bugs.openjdk.java.net/browse/JDK-8253374">JLS changes for Static Members of Inner Classes</a> (Java 16)
+         */
+        STATIC_LOCAL_TYPE_DECLARATIONS(16),
+
+        /**
+         * @see <a href="https://openjdk.java.net/jeps/360">JEP 360: Sealed Classes (Preview)</a> (Java 15)
+         * @see <a href="https://openjdk.java.net/jeps/397">JEP 397: Sealed Classes (Second Preview)</a> (Java 16)
+         * @see <a href="https://openjdk.java.net/jeps/409">JEP 409: Sealed Classes</a> (Java 17)
+         */
+        SEALED_CLASSES(17),
+
+        ;  // SUPPRESS CHECKSTYLE enum trailing semi is awesome
 
         private final int minJdkLevel;
 
@@ -242,30 +359,28 @@ public class LanguageLevelChecker<T> {
         String errorMessage(int jdk, boolean preview);
     }
 
-    private class CheckVisitor extends JavaVisitorBase<T, Void> {
-
-        //        @Override
-        //        public void visit(ASTStringLiteral node, T data) {
-        //            if (jdkVersion != 13 || !preview) {
-        //                if (node.isTextBlock()) {
-        //                    check(node, PreviewFeature.TEXT_BLOCK_LITERALS, data);
-        //                }
-        //            }
-        //            visitChildren(node, data);
-        //        }
-
+    private final class CheckVisitor extends JavaVisitorBase<T, Void> {
 
         @Override
-        public Void visit(ASTLiteral node, T data) {
-            if (node.isStringLiteral() && SPACE_ESCAPE_PATTERN.matcher(node.getImage()).find()) {
-                check(node, PreviewFeature.SPACE_STRING_ESCAPES, data);
-            }
-            if (node.isTextBlock()) {
-                check(node, PreviewFeature.TEXT_BLOCK_LITERALS, data);
-            }
+        protected Void visitChildren(Node node, T data) {
+            throw new AssertionError("Shouldn't recurse");
+        }
+
+        @Override
+        public Void visitNode(Node node, T param) {
             return null;
         }
 
+        @Override
+        public Void visit(ASTStringLiteral node, T data) {
+            if (node.isStringLiteral() && SPACE_ESCAPE_PATTERN.matcher(node.getImage()).find()) {
+                check(node, RegularLanguageFeature.SPACE_STRING_ESCAPES, data);
+            }
+            if (node.isTextBlock()) {
+                check(node, RegularLanguageFeature.TEXT_BLOCK_LITERALS, data);
+            }
+            return null;
+        }
 
         @Override
         public Void visit(ASTImportDeclaration node, T data) {
@@ -277,50 +392,35 @@ public class LanguageLevelChecker<T> {
 
         @Override
         public Void visit(ASTYieldStatement node, T data) {
-            check(node, PreviewFeature.YIELD_STATEMENTS, data);
-            return null;
-        }
-
-        @Override
-        public Void visit(ASTBreakStatement node, T data) {
-            if (node.getNumChildren() > 0) {
-                check(node, PreviewFeature.BREAK__WITH__VALUE_STATEMENTS, data);
-            }
+            check(node, RegularLanguageFeature.YIELD_STATEMENTS, data);
             return null;
         }
 
         @Override
         public Void visit(ASTSwitchExpression node, T data) {
-            check(node, PreviewFeature.SWITCH_EXPRESSIONS, data);
+            check(node, RegularLanguageFeature.SWITCH_EXPRESSIONS, data);
             return null;
         }
 
         @Override
         public Void visit(ASTRecordDeclaration node, T data) {
-            check(node, PreviewFeature.RECORD_DECLARATIONS, data);
+            check(node, RegularLanguageFeature.RECORD_DECLARATIONS, data);
             return null;
         }
 
-        //        @Override
-        //        public void visit(ASTConstructorCall node, T data) {
-        //            if (node.usesDiamondTypeArgs()) {
-        //                if (check(node, RegularLanguageFeature.DIAMOND_TYPE_ARGUMENTS, data) && node.isAnonymousClass()) {
-        //                    check(node, RegularLanguageFeature.DIAMOND_TYPE_ARGUMENTS_FOR_ANONYMOUS_CLASSES, data);
-        //                }
-        //            }
-        //            visitChildren(node, data);
-        //        }
+        @Override
+        public Void visit(ASTConstructorCall node, T data) {
+            if (node.usesDiamondTypeArgs()) {
+                if (check(node, RegularLanguageFeature.DIAMOND_TYPE_ARGUMENTS, data) && node.isAnonymousClass()) {
+                    check(node, RegularLanguageFeature.DIAMOND_TYPE_ARGUMENTS_FOR_ANONYMOUS_CLASSES, data);
+                }
+            }
+            return null;
+        }
 
         @Override
         public Void visit(ASTTypeArguments node, T data) {
-            if (check(node, RegularLanguageFeature.GENERICS, data)) {
-                if (node.isDiamond() && check(node, RegularLanguageFeature.DIAMOND_TYPE_ARGUMENTS, data)) {
-                    if (node.getNthParent(2) instanceof ASTAllocationExpression
-                        && ((ASTAllocationExpression) node.getNthParent(2)).isAnonymousClass()) {
-                        check(node, RegularLanguageFeature.DIAMOND_TYPE_ARGUMENTS_FOR_ANONYMOUS_CLASSES, data);
-                    }
-                }
-            }
+            check(node, RegularLanguageFeature.GENERICS, data);
             return null;
         }
 
@@ -334,17 +434,16 @@ public class LanguageLevelChecker<T> {
         public Void visit(ASTFormalParameter node, T data) {
             if (node.isVarargs()) {
                 check(node, RegularLanguageFeature.VARARGS_PARAMETERS, data);
-            } else if (node.isExplicitReceiverParameter()) {
-                check(node, RegularLanguageFeature.RECEIVER_PARAMETERS, data);
             }
-
             return null;
         }
 
-        //        @Override
-        //        public void visit(ASTReceiverParameter node, T data) {
-        //            check(node, RegularLanguageFeature.RECEIVER_PARAMETERS, data);
-        //        }
+
+        @Override
+        public Void visit(ASTReceiverParameter node, T data) {
+            check(node, RegularLanguageFeature.RECEIVER_PARAMETERS, data);
+            return null;
+        }
 
         @Override
         public Void visit(ASTAnnotation node, T data) {
@@ -356,42 +455,31 @@ public class LanguageLevelChecker<T> {
             return null;
         }
 
-        //
-        //        @Override
-        //        public Void visit(ASTForeachStatement node, T data) {
-        //            check(node, RegularLanguageFeature.FOREACH_LOOPS, data);
-        //            return null;
-        //        }
-
-
         @Override
-        public Void visit(ASTForStatement node, T data) {
-            if (node.isForeach()) {
-                check(node, RegularLanguageFeature.FOREACH_LOOPS, data);
-            }
+        public Void visit(ASTForeachStatement node, T data) {
+            check(node, RegularLanguageFeature.FOREACH_LOOPS, data);
             return null;
         }
 
         @Override
         public Void visit(ASTEnumDeclaration node, T data) {
             check(node, RegularLanguageFeature.ENUMS, data);
-            visit((ASTAnyTypeDeclaration) node, data);
+            visitTypeDecl((ASTAnyTypeDeclaration) node, data);
             return null;
         }
 
-
-        //        @Override
-        //        public Void visit(ASTNumericLiteral node, T data) {
-        //            int base = node.getBase();
-        //            if (base == 16 && !node.isIntegral()) {
-        //                check(node, RegularLanguageFeature.HEXADECIMAL_FLOATING_POINT_LITERALS, data);
-        //            } else if (base == 2) {
-        //                check(node, RegularLanguageFeature.BINARY_NUMERIC_LITERALS, data);
-        //            } else if (node.getImage().indexOf('_') >= 0) {
-        //                check(node, RegularLanguageFeature.UNDERSCORES_IN_NUMERIC_LITERALS, data);
-        //            }
-        //            return null;
-        //        }
+        @Override
+        public Void visit(ASTNumericLiteral node, T data) {
+            int base = node.getBase();
+            if (base == 16 && !node.isIntegral()) {
+                check(node, RegularLanguageFeature.HEXADECIMAL_FLOATING_POINT_LITERALS, data);
+            } else if (base == 2) {
+                check(node, RegularLanguageFeature.BINARY_NUMERIC_LITERALS, data);
+            } else if (node.getImage().indexOf('_') >= 0) {
+                check(node, RegularLanguageFeature.UNDERSCORES_IN_NUMERIC_LITERALS, data);
+            }
+            return null;
+        }
 
         @Override
         public Void visit(ASTMethodReference node, T data) {
@@ -407,11 +495,11 @@ public class LanguageLevelChecker<T> {
 
         @Override
         public Void visit(ASTMethodDeclaration node, T data) {
-            if (node.isDefault()) {
+            if (node.hasModifiers(JModifier.DEFAULT)) {
                 check(node, RegularLanguageFeature.DEFAULT_METHODS, data);
             }
 
-            if (node.isPrivate() && node.isInterfaceMember()) {
+            if (node.isPrivate() && node.getEnclosingType().isInterface()) {
                 check(node, RegularLanguageFeature.PRIVATE_METHODS_IN_INTERFACES, data);
             }
 
@@ -426,33 +514,23 @@ public class LanguageLevelChecker<T> {
         }
 
         @Override
-        public Void visit(ASTTypeTestPattern node, T data) {
-            check(node, PreviewFeature.TYPE_TEST_PATTERNS_IN_INSTANCEOF, data);
+        public Void visit(ASTTypePattern node, T data) {
+            check(node, RegularLanguageFeature.TYPE_PATTERNS_IN_INSTANCEOF, data);
             return null;
         }
 
-        //        @Override
-        //        public Void visit(ASTTryStatement node, T data) {
-        //            if (node.isTryWithResources()) {
-        //                if (check(node, RegularLanguageFeature.TRY_WITH_RESOURCES, data)) {
-        //                    for (ASTResource resource : node.getResources()) {
-        //                        if (resource.isConciseResource()) {
-        //                            check(node, RegularLanguageFeature.CONCISE_RESOURCE_SYNTAX, data);
-        //                            break;
-        //                        }
-        //                    }
-        //                }
-        //            }
-        //            return null;
-        //        }
-
+        @Override
+        public Void visit(ASTGuardedPattern node, T data) {
+            check(node, PreviewFeature.GUARDED_PATTERNS, data);
+            return null;
+        }
 
         @Override
         public Void visit(ASTTryStatement node, T data) {
             if (node.isTryWithResources()) {
                 if (check(node, RegularLanguageFeature.TRY_WITH_RESOURCES, data)) {
-                    for (ASTResource resource : node.children(ASTResourceSpecification.class).children(ASTResources.class).children(ASTResource.class)) {
-                        if (resource.children(ASTName.class).nonEmpty()) {
+                    for (ASTResource resource : node.getResources()) {
+                        if (resource.isConciseResource()) {
                             check(node, RegularLanguageFeature.CONCISE_RESOURCE_SYNTAX, data);
                             break;
                         }
@@ -462,26 +540,19 @@ public class LanguageLevelChecker<T> {
             return null;
         }
 
-        //        @Override
-        //        public Void visit(ASTIntersectionType node, T data) {
-        //            if (node.jjtGetParent() instanceof ASTCastExpression) {
-        //                check(node, RegularLanguageFeature.INTERSECTION_TYPES_IN_CASTS, data);
-        //            }
-        //            return null;
-        //        }
-
 
         @Override
-        public Void visit(ASTCastExpression node, T data) {
-            if (node.children(ASTReferenceType.class).nonEmpty()) {
+        public Void visit(ASTIntersectionType node, T data) {
+            if (node.getParent() instanceof ASTCastExpression) {
                 check(node, RegularLanguageFeature.INTERSECTION_TYPES_IN_CASTS, data);
             }
             return null;
         }
 
+
         @Override
-        public Void visit(ASTCatchStatement node, T data) {
-            if (node.isMulticatchStatement()) {
+        public Void visit(ASTCatchClause node, T data) {
+            if (node.getParameter().isMulticatch()) {
                 check(node, RegularLanguageFeature.COMPOSITE_CATCH_CLAUSES, data);
             }
             return null;
@@ -489,8 +560,21 @@ public class LanguageLevelChecker<T> {
 
         @Override
         public Void visit(ASTSwitchLabel node, T data) {
-            if (node.getNumChildren() > 1) {
-                check(node, PreviewFeature.COMPOSITE_CASE_LABEL, data);
+            if (IteratorUtil.count(node.iterator()) > 1) {
+                check(node, RegularLanguageFeature.COMPOSITE_CASE_LABEL, data);
+            }
+            if (node.isDefault() && JavaTokenKinds.CASE == node.getFirstToken().getKind()) {
+                check(node, PreviewFeature.PATTERN_MATCHING_FOR_SWITCH, data);
+            }
+            for (ASTExpression expr : node.getExprList()) {
+                if (expr instanceof ASTPatternExpression) {
+                    check(expr, PreviewFeature.PATTERN_MATCHING_FOR_SWITCH, data);
+                    if (((ASTPatternExpression) expr).getPattern() instanceof ASTGuardedPattern) {
+                        check(expr, PreviewFeature.GUARDED_PATTERNS, data);
+                    }
+                } else if (expr instanceof ASTNullLiteral) {
+                    check(expr, PreviewFeature.NULL_CASE_LABELS, data);
+                }
             }
             return null;
         }
@@ -501,11 +585,11 @@ public class LanguageLevelChecker<T> {
             return null;
         }
 
-        //        @Override
-        //        public Void visit(ASTSwitchLabeledRule node, T data) {
-        //            check(node, PreviewFeature.SWITCH_RULES, data);
-        //            return null;
-        //        }
+        @Override
+        public Void visit(ASTSwitchArrowBranch node, T data) {
+            check(node, RegularLanguageFeature.SWITCH_RULES, data);
+            return null;
+        }
 
         @Override
         public Void visit(ASTVariableDeclaratorId node, T data) {
@@ -514,12 +598,23 @@ public class LanguageLevelChecker<T> {
         }
 
         @Override
-        public Void visit(ASTAnyTypeDeclaration node, T data) {
+        public Void visitTypeDecl(ASTAnyTypeDeclaration node, T data) {
+            if (node.getModifiers().hasAnyExplicitly(JModifier.SEALED, JModifier.NON_SEALED)) {
+                check(node, RegularLanguageFeature.SEALED_CLASSES, data);
+            } else if (node.isLocal() && !node.isRegularClass()) {
+                check(node, RegularLanguageFeature.STATIC_LOCAL_TYPE_DECLARATIONS, data);
+            }
             String simpleName = node.getSimpleName();
             if ("var".equals(simpleName)) {
-                check(node, ReservedIdentifiers.VAR_AS_A_TYPE_NAME, data);
+                check(node, Keywords.VAR_AS_A_TYPE_NAME, data);
+            } else if ("yield".equals(simpleName)) {
+                check(node, Keywords.YIELD_AS_A_TYPE_NAME, data);
             } else if ("record".equals(simpleName)) {
-                check(node, ReservedIdentifiers.RECORD_AS_A_TYPE_NAME, data);
+                check(node, Keywords.RECORD_AS_A_TYPE_NAME, data);
+            } else if ("sealed".equals(simpleName)) {
+                check(node, Keywords.SEALED_AS_A_TYPE_NAME, data);
+            } else if ("permits".equals(simpleName)) {
+                check(node, Keywords.PERMITS_AS_A_TYPE_NAME, data);
             }
             checkIdent(node, simpleName, data);
             return null;
@@ -527,15 +622,14 @@ public class LanguageLevelChecker<T> {
 
         private void checkIdent(JavaNode node, String simpleName, T acc) {
             if ("enum".equals(simpleName)) {
-                check(node, ReservedIdentifiers.ENUM_AS_AN_IDENTIFIER, acc);
+                check(node, Keywords.ENUM_AS_AN_IDENTIFIER, acc);
             } else if ("assert".equals(simpleName)) {
-                check(node, ReservedIdentifiers.ASSERT_AS_AN_IDENTIFIER, acc);
+                check(node, Keywords.ASSERT_AS_AN_IDENTIFIER, acc);
             } else if ("_".equals(simpleName)) {
-                check(node, ReservedIdentifiers.UNDERSCORE_AS_AN_IDENTIFIER, acc);
+                check(node, Keywords.UNDERSCORE_AS_AN_IDENTIFIER, acc);
             }
         }
 
     }
-
 
 }

@@ -7,24 +7,50 @@ package net.sourceforge.pmd.lang.ast;
 import java.util.Collections;
 import java.util.Map;
 
+import net.sourceforge.pmd.lang.DummyLanguageModule;
+import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.impl.GenericNode;
 
 public class DummyRoot extends DummyNode implements GenericNode<DummyNode>, RootNode {
 
-    private final Map<Integer, String> suppressMap;
+    private Map<Integer, String> suppressMap = Collections.emptyMap();
+    private String filename = "sample.dummy";
+    private LanguageVersion languageVersion = LanguageRegistry.findLanguageByTerseName(DummyLanguageModule.TERSE_NAME).getDefaultVersion();
+    private String sourceText = "dummy text";
 
-    public DummyRoot(Map<Integer, String> suppressMap) {
-        super();
+
+    public DummyRoot withLanguage(LanguageVersion languageVersion) {
+        this.languageVersion = languageVersion;
+        return this;
+    }
+
+    public DummyRoot withSourceText(String sourceText) {
+        this.sourceText = sourceText;
+        return this;
+    }
+
+    public DummyRoot withNoPmdComments(Map<Integer, String> suppressMap) {
         this.suppressMap = suppressMap;
+        return this;
     }
 
-    public DummyRoot() {
-        this(Collections.emptyMap());
+
+    public DummyRoot withFileName(String filename) {
+        this.filename = filename;
+        return this;
     }
+
 
     @Override
-    public Map<Integer, String> getNoPmdComments() {
-        return suppressMap;
+    public AstInfo<DummyRoot> getAstInfo() {
+        return new AstInfo<>(
+            filename,
+            languageVersion,
+            sourceText,
+            this,
+            suppressMap
+        );
     }
 
     @Override

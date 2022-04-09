@@ -99,7 +99,7 @@ public final class FileUtil {
     }
 
     private static List<DataSource> collect(List<DataSource> dataSources, String fileLocation,
-            FilenameFilter filenameFilter) {
+                                            FilenameFilter filenameFilter) {
         File file = new File(fileLocation);
         if (!file.exists()) {
             throw new RuntimeException("File " + file.getName() + " doesn't exist");
@@ -176,7 +176,7 @@ public final class FileUtil {
     /**
      * Reads the file, which contains the filelist. This is used for the
      * command line arguments --filelist/-filelist for both PMD and CPD.
-     * The separator in the filelist is a command and/or newlines.
+     * The separator in the filelist is a comma and/or newlines.
      *
      * @param filelist the file which contains the list of path names
      * @return a comma-separated list of file paths

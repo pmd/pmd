@@ -11,8 +11,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -22,13 +20,21 @@ import java.util.Properties;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.reflect.FieldUtils;
+import org.apache.commons.lang3.reflect.MethodUtils;
 import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.Project;
 import org.apache.tools.ant.types.Parameter;
 
 import net.sourceforge.pmd.Report;
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.renderers.RendererFactory;
+import net.sourceforge.pmd.reporting.FileAnalysisListener;
+import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
+import net.sourceforge.pmd.util.datasource.DataSource;
 
+@InternalApi
 public class Formatter {
 
     private File toFile;
@@ -134,8 +140,7 @@ public class Formatter {
     }
 
     private static String[] validRendererCodes() {
-        return RendererFactory.REPORT_FORMAT_TO_RENDERER.keySet()
-                .toArray(new String[RendererFactory.REPORT_FORMAT_TO_RENDERER.size()]);
+        return RendererFactory.REPORT_FORMAT_TO_RENDERER.keySet().toArray(new String[0]);
     }
 
     private static String unknownRendererMessage(String userSpecifiedType) {
@@ -182,8 +187,7 @@ public class Formatter {
         boolean isOnError = true;
         try {
             output = Files.newOutputStream(file.toPath());
-            writer = new OutputStreamWriter(output, charset);
-            writer = new BufferedWriter(writer);
+            writer = new BufferedWriter(new OutputStreamWriter(output, charset));
             isOnError = false;
         } finally {
             if (isOnError) {
@@ -199,13 +203,21 @@ public class Formatter {
         // in case of pipe or redirect, no interactive console.
         if (console != null) {
             try {
-                Field f = Console.class.getDeclaredField("cs");
-                f.setAccessible(true);
-                Object res = f.get(console);
+                Object res = FieldUtils.readDeclaredField(console, "cs", true);
                 if (res instanceof Charset) {
                     return ((Charset) res).name();
                 }
-            } catch (ReflectiveOperationException ignored) {
+            } catch (IllegalArgumentException | ReflectiveOperationException ignored) {
+                // fall-through
+            }
+
+            // Maybe this is Java17? Then there will be
+            // https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/Console.html#charset()
+            // instead of the field "cs".
+            try {
+                Charset charset = (Charset) MethodUtils.invokeMethod(console, "charset");
+                return charset.name();
+            } catch (IllegalArgumentException | ReflectiveOperationException ignored) {
                 // fall-through
             }
             return getNativeConsoleEncoding();
@@ -215,15 +227,37 @@ public class Formatter {
 
     private static String getNativeConsoleEncoding() {
         try {
-            Method m = Console.class.getDeclaredMethod("encoding");
-            m.setAccessible(true);
-            Object res = m.invoke(null);
+            Object res = MethodUtils.invokeStaticMethod(Console.class, "encoding");
             if (res instanceof String) {
                 return (String) res;
             }
-        } catch (ReflectiveOperationException ignored) {
+        } catch (IllegalArgumentException | ReflectiveOperationException ignored) {
             // fall-through
         }
         return null;
+    }
+
+    @InternalApi
+    public GlobalAnalysisListener newListener(Project project, List<String> inputPaths) throws IOException {
+        start(project.getBaseDir().toString());
+        Renderer renderer = getRenderer();
+        renderer.setUseShortNames(inputPaths);
+
+        return new GlobalAnalysisListener() {
+            final GlobalAnalysisListener listener = renderer.newListener();
+
+            @Override
+            public FileAnalysisListener startFileAnalysis(DataSource file) {
+                return listener.startFileAnalysis(file);
+            }
+
+            @Override
+            public void close() throws Exception {
+                listener.close();
+                if (!toConsole) {
+                    writer.close();
+                }
+            }
+        };
     }
 }

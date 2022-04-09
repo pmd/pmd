@@ -10,6 +10,7 @@ Rules which enforce a specific coding style.
     </description>
 
     <rule name="DuplicateJspImports"
+          language="jsp"
           since="3.7"
           message="Avoid duplicate imports such as ''{0}''"
           class="net.sourceforge.pmd.lang.jsp.rule.codestyle.DuplicateJspImportsRule"
