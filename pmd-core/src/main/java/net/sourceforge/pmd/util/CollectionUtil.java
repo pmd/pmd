@@ -17,6 +17,7 @@ import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -270,6 +271,17 @@ public final class CollectionUtil {
         union.add(first);
         union.addAll(asList(rest));
         return Collections.unmodifiableList(union);
+    }
+
+    public static <K, V> Map<K, V> mapOf(K k1, V v1) {
+        return Collections.singletonMap(k1, v1);
+    }
+
+    public static <K, V> Map<K, V> mapOf(K k1, V v1, K k2, V v2) {
+        Map<K, V> map = new LinkedHashMap<>();
+        map.put(k1, v1);
+        map.put(k2, v2);
+        return Collections.unmodifiableMap(map);
     }
 
     public static <T, R> List<@NonNull R> mapNotNull(Iterable<? extends T> from, Function<? super T, ? extends @Nullable R> f) {

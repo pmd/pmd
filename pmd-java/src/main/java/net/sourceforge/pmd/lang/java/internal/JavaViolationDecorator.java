@@ -14,6 +14,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.internal.util.IteratorUtil;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
@@ -33,15 +34,30 @@ final class JavaViolationDecorator implements ViolationDecorator {
     public void decorate(Node violationNode, Map<String, String> extraData) {
         JavaNode javaNode = (JavaNode) violationNode;
 
-        String packageName = javaNode.getRoot().getPackageName();
-        String className = javaNode.getEnclosingType().getBinaryName();
-        String methodName = getMethodName(javaNode);
-        String varName = getVariableNameIfExists(javaNode);
+        setIfNonNull(RuleViolation.VARIABLE_NAME, getVariableNameIfExists(javaNode), extraData);
+        setIfNonNull(RuleViolation.METHOD_NAME, getMethodName(javaNode), extraData);
+        setIfNonNull(RuleViolation.CLASS_NAME, getClassName(javaNode), extraData);
+        setIfNonNull(RuleViolation.PACKAGE_NAME, javaNode.getRoot().getPackageName(), extraData);
+    }
 
-        setIfNonNull(RuleViolation.VARIABLE_NAME, varName, extraData);
-        setIfNonNull(RuleViolation.METHOD_NAME, methodName, extraData);
-        setIfNonNull(RuleViolation.CLASS_NAME, className, extraData);
-        setIfNonNull(RuleViolation.PACKAGE_NAME, packageName, extraData);
+    private @Nullable String getClassName(JavaNode javaNode) {
+        ASTAnyTypeDeclaration enclosing = null;
+        if (javaNode instanceof ASTAnyTypeDeclaration) {
+            enclosing = (ASTAnyTypeDeclaration) javaNode;
+        }
+        if (enclosing == null) {
+            enclosing = javaNode.getEnclosingType();
+        }
+        if (enclosing == null) {
+            enclosing = javaNode.getRoot().getTypeDeclarations().first(ASTAnyTypeDeclaration::isPublic);
+        }
+        if (enclosing == null) {
+            enclosing = javaNode.getRoot().getTypeDeclarations().first();
+        }
+        if (enclosing != null) {
+            return enclosing.getSimpleName();
+        }
+        return null;
     }
 
     private void setIfNonNull(String key, String value, Map<String, String> extraData) {

@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.renderers;
 
+import static net.sourceforge.pmd.util.StringUtil.nullToEmpty;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -49,7 +51,7 @@ public class YAHTMLRenderer extends AbstractAccumulatingRenderer {
     }
 
     private void addViolation(RuleViolation violation) {
-        String packageName = violation.getPackageName();
+        String packageName = violation.getAdditionalInfo().getOrDefault(RuleViolation.PACKAGE_NAME, "");
 
         // report each part of the package name: e.g. net.sf.pmd.test will create nodes for
         // net, net.sf, net.sf.pmd, and net.sf.pmd.test

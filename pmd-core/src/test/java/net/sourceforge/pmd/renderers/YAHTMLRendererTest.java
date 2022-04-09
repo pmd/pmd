@@ -12,6 +12,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import org.apache.commons.io.IOUtils;
@@ -28,6 +30,7 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
+import net.sourceforge.pmd.util.CollectionUtil;
 
 public class YAHTMLRendererTest extends AbstractRendererTest {
 
@@ -43,12 +46,9 @@ public class YAHTMLRendererTest extends AbstractRendererTest {
 
     private RuleViolation newRuleViolation(int beginLine, int beginColumn, int endLine, int endColumn, final String packageNameArg, final String classNameArg) {
         DummyNode node = createNode(beginLine, beginColumn, endLine, endColumn);
-        return new ParametricRuleViolation(new FooRule(), node, "blah") {
-            {
-                packageName = packageNameArg;
-                className = classNameArg;
-            }
-        };
+        Map<String, String> extraData = CollectionUtil.mapOf(RuleViolation.PACKAGE_NAME, packageNameArg,
+                                                             RuleViolation.CLASS_NAME, classNameArg);
+        return new ParametricRuleViolation(new FooRule(), node, "blah", extraData);
     }
 
     @Override

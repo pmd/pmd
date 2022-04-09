@@ -522,6 +522,9 @@ public final class StringUtil {
         return str.replaceAll("'", "''");
     }
 
+    public static String nullToEmpty(final String value) {
+        return value == null ? "" : value;
+    }
 
 
     public enum CaseConvention {

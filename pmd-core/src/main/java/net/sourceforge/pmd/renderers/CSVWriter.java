@@ -16,7 +16,7 @@ import java.util.List;
  * @author Brian Remedios
  * @param <T>
  */
-public class CSVWriter<T extends Object> {
+class CSVWriter<T> {
 
     private final String separator; // e.g., the comma
     private final String lineSeparator; // cr
@@ -67,7 +67,7 @@ public class CSVWriter<T extends Object> {
 
     private void quote(StringBuilder buffer, String s) {
         if (s == null) {
-            return;
+            s = "";
         }
         buffer.append('"').append(s).append('"');
     }

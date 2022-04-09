@@ -137,6 +137,7 @@ public interface RuleViolation {
      *
      * @return The package name.
      */
+    @Deprecated
     default String getPackageName() {
         return getAdditionalInfo().get(PACKAGE_NAME);
     }
@@ -146,6 +147,7 @@ public interface RuleViolation {
      *
      * @return The Class name.
      */
+    @Deprecated
     default String getClassName() {
         return getAdditionalInfo().get(CLASS_NAME);
     }
@@ -155,6 +157,7 @@ public interface RuleViolation {
      *
      * @return The method name.
      */
+    @Deprecated
     default String getMethodName() {
         return getAdditionalInfo().get(METHOD_NAME);
     }
@@ -164,6 +167,7 @@ public interface RuleViolation {
      *
      * @return The variable name.
      */
+    @Deprecated
     default String getVariableName() {
         return getAdditionalInfo().get(VARIABLE_NAME);
     }

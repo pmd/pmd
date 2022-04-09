@@ -4,24 +4,18 @@
 
 package net.sourceforge.pmd.renderers;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 /**
- *
  * @author Brian Remedios
- *
- * @param <T>
  * @deprecated Is internal API
  */
-@InternalApi
-@Deprecated
-public class ColumnDescriptor<T extends Object> {
+final class ColumnDescriptor<T> {
 
     public final String id;
     public final String title;
     public final Accessor<T> accessor;
 
-    public interface Accessor<T extends Object> {
+    public interface Accessor<T> {
+
         String get(int idx, T violation, String lineSeparator);
     }
 

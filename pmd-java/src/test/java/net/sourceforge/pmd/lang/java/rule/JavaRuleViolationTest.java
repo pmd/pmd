@@ -4,6 +4,11 @@
 
 package net.sourceforge.pmd.lang.java.rule;
 
+import static net.sourceforge.pmd.RuleViolation.*;
+import static net.sourceforge.pmd.RuleViolation.CLASS_NAME;
+import static net.sourceforge.pmd.RuleViolation.PACKAGE_NAME;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasEntry;
 import static org.junit.Assert.assertEquals;
 
 import java.util.List;
@@ -35,9 +40,10 @@ public class JavaRuleViolationTest {
     @Test
     public void testASTFormalParameterVariableName() {
         ASTCompilationUnit ast = parse("class Foo { void bar(int x) {} }");
-        final ASTFormalParameter node = ast.getFirstDescendantOfType(ASTFormalParameter.class);
+        final ASTFormalParameter node = ast.descendants(ASTFormalParameter.class).first();
         final RuleViolation violation = violationAt(node);
-        assertEquals("x", violation.getVariableName());
+        assertThat(violation.getAdditionalInfo(), hasEntry(VARIABLE_NAME, "x"));
+        assertThat(violation.getAdditionalInfo(), hasEntry(METHOD_NAME, "bar"));
     }
 
     private ASTCompilationUnit parse(final String code) {
@@ -52,8 +58,8 @@ public class JavaRuleViolationTest {
     @Test
     public void testMethodName() {
         ASTCompilationUnit ast = parse("class Foo { void bar(int x) {} }");
-        ASTMethodDeclaration md = ast.getFirstDescendantOfType(ASTMethodDeclaration.class);
-        assertEquals("bar", violationAt(md).getMethodName());
+        ASTMethodDeclaration md = ast.descendants(ASTMethodDeclaration.class).first();
+        assertThat(violationAt(md).getAdditionalInfo(), hasEntry(METHOD_NAME, "bar"));
     }
 
     public @NonNull RuleViolation violationAt(JavaNode md) {
@@ -69,8 +75,8 @@ public class JavaRuleViolationTest {
     @Test
     public void testEnumName() {
         ASTCompilationUnit ast = parse("enum Foo {FOO; void bar(int x) {} }");
-        ASTMethodDeclaration md = ast.getFirstDescendantOfType(ASTMethodDeclaration.class);
-        assertEquals("Foo", violationAt(md).getClassName());
+        ASTMethodDeclaration md = ast.descendants(ASTMethodDeclaration.class).first();
+        assertThat(violationAt(md).getAdditionalInfo(), hasEntry(CLASS_NAME, "Foo"));
     }
 
     /**
@@ -82,66 +88,66 @@ public class JavaRuleViolationTest {
     @Test
     public void testPackageAndClassNameForImport() {
         ASTCompilationUnit ast = parse("package pkg; import java.util.List; public class Foo { }");
-        ASTImportDeclaration importNode = ast.getFirstDescendantOfType(ASTImportDeclaration.class);
+        ASTImportDeclaration importNode = ast.descendants(ASTImportDeclaration.class).first();
 
         RuleViolation violation = violationAt(importNode);
-        assertEquals("pkg", violation.getPackageName());
-        assertEquals("Foo", violation.getClassName());
+        assertThat(violation.getAdditionalInfo(), hasEntry(PACKAGE_NAME, "pkg"));
+        assertThat(violation.getAdditionalInfo(), hasEntry(CLASS_NAME, "Foo"));
     }
 
     @Test
     public void testPackageAndClassNameForField() {
         ASTCompilationUnit ast = parse("package pkg; public class Foo { int a; }");
-        ASTClassOrInterfaceDeclaration classDeclaration = ast.getFirstDescendantOfType(ASTClassOrInterfaceDeclaration.class);
-        ASTFieldDeclaration field = ast.getFirstDescendantOfType(ASTFieldDeclaration.class);
+        ASTClassOrInterfaceDeclaration classDeclaration = ast.descendants(ASTClassOrInterfaceDeclaration.class).first();
+        ASTFieldDeclaration field = ast.descendants(ASTFieldDeclaration.class).first();
 
         RuleViolation violation = violationAt(classDeclaration);
-        assertEquals("pkg", violation.getPackageName());
-        assertEquals("Foo", violation.getClassName());
+        assertThat(violation.getAdditionalInfo(), hasEntry(PACKAGE_NAME, "pkg"));
+        assertThat(violation.getAdditionalInfo(), hasEntry(CLASS_NAME, "Foo"));
 
         violation = violationAt(field);
-        assertEquals("pkg", violation.getPackageName());
-        assertEquals("Foo", violation.getClassName());
+        assertThat(violation.getAdditionalInfo(), hasEntry(PACKAGE_NAME, "pkg"));
+        assertThat(violation.getAdditionalInfo(), hasEntry(CLASS_NAME, "Foo"));
     }
 
     @Test
     public void testPackageAndEnumName() {
         ASTCompilationUnit ast = parse("package pkg; import java.util.List; public enum FooE { }");
-        ASTImportDeclaration importNode = ast.getFirstDescendantOfType(ASTImportDeclaration.class);
+        ASTImportDeclaration importNode = ast.descendants(ASTImportDeclaration.class).first();
 
         RuleViolation violation = violationAt(importNode);
-        assertEquals("pkg", violation.getPackageName());
-        assertEquals("FooE", violation.getClassName());
+        assertThat(violation.getAdditionalInfo(), hasEntry(PACKAGE_NAME, "pkg"));
+        assertThat(violation.getAdditionalInfo(), hasEntry(CLASS_NAME, "FooE"));
     }
 
     @Test
     public void testDefaultPackageAndClassName() {
         ASTCompilationUnit ast = parse("import java.util.List; public class Foo { }");
-        ASTImportDeclaration importNode = ast.getFirstDescendantOfType(ASTImportDeclaration.class);
+        ASTImportDeclaration importNode = ast.descendants(ASTImportDeclaration.class).first();
 
         RuleViolation violation = violationAt(importNode);
-        assertEquals("", violation.getPackageName());
-        assertEquals("Foo", violation.getClassName());
+        assertThat(violation.getAdditionalInfo(), hasEntry(PACKAGE_NAME, ""));
+        assertThat(violation.getAdditionalInfo(), hasEntry(CLASS_NAME, "Foo"));
     }
 
     @Test
     public void testPackageAndMultipleClassesName() {
         ASTCompilationUnit ast = parse("package pkg; import java.util.List; class Foo { } public class Bar { }");
-        ASTImportDeclaration importNode = ast.getFirstDescendantOfType(ASTImportDeclaration.class);
+        ASTImportDeclaration importNode = ast.descendants(ASTImportDeclaration.class).first();
 
         RuleViolation violation = violationAt(importNode);
-        assertEquals("pkg", violation.getPackageName());
-        assertEquals("Bar", violation.getClassName());
+        assertThat(violation.getAdditionalInfo(), hasEntry(PACKAGE_NAME, "pkg"));
+        assertThat(violation.getAdditionalInfo(), hasEntry(CLASS_NAME, "Bar"));
     }
 
     @Test
     public void testPackageAndPackagePrivateClassesName() {
         ASTCompilationUnit ast = parse("package pkg; import java.util.List; class Foo { }");
-        ASTImportDeclaration importNode = ast.getFirstDescendantOfType(ASTImportDeclaration.class);
+        ASTImportDeclaration importNode = ast.descendants(ASTImportDeclaration.class).first();
 
         RuleViolation violation = violationAt(importNode);
-        assertEquals("pkg", violation.getPackageName());
-        assertEquals("Foo", violation.getClassName());
+        assertThat(violation.getAdditionalInfo(), hasEntry(PACKAGE_NAME, "pkg"));
+        assertThat(violation.getAdditionalInfo(), hasEntry(CLASS_NAME, "Foo"));
     }
 
     /**
@@ -151,23 +157,23 @@ public class JavaRuleViolationTest {
     @Test
     public void testInnerClass() {
         ASTCompilationUnit ast = parse("class Foo { int a; class Bar { int a; } }");
-        List<ASTClassOrInterfaceDeclaration> classes = ast.findDescendantsOfType(ASTClassOrInterfaceDeclaration.class);
+        List<ASTClassOrInterfaceDeclaration> classes = ast.descendants(ASTClassOrInterfaceDeclaration.class).toList();
         assertEquals(2, classes.size());
 
         RuleViolation fooViolation = violationAt(classes.get(0));
-        assertEquals("Foo", fooViolation.getClassName());
+        assertThat(fooViolation.getAdditionalInfo(), hasEntry(CLASS_NAME, "Foo"));
 
         RuleViolation barViolation = violationAt(classes.get(1));
-        assertEquals("Foo$Bar", barViolation.getClassName());
+        assertThat(barViolation.getAdditionalInfo(), hasEntry(CLASS_NAME, "Bar"));
 
-        List<ASTFieldDeclaration> fields = ast.findDescendantsOfType(ASTFieldDeclaration.class, true);
+        List<ASTFieldDeclaration> fields = ast.descendants(ASTFieldDeclaration.class).crossFindBoundaries().toList();
         assertEquals(2, fields.size());
 
         RuleViolation fieldViolation = violationAt(fields.get(0));
-        assertEquals("Foo", fieldViolation.getClassName());
+        assertThat(fieldViolation.getAdditionalInfo(), hasEntry(CLASS_NAME, "Foo"));
 
         RuleViolation innerFieldViolation = violationAt(fields.get(1));
-        assertEquals("Foo$Bar", innerFieldViolation.getClassName());
+        assertThat(innerFieldViolation.getAdditionalInfo(), hasEntry(CLASS_NAME, "Bar"));
     }
 
 }

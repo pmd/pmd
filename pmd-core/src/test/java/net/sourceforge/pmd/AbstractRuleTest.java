@@ -110,7 +110,7 @@ public class AbstractRuleTest {
         s.setImage("TestImage");
 
         RuleViolation rv = RuleContextTest.getReportForRuleApply(r, s).getViolations().get(0);
-        assertEquals("Message foo    10 ${noSuchProperty}", rv.getDescription());
+        assertEquals("Message foo ${className} ${methodName} ${variableName} 10 ${noSuchProperty}", rv.getDescription());
     }
 
     @Test

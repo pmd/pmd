@@ -19,6 +19,7 @@ import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.document.TextRange2d;
+import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * A {@link RuleViolation} implementation that is immutable, and therefore cache friendly
@@ -121,10 +122,10 @@ public final class CachedRuleViolation implements RuleViolation {
      */
     /* package */ static void storeToStream(final DataOutputStream stream,
             final RuleViolation violation) throws IOException {
-        stream.writeUTF(getValueOrEmpty(violation.getDescription()));
-        stream.writeUTF(getValueOrEmpty(violation.getRule().getRuleClass()));
-        stream.writeUTF(getValueOrEmpty(violation.getRule().getName()));
-        stream.writeUTF(getValueOrEmpty(violation.getRule().getLanguage().getTerseName()));
+        stream.writeUTF(StringUtil.nullToEmpty(violation.getDescription()));
+        stream.writeUTF(StringUtil.nullToEmpty(violation.getRule().getRuleClass()));
+        stream.writeUTF(StringUtil.nullToEmpty(violation.getRule().getName()));
+        stream.writeUTF(StringUtil.nullToEmpty(violation.getRule().getLanguage().getTerseName()));
         FileLocation location = violation.getLocation();
         stream.writeInt(location.getStartPos().getLine());
         stream.writeInt(location.getStartPos().getColumn());
@@ -134,12 +135,9 @@ public final class CachedRuleViolation implements RuleViolation {
         stream.writeInt(extraData.size());
         for (Entry<String, String> entry : extraData.entrySet()) {
             stream.writeUTF(entry.getKey());
-            stream.writeUTF(getValueOrEmpty(entry.getValue()));
+            stream.writeUTF(StringUtil.nullToEmpty(entry.getValue()));
 
         }
     }
 
-    private static String getValueOrEmpty(final String value) {
-        return value == null ? "" : value;
-    }
 }

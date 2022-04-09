@@ -30,6 +30,14 @@ public class ParametricRuleViolation implements RuleViolation {
     private final Map<String, String> extraData;
 
 
+    /**
+     * @deprecated Update tests that use this not to call the ctor directly.
+     */
+    @Deprecated
+    public ParametricRuleViolation(Rule theRule, Reportable node, String message) {
+        this(theRule, node.getReportLocation(), message, Collections.emptyMap());
+    }
+
     public ParametricRuleViolation(Rule theRule, Reportable node, String message, Map<String, String> extraData) {
         this(theRule, node.getReportLocation(), message, extraData);
     }

@@ -49,7 +49,7 @@ public class DummyLanguageModule extends BaseLanguageModule {
 
         @Override
         public ViolationDecorator getViolationDecorator() {
-            return (rv, node, data) -> data.put(RuleViolation.PACKAGE_NAME, "foo");
+            return (node, data) -> data.put(RuleViolation.PACKAGE_NAME, "foo");
         }
     }
 
