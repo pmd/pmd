@@ -7,20 +7,23 @@ package net.sourceforge.pmd;
 import static net.sourceforge.pmd.properties.constraints.NumericConstraints.inRange;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 import java.util.Collections;
 
 import org.junit.Test;
 
-import net.sourceforge.pmd.Report.SuppressedViolation;
 import net.sourceforge.pmd.lang.ast.DummyRoot;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
-import net.sourceforge.pmd.lang.rule.impl.DefaultRuleViolationFactory;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
+import net.sourceforge.pmd.reporting.FileAnalysisListener;
 
 
 public class AbstractRuleTest {
@@ -114,10 +117,13 @@ public class AbstractRuleTest {
     public void testRuleSuppress() {
         DummyRoot n = new DummyRoot().withNoPmdComments(Collections.singletonMap(5, ""));
         n.setCoordsReplaceText(5, 1, 6, 1);
-        RuleViolation violation = DefaultRuleViolationFactory.defaultInstance().createViolation(new MyRule(), n, n.getReportLocation(), "specificdescription");
-        SuppressedViolation suppressed = DefaultRuleViolationFactory.defaultInstance().suppressOrNull(n, violation);
 
-        assertNotNull(suppressed);
+        FileAnalysisListener listener = mock(FileAnalysisListener.class);
+        RuleContext ctx = RuleContext.create(listener, new MyRule());
+        ctx.addViolationWithMessage(n, "message");
+
+        verify(listener, never()).onRuleViolation(any());
+        verify(listener, times(1)).onSuppressedRuleViolation(any());
     }
 
     @Test

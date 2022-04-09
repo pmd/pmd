@@ -7,11 +7,14 @@ package net.sourceforge.pmd.lang.java.rule;
 import static org.junit.Assert.assertEquals;
 
 import java.util.List;
+import java.util.Objects;
 
+import org.apache.commons.lang3.mutable.MutableObject;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.Test;
 
 import net.sourceforge.pmd.FooRule;
+import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
@@ -29,10 +32,6 @@ public class JavaRuleViolationTest {
 
     // TODO there are no tests for anon or local classes
 
-    /**
-     * Verifies that {@link JavaRuleViolation} sets the variable name for an
-     * {@link ASTFormalParameter} node.
-     */
     @Test
     public void testASTFormalParameterVariableName() {
         ASTCompilationUnit ast = parse("class Foo { void bar(int x) {} }");
@@ -57,9 +56,11 @@ public class JavaRuleViolationTest {
         assertEquals("bar", violationAt(md).getMethodName());
     }
 
-    @NonNull
-    public RuleViolation violationAt(JavaNode md) {
-        return new JavaRuleViolation(new FooRule(), md, md.getReportLocation(), "");
+    public @NonNull RuleViolation violationAt(JavaNode md) {
+        MutableObject<RuleViolation> rv = new MutableObject<>();
+        RuleContext rctx = RuleContext.create(rv::setValue, new FooRule());
+        rctx.addViolation(md);
+        return Objects.requireNonNull(rv.getValue());
     }
 
     /**

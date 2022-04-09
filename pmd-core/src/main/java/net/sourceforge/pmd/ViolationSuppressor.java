@@ -14,14 +14,13 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import net.sourceforge.pmd.Report.SuppressedViolation;
 import net.sourceforge.pmd.lang.ast.AstInfo;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
 import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
 import net.sourceforge.pmd.lang.rule.xpath.internal.DeprecatedAttrLogger;
 import net.sourceforge.pmd.lang.rule.xpath.internal.SaxonXPathRuleQuery;
 
 /**
  * An object that suppresses rule violations. Suppressors are used by
- * {@link RuleViolationFactory} to filter out violations. In PMD 6.0.x,
+ * {@link RuleContext} to filter out violations. In PMD 6.0.x,
  * the {@link Report} object filtered violations itself - but it has
  * no knowledge of language-specific suppressors.
  */

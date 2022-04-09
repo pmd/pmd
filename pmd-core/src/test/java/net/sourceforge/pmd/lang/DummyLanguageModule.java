@@ -4,16 +4,10 @@
 
 package net.sourceforge.pmd.lang;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
-
-import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.ast.DummyRoot;
-import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.Parser;
-import net.sourceforge.pmd.lang.document.FileLocation;
-import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
-import net.sourceforge.pmd.lang.rule.impl.DefaultRuleViolationFactory;
+import net.sourceforge.pmd.reporting.ViolationDecorator;
 
 /**
  * Dummy language used for testing PMD.
@@ -39,11 +33,6 @@ public class DummyLanguageModule extends BaseLanguageModule {
 
     public static class Handler extends AbstractPmdLanguageVersionHandler {
 
-        @Override
-        public RuleViolationFactory getRuleViolationFactory() {
-            return new RuleViolationFactory();
-        }
-
 
         @Override
         public Parser getParser() {
@@ -57,6 +46,11 @@ public class DummyLanguageModule extends BaseLanguageModule {
                 return node;
             };
         }
+
+        @Override
+        public ViolationDecorator getViolationDecorator() {
+            return (rv, node, data) -> data.put(RuleViolation.PACKAGE_NAME, "foo");
+        }
     }
 
     public static class HandlerWithParserThatThrows extends Handler {
@@ -66,18 +60,5 @@ public class DummyLanguageModule extends BaseLanguageModule {
                 throw new AssertionError("test error while parsing");
             };
         }
-    }
-
-    public static class RuleViolationFactory extends DefaultRuleViolationFactory {
-
-        @Override
-        public RuleViolation createViolation(Rule rule, @NonNull Node node, FileLocation location, @NonNull String formattedMessage) {
-            return new ParametricRuleViolation(rule, location, formattedMessage) {
-                {
-                    this.packageName = "foo"; // just for testing variable expansion
-                }
-            };
-        }
-
     }
 }

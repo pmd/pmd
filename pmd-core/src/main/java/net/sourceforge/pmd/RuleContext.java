@@ -21,7 +21,7 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.document.TextRange2d;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
-import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
+import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 import net.sourceforge.pmd.processor.AbstractPMDProcessor;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
 import net.sourceforge.pmd.reporting.ViolationDecorator;
@@ -127,7 +127,7 @@ public final class RuleContext {
      * as a format string for a {@link MessageFormat} and should hence use
      * appropriate escapes. The given formatting arguments are used.
      *
-     * @param location   Location of the violation
+     * @param node       Location of the violation
      * @param message    Violation message
      * @param formatArgs Format arguments for the message
      */
@@ -137,16 +137,14 @@ public final class RuleContext {
         Objects.requireNonNull(formatArgs, "Format arguments were null, use an empty array");
 
         LanguageVersionHandler handler = node.getTextDocument().getLanguageVersion().getLanguageVersionHandler();
-        RuleViolationFactory fact = handler.getRuleViolationFactory();
-
 
         FileLocation location = node.getReportLocation();
         if (beginLine != -1 && endLine != -1) {
             location = FileLocation.location(location.getFileName(), TextRange2d.range2d(beginLine, 1, endLine, 1));
         }
-        violation = ViolationDecorator.apply(handler.getViolationDecorator(), violation, location);
 
-        RuleViolation violation = fact.createViolation(rule, node, location, makeMessage(message, formatArgs));
+        RuleViolation violation = new ParametricRuleViolation(rule, location, makeMessage(message, formatArgs));
+        violation = ViolationDecorator.apply(handler.getViolationDecorator(), violation, node);
 
         SuppressedViolation suppressed = suppressOrNull(node, violation, handler);
 

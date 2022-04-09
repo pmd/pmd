@@ -14,8 +14,6 @@ import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.reporting.Reportable;
-import net.sourceforge.pmd.util.DataMap;
-import net.sourceforge.pmd.util.DataMap.TransparentDataMap;
 
 /**
  * @deprecated This is internal. Clients should exclusively use {@link RuleViolation}.
@@ -97,26 +95,6 @@ public class ParametricRuleViolation implements RuleViolation {
     @Override
     public FileLocation getLocation() {
         return location;
-    }
-
-    @Override
-    public String getPackageName() {
-        return packageName;
-    }
-
-    @Override
-    public String getClassName() {
-        return className;
-    }
-
-    @Override
-    public String getMethodName() {
-        return methodName;
-    }
-
-    @Override
-    public String getVariableName() {
-        return variableName;
     }
 
     @Override

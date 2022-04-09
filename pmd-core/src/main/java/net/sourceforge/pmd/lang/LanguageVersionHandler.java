@@ -11,8 +11,6 @@ import net.sourceforge.pmd.ViolationSuppressor;
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.ast.Parser;
 import net.sourceforge.pmd.lang.metrics.LanguageMetricsProvider;
-import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
-import net.sourceforge.pmd.lang.rule.impl.DefaultRuleViolationFactory;
 import net.sourceforge.pmd.lang.rule.xpath.impl.XPathHandler;
 import net.sourceforge.pmd.properties.PropertySource;
 import net.sourceforge.pmd.reporting.ViolationDecorator;
@@ -60,13 +58,6 @@ public interface LanguageVersionHandler {
 
     default List<ViolationSuppressor> getExtraViolationSuppressor() {
         return Collections.emptyList();
-    }
-
-    /**
-     * Get the RuleViolationFactory.
-     */
-    default RuleViolationFactory getRuleViolationFactory() {
-        return DefaultRuleViolationFactory.defaultInstance();
     }
 
 
