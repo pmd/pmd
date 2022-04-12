@@ -3,7 +3,9 @@ source 'https://rubygems.org/'
 # bleeding edge from git
 #gem 'pmdtester', :git => 'https://github.com/pmd/pmd-regression-tester.git', branch: 'master'
 
-gem 'pmdtester'
+#gem 'pmdtester'
+gem 'pmdtester', :git => 'https://github.com/adangel/pmd-regression-tester.git', branch: 'fix-report-doc-filter'
+
 gem 'danger'
 
 # This group is only needed for rendering release notes (docs/render_release_notes.rb)
