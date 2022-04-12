@@ -16,6 +16,7 @@ This is a {{ site.pmd.release_type }} release.
 
 ### Fixed Issues
 * core
+  * [#3792](https://github.com/pmd/pmd/issues/3792): \[core] Allow to filter violations in Report
   * [#3882](https://github.com/pmd/pmd/pull/3882): \[core] Fix AssertionError about exhaustive switch
 
 ### API Changes
