@@ -24,7 +24,6 @@ import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Report.ConfigurationError;
 import net.sourceforge.pmd.Report.ProcessingError;
-import net.sourceforge.pmd.ReportTest;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleViolation;
@@ -67,7 +66,7 @@ public class YAHTMLRendererTest extends AbstractRendererTest {
         report.addRuleViolation(newRuleViolation(1, 1, 1, 1, "net.sf.pmd.test", "YAHTMLSampleClass1"));
         report.addRuleViolation(newRuleViolation(1, 1, 1, 2, "net.sf.pmd.test", "YAHTMLSampleClass1"));
         report.addRuleViolation(newRuleViolation(1, 1, 1, 1, "net.sf.pmd.other", "YAHTMLSampleClass2"));
-        String actual = ReportTest.render(getRenderer(), report);
+        String actual = renderReport(getRenderer(), report);
         assertEquals(filter(getExpected()), filter(actual));
 
         String[] htmlFiles = outputDir.list();
