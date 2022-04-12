@@ -6,19 +6,22 @@ package net.sourceforge.pmd.renderers;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.function.Consumer;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
 import net.sourceforge.pmd.FooRule;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Report.ConfigurationError;
 import net.sourceforge.pmd.Report.ProcessingError;
-import net.sourceforge.pmd.ReportTest;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.RuleViolation;
@@ -28,8 +31,13 @@ import net.sourceforge.pmd.lang.ast.DummyRoot;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
+import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
+import net.sourceforge.pmd.util.datasource.DataSource;
 
 public abstract class AbstractRendererTest {
+
+    @org.junit.Rule
+    public TemporaryFolder temporaryFolder = new TemporaryFolder();
 
     public abstract Renderer getRenderer();
 
@@ -98,6 +106,7 @@ public abstract class AbstractRendererTest {
     protected Rule createBooRule() {
         Rule booRule = new FooRule();
         booRule.setName("Boo");
+        booRule.setDescription("desc");
         booRule.setPriority(RulePriority.HIGH);
         return booRule;
     }
@@ -129,14 +138,18 @@ public abstract class AbstractRendererTest {
         RuleWithProperties theRule = new RuleWithProperties();
         theRule.setProperty(RuleWithProperties.STRING_PROPERTY_DESCRIPTOR,
                 "the string value\nsecond line with \"quotes\"");
-        String rendered = ReportTest.render(getRenderer(),
-                it -> it.onRuleViolation(new ParametricRuleViolation<Node>(theRule, node, "blah")));
+        String rendered = renderReport(getRenderer(),
+                it -> it.onRuleViolation(newRuleViolation(1, 1, 1, 1, theRule)));
         assertEquals(filter(getExpectedWithProperties()), filter(rendered));
     }
 
     @Test
     public void testRenderer() throws Exception {
-        String actual = render(reportOneViolation());
+        testRenderer(Charset.defaultCharset());
+    }
+
+    protected void testRenderer(Charset expectedCharset) throws Exception {
+        String actual = renderReport(getRenderer(), reportOneViolation(), expectedCharset);
         assertEquals(filter(getExpected()), filter(actual));
     }
 
@@ -167,13 +180,48 @@ public abstract class AbstractRendererTest {
     }
 
     private String render(Consumer<FileAnalysisListener> listenerEffects) throws IOException {
-        return ReportTest.render(getRenderer(), listenerEffects);
+        return renderReport(getRenderer(), listenerEffects);
     }
 
     @Test
     public void testConfigError() throws Exception {
         Report.ConfigurationError err = new Report.ConfigurationError(new FooRule(), "a configuration error");
-        String actual = ReportTest.renderGlobal(getRenderer(), it -> it.onConfigError(err));
+        String actual = renderGlobal(getRenderer(), it -> it.onConfigError(err));
         assertEquals(filter(getExpectedError(err)), filter(actual));
     }
+
+    protected String renderReport(Renderer renderer, Consumer<? super FileAnalysisListener> listenerEffects) throws IOException {
+        return renderReport(renderer, listenerEffects, Charset.defaultCharset());
+    }
+
+    protected String renderReport(Renderer renderer, Consumer<? super FileAnalysisListener> listenerEffects,
+                                  Charset expectedEncoding) throws IOException {
+        return renderGlobal(renderer, globalListener -> {
+            DataSource dummyFile = DataSource.forString("dummyText", "file");
+            try (FileAnalysisListener fal = globalListener.startFileAnalysis(dummyFile)) {
+                listenerEffects.accept(fal);
+            } catch (Exception e) {
+                throw new AssertionError(e);
+            }
+        }, expectedEncoding);
+    }
+
+    private String renderGlobal(Renderer renderer, Consumer<? super GlobalAnalysisListener> listenerEffects) throws IOException {
+        return renderGlobal(renderer, listenerEffects, Charset.defaultCharset());
+    }
+
+    private String renderGlobal(Renderer renderer, Consumer<? super GlobalAnalysisListener> listenerEffects,
+                                Charset expectedEncoding) throws IOException {
+        File file = temporaryFolder.newFile();
+        renderer.setReportFile(file.getAbsolutePath());
+
+        try (GlobalAnalysisListener listener = renderer.newListener()) {
+            listenerEffects.accept(listener);
+        } catch (Exception e) {
+            throw new AssertionError(e);
+        }
+
+        return FileUtils.readFileToString(file, expectedEncoding);
+    }
+
 }
