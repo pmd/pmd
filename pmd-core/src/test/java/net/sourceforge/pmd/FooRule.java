@@ -18,7 +18,7 @@ public class FooRule extends AbstractRule {
     public FooRule() {
         setLanguage(LanguageRegistry.getLanguage(DummyLanguageModule.NAME));
         setName("Foo");
-        setDescription("Description with Unicode Character U+2013: – .");
+        setDescription("Description with Unicode Character U+2013: \u2013 .");
     }
 
     @Override
