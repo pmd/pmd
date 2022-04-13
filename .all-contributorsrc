@@ -6584,6 +6584,16 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "jasonqiu98",
+      "name": "Jason Qiu",
+      "avatar_url": "https://avatars.githubusercontent.com/u/26801257?v=4",
+      "profile": "https://github.com/jasonqiu98",
+      "contributions": [
+        "code",
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,
