@@ -4,13 +4,15 @@
 
 package net.sourceforge.pmd.util.log.internal;
 
+import static net.sourceforge.pmd.util.StringUtil.quoteMessageFormat;
+
 import java.text.MessageFormat;
 import java.util.Objects;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.slf4j.event.Level;
 
-import net.sourceforge.pmd.util.StringUtil;
 import net.sourceforge.pmd.util.log.MessageReporter;
 
 /**
@@ -50,17 +52,23 @@ abstract class MessageReporterBase implements MessageReporter {
                 return;
             }
             message = MessageFormat.format(message, formatArgs);
-            String errorMessage = error.getMessage();
-            if (errorMessage == null) {
-                errorMessage = error.getClass().getSimpleName();
-            }
-            errorMessage = StringUtil.quoteMessageFormat(errorMessage);
-            log(level, message + ": " + errorMessage);
+            String errorMessage = getErrorMessage(error);
+            logImpl(level, message + ": " + errorMessage);
             if (isLoggable(Level.DEBUG)) {
-                String stackTrace = StringUtil.quoteMessageFormat(ExceptionUtils.getStackTrace(error));
+                String stackTrace = quoteMessageFormat(ExceptionUtils.getStackTrace(error));
                 log(Level.DEBUG, stackTrace);
             }
         }
+    }
+
+    @NonNull
+    private String getErrorMessage(Throwable error) {
+        String errorMessage = error.getMessage();
+        if (errorMessage == null) {
+            errorMessage = error.getClass().getSimpleName();
+        }
+        errorMessage = errorMessage;
+        return errorMessage;
     }
 
     @Override
@@ -69,14 +77,14 @@ abstract class MessageReporterBase implements MessageReporter {
             this.numErrors++;
         }
         if (isLoggable(level)) {
-            logImpl(level, message, formatArgs);
+            logImpl(level, MessageFormat.format(message, formatArgs));
         }
     }
 
     /**
      * Perform logging assuming {@link #isLoggable(Level)} is true.
      */
-    protected abstract void logImpl(Level level, String message, Object[] formatArgs);
+    protected abstract void logImpl(Level level, String message);
 
 
     @Override

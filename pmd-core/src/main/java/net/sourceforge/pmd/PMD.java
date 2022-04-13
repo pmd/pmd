@@ -31,7 +31,6 @@ import net.sourceforge.pmd.cli.internal.CliMessages;
 import net.sourceforge.pmd.internal.Slf4jSimpleConfiguration;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.reporting.ReportStats;
-import net.sourceforge.pmd.reporting.ReportStatsListener;
 import net.sourceforge.pmd.util.datasource.DataSource;
 import net.sourceforge.pmd.util.log.MessageReporter;
 import net.sourceforge.pmd.util.log.internal.SimpleMessageReporter;
@@ -68,34 +67,6 @@ public final class PMD {
     public static final String SUPPRESS_MARKER = PMDConfiguration.DEFAULT_SUPPRESS_MARKER;
 
     private PMD() {
-    }
-
-
-    private static ReportStats runAndReturnStats(PmdAnalysis pmd) {
-        if (pmd.getRulesets().isEmpty()) {
-            return ReportStats.empty();
-        }
-
-        @SuppressWarnings("PMD.CloseResource")
-        ReportStatsListener listener = new ReportStatsListener();
-
-        pmd.addListener(listener);
-
-        try {
-            pmd.performAnalysis();
-        } catch (Exception e) {
-            pmd.getReporter().errorEx("Exception during processing", e);
-            ReportStats stats = listener.getResult();
-            printErrorDetected(1 + stats.getNumErrors());
-            return stats; // should have been closed
-        }
-        ReportStats stats = listener.getResult();
-
-        if (stats.getNumErrors() > 0) {
-            printErrorDetected(stats.getNumErrors());
-        }
-
-        return stats;
     }
 
 
@@ -192,7 +163,7 @@ public final class PMD {
         return runPmd(parseResult.toConfiguration());
     }
 
-    private static void printErrorDetected(int errors) {
+    static void printErrorDetected(int errors) {
         String msg = CliMessages.errorDetectedMessage(errors, "PMD");
         log.error(msg);
     }
@@ -240,8 +211,7 @@ public final class PMD {
                 return StatusCode.ERROR;
             }
             try {
-                ReportStats stats;
-                stats = PMD.runAndReturnStats(pmd);
+                ReportStats stats = pmd.runAndReturnStats();
                 if (pmdReporter.numErrors() > 0) {
                     // processing errors are ignored
                     return StatusCode.ERROR;

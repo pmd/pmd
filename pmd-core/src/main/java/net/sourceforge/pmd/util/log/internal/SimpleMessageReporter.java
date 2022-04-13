@@ -30,7 +30,7 @@ public class SimpleMessageReporter extends MessageReporterBase implements Messag
     }
 
     @Override
-    protected void logImpl(Level level, String message, Object[] formatArgs) {
-        backend.atLevel(level).log(message, formatArgs);
+    protected void logImpl(Level level, String message) {
+        backend.atLevel(level).log(message);
     }
 }

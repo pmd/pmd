@@ -122,7 +122,7 @@ public class CLITest extends BaseCLITest {
     @Test
     public void testWrongRulename() {
         String[] args = { "-d", SOURCE_FOLDER, "-f", "text", "-R", "category/java/design.xml/ThisRuleDoesNotExist", };
-        String log = runTest(StatusCode.OK, args);
+        String log = runTest(StatusCode.ERROR, args);
         assertThat(log, containsString("No rules found. Maybe you misspelled a rule name?"
                                            + " (category/java/design.xml/ThisRuleDoesNotExist)"));
     }

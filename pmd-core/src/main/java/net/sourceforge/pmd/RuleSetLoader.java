@@ -218,7 +218,7 @@ public final class RuleSetLoader {
             }
         }
         if (!anyRules) {
-            reporter.warn("No rules found. Maybe you misspelled a rule name? ({})",
+            reporter.warn("No rules found. Maybe you misspelled a rule name? ({0})",
                           StringUtils.join(rulesetPaths, ','));
         }
         return ruleSets;
@@ -232,7 +232,7 @@ public final class RuleSetLoader {
             }
         }
         if (ruleset.getRules().isEmpty()) {
-            reporter.warn("No rules found in ruleset {}", path);
+            reporter.warn("No rules found in ruleset {0}", path);
         }
 
     }
