@@ -25,6 +25,7 @@ public final class SchemaConstants {
     public static final SchemaConstant EXCLUDE_PATTERN = new SchemaConstant("exclude-pattern");
     public static final SchemaConstant INCLUDE_PATTERN = new SchemaConstant("include-pattern");
     public static final SchemaConstant RULE = new SchemaConstant("rule");
+    public static final SchemaConstant REF = new SchemaConstant("ref");
 
     public static final SchemaConstant EXCLUDE = new SchemaConstant("exclude");
     public static final SchemaConstant PRIORITY = new SchemaConstant("priority");

@@ -16,45 +16,20 @@ import java.io.InputStream;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.function.Predicate;
 
-import org.apache.commons.lang3.StringUtils;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
-import org.junit.contrib.java.lang.system.SystemErrRule;
 import org.mockito.Mockito;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.slf4j.event.Level;
 
-import net.sourceforge.pmd.junit.LocaleRule;
 import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.rule.MockRule;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.util.ResourceLoader;
-import net.sourceforge.pmd.util.log.MessageReporter;
 
-public class RuleSetFactoryTest {
+public class RuleSetFactoryTest extends RulesetFactoryTestBase {
 
-    private static final Logger LOG = LoggerFactory.getLogger(RuleSetFactoryTest.class);
-
-    @org.junit.Rule
-    public LocaleRule localeRule = LocaleRule.en();
-
-    @org.junit.Rule
-    public final SystemErrRule systemErrRule = new SystemErrRule().muteForSuccessfulTests().enableLog();
-
-    private MessageReporter mockReporter;
-
-
-    @Before
-    public void setup() {
-        // mockReporter = Mockito.spy(new SimpleMessageReporter(LOG));
-        mockReporter = Mockito.mock(MessageReporter.class);
-    }
 
     @Test
     public void testRuleSetFileName() {
@@ -222,7 +197,7 @@ public class RuleSetFactoryTest {
         assertNotNull(rule);
         assertNull(rs.getRuleByName("OldName"));
 
-        assertTrue(systemErrRule.getLog().isEmpty());
+        verifyNoWarnings();
     }
 
     /**
@@ -295,7 +270,7 @@ public class RuleSetFactoryTest {
         assertNotNull(rs.getRuleByName("DummyBasicMockRule"));
         assertNotNull(rs.getRuleByName("SampleXPathRule"));
 
-        assertTrue(systemErrRule.getLog().isEmpty());
+        verifyNoWarnings();
     }
 
     /**
@@ -324,7 +299,7 @@ public class RuleSetFactoryTest {
         assertNotNull(rs.getRuleByName("DummyBasicMockRule"));
         assertNotNull(rs.getRuleByName("SampleXPathRule"));
 
-        assertTrue(systemErrRule.getLog().isEmpty());
+        verifyNoWarnings();
     }
 
     /**
@@ -349,12 +324,13 @@ public class RuleSetFactoryTest {
         assertNotNull(rs.getRuleByName("DummyBasicMockRule"));
         assertNotNull(rs.getRuleByName("SampleXPathRule"));
 
-        assertEquals(0,
-                     StringUtils.countMatches(systemErrRule.getLog(),
-                                              "WARN net.sourceforge.pmd.RuleSetFactory - Discontinue using Rule rulesets/dummy/basic.xml/DeprecatedRule as it is scheduled for removal from PMD."));
-        assertEquals(1,
-                StringUtils.countMatches(systemErrRule.getLog(),
-                    "WARN net.sourceforge.pmd.RuleSetFactory - Unable to exclude rules [NonExistingRule] from ruleset reference rulesets/dummy/basic.xml; perhaps the rule name is misspelled or the rule doesn't exist anymore?"));
+        verifyFoundWarningWithMessage(
+            Mockito.never(),
+            containing("Discontinue using Rule rulesets/dummy/basic.xml/DeprecatedRule")
+        );
+        verifyFoundAWarningWithMessage(containing(
+            "Exclude pattern 'NonExistingRule' did not match any rule in ruleset"
+        ));
     }
 
     /**
@@ -371,9 +347,9 @@ public class RuleSetFactoryTest {
         assertNotNull(rs.getRuleByName("DummyBasicMockRule"));
         assertNotNull(rs.getRuleByName("SampleXPathRule"));
 
-        assertEquals(1,
-                     StringUtils.countMatches(systemErrRule.getLog(),
-                                              "WARN net.sourceforge.pmd.RuleSetFactory - The RuleSet rulesets/dummy/deprecated.xml has been deprecated and will be removed in PMD"));
+        verifyFoundAWarningWithMessage(containing(
+            "The RuleSet rulesets/dummy/deprecated.xml has been deprecated and will be removed in PMD"
+        ));
     }
 
     /**
@@ -390,9 +366,10 @@ public class RuleSetFactoryTest {
         assertEquals(1, rs.getRules().size());
         assertNotNull(rs.getRuleByName("DummyBasic2MockRule"));
 
-        assertEquals(0,
-                     StringUtils.countMatches(systemErrRule.getLog(),
-                                              "WARN net.sourceforge.pmd.RuleSetFactory - Use Rule name rulesets/dummy/basic.xml/DummyBasicMockRule instead of the deprecated Rule name rulesets/dummy/basic2.xml/DummyBasicMockRule. PMD"));
+        verifyFoundWarningWithMessage(
+            Mockito.never(),
+            containing("Use Rule name rulesets/dummy/basic.xml/DummyBasicMockRule instead of the deprecated Rule name rulesets/dummy/basic2.xml/DummyBasicMockRule")
+        );
     }
 
     @Test
@@ -657,20 +634,6 @@ public class RuleSetFactoryTest {
         verifyFoundAnErrorWithMessage(containing("version range"));
     }
 
-    private void verifyFoundAnErrorWithMessage(Predicate<String> messageTest) {
-        Mockito.verify(mockReporter, Mockito.times(1))
-               .logEx(Mockito.eq(Level.ERROR), Mockito.argThat(messageTest::test), Mockito.any(), Mockito.any());
-    }
-
-    private void verifyFoundAWarningWithMessage(Predicate<String> messageTest) {
-        Mockito.verify(mockReporter, Mockito.times(1))
-               .logEx(Mockito.eq(Level.WARN), Mockito.argThat(messageTest::test), Mockito.any(), Mockito.any());
-    }
-
-    private static Predicate<String> containing(String part) {
-        return it -> it.contains(part);
-    }
-
     @Test
     public void testDirectDeprecatedRule() {
         Rule r = loadFirstRule(DIRECT_DEPRECATED_RULE);
@@ -776,7 +739,7 @@ public class RuleSetFactoryTest {
             + "</ruleset>\n");
         assertEquals(0, ruleset.getRules().size());
 
-        assertTrue(systemErrRule.getLog().isEmpty());
+        verifyNoWarnings();
     }
 
     /**

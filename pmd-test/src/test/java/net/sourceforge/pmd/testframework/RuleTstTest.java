@@ -5,8 +5,7 @@
 package net.sourceforge.pmd.testframework;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -20,13 +19,14 @@ import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.rule.AbstractRule;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 import net.sourceforge.pmd.test.lang.DummyLanguageModule.DummyRootNode;
 
 public class RuleTstTest {
     private LanguageVersion dummyLanguage = LanguageRegistry.findLanguageByTerseName("dummy").getDefaultVersion();
 
-    private Rule rule = mock(Rule.class);
+    private Rule rule = spy(AbstractRule.class);
 
     private RuleTst ruleTester = new RuleTst() {
     };
@@ -42,13 +42,6 @@ public class RuleTstTest {
 
         verify(rule).start(any(RuleContext.class));
         verify(rule).end(any(RuleContext.class));
-        verify(rule).getLanguage();
-        verify(rule, times(2)).getTargetSelector();
-        verify(rule).getMinimumLanguageVersion();
-        verify(rule).getMaximumLanguageVersion();
-        verify(rule).apply(any(Node.class), any(RuleContext.class));
-        verify(rule, times(4)).getName();
-        verify(rule).getPropertiesByPropertyDescriptor();
     }
 
     @Test

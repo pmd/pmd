@@ -9,6 +9,7 @@ import static net.sourceforge.pmd.internal.util.xml.SchemaConstants.EXCLUDE;
 import static net.sourceforge.pmd.internal.util.xml.SchemaConstants.EXCLUDE_PATTERN;
 import static net.sourceforge.pmd.internal.util.xml.SchemaConstants.INCLUDE_PATTERN;
 import static net.sourceforge.pmd.internal.util.xml.SchemaConstants.PRIORITY;
+import static net.sourceforge.pmd.internal.util.xml.SchemaConstants.REF;
 import static net.sourceforge.pmd.internal.util.xml.SchemaConstants.RULE;
 
 import java.io.IOException;
@@ -161,6 +162,7 @@ final class RuleSetFactory {
                     "Cannot parse a RuleSet from a non-external reference: <" + ruleSetReferenceId + ">.");
             }
 
+            @SuppressWarnings("PMD.CloseResource")
             AccumulatingMessageHandler handler = getXmlMessagePrinter();
             DocumentBuilder builder = createDocumentBuilder();
             InputSource inputSource = new InputSource(inputStream);
@@ -329,7 +331,7 @@ final class RuleSetFactory {
             return; // deleted rule
         }
         if (ref.endsWith("xml")) {
-            parseRuleSetReferenceNode(ruleSetBuilder, ruleNode, ref, rulesetReferences);
+            parseRuleSetReferenceNode(ruleSetBuilder, ruleNode, ref, rulesetReferences, err);
         } else if (StringUtils.isBlank(ref)) {
             parseSingleRuleNode(ruleSetReferenceId, ruleSetBuilder, ruleNode, err);
         } else {
@@ -351,11 +353,14 @@ final class RuleSetFactory {
      *            The RuleSet reference.
      * @param rulesetReferences keeps track of already processed complete ruleset references in order to log a warning
      */
-    // todo error reporting
-    private void parseRuleSetReferenceNode(RuleSetBuilder ruleSetBuilder, Element ruleElement, String ref, Set<String> rulesetReferences) {
+    private void parseRuleSetReferenceNode(RuleSetBuilder ruleSetBuilder,
+                                           Element ruleElement,
+                                           String ref,
+                                           Set<String> rulesetReferences,
+                                           PmdXmlReporter err) {
         String priority = null;
         NodeList childNodes = ruleElement.getChildNodes();
-        Set<String> excludedRulesCheck = new HashSet<>();
+        Map<String, Element> excludedRulesCheck = new HashMap<>();
         for (int i = 0; i < childNodes.getLength(); i++) {
             Node child = childNodes.item(i);
             if (EXCLUDE.isElementWithName(child)) {
@@ -363,13 +368,13 @@ final class RuleSetFactory {
                 String excludedRuleName = excludeElement.getAttribute("name");
                 excludedRuleName = compatibilityFilter.applyExclude(ref, excludedRuleName, this.warnDeprecated);
                 if (excludedRuleName != null) {
-                    excludedRulesCheck.add(excludedRuleName);
+                    excludedRulesCheck.put(excludedRuleName, excludeElement);
                 }
             } else if (PRIORITY.isElementWithName(child)) {
                 priority = XmlUtil.parseTextNode(child).trim();
             }
         }
-        final RuleSetReference ruleSetReference = new RuleSetReference(ref, true, excludedRulesCheck);
+        final RuleSetReference ruleSetReference = new RuleSetReference(ref, true, excludedRulesCheck.keySet());
 
         // load the ruleset with minimum priority low, so that we get all rules, to be able to exclude any rule
         // minimum priority will be applied again, before constructing the final ruleset
@@ -397,8 +402,9 @@ final class RuleSetFactory {
         if (!potentialRules.isEmpty() && potentialRules.size() == countDeprecated) {
             // all rules in the ruleset have been deprecated - the ruleset itself is considered to be deprecated
             rulesetDeprecated = true;
-            LOG.warn("The RuleSet {} has been deprecated and will be removed in PMD {}",
-                     ref, PMDVersion.getNextMajorRelease());
+            err.at(REF.getAttributeNode(ruleElement))
+                .warn("The RuleSet {0} has been deprecated and will be removed in PMD {1}",
+                      ref, PMDVersion.getNextMajorRelease());
         }
 
         for (RuleReference r : potentialRules) {
@@ -411,14 +417,13 @@ final class RuleSetFactory {
         }
 
         if (!excludedRulesCheck.isEmpty()) {
-            LOG.warn(
-                "Unable to exclude rules {} from ruleset reference {}"
-                    + "; perhaps the rule name is misspelled or the rule doesn't exist anymore?",
-                excludedRulesCheck, ref);
+            excludedRulesCheck.forEach(
+                (name, elt) ->
+                    err.at(elt).warn("Exclude pattern ''{0}'' did not match any rule in ruleset {1}", name, ref));
         }
 
         if (rulesetReferences.contains(ref)) {
-            LOG.warn("The ruleset {} is referenced multiple times in \"{}\".", ref, ruleSetBuilder.getName());
+            err.at(ruleElement).warn("The ruleset {0} is referenced multiple times in \"{1}\".", ref, ruleSetBuilder.getName());
         }
         rulesetReferences.add(ref);
     }
@@ -659,7 +664,7 @@ final class RuleSetFactory {
             delayedExceptions.add(e);
         }
 
-        public PmdXmlReporterImpl(MessageReporter pmdReporter, OoxmlFacade ooxml, XmlPositioner positioner) {
+        PmdXmlReporterImpl(MessageReporter pmdReporter, OoxmlFacade ooxml, XmlPositioner positioner) {
             super(ooxml, positioner);
             this.pmdReporter = pmdReporter;
         }

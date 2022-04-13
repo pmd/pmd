@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.util.log.internal;
 
 import java.text.MessageFormat;
+import java.util.Objects;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.event.Level;
@@ -43,6 +44,11 @@ abstract class MessageReporterBase implements MessageReporter {
     @Override
     public void logEx(Level level, String message, Object[] formatArgs, Throwable error) {
         if (isLoggable(level)) {
+            if (error == null) {
+                Objects.requireNonNull(message, "cannot call this method with null message and error");
+                log(level, message, formatArgs);
+                return;
+            }
             message = MessageFormat.format(message, formatArgs);
             String errorMessage = error.getMessage();
             if (errorMessage == null) {

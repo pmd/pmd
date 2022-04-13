@@ -128,7 +128,7 @@ public final class FileCollectionUtil {
     private static void addRoot(FileCollector collector, String rootLocation) throws IOException {
         Path path = Paths.get(rootLocation);
         if (!Files.exists(path)) {
-            collector.getReporter().error("No such file {}", path);
+            collector.getReporter().error("No such file {0}", path);
             return;
         }
 

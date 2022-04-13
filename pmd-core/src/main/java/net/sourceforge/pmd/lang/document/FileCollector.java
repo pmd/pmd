@@ -138,7 +138,7 @@ public final class FileCollector implements AutoCloseable {
      */
     public boolean addFile(Path file) {
         if (!Files.isRegularFile(file)) {
-            reporter.error("Not a regular file {}", file);
+            reporter.error("Not a regular file {0}", file);
             return false;
         }
         LanguageVersion languageVersion = discoverLanguage(file.toString());

@@ -7,8 +7,8 @@ package net.sourceforge.pmd.renderers;
 import static org.junit.Assert.assertEquals;
 
 import java.util.Collections;
-import java.util.function.Consumer;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 import org.junit.Test;
 
