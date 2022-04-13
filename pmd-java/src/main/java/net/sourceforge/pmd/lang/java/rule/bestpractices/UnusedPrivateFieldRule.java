@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -27,8 +28,20 @@ import net.sourceforge.pmd.lang.java.symboltable.JavaNameOccurrence;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.properties.PropertyFactory;
 
 public class UnusedPrivateFieldRule extends AbstractLombokAwareRule {
+
+    private static final PropertyDescriptor<List<String>> IGNORED_FIELD_NAMES =
+                PropertyFactory.stringListProperty("ignoredFieldNames")
+                    .defaultValue(Arrays.asList("serialVersionUID", "serialPersistentFields", "IDENT"))
+                    .desc("Field Names that are ignored from the unused check")
+                    .build();
+
+    public UnusedPrivateFieldRule() {
+        definePropertyDescriptor(IGNORED_FIELD_NAMES);
+    }
 
     @Override
     protected Collection<String> defaultSuppressionAnnotations() {
@@ -133,6 +146,6 @@ public class UnusedPrivateFieldRule extends AbstractLombokAwareRule {
     }
 
     private boolean isOK(String image) {
-        return "serialVersionUID".equals(image) || "serialPersistentFields".equals(image) || "IDENT".equals(image);
+        return getProperty(IGNORED_FIELD_NAMES).contains(image);
     }
 }
