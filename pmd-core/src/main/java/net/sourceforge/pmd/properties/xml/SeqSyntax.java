@@ -12,12 +12,11 @@ import java.util.stream.Collectors;
 
 import org.w3c.dom.Element;
 
+import net.sourceforge.pmd.internal.util.xml.PmdXmlReporter;
 import net.sourceforge.pmd.internal.util.xml.XmlErrorMessages;
 import net.sourceforge.pmd.internal.util.xml.XmlUtil;
 import net.sourceforge.pmd.properties.constraints.PropertyConstraint;
 import net.sourceforge.pmd.properties.xml.XmlMapper.StableXmlMapper;
-
-import com.github.oowekyala.ooxml.messages.XmlErrorReporter;
 
 /**
  * Serialize to and from a simple string. Examples:
@@ -47,8 +46,8 @@ final class SeqSyntax<T, C extends Iterable<T>> extends StableXmlMapper<C> {
     }
 
     @Override
-    public C fromXml(Element element, XmlErrorReporter err) {
-        RuntimeException aggregateEx = err.error(element, XmlErrorMessages.ERR__LIST_CONSTRAINT_NOT_SATISFIED);
+    public C fromXml(Element element, PmdXmlReporter err) {
+        RuntimeException aggregateEx = err.at(element).error(XmlErrorMessages.ERR__LIST_CONSTRAINT_NOT_SATISFIED);
 
         C result = XmlUtil.getElementChildren(element)
                           .map(child -> {

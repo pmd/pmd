@@ -15,12 +15,11 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.w3c.dom.Element;
 
+import net.sourceforge.pmd.internal.util.xml.PmdXmlReporter;
 import net.sourceforge.pmd.internal.util.xml.XmlErrorMessages;
 import net.sourceforge.pmd.internal.util.xml.XmlUtil;
 import net.sourceforge.pmd.properties.constraints.PropertyConstraint;
 import net.sourceforge.pmd.util.CollectionUtil;
-
-import com.github.oowekyala.ooxml.messages.XmlErrorReporter;
 
 /**
  * A set of syntaxes for read and write. One special syntax is designated
@@ -122,10 +121,10 @@ final class MapperSet<T> extends XmlMapper<T> {
     }
 
     @Override
-    public T fromXml(Element element, XmlErrorReporter err) {
+    public T fromXml(Element element, PmdXmlReporter err) {
         XmlMapper<T> syntax = readIndex.get(element.getTagName());
         if (syntax == null) {
-            throw err.error(element, XmlErrorMessages.ERR__UNEXPECTED_ELEMENT, element.getTagName(), XmlUtil.formatPossibleNames(readIndex.keySet()));
+            throw err.at(element).error(XmlErrorMessages.ERR__UNEXPECTED_ELEMENT, element.getTagName(), XmlUtil.formatPossibleNames(readIndex.keySet()));
         } else {
             return syntax.fromXml(element, err);
         }

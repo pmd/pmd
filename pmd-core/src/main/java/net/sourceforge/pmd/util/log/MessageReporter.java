@@ -5,7 +5,9 @@
 package net.sourceforge.pmd.util.log;
 
 import java.text.MessageFormat;
+import java.util.Objects;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.event.Level;
 
 import net.sourceforge.pmd.annotation.InternalApi;
@@ -26,9 +28,16 @@ public interface MessageReporter {
 
     boolean isLoggable(Level level);
 
-    void log(Level level, String message, Object... formatArgs);
+    default void log(Level level, String message, Object... formatArgs) {
+        logEx(level, message, formatArgs, null);
+    }
 
-    void logEx(Level level, String message, Object[] formatArgs, Throwable error);
+    void logEx(Level level, @Nullable String message, Object[] formatArgs, @Nullable Throwable error);
+
+    default RuntimeException newException(Level level, @Nullable Throwable cause, String message, Object... formatArgs) {
+        logEx(level, message, formatArgs, cause);
+        return new RuntimeException(MessageFormat.format(message, formatArgs), cause);
+    }
 
     default void info(String message, Object... formatArgs) {
         log(Level.INFO, message, formatArgs);
@@ -46,8 +55,19 @@ public interface MessageReporter {
         logEx(Level.WARN, message, formatArgs, error);
     }
 
-    default void error(String message, Object... formatArgs) {
+    default RuntimeException error(String message, Object... formatArgs) {
         log(Level.ERROR, message, formatArgs);
+        return newException(Level.ERROR, null, message, formatArgs);
+    }
+
+    default RuntimeException error(Throwable cause, String contextMessage, Object... formatArgs) {
+        logEx(Level.ERROR, contextMessage, formatArgs, Objects.requireNonNull(cause));
+        return newException(Level.ERROR, null, contextMessage, formatArgs);
+    }
+
+    default RuntimeException error(Throwable error) {
+        logEx(Level.ERROR, null, new Object[0], Objects.requireNonNull(error));
+        return newException(Level.ERROR, error, error.getMessage());
     }
 
     default void errorEx(String message, Throwable error) {

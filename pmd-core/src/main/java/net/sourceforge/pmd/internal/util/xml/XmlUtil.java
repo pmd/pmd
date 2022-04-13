@@ -21,7 +21,6 @@ import org.w3c.dom.Node;
 import net.sourceforge.pmd.properties.xml.XmlMapper;
 
 import com.github.oowekyala.ooxml.DomUtils;
-import com.github.oowekyala.ooxml.messages.XmlErrorReporter;
 
 public final class XmlUtil {
 
@@ -39,13 +38,13 @@ public final class XmlUtil {
         return getElementChildren(parent).filter(e -> names.contains(e.getTagName()));
     }
 
-    public static Stream<Element> getElementChildrenNamedReportOthers(Element parent, Set<String> names, XmlErrorReporter err) {
+    public static Stream<Element> getElementChildrenNamedReportOthers(Element parent, Set<String> names, PmdXmlReporter err) {
         return getElementChildren(parent)
             .map(it -> {
                 if (names.contains(it.getTagName())) {
                     return it;
                 } else {
-                    err.warn(it, IGNORED__UNEXPECTED_ELEMENT, it.getTagName(), formatPossibleNames(names));
+                    err.at(it).warn(IGNORED__UNEXPECTED_ELEMENT, it.getTagName(), formatPossibleNames(names));
                     return null;
                 }
             }).filter(Objects::nonNull);
@@ -55,10 +54,10 @@ public final class XmlUtil {
         return getElementChildren(parent).filter(e -> name.equals(e.getTagName()));
     }
 
-    public static <T> T expectElement(XmlErrorReporter err, Element elt, XmlMapper<T> syntax) {
+    public static <T> T expectElement(PmdXmlReporter err, Element elt, XmlMapper<T> syntax) {
 
         if (!syntax.getReadElementNames().contains(elt.getTagName())) {
-            err.warn(elt, "Wrong name, expected " + formatPossibleNames(syntax.getReadElementNames()));
+            err.at(elt).warn("Wrong name, expected " + formatPossibleNames(syntax.getReadElementNames()));
         } else {
             return syntax.fromXml(elt, err);
         }
@@ -67,28 +66,28 @@ public final class XmlUtil {
     }
 
 
-    public static List<Element> getChildrenExpectSingleName(Element elt, String name, XmlErrorReporter err) {
+    public static List<Element> getChildrenExpectSingleName(Element elt, String name, PmdXmlReporter err) {
         return XmlUtil.getElementChildren(elt).peek(it -> {
             if (!it.getTagName().equals(name)) {
-                err.warn(it, IGNORED__UNEXPECTED_ELEMENT, it.getTagName(), name);
+                err.at(it).warn(IGNORED__UNEXPECTED_ELEMENT, it.getTagName(), name);
             }
         }).collect(Collectors.toList());
     }
 
-    public static Element getSingleChildIn(Element elt, boolean throwOnMissing, XmlErrorReporter err, Set<String> names) {
+    public static Element getSingleChildIn(Element elt, boolean throwOnMissing, PmdXmlReporter err, Set<String> names) {
         List<Element> children = getElementChildrenNamed(elt, names).collect(Collectors.toList());
         if (children.size() == 1) {
             return children.get(0);
         } else if (children.isEmpty()) {
             if (throwOnMissing) {
-                throw err.error(elt, ERR__MISSING_REQUIRED_ELEMENT, formatPossibleNames(names));
+                throw err.at(elt).error(ERR__MISSING_REQUIRED_ELEMENT, formatPossibleNames(names));
             } else {
                 return null;
             }
         } else {
             for (int i = 1; i < children.size(); i++) {
                 Element child = children.get(i);
-                err.warn(child, IGNORED__DUPLICATE_CHILD_ELEMENT, child.getTagName());
+                err.at(child).warn(IGNORED__DUPLICATE_CHILD_ELEMENT, child.getTagName());
             }
             return children.get(0);
         }

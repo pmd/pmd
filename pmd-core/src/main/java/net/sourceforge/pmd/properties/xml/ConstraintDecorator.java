@@ -10,11 +10,10 @@ import java.util.Set;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.w3c.dom.Element;
 
+import net.sourceforge.pmd.internal.util.xml.PmdXmlReporter;
 import net.sourceforge.pmd.internal.util.xml.XmlErrorMessages;
 import net.sourceforge.pmd.properties.constraints.PropertyConstraint;
 import net.sourceforge.pmd.util.CollectionUtil;
-
-import com.github.oowekyala.ooxml.messages.XmlErrorReporter;
 
 /**
  * Decorates an XmlMapper with some {@link PropertyConstraint}s.
@@ -22,7 +21,7 @@ import com.github.oowekyala.ooxml.messages.XmlErrorReporter;
  * report errors on the most specific failing element.
  *
  * <p>Note that this is the only XmlMapper that *applies* constraints
- * in {@link #fromXml(Element, XmlErrorReporter)}. A {@link SeqSyntax}
+ * in {@link #fromXml(Element, PmdXmlReporter)}. A {@link SeqSyntax}
  * or {@link OptionalSyntax} may return some constraints in {@link #getConstraints()}
  * that are derived from the constraints of the item, yet not check them
  * on elements (they will be applied on each element by the {@link XmlMapper}
@@ -40,13 +39,13 @@ class ConstraintDecorator<T> extends XmlMapper<T> {
     }
 
     @Override
-    public T fromXml(Element element, XmlErrorReporter err) {
+    public T fromXml(Element element, PmdXmlReporter err) {
         T t = xmlMapper.fromXml(element, err);
 
         XmlSyntaxUtils.checkConstraintsThrow(
             t,
             constraints,
-            s -> err.error(element, XmlErrorMessages.ERR__CONSTRAINT_NOT_SATISFIED, s)
+            s -> err.at(element).error(XmlErrorMessages.ERR__CONSTRAINT_NOT_SATISFIED, s)
         );
 
         return t;

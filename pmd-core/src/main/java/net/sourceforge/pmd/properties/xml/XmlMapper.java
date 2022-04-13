@@ -12,12 +12,13 @@ import java.util.Set;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 
+import net.sourceforge.pmd.internal.util.xml.PmdXmlReporter;
 import net.sourceforge.pmd.properties.PropertyFactory;
 import net.sourceforge.pmd.properties.constraints.PropertyConstraint;
+import net.sourceforge.pmd.util.log.MessageReporter;
 
-import com.github.oowekyala.ooxml.messages.XmlErrorReporter;
+import com.github.oowekyala.ooxml.messages.XmlException;
 
 
 /**
@@ -35,11 +36,11 @@ public abstract class XmlMapper<T> {
 
     /**
      * Extract the value from an XML element. If an error occurs, throws
-     * an exception with {@link XmlErrorReporter#error(Node, Throwable)}
+     * an {@link XmlException} with {@link MessageReporter#error(Throwable)}
      * on the most specific node (the type of exception is unspecified).
      * This will check property constraints if any.
      */
-    public abstract T fromXml(Element element, XmlErrorReporter err);
+    public abstract T fromXml(Element element, PmdXmlReporter err);
 
 
     /** Write the value into the given XML element. */

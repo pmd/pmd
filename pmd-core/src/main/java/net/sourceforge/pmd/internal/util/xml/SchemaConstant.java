@@ -14,8 +14,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
-
-import com.github.oowekyala.ooxml.messages.XmlErrorReporter;
+import org.w3c.dom.Node;
 
 
 /**
@@ -36,21 +35,21 @@ public class SchemaConstant {
         return e.hasAttribute(name) ? Boolean.parseBoolean(attr) : defaultValue;
     }
 
-    public @NonNull String getAttributeOrThrow(Element element, XmlErrorReporter err) {
+    public @NonNull String getAttributeOrThrow(Element element, PmdXmlReporter err) {
         String attribute = element.getAttribute(name);
         if (!element.hasAttribute(name)) {
-            throw err.error(element, XmlErrorMessages.ERR__MISSING_REQUIRED_ATTRIBUTE, name);
+            throw err.at(element).error(XmlErrorMessages.ERR__MISSING_REQUIRED_ATTRIBUTE, name);
         }
 
         return attribute;
     }
 
-    public @NonNull String getNonBlankAttributeOrThrow(Element element, XmlErrorReporter err) {
+    public @NonNull String getNonBlankAttributeOrThrow(Element element, PmdXmlReporter err) {
         String attribute = element.getAttribute(name);
         if (!element.hasAttribute(name)) {
-            throw err.error(element, XmlErrorMessages.ERR__MISSING_REQUIRED_ATTRIBUTE, name);
+            throw err.at(element).error(XmlErrorMessages.ERR__MISSING_REQUIRED_ATTRIBUTE, name);
         } else if (StringUtils.isBlank(attribute)) {
-            throw err.error(element, XmlErrorMessages.ERR__BLANK_REQUIRED_ATTRIBUTE, name);
+            throw err.at(element).error(XmlErrorMessages.ERR__BLANK_REQUIRED_ATTRIBUTE, name);
         }
         return attribute;
     }
@@ -73,16 +72,16 @@ public class SchemaConstant {
                       .collect(Collectors.toList());
     }
 
-    public List<Element> getElementChildrenNamedReportOthers(Element elt, XmlErrorReporter err) {
+    public List<Element> getElementChildrenNamedReportOthers(Element elt, PmdXmlReporter err) {
         return XmlUtil.getElementChildrenNamedReportOthers(elt, setOf(name), err)
                       .collect(Collectors.toList());
     }
 
-    public Element getSingleChildIn(Element elt, XmlErrorReporter err) {
+    public Element getSingleChildIn(Element elt, PmdXmlReporter err) {
         return XmlUtil.getSingleChildIn(elt, true, err, setOf(name));
     }
 
-    public Element getOptChildIn(Element elt, XmlErrorReporter err) {
+    public Element getOptChildIn(Element elt, PmdXmlReporter err) {
         return XmlUtil.getSingleChildIn(elt, false, err, setOf(name));
     }
 
@@ -106,4 +105,7 @@ public class SchemaConstant {
     }
 
 
+    public boolean isElementWithName(Node node) {
+        return node.getNodeType() == Node.ELEMENT_NODE && node.getNodeName().equals(name);
+    }
 }

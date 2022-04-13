@@ -654,17 +654,17 @@ public class RuleSetFactoryTest {
     @Test
     public void testInvertedMinimumMaximumLanguageVersions() {
         assertCannotParse(INVERTED_MINIMUM_MAXIMUM_LANGUAGE_VERSIONS);
-        verifyFoundAnErrorWithMessage(containing("versionRange"));
+        verifyFoundAnErrorWithMessage(containing("version range"));
     }
 
     private void verifyFoundAnErrorWithMessage(Predicate<String> messageTest) {
         Mockito.verify(mockReporter, Mockito.times(1))
-               .log(Mockito.eq(Level.ERROR), Mockito.argThat(messageTest::test), Mockito.any());
+               .logEx(Mockito.eq(Level.ERROR), Mockito.argThat(messageTest::test), Mockito.any(), Mockito.any());
     }
 
     private void verifyFoundAWarningWithMessage(Predicate<String> messageTest) {
         Mockito.verify(mockReporter, Mockito.times(1))
-               .log(Mockito.eq(Level.WARN), Mockito.argThat(messageTest::test), Mockito.any());
+               .logEx(Mockito.eq(Level.WARN), Mockito.argThat(messageTest::test), Mockito.any(), Mockito.any());
     }
 
     private static Predicate<String> containing(String part) {

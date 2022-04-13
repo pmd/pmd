@@ -15,10 +15,9 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.w3c.dom.Element;
 
 import net.sourceforge.pmd.internal.util.PredicateUtil;
+import net.sourceforge.pmd.internal.util.xml.PmdXmlReporter;
 import net.sourceforge.pmd.properties.constraints.PropertyConstraint;
 import net.sourceforge.pmd.properties.xml.XmlMapper.StableXmlMapper;
-
-import com.github.oowekyala.ooxml.messages.XmlErrorReporter;
 
 /**
  * Serialize to and from a simple string. Examples:
@@ -77,11 +76,11 @@ class ValueSyntax<T> extends StableXmlMapper<T> {
     }
 
     @Override
-    public T fromXml(Element element, XmlErrorReporter err) {
+    public T fromXml(Element element, PmdXmlReporter err) {
         try {
             return fromString.apply(element.getTextContent());
         } catch (IllegalArgumentException e) {
-            throw err.error(element, e);
+            throw err.at(element).error(e);
         }
     }
 
