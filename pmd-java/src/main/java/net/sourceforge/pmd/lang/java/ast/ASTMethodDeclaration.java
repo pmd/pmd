@@ -142,7 +142,7 @@ public final class ASTMethodDeclaration extends AbstractMethodOrConstructorDecla
     /**
      * Returns the result type node of the method. This may be a {@link ASTVoidType}.
      */
-    public @NonNull ASTType getResultTypeNode() {
+    public @NonNull ASTType getResultTypeNode() { // TODO rename to getResultType()
         return firstChild(ASTType.class);
     }
 
