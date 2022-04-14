@@ -565,6 +565,9 @@ public final class LazyTypeResolver extends JavaVisitorBase<TypingContext, @NonN
 
         JMethodSig m = lambda.getFunctionalMethod(); // this forces resolution of the lambda
         if (!isUnresolved(m)) {
+            if (m.getArity() != node.getOwner().getArity()) {
+                return ts.ERROR;
+            }
             return m.getFormalParameters().get(node.getIndexInParent());
         }
         return ts.UNKNOWN;
