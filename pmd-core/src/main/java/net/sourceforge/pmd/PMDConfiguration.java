@@ -14,6 +14,7 @@ import java.util.Properties;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.annotation.DeprecatedUntil700;
 import net.sourceforge.pmd.cache.AnalysisCache;
@@ -27,6 +28,8 @@ import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.renderers.RendererFactory;
 import net.sourceforge.pmd.util.ClasspathClassLoader;
+import net.sourceforge.pmd.util.log.MessageReporter;
+import net.sourceforge.pmd.util.log.internal.SimpleMessageReporter;
 
 /**
  * This class contains the details for the runtime configuration of a PMD run.
@@ -100,6 +103,7 @@ public class PMDConfiguration extends AbstractConfiguration {
     private ClassLoader classLoader = getClass().getClassLoader();
     private LanguageVersionDiscoverer languageVersionDiscoverer = new LanguageVersionDiscoverer();
     private LanguageVersion forceLanguageVersion;
+    private MessageReporter reporter = new SimpleMessageReporter(LoggerFactory.getLogger(PMD.class));
 
     // Rule and source file options
     private List<String> ruleSets = new ArrayList<>();
@@ -244,6 +248,25 @@ public class PMDConfiguration extends AbstractConfiguration {
             // to IllegalArgumentException in ClasspathClassLoader.
             throw new IllegalArgumentException(e);
         }
+    }
+
+    /**
+     * Returns the message reporter that is to be used while running
+     * the analysis.
+     */
+    public @NonNull MessageReporter getReporter() {
+        return reporter;
+    }
+
+    /**
+     * Sets the message reporter that is to be used while running
+     * the analysis.
+     *
+     * @param reporter A non-null message reporter
+     */
+    public void setReporter(@NonNull MessageReporter reporter) {
+        AssertionUtil.requireParamNotNull("reporter", reporter);
+        this.reporter = reporter;
     }
 
     /**

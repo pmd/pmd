@@ -11,6 +11,7 @@ import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.ast.DummyRoot;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.Parser;
+import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 import net.sourceforge.pmd.lang.rule.impl.DefaultRuleViolationFactory;
 
@@ -34,6 +35,7 @@ public class DummyLanguageModule extends BaseLanguageModule {
         addDefaultVersion("1.7", new Handler(), "7");
         addVersion("1.8", new Handler(), "8");
         addVersion("1.9-throws", new HandlerWithParserThatThrows());
+        addVersion("1.9-semantic_error", new HandlerWithParserThatReportsSemanticError());
     }
 
     public static class Handler extends AbstractPmdLanguageVersionHandler {
@@ -63,6 +65,17 @@ public class DummyLanguageModule extends BaseLanguageModule {
         public Parser getParser() {
             return task -> {
                 throw new AssertionError("test error while parsing");
+            };
+        }
+    }
+
+    public static class HandlerWithParserThatReportsSemanticError extends Handler {
+        @Override
+        public Parser getParser() {
+            return task -> {
+                RootNode root = super.getParser().parse(task);
+                task.getReporter().error(root, "An error occurred!");
+                return root;
             };
         }
     }

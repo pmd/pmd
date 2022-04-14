@@ -7,6 +7,12 @@ package net.sourceforge.pmd.processor;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
+import static org.mockito.Mockito.contains;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 
 import java.util.List;
 
@@ -15,6 +21,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.contrib.java.lang.system.RestoreSystemProperties;
 import org.junit.rules.TestRule;
+import org.mockito.Mockito;
+import org.slf4j.event.Level;
 
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.Report;
@@ -34,6 +42,7 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
 import net.sourceforge.pmd.processor.MonoThreadProcessor.MonothreadRunnable;
 import net.sourceforge.pmd.util.datasource.DataSource;
+import net.sourceforge.pmd.util.log.MessageReporter;
 
 public class PmdRunnableTest {
 
@@ -42,20 +51,27 @@ public class PmdRunnableTest {
 
     private LanguageVersion dummyThrows;
     private LanguageVersion dummyDefault;
+    private LanguageVersion dummySemanticError;
     private PMDConfiguration configuration;
     private PmdRunnable pmdRunnable;
     private GlobalReportBuilderListener reportBuilder;
+    private MessageReporter reporter;
+    private Rule rule;
 
     @Before
     public void prepare() {
         Language dummyLanguage = LanguageRegistry.findLanguageByTerseName(DummyLanguageModule.TERSE_NAME);
         dummyDefault = dummyLanguage.getDefaultVersion();
         dummyThrows = dummyLanguage.getVersion("1.9-throws");
+        dummySemanticError = dummyLanguage.getVersion("1.9-semantic_error");
         DataSource dataSource = DataSource.forString("test", "test.dummy");
 
-        Rule rule = new RuleThatThrows();
+
+        rule = spy(new RuleThatThrows());
         configuration = new PMDConfiguration();
         reportBuilder = new GlobalReportBuilderListener();
+        reporter = mock(MessageReporter.class);
+        configuration.setReporter(reporter);
         pmdRunnable = new MonothreadRunnable(new RuleSets(RuleSet.forSingleRule(rule)),
                                              dataSource,
                                              reportBuilder,
@@ -100,6 +116,17 @@ public class PmdRunnableTest {
         configuration.setDefaultLanguageVersion(dummyDefault);
 
         Assert.assertThrows(AssertionError.class, pmdRunnable::run);
+    }
+
+
+    @Test
+    public void semanticErrorShouldAbortTheRun() {
+        configuration.setDefaultLanguageVersion(dummySemanticError);
+
+        pmdRunnable.run();
+
+        verify(reporter).log(eq(Level.INFO), contains("skipping rule analysis"));
+        verify(rule, never()).apply(Mockito.any(), Mockito.any());
     }
 
     private static class RuleThatThrows extends AbstractRule {
