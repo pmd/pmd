@@ -15,10 +15,10 @@
                 "text": "blah"
               },
               "fullDescription": {
-                "text": "desc"
+                "text": "Description with Unicode Character U+2013: – ."
               },
               "help": {
-                "text": "desc"
+                "text": "Description with Unicode Character U+2013: – ."
               },
               "properties": {
                 "ruleset": "RuleSet",

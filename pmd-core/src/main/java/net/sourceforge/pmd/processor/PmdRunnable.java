@@ -34,7 +34,7 @@ import net.sourceforge.pmd.util.datasource.DataSource;
  */
 abstract class PmdRunnable implements Runnable {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(PmdRunnable.class);
+    private static final Logger LOG = LoggerFactory.getLogger(PmdRunnable.class);
     private final DataSource dataSource;
     private final File file;
     private final GlobalAnalysisListener globalListener;
@@ -74,8 +74,10 @@ abstract class PmdRunnable implements Runnable {
             // Coarse check to see if any RuleSet applies to file, will need to do a finer RuleSet specific check later
             if (ruleSets.applies(file)) {
                 if (configuration.getAnalysisCache().isUpToDate(file)) {
+                    LOG.trace("Skipping file (lang: {}) because it was found in the cache: {}", langVersion, dataSource.getNiceFileName(false, null));
                     reportCachedRuleViolations(listener, file);
                 } else {
+                    LOG.trace("Processing file (lang: {}): {}", langVersion, dataSource.getNiceFileName(false, null));
                     try {
                         processSource(listener, langVersion, ruleSets);
                     } catch (Exception | StackOverflowError | AssertionError e) {
@@ -88,6 +90,8 @@ abstract class PmdRunnable implements Runnable {
                         listener.onError(new Report.ProcessingError(e, file.getPath()));
                     }
                 }
+            } else {
+                LOG.trace("Skipping file (lang: {}) because no rule applies: {}", langVersion, dataSource.getNiceFileName(false, null));
             }
         } catch (FileAnalysisException e) {
             throw e; // bubble managed exceptions, they were already reported

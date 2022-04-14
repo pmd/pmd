@@ -4,11 +4,14 @@
 
 package net.sourceforge.pmd.lang.java.types
 
+import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import net.sourceforge.pmd.lang.ast.NodeStream
 import net.sourceforge.pmd.lang.ast.NodeStream.*
 import net.sourceforge.pmd.lang.java.JavaParsingHelper
 import net.sourceforge.pmd.lang.java.ast.*
+import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.FunctionalExprMirror
+import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.InvocationMirror
 import net.sourceforge.pmd.lang.java.types.internal.infer.ResolutionFailure
 import net.sourceforge.pmd.lang.java.types.internal.infer.TypeInferenceLogger
 import org.mockito.ArgumentCaptor
@@ -45,35 +48,28 @@ data class TypeInferenceSpy(private val spy: TypeInferenceLogger, val ts: TypeSy
         this.shouldHaveNoErrors()
     }
 
-    fun shouldTriggerMissingCtDecl(block: TypeDslMixin.() -> Unit) {
-        this.shouldHaveNoErrors()
-        TypeDslOf(ts).block()
-        verify(spy, times(1)).noCompileTimeDeclaration(any())
+    fun shouldHaveMissingCtDecl(node: InvocationNode) {
+        verify(spy, times(1))
+            .noCompileTimeDeclaration(argThat { it.expr.location == node })
     }
 
-    fun shouldTriggerNoApplicableMethods(block: TypeDslMixin.() -> Unit) {
-        this.shouldHaveNoErrors()
-        TypeDslOf(ts).block()
-        verify(spy, times(1)).noApplicableCandidates(any())
+    fun shouldHaveNoApplicableMethods(node: InvocationNode) {
+        verify(spy, times(1))
+            .noApplicableCandidates(argThat {
+                it.expr.location == node
+            })
     }
 
-    fun shouldTriggerNoLambdaCtx(block: TypeDslMixin.() -> Unit) {
-        this.shouldHaveNoErrors()
-        TypeDslOf(ts).block()
-        val captor = ArgumentCaptor.forClass(ResolutionFailure::class.java)
-        verify(spy, times(1)).logResolutionFail(captor.capture())
-        val failure: ResolutionFailure = captor.value
-        failure.reason shouldBe "Missing target type for functional expression"
+    fun shouldHaveNoLambdaCtx(lambdaOrMref: FunctionalExpression) {
+        verify(spy, times(1))
+            .logResolutionFail(argThat {
+                it.reason == "Missing target type for functional expression"
+                        && it.location == lambdaOrMref
+            })
     }
 
-    fun resetInteractions() {
-        reset(spy)
-        `when`(spy.isNoop).thenReturn(false) // enable log for exceptions though
-    }
-
-    fun shouldBeAmbiguous(block: TypeDslMixin.() -> Unit) {
-        this.shouldHaveNoErrors()
-        TypeDslOf(ts).block()
-        verify(spy, times(1)).ambiguityError(any(), any(), any())
+    fun shouldBeAmbiguous(node: InvocationNode) {
+        verify(spy, times(1))
+            .ambiguityError(argThat { it.expr.location==node }, any(), any())
     }
 }
