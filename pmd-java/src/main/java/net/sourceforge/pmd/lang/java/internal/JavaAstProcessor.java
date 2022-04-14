@@ -40,6 +40,9 @@ import net.sourceforge.pmd.lang.java.types.internal.infer.TypeInferenceLogger.Ve
  * <p>This is the root context object for file-specific context. Instances
  * do not need to be thread-safe. Global information about eg the classpath
  * is held in a {@link TypeSystem} instance.
+ *
+ * <p>The object lives as long as a file, it is accessible from nodes
+ * using {@link InternalApiBridge#getProcessor(JavaNode)}.
  */
 public final class JavaAstProcessor {
 
@@ -173,9 +176,10 @@ public final class JavaAstProcessor {
 
         TimeTracker.bench("2. Symbol table resolution", () -> SymbolTableResolver.traverse(this, acu));
         TimeTracker.bench("3. AST disambiguation", () -> InternalApiBridge.disambigWithCtx(NodeStream.of(acu), ReferenceCtx.root(this, acu)));
-        TimeTracker.bench("4. Comment assignment", () -> InternalApiBridge.assignComments(acu));
-        TimeTracker.bench("5. Usage resolution", () -> InternalApiBridge.usageResolution(this, acu));
-        TimeTracker.bench("6. Override resolution", () -> InternalApiBridge.overrideResolution(this, acu));
+        TimeTracker.bench("4. Force type resolution", () -> InternalApiBridge.forceTypeResolutionPhase(this, acu));
+        TimeTracker.bench("5. Comment assignment", () -> InternalApiBridge.assignComments(acu));
+        TimeTracker.bench("6. Usage resolution", () -> InternalApiBridge.usageResolution(this, acu));
+        TimeTracker.bench("7. Override resolution", () -> InternalApiBridge.overrideResolution(this, acu));
     }
 
     public TypeSystem getTypeSystem() {
