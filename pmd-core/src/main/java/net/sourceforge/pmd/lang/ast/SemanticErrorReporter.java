@@ -103,7 +103,7 @@ public interface SemanticErrorReporter {
 
             private String logMessage(Level level, Node location, String message, Object[] args) {
                 String fullMessage = makeMessage(location, message, args);
-                if (level.compareTo(Level.INFO) < 0) {
+                if (level.compareTo(Level.INFO) > 0) {
                     logger.atLevel(level).log(fullMessage);
                 } else {
                     reporter.log(level, StringUtil.quoteMessageFormat(fullMessage)); // already formatted
