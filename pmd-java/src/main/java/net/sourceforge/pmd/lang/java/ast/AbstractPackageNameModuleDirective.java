@@ -6,8 +6,8 @@ package net.sourceforge.pmd.lang.java.ast;
 
 public abstract class AbstractPackageNameModuleDirective extends ASTModuleDirective {
 
-    AbstractPackageNameModuleDirective(int id, DirectiveType type) {
-        super(id, type);
+    AbstractPackageNameModuleDirective(int id) {
+        super(id);
     }
 
     public final String getPackageName() {

@@ -21,7 +21,7 @@ import net.sourceforge.pmd.lang.ast.NodeStream;
 public final class ASTModuleProvidesDirective extends ASTModuleDirective {
 
     ASTModuleProvidesDirective(int id) {
-        super(id, DirectiveType.PROVIDES);
+        super(id);
     }
 
     @Override

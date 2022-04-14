@@ -16,7 +16,7 @@ package net.sourceforge.pmd.lang.java.ast;
 public final class ASTModuleUsesDirective extends ASTModuleDirective {
 
     ASTModuleUsesDirective(int id) {
-        super(id, DirectiveType.USES);
+        super(id);
     }
 
     @Override

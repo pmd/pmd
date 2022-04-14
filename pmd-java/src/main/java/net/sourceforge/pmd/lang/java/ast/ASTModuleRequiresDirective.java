@@ -24,7 +24,7 @@ public final class ASTModuleRequiresDirective extends ASTModuleDirective {
     private boolean isTransitive;
 
     ASTModuleRequiresDirective(int id) {
-        super(id, DirectiveType.REQUIRES);
+        super(id);
     }
 
     @Override

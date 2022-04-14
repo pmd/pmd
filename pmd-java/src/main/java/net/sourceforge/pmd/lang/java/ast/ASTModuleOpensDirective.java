@@ -21,7 +21,7 @@ import net.sourceforge.pmd.lang.ast.NodeStream;
 public final class ASTModuleOpensDirective extends AbstractPackageNameModuleDirective {
 
     ASTModuleOpensDirective(int id) {
-        super(id, DirectiveType.OPENS);
+        super(id);
     }
 
     @Override

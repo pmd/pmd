@@ -21,7 +21,7 @@ import net.sourceforge.pmd.lang.ast.NodeStream;
 public final class ASTModuleExportsDirective extends AbstractPackageNameModuleDirective {
 
     ASTModuleExportsDirective(int id) {
-        super(id, DirectiveType.EXPORTS);
+        super(id);
     }
 
     @Override
