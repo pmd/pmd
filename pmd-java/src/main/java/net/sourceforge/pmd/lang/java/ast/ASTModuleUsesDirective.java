@@ -13,7 +13,7 @@ package net.sourceforge.pmd.lang.java.ast;
  *
  * </pre>
  */
-public final class ASTModuleUsesDirective extends AbstractPackageNameModuleDirective {
+public final class ASTModuleUsesDirective extends ASTModuleDirective {
 
     ASTModuleUsesDirective(int id) {
         super(id, DirectiveType.USES);

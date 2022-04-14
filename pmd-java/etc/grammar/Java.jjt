@@ -2759,7 +2759,7 @@ void ModuleDirective() #void:
       ModuleName() ";" ) #ModuleRequiresDirective
   | ( LOOKAHEAD({isKeyword("exports")})  <IDENTIFIER> packageName=VoidNameNoLookahead() {jjtThis.setPackageName(packageName);} [ LOOKAHEAD({isKeyword("to")}) <IDENTIFIER> ModuleName() ("," ModuleName())* ] ";" ) #ModuleExportsDirective
   | ( LOOKAHEAD({isKeyword("opens")})    <IDENTIFIER> packageName=VoidNameNoLookahead() {jjtThis.setPackageName(packageName);} [ LOOKAHEAD({isKeyword("to")}) <IDENTIFIER> ModuleName() ("," ModuleName())* ] ";" ) #ModuleOpensDirective
-  | ( LOOKAHEAD({isKeyword("uses")})     <IDENTIFIER> packageName=VoidNameNoLookahead() {jjtThis.setPackageName(packageName);} ";" ) #ModuleUsesDirective
+  | ( LOOKAHEAD({isKeyword("uses")})     <IDENTIFIER> ClassName() ";" ) #ModuleUsesDirective
   | ( LOOKAHEAD({isKeyword("provides")}) <IDENTIFIER> ClassName() LOOKAHEAD({isKeyword("with")}) <IDENTIFIER> ClassName() ("," ClassName() )* ";" ) #ModuleProvidesDirective
 }
 
