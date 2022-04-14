@@ -629,4 +629,28 @@ class C {
         }
     }
 
+    parserTest("Lambda with wrong form") {
+
+        val (acu, _) = parser.parseWithTypeInferenceSpy("""
+                interface Lambda {
+                    void call();
+                }
+                class Foo {
+                    {
+                        Lambda l = () -> {}; // ok
+                        Lambda l = x -> {};  // wrong form!
+                    }
+                }
+        """)
+
+        val (ok, wrong) = acu.descendants(ASTLambdaExpression::class.java).toList()
+        val t_Lambda = acu.typeDeclarations.firstOrThrow().typeMirror
+
+        acu.withTypeDsl {
+            ok shouldHaveType t_Lambda
+            wrong shouldHaveType t_Lambda
+            wrong.parameters[0] shouldHaveType ts.ERROR
+        }
+    }
+
 })
