@@ -23,4 +23,13 @@ public final class ASTModuleUsesDirective extends ASTModuleDirective {
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
+
+
+    /**
+     * Returns the node representing the consumed service.
+     */
+    public ASTClassOrInterfaceType getService() {
+        return firstChild(ASTClassOrInterfaceType.class);
+    }
+
 }

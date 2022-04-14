@@ -29,11 +29,18 @@ public final class ASTModuleProvidesDirective extends ASTModuleDirective {
         return visitor.visit(this, data);
     }
 
-    public ASTClassOrInterfaceType getProvidedInterface() {
+    /**
+     * Returns the node representing the provided interface.
+     */
+    public ASTClassOrInterfaceType getService() {
         return firstChild(ASTClassOrInterfaceType.class);
     }
 
-    public NodeStream<ASTClassOrInterfaceType> getImplementations() {
+    /**
+     * Returns the nodes representing the service providers, that is,
+     * the service implementations.
+     */
+    public NodeStream<ASTClassOrInterfaceType> getServiceProviders() {
         return children(ASTClassOrInterfaceType.class).drop(1);
     }
 }

@@ -86,9 +86,9 @@ class ASTModuleDeclarationTest : ParserTestSpec({
     parserTest("Test uses") {
 
         inContext(ModuleDirectiveParsingContext) {
-            "uses a.package_;" should parseAs {
+            "uses a.clazz.Name;" should parseAs {
                 child<ASTModuleUsesDirective> {
-                    it::getPackageName shouldBe "a.package_"
+                    it::getService shouldBe classType("Name")
                 }
             }
         }
@@ -99,8 +99,8 @@ class ASTModuleDeclarationTest : ParserTestSpec({
             enableProcessing()
             "provides an.Itf with imp1.Impl;" should parseAs {
                 child<ASTModuleProvidesDirective> {
-                    it::getProvidedInterface shouldBe classType("Itf")
-                    it.implementations.toList() shouldBe listOf(
+                    it::getService shouldBe classType("Itf")
+                    it.serviceProviders.toList() shouldBe listOf(
                         classType("Impl") {
                             val sym = it.referencedSym as JClassSymbol
                             sym.canonicalName shouldBe "imp1.Impl"
