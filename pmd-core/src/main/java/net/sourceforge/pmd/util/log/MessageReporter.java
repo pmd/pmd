@@ -33,8 +33,15 @@ public interface MessageReporter {
 
     void logEx(Level level, @Nullable String message, Object[] formatArgs, @Nullable Throwable error);
 
-    default RuntimeException newException(Level level, @Nullable Throwable cause, String message, Object... formatArgs) {
+    /**
+     * Logs and returns a new exception.
+     * Message and cause may not be null a the same time.
+     */
+    default RuntimeException newException(Level level, @Nullable Throwable cause, @Nullable String message, Object... formatArgs) {
         logEx(level, message, formatArgs, cause);
+        if (message == null) {
+            return new RuntimeException(cause);
+        }
         return new RuntimeException(MessageFormat.format(message, formatArgs), cause);
     }
 
@@ -62,8 +69,7 @@ public interface MessageReporter {
      * Only one of the cause or the message can be null.
      */
     default RuntimeException error(@Nullable Throwable cause, @Nullable String contextMessage, Object... formatArgs) {
-        logEx(Level.ERROR, contextMessage, formatArgs, cause);
-        return newException(Level.ERROR, null, contextMessage, formatArgs);
+        return newException(Level.ERROR, cause, contextMessage, formatArgs);
     }
 
     default RuntimeException error(Throwable error) {
