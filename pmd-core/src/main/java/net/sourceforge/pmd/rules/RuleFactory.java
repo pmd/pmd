@@ -4,12 +4,12 @@
 
 package net.sourceforge.pmd.rules;
 
-import static net.sourceforge.pmd.internal.util.xml.SchemaConstants.PROPERTY_TYPE;
-import static net.sourceforge.pmd.internal.util.xml.SchemaConstants.PROPERTY_VALUE;
-import static net.sourceforge.pmd.internal.util.xml.XmlErrorMessages.ERR__INVALID_LANG_VERSION;
-import static net.sourceforge.pmd.internal.util.xml.XmlErrorMessages.ERR__INVALID_LANG_VERSION_NO_NAMED_VERSION;
-import static net.sourceforge.pmd.internal.util.xml.XmlErrorMessages.ERR__PROPERTY_DOES_NOT_EXIST;
-import static net.sourceforge.pmd.internal.util.xml.XmlErrorMessages.IGNORED__DUPLICATE_PROPERTY_SETTER;
+import static net.sourceforge.pmd.util.internal.xml.SchemaConstants.PROPERTY_TYPE;
+import static net.sourceforge.pmd.util.internal.xml.SchemaConstants.PROPERTY_VALUE;
+import static net.sourceforge.pmd.util.internal.xml.XmlErrorMessages.ERR__INVALID_LANG_VERSION;
+import static net.sourceforge.pmd.util.internal.xml.XmlErrorMessages.ERR__INVALID_LANG_VERSION_NO_NAMED_VERSION;
+import static net.sourceforge.pmd.util.internal.xml.XmlErrorMessages.ERR__PROPERTY_DOES_NOT_EXIST;
+import static net.sourceforge.pmd.util.internal.xml.XmlErrorMessages.IGNORED__DUPLICATE_PROPERTY_SETTER;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -28,10 +28,6 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.RuleSetReference;
 import net.sourceforge.pmd.annotation.InternalApi;
-import net.sourceforge.pmd.internal.util.xml.PmdXmlReporter;
-import net.sourceforge.pmd.internal.util.xml.SchemaConstants;
-import net.sourceforge.pmd.internal.util.xml.XmlErrorMessages;
-import net.sourceforge.pmd.internal.util.xml.XmlUtil;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
@@ -43,6 +39,10 @@ import net.sourceforge.pmd.properties.ValueParser;
 import net.sourceforge.pmd.properties.builders.PropertyDescriptorExternalBuilder;
 import net.sourceforge.pmd.util.ResourceLoader;
 import net.sourceforge.pmd.util.StringUtil;
+import net.sourceforge.pmd.util.internal.xml.PmdXmlReporter;
+import net.sourceforge.pmd.util.internal.xml.SchemaConstants;
+import net.sourceforge.pmd.util.internal.xml.XmlErrorMessages;
+import net.sourceforge.pmd.util.internal.xml.XmlUtil;
 
 import com.github.oowekyala.ooxml.DomUtils;
 import com.github.oowekyala.ooxml.messages.XmlException;

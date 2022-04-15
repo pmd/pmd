@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -133,7 +133,7 @@ public class RuleSetFactoryTest extends RulesetFactoryTestBase {
 
     @Test
     public void testSingleRuleWithPriority() {
-        assertEquals(RulePriority.MEDIUM, loadFirstRule(PRIORITY).getPriority());
+        Assert.assertEquals(RulePriority.MEDIUM, loadFirstRule(PRIORITY).getPriority());
     }
 
     @Test

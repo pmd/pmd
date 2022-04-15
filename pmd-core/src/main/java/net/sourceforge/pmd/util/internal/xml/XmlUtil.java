@@ -2,11 +2,11 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.internal.util.xml;
+package net.sourceforge.pmd.util.internal.xml;
 
-import static net.sourceforge.pmd.internal.util.xml.XmlErrorMessages.ERR__MISSING_REQUIRED_ELEMENT;
-import static net.sourceforge.pmd.internal.util.xml.XmlErrorMessages.IGNORED__DUPLICATE_CHILD_ELEMENT;
-import static net.sourceforge.pmd.internal.util.xml.XmlErrorMessages.IGNORED__UNEXPECTED_ELEMENT_IN;
+import static net.sourceforge.pmd.util.internal.xml.XmlErrorMessages.ERR__MISSING_REQUIRED_ELEMENT;
+import static net.sourceforge.pmd.util.internal.xml.XmlErrorMessages.IGNORED__DUPLICATE_CHILD_ELEMENT;
+import static net.sourceforge.pmd.util.internal.xml.XmlErrorMessages.IGNORED__UNEXPECTED_ELEMENT_IN;
 
 import java.util.List;
 import java.util.Objects;

@@ -1,16 +1,16 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
 package net.sourceforge.pmd;
 
-import static net.sourceforge.pmd.internal.util.xml.SchemaConstants.DESCRIPTION;
-import static net.sourceforge.pmd.internal.util.xml.SchemaConstants.EXCLUDE;
-import static net.sourceforge.pmd.internal.util.xml.SchemaConstants.EXCLUDE_PATTERN;
-import static net.sourceforge.pmd.internal.util.xml.SchemaConstants.INCLUDE_PATTERN;
-import static net.sourceforge.pmd.internal.util.xml.SchemaConstants.PRIORITY;
-import static net.sourceforge.pmd.internal.util.xml.SchemaConstants.REF;
-import static net.sourceforge.pmd.internal.util.xml.SchemaConstants.RULE;
+import static net.sourceforge.pmd.util.internal.xml.SchemaConstants.DESCRIPTION;
+import static net.sourceforge.pmd.util.internal.xml.SchemaConstants.EXCLUDE;
+import static net.sourceforge.pmd.util.internal.xml.SchemaConstants.EXCLUDE_PATTERN;
+import static net.sourceforge.pmd.util.internal.xml.SchemaConstants.INCLUDE_PATTERN;
+import static net.sourceforge.pmd.util.internal.xml.SchemaConstants.PRIORITY;
+import static net.sourceforge.pmd.util.internal.xml.SchemaConstants.REF;
+import static net.sourceforge.pmd.util.internal.xml.SchemaConstants.RULE;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -43,11 +43,11 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
 import net.sourceforge.pmd.RuleSet.RuleSetBuilder;
-import net.sourceforge.pmd.internal.util.xml.PmdXmlReporter;
-import net.sourceforge.pmd.internal.util.xml.XmlUtil;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.rules.RuleFactory;
 import net.sourceforge.pmd.util.ResourceLoader;
+import net.sourceforge.pmd.util.internal.xml.PmdXmlReporter;
+import net.sourceforge.pmd.util.internal.xml.XmlUtil;
 import net.sourceforge.pmd.util.log.MessageReporter;
 
 import com.github.oowekyala.ooxml.DomUtils;

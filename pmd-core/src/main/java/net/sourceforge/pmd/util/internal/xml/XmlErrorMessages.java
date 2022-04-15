@@ -2,8 +2,9 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.internal.util.xml;
+package net.sourceforge.pmd.util.internal.xml;
 
+// CHECKSTYLE:OFF
 public final class XmlErrorMessages {
 
     private static final String THIS_WILL_BE_IGNORED = ", this will be ignored";
