@@ -39,7 +39,7 @@ public class Java17TreeDumpTest extends BaseTreeDumpTest {
             }
         });
         Assert.assertTrue("Unexpected message: " + thrown.getMessage(),
-                thrown.getMessage().contains("Sealed classes is a preview feature of JDK 16, you should select your language version accordingly"));
+                thrown.getMessage().contains("Sealed classes are a feature of Java 17, you should select your language version accordingly"));
     }
 
     @Test
@@ -69,7 +69,7 @@ public class Java17TreeDumpTest extends BaseTreeDumpTest {
             }
         });
         Assert.assertTrue("Unexpected message: " + thrown.getMessage(),
-                thrown.getMessage().contains("Sealed classes is a preview feature of JDK 16, you should select your language version accordingly"));
+                thrown.getMessage().contains("Sealed classes are a feature of Java 17, you should select your language version accordingly"));
     }
 
     @Test

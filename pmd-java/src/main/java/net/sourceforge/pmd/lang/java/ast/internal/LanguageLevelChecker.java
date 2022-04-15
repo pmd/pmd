@@ -119,51 +119,26 @@ public class LanguageLevelChecker<T> {
      */
     private enum PreviewFeature implements LanguageFeature {
         /**
-         * @see <a href="https://openjdk.java.net/jeps/359">JEP 359: Records (Preview)</a>
-         * @see <a href="https://openjdk.java.net/jeps/384">JEP 384: Records (Second Preview)</a>
-         * @see <a href="https://openjdk.java.net/jeps/395">JEP 395: Records</a>
+         * @see <a href="https://openjdk.java.net/jeps/406">JEP 406: Pattern Matching for switch (Preview)</a> (Java 17)
+         * @see <a href="https://openjdk.java.net/jeps/420">JEP 420: Pattern Matching for switch (Second Preview)</a> (Java 18)
          */
-        RECORD_DECLARATIONS(14, 15, true),
-
-        /**
-         * @see <a href="https://openjdk.java.net/jeps/305">JEP 305: Pattern Matching for instanceof (Preview)</a>
-         * @see <a href="https://openjdk.java.net/jeps/375">JEP 375: Pattern Matching for instanceof (Second Preview)</a>
-         * @see <a href="https://openjdk.java.net/jeps/394">JEP 394: Pattern Matching for instanceof</a>
-         */
-        TYPE_PATTERNS_IN_INSTANCEOF(14, 15, true),
-
-        /**
-         * Part of the records JEP 394.
-         * @see #RECORD_DECLARATIONS
-         * @see <a href="https://bugs.openjdk.java.net/browse/JDK-8253374">JLS changes for Static Members of Inner Classes</a>
-         */
-        STATIC_LOCAL_TYPE_DECLARATIONS(15, 15, true),
-
-        /**
-         * @see <a href="https://openjdk.java.net/jeps/360">JEP 360: Sealed Classes (Preview)</a>
-         * @see <a href="https://openjdk.java.net/jeps/397">JEP 397: Sealed Classes (Second Preview)</a>
-         * @see <a href="https://openjdk.java.net/jeps/409">JEP 409: Sealed Classes</a>
-         */
-        SEALED_CLASSES(15, 16, true),
-
-        /**
-         * @see <a href="https://openjdk.java.net/jeps/406">JEP 406: Pattern Matching for switch (Preview)</a>
-         */
-        PATTERN_MATCHING_FOR_SWITCH(17, 17, false),
+        PATTERN_MATCHING_FOR_SWITCH(17, 18, false),
 
         /**
          * Part of pattern matching for switch
          * @see #PATTERN_MATCHING_FOR_SWITCH
-         * @see <a href="https://openjdk.java.net/jeps/406">JEP 406: Pattern Matching for switch (Preview)</a>
+         * @see <a href="https://openjdk.java.net/jeps/406">JEP 406: Pattern Matching for switch (Preview)</a> (Java 17)
+         * @see <a href="https://openjdk.java.net/jeps/420">JEP 420: Pattern Matching for switch (Second Preview)</a> (Java 18)
          */
-        GUARDED_PATTERNS(17, 17, false),
+        GUARDED_PATTERNS(17, 18, false),
 
         /**
          * Part of pattern matching for switch
          * @see #PATTERN_MATCHING_FOR_SWITCH
-         * @see <a href="https://openjdk.java.net/jeps/406">JEP 406: Pattern Matching for switch (Preview)</a>
+         * @see <a href="https://openjdk.java.net/jeps/406">JEP 406: Pattern Matching for switch (Preview)</a> (Java 17)
+         * @see <a href="https://openjdk.java.net/jeps/420">JEP 420: Pattern Matching for switch (Second Preview)</a> (Java 18)
          */
-        NULL_CASE_LABELS(17, 17, false),
+        NULL_CASE_LABELS(17, 18, false),
 
         ;  // SUPPRESS CHECKSTYLE enum trailing semi is awesome
 
@@ -329,6 +304,34 @@ public class LanguageLevelChecker<T> {
          */
         SPACE_STRING_ESCAPES(15),
 
+        /**
+         * @see <a href="https://openjdk.java.net/jeps/359">JEP 359: Records (Preview)</a> (Java 14)
+         * @see <a href="https://openjdk.java.net/jeps/384">JEP 384: Records (Second Preview)</a> (Java 15)
+         * @see <a href="https://openjdk.java.net/jeps/395">JEP 395: Records</a> (Java 16)
+         */
+        RECORD_DECLARATIONS(16),
+
+        /**
+         * @see <a href="https://openjdk.java.net/jeps/305">JEP 305: Pattern Matching for instanceof (Preview)</a> (Java 14)
+         * @see <a href="https://openjdk.java.net/jeps/375">JEP 375: Pattern Matching for instanceof (Second Preview)</a> (Java 15)
+         * @see <a href="https://openjdk.java.net/jeps/394">JEP 394: Pattern Matching for instanceof</a> (Java 16)
+         */
+        TYPE_PATTERNS_IN_INSTANCEOF(16),
+
+        /**
+         * Part of the records JEP 394.
+         * @see #RECORD_DECLARATIONS
+         * @see <a href="https://bugs.openjdk.java.net/browse/JDK-8253374">JLS changes for Static Members of Inner Classes</a> (Java 16)
+         */
+        STATIC_LOCAL_TYPE_DECLARATIONS(16),
+
+        /**
+         * @see <a href="https://openjdk.java.net/jeps/360">JEP 360: Sealed Classes (Preview)</a> (Java 15)
+         * @see <a href="https://openjdk.java.net/jeps/397">JEP 397: Sealed Classes (Second Preview)</a> (Java 16)
+         * @see <a href="https://openjdk.java.net/jeps/409">JEP 409: Sealed Classes</a> (Java 17)
+         */
+        SEALED_CLASSES(17),
+
         ;  // SUPPRESS CHECKSTYLE enum trailing semi is awesome
 
         private final int minJdkLevel;
@@ -401,7 +404,7 @@ public class LanguageLevelChecker<T> {
 
         @Override
         public Void visit(ASTRecordDeclaration node, T data) {
-            check(node, PreviewFeature.RECORD_DECLARATIONS, data);
+            check(node, RegularLanguageFeature.RECORD_DECLARATIONS, data);
             return null;
         }
 
@@ -512,7 +515,7 @@ public class LanguageLevelChecker<T> {
 
         @Override
         public Void visit(ASTTypePattern node, T data) {
-            check(node, PreviewFeature.TYPE_PATTERNS_IN_INSTANCEOF, data);
+            check(node, RegularLanguageFeature.TYPE_PATTERNS_IN_INSTANCEOF, data);
             return null;
         }
 
@@ -597,9 +600,9 @@ public class LanguageLevelChecker<T> {
         @Override
         public Void visitTypeDecl(ASTAnyTypeDeclaration node, T data) {
             if (node.getModifiers().hasAnyExplicitly(JModifier.SEALED, JModifier.NON_SEALED)) {
-                check(node, PreviewFeature.SEALED_CLASSES, data);
+                check(node, RegularLanguageFeature.SEALED_CLASSES, data);
             } else if (node.isLocal() && !node.isRegularClass()) {
-                check(node, PreviewFeature.STATIC_LOCAL_TYPE_DECLARATIONS, data);
+                check(node, RegularLanguageFeature.STATIC_LOCAL_TYPE_DECLARATIONS, data);
             }
             String simpleName = node.getSimpleName();
             if ("var".equals(simpleName)) {

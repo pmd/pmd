@@ -78,6 +78,7 @@ import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.JavaVisitorBase;
 import net.sourceforge.pmd.lang.java.ast.QualifiableExpression;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
+import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.rule.bestpractices.UnusedAssignmentRule;
 import net.sourceforge.pmd.lang.java.rule.design.SingularFieldRule;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
@@ -877,7 +878,7 @@ public final class DataflowPass {
 
         private boolean isRelevantField(ASTExpression lhs) {
             return lhs instanceof ASTNamedReferenceExpr
-                && (trackThisInstance() && JavaRuleUtil.isThisFieldAccess(lhs)
+                && (trackThisInstance() && JavaAstUtils.isThisFieldAccess(lhs)
                 || trackStaticFields() && isStaticFieldOfThisClass(((ASTNamedReferenceExpr) lhs).getReferencedSym()));
         }
 

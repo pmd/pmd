@@ -15,8 +15,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTInitializer;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
+import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
-import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 
@@ -87,7 +87,7 @@ public class FieldDeclarationsShouldBeAtStartOfClassRule extends AbstractJavaRul
     private boolean isInitializerOk(ASTFieldDeclaration fieldDeclaration) {
         if (getProperty(IGNORE_ANONYMOUS_CLASS_DECLARATIONS) && fieldDeclaration.getVarIds().count() == 1) {
             ASTExpression initializer = fieldDeclaration.getVarIds().firstOrThrow().getInitializer();
-            return JavaRuleUtil.isAnonymousClassCreation(initializer);
+            return JavaAstUtils.isAnonymousClassCreation(initializer);
         }
         return false;
     }
