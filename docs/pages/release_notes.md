@@ -23,6 +23,9 @@ This is a {{ site.pmd.release_type }} release.
 * java
   * [#3889](https://github.com/pmd/pmd/pull/3889): \[java] Catch LinkageError in UselessOverridingMethodRule
 
+*   core
+    *   [#3884](https://github.com/pmd/pmd/issues/3884): \[core] XML report via ant task contains XML header twice
+
 ### API Changes
 
 ### External Contributions
