@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd;
 
+import static net.sourceforge.pmd.util.CollectionUtil.setOf;
 import static net.sourceforge.pmd.util.internal.xml.SchemaConstants.DESCRIPTION;
 import static net.sourceforge.pmd.util.internal.xml.SchemaConstants.EXCLUDE;
 import static net.sourceforge.pmd.util.internal.xml.SchemaConstants.EXCLUDE_PATTERN;
@@ -38,7 +39,6 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.event.Level;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
@@ -47,6 +47,7 @@ import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.rules.RuleFactory;
 import net.sourceforge.pmd.util.ResourceLoader;
 import net.sourceforge.pmd.util.internal.xml.PmdXmlReporter;
+import net.sourceforge.pmd.util.internal.xml.SchemaConstants;
 import net.sourceforge.pmd.util.internal.xml.XmlUtil;
 import net.sourceforge.pmd.util.log.MessageReporter;
 
@@ -358,20 +359,25 @@ final class RuleSetFactory {
                                            String ref,
                                            Set<String> rulesetReferences,
                                            PmdXmlReporter err) {
-        String priority = null;
-        NodeList childNodes = ruleElement.getChildNodes();
+        RulePriority priority = null;
         Map<String, Element> excludedRulesCheck = new HashMap<>();
-        for (int i = 0; i < childNodes.getLength(); i++) {
-            Node child = childNodes.item(i);
+        for (Element child : XmlUtil.getElementChildrenList(ruleElement)) {
             if (EXCLUDE.isElementWithName(child)) {
-                Element excludeElement = (Element) child;
-                String excludedRuleName = excludeElement.getAttribute("name");
+                String excludedRuleName;
+                try {
+                    excludedRuleName = SchemaConstants.NAME.getAttributeOrThrow(child, err);
+                } catch (XmlException ignored) {
+                    // has been reported
+                    continue;
+                }
                 excludedRuleName = compatibilityFilter.applyExclude(ref, excludedRuleName, this.warnDeprecated);
                 if (excludedRuleName != null) {
-                    excludedRulesCheck.put(excludedRuleName, excludeElement);
+                    excludedRulesCheck.put(excludedRuleName, child);
                 }
             } else if (PRIORITY.isElementWithName(child)) {
-                priority = XmlUtil.parseTextNode(child).trim();
+                priority = RuleFactory.parsePriority(err, child);
+            } else {
+                XmlUtil.reportIgnoredUnexpectedElt(ruleElement, child, setOf(EXCLUDE, PRIORITY), err);
             }
         }
         final RuleSetReference ruleSetReference = new RuleSetReference(ref, true, excludedRulesCheck.keySet());
@@ -388,7 +394,7 @@ final class RuleSetFactory {
                 RuleReference ruleReference = new RuleReference(rule, ruleSetReference);
                 // override the priority
                 if (priority != null) {
-                    ruleReference.setPriority(RulePriority.valueOf(Integer.parseInt(priority)));
+                    ruleReference.setPriority(priority);
                 }
 
                 if (rule.isDeprecated()) {

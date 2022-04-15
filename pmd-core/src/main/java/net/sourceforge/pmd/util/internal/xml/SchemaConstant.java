@@ -7,6 +7,7 @@ package net.sourceforge.pmd.util.internal.xml;
 import static net.sourceforge.pmd.util.CollectionUtil.setOf;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
@@ -18,7 +19,8 @@ import org.w3c.dom.Node;
 
 
 /**
- * Constants of the ruleset schema.
+ * Wraps the name of eg an attribute or element, and provides convenience
+ * methods to query the DOM.
  */
 public class SchemaConstant {
 
@@ -73,16 +75,16 @@ public class SchemaConstant {
     }
 
     public List<Element> getElementChildrenNamedReportOthers(Element elt, PmdXmlReporter err) {
-        return XmlUtil.getElementChildrenNamedReportOthers(elt, setOf(name), err)
+        return XmlUtil.getElementChildrenNamedReportOthers(elt, setOf(this), err)
                       .collect(Collectors.toList());
     }
 
     public Element getSingleChildIn(Element elt, PmdXmlReporter err) {
-        return XmlUtil.getSingleChildIn(elt, true, err, setOf(name));
+        return XmlUtil.getSingleChildIn(elt, true, err, setOf(this));
     }
 
     public Element getOptChildIn(Element elt, PmdXmlReporter err) {
-        return XmlUtil.getSingleChildIn(elt, false, err, setOf(name));
+        return XmlUtil.getSingleChildIn(elt, false, err, setOf(this));
     }
 
     public void setOn(Element element, String value) {
@@ -107,5 +109,22 @@ public class SchemaConstant {
 
     public boolean isElementWithName(Node node) {
         return node.getNodeType() == Node.ELEMENT_NODE && node.getNodeName().equals(name);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        SchemaConstant that = (SchemaConstant) o;
+        return Objects.equals(name, that.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name);
     }
 }

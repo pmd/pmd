@@ -184,7 +184,10 @@ public class RuleFactory {
                 rule.addExample(XmlUtil.parseTextNode(node));
                 break;
             case PRIORITY:
-                RulePriority rp = parsePriority(err, node, XmlUtil.parseTextNode(node));
+                RulePriority rp = parsePriority(err, node);
+                if (rp == null) {
+                    rp = RulePriority.MEDIUM;
+                }
                 rule.setPriority(rp);
                 break;
             case PROPERTIES:
@@ -214,20 +217,17 @@ public class RuleFactory {
     }
 
 
-    private @NonNull RulePriority parsePriority(PmdXmlReporter err, Element node, String trim) {
-        try {
-            int i = Integer.parseInt(trim.trim());
-            RulePriority rp = RulePriority.valueOfNullable(i);
-            if (rp == null) {
-                err.at(node).warn(XmlErrorMessages.WARN__INVALID_PRIORITY_VALUE, i);
-                return RulePriority.MEDIUM;
-            } else {
-                return rp;
-            }
-        } catch (NumberFormatException e) {
-            err.at(node).warn(XmlErrorMessages.WARN__INVALID_PRIORITY_VALUE, trim);
-            return RulePriority.MEDIUM;
+    /**
+     * Parse a priority. If invalid, report it and return null.
+     */
+    public static @Nullable RulePriority parsePriority(PmdXmlReporter err, Element node) {
+        String text = XmlUtil.parseTextNode(node);
+        RulePriority rp = RulePriority.valueOfNullable(text);
+        if (rp == null) {
+            err.at(node).error(XmlErrorMessages.ERR__INVALID_PRIORITY_VALUE, text);
+            return null;
         }
+        return rp;
     }
 
     private LanguageVersion getLanguageVersion(Element ruleElement, PmdXmlReporter err, Language language, String attrName) {

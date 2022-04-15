@@ -23,6 +23,7 @@ import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.benchmark.TimedOperation;
 import net.sourceforge.pmd.benchmark.TimedOperationCategory;
 import net.sourceforge.pmd.cache.AnalysisCacheListener;
+import net.sourceforge.pmd.cli.internal.CliMessages;
 import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.internal.util.FileCollectionUtil;
 import net.sourceforge.pmd.lang.Language;
@@ -417,15 +418,24 @@ public final class PmdAnalysis implements AutoCloseable {
         } catch (Exception e) {
             getReporter().errorEx("Exception during processing", e);
             ReportStats stats = listener.getResult();
-            PMD.printErrorDetected(1 + stats.getNumErrors());
+            printErrorDetected(1 + stats.getNumErrors());
             return stats; // should have been closed
         }
         ReportStats stats = listener.getResult();
 
         if (stats.getNumErrors() > 0) {
-            PMD.printErrorDetected(stats.getNumErrors());
+            printErrorDetected(stats.getNumErrors());
         }
 
         return stats;
+    }
+
+    static void printErrorDetected(MessageReporter reporter, int errors) {
+        String msg = CliMessages.errorDetectedMessage(errors, "PMD");
+        reporter.error(msg);
+    }
+
+    void printErrorDetected(int errors) {
+        printErrorDetected(getReporter(), errors);
     }
 }

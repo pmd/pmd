@@ -163,11 +163,6 @@ public final class PMD {
         return runPmd(parseResult.toConfiguration());
     }
 
-    static void printErrorDetected(int errors) {
-        String msg = CliMessages.errorDetectedMessage(errors, "PMD");
-        log.error(msg);
-    }
-
     /**
      * Execute PMD from a configuration. Returns the status code without
      * exiting the VM. This is the main entry point to run a full PMD run
@@ -226,7 +221,7 @@ public final class PMD {
 
         } catch (Exception e) {
             pmdReporter.errorEx("Exception while running PMD.", e);
-            printErrorDetected(1);
+            PmdAnalysis.printErrorDetected(pmdReporter, 1);
             return StatusCode.ERROR;
         } finally {
             finishBenchmarker(configuration);

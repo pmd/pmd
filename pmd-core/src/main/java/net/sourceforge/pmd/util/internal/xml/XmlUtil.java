@@ -6,6 +6,7 @@ package net.sourceforge.pmd.util.internal.xml;
 
 import static net.sourceforge.pmd.util.internal.xml.XmlErrorMessages.ERR__MISSING_REQUIRED_ELEMENT;
 import static net.sourceforge.pmd.util.internal.xml.XmlErrorMessages.IGNORED__DUPLICATE_CHILD_ELEMENT;
+import static net.sourceforge.pmd.util.internal.xml.XmlErrorMessages.IGNORED__UNEXPECTED_ELEMENT;
 import static net.sourceforge.pmd.util.internal.xml.XmlErrorMessages.IGNORED__UNEXPECTED_ELEMENT_IN;
 
 import java.util.List;
@@ -17,6 +18,8 @@ import java.util.stream.Stream;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+
+import net.sourceforge.pmd.util.StringUtil;
 
 import com.github.oowekyala.ooxml.DomUtils;
 
@@ -32,20 +35,38 @@ public final class XmlUtil {
                        .map(Element.class::cast);
     }
 
-    public static Stream<Element> getElementChildrenNamed(Element parent, Set<String> names) {
-        return getElementChildren(parent).filter(e -> names.contains(e.getTagName()));
+    public static List<Element> getElementChildrenList(Element parent) {
+        return getElementChildren(parent).collect(Collectors.toList());
     }
 
-    public static Stream<Element> getElementChildrenNamedReportOthers(Element parent, Set<String> names, PmdXmlReporter err) {
+    public static Stream<Element> getElementChildrenNamed(Element parent, Set<SchemaConstant> names) {
+        return getElementChildren(parent).filter(e -> matchesName(e, names));
+    }
+
+    public static Stream<Element> getElementChildrenNamedReportOthers(Element parent, Set<SchemaConstant> names, PmdXmlReporter err) {
         return getElementChildren(parent)
             .map(it -> {
-                if (names.contains(it.getTagName())) {
+                if (matchesName(it, names)) {
                     return it;
                 } else {
                     err.at(it).warn(IGNORED__UNEXPECTED_ELEMENT_IN, it.getTagName(), formatPossibleNames(names));
                     return null;
                 }
             }).filter(Objects::nonNull);
+    }
+
+    public static boolean matchesName(Element elt, Set<SchemaConstant> names) {
+        return names.stream().anyMatch(it -> it.xmlName().equals(elt.getTagName()));
+    }
+
+    public static void reportIgnoredUnexpectedElt(Element parent,
+                                                  Element unexpectedChild,
+                                                  Set<SchemaConstant> names,
+                                                  PmdXmlReporter err) {
+        err.at(unexpectedChild).warn(IGNORED__UNEXPECTED_ELEMENT,
+                                     unexpectedChild.getTagName(),
+                                     parent.getTagName(),
+                                     formatPossibleNames(names));
     }
 
     public static Stream<Element> getElementChildrenNamed(Element parent, String name) {
@@ -61,7 +82,7 @@ public final class XmlUtil {
         }).collect(Collectors.toList());
     }
 
-    public static Element getSingleChildIn(Element elt, boolean throwOnMissing, PmdXmlReporter err, Set<String> names) {
+    public static Element getSingleChildIn(Element elt, boolean throwOnMissing, PmdXmlReporter err, Set<SchemaConstant> names) {
         List<Element> children = getElementChildrenNamed(elt, names).collect(Collectors.toList());
         if (children.size() == 1) {
             return children.get(0);
@@ -80,14 +101,16 @@ public final class XmlUtil {
         }
     }
 
-    @Nullable
-    public static String formatPossibleNames(Set<String> names) {
+    public static @Nullable String formatPossibleNames(Set<SchemaConstant> names) {
         if (names.isEmpty()) {
             return null;
         } else if (names.size() == 1) {
-            return "'" + names.iterator().next() + "'";
+            return StringUtil.inSingleQuotes(names.iterator().next().xmlName());
         } else {
-            return "one of " + names.stream().map(it -> "'" + it + "'").collect(Collectors.joining(", "));
+            return "one of " + names.stream()
+                                    .map(SchemaConstant::xmlName)
+                                    .map(StringUtil::inSingleQuotes)
+                                    .collect(Collectors.joining(", "));
         }
     }
 
