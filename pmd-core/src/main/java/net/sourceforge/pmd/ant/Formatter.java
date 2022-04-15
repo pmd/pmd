@@ -110,7 +110,6 @@ public class Formatter {
             }
             renderer = createRenderer();
             renderer.setWriter(writer);
-            renderer.start();
         } catch (IOException ioe) {
             throw new BuildException(ioe.getMessage(), ioe);
         }

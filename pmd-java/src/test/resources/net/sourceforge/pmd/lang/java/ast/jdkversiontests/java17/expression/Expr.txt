@@ -1,4 +1,4 @@
-+- CompilationUnit[@PackageName = "com.example.expression", @declarationsAreInDefaultPackage = "false"]
++- CompilationUnit[@PackageName = "com.example.expression"]
    +- PackageDeclaration[@Name = "com.example.expression"]
    |  +- ModifierList[]
    +- ClassOrInterfaceDeclaration[@Abstract = "true", @Annotation = "false", @Anonymous = "false", @BinaryName = "com.example.expression.Expr", @CanonicalName = "com.example.expression.Expr", @EffectiveVisibility = "public", @Enum = "false", @Final = "false", @Image = "Expr", @Interface = "true", @Local = "false", @Native = "false", @Nested = "false", @PackageName = "com.example.expression", @PackagePrivate = "false", @Private = "false", @Protected = "false", @Public = "true", @Record = "false", @RegularClass = "false", @RegularInterface = "true", @SimpleName = "Expr", @Static = "false", @Strictfp = "false", @Synchronized = "false", @SyntacticallyAbstract = "false", @SyntacticallyFinal = "false", @SyntacticallyPublic = "true", @SyntacticallyStatic = "false", @TopLevel = "true", @Transient = "false", @Visibility = "public", @Volatile = "false"]

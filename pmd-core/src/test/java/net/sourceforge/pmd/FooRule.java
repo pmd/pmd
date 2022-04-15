@@ -22,6 +22,7 @@ public class FooRule extends AbstractRule {
     public FooRule() {
         setLanguage(LanguageRegistry.getLanguage(DummyLanguageModule.NAME));
         setName("Foo");
+        setDescription("Description with Unicode Character U+2013: \u2013 .");
     }
 
     @Override
@@ -37,11 +38,6 @@ public class FooRule extends AbstractRule {
     @Override
     public String getRuleSetName() {
         return "RuleSet";
-    }
-
-    @Override
-    public String getDescription() {
-        return "desc";
     }
 
     @Override

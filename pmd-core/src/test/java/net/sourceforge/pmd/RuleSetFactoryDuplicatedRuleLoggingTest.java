@@ -7,6 +7,7 @@ package net.sourceforge.pmd;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 public class RuleSetFactoryDuplicatedRuleLoggingTest extends RulesetFactoryTestBase {
@@ -18,7 +19,7 @@ public class RuleSetFactoryDuplicatedRuleLoggingTest extends RulesetFactoryTestB
         assertEquals(1, ruleset.getRules().size());
         Rule mockRule = ruleset.getRuleByName("DummyBasicMockRule");
         assertNotNull(mockRule);
-        assertEquals(RulePriority.MEDIUM, mockRule.getPriority());
+        Assert.assertEquals(RulePriority.MEDIUM, mockRule.getPriority());
         verifyFoundAWarningWithMessage(containing(
             "The rule DummyBasicMockRule is referenced multiple times in \"Custom Rules\". "
                 + "Only the last rule configuration is used."

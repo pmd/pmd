@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -19,7 +19,7 @@ import org.slf4j.LoggerFactory;
  *
  * @see <a href="https://sourceforge.net/p/pmd/bugs/1360/">issue 1360</a>
  */
-final class RuleSetFactoryCompatibility {
+public final class RuleSetFactoryCompatibility {
 
     static final RuleSetFactoryCompatibility EMPTY = new RuleSetFactoryCompatibility();
     /** The instance with the built-in filters for the modified PMD rules. */

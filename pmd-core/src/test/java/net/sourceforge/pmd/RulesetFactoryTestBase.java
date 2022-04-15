@@ -7,23 +7,30 @@ package net.sourceforge.pmd;
 import java.util.function.Predicate;
 
 import org.junit.Before;
+import org.junit.contrib.java.lang.system.SystemErrRule;
 import org.mockito.Mockito;
 import org.mockito.verification.VerificationMode;
+import org.slf4j.LoggerFactory;
 import org.slf4j.event.Level;
 
 import net.sourceforge.pmd.junit.LocaleRule;
 import net.sourceforge.pmd.util.log.MessageReporter;
+import net.sourceforge.pmd.util.log.internal.SimpleMessageReporter;
 
 public class RulesetFactoryTestBase {
 
     @org.junit.Rule
     public LocaleRule localeRule = LocaleRule.en();
 
+    @org.junit.Rule
+    public SystemErrRule systemErrRule = new SystemErrRule().muteForSuccessfulTests();
+
     protected MessageReporter mockReporter;
 
     @Before
     public void setup() {
-        mockReporter = Mockito.mock(MessageReporter.class);
+        SimpleMessageReporter reporter = new SimpleMessageReporter(LoggerFactory.getLogger(RulesetFactoryTestBase.class));
+        mockReporter = Mockito.spy(reporter);
     }
 
     protected void verifyNoWarnings() {

@@ -42,7 +42,7 @@ def run_pmdtester
         @base_branch = 'master'
         @logger.info "\n\n--------------------------------------"
         @logger.info "Run against #{@base_branch}"
-        @summary = PmdTester::Runner.new(get_args(@base_branch)).run
+        @summary = PmdTester::Runner.new(get_args(@base_branch, FALSE, 'target/diff1/patch_config.xml')).run
 
         # move the generated report out of the way
         FileUtils.mv 'target/reports/diff', 'target/diff2'
