@@ -129,15 +129,14 @@ final class RuleSetFactory {
      * @return A new Rule.
      */
     private Rule createRule(RuleSetReferenceId ruleSetReferenceId, boolean withDeprecatedRuleReferences) {
-        if (ruleSetReferenceId.isAllRules()) {
+        RuleSetReferenceId parentRuleset = ruleSetReferenceId.getParentRulesetIfThisIsARule();
+        if (parentRuleset == null) {
             throw new IllegalArgumentException(
                 "Cannot parse a single Rule from an all Rule RuleSet reference: <" + ruleSetReferenceId + ">.");
         }
-        RuleSet ruleSet;
-        // java8: computeIfAbsent
-        if (parsedRulesets.containsKey(ruleSetReferenceId)) {
-            ruleSet = parsedRulesets.get(ruleSetReferenceId);
-        } else {
+        // can't use computeIfAbsent as creating a ruleset may add more entries to the map.
+        RuleSet ruleSet = parsedRulesets.get(parentRuleset);
+        if (ruleSet == null) {
             ruleSet = createRuleSet(ruleSetReferenceId, withDeprecatedRuleReferences);
             parsedRulesets.put(ruleSetReferenceId, ruleSet);
         }
@@ -500,7 +499,7 @@ final class RuleSetFactory {
         RuleSetFactory ruleSetFactory = toLoader().filterAbovePriority(RulePriority.LOW).warnDeprecated(false).toFactory();
 
         boolean isSameRuleSet = false;
-        RuleSetReferenceId otherRuleSetReferenceId = RuleSetReferenceId.parse(ref).get(0);
+        RuleSetReferenceId otherRuleSetReferenceId = RuleSetReferenceId.parse(ref).get(0); // fixme what is this get(0) doing here
         if (!otherRuleSetReferenceId.isExternal()
             && containsRule(ruleSetReferenceId, otherRuleSetReferenceId.getRuleName())) {
             otherRuleSetReferenceId = new RuleSetReferenceId(ref, ruleSetReferenceId);

@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.util.ResourceLoader;
@@ -103,6 +104,14 @@ public class RuleSetReferenceId {
     public RuleSetReferenceId(final String id) {
 
         this(id, null);
+    }
+
+    private RuleSetReferenceId(final String ruleSetFileName, boolean allRules, boolean external, String ruleName, RuleSetReferenceId externalRuleSetReferenceId) {
+        this.ruleSetFileName = ruleSetFileName;
+        this.allRules = allRules;
+        this.external = external;
+        this.ruleName = ruleName;
+        this.externalRuleSetReferenceId = externalRuleSetReferenceId;
     }
 
     /**
@@ -219,6 +228,20 @@ public class RuleSetReferenceId {
                     "Cannot pair external <" + this + "> with external <" + externalRuleSetReferenceId + ">.");
         }
         this.externalRuleSetReferenceId = externalRuleSetReferenceId;
+    }
+
+    @Nullable RuleSetReferenceId getParentRulesetIfThisIsARule() {
+        if (ruleName == null) {
+            return null;
+        }
+        return new RuleSetReferenceId(
+            ruleSetFileName,
+            true,
+            external,
+            null,
+
+            null
+        );
     }
 
     /**
