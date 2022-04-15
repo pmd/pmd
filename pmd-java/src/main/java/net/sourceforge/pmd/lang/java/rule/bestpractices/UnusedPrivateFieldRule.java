@@ -35,7 +35,7 @@ public class UnusedPrivateFieldRule extends AbstractLombokAwareRule {
 
     private static final PropertyDescriptor<List<String>> IGNORED_FIELD_NAMES =
                 PropertyFactory.stringListProperty("ignoredFieldNames")
-                    .defaultValue(Arrays.asList("serialVersionUID", "serialPersistentFields", "IDENT"))
+                    .defaultValues("serialVersionUID", "serialPersistentFields")
                     .desc("Field Names that are ignored from the unused check")
                     .build();
 
