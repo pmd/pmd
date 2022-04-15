@@ -22,6 +22,7 @@ This is a {{ site.pmd.release_type }} release.
   * [#2505](https://github.com/pmd/pmd/issues/2505): \[doc] Improve side bar to show release date
 * java
   * [#3889](https://github.com/pmd/pmd/pull/3889): \[java] Catch LinkageError in UselessOverridingMethodRule
+  * [#3068](https://github.com/pmd/pmd/pull/3068): \[java] Some tests should not depend on real rules
 
 *   core
     *   [#3884](https://github.com/pmd/pmd/issues/3884): \[core] XML report via ant task contains XML header twice
