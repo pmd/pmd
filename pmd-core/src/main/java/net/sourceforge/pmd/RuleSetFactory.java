@@ -46,6 +46,7 @@ import net.sourceforge.pmd.RuleSet.RuleSetBuilder;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.rules.RuleFactory;
 import net.sourceforge.pmd.util.ResourceLoader;
+import net.sourceforge.pmd.util.StringUtil;
 import net.sourceforge.pmd.util.internal.xml.PmdXmlReporter;
 import net.sourceforge.pmd.util.internal.xml.SchemaConstants;
 import net.sourceforge.pmd.util.internal.xml.XmlUtil;
@@ -644,14 +645,15 @@ final class RuleSetFactory {
         return new AccumulatingMessageHandler(
             entry -> {
                 Level level = entry.getSeverity() == XmlSeverity.WARNING ? Level.WARN : Level.ERROR;
-                reporter.logEx(level, entry.toString(), new Object[0], entry.getCause());
+                String quotedText = StringUtil.quoteMessageFormat(entry.toString());
+                reporter.logEx(level, quotedText, new Object[0], entry.getCause());
             },
             XmlSeverity.WARNING
         ) {
             @Override
             protected void printSummaryLine(String kind, XmlSeverity severity, String message) {
                 Level level = severity == XmlSeverity.WARNING ? Level.WARN : Level.ERROR;
-                reporter.log(level, message);
+                reporter.log(level, StringUtil.quoteMessageFormat(message));
             }
         };
     }

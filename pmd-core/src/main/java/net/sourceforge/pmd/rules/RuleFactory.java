@@ -121,7 +121,11 @@ public class RuleFactory {
                 ruleReference.addExample(XmlUtil.parseTextNode(node));
                 break;
             case PRIORITY:
-                ruleReference.setPriority(RulePriority.valueOf(Integer.parseInt(XmlUtil.parseTextNode(node))));
+                RulePriority priority = parsePriority(err, node);
+                if (priority == null) {
+                    priority = RulePriority.MEDIUM;
+                }
+                ruleReference.setPriority(priority);
                 break;
             case PROPERTIES:
                 setPropertyValues(ruleReference, node, err);
