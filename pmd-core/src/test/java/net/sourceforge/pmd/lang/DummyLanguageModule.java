@@ -37,6 +37,11 @@ public class DummyLanguageModule extends BaseLanguageModule {
         addVersion("1.9-throws", new HandlerWithParserThatThrows());
     }
 
+
+    public static DummyLanguageModule getInstance() {
+        return (DummyLanguageModule) LanguageRegistry.getLanguage(NAME);
+    }
+
     public static class Handler extends AbstractPmdLanguageVersionHandler {
 
         @Override

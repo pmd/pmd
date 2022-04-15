@@ -23,7 +23,6 @@ import net.sourceforge.pmd.FooRule;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report.ConfigurationError;
 import net.sourceforge.pmd.Report.ProcessingError;
-import net.sourceforge.pmd.ReportTest;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.ast.DummyNode;
@@ -58,8 +57,7 @@ public class YAHTMLRendererTest extends AbstractRendererTest {
 
     @Test
     public void testReportMultipleViolations() throws Exception {
-
-        String actual = ReportTest.render(getRenderer(), it -> {
+        String actual = renderReport(getRenderer(), it -> {
             it.onRuleViolation(newRuleViolation(1, 1, 1, 1, "net.sf.pmd.test", "YAHTMLSampleClass1"));
             it.onRuleViolation(newRuleViolation(1, 1, 1, 2, "net.sf.pmd.test", "YAHTMLSampleClass1"));
             it.onRuleViolation(newRuleViolation(1, 1, 1, 1, "net.sf.pmd.other", "YAHTMLSampleClass2"));

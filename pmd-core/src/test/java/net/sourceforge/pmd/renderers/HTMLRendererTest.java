@@ -13,7 +13,6 @@ import org.junit.Test;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report.ConfigurationError;
 import net.sourceforge.pmd.Report.ProcessingError;
-import net.sourceforge.pmd.ReportTest;
 
 public class HTMLRendererTest extends AbstractRendererTest {
 
@@ -98,7 +97,7 @@ public class HTMLRendererTest extends AbstractRendererTest {
         renderer.setProperty(HTMLRenderer.LINE_PREFIX, linePrefix);
         renderer.setProperty(HTMLRenderer.HTML_EXTENSION, false);
 
-        String actual = ReportTest.render(renderer, reportOneViolation());
+        String actual = renderReport(renderer, reportOneViolation());
         assertEquals(filter(getExpected(linkPrefix, "L1")), filter(actual));
     }
 
@@ -110,7 +109,7 @@ public class HTMLRendererTest extends AbstractRendererTest {
         // dont set line prefix renderer.setProperty(HTMLRenderer.LINE_PREFIX, linePrefix);
         renderer.setProperty(HTMLRenderer.HTML_EXTENSION, false);
 
-        String actual = ReportTest.render(renderer, reportOneViolation());
+        String actual = renderReport(renderer, reportOneViolation());
         assertEquals(filter(getExpected(linkPrefix, "")), filter(actual));
     }
 
@@ -122,7 +121,7 @@ public class HTMLRendererTest extends AbstractRendererTest {
         renderer.setProperty(HTMLRenderer.LINE_PREFIX, "");
         renderer.setProperty(HTMLRenderer.HTML_EXTENSION, false);
 
-        String actual = ReportTest.render(renderer, reportOneViolation());
+        String actual = renderReport(renderer, reportOneViolation());
         assertEquals(filter(getExpected(linkPrefix, "1")), filter(actual));
     }
 }

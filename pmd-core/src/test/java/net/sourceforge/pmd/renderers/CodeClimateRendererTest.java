@@ -9,7 +9,6 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.ReportTest;
 import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 import net.sourceforge.pmd.lang.rule.XPathRule;
@@ -28,7 +27,7 @@ public class CodeClimateRendererTest extends AbstractRendererTest {
                 + "\"content\":{\"body\":\"## Foo\\n\\nSince: PMD null\\n\\nPriority: Low\\n\\n"
                 + "[Categories](https://github.com/codeclimate/platform/blob/master/spec/analyzers/SPEC.md#categories): Style\\n\\n"
                 + "[Remediation Points](https://github.com/codeclimate/platform/blob/master/spec/analyzers/SPEC.md#remediation-points): 50000\\n\\n"
-                + "desc\\n\\n"
+                + "Description with Unicode Character U+2013: – .\\n\\n"
                 + "### [PMD properties](https://pmd.github.io/latest/pmd_userdocs_configuring_rules.html#rule-properties)\\n\\n"
                 + "Name | Value | Description\\n" + "--- | --- | ---\\n"
                 + "violationSuppressRegex | | Suppress violations with messages matching a regular expression\\n"
@@ -43,7 +42,7 @@ public class CodeClimateRendererTest extends AbstractRendererTest {
                 + "\"content\":{\"body\":\"## Foo\\n\\nSince: PMD null\\n\\nPriority: Low\\n\\n"
                 + "[Categories](https://github.com/codeclimate/platform/blob/master/spec/analyzers/SPEC.md#categories): Style\\n\\n"
                 + "[Remediation Points](https://github.com/codeclimate/platform/blob/master/spec/analyzers/SPEC.md#remediation-points): 50000\\n\\n"
-                + "desc\\n\\n"
+                + "Description with Unicode Character U+2013: – .\\n\\n"
                 + "### [PMD properties](https://pmd.github.io/latest/pmd_userdocs_configuring_rules.html#rule-properties)\\n\\n"
                 + "Name | Value | Description\\n" + "--- | --- | ---\\n"
                 + "violationSuppressRegex | | Suppress violations with messages matching a regular expression\\n"
@@ -65,7 +64,7 @@ public class CodeClimateRendererTest extends AbstractRendererTest {
                 + "\"content\":{\"body\":\"## Foo\\n\\nSince: PMD null\\n\\nPriority: Low\\n\\n"
                 + "[Categories](https://github.com/codeclimate/platform/blob/master/spec/analyzers/SPEC.md#categories): Style\\n\\n"
                 + "[Remediation Points](https://github.com/codeclimate/platform/blob/master/spec/analyzers/SPEC.md#remediation-points): 50000\\n\\n"
-                + "desc\\n\\n"
+                + "Description with Unicode Character U+2013: – .\\n\\n"
                 + "### [PMD properties](https://pmd.github.io/latest/pmd_userdocs_configuring_rules.html#rule-properties)\\n\\n"
                 + "Name | Value | Description\\n" + "--- | --- | ---\\n"
                 + "violationSuppressRegex | | Suppress violations with messages matching a regular expression\\n"
@@ -90,10 +89,10 @@ public class CodeClimateRendererTest extends AbstractRendererTest {
         XPathRule theRule = new XPathRule(XPathVersion.XPATH_3_1, "//dummyNode");
 
         // Setup as FooRule
-        theRule.setDescription("desc");
+        theRule.setDescription("Description with Unicode Character U+2013: – .");
         theRule.setName("Foo");
 
-        String rendered = ReportTest.render(getRenderer(), it -> it.onRuleViolation(new ParametricRuleViolation(theRule, node, "blah")));
+        String rendered = renderReport(getRenderer(), it -> it.onRuleViolation(new ParametricRuleViolation(theRule, node, "blah")));
 
         // Output should be the exact same as for non xpath rules
         assertEquals(filter(getExpected()), filter(rendered));
