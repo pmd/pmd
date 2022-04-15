@@ -6,7 +6,7 @@ package net.sourceforge.pmd.internal.util.xml;
 
 import static net.sourceforge.pmd.internal.util.xml.XmlErrorMessages.ERR__MISSING_REQUIRED_ELEMENT;
 import static net.sourceforge.pmd.internal.util.xml.XmlErrorMessages.IGNORED__DUPLICATE_CHILD_ELEMENT;
-import static net.sourceforge.pmd.internal.util.xml.XmlErrorMessages.IGNORED__UNEXPECTED_ELEMENT;
+import static net.sourceforge.pmd.internal.util.xml.XmlErrorMessages.IGNORED__UNEXPECTED_ELEMENT_IN;
 
 import java.util.List;
 import java.util.Objects;
@@ -17,8 +17,6 @@ import java.util.stream.Stream;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-
-import net.sourceforge.pmd.properties.xml.XmlMapper;
 
 import com.github.oowekyala.ooxml.DomUtils;
 
@@ -44,7 +42,7 @@ public final class XmlUtil {
                 if (names.contains(it.getTagName())) {
                     return it;
                 } else {
-                    err.at(it).warn(IGNORED__UNEXPECTED_ELEMENT, it.getTagName(), formatPossibleNames(names));
+                    err.at(it).warn(IGNORED__UNEXPECTED_ELEMENT_IN, it.getTagName(), formatPossibleNames(names));
                     return null;
                 }
             }).filter(Objects::nonNull);
@@ -54,22 +52,11 @@ public final class XmlUtil {
         return getElementChildren(parent).filter(e -> name.equals(e.getTagName()));
     }
 
-    public static <T> T expectElement(PmdXmlReporter err, Element elt, XmlMapper<T> syntax) {
-
-        if (!syntax.getReadElementNames().contains(elt.getTagName())) {
-            err.at(elt).warn("Wrong name, expected " + formatPossibleNames(syntax.getReadElementNames()));
-        } else {
-            return syntax.fromXml(elt, err);
-        }
-
-        return null;
-    }
-
 
     public static List<Element> getChildrenExpectSingleName(Element elt, String name, PmdXmlReporter err) {
         return XmlUtil.getElementChildren(elt).peek(it -> {
             if (!it.getTagName().equals(name)) {
-                err.at(it).warn(IGNORED__UNEXPECTED_ELEMENT, it.getTagName(), name);
+                err.at(it).warn(IGNORED__UNEXPECTED_ELEMENT_IN, it.getTagName(), name);
             }
         }).collect(Collectors.toList());
     }

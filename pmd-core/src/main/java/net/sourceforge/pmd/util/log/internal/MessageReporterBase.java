@@ -51,6 +51,9 @@ abstract class MessageReporterBase implements MessageReporter {
                 log(level, message, formatArgs);
                 return;
             }
+            if (level == Level.ERROR) {
+                this.numErrors++;
+            }
             message = MessageFormat.format(message, formatArgs);
             String errorMessage = getErrorMessage(error);
             logImpl(level, message + ": " + errorMessage);

@@ -704,8 +704,14 @@ final class RuleSetFactory {
                         throw new IllegalArgumentException("unexpected!");
                     }
 
+                    if (message == null && formatArgs.length != 0) {
+                        throw new IllegalArgumentException("Cannot pass format arguments for null message");
+                    }
+
+                    String actualMessage = message == null ? cause.getMessage()
+                                                           : MessageFormat.format(message, formatArgs);
                     NiceXmlMessageSpec spec =
-                        new NiceXmlMessageSpec(position, MessageFormat.format(message, formatArgs))
+                        new NiceXmlMessageSpec(position, actualMessage)
                             .withSeverity(severity)
                             .withCause(cause);
                     String fullMessage = ooxml.getFormatter().formatSpec(ooxml, spec, positioner);

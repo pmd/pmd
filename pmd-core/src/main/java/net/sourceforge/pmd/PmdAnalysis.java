@@ -32,6 +32,8 @@ import net.sourceforge.pmd.lang.document.FileCollector;
 import net.sourceforge.pmd.processor.AbstractPMDProcessor;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
+import net.sourceforge.pmd.reporting.ReportStats;
+import net.sourceforge.pmd.reporting.ReportStatsListener;
 import net.sourceforge.pmd.util.ClasspathClassLoader;
 import net.sourceforge.pmd.util.IOUtil;
 import net.sourceforge.pmd.util.datasource.DataSource;
@@ -400,4 +402,30 @@ public final class PmdAnalysis implements AutoCloseable {
         }
     }
 
+    ReportStats runAndReturnStats() {
+        if (getRulesets().isEmpty()) {
+            return ReportStats.empty();
+        }
+
+        @SuppressWarnings("PMD.CloseResource")
+        ReportStatsListener listener = new ReportStatsListener();
+
+        addListener(listener);
+
+        try {
+            performAnalysis();
+        } catch (Exception e) {
+            getReporter().errorEx("Exception during processing", e);
+            ReportStats stats = listener.getResult();
+            PMD.printErrorDetected(1 + stats.getNumErrors());
+            return stats; // should have been closed
+        }
+        ReportStats stats = listener.getResult();
+
+        if (stats.getNumErrors() > 0) {
+            PMD.printErrorDetected(stats.getNumErrors());
+        }
+
+        return stats;
+    }
 }

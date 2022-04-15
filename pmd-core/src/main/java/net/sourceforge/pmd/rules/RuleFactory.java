@@ -9,11 +9,11 @@ import static net.sourceforge.pmd.internal.util.xml.SchemaConstants.PROPERTY_VAL
 import static net.sourceforge.pmd.internal.util.xml.XmlErrorMessages.ERR__INVALID_LANG_VERSION;
 import static net.sourceforge.pmd.internal.util.xml.XmlErrorMessages.ERR__INVALID_LANG_VERSION_NO_NAMED_VERSION;
 import static net.sourceforge.pmd.internal.util.xml.XmlErrorMessages.ERR__PROPERTY_DOES_NOT_EXIST;
-import static net.sourceforge.pmd.internal.util.xml.XmlErrorMessages.ERR__UNSUPPORTED_VALUE_ATTRIBUTE;
 import static net.sourceforge.pmd.internal.util.xml.XmlErrorMessages.IGNORED__DUPLICATE_PROPERTY_SETTER;
-import static net.sourceforge.pmd.internal.util.xml.XmlUtil.getSingleChildIn;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -22,6 +22,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RulePriority;
@@ -36,9 +37,10 @@ import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.properties.PropertyDescriptorField;
 import net.sourceforge.pmd.properties.PropertyTypeId;
-import net.sourceforge.pmd.properties.PropertyTypeId.BuilderAndMapper;
-import net.sourceforge.pmd.properties.xml.XmlMapper;
+import net.sourceforge.pmd.properties.ValueParser;
+import net.sourceforge.pmd.properties.builders.PropertyDescriptorExternalBuilder;
 import net.sourceforge.pmd.util.ResourceLoader;
 import net.sourceforge.pmd.util.StringUtil;
 
@@ -334,7 +336,7 @@ public class RuleFactory {
     }
 
     private <T> void setRulePropertyCapture(Rule rule, PropertyDescriptor<T> descriptor, Element propertyElt, PmdXmlReporter err) {
-        T value = parsePropertyValue(propertyElt, err, descriptor.xmlMapper());
+        T value = parsePropertyValue(propertyElt, err, descriptor::valueFrom);
         rule.setProperty(descriptor, value);
     }
 
@@ -361,64 +363,75 @@ public class RuleFactory {
 
         String typeId = SchemaConstants.PROPERTY_TYPE.getAttributeOrThrow(propertyElement, err);
 
-        PropertyTypeId factory = PropertyTypeId.lookupMnemonic(typeId);
-        if (factory == null) {
+        PropertyDescriptorExternalBuilder<?> pdFactory = PropertyTypeId.factoryFor(typeId);
+        if (pdFactory == null) {
             throw err.at(PROPERTY_TYPE.getAttributeNode(propertyElement))
                      .error(
-                         "Unsupported property type ''{0}''",
+                         XmlErrorMessages.ERR__UNSUPPORTED_PROPERTY_TYPE,
                          typeId
                      );
         }
 
-        return propertyDefCapture(propertyElement, err, factory.getBuilderUtils());
+        return propertyDefCapture(propertyElement, err, pdFactory);
     }
 
     private static <T> PropertyDescriptor<T> propertyDefCapture(Element propertyElement,
                                                                 PmdXmlReporter err,
-                                                                BuilderAndMapper<T> factory) {
+                                                                PropertyDescriptorExternalBuilder<T> factory) {
         // TODO support constraints like numeric range
 
         String name = SchemaConstants.NAME.getNonBlankAttributeOrThrow(propertyElement, err);
         String description = SchemaConstants.DESCRIPTION.getNonBlankAttributeOrThrow(propertyElement, err);
 
+        Map<PropertyDescriptorField, String> values = new HashMap<>();
+        values.put(PropertyDescriptorField.NAME, name);
+        values.put(PropertyDescriptorField.DESCRIPTION, description);
+        String defaultValue = parsePropertyValue(propertyElement, err, s -> s);
+        values.put(PropertyDescriptorField.DEFAULT_VALUE, defaultValue);
+
+        // populate remaining fields
+        for (Node attrNode : DomUtils.asList(propertyElement.getAttributes())) {
+            Attr attr = (Attr) attrNode;
+            PropertyDescriptorField field = PropertyDescriptorField.getConstant(attr.getName());
+            if (field == PropertyDescriptorField.NAME
+                || field == PropertyDescriptorField.DEFAULT_VALUE
+                || field == PropertyDescriptorField.DESCRIPTION) {
+                continue;
+            }
+            if (field == null) {
+                err.at(attr).warn(XmlErrorMessages.IGNORED__UNEXPECTED_ATTRIBUTE_IN, propertyElement.getLocalName());
+                continue;
+            }
+            values.put(field, attr.getValue());
+        }
 
         try {
-            return factory.newBuilder(name)
-                          .desc(description)
-                          .defaultValue(parsePropertyValue(propertyElement, err, factory.getXmlMapper()))
-                          .build();
-
+            return factory.build(values);
         } catch (IllegalArgumentException e) {
             // builder threw, rethrow with XML location
             throw err.at(propertyElement).error(e);
         }
     }
 
-    private static <T> T parsePropertyValue(Element propertyElt, PmdXmlReporter err, XmlMapper<T> syntax) {
+    private static <T> T parsePropertyValue(Element propertyElt, PmdXmlReporter err, ValueParser<T> parser) {
         @Nullable String defaultAttr = PROPERTY_VALUE.getAttributeOpt(propertyElt);
         if (defaultAttr != null) {
             Attr attrNode = PROPERTY_VALUE.getAttributeNode(propertyElt);
 
-            // the attribute syntax could be deprecated.
-            //   err.warn(attrNode,
-            //            WARN__DEPRECATED_USE_OF_ATTRIBUTE,
-            //            PROPERTY_VALUE.xmlName(),
-            //            String.join("\nor\n", syntax.getExamples()));
-
             try {
-                return syntax.fromString(defaultAttr);
+                return parser.valueOf(defaultAttr);
             } catch (IllegalArgumentException e) {
                 throw err.at(attrNode).error(e);
-            } catch (UnsupportedOperationException e) {
-                throw err.at(attrNode)
-                         .error(ERR__UNSUPPORTED_VALUE_ATTRIBUTE,
-                                String.join("\nor\n", syntax.getExamples()));
             }
 
         } else {
-            Element child = getSingleChildIn(propertyElt, true, err, syntax.getReadElementNames());
-            // this will report the correct error if any
-            return syntax.fromXml(child, err);
+            Element child = PROPERTY_VALUE.getSingleChildIn(propertyElt, err);
+            String text = XmlUtil.parseTextNode(child);
+            try {
+                return parser.valueOf(text);
+            } catch (IllegalArgumentException e) {
+                throw err.at(child).error(e);
+            }
         }
     }
 }

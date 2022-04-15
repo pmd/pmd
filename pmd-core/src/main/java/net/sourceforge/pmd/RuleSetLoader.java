@@ -139,7 +139,8 @@ public final class RuleSetLoader {
             this.minimumPriority,
             this.warnDeprecated,
             this.compatFilter,
-            this.includeDeprecatedRuleReferences
+            this.includeDeprecatedRuleReferences,
+            this.reporter
         );
     }
 
@@ -217,7 +218,7 @@ public final class RuleSetLoader {
             }
         }
         if (!anyRules) {
-            reporter.warn("No rules found. Maybe you misspelled a rule name? ({})",
+            reporter.warn("No rules found. Maybe you misspelled a rule name? ({0})",
                           StringUtils.join(rulesetPaths, ','));
         }
         return ruleSets;
@@ -231,7 +232,7 @@ public final class RuleSetLoader {
             }
         }
         if (ruleset.getRules().isEmpty()) {
-            reporter.warn("No rules found in ruleset {}", path);
+            reporter.warn("No rules found in ruleset {0}", path);
         }
 
     }
@@ -254,8 +255,10 @@ public final class RuleSetLoader {
     RuleSet loadFromResource(RuleSetReferenceId ruleSetReferenceId) {
         try {
             return toFactory().createRuleSet(ruleSetReferenceId);
+        } catch (RuleSetLoadException e) {
+            throw e;
         } catch (Exception e) {
-            throw new RuleSetLoadException("Cannot parse " + ruleSetReferenceId, e);
+            throw new RuleSetLoadException(ruleSetReferenceId, e);
         }
     }
 
