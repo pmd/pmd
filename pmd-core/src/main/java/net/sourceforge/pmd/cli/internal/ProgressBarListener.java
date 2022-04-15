@@ -29,7 +29,7 @@ public final class ProgressBarListener implements GlobalAnalysisListener {
     
     public ProgressBarListener(int totalFiles, Consumer<String> loggingFunction) {
         progressBar = new ProgressBarBuilder()
-                .setTaskName("Processing")
+                .setTaskName("Processing files")
                 .setInitialMax(totalFiles)
                 .setStyle(ProgressBarStyle.ASCII)
                 .continuousUpdate()
