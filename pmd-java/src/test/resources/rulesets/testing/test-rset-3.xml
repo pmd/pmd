@@ -7,7 +7,7 @@
         Ruleset used by test RuleSetReferenceIdTest
     </description>
 
-    <rule name="DummyRuleWithAViolationPerFile"
+    <rule name="PrintsVariableNames"
           language="java"
           since="1.0"
           message="Violation from test-rset-3.xml: name {0}"
