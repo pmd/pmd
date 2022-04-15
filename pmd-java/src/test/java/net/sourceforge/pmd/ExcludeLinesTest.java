@@ -42,28 +42,28 @@ public class ExcludeLinesTest extends RuleTst {
         ctx.setSourceCodeFile(new File("n/a"));
         ctx.setLanguageVersion(LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getDefaultVersion());
         RuleSet rules = RuleSet.forSingleRule(rule);
-        
+
         SourceCodeProcessor sourceCodeProcessor = new SourceCodeProcessor(configuration);
         sourceCodeProcessor.processSourceCode(new StringReader(TEST3), new RuleSets(rules), ctx);
         assertTrue(r.isEmpty());
         assertEquals(r.getSuppressedRuleViolations().size(), 1);
     }
 
-    private static final String TEST1 = "public class Foo {\n" +
-                                        " void foo() {\n" +
-                                        "  int x; //NOPMD \n" +
-                                        " } \n" +
-                                        "}";
+    private static final String TEST1 = "public class Foo {\n"
+                                        + " void foo() {\n"
+                                        + "  int x; //NOPMD \n"
+                                        + " } \n"
+                                        + "}";
 
-    private static final String TEST2 = "public class Foo {\n" +
-                                        " void foo() {\n" +
-                                        "  int x;\n" +
-                                        " } \n" +
-                                        "}";
+    private static final String TEST2 = "public class Foo {\n"
+                                        + " void foo() {\n"
+                                        + "  int x;\n"
+                                        + " } \n"
+                                        + "}";
 
-    private static final String TEST3 = "public class Foo {\n" +
-                                        " void foo() {\n" +
-                                        "  int x; // FOOBAR\n" +
-                                        " } \n" +
-                                        "}";
+    private static final String TEST3 = "public class Foo {\n"
+                                        + " void foo() {\n"
+                                        + "  int x; // FOOBAR\n"
+                                        + " } \n"
+                                        + "}";
 }
