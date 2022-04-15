@@ -202,6 +202,7 @@ public final class RuleSetLoader {
     public List<RuleSet> loadRuleSetsWithoutException(List<String> rulesetPaths) {
         List<RuleSet> ruleSets = new ArrayList<>(rulesetPaths.size());
         boolean anyRules = false;
+        boolean error = false;
         for (String path : rulesetPaths) {
             try {
                 RuleSet ruleset = this.loadFromResource(path);
@@ -209,6 +210,7 @@ public final class RuleSetLoader {
                 printRulesInDebug(path, ruleset);
                 ruleSets.add(ruleset);
             } catch (RuleSetLoadException e) {
+                error = true;
                 if (e.getCause() != null) {
                     // eg RuleSetNotFoundException
                     reporter.errorEx("Cannot load ruleset {0}", new Object[] { path }, e.getCause());
@@ -217,7 +219,7 @@ public final class RuleSetLoader {
                 }
             }
         }
-        if (!anyRules) {
+        if (!anyRules && !error) {
             reporter.warn("No rules found. Maybe you misspelled a rule name? ({0})",
                           StringUtils.join(rulesetPaths, ','));
         }

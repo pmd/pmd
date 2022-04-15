@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.util.log;
 
 import java.text.MessageFormat;
-import java.util.Objects;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.event.Level;
@@ -56,18 +55,19 @@ public interface MessageReporter {
     }
 
     default RuntimeException error(String message, Object... formatArgs) {
-        log(Level.ERROR, message, formatArgs);
-        return newException(Level.ERROR, null, message, formatArgs);
+        return error(null, message, formatArgs);
     }
 
-    default RuntimeException error(Throwable cause, String contextMessage, Object... formatArgs) {
-        logEx(Level.ERROR, contextMessage, formatArgs, Objects.requireNonNull(cause));
+    /**
+     * Only one of the cause or the message can be null.
+     */
+    default RuntimeException error(@Nullable Throwable cause, @Nullable String contextMessage, Object... formatArgs) {
+        logEx(Level.ERROR, contextMessage, formatArgs, cause);
         return newException(Level.ERROR, null, contextMessage, formatArgs);
     }
 
     default RuntimeException error(Throwable error) {
-        logEx(Level.ERROR, null, new Object[0], Objects.requireNonNull(error));
-        return newException(Level.ERROR, error, error.getMessage());
+        return error(error, null);
     }
 
     default void errorEx(String message, Throwable error) {

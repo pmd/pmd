@@ -690,6 +690,13 @@ final class RuleSetFactory {
                 }
 
                 @Override
+                public XmlException error(@Nullable Throwable cause, @Nullable String contextMessage, Object... formatArgs) {
+                    XmlException ex = newException(Level.ERROR, cause, contextMessage, formatArgs);
+                    ooxml.getPrinter().accept(ex);
+                    return ex;
+                }
+
+                @Override
                 public XmlException newException(Level level, Throwable cause, String message, Object... formatArgs) {
                     XmlSeverity severity;
                     switch (level) {

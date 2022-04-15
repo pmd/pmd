@@ -369,7 +369,7 @@ public final class PmdAnalysis implements AutoCloseable {
         ruleSets.removeDysfunctionalRules(brokenRules);
 
         for (final Rule rule : brokenRules) {
-            reporter.warn("Removed misconfigured rule: {} cause: {}",
+            reporter.warn("Removed misconfigured rule: {0} cause: {1}",
                           rule.getName(), rule.dysfunctionReason());
         }
 
