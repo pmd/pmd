@@ -53,11 +53,11 @@ import net.sourceforge.pmd.util.internal.xml.XmlUtil;
 import net.sourceforge.pmd.util.log.MessageReporter;
 
 import com.github.oowekyala.ooxml.DomUtils;
-import com.github.oowekyala.ooxml.messages.AccumulatingMessageHandler;
 import com.github.oowekyala.ooxml.messages.NiceXmlMessageSpec;
 import com.github.oowekyala.ooxml.messages.OoxmlFacade;
 import com.github.oowekyala.ooxml.messages.PositionedXmlDoc;
 import com.github.oowekyala.ooxml.messages.XmlException;
+import com.github.oowekyala.ooxml.messages.XmlMessageHandler;
 import com.github.oowekyala.ooxml.messages.XmlMessageReporterBase;
 import com.github.oowekyala.ooxml.messages.XmlPosition;
 import com.github.oowekyala.ooxml.messages.XmlPositioner;
@@ -163,20 +163,18 @@ final class RuleSetFactory {
                     "Cannot parse a RuleSet from a non-external reference: <" + ruleSetReferenceId + ">.");
             }
 
-            @SuppressWarnings("PMD.CloseResource")
-            AccumulatingMessageHandler handler = getXmlMessagePrinter();
+            XmlMessageHandler printer = getXmlMessagePrinter();
             DocumentBuilder builder = createDocumentBuilder();
             InputSource inputSource = new InputSource(inputStream);
             inputSource.setSystemId(ruleSetReferenceId.getRuleSetFileName());
 
             OoxmlFacade ooxml = new OoxmlFacade()
-                .withPrinter(handler)
+                .withPrinter(printer)
                 .withAnsiColors(false);
             PositionedXmlDoc parsed = ooxml.parse(builder, inputSource);
 
             @SuppressWarnings("PMD.CloseResource")
             PmdXmlReporterImpl err = new PmdXmlReporterImpl(reporter, ooxml, parsed.getPositioner());
-            XmlSeverity minSeverity = XmlSeverity.WARNING;
             try {
                 RuleSetBuilder ruleSetBuilder = new RuleSetBuilder(inputStream.getChecksum().getValue()).withFileName(ruleSetReferenceId.getRuleSetFileName());
 
@@ -184,7 +182,6 @@ final class RuleSetFactory {
                 if (err.errCount > 0) {
                     // note this makes us jump to the catch branch
                     // these might have been non-fatal errors
-                    minSeverity = XmlSeverity.ERROR;
                     String message;
                     if (err.errCount == 1) {
                         message = "An XML validation error occurred";
@@ -195,10 +192,7 @@ final class RuleSetFactory {
                 }
                 return ruleSet;
             } catch (Exception | Error e) {
-                minSeverity = XmlSeverity.ERROR;
                 throw e;
-            } finally {
-                handler.close(minSeverity, XmlSeverity.ERROR);
             }
         } catch (ParserConfigurationException | IOException ex) {
             throw new RuleSetLoadException(ruleSetReferenceId, ex);
@@ -641,20 +635,11 @@ final class RuleSetFactory {
                                   .includeDeprecatedRuleReferences(includeDeprecatedRuleReferences);
     }
 
-    private @NonNull AccumulatingMessageHandler getXmlMessagePrinter() {
-        return new AccumulatingMessageHandler(
-            entry -> {
-                Level level = entry.getSeverity() == XmlSeverity.WARNING ? Level.WARN : Level.ERROR;
-                String quotedText = StringUtil.quoteMessageFormat(entry.toString());
-                reporter.logEx(level, quotedText, new Object[0], entry.getCause());
-            },
-            XmlSeverity.WARNING
-        ) {
-            @Override
-            protected void printSummaryLine(String kind, XmlSeverity severity, String message) {
-                Level level = severity == XmlSeverity.WARNING ? Level.WARN : Level.ERROR;
-                reporter.log(level, StringUtil.quoteMessageFormat(message));
-            }
+    private @NonNull XmlMessageHandler getXmlMessagePrinter() {
+        return entry -> {
+            Level level = entry.getSeverity() == XmlSeverity.WARNING ? Level.WARN : Level.ERROR;
+            String quotedText = StringUtil.quoteMessageFormat(entry.toString());
+            reporter.logEx(level, quotedText, new Object[0], entry.getCause());
         };
     }
 
