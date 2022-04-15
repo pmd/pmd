@@ -5,12 +5,14 @@
 package net.sourceforge.pmd.renderers;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Iterator;
 
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.renderers.internal.sarif.SarifLog;
 import net.sourceforge.pmd.renderers.internal.sarif.SarifLogBuilder;
+import net.sourceforge.pmd.util.IOUtil;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -69,5 +71,10 @@ public class SarifRenderer extends AbstractIncrementingRenderer {
         final SarifLog sarifLog = sarifLogBuilder.build();
         final String json = gson.toJson(sarifLog);
         writer.write(json);
+    }
+
+    @Override
+    public void setReportFile(String reportFilename) {
+        this.setWriter(IOUtil.createWriter(StandardCharsets.UTF_8, reportFilename));
     }
 }
