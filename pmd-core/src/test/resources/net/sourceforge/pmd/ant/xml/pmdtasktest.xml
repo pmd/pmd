@@ -34,4 +34,14 @@
             </fileset>
         </pmd>
     </target>
+
+    <target name="testXmlFormatter">
+        <pmd noCache="true" shortFilenames="true">
+            <ruleset>${pmd.home}/src/test/resources/rulesets/dummy/basic.xml</ruleset>
+            <formatter type="xml" toFile="${pmd.home}/target/pmd-ant-xml.xml" />
+            <fileset dir="${pmd.home}/src/test/resources/net/sourceforge/pmd/ant/src">
+                <include name="**/*dummy"/>
+            </fileset>
+        </pmd>
+    </target>
 </project>
