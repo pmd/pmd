@@ -37,6 +37,7 @@ import net.sourceforge.pmd.reporting.ReportStats;
 import net.sourceforge.pmd.reporting.ReportStatsListener;
 import net.sourceforge.pmd.util.ClasspathClassLoader;
 import net.sourceforge.pmd.util.IOUtil;
+import net.sourceforge.pmd.util.StringUtil;
 import net.sourceforge.pmd.util.datasource.DataSource;
 import net.sourceforge.pmd.util.log.MessageReporter;
 import net.sourceforge.pmd.util.log.internal.SimpleMessageReporter;
@@ -432,7 +433,9 @@ public final class PmdAnalysis implements AutoCloseable {
 
     static void printErrorDetected(MessageReporter reporter, int errors) {
         String msg = CliMessages.errorDetectedMessage(errors, "PMD");
-        reporter.error(msg);
+        // note: using error level here increments the error count of the reporter,
+        // which we don't want.
+        reporter.info(StringUtil.quoteMessageFormat(msg));
     }
 
     void printErrorDetected(int errors) {
