@@ -11,6 +11,7 @@ import org.junit.Test;
 
 import net.sourceforge.pmd.cpd.Tokenizer;
 import net.sourceforge.pmd.cpd.test.CpdTextComparisonTest;
+import net.sourceforge.pmd.lang.html.ast.HtmlTokenizer;
 
 public class HtmlTokenizerTest extends CpdTextComparisonTest {
 

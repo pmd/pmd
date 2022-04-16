@@ -14,14 +14,11 @@ import org.jsoup.nodes.Node;
 import org.jsoup.nodes.TextNode;
 import org.jsoup.nodes.XmlDeclaration;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
-@InternalApi
-public final class HtmlTreeBuilder {
+final class HtmlTreeBuilder {
 
     public HtmlDocument build(Document doc, String htmlString) {
         HtmlDocument root = new HtmlDocument(doc);
-        addChilds(root, doc);
+        addChildren(root, doc);
 
         LineNumbers lineNumbers = new LineNumbers(root, htmlString);
         lineNumbers.determine();
@@ -29,11 +26,11 @@ public final class HtmlTreeBuilder {
         return root;
     }
     
-    private void addChilds(HtmlNode parent, Node node) {
+    private void addChildren(HtmlNode parent, Node node) {
         for (Node child : node.childNodes()) {
             HtmlNode converted = convertJsoupNode(child);
             parent.jjtAddChild(converted, parent.getNumChildren());
-            addChilds(converted, child);
+            addChildren(converted, child);
         }
     }
 
