@@ -48,7 +48,7 @@ import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 
 public class RuleSetTest {
 
-    private final Language dummyLang = LanguageRegistry.getLanguage(DummyLanguageModule.NAME);
+    private final Language dummyLang = DummyLanguageModule.getInstance();
 
     @Test(expected = NullPointerException.class)
     public void testRuleSetRequiresName() {
@@ -567,21 +567,21 @@ public class RuleSetTest {
     }
 
 
-    class MockRule extends net.sourceforge.pmd.lang.rule.MockRule {
+    static class MockRule extends net.sourceforge.pmd.lang.rule.MockRule {
 
         MockRule() {
             super();
-            setLanguage(dummyLang);
+            setLanguage(DummyLanguageModule.getInstance());
         }
 
         MockRule(String name, String description, String message, String ruleSetName, RulePriority priority) {
             super(name, description, message, ruleSetName, priority);
-            setLanguage(dummyLang);
+            setLanguage(DummyLanguageModule.getInstance());
         }
 
         MockRule(String name, String description, String message, String ruleSetName) {
             super(name, description, message, ruleSetName);
-            setLanguage(dummyLang);
+            setLanguage(DummyLanguageModule.getInstance());
         }
 
     }

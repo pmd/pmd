@@ -10,6 +10,7 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.ast.DummyRoot;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.Parser;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 import net.sourceforge.pmd.lang.rule.impl.DefaultRuleViolationFactory;
@@ -21,6 +22,7 @@ public class DummyLanguageModule extends BaseLanguageModule {
 
     public static final String NAME = "Dummy";
     public static final String TERSE_NAME = "dummy";
+    private static final String THROWING_VERSION_NAME = "1.9-throws-parse-exception";
 
     public DummyLanguageModule() {
         super(NAME, null, TERSE_NAME, "dummy");
@@ -33,7 +35,15 @@ public class DummyLanguageModule extends BaseLanguageModule {
         addVersion("1.6", new Handler(), "6");
         addDefaultVersion("1.7", new Handler(), "7");
         addVersion("1.8", new Handler(), "8");
-        addVersion("1.9-throws", new HandlerWithParserThatThrows());
+        addVersion(THROWING_VERSION_NAME, new HandlerWithParserThatThrows());
+    }
+
+    public static DummyLanguageModule getInstance() {
+        return (DummyLanguageModule) LanguageRegistry.getLanguage(NAME);
+    }
+
+    public LanguageVersion getVersionWhoseParserThrows() {
+        return getVersion(THROWING_VERSION_NAME);
     }
 
     public static class Handler extends AbstractPmdLanguageVersionHandler {
@@ -59,10 +69,11 @@ public class DummyLanguageModule extends BaseLanguageModule {
     }
 
     public static class HandlerWithParserThatThrows extends Handler {
+
         @Override
         public Parser getParser() {
             return task -> {
-                throw new AssertionError("test error while parsing");
+                throw new ParseException("test error while parsing");
             };
         }
     }

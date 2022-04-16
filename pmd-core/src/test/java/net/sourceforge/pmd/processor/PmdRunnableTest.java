@@ -48,9 +48,9 @@ public class PmdRunnableTest {
 
     @Before
     public void prepare() {
-        Language dummyLanguage = LanguageRegistry.findLanguageByTerseName(DummyLanguageModule.TERSE_NAME);
+        Language dummyLanguage = DummyLanguageModule.getInstance();
         dummyDefault = dummyLanguage.getDefaultVersion();
-        dummyThrows = dummyLanguage.getVersion("1.9-throws");
+        dummyThrows = DummyLanguageModule.getInstance().getVersionWhoseParserThrows();
         DataSource dataSource = DataSource.forString("test", "test.dummy");
 
         Rule rule = new RuleThatThrows();
