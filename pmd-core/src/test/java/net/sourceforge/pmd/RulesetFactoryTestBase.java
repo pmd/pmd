@@ -13,6 +13,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 
+import java.text.MessageFormat;
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -56,7 +57,8 @@ public class RulesetFactoryTestBase {
         return new Predicate<String>() {
             @Override
             public boolean test(String it) {
-                return it.contains(part);
+                String format = MessageFormat.format(it, new Object[0]);
+                return format.contains(part);
             }
 
             @Override
@@ -66,10 +68,16 @@ public class RulesetFactoryTestBase {
         };
     }
 
+    /**
+     * @param messageTest This is a MessageFormat string!
+     */
     protected void verifyFoundAWarningWithMessage(Predicate<String> messageTest) {
         verifyFoundWarningWithMessage(times(1), messageTest);
     }
 
+    /**
+     * @param messageTest This is a MessageFormat string!
+     */
     protected void verifyFoundWarningWithMessage(VerificationMode mode, Predicate<String> messageTest) {
         verify(mockReporter, mode)
             .logEx(eq(Level.WARN), argThat(messageTest::test), any(), any());
@@ -86,6 +94,11 @@ public class RulesetFactoryTestBase {
         loader.setReporter(mockReporter);
         return loader.loadFromResource(resourceDir + "/" + ruleSetFilename);
     }
+
+    /*
+        DSL to build a ruleset XML file with method calls.
+     */
+
 
     protected static @NonNull String rulesetXml(String... contents) {
         return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + "\n"
@@ -111,6 +124,13 @@ public class RulesetFactoryTestBase {
         return rule(buildMap(dummyRuleDefAttrs(), attributes), body);
     }
 
+    protected static @NonNull String dummyRule(String... body) {
+        return dummyRule(m -> { }, body);
+    }
+
+    /**
+     * Default attributes used by {@link #dummyRule(Consumer, String...)}.
+     */
     protected static Map<SchemaConstant, String> dummyRuleDefAttrs() {
         return buildMap(
             map -> {

@@ -25,6 +25,9 @@ import net.sourceforge.pmd.annotation.InternalApi;
 @InternalApi
 public interface MessageReporter {
 
+    // todo change String to MessageFormat in those arg lists, it's too confusing
+    // where to apply MessageFormat otherwise...
+
     boolean isLoggable(Level level);
 
     default void log(Level level, String message, Object... formatArgs) {

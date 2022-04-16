@@ -109,6 +109,7 @@ public enum RulePriority {
             return null;
         }
     }
+
     /**
      * Returns the priority which corresponds to the given number as returned by
      * {@link RulePriority#getPriority()}. If the number is an invalid value,
