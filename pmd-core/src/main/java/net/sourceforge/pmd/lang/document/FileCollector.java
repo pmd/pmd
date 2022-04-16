@@ -138,7 +138,7 @@ public final class FileCollector implements AutoCloseable {
      */
     public boolean addFile(Path file) {
         if (!Files.isRegularFile(file)) {
-            reporter.error("Not a regular file {0}", file);
+            reporter.error("Not a regular file: {0}", file);
             return false;
         }
         LanguageVersion languageVersion = discoverLanguage(file.toString());
@@ -162,7 +162,7 @@ public final class FileCollector implements AutoCloseable {
     public boolean addFile(Path file, Language language) {
         AssertionUtil.requireParamNotNull("language", language);
         if (!Files.isRegularFile(file)) {
-            reporter.error("Not a regular file {}", file);
+            reporter.error("Not a regular file: {}", file);
             return false;
         }
         NioTextFile nioTextFile = new NioTextFile(file, charset, discoverer.getDefaultLanguageVersion(language), getDisplayName(file));

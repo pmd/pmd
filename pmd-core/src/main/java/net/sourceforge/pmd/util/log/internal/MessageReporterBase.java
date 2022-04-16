@@ -24,12 +24,12 @@ import net.sourceforge.pmd.util.log.MessageReporter;
 abstract class MessageReporterBase implements MessageReporter {
 
     private int numErrors;
-    private Level minLevel = Level.TRACE;
+    private @Nullable Level minLevel = Level.TRACE;
 
     /**
      * null level means off.
      */
-    public final void setLevel(Level minLevel) {
+    public final void setLevel(@Nullable Level minLevel) {
         this.minLevel = minLevel;
     }
 

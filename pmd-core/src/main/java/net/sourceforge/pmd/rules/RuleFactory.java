@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.rules;
 
+import static net.sourceforge.pmd.util.internal.xml.SchemaConstants.MAXIMUM_LANGUAGE_VERSION;
+import static net.sourceforge.pmd.util.internal.xml.SchemaConstants.MINIMUM_LANGUAGE_VERSION;
 import static net.sourceforge.pmd.util.internal.xml.SchemaConstants.PROPERTY_TYPE;
 import static net.sourceforge.pmd.util.internal.xml.SchemaConstants.PROPERTY_VALUE;
 import static net.sourceforge.pmd.util.internal.xml.XmlErrorMessages.ERR__INVALID_LANG_VERSION;
@@ -40,6 +42,7 @@ import net.sourceforge.pmd.properties.builders.PropertyDescriptorExternalBuilder
 import net.sourceforge.pmd.util.ResourceLoader;
 import net.sourceforge.pmd.util.StringUtil;
 import net.sourceforge.pmd.util.internal.xml.PmdXmlReporter;
+import net.sourceforge.pmd.util.internal.xml.SchemaConstant;
 import net.sourceforge.pmd.util.internal.xml.SchemaConstants;
 import net.sourceforge.pmd.util.internal.xml.XmlErrorMessages;
 import net.sourceforge.pmd.util.internal.xml.XmlUtil;
@@ -63,8 +66,6 @@ public class RuleFactory {
     private static final String LANGUAGE = "language";
     private static final String MESSAGE = "message";
     private static final String EXTERNAL_INFO_URL = "externalInfoUrl";
-    private static final String MINIMUM_LANGUAGE_VERSION = "minimumLanguageVersion";
-    private static final String MAXIMUM_LANGUAGE_VERSION = "maximumLanguageVersion";
     private static final String SINCE = "since";
     private static final String PROPERTIES = "properties";
     public static final String PRIORITY = "priority";
@@ -211,7 +212,7 @@ public class RuleFactory {
     private void checkVersionsAreOrdered(Element ruleElement, PmdXmlReporter err, Rule rule) {
         if (rule.getMinimumLanguageVersion() != null && rule.getMaximumLanguageVersion() != null
             && rule.getMinimumLanguageVersion().compareTo(rule.getMaximumLanguageVersion()) > 0) {
-            throw err.at(ruleElement.getAttributeNode(MINIMUM_LANGUAGE_VERSION))
+            throw err.at(MINIMUM_LANGUAGE_VERSION.getAttributeNode(ruleElement))
                      .error(
                          XmlErrorMessages.ERR__INVALID_VERSION_RANGE,
                          rule.getMinimumLanguageVersion(),
@@ -234,9 +235,9 @@ public class RuleFactory {
         return rp;
     }
 
-    private LanguageVersion getLanguageVersion(Element ruleElement, PmdXmlReporter err, Language language, String attrName) {
-        if (ruleElement.hasAttribute(attrName)) {
-            String attrValue = ruleElement.getAttribute(attrName);
+    private LanguageVersion getLanguageVersion(Element ruleElement, PmdXmlReporter err, Language language, SchemaConstant attrName) {
+        if (attrName.hasAttribute(ruleElement)) {
+            String attrValue = attrName.getAttributeOrThrow(ruleElement, err);
             LanguageVersion version = language.getVersion(attrValue);
             if (version == null) {
                 String supportedVersions = language.getVersions().stream()
@@ -247,7 +248,7 @@ public class RuleFactory {
                 String message = supportedVersions.isEmpty()
                                  ? ERR__INVALID_LANG_VERSION_NO_NAMED_VERSION
                                  : ERR__INVALID_LANG_VERSION;
-                throw err.at(ruleElement.getAttributeNode(attrName))
+                throw err.at(attrName.getAttributeNode(ruleElement))
                          .error(
                              message,
                              attrValue,

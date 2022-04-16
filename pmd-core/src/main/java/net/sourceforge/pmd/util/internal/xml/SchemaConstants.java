@@ -12,6 +12,9 @@ public final class SchemaConstants {
 
     public static final SchemaConstant PROPERTY_TYPE = new SchemaConstant("type");
     public static final SchemaConstant NAME = new SchemaConstant("name");
+    public static final SchemaConstant MESSAGE = new SchemaConstant("message");
+    public static final SchemaConstant LANGUAGE = new SchemaConstant("language");
+    public static final SchemaConstant CLASS = new SchemaConstant("class");
     public static final SchemaConstant DESCRIPTION = new SchemaConstant("description");
     public static final SchemaConstant PROPERTY_VALUE = new SchemaConstant("value");
 
@@ -29,6 +32,8 @@ public final class SchemaConstants {
 
     public static final SchemaConstant EXCLUDE = new SchemaConstant("exclude");
     public static final SchemaConstant PRIORITY = new SchemaConstant("priority");
+    public static final SchemaConstant MINIMUM_LANGUAGE_VERSION = new SchemaConstant("minimumLanguageVersion");
+    public static final SchemaConstant MAXIMUM_LANGUAGE_VERSION = new SchemaConstant("maximumLanguageVersion");
 
 
     private SchemaConstants() {
