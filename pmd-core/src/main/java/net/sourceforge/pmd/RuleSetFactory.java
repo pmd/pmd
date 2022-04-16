@@ -49,6 +49,7 @@ import net.sourceforge.pmd.util.ResourceLoader;
 import net.sourceforge.pmd.util.StringUtil;
 import net.sourceforge.pmd.util.internal.xml.PmdXmlReporter;
 import net.sourceforge.pmd.util.internal.xml.SchemaConstants;
+import net.sourceforge.pmd.util.internal.xml.XmlErrorMessages;
 import net.sourceforge.pmd.util.internal.xml.XmlUtil;
 import net.sourceforge.pmd.util.log.MessageReporter;
 
@@ -236,11 +237,13 @@ final class RuleSetFactory {
                 try {
                     parseRuleNode(ruleSetReferenceId, builder, node, withDeprecatedRuleReferences, rulesetReferences, err);
                 } catch (XmlException recoveredFrom) {
-                    // will be thrown later.
-                    err.addExceptionToThrowLater(recoveredFrom);
+                    // already reported (it's an XmlException), error count
+                    // was incremented so parent method will throw RuleSetLoadException.
                 }
             } else {
-                throw err.at(node).error("Unexpected element as child of <ruleset>");
+                err.at(node).error(XmlErrorMessages.ERR__UNEXPECTED_ELEMENT_IN,
+                                   node.getTagName(),
+                                   SchemaConstants.RULESET);
             }
         }
 
@@ -259,7 +262,7 @@ final class RuleSetFactory {
         try {
             pattern = Pattern.compile(text);
         } catch (PatternSyntaxException pse) {
-            err.addExceptionToThrowLater((XmlException) err.at(node).error(pse));
+            err.at(node).error(pse);
             return null;
         }
         return pattern;
@@ -651,11 +654,6 @@ final class RuleSetFactory {
         private int errCount;
         private final List<RuntimeException> delayedExceptions = new ArrayList<>();
 
-        @Override
-        public void addExceptionToThrowLater(XmlException e) {
-            delayedExceptions.add(e);
-        }
-
         PmdXmlReporterImpl(MessageReporter pmdReporter, OoxmlFacade ooxml, XmlPositioner positioner) {
             super(ooxml, positioner);
             this.pmdReporter = pmdReporter;
@@ -677,15 +675,12 @@ final class RuleSetFactory {
 
                 @Override
                 public void logEx(Level level, String message, Object[] formatArgs, @Nullable Throwable error) {
-                    XmlException ex = newException(level, error, message, formatArgs);
-                    ooxml.getPrinter().accept(ex);
+                    newException(level, error, message, formatArgs);
                 }
 
                 @Override
                 public XmlException error(@Nullable Throwable cause, @Nullable String contextMessage, Object... formatArgs) {
-                    XmlException ex = newException(Level.ERROR, cause, contextMessage, formatArgs);
-                    ooxml.getPrinter().accept(ex);
-                    return ex;
+                    return newException(Level.ERROR, cause, contextMessage, formatArgs);
                 }
 
                 @Override
@@ -714,7 +709,9 @@ final class RuleSetFactory {
                             .withSeverity(severity)
                             .withCause(cause);
                     String fullMessage = ooxml.getFormatter().formatSpec(ooxml, spec, positioner);
-                    return new XmlException(spec, fullMessage);
+                    XmlException ex = new XmlException(spec, fullMessage);
+                    ooxml.getPrinter().accept(ex); // spec of newException is also to log.
+                    return ex;
                 }
 
                 @Override
