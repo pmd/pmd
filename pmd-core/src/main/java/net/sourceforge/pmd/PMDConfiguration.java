@@ -122,6 +122,7 @@ public class PMDConfiguration extends AbstractConfiguration {
     private boolean benchmark;
     private AnalysisCache analysisCache = new NoopAnalysisCache();
     private boolean ignoreIncrementalAnalysis;
+    private boolean progressBar = false;
 
     /**
      * Get the suppress marker. This is the source level marker used to indicate
@@ -780,4 +781,26 @@ public class PMDConfiguration extends AbstractConfiguration {
     public boolean isIgnoreIncrementalAnalysis() {
         return ignoreIncrementalAnalysis;
     }
+
+    /**
+     * Sets whether to indicate analysis progress in command line output.
+     *
+     * @param progressBar Whether to enable progress bar indicator in CLI
+     */
+    public void setProgressBar(boolean progressBar) {
+        this.progressBar = progressBar;
+    }
+
+
+    /**
+     * Returns whether progress bar indicator should be used. The default
+     * is false.
+     *
+     * @return {@code true} if progress bar indicator is enabled
+     */
+    public boolean isProgressBar() {
+        return progressBar;
+    }
+
+
 }
