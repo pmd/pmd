@@ -5,6 +5,7 @@
 package net.sourceforge.pmd;
 
 import static net.sourceforge.pmd.util.CollectionUtil.buildMap;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.argThat;
 import static org.mockito.Mockito.eq;
@@ -39,7 +40,7 @@ public class RulesetFactoryTestBase {
     public LocaleRule localeRule = LocaleRule.en();
 
     @org.junit.Rule
-    public SystemErrRule systemErrRule = new SystemErrRule().muteForSuccessfulTests();
+    public SystemErrRule systemErrRule = new SystemErrRule().enableLog().muteForSuccessfulTests();
 
     protected MessageReporter mockReporter;
 
@@ -95,6 +96,33 @@ public class RulesetFactoryTestBase {
         return loader.loadFromResource(resourceDir + "/" + ruleSetFilename);
     }
 
+
+    protected Rule loadFirstRule(String ruleSetXml) {
+        RuleSet rs = loadRuleSet(ruleSetXml);
+        return rs.getRules().iterator().next();
+    }
+
+    protected RuleSet loadRuleSet(String ruleSetXml) {
+        return loadRuleSet("dummyRuleset.xml", ruleSetXml);
+    }
+
+    protected RuleSet loadRuleSet(String fileName, String ruleSetXml) {
+        RuleSetLoader loader = new RuleSetLoader();
+        loader.setReporter(mockReporter);
+        return loader.loadFromString(fileName, ruleSetXml);
+    }
+
+    protected RuleSet loadRuleSetWithDeprecationWarnings(String ruleSetXml) {
+        try (PmdAnalysis pmd = PmdAnalysis.create(new PMDConfiguration(), mockReporter)) {
+            return pmd.newRuleSetLoader()
+                      .warnDeprecated(true)
+                      .enableCompatibility(false).loadFromString("dummyRuleset.xml", ruleSetXml);
+        }
+    }
+
+    protected void assertCannotParse(String xmlContent) {
+        assertThrows(RuleSetLoadException.class, () -> loadFirstRule(xmlContent));
+    }
     /*
         DSL to build a ruleset XML file with method calls.
      */

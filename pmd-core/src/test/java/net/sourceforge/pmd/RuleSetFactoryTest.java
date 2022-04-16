@@ -600,6 +600,16 @@ public class RuleSetFactoryTest extends RulesetFactoryTestBase {
     }
 
     @Test
+    public void testIncorrectPriority() {
+        assertCannotParse(rulesetXml(
+            dummyRule(
+                priority("not a priority")
+            )
+        ));
+        verifyFoundAnErrorWithMessage(containing("Not a valid priority: 'not a priority'"));
+    }
+
+    @Test
     public void testMinimumLanguageVersion() {
         Rule r = loadFirstRule(rulesetXml(
             dummyRule(
@@ -1095,28 +1105,5 @@ public class RuleSetFactoryTest extends RulesetFactoryTestBase {
             excludePattern("exclude3")
         );
 
-    private Rule loadFirstRule(String ruleSetXml) {
-        RuleSet rs = loadRuleSet(ruleSetXml);
-        return rs.getRules().iterator().next();
-    }
-
-    private RuleSet loadRuleSet(String ruleSetXml) {
-        try (PmdAnalysis pmd = PmdAnalysis.create(new PMDConfiguration(), mockReporter)) {
-            return pmd.newRuleSetLoader()
-                      .loadFromString("dummyRuleset.xml", ruleSetXml);
-        }
-    }
-
-    private RuleSet loadRuleSetWithDeprecationWarnings(String ruleSetXml) {
-        try (PmdAnalysis pmd = PmdAnalysis.create(new PMDConfiguration(), mockReporter)) {
-            return pmd.newRuleSetLoader()
-                      .warnDeprecated(true)
-                      .enableCompatibility(false).loadFromString("dummyRuleset.xml", ruleSetXml);
-        }
-    }
-
-    private void assertCannotParse(String xmlContent) {
-        assertThrows(RuleSetLoadException.class, () -> loadFirstRule(xmlContent));
-    }
 
 }

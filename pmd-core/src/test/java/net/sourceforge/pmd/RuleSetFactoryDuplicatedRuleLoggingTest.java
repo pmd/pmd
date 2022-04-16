@@ -12,9 +12,13 @@ import org.junit.Test;
 
 public class RuleSetFactoryDuplicatedRuleLoggingTest extends RulesetFactoryTestBase {
 
+    protected RuleSet loadMyRuleSet(String ruleSetFilename) {
+        return loadRuleSetInDir("net/sourceforge/pmd/rulesets/duplicatedRuleLoggingTest", ruleSetFilename);
+    }
+
     @Test
     public void duplicatedRuleReferenceShouldWarn() {
-        RuleSet ruleset = loadRuleSet("duplicatedRuleReference.xml");
+        RuleSet ruleset = loadMyRuleSet("duplicatedRuleReference.xml");
 
         assertEquals(1, ruleset.getRules().size());
         Rule mockRule = ruleset.getRuleByName("DummyBasicMockRule");
@@ -28,7 +32,7 @@ public class RuleSetFactoryDuplicatedRuleLoggingTest extends RulesetFactoryTestB
 
     @Test
     public void duplicatedRuleReferenceWithOverrideShouldNotWarn() {
-        RuleSet ruleset = loadRuleSet("duplicatedRuleReferenceWithOverride.xml");
+        RuleSet ruleset = loadMyRuleSet("duplicatedRuleReferenceWithOverride.xml");
 
         assertEquals(2, ruleset.getRules().size());
         Rule mockRule = ruleset.getRuleByName("DummyBasicMockRule");
@@ -40,7 +44,7 @@ public class RuleSetFactoryDuplicatedRuleLoggingTest extends RulesetFactoryTestB
 
     @Test
     public void duplicatedRuleReferenceWithOverrideBeforeShouldNotWarn() {
-        RuleSet ruleset = loadRuleSet("duplicatedRuleReferenceWithOverrideBefore.xml");
+        RuleSet ruleset = loadMyRuleSet("duplicatedRuleReferenceWithOverrideBefore.xml");
 
         assertEquals(2, ruleset.getRules().size());
         Rule mockRule = ruleset.getRuleByName("DummyBasicMockRule");
@@ -52,7 +56,7 @@ public class RuleSetFactoryDuplicatedRuleLoggingTest extends RulesetFactoryTestB
 
     @Test
     public void multipleDuplicates() {
-        RuleSet ruleset = loadRuleSet("multipleDuplicates.xml");
+        RuleSet ruleset = loadMyRuleSet("multipleDuplicates.xml");
 
         assertEquals(2, ruleset.getRules().size());
         Rule mockRule = ruleset.getRuleByName("DummyBasicMockRule");
@@ -66,7 +70,4 @@ public class RuleSetFactoryDuplicatedRuleLoggingTest extends RulesetFactoryTestB
             "The ruleset rulesets/dummy/basic.xml is referenced multiple times in ruleset 'Custom Rules'"));
     }
 
-    protected RuleSet loadRuleSet(String ruleSetFilename) {
-        return loadRuleSetInDir("net/sourceforge/pmd/rulesets/duplicatedRuleLoggingTest", ruleSetFilename);
-    }
 }
