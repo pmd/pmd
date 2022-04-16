@@ -14,15 +14,26 @@ import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.Test;
+import org.junit.contrib.java.lang.system.RestoreSystemProperties;
 
 import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.ReportTest;
 import net.sourceforge.pmd.Rule;
 
+
 public class SarifRendererTest extends AbstractRendererTest {
+
+    @org.junit.Rule
+    public RestoreSystemProperties systemProperties = new RestoreSystemProperties();
+
     @Override
     public Renderer getRenderer() {
         return new SarifRenderer();
+    }
+
+    @Test
+    public void testRendererWithASCII() throws Exception {
+        System.setProperty("file.encoding", StandardCharsets.US_ASCII.name());
+        testRenderer(StandardCharsets.UTF_8);
     }
 
     @Override
@@ -80,7 +91,7 @@ public class SarifRendererTest extends AbstractRendererTest {
     @Test
     public void testRendererMultipleLocations() throws Exception {
         Report rep = reportThreeViolationsTwoRules();
-        String actual = ReportTest.render(getRenderer(), rep);
+        String actual = renderReport(getRenderer(), rep);
 
         JSONObject json = new JSONObject(actual);
         JSONArray results = json.getJSONArray("runs").getJSONObject(0).getJSONArray("results");

@@ -75,12 +75,14 @@ public interface MessageReporter {
             switch (this) {
             case ERROR:
                 return java.util.logging.Level.SEVERE;
-            case INFO:
-                return java.util.logging.Level.INFO;
-            case TRACE:
-                return java.util.logging.Level.FINER;
             case WARN:
                 return java.util.logging.Level.WARNING;
+            case INFO:
+                return java.util.logging.Level.INFO;
+            case DEBUG:
+                return java.util.logging.Level.FINE;
+            case TRACE:
+                return java.util.logging.Level.FINER;
             default:
                 throw AssertionUtil.shouldNotReachHere("exhaustive");
             }
