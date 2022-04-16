@@ -31,6 +31,9 @@ public final class SchemaConstants {
     public static final SchemaConstant PRIORITY = new SchemaConstant("priority");
     public static final SchemaConstant MINIMUM_LANGUAGE_VERSION = new SchemaConstant("minimumLanguageVersion");
     public static final SchemaConstant MAXIMUM_LANGUAGE_VERSION = new SchemaConstant("maximumLanguageVersion");
+    public static final SchemaConstant EXTERNAL_INFO_URL = new SchemaConstant("externalInfoUrl");
+    public static final SchemaConstant EXAMPLE = new SchemaConstant("example");
+    public static final SchemaConstant SINCE = new SchemaConstant("since");
 
 
     private SchemaConstants() {

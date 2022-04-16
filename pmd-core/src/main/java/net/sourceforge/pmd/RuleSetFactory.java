@@ -219,24 +219,24 @@ final class RuleSetFactory {
 
         for (Element node : DomUtils.elementsIn(ruleSetElement)) {
             String text = XmlUtil.parseTextNode(node);
-            if (DESCRIPTION.isElementWithName(node)) {
+            if (DESCRIPTION.matchesElt(node)) {
                 builder.withDescription(text);
-            } else if (INCLUDE_PATTERN.isElementWithName(node)) {
+            } else if (INCLUDE_PATTERN.matchesElt(node)) {
                 final Pattern pattern = parseRegex(node, text, err);
                 if (pattern == null) {
                     continue;
                 }
                 builder.withFileInclusions(pattern);
-            } else if (EXCLUDE_PATTERN.isElementWithName(node)) {
+            } else if (EXCLUDE_PATTERN.matchesElt(node)) {
                 final Pattern pattern = parseRegex(node, text, err);
                 if (pattern == null) {
                     continue;
                 }
                 builder.withFileExclusions(pattern);
-            } else if (RULE.isElementWithName(node)) {
+            } else if (RULE.matchesElt(node)) {
                 try {
                     parseRuleNode(ruleSetReferenceId, builder, node, withDeprecatedRuleReferences, rulesetReferences, err);
-                } catch (XmlException recoveredFrom) {
+                } catch (XmlException ignored) {
                     // already reported (it's an XmlException), error count
                     // was incremented so parent method will throw RuleSetLoadException.
                 }
@@ -359,7 +359,7 @@ final class RuleSetFactory {
         RulePriority priority = null;
         Map<String, Element> excludedRulesCheck = new HashMap<>();
         for (Element child : XmlUtil.getElementChildrenList(ruleElement)) {
-            if (EXCLUDE.isElementWithName(child)) {
+            if (EXCLUDE.matchesElt(child)) {
                 String excludedRuleName;
                 try {
                     excludedRuleName = SchemaConstants.NAME.getAttributeOrThrow(child, err);
@@ -371,7 +371,7 @@ final class RuleSetFactory {
                 if (excludedRuleName != null) {
                     excludedRulesCheck.put(excludedRuleName, child);
                 }
-            } else if (PRIORITY.isElementWithName(child)) {
+            } else if (PRIORITY.matchesElt(child)) {
                 priority = RuleFactory.parsePriority(err, child);
             } else {
                 XmlUtil.reportIgnoredUnexpectedElt(ruleElement, child, setOf(EXCLUDE, PRIORITY), err);
@@ -422,11 +422,11 @@ final class RuleSetFactory {
         if (!excludedRulesCheck.isEmpty()) {
             excludedRulesCheck.forEach(
                 (name, elt) ->
-                    err.at(elt).warn("Exclude pattern ''{0}'' did not match any rule in ruleset {1}", name, ref));
+                    err.at(elt).warn("Exclude pattern ''{0}'' did not match any rule in ruleset ''{1}''", name, ref));
         }
 
         if (rulesetReferences.contains(ref)) {
-            err.at(ruleElement).warn("The ruleset {0} is referenced multiple times in \"{1}\".", ref, ruleSetBuilder.getName());
+            err.at(ruleElement).warn("The ruleset {0} is referenced multiple times in ruleset ''{1}''", ref, ruleSetBuilder.getName());
         }
         rulesetReferences.add(ref);
     }
@@ -563,7 +563,7 @@ final class RuleSetFactory {
                 // for all other cases, we should log a warning
                 if (existingRuleReference.hasOverriddenAttributes() || !ruleReference.hasOverriddenAttributes()) {
                     err.at(ruleNode).warn(
-                        "The rule {0} is referenced multiple times in \"{1}\". "
+                        "The rule {0} is referenced multiple times in ruleset ''{1}''. "
                             + "Only the last rule configuration is used.",
                         ruleReference.getName(),
                         ruleSetBuilder.getName());
@@ -652,7 +652,6 @@ final class RuleSetFactory {
 
         private final MessageReporter pmdReporter;
         private int errCount;
-        private final List<RuntimeException> delayedExceptions = new ArrayList<>();
 
         PmdXmlReporterImpl(MessageReporter pmdReporter, OoxmlFacade ooxml, XmlPositioner positioner) {
             super(ooxml, positioner);
@@ -695,7 +694,7 @@ final class RuleSetFactory {
                         severity = XmlSeverity.ERROR;
                         break;
                     default:
-                        throw new IllegalArgumentException("unexpected!");
+                        throw new IllegalArgumentException("unexpected level " + level);
                     }
 
                     if (message == null && formatArgs.length != 0) {

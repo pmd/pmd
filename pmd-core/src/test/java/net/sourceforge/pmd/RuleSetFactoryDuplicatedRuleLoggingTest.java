@@ -21,7 +21,7 @@ public class RuleSetFactoryDuplicatedRuleLoggingTest extends RulesetFactoryTestB
         assertNotNull(mockRule);
         Assert.assertEquals(RulePriority.MEDIUM, mockRule.getPriority());
         verifyFoundAWarningWithMessage(containing(
-            "The rule DummyBasicMockRule is referenced multiple times in \"Custom Rules\". "
+            "The rule DummyBasicMockRule is referenced multiple times in ruleset 'Custom Rules'. "
                 + "Only the last rule configuration is used."
         ));
     }
@@ -60,10 +60,10 @@ public class RuleSetFactoryDuplicatedRuleLoggingTest extends RulesetFactoryTestB
         assertEquals(RulePriority.MEDIUM_HIGH, mockRule.getPriority());
         assertNotNull(ruleset.getRuleByName("SampleXPathRule"));
         verifyFoundAWarningWithMessage(containing(
-            "The rule DummyBasicMockRule is referenced multiple times in \"Custom Rules\". "
+            "The rule DummyBasicMockRule is referenced multiple times in ruleset 'Custom Rules'. "
                 + "Only the last rule configuration is used."));
         verifyFoundAWarningWithMessage(containing(
-            "The ruleset rulesets/dummy/basic.xml is referenced multiple times in \"Custom Rules\"."));
+            "The ruleset rulesets/dummy/basic.xml is referenced multiple times in ruleset 'Custom Rules'"));
     }
 
     protected RuleSet loadRuleSet(String ruleSetFilename) {

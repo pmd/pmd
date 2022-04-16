@@ -8,6 +8,7 @@ import static net.sourceforge.pmd.util.CollectionUtil.setOf;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
@@ -56,9 +57,14 @@ public class SchemaConstant {
         return attribute;
     }
 
-    public @Nullable String getAttributeOpt(Element element) {
+    public @Nullable String getAttributeOrNull(Element element) {
         String attr = element.getAttribute(name);
         return attr.isEmpty() ? null : attr;
+    }
+
+    public Optional<String> getAttributeOpt(Element element) {
+        Attr attr = element.getAttributeNode(name);
+        return Optional.ofNullable(attr).map(Attr::getValue);
     }
 
     public @Nullable Attr getAttributeNode(Element element) {
@@ -107,7 +113,7 @@ public class SchemaConstant {
     }
 
 
-    public boolean isElementWithName(Node node) {
+    public boolean matchesElt(Node node) {
         return node.getNodeType() == Node.ELEMENT_NODE && node.getNodeName().equals(name);
     }
 
@@ -126,5 +132,14 @@ public class SchemaConstant {
     @Override
     public int hashCode() {
         return Objects.hash(name);
+    }
+
+    public @NonNull String getNonBlankAttribute(Element ruleElement, PmdXmlReporter err) {
+        String clazz = getAttributeOrThrow(ruleElement, err);
+        if (StringUtils.isBlank(clazz)) {
+            Attr node = getAttributeNode(ruleElement);
+            throw err.at(node).error("Attribute {0} may not be blank", this);
+        }
+        return clazz;
     }
 }
