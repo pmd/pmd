@@ -2124,7 +2124,11 @@ void QueryTableExpression() #void :
   |
     TableCollectionExpression()
   |
-    [ <LATERAL> ] "(" Subquery() [ SubqueryRestrictionClause() ] ")"
+    LOOKAHEAD(5) "(" [ LOOKAHEAD(2) SchemaName() "." ] TableName() [TableAlias()] ")"  
+  |  
+    LOOKAHEAD(3) [ <LATERAL> ] "(" Subquery() [ SubqueryRestrictionClause() ] ")"
+  | 
+    LOOKAHEAD(3) "(" JoinClause() ")"
   )
 }
 
