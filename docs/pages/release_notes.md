@@ -22,6 +22,7 @@ This is a {{ site.pmd.release_type }} release.
 * doc
   * [#2505](https://github.com/pmd/pmd/issues/2505): \[doc] Improve side bar to show release date
 * java
+  * [#1185](https://github.com/pmd/pmd/issues/1185): \[java] ArrayIsStoredDirectly false positive with field access 
   * [#1474](https://github.com/pmd/pmd/issues/1474): \[java] ArrayIsStoredDirectly false positive with method call
   * [#3879](https://github.com/pmd/pmd/issues/3879) \[java] ArrayIsStoredDirectly reports duplicated violation
   * [#3889](https://github.com/pmd/pmd/pull/3889): \[java] Catch LinkageError in UselessOverridingMethodRule

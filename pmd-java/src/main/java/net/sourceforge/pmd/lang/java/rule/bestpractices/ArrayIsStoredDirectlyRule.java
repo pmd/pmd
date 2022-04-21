@@ -84,10 +84,15 @@ public class ArrayIsStoredDirectlyRule extends AbstractSunSecureRule {
             return null;
         }
         if (assignedVar == null) {
-            ASTPrimarySuffix suffix = e.getFirstDescendantOfType(ASTPrimarySuffix.class);
+            ASTPrimaryPrefix prefix = null;
+            ASTPrimarySuffix suffix = null;
+            if (e.getNumChildren() > 0 && e.getChild(0) instanceof ASTPrimaryExpression) {
+                ASTPrimaryExpression primaryExpression = (ASTPrimaryExpression) e.getChild(0);
+                prefix = (ASTPrimaryPrefix) primaryExpression.getChild(0);
+                suffix = primaryExpression.getFirstChildOfType(ASTPrimarySuffix.class);
+            }
             if (suffix != null) {
                 assignedVar = suffix.getImage();
-                ASTPrimaryPrefix prefix = e.getFirstDescendantOfType(ASTPrimaryPrefix.class);
                 if (prefix != null) {
                     if (prefix.usesThisModifier()) {
                         assignedVar = "this." + assignedVar;

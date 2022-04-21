@@ -306,4 +306,23 @@ public class TestArrayIsStoredDirectly {
 ]]></code>
     </test-code>
 
+    <test-code>
+        <description>[java] ArrayIsStoredDirectly false positive with field access #1185</description>
+        <rule-property name="allowPrivate">false</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class TestArrayIsStoredDirectly {
+    private final boolean[] a;
+    private final foo b;
+
+    private TestArrayIsStoredDirectly(boolean[] a) {
+        this.a = null;
+        this.a = a.clone(); // no violation, it doesn't matter what the state of this.a is
+        this.b = new TestArrayIsStoredDirectly(a); // no violation
+        this.b = new TestArrayIsStoredDirectly(this.a); // false positive violation here
+    }
+}
+]]></code>
+    </test-code>
+
 </test-data>
