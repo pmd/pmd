@@ -265,7 +265,7 @@ public class UselessOverridingMethodRule extends AbstractJavaRule {
         while (superType != null && declaredMethod == null) {
             try {
                 declaredMethod = superType.getDeclaredMethod(overriddenMethodName, typeArgumentArray);
-            } catch (NoSuchMethodException | SecurityException e) {
+            } catch (LinkageError | ReflectiveOperationException | SecurityException e) {
                 declaredMethod = null;
             }
             superType = superType.getSuperclass();
