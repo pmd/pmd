@@ -30,6 +30,7 @@ This is a {{ site.pmd.release_type }} release.
 * doc
   * [#2505](https://github.com/pmd/pmd/issues/2505): \[doc] Improve side bar to show release date
 * java
+  * [#3068](https://github.com/pmd/pmd/issues/3068): \[java] Some tests should not depend on real rules
   * [#3889](https://github.com/pmd/pmd/pull/3889): \[java] Catch LinkageError in UselessOverridingMethodRule
   * [#3910](https://github.com/pmd/pmd/pull/3910): \[java] UnusedPrivateField - Allow the ignored fieldnames to be configurable
 * plsql
