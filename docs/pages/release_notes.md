@@ -19,6 +19,7 @@ This is a {{ site.pmd.release_type }} release.
   * [#3881](https://github.com/pmd/pmd/issues/3881): \[core] SARIF renderer depends on platform default encoding
   * [#3882](https://github.com/pmd/pmd/pull/3882): \[core] Fix AssertionError about exhaustive switch
   * [#3884](https://github.com/pmd/pmd/issues/3884): \[core] XML report via ant task contains XML header twice
+  * [#3896](https://github.com/pmd/pmd/pull/3896): \[core] Fix ast-dump CLI when reading from stdin
 * doc
   * [#2505](https://github.com/pmd/pmd/issues/2505): \[doc] Improve side bar to show release date
 * java

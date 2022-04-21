@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang;
 import java.io.Reader;
 import java.nio.file.Paths;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.xpath.internal.FileNameXPathFunction;
 
@@ -42,9 +43,14 @@ public abstract class AbstractParser implements Parser {
     @Deprecated
     public static Node doParse(Parser parser, String fileName, Reader source) {
         Node rootNode = parser.parse(fileName, source);
+        setFileName(fileName, rootNode);
+        return rootNode;
+    }
+
+    @InternalApi
+    public static void setFileName(String fileName, Node rootNode) {
         // remove prefixed path segments.
         String simpleFileName = Paths.get(fileName).getFileName().toString();
         rootNode.getUserMap().set(FileNameXPathFunction.FILE_NAME_KEY, simpleFileName);
-        return rootNode;
     }
 }
