@@ -40,7 +40,7 @@ import net.sourceforge.pmd.lang.Dummy2LanguageModule;
 import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
-import net.sourceforge.pmd.lang.ast.DummyRoot;
+import net.sourceforge.pmd.lang.ast.DummyNode.DummyRootNode;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.rule.RuleReference;
@@ -472,7 +472,7 @@ public class RuleSetTest {
     }
 
     private RootNode makeCompilationUnits(String filename) {
-        DummyRoot node = new DummyRoot();
+        DummyRootNode node = new DummyRootNode();
         node.setCoords(1, 1, 10, 1);
         node.setImage("Foo");
         node.withFileName(filename);

@@ -19,7 +19,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import net.sourceforge.pmd.lang.ast.DummyNode;
-import net.sourceforge.pmd.lang.ast.DummyRoot;
+import net.sourceforge.pmd.lang.ast.DummyNode.DummyRootNode;
 import net.sourceforge.pmd.lang.ast.Node;
 
 import junitparams.JUnitParamsRunner;
@@ -65,13 +65,13 @@ public class AbstractNodeTest {
         return indexes;
     }
 
-    private DummyRoot rootNode;
+    private DummyRootNode rootNode;
 
     @Before
     public void setUpSampleNodeTree() {
         rootNode = tree(
             () -> {
-                DummyRoot root = root();
+                DummyRootNode root = root();
 
                 for (int i = 0; i < NUM_CHILDREN; i++) {
                     final DummyNode child = node();
@@ -110,7 +110,7 @@ public class AbstractNodeTest {
 
     @Test
     public void testPrevNextSiblings() {
-        DummyRoot root = tree(() -> root(node(), node()));
+        DummyRootNode root = tree(() -> root(node(), node()));
 
         assertNull(root.getNextSibling());
         assertNull(root.getPreviousSibling());

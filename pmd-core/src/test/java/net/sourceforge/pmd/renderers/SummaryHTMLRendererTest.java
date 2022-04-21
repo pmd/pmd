@@ -16,7 +16,7 @@ import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report.ConfigurationError;
 import net.sourceforge.pmd.Report.ProcessingError;
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.lang.ast.DummyRoot;
+import net.sourceforge.pmd.lang.ast.DummyNode.DummyRootNode;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
 
 public class SummaryHTMLRendererTest extends AbstractRendererTest {
@@ -145,7 +145,7 @@ public class SummaryHTMLRendererTest extends AbstractRendererTest {
 
     private Consumer<FileAnalysisListener> createEmptyReportWithSuppression() throws Exception {
         return listener -> {
-            DummyRoot root = new DummyRoot().withNoPmdComments(Collections.singletonMap(1, "test")).withFileName(getSourceCodeFilename());
+            DummyRootNode root = new DummyRootNode().withNoPmdComments(Collections.singletonMap(1, "test")).withFileName(getSourceCodeFilename());
             root.setCoords(1, 10, 4, 5);
 
             RuleContext ruleContext = RuleContext.create(listener, new FooRule());
