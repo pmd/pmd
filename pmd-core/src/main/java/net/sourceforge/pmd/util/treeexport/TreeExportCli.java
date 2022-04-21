@@ -232,7 +232,7 @@ public class TreeExportCli {
         return new AbortedError();
     }
 
-    private static class AbortedError extends Error {
+    private static final class AbortedError extends Error {
 
     }
 }
