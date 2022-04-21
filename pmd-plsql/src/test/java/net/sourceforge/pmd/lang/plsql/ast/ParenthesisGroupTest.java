@@ -4,29 +4,37 @@
 
 package net.sourceforge.pmd.lang.plsql.ast;
 
-import org.junit.Assert;
 import org.junit.Test;
 
-import net.sourceforge.pmd.lang.plsql.AbstractPLSQLParserTst;
+import net.sourceforge.pmd.lang.ast.test.BaseParsingHelper;
+import net.sourceforge.pmd.lang.ast.test.BaseTreeDumpTest;
+import net.sourceforge.pmd.lang.ast.test.RelevantAttributePrinter;
+import net.sourceforge.pmd.lang.plsql.PlsqlParsingHelper;
 
-public class ParenthesisGroupTest extends AbstractPLSQLParserTst {
+public class ParenthesisGroupTest extends BaseTreeDumpTest {
+
+    public ParenthesisGroupTest() {
+        super(new RelevantAttributePrinter(), ".pls");
+    }
+
+    @Override
+    public BaseParsingHelper<?, ?> getParser() {
+        return PlsqlParsingHelper.WITH_PROCESSING.withResourceContext(getClass());
+    }
 
     @Test
     public void parseParenthesisGroup0() {
-        ASTInput input = plsql.parseResource("ParenthesisGroup0.pls");
-        Assert.assertNotNull(input);
+        doTest("ParenthesisGroup0");
     }
-    
+
     @Test
     public void parseParenthesisGroup1() {
-        ASTInput input = plsql.parseResource("ParenthesisGroup1.pls");
-        Assert.assertNotNull(input);
+        doTest("ParenthesisGroup1");
     }
-    
+
     @Test
     public void parseParenthesisGroup2() {
-        ASTInput input = plsql.parseResource("ParenthesisGroup2.pls");
-        Assert.assertNotNull(input);
+        doTest("ParenthesisGroup2");
     }
-    
+
 }
