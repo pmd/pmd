@@ -31,6 +31,7 @@ This is a {{ site.pmd.release_type }} release.
   * [#2505](https://github.com/pmd/pmd/issues/2505): \[doc] Improve side bar to show release date
 * java
   * [#3889](https://github.com/pmd/pmd/pull/3889): \[java] Catch LinkageError in UselessOverridingMethodRule
+  * [#3910](https://github.com/pmd/pmd/pull/3910): \[java] UnusedPrivateField - Allow the ignored fieldnames to be configurable
 * plsql
   * [#3706](https://github.com/pmd/pmd/issues/3706): \[plsql] Parsing exception CURSOR statement with parenthesis groupings
 
@@ -38,7 +39,7 @@ This is a {{ site.pmd.release_type }} release.
 
 ### External Contributions
 * [#3883](https://github.com/pmd/pmd/pull/3883): \[doc] Improve side bar by Adding Release Date - [@jasonqiu98](https://github.com/jasonqiu98)
-* [#3910](https://github.com/pmd/pmd/pull/3910): \[java] Allow the ignored fieldnames in the Unused Private Field check to be configurable - [Seth Wilcox](https://github.com/laoseth)
+* [#3910](https://github.com/pmd/pmd/pull/3910): \[java] UnusedPrivateField - Allow the ignored fieldnames to be configurable - [@laoseth](https://github.com/laoseth)
 * [#3928](https://github.com/pmd/pmd/pull/3928): \[plsql] Fix plsql parsing error in parenthesis groups - [@LiGaOg](https://github.com/LiGaOg)
 
 {% endtocmaker %}
