@@ -16,7 +16,6 @@ import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Report.ConfigurationError;
 import net.sourceforge.pmd.Report.ProcessingError;
-import net.sourceforge.pmd.ReportTest;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
@@ -121,7 +120,7 @@ public class SummaryHTMLRendererTest extends AbstractRendererTest {
         Report rep = createEmptyReportWithSuppression();
         Renderer renderer = getRenderer();
         renderer.setShowSuppressedViolations(true);
-        String actual = ReportTest.render(renderer, rep);
+        String actual = renderReport(renderer, rep);
         assertEquals("<html><head><title>PMD</title></head><body>" + PMD.EOL + "<center><h2>Summary</h2></center>"
                 + PMD.EOL + "<table align=\"center\" cellspacing=\"0\" cellpadding=\"3\">" + PMD.EOL
                 + "<tr><th>Rule name</th><th>Number of violations</th></tr>" + PMD.EOL + "</table>" + PMD.EOL
@@ -142,7 +141,7 @@ public class SummaryHTMLRendererTest extends AbstractRendererTest {
         Report rep = createEmptyReportWithSuppression();
         Renderer renderer = getRenderer();
         renderer.setShowSuppressedViolations(false);
-        String actual = ReportTest.render(renderer, rep);
+        String actual = renderReport(renderer, rep);
         assertEquals(getExpectedEmpty(), actual);
     }
 
