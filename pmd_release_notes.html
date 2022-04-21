@@ -1477,6 +1477,15 @@
 
 <h3 id="new-and-noteworthy">New and noteworthy</h3>
 
+<h4 id="modified-rules">Modified rules</h4>
+
+<ul>
+  <li>The Java rule <a href="pmd_rules_java_bestpractices.html#unusedprivatefield"><code class="language-plaintext highlighter-rouge">UnusedPrivateField</code></a> has a new property <code class="language-plaintext highlighter-rouge">ignoredFieldNames</code>.
+The default ignores serialization-specific fields (eg <code class="language-plaintext highlighter-rouge">serialVersionUID</code>).
+The property can be used to ignore more fields based on their name.
+Note that the rule used to ignore fields named <code class="language-plaintext highlighter-rouge">IDENT</code>, but doesn’t anymore (add this value to the property to restore the old behaviour).</li>
+</ul>
+
 <h3 id="fixed-issues">Fixed Issues</h3>
 <ul>
   <li>core
@@ -1484,6 +1493,7 @@
       <li><a href="https://github.com/pmd/pmd/issues/3881">#3881</a>: [core] SARIF renderer depends on platform default encoding</li>
       <li><a href="https://github.com/pmd/pmd/pull/3882">#3882</a>: [core] Fix AssertionError about exhaustive switch</li>
       <li><a href="https://github.com/pmd/pmd/issues/3884">#3884</a>: [core] XML report via ant task contains XML header twice</li>
+      <li><a href="https://github.com/pmd/pmd/pull/3896">#3896</a>: [core] Fix ast-dump CLI when reading from stdin</li>
     </ul>
   </li>
   <li>doc
@@ -1493,7 +1503,9 @@
   </li>
   <li>java
     <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/3068">#3068</a>: [java] Some tests should not depend on real rules</li>
       <li><a href="https://github.com/pmd/pmd/pull/3889">#3889</a>: [java] Catch LinkageError in UselessOverridingMethodRule</li>
+      <li><a href="https://github.com/pmd/pmd/pull/3910">#3910</a>: [java] UnusedPrivateField - Allow the ignored fieldnames to be configurable</li>
     </ul>
   </li>
   <li>plsql
@@ -1508,6 +1520,7 @@
 <h3 id="external-contributions">External Contributions</h3>
 <ul>
   <li><a href="https://github.com/pmd/pmd/pull/3883">#3883</a>: [doc] Improve side bar by Adding Release Date - <a href="https://github.com/jasonqiu98">@jasonqiu98</a></li>
+  <li><a href="https://github.com/pmd/pmd/pull/3910">#3910</a>: [java] UnusedPrivateField - Allow the ignored fieldnames to be configurable - <a href="https://github.com/laoseth">@laoseth</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/3928">#3928</a>: [plsql] Fix plsql parsing error in parenthesis groups - <a href="https://github.com/LiGaOg">@LiGaOg</a></li>
 </ul>
 
