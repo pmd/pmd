@@ -182,7 +182,7 @@ public class ReportTest implements ThreadSafeReportListener {
         Report filtered = r.filterViolations(new Predicate<RuleViolation>() {
             @Override
             public boolean test(RuleViolation ruleViolation) {
-                return !("to be filtered".equals(ruleViolation.getDescription()));
+                return !"to be filtered".equals(ruleViolation.getDescription());
             }
         });
 

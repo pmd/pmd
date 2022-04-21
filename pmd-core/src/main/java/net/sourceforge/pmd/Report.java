@@ -42,7 +42,7 @@ import net.sourceforge.pmd.util.Predicate;
  *     <li>{@link #filterViolations(Predicate)}</li>
  *     <li>{@link #union(Report)}</li>
  * </ul>
- * These methods create a new {@link Report} rather than modifying it.
+ * These methods create a new {@link Report} rather than modifying their receiver.
  * </p>
  */
 public class Report implements Iterable<RuleViolation> {
@@ -722,7 +722,7 @@ public class Report implements Iterable<RuleViolation> {
     /**
      * Creates a new report by combining this report with another report.
      * This is similar to {@link #merge(Report)}, but instead a new report
-     * is created.
+     * is created. The lowest start time and greatest end time are kept in the copy.
      *
      * @param other the other report to combine
      * @return
@@ -730,16 +730,8 @@ public class Report implements Iterable<RuleViolation> {
     public Report union(Report other) {
         Report copy = new Report();
 
-        if (other.start < start) {
-            copy.start = other.start;
-        } else {
-            copy.start = start;
-        }
-        if (other.end > end) {
-            copy.end = other.end;
-        } else {
-            copy.end = end;
-        }
+        copy.start = Math.min(other.start, this.start);
+        copy.end = Math.max(other.end, this.end);
 
         for (RuleViolation violation : violations) {
             copy.addRuleViolation(violation);
