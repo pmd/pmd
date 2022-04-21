@@ -21,6 +21,14 @@ This is a {{ site.pmd.release_type }} release.
 
 ### API Changes
 
+#### Experimental APIs
+
+* Report has two new methods which allow limited mutations of a given report:
+  * {% jdoc !!core::Report#filterViolations(net.sourceforge.pmd.util.Predicate) %} creates a new report with
+    some violations removed with a given predicate based filter.
+  * {% jdoc !!core::Report#union(net.sourceforge.pmd.Report) %} can combine two reports into a single new Report.
+* {% jdoc !!core::util.Predicate %} will be replaced in PMD7 with the standard Predicate interface from java8.
+
 ### External Contributions
 
 {% endtocmaker %}

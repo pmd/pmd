@@ -19,6 +19,7 @@ import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 
+import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.dfa.report.ReportTree;
 import net.sourceforge.pmd.lang.rule.stat.StatisticalRule;
@@ -700,6 +701,7 @@ public class Report implements Iterable<RuleViolation> {
      * @param filter when true, the violation will be kept.
      * @return copy of this report
      */
+    @Experimental
     public Report filterViolations(Predicate<RuleViolation> filter) {
         Report copy = new Report();
         copy.start = start;
@@ -727,6 +729,7 @@ public class Report implements Iterable<RuleViolation> {
      * @param other the other report to combine
      * @return
      */
+    @Experimental
     public Report union(Report other) {
         Report copy = new Report();
 
