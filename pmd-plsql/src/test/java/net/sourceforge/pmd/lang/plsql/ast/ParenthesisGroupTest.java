@@ -19,7 +19,7 @@ public class ParenthesisGroupTest extends BaseTreeDumpTest {
 
     @Override
     public BaseParsingHelper<?, ?> getParser() {
-        return PlsqlParsingHelper.WITH_PROCESSING.withResourceContext(getClass());
+        return PlsqlParsingHelper.DEFAULT.withResourceContext(getClass());
     }
 
     @Test
