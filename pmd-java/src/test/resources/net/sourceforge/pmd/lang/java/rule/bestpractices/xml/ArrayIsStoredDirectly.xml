@@ -287,4 +287,23 @@ public class ExampleAISD {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>[java] ArrayIsStoredDirectly false positive with method call #1474</description>
+        <rule-property name="allowPrivate">false</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class TestArrayIsStoredDirectly {
+    public double energy(int x) {
+        return 0.0;
+    }
+
+    // if energy[] is replace by energy2[], then no ArrayIsStoredDirectly warning
+    private void f(double[] energy) {
+        energy[0] = energy(1);
+    }
+}
+]]></code>
+    </test-code>
+
 </test-data>

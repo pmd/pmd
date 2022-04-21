@@ -80,6 +80,9 @@ public class ArrayIsStoredDirectlyRule extends AbstractSunSecureRule {
 
     private String getExpressionVarName(Node e) {
         String assignedVar = getFirstNameImage(e);
+        if (isMethodCall(e)) {
+            return null;
+        }
         if (assignedVar == null) {
             ASTPrimarySuffix suffix = e.getFirstDescendantOfType(ASTPrimarySuffix.class);
             if (suffix != null) {
@@ -95,6 +98,17 @@ public class ArrayIsStoredDirectlyRule extends AbstractSunSecureRule {
             }
         }
         return assignedVar;
+    }
+
+    private boolean isMethodCall(Node e) {
+        if (e.getNumChildren() == 1 && e.getChild(0) instanceof ASTPrimaryExpression) {
+            ASTPrimaryExpression primaryExpression = (ASTPrimaryExpression) e.getChild(0);
+            if (primaryExpression.getNumChildren() > 1) {
+                ASTPrimarySuffix suffix = (ASTPrimarySuffix) primaryExpression.getChild(1);
+                return suffix.isArguments();
+            }
+        }
+        return false;
     }
 
     /**
