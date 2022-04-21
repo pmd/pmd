@@ -496,7 +496,7 @@ public class RuleSetTest {
         assertThat(errors, hasSize(1));
         ProcessingError error = errors.get(0);
         assertThat(error.getMsg(), containsString("java.lang.IllegalStateException: Test exception while applying rule\n"));
-        assertThat(error.getMsg(), containsString("Rule applied on node=Foo"));
+        assertThat(error.getMsg(), containsString("Rule applied on node=dummyRootNode[@Image=Foo]"));
         assertThat(error.getError().getCause(), instanceOf(IllegalStateException.class));
     }
 
@@ -521,7 +521,7 @@ public class RuleSetTest {
         assertThat(errors, hasSize(1));
         ProcessingError error = errors.get(0);
         assertThat(error.getMsg(), containsString("java.lang.IllegalStateException: Test exception while applying rule\n"));
-        assertThat(error.getMsg(), containsString("Rule applied on node=Foo"));
+        assertThat(error.getMsg(), containsString("Rule applied on node=dummyRootNode[@Image=Foo]"));
         assertThat(error.getError().getCause(), instanceOf(IllegalStateException.class));
         assertThat(FilenameUtils.normalize(error.getFile(), true), equalTo("samplefile.dummy"));
 
@@ -560,7 +560,7 @@ public class RuleSetTest {
         assertThat(errors, hasSize(1));
         ProcessingError error = errors.get(0);
         assertThat(error.getMsg(), containsString("java.lang.UnsupportedOperationException: Test exception while applying rule\n"));
-        assertThat(error.getMsg(), containsString("Rule applied on node=Foo"));
+        assertThat(error.getMsg(), containsString("Rule applied on node=dummyRootNode[@Image=Foo]"));
         assertThat(error.getError().getCause(), instanceOf(UnsupportedOperationException.class));
 
         assertThat(report.getViolations(), hasSize(1));

@@ -15,13 +15,14 @@ import java.io.PrintStream;
 import java.nio.file.Files;
 import java.util.regex.Pattern;
 
-import org.apache.commons.io.IOUtils;
+import org.apache.tools.ant.util.TeeOutputStream;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Rule;
+import org.junit.contrib.java.lang.system.SystemErrRule;
+import org.junit.contrib.java.lang.system.SystemOutRule;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMD.StatusCode;
@@ -39,8 +40,10 @@ public abstract class BaseCLITest {
     // and slowing down tests
     protected static final String SOURCE_FOLDER = "src/test/resources/net/sourceforge/pmd/cli";
 
-    protected PrintStream originalOut;
-    protected PrintStream originalErr;
+    @Rule
+    public SystemErrRule systemErrRule = new SystemErrRule().muteForSuccessfulTests();
+    @Rule
+    public SystemOutRule systemOutRule = new SystemOutRule().muteForSuccessfulTests();
 
     /**
      * @throws java.lang.Exception
@@ -53,20 +56,6 @@ public abstract class BaseCLITest {
             assertTrue("failed to create output directory for test:" + testOuputDir.getAbsolutePath(),
                     testOuputDir.mkdirs());
         }
-    }
-
-    @Before
-    public void setup() {
-        originalOut = System.out;
-        originalErr = System.err;
-    }
-
-    @After
-    public void tearDown() {
-        IOUtils.closeQuietly(System.out);
-
-        System.setOut(originalOut);
-        System.setErr(originalErr);
     }
 
     protected void createTestOutputFile(String filename) {
@@ -133,9 +122,11 @@ public abstract class BaseCLITest {
 
     protected String runTest(StatusCode expectedExitCode, String... args) {
         ByteArrayOutputStream console = new ByteArrayOutputStream();
-        PrintStream out = new PrintStream(console);
+
+        PrintStream out = new PrintStream(new TeeOutputStream(console, System.out));
+        PrintStream err = new PrintStream(new TeeOutputStream(console, System.err));
         System.setOut(out);
-        System.setErr(out);
+        System.setErr(err);
         StatusCode statusCode = PMD.runPmd(args);
         assertEquals(expectedExitCode, statusCode);
         return console.toString();
