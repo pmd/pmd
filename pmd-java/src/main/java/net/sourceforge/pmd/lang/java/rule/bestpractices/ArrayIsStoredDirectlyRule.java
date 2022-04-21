@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.rule.bestpractices;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentOperator;
 import net.sourceforge.pmd.lang.java.ast.ASTBlockStatement;
@@ -120,10 +121,10 @@ public class ArrayIsStoredDirectlyRule extends AbstractSunSecureRule {
      * Checks if the variable designed in parameter is written to a field (not
      * local variable) in the statements.
      */
-    private boolean checkForDirectAssignment(Object ctx, final ASTFormalParameter parameter,
+    private void checkForDirectAssignment(Object ctx, final ASTFormalParameter parameter,
             final List<ASTBlockStatement> bs) {
         final ASTVariableDeclaratorId vid = parameter.getFirstDescendantOfType(ASTVariableDeclaratorId.class);
-        final String varName = vid.getImage();
+        final String varName = vid.getName();
         for (ASTBlockStatement b : bs) {
             if (b.getChild(0) instanceof ASTStatement && b.getChild(0).getChild(0) instanceof ASTStatementExpression) {
                 final ASTStatementExpression se = b.getFirstDescendantOfType(ASTStatementExpression.class);
@@ -173,13 +174,13 @@ public class ArrayIsStoredDirectlyRule extends AbstractSunSecureRule {
                             md = pe.getFirstParentOfType(ASTConstructorDeclaration.class);
                         }
                         if (!isLocalVariable(varName, md)) {
-                            addViolation(ctx, parameter, varName);
+                            RuleContext ruleContext = (RuleContext) ctx;
+                            ruleContext.addViolation(e, varName);
                         }
                     }
                 }
             }
         }
-        return false;
     }
 
     private ASTFormalParameter[] getArrays(ASTFormalParameters params) {
@@ -187,7 +188,7 @@ public class ArrayIsStoredDirectlyRule extends AbstractSunSecureRule {
         if (l != null && !l.isEmpty()) {
             List<ASTFormalParameter> l2 = new ArrayList<>();
             for (ASTFormalParameter fp : l) {
-                if (fp.isArray() || fp.isVarargs()) {
+                if (fp.getVariableDeclaratorId().hasArrayType() || fp.isVarargs()) {
                     l2.add(fp);
                 }
             }

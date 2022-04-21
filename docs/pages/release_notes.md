@@ -26,6 +26,7 @@ This is a {{ site.pmd.release_type }} release.
   * [#1474](https://github.com/pmd/pmd/issues/1474): \[java] ArrayIsStoredDirectly false positive with method call
   * [#3879](https://github.com/pmd/pmd/issues/3879) \[java] ArrayIsStoredDirectly reports duplicated violation
   * [#3889](https://github.com/pmd/pmd/pull/3889): \[java] Catch LinkageError in UselessOverridingMethodRule
+  * [#3929](https://github.com/pmd/pmd/issues/3929): \[java] ArrayIsStoredDirectly should report the assignment rather than formal parameter
 * plsql
   * [#3706](https://github.com/pmd/pmd/issues/3706): \[plsql] Parsing exception CURSOR statement with parenthesis groupings
 
