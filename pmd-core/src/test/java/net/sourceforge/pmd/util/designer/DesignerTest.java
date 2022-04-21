@@ -27,7 +27,8 @@ public class DesignerTest {
                 "doesn't matter");
         String xml = Designer.getXmlTreeCode(compilationUnit);
         assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-                + "<dummyNode BeginColumn=\"1\" BeginLine=\"1\" EndColumn=\"0\" EndLine=\"0\" FindBoundary=\"false\"\n"
-                + "           Image=\"Foo\"\n" + "           SingleLine=\"false\"/>", xml);
+                     + "<dummyNode BeginColumn=\"1\" BeginLine=\"1\" EndColumn=\"14\" EndLine=\"1\" FindBoundary=\"false\"\n"
+                     + "           Image=\"\"\n"
+                     + "           SingleLine=\"true\"/>", xml);
     }
 }
