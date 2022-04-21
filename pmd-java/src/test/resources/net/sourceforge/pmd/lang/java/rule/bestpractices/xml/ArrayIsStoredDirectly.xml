@@ -269,4 +269,22 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>[java] ArrayIsStoredDirectly reports duplicated violation #3879</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+public class ExampleAISD {
+
+    public String[] strs;
+
+    public void func(String[] strs, boolean flag) { // line 5
+        if (flag) {
+            this.strs = strs; // line 7
+        }
+    }
+}
+]]></code>
+    </test-code>
 </test-data>

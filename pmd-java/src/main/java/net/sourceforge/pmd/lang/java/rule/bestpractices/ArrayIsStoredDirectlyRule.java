@@ -19,6 +19,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
+import net.sourceforge.pmd.lang.java.ast.ASTStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTStatementExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
@@ -105,9 +106,12 @@ public class ArrayIsStoredDirectlyRule extends AbstractSunSecureRule {
         final ASTVariableDeclaratorId vid = parameter.getFirstDescendantOfType(ASTVariableDeclaratorId.class);
         final String varName = vid.getImage();
         for (ASTBlockStatement b : bs) {
-            if (b.hasDescendantOfType(ASTAssignmentOperator.class)) {
+            if (b.getChild(0) instanceof ASTStatement && b.getChild(0).getChild(0) instanceof ASTStatementExpression) {
                 final ASTStatementExpression se = b.getFirstDescendantOfType(ASTStatementExpression.class);
-                if (se == null || !(se.getChild(0) instanceof ASTPrimaryExpression)) {
+                if (se == null
+                        || se.getNumChildren() < 2
+                        || !(se.getChild(0) instanceof ASTPrimaryExpression)
+                        || !(se.getChild(1) instanceof ASTAssignmentOperator)) {
                     continue;
                 }
                 String assignedVar = getExpressionVarName(se);

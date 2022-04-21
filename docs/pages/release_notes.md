@@ -22,6 +22,7 @@ This is a {{ site.pmd.release_type }} release.
 * doc
   * [#2505](https://github.com/pmd/pmd/issues/2505): \[doc] Improve side bar to show release date
 * java
+  * [#3879](https://github.com/pmd/pmd/issues/3879) \[java] ArrayIsStoredDirectly reports duplicated violation
   * [#3889](https://github.com/pmd/pmd/pull/3889): \[java] Catch LinkageError in UselessOverridingMethodRule
 * plsql
   * [#3706](https://github.com/pmd/pmd/issues/3706): \[plsql] Parsing exception CURSOR statement with parenthesis groupings
