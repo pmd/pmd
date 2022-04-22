@@ -7,12 +7,12 @@ package net.sourceforge.pmd.lang.html.ast;
 import net.sourceforge.pmd.lang.ast.test.BaseParsingHelper;
 import net.sourceforge.pmd.lang.html.HtmlLanguageModule;
 
-public final class HtmlParsingHelper extends BaseParsingHelper<HtmlParsingHelper, HtmlDocument> {
+public final class HtmlParsingHelper extends BaseParsingHelper<HtmlParsingHelper, ASTHtmlDocument> {
 
     public static final HtmlParsingHelper DEFAULT = new HtmlParsingHelper(Params.getDefaultProcess());
 
     private HtmlParsingHelper(Params params) {
-        super(HtmlLanguageModule.NAME, HtmlDocument.class, params);
+        super(HtmlLanguageModule.NAME, ASTHtmlDocument.class, params);
     }
 
     @Override

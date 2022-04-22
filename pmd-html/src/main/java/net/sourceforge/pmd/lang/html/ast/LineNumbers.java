@@ -7,11 +7,11 @@ package net.sourceforge.pmd.lang.html.ast;
 import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
 
 class LineNumbers {
-    private final HtmlDocument document;
+    private final ASTHtmlDocument document;
     private String htmlString;
     private SourceCodePositioner sourceCodePositioner;
 
-    LineNumbers(HtmlDocument document, String htmlString) {
+    LineNumbers(ASTHtmlDocument document, String htmlString) {
         this.document = document;
         this.htmlString = htmlString;
         this.sourceCodePositioner = new SourceCodePositioner(htmlString);
@@ -26,20 +26,20 @@ class LineNumbers {
         int nodeLength = 0;
         int textLength = 0;
 
-        if (n instanceof HtmlDocument) {
+        if (n instanceof ASTHtmlDocument) {
             nextIndex = index;
-        } else if (n instanceof HtmlComment) {
+        } else if (n instanceof ASTHtmlComment) {
             nextIndex = htmlString.indexOf("<!--", nextIndex);
-        } else if (n instanceof HtmlElement) {
+        } else if (n instanceof ASTHtmlElement) {
             nextIndex = htmlString.indexOf("<" + n.getXPathNodeName(), nextIndex);
             nodeLength = htmlString.indexOf(">", nextIndex) - nextIndex + 1;
-        } else if (n instanceof HtmlCDataNode) {
+        } else if (n instanceof ASTHtmlCDataNode) {
             nextIndex = htmlString.indexOf("<![CDATA[", nextIndex);
-        } else if (n instanceof HtmlXmlDeclaration) {
+        } else if (n instanceof ASTHtmlXmlDeclaration) {
             nextIndex = htmlString.indexOf("<?", nextIndex);
-        } else if (n instanceof HtmlTextNode) {
-            textLength = ((HtmlTextNode) n).getText().length();
-        } else if (n instanceof HtmlDocumentType) {
+        } else if (n instanceof ASTHtmlTextNode) {
+            textLength = ((ASTHtmlTextNode) n).getText().length();
+        } else if (n instanceof ASTHtmlDocumentType) {
             nextIndex = index;
         }
 
@@ -53,24 +53,24 @@ class LineNumbers {
 
         // autoclosing element, eg <a />
         boolean isAutoClose = n.getNumChildren() == 0
-                && n instanceof HtmlElement
+                && n instanceof ASTHtmlElement
                 // nextIndex is up to the closing > at this point
                 && htmlString.startsWith("/>", nextIndex - 2);
 
-        if (n instanceof HtmlDocument) {
+        if (n instanceof ASTHtmlDocument) {
             nextIndex = htmlString.length();
-        } else if (n instanceof HtmlElement && !isAutoClose) {
+        } else if (n instanceof ASTHtmlElement && !isAutoClose) {
             nextIndex += 2 + n.getXPathNodeName().length() + 1; // </nodename>
-        } else if (n instanceof HtmlComment) {
+        } else if (n instanceof ASTHtmlComment) {
             nextIndex += 4 + 3; // <!-- and -->
-            nextIndex += ((HtmlComment) n).getData().length();
-        } else if (n instanceof HtmlTextNode) {
+            nextIndex += ((ASTHtmlComment) n).getData().length();
+        } else if (n instanceof ASTHtmlTextNode) {
             nextIndex += textLength;
-        } else if (n instanceof HtmlCDataNode) {
-            nextIndex += "<![CDATA[".length() + ((HtmlCDataNode) n).getText().length() + "]]>".length();
-        } else if (n instanceof HtmlXmlDeclaration) {
+        } else if (n instanceof ASTHtmlCDataNode) {
+            nextIndex += "<![CDATA[".length() + ((ASTHtmlCDataNode) n).getText().length() + "]]>".length();
+        } else if (n instanceof ASTHtmlXmlDeclaration) {
             nextIndex = htmlString.indexOf("?>", nextIndex) + 2;
-        } else if (n instanceof HtmlDocumentType) {
+        } else if (n instanceof ASTHtmlDocumentType) {
             nextIndex = htmlString.indexOf(">", nextIndex) + 1;
         }
 

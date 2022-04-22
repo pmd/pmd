@@ -7,9 +7,9 @@ package net.sourceforge.pmd.lang.html.ast;
 
 import org.jsoup.nodes.TextNode;
 
-public class HtmlTextNode extends AbstractHtmlNode<TextNode> {
+public class ASTHtmlTextNode extends AbstractHtmlNode<TextNode> {
 
-    HtmlTextNode(TextNode node) {
+    ASTHtmlTextNode(TextNode node) {
         super(node);
     }
 

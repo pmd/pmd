@@ -13,11 +13,11 @@ import org.jsoup.nodes.Element;
 
 import net.sourceforge.pmd.lang.ast.xpath.Attribute;
 
-public class HtmlElement extends AbstractHtmlNode<Element> {
+public class ASTHtmlElement extends AbstractHtmlNode<Element> {
 
     private final List<Attribute> attributes;
 
-    HtmlElement(Element element) {
+    ASTHtmlElement(Element element) {
         super(element);
 
         attributes = new ArrayList<>();

@@ -10,15 +10,15 @@ import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.html.HtmlLanguageModule;
-import net.sourceforge.pmd.lang.html.ast.HtmlCDataNode;
-import net.sourceforge.pmd.lang.html.ast.HtmlComment;
-import net.sourceforge.pmd.lang.html.ast.HtmlDocument;
-import net.sourceforge.pmd.lang.html.ast.HtmlDocumentType;
-import net.sourceforge.pmd.lang.html.ast.HtmlElement;
+import net.sourceforge.pmd.lang.html.ast.ASTHtmlCDataNode;
+import net.sourceforge.pmd.lang.html.ast.ASTHtmlComment;
+import net.sourceforge.pmd.lang.html.ast.ASTHtmlDocument;
+import net.sourceforge.pmd.lang.html.ast.ASTHtmlDocumentType;
+import net.sourceforge.pmd.lang.html.ast.ASTHtmlElement;
+import net.sourceforge.pmd.lang.html.ast.ASTHtmlTextNode;
+import net.sourceforge.pmd.lang.html.ast.ASTHtmlXmlDeclaration;
 import net.sourceforge.pmd.lang.html.ast.HtmlNode;
-import net.sourceforge.pmd.lang.html.ast.HtmlTextNode;
 import net.sourceforge.pmd.lang.html.ast.HtmlVisitor;
-import net.sourceforge.pmd.lang.html.ast.HtmlXmlDeclaration;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
 
 public abstract class AbstractHtmlRule extends AbstractRule implements HtmlVisitor {
@@ -52,37 +52,37 @@ public abstract class AbstractHtmlRule extends AbstractRule implements HtmlVisit
     }
 
     @Override
-    public Object visit(HtmlCDataNode node, Object data) {
+    public Object visit(ASTHtmlCDataNode node, Object data) {
         return visit((HtmlNode) node, data);
     }
 
     @Override
-    public Object visit(HtmlComment node, Object data) {
+    public Object visit(ASTHtmlComment node, Object data) {
         return visit((HtmlNode) node, data);
     }
 
     @Override
-    public Object visit(HtmlDocument node, Object data) {
+    public Object visit(ASTHtmlDocument node, Object data) {
         return visit((HtmlNode) node, data);
     }
 
     @Override
-    public Object visit(HtmlDocumentType node, Object data) {
+    public Object visit(ASTHtmlDocumentType node, Object data) {
         return visit((HtmlNode) node, data);
     }
 
     @Override
-    public Object visit(HtmlElement node, Object data) {
+    public Object visit(ASTHtmlElement node, Object data) {
         return visit((HtmlNode) node, data);
     }
 
     @Override
-    public Object visit(HtmlTextNode node, Object data) {
+    public Object visit(ASTHtmlTextNode node, Object data) {
         return visit((HtmlNode) node, data);
     }
 
     @Override
-    public Object visit(HtmlXmlDeclaration node, Object data) {
+    public Object visit(ASTHtmlXmlDeclaration node, Object data) {
         return visit((HtmlNode) node, data);
     }
 

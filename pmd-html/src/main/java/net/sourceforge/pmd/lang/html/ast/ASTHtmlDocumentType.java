@@ -5,11 +5,11 @@
 
 package net.sourceforge.pmd.lang.html.ast;
 
-import org.jsoup.nodes.XmlDeclaration;
+import org.jsoup.nodes.DocumentType;
 
-public final class HtmlXmlDeclaration extends AbstractHtmlNode<XmlDeclaration> {
+public final class ASTHtmlDocumentType extends AbstractHtmlNode<DocumentType> {
 
-    HtmlXmlDeclaration(XmlDeclaration node) {
+    ASTHtmlDocumentType(DocumentType node) {
         super(node);
     }
 
@@ -20,5 +20,13 @@ public final class HtmlXmlDeclaration extends AbstractHtmlNode<XmlDeclaration> {
 
     public String getName() {
         return node.name();
+    }
+
+    public String getPublicId() {
+        return node.publicId();
+    }
+
+    public String getSystemId() {
+        return node.systemId();
     }
 }

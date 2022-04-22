@@ -19,8 +19,8 @@ import net.sourceforge.pmd.annotation.InternalApi;
 @InternalApi
 public final class HtmlTreeBuilder {
 
-    public HtmlDocument build(Document doc, String htmlString) {
-        HtmlDocument root = new HtmlDocument(doc);
+    public ASTHtmlDocument build(Document doc, String htmlString) {
+        ASTHtmlDocument root = new ASTHtmlDocument(doc);
         addChilds(root, doc);
 
         LineNumbers lineNumbers = new LineNumbers(root, htmlString);
@@ -39,17 +39,17 @@ public final class HtmlTreeBuilder {
 
     private HtmlNode convertJsoupNode(Node node) {
         if (node instanceof Element) {
-            return new HtmlElement((Element) node);
+            return new ASTHtmlElement((Element) node);
         } else if (node instanceof CDataNode) {
-            return new HtmlCDataNode((CDataNode) node);
+            return new ASTHtmlCDataNode((CDataNode) node);
         } else if (node instanceof TextNode) {
-            return new HtmlTextNode((TextNode) node);
+            return new ASTHtmlTextNode((TextNode) node);
         } else if (node instanceof Comment) {
-            return new HtmlComment((Comment) node);
+            return new ASTHtmlComment((Comment) node);
         } else if (node instanceof XmlDeclaration) {
-            return new HtmlXmlDeclaration((XmlDeclaration) node);
+            return new ASTHtmlXmlDeclaration((XmlDeclaration) node);
         } else if (node instanceof DocumentType) {
-            return new HtmlDocumentType((DocumentType) node);
+            return new ASTHtmlDocumentType((DocumentType) node);
         } else {
             throw new RuntimeException("Unsupported node type: " + node.getClass());
         }

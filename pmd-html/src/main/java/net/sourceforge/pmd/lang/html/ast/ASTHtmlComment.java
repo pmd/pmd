@@ -7,9 +7,9 @@ package net.sourceforge.pmd.lang.html.ast;
 
 import org.jsoup.nodes.Comment;
 
-public final class HtmlComment extends AbstractHtmlNode<Comment> {
+public final class ASTHtmlComment extends AbstractHtmlNode<Comment> {
 
-    HtmlComment(Comment node) {
+    ASTHtmlComment(Comment node) {
         super(node);
     }
 

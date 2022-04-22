@@ -15,37 +15,37 @@ public class HtmlVisitorAdapter implements HtmlVisitor {
     }
 
     @Override
-    public Object visit(HtmlCDataNode node, Object data) {
+    public Object visit(ASTHtmlCDataNode node, Object data) {
         return visit((HtmlNode) node, data);
     }
 
     @Override
-    public Object visit(HtmlComment node, Object data) {
+    public Object visit(ASTHtmlComment node, Object data) {
         return visit((HtmlNode) node, data);
     }
 
     @Override
-    public Object visit(HtmlDocument node, Object data) {
+    public Object visit(ASTHtmlDocument node, Object data) {
         return visit((HtmlNode) node, data);
     }
 
     @Override
-    public Object visit(HtmlDocumentType node, Object data) {
+    public Object visit(ASTHtmlDocumentType node, Object data) {
         return visit((HtmlNode) node, data);
     }
 
     @Override
-    public Object visit(HtmlElement node, Object data) {
+    public Object visit(ASTHtmlElement node, Object data) {
         return visit((HtmlNode) node, data);
     }
 
     @Override
-    public Object visit(HtmlTextNode node, Object data) {
+    public Object visit(ASTHtmlTextNode node, Object data) {
         return visit((HtmlNode) node, data);
     }
 
     @Override
-    public Object visit(HtmlXmlDeclaration node, Object data) {
+    public Object visit(ASTHtmlXmlDeclaration node, Object data) {
         return visit((HtmlNode) node, data);
     }
 }

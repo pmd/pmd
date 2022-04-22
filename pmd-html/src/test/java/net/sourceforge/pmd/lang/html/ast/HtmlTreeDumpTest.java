@@ -17,7 +17,7 @@ public class HtmlTreeDumpTest extends BaseTreeDumpTest {
     }
 
     @Override
-    public BaseParsingHelper<HtmlParsingHelper, HtmlDocument> getParser() {
+    public BaseParsingHelper<HtmlParsingHelper, ASTHtmlDocument> getParser() {
         return HtmlParsingHelper.DEFAULT.withResourceContext(HtmlTreeDumpTest.class, "testdata");
     }
 

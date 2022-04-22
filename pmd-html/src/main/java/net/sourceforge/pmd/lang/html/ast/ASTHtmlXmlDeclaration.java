@@ -5,20 +5,20 @@
 
 package net.sourceforge.pmd.lang.html.ast;
 
-import org.jsoup.nodes.CDataNode;
+import org.jsoup.nodes.XmlDeclaration;
 
-public final class HtmlCDataNode extends AbstractHtmlNode<CDataNode> {
+public final class ASTHtmlXmlDeclaration extends AbstractHtmlNode<XmlDeclaration> {
 
-    HtmlCDataNode(CDataNode node) {
+    ASTHtmlXmlDeclaration(XmlDeclaration node) {
         super(node);
-    }
-
-    public String getText() {
-        return node.text();
     }
 
     @Override
     public Object acceptVisitor(HtmlVisitor visitor, Object data) {
         return visitor.visit(this, data);
+    }
+
+    public String getName() {
+        return node.name();
     }
 }

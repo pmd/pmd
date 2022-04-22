@@ -14,9 +14,9 @@ import net.sourceforge.pmd.cpd.SourceCode;
 import net.sourceforge.pmd.cpd.TokenEntry;
 import net.sourceforge.pmd.cpd.Tokenizer;
 import net.sourceforge.pmd.cpd.Tokens;
-import net.sourceforge.pmd.lang.html.ast.HtmlDocument;
+import net.sourceforge.pmd.lang.html.ast.ASTHtmlDocument;
+import net.sourceforge.pmd.lang.html.ast.ASTHtmlTextNode;
 import net.sourceforge.pmd.lang.html.ast.HtmlNode;
-import net.sourceforge.pmd.lang.html.ast.HtmlTextNode;
 import net.sourceforge.pmd.lang.html.ast.HtmlTreeBuilder;
 
 class HtmlTokenizer implements Tokenizer {
@@ -27,7 +27,7 @@ class HtmlTokenizer implements Tokenizer {
 
         Document doc = Parser.xmlParser().parseInput(data, "");
         HtmlTreeBuilder builder = new HtmlTreeBuilder();
-        HtmlDocument root = builder.build(doc, data);
+        ASTHtmlDocument root = builder.build(doc, data);
         
         traverse(root, tokenEntries);
         tokenEntries.add(TokenEntry.EOF);
@@ -36,8 +36,8 @@ class HtmlTokenizer implements Tokenizer {
     private void traverse(HtmlNode node, Tokens tokenEntries) {
         String image = node.getXPathNodeName();
 
-        if (node instanceof HtmlTextNode) {
-            image = ((HtmlTextNode) node).getText();
+        if (node instanceof ASTHtmlTextNode) {
+            image = ((ASTHtmlTextNode) node).getText();
         }
 
         TokenEntry token = new TokenEntry(image, node.getXPathNodeName(), node.getBeginLine(),

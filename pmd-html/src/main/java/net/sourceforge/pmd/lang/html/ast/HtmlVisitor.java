@@ -8,17 +8,17 @@ public interface HtmlVisitor {
 
     Object visit(HtmlNode node, Object data);
 
-    Object visit(HtmlCDataNode node, Object data);
+    Object visit(ASTHtmlCDataNode node, Object data);
 
-    Object visit(HtmlComment node, Object data);
+    Object visit(ASTHtmlComment node, Object data);
 
-    Object visit(HtmlDocument node, Object data);
+    Object visit(ASTHtmlDocument node, Object data);
 
-    Object visit(HtmlDocumentType node, Object data);
+    Object visit(ASTHtmlDocumentType node, Object data);
 
-    Object visit(HtmlElement node, Object data);
+    Object visit(ASTHtmlElement node, Object data);
 
-    Object visit(HtmlTextNode node, Object data);
+    Object visit(ASTHtmlTextNode node, Object data);
 
-    Object visit(HtmlXmlDeclaration node, Object data);
+    Object visit(ASTHtmlXmlDeclaration node, Object data);
 }

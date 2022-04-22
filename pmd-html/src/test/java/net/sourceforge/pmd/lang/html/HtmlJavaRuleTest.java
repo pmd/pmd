@@ -18,7 +18,7 @@ import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.xpath.Attribute;
-import net.sourceforge.pmd.lang.html.ast.HtmlElement;
+import net.sourceforge.pmd.lang.html.ast.ASTHtmlElement;
 import net.sourceforge.pmd.lang.html.rule.AbstractHtmlRule;
 
 public class HtmlJavaRuleTest {
@@ -44,7 +44,7 @@ public class HtmlJavaRuleTest {
             }
 
             @Override
-            public Object visit(HtmlElement node, Object data) {
+            public Object visit(ASTHtmlElement node, Object data) {
                 for (Attribute attribute : node.getAttributes()) {
                     if ("{".equals(attribute.getValue())) {
                         RuleContext ctx = (RuleContext) data;

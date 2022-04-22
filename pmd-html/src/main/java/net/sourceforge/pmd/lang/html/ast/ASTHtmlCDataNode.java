@@ -5,14 +5,16 @@
 
 package net.sourceforge.pmd.lang.html.ast;
 
-import org.jsoup.nodes.Document;
+import org.jsoup.nodes.CDataNode;
 
-import net.sourceforge.pmd.lang.ast.RootNode;
+public final class ASTHtmlCDataNode extends AbstractHtmlNode<CDataNode> {
 
-public class HtmlDocument extends HtmlElement implements RootNode {
+    ASTHtmlCDataNode(CDataNode node) {
+        super(node);
+    }
 
-    HtmlDocument(Document document) {
-        super(document);
+    public String getText() {
+        return node.text();
     }
 
     @Override
