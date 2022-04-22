@@ -16,4 +16,9 @@ public final class HtmlCDataNode extends AbstractHtmlNode<CDataNode> {
     public String getText() {
         return node.text();
     }
+
+    @Override
+    public Object acceptVisitor(HtmlVisitor visitor, Object data) {
+        return visitor.visit(this, data);
+    }
 }

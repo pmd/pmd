@@ -16,4 +16,9 @@ public final class HtmlComment extends AbstractHtmlNode<Comment> {
     public String getData() {
         return node.getData();
     }
+
+    @Override
+    public Object acceptVisitor(HtmlVisitor visitor, Object data) {
+        return visitor.visit(this, data);
+    }
 }

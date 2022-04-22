@@ -13,6 +13,11 @@ public class HtmlTextNode extends AbstractHtmlNode<TextNode> {
         super(node);
     }
 
+    @Override
+    public Object acceptVisitor(HtmlVisitor visitor, Object data) {
+        return visitor.visit(this, data);
+    }
+
     public String getNormalizedText() {
         return node.text();
     }

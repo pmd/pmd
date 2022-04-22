@@ -14,4 +14,9 @@ public class HtmlDocument extends HtmlElement implements RootNode {
     HtmlDocument(Document document) {
         super(document);
     }
+
+    @Override
+    public Object acceptVisitor(HtmlVisitor visitor, Object data) {
+        return visitor.visit(this, data);
+    }
 }

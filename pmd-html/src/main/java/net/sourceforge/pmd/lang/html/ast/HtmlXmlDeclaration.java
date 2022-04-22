@@ -13,6 +13,11 @@ public final class HtmlXmlDeclaration extends AbstractHtmlNode<XmlDeclaration> {
         super(node);
     }
 
+    @Override
+    public Object acceptVisitor(HtmlVisitor visitor, Object data) {
+        return visitor.visit(this, data);
+    }
+
     public String getName() {
         return node.name();
     }

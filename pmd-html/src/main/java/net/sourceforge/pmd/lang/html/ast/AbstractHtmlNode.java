@@ -9,7 +9,7 @@ import org.jsoup.nodes.Node;
 
 import net.sourceforge.pmd.lang.ast.AbstractNode;
 
-class AbstractHtmlNode<T extends Node> extends AbstractNode implements HtmlNode {
+abstract class AbstractHtmlNode<T extends Node> extends AbstractNode implements HtmlNode {
 
     protected final T node;
 

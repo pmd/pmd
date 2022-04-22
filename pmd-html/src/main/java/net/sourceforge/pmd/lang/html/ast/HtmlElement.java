@@ -27,6 +27,15 @@ public class HtmlElement extends AbstractHtmlNode<Element> {
     }
 
     @Override
+    public Object acceptVisitor(HtmlVisitor visitor, Object data) {
+        return visitor.visit(this, data);
+    }
+
+    public List<Attribute> getAttributes() {
+        return attributes;
+    }
+
+    @Override
     public Iterator<Attribute> getXPathAttributesIterator() {
         Iterator<Attribute> defaultAttributes = super.getXPathAttributesIterator();
         Iterator<Attribute> elementAttributes = attributes.iterator();

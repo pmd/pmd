@@ -12,4 +12,5 @@ public interface HtmlNode extends Node {
     @Override
     Iterable<? extends HtmlNode> children();
 
+    Object acceptVisitor(HtmlVisitor visitor, Object data);
 }
