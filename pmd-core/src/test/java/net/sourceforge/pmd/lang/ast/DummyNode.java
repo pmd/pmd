@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.lang.ast;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -154,14 +153,21 @@ public class DummyNode extends AbstractNode<DummyNode, DummyNode> implements Gen
 
     public static class DummyRootNode extends DummyNode implements RootNode {
 
-        private Map<Integer, String> suppressMap = Collections.emptyMap();
-        private TextDocument sourceText = TextDocument.readOnlyString(
-            "dummy text",
-            TextFile.UNKNOWN_FILENAME,
-            DummyLanguageModule.getInstance().getDefaultVersion()
-        );
-
         private AstInfo<DummyRootNode> astInfo;
+
+        public DummyRootNode() {
+            TextDocument document = TextDocument.readOnlyString(
+                "dummy text",
+                TextFile.UNKNOWN_FILENAME,
+                DummyLanguageModule.getInstance().getDefaultVersion()
+            );
+            astInfo = new AstInfo<>(
+                new ParserTask(
+                    document,
+                    SemanticErrorReporter.noop()
+                ),
+                this);
+        }
 
         public DummyRootNode withTaskInfo(ParserTask task) {
             this.astInfo = new AstInfo<>(task, this);
@@ -169,13 +175,17 @@ public class DummyNode extends AbstractNode<DummyNode, DummyNode> implements Gen
         }
 
         public DummyRootNode withNoPmdComments(Map<Integer, String> suppressMap) {
-            this.suppressMap = suppressMap;
+            this.astInfo = new AstInfo<>(
+                astInfo.getTextDocument(),
+                this,
+                suppressMap
+            );
             return this;
         }
 
         @Override
         public AstInfo<DummyRootNode> getAstInfo() {
-            return Objects.requireNonNull(astInfo, "no ast info, don't use DummyRootNode's ctor directly");
+            return Objects.requireNonNull(astInfo, "no ast info");
         }
 
         @Override
