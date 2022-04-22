@@ -3,7 +3,7 @@
  */
 
 
-package net.sourceforge.pmd.lang.html;
+package net.sourceforge.pmd.lang.html.ast;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -18,9 +18,8 @@ import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.ParseException;
-import net.sourceforge.pmd.lang.html.ast.HtmlTreeBuilder;
 
-class HtmlParser implements net.sourceforge.pmd.lang.Parser {
+public final class HtmlParser implements net.sourceforge.pmd.lang.Parser {
 
     @Override
     public boolean canParse() {

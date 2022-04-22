@@ -12,6 +12,7 @@ import net.sourceforge.pmd.lang.AbstractLanguageVersionHandler;
 import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.html.ast.HtmlParser;
 import net.sourceforge.pmd.lang.rule.AbstractRuleViolationFactory;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 import net.sourceforge.pmd.lang.rule.RuleViolationFactory;

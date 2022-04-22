@@ -6,6 +6,7 @@
 package net.sourceforge.pmd.lang.html;
 
 import net.sourceforge.pmd.cpd.AbstractLanguage;
+import net.sourceforge.pmd.lang.html.ast.HtmlTokenizer;
 
 public final class HtmlCpdLanguage extends AbstractLanguage {
 
