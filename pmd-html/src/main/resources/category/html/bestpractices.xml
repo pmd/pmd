@@ -61,4 +61,26 @@ This helps to reuse common styles.
         </example>
     </rule>
 
+    <rule name="UseAltAttributeForImages"
+          language="html"
+          since="6.45.0"
+          message="The image is missing an alternate text."
+          class="net.sourceforge.pmd.lang.html.rule.bestpractices.UseAltAttributeForImagesRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_html_bestpractices.html#usealtattributeforimages">
+        <description>
+            Always use an "alt" attribute for images. This provides an alternative text and is extensively used
+            by screen readers.
+        </description>
+        <priority>3</priority>
+        <example>
+            <![CDATA[
+<!-- instead of -->
+<img src="house.jpeg">
+
+<!-- use this -->
+<img src="house.jpeg" alt="A house from the 18th century">
+]]>
+        </example>
+    </rule>
+
 </ruleset>

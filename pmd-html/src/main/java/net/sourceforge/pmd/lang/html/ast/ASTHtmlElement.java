@@ -35,6 +35,19 @@ public class ASTHtmlElement extends AbstractHtmlNode<Element> {
         return attributes;
     }
 
+    public boolean hasAttribute(String name) {
+        return attributes.stream().anyMatch(attribute -> name.equalsIgnoreCase(attribute.getName()));
+    }
+
+    public String getAttribute(String rel) {
+        return attributes.stream()
+                .filter(attribute -> rel.equalsIgnoreCase(attribute.getName()))
+                .findFirst()
+                .map(Attribute::getValue)
+                .map(String::valueOf)
+                .orElse(null);
+    }
+
     @Override
     public Iterator<Attribute> getXPathAttributesIterator() {
         Iterator<Attribute> defaultAttributes = super.getXPathAttributesIterator();
