@@ -18,6 +18,10 @@ abstract class AbstractHtmlNode<T extends Node> extends AbstractNode implements 
         this.node = node;
     }
 
+    public String getNodeName() {
+        return node.nodeName();
+    }
+
     @Override
     public String getXPathNodeName() {
         return node.nodeName();
