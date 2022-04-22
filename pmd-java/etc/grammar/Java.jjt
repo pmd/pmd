@@ -1,4 +1,9 @@
 /**
+ * Improve module grammar.
+ * Type names in "provides" directives are disambiguated like any other type name.
+ * ASTName is made redundant and removed for good.
+ * Clément Fournier 03/2022
+ *====================================================================
  * Support "JEP 420: Pattern Matching for switch (Second Preview)" for Java 18 Preview
  * There were no grammar changes between 18-preview and 17-preview
  * Remove support for Java 16 preview language features
@@ -2734,40 +2739,34 @@ void DefaultValue():
 }
 
 void ModuleDeclaration():
+{}
 {
-    StringBuilder s = new StringBuilder();
-    JavaccToken t;
-}
-{
-  ( Annotation() )* [LOOKAHEAD({isKeyword("open")}) <IDENTIFIER> {jjtThis.setOpen(true);}] LOOKAHEAD({isKeyword("module")}) <IDENTIFIER>
-  t=<IDENTIFIER> { s.append(t.getImage()); }
-  ( "." t=<IDENTIFIER> { s.append('.').append(t.getImage()); } )* { jjtThis.setImage(s.toString()); }
+  AnnotationList()
+  [LOOKAHEAD({isKeyword("open")}) <IDENTIFIER> {jjtThis.setOpen(true);}]
+  LOOKAHEAD({isKeyword("module")}) <IDENTIFIER>
+  ModuleName()
   "{" (ModuleDirective())* "}"
 }
 
-void ModuleDirective():
-{}
+void ModuleDirective() #void:
+{String packageName;}
 {
-    ( LOOKAHEAD({isKeyword("requires")}) <IDENTIFIER> { jjtThis.setType(ASTModuleDirective.DirectiveType.REQUIRES); }
-            (LOOKAHEAD({isKeyword("transitive")}) <IDENTIFIER> { jjtThis.setRequiresModifier(ASTModuleDirective.RequiresModifier.TRANSITIVE); } |
-             "static"     { jjtThis.setRequiresModifier(ASTModuleDirective.RequiresModifier.STATIC);     } )?
-         ModuleName() ";" )
-  | ( LOOKAHEAD({isKeyword("exports")})  <IDENTIFIER> { jjtThis.setType(ASTModuleDirective.DirectiveType.EXPORTS); }  Name() [ LOOKAHEAD({isKeyword("to")}) <IDENTIFIER> ModuleName() ("," ModuleName())*] ";" )
-  | ( LOOKAHEAD({isKeyword("opens")})    <IDENTIFIER> { jjtThis.setType(ASTModuleDirective.DirectiveType.OPENS); }    Name() [ LOOKAHEAD({isKeyword("to")}) <IDENTIFIER> ModuleName() ("," ModuleName())*] ";" )
-  | ( LOOKAHEAD({isKeyword("uses")})     <IDENTIFIER> { jjtThis.setType(ASTModuleDirective.DirectiveType.USES); }     Name() ";" )
-  | ( LOOKAHEAD({isKeyword("provides")}) <IDENTIFIER> { jjtThis.setType(ASTModuleDirective.DirectiveType.PROVIDES); } Name() LOOKAHEAD({isKeyword("with")}) <IDENTIFIER> Name() ("," Name() )* ";" )
+    ( LOOKAHEAD({isKeyword("requires")}) <IDENTIFIER>
+      [
+        LOOKAHEAD({isKeyword("transitive")}) <IDENTIFIER> { jjtThis.setTransitive(); }
+      |                                      "static"     { jjtThis.setStatic(); }
+      ]
+      ModuleName() ";" ) #ModuleRequiresDirective
+  | ( LOOKAHEAD({isKeyword("exports")})  <IDENTIFIER> packageName=VoidNameNoLookahead() {jjtThis.setPackageName(packageName);} [ LOOKAHEAD({isKeyword("to")}) <IDENTIFIER> ModuleName() ("," ModuleName())* ] ";" ) #ModuleExportsDirective
+  | ( LOOKAHEAD({isKeyword("opens")})    <IDENTIFIER> packageName=VoidNameNoLookahead() {jjtThis.setPackageName(packageName);} [ LOOKAHEAD({isKeyword("to")}) <IDENTIFIER> ModuleName() ("," ModuleName())* ] ";" ) #ModuleOpensDirective
+  | ( LOOKAHEAD({isKeyword("uses")})     <IDENTIFIER> ClassName() ";" ) #ModuleUsesDirective
+  | ( LOOKAHEAD({isKeyword("provides")}) <IDENTIFIER> ClassName() LOOKAHEAD({isKeyword("with")}) <IDENTIFIER> ClassName() ("," ClassName() )* ";" ) #ModuleProvidesDirective
 }
 
 void ModuleName():
 { String name; }
 {
-  name=VoidName() { jjtThis.setImage(name); }
-}
-
-void Name():
-{ String name; }
-{
-  name=VoidName() { jjtThis.setImage(name); }
+  name=VoidNameNoLookahead() { jjtThis.setImage(name); }
 }
 
 void AmbiguousName():
@@ -2790,6 +2789,18 @@ String VoidName() #void:
   t=<IDENTIFIER>                    { s.append(t.getImage()); }
   ( LOOKAHEAD(2) "." t=<IDENTIFIER> { s.append('.').append(t.getImage()); }
   )*
+  {return s.toString();}
+}
+
+
+String VoidNameNoLookahead() #void:
+{
+  StringBuilder s = new StringBuilder();
+  JavaccToken t;
+}
+{
+  t=<IDENTIFIER>       { s.append(t.getImage()); }
+  ( "." t=<IDENTIFIER> { s.append('.').append(t.getImage()); } )*
   {return s.toString();}
 }
 

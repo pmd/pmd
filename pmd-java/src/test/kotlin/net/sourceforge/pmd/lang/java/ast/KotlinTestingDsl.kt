@@ -211,7 +211,8 @@ open class ParserTestCtx(val javaVersion: JavaVersion = JavaVersion.Latest,
         parser = parser.withProcessing(true).logTypeInference(verbose, to)
     }
 
-    var fullSource: String? = null
+    /** Populated after an [asIfIn] call, used by [TypeBodyParsingCtx]. */
+    internal var fullSource: String? = null
 
     /** Imports to add to the top of the parsing contexts. */
     internal val imports: List<String>
