@@ -379,6 +379,9 @@ entries:
     - title: XML and XML dialects
       url: /pmd_languages_xml.html
       output: web, pdf
+    - title: HTML
+      url: /pmd_languages_html.html
+      output: web, pdf
   - title: Developer Documentation
     output: web, pdf
     folderitems:
