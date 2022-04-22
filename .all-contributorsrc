@@ -6584,6 +6584,34 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "jasonqiu98",
+      "name": "Jason Qiu",
+      "avatar_url": "https://avatars.githubusercontent.com/u/26801257?v=4",
+      "profile": "https://github.com/jasonqiu98",
+      "contributions": [
+        "code",
+        "doc"
+      ]
+    },
+    {
+      "login": "laoseth",
+      "name": "Seth Wilcox",
+      "avatar_url": "https://avatars.githubusercontent.com/u/16923065?v=4",
+      "profile": "https://github.com/laoseth",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "LiGaOg",
+      "name": "LiGaOg",
+      "avatar_url": "https://avatars.githubusercontent.com/u/72175888?v=4",
+      "profile": "https://github.com/LiGaOg",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,

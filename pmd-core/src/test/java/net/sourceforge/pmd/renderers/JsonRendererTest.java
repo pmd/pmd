@@ -19,7 +19,6 @@ import net.sourceforge.pmd.FooRule;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Report.ConfigurationError;
 import net.sourceforge.pmd.Report.ProcessingError;
-import net.sourceforge.pmd.ReportTest;
 
 public class JsonRendererTest extends AbstractRendererTest {
 
@@ -92,7 +91,7 @@ public class JsonRendererTest extends AbstractRendererTest {
         suppressedLines.put(1, "test");
         rep.suppress(suppressedLines);
         rep.addRuleViolation(newRuleViolation(1, 1, 1, 1, new FooRule()));
-        String actual = ReportTest.render(getRenderer(), rep);
+        String actual = renderReport(getRenderer(), rep);
         String expected = readFile("expected-suppressed.json");
         Assert.assertEquals(filter(expected), filter(actual));
     }
