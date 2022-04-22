@@ -429,12 +429,12 @@
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-jsp</artifactId>
-                            <version>6.41.0</version> <!-- pmd.dogfood.version -->
+                            <version>6.44.0</version> <!-- pmd.dogfood.version -->
                         </dependency>
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-javascript</artifactId>
-                            <version>6.41.0</version> <!-- pmd.dogfood.version -->
+                            <version>6.44.0</version> <!-- pmd.dogfood.version -->
                         </dependency>
                         <!-- This contains the dogfood ruleset -->
                         <dependency>
@@ -1091,6 +1091,7 @@
         <module>pmd-fortran</module>
         <module>pmd-go</module>
         <module>pmd-groovy</module>
+        <module>pmd-html</module>
         <module>pmd-lua</module>
         <module>pmd-java</module>
         <module>pmd-javascript</module>
