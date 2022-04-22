@@ -110,6 +110,13 @@ public final class ASTLambdaExpression extends AbstractJavaExpr implements Funct
     }
 
 
+    /**
+     * Returns the number of formal parameters of this lambda.
+     */
+    public int getArity() {
+        return getParameters().size();
+    }
+
     @Override
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
