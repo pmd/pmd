@@ -28,9 +28,9 @@ import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.RuleWithProperties;
 import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.LanguageVersion;
-import net.sourceforge.pmd.lang.ast.DummyNode;
-import net.sourceforge.pmd.lang.ast.DummyRoot;
+import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.document.TextFile;
+import net.sourceforge.pmd.lang.document.TextRange2d;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
@@ -90,15 +90,14 @@ public abstract class AbstractRendererTest {
         };
     }
 
-    protected DummyNode createNode(int beginLine, int beginColumn, int endLine, int endColumn) {
-        DummyRoot node = new DummyRoot().withFileName(getSourceCodeFilename());
-        node.setCoordsReplaceText(beginLine, beginColumn, endLine, endColumn);
-        return node;
+    protected FileLocation createLocation(int beginLine, int beginColumn, int endLine, int endColumn) {
+        TextRange2d range2d = TextRange2d.range2d(beginLine, beginColumn, endLine, endColumn);
+        return FileLocation.location(getSourceCodeFilename(), range2d);
     }
 
     protected RuleViolation newRuleViolation(int beginLine, int beginColumn, int endLine, int endColumn, Rule rule) {
-        DummyNode node = createNode(beginLine, beginColumn, endLine, endColumn);
-        return new ParametricRuleViolation(rule, node, "blah");
+        FileLocation loc = createLocation(beginLine, beginColumn, endLine, endColumn);
+        return new ParametricRuleViolation(rule, loc, "blah");
     }
 
     /**
@@ -135,12 +134,11 @@ public abstract class AbstractRendererTest {
 
     @Test
     public void testRuleWithProperties() throws Exception {
-        DummyNode node = createNode(1, 1, 1, 1);
         RuleWithProperties theRule = new RuleWithProperties();
         theRule.setProperty(RuleWithProperties.STRING_PROPERTY_DESCRIPTOR,
                 "the string value\nsecond line with \"quotes\"");
-        String rendered = renderReport(getRenderer(),
-                it -> it.onRuleViolation(newRuleViolation(1, 1, 1, 1, theRule)));
+        RuleViolation violation = newRuleViolation(1, 1, 1, 1, theRule);
+        String rendered = renderReport(getRenderer(), it -> it.onRuleViolation(violation));
         assertEquals(filter(getExpectedWithProperties()), filter(rendered));
     }
 

@@ -37,6 +37,22 @@ public final class TextRange2d implements Comparable<TextRange2d> {
             + ")-(" + endLine + ", " + endCol + ")";
     }
 
+    public int getStartLine() {
+        return startLine;
+    }
+
+    public int getStartColumn() {
+        return startCol;
+    }
+
+    public int getEndLine() {
+        return endLine;
+    }
+
+    public int getEndColumn() {
+        return endCol;
+    }
+
     public static TextRange2d range2d(TextPos2d start, TextPos2d end) {
         return new TextRange2d(start.getLine(), start.getColumn(), end.getLine(), end.getColumn());
     }

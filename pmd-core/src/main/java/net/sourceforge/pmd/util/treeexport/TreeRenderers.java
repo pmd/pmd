@@ -50,7 +50,9 @@ public final class TreeRenderers {
 
     static final PropertyDescriptor<String> XML_LINE_SEPARATOR =
         PropertyFactory.stringProperty("lineSeparator")
-                       .desc("Line separator to use. The default is platform-specific.")
+                       .desc("Line separator to use. The default is platform-specific. "
+                             + "The values 'CR', 'CRLF', 'LF', '\\r', '\\r\\n' and '\\n' can be used "
+                             + "to represent a carriage return, line feed and their combination more easily.")
                        .defaultValue(System.lineSeparator())
                        .build();
 

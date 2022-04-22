@@ -9,7 +9,7 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.lang.ast.DummyNode;
+import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
@@ -85,7 +85,7 @@ public class CodeClimateRendererTest extends AbstractRendererTest {
 
     @Test
     public void testXPathRule() throws Exception {
-        DummyNode node = createNode(1, 1, 1, 1);
+        FileLocation node = createLocation(1, 1, 1, 1);
         XPathRule theRule = new XPathRule(XPathVersion.XPATH_3_1, "//dummyNode");
 
         // Setup as FooRule

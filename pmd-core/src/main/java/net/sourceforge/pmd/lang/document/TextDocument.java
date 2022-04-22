@@ -120,6 +120,11 @@ public interface TextDocument extends Closeable {
     }
 
     /**
+     * Returns a 2D text range that corresponds to the entire document.
+     */
+    TextRange2d getEntireRegion2d();
+
+    /**
      * Returns a region that spans the text of all the given lines.
      * This is intended to provide a replacement for {@link SourceCode#getSlice(int, int)}.
      *
@@ -226,7 +231,6 @@ public interface TextDocument extends Closeable {
      * @throws IndexOutOfBoundsException if the offset is out of bounds
      */
     TextPos2d lineColumnAtOffset(int offset, boolean inclusive);
-
 
 
     /**

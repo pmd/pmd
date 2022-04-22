@@ -110,6 +110,12 @@ public class PMDTaskTest {
             expected = expected.replaceFirst("timestamp=\"[^\"]+\"", "timestamp=\"\"");
             expected = expected.replaceFirst("\\.xsd\" version=\"[^\"]+\"", ".xsd\" version=\"\"");
 
+            // under windows, the file source sample.dummy has different line endings
+            // and therefore the endcolumn of the nodes also change
+            if (System.lineSeparator().equals("\r\n")) {
+                expected = expected.replaceFirst("endcolumn=\"109\"", "endcolumn=\"110\"");
+            }
+
             Assert.assertEquals(expected, actual);
         }
     }

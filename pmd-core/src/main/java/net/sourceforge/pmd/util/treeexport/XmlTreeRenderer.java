@@ -221,13 +221,33 @@ public final class XmlTreeRenderer implements TreeRenderer {
 
         /**
          * Sets the string that should be used to separate lines. The
-         * default is the platform-specific line separator.
+         * default is the platform-specific line separator. The following
+         * special values are interpreted specially: {@code CR}, {@code CRLF},
+         * {@code LF}, {@code \r}, {@code \r\n} and {@code \n}. The latter
+         * three use literal backslashes and are interpreted like Java
+         * escapes. The former three are named aliases for the same.
          *
          * @throws NullPointerException If the argument is null
          */
         public XmlRenderingConfig lineSeparator(String lineSeparator) {
-            this.lineSeparator = Objects.requireNonNull(lineSeparator);
+            this.lineSeparator = interpretLineSep(lineSeparator);
             return this;
+        }
+
+        private static String interpretLineSep(String lineSeparator) {
+            switch (lineSeparator) {
+            case "CR":
+            case "\\r":
+                return "\r";
+            case "CRLF":
+            case "\\r\\n":
+                return "\r\n";
+            case "LF":
+            case "\\n":
+                return "\n";
+            default:
+                return lineSeparator;
+            }
         }
 
         /**

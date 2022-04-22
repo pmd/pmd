@@ -12,8 +12,9 @@ import java.util.Comparator;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.ast.DummyNode;
-import net.sourceforge.pmd.lang.ast.DummyRoot;
+import net.sourceforge.pmd.lang.ast.DummyNode.DummyRootNode;
 import net.sourceforge.pmd.lang.rule.MockRule;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 
@@ -24,22 +25,20 @@ public class RuleViolationTest {
     @Test
     public void testConstructor1() {
         Rule rule = new MockRule("name", "desc", "msg", "rulesetname");
-        DummyRoot s = new DummyRoot().withFileName("filename");
-        s.setCoordsReplaceText(2, 1, 2, 3);
+        DummyRootNode s = DummyLanguageModule.parse("abcd", "filename");
         RuleViolation r = new ParametricRuleViolation(rule, s, rule.getMessage());
         assertEquals("object mismatch", rule, r.getRule());
-        assertEquals("line number is wrong", 2, r.getBeginLine());
+        assertEquals("line number is wrong", s.getBeginLine(), r.getBeginLine());
         assertEquals("filename is wrong", "filename", r.getFilename());
     }
 
     @Test
     public void testConstructor2() {
         Rule rule = new MockRule("name", "desc", "msg", "rulesetname");
-        DummyRoot s = new DummyRoot().withFileName("filename");
-        s.setCoordsReplaceText(2, 1, 2, 3);
+        DummyRootNode s = DummyLanguageModule.parse("abcd", "filename");
         RuleViolation r = new ParametricRuleViolation(rule, s, "description");
         assertEquals("object mismatch", rule, r.getRule());
-        assertEquals("line number is wrong", 2, r.getBeginLine());
+        assertEquals("line number is wrong", s.getBeginLine(), r.getBeginLine());
         assertEquals("filename is wrong", "filename", r.getFilename());
         assertEquals("description is wrong", "description", r.getDescription());
     }
@@ -48,11 +47,9 @@ public class RuleViolationTest {
     public void testComparatorWithDifferentFilenames() {
         Rule rule = new MockRule("name", "desc", "msg", "rulesetname");
         Comparator<RuleViolation> comp = RuleViolation.DEFAULT_COMPARATOR;
-        DummyRoot s = new DummyRoot().withFileName("filename1");
-        s.setCoordsReplaceText(10, 1, 11, 3);
+        DummyNode s = DummyLanguageModule.parse("(abc)", "filename1").getFirstChild();
+        DummyNode s1 = DummyLanguageModule.parse("(abc)", "filename2").getFirstChild();
         RuleViolation r1 = new ParametricRuleViolation(rule, s, "description");
-        DummyRoot s1 = new DummyRoot().withFileName("filename2");
-        s1.setCoordsReplaceText(10, 1, 11, 3);
         RuleViolation r2 = new ParametricRuleViolation(rule, s1, "description");
         assertEquals(-1, comp.compare(r1, r2));
         assertEquals(1, comp.compare(r2, r1));
@@ -62,27 +59,32 @@ public class RuleViolationTest {
     public void testComparatorWithSameFileDifferentLines() {
         Rule rule = new MockRule("name", "desc", "msg", "rulesetname");
         Comparator<RuleViolation> comp = RuleViolation.DEFAULT_COMPARATOR;
-        DummyRoot s = new DummyRoot().withFileName("filename1");
-        s.setCoordsReplaceText(10, 1, 15, 10);
-        DummyRoot s1 = new DummyRoot().withFileName("filename1");
-        s1.setCoordsReplaceText(20, 1, 25, 10);
-        RuleViolation r1 = new ParametricRuleViolation(rule, s, "description");
-        RuleViolation r2 = new ParametricRuleViolation(rule, s1, "description");
+        DummyRootNode root = DummyLanguageModule.parse("(abc) (def)");
+        DummyNode abcChild = root.getChild(0);
+        DummyNode defChild = root.getChild(1);
+        RuleViolation r1 = new ParametricRuleViolation(rule, abcChild, "description");
+        RuleViolation r2 = new ParametricRuleViolation(rule, defChild, "description");
         assertTrue(comp.compare(r1, r2) < 0);
         assertTrue(comp.compare(r2, r1) > 0);
     }
 
-    @Ignore
+    @Ignore("FIXME enabling this test means we don't respect the contract of Comparator!")
     @Test
     public void testComparatorWithSameFileSameLines() {
         Rule rule = new MockRule("name", "desc", "msg", "rulesetname");
         Comparator<RuleViolation> comp = RuleViolation.DEFAULT_COMPARATOR;
-        DummyNode s = new DummyNode().withFileName("filename1");
+        DummyRootNode rootNode = new DummyRootNode();
+
+        DummyNode s = new DummyNode();
         s.setCoords(10, 1, 15, 10);
-        DummyNode s1 = new DummyNode().withFileName("filename1");
-        s.setCoords(10, 1, 15, 10);
+        rootNode.addChild(s, 0);
         RuleViolation r1 = new ParametricRuleViolation(rule, s, "description");
+
+        DummyNode s1 = new DummyNode();
+        s1.setCoords(10, 1, 15, 10);
+        rootNode.addChild(s1, 1);
         RuleViolation r2 = new ParametricRuleViolation(rule, s1, "description");
+
         assertEquals(1, comp.compare(r1, r2));
         assertEquals(1, comp.compare(r2, r1));
     }

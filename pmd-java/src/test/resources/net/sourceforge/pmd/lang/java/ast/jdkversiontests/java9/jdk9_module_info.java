@@ -12,4 +12,5 @@ open module com.example.foo {
     uses com.example.foo.spi.Intf;
 
     provides com.example.foo.spi.Intf with com.example.foo.Impl;
+    provides com.example.foo.spi.Intf2 with com.example.foo.Impl, com.example.foo.Impl2;
 }

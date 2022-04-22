@@ -5,11 +5,6 @@
 package net.sourceforge.pmd.util.treeexport;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -18,8 +13,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.ast.DummyNode;
-import net.sourceforge.pmd.lang.rule.xpath.Attribute;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertySource;
 
@@ -74,44 +69,18 @@ public class TreeRenderersTest {
     }
 
 
-    public MyDummyNode dummyTree1() {
-        MyDummyNode dummy = new MyDummyNode();
-
+    public static DummyNode dummyTree1() {
+        DummyNode dummy = DummyLanguageModule.parse("(parent(child1)(child2))").getChild(0);
+        dummy.clearXPathAttributes();
         dummy.setXPathAttribute("foo", "bar");
         dummy.setXPathAttribute("ohio", "4");
 
-        MyDummyNode dummy1 = new MyDummyNode();
-
+        DummyNode dummy1 = dummy.getChild(0);
+        dummy1.clearXPathAttributes();
         dummy1.setXPathAttribute("o", "ha");
 
-        MyDummyNode dummy2 = new MyDummyNode();
-
-        dummy.addChild(dummy1, 0);
-        dummy.addChild(dummy2, 1);
+        dummy.getChild(1).clearXPathAttributes();
         return dummy;
-    }
-
-    private static class MyDummyNode extends DummyNode {
-
-
-        private final Map<String, String> attributes = new HashMap<>();
-
-        public void setXPathAttribute(String name, String value) {
-            attributes.put(name, value);
-        }
-
-        @Override
-        public Iterator<Attribute> getXPathAttributesIterator() {
-
-            List<Attribute> attrs = new ArrayList<>();
-            for (String name : attributes.keySet()) {
-                attrs.add(new Attribute(this, name, attributes.get(name)));
-            }
-
-            return attrs.iterator();
-        }
-
-
     }
 
 
