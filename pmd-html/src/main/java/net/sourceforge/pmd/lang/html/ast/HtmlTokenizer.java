@@ -2,27 +2,35 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-
 package net.sourceforge.pmd.lang.html.ast;
 
-import org.jsoup.nodes.Document;
-import org.jsoup.parser.Parser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.cpd.SourceCode;
 import net.sourceforge.pmd.cpd.TokenEntry;
 import net.sourceforge.pmd.cpd.Tokenizer;
 import net.sourceforge.pmd.cpd.Tokens;
+import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
+import net.sourceforge.pmd.lang.ast.SemanticErrorReporter;
+import net.sourceforge.pmd.lang.html.HtmlLanguageModule;
 
 public class HtmlTokenizer implements Tokenizer {
+    private static final Logger LOG = LoggerFactory.getLogger(HtmlTokenizer.class);
 
     @Override
     public void tokenize(SourceCode sourceCode, Tokens tokenEntries) {
-        String data = sourceCode.getCodeBuffer().toString();
+        ParserTask task = new ParserTask(
+                LanguageRegistry.getLanguage(HtmlLanguageModule.NAME).getDefaultVersion(),
+                sourceCode.getFileName(),
+                sourceCode.getCodeBuffer().toString(),
+                SemanticErrorReporter.reportToLogger(LOG)
+        );
 
-        Document doc = Parser.xmlParser().parseInput(data, "");
-        HtmlTreeBuilder builder = new HtmlTreeBuilder();
-        ASTHtmlDocument root = builder.build(doc, data);
-        
+        HtmlParser parser = new HtmlParser();
+        ASTHtmlDocument root = parser.parse(task);
+
         traverse(root, tokenEntries);
         tokenEntries.add(TokenEntry.EOF);
     }
@@ -42,5 +50,4 @@ public class HtmlTokenizer implements Tokenizer {
             traverse(child, tokenEntries);
         }
     }
-
 }

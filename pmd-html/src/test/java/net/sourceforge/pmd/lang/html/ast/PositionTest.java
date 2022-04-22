@@ -13,7 +13,7 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.test.BaseNodeAttributePrinter;
 import net.sourceforge.pmd.lang.ast.test.BaseParsingHelper;
 import net.sourceforge.pmd.lang.ast.test.BaseTreeDumpTest;
-import net.sourceforge.pmd.lang.ast.xpath.Attribute;
+import net.sourceforge.pmd.lang.rule.xpath.Attribute;
 import net.sourceforge.pmd.util.CollectionUtil;
 
 public class PositionTest extends BaseTreeDumpTest {
@@ -32,7 +32,7 @@ public class PositionTest extends BaseTreeDumpTest {
     }
 
     private static class PositionRenderer extends BaseNodeAttributePrinter {
-        private final Set<String> pos = CollectionUtil.asSet(new String[] {"BeginLine", "BeginColumn", "EndLine", "EndColumn"});
+        private final Set<String> pos = CollectionUtil.setOf("BeginLine", "BeginColumn", "EndLine", "EndColumn");
 
         @Override
         protected boolean ignoreAttribute(Node node, Attribute attribute) {

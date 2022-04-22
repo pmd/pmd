@@ -4,18 +4,20 @@
 
 package net.sourceforge.pmd.lang.html;
 
-import java.io.StringReader;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
 
-import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
-import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.Parser;
+import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
+import net.sourceforge.pmd.lang.ast.SemanticErrorReporter;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
 
@@ -38,9 +40,9 @@ public class HtmlXPathRuleTest {
         // "Don’t add spaces around the property, for example, { data } is not valid HTML."
         String xpath = "//*[local-name() = '#text'][contains(@Text, '{ ')]";
 
-        Report report = runXPath(LIGHTNING_WEB_COMPONENT, xpath);
-        Assert.assertEquals(1, report.getViolations().size());
-        Assert.assertEquals(3, report.getViolations().get(0).getBeginLine());
+        List<RuleViolation> violations = runXPath(LIGHTNING_WEB_COMPONENT, xpath);
+        Assert.assertEquals(1, violations.size());
+        Assert.assertEquals(3, violations.get(0).getBeginLine());
     }
 
     @Test
@@ -49,22 +51,23 @@ public class HtmlXPathRuleTest {
         // "Don’t add spaces around the property, for example, { data } is not valid HTML."
         String xpath = "//*[@value = '{']";
 
-        Report report = runXPath(LIGHTNING_WEB_COMPONENT, xpath);
-        Assert.assertEquals(1, report.getViolations().size());
-        Assert.assertEquals(4, report.getViolations().get(0).getBeginLine());
+        List<RuleViolation> violations = runXPath(LIGHTNING_WEB_COMPONENT, xpath);
+        Assert.assertEquals(1, violations.size());
+        Assert.assertEquals(4, violations.get(0).getBeginLine());
     }
 
-    private Report runXPath(String html, String xpath) {
+    private List<RuleViolation> runXPath(String html, String xpath) {
         LanguageVersion htmlLanguage = LanguageRegistry.findLanguageByTerseName(HtmlLanguageModule.TERSE_NAME).getDefaultVersion();
-        Parser parser = htmlLanguage.getLanguageVersionHandler().getParser(htmlLanguage.getLanguageVersionHandler().getDefaultParserOptions());
+        Parser parser = htmlLanguage.getLanguageVersionHandler().getParser();
+        ParserTask parserTask = new ParserTask(htmlLanguage, "n/a", html, SemanticErrorReporter.noop());
+        Node node = parser.parse(parserTask);
 
-        XPathRule rule = new XPathRule(XPathVersion.XPATH_2_0, xpath);
+        List<RuleViolation> violations = new ArrayList<>();
+        XPathRule rule = new XPathRule(XPathVersion.DEFAULT, xpath);
         rule.setMessage("test");
-        Node node = parser.parse("n/a", new StringReader(html));
-        RuleContext context = new RuleContext();
-        context.setLanguageVersion(htmlLanguage);
-        context.setCurrentRule(rule);
-        rule.apply(Arrays.asList(node), context);
-        return context.getReport();
+        rule.setLanguage(htmlLanguage.getLanguage());
+        RuleContext context = RuleContext.create(violations::add, rule);
+        rule.apply(node, context);
+        return violations;
     }
 }

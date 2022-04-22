@@ -5,12 +5,7 @@
 
 package net.sourceforge.pmd.lang.html.ast;
 
-import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.impl.GenericNode;
 
-public interface HtmlNode extends Node {
-
-    @Override
-    Iterable<? extends HtmlNode> children();
-
-    Object acceptVisitor(HtmlVisitor visitor, Object data);
+public interface HtmlNode extends GenericNode<HtmlNode> {
 }

@@ -82,8 +82,7 @@ class LineNumbers {
         if (n != null) {
             int line = sourceCodePositioner.lineNumberFromOffset(index);
             int column = sourceCodePositioner.columnFromOffset(line, index);
-            n.setBeginLine(line);
-            n.setBeginColumn(column);
+            n.setCoords(line, column, line, column);
         }
     }
 
@@ -91,8 +90,7 @@ class LineNumbers {
         if (n != null) {
             int line = sourceCodePositioner.lineNumberFromOffset(index);
             int column = sourceCodePositioner.columnFromOffset(line, index);
-            n.setEndLine(line);
-            n.setEndColumn(column);
+            n.setCoords(n.getBeginLine(), n.getBeginColumn(), line, column);
         }
     }
 }
