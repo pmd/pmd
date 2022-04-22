@@ -4,22 +4,28 @@
 
 package net.sourceforge.pmd.lang.ast;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
+import net.sourceforge.pmd.lang.DummyLanguageModule;
+import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.impl.AbstractNodeWithTextCoordinates;
 import net.sourceforge.pmd.lang.ast.impl.GenericNode;
+import net.sourceforge.pmd.lang.rule.xpath.Attribute;
 
 public class DummyNode extends AbstractNodeWithTextCoordinates<DummyNode, DummyNode> implements GenericNode<DummyNode> {
     private final boolean findBoundary;
     private final String xpathName;
     private final Map<String, String> userData = new HashMap<>();
     private String image;
+    private final List<Attribute> attributes = new ArrayList<>();
 
     public DummyNode(String xpathName) {
-        super();
-        this.findBoundary = false;
-        this.xpathName = xpathName;
+        this(false, xpathName);
     }
 
     public DummyNode() {
@@ -33,6 +39,30 @@ public class DummyNode extends AbstractNodeWithTextCoordinates<DummyNode, DummyN
     public DummyNode(boolean findBoundary, String xpathName) {
         this.findBoundary = findBoundary;
         this.xpathName = xpathName;
+
+        Iterator<Attribute> iter = super.getXPathAttributesIterator();
+        while (iter.hasNext()) {
+            attributes.add(iter.next());
+        }
+    }
+
+    @Override
+    public DummyNode getParent() {
+        return super.getParent();
+    }
+
+    @Override
+    public void addChild(DummyNode child, int index) {
+        super.addChild(child, index);
+    }
+
+    @Override
+    public DummyNode getChild(int index) {
+        return super.getChild(index);
+    }
+
+    public void setParent(DummyNode node) {
+        super.setParent(node);
     }
 
     public void publicSetChildren(DummyNode... children) {
@@ -58,7 +88,7 @@ public class DummyNode extends AbstractNodeWithTextCoordinates<DummyNode, DummyN
 
     @Override
     public String toString() {
-        return getImage();
+        return getXPathNodeName() + "[@Image=" + getImage() + "]";
     }
 
     @Override
@@ -75,19 +105,64 @@ public class DummyNode extends AbstractNodeWithTextCoordinates<DummyNode, DummyN
         return userData;
     }
 
-    @Override
-    public void addChild(DummyNode child, int index) {
-        super.addChild(child, index);
+    public void setXPathAttribute(String name, String value) {
+        attributes.add(new Attribute(this, name, value));
+    }
+
+
+    public void clearXPathAttributes() {
+        attributes.clear();
     }
 
     @Override
-    public DummyNode getChild(int index) {
-        return super.getChild(index);
+    public Iterator<Attribute> getXPathAttributesIterator() {
+        return attributes.iterator();
     }
 
-    public DummyNode withFileName(String filename) {
-        ((DummyRoot) getRoot()).withFileName(filename);
-        return this;
+    public static class DummyRootNode extends DummyNode implements RootNode {
+        private Map<Integer, String> suppressMap = Collections.emptyMap();
+        private String filename = "sample.dummy";
+        private LanguageVersion languageVersion = DummyLanguageModule.getInstance().getDefaultVersion();
+        private String sourceText = "dummy text";
+
+
+        public DummyRootNode withLanguage(LanguageVersion languageVersion) {
+            this.languageVersion = languageVersion;
+            return this;
+        }
+
+        public DummyRootNode withSourceText(String sourceText) {
+            this.sourceText = sourceText;
+            return this;
+        }
+
+        public DummyRootNode withNoPmdComments(Map<Integer, String> suppressMap) {
+            this.suppressMap = suppressMap;
+            return this;
+        }
+
+
+        public DummyRootNode withFileName(String filename) {
+            this.filename = filename;
+            return this;
+        }
+
+
+        @Override
+        public AstInfo<DummyRootNode> getAstInfo() {
+            return new AstInfo<>(
+                    filename,
+                    languageVersion,
+                    sourceText,
+                    this,
+                    suppressMap
+            );
+        }
+
+        @Override
+        public String getXPathNodeName() {
+            return "dummyRootNode";
+        }
     }
 
     public static class DummyNodeTypeB extends DummyNode {
@@ -96,5 +171,4 @@ public class DummyNode extends AbstractNodeWithTextCoordinates<DummyNode, DummyN
             super("dummyNodeB");
         }
     }
-
 }

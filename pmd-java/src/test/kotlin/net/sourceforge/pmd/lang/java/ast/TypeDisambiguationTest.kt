@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.ast
 
+import io.kotest.matchers.collections.shouldBeEmpty
+import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeSameInstanceAs
 import net.sourceforge.pmd.lang.ast.test.*
@@ -67,6 +69,30 @@ class TypeDisambiguationTest : ParserTestSpec({
                     }
                 }
             }
+        }
+    }
+
+    parserTest("Package names in module") {
+
+        val code = """
+            module java.base {
+               opens java.util;
+               provides java.util.Map with java.util.HashMap;
+               //       ^^^^^^^^^          ^^^^^^^^^
+            }
+        """
+
+        doTest("test without disambig") {
+            val acu = parser.parse(code)
+
+            acu.descendants(ASTAmbiguousName::class.java).toList().shouldHaveSize(2)
+        }
+
+        doTest("test with disambig") {
+            enableProcessing()
+            val acu = parser.parse(code)
+
+            acu.descendants(ASTAmbiguousName::class.java).toList().shouldBeEmpty()
         }
     }
 

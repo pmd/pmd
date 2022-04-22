@@ -30,21 +30,20 @@ public class PMDTaskTest extends AbstractAntTestHelper {
     @Test
     public void testNoFormattersValidation() {
         executeTarget("testNoFormattersValidation");
-        assertOutputContaining("Fields should be declared at the top of the class");
+        assertOutputContaining("Violation from test-rset-1.xml");
     }
 
     @Test
     public void testNestedRuleset() {
         executeTarget("testNestedRuleset");
-        assertOutputContaining("Avoid really long methods");
-        assertOutputContaining("Fields should be declared at the");
+        assertOutputContaining("Violation from test-rset-1.xml");
+        assertOutputContaining("Violation from test-rset-2.xml");
     }
 
     @Test
     public void testFormatterWithProperties() {
         executeTarget("testFormatterWithProperties");
-        assertOutputContaining("Avoid really long methods");
-        assertOutputContaining("Fields should be declared at the");
+        assertOutputContaining("Violation from test-rset-1.xml");
         assertOutputContaining("link_prefix");
         assertOutputContaining("line_prefix");
     }
@@ -52,42 +51,40 @@ public class PMDTaskTest extends AbstractAntTestHelper {
     @Test
     public void testAbstractNames() {
         executeTarget("testAbstractNames");
-        assertOutputContaining("Avoid really long methods");
-        assertOutputContaining("Fields should be declared at the");
+        assertOutputContaining("Violation from test-rset-1.xml");
+        assertOutputContaining("Violation from test-rset-2.xml");
     }
 
     @Test
     public void testAbstractNamesInNestedRuleset() {
         executeTarget("testAbstractNamesInNestedRuleset");
-        assertOutputContaining("Avoid really long methods");
-        assertOutputContaining("Fields should be declared at the");
+        assertOutputContaining("Violation from test-rset-1.xml");
+        assertOutputContaining("Violation from test-rset-2.xml");
     }
 
     @Test
     public void testCommaInRulesetfiles() {
         executeTarget("testCommaInRulesetfiles");
-        assertOutputContaining("Avoid really long methods");
-        assertOutputContaining("Fields should be declared at the");
+        assertOutputContaining("Violation from test-rset-1.xml");
+        assertOutputContaining("Violation from test-rset-2.xml");
     }
 
     @Test
     public void testRelativeRulesets() {
         executeTarget("testRelativeRulesets");
-        assertOutputContaining("Avoid really long methods");
-        assertOutputContaining("Fields should be declared at the");
+        assertOutputContaining("Violation from test-rset-1.xml");
     }
 
     @Test
     public void testRelativeRulesetsInRulesetfiles() {
         executeTarget("testRelativeRulesetsInRulesetfiles");
-        assertOutputContaining("Avoid really long methods");
-        assertOutputContaining("Fields should be declared at");
+        assertOutputContaining("Violation from test-rset-1.xml");
     }
 
     @Test
     public void testExplicitRuleInRuleSet() {
         executeTarget("testExplicitRuleInRuleSet");
-        assertOutputContaining("Avoid really long methods");
+        assertOutputContaining("Violation from test-rset-1.xml");
     }
 
     @Test
@@ -176,14 +173,14 @@ public class PMDTaskTest extends AbstractAntTestHelper {
     @Test
     public void testMissingCacheLocation() {
         executeTarget("testMissingCacheLocation");
-        assertOutputContaining("Avoid really long methods");
+        assertOutputContaining("Violation from test-rset-1.xml");
         assertContains(buildRule.getLog(), "This analysis could be faster");
     }
 
     @Test
     public void testAnalysisCache() {
         executeTarget("testAnalysisCache");
-        assertOutputContaining("Avoid really long methods");
+        assertOutputContaining("Violation from test-rset-1.xml");
         assertDoesntContain(buildRule.getLog(), "This analysis could be faster");
 
         assertTrue(currentTempFile().exists());
@@ -193,7 +190,7 @@ public class PMDTaskTest extends AbstractAntTestHelper {
     @Test
     public void testDisableIncrementalAnalysis() {
         executeTarget("testDisableIncrementalAnalysis");
-        assertOutputContaining("Avoid really long methods");
+        assertOutputContaining("Violation from test-rset-1.xml");
         assertDoesntContain(buildRule.getLog(), "This analysis could be faster");
 
         assertFalse(currentTempFile().exists());

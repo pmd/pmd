@@ -8,9 +8,12 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.lang.ast.DummyRoot;
+import net.sourceforge.pmd.lang.ast.DummyNode;
+import net.sourceforge.pmd.lang.ast.DummyNode.DummyRootNode;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.Parser;
+import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 import net.sourceforge.pmd.lang.rule.impl.DefaultRuleViolationFactory;
@@ -38,24 +41,35 @@ public class DummyLanguageModule extends BaseLanguageModule {
         addVersion("1.9-semantic_error", new HandlerWithParserThatReportsSemanticError());
     }
 
-    public static class Handler extends AbstractPmdLanguageVersionHandler {
+    public static Language getInstance() {
+        return LanguageRegistry.getLanguage(NAME);
+    }
 
+    public static DummyRootNode parse(String code) {
+        return parse(code, "nofilename");
+    }
+
+    public static DummyRootNode parse(String code, String filename) {
+        DummyRootNode rootNode = readLispNode(code);
+        rootNode.withFileName(filename);
+        return rootNode;
+    }
+
+
+    public static class Handler extends AbstractPmdLanguageVersionHandler {
         @Override
         public RuleViolationFactory getRuleViolationFactory() {
             return new RuleViolationFactory();
         }
 
-
         @Override
         public Parser getParser() {
             return task -> {
-                DummyRoot node = new DummyRoot();
-                node.setCoords(1, 1, 2, 10);
-                node.setImage("Foo");
-                node.withFileName(task.getFileDisplayName());
-                node.withLanguage(task.getLanguageVersion());
-                node.withSourceText(task.getSourceText());
-                return node;
+                DummyRootNode rootNode = readLispNode(task.getSourceText());
+                rootNode.withFileName(task.getFileDisplayName());
+                rootNode.withLanguage(task.getLanguageVersion());
+                rootNode.withSourceText(task.getSourceText());
+                return rootNode;
             };
         }
     }
@@ -78,6 +92,67 @@ public class DummyLanguageModule extends BaseLanguageModule {
                 return root;
             };
         }
+    }
+
+    /**
+     * Creates a tree of nodes that corresponds to the nesting structures
+     * of parentheses in the text. The image of each node is also populated.
+     * This is useful to create non-trivial trees with all the relevant
+     * data (eg coordinates) set properly.
+     *
+     * Eg {@code (a(b)x(c))} will create a tree with a node "a", with two
+     * children "b" and "c". "x" is ignored. The node "a" is not the root
+     * node, it has a {@link DummyRootNode} as parent, whose image is "".
+     */
+    private static DummyRootNode readLispNode(String text) {
+        final DummyRootNode root = new DummyRootNode().withSourceText(text);
+        DummyNode top = root;
+        SourceCodePositioner positioner = new SourceCodePositioner(text);
+        top.setCoords(1, 1, positioner.getLastLine(), positioner.getLastLineColumn());
+        int lastNodeStart = 0;
+        for (int i = 0; i < text.length(); i++) {
+            char c = text.charAt(i);
+            if (c == '(') {
+                DummyNode node = new DummyNode();
+                node.setParent(top);
+                top.addChild(node, top.getNumChildren());
+                // setup coordinates
+                int bline = positioner.lineNumberFromOffset(i);
+                int bcol = positioner.columnFromOffset(bline, i);
+                node.setCoords(bline, bcol, bline, bcol);
+                // cut out image
+                if (top.getImage() == null) {
+                    // image may be non null if this is not the first child of 'top'
+                    // eg in (a(b)x(c)), the image of the parent is set to "a".
+                    // When we're processing "(c", we ignore "x".
+                    String image = text.substring(lastNodeStart, i);
+                    top.setImage(image);
+                }
+                lastNodeStart = i + 1;
+                // node is the top of the stack now
+                top = node;
+            } else if (c == ')') {
+                if (top == null) {
+                    throw new ParseException("Unbalanced parentheses: " + text);
+                }
+                // setup coordinates
+                int eline = positioner.lineNumberFromOffset(i);
+                int ecol = positioner.columnFromOffset(eline, i);
+                top.setCoords(top.getBeginLine(), top.getBeginColumn(), eline, ecol);
+
+                if (top.getImage() == null) {
+                    // cut out image (if node doesn't have children it hasn't been populated yet)
+                    String image = text.substring(lastNodeStart, i);
+                    top.setImage(image);
+                    lastNodeStart = i + 1;
+                }
+                top = top.getParent();
+            }
+        }
+        if (top != root) {
+            throw new ParseException("Unbalanced parentheses: " + text);
+        }
+        return root;
     }
 
     public static class RuleViolationFactory extends DefaultRuleViolationFactory {

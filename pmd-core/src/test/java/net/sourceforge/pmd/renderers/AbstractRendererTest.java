@@ -27,7 +27,7 @@ import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.RuleWithProperties;
 import net.sourceforge.pmd.lang.ast.DummyNode;
-import net.sourceforge.pmd.lang.ast.DummyRoot;
+import net.sourceforge.pmd.lang.ast.DummyNode.DummyRootNode;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
@@ -90,7 +90,7 @@ public abstract class AbstractRendererTest {
     }
 
     protected DummyNode createNode(int beginLine, int beginColumn, int endLine, int endColumn) {
-        DummyNode node = new DummyRoot().withFileName(getSourceCodeFilename());
+        DummyNode node = new DummyRootNode().withFileName(getSourceCodeFilename());
         node.setCoords(beginLine, beginColumn, endLine, endColumn);
         return node;
     }

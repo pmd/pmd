@@ -1,3 +1,7 @@
+/*
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
+
 public class InputJava9TryWithResources {
  public static void main() {
   MyResource resource1 = new MyResource();

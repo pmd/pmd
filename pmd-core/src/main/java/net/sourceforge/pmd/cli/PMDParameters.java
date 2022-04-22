@@ -136,6 +136,9 @@ public class PMDParameters {
     @Parameter(names = { "--no-cache", "-no-cache" }, description = "Explicitly disable incremental analysis. The '-cache' option is ignored if this switch is present in the command line.")
     private boolean noCache = false;
 
+    @Parameter(names = { "--no-progress", "-no-progress" }, description = "Disables progress bar indicator of live analysis progress.")
+    private boolean noProgressBar = false;
+
     // this has to be a public static class, so that JCommander can use it!
     public static class PropertyConverter implements IStringConverter<Properties> {
 
@@ -222,6 +225,7 @@ public class PMDParameters {
         configuration.setFailOnViolation(this.isFailOnViolation());
         configuration.setAnalysisCacheLocation(this.cacheLocation);
         configuration.setIgnoreIncrementalAnalysis(this.isIgnoreIncrementalAnalysis());
+        configuration.setProgressBar(this.isProgressBar());
 
         LanguageVersion forceLangVersion = getForceLangVersion();
         if (forceLangVersion != null) {
@@ -367,6 +371,11 @@ public class PMDParameters {
     public boolean isFailOnViolation() {
         return failOnViolation;
     }
+
+    public boolean isProgressBar() {
+        return !noProgressBar;
+    }
+
 
     /**
      * @return the uri alternative to source directory.

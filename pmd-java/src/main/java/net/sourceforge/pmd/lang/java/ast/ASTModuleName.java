@@ -4,6 +4,10 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+/**
+ * The name of a module. Module names look like package names, eg
+ * {@code java.base}.
+ */
 public final class ASTModuleName extends AbstractJavaNode {
 
     ASTModuleName(int id) {
@@ -15,4 +19,19 @@ public final class ASTModuleName extends AbstractJavaNode {
     public <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
+
+    @Override
+    @Deprecated
+    public String getImage() {
+        return null;
+    }
+
+    /**
+     * Returns the name of the declared module. Module names look
+     * like package names, eg {@code java.base}.
+     */
+    public String getName() {
+        return super.getImage();
+    }
+
 }
