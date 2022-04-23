@@ -2818,6 +2818,7 @@ ASTEmbeddedSqlStatement EmbeddedSqlStatement()  :
 {}
 {
    <EXECUTE> <IMMEDIATE> StringExpression()
+    [ LOOKAHEAD(<BULK>) BulkCollectIntoClause() ] //#3687 Invoke this method to parse BULK COLLECT
 	[ <INTO> Name() ("," Name())* ]
 	[ UsingClause() ]
 	[ ( <RETURN> | <RETURNING> )  <INTO> Expression() ("," Expression())*] ";"
