@@ -37,7 +37,6 @@ import net.sourceforge.pmd.internal.util.ContextedAssertionError;
 import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
-import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
 import net.sourceforge.pmd.processor.MonoThreadProcessor.MonothreadRunnable;
@@ -49,9 +48,10 @@ public class PmdRunnableTest {
     @org.junit.Rule
     public TestRule restoreSystemProperties = new RestoreSystemProperties();
 
-    private LanguageVersion dummyThrows;
-    private LanguageVersion dummyDefault;
-    private LanguageVersion dummySemanticError;
+
+
+    private final DummyLanguageModule dummyLang = DummyLanguageModule.getInstance();
+
     private PMDConfiguration configuration;
     private PmdRunnable pmdRunnable;
     private GlobalReportBuilderListener reportBuilder;
@@ -60,10 +60,6 @@ public class PmdRunnableTest {
 
     @Before
     public void prepare() {
-        Language dummyLanguage = LanguageRegistry.findLanguageByTerseName(DummyLanguageModule.TERSE_NAME);
-        dummyDefault = dummyLanguage.getDefaultVersion();
-        dummyThrows = dummyLanguage.getVersion("1.9-throws");
-        dummySemanticError = dummyLanguage.getVersion("1.9-semantic_error");
         DataSource dataSource = DataSource.forString("test", "test.dummy");
 
 
@@ -82,7 +78,7 @@ public class PmdRunnableTest {
     @Test
     public void inErrorRecoveryModeErrorsShouldBeLoggedByParser() {
         System.setProperty(SystemProps.PMD_ERROR_RECOVERY, "");
-        configuration.setDefaultLanguageVersion(dummyThrows);
+        configuration.setDefaultLanguageVersion(dummyLang.getVersionWithParserThatThrowsAssertionError());
 
         pmdRunnable.run();
         reportBuilder.close();
@@ -92,7 +88,7 @@ public class PmdRunnableTest {
     @Test
     public void inErrorRecoveryModeErrorsShouldBeLoggedByRule() {
         System.setProperty(SystemProps.PMD_ERROR_RECOVERY, "");
-        configuration.setDefaultLanguageVersion(dummyDefault);
+        configuration.setDefaultLanguageVersion(dummyLang.getDefaultVersion());
 
         pmdRunnable.run();
         reportBuilder.close();
@@ -105,7 +101,7 @@ public class PmdRunnableTest {
     @Test
     public void withoutErrorRecoveryModeProcessingShouldBeAbortedByParser() {
         Assert.assertNull(System.getProperty(SystemProps.PMD_ERROR_RECOVERY));
-        configuration.setDefaultLanguageVersion(dummyThrows);
+        configuration.setDefaultLanguageVersion(dummyLang.getVersionWithParserThatThrowsAssertionError());
 
         Assert.assertThrows(AssertionError.class, pmdRunnable::run);
     }
@@ -113,7 +109,7 @@ public class PmdRunnableTest {
     @Test
     public void withoutErrorRecoveryModeProcessingShouldBeAbortedByRule() {
         Assert.assertNull(System.getProperty(SystemProps.PMD_ERROR_RECOVERY));
-        configuration.setDefaultLanguageVersion(dummyDefault);
+        configuration.setDefaultLanguageVersion(dummyLang.getDefaultVersion());
 
         Assert.assertThrows(AssertionError.class, pmdRunnable::run);
     }
@@ -121,7 +117,7 @@ public class PmdRunnableTest {
 
     @Test
     public void semanticErrorShouldAbortTheRun() {
-        configuration.setDefaultLanguageVersion(dummySemanticError);
+        configuration.setDefaultLanguageVersion(dummyLang.getVersionWithParserThatReportsSemanticError());
 
         pmdRunnable.run();
 

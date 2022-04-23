@@ -25,6 +25,9 @@ public class DummyLanguageModule extends BaseLanguageModule {
 
     public static final String NAME = "Dummy";
     public static final String TERSE_NAME = "dummy";
+    private static final String PARSER_REPORTS_SEMANTIC_ERROR = "1.9-semantic_error";
+    private static final String THROWS_SEMANTIC_ERROR = "1.9-throws_semantic_error";
+    private static final String THROWS_ASSERTION_ERROR = "1.9-throws";
 
     public DummyLanguageModule() {
         super(NAME, null, TERSE_NAME, "dummy");
@@ -37,12 +40,23 @@ public class DummyLanguageModule extends BaseLanguageModule {
         addVersion("1.6", new Handler(), "6");
         addDefaultVersion("1.7", new Handler(), "7");
         addVersion("1.8", new Handler(), "8");
-        addVersion("1.9-throws", new HandlerWithParserThatThrows());
-        addVersion("1.9-semantic_error", new HandlerWithParserThatReportsSemanticError());
+        addVersion(THROWS_ASSERTION_ERROR, new HandlerWithParserThatThrows());
+        addVersion(PARSER_REPORTS_SEMANTIC_ERROR, new HandlerWithParserThatReportsSemanticError());
+        addVersion(THROWS_SEMANTIC_ERROR, new HandlerWithParserThatThrowsSemanticError());
     }
 
-    public static Language getInstance() {
-        return LanguageRegistry.getLanguage(NAME);
+    public LanguageVersion getVersionWithParserThatThrowsAssertionError() {
+        return getVersion(THROWS_ASSERTION_ERROR);
+    }
+    public LanguageVersion getVersionWithParserThatThrowsSemanticError() {
+        return getVersion(THROWS_SEMANTIC_ERROR);
+    }
+    public LanguageVersion getVersionWithParserThatReportsSemanticError() {
+        return getVersion(PARSER_REPORTS_SEMANTIC_ERROR);
+    }
+
+    public static DummyLanguageModule getInstance() {
+        return (DummyLanguageModule) LanguageRegistry.getLanguage(NAME);
     }
 
     public static DummyRootNode parse(String code) {
@@ -90,6 +104,16 @@ public class DummyLanguageModule extends BaseLanguageModule {
                 RootNode root = super.getParser().parse(task);
                 task.getReporter().error(root, "An error occurred!");
                 return root;
+            };
+        }
+    }
+
+    public static class HandlerWithParserThatThrowsSemanticError extends Handler {
+        @Override
+        public Parser getParser() {
+            return task -> {
+                RootNode root = super.getParser().parse(task);
+                throw task.getReporter().error(root, "An error occurred!");
             };
         }
     }
