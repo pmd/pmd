@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.ant;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.fail;
 
 import java.io.FileInputStream;
@@ -92,7 +94,7 @@ public class PMDTaskTest {
             String actual = IOUtils.toString(in, StandardCharsets.UTF_8);
             // remove any trailing newline
             actual = actual.trim();
-            Assert.assertEquals("sample.dummy:1:\tSampleXPathRule:\tTest Rule 2", actual);
+            assertThat(actual, containsString("sample.dummy:1:\tSampleXPathRule:\tTest Rule 2"));
         }
     }
 

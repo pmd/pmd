@@ -157,7 +157,7 @@ public interface TextDocument extends Closeable {
      * @throws IndexOutOfBoundsException If the argument is not a valid region in this document
      */
     default FileLocation toLocation(TextRange2d range) {
-        int startOffset = offsetAtLineColumn(range.getEndPos());
+        int startOffset = offsetAtLineColumn(range.getStartPos());
         if (startOffset < 0) {
             throw new IndexOutOfBoundsException("Region out of bounds: " + range.displayString());
         }
