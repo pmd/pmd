@@ -1,4 +1,4 @@
-+- Input[@CanonicalImage = null, @ExcludedLinesCount = "0", @ExcludedRangesCount = "0", @Sourcecode = "CREATE OR REPLACE PROCEDURE TEST_PROCEDURE IS\n    --\n    CURSOR c_test IS\n        SELECT si.sid, sn.name, sa.age, ss.score, sp.parent\n        FROM ((((STUDENT_INFO si) INNER JOIN (STUDENT_AGE sa) on si.sid = sa.sid)\n            INNER JOIN\n            (STUDENT_SCORE ss) on si.sid = sp.sid)\n            INNER JOIN\n            (STUDENT_PARENT sp) on si.sid = sp.sid)\n        WHERE si.sid = \'114514\';\n    --\nBEGIN\n    --\n    --\nEND EXAMPLE_PROCEDURE;\n"]
++- Input[@CanonicalImage = null, @ExcludedLinesCount = "0", @ExcludedRangesCount = "0"]
    +- Global[@CanonicalImage = null]
       +- ProgramUnit[@CanonicalImage = null, @MethodName = "TEST_PROCEDURE", @Name = "TEST_PROCEDURE", @ObjectName = null]
          +- MethodDeclarator[@CanonicalImage = "TEST_PROCEDURE", @Image = "TEST_PROCEDURE", @ParameterCount = "1"]
