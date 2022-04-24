@@ -7,6 +7,7 @@ package net.sourceforge.pmd.test.lang;
 import net.sourceforge.pmd.lang.AbstractPmdLanguageVersionHandler;
 import net.sourceforge.pmd.lang.BaseLanguageModule;
 import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.AstInfo;
 import net.sourceforge.pmd.lang.ast.Parser;
 import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
@@ -43,12 +44,12 @@ public class DummyLanguageModule extends BaseLanguageModule {
     }
 
     public static DummyRootNode parse(String code, String filename) {
-        TextDocument doc = TextDocument.readOnlyString(code, filename, DummyLanguageModule.getInstance().getDefaultVersion());
+        LanguageVersion version = DummyLanguageModule.getInstance().getDefaultVersion();
         ParserTask task = new ParserTask(
-            doc,
+            TextDocument.readOnlyString(code, filename, version),
             SemanticErrorReporter.noop()
         );
-        return (DummyRootNode) doc.getLanguageVersion().getLanguageVersionHandler().getParser().parse(task);
+        return (DummyRootNode) version.getLanguageVersionHandler().getParser().parse(task);
     }
 
     public static class Handler extends AbstractPmdLanguageVersionHandler {

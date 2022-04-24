@@ -17,20 +17,12 @@ public final class TextRange2d implements Comparable<TextRange2d> {
     private final int endCol;
 
     public TextRange2d(int startLine, int startCol, int endLine, int endCol) {
-        checkValid(startLine, startCol, endLine, endCol);
         this.startLine = startLine;
         this.startCol = startCol;
         this.endLine = endLine;
         this.endCol = endCol;
-    }
-
-    private void checkValid(int startLine, int startCol, int endLine, int endCol) {
-        if (startCol < 1 || startLine < 1 || endLine < 1 || endCol < 1) {
-            throw new IllegalArgumentException(
-                "Not a valid range (l" + startLine + ", c" + startCol + ")-"
-                    + "(l" + endLine + ", c" + endCol + ")"
-            );
-        }
+        assert startCol >= 1 && startLine >= 1 && endLine >= 1 && endCol >= 1
+            : "Not a valid range " + displayString();
     }
 
 

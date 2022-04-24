@@ -52,12 +52,12 @@ public class DummyLanguageModule extends BaseLanguageModule {
     }
 
     public static DummyRootNode parse(String code, String filename) {
-        TextDocument doc = TextDocument.readOnlyString(code, filename, DummyLanguageModule.getInstance().getDefaultVersion());
+        LanguageVersion version = DummyLanguageModule.getInstance().getDefaultVersion();
         ParserTask task = new ParserTask(
-            doc,
+            TextDocument.readOnlyString(code, filename, version),
             SemanticErrorReporter.noop()
         );
-        return readLispNode(task);
+        return (DummyRootNode) version.getLanguageVersionHandler().getParser().parse(task);
     }
 
 

@@ -63,6 +63,11 @@ final class RootTextDocument extends BaseCloseable implements TextDocument {
     }
 
     @Override
+    public Chars getText() {
+        return content.getNormalizedText();
+    }
+
+    @Override
     public FileLocation toLocation(TextRegion region) {
         checkInRange(region, this.getLength());
         SourceCodePositioner positioner = content.getPositioner();
@@ -81,22 +86,6 @@ final class RootTextDocument extends BaseCloseable implements TextDocument {
             SourceCodePositioner.unmaskCol(epos),
             region
         );
-    }
-
-    @Override
-    public int offsetAtLineColumn(int line, int column) {
-        SourceCodePositioner positioner = content.getPositioner();
-        return positioner.offsetFromLineColumn(line, column);
-    }
-
-    @Override
-    public boolean isInRange(TextPos2d textPos2d) {
-        if (textPos2d.getLine() <= content.getPositioner().getNumLines()) {
-            int maxColumn = content.getPositioner().offsetOfEndOfLine(textPos2d.getLine());
-            return textPos2d.getColumn()
-                < content.getPositioner().columnFromOffset(textPos2d.getLine(), maxColumn);
-        }
-        return false;
     }
 
     @Override
@@ -130,8 +119,8 @@ final class RootTextDocument extends BaseCloseable implements TextDocument {
     }
 
     @Override
-    public TextFileContent getContent() {
-        return content;
+    public long getCheckSum() {
+        return content.getCheckSum();
     }
 
     @Override

@@ -28,6 +28,47 @@ import net.sourceforge.pmd.util.datasource.DataSource;
  * from a text document. Exposing it here could lead to files being written
  * to from within rules, while we want to eventually build an API that allows
  * file edition based on AST manipulation.
+ *
+ * <h3>Coordinates in TextDocument</h3>
+ *
+ * This interface is an abstraction over a piece of text, which might not
+ * correspond to the backing source file. This allows the document to
+ * be a view on a piece of a larger document (eg, a Javadoc comment, or
+ * a string in which a language is injected). Another use case is to perform
+ * escape translation, while preserving the line breaks of the original source.
+ *
+ * <p>This complicates addressing within a text document. To explain it,
+ * consider that there is always *one* text document that corresponds to
+ * the backing text file, which we call the <i>root</i> text document.
+ * Logical documents built on top of it are called <i>views</i>.
+ *
+ * Text documents use <i>offsets</i> and {@link TextRegion} to address their
+ * contents. These are always relative to the {@linkplain #getText() text} of
+ * the document. Line and column information are provided by {@link FileLocation}
+ * (see {@link #toLocation(TextRegion)}), and are always absolute (ie,
+ * represent actual source lines in the file).
+ *
+ * <p>For instance, say you have the following file (and root text document):
+ * <pre>{@code
+ * l1
+ * l2 (* comment *)
+ * l3
+ * }</pre>
+ * and you create a view for just the section {@code (* comment *)}.
+ * Then, that view's offset 0 (start of the document) will map
+ * to the {@code (} character, while the root document's offset 0 maps
+ * to the start of {@code l1}. When calling {@code toLocation(caretAt(0))},
+ * the view will however return {@code line 2, column 4}, ie, a line/column
+ * that can be found when inspecting the file.
+ *
+ * <p>To reduce the potential for mistakes, views do not provide access
+ * to their underlying text document. That way, nodes only have access
+ * to a single document, and their offsets can be assumed to be in the
+ * coordinate system of that document.
+ *
+ * <p>This interface does not provide a way to obtain line/column
+ * coordinates that are relative to a view's coordinate system. This
+ * would complicate the construction of views significantly.
  */
 public interface TextDocument extends Closeable {
     // todo logical sub-documents, to support embedded languages
@@ -80,9 +121,7 @@ public interface TextDocument extends Closeable {
      *
      * @see TextFileContent#getNormalizedText()
      */
-    default Chars getText() {
-        return getContent().getNormalizedText();
-    }
+    Chars getText();
 
     /**
      * Returns a region of the {@linkplain #getText() text} as a character sequence.
@@ -91,9 +130,11 @@ public interface TextDocument extends Closeable {
 
 
     /**
-     * Returns the current contents of the text file. See also {@link #getText()}.
+     * Returns a checksum for the contents of the file.
+     *
+     * @see TextFileContent#getCheckSum()
      */
-    TextFileContent getContent();
+    long getCheckSum();
 
     /**
      * Returns a reader over the text of this document.
@@ -135,7 +176,9 @@ public interface TextDocument extends Closeable {
      * the line/column information for both start and end offset of
      * the region.
      *
-     * @return A new file position
+     * @param region A region, in the coordinate system of this document
+     *
+     * @return A new file position, with absolute coordinates
      *
      * @throws IndexOutOfBoundsException If the argument is not a valid region in this document
      */
@@ -143,29 +186,9 @@ public interface TextDocument extends Closeable {
 
 
     /**
-     * Returns the offset at the given line and column number.
-     *
-     * @param line   Line number (1-based)
-     * @param column Column number (1-based)
-     *
-     * @return an offset (0-based)
-     */
-    int offsetAtLineColumn(int line, int column);
-
-    /**
-     * Returns true if the position is valid in this document.
-     */
-    boolean isInRange(TextPos2d textPos2d);
-
-    /**
-     * Returns the offset at the line and number.
-     */
-    default int offsetAtLineColumn(TextPos2d pos2d) {
-        return offsetAtLineColumn(pos2d.getLine(), pos2d.getColumn());
-    }
-
-    /**
      * Returns the line and column at the given offset (inclusive).
+     * Note that the line/column cannot be converted back. They are
+     * absolute in the coordinate system of the original document.
      *
      * @param offset A source offset (0-based), can range in {@code [0, length]}.
      *
@@ -176,13 +199,15 @@ public interface TextDocument extends Closeable {
     }
 
     /**
-     * Returns the line and column at the given offset (inclusive).
+     * Returns the line and column at the given offset.
      *
      * @param offset    A source offset (0-based), can range in {@code [0, length]}.
      * @param inclusive If the offset falls right after a line terminator,
      *                  two behaviours are possible. If the parameter is true,
-     *                  choose the position at the start of the next line.
-     *                  Otherwise choose the offset at the end of the line.
+     *                  choose the position at the start of the next line,
+     *                  otherwise choose the position at the end of the line.
+     *
+     * @return A position, in the coordinate system of the root document
      *
      * @throws IndexOutOfBoundsException if the offset is out of bounds
      */
@@ -203,7 +228,17 @@ public interface TextDocument extends Closeable {
     @Override
     void close() throws IOException;
 
-
+    /**
+     * Create a new text document for the given text file. The document's
+     * coordinate system is the same as the original text file.
+     *
+     * @param textFile A text file
+     *
+     * @return A new text document
+     *
+     * @throws IOException          If the file cannot be read ({@link TextFile#readContents()})
+     * @throws NullPointerException If the parameter is null
+     */
     static TextDocument create(TextFile textFile) throws IOException {
         return new RootTextDocument(textFile);
     }

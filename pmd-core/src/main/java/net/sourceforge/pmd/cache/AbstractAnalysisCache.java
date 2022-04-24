@@ -67,7 +67,7 @@ public abstract class AbstractAnalysisCache implements AnalysisCache {
     public boolean isUpToDate(final TextDocument document) {
         try (TimedOperation ignored = TimeTracker.startOperation(TimedOperationCategory.ANALYSIS_CACHE, "up-to-date check")) {
             // There is a new file being analyzed, prepare entry in updated cache
-            final AnalysisResult updatedResult = new AnalysisResult(document.getContent().getCheckSum(), new ArrayList<>());
+            final AnalysisResult updatedResult = new AnalysisResult(document.getCheckSum(), new ArrayList<>());
             updatedResultsCache.put(document.getPathId(), updatedResult);
 
             // Now check the old cache
@@ -214,7 +214,7 @@ public abstract class AbstractAnalysisCache implements AnalysisCache {
         String fileName = file.getPathId();
         AnalysisResult analysisResult = updatedResultsCache.get(fileName);
         if (analysisResult == null) {
-            analysisResult = new AnalysisResult(file.getContent().getCheckSum());
+            analysisResult = new AnalysisResult(file.getCheckSum());
         }
         final AnalysisResult nonNullAnalysisResult = analysisResult;
 
