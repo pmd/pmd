@@ -244,16 +244,21 @@ public interface TextFile extends Closeable {
     @Deprecated
     @DeprecatedUntil700
     static TextFile dataSourceCompat(DataSource ds, PMDConfiguration config) {
+        String pathId = ds.getNiceFileName(false, null);
+        LanguageVersion languageVersion = config.getLanguageVersionOfFile(pathId);
+        if (languageVersion == null) {
+            throw new NullPointerException("no language version detected for " + pathId);
+        }
         class DataSourceTextFile extends BaseCloseable implements TextFile {
 
             @Override
             public @NonNull LanguageVersion getLanguageVersion() {
-                return config.getLanguageVersionOfFile(getPathId());
+                return languageVersion;
             }
 
             @Override
             public String getPathId() {
-                return ds.getNiceFileName(false, null);
+                return pathId;
             }
 
             @Override

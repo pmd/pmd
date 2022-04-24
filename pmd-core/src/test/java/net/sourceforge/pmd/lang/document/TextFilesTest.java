@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.document;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 
@@ -22,8 +23,11 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
+import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.util.datasource.DataSource;
+import net.sourceforge.pmd.util.datasource.FileDataSource;
 
 public class TextFilesTest {
 
@@ -40,6 +44,64 @@ public class TextFilesTest {
             assertEquals(file.toString(), tf.getDisplayName());
             assertEquals(dummyVersion, tf.getLanguageVersion());
             assertEquals(Chars.wrap("some content"), tf.readContents().getNormalizedText());
+        }
+    }
+
+    @Test
+    public void testEquals() throws IOException {
+        Path file = makeTmpFile(StandardCharsets.UTF_8, "some content").toAbsolutePath();
+        try (TextFile tf = TextFile.forPath(file, StandardCharsets.UTF_8, dummyVersion)) {
+            try (TextFile tf2 = TextFile.forCharSeq("some content", file.toString(), dummyVersion)) {
+                assertEquals(tf.getPathId(), tf2.getPathId());
+
+                assertNotEquals(tf, tf2);
+                assertNotEquals(tf2, tf);
+                assertEquals(tf, tf);
+                assertEquals(tf, TextFile.forPath(file, StandardCharsets.UTF_8, dummyVersion));
+            }
+        }
+    }
+
+    @Test
+    public void testStringDataSourceCompat() throws IOException {
+        DataSource ds = DataSource.forString("text", "filename.dummy");
+        PMDConfiguration config = new PMDConfiguration();
+        try (TextFile tf = TextFile.dataSourceCompat(ds, config)) {
+            assertEquals("filename.dummy", tf.getPathId());
+            assertEquals("filename.dummy", tf.getDisplayName());
+            assertEquals(DummyLanguageModule.getInstance().getDefaultVersion(), tf.getLanguageVersion());
+            assertEquals(Chars.wrap("text"), tf.readContents().getNormalizedText());
+        }
+    }
+
+    @Test
+    public void testFileDataSourceCompat() throws IOException {
+        Path file = makeTmpFile(StandardCharsets.UTF_8, "some content");
+
+        DataSource ds = new FileDataSource(file.toFile());
+        PMDConfiguration config = new PMDConfiguration();
+        try (TextFile tf = TextFile.dataSourceCompat(ds, config)) {
+            assertEquals(ds.getNiceFileName(false, null), tf.getPathId());
+            assertEquals(ds.getNiceFileName(false, null), tf.getDisplayName());
+            assertEquals(Chars.wrap("some content"), tf.readContents().getNormalizedText());
+        }
+    }
+
+    @Test
+    public void testFileDataSourceCompatWithEncoding() throws IOException {
+        Path file = makeTmpFile(StandardCharsets.UTF_16BE, "some content");
+
+        DataSource ds = new FileDataSource(file.toFile());
+        PMDConfiguration config = new PMDConfiguration();
+        config.setSourceEncoding(StandardCharsets.UTF_16BE.name());
+        try (TextFile tf = TextFile.dataSourceCompat(ds, config)) {
+            assertEquals(Chars.wrap("some content"), tf.readContents().getNormalizedText());
+        }
+
+        // different encoding to produce garbage, to make sure encoding is used
+        config.setSourceEncoding(StandardCharsets.UTF_16LE.name());
+        try (TextFile tf = TextFile.dataSourceCompat(ds, config)) {
+            assertNotEquals(Chars.wrap("some content"), tf.readContents().getNormalizedText());
         }
     }
 

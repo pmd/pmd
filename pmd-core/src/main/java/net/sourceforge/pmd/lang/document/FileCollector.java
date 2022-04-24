@@ -375,7 +375,7 @@ public final class FileCollector implements AutoCloseable {
      */
     public void exclude(FileCollector excludeCollector) {
         Set<TextFile> toExclude = new HashSet<>(excludeCollector.allFilesToProcess);
-        for (Iterator<TextFile> iterator = allFilesToProcess.iterator(); iterator.hasNext(); ) {
+        for (Iterator<TextFile> iterator = allFilesToProcess.iterator(); iterator.hasNext();) {
             TextFile file = iterator.next();
             if (toExclude.contains(file)) {
                 LOG.trace("Excluding file {}", file.getPathId());
@@ -389,7 +389,7 @@ public final class FileCollector implements AutoCloseable {
      * collection.
      */
     public void filterLanguages(Set<Language> languages) {
-        for (Iterator<TextFile> iterator = allFilesToProcess.iterator(); iterator.hasNext(); ) {
+        for (Iterator<TextFile> iterator = allFilesToProcess.iterator(); iterator.hasNext();) {
             TextFile file = iterator.next();
             Language lang = file.getLanguageVersion().getLanguage();
             if (!languages.contains(lang)) {
