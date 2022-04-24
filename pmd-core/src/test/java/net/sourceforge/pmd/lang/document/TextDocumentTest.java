@@ -211,9 +211,7 @@ public class TextDocumentTest {
     public void testRegionOutOfBounds() {
         TextDocument doc = TextDocument.readOnlyString("bonjour\noha\ntristesse", dummyVersion);
 
-        expect.expect(AssertionError.class);
-
-        TextRegion.isValidRegion(0, 40, doc);
+        assertThrows(AssertionError.class, () -> TextRegion.isValidRegion(0, 40, doc));
     }
 
     // for junit params runner
@@ -228,7 +226,7 @@ public class TextDocumentTest {
                 TextDocument.readOnlyString("bonjour\n", dummyVersion),
                 TextDocument.readOnlyString("\n", dummyVersion),
                 TextDocument.readOnlyString("", dummyVersion),
-            };
+                };
         }
     }
 

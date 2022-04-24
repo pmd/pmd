@@ -22,7 +22,7 @@ public final class TextRange2d implements Comparable<TextRange2d> {
         this.endLine = endLine;
         this.endCol = endCol;
         assert startCol >= 1 && startLine >= 1 && endLine >= 1 && endCol >= 1
-            : "Not a valid range " + displayString();
+            : "Not a valid range " + toDisplayStringWithColon();
     }
 
 
@@ -34,9 +34,9 @@ public final class TextRange2d implements Comparable<TextRange2d> {
         return TextPos2d.pos2d(endLine, endCol);
     }
 
-    public String displayString() {
-        return "(" + startCol + ", " + endCol
-            + ")-(" + endLine + ", " + endCol + ")";
+    public String toDisplayStringWithColon() {
+        return getStartPos().toDisplayStringWithColon() + "-"
+            + getEndPos().toDisplayStringWithColon();
     }
 
     public int getStartLine() {
@@ -104,7 +104,8 @@ public final class TextRange2d implements Comparable<TextRange2d> {
 
     @Override
     public String toString() {
-        return "[" + getStartPos() + " - " + getEndPos() + ']';
+        return "!debug only! [" + getStartPos().toTupleString()
+            + " - " + getEndPos().toTupleString() + ']';
     }
 
 }
