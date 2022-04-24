@@ -13,6 +13,8 @@ import java.nio.CharBuffer;
 import java.nio.charset.Charset;
 import java.util.Iterator;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -197,6 +199,27 @@ public final class Chars implements CharSequence {
     }
 
     /**
+     * See {@link String#lastIndexOf(int, int)}.
+     */
+    public int lastIndexOf(int ch, int fromIndex) {
+        if (fromIndex < 0 || fromIndex >= len) {
+            return -1;
+        }
+        // we want to avoid searching too far in the string
+        // so we don't use String#indexOf, as it would be looking
+        // in the rest of the file too, which in the worst case is
+        // horrible
+
+        for (int i = start + fromIndex; i >= start; i--) {
+            char c = str.charAt(i);
+            if (c == ch) {
+                return i - start;
+            }
+        }
+        return -1;
+    }
+
+    /**
      * See {@link String#startsWith(String, int)}.
      */
     public boolean startsWith(String prefix, int fromIndex) {
@@ -219,6 +242,13 @@ public final class Chars implements CharSequence {
             return false;
         }
         return str.charAt(start + fromIndex) == prefix;
+    }
+
+    /**
+     * See {@link String#endsWith(String)}.
+     */
+    public boolean endsWith(String suffix) {
+        return startsWith(suffix, length() - suffix.length());
     }
 
     /**
@@ -252,6 +282,17 @@ public final class Chars implements CharSequence {
      */
     public Chars trim() {
         return trimStart().trimEnd();
+    }
+
+    /**
+     * Remove the suffix if it is present, otherwise returns this.
+     */
+    public Chars removeSuffix(String charSeq) {
+        int trimmedLen = length() - charSeq.length();
+        if (startsWith(charSeq, trimmedLen)) {
+            return slice(0, trimmedLen);
+        }
+        return this;
     }
 
 
@@ -441,6 +482,13 @@ public final class Chars implements CharSequence {
                 return next;
             }
         };
+    }
+
+    /**
+     * Returns a stream of lines yielded by {@link #lines()}.
+     */
+    public Stream<Chars> lineStream() {
+        return StreamSupport.stream(lines().spliterator(), false);
     }
 
 

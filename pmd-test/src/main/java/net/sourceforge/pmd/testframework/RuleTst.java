@@ -44,16 +44,19 @@ import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.document.Chars;
 import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.processor.AbstractPMDProcessor;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.renderers.TextRenderer;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
+import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * Advanced methods for test cases
  */
 public abstract class RuleTst {
+
     private final DocumentBuilder documentBuilder;
 
     /** Use a single classloader for all tests. */
@@ -483,15 +486,16 @@ public abstract class RuleTst {
                     throw new RuntimeException("No matching code fragment found for coderef");
                 }
             }
+            code = StringUtil.trimBlankLines(Chars.wrap(code)).toString();
 
             String description = getNodeValue(testCode, "description", true);
-            int expectedProblems = Integer.parseInt(getNodeValue(testCode, "expected-problems", true));
+            int expectedProblems = Integer.parseInt(getNodeValue(testCode, "expected-problems", true).trim());
 
             String languageVersionString = getNodeValue(testCode, "source-type", false);
             if (languageVersionString == null) {
                 tests[i] = new TestDescriptor(code, description, expectedProblems, rule);
             } else {
-
+                languageVersionString = languageVersionString.trim();
                 LanguageVersion languageVersion = parseSourceType(languageVersionString);
                 if (languageVersion != null) {
                     tests[i] = new TestDescriptor(code, description, expectedProblems, rule, languageVersion);
@@ -553,6 +557,6 @@ public abstract class RuleTst {
                 buffer.append(node.getNodeValue());
             }
         }
-        return buffer.toString().trim();
+        return buffer.toString();
     }
 }

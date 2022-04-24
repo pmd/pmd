@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.util;
 
 import java.text.MessageFormat;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.regex.Matcher;
@@ -15,6 +16,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.internal.util.AssertionUtil;
+import net.sourceforge.pmd.lang.document.Chars;
 
 /**
  * A number of String-specific utility methods for use by PMD or its IDE
@@ -278,53 +280,21 @@ public final class StringUtil {
      *
      * @throws NullPointerException If the parameter is null
      */
-    public static int maxCommonLeadingWhitespaceForAll(String[] strings) {
-
-        int shortest = lengthOfShortestIn(strings);
-        if (shortest == 0) {
-            return 0;
-        }
-
-        char[] matches = new char[shortest];
-
-        for (int m = 0; m < matches.length; m++) {
-            matches[m] = strings[0].charAt(m);
-            if (!Character.isWhitespace(matches[m])) {
-                return m;
-            }
-            for (String str : strings) {
-                if (str.charAt(m) != matches[m]) {
-                    return m;
-                }
+    private static int maxCommonLeadingWhitespaceForAll(List<? extends CharSequence> lines) {
+        // the max *common* leading WS length is the min length of all leading WS
+        int maxCommonWs = Integer.MAX_VALUE;
+        for (int i = 0; i < lines.size(); i++) {
+            CharSequence line = lines.get(i);
+            // compute common prefix
+            if (!StringUtils.isAllBlank(line) || i == lines.size() - 1) {
+                maxCommonWs = Math.min(maxCommonWs, StringUtil.countLeadingWhitespace(line));
             }
         }
-
-        return shortest;
-    }
-
-
-    /**
-     * Return the length of the shortest string in the array. If the collection
-     * is empty or any one of them is null then it returns 0.
-     *
-     * @throws NullPointerException If the parameter is null
-     */
-    public static int lengthOfShortestIn(String[] strings) {
-
-        if (strings.length == 0) {
-            return 0;
+        if (maxCommonWs == Integer.MAX_VALUE) {
+            // common prefix not found
+            maxCommonWs = 0;
         }
-
-        int minLength = Integer.MAX_VALUE;
-
-        for (String string : strings) {
-            if (string == null) {
-                return 0;
-            }
-            minLength = Math.min(minLength, string.length());
-        }
-
-        return minLength;
+        return maxCommonWs;
     }
 
 
@@ -334,7 +304,7 @@ public final class StringUtil {
      *
      * @return String[]
      */
-    public static String[] trimStartOn(String[] strings, int trimDepth) {
+    private static String[] trimStartOn(String[] strings, int trimDepth) {
 
         if (trimDepth == 0) {
             return strings;
@@ -346,6 +316,92 @@ public final class StringUtil {
         }
         return results;
     }
+
+    /**
+     * Trim common indentation in the lines of the string.
+     * Does not discard
+     */
+    public static StringBuilder trimIndent(Chars string) {
+        List<Chars> lines = string.lineStream().collect(Collectors.toList());
+        StringBuilder sb = new StringBuilder(string.length());
+        trimIndentIntoStringBuilder(lines, sb);
+        return sb;
+    }
+
+    public static void trimIndentIntoStringBuilder(List<Chars> lines, StringBuilder sb) {
+        int prefixLength = maxCommonLeadingWhitespaceForAll(lines);
+        appendWithoutCommonPrefix(lines, prefixLength, sb);
+    }
+
+    private static void appendWithoutCommonPrefix(List<Chars> lines, int prefixLength, StringBuilder output) {
+        for (int i = 0; i < lines.size(); i++) {
+            Chars line = lines.get(i);
+            // remove common whitespace prefix
+            if (!StringUtils.isAllBlank(line) && line.length() >= prefixLength) {
+                line = line.subSequence(prefixLength, line.length());
+            }
+            line = line.trimEnd();
+            line.appendChars(output);
+
+            boolean isLastLine = i == lines.size() - 1;
+            boolean isFirstLine = i == 0;
+            // todo is this &&?
+            if (!isLastLine || !isFirstLine && !StringUtils.isAllBlank(line)) {
+                output.append('\n'); // normalize line endings to LF
+            }
+        }
+    }
+
+    /**
+     * Remove trailing and leading blank lines.
+     */
+    public static Chars trimBlankLines(Chars string) {
+        int offsetOfFirstNonBlankChar = string.length();
+        for (int i = 0; i < string.length(); i++) {
+            if (!Character.isWhitespace(string.charAt(i))) {
+                offsetOfFirstNonBlankChar = i;
+                break;
+            }
+        }
+        int offsetOfLastNonBlankChar = 0;
+        for (int i = string.length() - 1; i > offsetOfFirstNonBlankChar; i--) {
+            if (!Character.isWhitespace(string.charAt(i))) {
+                offsetOfLastNonBlankChar = i;
+                break;
+            }
+        }
+
+        int lastNonBlankLine = string.indexOf('\n', offsetOfLastNonBlankChar);
+        int firstNonBlankLine = string.lastIndexOf('\n', offsetOfFirstNonBlankChar);
+
+        return string.subSequence(
+            minus1Default(firstNonBlankLine, 0),
+            minus1Default(lastNonBlankLine, string.length())
+        );
+    }
+
+    private static int minus1Default(int i, int defaultValue) {
+        return i == -1 ? defaultValue : i;
+    }
+
+
+    private static int countLeadingWhitespace(CharSequence s) {
+        int count = 0;
+        while (count < s.length() && Character.isWhitespace(s.charAt(count))) {
+            count++;
+        }
+        return count;
+    }
+
+    public static String[] linesWithTrimIndent(String source) {
+        String[] lines = source.split("\n");
+        int trimDepth = maxCommonLeadingWhitespaceForAll(Arrays.asList(lines));
+        if (trimDepth > 0) {
+            lines = trimStartOn(lines, trimDepth);
+        }
+        return lines;
+    }
+
 
 
     /**

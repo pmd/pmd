@@ -4,13 +4,15 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringEscapeUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
+
+import net.sourceforge.pmd.lang.document.Chars;
+import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * Represents a string literal. The image of this node is the literal as it appeared
@@ -71,7 +73,7 @@ public final class ASTStringLiteral extends AbstractLiteral implements ASTLitera
     @Override
     protected @Nullable Object buildConstValue() {
         if (isTextBlock()) {
-            return determineTextBlockContent(getImage());
+            return determineTextBlockContent(getText());
         } else {
             CharSequence image = getText();
             CharSequence woDelims = image.subSequence(1, image.length() - 1);
@@ -79,44 +81,34 @@ public final class ASTStringLiteral extends AbstractLiteral implements ASTLitera
         }
     }
 
-    static String determineTextBlockContent(String image) {
-        // normalize line endings to LF
-        String content = image.replaceAll("\r\n|\r", "\n");
-        int start = determineContentStart(content);
-        content = content.substring(start, content.length() - TEXTBLOCK_DELIMITER.length());
-
-        int prefixLength = Integer.MAX_VALUE;
-        List<String> lines = Arrays.asList(content.split("\\n"));
-        for (int i = 0; i < lines.size(); i++) {
-            String line = lines.get(i);
-            // compute common prefix
-            if (!StringUtils.isAllBlank(line) || i == lines.size() - 1) {
-                prefixLength = Math.min(prefixLength, countLeadingWhitespace(line));
-            }
-        }
-        if (prefixLength == Integer.MAX_VALUE) {
-            // common prefix not found
-            prefixLength = 0;
-        }
-        StringBuilder sb = new StringBuilder(content.length());
-        for (int i = 0; i < lines.size(); i++) {
-            String line = lines.get(i);
-            // remove common whitespace prefix
-            if (!StringUtils.isAllBlank(line) && line.length() >= prefixLength) {
-                line = line.substring(prefixLength);
-            }
-            line = removeTrailingWhitespace(line);
-            sb.append(line);
-
-            boolean isLastLine = i == lines.size() - 1;
-            boolean isFirstLine = i == 0;
-            if (!isLastLine || !isFirstLine && !StringUtils.isAllBlank(line)) {
-                sb.append('\n');
-            }
-        }
-
+    static String determineTextBlockContent(Chars image) {
+        List<Chars> lines = getContentLines(image);
+        StringBuilder sb = new StringBuilder(image.length());
+        StringUtil.trimIndentIntoStringBuilder(lines, sb);
         interpretEscapeSequences(sb);
         return sb.toString();
+    }
+
+    static String determineTextBlockContent(String image) {
+        return determineTextBlockContent(Chars.wrap(image));
+    }
+
+    /**
+     * Returns the lines of the parameter minus the delimiters.
+     */
+    private static @NonNull List<Chars> getContentLines(Chars chars) {
+        List<Chars> lines = chars.lineStream().collect(Collectors.toList());
+        assert lines.size() >= 2 : "invalid text block syntax " + chars;
+        // remove first line, it's just """ and some whitespace
+        lines = lines.subList(1, lines.size());
+
+        // trim the """ off the last line.
+        int lastIndex = lines.size() - 1;
+        Chars lastLine = lines.get(lastIndex);
+        assert lastLine.endsWith(TEXTBLOCK_DELIMITER);
+        lines.set(lastIndex, lastLine.removeSuffix(TEXTBLOCK_DELIMITER));
+
+        return lines;
     }
 
     private static void interpretEscapeSequences(StringBuilder sb) {
@@ -171,34 +163,5 @@ public final class ASTStringLiteral extends AbstractLiteral implements ASTLitera
                 }
             }
         }
-    }
-
-    private static int determineContentStart(String s) {
-        int start = TEXTBLOCK_DELIMITER.length(); // this is the opening delimiter
-        // the content begins after at the first character after the line terminator
-        // of the opening delimiter
-        while (start < s.length() && Character.isWhitespace(s.charAt(start))) {
-            if (s.charAt(start) == '\n') {
-                return start + 1;
-            }
-            start++;
-        }
-        return start;
-    }
-
-    private static int countLeadingWhitespace(String s) {
-        int count = 0;
-        while (count < s.length() && Character.isWhitespace(s.charAt(count))) {
-            count++;
-        }
-        return count;
-    }
-
-    private static String removeTrailingWhitespace(String s) {
-        int endIndexIncluding = s.length() - 1;
-        while (endIndexIncluding >= 0 && Character.isWhitespace(s.charAt(endIndexIncluding))) {
-            endIndexIncluding--;
-        }
-        return s.substring(0, endIndexIncluding + 1);
     }
 }
