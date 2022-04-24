@@ -188,7 +188,7 @@ public class TreeExportCli {
             throw bail("One of --file or --read-stdin must be mentioned");
         } else if (readStdin) {
             io.stderr.println("Reading from stdin...");
-            textFile = TextFile.forReader(readFromSystemIn(), "stdin", langVersion).build();
+            textFile = TextFile.forReader(readFromSystemIn(), "stdin", langVersion);
         } else {
             textFile = TextFile.forPath(Paths.get(file), Charset.forName(encoding), langVersion);
         }
