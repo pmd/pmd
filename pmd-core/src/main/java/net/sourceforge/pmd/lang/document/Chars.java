@@ -364,6 +364,14 @@ public final class Chars implements CharSequence {
     }
 
     /**
+     * Returns the subsequence that starts at the given offset and ends
+     * at the end of this string. Similar to {@link String#substring(int)}.
+     */
+    public Chars subSequence(int start) {
+        return slice(start, len - start);
+    }
+
+    /**
      * Slice a region of text.
      *
      * @param region A region
@@ -415,11 +423,11 @@ public final class Chars implements CharSequence {
     }
 
     private static void validateRangeWithAssert(int off, int len, int bound) {
-        assert len >= 0 && off >= 0 && (off + len) <= bound : invalidRange(off, len, bound);
+        assert len >= 0 && off >= 0 && off + len <= bound : invalidRange(off, len, bound);
     }
 
     private static void validateRange(int off, int len, int bound) {
-        if (len < 0 || off < 0 || (off + len) > bound) {
+        if (len < 0 || off < 0 || off + len > bound) {
             throw new IndexOutOfBoundsException(invalidRange(off, len, bound));
         }
     }
@@ -429,7 +437,7 @@ public final class Chars implements CharSequence {
     }
 
     @Override
-    public String toString() {
+    public @NonNull String toString() {
         // this already avoids the copy if start == 0 && len == str.length()
         return str.substring(start, start + len);
     }
@@ -548,7 +556,7 @@ public final class Chars implements CharSequence {
             private final int max = start + len;
 
             @Override
-            public int read(char[] cbuf, int off, int len) {
+            public int read(char @NonNull [] cbuf, int off, int len) {
                 if (len < 0 || off < 0 || off + len > cbuf.length) {
                     throw new IndexOutOfBoundsException();
                 }

@@ -12,6 +12,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.document.Chars;
+import net.sourceforge.pmd.util.CollectionUtil;
 import net.sourceforge.pmd.util.StringUtil;
 
 /**
@@ -83,8 +84,10 @@ public final class ASTStringLiteral extends AbstractLiteral implements ASTLitera
 
     static String determineTextBlockContent(Chars image) {
         List<Chars> lines = getContentLines(image);
-        StringBuilder sb = new StringBuilder(image.length());
-        StringUtil.trimIndentIntoStringBuilder(lines, sb);
+        // remove common prefix
+        StringUtil.trimIndentInPlace(lines);
+        // join with normalized end of line
+        StringBuilder sb = CollectionUtil.joinCharsIntoStringBuilder(lines, "\n");
         interpretEscapeSequences(sb);
         return sb.toString();
     }

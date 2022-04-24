@@ -279,8 +279,7 @@ public final class StringUtil {
      * the left without misaligning them.
      *
      * <p>Note: the spec is described in
-     * <a
-     * href='https://docs.oracle.com/en/java/javase/16/docs/api/java.base/java/lang/String.html#stripIndent()'>String#stripIndent</a>
+     * <a href='https://docs.oracle.com/en/java/javase/16/docs/api/java.base/java/lang/String.html#stripIndent()'>String#stripIndent</a>
      *
      * <quote>
      * The minimum indentation (min) is determined as follows:
@@ -309,33 +308,36 @@ public final class StringUtil {
         return maxCommonWs;
     }
 
+    /**
+     * Returns a list of
+     */
+    public static List<Chars> linesWithTrimIndent(String source) {
+        List<String> lines = Arrays.asList(source.split("\n"));
+        List<Chars> result = lines.stream().map(Chars::wrap).collect(CollectionUtil.toMutableList());
+        trimIndentInPlace(result);
+        return result;
+    }
 
     /**
-     * Trims off the leading characters off the strings up to the trimDepth
-     * specified. Returns the same strings if trimDepth = 0
-     *
-     * @return String[]
+     * @param lines mutable list
      */
-    private static String[] trimStartOn(String[] strings, int trimDepth) {
-
-        if (trimDepth == 0) {
-            return strings;
+    public static void trimIndentInPlace(List<Chars> lines) {
+        int trimDepth = maxCommonLeadingWhitespaceForAll(lines);
+        if (trimDepth > 0) {
+            lines.replaceAll(chars -> chars.length() >= trimDepth
+                                      ? chars.subSequence(trimDepth).trimEnd()
+                                      : chars.trimEnd());
         }
-
-        String[] results = new String[strings.length];
-        for (int i = 0; i < strings.length; i++) {
-            results[i] = strings[i].substring(trimDepth);
-        }
-        return results;
     }
 
     /**
      * Trim common indentation in the lines of the string, like
      * {@link #appendWithoutCommonPrefix(List, int, StringBuilder)}.
-     *
      */
     public static StringBuilder trimIndent(Chars string) {
-        List<Chars> lines = string.lineStream().collect(Collectors.toList());
+        List<Chars> lines = string.lineStream().collect(CollectionUtil.toMutableList());
+        trimIndentInPlace(lines);
+
         StringBuilder sb = new StringBuilder(string.length());
         trimIndentIntoStringBuilder(lines, sb);
         return sb;
@@ -365,7 +367,7 @@ public final class StringUtil {
             Chars line = lines.get(i);
             // remove common whitespace prefix
             if (line.length() >= prefixLength && !StringUtils.isBlank(line)) {
-                line = line.subSequence(prefixLength, line.length());
+                line = line.subSequence(prefixLength);
             }
             // trim trailing whitespace
             line = line.trimEnd();
@@ -398,17 +400,21 @@ public final class StringUtil {
             }
         }
 
-        int lastNonBlankLine = string.indexOf('\n', offsetOfLastNonBlankChar);
-        int firstNonBlankLine = string.lastIndexOf('\n', offsetOfFirstNonBlankChar);
+        // look backwards before the first non-blank char
+        int cutFromInclusive = string.lastIndexOf('\n', offsetOfFirstNonBlankChar);
+        // If firstNonBlankLineStart == -1, ie we're on the first line,
+        // we want to start at zero: then we add 1 to get 0
+        // If firstNonBlankLineStart >= 0, then it's the index of the
+        // \n, we want to cut right after that, so we add 1.
+        cutFromInclusive += 1;
 
-        return string.subSequence(
-            minus1Default(firstNonBlankLine, 0),
-            minus1Default(lastNonBlankLine, string.length())
-        );
-    }
+        // look forwards after the last non-blank char
+        int cutUntilExclusive = string.indexOf('\n', offsetOfLastNonBlankChar);
+        if (cutUntilExclusive == StringUtils.INDEX_NOT_FOUND) {
+            cutUntilExclusive = string.length();
+        }
 
-    private static int minus1Default(int i, int defaultValue) {
-        return i == -1 ? defaultValue : i;
+        return string.subSequence(cutFromInclusive, cutUntilExclusive);
     }
 
 
@@ -418,15 +424,6 @@ public final class StringUtil {
             count++;
         }
         return count;
-    }
-
-    public static String[] linesWithTrimIndent(String source) {
-        String[] lines = source.split("\n");
-        int trimDepth = maxCommonLeadingWhitespaceForAll(Arrays.asList(lines));
-        if (trimDepth > 0) {
-            lines = trimStartOn(lines, trimDepth);
-        }
-        return lines;
     }
 
 

@@ -94,6 +94,7 @@ public class StringUtilTest {
 
         assertTrimIndent(" \n b \n c\n  ",
                          "\nb\nc\n");
+        assertTrimIndent("", "");
     }
 
     private void assertTrimIndent(String input, String output) {
@@ -106,5 +107,29 @@ public class StringUtilTest {
         assertThat(StringUtil.elide("abc", 2, "."), equalTo("a."));
         assertThat(StringUtil.elide("abc", 2, ".."), equalTo(".."));
         assertThat(StringUtil.elide("abc", 3, ".."), equalTo("abc"));
+    }
+
+    @Test
+    public void substringAfterLast() {
+        assertEquals("abc", StringUtil.substringAfterLast("a.abc", '.'));
+        assertEquals("abc", StringUtil.substringAfterLast("abc", '.'));
+    }
+
+    @Test
+    public void trimBlankLines() {
+        assertTrimBlankLinesEquals(" \n \n abc \n \n de \n \n ",
+                                   " abc \n \n de ");
+        assertTrimBlankLinesEquals("", "");
+    }
+
+    private void assertTrimBlankLinesEquals(String input, String output) {
+        assertEquals(
+            Chars.wrap(output),
+            StringUtil.trimBlankLines(Chars.wrap(input))
+        );
+    }
+
+    @Test
+    public void linesWithTrimIndent() {
     }
 }
