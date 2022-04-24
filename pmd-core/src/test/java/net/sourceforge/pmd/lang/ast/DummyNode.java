@@ -4,18 +4,31 @@
 
 package net.sourceforge.pmd.lang.ast;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
+import net.sourceforge.pmd.lang.DummyLanguageModule;
+import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
 import net.sourceforge.pmd.lang.ast.impl.AbstractNode;
 import net.sourceforge.pmd.lang.ast.impl.GenericNode;
 import net.sourceforge.pmd.lang.document.FileLocation;
+import net.sourceforge.pmd.lang.document.TextDocument;
+import net.sourceforge.pmd.lang.document.TextFile;
+import net.sourceforge.pmd.lang.document.TextRange2d;
+import net.sourceforge.pmd.lang.document.TextRegion;
+import net.sourceforge.pmd.lang.rule.xpath.Attribute;
 
 public class DummyNode extends AbstractNode<DummyNode, DummyNode> implements GenericNode<DummyNode> {
+
     private final boolean findBoundary;
     private final String xpathName;
     private final Map<String, String> userData = new HashMap<>();
     private String image;
+    private final List<Attribute> attributes = new ArrayList<>();
 
     private int bline = 1;
     private int bcol = 1;
@@ -23,9 +36,7 @@ public class DummyNode extends AbstractNode<DummyNode, DummyNode> implements Gen
     private int ecol = 1;
 
     public DummyNode(String xpathName) {
-        super();
-        this.findBoundary = false;
-        this.xpathName = xpathName;
+        this(false, xpathName);
     }
 
     public DummyNode() {
@@ -39,6 +50,30 @@ public class DummyNode extends AbstractNode<DummyNode, DummyNode> implements Gen
     public DummyNode(boolean findBoundary, String xpathName) {
         this.findBoundary = findBoundary;
         this.xpathName = xpathName;
+
+        Iterator<Attribute> iter = super.getXPathAttributesIterator();
+        while (iter.hasNext()) {
+            attributes.add(iter.next());
+        }
+    }
+
+    @Override
+    public DummyNode getParent() {
+        return super.getParent();
+    }
+
+    @Override
+    public void addChild(DummyNode child, int index) {
+        super.addChild(child, index);
+    }
+
+    @Override
+    public DummyNode getChild(int index) {
+        return super.getChild(index);
+    }
+
+    public void setParent(DummyNode node) {
+        super.setParent(node);
     }
 
     public void publicSetChildren(DummyNode... children) {
@@ -56,9 +91,22 @@ public class DummyNode extends AbstractNode<DummyNode, DummyNode> implements Gen
         return this;
     }
 
+    public DummyNode setCoords(TextDocument document, TextRegion region) {
+        FileLocation loc = document.toLocation(region);
+        return setCoords(loc.getStartLine(), loc.getStartColumn(), loc.getEndLine(), loc.getEndColumn());
+    }
+
+    public DummyNode setCoords(TextRange2d region) {
+        return setCoords(region.getStartLine(), region.getStartColumn(), region.getEndLine(), region.getEndColumn());
+    }
+
+    public TextRange2d getCoords() {
+        return TextRange2d.range2d(bline, bcol, eline, ecol);
+    }
+
     @Override
     public FileLocation getReportLocation() {
-        return getTextDocument().createLocation(bline, bcol, eline, ecol);
+        return getTextDocument().toLocation(TextRange2d.range2d(bline, bcol, eline, ecol));
     }
 
     public void setImage(String image) {
@@ -72,7 +120,7 @@ public class DummyNode extends AbstractNode<DummyNode, DummyNode> implements Gen
 
     @Override
     public String toString() {
-        return getImage();
+        return getXPathNodeName() + "[@Image=" + getImage() + "]";
     }
 
     @Override
@@ -89,19 +137,61 @@ public class DummyNode extends AbstractNode<DummyNode, DummyNode> implements Gen
         return userData;
     }
 
-    @Override
-    public void addChild(DummyNode child, int index) {
-        super.addChild(child, index);
+    public void setXPathAttribute(String name, String value) {
+        attributes.add(new Attribute(this, name, value));
+    }
+
+
+    public void clearXPathAttributes() {
+        attributes.clear();
     }
 
     @Override
-    public DummyNode getChild(int index) {
-        return super.getChild(index);
+    public Iterator<Attribute> getXPathAttributesIterator() {
+        return attributes.iterator();
     }
 
-    public DummyNode withFileName(String filename) {
-        ((DummyRoot) getRoot()).withFileName(filename);
-        return this;
+    public static class DummyRootNode extends DummyNode implements RootNode {
+
+        private AstInfo<DummyRootNode> astInfo;
+
+        public DummyRootNode() {
+            TextDocument document = TextDocument.readOnlyString(
+                "dummy text",
+                TextFile.UNKNOWN_FILENAME,
+                DummyLanguageModule.getInstance().getDefaultVersion()
+            );
+            astInfo = new AstInfo<>(
+                new ParserTask(
+                    document,
+                    SemanticErrorReporter.noop()
+                ),
+                this);
+        }
+
+        public DummyRootNode withTaskInfo(ParserTask task) {
+            this.astInfo = new AstInfo<>(task, this);
+            return this;
+        }
+
+        public DummyRootNode withNoPmdComments(Map<Integer, String> suppressMap) {
+            this.astInfo = new AstInfo<>(
+                astInfo.getTextDocument(),
+                this,
+                suppressMap
+            );
+            return this;
+        }
+
+        @Override
+        public AstInfo<DummyRootNode> getAstInfo() {
+            return Objects.requireNonNull(astInfo, "no ast info");
+        }
+
+        @Override
+        public String getXPathNodeName() {
+            return "dummyRootNode";
+        }
     }
 
     public static class DummyNodeTypeB extends DummyNode {
@@ -110,5 +200,4 @@ public class DummyNode extends AbstractNode<DummyNode, DummyNode> implements Gen
             super("dummyNodeB");
         }
     }
-
 }

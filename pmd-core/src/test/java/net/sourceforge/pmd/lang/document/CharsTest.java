@@ -77,7 +77,7 @@ public class CharsTest {
         Chars bc = Chars.wrap("abcd").slice(1, 2);
 
         bc.getChars(0, arr, 1, 2);
-        assertArrayEquals(arr, new char[] {0, 'b', 'c', 0});
+        assertArrayEquals(arr, new char[] { 0, 'b', 'c', 0 });
 
         assertThrows(IndexOutOfBoundsException.class, () -> bc.getChars(2, arr, 0, 1));
         assertThrows(IndexOutOfBoundsException.class, () -> bc.getChars(-1, arr, 0, 1));
@@ -230,6 +230,36 @@ public class CharsTest {
         assertFalse(chars.contentEquals(Chars.wrap("a_b-c")));
 
         assertTrue(chars.contentEquals(Chars.wrap("A_B_C"), true));
+    }
+
+    @Test
+    public void testSlice() {
+        // slice is offset + length
+        Chars chars = Chars.wrap("a_a_b_c_s").slice(2, 5);
+        //                          -----
+        assertEquals(Chars.wrap("_b_"), chars.slice(1, 3));
+        assertThrows(IndexOutOfBoundsException.class, () -> chars.slice(0, -1));
+        assertThrows(IndexOutOfBoundsException.class, () -> chars.slice(0, 6));
+    }
+
+    @Test
+    public void testSubsequence() {
+        // subsequence is start + end
+        Chars chars = Chars.wrap("a_a_b_c_s").slice(2, 5);
+        //                          -----
+        assertEquals(Chars.wrap("_b"), chars.subSequence(1, 3));
+        assertThrows(IndexOutOfBoundsException.class, () -> chars.slice(0, -1));
+        assertThrows(IndexOutOfBoundsException.class, () -> chars.slice(0, 6));
+    }
+
+    @Test
+    public void testSubstring() {
+        // substring is start + end
+        Chars chars = Chars.wrap("a_a_b_c_s").slice(2, 5);
+        //                          -----
+        assertEquals("_b", chars.substring(1, 3));
+        assertThrows(IndexOutOfBoundsException.class, () -> chars.substring(0, -1));
+        assertThrows(IndexOutOfBoundsException.class, () -> chars.substring(0, 6));
     }
 
 }

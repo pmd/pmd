@@ -9,7 +9,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import net.sourceforge.pmd.lang.ast.DummyNode;
-import net.sourceforge.pmd.lang.ast.DummyRoot;
+import net.sourceforge.pmd.lang.ast.DummyNode.DummyRootNode;
 
 import net.sf.saxon.Configuration;
 import net.sf.saxon.type.Type;
@@ -19,7 +19,7 @@ public class ElementNodeTest {
 
     @Test
     public void testCompareOrder() {
-        DummyRoot root = new DummyRoot();
+        DummyRootNode root = new DummyRootNode();
 
         DummyNode c0 = new DummyNode(false, "foo");
         c0.setCoords(1, 1, 2, 2);

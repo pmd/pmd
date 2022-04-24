@@ -1,4 +1,4 @@
-+- CompilationUnit[@PackageName = "", @declarationsAreInDefaultPackage = "true"]
++- CompilationUnit[@PackageName = ""]
    +- ClassOrInterfaceDeclaration[@Abstract = "false", @Annotation = "false", @Anonymous = "false", @BinaryName = "PatternsInSwitchLabels", @CanonicalName = "PatternsInSwitchLabels", @EffectiveVisibility = "public", @Enum = "false", @Final = "false", @Image = "PatternsInSwitchLabels", @Interface = "false", @Local = "false", @Native = "false", @Nested = "false", @PackageName = "", @PackagePrivate = "false", @Private = "false", @Protected = "false", @Public = "true", @Record = "false", @RegularClass = "true", @RegularInterface = "false", @SimpleName = "PatternsInSwitchLabels", @Static = "false", @Strictfp = "false", @Synchronized = "false", @SyntacticallyAbstract = "false", @SyntacticallyFinal = "false", @SyntacticallyPublic = "true", @SyntacticallyStatic = "false", @TopLevel = "true", @Transient = "false", @Visibility = "public", @Volatile = "false"]
       +- ModifierList[]
       +- ClassOrInterfaceBody[@Empty = "false", @Size = "1"]

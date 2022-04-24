@@ -346,21 +346,20 @@ public final class Chars implements CharSequence {
     }
 
     /**
-     * Returns the substring starting at the given offset and with the
-     * given length. This differs from {@link String#substring(int, int)}
-     * in that it uses offset + length instead of start + end.
+     * Returns the substring between the given offsets.
+     * given length.
      *
-     * @param off Start offset ({@code 0 <= off < this.length()})
-     * @param len Length of the substring ({@code 0 <= len <= this.length() - off})
+     * @param start Start offset ({@code 0 <= start < this.length()})
+     * @param end   End offset ({@code start <= end <= this.length()})
      *
      * @return A substring
      *
      * @throws IndexOutOfBoundsException If the parameters are not a valid range
+     * @see String#substring(int, int)
      */
-    public String substring(int off, int len) {
-        validateRange(off, len, this.len);
-        int start = idx(off);
-        return str.substring(start, start + len);
+    public String substring(int start, int end) {
+        validateRange(start, end - start, this.len);
+        return str.substring(idx(start), idx(end));
     }
 
     private static void validateRangeWithAssert(int off, int len, int bound) {

@@ -23,16 +23,6 @@
                 <directory>../pmd-scala-common/src/main/resources</directory>
             </resource>
         </resources>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>8</source>
-                    <target>8</target>
-                </configuration>
-            </plugin>
-        </plugins>
         <testSourceDirectory>../pmd-scala-common/src/test/java</testSourceDirectory>
         <testResources>
             <testResource>
@@ -43,6 +33,24 @@
                 <directory>../pmd-scala-common/src/test/kotlin</directory>
             </testResource>
         </testResources>
+
+        <plugins>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>java-compile</id>
+                        <phase>none</phase>
+                    </execution>
+                    <execution>
+                        <id>java-test-compile</id>
+                        <phase>none</phase>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
 
         <pluginManagement>
             <plugins>
@@ -85,6 +93,15 @@
                             </configuration>
                         </execution>
                     </executions>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <configuration>
+                        <source>8</source>
+                        <target>8</target>
+                    </configuration>
                 </plugin>
 
                 <plugin>

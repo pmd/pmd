@@ -41,6 +41,7 @@ import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.lang.document.TextFileContent;
+import net.sourceforge.pmd.lang.document.TextRange2d;
 
 @SuppressWarnings("deprecation")
 public class FileAnalysisCacheTest {
@@ -116,7 +117,7 @@ public class FileAnalysisCacheTest {
 
         final RuleViolation rv = mock(RuleViolation.class);
         when(rv.getFilename()).thenReturn(sourceFile.getDisplayName());
-        when(rv.getLocation()).thenReturn(FileLocation.range(sourceFile.getDisplayName(), 1, 2, 3, 4));
+        when(rv.getLocation()).thenReturn(FileLocation.range(sourceFile.getDisplayName(), TextRange2d.range2d(1, 2, 3, 4)));
         final net.sourceforge.pmd.Rule rule = mock(net.sourceforge.pmd.Rule.class, Mockito.RETURNS_SMART_NULLS);
         when(rule.getLanguage()).thenReturn(mock(Language.class));
         when(rv.getRule()).thenReturn(rule);

@@ -69,7 +69,7 @@ final class RootTextDocument extends BaseCloseable implements TextDocument {
 
     @Override
     public FileLocation toLocation(TextRegion region) {
-        checkInRange(region);
+        checkInRange(region, this.getLength());
         SourceCodePositioner positioner = content.getPositioner();
 
         // We use longs to return both numbers at the same time
@@ -89,6 +89,31 @@ final class RootTextDocument extends BaseCloseable implements TextDocument {
     }
 
     @Override
+    public int offsetAtLineColumn(int line, int column) {
+        SourceCodePositioner positioner = content.getPositioner();
+        return positioner.offsetFromLineColumn(line, column);
+    }
+
+    @Override
+    public boolean isInRange(TextPos2d textPos2d) {
+        if (textPos2d.getLine() <= content.getPositioner().getNumLines()) {
+            int maxColumn = content.getPositioner().offsetOfEndOfLine(textPos2d.getLine());
+            return textPos2d.getColumn()
+                < content.getPositioner().columnFromOffset(textPos2d.getLine(), maxColumn);
+        }
+        return false;
+    }
+
+    @Override
+    public TextPos2d lineColumnAtOffset(int offset, boolean inclusive) {
+        long longPos = content.getPositioner().lineColFromOffset(offset, inclusive);
+        return TextPos2d.pos2d(
+            SourceCodePositioner.unmaskLine(longPos),
+            SourceCodePositioner.unmaskCol(longPos)
+        );
+    }
+
+    @Override
     public TextRegion createLineRange(int startLineInclusive, int endLineInclusive) {
         SourceCodePositioner positioner = content.getPositioner();
 
@@ -103,9 +128,19 @@ final class RootTextDocument extends BaseCloseable implements TextDocument {
         return TextRegion.fromBothOffsets(first, last);
     }
 
-    void checkInRange(TextRegion region) {
-        if (region.getEndOffset() > getLength()) {
-            throw regionOutOfBounds(region.getStartOffset(), region.getEndOffset(), getLength());
+    @Override
+    public TextRange2d getEntireRegion2d() {
+        SourceCodePositioner positioner = content.getPositioner();
+        return TextRange2d.range2d(
+            1, 1,
+            positioner.getLastLine(),
+            positioner.getLastLineColumn()
+        );
+    }
+
+    static void checkInRange(TextRegion region, int length) {
+        if (region.getEndOffset() > length) {
+            throw regionOutOfBounds(region.getStartOffset(), region.getEndOffset(), length);
         }
     }
 

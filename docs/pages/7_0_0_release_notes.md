@@ -19,6 +19,15 @@ This is a {{ site.pmd.release_type }} release.
 
 ### New and noteworthy
 
+#### CLI improvements
+
+The PMD CLI has been enhanced with a progress bar, which interactively displays the
+current progress of the analysis.
+
+TODO screenshot (take it right before releasing, because other changes to the CLI will occur until then)
+
+This can be disabled with the `--no-progress` flag.
+
 #### Full Antlr support
 
 Languages backed by an Antlr grammar are now fully supported. This means, it's now possible not only to use Antlr grammars for CPD,
@@ -155,7 +164,8 @@ The following previously deprecated rules have been finally removed:
 *   miscellaneous
     *   [#896](https://github.com/pmd/pmd/issues/896): \[all] Use slf4j
     *   [#1451](https://github.com/pmd/pmd/issues/1451): \[core] RulesetFactoryCompatibility stores the whole ruleset file in memory as a string
-
+*   cli
+    *   [#3828](https://github.com/pmd/pmd/issues/3828): \[core] Progress reporting
 *   apex-design
     *   [#2667](https://github.com/pmd/pmd/issues/2667): \[apex] Integrate nawforce/ApexLink to build robust Unused rule
 *   java-bestpractices
@@ -279,6 +289,7 @@ The metrics framework has been made simpler and more general.
 *   [#1881](https://github.com/pmd/pmd/pull/1881): \[doc] Add ANTLR documentation - [Matías Fraga](https://github.com/matifraga)
 *   [#1882](https://github.com/pmd/pmd/pull/1882): \[swift] UnavailableFunction Swift rule - [Tomás de Lucca](https://github.com/tomidelucca)
 *   [#2830](https://github.com/pmd/pmd/pull/2830): \[apex] Apexlink POC - [Kevin Jones](https://github.com/nawforce)
+*   [#3866](https://github.com/pmd/pmd/pull/3866): \[core] Add CLI Progress Bar - [@JerritEic](https://github.com/JerritEic)
 
 {% endtocmaker %}
 

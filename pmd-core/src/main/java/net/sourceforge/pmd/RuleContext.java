@@ -14,6 +14,7 @@ import net.sourceforge.pmd.Report.SuppressedViolation;
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.document.FileLocation;
+import net.sourceforge.pmd.lang.document.TextRange2d;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
 import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
 import net.sourceforge.pmd.processor.AbstractPMDProcessor;
@@ -131,7 +132,7 @@ public final class RuleContext {
 
         FileLocation location = node.getReportLocation();
         if (beginLine != -1 && endLine != -1) {
-            location = FileLocation.range(location.getFileName(), beginLine, 1, endLine, 1);
+            location = FileLocation.range(location.getFileName(), TextRange2d.range2d(beginLine, 1, endLine, 1));
         }
 
         RuleViolation violation = fact.createViolation(rule, node, location, makeMessage(message, formatArgs));

@@ -75,14 +75,30 @@ public final class IOUtil {
      * @return the writer, never null
      */
     public static Writer createWriter(String reportFile) {
+        return createWriter(getDefaultCharset(), reportFile);
+    }
+
+    /**
+     * Creates a writer that writes to the given file or to stdout.
+     * The file is created if it does not exist.
+     *
+     * <p>Unlike {@link #createWriter(String)}, this method always uses
+     * the given charset. Even for writing to stdout. It never
+     * falls back to the default charset.</p>
+     *
+     * @param charset the charset to be used (required)
+     * @param reportFile the file name (optional)
+     * @return
+     */
+    public static Writer createWriter(Charset charset, String reportFile) {
         try {
             if (StringUtils.isBlank(reportFile)) {
-                return createWriter();
+                return new OutputStreamWriter(System.out, charset);
             }
             Path path = new File(reportFile).toPath().toAbsolutePath();
             Files.createDirectories(path.getParent()); // ensure parent dir exists
             // this will create the file if it doesn't exist
-            return Files.newBufferedWriter(path, getDefaultCharset());
+            return Files.newBufferedWriter(path, charset);
         } catch (IOException e) {
             throw new IllegalArgumentException(e);
         }

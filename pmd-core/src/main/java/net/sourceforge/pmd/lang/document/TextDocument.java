@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.document;
 
+import static net.sourceforge.pmd.lang.document.RootTextDocument.checkInRange;
+
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.Reader;
@@ -37,6 +39,26 @@ public interface TextDocument extends Closeable {
 
     // todo text edition (there are some reverted commits in the branch
     //  with part of this, including a lot of tests)
+
+    /*
+        Summary of different coordinate systems:
+        Coordinate system:   Line/column            Offset
+        ==============================================================
+        Position:            TextPos2d              int >= 0
+        Range:               TextRange2d            TextRegion
+
+        (FileLocation is similar to TextRange2d in terms of position info)
+
+        Conversions:
+          line/column -> offset: offsetAtLineColumn
+          offset -> line/column: lineColumnAtOffset
+        Range conversions:
+          TextRegion  -> TextRange2d: toRegion
+          TextRange2d -> TextRegion: toRange2d
+
+          TextRegion -> FileLocation: toLocation
+          TextRange2d -> FileLocation: toLocation
+     */
 
     /**
      * Returns the language version that should be used to parse this file.
@@ -161,6 +183,11 @@ public interface TextDocument extends Closeable {
     }
 
     /**
+     * Returns a 2D text range that corresponds to the entire document.
+     */
+    TextRange2d getEntireRegion2d();
+
+    /**
      * Returns a region that spans the text of all the given lines.
      * This is intended to provide a replacement for {@link SourceCode#getSlice(int, int)}.
      *
@@ -179,7 +206,9 @@ public interface TextDocument extends Closeable {
 
 
     /**
-     * Turn a text region into a {@link FileLocation}.
+     * Turn a text region into a {@link FileLocation}. This computes
+     * the line/column information for both start and end offset of
+     * the region.
      *
      * @return A new file position
      *
@@ -187,22 +216,90 @@ public interface TextDocument extends Closeable {
      */
     FileLocation toLocation(TextRegion region);
 
-
-    // todo doc
-    default FileLocation createLocation(int bline, int bcol, int eline, int ecol) {
-        return FileLocation.range(getDisplayName(), bline, bcol, eline, ecol);
+    /**
+     * Turn a text region into a {@link FileLocation}. The file name is
+     * the display name of this document.
+     *
+     * @return A new file position
+     *
+     * @throws IndexOutOfBoundsException If the argument is not a valid region in this document
+     */
+    default FileLocation toLocation(TextRange2d range) {
+        int startOffset = offsetAtLineColumn(range.getStartPos());
+        if (startOffset < 0) {
+            throw new IndexOutOfBoundsException("Region out of bounds: " + range.displayString());
+        }
+        TextRegion region = TextRegion.caretAt(startOffset);
+        checkInRange(region, this.getLength());
+        return FileLocation.location(getDisplayName(), range);
     }
 
     /**
-     * Determines the line number at the given offset (inclusive).
-     *
-     * @return the line number at the given index
-     *
-     * @throws IndexOutOfBoundsException If the argument is not a valid offset in this document
+     * Turn a text region to a {@link TextRange2d}.
      */
-    default int lineNumberAt(int offset) {
-        return toLocation(TextRegion.fromOffsetLength(offset, 0)).getBeginLine();
+    default TextRange2d toRange2d(TextRegion region) {
+        TextPos2d start = lineColumnAtOffset(region.getStartOffset(), true);
+        TextPos2d end = lineColumnAtOffset(region.getEndOffset(), false);
+        return TextRange2d.range2d(start, end);
     }
+
+    /**
+     * Turn a {@link TextRange2d} into a {@link TextRegion}.
+     */
+    default TextRegion toRegion(TextRange2d region) {
+        return TextRegion.fromBothOffsets(
+            offsetAtLineColumn(region.getStartPos()),
+            offsetAtLineColumn(region.getEndPos())
+        );
+    }
+
+
+    /**
+     * Returns the offset at the given line and column number.
+     *
+     * @param line   Line number (1-based)
+     * @param column Column number (1-based)
+     *
+     * @return an offset (0-based)
+     */
+    int offsetAtLineColumn(int line, int column);
+
+    /**
+     * Returns true if the position is valid in this document.
+     */
+    boolean isInRange(TextPos2d textPos2d);
+
+    /**
+     * Returns the offset at the line and number.
+     */
+    default int offsetAtLineColumn(TextPos2d pos2d) {
+        return offsetAtLineColumn(pos2d.getLine(), pos2d.getColumn());
+    }
+
+    /**
+     * Returns the line and column at the given offset (inclusive).
+     *
+     * @param offset A source offset (0-based), can range in {@code [0, length]}.
+     *
+     * @throws IndexOutOfBoundsException if the offset is out of bounds
+     */
+    default TextPos2d lineColumnAtOffset(int offset) {
+        return lineColumnAtOffset(offset, true);
+    }
+
+    /**
+     * Returns the line and column at the given offset (inclusive).
+     *
+     * @param offset    A source offset (0-based), can range in {@code [0, length]}.
+     * @param inclusive If the offset falls right after a line terminator,
+     *                  two behaviours are possible. If the parameter is true,
+     *                  choose the position at the start of the next line.
+     *                  Otherwise choose the offset at the end of the line.
+     *
+     * @throws IndexOutOfBoundsException if the offset is out of bounds
+     */
+    TextPos2d lineColumnAtOffset(int offset, boolean inclusive);
+
 
     /**
      * Closing a document closes the underlying {@link TextFile}.

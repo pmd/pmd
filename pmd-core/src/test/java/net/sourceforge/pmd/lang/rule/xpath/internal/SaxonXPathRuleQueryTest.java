@@ -22,8 +22,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import net.sourceforge.pmd.lang.ast.DummyNode.DummyRootNode;
 import net.sourceforge.pmd.lang.ast.DummyNodeWithListAndEnum;
-import net.sourceforge.pmd.lang.ast.DummyRoot;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.rule.xpath.PmdXPathException;
@@ -64,7 +64,7 @@ public class SaxonXPathRuleQueryTest {
 
     @Test
     public void testHigherOrderFuns() { // XPath 3.1
-        DummyRoot tree = tree(() -> root(
+        DummyRootNode tree = tree(() -> root(
             node()
         ));
 
@@ -116,7 +116,7 @@ public class SaxonXPathRuleQueryTest {
 
     @Test
     public void testRootExpression() {
-        DummyRoot dummy = new DummyRoot();
+        DummyRootNode dummy = new DummyRootNode();
 
         List<Node> result = assertQuery(1, "/", dummy);
         Assert.assertEquals(dummy, result.get(0));
@@ -124,7 +124,7 @@ public class SaxonXPathRuleQueryTest {
 
     @Test
     public void testRootExpressionIsADocumentNode() {
-        DummyRoot dummy = new DummyRoot();
+        DummyRootNode dummy = new DummyRootNode();
 
         List<Node> result = assertQuery(1, "(/)[self::document-node()]", dummy);
         Assert.assertEquals(dummy, result.get(0));
@@ -132,7 +132,7 @@ public class SaxonXPathRuleQueryTest {
 
     @Test
     public void testRootExpressionWithName() {
-        DummyRoot dummy = new DummyRoot();
+        DummyRootNode dummy = new DummyRootNode();
         String xpathName = dummy.getXPathNodeName();
 
         List<Node> result = assertQuery(1, "(/)[self::document-node(element(" + xpathName + "))]", dummy);
@@ -232,7 +232,7 @@ public class SaxonXPathRuleQueryTest {
     public void unionBeforeSlash() {
         SaxonXPathRuleQuery query = createQuery("(//dummyNode | //dummyNodeB)/dummyNode[@Image = '10']");
 
-        DummyRoot tree = tree(() -> root(
+        DummyRootNode tree = tree(() -> root(
             node(
                 node()
             ),
@@ -254,7 +254,7 @@ public class SaxonXPathRuleQueryTest {
     public void unionBeforeSlashWithFilter() {
         SaxonXPathRuleQuery query = createQuery("(//dummyNode[@Image='0'] | //dummyNodeB[@Image='1'])/dummyNode[@Image = '10']");
 
-        DummyRoot tree = tree(() -> root(
+        DummyRootNode tree = tree(() -> root(
             node(
                 node()
             ),
@@ -277,7 +277,7 @@ public class SaxonXPathRuleQueryTest {
     public void unionBeforeSlashDeeper() {
         SaxonXPathRuleQuery query = createQuery("(//dummyNode | //dummyNodeB)/dummyNode/dummyNode");
 
-        DummyRoot tree = tree(() -> root(
+        DummyRootNode tree = tree(() -> root(
             node(
                 node(
                     node()

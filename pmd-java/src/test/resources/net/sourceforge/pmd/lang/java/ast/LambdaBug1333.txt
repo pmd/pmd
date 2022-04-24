@@ -20,7 +20,7 @@
          |     +- ExpressionStatement[]
          |        +- MethodCall[@CompileTimeConstant = "false", @Image = "delete", @MethodName = "delete", @ParenthesisDepth = "0", @Parenthesized = "false"]
          |           +- ArgumentList[@Empty = "false", @Size = "1"]
-         |              +- LambdaExpression[@BlockBody = "false", @CompileTimeConstant = "false", @ExpressionBody = "true", @ParenthesisDepth = "0", @Parenthesized = "false"]
+         |              +- LambdaExpression[@Arity = "1", @BlockBody = "false", @CompileTimeConstant = "false", @ExpressionBody = "true", @ParenthesisDepth = "0", @Parenthesized = "false"]
          |                 +- LambdaParameterList[@Empty = "false", @Size = "1"]
          |                 |  +- LambdaParameter[@EffectiveVisibility = "package", @Final = "false", @TypeInferred = "true", @Visibility = "package"]
          |                 |     +- ModifierList[@EffectiveModifiers = "{}", @ExplicitModifiers = "{}"]

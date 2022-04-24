@@ -18,11 +18,16 @@ public interface TextAvailableNode extends Node {
 
 
     /**
-     * Returns the exact region of text delimiting the node in the
-     * underlying text document. Note that {@link #getReportLocation()}
-     * does not need to match this region. This region uses the translated
-     * coordinate system, ie the coordinate system of {@link #getTextDocument()}.
+     * Returns the exact region of text delimiting
+     * the node in the underlying text document. Note
+     * that {@link #getReportLocation()} does not need
+     * to match this region. {@link #getReportLocation()}
+     * can be scoped down to a specific token, eg the
+     * class identifier. This region uses the translated
+     * coordinate system, ie the coordinate system
+     * of {@link #getTextDocument()}.
      */
+    @Override
     TextRegion getTextRegion();
 
     /**

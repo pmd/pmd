@@ -28,6 +28,7 @@ public class PMDExecutor {
     private static final String FORMAT_FLAG = "-f";
     private static final String FORMATTER = "text";
     private static final String REPORTFILE_FLAG = "-r";
+    private static final String NO_PROGRESSBAR_FLAG = "--no-progress";
 
     private PMDExecutor() {
         // this is a helper class only
@@ -108,10 +109,10 @@ public class PMDExecutor {
     public static ExecutionResult runPMDRules(Path reportFile, Path tempDir, String sourceDirectory, String ruleset, String formatter) throws Exception {
         if (SystemUtils.IS_OS_WINDOWS) {
             return runPMDWindows(tempDir, reportFile, SOURCE_DIRECTORY_FLAG, sourceDirectory, RULESET_FLAG, ruleset,
-                    FORMAT_FLAG, formatter, REPORTFILE_FLAG, reportFile.toAbsolutePath().toString());
+                    FORMAT_FLAG, formatter, REPORTFILE_FLAG, reportFile.toAbsolutePath().toString(), NO_PROGRESSBAR_FLAG);
         } else {
             return runPMDUnix(tempDir, reportFile, SOURCE_DIRECTORY_FLAG, sourceDirectory, RULESET_FLAG, ruleset,
-                    FORMAT_FLAG, formatter, REPORTFILE_FLAG, reportFile.toAbsolutePath().toString());
+                    FORMAT_FLAG, formatter, REPORTFILE_FLAG, reportFile.toAbsolutePath().toString(), NO_PROGRESSBAR_FLAG);
         }
     }
 

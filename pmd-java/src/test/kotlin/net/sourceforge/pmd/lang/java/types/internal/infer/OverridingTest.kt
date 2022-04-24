@@ -217,9 +217,8 @@ class F<G> {
             TypeOps.overrides(subE, supE, subE.declaringType)
         }
 
-        spy.shouldBeAmbiguous {
-            acu.firstMethodCall().methodType shouldBeSomeInstantiationOf subE
-        }
+        spy.shouldBeAmbiguous(acu.firstMethodCall())
+        acu.firstMethodCall().methodType shouldBeSomeInstantiationOf subE
     }
 
 

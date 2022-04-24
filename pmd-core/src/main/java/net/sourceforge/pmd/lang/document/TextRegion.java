@@ -88,7 +88,7 @@ public final class TextRegion implements Comparable<TextRegion> {
      *
      * @param offset Offset of a character
      */
-    public boolean containsOffset(int offset) {
+    public boolean contains(int offset) {
         return getStartOffset() <= offset && offset < getEndOffset();
     }
 
@@ -201,6 +201,17 @@ public final class TextRegion implements Comparable<TextRegion> {
      */
     public static TextRegion fromBothOffsets(int startOffset, int endOffset) {
         return new TextRegion(startOffset, endOffset - startOffset);
+    }
+
+    /**
+     * Builds a new region with zero length and placed at the given offset.
+     *
+     * @param startOffset Offset for start and end of the position.
+     *
+     * @throws AssertionError If the offset is negative
+     */
+    public static TextRegion caretAt(int startOffset) {
+        return new TextRegion(startOffset, 0);
     }
 
     /**

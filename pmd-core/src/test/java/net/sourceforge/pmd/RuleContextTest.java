@@ -9,6 +9,7 @@ import java.util.function.BiConsumer;
 import org.junit.Assert;
 import org.junit.Test;
 
+import net.sourceforge.pmd.lang.ast.DummyNode.DummyRootNode;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.ast.impl.DummyTreeUtil;
@@ -49,7 +50,10 @@ public class RuleContextTest {
     }
 
     private RuleViolation makeViolation(String unescapedMessage, Object... args) throws Exception {
-        Report report = getReport(new FooRule(), (r, ctx) -> ctx.addViolationWithMessage(DummyTreeUtil.tree(DummyTreeUtil::root), unescapedMessage, args));
+        Report report = getReport(new FooRule(), (r, ctx) -> {
+            DummyRootNode node = DummyTreeUtil.tree(DummyTreeUtil::root);
+            ctx.addViolationWithMessage(node, unescapedMessage, args);
+        });
         return report.getViolations().get(0);
     }
 
