@@ -626,12 +626,12 @@ public final class CollectionUtil {
                                            String delimiter) {
         boolean first = true;
         for (T t : iterable) {
-            appendItem.accept(sb, t);
             if (first) {
                 first = false;
             } else {
                 sb.append(delimiter);
             }
+            appendItem.accept(sb, t);
         }
         return sb;
     }
