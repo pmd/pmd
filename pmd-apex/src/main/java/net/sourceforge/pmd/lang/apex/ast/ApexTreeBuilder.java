@@ -390,7 +390,7 @@ final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
             return;
         }
         // find the token, that appears as close as possible before the node
-        TextRegion nodeRegion = node.getRegion();
+        TextRegion nodeRegion = node.getTextRegion();
         for (ApexDocTokenLocation comment : commentInfo.docTokenLocations) {
             if (comment.region.compareTo(nodeRegion) > 0) {
                 // this and all remaining tokens are after the node

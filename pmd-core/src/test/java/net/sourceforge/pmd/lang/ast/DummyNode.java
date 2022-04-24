@@ -15,7 +15,6 @@ import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
 import net.sourceforge.pmd.lang.ast.impl.AbstractNode;
 import net.sourceforge.pmd.lang.ast.impl.GenericNode;
-import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.lang.document.TextRegion;
@@ -87,10 +86,6 @@ public class DummyNode extends AbstractNode<DummyNode, DummyNode> implements Gen
         this.region = region;
     }
 
-    @Override
-    public FileLocation getReportLocation() {
-        return getTextDocument().toLocation(region);
-    }
 
     /**
      * Nodes with an image that starts with `#` also set the xpath name.

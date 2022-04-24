@@ -84,6 +84,7 @@ public final class ASTMethodDeclaration extends AbstractMethodOrConstructorDecla
 
     @Override
     public FileLocation getReportLocation() {
+        // the method identifier
         JavaccToken ident = TokenUtils.nthPrevious(getModifiers().getLastToken(), getFormalParameters().getFirstToken(), 1);
         return ident.getReportLocation();
     }

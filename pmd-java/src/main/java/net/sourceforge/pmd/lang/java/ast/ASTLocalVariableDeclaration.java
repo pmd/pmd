@@ -37,6 +37,7 @@ public final class ASTLocalVariableDeclaration extends AbstractJavaNode
 
     @Override
     public @Nullable FileLocation getReportLocation() {
+        // the first varId
         return getVarIds().firstOrThrow().getFirstToken().getReportLocation();
     }
 
