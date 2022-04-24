@@ -50,7 +50,6 @@ import net.sourceforge.pmd.processor.AbstractPMDProcessor;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.renderers.TextRenderer;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
-import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * Advanced methods for test cases
@@ -486,7 +485,7 @@ public abstract class RuleTst {
                     throw new RuntimeException("No matching code fragment found for coderef");
                 }
             }
-            code = StringUtil.trimBlankLines(Chars.wrap(code)).toString();
+            code = Chars.wrap(code).trimBlankLines().toString();
 
             String description = getNodeValue(testCode, "description", true);
             int expectedProblems = Integer.parseInt(getNodeValue(testCode, "expected-problems", true).trim());

@@ -116,20 +116,6 @@ public class StringUtilTest {
     }
 
     @Test
-    public void trimBlankLines() {
-        assertTrimBlankLinesEquals(" \n \n abc \n \n de \n \n ",
-                                   " abc \n \n de ");
-        assertTrimBlankLinesEquals("", "");
-    }
-
-    private void assertTrimBlankLinesEquals(String input, String output) {
-        assertEquals(
-            Chars.wrap(output),
-            StringUtil.trimBlankLines(Chars.wrap(input))
-        );
-    }
-
-    @Test
     public void linesWithTrimIndent() {
     }
 }

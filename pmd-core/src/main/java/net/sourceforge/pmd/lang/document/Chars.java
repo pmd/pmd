@@ -296,6 +296,43 @@ public final class Chars implements CharSequence {
     }
 
     /**
+     * Remove trailing and leading blank lines. The resulting string
+     * does not end with a line terminator.
+     */
+    public Chars trimBlankLines() {
+        int offsetOfFirstNonBlankChar = length();
+        for (int i = 0; i < length(); i++) {
+            if (!Character.isWhitespace(charAt(i))) {
+                offsetOfFirstNonBlankChar = i;
+                break;
+            }
+        }
+        int offsetOfLastNonBlankChar = 0;
+        for (int i = length() - 1; i > offsetOfFirstNonBlankChar; i--) {
+            if (!Character.isWhitespace(charAt(i))) {
+                offsetOfLastNonBlankChar = i;
+                break;
+            }
+        }
+
+        // look backwards before the first non-blank char
+        int cutFromInclusive = lastIndexOf('\n', offsetOfFirstNonBlankChar);
+        // If firstNonBlankLineStart == -1, ie we're on the first line,
+        // we want to start at zero: then we add 1 to get 0
+        // If firstNonBlankLineStart >= 0, then it's the index of the
+        // \n, we want to cut right after that, so we add 1.
+        cutFromInclusive += 1;
+
+        // look forwards after the last non-blank char
+        int cutUntilExclusive = indexOf('\n', offsetOfLastNonBlankChar);
+        if (cutUntilExclusive == StringUtils.INDEX_NOT_FOUND) {
+            cutUntilExclusive = length();
+        }
+
+        return subSequence(cutFromInclusive, cutUntilExclusive);
+    }
+
+    /**
      * Remove the suffix if it is present, otherwise returns this.
      */
     public Chars removeSuffix(String charSeq) {

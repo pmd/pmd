@@ -381,42 +381,6 @@ public final class StringUtil {
         }
     }
 
-    /**
-     * Remove trailing and leading blank lines.
-     */
-    public static Chars trimBlankLines(Chars string) {
-        int offsetOfFirstNonBlankChar = string.length();
-        for (int i = 0; i < string.length(); i++) {
-            if (!Character.isWhitespace(string.charAt(i))) {
-                offsetOfFirstNonBlankChar = i;
-                break;
-            }
-        }
-        int offsetOfLastNonBlankChar = 0;
-        for (int i = string.length() - 1; i > offsetOfFirstNonBlankChar; i--) {
-            if (!Character.isWhitespace(string.charAt(i))) {
-                offsetOfLastNonBlankChar = i;
-                break;
-            }
-        }
-
-        // look backwards before the first non-blank char
-        int cutFromInclusive = string.lastIndexOf('\n', offsetOfFirstNonBlankChar);
-        // If firstNonBlankLineStart == -1, ie we're on the first line,
-        // we want to start at zero: then we add 1 to get 0
-        // If firstNonBlankLineStart >= 0, then it's the index of the
-        // \n, we want to cut right after that, so we add 1.
-        cutFromInclusive += 1;
-
-        // look forwards after the last non-blank char
-        int cutUntilExclusive = string.indexOf('\n', offsetOfLastNonBlankChar);
-        if (cutUntilExclusive == StringUtils.INDEX_NOT_FOUND) {
-            cutUntilExclusive = string.length();
-        }
-
-        return string.subSequence(cutFromInclusive, cutUntilExclusive);
-    }
-
 
     private static int countLeadingWhitespace(CharSequence s) {
         int count = 0;

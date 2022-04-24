@@ -310,4 +310,17 @@ public class CharsTest {
         assertThrows(IndexOutOfBoundsException.class, () -> chars.substring(0, 6));
     }
 
+
+    @Test
+    public void testTrimBlankLines() {
+        assertTrimBlankLinesEquals(" \n \n abc \n \n de \n \n ",
+                                   " abc \n \n de ");
+        assertTrimBlankLinesEquals("", "");
+    }
+
+    private void assertTrimBlankLinesEquals(String input, String expected) {
+        Chars actual = Chars.wrap(input).trimBlankLines();
+        assertEquals(Chars.wrap(expected), actual);
+    }
+
 }
