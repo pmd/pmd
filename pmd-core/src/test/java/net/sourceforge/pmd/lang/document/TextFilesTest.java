@@ -50,11 +50,22 @@ public class TextFilesTest {
             assertEquals(Chars.wrap("some content"), tf.readContents().getNormalizedText());
             assertFalse("readonly", tf.isReadOnly());
 
+            // write with CRLF
             tf.writeContents(
-                TextFileContent.fromCharSeq("new content")
+                TextFileContent.fromCharSeq("new content\r\n")
             );
 
-            assertEquals(Chars.wrap("new content"), tf.readContents().getNormalizedText());
+            TextFileContent read = tf.readContents();
+            // is normalized to LF when rereading
+            assertEquals(Chars.wrap("new content\n"), read.getNormalizedText());
+            // but line terminator is detected as CRLF
+            assertEquals("\r\n", read.getLineTerminator());
+
+            tf.writeContents(
+                TextFileContent.fromCharSeq("new content\n")
+            );
+
+            assertEquals(Chars.wrap("new content\n"), tf.readContents().getNormalizedText());
         }
     }
 
@@ -102,13 +113,21 @@ public class TextFilesTest {
     }
 
     @Test
-    public void testReaderFileEscape() throws IOException {
+    public void testReaderFile() throws IOException {
         Path file = makeTmpFile(StandardCharsets.UTF_8, "some\r\ncontent");
         try (TextFile tf = TextFile.forReader(Files.newBufferedReader(file, StandardCharsets.UTF_8), "filename", dummyVersion)) {
             assertEquals("filename", tf.getPathId());
             assertEquals("filename", tf.getDisplayName());
             assertEquals(dummyVersion, tf.getLanguageVersion());
             assertEquals(Chars.wrap("some\ncontent"), tf.readContents().getNormalizedText());
+        }
+    }
+
+    @Test
+    public void testReaderFileIsReadOnly() throws IOException {
+        Path file = makeTmpFile(StandardCharsets.UTF_8, "some\r\ncontent");
+        try (TextFile tf = TextFile.forReader(Files.newBufferedReader(file, StandardCharsets.UTF_8), "filename", dummyVersion)) {
+            assertTrue("readonly", tf.isReadOnly());
             assertThrows(ReadOnlyFileException.class, () -> tf.writeContents(
                 TextFileContent.fromCharSeq("new content")
             ));
@@ -140,6 +159,7 @@ public class TextFilesTest {
     @Test
     public void testStringFileIsReadonly() throws IOException {
         try (TextFile tf = TextFile.forCharSeq("contents", "filename", dummyVersion)) {
+            assertTrue("readonly", tf.isReadOnly());
             assertThrows(ReadOnlyFileException.class, () -> tf.writeContents(
                 TextFileContent.fromCharSeq("new content")
             ));

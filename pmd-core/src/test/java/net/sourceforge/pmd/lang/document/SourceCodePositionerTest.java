@@ -63,6 +63,10 @@ public class SourceCodePositionerTest {
         assertEquals("abcd\ndef".length(), positioner.offsetFromLineColumn(2, 4));
 
         assertEquals("abcd\ndefghi\r\n".length(), positioner.offsetFromLineColumn(3, 1));
+        assertEquals(source.length(), positioner.offsetFromLineColumn(4, 4));
+        assertEquals(-1, positioner.offsetFromLineColumn(4, 5));
+        assertEquals(source.length(), positioner.offsetFromLineColumn(5, 1));
+        assertEquals(-1, positioner.offsetFromLineColumn(5, 2));
     }
 
 

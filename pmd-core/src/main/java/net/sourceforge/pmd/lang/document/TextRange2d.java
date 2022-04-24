@@ -4,12 +4,18 @@
 
 package net.sourceforge.pmd.lang.document;
 
+import java.util.Comparator;
 import java.util.Objects;
 
 /**
  * A place in a text document, represented as line/column information.
  */
 public final class TextRange2d implements Comparable<TextRange2d> {
+    private static final Comparator<TextRange2d> COMPARATOR =
+        Comparator.comparingInt(TextRange2d::getStartLine)
+            .thenComparingInt(TextRange2d::getStartColumn)
+            .thenComparingInt(TextRange2d::getEndLine)
+            .thenComparingInt(TextRange2d::getEndColumn);
 
     private final int startLine;
     private final int startCol;
@@ -69,11 +75,7 @@ public final class TextRange2d implements Comparable<TextRange2d> {
 
     @Override
     public int compareTo(TextRange2d o) {
-        int cmp = getStartPos().compareTo(o.getStartPos());
-        if (cmp != 0) {
-            return cmp;
-        }
-        return getEndPos().compareTo(o.getEndPos());
+        return COMPARATOR.compare(this, o);
     }
 
     public boolean contains(TextRange2d range) {

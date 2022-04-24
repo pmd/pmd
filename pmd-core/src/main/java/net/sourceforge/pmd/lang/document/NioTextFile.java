@@ -69,7 +69,7 @@ class NioTextFile extends BaseCloseable implements TextFile {
     public void writeContents(TextFileContent content) throws IOException {
         ensureOpen();
         if (isReadOnly()) {
-            throw new ReadOnlyFileException();
+            throw new ReadOnlyFileException(this);
         }
         try (BufferedWriter bw = Files.newBufferedWriter(path, charset)) {
             if (content.getLineTerminator().equals(TextFileContent.NORMALIZED_LINE_TERM)) {

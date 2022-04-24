@@ -30,11 +30,16 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  */
 public final class TextFileContent {
 
+    // the three line terminators we handle.
+    private static final String CRLF = "\r\n";
+    private static final String LF = "\n";
+    private static final String CR = "\r";
+
     /**
      * The normalized line ending used to replace platform-specific
      * line endings in the {@linkplain #getNormalizedText() normalized text}.
      */
-    public static final String NORMALIZED_LINE_TERM = "\n";
+    public static final String NORMALIZED_LINE_TERM = LF;
 
     /** The normalized line ending as a char. */
     public static final char NORMALIZED_LINE_TERM_CHAR = '\n';
@@ -225,10 +230,10 @@ public final class TextFileContent {
                     if (afterCr && c != NORMALIZED_LINE_TERM_CHAR) {
                         // we saw a \r last iteration, but didn't copy it
                         // it's not followed by an \n
-                        newLineTerm = "\r";
+                        newLineTerm = CR;
                         newLineOffset = bufOffset + i + offsetDiff;
                         if (i > 0) {
-                            cbuf[i - 1] = '\n'; // replace the \r with a \n
+                            cbuf[i - 1] = NORMALIZED_LINE_TERM_CHAR; // replace the \r with a \n
                         } else {
                             // The CR was trailing a buffer, so it's not in the current buffer and wasn't copied.
                             // Append a newline.
@@ -236,10 +241,10 @@ public final class TextFileContent {
                         }
                     } else {
                         if (afterCr) {
-                            newLineTerm = "\r\n";
+                            newLineTerm = CRLF;
 
                             if (i > 0) {
-                                cbuf[i - 1] = '\n'; // replace the \r with a \n
+                                cbuf[i - 1] = NORMALIZED_LINE_TERM_CHAR; // replace the \r with a \n
                                 // copy up to and including the \r, which was replaced
                                 result.append(cbuf, nextCharToCopy, i - nextCharToCopy);
                                 nextCharToCopy = i + 1; // set the next char to copy to after the \n
@@ -249,7 +254,7 @@ public final class TextFileContent {
                             offsetDiff--;
                         } else {
                             // just \n
-                            newLineTerm = "\n";
+                            newLineTerm = LF;
                         }
                         newLineOffset = bufOffset + i + offsetDiff + 1;
                     }
@@ -275,7 +280,7 @@ public final class TextFileContent {
         if (afterCr) { // we're at EOF, so it's not followed by \n
             result.append(NORMALIZED_LINE_TERM);
             positionerBuilder.addLineEndAtOffset(bufOffset);
-            detectedLineTerm = detectLineTerm(detectedLineTerm, "\r", fallbackLineSep);
+            detectedLineTerm = detectLineTerm(detectedLineTerm, CR, fallbackLineSep);
         }
 
         if (detectedLineTerm == null) {

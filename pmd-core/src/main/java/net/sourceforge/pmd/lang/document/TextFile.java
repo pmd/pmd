@@ -109,7 +109,7 @@ public interface TextFile extends Closeable {
      * @throws ReadOnlyFileException If this text source is read-only
      */
     default void writeContents(TextFileContent content) throws IOException {
-        throw new ReadOnlyFileException();
+        throw new ReadOnlyFileException(this);
     }
 
 

@@ -26,6 +26,13 @@ public class FileLocationTest {
     }
 
     @Test
+    public void testToRange() {
+        TextRange2d range2d = TextRange2d.range2d(1, 1, 1, 2);
+        FileLocation loc = FileLocation.range("fname", range2d);
+        assertEquals(range2d, loc.toRange2d());
+    }
+
+    @Test
     public void testToString() {
         FileLocation loc = FileLocation.range("fname", TextRange2d.range2d(1, 1, 1, 2));
 
