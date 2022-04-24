@@ -319,66 +319,29 @@ public final class StringUtil {
     }
 
     /**
+     * Trim the common indentation of each line in place in the input list.
+     * Trailing whitespace is removed on each line. Note that blank lines do
+     * not count towards computing the max common indentation, except
+     * the last one.
+     *
      * @param lines mutable list
      */
     public static void trimIndentInPlace(List<Chars> lines) {
         int trimDepth = maxCommonLeadingWhitespaceForAll(lines);
-        if (trimDepth > 0) {
-            lines.replaceAll(chars -> chars.length() >= trimDepth
-                                      ? chars.subSequence(trimDepth).trimEnd()
-                                      : chars.trimEnd());
-        }
+        lines.replaceAll(chars -> chars.length() >= trimDepth
+                                  ? chars.subSequence(trimDepth).trimEnd()
+                                  : chars.trimEnd());
     }
 
     /**
-     * Trim common indentation in the lines of the string, like
-     * {@link #appendWithoutCommonPrefix(List, int, StringBuilder)}.
+     * Trim common indentation in the lines of the string. Like
+     * {@link #trimIndentInPlace(List)} called with the list of lines
+     * and joined with {@code \n}.
      */
     public static StringBuilder trimIndent(Chars string) {
         List<Chars> lines = string.lineStream().collect(CollectionUtil.toMutableList());
         trimIndentInPlace(lines);
-
-        StringBuilder sb = new StringBuilder(string.length());
-        trimIndentIntoStringBuilder(lines, sb);
-        return sb;
-    }
-
-    /**
-     * Trim the common indentation of the lines and append them into
-     * the given StringBuilder, separating lines with \n. Trailing
-     * whitespace is removed on each line. Note that blank lines do
-     * not count towards computing the max common indentation, except
-     * the last one.
-     *
-     * @param lines List of lines to join
-     * @param sb    Output StringBuilder
-     */
-    public static void trimIndentIntoStringBuilder(List<Chars> lines, StringBuilder sb) {
-        int prefixLength = maxCommonLeadingWhitespaceForAll(lines);
-        appendWithoutCommonPrefix(lines, prefixLength, sb);
-    }
-
-    private static void appendWithoutCommonPrefix(List<Chars> lines, int prefixLength, StringBuilder output) {
-        for (int i = 0; i < lines.size(); i++) {
-            //  For each non-blank line, min leading white space characters are removed,
-            //  and any trailing white space characters are removed.
-            //  Blank lines are replaced with the empty string.
-
-            Chars line = lines.get(i);
-            // remove common whitespace prefix
-            if (line.length() >= prefixLength && !StringUtils.isBlank(line)) {
-                line = line.subSequence(prefixLength);
-            }
-            // trim trailing whitespace
-            line = line.trimEnd();
-            // append
-            line.appendChars(output);
-
-            boolean isLastLine = i == lines.size() - 1;
-            if (!isLastLine) {
-                output.append('\n'); // normalize line endings to LF
-            }
-        }
+        return CollectionUtil.joinCharsIntoStringBuilder(lines, "\n");
     }
 
 

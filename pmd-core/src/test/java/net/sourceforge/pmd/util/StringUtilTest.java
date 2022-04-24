@@ -98,7 +98,8 @@ public class StringUtilTest {
     }
 
     private void assertTrimIndent(String input, String output) {
-        assertThat(StringUtil.trimIndent(Chars.wrap(input)).toString(), equalTo(output));
+        String actual = StringUtil.trimIndent(Chars.wrap(input)).toString();
+        assertThat(actual, equalTo(output));
     }
 
     @Test
@@ -115,7 +116,4 @@ public class StringUtilTest {
         assertEquals("abc", StringUtil.substringAfterLast("abc", '.'));
     }
 
-    @Test
-    public void linesWithTrimIndent() {
-    }
 }

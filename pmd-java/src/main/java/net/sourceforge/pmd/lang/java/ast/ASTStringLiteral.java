@@ -88,6 +88,7 @@ public final class ASTStringLiteral extends AbstractLiteral implements ASTLitera
         StringUtil.trimIndentInPlace(lines);
         // join with normalized end of line
         StringBuilder sb = CollectionUtil.joinCharsIntoStringBuilder(lines, "\n");
+        // interpret escape sequences
         interpretEscapeSequences(sb);
         return sb.toString();
     }
