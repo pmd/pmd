@@ -150,13 +150,11 @@ public class TestDescriptor {
     }
 
     public String getTestMethodName() {
-        String methodName = getRule().getName() + "_"
+        return getRule().getName() + "_"
                 + getNumberInDocument()
                 + "_"
                 + getDescription()
                 .replaceAll("\n|\r", "_")
-                .replaceAll("[\\(\\)]|\\s", "_");
-
-        return methodName;
+                .replaceAll("[\\.\\(\\)]|\\s", "_");
     }
 }
