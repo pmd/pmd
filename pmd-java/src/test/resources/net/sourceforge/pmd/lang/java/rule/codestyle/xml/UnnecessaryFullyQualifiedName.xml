@@ -852,7 +852,7 @@ class Assert {
         <expected-problems>1</expected-problems>
         <expected-linenumbers>4</expected-linenumbers>
         <expected-messages>
-            <message>Unnecessary qualifier 'java.lang': 'Math' is already in scope because it is declared in java.lang </message>
+            <message>Unnecessary qualifier 'java.lang': 'Math' is already in scope because it is declared in java.lang</message>
         </expected-messages>
         <code><![CDATA[
             class ComplexButNotFlagged {
