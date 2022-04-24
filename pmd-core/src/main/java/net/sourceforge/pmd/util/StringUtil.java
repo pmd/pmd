@@ -278,16 +278,28 @@ public final class StringUtil {
      * leading characters can be removed to shift all the text in the strings to
      * the left without misaligning them.
      *
+     * <p>Note: the spec is described in
+     * <a
+     * href='https://docs.oracle.com/en/java/javase/16/docs/api/java.base/java/lang/String.html#stripIndent()'>String#stripIndent</a>
+     *
+     * <quote>
+     * The minimum indentation (min) is determined as follows:
+     * <ul>
+     *     <li>For each non-blank line (as defined by isBlank()), the leading white space characters are counted.
+     *     <li>The leading white space characters on the last line are also counted even if blank.
+     * </ul>
+     * The min value is the smallest of these counts.
+     * </quote>
+     *
      * @throws NullPointerException If the parameter is null
      */
     private static int maxCommonLeadingWhitespaceForAll(List<? extends CharSequence> lines) {
-        // the max *common* leading WS length is the min length of all leading WS
         int maxCommonWs = Integer.MAX_VALUE;
         for (int i = 0; i < lines.size(); i++) {
             CharSequence line = lines.get(i);
             // compute common prefix
-            if (!StringUtils.isAllBlank(line) || i == lines.size() - 1) {
-                maxCommonWs = Math.min(maxCommonWs, StringUtil.countLeadingWhitespace(line));
+            if (!StringUtils.isBlank(line) || i == lines.size() - 1) {
+                maxCommonWs = Math.min(maxCommonWs, countLeadingWhitespace(line));
             }
         }
         if (maxCommonWs == Integer.MAX_VALUE) {
@@ -318,8 +330,9 @@ public final class StringUtil {
     }
 
     /**
-     * Trim common indentation in the lines of the string.
-     * Does not discard
+     * Trim common indentation in the lines of the string, like
+     * {@link #appendWithoutCommonPrefix(List, int, StringBuilder)}.
+     *
      */
     public static StringBuilder trimIndent(Chars string) {
         List<Chars> lines = string.lineStream().collect(Collectors.toList());
@@ -328,6 +341,16 @@ public final class StringUtil {
         return sb;
     }
 
+    /**
+     * Trim the common indentation of the lines and append them into
+     * the given StringBuilder, separating lines with \n. Trailing
+     * whitespace is removed on each line. Note that blank lines do
+     * not count towards computing the max common indentation, except
+     * the last one.
+     *
+     * @param lines List of lines to join
+     * @param sb    Output StringBuilder
+     */
     public static void trimIndentIntoStringBuilder(List<Chars> lines, StringBuilder sb) {
         int prefixLength = maxCommonLeadingWhitespaceForAll(lines);
         appendWithoutCommonPrefix(lines, prefixLength, sb);
@@ -335,18 +358,22 @@ public final class StringUtil {
 
     private static void appendWithoutCommonPrefix(List<Chars> lines, int prefixLength, StringBuilder output) {
         for (int i = 0; i < lines.size(); i++) {
+            //  For each non-blank line, min leading white space characters are removed,
+            //  and any trailing white space characters are removed.
+            //  Blank lines are replaced with the empty string.
+
             Chars line = lines.get(i);
             // remove common whitespace prefix
-            if (!StringUtils.isAllBlank(line) && line.length() >= prefixLength) {
+            if (line.length() >= prefixLength && !StringUtils.isBlank(line)) {
                 line = line.subSequence(prefixLength, line.length());
             }
+            // trim trailing whitespace
             line = line.trimEnd();
+            // append
             line.appendChars(output);
 
             boolean isLastLine = i == lines.size() - 1;
-            boolean isFirstLine = i == 0;
-            // todo is this &&?
-            if (!isLastLine || !isFirstLine && !StringUtils.isAllBlank(line)) {
+            if (!isLastLine) {
                 output.append('\n'); // normalize line endings to LF
             }
         }
@@ -401,7 +428,6 @@ public final class StringUtil {
         }
         return lines;
     }
-
 
 
     /**

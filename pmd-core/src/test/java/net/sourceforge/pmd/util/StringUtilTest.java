@@ -10,6 +10,8 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
+import net.sourceforge.pmd.lang.document.Chars;
+
 public class StringUtilTest {
 
     @Test
@@ -80,6 +82,22 @@ public class StringUtilTest {
         assertThat(StringUtil.removeSurrounding("q", 'q'), equalTo("q"));
         assertThat(StringUtil.removeSurrounding("qq", 'q'), equalTo(""));
         assertThat(StringUtil.removeSurrounding("qqq", 'q'), equalTo("q"));
+    }
+
+    @Test
+    public void testTrimIndent() {
+        assertTrimIndent(" \n b \n c",
+                         "\nb\nc");
+
+        assertTrimIndent(" \nb \n c",
+                         "\nb\n c");
+
+        assertTrimIndent(" \n b \n c\n  ",
+                         "\nb\nc\n");
+    }
+
+    private void assertTrimIndent(String input, String output) {
+        assertThat(StringUtil.trimIndent(Chars.wrap(input)).toString(), equalTo(output));
     }
 
     @Test
