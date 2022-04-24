@@ -123,16 +123,6 @@ final class RootTextDocument extends BaseCloseable implements TextDocument {
         return TextRegion.fromBothOffsets(first, last);
     }
 
-    @Override
-    public TextRange2d getEntireRegion2d() {
-        SourceCodePositioner positioner = content.getPositioner();
-        return TextRange2d.range2d(
-            1, 1,
-            positioner.getLastLine(),
-            positioner.getLastLineColumn()
-        );
-    }
-
     static void checkInRange(TextRegion region, int length) {
         if (region.getEndOffset() > length) {
             throw regionOutOfBounds(region.getStartOffset(), region.getEndOffset(), length);

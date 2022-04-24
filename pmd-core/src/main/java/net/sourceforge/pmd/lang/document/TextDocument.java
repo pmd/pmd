@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.document;
 
-import static net.sourceforge.pmd.lang.document.RootTextDocument.checkInRange;
-
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.Reader;
@@ -120,11 +118,6 @@ public interface TextDocument extends Closeable {
     }
 
     /**
-     * Returns a 2D text range that corresponds to the entire document.
-     */
-    TextRange2d getEntireRegion2d();
-
-    /**
      * Returns a region that spans the text of all the given lines.
      * This is intended to provide a replacement for {@link SourceCode#getSlice(int, int)}.
      *
@@ -147,43 +140,6 @@ public interface TextDocument extends Closeable {
      * @throws IndexOutOfBoundsException If the argument is not a valid region in this document
      */
     FileLocation toLocation(TextRegion region);
-
-    /**
-     * Turn a text region into a {@link FileLocation}. The file name is
-     * the display name of this document.
-     *
-     * @return A new file position
-     *
-     * @throws IndexOutOfBoundsException If the argument is not a valid region in this document
-     */
-    default FileLocation toLocation(TextRange2d range) {
-        int startOffset = offsetAtLineColumn(range.getStartPos());
-        if (startOffset < 0) {
-            throw new IndexOutOfBoundsException("Region out of bounds: " + range.displayString());
-        }
-        TextRegion region = TextRegion.caretAt(startOffset);
-        checkInRange(region, this.getLength());
-        return FileLocation.range(getDisplayName(), range);
-    }
-
-    /**
-     * Turn a text region to a {@link TextRange2d}.
-     */
-    default TextRange2d toRange2d(TextRegion region) {
-        TextPos2d start = lineColumnAtOffset(region.getStartOffset(), true);
-        TextPos2d end = lineColumnAtOffset(region.getEndOffset(), false);
-        return TextRange2d.range2d(start, end);
-    }
-
-    /**
-     * Turn a {@link TextRange2d} into a {@link TextRegion}.
-     */
-    default TextRegion toRegion(TextRange2d region) {
-        return TextRegion.fromBothOffsets(
-            offsetAtLineColumn(region.getStartPos()),
-            offsetAtLineColumn(region.getEndPos())
-        );
-    }
 
 
     /**
