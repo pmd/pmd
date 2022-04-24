@@ -16,6 +16,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.junit.Test;
 
@@ -126,6 +127,23 @@ public class CharsTest {
     }
 
     @Test
+    public void lastIndexOf() {
+        Chars bc = Chars.wrap("aaaaabcdb").slice(5, 2);
+        //                          --
+        assertEquals(0, bc.lastIndexOf('b', 0));
+        assertEquals(0, bc.lastIndexOf('b', 1));
+        assertEquals(1, bc.lastIndexOf('c', 1));
+        assertEquals(-1, bc.lastIndexOf('c', 0));
+
+        assertEquals(-1, bc.lastIndexOf('d', 0));
+
+        assertEquals(-1, bc.lastIndexOf('x', 0));
+        assertEquals(-1, bc.lastIndexOf('a', -1));
+        assertEquals(-1, bc.lastIndexOf('a', 0));
+        assertEquals(-1, bc.lastIndexOf('a', 1));
+    }
+
+    @Test
     public void startsWith() {
         Chars bc = Chars.wrap("abcdb").slice(1, 2);
 
@@ -149,6 +167,22 @@ public class CharsTest {
         assertFalse(bc.startsWith("", -1));
         assertFalse(bc.startsWith("", 5));
 
+    }
+
+    @Test
+    public void removeSuffix() {
+        Chars bc = Chars.wrap("abcdb").slice(1, 2);
+        //                      --
+
+        assertEquals("bc", bc.toString());
+        assertEquals("b", bc.removeSuffix("c").toString());
+        assertEquals("", bc.removeSuffix("bc").toString());
+
+        bc = Chars.wrap("aaaaaaa").slice(2, 3);
+        //                 ---
+
+        assertEquals("", bc.removeSuffix("aaa").toString());
+        assertEquals("aaa", bc.removeSuffix("aaaa").toString());
     }
 
     @Test
@@ -197,6 +231,13 @@ public class CharsTest {
         Chars bc = Chars.wrap("aa\n");
         List<String> lines = CollectionUtil.map(bc.lines(), Chars::toString);
         assertEquals(listOf("aa"), lines);
+    }
+
+    @Test
+    public void linesStreamTest() {
+        Chars bc = Chars.wrap("aa\nb\rded\r\nlff");
+        List<String> lines = bc.lineStream().map(Chars::toString).collect(Collectors.toList());
+        assertEquals(listOf("aa", "b", "ded", "lff"), lines);
     }
 
     @Test

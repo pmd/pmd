@@ -44,7 +44,7 @@ final class SourceCodePositioner {
 
         int lineIdx = line - 1; // zero-based
 
-        if (offset == lineOffsets[lineIdx] && !inclusive) {
+        if (lineIdx != 0 && offset == lineOffsets[lineIdx] && !inclusive) {
             // we're precisely on the start of a line
             // if inclusive, prefer the position at the end of the previous line
             // This is a subtlety that the other methods for offset -> line do not
@@ -157,7 +157,8 @@ final class SourceCodePositioner {
      */
     public int offsetOfEndOfLine(final int line) {
         if (!isValidLine(line)) {
-            throw new IndexOutOfBoundsException(line + " is not a valid line number, expected at most " + lineOffsets.length);
+            throw new IndexOutOfBoundsException(
+                line + " is not a valid line number, expected at most " + lineOffsets.length);
         }
 
         return lineOffsets[line];
@@ -187,7 +188,11 @@ final class SourceCodePositioner {
     }
 
     private int getLastColumnOfLine(int line) {
-        return 1 + lineOffsets[line] - lineOffsets[line - 1];
+        if (line == 0) {
+            return 1 + lineOffsets[line];
+        } else {
+            return 1 + lineOffsets[line] - lineOffsets[line - 1];
+        }
     }
 
     /**
