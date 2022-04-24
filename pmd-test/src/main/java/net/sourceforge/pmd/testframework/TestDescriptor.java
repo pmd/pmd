@@ -148,4 +148,15 @@ public class TestDescriptor {
     public boolean isUseAuxClasspath() {
         return useAuxClasspath;
     }
+
+    public String getTestMethodName() {
+        String methodName = getRule().getName() + "_"
+                + getNumberInDocument()
+                + "_"
+                + getDescription()
+                .replaceAll("\n|\r", "_")
+                .replaceAll("[\\(\\)]|\\s", "_");
+
+        return methodName;
+    }
 }
