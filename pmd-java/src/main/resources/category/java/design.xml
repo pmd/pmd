@@ -1292,17 +1292,11 @@ Look for ternary operators with the form `condition ? literalBoolean : foo`
 or `condition ? foo : literalBoolean`
 or `condition ? literalBoolean1 : literalBoolean2`.
 
-These expressions can be simplified respectively to
-`condition || foo`  when the literalBoolean is true
-`!condition && foo` when the literalBoolean is false
-or
-`!condition || foo` when the literalBoolean is true
-`condition && foo`  when the literalBoolean is false
-or
-`true`  when the literalBoolean are both true
-`false` when the literalBoolean are both false
-`condition`  when the literalBoolean1 is true and the literalBoolean2 is false
-`!condition` when the literalBoolean1 is false and the literalBoolean2 is true
+These expressions can be simplified as follows:
+* `condition ? true : expr` simplifies to `condition || expr`
+* `condition ? false : expr` simplifies to `!condition && expr`
+* `condition ? expr : true` simplifies to `!condition || expr`
+* `condition ? expr : false` simplifies to `condition && expr`
 ]]>
         </description>
         <priority>3</priority>
