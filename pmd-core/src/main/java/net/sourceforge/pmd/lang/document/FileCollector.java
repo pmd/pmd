@@ -48,6 +48,7 @@ import net.sourceforge.pmd.util.log.MessageReporter;
  */
 @SuppressWarnings("PMD.CloseResource")
 public final class FileCollector implements AutoCloseable {
+
     private static final Logger LOG = LoggerFactory.getLogger(FileCollector.class);
 
     private final List<TextFile> allFilesToProcess = new ArrayList<>();
@@ -167,8 +168,11 @@ public final class FileCollector implements AutoCloseable {
             reporter.error("Not a regular file {}", file);
             return false;
         }
-        NioTextFile nioTextFile = new NioTextFile(file, charset, discoverer.getDefaultLanguageVersion(language), getDisplayName(file));
-        addFileImpl(nioTextFile);
+        LanguageVersion lv = discoverer.getDefaultLanguageVersion(language);
+        Objects.requireNonNull(lv);
+        addFileImpl(TextFile.builderForPath(file, charset, lv)
+                            .withDisplayName(getDisplayName(file))
+                            .build());
         return true;
     }
 
@@ -371,7 +375,7 @@ public final class FileCollector implements AutoCloseable {
      */
     public void exclude(FileCollector excludeCollector) {
         Set<TextFile> toExclude = new HashSet<>(excludeCollector.allFilesToProcess);
-        for (Iterator<TextFile> iterator = allFilesToProcess.iterator(); iterator.hasNext();) {
+        for (Iterator<TextFile> iterator = allFilesToProcess.iterator(); iterator.hasNext(); ) {
             TextFile file = iterator.next();
             if (toExclude.contains(file)) {
                 LOG.trace("Excluding file {}", file.getPathId());
@@ -385,7 +389,7 @@ public final class FileCollector implements AutoCloseable {
      * collection.
      */
     public void filterLanguages(Set<Language> languages) {
-        for (Iterator<TextFile> iterator = allFilesToProcess.iterator(); iterator.hasNext();) {
+        for (Iterator<TextFile> iterator = allFilesToProcess.iterator(); iterator.hasNext(); ) {
             TextFile file = iterator.next();
             Language lang = file.getLanguageVersion().getLanguage();
             if (!languages.contains(lang)) {

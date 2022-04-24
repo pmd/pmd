@@ -27,13 +27,19 @@ class NioTextFile extends BaseCloseable implements TextFile {
     private final Charset charset;
     private final LanguageVersion languageVersion;
     private final @Nullable String displayName;
+    private boolean readOnly;
 
-    NioTextFile(Path path, Charset charset, LanguageVersion languageVersion, @Nullable String displayName) {
+    NioTextFile(Path path,
+                Charset charset,
+                LanguageVersion languageVersion,
+                @Nullable String displayName,
+                boolean readOnly) {
         AssertionUtil.requireParamNotNull("path", path);
         AssertionUtil.requireParamNotNull("charset", charset);
         AssertionUtil.requireParamNotNull("language version", languageVersion);
 
         this.displayName = displayName;
+        this.readOnly = readOnly;
         this.path = path;
         this.charset = charset;
         this.languageVersion = languageVersion;
@@ -56,12 +62,15 @@ class NioTextFile extends BaseCloseable implements TextFile {
 
     @Override
     public boolean isReadOnly() {
-        return !Files.isWritable(path);
+        return readOnly || !Files.isWritable(path);
     }
 
     @Override
     public void writeContents(TextFileContent content) throws IOException {
         ensureOpen();
+        if (isReadOnly()) {
+            throw new ReadOnlyFileException();
+        }
         try (BufferedWriter bw = Files.newBufferedWriter(path, charset)) {
             if (content.getLineTerminator().equals(TextFileContent.NORMALIZED_LINE_TERM)) {
                 content.getNormalizedText().writeFully(bw);
