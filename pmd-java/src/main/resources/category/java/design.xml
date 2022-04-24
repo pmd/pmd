@@ -1289,8 +1289,7 @@ public void foo() throws Exception {
         <description>
 <![CDATA[
 Look for ternary operators with the form `condition ? literalBoolean : foo`
-or `condition ? foo : literalBoolean`
-or `condition ? literalBoolean1 : literalBoolean2`.
+or `condition ? foo : literalBoolean`.
 
 These expressions can be simplified as follows:
 * `condition ? true : expr` simplifies to `condition || expr`
