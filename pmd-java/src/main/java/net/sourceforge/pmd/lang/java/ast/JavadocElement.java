@@ -17,7 +17,7 @@ public class JavadocElement extends Comment {
     public JavadocElement(JavaccToken t, int theBeginLine, int theEndLine, int theBeginColumn, int theEndColumn, JavadocTag theTag) {
         super(t);
         this.tag = theTag;
-        this.reportLoc = FileLocation.location("TODO", TextRange2d.range2d(theBeginLine, theBeginColumn, theEndLine, theEndColumn));
+        this.reportLoc = FileLocation.range("TODO", TextRange2d.range2d(theBeginLine, theBeginColumn, theEndLine, theEndColumn));
     }
 
     public JavadocTag tag() {

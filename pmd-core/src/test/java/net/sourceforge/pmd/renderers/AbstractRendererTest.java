@@ -92,7 +92,7 @@ public abstract class AbstractRendererTest {
 
     protected FileLocation createLocation(int beginLine, int beginColumn, int endLine, int endColumn) {
         TextRange2d range2d = TextRange2d.range2d(beginLine, beginColumn, endLine, endColumn);
-        return FileLocation.location(getSourceCodeFilename(), range2d);
+        return FileLocation.range(getSourceCodeFilename(), range2d);
     }
 
     protected RuleViolation newRuleViolation(int beginLine, int beginColumn, int endLine, int endColumn, Rule rule) {

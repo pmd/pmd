@@ -70,7 +70,7 @@ public class RuleViolationComparatorTest {
 
     private RuleViolation createJavaRuleViolation(Rule rule, String fileName, int beginLine, String description,
             int beginColumn, int endLine, int endColumn) {
-        FileLocation loc = FileLocation.location(fileName, TextRange2d.range2d(beginLine, beginColumn, endLine, endColumn));
+        FileLocation loc = FileLocation.range(fileName, TextRange2d.range2d(beginLine, beginColumn, endLine, endColumn));
         return new ParametricRuleViolation(rule, loc, description);
     }
 }

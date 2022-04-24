@@ -163,7 +163,7 @@ public interface TextDocument extends Closeable {
         }
         TextRegion region = TextRegion.caretAt(startOffset);
         checkInRange(region, this.getLength());
-        return FileLocation.location(getDisplayName(), range);
+        return FileLocation.range(getDisplayName(), range);
     }
 
     /**

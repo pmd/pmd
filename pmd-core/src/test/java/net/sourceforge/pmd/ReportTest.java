@@ -75,7 +75,7 @@ public class ReportTest {
     }
 
     private static FileLocation getNode(int line, int column, String filename) {
-        return FileLocation.location(
+        return FileLocation.range(
             filename,
             TextRange2d.range2d(line, column, line, column)
         );

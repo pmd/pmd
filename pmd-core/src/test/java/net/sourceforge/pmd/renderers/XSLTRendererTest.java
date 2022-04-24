@@ -19,7 +19,7 @@ public class XSLTRendererTest {
     @Test
     public void testDefaultStylesheet() throws Exception {
         XSLTRenderer renderer = new XSLTRenderer();
-        FileLocation loc = FileLocation.location("file", TextRange2d.range2d(1, 1, 1, 2));
+        FileLocation loc = FileLocation.range("file", TextRange2d.range2d(1, 1, 1, 2));
         RuleViolation rv = new ParametricRuleViolation(new FooRule(), loc, "violation message");
         String result = ReportTest.render(renderer, it -> it.onRuleViolation(rv));
         Assert.assertTrue(result.contains("violation message"));

@@ -145,7 +145,7 @@ public final class FileLocation {
      * @throws IllegalArgumentException If the line and column are not correctly ordered
      * @throws IllegalArgumentException If the start offset or length are negative
      */
-    public static FileLocation location(String fileName, TextRange2d range2d) {
+    public static FileLocation range(String fileName, TextRange2d range2d) {
         TextPos2d start = range2d.getStartPos();
         TextPos2d end = range2d.getEndPos();
         return new FileLocation(fileName,

@@ -20,8 +20,6 @@ import net.sourceforge.pmd.lang.document.Chars;
 import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.lang.document.TextFile;
-import net.sourceforge.pmd.lang.document.TextPos2d;
-import net.sourceforge.pmd.lang.document.TextRange2d;
 import net.sourceforge.pmd.lang.document.TextRegion;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 import net.sourceforge.pmd.lang.rule.impl.DefaultRuleViolationFactory;
@@ -115,14 +113,11 @@ public class DummyLanguageModule extends BaseLanguageModule {
     private static DummyRootNode readLispNode(ParserTask task) {
         TextDocument document = task.getTextDocument();
         final DummyRootNode root = new DummyRootNode().withTaskInfo(task);
-        {
-            TextPos2d endPos = document.getEntireRegion2d().getEndPos();
-            root.setCoords(1, 1, endPos.getLine(), endPos.getColumn());
-        }
+        root.setRegion(document.getEntireRegion());
 
         DummyNode top = root;
         int lastNodeStart = 0;
-        Chars text = document.getContent().getNormalizedText();
+        Chars text = document.getText();
         for (int i = 0; i < text.length(); i++) {
             char c = text.charAt(i);
             if (c == '(') {
@@ -130,7 +125,7 @@ public class DummyLanguageModule extends BaseLanguageModule {
                 node.setParent(top);
                 top.addChild(node, top.getNumChildren());
                 // setup coordinates, temporary (will be completed when node closes)
-                node.setCoords(document, TextRegion.caretAt(i));
+                node.setRegion(TextRegion.caretAt(i));
 
                 // cut out image
                 if (top.getImage() == null) {
@@ -148,9 +143,7 @@ public class DummyLanguageModule extends BaseLanguageModule {
                     throw new ParseException("Unbalanced parentheses: " + text);
                 }
 
-                TextPos2d endPos = document.toRange2d(TextRegion.caretAt(i)).getEndPos();
-                TextPos2d startPos = top.getCoords().getStartPos();
-                top.setCoords(TextRange2d.range2d(startPos, endPos));
+                top.setRegion(TextRegion.fromBothOffsets(top.getTextRegion().getStartOffset(), i));
 
                 if (top.getImage() == null) {
                     // cut out image (if node doesn't have children it hasn't been populated yet)

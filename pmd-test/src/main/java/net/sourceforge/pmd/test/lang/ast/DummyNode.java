@@ -14,7 +14,7 @@ public class DummyNode extends AbstractNode<DummyNode, DummyNode> {
     private FileLocation location;
 
     public void setCoords(int bline, int bcol, int eline, int ecol) {
-        this.location = FileLocation.location(":dummyFile:", TextRange2d.range2d(bline, bcol, eline, ecol));
+        this.location = FileLocation.range(":dummyFile:", TextRange2d.range2d(bline, bcol, eline, ecol));
     }
 
     @Override
