@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.document;
 
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
@@ -452,8 +453,8 @@ public final class Chars implements CharSequence {
 
     /**
      * Returns an iterable over the lines of this char sequence. The lines
-     * are yielded without line separators. For the purposes of this method,
-     * a line delimiter is {@code LF} or {@code CR+LF}.
+     * are yielded without line separators. Like {@link BufferedReader#readLine()},
+     * a line delimiter is {@code CR}, {@code LF} or {@code CR+LF}.
      */
     public Iterable<Chars> lines() {
         return () -> new Iterator<Chars>() {
@@ -467,19 +468,27 @@ public final class Chars implements CharSequence {
 
             @Override
             public Chars next() {
-                int nl = indexOf('\n', pos);
-                Chars next;
-                if (nl < 0) {
-                    next = subSequence(pos, max);
+                int curPos = pos;
+                int cr = indexOf('\r', curPos);
+                int lf = indexOf('\n', curPos);
+
+                if (cr != -1 && lf != -1) {
+                    // found both CR and LF
+                    int min = Math.min(cr, lf);
+                    pos = lf == cr + 1 ? lf + 1 // CRLF
+                                       : min + 1;
+
+                    return subSequence(curPos, min);
+                } else if (cr == -1 && lf == -1) {
+                    // no following line terminator, cut until the end
                     pos = max;
-                    return next;
-                } else if (startsWith('\r', nl - 1)) {
-                    next = subSequence(pos, nl - 1);
+                    return subSequence(curPos, max);
                 } else {
-                    next = subSequence(pos, nl);
+                    // lf or cr (exactly one is != -1 and max returns that one)
+                    int idx = Math.max(cr, lf);
+                    pos = idx + 1;
+                    return subSequence(curPos, idx);
                 }
-                pos = nl + 1;
-                return next;
             }
         };
     }

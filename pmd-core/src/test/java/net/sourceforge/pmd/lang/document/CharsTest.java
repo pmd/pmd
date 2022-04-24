@@ -200,6 +200,13 @@ public class CharsTest {
     }
 
     @Test
+    public void linesTest3WithCr() {
+        Chars bc = Chars.wrap("aa\rb");
+        List<String> lines = CollectionUtil.map(bc.lines(), Chars::toString);
+        assertEquals(listOf("aa", "b"), lines);
+    }
+
+    @Test
     public void testEqualsHashCode() {
 
 
