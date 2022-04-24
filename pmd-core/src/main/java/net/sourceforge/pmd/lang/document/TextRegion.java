@@ -122,8 +122,8 @@ public final class TextRegion implements Comparable<TextRegion> {
      * @throws AssertionError If the parameter cannot produce a valid region
      */
     public TextRegion growLeft(int delta) {
-        assert (delta + length) >= 0 : "Left delta " + delta + " would produce a negative length region" + parThis();
-        assert (startOffset - delta) >= 0 : "Left delta " + delta + " would produce a region that starts before zero" + parThis();
+        assert delta + length >= 0 : "Left delta " + delta + " would produce a negative length region" + parThis();
+        assert startOffset - delta >= 0 : "Left delta " + delta + " would produce a region that starts before zero" + parThis();
         return new TextRegion(startOffset - delta, delta + length);
     }
 
@@ -135,7 +135,7 @@ public final class TextRegion implements Comparable<TextRegion> {
      * @throws AssertionError If the delta is negative and less than the length of this region
      */
     public TextRegion growRight(int delta) {
-        assert (delta + length) >= 0 : "Right delta " + delta + " would produce a negative length region" + parThis();
+        assert delta + length >= 0 : "Right delta " + delta + " would produce a negative length region" + parThis();
         return new TextRegion(startOffset, delta + length);
     }
 
@@ -179,15 +179,6 @@ public final class TextRegion implements Comparable<TextRegion> {
      */
     public static TextRegion fromOffsetLength(int startOffset, int length) {
         return new TextRegion(startOffset, length);
-    }
-
-    /**
-     * Builds a new region from offset and length.
-     *
-     * @throws AssertionError If either parameter is negative
-     */
-    public static TextRegion caretAt(int offset) {
-        return fromOffsetLength(offset, 0);
     }
 
     /**

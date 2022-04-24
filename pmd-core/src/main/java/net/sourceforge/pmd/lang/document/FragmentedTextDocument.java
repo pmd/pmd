@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.document;
 
+import java.util.function.ToIntFunction;
+
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.LanguageVersion;
@@ -48,44 +50,71 @@ final class FragmentedTextDocument extends BaseMappedDocument implements TextDoc
 
     @Override
     protected int localOffsetTransform(int outOffset, boolean inclusive) {
-        return inputOffsetAt(outOffset, inclusive);
+        return offsetTransform(outOffset, inclusive,
+                               Fragment::outToIn,
+                               Fragment::outEnd,
+                               Fragment::outStart
+        );
     }
 
-    private int inputOffsetAt(int outputOffset, boolean inclusive) {
+    @Override
+    protected int inverseLocalOffsetTransform(int inOffset, boolean inclusive) {
+        return offsetTransform(inOffset, inclusive,
+                               Fragment::inToOut,
+                               Fragment::inEnd,
+                               Fragment::inStart
+        );
+    }
+
+    interface OffsetMapper {
+
+        int mapOffset(Fragment fragment, int offset);
+    }
+
+    private int offsetTransform(int offset,
+                                boolean inclusive,
+                                OffsetMapper mapOffsetWhenContains,
+                                ToIntFunction<Fragment> end,
+                                ToIntFunction<Fragment> start) {
         // caching the last accessed fragment instead of doing
         // a linear search is critical for performance.
         Fragment f = this.lastAccessedFragment;
         if (f == null) {
-            return outputOffset;
+            return offset;
         }
 
-        if (!f.contains(outputOffset)) {
+        // Whether the fragment contains the offset we're looking for.
+        // Will be true most of the time.
+        boolean containsOffset =
+            start.applyAsInt(f) >= offset && offset < end.applyAsInt(f);
+
+        if (!containsOffset) {
             // Slow path, we must search for the fragment
             // This optimisation is important, otherwise we have
             // to search for very long times in some files
 
-            if (f.outEnd() < outputOffset) { // search forward
-                while (f.next != null && f.outEnd() < outputOffset) {
+            if (end.applyAsInt(f) < offset) { // search forward
+                while (f.next != null && end.applyAsInt(f) < offset) {
                     f = f.next;
                 }
             } else { // search backwards
-                while (f.prev != null && outputOffset <= f.outStart()) {
+                while (f.prev != null && offset <= start.applyAsInt(f)) {
                     f = f.prev;
                 }
             }
             lastAccessedFragment = f;
         }
 
-        if (!inclusive && f.outEnd() == outputOffset) {
+        if (!inclusive && end.applyAsInt(f) == offset) {
             if (f.next != null) {
                 f = f.next;
                 lastAccessedFragment = f;
                 // fallthrough
             } else {
-                return f.outToIn(outputOffset) + 1;
+                return mapOffsetWhenContains.mapOffset(f, offset) + 1;
             }
         }
-        return f.outToIn(outputOffset);
+        return mapOffsetWhenContains.mapOffset(f, offset);
     }
 
 
@@ -150,8 +179,8 @@ final class FragmentedTextDocument extends BaseMappedDocument implements TextDoc
             return inStart() + outOffset - outStart();
         }
 
-        boolean contains(int outOffset) {
-            return outStart() <= outOffset && outEnd() > outOffset;
+        int inToOut(int inOffset) {
+            return inOffset - inStart() + outStart();
         }
 
         @Override

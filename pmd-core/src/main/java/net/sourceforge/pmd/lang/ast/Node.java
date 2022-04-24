@@ -130,12 +130,8 @@ public interface Node extends Reportable {
      *     to create a region.
      */
     default TextRegion getTextRegion() {
-        @SuppressWarnings("PMD.CloseResource")
-        TextDocument document = getAstInfo().getTextDocument();
         FileLocation loc = getReportLocation();
-        int startOffset = document.offsetAtLineColumn(loc.getStartPos());
-        int endOffset = document.offsetAtLineColumn(loc.getStartPos());
-        return TextRegion.fromBothOffsets(startOffset, endOffset);
+        return getAstInfo().getTextDocument().toRegion(loc.toRange2d());
     }
 
 

@@ -148,7 +148,7 @@ public interface TextDocument extends Closeable {
     int inputOffset(int outOffset, boolean inclusive);
 
     /**
-     * Translate a region given in the the coordinate system of this
+     * Translate a region given in the coordinate system of this
      * document, to the coordinate system of the original document.
      * This works as if creating a new region with both start and end
      * offsets translated through {@link #inputOffset(int, boolean)}. The
@@ -159,6 +159,21 @@ public interface TextDocument extends Closeable {
      * @return Input region
      */
     TextRegion inputRegion(TextRegion outputRegion);
+
+    /**
+     * Translate a 2D range given in the coordinate system of this
+     * document, to the coordinate system of the original document.
+     * This works as if creating a new region with both start and end
+     * offsets translated through {@link #inputOffset(int, boolean)}. The
+     * returned region may have a different length.
+     *
+     * @param outputRange Output region
+     *
+     * @return Input region
+     */
+    default TextRange2d inputRange(TextRange2d outputRange) {
+        return toRange2d(inputRegion(toRegion(outputRange)));
+    }
 
 
     /**
@@ -176,16 +191,20 @@ public interface TextDocument extends Closeable {
     }
 
     /**
-     * Returns a text region that corresponds to the entire document.
+     * Returns a text region that corresponds to the entire document,
+     * in the coordinate system of this document.
      */
     default TextRegion getEntireRegion() {
         return TextRegion.fromOffsetLength(0, getLength());
     }
 
     /**
-     * Returns a 2D text range that corresponds to the entire document.
+     * Returns a 2D text range that corresponds to the entire document,
+     * in the coordinate system of this document.
      */
-    TextRange2d getEntireRegion2d();
+    default TextRange2d getEntireRegion2d() {
+        return toRange2d(getEntireRegion());
+    }
 
     /**
      * Returns a region that spans the text of all the given lines.
@@ -210,7 +229,9 @@ public interface TextDocument extends Closeable {
      * the line/column information for both start and end offset of
      * the region.
      *
-     * @return A new file position
+     * @param region A region, in the coordinate system of this document
+     *
+     * @return A new file position, with absolute coordinates
      *
      * @throws IndexOutOfBoundsException If the argument is not a valid region in this document
      */
@@ -231,7 +252,7 @@ public interface TextDocument extends Closeable {
         }
         TextRegion region = TextRegion.caretAt(startOffset);
         checkInRange(region, this.getLength());
-        return FileLocation.location(getDisplayName(), range);
+        return FileLocation.range(getDisplayName(), range);
     }
 
     /**
@@ -289,12 +310,16 @@ public interface TextDocument extends Closeable {
 
     /**
      * Returns the line and column at the given offset (inclusive).
+     * Both the input offset and the output range are in the coordinates
+     * of this document.
      *
      * @param offset    A source offset (0-based), can range in {@code [0, length]}.
      * @param inclusive If the offset falls right after a line terminator,
      *                  two behaviours are possible. If the parameter is true,
      *                  choose the position at the start of the next line.
      *                  Otherwise choose the offset at the end of the line.
+     *
+     * @return A position, in the coordinate system of this document
      *
      * @throws IndexOutOfBoundsException if the offset is out of bounds
      */
@@ -315,6 +340,17 @@ public interface TextDocument extends Closeable {
     @Override
     void close() throws IOException;
 
+    /**
+     * Create a new text document for the given text file. The document's
+     * coordinate system is the same as the original text file.
+     *
+     * @param textFile A text file
+     *
+     * @return A new text document
+     *
+     * @throws IOException          If the file cannot be read ({@link TextFile#readContents()})
+     * @throws NullPointerException If the parameter is null
+     */
     static TextDocument create(TextFile textFile) throws IOException {
         return new RootTextDocument(textFile);
     }
