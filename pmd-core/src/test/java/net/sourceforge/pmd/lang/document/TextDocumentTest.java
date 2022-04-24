@@ -11,9 +11,7 @@ import static org.junit.Assert.assertThrows;
 import java.io.IOException;
 
 import org.apache.commons.io.IOUtils;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 
 import net.sourceforge.pmd.lang.DummyLanguageModule;
@@ -26,8 +24,6 @@ import junitparams.Parameters;
 @RunWith(JUnitParamsRunner.class)
 public class TextDocumentTest {
 
-    @Rule
-    public ExpectedException expect = ExpectedException.none();
     private final LanguageVersion dummyVersion = LanguageRegistry.getDefaultLanguage().getDefaultVersion();
 
     @Test

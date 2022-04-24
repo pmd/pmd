@@ -17,6 +17,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
+import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
@@ -37,6 +38,15 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 public final class Chars implements CharSequence {
 
     public static final Chars EMPTY = wrap("");
+    /**
+     * Special sentinel used by {@link #lines()}.
+     */
+    private static final int NOT_TRIED = -2;
+
+    /**
+     * See {@link StringUtils#INDEX_NOT_FOUND}.
+     */
+    private static final int NOT_FOUND = -1;
 
     private final String str;
     private final int start;
@@ -161,20 +171,20 @@ public final class Chars implements CharSequence {
         final int max = start + len - searched.length();
 
         if (fromIndex < 0 || max < start + fromIndex) {
-            return -1;
+            return NOT_FOUND;
         } else if (searched.isEmpty()) {
             return 0;
         }
 
         final char fst = searched.charAt(0);
         int strpos = str.indexOf(fst, start + fromIndex);
-        while (strpos != -1 && strpos <= max) {
+        while (strpos != NOT_FOUND && strpos <= max) {
             if (str.startsWith(searched, strpos)) {
                 return strpos - start;
             }
             strpos = str.indexOf(fst, strpos + 1);
         }
-        return -1;
+        return NOT_FOUND;
     }
 
     /**
@@ -182,7 +192,7 @@ public final class Chars implements CharSequence {
      */
     public int indexOf(int ch, int fromIndex) {
         if (fromIndex < 0 || fromIndex >= len) {
-            return -1;
+            return NOT_FOUND;
         }
         // we want to avoid searching too far in the string
         // so we don't use String#indexOf, as it would be looking
@@ -196,7 +206,7 @@ public final class Chars implements CharSequence {
                 return i - start;
             }
         }
-        return -1;
+        return NOT_FOUND;
     }
 
     /**
@@ -204,7 +214,7 @@ public final class Chars implements CharSequence {
      */
     public int lastIndexOf(int ch, int fromIndex) {
         if (fromIndex < 0 || fromIndex >= len) {
-            return -1;
+            return NOT_FOUND;
         }
         // we want to avoid searching too far in the string
         // so we don't use String#indexOf, as it would be looking
@@ -217,7 +227,7 @@ public final class Chars implements CharSequence {
                 return i - start;
             }
         }
-        return -1;
+        return NOT_FOUND;
     }
 
     /**
@@ -460,6 +470,12 @@ public final class Chars implements CharSequence {
         return () -> new Iterator<Chars>() {
             final int max = len;
             int pos = 0;
+            // If those are NOT_TRIED, then we should scan ahead to find them
+            // If the scan fails then they'll stay -1 forever and won't be tried again.
+            // This is important to scan in documents where we know there are no
+            // CR characters, as in our normalized TextFileContent.
+            int nextCr = NOT_TRIED;
+            int nextLf = NOT_TRIED;
 
             @Override
             public boolean hasNext() {
@@ -468,26 +484,48 @@ public final class Chars implements CharSequence {
 
             @Override
             public Chars next() {
-                int curPos = pos;
-                int cr = indexOf('\r', curPos);
-                int lf = indexOf('\n', curPos);
+                final int curPos = pos;
+                if (nextCr == NOT_TRIED) {
+                    nextCr = indexOf('\r', curPos);
+                }
+                if (nextLf == NOT_TRIED) {
+                    nextLf = indexOf('\n', curPos);
+                }
+                final int cr = nextCr;
+                final int lf = nextLf;
 
-                if (cr != -1 && lf != -1) {
+                if (cr != NOT_FOUND && lf != NOT_FOUND) {
                     // found both CR and LF
                     int min = Math.min(cr, lf);
-                    pos = lf == cr + 1 ? lf + 1 // CRLF
-                                       : min + 1;
+                    if (lf == cr + 1) {
+                        // CRLF
+                        pos = lf + 1;
+                        nextCr = NOT_TRIED;
+                        nextLf = NOT_TRIED;
+                    } else {
+                        pos = min + 1;
+                        resetLookahead(cr, min);
+                    }
 
                     return subSequence(curPos, min);
-                } else if (cr == -1 && lf == -1) {
+                } else if (cr == NOT_FOUND && lf == NOT_FOUND) {
                     // no following line terminator, cut until the end
                     pos = max;
                     return subSequence(curPos, max);
                 } else {
                     // lf or cr (exactly one is != -1 and max returns that one)
                     int idx = Math.max(cr, lf);
+                    resetLookahead(cr, idx);
                     pos = idx + 1;
                     return subSequence(curPos, idx);
+                }
+            }
+
+            private void resetLookahead(int cr, int idx) {
+                if (idx == cr) {
+                    nextCr = NOT_TRIED;
+                } else {
+                    nextLf = NOT_TRIED;
                 }
             }
         };
@@ -515,7 +553,7 @@ public final class Chars implements CharSequence {
                     throw new IndexOutOfBoundsException();
                 }
                 if (pos >= max) {
-                    return -1;
+                    return NOT_FOUND;
                 }
                 int toRead = Integer.min(max - pos, len);
                 str.getChars(pos, pos + toRead, cbuf, off);
@@ -525,7 +563,7 @@ public final class Chars implements CharSequence {
 
             @Override
             public int read() {
-                return pos >= max ? -1 : str.charAt(pos++);
+                return pos >= max ? NOT_FOUND : str.charAt(pos++);
             }
 
             @Override
