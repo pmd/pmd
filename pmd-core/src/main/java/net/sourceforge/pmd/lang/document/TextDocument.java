@@ -77,25 +77,6 @@ public interface TextDocument extends Closeable {
     // todo text edition (there are some reverted commits in the branch
     //  with part of this, including a lot of tests)
 
-    /*
-        Summary of different coordinate systems:
-        Coordinate system:   Line/column            Offset
-        ==============================================================
-        Position:            TextPos2d              int >= 0
-        Range:               TextRange2d            TextRegion
-
-        (FileLocation is similar to TextRange2d in terms of position info)
-
-        Conversions:
-          line/column -> offset: offsetAtLineColumn
-          offset -> line/column: lineColumnAtOffset
-        Range conversions:
-          TextRegion  -> TextRange2d: toRegion
-          TextRange2d -> TextRegion: toRange2d
-
-          TextRegion -> FileLocation: toLocation
-          TextRange2d -> FileLocation: toLocation
-     */
 
     /**
      * Returns the language version that should be used to parse this file.

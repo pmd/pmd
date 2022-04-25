@@ -126,7 +126,6 @@ public final class PMD {
      * @return Report in which violations are accumulated
      *
      * @throws Exception If there was a problem when opening or closing the renderers
-     *
      * @deprecated Use {@link PmdAnalysis}
      */
     @Deprecated
