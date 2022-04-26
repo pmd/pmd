@@ -1304,11 +1304,11 @@ These expressions can be simplified as follows:
             <property name="xpath">
                 <value>
 <![CDATA[
-//ConditionalExpression[not(PrimaryExpression/*/Literal) and (Expression/PrimaryExpression/*/Literal/BooleanLiteral)]
-|
-//ConditionalExpression[not(Expression/PrimaryExpression/*/Literal) and (PrimaryExpression/*/Literal/BooleanLiteral)]
-|
-//ConditionalExpression[(PrimaryExpression/*/Literal/BooleanLiteral) and (Expression/PrimaryExpression/*/Literal/BooleanLiteral)]
+//ConditionalExpression[
+((PrimaryExpression/*/Literal/BooleanLiteral) or (Expression/PrimaryExpression/*/Literal/BooleanLiteral))
+and
+not((PrimaryExpression/*/Literal/NullLiteral) or (Expression/PrimaryExpression/*/Literal/NullLiteral))
+]
 ]]>
                 </value>
             </property>
