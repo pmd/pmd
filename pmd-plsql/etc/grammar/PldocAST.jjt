@@ -2823,7 +2823,8 @@ ASTEmbeddedSqlStatement EmbeddedSqlStatement()  :
 {
    <EXECUTE> <IMMEDIATE> StringExpression()
     [
-            ( IntoClause() | BulkCollectIntoClause() ) [ UsingClause() ]
+            IntoClause() [ UsingClause() ]
+        |   BulkCollectIntoClause() [ UsingClause() ]
         |   UsingClause() [ DynamicReturnClause() ]
         |   DynamicReturnClause()
     ]
@@ -2844,7 +2845,8 @@ ASTDynamicReturnClause DynamicReturnClause() :
 void UsingClause() #void :
 {}
 {
-    <USING> [ <IN> [ <OUT> ] | <OUT> ]  Expression() ("," [ <IN> [ <OUT> ] | <OUT> ] Expression())*
+    <USING> [ <IN> [ <OUT> ] | <OUT> ]  Expression()
+        ( "," [ <IN> [ <OUT> ] | <OUT> ] Expression() )*
 }
 
 ASTPipelineStatement PipelineStatement()  :
@@ -6600,7 +6602,6 @@ ASTID ID(): {}
 		//20120501 | <HEAP>
 		| <IF> //SYNTAX
 		//20120501 | <IMMEDIATE>
-		| <IN> //RESERVED WORD
 		| <INDEX> //RESERVED WORD
 		//20120501 | <INDICATOR>
 		| <INSERT> //SYNTAX  //RESERVED WORD
@@ -6833,7 +6834,6 @@ ASTQualifiedID QualifiedID(): {}
 		//20120501 | <HEAP>
 		//<IF>
 		//20120501 | <IMMEDIATE>
-		//<IN>
 		//<INDEX>
 		//20120501 | <INDICATOR>
 		//<INSERT>
