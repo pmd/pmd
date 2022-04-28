@@ -34,6 +34,11 @@ This is a {{ site.pmd.release_type }} release.
   * [#3068](https://github.com/pmd/pmd/issues/3068): \[java] Some tests should not depend on real rules
   * [#3889](https://github.com/pmd/pmd/pull/3889): \[java] Catch LinkageError in UselessOverridingMethodRule
   * [#3910](https://github.com/pmd/pmd/pull/3910): \[java] UnusedPrivateField - Allow the ignored fieldnames to be configurable
+* java-bestpractices
+  * [#1185](https://github.com/pmd/pmd/issues/1185): \[java] ArrayIsStoredDirectly false positive with field access
+  * [#1474](https://github.com/pmd/pmd/issues/1474): \[java] ArrayIsStoredDirectly false positive with method call
+  * [#3879](https://github.com/pmd/pmd/issues/3879) \[java] ArrayIsStoredDirectly reports duplicated violation
+  * [#3929](https://github.com/pmd/pmd/issues/3929): \[java] ArrayIsStoredDirectly should report the assignment rather than formal parameter
 * java-performance
   * [#3867](https://github.com/pmd/pmd/issues/3867): \[java] UseArraysAsList with method call
 * plsql
