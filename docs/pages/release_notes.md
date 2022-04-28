@@ -18,6 +18,14 @@ This is a {{ site.pmd.release_type }} release.
 
 This version of PMD ships a new language module to support analyzing of HTML.
 Support for HTML is experimental and might change without notice.
+The language implementation is not complete yet and the AST doesn't look
+well for text nodes and comment nodes and might be changed in the future.
+You can write your own rules, but we don't guarantee that the rules work with
+the next (minor) version of PMD without adjustments.
+
+Please give us feedback about how practical this new language is in
+[discussions](https://github.com/pmd/pmd/discussions). Please report
+missing features or bugs as new [issues](https://github.com/pmd/pmd/issues).
 
 #### New rules
 
@@ -67,6 +75,11 @@ Support for HTML is experimental and might change without notice.
   * [#3706](https://github.com/pmd/pmd/issues/3706): \[plsql] Parsing exception CURSOR statement with parenthesis groupings
 
 ### API Changes
+
+#### Experimental APIs
+
+* The module `pmd-html` is entirely experimental right now. Anything in the package
+  `net.sourceforge.pmd.lang.html` should be used cautiously.
 
 ### External Contributions
 * [#3883](https://github.com/pmd/pmd/pull/3883): \[doc] Improve side bar by Adding Release Date - [@jasonqiu98](https://github.com/jasonqiu98)
