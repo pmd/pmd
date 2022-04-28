@@ -14,6 +14,44 @@ This is a {{ site.pmd.release_type }} release.
 
 ### New and noteworthy
 
+#### Support for HTML
+
+This version of PMD ships a new language module to support analyzing of HTML.
+Support for HTML is experimental and might change without notice.
+The language implementation is not complete yet and the AST doesn't look
+well for text nodes and comment nodes and might be changed in the future.
+You can write your own rules, but we don't guarantee that the rules work with
+the next (minor) version of PMD without adjustments.
+
+Please give us feedback about how practical this new language is in
+[discussions](https://github.com/pmd/pmd/discussions). Please report
+missing features or bugs as new [issues](https://github.com/pmd/pmd/issues).
+
+#### New rules
+
+* The HTML rule {% rule html/bestpractices/AvoidInlineStyles %} finds elements which use a style attribute.
+  In order to help maintaining a webpage it is considered good practice to separate content and styles. Instead
+  of inline styles one should use CSS files and classes.
+
+```xml
+    <rule ref="category/html/bestpractices.xml/AvoidInlineStyles" />
+```
+
+* The HTML rule {% rule html/bestpractices/UnnecessaryTypeAttribute %} finds "link" and "script" elements which
+  still have a "type" attribute. This is not necessary anymore since modern browsers automatically use CSS and
+  JavaScript.
+
+```xml
+      <rule ref="category/html/bestpractices.xml/UnnecessaryTypeAttribute" />
+```
+
+* The HTML rule {% rule html/bestpractices/UseAltAttributeForImages %} finds "img" elements without an "alt"
+  attribute. An alternate text should always be provided in order to help screen readers.
+
+```xml
+      <rule ref="category/html/bestpractices.xml/UseAltAttributeForImages" />
+```
+
 #### Modified rules
 
 *   The Java rule {% rule java/bestpractices/UnusedPrivateField %} has a new property `ignoredFieldNames`.
@@ -56,6 +94,8 @@ This is a {{ site.pmd.release_type }} release.
     some violations removed with a given predicate based filter.
   * {% jdoc !!core::Report#union(net.sourceforge.pmd.Report) %} can combine two reports into a single new Report.
 * {% jdoc !!core::util.Predicate %} will be replaced in PMD7 with the standard Predicate interface from java8.
+* The module `pmd-html` is entirely experimental right now. Anything in the package
+  `net.sourceforge.pmd.lang.html` should be used cautiously.
 
 ### External Contributions
 * [#3883](https://github.com/pmd/pmd/pull/3883): \[doc] Improve side bar by Adding Release Date - [@jasonqiu98](https://github.com/jasonqiu98)

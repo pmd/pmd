@@ -1,0 +1,13 @@
++- #document[@NodeName = "#document"]
+   +- #declaration[@Name = "xml", @NodeName = "#declaration"]
+   +- #text[@Image = " ", @NodeName = "#text", @NormalizedText = " ", @Text = "
+"]
+   +- root[@NodeName = "root"]
+   |  +- #text[@Image = " ", @NodeName = "#text", @NormalizedText = " ", @Text = "
+  "]
+   |  +- child[@NodeName = "child", @attr1 = "value1"]
+   |  |  +- #text[@Image = "text & entities", @NodeName = "#text", @NormalizedText = "text & entities", @Text = "text & entities"]
+   |  +- #text[@Image = " ", @NodeName = "#text", @NormalizedText = " ", @Text = "
+"]
+   +- #text[@Image = " ", @NodeName = "#text", @NormalizedText = " ", @Text = "
+"]

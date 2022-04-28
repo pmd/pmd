@@ -1,0 +1,24 @@
+    [Image] or [Truncated image[            Bcol      Ecol
+L1
+    [#document]                             1         8
+    [#doctype]                              1         15
+    [\n]                                    16        16
+L2
+    [html]                                  1         7
+    [\n    ]                                7         4
+L3
+    [head]                                  5         22
+    [hello]                                 11        15
+    [\n    ]                                23        4
+L4
+    [body]                                  5         11
+    [\n        ]                            11        8
+L5
+    [h1]                                    9         22
+    [world]                                 13        17
+    [\n    ]                                23        4
+L6
+    [\n]                                    12        12
+L7
+    [\n]                                    8         8
+EOF
