@@ -2387,7 +2387,8 @@ ASTUnlabelledStatement UnlabelledStatement()  :
 	| OpenStatement()  ";"
 	| FetchStatement()  ";"
 	| Block()  ";"
-	| LOOKAHEAD(2) EmbeddedSqlStatement()
+	|   // Lookahead for EXECUTE IMMEDIATE to distinguish an identifier named "EXECUTE" from execute statement
+	    LOOKAHEAD(2) EmbeddedSqlStatement() ";"
 	| PipelineStatement()  ";"
 	| ConditionalCompilationStatement()  // Conditional Compilation works outside the normal parsing rules
         | InlinePragma() ";"
@@ -2821,12 +2822,23 @@ ASTEmbeddedSqlStatement EmbeddedSqlStatement()  :
 {}
 {
    <EXECUTE> <IMMEDIATE> StringExpression()
-    [ LOOKAHEAD(<BULK>) BulkCollectIntoClause() ] //#3687 Invoke this method to parse BULK COLLECT
-	[ <INTO> Name() ("," Name())* ]
-	[ UsingClause() ]
-	[ ( <RETURN> | <RETURNING> )  <INTO> Expression() ("," Expression())*] ";"
-	// PIPELINED FUNCTION OUTPUT
-      { return jjtThis ; }
+    [
+            ( IntoClause() | BulkCollectIntoClause() ) [ UsingClause() ]
+        |   UsingClause() [ DynamicReturnClause() ]
+        |   DynamicReturnClause()
+    ]
+    { return jjtThis; }
+}
+
+/**
+* https://docs.oracle.com/en/database/oracle/oracle-database/18/lnpls/RETURNING-INTO-clause.html#GUID-38F735B9-1100-45AF-AE71-18FB74A899BE
+*/
+ASTDynamicReturnClause DynamicReturnClause() :
+{}
+{
+    ( <RETURN> | <RETURNING> )
+    ( IntoClause() | BulkCollectIntoClause() )
+    { return jjtThis; }
 }
 
 void UsingClause() #void :
