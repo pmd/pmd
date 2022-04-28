@@ -38,7 +38,7 @@ import net.sourceforge.pmd.util.Predicate;
  * internalized in PMD 7.
  *
  * <p>For special use cases, like filtering the report after PMD analysis and
- * before rendering the report, some limited mutating operations are provided:
+ * before rendering the report, some transformation operations are provided:
  * <ul>
  *     <li>{@link #filterViolations(Predicate)}</li>
  *     <li>{@link #union(Report)}</li>
