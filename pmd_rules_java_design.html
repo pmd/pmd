@@ -629,6 +629,37 @@
                 
                 
                 <li class="subfolders">
+                    <a href="#">HTML Rules</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_rules_html.html">Index</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_html_bestpractices.html">Best Practices</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                
+                <li class="subfolders">
                     <a href="#">Java Rules</a>
                     <ul>
                         
@@ -1099,6 +1130,18 @@
 
                 
                 <li><a href="pmd_languages_xml.html">XML and XML dialects</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_languages_html.html">HTML</a></li>
                 
 
             
@@ -3441,17 +3484,18 @@ derived from RuntimeException or a checked exception.</p>
 <p>Look for ternary operators with the form <code class="language-plaintext highlighter-rouge">condition ? literalBoolean : foo</code>
 or <code class="language-plaintext highlighter-rouge">condition ? foo : literalBoolean</code>.</p>
 
-<p>These expressions can be simplified respectively to
-<code class="language-plaintext highlighter-rouge">condition || foo</code>  when the literalBoolean is true
-<code class="language-plaintext highlighter-rouge">!condition &amp;&amp; foo</code> when the literalBoolean is false
-or
-<code class="language-plaintext highlighter-rouge">!condition || foo</code> when the literalBoolean is true
-<code class="language-plaintext highlighter-rouge">condition &amp;&amp; foo</code>  when the literalBoolean is false</p>
+<p>These expressions can be simplified as follows:</p>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">condition ? true : expr</code> simplifies to <code class="language-plaintext highlighter-rouge">condition || expr</code></li>
+  <li><code class="language-plaintext highlighter-rouge">condition ? false : expr</code> simplifies to <code class="language-plaintext highlighter-rouge">!condition &amp;&amp; expr</code></li>
+  <li><code class="language-plaintext highlighter-rouge">condition ? expr : true</code> simplifies to <code class="language-plaintext highlighter-rouge">!condition || expr</code></li>
+  <li><code class="language-plaintext highlighter-rouge">condition ? expr : false</code> simplifies to <code class="language-plaintext highlighter-rouge">condition &amp;&amp; expr</code></li>
+</ul>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
-<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">ConditionalExpression</span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="nt">PrimaryExpression</span><span class="err">/*</span><span class="o">/</span><span class="nt">Literal</span><span class="p">)</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="p">(</span><span class="nt">Expression</span><span class="o">/</span><span class="nt">PrimaryExpression</span><span class="err">/*</span><span class="o">/</span><span class="nt">Literal</span><span class="o">/</span><span class="nt">BooleanLiteral</span><span class="p">)]</span><span class="w">
-</span><span class="p">|</span><span class="w">
-</span><span class="o">//</span><span class="nt">ConditionalExpression</span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="nt">Expression</span><span class="o">/</span><span class="nt">PrimaryExpression</span><span class="err">/*</span><span class="o">/</span><span class="nt">Literal</span><span class="p">)</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="p">(</span><span class="nt">PrimaryExpression</span><span class="err">/*</span><span class="o">/</span><span class="nt">Literal</span><span class="o">/</span><span class="nt">BooleanLiteral</span><span class="p">)]</span><span class="w">
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">ConditionalExpression</span><span class="w">
+  </span><span class="p">[(</span><span class="nt">Expression</span><span class="p">|.)</span><span class="o">/</span><span class="nt">PrimaryExpression</span><span class="err">/*</span><span class="o">/</span><span class="nt">Literal</span><span class="o">/</span><span class="nt">BooleanLiteral</span><span class="p">]</span><span class="w">
+  </span><span class="p">[</span><span class="ow">not</span><span class="p">((</span><span class="nt">Expression</span><span class="p">|.)</span><span class="o">/</span><span class="nt">PrimaryExpression</span><span class="err">/*</span><span class="o">/</span><span class="nt">Literal</span><span class="o">/</span><span class="nt">NullLiteral</span><span class="p">)]</span><span class="w">
 </span></code></pre></div></div>
 
 <p><strong>Example(s):</strong></p>
@@ -3471,6 +3515,10 @@ or
 
     <span class="kd">public</span> <span class="kt">void</span> <span class="nf">test4</span><span class="o">()</span> <span class="o">{</span>
         <span class="kd">final</span> <span class="kt">boolean</span> <span class="n">otherValue</span> <span class="o">=</span> <span class="n">condition</span> <span class="o">?</span> <span class="n">something</span><span class="o">()</span> <span class="o">:</span> <span class="kc">false</span><span class="o">;</span> <span class="c1">// can be as simple as condition &amp;&amp; something();</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">test5</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">condition</span> <span class="o">?</span> <span class="kc">true</span> <span class="o">:</span> <span class="kc">false</span><span class="o">;</span> <span class="c1">// can be as simple as return condition;</span>
     <span class="o">}</span>
 <span class="o">}</span>
 </code></pre></div></div>
@@ -4196,7 +4244,7 @@ remember to add a private constructor to prevent instantiation.
         <div class="col-lg-12 footer">
             &copy;2022 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Apr 22, 2022 <br />
+             Site last generated: Apr 28, 2022 <br />
             <p>
                 <img src="images/pmd-logo-small.png" alt="Company
                 logo"/>

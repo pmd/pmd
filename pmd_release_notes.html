@@ -629,6 +629,37 @@
                 
                 
                 <li class="subfolders">
+                    <a href="#">HTML Rules</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_rules_html.html">Index</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_html_bestpractices.html">Best Practices</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                
+                <li class="subfolders">
                     <a href="#">Java Rules</a>
                     <ul>
                         
@@ -1105,6 +1136,18 @@
 
             
             
+            
+
+            
+
+                
+                <li><a href="pmd_languages_html.html">HTML</a></li>
+                
+
+            
+
+            
+            
         </ul>
      </li>
        
@@ -1477,6 +1520,47 @@
 
 <h3 id="new-and-noteworthy">New and noteworthy</h3>
 
+<h4 id="support-for-html">Support for HTML</h4>
+
+<p>This version of PMD ships a new language module to support analyzing of HTML.
+Support for HTML is experimental and might change without notice.
+The language implementation is not complete yet and the AST doesn’t look
+well for text nodes and comment nodes and might be changed in the future.
+You can write your own rules, but we don’t guarantee that the rules work with
+the next (minor) version of PMD without adjustments.</p>
+
+<p>Please give us feedback about how practical this new language is in
+<a href="https://github.com/pmd/pmd/discussions">discussions</a>. Please report
+missing features or bugs as new <a href="https://github.com/pmd/pmd/issues">issues</a>.</p>
+
+<h4 id="new-rules">New rules</h4>
+
+<ul>
+  <li>The HTML rule <a href="pmd_rules_html_bestpractices.html#avoidinlinestyles"><code class="language-plaintext highlighter-rouge">AvoidInlineStyles</code></a> finds elements which use a style attribute.
+In order to help maintaining a webpage it is considered good practice to separate content and styles. Instead
+of inline styles one should use CSS files and classes.</li>
+</ul>
+
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/html/bestpractices.xml/AvoidInlineStyles"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<ul>
+  <li>The HTML rule <a href="pmd_rules_html_bestpractices.html#unnecessarytypeattribute"><code class="language-plaintext highlighter-rouge">UnnecessaryTypeAttribute</code></a> finds “link” and “script” elements which
+still have a “type” attribute. This is not necessary anymore since modern browsers automatically use CSS and
+JavaScript.</li>
+</ul>
+
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code>      <span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/html/bestpractices.xml/UnnecessaryTypeAttribute"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<ul>
+  <li>The HTML rule <a href="pmd_rules_html_bestpractices.html#usealtattributeforimages"><code class="language-plaintext highlighter-rouge">UseAltAttributeForImages</code></a> finds “img” elements without an “alt”
+attribute. An alternate text should always be provided in order to help screen readers.</li>
+</ul>
+
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code>      <span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/html/bestpractices.xml/UseAltAttributeForImages"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
 <h4 id="modified-rules">Modified rules</h4>
 
 <ul>
@@ -1490,6 +1574,7 @@ Note that the rule used to ignore fields named <code class="language-plaintext h
 <ul>
   <li>core
     <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/3792">#3792</a>: [core] Allow to filter violations in Report</li>
       <li><a href="https://github.com/pmd/pmd/issues/3881">#3881</a>: [core] SARIF renderer depends on platform default encoding</li>
       <li><a href="https://github.com/pmd/pmd/pull/3882">#3882</a>: [core] Fix AssertionError about exhaustive switch</li>
       <li><a href="https://github.com/pmd/pmd/issues/3884">#3884</a>: [core] XML report via ant task contains XML header twice</li>
@@ -1505,11 +1590,30 @@ Note that the rule used to ignore fields named <code class="language-plaintext h
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/3068">#3068</a>: [java] Some tests should not depend on real rules</li>
       <li><a href="https://github.com/pmd/pmd/pull/3889">#3889</a>: [java] Catch LinkageError in UselessOverridingMethodRule</li>
+    </ul>
+  </li>
+  <li>java-bestpractices
+    <ul>
       <li><a href="https://github.com/pmd/pmd/pull/3910">#3910</a>: [java] UnusedPrivateField - Allow the ignored fieldnames to be configurable</li>
+      <li><a href="https://github.com/pmd/pmd/issues/1185">#1185</a>: [java] ArrayIsStoredDirectly false positive with field access</li>
+      <li><a href="https://github.com/pmd/pmd/issues/1474">#1474</a>: [java] ArrayIsStoredDirectly false positive with method call</li>
+      <li><a href="https://github.com/pmd/pmd/issues/3879">#3879</a> [java] ArrayIsStoredDirectly reports duplicated violation</li>
+      <li><a href="https://github.com/pmd/pmd/issues/3929">#3929</a>: [java] ArrayIsStoredDirectly should report the assignment rather than formal parameter</li>
+    </ul>
+  </li>
+  <li>java-design
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/3603">#3603</a>: [java] SimplifiedTernary: no violation for ‘condition ? true : false’ case</li>
+    </ul>
+  </li>
+  <li>java-performance
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/3867">#3867</a>: [java] UseArraysAsList with method call</li>
     </ul>
   </li>
   <li>plsql
     <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/3687">#3687</a>: [plsql] Parsing exception EXECUTE IMMEDIATE l_sql BULK COLLECT INTO statement</li>
       <li><a href="https://github.com/pmd/pmd/issues/3706">#3706</a>: [plsql] Parsing exception CURSOR statement with parenthesis groupings</li>
     </ul>
   </li>
@@ -1517,11 +1621,28 @@ Note that the rule used to ignore fields named <code class="language-plaintext h
 
 <h3 id="api-changes">API Changes</h3>
 
+<h4 id="experimental-apis">Experimental APIs</h4>
+
+<ul>
+  <li>Report has two new methods which allow limited mutations of a given report:
+    <ul>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.45.0-SNAPSHOT/net/sourceforge/pmd/Report.html#filterViolations(net.sourceforge.pmd.util.Predicate)"><code>Report#filterViolations</code></a> creates a new report with
+some violations removed with a given predicate based filter.</li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.45.0-SNAPSHOT/net/sourceforge/pmd/Report.html#union(net.sourceforge.pmd.Report)"><code>Report#union</code></a> can combine two reports into a single new Report.</li>
+    </ul>
+  </li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.45.0-SNAPSHOT/net/sourceforge/pmd/util/Predicate.html#"><code>net.sourceforge.pmd.util.Predicate</code></a> will be replaced in PMD7 with the standard Predicate interface from java8.</li>
+  <li>The module <code class="language-plaintext highlighter-rouge">pmd-html</code> is entirely experimental right now. Anything in the package
+<code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.lang.html</code> should be used cautiously.</li>
+</ul>
+
 <h3 id="external-contributions">External Contributions</h3>
 <ul>
   <li><a href="https://github.com/pmd/pmd/pull/3883">#3883</a>: [doc] Improve side bar by Adding Release Date - <a href="https://github.com/jasonqiu98">@jasonqiu98</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/3910">#3910</a>: [java] UnusedPrivateField - Allow the ignored fieldnames to be configurable - <a href="https://github.com/laoseth">@laoseth</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/3928">#3928</a>: [plsql] Fix plsql parsing error in parenthesis groups - <a href="https://github.com/LiGaOg">@LiGaOg</a></li>
+  <li><a href="https://github.com/pmd/pmd/pull/3935">#3935</a>: [plsql] Fix parser exception in EXECUTE IMMEDIATE BULK COLLECT #3687 - <a href="https://github.com/Scrsloota">@Scrsloota</a></li>
+  <li><a href="https://github.com/pmd/pmd/pull/3938">#3938</a>: [java] Modify SimplifiedTernary to meet the missing case #3603 - <a href="https://github.com/VoidxHoshi">@VoidxHoshi</a></li>
 </ul>
 
 
@@ -1555,7 +1676,7 @@ Note that the rule used to ignore fields named <code class="language-plaintext h
         <div class="col-lg-12 footer">
             &copy;2022 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Apr 22, 2022 <br />
+             Site last generated: Apr 28, 2022 <br />
             <p>
                 <img src="images/pmd-logo-small.png" alt="Company
                 logo"/>

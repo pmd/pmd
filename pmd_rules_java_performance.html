@@ -629,6 +629,37 @@
                 
                 
                 <li class="subfolders">
+                    <a href="#">HTML Rules</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_rules_html.html">Index</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_html_bestpractices.html">Best Practices</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                
+                <li class="subfolders">
                     <a href="#">Java Rules</a>
                     <ul>
                         
@@ -1099,6 +1130,18 @@
 
                 
                 <li><a href="pmd_languages_xml.html">XML and XML dialects</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_languages_html.html">HTML</a></li>
                 
 
             
@@ -2463,6 +2506,8 @@ You must use <code class="language-plaintext highlighter-rouge">new ArrayList&lt
                 </span><span class="nt">PrimaryPrefix</span><span class="o">/</span><span class="nt">Name</span><span class="err">/</span><span class="na">@Image</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="kn">ancestor::</span><span class="nt">MethodDeclaration</span><span class="p">[</span><span class="m">1</span><span class="p">]</span><span class="o">//</span><span class="nt">FormalParameter</span><span class="o">/</span><span class="nt">VariableDeclaratorId</span><span class="p">[</span><span class="na">@ArrayType</span><span class="err">=</span><span class="nf">true</span><span class="p">()]</span><span class="err">/</span><span class="na">@Name</span><span class="w">
                 </span><span class="ow">and</span><span class="w"> </span><span class="nt">PrimarySuffix</span><span class="o">/</span><span class="nt">Expression</span><span class="o">/</span><span class="nt">PrimaryExpression</span><span class="o">/</span><span class="nt">PrimaryPrefix</span><span class="o">/</span><span class="nt">Name</span><span class="w">
             </span><span class="p">]</span><span class="w">
+            </span><span class="c">(: ignore method calls :)</span><span class="w">
+            </span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="nt">PrimarySuffix</span><span class="o">/</span><span class="nt">Arguments</span><span class="p">)]</span><span class="w">
         </span><span class="p">]</span><span class="w">
       </span><span class="p">]</span><span class="w">
 </span></code></pre></div></div>
@@ -2472,12 +2517,14 @@ You must use <code class="language-plaintext highlighter-rouge">new ArrayList&lt
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Test</span> <span class="o">{</span>
     <span class="kd">public</span> <span class="kt">void</span> <span class="nf">foo</span><span class="o">(</span><span class="nc">Integer</span><span class="o">[]</span> <span class="n">ints</span><span class="o">)</span> <span class="o">{</span>
         <span class="c1">// could just use Arrays.asList(ints)</span>
-        <span class="nc">List</span><span class="o">&lt;</span><span class="nc">Integer</span><span class="o">&gt;</span> <span class="n">l</span><span class="o">=</span> <span class="k">new</span> <span class="nc">ArrayList</span><span class="o">&lt;&gt;(</span><span class="mi">100</span><span class="o">);</span>
-        <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span> <span class="n">i</span><span class="o">&lt;</span> <span class="mi">100</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+        <span class="nc">List</span><span class="o">&lt;</span><span class="nc">Integer</span><span class="o">&gt;</span> <span class="n">l</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ArrayList</span><span class="o">&lt;&gt;(</span><span class="mi">100</span><span class="o">);</span>
+        <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">100</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
             <span class="n">l</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">ints</span><span class="o">[</span><span class="n">i</span><span class="o">]);</span>
         <span class="o">}</span>
-        <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span> <span class="n">i</span><span class="o">&lt;</span> <span class="mi">100</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
-            <span class="n">l</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">a</span><span class="o">[</span><span class="n">i</span><span class="o">].</span><span class="na">toString</span><span class="o">());</span> <span class="c1">// won't trigger the rule</span>
+
+        <span class="nc">List</span><span class="o">&lt;</span><span class="nc">Integer</span><span class="o">&gt;</span> <span class="n">anotherList</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ArrayList</span><span class="o">&lt;&gt;();</span>
+        <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">100</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+            <span class="n">anotherList</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">ints</span><span class="o">[</span><span class="n">i</span><span class="o">].</span><span class="na">toString</span><span class="o">());</span> <span class="c1">// won't trigger the rule</span>
         <span class="o">}</span>
     <span class="o">}</span>
 <span class="o">}</span>
@@ -2679,7 +2726,7 @@ or StringBuffer.toString().length() == …</p>
         <div class="col-lg-12 footer">
             &copy;2022 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Apr 22, 2022 <br />
+             Site last generated: Apr 28, 2022 <br />
             <p>
                 <img src="images/pmd-logo-small.png" alt="Company
                 logo"/>
