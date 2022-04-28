@@ -34,6 +34,8 @@ This is a {{ site.pmd.release_type }} release.
   * [#3068](https://github.com/pmd/pmd/issues/3068): \[java] Some tests should not depend on real rules
   * [#3889](https://github.com/pmd/pmd/pull/3889): \[java] Catch LinkageError in UselessOverridingMethodRule
   * [#3910](https://github.com/pmd/pmd/pull/3910): \[java] UnusedPrivateField - Allow the ignored fieldnames to be configurable
+* java-performance
+  * [#3867](https://github.com/pmd/pmd/issues/3867): \[java] UseArraysAsList with method call
 * plsql
   * [#3706](https://github.com/pmd/pmd/issues/3706): \[plsql] Parsing exception CURSOR statement with parenthesis groupings
 
