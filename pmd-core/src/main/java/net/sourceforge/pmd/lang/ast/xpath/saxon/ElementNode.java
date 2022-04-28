@@ -61,7 +61,7 @@ public class ElementNode extends BaseNodeInfo implements AstNodeOwner {
                        Node node,
                        int siblingPosition,
                        NamePool namePool) {
-        super(Type.ELEMENT, namePool, node.getXPathNodeName(), parent);
+        super(determineType(node), namePool, node.getXPathNodeName(), parent);
 
         this.document = document;
         this.parent = parent;
@@ -78,6 +78,16 @@ public class ElementNode extends BaseNodeInfo implements AstNodeOwner {
             this.children = null;
         }
         document.nodeToElementNode.put(node, this);
+    }
+
+    private static short determineType(Node node) {
+        String name = node.getXPathNodeName();
+        if ("#text".equals(name)) {
+            return Type.TEXT;
+        } else if ("#comment".equals(name)) {
+            return Type.COMMENT;
+        }
+        return Type.ELEMENT;
     }
 
     private Map<Integer, AttributeNode> getAttributes() {
@@ -147,8 +157,16 @@ public class ElementNode extends BaseNodeInfo implements AstNodeOwner {
     }
 
     @Override
-    public CharSequence getStringValueCS() {
+    public String getStringValue() {
+        if (determineType(getUnderlyingNode()) == Type.TEXT) {
+            return getUnderlyingNode().getImage();
+        }
         return "";
+    }
+
+    @Override
+    public CharSequence getStringValueCS() {
+        return getStringValue();
     }
 
     @Override
