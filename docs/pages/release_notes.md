@@ -32,19 +32,20 @@ This is a {{ site.pmd.release_type }} release.
   * [#2505](https://github.com/pmd/pmd/issues/2505): \[doc] Improve side bar to show release date
 * java
   * [#3068](https://github.com/pmd/pmd/issues/3068): \[java] Some tests should not depend on real rules
-  * [#3603](https://github.com/pmd/pmd/issues/3603): \[java] SimplifiedTernary: no violation for 'condition ? true : false' case
   * [#3889](https://github.com/pmd/pmd/pull/3889): \[java] Catch LinkageError in UselessOverridingMethodRule
-  * [#3910](https://github.com/pmd/pmd/pull/3910): \[java] UnusedPrivateField - Allow the ignored fieldnames to be configurable
 * java-bestpractices
+  * [#3910](https://github.com/pmd/pmd/pull/3910): \[java] UnusedPrivateField - Allow the ignored fieldnames to be configurable
   * [#1185](https://github.com/pmd/pmd/issues/1185): \[java] ArrayIsStoredDirectly false positive with field access
   * [#1474](https://github.com/pmd/pmd/issues/1474): \[java] ArrayIsStoredDirectly false positive with method call
   * [#3879](https://github.com/pmd/pmd/issues/3879) \[java] ArrayIsStoredDirectly reports duplicated violation
   * [#3929](https://github.com/pmd/pmd/issues/3929): \[java] ArrayIsStoredDirectly should report the assignment rather than formal parameter
+* java-design
+  * [#3603](https://github.com/pmd/pmd/issues/3603): \[java] SimplifiedTernary: no violation for 'condition ? true : false' case
 * java-performance
   * [#3867](https://github.com/pmd/pmd/issues/3867): \[java] UseArraysAsList with method call
 * plsql
-  * [#3706](https://github.com/pmd/pmd/issues/3706): \[plsql] Parsing exception CURSOR statement with parenthesis groupings
   * [#3687](https://github.com/pmd/pmd/issues/3687): \[plsql] Parsing exception EXECUTE IMMEDIATE l_sql BULK COLLECT INTO statement
+  * [#3706](https://github.com/pmd/pmd/issues/3706): \[plsql] Parsing exception CURSOR statement with parenthesis groupings
 
 ### API Changes
 
