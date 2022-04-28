@@ -178,6 +178,18 @@ entries:
     - title: null
       output: web, pdf
       subfolders:
+      - title: HTML Rules
+        output: web, pdf
+        subfolderitems:
+        - title: Index
+          output: web, pdf
+          url: /pmd_rules_html.html
+        - title: Best Practices
+          output: web, pdf
+          url: /pmd_rules_html_bestpractices.html
+    - title: null
+      output: web, pdf
+      subfolders:
       - title: Java Rules
         output: web, pdf
         subfolderitems:
@@ -378,6 +390,9 @@ entries:
       output: web, pdf
     - title: XML and XML dialects
       url: /pmd_languages_xml.html
+      output: web, pdf
+    - title: HTML
+      url: /pmd_languages_html.html
       output: web, pdf
   - title: Developer Documentation
     output: web, pdf

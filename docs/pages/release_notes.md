@@ -19,6 +19,36 @@ This is a {{ site.pmd.release_type }} release.
 
 ### New and noteworthy
 
+#### Support for HTML
+
+This version of PMD ships a new language module to support analyzing of HTML.
+Support for HTML is experimental and might change without notice.
+
+#### New rules
+
+* The HTML rule {% rule html/bestpractices/AvoidInlineStyles %} finds elements which use a style attribute.
+  In order to help maintaining a webpage it is considered good practice to separate content and styles. Instead
+  of inline styles one should use CSS files and classes.
+
+```xml
+    <rule ref="category/html/bestpractices.xml/AvoidInlineStyles" />
+```
+
+* The HTML rule {% rule html/bestpractices/UnnecessaryTypeAttribute %} finds "link" and "script" elements which
+  still have a "type" attribute. This is not necessary anymore since modern browsers automatically use CSS and
+  JavaScript.
+
+```xml
+      <rule ref="category/html/bestpractices.xml/UnnecessaryTypeAttribute" />
+```
+
+* The HTML rule {% rule html/bestpractices/UseAltAttributeForImages %} finds "img" elements without an "alt"
+  attribute. An alternate text should always be provided in order to help screen readers.
+
+```xml
+      <rule ref="category/html/bestpractices.xml/UseAltAttributeForImages" />
+```
+
 #### Modified rules
 
 *   The Java rule {% rule java/bestpractices/UnusedPrivateField %} has a new property `ignoredFieldNames`.
