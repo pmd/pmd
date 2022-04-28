@@ -79,6 +79,39 @@ public class ReportTest {
         return s;
     }
 
+    @Test
+    public void testFilterViolations() {
+        Rule rule = new MockRule("name", "desc", "msg", "rulesetname");
+        Node node1 = getNode(5, 5, true, "file1");
+        Node node2 = getNode(5, 6, true, "file1");
+        Report r = Report.buildReport(it -> {
+            it.onRuleViolation(new ParametricRuleViolation<>(rule, node1, rule.getMessage()));
+            it.onRuleViolation(new ParametricRuleViolation<>(rule, node2, "to be filtered"));
+        });
+
+        Report filtered = r.filterViolations(ruleViolation -> !"to be filtered".equals(ruleViolation.getDescription()));
+
+        assertEquals(1, filtered.getViolations().size());
+        assertEquals("msg", filtered.getViolations().get(0).getDescription());
+    }
+
+    @Test
+    public void testUnion() {
+        Rule rule = new MockRule("name", "desc", "msg", "rulesetname");
+        Node node1 = getNode(1, 2, true, "file1");
+        Report report1 = Report.buildReport(it -> {
+            it.onRuleViolation(new ParametricRuleViolation<>(rule, node1, rule.getMessage()));
+        });
+
+        Node node2 = getNode(2, 1, true, "file1");
+        Report report2 = Report.buildReport(it -> {
+            it.onRuleViolation(new ParametricRuleViolation<>(rule, node2, rule.getMessage()));
+        });
+
+        Report union = report1.union(report2);
+        assertEquals(2, union.getViolations().size());
+    }
+
     private static Node getNode(int line, int column, boolean nextLine, String filename) {
         DummyNode s = getNode(line, column, filename);
         if (nextLine) {
