@@ -1,4 +1,8 @@
-+- Input[@CanonicalImage = null, @ExcludedLinesCount = 0, @ExcludedRangesCount = 0, @Sourcecode = "CREATE OR REPLACE PROCEDURE TEST_PROCEDURE IS
++- Input[@CanonicalImage = null, @ExcludedLinesCount = 0, @ExcludedRangesCount = 0, @Sourcecode = "--
+-- BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+--
+
+CREATE OR REPLACE PROCEDURE TEST_PROCEDURE IS
     --
     CURSOR c_test IS
         SELECT si.sid, sn.name, sa.age, ss.score, sp.parent

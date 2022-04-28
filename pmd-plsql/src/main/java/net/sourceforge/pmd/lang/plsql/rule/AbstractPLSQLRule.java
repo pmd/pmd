@@ -66,6 +66,7 @@ import net.sourceforge.pmd.lang.plsql.ast.ASTDeclarativeSection;
 import net.sourceforge.pmd.lang.plsql.ast.ASTDeclarativeUnit;
 import net.sourceforge.pmd.lang.plsql.ast.ASTDeleteStatement;
 import net.sourceforge.pmd.lang.plsql.ast.ASTDirectory;
+import net.sourceforge.pmd.lang.plsql.ast.ASTDynamicReturnClause;
 import net.sourceforge.pmd.lang.plsql.ast.ASTElseClause;
 import net.sourceforge.pmd.lang.plsql.ast.ASTElsifClause;
 import net.sourceforge.pmd.lang.plsql.ast.ASTEmbeddedSqlStatement;
@@ -1437,6 +1438,11 @@ public abstract class AbstractPLSQLRule extends AbstractRule implements PLSQLPar
 
     @Override
     public Object visit(ASTCursorSpecification node, Object data) {
+        return visit((PLSQLNode) node, data);
+    }
+
+    @Override
+    public Object visit(ASTDynamicReturnClause node, Object data) {
         return visit((PLSQLNode) node, data);
     }
 

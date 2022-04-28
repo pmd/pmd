@@ -1,4 +1,8 @@
-+- Input[@CanonicalImage = null, @ExcludedLinesCount = 0, @ExcludedRangesCount = 0, @Sourcecode = "CREATE OR REPLACE PROCEDURE EXAMPLE_PROCEDURE IS
++- Input[@CanonicalImage = null, @ExcludedLinesCount = 0, @ExcludedRangesCount = 0, @Sourcecode = "--
+-- BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+--
+
+CREATE OR REPLACE PROCEDURE EXAMPLE_PROCEDURE IS
    --
    CURSOR c_example IS
       SELECT a.owner, u.object_name, p.aggregate
