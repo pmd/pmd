@@ -23,6 +23,7 @@ import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.renderers.XMLRenderer;
 import net.sourceforge.pmd.stat.Metric;
+import net.sourceforge.pmd.util.Predicate;
 
 public class ReportTest implements ThreadSafeReportListener {
 
@@ -166,6 +167,48 @@ public class ReportTest implements ThreadSafeReportListener {
             treeCount++;
         }
         assertEquals(2, treeCount);
+    }
+
+    @Test
+    public void testFilterViolations() {
+        Report r = new Report();
+        RuleContext ctx = new RuleContext();
+        Rule rule = new MockRule("name", "desc", "msg", "rulesetname");
+        Node node1 = getNode(5, 5);
+        r.addRuleViolation(new ParametricRuleViolation<>(rule, ctx, node1, rule.getMessage()));
+        Node node2 = getNode(5, 6);
+        r.addRuleViolation(new ParametricRuleViolation<>(rule, ctx, node2, "to be filtered"));
+
+        Report filtered = r.filterViolations(new Predicate<RuleViolation>() {
+            @Override
+            public boolean test(RuleViolation ruleViolation) {
+                return !"to be filtered".equals(ruleViolation.getDescription());
+            }
+        });
+
+        assertEquals(1, filtered.getViolations().size());
+        assertEquals("msg", filtered.getViolations().get(0).getDescription());
+    }
+
+    @Test
+    public void testUnion() {
+        RuleContext ctx = new RuleContext();
+        Rule rule = new MockRule("name", "desc", "msg", "rulesetname");
+
+        Report report1 = new Report();
+        report1.start();
+        Node node1 = getNode(1, 2);
+        report1.addRuleViolation(new ParametricRuleViolation<>(rule, ctx, node1, rule.getMessage()));
+        report1.end();
+
+        Report report2 = new Report();
+        report2.start();
+        Node node2 = getNode(2, 1);
+        report2.addRuleViolation(new ParametricRuleViolation<>(rule, ctx, node2, rule.getMessage()));
+        report2.end();
+
+        Report union = report1.union(report2);
+        assertEquals(2, union.getViolations().size());
     }
 
     private static Node getNode(int line, int column) {
