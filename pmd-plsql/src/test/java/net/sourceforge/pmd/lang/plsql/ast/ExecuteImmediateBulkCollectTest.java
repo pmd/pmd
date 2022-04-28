@@ -4,27 +4,36 @@
 
 package net.sourceforge.pmd.lang.plsql.ast;
 
-import org.junit.Assert;
 import org.junit.Test;
 
-import net.sourceforge.pmd.lang.plsql.AbstractPLSQLParserTst;
+import net.sourceforge.pmd.lang.ast.test.BaseParsingHelper;
+import net.sourceforge.pmd.lang.ast.test.BaseTreeDumpTest;
+import net.sourceforge.pmd.lang.ast.test.RelevantAttributePrinter;
+import net.sourceforge.pmd.lang.plsql.PlsqlParsingHelper;
 
-public class ExecuteImmediateBulkCollectTest extends AbstractPLSQLParserTst {
+public class ExecuteImmediateBulkCollectTest extends BaseTreeDumpTest {
+
+    public ExecuteImmediateBulkCollectTest() {
+        super(new RelevantAttributePrinter(), ".pls");
+    }
+
+    @Override
+    public BaseParsingHelper<?, ?> getParser() {
+        return PlsqlParsingHelper.WITH_PROCESSING.withResourceContext(getClass());
+    }
+
     @Test
     public void testExecuteImmediateBulkCollect1() {
-        ASTInput input = plsql.parseResource("ExecuteImmediateBulkCollect1.pls");
-        Assert.assertNotNull(input);
+        doTest("ExecuteImmediateBulkCollect1");
     }
 
     @Test
     public void testExecuteImmediateBulkCollect2() {
-        ASTInput input = plsql.parseResource("ExecuteImmediateBulkCollect2.pls");
-        Assert.assertNotNull(input);
+        doTest("ExecuteImmediateBulkCollect2");
     }
 
     @Test
     public void testExecuteImmediateBulkCollect3() {
-        ASTInput input = plsql.parseResource("ExecuteImmediateBulkCollect3.pls");
-        Assert.assertNotNull(input);
+        doTest("ExecuteImmediateBulkCollect3");
     }
 }

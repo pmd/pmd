@@ -2814,6 +2814,9 @@ ASTFetchStatement FetchStatement()  :
       { return jjtThis ; }
 }
 
+/**
+ * Execute Immediate: https://docs.oracle.com/en/database/oracle/oracle-database/18/lnpls/EXECUTE-IMMEDIATE-statement.html#GUID-C3245A95-B85B-4280-A01F-12307B108DC8
+ */
 ASTEmbeddedSqlStatement EmbeddedSqlStatement()  :
 {}
 {

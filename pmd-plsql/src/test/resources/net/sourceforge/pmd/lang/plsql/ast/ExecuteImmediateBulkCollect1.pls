@@ -1,3 +1,7 @@
+--
+-- BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+--
+
 CREATE OR REPLACE PROCEDURE EXAMPLE_PROCEDURE IS
    --
    TYPE t_data IS TABLE OF dual%ROWTYPE INDEX BY BINARY_INTEGER;
