@@ -1,23 +1,4 @@
-+- Input[@CanonicalImage = null, @ExcludedLinesCount = 0, @ExcludedRangesCount = 0, @Sourcecode = "--
--- BSD-style license; for more info see http://pmd.sourceforge.net/license.html
---
-
-CREATE OR REPLACE PROCEDURE EXAMPLE_PROCEDURE IS
-   --
-   TYPE t_data IS TABLE OF dual%ROWTYPE INDEX BY BINARY_INTEGER;
-   --
-   l_data t_data;
-   l_sql  VARCHAR2(500);
-   --
-BEGIN
-   --
-   l_sql := 'SELECT * FROM DUAL';
-   --
-   EXECUTE IMMEDIATE l_sql BULK COLLECT
-      INTO l_data;
-   --
-END EXAMPLE_PROCEDURE;
-"]
++- Input[@CanonicalImage = null, @ExcludedLinesCount = 0, @ExcludedRangesCount = 0, @Sourcecode = "--\n-- BSD-style license; for more info see http://pmd.sourceforge.net/license.html\n--\n\nCREATE OR REPLACE PROCEDURE EXAMPLE_PROCEDURE IS\n   --\n   TYPE t_data IS TABLE OF dual%ROWTYPE INDEX BY BINARY_INTEGER;\n   --\n   l_data t_data;\n   l_sql  VARCHAR2(500);\n   --\nBEGIN\n   --\n   l_sql := \'SELECT * FROM DUAL\';\n   --\n   EXECUTE IMMEDIATE l_sql BULK COLLECT\n      INTO l_data;\n   --\nEND EXAMPLE_PROCEDURE;\n"]
    +- Global[@CanonicalImage = null]
       +- ProgramUnit[@CanonicalImage = null, @MethodName = "EXAMPLE_PROCEDURE", @Name = "EXAMPLE_PROCEDURE", @ObjectName = null]
          +- MethodDeclarator[@CanonicalImage = "EXAMPLE_PROCEDURE", @Image = "EXAMPLE_PROCEDURE", @ParameterCount = 1]
@@ -50,16 +31,16 @@ END EXAMPLE_PROCEDURE;
          |                 +- NumericLiteral[@CanonicalImage = "500", @Image = "500"]
          +- Statement[@CanonicalImage = null]
          |  +- UnlabelledStatement[@CanonicalImage = null]
-         |     +- Expression[@CanonicalImage = "L_SQL := 'SELECT * FROM DUAL'", @Image = "l_sql := 'SELECT * FROM DUAL'"]
-         |        +- Assignment[@CanonicalImage = "L_SQL := 'SELECT * FROM DUAL'", @Image = "l_sql := 'SELECT * FROM DUAL'"]
+         |     +- Expression[@CanonicalImage = "L_SQL := \'SELECT * FROM DUAL\'", @Image = "l_sql := \'SELECT * FROM DUAL\'"]
+         |        +- Assignment[@CanonicalImage = "L_SQL := \'SELECT * FROM DUAL\'", @Image = "l_sql := \'SELECT * FROM DUAL\'"]
          |           +- PrimaryPrefix[@CanonicalImage = "L_SQL", @Image = "l_sql", @SelfModifier = false]
          |           |  +- SimpleExpression[@CanonicalImage = "L_SQL", @Image = "l_sql"]
          |           |     +- Column[@CanonicalImage = "L_SQL", @Image = "l_sql"]
          |           |        +- ID[@CanonicalImage = "L_SQL", @Image = "l_sql"]
-         |           +- Expression[@CanonicalImage = "'SELECT * FROM DUAL'", @Image = "'SELECT * FROM DUAL'"]
-         |              +- PrimaryPrefix[@CanonicalImage = "'SELECT * FROM DUAL'", @Image = "'SELECT * FROM DUAL'", @SelfModifier = false]
-         |                 +- Literal[@CanonicalImage = "'SELECT * FROM DUAL'", @Image = "'SELECT * FROM DUAL'"]
-         |                    +- StringLiteral[@CanonicalImage = "'SELECT * FROM DUAL'", @Image = "'SELECT * FROM DUAL'", @String = "SELECT * FROM DUAL"]
+         |           +- Expression[@CanonicalImage = "\'SELECT * FROM DUAL\'", @Image = "\'SELECT * FROM DUAL\'"]
+         |              +- PrimaryPrefix[@CanonicalImage = "\'SELECT * FROM DUAL\'", @Image = "\'SELECT * FROM DUAL\'", @SelfModifier = false]
+         |                 +- Literal[@CanonicalImage = "\'SELECT * FROM DUAL\'", @Image = "\'SELECT * FROM DUAL\'"]
+         |                    +- StringLiteral[@CanonicalImage = "\'SELECT * FROM DUAL\'", @Image = "\'SELECT * FROM DUAL\'", @String = "SELECT * FROM DUAL"]
          +- Statement[@CanonicalImage = null]
          |  +- UnlabelledStatement[@CanonicalImage = null]
          |     +- EmbeddedSqlStatement[@CanonicalImage = null]
