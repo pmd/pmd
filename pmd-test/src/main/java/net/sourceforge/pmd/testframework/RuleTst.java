@@ -435,7 +435,7 @@ public abstract class RuleTst {
         Element root = doc.getDocumentElement();
         NodeList testCodes = root.getElementsByTagName("test-code");
 
-        String absolutePathToTestXmlFile = new File(".").getAbsolutePath() + "/src/test/resources/"
+        String absolutePathToTestXmlFile = new File(".").getAbsoluteFile().toURI() + "/src/test/resources/"
                 + this.getClass().getPackage().getName().replaceAll("\\.", "/")
                 + "/" + testXmlFileName;
 

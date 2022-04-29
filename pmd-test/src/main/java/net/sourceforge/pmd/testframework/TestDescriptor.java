@@ -168,7 +168,7 @@ public class TestDescriptor {
     }
 
     public void setTestSourceUri(String absolutePath, int line) {
-        this.testSourceUri = URI.create("file:" + absolutePath + "?line=" + line);
+        this.testSourceUri = URI.create(absolutePath + "?line=" + line);
     }
 
     public URI getTestSourceUri() {
