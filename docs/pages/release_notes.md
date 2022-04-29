@@ -103,6 +103,7 @@ missing features or bugs as new [issues](https://github.com/pmd/pmd/issues).
 * [#3928](https://github.com/pmd/pmd/pull/3928): \[plsql] Fix plsql parsing error in parenthesis groups - [@LiGaOg](https://github.com/LiGaOg)
 * [#3935](https://github.com/pmd/pmd/pull/3935): \[plsql] Fix parser exception in EXECUTE IMMEDIATE BULK COLLECT #3687 - [@Scrsloota](https://github.com/Scrsloota)
 * [#3938](https://github.com/pmd/pmd/pull/3938): \[java] Modify SimplifiedTernary to meet the missing case #3603 - [@VoidxHoshi](https://github.com/VoidxHoshi)
+* [#3943](https://github.com/pmd/pmd/pull/3943): chore: Set permissions for GitHub actions - [@naveensrinivasan](https://github.com/naveensrinivasan)
 
 {% endtocmaker %}
 
