@@ -90,6 +90,7 @@
         <dokka.version>1.4.32</dokka.version>
 
 
+        <junit.version>5.8.2</junit.version>
         <javacc.version>5.0</javacc.version>
         <surefire.version>3.0.0-M5</surefire.version>
         <checkstyle.version>9.3</checkstyle.version>
@@ -286,7 +287,13 @@
                         <dependency>
                             <groupId>org.junit.vintage</groupId>
                             <artifactId>junit-vintage-engine</artifactId>
-                            <version>5.7.0</version>
+                            <version>${junit.version}</version>
+                        </dependency>
+                        <!-- JUnit5 Platform Engine for Junit 5 -->
+                        <dependency>
+                            <groupId>org.junit.jupiter</groupId>
+                            <artifactId>junit-jupiter-engine</artifactId>
+                            <version>${junit.version}</version>
                         </dependency>
                         <!-- Junit5 Platform Engine for Kotlin Tests -->
                         <dependency>
@@ -792,6 +799,13 @@
                 <scope>test</scope>
             </dependency>
 
+            <dependency>
+                <groupId>org.junit</groupId>
+                <artifactId>junit-bom</artifactId>
+                <version>5.8.2</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
             <dependency>
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
