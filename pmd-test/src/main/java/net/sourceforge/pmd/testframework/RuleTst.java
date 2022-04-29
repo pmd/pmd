@@ -13,10 +13,14 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.stream.Collectors;
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -28,6 +32,8 @@ import javax.xml.validation.SchemaFactory;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DynamicTest;
+import org.junit.jupiter.api.TestFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -586,5 +592,35 @@ public abstract class RuleTst {
             }
         }
         return buffer.toString().trim();
+    }
+
+    @TestFactory
+    Collection<DynamicTest> ruleTests() {
+        setUp();
+        final List<Rule> rules = new ArrayList<>(getRules());
+        rules.sort(Comparator.comparing(Rule::getName));
+
+        final List<TestDescriptor> tests = new LinkedList<>();
+        for (final Rule r : rules) {
+            final TestDescriptor[] ruleTests = extractTestsFromXml(r);
+            Collections.addAll(tests, ruleTests);
+        }
+
+        return tests.stream().map(this::toDynamicTest).collect(Collectors.toList());
+    }
+
+    private DynamicTest toDynamicTest(TestDescriptor testDescriptor) {
+        if (isIgnored(testDescriptor)) {
+            return DynamicTest.dynamicTest("[IGNORED] " + testDescriptor.getTestMethodName(),
+                    testDescriptor.getTestSourceUri(),
+                    () -> {});
+        }
+        return DynamicTest.dynamicTest(testDescriptor.getTestMethodName(),
+                testDescriptor.getTestSourceUri(),
+                () -> runTest(testDescriptor));
+    }
+
+    private static boolean isIgnored(TestDescriptor testDescriptor) {
+        return TestDescriptor.inRegressionTestMode() && !testDescriptor.isRegressionTest();
     }
 }
