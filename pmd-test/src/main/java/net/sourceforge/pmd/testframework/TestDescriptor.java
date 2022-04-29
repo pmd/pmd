@@ -155,6 +155,7 @@ public class TestDescriptor {
                 + "_"
                 + getDescription()
                 .replaceAll("\n|\r", "_")
-                .replaceAll("[\\.\\(\\)]|\\s", "_");
+                .replaceAll("[^\\w\\d_$]", "_")
+                .replaceAll("\\s+", "_");
     }
 }
