@@ -5,12 +5,13 @@
 package net.sourceforge.pmd.testframework;
 
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringReader;
 import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -24,12 +25,15 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.junit.jupiter.api.Assertions;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.ErrorHandler;
+import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
@@ -117,14 +121,14 @@ public abstract class RuleTst {
             RuleSet parsedRset = new RuleSetLoader().warnDeprecated(false).loadFromResource(ruleSet);
             Rule rule = parsedRset.getRuleByName(ruleName);
             if (rule == null) {
-                fail("Rule " + ruleName + " not found in ruleset " + ruleSet);
+                Assertions.fail("Rule " + ruleName + " not found in ruleset " + ruleSet);
             } else {
                 rule.setRuleSetName(ruleSet);
             }
             return rule;
         } catch (RuleSetLoadException e) {
             e.printStackTrace();
-            fail("Couldn't find ruleset " + ruleSet);
+            Assertions.fail("Couldn't find ruleset " + ruleSet);
             return null;
         }
     }
@@ -170,8 +174,8 @@ public abstract class RuleTst {
             if (test.getNumberOfProblemsExpected() != res) {
                 printReport(test, report);
             }
-            assertEquals('"' + test.getDescription() + "\" resulted in wrong number of failures,",
-                    test.getNumberOfProblemsExpected(), res);
+            Assertions.assertEquals(test.getNumberOfProblemsExpected(), res,
+                    '"' + test.getDescription() + "\" resulted in wrong number of failures,");
             assertMessages(report, test);
             assertLineNumbers(report, test);
         } finally {
@@ -212,9 +216,8 @@ public abstract class RuleTst {
             if (!expectedMessages.get(index).equals(actual)) {
                 printReport(test, report);
             }
-            assertEquals(
-                    '"' + test.getDescription() + "\" produced wrong message on violation number " + (index + 1) + ".",
-                    expectedMessages.get(index), actual);
+            Assertions.assertEquals(expectedMessages.get(index), actual,
+                    '"' + test.getDescription() + "\" produced wrong message on violation number " + (index + 1) + ".");
             index++;
         }
     }
@@ -237,8 +240,9 @@ public abstract class RuleTst {
             if (expected.get(index) != actual.intValue()) {
                 printReport(test, report);
             }
-            assertEquals('"' + test.getDescription() + "\" violation on wrong line number: violation number "
-                    + (index + 1) + ".", expected.get(index), actual);
+            Assertions.assertEquals(expected.get(index), actual,
+                    '"' + test.getDescription() + "\" violation on wrong line number: violation number "
+                    + (index + 1) + ".");
             index++;
         }
     }
@@ -359,16 +363,39 @@ public abstract class RuleTst {
         String testXmlFileName = baseDirectory + testsFileName + ".xml";
 
         Document doc;
+        List<Integer> lineNumbersForTests;
         try (InputStream inputStream = getClass().getResourceAsStream(testXmlFileName)) {
             if (inputStream == null) {
                 throw new RuntimeException("Couldn't find " + testXmlFileName);
             }
-            doc = documentBuilder.parse(inputStream);
+            String testXml = IOUtils.toString(inputStream, StandardCharsets.UTF_8);
+            lineNumbersForTests = determineLineNumbers(testXml);
+            try (StringReader r = new StringReader(testXml)) {
+                doc = documentBuilder.parse(new InputSource(r));
+            }
         } catch (FactoryConfigurationError | IOException | SAXException e) {
             throw new RuntimeException("Couldn't parse " + testXmlFileName + ", due to: " + e, e);
         }
 
-        return parseTests(rule, doc);
+        return parseTests(rule, doc, testXmlFileName, lineNumbersForTests);
+    }
+
+    private List<Integer> determineLineNumbers(String testXml) {
+        List<Integer> tests = new ArrayList<>();
+        int lineNumber = 1;
+        int index = 0;
+        while (index < testXml.length()) {
+            char c = testXml.charAt(index);
+            if (c == '\n') {
+                lineNumber++;
+            } else if (c == '<') {
+                if (testXml.startsWith("<test-code", index)) {
+                    tests.add(lineNumber);
+                }
+            }
+            index++;
+        }
+        return tests;
     }
 
     /**
@@ -398,9 +425,13 @@ public abstract class RuleTst {
         }
     }
 
-    private TestDescriptor[] parseTests(Rule rule, Document doc) {
+    private TestDescriptor[] parseTests(Rule rule, Document doc, String testXmlFileName, List<Integer> lineNumbersForTests) {
         Element root = doc.getDocumentElement();
         NodeList testCodes = root.getElementsByTagName("test-code");
+
+        String absolutePathToTestXmlFile = new File(".").getAbsolutePath() + "/src/test/resources/"
+                + this.getClass().getPackage().getName().replaceAll("\\.", "/")
+                + "/" + testXmlFileName;
 
         TestDescriptor[] tests = new TestDescriptor[testCodes.getLength()];
         for (int i = 0; i < testCodes.getLength(); i++) {
@@ -506,6 +537,7 @@ public abstract class RuleTst {
             tests[i].setExpectedLineNumbers(expectedLineNumbers);
             tests[i].setProperties(properties);
             tests[i].setNumberInDocument(i + 1);
+            tests[i].setTestSourceUri(absolutePathToTestXmlFile, lineNumbersForTests.get(i));
         }
         return tests;
     }
