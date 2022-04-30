@@ -29,7 +29,7 @@ public class VfTokenizer extends JavaCCTokenizer {
     protected TokenDocumentBehavior tokenBehavior() {
         return new JavaccTokenDocument.TokenDocumentBehavior(VfTokenKinds.TOKEN_NAMES) {
             @Override
-            protected TextDocument translate(TextDocument text) throws MalformedSourceException {
+            public TextDocument translate(TextDocument text) throws MalformedSourceException {
                 return new JavaEscapeTranslator(text).translateDocument();
             }
         };

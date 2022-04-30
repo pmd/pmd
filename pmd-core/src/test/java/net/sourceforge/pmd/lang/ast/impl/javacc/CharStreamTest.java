@@ -143,7 +143,7 @@ public class CharStreamTest {
             TextDocument.readOnlyString(abcd, dummyVersion),
             new TokenDocumentBehavior(Collections.emptyList()) {
                 @Override
-                protected TextDocument translate(TextDocument text) throws MalformedSourceException {
+                public TextDocument translate(TextDocument text) throws MalformedSourceException {
                     return new JavaEscapeTranslator(text).translateDocument();
                 }
             });

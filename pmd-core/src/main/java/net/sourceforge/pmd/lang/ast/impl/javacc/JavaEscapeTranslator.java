@@ -42,18 +42,21 @@ public final class JavaEscapeTranslator extends BackslashEscapeTranslator {
         }
     }
 
-    private Chars escapeValue(int posOfFirstBackSlash, int offOfTheU) throws MalformedSourceException {
+    private Chars escapeValue(int posOfFirstBackSlash, final int offOfTheU) throws MalformedSourceException {
+        int off = offOfTheU;
         try {
             char c = (char)
-                    ( hexVal(input.charAt(++offOfTheU)) << 12 // SUPPRESS CHECKSTYLE paren pad
-                    | hexVal(input.charAt(++offOfTheU)) << 8
-                    | hexVal(input.charAt(++offOfTheU)) << 4
-                    | hexVal(input.charAt(++offOfTheU))
-                    );
+                ( hexVal(input.charAt(++off)) << 12 // SUPPRESS CHECKSTYLE paren pad
+                | hexVal(input.charAt(++off)) << 8
+                | hexVal(input.charAt(++off)) << 4
+                | hexVal(input.charAt(++off))
+                );
 
             return Chars.wrap(Character.toString(c));
         } catch (NumberFormatException | IndexOutOfBoundsException e) {
-            throw new MalformedSourceException("Invalid unicode escape ", e, locationAt(posOfFirstBackSlash));
+            // cut off u and 4 digits
+            String escape = input.substring(offOfTheU, Math.min(input.length(), offOfTheU + 5));
+            throw new MalformedSourceException("Invalid unicode escape \\" + escape, e, locationAt(posOfFirstBackSlash));
         }
     }
 
