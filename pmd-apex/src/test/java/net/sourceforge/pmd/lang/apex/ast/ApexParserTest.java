@@ -226,9 +226,7 @@ public class ApexParserTest extends ApexParserTestBase {
     private int visitPosition(Node node, int count) {
         int result = count + 1;
         FileLocation loc = node.getReportLocation();
-        // todo rename to getStartLine
         Assert.assertTrue(loc.getStartLine() > 0);
-        // todo rename to getStartLine
         Assert.assertTrue(loc.getStartColumn() > 0);
         Assert.assertTrue(loc.getEndLine() > 0);
         Assert.assertTrue(loc.getEndColumn() > 0);
