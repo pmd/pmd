@@ -153,16 +153,4 @@ public class SourceCodePositionerTest {
         assertArrayEquals(new int[] { 0, 41, 50, 51 }, positioner.getLineOffsets());
     }
 
-    @Test
-    public void longOffsetMasking() {
-        assertMasking(1, 4);
-        assertMasking(Integer.MAX_VALUE, Integer.MAX_VALUE);
-    }
-
-    private void assertMasking(int line, int col) {
-        long l = SourceCodePositioner.maskLineCol(line, col);
-        assertEquals(line, SourceCodePositioner.unmaskLine(l));
-        assertEquals(col, SourceCodePositioner.unmaskCol(l));
-    }
-
 }

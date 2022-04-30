@@ -37,7 +37,7 @@ final class SourceCodePositioner {
         return lineOffsets;
     }
 
-    long lineColFromOffset(int offset, boolean inclusive) {
+    TextPos2d lineColFromOffset(int offset, boolean inclusive) {
         AssertionUtil.requireInInclusiveRange("offset", offset, 0, sourceCodeLength);
 
         int line = searchLineOffset(offset);
@@ -51,23 +51,10 @@ final class SourceCodePositioner {
             // handle. This is because an offset may be interpreted as the index
             // of a character, or the caret position between two characters. This
             // is relevant when building text regions, to respect inclusivity, etc.
-            return maskLineCol(lineIdx, getLastColumnOfLine(lineIdx));
+            return TextPos2d.pos2d(lineIdx, getLastColumnOfLine(lineIdx));
         }
 
-        return maskLineCol(line, 1 + offset - lineOffsets[lineIdx]);
-    }
-
-    // test only
-    static long maskLineCol(int line, int col) {
-        return (long) line << 32 | (long) col;
-    }
-
-    static int unmaskLine(long lineCol) {
-        return (int) (lineCol >> 32);
-    }
-
-    static int unmaskCol(long lineCol) {
-        return (int) lineCol;
+        return TextPos2d.pos2d(line, 1 + offset - lineOffsets[lineIdx]);
     }
 
     /**

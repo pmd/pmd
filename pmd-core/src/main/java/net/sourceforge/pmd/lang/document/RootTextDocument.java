@@ -74,27 +74,23 @@ final class RootTextDocument extends BaseCloseable implements TextDocument {
 
         // We use longs to return both numbers at the same time
         // This limits us to 2 billion lines or columns, which is FINE
-        long bpos = positioner.lineColFromOffset(region.getStartOffset(), true);
-        long epos = region.isEmpty() ? bpos
-                                     : positioner.lineColFromOffset(region.getEndOffset(), false);
+        TextPos2d bpos = positioner.lineColFromOffset(region.getStartOffset(), true);
+        TextPos2d epos = region.isEmpty() ? bpos
+                                          : positioner.lineColFromOffset(region.getEndOffset(), false);
 
         return new FileLocation(
             fileName,
-            SourceCodePositioner.unmaskLine(bpos),
-            SourceCodePositioner.unmaskCol(bpos),
-            SourceCodePositioner.unmaskLine(epos),
-            SourceCodePositioner.unmaskCol(epos),
+            bpos.getLine(),
+            bpos.getColumn(),
+            epos.getLine(),
+            epos.getColumn(),
             region
         );
     }
 
     @Override
     public TextPos2d lineColumnAtOffset(int offset, boolean inclusive) {
-        long longPos = content.getPositioner().lineColFromOffset(offset, inclusive);
-        return TextPos2d.pos2d(
-            SourceCodePositioner.unmaskLine(longPos),
-            SourceCodePositioner.unmaskCol(longPos)
-        );
+        return content.getPositioner().lineColFromOffset(offset, inclusive);
     }
 
     @Override
