@@ -14,6 +14,7 @@ This is a minor release.
 ### Table Of Contents
 
 * [New and noteworthy](#new-and-noteworthy)
+    * [PMD User Survey](#pmd-user-survey)
     * [Java 18 Support](#java-18-support)
     * [Better XML XPath support](#better-xml-xpath-support)
     * [New XPath functions](#new-xpath-functions)
@@ -26,6 +27,14 @@ This is a minor release.
 * [Stats](#stats)
 
 ### New and noteworthy
+
+#### PMD User Survey
+
+Help shape the future of PMD by telling us how you use it.
+
+Please participate in our survey at <https://forms.gle/4d8r1a1RDzfixHDc7>.
+
+Thank you!
 
 #### Java 18 Support
 

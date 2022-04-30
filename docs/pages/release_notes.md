@@ -14,6 +14,15 @@ This is a {{ site.pmd.release_type }} release.
 
 ### New and noteworthy
 
+#### PMD User Survey
+
+Help shape the future of PMD by telling us how you use it.
+
+Our little survey is still open in case you didn't participate yet.
+Please participate in our survey at <https://forms.gle/4d8r1a1RDzfixHDc7>.
+
+Thank you!
+
 #### Support for HTML
 
 This version of PMD ships a new language module to support analyzing of HTML.
