@@ -103,8 +103,8 @@ public final class Chars implements CharSequence {
     }
 
     /**
-     * Copies 'len' characters from index 'from' into the given array,
-     * starting at 'off'.
+     * Copies 'count' characters from index 'srcBegin' into the given array,
+     * starting at 'dstBegin'.
      *
      * @param srcBegin Start offset in this CharSequence
      * @param cbuf     Character array
@@ -177,7 +177,7 @@ public final class Chars implements CharSequence {
         }
 
         final char fst = searched.charAt(0);
-        int strpos = str.indexOf(fst, start + fromIndex);
+        int strpos = str.indexOf(fst, idx(fromIndex));
         while (strpos != NOT_FOUND && strpos <= max) {
             if (str.startsWith(searched, strpos)) {
                 return strpos - start;
@@ -252,7 +252,7 @@ public final class Chars implements CharSequence {
         if (fromIndex < 0 || fromIndex + 1 > len) {
             return false;
         }
-        return str.charAt(start + fromIndex) == prefix;
+        return str.charAt(idx(fromIndex)) == prefix;
     }
 
     /**
@@ -445,6 +445,9 @@ public final class Chars implements CharSequence {
     /**
      * Returns the substring between the given offsets.
      * given length.
+     *
+     * <p>Note: Unlike slice or subSequence, this method will create a new String which involves copying the 
+     * backing char array. Don't use it unnecessarily.
      *
      * @param start Start offset ({@code 0 <= start < this.length()})
      * @param end   End offset ({@code start <= end <= this.length()})
