@@ -437,6 +437,7 @@ fun TreeNodeWrapper<Node, *>.stringLit(image: String, contents: NodeSpec<ASTStri
         child<ASTStringLiteral> {
             it::getImage shouldBe image
             it::isTextBlock shouldBe false
+            it::isEmpty shouldBe it.constValue.isEmpty()
             contents()
         }
 
@@ -468,6 +469,7 @@ fun TreeNodeWrapper<Node, *>.boolean(value: Boolean, contents: NodeSpec<ASTBoole
 fun TreeNodeWrapper<Node, *>.textBlock(contents: NodeSpec<ASTStringLiteral> = EmptyAssertions) =
         child<ASTStringLiteral> {
             it::isTextBlock shouldBe true
+            it::isEmpty shouldBe it.constValue.isEmpty()
             contents()
         }
 

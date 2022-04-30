@@ -168,9 +168,7 @@ $delim
             }
 
             "\"abc\\u1234abc\"" should parseAs {
-                stringLit("\"abc\u1234abc\"") {
-                    it.originalText.toString() shouldBe "\"abc\\u1234abc\""
-                    it.text.toString() shouldBe "\"abc\u1234abc\""
+                stringLit("\"abc\\u1234abc\"") {
                     it::getConstValue shouldBe "abc\u1234abc"
                 }
             }
@@ -185,11 +183,23 @@ $delim
 
     parserTest("String literal octal escapes") {
         inContext(ExpressionParsingCtx) {
+            // (kotlin doesn't have octal escapes)
+            val char = "123".toInt(radix = 8).toChar()
 
             "\"\\123\"" should parseAs {
                 stringLit("\"\\123\"") {
-                    val char = "123".toInt(8).toChar()
                     it::getConstValue shouldBe char.toString()
+                }
+            }
+            val delim = "\"\"\""
+
+            """
+                $delim
+                \123
+                $delim
+            """ should parseAs {
+                textBlock {
+                    it::getConstValue shouldBe char.toString() + "\n"
                 }
             }
 

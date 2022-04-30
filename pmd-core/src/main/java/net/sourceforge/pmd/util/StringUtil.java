@@ -156,7 +156,7 @@ public final class StringUtil {
      */
     public static StringBuilder append(StringBuilder sb, CharSequence charSeq) {
         if (charSeq instanceof Chars) {
-            ((Chars) charSeq).appendChars(sb, 0, charSeq.length());
+            ((Chars) charSeq).appendChars(sb);
             return sb;
         } else {
             return sb.append(charSeq);

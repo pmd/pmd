@@ -121,26 +121,21 @@ public final class Chars implements CharSequence {
     }
 
     /**
-     * Appends the character range identified by offset and length into
+     * Appends the character range identified by start and end offset into
      * the string builder. This is much more efficient than calling
      * {@link StringBuilder#append(CharSequence)} with this as the
      * parameter, especially on Java 9+.
      *
-     * <p>Be aware that {@link StringBuilder#append(CharSequence, int, int)}
-     * takes a start and <i>end</i> offset, whereas this method (like all
-     * the others in this class) take a start offset and a length.
-     *
-     * @param off Start (inclusive)
-     * @param len Number of characters
+     * @param start Start index (inclusive)
+     * @param end End index (exclusive)
      *
      * @throws IndexOutOfBoundsException See {@link StringBuilder#append(CharSequence, int, int)}
      */
-    public void appendChars(StringBuilder sb, int off, int len) {
-        if (len == 0) {
+    public void appendChars(StringBuilder sb, int start, int end) {
+        if (end == 0) {
             return;
         }
-        int idx = idx(off);
-        sb.append(str, idx, idx + len);
+        sb.append(str, idx(start), idx(end));
     }
 
     /**
