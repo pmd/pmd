@@ -1,4 +1,4 @@
-+- Input[@CanonicalImage = null, @ExcludedLinesCount = "6", @ExcludedRangesCount = "2"]
++- Input[@CanonicalImage = null, @ExcludedLinesCount = 6, @ExcludedRangesCount = 2]
    +- Global[@CanonicalImage = null]
    |  +- Block[@CanonicalImage = null]
    |     +- Statement[@CanonicalImage = null]
