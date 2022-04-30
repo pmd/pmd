@@ -149,6 +149,21 @@ public final class StringUtil {
     }
 
     /**
+     * Like {@link StringBuilder#append(CharSequence)}, but uses an optimized
+     * implementation if the charsequence happens to be a {@link Chars}. {@link StringBuilder}
+     * already optimises the cases where the charseq is a string, a StringBuilder,
+     * or a stringBuffer. This is especially useful in parsers.
+     */
+    public static StringBuilder append(StringBuilder sb, CharSequence charSeq) {
+        if (charSeq instanceof Chars) {
+            ((Chars) charSeq).appendChars(sb);
+            return sb;
+        } else {
+            return sb.append(charSeq);
+        }
+    }
+
+    /**
      * Returns the substring following the last occurrence of the
      * given character. If the character doesn't occur, returns
      * the whole string. This contrasts with {@link StringUtils#substringAfterLast(String, String)},
