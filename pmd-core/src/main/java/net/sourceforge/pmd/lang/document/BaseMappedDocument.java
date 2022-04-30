@@ -46,14 +46,6 @@ abstract class BaseMappedDocument implements TextDocument {
     }
 
     @Override
-    public @NonNull TextRegion inputRegion(TextRegion outputRegion) {
-        // note that inputOffset already recurses up to the original document,
-        // so that we don't have to call base.inputRegion on the produced region
-        return TextRegion.fromBothOffsets(inputOffset(outputRegion.getStartOffset(), true),
-                                          inputOffset(outputRegion.getEndOffset(), false));
-    }
-
-    @Override
     public TextRegion createLineRange(int startLineInclusive, int endLineInclusive) {
         // see the doc, lines do not need to be translated
         return base.createLineRange(startLineInclusive, endLineInclusive);
@@ -61,15 +53,51 @@ abstract class BaseMappedDocument implements TextDocument {
 
     @Override
     public TextPos2d lineColumnAtOffset(int offset, boolean inclusive) {
-        return base.lineColumnAtOffset(localOffsetTransform(offset, inclusive));
+        return base.lineColumnAtOffset(inputOffset(offset, inclusive));
     }
 
-    @Override
-    public int inputOffset(int outOffset, boolean inclusive) {
+    /**
+     * Translate a region given in the coordinate system of this
+     * document, to the coordinate system of the base document.
+     * This works as if creating a new region with both start and end
+     * offsets translated through {@link #inputOffset(int, boolean)}. The
+     * returned region may have a different length.
+     *
+     * @param outputRegion Output region
+     *
+     * @return Input region
+     */
+    protected @NonNull TextRegion inputRegion(TextRegion outputRegion) {
+        return TextRegion.fromBothOffsets(inputOffset(outputRegion.getStartOffset(), true),
+                                          inputOffset(outputRegion.getEndOffset(), false));
+    }
+
+    /**
+     * Returns the input offset for the given output offset. This maps
+     * back an offset in the coordinate system of this document, to the
+     * coordinate system of the base document. This includes the
+     * length of any unicode escapes.
+     *
+     * <pre>
+     * input:      "a\u00a0b"   (original document)
+     * translated: "a b"        (this document)
+     *
+     * translateOffset(0) = 0
+     * translateOffset(1) = 1
+     * translateOffset(2) = 7 // includes the length of the escape
+     * </pre>
+     *
+     * @param outOffset Output offset
+     * @param inclusive Whether the offset is to be interpreted as the index of a character (true),
+     *                  or the position after a character (false)
+     *
+     * @return Input offset
+     */
+    protected final int inputOffset(int outOffset, boolean inclusive) {
         if (outOffset < 0 || outOffset > getLength()) {
             throw new IndexOutOfBoundsException();
         }
-        return base.inputOffset(localOffsetTransform(outOffset, inclusive), inclusive);
+        return localOffsetTransform(outOffset, inclusive);
     }
 
     /**

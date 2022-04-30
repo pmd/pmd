@@ -57,7 +57,7 @@ final class FragmentedTextDocument extends BaseMappedDocument implements TextDoc
         // Whether the fragment contains the offset we're looking for.
         // Will be true most of the time.
         boolean containsOffset =
-            f.outStart() >= outOffset && outOffset < f.outEnd();
+            f.outStart() <= outOffset && outOffset < f.outEnd();
 
         if (!containsOffset) {
             // Slow path, we must search for the fragment

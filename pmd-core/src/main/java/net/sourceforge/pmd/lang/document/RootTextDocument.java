@@ -120,16 +120,6 @@ final class RootTextDocument extends BaseCloseable implements TextDocument {
     }
 
     @Override
-    public int inputOffset(int outOffset, boolean inclusive) {
-        return outOffset;
-    }
-
-    @Override
-    public TextRegion inputRegion(TextRegion outputRegion) {
-        return outputRegion;
-    }
-
-    @Override
     public Chars sliceOriginalText(TextRegion region) {
         return getText().subSequence(region.getStartOffset(), region.getEndOffset());
     }

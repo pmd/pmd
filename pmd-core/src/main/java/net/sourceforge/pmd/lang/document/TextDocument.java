@@ -145,43 +145,6 @@ public interface TextDocument extends Closeable {
 
 
     /**
-     * Returns the input offset for the given output offset. This maps
-     * back an offset in the coordinate system of this document, to the
-     * coordinate system of the original document. This includes the
-     * length of any unicode escapes.
-     *
-     * <pre>
-     * input:      "a\u00a0b"   (original document)
-     * translated: "a b"        (this document)
-     *
-     * translateOffset(0) = 0
-     * translateOffset(1) = 1
-     * translateOffset(2) = 7 // includes the length of the escape
-     * </pre>
-     *
-     * @param outOffset Output offset
-     * @param inclusive Whether the offset is to be interpreted as the index of a character (true),
-     *                  or the position after a character (false)
-     *
-     * @return Input offset
-     */
-    int inputOffset(int outOffset, boolean inclusive);
-
-    /**
-     * Translate a region given in the coordinate system of this
-     * document, to the coordinate system of the original document.
-     * This works as if creating a new region with both start and end
-     * offsets translated through {@link #inputOffset(int, boolean)}. The
-     * returned region may have a different length.
-     *
-     * @param outputRegion Output region
-     *
-     * @return Input region
-     */
-    TextRegion inputRegion(TextRegion outputRegion);
-
-
-    /**
      * Returns a reader over the text of this document.
      */
     default Reader newReader() {
@@ -260,8 +223,6 @@ public interface TextDocument extends Closeable {
      *                  otherwise choose the position at the end of the line.
      *
      * @return A position, in the coordinate system of the root document
-     *
-     * @return A position, in the coordinate system of this document
      *
      * @throws IndexOutOfBoundsException if the offset is out of bounds
      */

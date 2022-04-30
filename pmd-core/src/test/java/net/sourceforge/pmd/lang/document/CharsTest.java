@@ -61,6 +61,14 @@ public class CharsTest {
     }
 
     @Test
+    public void toStringBuilder() {
+        Chars bc = Chars.wrap("abcd").slice(1, 2);
+        assertEquals("bc", bc.toString());
+
+        assertEquals("bc", bc.toStringBuilder().toString());
+    }
+
+    @Test
     public void write() throws IOException {
         StringWriter writer = new StringWriter();
         Chars bc = Chars.wrap("abcd").slice(1, 2);

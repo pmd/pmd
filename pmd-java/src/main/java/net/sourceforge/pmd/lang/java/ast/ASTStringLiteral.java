@@ -9,7 +9,6 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.document.Chars;
 import net.sourceforge.pmd.util.CollectionUtil;
@@ -31,6 +30,8 @@ public final class ASTStringLiteral extends AbstractLiteral implements ASTLitera
     }
 
 
+    // todo deprecate this
+    // it's ambiguous whether it returns getOriginalText or getTranslatedText
     @Override
     public String getImage() {
         return getText().toString();
@@ -72,12 +73,12 @@ public final class ASTStringLiteral extends AbstractLiteral implements ASTLitera
     }
 
     @Override
-    protected @Nullable Object buildConstValue() {
+    protected @NonNull Object buildConstValue() {
         if (isTextBlock()) {
             return determineTextBlockContent(getText());
         } else {
-            CharSequence image = getText();
-            CharSequence woDelims = image.subSequence(1, image.length() - 1);
+            Chars image = getText();
+            Chars woDelims = image.subSequence(1, image.length() - 1);
             return StringEscapeUtils.UNESCAPE_JAVA.translate(woDelims);
         }
     }
@@ -118,6 +119,7 @@ public final class ASTStringLiteral extends AbstractLiteral implements ASTLitera
     private static void interpretEscapeSequences(StringBuilder sb) {
         // interpret escape sequences "\<LF>" (line continuation), "n","t","b","r","f", "s", "\"", "\'", "\\"
         // we need to interpret everything in one pass, so regex replacement is inappropriate
+        // todo octal escapes: https://docs.oracle.com/javase/specs/jls/se17/html/jls-3.html#jls-EscapeSequence
         for (int i = 0; i < sb.length(); i++) {
             char c = sb.charAt(i);
             if (c == '\\' && i < sb.length() - 1) {

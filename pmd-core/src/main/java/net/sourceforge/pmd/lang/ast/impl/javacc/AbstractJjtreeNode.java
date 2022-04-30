@@ -7,7 +7,6 @@ package net.sourceforge.pmd.lang.ast.impl.javacc;
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.impl.AbstractNode;
-import net.sourceforge.pmd.lang.document.Chars;
 import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.document.TextRegion;
 import net.sourceforge.pmd.util.StringUtil;
@@ -46,11 +45,6 @@ public abstract class AbstractJjtreeNode<B extends AbstractJjtreeNode<B, N>, N e
 
     protected void setImage(String image) {
         this.image = image;
-    }
-
-    @Override
-    public final Chars getText() {
-        return getTextDocument().sliceOriginalText(getTextRegion());
     }
 
     @Override

@@ -588,6 +588,16 @@ public final class Chars implements CharSequence {
         return StreamSupport.stream(lines().spliterator(), false);
     }
 
+    /**
+     * Returns a new stringbuilder containing the whole contents of this
+     * char sequence.
+     */
+    public StringBuilder toStringBuilder() {
+        StringBuilder sb = new StringBuilder(length());
+        appendChars(sb);
+        return sb;
+    }
+
 
     /**
      * Returns a new reader for the whole contents of this char sequence.
