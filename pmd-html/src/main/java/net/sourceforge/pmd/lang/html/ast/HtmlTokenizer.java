@@ -4,35 +4,37 @@
 
 package net.sourceforge.pmd.lang.html.ast;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.io.IOException;
+import java.io.UncheckedIOException;
 
 import net.sourceforge.pmd.cpd.SourceCode;
 import net.sourceforge.pmd.cpd.TokenEntry;
 import net.sourceforge.pmd.cpd.Tokenizer;
 import net.sourceforge.pmd.cpd.Tokens;
-import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
 import net.sourceforge.pmd.lang.ast.SemanticErrorReporter;
-import net.sourceforge.pmd.lang.html.HtmlLanguageModule;
+import net.sourceforge.pmd.lang.document.CpdCompat;
+import net.sourceforge.pmd.lang.document.TextDocument;
 
 public class HtmlTokenizer implements Tokenizer {
-    private static final Logger LOG = LoggerFactory.getLogger(HtmlTokenizer.class);
 
     @Override
     public void tokenize(SourceCode sourceCode, Tokens tokenEntries) {
-        ParserTask task = new ParserTask(
-                LanguageRegistry.getLanguage(HtmlLanguageModule.NAME).getDefaultVersion(),
-                sourceCode.getFileName(),
-                sourceCode.getCodeBuffer().toString(),
-                SemanticErrorReporter.reportToLogger(LOG)
-        );
+        try (TextDocument textDoc = TextDocument.create(CpdCompat.cpdCompat(sourceCode))) {
+            ParserTask task = new ParserTask(
+                textDoc,
+                SemanticErrorReporter.noop()// fixme
+            );
 
-        HtmlParser parser = new HtmlParser();
-        ASTHtmlDocument root = parser.parse(task);
+            HtmlParser parser = new HtmlParser();
+            ASTHtmlDocument root = parser.parse(task);
 
-        traverse(root, tokenEntries);
-        tokenEntries.add(TokenEntry.EOF);
+            traverse(root, tokenEntries);
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        } finally {
+            tokenEntries.add(TokenEntry.EOF);
+        }
     }
 
     private void traverse(HtmlNode node, Tokens tokenEntries) {
@@ -42,8 +44,7 @@ public class HtmlTokenizer implements Tokenizer {
             image = ((ASTHtmlTextNode) node).getText();
         }
 
-        TokenEntry token = new TokenEntry(image, node.getXPathNodeName(), node.getBeginLine(),
-                node.getBeginColumn(), node.getEndColumn());
+        TokenEntry token = new TokenEntry(image, node.getReportLocation());
         tokenEntries.add(token);
 
         for (HtmlNode child : node.children()) {

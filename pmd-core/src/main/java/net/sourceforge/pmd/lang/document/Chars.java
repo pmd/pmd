@@ -446,8 +446,9 @@ public final class Chars implements CharSequence {
      * Returns the substring between the given offsets.
      * given length.
      *
-     * <p>Note: Unlike slice or subSequence, this method will create a new String which involves copying the 
-     * backing char array. Don't use it unnecessarily.
+     * <p>Note: Unlike slice or subSequence, this method will create a
+     * new String which involves copying the backing char array. Don't
+     * use it unnecessarily.
      *
      * @param start Start offset ({@code 0 <= start < this.length()})
      * @param end   End offset ({@code start <= end <= this.length()})
@@ -591,40 +592,79 @@ public final class Chars implements CharSequence {
      * Returns a new reader for the whole contents of this char sequence.
      */
     public Reader newReader() {
-        return new Reader() {
-            private int pos = start;
-            private final int max = start + len;
+        return new CharsReader(this);
+    }
 
-            @Override
-            public int read(char @NonNull [] cbuf, int off, int len) {
-                if (len < 0 || off < 0 || off + len > cbuf.length) {
-                    throw new IndexOutOfBoundsException();
-                }
-                if (pos >= max) {
-                    return NOT_FOUND;
-                }
-                int toRead = Integer.min(max - pos, len);
-                str.getChars(pos, pos + toRead, cbuf, off);
-                pos += toRead;
-                return toRead;
-            }
+    private static final class CharsReader extends Reader {
 
-            @Override
-            public int read() {
-                return pos >= max ? NOT_FOUND : str.charAt(pos++);
-            }
+        private Chars chars;
+        private int pos;
+        private final int max;
+        private int mark = -1;
 
-            @Override
-            public long skip(long n) {
-                int oldPos = pos;
-                pos = Math.min(max, pos + (int) n);
-                return pos - oldPos;
-            }
+        private CharsReader(Chars chars) {
+            this.chars = chars;
+            this.pos = chars.start;
+            this.max = chars.start + chars.len;
+        }
 
-            @Override
-            public void close() {
-                // nothing to do
+        @Override
+        public int read(char @NonNull [] cbuf, int off, int len) throws IOException {
+            if (len < 0 || off < 0 || off + len > cbuf.length) {
+                throw new IndexOutOfBoundsException();
             }
-        };
+            ensureOpen();
+            if (pos >= max) {
+                return NOT_FOUND;
+            }
+            int toRead = Integer.min(max - pos, len);
+            chars.str.getChars(pos, pos + toRead, cbuf, off);
+            pos += toRead;
+            return toRead;
+        }
+
+        @Override
+        public int read() throws IOException {
+            ensureOpen();
+            return pos >= max ? NOT_FOUND : chars.str.charAt(pos++);
+        }
+
+        @Override
+        public long skip(long n) throws IOException {
+            ensureOpen();
+            int oldPos = pos;
+            pos = Math.min(max, pos + (int) n);
+            return pos - oldPos;
+        }
+
+        private void ensureOpen() throws IOException {
+            if (chars == null) {
+                throw new IOException("Closed");
+            }
+        }
+
+        @Override
+        public void close() {
+            chars = null;
+        }
+
+        @Override
+        public void mark(int readAheadLimit) {
+            mark = pos;
+        }
+
+        @Override
+        public void reset() throws IOException {
+            ensureOpen();
+            if (mark == -1) {
+                throw new IOException("Reader was not marked");
+            }
+            pos = mark;
+        }
+
+        @Override
+        public boolean markSupported() {
+            return true;
+        }
     }
 }
