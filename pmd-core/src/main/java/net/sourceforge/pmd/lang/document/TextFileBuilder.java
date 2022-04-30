@@ -27,10 +27,41 @@ public abstract class TextFileBuilder {
         this.languageVersion = AssertionUtil.requireParamNotNull("language version", languageVersion);
     }
 
+    /**
+     * Specify that the built file is read only. Some text files are
+     * always read-only.
+     *
+     * @return This builder
+     */
+    public TextFileBuilder asReadOnly() {
+        // default is appropriate if the file type is always read-only
+        return this;
+    }
+
+
+    /**
+     * Sets a custom display name for the new file. If null, or this is
+     * never called, the display name defaults to the path ID.
+     *
+     * @param displayName A display name
+     *
+     * @return This builder
+     */
+    public TextFileBuilder withDisplayName(@Nullable String displayName) {
+        this.displayName = displayName;
+        return this;
+    }
+
+    /**
+     * Creates and returns the new text file.
+     */
+    public abstract TextFile build();
+
     static class ForNio extends TextFileBuilder {
 
         private final Path path;
         private final Charset charset;
+        private boolean readOnly = false;
 
         ForNio(LanguageVersion languageVersion, Path path, Charset charset) {
             super(languageVersion);
@@ -39,8 +70,14 @@ public abstract class TextFileBuilder {
         }
 
         @Override
+        public TextFileBuilder asReadOnly() {
+            readOnly = true;
+            return this;
+        }
+
+        @Override
         public TextFile build() {
-            return new NioTextFile(path, charset, languageVersion, displayName);
+            return new NioTextFile(path, charset, languageVersion, displayName, readOnly);
         }
     }
 
@@ -78,22 +115,4 @@ public abstract class TextFileBuilder {
         }
     }
 
-
-    /**
-     * Sets a custom display name for the new file. If null, or this is
-     * never called, the display name defaults to the path ID.
-     *
-     * @param displayName A display name
-     *
-     * @return This builder
-     */
-    public TextFileBuilder withDisplayName(@Nullable String displayName) {
-        this.displayName = displayName;
-        return this;
-    }
-
-    /**
-     * Creates and returns the new text file.
-     */
-    public abstract TextFile build();
 }

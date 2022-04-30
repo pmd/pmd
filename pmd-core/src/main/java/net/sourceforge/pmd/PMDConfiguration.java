@@ -364,7 +364,7 @@ public class PMDConfiguration extends AbstractConfiguration {
         if (languageVersion == null) {
             // For compatibility with older code that does not always pass in
             // a correct filename.
-            languageVersion = languageVersionDiscoverer.getDefaultLanguageVersion(LanguageRegistry.getLanguage("Java"));
+            languageVersion = languageVersionDiscoverer.getDefaultLanguageVersion(LanguageRegistry.getDefaultLanguage());
         }
         return languageVersion;
     }

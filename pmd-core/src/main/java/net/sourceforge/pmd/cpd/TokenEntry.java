@@ -78,8 +78,6 @@ public class TokenEntry implements Comparable<TokenEntry> {
     }
 
     public TokenEntry(String image, FileLocation location) {
-        // todo rename to getStartLine
-        // todo rename to getStartLine
         this(image, location.getFileName(), location.getStartLine(), location.getStartColumn(), location.getEndColumn());
     }
 

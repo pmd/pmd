@@ -40,6 +40,7 @@ import org.pcollections.PSet;
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.internal.util.IteratorUtil;
+import net.sourceforge.pmd.lang.document.Chars;
 
 /**
  * Generic collection and array-related utility functions for java.util types.
@@ -625,15 +626,25 @@ public final class CollectionUtil {
                                            String delimiter) {
         boolean first = true;
         for (T t : iterable) {
-            appendItem.accept(sb, t);
             if (first) {
                 first = false;
             } else {
                 sb.append(delimiter);
             }
+            appendItem.accept(sb, t);
         }
         return sb;
     }
+
+    public static @NonNull StringBuilder joinCharsIntoStringBuilder(List<Chars> lines, String delimiter) {
+        return joinOn(
+            new StringBuilder(),
+            lines,
+            (buf, line) -> line.appendChars(buf),
+            delimiter
+        );
+    }
+
 
     /**
      * Merge the second map into the first. If some keys are in common,

@@ -48,6 +48,7 @@ import net.sourceforge.pmd.util.log.MessageReporter;
  */
 @SuppressWarnings("PMD.CloseResource")
 public final class FileCollector implements AutoCloseable {
+
     private static final Logger LOG = LoggerFactory.getLogger(FileCollector.class);
 
     private final List<TextFile> allFilesToProcess = new ArrayList<>();
@@ -167,8 +168,11 @@ public final class FileCollector implements AutoCloseable {
             reporter.error("Not a regular file {}", file);
             return false;
         }
-        NioTextFile nioTextFile = new NioTextFile(file, charset, discoverer.getDefaultLanguageVersion(language), getDisplayName(file));
-        addFileImpl(nioTextFile);
+        LanguageVersion lv = discoverer.getDefaultLanguageVersion(language);
+        Objects.requireNonNull(lv);
+        addFileImpl(TextFile.builderForPath(file, charset, lv)
+                            .withDisplayName(getDisplayName(file))
+                            .build());
         return true;
     }
 

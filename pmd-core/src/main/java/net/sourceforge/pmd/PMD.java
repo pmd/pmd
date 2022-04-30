@@ -14,6 +14,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.slf4j.Logger;
@@ -34,7 +35,6 @@ import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.reporting.ReportStats;
 import net.sourceforge.pmd.reporting.ReportStatsListener;
-import net.sourceforge.pmd.util.CollectionUtil;
 import net.sourceforge.pmd.util.datasource.DataSource;
 import net.sourceforge.pmd.util.log.MessageReporter;
 import net.sourceforge.pmd.util.log.internal.SimpleMessageReporter;
@@ -126,7 +126,6 @@ public final class PMD {
      * @return Report in which violations are accumulated
      *
      * @throws Exception If there was a problem when opening or closing the renderers
-     *
      * @deprecated Use {@link PmdAnalysis}
      */
     @Deprecated
@@ -140,9 +139,11 @@ public final class PMD {
             pmd.addRenderers(renderers);
             @SuppressWarnings("PMD.CloseResource")
             GlobalReportBuilderListener reportBuilder = new GlobalReportBuilderListener();
-            List<TextFile> textFiles = CollectionUtil.map(files, ds -> TextFile.dataSourceCompat(ds, configuration));
-            textFiles.sort(Comparator.comparing(TextFile::getPathId));
-            pmd.performAnalysisImpl(listOf(reportBuilder), textFiles);
+            List<TextFile> sortedFiles = files.stream()
+                                              .map(ds -> TextFile.dataSourceCompat(ds, configuration))
+                                              .sorted(Comparator.comparing(TextFile::getPathId))
+                                              .collect(Collectors.toList());
+            pmd.performAnalysisImpl(listOf(reportBuilder), sortedFiles);
             return reportBuilder.getResult();
         }
     }

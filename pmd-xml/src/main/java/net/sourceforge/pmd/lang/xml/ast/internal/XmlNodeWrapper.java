@@ -19,7 +19,6 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
 
 import net.sourceforge.pmd.internal.util.IteratorUtil;
-import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.lang.document.TextRegion;
 import net.sourceforge.pmd.lang.rule.xpath.Attribute;
@@ -58,10 +57,9 @@ class XmlNodeWrapper implements XmlNode {
         return parser.wrapDomNode(domNode);
     }
 
-
     @Override
-    public FileLocation getReportLocation() {
-        return textDoc.toLocation(TextRegion.fromBothOffsets(startOffset, endOffset));
+    public TextRegion getTextRegion() {
+        return TextRegion.fromBothOffsets(startOffset, endOffset);
     }
 
     @Override

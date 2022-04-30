@@ -13,8 +13,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 import net.sourceforge.pmd.annotation.DeprecatedUntil700;
+import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.renderers.AbstractAccumulatingRenderer;
@@ -30,6 +32,15 @@ import net.sourceforge.pmd.util.BaseResultProducingCloseable;
  * <p>A report may be created by a {@link GlobalReportBuilderListener} that you
  * use as the {@linkplain GlobalAnalysisListener} in {@link PmdAnalysis#performAnalysisAndCollectReport() PMD's entry point}.
  * You can also create one manually with {@link #buildReport(Consumer)}.
+ *
+ * <p>For special use cases, like filtering the report after PMD analysis and
+ * before rendering the report, some transformation operations are provided:
+ * <ul>
+ *     <li>{@link #filterViolations(Predicate)}</li>
+ *     <li>{@link #union(Report)}</li>
+ * </ul>
+ * These methods create a new {@link Report} rather than modifying their receiver.
+ * </p>
  */
 public final class Report {
     // todo move to package reporting
@@ -351,5 +362,58 @@ public final class Report {
         protected Report getResultImpl() {
             return report;
         }
+    }
+
+    /**
+     * Creates a new report taking all the information from this report,
+     * but filtering the violations.
+     *
+     * @param filter when true, the violation will be kept.
+     * @return copy of this report
+     */
+    @Experimental
+    public Report filterViolations(Predicate<RuleViolation> filter) {
+        Report copy = new Report();
+
+        for (RuleViolation violation : violations) {
+            if (filter.test(violation)) {
+                copy.addRuleViolation(violation);
+            }
+        }
+
+        copy.suppressedRuleViolations.addAll(suppressedRuleViolations);
+        copy.errors.addAll(errors);
+        copy.configErrors.addAll(configErrors);
+        return copy;
+    }
+
+    /**
+     * Creates a new report by combining this report with another report.
+     * This is similar to {@link #merge(Report)}, but instead a new report
+     * is created. The lowest start time and greatest end time are kept in the copy.
+     *
+     * @param other the other report to combine
+     * @return
+     */
+    @Experimental
+    public Report union(Report other) {
+        Report copy = new Report();
+
+        for (RuleViolation violation : violations) {
+            copy.addRuleViolation(violation);
+        }
+        for (RuleViolation violation : other.violations) {
+            copy.addRuleViolation(violation);
+        }
+
+        copy.suppressedRuleViolations.addAll(suppressedRuleViolations);
+        copy.suppressedRuleViolations.addAll(other.suppressedRuleViolations);
+
+        copy.errors.addAll(errors);
+        copy.errors.addAll(other.errors);
+        copy.configErrors.addAll(configErrors);
+        copy.configErrors.addAll(other.configErrors);
+
+        return copy;
     }
 }

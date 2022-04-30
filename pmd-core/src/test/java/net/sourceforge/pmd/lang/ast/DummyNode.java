@@ -5,35 +5,29 @@
 package net.sourceforge.pmd.lang.ast;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
 import net.sourceforge.pmd.lang.ast.impl.AbstractNode;
 import net.sourceforge.pmd.lang.ast.impl.GenericNode;
-import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.lang.document.TextFile;
-import net.sourceforge.pmd.lang.document.TextRange2d;
 import net.sourceforge.pmd.lang.document.TextRegion;
 import net.sourceforge.pmd.lang.rule.xpath.Attribute;
 
 public class DummyNode extends AbstractNode<DummyNode, DummyNode> implements GenericNode<DummyNode> {
 
     private final boolean findBoundary;
-    private final String xpathName;
-    private final Map<String, String> userData = new HashMap<>();
+    private String xpathName;
     private String image;
     private final List<Attribute> attributes = new ArrayList<>();
 
-    private int bline = 1;
-    private int bcol = 1;
-    private int eline = 1;
-    private int ecol = 1;
+    private TextRegion region = TextRegion.caretAt(0);
 
     public DummyNode(String xpathName) {
         this(false, xpathName);
@@ -83,34 +77,25 @@ public class DummyNode extends AbstractNode<DummyNode, DummyNode> implements Gen
         }
     }
 
-    public DummyNode setCoords(int bline, int bcol, int eline, int ecol) {
-        this.bline = bline;
-        this.bcol = bcol;
-        this.eline = eline;
-        this.ecol = ecol;
-        return this;
-    }
-
-    public DummyNode setCoords(TextDocument document, TextRegion region) {
-        FileLocation loc = document.toLocation(region);
-        return setCoords(loc.getStartLine(), loc.getStartColumn(), loc.getEndLine(), loc.getEndColumn());
-    }
-
-    public DummyNode setCoords(TextRange2d region) {
-        return setCoords(region.getStartLine(), region.getStartColumn(), region.getEndLine(), region.getEndColumn());
-    }
-
-    public TextRange2d getCoords() {
-        return TextRange2d.range2d(bline, bcol, eline, ecol);
-    }
-
     @Override
-    public FileLocation getReportLocation() {
-        return getTextDocument().toLocation(TextRange2d.range2d(bline, bcol, eline, ecol));
+    public TextRegion getTextRegion() {
+        return region;
     }
 
+    public void setRegion(TextRegion region) {
+        this.region = region;
+    }
+
+
+    /**
+     * Nodes with an image that starts with `#` also set the xpath name.
+     */
     public void setImage(String image) {
         this.image = image;
+        if (image.startsWith("#")) {
+            xpathName = image.substring(1);
+            assert AssertionUtil.isJavaIdentifier(xpathName) : "need an ident after '#': " + image;
+        }
     }
 
     @Override
@@ -131,10 +116,6 @@ public class DummyNode extends AbstractNode<DummyNode, DummyNode> implements Gen
     @Override
     public boolean isFindBoundary() {
         return findBoundary;
-    }
-
-    public Map<String, String> getUserData() {
-        return userData;
     }
 
     public void setXPathAttribute(String name, String value) {

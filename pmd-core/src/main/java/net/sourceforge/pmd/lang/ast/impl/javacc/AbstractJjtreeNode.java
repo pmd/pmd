@@ -60,11 +60,6 @@ public abstract class AbstractJjtreeNode<B extends AbstractJjtreeNode<B, N>, N e
     }
 
     @Override
-    public FileLocation getReportLocation() {
-        return getTextDocument().toLocation(getTextRegion());
-    }
-
-    @Override
     public final int compareLocation(Node other) {
         if (other instanceof JjtreeNode<?>) {
             return getTextRegion().compareTo(((JjtreeNode<?>) other).getTextRegion());

@@ -119,20 +119,16 @@ public interface Node extends Reportable {
      * <p>Use this instead of {@link #getBeginColumn()}/{@link #getBeginLine()}, etc.
      */
     @Override
-    FileLocation getReportLocation();
+    default FileLocation getReportLocation() {
+        return getAstInfo().getTextDocument().toLocation(getTextRegion());
+    }
 
     /**
      * Returns a region of text delimiting the node in the underlying
      * text document. This does not necessarily match the
      * {@link #getReportLocation() report location}.
-     *
-     * @implNote The default implementation uses the {@link #getReportLocation()}
-     *     to create a region.
      */
-    default TextRegion getTextRegion() {
-        FileLocation loc = getReportLocation();
-        return getAstInfo().getTextDocument().toRegion(loc.toRange2d());
-    }
+    TextRegion getTextRegion();
 
 
     // Those are kept here because they're handled specially as XPath

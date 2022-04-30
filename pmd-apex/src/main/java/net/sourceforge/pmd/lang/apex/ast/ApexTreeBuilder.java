@@ -390,7 +390,7 @@ final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
             return;
         }
         // find the token, that appears as close as possible before the node
-        TextRegion nodeRegion = node.getRegion();
+        TextRegion nodeRegion = node.getTextRegion();
         for (ApexDocTokenLocation comment : commentInfo.docTokenLocations) {
             if (comment.region.compareTo(nodeRegion) > 0) {
                 // this and all remaining tokens are after the node
@@ -436,7 +436,7 @@ final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
             if (checkForCommentSuppression && commentText.startsWith("//")) {
                 Chars trimmed = commentText.subSequence("//".length(), commentText.length()).trimStart();
                 if (trimmed.startsWith(suppressMarker)) {
-                    Chars userMessage = trimmed.subSequence(suppressMarker.length(), trimmed.length()).trim();
+                    Chars userMessage = trimmed.subSequence(suppressMarker.length()).trim();
                     suppressMap.put(source.lineColumnAtOffset(startIdx).getLine(), userMessage.toString());
                 }
             }

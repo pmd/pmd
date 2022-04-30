@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.document;
 
-import static net.sourceforge.pmd.lang.document.RootTextDocument.checkInRange;
-
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.Reader;
@@ -30,6 +28,47 @@ import net.sourceforge.pmd.util.datasource.DataSource;
  * from a text document. Exposing it here could lead to files being written
  * to from within rules, while we want to eventually build an API that allows
  * file edition based on AST manipulation.
+ *
+ * <h3>Coordinates in TextDocument</h3>
+ *
+ * This interface is an abstraction over a piece of text, which might not
+ * correspond to the backing source file. This allows the document to
+ * be a view on a piece of a larger document (eg, a Javadoc comment, or
+ * a string in which a language is injected). Another use case is to perform
+ * escape translation, while preserving the line breaks of the original source.
+ *
+ * <p>This complicates addressing within a text document. To explain it,
+ * consider that there is always *one* text document that corresponds to
+ * the backing text file, which we call the <i>root</i> text document.
+ * Logical documents built on top of it are called <i>views</i>.
+ *
+ * Text documents use <i>offsets</i> and {@link TextRegion} to address their
+ * contents. These are always relative to the {@linkplain #getText() text} of
+ * the document. Line and column information are provided by {@link FileLocation}
+ * (see {@link #toLocation(TextRegion)}), and are always absolute (ie,
+ * represent actual source lines in the file).
+ *
+ * <p>For instance, say you have the following file (and root text document):
+ * <pre>{@code
+ * l1
+ * l2 (* comment *)
+ * l3
+ * }</pre>
+ * and you create a view for just the section {@code (* comment *)}.
+ * Then, that view's offset 0 (start of the document) will map
+ * to the {@code (} character, while the root document's offset 0 maps
+ * to the start of {@code l1}. When calling {@code toLocation(caretAt(0))},
+ * the view will however return {@code line 2, column 4}, ie, a line/column
+ * that can be found when inspecting the file.
+ *
+ * <p>To reduce the potential for mistakes, views do not provide access
+ * to their underlying text document. That way, nodes only have access
+ * to a single document, and their offsets can be assumed to be in the
+ * coordinate system of that document.
+ *
+ * <p>This interface does not provide a way to obtain line/column
+ * coordinates that are relative to a view's coordinate system. This
+ * would complicate the construction of views significantly.
  */
 public interface TextDocument extends Closeable {
     // todo logical sub-documents, to support embedded languages
@@ -40,25 +79,6 @@ public interface TextDocument extends Closeable {
     // todo text edition (there are some reverted commits in the branch
     //  with part of this, including a lot of tests)
 
-    /*
-        Summary of different coordinate systems:
-        Coordinate system:   Line/column            Offset
-        ==============================================================
-        Position:            TextPos2d              int >= 0
-        Range:               TextRange2d            TextRegion
-
-        (FileLocation is similar to TextRange2d in terms of position info)
-
-        Conversions:
-          line/column -> offset: offsetAtLineColumn
-          offset -> line/column: lineColumnAtOffset
-        Range conversions:
-          TextRegion  -> TextRange2d: toRegion
-          TextRange2d -> TextRegion: toRange2d
-
-          TextRegion -> FileLocation: toLocation
-          TextRange2d -> FileLocation: toLocation
-     */
 
     /**
      * Returns the language version that should be used to parse this file.
@@ -299,6 +319,8 @@ public interface TextDocument extends Closeable {
 
     /**
      * Returns the line and column at the given offset (inclusive).
+     * Note that the line/column cannot be converted back. They are
+     * absolute in the coordinate system of the original document.
      *
      * @param offset A source offset (0-based), can range in {@code [0, length]}.
      *
@@ -309,15 +331,17 @@ public interface TextDocument extends Closeable {
     }
 
     /**
-     * Returns the line and column at the given offset (inclusive).
+     * Returns the line and column at the given offset.
      * Both the input offset and the output range are in the coordinates
      * of this document.
      *
      * @param offset    A source offset (0-based), can range in {@code [0, length]}.
      * @param inclusive If the offset falls right after a line terminator,
      *                  two behaviours are possible. If the parameter is true,
-     *                  choose the position at the start of the next line.
-     *                  Otherwise choose the offset at the end of the line.
+     *                  choose the position at the start of the next line,
+     *                  otherwise choose the position at the end of the line.
+     *
+     * @return A position, in the coordinate system of the root document
      *
      * @return A position, in the coordinate system of this document
      *

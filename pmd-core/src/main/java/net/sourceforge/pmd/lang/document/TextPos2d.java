@@ -23,7 +23,7 @@ public final class TextPos2d implements Comparable<TextPos2d> {
         this.line = line;
         this.column = column;
 
-        assert line > 0 && column > 0 : "Invalid position" + parThis();
+        assert line > 0 && column > 0 : "Invalid position " + toTupleString();
     }
 
     /**
@@ -47,10 +47,6 @@ public final class TextPos2d implements Comparable<TextPos2d> {
      */
     public static TextPos2d pos2d(int line, int column) {
         return new TextPos2d(line, column);
-    }
-
-    private String parThis() {
-        return "(" + this + ")";
     }
 
 

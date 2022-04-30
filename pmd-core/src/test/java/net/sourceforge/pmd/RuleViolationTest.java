@@ -9,12 +9,14 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Comparator;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.lang.ast.DummyNode.DummyRootNode;
+import net.sourceforge.pmd.lang.document.FileLocation;
+import net.sourceforge.pmd.lang.document.TextFile;
+import net.sourceforge.pmd.lang.document.TextRange2d;
 import net.sourceforge.pmd.lang.rule.MockRule;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 
@@ -68,25 +70,19 @@ public class RuleViolationTest {
         assertTrue(comp.compare(r2, r1) > 0);
     }
 
-    @Ignore("FIXME enabling this test means we don't respect the contract of Comparator!")
     @Test
     public void testComparatorWithSameFileSameLines() {
         Rule rule = new MockRule("name", "desc", "msg", "rulesetname");
         Comparator<RuleViolation> comp = RuleViolation.DEFAULT_COMPARATOR;
-        DummyRootNode rootNode = new DummyRootNode();
+        String filename = TextFile.UNKNOWN_FILENAME;
 
-        DummyNode s = new DummyNode();
-        s.setCoords(10, 1, 15, 10);
-        rootNode.addChild(s, 0);
-        RuleViolation r1 = new ParametricRuleViolation(rule, s, "description");
 
-        DummyNode s1 = new DummyNode();
-        s1.setCoords(10, 1, 15, 10);
-        rootNode.addChild(s1, 1);
-        RuleViolation r2 = new ParametricRuleViolation(rule, s1, "description");
+        FileLocation loc = FileLocation.range(filename, TextRange2d.range2d(10, 1, 15, 10));
+        RuleViolation r1 = new ParametricRuleViolation(rule, loc, "description");
+        RuleViolation r2 = new ParametricRuleViolation(rule, loc, "description");
 
-        assertEquals(1, comp.compare(r1, r2));
-        assertEquals(1, comp.compare(r2, r1));
+        assertEquals(0, comp.compare(r1, r2));
+        assertEquals(0, comp.compare(r2, r1));
     }
 
     public static junit.framework.Test suite() {

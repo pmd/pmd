@@ -30,18 +30,23 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  */
 public final class TextFileContent {
 
+    // the three line terminators we handle.
+    private static final String CRLF = "\r\n";
+    private static final String LF = "\n";
+    private static final String CR = "\r";
+
     /**
      * The normalized line ending used to replace platform-specific
      * line endings in the {@linkplain #getNormalizedText() normalized text}.
      */
-    public static final String NORMALIZED_LINE_TERM = "\n";
+    public static final String NORMALIZED_LINE_TERM = LF;
 
     /** The normalized line ending as a char. */
     public static final char NORMALIZED_LINE_TERM_CHAR = '\n';
 
     private static final int DEFAULT_BUFSIZE = 8192;
 
-    private static final Pattern NEWLINE_PATTERN = Pattern.compile("\r\n|\n");
+    private static final Pattern NEWLINE_PATTERN = Pattern.compile("\r\n?|\n");
     private static final String FALLBACK_LINESEP = System.lineSeparator();
 
     private final Chars cdata;
@@ -61,9 +66,10 @@ public final class TextFileContent {
      * The text of the file, with the following normalizations:
      * <ul>
      * <li>Line endings are normalized to {@value NORMALIZED_LINE_TERM}.
-     * For this purpose, a line ending is either {@code \r\n} or {@code \n}
-     * (CRLF or LF), not the full range of unicode line endings. This is
-     * consistent with {@link BufferedReader#readLine()} for example.
+     * For this purpose, a line ending is either {@code \r}, {@code \r\n}
+     * or {@code \n} (CR, CRLF or LF), not the full range of unicode line
+     * endings. This is consistent with {@link BufferedReader#readLine()},
+     * and the JLS, for example.
      * <li>An initial byte-order mark is removed, if any.
      * </ul>
      */
@@ -207,35 +213,52 @@ public final class TextFileContent {
         }
 
         while (n != IOUtils.EOF) {
-            if (updateChecksum) { // if we use a checked input stream we dont need to update the checksum manually
+            if (updateChecksum) {
+                // if we use a checked input stream we dont need to update the checksum manually
+                // note that this checksum operates on non-normalized characters
                 updateChecksum(checksum, CharBuffer.wrap(cbuf, nextCharToCopy, n));
             }
+
+            int offsetDiff = 0;
 
             for (int i = nextCharToCopy; i < n; i++) {
                 char c = cbuf[i];
 
-                if (afterCr && c != NORMALIZED_LINE_TERM_CHAR && i == 0) {
-                    // we saw a \r at the end of the last buffer, but didn't copy it
-                    // it's actually not followed by an \n
-                    result.append('\r');
-                }
-
-                if (c == NORMALIZED_LINE_TERM_CHAR) {
+                if (afterCr || c == NORMALIZED_LINE_TERM_CHAR) {
                     final String newLineTerm;
-                    if (afterCr) {
-                        newLineTerm = "\r\n";
-
+                    final int newLineOffset;
+                    if (afterCr && c != NORMALIZED_LINE_TERM_CHAR) {
+                        // we saw a \r last iteration, but didn't copy it
+                        // it's not followed by an \n
+                        newLineTerm = CR;
+                        newLineOffset = bufOffset + i + offsetDiff;
                         if (i > 0) {
-                            cbuf[i - 1] = '\n'; // replace the \r with a \n
-                            // copy up to and including the \r, which was replaced
-                            result.append(cbuf, nextCharToCopy, i - nextCharToCopy);
-                            nextCharToCopy = i + 1; // set the next char to copy to after the \n
+                            cbuf[i - 1] = NORMALIZED_LINE_TERM_CHAR; // replace the \r with a \n
+                        } else {
+                            // The CR was trailing a buffer, so it's not in the current buffer and wasn't copied.
+                            // Append a newline.
+                            result.append(NORMALIZED_LINE_TERM);
                         }
                     } else {
-                        // just \n
-                        newLineTerm = NORMALIZED_LINE_TERM;
+                        if (afterCr) {
+                            newLineTerm = CRLF;
+
+                            if (i > 0) {
+                                cbuf[i - 1] = NORMALIZED_LINE_TERM_CHAR; // replace the \r with a \n
+                                // copy up to and including the \r, which was replaced
+                                result.append(cbuf, nextCharToCopy, i - nextCharToCopy);
+                                nextCharToCopy = i + 1; // set the next char to copy to after the \n
+                            }
+                            // Since we're replacing a 2-char delimiter with a single char,
+                            // the offset of the line needs to be adjusted.
+                            offsetDiff--;
+                        } else {
+                            // just \n
+                            newLineTerm = LF;
+                        }
+                        newLineOffset = bufOffset + i + offsetDiff + 1;
                     }
-                    positionerBuilder.addLineEndAtOffset(bufOffset + i + 1);
+                    positionerBuilder.addLineEndAtOffset(newLineOffset);
                     detectedLineTerm = detectLineTerm(detectedLineTerm, newLineTerm, fallbackLineSep);
                 }
                 afterCr = c == '\r';
@@ -250,18 +273,21 @@ public final class TextFileContent {
             }
 
             nextCharToCopy = 0;
-            bufOffset += n;
+            bufOffset += n + offsetDiff;
             n = input.read(cbuf);
         } // end while
+
+        if (afterCr) { // we're at EOF, so it's not followed by \n
+            result.append(NORMALIZED_LINE_TERM);
+            positionerBuilder.addLineEndAtOffset(bufOffset);
+            detectedLineTerm = detectLineTerm(detectedLineTerm, CR, fallbackLineSep);
+        }
 
         if (detectedLineTerm == null) {
             // no line terminator in text
             detectedLineTerm = fallbackLineSep;
         }
 
-        if (afterCr) { // we're at EOF, so it's not followed by \n
-            result.append('\r');
-        }
         return new TextFileContent(Chars.wrap(result), detectedLineTerm, checksum.getValue(), positionerBuilder.build(bufOffset));
     }
 
@@ -272,6 +298,7 @@ public final class TextFileContent {
         if (curLineTerm.equals(newLineTerm)) {
             return curLineTerm;
         } else {
+            // todo maybe we should report a warning
             return fallback; // mixed line terminators, fallback to system default
         }
     }
