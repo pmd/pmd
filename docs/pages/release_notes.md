@@ -114,5 +114,10 @@ missing features or bugs as new [issues](https://github.com/pmd/pmd/issues).
 * [#3938](https://github.com/pmd/pmd/pull/3938): \[java] Modify SimplifiedTernary to meet the missing case #3603 - [@VoidxHoshi](https://github.com/VoidxHoshi)
 * [#3943](https://github.com/pmd/pmd/pull/3943): chore: Set permissions for GitHub actions - [@naveensrinivasan](https://github.com/naveensrinivasan)
 
+### Stats
+* 97 commits
+* 31 closed tickets & PRs
+* Days since last release: 33
+
 {% endtocmaker %}
 
