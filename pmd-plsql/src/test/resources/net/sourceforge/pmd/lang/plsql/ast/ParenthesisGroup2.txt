@@ -1,4 +1,4 @@
-+- Input[@CanonicalImage = null, @ExcludedLinesCount = "0", @ExcludedRangesCount = "0"]
++- Input[@CanonicalImage = null, @ExcludedLinesCount = 0, @ExcludedRangesCount = 0]
    +- Global[@CanonicalImage = null]
       +- ProgramUnit[@CanonicalImage = null, @MethodName = "TEST_PROCEDURE", @Name = "TEST_PROCEDURE", @ObjectName = null]
          +- MethodDeclarator[@CanonicalImage = "TEST_PROCEDURE", @Image = "TEST_PROCEDURE", @ParameterCount = 1]
