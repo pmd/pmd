@@ -147,7 +147,7 @@ public class TextDocumentTest {
     }
 
     private void assertPos2dEqualsAt(TextDocument doc, int offset, String c, TextPos2d pos, boolean inclusive) {
-        Chars slicedChar = doc.sliceText(TextRegion.fromOffsetLength(offset, 1));
+        Chars slicedChar = doc.sliceTranslatedText(TextRegion.fromOffsetLength(offset, 1));
         assertEquals(c, slicedChar.toString());
         assertEquals(pos, doc.lineColumnAtOffset(offset, inclusive));
     }

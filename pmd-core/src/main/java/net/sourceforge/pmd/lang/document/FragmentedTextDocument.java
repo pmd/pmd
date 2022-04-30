@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.document;
 
-import java.util.function.ToIntFunction;
-
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.LanguageVersion;
@@ -47,74 +45,47 @@ final class FragmentedTextDocument extends BaseMappedDocument implements TextDoc
         return base.getLanguageVersion();
     }
 
-
     @Override
     protected int localOffsetTransform(int outOffset, boolean inclusive) {
-        return offsetTransform(outOffset, inclusive,
-                               Fragment::outToIn,
-                               Fragment::outEnd,
-                               Fragment::outStart
-        );
-    }
-
-    @Override
-    protected int inverseLocalOffsetTransform(int inOffset, boolean inclusive) {
-        return offsetTransform(inOffset, inclusive,
-                               Fragment::inToOut,
-                               Fragment::inEnd,
-                               Fragment::inStart
-        );
-    }
-
-    interface OffsetMapper {
-
-        int mapOffset(Fragment fragment, int offset);
-    }
-
-    private int offsetTransform(int offset,
-                                boolean inclusive,
-                                OffsetMapper mapOffsetWhenContains,
-                                ToIntFunction<Fragment> end,
-                                ToIntFunction<Fragment> start) {
         // caching the last accessed fragment instead of doing
         // a linear search is critical for performance.
         Fragment f = this.lastAccessedFragment;
         if (f == null) {
-            return offset;
+            return outOffset;
         }
 
         // Whether the fragment contains the offset we're looking for.
         // Will be true most of the time.
         boolean containsOffset =
-            start.applyAsInt(f) >= offset && offset < end.applyAsInt(f);
+            f.outStart() >= outOffset && outOffset < f.outEnd();
 
         if (!containsOffset) {
             // Slow path, we must search for the fragment
             // This optimisation is important, otherwise we have
             // to search for very long times in some files
 
-            if (end.applyAsInt(f) < offset) { // search forward
-                while (f.next != null && end.applyAsInt(f) < offset) {
+            if (f.outEnd() < outOffset) { // search forward
+                while (f.next != null && f.outEnd() < outOffset) {
                     f = f.next;
                 }
             } else { // search backwards
-                while (f.prev != null && offset <= start.applyAsInt(f)) {
+                while (f.prev != null && outOffset <= f.outStart()) {
                     f = f.prev;
                 }
             }
             lastAccessedFragment = f;
         }
 
-        if (!inclusive && end.applyAsInt(f) == offset) {
+        if (!inclusive && f.outEnd() == outOffset) {
             if (f.next != null) {
                 f = f.next;
                 lastAccessedFragment = f;
                 // fallthrough
             } else {
-                return mapOffsetWhenContains.mapOffset(f, offset) + 1;
+                return f.outToIn(outOffset) + 1;
             }
         }
-        return mapOffsetWhenContains.mapOffset(f, offset);
+        return f.outToIn(outOffset);
     }
 
 

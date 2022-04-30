@@ -60,18 +60,8 @@ abstract class BaseMappedDocument implements TextDocument {
     }
 
     @Override
-    public int offsetAtLineColumn(int line, int column) {
-      throw new UnsupportedOperationException();
-    }
-
-    @Override
     public TextPos2d lineColumnAtOffset(int offset, boolean inclusive) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public boolean isInRange(TextPos2d textPos2d) {
-        return false;
+        return base.lineColumnAtOffset(localOffsetTransform(offset, inclusive));
     }
 
     @Override
@@ -86,8 +76,6 @@ abstract class BaseMappedDocument implements TextDocument {
      * Output offset to input offset.
      */
     protected abstract int localOffsetTransform(int outOffset, boolean inclusive);
-
-    protected abstract int inverseLocalOffsetTransform(int inOffset, boolean inclusive);
 
 
     @Override

@@ -11,11 +11,6 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  */
 public final class TextPos2d implements Comparable<TextPos2d> {
 
-    /**
-     * The position at the start of the document (line 1, column 1).
-     */
-    public static TextPos2d DOCUMENT_START = new TextPos2d(1, 1);
-
     private final int line;
     private final int column;
 

@@ -180,21 +180,6 @@ public interface TextDocument extends Closeable {
      */
     TextRegion inputRegion(TextRegion outputRegion);
 
-    /**
-     * Translate a 2D range given in the coordinate system of this
-     * document, to the coordinate system of the original document.
-     * This works as if creating a new region with both start and end
-     * offsets translated through {@link #inputOffset(int, boolean)}. The
-     * returned region may have a different length.
-     *
-     * @param outputRange Output region
-     *
-     * @return Input region
-     */
-    default TextRange2d inputRange(TextRange2d outputRange) {
-        return toRange2d(inputRegion(toRegion(outputRange)));
-    }
-
 
     /**
      * Returns a reader over the text of this document.
@@ -216,14 +201,6 @@ public interface TextDocument extends Closeable {
      */
     default TextRegion getEntireRegion() {
         return TextRegion.fromOffsetLength(0, getLength());
-    }
-
-    /**
-     * Returns a 2D text range that corresponds to the entire document,
-     * in the coordinate system of this document.
-     */
-    default TextRange2d getEntireRegion2d() {
-        return toRange2d(getEntireRegion());
     }
 
     /**
@@ -257,65 +234,6 @@ public interface TextDocument extends Closeable {
      */
     FileLocation toLocation(TextRegion region);
 
-    /**
-     * Turn a text region into a {@link FileLocation}. The file name is
-     * the display name of this document.
-     *
-     * @return A new file position
-     *
-     * @throws IndexOutOfBoundsException If the argument is not a valid region in this document
-     */
-    default FileLocation toLocation(TextRange2d range) {
-        int startOffset = offsetAtLineColumn(range.getStartPos());
-        if (startOffset < 0) {
-            throw new IndexOutOfBoundsException("Region out of bounds: " + range.displayString());
-        }
-        TextRegion region = TextRegion.caretAt(startOffset);
-        checkInRange(region, this.getLength());
-        return FileLocation.range(getDisplayName(), range);
-    }
-
-    /**
-     * Turn a text region to a {@link TextRange2d}.
-     */
-    default TextRange2d toRange2d(TextRegion region) {
-        TextPos2d start = lineColumnAtOffset(region.getStartOffset(), true);
-        TextPos2d end = lineColumnAtOffset(region.getEndOffset(), false);
-        return TextRange2d.range2d(start, end);
-    }
-
-    /**
-     * Turn a {@link TextRange2d} into a {@link TextRegion}.
-     */
-    default TextRegion toRegion(TextRange2d region) {
-        return TextRegion.fromBothOffsets(
-            offsetAtLineColumn(region.getStartPos()),
-            offsetAtLineColumn(region.getEndPos())
-        );
-    }
-
-
-    /**
-     * Returns the offset at the given line and column number.
-     *
-     * @param line   Line number (1-based)
-     * @param column Column number (1-based)
-     *
-     * @return an offset (0-based)
-     */
-    int offsetAtLineColumn(int line, int column);
-
-    /**
-     * Returns true if the position is valid in this document.
-     */
-    boolean isInRange(TextPos2d textPos2d);
-
-    /**
-     * Returns the offset at the line and number.
-     */
-    default int offsetAtLineColumn(TextPos2d pos2d) {
-        return offsetAtLineColumn(pos2d.getLine(), pos2d.getColumn());
-    }
 
     /**
      * Returns the line and column at the given offset (inclusive).

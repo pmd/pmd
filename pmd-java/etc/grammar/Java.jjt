@@ -2618,14 +2618,14 @@ void AssertStatement() :
 void RUNSIGNEDSHIFT() #void:
 {}
 {
-   LOOKAHEAD({ JavaTokenDocument.getRealKind(getToken(1)) == RUNSIGNEDSHIFT})
+   LOOKAHEAD({ JavaTokenDocumentBehavior.getRealKind(getToken(1)) == RUNSIGNEDSHIFT})
    ">" ">" ">"
 }
 
 void RSIGNEDSHIFT() #void:
 {}
 {
-  LOOKAHEAD({ JavaTokenDocument.getRealKind(getToken(1)) == RSIGNEDSHIFT})
+  LOOKAHEAD({ JavaTokenDocumentBehavior.getRealKind(getToken(1)) == RSIGNEDSHIFT})
   ">" ">"
 }
 
