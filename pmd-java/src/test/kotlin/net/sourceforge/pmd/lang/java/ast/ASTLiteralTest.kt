@@ -168,8 +168,9 @@ $delim
             }
 
             "\"abc\\u1234abc\"" should parseAs {
-                stringLit("\"abc\\u1234abc\"") {
+                stringLit("\"abc\u1234abc\"") {
                     it::getConstValue shouldBe "abc\u1234abc"
+                    it.originalText.toString() shouldBe "\"abc\\u1234abc\""
                 }
             }
 

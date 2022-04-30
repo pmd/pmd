@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.lang.document.Chars;
+import net.sourceforge.pmd.lang.rule.xpath.NoAttribute;
 import net.sourceforge.pmd.util.StringUtil;
 
 /**
@@ -56,6 +57,17 @@ public final class ASTStringLiteral extends AbstractLiteral implements ASTLitera
     /** Length of the constant value in characters. */
     public int length() {
         return getConstValue().length();
+    }
+
+    /**
+     * Returns a string where non-printable characters have been escaped
+     * using Java-like escape codes (eg \n, \t, \u005cu00a0).
+     */
+    //                                          ^^^^^^
+    // this is a backslash, it's printed as \u00a0
+    @NoAttribute
+    public @NonNull String toPrintableString() {
+        return StringUtil.inDoubleQuotes(StringUtil.escapeJava(getConstValue()));
     }
 
     @Override
