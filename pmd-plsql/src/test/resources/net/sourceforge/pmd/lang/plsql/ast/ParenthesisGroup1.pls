@@ -1,3 +1,7 @@
+--
+-- BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+--
+
 CREATE OR REPLACE PROCEDURE EXAMPLE_PROCEDURE IS
    --
    CURSOR c_example IS

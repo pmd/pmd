@@ -48,10 +48,7 @@ public class RuleTestRunner extends ParentRunner<TestDescriptor> {
     protected Description describeChild(final TestDescriptor testCase) {
         Description description = testDescriptions.get(testCase);
         if (description == null) {
-            description = Description.createTestDescription(getTestClass().getJavaClass(),
-                testCase.getRule().getName() + "::"
-                    + testCase.getNumberInDocument() + " "
-                    + testCase.getDescription().replaceAll("\n|\r", " "));
+            description = Description.createTestDescription(getTestClass().getJavaClass().getName(), testCase.getTestMethodName());
             testDescriptions.putIfAbsent(testCase, description);
         }
         return description;
