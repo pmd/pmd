@@ -80,6 +80,23 @@ public final class InternalApiBridge {
         AstDisambiguationPass.disambigWithCtx(nodes, ctx);
     }
 
+    /**
+     * Forcing type resolution allows us to report errors more cleanly
+     * than if it was done completely lazy. All errors are reported, if
+     * the
+     */
+    public static void forceTypeResolutionPhase(JavaAstProcessor processor, ASTCompilationUnit root) {
+        root.descendants(TypeNode.class)
+            .crossFindBoundaries()
+            .forEach(it -> {
+                try {
+                    it.getTypeMirror();
+                } catch (Exception e) {
+                    processor.getLogger().error(it, "Error during type resolution of node " + it.getXPathNodeName());
+                }
+            });
+    }
+
     public static void usageResolution(JavaAstProcessor processor, ASTCompilationUnit root) {
         root.descendants(ASTNamedReferenceExpr.class)
             .crossFindBoundaries()

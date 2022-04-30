@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.ast
 
+import io.kotest.matchers.shouldBe
 import net.sourceforge.pmd.lang.ast.test.NodeSpec
 import net.sourceforge.pmd.lang.ast.test.ValuedNodeSpec
 import net.sourceforge.pmd.lang.ast.test.shouldBe
@@ -63,6 +64,7 @@ class ASTLiteralTest : ParserTestSpec({
                     }
                 }
             }
+
             suspend fun String.testTextBlock() {
                 this.testTextBlock(EmptyAssertions)
             }
@@ -166,8 +168,9 @@ $delim
             }
 
             "\"abc\\u1234abc\"" should parseAs {
-                stringLit("\"abc\\u1234abc\"") {
+                stringLit("\"abc\u1234abc\"") {
                     it::getConstValue shouldBe "abc\u1234abc"
+                    it.originalText.toString() shouldBe "\"abc\\u1234abc\""
                 }
             }
 
@@ -176,6 +179,31 @@ $delim
                     it::getConstValue shouldBe "abcüabc"
                 }
             }
+        }
+    }
+
+    parserTest("String literal octal escapes") {
+        inContext(ExpressionParsingCtx) {
+            // (kotlin doesn't have octal escapes)
+            val char = "123".toInt(radix = 8).toChar()
+
+            "\"\\123\"" should parseAs {
+                stringLit("\"\\123\"") {
+                    it::getConstValue shouldBe char.toString()
+                }
+            }
+            val delim = "\"\"\""
+
+            """
+                $delim
+                \123
+                $delim
+            """ should parseAs {
+                textBlock {
+                    it::getConstValue shouldBe char.toString() + "\n"
+                }
+            }
+
         }
     }
 

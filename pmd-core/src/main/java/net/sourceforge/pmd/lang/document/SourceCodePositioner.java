@@ -37,37 +37,24 @@ final class SourceCodePositioner {
         return lineOffsets;
     }
 
-    long lineColFromOffset(int offset, boolean inclusive) {
+    TextPos2d lineColFromOffset(int offset, boolean inclusive) {
         AssertionUtil.requireInInclusiveRange("offset", offset, 0, sourceCodeLength);
 
         int line = searchLineOffset(offset);
 
         int lineIdx = line - 1; // zero-based
 
-        if (offset == lineOffsets[lineIdx] && !inclusive) {
+        if (lineIdx != 0 && offset == lineOffsets[lineIdx] && !inclusive) {
             // we're precisely on the start of a line
             // if inclusive, prefer the position at the end of the previous line
             // This is a subtlety that the other methods for offset -> line do not
             // handle. This is because an offset may be interpreted as the index
             // of a character, or the caret position between two characters. This
             // is relevant when building text regions, to respect inclusivity, etc.
-            return maskLineCol(lineIdx, getLastColumnOfLine(lineIdx));
+            return TextPos2d.pos2d(lineIdx, getLastColumnOfLine(lineIdx));
         }
 
-        return maskLineCol(line, 1 + offset - lineOffsets[lineIdx]);
-    }
-
-    // test only
-    static long maskLineCol(int line, int col) {
-        return (long) line << 32 | (long) col;
-    }
-
-    static int unmaskLine(long lineCol) {
-        return (int) (lineCol >> 32);
-    }
-
-    static int unmaskCol(long lineCol) {
-        return (int) lineCol;
+        return TextPos2d.pos2d(line, 1 + offset - lineOffsets[lineIdx]);
     }
 
     /**
@@ -131,6 +118,9 @@ final class SourceCodePositioner {
      */
     public int offsetFromLineColumn(final int line, final int column) {
         if (!isValidLine(line)) {
+            if (line == lineOffsets.length && column == 1) {
+                return sourceCodeLength;
+            }
             return -1;
         }
 
@@ -154,7 +144,8 @@ final class SourceCodePositioner {
      */
     public int offsetOfEndOfLine(final int line) {
         if (!isValidLine(line)) {
-            throw new IndexOutOfBoundsException(line + " is not a valid line number, expected at most " + lineOffsets.length);
+            throw new IndexOutOfBoundsException(
+                line + " is not a valid line number, expected at most " + lineOffsets.length);
         }
 
         return lineOffsets[line];
@@ -172,6 +163,10 @@ final class SourceCodePositioner {
         return lineOffsets.length - 1;
     }
 
+    public int getNumLines() {
+        return getLastLine();
+    }
+
     /**
      * Returns the last column number of the last line in the document.
      */
@@ -180,11 +175,17 @@ final class SourceCodePositioner {
     }
 
     private int getLastColumnOfLine(int line) {
-        return 1 + lineOffsets[line] - lineOffsets[line - 1];
+        if (line == 0) {
+            return 1 + lineOffsets[line];
+        } else {
+            return 1 + lineOffsets[line] - lineOffsets[line - 1];
+        }
     }
 
     /**
      * Builds a new positioner for the given char sequence.
+     * The char sequence should have its newline delimiters normalized
+     * to {@link TextFileContent#NORMALIZED_LINE_TERM}.
      * The char sequence should not change state (eg a {@link StringBuilder})
      * after construction, otherwise this positioner becomes unreliable.
      *

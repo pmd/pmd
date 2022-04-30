@@ -45,47 +45,47 @@ final class FragmentedTextDocument extends BaseMappedDocument implements TextDoc
         return base.getLanguageVersion();
     }
 
-
     @Override
     protected int localOffsetTransform(int outOffset, boolean inclusive) {
-        return inputOffsetAt(outOffset, inclusive);
-    }
-
-    private int inputOffsetAt(int outputOffset, boolean inclusive) {
         // caching the last accessed fragment instead of doing
         // a linear search is critical for performance.
         Fragment f = this.lastAccessedFragment;
         if (f == null) {
-            return outputOffset;
+            return outOffset;
         }
 
-        if (!f.contains(outputOffset)) {
+        // Whether the fragment contains the offset we're looking for.
+        // Will be true most of the time.
+        boolean containsOffset =
+            f.outStart() <= outOffset && outOffset < f.outEnd();
+
+        if (!containsOffset) {
             // Slow path, we must search for the fragment
             // This optimisation is important, otherwise we have
             // to search for very long times in some files
 
-            if (f.outEnd() < outputOffset) { // search forward
-                while (f.next != null && f.outEnd() < outputOffset) {
+            if (f.outEnd() < outOffset) { // search forward
+                while (f.next != null && f.outEnd() < outOffset) {
                     f = f.next;
                 }
             } else { // search backwards
-                while (f.prev != null && outputOffset <= f.outStart()) {
+                while (f.prev != null && outOffset <= f.outStart()) {
                     f = f.prev;
                 }
             }
             lastAccessedFragment = f;
         }
 
-        if (!inclusive && f.outEnd() == outputOffset) {
+        if (!inclusive && f.outEnd() == outOffset) {
             if (f.next != null) {
                 f = f.next;
                 lastAccessedFragment = f;
                 // fallthrough
             } else {
-                return f.outToIn(outputOffset) + 1;
+                return f.outToIn(outOffset) + 1;
             }
         }
-        return f.outToIn(outputOffset);
+        return f.outToIn(outOffset);
     }
 
 
@@ -150,8 +150,8 @@ final class FragmentedTextDocument extends BaseMappedDocument implements TextDoc
             return inStart() + outOffset - outStart();
         }
 
-        boolean contains(int outOffset) {
-            return outStart() <= outOffset && outEnd() > outOffset;
+        int inToOut(int inOffset) {
+            return inOffset - inStart() + outStart();
         }
 
         @Override

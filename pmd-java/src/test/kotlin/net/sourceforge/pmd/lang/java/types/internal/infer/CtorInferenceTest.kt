@@ -322,11 +322,13 @@ class CtorInferenceTest : ProcessorTestSpec({
         )
 
         val (_, inner) = acu.declaredTypeSignatures()
-        val tvar = acu.typeVar("T")
+        val enclosingMethodCall = acu.firstMethodCall()
         val ctorCall = acu.firstCtorCall()
         val ctorSymbol = inner.constructors.first().symbol
 
-        spy.shouldTriggerMissingCtDecl { // for the enclosing method call
+        spy.shouldHaveMissingCtDecl(enclosingMethodCall)
+
+        ctorCall.withTypeDsl { // for the enclosing method call
             ctorCall.methodType.symbol shouldBe ctorSymbol
         }
     }

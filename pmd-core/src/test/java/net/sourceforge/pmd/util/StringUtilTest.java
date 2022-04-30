@@ -10,6 +10,8 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
+import net.sourceforge.pmd.lang.document.Chars;
+
 public class StringUtilTest {
 
     @Test
@@ -83,10 +85,35 @@ public class StringUtilTest {
     }
 
     @Test
+    public void testTrimIndent() {
+        assertTrimIndent(" \n b \n c",
+                         "\nb\nc");
+
+        assertTrimIndent(" \nb \n c",
+                         "\nb\n c");
+
+        assertTrimIndent(" \n b \n c\n  ",
+                         "\nb\nc\n");
+        assertTrimIndent("", "");
+    }
+
+    private void assertTrimIndent(String input, String output) {
+        String actual = StringUtil.trimIndent(Chars.wrap(input)).toString();
+        assertThat(actual, equalTo(output));
+    }
+
+    @Test
     public void testElide() {
         assertThat(StringUtil.elide("abc", 2, ""), equalTo("ab"));
         assertThat(StringUtil.elide("abc", 2, "."), equalTo("a."));
         assertThat(StringUtil.elide("abc", 2, ".."), equalTo(".."));
         assertThat(StringUtil.elide("abc", 3, ".."), equalTo("abc"));
     }
+
+    @Test
+    public void substringAfterLast() {
+        assertEquals("abc", StringUtil.substringAfterLast("a.abc", '.'));
+        assertEquals("abc", StringUtil.substringAfterLast("abc", '.'));
+    }
+
 }

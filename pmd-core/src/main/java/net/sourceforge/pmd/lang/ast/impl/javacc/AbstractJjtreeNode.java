@@ -7,7 +7,6 @@ package net.sourceforge.pmd.lang.ast.impl.javacc;
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.impl.AbstractNode;
-import net.sourceforge.pmd.lang.document.Chars;
 import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.document.TextRegion;
 import net.sourceforge.pmd.util.StringUtil;
@@ -49,19 +48,9 @@ public abstract class AbstractJjtreeNode<B extends AbstractJjtreeNode<B, N>, N e
     }
 
     @Override
-    public final Chars getText() {
-        return getTextDocument().sliceOriginalText(getTextRegion());
-    }
-
-    @Override
     public final TextRegion getTextRegion() {
         return TextRegion.fromBothOffsets(getFirstToken().getStartOffset(),
                                           getLastToken().getEndOffset());
-    }
-
-    @Override
-    public FileLocation getReportLocation() {
-        return getTextDocument().toLocation(getTextRegion());
     }
 
     @Override
@@ -157,7 +146,7 @@ public abstract class AbstractJjtreeNode<B extends AbstractJjtreeNode<B, N>, N e
     @Override
     public String toString() {
         FileLocation loc = getReportLocation();
-        return "!debug only! [" + getXPathNodeName() + ":" + loc.getBeginLine() + ":" + loc.getBeginColumn() + "]"
+        return "!debug only! [" + getXPathNodeName() + ":" + loc.getStartPos().toDisplayStringWithColon() + "]"
             + StringUtil.elide(getText().toString(), 150, "(truncated)");
     }
 }

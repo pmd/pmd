@@ -41,7 +41,7 @@ import net.sourceforge.pmd.lang.Dummy2LanguageModule;
 import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
-import net.sourceforge.pmd.lang.ast.DummyRoot;
+import net.sourceforge.pmd.lang.ast.DummyNode.DummyRootNode;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.document.TextFile;
@@ -73,10 +73,10 @@ public class RuleSetTest {
     @Test
     public void testAccessors() {
         RuleSet rs = new RuleSetBuilder(new Random().nextLong())
-                .withFileName("baz")
-                .withName("foo")
-                .withDescription("bar")
-                .build();
+            .withFileName("baz")
+            .withName("foo")
+            .withDescription("bar")
+            .build();
         assertEquals("file name mismatch", "baz", rs.getFileName());
         assertEquals("name mismatch", "foo", rs.getName());
         assertEquals("description mismatch", "bar", rs.getDescription());
@@ -113,44 +113,44 @@ public class RuleSetTest {
 
     private RuleSetBuilder createRuleSetBuilder(String name) {
         return new RuleSetBuilder(new Random().nextLong())
-                .withName(name)
-                .withDescription("Description for " + name);
+            .withName(name)
+            .withDescription("Description for " + name);
     }
 
     @Test
     public void testAddRuleSet() {
         RuleSet set1 = createRuleSetBuilder("ruleset1")
-                .addRule(new MockRule("name", "desc", "msg", "rulesetname"))
-                .build();
+            .addRule(new MockRule("name", "desc", "msg", "rulesetname"))
+            .build();
         RuleSet set2 = createRuleSetBuilder("ruleset2")
-                .addRule(new MockRule("name2", "desc", "msg", "rulesetname"))
-                .addRuleSet(set1)
-                .build();
+            .addRule(new MockRule("name2", "desc", "msg", "rulesetname"))
+            .addRuleSet(set1)
+            .build();
         assertEquals("ruleset size wrong", 2, set2.size());
     }
 
     @Test(expected = RuntimeException.class)
     public void testAddRuleSetByReferenceBad() {
         RuleSet set1 = createRuleSetBuilder("ruleset1")
-                .addRule(new MockRule("name", "desc", "msg", "rulesetname"))
-                .build();
+            .addRule(new MockRule("name", "desc", "msg", "rulesetname"))
+            .build();
 
         createRuleSetBuilder("ruleset2")
-                .addRule(new MockRule("name2", "desc", "msg", "rulesetname"))
-                .addRuleSetByReference(set1, false)
-                .build();
+            .addRule(new MockRule("name2", "desc", "msg", "rulesetname"))
+            .addRuleSetByReference(set1, false)
+            .build();
     }
 
     @Test
     public void testAddRuleSetByReferenceAllRule() {
         RuleSet set2 = createRuleSetBuilder("ruleset2")
-                .withFileName("foo")
-                .addRule(new MockRule("name", "desc", "msg", "rulesetname"))
-                .addRule(new MockRule("name2", "desc", "msg", "rulesetname"))
-                .build();
+            .withFileName("foo")
+            .addRule(new MockRule("name", "desc", "msg", "rulesetname"))
+            .addRule(new MockRule("name2", "desc", "msg", "rulesetname"))
+            .build();
         RuleSet set1 = createRuleSetBuilder("ruleset1")
-                .addRuleSetByReference(set2, true)
-                .build();
+            .addRuleSetByReference(set2, true)
+            .build();
         assertEquals("wrong rule size", 2, set1.getRules().size());
         for (Rule rule : set1.getRules()) {
             assertTrue("not a rule reference", rule instanceof RuleReference);
@@ -163,13 +163,13 @@ public class RuleSetTest {
     @Test
     public void testAddRuleSetByReferenceSingleRule() {
         RuleSet set2 = createRuleSetBuilder("ruleset2")
-                .withFileName("foo")
-                .addRule(new MockRule("name", "desc", "msg", "rulesetname"))
-                .addRule(new MockRule("name2", "desc", "msg", "rulesetname"))
-                .build();
+            .withFileName("foo")
+            .addRule(new MockRule("name", "desc", "msg", "rulesetname"))
+            .addRule(new MockRule("name2", "desc", "msg", "rulesetname"))
+            .build();
         RuleSet set1 = createRuleSetBuilder("ruleset1")
-                .addRuleSetByReference(set2, false)
-                .build();
+            .addRuleSetByReference(set2, false)
+            .build();
         assertEquals("wrong rule size", 2, set1.getRules().size());
         for (Rule rule : set1.getRules()) {
             assertTrue("not a rule reference", rule instanceof RuleReference);
@@ -201,21 +201,21 @@ public class RuleSetTest {
     @Test
     public void testEquals3() {
         RuleSet s = new RuleSetBuilder(new Random().nextLong())
-                .withName("basic rules")
-                .withDescription("desc")
-                .build();
+            .withName("basic rules")
+            .withDescription("desc")
+            .build();
         assertFalse("A ruleset cannot be equals to another kind of object", s.equals("basic rules"));
     }
 
     @Test
     public void testEquals4() {
         RuleSet s1 = createRuleSetBuilder("my ruleset")
-                .addRule(new MockRule("name", "desc", "msg", "rulesetname"))
-                .build();
+            .addRule(new MockRule("name", "desc", "msg", "rulesetname"))
+            .build();
 
         RuleSet s2 = createRuleSetBuilder("my ruleset")
-                .addRule(new MockRule("name", "desc", "msg", "rulesetname"))
-                .build();
+            .addRule(new MockRule("name", "desc", "msg", "rulesetname"))
+            .build();
 
         assertEquals("2 rulesets with same name and rules must be equals", s1, s2);
         assertEquals("Equals rulesets must have the same hashcode", s1.hashCode(), s2.hashCode());
@@ -224,12 +224,12 @@ public class RuleSetTest {
     @Test
     public void testEquals5() {
         RuleSet s1 = createRuleSetBuilder("my ruleset")
-                .addRule(new MockRule("name", "desc", "msg", "rulesetname"))
-                .build();
+            .addRule(new MockRule("name", "desc", "msg", "rulesetname"))
+            .build();
 
         RuleSet s2 = createRuleSetBuilder("my other ruleset")
-                .addRule(new MockRule("name", "desc", "msg", "rulesetname"))
-                .build();
+            .addRule(new MockRule("name", "desc", "msg", "rulesetname"))
+            .build();
 
         assertFalse("2 rulesets with different name but same rules must not be equals", s1.equals(s2));
     }
@@ -237,12 +237,12 @@ public class RuleSetTest {
     @Test
     public void testEquals6() {
         RuleSet s1 = createRuleSetBuilder("my ruleset")
-                .addRule(new MockRule("name", "desc", "msg", "rulesetname"))
-                .build();
+            .addRule(new MockRule("name", "desc", "msg", "rulesetname"))
+            .build();
 
         RuleSet s2 = createRuleSetBuilder("my ruleset")
-                .addRule(new MockRule("other rule", "desc", "msg", "rulesetname"))
-                .build();
+            .addRule(new MockRule("other rule", "desc", "msg", "rulesetname"))
+            .build();
 
         assertFalse("2 rulesets with same name but different rules must not be equals", s1.equals(s2));
     }
@@ -253,22 +253,22 @@ public class RuleSetTest {
         Rule rule = new MockRule();
 
         assertFalse("Different languages should not apply",
-                RuleSet.applies(rule, LanguageRegistry.getLanguage(Dummy2LanguageModule.NAME).getDefaultVersion()));
+                    RuleSet.applies(rule, LanguageRegistry.getLanguage(Dummy2LanguageModule.NAME).getDefaultVersion()));
 
         assertTrue("Same language with no min/max should apply",
-                RuleSet.applies(rule, dummyLang.getVersion("1.5")));
+                   RuleSet.applies(rule, dummyLang.getVersion("1.5")));
 
         rule.setMinimumLanguageVersion(dummyLang.getVersion("1.5"));
         assertTrue("Same language with valid min only should apply",
-                RuleSet.applies(rule, dummyLang.getVersion("1.5")));
+                   RuleSet.applies(rule, dummyLang.getVersion("1.5")));
 
         rule.setMaximumLanguageVersion(dummyLang.getVersion("1.6"));
         assertTrue("Same language with valid min and max should apply",
-                RuleSet.applies(rule, dummyLang.getVersion("1.5")));
+                   RuleSet.applies(rule, dummyLang.getVersion("1.5")));
         assertFalse("Same language with outside range of min/max should not apply",
-                RuleSet.applies(rule, dummyLang.getVersion("1.4")));
+                    RuleSet.applies(rule, dummyLang.getVersion("1.4")));
         assertFalse("Same language with outside range of min/max should not apply",
-                RuleSet.applies(rule, dummyLang.getVersion("1.7")));
+                    RuleSet.applies(rule, dummyLang.getVersion("1.7")));
     }
 
     @Test
@@ -285,9 +285,9 @@ public class RuleSetTest {
     public void testExcludePatternAreOrdered() {
 
         RuleSet ruleSet2 = createRuleSetBuilder("ruleset2")
-                .withFileExclusions(Pattern.compile(".*"))
-                .withFileExclusions(Pattern.compile(".*ha"))
-                .build();
+            .withFileExclusions(Pattern.compile(".*"))
+            .withFileExclusions(Pattern.compile(".*ha"))
+            .build();
         assertEquals("Exclude pattern", Arrays.asList(".*", ".*ha"), toStrings(ruleSet2.getFileExclusions()));
     }
 
@@ -315,8 +315,8 @@ public class RuleSetTest {
         assertEquals("Invalid number of patterns", 1, ruleSet.getFileExclusions().size());
 
         RuleSet ruleSet2 = createRuleSetBuilder("ruleset2")
-                .withFileExclusions(ruleSet.getFileExclusions())
-                .build();
+            .withFileExclusions(ruleSet.getFileExclusions())
+            .build();
         assertNotNull("Exclude patterns", ruleSet2.getFileExclusions());
         assertEquals("Invalid number of patterns", 1, ruleSet2.getFileExclusions().size());
     }
@@ -338,8 +338,8 @@ public class RuleSetTest {
     @Test
     public void testAddIncludePattern() {
         RuleSet ruleSet = createRuleSetBuilder("ruleset")
-                .withFileInclusions(Pattern.compile(".*"))
-                .build();
+            .withFileInclusions(Pattern.compile(".*"))
+            .build();
         assertNotNull("Include patterns", ruleSet.getFileInclusions());
         assertEquals("Invalid number of patterns", 1, ruleSet.getFileInclusions().size());
         assertEquals("Include pattern", ".*", ruleSet.getFileInclusions().get(0).pattern());
@@ -350,11 +350,11 @@ public class RuleSetTest {
     @Test
     public void testAddIncludePatterns() {
         RuleSet ruleSet = createRuleSetBuilder("ruleset1")
-                .withFileInclusions(Pattern.compile("ah*"), Pattern.compile(".*"))
-                .build();
+            .withFileInclusions(Pattern.compile("ah*"), Pattern.compile(".*"))
+            .build();
         RuleSet ruleSet2 = createRuleSetBuilder("ruleset1")
-                .withFileInclusions(ruleSet.getFileInclusions())
-                .build();
+            .withFileInclusions(ruleSet.getFileInclusions())
+            .build();
         assertNotNull("Include patterns", ruleSet2.getFileInclusions());
         assertEquals("Invalid number of patterns", 2, ruleSet2.getFileInclusions().size());
         assertEquals("Include pattern", "ah*", ruleSet2.getFileInclusions().get(0).pattern());
@@ -385,28 +385,28 @@ public class RuleSetTest {
         assertTrue("No patterns", ruleSet.applies(file));
 
         ruleSet = createRuleSetBuilder("ruleset")
-                .withFileExclusions(Pattern.compile("nomatch"))
-                .build();
+            .withFileExclusions(Pattern.compile("nomatch"))
+            .build();
         assertTrue("Non-matching exclude", ruleSet.applies(file));
 
         ruleSet = createRuleSetBuilder("ruleset")
-                .withFileExclusions(Pattern.compile("nomatch"), Pattern.compile(".*/package/.*"))
-                .build();
+            .withFileExclusions(Pattern.compile("nomatch"), Pattern.compile(".*/package/.*"))
+            .build();
         assertFalse("Matching exclude", ruleSet.applies(file));
 
         ruleSet = createRuleSetBuilder("ruleset")
-                .withFileExclusions(Pattern.compile("nomatch"))
-                .withFileExclusions(Pattern.compile(".*/package/.*"))
-                .withFileInclusions(Pattern.compile(".*/randomX/.*"))
-                .build();
+            .withFileExclusions(Pattern.compile("nomatch"))
+            .withFileExclusions(Pattern.compile(".*/package/.*"))
+            .withFileInclusions(Pattern.compile(".*/randomX/.*"))
+            .build();
         assertFalse("Non-matching include", ruleSet.applies(file));
 
         ruleSet = createRuleSetBuilder("ruleset")
-                .withFileExclusions(Pattern.compile("nomatch"))
-                .withFileExclusions(Pattern.compile(".*/package/.*"))
-                .withFileInclusions(Pattern.compile(".*/randomX/.*"))
-                .withFileInclusions(Pattern.compile(".*/random/.*"))
-                .build();
+            .withFileExclusions(Pattern.compile("nomatch"))
+            .withFileExclusions(Pattern.compile(".*/package/.*"))
+            .withFileInclusions(Pattern.compile(".*/randomX/.*"))
+            .withFileInclusions(Pattern.compile(".*/random/.*"))
+            .build();
         assertTrue("Matching include", ruleSet.applies(file));
     }
 
@@ -443,8 +443,8 @@ public class RuleSetTest {
         Rule rule = new FooRule();
         rule.setName("FooRule1");
         RuleSet ruleSet1 = createRuleSetBuilder("RuleSet1")
-                .addRule(rule)
-                .build();
+            .addRule(rule)
+            .build();
         RuleSet ruleSet2 = new RuleSet(ruleSet1);
 
         assertEquals(ruleSet1, ruleSet2);
@@ -474,23 +474,26 @@ public class RuleSetTest {
     }
 
     private RootNode makeCompilationUnits(String filename) {
-        DummyRoot node = new DummyRoot();
-        node.setCoords(1, 1, 10, 1);
+        DummyRootNode node = DummyLanguageModule.parse("dummyCode", filename);
         node.setImage("Foo");
-        node.withFileName(filename);
         return node;
+        //        DummyRootNode node = new DummyRootNode();
+        //        node.setCoordsReplaceText(1, 1, 2, 1);
+        //        node.setImage("Foo");
+        //        node.withFileName(filename);
+        //        return node;
     }
 
     @Test
     public void ruleExceptionShouldBeReported() throws Exception {
         RuleSet ruleset = createRuleSetBuilder("ruleExceptionShouldBeReported")
-                .addRule(new MockRule() {
-                    @Override
-                    public void apply(Node nodes, RuleContext ctx) {
-                        throw new IllegalStateException("Test exception while applying rule");
-                    }
-                })
-                .build();
+            .addRule(new MockRule() {
+                @Override
+                public void apply(Node nodes, RuleContext ctx) {
+                    throw new IllegalStateException("Test exception while applying rule");
+                }
+            })
+            .build();
 
         Report report = RuleContextTest.getReportForRuleSetApply(ruleset, makeCompilationUnits());
 
@@ -498,7 +501,7 @@ public class RuleSetTest {
         assertThat(errors, hasSize(1));
         ProcessingError error = errors.get(0);
         assertThat(error.getMsg(), containsString("java.lang.IllegalStateException: Test exception while applying rule\n"));
-        assertThat(error.getMsg(), containsString("Rule applied on node=Foo"));
+        assertThat(error.getMsg(), containsString("Rule applied on node=dummyRootNode[@Image=Foo]"));
         assertThat(error.getError().getCause(), instanceOf(IllegalStateException.class));
     }
 
@@ -523,7 +526,7 @@ public class RuleSetTest {
         assertThat(errors, hasSize(1));
         ProcessingError error = errors.get(0);
         assertThat(error.getMsg(), containsString("java.lang.IllegalStateException: Test exception while applying rule\n"));
-        assertThat(error.getMsg(), containsString("Rule applied on node=Foo"));
+        assertThat(error.getMsg(), containsString("Rule applied on node=dummyRootNode[@Image=Foo]"));
         assertThat(error.getError().getCause(), instanceOf(IllegalStateException.class));
         assertThat(FilenameUtils.normalize(error.getFile(), true), equalTo("samplefile.dummy"));
 
@@ -562,7 +565,7 @@ public class RuleSetTest {
         assertThat(errors, hasSize(1));
         ProcessingError error = errors.get(0);
         assertThat(error.getMsg(), containsString("java.lang.UnsupportedOperationException: Test exception while applying rule\n"));
-        assertThat(error.getMsg(), containsString("Rule applied on node=Foo"));
+        assertThat(error.getMsg(), containsString("Rule applied on node=dummyRootNode[@Image=Foo]"));
         assertThat(error.getError().getCause(), instanceOf(UnsupportedOperationException.class));
 
         assertThat(report.getViolations(), hasSize(1));

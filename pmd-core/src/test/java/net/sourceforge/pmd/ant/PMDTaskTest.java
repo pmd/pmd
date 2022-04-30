@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.ant;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.fail;
 
 import java.io.FileInputStream;
@@ -92,7 +94,25 @@ public class PMDTaskTest {
             String actual = IOUtils.toString(in, StandardCharsets.UTF_8);
             // remove any trailing newline
             actual = actual.trim();
-            Assert.assertEquals("sample.dummy:1:\tSampleXPathRule:\tTest Rule 2", actual);
+            assertThat(actual, containsString("sample.dummy:1:\tSampleXPathRule:\tTest Rule 2"));
+        }
+    }
+
+    @Test
+    public void testXmlFormatter() throws IOException {
+        buildRule.executeTarget("testXmlFormatter");
+
+        try (InputStream in = new FileInputStream("target/pmd-ant-xml.xml");
+             InputStream expectedStream = PMDTaskTest.class.getResourceAsStream("xml/expected-pmd-ant-xml.xml")) {
+            String actual = IOUtils.toString(in, StandardCharsets.UTF_8);
+            actual = actual.replaceFirst("timestamp=\"[^\"]+\"", "timestamp=\"\"");
+            actual = actual.replaceFirst("\\.xsd\" version=\"[^\"]+\"", ".xsd\" version=\"\"");
+
+            String expected = IOUtils.toString(expectedStream, StandardCharsets.UTF_8);
+            expected = expected.replaceFirst("timestamp=\"[^\"]+\"", "timestamp=\"\"");
+            expected = expected.replaceFirst("\\.xsd\" version=\"[^\"]+\"", ".xsd\" version=\"\"");
+
+            Assert.assertEquals(expected, actual);
         }
     }
 }

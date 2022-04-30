@@ -76,7 +76,7 @@
     </issueManagement>
 
     <properties>
-        <project.build.outputTimestamp>2022-03-27T15:01:59Z</project.build.outputTimestamp>
+        <project.build.outputTimestamp>2022-04-30T07:38:24Z</project.build.outputTimestamp>
 
         <java.version>8</java.version>
 
@@ -419,22 +419,22 @@
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-core</artifactId>
-                            <version>6.43.0</version> <!-- pmd.dogfood.version -->
+                            <version>6.45.0</version> <!-- pmd.dogfood.version -->
                         </dependency>
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-java</artifactId>
-                            <version>6.43.0</version> <!-- pmd.dogfood.version -->
+                            <version>6.45.0</version> <!-- pmd.dogfood.version -->
                         </dependency>
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-jsp</artifactId>
-                            <version>6.41.0</version> <!-- pmd.dogfood.version -->
+                            <version>6.45.0</version> <!-- pmd.dogfood.version -->
                         </dependency>
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-javascript</artifactId>
-                            <version>6.41.0</version> <!-- pmd.dogfood.version -->
+                            <version>6.45.0</version> <!-- pmd.dogfood.version -->
                         </dependency>
                         <!-- This contains the dogfood ruleset -->
                         <dependency>
@@ -1091,6 +1091,7 @@
         <module>pmd-fortran</module>
         <module>pmd-go</module>
         <module>pmd-groovy</module>
+        <module>pmd-html</module>
         <module>pmd-lua</module>
         <module>pmd-java</module>
         <module>pmd-javascript</module>

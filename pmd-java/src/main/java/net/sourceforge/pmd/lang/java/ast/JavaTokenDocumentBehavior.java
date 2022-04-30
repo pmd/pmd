@@ -15,9 +15,9 @@ import static net.sourceforge.pmd.lang.java.ast.JavaTokenKinds.SINGLE_LINE_COMME
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.impl.javacc.CharStream;
+import net.sourceforge.pmd.lang.ast.impl.javacc.JavaEscapeTranslator;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument;
-import net.sourceforge.pmd.lang.ast.impl.javacc.JavaEscapeTranslator;
 import net.sourceforge.pmd.lang.ast.impl.javacc.MalformedSourceException;
 import net.sourceforge.pmd.lang.document.TextDocument;
 

@@ -15,6 +15,7 @@ import org.apache.tools.ant.types.FileSet;
 import org.apache.tools.ant.types.Path;
 import org.apache.tools.ant.types.Reference;
 
+import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.ant.internal.PMDTaskImpl;
 
 public class PMDTask extends Task {
@@ -31,7 +32,7 @@ public class PMDTask extends Task {
     private boolean noRuleSetCompatibility;
     private String encoding;
     private int threads = 1; // same default as in PMDParameters (CLI)
-    private int minimumPriority;
+    private int minimumPriority = RulePriority.LOW.getPriority(); // inclusive
     private int maxRuleViolations = 0;
     private String failuresPropertyName;
     private SourceLanguage sourceLanguage;

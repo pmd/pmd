@@ -23,10 +23,9 @@ import net.sourceforge.pmd.FooRule;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report.ConfigurationError;
 import net.sourceforge.pmd.Report.ProcessingError;
-import net.sourceforge.pmd.ReportTest;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.lang.ast.DummyNode;
+import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 
 public class YAHTMLRendererTest extends AbstractRendererTest {
@@ -42,8 +41,8 @@ public class YAHTMLRendererTest extends AbstractRendererTest {
     }
 
     private RuleViolation newRuleViolation(int beginLine, int beginColumn, int endLine, int endColumn, final String packageNameArg, final String classNameArg) {
-        DummyNode node = createNode(beginLine, beginColumn, endLine, endColumn);
-        return new ParametricRuleViolation(new FooRule(), node, "blah") {
+        FileLocation loc = createLocation(beginLine, beginColumn, endLine, endColumn);
+        return new ParametricRuleViolation(new FooRule(), loc, "blah") {
             {
                 packageName = packageNameArg;
                 className = classNameArg;
@@ -58,8 +57,7 @@ public class YAHTMLRendererTest extends AbstractRendererTest {
 
     @Test
     public void testReportMultipleViolations() throws Exception {
-
-        String actual = ReportTest.render(getRenderer(), it -> {
+        String actual = renderReport(getRenderer(), it -> {
             it.onRuleViolation(newRuleViolation(1, 1, 1, 1, "net.sf.pmd.test", "YAHTMLSampleClass1"));
             it.onRuleViolation(newRuleViolation(1, 1, 1, 2, "net.sf.pmd.test", "YAHTMLSampleClass1"));
             it.onRuleViolation(newRuleViolation(1, 1, 1, 1, "net.sf.pmd.other", "YAHTMLSampleClass2"));

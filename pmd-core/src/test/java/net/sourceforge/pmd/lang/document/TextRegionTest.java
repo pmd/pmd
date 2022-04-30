@@ -30,17 +30,17 @@ public class TextRegionTest {
     public void testEmptyContains() {
         TextRegion r1 = TextRegion.fromOffsetLength(0, 0);
 
-        assertFalse(r1.containsOffset(0));
+        assertFalse(r1.contains(0));
     }
 
     @Test
     public void testContains() {
         TextRegion r1 = TextRegion.fromOffsetLength(1, 2);
 
-        assertFalse(r1.containsOffset(0));
-        assertTrue(r1.containsOffset(1));
-        assertTrue(r1.containsOffset(2));
-        assertFalse(r1.containsOffset(3));
+        assertFalse(r1.contains(0));
+        assertTrue(r1.contains(1));
+        assertTrue(r1.contains(2));
+        assertFalse(r1.contains(3));
     }
 
     @Test

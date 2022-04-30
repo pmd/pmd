@@ -63,6 +63,10 @@ public class SourceCodePositionerTest {
         assertEquals("abcd\ndef".length(), positioner.offsetFromLineColumn(2, 4));
 
         assertEquals("abcd\ndefghi\r\n".length(), positioner.offsetFromLineColumn(3, 1));
+        assertEquals(source.length(), positioner.offsetFromLineColumn(4, 4));
+        assertEquals(-1, positioner.offsetFromLineColumn(4, 5));
+        assertEquals(source.length(), positioner.offsetFromLineColumn(5, 1));
+        assertEquals(-1, positioner.offsetFromLineColumn(5, 2));
     }
 
 
@@ -147,18 +151,6 @@ public class SourceCodePositionerTest {
         SourceCodePositioner positioner = SourceCodePositioner.create(code);
 
         assertArrayEquals(new int[] { 0, 41, 50, 51 }, positioner.getLineOffsets());
-    }
-
-    @Test
-    public void longOffsetMasking() {
-        assertMasking(1, 4);
-        assertMasking(Integer.MAX_VALUE, Integer.MAX_VALUE);
-    }
-
-    private void assertMasking(int line, int col) {
-        long l = SourceCodePositioner.maskLineCol(line, col);
-        assertEquals(line, SourceCodePositioner.unmaskLine(l));
-        assertEquals(col, SourceCodePositioner.unmaskCol(l));
     }
 
 }

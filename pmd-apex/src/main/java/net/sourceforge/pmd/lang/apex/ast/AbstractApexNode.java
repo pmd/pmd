@@ -10,7 +10,6 @@ import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.AstVisitor;
 import net.sourceforge.pmd.lang.ast.FileAnalysisException;
 import net.sourceforge.pmd.lang.ast.impl.AbstractNode;
-import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.lang.document.TextRegion;
 
@@ -57,18 +56,14 @@ abstract class AbstractApexNode<T extends AstNode> extends AbstractNode<Abstract
     }
 
     @Override
-    public FileLocation getReportLocation() {
-        return getTextDocument().toLocation(getRegion());
-    }
-
-    protected @NonNull TextRegion getRegion() {
+    public @NonNull TextRegion getTextRegion() {
         if (region == null) {
             if (!hasRealLoc()) {
                 AbstractApexNode<?> parent = (AbstractApexNode<?>) getParent();
                 if (parent == null) {
                     throw new FileAnalysisException("Unable to determine location of " + this);
                 }
-                region = parent.getRegion();
+                region = parent.getTextRegion();
             } else {
                 Location loc = node.getLoc();
                 region = TextRegion.fromBothOffsets(loc.getStartIndex(), loc.getEndIndex());

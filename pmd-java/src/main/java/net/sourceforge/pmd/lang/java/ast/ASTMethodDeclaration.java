@@ -84,6 +84,7 @@ public final class ASTMethodDeclaration extends AbstractMethodOrConstructorDecla
 
     @Override
     public FileLocation getReportLocation() {
+        // the method identifier
         JavaccToken ident = TokenUtils.nthPrevious(getModifiers().getLastToken(), getFormalParameters().getFirstToken(), 1);
         return ident.getReportLocation();
     }
@@ -120,7 +121,7 @@ public final class ASTMethodDeclaration extends AbstractMethodOrConstructorDecla
             return null;
         }
 
-        return components.toStream().first(it -> it.getVarId().getVariableName().equals(this.getName()));
+        return components.toStream().first(it -> it.getVarId().getName().equals(this.getName()));
     }
 
 
@@ -142,20 +143,10 @@ public final class ASTMethodDeclaration extends AbstractMethodOrConstructorDecla
     }
 
     /**
-     * Returns the result type node of the method.
-     *
-     * @deprecated todo When removed from java-grammar, rename the other to this good name
-     */
-    @Deprecated
-    public ASTResultType getResultType() {
-        return getFirstChildOfType(ASTResultType.class);
-    }
-
-    /**
      * Returns the result type node of the method. This may be a {@link ASTVoidType}.
      */
-    public @NonNull ASTType getResultTypeNode() {
-        return getFirstChildOfType(ASTType.class);
+    public @NonNull ASTType getResultTypeNode() { // TODO rename to getResultType()
+        return firstChild(ASTType.class);
     }
 
     /**

@@ -9,12 +9,27 @@ import java.text.MessageFormat;
 import org.slf4j.Logger;
 import org.slf4j.event.Level;
 
+import net.sourceforge.pmd.util.StringUtil;
+import net.sourceforge.pmd.util.log.MessageReporter;
+
 /**
  * Reports errors that occur after parsing. This may be used to implement
  * semantic checks in a language specific way.
  */
 public interface SemanticErrorReporter {
     // TODO use resource bundle keys instead of string messages.
+
+
+    /**
+     * Report an informational message at the given location.
+     *
+     * @param location   Location where the message should be reported
+     * @param message    Message (rendered using a {@link MessageFormat})
+     * @param formatArgs Format arguments
+     */
+    default void info(Node location, String message, Object... formatArgs) {
+        // noop
+    }
 
 
     /**
@@ -69,12 +84,17 @@ public interface SemanticErrorReporter {
     }
 
 
-    static SemanticErrorReporter reportToLogger(Logger logger) {
+    /**
+     * Forwards to a {@link MessageReporter}, except trace and debug
+     * messages which are reported on a logger.
+     */
+    static SemanticErrorReporter reportToLogger(MessageReporter reporter, Logger logger) {
         return new SemanticErrorReporter() {
             private boolean hasError = false;
 
             private String locPrefix(Node loc) {
-                return "at " + loc.getReportLocation() + ": ";
+                return "at " + loc.getReportLocation()
+                    + ": ";
             }
 
             private String makeMessage(Node location, String message, Object[] args) {
@@ -83,8 +103,17 @@ public interface SemanticErrorReporter {
 
             private String logMessage(Level level, Node location, String message, Object[] args) {
                 String fullMessage = makeMessage(location, message, args);
-                logger.atLevel(level).log(fullMessage);
+                if (level.compareTo(Level.INFO) > 0) {
+                    logger.atLevel(level).log(fullMessage);
+                } else {
+                    reporter.log(level, StringUtil.quoteMessageFormat(fullMessage)); // already formatted
+                }
                 return fullMessage;
+            }
+
+            @Override
+            public void info(Node location, String message, Object... formatArgs) {
+                logMessage(Level.INFO, location, message, formatArgs);
             }
 
             @Override

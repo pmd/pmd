@@ -9,7 +9,7 @@ import java.util.Comparator;
 import net.sourceforge.pmd.lang.ast.AstVisitor;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.impl.AbstractNode;
-import net.sourceforge.pmd.lang.document.FileLocation;
+import net.sourceforge.pmd.lang.document.TextRegion;
 
 import scala.meta.Tree;
 import scala.meta.inputs.Position;
@@ -63,12 +63,8 @@ abstract class AbstractScalaNode<T extends Tree> extends AbstractNode<AbstractSc
     }
 
     @Override
-    public FileLocation getReportLocation() {
-        return FileLocation.range("TODO",
-                                  pos.startLine() + 1,
-                                  pos.startColumn() + 1,
-                                  pos.endLine() + 1,
-                                  pos.endColumn() + 1);
+    public TextRegion getTextRegion() {
+        return TextRegion.fromBothOffsets(pos.start(), pos.end());
     }
 
     @Override

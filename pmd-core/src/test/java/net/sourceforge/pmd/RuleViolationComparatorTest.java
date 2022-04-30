@@ -15,8 +15,8 @@ import java.util.Random;
 
 import org.junit.Test;
 
-import net.sourceforge.pmd.lang.ast.DummyNode;
-import net.sourceforge.pmd.lang.ast.DummyRoot;
+import net.sourceforge.pmd.lang.document.FileLocation;
+import net.sourceforge.pmd.lang.document.TextRange2d;
 import net.sourceforge.pmd.lang.rule.MockRule;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 
@@ -70,8 +70,7 @@ public class RuleViolationComparatorTest {
 
     private RuleViolation createJavaRuleViolation(Rule rule, String fileName, int beginLine, String description,
             int beginColumn, int endLine, int endColumn) {
-        DummyNode simpleNode = new DummyRoot().withFileName(fileName);
-        simpleNode.setCoords(beginLine, beginColumn, endLine, endColumn);
-        return new ParametricRuleViolation(rule, simpleNode, description);
+        FileLocation loc = FileLocation.range(fileName, TextRange2d.range2d(beginLine, beginColumn, endLine, endColumn));
+        return new ParametricRuleViolation(rule, loc, description);
     }
 }

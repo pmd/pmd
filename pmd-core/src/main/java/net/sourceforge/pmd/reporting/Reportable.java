@@ -39,7 +39,7 @@ public interface Reportable {
     @Deprecated
     @DeprecatedUntil700
     default int getBeginLine() {
-        return getReportLocation().getBeginLine();
+        return getReportLocation().getStartPos().getLine();
     }
 
 
@@ -51,7 +51,7 @@ public interface Reportable {
     @Deprecated
     @DeprecatedUntil700
     default int getEndLine() {
-        return getReportLocation().getEndLine();
+        return getReportLocation().getEndPos().getLine();
     }
 
 
@@ -63,7 +63,7 @@ public interface Reportable {
     @Deprecated
     @DeprecatedUntil700
     default int getBeginColumn() {
-        return getReportLocation().getBeginColumn();
+        return getReportLocation().getStartPos().getColumn();
     }
 
 
@@ -75,7 +75,7 @@ public interface Reportable {
     @Deprecated
     @DeprecatedUntil700
     default int getEndColumn() {
-        return getReportLocation().getEndColumn();
+        return getReportLocation().getEndPos().getColumn();
     }
 
 

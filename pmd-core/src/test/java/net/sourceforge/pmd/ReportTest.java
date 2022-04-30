@@ -9,18 +9,17 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.io.IOException;
 import java.io.StringWriter;
 import java.util.function.Consumer;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.Test;
 
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
-import net.sourceforge.pmd.lang.ast.DummyNode;
-import net.sourceforge.pmd.lang.ast.DummyRoot;
-import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.document.TextFile;
+import net.sourceforge.pmd.lang.document.TextRange2d;
 import net.sourceforge.pmd.lang.rule.MockRule;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 import net.sourceforge.pmd.renderers.Renderer;
@@ -32,15 +31,15 @@ public class ReportTest {
 
     // Files are grouped together now.
     @Test
-    public void testSortedReportFile() throws IOException {
+    public void testSortedReportFile() {
         Renderer rend = new XMLRenderer();
         String result = render(rend, r -> {
-            Node s = getNode(10, 5).withFileName("foo");
+            FileLocation s = getNode(10, 5, "foo");
             Rule rule1 = new MockRule("name", "desc", "msg", "rulesetname");
-            r.onRuleViolation(new ParametricRuleViolation(rule1, s, rule1.getMessage()));
-            Node s1 = getNode(10, 5).withFileName("bar");
+            r.onRuleViolation(violation(rule1, s));
+            FileLocation s1 = getNode(10, 5, "bar");
             Rule rule2 = new MockRule("name", "desc", "msg", "rulesetname");
-            r.onRuleViolation(new ParametricRuleViolation(rule2, s1, rule2.getMessage()));
+            r.onRuleViolation(violation(rule2, s1));
         });
         assertThat(result, containsString("bar"));
         assertThat(result, containsString("foo"));
@@ -48,16 +47,16 @@ public class ReportTest {
     }
 
     @Test
-    public void testSortedReportLine() throws IOException {
+    public void testSortedReportLine() {
         Renderer rend = new XMLRenderer();
         String result = render(rend, r -> {
-            Node node1 = getNode(20, 5).withFileName("foo1"); // line 20: after rule2 violation
+            FileLocation node1 = getNode(20, 5, "foo1"); // line 20: after rule2 violation
             Rule rule1 = new MockRule("rule1", "rule1", "msg", "rulesetname");
-            r.onRuleViolation(new ParametricRuleViolation(rule1, node1, rule1.getMessage()));
+            r.onRuleViolation(violation(rule1, node1));
 
-            Node node2 = getNode(10, 5).withFileName("foo1"); // line 10: before rule1 violation
+            FileLocation node2 = getNode(10, 5, "foo1"); // line 10: before rule1 violation
             Rule rule2 = new MockRule("rule2", "rule2", "msg", "rulesetname");
-            r.onRuleViolation(new ParametricRuleViolation(rule2, node2, rule2.getMessage())); // same file!!
+            r.onRuleViolation(violation(rule2, node2)); // same file!!
         });
         assertTrue("sort order wrong", result.indexOf("rule2") < result.indexOf("rule1"));
     }
@@ -65,34 +64,59 @@ public class ReportTest {
     @Test
     public void testIterator() {
         Rule rule = new MockRule("name", "desc", "msg", "rulesetname");
-        Node node1 = getNode(5, 5, true);
-        Node node2 = getNode(5, 6, true);
+        FileLocation loc1 = getNode(5, 5, "file1");
+        FileLocation loc2 = getNode(5, 6, "file1");
         Report r = Report.buildReport(it -> {
-            it.onRuleViolation(new ParametricRuleViolation(rule, node1, rule.getMessage()));
-            it.onRuleViolation(new ParametricRuleViolation(rule, node2, rule.getMessage()));
+            it.onRuleViolation(violation(rule, loc1));
+            it.onRuleViolation(violation(rule, loc2));
         });
 
         assertEquals(2, r.getViolations().size());
     }
 
-    private static DummyNode getNode(int line, int column) {
-        DummyNode parent = new DummyRoot();
-        DummyNode s = new DummyNode();
-        parent.setCoords(line, column, line, column + 1);
-        parent.addChild(s, 0);
-        s.setCoords(line, column, line, column + 1);
-        return s;
+    @Test
+    public void testFilterViolations() {
+        Rule rule = new MockRule("name", "desc", "msg", "rulesetname");
+        FileLocation loc1 = getNode(5, 5, "file1");
+        FileLocation loc2 = getNode(5, 6, "file1");
+        Report r = Report.buildReport(it -> {
+            it.onRuleViolation(violation(rule, loc1));
+            it.onRuleViolation(violation(rule, loc2, "to be filtered"));
+        });
+
+        Report filtered = r.filterViolations(ruleViolation -> !"to be filtered".equals(ruleViolation.getDescription()));
+
+        assertEquals(1, filtered.getViolations().size());
+        assertEquals("msg", filtered.getViolations().get(0).getDescription());
     }
 
-    private static Node getNode(int line, int column, boolean nextLine) {
-        DummyNode s = getNode(line, column);
-        if (nextLine) {
-            s.setCoords(line + 1, column + 4, line + 4, 1);
-        }
-        return s;
+    @Test
+    public void testUnion() {
+        Rule rule = new MockRule("name", "desc", "msg", "rulesetname");
+        FileLocation loc1 = getNode(1, 2, "file1");
+        Report report1 = Report.buildReport(it -> it.onRuleViolation(violation(rule, loc1)));
+
+        FileLocation loc2 = getNode(2, 1, "file1");
+        Report report2 = Report.buildReport(it -> it.onRuleViolation(violation(rule, loc2)));
+
+        Report union = report1.union(report2);
+        assertEquals(2, union.getViolations().size());
     }
 
-    public static String render(Renderer renderer, Consumer<? super FileAnalysisListener> listenerEffects) throws IOException {
+    private @NonNull RuleViolation violation(Rule rule, FileLocation loc2) {
+        return violation(rule, loc2, rule.getMessage());
+    }
+
+    private @NonNull RuleViolation violation(Rule rule, FileLocation loc1, String rule1) {
+        return new ParametricRuleViolation(rule, loc1, rule1);
+    }
+
+
+    private static FileLocation getNode(int line, int column, String filename) {
+        return FileLocation.range(filename, TextRange2d.range2d(line, column, line, column));
+    }
+
+    public static String render(Renderer renderer, Consumer<? super FileAnalysisListener> listenerEffects) {
         return renderGlobal(renderer, globalListener -> {
             LanguageVersion dummyVersion = LanguageRegistry.getDefaultLanguage().getDefaultVersion();
 
@@ -105,7 +129,7 @@ public class ReportTest {
         });
     }
 
-    public static String renderGlobal(Renderer renderer, Consumer<? super GlobalAnalysisListener> listenerEffects) throws IOException {
+    public static String renderGlobal(Renderer renderer, Consumer<? super GlobalAnalysisListener> listenerEffects) {
         StringWriter writer = new StringWriter();
         renderer.setWriter(writer);
 
@@ -118,12 +142,4 @@ public class ReportTest {
         return writer.toString();
     }
 
-    public static String render(Renderer renderer, Report report) throws IOException {
-        StringWriter writer = new StringWriter();
-        renderer.setWriter(writer);
-        renderer.start();
-        renderer.renderFileReport(report);
-        renderer.end();
-        return writer.toString();
-    }
 }

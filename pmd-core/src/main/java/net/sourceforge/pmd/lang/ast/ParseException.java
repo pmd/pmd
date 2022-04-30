@@ -124,7 +124,7 @@ public class ParseException extends FileAnalysisException {
             retval.append(']');
         }
         FileLocation loc = currentToken.next.getReportLocation();
-        retval.append(" at line ").append(loc.getBeginLine()).append(", column ").append(loc.getBeginColumn());
+        retval.append(" at ").append(loc.getStartPos().toDisplayStringInEnglish());
         retval.append('.').append(eol);
         if (expectedTokenSequences.length == 1) {
             retval.append("Was expecting:").append(eol).append("    ");

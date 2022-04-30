@@ -8,8 +8,9 @@ package net.sourceforge.pmd.lang.rule.xpath.internal;
 import org.junit.Assert;
 import org.junit.Test;
 
+import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.ast.DummyNode;
-import net.sourceforge.pmd.lang.ast.DummyRoot;
+import net.sourceforge.pmd.lang.ast.DummyNode.DummyRootNode;
 
 import net.sf.saxon.Configuration;
 import net.sf.saxon.type.Type;
@@ -19,16 +20,13 @@ public class ElementNodeTest {
 
     @Test
     public void testCompareOrder() {
-        DummyRoot root = new DummyRoot();
+        DummyRootNode root = DummyLanguageModule.parse(
+            "(#foo)"
+                + "(#foo)"
+        );
 
-        DummyNode c0 = new DummyNode(false, "foo");
-        c0.setCoords(1, 1, 2, 2);
-        root.addChild(c0, 0);
-
-        DummyNode c1 = new DummyNode(false, "foo");
-        c1.setCoords(2, 1, 2, 2);
-        root.addChild(c1, 1);
-
+        DummyNode c0 = root.getChild(0);
+        DummyNode c1 = root.getChild(1);
 
         Configuration configuration = Configuration.newConfiguration();
 

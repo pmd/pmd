@@ -15,6 +15,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.lang.ast.SemanticErrorReporter;
 import net.sourceforge.pmd.lang.java.ast.ASTAmbiguousName;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
@@ -42,7 +43,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTLambdaParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodReference;
-import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTNullLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTNumericLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTPattern;
@@ -100,15 +100,18 @@ public final class LazyTypeResolver extends JavaVisitorBase<TypingContext, @NonN
     private final PolyResolution polyResolution;
     private final JClassType stringType;
     private final JavaAstProcessor processor;
+    private final SemanticErrorReporter err;
     private final Infer infer;
 
 
-    public LazyTypeResolver(JavaAstProcessor processor, TypeInferenceLogger logger) {
+    public LazyTypeResolver(JavaAstProcessor processor,
+                            TypeInferenceLogger logger) {
         this.ts = processor.getTypeSystem();
         this.infer = new Infer(ts, processor.getJdkVersion(), logger);
         this.polyResolution = new PolyResolution(infer);
         this.stringType = (JClassType) TypesFromReflection.fromReflect(String.class, ts);
         this.processor = processor;
+        this.err = processor.getLogger();
     }
 
     public ExprContext getConversionContextForExternalUse(ASTExpression e) {
@@ -150,11 +153,6 @@ public final class LazyTypeResolver extends JavaVisitorBase<TypingContext, @NonN
     @Override
     public JTypeMirror visit(ASTVariableDeclarator node, TypingContext ctx) {
         return ts.NO_TYPE; // TODO shouldn't be a typenode (do you mean type of variable, or type of initializer?)
-    }
-
-    @Override
-    public JTypeMirror visit(ASTName node, TypingContext ctx) {
-        return ts.NO_TYPE; // TODO shouldn't be a typenode (basically an AmbiguousName)
     }
 
     @Override
@@ -565,6 +563,10 @@ public final class LazyTypeResolver extends JavaVisitorBase<TypingContext, @NonN
 
         JMethodSig m = lambda.getFunctionalMethod(); // this forces resolution of the lambda
         if (!isUnresolved(m)) {
+            if (m.getArity() != node.getOwner().getArity()) {
+                err.error(node.getOwner(), "Lambda shape does not conform to the functional method {0}", m);
+                return ts.ERROR;
+            }
             return m.getFormalParameters().get(node.getIndexInParent());
         }
         return ts.UNKNOWN;

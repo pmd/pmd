@@ -6584,6 +6584,61 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "jasonqiu98",
+      "name": "Jason Qiu",
+      "avatar_url": "https://avatars.githubusercontent.com/u/26801257?v=4",
+      "profile": "https://github.com/jasonqiu98",
+      "contributions": [
+        "code",
+        "doc"
+      ]
+    },
+    {
+      "login": "laoseth",
+      "name": "Seth Wilcox",
+      "avatar_url": "https://avatars.githubusercontent.com/u/16923065?v=4",
+      "profile": "https://github.com/laoseth",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "LiGaOg",
+      "name": "LiGaOg",
+      "avatar_url": "https://avatars.githubusercontent.com/u/72175888?v=4",
+      "profile": "https://github.com/LiGaOg",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "Scrsloota",
+      "name": "Scrsloota",
+      "avatar_url": "https://avatars.githubusercontent.com/u/91131546?v=4",
+      "profile": "https://github.com/Scrsloota",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "VoidxHoshi",
+      "name": "LaLucid",
+      "avatar_url": "https://avatars.githubusercontent.com/u/55886143?v=4",
+      "profile": "https://github.com/VoidxHoshi",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "naveensrinivasan",
+      "name": "Naveen",
+      "avatar_url": "https://avatars.githubusercontent.com/u/172697?v=4",
+      "profile": "https://naveensrinivasan.dev/",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,

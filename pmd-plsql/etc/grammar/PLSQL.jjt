@@ -160,6 +160,7 @@ package net.sourceforge.pmd.lang.plsql.ast;
 import java.util.List;
 import java.util.ArrayList;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.document.Chars;
 import net.sourceforge.pmd.lang.ast.impl.javacc.CharStream;
 import net.sourceforge.pmd.lang.plsql.ast.internal.ParsingExclusion;
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
@@ -2097,7 +2098,11 @@ void QueryTableExpression() #void :
   |
     TableCollectionExpression()
   |
-    [ <LATERAL> ] "(" Subquery() [ SubqueryRestrictionClause() ] ")"
+    LOOKAHEAD(5) "(" [ LOOKAHEAD(2) SchemaName() "." ] TableName() [TableAlias()] ")"  
+  |  
+    LOOKAHEAD(5) [ <LATERAL> ] "(" Subquery() [ SubqueryRestrictionClause() ] ")"
+  | 
+    "(" JoinClause() ")"
   )
 }
 
@@ -2356,7 +2361,8 @@ ASTUnlabelledStatement UnlabelledStatement()  :
 	| OpenStatement()  ";"
 	| FetchStatement()  ";"
 	| Block()  ";"
-	| LOOKAHEAD(2) EmbeddedSqlStatement()
+	|   // Lookahead for EXECUTE IMMEDIATE to distinguish an identifier named "EXECUTE" from execute statement
+	    LOOKAHEAD(2) EmbeddedSqlStatement() ";"
 	| PipelineStatement()  ";"
 	| ConditionalCompilationStatement()  // Conditional Compilation works outside the normal parsing rules
         | InlinePragma() ";"
@@ -2783,21 +2789,38 @@ ASTFetchStatement FetchStatement()  :
       { return jjtThis ; }
 }
 
+/**
+ * Execute Immediate: https://docs.oracle.com/en/database/oracle/oracle-database/18/lnpls/EXECUTE-IMMEDIATE-statement.html#GUID-C3245A95-B85B-4280-A01F-12307B108DC8
+ */
 ASTEmbeddedSqlStatement EmbeddedSqlStatement()  :
 {}
 {
    <EXECUTE> <IMMEDIATE> StringExpression()
-	[ <INTO> Name() ("," Name())* ]
-	[ UsingClause() ]
-	[ ( <RETURN> | <RETURNING> )  <INTO> Expression() ("," Expression())*] ";"
-	// PIPELINED FUNCTION OUTPUT
-      { return jjtThis ; }
+    [
+            IntoClause() [ UsingClause() ]
+        |   BulkCollectIntoClause() [ UsingClause() ]
+        |   UsingClause() [ DynamicReturnClause() ]
+        |   DynamicReturnClause()
+    ]
+    { return jjtThis; }
+}
+
+/**
+* https://docs.oracle.com/en/database/oracle/oracle-database/18/lnpls/RETURNING-INTO-clause.html#GUID-38F735B9-1100-45AF-AE71-18FB74A899BE
+*/
+ASTDynamicReturnClause DynamicReturnClause() :
+{}
+{
+    ( <RETURN> | <RETURNING> )
+    ( IntoClause() | BulkCollectIntoClause() )
+    { return jjtThis; }
 }
 
 void UsingClause() #void :
 {}
 {
-    <USING> [ <IN> [ <OUT> ] | <OUT> ]  Expression() ("," [ <IN> [ <OUT> ] | <OUT> ] Expression())*
+    <USING> [ <IN> [ <OUT> ] | <OUT> ]  Expression()
+        ( "," [ <IN> [ <OUT> ] | <OUT> ] Expression() )*
 }
 
 ASTPipelineStatement PipelineStatement()  :
@@ -6553,7 +6576,6 @@ ASTID ID(): {}
 		//20120501 | <HEAP>
 		| <IF> //SYNTAX
 		//20120501 | <IMMEDIATE>
-		| <IN> //RESERVED WORD
 		| <INDEX> //RESERVED WORD
 		//20120501 | <INDICATOR>
 		| <INSERT> //SYNTAX  //RESERVED WORD
@@ -6786,7 +6808,6 @@ ASTQualifiedID QualifiedID(): {}
 		//20120501 | <HEAP>
 		//<IF>
 		//20120501 | <IMMEDIATE>
-		//<IN>
 		//<INDEX>
 		//20120501 | <INDICATOR>
 		//<INSERT>

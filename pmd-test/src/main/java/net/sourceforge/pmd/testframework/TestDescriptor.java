@@ -153,4 +153,14 @@ public class TestDescriptor {
     public String toString() {
         return description + "\n\n" + code;
     }
+
+    public String getTestMethodName() {
+        return getRule().getName() + "_"
+                + getNumberInDocument()
+                + "_"
+                + getDescription()
+                .replaceAll("\n|\r", "_")
+                .replaceAll("[^\\w\\d_$]", "_")
+                .replaceAll("\\s+", "_");
+    }
 }

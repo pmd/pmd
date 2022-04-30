@@ -4,10 +4,12 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
+import static net.sourceforge.pmd.lang.ast.test.NodeExtensionsKt.textOfReportLocation;
 import static net.sourceforge.pmd.lang.ast.test.TestUtilsKt.assertPosition;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsInstanceOf.instanceOf;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -18,7 +20,6 @@ import java.util.List;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import net.sourceforge.pmd.lang.ast.Node;
@@ -75,22 +76,22 @@ public class ApexParserTest extends ApexParserTestBase {
         assertLineNumbersForTestCode(rootNode);
     }
 
-    private void assertLineNumbersForTestCode(ASTUserClassOrInterface<?> rootNode) {
+    private void assertLineNumbersForTestCode(ASTUserClassOrInterface<?> classNode) {
         // whole source code, well from the beginning of the class
         // name Modifier of the class - doesn't work. This node just
         // sees the identifier ("SimpleClass")
         // assertPosition(rootNode.getChild(0), 1, 1, 1, 6);
 
-        // "public"
-        assertPosition(rootNode, 1, 14, 1, 25);
+        // identifier: "SimpleClass"
+        assertPosition(classNode, 1, 14, 1, 25);
+        assertTextEquals("SimpleClass", classNode);
 
-        // "method1" - starts with identifier until end of its block statement
-        Node method1 = rootNode.getChild(1);
+        // identifier: "method1"
+        Node method1 = classNode.getChild(1);
+        assertTextEquals("method1", method1);
         assertPosition(method1, 2, 17, 2, 24);
-        // Modifier of method1 - doesn't work. This node just sees the
-        // identifier ("method1")
-        // assertPosition(method1.getChild(0), 2, 17, 2, 20); // "public" for
-        // method1
+        // modifiers have same location
+        assertPosition(method1.getChild(0), 2, 17, 2, 24);
 
         // BlockStatement - the whole method body
         Node blockStatement = method1.getChild(1);
@@ -100,6 +101,7 @@ public class ApexParserTest extends ApexParserTestBase {
         // the expression ("System.out...")
         Node expressionStatement = blockStatement.getChild(0);
         assertPosition(expressionStatement, 3, 20, 3, 35);
+        assertTextEquals("println('abc');", expressionStatement);
     }
 
     @Test
@@ -189,36 +191,36 @@ public class ApexParserTest extends ApexParserTestBase {
     }
 
     @Test
-    @Ignore("This is buggy, I'd like to stop pretending our reportLocation is a real node position")
-    public void verifyLineColumnNumbersInnerClasses() throws Exception {
+    public void verifyLineColumnNumbersInnerClasses() {
         ASTApexFile rootNode = apex.parseResource("InnerClassLocations.cls");
         Assert.assertNotNull(rootNode);
 
         visitPosition(rootNode, 0);
 
-        Assert.assertEquals("InnerClassLocations", rootNode.getMainNode().getSimpleName());
+        ASTUserClassOrInterface<?> classNode = rootNode.getMainNode();
+        Assert.assertEquals("InnerClassLocations", classNode.getSimpleName());
+        assertTextEquals("InnerClassLocations", classNode);
         // Note: Apex parser doesn't provide positions for "public class" keywords. The
         // position of the UserClass node is just the identifier. So, the node starts
         // with the identifier and not with the first keyword in the file...
-        assertPosition(rootNode, 1, 14, 16, 2);
+        assertPosition(classNode, 1, 14, 1, 33);
 
-        List<ASTUserClass> classes = rootNode.descendants(ASTUserClass.class).toList();
+        List<ASTUserClass> classes = classNode.descendants(ASTUserClass.class).toList();
         Assert.assertEquals(2, classes.size());
         Assert.assertEquals("bar1", classes.get(0).getSimpleName());
         List<ASTMethod> methods = classes.get(0).children(ASTMethod.class).toList();
         Assert.assertEquals(2, methods.size()); // m() and synthetic clone()
         Assert.assertEquals("m", methods.get(0).getImage());
-        assertPosition(methods.get(0), 4, 21, 7, 9);
+        assertPosition(methods.get(0), 4, 21, 4, 22);
         Assert.assertEquals("clone", methods.get(1).getImage());
-        assertPosition(methods.get(1), 7, 9, 7, 9);
+        assertFalse(methods.get(1).hasRealLoc());
+        assertPosition(methods.get(1), 3, 18, 3, 22);
 
-        // Position of the first inner class: starts with the identifier "bar1" and ends with
-        // the last real method m(). The last bracket it actually on the next line 8, but we
-        // don't see this in the AST.
-        assertPosition(classes.get(0), 3, 18, 7, 9);
+        // Position of the first inner class is its identifier
+        assertPosition(classes.get(0), 3, 18, 3, 22);
 
-        Assert.assertEquals("bar2", classes.get(1).getImage());
-        assertPosition(classes.get(1), 10, 18, 14, 9);
+        Assert.assertEquals("bar2", classes.get(1).getSimpleName());
+        assertPosition(classes.get(1), 10, 18, 10, 22);
     }
 
     // TEST HELPER
@@ -226,13 +228,17 @@ public class ApexParserTest extends ApexParserTestBase {
     private int visitPosition(Node node, int count) {
         int result = count + 1;
         FileLocation loc = node.getReportLocation();
-        Assert.assertTrue(loc.getBeginLine() > 0);
-        Assert.assertTrue(loc.getBeginColumn() > 0);
+        Assert.assertTrue(loc.getStartLine() > 0);
+        Assert.assertTrue(loc.getStartColumn() > 0);
         Assert.assertTrue(loc.getEndLine() > 0);
         Assert.assertTrue(loc.getEndColumn() > 0);
         for (int i = 0; i < node.getNumChildren(); i++) {
             result = visitPosition(node.getChild(i), result);
         }
         return result;
+    }
+
+    private void assertTextEquals(String expected, Node expressionStatement) {
+        assertEquals(expected, textOfReportLocation(expressionStatement));
     }
 }

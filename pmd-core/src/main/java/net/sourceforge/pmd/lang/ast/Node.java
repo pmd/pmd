@@ -119,7 +119,16 @@ public interface Node extends Reportable {
      * <p>Use this instead of {@link #getBeginColumn()}/{@link #getBeginLine()}, etc.
      */
     @Override
-    FileLocation getReportLocation();
+    default FileLocation getReportLocation() {
+        return getAstInfo().getTextDocument().toLocation(getTextRegion());
+    }
+
+    /**
+     * Returns a region of text delimiting the node in the underlying
+     * text document. This does not necessarily match the
+     * {@link #getReportLocation() report location}.
+     */
+    TextRegion getTextRegion();
 
 
     // Those are kept here because they're handled specially as XPath
@@ -127,22 +136,22 @@ public interface Node extends Reportable {
 
     @Override
     default int getBeginLine() {
-        return getReportLocation().getBeginLine();
+        return Reportable.super.getBeginLine();
     }
 
     @Override
     default int getBeginColumn() {
-        return getReportLocation().getBeginColumn();
+        return Reportable.super.getBeginColumn();
     }
 
     @Override
     default int getEndLine() {
-        return getReportLocation().getEndLine();
+        return Reportable.super.getEndLine();
     }
 
     @Override
     default int getEndColumn() {
-        return getReportLocation().getEndColumn();
+        return Reportable.super.getEndColumn();
     }
 
 

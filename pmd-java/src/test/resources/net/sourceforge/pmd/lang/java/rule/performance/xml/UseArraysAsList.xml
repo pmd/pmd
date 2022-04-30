@@ -166,4 +166,28 @@ public class UseArraysAsListFN {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>[java] UseArraysAsList with method call #3867</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>9</expected-linenumbers>
+        <code><![CDATA[
+import java.util.ArrayList;
+import java.util.List;
+
+public class Test {
+    public void foo(Integer[] ints) {
+        // could just use Arrays.asList(ints)
+        List<Integer> l = new ArrayList<>(100);
+        for (int i = 0; i < 100; i++) {
+            l.add(ints[i]); // line 9, here is the violation
+        }
+        List<Integer> anotherList = new ArrayList<>();
+        for (int i = 0; i < 100; i++) {
+            anotherList.add(ints[i].toString()); // line 13 - false positive
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

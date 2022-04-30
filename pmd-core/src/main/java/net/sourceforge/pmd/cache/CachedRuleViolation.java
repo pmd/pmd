@@ -12,6 +12,7 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.document.FileLocation;
+import net.sourceforge.pmd.lang.document.TextRange2d;
 
 /**
  * A {@link RuleViolation} implementation that is immutable, and therefore cache friendly
@@ -41,7 +42,7 @@ public final class CachedRuleViolation implements RuleViolation {
             final String className, final String methodName, final String variableName) {
         this.mapper = mapper;
         this.description = description;
-        this.location = FileLocation.range(fileName, beginLine, beginColumn, endLine, endColumn);
+        this.location = FileLocation.range(fileName, TextRange2d.range2d(beginLine, beginColumn, endLine, endColumn));
         this.ruleClassName = ruleClassName;
         this.ruleName = ruleName;
         this.ruleTargetLanguage = ruleTargetLanguage;
@@ -130,10 +131,10 @@ public final class CachedRuleViolation implements RuleViolation {
         stream.writeUTF(getValueOrEmpty(violation.getRule().getName()));
         stream.writeUTF(getValueOrEmpty(violation.getRule().getLanguage().getTerseName()));
         FileLocation location = violation.getLocation();
-        stream.writeInt(location.getBeginLine());
-        stream.writeInt(location.getBeginColumn());
-        stream.writeInt(location.getEndLine());
-        stream.writeInt(location.getEndColumn());
+        stream.writeInt(location.getStartPos().getLine());
+        stream.writeInt(location.getStartPos().getColumn());
+        stream.writeInt(location.getEndPos().getColumn());
+        stream.writeInt(location.getEndPos().getColumn());
         stream.writeUTF(getValueOrEmpty(violation.getPackageName()));
         stream.writeUTF(getValueOrEmpty(violation.getClassName()));
         stream.writeUTF(getValueOrEmpty(violation.getMethodName()));

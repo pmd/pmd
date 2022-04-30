@@ -4,22 +4,30 @@
 
 package net.sourceforge.pmd.test.lang.ast;
 
+import java.util.Objects;
+
 import net.sourceforge.pmd.lang.ast.impl.AbstractNode;
-import net.sourceforge.pmd.lang.document.FileLocation;
+import net.sourceforge.pmd.lang.document.TextRegion;
 
 public class DummyNode extends AbstractNode<DummyNode, DummyNode> {
 
     private String image;
-    private FileLocation location;
+    private TextRegion region = TextRegion.caretAt(0);
 
-    public void setCoords(int bline, int bcol, int eline, int ecol) {
-        this.location = FileLocation.range(":dummyFile:", bline, bcol, eline, ecol);
+    public DummyNode withCoords(TextRegion region) {
+        this.region = Objects.requireNonNull(region);
+        return this;
+    }
+
+    public DummyNode newChild() {
+        DummyNode child = new DummyNode();
+        addChild(child, getNumChildren());
+        return child;
     }
 
     @Override
-    public FileLocation getReportLocation() {
-        assert location != null : "Should have called setCoords";
-        return location;
+    public TextRegion getTextRegion() {
+        return region;
     }
 
     @Deprecated
