@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import static net.sourceforge.pmd.lang.java.ast.JavaTokenKinds.FORMAL_COMMENT;
 import static net.sourceforge.pmd.lang.java.ast.JavaTokenKinds.GT;
-import static net.sourceforge.pmd.lang.java.ast.JavaTokenKinds.IDENTIFIER;
 import static net.sourceforge.pmd.lang.java.ast.JavaTokenKinds.MULTI_LINE_COMMENT;
 import static net.sourceforge.pmd.lang.java.ast.JavaTokenKinds.RSIGNEDSHIFT;
 import static net.sourceforge.pmd.lang.java.ast.JavaTokenKinds.RUNSIGNEDSHIFT;
@@ -49,15 +48,10 @@ final class JavaTokenDocumentBehavior extends JavaccTokenDocument.TokenDocumentB
 
 
     @Override
-    protected TextDocument translate(TextDocument text) throws MalformedSourceException {
+    public TextDocument translate(TextDocument text) throws MalformedSourceException {
         return new JavaEscapeTranslator(text).translateDocument();
     }
 
-
-    @Override
-    protected boolean isImagePooled(JavaccToken t) {
-        return t.kind == IDENTIFIER;
-    }
 
     @Override
     public JavaccToken createToken(JavaccTokenDocument self, int kind, CharStream jcs, @Nullable String image) {

@@ -62,7 +62,7 @@ public class CPPTokenizer extends JavaCCTokenizer {
         return new TokenDocumentBehavior(CppTokenKinds.TOKEN_NAMES) {
 
             @Override
-            protected TextDocument translate(TextDocument text) throws MalformedSourceException {
+            public TextDocument translate(TextDocument text) throws MalformedSourceException {
                 if (skipBlocks) {
                     text = new CppBlockSkipper(text, skipBlocksStart, skipBlocksEnd).translateDocument();
                 }
