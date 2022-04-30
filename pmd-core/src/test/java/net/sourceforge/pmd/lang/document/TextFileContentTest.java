@@ -60,8 +60,10 @@ public class TextFileContentTest {
         TextFileContent content = origin.normalize("\ufeffabc");
         Chars normalizedText = content.getNormalizedText();
         Assert.assertEquals(Chars.wrap("abc"), normalizedText);
-        // this means the underlying string does not start with the bom marker
-        // it's useful for performance to have `textDocument.getText().toString()` be O(1).
+        // This means the string underlying the Chars does not start with the bom marker.
+        // It's useful for performance to have `textDocument.getText().toString()` be O(1),
+        // and not create a new string.
+        Assert.assertTrue("should be full string", normalizedText.isFullString());
         Assert.assertSame(normalizedText.toString(), normalizedText.toString());
     }
 

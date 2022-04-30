@@ -506,7 +506,8 @@ public final class Chars implements CharSequence {
         return h;
     }
 
-    private boolean isFullString() {
+    // test only
+    boolean isFullString() {
         return start == 0 && len == str.length();
     }
 
