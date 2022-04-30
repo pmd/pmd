@@ -27,6 +27,7 @@ class NioTextFile extends BaseCloseable implements TextFile {
     private final Charset charset;
     private final LanguageVersion languageVersion;
     private final @Nullable String displayName;
+    private final String pathId;
     private boolean readOnly;
 
     NioTextFile(Path path,
@@ -43,6 +44,7 @@ class NioTextFile extends BaseCloseable implements TextFile {
         this.path = path;
         this.charset = charset;
         this.languageVersion = languageVersion;
+        this.pathId = path.toAbsolutePath().toString();
     }
 
     @Override
@@ -57,7 +59,7 @@ class NioTextFile extends BaseCloseable implements TextFile {
 
     @Override
     public String getPathId() {
-        return path.toAbsolutePath().toString();
+        return pathId;
     }
 
     @Override
