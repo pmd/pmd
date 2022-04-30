@@ -184,6 +184,8 @@ final class SourceCodePositioner {
 
     /**
      * Builds a new positioner for the given char sequence.
+     * The char sequence should have its newline delimiters normalized
+     * to {@link TextFileContent#NORMALIZED_LINE_TERM}.
      * The char sequence should not change state (eg a {@link StringBuilder})
      * after construction, otherwise this positioner becomes unreliable.
      *
