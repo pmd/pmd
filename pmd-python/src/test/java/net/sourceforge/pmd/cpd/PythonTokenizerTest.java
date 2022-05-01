@@ -51,4 +51,10 @@ public class PythonTokenizerTest extends CpdTextComparisonTest {
     public void testTabWidth() {
         doTest("tabWidth");
     }
+
+    @Test
+    public void testVarWithDollar() {
+        doTest("var_with_dollar");
+    }
+
 }
