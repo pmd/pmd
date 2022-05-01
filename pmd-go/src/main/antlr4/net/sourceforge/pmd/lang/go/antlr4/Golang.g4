@@ -1215,6 +1215,7 @@ fragment UNICODE_LETTER
  | [\u1780-\u17B3]
  | [\u1820-\u1877]
  | [\u1880-\u18A8]
+ | [\u1D00-\u1DFF]
  | [\u1E00-\u1E9B]
  | [\u1EA0-\u1EE0]
  | [\u1EE1-\u1EF9]
