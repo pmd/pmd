@@ -16,3 +16,22 @@ public class PmdTest {
     }
 
 }
+
+enum CodeSet {
+
+    START_CODE_A('Ë'),
+    START_CODE_B('Ì'),
+    START_CODE_C('Í'),
+    A_TILDE('\u00c3'),
+    STOP_CODE('Î');
+
+    private final char encoding;
+
+    CodeSet(final char encoding) {
+        this.encoding = encoding;
+    }
+
+    public char getEncoding() {
+        return encoding;
+    }
+}
