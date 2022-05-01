@@ -129,6 +129,12 @@ public class ParserCornersTest {
     }
 
     @Test
+    public void testUnicodeIndent() {
+        // https://github.com/pmd/pmd/issues/3423
+        java7.parseResource("UnicodeIndent.java");
+    }
+
+    @Test
     public void testParsersCases15() {
         java5.parseResource("ParserCornerCases.java");
     }
