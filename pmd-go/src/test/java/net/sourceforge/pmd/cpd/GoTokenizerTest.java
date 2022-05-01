@@ -40,4 +40,11 @@ public class GoTokenizerTest extends CpdTextComparisonTest {
     public void testIssue1751() {
         doTest("issue-1751");
     }
+
+    @Test
+    public void testUnicode() {
+        // https://github.com/pmd/pmd/issues/2752
+        doTest("sample_unicode");
+    }
+
 }
