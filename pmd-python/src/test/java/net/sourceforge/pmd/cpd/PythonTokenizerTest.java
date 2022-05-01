@@ -43,6 +43,11 @@ public class PythonTokenizerTest extends CpdTextComparisonTest {
     }
 
     @Test
+    public void testUnicode() {
+        doTest("sample_unicode");
+    }
+
+    @Test
     public void testTabWidth() {
         doTest("tabWidth");
     }
