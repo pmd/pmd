@@ -30,24 +30,7 @@
                      |           +- Expression[@StandAlonePrimitive = false]
                      |              +- PrimaryExpression[]
                      |                 +- PrimaryPrefix[@SuperModifier = false, @ThisModifier = false]
-                     |                    +- Literal[@CharLiteral = false, @DoubleLiteral = false, @EscapedStringLiteral = """"
-                      <html>   
-                          <body>
-                              <p>Hello, world</p>    
-                          </body> 
-                      </html>   
-                      """", @FloatLiteral = false, @Image = """"
-                      <html>   
-                          <body>
-                              <p>Hello, world</p>    
-                          </body> 
-                      </html>   
-                      """", @IntLiteral = false, @LongLiteral = false, @SingleCharacterStringLiteral = false, @StringLiteral = true, @TextBlock = true, @TextBlockContent = "<html>
-    <body>
-        <p>Hello, world</p>
-    </body>
-</html>
-", @ValueAsDouble = NaN, @ValueAsFloat = NaN, @ValueAsInt = 0, @ValueAsLong = 0]
+                     |                    +- Literal[@CharLiteral = false, @DoubleLiteral = false, @EscapedStringLiteral = "\"\"\"\n                      <html>   \n                          <body>\n                              <p>Hello, world</p>    \n                          </body> \n                      </html>   \n                      \"\"\"", @FloatLiteral = false, @Image = "\"\"\"\n                      <html>   \n                          <body>\n                              <p>Hello, world</p>    \n                          </body> \n                      </html>   \n                      \"\"\"", @IntLiteral = false, @LongLiteral = false, @SingleCharacterStringLiteral = false, @StringLiteral = true, @TextBlock = true, @TextBlockContent = "<html>\n    <body>\n        <p>Hello, world</p>\n    </body>\n</html>\n", @ValueAsDouble = NaN, @ValueAsFloat = NaN, @ValueAsInt = 0, @ValueAsLong = 0]
                      +- BlockStatement[@Allocation = false]
                      |  +- Statement[]
                      |     +- StatementExpression[]
@@ -72,18 +55,7 @@
                      |           +- Expression[@StandAlonePrimitive = false]
                      |              +- PrimaryExpression[]
                      |                 +- PrimaryPrefix[@SuperModifier = false, @ThisModifier = false]
-                     |                    +- Literal[@CharLiteral = false, @DoubleLiteral = false, @EscapedStringLiteral = """"
-                       SELECT `EMP_ID`, `LAST_NAME` FROM `EMPLOYEE_TB`
-                       WHERE `CITY` = 'INDIANAPOLIS'
-                       ORDER BY `EMP_ID`, `LAST_NAME`;
-                       """", @FloatLiteral = false, @Image = """"
-                       SELECT `EMP_ID`, `LAST_NAME` FROM `EMPLOYEE_TB`
-                       WHERE `CITY` = 'INDIANAPOLIS'
-                       ORDER BY `EMP_ID`, `LAST_NAME`;
-                       """", @IntLiteral = false, @LongLiteral = false, @SingleCharacterStringLiteral = false, @StringLiteral = true, @TextBlock = true, @TextBlockContent = "SELECT `EMP_ID`, `LAST_NAME` FROM `EMPLOYEE_TB`
-WHERE `CITY` = 'INDIANAPOLIS'
-ORDER BY `EMP_ID`, `LAST_NAME`;
-", @ValueAsDouble = NaN, @ValueAsFloat = NaN, @ValueAsInt = 0, @ValueAsLong = 0]
+                     |                    +- Literal[@CharLiteral = false, @DoubleLiteral = false, @EscapedStringLiteral = "\"\"\"\n                       SELECT `EMP_ID`, `LAST_NAME` FROM `EMPLOYEE_TB`\n                       WHERE `CITY` = \'INDIANAPOLIS\'\n                       ORDER BY `EMP_ID`, `LAST_NAME`;\n                       \"\"\"", @FloatLiteral = false, @Image = "\"\"\"\n                       SELECT `EMP_ID`, `LAST_NAME` FROM `EMPLOYEE_TB`\n                       WHERE `CITY` = \'INDIANAPOLIS\'\n                       ORDER BY `EMP_ID`, `LAST_NAME`;\n                       \"\"\"", @IntLiteral = false, @LongLiteral = false, @SingleCharacterStringLiteral = false, @StringLiteral = true, @TextBlock = true, @TextBlockContent = "SELECT `EMP_ID`, `LAST_NAME` FROM `EMPLOYEE_TB`\nWHERE `CITY` = \'INDIANAPOLIS\'\nORDER BY `EMP_ID`, `LAST_NAME`;\n", @ValueAsDouble = NaN, @ValueAsFloat = NaN, @ValueAsInt = 0, @ValueAsLong = 0]
                      +- BlockStatement[@Allocation = false]
                      |  +- Statement[]
                      |     +- StatementExpression[]
@@ -118,7 +90,7 @@ ORDER BY `EMP_ID`, `LAST_NAME`;
                      |                          +- Expression[@StandAlonePrimitive = false]
                      |                             +- PrimaryExpression[]
                      |                                +- PrimaryPrefix[@SuperModifier = false, @ThisModifier = false]
-                     |                                   +- Literal[@CharLiteral = false, @DoubleLiteral = false, @EscapedStringLiteral = ""js"", @FloatLiteral = false, @Image = ""js"", @IntLiteral = false, @LongLiteral = false, @SingleCharacterStringLiteral = false, @StringLiteral = true, @TextBlock = false, @TextBlockContent = ""js"", @ValueAsDouble = NaN, @ValueAsFloat = NaN, @ValueAsInt = 0, @ValueAsLong = 0]
+                     |                                   +- Literal[@CharLiteral = false, @DoubleLiteral = false, @EscapedStringLiteral = "\"js\"", @FloatLiteral = false, @Image = "\"js\"", @IntLiteral = false, @LongLiteral = false, @SingleCharacterStringLiteral = false, @StringLiteral = true, @TextBlock = false, @TextBlockContent = "\"js\"", @ValueAsDouble = NaN, @ValueAsFloat = NaN, @ValueAsInt = 0, @ValueAsLong = 0]
                      +- BlockStatement[@Allocation = false]
                      |  +- LocalVariableDeclaration[@Abstract = false, @Array = false, @ArrayDepth = 0, @Default = false, @Final = false, @Modifiers = 0, @Native = false, @PackagePrivate = true, @Private = false, @Protected = false, @Public = false, @Static = false, @Strictfp = false, @Synchronized = false, @Transient = false, @TypeInferred = false, @VariableName = "obj", @Volatile = false]
                      |     +- Type[@Array = false, @ArrayDepth = 0, @ArrayType = false, @TypeImage = "Object"]
@@ -137,24 +109,7 @@ ORDER BY `EMP_ID`, `LAST_NAME`;
                      |                          +- Expression[@StandAlonePrimitive = false]
                      |                             +- PrimaryExpression[]
                      |                                +- PrimaryPrefix[@SuperModifier = false, @ThisModifier = false]
-                     |                                   +- Literal[@CharLiteral = false, @DoubleLiteral = false, @EscapedStringLiteral = """"
-                                 function hello() {
-                                     print('"Hello, world"');
-                                 }
-                                 
-                                 hello();
-                                 """", @FloatLiteral = false, @Image = """"
-                                 function hello() {
-                                     print('"Hello, world"');
-                                 }
-                                 
-                                 hello();
-                                 """", @IntLiteral = false, @LongLiteral = false, @SingleCharacterStringLiteral = false, @StringLiteral = true, @TextBlock = true, @TextBlockContent = "function hello() {
-    print('"Hello, world"');
-}
-
-hello();
-", @ValueAsDouble = NaN, @ValueAsFloat = NaN, @ValueAsInt = 0, @ValueAsLong = 0]
+                     |                                   +- Literal[@CharLiteral = false, @DoubleLiteral = false, @EscapedStringLiteral = "\"\"\"\n                                 function hello() {\n                                     print(\'\"Hello, world\"\');\n                                 }\n                                 \n                                 hello();\n                                 \"\"\"", @FloatLiteral = false, @Image = "\"\"\"\n                                 function hello() {\n                                     print(\'\"Hello, world\"\');\n                                 }\n                                 \n                                 hello();\n                                 \"\"\"", @IntLiteral = false, @LongLiteral = false, @SingleCharacterStringLiteral = false, @StringLiteral = true, @TextBlock = true, @TextBlockContent = "function hello() {\n    print(\'\"Hello, world\"\');\n}\n\nhello();\n", @ValueAsDouble = NaN, @ValueAsFloat = NaN, @ValueAsInt = 0, @ValueAsLong = 0]
                      +- BlockStatement[@Allocation = false]
                      |  +- LocalVariableDeclaration[@Abstract = false, @Array = false, @ArrayDepth = 0, @Default = false, @Final = false, @Modifiers = 0, @Native = false, @PackagePrivate = true, @Private = false, @Protected = false, @Public = false, @Static = false, @Strictfp = false, @Synchronized = false, @Transient = false, @TypeInferred = false, @VariableName = "htmlWithEscapes", @Volatile = false]
                      |     +- Type[@Array = false, @ArrayDepth = 0, @ArrayType = false, @TypeImage = "String"]
@@ -166,24 +121,7 @@ hello();
                      |           +- Expression[@StandAlonePrimitive = false]
                      |              +- PrimaryExpression[]
                      |                 +- PrimaryPrefix[@SuperModifier = false, @ThisModifier = false]
-                     |                    +- Literal[@CharLiteral = false, @DoubleLiteral = false, @EscapedStringLiteral = """"
-                      <html>
-                          <body>
-                              <p>Hello, world</p>
-                          </body>
-                      </html>
-                      """", @FloatLiteral = false, @Image = """"
-                      <html>
-                          <body>
-                              <p>Hello, world</p>
-                          </body>
-                      </html>
-                      """", @IntLiteral = false, @LongLiteral = false, @SingleCharacterStringLiteral = false, @StringLiteral = true, @TextBlock = true, @TextBlockContent = "<html>
-    <body>
-        <p>Hello, world</p>
-    </body>
-</html>
-", @ValueAsDouble = NaN, @ValueAsFloat = NaN, @ValueAsInt = 0, @ValueAsLong = 0]
+                     |                    +- Literal[@CharLiteral = false, @DoubleLiteral = false, @EscapedStringLiteral = "\"\"\"\n                      <html>\\r\n                          <body>\\r\n                              <p>Hello, world</p>\\r\n                          </body>\\r\n                      </html>\\r\n                      \"\"\"", @FloatLiteral = false, @Image = "\"\"\"\n                      <html>\\r\n                          <body>\\r\n                              <p>Hello, world</p>\\r\n                          </body>\\r\n                      </html>\\r\n                      \"\"\"", @IntLiteral = false, @LongLiteral = false, @SingleCharacterStringLiteral = false, @StringLiteral = true, @TextBlock = true, @TextBlockContent = "<html>\r\n    <body>\r\n        <p>Hello, world</p>\r\n    </body>\r\n</html>\r\n", @ValueAsDouble = NaN, @ValueAsFloat = NaN, @ValueAsInt = 0, @ValueAsLong = 0]
                      +- BlockStatement[@Allocation = false]
                      |  +- Statement[]
                      |     +- StatementExpression[]
@@ -208,9 +146,7 @@ hello();
                      |           +- Expression[@StandAlonePrimitive = false]
                      |              +- PrimaryExpression[]
                      |                 +- PrimaryPrefix[@SuperModifier = false, @ThisModifier = false]
-                     |                    +- Literal[@CharLiteral = false, @DoubleLiteral = false, @EscapedStringLiteral = """"
-                winter"""", @FloatLiteral = false, @Image = """"
-                winter"""", @IntLiteral = false, @LongLiteral = false, @SingleCharacterStringLiteral = false, @StringLiteral = true, @TextBlock = true, @TextBlockContent = "winter", @ValueAsDouble = NaN, @ValueAsFloat = NaN, @ValueAsInt = 0, @ValueAsLong = 0]
+                     |                    +- Literal[@CharLiteral = false, @DoubleLiteral = false, @EscapedStringLiteral = "\"\"\"\n                winter\"\"\"", @FloatLiteral = false, @Image = "\"\"\"\n                winter\"\"\"", @IntLiteral = false, @LongLiteral = false, @SingleCharacterStringLiteral = false, @StringLiteral = true, @TextBlock = true, @TextBlockContent = "winter", @ValueAsDouble = NaN, @ValueAsFloat = NaN, @ValueAsInt = 0, @ValueAsLong = 0]
                      +- BlockStatement[@Allocation = false]
                      |  +- LocalVariableDeclaration[@Abstract = false, @Array = false, @ArrayDepth = 0, @Default = false, @Final = false, @Modifiers = 0, @Native = false, @PackagePrivate = true, @Private = false, @Protected = false, @Public = false, @Static = false, @Strictfp = false, @Synchronized = false, @Transient = false, @TypeInferred = false, @VariableName = "period", @Volatile = false]
                      |     +- Type[@Array = false, @ArrayDepth = 0, @ArrayType = false, @TypeImage = "String"]
@@ -222,12 +158,7 @@ hello();
                      |           +- Expression[@StandAlonePrimitive = false]
                      |              +- PrimaryExpression[]
                      |                 +- PrimaryPrefix[@SuperModifier = false, @ThisModifier = false]
-                     |                    +- Literal[@CharLiteral = false, @DoubleLiteral = false, @EscapedStringLiteral = """"
-                        winter
-                        """", @FloatLiteral = false, @Image = """"
-                        winter
-                        """", @IntLiteral = false, @LongLiteral = false, @SingleCharacterStringLiteral = false, @StringLiteral = true, @TextBlock = true, @TextBlockContent = "winter
-", @ValueAsDouble = NaN, @ValueAsFloat = NaN, @ValueAsInt = 0, @ValueAsLong = 0]
+                     |                    +- Literal[@CharLiteral = false, @DoubleLiteral = false, @EscapedStringLiteral = "\"\"\"\n                        winter\n                        \"\"\"", @FloatLiteral = false, @Image = "\"\"\"\n                        winter\n                        \"\"\"", @IntLiteral = false, @LongLiteral = false, @SingleCharacterStringLiteral = false, @StringLiteral = true, @TextBlock = true, @TextBlockContent = "winter\n", @ValueAsDouble = NaN, @ValueAsFloat = NaN, @ValueAsInt = 0, @ValueAsLong = 0]
                      +- BlockStatement[@Allocation = false]
                      |  +- LocalVariableDeclaration[@Abstract = false, @Array = false, @ArrayDepth = 0, @Default = false, @Final = false, @Modifiers = 0, @Native = false, @PackagePrivate = true, @Private = false, @Protected = false, @Public = false, @Static = false, @Strictfp = false, @Synchronized = false, @Transient = false, @TypeInferred = false, @VariableName = "greeting", @Volatile = false]
                      |     +- Type[@Array = false, @ArrayDepth = 0, @ArrayType = false, @TypeImage = "String"]
@@ -239,12 +170,7 @@ hello();
                      |           +- Expression[@StandAlonePrimitive = false]
                      |              +- PrimaryExpression[]
                      |                 +- PrimaryPrefix[@SuperModifier = false, @ThisModifier = false]
-                     |                    +- Literal[@CharLiteral = false, @DoubleLiteral = false, @EscapedStringLiteral = """"
-            Hi, "Bob"
-            """", @FloatLiteral = false, @Image = """"
-            Hi, "Bob"
-            """", @IntLiteral = false, @LongLiteral = false, @SingleCharacterStringLiteral = false, @StringLiteral = true, @TextBlock = true, @TextBlockContent = "Hi, "Bob"
-", @ValueAsDouble = NaN, @ValueAsFloat = NaN, @ValueAsInt = 0, @ValueAsLong = 0]
+                     |                    +- Literal[@CharLiteral = false, @DoubleLiteral = false, @EscapedStringLiteral = "\"\"\"\n            Hi, \"Bob\"\n            \"\"\"", @FloatLiteral = false, @Image = "\"\"\"\n            Hi, \"Bob\"\n            \"\"\"", @IntLiteral = false, @LongLiteral = false, @SingleCharacterStringLiteral = false, @StringLiteral = true, @TextBlock = true, @TextBlockContent = "Hi, \"Bob\"\n", @ValueAsDouble = NaN, @ValueAsFloat = NaN, @ValueAsInt = 0, @ValueAsLong = 0]
                      +- BlockStatement[@Allocation = false]
                      |  +- LocalVariableDeclaration[@Abstract = false, @Array = false, @ArrayDepth = 0, @Default = false, @Final = false, @Modifiers = 0, @Native = false, @PackagePrivate = true, @Private = false, @Protected = false, @Public = false, @Static = false, @Strictfp = false, @Synchronized = false, @Transient = false, @TypeInferred = false, @VariableName = "salutation", @Volatile = false]
                      |     +- Type[@Array = false, @ArrayDepth = 0, @ArrayType = false, @TypeImage = "String"]
@@ -256,15 +182,7 @@ hello();
                      |           +- Expression[@StandAlonePrimitive = false]
                      |              +- PrimaryExpression[]
                      |                 +- PrimaryPrefix[@SuperModifier = false, @ThisModifier = false]
-                     |                    +- Literal[@CharLiteral = false, @DoubleLiteral = false, @EscapedStringLiteral = """"
-            Hi,
-             "Bob"
-            """", @FloatLiteral = false, @Image = """"
-            Hi,
-             "Bob"
-            """", @IntLiteral = false, @LongLiteral = false, @SingleCharacterStringLiteral = false, @StringLiteral = true, @TextBlock = true, @TextBlockContent = "Hi,
- "Bob"
-", @ValueAsDouble = NaN, @ValueAsFloat = NaN, @ValueAsInt = 0, @ValueAsLong = 0]
+                     |                    +- Literal[@CharLiteral = false, @DoubleLiteral = false, @EscapedStringLiteral = "\"\"\"\n            Hi,\n             \"Bob\"\n            \"\"\"", @FloatLiteral = false, @Image = "\"\"\"\n            Hi,\n             \"Bob\"\n            \"\"\"", @IntLiteral = false, @LongLiteral = false, @SingleCharacterStringLiteral = false, @StringLiteral = true, @TextBlock = true, @TextBlockContent = "Hi,\n \"Bob\"\n", @ValueAsDouble = NaN, @ValueAsFloat = NaN, @ValueAsInt = 0, @ValueAsLong = 0]
                      +- BlockStatement[@Allocation = false]
                      |  +- LocalVariableDeclaration[@Abstract = false, @Array = false, @ArrayDepth = 0, @Default = false, @Final = false, @Modifiers = 0, @Native = false, @PackagePrivate = true, @Private = false, @Protected = false, @Public = false, @Static = false, @Strictfp = false, @Synchronized = false, @Transient = false, @TypeInferred = false, @VariableName = "empty", @Volatile = false]
                      |     +- Type[@Array = false, @ArrayDepth = 0, @ArrayType = false, @TypeImage = "String"]
@@ -276,9 +194,7 @@ hello();
                      |           +- Expression[@StandAlonePrimitive = false]
                      |              +- PrimaryExpression[]
                      |                 +- PrimaryPrefix[@SuperModifier = false, @ThisModifier = false]
-                     |                    +- Literal[@CharLiteral = false, @DoubleLiteral = false, @EscapedStringLiteral = """"
-                       """", @FloatLiteral = false, @Image = """"
-                       """", @IntLiteral = false, @LongLiteral = false, @SingleCharacterStringLiteral = false, @StringLiteral = true, @TextBlock = true, @TextBlockContent = "", @ValueAsDouble = NaN, @ValueAsFloat = NaN, @ValueAsInt = 0, @ValueAsLong = 0]
+                     |                    +- Literal[@CharLiteral = false, @DoubleLiteral = false, @EscapedStringLiteral = "\"\"\"\n                       \"\"\"", @FloatLiteral = false, @Image = "\"\"\"\n                       \"\"\"", @IntLiteral = false, @LongLiteral = false, @SingleCharacterStringLiteral = false, @StringLiteral = true, @TextBlock = true, @TextBlockContent = "", @ValueAsDouble = NaN, @ValueAsFloat = NaN, @ValueAsInt = 0, @ValueAsLong = 0]
                      +- BlockStatement[@Allocation = false]
                      |  +- LocalVariableDeclaration[@Abstract = false, @Array = false, @ArrayDepth = 0, @Default = false, @Final = false, @Modifiers = 0, @Native = false, @PackagePrivate = true, @Private = false, @Protected = false, @Public = false, @Static = false, @Strictfp = false, @Synchronized = false, @Transient = false, @TypeInferred = false, @VariableName = "quote", @Volatile = false]
                      |     +- Type[@Array = false, @ArrayDepth = 0, @ArrayType = false, @TypeImage = "String"]
@@ -290,12 +206,7 @@ hello();
                      |           +- Expression[@StandAlonePrimitive = false]
                      |              +- PrimaryExpression[]
                      |                 +- PrimaryPrefix[@SuperModifier = false, @ThisModifier = false]
-                     |                    +- Literal[@CharLiteral = false, @DoubleLiteral = false, @EscapedStringLiteral = """"
-                       "
-                       """", @FloatLiteral = false, @Image = """"
-                       "
-                       """", @IntLiteral = false, @LongLiteral = false, @SingleCharacterStringLiteral = false, @StringLiteral = true, @TextBlock = true, @TextBlockContent = ""
-", @ValueAsDouble = NaN, @ValueAsFloat = NaN, @ValueAsInt = 0, @ValueAsLong = 0]
+                     |                    +- Literal[@CharLiteral = false, @DoubleLiteral = false, @EscapedStringLiteral = "\"\"\"\n                       \"\n                       \"\"\"", @FloatLiteral = false, @Image = "\"\"\"\n                       \"\n                       \"\"\"", @IntLiteral = false, @LongLiteral = false, @SingleCharacterStringLiteral = false, @StringLiteral = true, @TextBlock = true, @TextBlockContent = "\"\n", @ValueAsDouble = NaN, @ValueAsFloat = NaN, @ValueAsInt = 0, @ValueAsLong = 0]
                      +- BlockStatement[@Allocation = false]
                      |  +- LocalVariableDeclaration[@Abstract = false, @Array = false, @ArrayDepth = 0, @Default = false, @Final = false, @Modifiers = 0, @Native = false, @PackagePrivate = true, @Private = false, @Protected = false, @Public = false, @Static = false, @Strictfp = false, @Synchronized = false, @Transient = false, @TypeInferred = false, @VariableName = "backslash", @Volatile = false]
                      |     +- Type[@Array = false, @ArrayDepth = 0, @ArrayType = false, @TypeImage = "String"]
@@ -307,12 +218,7 @@ hello();
                      |           +- Expression[@StandAlonePrimitive = false]
                      |              +- PrimaryExpression[]
                      |                 +- PrimaryPrefix[@SuperModifier = false, @ThisModifier = false]
-                     |                    +- Literal[@CharLiteral = false, @DoubleLiteral = false, @EscapedStringLiteral = """"
-                           \
-                           """", @FloatLiteral = false, @Image = """"
-                           \
-                           """", @IntLiteral = false, @LongLiteral = false, @SingleCharacterStringLiteral = false, @StringLiteral = true, @TextBlock = true, @TextBlockContent = "
-", @ValueAsDouble = NaN, @ValueAsFloat = NaN, @ValueAsInt = 0, @ValueAsLong = 0]
+                     |                    +- Literal[@CharLiteral = false, @DoubleLiteral = false, @EscapedStringLiteral = "\"\"\"\n                           \\\\\n                           \"\"\"", @FloatLiteral = false, @Image = "\"\"\"\n                           \\\\\n                           \"\"\"", @IntLiteral = false, @LongLiteral = false, @SingleCharacterStringLiteral = false, @StringLiteral = true, @TextBlock = true, @TextBlockContent = "\\\n", @ValueAsDouble = NaN, @ValueAsFloat = NaN, @ValueAsInt = 0, @ValueAsLong = 0]
                      +- BlockStatement[@Allocation = false]
                      |  +- LocalVariableDeclaration[@Abstract = false, @Array = false, @ArrayDepth = 0, @Default = false, @Final = false, @Modifiers = 0, @Native = false, @PackagePrivate = true, @Private = false, @Protected = false, @Public = false, @Static = false, @Strictfp = false, @Synchronized = false, @Transient = false, @TypeInferred = false, @VariableName = "normalStringLiteral", @Volatile = false]
                      |     +- Type[@Array = false, @ArrayDepth = 0, @ArrayType = false, @TypeImage = "String"]
@@ -324,7 +230,7 @@ hello();
                      |           +- Expression[@StandAlonePrimitive = false]
                      |              +- PrimaryExpression[]
                      |                 +- PrimaryPrefix[@SuperModifier = false, @ThisModifier = false]
-                     |                    +- Literal[@CharLiteral = false, @DoubleLiteral = false, @EscapedStringLiteral = ""test"", @FloatLiteral = false, @Image = ""test"", @IntLiteral = false, @LongLiteral = false, @SingleCharacterStringLiteral = false, @StringLiteral = true, @TextBlock = false, @TextBlockContent = ""test"", @ValueAsDouble = NaN, @ValueAsFloat = NaN, @ValueAsInt = 0, @ValueAsLong = 0]
+                     |                    +- Literal[@CharLiteral = false, @DoubleLiteral = false, @EscapedStringLiteral = "\"test\"", @FloatLiteral = false, @Image = "\"test\"", @IntLiteral = false, @LongLiteral = false, @SingleCharacterStringLiteral = false, @StringLiteral = true, @TextBlock = false, @TextBlockContent = "\"test\"", @ValueAsDouble = NaN, @ValueAsFloat = NaN, @ValueAsInt = 0, @ValueAsLong = 0]
                      +- BlockStatement[@Allocation = false]
                      |  +- LocalVariableDeclaration[@Abstract = false, @Array = false, @ArrayDepth = 0, @Default = false, @Final = false, @Modifiers = 0, @Native = false, @PackagePrivate = true, @Private = false, @Protected = false, @Public = false, @Static = false, @Strictfp = false, @Synchronized = false, @Transient = false, @TypeInferred = false, @VariableName = "code", @Volatile = false]
                      |     +- Type[@Array = false, @ArrayDepth = 0, @ArrayType = false, @TypeImage = "String"]
@@ -336,18 +242,7 @@ hello();
                      |           +- Expression[@StandAlonePrimitive = false]
                      |              +- PrimaryExpression[]
                      |                 +- PrimaryPrefix[@SuperModifier = false, @ThisModifier = false]
-                     |                    +- Literal[@CharLiteral = false, @DoubleLiteral = false, @EscapedStringLiteral = """"
-            String text = """
-                A text block inside a text block
-            """;
-            """", @FloatLiteral = false, @Image = """"
-            String text = """
-                A text block inside a text block
-            """;
-            """", @IntLiteral = false, @LongLiteral = false, @SingleCharacterStringLiteral = false, @StringLiteral = true, @TextBlock = true, @TextBlockContent = "String text = """
-    A text block inside a text block
-""";
-", @ValueAsDouble = NaN, @ValueAsFloat = NaN, @ValueAsInt = 0, @ValueAsLong = 0]
+                     |                    +- Literal[@CharLiteral = false, @DoubleLiteral = false, @EscapedStringLiteral = "\"\"\"\n            String text = \\\"\"\"\n                A text block inside a text block\n            \\\"\"\";\n            \"\"\"", @FloatLiteral = false, @Image = "\"\"\"\n            String text = \\\"\"\"\n                A text block inside a text block\n            \\\"\"\";\n            \"\"\"", @IntLiteral = false, @LongLiteral = false, @SingleCharacterStringLiteral = false, @StringLiteral = true, @TextBlock = true, @TextBlockContent = "String text = \"\"\"\n    A text block inside a text block\n\"\"\";\n", @ValueAsDouble = NaN, @ValueAsFloat = NaN, @ValueAsInt = 0, @ValueAsLong = 0]
                      +- BlockStatement[@Allocation = false]
                      |  +- LocalVariableDeclaration[@Abstract = false, @Array = false, @ArrayDepth = 0, @Default = false, @Final = false, @Modifiers = 0, @Native = false, @PackagePrivate = true, @Private = false, @Protected = false, @Public = false, @Static = false, @Strictfp = false, @Synchronized = false, @Transient = false, @TypeInferred = false, @VariableName = "text", @Volatile = false]
                      |     +- Type[@Array = false, @ArrayDepth = 0, @ArrayType = false, @TypeImage = "String"]
@@ -359,15 +254,7 @@ hello();
                      |           +- Expression[@StandAlonePrimitive = false]
                      |              +- PrimaryExpression[]
                      |                 +- PrimaryPrefix[@SuperModifier = false, @ThisModifier = false]
-                     |                    +- Literal[@CharLiteral = false, @DoubleLiteral = false, @EscapedStringLiteral = """"
-                      Lorem ipsum dolor sit amet, consectetur adipiscing 
-                      elit, sed do eiusmod tempor incididunt ut labore 
-                      et dolore magna aliqua.
-                      """", @FloatLiteral = false, @Image = """"
-                      Lorem ipsum dolor sit amet, consectetur adipiscing 
-                      elit, sed do eiusmod tempor incididunt ut labore 
-                      et dolore magna aliqua.
-                      """", @IntLiteral = false, @LongLiteral = false, @SingleCharacterStringLiteral = false, @StringLiteral = true, @TextBlock = true, @TextBlockContent = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.", @ValueAsDouble = NaN, @ValueAsFloat = NaN, @ValueAsInt = 0, @ValueAsLong = 0]
+                     |                    +- Literal[@CharLiteral = false, @DoubleLiteral = false, @EscapedStringLiteral = "\"\"\"\n                      Lorem ipsum dolor sit amet, consectetur adipiscing \\\n                      elit, sed do eiusmod tempor incididunt ut labore \\\n                      et dolore magna aliqua.\\\n                      \"\"\"", @FloatLiteral = false, @Image = "\"\"\"\n                      Lorem ipsum dolor sit amet, consectetur adipiscing \\\n                      elit, sed do eiusmod tempor incididunt ut labore \\\n                      et dolore magna aliqua.\\\n                      \"\"\"", @IntLiteral = false, @LongLiteral = false, @SingleCharacterStringLiteral = false, @StringLiteral = true, @TextBlock = true, @TextBlockContent = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.", @ValueAsDouble = NaN, @ValueAsFloat = NaN, @ValueAsInt = 0, @ValueAsLong = 0]
                      +- BlockStatement[@Allocation = false]
                      |  +- Statement[]
                      |     +- StatementExpression[]
@@ -392,18 +279,7 @@ hello();
                      |           +- Expression[@StandAlonePrimitive = false]
                      |              +- PrimaryExpression[]
                      |                 +- PrimaryPrefix[@SuperModifier = false, @ThisModifier = false]
-                     |                    +- Literal[@CharLiteral = false, @DoubleLiteral = false, @EscapedStringLiteral = """"
-                        red  s
-                        greens
-                        blue s
-                        """", @FloatLiteral = false, @Image = """"
-                        red  s
-                        greens
-                        blue s
-                        """", @IntLiteral = false, @LongLiteral = false, @SingleCharacterStringLiteral = false, @StringLiteral = true, @TextBlock = true, @TextBlockContent = "red   
-green 
-blue  
-", @ValueAsDouble = NaN, @ValueAsFloat = NaN, @ValueAsInt = 0, @ValueAsLong = 0]
+                     |                    +- Literal[@CharLiteral = false, @DoubleLiteral = false, @EscapedStringLiteral = "\"\"\"\n                        red  \\s\n                        green\\s\n                        blue \\s\n                        \"\"\"", @FloatLiteral = false, @Image = "\"\"\"\n                        red  \\s\n                        green\\s\n                        blue \\s\n                        \"\"\"", @IntLiteral = false, @LongLiteral = false, @SingleCharacterStringLiteral = false, @StringLiteral = true, @TextBlock = true, @TextBlockContent = "red   \ngreen \nblue  \n", @ValueAsDouble = NaN, @ValueAsFloat = NaN, @ValueAsInt = 0, @ValueAsLong = 0]
                      +- BlockStatement[@Allocation = false]
                      |  +- Statement[]
                      |     +- StatementExpression[]
@@ -428,15 +304,7 @@ blue
                      |           +- Expression[@StandAlonePrimitive = false]
                      |              +- PrimaryExpression[]
                      |                 +- PrimaryPrefix[@SuperModifier = false, @ThisModifier = false]
-                     |                    +- Literal[@CharLiteral = false, @DoubleLiteral = false, @EscapedStringLiteral = """"
-
-test
-"""", @FloatLiteral = false, @Image = """"
-
-test
-"""", @IntLiteral = false, @LongLiteral = false, @SingleCharacterStringLiteral = false, @StringLiteral = true, @TextBlock = true, @TextBlockContent = "
-test
-", @ValueAsDouble = NaN, @ValueAsFloat = NaN, @ValueAsInt = 0, @ValueAsLong = 0]
+                     |                    +- Literal[@CharLiteral = false, @DoubleLiteral = false, @EscapedStringLiteral = "\"\"\"\n\ntest\n\"\"\"", @FloatLiteral = false, @Image = "\"\"\"\n\ntest\n\"\"\"", @IntLiteral = false, @LongLiteral = false, @SingleCharacterStringLiteral = false, @StringLiteral = true, @TextBlock = true, @TextBlockContent = "\ntest\n", @ValueAsDouble = NaN, @ValueAsFloat = NaN, @ValueAsInt = 0, @ValueAsLong = 0]
                      +- BlockStatement[@Allocation = false]
                      |  +- Statement[]
                      |     +- StatementExpression[]
@@ -456,14 +324,11 @@ test
                      |                                   +- Expression[@StandAlonePrimitive = false]
                      |                                   |  +- PrimaryExpression[]
                      |                                   |     +- PrimaryPrefix[@SuperModifier = false, @ThisModifier = false]
-                     |                                   |        +- Literal[@CharLiteral = false, @DoubleLiteral = false, @EscapedStringLiteral = ""
-"", @FloatLiteral = false, @Image = ""
-"", @IntLiteral = false, @LongLiteral = false, @SingleCharacterStringLiteral = true, @StringLiteral = true, @TextBlock = false, @TextBlockContent = ""
-"", @ValueAsDouble = NaN, @ValueAsFloat = NaN, @ValueAsInt = 0, @ValueAsLong = 0]
+                     |                                   |        +- Literal[@CharLiteral = false, @DoubleLiteral = false, @EscapedStringLiteral = "\"\\n\"", @FloatLiteral = false, @Image = "\"\\n\"", @IntLiteral = false, @LongLiteral = false, @SingleCharacterStringLiteral = true, @StringLiteral = true, @TextBlock = false, @TextBlockContent = "\"\\n\"", @ValueAsDouble = NaN, @ValueAsFloat = NaN, @ValueAsInt = 0, @ValueAsLong = 0]
                      |                                   +- Expression[@StandAlonePrimitive = false]
                      |                                      +- PrimaryExpression[]
                      |                                         +- PrimaryPrefix[@SuperModifier = false, @ThisModifier = false]
-                     |                                            +- Literal[@CharLiteral = false, @DoubleLiteral = false, @EscapedStringLiteral = ""<LF>"", @FloatLiteral = false, @Image = ""<LF>"", @IntLiteral = false, @LongLiteral = false, @SingleCharacterStringLiteral = false, @StringLiteral = true, @TextBlock = false, @TextBlockContent = ""<LF>"", @ValueAsDouble = NaN, @ValueAsFloat = NaN, @ValueAsInt = 0, @ValueAsLong = 0]
+                     |                                            +- Literal[@CharLiteral = false, @DoubleLiteral = false, @EscapedStringLiteral = "\"<LF>\"", @FloatLiteral = false, @Image = "\"<LF>\"", @IntLiteral = false, @LongLiteral = false, @SingleCharacterStringLiteral = false, @StringLiteral = true, @TextBlock = false, @TextBlockContent = "\"<LF>\"", @ValueAsDouble = NaN, @ValueAsFloat = NaN, @ValueAsInt = 0, @ValueAsLong = 0]
                      +- BlockStatement[@Allocation = false]
                      |  +- LocalVariableDeclaration[@Abstract = false, @Array = false, @ArrayDepth = 0, @Default = false, @Final = false, @Modifiers = 0, @Native = false, @PackagePrivate = true, @Private = false, @Protected = false, @Public = false, @Static = false, @Strictfp = false, @Synchronized = false, @Transient = false, @TypeInferred = false, @VariableName = "bs", @Volatile = false]
                      |     +- Type[@Array = false, @ArrayDepth = 0, @ArrayType = false, @TypeImage = "String"]
@@ -475,12 +340,7 @@ test
                      |           +- Expression[@StandAlonePrimitive = false]
                      |              +- PrimaryExpression[]
                      |                 +- PrimaryPrefix[@SuperModifier = false, @ThisModifier = false]
-                     |                    +- Literal[@CharLiteral = false, @DoubleLiteral = false, @EscapedStringLiteral = """"
-                \test
-                """", @FloatLiteral = false, @Image = """"
-                \test
-                """", @IntLiteral = false, @LongLiteral = false, @SingleCharacterStringLiteral = false, @StringLiteral = true, @TextBlock = true, @TextBlockContent = "	est
-", @ValueAsDouble = NaN, @ValueAsFloat = NaN, @ValueAsInt = 0, @ValueAsLong = 0]
+                     |                    +- Literal[@CharLiteral = false, @DoubleLiteral = false, @EscapedStringLiteral = "\"\"\"\n                \\\\test\n                \"\"\"", @FloatLiteral = false, @Image = "\"\"\"\n                \\\\test\n                \"\"\"", @IntLiteral = false, @LongLiteral = false, @SingleCharacterStringLiteral = false, @StringLiteral = true, @TextBlock = true, @TextBlockContent = "\\test\n", @ValueAsDouble = NaN, @ValueAsFloat = NaN, @ValueAsInt = 0, @ValueAsLong = 0]
                      +- BlockStatement[@Allocation = false]
                         +- Statement[]
                            +- StatementExpression[]
@@ -500,11 +360,8 @@ test
                                                          +- Expression[@StandAlonePrimitive = false]
                                                          |  +- PrimaryExpression[]
                                                          |     +- PrimaryPrefix[@SuperModifier = false, @ThisModifier = false]
-                                                         |        +- Literal[@CharLiteral = false, @DoubleLiteral = false, @EscapedStringLiteral = ""
-"", @FloatLiteral = false, @Image = ""
-"", @IntLiteral = false, @LongLiteral = false, @SingleCharacterStringLiteral = true, @StringLiteral = true, @TextBlock = false, @TextBlockContent = ""
-"", @ValueAsDouble = NaN, @ValueAsFloat = NaN, @ValueAsInt = 0, @ValueAsLong = 0]
+                                                         |        +- Literal[@CharLiteral = false, @DoubleLiteral = false, @EscapedStringLiteral = "\"\\n\"", @FloatLiteral = false, @Image = "\"\\n\"", @IntLiteral = false, @LongLiteral = false, @SingleCharacterStringLiteral = true, @StringLiteral = true, @TextBlock = false, @TextBlockContent = "\"\\n\"", @ValueAsDouble = NaN, @ValueAsFloat = NaN, @ValueAsInt = 0, @ValueAsLong = 0]
                                                          +- Expression[@StandAlonePrimitive = false]
                                                             +- PrimaryExpression[]
                                                                +- PrimaryPrefix[@SuperModifier = false, @ThisModifier = false]
-                                                                  +- Literal[@CharLiteral = false, @DoubleLiteral = false, @EscapedStringLiteral = ""<LF>"", @FloatLiteral = false, @Image = ""<LF>"", @IntLiteral = false, @LongLiteral = false, @SingleCharacterStringLiteral = false, @StringLiteral = true, @TextBlock = false, @TextBlockContent = ""<LF>"", @ValueAsDouble = NaN, @ValueAsFloat = NaN, @ValueAsInt = 0, @ValueAsLong = 0]
+                                                                  +- Literal[@CharLiteral = false, @DoubleLiteral = false, @EscapedStringLiteral = "\"<LF>\"", @FloatLiteral = false, @Image = "\"<LF>\"", @IntLiteral = false, @LongLiteral = false, @SingleCharacterStringLiteral = false, @StringLiteral = true, @TextBlock = false, @TextBlockContent = "\"<LF>\"", @ValueAsDouble = NaN, @ValueAsFloat = NaN, @ValueAsInt = 0, @ValueAsLong = 0]

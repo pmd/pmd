@@ -1,23 +1,4 @@
-+- Input[@CanonicalImage = null, @ExcludedLinesCount = 0, @ExcludedRangesCount = 0, @Sourcecode = "--
--- BSD-style license; for more info see http://pmd.sourceforge.net/license.html
---
-
-CREATE OR REPLACE PROCEDURE TEST_PROCEDURE IS
-    --
-    CURSOR c_test IS
-        SELECT si.sid, sn.name, sa.age, ss.score, sp.parent
-        FROM ((((STUDENT_INFO si) INNER JOIN (STUDENT_AGE sa) on si.sid = sa.sid)
-            INNER JOIN
-            (STUDENT_SCORE ss) on si.sid = sp.sid)
-            INNER JOIN
-            (STUDENT_PARENT sp) on si.sid = sp.sid)
-        WHERE si.sid = '114514';
-    --
-BEGIN
-    --
-    --
-END EXAMPLE_PROCEDURE;
-"]
++- Input[@CanonicalImage = null, @ExcludedLinesCount = 0, @ExcludedRangesCount = 0, @Sourcecode = "--\n-- BSD-style license; for more info see http://pmd.sourceforge.net/license.html\n--\n\nCREATE OR REPLACE PROCEDURE TEST_PROCEDURE IS\n    --\n    CURSOR c_test IS\n        SELECT si.sid, sn.name, sa.age, ss.score, sp.parent\n        FROM ((((STUDENT_INFO si) INNER JOIN (STUDENT_AGE sa) on si.sid = sa.sid)\n            INNER JOIN\n            (STUDENT_SCORE ss) on si.sid = sp.sid)\n            INNER JOIN\n            (STUDENT_PARENT sp) on si.sid = sp.sid)\n        WHERE si.sid = \'114514\';\n    --\nBEGIN\n    --\n    --\nEND EXAMPLE_PROCEDURE;\n"]
    +- Global[@CanonicalImage = null]
       +- ProgramUnit[@CanonicalImage = null, @MethodName = "TEST_PROCEDURE", @Name = "TEST_PROCEDURE", @ObjectName = null]
          +- MethodDeclarator[@CanonicalImage = "TEST_PROCEDURE", @Image = "TEST_PROCEDURE", @ParameterCount = 1]
@@ -147,8 +128,8 @@ END EXAMPLE_PROCEDURE;
          |                          |        |  +- ID[@CanonicalImage = "SI", @Image = "si"]
          |                          |        +- Column[@CanonicalImage = "SID", @Image = "sid"]
          |                          |           +- ID[@CanonicalImage = "SID", @Image = "sid"]
-         |                          +- SqlExpression[@CanonicalImage = "'114514'", @Image = "'114514'"]
-         |                             +- PrimaryPrefix[@CanonicalImage = "'114514'", @Image = "'114514'", @SelfModifier = false]
-         |                                +- Literal[@CanonicalImage = "'114514'", @Image = "'114514'"]
-         |                                   +- StringLiteral[@CanonicalImage = "'114514'", @Image = "'114514'", @String = "114514"]
+         |                          +- SqlExpression[@CanonicalImage = "\'114514\'", @Image = "\'114514\'"]
+         |                             +- PrimaryPrefix[@CanonicalImage = "\'114514\'", @Image = "\'114514\'", @SelfModifier = false]
+         |                                +- Literal[@CanonicalImage = "\'114514\'", @Image = "\'114514\'"]
+         |                                   +- StringLiteral[@CanonicalImage = "\'114514\'", @Image = "\'114514\'", @String = "114514"]
          +- ID[@CanonicalImage = "EXAMPLE_PROCEDURE", @Image = "EXAMPLE_PROCEDURE"]

@@ -58,7 +58,7 @@
                                              +- AdditiveExpression[@Image = "+", @Operator = "+"]
                                                 +- PrimaryExpression[]
                                                 |  +- PrimaryPrefix[@SuperModifier = false, @ThisModifier = false]
-                                                |     +- Literal[@CharLiteral = false, @DoubleLiteral = false, @EscapedStringLiteral = ""p = "", @FloatLiteral = false, @Image = ""p = "", @IntLiteral = false, @LongLiteral = false, @SingleCharacterStringLiteral = false, @StringLiteral = true, @TextBlock = false, @TextBlockContent = ""p = "", @ValueAsDouble = NaN, @ValueAsFloat = NaN, @ValueAsInt = 0, @ValueAsLong = 0]
+                                                |     +- Literal[@CharLiteral = false, @DoubleLiteral = false, @EscapedStringLiteral = "\"p = \"", @FloatLiteral = false, @Image = "\"p = \"", @IntLiteral = false, @LongLiteral = false, @SingleCharacterStringLiteral = false, @StringLiteral = true, @TextBlock = false, @TextBlockContent = "\"p = \"", @ValueAsDouble = NaN, @ValueAsFloat = NaN, @ValueAsInt = 0, @ValueAsLong = 0]
                                                 +- PrimaryExpression[]
                                                    +- PrimaryPrefix[@SuperModifier = false, @ThisModifier = false]
                                                       +- Name[@Image = "p"]
