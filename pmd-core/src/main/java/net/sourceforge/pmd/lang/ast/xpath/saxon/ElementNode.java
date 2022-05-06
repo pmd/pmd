@@ -80,7 +80,7 @@ public class ElementNode extends BaseNodeInfo implements AstNodeOwner {
         document.nodeToElementNode.put(node, this);
     }
 
-    private static short determineType(Node node) {
+    private static int determineType(Node node) {
         String name = node.getXPathNodeName();
         if ("#text".equals(name)) {
             return Type.TEXT;
