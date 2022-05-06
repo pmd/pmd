@@ -4,18 +4,14 @@
 
 package net.sourceforge.pmd.lang.html;
 
-import java.io.StringReader;
-import java.util.Arrays;
-
 import org.junit.Assert;
 import org.junit.Test;
 
 import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.lang.LanguageRegistry;
-import net.sourceforge.pmd.lang.LanguageVersion;
-import net.sourceforge.pmd.lang.Parser;
-import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.html.ast.ASTHtmlComment;
+import net.sourceforge.pmd.lang.html.ast.ASTHtmlDocument;
+import net.sourceforge.pmd.lang.html.ast.ASTHtmlTextNode;
+import net.sourceforge.pmd.lang.html.ast.HtmlParsingHelper;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
 
@@ -44,6 +40,20 @@ public class HtmlXPathRuleTest {
         Report report = runXPath(LIGHTNING_WEB_COMPONENT, xpath);
         Assert.assertEquals(1, report.getViolations().size());
         Assert.assertEquals(3, report.getViolations().get(0).getBeginLine());
+    }
+
+    @Test
+    public void verifyTextNodeName() {
+        ASTHtmlDocument document = HtmlParsingHelper.DEFAULT.parse("<p>foobar</p>");
+        ASTHtmlTextNode textNode = document.getFirstDescendantOfType(ASTHtmlTextNode.class);
+        Assert.assertEquals("#text", textNode.getXPathNodeName());
+    }
+
+    @Test
+    public void verifyCommentNodeName() {
+        ASTHtmlDocument document = HtmlParsingHelper.DEFAULT.parse("<p><!-- a comment --></p>");
+        ASTHtmlComment comment = document.getFirstDescendantOfType(ASTHtmlComment.class);
+        Assert.assertEquals("#comment", comment.getXPathNodeName());
     }
 
     @Test
@@ -79,16 +89,9 @@ public class HtmlXPathRuleTest {
     }
 
     private Report runXPath(String html, String xpath) {
-        LanguageVersion htmlLanguage = LanguageRegistry.findLanguageByTerseName(HtmlLanguageModule.TERSE_NAME).getDefaultVersion();
-        Parser parser = htmlLanguage.getLanguageVersionHandler().getParser(htmlLanguage.getLanguageVersionHandler().getDefaultParserOptions());
-
         XPathRule rule = new XPathRule(XPathVersion.XPATH_2_0, xpath);
         rule.setMessage("test");
-        Node node = parser.parse("n/a", new StringReader(html));
-        RuleContext context = new RuleContext();
-        context.setLanguageVersion(htmlLanguage);
-        context.setCurrentRule(rule);
-        rule.apply(Arrays.asList(node), context);
-        return context.getReport();
+        rule.setLanguage(HtmlParsingHelper.DEFAULT.getLanguage());
+        return HtmlParsingHelper.DEFAULT.executeRule(rule, html);
     }
 }
