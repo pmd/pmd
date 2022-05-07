@@ -418,7 +418,9 @@ final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
             if (commentText.startsWith("/**")) {
                 ApexDocTokenLocation doctok = new ApexDocTokenLocation(commentRegion, commentText);
                 tokenLocations.add(doctok);
-                tok = doctok;
+                // TODO #3953 - if this is an FP, just uncomment the code and remove the continue statement
+                // tok = doctok;
+                continue;
             } else {
                 tok = new TokenLocation(commentRegion);
             }
