@@ -87,13 +87,16 @@ import net.sourceforge.pmd.util.ResourceLoader;
 @InternalApi
 public class RuleSetReferenceId {
 
-    private static final Logger LOG = Logger.getLogger(RuleSetReferenceId.class.getName());
+    // use the logger of RuleSetFactory, because the warnings conceptually come from there.
+    private static final Logger LOG = Logger.getLogger(RuleSetFactory.class.getName());
 
     private final boolean external;
     private final String ruleSetFileName;
     private final boolean allRules;
     private final String ruleName;
     private final RuleSetReferenceId externalRuleSetReferenceId;
+
+    private final String originalRef;
 
     /**
      * Construct a RuleSetReferenceId for the given single ID string.
@@ -141,6 +144,7 @@ public class RuleSetReferenceId {
      *                                  RuleSetReferenceId.
      */
     RuleSetReferenceId(final String id, final RuleSetReferenceId externalRuleSetReferenceId, boolean warnDeprecated) {
+        this.originalRef = id;
 
         if (externalRuleSetReferenceId != null && !externalRuleSetReferenceId.isExternal()) {
             throw new IllegalArgumentException("Cannot pair with non-external <" + externalRuleSetReferenceId + ">.");
@@ -281,7 +285,7 @@ public class RuleSetReferenceId {
         }
         // Likely a simple RuleSet name
         int index = name.indexOf('-');
-        if (index >= 0) {
+        if (index > 0) {
             // Standard short name
             return "rulesets/" + name.substring(0, index) + '/' + name.substring(index + 1) + ".xml";
         }
@@ -374,7 +378,7 @@ public class RuleSetReferenceId {
         if (referenceString != null && referenceString.trim().length() > 0) {
 
             if (referenceString.indexOf(',') == -1) {
-                references.add(new RuleSetReferenceId(referenceString));
+                references.add(new RuleSetReferenceId(referenceString, null, warnDeprecated));
             } else {
                 for (String name : referenceString.split(",")) {
                     references.add(new RuleSetReferenceId(name.trim(), null, warnDeprecated));
@@ -440,9 +444,9 @@ public class RuleSetReferenceId {
             InputStream in = StringUtils.isBlank(ruleSetFileName) ? null
                     : rl.loadResourceAsStream(ruleSetFileName);
             if (in == null) {
-                throw new RuleSetNotFoundException("Can't find resource '" + ruleSetFileName + "' for rule '" + ruleName
+                throw new RuleSetNotFoundException("Cannot resolve rule/ruleset reference '" + originalRef
                         + "'" + ".  Make sure the resource is a valid file or URL and is on the CLASSPATH. "
-                        + "Here's the current classpath: " + System.getProperty("java.class.path"));
+                        + "Use --debug (or a fine log level) to see the current classpath.");
             }
             return in;
         } else {
@@ -457,8 +461,11 @@ public class RuleSetReferenceId {
      *         <i>ruleSetFileName</i> for all Rule external references,
      *         <i>ruleSetFileName/ruleName</i>, for a single Rule external
      *         references, or <i>ruleName</i> otherwise.
+     *
+     * @deprecated Do not rely on the format of this method, it may be changed in PMD 7.
      */
     @Override
+    @Deprecated
     public String toString() {
         if (ruleSetFileName != null) {
             if (allRules) {

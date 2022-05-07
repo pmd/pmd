@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.cli;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.containsStringIgnoringCase;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertEquals;
@@ -22,6 +23,7 @@ import java.util.logging.Logger;
 
 import org.apache.commons.io.IOUtils;
 import org.hamcrest.Matcher;
+import org.hamcrest.MatcherAssert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -186,6 +188,12 @@ public class CoreCliTest {
         } finally {
             Files.deleteIfExists(absoluteReportFile);
         }
+    }
+
+    @Test
+    public void testDeprecatedRulesetSyntaxOnCommandLine() {
+        runPmdSuccessfully("--no-cache", "--dir", srcDir, "--rulesets", "dummy-basic");
+        MatcherAssert.assertThat(loggingRule.getLog(), containsString("Ruleset reference 'dummy-basic' uses a deprecated form, use 'rulesets/dummy/basic.xml' instead"));
     }
 
 
