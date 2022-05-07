@@ -195,6 +195,24 @@ public class CharsTest {
     }
 
     @Test
+    public void removePrefix() {
+        Chars bc = Chars.wrap("abcdb").slice(1, 2);
+        //                      --
+
+        assertEquals("bc", bc.toString());
+        assertEquals("bc", bc.removePrefix("c").toString());
+        assertEquals("", bc.removePrefix("bc").toString());
+        assertEquals("c", bc.removePrefix("b").toString());
+
+        bc = Chars.wrap("aaaaaaa").slice(2, 3);
+        //                 ---
+
+        assertEquals("aaa", bc.toString());
+        assertEquals("", bc.removePrefix("aaa").toString());
+        assertEquals("aaa", bc.removePrefix("aaaa").toString());
+    }
+
+    @Test
     public void trimNoop() {
         Chars bc = Chars.wrap("abcdb").slice(1, 2);
         assertEquals("bc", bc.toString());

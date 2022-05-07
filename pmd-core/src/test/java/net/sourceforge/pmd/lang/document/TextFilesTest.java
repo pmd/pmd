@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.document;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 
@@ -51,13 +52,23 @@ public class TextFilesTest {
     public void testEquals() throws IOException {
         Path file = makeTmpFile(StandardCharsets.UTF_8, "some content").toAbsolutePath();
         try (TextFile tf = TextFile.forPath(file, StandardCharsets.UTF_8, dummyVersion)) {
-            try (TextFile tf2 = TextFile.forCharSeq("some content", file.toString(), dummyVersion)) {
-                assertEquals(tf.getPathId(), tf2.getPathId());
+            try (TextFile tfPrime = TextFile.forPath(file, StandardCharsets.UTF_8, dummyVersion)) {
+                try (TextFile stringTf = TextFile.forCharSeq("some content", file.toString(), dummyVersion)) {
+                    assertEquals(tf.getPathId(), stringTf.getPathId());
 
-                assertNotEquals(tf, tf2);
-                assertNotEquals(tf2, tf);
-                assertEquals(tf, tf);
-                assertEquals(tf, TextFile.forPath(file, StandardCharsets.UTF_8, dummyVersion));
+                    // despite same path id, they are different implementations
+                    assertNotEquals(tf, stringTf);
+                    assertNotEquals(stringTf, tf);
+
+                    // identical, but string text files use identity
+                    assertNotEquals(stringTf, TextFile.forCharSeq("some content", file.toString(), dummyVersion));
+
+                    // those are identical so are equals
+                    assertNotSame(tf, tfPrime);
+                    assertEquals(tf, tfPrime);
+                    assertEquals(tfPrime, tf);
+                    assertEquals(tf.hashCode(), tfPrime.hashCode());
+                }
             }
         }
     }

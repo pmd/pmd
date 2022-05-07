@@ -1,0 +1,9 @@
++- AstRoot
+   +- ExpressionStatement
+      +- Assignment
+         +- Name
+         +- ObjectLiteral
+            +- ObjectProperty
+               +- Name
+               +- FunctionNode
+                  +- Block

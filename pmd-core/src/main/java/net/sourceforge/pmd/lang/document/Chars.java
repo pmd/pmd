@@ -127,7 +127,7 @@ public final class Chars implements CharSequence {
      * parameter, especially on Java 9+.
      *
      * @param start Start index (inclusive)
-     * @param end End index (exclusive)
+     * @param end   End index (exclusive)
      *
      * @throws IndexOutOfBoundsException See {@link StringBuilder#append(CharSequence, int, int)}
      */
@@ -334,6 +334,16 @@ public final class Chars implements CharSequence {
         int trimmedLen = length() - charSeq.length();
         if (startsWith(charSeq, trimmedLen)) {
             return slice(0, trimmedLen);
+        }
+        return this;
+    }
+
+    /**
+     * Remove the prefix if it is present, otherwise returns this.
+     */
+    public Chars removePrefix(String charSeq) {
+        if (startsWith(charSeq)) {
+            return subSequence(charSeq.length(), length());
         }
         return this;
     }

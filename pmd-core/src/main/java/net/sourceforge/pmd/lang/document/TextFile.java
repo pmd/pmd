@@ -133,6 +133,18 @@ public interface TextFile extends Closeable {
     @Override
     void close() throws IOException;
 
+
+    /**
+     * Text file equality is implementation-defined. The only constraint
+     * is that equal text files should have equal path IDs (and the usual
+     * properties mandated by {@link Object#equals(Object)}).
+     */
+    // currently:
+    // - Path-based TextFiles compare their path for equality, where the path is not normalized.
+    // - Reader- and String-based TextFiles use identity semantics.
+    @Override
+    boolean equals(Object o);
+
     // factory methods
 
     /**

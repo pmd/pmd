@@ -19,7 +19,7 @@ abstract class AbstractInfixEcmascriptNode<T extends InfixExpression> extends Ab
         if (setImage) {
             if (infixExpression.getOperator() == Token.ASSIGN_BITXOR) {
                 super.setImage("^=");
-            } else {
+            } else if (infixExpression.getOperator() != Token.METHOD) {
                 super.setImage(AstRoot.operatorToString(infixExpression.getOperator()));
             }
         }

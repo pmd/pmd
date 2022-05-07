@@ -115,6 +115,9 @@ The tool comes with a rather extensive help text, simply running with `--help`!
                description="Explicitly disables incremental analysis. This switch turns off suggestions to use Incremental Analysis,
                and causes the `--cache` option to be discarded if it is provided."
     %}
+    {% include custom/cli_option_row.html options="--no-progress"
+               description="Disable progress bar indicator of live analysis progress."
+    %}
     {% include custom/cli_option_row.html options="--property,-P"
                option_arg="name>=<value"
                description="Specifies a property for the report renderer. The option can be specified several times."
