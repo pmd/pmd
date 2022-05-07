@@ -539,7 +539,11 @@ public class RuleSetFactory {
         // load the ruleset with minimum priority low, so that we get all rules, to be able to exclude any rule
         // minimum priority will be applied again, before constructing the final ruleset
         RuleSetFactory ruleSetFactory = toLoader().filterAbovePriority(RulePriority.LOW).warnDeprecated(false).toFactory();
-        RuleSet otherRuleSet = ruleSetFactory.createRuleSet(RuleSetReferenceId.parse(ref).get(0));
+        RuleSetReferenceId ruleSetReferenceId = parseReferenceAndWarn(ruleSetBuilder, ref, "ruleset");
+        if (ruleSetReferenceId == null) {
+            return;
+        }
+        RuleSet otherRuleSet = ruleSetFactory.createRuleSet(ruleSetReferenceId);
         List<RuleReference> potentialRules = new ArrayList<>();
         int countDeprecated = 0;
         for (Rule rule : otherRuleSet.getRules()) {
@@ -587,6 +591,18 @@ public class RuleSetFactory {
                     + ruleSetBuilder.getName() + "\".");
         }
         rulesetReferences.add(ref);
+    }
+
+    private RuleSetReferenceId parseReferenceAndWarn(RuleSetBuilder ruleSetBuilder, String ref, String refKind) {
+        List<RuleSetReferenceId> references = RuleSetReferenceId.parse(ref, warnDeprecated);
+        if (references.size() > 1 && warnDeprecated) {
+            LOG.warning("Referencing several " + refKind + "s as a comma separated list is deprecated. "
+                        + "All " + refKind + "s but the first are ignored. Reference: '" + ref + "'");
+        } else if (references.isEmpty()) {
+            LOG.warning("Empty " + refKind + " reference in ruleset " + ruleSetBuilder.getName());
+            return null;
+        }
+        return references.get(0);
     }
 
     /**
@@ -656,7 +672,10 @@ public class RuleSetFactory {
         RuleSetFactory ruleSetFactory = toLoader().filterAbovePriority(RulePriority.LOW).warnDeprecated(false).toFactory();
 
         boolean isSameRuleSet = false;
-        RuleSetReferenceId otherRuleSetReferenceId = RuleSetReferenceId.parse(ref).get(0);
+        RuleSetReferenceId otherRuleSetReferenceId = parseReferenceAndWarn(ruleSetBuilder, ref, "rule");
+        if (otherRuleSetReferenceId == null) {
+            return;
+        }
         if (!otherRuleSetReferenceId.isExternal()
                 && containsRule(ruleSetReferenceId, otherRuleSetReferenceId.getRuleName())) {
             otherRuleSetReferenceId = new RuleSetReferenceId(ref, ruleSetReferenceId);
@@ -743,6 +762,7 @@ public class RuleSetFactory {
      * @return {@code true} if the ruleName exists
      */
     private boolean containsRule(RuleSetReferenceId ruleSetReferenceId, String ruleName) {
+        // unbelievable...
         boolean found = false;
         try (InputStream ruleSet = ruleSetReferenceId.getInputStream(resourceLoader)) {
             DocumentBuilder builder = createDocumentBuilder();

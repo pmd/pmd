@@ -11,6 +11,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -85,6 +86,9 @@ import net.sourceforge.pmd.util.ResourceLoader;
 @Deprecated
 @InternalApi
 public class RuleSetReferenceId {
+
+    private static final Logger LOG = Logger.getLogger(RuleSetReferenceId.class.getName());
+
     private final boolean external;
     private final String ruleSetFileName;
     private final boolean allRules;
@@ -110,19 +114,33 @@ public class RuleSetReferenceId {
      * Rule. The external RuleSetReferenceId will be responsible for producing
      * the InputStream containing the Rule.
      *
-     * @param id
-     *            The id string.
-     * @param externalRuleSetReferenceId
-     *            A RuleSetReferenceId to associate with this new instance.
-     * @throws IllegalArgumentException
-     *             If the ID contains a comma character.
-     * @throws IllegalArgumentException
-     *             If external RuleSetReferenceId is not external.
-     * @throws IllegalArgumentException
-     *             If the ID is not Rule reference when there is an external
-     *             RuleSetReferenceId.
+     * @param id                         The id string.
+     * @param externalRuleSetReferenceId A RuleSetReferenceId to associate with this new instance.
+     *
+     * @throws IllegalArgumentException If the ID contains a comma character.
+     * @throws IllegalArgumentException If external RuleSetReferenceId is not external.
+     * @throws IllegalArgumentException If the ID is not Rule reference when there is an external
+     *                                  RuleSetReferenceId.
      */
     public RuleSetReferenceId(final String id, final RuleSetReferenceId externalRuleSetReferenceId) {
+        this(id, externalRuleSetReferenceId, false);
+    }
+
+    /**
+     * Construct a RuleSetReferenceId for the given single ID string. If an
+     * external RuleSetReferenceId is given, the ID must refer to a non-external
+     * Rule. The external RuleSetReferenceId will be responsible for producing
+     * the InputStream containing the Rule.
+     *
+     * @param id                         The id string.
+     * @param externalRuleSetReferenceId A RuleSetReferenceId to associate with this new instance.
+     *
+     * @throws IllegalArgumentException If the ID contains a comma character.
+     * @throws IllegalArgumentException If external RuleSetReferenceId is not external.
+     * @throws IllegalArgumentException If the ID is not Rule reference when there is an external
+     *                                  RuleSetReferenceId.
+     */
+    RuleSetReferenceId(final String id, final RuleSetReferenceId externalRuleSetReferenceId, boolean warnDeprecated) {
 
         if (externalRuleSetReferenceId != null && !externalRuleSetReferenceId.isExternal()) {
             throw new IllegalArgumentException("Cannot pair with non-external <" + externalRuleSetReferenceId + ">.");
@@ -177,8 +195,16 @@ public class RuleSetReferenceId {
                 allRules = tempRuleName == null;
             } else {
                 // resolve the ruleset name - it's maybe a built in ruleset
-                String builtinRuleSet = resolveBuiltInRuleset(tempRuleSetFileName);
+                String expandedRuleset = resolveDeprecatedBuiltInRulesetShorthand(tempRuleSetFileName);
+                String builtinRuleSet = expandedRuleset == null ? tempRuleSetFileName : expandedRuleset;
                 if (checkRulesetExists(builtinRuleSet)) {
+                    if (expandedRuleset != null && warnDeprecated) {
+                        LOG.warning(
+                            "Ruleset reference '" + tempRuleSetFileName + "' uses a deprecated form, use '"
+                            + builtinRuleSet + "' instead"
+                        );
+                    }
+
                     external = true;
                     ruleSetFileName = builtinRuleSet;
                     ruleName = tempRuleName;
@@ -249,25 +275,22 @@ public class RuleSetReferenceId {
      *            the ruleset name
      * @return the full classpath to the ruleset
      */
-    private String resolveBuiltInRuleset(final String name) {
-        String result = null;
-        if (name != null) {
-            // Likely a simple RuleSet name
-            int index = name.indexOf('-');
-            if (index >= 0) {
-                // Standard short name
-                result = "rulesets/" + name.substring(0, index) + '/' + name.substring(index + 1) + ".xml";
-            } else {
-                // A release RuleSet?
-                if (name.matches("[0-9]+.*")) {
-                    result = "rulesets/releases/" + name + ".xml";
-                } else {
-                    // Appears to be a non-standard RuleSet name
-                    result = name;
-                }
-            }
+    private String resolveDeprecatedBuiltInRulesetShorthand(final String name) {
+        if (name == null) {
+            return null;
         }
-        return result;
+        // Likely a simple RuleSet name
+        int index = name.indexOf('-');
+        if (index >= 0) {
+            // Standard short name
+            return "rulesets/" + name.substring(0, index) + '/' + name.substring(index + 1) + ".xml";
+        }
+        // A release RuleSet?
+        if (name.matches("[0-9]+.*")) {
+            return "rulesets/releases/" + name + ".xml";
+        }
+        // Appears to be a non-standard RuleSet name
+        return null;
     }
 
     /**
@@ -330,11 +353,23 @@ public class RuleSetReferenceId {
      * Parse a String comma separated list of RuleSet reference IDs into a List
      * of RuleReferenceId instances.
      *
-     * @param referenceString
-     *            A comma separated list of RuleSet reference IDs.
+     * @param referenceString A comma separated list of RuleSet reference IDs.
+     *
      * @return The corresponding List of RuleSetReferenceId instances.
      */
     public static List<RuleSetReferenceId> parse(String referenceString) {
+        return parse(referenceString, false);
+    }
+
+    /**
+     * Parse a String comma separated list of RuleSet reference IDs into a List
+     * of RuleReferenceId instances.
+     *
+     * @param referenceString A comma separated list of RuleSet reference IDs.
+     *
+     * @return The corresponding List of RuleSetReferenceId instances.
+     */
+    public static List<RuleSetReferenceId> parse(String referenceString, boolean warnDeprecated) {
         List<RuleSetReferenceId> references = new ArrayList<>();
         if (referenceString != null && referenceString.trim().length() > 0) {
 
@@ -342,7 +377,7 @@ public class RuleSetReferenceId {
                 references.add(new RuleSetReferenceId(referenceString));
             } else {
                 for (String name : referenceString.split(",")) {
-                    references.add(new RuleSetReferenceId(name.trim()));
+                    references.add(new RuleSetReferenceId(name.trim(), null, warnDeprecated));
                 }
             }
         }
