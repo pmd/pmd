@@ -29,6 +29,8 @@ pmd -d src/*/java -R rset*.xml
 
 ### Fixed Issues
 
+* cli
+  * [#1445](https://github.com/pmd/pmd/issues/1445): \[core] Allow CLI to take globs as parameters
 * javascript
   * [#3948](https://github.com/pmd/pmd/issues/3948): \[js] Invalid operator error for method property in object literal
 
