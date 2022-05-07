@@ -103,7 +103,7 @@ public class PMDConfiguration extends AbstractConfiguration {
     // Rule and source file options
     private List<String> ruleSets = new ArrayList<>();
     private RulePriority minimumPriority = RulePriority.LOW;
-    private List<String> inputPaths;
+    private List<String> inputPaths = new ArrayList<>();
     private String inputUri;
     private String inputFilePath;
     private String ignoreFilePath;

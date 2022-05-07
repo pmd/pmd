@@ -39,7 +39,7 @@ public class PMDParameters {
     private String uri;
 
     @Parameter(names = { "--dir", "-dir", "-d" }, description = "Root directory for sources.", variableArity = true)
-    private List<String> inputPaths;
+    private List<String> inputPaths = new ArrayList<>();
 
     @Parameter(names = { "--file-list", "-filelist" }, description = "Path to a file containing a list of files to analyze.")
     private String fileListPath;

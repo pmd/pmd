@@ -114,13 +114,16 @@ public final class PmdParametersParseResult {
 
     private static void parseAndValidate(JCommander jcommander, PMDParameters result, String[] args) {
         jcommander.parse(args);
+        if (result.isHelp() || result.isVersion()) {
+            return;
+        }
         // jcommander has no special support for global parameter validation like this
         // For consistency we report this with a ParameterException
-        if (null == result.getSourceDir()
+        if (result.getInputPaths().isEmpty()
             && null == result.getUri()
             && null == result.getFileListPath()) {
             throw new ParameterException(
-                "Please provide a parameter for source root directory (-dir or -d), database URI (-uri or -u), or file list path (-filelist).");
+                "Please provide a parameter for source root directory (--dir or -d), database URI (--uri or -u), or file list path (--file-list).");
         }
 
     }
