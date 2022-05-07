@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+import org.apache.commons.lang3.StringUtils;
+
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.RulePriority;
@@ -29,14 +31,15 @@ import com.beust.jcommander.validators.PositiveInteger;
 public class PMDParameters {
 
     @Parameter(names = { "--rulesets", "-rulesets", "-R" }, description = "Comma separated list of ruleset names to use.",
-            required = true)
-    private String rulesets;
+               required = true,
+               variableArity = true)
+    private List<String> rulesets;
 
     @Parameter(names = { "--uri", "-uri", "-u" }, description = "Database URI for sources.")
     private String uri;
 
-    @Parameter(names = { "--dir", "-dir", "-d" }, description = "Root directory for sources.")
-    private String sourceDir;
+    @Parameter(names = { "--dir", "-dir", "-d" }, description = "Root directory for sources.", variableArity = true)
+    private List<String> inputPaths;
 
     @Parameter(names = { "--file-list", "-filelist" }, description = "Path to a file containing a list of files to analyze.")
     private String fileListPath;
@@ -192,10 +195,6 @@ public class PMDParameters {
      * @throws IllegalArgumentException if the parameters are inconsistent or incomplete
      */
     public PMDConfiguration toConfiguration() {
-        if (null == this.getSourceDir() && null == this.getUri() && null == this.getFileListPath()) {
-            throw new IllegalArgumentException(
-                    "Please provide a parameter for source root directory (-dir or -d), database URI (-uri or -u), or file list path (-filelist).");
-        }
         PMDConfiguration configuration = new PMDConfiguration();
         configuration.setInputPaths(this.getSourceDir());
         configuration.setInputFilePath(this.getFileListPath());
@@ -329,12 +328,22 @@ public class PMDParameters {
         return auxclasspath;
     }
 
+    @Deprecated
     public String getRulesets() {
+        return StringUtils.join(rulesets, ",");
+    }
+
+    public List<String> getRulesetRefs() {
         return rulesets;
     }
 
+    public List<String> getInputPaths() {
+        return inputPaths;
+    }
+
+    @Deprecated
     public String getSourceDir() {
-        return sourceDir;
+        return StringUtils.join(inputPaths, ",");
     }
 
     public String getFileListPath() {

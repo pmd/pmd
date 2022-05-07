@@ -40,6 +40,7 @@ import net.sourceforge.pmd.junit.JavaUtilLoggingRule;
 public class CoreCliTest {
 
     private static final String DUMMY_RULESET = "net/sourceforge/pmd/cli/FakeRuleset.xml";
+    private static final String DUMMY_RULESET2 = "net/sourceforge/pmd/cli/FakeRuleset2.xml";
     private static final String STRING_TO_REPLACE = "__should_be_replaced__";
 
     @Rule
@@ -54,6 +55,7 @@ public class CoreCliTest {
     public final SystemErrRule errStreamCaptor = new SystemErrRule();
 
     private Path srcDir;
+    private Path srcDir2;
 
     @Before
     public void setup() throws IOException {
@@ -63,8 +65,10 @@ public class CoreCliTest {
 
         // create a few files
         srcDir = Files.createDirectories(root.resolve("src"));
+        srcDir2 = Files.createDirectories(root.resolve("src2"));
         writeString(srcDir.resolve("someSource.dummy"), "dummy text");
-        
+        writeString(srcDir2.resolve("someSource.dummy"), "dummy text");
+        // reset logger?
         Logger.getLogger("net.sourceforge.pmd");
     }
 
@@ -199,6 +203,23 @@ public class CoreCliTest {
         StatusCode code = PMD.runPmd(args);
         assertEquals(StatusCode.ERROR, code);
         assertThatErrAndOut(not(containsStringIgnoringCase("Available report formats and")));
+    }
+
+    @Test
+    public void testMultipleRulesets() {
+        startCapturingErrAndOut();
+        runPmdSuccessfully("--no-cache", "-d", srcDir, "-R", DUMMY_RULESET, DUMMY_RULESET2);
+        runPmdSuccessfully("--no-cache", "-d", srcDir, "-R", DUMMY_RULESET, DUMMY_RULESET2, "--");
+        // ensure -d is not considered a ruleset
+        runPmdSuccessfully("--no-cache", "-R", DUMMY_RULESET, DUMMY_RULESET2, "-d", srcDir);
+    }
+
+    @Test
+    public void testMultipleDirectories() {
+        startCapturingErrAndOut();
+        runPmdSuccessfully("--no-cache", "-d", srcDir, srcDir2, "-R", DUMMY_RULESET);
+        runPmdSuccessfully("--no-cache", "-R", DUMMY_RULESET, "-d", srcDir, srcDir2);
+        runPmdSuccessfully("--no-cache", "-R", DUMMY_RULESET, "-d", srcDir, srcDir2, "--");
     }
 
     private void assertThatErrAndOut(Matcher<String> matcher) {
