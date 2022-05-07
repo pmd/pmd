@@ -59,16 +59,6 @@ import net.sourceforge.pmd.util.ResourceLoader;
  * <td>all</td>
  * </tr>
  * <tr>
- * <td>java-basic</td>
- * <td>rulesets/java/basic.xml</td>
- * <td>all</td>
- * </tr>
- * <tr>
- * <td>50</td>
- * <td>rulesets/releases/50.xml</td>
- * <td>all</td>
- * </tr>
- * <tr>
  * <td>rulesets/java/basic.xml/EmptyCatchBlock</td>
  * <td>rulesets/java/basic.xml</td>
  * <td>EmptyCatchBlock</td>
