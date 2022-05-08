@@ -115,7 +115,13 @@ public class UseCollectionIsEmptyRule extends AbstractInefficientZeroCheck {
             classOrEnumBody = expr.getFirstParentOfType(ASTEnumBody.class);
         }                 
         if (classOrEnumBody == null) {
-            classOrEnumBody = expr.getFirstParentOfType(ASTRecordBody.class);
+            classOrEnumBody = expr.getFirstParentOfType(ASTRecordDeclaration.class);
+            List<ASTVariableDeclaratorId> descendantsOfType = classOrEnumBody.findDescendantsOfType(ASTVariableDeclaratorId.class);
+            for (ASTVariableDeclaratorId variableDeclaratorId : descendantsOfType) {
+                if (variableDeclaratorId.getName().equals(varName)) {
+                    return variableDeclaratorId.getTypeNode().getTypeDefinition();
+                }
+            }
         }
         List<ASTVariableDeclarator> varDeclarators = classOrEnumBody.findDescendantsOfType(ASTVariableDeclarator.class);
         for (ASTVariableDeclarator varDeclarator : varDeclarators) {
