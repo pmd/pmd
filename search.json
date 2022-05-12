@@ -136,6 +136,53 @@
 
 
 {
+"title": "Best Practices (HTML, Best Practices)",
+"tags": "",
+"keywords": "Best Practices",
+"url": "pmd_rules_html_bestpractices.html#best practices",
+"summary": "Rules which enforce generally accepted best practices."
+}
+,
+
+{
+"title": "AvoidInlineStyles (HTML, Best Practices)",
+"tags": "",
+"keywords": "AvoidInlineStyles",
+"url": "pmd_rules_html_bestpractices.html#avoidinlinestyles",
+"summary": "Rules which enforce generally accepted best practices."
+}
+,
+
+{
+"title": "UnnecessaryTypeAttribute (HTML, Best Practices)",
+"tags": "",
+"keywords": "UnnecessaryTypeAttribute",
+"url": "pmd_rules_html_bestpractices.html#unnecessarytypeattribute",
+"summary": "Rules which enforce generally accepted best practices."
+}
+,
+
+{
+"title": "UseAltAttributeForImages (HTML, Best Practices)",
+"tags": "",
+"keywords": "UseAltAttributeForImages",
+"url": "pmd_rules_html_bestpractices.html#usealtattributeforimages",
+"summary": "Rules which enforce generally accepted best practices."
+}
+
+
+
+
+
+,
+
+
+
+
+
+
+
+{
 "title": "Best Practices (PLSQL, Best Practices)",
 "tags": "",
 "keywords": "Best Practices",
@@ -149,6 +196,44 @@
 "tags": "",
 "keywords": "TomKytesDespair",
 "url": "pmd_rules_plsql_bestpractices.html#tomkytesdespair",
+"summary": "Rules which enforce generally accepted best practices."
+}
+
+
+
+
+
+,
+
+
+
+
+
+
+
+{
+"title": "Best Practices (VM, Best Practices)",
+"tags": "",
+"keywords": "Best Practices",
+"url": "pmd_rules_vm_bestpractices.html#best practices",
+"summary": "Rules which enforce generally accepted best practices."
+}
+,
+
+{
+"title": "AvoidReassigningParameters (VM, Best Practices)",
+"tags": "",
+"keywords": "AvoidReassigningParameters",
+"url": "pmd_rules_vm_bestpractices.html#avoidreassigningparameters",
+"summary": "Rules which enforce generally accepted best practices."
+}
+,
+
+{
+"title": "UnusedMacroParameter (VM, Best Practices)",
+"tags": "",
+"keywords": "UnusedMacroParameter",
+"url": "pmd_rules_vm_bestpractices.html#unusedmacroparameter",
 "summary": "Rules which enforce generally accepted best practices."
 }
 
@@ -252,91 +337,6 @@
 "tags": "",
 "keywords": "NoJspForward",
 "url": "pmd_rules_jsp_bestpractices.html#nojspforward",
-"summary": "Rules which enforce generally accepted best practices."
-}
-
-
-
-
-
-,
-
-
-
-
-
-
-
-{
-"title": "Best Practices (VM, Best Practices)",
-"tags": "",
-"keywords": "Best Practices",
-"url": "pmd_rules_vm_bestpractices.html#best practices",
-"summary": "Rules which enforce generally accepted best practices."
-}
-,
-
-{
-"title": "AvoidReassigningParameters (VM, Best Practices)",
-"tags": "",
-"keywords": "AvoidReassigningParameters",
-"url": "pmd_rules_vm_bestpractices.html#avoidreassigningparameters",
-"summary": "Rules which enforce generally accepted best practices."
-}
-,
-
-{
-"title": "UnusedMacroParameter (VM, Best Practices)",
-"tags": "",
-"keywords": "UnusedMacroParameter",
-"url": "pmd_rules_vm_bestpractices.html#unusedmacroparameter",
-"summary": "Rules which enforce generally accepted best practices."
-}
-
-
-
-
-
-,
-
-
-
-
-
-
-
-{
-"title": "Best Practices (HTML, Best Practices)",
-"tags": "",
-"keywords": "Best Practices",
-"url": "pmd_rules_html_bestpractices.html#best practices",
-"summary": "Rules which enforce generally accepted best practices."
-}
-,
-
-{
-"title": "AvoidInlineStyles (HTML, Best Practices)",
-"tags": "",
-"keywords": "AvoidInlineStyles",
-"url": "pmd_rules_html_bestpractices.html#avoidinlinestyles",
-"summary": "Rules which enforce generally accepted best practices."
-}
-,
-
-{
-"title": "UnnecessaryTypeAttribute (HTML, Best Practices)",
-"tags": "",
-"keywords": "UnnecessaryTypeAttribute",
-"url": "pmd_rules_html_bestpractices.html#unnecessarytypeattribute",
-"summary": "Rules which enforce generally accepted best practices."
-}
-,
-
-{
-"title": "UseAltAttributeForImages (HTML, Best Practices)",
-"tags": "",
-"keywords": "UseAltAttributeForImages",
-"url": "pmd_rules_html_bestpractices.html#usealtattributeforimages",
 "summary": "Rules which enforce generally accepted best practices."
 }
 
@@ -2265,62 +2265,6 @@
 
 
 {
-"title": "Design (Java Server Pages, Design)",
-"tags": "",
-"keywords": "Design",
-"url": "pmd_rules_jsp_design.html#design",
-"summary": "Rules that help you discover design issues."
-}
-,
-
-{
-"title": "NoInlineScript (Java Server Pages, Design)",
-"tags": "",
-"keywords": "NoInlineScript",
-"url": "pmd_rules_jsp_design.html#noinlinescript",
-"summary": "Rules that help you discover design issues."
-}
-,
-
-{
-"title": "NoInlineStyleInformation (Java Server Pages, Design)",
-"tags": "",
-"keywords": "NoInlineStyleInformation",
-"url": "pmd_rules_jsp_design.html#noinlinestyleinformation",
-"summary": "Rules that help you discover design issues."
-}
-,
-
-{
-"title": "NoLongScripts (Java Server Pages, Design)",
-"tags": "",
-"keywords": "NoLongScripts",
-"url": "pmd_rules_jsp_design.html#nolongscripts",
-"summary": "Rules that help you discover design issues."
-}
-,
-
-{
-"title": "NoScriptlets (Java Server Pages, Design)",
-"tags": "",
-"keywords": "NoScriptlets",
-"url": "pmd_rules_jsp_design.html#noscriptlets",
-"summary": "Rules that help you discover design issues."
-}
-
-
-
-
-
-,
-
-
-
-
-
-
-
-{
 "title": "Design (VM, Design)",
 "tags": "",
 "keywords": "Design",
@@ -2370,6 +2314,62 @@
 "tags": "",
 "keywords": "NoInlineStyles",
 "url": "pmd_rules_vm_design.html#noinlinestyles",
+"summary": "Rules that help you discover design issues."
+}
+
+
+
+
+
+,
+
+
+
+
+
+
+
+{
+"title": "Design (Java Server Pages, Design)",
+"tags": "",
+"keywords": "Design",
+"url": "pmd_rules_jsp_design.html#design",
+"summary": "Rules that help you discover design issues."
+}
+,
+
+{
+"title": "NoInlineScript (Java Server Pages, Design)",
+"tags": "",
+"keywords": "NoInlineScript",
+"url": "pmd_rules_jsp_design.html#noinlinescript",
+"summary": "Rules that help you discover design issues."
+}
+,
+
+{
+"title": "NoInlineStyleInformation (Java Server Pages, Design)",
+"tags": "",
+"keywords": "NoInlineStyleInformation",
+"url": "pmd_rules_jsp_design.html#noinlinestyleinformation",
+"summary": "Rules that help you discover design issues."
+}
+,
+
+{
+"title": "NoLongScripts (Java Server Pages, Design)",
+"tags": "",
+"keywords": "NoLongScripts",
+"url": "pmd_rules_jsp_design.html#nolongscripts",
+"summary": "Rules that help you discover design issues."
+}
+,
+
+{
+"title": "NoScriptlets (Java Server Pages, Design)",
+"tags": "",
+"keywords": "NoScriptlets",
+"url": "pmd_rules_jsp_design.html#noscriptlets",
 "summary": "Rules that help you discover design issues."
 }
 
@@ -3184,6 +3184,44 @@
 
 
 {
+"title": "Error Prone (VM, Error Prone)",
+"tags": "",
+"keywords": "Error Prone",
+"url": "pmd_rules_vm_errorprone.html#error prone",
+"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
+}
+,
+
+{
+"title": "EmptyForeachStmt (VM, Error Prone)",
+"tags": "",
+"keywords": "EmptyForeachStmt",
+"url": "pmd_rules_vm_errorprone.html#emptyforeachstmt",
+"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
+}
+,
+
+{
+"title": "EmptyIfStmt (VM, Error Prone)",
+"tags": "",
+"keywords": "EmptyIfStmt",
+"url": "pmd_rules_vm_errorprone.html#emptyifstmt",
+"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
+}
+
+
+
+
+
+,
+
+
+
+
+
+
+
+{
 "title": "Error Prone (Java Server Pages, Error Prone)",
 "tags": "",
 "keywords": "Error Prone",
@@ -3213,28 +3251,19 @@
 
 
 {
-"title": "Error Prone (VM, Error Prone)",
+"title": "Error Prone (XML, Error Prone)",
 "tags": "",
 "keywords": "Error Prone",
-"url": "pmd_rules_vm_errorprone.html#error prone",
+"url": "pmd_rules_xml_errorprone.html#error prone",
 "summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
 }
 ,
 
 {
-"title": "EmptyForeachStmt (VM, Error Prone)",
+"title": "MistypedCDATASection (XML, Error Prone)",
 "tags": "",
-"keywords": "EmptyForeachStmt",
-"url": "pmd_rules_vm_errorprone.html#emptyforeachstmt",
-"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
-}
-,
-
-{
-"title": "EmptyIfStmt (VM, Error Prone)",
-"tags": "",
-"keywords": "EmptyIfStmt",
-"url": "pmd_rules_vm_errorprone.html#emptyifstmt",
+"keywords": "MistypedCDATASection",
+"url": "pmd_rules_xml_errorprone.html#mistypedcdatasection",
 "summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
 }
 
@@ -4245,35 +4274,6 @@
 
 
 {
-"title": "Error Prone (XML, Error Prone)",
-"tags": "",
-"keywords": "Error Prone",
-"url": "pmd_rules_xml_errorprone.html#error prone",
-"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
-}
-,
-
-{
-"title": "MistypedCDATASection (XML, Error Prone)",
-"tags": "",
-"keywords": "MistypedCDATASection",
-"url": "pmd_rules_xml_errorprone.html#mistypedcdatasection",
-"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
-}
-
-
-
-
-
-,
-
-
-
-
-
-
-
-{
 "title": "Error Prone (Apex, Error Prone)",
 "tags": "",
 "keywords": "Error Prone",
@@ -4475,11 +4475,11 @@
 
 
 {
-"title": "HTML Rules",
-"tags": "rule_referenceshtml",
+"title": "Processing HTML files",
+"tags": "",
 "keywords": "",
-"url": "pmd_rules_html.html",
-"summary": "Index of all built-in rules available for HTML"
+"url": "pmd_languages_html.html",
+"summary": ""
 }
 
 
@@ -4491,11 +4491,11 @@
 
 
 {
-"title": "Processing HTML files",
-"tags": "",
+"title": "HTML Rules",
+"tags": "rule_referenceshtml",
 "keywords": "",
-"url": "pmd_languages_html.html",
-"summary": ""
+"url": "pmd_rules_html.html",
+"summary": "Index of all built-in rules available for HTML"
 }
 
 
@@ -4587,11 +4587,11 @@
 
 
 {
-"title": "Java Rules",
-"tags": "rule_referencesjava",
+"title": "Supported Java Versions",
+"tags": "",
 "keywords": "",
-"url": "pmd_rules_java.html",
-"summary": "Index of all built-in rules available for Java"
+"url": "pmd_languages_java.html",
+"summary": ""
 }
 
 
@@ -4603,11 +4603,11 @@
 
 
 {
-"title": "Supported Java Versions",
-"tags": "",
+"title": "Java Rules",
+"tags": "rule_referencesjava",
 "keywords": "",
-"url": "pmd_languages_java.html",
-"summary": ""
+"url": "pmd_rules_java.html",
+"summary": "Index of all built-in rules available for Java"
 }
 
 
@@ -4635,11 +4635,11 @@
 
 
 {
-"title": "Java Server Pages Rules",
-"tags": "rule_referencesjsp",
+"title": "JSP Support",
+"tags": "",
 "keywords": "",
-"url": "pmd_rules_jsp.html",
-"summary": "Index of all built-in rules available for Java Server Pages"
+"url": "pmd_languages_jsp.html",
+"summary": ""
 }
 
 
@@ -4651,11 +4651,11 @@
 
 
 {
-"title": "JSP Support",
-"tags": "",
+"title": "Java Server Pages Rules",
+"tags": "rule_referencesjsp",
 "keywords": "",
-"url": "pmd_languages_jsp.html",
-"summary": ""
+"url": "pmd_rules_jsp.html",
+"summary": "Index of all built-in rules available for Java Server Pages"
 }
 
 
@@ -5405,11 +5405,11 @@
 
 
 {
-"title": "PLSQL Rules",
-"tags": "rule_referencesplsql",
+"title": "PLSQL",
+"tags": "",
 "keywords": "",
-"url": "pmd_rules_plsql.html",
-"summary": "Index of all built-in rules available for PLSQL"
+"url": "pmd_languages_plsql.html",
+"summary": ""
 }
 
 
@@ -5421,11 +5421,11 @@
 
 
 {
-"title": "PLSQL",
-"tags": "",
+"title": "PLSQL Rules",
+"tags": "rule_referencesplsql",
 "keywords": "",
-"url": "pmd_languages_plsql.html",
-"summary": ""
+"url": "pmd_rules_plsql.html",
+"summary": "Index of all built-in rules available for PLSQL"
 }
 
 
@@ -5581,11 +5581,11 @@
 
 
 {
-"title": "Guidelines for standard rules",
-"tags": "devdocsextending",
+"title": "Rule guidelines",
+"tags": "extendinguserdocs",
 "keywords": "",
-"url": "pmd_devdocs_major_rule_guidelines.html",
-"summary": "Guidelines for rules that are included in the standard distribution"
+"url": "pmd_userdocs_extending_rule_guidelines.html",
+"summary": "Rule Guidelines, or the last touches to a rule"
 }
 
 
@@ -5597,11 +5597,11 @@
 
 
 {
-"title": "Rule guidelines",
-"tags": "extendinguserdocs",
+"title": "Guidelines for standard rules",
+"tags": "devdocsextending",
 "keywords": "",
-"url": "pmd_userdocs_extending_rule_guidelines.html",
-"summary": "Rule Guidelines, or the last touches to a rule"
+"url": "pmd_devdocs_major_rule_guidelines.html",
+"summary": "Guidelines for rules that are included in the standard distribution"
 }
 
 
@@ -5625,44 +5625,6 @@
 ,
 
 
-
-
-
-
-
-
-
-{
-"title": "Security (Java Server Pages, Security)",
-"tags": "",
-"keywords": "Security",
-"url": "pmd_rules_jsp_security.html#security",
-"summary": "Rules that flag potential security flaws."
-}
-,
-
-{
-"title": "IframeMissingSrcAttribute (Java Server Pages, Security)",
-"tags": "",
-"keywords": "IframeMissingSrcAttribute",
-"url": "pmd_rules_jsp_security.html#iframemissingsrcattribute",
-"summary": "Rules that flag potential security flaws."
-}
-,
-
-{
-"title": "NoUnsanitizedJSPExpression (Java Server Pages, Security)",
-"tags": "",
-"keywords": "NoUnsanitizedJSPExpression",
-"url": "pmd_rules_jsp_security.html#nounsanitizedjspexpression",
-"summary": "Rules that flag potential security flaws."
-}
-
-
-
-
-
-,
 
 
 
@@ -5702,6 +5664,44 @@
 "tags": "",
 "keywords": "VfUnescapeEl",
 "url": "pmd_rules_vf_security.html#vfunescapeel",
+"summary": "Rules that flag potential security flaws."
+}
+
+
+
+
+
+,
+
+
+
+
+
+
+
+{
+"title": "Security (Java Server Pages, Security)",
+"tags": "",
+"keywords": "Security",
+"url": "pmd_rules_jsp_security.html#security",
+"summary": "Rules that flag potential security flaws."
+}
+,
+
+{
+"title": "IframeMissingSrcAttribute (Java Server Pages, Security)",
+"tags": "",
+"keywords": "IframeMissingSrcAttribute",
+"url": "pmd_rules_jsp_security.html#iframemissingsrcattribute",
+"summary": "Rules that flag potential security flaws."
+}
+,
+
+{
+"title": "NoUnsanitizedJSPExpression (Java Server Pages, Security)",
+"tags": "",
+"keywords": "NoUnsanitizedJSPExpression",
+"url": "pmd_rules_jsp_security.html#nounsanitizedjspexpression",
 "summary": "Rules that flag potential security flaws."
 }
 
@@ -6091,11 +6091,11 @@
 
 
 {
-"title": "XML Rules",
-"tags": "rule_referencesxml",
+"title": "Processing XML files",
+"tags": "",
 "keywords": "",
-"url": "pmd_rules_xml.html",
-"summary": "Index of all built-in rules available for XML"
+"url": "pmd_languages_xml.html",
+"summary": ""
 }
 
 
@@ -6107,11 +6107,11 @@
 
 
 {
-"title": "Processing XML files",
-"tags": "",
+"title": "XML Rules",
+"tags": "rule_referencesxml",
 "keywords": "",
-"url": "pmd_languages_xml.html",
-"summary": ""
+"url": "pmd_rules_xml.html",
+"summary": "Index of all built-in rules available for XML"
 }
 
 

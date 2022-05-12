@@ -56,7 +56,19 @@
   
   
   <url>
+    <loc>https://pmd.github.io/pmd/pmd_rules_html_bestpractices.html</loc>
+  </url>
+  
+  
+  
+  <url>
     <loc>https://pmd.github.io/pmd/pmd_rules_plsql_bestpractices.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_rules_vm_bestpractices.html</loc>
   </url>
   
   
@@ -69,18 +81,6 @@
   
   <url>
     <loc>https://pmd.github.io/pmd/pmd_rules_jsp_bestpractices.html</loc>
-  </url>
-  
-  
-  
-  <url>
-    <loc>https://pmd.github.io/pmd/pmd_rules_vm_bestpractices.html</loc>
-  </url>
-  
-  
-  
-  <url>
-    <loc>https://pmd.github.io/pmd/pmd_rules_html_bestpractices.html</loc>
   </url>
   
   
@@ -194,13 +194,13 @@
   
   
   <url>
-    <loc>https://pmd.github.io/pmd/pmd_rules_jsp_design.html</loc>
+    <loc>https://pmd.github.io/pmd/pmd_rules_vm_design.html</loc>
   </url>
   
   
   
   <url>
-    <loc>https://pmd.github.io/pmd/pmd_rules_vm_design.html</loc>
+    <loc>https://pmd.github.io/pmd/pmd_rules_jsp_design.html</loc>
   </url>
   
   
@@ -260,13 +260,19 @@
   
   
   <url>
+    <loc>https://pmd.github.io/pmd/pmd_rules_vm_errorprone.html</loc>
+  </url>
+  
+  
+  
+  <url>
     <loc>https://pmd.github.io/pmd/pmd_rules_jsp_errorprone.html</loc>
   </url>
   
   
   
   <url>
-    <loc>https://pmd.github.io/pmd/pmd_rules_vm_errorprone.html</loc>
+    <loc>https://pmd.github.io/pmd/pmd_rules_xml_errorprone.html</loc>
   </url>
   
   
@@ -279,12 +285,6 @@
   
   <url>
     <loc>https://pmd.github.io/pmd/pmd_rules_java_errorprone.html</loc>
-  </url>
-  
-  
-  
-  <url>
-    <loc>https://pmd.github.io/pmd/pmd_rules_xml_errorprone.html</loc>
   </url>
   
   
@@ -322,13 +322,13 @@
   
   
   <url>
-    <loc>https://pmd.github.io/pmd/pmd_rules_html.html</loc>
+    <loc>https://pmd.github.io/pmd/pmd_languages_html.html</loc>
   </url>
   
   
   
   <url>
-    <loc>https://pmd.github.io/pmd/pmd_languages_html.html</loc>
+    <loc>https://pmd.github.io/pmd/pmd_rules_html.html</loc>
   </url>
   
   
@@ -364,13 +364,13 @@
   
   
   <url>
-    <loc>https://pmd.github.io/pmd/pmd_rules_java.html</loc>
+    <loc>https://pmd.github.io/pmd/pmd_languages_java.html</loc>
   </url>
   
   
   
   <url>
-    <loc>https://pmd.github.io/pmd/pmd_languages_java.html</loc>
+    <loc>https://pmd.github.io/pmd/pmd_rules_java.html</loc>
   </url>
   
   
@@ -382,13 +382,13 @@
   
   
   <url>
-    <loc>https://pmd.github.io/pmd/pmd_rules_jsp.html</loc>
+    <loc>https://pmd.github.io/pmd/pmd_languages_jsp.html</loc>
   </url>
   
   
   
   <url>
-    <loc>https://pmd.github.io/pmd/pmd_languages_jsp.html</loc>
+    <loc>https://pmd.github.io/pmd/pmd_rules_jsp.html</loc>
   </url>
   
   
@@ -496,13 +496,13 @@
   
   
   <url>
-    <loc>https://pmd.github.io/pmd/pmd_rules_plsql.html</loc>
+    <loc>https://pmd.github.io/pmd/pmd_languages_plsql.html</loc>
   </url>
   
   
   
   <url>
-    <loc>https://pmd.github.io/pmd/pmd_languages_plsql.html</loc>
+    <loc>https://pmd.github.io/pmd/pmd_rules_plsql.html</loc>
   </url>
   
   
@@ -562,13 +562,13 @@
   
   
   <url>
-    <loc>https://pmd.github.io/pmd/pmd_devdocs_major_rule_guidelines.html</loc>
+    <loc>https://pmd.github.io/pmd/pmd_userdocs_extending_rule_guidelines.html</loc>
   </url>
   
   
   
   <url>
-    <loc>https://pmd.github.io/pmd/pmd_userdocs_extending_rule_guidelines.html</loc>
+    <loc>https://pmd.github.io/pmd/pmd_devdocs_major_rule_guidelines.html</loc>
   </url>
   
   
@@ -582,13 +582,13 @@
   
   
   <url>
-    <loc>https://pmd.github.io/pmd/pmd_rules_jsp_security.html</loc>
+    <loc>https://pmd.github.io/pmd/pmd_rules_vf_security.html</loc>
   </url>
   
   
   
   <url>
-    <loc>https://pmd.github.io/pmd/pmd_rules_vf_security.html</loc>
+    <loc>https://pmd.github.io/pmd/pmd_rules_jsp_security.html</loc>
   </url>
   
   
@@ -704,13 +704,13 @@
   
   
   <url>
-    <loc>https://pmd.github.io/pmd/pmd_rules_xml.html</loc>
+    <loc>https://pmd.github.io/pmd/pmd_languages_xml.html</loc>
   </url>
   
   
   
   <url>
-    <loc>https://pmd.github.io/pmd/pmd_languages_xml.html</loc>
+    <loc>https://pmd.github.io/pmd/pmd_rules_xml.html</loc>
   </url>
   
   
