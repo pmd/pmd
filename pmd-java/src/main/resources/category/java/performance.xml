@@ -968,6 +968,7 @@ You must use `new ArrayList<>(Arrays.asList(...))` if that is inconvenient for y
 <![CDATA[
 //Statement/ForStatement
     [not(.//IfStatement)]
+    [count(Statement//StatementExpression)=1]
     [@Foreach = true() or ForInit//VariableInitializer//Literal[@IntLiteral= true() and @Image='0']]
     //StatementExpression
       [PrimaryExpression
