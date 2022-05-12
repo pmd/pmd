@@ -17,6 +17,7 @@ This is a {{ site.pmd.release_type }} release.
 ### Fixed Issues
 
 * java-performance
+  * [#3379](https://github.com/pmd/pmd/issues/3379): \[java] UseArraysAsList must ignore primitive arrays
   * [#3965](https://github.com/pmd/pmd/issues/3965): \[java] UseArraysAsList false positive with non-trivial loops
 * javascript
   * [#3948](https://github.com/pmd/pmd/issues/3948): \[js] Invalid operator error for method property in object literal
