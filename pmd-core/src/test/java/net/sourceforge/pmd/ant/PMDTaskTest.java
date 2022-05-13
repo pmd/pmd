@@ -22,7 +22,6 @@ import org.junit.contrib.java.lang.system.RestoreSystemProperties;
 import org.junit.rules.TestRule;
 
 import net.sourceforge.pmd.internal.Slf4jSimpleConfiguration;
-
 import net.sourceforge.pmd.util.IOUtil;
 
 public class PMDTaskTest {

@@ -19,5 +19,4 @@ public final class HtmlParser implements net.sourceforge.pmd.lang.ast.Parser {
         HtmlTreeBuilder builder = new HtmlTreeBuilder();
         return builder.build(doc, data, task, new HashMap<>());
     }
-    }
 }
