@@ -80,30 +80,56 @@ public class IOUtilTest {
 
     @Test
     public void testNormalizePath() {
-        Assert.assertEquals("ab/cd.txt", IOUtil.normalizePath("ab/ef/../cd.txt"));
-        Assert.assertEquals("/a.txt", IOUtil.normalizePath("/x/../../a.txt"));
-        Assert.assertEquals("/foo", IOUtil.normalizePath("//../foo"));
-        Assert.assertEquals("/foo", IOUtil.normalizePath("/foo//"));
-        Assert.assertEquals("/foo", IOUtil.normalizePath("/foo/./"));
-        Assert.assertEquals("/bar", IOUtil.normalizePath("/foo/../bar"));
-        Assert.assertEquals("/bar", IOUtil.normalizePath("/foo/../bar/"));
-        Assert.assertEquals("/baz", IOUtil.normalizePath("/foo/../bar/../baz"));
-        Assert.assertEquals("/foo/bar", IOUtil.normalizePath("//foo//./bar"));
-        Assert.assertEquals("foo", IOUtil.normalizePath("foo/bar/.."));
-        Assert.assertEquals("bar", IOUtil.normalizePath("foo/../bar"));
-        Assert.assertEquals("/foo/baz", IOUtil.normalizePath("//foo/bar/../baz"));
-        Assert.assertEquals("~/bar", IOUtil.normalizePath("~/foo/../bar/"));
-        Assert.assertEquals("/", IOUtil.normalizePath("/../"));
-        Assert.assertEquals("bar", IOUtil.normalizePath("~/../bar"));
-        Assert.assertEquals("bar", IOUtil.normalizePath("./bar"));
+        if (SystemUtils.IS_OS_UNIX) {
+            Assert.assertEquals("ab/cd.txt", IOUtil.normalizePath("ab/ef/../cd.txt"));
+            Assert.assertEquals("/a.txt", IOUtil.normalizePath("/x/../../a.txt"));
+            Assert.assertEquals("/foo", IOUtil.normalizePath("//../foo"));
+            Assert.assertEquals("/foo", IOUtil.normalizePath("/foo//"));
+            Assert.assertEquals("/foo", IOUtil.normalizePath("/foo/./"));
+            Assert.assertEquals("/bar", IOUtil.normalizePath("/foo/../bar"));
+            Assert.assertEquals("/bar", IOUtil.normalizePath("/foo/../bar/"));
+            Assert.assertEquals("/baz", IOUtil.normalizePath("/foo/../bar/../baz"));
+            Assert.assertEquals("/foo/bar", IOUtil.normalizePath("//foo//./bar"));
+            Assert.assertEquals("foo", IOUtil.normalizePath("foo/bar/.."));
+            Assert.assertEquals("bar", IOUtil.normalizePath("foo/../bar"));
+            Assert.assertEquals("/foo/baz", IOUtil.normalizePath("//foo/bar/../baz"));
+            Assert.assertEquals("~/bar", IOUtil.normalizePath("~/foo/../bar/"));
+            Assert.assertEquals("/", IOUtil.normalizePath("/../"));
+            Assert.assertEquals("bar", IOUtil.normalizePath("~/../bar"));
+            Assert.assertEquals("bar", IOUtil.normalizePath("./bar"));
 
-        Assert.assertNull(IOUtil.normalizePath("../foo"));
-        Assert.assertNull(IOUtil.normalizePath("foo/../../bar"));
-        Assert.assertNull(IOUtil.normalizePath("."));
+            Assert.assertNull(IOUtil.normalizePath("../foo"));
+            Assert.assertNull(IOUtil.normalizePath("foo/../../bar"));
+            Assert.assertNull(IOUtil.normalizePath("."));
 
-        Assert.assertTrue(IOUtil.equalsNormalizedPaths("foo/../bar", "bar/./"));
+            Assert.assertTrue(IOUtil.equalsNormalizedPaths("foo/../bar", "bar/./"));
+        }
 
         if (SystemUtils.IS_OS_WINDOWS) {
+            Assert.assertEquals("ab\\cd.txt", IOUtil.normalizePath("ab\\ef\\..\\cd.txt"));
+            Assert.assertEquals("\\a.txt", IOUtil.normalizePath("\\x\\..\\..\\a.txt"));
+            Assert.assertEquals("\\foo", IOUtil.normalizePath("\\foo\\\\"));
+            Assert.assertEquals("\\foo", IOUtil.normalizePath("\\foo\\.\\"));
+            Assert.assertEquals("\\bar", IOUtil.normalizePath("\\foo\\..\\bar"));
+            Assert.assertEquals("\\bar", IOUtil.normalizePath("\\foo\\..\\bar\\"));
+            Assert.assertEquals("\\baz", IOUtil.normalizePath("\\foo\\..\\bar\\..\\baz"));
+            Assert.assertEquals("\\\\foo\\bar\\", IOUtil.normalizePath("\\\\foo\\bar"));
+            Assert.assertEquals("\\\\foo\\bar\\baz", IOUtil.normalizePath("\\\\foo\\bar\\..\\baz"));
+            Assert.assertEquals("foo", IOUtil.normalizePath("foo\\bar\\.."));
+            Assert.assertEquals("bar", IOUtil.normalizePath("foo\\..\\bar"));
+            Assert.assertEquals("\\foo\\baz", IOUtil.normalizePath("\\foo\\bar\\..\\baz"));
+            Assert.assertEquals("\\", IOUtil.normalizePath("\\..\\"));
+            Assert.assertEquals("bar", IOUtil.normalizePath(".\\bar"));
+
+            Assert.assertNull(IOUtil.normalizePath("\\\\..\\foo"));
+            Assert.assertNull(IOUtil.normalizePath("..\\foo"));
+            Assert.assertNull(IOUtil.normalizePath("foo\\..\\..\\bar"));
+            Assert.assertNull(IOUtil.normalizePath("."));
+            Assert.assertNull(IOUtil.normalizePath("\\\\foo\\\\.\\bar"));
+            Assert.assertNull(IOUtil.normalizePath("\\\\foo\\.\\bar"));
+
+            Assert.assertTrue(IOUtil.equalsNormalizedPaths("foo\\..\\bar", "bar\\.\\"));
+
             Assert.assertEquals("C:\\bar", IOUtil.normalizePath("C:\\..\\bar"));
             Assert.assertEquals("ab\\cd.txt", IOUtil.normalizePath("ab\\ef\\..\\cd.txt"));
             Assert.assertEquals("C:\\ab\\cd.txt", IOUtil.normalizePath("C:\\ab\\ef\\..\\.\\cd.txt"));

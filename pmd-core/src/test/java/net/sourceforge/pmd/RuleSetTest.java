@@ -12,6 +12,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -581,7 +582,7 @@ public class RuleSetTest {
         assertEquals("Wrong error message", "RuntimeException: Test exception while applying rule", processingError.getMsg());
         assertTrue("Should be a RuntimeException", processingError.getError() instanceof RuntimeException);
         assertEquals("Wrong filename in processing error",
-                "net.sourceforge.pmd.RuleSetTest/ruleExceptionShouldBeReported.java",
+                Paths.get("net.sourceforge.pmd.RuleSetTest", "ruleExceptionShouldBeReported.java").toString(),
                 IOUtil.normalizePath(processingError.getFile()));
 
         assertEquals("There should be a violation", 1, context.getReport().size());
