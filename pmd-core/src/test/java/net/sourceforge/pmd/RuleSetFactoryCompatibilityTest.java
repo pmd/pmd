@@ -9,10 +9,10 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 
-import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
+import net.sourceforge.pmd.util.IOUtil;
 import net.sourceforge.pmd.util.ResourceLoader;
 
 public class RuleSetFactoryCompatibilityTest {
@@ -48,7 +48,7 @@ public class RuleSetFactoryCompatibilityTest {
 
         InputStream stream = new ByteArrayInputStream(ruleset.getBytes(StandardCharsets.ISO_8859_1));
         Reader filtered = rsfc.filterRuleSetFile(stream);
-        String out = IOUtils.toString(filtered);
+        String out = IOUtil.readToString(filtered);
 
         Assert.assertFalse(out.contains("notexisting.xml"));
         Assert.assertFalse(out.contains("OldDummyBasicMockRule"));
@@ -90,7 +90,7 @@ public class RuleSetFactoryCompatibilityTest {
 
         InputStream stream = new ByteArrayInputStream(ruleset.getBytes(StandardCharsets.ISO_8859_1));
         Reader filtered = rsfc.filterRuleSetFile(stream);
-        String out = IOUtils.toString(filtered);
+        String out = IOUtil.readToString(filtered);
 
         Assert.assertTrue(out.contains("OldDummyBasicMockRule"));
     }
@@ -112,7 +112,7 @@ public class RuleSetFactoryCompatibilityTest {
                 + " <rule ref=\"rulesets/dummy/basic.xml/OldNameOfBasicMockRule\" />\n" + "</ruleset>\n";
         InputStream stream = new ByteArrayInputStream(in.getBytes(StandardCharsets.ISO_8859_1));
         Reader filtered = rsfc.filterRuleSetFile(stream);
-        String out = IOUtils.toString(filtered);
+        String out = IOUtil.readToString(filtered);
 
         Assert.assertFalse(out.contains("notexisting.xml"));
         Assert.assertTrue(out.contains("<rule ref=\"rulesets/dummy/basic.xml/DummyBasicMockRule\" />"));
@@ -136,7 +136,7 @@ public class RuleSetFactoryCompatibilityTest {
                 + "   <exclude name=\"AnotherOldNameOfBasicMockRule\"/>\n" + " </rule>\n" + "</ruleset>\n";
         InputStream stream = new ByteArrayInputStream(in.getBytes(StandardCharsets.ISO_8859_1));
         Reader filtered = rsfc.filterRuleSetFile(stream);
-        String out = IOUtils.toString(filtered);
+        String out = IOUtil.readToString(filtered);
 
         Assert.assertFalse(out.contains("OldNameOfBasicMockRule"));
         Assert.assertTrue(out.contains("<exclude name=\"NewNameOfBasicMockRule\" />"));

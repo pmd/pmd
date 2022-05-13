@@ -14,7 +14,7 @@ import java.util.logging.Logger;
 import java.util.zip.CheckedInputStream;
 import java.util.zip.Checksum;
 
-import org.apache.commons.io.IOUtils;
+import net.sourceforge.pmd.util.IOUtil;
 
 /**
  * Base fingerprinter for raw files.
@@ -40,7 +40,7 @@ public class RawFileFingerprinter implements ClasspathEntryFingerprinter {
     public void fingerprint(URL entry, Checksum checksum) throws IOException {
         try (CheckedInputStream inputStream = new CheckedInputStream(entry.openStream(), checksum)) {
             // Just read it, the CheckedInputStream will update the checksum on it's own
-            while (IOUtils.skip(inputStream, Long.MAX_VALUE) == Long.MAX_VALUE) {
+            while (IOUtil.skipFully(inputStream, Long.MAX_VALUE) == Long.MAX_VALUE) {
                 // just loop
             }
         } catch (final FileNotFoundException ignored) {

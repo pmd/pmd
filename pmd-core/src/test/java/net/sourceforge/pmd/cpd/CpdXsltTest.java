@@ -17,9 +17,10 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
-import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
 import org.junit.Test;
+
+import net.sourceforge.pmd.util.IOUtil;
 
 
 public class CpdXsltTest {
@@ -49,7 +50,7 @@ public class CpdXsltTest {
         transformer.setErrorListener(errorListener);
         transformer.transform(cpdReport, result);
 
-        String expected = IOUtils.toString(CpdXsltTest.class.getResourceAsStream("ExpectedCpdHtmlReport.html"), StandardCharsets.UTF_8);
+        String expected = IOUtil.readToString(CpdXsltTest.class.getResourceAsStream("ExpectedCpdHtmlReport.html"), StandardCharsets.UTF_8);
         Assert.assertEquals(expected, result.getWriter().toString());
         Assert.assertTrue("XSLT errors occured: " + errorListener, errorListener.hasNoErrors());
     }
