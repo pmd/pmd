@@ -8,12 +8,11 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.Map;
 
-import org.apache.commons.io.IOUtils;
-
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.apex.ApexJorjeLogging;
 import net.sourceforge.pmd.lang.apex.ApexParserOptions;
 import net.sourceforge.pmd.lang.ast.ParseException;
+import net.sourceforge.pmd.util.IOUtil;
 
 import apex.jorje.data.Locations;
 import apex.jorje.semantic.ast.compilation.Compilation;
@@ -50,7 +49,7 @@ public class ApexParser {
 
     public ApexNode<Compilation> parse(final Reader reader) {
         try {
-            final String sourceCode = IOUtils.toString(reader);
+            final String sourceCode = IOUtil.readToString(reader);
             final Compilation astRoot = parseApex(sourceCode);
             final ApexTreeBuilder treeBuilder = new ApexTreeBuilder(sourceCode, parserOptions);
             suppressMap = treeBuilder.getSuppressMap();
