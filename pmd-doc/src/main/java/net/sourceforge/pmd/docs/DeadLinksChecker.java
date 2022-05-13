@@ -36,10 +36,10 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.sourceforge.pmd.util.IOUtil;
 
 /**
  * Checks links to local pages for non-existing link-targets.
@@ -299,7 +299,7 @@ public class DeadLinksChecker {
 
     private String fileToString(Path mdFile) {
         try (InputStream inputStream = Files.newInputStream(mdFile)) {
-            return IOUtils.toString(inputStream, StandardCharsets.UTF_8);
+            return IOUtil.readToString(inputStream, StandardCharsets.UTF_8);
         } catch (IOException ex) {
             throw new RuntimeException("error reading " + mdFile, ex);
         }

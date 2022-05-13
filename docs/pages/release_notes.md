@@ -20,7 +20,8 @@ This is a {{ site.pmd.release_type }} release.
 ### New and noteworthy
 
 ### Fixed Issues
-
+* core
+  * [#3942](https://github.com/pmd/pmd/issues/3942): \[core] common-io path traversal vulnerability (CVE-2021-29425)
 * javascript
   * [#3948](https://github.com/pmd/pmd/issues/3948): \[js] Invalid operator error for method property in object literal
 

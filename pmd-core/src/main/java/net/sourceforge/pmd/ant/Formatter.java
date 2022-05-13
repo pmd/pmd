@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.commons.lang3.reflect.MethodUtils;
@@ -32,6 +31,7 @@ import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.renderers.RendererFactory;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
+import net.sourceforge.pmd.util.IOUtil;
 import net.sourceforge.pmd.util.datasource.DataSource;
 
 @InternalApi
@@ -190,8 +190,8 @@ public class Formatter {
             isOnError = false;
         } finally {
             if (isOnError) {
-                IOUtils.closeQuietly(output);
-                IOUtils.closeQuietly(writer);
+                IOUtil.closeQuietly(output);
+                IOUtil.closeQuietly(writer);
             }
         }
         return writer;
