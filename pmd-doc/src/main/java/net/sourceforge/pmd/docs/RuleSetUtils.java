@@ -4,12 +4,14 @@
 
 package net.sourceforge.pmd.docs;
 
-import org.apache.commons.io.FilenameUtils;
+import java.io.File;
+
 import org.apache.commons.lang3.StringUtils;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.lang.rule.RuleReference;
+import net.sourceforge.pmd.util.IOUtil;
 
 public final class RuleSetUtils {
 
@@ -28,7 +30,7 @@ public final class RuleSetUtils {
     }
 
     public static String getRuleSetFilename(String rulesetFileName) {
-        return FilenameUtils.getBaseName(StringUtils.chomp(rulesetFileName));
+        return IOUtil.getFilenameBase(StringUtils.chomp(rulesetFileName));
     }
 
     /**
@@ -50,8 +52,8 @@ public final class RuleSetUtils {
     }
 
     public static String getRuleSetClasspath(RuleSet ruleset) {
-        final String RESOURCES_PATH = "/resources/";
-        String filename = FilenameUtils.normalize(StringUtils.chomp(ruleset.getFileName()), true);
+        final String RESOURCES_PATH = File.separator + "resources" + File.separator;
+        String filename = IOUtil.normalizePath(StringUtils.chomp(ruleset.getFileName()));
         int startIndex = filename.lastIndexOf(RESOURCES_PATH);
         if (startIndex > -1) {
             return filename.substring(startIndex + RESOURCES_PATH.length());
