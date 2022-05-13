@@ -971,9 +971,9 @@ You must use `new ArrayList<>(Arrays.asList(...))` if that is inconvenient for y
     [count(Statement//StatementExpression)=1]
     [@Foreach = true() or ForInit//VariableInitializer//Literal[@IntLiteral= true() and @Image='0']]
     (: skip primitive types :)
-    [@Foreach = true() and Expression[not(pmd-java:typeIs('boolean[]') or pmd-java:typeIs('char[]') or pmd-java:typeIs('byte[]') or pmd-java:typeIs('short[]') or pmd-java:typeIs('int[]') or pmd-java:typeIs('long[]') or pmd-java:typeIs('float[]') or pmd-java:typeIs('double[]'))]
+    [@Foreach = true() and Expression[pmd-java:typeIs('java.lang.Object[]')]
         or Expression/RelationalExpression/PrimaryExpression/PrimaryPrefix/Name[substring-before(@Image, '.length') =
-           ancestor::MethodDeclaration[1]//VariableDeclaratorId[not(pmd-java:typeIs('boolean[]') or pmd-java:typeIs('char[]') or pmd-java:typeIs('byte[]') or pmd-java:typeIs('short[]') or pmd-java:typeIs('int[]') or pmd-java:typeIs('long[]') or pmd-java:typeIs('float[]') or pmd-java:typeIs('double[]'))]
+           ancestor::MethodDeclaration[1]//VariableDeclaratorId[pmd-java:typeIs('java.lang.Object[]')]
            /@Name]
     ]
     //StatementExpression
