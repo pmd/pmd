@@ -194,6 +194,21 @@ public class IOUtilTest {
     }
 
     @Test
+    public void testInputStreamFromReader2() throws IOException {
+        int size = 8192 + 8192 + 10;
+        char[] data = new char[size];
+        for (int i = 0; i < size; i++) {
+            data[i] = 'A';
+        }
+        data[8192] = 'ä'; // block size border - in UTF-8 these are two bytes. Decoding needs to take the bytes
+        // from previous block and new block
+        try (InputStream inputStream = IOUtil.fromReader(new StringReader(new String(data)))) {
+            byte[] bytes = IOUtil.toByteArray(inputStream);
+            Assert.assertEquals(new String(data), new String(bytes, StandardCharsets.UTF_8));
+        }
+    }
+
+    @Test
     public void testCopyStream() throws IOException {
         int size = 8192 + 8192 + 10;
         byte[] data = new byte[size];
