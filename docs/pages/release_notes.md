@@ -16,6 +16,8 @@ This is a {{ site.pmd.release_type }} release.
 
 ### Fixed Issues
 
+* core
+  * [#3970](https://github.com/pmd/pmd/issues/3970): \[core] FileCollector.addFile ignores language parameter
 * javascript
   * [#3948](https://github.com/pmd/pmd/issues/3948): \[js] Invalid operator error for method property in object literal
 

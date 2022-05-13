@@ -5,6 +5,8 @@
 package net.sourceforge.pmd.lang;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +14,7 @@ import java.util.Objects;
 
 import org.apache.commons.lang3.StringUtils;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.internal.util.AssertionUtil;
 
 /**
@@ -23,6 +26,8 @@ public class LanguageVersionDiscoverer {
     private Map<Language, LanguageVersion> languageToLanguageVersion = new HashMap<>();
 
     private LanguageVersion forcedVersion;
+
+    private Map<String, LanguageVersion> forcedVersionByFile = new HashMap<>();
 
     public LanguageVersionDiscoverer() {
         this(null);
@@ -97,10 +102,13 @@ public class LanguageVersionDiscoverer {
      *         file.
      */
     public LanguageVersion getDefaultLanguageVersionForFile(String fileName) {
-        List<Language> languages = getLanguagesForFile(fileName);
-        LanguageVersion languageVersion = null;
-        if (!languages.isEmpty()) {
-            languageVersion = getDefaultLanguageVersion(languages.get(0));
+        LanguageVersion languageVersion = forcedVersionByFile.get(fileName);
+
+        if (languageVersion == null) {
+            List<Language> languages = getLanguagesForFile(fileName);
+            if (!languages.isEmpty()) {
+                languageVersion = getDefaultLanguageVersion(languages.get(0));
+            }
         }
         return languageVersion;
     }
@@ -142,4 +150,16 @@ public class LanguageVersionDiscoverer {
     }
 
 
+
+    @InternalApi
+    @Deprecated
+    public void recordLanguageVersionForFile(Path file, LanguageVersion languageVersion) {
+        String fileName;
+        try {
+            fileName = file.toRealPath().toString();
+        } catch (IOException e) {
+            fileName = file.toAbsolutePath().toString();
+        }
+        forcedVersionByFile.put(fileName, languageVersion);
+    }
 }

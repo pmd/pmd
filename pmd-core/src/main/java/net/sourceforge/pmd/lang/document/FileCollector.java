@@ -155,8 +155,10 @@ public final class FileCollector implements AutoCloseable {
             reporter.error("Not a regular file {0}", file);
             return false;
         }
-        NioTextFile nioTextFile = new NioTextFile(file, charset, discoverer.getDefaultLanguageVersion(language), getDisplayName(file));
+        LanguageVersion languageVersion = discoverer.getDefaultLanguageVersion(language);
+        NioTextFile nioTextFile = new NioTextFile(file, charset, languageVersion, getDisplayName(file));
         addFileImpl(nioTextFile);
+        discoverer.recordLanguageVersionForFile(file, languageVersion);
         return true;
     }
 

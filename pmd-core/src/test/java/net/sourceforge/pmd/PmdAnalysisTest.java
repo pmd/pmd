@@ -14,10 +14,17 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
+import java.nio.file.Paths;
+import java.util.List;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.ArgumentMatchers;
 
+import net.sourceforge.pmd.lang.Dummy2LanguageModule;
+import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.rule.AbstractRule;
 import net.sourceforge.pmd.renderers.Renderer;
 
 /**
@@ -69,6 +76,34 @@ public class PmdAnalysisTest {
         try (PmdAnalysis pmd = PmdAnalysis.create(config)) {
             assertThat(pmd.rulesets(), hasSize(1)); // no failure
             assertThat(pmd.getReporter().numErrors(), equalTo(1));
+        }
+    }
+
+    @Test
+    public void testFileWithSpecificLanguage() {
+        final Language language = Dummy2LanguageModule.getInstance();
+        PMDConfiguration config = new PMDConfiguration();
+        config.setIgnoreIncrementalAnalysis(true);
+        RuleSet ruleset = RuleSet.forSingleRule(new TestRule());
+
+        try (PmdAnalysis pmd = PmdAnalysis.create(config)) {
+            pmd.addRuleSet(ruleset);
+            pmd.files().addFile(Paths.get("src", "test", "resources", "sample-source", "dummy", "foo.txt"), language);
+            Report report = pmd.performAnalysisAndCollectReport();
+            Assert.assertEquals(0, report.getProcessingErrors().size());
+            Assert.assertEquals(1, report.getViolations().size());
+        }
+    }
+
+    public static class TestRule extends AbstractRule {
+        public TestRule() {
+            setLanguage(Dummy2LanguageModule.getInstance());
+            setMessage("dummy 2 test rule");
+        }
+
+        @Override
+        public void apply(List<? extends Node> nodes, RuleContext ctx) {
+            ctx.addViolation(nodes.get(0));
         }
     }
 
