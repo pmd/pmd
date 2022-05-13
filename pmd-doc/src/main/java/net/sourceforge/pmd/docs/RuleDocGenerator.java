@@ -31,7 +31,6 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.SystemUtils;
 import org.apache.commons.text.StringEscapeUtils;
 
 import net.sourceforge.pmd.Rule;
@@ -609,13 +608,13 @@ public class RuleDocGenerator {
         // is replaced by a correct path.
         for (List<RuleSet> rulesets : sortedRulesets.values()) {
             for (RuleSet ruleset : rulesets) {
-                String rulesetFilename = normalizeForwardSlashes(StringUtils.chomp(ruleset.getFileName()));
+                String rulesetFilename = RuleSetUtils.normalizeForwardSlashes(StringUtils.chomp(ruleset.getFileName()));
                 allRulesets.put(ruleset.getFileName(), rulesetFilename);
                 for (Rule rule : ruleset.getRules()) {
                     String ruleClass = rule.getRuleClass();
                     String relativeSourceFilename = ruleClass.replaceAll("\\.", Matcher.quoteReplacement(File.separator))
                             + ".java";
-                    allRules.put(ruleClass, normalizeForwardSlashes(relativeSourceFilename));
+                    allRules.put(ruleClass, RuleSetUtils.normalizeForwardSlashes(relativeSourceFilename));
                 }
             }
         }
@@ -637,7 +636,7 @@ public class RuleDocGenerator {
                         }
                         if (foundRuleClass != null) {
                             Path foundPath = root.relativize(file);
-                            allRules.put(foundRuleClass, normalizeForwardSlashes(foundPath.toString()));
+                            allRules.put(foundRuleClass, RuleSetUtils.normalizeForwardSlashes(foundPath.toString()));
                         }
 
                         String foundRuleset = null;
@@ -649,7 +648,7 @@ public class RuleDocGenerator {
                         }
                         if (foundRuleset != null) {
                             Path foundPath = root.relativize(file);
-                            allRulesets.put(foundRuleset, normalizeForwardSlashes(foundPath.toString()));
+                            allRulesets.put(foundRuleset, RuleSetUtils.normalizeForwardSlashes(foundPath.toString()));
                         }
                     }
                     return FileVisitResult.CONTINUE;
@@ -658,15 +657,5 @@ public class RuleDocGenerator {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    private static String normalizeForwardSlashes(String path) {
-        String normalized = IOUtil.normalizePath(path);
-        if (SystemUtils.IS_OS_WINDOWS) {
-            // Note: windows path separators are changed to forward slashes,
-            // so that the editme link works
-            normalized = normalized.replaceAll(Pattern.quote(File.separator), "/");
-        }
-        return normalized;
     }
 }
