@@ -326,7 +326,7 @@ public final class IOUtil {
                     charBuffer.flip();
                     encoder.encode(charBuffer, byteBuffer, eof);
                     byteBuffer.flip();
-                    charBuffer.flip();
+                    charBuffer.compact();
                 }
 
                 if (byteBuffer.hasRemaining()) {

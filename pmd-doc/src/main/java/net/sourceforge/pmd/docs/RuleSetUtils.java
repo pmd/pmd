@@ -5,8 +5,10 @@
 package net.sourceforge.pmd.docs;
 
 import java.io.File;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.SystemUtils;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
@@ -52,14 +54,24 @@ public final class RuleSetUtils {
     }
 
     public static String getRuleSetClasspath(RuleSet ruleset) {
-        final String RESOURCES_PATH = File.separator + "resources" + File.separator;
-        String filename = IOUtil.normalizePath(StringUtils.chomp(ruleset.getFileName()));
+        final String RESOURCES_PATH = "/resources/";
+        String filename = normalizeForwardSlashes(StringUtils.chomp(ruleset.getFileName()));
         int startIndex = filename.lastIndexOf(RESOURCES_PATH);
         if (startIndex > -1) {
             return filename.substring(startIndex + RESOURCES_PATH.length());
         } else {
             return filename;
         }
+    }
+
+    public static String normalizeForwardSlashes(String path) {
+        String normalized = IOUtil.normalizePath(path);
+        if (SystemUtils.IS_OS_WINDOWS) {
+            // Note: windows path separators are changed to forward slashes,
+            // so that the editme link works
+            normalized = normalized.replaceAll(Pattern.quote(File.separator), "/");
+        }
+        return normalized;
     }
 
     /**
