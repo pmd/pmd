@@ -40,6 +40,11 @@ mvn dependency:build-classpath -DincludeScope=test -Dmdep.outputFile=classpath.t
     <exclude-pattern>.*/build/generated-sources/.*</exclude-pattern>
 
     <build-command><![CDATA[#!/usr/bin/env bash
+## Skip gradle execution
+if test -e classpath.txt; then
+  exit
+fi
+
 set -e
 
 # Make sure to use java11. This is already installed by build.sh
@@ -128,11 +133,6 @@ index 6021fa574d..15d29ed699 100644
 +}
 EOF
 ) | patch --strip=1
-
-## Skip gradle execution
-if test -e classpath.txt; then
-  exit
-fi
 
 ./gradlew --console=plain --build-cache --no-daemon --max-workers=4 build testClasses -x test -x javadoc -x api -x asciidoctor -x asciidoctorPdf
 ./gradlew --console=plain --build-cache --no-daemon --max-workers=4 createSquishClasspath -q > classpath.txt
