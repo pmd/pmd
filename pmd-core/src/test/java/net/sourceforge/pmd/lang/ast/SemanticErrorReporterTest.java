@@ -45,7 +45,7 @@ public class SemanticErrorReporterTest {
 
     @Test
     public void testErrorLogging() {
-        SemanticErrorReporter reporter = SemanticErrorReporter.reportToLogger(mockReporter, mockLogger);
+        SemanticErrorReporter reporter = SemanticErrorReporter.reportToLogger(mockReporter);
         RootNode node = parseMockNode(reporter);
 
         assertFalse(reporter.hasError());
@@ -61,7 +61,7 @@ public class SemanticErrorReporterTest {
 
     @Test
     public void testEscaping() {
-        SemanticErrorReporter reporter = SemanticErrorReporter.reportToLogger(mockReporter, mockLogger);
+        SemanticErrorReporter reporter = SemanticErrorReporter.reportToLogger(mockReporter);
         RootNode node = parseMockNode(reporter);
 
         // this is a MessageFormat string

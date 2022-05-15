@@ -129,7 +129,7 @@ abstract class PmdRunnable implements Runnable {
                                LanguageVersion languageVersion,
                                String filename) throws FileAnalysisException {
 
-        SemanticErrorReporter reporter = SemanticErrorReporter.reportToLogger(configuration.getReporter(), LOG);
+        SemanticErrorReporter reporter = SemanticErrorReporter.reportToLogger(configuration.getReporter());
         ParserTask task = new ParserTask(
             languageVersion,
             filename,

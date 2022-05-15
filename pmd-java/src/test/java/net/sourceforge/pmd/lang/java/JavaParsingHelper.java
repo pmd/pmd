@@ -125,7 +125,7 @@ public class JavaParsingHelper extends BaseParsingHelper<JavaParsingHelper, ASTC
             }
             Logger consoleLogger = LoggerFactory.getLogger(TestCheckLogger.class);
             MessageReporter reporter = new SimpleMessageReporter(consoleLogger);
-            return SemanticErrorReporter.reportToLogger(reporter, consoleLogger);
+            return SemanticErrorReporter.reportToLogger(reporter);
         }
 
         @Override

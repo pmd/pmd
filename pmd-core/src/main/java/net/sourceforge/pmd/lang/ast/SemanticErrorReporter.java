@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.ast;
 
 import java.text.MessageFormat;
 
-import org.slf4j.Logger;
 import org.slf4j.event.Level;
 
 import net.sourceforge.pmd.util.StringUtil;
@@ -90,7 +89,7 @@ public interface SemanticErrorReporter {
      * Forwards to a {@link MessageReporter}, except trace and debug
      * messages which are reported on a logger.
      */
-    static SemanticErrorReporter reportToLogger(MessageReporter reporter, Logger logger) {
+    static SemanticErrorReporter reportToLogger(MessageReporter reporter) {
         return new SemanticErrorReporter() {
             private boolean hasError = false;
 
@@ -105,11 +104,7 @@ public interface SemanticErrorReporter {
 
             private String logMessage(Level level, Node location, String message, Object[] args) {
                 String fullMessage = makeMessage(location, message, args);
-                if (level.compareTo(Level.INFO) > 0) {
-                    logger.atLevel(level).log(fullMessage);
-                } else {
-                    reporter.log(level, StringUtil.quoteMessageFormat(fullMessage)); // already formatted
-                }
+                reporter.log(level, StringUtil.quoteMessageFormat(fullMessage)); // already formatted
                 return fullMessage;
             }
 
