@@ -34,7 +34,9 @@ public interface SemanticErrorReporter {
 
     /**
      * Report a warning at the given location. Warnings do not abort
-     * the analysis.
+     * the analysis. They are usually recoverable errors. They are used
+     * to warn the user that something wrong is going on, which may cause
+     * subsequent errors or inconsistent behavior.
      *
      * @param location   Location where the warning should be reported
      * @param message    Message (rendered using a {@link MessageFormat})
@@ -44,9 +46,9 @@ public interface SemanticErrorReporter {
 
 
     /**
-     * Report an error at the given location. Errors abort subsequent analysis.
-     * The produced error can be thrown by the caller if it cannot be recovered
-     * from.
+     * Report an error at the given location. Errors abort subsequent analysis
+     * and cause a processing error to be put in the report. The produced error
+     * can be thrown by the caller if it cannot be recovered from.
      *
      * @param location   Location where the error should be reported
      * @param message    Message (rendered using a {@link MessageFormat})

@@ -4,12 +4,15 @@
 
 package net.sourceforge.pmd.lang.ast;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.contains;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -36,6 +39,7 @@ public class SemanticErrorReporterTest {
     @Before
     public void setup() {
         mockReporter = mock(MessageReporter.class);
+        when(mockReporter.isLoggable(Level.ERROR)).thenReturn(true);
         mockLogger = spy(NOPLogger.class);
     }
 
@@ -44,11 +48,15 @@ public class SemanticErrorReporterTest {
         SemanticErrorReporter reporter = SemanticErrorReporter.reportToLogger(mockReporter, mockLogger);
         RootNode node = parseMockNode(reporter);
 
+        assertFalse(reporter.hasError());
+
         String message = "an error occurred";
         reporter.error(node, message);
 
         verify(mockReporter).log(eq(Level.ERROR), contains(message));
         verifyNoMoreInteractions(mockLogger);
+
+        assertTrue(reporter.hasError());
     }
 
     @Test
