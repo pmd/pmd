@@ -15,6 +15,7 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -144,8 +145,8 @@ public class JavaParsingHelper extends BaseParsingHelper<JavaParsingHelper, ASTC
         }
 
         @Override
-        public boolean hasError() {
-            return baseLogger.hasError();
+        public @Nullable SemanticException getFirstError() {
+            return baseLogger.getFirstError();
         }
     }
 
@@ -181,8 +182,8 @@ public class JavaParsingHelper extends BaseParsingHelper<JavaParsingHelper, ASTC
         }
 
         @Override
-        public boolean hasError() {
-            return false;
+        public @Nullable SemanticException getFirstError() {
+            return null;
         }
     }
 }

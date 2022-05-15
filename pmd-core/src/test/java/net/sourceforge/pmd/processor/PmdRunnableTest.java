@@ -132,8 +132,11 @@ public class PmdRunnableTest {
 
         pmdRunnable.run();
 
-        verify(reporter).log(eq(Level.INFO), contains("skipping rule analysis"));
+        verify(reporter, times(1)).log(eq(Level.ERROR), eq("at test.dummy :1:1: " + TEST_MESSAGE_SEMANTIC_ERROR));
         verify(rule, never()).apply(Mockito.any(), Mockito.any());
+
+        reportBuilder.close();
+        Assert.assertEquals(1, reportBuilder.getResult().getProcessingErrors().size());
     }
 
     @Test
@@ -144,6 +147,9 @@ public class PmdRunnableTest {
 
         verify(reporter, times(1)).log(eq(Level.ERROR), contains(TEST_MESSAGE_SEMANTIC_ERROR));
         verify(rule, never()).apply(Mockito.any(), Mockito.any());
+
+        reportBuilder.close();
+        Assert.assertEquals(1, reportBuilder.getResult().getProcessingErrors().size());
     }
 
     public static void registerCustomVersions(BiConsumer<String, Handler> addVersion) {
