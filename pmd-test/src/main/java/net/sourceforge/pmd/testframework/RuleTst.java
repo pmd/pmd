@@ -250,6 +250,8 @@ public abstract class RuleTst {
                 + " problem(s) found.");
         System.out.println(" -> Expected messages: " + test.getExpectedMessages());
         System.out.println(" -> Expected line numbers: " + test.getExpectedLineNumbers());
+        System.out.println("Test Method Name: " + test.getTestMethodName());
+        System.out.println("    @org.junit.Test public void " + test.getTestMethodName() + "() {}");
         System.out.println();
         TextRenderer renderer = new TextRenderer();
         renderer.setWriter(new StringWriter());

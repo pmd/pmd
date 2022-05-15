@@ -246,6 +246,18 @@ the breaking API changes will be performed in 7.0.0.
 an API is tagged as `@Deprecated` or not in the latest minor release. During the development of 7.0.0,
 we may decide to remove some APIs that were not tagged as deprecated, though we'll try to avoid it." %}
 
+#### 6.45.0
+
+##### Experimental APIs
+
+* Report has two new methods which allow limited mutations of a given report:
+    * {% jdoc !!core::Report#filterViolations(net.sourceforge.pmd.util.Predicate) %} creates a new report with
+      some violations removed with a given predicate based filter.
+    * {% jdoc !!core::Report#union(net.sourceforge.pmd.Report) %} can combine two reports into a single new Report.
+* {% jdoc !!core::util.Predicate %} will be replaced in PMD7 with the standard Predicate interface from java8.
+* The module `pmd-html` is entirely experimental right now. Anything in the package
+  `net.sourceforge.pmd.lang.html` should be used cautiously.
+
 #### 6.44.0
 
 ##### Deprecated API
