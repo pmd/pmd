@@ -149,7 +149,7 @@ abstract class PmdRunnable implements Runnable {
         RootNode rootNode = parse(parser, task);
 
         if (reporter.hasError()) {
-            reporter.info(rootNode, "Errors occurred in file, skipping rule analysis");
+            configuration.getReporter().info("Errors occurred in file, skipping rule analysis: {0}", filename);
             return;
         }
 
