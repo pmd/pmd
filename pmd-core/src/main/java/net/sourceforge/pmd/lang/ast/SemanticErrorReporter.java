@@ -88,7 +88,6 @@ public interface SemanticErrorReporter {
      */
     static SemanticErrorReporter reportToLogger(MessageReporter reporter) {
         return new SemanticErrorReporter() {
-            private boolean hasError = false;
 
             private SemanticException exception = null;
 
@@ -114,7 +113,6 @@ public interface SemanticErrorReporter {
 
             @Override
             public SemanticException error(Node location, String message, Object... args) {
-                hasError = true;
                 String fullMessage = logMessage(Level.ERROR, location, message, args);
                 SemanticException ex = new SemanticException(fullMessage);
                 if (this.exception == null) {
