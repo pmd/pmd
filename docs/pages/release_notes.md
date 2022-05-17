@@ -28,7 +28,7 @@ when used on the CLI or in a ruleset XML file:
 - `<lang-name>-<ruleset-name>`, eg `java-basic`, which resolves to `rulesets/java/basic.xml`
 - the internal release number, eg `600`, which resolves to `rulesets/releases/600.xml`
 
-Use the explicit forms of these references
+Use the explicit forms of these references to be compatible with PMD 7.
 
 #### Deprecated API
 

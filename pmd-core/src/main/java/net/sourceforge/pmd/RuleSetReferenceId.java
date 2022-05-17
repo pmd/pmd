@@ -77,6 +77,9 @@ import net.sourceforge.pmd.util.ResourceLoader;
 @InternalApi
 public class RuleSetReferenceId {
 
+    // todo this class has issues... What is even an "external" ruleset?
+    //  terminology and API should be clarified.
+
     // use the logger of RuleSetFactory, because the warnings conceptually come from there.
     private static final Logger LOG = Logger.getLogger(RuleSetFactory.class.getName());
 
