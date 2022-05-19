@@ -18,12 +18,12 @@ import org.junit.jupiter.api.Test;
 public class PMDTaskTest extends AbstractAntTest {
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         configureProject("src/test/resources/net/sourceforge/pmd/ant/xml/pmdtasktest.xml");
     }
 
     @Test
-    public void testFormatterWithNoToFileAttribute() {
+    void testFormatterWithNoToFileAttribute() {
         try {
             executeTarget("testFormatterWithNoToFileAttribute");
             Assertions.fail("This should throw an exception");
@@ -33,7 +33,7 @@ public class PMDTaskTest extends AbstractAntTest {
     }
 
     @Test
-    public void testNoRuleSets() {
+    void testNoRuleSets() {
         try {
             executeTarget("testNoRuleSets");
             Assertions.fail("This should throw an exception");
@@ -43,12 +43,12 @@ public class PMDTaskTest extends AbstractAntTest {
     }
 
     @Test
-    public void testBasic() {
+    void testBasic() {
         executeTarget("testBasic");
     }
 
     @Test
-    public void testInvalidLanguageVersion() {
+    void testInvalidLanguageVersion() {
         try {
             executeTarget("testInvalidLanguageVersion");
             Assertions.assertEquals(
@@ -63,7 +63,7 @@ public class PMDTaskTest extends AbstractAntTest {
     }
 
     @Test
-    public void testWithShortFilenames() throws IOException {
+    void testWithShortFilenames() throws IOException {
         executeTarget("testWithShortFilenames");
 
         try (InputStream in = new FileInputStream("target/pmd-ant-test.txt")) {
@@ -75,7 +75,7 @@ public class PMDTaskTest extends AbstractAntTest {
     }
 
     @Test
-    public void testXmlFormatter() throws IOException {
+    void testXmlFormatter() throws IOException {
         executeTarget("testXmlFormatter");
 
         try (InputStream in = new FileInputStream("target/pmd-ant-xml.xml");

@@ -21,7 +21,7 @@ import org.junit.jupiter.api.AfterAll;
 
 import net.sourceforge.pmd.internal.Slf4jSimpleConfiguration;
 
-public class AbstractAntTest {
+class AbstractAntTest {
     protected Project project;
 
     protected StringBuilder log;
@@ -39,7 +39,7 @@ public class AbstractAntTest {
     }
 
     @AfterAll
-    public static void resetLogging() {
+    static void resetLogging() {
         Slf4jSimpleConfiguration.reconfigureDefaultLogLevel(null);
     }
 

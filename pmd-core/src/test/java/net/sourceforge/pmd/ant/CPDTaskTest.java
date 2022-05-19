@@ -18,12 +18,12 @@ import org.junit.jupiter.api.Test;
 public class CPDTaskTest extends AbstractAntTest {
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         configureProject("src/test/resources/net/sourceforge/pmd/ant/xml/cpdtasktest.xml");
     }
 
     @Test
-    public void testBasic() {
+    void testBasic() {
         executeTarget("testBasic");
         // FIXME: This clearly needs to be improved - but I don't like to write
         // test, so feel free to contribute :)

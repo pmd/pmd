@@ -15,13 +15,13 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
-public class ZipFileFingerprinterTest extends AbstractClasspathEntryFingerprinterTest {
+class ZipFileFingerprinterTest extends AbstractClasspathEntryFingerprinterTest {
 
     @Test
-    public void zipEntryMetadataDoesNotAffectFingerprint() throws IOException {
+    void zipEntryMetadataDoesNotAffectFingerprint() throws IOException {
         final File file = createValidNonEmptyFile();
         final long baselineFingerprint = getBaseLineFingerprint(file);
         final long originalFileSize = file.length();
@@ -35,8 +35,8 @@ public class ZipFileFingerprinterTest extends AbstractClasspathEntryFingerprinte
             overwriteZipFileContents(file, zipEntry);
         }
 
-        Assert.assertEquals(baselineFingerprint, updateFingerprint(file));
-        Assert.assertNotEquals(originalFileSize, file.length());
+        Assertions.assertEquals(baselineFingerprint, updateFingerprint(file));
+        Assertions.assertNotEquals(originalFileSize, file.length());
     }
 
     @Override
@@ -56,7 +56,7 @@ public class ZipFileFingerprinterTest extends AbstractClasspathEntryFingerprinte
 
     @Override
     protected File createValidNonEmptyFile() throws IOException {
-        final File zipFile = tempFolder.newFile("foo.jar");
+        final File zipFile = tempDir.resolve("foo.jar").toFile();
         overwriteZipFileContents(zipFile, new ZipEntry("lib/Foo.class"));
         return zipFile;
     }
