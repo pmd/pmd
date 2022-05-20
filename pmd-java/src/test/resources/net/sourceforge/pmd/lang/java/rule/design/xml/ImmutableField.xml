@@ -657,4 +657,35 @@ public class ExampleImmutableField {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#3874 [java] ImmutableField reports fields annotated with @Autowired (Spring) and @Mock (Mockito)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.beans.factory.annotation.Autowired;
+
+public class ExampleImmutableField {
+
+    @Mock
+    private Foo foo;
+
+    @InjectMocks
+    private Bar bar;
+
+    @MockBean
+    private Baz Baz;
+
+    @Autowired
+    private Foo2 foo2;
+}
+
+class Foo {}
+class Bar {}
+class Baz {}
+class Foo2 {}
+        ]]></code>
+    </test-code>
 </test-data>
