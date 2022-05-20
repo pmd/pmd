@@ -113,7 +113,9 @@ class BaseTestParserImpl {
 
 
         LanguageVersion lversion = parseLanguageVersion(testCode, err);
-        descriptor.setLanguageVersion(lversion);
+        if (lversion != null) {
+            descriptor.setLanguageVersion(lversion);
+        }
     }
 
     private void parseExpectedProblems(Element testCode, RuleTestDescriptor descriptor, PmdXmlReporter err) {

@@ -29,6 +29,7 @@ public class RuleTestDescriptor {
     public RuleTestDescriptor(int index, Rule rule) {
         this.index = index;
         this.rule = rule;
+        this.languageVersion = rule.getLanguage().getDefaultVersion();
     }
 
     public Rule getRule() {
@@ -60,6 +61,9 @@ public class RuleTestDescriptor {
     }
 
     public void setLanguageVersion(LanguageVersion languageVersion) {
+        if (!languageVersion.getLanguage().equals(this.getRule().getLanguage())) {
+            throw new IllegalArgumentException("Invalid version " + languageVersion);
+        }
         this.languageVersion = languageVersion;
     }
 

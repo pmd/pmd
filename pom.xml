@@ -688,6 +688,11 @@
                 <version>${project.version}</version>
             </dependency>
             <dependency>
+                <groupId>net.sourceforge.pmd</groupId>
+                <artifactId>pmd-test-schema</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>net.sourceforge.saxon</groupId>
                 <artifactId>saxon</artifactId>
                 <version>9.1.0.8</version>

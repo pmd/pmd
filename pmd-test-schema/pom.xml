@@ -31,6 +31,7 @@
             <groupId>com.github.oowekyala.ooxml</groupId>
             <artifactId>nice-xml-messages</artifactId>
             <version>3</version>
+            <scope>compile</scope>
         </dependency>
 
         <dependency>

@@ -12,6 +12,7 @@ import org.junit.Ignore;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.test.schema.RuleTestDescriptor;
 
 /**
  * Stores the information required to run a complete test.
@@ -41,12 +42,26 @@ public class TestDescriptor {
     }
 
     public TestDescriptor(String code, String description, int numberOfProblemsExpected, Rule rule,
-            LanguageVersion languageVersion) {
+                          LanguageVersion languageVersion) {
         this.rule = rule;
         this.code = code;
         this.description = description;
         this.numberOfProblemsExpected = numberOfProblemsExpected;
         this.languageVersion = languageVersion;
+    }
+
+    // for compatibility
+    public TestDescriptor(RuleTestDescriptor td) {
+        this.rule = td.getRule();
+        this.code = td.getCode();
+        this.description = td.getDescription();
+        this.numberOfProblemsExpected = td.getExpectedProblems();
+        this.expectedLineNumbers = td.getExpectedLineNumbers();
+        this.expectedMessages = td.getExpectedMessages();
+        this.isRegressionTest = !td.isIgnored();
+        this.numberInDocument = td.getIndex();
+        this.properties = td.getProperties();
+        this.languageVersion = td.getLanguageVersion();
     }
 
     public int getNumberInDocument() {
