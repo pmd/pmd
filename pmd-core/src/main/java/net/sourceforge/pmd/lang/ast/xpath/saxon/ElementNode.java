@@ -81,6 +81,9 @@ public class ElementNode extends BaseNodeInfo implements AstNodeOwner {
     }
 
     private static int determineType(Node node) {
+        // As of PMD 6.48.0, only the experimental HTML module uses this naming 
+        // convention to identify non-element nodes.
+        // TODO PMD 7: maybe generalize this to other languages
         String name = node.getXPathNodeName();
         if ("#text".equals(name)) {
             return Type.TEXT;
@@ -158,7 +161,7 @@ public class ElementNode extends BaseNodeInfo implements AstNodeOwner {
 
     @Override
     public String getStringValue() {
-        if (determineType(getUnderlyingNode()) == Type.TEXT) {
+        if (getNodeKind() == Type.TEXT || getNodeKind() == Type.COMMENT) {
             return getUnderlyingNode().getImage();
         }
         return "";
