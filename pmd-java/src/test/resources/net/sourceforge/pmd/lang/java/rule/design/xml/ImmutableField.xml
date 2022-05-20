@@ -574,7 +574,7 @@ public class ExampleImmutableField {
     </test-code>
 
     <test-code>
-        <description>#3874 [java] ImmutableField - false positive when using field setter annotations</description>
+        <description>#3874 [java] ImmutableField reports fields annotated with @Autowired (Spring) and @Mock (Mockito)</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import org.mockito.InjectMocks;
@@ -596,6 +596,11 @@ public class ExampleImmutableField {
     @Autowired
     private Foo2 foo2;
 }
+
+class Foo {}
+class Bar {}
+class Baz {}
+class Foo2 {}
         ]]></code>
     </test-code>
 </test-data>
