@@ -763,7 +763,7 @@ public class RuleSetFactory {
      * @return {@code true} if the ruleName exists
      */
     private boolean containsRule(RuleSetReferenceId ruleSetReferenceId, String ruleName) {
-        // unbelievable...
+        // TODO: avoid reloading the ruleset once again
         boolean found = false;
         try (InputStream ruleSet = ruleSetReferenceId.getInputStream(resourceLoader)) {
             DocumentBuilder builder = createDocumentBuilder();
