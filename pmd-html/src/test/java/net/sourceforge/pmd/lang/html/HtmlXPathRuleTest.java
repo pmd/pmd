@@ -44,8 +44,7 @@ public class HtmlXPathRuleTest {
 
     @Test
     public void selectTextNodeByNodeNameShouldNotWork() {
-        String xpath = "//*[local-name() = '#text'][contains(@Text, '{ ')]";
-
+        String xpath = "//*[local-name() = '#text']";
         Report report = runXPath(LIGHTNING_WEB_COMPONENT, xpath);
         Assert.assertEquals(0, report.getViolations().size());
     }
