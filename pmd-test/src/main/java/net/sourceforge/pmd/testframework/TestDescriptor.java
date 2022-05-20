@@ -167,8 +167,8 @@ public class TestDescriptor {
                 .replaceAll("\\s+", "_");
     }
 
-    public void setTestSourceUri(String absolutePath, int line) {
-        this.testSourceUri = URI.create(absolutePath + "?line=" + line);
+    public void setTestSourceUri(String absoluteUri, int line) {
+        this.testSourceUri = URI.create(absoluteUri + "?line=" + line);
     }
 
     public URI getTestSourceUri() {

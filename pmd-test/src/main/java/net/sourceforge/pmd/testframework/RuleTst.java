@@ -435,7 +435,7 @@ public abstract class RuleTst {
         Element root = doc.getDocumentElement();
         NodeList testCodes = root.getElementsByTagName("test-code");
 
-        String absolutePathToTestXmlFile = new File(".").getAbsoluteFile().toURI() + "/src/test/resources/"
+        String absoluteUriToTestXmlFile = new File(".").getAbsoluteFile().toURI() + "/src/test/resources/"
                 + this.getClass().getPackage().getName().replaceAll("\\.", "/")
                 + "/" + testXmlFileName;
 
@@ -543,7 +543,7 @@ public abstract class RuleTst {
             tests[i].setExpectedLineNumbers(expectedLineNumbers);
             tests[i].setProperties(properties);
             tests[i].setNumberInDocument(i + 1);
-            tests[i].setTestSourceUri(absolutePathToTestXmlFile, lineNumbersForTests.get(i));
+            tests[i].setTestSourceUri(absoluteUriToTestXmlFile, lineNumbersForTests.get(i));
         }
         return tests;
     }
