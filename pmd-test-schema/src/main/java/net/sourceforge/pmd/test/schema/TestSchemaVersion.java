@@ -13,9 +13,11 @@ import javax.xml.validation.SchemaFactory;
 import org.xml.sax.SAXException;
 
 /**
+ * Internal for now, there's only one version.
+ *
  * @author Clément Fournier
  */
-public enum TestSchemaVersion {
+enum TestSchemaVersion {
     V1("rule-tests_1_0_0.xsd", new BaseTestParserImpl.ParserV1());
 
     private final Schema schema;

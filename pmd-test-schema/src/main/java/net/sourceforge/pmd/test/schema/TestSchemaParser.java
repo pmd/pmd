@@ -37,8 +37,12 @@ public class TestSchemaParser {
 
     private final TestSchemaVersion version;
 
-    public TestSchemaParser(TestSchemaVersion version) {
+    TestSchemaParser(TestSchemaVersion version) {
         this.version = version;
+    }
+
+    public TestSchemaParser() {
+        this(TestSchemaVersion.V1);
     }
 
     /**
@@ -85,11 +89,13 @@ public class TestSchemaParser {
         }
 
         @Override
-        protected Reporter create2ndStage(XmlPosition position, XmlPositioner positioner, Consumer<XmlException> handleEx) {
-            return new Reporter(position, positioner, ooxml, handleEx.andThen(this::consumeEx));
+        protected Reporter create2ndStage(XmlPosition position, XmlPositioner positioner) {
+            return new Reporter(position, positioner, ooxml, this::handleEx);
         }
 
-        protected void consumeEx(XmlException e) {
+        @Override
+        protected void handleEx(XmlException e) {
+            super.handleEx(e);
             hasError |= e.getSeverity() == XmlSeverity.ERROR;
         }
 
@@ -97,9 +103,9 @@ public class TestSchemaParser {
         public PmdXmlReporter newScope() {
             return new PmdXmlReporterImpl(ooxml, positioner) {
                 @Override
-                protected void consumeEx(XmlException e) {
-                    super.consumeEx(e);
-                    PmdXmlReporterImpl.this.consumeEx(e);
+                protected void handleEx(XmlException e) {
+                    super.handleEx(e);
+                    PmdXmlReporterImpl.this.hasError |= this.hasError();
                 }
             };
         }
@@ -117,7 +123,8 @@ public class TestSchemaParser {
     private DocumentBuilder newDocumentBuilder() {
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         try {
-            dbf.setSchema(version.getSchema());
+            // don't use the schema as it adds deprecated attributes implicitly...
+            // dbf.setSchema(version.getSchema());
             dbf.setNamespaceAware(true);
             return dbf.newDocumentBuilder();
         } catch (ParserConfigurationException e) {

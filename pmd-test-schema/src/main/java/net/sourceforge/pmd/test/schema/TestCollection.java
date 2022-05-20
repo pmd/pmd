@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.test.schema;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -12,11 +14,15 @@ import java.util.Objects;
  */
 public class TestCollection {
 
-    private List<TestDescriptor> tests;
-
+    private final List<TestDescriptor> tests = new ArrayList<>();
 
     public void addTest(TestDescriptor descriptor) {
         tests.add(Objects.requireNonNull(descriptor));
+    }
+
+
+    public List<TestDescriptor> getTests() {
+        return Collections.unmodifiableList(tests);
     }
 
 }
