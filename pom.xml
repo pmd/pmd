@@ -808,6 +808,13 @@
             </dependency>
 
             <dependency>
+                <groupId>org.junit.platform</groupId>
+                <artifactId>junit-platform-suite</artifactId>
+                <version>1.9.0-M1</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
                 <groupId>com.github.stefanbirkner</groupId>
                 <artifactId>system-lambda</artifactId>
                 <version>1.2.1</version>
