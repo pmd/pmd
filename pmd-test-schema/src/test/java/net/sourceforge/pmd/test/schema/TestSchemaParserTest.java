@@ -52,7 +52,7 @@ public class TestSchemaParserTest {
                       + "    </test-code>\n"
                       + "</test-data>\n";
 
-        TestCollection parsed = parseFile(file);
+        RuleTestCollection parsed = parseFile(file);
 
         assertEquals(2, parsed.getTests().size());
 
@@ -76,14 +76,14 @@ public class TestSchemaParserTest {
                       + "</test-data>\n";
 
         errStreamCaptor.enableLog();
-        TestCollection parsed = parseFile(file);
+        RuleTestCollection parsed = parseFile(file);
 
         assertEquals(1, parsed.getTests().size());
         MatcherAssert.assertThat(errStreamCaptor.getLog(), containsString(" 6|     <test-code regressionTest='false'>\n"
                                                                           + "                   ^^^^^^^^^^^^^^ Attribute 'regressionTest' is deprecated, use 'ignored' with inverted value\n"));
     }
 
-    private TestCollection parseFile(String file) throws IOException {
+    private RuleTestCollection parseFile(String file) throws IOException {
         MockRule mockRule = new MockRule();
 
         InputSource is = new InputSource();

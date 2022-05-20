@@ -10,18 +10,21 @@ import java.util.List;
 import java.util.Objects;
 
 /**
+ * Collection of individual rule tests. Each test contains a copy of the
+ * rule.
+ *
  * @author Clément Fournier
  */
-public class TestCollection {
+public class RuleTestCollection {
 
-    private final List<TestDescriptor> tests = new ArrayList<>();
+    private final List<RuleTestDescriptor> tests = new ArrayList<>();
 
-    public void addTest(TestDescriptor descriptor) {
+    public void addTest(RuleTestDescriptor descriptor) {
         tests.add(Objects.requireNonNull(descriptor));
     }
 
 
-    public List<TestDescriptor> getTests() {
+    public List<RuleTestDescriptor> getTests() {
         return Collections.unmodifiableList(tests);
     }
 

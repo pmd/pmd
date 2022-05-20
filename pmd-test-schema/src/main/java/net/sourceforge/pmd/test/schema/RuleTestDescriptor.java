@@ -13,20 +13,20 @@ import net.sourceforge.pmd.lang.LanguageVersion;
 /**
  * @author Clément Fournier
  */
-public class TestDescriptor {
+public class RuleTestDescriptor {
 
     private boolean ignored;
     private String description;
     private LanguageVersion languageVersion;
-    private Properties properties = new Properties();
-    private int index;
+    private final Properties properties = new Properties();
+    private final int index;
     private final Rule rule;
     private String code;
     private int expectedProblems;
     private List<Integer> expectedLineNumbers;
     private List<String> expectedMessages;
 
-    public TestDescriptor(int index, Rule rule) {
+    public RuleTestDescriptor(int index, Rule rule) {
         this.index = index;
         this.rule = rule;
     }
@@ -72,8 +72,34 @@ public class TestDescriptor {
     }
 
     public void recordExpectedViolations(int expectedProblems, List<Integer> expectedLineNumbers, List<String> expectedMessages) {
+        checkListSize(expectedProblems, expectedLineNumbers);
+        checkListSize(expectedProblems, expectedMessages);
+
         this.expectedProblems = expectedProblems;
         this.expectedLineNumbers = expectedLineNumbers;
         this.expectedMessages = expectedMessages;
+    }
+
+    private void checkListSize(int expectedProblems, List<?> expectedMessages) {
+        if (!expectedMessages.isEmpty() && expectedProblems != expectedMessages.size()) {
+            throw new IllegalArgumentException(
+                "Expected list of size " + expectedProblems + ", got " + expectedMessages);
+        }
+    }
+
+    public int getExpectedProblems() {
+        return expectedProblems;
+    }
+
+    public int getIndex() {
+        return index;
+    }
+
+    public List<Integer> getExpectedLineNumbers() {
+        return expectedLineNumbers;
+    }
+
+    public List<String> getExpectedMessages() {
+        return expectedMessages;
     }
 }

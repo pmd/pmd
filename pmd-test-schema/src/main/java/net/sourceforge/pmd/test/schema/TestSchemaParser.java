@@ -56,12 +56,12 @@ public class TestSchemaParser {
      * @throws IOException  If parsing throws this
      * @throws XmlException If parsing throws this
      */
-    public TestCollection parse(Rule rule, InputSource inputSource) throws IOException, XmlException {
+    public RuleTestCollection parse(Rule rule, InputSource inputSource) throws IOException, XmlException {
         OoxmlFacade ooxml = new OoxmlFacade();
         PositionedXmlDoc doc = ooxml.parse(newDocumentBuilder(), inputSource);
 
         try (PmdXmlReporterImpl err = new PmdXmlReporterImpl(ooxml, doc.getPositioner())) {
-            TestCollection collection = version.getParserImpl().parseDocument(rule, doc.getDocument(), err);
+            RuleTestCollection collection = version.getParserImpl().parseDocument(rule, doc.getDocument(), err);
             if (err.hasError()) {
                 // todo maybe add a way not to throw here
                 throw new IllegalStateException("Errors were encountered while parsing XML tests");
@@ -115,9 +115,6 @@ public class TestSchemaParser {
             return hasError;
         }
 
-        @Override
-        public void close() {
-        }
     }
 
     private DocumentBuilder newDocumentBuilder() {

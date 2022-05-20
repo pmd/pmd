@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.test.schema;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -17,7 +18,6 @@ import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.lang.LanguageRegistry;
@@ -37,21 +37,22 @@ class BaseTestParserImpl {
 
     }
 
-    public TestCollection parseDocument(Rule rule, Document doc, PmdXmlReporter err) {
+    public RuleTestCollection parseDocument(Rule rule, Document doc, PmdXmlReporter err) {
         Element root = doc.getDocumentElement();
 
         Map<String, Element> codeFragments = parseCodeFragments(err, root);
 
         Set<String> usedFragments = new HashSet<>();
-        NodeList testCodes = root.getElementsByTagName("test-code");
-        TestCollection result = new TestCollection();
-        for (int i = 0; i < testCodes.getLength(); i++) {
-            TestDescriptor descriptor = new TestDescriptor(i, rule.deepCopy());
+        List<Element> testCodes = DomUtils.childrenNamed(root, "test-code");
+        RuleTestCollection result = new RuleTestCollection();
+        for (int i = 0; i < testCodes.size(); i++) {
+            RuleTestDescriptor descriptor = new RuleTestDescriptor(i, rule.deepCopy());
 
-            PmdXmlReporter errScope = err.newScope();
-            parseSingleTest((Element) testCodes.item(i), descriptor, codeFragments, usedFragments, errScope);
-            if (!errScope.hasError()) {
-                result.addTest(descriptor);
+            try (PmdXmlReporter errScope = err.newScope()) {
+                parseSingleTest(testCodes.get(i), descriptor, codeFragments, usedFragments, errScope);
+                if (!errScope.hasError()) {
+                    result.addTest(descriptor);
+                }
             }
         }
 
@@ -64,13 +65,13 @@ class BaseTestParserImpl {
     private Map<String, Element> parseCodeFragments(PmdXmlReporter err, Element root) {
         Map<String, Element> codeFragments = new HashMap<>();
 
-        for (Node node : DomUtils.asList(root.getElementsByTagName("code-fragment"))) {
-            Attr id = getRequiredAttribute("id", (Element) node, err);
+        for (Element node : DomUtils.childrenNamed(root, "code-fragment")) {
+            Attr id = getRequiredAttribute("id", node, err);
             if (id == null) {
                 continue;
             }
 
-            Element prev = codeFragments.put(id.getValue(), (Element) node);
+            Element prev = codeFragments.put(id.getValue(), node);
             if (prev != null) {
                 err.at(prev).error("Fragment with duplicate id ''{0}'' is ignored", id.getValue());
             }
@@ -78,7 +79,11 @@ class BaseTestParserImpl {
         return codeFragments;
     }
 
-    private void parseSingleTest(Element testCode, TestDescriptor descriptor, Map<String, Element> fragments, Set<String> usedFragments, PmdXmlReporter err) {
+    private void parseSingleTest(Element testCode,
+                                 RuleTestDescriptor descriptor,
+                                 Map<String, Element> fragments,
+                                 Set<String> usedFragments,
+                                 PmdXmlReporter err) {
         {
             String description = getSingleChildText(testCode, "description", true, err);
             if (description == null) {
@@ -100,7 +105,7 @@ class BaseTestParserImpl {
 
         parseExpectedProblems(testCode, descriptor, err);
 
-        String code = getTestCode(testCode, fragments, err);
+        String code = getTestCode(testCode, fragments, usedFragments, err);
         if (code == null) {
             return;
         }
@@ -111,19 +116,19 @@ class BaseTestParserImpl {
         descriptor.setLanguageVersion(lversion);
     }
 
-    private void parseExpectedProblems(Element testCode, TestDescriptor descriptor, PmdXmlReporter err) {
+    private void parseExpectedProblems(Element testCode, RuleTestDescriptor descriptor, PmdXmlReporter err) {
         Node expectedProblemsNode = getSingleChild(testCode, "expected-problems", true, err);
         if (expectedProblemsNode == null) {
             return;
         }
         int expectedProblems = Integer.parseInt(parseTextNode(expectedProblemsNode));
 
-        List<String> expectedMessages = null;
+        List<String> expectedMessages = Collections.emptyList();
         {
             Element messagesNode = getSingleChild(testCode, "expected-messages", false, err);
             if (messagesNode != null) {
                 expectedMessages = new ArrayList<>();
-                List<Node> messageNodes = DomUtils.asList(messagesNode.getElementsByTagName("message"));
+                List<Element> messageNodes = DomUtils.childrenNamed(messagesNode, "message");
                 if (messageNodes.size() != expectedProblems) {
                     err.at(expectedProblemsNode).error("Number of ''expected-messages'' ({0}) does not match", messageNodes.size());
                     return;
@@ -135,7 +140,7 @@ class BaseTestParserImpl {
             }
         }
 
-        List<Integer> expectedLineNumbers = null;
+        List<Integer> expectedLineNumbers = Collections.emptyList();
         {
             Element lineNumbers = getSingleChild(testCode, "expected-linenumbers", false, err);
             if (lineNumbers != null) {
@@ -159,16 +164,16 @@ class BaseTestParserImpl {
 
     }
 
-    private String getTestCode(Element testCode, Map<String, Element> fragments, PmdXmlReporter err) {
+    private String getTestCode(Element testCode, Map<String, Element> fragments, Set<String> usedFragments, PmdXmlReporter err) {
         String code = getSingleChildText(testCode, "code", false, err);
         if (code == null) {
             // Should have a coderef
-            NodeList coderefs = testCode.getElementsByTagName("code-ref");
-            if (coderefs.getLength() == 0) {
+            List<Element> coderefs = DomUtils.childrenNamed(testCode, "code-ref");
+            if (coderefs.isEmpty()) {
                 throw new RuntimeException(
                     "Required tag is missing from the test-xml. Supply either a code or a code-ref tag");
             }
-            Element coderef = (Element) coderefs.item(0);
+            Element coderef = coderefs.get(0);
             Attr id = getRequiredAttribute("id", coderef, err);
             if (id == null) {
                 return null;
@@ -178,6 +183,7 @@ class BaseTestParserImpl {
                 err.at(id).error("Unknown id, known IDs are {0}", fragments.keySet());
                 return null;
             }
+            usedFragments.add(id.getValue());
             code = parseTextNodeNoTrim(fragment);
         }
         return code;
@@ -200,8 +206,8 @@ class BaseTestParserImpl {
 
     private Properties parseRuleProperties(Element testCode, PropertySource knownProps, PmdXmlReporter err) {
         Properties properties = new Properties();
-        for (Node ruleProperty : DomUtils.asList(testCode.getElementsByTagName("rule-property"))) {
-            Node nameAttr = getRequiredAttribute("name", (Element) ruleProperty, err);
+        for (Element ruleProperty : DomUtils.childrenNamed(testCode, "rule-property")) {
+            Node nameAttr = getRequiredAttribute("name", ruleProperty, err);
             if (nameAttr == null) {
                 continue;
             }
@@ -246,16 +252,16 @@ class BaseTestParserImpl {
     }
 
     private Element getSingleChild(Element parentElm, String nodeName, boolean required, PmdXmlReporter err) {
-        NodeList nodes = parentElm.getElementsByTagName(nodeName);
-        if (nodes.getLength() == 0) {
+        List<Element> nodes = DomUtils.childrenNamed(parentElm, nodeName);
+        if (nodes.isEmpty()) {
             if (required) {
                 err.at(parentElm).error("Required child ''{0}'' is missing", nodeName);
             }
             return null;
-        } else if (nodes.getLength() > 1) {
-            err.at(nodes.item(1)).error("Duplicate tag ''{0}'' is ignored", nodeName);
+        } else if (nodes.size() > 1) {
+            err.at(nodes.get(1)).error("Duplicate tag ''{0}'' is ignored", nodeName);
         }
-        return (Element) nodes.item(0);
+        return nodes.get(0);
     }
 
     private static String parseTextNode(Node exampleNode) {
