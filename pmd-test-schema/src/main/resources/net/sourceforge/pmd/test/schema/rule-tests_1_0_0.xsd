@@ -1,68 +1,92 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-  ~ BSD-style license; for more info see http://pmd.sourceforge.net/license.html
-  -->
+<xs:schema
+        xmlns:xs="http://www.w3.org/2001/XMLSchema"
+        xmlns:tns="http://pmd.sourceforge.net/rule-tests-2"
+        targetNamespace="http://pmd.sourceforge.net/rule-tests-2"
+        elementFormDefault="qualified">
 
-<schema
-    xmlns="http://www.w3.org/2001/XMLSchema"
-    targetNamespace="http://pmd.sourceforge.net/rule-tests"
-    xmlns:tns="http://pmd.sourceforge.net/rule-tests"
-    elementFormDefault="qualified">
+    <xs:element name="test-data">
+        <xs:complexType>
+            <xs:choice maxOccurs="unbounded">
+                <xs:element name="test-code" minOccurs="0" maxOccurs="unbounded" type="tns:testType"/>
+                <xs:element name="code-fragment" minOccurs="0" maxOccurs="unbounded" type="tns:codeFragmentType">
+                    <xs:annotation>
+                        <xs:documentation>
+                            A code fragment that can be referred to by several tests.
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+            </xs:choice>
+        </xs:complexType>
+    </xs:element>
 
-    <element name="test-data">
-        <complexType>
-            <group ref="tns:testCodeOrCodeFragment" minOccurs="1" maxOccurs="unbounded"/>
-        </complexType>
-    </element>
+    <xs:complexType name="testType">
+        <xs:sequence>
+            <xs:element name="description" type="xs:string"/>
+            <xs:element name="rule-property" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                    <xs:simpleContent>
+                        <xs:extension base="xs:string">
+                            <xs:attribute name="name" type="xs:string" use="required"/>
+                        </xs:extension>
+                    </xs:simpleContent>
+                </xs:complexType>
+            </xs:element>
 
-    <group name="testCodeOrCodeFragment">
-        <sequence>
-            <element name="test-code" minOccurs="0" maxOccurs="unbounded" type="tns:testCodeType"/>
-            <element name="code-fragment" minOccurs="0" maxOccurs="unbounded" type="tns:codeFragmentType"/>
-        </sequence>
-    </group>
+            <xs:element name="expected-problems" type="xs:int"/>
+            <xs:element name="expected-linenumbers" type="xs:string" minOccurs="0"/>
+            <xs:element name="expected-messages" minOccurs="0">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="message" type="xs:string" maxOccurs="unbounded"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:choice>
+                <xs:element name="code">
+                    <xs:complexType>
+                        <xs:attribute name="version" type="xs:string" default=""/>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="code-ref">
+                    <xs:complexType>
+                        <xs:attribute name="id" type="xs:IDREF" use="required"/>
+                    </xs:complexType>
+                </xs:element>
+            </xs:choice>
+            <xs:element name="source-type" minOccurs="0" default="" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>
+                        Language version of the source, eg 'java 8'.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+        <xs:attribute name="reinitializeRule" type="xs:boolean" default="true"/>
+        <xs:attribute name="regressionTest" type="xs:boolean" default="true"/>
+        <xs:attribute name="useAuxClasspath" type="xs:boolean" default="true"/>
 
-    <complexType name="testCodeType">
-        <sequence>
-            <element name="description" type="string"/>
-            <element name="rule-property" minOccurs="0" maxOccurs="unbounded">
-                <complexType>
-                    <simpleContent>
-                        <extension base="string">
-                            <attribute name="name" type="string" use="required"/>
-                        </extension>
-                    </simpleContent>
-                </complexType>
-            </element>
-            <element name="expected-problems" type="integer"/>
-            <element name="expected-linenumbers" type="string" minOccurs="0"/>
-            <element name="expected-messages" minOccurs="0">
-                <complexType>
-                    <sequence>
-                        <element name="message" type="string" maxOccurs="unbounded"/>
-                    </sequence>
-                </complexType>
-            </element>
-            <choice>
-                <element name="code"/>
-                <element name="code-ref">
-                    <complexType>
-                        <attribute name="id" type="IDREF" use="required"/>
-                    </complexType>
-                </element>
-            </choice>
-            <element name="source-type" minOccurs="0" default="java" type="string"/>
-        </sequence>
-        <attribute name="reinitializeRule" type="boolean" default="true"/>
-        <attribute name="regressionTest" type="boolean" default="true"/>
-        <attribute name="useAuxClasspath" type="boolean" default="true"/>
-    </complexType>
+        <xs:attribute name="ignored" type="xs:string" default="">
+            <xs:annotation>
+                <xs:documentation>
+                    Contains a reason for why the test is ignored.
+                    If non-empty, the test will be ignored.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
 
-    <complexType name="codeFragmentType">
-        <simpleContent>
-            <extension base="string">
-                <attribute name="id" type="ID" use="required"/>
-            </extension>
-        </simpleContent>
-    </complexType>
-</schema>
+    <xs:complexType name="codeFragmentType">
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+                <xs:attribute name="id" type="xs:ID" use="required"/>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+
+    <xs:simpleType name="positiveInt">
+        <xs:restriction base="xs:int">
+            <xs:minInclusive value="1"/>
+        </xs:restriction>
+    </xs:simpleType>
+</xs:schema>
