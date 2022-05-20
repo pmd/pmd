@@ -43,6 +43,14 @@ public class HtmlXPathRuleTest {
     }
 
     @Test
+    public void selectTextNodeByNodeNameShouldNotWork() {
+        String xpath = "//*[local-name() = '#text'][contains(@Text, '{ ')]";
+
+        Report report = runXPath(LIGHTNING_WEB_COMPONENT, xpath);
+        Assert.assertEquals(0, report.getViolations().size());
+    }
+
+    @Test
     public void verifyTextNodeName() {
         ASTHtmlDocument document = HtmlParsingHelper.DEFAULT.parse("<p>foobar</p>");
         ASTHtmlTextNode textNode = document.getFirstDescendantOfType(ASTHtmlTextNode.class);
