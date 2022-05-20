@@ -1522,8 +1522,14 @@
 
 <p>The HTML language module uses <a href="https://jsoup.org/">jsoup</a> for parsing.</p>
 
-<p>XPath rules are supported, but the DOM is not a typical XML/XPath DOM. E.g.
-text nodes are normal nodes. This might change in the future.</p>
+<p>XPath 2.0 rules are supported, but the DOM is not always a typical XML/XPath DOM.
+In the Designer, text nodes appear as nodes with name “#text”, but they can
+be selected as usual using <code class="language-plaintext highlighter-rouge">text()</code>.</p>
+
+<p>XML Namespaces are not supported. The local name of attributes include the prefix,
+so that you have to select attributes by e.g. <code class="language-plaintext highlighter-rouge">//*[@*[local-name() = 'if:true']]</code>.</p>
+
+<p>Only XPath 1.0 rules are not supported.</p>
 
 
     <div class="tags">
@@ -1556,7 +1562,7 @@ text nodes are normal nodes. This might change in the future.</p>
             &copy;2022 PMD Open Source Project. All rights
             reserved. <br />
             <span>Page last updated:</span>
-            April 2022 (6.45.0)<br /> Site last generated: May 13, 2022 <br />
+            April 2022 (6.45.0)<br /> Site last generated: May 20, 2022 <br />
             <p>
                 <img src="images/pmd-logo-small.png" alt="Company
                 logo"/>

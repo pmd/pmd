@@ -1520,9 +1520,36 @@
 
 <h3 id="new-and-noteworthy">New and noteworthy</h3>
 
+<h4 id="cli-improvements">CLI improvements</h4>
+
+<p>The PMD CLI now allows repeating the <code class="language-plaintext highlighter-rouge">--dir</code> (<code class="language-plaintext highlighter-rouge">-d</code>) and <code class="language-plaintext highlighter-rouge">--rulesets</code> (<code class="language-plaintext highlighter-rouge">-R</code>) options,
+ as well as providing several space-separated arguments to either of them. For instance:</p>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pmd <span class="nt">-d</span> src/main/java src/test/java <span class="nt">-R</span> rset1.xml <span class="nt">-R</span> rset2.xml
+</code></pre></div></div>
+<p>This also allows globs to be used on the CLI if your shell supports shell expansion.
+For instance, the above can be written</p>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pmd <span class="nt">-d</span> src/<span class="k">*</span>/java <span class="nt">-R</span> rset<span class="k">*</span>.xml
+</code></pre></div></div>
+<p>Please use theses new forms instead of using comma-separated list as argument to these options.</p>
+
 <h3 id="fixed-issues">Fixed Issues</h3>
 
 <ul>
+  <li>cli
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/1445">#1445</a>: [core] Allow CLI to take globs as parameters</li>
+    </ul>
+  </li>
+  <li>html
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/pull/3955">#3955</a>: [html] Improvements for handling text and comment nodes</li>
+    </ul>
+  </li>
+  <li>java-design
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/3874">#3874</a>: [java] ImmutableField reports fields annotated with @Autowired (Spring) and @Mock (Mockito)</li>
+    </ul>
+  </li>
   <li>javascript
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/3948">#3948</a>: [js] Invalid operator error for method property in object literal</li>
@@ -1532,7 +1559,19 @@
 
 <h3 id="api-changes">API Changes</h3>
 
+<h4 id="deprecated-api">Deprecated API</h4>
+
+<ul>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.46.0-SNAPSHOT/net/sourceforge/pmd/PMDConfiguration.html#getInputPaths()"><code>getInputPaths</code></a> and
+<a href="https://docs.pmd-code.org/apidocs/pmd-core/6.46.0-SNAPSHOT/net/sourceforge/pmd/PMDConfiguration.html#setInputPaths(java.lang.String)"><code>setInputPaths</code></a> are now deprecated.
+A new set of methods have been added, which use lists and do not rely on comma splitting.</li>
+</ul>
+
 <h3 id="external-contributions">External Contributions</h3>
+
+<ul>
+  <li><a href="https://github.com/pmd/pmd/pull/3964">#3964</a>: [java] Fix #3874 - ImmutableField: fix mockito/spring false positives - <a href="https://github.com/lukelukes">@lukelukes</a></li>
+</ul>
 
 
 
@@ -1565,7 +1604,7 @@
         <div class="col-lg-12 footer">
             &copy;2022 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: May 13, 2022 <br />
+             Site last generated: May 20, 2022 <br />
             <p>
                 <img src="images/pmd-logo-small.png" alt="Company
                 logo"/>

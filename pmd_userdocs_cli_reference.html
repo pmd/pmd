@@ -1755,7 +1755,7 @@
 
 <tr>
     <td><a style="pointer-events: none; cursor: default;" name="-file-list"><code>--file-list&nbsp;&lt;filepath&gt;</code></a></td>
-    <td>Path to file containing a comma delimited list of files to analyze.
+    <td>Path to file containing a list of files to analyze, one path per line.
                             If this is given, then you don't need to provide <code>--dir</code>.</td>
     <td><code></code></td>
     <td></td>
@@ -1779,8 +1779,8 @@
 <tr>
     <td><a style="pointer-events: none; cursor: default;" name="-force-language"><code>--force-language&nbsp;&lt;lang&gt;</code></a></td>
     <td>Force a language to be used for all input files, irrespective of
-                            filenames. When using this option, the automatic language selection
-                            by extension is disabled and all files are tried to be parsed with
+                            file names. When using this option, the automatic language selection
+                            by extension is disabled and PMD tries to parse all files with
                             the given language <code>&lt;lang&gt;</code>. Parsing errors are ignored and unparsable files
                             are skipped.
                             
@@ -1807,9 +1807,9 @@
 
 <tr>
     <td><a style="pointer-events: none; cursor: default;" name="-ignore-list"><code>--ignore-list&nbsp;&lt;filepath&gt;</code></a></td>
-    <td>Path to file containing a comma delimited list of files to ignore.
+    <td>Path to file containing a list of files to ignore, one path per line.
                             This option can be combined with <code>--dir</code> and <code>--file-list</code>.
-                            This ignore list takes precedence over any files in the filelist.</td>
+                            This ignore list takes precedence over any files in the file-list.</td>
     <td><code></code></td>
     <td></td>
 </tr>
@@ -2270,7 +2270,7 @@ $ ./run.sh pmd --file-list /home/me/src/filelist.txt -f text -R ruleset.xml --fo
         <div class="col-lg-12 footer">
             &copy;2022 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: May 13, 2022 <br />
+             Site last generated: May 20, 2022 <br />
             <p>
                 <img src="images/pmd-logo-small.png" alt="Company
                 logo"/>
