@@ -105,11 +105,27 @@ public final class PmdParametersParseResult {
         jcommander.setProgramName("pmd");
 
         try {
-            jcommander.parse(args);
+            parseAndValidate(jcommander, result, args);
             return new PmdParametersParseResult(result, filterDeprecatedOptions(args));
         } catch (ParameterException e) {
             return new PmdParametersParseResult(e, filterDeprecatedOptions(args));
         }
+    }
+
+    private static void parseAndValidate(JCommander jcommander, PMDParameters result, String[] args) {
+        jcommander.parse(args);
+        if (result.isHelp() || result.isVersion()) {
+            return;
+        }
+        // jcommander has no special support for global parameter validation like this
+        // For consistency we report this with a ParameterException
+        if (result.getInputPaths().isEmpty()
+            && null == result.getUri()
+            && null == result.getFileListPath()) {
+            throw new ParameterException(
+                "Please provide a parameter for source root directory (--dir or -d), database URI (--uri or -u), or file list path (--file-list).");
+        }
+
     }
 
     private static Map<String, String> filterDeprecatedOptions(String... args) {
