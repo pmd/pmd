@@ -6666,6 +6666,15 @@
       "contributions": [
         "bug"
       ]
+    },
+    {
+      "login": "flyhard",
+      "name": "Per Abich",
+      "avatar_url": "https://avatars.githubusercontent.com/u/409466?v=4",
+      "profile": "https://github.com/flyhard",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
