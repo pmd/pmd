@@ -26,7 +26,7 @@ For instance, the above can be written
 ```shell
 pmd -d src/*/java -R rset*.xml
 ```
-Please use theses new forms instead of using comma-separated list as argument to these options.
+Please use theses new forms instead of using comma-separated lists as argument to these options.
 
 ### Fixed Issues
 
