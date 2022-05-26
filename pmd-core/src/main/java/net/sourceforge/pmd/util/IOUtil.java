@@ -181,6 +181,13 @@ public final class IOUtil {
         }
     }
 
+
+    // The following methods are taken from Apache Commons IO.
+    // The dependency was removed from PMD 6 because it had a security issue,
+    // and upgrading was not possible without upgrading to Java 8.
+    // See https://github.com/pmd/pmd/pull/3968
+    // TODO PMD 7: consider bringing back commons-io and cleaning this class up.
+
     public static void closeQuietly(Closeable closeable) {
         try {
             closeable.close();
