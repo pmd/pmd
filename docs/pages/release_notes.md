@@ -76,7 +76,8 @@ Those APIs are not intended to be used by clients, and will be hidden or removed
 You can identify them with the `@InternalApi` annotation. You'll also get a deprecation warning.
 
 - {% jdoc core::cpd.CPDCommandLineInterface %} has been internalized. In order to execute CPD either
-{% jdoc !!core::cpd.CPD#run(String...) %} or {% jdoc !!core::cpd.CPD#main(String[]) %} should be used.
+{% jdoc !!core::cpd.CPD#run(java.lang.String...) %} or {% jdoc !!core::cpd.CPD#main(java.lang.String[]) %}
+should be used.
 - Several members of {% jdoc test::cli.BaseCPDCLITest %} have been deprecated with replacements.
 
 ### External Contributions
