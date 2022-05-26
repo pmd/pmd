@@ -180,6 +180,16 @@ public class EcmascriptParserTest extends EcmascriptParserTestBase {
         assertEquals("^=", infix.getImage());
     }
 
+    @Test
+    public void testUnicodeCjk() {
+        // the first is u+4F60
+        js.parse("import { Test } from 'test2'\n"
+                 + "define('element', class extends Test {\n"
+                 + "    <button onClick={this.clickHandler}>你好</button>\n"
+                 + "  }\n"
+                 + "})");
+    }
+
     /**
      * [javascript] Failing with OutOfMemoryError parsing a Javascript file #2081
      */
