@@ -38,6 +38,8 @@ the CPD GUI. See [#3974](https://github.com/pmd/pmd/pull/3974) for details.
 
 * cli
     * [#1445](https://github.com/pmd/pmd/issues/1445): \[core] Allow CLI to take globs as parameters
+* core
+    * [#3942](https://github.com/pmd/pmd/issues/3942): \[core] common-io path traversal vulnerability (CVE-2021-29425)
 * cs (c#)
     * [#3974](https://github.com/pmd/pmd/pull/3974): \[cs] Add option to ignore C# attributes (annotations)
 * go

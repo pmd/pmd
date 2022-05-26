@@ -10,7 +10,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 
-import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
@@ -26,6 +25,7 @@ import net.sourceforge.pmd.RuleWithProperties;
 import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
+import net.sourceforge.pmd.util.IOUtil;
 
 public abstract class AbstractRendererTest {
 
@@ -204,6 +204,6 @@ public abstract class AbstractRendererTest {
         renderer.renderFileReport(report);
         renderer.end();
         renderer.flush();
-        return FileUtils.readFileToString(file, expectedEncoding);
+        return IOUtil.readFileToString(file, expectedEncoding);
     }
 }

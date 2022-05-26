@@ -16,11 +16,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.commons.io.IOUtils;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
+
+import net.sourceforge.pmd.util.IOUtil;
 
 public class DocumentFileTest {
 
@@ -51,8 +52,8 @@ public class DocumentFileTest {
 
     @Test
     public void shouldPreserveNewlines() throws IOException {
-        final String testFileContent = IOUtils.toString(
-                DocumentFileTest.class.getResource("ShouldPreserveNewlines.java"), StandardCharsets.UTF_8);
+        final String testFileContent = IOUtil.readToString(
+                DocumentFileTest.class.getResourceAsStream("ShouldPreserveNewlines.java"), StandardCharsets.UTF_8);
         writeContentToTemporaryFile(testFileContent);
 
         try (DocumentFile documentFile = new DocumentFile(temporaryFile, StandardCharsets.UTF_8)) {

@@ -105,7 +105,7 @@
 
         <argLine>-Xmx512m -Dfile.encoding=${project.build.sourceEncoding}</argLine>
 
-        <pmd.build-tools.version>17</pmd.build-tools.version>
+        <pmd.build-tools.version>18-SNAPSHOT</pmd.build-tools.version>
 
         <pmd-designer.version>6.37.0</pmd-designer.version>
     </properties>
@@ -703,11 +703,6 @@
                 <artifactId>javacc</artifactId>
                 <version>${javacc.version}</version>
                 <scope>provided</scope> <!-- only needed for generating the parser via ant -->
-            </dependency>
-            <dependency>
-                <groupId>commons-io</groupId>
-                <artifactId>commons-io</artifactId>
-                <version>2.6</version> <!-- note: this is the last version compatible with java7 -->
             </dependency>
             <dependency>
                 <groupId>org.apache.commons</groupId>

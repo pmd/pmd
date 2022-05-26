@@ -4,11 +4,12 @@
 
 package net.sourceforge.pmd.junit;
 
+import java.io.ByteArrayOutputStream;
+import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.util.logging.Logger;
 import java.util.logging.StreamHandler;
 
-import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.junit.rules.ExternalResource;
 
 /**
@@ -63,7 +64,11 @@ public class JavaUtilLoggingRule extends ExternalResource {
      */
     public String getLog() {
         customLogHandler.flush();
-        return stream.toString(StandardCharsets.UTF_8);
+        try {
+            return stream.toString(StandardCharsets.UTF_8.name());
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**

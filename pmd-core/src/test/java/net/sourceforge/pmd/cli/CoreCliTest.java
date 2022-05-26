@@ -20,7 +20,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.logging.Logger;
 
-import org.apache.commons.io.IOUtils;
 import org.hamcrest.Matcher;
 import org.junit.Before;
 import org.junit.Rule;
@@ -33,6 +32,7 @@ import org.junit.rules.TemporaryFolder;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMD.StatusCode;
 import net.sourceforge.pmd.junit.JavaUtilLoggingRule;
+import net.sourceforge.pmd.util.IOUtil;
 
 /**
  *
@@ -131,7 +131,7 @@ public class CoreCliTest {
         runPmdSuccessfully("--no-cache", "--dir", srcDir, "--rulesets", DUMMY_RULESET, "--report-file", reportFile, "--debug");
 
         assertTrue("Report file should have been created", Files.exists(reportFile));
-        String reportText = IOUtils.toString(Files.newBufferedReader(reportFile, StandardCharsets.UTF_8));
+        String reportText = IOUtil.readToString(Files.newBufferedReader(reportFile, StandardCharsets.UTF_8));
         assertThat(reportText, not(containsStringIgnoringCase("error")));
     }
 

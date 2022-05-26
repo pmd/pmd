@@ -11,13 +11,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.BuildFileRule;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+
+import net.sourceforge.pmd.util.IOUtil;
 
 public class PMDTaskTest {
 
@@ -74,7 +75,7 @@ public class PMDTaskTest {
         buildRule.executeTarget("testWithShortFilenames");
 
         try (InputStream in = new FileInputStream("target/pmd-ant-test.txt")) {
-            String actual = IOUtils.toString(in, StandardCharsets.UTF_8);
+            String actual = IOUtil.readToString(in, StandardCharsets.UTF_8);
             // remove any trailing newline
             actual = actual.replaceAll("\n|\r", "");
             Assert.assertEquals("sample.dummy:0:\tSampleXPathRule:\tTest Rule 2", actual);
@@ -87,11 +88,11 @@ public class PMDTaskTest {
 
         try (InputStream in = new FileInputStream("target/pmd-ant-xml.xml");
              InputStream expectedStream = PMDTaskTest.class.getResourceAsStream("xml/expected-pmd-ant-xml.xml")) {
-            String actual = IOUtils.toString(in, StandardCharsets.UTF_8);
+            String actual = IOUtil.readToString(in, StandardCharsets.UTF_8);
             actual = actual.replaceFirst("timestamp=\"[^\"]+\"", "timestamp=\"\"");
             actual = actual.replaceFirst("\\.xsd\" version=\"[^\"]+\"", ".xsd\" version=\"\"");
 
-            String expected = IOUtils.toString(expectedStream, StandardCharsets.UTF_8);
+            String expected = IOUtil.readToString(expectedStream, StandardCharsets.UTF_8);
             expected = expected.replaceFirst("timestamp=\"[^\"]+\"", "timestamp=\"\"");
             expected = expected.replaceFirst("\\.xsd\" version=\"[^\"]+\"", ".xsd\" version=\"\"");
 

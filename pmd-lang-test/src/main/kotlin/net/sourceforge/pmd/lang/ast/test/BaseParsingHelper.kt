@@ -7,7 +7,7 @@ import net.sourceforge.pmd.*
 import net.sourceforge.pmd.lang.*
 import net.sourceforge.pmd.lang.ast.Node
 import net.sourceforge.pmd.lang.ast.RootNode
-import org.apache.commons.io.IOUtils
+import net.sourceforge.pmd.util.IOUtil
 import java.io.File
 import java.io.InputStream
 import java.io.StringReader
@@ -160,7 +160,7 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
     }
 
     private fun consume(input: InputStream) =
-            IOUtils.toString(input, StandardCharsets.UTF_8)
+            IOUtil.readToString(input, StandardCharsets.UTF_8)
                     .replace("\r\n", "\n")  // normalize line-endings
 
     /**
