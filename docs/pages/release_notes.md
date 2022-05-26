@@ -39,6 +39,7 @@ the CPD GUI. See [#3974](https://github.com/pmd/pmd/pull/3974) for details.
 * cli
     * [#1445](https://github.com/pmd/pmd/issues/1445): \[core] Allow CLI to take globs as parameters
 * core
+    * [#3787](https://github.com/pmd/pmd/issues/3787): \[core] Internalize some methods in Ant Formatter
     * [#3942](https://github.com/pmd/pmd/issues/3942): \[core] common-io path traversal vulnerability (CVE-2021-29425)
 * cs (c#)
     * [#3974](https://github.com/pmd/pmd/pull/3974): \[cs] Add option to ignore C# attributes (annotations)
@@ -68,6 +69,15 @@ the CPD GUI. See [#3974](https://github.com/pmd/pmd/pull/3974) for details.
 - {% jdoc core::PMDConfiguration#getInputPaths() %} and
 {% jdoc core::PMDConfiguration#setInputPaths(java.lang.String) %} are now deprecated.
 A new set of methods have been added, which use lists and do not rely on comma splitting.
+
+#### Internal API
+
+Those APIs are not intended to be used by clients, and will be hidden or removed with PMD 7.0.0.
+You can identify them with the `@InternalApi` annotation. You'll also get a deprecation warning.
+
+- The methods {% jdoc !!core::ant.Formatter#start(java.lang.String) %},
+{% jdoc !!core::ant.Formatter#end(net.sourceforge.pmd.Report) %}, {% jdoc !!core::ant.Formatter#getRenderer() %},
+and {% jdoc !!core::ant.Formatter#isNoOutputSupplied() %} have been internalized.
 
 ### External Contributions
 
