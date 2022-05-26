@@ -32,12 +32,19 @@ Please use theses new forms instead of using comma-separated lists as argument t
 
 * cli
     * [#1445](https://github.com/pmd/pmd/issues/1445): \[core] Allow CLI to take globs as parameters
+* go
+    * [#2752](https://github.com/pmd/pmd/issues/2752): \[go] Error parsing unicode values
 * html
     * [#3955](https://github.com/pmd/pmd/pull/3955): \[html] Improvements for handling text and comment nodes
+* java
+    * [#3423](https://github.com/pmd/pmd/issues/3423): \[java] Error processing identifiers with Unicode 
 * java-design
     * [#3874](https://github.com/pmd/pmd/issues/3874): \[java] ImmutableField reports fields annotated with @Autowired (Spring) and @Mock (Mockito)
 * javascript
+    * [#2605](https://github.com/pmd/pmd/issues/2605): \[js] Support unicode characters
     * [#3948](https://github.com/pmd/pmd/issues/3948): \[js] Invalid operator error for method property in object literal
+* python
+    * [#2604](https://github.com/pmd/pmd/issues/2604): \[python] Support unicode identifiers
 
 ### API Changes
 
