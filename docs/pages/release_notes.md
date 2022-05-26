@@ -28,10 +28,18 @@ pmd -d src/*/java -R rset*.xml
 ```
 Please use theses new forms instead of using comma-separated lists as argument to these options.
 
+#### C# Improvements
+
+When executing CPD on C# sources, the option `--ignore-annotations` is now supported as well.
+It ignores C# attributes when detecting duplicated code. This option can also be enabled via
+the CPD GUI. See [#3974](https://github.com/pmd/pmd/pull/3974) for details.
+
 ### Fixed Issues
 
 * cli
     * [#1445](https://github.com/pmd/pmd/issues/1445): \[core] Allow CLI to take globs as parameters
+* cs (c#)
+    * [#3974](https://github.com/pmd/pmd/pull/3974): \[cs] Add option to ignore C# attributes (annotations)
 * go
     * [#2752](https://github.com/pmd/pmd/issues/2752): \[go] Error parsing unicode values
 * html
@@ -57,6 +65,7 @@ A new set of methods have been added, which use lists and do not rely on comma s
 ### External Contributions
 
 * [#3964](https://github.com/pmd/pmd/pull/3964): \[java] Fix #3874 - ImmutableField: fix mockito/spring false positives - [@lukelukes](https://github.com/lukelukes)
+* [#3974](https://github.com/pmd/pmd/pull/3974): \[cs] Add option to ignore C# attributes (annotations) - [@maikelsteneker](https://github.com/maikelsteneker)
 
 {% endtocmaker %}
 
