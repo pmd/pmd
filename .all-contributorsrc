@@ -6639,6 +6639,24 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "lukelukes",
+      "name": "lukelukes",
+      "avatar_url": "https://avatars.githubusercontent.com/u/45536418?v=4",
+      "profile": "https://github.com/lukelukes",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "vibhory2j",
+      "name": "Vibhor Goyal",
+      "avatar_url": "https://avatars.githubusercontent.com/u/15845016?v=4",
+      "profile": "https://github.com/vibhory2j",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,
