@@ -1532,6 +1532,12 @@ For instance, the above can be written</p>
 </code></pre></div></div>
 <p>Please use theses new forms instead of using comma-separated lists as argument to these options.</p>
 
+<h4 id="c-improvements">C# Improvements</h4>
+
+<p>When executing CPD on C# sources, the option <code class="language-plaintext highlighter-rouge">--ignore-annotations</code> is now supported as well.
+It ignores C# attributes when detecting duplicated code. This option can also be enabled via
+the CPD GUI. See <a href="https://github.com/pmd/pmd/pull/3974">#3974</a> for details.</p>
+
 <h3 id="fixed-issues">Fixed Issues</h3>
 
 <ul>
@@ -1540,9 +1546,29 @@ For instance, the above can be written</p>
       <li><a href="https://github.com/pmd/pmd/issues/1445">#1445</a>: [core] Allow CLI to take globs as parameters</li>
     </ul>
   </li>
+  <li>cs (c#)
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/pull/3974">#3974</a>: [cs] Add option to ignore C# attributes (annotations)</li>
+    </ul>
+  </li>
+  <li>go
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/2752">#2752</a>: [go] Error parsing unicode values</li>
+    </ul>
+  </li>
   <li>html
     <ul>
       <li><a href="https://github.com/pmd/pmd/pull/3955">#3955</a>: [html] Improvements for handling text and comment nodes</li>
+    </ul>
+  </li>
+  <li>java
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/3423">#3423</a>: [java] Error processing identifiers with Unicode</li>
+    </ul>
+  </li>
+  <li>java-bestpractices
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/3954">#3954</a>: [java] NPE in UseCollectionIsEmptyRule when .size() is called in a record</li>
     </ul>
   </li>
   <li>java-design
@@ -1552,7 +1578,13 @@ For instance, the above can be written</p>
   </li>
   <li>javascript
     <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/2605">#2605</a>: [js] Support unicode characters</li>
       <li><a href="https://github.com/pmd/pmd/issues/3948">#3948</a>: [js] Invalid operator error for method property in object literal</li>
+    </ul>
+  </li>
+  <li>python
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/2604">#2604</a>: [python] Support unicode identifiers</li>
     </ul>
   </li>
 </ul>
@@ -1570,7 +1602,9 @@ A new set of methods have been added, which use lists and do not rely on comma s
 <h3 id="external-contributions">External Contributions</h3>
 
 <ul>
+  <li><a href="https://github.com/pmd/pmd/pull/3961">#3961</a>: [java] Fix #3954 - NPE in UseCollectionIsEmptyRule with record - <a href="https://github.com/flyhard">@flyhard</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/3964">#3964</a>: [java] Fix #3874 - ImmutableField: fix mockito/spring false positives - <a href="https://github.com/lukelukes">@lukelukes</a></li>
+  <li><a href="https://github.com/pmd/pmd/pull/3974">#3974</a>: [cs] Add option to ignore C# attributes (annotations) - <a href="https://github.com/maikelsteneker">@maikelsteneker</a></li>
 </ul>
 
 
