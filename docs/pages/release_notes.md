@@ -41,10 +41,10 @@ the CPD GUI. See [#3974](https://github.com/pmd/pmd/pull/3974) for details.
 
 ### Fixed Issues
 
-* core
-  * [#3942](https://github.com/pmd/pmd/issues/3942): \[core] common-io path traversal vulnerability (CVE-2021-29425)
 * cli
     * [#1445](https://github.com/pmd/pmd/issues/1445): \[core] Allow CLI to take globs as parameters
+* core
+    * [#3942](https://github.com/pmd/pmd/issues/3942): \[core] common-io path traversal vulnerability (CVE-2021-29425)
 * cs (c#)
     * [#3974](https://github.com/pmd/pmd/pull/3974): \[cs] Add option to ignore C# attributes (annotations)
 * go
@@ -57,6 +57,9 @@ the CPD GUI. See [#3974](https://github.com/pmd/pmd/pull/3974) for details.
     * [#3954](https://github.com/pmd/pmd/issues/3954): \[java] NPE in UseCollectionIsEmptyRule when .size() is called in a record
 * java-design
     * [#3874](https://github.com/pmd/pmd/issues/3874): \[java] ImmutableField reports fields annotated with @Autowired (Spring) and @Mock (Mockito)
+* java-performance
+    * [#3379](https://github.com/pmd/pmd/issues/3379): \[java] UseArraysAsList must ignore primitive arrays
+    * [#3965](https://github.com/pmd/pmd/issues/3965): \[java] UseArraysAsList false positive with non-trivial loops
 * javascript
     * [#2605](https://github.com/pmd/pmd/issues/2605): \[js] Support unicode characters
     * [#3948](https://github.com/pmd/pmd/issues/3948): \[js] Invalid operator error for method property in object literal

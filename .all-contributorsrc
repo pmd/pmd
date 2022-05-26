@@ -6675,6 +6675,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "filipponova",
+      "name": "Filippo Nova",
+      "avatar_url": "https://avatars.githubusercontent.com/u/12506636?v=4",
+      "profile": "https://github.com/filipponova",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,
