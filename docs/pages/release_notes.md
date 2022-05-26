@@ -46,6 +46,7 @@ the CPD GUI. See [#3974](https://github.com/pmd/pmd/pull/3974) for details.
     * [#2752](https://github.com/pmd/pmd/issues/2752): \[go] Error parsing unicode values
 * html
     * [#3955](https://github.com/pmd/pmd/pull/3955): \[html] Improvements for handling text and comment nodes
+    * [#3978](https://github.com/pmd/pmd/pull/3978): \[html] Add additional file extensions htm, xhtml, xht, shtml
 * java
     * [#3423](https://github.com/pmd/pmd/issues/3423): \[java] Error processing identifiers with Unicode 
 * java-bestpractices
