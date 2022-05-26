@@ -23,7 +23,6 @@ import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import net.sourceforge.pmd.annotation.InternalApi;
@@ -183,7 +182,7 @@ public final class FileUtil {
      * @throws IOException if the file couldn't be read
      */
     public static String readFilelist(File filelist) throws IOException {
-        String filePaths = FileUtils.readFileToString(filelist);
+        String filePaths = IOUtil.readFileToString(filelist);
         filePaths = StringUtils.trimToEmpty(filePaths);
         filePaths = filePaths.replaceAll("\\r?\\n", ",");
         filePaths = filePaths.replaceAll(",+", ",");

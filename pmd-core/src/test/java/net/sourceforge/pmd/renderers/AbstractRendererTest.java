@@ -13,8 +13,6 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.function.Consumer;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
@@ -32,6 +30,7 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
+import net.sourceforge.pmd.util.IOUtil;
 import net.sourceforge.pmd.util.datasource.DataSource;
 
 public abstract class AbstractRendererTest {
@@ -126,7 +125,7 @@ public abstract class AbstractRendererTest {
      */
     protected String readFile(String relativePath) {
         try (InputStream in = getClass().getResourceAsStream(relativePath)) {
-            return IOUtils.toString(in, StandardCharsets.UTF_8);
+            return IOUtil.readToString(in, StandardCharsets.UTF_8);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -221,7 +220,7 @@ public abstract class AbstractRendererTest {
             throw new AssertionError(e);
         }
 
-        return FileUtils.readFileToString(file, expectedEncoding);
+        return IOUtil.readFileToString(file, expectedEncoding);
     }
 
 }

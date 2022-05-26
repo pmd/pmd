@@ -12,7 +12,6 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
@@ -33,6 +32,7 @@ import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.lang.ast.DummyNode.DummyRootNode;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
+import net.sourceforge.pmd.util.IOUtil;
 
 public class XMLRendererTest extends AbstractRendererTest {
     @Rule // Restores system properties after test
@@ -169,7 +169,7 @@ public class XMLRendererTest extends AbstractRendererTest {
         renderer.flush();
 
         try (FileInputStream input = new FileInputStream(reportFile)) {
-            return IOUtils.toString(input, expectedCharset);
+            return IOUtil.readToString(input, expectedCharset);
         }
     }
 }

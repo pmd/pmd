@@ -19,9 +19,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import net.sourceforge.pmd.util.IOUtil;
 
 /**
  * Implementation that handles a Document as a file in the filesystem and receives operations in a sorted manner
@@ -159,7 +160,7 @@ public class DocumentFile implements Document, Closeable {
     }
 
     private void writeUntilEOF() throws IOException {
-        IOUtils.copy(reader, writer);
+        IOUtil.copy(reader, writer);
     }
 
     /* package-private */ List<Integer> getLineToOffset() {

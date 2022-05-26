@@ -16,7 +16,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
 
 import net.sourceforge.pmd.annotation.Experimental;
@@ -32,6 +31,7 @@ import net.sourceforge.pmd.lang.ast.SemanticErrorReporter;
 import net.sourceforge.pmd.lang.rule.xpath.Attribute;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertySource;
+import net.sourceforge.pmd.util.IOUtil;
 
 import com.beust.jcommander.DynamicParameter;
 import com.beust.jcommander.JCommander;
@@ -200,7 +200,7 @@ public class TreeExportCli {
         Slf4jSimpleConfiguration.disableLogging(Attribute.class);
 
         try {
-            String fullSource = IOUtils.toString(source);
+            String fullSource = IOUtil.readToString(source);
             ParserTask task = new ParserTask(langVersion, fileName, fullSource, SemanticErrorReporter.noop());
             RootNode root = parser.parse(task);
 

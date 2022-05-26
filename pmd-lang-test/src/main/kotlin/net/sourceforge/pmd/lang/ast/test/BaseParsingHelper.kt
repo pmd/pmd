@@ -11,8 +11,8 @@ import net.sourceforge.pmd.lang.LanguageVersionHandler
 import net.sourceforge.pmd.lang.ast.*
 import net.sourceforge.pmd.processor.AbstractPMDProcessor
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener
+import net.sourceforge.pmd.util.IOUtil
 import net.sourceforge.pmd.util.datasource.DataSource
-import org.apache.commons.io.IOUtils
 import java.io.InputStream
 import java.nio.charset.StandardCharsets
 import java.nio.file.Files
@@ -150,7 +150,7 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
      */
     @JvmOverloads
     open fun parseFile(path: Path, version: String? = null): T =
-            parse(IOUtils.toString(Files.newBufferedReader(path)), version, fileName = path.toAbsolutePath().toString())
+            parse(IOUtil.readToString(Files.newBufferedReader(path)), version, fileName = path.toAbsolutePath().toString())
 
     /**
      * Fetches the source of the given [clazz].
@@ -168,7 +168,7 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
     }
 
     private fun consume(input: InputStream) =
-            IOUtils.toString(input, StandardCharsets.UTF_8)
+            IOUtil.readToString(input, StandardCharsets.UTF_8)
                     .replace(Regex("\\R"), "\n")  // normalize line-endings
 
     /**
