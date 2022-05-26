@@ -64,7 +64,7 @@ public class CoreCliTest {
         // create a few files
         srcDir = Files.createDirectories(root.resolve("src"));
         writeString(srcDir.resolve("someSource.dummy"), "dummy text");
-        
+        // reset logger?
         Logger.getLogger("net.sourceforge.pmd");
     }
 
