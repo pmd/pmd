@@ -968,7 +968,14 @@ You must use `new ArrayList<>(Arrays.asList(...))` if that is inconvenient for y
 <![CDATA[
 //Statement/ForStatement
     [not(.//IfStatement)]
+    [count(Statement//StatementExpression)=1]
     [@Foreach = true() or ForInit//VariableInitializer//Literal[@IntLiteral= true() and @Image='0']]
+    (: skip primitive types :)
+    [@Foreach = true() and Expression[pmd-java:typeIs('java.lang.Object[]')]
+        or Expression/RelationalExpression/PrimaryExpression/PrimaryPrefix/Name[substring-before(@Image, '.length') =
+           ancestor::MethodDeclaration[1]//VariableDeclaratorId[pmd-java:typeIs('java.lang.Object[]')]
+           /@Name]
+    ]
     //StatementExpression
       [PrimaryExpression
         [PrimaryPrefix/Name
@@ -1012,12 +1019,12 @@ public class Test {
     public void foo(Integer[] ints) {
         // could just use Arrays.asList(ints)
         List<Integer> l = new ArrayList<>(100);
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < ints.length; i++) {
             l.add(ints[i]);
         }
 
         List<Integer> anotherList = new ArrayList<>();
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < ints.length; i++) {
             anotherList.add(ints[i].toString()); // won't trigger the rule
         }
     }
