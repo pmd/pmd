@@ -44,6 +44,7 @@ the CPD GUI. See [#3974](https://github.com/pmd/pmd/pull/3974) for details.
 * cli
     * [#1445](https://github.com/pmd/pmd/issues/1445): \[core] Allow CLI to take globs as parameters
 * core
+    * [#2352](https://github.com/pmd/pmd/issues/2352): \[core] Deprecate \<lang\>-\<ruleset\> hyphen notation for ruleset references
     * [#3942](https://github.com/pmd/pmd/issues/3942): \[core] common-io path traversal vulnerability (CVE-2021-29425)
 * cs (c#)
     * [#3974](https://github.com/pmd/pmd/pull/3974): \[cs] Add option to ignore C# attributes (annotations)
@@ -68,8 +69,20 @@ the CPD GUI. See [#3974](https://github.com/pmd/pmd/pull/3974) for details.
 
 ### API Changes
 
+#### Deprecated ruleset references
+
+Ruleset references with the following formats are now deprecated and will produce a warning
+when used on the CLI or in a ruleset XML file:
+- `<lang-name>-<ruleset-name>`, eg `java-basic`, which resolves to `rulesets/java/basic.xml`
+- the internal release number, eg `600`, which resolves to `rulesets/releases/600.xml`
+
+Use the explicit forms of these references to be compatible with PMD 7.
+
 #### Deprecated API
 
+- {% jdoc core::RuleSetReferenceId#toString() %} is now deprecated. The format of this
+ method will remain the same until PMD 7. The deprecation is intended to steer users
+ away from relying on this format, as it may be changed in PMD 7.
 - {% jdoc core::PMDConfiguration#getInputPaths() %} and
 {% jdoc core::PMDConfiguration#setInputPaths(java.lang.String) %} are now deprecated.
 A new set of methods have been added, which use lists and do not rely on comma splitting.
