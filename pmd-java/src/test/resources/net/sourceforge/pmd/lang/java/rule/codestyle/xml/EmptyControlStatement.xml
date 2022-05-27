@@ -7,6 +7,9 @@
         <description>pos, empty try block</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>3</expected-linenumbers>
+        <expected-messages>
+            <message>Empty try body</message>
+        </expected-messages>
         <code><![CDATA[
             public class EmptyTryBlock1 {
                 public void foo() {
@@ -23,6 +26,9 @@
         <description>pos, empty try block</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>3</expected-linenumbers>
+        <expected-messages>
+            <message>Empty try body</message>
+        </expected-messages>
         <code><![CDATA[
             public class EmptyTryBlock2 {
                 public void foo() {
@@ -38,6 +44,9 @@
         <description>pos, empty finally block</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>5</expected-linenumbers>
+        <expected-messages>
+            <message>Empty finally clause</message>
+        </expected-messages>
         <code><![CDATA[
             public class EmptyTryBlock2 {
                 public void foo() {
@@ -68,6 +77,10 @@
     <test-code>
         <description>pos, empty try and finally block</description>
         <expected-problems>2</expected-problems>
+        <expected-messages>
+            <message>Empty try body</message>
+            <message>Empty finally clause</message>
+        </expected-messages>
         <code><![CDATA[
             public class EmptyTryBlock3 {
                 public void foo() {
@@ -82,6 +95,9 @@
     <test-code>
         <description>#432 empty try-with-resource - not ok</description>
         <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Empty try body - you could rename the resource to 'ignored'</message>
+        </expected-messages>
         <code><![CDATA[
             class X {
                 void method() {
@@ -113,6 +129,9 @@
         <description>empty concise try-with-resource - not ok</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>4</expected-linenumbers>
+        <expected-messages>
+            <message>Empty try body - you could rename the resource to 'ignored'</message>
+        </expected-messages>
         <code><![CDATA[
             import java.io.InputStream;
             class X {
@@ -127,6 +146,9 @@
     <test-code>
         <description>pos, empty synchronized stmt</description>
         <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Empty synchronized statement</message>
+        </expected-messages>
         <code><![CDATA[
             public class Foo {
                 void foo() {
@@ -151,6 +173,9 @@
     <test-code>
         <description>pos, empty switch stmt</description>
         <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Empty switch statement</message>
+        </expected-messages>
         <code><![CDATA[
             public class EmptySwitchStmt1 {
                 public void bar() {
@@ -180,6 +205,9 @@
     <test-code>
         <description>pos, empty block</description>
         <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Empty block</message>
+        </expected-messages>
         <code><![CDATA[
             public class Foo {
                 public void bar() {
@@ -204,6 +232,9 @@
     <test-code>
         <description>empty initializer failure case (non static)</description>
         <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Empty initializer statement</message>
+        </expected-messages>
         <code><![CDATA[
             public class Foo {
                 {}
@@ -214,6 +245,9 @@
     <test-code>
         <description>empty initializer failure case (static)</description>
         <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Empty initializer statement</message>
+        </expected-messages>
         <code><![CDATA[
             public class Foo {
                 static {}
@@ -224,6 +258,9 @@
     <test-code>
         <description>not an initializer - empty statement block</description>
         <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Empty block</message>
+        </expected-messages>
         <code><![CDATA[
             public class Foo {
                 public void bar() {
@@ -260,6 +297,10 @@
         <description>pos, empty for</description>
         <expected-problems>2</expected-problems>
         <expected-linenumbers>3,5</expected-linenumbers>
+        <expected-messages>
+            <message>Empty for statement</message>
+            <message>Empty for statement</message>
+        </expected-messages>
         <code><![CDATA[
             public class Foo {
                 public void bar() {
@@ -277,6 +318,10 @@
         <description>pos, empty do..while</description>
         <expected-problems>2</expected-problems>
         <expected-linenumbers>4,6</expected-linenumbers>
+        <expected-messages>
+            <message>Empty do..while statement</message>
+            <message>Empty do..while statement</message>
+        </expected-messages>
         <code><![CDATA[
             public class Foo {
                 public void bar() {
@@ -295,6 +340,10 @@
         <description>pos, empty foreach</description>
         <expected-problems>2</expected-problems>
         <expected-linenumbers>6,8</expected-linenumbers>
+        <expected-messages>
+            <message>Empty for statement</message>
+            <message>Empty for statement</message>
+        </expected-messages>
         <code><![CDATA[
             import java.util.List;
 
@@ -335,6 +384,9 @@
         <description>pos, empty while</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>3</expected-linenumbers>
+        <expected-messages>
+            <message>Empty while statement</message>
+        </expected-messages>
         <code><![CDATA[
             public class Foo {
                 public void bar() {
@@ -351,6 +403,9 @@
     <test-code>
         <description>while(true);</description>
         <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Empty while statement</message>
+        </expected-messages>
         <code><![CDATA[
             public class Foo {
                 public void bar() {
@@ -364,6 +419,9 @@
         <description>one empty if statement</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>3</expected-linenumbers>
+        <expected-messages>
+            <message>Empty if statement</message>
+        </expected-messages>
         <code><![CDATA[
 public class Foo {
     void bar(int x) {
@@ -378,6 +436,10 @@ public class Foo {
         <description>empty if with else statement</description>
         <expected-problems>2</expected-problems>
         <expected-linenumbers>3,4</expected-linenumbers>
+        <expected-messages>
+            <message>Empty if statement</message>
+            <message>Empty else statement</message>
+        </expected-messages>
         <code><![CDATA[
 public class Foo {
     void bar(int x) {
@@ -393,6 +455,11 @@ public class Foo {
         <description>empty if with else and else if statement</description>
         <expected-problems>3</expected-problems>
         <expected-linenumbers>3,4,5</expected-linenumbers>
+        <expected-messages>
+            <message>Empty if statement</message>
+            <message>Empty if statement</message>
+            <message>Empty else statement</message>
+        </expected-messages>
         <code><![CDATA[
 public class Foo {
     void bar(int x) {
@@ -422,6 +489,9 @@ public class Foo {
     <test-code>
         <description>empty if statement</description>
         <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Empty if statement</message>
+        </expected-messages>
         <code><![CDATA[
 public class Foo {
     void bar(int x) {
@@ -434,6 +504,9 @@ public class Foo {
     <test-code>
         <description>empty if statement with comment</description>
         <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Empty if statement</message>
+        </expected-messages>
         <code><![CDATA[
 public class Foo {
     void bar(int x) {
