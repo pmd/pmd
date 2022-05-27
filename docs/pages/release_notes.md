@@ -36,6 +36,34 @@ the CPD GUI. See [#3974](https://github.com/pmd/pmd/pull/3974) for details.
 
 #### New Rules
 
+This release ships with 2 new Java rules.
+
+* {% rule java/codestyle/EmptyControlStatement %} reports many instances of empty things, e.g. control statements whose
+  body is empty, as well as empty initializers.
+
+  EmptyControlStatement also works for empty `for` and `do` loops, while there were previously
+  no corresponding rules.
+
+  This new rule replaces the rules EmptyFinallyBlock, EmptyIfStmt, EmptyInitializer, EmptyStatementBlock,
+  EmptySwitchStatements, EmptySynchronizedBlock, EmptyTryBlock, and EmptyWhileStmt.
+
+```xml
+<rule ref="category/java/codestyle.xml/EmptyControlStatement"/>
+```
+
+The rule is part of the quickstart.xml ruleset.
+
+* {%rule java/codestyle/UnnecessarySemicolon %} reports semicolons that are unnecessary  (so called "empty statements"
+  and "empty declarations").
+
+  This new rule replaces the rule EmptyStatementNotInLoop.
+
+```xml
+<rule ref="category/java/codestyle.xml/UnnecessarySemicolon"/>
+```
+
+The rule is part of the quickstart.xml ruleset.
+
 #### Deprecated Rules
 
 * The following Java rules are deprecated and removed from the quickstart ruleset, as the new rule
