@@ -80,8 +80,8 @@ public class EmptyControlStatementRule extends AbstractJavaRule {
         if (isEmpty(node.getThenBranch().getChild(0))) {
             addViolation(data, node, "Empty if statement");
         }
-        if (isEmpty(node.getElseBranch().getChild(0))) {
-            addViolation(data, node, "Empty else statement");
+        if (node.hasElse() && isEmpty(node.getElseBranch().getChild(0))) {
+            addViolation(data, node.getElseBranch(), "Empty else statement");
         }
         return null;
     }

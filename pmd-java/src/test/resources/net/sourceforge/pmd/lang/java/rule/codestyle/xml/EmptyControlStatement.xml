@@ -185,7 +185,7 @@
     </test-code>
     
     <test-code>
-        <description>failure case (non static)</description>
+        <description>empty initializer failure case (non static)</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
             public class Foo {
@@ -195,7 +195,7 @@
     </test-code>
 
     <test-code>
-        <description>failure case (static)</description>
+        <description>empty initializer failure case (static)</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
             public class Foo {
@@ -205,7 +205,7 @@
     </test-code>
 
     <test-code>
-        <description>not an initializer</description>
+        <description>not an initializer - empty statement block</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
             public class Foo {
@@ -341,5 +341,90 @@
                 }
             }
             ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>one empty if statement</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    void bar(int x) {
+        if (x > 2) {
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>empty if with else statement</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,4</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    void bar(int x) {
+        if (x > 2) {
+        } else {
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>empty if with else and else if statement</description>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>3,4,5</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    void bar(int x) {
+        if (x > 2) {
+        } else if (x > 3) {
+        } else {
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>one not empty if statement</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar(int x) {
+        if (x > 2) {
+            x = 1;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>empty if statement</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar(int x) {
+        if (x > 2);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>empty if statement with comment</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar(int x) {
+        if (x == 0) {
+            // empty!
+        }
+    }
+}
+        ]]></code>
     </test-code>
 </test-data>
