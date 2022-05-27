@@ -824,6 +824,7 @@ in each object at runtime.
         self::Name[@Image=//FieldDeclaration[@Static=true()]/VariableDeclarator/@Name]
     ]
  ]
+(:CS304 issue link: https://github.com/pmd/pmd/issues/3949:)
 /VariableDeclaratorId
 ]]>
                 </value>
