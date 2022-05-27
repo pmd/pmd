@@ -25,7 +25,7 @@ public class ASTResource extends ASTFormalParameter {
         return visitor.visit(this, data);
     }
 
-    public String getName() {
+    public String getStableName() {
         ASTVariableDeclaratorId variableDeclaratorId = getVariableDeclaratorId();
         if (variableDeclaratorId != null) {
             return variableDeclaratorId.getName();

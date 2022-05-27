@@ -132,7 +132,7 @@ public class EmptyControlStatementRule extends AbstractJavaRule {
             if (resources != null) {
                 for (ASTResource resource : resources.findDescendantsOfType(ASTResource.class)) {
                     hasResource = true;
-                    String name = resource.getName();
+                    String name = resource.getStableName();
                     if (!JavaRuleUtil.isExplicitUnusedVarName(name)) {
                         allResourcesIgnored = false;
                         break;
