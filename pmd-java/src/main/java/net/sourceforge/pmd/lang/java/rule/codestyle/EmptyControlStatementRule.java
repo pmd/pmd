@@ -143,7 +143,7 @@ public class EmptyControlStatementRule extends AbstractJavaRule {
             }
 
             if (hasResource && !allResourcesIgnored) {
-                asCtx(data).addViolationWithMessage(node, "Empty try body - you could rename the resource to 'ignored'");
+                asCtx(data).addViolationWithMessage(node, "Empty try body - you could rename the resource to ''ignored''");
             } else if (!hasResource) {
                 asCtx(data).addViolationWithMessage(node, "Empty try body");
             }
