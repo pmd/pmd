@@ -815,7 +815,8 @@ in each object at runtime.
     and //ImportDeclaration/Name[@Image="lombok.Builder"])]
 /VariableDeclarator
  [VariableInitializer/Expression/PrimaryExpression[not(PrimarySuffix)]
-  /PrimaryPrefix/*
+  /PrimaryPrefix/*  or VariableInitializer/Expression/PrimaryExpression[not(PrimarySuffix)]
+  /PrimaryPrefix/Expression/*
     [
         self::Literal (: literal :)
         or
