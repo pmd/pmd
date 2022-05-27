@@ -10,6 +10,7 @@
         <code><![CDATA[
 public class Foo {
     public final int BAR = 42;
+    public final int bar=(41);
 }
         ]]></code>
     </test-code>
