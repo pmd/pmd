@@ -736,22 +736,24 @@ public abstract class ShouldBeAbstract {
             This rule replaces the rules EmptyFinallyBlock, 
             EmptyIfStmt, EmptyInitializer, EmptyStatementBlock, 
             EmptySwitchStatements, EmptySynchronizedBlock, EmptyTryBlock, and EmptyWhileStmt.
-            Notice that EmptyCatchBlock is still an independent rule.
+
+            Notice that {% rule java/errorprone/EmptyCatchBlock %} is still an independent rule.
+
             EmptyStatementNotInLoop is replaced by {% rule java/codestyle/UnnecessarySemicolon %}.
         ]]></description>
         <priority>3</priority>
         <example>
-            <![CDATA[
-            class Foo {
-                {
-                    if (true); // empty if statement
-                    if (true) { // empty as well
-                    }
-                }
+<![CDATA[
+class Foo {
+    {
+        if (true); // empty if statement
+        if (true) { // empty as well
+        }
+    }
 
-                {} // empty initializer
-            }
-            ]]>
+    {} // empty initializer
+}
+]]>
         </example>
     </rule>
 
@@ -2207,7 +2209,7 @@ public class Foo {
             </property>
         </properties>
         <example>
-            <![CDATA[
+<![CDATA[
 class Foo {
     {
         toString();; // one of these semicolons is unnecessary

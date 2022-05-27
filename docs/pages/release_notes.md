@@ -34,6 +34,23 @@ When executing CPD on C# sources, the option `--ignore-annotations` is now suppo
 It ignores C# attributes when detecting duplicated code. This option can also be enabled via
 the CPD GUI. See [#3974](https://github.com/pmd/pmd/pull/3974) for details.
 
+#### New Rules
+
+#### Deprecated Rules
+
+* The following Java rules are deprecated and removed from the quickstart ruleset, as the new rule
+{% rule java/codestyle/EmptyControlStatement %} merges their functionality:
+    * {% rule java/errorprone/EmptyFinallyBlock %}
+    * {% rule java/errorprone/EmptyIfStmt %}
+    * {% rule java/errorprone/EmptyInitializer %}
+    * {% rule java/errorprone/EmptyStatementBlock %}
+    * {% rule java/errorprone/EmptySwitchStatements %}
+    * {% rule java/errorprone/EmptySynchronizedBlock %}
+    * {% rule java/errorprone/EmptyTryBlock %}
+    * {% rule java/errorprone/EmptyWhileStmt %}
+* The Java rule {% rule java/errorprone/EmptyStatementNotInLoop %} is deprecated and removed from the quickstart
+ruleset. Use the new rule {% rule java/codestyle/UnnecessarySemicolon %} instead.
+
 ### Fixed Issues
 
 * cli
