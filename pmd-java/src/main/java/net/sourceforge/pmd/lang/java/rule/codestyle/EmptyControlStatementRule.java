@@ -14,7 +14,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTInitializer;
 import net.sourceforge.pmd.lang.java.ast.ASTResource;
 import net.sourceforge.pmd.lang.java.ast.ASTResourceList;
-import net.sourceforge.pmd.lang.java.ast.ASTStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTSynchronizedStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTTryStatement;
@@ -57,7 +56,7 @@ public class EmptyControlStatementRule extends AbstractJavaRulechainRule {
 
     @Override
     public Object visit(ASTBlock node, Object data) {
-        if (isEmpty(node) && node.getNthParent(3) instanceof ASTBlock) {
+        if (isEmpty(node) && node.getParent() instanceof ASTBlock) {
             addViolation(data, node, "Empty block");
         }
         return null;
@@ -65,10 +64,10 @@ public class EmptyControlStatementRule extends AbstractJavaRulechainRule {
 
     @Override
     public Object visit(ASTIfStatement node, Object data) {
-        if (isEmpty(node.getThenBranch().getChild(0))) {
+        if (isEmpty(node.getThenBranch())) {
             addViolation(data, node, "Empty if statement");
         }
-        if (node.hasElse() && isEmpty(node.getElseBranch().getChild(0))) {
+        if (node.hasElse() && isEmpty(node.getElseBranch())) {
             addViolation(data, node.getElseBranch(), "Empty else statement");
         }
         return null;
@@ -146,9 +145,6 @@ public class EmptyControlStatementRule extends AbstractJavaRulechainRule {
     }
 
     private boolean isEmpty(JavaNode node) {
-        if (node instanceof ASTStatement) {
-            node = node.getChild(0);
-        }
         return node instanceof ASTBlock && node.getNumChildren() == 0
             || node instanceof ASTEmptyStatement;
     }
