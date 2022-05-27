@@ -712,7 +712,7 @@ public abstract class ShouldBeAbstract {
 
     <rule name="EmptyControlStatement"
           language="java"
-          since="6.42.0"
+          since="6.46.0"
           message="This control statement has an empty branch"
           class="net.sourceforge.pmd.lang.java.rule.codestyle.EmptyControlStatementRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#emptycontrolstatement">
@@ -724,13 +724,14 @@ public abstract class ShouldBeAbstract {
             Reports control statements whose body is empty, as well as empty initializers.
 
             The checked code constructs are the following:
-            - bodies of `try` statements (not try-with-resources)
+            - bodies of `try` statements
             - `finally` clauses of `try` statements
             - `switch` statements
             - `synchronized` statements
             - `if` statements
             - loop statements: `while`, `for`, `do .. while`
             - initializers
+            - blocks used as statements (for scoping)
 
             This rule replaces the rules EmptyFinallyBlock, 
             EmptyIfStmt, EmptyInitializer, EmptyStatementBlock, 
@@ -2173,7 +2174,7 @@ public class Foo {
 
     <rule name="UnnecessarySemicolon"
           language="java"
-          since="6.42.0"
+          since="6.46.0"
           message="Unnecessary semicolon"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#unnecessarysemicolon">
@@ -2184,6 +2185,8 @@ public class Foo {
             
             This rule will not report empty statements that are syntactically 
             required, for instance, because they are the body of a control statement.
+
+            This rule replaces EmptyStatementNotInLoop.
         </description>
         <priority>3</priority>
         <properties>
