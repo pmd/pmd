@@ -813,14 +813,19 @@ in each object at runtime.
  [@Final=true() and @Static=false()]
  [not(preceding-sibling::Annotation/MarkerAnnotation/Name[@Image="Builder.Default"]
     and //ImportDeclaration/Name[@Image="lombok.Builder"])]
+ [not(ReferenceType)]
 /VariableDeclarator
  [VariableInitializer/Expression/PrimaryExpression[not(PrimarySuffix)]
-  /PrimaryPrefix/*
+  /PrimaryPrefix[not(./AllocationExpression/ClassOrInterfaceType[pmd-java:typeIs('java.lang.Thread')])]
+    /*
     [
         self::Literal (: literal :)
         or
         (: another static field :)
         self::Name[@Image=//FieldDeclaration[@Static=true()]/VariableDeclarator/@Name]
+        or
+        (:unnecessary parenthesis :)
+        descendant-or-self::Literal
     ]
  ]
 /VariableDeclaratorId

@@ -192,4 +192,16 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>
+            #3949 - FinalFieldCouldBeStatic false negative with unnecessary parenthesis
+        </description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public final int BAR = (42);
+}
+        ]]></code>
+    </test-code>
 </test-data>
