@@ -112,9 +112,9 @@ Novice as much as advanced readers may want to [read on on Refactoring Guru](htt
                languages="Java"
     %}
     {% include custom/cli_option_row.html options="--ignore-annotations"
-               description="Ignore language annotations when comparing text"
+               description="Ignore language annotations (Java) or attributes (C#) when comparing text"
                default="false"
-               languages="Java"
+               languages="C#, Java"
     %}
     {% include custom/cli_option_row.html options="--ignore-literal-sequences"
                description="Ignore sequences of literals (common e.g. in list initializers)"

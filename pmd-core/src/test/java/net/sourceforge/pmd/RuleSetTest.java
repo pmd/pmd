@@ -12,6 +12,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -22,7 +23,6 @@ import java.util.Random;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-import org.apache.commons.io.FilenameUtils;
 import org.junit.Test;
 
 import net.sourceforge.pmd.Report.ProcessingError;
@@ -35,6 +35,7 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.MockRule;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.util.CollectionUtil;
+import net.sourceforge.pmd.util.IOUtil;
 
 public class RuleSetTest {
 
@@ -581,8 +582,8 @@ public class RuleSetTest {
         assertEquals("Wrong error message", "RuntimeException: Test exception while applying rule", processingError.getMsg());
         assertTrue("Should be a RuntimeException", processingError.getError() instanceof RuntimeException);
         assertEquals("Wrong filename in processing error",
-                "net.sourceforge.pmd.RuleSetTest/ruleExceptionShouldBeReported.java",
-                FilenameUtils.normalize(processingError.getFile(), true));
+                Paths.get("net.sourceforge.pmd.RuleSetTest", "ruleExceptionShouldBeReported.java").toString(),
+                IOUtil.normalizePath(processingError.getFile()));
 
         assertEquals("There should be a violation", 1, context.getReport().size());
     }

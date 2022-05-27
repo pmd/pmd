@@ -6639,6 +6639,51 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "lukelukes",
+      "name": "lukelukes",
+      "avatar_url": "https://avatars.githubusercontent.com/u/45536418?v=4",
+      "profile": "https://github.com/lukelukes",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "vibhory2j",
+      "name": "Vibhor Goyal",
+      "avatar_url": "https://avatars.githubusercontent.com/u/15845016?v=4",
+      "profile": "https://github.com/vibhory2j",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "Ramel0921",
+      "name": "Ramel0921",
+      "avatar_url": "https://avatars.githubusercontent.com/u/104978096?v=4",
+      "profile": "https://github.com/Ramel0921",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "flyhard",
+      "name": "Per Abich",
+      "avatar_url": "https://avatars.githubusercontent.com/u/409466?v=4",
+      "profile": "https://github.com/flyhard",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "filipponova",
+      "name": "Filippo Nova",
+      "avatar_url": "https://avatars.githubusercontent.com/u/12506636?v=4",
+      "profile": "https://github.com/filipponova",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,

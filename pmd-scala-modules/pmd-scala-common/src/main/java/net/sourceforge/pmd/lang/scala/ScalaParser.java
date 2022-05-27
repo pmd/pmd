@@ -9,13 +9,12 @@ import java.io.Reader;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.io.IOUtils;
-
 import net.sourceforge.pmd.lang.AbstractParser;
 import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.scala.ast.ASTSource;
+import net.sourceforge.pmd.util.IOUtil;
 
 import scala.meta.Dialect;
 import scala.meta.Source;
@@ -52,7 +51,7 @@ public class ScalaParser extends AbstractParser {
     public ASTSource parse(String fileName, Reader source) throws ParseException {
         Input.VirtualFile virtualFile;
         try {
-            String sourceString = IOUtils.toString(source);
+            String sourceString = IOUtil.readToString(source);
             virtualFile = new Input.VirtualFile(fileName, sourceString);
         } catch (IOException e) {
             throw new ParseException(e);

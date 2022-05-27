@@ -12,11 +12,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Objects;
 
-import org.apache.commons.io.IOUtils;
-
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.util.IOUtil;
 import net.sourceforge.pmd.util.datasource.DataSource;
 import net.sourceforge.pmd.util.datasource.FileDataSource;
 
@@ -68,7 +67,7 @@ class NioTextFile implements TextFile {
         }
 
         try (BufferedReader br = Files.newBufferedReader(path, charset)) {
-            return IOUtils.toString(br);
+            return IOUtil.readToString(br);
         }
     }
 

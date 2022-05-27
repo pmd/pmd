@@ -11,7 +11,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.io.IOUtils;
 import org.mozilla.javascript.CompilerEnvirons;
 import org.mozilla.javascript.Parser;
 import org.mozilla.javascript.ast.AstRoot;
@@ -22,6 +21,7 @@ import org.mozilla.javascript.ast.ParseProblem;
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ecmascript.EcmascriptParserOptions;
+import net.sourceforge.pmd.util.IOUtil;
 
 public class EcmascriptParser {
     @Deprecated
@@ -64,7 +64,7 @@ public class EcmascriptParser {
     public EcmascriptNode<AstRoot> parse(final Reader reader) {
         try {
             final List<ParseProblem> parseProblems = new ArrayList<>();
-            final String sourceCode = IOUtils.toString(reader);
+            final String sourceCode = IOUtil.readToString(reader);
             final AstRoot astRoot = parseEcmascript(sourceCode, parseProblems);
             final EcmascriptTreeBuilder treeBuilder = new EcmascriptTreeBuilder(sourceCode, parseProblems);
             EcmascriptNode<AstRoot> tree = treeBuilder.build(astRoot);

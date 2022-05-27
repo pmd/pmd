@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.design;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -39,6 +41,17 @@ public class ImmutableFieldRule extends AbstractLombokAwareRule {
         IMMUTABLE,
         /** Variable is only written during declaration, if at all. */
         CHECKDECL
+    }
+
+    @Override
+    protected Collection<String> defaultSuppressionAnnotations() {
+        Collection<String> defaultValues = new ArrayList<>(super.defaultSuppressionAnnotations());
+        defaultValues.add("org.mockito.Mock");
+        defaultValues.add("org.mockito.InjectMocks");
+        defaultValues.add("org.springframework.beans.factory.annotation.Autowired");
+        defaultValues.add("org.springframework.boot.test.mock.mockito.MockBean");
+
+        return defaultValues;
     }
 
     @Override

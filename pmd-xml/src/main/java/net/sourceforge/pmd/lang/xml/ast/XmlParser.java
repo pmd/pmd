@@ -13,7 +13,6 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.apache.commons.io.IOUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
@@ -22,6 +21,7 @@ import org.xml.sax.SAXException;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.xml.XmlParserOptions;
+import net.sourceforge.pmd.util.IOUtil;
 
 
 public class XmlParser {
@@ -37,7 +37,7 @@ public class XmlParser {
     protected Document parseDocument(Reader reader) throws ParseException {
         nodeCache.clear();
         try {
-            String xmlData = IOUtils.toString(reader);
+            String xmlData = IOUtil.readToString(reader);
 
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             dbf.setNamespaceAware(parserOptions.isNamespaceAware());
