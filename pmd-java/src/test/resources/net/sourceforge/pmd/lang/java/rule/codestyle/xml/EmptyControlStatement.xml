@@ -106,6 +106,20 @@
             ]]></code>
     </test-code>
 
+    <test-code>
+        <description>empty concise try-with-resource - not ok</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+            import java.io.InputStream;
+            class X {
+                void method(InputStream in) {
+                    try (in) {
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
 
     <test-code>
         <description>pos, empty synchronized stmt</description>
