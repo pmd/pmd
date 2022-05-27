@@ -18,6 +18,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTSynchronizedStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTTryStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
@@ -46,7 +47,7 @@ public class EmptyControlStatementRule extends AbstractJavaRule {
     @Override
     public Object visit(ASTFinallyStatement node, Object data) {
         if (isEmpty(node.getBody())) {
-            addViolation(data, node, "Empty finally clause");
+            asCtx(data).addViolationWithMessage(node, "Empty finally clause");
         }
         return null;
     }
@@ -54,7 +55,7 @@ public class EmptyControlStatementRule extends AbstractJavaRule {
     @Override
     public Object visit(ASTSynchronizedStatement node, Object data) {
         if (isEmpty(node.getBody())) {
-            addViolation(data, node, "Empty synchronized statement");
+            asCtx(data).addViolationWithMessage(node, "Empty synchronized statement");
         }
         return null;
     }
@@ -62,7 +63,7 @@ public class EmptyControlStatementRule extends AbstractJavaRule {
     @Override
     public Object visit(ASTSwitchStatement node, Object data) {
         if (node.getNumChildren() == 1) {
-            addViolation(data, node, "Empty switch statement");
+            asCtx(data).addViolationWithMessage(node, "Empty switch statement");
         }
         return null;
     }
@@ -70,7 +71,7 @@ public class EmptyControlStatementRule extends AbstractJavaRule {
     @Override
     public Object visit(ASTBlock node, Object data) {
         if (isEmpty(node) && node.getNthParent(3) instanceof ASTBlock) {
-            addViolation(data, node, "Empty block");
+            asCtx(data).addViolationWithMessage(node, "Empty block");
         }
         return null;
     }
@@ -78,10 +79,10 @@ public class EmptyControlStatementRule extends AbstractJavaRule {
     @Override
     public Object visit(ASTIfStatement node, Object data) {
         if (isEmpty(node.getThenBranch().getChild(0))) {
-            addViolation(data, node, "Empty if statement");
+            asCtx(data).addViolationWithMessage(node, "Empty if statement");
         }
         if (node.hasElse() && isEmpty(node.getElseBranch().getChild(0))) {
-            addViolation(data, node.getElseBranch(), "Empty else statement");
+            asCtx(data).addViolationWithMessage(node.getElseBranch(), "Empty else statement");
         }
         return null;
     }
@@ -89,19 +90,20 @@ public class EmptyControlStatementRule extends AbstractJavaRule {
     @Override
     public Object visit(ASTWhileStatement node, Object data) {
         if (isEmpty(node.getBody())) {
-            addViolation(data, node, "Empty while statement");
+            asCtx(data).addViolationWithMessage(node, "Empty while statement");
         }
         return null;
     }
 
     @Override
     public Object visit(ASTForStatement node, Object data) {
-        if (node.isForeach() && JavaRuleUtil.isExplicitUnusedVarName(node.getFirstChildOfType(ASTLocalVariableDeclaration.class).getVariableName())) {
+        if (node.isForeach() && JavaRuleUtil.isExplicitUnusedVarName(node.getFirstChildOfType(ASTLocalVariableDeclaration.class)
+                .getFirstDescendantOfType(ASTVariableDeclaratorId.class).getName())) {
             // allow `for (ignored : iterable) {}`
             return null;
         }
         if (isEmpty(node.getBody())) {
-            addViolation(data, node, "Empty for statement");
+            asCtx(data).addViolationWithMessage(node, "Empty for statement");
         }
         return null;
     }
@@ -109,7 +111,7 @@ public class EmptyControlStatementRule extends AbstractJavaRule {
     @Override
     public Object visit(ASTDoStatement node, Object data) {
         if (isEmpty(node.getBody())) {
-            addViolation(data, node, "Empty do..while statement");
+            asCtx(data).addViolationWithMessage(node, "Empty do..while statement");
         }
         return null;
     }
@@ -117,7 +119,7 @@ public class EmptyControlStatementRule extends AbstractJavaRule {
     @Override
     public Object visit(ASTInitializer node, Object data) {
         if (isEmpty(node.getBody())) {
-            addViolation(data, node, "Empty initializer statement");
+            asCtx(data).addViolationWithMessage(node, "Empty initializer statement");
         }
         return null;
     }
@@ -141,9 +143,9 @@ public class EmptyControlStatementRule extends AbstractJavaRule {
             }
 
             if (hasResource && !allResourcesIgnored) {
-                addViolation(data, node, "Empty try body - you could rename the resource to 'ignored'");
+                asCtx(data).addViolationWithMessage(node, "Empty try body - you could rename the resource to 'ignored'");
             } else if (!hasResource) {
-                addViolation(data, node, "Empty try body");
+                asCtx(data).addViolationWithMessage(node, "Empty try body");
             }
         }
         return null;
