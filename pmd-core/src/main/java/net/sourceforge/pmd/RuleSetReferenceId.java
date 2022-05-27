@@ -12,9 +12,10 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.util.ResourceLoader;
@@ -82,7 +83,7 @@ public class RuleSetReferenceId {
     //  terminology and API should be clarified.
 
     // use the logger of RuleSetFactory, because the warnings conceptually come from there.
-    private static final Logger LOG = Logger.getLogger(RuleSetFactory.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(RuleSetFactory.class);
 
     private final boolean external;
     private final String ruleSetFileName;
@@ -197,9 +198,9 @@ public class RuleSetReferenceId {
                 String builtinRuleSet = expandedRuleset == null ? tempRuleSetFileName : expandedRuleset;
                 if (checkRulesetExists(builtinRuleSet)) {
                     if (expandedRuleset != null && warnDeprecated) {
-                        LOG.warning(
-                            "Ruleset reference '" + tempRuleSetFileName + "' uses a deprecated form, use '"
-                            + builtinRuleSet + "' instead"
+                        LOG.warn(
+                            "Ruleset reference '{}' uses a deprecated form, use '{}' instead",
+                            tempRuleSetFileName, builtinRuleSet
                         );
                     }
 
