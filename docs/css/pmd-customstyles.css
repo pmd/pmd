@@ -21,6 +21,10 @@
     width: 100%;
 }
 
+header {
+    margin-top: 40px;
+}
+
 details {
     border-radius: 3px;
     background: #EEE;
@@ -83,4 +87,10 @@ details[open] summary {
 }
 .xpath-fun-doc .code-examples dt {
     font-weight: normal;
+}
+
+div.sidebarTitleDate {
+    margin-top:2.5px;
+    margin-bottom:5px;
+    margin-left:5px; 
 }

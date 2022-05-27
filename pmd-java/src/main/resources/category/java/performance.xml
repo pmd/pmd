@@ -968,7 +968,14 @@ You must use `new ArrayList<>(Arrays.asList(...))` if that is inconvenient for y
 <![CDATA[
 //Statement/ForStatement
     [not(.//IfStatement)]
+    [count(Statement//StatementExpression)=1]
     [@Foreach = true() or ForInit//VariableInitializer//Literal[@IntLiteral= true() and @Image='0']]
+    (: skip primitive types :)
+    [@Foreach = true() and Expression[pmd-java:typeIs('java.lang.Object[]')]
+        or Expression/RelationalExpression/PrimaryExpression/PrimaryPrefix/Name[substring-before(@Image, '.length') =
+           ancestor::MethodDeclaration[1]//VariableDeclaratorId[pmd-java:typeIs('java.lang.Object[]')]
+           /@Name]
+    ]
     //StatementExpression
       [PrimaryExpression
         [PrimaryPrefix/Name
@@ -998,6 +1005,8 @@ You must use `new ArrayList<>(Arrays.asList(...))` if that is inconvenient for y
                 PrimaryPrefix/Name/@Image = ancestor::MethodDeclaration[1]//FormalParameter/VariableDeclaratorId[@ArrayType=true()]/@Name
                 and PrimarySuffix/Expression/PrimaryExpression/PrimaryPrefix/Name
             ]
+            (: ignore method calls :)
+            [not(PrimarySuffix/Arguments)]
         ]
       ]
 ]]>
@@ -1009,12 +1018,14 @@ You must use `new ArrayList<>(Arrays.asList(...))` if that is inconvenient for y
 public class Test {
     public void foo(Integer[] ints) {
         // could just use Arrays.asList(ints)
-        List<Integer> l= new ArrayList<>(100);
-        for (int i=0; i< 100; i++) {
+        List<Integer> l = new ArrayList<>(100);
+        for (int i = 0; i < ints.length; i++) {
             l.add(ints[i]);
         }
-        for (int i=0; i< 100; i++) {
-            l.add(a[i].toString()); // won't trigger the rule
+
+        List<Integer> anotherList = new ArrayList<>();
+        for (int i = 0; i < ints.length; i++) {
+            anotherList.add(ints[i].toString()); // won't trigger the rule
         }
     }
 }
@@ -1138,13 +1149,22 @@ threadsafe StringBuffer is recommended to avoid this.
         <example>
 <![CDATA[
 public class Foo {
-    void bar() {
-        String a;
-        a = "foo";
-        a += " bar";
-        // better would be:
-        // StringBuilder a = new StringBuilder("foo");
-        // a.append(" bar");
+    String inefficientConcatenation() {
+        String result = "";
+        for (int i = 0; i < 10; i++) {
+            // warning: this concatenation will create one new StringBuilder per iteration
+            result += getStringFromSomeWhere(i);
+        }
+        return result;
+    }
+
+    String efficientConcatenation() {
+        // better would be to use one StringBuilder for the entire loop
+        StringBuilder result = new StringBuilder();
+        for (int i = 0; i < 10; i++) {
+            result.append(getStringFromSomeWhere(i));
+        }
+        return result.toString();
     }
 }
 ]]>

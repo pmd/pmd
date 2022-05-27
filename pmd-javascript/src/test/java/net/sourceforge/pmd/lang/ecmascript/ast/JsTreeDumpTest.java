@@ -30,4 +30,20 @@ public class JsTreeDumpTest extends BaseTreeDumpTest {
     public void jquerySelector() {
         doTest("jquery-selector");
     }
+
+    @Test
+    public void decorators() {
+        doTest("decorators");
+    }
+
+    @Test
+    public void templateStrings() {
+        doTest("templateStrings");
+    }
+
+    @Test
+    public void issue3948() {
+        // https://github.com/pmd/pmd/issues/3948
+        doTest("issue3948");
+    }
 }

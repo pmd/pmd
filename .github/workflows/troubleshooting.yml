@@ -2,6 +2,9 @@ name: troubleshooting
 
 on: workflow_dispatch
 
+permissions:
+  contents: read
+
 jobs:
   build:
     runs-on: ${{ matrix.os }}
@@ -12,8 +15,8 @@ jobs:
         os: [ ubuntu-latest ]
 
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/cache@v2
+      - uses: actions/checkout@v3
+      - uses: actions/cache@v3
         with:
           path: |
               ~/.m2/repository
@@ -21,9 +24,9 @@ jobs:
               ~/.cache
               ~/work/pmd/target/repositories
               vendor/bundle
-          key: v2-${{ runner.os }}-${{ hashFiles('**/pom.xml') }}
+          key: v3-${{ runner.os }}-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
-            v2-${{ runner.os }}-
+            v3-${{ runner.os }}-
       - name: Set up Ruby 2.7
         uses: ruby/setup-ruby@v1
         with:

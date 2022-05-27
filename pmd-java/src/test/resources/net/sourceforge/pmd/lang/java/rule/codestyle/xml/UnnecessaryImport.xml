@@ -915,4 +915,27 @@ public class U {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>Necessary imports for @snippet tags introduced with JEP 413 in Java 18</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.math.BigDecimal;
+import java.util.ArrayList;
+
+/**
+ * {@snippet :
+ *    BigDecimal n = new BigDecimal("10.0"); // @link substring="BigDecimal" target="BigDecimal"
+ * }
+ *
+ * <p>Other example:
+ * {@snippet :
+ *    Sample.add(this); // @link target="ArrayList#add(Object)"
+ * }
+ */
+public class Sample {
+    // ...
+}
+        ]]></code>
+    </test-code>
 </test-data>

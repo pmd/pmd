@@ -4,32 +4,35 @@
 
 package net.sourceforge.pmd.renderers;
 
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertEquals;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
-import org.apache.commons.io.IOUtils;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.junit.Test;
+import org.junit.contrib.java.lang.system.RestoreSystemProperties;
 
-import net.sourceforge.pmd.FooRule;
 import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.ReportTest;
-import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.RulePriority;
-import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.lang.ast.DummyNode;
-import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.rule.AbstractRule;
-import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
+import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.util.IOUtil;
 
 public class SarifRendererTest extends AbstractRendererTest {
+
+    @org.junit.Rule
+    public RestoreSystemProperties systemProperties = new RestoreSystemProperties();
+
     @Override
     public Renderer getRenderer() {
         return new SarifRenderer();
+    }
+
+    @Test
+    public void testRendererWithASCII() throws Exception {
+        System.setProperty("file.encoding", StandardCharsets.US_ASCII.name());
+        testRenderer(StandardCharsets.UTF_8);
     }
 
     @Override
@@ -74,50 +77,41 @@ public class SarifRendererTest extends AbstractRendererTest {
 
     @Override
     public String filter(String expected) {
-        return expected.replaceAll("\r\n", "\n"); // make the test run on Windows, too
+        return expected.replaceAll("\r\n", "\n") // make the test run on Windows, too
+                .replaceAll("\"version\": \".+\",", "\"version\": \"unknown\",");
     }
 
-    @Override
+    /**
+     * Multiple occurrences of the same rule should be reported as individual results.
+     * 
+     * @see <a href="https://github.com/pmd/pmd/issues/3768"> [core] SARIF formatter reports multiple locations
+     *      when it should report multiple results #3768</a>
+     */
     @Test
-    public void testRendererMultiple() throws Exception {
-        // Setup
-        Report rep = reportTwoViolations();
+    public void testRendererMultipleLocations() throws Exception {
+        Report rep = reportThreeViolationsTwoRules();
+        String actual = renderReport(getRenderer(), rep);
 
-        // Exercise
-        String actual = ReportTest.render(getRenderer(), rep);
-
-        // Verify that both rules are and rule ids are linked in the results 
-        // Initially was comparing whole files but order of rules rendered can't be guaranteed when the report is being rendered
-        // Refer to pmd-core/src/test/resources/net/sourceforge/pmd/renderers/sarif/expected-multiple.sarif.json to see an example data structure
-        assertThat(filter(actual), containsString("\"ruleId\": \"Foo\""));
-        assertThat(filter(actual), containsString("\"ruleId\": \"Boo\""));
-        assertThat(filter(actual), containsString("\"id\": \"Foo\""));
-        assertThat(filter(actual), containsString("\"id\": \"Boo\""));
+        JSONObject json = new JSONObject(actual);
+        JSONArray results = json.getJSONArray("runs").getJSONObject(0).getJSONArray("results");
+        assertEquals(3, results.length());
+        assertEquals(filter(readFile("expected-multiple-locations.sarif.json")), filter(actual));
     }
 
-    private Report reportTwoViolations() {
+    private Report reportThreeViolationsTwoRules() {
+        Rule fooRule = createFooRule();
+        Rule booRule = createBooRule();
+
         Report report = new Report();
-        RuleViolation informationalRuleViolation = newRuleViolation(1, "Foo");
-        informationalRuleViolation.getRule().setPriority(RulePriority.LOW);
-        report.addRuleViolation(informationalRuleViolation);
-        RuleViolation severeRuleViolation = newRuleViolation(2, "Boo");
-        severeRuleViolation.getRule().setPriority(RulePriority.HIGH);
-        report.addRuleViolation(severeRuleViolation);
+        report.addRuleViolation(newRuleViolation(1, 1, 1, 10, fooRule));
+        report.addRuleViolation(newRuleViolation(5, 1, 5, 11, fooRule));
+        report.addRuleViolation(newRuleViolation(2, 2, 3, 1, booRule));
         return report;
-    }
-
-    private RuleViolation newRuleViolation(int endColumn, String ruleName) {
-        DummyNode node = createNode(endColumn);
-        RuleContext ctx = new RuleContext();
-        ctx.setSourceCodeFile(new File(getSourceCodeFilename()));
-        AbstractRule fooRule = new FooRule();
-        fooRule.setName(ruleName);
-        return new ParametricRuleViolation<Node>(fooRule, ctx, node, "blah");
     }
 
     private String readFile(String name) {
         try (InputStream in = SarifRendererTest.class.getResourceAsStream("sarif/" + name)) {
-            String asd = IOUtils.toString(in, StandardCharsets.UTF_8);
+            String asd = IOUtil.readToString(in, StandardCharsets.UTF_8);
             return asd;
         } catch (IOException e) {
             throw new RuntimeException(e);

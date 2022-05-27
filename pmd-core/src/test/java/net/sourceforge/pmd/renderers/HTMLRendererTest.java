@@ -14,7 +14,6 @@ import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Report.ConfigurationError;
 import net.sourceforge.pmd.Report.ProcessingError;
-import net.sourceforge.pmd.ReportTest;
 
 public class HTMLRendererTest extends AbstractRendererTest {
 
@@ -100,7 +99,7 @@ public class HTMLRendererTest extends AbstractRendererTest {
         renderer.setProperty(HTMLRenderer.HTML_EXTENSION, false);
 
         Report rep = reportOneViolation();
-        String actual = ReportTest.render(renderer, rep);
+        String actual = renderReport(renderer, rep);
         assertEquals(filter(getExpected(linkPrefix, "L1")), filter(actual));
     }
 
@@ -113,7 +112,7 @@ public class HTMLRendererTest extends AbstractRendererTest {
         renderer.setProperty(HTMLRenderer.HTML_EXTENSION, false);
 
         Report rep = reportOneViolation();
-        String actual = ReportTest.render(renderer, rep);
+        String actual = renderReport(renderer, rep);
         assertEquals(filter(getExpected(linkPrefix, "")), filter(actual));
     }
 
@@ -126,7 +125,7 @@ public class HTMLRendererTest extends AbstractRendererTest {
         renderer.setProperty(HTMLRenderer.HTML_EXTENSION, false);
 
         Report rep = reportOneViolation();
-        String actual = ReportTest.render(renderer, rep);
+        String actual = renderReport(renderer, rep);
         assertEquals(filter(getExpected(linkPrefix, "1")), filter(actual));
     }
 }

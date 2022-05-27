@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.rule;
 
 import static java.util.Collections.singletonList;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertEquals;
 
 import org.hamcrest.Matchers;
@@ -13,11 +14,13 @@ import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 
+import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.junit.JavaUtilLoggingRule;
 import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.ast.DummyNode;
+import net.sourceforge.pmd.lang.ast.DummyNode.DummyRootNode;
 import net.sourceforge.pmd.lang.ast.DummyNodeWithDeprecatedAttribute;
 import net.sourceforge.pmd.lang.ast.DummyNodeWithListAndEnum;
 import net.sourceforge.pmd.lang.ast.xpath.Attribute;
@@ -154,12 +157,76 @@ public class XPathRuleTest {
         return xpr;
     }
 
+
+    public XPathRule makeXPath(String xpathExpr) {
+        XPathRule xpr = new XPathRule(XPathVersion.XPATH_2_0, xpathExpr);
+        xpr.setName("name");
+        xpr.setMessage("gotcha");
+        return xpr;
+    }
+
+    @Test
+    public void testFileNameInXpath() {
+        Report report = executeRule(makeXPath("//*[pmd:fileName() = 'Foo.cls']"),
+                                    newRoot("src/Foo.cls"));
+
+        assertThat(report.getViolations(), hasSize(1));
+    }
+
+    @Test
+    public void testBeginLine() {
+        Report report = executeRule(makeXPath("//*[pmd:startLine(.)=1]"),
+                                    newRoot("src/Foo.cls"));
+
+        assertThat(report.getViolations(), hasSize(1));
+    }
+
+    @Test
+    public void testBeginCol() {
+        Report report = executeRule(makeXPath("//*[pmd:startColumn(.)=1]"),
+                                    newRoot("src/Foo.cls"));
+
+        assertThat(report.getViolations(), hasSize(1));
+    }
+
+    @Test
+    public void testEndLine() {
+        Report report = executeRule(makeXPath("//*[pmd:endLine(.)=1]"),
+                                    newRoot("src/Foo.cls"));
+
+        assertThat(report.getViolations(), hasSize(1));
+    }
+
+    @Test
+    public void testEndColumn() {
+        Report report = executeRule(makeXPath("//*[pmd:endColumn(.)>1]"),
+                                    newRoot("src/Foo.cls"));
+
+        assertThat(report.getViolations(), hasSize(1));
+    }
+
+    public Report executeRule(net.sourceforge.pmd.Rule rule, DummyNode node) {
+        RuleContext ctx = new RuleContext();
+        ctx.setReport(new Report());
+        ctx.setLanguageVersion(LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getDefaultVersion());
+        eval(ctx, rule, node);
+        return ctx.getReport();
+    }
+
     public void eval(RuleContext ctx, net.sourceforge.pmd.Rule rule, DummyNode node) {
+        ctx.setCurrentRule(rule);
         rule.apply(singletonList(node), ctx);
+        ctx.setCurrentRule(null);
     }
 
     public DummyNode newNode() {
         DummyNode dummy = new DummyNodeWithDeprecatedAttribute(2);
+        dummy.setCoords(1, 1, 1, 2);
+        return dummy;
+    }
+
+    public DummyNode.DummyRootNode newRoot(String fileName) {
+        DummyRootNode dummy = new DummyRootNode(fileName);
         dummy.setCoords(1, 1, 1, 2);
         return dummy;
     }

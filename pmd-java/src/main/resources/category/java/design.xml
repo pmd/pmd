@@ -338,11 +338,17 @@ is invoked by a inner class.
             <property name="xpath">
                 <value>
 <![CDATA[
-//TypeDeclaration[count(../TypeDeclaration) = 1]/ClassOrInterfaceDeclaration
-[@Final = false()]
-[ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration[@Private = true()]]
-[not(./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration[(@Public = true()) or (@Protected = true()) or (@PackagePrivate = true())])]
-[not(.//ClassOrInterfaceDeclaration)]
+//TypeDeclaration
+  /ClassOrInterfaceDeclaration
+  [@Final = false()]
+  (: at least one private constructor :)
+  [ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration[@Private = true()]]
+  (: no public constructor :)
+  [not(./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration[(@Public = true()) or (@Protected = true()) or (@PackagePrivate = true())])]
+  (: not a base class in the same compilation unit :)
+  [not(@SimpleName = ../../TypeDeclaration/ClassOrInterfaceDeclaration/ExtendsList/ClassOrInterfaceType/@Image)]
+  (: not a base class for a inner class in the same compilation unit :)
+  [not(@SimpleName = .//ClassOrInterfaceDeclaration/ExtendsList/ClassOrInterfaceType/@Image)]
 ]]>
                 </value>
             </property>
@@ -804,11 +810,19 @@ in each object at runtime.
                 <value>
 <![CDATA[
 //FieldDeclaration
- [@Final= true() and @Static= false()]
+ [@Final=true() and @Static=false()]
  [not(preceding-sibling::Annotation/MarkerAnnotation/Name[@Image="Builder.Default"]
     and //ImportDeclaration/Name[@Image="lombok.Builder"])]
 /VariableDeclarator
- [VariableInitializer/Expression/PrimaryExpression[not(PrimarySuffix)]/PrimaryPrefix/Literal]
+ [VariableInitializer/Expression/PrimaryExpression[not(PrimarySuffix)]
+  /PrimaryPrefix/*
+    [
+        self::Literal (: literal :)
+        or
+        (: another static field :)
+        self::Name[@Image=//FieldDeclaration[@Static=true()]/VariableDeclarator/@Name]
+    ]
+ ]
 /VariableDeclaratorId
 ]]>
                 </value>
@@ -1277,12 +1291,11 @@ public void foo() throws Exception {
 Look for ternary operators with the form `condition ? literalBoolean : foo`
 or `condition ? foo : literalBoolean`.
 
-These expressions can be simplified respectively to
-`condition || foo`  when the literalBoolean is true
-`!condition && foo` when the literalBoolean is false
-or
-`!condition || foo` when the literalBoolean is true
-`condition && foo`  when the literalBoolean is false
+These expressions can be simplified as follows:
+* `condition ? true : expr` simplifies to `condition || expr`
+* `condition ? false : expr` simplifies to `!condition && expr`
+* `condition ? expr : true` simplifies to `!condition || expr`
+* `condition ? expr : false` simplifies to `condition && expr`
 ]]>
         </description>
         <priority>3</priority>
@@ -1291,9 +1304,9 @@ or
             <property name="xpath">
                 <value>
 <![CDATA[
-//ConditionalExpression[not(PrimaryExpression/*/Literal) and (Expression/PrimaryExpression/*/Literal/BooleanLiteral)]
-|
-//ConditionalExpression[not(Expression/PrimaryExpression/*/Literal) and (PrimaryExpression/*/Literal/BooleanLiteral)]
+//ConditionalExpression
+  [(Expression|.)/PrimaryExpression/*/Literal/BooleanLiteral]
+  [not((Expression|.)/PrimaryExpression/*/Literal/NullLiteral)]
 ]]>
                 </value>
             </property>
@@ -1315,6 +1328,10 @@ public class Foo {
 
     public void test4() {
         final boolean otherValue = condition ? something() : false; // can be as simple as condition && something();
+    }
+
+    public boolean test5() {
+        return condition ? true : false; // can be as simple as return condition;
     }
 }
 ]]>

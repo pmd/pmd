@@ -294,7 +294,7 @@ public final class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class MyClass {
-    private int positive = 1;
+    private int positive = 1; // cannot be final, is modified in ctor
 
     public MyClass(int value) {
         // if negative keep default
@@ -308,10 +308,11 @@ public class MyClass {
 
     <test-code>
         <description>Bug 1740480, assignment in single constructor based on constructor argument check</description>
-        <expected-problems>0</expected-problems>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
         <code><![CDATA[
 public class MyClass {
-    private int positive;
+    private int positive; // can be final
 
     public MyClass(int value) {
         if (value > 0) {
@@ -549,6 +550,57 @@ public class TestFinal {
       e = e.add(BigInteger.ONE);
   }
 }
+        ]]></code>
+    </test-code>
+    
+    <test-code>
+        <description>[java] ImmutableField - false negative when field assigned in constructor conditionally #3850</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+public class ExampleImmutableField {
+
+    private String str; // false negative here, could be final
+
+    public ExampleImmutableField(String strLocal, boolean flag) { 
+        if (flag){
+            this.str = strLocal;
+        } else {
+            this.str = strLocal+"123";
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#3874 [java] ImmutableField reports fields annotated with @Autowired (Spring) and @Mock (Mockito)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.beans.factory.annotation.Autowired;
+
+public class ExampleImmutableField {
+
+    @Mock
+    private Foo foo;
+
+    @InjectMocks
+    private Bar bar;
+
+    @MockBean
+    private Baz Baz;
+
+    @Autowired
+    private Foo2 foo2;
+}
+
+class Foo {}
+class Bar {}
+class Baz {}
+class Foo2 {}
         ]]></code>
     </test-code>
 </test-data>

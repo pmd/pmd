@@ -19,17 +19,32 @@ import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 
+import net.sourceforge.pmd.annotation.Experimental;
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.dfa.report.ReportTree;
 import net.sourceforge.pmd.lang.rule.stat.StatisticalRule;
 import net.sourceforge.pmd.renderers.AbstractAccumulatingRenderer;
 import net.sourceforge.pmd.stat.Metric;
 import net.sourceforge.pmd.util.DateTimeUtil;
 import net.sourceforge.pmd.util.NumericConstants;
+import net.sourceforge.pmd.util.Predicate;
 
 /**
- * A {@link Report} collects all informations during a PMD execution. This
- * includes violations, suppressed violations, metrics, error during processing
- * and configuration errors.
+ * A {@link Report} is the output of a PMD execution. This
+ * includes violations, suppressed violations, metrics, error
+ * during processing and configuration errors. PMD's entry point creates
+ * a report (see {@link PmdAnalysis#performAnalysisAndCollectReport()})
+ * The mutation methods on this class are deprecated, as they will be
+ * internalized in PMD 7.
+ *
+ * <p>For special use cases, like filtering the report after PMD analysis and
+ * before rendering the report, some transformation operations are provided:
+ * <ul>
+ *     <li>{@link #filterViolations(Predicate)}</li>
+ *     <li>{@link #union(Report)}</li>
+ * </ul>
+ * These methods create a new {@link Report} rather than modifying their receiver.
+ * </p>
  */
 public class Report implements Iterable<RuleViolation> {
 
@@ -54,14 +69,28 @@ public class Report implements Iterable<RuleViolation> {
     private final List<SuppressedViolation> suppressedRuleViolations = new ArrayList<>();
 
     /**
+     * @deprecated {@link Report} instances are created by PMD. There is no need
+     * to create a own report. This constructor will be hidden
+     * in PMD7.
+     */
+    @Deprecated
+    @InternalApi
+    public Report() { // NOPMD - UnnecessaryConstructor
+        // TODO: should be package-private, you have to use a listener to build a report.
+    }
+
+    /**
      * Creates a new, initialized, empty report for the given file name.
      *
-     * @param ctx
-     *            The context to use to connect to the report
-     * @param fileName
-     *            the filename used to report any violations
+     * @param ctx      The context to use to connect to the report
+     * @param fileName the filename used to report any violations
+     *
      * @return the new report
+     *
+     * @deprecated Is internal API
      */
+    @Deprecated
+    @InternalApi
     public static Report createReport(RuleContext ctx, String fileName) {
         Report report = new Report();
 
@@ -330,9 +359,12 @@ public class Report implements Iterable<RuleViolation> {
     /**
      * Adds a new rule violation to the report and notify the listeners.
      *
-     * @param violation
-     *            the violation to add
+     * @param violation the violation to add
+     *
+     * @deprecated PMD's way of creating a report is internal and may be changed in pmd 7.
      */
+    @Deprecated
+    @InternalApi
     public void addRuleViolation(RuleViolation violation) {
 
         // NOPMD suppress
@@ -376,7 +408,11 @@ public class Report implements Iterable<RuleViolation> {
      *
      * @param error
      *            the error to add
+     *
+     * @deprecated PMD's way of creating a report is internal and may be changed in pmd 7.
      */
+    @Deprecated
+    @InternalApi
     public void addConfigError(ConfigurationError error) {
         configErrors.add(error);
     }
@@ -386,7 +422,10 @@ public class Report implements Iterable<RuleViolation> {
      *
      * @param error
      *            the error to add
+     * @deprecated PMD's way of creating a report is internal and may be changed in pmd 7.
      */
+    @Deprecated
+    @InternalApi
     public void addError(ProcessingError error) {
         errors.add(error);
     }
@@ -402,7 +441,11 @@ public class Report implements Iterable<RuleViolation> {
      * @param r the report to be merged into this.
      *
      * @see AbstractAccumulatingRenderer
+     *
+     * @deprecated Internal API
      */
+    @Deprecated
+    @InternalApi
     public void merge(Report r) {
         synchronized (lock) {
             errors.addAll(r.errors);
@@ -649,5 +692,70 @@ public class Report implements Iterable<RuleViolation> {
     @Deprecated
     public void addListeners(List<ThreadSafeReportListener> allListeners) {
         listeners.addAll(allListeners);
+    }
+
+    /**
+     * Creates a new report taking all the information from this report,
+     * but filtering the violations.
+     *
+     * @param filter when true, the violation will be kept.
+     * @return copy of this report
+     */
+    @Experimental
+    public Report filterViolations(Predicate<RuleViolation> filter) {
+        Report copy = new Report();
+        copy.start = start;
+        copy.end = end;
+
+        for (RuleViolation violation : violations) {
+            if (filter.test(violation)) {
+                copy.addRuleViolation(violation);
+            }
+        }
+
+        copy.linesToSuppress.putAll(linesToSuppress);
+        copy.suppressedRuleViolations.addAll(suppressedRuleViolations);
+        copy.metrics.addAll(metrics);
+        copy.errors.addAll(errors);
+        copy.configErrors.addAll(configErrors);
+        return copy;
+    }
+
+    /**
+     * Creates a new report by combining this report with another report.
+     * This is similar to {@link #merge(Report)}, but instead a new report
+     * is created. The lowest start time and greatest end time are kept in the copy.
+     *
+     * @param other the other report to combine
+     * @return
+     */
+    @Experimental
+    public Report union(Report other) {
+        Report copy = new Report();
+
+        copy.start = Math.min(other.start, this.start);
+        copy.end = Math.max(other.end, this.end);
+
+        for (RuleViolation violation : violations) {
+            copy.addRuleViolation(violation);
+        }
+        for (RuleViolation violation : other.violations) {
+            copy.addRuleViolation(violation);
+        }
+
+        copy.linesToSuppress.putAll(linesToSuppress);
+        copy.linesToSuppress.putAll(other.linesToSuppress);
+
+        copy.suppressedRuleViolations.addAll(suppressedRuleViolations);
+        copy.suppressedRuleViolations.addAll(other.suppressedRuleViolations);
+
+        copy.metrics.addAll(metrics);
+        copy.metrics.addAll(other.metrics);
+        copy.errors.addAll(errors);
+        copy.errors.addAll(other.errors);
+        copy.configErrors.addAll(configErrors);
+        copy.configErrors.addAll(other.configErrors);
+
+        return copy;
     }
 }

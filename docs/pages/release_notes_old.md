@@ -5,6 +5,505 @@ permalink: pmd_release_notes_old.html
 
 Previous versions of PMD can be downloaded here: https://github.com/pmd/pmd/releases
 
+## 30-April-2022 - 6.45.0
+
+The PMD team is pleased to announce PMD 6.45.0.
+
+This is a minor release.
+
+### Table Of Contents
+
+* [New and noteworthy](#new-and-noteworthy)
+    * [PMD User Survey](#pmd-user-survey)
+    * [Support for HTML](#support-for-html)
+    * [New rules](#new-rules)
+    * [Modified rules](#modified-rules)
+* [Fixed Issues](#fixed-issues)
+* [API Changes](#api-changes)
+    * [Experimental APIs](#experimental-apis)
+* [External Contributions](#external-contributions)
+* [Stats](#stats)
+
+### New and noteworthy
+
+#### PMD User Survey
+
+Help shape the future of PMD by telling us how you use it.
+
+Our little survey is still open in case you didn't participate yet.
+Please participate in our survey at <https://forms.gle/4d8r1a1RDzfixHDc7>.
+
+Thank you!
+
+#### Support for HTML
+
+This version of PMD ships a new language module to support analyzing of HTML.
+Support for HTML is experimental and might change without notice.
+The language implementation is not complete yet and the AST doesn't look
+well for text nodes and comment nodes and might be changed in the future.
+You can write your own rules, but we don't guarantee that the rules work with
+the next (minor) version of PMD without adjustments.
+
+Please give us feedback about how practical this new language is in
+[discussions](https://github.com/pmd/pmd/discussions). Please report
+missing features or bugs as new [issues](https://github.com/pmd/pmd/issues).
+
+#### New rules
+
+* The HTML rule [`AvoidInlineStyles`](https://pmd.github.io/pmd-6.45.0/pmd_rules_html_bestpractices.html#avoidinlinestyles) finds elements which use a style attribute.
+  In order to help maintaining a webpage it is considered good practice to separate content and styles. Instead
+  of inline styles one should use CSS files and classes.
+
+```xml
+    <rule ref="category/html/bestpractices.xml/AvoidInlineStyles" />
+```
+
+* The HTML rule [`UnnecessaryTypeAttribute`](https://pmd.github.io/pmd-6.45.0/pmd_rules_html_bestpractices.html#unnecessarytypeattribute) finds "link" and "script" elements which
+  still have a "type" attribute. This is not necessary anymore since modern browsers automatically use CSS and
+  JavaScript.
+
+```xml
+      <rule ref="category/html/bestpractices.xml/UnnecessaryTypeAttribute" />
+```
+
+* The HTML rule [`UseAltAttributeForImages`](https://pmd.github.io/pmd-6.45.0/pmd_rules_html_bestpractices.html#usealtattributeforimages) finds "img" elements without an "alt"
+  attribute. An alternate text should always be provided in order to help screen readers.
+
+```xml
+      <rule ref="category/html/bestpractices.xml/UseAltAttributeForImages" />
+```
+
+#### Modified rules
+
+*   The Java rule [`UnusedPrivateField`](https://pmd.github.io/pmd-6.45.0/pmd_rules_java_bestpractices.html#unusedprivatefield) has a new property `ignoredFieldNames`.
+    The default ignores serialization-specific fields (eg `serialVersionUID`).
+    The property can be used to ignore more fields based on their name.
+    Note that the rule used to ignore fields named `IDENT`, but doesn't anymore (add this value to the property to restore the old behaviour).
+
+### Fixed Issues
+* core
+  * [#3792](https://github.com/pmd/pmd/issues/3792): \[core] Allow to filter violations in Report
+  * [#3881](https://github.com/pmd/pmd/issues/3881): \[core] SARIF renderer depends on platform default encoding
+  * [#3882](https://github.com/pmd/pmd/pull/3882): \[core] Fix AssertionError about exhaustive switch
+  * [#3884](https://github.com/pmd/pmd/issues/3884): \[core] XML report via ant task contains XML header twice
+  * [#3896](https://github.com/pmd/pmd/pull/3896): \[core] Fix ast-dump CLI when reading from stdin
+* doc
+  * [#2505](https://github.com/pmd/pmd/issues/2505): \[doc] Improve side bar to show release date
+* java
+  * [#3068](https://github.com/pmd/pmd/issues/3068): \[java] Some tests should not depend on real rules
+  * [#3889](https://github.com/pmd/pmd/pull/3889): \[java] Catch LinkageError in UselessOverridingMethodRule
+* java-bestpractices
+  * [#3910](https://github.com/pmd/pmd/pull/3910): \[java] UnusedPrivateField - Allow the ignored fieldnames to be configurable
+  * [#1185](https://github.com/pmd/pmd/issues/1185): \[java] ArrayIsStoredDirectly false positive with field access
+  * [#1474](https://github.com/pmd/pmd/issues/1474): \[java] ArrayIsStoredDirectly false positive with method call
+  * [#3879](https://github.com/pmd/pmd/issues/3879) \[java] ArrayIsStoredDirectly reports duplicated violation
+  * [#3929](https://github.com/pmd/pmd/issues/3929): \[java] ArrayIsStoredDirectly should report the assignment rather than formal parameter
+* java-design
+  * [#3603](https://github.com/pmd/pmd/issues/3603): \[java] SimplifiedTernary: no violation for 'condition ? true : false' case
+* java-performance
+  * [#3867](https://github.com/pmd/pmd/issues/3867): \[java] UseArraysAsList with method call
+* plsql
+  * [#3687](https://github.com/pmd/pmd/issues/3687): \[plsql] Parsing exception EXECUTE IMMEDIATE l_sql BULK COLLECT INTO statement
+  * [#3706](https://github.com/pmd/pmd/issues/3706): \[plsql] Parsing exception CURSOR statement with parenthesis groupings
+
+### API Changes
+
+#### Experimental APIs
+
+* Report has two new methods which allow limited mutations of a given report:
+  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.45.0/net/sourceforge/pmd/Report.html#filterViolations(net.sourceforge.pmd.util.Predicate)"><code>Report#filterViolations</code></a> creates a new report with
+    some violations removed with a given predicate based filter.
+  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.45.0/net/sourceforge/pmd/Report.html#union(net.sourceforge.pmd.Report)"><code>Report#union</code></a> can combine two reports into a single new Report.
+* <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.45.0/net/sourceforge/pmd/util/Predicate.html#"><code>net.sourceforge.pmd.util.Predicate</code></a> will be replaced in PMD7 with the standard Predicate interface from java8.
+* The module `pmd-html` is entirely experimental right now. Anything in the package
+  `net.sourceforge.pmd.lang.html` should be used cautiously.
+
+### External Contributions
+* [#3883](https://github.com/pmd/pmd/pull/3883): \[doc] Improve side bar by Adding Release Date - [@jasonqiu98](https://github.com/jasonqiu98)
+* [#3910](https://github.com/pmd/pmd/pull/3910): \[java] UnusedPrivateField - Allow the ignored fieldnames to be configurable - [@laoseth](https://github.com/laoseth)
+* [#3928](https://github.com/pmd/pmd/pull/3928): \[plsql] Fix plsql parsing error in parenthesis groups - [@LiGaOg](https://github.com/LiGaOg)
+* [#3935](https://github.com/pmd/pmd/pull/3935): \[plsql] Fix parser exception in EXECUTE IMMEDIATE BULK COLLECT #3687 - [@Scrsloota](https://github.com/Scrsloota)
+* [#3938](https://github.com/pmd/pmd/pull/3938): \[java] Modify SimplifiedTernary to meet the missing case #3603 - [@VoidxHoshi](https://github.com/VoidxHoshi)
+* [#3943](https://github.com/pmd/pmd/pull/3943): chore: Set permissions for GitHub actions - [@naveensrinivasan](https://github.com/naveensrinivasan)
+
+### Stats
+* 97 commits
+* 31 closed tickets & PRs
+* Days since last release: 33
+
+## 27-March-2022 - 6.44.0
+
+The PMD team is pleased to announce PMD 6.44.0.
+
+This is a minor release.
+
+### Table Of Contents
+
+* [New and noteworthy](#new-and-noteworthy)
+    * [PMD User Survey](#pmd-user-survey)
+    * [Java 18 Support](#java-18-support)
+    * [Better XML XPath support](#better-xml-xpath-support)
+    * [New XPath functions](#new-xpath-functions)
+    * [New programmatic API](#new-programmatic-api)
+* [Fixed Issues](#fixed-issues)
+* [API Changes](#api-changes)
+    * [Deprecated API](#deprecated-api)
+    * [Experimental APIs](#experimental-apis)
+* [External Contributions](#external-contributions)
+* [Stats](#stats)
+
+### New and noteworthy
+
+#### PMD User Survey
+
+Help shape the future of PMD by telling us how you use it.
+
+Please participate in our survey at <https://forms.gle/4d8r1a1RDzfixHDc7>.
+
+Thank you!
+
+#### Java 18 Support
+
+This release of PMD brings support for Java 18. There are no new standard language features.
+
+PMD also supports [JEP 420: Pattern Matching for switch (Second Preview)](https://openjdk.java.net/jeps/420) as a
+preview language feature. In order to analyze a project with PMD that uses these language features,
+you'll need to enable it via the environment variable `PMD_JAVA_OPTS` and select the new language
+version `18-preview`:
+
+    export PMD_JAVA_OPTS=--enable-preview
+    ./run.sh pmd -language java -version 18-preview ...
+
+Note: Support for Java 16 preview language features have been removed. The version "16-preview" is no longer available.
+
+#### Better XML XPath support
+
+The new rule class <a href="https://docs.pmd-code.org/apidocs/pmd-xml/6.44.0/net/sourceforge/pmd/lang/xml/rule/DomXPathRule.html#"><code>DomXPathRule</code></a> is intended to replace
+usage of the `XPathRule` for XML rules. This rule executes the XPath query in a different
+way, which sticks to the XPath specification. This means the expression is interpreted
+the same way in PMD as in all other XPath development tools that stick to the standard.
+You can for instance test the expression in an online XPath editor.
+
+Prefer using this class to define XPath rules: replace the value of the `class`
+attribute with `net.sourceforge.pmd.lang.xml.rule.DomXPathRule` like so:
+```xml
+<rule name="MyXPathRule"
+      language="xml"
+      message="A message"
+      class="net.sourceforge.pmd.lang.xml.rule.DomXPathRule">
+
+      <properties>
+        <property name="xpath">
+            <value><![CDATA[
+            /a/b/c[@attr = "5"]
+            ]]></value>
+        </property>
+        <!-- Note: the property "version" is ignored, remove it. The query is XPath 2. -->
+      </properties>
+</rule>
+```
+
+The rule is more powerful than `XPathRule`, as it can now handle XML namespaces,
+comments and processing instructions. Please refer to the Javadoc of <a href="https://docs.pmd-code.org/apidocs/pmd-xml/6.44.0/net/sourceforge/pmd/lang/xml/rule/DomXPathRule.html#"><code>DomXPathRule</code></a>
+for information about the differences with `XPathRule` and examples.
+
+`XPathRule` is still perfectly supported for all other languages, including Apex and Java.
+
+#### New XPath functions
+
+The new XPath functions `pmd:startLine`, `pmd:endLine`, `pmd:startColumn`,
+and `pmd:endColumn` are now available in XPath rules for all languages. They
+replace the node attributes `@BeginLine`, `@EndLine` and such. These attributes
+will be deprecated in a future release.
+
+Please refer to [the documentation](https://pmd.github.io/latest/pmd_userdocs_extending_writing_xpath_rules.html#pmd-extension-functions) of these functions for more information, including usage samples.
+
+Note that the function `pmd:endColumn` returns an exclusive index, while the
+attribute `@EndColumn` is inclusive. This is for forward compatibility with PMD 7,
+which uses exclusive end indices.
+
+#### New programmatic API
+
+This release introduces a new programmatic API to replace the inflexible <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.44.0/net/sourceforge/pmd/PMD.html#"><code>PMD</code></a> class.
+Programmatic execution of PMD should now be done with a <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.44.0/net/sourceforge/pmd/PMDConfiguration.html#"><code>PMDConfiguration</code></a>
+and a <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.44.0/net/sourceforge/pmd/PmdAnalysis.html#"><code>PmdAnalysis</code></a>, for instance:
+
+```java
+PMDConfiguration config = new PMDConfiguration();
+config.setDefaultLanguageVersion(LanguageRegistry.findLanguageByTerseName("java").getVersion("11"));
+config.setInputPaths("src/main/java");
+config.prependAuxClasspath("target/classes");
+config.setMinimumPriority(RulePriority.HIGH);
+config.addRuleSet("rulesets/java/quickstart.xml");
+config.setReportFormat("xml");
+config.setReportFile("target/pmd-report.xml");
+
+try (PmdAnalysis pmd = PmdAnalysis.create(config)) {
+    // note: don't use `config` once a PmdAnalysis has been created.
+    // optional: add more rulesets
+    pmd.addRuleSet(pmd.newRuleSetLoader().loadFromResource("custom-ruleset.xml"));
+    // optional: add more files
+    pmd.files().addFile(Paths.get("src", "main", "more-java", "ExtraSource.java"));
+    // optional: add more renderers
+    pmd.addRenderer(renderer);
+
+    // or just call PMD
+    pmd.performAnalysis();
+}
+```
+
+The `PMD` class still supports methods related to CLI execution: `runPmd` and `main`.
+All other members are now deprecated for removal.
+The CLI itself remains compatible, if you run PMD via command-line, no action is required on your part.
+
+### Fixed Issues
+
+*   apex
+    *   [#3817](https://github.com/pmd/pmd/pull/3817): \[apex] Add designer bindings to display main attributes
+*   apex-performance
+    *   [#3773](https://github.com/pmd/pmd/pull/3773): \[apex] EagerlyLoadedDescribeSObjectResult false positives with SObjectField.getDescribe()
+*   core
+    *   [#2693](https://github.com/pmd/pmd/issues/2693): \[ci] Add integration tests with real open-source projects
+    *   [#3299](https://github.com/pmd/pmd/issues/3299): \[core] Deprecate system properties of PMDCommandLineInterface
+*   java
+    *   [#3809](https://github.com/pmd/pmd/issues/3809): \[java] Support JDK 18
+*   doc
+    *   [#2504](https://github.com/pmd/pmd/issues/2504): \[doc] Improve "Edit me on github" button
+    *   [#3812](https://github.com/pmd/pmd/issues/3812): \[doc] Documentation website table of contents broken on pages with many subheadings
+*   java-design
+    *   [#3850](https://github.com/pmd/pmd/issues/3850): \[java] ImmutableField - false negative when field assigned in constructor conditionally
+    *   [#3851](https://github.com/pmd/pmd/issues/3851): \[java] ClassWithOnlyPrivateConstructorsShouldBeFinal - false negative when a compilation unit contains two class declarations
+*   xml
+    *   [#2766](https://github.com/pmd/pmd/issues/2766): \[xml] XMLNS prefix is not pre-declared in xpath query
+    *   [#3863](https://github.com/pmd/pmd/issues/3863): \[xml] Make XPath rules work exactly as in the XPath spec
+
+### API Changes
+
+#### Deprecated API
+
+* Several members of <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.44.0/net/sourceforge/pmd/PMD.html#"><code>PMD</code></a> have been newly deprecated, including:
+  - `PMD#EOL`: use `System#lineSeparator()`
+  - `PMD#SUPPRESS_MARKER`: use <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.44.0/net/sourceforge/pmd/PMDConfiguration.html#DEFAULT_SUPPRESS_MARKER"><code>DEFAULT_SUPPRESS_MARKER</code></a>
+  - `PMD#processFiles`: use the [new programmatic API](#new-programmatic-api)
+  - `PMD#getApplicableFiles`: is internal
+* <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.44.0/net/sourceforge/pmd/PMDConfiguration.html#prependClasspath(java.lang.String)"><code>PMDConfiguration#prependClasspath</code></a> is deprecated
+  in favour of <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.44.0/net/sourceforge/pmd/PMDConfiguration.html#prependAuxClasspath(java.lang.String)"><code>prependAuxClasspath</code></a>.
+* <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.44.0/net/sourceforge/pmd/PMDConfiguration.html#setRuleSets(java.lang.String)"><code>PMDConfiguration#setRuleSets</code></a> and
+  <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.44.0/net/sourceforge/pmd/PMDConfiguration.html#getRuleSets()"><code>getRuleSets</code></a> are deprecated. Use instead
+  <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.44.0/net/sourceforge/pmd/PMDConfiguration.html#setRuleSets(java.util.List)"><code>setRuleSets</code></a>,
+  <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.44.0/net/sourceforge/pmd/PMDConfiguration.html#addRuleSet(java.lang.String)"><code>addRuleSet</code></a>,
+  and <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.44.0/net/sourceforge/pmd/PMDConfiguration.html#getRuleSetPaths()"><code>getRuleSetPaths</code></a>.
+* Several members of <a href="https://docs.pmd-code.org/apidocs/pmd-test/6.44.0/net/sourceforge/pmd/cli/BaseCLITest.html#"><code>BaseCLITest</code></a> have been deprecated with replacements.
+* Several members of <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.44.0/net/sourceforge/pmd/cli/PMDCommandLineInterface.html#"><code>PMDCommandLineInterface</code></a> have been explicitly deprecated.
+  The whole class however was deprecated long ago already with 6.30.0. It is internal API and should
+  not be used.
+
+* In modelica, the rule classes <a href="https://docs.pmd-code.org/apidocs/pmd-modelica/6.44.0/net/sourceforge/pmd/lang/modelica/rule/AmbiguousResolutionRule.html#"><code>AmbiguousResolutionRule</code></a>
+  and <a href="https://docs.pmd-code.org/apidocs/pmd-modelica/6.44.0/net/sourceforge/pmd/lang/modelica/rule/ConnectUsingNonConnector.html#"><code>ConnectUsingNonConnector</code></a> have been deprecated,
+  since they didn't comply to the usual rule class naming conventions yet.
+  The replacements are in the subpackage `bestpractices`.
+
+#### Experimental APIs
+
+*   Together with the [new programmatic API](#new-programmatic-api) the interface
+    <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.44.0/net/sourceforge/pmd/lang/document/TextFile.html#"><code>TextFile</code></a> has been added as *experimental*. It intends
+    to replace <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.44.0/net/sourceforge/pmd/util/datasource/DataSource.html#"><code>DataSource</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.44.0/net/sourceforge/pmd/cpd/SourceCode.html#"><code>SourceCode</code></a> in the long term.
+    
+    This interface will change in PMD 7 to support read/write operations
+    and other things. You don't need to use it in PMD 6, as <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.44.0/net/sourceforge/pmd/lang/document/FileCollector.html#"><code>FileCollector</code></a>
+    decouples you from this. A file collector is available through <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.44.0/net/sourceforge/pmd/PmdAnalysis.html#files()"><code>PmdAnalysis#files</code></a>.
+
+### External Contributions
+
+*   [#3773](https://github.com/pmd/pmd/pull/3773): \[apex] EagerlyLoadedDescribeSObjectResult false positives with SObjectField.getDescribe() - [@filiprafalowicz](https://github.com/filiprafalowicz)
+*   [#3811](https://github.com/pmd/pmd/pull/3811): \[doc] Improve "Edit me on github" button - [@btjiong](https://github.com/btjiong)
+*   [#3836](https://github.com/pmd/pmd/pull/3836): \[doc] Make TOC scrollable when too many subheadings - [@JerritEic](https://github.com/JerritEic)
+
+### Stats
+* 124 commits
+* 23 closed tickets & PRs
+* Days since last release: 29
+
+## 26-February-2022 - 6.43.0
+
+The PMD team is pleased to announce PMD 6.43.0.
+
+This is a minor release.
+
+### Table Of Contents
+
+* [New and noteworthy](#new-and-noteworthy)
+* [Fixed Issues](#fixed-issues)
+* [API Changes](#api-changes)
+    * [Deprecated API](#deprecated-api)
+    * [Internal API](#internal-api)
+    * [Changed API](#changed-api)
+* [External Contributions](#external-contributions)
+* [Stats](#stats)
+
+### New and noteworthy
+
+### Fixed Issues
+
+*   core
+    *   [#3427](https://github.com/pmd/pmd/issues/3427): \[core] Stop printing CLI usage text when exiting due to invalid parameters
+    *   [#3768](https://github.com/pmd/pmd/issues/3768): \[core] SARIF formatter reports multiple locations when it should report multiple results
+*   doc
+    *   [#2502](https://github.com/pmd/pmd/issues/2502): \[doc] Add floating table-of-contents (toc) on the right
+    *   [#3807](https://github.com/pmd/pmd/pull/3807): \[doc] Document Ant Task parameter `threads`
+*   java
+    *   [#3698](https://github.com/pmd/pmd/issues/3697): \[java] Parsing error with try-with-resources and qualified resource
+*   java-bestpractices
+    *   [#3605](https://github.com/pmd/pmd/issues/3605): \[java] SwitchStmtsShouldHaveDefault triggered when default case is present
+*   java-codestyle
+    *   [#278](https://github.com/pmd/pmd/issues/278): \[java] ConfusingTernary should treat `!= null` as positive condition
+*   java-performance
+    *   [#3374](https://github.com/pmd/pmd/issues/3374): \[java] UseStringBufferForStringAppends: Wrong example in documentation
+*   misc
+    *   [#3759](https://github.com/pmd/pmd/issues/3759): \[lang-test] Upgrade dokka maven plugin to 1.4.32
+*   plsql
+    *   [#3746](https://github.com/pmd/pmd/issues/3746): \[plsql] Parsing exception "Less than or equal to/Greater than or equal to" operators in DML statements
+
+### API Changes
+
+#### Deprecated API
+
+Some API deprecations were performed in core PMD classes, to improve compatibility with PMD 7.
+- <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.43.0/net/sourceforge/pmd/Report.html#"><code>Report</code></a>: the constructor and other construction methods like addViolation or createReport
+- <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.43.0/net/sourceforge/pmd/RuleContext.html#"><code>RuleContext</code></a>: all constructors, getters and setters. A new set
+of stable methods, matching those in PMD 7, was added to replace the `addViolation`
+overloads of <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.43.0/net/sourceforge/pmd/lang/rule/AbstractRule.html#"><code>AbstractRule</code></a>. In PMD 7, `RuleContext` will
+be the API to report violations, and it can already be used as such in PMD 6.
+- The field <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.43.0/net/sourceforge/pmd/PMD.html#configuration"><code>configuration</code></a> is unused and will be removed.
+
+#### Internal API
+
+Those APIs are not intended to be used by clients, and will be hidden or removed with PMD 7.0.0.
+You can identify them with the `@InternalApi` annotation. You'll also get a deprecation warning.
+
+- <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.43.0/net/sourceforge/pmd/RuleSet.html#"><code>RuleSet</code></a>: methods that serve to apply rules, including `apply`, `start`, `end`, `removeDysfunctionalRules`
+- <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.43.0/net/sourceforge/pmd/renderers/AbstractAccumulatingRenderer.html#renderFileReport(Report)"><code>AbstractAccumulatingRenderer#renderFileReport</code></a> is internal API
+  and should not be overridden in own renderers.
+
+#### Changed API
+
+It is now forbidden to report a violation:
+- With a `null` node
+- With a `null` message
+- With a `null` set of format arguments (prefer a zero-length array)
+
+Note that the message is set from the XML rule declaration, so this is only relevant
+if you instantiate rules manually.
+
+<a href="https://docs.pmd-code.org/apidocs/pmd-core/6.43.0/net/sourceforge/pmd/RuleContext.html#"><code>RuleContext</code></a> now requires setting the current rule before calling
+<a href="https://docs.pmd-code.org/apidocs/pmd-core/6.43.0/net/sourceforge/pmd/Rule.html#apply(java.util.List,net.sourceforge.pmd.RuleContext)"><code>apply</code></a>. This is
+done automatically by `RuleSet#apply` and such. Creating and configuring a
+`RuleContext` manually is strongly advised against, as the lifecycle of `RuleContext`
+will change drastically in PMD 7.
+
+### External Contributions
+
+*   [#3767](https://github.com/pmd/pmd/pull/3767): \[core] Update GUI.java - [Vyom Yadav](https://github.com/Vyom-Yadav)
+*   [#3804](https://github.com/pmd/pmd/pull/3804): \[doc] Add floating table of contents (issue #2502) - [JerritEic](https://github.com/JerritEic)
+
+### Stats
+* 49 commits
+* 22 closed tickets & PRs
+* Days since last release: 27
+
+## 29-January-2022 - 6.42.0
+
+The PMD team is pleased to announce PMD 6.42.0.
+
+This is a minor release.
+
+### Table Of Contents
+
+* [New and noteworthy](#new-and-noteworthy)
+    * [Javascript: Rhino updated to latest version 1.7.14](#javascript:-rhino-updated-to-latest-version-1.7.14)
+    * [New rules](#new-rules)
+    * [Modified rules](#modified-rules)
+* [Fixed Issues](#fixed-issues)
+* [API Changes](#api-changes)
+* [External Contributions](#external-contributions)
+* [Stats](#stats)
+
+### New and noteworthy
+
+#### Javascript: Rhino updated to latest version 1.7.14
+
+[Rhino](https://github.com/mozilla/rhino), the implementation of JavaScript we use
+for parsing JavaScript code, has been updated to the latest version 1.7.14.
+Now language features like template strings can be parsed. However Rhino does
+not support all features of the latest EcmaScript standard.
+
+#### New rules
+
+*   The new Java rule [`FinalParameterInAbstractMethod`](https://pmd.github.io/pmd-6.42.0/pmd_rules_java_codestyle.html#finalparameterinabstractmethod) detects parameters that are
+    declared as final in interfaces or abstract methods. Declaring the parameters as final is useless
+    because the implementation may choose to not respect it.
+
+```xml
+    <rule ref="category/java/codestyle.xml/FinalParameterInAbstractMethod" />
+```
+
+   The rule is part of the quickstart.xml ruleset.
+
+#### Modified rules
+
+*   The Apex rule [`ApexDoc`](https://pmd.github.io/pmd-6.42.0/pmd_rules_apex_documentation.html#apexdoc) has a new property `reportProperty`.
+    If set to `false` (default is `true` if unspecified) doesn't report missing ApexDoc comments on properties.
+    It allows you to enforce ApexDoc comments for classes and methods without requiring them for properties.
+
+### Fixed Issues
+
+*   core
+    *   [#3328](https://github.com/pmd/pmd/issues/3328): \[core] designer.bat errors when JAVAFX_HOME contains spaces
+*   java
+    *   [#3698](https://github.com/pmd/pmd/issues/3698): \[java] Error resolving Symbol Table
+*   java-bestpractices
+    *   [#3209](https://github.com/pmd/pmd/issues/3209): \[java] UnusedPrivateMethod false positive with static method and cast expression
+    *   [#3468](https://github.com/pmd/pmd/issues/3468): \[java] UnusedPrivateMethod false positive when outer class calls private static method on inner class
+*   java-design
+    *   [#3679](https://github.com/pmd/pmd/issues/3679): \[java] Make FinalFieldCouldBeStatic detect constant variable
+*   java-errorprone
+    *   [#3644](https://github.com/pmd/pmd/issues/3644): \[java] InvalidLogMessageFormat: false positives with logstash structured logging
+    *   [#3686](https://github.com/pmd/pmd/issues/3686): \[java] ReturnEmptyCollectionRatherThanNull - false negative with conditioned returns
+    *   [#3701](https://github.com/pmd/pmd/issues/3701): \[java] MissingStaticMethodInNonInstantiatableClass false positive with method inner classes
+    *   [#3721](https://github.com/pmd/pmd/issues/3721): \[java] ReturnEmptyCollectionRatherThanNull - false positive with stream and lambda
+*   java-performance
+    *   [#3492](https://github.com/pmd/pmd/issues/3492): \[java] UselessStringValueOf: False positive when there is no initial String to append to
+    *   [#3639](https://github.com/pmd/pmd/issues/3639): \[java] UseStringBufferLength: false negative with empty string variable
+    *   [#3712](https://github.com/pmd/pmd/issues/3712): \[java] InsufficientStringBufferDeclaration false positive with StringBuilder.setLength(0)
+*   javascript
+    *   [#3703](https://github.com/pmd/pmd/issues/3703): \[javascript] Error - no Node adapter class registered for XmlPropRef
+
+### API Changes
+
+No changes.
+
+### External Contributions
+
+*   [#3631](https://github.com/pmd/pmd/pull/3631): \[java] Fixed False positive for UselessStringValueOf when there is no initial String to append to - [John Armgardt](https://github.com/johnra2)
+*   [#3683](https://github.com/pmd/pmd/pull/3683): \[java] Fixed 3468 UnusedPrivateMethod false positive when outer class calls private static method on inner class - [John Armgardt](https://github.com/johnra2)
+*   [#3688](https://github.com/pmd/pmd/pull/3688): \[java] Bump log4j to 2.16.0 - [Sergey Nuyanzin](https://github.com/snuyanzin)
+*   [#3693](https://github.com/pmd/pmd/pull/3693): \[apex] ApexDoc: Add reportProperty property - [Steve Babula](https://github.com/babula)
+*   [#3704](https://github.com/pmd/pmd/pull/3704): \[java] Fix for #3686 - Fix ReturnEmptyCollectionRatherThanNull - [Oleksii Dykov](https://github.com/dykov)
+*   [#3713](https://github.com/pmd/pmd/pull/3713): \[java] Enhance UnnecessaryModifier to support records - [Vincent Galloy](https://github.com/vgalloy)
+*   [#3719](https://github.com/pmd/pmd/pull/3719): \[java] Upgrade log4j to 2.17.1 - [Daniel Paul Searles](https://github.com/squaresurf)
+*   [#3720](https://github.com/pmd/pmd/pull/3720): \[java] New rule: FinalParameterInAbstractMethod - [Vincent Galloy](https://github.com/vgalloy)
+*   [#3724](https://github.com/pmd/pmd/pull/3724): \[java] Fix for #3679 - fix FinalFieldCouldBeStatic - [Oleksii Dykov](https://github.com/dykov)
+*   [#3727](https://github.com/pmd/pmd/pull/3727): \[java] #3724 - fix FinalFieldCouldBeStatic: triggers only if the referenced name is static - [Oleksii Dykov](https://github.com/dykov)
+*   [#3742](https://github.com/pmd/pmd/pull/3742): \[java] Fix #3701 - fix MissingStaticMethodInNonInstantiatableClass for method local classes - [Oleksii Dykov](https://github.com/dykov)
+*   [#3744](https://github.com/pmd/pmd/pull/3744): \[core] Updated SaxonXPathRuleQueryTest.java - [Vyom Yadav](https://github.com/Vyom-Yadav)
+*   [#3745](https://github.com/pmd/pmd/pull/3745): \[java] Fix #3712: InsufficientStringBufferDeclaration setLength false positive - [Daniel Gredler](https://github.com/gredler)
+*   [#3747](https://github.com/pmd/pmd/pull/3747): \[visualforce] Updated DataType.java - [Vyom Yadav](https://github.com/Vyom-Yadav)
+
+### Stats
+* 88 commits
+* 35 closed tickets & PRs
+* Days since last release: 62
+
 ## 27-November-2021 - 6.41.0
 
 The PMD team is pleased to announce PMD 6.41.0.

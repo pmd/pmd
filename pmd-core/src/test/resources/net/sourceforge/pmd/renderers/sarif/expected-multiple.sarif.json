@@ -10,6 +10,25 @@
           "informationUri": "https://pmd.github.io/pmd/",
           "rules": [
             {
+              "id": "Foo",
+              "shortDescription": {
+                "text": "blah"
+              },
+              "fullDescription": {
+                "text": "Description with Unicode Character U+2013: – ."
+              },
+              "help": {
+                "text": "Description with Unicode Character U+2013: – ."
+              },
+              "properties": {
+                "ruleset": "RuleSet",
+                "priority": 5,
+                "tags": [
+                  "RuleSet"
+                ]
+              }
+            },
+            {
               "id": "Boo",
               "shortDescription": {
                 "text": "blah"
@@ -27,32 +46,13 @@
                   "RuleSet"
                 ]
               }
-            },
-            {
-              "id": "Foo",
-              "shortDescription": {
-                "text": "blah"
-              },
-              "fullDescription": {
-                "text": "desc"
-              },
-              "help": {
-                "text": "desc"
-              },
-              "properties": {
-                "ruleset": "RuleSet",
-                "priority": 5,
-                "tags": [
-                  "RuleSet"
-                ]
-              }
             }
           ]
         }
       },
       "results": [
         {
-          "ruleId": "Boo",
+          "ruleId": "Foo",
           "ruleIndex": 0,
           "message": {
             "text": "blah"
@@ -67,14 +67,14 @@
                   "startLine": 1,
                   "startColumn": 1,
                   "endLine": 1,
-                  "endColumn": 2
+                  "endColumn": 1
                 }
               }
             }
           ]
         },
         {
-          "ruleId": "Foo",
+          "ruleId": "Boo",
           "ruleIndex": 1,
           "message": {
             "text": "blah"
@@ -89,7 +89,7 @@
                   "startLine": 1,
                   "startColumn": 1,
                   "endLine": 1,
-                  "endColumn": 1
+                  "endColumn": 2
                 }
               }
             }

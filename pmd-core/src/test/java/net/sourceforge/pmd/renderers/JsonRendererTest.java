@@ -11,14 +11,14 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
+import net.sourceforge.pmd.FooRule;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Report.ConfigurationError;
 import net.sourceforge.pmd.Report.ProcessingError;
-import net.sourceforge.pmd.ReportTest;
+import net.sourceforge.pmd.util.IOUtil;
 
 public class JsonRendererTest extends AbstractRendererTest {
 
@@ -69,7 +69,7 @@ public class JsonRendererTest extends AbstractRendererTest {
 
     private String readFile(String name) {
         try (InputStream in = JsonRendererTest.class.getResourceAsStream("json/" + name)) {
-            return IOUtils.toString(in, StandardCharsets.UTF_8);
+            return IOUtil.readToString(in, StandardCharsets.UTF_8);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -90,8 +90,8 @@ public class JsonRendererTest extends AbstractRendererTest {
         Map<Integer, String> suppressedLines = new HashMap<>();
         suppressedLines.put(1, "test");
         rep.suppress(suppressedLines);
-        rep.addRuleViolation(newRuleViolation(1));
-        String actual = ReportTest.render(getRenderer(), rep);
+        rep.addRuleViolation(newRuleViolation(1, 1, 1, 1, new FooRule()));
+        String actual = renderReport(getRenderer(), rep);
         String expected = readFile("expected-suppressed.json");
         Assert.assertEquals(filter(expected), filter(actual));
     }

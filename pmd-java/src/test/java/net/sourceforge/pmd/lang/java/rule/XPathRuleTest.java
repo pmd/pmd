@@ -15,6 +15,7 @@ import java.util.List;
 import org.junit.Test;
 
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.PMDException;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Rule;
@@ -22,6 +23,7 @@ import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.SourceCodeProcessor;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.Parser;
@@ -200,13 +202,13 @@ public class XPathRuleTest extends RuleTst {
     }
 
     private static Report getReportForTestString(Rule r, String test) throws PMDException {
-        PMD p = new PMD();
         RuleContext ctx = new RuleContext();
         Report report = new Report();
         ctx.setReport(report);
         ctx.setSourceCodeFile(new File("n/a"));
         RuleSet rules = RuleSet.forSingleRule(r);
-        p.getSourceCodeProcessor().processSourceCode(new StringReader(test), new RuleSets(rules), ctx);
+        SourceCodeProcessor sourceCodeProcessor = new SourceCodeProcessor(new PMDConfiguration());
+        sourceCodeProcessor.processSourceCode(new StringReader(test), new RuleSets(rules), ctx);
         return report;
     }
 

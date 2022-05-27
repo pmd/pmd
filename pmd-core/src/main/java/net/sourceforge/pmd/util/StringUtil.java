@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.util;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -867,5 +868,13 @@ public final class StringUtil {
             }
         }
         return retval.toString();
+    }
+
+    /**
+     * Escape the string so that it appears literally when interpreted
+     * by a {@link MessageFormat}.
+     */
+    public static String quoteMessageFormat(String str) {
+        return str.replaceAll("'", "''");
     }
 }

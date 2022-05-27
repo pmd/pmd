@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.rule.bestpractices;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentOperator;
 import net.sourceforge.pmd.lang.java.ast.ASTBlockStatement;
@@ -19,6 +20,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
+import net.sourceforge.pmd.lang.java.ast.ASTStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTStatementExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
@@ -79,11 +81,19 @@ public class ArrayIsStoredDirectlyRule extends AbstractSunSecureRule {
 
     private String getExpressionVarName(Node e) {
         String assignedVar = getFirstNameImage(e);
+        if (isMethodCall(e)) {
+            return null;
+        }
         if (assignedVar == null) {
-            ASTPrimarySuffix suffix = e.getFirstDescendantOfType(ASTPrimarySuffix.class);
+            ASTPrimaryPrefix prefix = null;
+            ASTPrimarySuffix suffix = null;
+            if (e.getNumChildren() > 0 && e.getChild(0) instanceof ASTPrimaryExpression) {
+                ASTPrimaryExpression primaryExpression = (ASTPrimaryExpression) e.getChild(0);
+                prefix = (ASTPrimaryPrefix) primaryExpression.getChild(0);
+                suffix = primaryExpression.getFirstChildOfType(ASTPrimarySuffix.class);
+            }
             if (suffix != null) {
                 assignedVar = suffix.getImage();
-                ASTPrimaryPrefix prefix = e.getFirstDescendantOfType(ASTPrimaryPrefix.class);
                 if (prefix != null) {
                     if (prefix.usesThisModifier()) {
                         assignedVar = "this." + assignedVar;
@@ -96,18 +106,32 @@ public class ArrayIsStoredDirectlyRule extends AbstractSunSecureRule {
         return assignedVar;
     }
 
+    private boolean isMethodCall(Node e) {
+        if (e.getNumChildren() == 1 && e.getChild(0) instanceof ASTPrimaryExpression) {
+            ASTPrimaryExpression primaryExpression = (ASTPrimaryExpression) e.getChild(0);
+            if (primaryExpression.getNumChildren() > 1) {
+                ASTPrimarySuffix suffix = (ASTPrimarySuffix) primaryExpression.getChild(1);
+                return suffix.isArguments();
+            }
+        }
+        return false;
+    }
+
     /**
      * Checks if the variable designed in parameter is written to a field (not
      * local variable) in the statements.
      */
-    private boolean checkForDirectAssignment(Object ctx, final ASTFormalParameter parameter,
+    private void checkForDirectAssignment(Object ctx, final ASTFormalParameter parameter,
             final List<ASTBlockStatement> bs) {
         final ASTVariableDeclaratorId vid = parameter.getFirstDescendantOfType(ASTVariableDeclaratorId.class);
-        final String varName = vid.getImage();
+        final String varName = vid.getName();
         for (ASTBlockStatement b : bs) {
-            if (b.hasDescendantOfType(ASTAssignmentOperator.class)) {
+            if (b.getChild(0) instanceof ASTStatement && b.getChild(0).getChild(0) instanceof ASTStatementExpression) {
                 final ASTStatementExpression se = b.getFirstDescendantOfType(ASTStatementExpression.class);
-                if (se == null || !(se.getChild(0) instanceof ASTPrimaryExpression)) {
+                if (se == null
+                        || se.getNumChildren() < 2
+                        || !(se.getChild(0) instanceof ASTPrimaryExpression)
+                        || !(se.getChild(1) instanceof ASTAssignmentOperator)) {
                     continue;
                 }
                 String assignedVar = getExpressionVarName(se);
@@ -150,13 +174,13 @@ public class ArrayIsStoredDirectlyRule extends AbstractSunSecureRule {
                             md = pe.getFirstParentOfType(ASTConstructorDeclaration.class);
                         }
                         if (!isLocalVariable(varName, md)) {
-                            addViolation(ctx, parameter, varName);
+                            RuleContext ruleContext = (RuleContext) ctx;
+                            ruleContext.addViolation(e, varName);
                         }
                     }
                 }
             }
         }
-        return false;
     }
 
     private ASTFormalParameter[] getArrays(ASTFormalParameters params) {
@@ -164,7 +188,7 @@ public class ArrayIsStoredDirectlyRule extends AbstractSunSecureRule {
         if (l != null && !l.isEmpty()) {
             List<ASTFormalParameter> l2 = new ArrayList<>();
             for (ASTFormalParameter fp : l) {
-                if (fp.isArray() || fp.isVarargs()) {
+                if (fp.getVariableDeclaratorId().hasArrayType() || fp.isVarargs()) {
                     l2.add(fp);
                 }
             }

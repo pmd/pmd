@@ -31,7 +31,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-import org.apache.commons.io.FilenameUtils;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.contrib.java.lang.system.SystemErrRule;
@@ -45,6 +44,7 @@ import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.util.IOUtil;
 import net.sourceforge.pmd.util.ResourceLoader;
 
 /**
@@ -155,7 +155,7 @@ public abstract class AbstractRuleSetFactoryTest {
                 } else {
                     String expectedExternalInfoURL = "https?://pmd.(sourceforge.net|github.io)/.+/pmd_rules_"
                             + language.getTerseName() + "_"
-                            + FilenameUtils.getBaseName(fileName)
+                            + IOUtil.getFilenameBase(fileName)
                             + ".html#"
                             + rule.getName().toLowerCase(Locale.ROOT);
                     if (rule.getExternalInfoUrl() == null
@@ -287,9 +287,16 @@ public abstract class AbstractRuleSetFactoryTest {
 
     private List<String> getRuleSetFileNames(String language) throws IOException, RuleSetNotFoundException {
         List<String> ruleSetFileNames = new ArrayList<>();
+        ruleSetFileNames.addAll(getRuleSetFileNames(language, "rulesets/" + language + "/rulesets.properties"));
+        ruleSetFileNames.addAll(getRuleSetFileNames(language, "category/" + language + "/categories.properties"));
+        return ruleSetFileNames;
+    }
+
+    private List<String> getRuleSetFileNames(String language, String propertiesPath) throws IOException, RuleSetNotFoundException {
+        List<String> ruleSetFileNames = new ArrayList<>();
         try {
             Properties properties = new Properties();
-            try (InputStream is = new ResourceLoader().loadClassPathResourceAsStreamOrThrow("rulesets/" + language + "/rulesets.properties")) {
+            try (InputStream is = new ResourceLoader().loadClassPathResourceAsStreamOrThrow(propertiesPath)) {
                 properties.load(is);
             }
             String fileNames = properties.getProperty("rulesets.filenames");
@@ -304,6 +311,8 @@ public abstract class AbstractRuleSetFactoryTest {
         }
         return ruleSetFileNames;
     }
+    
+    
 
     private RuleSet loadRuleSetByFileName(String ruleSetFileName) throws RuleSetNotFoundException {
         RuleSetFactory rsf = RulesetsFactoryUtils.defaultFactory();

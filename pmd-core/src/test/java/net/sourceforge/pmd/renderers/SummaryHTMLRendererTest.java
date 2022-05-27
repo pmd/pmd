@@ -16,7 +16,6 @@ import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Report.ConfigurationError;
 import net.sourceforge.pmd.Report.ProcessingError;
-import net.sourceforge.pmd.ReportTest;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
@@ -71,7 +70,8 @@ public class SummaryHTMLRendererTest extends AbstractRendererTest {
         return "<html><head><title>PMD</title></head><body>" + PMD.EOL + "<center><h2>Summary</h2></center>" + PMD.EOL
                 + "<table align=\"center\" cellspacing=\"0\" cellpadding=\"3\">" + PMD.EOL
                 + "<tr><th>Rule name</th><th>Number of violations</th></tr>" + PMD.EOL
-                + "<tr><td>Foo</td><td align=center>2</td></tr>" + PMD.EOL + "</table>" + PMD.EOL
+                + "<tr><td>Boo</td><td align=center>1</td></tr>" + PMD.EOL
+                + "<tr><td>Foo</td><td align=center>1</td></tr>" + PMD.EOL + "</table>" + PMD.EOL
                 + "<center><h2>Detail</h2></center><table align=\"center\" cellspacing=\"0\" cellpadding=\"3\"><tr>"
                 + PMD.EOL
                 + "<center><h3>PMD report</h3></center><center><h3>Problems found</h3></center><table align=\"center\" cellspacing=\"0\" cellpadding=\"3\"><tr>"
@@ -120,7 +120,7 @@ public class SummaryHTMLRendererTest extends AbstractRendererTest {
         Report rep = createEmptyReportWithSuppression();
         Renderer renderer = getRenderer();
         renderer.setShowSuppressedViolations(true);
-        String actual = ReportTest.render(renderer, rep);
+        String actual = renderReport(renderer, rep);
         assertEquals("<html><head><title>PMD</title></head><body>" + PMD.EOL + "<center><h2>Summary</h2></center>"
                 + PMD.EOL + "<table align=\"center\" cellspacing=\"0\" cellpadding=\"3\">" + PMD.EOL
                 + "<tr><th>Rule name</th><th>Number of violations</th></tr>" + PMD.EOL + "</table>" + PMD.EOL
@@ -141,7 +141,7 @@ public class SummaryHTMLRendererTest extends AbstractRendererTest {
         Report rep = createEmptyReportWithSuppression();
         Renderer renderer = getRenderer();
         renderer.setShowSuppressedViolations(false);
-        String actual = ReportTest.render(renderer, rep);
+        String actual = renderReport(renderer, rep);
         assertEquals(getExpectedEmpty(), actual);
     }
 

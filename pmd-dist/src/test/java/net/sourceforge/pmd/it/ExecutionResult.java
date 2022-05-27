@@ -68,10 +68,38 @@ public class ExecutionResult {
      * generated report.
      *
      * @param expectedExitCode the exit code, e.g. 0 if no rule violations are expected, or 4 if violations are found
-     * @param expectedOutput the output to search for
-     * @param expectedReport the string to search for tin the report
+     * @param expectedOutput   the output to search for
+     * @param expectedReport   the string to search for tin the report
      */
     public void assertExecutionResult(int expectedExitCode, String expectedOutput, String expectedReport) {
+        assertExecResultImpl(expectedExitCode, output, expectedOutput, expectedReport);
+    }
+
+    /**
+     * Asserts that the command exited with the expected exit code and that the given expected
+     * output is contained in the actual command ERROR output, and the given expected report is in the
+     * generated report.
+     *
+     * @param expectedExitCode    the exit code, e.g. 0 if no rule violations are expected, or 4 if violations are found
+     * @param expectedErrorOutput the output to search for in stderr
+     * @param expectedReport      the string to search for tin the report
+     */
+    public void assertExecutionResultErrOutput(int expectedExitCode, String expectedErrorOutput, String expectedReport) {
+        assertExecResultImpl(expectedExitCode, errorOutput, expectedErrorOutput, expectedReport);
+    }
+
+    /**
+     * Asserts that the command exited with the expected exit code and that the given expected
+     * output is contained in the actual command ERROR output.
+     *
+     * @param expectedExitCode    the exit code, e.g. 0 if no rule violations are expected, or 4 if violations are found
+     * @param expectedErrorOutput the output to search for in stderr
+     */
+    public void assertExecutionResultErrOutput(int expectedExitCode, String expectedErrorOutput) {
+        assertExecResultImpl(expectedExitCode, errorOutput, expectedErrorOutput, null);
+    }
+
+    private void assertExecResultImpl(int expectedExitCode, String output, String expectedOutput, String expectedReport) {
         assertEquals("Command exited with wrong code.\nComplete result:\n\n" + this, expectedExitCode, exitCode);
         assertNotNull("No output found", output);
         if (expectedOutput != null && !expectedOutput.isEmpty()) {
@@ -83,7 +111,7 @@ public class ExecutionResult {
         }
         if (expectedReport != null && !expectedReport.isEmpty()) {
             assertTrue("Expected report '" + expectedReport + "'.\nComplete result:\n\n" + this,
-                    report.contains(expectedReport));
+                       report.contains(expectedReport));
         }
     }
 

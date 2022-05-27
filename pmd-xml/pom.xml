@@ -7,7 +7,7 @@
     <parent>
         <groupId>net.sourceforge.pmd</groupId>
         <artifactId>pmd</artifactId>
-        <version>6.42.0-SNAPSHOT</version>
+        <version>6.46.0-SNAPSHOT</version>
         <relativePath>../</relativePath>
     </parent>
 
@@ -44,8 +44,9 @@
             <artifactId>antlr4-runtime</artifactId>
         </dependency>
         <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
+            <groupId>net.sourceforge.saxon</groupId>
+            <artifactId>saxon</artifactId>
+            <classifier>dom</classifier>
         </dependency>
 
         <dependency>

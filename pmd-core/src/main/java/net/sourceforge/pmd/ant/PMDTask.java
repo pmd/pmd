@@ -30,7 +30,7 @@ public class PMDTask extends Task {
     private String rulesetFiles;
     private boolean noRuleSetCompatibility;
     private String encoding;
-    private int threads;
+    private int threads = 1; // same default as in PMDParameters (CLI)
     private int minimumPriority;
     private int maxRuleViolations = 0;
     private String failuresPropertyName;

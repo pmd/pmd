@@ -10,8 +10,6 @@ import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.io.IOUtils;
-
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.AbstractParser;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
@@ -56,7 +54,7 @@ public class PLSQLParser extends AbstractParser {
     @Override
     public Node parse(String fileName, Reader source) throws ParseException {
         try {
-            String sourcecode = IOUtils.toString(source);
+            String sourcecode = IOUtil.readToString(source);
             AbstractTokenManager.setFileName(fileName);
             return createPLSQLParser(new StringReader(sourcecode)).Input(sourcecode);
         } catch (IOException e) {
@@ -69,3 +67,4 @@ public class PLSQLParser extends AbstractParser {
         return new HashMap<>(); // FIXME
     }
 }
+

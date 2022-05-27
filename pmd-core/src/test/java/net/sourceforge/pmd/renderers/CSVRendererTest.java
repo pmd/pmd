@@ -30,7 +30,7 @@ public class CSVRendererTest extends AbstractRendererTest {
     public String getExpectedMultiple() {
         return getHeader()
                 + "\"1\",\"\",\"" + getSourceCodeFilename() + "\",\"5\",\"1\",\"blah\",\"RuleSet\",\"Foo\"" + PMD.EOL
-                + "\"2\",\"\",\"" + getSourceCodeFilename() + "\",\"1\",\"1\",\"blah\",\"RuleSet\",\"Foo\"" + PMD.EOL;
+                + "\"2\",\"\",\"" + getSourceCodeFilename() + "\",\"1\",\"1\",\"blah\",\"RuleSet\",\"Boo\"" + PMD.EOL;
     }
 
     @Override
@@ -45,9 +45,5 @@ public class CSVRendererTest extends AbstractRendererTest {
 
     private String getHeader() {
         return "\"Problem\",\"Package\",\"File\",\"Priority\",\"Line\",\"Description\",\"Rule set\",\"Rule\"" + PMD.EOL;
-    }
-
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(CSVRendererTest.class);
     }
 }

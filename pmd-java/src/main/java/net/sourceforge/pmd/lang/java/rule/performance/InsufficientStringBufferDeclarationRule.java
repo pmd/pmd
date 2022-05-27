@@ -97,7 +97,7 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRule {
 
                 if (n.getImage().endsWith("setLength")) {
                     int newLength = getConstructorLength(n, 0);
-                    if (newLength > constructorLength) {
+                    if (constructorLength != -1 && newLength > constructorLength) {
                         constructorLength = newLength; // a bigger setLength increases capacity
                         rootNode = n;
                     }

@@ -4,15 +4,19 @@
 
 package net.sourceforge.pmd.lang.java.rule.performance;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
+import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
@@ -56,15 +60,15 @@ public class UseStringBufferLengthRule extends AbstractJavaRule {
     @Override
     public Object visit(ASTName decl, Object data) {
         if (!decl.getImage().endsWith("toString")) {
-            return data;
+            return super.visit(decl, data);
         }
         NameDeclaration nd = decl.getNameDeclaration();
         if (nd == null) {
-            return data;
+            return super.visit(decl, data);
         }
         if (alreadySeen.contains(nd) || !(nd instanceof VariableNameDeclaration)
                 || !ConsecutiveLiteralAppendsRule.isStringBuilderOrBuffer(((VariableNameDeclaration) nd).getDeclaratorId())) {
-            return data;
+            return super.visit(decl, data);
         }
         alreadySeen.add(nd);
 
@@ -72,7 +76,7 @@ public class UseStringBufferLengthRule extends AbstractJavaRule {
             addViolation(data, decl);
         }
 
-        return data;
+        return super.visit(decl, data);
     }
 
     /**
@@ -112,14 +116,37 @@ public class UseStringBufferLengthRule extends AbstractJavaRule {
         // 3. child: equals
         if (parent.getChild(2).hasImageEqualTo("equals")) {
             // 4. child: the arguments of equals, there must be exactly one and
-            // it must be ""
-            List<ASTArgumentList> argList = parent.getChild(3).findDescendantsOfType(ASTArgumentList.class);
-            if (argList.size() == 1) {
-                List<ASTLiteral> literals = argList.get(0).findDescendantsOfType(ASTLiteral.class);
+            // it must be "" or a final variable initialized with ""
+            Node primarySuffix = parent.getChild(3);
+            List<ASTArgumentList> methodCalls = primarySuffix.findDescendantsOfType(ASTArgumentList.class);
+            if (methodCalls.size() == 1 && methodCalls.get(0).size() == 1) {
+                ASTExpression firstArgument = primarySuffix.getChild(0).getFirstChildOfType(ASTArgumentList.class)
+                        .findChildrenOfType(ASTExpression.class).get(0);
+                List<ASTLiteral> literals = firstArgument.findDescendantsOfType(ASTLiteral.class);
+                if (literals.isEmpty()) {
+                    literals = findLiteralsInVariableInitializer(firstArgument);
+                }
                 return literals.size() == 1 && literals.get(0).hasImageEqualTo("\"\"");
             }
         }
         return false;
+    }
+
+    private List<ASTLiteral> findLiteralsInVariableInitializer(ASTExpression firstArgument) {
+        List<ASTName> varAccess = firstArgument.findDescendantsOfType(ASTName.class);
+        if (varAccess.size() == 1) {
+            NameDeclaration nameDeclaration = varAccess.get(0).getNameDeclaration();
+            if (nameDeclaration != null && nameDeclaration.getNode() instanceof ASTVariableDeclaratorId) {
+                ASTVariableDeclaratorId varId = (ASTVariableDeclaratorId) nameDeclaration.getNode();
+                if (varId.isFinal() && varId.getParent() instanceof ASTVariableDeclarator) {
+                    ASTVariableDeclarator declarator = (ASTVariableDeclarator) varId.getParent();
+                    if (declarator.getInitializer() != null) {
+                        return declarator.getInitializer().findDescendantsOfType(ASTLiteral.class);
+                    }
+                }
+            }
+        }
+        return Collections.emptyList();
     }
 
     private boolean isLengthViolation(Node parent) {

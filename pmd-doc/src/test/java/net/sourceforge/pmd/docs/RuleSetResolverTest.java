@@ -12,19 +12,19 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.commons.io.FilenameUtils;
 import org.junit.Test;
 
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.RulesetsFactoryUtils;
+import net.sourceforge.pmd.util.IOUtil;
 
 public class RuleSetResolverTest {
 
     private static List<String> excludedRulesets = new ArrayList<>();
 
     static {
-        excludedRulesets.add(FilenameUtils.normalize("pmd-test/src/main/resources/rulesets/dummy/basic.xml"));
+        excludedRulesets.add(IOUtil.normalizePath("pmd-test/src/main/resources/rulesets/dummy/basic.xml"));
     }
 
     @Test

@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.design;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -16,9 +18,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTDoStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTTryStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableInitializer;
 import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
@@ -44,6 +44,17 @@ public class ImmutableFieldRule extends AbstractLombokAwareRule {
     }
 
     @Override
+    protected Collection<String> defaultSuppressionAnnotations() {
+        Collection<String> defaultValues = new ArrayList<>(super.defaultSuppressionAnnotations());
+        defaultValues.add("org.mockito.Mock");
+        defaultValues.add("org.mockito.InjectMocks");
+        defaultValues.add("org.springframework.beans.factory.annotation.Autowired");
+        defaultValues.add("org.springframework.boot.test.mock.mockito.MockBean");
+
+        return defaultValues;
+    }
+
+    @Override
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
         Object result = super.visit(node, data);
 
@@ -60,11 +71,15 @@ public class ImmutableFieldRule extends AbstractLombokAwareRule {
                 continue;
             }
 
-            FieldImmutabilityType type = initializedInConstructor(field, entry.getValue(), new HashSet<>(constructors));
+            List<NameOccurrence> usages = entry.getValue();
+            FieldImmutabilityType type = initializedInConstructor(field, usages, new HashSet<>(constructors));
             if (type == FieldImmutabilityType.MUTABLE) {
                 continue;
             }
-            if (type == FieldImmutabilityType.IMMUTABLE || type == FieldImmutabilityType.CHECKDECL && initializedWhenDeclared(field)) {
+            if (initializedWhenDeclared(field) && usages.isEmpty()) {
+                addViolation(data, field.getNode(), field.getImage());
+            }
+            if (type == FieldImmutabilityType.IMMUTABLE || type == FieldImmutabilityType.CHECKDECL && !initializedWhenDeclared(field)) {
                 addViolation(data, field.getNode(), field.getImage());
             }
         }
@@ -90,14 +105,7 @@ public class ImmutableFieldRule extends AbstractLombokAwareRule {
                         methodInitCount++;
                         continue;
                     }
-                    // Check for assigns in if-statements, which can depend on
-                    // constructor
-                    // args or other runtime knowledge and can be a valid reason
-                    // to instantiate
-                    // in one constructor only
-                    if (node.getFirstParentOfType(ASTIfStatement.class) != null) {
-                        methodInitCount++;
-                    }
+
                     if (inAnonymousInnerClass(node)) {
                         methodInitCount++;
                     } else if (node.getFirstParentOfType(ASTLambdaExpression.class) != null) {
@@ -106,15 +114,15 @@ public class ImmutableFieldRule extends AbstractLombokAwareRule {
                         consSet.add(constructor);
                     }
                 } else {
-                    if (node.getFirstParentOfType(ASTMethodDeclaration.class) != null) {
-                        methodInitCount++;
-                    } else if (node.getFirstParentOfType(ASTLambdaExpression.class) != null) {
+                    if (node.getFirstParentOfType(ASTLambdaExpression.class) != null) {
                         lambdaUsage++;
+                    } else {
+                        methodInitCount++;
                     }
                 }
             }
         }
-        if (usages.isEmpty() || methodInitCount == 0 && lambdaUsage == 0 && consSet.isEmpty()) {
+        if (usages.isEmpty() || methodInitCount == 0 && lambdaUsage == 0 && allConstructors.equals(consSet)) {
             result = FieldImmutabilityType.CHECKDECL;
         } else {
             allConstructors.removeAll(consSet);

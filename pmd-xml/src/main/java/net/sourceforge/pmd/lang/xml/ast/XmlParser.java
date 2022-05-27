@@ -13,7 +13,6 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.apache.commons.io.IOUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
@@ -22,6 +21,7 @@ import org.xml.sax.SAXException;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.xml.XmlParserOptions;
+import net.sourceforge.pmd.util.IOUtil;
 
 
 public class XmlParser {
@@ -37,7 +37,7 @@ public class XmlParser {
     protected Document parseDocument(Reader reader) throws ParseException {
         nodeCache.clear();
         try {
-            String xmlData = IOUtils.toString(reader);
+            String xmlData = IOUtil.readToString(reader);
 
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             dbf.setNamespaceAware(parserOptions.isNamespaceAware());
@@ -90,8 +90,19 @@ public class XmlParser {
      * The root should implement {@link RootNode}.
      */
     public static class RootXmlNode extends XmlNodeWrapper implements RootNode {
-        RootXmlNode(XmlParser parser, Node domNode) {
+
+        RootXmlNode(XmlParser parser, Document domNode) {
             super(parser, domNode);
+        }
+
+        @Override
+        public XmlNode wrap(Node domNode) {
+            return super.wrap(domNode);
+        }
+
+        @Override
+        public Document getNode() {
+            return (Document) super.getNode();
         }
     }
 

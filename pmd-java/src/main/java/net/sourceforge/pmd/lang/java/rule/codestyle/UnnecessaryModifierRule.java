@@ -24,6 +24,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTRecordDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTResource;
 import net.sourceforge.pmd.lang.java.ast.AccessNode;
 import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
@@ -42,6 +43,7 @@ public class UnnecessaryModifierRule extends AbstractJavaRule {
         addRuleChainVisit(ASTFieldDeclaration.class);
         addRuleChainVisit(ASTAnnotationMethodDeclaration.class);
         addRuleChainVisit(ASTConstructorDeclaration.class);
+        addRuleChainVisit(ASTRecordDeclaration.class);
     }
 
 
@@ -260,6 +262,17 @@ public class UnnecessaryModifierRule extends AbstractJavaRule {
             if (node.isPrivate()) {
                 reportUnnecessaryModifiers(data, node, Modifier.PRIVATE, "enum constructors are implicitly private");
             }
+        }
+        return data;
+    }
+
+    @Override
+    public Object visit(ASTRecordDeclaration node, Object data) {
+        if (node.isStatic()) {
+            reportUnnecessaryModifiers(data, node, Modifier.STATIC, "records are implicitly static");
+        }
+        if (node.isSyntacticallyFinal()) {
+            reportUnnecessaryModifiers(data, node, Modifier.FINAL, "records are implicitly final");
         }
         return data;
     }

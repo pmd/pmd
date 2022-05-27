@@ -358,6 +358,7 @@ public class MissingOverrideRule extends AbstractJavaRule {
         }
 
 
+        @SuppressWarnings("PMD.ReturnEmptyCollectionRatherThanNull")
         private static Class<?>[] getParameterTypes(ASTFormalParameters params) {
             Class<?>[] paramTypes = new Class[params.size()];
             int i = 0;

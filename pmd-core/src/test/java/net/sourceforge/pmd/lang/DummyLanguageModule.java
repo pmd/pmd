@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang;
 
+import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -17,14 +18,17 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.ast.DummyNode;
+import net.sourceforge.pmd.lang.ast.DummyNode.DummyRootNode;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.ParseException;
+import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
 import net.sourceforge.pmd.lang.ast.xpath.AbstractASTXPathHandler;
 import net.sourceforge.pmd.lang.ast.xpath.DocumentNavigator;
 import net.sourceforge.pmd.lang.rule.AbstractRuleChainVisitor;
 import net.sourceforge.pmd.lang.rule.AbstractRuleViolationFactory;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 import net.sourceforge.pmd.lang.rule.RuleChainVisitor;
+import net.sourceforge.pmd.util.IOUtil;
 
 import net.sf.saxon.expr.XPathContext;
 import net.sf.saxon.sxpath.IndependentContext;
@@ -50,12 +54,27 @@ public class DummyLanguageModule extends BaseLanguageModule {
         addVersion("1.8", new Handler(), "8");
     }
 
+    public static Language getInstance() {
+        return LanguageRegistry.getLanguage(NAME);
+    }
+
+    public static DummyRootNode parse(String code) {
+        return parse(code, "nofilename");
+    }
+
+    public static DummyRootNode parse(String code, String filename) {
+        DummyRootNode rootNode = readLispNode(code);
+        AbstractParser.setFileName(filename, rootNode);
+        return rootNode;
+    }
+
     /**
      * @deprecated for removal with PMD 7. A language dependent rule chain visitor is not needed anymore.
-     *      See {@link RuleChainVisitor}.
+     *     See {@link RuleChainVisitor}.
      */
     @Deprecated
     public static class DummyRuleChainVisitor extends AbstractRuleChainVisitor {
+
         @Override
         protected void visit(Rule rule, Node node, RuleContext ctx) {
             rule.apply(Arrays.asList(node), ctx);
@@ -110,11 +129,14 @@ public class DummyLanguageModule extends BaseLanguageModule {
             return new AbstractParser(parserOptions) {
                 @Override
                 public Node parse(String fileName, Reader source) throws ParseException {
-                    DummyNode node = new DummyNode(1);
-                    node.testingOnlySetBeginLine(1);
-                    node.testingOnlySetBeginColumn(1);
-                    node.setImage("Foo");
-                    return node;
+                    try {
+                        String text = IOUtil.readToString(source);
+                        DummyRootNode rootNode = readLispNode(text);
+                        AbstractParser.setFileName(fileName, rootNode);
+                        return rootNode;
+                    } catch (IOException e) {
+                        throw new ParseException(e);
+                    }
                 }
 
                 @Override
@@ -135,7 +157,71 @@ public class DummyLanguageModule extends BaseLanguageModule {
         }
     }
 
+    /**
+     * Creates a tree of nodes that corresponds to the nesting structures
+     * of parentheses in the text. The image of each node is also populated.
+     * This is useful to create non-trivial trees with all the relevant
+     * data (eg coordinates) set properly.
+     *
+     * Eg {@code (a(b)x(c))} will create a tree with a node "a", with two
+     * children "b" and "c". "x" is ignored. The node "a" is not the root
+     * node, it has a {@link DummyRootNode} as parent, whose image is "".
+     */
+    private static DummyRootNode readLispNode(String text) {
+        final DummyRootNode root = new DummyRootNode();
+        DummyNode top = root;
+        SourceCodePositioner positioner = new SourceCodePositioner(text);
+        top.setCoords(1, 1, positioner.getLastLine(), positioner.getLastLineColumn());
+        int lastNodeStart = 0;
+        for (int i = 0; i < text.length(); i++) {
+            char c = text.charAt(i);
+            if (c == '(') {
+                DummyNode node = new DummyNode();
+                node.setParent(top);
+                top.jjtAddChild(node, top.getNumChildren());
+                // setup coordinates
+                int bline = positioner.lineNumberFromOffset(i);
+                int bcol = positioner.columnFromOffset(bline, i);
+                node.setBeginLine(bline);
+                node.setBeginColumn(bcol);
+                // cut out image
+                if (top.getImage() == null) {
+                    // image may be non null if this is not the first child of 'top'
+                    // eg in (a(b)x(c)), the image of the parent is set to "a".
+                    // When we're processing "(c", we ignore "x".
+                    String image = text.substring(lastNodeStart, i);
+                    top.setImage(image);
+                }
+                lastNodeStart = i + 1;
+                // node is the top of the stack now
+                top = node;
+            } else if (c == ')') {
+                if (top == null) {
+                    throw new ParseException("Unbalanced parentheses: " + text);
+                }
+                // setup coordinates
+                int eline = positioner.lineNumberFromOffset(i);
+                int ecol = positioner.columnFromOffset(eline, i);
+                top.setEndLine(eline);
+                top.setEndColumn(ecol);
+
+                if (top.getImage() == null) {
+                    // cut out image (if node doesn't have children it hasn't been populated yet)
+                    String image = text.substring(lastNodeStart, i);
+                    top.setImage(image);
+                    lastNodeStart = i + 1;
+                }
+                top = top.getParent();
+            }
+        }
+        if (top != root) {
+            throw new ParseException("Unbalanced parentheses: " + text);
+        }
+        return root;
+    }
+
     public static class RuleViolationFactory extends AbstractRuleViolationFactory {
+
         @Override
         protected RuleViolation createRuleViolation(Rule rule, RuleContext ruleContext, Node node, String message) {
             return createRuleViolation(rule, ruleContext, node, message, 0, 0);
@@ -143,7 +229,7 @@ public class DummyLanguageModule extends BaseLanguageModule {
 
         @Override
         protected RuleViolation createRuleViolation(Rule rule, RuleContext ruleContext, Node node, String message,
-                int beginLine, int endLine) {
+                                                    int beginLine, int endLine) {
             ParametricRuleViolation<Node> rv = new ParametricRuleViolation<Node>(rule, ruleContext, node, message) {
                 public String getPackageName() {
                     this.packageName = "foo"; // just for testing variable expansion

@@ -147,7 +147,16 @@ public class GUI implements CPDListener {
 
                 @Override
                 public boolean canIgnoreAnnotations() {
-                    return "java".equals(terseName);
+                    if (terseName == null) {
+                        return false;
+                    }
+                    switch (terseName) {
+                        case "cs":
+                        case "java":
+                            return true;
+                        default:
+                            return false;
+                    }
                 }
 
                 @Override
@@ -170,7 +179,7 @@ public class GUI implements CPDListener {
                     if (terseName == null) {
                         return false;
                     }
-                    switch(terseName) {
+                    switch (terseName) {
                         case "cpp":
                         case "cs":
                             return true;

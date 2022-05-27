@@ -257,6 +257,34 @@ TOKEN_MGR_DECLS : {
   List<ParsingExclusion> exclusions = new ArrayList<ParsingExclusion>();
 }
 
+// add names to SINGLE CHARACTER tokens
+// multiple character operators are sequences of tokens.
+TOKEN: {
+  < LPAREN: "(" >
+| < RPAREN: ")" >
+| < LBRACE: "{" >
+| < RBRACE: "}" >
+| < LBRACKET: "[" >
+| < RBRACKET: "]" >
+| < SEMICOLON: ";" >
+| < COMMA: "," >
+| < DOT: "." >
+| < AROBASE: "@" >
+| < ASSIGN: "=" >
+| < LT: "<" >
+| < BANG: "!" >
+| < TILDE: "~" >
+| < HOOK: "?" >
+| < COLON: ":" >
+| < PLUSSIGN: "+" >
+| < MINUSSIGN: "-" >
+| < STAR: "*" >
+| < SLASH: "/" >
+| < BIT_AND: "&" >
+| < BIT_OR: "|" >
+| < XOR: "^" >
+| < REM: "%" >
+}
 
 /**
  * 2006-05-22 - Matthias Hendler - Added parsing of triggers and global functions/procedures
@@ -1603,18 +1631,26 @@ ASTInCondition InCondition() :
     { return jjtThis; }
 }
 
-ASTComparisonCondition ComparisonCondition() :
+private String ComparisonOp() #void :
 {}
 {
-    (
-    // SimpleComparisonCondition
-      LOOKAHEAD(3) (SqlExpression() ( "=" | "!=" | "^=" | "<>" | ">" | "<" | ">=" | "<=" ) { jjtThis.setOperator(token.getImage()); } SqlExpression() )
-    | LOOKAHEAD(3) ( "(" SqlExpression() ("," SqlExpression())* ")" ( "=" | "!=" | "^=" | "<>" ) { jjtThis.setOperator(token.getImage()); } "(" ( LOOKAHEAD(3) ExpressionList() | LOOKAHEAD(3) Subquery() ) ")" )
+      "=" {return "=";}
+    | "!" "=" {return "!=";}
+    | "^" "=" {return "^=";}
+    | "<" ( "=" {return "<=";} | ">" {return "<>";} )? {return "<";}
+    | ">" ( "=" {return ">=";} )? {return ">";}
+}
 
-    // GroupComparisonCondition
-    | LOOKAHEAD(3) (SqlExpression() ( "=" | "!=" | "^=" | "<>" | ">" | "<" | ">=" | "<=" ) { jjtThis.setOperator(token.getImage()); } ( <ANY> | <SOME> | <ALL> ) "(" ( LOOKAHEAD(3) ExpressionListSingle() | LOOKAHEAD(3) Subquery() ) ")" )
-    | LOOKAHEAD(3) ( "(" SqlExpression() ("," SqlExpression())* ")" ( "=" | "!=" | "^=" | "<>" ) { jjtThis.setOperator(token.getImage()); } ( <ANY> | <SOME> | <ALL> ) "(" ( LOOKAHEAD(3) ExpressionListMultiple() ("," ExpressionListMultiple())* | LOOKAHEAD(3) Subquery() ) ")" )
-    )
+ASTComparisonCondition ComparisonCondition() :
+{String op;}
+{
+    (LOOKAHEAD(3) SqlExpression() | ExpressionListMultiple() )
+    op=ComparisonOp() { jjtThis.setOperator(op); }
+    ( <ANY> | <SOME> | <ALL> )?
+    (LOOKAHEAD(3) "(" Subquery() ")"
+    |LOOKAHEAD(3) "(" ExpressionListSingle() ")"
+    |LOOKAHEAD(3) "(" ExpressionListMultiple() ("," ExpressionListMultiple())* ")"
+    |LOOKAHEAD(3) SqlExpression())
     { return jjtThis; }
 }
 
@@ -2088,7 +2124,11 @@ void QueryTableExpression() #void :
   |
     TableCollectionExpression()
   |
-    [ <LATERAL> ] "(" Subquery() [ SubqueryRestrictionClause() ] ")"
+    LOOKAHEAD(5) "(" [ LOOKAHEAD(2) SchemaName() "." ] TableName() [TableAlias()] ")"  
+  |  
+    LOOKAHEAD(5) [ <LATERAL> ] "(" Subquery() [ SubqueryRestrictionClause() ] ")"
+  | 
+    "(" JoinClause() ")"
   )
 }
 
@@ -2347,7 +2387,8 @@ ASTUnlabelledStatement UnlabelledStatement()  :
 	| OpenStatement()  ";"
 	| FetchStatement()  ";"
 	| Block()  ";"
-	| LOOKAHEAD(2) EmbeddedSqlStatement()
+	|   // Lookahead for EXECUTE IMMEDIATE to distinguish an identifier named "EXECUTE" from execute statement
+	    LOOKAHEAD(2) EmbeddedSqlStatement() ";"
 	| PipelineStatement()  ";"
 	| ConditionalCompilationStatement()  // Conditional Compilation works outside the normal parsing rules
         | InlinePragma() ";"
@@ -2774,21 +2815,38 @@ ASTFetchStatement FetchStatement()  :
       { return jjtThis ; }
 }
 
+/**
+ * Execute Immediate: https://docs.oracle.com/en/database/oracle/oracle-database/18/lnpls/EXECUTE-IMMEDIATE-statement.html#GUID-C3245A95-B85B-4280-A01F-12307B108DC8
+ */
 ASTEmbeddedSqlStatement EmbeddedSqlStatement()  :
 {}
 {
    <EXECUTE> <IMMEDIATE> StringExpression()
-	[ <INTO> Name() ("," Name())* ]
-	[ UsingClause() ]
-	[ ( <RETURN> | <RETURNING> )  <INTO> Expression() ("," Expression())*] ";"
-	// PIPELINED FUNCTION OUTPUT
-      { return jjtThis ; }
+    [
+            IntoClause() [ UsingClause() ]
+        |   BulkCollectIntoClause() [ UsingClause() ]
+        |   UsingClause() [ DynamicReturnClause() ]
+        |   DynamicReturnClause()
+    ]
+    { return jjtThis; }
+}
+
+/**
+* https://docs.oracle.com/en/database/oracle/oracle-database/18/lnpls/RETURNING-INTO-clause.html#GUID-38F735B9-1100-45AF-AE71-18FB74A899BE
+*/
+ASTDynamicReturnClause DynamicReturnClause() :
+{}
+{
+    ( <RETURN> | <RETURNING> )
+    ( IntoClause() | BulkCollectIntoClause() )
+    { return jjtThis; }
 }
 
 void UsingClause() #void :
 {}
 {
-    <USING> [ <IN> [ <OUT> ] | <OUT> ]  Expression() ("," [ <IN> [ <OUT> ] | <OUT> ] Expression())*
+    <USING> [ <IN> [ <OUT> ] | <OUT> ]  Expression()
+        ( "," [ <IN> [ <OUT> ] | <OUT> ] Expression() )*
 }
 
 ASTPipelineStatement PipelineStatement()  :
@@ -3179,17 +3237,17 @@ ASTEqualityExpression EqualityExpression() #EqualityExpression(>1) :
 {
   //RelationalExpression() ( ( "=" | "!=" | "<>" | <IS>) RelationalExpression() )*
   (
+
+	  simpleNode=RelationalExpression()
+	  {sb.append(simpleNode.getImage());}
 	  (
-	    simpleNode = RelationalExpression()
-	  ) {sb.append(simpleNode.getImage());}
-	  (
-	   ( ("=" ) {sb.append(" = ");}
-	   | ("!" "=" ) {sb.append(" != ");}
+	   ( "=" {sb.append(" = ");}
+	   | "!" "=" {sb.append(" != ");}
 	   // Now unde RelationalExpression | ("<" ">" ) {sb.append(" <> ");}
-	   | (<IS>) {sb.append(" IS ");})
-	   (
-	   simpleNode = RelationalExpression()
-	   ) {sb.append(simpleNode.getImage());}
+	   | <IS> {sb.append(" IS ");}
+	   )
+	   simpleNode=RelationalExpression()
+	   {sb.append(simpleNode.getImage());}
 	  )*
   )
  {
@@ -3209,17 +3267,16 @@ ASTRelationalExpression RelationalExpression() #RelationalExpression(>1) :
   (
     (
 
-      (
-          ("<>" { sb.append(" <> "); } )
-        | ("<=" { sb.append(" <= "); } )
-        | (">=" { sb.append(" >= "); } )
-        | ("!=" { sb.append(" != "); } )
-        | ("~=" { sb.append(" ~= "); } )
-        | ("^=" { sb.append(" ^= "); } )
-        | ("<" { sb.append(" < "); } )
-        | (">" { sb.append(" > "); } )
+      (  LOOKAHEAD(2) "<" ">" { sb.append(" <> "); }
+        |LOOKAHEAD(2) "<" "=" { sb.append(" <= "); }
+        |LOOKAHEAD(2) ">" "=" { sb.append(" >= "); }
+        // then lookahead(1) is enough
+        | "<" { sb.append(" < "); }
+        | ">" { sb.append(" > "); }
+        | "!" "=" { sb.append(" != "); }
+        | "~" "=" { sb.append(" ~= "); }
+        | "^" "=" { sb.append(" ^= "); }
       )
-
       { sb.append(" "); }
       | [(<NOT>) { sb.append(" NOT "); }]
       (
@@ -6545,7 +6602,6 @@ ASTID ID(): {}
 		//20120501 | <HEAP>
 		| <IF> //SYNTAX
 		//20120501 | <IMMEDIATE>
-		| <IN> //RESERVED WORD
 		| <INDEX> //RESERVED WORD
 		//20120501 | <INDICATOR>
 		| <INSERT> //SYNTAX  //RESERVED WORD
@@ -6778,7 +6834,6 @@ ASTQualifiedID QualifiedID(): {}
 		//20120501 | <HEAP>
 		//<IF>
 		//20120501 | <IMMEDIATE>
-		//<IN>
 		//<INDEX>
 		//20120501 | <INDICATOR>
 		//<INSERT>
