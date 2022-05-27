@@ -736,7 +736,7 @@ public abstract class ShouldBeAbstract {
             EmptyIfStmt, EmptyInitializer, EmptyStatementBlock, 
             EmptySwitchStatements, EmptySynchronizedBlock, EmptyTryBlock, and EmptyWhileStmt.
             Notice that EmptyCatchBlock is still an independent rule.
-            EmptyStatementNotInLoop is replaced by {% rule java/codestyle/UnnecessarySemiColon %}.
+            EmptyStatementNotInLoop is replaced by {% rule java/codestyle/UnnecessarySemicolon %}.
         ]]></description>
         <priority>3</priority>
         <example>
