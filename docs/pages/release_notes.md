@@ -151,5 +151,10 @@ and {% jdoc !!core::ant.Formatter#isNoOutputSupplied() %} have been internalized
 * [#3964](https://github.com/pmd/pmd/pull/3964): \[java] Fix #3874 - ImmutableField: fix mockito/spring false positives - [@lukelukes](https://github.com/lukelukes)
 * [#3974](https://github.com/pmd/pmd/pull/3974): \[cs] Add option to ignore C# attributes (annotations) - [@maikelsteneker](https://github.com/maikelsteneker)
 
+### Stats
+* 92 commits
+* 30 closed tickets & PRs
+* Days since last release: 28
+
 {% endtocmaker %}
 
