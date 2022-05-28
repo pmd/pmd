@@ -4,9 +4,11 @@
 
 package net.sourceforge.pmd.cpd;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -18,6 +20,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.sourceforge.pmd.annotation.Experimental;
+import net.sourceforge.pmd.cli.internal.CliMessages;
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
 import net.sourceforge.pmd.util.FileFinder;
 import net.sourceforge.pmd.util.IOUtil;
@@ -172,7 +175,75 @@ public class CPD {
         return new ArrayList<>(source.values());
     }
 
+    /**
+     * Entry to invoke CPD as command line tool. Note that this will
+     * invoke {@link System#exit(int)}.
+     *
+     * @param args command line arguments
+     */
     public static void main(String[] args) {
-        CPDCommandLineInterface.main(args);
+        StatusCode statusCode = runCpd(args);
+        CPDCommandLineInterface.setStatusCodeOrExit(statusCode.toInt());
+    }
+
+    /**
+     * Parses the command line and executes CPD. Returns the status code
+     * without exiting the VM.
+     *
+     * @param args command line arguments
+     *
+     * @return the status code
+     */
+    public static StatusCode runCpd(String... args) {
+        CPDConfiguration arguments = new CPDConfiguration();
+        CPD.StatusCode statusCode = CPDCommandLineInterface.parseArgs(arguments, args);
+        if (statusCode != null) {
+            return statusCode;
+        }
+
+        CPD cpd = new CPD(arguments);
+
+        try {
+            CPDCommandLineInterface.addSourceFilesToCPD(cpd, arguments);
+
+            cpd.go();
+            if (arguments.getCPDRenderer() == null) {
+                // legacy writer
+                System.out.println(arguments.getRenderer().render(cpd.getMatches()));
+            } else {
+                arguments.getCPDRenderer().render(cpd.getMatches(), new BufferedWriter(new OutputStreamWriter(System.out)));
+            }
+            if (cpd.getMatches().hasNext()) {
+                if (arguments.isFailOnViolation()) {
+                    statusCode = StatusCode.DUPLICATE_CODE_FOUND;
+                } else {
+                    statusCode = StatusCode.OK;
+                }
+            } else {
+                statusCode = StatusCode.OK;
+            }
+        } catch (IOException | RuntimeException e) {
+            e.printStackTrace();
+            LOGGER.severe(CliMessages.errorDetectedMessage(1, CPDCommandLineInterface.PROGRAM_NAME));
+            statusCode = StatusCode.ERROR;
+        }
+        return statusCode;
+    }
+
+    public enum StatusCode {
+        OK(0),
+        ERROR(1),
+        DUPLICATE_CODE_FOUND(4);
+
+        private final int code;
+
+        StatusCode(int code) {
+            this.code = code;
+        }
+
+        /** Returns the exit code as used in CLI. */
+        public int toInt() {
+            return this.code;
+        }
     }
 }
