@@ -85,6 +85,7 @@ ruleset. Use the new rule {% rule java/codestyle/UnnecessarySemicolon %} instead
     * [#1445](https://github.com/pmd/pmd/issues/1445): \[core] Allow CLI to take globs as parameters
 * core
     * [#2352](https://github.com/pmd/pmd/issues/2352): \[core] Deprecate \<lang\>-\<ruleset\> hyphen notation for ruleset references
+    * [#3787](https://github.com/pmd/pmd/issues/3787): \[core] Internalize some methods in Ant Formatter
     * [#3835](https://github.com/pmd/pmd/issues/3835): \[core] Deprecate system properties of CPDCommandLineInterface
     * [#3942](https://github.com/pmd/pmd/issues/3942): \[core] common-io path traversal vulnerability (CVE-2021-29425)
 * cs (c#)
@@ -140,6 +141,9 @@ You can identify them with the `@InternalApi` annotation. You'll also get a depr
 {% jdoc !!core::cpd.CPD#run(java.lang.String...) %} or {% jdoc !!core::cpd.CPD#main(java.lang.String[]) %}
 should be used.
 - Several members of {% jdoc test::cli.BaseCPDCLITest %} have been deprecated with replacements.
+- The methods {% jdoc !!core::ant.Formatter#start(java.lang.String) %},
+{% jdoc !!core::ant.Formatter#end(net.sourceforge.pmd.Report) %}, {% jdoc !!core::ant.Formatter#getRenderer() %},
+and {% jdoc !!core::ant.Formatter#isNoOutputSupplied() %} have been internalized.
 
 ### External Contributions
 
