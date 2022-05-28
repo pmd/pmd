@@ -90,6 +90,8 @@ ruleset. Use the new rule {% rule java/codestyle/UnnecessarySemicolon %} instead
     * [#1445](https://github.com/pmd/pmd/issues/1445): \[core] Allow CLI to take globs as parameters
 * core
     * [#2352](https://github.com/pmd/pmd/issues/2352): \[core] Deprecate \<lang\>-\<ruleset\> hyphen notation for ruleset references
+    * [#3787](https://github.com/pmd/pmd/issues/3787): \[core] Internalize some methods in Ant Formatter
+    * [#3835](https://github.com/pmd/pmd/issues/3835): \[core] Deprecate system properties of CPDCommandLineInterface
     * [#3942](https://github.com/pmd/pmd/issues/3942): \[core] common-io path traversal vulnerability (CVE-2021-29425)
 * cs (c#)
     * [#3974](https://github.com/pmd/pmd/pull/3974): \[cs] Add option to ignore C# attributes (annotations)
@@ -97,12 +99,15 @@ ruleset. Use the new rule {% rule java/codestyle/UnnecessarySemicolon %} instead
     * [#2752](https://github.com/pmd/pmd/issues/2752): \[go] Error parsing unicode values
 * html
     * [#3955](https://github.com/pmd/pmd/pull/3955): \[html] Improvements for handling text and comment nodes
+    * [#3978](https://github.com/pmd/pmd/pull/3978): \[html] Add additional file extensions htm, xhtml, xht, shtml
 * java
     * [#3423](https://github.com/pmd/pmd/issues/3423): \[java] Error processing identifiers with Unicode 
 * java-bestpractices
     * [#3954](https://github.com/pmd/pmd/issues/3954): \[java] NPE in UseCollectionIsEmptyRule when .size() is called in a record
 * java-design
     * [#3874](https://github.com/pmd/pmd/issues/3874): \[java] ImmutableField reports fields annotated with @Autowired (Spring) and @Mock (Mockito)
+* java-errorprone
+    * [#3096](https://github.com/pmd/pmd/issues/3096): \[java] EmptyStatementNotInLoop FP in 6.30.0 with IfStatement
 * java-performance
     * [#3379](https://github.com/pmd/pmd/issues/3379): \[java] UseArraysAsList must ignore primitive arrays
     * [#3965](https://github.com/pmd/pmd/issues/3965): \[java] UseArraysAsList false positive with non-trivial loops
@@ -131,6 +136,19 @@ Use the explicit forms of these references to be compatible with PMD 7.
 - {% jdoc core::PMDConfiguration#getInputPaths() %} and
 {% jdoc core::PMDConfiguration#setInputPaths(java.lang.String) %} are now deprecated.
 A new set of methods have been added, which use lists and do not rely on comma splitting.
+
+#### Internal API
+
+Those APIs are not intended to be used by clients, and will be hidden or removed with PMD 7.0.0.
+You can identify them with the `@InternalApi` annotation. You'll also get a deprecation warning.
+
+- {% jdoc core::cpd.CPDCommandLineInterface %} has been internalized. In order to execute CPD either
+{% jdoc !!core::cpd.CPD#run(java.lang.String...) %} or {% jdoc !!core::cpd.CPD#main(java.lang.String[]) %}
+should be used.
+- Several members of {% jdoc test::cli.BaseCPDCLITest %} have been deprecated with replacements.
+- The methods {% jdoc !!core::ant.Formatter#start(java.lang.String) %},
+{% jdoc !!core::ant.Formatter#end(net.sourceforge.pmd.Report) %}, {% jdoc !!core::ant.Formatter#getRenderer() %},
+and {% jdoc !!core::ant.Formatter#isNoOutputSupplied() %} have been internalized.
 
 ### External Contributions
 

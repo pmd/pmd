@@ -65,10 +65,14 @@ public class Formatter {
         this.parameters.add(parameter);
     }
 
+    @Deprecated
+    @InternalApi
     public Renderer getRenderer() {
         return renderer;
     }
 
+    @Deprecated
+    @InternalApi
     public void start(String baseDir) {
 
         Properties properties = createProperties();
@@ -115,6 +119,8 @@ public class Formatter {
         }
     }
 
+    @Deprecated
+    @InternalApi
     public void end(Report errorReport) {
         try {
             renderer.renderFileReport(errorReport);
@@ -129,6 +135,8 @@ public class Formatter {
         }
     }
 
+    @Deprecated
+    @InternalApi
     public boolean isNoOutputSupplied() {
         return toFile == null && !toConsole;
     }
@@ -236,6 +244,7 @@ public class Formatter {
         return null;
     }
 
+    @Deprecated
     @InternalApi
     public GlobalAnalysisListener newListener(Project project, List<String> inputPaths) throws IOException {
         start(project.getBaseDir().toString());
