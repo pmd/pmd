@@ -15,6 +15,8 @@ public class Foo {
         buz("Howdy");
         buz("Howdy");
     }
+    private void buz(String x) {}
+
 }
         ]]></code>
     </test-code>
@@ -27,6 +29,7 @@ public class Foo {
     private void bar() {
         buz(2);
     }
+    private void buz(int x) {}
 }
         ]]></code>
     </test-code>
@@ -86,6 +89,7 @@ public class Foo {
         buz("Howdy");
         buz("Howdy");
     }
+    private void buz(String x) {}
 }
         ]]></code>
     </test-code>
@@ -100,6 +104,7 @@ public class Foo {
         buz("Howdy"); buz("Howdy"); buz("Howdy"); buz("Howdy");
         buz("foo"); buz("foo"); buz("foo"); buz("foo");
     }
+    private void buz(String x) {}
 }
         ]]></code>
     </test-code>
@@ -115,6 +120,7 @@ public class Foo {
         buz("Howdy"); buz("Howdy"); buz("Howdy"); buz("Howdy");
         buz("foo"); buz("foo"); buz("foo"); buz("foo");
     }
+    private void buz(String x) {}
 }
         ]]></code>
     </test-code>
@@ -128,6 +134,7 @@ public class Foo {
     private void bar() {
         buz("Howdy"); buz("Howdy"); buz("Howdy"); buz("Howdy");
     }
+    private void buz(String x) {}
 }
         ]]></code>
     </test-code>
@@ -141,6 +148,7 @@ public class Foo {
     private void bar() {
         buz("foo"); buz("foo"); buz("foo"); buz("foo");
     }
+    private void buz(String x) {}
 }
         ]]></code>
     </test-code>
@@ -154,6 +162,7 @@ public class Foo {
         buz("foo"); buz("foo"); buz("foo"); buz("foo");
         buz("fo"); buz("fo"); buz("fo"); buz("fo");
     }
+    private void buz(String x) {}
 }
         ]]></code>
     </test-code>
