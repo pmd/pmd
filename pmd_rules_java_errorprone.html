@@ -3509,11 +3509,16 @@ or reported.</p>
 
 <h2 id="emptyfinallyblock">EmptyFinallyBlock</h2>
 
+<p><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span></p>
+
 <p><strong>Since:</strong> PMD 0.4</p>
 
 <p><strong>Priority:</strong> Medium (3)</p>
 
 <p>Empty finally blocks serve no purpose and should be removed.</p>
+
+<p>This rule is deprecated since PMD 6.46.0. Use the rule <a href="pmd_rules_java_codestyle.html#emptycontrolstatement"><code class="language-plaintext highlighter-rouge">EmptyControlStatement</code></a>
+from category codestyle instead.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">FinallyStatement</span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="nt">Block</span><span class="o">/</span><span class="nt">BlockStatement</span><span class="p">)]</span><span class="w">
@@ -3538,11 +3543,16 @@ or reported.</p>
 
 <h2 id="emptyifstmt">EmptyIfStmt</h2>
 
+<p><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span></p>
+
 <p><strong>Since:</strong> PMD 0.1</p>
 
 <p><strong>Priority:</strong> Medium (3)</p>
 
 <p>Empty If Statement finds instances where a condition is checked but nothing is done about it.</p>
+
+<p>This rule is deprecated since PMD 6.46.0. Use the rule <a href="pmd_rules_java_codestyle.html#emptycontrolstatement"><code class="language-plaintext highlighter-rouge">EmptyControlStatement</code></a>
+from category codestyle instead.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">IfStatement</span><span class="o">/</span><span class="nt">Statement</span><span class="w">
@@ -3566,11 +3576,16 @@ or reported.</p>
 
 <h2 id="emptyinitializer">EmptyInitializer</h2>
 
+<p><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span></p>
+
 <p><strong>Since:</strong> PMD 5.0</p>
 
 <p><strong>Priority:</strong> Medium (3)</p>
 
 <p>Empty initializers serve no purpose and should be removed.</p>
+
+<p>This rule is deprecated since PMD 6.46.0. Use the rule <a href="pmd_rules_java_codestyle.html#emptycontrolstatement"><code class="language-plaintext highlighter-rouge">EmptyControlStatement</code></a>
+from category codestyle instead.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">Initializer</span><span class="o">/</span><span class="nt">Block</span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="err">*</span><span class="p">)]</span><span class="w">
@@ -3593,11 +3608,16 @@ or reported.</p>
 
 <h2 id="emptystatementblock">EmptyStatementBlock</h2>
 
+<p><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span></p>
+
 <p><strong>Since:</strong> PMD 5.0</p>
 
 <p><strong>Priority:</strong> Medium (3)</p>
 
 <p>Empty block statements serve no purpose and should be removed.</p>
+
+<p>This rule is deprecated since PMD 6.46.0. Use the rule <a href="pmd_rules_java_codestyle.html#emptycontrolstatement"><code class="language-plaintext highlighter-rouge">EmptyControlStatement</code></a>
+from category codestyle instead.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">BlockStatement</span><span class="o">/</span><span class="nt">Statement</span><span class="o">/</span><span class="nt">Block</span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="err">*</span><span class="p">)]</span><span class="w">
@@ -3660,11 +3680,16 @@ and should be removed.</p>
 
 <h2 id="emptyswitchstatements">EmptySwitchStatements</h2>
 
+<p><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span></p>
+
 <p><strong>Since:</strong> PMD 1.0</p>
 
 <p><strong>Priority:</strong> Medium (3)</p>
 
-<p>Empty switch statements serve no purpose and should be removed.</p>
+<p>Empty switch statements serve no purpose and should be removed.#</p>
+
+<p>This rule is deprecated since PMD 6.46.0. Use the rule <a href="pmd_rules_java_codestyle.html#emptycontrolstatement"><code class="language-plaintext highlighter-rouge">EmptyControlStatement</code></a>
+from category codestyle instead.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">SwitchStatement</span><span class="p">[</span><span class="nf">count</span><span class="p">(</span><span class="err">*</span><span class="p">)</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="m">1</span><span class="p">]</span><span class="w">
@@ -3687,11 +3712,16 @@ and should be removed.</p>
 
 <h2 id="emptysynchronizedblock">EmptySynchronizedBlock</h2>
 
+<p><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span></p>
+
 <p><strong>Since:</strong> PMD 1.3</p>
 
 <p><strong>Priority:</strong> Medium (3)</p>
 
 <p>Empty synchronized blocks serve no purpose and should be removed.</p>
+
+<p>This rule is deprecated since PMD 6.46.0. Use the rule <a href="pmd_rules_java_codestyle.html#emptycontrolstatement"><code class="language-plaintext highlighter-rouge">EmptyControlStatement</code></a>
+from category codestyle instead.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">SynchronizedStatement</span><span class="o">/</span><span class="nt">Block</span><span class="p">[</span><span class="m">1</span><span class="p">][</span><span class="ow">not</span><span class="p">(</span><span class="err">*</span><span class="p">)]</span><span class="w">
@@ -3714,11 +3744,16 @@ and should be removed.</p>
 
 <h2 id="emptytryblock">EmptyTryBlock</h2>
 
+<p><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span></p>
+
 <p><strong>Since:</strong> PMD 0.4</p>
 
 <p><strong>Priority:</strong> Medium (3)</p>
 
 <p>Avoid empty try blocks - what’s the point?</p>
+
+<p>This rule is deprecated since PMD 6.46.0. Use the rule <a href="pmd_rules_java_codestyle.html#emptycontrolstatement"><code class="language-plaintext highlighter-rouge">EmptyControlStatement</code></a>
+from category codestyle instead.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">TryStatement</span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="nt">ResourceSpecification</span><span class="p">)]</span><span class="o">/</span><span class="nt">Block</span><span class="p">[</span><span class="m">1</span><span class="p">][</span><span class="ow">not</span><span class="p">(</span><span class="err">*</span><span class="p">)]</span><span class="w">
@@ -3742,6 +3777,8 @@ and should be removed.</p>
 
 <h2 id="emptywhilestmt">EmptyWhileStmt</h2>
 
+<p><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span></p>
+
 <p><strong>Since:</strong> PMD 0.2</p>
 
 <p><strong>Priority:</strong> Medium (3)</p>
@@ -3749,6 +3786,9 @@ and should be removed.</p>
 <p>Empty While Statement finds all instances where a while statement does nothing.
 If it is a timing loop, then you should use Thread.sleep() for it; if it is
 a while loop that does a lot in the exit expression, rewrite it to make it clearer.</p>
+
+<p>This rule is deprecated since PMD 6.46.0. Use the rule <a href="pmd_rules_java_codestyle.html#emptycontrolstatement"><code class="language-plaintext highlighter-rouge">EmptyControlStatement</code></a>
+from category codestyle instead.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">WhileStatement</span><span class="o">/</span><span class="nt">Statement</span><span class="p">[</span><span class="nt">Block</span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="err">*</span><span class="p">)]</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="nt">EmptyStatement</span><span class="p">]</span><span class="w">
@@ -5614,7 +5654,7 @@ Thread.currentThread().getContextClassLoader() instead.</p>
         <div class="col-lg-12 footer">
             &copy;2022 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: May 26, 2022 <br />
+             Site last generated: May 28, 2022 <br />
             <p>
                 <img src="images/pmd-logo-small.png" alt="Company
                 logo"/>

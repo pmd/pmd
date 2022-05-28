@@ -1593,6 +1593,7 @@
   <li><a href="pmd_rules_java_codestyle.html#defaultpackage">DefaultPackage</a>: <span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span> Use explicit scoping instead of accidental usage of default package private level. The rule allow…</li>
   <li><a href="pmd_rules_java_codestyle.html#dontimportjavalang">DontImportJavaLang</a>: <span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span> Avoid importing anything from the package ‘java.lang’.  These classes are automatically imported …</li>
   <li><a href="pmd_rules_java_codestyle.html#duplicateimports">DuplicateImports</a>: <span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span> Duplicate or overlapping import statements should be avoided. This rule is deprecated since PMD 6…</li>
+  <li><a href="pmd_rules_java_codestyle.html#emptycontrolstatement">EmptyControlStatement</a>: Reports control statements whose body is empty, as well as empty initializers.             The ch…</li>
   <li><a href="pmd_rules_java_codestyle.html#emptymethodinabstractclassshouldbeabstract">EmptyMethodInAbstractClassShouldBeAbstract</a>: Empty or auto-generated methods in an abstract class should be tagged as abstract. This helps to …</li>
   <li><a href="pmd_rules_java_codestyle.html#extendsobject">ExtendsObject</a>: No need to explicitly extend Object.</li>
   <li><a href="pmd_rules_java_codestyle.html#fielddeclarationsshouldbeatstartofclass">FieldDeclarationsShouldBeAtStartOfClass</a>: Fields should be declared at the top of the class, before any method declarations, constructors, …</li>
@@ -1634,6 +1635,7 @@
   <li><a href="pmd_rules_java_codestyle.html#unnecessarylocalbeforereturn">UnnecessaryLocalBeforeReturn</a>: Avoid the creation of unnecessary local variables</li>
   <li><a href="pmd_rules_java_codestyle.html#unnecessarymodifier">UnnecessaryModifier</a>: Fields in interfaces and annotations are automatically ‘public static final’, and methods are ‘pu…</li>
   <li><a href="pmd_rules_java_codestyle.html#unnecessaryreturn">UnnecessaryReturn</a>: Avoid the use of unnecessary return statements.</li>
+  <li><a href="pmd_rules_java_codestyle.html#unnecessarysemicolon">UnnecessarySemicolon</a>: Reports unnecessary semicolons (so called "empty statements" and "empty declarations").          …</li>
   <li><a href="pmd_rules_java_codestyle.html#usediamondoperator">UseDiamondOperator</a>: Use the diamond operator to let the type be inferred automatically. With the Diamond operator it …</li>
   <li><a href="pmd_rules_java_codestyle.html#uselessparentheses">UselessParentheses</a>: Useless parentheses should be removed.</li>
   <li><a href="pmd_rules_java_codestyle.html#uselessqualifiedthis">UselessQualifiedThis</a>: Reports qualified this usages in the same class.</li>
@@ -1760,15 +1762,15 @@
   <li><a href="pmd_rules_java_errorprone.html#dontusefloattypeforloopindices">DontUseFloatTypeForLoopIndices</a>: Don’t use floating point for loop indices. If you must use floating point, use double unless you’…</li>
   <li><a href="pmd_rules_java_errorprone.html#emptycatchblock">EmptyCatchBlock</a>: Empty Catch Block finds instances where an exception is caught, but nothing is done. In most circ…</li>
   <li><a href="pmd_rules_java_errorprone.html#emptyfinalizer">EmptyFinalizer</a>: Empty finalize methods serve no purpose and should be removed. Note that Oracle has declared Obje…</li>
-  <li><a href="pmd_rules_java_errorprone.html#emptyfinallyblock">EmptyFinallyBlock</a>: Empty finally blocks serve no purpose and should be removed.</li>
-  <li><a href="pmd_rules_java_errorprone.html#emptyifstmt">EmptyIfStmt</a>: Empty If Statement finds instances where a condition is checked but nothing is done about it.</li>
-  <li><a href="pmd_rules_java_errorprone.html#emptyinitializer">EmptyInitializer</a>: Empty initializers serve no purpose and should be removed.</li>
-  <li><a href="pmd_rules_java_errorprone.html#emptystatementblock">EmptyStatementBlock</a>: Empty block statements serve no purpose and should be removed.</li>
+  <li><a href="pmd_rules_java_errorprone.html#emptyfinallyblock">EmptyFinallyBlock</a>: <span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span> Empty finally blocks serve no purpose and should be removed. This rule is deprecated since PMD 6….</li>
+  <li><a href="pmd_rules_java_errorprone.html#emptyifstmt">EmptyIfStmt</a>: <span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span> Empty If Statement finds instances where a condition is checked but nothing is done about it. Thi…</li>
+  <li><a href="pmd_rules_java_errorprone.html#emptyinitializer">EmptyInitializer</a>: <span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span> Empty initializers serve no purpose and should be removed. This rule is deprecated since PMD 6.46…</li>
+  <li><a href="pmd_rules_java_errorprone.html#emptystatementblock">EmptyStatementBlock</a>: <span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span> Empty block statements serve no purpose and should be removed. This rule is deprecated since PMD …</li>
   <li><a href="pmd_rules_java_errorprone.html#emptystatementnotinloop">EmptyStatementNotInLoop</a>: An empty statement (or a semicolon by itself) that is not used as the sole body of a ‘for’ or ‘wh…</li>
-  <li><a href="pmd_rules_java_errorprone.html#emptyswitchstatements">EmptySwitchStatements</a>: Empty switch statements serve no purpose and should be removed.</li>
-  <li><a href="pmd_rules_java_errorprone.html#emptysynchronizedblock">EmptySynchronizedBlock</a>: Empty synchronized blocks serve no purpose and should be removed.</li>
-  <li><a href="pmd_rules_java_errorprone.html#emptytryblock">EmptyTryBlock</a>: Avoid empty try blocks - what’s the point?</li>
-  <li><a href="pmd_rules_java_errorprone.html#emptywhilestmt">EmptyWhileStmt</a>: Empty While Statement finds all instances where a while statement does nothing. If it is a timing…</li>
+  <li><a href="pmd_rules_java_errorprone.html#emptyswitchstatements">EmptySwitchStatements</a>: <span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span> Empty switch statements serve no purpose and should be removed.# This rule is deprecated since PM…</li>
+  <li><a href="pmd_rules_java_errorprone.html#emptysynchronizedblock">EmptySynchronizedBlock</a>: <span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span> Empty synchronized blocks serve no purpose and should be removed. This rule is deprecated since P…</li>
+  <li><a href="pmd_rules_java_errorprone.html#emptytryblock">EmptyTryBlock</a>: <span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span> Avoid empty try blocks - what’s the point? This rule is deprecated since PMD 6.46.0. Use the rule…</li>
+  <li><a href="pmd_rules_java_errorprone.html#emptywhilestmt">EmptyWhileStmt</a>: <span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span> Empty While Statement finds all instances where a while statement does nothing. If it is a timing…</li>
   <li><a href="pmd_rules_java_errorprone.html#equalsnull">EqualsNull</a>: Tests for null should not use the equals() method. The ‘==’ operator should be used instead.</li>
   <li><a href="pmd_rules_java_errorprone.html#finalizedoesnotcallsuperfinalize">FinalizeDoesNotCallSuperFinalize</a>: If the finalize() is implemented, its last action should be to call super.finalize. Note that Ora…</li>
   <li><a href="pmd_rules_java_errorprone.html#finalizeonlycallssuperfinalize">FinalizeOnlyCallsSuperFinalize</a>: If the finalize() is implemented, it should do something besides just calling super.finalize(). N…</li>
@@ -1914,7 +1916,7 @@
         <div class="col-lg-12 footer">
             &copy;2022 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: May 26, 2022 <br />
+             Site last generated: May 28, 2022 <br />
             <p>
                 <img src="images/pmd-logo-small.png" alt="Company
                 logo"/>

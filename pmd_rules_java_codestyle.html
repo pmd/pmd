@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Rules which enforce a specific coding style.">
-<meta name="keywords" content=" Code Style, AbstractNaming, AtLeastOneConstructor, AvoidDollarSigns, AvoidFinalLocalVariable, AvoidPrefixingMethodParameters, AvoidProtectedFieldInFinalClass, AvoidProtectedMethodInFinalClassNotExtending, AvoidUsingNativeCode, BooleanGetMethodName, CallSuperInConstructor, ClassNamingConventions, CommentDefaultAccessModifier, ConfusingTernary, ControlStatementBraces, DefaultPackage, DontImportJavaLang, DuplicateImports, EmptyMethodInAbstractClassShouldBeAbstract, ExtendsObject, FieldDeclarationsShouldBeAtStartOfClass, FieldNamingConventions, FinalParameterInAbstractMethod, ForLoopShouldBeWhileLoop, ForLoopsMustUseBraces, FormalParameterNamingConventions, GenericsNaming, IdenticalCatchBranches, IfElseStmtsMustUseBraces, IfStmtsMustUseBraces, LinguisticNaming, LocalHomeNamingConvention, LocalInterfaceSessionNamingConvention, LocalVariableCouldBeFinal, LocalVariableNamingConventions, LongVariable, MDBAndSessionBeanNamingConvention, MethodArgumentCouldBeFinal, MethodNamingConventions, MIsLeadingVariableName, NoPackage, UseUnderscoresInNumericLiterals, OnlyOneReturn, PackageCase, PrematureDeclaration, RemoteInterfaceNamingConvention, RemoteSessionInterfaceNamingConvention, ShortClassName, ShortMethodName, ShortVariable, SuspiciousConstantFieldName, TooManyStaticImports, UnnecessaryAnnotationValueElement, UnnecessaryCast, UnnecessaryConstructor, UnnecessaryFullyQualifiedName, UnnecessaryImport, UnnecessaryLocalBeforeReturn, UnnecessaryModifier, UnnecessaryReturn, UseDiamondOperator, UselessParentheses, UselessQualifiedThis, UseShortArrayInitializer, VariableNamingConventions, WhileLoopsMustUseBraces">
+<meta name="keywords" content=" Code Style, AbstractNaming, AtLeastOneConstructor, AvoidDollarSigns, AvoidFinalLocalVariable, AvoidPrefixingMethodParameters, AvoidProtectedFieldInFinalClass, AvoidProtectedMethodInFinalClassNotExtending, AvoidUsingNativeCode, BooleanGetMethodName, CallSuperInConstructor, ClassNamingConventions, CommentDefaultAccessModifier, ConfusingTernary, ControlStatementBraces, DefaultPackage, DontImportJavaLang, DuplicateImports, EmptyMethodInAbstractClassShouldBeAbstract, EmptyControlStatement, ExtendsObject, FieldDeclarationsShouldBeAtStartOfClass, FieldNamingConventions, FinalParameterInAbstractMethod, ForLoopShouldBeWhileLoop, ForLoopsMustUseBraces, FormalParameterNamingConventions, GenericsNaming, IdenticalCatchBranches, IfElseStmtsMustUseBraces, IfStmtsMustUseBraces, LinguisticNaming, LocalHomeNamingConvention, LocalInterfaceSessionNamingConvention, LocalVariableCouldBeFinal, LocalVariableNamingConventions, LongVariable, MDBAndSessionBeanNamingConvention, MethodArgumentCouldBeFinal, MethodNamingConventions, MIsLeadingVariableName, NoPackage, UseUnderscoresInNumericLiterals, OnlyOneReturn, PackageCase, PrematureDeclaration, RemoteInterfaceNamingConvention, RemoteSessionInterfaceNamingConvention, ShortClassName, ShortMethodName, ShortVariable, SuspiciousConstantFieldName, TooManyStaticImports, UnnecessaryAnnotationValueElement, UnnecessaryCast, UnnecessaryConstructor, UnnecessaryFullyQualifiedName, UnnecessaryImport, UnnecessaryLocalBeforeReturn, UnnecessaryModifier, UnnecessaryReturn, UnnecessarySemicolon, UseDiamondOperator, UselessParentheses, UselessQualifiedThis, UseShortArrayInitializer, VariableNamingConventions, WhileLoopsMustUseBraces">
 <title>Code Style | PMD Source Code Analyzer</title>
 <link rel="stylesheet" href="css/syntax.css">
 
@@ -2411,6 +2411,53 @@ from category codestyle instead.</p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/codestyle.xml/DuplicateImports"</span> <span class="nt">/&gt;</span>
 </code></pre></div></div>
 
+<h2 id="emptycontrolstatement">EmptyControlStatement</h2>
+
+<p><strong>Since:</strong> PMD 6.46.0</p>
+
+<p><strong>Priority:</strong> Medium (3)</p>
+
+<p>Reports control statements whose body is empty, as well as empty initializers.</p>
+
+<p>The checked code constructs are the following:</p>
+<ul>
+  <li>bodies of <code class="language-plaintext highlighter-rouge">try</code> statements</li>
+  <li><code class="language-plaintext highlighter-rouge">finally</code> clauses of <code class="language-plaintext highlighter-rouge">try</code> statements</li>
+  <li><code class="language-plaintext highlighter-rouge">switch</code> statements</li>
+  <li><code class="language-plaintext highlighter-rouge">synchronized</code> statements</li>
+  <li><code class="language-plaintext highlighter-rouge">if</code> statements</li>
+  <li>loop statements: <code class="language-plaintext highlighter-rouge">while</code>, <code class="language-plaintext highlighter-rouge">for</code>, <code class="language-plaintext highlighter-rouge">do .. while</code></li>
+  <li>initializers</li>
+  <li>blocks used as statements (for scoping)</li>
+</ul>
+
+<p>This rule replaces the rules EmptyFinallyBlock, 
+EmptyIfStmt, EmptyInitializer, EmptyStatementBlock, 
+EmptySwitchStatements, EmptySynchronizedBlock, EmptyTryBlock, and EmptyWhileStmt.</p>
+
+<p>Notice that <a href="pmd_rules_java_errorprone.html#emptycatchblock"><code class="language-plaintext highlighter-rouge">EmptyCatchBlock</code></a> is still an independent rule.</p>
+
+<p>EmptyStatementNotInLoop is replaced by <a href="pmd_rules_java_codestyle.html#unnecessarysemicolon"><code class="language-plaintext highlighter-rouge">UnnecessarySemicolon</code></a>.</p>
+
+<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/codestyle/EmptyControlStatementRule.java">net.sourceforge.pmd.lang.java.rule.codestyle.EmptyControlStatementRule</a></p>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
+    <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="kc">true</span><span class="o">);</span> <span class="c1">// empty if statement</span>
+        <span class="k">if</span> <span class="o">(</span><span class="kc">true</span><span class="o">)</span> <span class="o">{</span> <span class="c1">// empty as well</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+
+    <span class="o">{}</span> <span class="c1">// empty initializer</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule by referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/codestyle.xml/EmptyControlStatement"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
 <h2 id="emptymethodinabstractclassshouldbeabstract">EmptyMethodInAbstractClassShouldBeAbstract</h2>
 
 <p><strong>Since:</strong> PMD 4.1</p>
@@ -4341,6 +4388,46 @@ For historical reasons, modifiers which are implied by the context are accepted 
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/codestyle.xml/UnnecessaryReturn"</span> <span class="nt">/&gt;</span>
 </code></pre></div></div>
 
+<h2 id="unnecessarysemicolon">UnnecessarySemicolon</h2>
+
+<p><strong>Since:</strong> PMD 6.46.0</p>
+
+<p><strong>Priority:</strong> Medium (3)</p>
+
+<p>Reports unnecessary semicolons (so called "empty statements" and "empty declarations").
+These can be removed without changing the program. The Java grammar
+allows them for historical reasons, but they should be avoided.</p>
+
+<p>This rule will not report empty statements that are syntactically 
+required, for instance, because they are the body of a control statement.</p>
+
+<p>This rule replaces EmptyStatementNotInLoop.</p>
+
+<p><strong>This rule is defined by the following XPath expression:</strong></p>
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">(: empty top-level declarations :)</span><span class="w">
+      </span><span class="o">//</span><span class="nt">EmptyStatement</span><span class="p">[</span><span class="kn">parent::</span><span class="nt">CompilationUnit</span><span class="p">]</span><span class="w">
+      </span><span class="c">(: empty body declarations :)</span><span class="w">
+    </span><span class="p">|</span><span class="w"> </span><span class="o">//</span><span class="nt">ClassOrInterfaceBodyDeclaration</span><span class="p">[</span><span class="nf">count</span><span class="p">(</span><span class="err">*</span><span class="p">)</span><span class="err">=</span><span class="m">0</span><span class="p">]</span><span class="w">
+      </span><span class="c">(: empty statements :)</span><span class="w">
+    </span><span class="p">|</span><span class="w"> </span><span class="o">//</span><span class="nt">Block</span><span class="o">/</span><span class="nt">BlockStatement</span><span class="o">/</span><span class="nt">Statement</span><span class="o">/</span><span class="nf">EmptyStatement</span><span class="w">
+      </span><span class="c">(: grammar is irregular in pmd 6 :)</span><span class="w">
+    </span><span class="p">|</span><span class="w"> </span><span class="o">//</span><span class="nt">ConstructorDeclaration</span><span class="o">/</span><span class="nt">BlockStatement</span><span class="o">/</span><span class="nt">Statement</span><span class="o">/</span><span class="nt">EmptyStatement</span><span class="w">
+</span></code></pre></div></div>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
+    <span class="o">{</span>
+        <span class="n">toString</span><span class="o">();;</span> <span class="c1">// one of these semicolons is unnecessary</span>
+        <span class="k">if</span> <span class="o">(</span><span class="kc">true</span><span class="o">);</span> <span class="c1">// this semicolon is not unnecessary, but it could be an empty block instead (not reported)</span>
+    <span class="o">}</span>
+<span class="o">};</span> <span class="c1">// this semicolon is unnecessary</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule by referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/codestyle.xml/UnnecessarySemicolon"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
 <h2 id="usediamondoperator">UseDiamondOperator</h2>
 
 <p><strong>Since:</strong> PMD 6.11.0</p>
@@ -4854,7 +4941,7 @@ by the rule <a href="pmd_rules_java_codestyle.html#controlstatementbraces"><code
         <div class="col-lg-12 footer">
             &copy;2022 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: May 26, 2022 <br />
+             Site last generated: May 28, 2022 <br />
             <p>
                 <img src="images/pmd-logo-small.png" alt="Company
                 logo"/>

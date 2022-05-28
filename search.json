@@ -1291,6 +1291,15 @@
 ,
 
 {
+"title": "EmptyControlStatement (Java, Code Style)",
+"tags": "",
+"keywords": "EmptyControlStatement",
+"url": "pmd_rules_java_codestyle.html#emptycontrolstatement",
+"summary": "Rules which enforce a specific coding style."
+}
+,
+
+{
 "title": "ExtendsObject (Java, Code Style)",
 "tags": "",
 "keywords": "ExtendsObject",
@@ -1655,6 +1664,15 @@
 "tags": "",
 "keywords": "UnnecessaryReturn",
 "url": "pmd_rules_java_codestyle.html#unnecessaryreturn",
+"summary": "Rules which enforce a specific coding style."
+}
+,
+
+{
+"title": "UnnecessarySemicolon (Java, Code Style)",
+"tags": "",
+"keywords": "UnnecessarySemicolon",
+"url": "pmd_rules_java_codestyle.html#unnecessarysemicolon",
 "summary": "Rules which enforce a specific coding style."
 }
 ,
