@@ -2172,7 +2172,7 @@ a block `{}` is sufficient.
             <property name="xpath">
                 <value>
 <![CDATA[
-//DoStatement[Expression/PrimaryExpression/PrimaryPrefix/Literal/BooleanLiteral] |
+//DoStatement[Expression/(.|*)/PrimaryExpression/PrimaryPrefix/Literal/BooleanLiteral] |
 //WhileStatement[Expression/PrimaryExpression/PrimaryPrefix/Literal/BooleanLiteral[@True = false()]]
 ]]>
                 </value>
@@ -2187,6 +2187,8 @@ public class Example {
     while (false) { } // disallowed
     do { } while (true); // disallowed
     do { } while (false); // disallowed
+    do { } while (false | false); // disallowed
+    do { } while (false || false); // disallowed
   }
 }
 ]]>
