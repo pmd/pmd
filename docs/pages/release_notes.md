@@ -97,6 +97,8 @@ ruleset. Use the new rule {% rule java/codestyle/UnnecessarySemicolon %} instead
     * [#3954](https://github.com/pmd/pmd/issues/3954): \[java] NPE in UseCollectionIsEmptyRule when .size() is called in a record
 * java-design
     * [#3874](https://github.com/pmd/pmd/issues/3874): \[java] ImmutableField reports fields annotated with @Autowired (Spring) and @Mock (Mockito)
+* java-errorprone
+    * [#3096](https://github.com/pmd/pmd/issues/3096): \[java] EmptyStatementNotInLoop FP in 6.30.0 with IfStatement
 * java-performance
     * [#3379](https://github.com/pmd/pmd/issues/3379): \[java] UseArraysAsList must ignore primitive arrays
     * [#3965](https://github.com/pmd/pmd/issues/3965): \[java] UseArraysAsList false positive with non-trivial loops
