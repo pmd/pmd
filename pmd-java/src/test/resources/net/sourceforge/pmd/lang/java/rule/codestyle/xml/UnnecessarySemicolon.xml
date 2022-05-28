@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+  -->
+
+<test-data xmlns="http://pmd.sourceforge.net/rule-tests"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description>Neg, necessary empty statements</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            class Foo {
+                static {
+                    if (true);
+                    while (true);
+                    do ; while (true);
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Pos, empty stmt in ctor</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+            class Foo {
+                Foo() {
+                    ;
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Pos, empty stmt in method</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+            class Foo {
+                Foo f() {
+                    ;
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Pos, empty decl in toplevel</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>1,3</expected-linenumbers>
+        <code><![CDATA[
+            import f;;
+
+            class Foo {};
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Pos, empty decl in inner class</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+            class Foo {
+                class B {}
+                ;
+            }
+            ]]></code>
+    </test-code>
+
+</test-data>
