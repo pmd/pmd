@@ -85,6 +85,7 @@ ruleset. Use the new rule {% rule java/codestyle/UnnecessarySemicolon %} instead
     * [#1445](https://github.com/pmd/pmd/issues/1445): \[core] Allow CLI to take globs as parameters
 * core
     * [#2352](https://github.com/pmd/pmd/issues/2352): \[core] Deprecate \<lang\>-\<ruleset\> hyphen notation for ruleset references
+    * [#3835](https://github.com/pmd/pmd/issues/3835): \[core] Deprecate system properties of CPDCommandLineInterface
     * [#3942](https://github.com/pmd/pmd/issues/3942): \[core] common-io path traversal vulnerability (CVE-2021-29425)
 * cs (c#)
     * [#3974](https://github.com/pmd/pmd/pull/3974): \[cs] Add option to ignore C# attributes (annotations)
@@ -129,6 +130,16 @@ Use the explicit forms of these references to be compatible with PMD 7.
 - {% jdoc core::PMDConfiguration#getInputPaths() %} and
 {% jdoc core::PMDConfiguration#setInputPaths(java.lang.String) %} are now deprecated.
 A new set of methods have been added, which use lists and do not rely on comma splitting.
+
+#### Internal API
+
+Those APIs are not intended to be used by clients, and will be hidden or removed with PMD 7.0.0.
+You can identify them with the `@InternalApi` annotation. You'll also get a deprecation warning.
+
+- {% jdoc core::cpd.CPDCommandLineInterface %} has been internalized. In order to execute CPD either
+{% jdoc !!core::cpd.CPD#run(java.lang.String...) %} or {% jdoc !!core::cpd.CPD#main(java.lang.String[]) %}
+should be used.
+- Several members of {% jdoc test::cli.BaseCPDCLITest %} have been deprecated with replacements.
 
 ### External Contributions
 
