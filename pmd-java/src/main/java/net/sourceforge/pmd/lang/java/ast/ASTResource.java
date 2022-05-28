@@ -25,6 +25,15 @@ public class ASTResource extends ASTFormalParameter {
         return visitor.visit(this, data);
     }
 
+    public String getStableName() {
+        ASTVariableDeclaratorId variableDeclaratorId = getVariableDeclaratorId();
+        if (variableDeclaratorId != null) {
+            return variableDeclaratorId.getName();
+        }
+        // concise try-with-resources
+        return getFirstChildOfType(ASTName.class).getImage();
+    }
+
     // TODO Should we deprecate all methods from ASTFormalParameter?
 
 }

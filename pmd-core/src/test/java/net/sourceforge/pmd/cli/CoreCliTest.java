@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.cli;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.containsStringIgnoringCase;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertEquals;
@@ -21,6 +22,7 @@ import java.nio.file.Path;
 import java.util.logging.Logger;
 
 import org.hamcrest.Matcher;
+import org.hamcrest.MatcherAssert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -188,6 +190,13 @@ public class CoreCliTest {
         }
     }
 
+    @Test
+    public void testDeprecatedRulesetSyntaxOnCommandLine() {
+        startCapturingErrAndOut();
+        runPmd(StatusCode.VIOLATIONS_FOUND, "--no-cache", "--dir", srcDir, "--rulesets", "dummy-basic");
+        MatcherAssert.assertThat(errStreamCaptor.getLog(), containsString("Ruleset reference 'dummy-basic' uses a deprecated form, use 'rulesets/dummy/basic.xml' instead"));
+    }
+
 
     @Test
     public void testWrongCliOptionsDoNotPrintUsage() {
@@ -223,7 +232,7 @@ public class CoreCliTest {
 
 
     private static void runPmdSuccessfully(Object... args) {
-        runPmd(0, args);
+        runPmd(StatusCode.OK, args);
     }
 
     private static String[] argsToString(Object... args) {
@@ -248,9 +257,9 @@ public class CoreCliTest {
         return StandardCharsets.UTF_8.decode(buf).toString();
     }
 
-    private static void runPmd(int expectedExitCode, Object[] args) {
+    private static void runPmd(StatusCode expectedExitCode, Object... args) {
         StatusCode actualExitCode = PMD.runPmd(argsToString(args));
-        assertEquals("Exit code", expectedExitCode, actualExitCode.toInt());
+        assertEquals("Exit code", expectedExitCode, actualExitCode);
     }
 
 
