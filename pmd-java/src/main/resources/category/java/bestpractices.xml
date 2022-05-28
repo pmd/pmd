@@ -2171,13 +2171,16 @@ a block `{}` is sufficient.
         <properties>
             <property name="xpath">
                 <value>
+<![CDATA[
 //DoStatement[Expression/PrimaryExpression/PrimaryPrefix/Literal/BooleanLiteral] |
 //WhileStatement[Expression/PrimaryExpression/PrimaryPrefix/Literal/BooleanLiteral[@True = false()]]
+]]>
                 </value>
             </property>
             <property name="version" value="2.0" />
         </properties>
         <example>
+<![CDATA[
 public class Example {
   {
     while (true) { } // allowed
@@ -2186,6 +2189,7 @@ public class Example {
     do { } while (false); // disallowed
   }
 }
+]]>
         </example>
     </rule>
 
