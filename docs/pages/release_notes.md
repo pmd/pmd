@@ -34,6 +34,51 @@ When executing CPD on C# sources, the option `--ignore-annotations` is now suppo
 It ignores C# attributes when detecting duplicated code. This option can also be enabled via
 the CPD GUI. See [#3974](https://github.com/pmd/pmd/pull/3974) for details.
 
+#### New Rules
+
+This release ships with 2 new Java rules.
+
+* {% rule java/codestyle/EmptyControlStatement %} reports many instances of empty things, e.g. control statements whose
+  body is empty, as well as empty initializers.
+
+  EmptyControlStatement also works for empty `for` and `do` loops, while there were previously
+  no corresponding rules.
+
+  This new rule replaces the rules EmptyFinallyBlock, EmptyIfStmt, EmptyInitializer, EmptyStatementBlock,
+  EmptySwitchStatements, EmptySynchronizedBlock, EmptyTryBlock, and EmptyWhileStmt.
+
+```xml
+<rule ref="category/java/codestyle.xml/EmptyControlStatement"/>
+```
+
+The rule is part of the quickstart.xml ruleset.
+
+* {%rule java/codestyle/UnnecessarySemicolon %} reports semicolons that are unnecessary  (so called "empty statements"
+  and "empty declarations").
+
+  This new rule replaces the rule EmptyStatementNotInLoop.
+
+```xml
+<rule ref="category/java/codestyle.xml/UnnecessarySemicolon"/>
+```
+
+The rule is part of the quickstart.xml ruleset.
+
+#### Deprecated Rules
+
+* The following Java rules are deprecated and removed from the quickstart ruleset, as the new rule
+{% rule java/codestyle/EmptyControlStatement %} merges their functionality:
+    * {% rule java/errorprone/EmptyFinallyBlock %}
+    * {% rule java/errorprone/EmptyIfStmt %}
+    * {% rule java/errorprone/EmptyInitializer %}
+    * {% rule java/errorprone/EmptyStatementBlock %}
+    * {% rule java/errorprone/EmptySwitchStatements %}
+    * {% rule java/errorprone/EmptySynchronizedBlock %}
+    * {% rule java/errorprone/EmptyTryBlock %}
+    * {% rule java/errorprone/EmptyWhileStmt %}
+* The Java rule {% rule java/errorprone/EmptyStatementNotInLoop %} is deprecated and removed from the quickstart
+ruleset. Use the new rule {% rule java/codestyle/UnnecessarySemicolon %} instead.
+
 ### Fixed Issues
 
 * cli
@@ -52,6 +97,8 @@ the CPD GUI. See [#3974](https://github.com/pmd/pmd/pull/3974) for details.
     * [#3954](https://github.com/pmd/pmd/issues/3954): \[java] NPE in UseCollectionIsEmptyRule when .size() is called in a record
 * java-design
     * [#3874](https://github.com/pmd/pmd/issues/3874): \[java] ImmutableField reports fields annotated with @Autowired (Spring) and @Mock (Mockito)
+* java-errorprone
+    * [#3096](https://github.com/pmd/pmd/issues/3096): \[java] EmptyStatementNotInLoop FP in 6.30.0 with IfStatement
 * java-performance
     * [#3379](https://github.com/pmd/pmd/issues/3379): \[java] UseArraysAsList must ignore primitive arrays
     * [#3965](https://github.com/pmd/pmd/issues/3965): \[java] UseArraysAsList false positive with non-trivial loops
