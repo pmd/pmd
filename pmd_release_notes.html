@@ -174,8 +174,8 @@
 
 
 <ul id="mysidebar" class="nav">
-    <li class="sidebarTitle">PMD 6.46.0</li>
-    <div class="sidebarTitleDate">Release date: 28-May-2022</div>
+    <li class="sidebarTitle">PMD 6.47.0-SNAPSHOT</li>
+    <div class="sidebarTitleDate">Release date: 25-June-2022</div>
     
     
     
@@ -1512,212 +1512,19 @@
    
     <div id="inline-toc"><!-- empty, move TOC here when screen size too small --></div>
     
-  <h2 id="28-may-2022---6460">28-May-2022 - 6.46.0</h2>
+  <h2 id="25-june-2022---6470-snapshot">25-June-2022 - 6.47.0-SNAPSHOT</h2>
 
-<p>The PMD team is pleased to announce PMD 6.46.0.</p>
+<p>The PMD team is pleased to announce PMD 6.47.0-SNAPSHOT.</p>
 
 <p>This is a minor release.</p>
 
 <h3 id="new-and-noteworthy">New and noteworthy</h3>
 
-<h4 id="cli-improvements">CLI improvements</h4>
-
-<p>The PMD CLI now allows repeating the <code class="language-plaintext highlighter-rouge">--dir</code> (<code class="language-plaintext highlighter-rouge">-d</code>) and <code class="language-plaintext highlighter-rouge">--rulesets</code> (<code class="language-plaintext highlighter-rouge">-R</code>) options,
- as well as providing several space-separated arguments to either of them. For instance:</p>
-<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pmd <span class="nt">-d</span> src/main/java src/test/java <span class="nt">-R</span> rset1.xml <span class="nt">-R</span> rset2.xml
-</code></pre></div></div>
-<p>This also allows globs to be used on the CLI if your shell supports shell expansion.
-For instance, the above can be written</p>
-<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pmd <span class="nt">-d</span> src/<span class="k">*</span>/java <span class="nt">-R</span> rset<span class="k">*</span>.xml
-</code></pre></div></div>
-<p>Please use theses new forms instead of using comma-separated lists as argument to these options.</p>
-
-<h4 id="c-improvements">C# Improvements</h4>
-
-<p>When executing CPD on C# sources, the option <code class="language-plaintext highlighter-rouge">--ignore-annotations</code> is now supported as well.
-It ignores C# attributes when detecting duplicated code. This option can also be enabled via
-the CPD GUI. See <a href="https://github.com/pmd/pmd/pull/3974">#3974</a> for details.</p>
-
-<h4 id="new-rules">New Rules</h4>
-
-<p>This release ships with 2 new Java rules.</p>
-
-<ul>
-  <li>
-    <p><a href="pmd_rules_java_codestyle.html#emptycontrolstatement"><code class="language-plaintext highlighter-rouge">EmptyControlStatement</code></a> reports many instances of empty things, e.g. control statements whose
-body is empty, as well as empty initializers.</p>
-
-    <p>EmptyControlStatement also works for empty <code class="language-plaintext highlighter-rouge">for</code> and <code class="language-plaintext highlighter-rouge">do</code> loops, while there were previously
-no corresponding rules.</p>
-
-    <p>This new rule replaces the rules EmptyFinallyBlock, EmptyIfStmt, EmptyInitializer, EmptyStatementBlock,
-EmptySwitchStatements, EmptySynchronizedBlock, EmptyTryBlock, and EmptyWhileStmt.</p>
-  </li>
-</ul>
-
-<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/codestyle.xml/EmptyControlStatement"</span><span class="nt">/&gt;</span>
-</code></pre></div></div>
-
-<p>The rule is part of the quickstart.xml ruleset.</p>
-
-<ul>
-  <li>
-    <p><a href="pmd_rules_java_codestyle.html#unnecessarysemicolon"><code class="language-plaintext highlighter-rouge">UnnecessarySemicolon</code></a> reports semicolons that are unnecessary  (so called “empty statements”
-and “empty declarations”).</p>
-
-    <p>This new rule replaces the rule EmptyStatementNotInLoop.</p>
-  </li>
-</ul>
-
-<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/codestyle.xml/UnnecessarySemicolon"</span><span class="nt">/&gt;</span>
-</code></pre></div></div>
-
-<p>The rule is part of the quickstart.xml ruleset.</p>
-
-<h4 id="deprecated-rules">Deprecated Rules</h4>
-
-<ul>
-  <li>The following Java rules are deprecated and removed from the quickstart ruleset, as the new rule
-<a href="pmd_rules_java_codestyle.html#emptycontrolstatement"><code class="language-plaintext highlighter-rouge">EmptyControlStatement</code></a> merges their functionality:
-    <ul>
-      <li><a href="pmd_rules_java_errorprone.html#emptyfinallyblock"><code class="language-plaintext highlighter-rouge">EmptyFinallyBlock</code></a></li>
-      <li><a href="pmd_rules_java_errorprone.html#emptyifstmt"><code class="language-plaintext highlighter-rouge">EmptyIfStmt</code></a></li>
-      <li><a href="pmd_rules_java_errorprone.html#emptyinitializer"><code class="language-plaintext highlighter-rouge">EmptyInitializer</code></a></li>
-      <li><a href="pmd_rules_java_errorprone.html#emptystatementblock"><code class="language-plaintext highlighter-rouge">EmptyStatementBlock</code></a></li>
-      <li><a href="pmd_rules_java_errorprone.html#emptyswitchstatements"><code class="language-plaintext highlighter-rouge">EmptySwitchStatements</code></a></li>
-      <li><a href="pmd_rules_java_errorprone.html#emptysynchronizedblock"><code class="language-plaintext highlighter-rouge">EmptySynchronizedBlock</code></a></li>
-      <li><a href="pmd_rules_java_errorprone.html#emptytryblock"><code class="language-plaintext highlighter-rouge">EmptyTryBlock</code></a></li>
-      <li><a href="pmd_rules_java_errorprone.html#emptywhilestmt"><code class="language-plaintext highlighter-rouge">EmptyWhileStmt</code></a></li>
-    </ul>
-  </li>
-  <li>The Java rule <a href="pmd_rules_java_errorprone.html#emptystatementnotinloop"><code class="language-plaintext highlighter-rouge">EmptyStatementNotInLoop</code></a> is deprecated and removed from the quickstart
-ruleset. Use the new rule <a href="pmd_rules_java_codestyle.html#unnecessarysemicolon"><code class="language-plaintext highlighter-rouge">UnnecessarySemicolon</code></a> instead.</li>
-</ul>
-
 <h3 id="fixed-issues">Fixed Issues</h3>
-
-<ul>
-  <li>cli
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/1445">#1445</a>: [core] Allow CLI to take globs as parameters</li>
-    </ul>
-  </li>
-  <li>core
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/2352">#2352</a>: [core] Deprecate &lt;lang&gt;-&lt;ruleset&gt; hyphen notation for ruleset references</li>
-      <li><a href="https://github.com/pmd/pmd/issues/3787">#3787</a>: [core] Internalize some methods in Ant Formatter</li>
-      <li><a href="https://github.com/pmd/pmd/issues/3835">#3835</a>: [core] Deprecate system properties of CPDCommandLineInterface</li>
-      <li><a href="https://github.com/pmd/pmd/issues/3942">#3942</a>: [core] common-io path traversal vulnerability (CVE-2021-29425)</li>
-    </ul>
-  </li>
-  <li>cs (c#)
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/pull/3974">#3974</a>: [cs] Add option to ignore C# attributes (annotations)</li>
-    </ul>
-  </li>
-  <li>go
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/2752">#2752</a>: [go] Error parsing unicode values</li>
-    </ul>
-  </li>
-  <li>html
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/pull/3955">#3955</a>: [html] Improvements for handling text and comment nodes</li>
-      <li><a href="https://github.com/pmd/pmd/pull/3978">#3978</a>: [html] Add additional file extensions htm, xhtml, xht, shtml</li>
-    </ul>
-  </li>
-  <li>java
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/3423">#3423</a>: [java] Error processing identifiers with Unicode</li>
-    </ul>
-  </li>
-  <li>java-bestpractices
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/3954">#3954</a>: [java] NPE in UseCollectionIsEmptyRule when .size() is called in a record</li>
-    </ul>
-  </li>
-  <li>java-design
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/3874">#3874</a>: [java] ImmutableField reports fields annotated with @Autowired (Spring) and @Mock (Mockito)</li>
-    </ul>
-  </li>
-  <li>java-errorprone
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/3096">#3096</a>: [java] EmptyStatementNotInLoop FP in 6.30.0 with IfStatement</li>
-    </ul>
-  </li>
-  <li>java-performance
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/3379">#3379</a>: [java] UseArraysAsList must ignore primitive arrays</li>
-      <li><a href="https://github.com/pmd/pmd/issues/3965">#3965</a>: [java] UseArraysAsList false positive with non-trivial loops</li>
-    </ul>
-  </li>
-  <li>javascript
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/2605">#2605</a>: [js] Support unicode characters</li>
-      <li><a href="https://github.com/pmd/pmd/issues/3948">#3948</a>: [js] Invalid operator error for method property in object literal</li>
-    </ul>
-  </li>
-  <li>python
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/2604">#2604</a>: [python] Support unicode identifiers</li>
-    </ul>
-  </li>
-</ul>
 
 <h3 id="api-changes">API Changes</h3>
 
-<h4 id="deprecated-ruleset-references">Deprecated ruleset references</h4>
-
-<p>Ruleset references with the following formats are now deprecated and will produce a warning
-when used on the CLI or in a ruleset XML file:</p>
-<ul>
-  <li><code class="language-plaintext highlighter-rouge">&lt;lang-name&gt;-&lt;ruleset-name&gt;</code>, eg <code class="language-plaintext highlighter-rouge">java-basic</code>, which resolves to <code class="language-plaintext highlighter-rouge">rulesets/java/basic.xml</code></li>
-  <li>the internal release number, eg <code class="language-plaintext highlighter-rouge">600</code>, which resolves to <code class="language-plaintext highlighter-rouge">rulesets/releases/600.xml</code></li>
-</ul>
-
-<p>Use the explicit forms of these references to be compatible with PMD 7.</p>
-
-<h4 id="deprecated-api">Deprecated API</h4>
-
-<ul>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.46.0/net/sourceforge/pmd/RuleSetReferenceId.html#toString()"><code>toString</code></a> is now deprecated. The format of this
- method will remain the same until PMD 7. The deprecation is intended to steer users
- away from relying on this format, as it may be changed in PMD 7.</li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.46.0/net/sourceforge/pmd/PMDConfiguration.html#getInputPaths()"><code>getInputPaths</code></a> and
-<a href="https://docs.pmd-code.org/apidocs/pmd-core/6.46.0/net/sourceforge/pmd/PMDConfiguration.html#setInputPaths(java.lang.String)"><code>setInputPaths</code></a> are now deprecated.
-A new set of methods have been added, which use lists and do not rely on comma splitting.</li>
-</ul>
-
-<h4 id="internal-api">Internal API</h4>
-
-<p>Those APIs are not intended to be used by clients, and will be hidden or removed with PMD 7.0.0.
-You can identify them with the <code class="language-plaintext highlighter-rouge">@InternalApi</code> annotation. You’ll also get a deprecation warning.</p>
-
-<ul>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.46.0/net/sourceforge/pmd/cpd/CPDCommandLineInterface.html#"><code>CPDCommandLineInterface</code></a> has been internalized. In order to execute CPD either
-<a href="https://docs.pmd-code.org/apidocs/pmd-core/6.46.0/net/sourceforge/pmd/cpd/CPD.html#run(java.lang.String...)"><code>CPD#run</code></a> or <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.46.0/net/sourceforge/pmd/cpd/CPD.html#main(java.lang.String[])"><code>CPD#main</code></a>
-should be used.</li>
-  <li>Several members of <a href="https://docs.pmd-code.org/apidocs/pmd-test/6.46.0/net/sourceforge/pmd/cli/BaseCPDCLITest.html#"><code>BaseCPDCLITest</code></a> have been deprecated with replacements.</li>
-  <li>The methods <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.46.0/net/sourceforge/pmd/ant/Formatter.html#start(java.lang.String)"><code>Formatter#start</code></a>,
-<a href="https://docs.pmd-code.org/apidocs/pmd-core/6.46.0/net/sourceforge/pmd/ant/Formatter.html#end(net.sourceforge.pmd.Report)"><code>Formatter#end</code></a>, <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.46.0/net/sourceforge/pmd/ant/Formatter.html#getRenderer()"><code>Formatter#getRenderer</code></a>,
-and <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.46.0/net/sourceforge/pmd/ant/Formatter.html#isNoOutputSupplied()"><code>Formatter#isNoOutputSupplied</code></a> have been internalized.</li>
-</ul>
-
 <h3 id="external-contributions">External Contributions</h3>
-
-<ul>
-  <li><a href="https://github.com/pmd/pmd/pull/3961">#3961</a>: [java] Fix #3954 - NPE in UseCollectionIsEmptyRule with record - <a href="https://github.com/flyhard">@flyhard</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/3964">#3964</a>: [java] Fix #3874 - ImmutableField: fix mockito/spring false positives - <a href="https://github.com/lukelukes">@lukelukes</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/3974">#3974</a>: [cs] Add option to ignore C# attributes (annotations) - <a href="https://github.com/maikelsteneker">@maikelsteneker</a></li>
-</ul>
-
-<h3 id="stats">Stats</h3>
-<ul>
-  <li>92 commits</li>
-  <li>30 closed tickets &amp; PRs</li>
-  <li>Days since last release: 28</li>
-</ul>
 
 
 
