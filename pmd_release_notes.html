@@ -174,7 +174,7 @@
 
 
 <ul id="mysidebar" class="nav">
-    <li class="sidebarTitle">PMD 6.46.0-SNAPSHOT</li>
+    <li class="sidebarTitle">PMD 6.46.0</li>
     <div class="sidebarTitleDate">Release date: 28-May-2022</div>
     
     
@@ -1512,9 +1512,9 @@
    
     <div id="inline-toc"><!-- empty, move TOC here when screen size too small --></div>
     
-  <h2 id="28-may-2022---6460-snapshot">28-May-2022 - 6.46.0-SNAPSHOT</h2>
+  <h2 id="28-may-2022---6460">28-May-2022 - 6.46.0</h2>
 
-<p>The PMD team is pleased to announce PMD 6.46.0-SNAPSHOT.</p>
+<p>The PMD team is pleased to announce PMD 6.46.0.</p>
 
 <p>This is a minor release.</p>
 
@@ -1681,11 +1681,11 @@ when used on the CLI or in a ruleset XML file:</p>
 <h4 id="deprecated-api">Deprecated API</h4>
 
 <ul>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.46.0-SNAPSHOT/net/sourceforge/pmd/RuleSetReferenceId.html#toString()"><code>toString</code></a> is now deprecated. The format of this
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.46.0/net/sourceforge/pmd/RuleSetReferenceId.html#toString()"><code>toString</code></a> is now deprecated. The format of this
  method will remain the same until PMD 7. The deprecation is intended to steer users
  away from relying on this format, as it may be changed in PMD 7.</li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.46.0-SNAPSHOT/net/sourceforge/pmd/PMDConfiguration.html#getInputPaths()"><code>getInputPaths</code></a> and
-<a href="https://docs.pmd-code.org/apidocs/pmd-core/6.46.0-SNAPSHOT/net/sourceforge/pmd/PMDConfiguration.html#setInputPaths(java.lang.String)"><code>setInputPaths</code></a> are now deprecated.
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.46.0/net/sourceforge/pmd/PMDConfiguration.html#getInputPaths()"><code>getInputPaths</code></a> and
+<a href="https://docs.pmd-code.org/apidocs/pmd-core/6.46.0/net/sourceforge/pmd/PMDConfiguration.html#setInputPaths(java.lang.String)"><code>setInputPaths</code></a> are now deprecated.
 A new set of methods have been added, which use lists and do not rely on comma splitting.</li>
 </ul>
 
@@ -1695,13 +1695,13 @@ A new set of methods have been added, which use lists and do not rely on comma s
 You can identify them with the <code class="language-plaintext highlighter-rouge">@InternalApi</code> annotation. You’ll also get a deprecation warning.</p>
 
 <ul>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.46.0-SNAPSHOT/net/sourceforge/pmd/cpd/CPDCommandLineInterface.html#"><code>CPDCommandLineInterface</code></a> has been internalized. In order to execute CPD either
-<a href="https://docs.pmd-code.org/apidocs/pmd-core/6.46.0-SNAPSHOT/net/sourceforge/pmd/cpd/CPD.html#run(java.lang.String...)"><code>CPD#run</code></a> or <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.46.0-SNAPSHOT/net/sourceforge/pmd/cpd/CPD.html#main(java.lang.String[])"><code>CPD#main</code></a>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.46.0/net/sourceforge/pmd/cpd/CPDCommandLineInterface.html#"><code>CPDCommandLineInterface</code></a> has been internalized. In order to execute CPD either
+<a href="https://docs.pmd-code.org/apidocs/pmd-core/6.46.0/net/sourceforge/pmd/cpd/CPD.html#run(java.lang.String...)"><code>CPD#run</code></a> or <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.46.0/net/sourceforge/pmd/cpd/CPD.html#main(java.lang.String[])"><code>CPD#main</code></a>
 should be used.</li>
-  <li>Several members of <a href="https://docs.pmd-code.org/apidocs/pmd-test/6.46.0-SNAPSHOT/net/sourceforge/pmd/cli/BaseCPDCLITest.html#"><code>BaseCPDCLITest</code></a> have been deprecated with replacements.</li>
-  <li>The methods <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.46.0-SNAPSHOT/net/sourceforge/pmd/ant/Formatter.html#start(java.lang.String)"><code>Formatter#start</code></a>,
-<a href="https://docs.pmd-code.org/apidocs/pmd-core/6.46.0-SNAPSHOT/net/sourceforge/pmd/ant/Formatter.html#end(net.sourceforge.pmd.Report)"><code>Formatter#end</code></a>, <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.46.0-SNAPSHOT/net/sourceforge/pmd/ant/Formatter.html#getRenderer()"><code>Formatter#getRenderer</code></a>,
-and <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.46.0-SNAPSHOT/net/sourceforge/pmd/ant/Formatter.html#isNoOutputSupplied()"><code>Formatter#isNoOutputSupplied</code></a> have been internalized.</li>
+  <li>Several members of <a href="https://docs.pmd-code.org/apidocs/pmd-test/6.46.0/net/sourceforge/pmd/cli/BaseCPDCLITest.html#"><code>BaseCPDCLITest</code></a> have been deprecated with replacements.</li>
+  <li>The methods <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.46.0/net/sourceforge/pmd/ant/Formatter.html#start(java.lang.String)"><code>Formatter#start</code></a>,
+<a href="https://docs.pmd-code.org/apidocs/pmd-core/6.46.0/net/sourceforge/pmd/ant/Formatter.html#end(net.sourceforge.pmd.Report)"><code>Formatter#end</code></a>, <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.46.0/net/sourceforge/pmd/ant/Formatter.html#getRenderer()"><code>Formatter#getRenderer</code></a>,
+and <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.46.0/net/sourceforge/pmd/ant/Formatter.html#isNoOutputSupplied()"><code>Formatter#isNoOutputSupplied</code></a> have been internalized.</li>
 </ul>
 
 <h3 id="external-contributions">External Contributions</h3>
@@ -1710,6 +1710,13 @@ and <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.46.0-SNAPSHOT/net/sour
   <li><a href="https://github.com/pmd/pmd/pull/3961">#3961</a>: [java] Fix #3954 - NPE in UseCollectionIsEmptyRule with record - <a href="https://github.com/flyhard">@flyhard</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/3964">#3964</a>: [java] Fix #3874 - ImmutableField: fix mockito/spring false positives - <a href="https://github.com/lukelukes">@lukelukes</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/3974">#3974</a>: [cs] Add option to ignore C# attributes (annotations) - <a href="https://github.com/maikelsteneker">@maikelsteneker</a></li>
+</ul>
+
+<h3 id="stats">Stats</h3>
+<ul>
+  <li>92 commits</li>
+  <li>30 closed tickets &amp; PRs</li>
+  <li>Days since last release: 28</li>
 </ul>
 
 
