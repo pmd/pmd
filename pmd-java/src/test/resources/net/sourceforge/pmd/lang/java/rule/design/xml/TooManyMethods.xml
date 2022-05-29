@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <test-data
-    xmlns="http://pmd.sourceforge.net/rule-tests"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+        xmlns="http://pmd.sourceforge.net/rule-tests"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
 
     <test-code>
         <description>Less than 10 methods.</description>
@@ -110,6 +110,40 @@ public class OuterClass {
         @Override
         public void method7() {}
     }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#3729 TooManyMethods ignores "real" methods which are named like getters or setters</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void setMethod1(){int a = 1;a++;}
+    public void setMethod2(){int a = 1;a++;}
+    public void setMethod3(){int a = 1;a++;}
+    public void setMethod4(){int a = 1;a++;}
+    public void setMethod5(){int a = 1;a++;}
+
+    public void getMethod6(){int a = 1;a++;}
+    public void getMethod7(){int a = 1;a++;}
+    public void getMethod8(){int a = 1;a++;}
+    public void getMethod9(){int a = 1;a++;}
+    public void getMethod10(){int a = 1;a++;}
+
+    public boolean isMethod11(){int a = 1;a++;}
+    public boolean isMethod12(){int a = 1;a++;}
+    public boolean isMethod13(){int a = 1;a++;}
+    public boolean isMethod14(){int a = 1;a++;}
+    public boolean isMethod15(){int a = 1;a++;}
+    public boolean isMethod16(){int a = 1;a++;}
+
+    public void method17(){}
+    public void method18(){}
+    public void method19(){}
+    public void method20(){}
+    public void method21(){}
+    public void method22(){}
 }
         ]]></code>
     </test-code>
