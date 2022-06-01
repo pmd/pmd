@@ -1709,7 +1709,7 @@ complexity and find a way to have more fine grained objects.
                 or
                 starts-with(@Name,'is')
          and (
-                count(../Block/BlockStatement)==1)
+                count(../Block/BlockStatement)<=1)
 
             )
       ]) > $maxmethods
