@@ -1067,6 +1067,7 @@
         <module>pmd-dart</module>
         <module>pmd-dist</module>
         <module>pmd-fortran</module>
+        <module>pmd-gherkin</module>
         <module>pmd-go</module>
         <module>pmd-groovy</module>
         <module>pmd-lua</module>
