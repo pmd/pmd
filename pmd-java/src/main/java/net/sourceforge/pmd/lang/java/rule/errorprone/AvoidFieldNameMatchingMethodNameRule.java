@@ -14,7 +14,6 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBody;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumBody;
-import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
@@ -31,36 +30,39 @@ public class AvoidFieldNameMatchingMethodNameRule extends AbstractJavaRule {
     }
 
     @Override
-    public Object visit(ASTEnumDeclaration node, Object data) {
+    public Object visit(ASTClassOrInterfaceBody node, Object data) {
+        handleClassOrEnum(node, data);
         return super.visit(node, data);
     }
 
     @Override
-    public Object visit(JavaNode node, Object data) {
-        if (node instanceof ASTClassOrInterfaceBody || node instanceof ASTEnumBody) {
-            int n = node.getNumChildren();
-            List<ASTFieldDeclaration> fields = new ArrayList<>();
-            Set<String> methodNames = new HashSet<>();
-            for (int i = 0; i < n; i++) {
-                Node child = node.getChild(i);
-                if (child.getNumChildren() == 0) {
-                    continue;
-                }
-                child = child.getChild(child.getNumChildren() - 1);
-                if (child instanceof ASTFieldDeclaration) {
-                    fields.add((ASTFieldDeclaration) child);
-                } else if (child instanceof ASTMethodDeclaration) {
-                    methodNames.add(((ASTMethodDeclaration) child).getName().toLowerCase(Locale.ROOT));
-                }
-            }
-            for (ASTFieldDeclaration field : fields) {
-                String varName = field.getVariableName().toLowerCase(Locale.ROOT);
-                if (methodNames.contains(varName)) {
-                    addViolation(data, field, field.getVariableName());
-                }
-            }
-            return super.visit(node, data);
-        }
+    public Object visit(ASTEnumBody node, Object data) {
+        handleClassOrEnum(node, data);
         return super.visit(node, data);
     }
+
+    private void handleClassOrEnum(JavaNode node, Object data) {
+        int n = node.getNumChildren();
+        List<ASTFieldDeclaration> fields = new ArrayList<>();
+        Set<String> methodNames = new HashSet<>();
+        for (int i = 0; i < n; i++) {
+            Node child = node.getChild(i);
+            if (child.getNumChildren() == 0) {
+                continue;
+            }
+            child = child.getChild(child.getNumChildren() - 1);
+            if (child instanceof ASTFieldDeclaration) {
+                fields.add((ASTFieldDeclaration) child);
+            } else if (child instanceof ASTMethodDeclaration) {
+                methodNames.add(((ASTMethodDeclaration) child).getName().toLowerCase(Locale.ROOT));
+            }
+        }
+        for (ASTFieldDeclaration field : fields) {
+            String varName = field.getVariableName().toLowerCase(Locale.ROOT);
+            if (methodNames.contains(varName)) {
+                addViolation(data, field, field.getVariableName());
+            }
+        }
+    }
+
 }

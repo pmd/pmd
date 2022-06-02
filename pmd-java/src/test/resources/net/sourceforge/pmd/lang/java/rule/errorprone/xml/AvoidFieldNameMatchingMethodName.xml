@@ -65,7 +65,7 @@ public interface Bar {
     </test-code>
 
     <test-code>
-        <description>Test1 in Enum</description>
+        <description>Test1 in Enum #3936</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class C {
@@ -79,7 +79,7 @@ public class C {
     </test-code>
 
     <test-code>
-        <description>Test2 in Enum</description>
+        <description>Test2 in Enum #3936</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class C {
@@ -93,7 +93,7 @@ public class C {
     </test-code>
 
     <test-code>
-        <description>Test3 in Enum</description>
+        <description>Test3 in Enum #3936</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class C {
