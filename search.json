@@ -136,62 +136,6 @@
 
 
 {
-"title": "Best Practices (Java Server Pages, Best Practices)",
-"tags": "",
-"keywords": "Best Practices",
-"url": "pmd_rules_jsp_bestpractices.html#best practices",
-"summary": "Rules which enforce generally accepted best practices."
-}
-,
-
-{
-"title": "DontNestJsfInJstlIteration (Java Server Pages, Best Practices)",
-"tags": "",
-"keywords": "DontNestJsfInJstlIteration",
-"url": "pmd_rules_jsp_bestpractices.html#dontnestjsfinjstliteration",
-"summary": "Rules which enforce generally accepted best practices."
-}
-,
-
-{
-"title": "NoClassAttribute (Java Server Pages, Best Practices)",
-"tags": "",
-"keywords": "NoClassAttribute",
-"url": "pmd_rules_jsp_bestpractices.html#noclassattribute",
-"summary": "Rules which enforce generally accepted best practices."
-}
-,
-
-{
-"title": "NoHtmlComments (Java Server Pages, Best Practices)",
-"tags": "",
-"keywords": "NoHtmlComments",
-"url": "pmd_rules_jsp_bestpractices.html#nohtmlcomments",
-"summary": "Rules which enforce generally accepted best practices."
-}
-,
-
-{
-"title": "NoJspForward (Java Server Pages, Best Practices)",
-"tags": "",
-"keywords": "NoJspForward",
-"url": "pmd_rules_jsp_bestpractices.html#nojspforward",
-"summary": "Rules which enforce generally accepted best practices."
-}
-
-
-
-
-
-,
-
-
-
-
-
-
-
-{
 "title": "Best Practices (Java, Best Practices)",
 "tags": "",
 "keywords": "Best Practices",
@@ -801,120 +745,46 @@
 
 
 {
-"title": "Best Practices (VM, Best Practices)",
+"title": "Best Practices (Java Server Pages, Best Practices)",
 "tags": "",
 "keywords": "Best Practices",
-"url": "pmd_rules_vm_bestpractices.html#best practices",
+"url": "pmd_rules_jsp_bestpractices.html#best practices",
 "summary": "Rules which enforce generally accepted best practices."
 }
 ,
 
 {
-"title": "AvoidReassigningParameters (VM, Best Practices)",
+"title": "DontNestJsfInJstlIteration (Java Server Pages, Best Practices)",
 "tags": "",
-"keywords": "AvoidReassigningParameters",
-"url": "pmd_rules_vm_bestpractices.html#avoidreassigningparameters",
+"keywords": "DontNestJsfInJstlIteration",
+"url": "pmd_rules_jsp_bestpractices.html#dontnestjsfinjstliteration",
 "summary": "Rules which enforce generally accepted best practices."
 }
 ,
 
 {
-"title": "UnusedMacroParameter (VM, Best Practices)",
+"title": "NoClassAttribute (Java Server Pages, Best Practices)",
 "tags": "",
-"keywords": "UnusedMacroParameter",
-"url": "pmd_rules_vm_bestpractices.html#unusedmacroparameter",
-"summary": "Rules which enforce generally accepted best practices."
-}
-
-
-
-
-
-,
-
-
-
-
-
-
-
-{
-"title": "Best Practices (Apex, Best Practices)",
-"tags": "",
-"keywords": "Best Practices",
-"url": "pmd_rules_apex_bestpractices.html#best practices",
+"keywords": "NoClassAttribute",
+"url": "pmd_rules_jsp_bestpractices.html#noclassattribute",
 "summary": "Rules which enforce generally accepted best practices."
 }
 ,
 
 {
-"title": "ApexAssertionsShouldIncludeMessage (Apex, Best Practices)",
+"title": "NoHtmlComments (Java Server Pages, Best Practices)",
 "tags": "",
-"keywords": "ApexAssertionsShouldIncludeMessage",
-"url": "pmd_rules_apex_bestpractices.html#apexassertionsshouldincludemessage",
+"keywords": "NoHtmlComments",
+"url": "pmd_rules_jsp_bestpractices.html#nohtmlcomments",
 "summary": "Rules which enforce generally accepted best practices."
 }
 ,
 
 {
-"title": "ApexUnitTestClassShouldHaveAsserts (Apex, Best Practices)",
+"title": "NoJspForward (Java Server Pages, Best Practices)",
 "tags": "",
-"keywords": "ApexUnitTestClassShouldHaveAsserts",
-"url": "pmd_rules_apex_bestpractices.html#apexunittestclassshouldhaveasserts",
-"summary": "Rules which enforce generally accepted best practices."
-}
-,
-
-{
-"title": "ApexUnitTestMethodShouldHaveIsTestAnnotation (Apex, Best Practices)",
-"tags": "",
-"keywords": "ApexUnitTestMethodShouldHaveIsTestAnnotation",
-"url": "pmd_rules_apex_bestpractices.html#apexunittestmethodshouldhaveistestannotation",
-"summary": "Rules which enforce generally accepted best practices."
-}
-,
-
-{
-"title": "ApexUnitTestShouldNotUseSeeAllDataTrue (Apex, Best Practices)",
-"tags": "",
-"keywords": "ApexUnitTestShouldNotUseSeeAllDataTrue",
-"url": "pmd_rules_apex_bestpractices.html#apexunittestshouldnotuseseealldatatrue",
-"summary": "Rules which enforce generally accepted best practices."
-}
-,
-
-{
-"title": "AvoidGlobalModifier (Apex, Best Practices)",
-"tags": "",
-"keywords": "AvoidGlobalModifier",
-"url": "pmd_rules_apex_bestpractices.html#avoidglobalmodifier",
-"summary": "Rules which enforce generally accepted best practices."
-}
-,
-
-{
-"title": "AvoidLogicInTrigger (Apex, Best Practices)",
-"tags": "",
-"keywords": "AvoidLogicInTrigger",
-"url": "pmd_rules_apex_bestpractices.html#avoidlogicintrigger",
-"summary": "Rules which enforce generally accepted best practices."
-}
-,
-
-{
-"title": "DebugsShouldUseLoggingLevel (Apex, Best Practices)",
-"tags": "",
-"keywords": "DebugsShouldUseLoggingLevel",
-"url": "pmd_rules_apex_bestpractices.html#debugsshoulduselogginglevel",
-"summary": "Rules which enforce generally accepted best practices."
-}
-,
-
-{
-"title": "UnusedLocalVariable (Apex, Best Practices)",
-"tags": "",
-"keywords": "UnusedLocalVariable",
-"url": "pmd_rules_apex_bestpractices.html#unusedlocalvariable",
+"keywords": "NoJspForward",
+"url": "pmd_rules_jsp_bestpractices.html#nojspforward",
 "summary": "Rules which enforce generally accepted best practices."
 }
 
@@ -1040,6 +910,136 @@
 
 
 
+
+
+{
+"title": "Best Practices (Apex, Best Practices)",
+"tags": "",
+"keywords": "Best Practices",
+"url": "pmd_rules_apex_bestpractices.html#best practices",
+"summary": "Rules which enforce generally accepted best practices."
+}
+,
+
+{
+"title": "ApexAssertionsShouldIncludeMessage (Apex, Best Practices)",
+"tags": "",
+"keywords": "ApexAssertionsShouldIncludeMessage",
+"url": "pmd_rules_apex_bestpractices.html#apexassertionsshouldincludemessage",
+"summary": "Rules which enforce generally accepted best practices."
+}
+,
+
+{
+"title": "ApexUnitTestClassShouldHaveAsserts (Apex, Best Practices)",
+"tags": "",
+"keywords": "ApexUnitTestClassShouldHaveAsserts",
+"url": "pmd_rules_apex_bestpractices.html#apexunittestclassshouldhaveasserts",
+"summary": "Rules which enforce generally accepted best practices."
+}
+,
+
+{
+"title": "ApexUnitTestMethodShouldHaveIsTestAnnotation (Apex, Best Practices)",
+"tags": "",
+"keywords": "ApexUnitTestMethodShouldHaveIsTestAnnotation",
+"url": "pmd_rules_apex_bestpractices.html#apexunittestmethodshouldhaveistestannotation",
+"summary": "Rules which enforce generally accepted best practices."
+}
+,
+
+{
+"title": "ApexUnitTestShouldNotUseSeeAllDataTrue (Apex, Best Practices)",
+"tags": "",
+"keywords": "ApexUnitTestShouldNotUseSeeAllDataTrue",
+"url": "pmd_rules_apex_bestpractices.html#apexunittestshouldnotuseseealldatatrue",
+"summary": "Rules which enforce generally accepted best practices."
+}
+,
+
+{
+"title": "AvoidGlobalModifier (Apex, Best Practices)",
+"tags": "",
+"keywords": "AvoidGlobalModifier",
+"url": "pmd_rules_apex_bestpractices.html#avoidglobalmodifier",
+"summary": "Rules which enforce generally accepted best practices."
+}
+,
+
+{
+"title": "AvoidLogicInTrigger (Apex, Best Practices)",
+"tags": "",
+"keywords": "AvoidLogicInTrigger",
+"url": "pmd_rules_apex_bestpractices.html#avoidlogicintrigger",
+"summary": "Rules which enforce generally accepted best practices."
+}
+,
+
+{
+"title": "DebugsShouldUseLoggingLevel (Apex, Best Practices)",
+"tags": "",
+"keywords": "DebugsShouldUseLoggingLevel",
+"url": "pmd_rules_apex_bestpractices.html#debugsshoulduselogginglevel",
+"summary": "Rules which enforce generally accepted best practices."
+}
+,
+
+{
+"title": "UnusedLocalVariable (Apex, Best Practices)",
+"tags": "",
+"keywords": "UnusedLocalVariable",
+"url": "pmd_rules_apex_bestpractices.html#unusedlocalvariable",
+"summary": "Rules which enforce generally accepted best practices."
+}
+
+
+
+
+
+,
+
+
+
+
+
+
+
+{
+"title": "Best Practices (VM, Best Practices)",
+"tags": "",
+"keywords": "Best Practices",
+"url": "pmd_rules_vm_bestpractices.html#best practices",
+"summary": "Rules which enforce generally accepted best practices."
+}
+,
+
+{
+"title": "AvoidReassigningParameters (VM, Best Practices)",
+"tags": "",
+"keywords": "AvoidReassigningParameters",
+"url": "pmd_rules_vm_bestpractices.html#avoidreassigningparameters",
+"summary": "Rules which enforce generally accepted best practices."
+}
+,
+
+{
+"title": "UnusedMacroParameter (VM, Best Practices)",
+"tags": "",
+"keywords": "UnusedMacroParameter",
+"url": "pmd_rules_vm_bestpractices.html#unusedmacroparameter",
+"summary": "Rules which enforce generally accepted best practices."
+}
+
+
+
+
+
+,
+
+
+
+
+
 {
 "title": "Building PMD from source",
 "tags": "devdocs",
@@ -1079,35 +1079,6 @@
 "url": "pmd_userdocs_cli_reference.html",
 "summary": "Full reference for PMD's command-line interface, including options, output formats and supported languages"
 }
-
-
-
-,
-
-
-
-
-
-
-
-{
-"title": "Code Style (Java Server Pages, Code Style)",
-"tags": "",
-"keywords": "Code Style",
-"url": "pmd_rules_jsp_codestyle.html#code style",
-"summary": "Rules which enforce a specific coding style."
-}
-,
-
-{
-"title": "DuplicateJspImports (Java Server Pages, Code Style)",
-"tags": "",
-"keywords": "DuplicateJspImports",
-"url": "pmd_rules_jsp_codestyle.html#duplicatejspimports",
-"summary": "Rules which enforce a specific coding style."
-}
-
-
 
 
 
@@ -1808,19 +1779,120 @@
 
 
 {
-"title": "Code Style (XSL, Code Style)",
+"title": "Code Style (Java Server Pages, Code Style)",
 "tags": "",
 "keywords": "Code Style",
-"url": "pmd_rules_xsl_codestyle.html#code style",
+"url": "pmd_rules_jsp_codestyle.html#code style",
 "summary": "Rules which enforce a specific coding style."
 }
 ,
 
 {
-"title": "UseConcatOnce (XSL, Code Style)",
+"title": "DuplicateJspImports (Java Server Pages, Code Style)",
 "tags": "",
-"keywords": "UseConcatOnce",
-"url": "pmd_rules_xsl_codestyle.html#useconcatonce",
+"keywords": "DuplicateJspImports",
+"url": "pmd_rules_jsp_codestyle.html#duplicatejspimports",
+"summary": "Rules which enforce a specific coding style."
+}
+
+
+
+
+
+,
+
+
+
+
+
+
+
+{
+"title": "Code Style (Ecmascript, Code Style)",
+"tags": "",
+"keywords": "Code Style",
+"url": "pmd_rules_ecmascript_codestyle.html#code style",
+"summary": "Rules which enforce a specific coding style."
+}
+,
+
+{
+"title": "AssignmentInOperand (Ecmascript, Code Style)",
+"tags": "",
+"keywords": "AssignmentInOperand",
+"url": "pmd_rules_ecmascript_codestyle.html#assignmentinoperand",
+"summary": "Rules which enforce a specific coding style."
+}
+,
+
+{
+"title": "ForLoopsMustUseBraces (Ecmascript, Code Style)",
+"tags": "",
+"keywords": "ForLoopsMustUseBraces",
+"url": "pmd_rules_ecmascript_codestyle.html#forloopsmustusebraces",
+"summary": "Rules which enforce a specific coding style."
+}
+,
+
+{
+"title": "IfElseStmtsMustUseBraces (Ecmascript, Code Style)",
+"tags": "",
+"keywords": "IfElseStmtsMustUseBraces",
+"url": "pmd_rules_ecmascript_codestyle.html#ifelsestmtsmustusebraces",
+"summary": "Rules which enforce a specific coding style."
+}
+,
+
+{
+"title": "IfStmtsMustUseBraces (Ecmascript, Code Style)",
+"tags": "",
+"keywords": "IfStmtsMustUseBraces",
+"url": "pmd_rules_ecmascript_codestyle.html#ifstmtsmustusebraces",
+"summary": "Rules which enforce a specific coding style."
+}
+,
+
+{
+"title": "NoElseReturn (Ecmascript, Code Style)",
+"tags": "",
+"keywords": "NoElseReturn",
+"url": "pmd_rules_ecmascript_codestyle.html#noelsereturn",
+"summary": "Rules which enforce a specific coding style."
+}
+,
+
+{
+"title": "UnnecessaryBlock (Ecmascript, Code Style)",
+"tags": "",
+"keywords": "UnnecessaryBlock",
+"url": "pmd_rules_ecmascript_codestyle.html#unnecessaryblock",
+"summary": "Rules which enforce a specific coding style."
+}
+,
+
+{
+"title": "UnnecessaryParentheses (Ecmascript, Code Style)",
+"tags": "",
+"keywords": "UnnecessaryParentheses",
+"url": "pmd_rules_ecmascript_codestyle.html#unnecessaryparentheses",
+"summary": "Rules which enforce a specific coding style."
+}
+,
+
+{
+"title": "UnreachableCode (Ecmascript, Code Style)",
+"tags": "",
+"keywords": "UnreachableCode",
+"url": "pmd_rules_ecmascript_codestyle.html#unreachablecode",
+"summary": "Rules which enforce a specific coding style."
+}
+,
+
+{
+"title": "WhileLoopsMustUseBraces (Ecmascript, Code Style)",
+"tags": "",
+"keywords": "WhileLoopsMustUseBraces",
+"url": "pmd_rules_ecmascript_codestyle.html#whileloopsmustusebraces",
 "summary": "Rules which enforce a specific coding style."
 }
 
@@ -1974,91 +2046,19 @@
 
 
 {
-"title": "Code Style (Ecmascript, Code Style)",
+"title": "Code Style (XSL, Code Style)",
 "tags": "",
 "keywords": "Code Style",
-"url": "pmd_rules_ecmascript_codestyle.html#code style",
+"url": "pmd_rules_xsl_codestyle.html#code style",
 "summary": "Rules which enforce a specific coding style."
 }
 ,
 
 {
-"title": "AssignmentInOperand (Ecmascript, Code Style)",
+"title": "UseConcatOnce (XSL, Code Style)",
 "tags": "",
-"keywords": "AssignmentInOperand",
-"url": "pmd_rules_ecmascript_codestyle.html#assignmentinoperand",
-"summary": "Rules which enforce a specific coding style."
-}
-,
-
-{
-"title": "ForLoopsMustUseBraces (Ecmascript, Code Style)",
-"tags": "",
-"keywords": "ForLoopsMustUseBraces",
-"url": "pmd_rules_ecmascript_codestyle.html#forloopsmustusebraces",
-"summary": "Rules which enforce a specific coding style."
-}
-,
-
-{
-"title": "IfElseStmtsMustUseBraces (Ecmascript, Code Style)",
-"tags": "",
-"keywords": "IfElseStmtsMustUseBraces",
-"url": "pmd_rules_ecmascript_codestyle.html#ifelsestmtsmustusebraces",
-"summary": "Rules which enforce a specific coding style."
-}
-,
-
-{
-"title": "IfStmtsMustUseBraces (Ecmascript, Code Style)",
-"tags": "",
-"keywords": "IfStmtsMustUseBraces",
-"url": "pmd_rules_ecmascript_codestyle.html#ifstmtsmustusebraces",
-"summary": "Rules which enforce a specific coding style."
-}
-,
-
-{
-"title": "NoElseReturn (Ecmascript, Code Style)",
-"tags": "",
-"keywords": "NoElseReturn",
-"url": "pmd_rules_ecmascript_codestyle.html#noelsereturn",
-"summary": "Rules which enforce a specific coding style."
-}
-,
-
-{
-"title": "UnnecessaryBlock (Ecmascript, Code Style)",
-"tags": "",
-"keywords": "UnnecessaryBlock",
-"url": "pmd_rules_ecmascript_codestyle.html#unnecessaryblock",
-"summary": "Rules which enforce a specific coding style."
-}
-,
-
-{
-"title": "UnnecessaryParentheses (Ecmascript, Code Style)",
-"tags": "",
-"keywords": "UnnecessaryParentheses",
-"url": "pmd_rules_ecmascript_codestyle.html#unnecessaryparentheses",
-"summary": "Rules which enforce a specific coding style."
-}
-,
-
-{
-"title": "UnreachableCode (Ecmascript, Code Style)",
-"tags": "",
-"keywords": "UnreachableCode",
-"url": "pmd_rules_ecmascript_codestyle.html#unreachablecode",
-"summary": "Rules which enforce a specific coding style."
-}
-,
-
-{
-"title": "WhileLoopsMustUseBraces (Ecmascript, Code Style)",
-"tags": "",
-"keywords": "WhileLoopsMustUseBraces",
-"url": "pmd_rules_ecmascript_codestyle.html#whileloopsmustusebraces",
+"keywords": "UseConcatOnce",
+"url": "pmd_rules_xsl_codestyle.html#useconcatonce",
 "summary": "Rules which enforce a specific coding style."
 }
 
@@ -2143,62 +2143,6 @@
 "url": "pmd_userdocs_extending_defining_properties.html",
 "summary": "Learn how to define your own properties both for Java and XPath rules."
 }
-
-
-
-,
-
-
-
-
-
-
-
-{
-"title": "Design (Java Server Pages, Design)",
-"tags": "",
-"keywords": "Design",
-"url": "pmd_rules_jsp_design.html#design",
-"summary": "Rules that help you discover design issues."
-}
-,
-
-{
-"title": "NoInlineScript (Java Server Pages, Design)",
-"tags": "",
-"keywords": "NoInlineScript",
-"url": "pmd_rules_jsp_design.html#noinlinescript",
-"summary": "Rules that help you discover design issues."
-}
-,
-
-{
-"title": "NoInlineStyleInformation (Java Server Pages, Design)",
-"tags": "",
-"keywords": "NoInlineStyleInformation",
-"url": "pmd_rules_jsp_design.html#noinlinestyleinformation",
-"summary": "Rules that help you discover design issues."
-}
-,
-
-{
-"title": "NoLongScripts (Java Server Pages, Design)",
-"tags": "",
-"keywords": "NoLongScripts",
-"url": "pmd_rules_jsp_design.html#nolongscripts",
-"summary": "Rules that help you discover design issues."
-}
-,
-
-{
-"title": "NoScriptlets (Java Server Pages, Design)",
-"tags": "",
-"keywords": "NoScriptlets",
-"url": "pmd_rules_jsp_design.html#noscriptlets",
-"summary": "Rules that help you discover design issues."
-}
-
-
 
 
 
@@ -2791,55 +2735,46 @@
 
 
 {
-"title": "Design (VM, Design)",
+"title": "Design (Java Server Pages, Design)",
 "tags": "",
 "keywords": "Design",
-"url": "pmd_rules_vm_design.html#design",
+"url": "pmd_rules_jsp_design.html#design",
 "summary": "Rules that help you discover design issues."
 }
 ,
 
 {
-"title": "AvoidDeeplyNestedIfStmts (VM, Design)",
+"title": "NoInlineScript (Java Server Pages, Design)",
 "tags": "",
-"keywords": "AvoidDeeplyNestedIfStmts",
-"url": "pmd_rules_vm_design.html#avoiddeeplynestedifstmts",
+"keywords": "NoInlineScript",
+"url": "pmd_rules_jsp_design.html#noinlinescript",
 "summary": "Rules that help you discover design issues."
 }
 ,
 
 {
-"title": "CollapsibleIfStatements (VM, Design)",
+"title": "NoInlineStyleInformation (Java Server Pages, Design)",
 "tags": "",
-"keywords": "CollapsibleIfStatements",
-"url": "pmd_rules_vm_design.html#collapsibleifstatements",
+"keywords": "NoInlineStyleInformation",
+"url": "pmd_rules_jsp_design.html#noinlinestyleinformation",
 "summary": "Rules that help you discover design issues."
 }
 ,
 
 {
-"title": "ExcessiveTemplateLength (VM, Design)",
+"title": "NoLongScripts (Java Server Pages, Design)",
 "tags": "",
-"keywords": "ExcessiveTemplateLength",
-"url": "pmd_rules_vm_design.html#excessivetemplatelength",
+"keywords": "NoLongScripts",
+"url": "pmd_rules_jsp_design.html#nolongscripts",
 "summary": "Rules that help you discover design issues."
 }
 ,
 
 {
-"title": "NoInlineJavaScript (VM, Design)",
+"title": "NoScriptlets (Java Server Pages, Design)",
 "tags": "",
-"keywords": "NoInlineJavaScript",
-"url": "pmd_rules_vm_design.html#noinlinejavascript",
-"summary": "Rules that help you discover design issues."
-}
-,
-
-{
-"title": "NoInlineStyles (VM, Design)",
-"tags": "",
-"keywords": "NoInlineStyles",
-"url": "pmd_rules_vm_design.html#noinlinestyles",
+"keywords": "NoScriptlets",
+"url": "pmd_rules_jsp_design.html#noscriptlets",
 "summary": "Rules that help you discover design issues."
 }
 
@@ -2959,6 +2894,71 @@
 "tags": "",
 "keywords": "TooManyFields",
 "url": "pmd_rules_apex_design.html#toomanyfields",
+"summary": "Rules that help you discover design issues."
+}
+
+
+
+
+
+,
+
+
+
+
+
+
+
+{
+"title": "Design (VM, Design)",
+"tags": "",
+"keywords": "Design",
+"url": "pmd_rules_vm_design.html#design",
+"summary": "Rules that help you discover design issues."
+}
+,
+
+{
+"title": "AvoidDeeplyNestedIfStmts (VM, Design)",
+"tags": "",
+"keywords": "AvoidDeeplyNestedIfStmts",
+"url": "pmd_rules_vm_design.html#avoiddeeplynestedifstmts",
+"summary": "Rules that help you discover design issues."
+}
+,
+
+{
+"title": "CollapsibleIfStatements (VM, Design)",
+"tags": "",
+"keywords": "CollapsibleIfStatements",
+"url": "pmd_rules_vm_design.html#collapsibleifstatements",
+"summary": "Rules that help you discover design issues."
+}
+,
+
+{
+"title": "ExcessiveTemplateLength (VM, Design)",
+"tags": "",
+"keywords": "ExcessiveTemplateLength",
+"url": "pmd_rules_vm_design.html#excessivetemplatelength",
+"summary": "Rules that help you discover design issues."
+}
+,
+
+{
+"title": "NoInlineJavaScript (VM, Design)",
+"tags": "",
+"keywords": "NoInlineJavaScript",
+"url": "pmd_rules_vm_design.html#noinlinejavascript",
+"summary": "Rules that help you discover design issues."
+}
+,
+
+{
+"title": "NoInlineStyles (VM, Design)",
+"tags": "",
+"keywords": "NoInlineStyles",
+"url": "pmd_rules_vm_design.html#noinlinestyles",
 "summary": "Rules that help you discover design issues."
 }
 
@@ -3105,35 +3105,6 @@
 "url": "pmd_rules_ecmascript.html",
 "summary": "Index of all built-in rules available for Ecmascript"
 }
-
-
-
-,
-
-
-
-
-
-
-
-{
-"title": "Error Prone (Java Server Pages, Error Prone)",
-"tags": "",
-"keywords": "Error Prone",
-"url": "pmd_rules_jsp_errorprone.html#error prone",
-"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
-}
-,
-
-{
-"title": "JspEncoding (Java Server Pages, Error Prone)",
-"tags": "",
-"keywords": "JspEncoding",
-"url": "pmd_rules_jsp_errorprone.html#jspencoding",
-"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
-}
-
-
 
 
 
@@ -4140,73 +4111,6 @@
 
 
 {
-"title": "Error Prone (VM, Error Prone)",
-"tags": "",
-"keywords": "Error Prone",
-"url": "pmd_rules_vm_errorprone.html#error prone",
-"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
-}
-,
-
-{
-"title": "EmptyForeachStmt (VM, Error Prone)",
-"tags": "",
-"keywords": "EmptyForeachStmt",
-"url": "pmd_rules_vm_errorprone.html#emptyforeachstmt",
-"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
-}
-,
-
-{
-"title": "EmptyIfStmt (VM, Error Prone)",
-"tags": "",
-"keywords": "EmptyIfStmt",
-"url": "pmd_rules_vm_errorprone.html#emptyifstmt",
-"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
-}
-
-
-
-
-
-,
-
-
-
-
-
-
-
-{
-"title": "Error Prone (XML, Error Prone)",
-"tags": "",
-"keywords": "Error Prone",
-"url": "pmd_rules_xml_errorprone.html#error prone",
-"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
-}
-,
-
-{
-"title": "MistypedCDATASection (XML, Error Prone)",
-"tags": "",
-"keywords": "MistypedCDATASection",
-"url": "pmd_rules_xml_errorprone.html#mistypedcdatasection",
-"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
-}
-
-
-
-
-
-,
-
-
-
-
-
-
-
-{
 "title": "Error Prone (Maven POM, Error Prone)",
 "tags": "",
 "keywords": "Error Prone",
@@ -4229,6 +4133,82 @@
 "tags": "",
 "keywords": "ProjectVersionAsDependencyVersion",
 "url": "pmd_rules_pom_errorprone.html#projectversionasdependencyversion",
+"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
+}
+
+
+
+
+
+,
+
+
+
+
+
+
+
+{
+"title": "Error Prone (Java Server Pages, Error Prone)",
+"tags": "",
+"keywords": "Error Prone",
+"url": "pmd_rules_jsp_errorprone.html#error prone",
+"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
+}
+,
+
+{
+"title": "JspEncoding (Java Server Pages, Error Prone)",
+"tags": "",
+"keywords": "JspEncoding",
+"url": "pmd_rules_jsp_errorprone.html#jspencoding",
+"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
+}
+
+
+
+
+
+,
+
+
+
+
+
+
+
+{
+"title": "Error Prone (Ecmascript, Error Prone)",
+"tags": "",
+"keywords": "Error Prone",
+"url": "pmd_rules_ecmascript_errorprone.html#error prone",
+"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
+}
+,
+
+{
+"title": "AvoidTrailingComma (Ecmascript, Error Prone)",
+"tags": "",
+"keywords": "AvoidTrailingComma",
+"url": "pmd_rules_ecmascript_errorprone.html#avoidtrailingcomma",
+"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
+}
+,
+
+{
+"title": "EqualComparison (Ecmascript, Error Prone)",
+"tags": "",
+"keywords": "EqualComparison",
+"url": "pmd_rules_ecmascript_errorprone.html#equalcomparison",
+"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
+}
+,
+
+{
+"title": "InnaccurateNumericLiteral (Ecmascript, Error Prone)",
+"tags": "",
+"keywords": "InnaccurateNumericLiteral",
+"url": "pmd_rules_ecmascript_errorprone.html#innaccuratenumericliteral",
 "summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
 }
 
@@ -4382,37 +4362,57 @@
 
 
 {
-"title": "Error Prone (Ecmascript, Error Prone)",
+"title": "Error Prone (XML, Error Prone)",
 "tags": "",
 "keywords": "Error Prone",
-"url": "pmd_rules_ecmascript_errorprone.html#error prone",
+"url": "pmd_rules_xml_errorprone.html#error prone",
 "summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
 }
 ,
 
 {
-"title": "AvoidTrailingComma (Ecmascript, Error Prone)",
+"title": "MistypedCDATASection (XML, Error Prone)",
 "tags": "",
-"keywords": "AvoidTrailingComma",
-"url": "pmd_rules_ecmascript_errorprone.html#avoidtrailingcomma",
+"keywords": "MistypedCDATASection",
+"url": "pmd_rules_xml_errorprone.html#mistypedcdatasection",
+"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
+}
+
+
+
+
+
+,
+
+
+
+
+
+
+
+{
+"title": "Error Prone (VM, Error Prone)",
+"tags": "",
+"keywords": "Error Prone",
+"url": "pmd_rules_vm_errorprone.html#error prone",
 "summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
 }
 ,
 
 {
-"title": "EqualComparison (Ecmascript, Error Prone)",
+"title": "EmptyForeachStmt (VM, Error Prone)",
 "tags": "",
-"keywords": "EqualComparison",
-"url": "pmd_rules_ecmascript_errorprone.html#equalcomparison",
+"keywords": "EmptyForeachStmt",
+"url": "pmd_rules_vm_errorprone.html#emptyforeachstmt",
 "summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
 }
 ,
 
 {
-"title": "InnaccurateNumericLiteral (Ecmascript, Error Prone)",
+"title": "EmptyIfStmt (VM, Error Prone)",
 "tags": "",
-"keywords": "InnaccurateNumericLiteral",
-"url": "pmd_rules_ecmascript_errorprone.html#innaccuratenumericliteral",
+"keywords": "EmptyIfStmt",
+"url": "pmd_rules_vm_errorprone.html#emptyifstmt",
 "summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
 }
 
@@ -4493,11 +4493,11 @@
 
 
 {
-"title": "Processing HTML files",
-"tags": "",
+"title": "HTML Rules",
+"tags": "rule_referenceshtml",
 "keywords": "",
-"url": "pmd_languages_html.html",
-"summary": ""
+"url": "pmd_rules_html.html",
+"summary": "Index of all built-in rules available for HTML"
 }
 
 
@@ -4509,11 +4509,11 @@
 
 
 {
-"title": "HTML Rules",
-"tags": "rule_referenceshtml",
+"title": "Processing HTML files",
+"tags": "",
 "keywords": "",
-"url": "pmd_rules_html.html",
-"summary": "Index of all built-in rules available for HTML"
+"url": "pmd_languages_html.html",
+"summary": ""
 }
 
 
@@ -4605,11 +4605,11 @@
 
 
 {
-"title": "Supported Java Versions",
-"tags": "",
+"title": "Java Rules",
+"tags": "rule_referencesjava",
 "keywords": "",
-"url": "pmd_languages_java.html",
-"summary": ""
+"url": "pmd_rules_java.html",
+"summary": "Index of all built-in rules available for Java"
 }
 
 
@@ -4621,11 +4621,11 @@
 
 
 {
-"title": "Java Rules",
-"tags": "rule_referencesjava",
+"title": "Supported Java Versions",
+"tags": "",
 "keywords": "",
-"url": "pmd_rules_java.html",
-"summary": "Index of all built-in rules available for Java"
+"url": "pmd_languages_java.html",
+"summary": ""
 }
 
 
@@ -4653,11 +4653,11 @@
 
 
 {
-"title": "JSP Support",
-"tags": "",
+"title": "Java Server Pages Rules",
+"tags": "rule_referencesjsp",
 "keywords": "",
-"url": "pmd_languages_jsp.html",
-"summary": ""
+"url": "pmd_rules_jsp.html",
+"summary": "Index of all built-in rules available for Java Server Pages"
 }
 
 
@@ -4669,11 +4669,11 @@
 
 
 {
-"title": "Java Server Pages Rules",
-"tags": "rule_referencesjsp",
+"title": "JSP Support",
+"tags": "",
 "keywords": "",
-"url": "pmd_rules_jsp.html",
-"summary": "Index of all built-in rules available for Java Server Pages"
+"url": "pmd_languages_jsp.html",
+"summary": ""
 }
 
 
@@ -5322,35 +5322,6 @@
 
 
 {
-"title": "Performance (XSL, Performance)",
-"tags": "",
-"keywords": "Performance",
-"url": "pmd_rules_xsl_performance.html#performance",
-"summary": "Rules that flag suboptimal code."
-}
-,
-
-{
-"title": "AvoidAxisNavigation (XSL, Performance)",
-"tags": "",
-"keywords": "AvoidAxisNavigation",
-"url": "pmd_rules_xsl_performance.html#avoidaxisnavigation",
-"summary": "Rules that flag suboptimal code."
-}
-
-
-
-
-
-,
-
-
-
-
-
-
-
-{
 "title": "Performance (Apex, Performance)",
 "tags": "",
 "keywords": "Performance",
@@ -5422,13 +5393,26 @@
 
 
 
+
+
 {
-"title": "PLSQL",
+"title": "Performance (XSL, Performance)",
 "tags": "",
-"keywords": "",
-"url": "pmd_languages_plsql.html",
-"summary": ""
+"keywords": "Performance",
+"url": "pmd_rules_xsl_performance.html#performance",
+"summary": "Rules that flag suboptimal code."
 }
+,
+
+{
+"title": "AvoidAxisNavigation (XSL, Performance)",
+"tags": "",
+"keywords": "AvoidAxisNavigation",
+"url": "pmd_rules_xsl_performance.html#avoidaxisnavigation",
+"summary": "Rules that flag suboptimal code."
+}
+
+
 
 
 
@@ -5444,6 +5428,22 @@
 "keywords": "",
 "url": "pmd_rules_plsql.html",
 "summary": "Index of all built-in rules available for PLSQL"
+}
+
+
+
+,
+
+
+
+
+
+{
+"title": "PLSQL",
+"tags": "",
+"keywords": "",
+"url": "pmd_languages_plsql.html",
+"summary": ""
 }
 
 
@@ -5651,44 +5651,6 @@
 
 
 {
-"title": "Security (Java Server Pages, Security)",
-"tags": "",
-"keywords": "Security",
-"url": "pmd_rules_jsp_security.html#security",
-"summary": "Rules that flag potential security flaws."
-}
-,
-
-{
-"title": "IframeMissingSrcAttribute (Java Server Pages, Security)",
-"tags": "",
-"keywords": "IframeMissingSrcAttribute",
-"url": "pmd_rules_jsp_security.html#iframemissingsrcattribute",
-"summary": "Rules that flag potential security flaws."
-}
-,
-
-{
-"title": "NoUnsanitizedJSPExpression (Java Server Pages, Security)",
-"tags": "",
-"keywords": "NoUnsanitizedJSPExpression",
-"url": "pmd_rules_jsp_security.html#nounsanitizedjspexpression",
-"summary": "Rules that flag potential security flaws."
-}
-
-
-
-
-
-,
-
-
-
-
-
-
-
-{
 "title": "Security (Java, Security)",
 "tags": "",
 "keywords": "Security",
@@ -5711,6 +5673,91 @@
 "tags": "",
 "keywords": "InsecureCryptoIv",
 "url": "pmd_rules_java_security.html#insecurecryptoiv",
+"summary": "Rules that flag potential security flaws."
+}
+
+
+
+
+
+,
+
+
+
+
+
+
+
+{
+"title": "Security (Salesforce VisualForce, Security)",
+"tags": "",
+"keywords": "Security",
+"url": "pmd_rules_vf_security.html#security",
+"summary": "Rules that flag potential security flaws."
+}
+,
+
+{
+"title": "VfCsrf (Salesforce VisualForce, Security)",
+"tags": "",
+"keywords": "VfCsrf",
+"url": "pmd_rules_vf_security.html#vfcsrf",
+"summary": "Rules that flag potential security flaws."
+}
+,
+
+{
+"title": "VfHtmlStyleTagXss (Salesforce VisualForce, Security)",
+"tags": "",
+"keywords": "VfHtmlStyleTagXss",
+"url": "pmd_rules_vf_security.html#vfhtmlstyletagxss",
+"summary": "Rules that flag potential security flaws."
+}
+,
+
+{
+"title": "VfUnescapeEl (Salesforce VisualForce, Security)",
+"tags": "",
+"keywords": "VfUnescapeEl",
+"url": "pmd_rules_vf_security.html#vfunescapeel",
+"summary": "Rules that flag potential security flaws."
+}
+
+
+
+
+
+,
+
+
+
+
+
+
+
+{
+"title": "Security (Java Server Pages, Security)",
+"tags": "",
+"keywords": "Security",
+"url": "pmd_rules_jsp_security.html#security",
+"summary": "Rules that flag potential security flaws."
+}
+,
+
+{
+"title": "IframeMissingSrcAttribute (Java Server Pages, Security)",
+"tags": "",
+"keywords": "IframeMissingSrcAttribute",
+"url": "pmd_rules_jsp_security.html#iframemissingsrcattribute",
+"summary": "Rules that flag potential security flaws."
+}
+,
+
+{
+"title": "NoUnsanitizedJSPExpression (Java Server Pages, Security)",
+"tags": "",
+"keywords": "NoUnsanitizedJSPExpression",
+"url": "pmd_rules_jsp_security.html#nounsanitizedjspexpression",
 "summary": "Rules that flag potential security flaws."
 }
 
@@ -5830,53 +5877,6 @@
 "tags": "",
 "keywords": "ApexXSSFromURLParam",
 "url": "pmd_rules_apex_security.html#apexxssfromurlparam",
-"summary": "Rules that flag potential security flaws."
-}
-
-
-
-
-
-,
-
-
-
-
-
-
-
-{
-"title": "Security (Salesforce VisualForce, Security)",
-"tags": "",
-"keywords": "Security",
-"url": "pmd_rules_vf_security.html#security",
-"summary": "Rules that flag potential security flaws."
-}
-,
-
-{
-"title": "VfCsrf (Salesforce VisualForce, Security)",
-"tags": "",
-"keywords": "VfCsrf",
-"url": "pmd_rules_vf_security.html#vfcsrf",
-"summary": "Rules that flag potential security flaws."
-}
-,
-
-{
-"title": "VfHtmlStyleTagXss (Salesforce VisualForce, Security)",
-"tags": "",
-"keywords": "VfHtmlStyleTagXss",
-"url": "pmd_rules_vf_security.html#vfhtmlstyletagxss",
-"summary": "Rules that flag potential security flaws."
-}
-,
-
-{
-"title": "VfUnescapeEl (Salesforce VisualForce, Security)",
-"tags": "",
-"keywords": "VfUnescapeEl",
-"url": "pmd_rules_vf_security.html#vfunescapeel",
 "summary": "Rules that flag potential security flaws."
 }
 
@@ -6109,11 +6109,11 @@
 
 
 {
-"title": "Processing XML files",
-"tags": "",
+"title": "XML Rules",
+"tags": "rule_referencesxml",
 "keywords": "",
-"url": "pmd_languages_xml.html",
-"summary": ""
+"url": "pmd_rules_xml.html",
+"summary": "Index of all built-in rules available for XML"
 }
 
 
@@ -6125,11 +6125,11 @@
 
 
 {
-"title": "XML Rules",
-"tags": "rule_referencesxml",
+"title": "Processing XML files",
+"tags": "",
 "keywords": "",
-"url": "pmd_rules_xml.html",
-"summary": "Index of all built-in rules available for XML"
+"url": "pmd_languages_xml.html",
+"summary": ""
 }
 
 
