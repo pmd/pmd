@@ -603,4 +603,22 @@ class Baz {}
 class Foo2 {}
         ]]></code>
     </test-code>
+    <test-code>
+        <description>#3981 #3998 [java] ImmutableField reports fields annotated with @Value (Spring) and @Captor (Mockito)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.mockito.Captor;
+import org.mockito.ArgumentCaptor;
+import org.springframework.beans.factory.annotation.Value;
+
+public class ExampleImmutableField {
+
+    @Value("${property.value}")
+    private String bar2;
+
+    @Captor
+    private ArgumentCaptor<Object> baz2;
+}
+        ]]></code>
+    </test-code>
 </test-data>
