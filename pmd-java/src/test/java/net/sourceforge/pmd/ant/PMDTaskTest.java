@@ -9,14 +9,16 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 
-import org.apache.commons.io.FileUtils;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.contrib.java.lang.system.RestoreSystemProperties;
 import org.junit.rules.ExternalResource;
 import org.junit.rules.TestRule;
+
+import net.sourceforge.pmd.util.IOUtil;
 
 public class PMDTaskTest extends AbstractAntTestHelper {
 
@@ -132,7 +134,7 @@ public class PMDTaskTest extends AbstractAntTestHelper {
         setDefaultCharset("cp1252");
 
         executeTarget("testFormatterEncodingWithXML");
-        String report = FileUtils.readFileToString(currentTempFile(), "UTF-8");
+        String report = IOUtil.readFileToString(currentTempFile(), StandardCharsets.UTF_8);
         assertTrue(report.contains("someVariableWithÜmlaut"));
     }
 
