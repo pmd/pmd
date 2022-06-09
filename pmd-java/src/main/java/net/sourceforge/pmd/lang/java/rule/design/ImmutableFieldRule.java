@@ -46,9 +46,11 @@ public class ImmutableFieldRule extends AbstractJavaRulechainRule {
     private static final Set<String> INVALIDATING_FIELD_ANNOTS =
         setOf(
                 "lombok.Setter",
-                "org.mockito.Mock",
+                "org.mockito.Captor",
                 "org.mockito.InjectMocks",
+                "org.mockito.Mock",
                 "org.springframework.beans.factory.annotation.Autowired",
+                "org.springframework.beans.factory.annotation.Value",
                 "org.springframework.boot.test.mock.mockito.MockBean"
         );
 
