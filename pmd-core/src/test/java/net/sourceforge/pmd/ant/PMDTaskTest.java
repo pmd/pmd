@@ -15,7 +15,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class PMDTaskTest extends AbstractAntTest {
+class PMDTaskTest extends AbstractAntTest {
 
     @BeforeEach
     void setUp() {

@@ -15,7 +15,7 @@ import org.junit.jupiter.api.Test;
  * @author Romain Pelisse &lt;belaran@gmail.com&gt;
  *
  */
-public class CPDTaskTest extends AbstractAntTest {
+class CPDTaskTest extends AbstractAntTest {
 
     @BeforeEach
     void setUp() {

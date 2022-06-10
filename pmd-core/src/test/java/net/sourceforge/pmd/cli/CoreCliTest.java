@@ -8,10 +8,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.containsStringIgnoringCase;
 import static org.hamcrest.Matchers.not;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -21,48 +17,40 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 import org.apache.commons.io.IOUtils;
-import org.hamcrest.Matcher;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.contrib.java.lang.system.RestoreSystemProperties;
-import org.junit.contrib.java.lang.system.SystemErrRule;
-import org.junit.contrib.java.lang.system.SystemOutRule;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMD.StatusCode;
 import net.sourceforge.pmd.internal.Slf4jSimpleConfiguration;
 
+import com.github.stefanbirkner.systemlambda.SystemLambda;
+
 /**
  *
  */
-public class CoreCliTest {
+class CoreCliTest {
+
+    @TempDir
+    private Path tempDir;
 
     private static final String DUMMY_RULESET = "net/sourceforge/pmd/cli/FakeRuleset.xml";
     private static final String STRING_TO_REPLACE = "__should_be_replaced__";
 
-    @Rule
-    public TemporaryFolder tempDir = new TemporaryFolder();
-    // restoring system properties: -debug might change logging properties
-    // See Slf4jSimpleConfigurationForAnt and resetLogging
-    @Rule
-    public RestoreSystemProperties restoreSystemProperties = new RestoreSystemProperties();
-    @Rule
-    public final SystemOutRule outStreamCaptor = new SystemOutRule().muteForSuccessfulTests().enableLog();
-    @Rule
-    public final SystemErrRule errStreamCaptor = new SystemErrRule().muteForSuccessfulTests().enableLog();
+    private Path srcDir;
 
-    @AfterClass
-    public static void resetLogging() {
+    @AfterAll
+    static void resetLogging() {
+        // reset logging in case "--debug" changed the logging properties
+        // See also Slf4jSimpleConfigurationForAnt
         Slf4jSimpleConfiguration.reconfigureDefaultLogLevel(null);
     }
 
-    private Path srcDir;
-
-    @Before
-    public void setup() throws IOException {
+    @BeforeEach
+    void setup() throws IOException {
         // set current directory to wd
         Path root = tempRoot();
         System.setProperty("user.dir", root.toString());
@@ -74,85 +62,88 @@ public class CoreCliTest {
 
 
     @Test
-    public void testPreExistingReportFile() throws IOException {
+    void testPreExistingReportFile() throws Exception {
         Path reportFile = tempRoot().resolve("out/reportFile.txt");
         // now we create the file
         Files.createDirectories(reportFile.getParent());
         writeString(reportFile, STRING_TO_REPLACE);
 
-        assertTrue("Report file should exist", Files.exists(reportFile));
+        Assertions.assertTrue(Files.exists(reportFile), "Report file should exist");
 
-        runPmdSuccessfully("-no-cache", "-d", srcDir, "-R", DUMMY_RULESET, "-r", reportFile);
+        runPmdSuccessfully("--no-cache", "-d", srcDir, "-R", DUMMY_RULESET, "-r", reportFile);
 
-        assertNotEquals(readString(reportFile), STRING_TO_REPLACE);
+        Assertions.assertNotEquals(readString(reportFile), STRING_TO_REPLACE);
     }
 
     @Test
-    public void testPreExistingReportFileLongOption() throws IOException {
+    void testPreExistingReportFileLongOption() throws Exception {
         Path reportFile = tempRoot().resolve("out/reportFile.txt");
         // now we create the file
         Files.createDirectories(reportFile.getParent());
         writeString(reportFile, STRING_TO_REPLACE);
 
-        assertTrue("Report file should exist", Files.exists(reportFile));
+        Assertions.assertTrue(Files.exists(reportFile), "Report file should exist");
 
         runPmdSuccessfully("--no-cache", "--dir", srcDir, "--rulesets", DUMMY_RULESET, "--report-file", reportFile);
 
-        assertNotEquals("Report file should have been overwritten", readString(reportFile), STRING_TO_REPLACE);
+        Assertions.assertNotEquals("Report file should have been overwritten", readString(reportFile), STRING_TO_REPLACE);
     }
 
     @Test
-    public void testNonExistentReportFile() throws IOException {
+    void testNonExistentReportFile() throws Exception {
         Path reportFile = tempRoot().resolve("out/reportFile.txt");
 
-        assertFalse("Report file should not exist", Files.exists(reportFile));
+        Assertions.assertFalse(Files.exists(reportFile), "Report file should not exist");
 
         try {
-            runPmdSuccessfully("-no-cache", "-d", srcDir, "-R", DUMMY_RULESET, "-r", reportFile);
-            assertTrue("Report file should have been created", Files.exists(reportFile));
+            runPmdSuccessfully("--no-cache", "-d", srcDir, "-R", DUMMY_RULESET, "-r", reportFile);
+            Assertions.assertTrue(Files.exists(reportFile), "Report file should have been created");
         } finally {
             Files.deleteIfExists(reportFile);
         }
     }
 
     @Test
-    public void testNonExistentReportFileLongOption() {
+    void testNonExistentReportFileLongOption() throws Exception {
         Path reportFile = tempRoot().resolve("out/reportFile.txt");
 
-        assertFalse("Report file should not exist", Files.exists(reportFile));
+        Assertions.assertFalse(Files.exists(reportFile), "Report file should not exist");
 
         runPmdSuccessfully("--no-cache", "--dir", srcDir, "--rulesets", DUMMY_RULESET, "--report-file", reportFile);
 
-        assertTrue("Report file should have been created", Files.exists(reportFile));
+        Assertions.assertTrue(Files.exists(reportFile), "Report file should have been created");
     }
 
     @Test
-    public void testFileCollectionWithUnknownFiles() throws IOException {
+    void testFileCollectionWithUnknownFiles() throws Exception {
         Path reportFile = tempRoot().resolve("out/reportFile.txt");
         Files.createFile(srcDir.resolve("foo.not_analysable"));
-        assertFalse("Report file should not exist", Files.exists(reportFile));
+        Assertions.assertFalse(Files.exists(reportFile), "Report file should not exist");
 
-        runPmdSuccessfully("--no-cache", "--dir", srcDir, "--rulesets", DUMMY_RULESET, "--report-file", reportFile, "--debug");
+        // restoring system properties: --debug might change logging properties
+        SystemLambda.restoreSystemProperties(() -> {
+            runPmdSuccessfully("--no-cache", "--dir", srcDir, "--rulesets", DUMMY_RULESET, "--report-file", reportFile, "--debug");
+        });
 
-        assertTrue("Report file should have been created", Files.exists(reportFile));
+        Assertions.assertTrue(Files.exists(reportFile), "Report file should have been created");
         String reportText = IOUtils.toString(Files.newBufferedReader(reportFile, StandardCharsets.UTF_8));
         assertThat(reportText, not(containsStringIgnoringCase("error")));
     }
 
     @Test
-    public void testNonExistentReportFileDeprecatedOptions() {
+    void testNonExistentReportFileDeprecatedOptions() throws Exception {
         Path reportFile = tempRoot().resolve("out/reportFile.txt");
 
-        assertFalse("Report file should not exist", Files.exists(reportFile));
+        Assertions.assertFalse(Files.exists(reportFile), "Report file should not exist");
 
-        runPmdSuccessfully("-no-cache", "-dir", srcDir, "-rulesets", DUMMY_RULESET, "-reportfile", reportFile);
+        String log = runPmdSuccessfully("-no-cache", "-dir", srcDir, "-rulesets", DUMMY_RULESET, "-reportfile", reportFile);
 
-        assertTrue("Report file should have been created", Files.exists(reportFile));
-        assertTrue(errStreamCaptor.getLog().contains("Some deprecated options were used on the command-line, including -rulesets"));
-        assertTrue(errStreamCaptor.getLog().contains("Consider replacing it with --rulesets (or -R)"));
+        Assertions.assertTrue(Files.exists(reportFile), "Report file should have been created");
+        Assertions.assertTrue(log.contains("Some deprecated options were used on the command-line, including -rulesets"));
+        Assertions.assertTrue(log.contains("Consider replacing it with --rulesets (or -R)"));
         // only one parameter is logged
-        assertFalse(errStreamCaptor.getLog().contains("Some deprecated options were used on the command-line, including -reportfile"));
-        assertFalse(errStreamCaptor.getLog().contains("Consider replacing it with --report-file"));
+        Assertions.assertFalse(log.contains("Some deprecated options were used on the command-line, including -reportfile"));
+        Assertions.assertFalse(log.contains("Consider replacing it with --report-file"));
     }
 
     /**
@@ -163,73 +154,74 @@ public class CoreCliTest {
      * and makes sure to cleanup the file afterwards.
      */
     @Test
-    public void testRelativeReportFile() throws IOException {
+    void testRelativeReportFile() throws Exception {
         String reportFile = "reportFile.txt";
         Path absoluteReportFile = FileSystems.getDefault().getPath(reportFile).toAbsolutePath();
         // verify the file doesn't exist yet - we will delete the file at the end!
-        assertFalse("Report file must not exist yet!", Files.exists(absoluteReportFile));
+        Assertions.assertFalse(Files.exists(absoluteReportFile), "Report file must not exist yet!");
 
         try {
-            runPmdSuccessfully("-no-cache", "-d", srcDir, "-R", DUMMY_RULESET, "-r", reportFile);
-            assertTrue("Report file should have been created", Files.exists(absoluteReportFile));
+            runPmdSuccessfully("--no-cache", "-d", srcDir, "-R", DUMMY_RULESET, "-r", reportFile);
+            Assertions.assertTrue(Files.exists(absoluteReportFile), "Report file should have been created");
         } finally {
             Files.deleteIfExists(absoluteReportFile);
         }
     }
 
     @Test
-    public void testRelativeReportFileLongOption() throws IOException {
+    void testRelativeReportFileLongOption() throws Exception {
         String reportFile = "reportFile.txt";
         Path absoluteReportFile = FileSystems.getDefault().getPath(reportFile).toAbsolutePath();
         // verify the file doesn't exist yet - we will delete the file at the end!
-        assertFalse("Report file must not exist yet!", Files.exists(absoluteReportFile));
+        Assertions.assertFalse(Files.exists(absoluteReportFile), "Report file must not exist yet!");
 
         try {
             runPmdSuccessfully("--no-cache", "--dir", srcDir, "--rulesets", DUMMY_RULESET, "--report-file", reportFile);
-            assertTrue("Report file should have been created", Files.exists(absoluteReportFile));
+            Assertions.assertTrue(Files.exists(absoluteReportFile), "Report file should have been created");
         } finally {
             Files.deleteIfExists(absoluteReportFile);
         }
     }
 
     @Test
-    public void debugLogging() {
-        runPmdSuccessfully("--debug", "--no-cache", "--dir", srcDir, "--rulesets", DUMMY_RULESET);
-        assertThat(errStreamCaptor.getLog(), containsString("[main] INFO net.sourceforge.pmd.PMD - Log level is at TRACE"));
+    void debugLogging() throws Exception {
+        // restoring system properties: --debug might change logging properties
+        SystemLambda.restoreSystemProperties(() -> {
+            String log = runPmdSuccessfully("--debug", "--no-cache", "--dir", srcDir, "--rulesets", DUMMY_RULESET);
+            assertThat(log, containsString("[main] INFO net.sourceforge.pmd.PMD - Log level is at TRACE"));
+        });
     }
 
     @Test
-    public void defaultLogging() {
-        runPmdSuccessfully("--no-cache", "--dir", srcDir, "--rulesets", DUMMY_RULESET);
-        assertThat(errStreamCaptor.getLog(), containsString("[main] INFO net.sourceforge.pmd.PMD - Log level is at INFO"));
+    void defaultLogging() throws Exception {
+        String log = runPmdSuccessfully("--no-cache", "--dir", srcDir, "--rulesets", DUMMY_RULESET);
+        assertThat(log, containsString("[main] INFO net.sourceforge.pmd.PMD - Log level is at INFO"));
     }
 
 
     @Test
-    public void testWrongCliOptionsDoNotPrintUsage() {
+    void testWrongCliOptionsDoNotPrintUsage() throws Exception {
         String[] args = { "-invalid" };
         PmdParametersParseResult params = PmdParametersParseResult.extractParameters(args);
-        assertTrue("Expected invalid args", params.isError());
+        Assertions.assertTrue(params.isError(), "Expected invalid args");
 
-        StatusCode code = PMD.runPmd(args);
-        assertEquals(StatusCode.ERROR, code);
-        assertThatErrAndOut(not(containsStringIgnoringCase("Available report formats and")));
+        String log = SystemLambda.tapSystemErrAndOut(() -> {
+            StatusCode code = PMD.runPmd(args);
+            Assertions.assertEquals(StatusCode.ERROR, code);
+        });
+        assertThat(log, not(containsStringIgnoringCase("Available report formats and")));
     }
 
     // utilities
-
-    private void assertThatErrAndOut(Matcher<String> matcher) {
-        assertThat("stdout", outStreamCaptor.getLog(), matcher);
-        assertThat("stderr", errStreamCaptor.getLog(), matcher);
-    }
-
     private Path tempRoot() {
-        return tempDir.getRoot().toPath();
+        return tempDir;
     }
 
 
-    private static void runPmdSuccessfully(Object... args) {
-        runPmd(0, args);
+    private static String runPmdSuccessfully(Object... args) throws Exception {
+        return SystemLambda.tapSystemErrAndOut(() -> {
+            runPmd(0, args);
+        });
     }
 
     private static String[] argsToString(Object... args) {
@@ -256,7 +248,7 @@ public class CoreCliTest {
 
     private static void runPmd(int expectedExitCode, Object[] args) {
         StatusCode actualExitCode = PMD.runPmd(argsToString(args));
-        assertEquals("Exit code", expectedExitCode, actualExitCode.toInt());
+        Assertions.assertEquals(expectedExitCode, actualExitCode.toInt(), "Exit code");
     }
 
 

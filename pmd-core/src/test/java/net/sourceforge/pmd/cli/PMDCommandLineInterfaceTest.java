@@ -4,100 +4,91 @@
 
 package net.sourceforge.pmd.cli;
 
-import static org.junit.Assert.assertTrue;
-
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.contrib.java.lang.system.ExpectedSystemExit;
-import org.junit.contrib.java.lang.system.RestoreSystemProperties;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.cache.NoopAnalysisCache;
+
+import com.github.stefanbirkner.systemlambda.SystemLambda;
 
 
 /**
  * Unit test for {@link PMDCommandLineInterface}
  */
-public class PMDCommandLineInterfaceTest {
-    @Rule
-    public final ExpectedSystemExit exit = ExpectedSystemExit.none();
+class PMDCommandLineInterfaceTest {
 
-    @Rule // Restores system properties after test
-    public final RestoreSystemProperties restoreSystemProperties = new RestoreSystemProperties();
-
-    @Before
-    public void clearSystemProperties() {
+    @BeforeEach
+    void clearSystemProperties() {
         System.clearProperty(PMDCommandLineInterface.NO_EXIT_AFTER_RUN);
         System.clearProperty(PMDCommandLineInterface.STATUS_CODE_PROPERTY);
     }
 
     @Test
-    public void testProperties() {
+    void testProperties() {
         PMDParameters params = new PMDParameters();
         String[] args = { "-d", "source_folder", "-f", "yahtml", "-P", "outputDir=output_folder", "-R", "java-empty", };
         PMDCommandLineInterface.extractParameters(params, args, "PMD");
 
-        Assert.assertEquals("output_folder", params.getProperties().getProperty("outputDir"));
+        Assertions.assertEquals("output_folder", params.getProperties().getProperty("outputDir"));
     }
 
     @Test
-    public void testMultipleProperties() {
+    void testMultipleProperties() {
         PMDParameters params = new PMDParameters();
         String[] args = { "-d", "source_folder", "-f", "ideaj", "-P", "sourcePath=/home/user/source/", "-P",
             "fileName=Foo.java", "-P", "classAndMethodName=Foo.method", "-R", "java-empty", };
         PMDCommandLineInterface.extractParameters(params, args, "PMD");
 
-        Assert.assertEquals("/home/user/source/", params.getProperties().getProperty("sourcePath"));
-        Assert.assertEquals("Foo.java", params.getProperties().getProperty("fileName"));
-        Assert.assertEquals("Foo.method", params.getProperties().getProperty("classAndMethodName"));
+        Assertions.assertEquals("/home/user/source/", params.getProperties().getProperty("sourcePath"));
+        Assertions.assertEquals("Foo.java", params.getProperties().getProperty("fileName"));
+        Assertions.assertEquals("Foo.method", params.getProperties().getProperty("classAndMethodName"));
     }
 
 
     @Test
-    public void testNoCacheSwitch() {
+    void testNoCacheSwitch() {
         PMDParameters params = new PMDParameters();
         String[] args = {"-d", "source_folder", "-f", "ideaj", "-R", "java-empty", "-cache", "/home/user/.pmd/cache", "-no-cache", };
         PMDCommandLineInterface.extractParameters(params, args, "PMD");
 
-        assertTrue(params.isIgnoreIncrementalAnalysis());
+        Assertions.assertTrue(params.isIgnoreIncrementalAnalysis());
         PMDConfiguration config = params.toConfiguration();
-        assertTrue(config.isIgnoreIncrementalAnalysis());
-        assertTrue(config.getAnalysisCache() instanceof NoopAnalysisCache);
+        Assertions.assertTrue(config.isIgnoreIncrementalAnalysis());
+        Assertions.assertTrue(config.getAnalysisCache() instanceof NoopAnalysisCache);
     }
 
     @Test
-    public void testNoCacheSwitchLongOption() {
+    void testNoCacheSwitchLongOption() {
         PMDParameters params = new PMDParameters();
         String[] args = {"-d", "source_folder", "-f", "ideaj", "-R", "java-empty", "--cache", "/home/user/.pmd/cache", "--no-cache", };
         PMDCommandLineInterface.extractParameters(params, args, "PMD");
 
-        assertTrue(params.isIgnoreIncrementalAnalysis());
+        Assertions.assertTrue(params.isIgnoreIncrementalAnalysis());
         PMDConfiguration config = params.toConfiguration();
-        assertTrue(config.isIgnoreIncrementalAnalysis());
-        assertTrue(config.getAnalysisCache() instanceof NoopAnalysisCache);
+        Assertions.assertTrue(config.isIgnoreIncrementalAnalysis());
+        Assertions.assertTrue(config.getAnalysisCache() instanceof NoopAnalysisCache);
     }
 
     @Test
-    public void testSetStatusCodeOrExitDoExit() {
-        exit.expectSystemExitWithStatus(0);
-
-        PMDCommandLineInterface.setStatusCodeOrExit(0);
+    void testSetStatusCodeOrExitDoExit() throws Exception {
+        int code = SystemLambda.catchSystemExit(() -> PMDCommandLineInterface.setStatusCodeOrExit(0));
+        Assertions.assertEquals(0, code);
     }
 
     @Test
-    public void testSetStatusCodeOrExitSetStatus() {
+    void testSetStatusCodeOrExitSetStatus() {
         System.setProperty(PMDCommandLineInterface.NO_EXIT_AFTER_RUN, "1");
 
         PMDCommandLineInterface.setStatusCodeOrExit(0);
-        Assert.assertEquals(System.getProperty(PMDCommandLineInterface.STATUS_CODE_PROPERTY), "0");
+        Assertions.assertEquals(System.getProperty(PMDCommandLineInterface.STATUS_CODE_PROPERTY), "0");
     }
 
     @Test
-    public void testBuildUsageText() {
+    void testBuildUsageText() {
         // no exception..
-        Assert.assertNotNull(PMDCommandLineInterface.buildUsageText());
+        Assertions.assertNotNull(PMDCommandLineInterface.buildUsageText());
     }
 
 }

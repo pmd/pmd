@@ -5,19 +5,19 @@
 package net.sourceforge.pmd.cli;
 
 import org.apache.commons.lang3.reflect.FieldUtils;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
-public class PMDParametersTest {
+class PMDParametersTest {
 
     @Test
-    public void testVersion() throws Exception {
+    void testVersion() throws Exception {
         PMDParameters parameters = new PMDParameters();
         // no language set, uses default language
-        Assert.assertEquals("1.7", parameters.getVersion());
+        Assertions.assertEquals("1.7", parameters.getVersion());
 
         // now set language
         FieldUtils.writeDeclaredField(parameters, "language", "dummy2", true);
-        Assert.assertEquals("1.0", parameters.getVersion());
+        Assertions.assertEquals("1.0", parameters.getVersion());
     }
 }
