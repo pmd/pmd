@@ -197,7 +197,7 @@ To install the PMD plugin for Eclipse:
 *   Start Eclipse and open a project
 *   Select "Help"->"Software Updates"->"Find and Install"
 *   Click "Next", then click "New remote site"
-*   Enter "PMD" into the Name field and <https://dl.bintray.com/pmd/pmd-eclipse-plugin/updates/> into the URL field
+*   Enter "PMD" into the Name field and select the URL of the version you need from [here](https://pmd.github.io/pmd-eclipse-plugin-p2-site/) and into the URL field
 *   Click through the rest of the dialog boxes to install the plugin
 
 Alternatively, you can download the latest zip file and follow the above procedures
