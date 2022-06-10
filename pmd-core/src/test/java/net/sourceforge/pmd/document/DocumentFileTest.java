@@ -17,11 +17,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+
+import net.sourceforge.pmd.util.IOUtil;
 
 class DocumentFileTest {
 
@@ -53,8 +54,8 @@ class DocumentFileTest {
 
     @Test
     void shouldPreserveNewlines() throws IOException {
-        final String testFileContent = IOUtils.toString(
-                DocumentFileTest.class.getResource("ShouldPreserveNewlines.java"), StandardCharsets.UTF_8);
+        final String testFileContent = IOUtil.readToString(
+                DocumentFileTest.class.getResourceAsStream("ShouldPreserveNewlines.java"), StandardCharsets.UTF_8);
         writeContentToTemporaryFile(testFileContent);
 
         try (DocumentFile documentFile = new DocumentFile(temporaryFile, StandardCharsets.UTF_8)) {

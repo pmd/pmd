@@ -671,8 +671,8 @@ You must use `new ArrayList<>(Arrays.asList(...))` if that is inconvenient for y
       [VariableDeclarator[NumericLiteral[@IntLiteral][@Image = '0']]]
     ]
   ]
-  [not(.//IfStatement)]
-  /*[last()]//
+  [*[2]//FieldAccess[@Name = 'length']/VariableAccess[pmd-java:typeIs("java.lang.Object[]")]]
+  /*[last()]/ExpressionStatement/
     MethodCall
       [pmd-java:matchesSig('java.util.Collection#add(_)')]
       [ArgumentList/ArrayAccess
@@ -680,9 +680,8 @@ You must use `new ArrayList<>(Arrays.asList(...))` if that is inconvenient for y
       ]
 |
 //ForeachStatement
-  [not(.//IfStatement)]
   [VariableAccess[pmd-java:typeIs("java.lang.Object[]")]]
-  /*[last()]//MethodCall
+  /*[last()]/ExpressionStatement/MethodCall
       [pmd-java:matchesSig('java.util.Collection#add(_)')]
       [ArgumentList
         [VariableAccess[@Name = ancestor::ForeachStatement/LocalVariableDeclaration/VariableDeclarator/VariableDeclaratorId/@Name]]
@@ -697,12 +696,12 @@ public class Test {
     public void foo(Integer[] ints) {
         // could just use Arrays.asList(ints)
         List<Integer> l = new ArrayList<>(100);
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < ints.length; i++) {
             l.add(ints[i]);
         }
 
         List<Integer> anotherList = new ArrayList<>();
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < ints.length; i++) {
             anotherList.add(ints[i].toString()); // won't trigger the rule
         }
     }

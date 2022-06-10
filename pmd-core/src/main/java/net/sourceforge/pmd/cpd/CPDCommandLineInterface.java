@@ -4,11 +4,9 @@
 
 package net.sourceforge.pmd.cpd;
 
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,27 +22,45 @@ import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMDVersion;
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.cli.internal.CliMessages;
+import net.sourceforge.pmd.cpd.CPD.StatusCode;
 import net.sourceforge.pmd.util.FileUtil;
 import net.sourceforge.pmd.util.database.DBURI;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 
+/**
+ * @deprecated Internal API. Use {@link CPD#runCpd(String...)} or {@link CPD#main(String[])}
+ *      in order to execute CPD.
+ */
+@Deprecated
+@InternalApi
 public final class CPDCommandLineInterface {
     private static final Logger LOG = LoggerFactory.getLogger(CPDCommandLineInterface.class);
 
-    private static final int NO_ERRORS_STATUS = 0;
-    private static final int ERROR_STATUS = 1;
-    private static final int DUPLICATE_CODE_FOUND = 4;
-
+    /**
+     * @deprecated This is used for testing, but support for it will be removed in PMD 7.
+     * Use {@link CPD#runCpd(String...)} to avoid exiting the VM. In PMD 7,
+     * {@link CPD#main(String[])} will call {@link System#exit(int)} always.
+     */
+    @Deprecated
     public static final String NO_EXIT_AFTER_RUN = "net.sourceforge.pmd.cli.noExit";
+
+    /**
+     * @deprecated This is used for testing, but support for it will be removed in PMD 7.
+     * Use {@link CPD#runCpd(String...)} to avoid exiting the VM. In PMD 7,
+     * {@link CPD#main(String[])} will call {@link System#exit(int)} always.
+     */
+    @Deprecated
     public static final String STATUS_CODE_PROPERTY = "net.sourceforge.pmd.cli.status";
 
-    private static final String PROGRAM_NAME = "cpd";
+    static final String PROGRAM_NAME = "cpd";
 
     private CPDCommandLineInterface() { }
 
+    @Deprecated
     public static void setStatusCodeOrExit(int status) {
         if (isExitAfterRunSet()) {
             System.exit(status);
@@ -65,8 +81,7 @@ public final class CPDCommandLineInterface {
         System.setProperty(STATUS_CODE_PROPERTY, Integer.toString(statusCode));
     }
 
-    public static void main(String[] args) {
-        CPDConfiguration arguments = new CPDConfiguration();
+    static StatusCode parseArgs(CPDConfiguration arguments, String... args) {
         JCommander jcommander = new JCommander(arguments);
         jcommander.setProgramName(PROGRAM_NAME);
 
@@ -75,14 +90,12 @@ public final class CPDCommandLineInterface {
             if (arguments.isHelp()) {
                 jcommander.usage();
                 System.out.println(buildUsageText());
-                setStatusCodeOrExit(NO_ERRORS_STATUS);
-                return;
+                return StatusCode.OK;
             }
         } catch (ParameterException e) {
             System.err.println(e.getMessage());
             System.err.println(CliMessages.runWithHelpFlagMessage());
-            setStatusCodeOrExit(ERROR_STATUS);
-            return;
+            return StatusCode.ERROR;
         }
 
         Map<String, String> deprecatedOptions = filterDeprecatedOptions(args);
@@ -96,32 +109,16 @@ public final class CPDCommandLineInterface {
         // Pass extra parameters as System properties to allow language
         // implementation to retrieve their associate values...
         CPDConfiguration.setSystemProperties(arguments);
-        CPD cpd = new CPD(arguments);
 
-        try {
-            addSourceFilesToCPD(cpd, arguments);
+        return null;
+    }
 
-            cpd.go();
-            if (arguments.getCPDRenderer() == null) {
-                // legacy writer
-                System.out.println(arguments.getRenderer().render(cpd.getMatches()));
-            } else {
-                arguments.getCPDRenderer().render(cpd.getMatches(), new BufferedWriter(new OutputStreamWriter(System.out)));
-            }
-            if (cpd.getMatches().hasNext()) {
-                if (arguments.isFailOnViolation()) {
-                    setStatusCodeOrExit(DUPLICATE_CODE_FOUND);
-                } else {
-                    setStatusCodeOrExit(NO_ERRORS_STATUS);
-                }
-            } else {
-                setStatusCodeOrExit(NO_ERRORS_STATUS);
-            }
-        } catch (IOException | RuntimeException e) {
-            LOG.debug(e.toString(), e);
-            LOG.error(CliMessages.errorDetectedMessage(1, "CPD"));
-            setStatusCodeOrExit(ERROR_STATUS);
-        }
+    /**
+     * @deprecated Use {@link CPD#main(String[])}
+     */
+    @Deprecated
+    public static void main(String[] args) {
+        setStatusCodeOrExit(CPD.runCpd(args).toInt());
     }
 
     private static Map<String, String> filterDeprecatedOptions(String... args) {
@@ -212,6 +209,8 @@ public final class CPDCommandLineInterface {
         }
     }
 
+    @Deprecated
+    @InternalApi
     public static String buildUsageText() {
         String helpText = " For example on Windows:" + PMD.EOL;
 

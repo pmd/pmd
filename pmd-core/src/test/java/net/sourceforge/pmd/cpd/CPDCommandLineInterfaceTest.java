@@ -33,8 +33,9 @@ class CPDCommandLineInterfaceTest {
     void testEmptyResultRendering() throws Exception {
         String stdout = SystemLambda.tapSystemOut(() -> {
             SystemLambda.tapSystemErr(() -> {
-                CPDCommandLineInterface.main(new String[] { "--minimum-tokens", "340", "--language", "java", "--files",
-                    SRC_DIR, "--format", "xml", });
+                CPD.StatusCode statusCode = CPD.runCpd("--minimum-tokens", "340", "--language", "java", "--files",
+                        SRC_DIR, "--format", "xml");
+                Assertions.assertEquals(CPD.StatusCode.OK, statusCode);
             });
         });
         Assertions.assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" + "<pmd-cpd/>", stdout.trim());
@@ -49,8 +50,9 @@ class CPDCommandLineInterfaceTest {
 
         String stderr = SystemLambda.tapSystemErr(() -> {
             String stdout = SystemLambda.tapSystemOut(() -> {
-                CPDCommandLineInterface.main(new String[] { "--minimum-tokens", "340", "--language", "java", "--filelist",
-                    filelist.getAbsolutePath(), "--format", "xml", "-failOnViolation", "true" });
+                CPD.StatusCode statusCode = CPD.runCpd("--minimum-tokens", "340", "--language", "java", "--filelist",
+                        filelist.getAbsolutePath(), "--format", "xml", "-failOnViolation", "true");
+                Assertions.assertEquals(CPD.StatusCode.OK, statusCode);
             });
             Assertions.assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" + "<pmd-cpd/>", stdout.trim());
         });

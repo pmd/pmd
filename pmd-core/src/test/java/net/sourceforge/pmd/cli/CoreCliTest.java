@@ -16,7 +16,7 @@ import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import org.apache.commons.io.IOUtils;
+import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,6 +26,7 @@ import org.junit.jupiter.api.io.TempDir;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMD.StatusCode;
 import net.sourceforge.pmd.internal.Slf4jSimpleConfiguration;
+import net.sourceforge.pmd.util.IOUtil;
 
 import com.github.stefanbirkner.systemlambda.SystemLambda;
 
@@ -126,7 +127,7 @@ class CoreCliTest {
         });
 
         Assertions.assertTrue(Files.exists(reportFile), "Report file should have been created");
-        String reportText = IOUtils.toString(Files.newBufferedReader(reportFile, StandardCharsets.UTF_8));
+        String reportText = IOUtil.readToString(Files.newBufferedReader(reportFile, StandardCharsets.UTF_8));
         assertThat(reportText, not(containsStringIgnoringCase("error")));
     }
 
@@ -198,6 +199,14 @@ class CoreCliTest {
         assertThat(log, containsString("[main] INFO net.sourceforge.pmd.PMD - Log level is at INFO"));
     }
 
+    @Test
+    void testDeprecatedRulesetSyntaxOnCommandLine() throws Exception {
+        String log = SystemLambda.tapSystemErrAndOut(() -> {
+            runPmd(StatusCode.VIOLATIONS_FOUND, "--no-cache", "--dir", srcDir, "--rulesets", "dummy-basic");
+        });
+        MatcherAssert.assertThat(log, containsString("Ruleset reference 'dummy-basic' uses a deprecated form, use 'rulesets/dummy/basic.xml' instead"));
+    }
+
 
     @Test
     void testWrongCliOptionsDoNotPrintUsage() throws Exception {
@@ -220,7 +229,7 @@ class CoreCliTest {
 
     private static String runPmdSuccessfully(Object... args) throws Exception {
         return SystemLambda.tapSystemErrAndOut(() -> {
-            runPmd(0, args);
+            runPmd(StatusCode.OK, args);
         });
     }
 
@@ -246,9 +255,9 @@ class CoreCliTest {
         return StandardCharsets.UTF_8.decode(buf).toString();
     }
 
-    private static void runPmd(int expectedExitCode, Object[] args) {
+    private static void runPmd(StatusCode expectedExitCode, Object... args) {
         StatusCode actualExitCode = PMD.runPmd(argsToString(args));
-        Assertions.assertEquals(expectedExitCode, actualExitCode.toInt(), "Exit code");
+        Assertions.assertEquals(expectedExitCode, actualExitCode, "Exit code");
     }
 
 

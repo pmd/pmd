@@ -44,7 +44,15 @@ public class ImmutableFieldRule extends AbstractJavaRulechainRule {
         );
 
     private static final Set<String> INVALIDATING_FIELD_ANNOTS =
-        setOf("lombok.Setter");
+        setOf(
+                "lombok.Setter",
+                "org.mockito.Captor",
+                "org.mockito.InjectMocks",
+                "org.mockito.Mock",
+                "org.springframework.beans.factory.annotation.Autowired",
+                "org.springframework.beans.factory.annotation.Value",
+                "org.springframework.boot.test.mock.mockito.MockBean"
+        );
 
     public ImmutableFieldRule() {
         super(ASTFieldDeclaration.class);
@@ -54,7 +62,6 @@ public class ImmutableFieldRule extends AbstractJavaRulechainRule {
 
     @Override
     public Object visit(ASTFieldDeclaration field, Object data) {
-
         ASTAnyTypeDeclaration enclosingType = field.getEnclosingType();
         if (field.getEffectiveVisibility().isAtMost(Visibility.V_PRIVATE)
             && !field.getModifiers().hasAny(JModifier.VOLATILE, JModifier.STATIC, JModifier.FINAL)

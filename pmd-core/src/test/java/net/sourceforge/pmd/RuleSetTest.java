@@ -30,7 +30,6 @@ import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import org.apache.commons.io.FilenameUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.Test;
 
@@ -45,6 +44,7 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
+import net.sourceforge.pmd.util.IOUtil;
 
 public class RuleSetTest {
 
@@ -523,7 +523,7 @@ public class RuleSetTest {
         assertThat(error.getMsg(), containsString("java.lang.IllegalStateException: Test exception while applying rule\n"));
         assertThat(error.getMsg(), containsString("Rule applied on node=dummyRootNode[@Image=Foo]"));
         assertThat(error.getError().getCause(), instanceOf(IllegalStateException.class));
-        assertThat(FilenameUtils.normalize(error.getFile(), true), equalTo("samplefile.dummy"));
+        assertThat(IOUtil.normalizePath(error.getFile()), equalTo("samplefile.dummy"));
 
         assertThat(report.getViolations(), hasSize(1));
     }

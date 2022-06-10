@@ -11,7 +11,6 @@ import java.io.PrintStream;
 import java.io.StringWriter;
 import java.nio.charset.Charset;
 
-import org.apache.commons.io.output.WriterOutputStream;
 import org.apache.tools.ant.BuildEvent;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.BuildListener;
@@ -20,6 +19,7 @@ import org.apache.tools.ant.ProjectHelper;
 import org.junit.jupiter.api.AfterAll;
 
 import net.sourceforge.pmd.internal.Slf4jSimpleConfiguration;
+import net.sourceforge.pmd.util.IOUtil;
 
 class AbstractAntTest {
     protected Project project;
@@ -61,8 +61,8 @@ class AbstractAntTest {
         log = new StringBuilder();
         out = new StringWriter();
         err = new StringWriter();
-        PrintStream outStream = new PrintStream(new WriterOutputStream(out, Charset.defaultCharset()));
-        PrintStream errStream = new PrintStream(new WriterOutputStream(err, Charset.defaultCharset()));
+        PrintStream outStream = new PrintStream(IOUtil.fromWriter(out, Charset.defaultCharset().name()));
+        PrintStream errStream = new PrintStream(IOUtil.fromWriter(err, Charset.defaultCharset().name()));
         synchronized (System.out) {
             PrintStream originalOut = System.out;
             PrintStream originalErr = System.err;

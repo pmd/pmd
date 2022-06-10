@@ -76,7 +76,7 @@
     </issueManagement>
 
     <properties>
-        <project.build.outputTimestamp>2022-03-27T15:01:59Z</project.build.outputTimestamp>
+        <project.build.outputTimestamp>2022-05-28T09:04:31Z</project.build.outputTimestamp>
 
         <java.version>8</java.version>
 
@@ -85,8 +85,8 @@
 
 
         <kotlin.compiler.jvmTarget>${maven.compiler.test.target}</kotlin.compiler.jvmTarget>
-        <kotlin.version>1.4.10</kotlin.version>
-        <kotest.version>4.3.1</kotest.version>
+        <kotlin.version>1.4.32</kotlin.version>
+        <kotest.version>4.4.3</kotest.version>
         <dokka.version>1.4.32</dokka.version>
 
 
@@ -95,7 +95,7 @@
         <surefire.version>3.0.0-M5</surefire.version>
         <checkstyle.version>9.3</checkstyle.version>
         <checkstyle.plugin.version>3.1.2</checkstyle.plugin.version>
-        <pmd.plugin.version>3.16.0</pmd.plugin.version>
+        <pmd.plugin.version>3.17.0</pmd.plugin.version>
         <ant.version>1.10.12</ant.version>
         <javadoc.plugin.version>3.2.0</javadoc.plugin.version>
         <antlr.version>4.8</antlr.version>
@@ -108,7 +108,7 @@
 
         <argLine>-Xmx512m -Dfile.encoding=${project.build.sourceEncoding}</argLine>
 
-        <pmd.build-tools.version>18-SNAPSHOT</pmd.build-tools.version>
+        <pmd.build-tools.version>18</pmd.build-tools.version>
 
         <pmd-designer.version>6.37.0</pmd-designer.version>
         <javacc.jar>${settings.localRepository}/net/java/dev/javacc/javacc/${javacc.version}/javacc-${javacc.version}.jar</javacc.jar>
@@ -383,7 +383,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-enforcer-plugin</artifactId>
-                    <version>3.0.0-M2</version>
+                    <version>3.0.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -426,22 +426,22 @@
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-core</artifactId>
-                            <version>6.44.0</version> <!-- pmd.dogfood.version -->
+                            <version>6.46.0</version> <!-- pmd.dogfood.version -->
                         </dependency>
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-java</artifactId>
-                            <version>6.44.0</version> <!-- pmd.dogfood.version -->
+                            <version>6.46.0</version> <!-- pmd.dogfood.version -->
                         </dependency>
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-jsp</artifactId>
-                            <version>6.44.0</version> <!-- pmd.dogfood.version -->
+                            <version>6.46.0</version> <!-- pmd.dogfood.version -->
                         </dependency>
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-javascript</artifactId>
-                            <version>6.44.0</version> <!-- pmd.dogfood.version -->
+                            <version>6.46.0</version> <!-- pmd.dogfood.version -->
                         </dependency>
                         <!-- This contains the dogfood ruleset -->
                         <dependency>
@@ -450,6 +450,11 @@
                             <version>${pmd.build-tools.version}</version>
                         </dependency>
                     </dependencies>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-site-plugin</artifactId>
+                    <version>4.0.0-M1</version>
                 </plugin>
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
@@ -512,6 +517,33 @@
                                 <requireJavaVersion>
                                     <version>[11,)</version>
                                 </requireJavaVersion>
+                            </rules>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>enforce-no-snapshots</id>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <requireReleaseDeps>
+                                    <message>No Snapshots Allowed!</message>
+                                    <onlyWhenRelease>true</onlyWhenRelease>
+                                </requireReleaseDeps>
+                            </rules>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>enforce-plugin-versions</id>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <requirePluginVersions>
+                                    <message>Best Practice is to always define plugin versions!</message>
+                                </requirePluginVersions>
                             </rules>
                         </configuration>
                     </execution>
@@ -708,11 +740,6 @@
                 <artifactId>javacc</artifactId>
                 <version>${javacc.version}</version>
                 <scope>provided</scope> <!-- only needed for generating the parser via ant -->
-            </dependency>
-            <dependency>
-                <groupId>commons-io</groupId>
-                <artifactId>commons-io</artifactId>
-                <version>2.6</version> <!-- note: this is the last version compatible with java7 -->
             </dependency>
             <dependency>
                 <groupId>org.apache.commons</groupId>
