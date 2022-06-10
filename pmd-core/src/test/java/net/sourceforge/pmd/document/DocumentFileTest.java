@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.document;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -12,31 +12,33 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
-public class DocumentFileTest {
+class DocumentFileTest {
 
     private static final String FILE_PATH = "psvm.java";
 
-    @Rule
-    public TemporaryFolder temporaryFolder = new TemporaryFolder();
+    @TempDir
+    private Path temporaryFolder;
     private File temporaryFile;
 
-    @Before
-    public void setUpTemporaryFiles() throws IOException {
-        temporaryFile = temporaryFolder.newFile(FILE_PATH);
+    @BeforeEach
+    private void setUpTemporaryFiles() throws IOException {
+        temporaryFile = temporaryFolder.resolve(FILE_PATH).toFile();
+        Assertions.assertTrue(temporaryFile.createNewFile());
     }
 
     @Test
-    public void insertAtStartOfTheFileShouldSucceed() throws IOException {
+    void insertAtStartOfTheFileShouldSucceed() throws IOException {
         writeContentToTemporaryFile("static void main(String[] args) {}");
 
         try (DocumentFile documentFile = new DocumentFile(temporaryFile, StandardCharsets.UTF_8)) {
@@ -50,7 +52,7 @@ public class DocumentFileTest {
     }
 
     @Test
-    public void shouldPreserveNewlines() throws IOException {
+    void shouldPreserveNewlines() throws IOException {
         final String testFileContent = IOUtils.toString(
                 DocumentFileTest.class.getResource("ShouldPreserveNewlines.java"), StandardCharsets.UTF_8);
         writeContentToTemporaryFile(testFileContent);
@@ -99,7 +101,7 @@ public class DocumentFileTest {
     }
 
     @Test
-    public void insertVariousTokensIntoTheFileShouldSucceed() throws IOException {
+    void insertVariousTokensIntoTheFileShouldSucceed() throws IOException {
         writeContentToTemporaryFile("static void main(String[] args) {}");
 
         try (DocumentFile documentFile = new DocumentFile(temporaryFile, StandardCharsets.UTF_8)) {
@@ -114,7 +116,7 @@ public class DocumentFileTest {
     }
 
     @Test
-    public void insertAtTheEndOfTheFileShouldSucceed() throws IOException {
+    void insertAtTheEndOfTheFileShouldSucceed() throws IOException {
         final String code = "public static void main(String[] args)";
         writeContentToTemporaryFile(code);
 
@@ -129,7 +131,7 @@ public class DocumentFileTest {
     }
 
     @Test
-    public void removeTokenShouldSucceed() throws IOException {
+    void removeTokenShouldSucceed() throws IOException {
         final String code = "public static void main(final String[] args) {}";
         writeContentToTemporaryFile(code);
 
@@ -144,7 +146,7 @@ public class DocumentFileTest {
     }
 
     @Test
-    public void insertAndRemoveTokensShouldSucceed() throws IOException {
+    void insertAndRemoveTokensShouldSucceed() throws IOException {
         final String code = "static void main(final String[] args) {}";
         writeContentToTemporaryFile(code);
 
@@ -160,7 +162,7 @@ public class DocumentFileTest {
     }
 
     @Test
-    public void insertAndDeleteVariousTokensShouldSucceed() throws IOException {
+    void insertAndDeleteVariousTokensShouldSucceed() throws IOException {
         final String code = "void main(String[] args) {}";
         writeContentToTemporaryFile(code);
 
@@ -179,7 +181,7 @@ public class DocumentFileTest {
     }
 
     @Test
-    public void replaceATokenShouldSucceed() throws IOException {
+    void replaceATokenShouldSucceed() throws IOException {
         final String code = "int main(String[] args) {}";
         writeContentToTemporaryFile(code);
 
@@ -194,7 +196,7 @@ public class DocumentFileTest {
     }
 
     @Test
-    public void replaceVariousTokensShouldSucceed() throws IOException {
+    void replaceVariousTokensShouldSucceed() throws IOException {
         final String code = "int main(String[] args) {}";
         writeContentToTemporaryFile(code);
 
@@ -211,7 +213,7 @@ public class DocumentFileTest {
     }
 
     @Test
-    public void insertDeleteAndReplaceVariousTokensShouldSucceed() throws IOException {
+    void insertDeleteAndReplaceVariousTokensShouldSucceed() throws IOException {
         final String code = "static int main(CharSequence[] args) {}";
         writeContentToTemporaryFile(code);
 
@@ -230,7 +232,7 @@ public class DocumentFileTest {
     }
 
     @Test
-    public void lineToOffsetMappingWithLineFeedShouldSucceed() throws IOException {
+    void lineToOffsetMappingWithLineFeedShouldSucceed() throws IOException {
         final String code = "public static int main(String[] args) {" + '\n'
                 + "int var;" + '\n'
                 + "}";
@@ -247,7 +249,7 @@ public class DocumentFileTest {
     }
 
     @Test
-    public void lineToOffsetMappingWithCarriageReturnFeedLineFeedShouldSucceed() throws IOException {
+    void lineToOffsetMappingWithCarriageReturnFeedLineFeedShouldSucceed() throws IOException {
         final String code = "public static int main(String[] args) {" + "\r\n"
                 + "int var;" + "\r\n"
                 + "}";
@@ -264,7 +266,7 @@ public class DocumentFileTest {
     }
 
     @Test
-    public void lineToOffsetMappingWithMixedLineSeparatorsShouldSucceed() throws IOException {
+    void lineToOffsetMappingWithMixedLineSeparatorsShouldSucceed() throws IOException {
         final String code = "public static int main(String[] args) {" + "\r\n"
                 + "int var;" + "\n"
                 + "}";
