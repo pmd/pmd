@@ -46,9 +46,11 @@ public class ImmutableFieldRule extends AbstractLombokAwareRule {
     @Override
     protected Collection<String> defaultSuppressionAnnotations() {
         Collection<String> defaultValues = new ArrayList<>(super.defaultSuppressionAnnotations());
-        defaultValues.add("org.mockito.Mock");
+        defaultValues.add("org.mockito.Captor");
         defaultValues.add("org.mockito.InjectMocks");
+        defaultValues.add("org.mockito.Mock");
         defaultValues.add("org.springframework.beans.factory.annotation.Autowired");
+        defaultValues.add("org.springframework.beans.factory.annotation.Value");
         defaultValues.add("org.springframework.boot.test.mock.mockito.MockBean");
 
         return defaultValues;
