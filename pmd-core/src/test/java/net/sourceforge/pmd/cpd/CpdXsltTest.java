@@ -18,11 +18,11 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
 import org.apache.commons.io.IOUtils;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 
-public class CpdXsltTest {
+class CpdXsltTest {
     /* Sample ant build.xml file. Run with "ant cpdxsl".
 
 <project>
@@ -33,7 +33,7 @@ public class CpdXsltTest {
      */
 
     @Test
-    public void cpdhtml() throws Exception {
+    void cpdhtml() throws Exception {
         XSLTErrorListener errorListener = new XSLTErrorListener();
 
         // note: using the default JDK factory, otherwise we would use Saxon from PMD's classpath
@@ -50,8 +50,8 @@ public class CpdXsltTest {
         transformer.transform(cpdReport, result);
 
         String expected = IOUtils.toString(CpdXsltTest.class.getResourceAsStream("ExpectedCpdHtmlReport.html"), StandardCharsets.UTF_8);
-        Assert.assertEquals(expected, result.getWriter().toString());
-        Assert.assertTrue("XSLT errors occured: " + errorListener, errorListener.hasNoErrors());
+        Assertions.assertEquals(expected, result.getWriter().toString());
+        Assertions.assertTrue(errorListener.hasNoErrors(), "XSLT errors occured: " + errorListener);
     }
 
     private static class XSLTErrorListener implements ErrorListener {

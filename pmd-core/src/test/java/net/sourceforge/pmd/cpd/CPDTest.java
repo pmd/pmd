@@ -8,15 +8,15 @@ import java.io.File;
 import java.util.Iterator;
 
 import org.apache.commons.lang3.SystemUtils;
-import org.junit.Assert;
-import org.junit.Assume;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Assumptions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit test for {@link CPD}
  */
-public class CPDTest {
+class CPDTest {
 
     private static final String BASE_TEST_RESOURCE_PATH = "src/test/resources/net/sourceforge/pmd/cpd/files/";
     private static final String TARGET_TEST_RESOURCE_PATH = "target/classes/net/sourceforge/pmd/cpd/files/";
@@ -27,7 +27,7 @@ public class CPDTest {
     // simply executed only on linux.
     private boolean canTestSymLinks = SystemUtils.IS_OS_UNIX;
 
-    @Before
+    @BeforeEach
     public void setup() throws Exception {
         CPDConfiguration theConfiguration = new CPDConfiguration();
         theConfiguration.setLanguage(new AnyLanguage("any"));
@@ -44,7 +44,7 @@ public class CPDTest {
      *             any error
      */
     private void prepareSymLinks() throws Exception {
-        Assume.assumeTrue("Skipping unit tests with symlinks.", canTestSymLinks);
+        Assumptions.assumeTrue(canTestSymLinks, "Skipping unit tests with symlinks.");
 
         Runtime runtime = Runtime.getRuntime();
         if (!new File(TARGET_TEST_RESOURCE_PATH, "symlink-for-real-file.txt").exists()) {
@@ -65,7 +65,7 @@ public class CPDTest {
      *             any error
      */
     @Test
-    public void testFileSectionWithBrokenSymlinks() throws Exception {
+    void testFileSectionWithBrokenSymlinks() throws Exception {
         prepareSymLinks();
 
         NoFileAssertListener listener = new NoFileAssertListener(0);
@@ -83,7 +83,7 @@ public class CPDTest {
      *             any error
      */
     @Test
-    public void testFileAddedAsSymlinkAndReal() throws Exception {
+    void testFileAddedAsSymlinkAndReal() throws Exception {
         prepareSymLinks();
 
         NoFileAssertListener listener = new NoFileAssertListener(1);
@@ -102,7 +102,7 @@ public class CPDTest {
      *             any error
      */
     @Test
-    public void testFileAddedWithRelativePath() throws Exception {
+    void testFileAddedWithRelativePath() throws Exception {
         NoFileAssertListener listener = new NoFileAssertListener(1);
         cpd.setCpdListener(listener);
 
@@ -116,7 +116,7 @@ public class CPDTest {
      * @throws Exception
      */
     @Test
-    public void testFileOrderRelevance() throws Exception {
+    void testFileOrderRelevance() throws Exception {
         cpd.add(new File("./" + BASE_TEST_RESOURCE_PATH, "dup2.java"));
         cpd.add(new File("./" + BASE_TEST_RESOURCE_PATH, "dup1.java"));
         cpd.go();
@@ -125,8 +125,8 @@ public class CPDTest {
         while (matches.hasNext()) {
             Match match = matches.next();
             // the file added first was dup2.
-            Assert.assertTrue(match.getFirstMark().getFilename().endsWith("dup2.java"));
-            Assert.assertTrue(match.getSecondMark().getFilename().endsWith("dup1.java"));
+            Assertions.assertTrue(match.getFirstMark().getFilename().endsWith("dup2.java"));
+            Assertions.assertTrue(match.getSecondMark().getFilename().endsWith("dup1.java"));
         }
     }
 
@@ -146,7 +146,7 @@ public class CPDTest {
         public void addedFile(int fileCount, File file) {
             files++;
             if (files > expectedFilesCount) {
-                Assert.fail("File was added! - " + file);
+                Assertions.fail("File was added! - " + file);
             }
         }
 
@@ -156,8 +156,8 @@ public class CPDTest {
         }
 
         public void verify() {
-            Assert.assertEquals("Expected " + expectedFilesCount + " files, but " + files + " have been added.",
-                    expectedFilesCount, files);
+            Assertions.assertEquals(expectedFilesCount, files,
+                    "Expected " + expectedFilesCount + " files, but " + files + " have been added.");
         }
     }
 }

@@ -5,57 +5,57 @@
 package net.sourceforge.pmd.cpd;
 
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
-import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
-public class AnyTokenizerTest {
+class AnyTokenizerTest {
 
     @Test
-    public void testMultiLineMacros() {
+    void testMultiLineMacros() {
         AnyTokenizer tokenizer = new AnyTokenizer("//");
         compareResult(tokenizer, TEST1, EXPECTED);
     }
 
     @Test
-    public void testStringEscape() {
+    void testStringEscape() {
         AnyTokenizer tokenizer = new AnyTokenizer("//");
         compareResult(tokenizer, "a = \"oo\\n\"", listOf("a", "=", "\"oo\\n\"", "EOF"));
     }
 
     @Test
-    public void testMultilineString() {
+    void testMultilineString() {
         AnyTokenizer tokenizer = new AnyTokenizer("//");
         Tokens tokens = compareResult(tokenizer, "a = \"oo\n\";", listOf("a", "=", "\"oo\n\"", ";", "EOF"));
         TokenEntry string = tokens.getTokens().get(2);
-        assertEquals("\"oo\n\"", getTokenImage(string));
-        assertEquals(1, string.getBeginLine());
-        assertEquals(5, string.getBeginColumn());
-        assertEquals(2, string.getEndColumn()); // ends on line 2
+        Assertions.assertEquals("\"oo\n\"", getTokenImage(string));
+        Assertions.assertEquals(1, string.getBeginLine());
+        Assertions.assertEquals(5, string.getBeginColumn());
+        Assertions.assertEquals(2, string.getEndColumn()); // ends on line 2
 
         TokenEntry semi = tokens.getTokens().get(3);
-        assertEquals(";", getTokenImage(semi));
-        assertEquals(2, semi.getBeginLine());
-        assertEquals(2, semi.getBeginColumn());
-        assertEquals(3, semi.getEndColumn());
+        Assertions.assertEquals(";", getTokenImage(semi));
+        Assertions.assertEquals(2, semi.getBeginLine());
+        Assertions.assertEquals(2, semi.getBeginColumn());
+        Assertions.assertEquals(3, semi.getEndColumn());
     }
 
     /**
      * Tests that [core][cpd] AnyTokenizer doesn't count columns correctly #2760 is actually fixed.
      */
     @Test
-    public void testTokenPosition() {
+    void testTokenPosition() {
         AnyTokenizer tokenizer = new AnyTokenizer();
         SourceCode code = new SourceCode(new SourceCode.StringCodeLoader("a;\nbbbb\n;"));
         Tokens tokens = new Tokens();
         tokenizer.tokenize(code, tokens);
         TokenEntry bbbbToken = tokens.getTokens().get(2);
-        assertEquals(2, bbbbToken.getBeginLine());
-        assertEquals(1, bbbbToken.getBeginColumn());
-        assertEquals(5, bbbbToken.getEndColumn());
+        Assertions.assertEquals(2, bbbbToken.getBeginLine());
+        Assertions.assertEquals(1, bbbbToken.getBeginColumn());
+        Assertions.assertEquals(5, bbbbToken.getEndColumn());
     }
 
 
@@ -69,7 +69,7 @@ public class AnyTokenizerTest {
             tokenStrings.add(getTokenImage(token));
         }
 
-        assertEquals(expectedImages, tokenStrings);
+        Assertions.assertEquals(expectedImages, tokenStrings);
         return tokens;
     }
 

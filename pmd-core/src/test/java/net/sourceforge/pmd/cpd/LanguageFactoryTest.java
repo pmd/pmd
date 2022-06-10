@@ -4,15 +4,14 @@
 
 package net.sourceforge.pmd.cpd;
 
-import static org.junit.Assert.assertTrue;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
-import org.junit.Test;
-
-public class LanguageFactoryTest {
+class LanguageFactoryTest {
 
     @Test
-    public void testSimple() {
-        assertTrue(LanguageFactory.createLanguage("Cpddummy") instanceof CpddummyLanguage);
-        assertTrue(LanguageFactory.createLanguage("not_existing_language") instanceof AnyLanguage);
+    void testSimple() {
+        Assertions.assertTrue(LanguageFactory.createLanguage("Cpddummy") instanceof CpddummyLanguage);
+        Assertions.assertTrue(LanguageFactory.createLanguage("not_existing_language") instanceof AnyLanguage);
     }
 }
