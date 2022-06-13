@@ -230,7 +230,7 @@ public class PMDParameters {
      */
     public PMDConfiguration toConfiguration() {
         PMDConfiguration configuration = new PMDConfiguration();
-        configuration.setInputPaths(this.getSourceDir());
+        configuration.setInputPaths(this.getInputPaths());
         configuration.setInputFilePath(this.getFileListPath());
         configuration.setIgnoreFilePath(this.getIgnoreListPath());
         configuration.setInputUri(this.getUri());
