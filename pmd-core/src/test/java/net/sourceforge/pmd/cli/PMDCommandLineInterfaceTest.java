@@ -91,4 +91,15 @@ class PMDCommandLineInterfaceTest {
         Assertions.assertNotNull(PMDCommandLineInterface.buildUsageText());
     }
 
+    @Test
+    public void testOnlyFileListOption() {
+        PMDParameters params = new PMDParameters();
+        String[] args = {"--file-list", "pmd.filelist", "-f", "text", "-R", "rulesets/java/quickstart.xml", "--no-cache", };
+        PMDCommandLineInterface.extractParameters(params, args, "PMD");
+
+        PMDConfiguration config = params.toConfiguration();
+        Assertions.assertEquals("pmd.filelist", config.getInputFilePath());
+        Assertions.assertTrue(config.getAllInputPaths().isEmpty()); // no additional input paths
+        Assertions.assertNull(config.getInputPaths());
+    }
 }
