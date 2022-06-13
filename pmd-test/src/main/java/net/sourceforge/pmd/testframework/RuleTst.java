@@ -29,7 +29,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DynamicTest;
@@ -58,6 +57,7 @@ import net.sourceforge.pmd.processor.AbstractPMDProcessor;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.renderers.TextRenderer;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
+import net.sourceforge.pmd.util.IOUtil;
 import net.sourceforge.pmd.util.datasource.DataSource;
 
 /**
@@ -374,7 +374,7 @@ public abstract class RuleTst {
             if (inputStream == null) {
                 throw new RuntimeException("Couldn't find " + testXmlFileName);
             }
-            String testXml = IOUtils.toString(inputStream, StandardCharsets.UTF_8);
+            String testXml = IOUtil.readToString(inputStream, StandardCharsets.UTF_8);
             lineNumbersForTests = determineLineNumbers(testXml);
             try (StringReader r = new StringReader(testXml)) {
                 doc = documentBuilder.parse(new InputSource(r));
