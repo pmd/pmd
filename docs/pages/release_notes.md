@@ -28,6 +28,7 @@ This is a {{ site.pmd.release_type }} release.
 * [#3985](https://github.com/pmd/pmd/pull/3985): \[java] Fix false negative problem about Enum in AvoidFieldNameMatchingMethodName #3936 - [@Scrsloota](https://github.com/Scrsloota)
 * [#3993](https://github.com/pmd/pmd/pull/3993): \[java] AvoidDuplicateLiterals - Add the method "buz" definition to test cases - [@dalizi007](https://github.com/dalizi007)
 * [#4002](https://github.com/pmd/pmd/pull/4002): \[java] ImmutableField - Ignore fields annotated with @Value (Spring) or @Captor (Mockito) - [@jjlharrison](https://github.com/jjlharrison)
+* [#4006](https://github.com/pmd/pmd/pull/4006): \[doc] Fix eclipse plugin update site URL - [@shiomiyan](https://github.com/shiomiyan)
 
 {% endtocmaker %}
 
