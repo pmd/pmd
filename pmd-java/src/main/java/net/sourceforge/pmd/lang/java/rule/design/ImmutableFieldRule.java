@@ -50,6 +50,7 @@ public class ImmutableFieldRule extends AbstractLombokAwareRule {
         defaultValues.add("org.mockito.InjectMocks");
         defaultValues.add("org.springframework.beans.factory.annotation.Autowired");
         defaultValues.add("org.springframework.boot.test.mock.mockito.MockBean");
+        defaultValues.add("javax.inject.Inject");
 
         return defaultValues;
     }
