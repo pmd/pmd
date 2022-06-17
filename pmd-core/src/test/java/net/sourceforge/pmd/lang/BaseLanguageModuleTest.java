@@ -4,8 +4,8 @@
 
 package net.sourceforge.pmd.lang;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class BaseLanguageModuleTest {
 
@@ -15,11 +15,11 @@ public class BaseLanguageModuleTest {
         Language l1a = new DummyLanguageModule();
         Language l2 = new Dummy2LanguageModule();
 
-        Assert.assertEquals(l1.hashCode(), l1a.hashCode());
-        Assert.assertNotEquals(l1.hashCode(), l2.hashCode());
+        Assertions.assertEquals(l1.hashCode(), l1a.hashCode());
+        Assertions.assertNotEquals(l1.hashCode(), l2.hashCode());
 
-        Assert.assertEquals(l1, l1a);
-        Assert.assertNotEquals(l1, l2);
+        Assertions.assertEquals(l1, l1a);
+        Assertions.assertNotEquals(l1, l2);
     }
 
     @Test
@@ -27,6 +27,6 @@ public class BaseLanguageModuleTest {
         Language l1 = new DummyLanguageModule();
         Language l2 = new Dummy2LanguageModule();
 
-        Assert.assertTrue(l1.compareTo(l2) < 0);
+        Assertions.assertTrue(l1.compareTo(l2) < 0);
     }
 }

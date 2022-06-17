@@ -9,7 +9,10 @@ import static net.sourceforge.pmd.lang.ast.impl.DummyTreeUtil.node;
 import static net.sourceforge.pmd.lang.ast.impl.DummyTreeUtil.nodeB;
 import static net.sourceforge.pmd.lang.ast.impl.DummyTreeUtil.root;
 import static net.sourceforge.pmd.lang.ast.impl.DummyTreeUtil.tree;
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.HashMap;
 import java.util.List;
@@ -17,10 +20,7 @@ import java.util.Map;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.hamcrest.CoreMatchers;
-import org.junit.Assert;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.ast.DummyNode.DummyRootNode;
 import net.sourceforge.pmd.lang.ast.DummyNodeWithListAndEnum;
@@ -42,9 +42,6 @@ import net.sf.saxon.value.BooleanValue;
 import net.sf.saxon.value.SequenceType;
 
 public class SaxonXPathRuleQueryTest {
-
-    @Rule
-    public final ExpectedException expected = ExpectedException.none();
 
     //    Unsupported: https://github.com/pmd/pmd/issues/2451
     //    @Test
@@ -106,12 +103,11 @@ public class SaxonXPathRuleQueryTest {
     public void testInvalidReturn() {
         DummyNodeWithListAndEnum dummy = new DummyNodeWithListAndEnum();
 
-
-        expected.expect(PmdXPathException.class);
-        expected.expectMessage(CoreMatchers.containsString("XPath rule expression returned a non-node"));
-        expected.expectMessage(CoreMatchers.containsString("Int64Value"));
-
-        createQuery("1+2").evaluate(dummy);
+        PmdXPathException exception = assertThrows(PmdXPathException.class, () -> {
+            createQuery("1+2").evaluate(dummy);
+        });
+        assertThat(exception.getMessage(), CoreMatchers.containsString("XPath rule expression returned a non-node"));
+        assertThat(exception.getMessage(), CoreMatchers.containsString("Int64Value"));
     }
 
     @Test
@@ -119,7 +115,7 @@ public class SaxonXPathRuleQueryTest {
         DummyRootNode dummy = new DummyRootNode();
 
         List<Node> result = assertQuery(1, "/", dummy);
-        Assert.assertEquals(dummy, result.get(0));
+        assertEquals(dummy, result.get(0));
     }
 
     @Test
@@ -127,7 +123,7 @@ public class SaxonXPathRuleQueryTest {
         DummyRootNode dummy = new DummyRootNode();
 
         List<Node> result = assertQuery(1, "(/)[self::document-node()]", dummy);
-        Assert.assertEquals(dummy, result.get(0));
+        assertEquals(dummy, result.get(0));
     }
 
     @Test
@@ -136,7 +132,7 @@ public class SaxonXPathRuleQueryTest {
         String xpathName = dummy.getXPathNodeName();
 
         List<Node> result = assertQuery(1, "(/)[self::document-node(element(" + xpathName + "))]", dummy);
-        Assert.assertEquals(dummy, result.get(0));
+        assertEquals(dummy, result.get(0));
 
         assertQuery(0, "(/)[self::document-node(element(DummyNodeX))]", dummy);
     }
@@ -146,8 +142,8 @@ public class SaxonXPathRuleQueryTest {
         SaxonXPathRuleQuery query = createQuery("//dummyNode[@Image='baz']/foo | //bar[@Public = 'true'] | //dummyNode[@Public = false()] | //dummyNode");
         List<String> ruleChainVisits = query.getRuleChainVisits();
         assertEquals(2, ruleChainVisits.size());
-        Assert.assertTrue(ruleChainVisits.contains("dummyNode"));
-        Assert.assertTrue(ruleChainVisits.contains("bar"));
+        assertTrue(ruleChainVisits.contains("dummyNode"));
+        assertTrue(ruleChainVisits.contains("bar"));
 
         assertEquals(3, query.nodeNameToXPaths.size());
         assertExpression("(self::node()[(string(data(@Image))) eq \"baz\"])/child::element(foo)", query.getExpressionsForLocalNameOrDefault("dummyNode").get(0));
@@ -162,7 +158,7 @@ public class SaxonXPathRuleQueryTest {
         SaxonXPathRuleQuery query = createQuery("//dummyNode[@Test1 = false()][@Test2 = true()]");
         List<String> ruleChainVisits = query.getRuleChainVisits();
         assertEquals(1, ruleChainVisits.size());
-        Assert.assertTrue(ruleChainVisits.contains("dummyNode"));
+        assertTrue(ruleChainVisits.contains("dummyNode"));
         assertEquals(2, query.nodeNameToXPaths.size());
         assertExpression("(self::node()[(boolean(data(@Test1))) eq false()])[(boolean(data(@Test2))) eq true()]", query.getExpressionsForLocalNameOrDefault("dummyNode").get(0));
         assertExpression("(((/)/descendant::element(dummyNode))[(boolean(data(@Test1))) eq false()])[(boolean(data(@Test2))) eq true()]", query.getFallbackExpr());
@@ -173,7 +169,7 @@ public class SaxonXPathRuleQueryTest {
         SaxonXPathRuleQuery query = createQuery("//dummyNode[pmd-dummy:imageIs(@Image)]");
         List<String> ruleChainVisits = query.getRuleChainVisits();
         assertEquals(1, ruleChainVisits.size());
-        Assert.assertTrue(ruleChainVisits.contains("dummyNode"));
+        assertTrue(ruleChainVisits.contains("dummyNode"));
         assertEquals(2, query.nodeNameToXPaths.size());
         assertExpression("self::node()[Q{http://pmd.sourceforge.net/pmd-dummy}imageIs(exactly-one(convertUntyped(data(@Image))))]", query.getExpressionsForLocalNameOrDefault("dummyNode").get(0));
         assertExpression("((/)/descendant::element(Q{}dummyNode))[Q{http://pmd.sourceforge.net/pmd-dummy}imageIs(exactly-one(convertUntyped(data(@Image))))]", query.getFallbackExpr());
@@ -211,7 +207,7 @@ public class SaxonXPathRuleQueryTest {
         SaxonXPathRuleQuery query = createQuery("//dummyNode/foo/*/bar[@Test = 'false']");
         List<String> ruleChainVisits = query.getRuleChainVisits();
         assertEquals(1, ruleChainVisits.size());
-        Assert.assertTrue(ruleChainVisits.contains("dummyNode"));
+        assertTrue(ruleChainVisits.contains("dummyNode"));
         assertEquals(2, query.nodeNameToXPaths.size());
         assertExpression("(((self::node()/child::element(foo))/child::element())/child::element(bar))[(string(data(@Test))) eq \"false\"]", query.getExpressionsForLocalNameOrDefault("dummyNode").get(0));
         assertExpression("docOrder(((docOrder((((/)/descendant::element(dummyNode))/child::element(foo))/child::element()))/child::element(bar))[(string(data(@Test))) eq \"false\"])", query.getFallbackExpr());
@@ -222,7 +218,7 @@ public class SaxonXPathRuleQueryTest {
         SaxonXPathRuleQuery query = createQuery("//dummyNode/foo[@Baz = 'a']/*/bar[@Test = 'false']");
         List<String> ruleChainVisits = query.getRuleChainVisits();
         assertEquals(1, ruleChainVisits.size());
-        Assert.assertTrue(ruleChainVisits.contains("dummyNode"));
+        assertTrue(ruleChainVisits.contains("dummyNode"));
         assertEquals(2, query.nodeNameToXPaths.size());
         assertExpression("((((self::node()/child::element(foo))[(string(data(@Baz))) eq \"a\"])/child::element())/child::element(bar))[(string(data(@Test))) eq \"false\"]", query.getExpressionsForLocalNameOrDefault("dummyNode").get(0));
         assertExpression("docOrder(((docOrder(((((/)/descendant::element(dummyNode))/child::element(foo))[(string(data(@Baz))) eq \"a\"])/child::element()))/child::element(bar))[(string(data(@Test))) eq \"false\"])", query.getFallbackExpr());
@@ -304,7 +300,7 @@ public class SaxonXPathRuleQueryTest {
         SaxonXPathRuleQuery query = createQuery("//dummyNode[matches(@SimpleName, $testClassPattern)]", testClassPattern);
         List<String> ruleChainVisits = query.getRuleChainVisits();
         assertEquals(1, ruleChainVisits.size());
-        Assert.assertTrue(ruleChainVisits.contains("dummyNode"));
+        assertTrue(ruleChainVisits.contains("dummyNode"));
         assertEquals(2, query.nodeNameToXPaths.size());
         assertExpression("self::node()[matches(convertUntyped(data(@SimpleName)), \"a\", \"\")]", query.getExpressionsForLocalNameOrDefault("dummyNode").get(0));
         assertExpression("((/)/descendant::element(Q{}dummyNode))[matches(convertUntyped(data(@SimpleName)), \"a\", \"\")]", query.getFallbackExpr());
@@ -316,7 +312,7 @@ public class SaxonXPathRuleQueryTest {
         SaxonXPathRuleQuery query = createQuery("//dummyNode[matches(@SimpleName, $testClassPattern)]/foo", testClassPattern);
         List<String> ruleChainVisits = query.getRuleChainVisits();
         assertEquals(1, ruleChainVisits.size());
-        Assert.assertTrue(ruleChainVisits.contains("dummyNode"));
+        assertTrue(ruleChainVisits.contains("dummyNode"));
         assertEquals(2, query.nodeNameToXPaths.size());
         assertExpression("(self::node()[matches(convertUntyped(data(@SimpleName)), \"a\", \"\")])/child::element(Q{}foo)", query.getExpressionsForLocalNameOrDefault("dummyNode").get(0));
         assertExpression("docOrder((((/)/descendant::element(Q{}dummyNode))[matches(convertUntyped(data(@SimpleName)), \"a\", \"\")])/child::element(Q{}foo))", query.getFallbackExpr());
@@ -326,9 +322,9 @@ public class SaxonXPathRuleQueryTest {
     public void ruleChainVisitWithTwoFunctions() {
         SaxonXPathRuleQuery query = createQuery("//dummyNode[ends-with(@Image, 'foo')][pmd-dummy:imageIs('bar')]");
         List<String> ruleChainVisits = query.getRuleChainVisits();
-        Assert.assertEquals(1, ruleChainVisits.size());
-        Assert.assertTrue(ruleChainVisits.contains("dummyNode"));
-        Assert.assertEquals(2, query.nodeNameToXPaths.size());
+        assertEquals(1, ruleChainVisits.size());
+        assertTrue(ruleChainVisits.contains("dummyNode"));
+        assertEquals(2, query.nodeNameToXPaths.size());
         assertExpression("let $v0 := imageIs(\"bar\") return ((self::node()[ends-with(convertUntyped(data(@Image)), \"foo\")])[$v0])", query.nodeNameToXPaths.get("dummyNode").get(0));
     }
 
@@ -336,28 +332,28 @@ public class SaxonXPathRuleQueryTest {
     public void ruleChainWithUnions() {
         SaxonXPathRuleQuery query = createQuery("(//ForStatement | //WhileStatement | //DoStatement)//AssignmentOperator");
         List<String> ruleChainVisits = query.getRuleChainVisits();
-        Assert.assertEquals(0, ruleChainVisits.size());
+        assertEquals(0, ruleChainVisits.size());
     }
 
     @Test
     public void ruleChainWithUnionsAndFilter() {
         SaxonXPathRuleQuery query = createQuery("(//ForStatement | //WhileStatement | //DoStatement)//AssignmentOperator[@Image='foo']");
         List<String> ruleChainVisits = query.getRuleChainVisits();
-        Assert.assertEquals(0, ruleChainVisits.size());
+        assertEquals(0, ruleChainVisits.size());
     }
 
     @Test
     public void ruleChainWithUnionsCustomFunctionsVariant1() {
         SaxonXPathRuleQuery query = createQuery("(//ForStatement | //WhileStatement | //DoStatement)//dummyNode[pmd-dummy:imageIs(@Image)]");
         List<String> ruleChainVisits = query.getRuleChainVisits();
-        Assert.assertEquals(0, ruleChainVisits.size());
+        assertEquals(0, ruleChainVisits.size());
     }
 
     @Test
     public void ruleChainWithUnionsCustomFunctionsVariant2() {
         SaxonXPathRuleQuery query = createQuery("//(ForStatement | WhileStatement | DoStatement)//dummyNode[pmd-dummy:imageIs(@Image)]");
         List<String> ruleChainVisits = query.getRuleChainVisits();
-        Assert.assertEquals(0, ruleChainVisits.size());
+        assertEquals(0, ruleChainVisits.size());
     }
 
     @Test
@@ -366,10 +362,10 @@ public class SaxonXPathRuleQueryTest {
                                                     + " | //WhileStatement//dummyNode[pmd-dummy:imageIs(@Image)]"
                                                     + " | //DoStatement//dummyNode[pmd-dummy:imageIs(@Image)]");
         List<String> ruleChainVisits = query.getRuleChainVisits();
-        Assert.assertEquals(3, ruleChainVisits.size());
-        Assert.assertTrue(ruleChainVisits.contains("ForStatement"));
-        Assert.assertTrue(ruleChainVisits.contains("WhileStatement"));
-        Assert.assertTrue(ruleChainVisits.contains("DoStatement"));
+        assertEquals(3, ruleChainVisits.size());
+        assertTrue(ruleChainVisits.contains("ForStatement"));
+        assertTrue(ruleChainVisits.contains("WhileStatement"));
+        assertTrue(ruleChainVisits.contains("DoStatement"));
 
         final String expectedSubexpression = "(self::node()/descendant::element(dummyNode))[imageIs(exactly-one(convertUntyped(data(@Image))))]";
         assertExpression(expectedSubexpression, query.nodeNameToXPaths.get("ForStatement").get(0));
@@ -392,7 +388,7 @@ public class SaxonXPathRuleQueryTest {
     private static List<Node> assertQuery(int resultSize, String xpath, Node node, PropertyDescriptor<?>... descriptors) {
         SaxonXPathRuleQuery query = createQuery(xpath, descriptors);
         List<Node> result = query.evaluate(node);
-        assertEquals("Wrong number of matched nodes", resultSize, result.size());
+        assertEquals(resultSize, result.size(), "Wrong number of matched nodes");
         return result;
     }
 

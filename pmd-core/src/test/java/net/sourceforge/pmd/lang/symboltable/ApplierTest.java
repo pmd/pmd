@@ -4,13 +4,13 @@
 
 package net.sourceforge.pmd.lang.symboltable;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ApplierTest {
 
@@ -53,9 +53,5 @@ public class ApplierTest {
         l.add(new Object());
         Applier.apply(f, l.iterator());
         assertEquals(2, f.getNumCallbacks());
-    }
-
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(ApplierTest.class);
     }
 }

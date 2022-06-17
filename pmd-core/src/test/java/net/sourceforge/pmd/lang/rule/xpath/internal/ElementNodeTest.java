@@ -5,8 +5,8 @@
 
 package net.sourceforge.pmd.lang.rule.xpath.internal;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.lang.ast.DummyNode.DummyRootNode;
@@ -33,28 +33,28 @@ public class ElementNodeTest {
         Configuration configuration = Configuration.newConfiguration();
 
         AstTreeInfo treeInfo = new AstTreeInfo(root, configuration);
-        Assert.assertSame(root, treeInfo.getRootNode().getUnderlyingNode());
-        Assert.assertEquals(Type.DOCUMENT, treeInfo.getRootNode().getNodeKind());
+        Assertions.assertSame(root, treeInfo.getRootNode().getUnderlyingNode());
+        Assertions.assertEquals(Type.DOCUMENT, treeInfo.getRootNode().getNodeKind());
 
         AstElementNode rootElt = treeInfo.getRootNode().getRootElement();
-        Assert.assertSame(root, rootElt.getUnderlyingNode());
-        Assert.assertEquals(Type.ELEMENT, rootElt.getNodeKind());
-        Assert.assertSame(rootElt, treeInfo.findWrapperFor(root));
+        Assertions.assertSame(root, rootElt.getUnderlyingNode());
+        Assertions.assertEquals(Type.ELEMENT, rootElt.getNodeKind());
+        Assertions.assertSame(rootElt, treeInfo.findWrapperFor(root));
 
         AstElementNode elementFoo0 = rootElt.getChildren().get(0);
-        Assert.assertSame(c0, elementFoo0.getUnderlyingNode());
-        Assert.assertSame(elementFoo0, treeInfo.findWrapperFor(c0));
+        Assertions.assertSame(c0, elementFoo0.getUnderlyingNode());
+        Assertions.assertSame(elementFoo0, treeInfo.findWrapperFor(c0));
 
         AstElementNode elementFoo1 = rootElt.getChildren().get(1);
-        Assert.assertSame(c1, elementFoo1.getUnderlyingNode());
-        Assert.assertSame(elementFoo1, treeInfo.findWrapperFor(c1));
+        Assertions.assertSame(c1, elementFoo1.getUnderlyingNode());
+        Assertions.assertSame(elementFoo1, treeInfo.findWrapperFor(c1));
 
-        Assert.assertFalse(elementFoo0.isSameNodeInfo(elementFoo1));
-        Assert.assertFalse(elementFoo1.isSameNodeInfo(elementFoo0));
-        Assert.assertTrue(elementFoo0.compareOrder(elementFoo1) < 0);
-        Assert.assertTrue(elementFoo1.compareOrder(elementFoo0) > 0);
-        Assert.assertEquals(0, elementFoo0.compareOrder(elementFoo0));
-        Assert.assertEquals(0, elementFoo1.compareOrder(elementFoo1));
+        Assertions.assertFalse(elementFoo0.isSameNodeInfo(elementFoo1));
+        Assertions.assertFalse(elementFoo1.isSameNodeInfo(elementFoo0));
+        Assertions.assertTrue(elementFoo0.compareOrder(elementFoo1) < 0);
+        Assertions.assertTrue(elementFoo1.compareOrder(elementFoo0) > 0);
+        Assertions.assertEquals(0, elementFoo0.compareOrder(elementFoo0));
+        Assertions.assertEquals(0, elementFoo1.compareOrder(elementFoo1));
 
     }
 
@@ -74,19 +74,19 @@ public class ElementNodeTest {
         AstTreeInfo treeInfo = new AstTreeInfo(root, configuration);
 
         AstElementNode rootElt = treeInfo.getRootNode().getRootElement();
-        Assert.assertSame(root, rootElt.getUnderlyingNode());
-        Assert.assertEquals(Type.ELEMENT, rootElt.getNodeKind());
-        Assert.assertSame(rootElt, treeInfo.findWrapperFor(root));
+        Assertions.assertSame(root, rootElt.getUnderlyingNode());
+        Assertions.assertEquals(Type.ELEMENT, rootElt.getNodeKind());
+        Assertions.assertSame(rootElt, treeInfo.findWrapperFor(root));
 
         AstElementNode elementFoo0 = rootElt.getChildren().get(0);
-        Assert.assertEquals(Type.ELEMENT, elementFoo0.getNodeKind());
-        Assert.assertSame(c0, elementFoo0.getUnderlyingNode());
-        Assert.assertSame(elementFoo0, treeInfo.findWrapperFor(c0));
+        Assertions.assertEquals(Type.ELEMENT, elementFoo0.getNodeKind());
+        Assertions.assertSame(c0, elementFoo0.getUnderlyingNode());
+        Assertions.assertSame(elementFoo0, treeInfo.findWrapperFor(c0));
 
         AstElementNode elementText1 = rootElt.getChildren().get(1);
-        Assert.assertEquals(Type.TEXT, elementText1.getNodeKind());
-        Assert.assertSame(c1, elementText1.getUnderlyingNode());
-        Assert.assertSame(elementText1, treeInfo.findWrapperFor(c1));
+        Assertions.assertEquals(Type.TEXT, elementText1.getNodeKind());
+        Assertions.assertSame(c1, elementText1.getUnderlyingNode());
+        Assertions.assertSame(elementText1, treeInfo.findWrapperFor(c1));
     }
 
     @Test
@@ -102,9 +102,9 @@ public class ElementNodeTest {
         AstElementNode rootElt = treeInfo.getRootNode().getRootElement();
 
         AstElementNode elementComment = rootElt.getChildren().get(0);
-        Assert.assertEquals(Type.COMMENT, elementComment.getNodeKind());
-        Assert.assertSame(c1, elementComment.getUnderlyingNode());
-        Assert.assertSame(elementComment, treeInfo.findWrapperFor(c1));
+        Assertions.assertEquals(Type.COMMENT, elementComment.getNodeKind());
+        Assertions.assertSame(c1, elementComment.getUnderlyingNode());
+        Assertions.assertSame(elementComment, treeInfo.findWrapperFor(c1));
     }
 
 }

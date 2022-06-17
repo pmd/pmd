@@ -10,11 +10,9 @@ import static org.hamcrest.Matchers.hasSize;
 
 import java.util.List;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.contrib.java.lang.system.RestoreSystemProperties;
-import org.junit.rules.TestRule;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.Report;
@@ -35,10 +33,9 @@ import net.sourceforge.pmd.lang.rule.AbstractRule;
 import net.sourceforge.pmd.processor.MonoThreadProcessor.MonothreadRunnable;
 import net.sourceforge.pmd.util.datasource.DataSource;
 
-public class PmdRunnableTest {
+import com.github.stefanbirkner.systemlambda.SystemLambda;
 
-    @org.junit.Rule
-    public TestRule restoreSystemProperties = new RestoreSystemProperties();
+public class PmdRunnableTest {
 
     private LanguageVersion dummyThrows;
     private LanguageVersion dummyDefault;
@@ -46,7 +43,7 @@ public class PmdRunnableTest {
     private PmdRunnable pmdRunnable;
     private GlobalReportBuilderListener reportBuilder;
 
-    @Before
+    @BeforeEach
     public void prepare() {
         Language dummyLanguage = LanguageRegistry.findLanguageByTerseName(DummyLanguageModule.TERSE_NAME);
         dummyDefault = dummyLanguage.getDefaultVersion();
@@ -64,42 +61,46 @@ public class PmdRunnableTest {
     }
 
     @Test
-    public void inErrorRecoveryModeErrorsShouldBeLoggedByParser() {
-        System.setProperty(SystemProps.PMD_ERROR_RECOVERY, "");
-        configuration.setDefaultLanguageVersion(dummyThrows);
+    public void inErrorRecoveryModeErrorsShouldBeLoggedByParser() throws Exception {
+        SystemLambda.restoreSystemProperties(() -> {
+            System.setProperty(SystemProps.PMD_ERROR_RECOVERY, "");
+            configuration.setDefaultLanguageVersion(dummyThrows);
 
-        pmdRunnable.run();
-        reportBuilder.close();
-        Assert.assertEquals(1, reportBuilder.getResult().getProcessingErrors().size());
+            pmdRunnable.run();
+            reportBuilder.close();
+            Assertions.assertEquals(1, reportBuilder.getResult().getProcessingErrors().size());
+        });
     }
 
     @Test
-    public void inErrorRecoveryModeErrorsShouldBeLoggedByRule() {
-        System.setProperty(SystemProps.PMD_ERROR_RECOVERY, "");
-        configuration.setDefaultLanguageVersion(dummyDefault);
+    public void inErrorRecoveryModeErrorsShouldBeLoggedByRule() throws Exception {
+        SystemLambda.restoreSystemProperties(() -> {
+            System.setProperty(SystemProps.PMD_ERROR_RECOVERY, "");
+            configuration.setDefaultLanguageVersion(dummyDefault);
 
-        pmdRunnable.run();
-        reportBuilder.close();
-        Report report = reportBuilder.getResult();
-        List<ProcessingError> errors = report.getProcessingErrors();
-        assertThat(errors, hasSize(1));
-        assertThat(errors.get(0).getError(), instanceOf(ContextedAssertionError.class));
+            pmdRunnable.run();
+            reportBuilder.close();
+            Report report = reportBuilder.getResult();
+            List<ProcessingError> errors = report.getProcessingErrors();
+            assertThat(errors, hasSize(1));
+            assertThat(errors.get(0).getError(), instanceOf(ContextedAssertionError.class));
+        });
     }
 
     @Test
     public void withoutErrorRecoveryModeProcessingShouldBeAbortedByParser() {
-        Assert.assertNull(System.getProperty(SystemProps.PMD_ERROR_RECOVERY));
+        Assertions.assertNull(System.getProperty(SystemProps.PMD_ERROR_RECOVERY));
         configuration.setDefaultLanguageVersion(dummyThrows);
 
-        Assert.assertThrows(AssertionError.class, pmdRunnable::run);
+        Assertions.assertThrows(AssertionError.class, pmdRunnable::run);
     }
 
     @Test
     public void withoutErrorRecoveryModeProcessingShouldBeAbortedByRule() {
-        Assert.assertNull(System.getProperty(SystemProps.PMD_ERROR_RECOVERY));
+        Assertions.assertNull(System.getProperty(SystemProps.PMD_ERROR_RECOVERY));
         configuration.setDefaultLanguageVersion(dummyDefault);
 
-        Assert.assertThrows(AssertionError.class, pmdRunnable::run);
+        Assertions.assertThrows(AssertionError.class, pmdRunnable::run);
     }
 
     private static class RuleThatThrows extends AbstractRule {

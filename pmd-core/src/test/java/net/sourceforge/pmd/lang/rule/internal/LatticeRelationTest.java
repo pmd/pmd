@@ -8,7 +8,7 @@ import static java.util.Collections.emptyList;
 import static java.util.Collections.emptySet;
 import static java.util.Collections.singletonList;
 import static net.sourceforge.pmd.util.CollectionUtil.setOf;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -19,18 +19,14 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.pcollections.HashTreePSet;
 import org.pcollections.PSet;
 
 import net.sourceforge.pmd.internal.util.PredicateUtil;
 
 public class LatticeRelationTest {
-
-    @Rule
-    public ExpectedException expect = ExpectedException.none();
 
     @Test
     public void testCustomTopo() {
@@ -307,10 +303,10 @@ public class LatticeRelationTest {
         LatticeRelation<String, String, Set<String>> lattice =
             new LatticeRelation<>(cyclicOrder, PredicateUtil.always(), Objects::toString, Collectors.toSet());
 
-        expect.expect(IllegalStateException.class);
-        expect.expectMessage("a -> b -> c -> d -> a");
-
-        lattice.put("a", "1");
+        IllegalStateException exception = Assertions.assertThrows(IllegalStateException.class, () -> {
+            lattice.put("a", "1");
+        });
+        assertEquals("Cycle in graph: a -> b -> c -> d -> a", exception.getMessage());
 
     }
 

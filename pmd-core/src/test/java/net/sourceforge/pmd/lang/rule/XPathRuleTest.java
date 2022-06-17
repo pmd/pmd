@@ -6,12 +6,10 @@ package net.sourceforge.pmd.lang.rule;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.hamcrest.Matchers;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.contrib.java.lang.system.SystemErrRule;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleContextTest;
@@ -22,10 +20,9 @@ import net.sourceforge.pmd.lang.ast.DummyNode.DummyRootNode;
 import net.sourceforge.pmd.lang.ast.DummyNodeWithDeprecatedAttribute;
 import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
 
-public class XPathRuleTest {
+import com.github.stefanbirkner.systemlambda.SystemLambda;
 
-    @Rule
-    public final SystemErrRule systemErrRule = new SystemErrRule().muteForSuccessfulTests().enableLog();
+public class XPathRuleTest {
 
     @Test
     public void testAttributeDeprecation10() throws Exception {
@@ -41,48 +38,42 @@ public class XPathRuleTest {
     public void testDeprecation(XPathVersion version) throws Exception {
         XPathRule xpr = makeRule(version, "SomeRule");
 
-        systemErrRule.clearLog();
-
         DummyNode firstNode = newNode();
 
-        // with another rule forked from the same one (in multithreaded processor)
-        Report report = RuleContextTest.getReportForRuleApply(xpr, firstNode);
-        assertEquals(1, report.getViolations().size());
-
-        String log = systemErrRule.getLog();
+        String log = SystemLambda.tapSystemErrAndOut(() -> {
+            // with another rule forked from the same one (in multithreaded processor)
+            Report report = RuleContextTest.getReportForRuleApply(xpr, firstNode);
+            assertEquals(1, report.getViolations().size());
+        });
         assertThat(log, Matchers.containsString("Use of deprecated attribute 'dummyNode/@Size' by XPath rule 'SomeRule'"));
         assertThat(log, Matchers.containsString("Use of deprecated attribute 'dummyNode/@Name' by XPath rule 'SomeRule', please use @Image instead"));
 
 
-        systemErrRule.clearLog();
-
-        // with another node
-        report = RuleContextTest.getReportForRuleApply(xpr, newNode());
-
-        assertEquals(1, report.getViolations().size());
-
-        assertEquals("", systemErrRule.getLog()); // no additional warnings
+        log = SystemLambda.tapSystemErrAndOut(() -> {
+            // with another node
+            Report report = RuleContextTest.getReportForRuleApply(xpr, newNode());
+            assertEquals(1, report.getViolations().size());
+        });
+        assertEquals("", log); // no additional warnings
 
 
-        // with another rule forked from the same one (in multithreaded processor)
-        report = RuleContextTest.getReportForRuleApply(xpr.deepCopy(), newNode());
-
-        assertEquals(1, report.getViolations().size());
-
-        assertEquals("", systemErrRule.getLog()); // no additional warnings
+        log = SystemLambda.tapSystemErrAndOut(() -> {
+            // with another rule forked from the same one (in multithreaded processor)
+            Report report = RuleContextTest.getReportForRuleApply(xpr.deepCopy(), newNode());
+            assertEquals(1, report.getViolations().size());
+        });
+        assertEquals("", log); // no additional warnings
 
         // with another rule on the same node, new warnings
         XPathRule otherRule = makeRule(version, "OtherRule");
         otherRule.setRuleSetName("rset.xml");
 
-        report = RuleContextTest.getReportForRuleApply(otherRule, firstNode);
-
-        assertEquals(1, report.getViolations().size());
-
-        log = systemErrRule.getLog();
+        log = SystemLambda.tapSystemErrAndOut(() -> {
+            Report report = RuleContextTest.getReportForRuleApply(otherRule, firstNode);
+            assertEquals(1, report.getViolations().size());
+        });
         assertThat(log, Matchers.containsString("Use of deprecated attribute 'dummyNode/@Size' by XPath rule 'OtherRule' (in ruleset 'rset.xml')"));
         assertThat(log, Matchers.containsString("Use of deprecated attribute 'dummyNode/@Name' by XPath rule 'OtherRule' (in ruleset 'rset.xml'), please use @Image instead"));
-
     }
 
     public XPathRule makeRule(XPathVersion version, String name) {

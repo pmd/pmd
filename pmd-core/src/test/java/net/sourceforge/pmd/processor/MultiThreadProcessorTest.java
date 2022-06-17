@@ -9,8 +9,8 @@ import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.Report.GlobalReportBuilderListener;
@@ -79,10 +79,10 @@ public class MultiThreadProcessorTest {
 
         // if the rule is not executed, then maybe a
         // ConcurrentModificationException happened
-        Assert.assertEquals("Test rule has not been executed", 2, NotThreadSafeRule.count.get());
+        Assertions.assertEquals(2, NotThreadSafeRule.count.get(), "Test rule has not been executed");
         // if the violation is not reported, then the rule instances have been
         // shared between the threads
-        Assert.assertEquals("Missing violation", 1, reportListener.violations.get());
+        Assertions.assertEquals(1, reportListener.violations.get(), "Missing violation");
     }
 
     public static class NotThreadSafeRule extends AbstractRule {

@@ -4,8 +4,8 @@
 
 package net.sourceforge.pmd.lang;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.cli.PMDCommandLineInterface;
 import net.sourceforge.pmd.cli.PMDParameters;
@@ -21,6 +21,6 @@ public class LanguageParameterTest {
         String[] args = { "-d", "source_folder", "-f", "ideaj", "-P", "sourcePath=/home/user/source/", "-R", "java-empty", "-force-language", "dummy"};
         PMDCommandLineInterface.extractParameters(params, args, "PMD");
 
-        Assert.assertEquals(new DummyLanguageModule().getDefaultVersion().getName(), params.toConfiguration().getForceLanguageVersion().getName());
+        Assertions.assertEquals(new DummyLanguageModule().getDefaultVersion().getName(), params.toConfiguration().getForceLanguageVersion().getName());
     }
 }
