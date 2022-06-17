@@ -78,8 +78,6 @@ public class ImmutableFieldRule extends AbstractLombokAwareRule {
     }
 
     private boolean isImmutableField(VariableNameDeclaration field, List<NameOccurrence> usages, Set<ASTConstructorDeclaration> allConstructors) {
-        boolean assignedInMethod = false;
-        boolean assignedInLambda = false;
         Set<ASTConstructorDeclaration> consSet = new HashSet<>(); // set of constructors accessing the field
         for (NameOccurrence occ : usages) {
             JavaNameOccurrence jocc = (JavaNameOccurrence) occ;
@@ -88,31 +86,25 @@ public class ImmutableFieldRule extends AbstractLombokAwareRule {
                 ASTConstructorDeclaration constructor = node.getFirstParentOfType(ASTConstructorDeclaration.class);
                 if (constructor != null && isSameClass(field, constructor)) {
                     if (inLoopOrTry(node)) {
-                        assignedInMethod = true;
-                        continue;
+                        return false;
                     }
 
-                    if (inAnonymousInnerClass(node)) {
-                        assignedInMethod = true;
-                    } else if (node.getFirstParentOfType(ASTLambdaExpression.class) != null) {
-                        assignedInLambda = true;
+                    if (inAnonymousInnerClass(node) || isInLambda(node)) {
+                        return false; // leaks
                     } else {
                         consSet.add(constructor);
                     }
-                } else {
-                    if (node.getFirstParentOfType(ASTLambdaExpression.class) != null) {
-                        assignedInLambda = true;
-                    } else {
-                        assignedInMethod = true;
-                    }
+                } else if (inAnonymousInnerClass(node) || isInLambda(node)) {
+                    return false; // leaks
                 }
             }
         }
-        if (assignedInLambda || assignedInMethod) {
-            return false;
-        }
         return (allConstructors.equals(consSet) && !allConstructors.isEmpty())
                ^ initializedWhenDeclared(field);
+    }
+
+    private boolean isInLambda(Node node) {
+        return node.getFirstParentOfType(ASTLambdaExpression.class) != null;
     }
 
     /**
