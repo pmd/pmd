@@ -621,4 +621,32 @@ public class ExampleImmutableField {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>#4008 FN with field assigned only in initializer</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            public class Foo {
+                private String variable = "hello";
+
+                public Goo() {
+
+                }
+                public String getVariable() {
+                    return variable;
+                }
+            }
+            ]]></code>
+    </test-code> <test-code>
+        <description>#4008 FN with field assigned only in initializer (no ctor)</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            public class Foo {
+                private String variable = "hello";
+
+                public String getVariable() {
+                    return variable;
+                }
+            }
+            ]]></code>
+    </test-code>
 </test-data>
