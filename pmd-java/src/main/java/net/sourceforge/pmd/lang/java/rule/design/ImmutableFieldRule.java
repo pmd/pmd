@@ -94,11 +94,13 @@ public class ImmutableFieldRule extends AbstractLombokAwareRule {
                     } else {
                         consSet.add(constructor);
                     }
-                } else if (inAnonymousInnerClass(node) || isInLambda(node)) {
-                    return false; // leaks
+                } else {
+                    // assigned outside of ctors.
+                    return false;
                 }
             }
         }
+
         return (allConstructors.equals(consSet) && !allConstructors.isEmpty())
                ^ initializedWhenDeclared(field);
     }
