@@ -636,7 +636,8 @@ public class ExampleImmutableField {
                 }
             }
             ]]></code>
-    </test-code> <test-code>
+    </test-code>
+    <test-code>
         <description>#4008 FN with field assigned only in initializer (no ctor)</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
@@ -648,5 +649,18 @@ public class ExampleImmutableField {
                 }
             }
             ]]></code>
+    </test-code>
+    <test-code>
+        <description>[java] ImmutableField: Do not flag fields annotated with @Inject #4011</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import javax.inject.Inject;
+public class Foo {
+    @Inject
+    private MyService service;
+}
+
+interface MyService {}
+]]></code>
     </test-code>
 </test-data>
