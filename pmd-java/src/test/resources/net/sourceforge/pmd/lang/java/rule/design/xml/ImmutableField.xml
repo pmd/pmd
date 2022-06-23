@@ -663,4 +663,18 @@ public class Foo {
 interface MyService {}
 ]]></code>
     </test-code>
+    <test-code>
+        <description>[java] ImmutableField reports fields annotated with @FindBy and @FindBys (Selenium) #4020</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class SomePage {
+    @org.openqa.selenium.support.FindBy(id = "id1")
+    private WebElement field1;
+
+    @org.openqa.selenium.support.FindBys(value = {@org.openqa.selenium.support.FindByFindBy(id = "id2"),
+                                                       @org.openqa.selenium.support.FindBy(xpath = "//div/table")})
+    private WebElement table;
+}
+]]></code>
+    </test-code>
 </test-data>
