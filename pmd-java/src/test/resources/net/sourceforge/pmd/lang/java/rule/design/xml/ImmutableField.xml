@@ -677,4 +677,17 @@ public class SomePage {
 }
 ]]></code>
     </test-code>
+    <test-code>
+        <description>[java] ImmutableField reports fields annotated with @GwtMock (GwtMockito) and @Spy (Mockito) #4004</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class SomeTest {
+    @com.google.gwtmockito.GwtMock
+    private String someMock;
+
+    @org.mockito.Spy
+    private String someSpy;
+}
+]]></code>
+    </test-code>
 </test-data>
