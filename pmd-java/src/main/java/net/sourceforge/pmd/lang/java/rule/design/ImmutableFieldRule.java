@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.rule.design;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -34,12 +32,6 @@ import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
  * @author Olander
  */
 public class ImmutableFieldRule extends AbstractLombokAwareRule {
-
-    @Override
-    protected Collection<String> defaultSuppressionAnnotations() {
-        Collection<String> defaultValues = new ArrayList<>(super.defaultSuppressionAnnotations());
-        return defaultValues;
-    }
 
     @Override
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
