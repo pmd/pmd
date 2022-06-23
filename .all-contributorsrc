@@ -6703,6 +6703,15 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "lgemeinhardt",
+      "name": "lgemeinhardt",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1395165?v=4",
+      "profile": "https://github.com/lgemeinhardt",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,
