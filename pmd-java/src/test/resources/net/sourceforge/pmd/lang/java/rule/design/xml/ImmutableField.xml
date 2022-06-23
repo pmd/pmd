@@ -690,4 +690,39 @@ public class SomeTest {
 }
 ]]></code>
     </test-code>
+    <test-code>
+        <description>[java] ImmutableField: Do not flag fields in @Entity #3823</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import javax.persistence.Id;
+import javax.persistence.Column;
+@Entity
+@Table(name = "my_table")
+public class MyTable implements Serializable
+{
+   private static final long serialVersionUID = 1L;
+
+   @Id
+   @Column(name = "directory", nullable = false)
+   private long m_id;  // PMD Violation: ImmutableField
+
+   // other fields
+
+   /**
+    * For JPA
+    */
+   public MyTable()
+   {
+      // nothing to do
+   }
+
+   public long getId()
+   {
+      return m_id;
+   }
+}
+]]></code>
+    </test-code>
 </test-data>
