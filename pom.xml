@@ -893,6 +893,15 @@
                 <artifactId>kotest-runner-junit5-jvm</artifactId>
                 <version>${kotest.version}</version>
                 <scope>test</scope>
+                <exclusions>
+                    <!-- exclude transitive dependency to fix CVE-2021-29425
+                         kotest 4.4.3 depends on commons-io 2.6
+                      -->
+                    <exclusion>
+                        <groupId>commons-io</groupId>
+                        <artifactId>commons-io</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>io.kotest</groupId>
@@ -912,6 +921,26 @@
                 <artifactId>annotations</artifactId>
                 <version>13.0</version>
                 <scope>test</scope>
+            </dependency>
+
+            <!-- transitive dependency through io.kotest/kotest-runner-junit5-jvm@4.4.3
+                 upgrade to 4.8.112 to fix [sonatype-2021-1074] CWE-611: Improper Restriction of XML External Entity Reference ('XXE')
+                 https://github.com/classgraph/classgraph/releases/tag/classgraph-4.8.112
+              -->
+            <dependency>
+                <groupId>io.github.classgraph</groupId>
+                <artifactId>classgraph</artifactId>
+                <version>4.8.112</version>
+            </dependency>
+
+            <!-- transitive dependency through org.scalameta:trees_2.13
+                 upgrade to 3.16.1 to fix CVE-2021-22569 A potential Denial of Service issue in protobuf-java
+                 https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-wrvw-hg22-4m67
+            -->
+            <dependency>
+                <groupId>com.google.protobuf</groupId>
+                <artifactId>protobuf-java</artifactId>
+                <version>3.16.1</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
