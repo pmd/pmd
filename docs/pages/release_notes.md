@@ -19,83 +19,34 @@ This is a {{ site.pmd.release_type }} release.
 
 ### New and noteworthy
 
-
-#### New programmatic API
-
-This release introduces a new programmatic API to replace the inflexible {% jdoc core::PMD %} class.
-Programmatic execution of PMD should now be done with a {% jdoc core::PMDConfiguration %}
-and a {% jdoc core::PmdAnalysis %}, for instance:
-
-```java
-PMDConfiguration config = new PMDConfiguration();
-config.setDefaultLanguageVersion(LanguageRegistry.findLanguageByTerseName("java").getVersion("11"));
-config.setInputPaths("src/main/java");
-config.prependAuxClasspath("target/classes");
-config.setMinimumPriority(RulePriority.HIGH);
-config.addRuleSet("rulesets/java/quickstart.xml");
-config.setReportFormat("xml");
-config.setReportFile("target/pmd-report.xml");
-
-try (PmdAnalysis pmd = PmdAnalysis.create(config)) {
-    // note: don't use `config` once a PmdAnalysis has been created.
-    // optional: add more rulesets
-    pmd.addRuleSet(pmd.newRuleSetLoader().loadFromResource("custom-ruleset.xml"));
-    // optional: add more files
-    pmd.files().addFile(Paths.get("src", "main", "more-java", "ExtraSource.java"));
-    // optional: add more renderers
-    pmd.addRenderer(renderer);
-
-    // or just call PMD
-    pmd.performAnalysis();
-}
-```
-
-The `PMD` class still supports methods related to CLI execution: `runPmd` and `main`.
-All other members are now deprecated for removal.
-The CLI itself remains compatible, if you run PMD via command-line, no action is required on your part.
-
 ### Fixed Issues
-
-*   apex-performance
-    *   [#3773](https://github.com/pmd/pmd/pull/3773): \[apex] EagerlyLoadedDescribeSObjectResult false positives with SObjectField.getDescribe()
-*   core
-    *   [#3299](https://github.com/pmd/pmd/issues/3299): \[core] Deprecate system properties of PMDCommandLineInterface
+* core
+    * [#3999](https://github.com/pmd/pmd/issues/3999): \[cli] All files are analyzed despite parameter `--file-list`
+    * [#4009](https://github.com/pmd/pmd/issues/4009): \[core] Cannot build PMD with Temurin 17
+* java-bestpractices
+    * [#3824](https://github.com/pmd/pmd/issues/3824): \[java] UnusedPrivateField: Do not flag fields annotated with @<!-- -->Version
+    * [#3825](https://github.com/pmd/pmd/issues/3825): \[java] UnusedPrivateField: Do not flag fields annotated with @<!-- -->Id or @<!-- -->EmbeddedId
+* java-design
+    * [#3823](https://github.com/pmd/pmd/issues/3823): \[java] ImmutableField: Do not flag fields in @<!-- -->Entity
+    * [#3981](https://github.com/pmd/pmd/issues/3981): \[java] ImmutableField reports fields annotated with @<!-- -->Value (Spring)
+    * [#3998](https://github.com/pmd/pmd/issues/3998): \[java] ImmutableField reports fields annotated with @<!-- -->Captor (Mockito)
+    * [#4004](https://github.com/pmd/pmd/issues/4004): \[java] ImmutableField reports fields annotated with @<!-- -->GwtMock (GwtMockito) and @<!-- -->Spy (Mockito)
+    * [#4008](https://github.com/pmd/pmd/issues/4008): \[java] ImmutableField not reporting fields that are only initialized in the declaration
+    * [#4011](https://github.com/pmd/pmd/issues/4011): \[java] ImmutableField: Do not flag fields annotated with @<!-- -->Inject
+    * [#4020](https://github.com/pmd/pmd/issues/4020): \[java] ImmutableField reports fields annotated with @<!-- -->FindBy and @<!-- -->FindBys (Selenium)
+* java-errorprone
+    * [#3936](https://github.com/pmd/pmd/issues/3936): \[java] AvoidFieldNameMatchingMethodName should consider enum class
+    * [#3937](https://github.com/pmd/pmd/issues/3937): \[java] AvoidDuplicateLiterals - uncompilable test cases
 
 ### API Changes
 
-#### Deprecated API
-
-* Several members of {% jdoc core::PMD %} have been newly deprecated, including:
-  - `PMD#EOL`: use `System#lineSeparator()`
-  - `PMD#SUPPRESS_MARKER`: use {% jdoc core::PMDConfiguration#DEFAULT_SUPPRESS_MARKER %}
-  - `PMD#processFiles`: use the [new programmatic API](#new-programmatic-api)
-  - `PMD#getApplicableFiles`: is internal
-* {% jdoc !!core::PMDConfiguration#prependClasspath(java.lang.String) %} is deprecated
-  in favour of {% jdoc core::PMDConfiguration#prependAuxClasspath(java.lang.String) %}.
-* {% jdoc !!core::PMDConfiguration#setRuleSets(java.lang.String) %} and
-  {% jdoc core::PMDConfiguration#getRuleSets() %} are deprecated. Use instead
-  {% jdoc core::PMDConfiguration#setRuleSets(java.util.List) %},
-  {% jdoc core::PMDConfiguration#addRuleSet(java.lang.String) %},
-  and {% jdoc core::PMDConfiguration#getRuleSetPaths() %}.
-* Several members of {% jdoc test::cli.BaseCLITest %} have been deprecated with replacements.
-* Several members of {% jdoc core::cli.PMDCommandLineInterface %} have been explicitly deprecated.
-  The whole class however was deprecated long ago already with 6.30.0. It is internal API and should
-  not be used.
-
-#### Experimental APIs
-
-*   Together with the [new programmatic API](#new-programmatic-api) the interface
-    {% jdoc core::lang.document.TextFile %} has been added as *experimental*. It intends
-    to replace {% jdoc core::util.datasource.DataSource %} and {% jdoc core::cpd.SourceCode %} in the long term.
-    
-    This interface will change in PMD 7 to support read/write operations
-    and other things. You don't need to use it in PMD 6, as {% jdoc core::lang.document.FileCollector %}
-    decouples you from this. A file collector is available through {% jdoc !!core::PmdAnalysis#files() %}.
-
-
 ### External Contributions
-
-*   [#3773](https://github.com/pmd/pmd/pull/3773): \[apex] EagerlyLoadedDescribeSObjectResult false positives with SObjectField.getDescribe() - [@filiprafalowicz](https://github.com/filiprafalowicz)
+* [#3985](https://github.com/pmd/pmd/pull/3985): \[java] Fix false negative problem about Enum in AvoidFieldNameMatchingMethodName #3936 - [@Scrsloota](https://github.com/Scrsloota)
+* [#3993](https://github.com/pmd/pmd/pull/3993): \[java] AvoidDuplicateLiterals - Add the method "buz" definition to test cases - [@dalizi007](https://github.com/dalizi007)
+* [#4002](https://github.com/pmd/pmd/pull/4002): \[java] ImmutableField - Ignore fields annotated with @<!-- -->Value (Spring) or @<!-- -->Captor (Mockito) - [@jjlharrison](https://github.com/jjlharrison)
+* [#4003](https://github.com/pmd/pmd/pull/4003): \[java] UnusedPrivateField - Ignore fields annotated with @<!-- -->Id/@<!-- -->EmbeddedId/@<!-- -->Version (JPA) or @<!-- -->Mock/@<!-- -->Spy/@<!-- -->MockBean (Mockito/Spring) - [@jjlharrison](https://github.com/jjlharrison)
+* [#4006](https://github.com/pmd/pmd/pull/4006): \[doc] Fix eclipse plugin update site URL - [@shiomiyan](https://github.com/shiomiyan)
+* [#4010](https://github.com/pmd/pmd/pull/4010): \[core] Bump kotlin to version 1.7.0 - [@maikelsteneker](https://github.com/maikelsteneker)
 
 {% endtocmaker %}
 

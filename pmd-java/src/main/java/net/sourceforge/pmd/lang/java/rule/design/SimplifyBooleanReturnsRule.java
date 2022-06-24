@@ -12,10 +12,10 @@ import static net.sourceforge.pmd.lang.java.ast.BinaryOp.GT;
 import static net.sourceforge.pmd.lang.java.ast.BinaryOp.LE;
 import static net.sourceforge.pmd.lang.java.ast.BinaryOp.LT;
 import static net.sourceforge.pmd.lang.java.ast.BinaryOp.NE;
-import static net.sourceforge.pmd.lang.java.ast.BinaryOp.isInfixExprWithOperator;
 import static net.sourceforge.pmd.lang.java.ast.BinaryOp.opsWithGreaterPrecedence;
-import static net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil.areComplements;
-import static net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil.isBooleanLiteral;
+import static net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils.areComplements;
+import static net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils.isBooleanLiteral;
+import static net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils.isInfixExprWithOperator;
 
 import java.util.EnumSet;
 import java.util.Set;
@@ -33,8 +33,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpression;
 import net.sourceforge.pmd.lang.java.ast.BinaryOp;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
+import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
-import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind;
 
 public class SimplifyBooleanReturnsRule extends AbstractJavaRulechainRule {
@@ -157,7 +157,7 @@ public class SimplifyBooleanReturnsRule extends AbstractJavaRulechainRule {
             // == -> !=
             || isInfixExprWithOperator(e, NEGATABLE_OPS)
             // !! ->
-            || JavaRuleUtil.isBooleanNegation(e)) {
+            || JavaAstUtils.isBooleanNegation(e)) {
             return false;
         } else if (isInfixExprWithOperator(e, CONDITIONAL_OR)
             || isInfixExprWithOperator(e, CONDITIONAL_AND)) {

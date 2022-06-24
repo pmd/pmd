@@ -12,9 +12,7 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.nio.charset.Charset;
 
-import org.apache.commons.io.ByteOrderMark;
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.io.input.BOMInputStream;
+import net.sourceforge.pmd.util.IOUtil;
 
 /**
  * Represents a source file to be analyzed. Different implementations can get
@@ -59,10 +57,10 @@ public interface DataSource extends Closeable {
         String fullSource;
         try (InputStream stream = dataSource.getInputStream();
              // Skips the byte-order mark
-             BOMInputStream bomIs = new BOMInputStream(stream, ByteOrderMark.UTF_8, ByteOrderMark.UTF_16BE);
+             IOUtil.BomAwareInputStream bomIs = new IOUtil.BomAwareInputStream(stream);
              Reader reader = new InputStreamReader(bomIs, sourceEncoding)) {
 
-            fullSource = IOUtils.toString(reader); // this already buffers properly
+            fullSource = IOUtil.readToString(reader); // this already buffers properly
         }
         return fullSource;
     }

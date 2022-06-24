@@ -11,13 +11,10 @@ import java.util.List;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
-import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.lang.rule.xpath.DeprecatedAttribute;
-import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
 // @formatter:off
 /**
@@ -33,13 +30,9 @@ import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
  *    <li> Resource declarations occurring in try-with-resources statements.
  * </ul>
  *
- * <p>Since this node conventionally represents the declared variable in PMD, our symbol table
- * populates it with a {@link VariableNameDeclaration}, and its usages can be accessed through
- * the method {@link #getUsages()}.
- *
- * <p>Type resolution assigns the type of the variable to this node. See {@link #getType()}'s
- * documentation for the contract of this method.
- *
+ * <p>Since this node conventionally represents the declared variable in PMD,
+ * it owns a {@link JVariableSymbol} and can provide access to
+ * {@linkplain #getLocalUsages() variable usages}.
  *
  * <pre class="grammar">
  *
@@ -51,8 +44,6 @@ import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 // @formatter:on
 public final class ASTVariableDeclaratorId extends AbstractTypedSymbolDeclarator<JVariableSymbol> implements AccessNode, SymbolDeclaratorNode, FinalizableNode {
 
-    private VariableNameDeclaration nameDeclaration;
-
     private List<ASTNamedReferenceExpr> usages = Collections.emptyList();
 
     ASTVariableDeclaratorId(int id) {
@@ -62,28 +53,6 @@ public final class ASTVariableDeclaratorId extends AbstractTypedSymbolDeclarator
     @Override
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
-    }
-
-    /**
-     * Note: this might be <code>null</code> in certain cases.
-     */
-    public VariableNameDeclaration getNameDeclaration() {
-        return nameDeclaration;
-    }
-
-    @InternalApi
-    @Deprecated
-    public void setNameDeclaration(VariableNameDeclaration decl) {
-        nameDeclaration = decl;
-    }
-
-    /**
-     * @deprecated transitional, use {@link #getLocalUsages()}
-     */
-    @Deprecated
-    public List<NameOccurrence> getUsages() {
-        return getScope().getDeclarations(VariableNameDeclaration.class)
-                         .getOrDefault(nameDeclaration, Collections.emptyList());
     }
 
     /**

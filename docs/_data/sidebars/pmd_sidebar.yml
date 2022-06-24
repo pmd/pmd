@@ -178,6 +178,18 @@ entries:
     - title: null
       output: web, pdf
       subfolders:
+      - title: HTML Rules
+        output: web, pdf
+        subfolderitems:
+        - title: Index
+          output: web, pdf
+          url: /pmd_rules_html.html
+        - title: Best Practices
+          output: web, pdf
+          url: /pmd_rules_html_bestpractices.html
+    - title: null
+      output: web, pdf
+      subfolders:
       - title: Java Rules
         output: web, pdf
         subfolderitems:
@@ -370,9 +382,18 @@ entries:
     - title: Apex
       url: /pmd_languages_apex.html
       output: web, pdf
-    - title: Java
-      url: /pmd_languages_java.html
+    - title: null
       output: web, pdf
+      subfolders:
+      - title: Java
+        output: web, pdf
+        subfolderitems:
+        - title: Java Support
+          url: /pmd_languages_java.html
+          output: web, pdf
+        - title: Java Versions
+          url: /pmd_languages_java_versions.html
+          output: web, pdf
     - title: JSP
       url: /pmd_languages_jsp.html
       output: web, pdf
@@ -384,6 +405,12 @@ entries:
       output: web, pdf
     - title: Visualforce
       url: /pmd_languages_visualforce.html
+      output: web, pdf
+    - title: XML and XML dialects
+      url: /pmd_languages_xml.html
+      output: web, pdf
+    - title: HTML
+      url: /pmd_languages_html.html
       output: web, pdf
   - title: Developer Documentation
     output: web, pdf

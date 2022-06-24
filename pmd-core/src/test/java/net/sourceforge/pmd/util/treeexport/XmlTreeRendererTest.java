@@ -5,11 +5,6 @@
 package net.sourceforge.pmd.util.treeexport;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Rule;
@@ -31,7 +26,7 @@ public class XmlTreeRendererTest {
     @Test
     public void testRenderWithAttributes() throws IOException {
 
-        DummyNode dummy = dummyTree1();
+        DummyNode dummy = TreeRenderersTest.dummyTree1();
 
         XmlRenderingConfig strat = new XmlRenderingConfig();
         strat.lineSeparator("\n");
@@ -53,7 +48,7 @@ public class XmlTreeRendererTest {
     @Test
     public void testRenderWithCustomLineSep() throws IOException {
 
-        DummyNode dummy = dummyTree1();
+        DummyNode dummy = TreeRenderersTest.dummyTree1();
 
         XmlRenderingConfig strat = new XmlRenderingConfig();
         strat.lineSeparator("\r\n");
@@ -75,7 +70,7 @@ public class XmlTreeRendererTest {
     @Test
     public void testRenderWithCustomIndent() throws IOException {
 
-        DummyNode dummy = dummyTree1();
+        DummyNode dummy = TreeRenderersTest.dummyTree1();
 
         XmlRenderingConfig strat = new XmlRenderingConfig().lineSeparator("").indentWith("");
 
@@ -97,7 +92,7 @@ public class XmlTreeRendererTest {
     @Test
     public void testRenderWithNoAttributes() throws IOException {
 
-        DummyNode dummy = dummyTree1();
+        DummyNode dummy = TreeRenderersTest.dummyTree1();
 
         XmlRenderingConfig strat = new XmlRenderingConfig() {
             @Override
@@ -124,7 +119,7 @@ public class XmlTreeRendererTest {
     @Test
     public void testRenderFilterAttributes() throws IOException {
 
-        DummyNode dummy = dummyTree1();
+        DummyNode dummy = TreeRenderersTest.dummyTree1();
 
         XmlRenderingConfig strategy = new XmlRenderingConfig() {
             @Override
@@ -150,7 +145,7 @@ public class XmlTreeRendererTest {
     @Test
     public void testInvalidAttributeName() throws IOException {
 
-        MyDummyNode dummy = dummyTree1();
+        DummyNode dummy = TreeRenderersTest.dummyTree1();
 
         dummy.setXPathAttribute("&notAName", "foo");
 
@@ -171,7 +166,7 @@ public class XmlTreeRendererTest {
     @Test
     public void testEscapeAttributes() throws IOException {
 
-        MyDummyNode dummy = dummyTree1();
+        DummyNode dummy = TreeRenderersTest.dummyTree1();
 
         dummy.setXPathAttribute("eh", " 'a &> b\" ");
 
@@ -194,7 +189,7 @@ public class XmlTreeRendererTest {
     @Test
     public void testEscapeDoubleAttributes() throws IOException {
 
-        MyDummyNode dummy = dummyTree1();
+        DummyNode dummy = TreeRenderersTest.dummyTree1();
 
         dummy.setXPathAttribute("eh", " 'a &> b\" ");
 
@@ -217,7 +212,7 @@ public class XmlTreeRendererTest {
     @Test
     public void testNoProlog() throws IOException {
 
-        DummyNode dummy = dummyTree1();
+        DummyNode dummy = TreeRenderersTest.dummyTree1();
 
 
         XmlRenderingConfig strat = new XmlRenderingConfig().lineSeparator("\n").renderProlog(false);
@@ -239,7 +234,7 @@ public class XmlTreeRendererTest {
     @Test
     public void testDefaultLineSep() throws IOException {
 
-        DummyNode dummy = dummyTree1();
+        DummyNode dummy = TreeRenderersTest.dummyTree1();
 
         XmlTreeRenderer renderer = new XmlTreeRenderer();
 
@@ -255,47 +250,4 @@ public class XmlTreeRendererTest {
                                 + "</dummyNode>" + System.lineSeparator(), out.toString());
 
     }
-
-
-    public MyDummyNode dummyTree1() {
-        MyDummyNode dummy = new MyDummyNode();
-
-        dummy.setXPathAttribute("foo", "bar");
-        dummy.setXPathAttribute("ohio", "4");
-
-        MyDummyNode dummy1 = new MyDummyNode();
-
-        dummy1.setXPathAttribute("o", "ha");
-
-        MyDummyNode dummy2 = new MyDummyNode();
-
-        dummy.addChild(dummy1, 0);
-        dummy.addChild(dummy2, 1);
-        return dummy;
-    }
-
-    private static class MyDummyNode extends DummyNode {
-
-
-        private final Map<String, String> attributes = new HashMap<>();
-
-        public void setXPathAttribute(String name, String value) {
-            attributes.put(name, value);
-        }
-
-        @Override
-        public Iterator<Attribute> getXPathAttributesIterator() {
-
-            List<Attribute> attrs = new ArrayList<>();
-            for (String name : attributes.keySet()) {
-                attrs.add(new Attribute(this, name, attributes.get(name)));
-            }
-
-            return attrs.iterator();
-        }
-
-
-    }
-
-
 }

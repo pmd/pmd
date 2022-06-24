@@ -11,7 +11,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.exception.ContextedRuntimeException;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
@@ -25,6 +24,7 @@ import net.sourceforge.pmd.lang.ast.Parser;
 import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
 import net.sourceforge.pmd.lang.ast.SemanticErrorReporter;
 import net.sourceforge.pmd.lang.vf.DataType;
+import net.sourceforge.pmd.util.IOUtil;
 
 import apex.jorje.semantic.symbol.type.BasicType;
 
@@ -69,7 +69,7 @@ class ApexClassPropertyTypes extends SalesforceFieldTypes {
     static Node parseApex(Path apexFilePath) {
         String fileText;
         try (BufferedReader reader = Files.newBufferedReader(apexFilePath, StandardCharsets.UTF_8)) {
-            fileText = IOUtils.toString(reader);
+            fileText = IOUtil.readToString(reader);
         } catch (IOException e) {
             throw new ContextedRuntimeException(e).addContextValue("apexFilePath", apexFilePath);
         }

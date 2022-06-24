@@ -20,12 +20,12 @@ import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.AccessNode.Visibility;
 import net.sourceforge.pmd.lang.java.ast.JModifier;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
+import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.rule.internal.DataflowPass;
 import net.sourceforge.pmd.lang.java.rule.internal.DataflowPass.AssignmentEntry;
 import net.sourceforge.pmd.lang.java.rule.internal.DataflowPass.DataflowResult;
 import net.sourceforge.pmd.lang.java.rule.internal.JavaPropertyUtil;
-import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.util.CollectionUtil;
 
@@ -43,9 +43,6 @@ public class ImmutableFieldRule extends AbstractJavaRulechainRule {
             "lombok.Value"
         );
 
-    private static final Set<String> INVALIDATING_FIELD_ANNOTS =
-        setOf("lombok.Setter");
-
     public ImmutableFieldRule() {
         super(ASTFieldDeclaration.class);
         definePropertyDescriptor(IGNORED_ANNOTS);
@@ -54,13 +51,11 @@ public class ImmutableFieldRule extends AbstractJavaRulechainRule {
 
     @Override
     public Object visit(ASTFieldDeclaration field, Object data) {
-
         ASTAnyTypeDeclaration enclosingType = field.getEnclosingType();
         if (field.getEffectiveVisibility().isAtMost(Visibility.V_PRIVATE)
             && !field.getModifiers().hasAny(JModifier.VOLATILE, JModifier.STATIC, JModifier.FINAL)
-            && !JavaRuleUtil.hasAnyAnnotation(field, INVALIDATING_FIELD_ANNOTS)
-            && !JavaRuleUtil.hasAnyAnnotation(enclosingType, INVALIDATING_CLASS_ANNOT)
-            && !JavaRuleUtil.hasAnyAnnotation(field, getProperty(IGNORED_ANNOTS))) {
+            && !JavaAstUtils.hasAnyAnnotation(enclosingType, INVALIDATING_CLASS_ANNOT)
+            && !JavaAstUtils.hasAnyAnnotation(field, getProperty(IGNORED_ANNOTS))) {
 
             DataflowResult dataflow = DataflowPass.getDataflowResult(field.getRoot());
 

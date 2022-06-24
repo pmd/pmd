@@ -31,19 +31,19 @@ public class AsmSymbolResolver implements SymbolResolver {
     private final Classpath classLoader;
     private final SignatureParser typeLoader;
 
-    private final ConcurrentMap<String, SoftClassReference> knownStubs = new ConcurrentHashMap<>();
+    private final ConcurrentMap<String, ClassStub> knownStubs = new ConcurrentHashMap<>();
 
     /**
      * Sentinel for when we fail finding a URL. This allows using a single map,
      * instead of caching failure cases separately.
      */
-    private final SoftClassReference failed;
+    private final ClassStub failed;
 
     public AsmSymbolResolver(TypeSystem ts, Classpath classLoader) {
         this.ts = ts;
         this.classLoader = classLoader;
         this.typeLoader = new SignatureParser(this);
-        this.failed = new SoftClassReference(this, "/*failed-lookup*/", FailedLoader.INSTANCE, 0);
+        this.failed = new ClassStub(this, "/*failed-lookup*/", FailedLoader.INSTANCE, 0);
     }
 
     @Override
@@ -52,21 +52,23 @@ public class AsmSymbolResolver implements SymbolResolver {
 
         String internalName = getInternalName(binaryName);
 
-        SoftClassReference found = knownStubs.computeIfAbsent(internalName, iname -> {
-            if (!hasCanonicalName(internalName)) {
-                // if the class is anonymous/local, give up
-                return failed;
-            }
-
-            @Nullable URL url = getUrlOfInternalName(internalName);
+        ClassStub found = knownStubs.computeIfAbsent(internalName, iname -> {
+            @Nullable URL url = getUrlOfInternalName(iname);
             if (url == null) {
                 return failed;
             }
 
-            return new SoftClassReference(this, iname, new UrlLoader(url), ClassStub.UNKNOWN_ARITY);
+            return new ClassStub(this, iname, new UrlLoader(url), ClassStub.UNKNOWN_ARITY);
         });
 
-        return found == failed ? null : found.get(); // NOPMD CompareObjectsWithEquals
+        if (!found.hasCanonicalName()) {
+            // note: this check needs to be done outside of computeIfAbsent
+            //  to prevent recursive updates of the knownStubs map.
+            knownStubs.put(internalName, failed);
+            found = failed;
+        }
+
+        return found == failed ? null : found; // NOPMD CompareObjectsWithEquals
     }
 
     SignatureParser getSigParser() {
@@ -81,28 +83,6 @@ public class AsmSymbolResolver implements SymbolResolver {
         return binaryName.replace('.', '/');
     }
 
-    /**
-     * Test whether an internal name has a canonical name. This means,
-     * every segment of the simple name (part after the last '/'), where
-     * segments are separated by '$', is a valid java identifier. We only
-     * check the first character as anon/local classes are identified with
-     * integers, which are not valid java identifier starts.
-     */
-    static boolean hasCanonicalName(String internalName) {
-        int packageEnd = internalName.lastIndexOf('/');
-        for (int i = packageEnd; i + 1 < internalName.length();) {
-            char firstChar = internalName.charAt(i + 1);
-            if (!Character.isJavaIdentifierStart(firstChar)) {
-                return false;
-            }
-            i = internalName.indexOf('$', i + 1);
-            if (i == -1) {
-                break;
-            }
-        }
-        return !internalName.isEmpty();
-    }
-
     @Nullable
     URL getUrlOfInternalName(String internalName) {
         return classLoader.findResource(internalName + ".class");
@@ -112,28 +92,22 @@ public class AsmSymbolResolver implements SymbolResolver {
        These methods return an unresolved symbol if the url is not found.
      */
 
-    @Nullable JClassSymbol resolveFromInternalNameCannotFail(@Nullable String internalName) {
+    @Nullable ClassStub resolveFromInternalNameCannotFail(@Nullable String internalName) {
         if (internalName == null) {
             return null;
         }
-        return resolveFromInternalNameCannotFail(internalName, 0);
+        return resolveFromInternalNameCannotFail(internalName, ClassStub.UNKNOWN_ARITY);
     }
 
-    // this is for inner + parent classes
-    void registerKnown(@NonNull String internalName, ClassStub innerClass) {
-        SoftClassReference softRef = new SoftClassReference(this, innerClass, internalName);
-        knownStubs.put(internalName, softRef);
-    }
-
-    @SuppressWarnings("PMD.CompareObjectsWithEquals") // SoftClassReference
-    @NonNull JClassSymbol resolveFromInternalNameCannotFail(@NonNull String internalName, int observedArity) {
+    @SuppressWarnings("PMD.CompareObjectsWithEquals") // ClassStub
+    @NonNull ClassStub resolveFromInternalNameCannotFail(@NonNull String internalName, int observedArity) {
         return knownStubs.compute(internalName, (iname, prev) -> {
             if (prev != failed && prev != null) {
                 return prev;
             }
             @Nullable URL url = getUrlOfInternalName(iname);
             Loader loader = url == null ? FailedLoader.INSTANCE : new UrlLoader(url);
-            return new SoftClassReference(this, iname, loader, observedArity);
-        }).get();
+            return new ClassStub(this, iname, loader, observedArity);
+        });
     }
 }

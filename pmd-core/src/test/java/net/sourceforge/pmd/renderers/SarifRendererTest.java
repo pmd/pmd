@@ -6,21 +6,32 @@ package net.sourceforge.pmd.renderers;
 
 import static org.junit.Assert.assertEquals;
 
+import java.nio.charset.StandardCharsets;
 import java.util.function.Consumer;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.Test;
+import org.junit.contrib.java.lang.system.RestoreSystemProperties;
 
 import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.ReportTest;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
 
 public class SarifRendererTest extends AbstractRendererTest {
+
+    @org.junit.Rule
+    public RestoreSystemProperties systemProperties = new RestoreSystemProperties();
+
     @Override
     public Renderer getRenderer() {
         return new SarifRenderer();
+    }
+
+    @Test
+    public void testRendererWithASCII() throws Exception {
+        System.setProperty("file.encoding", StandardCharsets.US_ASCII.name());
+        testRenderer(StandardCharsets.UTF_8);
     }
 
     @Override
@@ -77,7 +88,7 @@ public class SarifRendererTest extends AbstractRendererTest {
      */
     @Test
     public void testRendererMultipleLocations() throws Exception {
-        String actual = ReportTest.render(getRenderer(), reportThreeViolationsTwoRules());
+        String actual = renderReport(getRenderer(), reportThreeViolationsTwoRules());
 
         JSONObject json = new JSONObject(actual);
         JSONArray results = json.getJSONArray("runs").getJSONObject(0).getJSONArray("results");

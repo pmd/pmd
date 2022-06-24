@@ -48,7 +48,7 @@ function regression_tester_uploadBaseline() {
         --mode single \
         --local-git-repo ./pmd \
         --patch-branch "${baseline_branch}" \
-        --patch-config ./pmd/.ci/files/all-java.xml \
+        --patch-config ./pmd/.ci/files/all-regression-rules.xml \
         --list-of-project ./pmd/.ci/files/project-list.xml --html-flag \
         --error-recovery
     pushd target/reports || { echo "Directory 'target/reports' doesn't exist"; exit 1; }

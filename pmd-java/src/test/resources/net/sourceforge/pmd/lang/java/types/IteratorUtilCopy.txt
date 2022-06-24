@@ -1,4 +1,4 @@
-+- CompilationUnit[@TypeMirror = "void"]
++- CompilationUnit[]
    +- PackageDeclaration[]
    |  +- ModifierList[]
    +- ImportDeclaration[]

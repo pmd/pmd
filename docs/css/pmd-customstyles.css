@@ -28,6 +28,10 @@
     width: 100%;
 }
 
+header {
+    margin-top: 40px;
+}
+
 details {
     border-radius: 3px;
     background: #EEE;
@@ -117,4 +121,10 @@ pre {
     background-color: #f5f5f5;
     border: 1px solid #cccccc;
     border-radius: 4px;
+}
+
+div.sidebarTitleDate {
+    margin-top:2.5px;
+    margin-bottom:5px;
+    margin-left:5px; 
 }

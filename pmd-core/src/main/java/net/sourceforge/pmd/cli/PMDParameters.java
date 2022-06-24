@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
+import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.PMD;
@@ -32,20 +33,44 @@ import com.beust.jcommander.validators.PositiveInteger;
 @InternalApi
 public class PMDParameters {
 
-    @Parameter(names = { "--rulesets", "-rulesets", "-R" }, description = "Comma separated list of ruleset names to use.",
-            required = true)
-    private String rulesets;
+    @Parameter(names = { "--rulesets", "-rulesets", "-R" },
+               description = "Path to a ruleset xml file. "
+                             + "The path may reference a resource on the classpath of the application, be a local file system path, or a URL. "
+                             + "The option can be repeated, and multiple arguments can be provided to a single occurrence of the option.",
+               required = true,
+               variableArity = true)
+    private List<String> rulesets;
 
-    @Parameter(names = { "--uri", "-uri", "-u" }, description = "Database URI for sources.")
+    @Parameter(names = { "--uri", "-uri", "-u" },
+               description = "Database URI for sources. "
+                             + "One of --dir, --file-list or --uri must be provided. "
+    )
     private String uri;
 
-    @Parameter(names = { "--dir", "-dir", "-d" }, description = "Root directory for sources.")
-    private String sourceDir;
+    @Parameter(names = { "--dir", "-dir", "-d" },
+               description = "Path to a source file, or directory containing source files to analyze. "
+                             // About the following line:
+                             // In PMD 6, this is only the case for files found in directories. If you
+                             // specify a file directly, and it is unknown, then the Java parser is used.
+                             + "Note that a file is only effectively added if it matches a language known by PMD. "
+                             + "Zip and Jar files are also supported, if they are specified directly "
+                             + "(archive files found while exploring a directory are not recursively expanded). "
+                             + "This option can be repeated, and multiple arguments can be provided to a single occurrence of the option. "
+                             + "One of --dir, --file-list or --uri must be provided. ",
+               variableArity = true)
+    private List<String> inputPaths = new ArrayList<>();
 
-    @Parameter(names = { "--file-list", "-filelist" }, description = "Path to a file containing a list of files to analyze.")
+    @Parameter(names = { "--file-list", "-filelist" },
+               description =
+                   "Path to a file containing a list of files to analyze, one path per line. "
+                   + "One of --dir, --file-list or --uri must be provided. "
+    )
     private String fileListPath;
 
-    @Parameter(names = { "--ignore-list", "-ignorelist" }, description = "Path to a file containing a list of files to ignore.")
+    @Parameter(names = { "--ignore-list", "-ignorelist" },
+               description = "Path to a file containing a list of files to exclude from the analysis, one path per line. "
+                             + "This option can be combined with --dir and --file-list. "
+    )
     private String ignoreListPath;
 
     @Parameter(names = { "--format", "-format", "-f" }, description = "Report format type.")
@@ -107,12 +132,17 @@ public class PMDParameters {
     @Parameter(names = { "-language", "-l" }, description = "Specify a language PMD should use.")
     private String language = null;
 
-    @Parameter(names = { "--force-language", "-force-language" }, description = "Force a language to be used for all input files, irrespective of filenames.")
+    @Parameter(names = { "--force-language", "-force-language" },
+               description = "Force a language to be used for all input files, irrespective of file names. "
+                             + "When using this option, the automatic language selection by extension is disabled, and PMD "
+                             + "tries to parse all input files with the given language's parser. "
+                             + "Parsing errors are ignored."
+               )
     private String forceLanguage = null;
 
     @Parameter(names = { "--aux-classpath", "-auxclasspath" },
             description = "Specifies the classpath for libraries used by the source code. "
-                    + "This is used by the type resolution. The platform specific path delimiter "
+                    + "This is used to resolve types in Java source files. The platform specific path delimiter "
                     + "(\":\" on Linux, \";\" on Windows) is used to separate the entries. "
                     + "Alternatively, a single 'file:' URL to a text file containing path elements on consecutive lines "
                     + "can be specified.")
@@ -135,6 +165,9 @@ public class PMDParameters {
 
     @Parameter(names = { "--no-cache", "-no-cache" }, description = "Explicitly disable incremental analysis. The '-cache' option is ignored if this switch is present in the command line.")
     private boolean noCache = false;
+
+    @Parameter(names = { "--no-progress", "-no-progress" }, description = "Disables progress bar indicator of live analysis progress.")
+    private boolean noProgressBar = false;
 
     // this has to be a public static class, so that JCommander can use it!
     public static class PropertyConverter implements IStringConverter<Properties> {
@@ -196,12 +229,8 @@ public class PMDParameters {
      * @throws IllegalArgumentException if the parameters are inconsistent or incomplete
      */
     public PMDConfiguration toConfiguration() {
-        if (null == this.getSourceDir() && null == this.getUri() && null == this.getFileListPath()) {
-            throw new IllegalArgumentException(
-                    "Please provide a parameter for source root directory (-dir or -d), database URI (-uri or -u), or file list path (-filelist).");
-        }
         PMDConfiguration configuration = new PMDConfiguration();
-        configuration.setInputPaths(this.getSourceDir());
+        configuration.setInputPaths(this.getInputPaths());
         configuration.setInputFilePath(this.getFileListPath());
         configuration.setIgnoreFilePath(this.getIgnoreListPath());
         configuration.setInputUri(this.getUri());
@@ -222,6 +251,7 @@ public class PMDParameters {
         configuration.setFailOnViolation(this.isFailOnViolation());
         configuration.setAnalysisCacheLocation(this.cacheLocation);
         configuration.setIgnoreIncrementalAnalysis(this.isIgnoreIncrementalAnalysis());
+        configuration.setProgressBar(this.isProgressBar());
 
         LanguageVersion forceLangVersion = getForceLangVersion();
         if (forceLangVersion != null) {
@@ -344,12 +374,22 @@ public class PMDParameters {
         return auxclasspath;
     }
 
+    @Deprecated
     public String getRulesets() {
+        return StringUtils.join(rulesets, ",");
+    }
+
+    public List<String> getRulesetRefs() {
         return rulesets;
     }
 
+    public List<String> getInputPaths() {
+        return inputPaths;
+    }
+
+    @Deprecated
     public String getSourceDir() {
-        return sourceDir;
+        return StringUtils.join(inputPaths, ",");
     }
 
     public String getFileListPath() {
@@ -367,6 +407,11 @@ public class PMDParameters {
     public boolean isFailOnViolation() {
         return failOnViolation;
     }
+
+    public boolean isProgressBar() {
+        return !noProgressBar;
+    }
+
 
     /**
      * @return the uri alternative to source directory.

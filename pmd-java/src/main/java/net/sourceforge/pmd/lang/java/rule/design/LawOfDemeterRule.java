@@ -5,13 +5,13 @@
 package net.sourceforge.pmd.lang.java.rule.design;
 
 import static net.sourceforge.pmd.lang.java.ast.BinaryOp.INSTANCEOF;
-import static net.sourceforge.pmd.lang.java.ast.BinaryOp.isInfixExprWithOperator;
-import static net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil.isArrayLengthFieldAccess;
-import static net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil.isCallOnThisInstance;
+import static net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils.isArrayLengthFieldAccess;
+import static net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils.isCallOnThisInstance;
+import static net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils.isInfixExprWithOperator;
+import static net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils.isRefToFieldOfThisClass;
+import static net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils.isThisOrSuper;
 import static net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil.isGetterCall;
 import static net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil.isNullChecked;
-import static net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil.isRefToFieldOfThisClass;
-import static net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil.isThisOrSuper;
 import static net.sourceforge.pmd.properties.constraints.NumericConstraints.positive;
 
 import java.util.LinkedHashMap;

@@ -36,4 +36,12 @@ public final class ASTInitializer extends AbstractJavaNode implements ASTBodyDec
     void setStatic() {
         isStatic = true;
     }
+
+    /**
+     * Returns the body of this initializer.
+     */
+    public ASTBlock getBody() {
+        return (ASTBlock) getChild(0);
+    }
+
 }

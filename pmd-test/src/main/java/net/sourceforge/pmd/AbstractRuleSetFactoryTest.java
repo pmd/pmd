@@ -31,7 +31,6 @@ import java.util.regex.Pattern;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-import org.apache.commons.io.FilenameUtils;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.contrib.java.lang.system.SystemErrRule;
@@ -45,6 +44,7 @@ import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.util.IOUtil;
 
 /**
  * Base test class to verify the language's rulesets. This class should be
@@ -153,7 +153,7 @@ public abstract class AbstractRuleSetFactoryTest {
                 } else {
                     String expectedExternalInfoURL = "https?://pmd.(sourceforge.net|github.io)/.+/pmd_rules_"
                             + language.getTerseName() + "_"
-                            + FilenameUtils.getBaseName(fileName)
+                            + IOUtil.getFilenameBase(fileName)
                             + ".html#"
                             + rule.getName().toLowerCase(Locale.ROOT);
                     if (rule.getExternalInfoUrl() == null
@@ -285,9 +285,16 @@ public abstract class AbstractRuleSetFactoryTest {
 
     private List<String> getRuleSetFileNames(String language) throws IOException {
         List<String> ruleSetFileNames = new ArrayList<>();
+        ruleSetFileNames.addAll(getRuleSetFileNames(language, "rulesets/" + language + "/rulesets.properties"));
+        ruleSetFileNames.addAll(getRuleSetFileNames(language, "category/" + language + "/categories.properties"));
+        return ruleSetFileNames;
+    }
+
+    private List<String> getRuleSetFileNames(String language, String propertiesPath) throws IOException {
+        List<String> ruleSetFileNames = new ArrayList<>();
         Properties properties = new Properties();
         @SuppressWarnings("PMD.CloseResource")
-        InputStream input = getClass().getResourceAsStream("rulesets/" + language + "/rulesets.properties");
+        InputStream input = getClass().getResourceAsStream(propertiesPath);
         if (input == null) {
             // this might happen if a language is only support by CPD, but not
             // by PMD
@@ -302,7 +309,6 @@ public abstract class AbstractRuleSetFactoryTest {
         while (st.hasMoreTokens()) {
             ruleSetFileNames.add(st.nextToken());
         }
-
         return ruleSetFileNames;
     }
 

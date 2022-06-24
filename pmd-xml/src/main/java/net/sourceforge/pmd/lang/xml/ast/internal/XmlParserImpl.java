@@ -25,7 +25,6 @@ import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.xml.ast.XmlNode;
 
-
 public final class XmlParserImpl {
     // never throws on unresolved resource
     private static final EntityResolver SILENT_ENTITY_RESOLVER = (publicId, systemId) -> new InputSource(new ByteArrayInputStream("".getBytes()));
@@ -36,7 +35,6 @@ public final class XmlParserImpl {
     private Document parseDocument(String xmlData) throws ParseException {
         nodeCache.clear();
         try {
-
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             dbf.setNamespaceAware(true);
             dbf.setValidating(false);
@@ -91,7 +89,7 @@ public final class XmlParserImpl {
 
         private final AstInfo<RootXmlNode> astInfo;
 
-        RootXmlNode(XmlParserImpl parser, Node domNode, ParserTask task) {
+        RootXmlNode(XmlParserImpl parser, Document domNode, ParserTask task) {
             super(parser, domNode);
             this.astInfo = new AstInfo<>(task, this);
         }
@@ -99,6 +97,16 @@ public final class XmlParserImpl {
         @Override
         public AstInfo<RootXmlNode> getAstInfo() {
             return astInfo;
+        }
+
+        @Override
+        public XmlNode wrap(Node domNode) {
+            return super.wrap(domNode);
+        }
+
+        @Override
+        public Document getNode() {
+            return (Document) super.getNode();
         }
     }
 

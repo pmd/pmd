@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.commons.lang3.reflect.MethodUtils;
@@ -32,6 +31,7 @@ import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.renderers.RendererFactory;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
+import net.sourceforge.pmd.util.IOUtil;
 import net.sourceforge.pmd.util.datasource.DataSource;
 
 @InternalApi
@@ -65,10 +65,14 @@ public class Formatter {
         this.parameters.add(parameter);
     }
 
+    @Deprecated
+    @InternalApi
     public Renderer getRenderer() {
         return renderer;
     }
 
+    @Deprecated
+    @InternalApi
     public void start(String baseDir) {
 
         Properties properties = createProperties();
@@ -110,12 +114,13 @@ public class Formatter {
             }
             renderer = createRenderer();
             renderer.setWriter(writer);
-            renderer.start();
         } catch (IOException ioe) {
             throw new BuildException(ioe.getMessage(), ioe);
         }
     }
 
+    @Deprecated
+    @InternalApi
     public void end(Report errorReport) {
         try {
             renderer.renderFileReport(errorReport);
@@ -130,6 +135,8 @@ public class Formatter {
         }
     }
 
+    @Deprecated
+    @InternalApi
     public boolean isNoOutputSupplied() {
         return toFile == null && !toConsole;
     }
@@ -191,8 +198,8 @@ public class Formatter {
             isOnError = false;
         } finally {
             if (isOnError) {
-                IOUtils.closeQuietly(output);
-                IOUtils.closeQuietly(writer);
+                IOUtil.closeQuietly(output);
+                IOUtil.closeQuietly(writer);
             }
         }
         return writer;
@@ -237,6 +244,7 @@ public class Formatter {
         return null;
     }
 
+    @Deprecated
     @InternalApi
     public GlobalAnalysisListener newListener(Project project, List<String> inputPaths) throws IOException {
         start(project.getBaseDir().toString());

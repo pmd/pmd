@@ -14,7 +14,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.regex.Pattern;
 
-import org.apache.commons.io.IOUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -23,12 +22,12 @@ import net.sourceforge.pmd.FooRule;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report.ConfigurationError;
 import net.sourceforge.pmd.Report.ProcessingError;
-import net.sourceforge.pmd.ReportTest;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
+import net.sourceforge.pmd.util.IOUtil;
 
 public class YAHTMLRendererTest extends AbstractRendererTest {
 
@@ -59,8 +58,7 @@ public class YAHTMLRendererTest extends AbstractRendererTest {
 
     @Test
     public void testReportMultipleViolations() throws Exception {
-
-        String actual = ReportTest.render(getRenderer(), it -> {
+        String actual = renderReport(getRenderer(), it -> {
             it.onRuleViolation(newRuleViolation(1, 1, 1, 1, "net.sf.pmd.test", "YAHTMLSampleClass1"));
             it.onRuleViolation(newRuleViolation(1, 1, 1, 2, "net.sf.pmd.test", "YAHTMLSampleClass1"));
             it.onRuleViolation(newRuleViolation(1, 1, 1, 1, "net.sf.pmd.other", "YAHTMLSampleClass2"));
@@ -77,8 +75,8 @@ public class YAHTMLRendererTest extends AbstractRendererTest {
         for (String file : htmlFiles) {
             try (FileInputStream in = new FileInputStream(new File(outputDir, file));
                     InputStream expectedIn = YAHTMLRendererTest.class.getResourceAsStream("yahtml/" + file)) {
-                String data = IOUtils.toString(in, StandardCharsets.UTF_8);
-                String expected = normalizeLineSeparators(IOUtils.toString(expectedIn, StandardCharsets.UTF_8));
+                String data = IOUtil.readToString(in, StandardCharsets.UTF_8);
+                String expected = normalizeLineSeparators(IOUtil.readToString(expectedIn, StandardCharsets.UTF_8));
 
                 assertEquals("File " + file + " is different", expected, data);
             }
@@ -86,8 +84,8 @@ public class YAHTMLRendererTest extends AbstractRendererTest {
     }
 
     private static String normalizeLineSeparators(String s) {
-        return s.replaceAll(Pattern.quote(IOUtils.LINE_SEPARATOR_WINDOWS), IOUtils.LINE_SEPARATOR_UNIX)
-                .replaceAll(Pattern.quote(IOUtils.LINE_SEPARATOR_UNIX), PMD.EOL);
+        return s.replaceAll(Pattern.quote("\r\n"), "\n")
+                .replaceAll(Pattern.quote("\n"), PMD.EOL);
     }
 
     @Override

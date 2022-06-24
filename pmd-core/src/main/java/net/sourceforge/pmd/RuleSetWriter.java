@@ -21,7 +21,6 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.CDATASection;
@@ -37,6 +36,7 @@ import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyDescriptorField;
 import net.sourceforge.pmd.properties.PropertyTypeId;
+import net.sourceforge.pmd.util.IOUtil;
 
 /**
  * This class represents a way to serialize a RuleSet to an XML configuration
@@ -62,7 +62,7 @@ public class RuleSetWriter {
     }
 
     public void close() {
-        IOUtils.closeQuietly(outputStream);
+        IOUtil.closeQuietly(outputStream);
     }
 
     public void write(RuleSet ruleSet) {

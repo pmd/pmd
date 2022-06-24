@@ -14,8 +14,7 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.io.ByteOrderMark;
-import org.apache.commons.io.input.BOMInputStream;
+import net.sourceforge.pmd.util.IOUtil;
 
 public class SourceCode {
 
@@ -112,11 +111,10 @@ public class SourceCode {
 
         @Override
         public Reader getReader() throws Exception {
-            BOMInputStream inputStream = new BOMInputStream(Files.newInputStream(file.toPath()), ByteOrderMark.UTF_8,
-                    ByteOrderMark.UTF_16BE, ByteOrderMark.UTF_16LE);
+            IOUtil.BomAwareInputStream inputStream = new IOUtil.BomAwareInputStream(Files.newInputStream(file.toPath()));
 
-            if (inputStream.hasBOM()) {
-                encoding = inputStream.getBOMCharsetName();
+            if (inputStream.hasBom()) {
+                encoding = inputStream.getBomCharsetName();
             }
             return new InputStreamReader(inputStream, encoding);
         }

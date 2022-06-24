@@ -18,8 +18,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTMemberValuePair;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.AccessNode.Visibility;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
+import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
-import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 
 public class UseUtilityClassRule extends AbstractJavaRulechainRule {
@@ -35,7 +35,7 @@ public class UseUtilityClassRule extends AbstractJavaRulechainRule {
 
     @Override
     public Object visit(ASTClassOrInterfaceDeclaration klass, Object data) {
-        if (JavaRuleUtil.hasAnyAnnotation(klass, IGNORED_CLASS_ANNOT)
+        if (JavaAstUtils.hasAnyAnnotation(klass, IGNORED_CLASS_ANNOT)
             || TypeTestUtil.isA("junit.framework.TestSuite", klass) // suite method is ok
             || klass.isInterface()
             || klass.isAbstract()
