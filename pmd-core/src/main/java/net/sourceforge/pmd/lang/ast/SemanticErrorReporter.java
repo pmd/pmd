@@ -83,7 +83,25 @@ public interface SemanticErrorReporter {
 
             private String logMessage(Level level, Node location, String message, Object[] args) {
                 String fullMessage = makeMessage(location, message, args);
-                logger.atLevel(level).log(fullMessage);
+                switch (level) {
+                case ERROR:
+                    logger.error(fullMessage);
+                    break;
+                case WARN:
+                    logger.warn(fullMessage);
+                    break;
+                case INFO:
+                    logger.info(fullMessage);
+                    break;
+                case DEBUG:
+                    logger.debug(fullMessage);
+                    break;
+                case TRACE:
+                    logger.trace(fullMessage);
+                    break;
+                default:
+                    throw new AssertionError("Invalid log level: " + level);
+                }
                 return fullMessage;
             }
 

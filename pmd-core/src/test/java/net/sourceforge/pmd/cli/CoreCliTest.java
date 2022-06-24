@@ -195,19 +195,22 @@ public class CoreCliTest {
 
     @Test
     public void debugLogging() {
-        runPmdSuccessfully("--debug", "--no-cache", "--dir", srcDir, "--rulesets", DUMMY_RULESET);
+        Path reportFile = tempRoot().resolve("out/reportFile.txt");
+        runPmdSuccessfully("--debug", "--no-cache", "--dir", srcDir, "--rulesets", DUMMY_RULESET, "-r", reportFile);
         assertThat(errStreamCaptor.getLog(), containsString("[main] INFO net.sourceforge.pmd.PMD - Log level is at TRACE"));
     }
 
     @Test
     public void defaultLogging() {
-        runPmdSuccessfully("--no-cache", "--dir", srcDir, "--rulesets", DUMMY_RULESET);
+        Path reportFile = tempRoot().resolve("out/reportFile.txt");
+        runPmdSuccessfully("--no-cache", "--dir", srcDir, "--rulesets", DUMMY_RULESET, "-r", reportFile);
         assertThat(errStreamCaptor.getLog(), containsString("[main] INFO net.sourceforge.pmd.PMD - Log level is at INFO"));
     }
 
     @Test
     public void testDeprecatedRulesetSyntaxOnCommandLine() {
-        runPmd(StatusCode.VIOLATIONS_FOUND, "--no-cache", "--dir", srcDir, "--rulesets", "dummy-basic");
+        Path reportFile = tempRoot().resolve("out/reportFile.txt");
+        runPmd(StatusCode.VIOLATIONS_FOUND, "--no-cache", "--dir", srcDir, "--rulesets", "dummy-basic", "-r", reportFile);
         MatcherAssert.assertThat(errStreamCaptor.getLog(), containsString("Ruleset reference 'dummy-basic' uses a deprecated form, use 'rulesets/dummy/basic.xml' instead"));
     }
 
