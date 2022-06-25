@@ -11,18 +11,18 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Iterator;
 
-import org.apache.commons.io.FilenameUtils;
 import org.junit.Before;
 import org.junit.Test;
 
 import net.sourceforge.pmd.lang.apex.ApexLanguageModule;
+import net.sourceforge.pmd.util.IOUtil;
 
 public class ApexCpdTest {
     private File testdir;
 
     @Before
     public void setUp() {
-        String path = FilenameUtils.normalize("src/test/resources/net/sourceforge/pmd/cpd/issue427");
+        String path = IOUtil.normalizePath("src/test/resources/net/sourceforge/pmd/cpd/issue427");
         testdir = new File(path);
     }
 

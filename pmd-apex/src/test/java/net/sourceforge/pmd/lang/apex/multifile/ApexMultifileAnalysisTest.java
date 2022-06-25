@@ -15,12 +15,13 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.Arrays;
 
-import org.apache.commons.io.IOUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.contrib.java.lang.system.SystemErrRule;
 import org.junit.rules.TemporaryFolder;
+
+import net.sourceforge.pmd.util.IOUtil;
 
 public class ApexMultifileAnalysisTest {
 
@@ -67,7 +68,7 @@ public class ApexMultifileAnalysisTest {
 
     private void copyResource(String resourcePath, String relativePathInTempDir) throws IOException {
         File file = tempFolder.newFile(relativePathInTempDir);
-        String fileContents = IOUtils.toString(getClass().getResourceAsStream(resourcePath), StandardCharsets.UTF_8);
+        String fileContents = IOUtil.readToString(getClass().getResourceAsStream(resourcePath), StandardCharsets.UTF_8);
         Files.write(file.toPath(), Arrays.asList(fileContents.split("\\R").clone()));
     }
 

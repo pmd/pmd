@@ -12,8 +12,9 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
 
-import org.apache.commons.io.IOUtils;
 import org.junit.Test;
+
+import net.sourceforge.pmd.util.IOUtil;
 
 /**
  * @author Philippe T'Seyen
@@ -56,7 +57,7 @@ public class FileReporterTest {
 
     private String readFile(File file) throws IOException {
         try (Reader reader = new FileReader(file)) {
-            String text = IOUtils.toString(reader);
+            String text = IOUtil.readToString(reader);
             return text.replaceAll("\\R", "\n");
         }
     }

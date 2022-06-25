@@ -516,4 +516,31 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>With records</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.Set;
+
+public record Record(Set<String> stringSet) {
+
+    public boolean hasMoreThanOneItem() {
+        return this.stringSet.size() > 1;
+    }
+}        ]]></code>
+    </test-code>
+    <test-code>
+        <description>With records and size check</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+import java.util.Set;
+
+public record Record(Set<String> stringSet) {
+
+    public boolean hasMoreThanOneItem() {
+        return this.stringSet.size() == 0;
+    }
+}        ]]></code>
+    </test-code>
 </test-data>

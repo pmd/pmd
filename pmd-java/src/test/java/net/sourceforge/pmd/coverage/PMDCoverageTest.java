@@ -14,7 +14,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Rule;
@@ -27,6 +26,7 @@ import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.java.JavaLanguageModule;
+import net.sourceforge.pmd.util.IOUtil;
 
 public class PMDCoverageTest {
 
@@ -80,7 +80,7 @@ public class PMDCoverageTest {
 
             System.err.println("Running PMD with: " + Arrays.toString(args));
             PMD.runPmd(args);
-            report = FileUtils.readFileToString(f, StandardCharsets.UTF_8);
+            report = IOUtil.readFileToString(f, StandardCharsets.UTF_8);
 
             assertEquals("Nothing should be output to stdout", 0, output.getLog().length());
 

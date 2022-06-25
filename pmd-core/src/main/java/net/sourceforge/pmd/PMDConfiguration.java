@@ -8,10 +8,12 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Properties;
 
+import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.LoggerFactory;
@@ -108,7 +110,7 @@ public class PMDConfiguration extends AbstractConfiguration {
     // Rule and source file options
     private List<String> ruleSets = new ArrayList<>();
     private RulePriority minimumPriority = RulePriority.LOW;
-    private String inputPaths;
+    private List<String> inputPaths = new ArrayList<>();
     private String inputUri;
     private String inputFilePath;
     private String ignoreFilePath;
@@ -458,19 +460,54 @@ public class PMDConfiguration extends AbstractConfiguration {
      * Get the comma separated list of input paths to process for source files.
      *
      * @return A comma separated list.
+     *
+     * @deprecated Use {@link #getAllInputPaths()}
      */
+    @Deprecated
     public String getInputPaths() {
-        return inputPaths;
+        return inputPaths.isEmpty() ? null : StringUtils.join(inputPaths, ",");
+    }
+
+    /**
+     * Returns an unmodifiable list.
+     *
+     * @throws NullPointerException If the parameter is null
+     */
+    public List<String> getAllInputPaths() {
+        return Collections.unmodifiableList(inputPaths);
     }
 
     /**
      * Set the comma separated list of input paths to process for source files.
      *
-     * @param inputPaths
-     *            The comma separated list.
+     * @param inputPaths The comma separated list.
+     *
+     * @throws NullPointerException If the parameter is null
+     * @deprecated Use {@link #setInputPaths(List)} or {@link #addInputPath(String)}
      */
+    @Deprecated
     public void setInputPaths(String inputPaths) {
-        this.inputPaths = inputPaths;
+        List<String> paths = new ArrayList<>();
+        Collections.addAll(paths, inputPaths.split(","));
+        this.inputPaths = paths;
+    }
+
+    /**
+     * Set the input paths to the given list of paths.
+     * @throws NullPointerException If the parameter is null
+     */
+    public void setInputPaths(List<String> inputPaths) {
+        this.inputPaths = new ArrayList<>(inputPaths);
+    }
+
+    /**
+     * Add an input path. It is not split on commas.
+     *
+     * @throws NullPointerException If the parameter is null
+     */
+    public void addInputPath(String inputPath) {
+        Objects.requireNonNull(inputPath);
+        this.inputPaths.add(inputPath);
     }
 
     public String getInputFilePath() {
@@ -564,7 +601,7 @@ public class PMDConfiguration extends AbstractConfiguration {
         Renderer renderer = RendererFactory.createRenderer(reportFormat, reportProperties);
         renderer.setShowSuppressedViolations(showSuppressedViolations);
         if (reportShortNames && inputPaths != null) {
-            renderer.setUseShortNames(Arrays.asList(inputPaths.split(",")));
+            renderer.setUseShortNames(Collections.unmodifiableList(new ArrayList<>(inputPaths)));
         }
         if (withReportWriter) {
             renderer.setReportFile(reportFile);

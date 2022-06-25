@@ -10,16 +10,16 @@ import java.nio.file.FileSystems;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import org.apache.commons.io.FilenameUtils;
-
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetLoader;
+import net.sourceforge.pmd.util.IOUtil;
 
 public final class GenerateRuleDocsCmd {
 
@@ -53,8 +53,8 @@ public final class GenerateRuleDocsCmd {
         try {
             List<String> additionalRulesets = new ArrayList<>();
             Pattern rulesetPattern = Pattern.compile("^.+" + Pattern.quote(File.separator) + "pmd-\\w+"
-                                                         + Pattern.quote(FilenameUtils.normalize("/src/main/resources/rulesets/"))
-                                                         + "\\w+" + Pattern.quote(File.separator) + "\\w+.xml$");
+                    + Pattern.quote(IOUtil.normalizePath(File.separator + Paths.get("src", "main", "resources", "rulesets").toString() + File.separator))
+                    + "\\w+" + Pattern.quote(File.separator) + "\\w+.xml$");
             Files.walkFileTree(basePath, new SimpleFileVisitor<Path>() {
                 @Override
                 public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
