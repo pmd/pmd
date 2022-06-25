@@ -14,7 +14,9 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.Objects;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.event.Level;
@@ -160,7 +162,12 @@ public final class PMD {
             System.err.println(CliMessages.runWithHelpFlagMessage());
             return StatusCode.ERROR;
         }
-        return runPmd(parseResult.toConfiguration());
+
+        PMDConfiguration configuration = Objects.requireNonNull(parseResult.toConfiguration());
+        MessageReporter pmdReporter = setupMessageReporter(configuration);
+        configuration.setReporter(pmdReporter);
+
+        return runPmd(configuration);
     }
 
     /**
@@ -179,28 +186,11 @@ public final class PMD {
             TimeTracker.startGlobalTracking();
         }
 
-        // only reconfigure logging, if debug flag was used on command line
-        // otherwise just use whatever is in conf/simplelogger.properties which happens automatically
-        if (configuration.isDebug()) {
-            Slf4jSimpleConfiguration.reconfigureDefaultLogLevel(Level.TRACE);
-            // need to reload the logger with the new configuration
-            log = LoggerFactory.getLogger(PMD.class);
-        }
-        // create a top-level reporter
-        // TODO CLI errors should also be reported through this
-        // TODO this should not use the logger as backend, otherwise without
-        //  slf4j implementation binding, errors are entirely ignored.
-        MessageReporter pmdReporter = new SimpleMessageReporter(log);
-        // always install java.util.logging to slf4j bridge
-        Slf4jSimpleConfiguration.installJulBridge();
-        // logging, mostly for testing purposes
-        Level defaultLogLevel = Slf4jSimpleConfiguration.getDefaultLogLevel();
-        log.info("Log level is at {}", defaultLogLevel);
-
+        MessageReporter pmdReporter = configuration.getReporter();
         try {
             PmdAnalysis pmd;
             try {
-                pmd = PmdAnalysis.create(configuration, pmdReporter);
+                pmd = PmdAnalysis.create(configuration);
             } catch (Exception e) {
                 pmdReporter.errorEx("Could not initialize analysis", e);
                 return StatusCode.ERROR;
@@ -227,6 +217,27 @@ public final class PMD {
         } finally {
             finishBenchmarker(configuration);
         }
+    }
+
+    private static @NonNull MessageReporter setupMessageReporter(PMDConfiguration configuration) {
+        // only reconfigure logging, if debug flag was used on command line
+        // otherwise just use whatever is in conf/simplelogger.properties which happens automatically
+        if (configuration.isDebug()) {
+            Slf4jSimpleConfiguration.reconfigureDefaultLogLevel(Level.TRACE);
+            // need to reload the logger with the new configuration
+            log = LoggerFactory.getLogger(PMD.class);
+        }
+        // create a top-level reporter
+        // TODO CLI errors should also be reported through this
+        // TODO this should not use the logger as backend, otherwise without
+        //  slf4j implementation binding, errors are entirely ignored.
+        MessageReporter pmdReporter = new SimpleMessageReporter(log);
+        // always install java.util.logging to slf4j bridge
+        Slf4jSimpleConfiguration.installJulBridge();
+        // logging, mostly for testing purposes
+        Level defaultLogLevel = Slf4jSimpleConfiguration.getDefaultLogLevel();
+        log.info("Log level is at {}", defaultLogLevel);
+        return pmdReporter;
     }
 
     private static void finishBenchmarker(PMDConfiguration configuration) {

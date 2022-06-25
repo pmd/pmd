@@ -25,6 +25,7 @@ import net.sourceforge.pmd.lang.ast.Parser;
 import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.ast.SemanticErrorReporter;
+import net.sourceforge.pmd.lang.ast.SemanticException;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
 import net.sourceforge.pmd.util.datasource.DataSource;
@@ -129,11 +130,12 @@ abstract class PmdRunnable implements Runnable {
                                LanguageVersion languageVersion,
                                String filename) throws FileAnalysisException {
 
+        SemanticErrorReporter reporter = SemanticErrorReporter.reportToLogger(configuration.getReporter());
         ParserTask task = new ParserTask(
             languageVersion,
             filename,
             sourceCode,
-            SemanticErrorReporter.reportToLogger(LOG),
+            reporter,
             configuration.getClassLoader()
         );
 
@@ -146,6 +148,12 @@ abstract class PmdRunnable implements Runnable {
         Parser parser = handler.getParser();
 
         RootNode rootNode = parse(parser, task);
+
+        SemanticException semanticError = reporter.getFirstError();
+        if (semanticError != null) {
+            // cause a processing error to be reported and rule analysis to be skipped
+            throw semanticError;
+        }
 
         ruleSets.apply(rootNode, listener);
     }

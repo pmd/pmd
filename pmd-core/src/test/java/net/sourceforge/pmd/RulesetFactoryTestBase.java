@@ -113,7 +113,9 @@ public class RulesetFactoryTestBase {
     }
 
     protected RuleSet loadRuleSetWithDeprecationWarnings(String ruleSetXml) {
-        try (PmdAnalysis pmd = PmdAnalysis.create(new PMDConfiguration(), mockReporter)) {
+        PMDConfiguration config = new PMDConfiguration();
+        config.setReporter(mockReporter);
+        try (PmdAnalysis pmd = PmdAnalysis.create(config)) {
             return pmd.newRuleSetLoader()
                       .warnDeprecated(true)
                       .enableCompatibility(false).loadFromString("dummyRuleset.xml", ruleSetXml);

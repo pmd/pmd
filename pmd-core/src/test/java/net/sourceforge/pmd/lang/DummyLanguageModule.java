@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang;
 
+import java.util.Objects;
+
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.Rule;
@@ -16,6 +18,7 @@ import net.sourceforge.pmd.lang.ast.Parser;
 import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 import net.sourceforge.pmd.lang.rule.impl.DefaultRuleViolationFactory;
+import net.sourceforge.pmd.processor.PmdRunnableTest;
 
 /**
  * Dummy language used for testing PMD.
@@ -24,7 +27,6 @@ public class DummyLanguageModule extends BaseLanguageModule {
 
     public static final String NAME = "Dummy";
     public static final String TERSE_NAME = "dummy";
-    private static final String THROWING_VERSION_NAME = "1.9-throws-parse-exception";
 
     public DummyLanguageModule() {
         super(NAME, null, TERSE_NAME, "dummy");
@@ -37,15 +39,11 @@ public class DummyLanguageModule extends BaseLanguageModule {
         addVersion("1.6", new Handler(), "6");
         addDefaultVersion("1.7", new Handler(), "7");
         addVersion("1.8", new Handler(), "8");
-        addVersion(THROWING_VERSION_NAME, new HandlerWithParserThatThrows());
+        PmdRunnableTest.registerCustomVersions(this::addVersion);
     }
 
     public static DummyLanguageModule getInstance() {
-        return (DummyLanguageModule) LanguageRegistry.getLanguage(NAME);
-    }
-
-    public LanguageVersion getVersionWhoseParserThrows() {
-        return getVersion(THROWING_VERSION_NAME);
+        return (DummyLanguageModule) Objects.requireNonNull(LanguageRegistry.getLanguage(NAME));
     }
 
     public static DummyRootNode parse(String code) {
@@ -77,16 +75,6 @@ public class DummyLanguageModule extends BaseLanguageModule {
         }
     }
 
-    public static class HandlerWithParserThatThrows extends Handler {
-
-        @Override
-        public Parser getParser() {
-            return task -> {
-                throw new ParseException("test error while parsing");
-            };
-        }
-    }
-
     /**
      * Creates a tree of nodes that corresponds to the nesting structures
      * of parentheses in the text. The image of each node is also populated.
@@ -98,7 +86,7 @@ public class DummyLanguageModule extends BaseLanguageModule {
      * node, it has a {@link DummyRootNode} as parent, whose image is "".
      */
     private static DummyRootNode readLispNode(String text) {
-        final DummyRootNode root = new DummyRootNode();
+        final DummyRootNode root = new DummyRootNode().withSourceText(text);
         DummyNode top = root;
         SourceCodePositioner positioner = new SourceCodePositioner(text);
         top.setCoords(1, 1, positioner.getLastLine(), positioner.getLastLineColumn());
