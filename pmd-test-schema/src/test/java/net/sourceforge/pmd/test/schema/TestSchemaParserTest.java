@@ -16,6 +16,7 @@ import org.junit.Test;
 import org.junit.contrib.java.lang.system.SystemErrRule;
 import org.xml.sax.InputSource;
 
+import net.sourceforge.pmd.lang.PlainTextLanguage;
 import net.sourceforge.pmd.lang.rule.MockRule;
 
 /**
@@ -85,6 +86,7 @@ public class TestSchemaParserTest {
 
     private RuleTestCollection parseFile(String file) throws IOException {
         MockRule mockRule = new MockRule();
+        mockRule.setLanguage(PlainTextLanguage.getInstance());
 
         InputSource is = new InputSource();
         is.setSystemId("a/file.xml");
