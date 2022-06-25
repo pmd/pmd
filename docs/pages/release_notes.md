@@ -12,8 +12,6 @@ This is a {{ site.pmd.release_type }} release.
 
 {% tocmaker is_release_notes_processor %}
 
-### New and noteworthy
-
 ### Fixed Issues
 * core
     * [#3999](https://github.com/pmd/pmd/issues/3999): \[cli] All files are analyzed despite parameter `--file-list`
@@ -35,6 +33,8 @@ This is a {{ site.pmd.release_type }} release.
 
 ### API Changes
 
+No changes.
+
 ### External Contributions
 * [#3985](https://github.com/pmd/pmd/pull/3985): \[java] Fix false negative problem about Enum in AvoidFieldNameMatchingMethodName #3936 - [@Scrsloota](https://github.com/Scrsloota)
 * [#3993](https://github.com/pmd/pmd/pull/3993): \[java] AvoidDuplicateLiterals - Add the method "buz" definition to test cases - [@dalizi007](https://github.com/dalizi007)
@@ -42,6 +42,11 @@ This is a {{ site.pmd.release_type }} release.
 * [#4003](https://github.com/pmd/pmd/pull/4003): \[java] UnusedPrivateField - Ignore fields annotated with @<!-- -->Id/@<!-- -->EmbeddedId/@<!-- -->Version (JPA) or @<!-- -->Mock/@<!-- -->Spy/@<!-- -->MockBean (Mockito/Spring) - [@jjlharrison](https://github.com/jjlharrison)
 * [#4006](https://github.com/pmd/pmd/pull/4006): \[doc] Fix eclipse plugin update site URL - [@shiomiyan](https://github.com/shiomiyan)
 * [#4010](https://github.com/pmd/pmd/pull/4010): \[core] Bump kotlin to version 1.7.0 - [@maikelsteneker](https://github.com/maikelsteneker)
+
+### Stats
+* 45 commits
+* 23 closed tickets & PRs
+* Days since last release: 27
 
 {% endtocmaker %}
 
