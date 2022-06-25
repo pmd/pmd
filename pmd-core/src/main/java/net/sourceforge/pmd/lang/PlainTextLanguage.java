@@ -41,7 +41,7 @@ public final class PlainTextLanguage extends BaseLanguageModule {
     static final String TERSE_NAME = "text";
 
     private PlainTextLanguage() {
-        super("Plain text", "Plain text", TERSE_NAME,"plain-text-file-goo-extension");
+        super("Plain text", "Plain text", TERSE_NAME, "plain-text-file-goo-extension");
         addVersion("default", new TextLvh(), true);
     }
 
