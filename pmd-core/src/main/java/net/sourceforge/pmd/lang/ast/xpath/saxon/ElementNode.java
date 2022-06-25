@@ -61,7 +61,7 @@ public class ElementNode extends BaseNodeInfo implements AstNodeOwner {
                        Node node,
                        int siblingPosition,
                        NamePool namePool) {
-        super(Type.ELEMENT, namePool, node.getXPathNodeName(), parent);
+        super(determineType(node), namePool, node.getXPathNodeName(), parent);
 
         this.document = document;
         this.parent = parent;
@@ -78,6 +78,19 @@ public class ElementNode extends BaseNodeInfo implements AstNodeOwner {
             this.children = null;
         }
         document.nodeToElementNode.put(node, this);
+    }
+
+    private static int determineType(Node node) {
+        // As of PMD 6.48.0, only the experimental HTML module uses this naming 
+        // convention to identify non-element nodes.
+        // TODO PMD 7: maybe generalize this to other languages
+        String name = node.getXPathNodeName();
+        if ("#text".equals(name)) {
+            return Type.TEXT;
+        } else if ("#comment".equals(name)) {
+            return Type.COMMENT;
+        }
+        return Type.ELEMENT;
     }
 
     private Map<Integer, AttributeNode> getAttributes() {
@@ -147,8 +160,16 @@ public class ElementNode extends BaseNodeInfo implements AstNodeOwner {
     }
 
     @Override
-    public CharSequence getStringValueCS() {
+    public String getStringValue() {
+        if (getNodeKind() == Type.TEXT || getNodeKind() == Type.COMMENT) {
+            return getUnderlyingNode().getImage();
+        }
         return "";
+    }
+
+    @Override
+    public CharSequence getStringValueCS() {
+        return getStringValue();
     }
 
     @Override

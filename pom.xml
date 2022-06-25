@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.sourceforge.pmd</groupId>
     <artifactId>pmd</artifactId>
-    <version>6.46.0-SNAPSHOT</version>
+    <version>6.48.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>PMD</name>
 
@@ -76,7 +76,7 @@
     </issueManagement>
 
     <properties>
-        <project.build.outputTimestamp>2022-04-30T07:38:24Z</project.build.outputTimestamp>
+        <project.build.outputTimestamp>2022-06-25T07:30:42Z</project.build.outputTimestamp>
 
         <java.version>7</java.version>
 
@@ -85,16 +85,16 @@
 
 
         <kotlin.compiler.jvmTarget>${maven.compiler.test.target}</kotlin.compiler.jvmTarget>
-        <kotlin.version>1.4.10</kotlin.version>
-        <kotest.version>4.3.1</kotest.version>
-        <dokka.version>1.4.32</dokka.version>
+        <kotlin.version>1.7.0</kotlin.version>
+        <kotest.version>4.4.3</kotest.version>
+        <dokka.version>1.6.21</dokka.version>
 
 
         <javacc.version>5.0</javacc.version>
         <surefire.version>3.0.0-M5</surefire.version>
         <checkstyle.version>9.3</checkstyle.version>
         <checkstyle.plugin.version>3.1.2</checkstyle.plugin.version>
-        <pmd.plugin.version>3.16.0</pmd.plugin.version>
+        <pmd.plugin.version>3.17.0</pmd.plugin.version>
         <ant.version>1.10.12</ant.version>
         <javadoc.plugin.version>3.2.0</javadoc.plugin.version>
         <antlr.version>4.7.2</antlr.version>
@@ -105,7 +105,7 @@
 
         <argLine>-Xmx512m -Dfile.encoding=${project.build.sourceEncoding}</argLine>
 
-        <pmd.build-tools.version>17</pmd.build-tools.version>
+        <pmd.build-tools.version>18</pmd.build-tools.version>
 
         <pmd-designer.version>6.37.0</pmd-designer.version>
     </properties>
@@ -364,7 +364,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-enforcer-plugin</artifactId>
-                    <version>3.0.0-M2</version>
+                    <version>3.0.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -406,22 +406,22 @@
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-core</artifactId>
-                            <version>6.45.0</version> <!-- pmd.dogfood.version -->
+                            <version>6.47.0</version> <!-- pmd.dogfood.version -->
                         </dependency>
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-java</artifactId>
-                            <version>6.45.0</version> <!-- pmd.dogfood.version -->
+                            <version>6.47.0</version> <!-- pmd.dogfood.version -->
                         </dependency>
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-jsp</artifactId>
-                            <version>6.45.0</version> <!-- pmd.dogfood.version -->
+                            <version>6.47.0</version> <!-- pmd.dogfood.version -->
                         </dependency>
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-javascript</artifactId>
-                            <version>6.45.0</version> <!-- pmd.dogfood.version -->
+                            <version>6.47.0</version> <!-- pmd.dogfood.version -->
                         </dependency>
                         <!-- This contains the dogfood ruleset -->
                         <dependency>
@@ -430,6 +430,11 @@
                             <version>${pmd.build-tools.version}</version>
                         </dependency>
                     </dependencies>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-site-plugin</artifactId>
+                    <version>4.0.0-M1</version>
                 </plugin>
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
@@ -492,6 +497,33 @@
                                 <requireJavaVersion>
                                     <version>[11,)</version>
                                 </requireJavaVersion>
+                            </rules>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>enforce-no-snapshots</id>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <requireReleaseDeps>
+                                    <message>No Snapshots Allowed!</message>
+                                    <onlyWhenRelease>true</onlyWhenRelease>
+                                </requireReleaseDeps>
+                            </rules>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>enforce-plugin-versions</id>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <requirePluginVersions>
+                                    <message>Best Practice is to always define plugin versions!</message>
+                                </requirePluginVersions>
                             </rules>
                         </configuration>
                     </execution>
@@ -710,11 +742,6 @@
                 <scope>provided</scope> <!-- only needed for generating the parser via ant -->
             </dependency>
             <dependency>
-                <groupId>commons-io</groupId>
-                <artifactId>commons-io</artifactId>
-                <version>2.6</version> <!-- note: this is the last version compatible with java7 -->
-            </dependency>
-            <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>
                 <version>3.8.1</version>
@@ -871,6 +898,15 @@
                 <artifactId>kotest-runner-junit5-jvm</artifactId>
                 <version>${kotest.version}</version>
                 <scope>test</scope>
+                <exclusions>
+                    <!-- exclude transitive dependency to fix CVE-2021-29425
+                         kotest 4.4.3 depends on commons-io 2.6
+                      -->
+                    <exclusion>
+                        <groupId>commons-io</groupId>
+                        <artifactId>commons-io</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>io.kotest</groupId>
@@ -890,6 +926,26 @@
                 <artifactId>annotations</artifactId>
                 <version>13.0</version>
                 <scope>test</scope>
+            </dependency>
+
+            <!-- transitive dependency through io.kotest/kotest-runner-junit5-jvm@4.4.3
+                 upgrade to 4.8.112 to fix [sonatype-2021-1074] CWE-611: Improper Restriction of XML External Entity Reference ('XXE')
+                 https://github.com/classgraph/classgraph/releases/tag/classgraph-4.8.112
+              -->
+            <dependency>
+                <groupId>io.github.classgraph</groupId>
+                <artifactId>classgraph</artifactId>
+                <version>4.8.112</version>
+            </dependency>
+
+            <!-- transitive dependency through org.scalameta:trees_2.13
+                 upgrade to 3.16.1 to fix CVE-2021-22569 A potential Denial of Service issue in protobuf-java
+                 https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-wrvw-hg22-4m67
+            -->
+            <dependency>
+                <groupId>com.google.protobuf</groupId>
+                <artifactId>protobuf-java</artifactId>
+                <version>3.16.1</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -936,6 +992,17 @@
             <id>sonatype-nexus-plugin-snapshots</id>
             <name>Sonatype Nexus Snapshots</name>
             <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </pluginRepository>
+        <pluginRepository>
+            <id>apache.snapshots</id>
+            <name>Apache Snapshot Repository</name>
+            <url>https://repository.apache.org/snapshots</url>
             <releases>
                 <enabled>false</enabled>
             </releases>

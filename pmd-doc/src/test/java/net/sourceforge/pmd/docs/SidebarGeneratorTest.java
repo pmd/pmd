@@ -15,7 +15,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,6 +27,7 @@ import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RulesetsFactoryUtils;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.util.IOUtil;
 
 public class SidebarGeneratorTest {
     private MockedFileWriter writer = new MockedFileWriter();
@@ -56,7 +56,7 @@ public class SidebarGeneratorTest {
         String yaml = new Yaml(options).dump(result);
 
         String expected = MockedFileWriter.normalizeLineSeparators(
-                IOUtils.toString(SidebarGeneratorTest.class.getResourceAsStream("sidebar.yml"), StandardCharsets.UTF_8));
+                IOUtil.readToString(SidebarGeneratorTest.class.getResourceAsStream("sidebar.yml"), StandardCharsets.UTF_8));
         assertEquals(expected, yaml);
     }
 }

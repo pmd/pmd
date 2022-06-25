@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
-import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.Test;
@@ -18,7 +17,7 @@ import org.junit.contrib.java.lang.system.RestoreSystemProperties;
 
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Rule;
-
+import net.sourceforge.pmd.util.IOUtil;
 
 public class SarifRendererTest extends AbstractRendererTest {
 
@@ -112,7 +111,7 @@ public class SarifRendererTest extends AbstractRendererTest {
 
     private String readFile(String name) {
         try (InputStream in = SarifRendererTest.class.getResourceAsStream("sarif/" + name)) {
-            String asd = IOUtils.toString(in, StandardCharsets.UTF_8);
+            String asd = IOUtil.readToString(in, StandardCharsets.UTF_8);
             return asd;
         } catch (IOException e) {
             throw new RuntimeException(e);

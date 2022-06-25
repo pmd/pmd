@@ -1,0 +1,13 @@
+    [Image] or [Truncated image[            Bcol      Ecol
+L3
+    [def]                                   1         3
+    [check]                                 5         9
+    [(]                                     10        10
+    [)]                                     11        11
+    [:]                                     12        12
+L4
+    [total_cost_μs]                         5         17
+    [=]                                     19        19
+    [\[]                                    21        21
+    [\]]                                    22        22
+EOF

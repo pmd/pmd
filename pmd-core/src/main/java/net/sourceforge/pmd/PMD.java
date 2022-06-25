@@ -242,6 +242,7 @@ public class PMD {
     @Deprecated
     @InternalApi
     public static int doPMD(PMDConfiguration configuration) {
+        LOG.fine("Current classpath:\n" + System.getProperty("java.class.path"));
         try (PmdAnalysis pmd = PmdAnalysis.create(configuration)) {
             if (pmd.getRulesets().isEmpty()) {
                 return pmd.getReporter().numErrors() > 0 ? -1 : 0;
