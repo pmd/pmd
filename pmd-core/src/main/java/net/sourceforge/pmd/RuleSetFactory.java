@@ -323,18 +323,19 @@ final class RuleSetFactory {
                                boolean withDeprecatedRuleReferences,
                                Set<String> rulesetReferences,
                                PmdXmlReporter err) {
-        String ref = ruleNode.getAttribute("ref");
-        ref = compatibilityFilter.applyRef(ref, this.warnDeprecated);
-        if (ref == null) {
-            return; // deleted rule
+        if (ruleNode.hasAttribute("ref")) {
+            String ref = ruleNode.getAttribute("ref");
+            RuleSetReferenceId refId = parseReferenceAndWarn(ruleSetBuilder, ref);
+            if (refId != null) {
+                if (refId.isAllRules()) {
+                    parseRuleSetReferenceNode(ruleSetBuilder, ruleNode, ref, refId, rulesetReferences, err);
+                } else {
+                    parseRuleReferenceNode(ruleSetReferenceId, ruleSetBuilder, ruleNode, ref, refId, withDeprecatedRuleReferences, err);
+                }
+                return;
+            }
         }
-        if (ref.endsWith("xml")) {
-            parseRuleSetReferenceNode(ruleSetBuilder, ruleNode, ref, rulesetReferences, err);
-        } else if (StringUtils.isBlank(ref)) {
-            parseSingleRuleNode(ruleSetReferenceId, ruleSetBuilder, ruleNode, err);
-        } else {
-            parseRuleReferenceNode(ruleSetReferenceId, ruleSetBuilder, ruleNode, ref, withDeprecatedRuleReferences, err);
-        }
+        parseSingleRuleNode(ruleSetReferenceId, ruleSetBuilder, ruleNode, err);
     }
 
     /**
@@ -354,7 +355,7 @@ final class RuleSetFactory {
     private void parseRuleSetReferenceNode(RuleSetBuilder ruleSetBuilder,
                                            Element ruleElement,
                                            String ref,
-                                           Set<String> rulesetReferences,
+                                          RuleSetReferenceId ruleSetReferenceId, Set<String> rulesetReferences,
                                            PmdXmlReporter err) {
         RulePriority priority = null;
         Map<String, Element> excludedRulesCheck = new HashMap<>();
@@ -382,7 +383,7 @@ final class RuleSetFactory {
         // load the ruleset with minimum priority low, so that we get all rules, to be able to exclude any rule
         // minimum priority will be applied again, before constructing the final ruleset
         RuleSetFactory ruleSetFactory = toLoader().filterAbovePriority(RulePriority.LOW).warnDeprecated(false).toFactory();
-        RuleSet otherRuleSet = ruleSetFactory.createRuleSet(RuleSetReferenceId.parse(ref).get(0));
+        RuleSet otherRuleSet = ruleSetFactory.createRuleSet(ruleSetReferenceId);
         List<RuleReference> potentialRules = new ArrayList<>();
         int countDeprecated = 0;
         for (Rule rule : otherRuleSet.getRules()) {
@@ -429,6 +430,24 @@ final class RuleSetFactory {
             err.at(ruleElement).warn("The ruleset {0} is referenced multiple times in ruleset ''{1}''", ref, ruleSetBuilder.getName());
         }
         rulesetReferences.add(ref);
+    }
+
+    private RuleSetReferenceId parseReferenceAndWarn(RuleSetBuilder ruleSetBuilder, String ref) {
+        ref = compatibilityFilter.applyRef(ref, this.warnDeprecated);
+        if (ref == null) {
+            LOG.debug("Rule ref {} references a deleted rule, ignoring", ref);
+            return null; // deleted rule
+        }
+
+        List<RuleSetReferenceId> references = RuleSetReferenceId.parse(ref, warnDeprecated);
+        if (references.size() > 1 && warnDeprecated) {
+            LOG.warn("Using a comma separated list as a ref attribute is deprecated. "
+                        + "All references but the first are ignored. Reference: '{}'", ref);
+        } else if (references.isEmpty()) {
+            LOG.warn("Empty ref attribute in ruleset '{}'", ruleSetBuilder.getName());
+            return null;
+        }
+        return references.get(0);
     }
 
     /**
@@ -482,6 +501,7 @@ final class RuleSetFactory {
                                         RuleSetBuilder ruleSetBuilder,
                                         Element ruleNode,
                                         String ref,
+                                       RuleSetReferenceId otherRuleSetReferenceId,
                                         boolean withDeprecatedRuleReferences,
                                         PmdXmlReporter err) {
 
@@ -497,7 +517,6 @@ final class RuleSetFactory {
         RuleSetFactory ruleSetFactory = toLoader().filterAbovePriority(RulePriority.LOW).warnDeprecated(false).toFactory();
 
         boolean isSameRuleSet = false;
-        RuleSetReferenceId otherRuleSetReferenceId = RuleSetReferenceId.parse(ref).get(0); // fixme what is this get(0) doing here
         if (!otherRuleSetReferenceId.isExternal()
             && containsRule(ruleSetReferenceId, otherRuleSetReferenceId.getRuleName())) {
             otherRuleSetReferenceId = new RuleSetReferenceId(ref, ruleSetReferenceId);
@@ -584,6 +603,7 @@ final class RuleSetFactory {
      * @return {@code true} if the ruleName exists
      */
     private boolean containsRule(RuleSetReferenceId ruleSetReferenceId, String ruleName) {
+        // TODO: avoid reloading the ruleset once again
         boolean found = false;
         try (InputStream ruleSet = ruleSetReferenceId.getInputStream(resourceLoader)) {
             DocumentBuilder builder = createDocumentBuilder();

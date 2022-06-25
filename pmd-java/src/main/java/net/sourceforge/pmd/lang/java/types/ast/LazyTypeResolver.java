@@ -42,7 +42,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTLambdaParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodReference;
-import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTNullLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTNumericLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTPattern;
@@ -150,11 +149,6 @@ public final class LazyTypeResolver extends JavaVisitorBase<TypingContext, @NonN
     @Override
     public JTypeMirror visit(ASTVariableDeclarator node, TypingContext ctx) {
         return ts.NO_TYPE; // TODO shouldn't be a typenode (do you mean type of variable, or type of initializer?)
-    }
-
-    @Override
-    public JTypeMirror visit(ASTName node, TypingContext ctx) {
-        return ts.NO_TYPE; // TODO shouldn't be a typenode (basically an AmbiguousName)
     }
 
     @Override
@@ -565,6 +559,9 @@ public final class LazyTypeResolver extends JavaVisitorBase<TypingContext, @NonN
 
         JMethodSig m = lambda.getFunctionalMethod(); // this forces resolution of the lambda
         if (!isUnresolved(m)) {
+            if (m.getArity() != node.getOwner().getArity()) {
+                return ts.ERROR;
+            }
             return m.getFormalParameters().get(node.getIndexInParent());
         }
         return ts.UNKNOWN;

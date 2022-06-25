@@ -9,7 +9,7 @@ import java.util.function.Supplier;
 
 import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.lang.ast.DummyNode.DummyNodeTypeB;
-import net.sourceforge.pmd.lang.ast.DummyRoot;
+import net.sourceforge.pmd.lang.ast.DummyNode.DummyRootNode;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.util.CollectionUtil;
@@ -26,8 +26,8 @@ public final class DummyTreeUtil {
     }
 
 
-    public static DummyRoot root(DummyNode... children) {
-        return nodeImpl(new DummyRoot(), children);
+    public static DummyRootNode root(DummyNode... children) {
+        return nodeImpl(new DummyRootNode(), children);
     }
 
     /** Creates a dummy node with the given children. */
@@ -74,8 +74,8 @@ public final class DummyTreeUtil {
      * )
      * </pre>
      */
-    public static DummyRoot tree(Supplier<DummyRoot> supplier) {
-        DummyRoot dummyNode = supplier.get();
+    public static DummyRootNode tree(Supplier<DummyRootNode> supplier) {
+        DummyRootNode dummyNode = supplier.get();
         assignPathImage(dummyNode, "");
         return dummyNode;
     }

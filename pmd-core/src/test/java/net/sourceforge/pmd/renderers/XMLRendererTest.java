@@ -12,7 +12,6 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
@@ -30,9 +29,10 @@ import net.sourceforge.pmd.Report.ConfigurationError;
 import net.sourceforge.pmd.Report.ProcessingError;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.ast.DummyNode;
-import net.sourceforge.pmd.lang.ast.DummyRoot;
+import net.sourceforge.pmd.lang.ast.DummyNode.DummyRootNode;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
+import net.sourceforge.pmd.util.IOUtil;
 
 public class XMLRendererTest extends AbstractRendererTest {
     @Rule // Restores system properties after test
@@ -91,7 +91,7 @@ public class XMLRendererTest extends AbstractRendererTest {
     }
 
     private RuleViolation createRuleViolation(String description) {
-        DummyNode node = new DummyRoot().withFileName(getSourceCodeFilename());
+        DummyNode node = new DummyRootNode().withFileName(getSourceCodeFilename());
         node.setCoords(1, 1, 1, 1);
         return new ParametricRuleViolation<Node>(new FooRule(), node, description);
     }
@@ -169,7 +169,7 @@ public class XMLRendererTest extends AbstractRendererTest {
         renderer.flush();
 
         try (FileInputStream input = new FileInputStream(reportFile)) {
-            return IOUtils.toString(input, expectedCharset);
+            return IOUtil.readToString(input, expectedCharset);
         }
     }
 }

@@ -8,9 +8,8 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
-
-import org.apache.commons.io.comparator.PathFileComparator;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 
@@ -49,7 +48,12 @@ public class FileFinder {
             return;
         }
 
-        Arrays.sort(candidates, PathFileComparator.PATH_INSENSITIVE_COMPARATOR);
+        Arrays.sort(candidates, new Comparator<File>() {
+            @Override
+            public int compare(File o1, File o2) {
+                return o1.getPath().compareToIgnoreCase(o2.getPath());
+            }
+        });
 
         for (File tmp : candidates) {
             if (tmp.isDirectory()) {

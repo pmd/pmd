@@ -13,10 +13,9 @@ import java.util.List;
 import java.util.zip.Adler32;
 import java.util.zip.CheckedInputStream;
 
-import org.apache.commons.io.IOUtils;
-
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.util.IOUtil;
 
 /**
  * The result of a single file analysis.
@@ -45,8 +44,7 @@ public class AnalysisResult {
                 new BufferedInputStream(Files.newInputStream(sourceFile.toPath())), new Adler32());
         ) {
             // Just read it, the CheckedInputStream will update the checksum on it's own
-            IOUtils.skipFully(stream, sourceFile.length());
-
+            IOUtil.skipFully(stream, sourceFile.length());
             return stream.getChecksum().getValue();
         } catch (final IOException ignored) {
             // We don't really care, if it's unreadable

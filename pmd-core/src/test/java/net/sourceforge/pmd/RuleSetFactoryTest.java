@@ -6,6 +6,7 @@ package net.sourceforge.pmd;
 
 import static net.sourceforge.pmd.util.internal.xml.SchemaConstants.DEPRECATED;
 import static net.sourceforge.pmd.util.internal.xml.SchemaConstants.NAME;
+import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -19,6 +20,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.hamcrest.MatcherAssert;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -116,6 +118,19 @@ public class RuleSetFactoryTest extends RulesetFactoryTestBase {
     public void testSingleRule() {
         RuleSet rs = loadRuleSet(SINGLE_RULE);
         assertEquals(1, rs.size());
+        Rule r = rs.getRules().iterator().next();
+        assertEquals("MockRuleName", r.getName());
+        assertEquals("net.sourceforge.pmd.lang.rule.MockRule", r.getRuleClass());
+        assertEquals("avoid the mock rule", r.getMessage());
+    }
+
+    @Test
+    public void testSingleRuleEmptyRef() {
+        RuleSet rs = loadRuleSet(SINGLE_RULE_EMPTY_REF);
+        assertEquals(1, rs.size());
+
+        MatcherAssert.assertThat(systemErrRule.getLog(), containsString("Empty ref attribute in ruleset 'test'"));
+
         Rule r = rs.getRules().iterator().next();
         assertEquals("MockRuleName", r.getName());
         assertEquals("net.sourceforge.pmd.lang.rule.MockRule", r.getRuleClass());
@@ -917,14 +932,29 @@ public class RuleSetFactoryTest extends RulesetFactoryTestBase {
     @Test
     public void testMissingRuleSetDescriptionIsWarning() {
         loadRuleSetWithDeprecationWarnings(
-            "<?xml version=\"1.0\"?>\n" + "<ruleset name=\"then name\"\n"
-                + "    xmlns=\"http://pmd.sourceforge.net/ruleset/2.0.0\"\n"
-                + "    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
-                + "    xsi:schemaLocation=\"http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd\">\n"
-                + "  <rule ref=\"rulesets/dummy/basic.xml\"/>\n"
-                + "  </ruleset>\n"
+                "<?xml version=\"1.0\"?>\n" + "<ruleset name=\"then name\"\n"
+                        + "    xmlns=\"http://pmd.sourceforge.net/ruleset/2.0.0\"\n"
+                        + "    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
+                        + "    xsi:schemaLocation=\"http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd\">\n"
+                        + "  <rule ref=\"rulesets/dummy/basic.xml\"/>\n"
+                        + "  </ruleset>\n"
         );
         verifyFoundAWarningWithMessage(containing("RuleSet description is missing."));
+    }
+
+    @Test
+    public void testDeprecatedRulesetReferenceProducesWarning() throws Exception {
+        loadRuleSetWithDeprecationWarnings(
+                "<?xml version=\"1.0\"?>\n" + "<ruleset \n"
+                        + "    name='foo'"
+                        + "    xmlns=\"http://pmd.sourceforge.net/ruleset/2.0.0\"\n"
+                        + "    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
+                        + "    xsi:schemaLocation=\"http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd\">\n"
+                        + "  <description>Custom ruleset for tests</description>\n"
+                        + "  <rule ref=\"dummy-basic\"/>\n"
+                        + "  </ruleset>\n");
+
+        MatcherAssert.assertThat(systemErrRule.getLog(), containsString("Ruleset reference 'dummy-basic' uses a deprecated form, use 'rulesets/dummy/basic.xml' instead"));
     }
 
     private static final String REF_OVERRIDE_ORIGINAL_NAME = "<?xml version=\"1.0\"?>\n"
@@ -1049,6 +1079,18 @@ public class RuleSetFactoryTest extends RulesetFactoryTestBase {
                 priority("3")
             )
         );
+
+    private static final String SINGLE_RULE_EMPTY_REF = "<?xml version=\"1.0\"?>\n"
+        + "<ruleset name=\"test\">\n"
+        + "<description>testdesc</description>\n"
+        + "<rule \n"
+        + "language=\"dummy\" \n"
+        + "ref=\"\" \n"
+        + "name=\"MockRuleName\" \n"
+        + "message=\"avoid the mock rule\" \n"
+        + "class=\"net.sourceforge.pmd.lang.rule.MockRule\">\n"
+        + "<priority>3</priority>\n"
+        + "</rule></ruleset>";
 
     private static final String PROPERTIES =
         rulesetXml(

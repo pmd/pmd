@@ -8,7 +8,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class DummyNodeWithListAndEnum extends DummyRoot {
+public class DummyNodeWithListAndEnum extends DummyNode.DummyRootNode {
     public DummyNodeWithListAndEnum() {
         super();
         beginLine = 1;

@@ -11,12 +11,15 @@ import static org.junit.Assert.fail;
 
 import java.util.List;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.Test;
 
 import net.sourceforge.pmd.lang.ast.ParseException;
+import net.sourceforge.pmd.lang.ast.test.BaseParsingHelper;
+import net.sourceforge.pmd.lang.java.BaseJavaTreeDumpTest;
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 
-public class JDKVersionTest {
+public class JDKVersionTest extends BaseJavaTreeDumpTest {
 
     private final JavaParsingHelper java3 = JavaParsingHelper.DEFAULT
         .withDefaultVersion("1.3")
@@ -210,7 +213,7 @@ public class JDKVersionTest {
 
     @Test(expected = ParseException.class)
     public final void jdk9PrivateInterfaceMethodsInJava18() {
-        java8.parseResource("jdk9_private_interface_methods.java");
+        java8.parseResource("java9/jdk9_private_interface_methods.java");
     }
 
     @Test
@@ -225,52 +228,52 @@ public class JDKVersionTest {
 
     @Test
     public final void jdk9PrivateInterfaceMethods() {
-        java9.parseResource("jdk9_private_interface_methods.java");
+        java9.parseResource("java9/jdk9_private_interface_methods.java");
     }
 
     @Test
     public final void jdk9InvalidIdentifierInJava18() {
-        java8.parseResource("jdk9_invalid_identifier.java");
+        java8.parseResource("java9/jdk9_invalid_identifier.java");
     }
 
     @Test(expected = ParseException.class)
     public final void jdk9InvalidIdentifier() {
-        java9.parseResource("jdk9_invalid_identifier.java");
+        java9.parseResource("java9/jdk9_invalid_identifier.java");
     }
 
     @Test(expected = ParseException.class)
     public final void jdk9AnonymousDiamondInJava8() {
-        java8.parseResource("jdk9_anonymous_diamond.java");
+        java8.parseResource("java9/jdk9_anonymous_diamond.java");
     }
 
     @Test
     public final void jdk9AnonymousDiamond() {
-        java9.parseResource("jdk9_anonymous_diamond.java");
+        java9.parseResource("java9/jdk9_anonymous_diamond.java");
     }
 
     @Test(expected = ParseException.class)
     public final void jdk9ModuleInfoInJava8() {
-        java8.parseResource("jdk9_module_info.java");
+        java8.parseResource("java9/jdk9_module_info.java");
     }
 
     @Test
     public final void jdk9ModuleInfo() {
-        java9.parseResource("jdk9_module_info.java");
+        java9.parseResource("java9/jdk9_module_info.java");
     }
 
     @Test
     public void testAnnotatedModule() {
-        java9.parseResource("jdk9_module_info_with_annot.java");
+        java9.parseResource("java9/jdk9_module_info_with_annot.java");
     }
 
     @Test(expected = ParseException.class)
     public final void jdk9TryWithResourcesInJava8() {
-        java8.parseResource("jdk9_try_with_resources.java");
+        java8.parseResource("java9/jdk9_try_with_resources.java");
     }
 
     @Test
     public final void jdk9TryWithResources() {
-        java9.parseResource("jdk9_try_with_resources.java");
+        java9.parseResource("java9/jdk9_try_with_resources.java");
     }
 
     @Test
@@ -291,5 +294,10 @@ public class JDKVersionTest {
         } catch (ParseException e) {
             assertTrue(e.getMessage().startsWith("Line 19"));
         }
+    }
+
+    @Override
+    public @NonNull BaseParsingHelper<?, ?> getParser() {
+        return java9;
     }
 }

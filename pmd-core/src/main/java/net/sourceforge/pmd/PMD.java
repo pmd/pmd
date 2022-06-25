@@ -206,6 +206,7 @@ public final class PMD {
                 return StatusCode.ERROR;
             }
             try {
+                log.debug("Current classpath:\n{}", System.getProperty("java.class.path"));
                 ReportStats stats = pmd.runAndReturnStats();
                 if (pmdReporter.numErrors() > 0) {
                     // processing errors are ignored

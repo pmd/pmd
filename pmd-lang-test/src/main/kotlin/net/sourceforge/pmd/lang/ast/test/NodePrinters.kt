@@ -65,7 +65,7 @@ open class BaseNodeAttributePrinter : TextTreeRenderer(true, -1) {
         node.xPathAttributesIterator
                 .asSequence()
                 .filterNot { ignoreAttribute(node, it) }
-                .map { AttributeInfo(it.name, it.value?.toString()) }
+                .map { AttributeInfo(it.name, it.value) }
                 .forEach { result += it }
     }
 
@@ -91,7 +91,8 @@ open class BaseNodeAttributePrinter : TextTreeRenderer(true, -1) {
             is Char -> '\''.toString() + value.toString().replace("'".toRegex(), "\\'") + '\''.toString()
             is Enum<*> -> value.enumDeclaringClass.simpleName + "." + value.name
             is Class<*> -> value.canonicalName?.let { "$it.class" }
-            is Number, is Boolean, null -> value.toString()
+            is Number, is Boolean -> value.toString()
+            null -> "null"
             else -> null
         }
     }

@@ -8,9 +8,8 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.function.Function;
 
-import org.apache.commons.io.IOUtils;
-
 import net.sourceforge.pmd.lang.ast.CharStream;
+import net.sourceforge.pmd.util.IOUtil;
 
 public final class CharStreamFactory {
 
@@ -58,7 +57,7 @@ public final class CharStreamFactory {
     @Deprecated
     public static String toString(Reader dstream) {
         try (Reader r = dstream) {
-            return IOUtils.toString(r);
+            return IOUtil.readToString(r);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

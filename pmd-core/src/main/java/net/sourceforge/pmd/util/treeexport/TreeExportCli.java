@@ -4,20 +4,18 @@
 
 package net.sourceforge.pmd.util.treeexport;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.Reader;
-import java.io.StringReader;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Scanner;
 
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.io.input.CloseShieldInputStream;
 import org.apache.commons.lang3.StringEscapeUtils;
 
 import net.sourceforge.pmd.annotation.Experimental;
@@ -33,6 +31,7 @@ import net.sourceforge.pmd.lang.ast.SemanticErrorReporter;
 import net.sourceforge.pmd.lang.rule.xpath.Attribute;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertySource;
+import net.sourceforge.pmd.util.IOUtil;
 
 import com.beust.jcommander.DynamicParameter;
 import com.beust.jcommander.JCommander;
@@ -41,6 +40,7 @@ import com.beust.jcommander.ParameterException;
 
 @Experimental
 public class TreeExportCli {
+
     @Parameter(names = { "--format", "-f" }, description = "The output format.")
     private String format = "xml";
     @Parameter(names = { "--language", "-l" }, description = "Specify the language to use.")
@@ -49,43 +49,63 @@ public class TreeExportCli {
     private String encoding = StandardCharsets.UTF_8.name();
     @DynamicParameter(names = "-P", description = "Properties for the renderer.")
     private Map<String, String> properties = new HashMap<>();
-
     @Parameter(names = { "--help", "-h" }, description = "Display usage.", help = true)
     private boolean help;
-
     @Parameter(names = "--file", description = "The file to dump")
     private String file;
-
     @Parameter(names = { "--read-stdin", "-i" }, description = "Read source from standard input")
     private boolean readStdin;
 
+    private final Io io;
 
-    public static void main(String[] args) throws IOException {
-        TreeExportCli cli = new TreeExportCli();
-        JCommander jcommander = new JCommander(cli);
+    TreeExportCli(Io io) {
+        this.io = io;
+    }
+
+    public static void main(String... args) {
+        TreeExportCli cli = new TreeExportCli(Io.SYSTEM);
+        System.exit(cli.runMain(args));
+    }
+
+    public int runMain(String... args) {
+        try {
+            return runMainOrThrow(args);
+        } catch (AbortedError e) {
+            return 1;
+        } catch (IOException e) {
+            io.stderr.println("Error: " + e);
+            e.printStackTrace(io.stderr);
+            return 1;
+        }
+    }
+
+    private int runMainOrThrow(String[] args) throws IOException {
+
+        JCommander jcommander = new JCommander(this);
 
         try {
             jcommander.parse(args);
         } catch (ParameterException e) {
-            System.err.println(e.getMessage());
-            cli.usage(jcommander);
-            System.exit(1);
+            io.stderr.println(e.getMessage());
+            usage(jcommander);
+            return 1;
         }
 
-        if (cli.help) {
-            cli.usage(jcommander);
-            System.exit(0);
+        if (help) {
+            usage(jcommander);
+            return 0;
         }
 
 
-        TreeRendererDescriptor descriptor = TreeRenderers.findById(cli.format);
+        TreeRendererDescriptor descriptor = TreeRenderers.findById(this.format);
         if (descriptor == null) {
-            throw cli.bail("Unknown format '" + cli.format + "'");
+            throw this.bail("Unknown format '" + this.format + "'");
         }
 
-        PropertySource bundle = parseProperties(cli, descriptor);
+        PropertySource bundle = parseProperties(this, descriptor);
 
-        cli.run(descriptor.produceRenderer(bundle));
+        run(descriptor.produceRenderer(bundle));
+        return 0;
     }
 
     public static PropertySource parseProperties(TreeExportCli cli, TreeRendererDescriptor descriptor) {
@@ -163,51 +183,42 @@ public class TreeExportCli {
         Parser parser = languageHandler.getParser();
 
         @SuppressWarnings("PMD.CloseResource")
-        final Reader source;
-        final String filename;
+        Reader source;
+        String fileName;
         if (file == null && !readStdin) {
             throw bail("One of --file or --read-stdin must be mentioned");
         } else if (readStdin) {
-            System.err.println("Reading from stdin...");
-            source = new StringReader(readFromSystemIn());
-            filename = "stdin";
+            io.stderr.println("Reading from stdin...");
+            source = readFromSystemIn();
+            fileName = "stdin";
         } else {
             source = Files.newBufferedReader(new File(file).toPath(), Charset.forName(encoding));
-            filename = file;
+            fileName = file;
         }
 
         // disable warnings for deprecated attributes
         Slf4jSimpleConfiguration.disableLogging(Attribute.class);
 
         try {
-            String fullSource = IOUtils.toString(source);
-            ParserTask task = new ParserTask(langVersion, filename, fullSource, SemanticErrorReporter.noop());
+            String fullSource = IOUtil.readToString(source);
+            ParserTask task = new ParserTask(langVersion, fileName, fullSource, SemanticErrorReporter.noop());
             RootNode root = parser.parse(task);
 
-            renderer.renderSubtree(root, System.out);
+            renderer.renderSubtree(root, io.stdout);
         } finally {
             source.close();
         }
     }
 
-    private String readFromSystemIn() {
-
-
-        StringBuilder sb = new StringBuilder();
-        try (Scanner scanner = new Scanner(new CloseShieldInputStream(System.in))) {
-            while (scanner.hasNextLine()) {
-                sb.append(scanner.nextLine());
-            }
-        }
-        return sb.toString();
-
+    private Reader readFromSystemIn() {
+        return new BufferedReader(new InputStreamReader(io.stdin));
     }
 
     private void printWarning() {
-        System.err.println("-------------------------------------------------------------------------------");
-        System.err.println("This command line utility is experimental. It might change at any time without");
-        System.err.println("prior notice.");
-        System.err.println("-------------------------------------------------------------------------------");
+        io.stderr.println("-------------------------------------------------------------------------------");
+        io.stderr.println("This command line utility is experimental. It might change at any time without");
+        io.stderr.println("prior notice.");
+        io.stderr.println("-------------------------------------------------------------------------------");
     }
 
     private static <T> void setProperty(PropertyDescriptor<T> descriptor, PropertySource bundle, String value) {
@@ -215,10 +226,13 @@ public class TreeExportCli {
     }
 
 
-    private RuntimeException bail(String message) {
-        System.err.println(message);
-        System.err.println("Use --help for usage information");
-        System.exit(1);
-        return new RuntimeException();
+    private AbortedError bail(String message) {
+        io.stderr.println(message);
+        io.stderr.println("Use --help for usage information");
+        return new AbortedError();
+    }
+
+    private static final class AbortedError extends Error {
+
     }
 }

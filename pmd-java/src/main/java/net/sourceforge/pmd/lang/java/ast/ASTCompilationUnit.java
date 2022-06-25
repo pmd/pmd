@@ -100,6 +100,13 @@ public final class ASTCompilationUnit extends AbstractJavaNode implements JavaNo
         return children(ASTAnyTypeDeclaration.class);
     }
 
+    /**
+     * Returns the module declaration, if this is a modular compilation unit.
+     */
+    public @Nullable ASTModuleDeclaration getModuleDeclaration() {
+        return firstChild(ASTModuleDeclaration.class);
+    }
+
     @Override
     public @NonNull JSymbolTable getSymbolTable() {
         assert symbolTable != null : "Symbol table wasn't set";

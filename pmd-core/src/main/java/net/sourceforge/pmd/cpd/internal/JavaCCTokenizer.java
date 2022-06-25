@@ -6,8 +6,7 @@ package net.sourceforge.pmd.cpd.internal;
 
 import java.io.IOException;
 import java.io.Reader;
-
-import org.apache.commons.io.input.CharSequenceReader;
+import java.io.StringReader;
 
 import net.sourceforge.pmd.cpd.SourceCode;
 import net.sourceforge.pmd.cpd.TokenEntry;
@@ -26,7 +25,7 @@ public abstract class JavaCCTokenizer implements Tokenizer {
 
     @SuppressWarnings("PMD.CloseResource")
     protected TokenManager<JavaccToken> getLexerForSource(SourceCode sourceCode) throws IOException {
-        Reader reader = IOUtil.skipBOM(new CharSequenceReader(sourceCode.getCodeBuffer()));
+        Reader reader = IOUtil.skipBOM(new StringReader(sourceCode.getCodeBuffer().toString()));
         return makeLexerImpl(makeCharStream(reader));
     }
 

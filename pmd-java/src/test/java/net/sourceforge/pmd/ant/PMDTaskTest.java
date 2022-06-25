@@ -9,9 +9,9 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 
-import org.apache.commons.io.FileUtils;
 import org.junit.AfterClass;
 import org.junit.Rule;
 import org.junit.Test;
@@ -20,6 +20,7 @@ import org.junit.rules.ExternalResource;
 import org.junit.rules.TestRule;
 
 import net.sourceforge.pmd.internal.Slf4jSimpleConfiguration;
+import net.sourceforge.pmd.util.IOUtil;
 
 public class PMDTaskTest extends AbstractAntTestHelper {
 
@@ -30,21 +31,20 @@ public class PMDTaskTest extends AbstractAntTestHelper {
     @Test
     public void testNoFormattersValidation() {
         executeTarget("testNoFormattersValidation");
-        assertOutputContaining("Fields should be declared at the top of the class");
+        assertOutputContaining("Violation from test-rset-1.xml");
     }
 
     @Test
     public void testNestedRuleset() {
         executeTarget("testNestedRuleset");
-        assertOutputContaining("Avoid really long methods");
-        assertOutputContaining("Fields should be declared at the");
+        assertOutputContaining("Violation from test-rset-1.xml");
+        assertOutputContaining("Violation from test-rset-2.xml");
     }
 
     @Test
     public void testFormatterWithProperties() {
         executeTarget("testFormatterWithProperties");
-        assertOutputContaining("Avoid really long methods");
-        assertOutputContaining("Fields should be declared at the");
+        assertOutputContaining("Violation from test-rset-1.xml");
         assertOutputContaining("link_prefix");
         assertOutputContaining("line_prefix");
     }
@@ -52,42 +52,40 @@ public class PMDTaskTest extends AbstractAntTestHelper {
     @Test
     public void testAbstractNames() {
         executeTarget("testAbstractNames");
-        assertOutputContaining("Avoid really long methods");
-        assertOutputContaining("Fields should be declared at the");
+        assertOutputContaining("Violation from test-rset-1.xml");
+        assertOutputContaining("Violation from test-rset-2.xml");
     }
 
     @Test
     public void testAbstractNamesInNestedRuleset() {
         executeTarget("testAbstractNamesInNestedRuleset");
-        assertOutputContaining("Avoid really long methods");
-        assertOutputContaining("Fields should be declared at the");
+        assertOutputContaining("Violation from test-rset-1.xml");
+        assertOutputContaining("Violation from test-rset-2.xml");
     }
 
     @Test
     public void testCommaInRulesetfiles() {
         executeTarget("testCommaInRulesetfiles");
-        assertOutputContaining("Avoid really long methods");
-        assertOutputContaining("Fields should be declared at the");
+        assertOutputContaining("Violation from test-rset-1.xml");
+        assertOutputContaining("Violation from test-rset-2.xml");
     }
 
     @Test
     public void testRelativeRulesets() {
         executeTarget("testRelativeRulesets");
-        assertOutputContaining("Avoid really long methods");
-        assertOutputContaining("Fields should be declared at the");
+        assertOutputContaining("Violation from test-rset-1.xml");
     }
 
     @Test
     public void testRelativeRulesetsInRulesetfiles() {
         executeTarget("testRelativeRulesetsInRulesetfiles");
-        assertOutputContaining("Avoid really long methods");
-        assertOutputContaining("Fields should be declared at");
+        assertOutputContaining("Violation from test-rset-1.xml");
     }
 
     @Test
     public void testExplicitRuleInRuleSet() {
         executeTarget("testExplicitRuleInRuleSet");
-        assertOutputContaining("Avoid really long methods");
+        assertOutputContaining("Violation from test-rset-1.xml");
     }
 
     @Test
@@ -145,7 +143,7 @@ public class PMDTaskTest extends AbstractAntTestHelper {
         setDefaultCharset("cp1252");
 
         executeTarget("testFormatterEncodingWithXML");
-        String report = FileUtils.readFileToString(currentTempFile(), "UTF-8");
+        String report = IOUtil.readFileToString(currentTempFile(), StandardCharsets.UTF_8);
         assertTrue(report.contains("someVariableWithÜmlaut"));
     }
 
@@ -176,14 +174,14 @@ public class PMDTaskTest extends AbstractAntTestHelper {
     @Test
     public void testMissingCacheLocation() {
         executeTarget("testMissingCacheLocation");
-        assertOutputContaining("Avoid really long methods");
+        assertOutputContaining("Violation from test-rset-1.xml");
         assertContains(buildRule.getLog(), "This analysis could be faster");
     }
 
     @Test
     public void testAnalysisCache() {
         executeTarget("testAnalysisCache");
-        assertOutputContaining("Avoid really long methods");
+        assertOutputContaining("Violation from test-rset-1.xml");
         assertDoesntContain(buildRule.getLog(), "This analysis could be faster");
 
         assertTrue(currentTempFile().exists());
@@ -193,7 +191,7 @@ public class PMDTaskTest extends AbstractAntTestHelper {
     @Test
     public void testDisableIncrementalAnalysis() {
         executeTarget("testDisableIncrementalAnalysis");
-        assertOutputContaining("Avoid really long methods");
+        assertOutputContaining("Violation from test-rset-1.xml");
         assertDoesntContain(buildRule.getLog(), "This analysis could be faster");
 
         assertFalse(currentTempFile().exists());

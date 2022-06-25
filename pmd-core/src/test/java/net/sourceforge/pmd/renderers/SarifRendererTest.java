@@ -18,7 +18,6 @@ import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
 
-
 public class SarifRendererTest extends AbstractRendererTest {
 
     @org.junit.Rule
