@@ -7,10 +7,10 @@ package net.sourceforge.pmd.properties.constraints;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class NumericConstraintsTest {
+class NumericConstraintsTest {
 
     @Test
-    public void testInRangeInteger() {
+    void testInRangeInteger() {
         PropertyConstraint<Integer> constraint = NumericConstraints.inRange(1, 10);
         Assertions.assertTrue(constraint.test(1));
         Assertions.assertTrue(constraint.test(5));
@@ -22,7 +22,7 @@ public class NumericConstraintsTest {
     }
 
     @Test
-    public void testInRangeDouble() {
+    void testInRangeDouble() {
         PropertyConstraint<Double> constraint = NumericConstraints.inRange(1.0, 10.0);
         Assertions.assertTrue(constraint.test(1.0));
         Assertions.assertTrue(constraint.test(5.5));
@@ -34,7 +34,7 @@ public class NumericConstraintsTest {
     }
 
     @Test
-    public void testPositive() {
+    void testPositive() {
         PropertyConstraint<Number> constraint = NumericConstraints.positive();
         Assertions.assertTrue(constraint.test(1));
         Assertions.assertTrue(constraint.test(1.5f));
