@@ -4,23 +4,23 @@
 
 package net.sourceforge.pmd.renderers;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
 
-public class CodeClimateRendererTest extends AbstractRendererTest {
+class CodeClimateRendererTest extends AbstractRendererTest {
 
     @Override
-    public Renderer getRenderer() {
+    Renderer getRenderer() {
         return new CodeClimateRenderer();
     }
 
     @Override
-    public String getExpected() {
+    String getExpected() {
         return "{\"type\":\"issue\",\"check_name\":\"Foo\",\"description\":\"blah\","
                 + "\"content\":{\"body\":\"## Foo\\n\\nSince: PMD null\\n\\nPriority: Low\\n\\n"
                 + "[Categories](https://github.com/codeclimate/platform/blob/master/spec/analyzers/SPEC.md#categories): Style\\n\\n"
@@ -35,7 +35,7 @@ public class CodeClimateRendererTest extends AbstractRendererTest {
     }
 
     @Override
-    public String getExpectedWithProperties() {
+    String getExpectedWithProperties() {
         return "{\"type\":\"issue\",\"check_name\":\"Foo\",\"description\":\"blah\","
                 + "\"content\":{\"body\":\"## Foo\\n\\nSince: PMD null\\n\\nPriority: Low\\n\\n"
                 + "[Categories](https://github.com/codeclimate/platform/blob/master/spec/analyzers/SPEC.md#categories): Style\\n\\n"
@@ -52,12 +52,12 @@ public class CodeClimateRendererTest extends AbstractRendererTest {
     }
 
     @Override
-    public String getExpectedEmpty() {
+    String getExpectedEmpty() {
         return "";
     }
 
     @Override
-    public String getExpectedMultiple() {
+    String getExpectedMultiple() {
         return "{\"type\":\"issue\",\"check_name\":\"Foo\",\"description\":\"blah\","
                 + "\"content\":{\"body\":\"## Foo\\n\\nSince: PMD null\\n\\nPriority: Low\\n\\n"
                 + "[Categories](https://github.com/codeclimate/platform/blob/master/spec/analyzers/SPEC.md#categories): Style\\n\\n"
@@ -82,7 +82,7 @@ public class CodeClimateRendererTest extends AbstractRendererTest {
     }
 
     @Test
-    public void testXPathRule() throws Exception {
+    void testXPathRule() throws Exception {
         XPathRule theRule = new XPathRule(XPathVersion.XPATH_3_1, "//dummyNode");
 
         // Setup as FooRule
