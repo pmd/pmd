@@ -3384,7 +3384,8 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/242337?v=4",
       "profile": "https://github.com/jjlharrison",
       "contributions": [
-        "bug"
+        "bug",
+        "code"
       ]
     },
     {
@@ -6681,6 +6682,51 @@
       "name": "Filippo Nova",
       "avatar_url": "https://avatars.githubusercontent.com/u/12506636?v=4",
       "profile": "https://github.com/filipponova",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "dalizi007",
+      "name": "dalizi007",
+      "avatar_url": "https://avatars.githubusercontent.com/u/90743616?v=4",
+      "profile": "https://github.com/dalizi007",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "shiomiyan",
+      "name": "shiomiyan",
+      "avatar_url": "https://avatars.githubusercontent.com/u/35842766?v=4",
+      "profile": "https://github.com/shiomiyan",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "lgemeinhardt",
+      "name": "lgemeinhardt",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1395165?v=4",
+      "profile": "https://github.com/lgemeinhardt",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "HaelC",
+      "name": "Haoliang Chen",
+      "avatar_url": "https://avatars.githubusercontent.com/u/16898273?v=4",
+      "profile": "https://haelchan.me/",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "FSchliephacke",
+      "name": "FSchliephacke",
+      "avatar_url": "https://avatars.githubusercontent.com/u/10260493?v=4",
+      "profile": "https://github.com/FSchliephacke",
       "contributions": [
         "bug"
       ]
