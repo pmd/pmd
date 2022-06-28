@@ -18,7 +18,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.Report.GlobalReportBuilderListener;
-import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.benchmark.TimedOperation;
 import net.sourceforge.pmd.benchmark.TimedOperationCategory;
@@ -37,7 +36,6 @@ import net.sourceforge.pmd.util.ClasspathClassLoader;
 import net.sourceforge.pmd.util.IOUtil;
 import net.sourceforge.pmd.util.datasource.DataSource;
 import net.sourceforge.pmd.util.log.MessageReporter;
-import net.sourceforge.pmd.util.log.internal.SimpleMessageReporter;
 
 /**
  * Main programmatic API of PMD. Create and configure a {@link PMDConfiguration},
@@ -88,9 +86,9 @@ public final class PmdAnalysis implements AutoCloseable {
      * the file collector ({@link #files()}), but more can be added
      * programmatically using the file collector.
      */
-    private PmdAnalysis(PMDConfiguration config, MessageReporter reporter) {
+    private PmdAnalysis(PMDConfiguration config) {
         this.configuration = config;
-        this.reporter = reporter;
+        this.reporter = config.getReporter();
         this.collector = FileCollector.newCollector(
             config.getLanguageVersionDiscoverer(),
             reporter
@@ -111,15 +109,7 @@ public final class PmdAnalysis implements AutoCloseable {
      * </ul>
      */
     public static PmdAnalysis create(PMDConfiguration config) {
-        return create(
-            config,
-            new SimpleMessageReporter(LoggerFactory.getLogger(PmdAnalysis.class))
-        );
-    }
-
-    @InternalApi
-    static PmdAnalysis create(PMDConfiguration config, MessageReporter reporter) {
-        PmdAnalysis pmd = new PmdAnalysis(config, reporter);
+        PmdAnalysis pmd = new PmdAnalysis(config);
 
         // note: do not filter files by language
         // they could be ignored later. The problem is if you call

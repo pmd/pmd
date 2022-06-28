@@ -4,9 +4,6 @@
 
 package net.sourceforge.pmd.lang.html.ast;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import net.sourceforge.pmd.cpd.SourceCode;
 import net.sourceforge.pmd.cpd.TokenEntry;
 import net.sourceforge.pmd.cpd.Tokenizer;
@@ -17,7 +14,6 @@ import net.sourceforge.pmd.lang.ast.SemanticErrorReporter;
 import net.sourceforge.pmd.lang.html.HtmlLanguageModule;
 
 public class HtmlTokenizer implements Tokenizer {
-    private static final Logger LOG = LoggerFactory.getLogger(HtmlTokenizer.class);
 
     @Override
     public void tokenize(SourceCode sourceCode, Tokens tokenEntries) {
@@ -25,7 +21,7 @@ public class HtmlTokenizer implements Tokenizer {
                 LanguageRegistry.getLanguage(HtmlLanguageModule.NAME).getDefaultVersion(),
                 sourceCode.getFileName(),
                 sourceCode.getCodeBuffer().toString(),
-                SemanticErrorReporter.reportToLogger(LOG)
+                SemanticErrorReporter.noop() // todo
         );
 
         HtmlParser parser = new HtmlParser();

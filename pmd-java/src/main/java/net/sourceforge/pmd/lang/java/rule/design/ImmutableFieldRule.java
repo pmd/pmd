@@ -43,17 +43,6 @@ public class ImmutableFieldRule extends AbstractJavaRulechainRule {
             "lombok.Value"
         );
 
-    private static final Set<String> INVALIDATING_FIELD_ANNOTS =
-        setOf(
-                "lombok.Setter",
-                "org.mockito.Captor",
-                "org.mockito.InjectMocks",
-                "org.mockito.Mock",
-                "org.springframework.beans.factory.annotation.Autowired",
-                "org.springframework.beans.factory.annotation.Value",
-                "org.springframework.boot.test.mock.mockito.MockBean"
-        );
-
     public ImmutableFieldRule() {
         super(ASTFieldDeclaration.class);
         definePropertyDescriptor(IGNORED_ANNOTS);
@@ -65,7 +54,6 @@ public class ImmutableFieldRule extends AbstractJavaRulechainRule {
         ASTAnyTypeDeclaration enclosingType = field.getEnclosingType();
         if (field.getEffectiveVisibility().isAtMost(Visibility.V_PRIVATE)
             && !field.getModifiers().hasAny(JModifier.VOLATILE, JModifier.STATIC, JModifier.FINAL)
-            && !JavaAstUtils.hasAnyAnnotation(field, INVALIDATING_FIELD_ANNOTS)
             && !JavaAstUtils.hasAnyAnnotation(enclosingType, INVALIDATING_CLASS_ANNOT)
             && !JavaAstUtils.hasAnyAnnotation(field, getProperty(IGNORED_ANNOTS))) {
 
