@@ -7,15 +7,10 @@ package net.sourceforge.pmd.cpd;
 import java.util.Properties;
 
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 import net.sourceforge.pmd.cpd.test.CpdTextComparisonTest;
 
 public class GherkinTokenizerTest extends CpdTextComparisonTest {
-
-    @org.junit.Rule
-    public ExpectedException ex = ExpectedException.none();
-
     public GherkinTokenizerTest() {
         super(".feature");
     }

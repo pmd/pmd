@@ -5,7 +5,7 @@
 package net.sourceforge.pmd.cpd;
 
 /**
- * Language implementation for Gherkin
+ * Language implementation for Gherkin.
  */
 public class GherkinLanguage extends AbstractLanguage {
 
