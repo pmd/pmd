@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.util.treeexport;
 
 import static org.hamcrest.Matchers.containsString;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
@@ -15,27 +16,26 @@ import java.io.InputStream;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 
 import org.hamcrest.Matcher;
 import org.hamcrest.MatcherAssert;
-import org.junit.Assert;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 /**
  *
  */
-public class TreeExportCliTest {
+class TreeExportCliTest {
 
-    @Rule
-    public TemporaryFolder tmp = new TemporaryFolder();
+    @TempDir
+    Path tmp;
 
     @Test
-    public void testReadStandardInput() {
+    void testReadStandardInput() {
         IoSpy spy = IoSpy.withStdin("(a(b))");
         int status = spy.runMain("-i", "-f", "xml", "-PlineSeparator=LF");
-        Assert.assertEquals(0, status);
+        assertEquals(0, status);
         spy.assertThatStdout(containsString("<?xml version='1.0' encoding='UTF-8' ?>\n"
                                             + "<dummyRootNode Image=''>\n"
                                             + "    <dummyNode Image='a'>\n"
@@ -45,11 +45,11 @@ public class TreeExportCliTest {
     }
 
     @Test
-    public void testReadFile() throws IOException {
+    void testReadFile() throws IOException {
         File file = newFileWithContents("(a(b))");
         IoSpy spy = new IoSpy();
         int status = spy.runMain("--file", file.getAbsolutePath(), "-f", "xml", "-PlineSeparator=LF");
-        Assert.assertEquals(0, status);
+        assertEquals(0, status);
         spy.assertThatStdout(containsString("<?xml version='1.0' encoding='UTF-8' ?>\n"
                                             + "<dummyRootNode Image=''>\n"
                                             + "    <dummyNode Image='a'>\n"
@@ -59,7 +59,7 @@ public class TreeExportCliTest {
     }
 
     private File newFileWithContents(String data) throws IOException {
-        File file = tmp.newFile();
+        File file = Files.createTempFile(tmp, "TreeExportCliTest", "data").toFile();
         try (BufferedWriter br = Files.newBufferedWriter(file.toPath(), StandardCharsets.UTF_8)) {
             br.write(data);
         }

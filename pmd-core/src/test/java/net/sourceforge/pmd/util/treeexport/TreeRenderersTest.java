@@ -4,14 +4,13 @@
 
 package net.sourceforge.pmd.util.treeexport;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.io.IOException;
 
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.Assert;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.ast.DummyNode;
@@ -21,20 +20,17 @@ import net.sourceforge.pmd.properties.PropertySource;
 /**
  *
  */
-public class TreeRenderersTest {
-
-    @Rule
-    public ExpectedException expect = ExpectedException.none();
+class TreeRenderersTest {
 
     @Test
-    public void testStandardRenderersAreRegistered() {
+    void testStandardRenderersAreRegistered() {
 
-        Assert.assertEquals(TreeRenderers.XML, TreeRenderers.findById(TreeRenderers.XML.id()));
+        assertEquals(TreeRenderers.XML, TreeRenderers.findById(TreeRenderers.XML.id()));
 
     }
 
     @Test
-    public void testXmlPropertiesAvailable() {
+    void testXmlPropertiesAvailable() {
 
 
         PropertySource properties = TreeRenderers.XML.newPropertyBundle();
@@ -48,7 +44,7 @@ public class TreeRenderersTest {
     }
 
     @Test
-    public void testXmlDescriptorDump() throws IOException {
+    void testXmlDescriptorDump() throws IOException {
 
         PropertySource bundle = TreeRenderers.XML.newPropertyBundle();
 
@@ -61,7 +57,7 @@ public class TreeRenderersTest {
         StringBuilder out = new StringBuilder();
 
         renderer.renderSubtree(dummyTree1(), out);
-        Assert.assertEquals("<dummyNode foo=\"bar\" ohio=\"4\">\n"
+        assertEquals("<dummyNode foo=\"bar\" ohio=\"4\">\n"
                                 + "    <dummyNode o=\"ha\" />\n"
                                 + "    <dummyNode />\n"
                                 + "</dummyNode>\n", out.toString());
@@ -69,7 +65,7 @@ public class TreeRenderersTest {
     }
 
 
-    public static DummyNode dummyTree1() {
+    static DummyNode dummyTree1() {
         DummyNode dummy = DummyLanguageModule.parse("(parent(child1)(child2))").getChild(0);
         dummy.clearXPathAttributes();
         dummy.setXPathAttribute("foo", "bar");
