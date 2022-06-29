@@ -101,6 +101,8 @@ Example:
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <pmd-cpd>
+   <file path="/home/pmd/source/pmd-core/src/test/java/net/sourceforge/pmd/RuleReferenceTest.java" totalNumberOfTokens="523"/>
+   <file path="/home/pmd/source/pmd-core/src/test/java/net/sourceforge/pmd/lang/rule/xpath/JaxenXPathRuleQueryTest.java" totalNumberOfTokens="120"/>
    <duplication lines="33" tokens="239">
       <file column="29" endcolumn="75" endline="64" line="32"
             path="/home/pmd/source/pmd-core/src/test/java/net/sourceforge/pmd/RuleReferenceTest.java"/>

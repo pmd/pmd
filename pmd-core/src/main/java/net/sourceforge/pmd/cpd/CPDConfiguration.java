@@ -22,6 +22,8 @@ import java.util.Set;
 
 import net.sourceforge.pmd.AbstractConfiguration;
 import net.sourceforge.pmd.cpd.renderer.CPDRenderer;
+import net.sourceforge.pmd.cpd.renderer.CPDRendererAdapter;
+import net.sourceforge.pmd.cpd.renderer.CPDReportRenderer;
 import net.sourceforge.pmd.util.FileFinder;
 import net.sourceforge.pmd.util.FileUtil;
 
@@ -72,7 +74,10 @@ public class CPDConfiguration extends AbstractConfiguration {
     @Deprecated
     private Renderer renderer;
 
+    @Deprecated
     private CPDRenderer cpdRenderer;
+
+    private CPDReportRenderer cpdReportRenderer;
 
     private String encoding;
 
@@ -170,7 +175,12 @@ public class CPDConfiguration extends AbstractConfiguration {
         }
         if (getRenderer() == null && getCPDRenderer() == null) {
             try {
-                setCPDRenderer(getCPDRendererFromString(getRendererName(), getEncoding()));
+                try {
+                    setCPDReportRenderer(getCPDReportRendererFromString(getRendererName(), getEncoding()));
+                } catch (ClassCastException e) {
+                    // The renderer class configured is not using the new CPDReportRenderer interface...
+                    setCPDRenderer(getCPDRendererFromString(getRendererName(), getEncoding()));
+                }
             } catch (ClassCastException e) {
                 // The renderer class configured is not using the new CPDRenderer interface...
                 setRenderer(getRendererFromString(getRendererName(), getEncoding()));
@@ -207,6 +217,10 @@ public class CPDConfiguration extends AbstractConfiguration {
         }
     }
 
+    /**
+     * @deprecated use {@link #getCPDReportRendererFromString(String, String)}
+     */
+    @Deprecated
     public static CPDRenderer getCPDRendererFromString(String name, String encoding) {
         String clazzname = name;
         if (clazzname == null || "".equals(clazzname)) {
@@ -228,6 +242,15 @@ public class CPDConfiguration extends AbstractConfiguration {
         } catch (Exception e) {
             System.err.println("Couldn't instantiate renderer, defaulting to SimpleRenderer: " + e);
             return new SimpleRenderer();
+        }
+    }
+
+    public static CPDReportRenderer getCPDReportRendererFromString(String name, String encoding) {
+        final CPDRenderer renderer = getCPDRendererFromString(name, encoding);
+        if (renderer instanceof CPDReportRenderer) {
+            return (CPDReportRenderer) renderer;
+        } else {
+            return new CPDRendererAdapter(renderer);
         }
     }
 
@@ -326,8 +349,16 @@ public class CPDConfiguration extends AbstractConfiguration {
         return renderer;
     }
 
+    /**
+     * @deprecated Use {@link #getCPDReportRenderer()} instead
+     */
+    @Deprecated
     public CPDRenderer getCPDRenderer() {
         return cpdRenderer;
+    }
+
+    public CPDReportRenderer getCPDReportRenderer() {
+        return cpdReportRenderer;
     }
 
     public Tokenizer tokenizer() {
@@ -382,9 +413,20 @@ public class CPDConfiguration extends AbstractConfiguration {
         this.cpdRenderer = null;
     }
 
+    /**
+     * @deprecated Use {@link #setCPDReportRenderer(CPDReportRenderer)} instead
+     * @param renderer
+     */
+    @Deprecated
     public void setCPDRenderer(CPDRenderer renderer) {
         this.cpdRenderer = renderer;
         this.renderer = null;
+    }
+
+    public void setCPDReportRenderer(CPDReportRenderer renderer) {
+        this.renderer = null;
+        this.cpdRenderer = null;
+        this.cpdReportRenderer = renderer;
     }
 
     public boolean isIgnoreLiterals() {

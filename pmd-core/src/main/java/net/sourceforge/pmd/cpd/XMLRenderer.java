@@ -7,7 +7,12 @@ package net.sourceforge.pmd.cpd;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -22,6 +27,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import net.sourceforge.pmd.cpd.renderer.CPDRenderer;
+import net.sourceforge.pmd.cpd.renderer.CPDReportRenderer;
 import net.sourceforge.pmd.util.StringUtil;
 
 /**
@@ -29,7 +35,7 @@ import net.sourceforge.pmd.util.StringUtil;
  * @author Romain Pelisse - javax.xml implementation
  *
  */
-public final class XMLRenderer implements Renderer, CPDRenderer {
+public final class XMLRenderer implements Renderer, CPDRenderer, CPDReportRenderer {
 
     private String encoding;
 
@@ -101,9 +107,30 @@ public final class XMLRenderer implements Renderer, CPDRenderer {
 
     @Override
     public void render(Iterator<Match> matches, Writer writer) throws IOException {
-        Document doc = createDocument();
-        Element root = doc.createElement("pmd-cpd");
+        render(new CPDReport(matches, Collections.<String, Integer>emptyMap()), writer);
+    }
+
+    @Override
+    public void render(final CPDReport report, final Writer writer) throws IOException {
+        final Document doc = createDocument();
+        final Element root = doc.createElement("pmd-cpd");
+        final Map<String, Integer> numberOfTokensPerFile = report.getNumberOfTokensPerFile();
+        final Iterator<Match> matches = report.getMatches();
         doc.appendChild(root);
+
+        final List<Map.Entry<String, Integer>> entries = new ArrayList<>(numberOfTokensPerFile.entrySet());
+        Collections.sort(entries, new Comparator<Map.Entry<String, Integer>>() {
+            @Override
+            public int compare(final Map.Entry<String, Integer> entry1, final Map.Entry<String, Integer> entry2) {
+                return entry1.getKey().compareTo(entry2.getKey());
+            }
+        });
+        for (final Map.Entry<String, Integer> pair : entries) {
+            final Element fileElement = doc.createElement("file");
+            fileElement.setAttribute("path", pair.getKey());
+            fileElement.setAttribute("totalNumberOfTokens", String.valueOf(pair.getValue()));
+            root.appendChild(fileElement);
+        }
 
         Match match;
         while (matches.hasNext()) {

@@ -10,6 +10,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -21,6 +22,7 @@ import java.util.logging.Logger;
 
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.cli.internal.CliMessages;
+import net.sourceforge.pmd.cpd.renderer.CPDReportRenderer;
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
 import net.sourceforge.pmd.util.FileFinder;
 import net.sourceforge.pmd.util.IOUtil;
@@ -38,6 +40,8 @@ public class CPD {
     private Tokens tokens = new Tokens();
     private MatchAlgorithm matchAlgorithm;
     private Set<String> current = new HashSet<>();
+    private final Map<String, Integer> numberOfTokensPerFile = new HashMap<>();
+    private int lastTokenSize = 0;
 
     public CPD(CPDConfiguration theConfiguration) {
         configuration = theConfiguration;
@@ -57,6 +61,10 @@ public class CPD {
 
     public Iterator<Match> getMatches() {
         return matchAlgorithm.matches();
+    }
+
+    public Map<String, Integer> getNumberOfTokensPerFile() {
+        return numberOfTokensPerFile;
     }
 
     public void addAllInDirectory(File dir) throws IOException {
@@ -145,6 +153,8 @@ public class CPD {
         configuration.tokenizer().tokenize(sourceCode, tokens);
         listener.addedFile(1, new File(sourceCode.getFileName()));
         source.put(sourceCode.getFileName(), sourceCode);
+        numberOfTokensPerFile.put(sourceCode.getFileName(), tokens.size() - lastTokenSize - 1 /*EOF*/);
+        lastTokenSize = tokens.size();
     }
 
     private void addAndSkipLexicalErrors(SourceCode sourceCode) throws IOException {
@@ -207,11 +217,13 @@ public class CPD {
             CPDCommandLineInterface.addSourceFilesToCPD(cpd, arguments);
 
             cpd.go();
-            if (arguments.getCPDRenderer() == null) {
+            final CPDReportRenderer renderer = arguments.getCPDReportRenderer();
+            if (renderer == null) {
                 // legacy writer
                 System.out.println(arguments.getRenderer().render(cpd.getMatches()));
             } else {
-                arguments.getCPDRenderer().render(cpd.getMatches(), new BufferedWriter(new OutputStreamWriter(System.out)));
+                final CPDReport report = new CPDReport(cpd.getMatches(), cpd.numberOfTokensPerFile);
+                renderer.render(report, new BufferedWriter(new OutputStreamWriter(System.out)));
             }
             if (cpd.getMatches().hasNext()) {
                 if (arguments.isFailOnViolation()) {
