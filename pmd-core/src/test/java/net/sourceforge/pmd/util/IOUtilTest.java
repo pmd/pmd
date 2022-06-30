@@ -4,6 +4,9 @@
 
 package net.sourceforge.pmd.util;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.CharArrayReader;
@@ -25,9 +28,6 @@ import org.apache.commons.lang3.SystemUtils;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.function.ThrowingRunnable;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
 public class IOUtilTest {
 
