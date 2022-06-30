@@ -9,8 +9,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.nio.charset.StandardCharsets;
 import java.util.function.Consumer;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.Report;
@@ -18,6 +16,9 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
 
 import com.github.stefanbirkner.systemlambda.SystemLambda;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 
 class SarifRendererTest extends AbstractRendererTest {
 
@@ -90,9 +91,10 @@ class SarifRendererTest extends AbstractRendererTest {
     void testRendererMultipleLocations() throws Exception {
         String actual = renderReport(getRenderer(), reportThreeViolationsTwoRules());
 
-        JSONObject json = new JSONObject(actual);
-        JSONArray results = json.getJSONArray("runs").getJSONObject(0).getJSONArray("results");
-        assertEquals(3, results.length());
+        Gson gson = new Gson();
+        JsonObject json = gson.fromJson(actual, JsonObject.class);
+        JsonArray results = json.getAsJsonArray("runs").get(0).getAsJsonObject().getAsJsonArray("results");
+        assertEquals(3, results.size());
         assertEquals(filter(readFile("expected-multiple-locations.sarif.json")), filter(actual));
     }
 
