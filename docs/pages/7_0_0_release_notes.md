@@ -49,6 +49,8 @@ Given the full Antlr support, PMD now fully supports Swift. We are pleased to an
 * {% rule "swift/bestpractices/UnavailableFunction" %} (`swift-bestpractices`) flags any function throwing a `fatalError` not marked as
   `@available(*, unavailable)` to ensure no calls are actually performed in the codebase.
 
+Contributors: [@lsoncini](https://github.com/lsoncini), [@matifraga](https://github.com/matifraga), [@tomidelucca](https://github.com/tomidelucca)
+
 #### Kotlin support (experimental)
 
 PMD now supports Kotlin as an additional language for analyzing source code. It is based on
