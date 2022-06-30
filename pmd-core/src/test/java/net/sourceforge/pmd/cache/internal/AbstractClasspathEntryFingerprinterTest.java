@@ -4,6 +4,11 @@
 
 package net.sourceforge.pmd.cache.internal;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -11,7 +16,6 @@ import java.nio.file.Path;
 import java.util.zip.Adler32;
 import java.util.zip.Checksum;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -49,13 +53,13 @@ abstract class AbstractClasspathEntryFingerprinterTest {
     @ParameterizedTest
     @MethodSource("getValidFileExtensions")
     void appliesToValidFile(final String extension) {
-        Assertions.assertTrue(fingerprinter.appliesTo(extension));
+        assertTrue(fingerprinter.appliesTo(extension));
     }
 
     @ParameterizedTest
     @MethodSource("getInvalidFileExtensions")
     void doesNotApplyToInvalidFile(final String extension) {
-        Assertions.assertFalse(fingerprinter.appliesTo(extension));
+        assertFalse(fingerprinter.appliesTo(extension));
     }
 
     @Test
@@ -64,7 +68,7 @@ abstract class AbstractClasspathEntryFingerprinterTest {
 
         fingerprinter.fingerprint(new File("non-existing").toURI().toURL(), checksum);
 
-        Assertions.assertEquals(prevValue, checksum.getValue());
+        assertEquals(prevValue, checksum.getValue());
     }
 
     @Test
@@ -72,7 +76,7 @@ abstract class AbstractClasspathEntryFingerprinterTest {
         final long prevValue = checksum.getValue();
         final File file = createValidNonEmptyFile();
 
-        Assertions.assertNotEquals(prevValue, updateFingerprint(file));
+        assertNotEquals(prevValue, updateFingerprint(file));
     }
 
     protected long updateFingerprint(final File file) throws MalformedURLException, IOException {

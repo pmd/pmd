@@ -12,6 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -21,7 +22,6 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
@@ -259,7 +259,7 @@ class NodeStreamBlanketTest<T extends Node> {
 
     @SafeVarargs
     private static <T> void assertImplication(T input, Prop<? super T> precond, Prop<? super T>... properties) {
-        Assumptions.assumeTrue(precond.test(input));
+        assumeTrue(precond.test(input));
 
         for (Prop<? super T> prop2 : properties) {
             assertTrue(

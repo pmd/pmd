@@ -4,13 +4,17 @@
 
 package net.sourceforge.pmd.cpd.token.internal;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.TokenManager;
@@ -115,25 +119,25 @@ class BaseTokenFilterTest {
         final TokenManager<StringToken> tokenManager = new StringTokenManager();
         final DummyTokenFilter<StringToken> tokenFilter = new DummyTokenFilter<>(tokenManager);
         final StringToken firstToken = tokenFilter.getNextToken();
-        Assertions.assertEquals("a", firstToken.getImage());
+        assertEquals("a", firstToken.getImage());
         final Iterable<StringToken> iterable = tokenFilter.getRemainingTokens();
         final Iterator<StringToken> it1 = iterable.iterator();
         final Iterator<StringToken> it2 = iterable.iterator();
-        Assertions.assertTrue(it1.hasNext());
-        Assertions.assertTrue(it2.hasNext());
+        assertTrue(it1.hasNext());
+        assertTrue(it2.hasNext());
         final StringToken firstValFirstIt = it1.next();
         final StringToken firstValSecondIt = it2.next();
-        Assertions.assertTrue(it1.hasNext());
-        Assertions.assertTrue(it2.hasNext());
+        assertTrue(it1.hasNext());
+        assertTrue(it2.hasNext());
         final StringToken secondValFirstIt = it1.next();
-        Assertions.assertFalse(it1.hasNext());
-        Assertions.assertTrue(it2.hasNext());
+        assertFalse(it1.hasNext());
+        assertTrue(it2.hasNext());
         final StringToken secondValSecondIt = it2.next();
-        Assertions.assertFalse(it2.hasNext());
-        Assertions.assertEquals("b", firstValFirstIt.getImage());
-        Assertions.assertEquals("b", firstValSecondIt.getImage());
-        Assertions.assertEquals("c", secondValFirstIt.getImage());
-        Assertions.assertEquals("c", secondValSecondIt.getImage());
+        assertFalse(it2.hasNext());
+        assertEquals("b", firstValFirstIt.getImage());
+        assertEquals("b", firstValSecondIt.getImage());
+        assertEquals("c", secondValFirstIt.getImage());
+        assertEquals("c", secondValSecondIt.getImage());
     }
 
     @Test
@@ -141,25 +145,25 @@ class BaseTokenFilterTest {
         final TokenManager<StringToken> tokenManager = new StringTokenManager();
         final DummyTokenFilter<StringToken> tokenFilter = new DummyTokenFilter<>(tokenManager);
         final StringToken firstToken = tokenFilter.getNextToken();
-        Assertions.assertEquals("a", firstToken.getImage());
+        assertEquals("a", firstToken.getImage());
         final Iterable<StringToken> iterable = tokenFilter.getRemainingTokens();
         final Iterator<StringToken> it1 = iterable.iterator();
         final Iterator<StringToken> it2 = iterable.iterator();
-        Assertions.assertTrue(it1.hasNext());
-        Assertions.assertTrue(it2.hasNext());
+        assertTrue(it1.hasNext());
+        assertTrue(it2.hasNext());
         final StringToken firstValFirstIt = it1.next();
-        Assertions.assertTrue(it1.hasNext());
+        assertTrue(it1.hasNext());
         final StringToken secondValFirstIt = it1.next();
-        Assertions.assertFalse(it1.hasNext());
-        Assertions.assertTrue(it2.hasNext());
+        assertFalse(it1.hasNext());
+        assertTrue(it2.hasNext());
         final StringToken firstValSecondIt = it2.next();
-        Assertions.assertTrue(it2.hasNext());
+        assertTrue(it2.hasNext());
         final StringToken secondValSecondIt = it2.next();
-        Assertions.assertFalse(it2.hasNext());
-        Assertions.assertEquals("b", firstValFirstIt.getImage());
-        Assertions.assertEquals("b", firstValSecondIt.getImage());
-        Assertions.assertEquals("c", secondValFirstIt.getImage());
-        Assertions.assertEquals("c", secondValSecondIt.getImage());
+        assertFalse(it2.hasNext());
+        assertEquals("b", firstValFirstIt.getImage());
+        assertEquals("b", firstValSecondIt.getImage());
+        assertEquals("c", secondValFirstIt.getImage());
+        assertEquals("c", secondValSecondIt.getImage());
     }
 
     @Test
@@ -167,7 +171,7 @@ class BaseTokenFilterTest {
         final TokenManager<StringToken> tokenManager = new StringTokenManager();
         final DummyTokenFilter<StringToken> tokenFilter = new DummyTokenFilter<>(tokenManager);
         final StringToken firstToken = tokenFilter.getNextToken();
-        Assertions.assertEquals("a", firstToken.getImage());
+        assertEquals("a", firstToken.getImage());
         final Iterable<StringToken> iterable = tokenFilter.getRemainingTokens();
         final Iterator<StringToken> it1 = iterable.iterator();
         final Iterator<StringToken> it2 = iterable.iterator();
@@ -175,7 +179,7 @@ class BaseTokenFilterTest {
         it1.next();
         it2.next();
         it2.next();
-        Assertions.assertThrows(NoSuchElementException.class, () -> it1.next());
+        assertThrows(NoSuchElementException.class, () -> it1.next());
     }
 
     @Test
@@ -183,12 +187,12 @@ class BaseTokenFilterTest {
         final TokenManager<StringToken> tokenManager = new StringTokenManager();
         final DummyTokenFilter<StringToken> tokenFilter = new DummyTokenFilter<>(tokenManager);
         final StringToken firstToken = tokenFilter.getNextToken();
-        Assertions.assertEquals("a", firstToken.getImage());
+        assertEquals("a", firstToken.getImage());
         final Iterable<StringToken> iterable = tokenFilter.getRemainingTokens();
         final Iterator<StringToken> it1 = iterable.iterator();
         final StringToken secondToken = tokenFilter.getNextToken();
-        Assertions.assertEquals("b", secondToken.getImage());
-        Assertions.assertThrows(ConcurrentModificationException.class, () -> it1.next());
+        assertEquals("b", secondToken.getImage());
+        assertThrows(ConcurrentModificationException.class, () -> it1.next());
     }
 
 }

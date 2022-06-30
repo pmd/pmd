@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 /**
  * Unit test for {@link SourceCodePositioner}.
  */
-public class SourceCodePositionerTest {
+class SourceCodePositionerTest {
 
     private static final String SOURCE_CODE = "abcd\ndefghi\n\njklmn\nopq";
 
@@ -19,7 +19,7 @@ public class SourceCodePositionerTest {
      * Tests whether the lines and columns are calculated correctly.
      */
     @Test
-    public void testLineNumberFromOffset() {
+    void testLineNumberFromOffset() {
         SourceCodePositioner positioner = new SourceCodePositioner(SOURCE_CODE);
 
         int offset;

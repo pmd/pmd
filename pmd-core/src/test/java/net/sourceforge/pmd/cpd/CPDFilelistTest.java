@@ -4,12 +4,14 @@
 
 package net.sourceforge.pmd.cpd;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.nio.file.Paths;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 class CPDFilelistTest {
@@ -23,13 +25,13 @@ class CPDFilelistTest {
         CPDCommandLineInterface.addSourceFilesToCPD(cpd, arguments);
 
         List<String> paths = cpd.getSourcePaths();
-        Assertions.assertEquals(2, paths.size());
+        assertEquals(2, paths.size());
         Set<String> simpleNames = new HashSet<>();
         for (String path : paths) {
             simpleNames.add(Paths.get(path).getFileName().toString());
         }
-        Assertions.assertTrue(simpleNames.contains("anotherfile.dummy"));
-        Assertions.assertTrue(simpleNames.contains("somefile.dummy"));
+        assertTrue(simpleNames.contains("anotherfile.dummy"));
+        assertTrue(simpleNames.contains("somefile.dummy"));
     }
 
     @Test
@@ -41,12 +43,12 @@ class CPDFilelistTest {
         CPDCommandLineInterface.addSourceFilesToCPD(cpd, arguments);
 
         List<String> paths = cpd.getSourcePaths();
-        Assertions.assertEquals(2, paths.size());
+        assertEquals(2, paths.size());
         Set<String> simpleNames = new HashSet<>();
         for (String path : paths) {
             simpleNames.add(Paths.get(path).getFileName().toString());
         }
-        Assertions.assertTrue(simpleNames.contains("anotherfile.dummy"));
-        Assertions.assertTrue(simpleNames.contains("somefile.dummy"));
+        assertTrue(simpleNames.contains("anotherfile.dummy"));
+        assertTrue(simpleNames.contains("somefile.dummy"));
     }
 }

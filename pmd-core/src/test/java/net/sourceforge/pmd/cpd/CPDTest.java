@@ -4,12 +4,15 @@
 
 package net.sourceforge.pmd.cpd;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
+
 import java.io.File;
 import java.util.Iterator;
 
 import org.apache.commons.lang3.SystemUtils;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -28,7 +31,7 @@ class CPDTest {
     private boolean canTestSymLinks = SystemUtils.IS_OS_UNIX;
 
     @BeforeEach
-    public void setup() throws Exception {
+    void setup() throws Exception {
         CPDConfiguration theConfiguration = new CPDConfiguration();
         theConfiguration.setLanguage(new AnyLanguage("any"));
         theConfiguration.setMinimumTileSize(10);
@@ -44,7 +47,7 @@ class CPDTest {
      *             any error
      */
     private void prepareSymLinks() throws Exception {
-        Assumptions.assumeTrue(canTestSymLinks, "Skipping unit tests with symlinks.");
+        assumeTrue(canTestSymLinks, "Skipping unit tests with symlinks.");
 
         Runtime runtime = Runtime.getRuntime();
         if (!new File(TARGET_TEST_RESOURCE_PATH, "symlink-for-real-file.txt").exists()) {
@@ -125,8 +128,8 @@ class CPDTest {
         while (matches.hasNext()) {
             Match match = matches.next();
             // the file added first was dup2.
-            Assertions.assertTrue(match.getFirstMark().getFilename().endsWith("dup2.java"));
-            Assertions.assertTrue(match.getSecondMark().getFilename().endsWith("dup1.java"));
+            assertTrue(match.getFirstMark().getFilename().endsWith("dup2.java"));
+            assertTrue(match.getSecondMark().getFilename().endsWith("dup1.java"));
         }
     }
 
@@ -146,7 +149,7 @@ class CPDTest {
         public void addedFile(int fileCount, File file) {
             files++;
             if (files > expectedFilesCount) {
-                Assertions.fail("File was added! - " + file);
+                fail("File was added! - " + file);
             }
         }
 
@@ -156,7 +159,7 @@ class CPDTest {
         }
 
         public void verify() {
-            Assertions.assertEquals(expectedFilesCount, files,
+            assertEquals(expectedFilesCount, files,
                     "Expected " + expectedFilesCount + " files, but " + files + " have been added.");
         }
     }

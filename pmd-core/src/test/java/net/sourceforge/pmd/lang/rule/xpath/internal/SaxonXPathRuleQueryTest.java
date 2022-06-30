@@ -41,11 +41,11 @@ import net.sf.saxon.trans.XPathException;
 import net.sf.saxon.value.BooleanValue;
 import net.sf.saxon.value.SequenceType;
 
-public class SaxonXPathRuleQueryTest {
+class SaxonXPathRuleQueryTest {
 
     //    Unsupported: https://github.com/pmd/pmd/issues/2451
     //    @Test
-    //    public void testListAttribute() {
+    //    void testListAttribute() {
     //        RootNode dummy = new DummyNodeWithListAndEnum();
     //
     //        assertQuery(1, "//dummyNode[@List = \"A\"]", dummy);
@@ -60,7 +60,7 @@ public class SaxonXPathRuleQueryTest {
     //    }
 
     @Test
-    public void testHigherOrderFuns() { // XPath 3.1
+    void testHigherOrderFuns() { // XPath 3.1
         DummyRootNode tree = tree(() -> root(
             node()
         ));
@@ -88,7 +88,7 @@ public class SaxonXPathRuleQueryTest {
     }
 
     @Test
-    public void testListProperty() {
+    void testListProperty() {
         RootNode dummy = new DummyNodeWithListAndEnum();
 
         PropertyDescriptor<List<String>> prop = PropertyFactory.stringListProperty("prop")
@@ -100,7 +100,7 @@ public class SaxonXPathRuleQueryTest {
     }
 
     @Test
-    public void testInvalidReturn() {
+    void testInvalidReturn() {
         DummyNodeWithListAndEnum dummy = new DummyNodeWithListAndEnum();
 
         PmdXPathException exception = assertThrows(PmdXPathException.class, () -> {
@@ -111,7 +111,7 @@ public class SaxonXPathRuleQueryTest {
     }
 
     @Test
-    public void testRootExpression() {
+    void testRootExpression() {
         DummyRootNode dummy = new DummyRootNode();
 
         List<Node> result = assertQuery(1, "/", dummy);
@@ -119,7 +119,7 @@ public class SaxonXPathRuleQueryTest {
     }
 
     @Test
-    public void testRootExpressionIsADocumentNode() {
+    void testRootExpressionIsADocumentNode() {
         DummyRootNode dummy = new DummyRootNode();
 
         List<Node> result = assertQuery(1, "(/)[self::document-node()]", dummy);
@@ -127,7 +127,7 @@ public class SaxonXPathRuleQueryTest {
     }
 
     @Test
-    public void testRootExpressionWithName() {
+    void testRootExpressionWithName() {
         DummyRootNode dummy = new DummyRootNode();
         String xpathName = dummy.getXPathNodeName();
 
@@ -138,7 +138,7 @@ public class SaxonXPathRuleQueryTest {
     }
 
     @Test
-    public void ruleChainVisits() {
+    void ruleChainVisits() {
         SaxonXPathRuleQuery query = createQuery("//dummyNode[@Image='baz']/foo | //bar[@Public = 'true'] | //dummyNode[@Public = false()] | //dummyNode");
         List<String> ruleChainVisits = query.getRuleChainVisits();
         assertEquals(2, ruleChainVisits.size());
@@ -154,7 +154,7 @@ public class SaxonXPathRuleQueryTest {
     }
 
     @Test
-    public void ruleChainVisitsMultipleFilters() {
+    void ruleChainVisitsMultipleFilters() {
         SaxonXPathRuleQuery query = createQuery("//dummyNode[@Test1 = false()][@Test2 = true()]");
         List<String> ruleChainVisits = query.getRuleChainVisits();
         assertEquals(1, ruleChainVisits.size());
@@ -165,7 +165,7 @@ public class SaxonXPathRuleQueryTest {
     }
 
     @Test
-    public void ruleChainVisitsCustomFunctions() {
+    void ruleChainVisitsCustomFunctions() {
         SaxonXPathRuleQuery query = createQuery("//dummyNode[pmd-dummy:imageIs(@Image)]");
         List<String> ruleChainVisits = query.getRuleChainVisits();
         assertEquals(1, ruleChainVisits.size());
@@ -180,7 +180,7 @@ public class SaxonXPathRuleQueryTest {
      * excluded from rule chain execution. Saxon itself optimizes this quite good already.
      */
     @Test
-    public void ruleChainVisitsUnboundedPathExpressions() {
+    void ruleChainVisitsUnboundedPathExpressions() {
         SaxonXPathRuleQuery query = createQuery("//dummyNode[//ClassOrInterfaceType]");
         List<String> ruleChainVisits = query.getRuleChainVisits();
         assertEquals(0, ruleChainVisits.size());
@@ -203,7 +203,7 @@ public class SaxonXPathRuleQueryTest {
     }
 
     @Test
-    public void ruleChainVisitsNested() {
+    void ruleChainVisitsNested() {
         SaxonXPathRuleQuery query = createQuery("//dummyNode/foo/*/bar[@Test = 'false']");
         List<String> ruleChainVisits = query.getRuleChainVisits();
         assertEquals(1, ruleChainVisits.size());
@@ -214,7 +214,7 @@ public class SaxonXPathRuleQueryTest {
     }
 
     @Test
-    public void ruleChainVisitsNested2() {
+    void ruleChainVisitsNested2() {
         SaxonXPathRuleQuery query = createQuery("//dummyNode/foo[@Baz = 'a']/*/bar[@Test = 'false']");
         List<String> ruleChainVisits = query.getRuleChainVisits();
         assertEquals(1, ruleChainVisits.size());
@@ -225,7 +225,7 @@ public class SaxonXPathRuleQueryTest {
     }
 
     @Test
-    public void unionBeforeSlash() {
+    void unionBeforeSlash() {
         SaxonXPathRuleQuery query = createQuery("(//dummyNode | //dummyNodeB)/dummyNode[@Image = '10']");
 
         DummyRootNode tree = tree(() -> root(
@@ -247,7 +247,7 @@ public class SaxonXPathRuleQueryTest {
     }
 
     @Test
-    public void unionBeforeSlashWithFilter() {
+    void unionBeforeSlashWithFilter() {
         SaxonXPathRuleQuery query = createQuery("(//dummyNode[@Image='0'] | //dummyNodeB[@Image='1'])/dummyNode[@Image = '10']");
 
         DummyRootNode tree = tree(() -> root(
@@ -270,7 +270,7 @@ public class SaxonXPathRuleQueryTest {
     }
 
     @Test
-    public void unionBeforeSlashDeeper() {
+    void unionBeforeSlashDeeper() {
         SaxonXPathRuleQuery query = createQuery("(//dummyNode | //dummyNodeB)/dummyNode/dummyNode");
 
         DummyRootNode tree = tree(() -> root(
@@ -295,7 +295,7 @@ public class SaxonXPathRuleQueryTest {
     }
 
     @Test
-    public void ruleChainVisitWithVariable() {
+    void ruleChainVisitWithVariable() {
         PropertyDescriptor<String> testClassPattern = PropertyFactory.stringProperty("testClassPattern").desc("test").defaultValue("a").build();
         SaxonXPathRuleQuery query = createQuery("//dummyNode[matches(@SimpleName, $testClassPattern)]", testClassPattern);
         List<String> ruleChainVisits = query.getRuleChainVisits();
@@ -307,7 +307,7 @@ public class SaxonXPathRuleQueryTest {
     }
 
     @Test
-    public void ruleChainVisitWithVariable2() {
+    void ruleChainVisitWithVariable2() {
         PropertyDescriptor<String> testClassPattern = PropertyFactory.stringProperty("testClassPattern").desc("test").defaultValue("a").build();
         SaxonXPathRuleQuery query = createQuery("//dummyNode[matches(@SimpleName, $testClassPattern)]/foo", testClassPattern);
         List<String> ruleChainVisits = query.getRuleChainVisits();
@@ -319,7 +319,7 @@ public class SaxonXPathRuleQueryTest {
     }
 
     @Test
-    public void ruleChainVisitWithTwoFunctions() {
+    void ruleChainVisitWithTwoFunctions() {
         SaxonXPathRuleQuery query = createQuery("//dummyNode[ends-with(@Image, 'foo')][pmd-dummy:imageIs('bar')]");
         List<String> ruleChainVisits = query.getRuleChainVisits();
         assertEquals(1, ruleChainVisits.size());
@@ -329,35 +329,35 @@ public class SaxonXPathRuleQueryTest {
     }
 
     @Test
-    public void ruleChainWithUnions() {
+    void ruleChainWithUnions() {
         SaxonXPathRuleQuery query = createQuery("(//ForStatement | //WhileStatement | //DoStatement)//AssignmentOperator");
         List<String> ruleChainVisits = query.getRuleChainVisits();
         assertEquals(0, ruleChainVisits.size());
     }
 
     @Test
-    public void ruleChainWithUnionsAndFilter() {
+    void ruleChainWithUnionsAndFilter() {
         SaxonXPathRuleQuery query = createQuery("(//ForStatement | //WhileStatement | //DoStatement)//AssignmentOperator[@Image='foo']");
         List<String> ruleChainVisits = query.getRuleChainVisits();
         assertEquals(0, ruleChainVisits.size());
     }
 
     @Test
-    public void ruleChainWithUnionsCustomFunctionsVariant1() {
+    void ruleChainWithUnionsCustomFunctionsVariant1() {
         SaxonXPathRuleQuery query = createQuery("(//ForStatement | //WhileStatement | //DoStatement)//dummyNode[pmd-dummy:imageIs(@Image)]");
         List<String> ruleChainVisits = query.getRuleChainVisits();
         assertEquals(0, ruleChainVisits.size());
     }
 
     @Test
-    public void ruleChainWithUnionsCustomFunctionsVariant2() {
+    void ruleChainWithUnionsCustomFunctionsVariant2() {
         SaxonXPathRuleQuery query = createQuery("//(ForStatement | WhileStatement | DoStatement)//dummyNode[pmd-dummy:imageIs(@Image)]");
         List<String> ruleChainVisits = query.getRuleChainVisits();
         assertEquals(0, ruleChainVisits.size());
     }
 
     @Test
-    public void ruleChainWithUnionsCustomFunctionsVariant3() {
+    void ruleChainWithUnionsCustomFunctionsVariant3() {
         SaxonXPathRuleQuery query = createQuery("//ForStatement//dummyNode[pmd-dummy:imageIs(@Image)]"
                                                     + " | //WhileStatement//dummyNode[pmd-dummy:imageIs(@Image)]"
                                                     + " | //DoStatement//dummyNode[pmd-dummy:imageIs(@Image)]");

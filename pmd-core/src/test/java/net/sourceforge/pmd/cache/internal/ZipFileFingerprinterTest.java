@@ -4,6 +4,9 @@
 
 package net.sourceforge.pmd.cache.internal;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -15,7 +18,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 class ZipFileFingerprinterTest extends AbstractClasspathEntryFingerprinterTest {
@@ -35,8 +37,8 @@ class ZipFileFingerprinterTest extends AbstractClasspathEntryFingerprinterTest {
             overwriteZipFileContents(file, zipEntry);
         }
 
-        Assertions.assertEquals(baselineFingerprint, updateFingerprint(file));
-        Assertions.assertNotEquals(originalFileSize, file.length());
+        assertEquals(baselineFingerprint, updateFingerprint(file));
+        assertNotEquals(originalFileSize, file.length());
     }
 
     @Override

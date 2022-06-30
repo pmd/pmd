@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.document;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -17,7 +18,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -35,7 +35,7 @@ class DocumentFileTest {
     @BeforeEach
     private void setUpTemporaryFiles() throws IOException {
         temporaryFile = temporaryFolder.resolve(FILE_PATH).toFile();
-        Assertions.assertTrue(temporaryFile.createNewFile());
+        assertTrue(temporaryFile.createNewFile());
     }
 
     @Test

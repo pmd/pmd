@@ -24,11 +24,11 @@ import net.sourceforge.pmd.lang.rule.xpath.NoAttribute.NoAttrScope;
 /**
  * @author Clément Fournier
  */
-public class NoAttributeTest {
+class NoAttributeTest {
 
 
     @Test
-    public void testNoAttrInherited() {
+    void testNoAttrInherited() {
         Node child = new NodeNoInherited();
 
         Set<String> attrNames = IteratorUtil.toList(child.getXPathAttributesIterator()).stream().map(Attribute::getName).collect(Collectors.toSet());
@@ -45,7 +45,7 @@ public class NoAttributeTest {
 
 
     @Test
-    public void testNoAttrAll() {
+    void testNoAttrAll() {
 
         assertTrue(0 < IteratorUtil.count(new NodeAllAttr(12).getXPathAttributesIterator()));
 
@@ -59,7 +59,7 @@ public class NoAttributeTest {
     }
 
     @Test
-    public void testNoAttrAllIsNotInherited() {
+    void testNoAttrAllIsNotInherited() {
 
         NodeNoAttrAllChild child = new NodeNoAttrAllChild();
 

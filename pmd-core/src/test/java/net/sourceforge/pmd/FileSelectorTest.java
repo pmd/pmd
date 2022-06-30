@@ -4,9 +4,10 @@
 
 package net.sourceforge.pmd;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.io.File;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.DummyLanguageModule;
@@ -31,7 +32,7 @@ class FileSelectorTest {
         File javaFile = new File("/path/to/myFile.dummy");
 
         boolean selected = fileSelector.accept(javaFile.getParentFile(), javaFile.getName());
-        Assertions.assertEquals(true, selected, "This file should be selected !");
+        assertEquals(true, selected, "This file should be selected !");
     }
 
     /**
@@ -45,7 +46,7 @@ class FileSelectorTest {
         File javaFile = new File("/path/to/myFile.txt");
 
         boolean selected = fileSelector.accept(javaFile.getParentFile(), javaFile.getName());
-        Assertions.assertEquals(false, selected, "Not-source file must not be selected!");
+        assertEquals(false, selected, "Not-source file must not be selected!");
     }
 
     /**
@@ -59,6 +60,6 @@ class FileSelectorTest {
         File javaFile = new File("/path/to/MyClass.java");
 
         boolean selected = fileSelector.accept(javaFile.getParentFile(), javaFile.getName());
-        Assertions.assertEquals(false, selected, "Unwanted java file must not be selected!");
+        assertEquals(false, selected, "Unwanted java file must not be selected!");
     }
 }

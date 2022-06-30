@@ -26,7 +26,7 @@ import net.sourceforge.pmd.util.CollectionUtil;
 /**
  * Unit test for {@link AttributeAxisIterator}
  */
-public class AttributeAxisIteratorTest {
+class AttributeAxisIteratorTest {
 
     private static final Set<String> DEFAULT_ATTRS = setOf("BeginColumn", "BeginLine", "Image", "EndColumn", "EndLine");
 
@@ -34,7 +34,7 @@ public class AttributeAxisIteratorTest {
      * Test hasNext and next.
      */
     @Test
-    public void testAttributeAxisIterator() {
+    void testAttributeAxisIterator() {
         DummyNode dummyNode = new DummyNode();
         dummyNode.setCoords(1, 1, 2, 2);
 
@@ -44,7 +44,7 @@ public class AttributeAxisIteratorTest {
     }
 
     @Test
-    public void testAttributeAxisIteratorWithEnum() {
+    void testAttributeAxisIteratorWithEnum() {
         DummyNodeWithEnum dummyNode = new DummyNodeWithEnum();
 
         AttributeAxisIterator it = new AttributeAxisIterator(dummyNode);
@@ -55,7 +55,7 @@ public class AttributeAxisIteratorTest {
     }
 
     @Test
-    public void testAttributeAxisIteratorWithList() {
+    void testAttributeAxisIteratorWithList() {
         // list attributes are not supported anymore
         DummyNodeWithList dummyNode = new DummyNodeWithList();
 

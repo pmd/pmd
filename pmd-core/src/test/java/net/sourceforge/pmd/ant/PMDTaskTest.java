@@ -4,13 +4,15 @@
 
 package net.sourceforge.pmd.ant;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
+
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
 import org.apache.tools.ant.BuildException;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -27,9 +29,9 @@ class PMDTaskTest extends AbstractAntTest {
     void testFormatterWithNoToFileAttribute() {
         try {
             executeTarget("testFormatterWithNoToFileAttribute");
-            Assertions.fail("This should throw an exception");
+            fail("This should throw an exception");
         } catch (BuildException ex) {
-            Assertions.assertEquals("toFile or toConsole needs to be specified in Formatter", ex.getMessage());
+            assertEquals("toFile or toConsole needs to be specified in Formatter", ex.getMessage());
         }
     }
 
@@ -37,9 +39,9 @@ class PMDTaskTest extends AbstractAntTest {
     void testNoRuleSets() {
         try {
             executeTarget("testNoRuleSets");
-            Assertions.fail("This should throw an exception");
+            fail("This should throw an exception");
         } catch (BuildException ex) {
-            Assertions.assertEquals("No rulesets specified", ex.getMessage());
+            assertEquals("No rulesets specified", ex.getMessage());
         }
     }
 
@@ -52,12 +54,12 @@ class PMDTaskTest extends AbstractAntTest {
     void testInvalidLanguageVersion() {
         try {
             executeTarget("testInvalidLanguageVersion");
-            Assertions.assertEquals(
+            assertEquals(
                     "The following language is not supported:<sourceLanguage name=\"java\" version=\"42\" />.",
                     log.toString());
-            Assertions.fail("This should throw an exception");
+            fail("This should throw an exception");
         } catch (BuildException ex) {
-            Assertions.assertEquals(
+            assertEquals(
                     "The following language is not supported:<sourceLanguage name=\"java\" version=\"42\" />.",
                     ex.getMessage());
         }
@@ -71,7 +73,7 @@ class PMDTaskTest extends AbstractAntTest {
             String actual = IOUtil.readToString(in, StandardCharsets.UTF_8);
             // remove any trailing newline
             actual = actual.trim();
-            Assertions.assertEquals("sample.dummy:1:\tSampleXPathRule:\tTest Rule 2", actual);
+            assertEquals("sample.dummy:1:\tSampleXPathRule:\tTest Rule 2", actual);
         }
     }
 
@@ -95,7 +97,7 @@ class PMDTaskTest extends AbstractAntTest {
                 expected = expected.replaceFirst("endcolumn=\"109\"", "endcolumn=\"110\"");
             }
 
-            Assertions.assertEquals(expected, actual);
+            assertEquals(expected, actual);
         }
     }
 }

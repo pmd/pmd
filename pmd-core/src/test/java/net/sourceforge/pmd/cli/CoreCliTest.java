@@ -8,6 +8,10 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.containsStringIgnoringCase;
 import static org.hamcrest.Matchers.not;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -16,9 +20,7 @@ import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -69,11 +71,11 @@ class CoreCliTest {
         Files.createDirectories(reportFile.getParent());
         writeString(reportFile, STRING_TO_REPLACE);
 
-        Assertions.assertTrue(Files.exists(reportFile), "Report file should exist");
+        assertTrue(Files.exists(reportFile), "Report file should exist");
 
         runPmdSuccessfully("--no-cache", "-d", srcDir, "-R", DUMMY_RULESET, "-r", reportFile);
 
-        Assertions.assertNotEquals(readString(reportFile), STRING_TO_REPLACE);
+        assertNotEquals(readString(reportFile), STRING_TO_REPLACE);
     }
 
     @Test
@@ -83,22 +85,22 @@ class CoreCliTest {
         Files.createDirectories(reportFile.getParent());
         writeString(reportFile, STRING_TO_REPLACE);
 
-        Assertions.assertTrue(Files.exists(reportFile), "Report file should exist");
+        assertTrue(Files.exists(reportFile), "Report file should exist");
 
         runPmdSuccessfully("--no-cache", "--dir", srcDir, "--rulesets", DUMMY_RULESET, "--report-file", reportFile);
 
-        Assertions.assertNotEquals("Report file should have been overwritten", readString(reportFile), STRING_TO_REPLACE);
+        assertNotEquals(readString(reportFile), STRING_TO_REPLACE, "Report file should have been overwritten");
     }
 
     @Test
     void testNonExistentReportFile() throws Exception {
         Path reportFile = tempRoot().resolve("out/reportFile.txt");
 
-        Assertions.assertFalse(Files.exists(reportFile), "Report file should not exist");
+        assertFalse(Files.exists(reportFile), "Report file should not exist");
 
         try {
             runPmdSuccessfully("--no-cache", "-d", srcDir, "-R", DUMMY_RULESET, "-r", reportFile);
-            Assertions.assertTrue(Files.exists(reportFile), "Report file should have been created");
+            assertTrue(Files.exists(reportFile), "Report file should have been created");
         } finally {
             Files.deleteIfExists(reportFile);
         }
@@ -108,25 +110,25 @@ class CoreCliTest {
     void testNonExistentReportFileLongOption() throws Exception {
         Path reportFile = tempRoot().resolve("out/reportFile.txt");
 
-        Assertions.assertFalse(Files.exists(reportFile), "Report file should not exist");
+        assertFalse(Files.exists(reportFile), "Report file should not exist");
 
         runPmdSuccessfully("--no-cache", "--dir", srcDir, "--rulesets", DUMMY_RULESET, "--report-file", reportFile);
 
-        Assertions.assertTrue(Files.exists(reportFile), "Report file should have been created");
+        assertTrue(Files.exists(reportFile), "Report file should have been created");
     }
 
     @Test
     void testFileCollectionWithUnknownFiles() throws Exception {
         Path reportFile = tempRoot().resolve("out/reportFile.txt");
         Files.createFile(srcDir.resolve("foo.not_analysable"));
-        Assertions.assertFalse(Files.exists(reportFile), "Report file should not exist");
+        assertFalse(Files.exists(reportFile), "Report file should not exist");
 
         // restoring system properties: --debug might change logging properties
         SystemLambda.restoreSystemProperties(() -> {
             runPmdSuccessfully("--no-cache", "--dir", srcDir, "--rulesets", DUMMY_RULESET, "--report-file", reportFile, "--debug");
         });
 
-        Assertions.assertTrue(Files.exists(reportFile), "Report file should have been created");
+        assertTrue(Files.exists(reportFile), "Report file should have been created");
         String reportText = IOUtil.readToString(Files.newBufferedReader(reportFile, StandardCharsets.UTF_8));
         assertThat(reportText, not(containsStringIgnoringCase("error")));
     }
@@ -135,16 +137,16 @@ class CoreCliTest {
     void testNonExistentReportFileDeprecatedOptions() throws Exception {
         Path reportFile = tempRoot().resolve("out/reportFile.txt");
 
-        Assertions.assertFalse(Files.exists(reportFile), "Report file should not exist");
+        assertFalse(Files.exists(reportFile), "Report file should not exist");
 
         String log = runPmdSuccessfully("-no-cache", "-dir", srcDir, "-rulesets", DUMMY_RULESET, "-reportfile", reportFile);
 
-        Assertions.assertTrue(Files.exists(reportFile), "Report file should have been created");
-        Assertions.assertTrue(log.contains("Some deprecated options were used on the command-line, including -rulesets"));
-        Assertions.assertTrue(log.contains("Consider replacing it with --rulesets (or -R)"));
+        assertTrue(Files.exists(reportFile), "Report file should have been created");
+        assertTrue(log.contains("Some deprecated options were used on the command-line, including -rulesets"));
+        assertTrue(log.contains("Consider replacing it with --rulesets (or -R)"));
         // only one parameter is logged
-        Assertions.assertFalse(log.contains("Some deprecated options were used on the command-line, including -reportfile"));
-        Assertions.assertFalse(log.contains("Consider replacing it with --report-file"));
+        assertFalse(log.contains("Some deprecated options were used on the command-line, including -reportfile"));
+        assertFalse(log.contains("Consider replacing it with --report-file"));
     }
 
     /**
@@ -159,11 +161,11 @@ class CoreCliTest {
         String reportFile = "reportFile.txt";
         Path absoluteReportFile = FileSystems.getDefault().getPath(reportFile).toAbsolutePath();
         // verify the file doesn't exist yet - we will delete the file at the end!
-        Assertions.assertFalse(Files.exists(absoluteReportFile), "Report file must not exist yet!");
+        assertFalse(Files.exists(absoluteReportFile), "Report file must not exist yet!");
 
         try {
             runPmdSuccessfully("--no-cache", "-d", srcDir, "-R", DUMMY_RULESET, "-r", reportFile);
-            Assertions.assertTrue(Files.exists(absoluteReportFile), "Report file should have been created");
+            assertTrue(Files.exists(absoluteReportFile), "Report file should have been created");
         } finally {
             Files.deleteIfExists(absoluteReportFile);
         }
@@ -174,11 +176,11 @@ class CoreCliTest {
         String reportFile = "reportFile.txt";
         Path absoluteReportFile = FileSystems.getDefault().getPath(reportFile).toAbsolutePath();
         // verify the file doesn't exist yet - we will delete the file at the end!
-        Assertions.assertFalse(Files.exists(absoluteReportFile), "Report file must not exist yet!");
+        assertFalse(Files.exists(absoluteReportFile), "Report file must not exist yet!");
 
         try {
             runPmdSuccessfully("--no-cache", "--dir", srcDir, "--rulesets", DUMMY_RULESET, "--report-file", reportFile);
-            Assertions.assertTrue(Files.exists(absoluteReportFile), "Report file should have been created");
+            assertTrue(Files.exists(absoluteReportFile), "Report file should have been created");
         } finally {
             Files.deleteIfExists(absoluteReportFile);
         }
@@ -204,7 +206,7 @@ class CoreCliTest {
         String log = SystemLambda.tapSystemErrAndOut(() -> {
             runPmd(StatusCode.VIOLATIONS_FOUND, "--no-cache", "--dir", srcDir, "--rulesets", "dummy-basic");
         });
-        MatcherAssert.assertThat(log, containsString("Ruleset reference 'dummy-basic' uses a deprecated form, use 'rulesets/dummy/basic.xml' instead"));
+        assertThat(log, containsString("Ruleset reference 'dummy-basic' uses a deprecated form, use 'rulesets/dummy/basic.xml' instead"));
     }
 
 
@@ -212,11 +214,11 @@ class CoreCliTest {
     void testWrongCliOptionsDoNotPrintUsage() throws Exception {
         String[] args = { "-invalid" };
         PmdParametersParseResult params = PmdParametersParseResult.extractParameters(args);
-        Assertions.assertTrue(params.isError(), "Expected invalid args");
+        assertTrue(params.isError(), "Expected invalid args");
 
         String log = SystemLambda.tapSystemErrAndOut(() -> {
             StatusCode code = PMD.runPmd(args);
-            Assertions.assertEquals(StatusCode.ERROR, code);
+            assertEquals(StatusCode.ERROR, code);
         });
         assertThat(log, not(containsStringIgnoringCase("Available report formats and")));
     }
@@ -257,7 +259,7 @@ class CoreCliTest {
 
     private static void runPmd(StatusCode expectedExitCode, Object... args) {
         StatusCode actualExitCode = PMD.runPmd(argsToString(args));
-        Assertions.assertEquals(expectedExitCode, actualExitCode, "Exit code");
+        assertEquals(expectedExitCode, actualExitCode, "Exit code");
     }
 
 

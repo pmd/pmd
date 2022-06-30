@@ -7,6 +7,7 @@ package net.sourceforge.pmd;
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.empty;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -24,7 +25,6 @@ import java.nio.file.Path;
 import java.util.Collections;
 import java.util.Properties;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -75,7 +75,7 @@ class PmdConfigurationTest {
         PMDConfiguration configuration = new PMDConfiguration();
         configuration.prependAuxClasspath("file:" + relativeFilePath);
         URL[] urls = ((ClasspathClassLoader) configuration.getClassLoader()).getURLs();
-        Assertions.assertEquals(0, urls.length);
+        assertEquals(0, urls.length);
     }
 
     @Test
@@ -84,7 +84,7 @@ class PmdConfigurationTest {
         PMDConfiguration configuration = new PMDConfiguration();
         configuration.prependAuxClasspath("file:" + relativeFilePath);
         URL[] urls = ((ClasspathClassLoader) configuration.getClassLoader()).getURLs();
-        Assertions.assertEquals(0, urls.length);
+        assertEquals(0, urls.length);
     }
 
     @Test
@@ -110,7 +110,7 @@ class PmdConfigurationTest {
             new URI(FILE_SCHEME, null, currentWorkingDirectory, null),
             new URI(FILE_SCHEME, null, currentWorkingDirectory + "relative source dir/bar", null),
         };
-        Assertions.assertArrayEquals(expectedUris, uris);
+        assertArrayEquals(expectedUris, uris);
     }
 
     @Test
@@ -279,7 +279,7 @@ class PmdConfigurationTest {
 
         // set dummy cache location
         final File cacheFile = folder.resolve("pmd-cachefile").toFile();
-        Assertions.assertTrue(cacheFile.createNewFile());
+        assertTrue(cacheFile.createNewFile());
         final FileAnalysisCache analysisCache = new FileAnalysisCache(cacheFile);
         configuration.setAnalysisCache(analysisCache);
         assertNotNull(configuration.getAnalysisCache(), "Null cache location accepted");

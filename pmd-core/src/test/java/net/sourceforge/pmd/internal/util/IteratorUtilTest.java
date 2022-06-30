@@ -25,10 +25,9 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class IteratorUtilTest {
+class IteratorUtilTest {
 
     @Test
     void testAnyMatchPos() {
@@ -279,7 +278,7 @@ public class IteratorUtilTest {
     void testTakeNegative() {
         Iterator<String> iter = iterOf("a", "b", "c");
 
-        Assertions.assertThrows(IllegalArgumentException.class, () -> IteratorUtil.take(iter, -5));
+        assertThrows(IllegalArgumentException.class, () -> IteratorUtil.take(iter, -5));
     }
 
     @Test
@@ -315,7 +314,7 @@ public class IteratorUtilTest {
     void testDropNegative() {
         Iterator<String> iter = iterOf("a", "b", "c");
 
-        Assertions.assertThrows(IllegalArgumentException.class, () -> IteratorUtil.advance(iter, -5));
+        assertThrows(IllegalArgumentException.class, () -> IteratorUtil.advance(iter, -5));
     }
 
     @Test
@@ -351,7 +350,7 @@ public class IteratorUtilTest {
     void testGetNegative() {
         Iterator<String> iter = iterOf("a", "b", "c");
 
-        Assertions.assertThrows(IllegalArgumentException.class, () -> IteratorUtil.getNth(iter, -5));
+        assertThrows(IllegalArgumentException.class, () -> IteratorUtil.getNth(iter, -5));
     }
 
     @Test
@@ -493,12 +492,12 @@ public class IteratorUtilTest {
     void testDropLastNegative() {
         Iterator<String> iter = iterOf("ab", "c");
 
-        Assertions.assertThrows(IllegalArgumentException.class, () -> IteratorUtil.dropLast(iter, -3));
+        assertThrows(IllegalArgumentException.class, () -> IteratorUtil.dropLast(iter, -3));
     }
 
     private void assertExhausted(Iterator<?> mapped) {
         assertFalse(mapped.hasNext());
-        Assertions.assertThrows(NoSuchElementException.class, () -> mapped.next());
+        assertThrows(NoSuchElementException.class, () -> mapped.next());
     }
 
     static <T> Iterator<T> iterOf(T... ts) {

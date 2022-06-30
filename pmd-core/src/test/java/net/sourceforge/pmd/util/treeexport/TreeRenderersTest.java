@@ -4,17 +4,16 @@
 
 package net.sourceforge.pmd.util.treeexport;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
 
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.ast.DummyNode;
-import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertySource;
 
 /**
@@ -35,8 +34,8 @@ class TreeRenderersTest {
 
         PropertySource properties = TreeRenderers.XML.newPropertyBundle();
 
-        MatcherAssert.assertThat(properties.getPropertyDescriptors(),
-                          Matchers.<PropertyDescriptor<?>>containsInAnyOrder(TreeRenderers.XML_LINE_SEPARATOR,
+        assertThat(properties.getPropertyDescriptors(),
+                          containsInAnyOrder(TreeRenderers.XML_LINE_SEPARATOR,
                                                                              TreeRenderers.XML_RENDER_COMMON_ATTRIBUTES,
                                                                              TreeRenderers.XML_RENDER_PROLOG,
                                                                              TreeRenderers.XML_USE_SINGLE_QUOTES));

@@ -41,7 +41,7 @@ import com.github.stefanbirkner.systemlambda.SystemLambda;
 class XMLRendererTest extends AbstractRendererTest {
 
     @TempDir
-    public Path folder;
+    private Path folder;
 
     @Override
     Renderer getRenderer() {

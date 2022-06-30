@@ -4,29 +4,32 @@
 
 package net.sourceforge.pmd.lang;
 
-import org.junit.jupiter.api.Assertions;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.junit.jupiter.api.Test;
 
-public class BaseLanguageModuleTest {
+class BaseLanguageModuleTest {
 
     @Test
-    public void testHashCodeEquals() {
+    void testHashCodeEquals() {
         Language l1 = new DummyLanguageModule();
         Language l1a = new DummyLanguageModule();
         Language l2 = new Dummy2LanguageModule();
 
-        Assertions.assertEquals(l1.hashCode(), l1a.hashCode());
-        Assertions.assertNotEquals(l1.hashCode(), l2.hashCode());
+        assertEquals(l1.hashCode(), l1a.hashCode());
+        assertNotEquals(l1.hashCode(), l2.hashCode());
 
-        Assertions.assertEquals(l1, l1a);
-        Assertions.assertNotEquals(l1, l2);
+        assertEquals(l1, l1a);
+        assertNotEquals(l1, l2);
     }
 
     @Test
-    public void testCompareTo() {
+    void testCompareTo() {
         Language l1 = new DummyLanguageModule();
         Language l2 = new Dummy2LanguageModule();
 
-        Assertions.assertTrue(l1.compareTo(l2) < 0);
+        assertTrue(l1.compareTo(l2) < 0);
     }
 }

@@ -10,10 +10,10 @@ import static net.sourceforge.pmd.lang.ast.impl.DummyTreeUtil.tree;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.List;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -64,7 +64,7 @@ class AbstractNodeTest {
     private DummyRootNode rootNode;
 
     @BeforeEach
-    public void setUpSampleNodeTree() {
+    void setUpSampleNodeTree() {
         rootNode = tree(
             () -> {
                 DummyRootNode root = root();
@@ -196,7 +196,7 @@ class AbstractNodeTest {
             rootNode.removeChildAtIndex(-1);
             rootNode.removeChildAtIndex(rootNode.getNumChildren());
         } catch (final Exception e) {
-            Assertions.fail("No exception was expected.");
+            fail("No exception was expected.");
         }
     }
 

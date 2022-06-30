@@ -30,13 +30,13 @@ import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
 /**
  * @author Clément Fournier
  */
-public class FileCollectorTest {
+class FileCollectorTest {
 
     @TempDir
-    public Path tempFolder;
+    private Path tempFolder;
 
     @Test
-    public void testAddFile() throws IOException {
+    void testAddFile() throws IOException {
         Path foo = newFile(tempFolder, "foo.dummy");
         Path bar = newFile(tempFolder, "bar.unknown");
 
@@ -49,7 +49,7 @@ public class FileCollectorTest {
     }
 
     @Test
-    public void testAddFileForceLanguage() throws IOException {
+    void testAddFileForceLanguage() throws IOException {
         Path bar = newFile(tempFolder, "bar.unknown");
 
         Language dummy = LanguageRegistry.findLanguageByTerseName("dummy");
@@ -62,7 +62,7 @@ public class FileCollectorTest {
     }
 
     @Test
-    public void testAddFileNotExists() {
+    void testAddFileNotExists() {
         FileCollector collector = newCollector();
 
         assertFalse(collector.addFile(tempFolder.resolve("does_not_exist.dummy")));
@@ -70,7 +70,7 @@ public class FileCollectorTest {
     }
 
     @Test
-    public void testAddFileNotAFile() throws IOException {
+    void testAddFileNotAFile() throws IOException {
         Path dir = tempFolder.resolve("src");
         Files.createDirectories(dir);
 
@@ -80,7 +80,7 @@ public class FileCollectorTest {
     }
 
     @Test
-    public void testAddDirectory() throws IOException {
+    void testAddDirectory() throws IOException {
         Path root = tempFolder;
         newFile(root, "src/foo.dummy");
         newFile(root, "src/bar.unknown");
@@ -94,7 +94,7 @@ public class FileCollectorTest {
     }
 
     @Test
-    public void testRelativize() throws IOException {
+    void testRelativize() throws IOException {
         String displayName = FileCollector.getDisplayName(Paths.get("a", "b", "c"), listOf(Paths.get("a").toString()));
         assertEquals(displayName, Paths.get("b", "c").toString());
     }

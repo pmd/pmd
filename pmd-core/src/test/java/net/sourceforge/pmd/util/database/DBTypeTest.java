@@ -31,7 +31,7 @@ class DBTypeTest {
     private Properties includeProperties;
 
     @TempDir
-    Path folder;
+    private Path folder;
 
     @BeforeEach
     void setUp() throws Exception {

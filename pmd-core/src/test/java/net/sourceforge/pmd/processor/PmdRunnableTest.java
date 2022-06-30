@@ -8,6 +8,8 @@ import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.contains;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.mock;
@@ -19,7 +21,6 @@ import static org.mockito.Mockito.verify;
 import java.util.List;
 import java.util.function.BiConsumer;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -66,7 +67,7 @@ public class PmdRunnableTest {
     private Rule rule;
 
     @BeforeEach
-    public void prepare() {
+    void prepare() {
         DataSource dataSource = DataSource.forString("test", "test.dummy");
 
 
@@ -111,23 +112,23 @@ public class PmdRunnableTest {
 
     @Test
     void withoutErrorRecoveryModeProcessingShouldBeAbortedByParser() {
-        Assertions.assertNull(System.getProperty(SystemProps.PMD_ERROR_RECOVERY));
+        assertNull(System.getProperty(SystemProps.PMD_ERROR_RECOVERY));
         configuration.setDefaultLanguageVersion(versionWithParserThatThrowsAssertionError());
 
-        Assertions.assertThrows(AssertionError.class, pmdRunnable::run);
+        assertThrows(AssertionError.class, pmdRunnable::run);
     }
 
     @Test
-    public void withoutErrorRecoveryModeProcessingShouldBeAbortedByRule() {
-        Assertions.assertNull(System.getProperty(SystemProps.PMD_ERROR_RECOVERY));
+    void withoutErrorRecoveryModeProcessingShouldBeAbortedByRule() {
+        assertNull(System.getProperty(SystemProps.PMD_ERROR_RECOVERY));
         configuration.setDefaultLanguageVersion(dummyLang.getDefaultVersion());
 
-        Assertions.assertThrows(AssertionError.class, pmdRunnable::run);
+        assertThrows(AssertionError.class, pmdRunnable::run);
     }
 
 
     @Test
-    public void semanticErrorShouldAbortTheRun() {
+    void semanticErrorShouldAbortTheRun() {
         configuration.setDefaultLanguageVersion(versionWithParserThatReportsSemanticError());
 
         pmdRunnable.run();
@@ -140,7 +141,7 @@ public class PmdRunnableTest {
     }
 
     @Test
-    public void semanticErrorThrownShouldAbortTheRun() {
+    void semanticErrorThrownShouldAbortTheRun() {
         configuration.setDefaultLanguageVersion(getVersionWithParserThatThrowsSemanticError());
 
         pmdRunnable.run();

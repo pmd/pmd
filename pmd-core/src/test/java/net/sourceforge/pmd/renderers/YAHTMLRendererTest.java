@@ -36,7 +36,7 @@ class YAHTMLRendererTest extends AbstractRendererTest {
     private File outputDir;
 
     @TempDir
-    public Path folder;
+    private Path folder;
 
     @BeforeEach
     void setUp() throws IOException {

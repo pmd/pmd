@@ -12,7 +12,7 @@ import java.util.function.Predicate;
 
 import org.junit.jupiter.api.Test;
 
-public class ApplierTest {
+class ApplierTest {
 
     private static class MyFunction implements Predicate<Object> {
         private int numCallbacks = 0;
@@ -34,7 +34,7 @@ public class ApplierTest {
     }
 
     @Test
-    public void testSimple() {
+    void testSimple() {
         MyFunction f = new MyFunction(Integer.MAX_VALUE);
         List<Object> l = new ArrayList<>();
         l.add(new Object());
@@ -45,7 +45,7 @@ public class ApplierTest {
     }
 
     @Test
-    public void testLimit() {
+    void testLimit() {
         MyFunction f = new MyFunction(2);
         List<Object> l = new ArrayList<>();
         l.add(new Object());

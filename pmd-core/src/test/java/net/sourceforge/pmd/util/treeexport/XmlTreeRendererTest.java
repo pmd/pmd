@@ -18,7 +18,7 @@ import net.sourceforge.pmd.util.treeexport.XmlTreeRenderer.XmlRenderingConfig;
 
 /**
  */
-public class XmlTreeRendererTest {
+class XmlTreeRendererTest {
 
     @Test
     void testRenderWithAttributes() throws IOException {

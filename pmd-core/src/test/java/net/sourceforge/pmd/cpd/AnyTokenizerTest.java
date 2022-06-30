@@ -5,11 +5,11 @@
 package net.sourceforge.pmd.cpd;
 
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 class AnyTokenizerTest {
@@ -31,16 +31,16 @@ class AnyTokenizerTest {
         AnyTokenizer tokenizer = new AnyTokenizer("//");
         Tokens tokens = compareResult(tokenizer, "a = \"oo\n\";", listOf("a", "=", "\"oo\n\"", ";", "EOF"));
         TokenEntry string = tokens.getTokens().get(2);
-        Assertions.assertEquals("\"oo\n\"", getTokenImage(string));
-        Assertions.assertEquals(1, string.getBeginLine());
-        Assertions.assertEquals(5, string.getBeginColumn());
-        Assertions.assertEquals(2, string.getEndColumn()); // ends on line 2
+        assertEquals("\"oo\n\"", getTokenImage(string));
+        assertEquals(1, string.getBeginLine());
+        assertEquals(5, string.getBeginColumn());
+        assertEquals(2, string.getEndColumn()); // ends on line 2
 
         TokenEntry semi = tokens.getTokens().get(3);
-        Assertions.assertEquals(";", getTokenImage(semi));
-        Assertions.assertEquals(2, semi.getBeginLine());
-        Assertions.assertEquals(2, semi.getBeginColumn());
-        Assertions.assertEquals(3, semi.getEndColumn());
+        assertEquals(";", getTokenImage(semi));
+        assertEquals(2, semi.getBeginLine());
+        assertEquals(2, semi.getBeginColumn());
+        assertEquals(3, semi.getEndColumn());
     }
 
     /**
@@ -53,9 +53,9 @@ class AnyTokenizerTest {
         Tokens tokens = new Tokens();
         tokenizer.tokenize(code, tokens);
         TokenEntry bbbbToken = tokens.getTokens().get(2);
-        Assertions.assertEquals(2, bbbbToken.getBeginLine());
-        Assertions.assertEquals(1, bbbbToken.getBeginColumn());
-        Assertions.assertEquals(5, bbbbToken.getEndColumn());
+        assertEquals(2, bbbbToken.getBeginLine());
+        assertEquals(1, bbbbToken.getBeginColumn());
+        assertEquals(5, bbbbToken.getEndColumn());
     }
 
 
@@ -69,7 +69,7 @@ class AnyTokenizerTest {
             tokenStrings.add(getTokenImage(token));
         }
 
-        Assertions.assertEquals(expectedImages, tokenStrings);
+        assertEquals(expectedImages, tokenStrings);
         return tokens;
     }
 

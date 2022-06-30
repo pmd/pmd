@@ -4,10 +4,12 @@
 
 package net.sourceforge.pmd.cpd;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.cpd.renderer.CPDRenderer;
@@ -25,8 +27,8 @@ class CPDConfigurationTest {
 
         for (Map.Entry<String, Class<? extends CPDRenderer>> entry : renderersToTest.entrySet()) {
             Renderer r = CPDConfiguration.getRendererFromString(entry.getKey(), "UTF-8");
-            Assertions.assertNotNull(r);
-            Assertions.assertSame(entry.getValue(), r.getClass());
+            assertNotNull(r);
+            assertSame(entry.getValue(), r.getClass());
         }
     }
 
@@ -41,8 +43,8 @@ class CPDConfigurationTest {
 
         for (Map.Entry<String, Class<? extends CPDRenderer>> entry : renderersToTest.entrySet()) {
             CPDRenderer r = CPDConfiguration.getCPDRendererFromString(entry.getKey(), "UTF-8");
-            Assertions.assertNotNull(r);
-            Assertions.assertSame(entry.getValue(), r.getClass());
+            assertNotNull(r);
+            assertSame(entry.getValue(), r.getClass());
         }
     }
 }

@@ -18,7 +18,7 @@ import org.junit.jupiter.api.io.TempDir;
 class FileDataSourceTest {
 
     @TempDir
-    Path tempFolder;
+    private Path tempFolder;
 
     private static final String SOMEFILE_DIR = "path/";
     private static final String SOMEFILE_TXT = "somefile.txt";

@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.util.treeexport;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -19,7 +20,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 import org.hamcrest.Matcher;
-import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -29,7 +29,7 @@ import org.junit.jupiter.api.io.TempDir;
 class TreeExportCliTest {
 
     @TempDir
-    Path tmp;
+    private Path tmp;
 
     @Test
     void testReadStandardInput() {
@@ -85,7 +85,7 @@ class TreeExportCliTest {
         }
 
         void assertThatStdout(Matcher<? super String> str) {
-            MatcherAssert.assertThat("stdout", out.toString(), str);
+            assertThat("stdout", out.toString(), str);
         }
 
         int runMain(String... args) {

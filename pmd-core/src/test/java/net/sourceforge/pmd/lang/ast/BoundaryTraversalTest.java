@@ -16,7 +16,7 @@ import org.junit.jupiter.api.Test;
 /**
  * Unit test for {@link Node} tree traversal methods
  */
-public class BoundaryTraversalTest {
+class BoundaryTraversalTest {
 
     private DummyNode rootNode;
 
@@ -30,12 +30,12 @@ public class BoundaryTraversalTest {
     }
 
     @BeforeEach
-    public void setUpSampleNodeTree() {
+    void setUpSampleNodeTree() {
         rootNode = newDummyNode(false);
     }
 
     @Test
-    public void testBoundaryIsHonored() {
+    void testBoundaryIsHonored() {
         addChild(rootNode, addChild(newDummyNode(true), newDummyNode(false)));
 
         List<DummyNode> descendantsOfType = rootNode.descendants(DummyNode.class).toList();
@@ -44,7 +44,7 @@ public class BoundaryTraversalTest {
     }
 
     @Test
-    public void testSearchFromBoundary() {
+    void testSearchFromBoundary() {
         addChild(rootNode, addChild(newDummyNode(true), newDummyNode(false)));
 
         List<DummyNode> descendantsOfType = rootNode.descendants(DummyNode.class).first().descendants(DummyNode.class).toList();
@@ -53,7 +53,7 @@ public class BoundaryTraversalTest {
     }
 
     @Test
-    public void testSearchFromBoundaryFromNonOptimisedStream() {
+    void testSearchFromBoundaryFromNonOptimisedStream() {
         addChild(rootNode, addChild(newDummyNode(true), newDummyNode(false)));
 
         List<DummyNode> descendantsOfType = rootNode.descendants(DummyNode.class).take(1).descendants(DummyNode.class).toList();
@@ -62,7 +62,7 @@ public class BoundaryTraversalTest {
     }
 
     @Test
-    public void testSearchIgnoringBoundary() {
+    void testSearchIgnoringBoundary() {
         addChild(rootNode, addChild(newDummyNode(true), newDummyNode(false)));
 
         List<DummyNode> descendantsOfType = rootNode.findDescendantsOfType(DummyNode.class, true);

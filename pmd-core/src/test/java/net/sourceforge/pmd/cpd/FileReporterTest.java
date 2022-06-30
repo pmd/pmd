@@ -4,12 +4,15 @@
 
 package net.sourceforge.pmd.cpd;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.util.IOUtil;
@@ -30,9 +33,9 @@ class FileReporterTest {
         File reportFile = new File("report.tmp");
         FileReporter fileReporter = new FileReporter(reportFile);
         fileReporter.report("");
-        Assertions.assertTrue(reportFile.exists());
-        Assertions.assertEquals(0L, reportFile.length());
-        Assertions.assertTrue(reportFile.delete());
+        assertTrue(reportFile.exists());
+        assertEquals(0L, reportFile.length());
+        assertTrue(reportFile.delete());
     }
 
     @Test
@@ -42,15 +45,15 @@ class FileReporterTest {
         FileReporter fileReporter = new FileReporter(reportFile);
 
         fileReporter.report(testString);
-        Assertions.assertEquals(testString, readFile(reportFile));
-        Assertions.assertTrue(reportFile.delete());
+        assertEquals(testString, readFile(reportFile));
+        assertTrue(reportFile.delete());
     }
 
     @Test
     void testInvalidFile() throws ReportException {
         File reportFile = new File("/invalid_folder/report.tmp");
         FileReporter fileReporter = new FileReporter(reportFile);
-        Assertions.assertThrows(ReportException.class, () -> fileReporter.report(""));
+        assertThrows(ReportException.class, () -> fileReporter.report(""));
     }
 
     private String readFile(File file) throws IOException {

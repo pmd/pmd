@@ -4,7 +4,8 @@
 
 package net.sourceforge.pmd.cpd;
 
-import org.junit.jupiter.api.Assertions;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.cpd.SourceCode.StringCodeLoader;
@@ -23,14 +24,14 @@ class MarkTest {
         String codeFragment = "code fragment";
         mark.setSourceCode(new SourceCode(new StringCodeLoader(codeFragment)));
 
-        Assertions.assertEquals(token, mark.getToken());
-        Assertions.assertEquals(filename, mark.getFilename());
-        Assertions.assertEquals(beginLine, mark.getBeginLine());
-        Assertions.assertEquals(lineCount, mark.getLineCount());
-        Assertions.assertEquals(beginLine + lineCount - 1, mark.getEndLine());
-        Assertions.assertEquals(-1, mark.getBeginColumn());
-        Assertions.assertEquals(-1, mark.getEndColumn());
-        Assertions.assertEquals(codeFragment, mark.getSourceCodeSlice());
+        assertEquals(token, mark.getToken());
+        assertEquals(filename, mark.getFilename());
+        assertEquals(beginLine, mark.getBeginLine());
+        assertEquals(lineCount, mark.getLineCount());
+        assertEquals(beginLine + lineCount - 1, mark.getEndLine());
+        assertEquals(-1, mark.getBeginColumn());
+        assertEquals(-1, mark.getEndColumn());
+        assertEquals(codeFragment, mark.getSourceCodeSlice());
     }
 
     @Test
@@ -49,13 +50,13 @@ class MarkTest {
         final String codeFragment = "code fragment";
         mark.setSourceCode(new SourceCode(new StringCodeLoader(codeFragment)));
 
-        Assertions.assertEquals(token, mark.getToken());
-        Assertions.assertEquals(filename, mark.getFilename());
-        Assertions.assertEquals(beginLine, mark.getBeginLine());
-        Assertions.assertEquals(lineCount, mark.getLineCount());
-        Assertions.assertEquals(beginLine + lineCount - 1, mark.getEndLine());
-        Assertions.assertEquals(beginColumn, mark.getBeginColumn());
-        Assertions.assertEquals(endColumn, mark.getEndColumn());
-        Assertions.assertEquals(codeFragment, mark.getSourceCodeSlice());
+        assertEquals(token, mark.getToken());
+        assertEquals(filename, mark.getFilename());
+        assertEquals(beginLine, mark.getBeginLine());
+        assertEquals(lineCount, mark.getLineCount());
+        assertEquals(beginLine + lineCount - 1, mark.getEndLine());
+        assertEquals(beginColumn, mark.getBeginColumn());
+        assertEquals(endColumn, mark.getEndColumn());
+        assertEquals(codeFragment, mark.getSourceCodeSlice());
     }
 }
