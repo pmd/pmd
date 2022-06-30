@@ -4,11 +4,10 @@
 
 package net.sourceforge.pmd.cpd;
 
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -211,7 +210,7 @@ public class CPD {
                 // legacy writer
                 System.out.println(arguments.getRenderer().render(cpd.getMatches()));
             } else {
-                arguments.getCPDRenderer().render(cpd.getMatches(), new BufferedWriter(new OutputStreamWriter(System.out)));
+                arguments.getCPDRenderer().render(cpd.getMatches(), IOUtil.createWriter(Charset.defaultCharset(), null));
             }
             if (cpd.getMatches().hasNext()) {
                 if (arguments.isFailOnViolation()) {

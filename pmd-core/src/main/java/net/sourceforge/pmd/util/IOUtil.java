@@ -50,6 +50,14 @@ public final class IOUtil {
     private IOUtil() {
     }
 
+    /**
+     * Creates a writer that writes to stdout using the system default charset.
+     *
+     * @return a writer, never null
+     *
+     * @see #createWriter(String)
+     * @see #createWriter(Charset, String)
+     */
     public static Writer createWriter() {
         return createWriter(null);
     }
