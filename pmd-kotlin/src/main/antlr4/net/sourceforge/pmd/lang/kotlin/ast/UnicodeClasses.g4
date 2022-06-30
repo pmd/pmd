@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: Apache-2.0
 /**
  * Kotlin lexical grammar in ANTLR4 notation (Unicode classes)
  *

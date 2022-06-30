@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: Apache-2.0
 /**
  * Kotlin syntax grammar in ANTLR4 notation
  */
