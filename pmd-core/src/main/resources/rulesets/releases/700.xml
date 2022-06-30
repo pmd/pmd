@@ -12,5 +12,13 @@ This ruleset contains links to rules that are new in PMD v7.0.0
 
     <rule ref="category/java/codestyle.xml/UnnecessaryBoxing"/>
 
+    <rule ref="category/kotlin/bestpractices.xml/FunctionNameTooShort"/>
+    <rule ref="category/kotlin/errorprone.xml/OverrideBothEqualsAndHashcode"/>
+
+    <rule ref="category/swift/errorprone.xml/ForceCast"/>
+    <rule ref="category/swift/errorprone.xml/ForceTry"/>
+    <rule ref="category/swift/bestpractices.xml/ProhibitedInterfaceBuilder"/>
+    <rule ref="category/swift/bestpractices.xml/UnavailableFunction"/>
+
 </ruleset>
 
