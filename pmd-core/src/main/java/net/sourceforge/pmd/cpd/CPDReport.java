@@ -12,7 +12,7 @@ public class CPDReport {
     private final Iterator<Match> matches;
     private final Map<String, Integer> numberOfTokensPerFile;
 
-    public CPDReport(final Iterator<Match> matches, final Map<String, Integer> numberOfTokensPerFile) {
+    CPDReport(final Iterator<Match> matches, final Map<String, Integer> numberOfTokensPerFile) {
         this.matches = matches;
         this.numberOfTokensPerFile = numberOfTokensPerFile;
     }
