@@ -63,10 +63,6 @@ public class CPD {
         return matchAlgorithm.matches();
     }
 
-    public Map<String, Integer> getNumberOfTokensPerFile() {
-        return numberOfTokensPerFile;
-    }
-
     public void addAllInDirectory(File dir) throws IOException {
         addDirectory(dir, false);
     }
@@ -222,7 +218,7 @@ public class CPD {
                 // legacy writer
                 System.out.println(arguments.getRenderer().render(cpd.getMatches()));
             } else {
-                final CPDReport report = new CPDReport(cpd.getMatches(), cpd.numberOfTokensPerFile);
+                final CPDReport report = cpd.toReport();
                 renderer.render(report, new BufferedWriter(new OutputStreamWriter(System.out)));
             }
             if (cpd.getMatches().hasNext()) {
@@ -240,6 +236,10 @@ public class CPD {
             statusCode = StatusCode.ERROR;
         }
         return statusCode;
+    }
+
+    public CPDReport toReport() {
+        return new CPDReport(this.getMatches(), numberOfTokensPerFile);
     }
 
     public enum StatusCode {

@@ -176,7 +176,7 @@ public class CPDConfiguration extends AbstractConfiguration {
         if (getRenderer() == null && getCPDRenderer() == null) {
             try {
                 try {
-                    setCPDReportRenderer(getCPDReportRendererFromString(getRendererName(), getEncoding()));
+                    setRenderer(getCPDReportRendererFromString(getRendererName(), getEncoding()));
                 } catch (ClassCastException e) {
                     // The renderer class configured is not using the new CPDReportRenderer interface...
                     setCPDRenderer(getCPDRendererFromString(getRendererName(), getEncoding()));
@@ -357,7 +357,7 @@ public class CPDConfiguration extends AbstractConfiguration {
         return cpdRenderer;
     }
 
-    public CPDReportRenderer getCPDReportRenderer() {
+    CPDReportRenderer getCPDReportRenderer() {
         return cpdReportRenderer;
     }
 
@@ -414,7 +414,7 @@ public class CPDConfiguration extends AbstractConfiguration {
     }
 
     /**
-     * @deprecated Use {@link #setCPDReportRenderer(CPDReportRenderer)} instead
+     * @deprecated Use {@link #setRenderer(CPDReportRenderer)} instead
      * @param renderer
      */
     @Deprecated
@@ -423,7 +423,7 @@ public class CPDConfiguration extends AbstractConfiguration {
         this.renderer = null;
     }
 
-    public void setCPDReportRenderer(CPDReportRenderer renderer) {
+    public void setRenderer(CPDReportRenderer renderer) {
         this.renderer = null;
         this.cpdRenderer = null;
         this.cpdReportRenderer = renderer;

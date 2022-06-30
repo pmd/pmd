@@ -132,7 +132,7 @@ public class CPDTask extends Task {
             log("No duplicates over " + minimumTokenCount + " tokens found", Project.MSG_INFO);
         }
         CPDReportRenderer renderer = createRenderer();
-        CPDReport report = new CPDReport(cpd.getMatches(), cpd.getNumberOfTokensPerFile());
+        CPDReport report = cpd.toReport();
 
         try {
             // will be closed via BufferedWriter/OutputStreamWriter chain down below

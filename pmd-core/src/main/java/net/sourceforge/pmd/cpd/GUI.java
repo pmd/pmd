@@ -730,7 +730,7 @@ public class GUI implements CPDListener {
             cpd.go();
             t.stop();
 
-            numberOfTokensPerFile = cpd.getNumberOfTokensPerFile();
+            numberOfTokensPerFile = cpd.toReport().getNumberOfTokensPerFile();
             matches = new ArrayList<>();
             for (Iterator<Match> i = cpd.getMatches(); i.hasNext();) {
                 Match match = i.next();

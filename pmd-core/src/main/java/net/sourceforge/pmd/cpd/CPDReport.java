@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.cpd;
 
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -21,6 +22,6 @@ public class CPDReport {
     }
 
     public Map<String, Integer> getNumberOfTokensPerFile() {
-        return numberOfTokensPerFile;
+        return Collections.unmodifiableMap(numberOfTokensPerFile);
     }
 }
