@@ -7,24 +7,24 @@ package net.sourceforge.pmd.lang.apex.ast;
 import static net.sourceforge.pmd.lang.ast.test.TestUtilsKt.assertPosition;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsInstanceOf.instanceOf;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.util.IOUtil;
 
-public class ApexParserTest extends ApexParserTestBase {
+class ApexParserTest extends ApexParserTestBase {
 
     @Test
-    public void understandsSimpleFile() {
+    void understandsSimpleFile() {
 
         // Setup
         String code = "@isTest\n"
@@ -43,7 +43,7 @@ public class ApexParserTest extends ApexParserTestBase {
     }
 
     @Test
-    public void fileName() {
+    void fileName() {
         String code = "class Outer { class Inner {}}";
 
         ASTUserClass rootNode = (ASTUserClass) parse(code, "src/filename.cls");
@@ -60,13 +60,13 @@ public class ApexParserTest extends ApexParserTestBase {
             + "}\n"; // line 6
 
     @Test
-    public void verifyLineColumnNumbers() {
+    void verifyLineColumnNumbers() {
         ASTUserClassOrInterface<?> rootNode = parse(testCodeForLineNumbers);
         assertLineNumbersForTestCode(rootNode);
     }
 
     @Test
-    public void verifyLineColumnNumbersWithWindowsLineEndings() {
+    void verifyLineColumnNumbersWithWindowsLineEndings() {
         String windowsLineEndings = testCodeForLineNumbers.replaceAll(" \n", "\r\n");
         ASTUserClassOrInterface<?> rootNode = parse(windowsLineEndings);
         assertLineNumbersForTestCode(rootNode);
@@ -100,7 +100,7 @@ public class ApexParserTest extends ApexParserTestBase {
     }
 
     @Test
-    public void verifyEndLine() {
+    void verifyEndLine() {
 
         String code = "public class SimpleClass {\n" // line 1
                 + "    public void method1() {\n" // line 2
@@ -112,16 +112,16 @@ public class ApexParserTest extends ApexParserTestBase {
         ASTUserClassOrInterface<?> rootNode = parse(code);
 
         Node method1 = rootNode.getChild(1);
-        assertEquals("Wrong begin line", 2, method1.getBeginLine());
-        assertEquals("Wrong end line", 3, method1.getEndLine());
+        assertEquals(2, method1.getBeginLine(), "Wrong begin line");
+        assertEquals(3, method1.getEndLine(), "Wrong end line");
 
         Node method2 = rootNode.getChild(2);
-        assertEquals("Wrong begin line", 4, method2.getBeginLine());
-        assertEquals("Wrong end line", 5, method2.getEndLine());
+        assertEquals(4, method2.getBeginLine(), "Wrong begin line");
+        assertEquals(5, method2.getEndLine(), "Wrong end line");
     }
 
     @Test
-    public void checkComments() {
+    void checkComments() {
 
         String code = "public  /** Comment on Class */ class SimpleClass {\n" // line 1
             + "    /** Comment on m1 */"
@@ -149,14 +149,14 @@ public class ApexParserTest extends ApexParserTestBase {
     }
 
     @Test
-    public void parsesRealWorldClasses() throws Exception {
+    void parsesRealWorldClasses() throws Exception {
         File directory = new File("src/test/resources");
         File[] fList = directory.listFiles();
 
         for (File file : fList) {
             if (file.isFile() && file.getName().endsWith(".cls")) {
                 String sourceCode = IOUtil.readFileToString(file, StandardCharsets.UTF_8);
-                Assert.assertNotNull(parse(sourceCode));
+                assertNotNull(parse(sourceCode));
             }
         }
     }
@@ -166,7 +166,7 @@ public class ApexParserTest extends ApexParserTestBase {
      * @see <a href="https://github.com/pmd/pmd/issues/1546">[apex] PMD parsing exception for Apex classes using 'inherited sharing' keyword</a>
      */
     @Test
-    public void parseInheritedSharingClass() throws IOException {
+    void parseInheritedSharingClass() throws IOException {
         String source = IOUtil.readToString(ApexParserTest.class.getResourceAsStream("InheritedSharing.cls"),
                 StandardCharsets.UTF_8);
         parse(source);
@@ -178,17 +178,17 @@ public class ApexParserTest extends ApexParserTestBase {
      * @see <a href="https://sourceforge.net/p/pmd/bugs/1485/">#1485 [apex] Analysis of some apex classes cause a stackoverflow error</a>
      */
     @Test
-    public void stackOverflowDuringClassParsing() throws Exception {
+    void stackOverflowDuringClassParsing() throws Exception {
         String source = IOUtil.readToString(ApexParserTest.class.getResourceAsStream("StackOverflowClass.cls"),
                 StandardCharsets.UTF_8);
         ASTUserClassOrInterface<?> rootNode = parse(source);
 
         int count = visitPosition(rootNode, 0);
-        Assert.assertEquals(487, count);
+        assertEquals(487, count);
     }
 
     @Test
-    public void verifyLineColumnNumbersInnerClasses() throws Exception {
+    void verifyLineColumnNumbersInnerClasses() throws Exception {
         String source = IOUtil.readToString(ApexParserTest.class.getResourceAsStream("InnerClassLocations.cls"),
                 StandardCharsets.UTF_8);
         source = source.replaceAll("\r\n", "\n");
@@ -196,20 +196,20 @@ public class ApexParserTest extends ApexParserTestBase {
 
         visitPosition(rootNode, 0);
 
-        Assert.assertEquals("InnerClassLocations", rootNode.getSimpleName());
+        assertEquals("InnerClassLocations", rootNode.getSimpleName());
         // Note: Apex parser doesn't provide positions for "public class" keywords. The
         // position of the UserClass node is just the identifier. So, the node starts
         // with the identifier and not with the first keyword in the file...
         assertPosition(rootNode, 1, 14, 16, 2);
 
         List<ASTUserClass> classes = rootNode.descendants(ASTUserClass.class).toList();
-        Assert.assertEquals(2, classes.size());
-        Assert.assertEquals("bar1", classes.get(0).getSimpleName());
+        assertEquals(2, classes.size());
+        assertEquals("bar1", classes.get(0).getSimpleName());
         List<ASTMethod> methods = classes.get(0).findChildrenOfType(ASTMethod.class);
-        Assert.assertEquals(2, methods.size()); // m() and synthetic clone()
-        Assert.assertEquals("m", methods.get(0).getImage());
+        assertEquals(2, methods.size()); // m() and synthetic clone()
+        assertEquals("m", methods.get(0).getImage());
         assertPosition(methods.get(0), 4, 21, 7, 9);
-        Assert.assertEquals("clone", methods.get(1).getImage());
+        assertEquals("clone", methods.get(1).getImage());
         assertPosition(methods.get(1), 7, 9, 7, 9);
 
         // Position of the first inner class: starts with the identifier "bar1" and ends with
@@ -217,7 +217,7 @@ public class ApexParserTest extends ApexParserTestBase {
         // don't see this in the AST.
         assertPosition(classes.get(0), 3, 18, 7, 9);
 
-        Assert.assertEquals("bar2", classes.get(1).getImage());
+        assertEquals("bar2", classes.get(1).getImage());
         assertPosition(classes.get(1), 10, 18, 14, 9);
     }
 
@@ -225,10 +225,10 @@ public class ApexParserTest extends ApexParserTestBase {
 
     private int visitPosition(Node node, int count) {
         int result = count + 1;
-        Assert.assertTrue(node.getBeginLine() > 0);
-        Assert.assertTrue(node.getBeginColumn() > 0);
-        Assert.assertTrue(node.getEndLine() > 0);
-        Assert.assertTrue(node.getEndColumn() > 0);
+        assertTrue(node.getBeginLine() > 0);
+        assertTrue(node.getBeginColumn() > 0);
+        assertTrue(node.getEndLine() > 0);
+        assertTrue(node.getEndColumn() > 0);
         for (int i = 0; i < node.getNumChildren(); i++) {
             result = visitPosition(node.getChild(i), result);
         }

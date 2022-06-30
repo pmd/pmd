@@ -4,9 +4,9 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class ApexCompilerSoqlTest extends ApexParserTestBase {
+class ApexCompilerSoqlTest extends ApexParserTestBase {
 
     private static final String CODE = "public class Foo {\n"
         + "   public List<SObject> test1() {\n"
@@ -15,7 +15,7 @@ public class ApexCompilerSoqlTest extends ApexParserTestBase {
         + "}\n";
 
     @Test
-    public void testSoqlCompilation() {
+    void testSoqlCompilation() {
         apex.parse(CODE);
     }
 }

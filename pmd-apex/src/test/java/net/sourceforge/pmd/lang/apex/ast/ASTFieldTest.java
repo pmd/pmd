@@ -4,34 +4,36 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
-public class ASTFieldTest extends ApexParserTestBase {
+import org.junit.jupiter.api.Test;
+
+class ASTFieldTest extends ApexParserTestBase {
 
     @Test
-    public void testGetType() {
+    void testGetType() {
         ASTField field = parse("public class Foo { private String myField = 'a'; }")
             .descendants(ASTField.class).firstOrThrow();
 
-        Assert.assertEquals("myField", field.getImage());
-        Assert.assertEquals("String", field.getType());
-        Assert.assertEquals("a", field.getValue());
+        assertEquals("myField", field.getImage());
+        assertEquals("String", field.getType());
+        assertEquals("a", field.getValue());
     }
 
     @Test
-    public void testGetValue() {
+    void testGetValue() {
         ASTField field = parse("public class Foo { private String myField = 'a'; }")
             .descendants(ASTField.class).firstOrThrow();
 
-        Assert.assertEquals("a", field.getValue());
+        assertEquals("a", field.getValue());
     }
 
     @Test
-    public void testGetNoValue() {
+    void testGetNoValue() {
         ASTField field = parse("public class Foo { private String myField; }")
             .descendants(ASTField.class).firstOrThrow();
 
-        Assert.assertNull(field.getValue());
+        assertNull(field.getValue());
     }
 }

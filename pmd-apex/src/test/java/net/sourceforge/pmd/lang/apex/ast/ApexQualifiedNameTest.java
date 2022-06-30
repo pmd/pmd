@@ -4,21 +4,20 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
-import org.junit.Test;
-
+import org.junit.jupiter.api.Test;
 
 /**
  * @author Clément Fournier
  */
-public class ApexQualifiedNameTest extends ApexParserTestBase {
+class ApexQualifiedNameTest extends ApexParserTestBase {
 
     @Test
-    public void testClass() {
+    void testClass() {
         ASTUserClass root = (ASTUserClass) parse("public class Foo {}");
 
         ApexQualifiedName qname = root.getQualifiedName();
@@ -30,7 +29,7 @@ public class ApexQualifiedNameTest extends ApexParserTestBase {
 
 
     @Test
-    public void testNestedClass() {
+    void testNestedClass() {
         ASTUserClass root = (ASTUserClass) parse("public class Foo { class Bar {}}");
 
         ASTUserClass inner = root.descendants(ASTUserClass.class).firstOrThrow();
@@ -43,7 +42,7 @@ public class ApexQualifiedNameTest extends ApexParserTestBase {
 
 
     @Test
-    public void testSimpleMethod() {
+    void testSimpleMethod() {
         ASTUserClass root = (ASTUserClass) parse("public class Foo { String foo() {}}");
         ApexQualifiedName qname = root.descendants(ASTMethod.class).firstOrThrow().getQualifiedName();
         assertEquals("c__Foo#foo()", qname.toString());
@@ -54,7 +53,7 @@ public class ApexQualifiedNameTest extends ApexParserTestBase {
 
 
     @Test
-    public void testMethodWithArguments() {
+    void testMethodWithArguments() {
         ASTUserClass root = (ASTUserClass) parse("public class Foo { String foo(String h, Foo g) {}}");
         ApexQualifiedName qname = root.descendants(ASTMethod.class).firstOrThrow().getQualifiedName();
         assertEquals("c__Foo#foo(String, Foo)", qname.toString());
@@ -65,7 +64,7 @@ public class ApexQualifiedNameTest extends ApexParserTestBase {
 
 
     @Test
-    public void testOverLoads() {
+    void testOverLoads() {
         ASTUserClass root = (ASTUserClass) parse("public class Foo { "
                                                                  + "String foo(String h) {} "
                                                                  + "String foo(int c) {}"
@@ -82,7 +81,7 @@ public class ApexQualifiedNameTest extends ApexParserTestBase {
 
 
     @Test
-    public void testTrigger() {
+    void testTrigger() {
         ASTUserTrigger root = (ASTUserTrigger) parse("trigger myAccountTrigger on Account (before insert, before update) {}");
 
 

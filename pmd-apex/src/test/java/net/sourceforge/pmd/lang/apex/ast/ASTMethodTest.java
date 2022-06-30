@@ -4,19 +4,20 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.util.List;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class ASTMethodTest extends ApexParserTestBase {
+class ASTMethodTest extends ApexParserTestBase {
 
     @Test
-    public void testConstructorName() {
+    void testConstructorName() {
         ASTUserClass node = (ASTUserClass) parse("public class Foo { public Foo() {} public void bar() {} }");
         List<ASTMethod> methods = node.children(ASTMethod.class).toList();
-        Assert.assertEquals("Foo", methods.get(0).getImage()); // constructor
-        Assert.assertEquals("<init>", methods.get(0).getCanonicalName());
-        Assert.assertEquals("bar", methods.get(1).getImage()); // normal method
+        assertEquals("Foo", methods.get(0).getImage()); // constructor
+        assertEquals("<init>", methods.get(0).getCanonicalName());
+        assertEquals("bar", methods.get(1).getImage()); // normal method
     }
 }
