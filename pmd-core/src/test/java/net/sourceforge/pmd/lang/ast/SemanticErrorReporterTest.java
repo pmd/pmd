@@ -4,8 +4,8 @@
 
 package net.sourceforge.pmd.lang.ast;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.contains;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.mock;
@@ -14,8 +14,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.event.Level;
 import org.slf4j.helpers.NOPLogger;
@@ -30,21 +30,21 @@ import net.sourceforge.pmd.util.log.MessageReporter;
  * Reports errors that occur after parsing. This may be used to implement
  * semantic checks in a language specific way.
  */
-public class SemanticErrorReporterTest {
+class SemanticErrorReporterTest {
 
     private static final String MOCK_FILENAME = "dummy/file.txt";
     MessageReporter mockReporter;
     Logger mockLogger;
 
-    @Before
-    public void setup() {
+    @BeforeEach
+    void setup() {
         mockReporter = mock(MessageReporter.class);
         when(mockReporter.isLoggable(Level.ERROR)).thenReturn(true);
         mockLogger = spy(NOPLogger.class);
     }
 
     @Test
-    public void testErrorLogging() {
+    void testErrorLogging() {
         SemanticErrorReporter reporter = SemanticErrorReporter.reportToLogger(mockReporter);
         RootNode node = parseMockNode(reporter);
 
@@ -60,7 +60,7 @@ public class SemanticErrorReporterTest {
     }
 
     @Test
-    public void testEscaping() {
+    void testEscaping() {
         SemanticErrorReporter reporter = SemanticErrorReporter.reportToLogger(mockReporter);
         RootNode node = parseMockNode(reporter);
 

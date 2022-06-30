@@ -4,34 +4,31 @@
 
 package net.sourceforge.pmd.renderers;
 
-import org.junit.Test;
-
-public class EmptyRendererTest extends AbstractRendererTest {
+class EmptyRendererTest extends AbstractRendererTest {
 
     @Override
-    public Renderer getRenderer() {
+    Renderer getRenderer() {
         return new EmptyRenderer();
     }
 
-    // Overriding the annotation from the super class, this renderer doesn't care, so no NPE.
-    @Test
     @Override
-    public void testNullPassedIn() throws Exception {
-        super.testNullPassedIn();
+    void testNullPassedIn() throws Exception {
+        // Overriding test from the super class, this renderer doesn't care, so no NPE.
+        getRenderer().renderFileReport(null);
     }
 
     @Override
-    public String getExpected() {
+    String getExpected() {
         return "";
     }
 
     @Override
-    public String getExpectedEmpty() {
+    String getExpectedEmpty() {
         return "";
     }
 
     @Override
-    public String getExpectedMultiple() {
+    String getExpectedMultiple() {
         return "";
     }
 }

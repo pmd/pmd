@@ -4,14 +4,14 @@
 
 package net.sourceforge.pmd;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.function.Consumer;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.lang.ast.DummyNode.DummyRootNode;
@@ -28,7 +28,7 @@ public class ReportTest {
 
     // Files are grouped together now.
     @Test
-    public void testSortedReportFile() throws IOException {
+    void testSortedReportFile() throws IOException {
         Renderer rend = new XMLRenderer();
         String result = render(rend, r -> {
             Node s = getNode(10, 5, "foo");
@@ -38,11 +38,11 @@ public class ReportTest {
             Rule rule2 = new MockRule("name", "desc", "msg", "rulesetname");
             r.onRuleViolation(new ParametricRuleViolation<>(rule2, s1, rule2.getMessage()));
         });
-        assertTrue("sort order wrong", result.indexOf("bar") < result.indexOf("foo"));
+        assertTrue(result.indexOf("bar") < result.indexOf("foo"), "sort order wrong");
     }
 
     @Test
-    public void testSortedReportLine() throws IOException {
+    void testSortedReportLine() throws IOException {
         Renderer rend = new XMLRenderer();
         String result = render(rend, r -> {
             Node node1 = getNode(20, 5, "foo1"); // line 20: after rule2 violation
@@ -53,11 +53,11 @@ public class ReportTest {
             Rule rule2 = new MockRule("rule2", "rule2", "msg", "rulesetname");
             r.onRuleViolation(new ParametricRuleViolation<>(rule2, node2, rule2.getMessage())); // same file!!
         });
-        assertTrue("sort order wrong", result.indexOf("rule2") < result.indexOf("rule1"));
+        assertTrue(result.indexOf("rule2") < result.indexOf("rule1"), "sort order wrong");
     }
 
     @Test
-    public void testIterator() {
+    void testIterator() {
         Rule rule = new MockRule("name", "desc", "msg", "rulesetname");
         Node node1 = getNode(5, 5, true, "file1");
         Node node2 = getNode(5, 6, true, "file1");
@@ -80,7 +80,7 @@ public class ReportTest {
     }
 
     @Test
-    public void testFilterViolations() {
+    void testFilterViolations() {
         Rule rule = new MockRule("name", "desc", "msg", "rulesetname");
         Node node1 = getNode(5, 5, true, "file1");
         Node node2 = getNode(5, 6, true, "file1");
@@ -96,7 +96,7 @@ public class ReportTest {
     }
 
     @Test
-    public void testUnion() {
+    void testUnion() {
         Rule rule = new MockRule("name", "desc", "msg", "rulesetname");
         Node node1 = getNode(1, 2, true, "file1");
         Report report1 = Report.buildReport(it -> {

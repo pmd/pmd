@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.util.List;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.internal.util.FileCollectionUtil;
@@ -21,14 +21,14 @@ import net.sourceforge.pmd.lang.document.FileCollector;
 import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.util.log.internal.NoopReporter;
 
-public class PMDFilelistTest {
+class PMDFilelistTest {
 
     private static @NonNull FileCollector newCollector() {
         return FileCollector.newCollector(new LanguageVersionDiscoverer(), new NoopReporter());
     }
 
     @Test
-    public void testGetApplicableFiles() throws IOException {
+    void testGetApplicableFiles() throws IOException {
         FileCollector collector = newCollector();
 
         FileCollectionUtil.collectFileList(collector, "src/test/resources/net/sourceforge/pmd/cli/filelist.txt");
@@ -40,7 +40,7 @@ public class PMDFilelistTest {
     }
 
     @Test
-    public void testGetApplicableFilesMultipleLines() throws IOException {
+    void testGetApplicableFilesMultipleLines() throws IOException {
         FileCollector collector = newCollector();
 
         FileCollectionUtil.collectFileList(collector, "src/test/resources/net/sourceforge/pmd/cli/filelist2.txt");
@@ -53,7 +53,7 @@ public class PMDFilelistTest {
     }
 
     @Test
-    public void testGetApplicableFilesWithIgnores() throws IOException {
+    void testGetApplicableFilesWithIgnores() throws IOException {
         FileCollector collector = newCollector();
 
         PMDConfiguration configuration = new PMDConfiguration();
@@ -68,7 +68,7 @@ public class PMDFilelistTest {
     }
 
     @Test
-    public void testGetApplicableFilesWithDirAndIgnores() throws IOException {
+    void testGetApplicableFilesWithDirAndIgnores() throws IOException {
 
         PMDConfiguration configuration = new PMDConfiguration();
         configuration.setInputPaths("src/test/resources/net/sourceforge/pmd/cli/src");

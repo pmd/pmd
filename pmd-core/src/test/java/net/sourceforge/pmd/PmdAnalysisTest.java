@@ -15,7 +15,7 @@ import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
 
 import net.sourceforge.pmd.renderers.Renderer;
@@ -23,10 +23,10 @@ import net.sourceforge.pmd.renderers.Renderer;
 /**
  * @author Clément Fournier
  */
-public class PmdAnalysisTest {
+class PmdAnalysisTest {
 
     @Test
-    public void testPmdAnalysisWithEmptyConfig() {
+    void testPmdAnalysisWithEmptyConfig() {
         PMDConfiguration config = new PMDConfiguration();
         try (PmdAnalysis pmd = PmdAnalysis.create(config)) {
             assertThat(pmd.files().getCollectedFiles(), empty());
@@ -36,7 +36,7 @@ public class PmdAnalysisTest {
     }
 
     @Test
-    public void testRendererInteractions() throws IOException {
+    void testRendererInteractions() throws IOException {
         PMDConfiguration config = new PMDConfiguration();
         config.setInputPaths("sample-source/dummy");
         Renderer renderer = spy(Renderer.class);
@@ -53,7 +53,7 @@ public class PmdAnalysisTest {
     }
 
     @Test
-    public void testRulesetLoading() {
+    void testRulesetLoading() {
         PMDConfiguration config = new PMDConfiguration();
         config.addRuleSet("rulesets/dummy/basic.xml");
         try (PmdAnalysis pmd = PmdAnalysis.create(config)) {
@@ -62,7 +62,7 @@ public class PmdAnalysisTest {
     }
 
     @Test
-    public void testRulesetWhenSomeoneHasAnError() {
+    void testRulesetWhenSomeoneHasAnError() {
         PMDConfiguration config = new PMDConfiguration();
         config.addRuleSet("rulesets/dummy/basic.xml");
         config.addRuleSet("rulesets/xxxe/notaruleset.xml");

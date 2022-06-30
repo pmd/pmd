@@ -6,12 +6,12 @@ package net.sourceforge.pmd.properties;
 
 import java.util.Map;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author Clément Fournier
  */
-public abstract class AbstractPackagedPropertyDescriptorTester<T> extends AbstractPropertyDescriptorTester<T> {
+abstract class AbstractPackagedPropertyDescriptorTester<T> extends AbstractPropertyDescriptorTester<T> {
 
     /* default */ AbstractPackagedPropertyDescriptorTester(String typeName) {
         super(typeName);
@@ -19,7 +19,7 @@ public abstract class AbstractPackagedPropertyDescriptorTester<T> extends Abstra
 
 
     @Test
-    public void testMissingPackageNames() {
+    void testMissingPackageNames() {
         Map<PropertyDescriptorField, String> attributes = getPropertyDescriptorValues();
         attributes.remove(PropertyDescriptorField.LEGAL_PACKAGES);
         getMultiFactory().build(attributes); // no exception, null is ok

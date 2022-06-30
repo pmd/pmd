@@ -36,7 +36,10 @@ import org.junit.runners.model.InitializationError;
  * ...
  * }
  * </pre>
+ *
+ * @deprecated This is not needed anymore with JUnit5. Just extend from {@link SimpleAggregatorTst}.
  */
+@Deprecated
 public class PMDTestRunner extends Runner implements Filterable, Sortable {
     private final Class<? extends SimpleAggregatorTst> klass;
     private final RuleTestRunner ruleTests;

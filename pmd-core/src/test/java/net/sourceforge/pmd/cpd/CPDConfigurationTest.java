@@ -4,18 +4,20 @@
 
 package net.sourceforge.pmd.cpd;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.cpd.renderer.CPDRenderer;
 
-public class CPDConfigurationTest {
+class CPDConfigurationTest {
 
     @Test
-    public void testRenderers() {
+    void testRenderers() {
         Map<String, Class<? extends CPDRenderer>> renderersToTest = new HashMap<>();
         renderersToTest.put("csv", CSVRenderer.class);
         renderersToTest.put("xml", XMLRenderer.class);
@@ -25,13 +27,13 @@ public class CPDConfigurationTest {
 
         for (Map.Entry<String, Class<? extends CPDRenderer>> entry : renderersToTest.entrySet()) {
             Renderer r = CPDConfiguration.getRendererFromString(entry.getKey(), "UTF-8");
-            Assert.assertNotNull(r);
-            Assert.assertSame(entry.getValue(), r.getClass());
+            assertNotNull(r);
+            assertSame(entry.getValue(), r.getClass());
         }
     }
 
     @Test
-    public void testCPDRenderers() {
+    void testCPDRenderers() {
         Map<String, Class<? extends CPDRenderer>> renderersToTest = new HashMap<>();
         renderersToTest.put("csv", CSVRenderer.class);
         renderersToTest.put("xml", XMLRenderer.class);
@@ -41,8 +43,8 @@ public class CPDConfigurationTest {
 
         for (Map.Entry<String, Class<? extends CPDRenderer>> entry : renderersToTest.entrySet()) {
             CPDRenderer r = CPDConfiguration.getCPDRendererFromString(entry.getKey(), "UTF-8");
-            Assert.assertNotNull(r);
-            Assert.assertSame(entry.getValue(), r.getClass());
+            assertNotNull(r);
+            assertSame(entry.getValue(), r.getClass());
         }
     }
 }
