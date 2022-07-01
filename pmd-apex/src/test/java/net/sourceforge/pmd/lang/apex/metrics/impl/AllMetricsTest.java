@@ -13,7 +13,7 @@ import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
  *
  * @author Clément Fournier
  */
-public class AllMetricsTest extends SimpleAggregatorTst {
+class AllMetricsTest extends SimpleAggregatorTst {
 
 
     private static final String RULESET = "rulesets/apex/metrics_test.xml";

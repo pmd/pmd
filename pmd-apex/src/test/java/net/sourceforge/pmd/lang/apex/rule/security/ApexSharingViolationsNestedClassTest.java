@@ -4,16 +4,15 @@
 
 package net.sourceforge.pmd.lang.apex.rule.security;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleViolation;
@@ -27,8 +26,7 @@ import net.sourceforge.pmd.lang.apex.ast.ApexParserTestBase;
  * based on the boolean permutations. Any classes that includes data access cod, but doesn't declare a sharing setting
  * should trigger a violation.</p>
  */
-@RunWith(Parameterized.class)
-public class ApexSharingViolationsNestedClassTest extends ApexParserTestBase {
+class ApexSharingViolationsNestedClassTest extends ApexParserTestBase {
     /**
      * Type of operation that may require a sharing declaration.
      */
@@ -56,45 +54,25 @@ public class ApexSharingViolationsNestedClassTest extends ApexParserTestBase {
     /**
      * The permutations used for class generation. See {@link #generateClass(boolean, Operation, boolean, Operation)}
      */
-    private final boolean outerSharingDeclared;
-    private final Operation outerOperation;
-    private final boolean innerSharingDeclared;
-    private final Operation innerOperation;
-
-    /**
-     * Track the expected violations based on the permutations.
-     */
-    private final int expectedViolations;
-    private final List<Integer> expectedLineNumbers;
-
-    public ApexSharingViolationsNestedClassTest(boolean outerSharingDeclared, Operation outerOperation,
-                                                boolean innerSharingDeclared, Operation innerOperation,
-                                                int expectedViolations, List<Integer> expectedLineNumbers) {
-        this.outerSharingDeclared = outerSharingDeclared;
-        this.outerOperation = outerOperation;
-        this.innerSharingDeclared = innerSharingDeclared;
-        this.innerOperation = innerOperation;
-        this.expectedViolations = expectedViolations;
-        this.expectedLineNumbers = expectedLineNumbers;
-    }
-
-    @Test
-    public void testSharingPermutation() {
+    @ParameterizedTest
+    @MethodSource("data")
+    void testSharingPermutation(boolean outerSharingDeclared, Operation outerOperation,
+                                boolean innerSharingDeclared, Operation innerOperation,
+                                int expectedViolations, List<Integer> expectedLineNumbers) {
         String apexClass = generateClass(outerSharingDeclared, outerOperation, innerSharingDeclared, innerOperation);
         ApexSharingViolationsRule rule = new ApexSharingViolationsRule();
         rule.setMessage("a message");
         Report rpt = apex.executeRule(rule, apexClass);
         List<RuleViolation> violations = rpt.getViolations();
-        assertEquals("Unexpected Violation Size\n" + apexClass, expectedViolations, violations.size());
+        assertEquals(expectedViolations, violations.size(), "Unexpected Violation Size\n" + apexClass);
         List<Integer> lineNumbers = violations.stream().map(v -> v.getBeginLine()).collect(Collectors.toList());
-        assertEquals("Unexpected Line Numbers\n" + apexClass, expectedLineNumbers, lineNumbers);
+        assertEquals(expectedLineNumbers, lineNumbers, "Unexpected Line Numbers\n" + apexClass);
     }
 
     /**
      * Parameter provider that covers are all permutations
      */
-    @Parameterized.Parameters
-    public static Collection<?> data() {
+    static Collection<?> data() {
         List<Object[]> data = new ArrayList<>();
 
         boolean[] boolPermutations = {false, true};
