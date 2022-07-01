@@ -1534,10 +1534,16 @@
 <p><strong>Priority:</strong> Medium (3)</p>
 
 <p>The conversion of literals to strings by concatenating them with empty strings is inefficient.
-It is much better to use one of the type-specific toString() methods instead.</p>
+It is much better to use one of the type-specific <code class="language-plaintext highlighter-rouge">toString()</code> methods instead or <code class="language-plaintext highlighter-rouge">String.valueOf()</code>.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">AdditiveExpression</span><span class="o">/</span><span class="nt">PrimaryExpression</span><span class="o">/</span><span class="nt">PrimaryPrefix</span><span class="o">/</span><span class="nt">Literal</span><span class="p">[</span><span class="na">@Image</span><span class="err">=</span><span class="s1">'""'</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="ow">not</span><span class="p">(</span><span class="kn">ancestor::</span><span class="nt">Annotation</span><span class="p">)]</span><span class="w">
+</span><span class="p">|</span><span class="w">
+</span><span class="o">//</span><span class="nt">AdditiveExpression</span><span class="o">/</span><span class="nt">PrimaryExpression</span><span class="o">/</span><span class="nt">PrimaryPrefix</span><span class="o">/</span><span class="nt">Name</span><span class="w">
+  </span><span class="p">[</span><span class="na">@Image</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="p">(</span><span class="o">//</span><span class="nt">FieldDeclaration</span><span class="p">[</span><span class="na">@Final</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">true</span><span class="p">()]|</span><span class="kn">ancestor::</span><span class="nt">MethodDeclaration</span><span class="o">//</span><span class="nt">LocalVariableDeclaration</span><span class="p">[</span><span class="na">@Final</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">true</span><span class="p">()])</span><span class="w">
+                </span><span class="o">/</span><span class="nt">VariableDeclarator</span><span class="p">[</span><span class="na">@Initializer</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">true</span><span class="p">()]</span><span class="w">
+                    </span><span class="p">[</span><span class="nt">VariableInitializer</span><span class="o">/</span><span class="nt">Expression</span><span class="o">/</span><span class="nt">PrimaryExpression</span><span class="o">/</span><span class="nt">PrimaryPrefix</span><span class="o">/</span><span class="nt">Literal</span><span class="p">[</span><span class="na">@Image</span><span class="err">=</span><span class="s1">'""'</span><span class="p">]]</span><span class="w">
+                    </span><span class="o">/</span><span class="nt">VariableDeclaratorId</span><span class="err">/</span><span class="na">@Name</span><span class="p">]</span><span class="w">
 </span></code></pre></div></div>
 
 <p><strong>Example(s):</strong></p>
