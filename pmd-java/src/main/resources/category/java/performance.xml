@@ -17,7 +17,7 @@ Rules that flag suboptimal code.
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#addemptystring">
         <description>
 The conversion of literals to strings by concatenating them with empty strings is inefficient.
-It is much better to use one of the type-specific toString() methods instead.
+It is much better to use one of the type-specific `toString()` methods instead or `String.valuef()`.
         </description>
         <priority>3</priority>
         <properties>
@@ -27,7 +27,11 @@ It is much better to use one of the type-specific toString() methods instead.
 <![CDATA[
 //AdditiveExpression/PrimaryExpression/PrimaryPrefix/Literal[@Image='""' and not(ancestor::Annotation)]
 |
-//AdditiveExpression/PrimaryExpression/PrimaryPrefix/Name[contains(string-join(//VariableInitializer/Expression/PrimaryExpression/PrimaryPrefix/Literal[@Image='""']/../../../../../VariableDeclaratorId/@Name,','),@Image)]
+//AdditiveExpression/PrimaryExpression/PrimaryPrefix/Name
+  [@Image = //(LocalVariableDeclaration[@Final = true()]|FieldDeclaration[@Final = true()])
+                /VariableDeclarator[@Initializer = true()]
+                    [VariableInitializer/Expression/PrimaryExpression/PrimaryPrefix/Literal[@Image='""']]
+                    /VariableDeclaratorId/@Name]
 ]]>
                 </value>
             </property>
