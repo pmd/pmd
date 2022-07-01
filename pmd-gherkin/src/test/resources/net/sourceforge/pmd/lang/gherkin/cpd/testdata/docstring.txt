@@ -1,0 +1,15 @@
+    [Image] or [Truncated image[            Bcol      Ecol
+L1
+    [Given]                                 1         5
+    [I]                                     7         7
+    [have]                                  9         12
+    [a]                                     14        14
+    [lot]                                   16        18
+    [to]                                    20        21
+    [say:]                                  23        26
+    [\n]                                    27        27
+L2
+    ["""\n One\n Two\n Three\n """]         1         4
+L6
+    [\n]                                    5         5
+EOF
