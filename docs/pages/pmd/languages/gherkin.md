@@ -3,8 +3,9 @@ title: Gherkin
 permalink: pmd_languages_gherkin.html
 ---
 
-The [Gherkin](https://cucumber.io/docs/gherkin/) language is used to define test cases for the [Cucumber](https://cucumber.io/) testing tool for behavior-driven development. The Gherkin syntax is designed to be 
-non-technical, making it human-readable for a wide audience.
+The [Gherkin](https://cucumber.io/docs/gherkin/) language is used to define test cases for the
+[Cucumber](https://cucumber.io/) testing tool for behavior-driven development.
+The Gherkin syntax is designed to be non-technical, making it human-readable for a wide audience.
 
 ## Support in PMD
 Starting from version 6.48.0, Gherkin support was added to CPD.
