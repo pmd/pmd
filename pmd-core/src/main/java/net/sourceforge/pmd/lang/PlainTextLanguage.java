@@ -40,7 +40,7 @@ public final class PlainTextLanguage extends BaseLanguageModule {
         return INSTANCE;
     }
 
-    private static class TextLvh implements LanguageVersionHandler {
+    private static final class TextLvh implements LanguageVersionHandler {
         @Override
         public Parser getParser() {
             return parserTask -> new PlainTextFile(parserTask);
