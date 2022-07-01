@@ -4,24 +4,12 @@
 
 package net.sourceforge.pmd.lang;
 
-import java.io.IOException;
-import java.io.Reader;
-import java.util.Collections;
-import java.util.Map;
-
-import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.annotation.Experimental;
-import net.sourceforge.pmd.lang.ast.AbstractNode;
-import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.ast.ParseException;
+import net.sourceforge.pmd.lang.ast.AstInfo;
+import net.sourceforge.pmd.lang.ast.Parser;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
-import net.sourceforge.pmd.lang.rule.AbstractRuleViolationFactory;
-import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
-import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
-import net.sourceforge.pmd.util.IOUtil;
+import net.sourceforge.pmd.lang.ast.impl.AbstractNode;
 
 /**
  * A dummy language implementation whose parser produces a single node.
@@ -52,57 +40,10 @@ public final class PlainTextLanguage extends BaseLanguageModule {
         return INSTANCE;
     }
 
-    private static class TextLvh extends AbstractLanguageVersionHandler {
-
-        private static final RuleViolationFactory RV_FACTORY = new AbstractRuleViolationFactory() {
-            @Override
-            protected RuleViolation createRuleViolation(Rule rule, RuleContext ruleContext, Node node, String s) {
-                return new ParametricRuleViolation<>(rule, ruleContext, node, s);
-            }
-
-            @Override
-            protected RuleViolation createRuleViolation(Rule rule, RuleContext ruleContext, Node node, String s, int i, int i1) {
-                return new ParametricRuleViolation<>(rule, ruleContext, node, s);
-            }
-        };
-
+    private static class TextLvh implements LanguageVersionHandler {
         @Override
-        public RuleViolationFactory getRuleViolationFactory() {
-            return RV_FACTORY;
-        }
-
-        @Override
-        public Parser getParser(final ParserOptions parserOptions) {
-            return new Parser() {
-                @Override
-                public ParserOptions getParserOptions() {
-                    return parserOptions;
-                }
-
-                @Override
-                public TokenManager getTokenManager(String s, Reader reader) {
-                    return null;
-                }
-
-                @Override
-                public boolean canParse() {
-                    return true;
-                }
-
-                @Override
-                public Node parse(String s, Reader reader) throws ParseException {
-                    try {
-                        return new PlainTextFile(IOUtil.readToString(reader));
-                    } catch (IOException e) {
-                        throw new ParseException(e);
-                    }
-                }
-
-                @Override
-                public Map<Integer, String> getSuppressMap() {
-                    return Collections.emptyMap();
-                }
-            };
+        public Parser getParser() {
+            return parserTask -> new PlainTextFile(parserTask);
         }
     }
 
@@ -110,14 +51,20 @@ public final class PlainTextLanguage extends BaseLanguageModule {
      * The only node produced by the parser of {@link PlainTextLanguage}.
      */
     public static final class PlainTextFile extends AbstractNode implements RootNode {
+        private final int beginLine;
+        private final int beginColumn;
+        private final int endLine;
+        private final int endColumn;
 
-        PlainTextFile(String fileText) {
-            super(0);
-            SourceCodePositioner positioner = new SourceCodePositioner(fileText);
+        private final AstInfo<PlainTextFile> astInfo;
+
+        PlainTextFile(Parser.ParserTask parserTask) {
+            SourceCodePositioner positioner = new SourceCodePositioner(parserTask.getSourceText());
             this.beginLine = 1;
             this.beginColumn = 1;
             this.endLine = positioner.getLastLine();
             this.endColumn = positioner.getLastLineColumn();
+            this.astInfo = new AstInfo<>(parserTask, this);
         }
 
         @Override
@@ -131,8 +78,23 @@ public final class PlainTextLanguage extends BaseLanguageModule {
         }
 
         @Override
-        public void setImage(String image) {
-            throw new UnsupportedOperationException();
+        public int getBeginLine() {
+            return beginLine;
+        }
+
+        @Override
+        public int getBeginColumn() {
+            return beginColumn;
+        }
+
+        @Override
+        public int getEndLine() {
+            return endLine;
+        }
+
+        @Override
+        public int getEndColumn() {
+            return endColumn;
         }
 
         @Override
@@ -148,6 +110,11 @@ public final class PlainTextLanguage extends BaseLanguageModule {
         @Override
         public String toString() {
             return "Plain text file (" + endLine + "lines)";
+        }
+
+        @Override
+        public AstInfo<? extends RootNode> getAstInfo() {
+            return astInfo;
         }
     }
 
