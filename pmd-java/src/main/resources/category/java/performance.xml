@@ -28,7 +28,7 @@ It is much better to use one of the type-specific `toString()` methods instead o
 //AdditiveExpression/PrimaryExpression/PrimaryPrefix/Literal[@Image='""' and not(ancestor::Annotation)]
 |
 //AdditiveExpression/PrimaryExpression/PrimaryPrefix/Name
-  [@Image = //(LocalVariableDeclaration[@Final = true()]|FieldDeclaration[@Final = true()])
+  [@Image = (//FieldDeclaration[@Final = true()]|ancestor::MethodDeclaration//LocalVariableDeclaration[@Final = true()])
                 /VariableDeclarator[@Initializer = true()]
                     [VariableInitializer/Expression/PrimaryExpression/PrimaryPrefix/Literal[@Image='""']]
                     /VariableDeclaratorId/@Name]
