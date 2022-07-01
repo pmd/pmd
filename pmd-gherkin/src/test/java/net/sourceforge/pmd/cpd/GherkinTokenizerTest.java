@@ -9,6 +9,7 @@ import java.util.Properties;
 import org.junit.Test;
 
 import net.sourceforge.pmd.cpd.test.CpdTextComparisonTest;
+import net.sourceforge.pmd.lang.gherkin.cpd.GherkinTokenizer;
 
 public class GherkinTokenizerTest extends CpdTextComparisonTest {
     public GherkinTokenizerTest() {
