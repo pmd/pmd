@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.Map;
 
 import net.sourceforge.pmd.lang.DummyLanguageModule;
-import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.impl.AbstractNodeWithTextCoordinates;
 import net.sourceforge.pmd.lang.ast.impl.GenericNode;
@@ -123,7 +122,7 @@ public class DummyNode extends AbstractNodeWithTextCoordinates<DummyNode, DummyN
     public static class DummyRootNode extends DummyNode implements RootNode {
         private Map<Integer, String> suppressMap = Collections.emptyMap();
         private String filename = "sample.dummy";
-        private LanguageVersion languageVersion = LanguageRegistry.findLanguageByTerseName(DummyLanguageModule.TERSE_NAME).getDefaultVersion();
+        private LanguageVersion languageVersion = DummyLanguageModule.getInstance().getDefaultVersion();
         private String sourceText = "dummy text";
 
 

@@ -15,6 +15,7 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,6 +31,8 @@ import net.sourceforge.pmd.lang.java.types.TypeSystem;
 import net.sourceforge.pmd.lang.java.types.internal.infer.TypeInferenceLogger;
 import net.sourceforge.pmd.lang.java.types.internal.infer.TypeInferenceLogger.SimpleLogger;
 import net.sourceforge.pmd.lang.java.types.internal.infer.TypeInferenceLogger.VerboseLogger;
+import net.sourceforge.pmd.util.log.MessageReporter;
+import net.sourceforge.pmd.util.log.internal.SimpleMessageReporter;
 
 import kotlin.Pair;
 
@@ -110,12 +113,20 @@ public class JavaParsingHelper extends BaseParsingHelper<JavaParsingHelper, ASTC
         }
 
         public TestCheckLogger(boolean doLogOnConsole) {
-            if (doLogOnConsole) {
-                Logger consoleLogger = LoggerFactory.getLogger(TestCheckLogger.class);
-                baseLogger = SemanticErrorReporter.reportToLogger(consoleLogger);
-            } else {
-                baseLogger = SemanticErrorReporter.noop();
+            this(defaultMessageReporter(doLogOnConsole));
+        }
+
+        public TestCheckLogger(SemanticErrorReporter baseLogger) {
+            this.baseLogger = baseLogger;
+        }
+
+        private static SemanticErrorReporter defaultMessageReporter(boolean doLog) {
+            if (!doLog) {
+                return SemanticErrorReporter.noop();
             }
+            Logger consoleLogger = LoggerFactory.getLogger(TestCheckLogger.class);
+            MessageReporter reporter = new SimpleMessageReporter(consoleLogger);
+            return SemanticErrorReporter.reportToLogger(reporter);
         }
 
         @Override
@@ -134,8 +145,8 @@ public class JavaParsingHelper extends BaseParsingHelper<JavaParsingHelper, ASTC
         }
 
         @Override
-        public boolean hasError() {
-            return baseLogger.hasError();
+        public @Nullable SemanticException getFirstError() {
+            return baseLogger.getFirstError();
         }
     }
 
@@ -171,8 +182,8 @@ public class JavaParsingHelper extends BaseParsingHelper<JavaParsingHelper, ASTC
         }
 
         @Override
-        public boolean hasError() {
-            return false;
+        public @Nullable SemanticException getFirstError() {
+            return null;
         }
     }
 }

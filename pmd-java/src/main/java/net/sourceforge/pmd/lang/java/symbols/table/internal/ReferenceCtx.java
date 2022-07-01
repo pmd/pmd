@@ -90,7 +90,7 @@ public final class ReferenceCtx {
             if (distinct.size() == 1) {
                 return distinct.iterator().next();
             }
-            processor.getLogger().error(
+            processor.getLogger().warning(
                 errorLocation,
                 AMBIGUOUS_NAME_REFERENCE,
                 name,

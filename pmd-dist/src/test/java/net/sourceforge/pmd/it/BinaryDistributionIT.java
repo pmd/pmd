@@ -26,8 +26,8 @@ public class BinaryDistributionIT extends AbstractBinaryDistributionTest {
     private static final String SUPPORTED_LANGUAGES_PMD;
 
     static {
-        SUPPORTED_LANGUAGES_CPD = "Supported languages: [apex, cpp, cs, dart, ecmascript, fortran, go, groovy, html, java, jsp, kotlin, lua, matlab, modelica, objectivec, perl, php, plsql, python, ruby, scala, swift, vf, xml]";
-        SUPPORTED_LANGUAGES_PMD = "apex, ecmascript, html, java, jsp, modelica, plsql, pom, scala, swift, vf, vm, wsdl, xml, xsl";
+        SUPPORTED_LANGUAGES_CPD = "Supported languages: [apex, cpp, cs, dart, ecmascript, fortran, gherkin, go, groovy, html, java, jsp, kotlin, lua, matlab, modelica, objectivec, perl, php, plsql, python, ruby, scala, swift, vf, xml]";
+        SUPPORTED_LANGUAGES_PMD = "apex, ecmascript, html, java, jsp, kotlin, modelica, plsql, pom, scala, swift, vf, vm, wsdl, xml, xsl";
     }
 
     private final String srcDir = new File(".", "src/test/resources/sample-source/java/").getAbsolutePath();
