@@ -1837,7 +1837,7 @@ a block `{}` is sufficient.
     [count(BooleanLiteral[@True = false()]) >= 1]]
 |
 (: while loops with conditional and'ed boolean literals, maybe parenthesized :)
-//WhileStatement[(.|InfixExpression[@Operator=('&', '&&')])
+//WhileStatement[(InfixExpression[@Operator=('&', '&&')])
     (: at least one false literal :)
     [count(BooleanLiteral[@True = false()]) >= 1]]
 |
@@ -1846,7 +1846,7 @@ a block `{}` is sufficient.
     [count(BooleanLiteral) = 2]]
 |
 (: do-while loops with conditional and'ed boolean literals, maybe parenthesized :)
-//DoStatement[(.|InfixExpression[@Operator=('&', '&&')])
+//DoStatement[(InfixExpression[@Operator=('&', '&&')])
     (: at least one false literal :)
     [count(BooleanLiteral[@True = false()]) >= 1]]
                 ]]></value>
