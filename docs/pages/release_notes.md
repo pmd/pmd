@@ -25,10 +25,13 @@ Being based on a proper Antlr grammar, CPD can:
 * honor [comment-based suppressions](pmd_userdocs_cpd.html#suppression)
 
 ### Fixed Issues
+* java-bestpractices
+    * [#3455](https://github.com/pmd/pmd/issues/3455): \[java] WhileLoopWithLiteralBoolean - false negative with complex expressions
 
 ### API Changes
 
 ### External Contributions
+* [#3988](https://github.com/pmd/pmd/pull/3988): \[java] Modify WhileLoopWithLiteralBoolean to meet the missing case #3455 - [@VoidxHoshi](https://github.com/VoidxHoshi)
 * [#4017](https://github.com/pmd/pmd/pull/4017): Add Gherkin support to CPD - [@ASBrouwers](https://github.com/ASBrouwers)
 
 {% endtocmaker %}
