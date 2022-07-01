@@ -7,6 +7,7 @@ package net.sourceforge.pmd.cpd;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.TreeMap;
 
 public class CPDReport {
     private final Iterator<Match> matches;
@@ -14,7 +15,7 @@ public class CPDReport {
 
     CPDReport(final Iterator<Match> matches, final Map<String, Integer> numberOfTokensPerFile) {
         this.matches = matches;
-        this.numberOfTokensPerFile = numberOfTokensPerFile;
+        this.numberOfTokensPerFile = Collections.unmodifiableMap(new TreeMap<>(numberOfTokensPerFile));
     }
 
     public Iterator<Match> getMatches() {
@@ -22,6 +23,6 @@ public class CPDReport {
     }
 
     public Map<String, Integer> getNumberOfTokensPerFile() {
-        return Collections.unmodifiableMap(numberOfTokensPerFile);
+        return numberOfTokensPerFile;
     }
 }

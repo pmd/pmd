@@ -9,7 +9,6 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -119,12 +118,6 @@ public final class XMLRenderer implements Renderer, CPDRenderer, CPDReportRender
         doc.appendChild(root);
 
         final List<Map.Entry<String, Integer>> entries = new ArrayList<>(numberOfTokensPerFile.entrySet());
-        Collections.sort(entries, new Comparator<Map.Entry<String, Integer>>() {
-            @Override
-            public int compare(final Map.Entry<String, Integer> entry1, final Map.Entry<String, Integer> entry2) {
-                return entry1.getKey().compareTo(entry2.getKey());
-            }
-        });
         for (final Map.Entry<String, Integer> pair : entries) {
             final Element fileElement = doc.createElement("file");
             fileElement.setAttribute("path", pair.getKey());
