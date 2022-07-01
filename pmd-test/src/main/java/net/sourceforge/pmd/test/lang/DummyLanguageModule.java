@@ -14,6 +14,7 @@ import java.util.Map;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.AbstractLanguageVersionHandler;
 import net.sourceforge.pmd.lang.AbstractParser;
 import net.sourceforge.pmd.lang.BaseLanguageModule;
@@ -30,7 +31,12 @@ import net.sourceforge.pmd.test.lang.ast.DummyNode;
 
 /**
  * Dummy language used for testing PMD.
+ *
+ * @deprecated Don't use this directly. We can probably remove this in favour of plaintextlanguage
+ *  when https://github.com/pmd/pmd/issues/3918 is merged
  */
+@Deprecated
+@InternalApi
 public class DummyLanguageModule extends BaseLanguageModule {
 
     public static final String NAME = "Dummy";

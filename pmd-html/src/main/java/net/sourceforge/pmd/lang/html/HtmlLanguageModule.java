@@ -13,7 +13,7 @@ public final class HtmlLanguageModule extends BaseLanguageModule {
     public static final String TERSE_NAME = "html";
 
     public HtmlLanguageModule() {
-        super(NAME, null, TERSE_NAME, "html");
+        super(NAME, null, TERSE_NAME, "html", "htm", "xhtml", "xht", "shtml");
         addDefaultVersion("", new HtmlHandler());
     }
 

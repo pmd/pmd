@@ -150,7 +150,7 @@ public final class RuleSetLoader {
      * @throws RuleSetLoadException If any error occurs (eg, invalid syntax, or resource not found)
      */
     public RuleSet loadFromResource(String rulesetPath) {
-        return loadFromResource(new RuleSetReferenceId(rulesetPath));
+        return loadFromResource(new RuleSetReferenceId(rulesetPath, null, warnDeprecated));
     }
 
     /**
@@ -162,7 +162,7 @@ public final class RuleSetLoader {
      * @throws RuleSetLoadException If any error occurs (eg, invalid syntax)
      */
     public RuleSet loadFromString(String filename, final String rulesetXmlContent) {
-        return loadFromResource(new RuleSetReferenceId(filename) {
+        return loadFromResource(new RuleSetReferenceId(filename, null, warnDeprecated) {
             @Override
             public InputStream getInputStream(ResourceLoader rl) {
                 return new ByteArrayInputStream(rulesetXmlContent.getBytes(StandardCharsets.UTF_8));

@@ -13,8 +13,10 @@ import java.util.Set;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBody;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTEnumBody;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 
 public class AvoidFieldNameMatchingMethodNameRule extends AbstractJavaRule {
@@ -29,6 +31,17 @@ public class AvoidFieldNameMatchingMethodNameRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTClassOrInterfaceBody node, Object data) {
+        handleClassOrEnum(node, data);
+        return super.visit(node, data);
+    }
+
+    @Override
+    public Object visit(ASTEnumBody node, Object data) {
+        handleClassOrEnum(node, data);
+        return super.visit(node, data);
+    }
+
+    private void handleClassOrEnum(JavaNode node, Object data) {
         int n = node.getNumChildren();
         List<ASTFieldDeclaration> fields = new ArrayList<>();
         Set<String> methodNames = new HashSet<>();
@@ -50,7 +63,6 @@ public class AvoidFieldNameMatchingMethodNameRule extends AbstractJavaRule {
                 addViolation(data, field, field.getVariableName());
             }
         }
-        return super.visit(node, data);
     }
 
 }
