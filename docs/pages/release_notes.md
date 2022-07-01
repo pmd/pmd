@@ -25,10 +25,13 @@ Being based on a proper Antlr grammar, CPD can:
 * honor [comment-based suppressions](pmd_userdocs_cpd.html#suppression)
 
 ### Fixed Issues
+* java-performance
+    * [#3625](https://github.com/pmd/pmd/issues/3625): \[java] AddEmptyString - false negative with empty var
 
 ### API Changes
 
 ### External Contributions
+* [#3984](https://github.com/pmd/pmd/pull/3984): \[java] Fix AddEmptyString false-negative issue - [@LiGaOg](https://github.com/LiGaOg)
 * [#4017](https://github.com/pmd/pmd/pull/4017): Add Gherkin support to CPD - [@ASBrouwers](https://github.com/ASBrouwers)
 
 {% endtocmaker %}
