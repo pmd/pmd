@@ -17,12 +17,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 import net.sourceforge.pmd.cpd.renderer.CPDRenderer;
 import net.sourceforge.pmd.cpd.renderer.CPDReportRenderer;
@@ -189,7 +191,7 @@ public class XMLRendererTest {
     }
 
     @Test
-    public void testFilesWithNumberOfTokens() throws IOException {
+    public void testFilesWithNumberOfTokens() throws IOException, ParserConfigurationException, SAXException {
         final CPDReportRenderer renderer = new XMLRenderer();
         final List<Match> matches = new ArrayList<>();
         final String filename = "/var/Foo.java";
@@ -205,18 +207,13 @@ public class XMLRendererTest {
         final StringWriter writer = new StringWriter();
         renderer.render(report, writer);
         final String xmlOutput = writer.toString();
-        try {
-            final Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder()
-                    .parse(new ByteArrayInputStream(xmlOutput.getBytes(ENCODING)));
-            final NodeList files = doc.getElementsByTagName("file");
-            final Node file = files.item(0);
-            final NamedNodeMap attributes = file.getAttributes();
-            assertEquals("/var/Foo.java", attributes.getNamedItem("path").getNodeValue());
-            assertEquals("888", attributes.getNamedItem("totalNumberOfTokens").getNodeValue());
-        } catch (Exception e) {
-            e.printStackTrace();
-            fail(e.getMessage());
-        }
+        final Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder()
+                .parse(new ByteArrayInputStream(xmlOutput.getBytes(ENCODING)));
+        final NodeList files = doc.getElementsByTagName("file");
+        final Node file = files.item(0);
+        final NamedNodeMap attributes = file.getAttributes();
+        assertEquals("/var/Foo.java", attributes.getNamedItem("path").getNodeValue());
+        assertEquals("888", attributes.getNamedItem("totalNumberOfTokens").getNodeValue());
     }
 
     @Test
