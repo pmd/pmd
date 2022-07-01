@@ -6730,6 +6730,15 @@
       "contributions": [
         "bug"
       ]
+    },
+    {
+      "login": "ASBrouwers",
+      "name": "ASBrouwers",
+      "avatar_url": "https://avatars.githubusercontent.com/u/23551289?v=4",
+      "profile": "https://github.com/ASBrouwers",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
