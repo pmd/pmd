@@ -961,6 +961,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
   <tr>
     <td align="center"><a href="https://github.com/magwas"><img src="https://avatars.githubusercontent.com/u/756838?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Árpád Magosányi</b></sub></a><br /><a href="https://github.com/pmd/pmd/issues?q=author%3Amagwas" title="Bug reports">🐛</a></td>
     <td align="center"><a href="https://github.com/clsaa"><img src="https://avatars.githubusercontent.com/u/32028545?v=4?s=100" width="100px;" alt=""/><br /><sub><b>任贵杰</b></sub></a><br /><a href="https://github.com/pmd/pmd/issues?q=author%3Aclsaa" title="Bug reports">🐛</a></td>
+    <td align="center"><a href="https://github.com/341816041"><img src="https://avatars.githubusercontent.com/u/100549608?v=4?s=100" width="100px;" alt=""/><br /><sub><b>茅延安</b></sub></a><br /><a href="https://github.com/pmd/pmd/commits?author=341816041" title="Code">💻</a></td>
   </tr>
 </table>
 
