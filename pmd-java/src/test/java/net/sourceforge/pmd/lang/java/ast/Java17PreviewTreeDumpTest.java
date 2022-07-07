@@ -82,7 +82,7 @@ public class Java17PreviewTreeDumpTest extends BaseTreeDumpTest {
             }
         });
         Assert.assertTrue("Unexpected message: " + thrown.getMessage(),
-                thrown.getMessage().contains("Guarded patterns are only supported with JDK 17 Preview or JDK 18 Preview or JDK 19 Preview."));
+                thrown.getMessage().contains("Guarded patterns are only supported with JDK 17 Preview or JDK 18 Preview."));
     }
 
     @Test

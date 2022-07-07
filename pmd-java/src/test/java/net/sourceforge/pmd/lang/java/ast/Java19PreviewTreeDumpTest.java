@@ -14,27 +14,27 @@ import net.sourceforge.pmd.lang.ast.test.BaseTreeDumpTest;
 import net.sourceforge.pmd.lang.ast.test.RelevantAttributePrinter;
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 
-public class Java18PreviewTreeDumpTest extends BaseTreeDumpTest {
-    private final JavaParsingHelper java18p =
-            JavaParsingHelper.WITH_PROCESSING.withDefaultVersion("18-preview")
-                    .withResourceContext(Java18PreviewTreeDumpTest.class, "jdkversiontests/java18p/");
-    private final JavaParsingHelper java18 = java18p.withDefaultVersion("18");
+public class Java19PreviewTreeDumpTest extends BaseTreeDumpTest {
+    private final JavaParsingHelper java19p =
+            JavaParsingHelper.WITH_PROCESSING.withDefaultVersion("19-preview")
+                    .withResourceContext(Java19PreviewTreeDumpTest.class, "jdkversiontests/java19p/");
+    private final JavaParsingHelper java19 = java19p.withDefaultVersion("19");
 
-    public Java18PreviewTreeDumpTest() {
+    public Java19PreviewTreeDumpTest() {
         super(new RelevantAttributePrinter(), ".java");
     }
 
     @Override
     public BaseParsingHelper<?, ?> getParser() {
-        return java18p;
+        return java19p;
     }
 
     @Test
-    public void dealingWithNullBeforeJava18Preview() {
+    public void dealingWithNullBeforeJava19Preview() {
         ParseException thrown = Assert.assertThrows(ParseException.class, new ThrowingRunnable() {
             @Override
             public void run() throws Throwable {
-                java18.parseResource("DealingWithNull.java");
+                java19.parseResource("DealingWithNull.java");
             }
         });
         Assert.assertTrue("Unexpected message: " + thrown.getMessage(),
@@ -57,15 +57,15 @@ public class Java18PreviewTreeDumpTest extends BaseTreeDumpTest {
     }
 
     @Test
-    public void guardedAndParenthesizedPatternsBeforeJava18Preview() {
+    public void guardedAndParenthesizedPatternsBeforeJava19Preview() {
         ParseException thrown = Assert.assertThrows(ParseException.class, new ThrowingRunnable() {
             @Override
             public void run() throws Throwable {
-                java18.parseResource("GuardedAndParenthesizedPatterns.java");
+                java19.parseResource("GuardedAndParenthesizedPatterns.java");
             }
         });
         Assert.assertTrue("Unexpected message: " + thrown.getMessage(),
-                thrown.getMessage().contains("Guarded patterns are only supported with JDK 17 Preview or JDK 18 Preview."));
+                thrown.getMessage().contains("Pattern Matching in Switch is only supported with JDK 17 Preview or JDK 18 Preview or JDK 19 Preview."));
     }
 
     @Test
@@ -74,11 +74,11 @@ public class Java18PreviewTreeDumpTest extends BaseTreeDumpTest {
     }
 
     @Test
-    public void patternsInSwitchLabelsBeforeJava18Preview() {
+    public void patternsInSwitchLabelsBeforeJava19Preview() {
         ParseException thrown = Assert.assertThrows(ParseException.class, new ThrowingRunnable() {
             @Override
             public void run() throws Throwable {
-                java18.parseResource("PatternsInSwitchLabels.java");
+                java19.parseResource("PatternsInSwitchLabels.java");
             }
         });
         Assert.assertTrue("Unexpected message: " + thrown.getMessage(),

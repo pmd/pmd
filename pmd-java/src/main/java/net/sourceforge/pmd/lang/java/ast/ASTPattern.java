@@ -17,7 +17,6 @@ import net.sourceforge.pmd.annotation.Experimental;
  * <pre class="grammar">
  *
  * Pattern ::=   {@link ASTTypePattern TypePattern}
- *             | {@link ASTGuardedPattern GuardedPattern}
  *
  * </pre>
  * 

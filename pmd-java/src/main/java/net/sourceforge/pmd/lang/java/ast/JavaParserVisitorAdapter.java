@@ -664,8 +664,15 @@ public class JavaParserVisitorAdapter implements JavaParserVisitor {
     }
 
     @Experimental
+    @Deprecated
     @Override
     public Object visit(ASTGuardedPattern node, Object data) {
+        return visit((JavaNode) node, data);
+    }
+
+    @Experimental
+    @Override
+    public Object visit(ASTGuard node, Object data) {
         return visit((JavaNode) node, data);
     }
 }

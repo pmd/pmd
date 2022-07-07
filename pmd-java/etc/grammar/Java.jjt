@@ -1,4 +1,9 @@
 /**
+ * Support "JEP 427: Pattern Matching for switch (Third Preview)" for Java 19 Preview
+ * Note: GuardedPattern is deprecated and only valid for 17-preview and 18-preview
+ * New AST node: Guard - used within switch case labels for refining a pattern
+ * Andreas Dangel 07/2022
+ *====================================================================
  * Support "JEP 420: Pattern Matching for switch (Second Preview)" for Java 18 Preview
  * There were no grammar changes between 18-preview and 17-preview
  * Remove support for Java 16 preview language features
@@ -556,8 +561,20 @@ public class JavaParser {
   }
 
   private void checkForGuardedPatterns() {
-    if (!isJEP406Supported()) {
-        throwParseException("Guarded patterns are only supported with JDK 17 Preview or JDK 18 Preview or JDK 19 Preview.");
+    if (!((jdkVersion == 17 || jdkVersion == 18) && preview)) {
+        throwParseException("Guarded patterns are only supported with JDK 17 Preview or JDK 18 Preview.");
+    }
+  }
+
+  private void checkForParenthesizedInstanceOfPattern() {
+    if (!((jdkVersion == 17 || jdkVersion == 18) && preview)) {
+        throwParseException("Parenthesized InstanceOf patterns are only supported with JDK 17 Preview or JDK 18 Preview.");
+    }
+  }
+
+  private void checkForGuard() {
+    if (!((jdkVersion == 19) && preview)) {
+      throwParseException("Guards are only supported with JDK 19 Preview.");
     }
   }
 
@@ -1761,7 +1778,8 @@ void EqualityExpression() #EqualityExpression(>1):
 void Pattern() #void:
 {}
 {
-    PrimaryPattern() [ GuardedPatternCondition() #GuardedPattern(2) {checkForGuardedPatterns();} ]
+    TypePattern() [ GuardedPatternCondition() #GuardedPattern(2) {checkForGuardedPatterns();} ]
+    | ParenthesizedPattern()
 }
 
 void GuardedPatternCondition() #void:
@@ -1770,11 +1788,10 @@ void GuardedPatternCondition() #void:
     "&&" ConditionalAndExpression()
 }
 
-void PrimaryPattern() #void:
+void ParenthesizedPattern() #void:
 {}
 {
-    TypePattern()
-    | "(" Pattern() ")" { AstImplUtil.bumpParenDepth((ASTPattern) jjtree.peekNode()); }
+    "(" Pattern() ")" { AstImplUtil.bumpParenDepth((ASTPattern) jjtree.peekNode()); }
 }
 
 void TypePattern():
@@ -1791,9 +1808,9 @@ void InstanceOfExpression() #InstanceOfExpression(>1):
   RelationalExpression()
   [ "instanceof"
       (
-        LOOKAHEAD("final" | "@") {checkforBadInstanceOfPattern();} PrimaryPattern()
+        LOOKAHEAD("final" | "@") {checkforBadInstanceOfPattern();} Pattern()
       |
-        LOOKAHEAD("(") Pattern() {checkforBadInstanceOfPattern();}
+        LOOKAHEAD("(") Pattern() {checkForParenthesizedInstanceOfPattern();}
       |
         Type()
         [ {checkforBadInstanceOfPattern();} VariableDeclaratorId() #TypePattern(2) ]
@@ -2275,7 +2292,7 @@ void CaseLabelElement(ASTSwitchLabel label) #void:
 {
     "default" {label.setDefault(); checkForDefaultCaseLabel();}
     |
-    LOOKAHEAD(Pattern()) Pattern() {checkForPatternMatchingInSwitch();}
+    LOOKAHEAD(Pattern()) Pattern() {checkForPatternMatchingInSwitch();} ( LOOKAHEAD({isKeyword("when")}) Guard() )*
     |
     ConditionalExpression() #Expression
         {
@@ -2283,6 +2300,21 @@ void CaseLabelElement(ASTSwitchLabel label) #void:
                 checkForNullCaseLabel();
             }
         }
+}
+
+void Guard() :
+{
+    Token t;
+    checkForGuard();
+}
+{
+    t = <IDENTIFIER> {
+        if (!"when".equals(t.image)) {
+            throw new ParseException("ERROR: expected 'when'");
+        }
+    }
+
+    Expression()
 }
 
 void YieldStatement() :
