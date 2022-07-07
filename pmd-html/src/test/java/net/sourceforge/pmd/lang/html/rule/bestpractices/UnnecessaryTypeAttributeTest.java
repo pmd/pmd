@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.html.rule.bestpractices;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class UnnecessaryTypeAttributeTest extends PmdRuleTst {
+class UnnecessaryTypeAttributeTest extends PmdRuleTst {
     // no additional unit tests
 }

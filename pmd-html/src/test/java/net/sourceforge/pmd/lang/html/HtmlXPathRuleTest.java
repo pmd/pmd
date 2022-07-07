@@ -4,11 +4,12 @@
 
 package net.sourceforge.pmd.lang.html;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleViolation;
@@ -25,7 +26,7 @@ import net.sourceforge.pmd.lang.html.ast.HtmlParsingHelper;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
 
-public class HtmlXPathRuleTest {
+class HtmlXPathRuleTest {
     // from https://developer.salesforce.com/docs/component-library/documentation/en/lwc/lwc.js_props_getter
     private static final String LIGHTNING_WEB_COMPONENT = "<!-- helloExpressions.html -->\n"
             + "<template>\n"
@@ -42,67 +43,67 @@ public class HtmlXPathRuleTest {
             + "</template>";
 
     @Test
-    public void selectTextNode() {
+    void selectTextNode() {
         // from https://developer.salesforce.com/docs/component-library/documentation/en/lwc/lwc.js_props_getter
         // "Don’t add spaces around the property, for example, { data } is not valid HTML."
         String xpath = "//text()[contains(., '{ ')]";
 
         List<RuleViolation> violations = runXPath(LIGHTNING_WEB_COMPONENT, xpath);
-        Assert.assertEquals(1, violations.size());
-        Assert.assertEquals(3, violations.get(0).getBeginLine());
+        assertEquals(1, violations.size());
+        assertEquals(3, violations.get(0).getBeginLine());
     }
 
     @Test
-    public void selectTextNodeByNodeNameShouldNotWork() {
+    void selectTextNodeByNodeNameShouldNotWork() {
         String xpath = "//*[local-name() = '#text']";
         List<RuleViolation> violations = runXPath(LIGHTNING_WEB_COMPONENT, xpath);
-        Assert.assertEquals(0, violations.size());
+        assertEquals(0, violations.size());
     }
 
     @Test
-    public void verifyTextNodeName() {
+    void verifyTextNodeName() {
         ASTHtmlDocument document = HtmlParsingHelper.DEFAULT.parse("<p>foobar</p>");
         ASTHtmlTextNode textNode = document.getFirstDescendantOfType(ASTHtmlTextNode.class);
-        Assert.assertEquals("#text", textNode.getXPathNodeName());
+        assertEquals("#text", textNode.getXPathNodeName());
     }
 
     @Test
-    public void verifyCommentNodeName() {
+    void verifyCommentNodeName() {
         ASTHtmlDocument document = HtmlParsingHelper.DEFAULT.parse("<p><!-- a comment --></p>");
         ASTHtmlComment comment = document.getFirstDescendantOfType(ASTHtmlComment.class);
-        Assert.assertEquals("#comment", comment.getXPathNodeName());
+        assertEquals("#comment", comment.getXPathNodeName());
     }
 
     @Test
-    public void selectAttributes() {
+    void selectAttributes() {
         // from https://developer.salesforce.com/docs/component-library/documentation/en/lwc/lwc.js_props_getter
         // "Don’t add spaces around the property, for example, { data } is not valid HTML."
         String xpath = "//*[@value = '{']";
 
         List<RuleViolation> violations = runXPath(LIGHTNING_WEB_COMPONENT, xpath);
-        Assert.assertEquals(1, violations.size());
-        Assert.assertEquals(4, violations.get(0).getBeginLine());
+        assertEquals(1, violations.size());
+        assertEquals(4, violations.get(0).getBeginLine());
     }
 
     @Test
-    public void selectAttributesMultiple() {
+    void selectAttributesMultiple() {
         // from https://developer.salesforce.com/docs/component-library/documentation/en/lwc/lwc.js_props_getter
         // "Don’t add spaces around the property, for example, { data } is not valid HTML."
         String xpath = "//*[@*[local-name() = ('value', 'onchange')] = '{']";
 
         List<RuleViolation> violations = runXPath(LIGHTNING_WEB_COMPONENT, xpath);
-        Assert.assertEquals(2, violations.size());
-        Assert.assertEquals(4, violations.get(0).getBeginLine());
-        Assert.assertEquals(6, violations.get(1).getBeginLine());
+        assertEquals(2, violations.size());
+        assertEquals(4, violations.get(0).getBeginLine());
+        assertEquals(6, violations.get(1).getBeginLine());
     }
 
     @Test
-    public void selectAttributeByName() {
+    void selectAttributeByName() {
         String xpath = "//*[@*[local-name() = 'if:true']]";
 
         List<RuleViolation> violations = runXPath(LIGHTNING_WEB_COMPONENT, xpath);
-        Assert.assertEquals(1, violations.size());
-        Assert.assertEquals(10, violations.get(0).getBeginLine());
+        assertEquals(1, violations.size());
+        assertEquals(10, violations.get(0).getBeginLine());
     }
 
     private List<RuleViolation> runXPath(String html, String xpath) {
