@@ -4,27 +4,29 @@
 
 package net.sourceforge.pmd.lang.ecmascript.ast;
 
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ASTFunctionNodeTest extends EcmascriptParserTestBase {
+import org.junit.jupiter.api.Test;
+
+class ASTFunctionNodeTest extends EcmascriptParserTestBase {
 
     @Test
     public void testGetBody() {
         ASTAstRoot node = js.parse("function foo() { var a = 'a'; }");
         ASTFunctionNode fn = node.getFirstDescendantOfType(ASTFunctionNode.class);
-        Assert.assertFalse(fn.isClosure());
+        assertFalse(fn.isClosure());
         EcmascriptNode<?> body = fn.getBody();
-        Assert.assertTrue(body instanceof ASTBlock);
+        assertTrue(body instanceof ASTBlock);
     }
 
     @Test
-    public void testGetBodyFunctionClosureExpression() {
+    void testGetBodyFunctionClosureExpression() {
         ASTAstRoot node = js.parse("(function(x) x*x)");
         ASTFunctionNode fn = node.getFirstDescendantOfType(ASTFunctionNode.class);
-        Assert.assertTrue(fn.isClosure());
+        assertTrue(fn.isClosure());
         EcmascriptNode<?> body = fn.getBody();
-        Assert.assertTrue(body instanceof ASTBlock);
-        Assert.assertTrue(body.getChild(0) instanceof ASTReturnStatement);
+        assertTrue(body instanceof ASTBlock);
+        assertTrue(body.getChild(0) instanceof ASTReturnStatement);
     }
 }

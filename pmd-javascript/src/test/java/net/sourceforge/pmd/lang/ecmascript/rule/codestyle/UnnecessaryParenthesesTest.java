@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.ecmascript.rule.codestyle;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class UnnecessaryParenthesesTest extends PmdRuleTst {
+class UnnecessaryParenthesesTest extends PmdRuleTst {
     // no additional unit tests
 }
