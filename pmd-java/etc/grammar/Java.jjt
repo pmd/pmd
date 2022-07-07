@@ -3,6 +3,7 @@
  * Note: GuardedPattern is deprecated and only valid for 17-preview and 18-preview
  * New AST node: Guard - used within switch case labels for refining a pattern
  * Support "JEP 405: Record Patterns (Preview)" for Java 19 Preview
+ * Remove support for Java 17 preview language features
  * Andreas Dangel 07/2022
  *====================================================================
  * Support "JEP 420: Pattern Matching for switch (Second Preview)" for Java 18 Preview
@@ -540,36 +541,36 @@ public class JavaParser {
   }
 
   private boolean isJEP406Supported() {
-    return (jdkVersion == 17 || jdkVersion == 18 || jdkVersion == 19) && preview;
+    return (jdkVersion == 18 || jdkVersion == 19) && preview;
   }
 
   private void checkForPatternMatchingInSwitch() {
     if (!isJEP406Supported()) {
-        throwParseException("Pattern Matching in Switch is only supported with JDK 17 Preview or JDK 18 Preview or JDK 19 Preview.");
+        throwParseException("Pattern Matching in Switch is only supported with JDK 18 Preview or JDK 19 Preview.");
     }
   }
 
   private void checkForNullCaseLabel() {
     if (!isJEP406Supported()) {
-        throwParseException("Null case labels in switch are only supported with JDK 17 Preview or JDK 18 Preview or JDK 19 Preview.");
+        throwParseException("Null case labels in switch are only supported with JDK 18 Preview or JDK 19 Preview.");
     }
   }
 
   private void checkForDefaultCaseLabel() {
     if (!isJEP406Supported()) {
-        throwParseException("Default case labels in switch are only supported with JDK 17 Preview or JDK 18 Preview or JDK 19 Preview.");
+        throwParseException("Default case labels in switch are only supported with JDK 18 Preview or JDK 19 Preview.");
     }
   }
 
   private void checkForGuardedPatterns() {
-    if (!((jdkVersion == 17 || jdkVersion == 18) && preview)) {
-        throwParseException("Guarded patterns are only supported with JDK 17 Preview or JDK 18 Preview.");
+    if (!((jdkVersion == 18) && preview)) {
+        throwParseException("Guarded patterns are only supported with JDK 18 Preview.");
     }
   }
 
   private void checkForParenthesizedInstanceOfPattern() {
-    if (!((jdkVersion == 17 || jdkVersion == 18) && preview)) {
-        throwParseException("Parenthesized InstanceOf patterns are only supported with JDK 17 Preview or JDK 18 Preview.");
+    if (!((jdkVersion == 18) && preview)) {
+        throwParseException("Parenthesized InstanceOf patterns are only supported with JDK 18 Preview.");
     }
   }
 
