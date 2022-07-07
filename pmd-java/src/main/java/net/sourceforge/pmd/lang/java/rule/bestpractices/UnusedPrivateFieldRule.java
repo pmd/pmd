@@ -49,6 +49,15 @@ public class UnusedPrivateFieldRule extends AbstractLombokAwareRule {
         defaultValues.add("javafx.fxml.FXML");
         defaultValues.add("lombok.experimental.Delegate");
         defaultValues.add("lombok.EqualsAndHashCode");
+        defaultValues.add("javax.persistence.Id");
+        defaultValues.add("javax.persistence.EmbeddedId");
+        defaultValues.add("javax.persistence.Version");
+        defaultValues.add("jakarta.persistence.Id");
+        defaultValues.add("jakarta.persistence.EmbeddedId");
+        defaultValues.add("jakarta.persistence.Version");
+        defaultValues.add("org.mockito.Mock");
+        defaultValues.add("org.mockito.Spy");
+        defaultValues.add("org.springframework.boot.test.mock.mockito.MockBean");
         return defaultValues;
     }
 
