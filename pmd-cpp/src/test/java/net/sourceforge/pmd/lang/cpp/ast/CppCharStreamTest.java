@@ -4,29 +4,29 @@
 
 package net.sourceforge.pmd.lang.cpp.ast;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
 import java.io.StringReader;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class CppCharStreamTest {
+class CppCharStreamTest {
 
     @Test
-    public void testContinuationUnix() throws IOException {
+    void testContinuationUnix() throws IOException {
         CppCharStream stream = CppCharStream.newCppCharStream(new StringReader("a\\\nb"));
         assertStream(stream, "ab");
     }
 
     @Test
-    public void testContinuationWindows() throws IOException {
+    void testContinuationWindows() throws IOException {
         CppCharStream stream = CppCharStream.newCppCharStream(new StringReader("a\\\r\nb"));
         assertStream(stream, "ab");
     }
 
     @Test
-    public void testBackup() throws IOException {
+    void testBackup() throws IOException {
         CppCharStream stream = CppCharStream.newCppCharStream(new StringReader("a\\b\\\rc"));
         assertStream(stream, "a\\b\\\rc");
     }
