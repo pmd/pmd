@@ -2,6 +2,7 @@
  * Support "JEP 427: Pattern Matching for switch (Third Preview)" for Java 19 Preview
  * Note: GuardedPattern is deprecated and only valid for 17-preview and 18-preview
  * New AST node: Guard - used within switch case labels for refining a pattern
+ * Support "JEP 405: Record Patterns (Preview)" for Java 19 Preview
  * Andreas Dangel 07/2022
  *====================================================================
  * Support "JEP 420: Pattern Matching for switch (Second Preview)" for Java 18 Preview
@@ -575,6 +576,12 @@ public class JavaParser {
   private void checkForGuard() {
     if (!((jdkVersion == 19) && preview)) {
       throwParseException("Guards are only supported with JDK 19 Preview.");
+    }
+  }
+
+  private void checkForRecordPatterns() {
+    if (!((jdkVersion == 19) && preview)) {
+      throwParseException("Record Patterns are only supported with JDK 19 Preview.");
     }
   }
 
@@ -1778,8 +1785,9 @@ void EqualityExpression() #EqualityExpression(>1):
 void Pattern() #void:
 {}
 {
-    TypePattern() [ GuardedPatternCondition() #GuardedPattern(2) {checkForGuardedPatterns();} ]
-    | ParenthesizedPattern()
+    LOOKAHEAD(ReferenceType() "(") RecordPattern()
+    | LOOKAHEAD("(") ParenthesizedPattern()
+    | TypePattern() [ GuardedPatternCondition() #GuardedPattern(2) {checkForGuardedPatterns();} ]
 }
 
 void GuardedPatternCondition() #void:
@@ -1802,6 +1810,24 @@ void TypePattern():
   VariableDeclaratorId()
 }
 
+void RecordPattern():
+{ checkForRecordPatterns(); }
+{
+  ReferenceType() RecordStructurePattern() [ VariableDeclaratorId() ]
+}
+
+void RecordStructurePattern():
+{}
+{
+  "(" [ RecordComponentPatternList() ] ")"
+}
+
+void RecordComponentPatternList() #void:
+{}
+{
+  Pattern() ( "," Pattern() )*
+}
+
 void InstanceOfExpression() #InstanceOfExpression(>1):
 {}
 {
@@ -1811,6 +1837,8 @@ void InstanceOfExpression() #InstanceOfExpression(>1):
         LOOKAHEAD("final" | "@") {checkforBadInstanceOfPattern();} Pattern()
       |
         LOOKAHEAD("(") Pattern() {checkForParenthesizedInstanceOfPattern();}
+      |
+        LOOKAHEAD(ReferenceType() "(") RecordPattern()
       |
         Type()
         [ {checkforBadInstanceOfPattern();} VariableDeclaratorId() #TypePattern(2) ]

@@ -4,7 +4,9 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import org.junit.Assert;
+import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
+
 import org.junit.Test;
 import org.junit.function.ThrowingRunnable;
 
@@ -31,13 +33,13 @@ public class Java19PreviewTreeDumpTest extends BaseTreeDumpTest {
 
     @Test
     public void dealingWithNullBeforeJava19Preview() {
-        ParseException thrown = Assert.assertThrows(ParseException.class, new ThrowingRunnable() {
+        ParseException thrown = assertThrows(ParseException.class, new ThrowingRunnable() {
             @Override
             public void run() throws Throwable {
                 java19.parseResource("DealingWithNull.java");
             }
         });
-        Assert.assertTrue("Unexpected message: " + thrown.getMessage(),
+        assertTrue("Unexpected message: " + thrown.getMessage(),
                 thrown.getMessage().contains("Null case labels in switch are only supported with JDK 17 Preview or JDK 18 Preview or JDK 19 Preview."));
     }
 
@@ -58,13 +60,13 @@ public class Java19PreviewTreeDumpTest extends BaseTreeDumpTest {
 
     @Test
     public void guardedAndParenthesizedPatternsBeforeJava19Preview() {
-        ParseException thrown = Assert.assertThrows(ParseException.class, new ThrowingRunnable() {
+        ParseException thrown = assertThrows(ParseException.class, new ThrowingRunnable() {
             @Override
             public void run() throws Throwable {
                 java19.parseResource("GuardedAndParenthesizedPatterns.java");
             }
         });
-        Assert.assertTrue("Unexpected message: " + thrown.getMessage(),
+        assertTrue("Unexpected message: " + thrown.getMessage(),
                 thrown.getMessage().contains("Pattern Matching in Switch is only supported with JDK 17 Preview or JDK 18 Preview or JDK 19 Preview."));
     }
 
@@ -75,13 +77,13 @@ public class Java19PreviewTreeDumpTest extends BaseTreeDumpTest {
 
     @Test
     public void patternsInSwitchLabelsBeforeJava19Preview() {
-        ParseException thrown = Assert.assertThrows(ParseException.class, new ThrowingRunnable() {
+        ParseException thrown = assertThrows(ParseException.class, new ThrowingRunnable() {
             @Override
             public void run() throws Throwable {
                 java19.parseResource("PatternsInSwitchLabels.java");
             }
         });
-        Assert.assertTrue("Unexpected message: " + thrown.getMessage(),
+        assertTrue("Unexpected message: " + thrown.getMessage(),
                 thrown.getMessage().contains("Pattern Matching in Switch is only supported with JDK 17 Preview or JDK 18 Preview or JDK 19 Preview."));
     }
 
@@ -98,5 +100,22 @@ public class Java19PreviewTreeDumpTest extends BaseTreeDumpTest {
     @Test
     public void scopeOfPatternVariableDeclarations() {
         doTest("ScopeOfPatternVariableDeclarations");
+    }
+
+    @Test
+    public void recordPatterns() {
+        doTest("RecordPatterns");
+    }
+
+    @Test
+    public void recordPatternsBeforeJava19Preview() {
+        ParseException thrown = assertThrows(ParseException.class, new ThrowingRunnable() {
+            @Override
+            public void run() throws Throwable {
+                java19.parseResource("RecordPatterns.java");
+            }
+        });
+        assertTrue("Unexpected message: " + thrown.getMessage(),
+                thrown.getMessage().contains("Record Patterns are only supported with JDK 19 Preview."));
     }
 }

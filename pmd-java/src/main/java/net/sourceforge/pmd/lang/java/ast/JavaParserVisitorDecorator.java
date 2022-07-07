@@ -807,4 +807,16 @@ public class JavaParserVisitorDecorator implements JavaParserControllessVisitor 
     public Object visit(ASTGuard node, Object data) {
         return visitor.visit(node, data);
     }
+
+    @Experimental
+    @Override
+    public Object visit(ASTRecordPattern node, Object data) {
+        return visitor.visit(node, data);
+    }
+
+    @Experimental
+    @Override
+    public Object visit(ASTRecordStructurePattern node, Object data) {
+        return visitor.visit(node, data);
+    }
 }
