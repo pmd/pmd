@@ -27,6 +27,8 @@ Being based on a proper Antlr grammar, CPD can:
 ### Fixed Issues
 * java-bestpractices
     * [#3455](https://github.com/pmd/pmd/issues/3455): \[java] WhileLoopWithLiteralBoolean - false negative with complex expressions
+* java-design
+    * [#3949](https://github.com/pmd/pmd/issues/3949): \[java] FinalFieldCouldBeStatic - false negative with unnecessary parenthesis
 * java-performance
     * [#3625](https://github.com/pmd/pmd/issues/3625): \[java] AddEmptyString - false negative with empty var
 
@@ -35,6 +37,7 @@ Being based on a proper Antlr grammar, CPD can:
 ### External Contributions
 * [#3984](https://github.com/pmd/pmd/pull/3984): \[java] Fix AddEmptyString false-negative issue - [@LiGaOg](https://github.com/LiGaOg)
 * [#3988](https://github.com/pmd/pmd/pull/3988): \[java] Modify WhileLoopWithLiteralBoolean to meet the missing case #3455 - [@VoidxHoshi](https://github.com/VoidxHoshi)
+* [#3992](https://github.com/pmd/pmd/pull/3992): \[java] FinalFieldCouldBeStatic - fix false negative with unnecessary parenthesis - [@dalizi007](https://github.com/dalizi007)
 * [#4017](https://github.com/pmd/pmd/pull/4017): Add Gherkin support to CPD - [@ASBrouwers](https://github.com/ASBrouwers)
 
 {% endtocmaker %}
