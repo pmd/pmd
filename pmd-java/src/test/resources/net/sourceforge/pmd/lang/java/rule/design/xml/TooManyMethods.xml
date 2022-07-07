@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <test-data
-        xmlns="http://pmd.sourceforge.net/rule-tests"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
 
     <test-code>
         <description>Less than 10 methods.</description>
@@ -114,10 +114,7 @@ public class OuterClass {
         ]]></code>
     </test-code>
 
-    <test-code>
-        <description>#3729 TooManyMethods ignores "real" methods which are named like getters or setters</description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
+    <code-fragment id="code_22_real_methods"><![CDATA[
 public class Foo {
     public void setMethod1(){int a = 1;a++;}
     public void setMethod2(){int a = 1;a++;}
@@ -144,7 +141,25 @@ public class Foo {
     public void method20(){}
     public void method21(){}
     public void method22(){}
+
+    private String field;
+    public String getField() { return field; } // real getter
+    public void setField(String field) { this.field = field; } // real setter
 }
-        ]]></code>
+]]>
+    </code-fragment>
+
+    <test-code>
+        <description>#3729 TooManyMethods ignores "real" methods which are named like getters or setters - default</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>1</expected-linenumbers>
+        <code-ref id="code_22_real_methods"/>
+    </test-code>
+
+    <test-code>
+        <description>#3729 TooManyMethods ignores "real" methods which are named like getters or setters - max 22 methods</description>
+        <rule-property name="maxmethods">22</rule-property>
+        <expected-problems>0</expected-problems>
+        <code-ref id="code_22_real_methods"/>
     </test-code>
 </test-data>
