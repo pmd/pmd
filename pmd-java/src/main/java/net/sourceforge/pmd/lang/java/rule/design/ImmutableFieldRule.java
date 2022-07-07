@@ -4,8 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.rule.design;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -34,33 +33,13 @@ import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
  */
 public class ImmutableFieldRule extends AbstractLombokAwareRule {
 
-    private enum FieldImmutabilityType {
-        /** Variable is changed in methods and/or in lambdas */
-        MUTABLE,
-        /** Variable is not changed outside the constructor. */
-        IMMUTABLE,
-        /** Variable is only written during declaration, if at all. */
-        CHECKDECL
-    }
-
-    @Override
-    protected Collection<String> defaultSuppressionAnnotations() {
-        Collection<String> defaultValues = new ArrayList<>(super.defaultSuppressionAnnotations());
-        defaultValues.add("org.mockito.Mock");
-        defaultValues.add("org.mockito.InjectMocks");
-        defaultValues.add("org.springframework.beans.factory.annotation.Autowired");
-        defaultValues.add("org.springframework.boot.test.mock.mockito.MockBean");
-
-        return defaultValues;
-    }
-
     @Override
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
         Object result = super.visit(node, data);
 
         Map<VariableNameDeclaration, List<NameOccurrence>> vars = node.getScope()
                 .getDeclarations(VariableNameDeclaration.class);
-        List<ASTConstructorDeclaration> constructors = findAllConstructors(node);
+        Set<ASTConstructorDeclaration> constructors = Collections.unmodifiableSet(new HashSet<>(findAllConstructors(node)));
         for (Map.Entry<VariableNameDeclaration, List<NameOccurrence>> entry : vars.entrySet()) {
             VariableNameDeclaration field = entry.getKey();
             AccessNode accessNodeParent = field.getAccessNodeParent();
@@ -72,14 +51,7 @@ public class ImmutableFieldRule extends AbstractLombokAwareRule {
             }
 
             List<NameOccurrence> usages = entry.getValue();
-            FieldImmutabilityType type = initializedInConstructor(field, usages, new HashSet<>(constructors));
-            if (type == FieldImmutabilityType.MUTABLE) {
-                continue;
-            }
-            if (initializedWhenDeclared(field) && usages.isEmpty()) {
-                addViolation(data, field.getNode(), field.getImage());
-            }
-            if (type == FieldImmutabilityType.IMMUTABLE || type == FieldImmutabilityType.CHECKDECL && !initializedWhenDeclared(field)) {
+            if (isImmutableField(field, usages, constructors)) {
                 addViolation(data, field.getNode(), field.getImage());
             }
         }
@@ -90,10 +62,7 @@ public class ImmutableFieldRule extends AbstractLombokAwareRule {
         return field.getAccessNodeParent().hasDescendantOfType(ASTVariableInitializer.class);
     }
 
-    private FieldImmutabilityType initializedInConstructor(VariableNameDeclaration field, List<NameOccurrence> usages, Set<ASTConstructorDeclaration> allConstructors) {
-        FieldImmutabilityType result = FieldImmutabilityType.MUTABLE;
-        int methodInitCount = 0;
-        int lambdaUsage = 0;
+    private boolean isImmutableField(VariableNameDeclaration field, List<NameOccurrence> usages, Set<ASTConstructorDeclaration> allConstructors) {
         Set<ASTConstructorDeclaration> consSet = new HashSet<>(); // set of constructors accessing the field
         for (NameOccurrence occ : usages) {
             JavaNameOccurrence jocc = (JavaNameOccurrence) occ;
@@ -102,35 +71,27 @@ public class ImmutableFieldRule extends AbstractLombokAwareRule {
                 ASTConstructorDeclaration constructor = node.getFirstParentOfType(ASTConstructorDeclaration.class);
                 if (constructor != null && isSameClass(field, constructor)) {
                     if (inLoopOrTry(node)) {
-                        methodInitCount++;
-                        continue;
+                        return false;
                     }
 
-                    if (inAnonymousInnerClass(node)) {
-                        methodInitCount++;
-                    } else if (node.getFirstParentOfType(ASTLambdaExpression.class) != null) {
-                        lambdaUsage++;
+                    if (inAnonymousInnerClass(node) || isInLambda(node)) {
+                        return false; // leaks
                     } else {
                         consSet.add(constructor);
                     }
                 } else {
-                    if (node.getFirstParentOfType(ASTLambdaExpression.class) != null) {
-                        lambdaUsage++;
-                    } else {
-                        methodInitCount++;
-                    }
+                    // assigned outside of ctors.
+                    return false;
                 }
             }
         }
-        if (usages.isEmpty() || methodInitCount == 0 && lambdaUsage == 0 && allConstructors.equals(consSet)) {
-            result = FieldImmutabilityType.CHECKDECL;
-        } else {
-            allConstructors.removeAll(consSet);
-            if (allConstructors.isEmpty() && methodInitCount == 0 && lambdaUsage == 0) {
-                result = FieldImmutabilityType.IMMUTABLE;
-            }
-        }
-        return result;
+
+        return (allConstructors.equals(consSet) && !allConstructors.isEmpty())
+               ^ initializedWhenDeclared(field);
+    }
+
+    private boolean isInLambda(Node node) {
+        return node.getFirstParentOfType(ASTLambdaExpression.class) != null;
     }
 
     /**

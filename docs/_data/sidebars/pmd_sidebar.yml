@@ -382,6 +382,9 @@ entries:
     - title: HTML
       url: /pmd_languages_html.html
       output: web, pdf
+    - title: Gherkin
+      url: /pmd_languages_gherkin.html
+      output: web, pdf
   - title: Developer Documentation
     output: web, pdf
     folderitems:
