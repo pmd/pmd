@@ -2637,6 +2637,18 @@ in each object at runtime.</p>
         </span><span class="ow">or</span><span class="w">
         </span><span class="c">(: another static field :)</span><span class="w">
         </span><span class="kn">self::</span><span class="nt">Name</span><span class="p">[</span><span class="na">@Image</span><span class="err">=</span><span class="o">//</span><span class="nt">FieldDeclaration</span><span class="p">[</span><span class="na">@Static</span><span class="err">=</span><span class="nf">true</span><span class="p">()]</span><span class="o">/</span><span class="nt">VariableDeclarator</span><span class="err">/</span><span class="na">@Name</span><span class="p">]</span><span class="w">
+        </span><span class="ow">or</span><span class="w">
+        </span><span class="c">(:unnecessary parenthesis :)</span><span class="w">
+        </span><span class="kn">self::</span><span class="nt">Expression</span><span class="o">/</span><span class="nt">PrimaryExpression</span><span class="o">/</span><span class="nt">PrimaryPrefix</span><span class="o">/</span><span class="nt">Literal</span><span class="w">
+        </span><span class="ow">or</span><span class="w">
+        </span><span class="c">(:empty array allocation :)</span><span class="w">
+        </span><span class="kn">self::</span><span class="nt">AllocationExpression</span><span class="p">[</span><span class="nt">ArrayDimsAndInits</span><span class="o">/</span><span class="nt">Expression</span><span class="o">/</span><span class="nt">PrimaryExpression</span><span class="o">/</span><span class="nt">PrimaryPrefix</span><span class="err">/</span><span class="o">*</span><span class="w">
+            </span><span class="p">[</span><span class="w">
+                </span><span class="kn">self::</span><span class="nt">Literal</span><span class="p">[</span><span class="na">@IntLiteral</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">true</span><span class="p">()][</span><span class="na">@Image</span><span class="err">=</span><span class="s2">"0"</span><span class="p">]</span><span class="w">
+                </span><span class="ow">or</span><span class="w">
+                </span><span class="kn">self::</span><span class="nt">Expression</span><span class="o">/</span><span class="nt">PrimaryExpression</span><span class="o">/</span><span class="nt">PrimaryPrefix</span><span class="o">/</span><span class="nt">Literal</span><span class="p">[</span><span class="na">@IntLiteral</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">true</span><span class="p">()][</span><span class="na">@Image</span><span class="err">=</span><span class="s2">"0"</span><span class="p">]</span><span class="w">
+            </span><span class="p">]</span><span class="w">
+        </span><span class="p">]</span><span class="w">
     </span><span class="p">]</span><span class="w">
  </span><span class="p">]</span><span class="w">
 </span><span class="o">/</span><span class="nt">VariableDeclaratorId</span><span class="w">
@@ -4028,11 +4040,9 @@ complexity and find a way to have more fine grained objects.</p>
      </span><span class="p">[</span><span class="w">
       </span><span class="nf">count</span><span class="p">(.</span><span class="o">/</span><span class="nt">ClassOrInterfaceBodyDeclaration</span><span class="o">/</span><span class="nt">MethodDeclaration</span><span class="p">[</span><span class="w">
          </span><span class="ow">not</span><span class="w"> </span><span class="p">(</span><span class="w">
-                </span><span class="nf">starts-with</span><span class="p">(</span><span class="na">@Name</span><span class="p">,</span><span class="s1">'get'</span><span class="p">)</span><span class="w">
-                </span><span class="ow">or</span><span class="w">
-                </span><span class="nf">starts-with</span><span class="p">(</span><span class="na">@Name</span><span class="p">,</span><span class="s1">'set'</span><span class="p">)</span><span class="w">
-                </span><span class="ow">or</span><span class="w">
-                </span><span class="nf">starts-with</span><span class="p">(</span><span class="na">@Name</span><span class="p">,</span><span class="s1">'is'</span><span class="p">)</span><span class="w">
+                </span><span class="p">(</span><span class="nf">starts-with</span><span class="p">(</span><span class="na">@Name</span><span class="p">,</span><span class="s1">'get'</span><span class="p">)</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="nf">starts-with</span><span class="p">(</span><span class="na">@Name</span><span class="p">,</span><span class="s1">'set'</span><span class="p">)</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="nf">starts-with</span><span class="p">(</span><span class="na">@Name</span><span class="p">,</span><span class="s1">'is'</span><span class="p">))</span><span class="w">
+                </span><span class="ow">and</span><span class="w">
+                </span><span class="nf">count</span><span class="p">(</span><span class="nt">Block</span><span class="o">/</span><span class="nt">BlockStatement</span><span class="p">)</span><span class="w"> </span><span class="err">&lt;=</span><span class="w"> </span><span class="m">1</span><span class="w">
             </span><span class="p">)</span><span class="w">
       </span><span class="p">])</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="nv">$maxmethods</span><span class="w">
    </span><span class="p">]</span><span class="w">
@@ -4256,7 +4266,7 @@ remember to add a private constructor to prevent instantiation.
         <div class="col-lg-12 footer">
             &copy;2022 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Jul 1, 2022 <br />
+             Site last generated: Jul 7, 2022 <br />
             <p>
                 <img src="images/pmd-logo-small.png" alt="Company
                 logo"/>
