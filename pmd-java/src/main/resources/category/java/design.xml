@@ -1391,11 +1391,9 @@ complexity and find a way to have more fine grained objects.
      [
       count(MethodDeclaration[
          not (
-                starts-with(@Name,'get')
-                or
-                starts-with(@Name,'set')
-                or
-                starts-with(@Name,'is')
+                (starts-with(@Name,'get') or starts-with(@Name,'set') or starts-with(@Name,'is'))
+                and
+                count(Block/BlockStatement) <= 1
             )
       ]) > $maxmethods
    ]
