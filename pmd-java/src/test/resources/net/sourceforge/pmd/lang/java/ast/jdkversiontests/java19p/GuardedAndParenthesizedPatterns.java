@@ -19,6 +19,17 @@ public class GuardedAndParenthesizedPatterns {
         }
     }
 
+    // verify that "when" can still be used as an identifier
+    void testIdentifierWhen(String when) {
+        System.out.println(when);
+    }
+
+    // verify that "when" can still be used as an identifier
+    void testIdentifierWhen() {
+        int when = 1;
+        System.out.println(when);
+    }
+
     static void testWithNull(Object o) {
         switch (o) {
             case String s when (s.length() == 1)    -> System.out.println("single char string");
