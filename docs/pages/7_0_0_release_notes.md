@@ -49,6 +49,26 @@ Given the full Antlr support, PMD now fully supports Swift. We are pleased to an
 * {% rule "swift/bestpractices/UnavailableFunction" %} (`swift-bestpractices`) flags any function throwing a `fatalError` not marked as
   `@available(*, unavailable)` to ensure no calls are actually performed in the codebase.
 
+Contributors: [@lsoncini](https://github.com/lsoncini), [@matifraga](https://github.com/matifraga), [@tomidelucca](https://github.com/tomidelucca)
+
+#### Kotlin support (experimental)
+
+PMD now supports Kotlin as an additional language for analyzing source code. It is based on
+the official kotlin Antlr grammar. Java-based rules and XPath-based rules are supported.
+
+Kotlin support has **experimental** stability level, meaning no compatibility should
+be expected between even incremental releases. Any functionality can be added, removed or changed without
+warning.
+
+We are shipping the following rules:
+
+* {% rule kotlin/bestpractices/FunctionNameTooShort %} (`kotlin-bestpractices`) finds functions with a too short name.
+* {% rule kotlin/errorprone/OverrideBothEqualsAndHashcode %} (`kotlin-errorprone`) finds classes with only either `equals`
+  or `hashCode` overridden, but not both. This leads to unexpected behavior once instances of such classes
+  are used in collections (Lists, HashMaps, ...).
+
+Contributors: [@jborgers](https://github.com/jborgers), [@stokpop](https://github.com/stokpop)
+
 #### XPath 3.1 support
 
 Support for XPath versions 1.0, 1.0-compatibility was removed, support for XPath 2.0 is deprecated. The default (and only) supported XPath version is now XPath 3.1. This version of the XPath language is mostly identical to XPath 2.0. Notable changes:
@@ -161,14 +181,14 @@ The following previously deprecated rules have been finally removed:
 
 ### Fixed Issues
 
-*   miscellaneous
+* miscellaneous
     *   [#896](https://github.com/pmd/pmd/issues/896): \[all] Use slf4j
     *   [#1451](https://github.com/pmd/pmd/issues/1451): \[core] RulesetFactoryCompatibility stores the whole ruleset file in memory as a string
-*   cli
+* cli
     *   [#3828](https://github.com/pmd/pmd/issues/3828): \[core] Progress reporting
-*   apex-design
+* apex-design
     *   [#2667](https://github.com/pmd/pmd/issues/2667): \[apex] Integrate nawforce/ApexLink to build robust Unused rule
-*   java-bestpractices
+* java-bestpractices
     * [#342](https://github.com/pmd/pmd/issues/342): \[java] AccessorMethodGeneration: Name clash with another public field not properly handled
     * [#755](https://github.com/pmd/pmd/issues/755): \[java] AccessorClassGeneration false positive for private constructors
     * [#770](https://github.com/pmd/pmd/issues/770): \[java] UnusedPrivateMethod yields false positive for counter-variant arguments
@@ -243,6 +263,8 @@ The following previously deprecated rules have been finally removed:
 * java-performance
     * [#1224](https://github.com/pmd/pmd/issues/1224): \[java] InefficientEmptyStringCheck false negative in anonymous class
     * [#2712](https://github.com/pmd/pmd/issues/2712): \[java] SimplifyStartsWith false-positive with AssertJ
+* kotlin
+    * [#419](https://github.com/pmd/pmd/issues/419): \[kotlin] Add support for Kotlin
 
 ### API Changes
 
