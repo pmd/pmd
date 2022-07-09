@@ -14,7 +14,6 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.Parser;
 import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
-import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.ast.SemanticErrorReporter;
 import net.sourceforge.pmd.lang.document.Chars;
 import net.sourceforge.pmd.lang.document.FileLocation;
@@ -23,6 +22,7 @@ import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.lang.document.TextRegion;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 import net.sourceforge.pmd.lang.rule.impl.DefaultRuleViolationFactory;
+import net.sourceforge.pmd.processor.PmdRunnableTest;
 
 /**
  * Dummy language used for testing PMD.
@@ -43,8 +43,11 @@ public class DummyLanguageModule extends BaseLanguageModule {
         addVersion("1.6", new Handler(), "6");
         addDefaultVersion("1.7", new Handler(), "7");
         addVersion("1.8", new Handler(), "8");
-        addVersion("1.9-throws", new HandlerWithParserThatThrows());
-        addVersion("1.9-semantic_error", new HandlerWithParserThatReportsSemanticError());
+        PmdRunnableTest.registerCustomVersions(this::addVersion);
+    }
+
+    public static DummyLanguageModule getInstance() {
+        return (DummyLanguageModule) LanguageRegistry.getLanguage(NAME);
     }
 
     public static DummyRootNode parse(String code) {
@@ -60,11 +63,6 @@ public class DummyLanguageModule extends BaseLanguageModule {
         return (DummyRootNode) version.getLanguageVersionHandler().getParser().parse(task);
     }
 
-
-    public static DummyLanguageModule getInstance() {
-        return (DummyLanguageModule) LanguageRegistry.getLanguage(NAME);
-    }
-
     public static class Handler extends AbstractPmdLanguageVersionHandler {
 
         @Override
@@ -75,28 +73,6 @@ public class DummyLanguageModule extends BaseLanguageModule {
         @Override
         public Parser getParser() {
             return DummyLanguageModule::readLispNode;
-        }
-    }
-
-    public static class HandlerWithParserThatThrows extends Handler {
-
-        @Override
-        public Parser getParser() {
-            return task -> {
-                throw new AssertionError("test error while parsing");
-            };
-        }
-    }
-
-    public static class HandlerWithParserThatReportsSemanticError extends Handler {
-
-        @Override
-        public Parser getParser() {
-            return task -> {
-                RootNode root = super.getParser().parse(task);
-                task.getReporter().error(root, "An error occurred!");
-                return root;
-            };
         }
     }
 
@@ -170,6 +146,5 @@ public class DummyLanguageModule extends BaseLanguageModule {
                 }
             };
         }
-
     }
 }

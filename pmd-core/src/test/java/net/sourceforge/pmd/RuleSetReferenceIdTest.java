@@ -22,9 +22,9 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
-import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 
+import net.sourceforge.pmd.util.IOUtil;
 import net.sourceforge.pmd.util.ResourceLoader;
 
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
@@ -123,7 +123,7 @@ public class RuleSetReferenceIdTest {
         assertRuleSetReferenceId(true, rulesetUrl, true, null, rulesetUrl, ruleSetReferenceId);
 
         try (InputStream inputStream = ruleSetReferenceId.getInputStream(new ResourceLoader())) {
-            String loaded = IOUtils.toString(inputStream, StandardCharsets.UTF_8);
+            String loaded = IOUtil.readToString(inputStream, StandardCharsets.UTF_8);
             assertEquals("xyz", loaded);
         }
 
@@ -139,8 +139,8 @@ public class RuleSetReferenceIdTest {
         String path = "/profiles/export?format=pmd&language=java&name=Sonar%2520way";
         String completePath = path + "/DummyBasicMockRule";
         String hostpart = "http://localhost:" + wireMockRule.port();
-        String basicRuleSet = IOUtils
-                .toString(RuleSetReferenceId.class.getResourceAsStream("/rulesets/dummy/basic.xml"), StandardCharsets.UTF_8);
+        String basicRuleSet = IOUtil
+                .readToString(RuleSetReferenceId.class.getResourceAsStream("/rulesets/dummy/basic.xml"), StandardCharsets.UTF_8);
 
         stubFor(head(urlEqualTo(completePath)).willReturn(aResponse().withStatus(404)));
         stubFor(head(urlEqualTo(path)).willReturn(aResponse().withStatus(200).withHeader("Content-type", "text/xml")));
@@ -152,7 +152,7 @@ public class RuleSetReferenceIdTest {
                 ruleSetReferenceId);
 
         try (InputStream inputStream = ruleSetReferenceId.getInputStream(new ResourceLoader())) {
-            String loaded = IOUtils.toString(inputStream, StandardCharsets.UTF_8);
+            String loaded = IOUtil.readToString(inputStream, StandardCharsets.UTF_8);
             assertEquals(basicRuleSet, loaded);
         }
 

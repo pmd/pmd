@@ -1526,6 +1526,7 @@ public class Foo {
     </rule>
 
     <rule name="EmptyFinallyBlock"
+          deprecated="true"
           language="java"
           since="0.4"
           message="Avoid empty finally blocks"
@@ -1533,6 +1534,9 @@ public class Foo {
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#emptyfinallyblock">
         <description>
 Empty finally blocks serve no purpose and should be removed.
+
+This rule is deprecated since PMD 6.46.0. Use the rule {% rule "java/codestyle/EmptyControlStatement" %}
+from category codestyle instead.
         </description>
         <priority>3</priority>
         <properties>
@@ -1560,6 +1564,7 @@ public class Foo {
     </rule>
 
     <rule name="EmptyIfStmt"
+          deprecated="true"
           language="java"
           since="0.1"
           message="Avoid empty 'if' statements"
@@ -1567,6 +1572,9 @@ public class Foo {
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#emptyifstmt">
         <description>
 Empty If Statement finds instances where a condition is checked but nothing is done about it.
+
+This rule is deprecated since PMD 6.46.0. Use the rule {% rule "java/codestyle/EmptyControlStatement" %}
+from category codestyle instead.
         </description>
         <priority>3</priority>
         <properties>
@@ -1592,6 +1600,7 @@ public class Foo {
     </rule>
 
     <rule name="EmptyInitializer"
+          deprecated="true"
           language="java"
           since="5.0"
           message="Empty initializer was found"
@@ -1599,6 +1608,9 @@ public class Foo {
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#emptyinitializer">
         <description>
 Empty initializers serve no purpose and should be removed.
+
+This rule is deprecated since PMD 6.46.0. Use the rule {% rule "java/codestyle/EmptyControlStatement" %}
+from category codestyle instead.
         </description>
         <priority>3</priority>
         <properties>
@@ -1620,6 +1632,7 @@ public class Foo {
     </rule>
 
     <rule name="EmptyStatementBlock"
+          deprecated="true"
           language="java"
           since="5.0"
           message="Avoid empty block statements."
@@ -1627,6 +1640,9 @@ public class Foo {
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#emptystatementblock">
         <description>
 Empty block statements serve no purpose and should be removed.
+
+This rule is deprecated since PMD 6.46.0. Use the rule {% rule "java/codestyle/EmptyControlStatement" %}
+from category codestyle instead.
         </description>
         <priority>3</priority>
         <properties>
@@ -1691,13 +1707,17 @@ public void doit() {
     </rule>
 
     <rule name="EmptySwitchStatements"
+          deprecated="true"
           language="java"
           since="1.0"
           message="Avoid empty switch statements"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#emptyswitchstatements">
         <description>
-Empty switch statements serve no purpose and should be removed.
+Empty switch statements serve no purpose and should be removed.#
+
+This rule is deprecated since PMD 6.46.0. Use the rule {% rule "java/codestyle/EmptyControlStatement" %}
+from category codestyle instead.
         </description>
         <priority>3</priority>
         <properties>
@@ -1719,6 +1739,7 @@ public void bar() {
     </rule>
 
     <rule name="EmptySynchronizedBlock"
+          deprecated="true"
           language="java"
           since="1.3"
           message="Avoid empty synchronized blocks"
@@ -1726,6 +1747,9 @@ public void bar() {
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#emptysynchronizedblock">
         <description>
 Empty synchronized blocks serve no purpose and should be removed.
+
+This rule is deprecated since PMD 6.46.0. Use the rule {% rule "java/codestyle/EmptyControlStatement" %}
+from category codestyle instead.
         </description>
         <priority>3</priority>
         <properties>
@@ -1747,6 +1771,7 @@ public class Foo {
     </rule>
 
     <rule name="EmptyTryBlock"
+          deprecated="true"
           language="java"
           since="0.4"
           message="Avoid empty try blocks"
@@ -1754,6 +1779,9 @@ public class Foo {
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#emptytryblock">
         <description>
 Avoid empty try blocks - what's the point?
+
+This rule is deprecated since PMD 6.46.0. Use the rule {% rule "java/codestyle/EmptyControlStatement" %}
+from category codestyle instead.
         </description>
         <priority>3</priority>
         <properties>
@@ -1780,6 +1808,7 @@ public class Foo {
     </rule>
 
     <rule name="EmptyWhileStmt"
+          deprecated="true"
           language="java"
           since="0.2"
           message="Avoid empty 'while' statements"
@@ -1789,6 +1818,9 @@ public class Foo {
 Empty While Statement finds all instances where a while statement does nothing.
 If it is a timing loop, then you should use Thread.sleep() for it; if it is
 a while loop that does a lot in the exit expression, rewrite it to make it clearer.
+
+This rule is deprecated since PMD 6.46.0. Use the rule {% rule "java/codestyle/EmptyControlStatement" %}
+from category codestyle instead.
         </description>
         <priority>3</priority>
         <properties>

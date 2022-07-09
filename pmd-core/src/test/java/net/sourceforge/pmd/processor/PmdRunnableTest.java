@@ -12,9 +12,11 @@ import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import java.util.List;
+import java.util.function.BiConsumer;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -35,10 +37,13 @@ import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.internal.SystemProps;
 import net.sourceforge.pmd.internal.util.ContextedAssertionError;
 import net.sourceforge.pmd.lang.DummyLanguageModule;
+import net.sourceforge.pmd.lang.DummyLanguageModule.Handler;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.Parser;
+import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
 import net.sourceforge.pmd.processor.MonoThreadProcessor.MonothreadRunnable;
@@ -46,12 +51,18 @@ import net.sourceforge.pmd.util.log.MessageReporter;
 
 public class PmdRunnableTest {
 
+    public static final String TEST_MESSAGE_SEMANTIC_ERROR = "An error occurred!";
+    private static final String PARSER_REPORTS_SEMANTIC_ERROR = "1.9-semantic_error";
+    private static final String THROWS_SEMANTIC_ERROR = "1.9-throws_semantic_error";
+    private static final String THROWS_ASSERTION_ERROR = "1.9-throws";
+
+
     @org.junit.Rule
     public TestRule restoreSystemProperties = new RestoreSystemProperties();
 
-    private LanguageVersion dummyThrows;
-    private LanguageVersion dummyDefault;
-    private LanguageVersion dummySemanticError;
+
+    private final DummyLanguageModule dummyLang = DummyLanguageModule.getInstance();
+
     private PMDConfiguration configuration;
     private PmdRunnable pmdRunnable;
     private MessageReporter reporter;
@@ -60,11 +71,6 @@ public class PmdRunnableTest {
 
     @Before
     public void prepare() {
-        Language dummyLanguage = LanguageRegistry.findLanguageByTerseName(DummyLanguageModule.TERSE_NAME);
-        dummyDefault = dummyLanguage.getDefaultVersion();
-        dummyThrows = dummyLanguage.getVersion("1.9-throws");
-        dummySemanticError = dummyLanguage.getVersion("1.9-semantic_error");
-
         // reset data
         rule = spy(new RuleThatThrows());
         configuration = new PMDConfiguration();
@@ -95,7 +101,7 @@ public class PmdRunnableTest {
     public void inErrorRecoveryModeErrorsShouldBeLoggedByParser() {
         System.setProperty(SystemProps.PMD_ERROR_RECOVERY, "");
 
-        Report report = process(dummyThrows);
+        Report report = process(versionWithParserThatThrowsAssertionError());
 
         Assert.assertEquals(1, report.getProcessingErrors().size());
     }
@@ -104,7 +110,7 @@ public class PmdRunnableTest {
     public void inErrorRecoveryModeErrorsShouldBeLoggedByRule() {
         System.setProperty(SystemProps.PMD_ERROR_RECOVERY, "");
 
-        Report report = process(dummyDefault);
+        Report report = process(dummyLang.getDefaultVersion());
 
         List<ProcessingError> errors = report.getProcessingErrors();
         assertThat(errors, hasSize(1));
@@ -115,24 +121,55 @@ public class PmdRunnableTest {
     public void withoutErrorRecoveryModeProcessingShouldBeAbortedByParser() {
         Assert.assertNull(System.getProperty(SystemProps.PMD_ERROR_RECOVERY));
 
-        Assert.assertThrows(AssertionError.class, () -> process(dummyThrows));
+        Assert.assertThrows(AssertionError.class, () -> process(versionWithParserThatThrowsAssertionError()));
     }
 
     @Test
     public void withoutErrorRecoveryModeProcessingShouldBeAbortedByRule() {
         Assert.assertNull(System.getProperty(SystemProps.PMD_ERROR_RECOVERY));
 
-
-        Assert.assertThrows(AssertionError.class, () -> process(dummyDefault));
+        Assert.assertThrows(AssertionError.class, () -> process(dummyLang.getDefaultVersion()));
     }
 
 
     @Test
     public void semanticErrorShouldAbortTheRun() {
-        process(dummySemanticError);
+        Report report = process(versionWithParserThatReportsSemanticError());
 
-        verify(reporter).log(eq(Level.INFO), contains("skipping rule analysis"));
+        verify(reporter, times(1))
+            .log(eq(Level.ERROR), eq("at !debug only! test.dummy:1:1: " + TEST_MESSAGE_SEMANTIC_ERROR));
         verify(rule, never()).apply(Mockito.any(), Mockito.any());
+
+        Assert.assertEquals(1, report.getProcessingErrors().size());
+    }
+
+    @Test
+    public void semanticErrorThrownShouldAbortTheRun() {
+        Report report = process(getVersionWithParserThatThrowsSemanticError());
+
+        verify(reporter, times(1)).log(eq(Level.ERROR), contains(TEST_MESSAGE_SEMANTIC_ERROR));
+        verify(rule, never()).apply(Mockito.any(), Mockito.any());
+
+        Assert.assertEquals(1, report.getProcessingErrors().size());
+    }
+
+    public static void registerCustomVersions(BiConsumer<String, Handler> addVersion) {
+        addVersion.accept(THROWS_ASSERTION_ERROR, new HandlerWithParserThatThrows());
+        addVersion.accept(PARSER_REPORTS_SEMANTIC_ERROR, new HandlerWithParserThatReportsSemanticError());
+        addVersion.accept(THROWS_SEMANTIC_ERROR, new HandlerWithParserThatThrowsSemanticError());
+
+    }
+
+    public LanguageVersion versionWithParserThatThrowsAssertionError() {
+        return dummyLang.getVersion(THROWS_ASSERTION_ERROR);
+    }
+
+    public LanguageVersion getVersionWithParserThatThrowsSemanticError() {
+        return dummyLang.getVersion(THROWS_SEMANTIC_ERROR);
+    }
+
+    public LanguageVersion versionWithParserThatReportsSemanticError() {
+        return dummyLang.getVersion(PARSER_REPORTS_SEMANTIC_ERROR);
     }
 
     private static class RuleThatThrows extends AbstractRule {
@@ -145,6 +182,39 @@ public class PmdRunnableTest {
         @Override
         public void apply(Node target, RuleContext ctx) {
             throw new AssertionError("test");
+        }
+    }
+
+    public static class HandlerWithParserThatThrowsSemanticError extends Handler {
+
+        @Override
+        public Parser getParser() {
+            return task -> {
+                RootNode root = super.getParser().parse(task);
+                throw task.getReporter().error(root, TEST_MESSAGE_SEMANTIC_ERROR);
+            };
+        }
+    }
+
+    public static class HandlerWithParserThatThrows extends Handler {
+
+        @Override
+        public Parser getParser() {
+            return task -> {
+                throw new AssertionError("test error while parsing");
+            };
+        }
+    }
+
+    public static class HandlerWithParserThatReportsSemanticError extends Handler {
+
+        @Override
+        public Parser getParser() {
+            return task -> {
+                RootNode root = super.getParser().parse(task);
+                task.getReporter().error(root, TEST_MESSAGE_SEMANTIC_ERROR);
+                return root;
+            };
         }
     }
 }

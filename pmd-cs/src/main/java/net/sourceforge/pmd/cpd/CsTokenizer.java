@@ -22,6 +22,7 @@ public class CsTokenizer extends AntlrTokenizer {
 
     private boolean ignoreUsings = false;
     private boolean ignoreLiteralSequences = false;
+    private boolean ignoreAttributes = false;
 
     /**
      * Sets the possible options for the C# tokenizer.
@@ -29,19 +30,16 @@ public class CsTokenizer extends AntlrTokenizer {
      * @param properties the properties
      * @see #IGNORE_USINGS
      * @see #OPTION_IGNORE_LITERAL_SEQUENCES
+     * @see #IGNORE_ANNOTATIONS
      */
     public void setProperties(Properties properties) {
-        ignoreUsings = Boolean.parseBoolean(properties.getProperty(IGNORE_USINGS, Boolean.FALSE.toString()));
-        ignoreLiteralSequences = Boolean.parseBoolean(properties.getProperty(OPTION_IGNORE_LITERAL_SEQUENCES,
-            Boolean.FALSE.toString()));
+        ignoreUsings = getBooleanProperty(properties, IGNORE_USINGS);
+        ignoreLiteralSequences = getBooleanProperty(properties, OPTION_IGNORE_LITERAL_SEQUENCES);
+        ignoreAttributes = getBooleanProperty(properties, IGNORE_ANNOTATIONS);
     }
 
-    public void setIgnoreUsings(boolean ignoreUsings) {
-        this.ignoreUsings = ignoreUsings;
-    }
-
-    public void setIgnoreLiteralSequences(boolean ignoreLiteralSequences) {
-        this.ignoreLiteralSequences = ignoreLiteralSequences;
+    private boolean getBooleanProperty(final Properties properties, final String property) {
+        return Boolean.parseBoolean(properties.getProperty(property, Boolean.FALSE.toString()));
     }
 
     @Override
@@ -51,7 +49,7 @@ public class CsTokenizer extends AntlrTokenizer {
 
     @Override
     protected AntlrTokenFilter getTokenFilter(final AntlrTokenManager tokenManager) {
-        return new CsTokenFilter(tokenManager, ignoreUsings, ignoreLiteralSequences);
+        return new CsTokenFilter(tokenManager, ignoreUsings, ignoreLiteralSequences, ignoreAttributes);
     }
 
     /**
@@ -70,15 +68,18 @@ public class CsTokenizer extends AntlrTokenizer {
 
         private final boolean ignoreUsings;
         private final boolean ignoreLiteralSequences;
+        private final boolean ignoreAttributes;
         private boolean discardingUsings = false;
         private boolean discardingNL = false;
+        private boolean isDiscardingAttribute = false;
         private AntlrToken discardingLiteralsUntil = null;
         private boolean discardCurrent = false;
 
-        CsTokenFilter(final AntlrTokenManager tokenManager, boolean ignoreUsings, boolean ignoreLiteralSequences) {
+        CsTokenFilter(final AntlrTokenManager tokenManager, boolean ignoreUsings, boolean ignoreLiteralSequences, boolean ignoreAttributes) {
             super(tokenManager);
             this.ignoreUsings = ignoreUsings;
             this.ignoreLiteralSequences = ignoreLiteralSequences;
+            this.ignoreAttributes = ignoreAttributes;
         }
 
         @Override
@@ -91,6 +92,7 @@ public class CsTokenizer extends AntlrTokenizer {
             discardCurrent = false;
             skipUsingDirectives(currentToken, remainingTokens);
             skipLiteralSequences(currentToken, remainingTokens);
+            skipAttributes(currentToken);
         }
 
         private void skipUsingDirectives(final AntlrToken currentToken, final Iterable<AntlrToken> remainingTokens) {
@@ -167,6 +169,25 @@ public class CsTokenizer extends AntlrTokenizer {
             discardingNL = currentToken.getKind() == CSharpLexer.NL;
         }
 
+        private void skipAttributes(final AntlrToken currentToken) {
+            if (ignoreAttributes) {
+                switch (currentToken.getKind()) {
+                case CSharpLexer.OPEN_BRACKET:
+                    // Start of an attribute.
+                    isDiscardingAttribute = true;
+                    break;
+                case CSharpLexer.CLOSE_BRACKET:
+                    // End of an attribute.
+                    isDiscardingAttribute = false;
+                    discardCurrent = true;
+                    break;
+                default:
+                    // Skip any other token.
+                    break;
+                }
+            }
+        }
+
         private void skipLiteralSequences(final AntlrToken currentToken, final Iterable<AntlrToken> remainingTokens) {
             if (ignoreLiteralSequences) {
                 final int type = currentToken.getKind();
@@ -222,7 +243,7 @@ public class CsTokenizer extends AntlrTokenizer {
 
         @Override
         protected boolean isLanguageSpecificDiscarding() {
-            return discardingUsings || discardingNL || isDiscardingLiterals() || discardCurrent;
+            return discardingUsings || discardingNL || isDiscardingAttribute || isDiscardingLiterals() || discardCurrent;
         }
     }
 }

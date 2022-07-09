@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,6 +35,7 @@ import net.sourceforge.pmd.benchmark.TimedOperationCategory;
 import net.sourceforge.pmd.cache.internal.ClasspathFingerprinter;
 import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
+import net.sourceforge.pmd.util.IOUtil;
 
 /**
  * Abstract implementation of the analysis cache. Handles all operations, except for persistence.
@@ -180,7 +180,7 @@ public abstract class AbstractAnalysisCache implements AnalysisCache {
             @Override
             public FileVisitResult visitFile(final Path file,
                                              final BasicFileAttributes attrs) throws IOException {
-                String extension = FilenameUtils.getExtension(file.toString());
+                String extension = IOUtil.getFilenameExtension(file.toString());
                 if ("jar".equalsIgnoreCase(extension)) {
                     fileVisitor.visitFile(file, attrs);
                 }

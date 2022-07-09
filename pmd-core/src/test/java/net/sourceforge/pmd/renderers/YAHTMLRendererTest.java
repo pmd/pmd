@@ -14,7 +14,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.regex.Pattern;
 
-import org.apache.commons.io.IOUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -27,6 +26,7 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
+import net.sourceforge.pmd.util.IOUtil;
 
 public class YAHTMLRendererTest extends AbstractRendererTest {
 
@@ -74,8 +74,8 @@ public class YAHTMLRendererTest extends AbstractRendererTest {
         for (String file : htmlFiles) {
             try (FileInputStream in = new FileInputStream(new File(outputDir, file));
                     InputStream expectedIn = YAHTMLRendererTest.class.getResourceAsStream("yahtml/" + file)) {
-                String data = IOUtils.toString(in, StandardCharsets.UTF_8);
-                String expected = normalizeLineSeparators(IOUtils.toString(expectedIn, StandardCharsets.UTF_8));
+                String data = IOUtil.readToString(in, StandardCharsets.UTF_8);
+                String expected = normalizeLineSeparators(IOUtil.readToString(expectedIn, StandardCharsets.UTF_8));
 
                 assertEquals("File " + file + " is different", expected, data);
             }
@@ -83,8 +83,8 @@ public class YAHTMLRendererTest extends AbstractRendererTest {
     }
 
     private static String normalizeLineSeparators(String s) {
-        return s.replaceAll(Pattern.quote(IOUtils.LINE_SEPARATOR_WINDOWS), IOUtils.LINE_SEPARATOR_UNIX)
-                .replaceAll(Pattern.quote(IOUtils.LINE_SEPARATOR_UNIX), PMD.EOL);
+        return s.replaceAll(Pattern.quote("\r\n"), "\n")
+                .replaceAll(Pattern.quote("\n"), PMD.EOL);
     }
 
     @Override

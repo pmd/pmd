@@ -690,4 +690,63 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#3824 #3825 Do not flag fields annotated with @Id, @EmbeddedId, or @Version</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Version;
+
+@Entity
+@Table(name = "my_table")
+public class MyTable implements Serializable {
+   private static final long serialVersionUID = 1L;
+
+   @Id
+   @Column(name = "id", nullable = false)
+   private long m_id;
+
+   @Version
+   @Column(name = "optimistic_lock", nullable = false)
+   private short m_optimisticLock;
+
+   public MyTable() {
+      // nothing to do
+   }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Do not flag Mockito fields that are injected into test target</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.mockito.Spy;
+import org.mockito.Mock;
+import org.mockito.InjectMocks;
+import org.springframework.boot.test.mock.mockito.MockBean;
+
+public class MyTest {
+   @Mock
+   private Object mock;
+
+   @MockBean
+   private Object bean;
+
+   @Spy
+   private Object spy;
+
+   @InjectMocks
+   private Object target;
+
+   void test() {
+      target.methodToTest();
+   }
+}
+        ]]></code>
+    </test-code>
 </test-data>

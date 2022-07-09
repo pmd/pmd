@@ -4,12 +4,15 @@
 
 package net.sourceforge.pmd.lang.ast;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.contains;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -36,24 +39,29 @@ public class SemanticErrorReporterTest {
     @Before
     public void setup() {
         mockReporter = mock(MessageReporter.class);
+        when(mockReporter.isLoggable(Level.ERROR)).thenReturn(true);
         mockLogger = spy(NOPLogger.class);
     }
 
     @Test
     public void testErrorLogging() {
-        SemanticErrorReporter reporter = SemanticErrorReporter.reportToLogger(mockReporter, mockLogger);
+        SemanticErrorReporter reporter = SemanticErrorReporter.reportToLogger(mockReporter);
         RootNode node = parseMockNode(reporter);
+
+        assertNull(reporter.getFirstError());
 
         String message = "an error occurred";
         reporter.error(node, message);
 
         verify(mockReporter).log(eq(Level.ERROR), contains(message));
         verifyNoMoreInteractions(mockLogger);
+
+        assertNotNull(reporter.getFirstError());
     }
 
     @Test
     public void testEscaping() {
-        SemanticErrorReporter reporter = SemanticErrorReporter.reportToLogger(mockReporter, mockLogger);
+        SemanticErrorReporter reporter = SemanticErrorReporter.reportToLogger(mockReporter);
         RootNode node = parseMockNode(reporter);
 
         // this is a MessageFormat string

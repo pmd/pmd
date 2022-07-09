@@ -18,7 +18,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import org.apache.commons.io.IOUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.Rule;
 import org.junit.Test;
@@ -242,7 +241,7 @@ public class TextFilesTest {
     private @NonNull Path makeTmpFile(Charset charset, String content) throws IOException {
         Path file = tempDir.newFile().toPath();
         try (BufferedWriter writer = Files.newBufferedWriter(file, charset)) {
-            IOUtils.write(content, writer);
+            writer.write(content);
         }
         return file;
     }

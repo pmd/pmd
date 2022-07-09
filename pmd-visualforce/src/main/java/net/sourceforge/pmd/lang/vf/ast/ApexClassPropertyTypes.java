@@ -25,6 +25,7 @@ import net.sourceforge.pmd.lang.ast.SemanticErrorReporter;
 import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.lang.vf.DataType;
+import net.sourceforge.pmd.util.IOUtil;
 
 import apex.jorje.semantic.symbol.type.BasicType;
 

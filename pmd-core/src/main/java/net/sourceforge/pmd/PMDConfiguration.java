@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Properties;
 
-import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.LoggerFactory;
@@ -464,7 +463,6 @@ public class PMDConfiguration extends AbstractConfiguration {
      * @deprecated Use {@link #getAllInputPaths()}
      */
     @Deprecated
-    @DeprecatedUntil700
     public @Nullable String getInputPaths() {
         return inputPaths.isEmpty() ? null : String.join(",", inputPaths);
     }
@@ -479,20 +477,34 @@ public class PMDConfiguration extends AbstractConfiguration {
     /**
      * Set the comma separated list of input paths to process for source files.
      *
-     * @param inputPaths
-     *            The comma separated list.
+     * @param inputPaths The comma separated list.
+     *
+     * @throws NullPointerException If the parameter is null
+     * @deprecated Use {@link #setInputPaths(List)} or {@link #addInputPath(String)}
      */
-    public void setInputPaths(@NonNull String inputPaths) {
+    @Deprecated
+    public void setInputPaths(String inputPaths) {
         List<String> paths = new ArrayList<>();
         Collections.addAll(paths, inputPaths.split(","));
-        paths.removeIf(StringUtils::isBlank);
         this.inputPaths = paths;
     }
 
-    public void setInputPaths(@NonNull List<String> inputPaths) {
-        List<String> paths = new ArrayList<>(inputPaths);
-        paths.removeIf(StringUtils::isBlank);
-        this.inputPaths = paths;
+    /**
+     * Set the input paths to the given list of paths.
+     * @throws NullPointerException If the parameter is null
+     */
+    public void setInputPaths(List<String> inputPaths) {
+        this.inputPaths = new ArrayList<>(inputPaths);
+    }
+
+    /**
+     * Add an input path. It is not split on commas.
+     *
+     * @throws NullPointerException If the parameter is null
+     */
+    public void addInputPath(String inputPath) {
+        Objects.requireNonNull(inputPath);
+        this.inputPaths.add(inputPath);
     }
 
     public String getInputFilePath() {

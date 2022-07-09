@@ -14,7 +14,6 @@ import java.io.Reader;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
 
-import org.apache.commons.io.IOUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.PMDConfiguration;
@@ -25,6 +24,7 @@ import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.document.TextFileBuilder.ForCharSeq;
 import net.sourceforge.pmd.lang.document.TextFileBuilder.ForNio;
 import net.sourceforge.pmd.lang.document.TextFileBuilder.ForReader;
+import net.sourceforge.pmd.util.IOUtil;
 import net.sourceforge.pmd.util.datasource.DataSource;
 
 /**
@@ -283,7 +283,7 @@ public interface TextFile extends Closeable {
                 ensureOpen();
                 try (InputStream is = ds.getInputStream();
                      Reader reader = new BufferedReader(new InputStreamReader(is, config.getSourceEncoding()))) {
-                    String contents = IOUtils.toString(reader);
+                    String contents = IOUtil.readToString(reader);
                     return TextFileContent.fromCharSeq(contents);
                 }
             }
