@@ -821,6 +821,18 @@ in each object at runtime.
         or
         (: another static field :)
         self::Name[@Image=//FieldDeclaration[@Static=true()]/VariableDeclarator/@Name]
+        or
+        (:unnecessary parenthesis :)
+        self::Expression/PrimaryExpression/PrimaryPrefix/Literal
+        or
+        (:empty array allocation :)
+        self::AllocationExpression[ArrayDimsAndInits/Expression/PrimaryExpression/PrimaryPrefix/*
+            [
+                self::Literal[@IntLiteral = true()][@Image="0"]
+                or
+                self::Expression/PrimaryExpression/PrimaryPrefix/Literal[@IntLiteral = true()][@Image="0"]
+            ]
+        ]
     ]
  ]
 /VariableDeclaratorId
@@ -1678,36 +1690,14 @@ complexity and find a way to have more fine grained objects.
             <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
-                    <!--  FIXME: Refine XPath to discard 'get' and 'set' methods with Block no more than 3 lines,
-                                something like this:
-                                    not (
-                                            (
-                                                starts-with(@Name,'get')
-                                                or
-                                                starts-with(@Name,'set')
-                                                or
-                                                starts-with(@Name,'is')
-                                            )
-                                            and (
-                                                    (
-                                                        (../Block/attribute::endLine)
-                                                         -
-                                                        (../Block/attribute::beginLine)
-                                                    ) <= 3
-                                            )
-                                        )
-                                This will avoid discarding 'real' methods...
-                     -->
 <![CDATA[
  //ClassOrInterfaceDeclaration/ClassOrInterfaceBody
      [
       count(./ClassOrInterfaceBodyDeclaration/MethodDeclaration[
          not (
-                starts-with(@Name,'get')
-                or
-                starts-with(@Name,'set')
-                or
-                starts-with(@Name,'is')
+                (starts-with(@Name,'get') or starts-with(@Name,'set') or starts-with(@Name,'is'))
+                and
+                count(Block/BlockStatement) <= 1
             )
       ]) > $maxmethods
    ]
