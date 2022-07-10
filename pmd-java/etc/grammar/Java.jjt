@@ -1,4 +1,12 @@
 /**
+ * Support "JEP 427: Pattern Matching for switch (Third Preview)" for Java 19 Preview
+ * Note: GuardedPattern is deprecated and only valid for 17-preview and 18-preview
+   * New AST node: ASTSwitchGuard (production "Guard") - used within switch case labels for refining a pattern
+ * Support "JEP 405: Record Patterns (Preview)" for Java 19 Preview
+   * New AST node: ASTRecordPattern and ASTComponentPatternList (production "RecordStructurePattern")
+ * Remove support for Java 17 preview language features
+ * Andreas Dangel 07/2022
+ *====================================================================
  * Improve module grammar.
  * Type names in "provides" directives are disambiguated like any other type name.
  * ASTName is made redundant and removed for good.
@@ -321,7 +329,6 @@ class JavaParserImpl {
    * See also comment at #Expression().
    */
   private boolean inSwitchLabel = false;
-
 
   // This is a semantic LOOKAHEAD to determine if we're dealing with an assert
   // Note that this can't be replaced with a syntactic lookahead
@@ -1712,7 +1719,9 @@ void EqualityExpression() #void:
 void Pattern() #void:
 {}
 {
-    PrimaryPattern() [ GuardedPatternCondition() #GuardedPattern(2) ]
+    LOOKAHEAD(ReferenceType() "(") RecordPattern()
+    | LOOKAHEAD("(") ParenthesizedPattern()
+    | TypePattern() [ GuardedPatternCondition() #GuardedPattern(2) ]
 }
 
 void GuardedPatternCondition() #void:
@@ -1721,17 +1730,34 @@ void GuardedPatternCondition() #void:
     "&&" ConditionalAndExpression()
 }
 
-void PrimaryPattern() #void:
+void ParenthesizedPattern() #void:
 {}
 {
-      "(" Pattern() ")" { AstImplUtil.bumpParenDepth((ASTPattern) jjtree.peekNode()); }
-    | LOOKAHEAD({true}) TypePattern()
+    "(" Pattern() ")" { AstImplUtil.bumpParenDepth((ASTPattern) jjtree.peekNode()); }
 }
 
 void TypePattern():
 {}
 {
   LocalVarModifierList() ReferenceType() VariableDeclaratorId()
+}
+
+void RecordPattern():
+{ checkForRecordPatterns(); }
+{
+  ReferenceType() RecordStructurePattern() [ VariableDeclaratorId() ]
+}
+
+void RecordStructurePattern() #ComponentPatternList:
+{}
+{
+  "(" [ RecordComponentPatternList() ] ")"
+}
+
+void RecordComponentPatternList() #void:
+{}
+{
+  Pattern() ( "," Pattern() )*
 }
 
 void InstanceOfExpression() #void:
@@ -1743,7 +1769,8 @@ void InstanceOfExpression() #void:
         (
 
               AnnotatedRefType() [ VariableDeclaratorId() #TypePattern(2) ]
-            | PrimaryPattern()
+            | Pattern()
+            | LOOKAHEAD(ReferenceType() "(") RecordPattern()
         )
         {
             jjtThis.setOp(BinaryOp.INSTANCEOF);
@@ -2437,13 +2464,28 @@ void CaseLabelElement(ASTSwitchLabel label) #void:
 {
     "default" {label.setDefault();}
     |
-    LOOKAHEAD(Pattern()) Pattern() {
+    LOOKAHEAD(Pattern()) Pattern() ( LOOKAHEAD({isKeyword("when")}) Guard() )* {
         AbstractJavaNode top = jjtree.popNode();
         top = new ASTPatternExpression((ASTPattern) top);
         jjtree.pushNode(top);
     }
     |
     ConditionalExpression()
+}
+
+void Guard() #SwitchGuard:
+{
+    Token t;
+    checkForGuard();
+}
+{
+    t = <IDENTIFIER> {
+        if (!"when".equals(t.image)) {
+            throw new ParseException("ERROR: expected 'when'");
+        }
+    }
+
+    Expression()
 }
 
 void YieldStatement() :

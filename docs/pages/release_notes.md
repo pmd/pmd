@@ -19,6 +19,22 @@ This is a {{ site.pmd.release_type }} release.
 
 ### New and noteworthy
 
+#### Java 19 Support
+
+This release of PMD brings support for Java 19. There are no new standard language features.
+
+PMD supports [JEP 427: Pattern Matching for switch (Third Preview)](https://openjdk.org/jeps/427) and
+[JEP 405: Record Patterns (Preview)](https://openjdk.org/jeps/405) as preview language features.
+
+In order to analyze a project with PMD that uses these language features,
+you'll need to enable it via the environment variable `PMD_JAVA_OPTS` and select the new language
+version `19-preview`:
+
+    export PMD_JAVA_OPTS=--enable-preview
+    ./run.sh pmd -language java -version 19-preview ...
+
+Note: Support for Java 17 preview language features have been removed. The version "17-preview" is no longer available.
+
 #### Gherkin support
 Thanks to the contribution from [Anne Brouwers](https://github.com/ASBrouwers) PMD now has CPD support
 for the [Gherkin](https://cucumber.io/docs/gherkin/) language. It is used to defined test cases for the
@@ -30,6 +46,8 @@ Being based on a proper Antlr grammar, CPD can:
 * honor [comment-based suppressions](pmd_userdocs_cpd.html#suppression)
 
 ### Fixed Issues
+* java
+    * [#4015](https://github.com/pmd/pmd/issues/4015): \[java] Support JDK 19
 * java-bestpractices
     * [#3455](https://github.com/pmd/pmd/issues/3455): \[java] WhileLoopWithLiteralBoolean - false negative with complex expressions
 * java-design
@@ -39,6 +57,20 @@ Being based on a proper Antlr grammar, CPD can:
     * [#3625](https://github.com/pmd/pmd/issues/3625): \[java] AddEmptyString - false negative with empty var
 
 ### API Changes
+
+#### Deprecated API
+
+* The experimental Java AST class {% jdoc java::lang.java.ast.ASTGuardedPattern %} has been deprecated and
+  will be removed. It was introduced for Java 17 and Java 18 Preview as part of pattern matching for switch,
+  but it is no longer supported with Java 19 Preview.
+
+#### Experimental APIs
+
+* To support the Java preview language features "Pattern Matching for Switch" and "Record Patterns", the following
+  AST nodes have been introduced as experimental:
+    * {% jdoc java::lang.java.ast.ASTSwitchGuard %}
+    * {% jdoc java::lang.java.ast.ASTRecordPattern %}
+    * {% jdoc java::lang.java.ast.ASTComponentPatternList %}
 
 ### External Contributions
 * [#3984](https://github.com/pmd/pmd/pull/3984): \[java] Fix AddEmptyString false-negative issue - [@LiGaOg](https://github.com/LiGaOg)
