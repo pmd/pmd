@@ -279,13 +279,13 @@ public final class CollectionUtil {
     }
 
     public static <K, V> Map<K, V> buildMap(Consumer<Map<K, V>> effect) {
-        LinkedHashMap<K, V> map = new LinkedHashMap<>();
+        Map<K, V> map = new LinkedHashMap<>();
         effect.accept(map);
         return Collections.unmodifiableMap(map);
     }
 
     public static <K, V> Map<K, V> buildMap(Map<K, V> initialMap, Consumer<Map<K, V>> effect) {
-        LinkedHashMap<K, V> map = new LinkedHashMap<>(initialMap);
+        Map<K, V> map = new LinkedHashMap<>(initialMap);
         effect.accept(map);
         return Collections.unmodifiableMap(map);
     }
