@@ -187,6 +187,7 @@ class BaseTestParserImpl {
             }
             usedFragments.add(id.getValue());
             code = parseTextNodeNoTrim(fragment);
+            code = code.trim(); // todo replace with trimIndent in PMD 7
         }
         return code;
     }
