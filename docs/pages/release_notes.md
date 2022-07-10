@@ -60,9 +60,9 @@ Being based on a proper Antlr grammar, CPD can:
 
 * To support the Java preview language features "Pattern Matching for Switch" and "Record Patterns", the following
   AST nodes have been introduced as experimental:
-    * {% jdoc java::lang.java.ast.ASTGuard %}
+    * {% jdoc java::lang.java.ast.ASTSwitchGuard %}
     * {% jdoc java::lang.java.ast.ASTRecordPattern %}
-    * {% jdoc java::lang.java.ast.ASTRecordStructurePattern %}
+    * {% jdoc java::lang.java.ast.ASTComponentPatternList %}
 
 ### External Contributions
 * [#3984](https://github.com/pmd/pmd/pull/3984): \[java] Fix AddEmptyString false-negative issue - [@LiGaOg](https://github.com/LiGaOg)

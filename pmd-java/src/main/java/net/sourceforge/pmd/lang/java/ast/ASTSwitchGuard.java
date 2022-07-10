@@ -11,21 +11,21 @@ import net.sourceforge.pmd.annotation.Experimental;
  *
  * <pre class="grammar">
  *
- * SwitchLabel := "case" {@linkplain ASTPattern Pattern} "when" {@linkplain ASTGuard Guard}
- * Guard ::= {@linkplain ASTExpression Expression}
+ * SwitchLabel := "case" {@linkplain ASTPattern Pattern} SwitchGuard?
+ * SwitchGuard ::= "when" {@linkplain ASTExpression Expression}
  *
  * </pre>
  *
  * @see <a href="https://openjdk.org/jeps/427">JEP 427: Pattern Matching for switch (Third Preview)</a>
 */
 @Experimental
-public final class ASTGuard extends AbstractJavaNode {
+public final class ASTSwitchGuard extends AbstractJavaNode {
 
-    ASTGuard(int id) {
+    ASTSwitchGuard(int id) {
         super(id);
     }
 
-    ASTGuard(JavaParser p, int id) {
+    ASTSwitchGuard(JavaParser p, int id) {
         super(p, id);
     }
 

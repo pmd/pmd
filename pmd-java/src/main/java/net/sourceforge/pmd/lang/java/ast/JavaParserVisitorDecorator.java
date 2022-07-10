@@ -804,7 +804,7 @@ public class JavaParserVisitorDecorator implements JavaParserControllessVisitor 
 
     @Experimental
     @Override
-    public Object visit(ASTGuard node, Object data) {
+    public Object visit(ASTSwitchGuard node, Object data) {
         return visitor.visit(node, data);
     }
 
@@ -816,7 +816,7 @@ public class JavaParserVisitorDecorator implements JavaParserControllessVisitor 
 
     @Experimental
     @Override
-    public Object visit(ASTRecordStructurePattern node, Object data) {
+    public Object visit(ASTComponentPatternList node, Object data) {
         return visitor.visit(node, data);
     }
 }

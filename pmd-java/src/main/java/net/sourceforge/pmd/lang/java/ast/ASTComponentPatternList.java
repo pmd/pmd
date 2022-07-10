@@ -12,19 +12,19 @@ import net.sourceforge.pmd.annotation.Experimental;
  *
  * <pre class="grammar">
  *
- * RecordStructurePattern ::= "(" {@linkplain ASTPattern Pattern} ( "," {@linkplain ASTPattern pattern} ) ")"
+ * ComponentPatternList ::= "(" {@linkplain ASTPattern Pattern} ( "," {@linkplain ASTPattern pattern} ) ")"
  *
  * </pre>
  *
  * @see <a href="https://openjdk.org/jeps/405">JEP 405: Record Patterns (Preview)</a>
  */
 @Experimental
-public final class ASTRecordStructurePattern extends AbstractJavaNode {
-    ASTRecordStructurePattern(int id) {
+public final class ASTComponentPatternList extends AbstractJavaNode {
+    ASTComponentPatternList(int id) {
         super(id);
     }
 
-    ASTRecordStructurePattern(JavaParser p, int id) {
+    ASTComponentPatternList(JavaParser p, int id) {
         super(p, id);
     }
 

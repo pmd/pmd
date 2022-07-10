@@ -1,8 +1,9 @@
 /**
  * Support "JEP 427: Pattern Matching for switch (Third Preview)" for Java 19 Preview
  * Note: GuardedPattern is deprecated and only valid for 17-preview and 18-preview
- * New AST node: Guard - used within switch case labels for refining a pattern
+   * New AST node: ASTSwitchGuard (production "Guard") - used within switch case labels for refining a pattern
  * Support "JEP 405: Record Patterns (Preview)" for Java 19 Preview
+   * New AST node: ASTRecordPattern and ASTComponentPatternList (production "RecordStructurePattern")
  * Remove support for Java 17 preview language features
  * Andreas Dangel 07/2022
  *====================================================================
@@ -1817,7 +1818,7 @@ void RecordPattern():
   ReferenceType() RecordStructurePattern() [ VariableDeclaratorId() ]
 }
 
-void RecordStructurePattern():
+void RecordStructurePattern() #ComponentPatternList:
 {}
 {
   "(" [ RecordComponentPatternList() ] ")"
@@ -2331,7 +2332,7 @@ void CaseLabelElement(ASTSwitchLabel label) #void:
         }
 }
 
-void Guard() :
+void Guard() #SwitchGuard:
 {
     Token t;
     checkForGuard();

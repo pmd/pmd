@@ -7,12 +7,11 @@ package net.sourceforge.pmd.lang.java.ast;
 import net.sourceforge.pmd.annotation.Experimental;
 
 /**
- * A record pattern (JDK19). This can be found on
- * the right-hand side of an {@link ASTInstanceOfExpression InstanceOfExpression}.
+ * A record pattern (JDK19).
  *
  * <pre class="grammar">
  *
- * RecordPattern ::= {@linkplain ASTReferenceType ReferenceType} {@linkplain ASTRecordStructurePattern RecordStructurePattern} [ {@linkplain ASTVariableDeclaratorId} VariableDeclaratorId ]
+ * RecordPattern ::= {@linkplain ASTReferenceType ReferenceType} {@linkplain ASTComponentPatternList ComponentPatternList} [ {@linkplain ASTVariableDeclaratorId VariableDeclaratorId} ]
  *
  * </pre>
  *

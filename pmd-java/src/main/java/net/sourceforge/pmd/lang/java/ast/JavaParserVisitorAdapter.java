@@ -672,7 +672,7 @@ public class JavaParserVisitorAdapter implements JavaParserVisitor {
 
     @Experimental
     @Override
-    public Object visit(ASTGuard node, Object data) {
+    public Object visit(ASTSwitchGuard node, Object data) {
         return visit((JavaNode) node, data);
     }
 
@@ -684,7 +684,7 @@ public class JavaParserVisitorAdapter implements JavaParserVisitor {
 
     @Experimental
     @Override
-    public Object visit(ASTRecordStructurePattern node, Object data) {
+    public Object visit(ASTComponentPatternList node, Object data) {
         return visit((JavaNode) node, data);
     }
 }
