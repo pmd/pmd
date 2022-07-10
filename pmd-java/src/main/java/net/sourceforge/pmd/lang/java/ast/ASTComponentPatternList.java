@@ -19,17 +19,13 @@ import net.sourceforge.pmd.annotation.Experimental;
  * @see <a href="https://openjdk.org/jeps/405">JEP 405: Record Patterns (Preview)</a>
  */
 @Experimental
-public final class ASTComponentPatternList extends AbstractJavaNode {
+public final class ASTComponentPatternList extends ASTList<ASTPattern> {
     ASTComponentPatternList(int id) {
-        super(id);
-    }
-
-    ASTComponentPatternList(JavaParser p, int id) {
-        super(p, id);
+        super(id, ASTPattern.class);
     }
 
     @Override
-    public Object jjtAccept(JavaParserVisitor visitor, Object data) {
+    protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 }

@@ -26,13 +26,8 @@ public final class ASTRecordPattern extends AbstractJavaNode implements ASTPatte
         super(id);
     }
 
-    ASTRecordPattern(JavaParser p, int id) {
-        super(p, id);
-    }
-
-
     @Override
-    public Object jjtAccept(JavaParserVisitor visitor, Object data) {
+    protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 

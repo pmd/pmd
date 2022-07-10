@@ -18,7 +18,7 @@ import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 
 public class Java19PreviewTreeDumpTest extends BaseTreeDumpTest {
     private final JavaParsingHelper java19p =
-            JavaParsingHelper.WITH_PROCESSING.withDefaultVersion("19-preview")
+            JavaParsingHelper.DEFAULT.withDefaultVersion("19-preview")
                     .withResourceContext(Java19PreviewTreeDumpTest.class, "jdkversiontests/java19p/");
     private final JavaParsingHelper java19 = java19p.withDefaultVersion("19");
 

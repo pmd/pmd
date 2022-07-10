@@ -1743,7 +1743,7 @@ void TypePattern():
 }
 
 void RecordPattern():
-{ checkForRecordPatterns(); }
+{}
 {
   ReferenceType() RecordStructurePattern() [ VariableDeclaratorId() ]
 }
@@ -2476,7 +2476,6 @@ void CaseLabelElement(ASTSwitchLabel label) #void:
 void Guard() #SwitchGuard:
 {
     Token t;
-    checkForGuard();
 }
 {
     t = <IDENTIFIER> {
