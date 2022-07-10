@@ -1721,7 +1721,7 @@ void Pattern() #void:
 {
     LOOKAHEAD(ReferenceType() "(") RecordPattern()
     | LOOKAHEAD("(") ParenthesizedPattern()
-    | TypePattern() [ GuardedPatternCondition() #GuardedPattern(2) ]
+    | TypePattern() [ LOOKAHEAD({getToken(1).kind == SC_AND && jdkVersion < 19}) GuardedPatternCondition() #GuardedPattern(2) ]
 }
 
 void GuardedPatternCondition() #void:
@@ -1739,7 +1739,7 @@ void ParenthesizedPattern() #void:
 void TypePattern():
 {}
 {
-  LocalVarModifierList() ReferenceType() VariableDeclaratorId()
+  LocalVarModifierList() FormalParamType() VariableDeclaratorId()
 }
 
 void RecordPattern():
@@ -1767,10 +1767,9 @@ void InstanceOfExpression() #void:
     LOOKAHEAD(1)
     ("instanceof"
         (
-
-              AnnotatedRefType() [ VariableDeclaratorId() #TypePattern(2) ]
+              LOOKAHEAD(ReferenceType() "(") RecordPattern()
+            | AnnotatedRefType() [ VariableDeclaratorId() #TypePattern(2) ]
             | Pattern()
-            | LOOKAHEAD(ReferenceType() "(") RecordPattern()
         )
         {
             jjtThis.setOp(BinaryOp.INSTANCEOF);
@@ -2464,11 +2463,11 @@ void CaseLabelElement(ASTSwitchLabel label) #void:
 {
     "default" {label.setDefault();}
     |
-    LOOKAHEAD(Pattern()) Pattern() ( LOOKAHEAD({isKeyword("when")}) Guard() )* {
+    LOOKAHEAD(Pattern()) Pattern() {
         AbstractJavaNode top = jjtree.popNode();
         top = new ASTPatternExpression((ASTPattern) top);
         jjtree.pushNode(top);
-    }
+    } ( LOOKAHEAD({isKeyword("when")}) Guard() )*
     |
     ConditionalExpression()
 }
