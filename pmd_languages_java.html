@@ -1538,19 +1538,24 @@
   </thead>
   <tbody>
     <tr>
+      <td>19-preview</td>
+      <td> </td>
+      <td>6.48.0</td>
+    </tr>
+    <tr>
+      <td>19 (default)</td>
+      <td> </td>
+      <td>6.48.0</td>
+    </tr>
+    <tr>
       <td>18-preview</td>
       <td> </td>
       <td>6.44.0</td>
     </tr>
     <tr>
-      <td>18 (default)</td>
+      <td>18</td>
       <td> </td>
       <td>6.44.0</td>
-    </tr>
-    <tr>
-      <td>17-preview</td>
-      <td> </td>
-      <td>6.37.0</td>
     </tr>
     <tr>
       <td>17</td>
@@ -1633,10 +1638,10 @@
 <h2 id="using-java-preview-features">Using Java preview features</h2>
 
 <p>In order to analyze a project with PMD that uses preview language features, you’ll need to enable
-it via the environment variable <code class="language-plaintext highlighter-rouge">PMD_JAVA_OPTS</code> and select the new language version, e.g. <code class="language-plaintext highlighter-rouge">18-preview</code>:</p>
+it via the environment variable <code class="language-plaintext highlighter-rouge">PMD_JAVA_OPTS</code> and select the new language version, e.g. <code class="language-plaintext highlighter-rouge">19-preview</code>:</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>export PMD_JAVA_OPTS=--enable-preview
-./run.sh pmd -language java -version 18-preview ...
+./run.sh pmd -language java -version 19-preview ...
 </code></pre></div></div>
 
 <p>Note: we only support preview language features for the latest two java versions.</p>
@@ -1671,7 +1676,7 @@ it via the environment variable <code class="language-plaintext highlighter-roug
         <div class="col-lg-12 footer">
             &copy;2022 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Jul 7, 2022 <br />
+             Site last generated: Jul 13, 2022 <br />
             <p>
                 <img src="images/pmd-logo-small.png" alt="Company
                 logo"/>

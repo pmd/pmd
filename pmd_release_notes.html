@@ -1532,6 +1532,23 @@
 
 <h3 id="new-and-noteworthy">New and noteworthy</h3>
 
+<h4 id="java-19-support">Java 19 Support</h4>
+
+<p>This release of PMD brings support for Java 19. There are no new standard language features.</p>
+
+<p>PMD supports <a href="https://openjdk.org/jeps/427">JEP 427: Pattern Matching for switch (Third Preview)</a> and
+<a href="https://openjdk.org/jeps/405">JEP 405: Record Patterns (Preview)</a> as preview language features.</p>
+
+<p>In order to analyze a project with PMD that uses these language features,
+you’ll need to enable it via the environment variable <code class="language-plaintext highlighter-rouge">PMD_JAVA_OPTS</code> and select the new language
+version <code class="language-plaintext highlighter-rouge">19-preview</code>:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>export PMD_JAVA_OPTS=--enable-preview
+./run.sh pmd -language java -version 19-preview ...
+</code></pre></div></div>
+
+<p>Note: Support for Java 17 preview language features have been removed. The version “17-preview” is no longer available.</p>
+
 <h4 id="gherkin-support">Gherkin support</h4>
 <p>Thanks to the contribution from <a href="https://github.com/ASBrouwers">Anne Brouwers</a> PMD now has CPD support
 for the <a href="https://cucumber.io/docs/gherkin/">Gherkin</a> language. It is used to defined test cases for the
@@ -1546,6 +1563,11 @@ for the <a href="https://cucumber.io/docs/gherkin/">Gherkin</a> language. It is 
 
 <h3 id="fixed-issues">Fixed Issues</h3>
 <ul>
+  <li>java
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/4015">#4015</a>: [java] Support JDK 19</li>
+    </ul>
+  </li>
   <li>java-bestpractices
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/3455">#3455</a>: [java] WhileLoopWithLiteralBoolean - false negative with complex expressions</li>
@@ -1565,6 +1587,27 @@ for the <a href="https://cucumber.io/docs/gherkin/">Gherkin</a> language. It is 
 </ul>
 
 <h3 id="api-changes">API Changes</h3>
+
+<h4 id="deprecated-api">Deprecated API</h4>
+
+<ul>
+  <li>The experimental Java AST class <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.48.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTGuardedPattern.html#"><code>ASTGuardedPattern</code></a> has been deprecated and
+will be removed. It was introduced for Java 17 and Java 18 Preview as part of pattern matching for switch,
+but it is no longer supported with Java 19 Preview.</li>
+</ul>
+
+<h4 id="experimental-apis">Experimental APIs</h4>
+
+<ul>
+  <li>To support the Java preview language features “Pattern Matching for Switch” and “Record Patterns”, the following
+AST nodes have been introduced as experimental:
+    <ul>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/6.48.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTSwitchGuard.html#"><code>ASTSwitchGuard</code></a></li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/6.48.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTRecordPattern.html#"><code>ASTRecordPattern</code></a></li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/6.48.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTComponentPatternList.html#"><code>ASTComponentPatternList</code></a></li>
+    </ul>
+  </li>
+</ul>
 
 <h3 id="external-contributions">External Contributions</h3>
 <ul>
@@ -1606,7 +1649,7 @@ for the <a href="https://cucumber.io/docs/gherkin/">Gherkin</a> language. It is 
         <div class="col-lg-12 footer">
             &copy;2022 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Jul 7, 2022 <br />
+             Site last generated: Jul 13, 2022 <br />
             <p>
                 <img src="images/pmd-logo-small.png" alt="Company
                 logo"/>
