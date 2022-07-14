@@ -242,11 +242,6 @@ public class LanguageLevelChecker<T> {
          */
         PERMITS_AS_A_TYPE_NAME(15, "permits"),
 
-        /**
-         * ContextualKeyword since Java 19 Preview.
-         */
-        WHEN_AS_A_TYPE_NAME(19, "when"),
-
         ;  // SUPPRESS CHECKSTYLE enum trailing semi is awesome
 
         private final int maxJdkVersion;
@@ -653,8 +648,6 @@ public class LanguageLevelChecker<T> {
                 check(node, Keywords.SEALED_AS_A_TYPE_NAME, data);
             } else if ("permits".equals(simpleName)) {
                 check(node, Keywords.PERMITS_AS_A_TYPE_NAME, data);
-            } else if ("when".equals(simpleName)) {
-                check(node, Keywords.WHEN_AS_A_TYPE_NAME, data);
             }
             checkIdent(node, simpleName, data);
             return null;
