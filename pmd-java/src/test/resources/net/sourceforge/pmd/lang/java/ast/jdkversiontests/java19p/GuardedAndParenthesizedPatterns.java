@@ -30,6 +30,9 @@ public class GuardedAndParenthesizedPatterns {
         System.out.println(when);
     }
 
+    // verify that "when" can still be used as a type name
+    private static class when {}
+
     static void testWithNull(Object o) {
         switch (o) {
             case String s when (s.length() == 1)    -> System.out.println("single char string");
