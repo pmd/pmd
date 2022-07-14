@@ -190,6 +190,23 @@ public class RuleSetFactoryTest extends RulesetFactoryTestBase {
     }
 
     @Test
+    public void testStringMultiPropertyDelimiter() {
+        Rule r = loadFirstRule("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + "<ruleset name=\"test\">\n "
+                + " <description>ruleset desc</description>\n     "
+                + "<rule name=\"myRule\" message=\"Do not place to this package. Move to \n{0} package/s"
+                + " instead.\" \n"
+                + "class=\"net.sourceforge.pmd.lang.rule.XPathRule\" language=\"dummy\">\n"
+                + "         <description>Please move your class to the right folder(rest \nfolder)</description>\n"
+                + "         <priority>2</priority>\n         <properties>\n             <property name=\"packageRegEx\""
+                + " value=\"com.aptsssss,com.abc\" \ntype=\"List[String]\" delimiter=\",\" "
+                + "description=\"valid packages\"/>\n"
+                + "         </properties></rule>" + "</ruleset>");
+
+        Object propValue = r.getProperty(r.getPropertyDescriptor("packageRegEx"));
+        assertEquals(Arrays.asList("com.aptsssss", "com.abc"), propValue);
+    }
+
+    @Test
     public void testRuleSetWithDeprecatedRule() {
         RuleSet rs = loadRuleSet("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + "<ruleset name=\"ruleset\">\n"
                                      + "  <description>ruleset desc</description>\n"
