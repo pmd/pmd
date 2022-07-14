@@ -43,22 +43,22 @@ public class SimpleMessageReporter extends MessageReporterBase implements Messag
     }
 
     @Override
-    protected void logImpl(Level level, String message, Object[] formatArgs) {
+    protected void logImpl(Level level, String message) {
         switch (level) {
         case ERROR:
-            backend.error(message, formatArgs);
+            backend.error(message);
             break;
         case WARN:
-            backend.warn(message, formatArgs);
+            backend.warn(message);
             break;
         case INFO:
-            backend.info(message, formatArgs);
+            backend.info(message);
             break;
         case DEBUG:
-            backend.debug(message, formatArgs);
+            backend.debug(message);
             break;
         case TRACE:
-            backend.trace(message, formatArgs);
+            backend.trace(message);
             break;
         default:
             throw new AssertionError("Invalid log level: " + level);

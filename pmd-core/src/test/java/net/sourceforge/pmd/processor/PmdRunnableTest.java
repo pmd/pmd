@@ -60,9 +60,6 @@ public class PmdRunnableTest {
     @org.junit.Rule
     public TestRule restoreSystemProperties = new RestoreSystemProperties();
 
-
-    private final DummyLanguageModule dummyLang = DummyLanguageModule.getInstance();
-
     private PMDConfiguration configuration;
     private PmdRunnable pmdRunnable;
     private GlobalReportBuilderListener reportBuilder;
@@ -99,7 +96,7 @@ public class PmdRunnableTest {
     @Test
     public void inErrorRecoveryModeErrorsShouldBeLoggedByRule() {
         System.setProperty(SystemProps.PMD_ERROR_RECOVERY, "");
-        configuration.setDefaultLanguageVersion(dummyLang.getDefaultVersion());
+        configuration.setDefaultLanguageVersion(DummyLanguageModule.getInstance().getDefaultVersion());
 
         pmdRunnable.run();
         reportBuilder.close();
@@ -120,7 +117,7 @@ public class PmdRunnableTest {
     @Test
     public void withoutErrorRecoveryModeProcessingShouldBeAbortedByRule() {
         Assert.assertNull(System.getProperty(SystemProps.PMD_ERROR_RECOVERY));
-        configuration.setDefaultLanguageVersion(dummyLang.getDefaultVersion());
+        configuration.setDefaultLanguageVersion(DummyLanguageModule.getInstance().getDefaultVersion());
 
         Assert.assertThrows(AssertionError.class, pmdRunnable::run);
     }
@@ -156,19 +153,18 @@ public class PmdRunnableTest {
         addVersion.accept(THROWS_ASSERTION_ERROR, new HandlerWithParserThatThrows());
         addVersion.accept(PARSER_REPORTS_SEMANTIC_ERROR, new HandlerWithParserThatReportsSemanticError());
         addVersion.accept(THROWS_SEMANTIC_ERROR, new HandlerWithParserThatThrowsSemanticError());
-
     }
 
-    public LanguageVersion versionWithParserThatThrowsAssertionError() {
-        return dummyLang.getVersion(THROWS_ASSERTION_ERROR);
+    public static LanguageVersion versionWithParserThatThrowsAssertionError() {
+        return DummyLanguageModule.getInstance().getVersion(THROWS_ASSERTION_ERROR);
     }
 
-    public LanguageVersion getVersionWithParserThatThrowsSemanticError() {
-        return dummyLang.getVersion(THROWS_SEMANTIC_ERROR);
+    public static LanguageVersion getVersionWithParserThatThrowsSemanticError() {
+        return DummyLanguageModule.getInstance().getVersion(THROWS_SEMANTIC_ERROR);
     }
 
-    public LanguageVersion versionWithParserThatReportsSemanticError() {
-        return dummyLang.getVersion(PARSER_REPORTS_SEMANTIC_ERROR);
+    public static LanguageVersion versionWithParserThatReportsSemanticError() {
+        return DummyLanguageModule.getInstance().getVersion(PARSER_REPORTS_SEMANTIC_ERROR);
     }
 
     private static class RuleThatThrows extends AbstractRule {
