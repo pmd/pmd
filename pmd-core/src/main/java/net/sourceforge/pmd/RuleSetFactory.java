@@ -22,7 +22,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Consumer;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 import java.util.zip.Adler32;
@@ -217,7 +216,7 @@ final class RuleSetFactory {
 
         Set<String> rulesetReferences = new HashSet<>();
 
-        for (Element node : DomUtils.elementsIn(ruleSetElement)) {
+        for (Element node : DomUtils.children(ruleSetElement)) {
             String text = XmlUtil.parseTextNode(node);
             if (DESCRIPTION.matchesElt(node)) {
                 builder.withDescription(text);
@@ -679,7 +678,7 @@ final class RuleSetFactory {
         }
 
         @Override
-        protected MessageReporter create2ndStage(XmlPosition position, XmlPositioner positioner, Consumer<XmlException> handleEx) {
+        protected MessageReporter create2ndStage(XmlPosition position, XmlPositioner positioner) {
             return new MessageReporter() {
                 @Override
                 public boolean isLoggable(Level level) {

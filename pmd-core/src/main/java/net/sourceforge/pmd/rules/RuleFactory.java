@@ -91,7 +91,7 @@ public class RuleFactory {
         SchemaConstants.MESSAGE.getAttributeOpt(ruleElement).ifPresent(ruleReference::setMessage);
         SchemaConstants.EXTERNAL_INFO_URL.getAttributeOpt(ruleElement).ifPresent(ruleReference::setExternalInfoUrl);
 
-        for (Element node : DomUtils.elementsIn(ruleElement)) {
+        for (Element node : DomUtils.children(ruleElement)) {
 
             if (SchemaConstants.DESCRIPTION.matchesElt(node)) {
 
@@ -164,7 +164,7 @@ public class RuleFactory {
         SchemaConstants.EXTERNAL_INFO_URL.getAttributeOpt(ruleElement).ifPresent(rule::setExternalInfoUrl);
         rule.setDeprecated(SchemaConstants.DEPRECATED.getAsBooleanAttr(ruleElement, false));
 
-        for (Element node : DomUtils.elementsIn(ruleElement)) {
+        for (Element node : DomUtils.children(ruleElement)) {
             if (SchemaConstants.DESCRIPTION.matchesElt(node)) {
 
                 rule.setDescription(XmlUtil.parseTextNode(node));
