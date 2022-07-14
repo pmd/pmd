@@ -3,10 +3,24 @@
  */
 
 /**
- * @see <a href="https://openjdk.java.net/jeps/406">JEP 406: Pattern Matching for switch (Preview)</a>
+ * @see <a href="https://openjdk.org/jeps/427">JEP 427: Pattern Matching for switch (Third Preview)</a>
  */
 public class DealingWithNull {
 
+    static void testFooBar(String s) {
+        switch (s) {
+            case null         -> System.out.println("Oops");
+            case "Foo", "Bar" -> System.out.println("Great");
+            default           -> System.out.println("Ok");
+        }
+    }
+
+    static void testStringOrNull(Object o) {
+        switch (o) {
+            case null, String s -> System.out.println("String: " + s);
+            case default -> System.out.print("default case");
+        }
+    }
 
     static void test(Object o) {
         switch (o) {
@@ -64,5 +78,13 @@ public class DealingWithNull {
         test3(3);
         test3("test");
         test3(null);
+
+        testFooBar(null);
+        testFooBar("Foo");
+        testFooBar("Bar");
+        testFooBar("baz");
+
+        testStringOrNull(null);
+        testStringOrNull("some string");
     }
 }
