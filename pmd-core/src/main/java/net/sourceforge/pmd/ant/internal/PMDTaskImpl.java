@@ -239,7 +239,7 @@ public class PMDTaskImpl {
         Slf4jSimpleConfiguration.installJulBridge();
         // need to reload the logger with the new configuration
         Logger log = LoggerFactory.getLogger(PMDTaskImpl.class);
-        log.atLevel(level).log("Logging is at {}", level);
+        log.info("Logging is at {}", level);
         try {
             doTask();
         } finally {

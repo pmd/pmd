@@ -4,11 +4,15 @@
 
 package net.sourceforge.pmd.lang.kotlin;
 
+import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.BaseLanguageModule;
 
 /**
  * Language Module for Kotlin
+ *
+ * <p>Note: Kotlin support is considered an experimental feature. The AST structure might change.</p>
  */
+@Experimental
 public class KotlinLanguageModule extends BaseLanguageModule {
 
     /** The name. */

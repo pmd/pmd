@@ -98,7 +98,7 @@
         <ant.version>1.10.12</ant.version>
         <javadoc.plugin.version>3.2.0</javadoc.plugin.version>
         <antlr.version>4.9.1</antlr.version>
-        <slf4j.version>2.0.0-alpha6</slf4j.version>
+        <slf4j.version>1.7.36</slf4j.version>
         <saxon.version>10.7</saxon.version>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -706,7 +706,7 @@
             <dependency>
                 <groupId>org.ow2.asm</groupId>
                 <artifactId>asm</artifactId>
-                <version>9.2</version>
+                <version>9.3</version>
             </dependency>
             <dependency>
                 <groupId>org.pcollections</groupId>
@@ -1169,6 +1169,7 @@
         <module>pmd-dist</module>
         <module>pmd-doc</module>
         <module>pmd-fortran</module>
+        <module>pmd-gherkin</module>
         <module>pmd-go</module>
         <module>pmd-groovy</module>
         <module>pmd-html</module>

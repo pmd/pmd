@@ -13,6 +13,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTGuardedPattern;
 import net.sourceforge.pmd.lang.java.ast.ASTInfixExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPattern;
 import net.sourceforge.pmd.lang.java.ast.ASTPatternExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTRecordPattern;
 import net.sourceforge.pmd.lang.java.ast.ASTTypePattern;
 import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
@@ -90,6 +91,13 @@ final class PatternBindingsUtil {
     static BindSet bindersOfPattern(ASTPattern pattern) {
         if (pattern instanceof ASTTypePattern) {
             return BindSet.whenTrue(HashTreePSet.singleton(((ASTTypePattern) pattern).getVarId()));
+        } else if (pattern instanceof ASTRecordPattern) {
+            // record pattern might not bind a variable for the whole record...
+            ASTVariableDeclaratorId varId = ((ASTRecordPattern) pattern).getVarId();
+            if (varId == null) {
+                return BindSet.whenTrue(BindSet.noBindings());
+            }
+            return BindSet.whenTrue(HashTreePSet.singleton(varId));
         } else if (pattern instanceof ASTGuardedPattern) {
             BindSet patternBindings = bindersOfPattern(((ASTGuardedPattern) pattern).getPattern());
             BindSet guardBindings = bindersOfExpr(((ASTGuardedPattern) pattern).getGuard());

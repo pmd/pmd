@@ -6,13 +6,31 @@
 
     <test-code>
         <description>do while true</description>
-        <expected-problems>1</expected-problems>
-        <expected-linenumbers>4</expected-linenumbers>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>4,6</expected-linenumbers>
         <code><![CDATA[
 class Foo {
     {
         do {
         } while (true);
+        do {
+        } while ((true));
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>do while true | true</description>
+        <expected-problems>4</expected-problems>
+        <expected-linenumbers>3,4,5,6</expected-linenumbers>
+        <code><![CDATA[
+class Foo {
+    {
+        do { } while (true | true);
+        do { } while (true || true);
+        do { } while ((true | true));
+        do { } while ((true || true));
     }
 }
         ]]></code>
@@ -20,13 +38,48 @@ class Foo {
 
     <test-code>
         <description>do while false</description>
-        <expected-problems>1</expected-problems>
-        <expected-linenumbers>4</expected-linenumbers>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>4,6</expected-linenumbers>
         <code><![CDATA[
 class Foo {
     {
         do {
         } while (false);
+        do {
+        } while ((false));
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>do while false | false #3455</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,5</expected-linenumbers>
+        <code><![CDATA[
+class Foo {
+    {
+        do {
+        } while (false | false);
+        do {
+        } while ((false | false));
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>do while false || false #3455</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,6</expected-linenumbers>
+        <code><![CDATA[
+class Foo {
+    {
+        do {
+        } while (false || false);
+
+        do {
+        } while ((false || false));
     }
 }
         ]]></code>
@@ -46,7 +99,7 @@ class Foo {
     </test-code>
 
     <test-code>
-        <description>while true</description>
+        <description>while true - allowed</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 class Foo {
@@ -60,13 +113,31 @@ class Foo {
 
     <test-code>
         <description>while false</description>
-        <expected-problems>1</expected-problems>
-        <expected-linenumbers>3</expected-linenumbers>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,5</expected-linenumbers>
         <code><![CDATA[
 class Foo {
     {
         while (false) {
         }
+        while ((false)) {
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>while false | false</description>
+        <expected-problems>4</expected-problems>
+        <expected-linenumbers>3,4,5,6</expected-linenumbers>
+        <code><![CDATA[
+class Foo {
+    {
+        while (false | false) { }
+        while ((false | false)) { }
+        while (false || false) { }
+        while ((false || false)) { }
     }
 }
         ]]></code>
@@ -83,5 +154,83 @@ class Foo {
     }
 }
         ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>conditional or with only one boolean literal</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Foo {
+    void bar(boolean arg) {
+        while (false | arg) { }
+        while (false || arg) { }
+        do { } while (false || arg);
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>conditional and with only one boolean literal</description>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>3,4,5</expected-linenumbers>
+        <code><![CDATA[
+class Foo {
+    void bar(boolean arg) {
+        while (false & arg) { }
+        while (false && arg) { }
+        do { } while (false && arg);
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>conditional-and boolean literal</description>
+        <expected-problems>28</expected-problems>
+        <expected-linenumbers>10,11,12,13,14,15,16,17,18,19,20,21,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39</expected-linenumbers>
+        <code><![CDATA[
+class Foo {
+    {
+        // these evaluate to true and are allowed
+        while (true & true) { }
+        while ((true & true)) { }
+        while (true && true) { }
+        while ((true && true)) { }
+
+        // these evaluate to false and should be flagged
+        while (false & false) { } // line 10
+        while ((false & false)) { }
+        while (false && false) { }
+        while ((false && false)) { }
+        while (false & true) { }
+        while ((false & true)) { }
+        while (false && true) { }
+        while ((false && true)) { }
+        while (true & false) { }
+        while ((true & false)) { }
+        while (true && false) { }
+        while ((true && false)) { }
+
+        // do-while loops should always be flagged
+        do {} while (false & false);
+        do {} while ((false & false));
+        do {} while (false && false);
+        do {} while ((false && false));
+        do {} while (true & false);
+        do {} while ((true & false));
+        do {} while (true && false);
+        do {} while ((true && false));
+        do {} while (false & true);
+        do {} while ((false & true));
+        do {} while (false && true);
+        do {} while ((false && true));
+        do {} while (true & true);
+        do {} while ((true & true));
+        do {} while (true && true);
+        do {} while ((true && true));
+    }
+}
+]]></code>
     </test-code>
 </test-data>

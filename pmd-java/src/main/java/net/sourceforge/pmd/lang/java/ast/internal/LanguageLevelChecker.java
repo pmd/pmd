@@ -35,10 +35,12 @@ import net.sourceforge.pmd.lang.java.ast.ASTNumericLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTPatternExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTReceiverParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTRecordDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTRecordPattern;
 import net.sourceforge.pmd.lang.java.ast.ASTResource;
 import net.sourceforge.pmd.lang.java.ast.ASTStringLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchArrowBranch;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTSwitchGuard;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchLabel;
 import net.sourceforge.pmd.lang.java.ast.ASTTryStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
@@ -119,26 +121,45 @@ public class LanguageLevelChecker<T> {
      */
     private enum PreviewFeature implements LanguageFeature {
         /**
-         * @see <a href="https://openjdk.java.net/jeps/406">JEP 406: Pattern Matching for switch (Preview)</a> (Java 17)
-         * @see <a href="https://openjdk.java.net/jeps/420">JEP 420: Pattern Matching for switch (Second Preview)</a> (Java 18)
+         * Pattern matching for switch
+         * @see <a href="https://openjdk.org/jeps/406">JEP 406: Pattern Matching for switch (Preview)</a> (Java 17)
+         * @see <a href="https://openjdk.org/jeps/420">JEP 420: Pattern Matching for switch (Second Preview)</a> (Java 18)
+         * @see <a href="https://openjdk.org/jeps/427">JEP 427: Pattern Matching for switch (Third Preview)</a> (Java 19)
          */
-        PATTERN_MATCHING_FOR_SWITCH(17, 18, false),
+        PATTERN_MATCHING_FOR_SWITCH(17, 19, false),
 
         /**
          * Part of pattern matching for switch
          * @see #PATTERN_MATCHING_FOR_SWITCH
          * @see <a href="https://openjdk.java.net/jeps/406">JEP 406: Pattern Matching for switch (Preview)</a> (Java 17)
          * @see <a href="https://openjdk.java.net/jeps/420">JEP 420: Pattern Matching for switch (Second Preview)</a> (Java 18)
+         * @deprecated This solution has been discontinued in favor of an explicit guard using "when" keyword
+         * in Java 19, see {@link #CASE_REFINEMENT}.</p>
          */
+        @Deprecated
         GUARDED_PATTERNS(17, 18, false),
 
         /**
          * Part of pattern matching for switch
          * @see #PATTERN_MATCHING_FOR_SWITCH
-         * @see <a href="https://openjdk.java.net/jeps/406">JEP 406: Pattern Matching for switch (Preview)</a> (Java 17)
-         * @see <a href="https://openjdk.java.net/jeps/420">JEP 420: Pattern Matching for switch (Second Preview)</a> (Java 18)
+         * @see <a href="https://openjdk.org/jeps/406">JEP 406: Pattern Matching for switch (Preview)</a> (Java 17)
+         * @see <a href="https://openjdk.org/jeps/420">JEP 420: Pattern Matching for switch (Second Preview)</a> (Java 18)
+         * @see <a href="https://openjdk.org/jeps/427">JEP 427: Pattern Matching for switch (Third Preview)</a> (Java 19)
          */
-        NULL_CASE_LABELS(17, 18, false),
+        NULL_CASE_LABELS(17, 19, false),
+
+        /**
+         * Part of pattern matching for switch: Case refinement using "when"
+         * @see #PATTERN_MATCHING_FOR_SWITCH
+         * @see <a href="https://openjdk.org/jeps/427">JEP 427: Pattern Matching for switch (Third Preview)</a> (Java 19)
+         */
+        CASE_REFINEMENT(19, 19, false),
+
+        /**
+         * Record patterns
+         * @see <a href="https://openjdk.org/jeps/405">JEP 405: Record Patterns (Preview)</a>
+         */
+        RECORD_PATTERNS(19, 19, false),
 
         ;  // SUPPRESS CHECKSTYLE enum trailing semi is awesome
 
@@ -520,8 +541,20 @@ public class LanguageLevelChecker<T> {
         }
 
         @Override
+        public Void visit(ASTRecordPattern node, T data) {
+            check(node, PreviewFeature.RECORD_PATTERNS, data);
+            return null;
+        }
+
+        @Override
         public Void visit(ASTGuardedPattern node, T data) {
             check(node, PreviewFeature.GUARDED_PATTERNS, data);
+            return null;
+        }
+
+        @Override
+        public Void visit(ASTSwitchGuard node, T data) {
+            check(node, PreviewFeature.CASE_REFINEMENT, data);
             return null;
         }
 
