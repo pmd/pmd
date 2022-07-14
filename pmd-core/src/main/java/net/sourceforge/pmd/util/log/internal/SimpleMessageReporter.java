@@ -26,11 +26,42 @@ public class SimpleMessageReporter extends MessageReporterBase implements Messag
 
     @Override
     protected boolean isLoggableImpl(Level level) {
-        return backend.isEnabledForLevel(level);
+        switch (level) {
+        case ERROR:
+            return backend.isErrorEnabled();
+        case WARN:
+            return backend.isWarnEnabled();
+        case INFO:
+            return backend.isInfoEnabled();
+        case DEBUG:
+            return backend.isDebugEnabled();
+        case TRACE:
+            return backend.isTraceEnabled();
+        default:
+            return false;
+        }
     }
 
     @Override
     protected void logImpl(Level level, String message, Object[] formatArgs) {
-        backend.atLevel(level).log(message, formatArgs);
+        switch (level) {
+        case ERROR:
+            backend.error(message, formatArgs);
+            break;
+        case WARN:
+            backend.warn(message, formatArgs);
+            break;
+        case INFO:
+            backend.info(message, formatArgs);
+            break;
+        case DEBUG:
+            backend.debug(message, formatArgs);
+            break;
+        case TRACE:
+            backend.trace(message, formatArgs);
+            break;
+        default:
+            throw new AssertionError("Invalid log level: " + level);
+        }
     }
 }
