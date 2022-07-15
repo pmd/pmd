@@ -7,9 +7,10 @@ package net.sourceforge.pmd.lang;
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.ast.AstInfo;
 import net.sourceforge.pmd.lang.ast.Parser;
+import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
 import net.sourceforge.pmd.lang.ast.RootNode;
-import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
 import net.sourceforge.pmd.lang.ast.impl.AbstractNode;
+import net.sourceforge.pmd.lang.document.TextRegion;
 
 /**
  * A dummy language implementation whose parser produces a single node.
@@ -43,28 +44,25 @@ public final class PlainTextLanguage extends BaseLanguageModule {
     private static final class TextLvh implements LanguageVersionHandler {
         @Override
         public Parser getParser() {
-            return parserTask -> new PlainTextFile(parserTask);
+            return PlainTextFile::new;
         }
     }
 
     /**
      * The only node produced by the parser of {@link PlainTextLanguage}.
      */
-    public static final class PlainTextFile extends AbstractNode implements RootNode {
-        private final int beginLine;
-        private final int beginColumn;
-        private final int endLine;
-        private final int endColumn;
+    public static class PlainTextFile extends AbstractNode<PlainTextFile, PlainTextFile> implements RootNode {
 
         private final AstInfo<PlainTextFile> astInfo;
 
-        PlainTextFile(Parser.ParserTask parserTask) {
-            SourceCodePositioner positioner = new SourceCodePositioner(parserTask.getSourceText());
-            this.beginLine = 1;
-            this.beginColumn = 1;
-            this.endLine = positioner.getLastLine();
-            this.endColumn = positioner.getLastLineColumn();
-            this.astInfo = new AstInfo<>(parserTask, this);
+
+        PlainTextFile(ParserTask task) {
+            this.astInfo = new AstInfo<>(task, this);
+        }
+
+        @Override
+        public TextRegion getTextRegion() {
+            return getTextDocument().getEntireRegion();
         }
 
         @Override
@@ -78,38 +76,8 @@ public final class PlainTextLanguage extends BaseLanguageModule {
         }
 
         @Override
-        public int getBeginLine() {
-            return beginLine;
-        }
-
-        @Override
-        public int getBeginColumn() {
-            return beginColumn;
-        }
-
-        @Override
-        public int getEndLine() {
-            return endLine;
-        }
-
-        @Override
-        public int getEndColumn() {
-            return endColumn;
-        }
-
-        @Override
-        public void remove() {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public void removeChildAtIndex(int childIndex) {
-            throw new IndexOutOfBoundsException();
-        }
-
-        @Override
         public String toString() {
-            return "Plain text file (" + endLine + "lines)";
+            return "Plain text file (" + getEndLine() + " lines)";
         }
 
         @Override

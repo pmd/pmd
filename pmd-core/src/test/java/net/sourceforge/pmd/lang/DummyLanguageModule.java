@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang;
 
+import java.util.Objects;
+
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.Rule;
@@ -47,7 +49,7 @@ public class DummyLanguageModule extends BaseLanguageModule {
     }
 
     public static DummyLanguageModule getInstance() {
-        return (DummyLanguageModule) LanguageRegistry.getLanguage(NAME);
+        return (DummyLanguageModule) Objects.requireNonNull(LanguageRegistry.getLanguage(NAME));
     }
 
     public static DummyRootNode parse(String code) {

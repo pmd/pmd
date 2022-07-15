@@ -12,8 +12,10 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import org.apache.commons.lang3.StringUtils;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -104,6 +106,15 @@ public class RuleSetReferenceId {
     public RuleSetReferenceId(final String id) {
 
         this(id, null);
+    }
+
+    private RuleSetReferenceId(final String ruleSetFileName, boolean external, String ruleName, RuleSetReferenceId externalRuleSetReferenceId) {
+        this.ruleSetFileName = Objects.requireNonNull(ruleSetFileName);
+        this.originalRef = ruleName == null ? ruleSetFileName : ruleSetFileName + "/" + ruleName;
+        this.allRules = ruleName == null;
+        this.external = external;
+        this.ruleName = ruleName;
+        this.externalRuleSetReferenceId = externalRuleSetReferenceId;
     }
 
     /**
@@ -243,6 +254,19 @@ public class RuleSetReferenceId {
                     "Cannot pair external <" + this + "> with external <" + externalRuleSetReferenceId + ">.");
         }
         this.externalRuleSetReferenceId = externalRuleSetReferenceId;
+    }
+
+    @Nullable RuleSetReferenceId getParentRulesetIfThisIsARule() {
+        if (ruleName == null) {
+            return null;
+        }
+        return new RuleSetReferenceId(
+            ruleSetFileName,
+            external,
+            null,
+
+            null
+        );
     }
 
     /**

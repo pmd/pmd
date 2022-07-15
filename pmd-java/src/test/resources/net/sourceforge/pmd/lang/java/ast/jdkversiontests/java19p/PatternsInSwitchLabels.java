@@ -3,7 +3,7 @@
  */
 
 /**
- * @see <a href="https://openjdk.java.net/jeps/406">JEP 406: Pattern Matching for switch (Preview)</a>
+ * @see <a href="https://openjdk.org/jeps/427">JEP 427: Pattern Matching for switch (Third Preview)</a>
  */
 public class PatternsInSwitchLabels {
 

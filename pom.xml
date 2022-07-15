@@ -98,7 +98,7 @@
         <ant.version>1.10.12</ant.version>
         <javadoc.plugin.version>3.2.0</javadoc.plugin.version>
         <antlr.version>4.9.1</antlr.version>
-        <slf4j.version>2.0.0-alpha6</slf4j.version>
+        <slf4j.version>1.7.36</slf4j.version>
         <saxon.version>10.7</saxon.version>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -706,7 +706,7 @@
             <dependency>
                 <groupId>org.ow2.asm</groupId>
                 <artifactId>asm</artifactId>
-                <version>9.2</version>
+                <version>9.3</version>
             </dependency>
             <dependency>
                 <groupId>org.pcollections</groupId>
@@ -1022,6 +1022,19 @@
     </pluginRepositories>
 
     <profiles>
+        <profile>
+            <!-- Adds an SLF4J implementation, useful when developing within an IDE -->
+            <id>with-slf4j-impl</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <dependencies>
+                <dependency>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-simple</artifactId>
+                </dependency>
+            </dependencies>
+        </profile>
         <profile>
             <id>pmd-release</id>
             <properties>
