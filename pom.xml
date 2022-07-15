@@ -98,8 +98,8 @@
         <pmd.plugin.version>3.17.0</pmd.plugin.version>
         <ant.version>1.10.12</ant.version>
         <javadoc.plugin.version>3.2.0</javadoc.plugin.version>
-        <antlr.version>4.8</antlr.version>
-        <slf4j.version>2.0.0-alpha6</slf4j.version>
+        <antlr.version>4.9.1</antlr.version>
+        <slf4j.version>1.7.36</slf4j.version>
         <saxon.version>10.7</saxon.version>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -110,7 +110,7 @@
 
         <pmd.build-tools.version>18</pmd.build-tools.version>
 
-        <pmd-designer.version>6.37.0</pmd-designer.version>
+        <pmd-designer.version>7.0.0-SNAPSHOT</pmd-designer.version>
         <javacc.jar>${settings.localRepository}/net/java/dev/javacc/javacc/${javacc.version}/javacc-${javacc.version}.jar</javacc.jar>
         <javacc.outputDirectory>${project.build.directory}/generated-sources/javacc</javacc.outputDirectory>
         <javacc.ant.wrapper>${project.basedir}/../javacc-wrapper.xml</javacc.ant.wrapper>
@@ -713,7 +713,7 @@
             <dependency>
                 <groupId>org.ow2.asm</groupId>
                 <artifactId>asm</artifactId>
-                <version>9.2</version>
+                <version>9.3</version>
             </dependency>
             <dependency>
                 <groupId>org.pcollections</groupId>
@@ -1046,6 +1046,19 @@
 
     <profiles>
         <profile>
+            <!-- Adds an SLF4J implementation, useful when developing within an IDE -->
+            <id>with-slf4j-impl</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <dependencies>
+                <dependency>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-simple</artifactId>
+                </dependency>
+            </dependencies>
+        </profile>
+        <profile>
             <id>pmd-release</id>
             <properties>
                 <pmd.website.baseurl>https://pmd.github.io/pmd-${project.version}</pmd.website.baseurl>
@@ -1179,6 +1192,7 @@
         <module>pmd-dist</module>
         <module>pmd-doc</module>
         <module>pmd-fortran</module>
+        <module>pmd-gherkin</module>
         <module>pmd-go</module>
         <module>pmd-groovy</module>
         <module>pmd-html</module>

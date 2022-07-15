@@ -117,6 +117,11 @@
             <groupId>org.pcollections</groupId>
             <artifactId>pcollections</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.github.oowekyala.ooxml</groupId>
+            <artifactId>nice-xml-messages</artifactId>
+            <version>3.1</version>
+        </dependency>
 
         <dependency>
             <groupId>org.slf4j</groupId>

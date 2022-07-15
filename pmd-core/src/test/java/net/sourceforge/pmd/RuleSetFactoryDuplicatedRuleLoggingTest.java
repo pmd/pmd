@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 
 import com.github.stefanbirkner.systemlambda.SystemLambda;
 
-class RuleSetFactoryDuplicatedRuleLoggingTest {
+class RuleSetFactoryDuplicatedRuleLoggingTest extends RulesetFactoryTestBase {
 
     @Test
     void duplicatedRuleReferenceShouldWarn() throws Exception {
@@ -46,7 +46,6 @@ class RuleSetFactoryDuplicatedRuleLoggingTest {
     void duplicatedRuleReferenceWithOverrideBeforeShouldNotWarn() throws Exception {
         String log = SystemLambda.tapSystemErr(() -> {
             RuleSet ruleset = loadRuleSet("duplicatedRuleReferenceWithOverrideBefore.xml");
-
             assertEquals(2, ruleset.getRules().size());
             Rule mockRule = ruleset.getRuleByName("DummyBasicMockRule");
             assertNotNull(mockRule);
@@ -72,7 +71,4 @@ class RuleSetFactoryDuplicatedRuleLoggingTest {
         assertTrue(log.contains("The ruleset rulesets/dummy/basic.xml is referenced multiple times in \"Custom Rules\"."));
     }
 
-    private RuleSet loadRuleSet(String ruleSetFilename) {
-        return new RuleSetLoader().loadFromResource("net/sourceforge/pmd/rulesets/duplicatedRuleLoggingTest/" + ruleSetFilename);
-    }
 }

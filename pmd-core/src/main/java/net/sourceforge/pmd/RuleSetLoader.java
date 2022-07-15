@@ -139,7 +139,8 @@ public final class RuleSetLoader {
             this.minimumPriority,
             this.warnDeprecated,
             this.compatFilter,
-            this.includeDeprecatedRuleReferences
+            this.includeDeprecatedRuleReferences,
+            this.reporter
         );
     }
 
@@ -201,6 +202,7 @@ public final class RuleSetLoader {
     public List<RuleSet> loadRuleSetsWithoutException(List<String> rulesetPaths) {
         List<RuleSet> ruleSets = new ArrayList<>(rulesetPaths.size());
         boolean anyRules = false;
+        boolean error = false;
         for (String path : rulesetPaths) {
             try {
                 RuleSet ruleset = this.loadFromResource(path);
@@ -208,16 +210,12 @@ public final class RuleSetLoader {
                 printRulesInDebug(path, ruleset);
                 ruleSets.add(ruleset);
             } catch (RuleSetLoadException e) {
-                if (e.getCause() != null) {
-                    // eg RuleSetNotFoundException
-                    reporter.errorEx("Cannot load ruleset {0}", new Object[] { path }, e.getCause());
-                } else {
-                    reporter.errorEx("Cannot load ruleset {0}", new Object[] { path }, e);
-                }
+                error = true;
+                reporter.error(e);
             }
         }
-        if (!anyRules) {
-            reporter.warn("No rules found. Maybe you misspelled a rule name? ({})",
+        if (!anyRules && !error) {
+            reporter.warn("No rules found. Maybe you misspelled a rule name? ({0})",
                           StringUtils.join(rulesetPaths, ','));
         }
         return ruleSets;
@@ -231,7 +229,7 @@ public final class RuleSetLoader {
             }
         }
         if (ruleset.getRules().isEmpty()) {
-            reporter.warn("No rules found in ruleset {}", path);
+            reporter.warn("No rules found in ruleset {0}", path);
         }
 
     }
@@ -254,8 +252,10 @@ public final class RuleSetLoader {
     RuleSet loadFromResource(RuleSetReferenceId ruleSetReferenceId) {
         try {
             return toFactory().createRuleSet(ruleSetReferenceId);
+        } catch (RuleSetLoadException e) {
+            throw e;
         } catch (Exception e) {
-            throw new RuleSetLoadException("Cannot parse " + ruleSetReferenceId, e);
+            throw new RuleSetLoadException(ruleSetReferenceId, e);
         }
     }
 
