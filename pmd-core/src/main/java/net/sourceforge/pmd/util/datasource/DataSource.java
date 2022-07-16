@@ -9,11 +9,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
 
+import net.sourceforge.pmd.lang.document.TextFile;
+
 /**
  * Represents a source file to be analyzed. Different implementations can get
  * the source file from different places: the filesystem, a zip or jar file,
  * etc.
+ *
+ * @deprecated Use {@link TextFile}
  */
+@Deprecated
 public interface DataSource extends Closeable {
 
     /**

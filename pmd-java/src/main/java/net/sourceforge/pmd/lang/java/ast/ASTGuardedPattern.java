@@ -16,8 +16,11 @@ import net.sourceforge.pmd.annotation.Experimental;
  * </pre>
  *
  * @see <a href="https://openjdk.java.net/jeps/406">JEP 406: Pattern Matching for switch (Preview)</a>
+ *
+ * @deprecated This is not used with java 19 preview anymore. Only valid for java 18 preview.
  */
 @Experimental
+@Deprecated
 public final class ASTGuardedPattern extends AbstractJavaNode implements ASTPattern {
 
     private int parenDepth;

@@ -13,7 +13,10 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.event.Level;
@@ -32,8 +35,6 @@ import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.reporting.ReportStats;
-import net.sourceforge.pmd.reporting.ReportStatsListener;
-import net.sourceforge.pmd.util.CollectionUtil;
 import net.sourceforge.pmd.util.datasource.DataSource;
 import net.sourceforge.pmd.util.log.MessageReporter;
 import net.sourceforge.pmd.util.log.internal.SimpleMessageReporter;
@@ -73,34 +74,6 @@ public final class PMD {
     }
 
 
-    private static ReportStats runAndReturnStats(PmdAnalysis pmd) {
-        if (pmd.getRulesets().isEmpty()) {
-            return ReportStats.empty();
-        }
-
-        @SuppressWarnings("PMD.CloseResource")
-        ReportStatsListener listener = new ReportStatsListener();
-
-        pmd.addListener(listener);
-
-        try {
-            pmd.performAnalysis();
-        } catch (Exception e) {
-            pmd.getReporter().errorEx("Exception during processing", e);
-            ReportStats stats = listener.getResult();
-            printErrorDetected(1 + stats.getNumErrors());
-            return stats; // should have been closed
-        }
-        ReportStats stats = listener.getResult();
-
-        if (stats.getNumErrors() > 0) {
-            printErrorDetected(stats.getNumErrors());
-        }
-
-        return stats;
-    }
-
-
     static void encourageToUseIncrementalAnalysis(final PMDConfiguration configuration) {
         if (!configuration.isIgnoreIncrementalAnalysis()
             && configuration.getAnalysisCache() instanceof NoopAnalysisCache
@@ -125,7 +98,6 @@ public final class PMD {
      * @return Report in which violations are accumulated
      *
      * @throws Exception If there was a problem when opening or closing the renderers
-     *
      * @deprecated Use {@link PmdAnalysis}
      */
     @Deprecated
@@ -139,9 +111,11 @@ public final class PMD {
             pmd.addRenderers(renderers);
             @SuppressWarnings("PMD.CloseResource")
             GlobalReportBuilderListener reportBuilder = new GlobalReportBuilderListener();
-            List<TextFile> textFiles = CollectionUtil.map(files, ds -> TextFile.dataSourceCompat(ds, configuration));
-            textFiles.sort(Comparator.comparing(TextFile::getPathId));
-            pmd.performAnalysisImpl(listOf(reportBuilder), textFiles);
+            List<TextFile> sortedFiles = files.stream()
+                                              .map(ds -> TextFile.dataSourceCompat(ds, configuration))
+                                              .sorted(Comparator.comparing(TextFile::getPathId))
+                                              .collect(Collectors.toList());
+            pmd.performAnalysisImpl(listOf(reportBuilder), sortedFiles);
             return reportBuilder.getResult();
         }
     }
@@ -191,12 +165,14 @@ public final class PMD {
             System.err.println(CliMessages.runWithHelpFlagMessage());
             return StatusCode.ERROR;
         }
-        return runPmd(parseResult.toConfiguration(LanguageRegistry.PMD));
-    }
 
-    private static void printErrorDetected(int errors) {
-        String msg = CliMessages.errorDetectedMessage(errors, "PMD");
-        log.error(msg);
+        PMDConfiguration configuration = Objects.requireNonNull(
+            parseResult.toConfiguration(LanguageRegistry.PMD)
+        );
+        MessageReporter pmdReporter = setupMessageReporter(configuration);
+        configuration.setReporter(pmdReporter);
+
+        return runPmd(configuration);
     }
 
     /**
@@ -215,6 +191,40 @@ public final class PMD {
             TimeTracker.startGlobalTracking();
         }
 
+        MessageReporter pmdReporter = configuration.getReporter();
+        try {
+            PmdAnalysis pmd;
+            try {
+                pmd = PmdAnalysis.create(configuration);
+            } catch (Exception e) {
+                pmdReporter.errorEx("Could not initialize analysis", e);
+                return StatusCode.ERROR;
+            }
+            try {
+                log.debug("Current classpath:\n{}", System.getProperty("java.class.path"));
+                ReportStats stats = pmd.runAndReturnStats();
+                if (pmdReporter.numErrors() > 0) {
+                    // processing errors are ignored
+                    return StatusCode.ERROR;
+                } else if (stats.getNumViolations() > 0 && configuration.isFailOnViolation()) {
+                    return StatusCode.VIOLATIONS_FOUND;
+                } else {
+                    return StatusCode.OK;
+                }
+            } finally {
+                pmd.close();
+            }
+
+        } catch (Exception e) {
+            pmdReporter.errorEx("Exception while running PMD.", e);
+            PmdAnalysis.printErrorDetected(pmdReporter, 1);
+            return StatusCode.ERROR;
+        } finally {
+            finishBenchmarker(configuration);
+        }
+    }
+
+    private static @NonNull MessageReporter setupMessageReporter(PMDConfiguration configuration) {
         // only reconfigure logging, if debug flag was used on command line
         // otherwise just use whatever is in conf/simplelogger.properties which happens automatically
         if (configuration.isDebug()) {
@@ -232,37 +242,7 @@ public final class PMD {
         // logging, mostly for testing purposes
         Level defaultLogLevel = Slf4jSimpleConfiguration.getDefaultLogLevel();
         log.info("Log level is at {}", defaultLogLevel);
-
-        try {
-            PmdAnalysis pmd;
-            try {
-                pmd = PmdAnalysis.create(configuration, pmdReporter);
-            } catch (Exception e) {
-                pmdReporter.errorEx("Could not initialize analysis", e);
-                return StatusCode.ERROR;
-            }
-            try {
-                ReportStats stats;
-                stats = PMD.runAndReturnStats(pmd);
-                if (pmdReporter.numErrors() > 0) {
-                    // processing errors are ignored
-                    return StatusCode.ERROR;
-                } else if (stats.getNumViolations() > 0 && configuration.isFailOnViolation()) {
-                    return StatusCode.VIOLATIONS_FOUND;
-                } else {
-                    return StatusCode.OK;
-                }
-            } finally {
-                pmd.close();
-            }
-
-        } catch (Exception e) {
-            pmdReporter.errorEx("Exception while running PMD.", e);
-            printErrorDetected(1);
-            return StatusCode.ERROR;
-        } finally {
-            finishBenchmarker(configuration);
-        }
+        return pmdReporter;
     }
 
     private static void finishBenchmarker(PMDConfiguration configuration) {

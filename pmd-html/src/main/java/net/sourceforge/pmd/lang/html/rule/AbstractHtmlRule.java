@@ -1,0 +1,30 @@
+/*
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
+
+package net.sourceforge.pmd.lang.html.rule;
+
+import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.html.HtmlLanguageModule;
+import net.sourceforge.pmd.lang.html.ast.HtmlVisitor;
+import net.sourceforge.pmd.lang.rule.AbstractRule;
+
+public abstract class AbstractHtmlRule extends AbstractRule implements HtmlVisitor {
+
+    public AbstractHtmlRule() {
+        super.setLanguage(LanguageRegistry.getLanguage(HtmlLanguageModule.NAME));
+    }
+
+    @Override
+    public Object visitNode(Node node, Object param) {
+        node.children().forEach(c -> c.acceptVisitor(this, param));
+        return param;
+    }
+
+    @Override
+    public void apply(Node target, RuleContext ctx) {
+        target.acceptVisitor(this, ctx);
+    }
+}

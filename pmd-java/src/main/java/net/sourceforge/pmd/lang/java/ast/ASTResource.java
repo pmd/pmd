@@ -91,5 +91,4 @@ public final class ASTResource extends AbstractJavaNode {
             return ((ASTLocalVariableDeclaration) c).iterator().next().getInitializer();
         }
     }
-
 }

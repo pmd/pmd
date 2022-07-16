@@ -31,18 +31,21 @@ class ASTInstanceOfExpressionTest : ParserTestSpec({
 
         inContext(ExpressionParsingCtx) {
 
-            "o instanceof (String s && s.length() > 4)" should parseAs {
-                infixExpr(BinaryOp.INSTANCEOF) {
-                    it::getLeftOperand shouldBe variableAccess("o")
-                    it::getRightOperand shouldBe patternExpr {
-                        guardedPattern {
-                            it::getPattern shouldBe typePattern {
+            "o instanceof String s && s.length() > 4" should parseAs {
+                infixExpr(BinaryOp.CONDITIONAL_AND) {
+                    infixExpr(BinaryOp.INSTANCEOF) {
+                        it::getLeftOperand shouldBe variableAccess("o")
+                        it::getRightOperand shouldBe patternExpr {
+                            typePattern {
                                 modifiers()
                                 classType("String")
                                 variableId("s")
                             }
-                            it::getGuard shouldBe infixExpr(BinaryOp.GT)
                         }
+                    }
+                    infixExpr(BinaryOp.GT) {
+                        it::getLeftOperand shouldBe methodCall("length")
+                        it::getRightOperand shouldBe number {  }
                     }
                 }
             }

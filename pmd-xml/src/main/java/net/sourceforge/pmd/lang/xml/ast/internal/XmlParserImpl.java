@@ -25,7 +25,6 @@ import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.xml.ast.XmlNode;
 
-
 public final class XmlParserImpl {
     // never throws on unresolved resource
     private static final EntityResolver SILENT_ENTITY_RESOLVER = (publicId, systemId) -> new InputSource(new ByteArrayInputStream("".getBytes()));
@@ -36,7 +35,6 @@ public final class XmlParserImpl {
     private Document parseDocument(String xmlData) throws ParseException {
         nodeCache.clear();
         try {
-
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             dbf.setNamespaceAware(true);
             dbf.setValidating(false);

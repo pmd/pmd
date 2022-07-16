@@ -23,7 +23,7 @@ infix fun TextAvailableNode.shouldHaveText(str: String) {
 inline fun <reified T : Node> Node.getDescendantsOfType(): List<T> = descendants(T::class.java).toList()
 inline fun <reified T : Node> Node.getFirstDescendantOfType(): T = descendants(T::class.java).firstOrThrow()
 
-fun TextAvailableNode.textOfReportLocation(): String? =
+fun Node.textOfReportLocation(): String? =
         reportLocation.regionInFile?.let(textDocument::sliceText)?.toString()
 
 

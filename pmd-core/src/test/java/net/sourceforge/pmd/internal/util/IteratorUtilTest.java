@@ -9,10 +9,11 @@ import static java.util.Collections.emptyIterator;
 import static java.util.Collections.emptyList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsIterableContainingInOrder.contains;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,18 +25,12 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import org.junit.Assert;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.junit.jupiter.api.Test;
 
-public class IteratorUtilTest {
-
-    @Rule
-    public ExpectedException exception = ExpectedException.none();
+class IteratorUtilTest {
 
     @Test
-    public void testAnyMatchPos() {
+    void testAnyMatchPos() {
         Iterator<String> iter = iterOf("a", "b", "cd");
 
         boolean match = IteratorUtil.anyMatch(iter, it -> it.length() > 1);
@@ -44,7 +39,7 @@ public class IteratorUtilTest {
     }
 
     @Test
-    public void testAnyMatchNeg() {
+    void testAnyMatchNeg() {
         Iterator<String> iter = iterOf("a", "b", "");
 
         boolean match = IteratorUtil.anyMatch(iter, it -> it.length() > 1);
@@ -53,7 +48,7 @@ public class IteratorUtilTest {
     }
 
     @Test
-    public void testAnyMatchEmpty() {
+    void testAnyMatchEmpty() {
         Iterator<String> iter = emptyIterator();
 
         boolean match = IteratorUtil.anyMatch(iter, it -> it.length() > 1);
@@ -63,7 +58,7 @@ public class IteratorUtilTest {
 
 
     @Test
-    public void testAllMatchPos() {
+    void testAllMatchPos() {
         Iterator<String> iter = iterOf("ap", "bcd", "cd");
 
         boolean match = IteratorUtil.allMatch(iter, it -> it.length() > 1);
@@ -72,7 +67,7 @@ public class IteratorUtilTest {
     }
 
     @Test
-    public void testAllMatchNeg() {
+    void testAllMatchNeg() {
         Iterator<String> iter = iterOf("a", "bcd", "");
 
         boolean match = IteratorUtil.allMatch(iter, it -> it.length() > 1);
@@ -81,7 +76,7 @@ public class IteratorUtilTest {
     }
 
     @Test
-    public void testAllMatchEmpty() {
+    void testAllMatchEmpty() {
         Iterator<String> iter = emptyIterator();
 
         boolean match = IteratorUtil.allMatch(iter, it -> it.length() > 1);
@@ -91,7 +86,7 @@ public class IteratorUtilTest {
 
 
     @Test
-    public void testNoneMatchPos() {
+    void testNoneMatchPos() {
         Iterator<String> iter = iterOf("ap", "bcd", "cd");
 
         boolean match = IteratorUtil.noneMatch(iter, it -> it.length() < 1);
@@ -100,7 +95,7 @@ public class IteratorUtilTest {
     }
 
     @Test
-    public void testNoneMatchNeg() {
+    void testNoneMatchNeg() {
         Iterator<String> iter = iterOf("a", "bcd", "");
 
         boolean match = IteratorUtil.noneMatch(iter, it -> it.length() < 1);
@@ -109,7 +104,7 @@ public class IteratorUtilTest {
     }
 
     @Test
-    public void testNoneMatchEmpty() {
+    void testNoneMatchEmpty() {
         Iterator<String> iter = emptyIterator();
 
         boolean match = IteratorUtil.noneMatch(iter, it -> it.length() < 1);
@@ -118,7 +113,7 @@ public class IteratorUtilTest {
     }
 
     @Test
-    public void testFlatmap() {
+    void testFlatmap() {
         Iterator<String> iter = iterOf("ab", "cd", "e", "", "f");
         Function<String, Iterator<String>> fun = s -> s.chars().mapToObj(i -> (char) i).map(String::valueOf).iterator();
 
@@ -130,7 +125,7 @@ public class IteratorUtilTest {
 
 
     @Test
-    public void testFlatmapEmpty() {
+    void testFlatmapEmpty() {
         Iterator<String> iter = emptyIterator();
         Function<String, Iterator<String>> fun = s -> s.chars().mapToObj(i -> (char) i).map(String::valueOf).iterator();
 
@@ -141,7 +136,7 @@ public class IteratorUtilTest {
     }
 
     @Test
-    public void testFlatmapEmpty2() {
+    void testFlatmapEmpty2() {
         Iterator<String> iter = iterOf("ab", "cd", "e", "", "f");
         Function<String, Iterator<String>> fun = s -> emptyIterator();
 
@@ -151,7 +146,7 @@ public class IteratorUtilTest {
     }
 
     @Test
-    public void testFlatmapIsLazy() {
+    void testFlatmapIsLazy() {
         Iterator<String> iter = iterOf("a", "b");
         Function<String, Iterator<String>> fun = s -> {
             if (s.equals("a")) {
@@ -166,14 +161,12 @@ public class IteratorUtilTest {
         assertTrue(mapped.hasNext());
         assertEquals("a", mapped.next());
 
-        exception.expect(AssertionError.class);
-
-        assertTrue(mapped.hasNext());
+        assertThrows(AssertionError.class, () -> mapped.hasNext());
     }
 
 
     @Test
-    public void testFlatmapWithSelf() {
+    void testFlatmapWithSelf() {
         Iterator<String> iter = iterOf("ab", "e", null, "f");
         Function<String, Iterator<String>> fun = s -> s == null ? null // test null safety
                                                                 : iterOf(s + "1", s + "2");
@@ -184,7 +177,7 @@ public class IteratorUtilTest {
     }
 
     @Test
-    public void testMapNotNull() {
+    void testMapNotNull() {
         Iterator<String> iter = iterOf("ab", "cdde", "e", "", "f", "fe");
         Function<String, Integer> fun = s -> s.length() < 2 ? null : s.length();
 
@@ -195,7 +188,7 @@ public class IteratorUtilTest {
     }
 
     @Test
-    public void testMapNotNullEmpty() {
+    void testMapNotNullEmpty() {
         Iterator<String> iter = emptyIterator();
         Function<String, Integer> fun = s -> s.length() < 2 ? null : s.length();
 
@@ -206,7 +199,7 @@ public class IteratorUtilTest {
     }
 
     @Test
-    public void testMapNotNullEmpty2() {
+    void testMapNotNullEmpty2() {
         Iterator<String> iter = iterOf("a", "b");
         Function<String, Iterator<String>> fun = s -> null;
 
@@ -217,7 +210,7 @@ public class IteratorUtilTest {
     }
 
     @Test
-    public void testFilterNotNull() {
+    void testFilterNotNull() {
         Iterator<String> iter = iterOf("ab", null, "e", null, "", "fe");
 
         Iterator<String> mapped = IteratorUtil.filterNotNull(iter);
@@ -229,7 +222,7 @@ public class IteratorUtilTest {
 
 
     @Test
-    public void testDistinct() {
+    void testDistinct() {
         Iterator<String> iter = iterOf("ab", null, "e", null, "fe", "ab", "c");
 
         Iterator<String> mapped = IteratorUtil.distinct(iter);
@@ -241,7 +234,7 @@ public class IteratorUtilTest {
 
 
     @Test
-    public void testTakeWhile() {
+    void testTakeWhile() {
         Iterator<String> iter = iterOf("ab", "null", "e", null, "", "fe");
         Predicate<String> predicate = Objects::nonNull;
 
@@ -252,7 +245,7 @@ public class IteratorUtilTest {
     }
 
     @Test
-    public void testTakeWhileWithEmpty() {
+    void testTakeWhileWithEmpty() {
         Iterator<String> iter = iterOf();
         Predicate<String> predicate = Objects::nonNull;
 
@@ -262,7 +255,7 @@ public class IteratorUtilTest {
     }
 
     @Test
-    public void testPeek() {
+    void testPeek() {
         Iterator<String> iter = iterOf("ab", null, "c");
         List<String> seen = new ArrayList<>();
         Consumer<String> action = seen::add;
@@ -282,15 +275,14 @@ public class IteratorUtilTest {
     }
 
     @Test
-    public void testTakeNegative() {
+    void testTakeNegative() {
         Iterator<String> iter = iterOf("a", "b", "c");
 
-        exception.expect(IllegalArgumentException.class);
-        IteratorUtil.take(iter, -5);
+        assertThrows(IllegalArgumentException.class, () -> IteratorUtil.take(iter, -5));
     }
 
     @Test
-    public void testTake0() {
+    void testTake0() {
         Iterator<String> iter = iterOf("a", "b", "c");
 
         Iterator<String> mapped = IteratorUtil.take(iter, 0);
@@ -299,7 +291,7 @@ public class IteratorUtilTest {
     }
 
     @Test
-    public void testTake() {
+    void testTake() {
         Iterator<String> iter = iterOf("a", "b", "c");
 
         Iterator<String> mapped = IteratorUtil.take(iter, 1);
@@ -309,7 +301,7 @@ public class IteratorUtilTest {
     }
 
     @Test
-    public void testTakeOverflow() {
+    void testTakeOverflow() {
         Iterator<String> iter = iterOf("a", "b", "c");
 
         Iterator<String> mapped = IteratorUtil.take(iter, 12);
@@ -319,15 +311,14 @@ public class IteratorUtilTest {
     }
 
     @Test
-    public void testDropNegative() {
+    void testDropNegative() {
         Iterator<String> iter = iterOf("a", "b", "c");
 
-        exception.expect(IllegalArgumentException.class);
-        IteratorUtil.advance(iter, -5);
+        assertThrows(IllegalArgumentException.class, () -> IteratorUtil.advance(iter, -5));
     }
 
     @Test
-    public void testDrop0() {
+    void testDrop0() {
         Iterator<String> iter = iterOf("a", "b", "c");
 
         Iterator<String> mapped = IteratorUtil.drop(iter, 0);
@@ -337,7 +328,7 @@ public class IteratorUtilTest {
     }
 
     @Test
-    public void testDrop() {
+    void testDrop() {
         Iterator<String> iter = iterOf("a", "b", "c");
 
         Iterator<String> mapped = IteratorUtil.drop(iter, 1);
@@ -347,7 +338,7 @@ public class IteratorUtilTest {
     }
 
     @Test
-    public void testDropOverflow() {
+    void testDropOverflow() {
         Iterator<String> iter = iterOf("a", "b", "c");
 
         Iterator<String> mapped = IteratorUtil.drop(iter, 12);
@@ -356,15 +347,14 @@ public class IteratorUtilTest {
     }
 
     @Test
-    public void testGetNegative() {
+    void testGetNegative() {
         Iterator<String> iter = iterOf("a", "b", "c");
 
-        exception.expect(IllegalArgumentException.class);
-        IteratorUtil.getNth(iter, -5);
+        assertThrows(IllegalArgumentException.class, () -> IteratorUtil.getNth(iter, -5));
     }
 
     @Test
-    public void testGet0() {
+    void testGet0() {
         Iterator<String> iter = iterOf("a", "b", "c");
 
 
@@ -374,7 +364,7 @@ public class IteratorUtilTest {
     }
 
     @Test
-    public void testGetNth() {
+    void testGetNth() {
         Iterator<String> iter = iterOf("a", "b", "c");
 
         String elt = IteratorUtil.getNth(iter, 1);
@@ -383,7 +373,7 @@ public class IteratorUtilTest {
     }
 
     @Test
-    public void testGetOverflow() {
+    void testGetOverflow() {
         Iterator<String> iter = iterOf("a", "b", "c");
 
         String elt = IteratorUtil.getNth(iter, 12);
@@ -393,7 +383,7 @@ public class IteratorUtilTest {
 
 
     @Test
-    public void testLast() {
+    void testLast() {
         Iterator<String> iter = iterOf("a", "b", "c");
 
         String elt = IteratorUtil.last(iter);
@@ -403,7 +393,7 @@ public class IteratorUtilTest {
     }
 
     @Test
-    public void testLastEmpty() {
+    void testLastEmpty() {
         Iterator<String> iter = emptyIterator();
 
         String elt = IteratorUtil.last(iter);
@@ -412,7 +402,7 @@ public class IteratorUtilTest {
     }
 
     @Test
-    public void testCount() {
+    void testCount() {
         Iterator<String> iter = iterOf("a", "b", "c");
 
         int size = IteratorUtil.count(iter);
@@ -422,7 +412,7 @@ public class IteratorUtilTest {
     }
 
     @Test
-    public void testCountEmpty() {
+    void testCountEmpty() {
         Iterator<String> iter = emptyIterator();
 
         int size = IteratorUtil.count(iter);
@@ -431,7 +421,7 @@ public class IteratorUtilTest {
     }
 
     @Test
-    public void testToList() {
+    void testToList() {
         Iterator<String> iter = iterOf("a", "b", "c");
 
         List<String> lst = IteratorUtil.toList(iter);
@@ -441,7 +431,7 @@ public class IteratorUtilTest {
     }
 
     @Test
-    public void testAsReversed() {
+    void testAsReversed() {
         List<String> iter = listOf("a", "b", "c");
 
         Iterable<String> mapped = IteratorUtil.asReversed(iter);
@@ -450,7 +440,7 @@ public class IteratorUtilTest {
     }
 
     @Test
-    public void testAsReversedIsRepeatable() {
+    void testAsReversedIsRepeatable() {
         List<String> iter = listOf("a", "b", "c");
 
         Iterable<String> mapped = IteratorUtil.asReversed(iter);
@@ -463,7 +453,7 @@ public class IteratorUtilTest {
 
 
     @Test
-    public void testDropLast() {
+    void testDropLast() {
         Iterator<String> iter = iterOf("ab", "cdde", "e", "", "f", "fe");
 
         Iterator<String> dropped = IteratorUtil.dropLast(iter, 2);
@@ -472,7 +462,7 @@ public class IteratorUtilTest {
     }
 
     @Test
-    public void testDropLastOne() {
+    void testDropLastOne() {
         Iterator<String> iter = iterOf("ab", "cdde", "e", "", "f", "fe");
 
         Iterator<String> dropped = IteratorUtil.dropLast(iter, 1);
@@ -481,7 +471,7 @@ public class IteratorUtilTest {
     }
 
     @Test
-    public void testDropMoreThanSize() {
+    void testDropMoreThanSize() {
         Iterator<String> iter = iterOf("ab", "c");
 
         Iterator<String> dropped = IteratorUtil.dropLast(iter, 4);
@@ -490,7 +480,7 @@ public class IteratorUtilTest {
     }
 
     @Test
-    public void testDropLastZero() {
+    void testDropLastZero() {
         Iterator<String> iter = iterOf("ab", "c");
 
         Iterator<String> dropped = IteratorUtil.dropLast(iter, 0);
@@ -499,16 +489,15 @@ public class IteratorUtilTest {
     }
 
     @Test
-    public void testDropLastNegative() {
+    void testDropLastNegative() {
         Iterator<String> iter = iterOf("ab", "c");
 
-        Assert.assertThrows(IllegalArgumentException.class, () -> IteratorUtil.dropLast(iter, -3));
+        assertThrows(IllegalArgumentException.class, () -> IteratorUtil.dropLast(iter, -3));
     }
 
     private void assertExhausted(Iterator<?> mapped) {
         assertFalse(mapped.hasNext());
-        exception.expect(NoSuchElementException.class);
-        mapped.next();
+        assertThrows(NoSuchElementException.class, () -> mapped.next());
     }
 
     static <T> Iterator<T> iterOf(T... ts) {

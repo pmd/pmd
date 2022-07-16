@@ -4,48 +4,38 @@
 
 package net.sourceforge.pmd.util.treeexport;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.Assert;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.junit.jupiter.api.Test;
 
+import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.ast.DummyNode;
-import net.sourceforge.pmd.lang.rule.xpath.Attribute;
-import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertySource;
 
 /**
  *
  */
-public class TreeRenderersTest {
-
-    @Rule
-    public ExpectedException expect = ExpectedException.none();
+class TreeRenderersTest {
 
     @Test
-    public void testStandardRenderersAreRegistered() {
+    void testStandardRenderersAreRegistered() {
 
-        Assert.assertEquals(TreeRenderers.XML, TreeRenderers.findById(TreeRenderers.XML.id()));
+        assertEquals(TreeRenderers.XML, TreeRenderers.findById(TreeRenderers.XML.id()));
 
     }
 
     @Test
-    public void testXmlPropertiesAvailable() {
+    void testXmlPropertiesAvailable() {
 
 
         PropertySource properties = TreeRenderers.XML.newPropertyBundle();
 
-        MatcherAssert.assertThat(properties.getPropertyDescriptors(),
-                          Matchers.<PropertyDescriptor<?>>containsInAnyOrder(TreeRenderers.XML_LINE_SEPARATOR,
+        assertThat(properties.getPropertyDescriptors(),
+                          containsInAnyOrder(TreeRenderers.XML_LINE_SEPARATOR,
                                                                              TreeRenderers.XML_RENDER_COMMON_ATTRIBUTES,
                                                                              TreeRenderers.XML_RENDER_PROLOG,
                                                                              TreeRenderers.XML_USE_SINGLE_QUOTES));
@@ -53,7 +43,7 @@ public class TreeRenderersTest {
     }
 
     @Test
-    public void testXmlDescriptorDump() throws IOException {
+    void testXmlDescriptorDump() throws IOException {
 
         PropertySource bundle = TreeRenderers.XML.newPropertyBundle();
 
@@ -66,7 +56,7 @@ public class TreeRenderersTest {
         StringBuilder out = new StringBuilder();
 
         renderer.renderSubtree(dummyTree1(), out);
-        Assert.assertEquals("<dummyNode foo=\"bar\" ohio=\"4\">\n"
+        assertEquals("<dummyNode foo=\"bar\" ohio=\"4\">\n"
                                 + "    <dummyNode o=\"ha\" />\n"
                                 + "    <dummyNode />\n"
                                 + "</dummyNode>\n", out.toString());
@@ -74,44 +64,18 @@ public class TreeRenderersTest {
     }
 
 
-    public MyDummyNode dummyTree1() {
-        MyDummyNode dummy = new MyDummyNode();
-
+    static DummyNode dummyTree1() {
+        DummyNode dummy = DummyLanguageModule.parse("(parent(child1)(child2))").getChild(0);
+        dummy.clearXPathAttributes();
         dummy.setXPathAttribute("foo", "bar");
         dummy.setXPathAttribute("ohio", "4");
 
-        MyDummyNode dummy1 = new MyDummyNode();
-
+        DummyNode dummy1 = dummy.getChild(0);
+        dummy1.clearXPathAttributes();
         dummy1.setXPathAttribute("o", "ha");
 
-        MyDummyNode dummy2 = new MyDummyNode();
-
-        dummy.addChild(dummy1, 0);
-        dummy.addChild(dummy2, 1);
+        dummy.getChild(1).clearXPathAttributes();
         return dummy;
-    }
-
-    private static class MyDummyNode extends DummyNode {
-
-
-        private final Map<String, String> attributes = new HashMap<>();
-
-        public void setXPathAttribute(String name, String value) {
-            attributes.put(name, value);
-        }
-
-        @Override
-        public Iterator<Attribute> getXPathAttributesIterator() {
-
-            List<Attribute> attrs = new ArrayList<>();
-            for (String name : attributes.keySet()) {
-                attrs.add(new Attribute(this, name, attributes.get(name)));
-            }
-
-            return attrs.iterator();
-        }
-
-
     }
 
 

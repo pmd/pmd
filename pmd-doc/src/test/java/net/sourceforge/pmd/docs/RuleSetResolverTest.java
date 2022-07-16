@@ -10,15 +10,15 @@ import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.util.List;
 
-import org.apache.commons.io.FilenameUtils;
 import org.junit.Test;
 
 import net.sourceforge.pmd.RuleSetLoader;
+import net.sourceforge.pmd.util.IOUtil;
 
 public class RuleSetResolverTest {
 
     private static final List<String> EXCLUDED_RULESETS = listOf(
-        FilenameUtils.normalize("pmd-test/src/main/resources/rulesets/dummy/basic.xml")
+            IOUtil.normalizePath("pmd-test/src/main/resources/rulesets/dummy/basic.xml")
     );
 
     @Test

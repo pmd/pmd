@@ -785,7 +785,8 @@ in each object at runtime.
     [not(.//Annotation[pmd-java:typeIs('lombok.Builder.Default')])]
     /VariableDeclarator[*[pmd-java:nodeIs('Literal')]
          or VariableAccess[@Name = //FieldDeclaration[pmd-java:modifiers() = 'static']/VariableDeclarator/VariableDeclaratorId/@Name]
-         or FieldAccess]
+         or FieldAccess
+         or ArrayAllocation/ArrayType/ArrayDimensions/ArrayDimExpr/NumericLiteral[@IntLiteral = true()][@Image = "0"]]
     /VariableDeclaratorId
 ]]>
                 </value>
@@ -1134,12 +1135,11 @@ public void foo() throws Exception {
 Reports ternary expression with the form `condition ? literalBoolean : foo`
 or `condition ? foo : literalBoolean`.
 
-These expressions can be simplified respectively to
-`condition || foo`  when the literalBoolean is true
-`!condition && foo` when the literalBoolean is false
-or
-`!condition || foo` when the literalBoolean is true
-`condition && foo`  when the literalBoolean is false
+These expressions can be simplified as follows:
+* `condition ? true : expr` simplifies to `condition || expr`
+* `condition ? false : expr` simplifies to `!condition && expr`
+* `condition ? expr : true` simplifies to `!condition || expr`
+* `condition ? expr : false` simplifies to `condition && expr`
 ]]>
         </description>
         <priority>3</priority>
@@ -1169,6 +1169,10 @@ public class Foo {
 
     public void test4() {
         final boolean otherValue = condition ? something() : false; // can be as simple as condition && something();
+    }
+
+    public boolean test5() {
+        return condition ? true : false; // can be as simple as return condition;
     }
 }
 ]]>
@@ -1388,11 +1392,9 @@ complexity and find a way to have more fine grained objects.
      [
       count(MethodDeclaration[
          not (
-                starts-with(@Name,'get')
-                or
-                starts-with(@Name,'set')
-                or
-                starts-with(@Name,'is')
+                (starts-with(@Name,'get') or starts-with(@Name,'set') or starts-with(@Name,'is'))
+                and
+                count(Block/*) <= 1
             )
       ]) > $maxmethods
    ]

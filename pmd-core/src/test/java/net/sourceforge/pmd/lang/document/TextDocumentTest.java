@@ -4,22 +4,27 @@
 
 package net.sourceforge.pmd.lang.document;
 
+import static net.sourceforge.pmd.lang.document.TextPos2d.pos2d;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThrows;
 
-import org.junit.Rule;
+import java.io.IOException;
+
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.junit.runner.RunWith;
 
 import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.util.IOUtil;
 
+import junitparams.JUnitParamsRunner;
+import junitparams.Parameters;
+
+@RunWith(JUnitParamsRunner.class)
 public class TextDocumentTest {
 
-    @Rule
-    public ExpectedException expect = ExpectedException.none();
-    private final LanguageVersion dummyVersion = DummyLanguageModule.INSTANCE.getDefaultVersion();
+    private final LanguageVersion dummyVersion = LanguageRegistry.getDefaultLanguage().getDefaultVersion();
 
     @Test
     public void testSingleLineRegion() {
@@ -33,13 +38,10 @@ public class TextDocumentTest {
 
         FileLocation withLines = doc.toLocation(region);
 
-        // todo rename to getStartLine
         assertEquals(1, withLines.getStartLine());
         assertEquals(1, withLines.getEndLine());
-        // todo rename to getStartLine
         assertEquals(1, withLines.getStartColumn());
         assertEquals(1 + "bonjour".length(), withLines.getEndColumn());
-        // todo rename to getStartLine
         assertEquals("bonjour".length(), withLines.getEndColumn() - withLines.getStartColumn());
     }
 
@@ -51,13 +53,10 @@ public class TextDocumentTest {
         assertEquals("bonjour\n", doc.sliceText(region).toString());
         FileLocation withLines = doc.toLocation(region);
 
-        // todo rename to getStartLine
         assertEquals(1, withLines.getStartLine());
         assertEquals(1, withLines.getEndLine());
-        // todo rename to getStartLine
         assertEquals(1, withLines.getStartColumn());
         assertEquals(1 + "bonjour\n".length(), withLines.getEndColumn());
-        // todo rename to getStartLine
         assertEquals("bonjour\n".length(), withLines.getEndColumn() - withLines.getStartColumn());
     }
 
@@ -72,10 +71,8 @@ public class TextDocumentTest {
 
         FileLocation withLines = doc.toLocation(region);
 
-        // todo rename to getStartLine
         assertEquals(2, withLines.getStartLine());
         assertEquals(2, withLines.getEndLine());
-        // todo rename to getStartLine
         assertEquals(1, withLines.getStartColumn());
         assertEquals(1, withLines.getEndColumn());
     }
@@ -92,10 +89,8 @@ public class TextDocumentTest {
 
         FileLocation withLines = doc.toLocation(region);
 
-        // todo rename to getStartLine
         assertEquals(1, withLines.getStartLine());
         assertEquals(1, withLines.getEndLine());
-        // todo rename to getStartLine
         assertEquals(1 + "bonjour".length(), withLines.getStartColumn());
         assertEquals(1 + "bonjour\n".length(), withLines.getEndColumn());
     }
@@ -109,10 +104,8 @@ public class TextDocumentTest {
 
         FileLocation withLines = doc.toLocation(region);
 
-        // todo rename to getStartLine
         assertEquals(1, withLines.getStartLine());
         assertEquals(1, withLines.getEndLine());
-        // todo rename to getStartLine
         assertEquals(1, withLines.getStartColumn());
         assertEquals(1 + doc.getLength(), withLines.getEndColumn());
     }
@@ -129,12 +122,34 @@ public class TextDocumentTest {
 
         FileLocation withLines = doc.toLocation(region);
 
-        // todo rename to getStartLine
         assertEquals(1, withLines.getStartLine());
         assertEquals(3, withLines.getEndLine());
-        // todo rename to getStartLine
         assertEquals(1 + "bonjou".length(), withLines.getStartColumn());
         assertEquals(1 + "tri".length(), withLines.getEndColumn());
+    }
+
+
+    @Test
+    public void testLineColumnFromOffset() {
+        TextDocument doc = TextDocument.readOnlyString("ab\ncd\n", dummyVersion);
+
+        assertPos2dEqualsAt(doc, 0, "a", pos2d(1, 1), true);
+        assertPos2dEqualsAt(doc, 0, "a", pos2d(1, 1), false);
+        assertPos2dEqualsAt(doc, 1, "b", pos2d(1, 2), true);
+        assertPos2dEqualsAt(doc, 2, "\n", pos2d(1, 3), true);
+        assertPos2dEqualsAt(doc, 3, "c", pos2d(2, 1), true);
+        assertPos2dEqualsAt(doc, 3, "c", pos2d(1, 4), false);
+        assertPos2dEqualsAt(doc, 4, "d", pos2d(2, 2), true);
+        assertPos2dEqualsAt(doc, 5, "\n", pos2d(2, 3), true);
+        // EOF caret position
+        assertEquals(pos2d(3, 1), doc.lineColumnAtOffset(6));
+        assertThrows(IndexOutOfBoundsException.class, () -> doc.lineColumnAtOffset(7));
+    }
+
+    private void assertPos2dEqualsAt(TextDocument doc, int offset, String c, TextPos2d pos, boolean inclusive) {
+        Chars slicedChar = doc.sliceText(TextRegion.fromOffsetLength(offset, 1));
+        assertEquals(c, slicedChar.toString());
+        assertEquals(pos, doc.lineColumnAtOffset(offset, inclusive));
     }
 
     @Test
@@ -149,60 +164,12 @@ public class TextDocumentTest {
 
         FileLocation withLines = doc.toLocation(region);
 
-        // todo rename to getStartLine
         assertEquals(1, withLines.getStartLine());
         assertEquals(1, withLines.getEndLine());
-        // todo rename to getStartLine
         assertEquals(1 + "bonjour".length(), withLines.getStartColumn());
         assertEquals(1 + "bonjour".length(), withLines.getEndColumn());
     }
 
-    @Test
-    public void testOffsetFromLineColumn() {
-        TextDocument doc = TextDocument.readOnlyString("bonjour\noa\n", dummyVersion);
-
-        assertEquals(0, doc.offsetAtLineColumn(1, 1));
-        assertEquals(1, doc.offsetAtLineColumn(1, 2));
-        assertEquals(2, doc.offsetAtLineColumn(1, 3));
-        assertEquals(3, doc.offsetAtLineColumn(1, 4));
-        assertEquals(4, doc.offsetAtLineColumn(1, 5));
-        assertEquals(5, doc.offsetAtLineColumn(1, 6));
-        assertEquals(6, doc.offsetAtLineColumn(1, 7));
-        assertEquals(7, doc.offsetAtLineColumn(1, 8));
-        assertEquals(8, doc.offsetAtLineColumn(1, 9));
-        assertEquals(8, doc.offsetAtLineColumn(2, 1));
-        assertEquals(9, doc.offsetAtLineColumn(2, 2));
-        assertEquals(10, doc.offsetAtLineColumn(2, 3));
-        assertEquals(11, doc.offsetAtLineColumn(2, 4));
-        assertEquals(11, doc.offsetAtLineColumn(3, 1));
-    }
-
-    @Test
-    public void testCoordinateRoundTripWithEndOfLine() {
-        TextDocument doc = TextDocument.readOnlyString("bonjour\noa\n", dummyVersion);
-        TextRange2d inputRange = TextRange2d.fullLine(1, "bonjour\n".length());
-
-        TextRegion lineRange = doc.createLineRange(1, 1);
-        TextRegion region = doc.toRegion(inputRange);
-
-        assertEquals(TextRegion.fromOffsetLength(0, "bonjour\n".length()), region);
-        assertEquals(TextRegion.fromOffsetLength(0, "bonjour\n".length()), lineRange);
-        TextRange2d roundTrip = doc.toRange2d(region);
-        assertEquals(inputRange, roundTrip);
-
-    }
-
-    @Test
-    public void testCoordinateRoundTripSimple() {
-        TextDocument doc = TextDocument.readOnlyString("bonjour\noa\n", dummyVersion);
-        TextRange2d inputRange = TextRange2d.fullLine(1, "bonjour".length());
-
-        TextRegion region = doc.toRegion(inputRange);
-        assertEquals(TextRegion.fromOffsetLength(0, "bonjour".length()), region);
-
-        TextRange2d roundTrip = doc.toRange2d(region);
-        assertEquals(inputRange, roundTrip);
-    }
 
     @Test
     public void testLineRange() {
@@ -218,12 +185,45 @@ public class TextDocumentTest {
     }
 
     @Test
+    @Parameters(source = DocumentsProvider.class)
+    public void testEntireRegion(TextDocument doc) {
+        assertEquals("getEntireRegion should return something based on length",
+                     TextRegion.fromOffsetLength(0, doc.getLength()),
+                     doc.getEntireRegion());
+    }
+
+    @Test
+    @Parameters(source = DocumentsProvider.class)
+    public void testReader(TextDocument doc) throws IOException {
+
+        assertEquals("NewReader should read the text",
+                     doc.getText().toString(),
+                     IOUtil.readToString(doc.newReader())
+        );
+
+    }
+
+    @Test
     public void testRegionOutOfBounds() {
         TextDocument doc = TextDocument.readOnlyString("bonjour\noha\ntristesse", dummyVersion);
 
-        expect.expect(AssertionError.class);
+        assertThrows(AssertionError.class, () -> TextRegion.isValidRegion(0, 40, doc));
+    }
 
-        TextRegion.isValidRegion(0, 40, doc);
+    // for junit params runner
+    public static final class DocumentsProvider {
+
+
+        @SuppressWarnings("resource")
+        public static Object[] provideParameters() {
+            LanguageVersion dummyVersion = DummyLanguageModule.getInstance().getDefaultVersion();
+            return new TextDocument[] {
+                TextDocument.readOnlyString("bonjour\noha\ntristesse", dummyVersion),
+                TextDocument.readOnlyString("bonjour\n", dummyVersion),
+                TextDocument.readOnlyString("\n", dummyVersion),
+                TextDocument.readOnlyString("", dummyVersion),
+                };
+        }
     }
 
 }

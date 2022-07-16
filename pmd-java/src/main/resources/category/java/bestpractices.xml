@@ -1824,21 +1824,48 @@ a block `{}` is sufficient.
         <properties>
             <property name="xpath">
                 <value><![CDATA[
-  //DoStatement/BooleanLiteral
-| //WhileStatement/BooleanLiteral[@True = false()]
+(: while loops with single boolean literal, maybe parenthesized :)
+//WhileStatement/BooleanLiteral[@True = false()]
+|
+(: do-while loops with single boolean literal, maybe parenthesized :)
+//DoStatement/BooleanLiteral
+|
+(: while loops with conditional or'ed or and'ed boolean literals, maybe parenthesized :)
+//WhileStatement[(.|InfixExpression)
+    [count(BooleanLiteral) = 2]
+    (: at least one false literal :)
+    [count(BooleanLiteral[@True = false()]) >= 1]]
+|
+(: while loops with conditional and'ed boolean literals, maybe parenthesized :)
+//WhileStatement[(InfixExpression[@Operator=('&', '&&')])
+    (: at least one false literal :)
+    [count(BooleanLiteral[@True = false()]) >= 1]]
+|
+(: do-while loops with conditional or'ed or and'ed boolean literals, maybe parenthesized :)
+//DoStatement[(.|InfixExpression)
+    [count(BooleanLiteral) = 2]]
+|
+(: do-while loops with conditional and'ed boolean literals, maybe parenthesized :)
+//DoStatement[(InfixExpression[@Operator=('&', '&&')])
+    (: at least one false literal :)
+    [count(BooleanLiteral[@True = false()]) >= 1]]
                 ]]></value>
             </property>
             <property name="version" value="2.0" />
         </properties>
         <example>
+<![CDATA[
 public class Example {
   {
     while (true) { } // allowed
     while (false) { } // disallowed
     do { } while (true); // disallowed
     do { } while (false); // disallowed
+    do { } while (false | false); // disallowed
+    do { } while (false || false); // disallowed
   }
 }
+]]>
         </example>
     </rule>
 

@@ -8,15 +8,19 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.junit.Assume;
 import org.junit.Test;
 
 import net.sourceforge.pmd.PMDVersion;
+import net.sourceforge.pmd.util.IOUtil;
 
 /**
  * This test calls ant in a fake terminal to make sure we have a {@link java.io.Console} connected.
@@ -41,10 +45,28 @@ public class AntIT extends AbstractBinaryDistributionTest {
 
 
     private File prepareAntTestProjectFolder() throws IOException {
-        File sourceProjectFolder = new File("src/test/resources/ant-it");
-        File projectFolder = folder.newFolder();
-        FileUtils.copyDirectory(sourceProjectFolder, projectFolder);
-        return projectFolder;
+        final Path sourceProjectFolder = new File("src/test/resources/ant-it").toPath();
+        final Path projectFolder = folder.newFolder().toPath();
+        Files.walkFileTree(sourceProjectFolder, new SimpleFileVisitor<Path>() {
+            @Override
+            public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
+                assert !dir.isAbsolute();
+                Path target = projectFolder.resolve(sourceProjectFolder.relativize(dir));
+                if (!target.toFile().exists()) {
+                    target.toFile().mkdir();
+                }
+                return FileVisitResult.CONTINUE;
+            }
+
+            @Override
+            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                assert !file.isAbsolute();
+                Path target = projectFolder.resolve(sourceProjectFolder.relativize(file));
+                Files.copy(file, target);
+                return FileVisitResult.CONTINUE;
+            }
+        });
+        return projectFolder.toFile();
     }
 
 
@@ -64,7 +86,7 @@ public class AntIT extends AbstractBinaryDistributionTest {
             @Override
             public void run() {
                 try (InputStream in = process.getInputStream()) {
-                    String output = IOUtils.toString(process.getInputStream(), StandardCharsets.UTF_8);
+                    String output = IOUtil.readToString(process.getInputStream(), StandardCharsets.UTF_8);
                     result.withOutput(output);
                 } catch (IOException e) {
                     result.withOutput("Exception occurred: " + e.toString());

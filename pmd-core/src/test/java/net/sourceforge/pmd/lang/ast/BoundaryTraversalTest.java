@@ -4,19 +4,19 @@
 
 package net.sourceforge.pmd.lang.ast;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit test for {@link Node} tree traversal methods
  */
-public class BoundaryTraversalTest {
+class BoundaryTraversalTest {
 
     private DummyNode rootNode;
 
@@ -29,13 +29,13 @@ public class BoundaryTraversalTest {
         return parent;
     }
 
-    @Before
-    public void setUpSampleNodeTree() {
+    @BeforeEach
+    void setUpSampleNodeTree() {
         rootNode = newDummyNode(false);
     }
 
     @Test
-    public void testBoundaryIsHonored() {
+    void testBoundaryIsHonored() {
         addChild(rootNode, addChild(newDummyNode(true), newDummyNode(false)));
 
         List<DummyNode> descendantsOfType = rootNode.descendants(DummyNode.class).toList();
@@ -44,7 +44,7 @@ public class BoundaryTraversalTest {
     }
 
     @Test
-    public void testSearchFromBoundary() {
+    void testSearchFromBoundary() {
         addChild(rootNode, addChild(newDummyNode(true), newDummyNode(false)));
 
         List<DummyNode> descendantsOfType = rootNode.descendants(DummyNode.class).first().descendants(DummyNode.class).toList();
@@ -53,7 +53,7 @@ public class BoundaryTraversalTest {
     }
 
     @Test
-    public void testSearchFromBoundaryFromNonOptimisedStream() {
+    void testSearchFromBoundaryFromNonOptimisedStream() {
         addChild(rootNode, addChild(newDummyNode(true), newDummyNode(false)));
 
         List<DummyNode> descendantsOfType = rootNode.descendants(DummyNode.class).take(1).descendants(DummyNode.class).toList();
@@ -62,7 +62,7 @@ public class BoundaryTraversalTest {
     }
 
     @Test
-    public void testSearchIgnoringBoundary() {
+    void testSearchIgnoringBoundary() {
         addChild(rootNode, addChild(newDummyNode(true), newDummyNode(false)));
 
         List<DummyNode> descendantsOfType = rootNode.findDescendantsOfType(DummyNode.class, true);

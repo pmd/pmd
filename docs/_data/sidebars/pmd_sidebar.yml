@@ -178,6 +178,18 @@ entries:
     - title: null
       output: web, pdf
       subfolders:
+      - title: HTML Rules
+        output: web, pdf
+        subfolderitems:
+        - title: Index
+          output: web, pdf
+          url: /pmd_rules_html.html
+        - title: Best Practices
+          output: web, pdf
+          url: /pmd_rules_html_bestpractices.html
+    - title: null
+      output: web, pdf
+      subfolders:
       - title: Java Rules
         output: web, pdf
         subfolderitems:
@@ -232,6 +244,21 @@ entries:
         - title: Security
           output: web, pdf
           url: /pmd_rules_jsp_security.html
+    - title: null
+      output: web, pdf
+      subfolders:
+      - title: Kotlin Rules
+        output: web, pdf
+        subfolderitems:
+        - title: Index
+          output: web, pdf
+          url: /pmd_rules_kotlin.html
+        - title: Best Practices
+          output: web, pdf
+          url: /pmd_rules_kotlin_bestpractices.html
+        - title: Error Prone
+          output: web, pdf
+          url: /pmd_rules_kotlin_errorprone.html
     - title: null
       output: web, pdf
       subfolders:
@@ -370,6 +397,9 @@ entries:
     - title: JSP
       url: /pmd_languages_jsp.html
       output: web, pdf
+    - title: Kotlin
+      url: /pmd_languages_kotlin.html
+      output: web, pdf
     - title: PLSQL
       url: /pmd_languages_plsql.html
       output: web, pdf
@@ -378,6 +408,12 @@ entries:
       output: web, pdf
     - title: XML and XML dialects
       url: /pmd_languages_xml.html
+      output: web, pdf
+    - title: HTML
+      url: /pmd_languages_html.html
+      output: web, pdf
+    - title: Gherkin
+      url: /pmd_languages_gherkin.html
       output: web, pdf
   - title: Developer Documentation
     output: web, pdf

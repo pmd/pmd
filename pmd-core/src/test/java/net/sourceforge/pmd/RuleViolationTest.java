@@ -4,90 +4,82 @@
 
 package net.sourceforge.pmd;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Comparator;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
+import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.ast.DummyNode;
-import net.sourceforge.pmd.lang.ast.DummyRoot;
+import net.sourceforge.pmd.lang.ast.DummyNode.DummyRootNode;
+import net.sourceforge.pmd.lang.document.FileLocation;
+import net.sourceforge.pmd.lang.document.TextFile;
+import net.sourceforge.pmd.lang.document.TextRange2d;
 import net.sourceforge.pmd.lang.rule.MockRule;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 
-import junit.framework.JUnit4TestAdapter;
-
-public class RuleViolationTest {
+class RuleViolationTest {
 
     @Test
-    public void testConstructor1() {
+    void testConstructor1() {
         Rule rule = new MockRule("name", "desc", "msg", "rulesetname");
-        DummyRoot s = new DummyRoot().withFileName("filename");
-        s.setCoordsReplaceText(2, 1, 2, 3);
+        DummyRootNode s = DummyLanguageModule.parse("abcd", "filename");
         RuleViolation r = new ParametricRuleViolation(rule, s, rule.getMessage());
-        assertEquals("object mismatch", rule, r.getRule());
-        assertEquals("line number is wrong", 2, r.getBeginLine());
-        assertEquals("filename is wrong", "filename", r.getFilename());
+        assertEquals(rule, r.getRule(), "object mismatch");
+        assertEquals(1, r.getBeginLine(), "line number is wrong");
+        assertEquals("filename", r.getFilename(), "filename is wrong");
     }
 
     @Test
-    public void testConstructor2() {
+    void testConstructor2() {
         Rule rule = new MockRule("name", "desc", "msg", "rulesetname");
-        DummyRoot s = new DummyRoot().withFileName("filename");
-        s.setCoordsReplaceText(2, 1, 2, 3);
+        DummyRootNode s = DummyLanguageModule.parse("abcd", "filename");
         RuleViolation r = new ParametricRuleViolation(rule, s, "description");
-        assertEquals("object mismatch", rule, r.getRule());
-        assertEquals("line number is wrong", 2, r.getBeginLine());
-        assertEquals("filename is wrong", "filename", r.getFilename());
-        assertEquals("description is wrong", "description", r.getDescription());
+        assertEquals(rule, r.getRule(), "object mismatch");
+        assertEquals(1, r.getBeginLine(), "line number is wrong");
+        assertEquals("filename", r.getFilename(), "filename is wrong");
+        assertEquals("description", r.getDescription(), "description is wrong");
     }
 
     @Test
-    public void testComparatorWithDifferentFilenames() {
+    void testComparatorWithDifferentFilenames() {
         Rule rule = new MockRule("name", "desc", "msg", "rulesetname");
         Comparator<RuleViolation> comp = RuleViolation.DEFAULT_COMPARATOR;
-        DummyRoot s = new DummyRoot().withFileName("filename1");
-        s.setCoordsReplaceText(10, 1, 11, 3);
+        DummyNode s = DummyLanguageModule.parse("(abc)", "filename1").getFirstChild();
+        DummyNode s1 = DummyLanguageModule.parse("(abc)", "filename2").getFirstChild();
         RuleViolation r1 = new ParametricRuleViolation(rule, s, "description");
-        DummyRoot s1 = new DummyRoot().withFileName("filename2");
-        s1.setCoordsReplaceText(10, 1, 11, 3);
         RuleViolation r2 = new ParametricRuleViolation(rule, s1, "description");
         assertEquals(-1, comp.compare(r1, r2));
         assertEquals(1, comp.compare(r2, r1));
     }
 
     @Test
-    public void testComparatorWithSameFileDifferentLines() {
+    void testComparatorWithSameFileDifferentLines() {
         Rule rule = new MockRule("name", "desc", "msg", "rulesetname");
         Comparator<RuleViolation> comp = RuleViolation.DEFAULT_COMPARATOR;
-        DummyRoot s = new DummyRoot().withFileName("filename1");
-        s.setCoordsReplaceText(10, 1, 15, 10);
-        DummyRoot s1 = new DummyRoot().withFileName("filename1");
-        s1.setCoordsReplaceText(20, 1, 25, 10);
-        RuleViolation r1 = new ParametricRuleViolation(rule, s, "description");
-        RuleViolation r2 = new ParametricRuleViolation(rule, s1, "description");
+        DummyRootNode root = DummyLanguageModule.parse("(abc) (def)");
+        DummyNode abcChild = root.getChild(0);
+        DummyNode defChild = root.getChild(1);
+        RuleViolation r1 = new ParametricRuleViolation(rule, abcChild, "description");
+        RuleViolation r2 = new ParametricRuleViolation(rule, defChild, "description");
         assertTrue(comp.compare(r1, r2) < 0);
         assertTrue(comp.compare(r2, r1) > 0);
     }
 
-    @Ignore
     @Test
-    public void testComparatorWithSameFileSameLines() {
+    void testComparatorWithSameFileSameLines() {
         Rule rule = new MockRule("name", "desc", "msg", "rulesetname");
         Comparator<RuleViolation> comp = RuleViolation.DEFAULT_COMPARATOR;
-        DummyNode s = new DummyNode().withFileName("filename1");
-        s.setCoords(10, 1, 15, 10);
-        DummyNode s1 = new DummyNode().withFileName("filename1");
-        s.setCoords(10, 1, 15, 10);
-        RuleViolation r1 = new ParametricRuleViolation(rule, s, "description");
-        RuleViolation r2 = new ParametricRuleViolation(rule, s1, "description");
-        assertEquals(1, comp.compare(r1, r2));
-        assertEquals(1, comp.compare(r2, r1));
-    }
+        String filename = TextFile.UNKNOWN_FILENAME;
 
-    public static junit.framework.Test suite() {
-        return new JUnit4TestAdapter(RuleViolationTest.class);
+
+        FileLocation loc = FileLocation.range(filename, TextRange2d.range2d(10, 1, 15, 10));
+        RuleViolation r1 = new ParametricRuleViolation(rule, loc, "description");
+        RuleViolation r2 = new ParametricRuleViolation(rule, loc, "description");
+
+        assertEquals(0, comp.compare(r1, r2));
+        assertEquals(0, comp.compare(r2, r1));
     }
 }

@@ -30,15 +30,6 @@ public class ASTYieldStatement extends AbstractStatement {
         return visitor.visit(this, data);
     }
 
-    @Override
-    public String getImage() {
-        String result = super.getImage();
-        if (result == null && hasDescendantOfType(ASTName.class)) {
-            result = getFirstDescendantOfType(ASTName.class).getImage();
-        }
-        return result;
-    }
-
 
     /** Returns the yielded expression. */
     public ASTExpression getExpr() {

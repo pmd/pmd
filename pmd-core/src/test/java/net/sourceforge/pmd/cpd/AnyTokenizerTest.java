@@ -5,29 +5,29 @@
 package net.sourceforge.pmd.cpd;
 
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class AnyTokenizerTest {
+class AnyTokenizerTest {
 
     @Test
-    public void testMultiLineMacros() {
+    void testMultiLineMacros() {
         AnyTokenizer tokenizer = new AnyTokenizer("//");
         compareResult(tokenizer, TEST1, EXPECTED);
     }
 
     @Test
-    public void testStringEscape() {
+    void testStringEscape() {
         AnyTokenizer tokenizer = new AnyTokenizer("//");
         compareResult(tokenizer, "a = \"oo\\n\"", listOf("a", "=", "\"oo\\n\"", "EOF"));
     }
 
     @Test
-    public void testMultilineString() {
+    void testMultilineString() {
         AnyTokenizer tokenizer = new AnyTokenizer("//");
         Tokens tokens = compareResult(tokenizer, "a = \"oo\n\";", listOf("a", "=", "\"oo\n\"", ";", "EOF"));
         TokenEntry string = tokens.getTokens().get(2);
@@ -47,7 +47,7 @@ public class AnyTokenizerTest {
      * Tests that [core][cpd] AnyTokenizer doesn't count columns correctly #2760 is actually fixed.
      */
     @Test
-    public void testTokenPosition() {
+    void testTokenPosition() {
         AnyTokenizer tokenizer = new AnyTokenizer();
         SourceCode code = new SourceCode(new SourceCode.StringCodeLoader("a;\nbbbb\n;"));
         Tokens tokens = new Tokens();

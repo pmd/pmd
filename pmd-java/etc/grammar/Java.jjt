@@ -1,4 +1,17 @@
 /**
+ * Support "JEP 427: Pattern Matching for switch (Third Preview)" for Java 19 Preview
+ * Note: GuardedPattern is deprecated and only valid for 17-preview and 18-preview
+   * New AST node: ASTSwitchGuard (production "Guard") - used within switch case labels for refining a pattern
+ * Support "JEP 405: Record Patterns (Preview)" for Java 19 Preview
+   * New AST node: ASTRecordPattern and ASTComponentPatternList (production "RecordStructurePattern")
+ * Remove support for Java 17 preview language features
+ * Andreas Dangel 07/2022
+ *====================================================================
+ * Improve module grammar.
+ * Type names in "provides" directives are disambiguated like any other type name.
+ * ASTName is made redundant and removed for good.
+ * Clément Fournier 03/2022
+ *====================================================================
  * Support "JEP 420: Pattern Matching for switch (Second Preview)" for Java 18 Preview
  * There were no grammar changes between 18-preview and 17-preview
  * Remove support for Java 16 preview language features
@@ -316,7 +329,6 @@ class JavaParserImpl {
    * See also comment at #Expression().
    */
   private boolean inSwitchLabel = false;
-
 
   // This is a semantic LOOKAHEAD to determine if we're dealing with an assert
   // Note that this can't be replaced with a syntactic lookahead
@@ -791,7 +803,7 @@ TOKEN :
    "\u1310","\u1312"-"\u1315","\u1318"-"\u131e","\u1320"-"\u1346","\u1348"-"\u135a",
    "\u13a0"-"\u13f4","\u1401"-"\u166c","\u166f"-"\u1676","\u1681"-"\u169a","\u16a0"-"\u16ea",
    "\u1780"-"\u17b3","\u17db","\u1820"-"\u1877","\u1880"-"\u18a8","\u1e00"-"\u1e9b",
-   "\u1ea0"-"\u1ef9","\u1f00"-"\u1f15","\u1f18"-"\u1f1d","\u1f20"-"\u1f45","\u1f48"-"\u1f4d",
+   "\u1ea0"-"\u1ef9","\u1d00"-"\u1eef","\u1f00"-"\u1f15","\u1f18"-"\u1f1d","\u1f20"-"\u1f45","\u1f48"-"\u1f4d",
    "\u1f50"-"\u1f57","\u1f59","\u1f5b","\u1f5d","\u1f5f"-"\u1f7d","\u1f80"-"\u1fb4",
    "\u1fb6"-"\u1fbc","\u1fbe","\u1fc2"-"\u1fc4","\u1fc6"-"\u1fcc","\u1fd0"-"\u1fd3",
    "\u1fd6"-"\u1fdb","\u1fe0"-"\u1fec","\u1ff2"-"\u1ff4","\u1ff6"-"\u1ffc","\u203f"-"\u2040",
@@ -799,7 +811,7 @@ TOKEN :
    "\u2124","\u2126","\u2128","\u212a"-"\u212d","\u212f"-"\u2131","\u2133"-"\u2139",
    "\u2160"-"\u2183","\u3005"-"\u3007","\u3021"-"\u3029","\u3031"-"\u3035","\u3038"-"\u303a",
    "\u3041"-"\u3094","\u309d"-"\u309e","\u30a1"-"\u30fe","\u3105"-"\u312c","\u3131"-"\u318e",
-   "\u31a0"-"\u31b7","\u3400"-"\u4db5","\u4e00"-"\u9fa5","\ua000"-"\ua48c","\uac00"-"\ud7a3",
+   "\u31a0"-"\u31b7","\u3400"-"\u4db5","\u4e00"-"\u9fa5","\ua000"-"\ua48c","\ua490"-"\uabff","\uac00"-"\ud7a3",
    "\uf900"-"\ufa2d","\ufb00"-"\ufb06","\ufb13"-"\ufb17","\ufb1d","\ufb1f"-"\ufb28",
    "\ufb2a"-"\ufb36","\ufb38"-"\ufb3c","\ufb3e","\ufb40"-"\ufb41","\ufb43"-"\ufb44",
    "\ufb46"-"\ufbb1","\ufbd3"-"\ufd3d","\ufd50"-"\ufd8f","\ufd92"-"\ufdc7","\ufdf0"-"\ufdfb",
@@ -860,7 +872,7 @@ TOKEN :
    "\u12f0"-"\u130e","\u1310","\u1312"-"\u1315","\u1318"-"\u131e","\u1320"-"\u1346",
    "\u1348"-"\u135a","\u1369"-"\u1371","\u13a0"-"\u13f4","\u1401"-"\u166c","\u166f"-"\u1676",
    "\u1681"-"\u169a","\u16a0"-"\u16ea","\u1780"-"\u17d3","\u17db","\u17e0"-"\u17e9",
-   "\u180b"-"\u180e","\u1810"-"\u1819","\u1820"-"\u1877","\u1880"-"\u18a9","\u1e00"-"\u1e9b",
+   "\u180b"-"\u180e","\u1810"-"\u1819","\u1820"-"\u1877","\u1880"-"\u18a9","\u1d00"-"\u1d7f","\u1e00"-"\u1e9b",
    "\u1ea0"-"\u1ef9","\u1f00"-"\u1f15","\u1f18"-"\u1f1d","\u1f20"-"\u1f45","\u1f48"-"\u1f4d",
    "\u1f50"-"\u1f57","\u1f59","\u1f5b","\u1f5d","\u1f5f"-"\u1f7d","\u1f80"-"\u1fb4",
    "\u1fb6"-"\u1fbc","\u1fbe","\u1fc2"-"\u1fc4","\u1fc6"-"\u1fcc","\u1fd0"-"\u1fd3",
@@ -871,6 +883,7 @@ TOKEN :
    "\u2160"-"\u2183","\u3005"-"\u3007","\u3021"-"\u302f","\u3031"-"\u3035","\u3038"-"\u303a",
    "\u3041"-"\u3094","\u3099"-"\u309a","\u309d"-"\u309e","\u30a1"-"\u30fe","\u3105"-"\u312c",
    "\u3131"-"\u318e","\u31a0"-"\u31b7","\u3400"-"\u4db5","\u4e00"-"\u9fa5","\ua000"-"\ua48c",
+   "\ua490"-"\uabff",
    "\uac00"-"\ud7a3","\uf900"-"\ufa2d","\ufb00"-"\ufb06","\ufb13"-"\ufb17","\ufb1d"-"\ufb28",
    "\ufb2a"-"\ufb36","\ufb38"-"\ufb3c","\ufb3e","\ufb40"-"\ufb41","\ufb43"-"\ufb44",
    "\ufb46"-"\ufbb1","\ufbd3"-"\ufd3d","\ufd50"-"\ufd8f","\ufd92"-"\ufdc7","\ufdf0"-"\ufdfb",
@@ -1706,7 +1719,9 @@ void EqualityExpression() #void:
 void Pattern() #void:
 {}
 {
-    PrimaryPattern() [ GuardedPatternCondition() #GuardedPattern(2) ]
+    LOOKAHEAD(ReferenceType() "(") RecordPattern()
+    | LOOKAHEAD("(") ParenthesizedPattern()
+    | TypePattern() [ LOOKAHEAD({getToken(1).kind == SC_AND && jdkVersion < 19}) GuardedPatternCondition() #GuardedPattern(2) ]
 }
 
 void GuardedPatternCondition() #void:
@@ -1715,17 +1730,34 @@ void GuardedPatternCondition() #void:
     "&&" ConditionalAndExpression()
 }
 
-void PrimaryPattern() #void:
+void ParenthesizedPattern() #void:
 {}
 {
-      "(" Pattern() ")" { AstImplUtil.bumpParenDepth((ASTPattern) jjtree.peekNode()); }
-    | LOOKAHEAD({true}) TypePattern()
+    "(" Pattern() ")" { AstImplUtil.bumpParenDepth((ASTPattern) jjtree.peekNode()); }
 }
 
 void TypePattern():
 {}
 {
-  LocalVarModifierList() ReferenceType() VariableDeclaratorId()
+  LocalVarModifierList() FormalParamType() VariableDeclaratorId()
+}
+
+void RecordPattern():
+{}
+{
+  ReferenceType() RecordStructurePattern() [ VariableDeclaratorId() ]
+}
+
+void RecordStructurePattern() #ComponentPatternList:
+{}
+{
+  "(" [ RecordComponentPatternList() ] ")"
+}
+
+void RecordComponentPatternList() #void:
+{}
+{
+  Pattern() ( "," Pattern() )*
 }
 
 void InstanceOfExpression() #void:
@@ -1735,9 +1767,9 @@ void InstanceOfExpression() #void:
     LOOKAHEAD(1)
     ("instanceof"
         (
-
-              AnnotatedRefType() [ VariableDeclaratorId() #TypePattern(2) ]
-            | PrimaryPattern()
+              LOOKAHEAD(ReferenceType() "(") RecordPattern()
+            | AnnotatedRefType() [ VariableDeclaratorId() #TypePattern(2) ]
+            | Pattern()
         )
         {
             jjtThis.setOp(BinaryOp.INSTANCEOF);
@@ -2435,9 +2467,23 @@ void CaseLabelElement(ASTSwitchLabel label) #void:
         AbstractJavaNode top = jjtree.popNode();
         top = new ASTPatternExpression((ASTPattern) top);
         jjtree.pushNode(top);
-    }
+    } ( LOOKAHEAD({isKeyword("when")}) Guard() )*
     |
     ConditionalExpression()
+}
+
+void Guard() #SwitchGuard:
+{
+    Token t;
+}
+{
+    t = <IDENTIFIER> {
+        if (!"when".equals(t.image)) {
+            throw new ParseException("ERROR: expected 'when'");
+        }
+    }
+
+    Expression()
 }
 
 void YieldStatement() :
@@ -2734,40 +2780,34 @@ void DefaultValue():
 }
 
 void ModuleDeclaration():
+{}
 {
-    StringBuilder s = new StringBuilder();
-    JavaccToken t;
-}
-{
-  ( Annotation() )* [LOOKAHEAD({isKeyword("open")}) <IDENTIFIER> {jjtThis.setOpen(true);}] LOOKAHEAD({isKeyword("module")}) <IDENTIFIER>
-  t=<IDENTIFIER> { s.append(t.getImage()); }
-  ( "." t=<IDENTIFIER> { s.append('.').append(t.getImage()); } )* { jjtThis.setImage(s.toString()); }
+  AnnotationList()
+  [LOOKAHEAD({isKeyword("open")}) <IDENTIFIER> {jjtThis.setOpen(true);}]
+  LOOKAHEAD({isKeyword("module")}) <IDENTIFIER>
+  ModuleName()
   "{" (ModuleDirective())* "}"
 }
 
-void ModuleDirective():
-{}
+void ModuleDirective() #void:
+{String packageName;}
 {
-    ( LOOKAHEAD({isKeyword("requires")}) <IDENTIFIER> { jjtThis.setType(ASTModuleDirective.DirectiveType.REQUIRES); }
-            (LOOKAHEAD({isKeyword("transitive")}) <IDENTIFIER> { jjtThis.setRequiresModifier(ASTModuleDirective.RequiresModifier.TRANSITIVE); } |
-             "static"     { jjtThis.setRequiresModifier(ASTModuleDirective.RequiresModifier.STATIC);     } )?
-         ModuleName() ";" )
-  | ( LOOKAHEAD({isKeyword("exports")})  <IDENTIFIER> { jjtThis.setType(ASTModuleDirective.DirectiveType.EXPORTS); }  Name() [ LOOKAHEAD({isKeyword("to")}) <IDENTIFIER> ModuleName() ("," ModuleName())*] ";" )
-  | ( LOOKAHEAD({isKeyword("opens")})    <IDENTIFIER> { jjtThis.setType(ASTModuleDirective.DirectiveType.OPENS); }    Name() [ LOOKAHEAD({isKeyword("to")}) <IDENTIFIER> ModuleName() ("," ModuleName())*] ";" )
-  | ( LOOKAHEAD({isKeyword("uses")})     <IDENTIFIER> { jjtThis.setType(ASTModuleDirective.DirectiveType.USES); }     Name() ";" )
-  | ( LOOKAHEAD({isKeyword("provides")}) <IDENTIFIER> { jjtThis.setType(ASTModuleDirective.DirectiveType.PROVIDES); } Name() LOOKAHEAD({isKeyword("with")}) <IDENTIFIER> Name() ("," Name() )* ";" )
+    ( LOOKAHEAD({isKeyword("requires")}) <IDENTIFIER>
+      [
+        LOOKAHEAD({isKeyword("transitive")}) <IDENTIFIER> { jjtThis.setTransitive(); }
+      |                                      "static"     { jjtThis.setStatic(); }
+      ]
+      ModuleName() ";" ) #ModuleRequiresDirective
+  | ( LOOKAHEAD({isKeyword("exports")})  <IDENTIFIER> packageName=VoidNameNoLookahead() {jjtThis.setPackageName(packageName);} [ LOOKAHEAD({isKeyword("to")}) <IDENTIFIER> ModuleName() ("," ModuleName())* ] ";" ) #ModuleExportsDirective
+  | ( LOOKAHEAD({isKeyword("opens")})    <IDENTIFIER> packageName=VoidNameNoLookahead() {jjtThis.setPackageName(packageName);} [ LOOKAHEAD({isKeyword("to")}) <IDENTIFIER> ModuleName() ("," ModuleName())* ] ";" ) #ModuleOpensDirective
+  | ( LOOKAHEAD({isKeyword("uses")})     <IDENTIFIER> ClassName() ";" ) #ModuleUsesDirective
+  | ( LOOKAHEAD({isKeyword("provides")}) <IDENTIFIER> ClassName() LOOKAHEAD({isKeyword("with")}) <IDENTIFIER> ClassName() ("," ClassName() )* ";" ) #ModuleProvidesDirective
 }
 
 void ModuleName():
 { String name; }
 {
-  name=VoidName() { jjtThis.setImage(name); }
-}
-
-void Name():
-{ String name; }
-{
-  name=VoidName() { jjtThis.setImage(name); }
+  name=VoidNameNoLookahead() { jjtThis.setImage(name); }
 }
 
 void AmbiguousName():
@@ -2790,6 +2830,18 @@ String VoidName() #void:
   t=<IDENTIFIER>                    { s.append(t.getImage()); }
   ( LOOKAHEAD(2) "." t=<IDENTIFIER> { s.append('.').append(t.getImage()); }
   )*
+  {return s.toString();}
+}
+
+
+String VoidNameNoLookahead() #void:
+{
+  StringBuilder s = new StringBuilder();
+  JavaccToken t;
+}
+{
+  t=<IDENTIFIER>       { s.append(t.getImage()); }
+  ( "." t=<IDENTIFIER> { s.append('.').append(t.getImage()); } )*
   {return s.toString();}
 }
 

@@ -1,0 +1,57 @@
+<!-- from https://raw.githubusercontent.com/trailheadapps/lwc-recipes-oss/main/src/modules/ui/app/app.html -->
+<template>
+    <section class="content container page-background">
+        <ui-navbar
+            nav-items={navigationItems}
+            selected-item={currentNavigationItem}
+            oncategorychange={handleCategoryChange}
+        >
+        </ui-navbar>
+
+        <article class="container">
+            <div>
+                <template if:true={navigationItems.hello.visible}>
+                    <recipe-hello></recipe-hello>
+                    <recipe-hello-binding></recipe-hello-binding>
+                    <recipe-hello-expressions></recipe-hello-expressions>
+                    <recipe-hello-expressions-track></recipe-hello-expressions-track>
+                    <recipe-hello-conditional-rendering></recipe-hello-conditional-rendering>
+                    <recipe-hello-for-each></recipe-hello-for-each
+                    ><recipe-hello-iterator></recipe-hello-iterator>
+                </template>
+                <template if:true={navigationItems.composition.visible}>
+                    <recipe-composition-basics></recipe-composition-basics>
+                    <recipe-composition-iteration></recipe-composition-iteration>
+                    <recipe-composition-contact-search></recipe-composition-contact-search>
+                    <recipe-composition-dynamic></recipe-composition-dynamic>
+                </template>
+                <template if:true={navigationItems.child.visible}>
+                    <recipe-event-simple></recipe-event-simple>
+                    <recipe-event-with-data></recipe-event-with-data>
+                    <recipe-event-bubbling></recipe-event-bubbling>
+                </template>
+                <template if:true={navigationItems.parent.visible}>
+                    <recipe-api-property></recipe-api-property>
+                    <recipe-api-function></recipe-api-function>
+                    <recipe-api-setter-getter></recipe-api-setter-getter>
+                </template>
+                <template if:true={navigationItems.misc.visible}>
+                    <recipe-misc-shared-java-script></recipe-misc-shared-java-script>
+                    <recipe-misc-rest-api-call></recipe-misc-rest-api-call>
+                    <recipe-misc-dom-query></recipe-misc-dom-query>
+                    <recipe-misc-multiple-templates></recipe-misc-multiple-templates>
+                </template>
+                <template if:true={navigationItems.party.visible}>
+                    <recipe-libs-d3></recipe-libs-d3>
+                    <recipe-libs-chartjs></recipe-libs-chartjs>
+                </template>
+                <ui-navfooter
+                    label-next={nextNavigationItem}
+                    label-previous={previousNavigationItem}
+                    onnextclicked={handleNavigateNext}
+                    onpreviousclicked={handleNavigatePrevious}
+                ></ui-navfooter>
+            </div>
+        </article>
+    </section>
+</template>

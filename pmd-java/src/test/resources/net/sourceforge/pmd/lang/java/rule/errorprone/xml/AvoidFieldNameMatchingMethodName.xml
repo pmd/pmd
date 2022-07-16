@@ -104,4 +104,46 @@ public interface Bar {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>Test1 in Enum #3936</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class C {
+  enum E {
+      R;
+      int bar;
+      void bar() {}  // should report a warning in this line
+  }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Test2 in Enum #3936</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class C {
+  int bar;
+  enum E {
+      R;
+      void bar() {}
+  }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Test3 in Enum #3936</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class C {
+  void bar() {}
+  enum E {
+      R;
+      int bar;
+  }
+}
+        ]]></code>
+    </test-code>
 </test-data>

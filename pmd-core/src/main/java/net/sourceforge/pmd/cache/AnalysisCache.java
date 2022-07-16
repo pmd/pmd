@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.cache;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
@@ -12,9 +11,9 @@ import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.document.TextDocument;
+import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
-import net.sourceforge.pmd.util.datasource.DataSource;
 
 /**
  * An analysis cache for incremental analysis.
@@ -68,8 +67,8 @@ public interface AnalysisCache {
     void checkValidity(RuleSets ruleSets, ClassLoader auxclassPathClassLoader);
 
     /**
-     * Returns a listener that will be used like in {@link GlobalAnalysisListener#startFileAnalysis(DataSource)}.
-     * This should record violations, and call {@link #analysisFailed(File)}
+     * Returns a listener that will be used like in {@link GlobalAnalysisListener#startFileAnalysis(TextFile)}.
+     * This should record violations, and call {@link #analysisFailed(TextDocument)}
      * upon error.
      */
     FileAnalysisListener startFileAnalysis(TextDocument file);

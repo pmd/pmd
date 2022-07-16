@@ -17,8 +17,27 @@ import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
 import net.sourceforge.pmd.lang.java.types.ast.LazyTypeResolver;
 
-// FUTURE Change this class to extend from SimpleJavaNode, as TypeNode is not appropriate (unless I'm wrong)
-public final class ASTCompilationUnit extends AbstractJavaTypeNode implements JavaNode, GenericNode<JavaNode>, RootNode {
+
+/**
+ * The root node of all Java ASTs.
+ *
+ * <pre class="grammar">
+ *
+ * CompilationUnit ::= RegularCompilationUnit
+ *                   | ModularCompilationUnit
+ *
+ * RegularCompilationUnit ::=
+ *   {@linkplain ASTPackageDeclaration PackageDeclaration}?
+ *   {@linkplain ASTImportDeclaration ImportDeclaration}*
+ *   {@linkplain ASTAnyTypeDeclaration TypeDeclaration}*
+ *
+ * ModularCompilationUnit ::=
+ *   {@linkplain ASTImportDeclaration ImportDeclaration}*
+ *   {@linkplain ASTModuleDeclaration ModuleDeclaration}
+ *
+ * </pre>
+ */
+public final class ASTCompilationUnit extends AbstractJavaNode implements JavaNode, GenericNode<JavaNode>, RootNode {
 
     private LazyTypeResolver lazyTypeResolver;
     private List<Comment> comments;
@@ -52,15 +71,9 @@ public final class ASTCompilationUnit extends AbstractJavaTypeNode implements Ja
     }
 
     /**
-     * @deprecated Use {@code getPackageName().isEmpty()}
+     * Returns the package declaration, if there is one.
      */
-    @Deprecated
-    public boolean declarationsAreInDefaultPackage() {
-        return getPackageDeclaration() == null;
-    }
-
-    @Nullable
-    public ASTPackageDeclaration getPackageDeclaration() {
+    public @Nullable ASTPackageDeclaration getPackageDeclaration() {
         return AstImplUtil.getChildAs(this, 0, ASTPackageDeclaration.class);
     }
 
@@ -73,19 +86,25 @@ public final class ASTCompilationUnit extends AbstractJavaTypeNode implements Ja
      * Returns the package name of this compilation unit. If there is no
      * package declaration, then returns the empty string.
      */
-    @NonNull
-    public String getPackageName() {
+    public @NonNull String getPackageName() {
         ASTPackageDeclaration pack = getPackageDeclaration();
         return pack == null ? "" : pack.getName();
     }
 
     /**
-     * Returns the type declarations declared in this compilation unit.
-     * This may be empty if this a package-info.java, or a modular
-     * compilation unit. Note that this only cares for top-level types
+     * Returns the top-level type declarations declared in this compilation
+     * unit. This may be empty, eg if this a package-info.java, or a modular
+     * compilation unit (but ordinary compilation units may also be empty).
      */
     public NodeStream<ASTAnyTypeDeclaration> getTypeDeclarations() {
         return children(ASTAnyTypeDeclaration.class);
+    }
+
+    /**
+     * Returns the module declaration, if this is a modular compilation unit.
+     */
+    public @Nullable ASTModuleDeclaration getModuleDeclaration() {
+        return firstChild(ASTModuleDeclaration.class);
     }
 
     @Override

@@ -16,8 +16,8 @@ import java.util.regex.Pattern;
  * @since 6.2.0
  */
 @Deprecated
-public class RegexPropertyTest extends AbstractPropertyDescriptorTester<Pattern> {
-    public RegexPropertyTest() {
+class RegexPropertyTest extends AbstractPropertyDescriptorTester<Pattern> {
+    RegexPropertyTest() {
         super("Regex");
     }
 
@@ -60,42 +60,42 @@ public class RegexPropertyTest extends AbstractPropertyDescriptorTester<Pattern>
     }
 
     @Override
-    public void testAddAttributesMulti() {
+    void testAddAttributesMulti() {
     }
 
 
     @Override
-    public void testAsDelimitedString() {
+    void testAsDelimitedString() {
     }
 
 
     @Override
-    public void testErrorForBadMulti() {
+    void testErrorForBadMulti() {
     }
 
 
     @Override
-    public void testErrorForCorrectMulti() {
+    void testErrorForCorrectMulti() {
     }
 
 
     @Override
-    public void testFactoryMultiValueDefaultDelimiter() {
+    void testFactoryMultiValueDefaultDelimiter() {
     }
 
 
     @Override
-    public void testFactoryMultiValueCustomDelimiter() {
+    void testFactoryMultiValueCustomDelimiter() {
     }
 
 
     @Override
-    public void testTypeMulti() {
+    void testTypeMulti() {
     }
 
 
     @Override
-    public void testIsMultiValueMulti() {
+    void testIsMultiValueMulti() {
     }
 
 
