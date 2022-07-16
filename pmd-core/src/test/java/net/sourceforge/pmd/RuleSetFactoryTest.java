@@ -230,20 +230,19 @@ class RuleSetFactoryTest extends RulesetFactoryTestBase {
      */
     @Test
     void testRuleSetWithDeprecatedButRenamedRule() throws Exception {
-        String log =  SystemLambda.tapSystemErr(() -> {
-        RuleSet rs = loadRuleSetWithDeprecationWarnings(
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + "<ruleset name=\"test\">\n"
-                + "  <description>ruleset desc</description>\n"
-                + "     <rule deprecated=\"true\" ref=\"NewName\" name=\"OldName\"/>"
-                + "     <rule name=\"NewName\" message=\"m\" class=\"net.sourceforge.pmd.lang.rule.XPathRule\" language=\"dummy\">"
-                + "         <description>d</description>\n" + "         <priority>2</priority>\n" + "     </rule>"
-                + "</ruleset>");
-        assertEquals(1, rs.getRules().size());
-        Rule rule = rs.getRuleByName("NewName");
-        assertNotNull(rule);
-        assertNull(rs.getRuleByName("OldName"));
+        SystemLambda.tapSystemErr(() -> {
+            RuleSet rs = loadRuleSetWithDeprecationWarnings(
+                "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + "<ruleset name=\"test\">\n"
+                    + "  <description>ruleset desc</description>\n"
+                    + "     <rule deprecated=\"true\" ref=\"NewName\" name=\"OldName\"/>"
+                    + "     <rule name=\"NewName\" message=\"m\" class=\"net.sourceforge.pmd.lang.rule.XPathRule\" language=\"dummy\">"
+                    + "         <description>d</description>\n" + "         <priority>2</priority>\n" + "     </rule>"
+                    + "</ruleset>");
+            assertEquals(1, rs.getRules().size());
+            Rule rule = rs.getRuleByName("NewName");
+            assertNotNull(rule);
+            assertNull(rs.getRuleByName("OldName"));
         });
-        assertTrue(log.isEmpty());
 
         verifyNoWarnings();
     }
@@ -280,11 +279,11 @@ class RuleSetFactoryTest extends RulesetFactoryTestBase {
      */
     @Test
     void testRuleSetReferencesADeprecatedRenamedRule() throws Exception {
-        String log = SystemLambda.tapSystemErr(() -> {
+        SystemLambda.tapSystemErr(() -> {
             RuleSet rs = loadRuleSetWithDeprecationWarnings(
-                    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + "<ruleset name=\"test\">\n"
-                            + "  <description>ruleset desc</description>\n"
-                            + "     <rule ref=\"rulesets/dummy/basic.xml/OldNameOfDummyBasicMockRule\"/>" + "</ruleset>");
+                "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + "<ruleset name=\"test\">\n"
+                    + "  <description>ruleset desc</description>\n"
+                    + "     <rule ref=\"rulesets/dummy/basic.xml/OldNameOfDummyBasicMockRule\"/>" + "</ruleset>");
             assertEquals(1, rs.getRules().size());
             Rule rule = rs.getRuleByName("OldNameOfDummyBasicMockRule");
             assertNotNull(rule);
@@ -312,17 +311,17 @@ class RuleSetFactoryTest extends RulesetFactoryTestBase {
      */
     @Test
     void testRuleSetReferencesRulesetWithADeprecatedRenamedRule() throws Exception {
-        String log = SystemLambda.tapSystemErr(() -> {
+        SystemLambda.tapSystemErr(() -> {
             RuleSet rs = loadRuleSetWithDeprecationWarnings(
-                    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + "<ruleset name=\"test\">\n"
-                            + "  <description>ruleset desc</description>\n"
-                            + "     <rule ref=\"rulesets/dummy/basic.xml\"/>" + "</ruleset>");
+                "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + "<ruleset name=\"test\">\n"
+                    + "  <description>ruleset desc</description>\n"
+                    + "     <rule ref=\"rulesets/dummy/basic.xml\"/>" + "</ruleset>");
             assertEquals(2, rs.getRules().size());
             assertNotNull(rs.getRuleByName("DummyBasicMockRule"));
             assertNotNull(rs.getRuleByName("SampleXPathRule"));
         });
 
-        assertTrue(log.isEmpty());
+        verifyNoWarnings();
     }
 
     /**
@@ -369,7 +368,7 @@ class RuleSetFactoryTest extends RulesetFactoryTestBase {
      */
     @Test
     void testRuleSetReferencesRulesetWithAExcludedNonExistingRule() throws Exception {
-        String log = SystemLambda.tapSystemErr(() -> {
+        SystemLambda.tapSystemErr(() -> {
             RuleSet rs = loadRuleSetWithDeprecationWarnings(
                 rulesetXml(
                     rulesetRef("rulesets/dummy/basic.xml",
@@ -395,7 +394,7 @@ class RuleSetFactoryTest extends RulesetFactoryTestBase {
      */
     @Test
     void testRuleSetReferencesDeprecatedRuleset() throws Exception {
-        String log = SystemLambda.tapSystemErr(() -> {
+        SystemLambda.tapSystemErr(() -> {
             RuleSet rs = loadRuleSetWithDeprecationWarnings(
                 rulesetXml(
                     rulesetRef("rulesets/dummy/deprecated.xml")
@@ -417,7 +416,7 @@ class RuleSetFactoryTest extends RulesetFactoryTestBase {
      */
     @Test
     void testRuleSetReferencesRulesetWithAMovedRule() throws Exception {
-        String log = SystemLambda.tapSystemErr(() -> {
+        SystemLambda.tapSystemErr(() -> {
             RuleSet rs = loadRuleSetWithDeprecationWarnings(
                 rulesetXml(
                     ruleRef("rulesets/dummy/basic2.xml")
@@ -460,7 +459,7 @@ class RuleSetFactoryTest extends RulesetFactoryTestBase {
     }
 
     @Test
-    public void testExternalReferenceOverrideNonExistent() {
+    void testExternalReferenceOverrideNonExistent() {
         assertThrows(RuleSetLoadException.class,
                      () -> loadFirstRule(REF_OVERRIDE_NONEXISTENT));
         verifyFoundAnErrorWithMessage(
@@ -976,19 +975,15 @@ class RuleSetFactoryTest extends RulesetFactoryTestBase {
 
     @Test
     void testDeprecatedRulesetReferenceProducesWarning() throws Exception {
-        String log = SystemLambda.tapSystemErr(() -> {
-            loadRuleSetWithDeprecationWarnings(
-                    "<?xml version=\"1.0\"?>\n" + "<ruleset \n"
-                            + "    name='foo'"
-                            + "    xmlns=\"http://pmd.sourceforge.net/ruleset/2.0.0\"\n"
-                            + "    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
-                            + "    xsi:schemaLocation=\"http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd\">\n"
-                            + "  <description>Custom ruleset for tests</description>\n"
-                            + "  <rule ref=\"dummy-basic\"/>\n"
-                            + "  </ruleset>\n");
-        });
+        SystemLambda.tapSystemErr(
+            () -> loadRuleSetWithDeprecationWarnings(
+                rulesetXml(
+                    ruleRef("dummy-basic")
+                )));
 
-       assertThat(log, containsString("Ruleset reference 'dummy-basic' uses a deprecated form, use 'rulesets/dummy/basic.xml' instead"));
+        verifyFoundAWarningWithMessage(containing(
+            "Ruleset reference 'dummy-basic' uses a deprecated form, use 'rulesets/dummy/basic.xml' instead"
+        ));
     }
 
     private static final String REF_OVERRIDE_ORIGINAL_NAME = "<?xml version=\"1.0\"?>\n"
