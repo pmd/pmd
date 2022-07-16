@@ -21,13 +21,11 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.junit.Before;
-import org.junit.contrib.java.lang.system.SystemErrRule;
+import org.junit.jupiter.api.BeforeEach;
 import org.mockito.verification.VerificationMode;
 import org.slf4j.LoggerFactory;
 import org.slf4j.event.Level;
 
-import net.sourceforge.pmd.junit.LocaleRule;
 import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.util.internal.xml.SchemaConstant;
 import net.sourceforge.pmd.util.internal.xml.SchemaConstants;
@@ -36,15 +34,9 @@ import net.sourceforge.pmd.util.log.internal.SimpleMessageReporter;
 
 public class RulesetFactoryTestBase {
 
-    @org.junit.Rule
-    public LocaleRule localeRule = LocaleRule.en();
-
-    @org.junit.Rule
-    public SystemErrRule systemErrRule = new SystemErrRule().enableLog().muteForSuccessfulTests();
-
     protected MessageReporter mockReporter;
 
-    @Before
+    @BeforeEach
     public void setup() {
         SimpleMessageReporter reporter = new SimpleMessageReporter(LoggerFactory.getLogger(RulesetFactoryTestBase.class));
         mockReporter = spy(reporter);

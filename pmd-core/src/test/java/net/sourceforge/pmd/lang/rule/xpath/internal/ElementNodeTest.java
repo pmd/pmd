@@ -5,12 +5,12 @@
 
 package net.sourceforge.pmd.lang.rule.xpath.internal;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.ast.DummyNode;
@@ -19,11 +19,11 @@ import net.sourceforge.pmd.lang.ast.DummyNode.DummyRootNode;
 import net.sf.saxon.Configuration;
 import net.sf.saxon.type.Type;
 
-public class ElementNodeTest {
+class ElementNodeTest {
 
 
     @Test
-    public void testCompareOrder() {
+    void testCompareOrder() {
         DummyRootNode root = DummyLanguageModule.parse(
             "(#foo)"
                 + "(#foo)"
@@ -61,7 +61,7 @@ public class ElementNodeTest {
     }
 
     @Test
-    public void verifyTextNodeType() {
+    void verifyTextNodeType() {
         DummyRootNode root = DummyLanguageModule.parse("(foo)(#text)");
 
         DummyNode c0 = root.getChild(0);
@@ -87,7 +87,7 @@ public class ElementNodeTest {
     }
 
     @Test
-    public void verifyCommentNodeType() {
+    void verifyCommentNodeType() {
         DummyRootNode root = DummyLanguageModule.parse("(#comment)");
 
         DummyNode c1 = root.getChild(0);

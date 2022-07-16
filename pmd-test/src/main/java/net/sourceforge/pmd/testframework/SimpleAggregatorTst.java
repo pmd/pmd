@@ -7,8 +7,6 @@ package net.sourceforge.pmd.testframework;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.runner.RunWith;
-
 import net.sourceforge.pmd.Rule;
 
 /**
@@ -19,7 +17,6 @@ import net.sourceforge.pmd.Rule;
  * rules, that should be tested via calls to
  * {@link #addRule(String, String)}.
  */
-@RunWith(PMDTestRunner.class)
 public abstract class SimpleAggregatorTst extends RuleTst {
 
     private List<Rule> rules = new ArrayList<>();

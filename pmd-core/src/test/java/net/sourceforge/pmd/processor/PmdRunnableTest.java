@@ -7,6 +7,9 @@ package net.sourceforge.pmd.processor;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.contains;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.mock;
@@ -18,11 +21,8 @@ import static org.mockito.Mockito.verify;
 import java.util.List;
 import java.util.function.BiConsumer;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.contrib.java.lang.system.RestoreSystemProperties;
-import org.junit.rules.TestRule;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.slf4j.event.Level;
 
@@ -56,17 +56,13 @@ public class PmdRunnableTest {
     private static final String THROWS_SEMANTIC_ERROR = "1.9-throws_semantic_error";
     private static final String THROWS_ASSERTION_ERROR = "1.9-throws";
 
-
-    @org.junit.Rule
-    public TestRule restoreSystemProperties = new RestoreSystemProperties();
-
     private PMDConfiguration configuration;
     private PmdRunnable pmdRunnable;
     private MessageReporter reporter;
     private Rule rule;
 
 
-    @Before
+    @BeforeEach
     public void prepare() {
         // reset data
         rule = spy(new RuleThatThrows());
@@ -100,7 +96,7 @@ public class PmdRunnableTest {
 
         Report report = process(versionWithParserThatThrowsAssertionError());
 
-        Assert.assertEquals(1, report.getProcessingErrors().size());
+        assertEquals(1, report.getProcessingErrors().size());
     }
 
     @Test
@@ -116,16 +112,16 @@ public class PmdRunnableTest {
 
     @Test
     public void withoutErrorRecoveryModeProcessingShouldBeAbortedByParser() {
-        Assert.assertNull(System.getProperty(SystemProps.PMD_ERROR_RECOVERY));
+        assertNull(System.getProperty(SystemProps.PMD_ERROR_RECOVERY));
 
-        Assert.assertThrows(AssertionError.class, () -> process(versionWithParserThatThrowsAssertionError()));
+        assertThrows(AssertionError.class, () -> process(versionWithParserThatThrowsAssertionError()));
     }
 
     @Test
     public void withoutErrorRecoveryModeProcessingShouldBeAbortedByRule() {
-        Assert.assertNull(System.getProperty(SystemProps.PMD_ERROR_RECOVERY));
+        assertNull(System.getProperty(SystemProps.PMD_ERROR_RECOVERY));
 
-        Assert.assertThrows(AssertionError.class, () -> process(DummyLanguageModule.getInstance().getDefaultVersion()));
+        assertThrows(AssertionError.class, () -> process(DummyLanguageModule.getInstance().getDefaultVersion()));
     }
 
 
@@ -137,7 +133,7 @@ public class PmdRunnableTest {
             .log(eq(Level.ERROR), eq("at !debug only! test.dummy:1:1: " + TEST_MESSAGE_SEMANTIC_ERROR));
         verify(rule, never()).apply(Mockito.any(), Mockito.any());
 
-        Assert.assertEquals(1, report.getProcessingErrors().size());
+        assertEquals(1, report.getProcessingErrors().size());
     }
 
     @Test
@@ -147,7 +143,7 @@ public class PmdRunnableTest {
         verify(reporter, times(1)).log(eq(Level.ERROR), contains(TEST_MESSAGE_SEMANTIC_ERROR));
         verify(rule, never()).apply(Mockito.any(), Mockito.any());
 
-        Assert.assertEquals(1, report.getProcessingErrors().size());
+        assertEquals(1, report.getProcessingErrors().size());
     }
 
     public static void registerCustomVersions(BiConsumer<String, Handler> addVersion) {

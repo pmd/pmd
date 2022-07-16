@@ -7,21 +7,22 @@ package net.sourceforge.pmd;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import com.github.stefanbirkner.systemlambda.SystemLambda;
 
 public class RuleSetFactoryMessagesTest extends RulesetFactoryTestBase {
 
     @Test
-    public void testFullMessage() {
-        assertCannotParse(
+    public void testFullMessage() throws Exception {
+        String log = SystemLambda.tapSystemErr(() -> assertCannotParse(
             rulesetXml(
                 dummyRule(
                     priority("not a priority")
                 )
             )
-        );
+        ));
 
-        String log = systemErrRule.getLog();
         assertThat(log, containsString(
             "Error at dummyRuleset.xml:9:1\n"
                 + " 7| \n"

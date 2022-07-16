@@ -15,14 +15,14 @@ import java.util.List;
  * @author Brian Remedios
  */
 @Deprecated
-public class DoublePropertyTest extends AbstractNumericPropertyDescriptorTester<Double> {
+class DoublePropertyTest extends AbstractNumericPropertyDescriptorTester<Double> {
 
     private static final double MIN = -10.0;
     private static final double MAX = 100.0;
     private static final double SHIFT = 5.0;
 
 
-    public DoublePropertyTest() {
+    DoublePropertyTest() {
         super("Double");
     }
 

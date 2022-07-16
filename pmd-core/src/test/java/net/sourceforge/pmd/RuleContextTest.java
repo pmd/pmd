@@ -4,10 +4,11 @@
 
 package net.sourceforge.pmd;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.util.function.BiConsumer;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.ast.DummyNode.DummyRootNode;
 import net.sourceforge.pmd.lang.ast.Node;
@@ -16,7 +17,7 @@ import net.sourceforge.pmd.lang.ast.impl.DummyTreeUtil;
 
 public class RuleContextTest {
 
-    public static Report getReport(Rule rule, BiConsumer<Rule, RuleContext> sideEffects) {
+    static Report getReport(Rule rule, BiConsumer<Rule, RuleContext> sideEffects) {
         return Report.buildReport(listener -> sideEffects.accept(rule, RuleContext.create(listener, rule)));
     }
 
@@ -24,29 +25,29 @@ public class RuleContextTest {
         return getReport(rule, (r, ctx) -> r.apply(node, ctx));
     }
 
-    public static Report getReportForRuleSetApply(RuleSet ruleset, RootNode node) {
+    static Report getReportForRuleSetApply(RuleSet ruleset, RootNode node) {
         return Report.buildReport(listener -> new RuleSets(ruleset).apply(node, listener));
     }
 
     @Test
-    public void testMessage() throws Exception {
+    void testMessage() throws Exception {
         Report report = getReport(new FooRule(), (r, ctx) -> ctx.addViolationWithMessage(DummyTreeUtil.tree(DummyTreeUtil::root), "message with \"'{'\""));
 
-        Assert.assertEquals("message with \"{\"", report.getViolations().get(0).getDescription());
+        assertEquals("message with \"{\"", report.getViolations().get(0).getDescription());
     }
 
     @Test
-    public void testMessageEscaping() throws Exception {
+    void testMessageEscaping() throws Exception {
         RuleViolation violation = makeViolation("message with \"'{'\"");
 
-        Assert.assertEquals("message with \"{\"", violation.getDescription());
+        assertEquals("message with \"{\"", violation.getDescription());
     }
 
     @Test
-    public void testMessageEscaping2() throws Exception {
+    void testMessageEscaping2() throws Exception {
         RuleViolation violation = makeViolation("message with ${ohio}");
 
-        Assert.assertEquals("message with ${ohio}", violation.getDescription());
+        assertEquals("message with ${ohio}", violation.getDescription());
     }
 
     private RuleViolation makeViolation(String unescapedMessage, Object... args) throws Exception {

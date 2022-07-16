@@ -4,8 +4,8 @@
 
 package net.sourceforge.pmd.processor;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
@@ -13,7 +13,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import net.sourceforge.pmd.FooRule;
@@ -29,12 +29,12 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener.ViolationCounterListener;
 
-public class GlobalListenerTest {
+class GlobalListenerTest {
 
     static final int NUM_DATA_SOURCES = 3;
 
     @Test
-    public void testViolationCounter() throws Exception {
+    void testViolationCounter() throws Exception {
 
         PMDConfiguration config = newConfig();
 
@@ -49,7 +49,7 @@ public class GlobalListenerTest {
     }
 
     @Test
-    public void testViolationCounterOnMulti() throws Exception {
+    void testViolationCounterOnMulti() throws Exception {
 
         PMDConfiguration config = newConfig();
         config.setThreads(2);
@@ -67,7 +67,7 @@ public class GlobalListenerTest {
     }
 
     @Test
-    public void testAnalysisCache() throws Exception {
+    void testAnalysisCache() throws Exception {
 
         PMDConfiguration config = newConfig();
         AnalysisCache mockCache = spy(NoopAnalysisCache.class);
@@ -82,7 +82,7 @@ public class GlobalListenerTest {
     }
 
     @Test
-    public void testCacheWithFailure() throws Exception {
+    void testCacheWithFailure() throws Exception {
 
         PMDConfiguration config = newConfig();
         AnalysisCache mockCache = spy(NoopAnalysisCache.class);
@@ -98,7 +98,7 @@ public class GlobalListenerTest {
     }
 
     @Test
-    public void testCacheWithPropagatedException() throws Exception {
+    void testCacheWithPropagatedException() throws Exception {
 
         PMDConfiguration config = newConfig();
         AnalysisCache mockCache = spy(NoopAnalysisCache.class);
