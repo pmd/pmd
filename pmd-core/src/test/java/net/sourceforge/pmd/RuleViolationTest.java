@@ -9,7 +9,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Comparator;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.DummyLanguageModule;
@@ -29,7 +28,7 @@ class RuleViolationTest {
         DummyRootNode s = DummyLanguageModule.parse("abcd", "filename");
         RuleViolation r = new ParametricRuleViolation(rule, s, rule.getMessage());
         assertEquals(rule, r.getRule(), "object mismatch");
-        assertEquals(2, r.getBeginLine(), "line number is wrong");
+        assertEquals(1, r.getBeginLine(), "line number is wrong");
         assertEquals("filename", r.getFilename(), "filename is wrong");
     }
 
@@ -39,7 +38,7 @@ class RuleViolationTest {
         DummyRootNode s = DummyLanguageModule.parse("abcd", "filename");
         RuleViolation r = new ParametricRuleViolation(rule, s, "description");
         assertEquals(rule, r.getRule(), "object mismatch");
-        assertEquals(2, r.getBeginLine(), "line number is wrong");
+        assertEquals(1, r.getBeginLine(), "line number is wrong");
         assertEquals("filename", r.getFilename(), "filename is wrong");
         assertEquals("description", r.getDescription(), "description is wrong");
     }

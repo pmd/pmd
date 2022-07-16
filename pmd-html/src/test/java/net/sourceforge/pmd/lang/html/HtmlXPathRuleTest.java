@@ -4,19 +4,15 @@
 
 package net.sourceforge.pmd.lang.html;
 
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.util.List;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.lang.LanguageRegistry;
-import net.sourceforge.pmd.lang.LanguageVersion;
-import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.ast.Parser;
-import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
-import net.sourceforge.pmd.lang.ast.SemanticErrorReporter;
 import net.sourceforge.pmd.lang.html.ast.ASTHtmlComment;
 import net.sourceforge.pmd.lang.html.ast.ASTHtmlDocument;
 import net.sourceforge.pmd.lang.html.ast.ASTHtmlTextNode;
@@ -48,29 +44,29 @@ public class HtmlXPathRuleTest {
         String xpath = "//text()[contains(., '{ ')]";
 
         List<RuleViolation> violations = runXPath(LIGHTNING_WEB_COMPONENT, xpath);
-        Assert.assertEquals(1, violations.size());
-        Assert.assertEquals(3, violations.get(0).getBeginLine());
+        assertEquals(1, violations.size());
+        assertEquals(3, violations.get(0).getBeginLine());
     }
 
     @Test
     public void selectTextNodeByNodeNameShouldNotWork() {
         String xpath = "//*[local-name() = '#text']";
         List<RuleViolation> violations = runXPath(LIGHTNING_WEB_COMPONENT, xpath);
-        Assert.assertEquals(0, violations.size());
+        assertEquals(0, violations.size());
     }
 
     @Test
     public void verifyTextNodeName() {
         ASTHtmlDocument document = HtmlParsingHelper.DEFAULT.parse("<p>foobar</p>");
         ASTHtmlTextNode textNode = document.getFirstDescendantOfType(ASTHtmlTextNode.class);
-        Assert.assertEquals("#text", textNode.getXPathNodeName());
+        assertEquals("#text", textNode.getXPathNodeName());
     }
 
     @Test
     public void verifyCommentNodeName() {
         ASTHtmlDocument document = HtmlParsingHelper.DEFAULT.parse("<p><!-- a comment --></p>");
         ASTHtmlComment comment = document.getFirstDescendantOfType(ASTHtmlComment.class);
-        Assert.assertEquals("#comment", comment.getXPathNodeName());
+        assertEquals("#comment", comment.getXPathNodeName());
     }
 
     @Test
@@ -80,8 +76,8 @@ public class HtmlXPathRuleTest {
         String xpath = "//*[@value = '{']";
 
         List<RuleViolation> violations = runXPath(LIGHTNING_WEB_COMPONENT, xpath);
-        Assert.assertEquals(1, violations.size());
-        Assert.assertEquals(4, violations.get(0).getBeginLine());
+        assertEquals(1, violations.size());
+        assertEquals(4, violations.get(0).getBeginLine());
     }
 
     @Test
@@ -91,9 +87,9 @@ public class HtmlXPathRuleTest {
         String xpath = "//*[@*[local-name() = ('value', 'onchange')] = '{']";
 
         List<RuleViolation> violations = runXPath(LIGHTNING_WEB_COMPONENT, xpath);
-        Assert.assertEquals(2, violations.size());
-        Assert.assertEquals(4, violations.get(0).getBeginLine());
-        Assert.assertEquals(6, violations.get(1).getBeginLine());
+        assertEquals(2, violations.size());
+        assertEquals(4, violations.get(0).getBeginLine());
+        assertEquals(6, violations.get(1).getBeginLine());
     }
 
     @Test
@@ -101,8 +97,8 @@ public class HtmlXPathRuleTest {
         String xpath = "//*[@*[local-name() = 'if:true']]";
 
         List<RuleViolation> violations = runXPath(LIGHTNING_WEB_COMPONENT, xpath);
-        Assert.assertEquals(1, violations.size());
-        Assert.assertEquals(10, violations.get(0).getBeginLine());
+        assertEquals(1, violations.size());
+        assertEquals(10, violations.get(0).getBeginLine());
     }
 
     private List<RuleViolation> runXPath(String html, String xpath) {

@@ -8,7 +8,6 @@ import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.contains;
 import static org.mockito.Mockito.eq;
@@ -48,6 +47,8 @@ import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
 import net.sourceforge.pmd.processor.MonoThreadProcessor.MonothreadRunnable;
 import net.sourceforge.pmd.util.log.MessageReporter;
+
+import com.github.stefanbirkner.systemlambda.SystemLambda;
 
 public class PmdRunnableTest {
 
@@ -91,37 +92,44 @@ public class PmdRunnableTest {
     }
 
     @Test
-    public void inErrorRecoveryModeErrorsShouldBeLoggedByParser() {
-        System.setProperty(SystemProps.PMD_ERROR_RECOVERY, "");
+    public void inErrorRecoveryModeErrorsShouldBeLoggedByParser() throws Exception {
+        SystemLambda.restoreSystemProperties(() -> {
+            System.setProperty(SystemProps.PMD_ERROR_RECOVERY, "");
 
-        Report report = process(versionWithParserThatThrowsAssertionError());
+            Report report = process(versionWithParserThatThrowsAssertionError());
 
-        assertEquals(1, report.getProcessingErrors().size());
+            assertEquals(1, report.getProcessingErrors().size());
+        });
     }
 
     @Test
-    public void inErrorRecoveryModeErrorsShouldBeLoggedByRule() {
-        System.setProperty(SystemProps.PMD_ERROR_RECOVERY, "");
+    public void inErrorRecoveryModeErrorsShouldBeLoggedByRule() throws Exception {
+        SystemLambda.restoreSystemProperties(() -> {
+            System.setProperty(SystemProps.PMD_ERROR_RECOVERY, "");
 
-        Report report = process(DummyLanguageModule.getInstance().getDefaultVersion());
+            Report report = process(DummyLanguageModule.getInstance().getDefaultVersion());
 
-        List<ProcessingError> errors = report.getProcessingErrors();
-        assertThat(errors, hasSize(1));
-        assertThat(errors.get(0).getError(), instanceOf(ContextedAssertionError.class));
+            List<ProcessingError> errors = report.getProcessingErrors();
+            assertThat(errors, hasSize(1));
+            assertThat(errors.get(0).getError(), instanceOf(ContextedAssertionError.class));
+        });
+
     }
 
     @Test
-    public void withoutErrorRecoveryModeProcessingShouldBeAbortedByParser() {
-        assertNull(System.getProperty(SystemProps.PMD_ERROR_RECOVERY));
-
-        assertThrows(AssertionError.class, () -> process(versionWithParserThatThrowsAssertionError()));
+    public void withoutErrorRecoveryModeProcessingShouldBeAbortedByParser() throws Exception {
+        SystemLambda.restoreSystemProperties(() -> {
+            System.clearProperty(SystemProps.PMD_ERROR_RECOVERY);
+            assertThrows(AssertionError.class, () -> process(versionWithParserThatThrowsAssertionError()));
+        });
     }
 
     @Test
-    public void withoutErrorRecoveryModeProcessingShouldBeAbortedByRule() {
-        assertNull(System.getProperty(SystemProps.PMD_ERROR_RECOVERY));
-
-        assertThrows(AssertionError.class, () -> process(DummyLanguageModule.getInstance().getDefaultVersion()));
+    public void withoutErrorRecoveryModeProcessingShouldBeAbortedByRule() throws Exception {
+        SystemLambda.restoreSystemProperties(() -> {
+            System.clearProperty(SystemProps.PMD_ERROR_RECOVERY);
+            assertThrows(AssertionError.class, () -> process(DummyLanguageModule.getInstance().getDefaultVersion()));
+        });
     }
 
 

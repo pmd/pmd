@@ -31,7 +31,7 @@ public class ReportTest {
 
     // Files are grouped together now.
     @Test
-    void testSortedReportFile()  {
+    void testSortedReportFile() {
         Renderer rend = new XMLRenderer();
         String result = render(rend, r -> {
             FileLocation s = getNode(10, 5, "foo");

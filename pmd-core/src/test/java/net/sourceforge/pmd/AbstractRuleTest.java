@@ -73,7 +73,7 @@ public class AbstractRuleTest {
         DummyRootNode s = DummyLanguageModule.parse("abc()", "filename");
 
         RuleViolation rv = new ParametricRuleViolation(r, s, r.getMessage());
-        assertEquals(5, rv.getBeginLine(), "Line number mismatch!");
+        assertEquals(1, rv.getBeginLine(), "Line number mismatch!");
         assertEquals("filename", rv.getFilename(), "Filename mismatch!");
         assertEquals(r, rv.getRule(), "Rule object mismatch!");
         assertEquals("my rule msg", rv.getDescription(), "Rule msg mismatch!");
@@ -85,14 +85,14 @@ public class AbstractRuleTest {
         MyRule r = new MyRule();
         DummyRootNode s = DummyLanguageModule.parse("abc()", "filename");
         RuleViolation rv = new ParametricRuleViolation(r, s, "specificdescription");
-        assertEquals(5, rv.getBeginLine(), "Line number mismatch!");
+        assertEquals(1, rv.getBeginLine(), "Line number mismatch!");
         assertEquals("filename", rv.getFilename(), "Filename mismatch!");
         assertEquals(r, rv.getRule(), "Rule object mismatch!");
         assertEquals("specificdescription", rv.getDescription(), "Rule description mismatch!");
     }
 
     @Test
-    void testRuleWithVariableInMessage() throws Exception {
+    void testRuleWithVariableInMessage() {
         MyRule r = new MyRule() {
             @Override
             public void apply(Node target, RuleContext ctx) {
