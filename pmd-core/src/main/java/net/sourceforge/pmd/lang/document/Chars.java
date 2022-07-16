@@ -363,15 +363,9 @@ public final class Chars implements CharSequence {
     public boolean contentEquals(CharSequence cs, boolean ignoreCase) {
         if (cs instanceof Chars) {
             Chars chars2 = (Chars) cs;
-            if (len != chars2.len) {
-                return false;
-            }
-            return str.regionMatches(ignoreCase, start, chars2.str, chars2.start, len);
+            return len == chars2.len && str.regionMatches(ignoreCase, start, chars2.str, chars2.start, len);
         } else {
-            if (length() != cs.length()) {
-                return false;
-            }
-            return str.regionMatches(ignoreCase, start, cs.toString(), 0, len);
+            return length() == cs.length() && str.regionMatches(ignoreCase, start, cs.toString(), 0, len);
         }
     }
 
@@ -493,10 +487,7 @@ public final class Chars implements CharSequence {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof Chars)) {
-            return false;
-        }
-        return contentEquals((Chars) o);
+        return o instanceof Chars && contentEquals((Chars) o);
     }
 
     @Override
