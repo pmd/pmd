@@ -16,8 +16,6 @@ import java.util.Objects;
 
 import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.util.ResourceLoader;
@@ -84,9 +82,6 @@ public class RuleSetReferenceId {
 
     // todo this class has issues... What is even an "external" ruleset?
     //  terminology and API should be clarified.
-
-    // use the logger of RuleSetFactory, because the warnings conceptually come from there.
-    private static final Logger LOG = LoggerFactory.getLogger(RuleSetFactory.class);
 
     private final boolean external;
     private final String ruleSetFileName;
