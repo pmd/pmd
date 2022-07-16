@@ -484,10 +484,7 @@ public final class Chars implements CharSequence {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        return o instanceof Chars && contentEquals((Chars) o);
+        return this == o || o instanceof Chars && contentEquals((Chars) o);
     }
 
     @Override
