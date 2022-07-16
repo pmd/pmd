@@ -121,7 +121,7 @@ public class ReportTest {
 
     public static String render(Renderer renderer, Consumer<? super FileAnalysisListener> listenerEffects) {
         return renderGlobal(renderer, globalListener -> {
-            LanguageVersion dummyVersion = DummyLanguageModule.INSTANCE.getDefaultVersion();
+            LanguageVersion dummyVersion = DummyLanguageModule.getInstance().getDefaultVersion();
 
             TextFile dummyFile = TextFile.forCharSeq("dummyText", "file", dummyVersion);
             try (FileAnalysisListener fal = globalListener.startFileAnalysis(dummyFile)) {

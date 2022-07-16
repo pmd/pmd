@@ -17,8 +17,6 @@ import org.apache.tools.ant.types.Reference;
 
 import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.ant.internal.PMDTaskImpl;
-import net.sourceforge.pmd.lang.LanguageLoader;
-import net.sourceforge.pmd.lang.LanguageRegistry;
 
 public class PMDTask extends Task {
 
@@ -48,8 +46,8 @@ public class PMDTask extends Task {
 
         ClassLoader oldClassloader = Thread.currentThread().getContextClassLoader();
         Thread.currentThread().setContextClassLoader(PMDTask.class.getClassLoader());
-        try (LanguageRegistry registry = LanguageLoader.DEFAULT.load()) {
-            PMDTaskImpl mirror = new PMDTaskImpl(this, registry);
+        try {
+            PMDTaskImpl mirror = new PMDTaskImpl(this);
             mirror.execute();
         } catch (Exception e) {
             throw new BuildException(e);

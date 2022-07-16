@@ -11,10 +11,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
+import net.sourceforge.pmd.PmdContextualizedTest;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleContextTest;
 import net.sourceforge.pmd.lang.DummyLanguageModule;
-import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.lang.ast.DummyNode.DummyRootNode;
 import net.sourceforge.pmd.lang.ast.DummyNodeWithDeprecatedAttribute;
@@ -23,7 +23,7 @@ import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
 
 import com.github.stefanbirkner.systemlambda.SystemLambda;
 
-class XPathRuleTest {
+class XPathRuleTest extends PmdContextualizedTest {
 
     @Test
     void testAttributeDeprecation10() throws Exception {
@@ -80,7 +80,7 @@ class XPathRuleTest {
     XPathRule makeRule(XPathVersion version, String name) {
         XPathRule xpr = new XPathRule(version, "//dummyNode[@Size >= 2 and @Name='foo']");
         xpr.setName(name);
-        xpr.setLanguage(LanguageRegistry.getLanguage("Dummy"));
+        setDummyLanguage(xpr);
         xpr.setMessage("gotcha");
         return xpr;
     }
@@ -88,7 +88,7 @@ class XPathRuleTest {
 
     XPathRule makeXPath(String xpathExpr) {
         XPathRule xpr = new XPathRule(XPathVersion.XPATH_2_0, xpathExpr);
-        xpr.setLanguage(LanguageRegistry.getLanguage(DummyLanguageModule.NAME));
+        setDummyLanguage(xpr);
         xpr.setName("name");
         xpr.setMessage("gotcha");
         return xpr;

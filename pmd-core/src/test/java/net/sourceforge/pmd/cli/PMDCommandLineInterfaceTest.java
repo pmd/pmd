@@ -59,7 +59,7 @@ class PMDCommandLineInterfaceTest {
         PMDCommandLineInterface.extractParameters(params, args, "PMD");
 
         assertTrue(params.isIgnoreIncrementalAnalysis());
-        PMDConfiguration config = params.toConfiguration(LanguageRegistry.STATIC);
+        PMDConfiguration config = params.toConfiguration(LanguageRegistry.PMD);
         assertTrue(config.isIgnoreIncrementalAnalysis());
         assertTrue(config.getAnalysisCache() instanceof NoopAnalysisCache);
     }

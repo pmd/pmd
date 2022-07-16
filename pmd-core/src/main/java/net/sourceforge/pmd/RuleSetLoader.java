@@ -143,6 +143,7 @@ public final class RuleSetLoader {
     public RuleSetFactory toFactory() {
         return new RuleSetFactory(
             this.resourceLoader,
+            this.languageRegistry,
             this.minimumPriority,
             this.warnDeprecated,
             this.compatFilter,

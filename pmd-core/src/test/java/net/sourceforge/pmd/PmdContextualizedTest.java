@@ -6,9 +6,11 @@ package net.sourceforge.pmd;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import net.sourceforge.pmd.lang.Dummy2LanguageModule;
 import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.lang.LanguageVersion;
 
 /**
  * A base class for PMD tests that rely on a {@link LanguageRegistry}.
@@ -28,7 +30,11 @@ public class PmdContextualizedTest {
         return registry.getLanguageByFullName(DummyLanguageModule.NAME);
     }
 
-    public <T extends Rule> T dummyRule(T rule) {
+    public Language dummyLanguage2() {
+        return registry.getLanguageByFullName(Dummy2LanguageModule.NAME);
+    }
+
+    public <T extends Rule> T setDummyLanguage(T rule) {
         rule.setLanguage(dummyLanguage());
         return rule;
     }
@@ -38,5 +44,8 @@ public class PmdContextualizedTest {
         return new PMDConfiguration(languageRegistry());
     }
 
+    protected LanguageVersion dummyVersion() {
+        return dummyLanguage().getDefaultVersion();
+    }
 }
 

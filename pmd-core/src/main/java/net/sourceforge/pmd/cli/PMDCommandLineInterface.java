@@ -145,7 +145,7 @@ public final class PMDCommandLineInterface {
 
     private static String supportedVersions() {
         return "Languages and version suported:" + PMD.EOL
-                + LanguageRegistry.STATIC.getLanguages().stream().map(Language::getTerseName).collect(Collectors.joining(", "))
+                + LanguageRegistry.PMD.getLanguages().stream().map(Language::getTerseName).collect(Collectors.joining(", "))
                 + PMD.EOL;
     }
 

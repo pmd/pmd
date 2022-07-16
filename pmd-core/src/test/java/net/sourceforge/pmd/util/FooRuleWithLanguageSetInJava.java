@@ -12,7 +12,7 @@ import net.sourceforge.pmd.lang.rule.AbstractRule;
 public class FooRuleWithLanguageSetInJava extends AbstractRule {
 
     public FooRuleWithLanguageSetInJava() {
-        setLanguage(DummyLanguageModule.INSTANCE);
+        setLanguage(DummyLanguageModule.getInstance());
     }
 
 

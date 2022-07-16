@@ -17,7 +17,7 @@ import net.sourceforge.pmd.lang.LanguageFilenameFilter;
  *
  * @author pieter_van_raemdonck - Application Engineers NV/SA - www.ae.be
  */
-class FileSelectorTest {
+class FileSelectorTest extends PmdContextualizedTest {
 
     /**
      * Test wanted selection of a source file.

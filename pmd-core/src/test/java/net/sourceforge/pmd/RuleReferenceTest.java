@@ -12,16 +12,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
-import net.sourceforge.pmd.lang.Dummy2LanguageModule;
 import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.Language;
-import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.rule.MockRule;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 
-class RuleReferenceTest {
+class RuleReferenceTest extends PmdContextualizedTest {
 
     @Test
     void testRuleSetReference() {
@@ -36,7 +34,7 @@ class RuleReferenceTest {
         final PropertyDescriptor<String> PROPERTY1_DESCRIPTOR = PropertyFactory.stringProperty("property1").desc("Test property").defaultValue("").build();
         MockRule rule = new MockRule();
         rule.definePropertyDescriptor(PROPERTY1_DESCRIPTOR);
-        Language dummyLang = LanguageRegistry.getLanguage(DummyLanguageModule.NAME);
+        Language dummyLang = DummyLanguageModule.getInstance();
         rule.setLanguage(dummyLang);
         rule.setName("name1");
         rule.setProperty(PROPERTY1_DESCRIPTOR, "value1");
@@ -68,17 +66,17 @@ class RuleReferenceTest {
     @Test
     void testLanguageOverrideDisallowed() {
         MockRule rule = new MockRule();
-        Language dummyLang = LanguageRegistry.getLanguage(DummyLanguageModule.NAME);
+        Language dummyLang = DummyLanguageModule.getInstance();
         rule.setLanguage(dummyLang);
 
         RuleReference ruleReference = new RuleReference();
         ruleReference.setRule(rule);
 
-        assertThrows(UnsupportedOperationException.class, () -> ruleReference.setLanguage(LanguageRegistry.getLanguage(Dummy2LanguageModule.NAME)));
+        assertThrows(UnsupportedOperationException.class, () -> ruleReference.setLanguage(dummyLanguage2()));
         assertEquals(dummyLang, ruleReference.getLanguage());
-        assertThrows(IllegalArgumentException.class, () -> ruleReference.setMaximumLanguageVersion(LanguageRegistry.getLanguage(Dummy2LanguageModule.NAME).getVersion("1.0")));
+        assertThrows(IllegalArgumentException.class, () -> ruleReference.setMaximumLanguageVersion(dummyLanguage2().getVersion("1.0")));
         assertEquals(rule.getMaximumLanguageVersion(), ruleReference.getOverriddenMaximumLanguageVersion());
-        assertThrows(IllegalArgumentException.class, () -> ruleReference.setMinimumLanguageVersion(LanguageRegistry.getLanguage(Dummy2LanguageModule.NAME).getVersion("1.0")));
+        assertThrows(IllegalArgumentException.class, () -> ruleReference.setMinimumLanguageVersion(dummyLanguage2().getVersion("1.0")));
         assertEquals(rule.getMinimumLanguageVersion(), ruleReference.getMinimumLanguageVersion());
     }
 
@@ -87,7 +85,7 @@ class RuleReferenceTest {
         final PropertyDescriptor<String> PROPERTY1_DESCRIPTOR = PropertyFactory.stringProperty("property1").desc("Test property").defaultValue("").build();
         MockRule rule = new MockRule();
         rule.definePropertyDescriptor(PROPERTY1_DESCRIPTOR);
-        Language dummyLang = LanguageRegistry.getLanguage(DummyLanguageModule.NAME);
+        Language dummyLang = DummyLanguageModule.getInstance();
         rule.setLanguage(dummyLang);
         rule.setName("name1");
         rule.setProperty(PROPERTY1_DESCRIPTOR, "value1");
@@ -119,18 +117,18 @@ class RuleReferenceTest {
 
     private void validateOverriddenValues(final PropertyDescriptor<String> propertyDescriptor1,
             final PropertyDescriptor<String> propertyDescriptor2, RuleReference ruleReference) {
-        assertEquals(LanguageRegistry.getLanguage(DummyLanguageModule.NAME), ruleReference.getLanguage(),
-                "Override failed");
+        assertEquals(DummyLanguageModule.getInstance(), ruleReference.getLanguage(),
+                     "Override failed");
 
-        assertEquals(LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getVersion("1.3"), ruleReference.getMinimumLanguageVersion(),
-                "Override failed");
-        assertEquals(LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getVersion("1.3"), ruleReference.getOverriddenMinimumLanguageVersion(),
-                "Override failed");
+        assertEquals(DummyLanguageModule.getInstance().getVersion("1.3"), ruleReference.getMinimumLanguageVersion(),
+                     "Override failed");
+        assertEquals(DummyLanguageModule.getInstance().getVersion("1.3"), ruleReference.getOverriddenMinimumLanguageVersion(),
+                     "Override failed");
 
-        assertEquals(LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getVersion("1.7"), ruleReference.getMaximumLanguageVersion(),
-                "Override failed");
-        assertEquals(LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getVersion("1.7"), ruleReference.getOverriddenMaximumLanguageVersion(),
-                "Override failed");
+        assertEquals(DummyLanguageModule.getInstance().getVersion("1.7"), ruleReference.getMaximumLanguageVersion(),
+                     "Override failed");
+        assertEquals(DummyLanguageModule.getInstance().getVersion("1.7"), ruleReference.getOverriddenMaximumLanguageVersion(),
+                     "Override failed");
 
         assertEquals(false, ruleReference.getRule().isDeprecated(), "Override failed");
         assertEquals(true, ruleReference.isDeprecated(), "Override failed");
@@ -177,9 +175,9 @@ class RuleReferenceTest {
         final PropertyDescriptor<String> PROPERTY1_DESCRIPTOR = PropertyFactory.stringProperty("property1").desc("Test property").defaultValue("").build();
         MockRule rule = new MockRule();
         rule.definePropertyDescriptor(PROPERTY1_DESCRIPTOR);
-        rule.setLanguage(LanguageRegistry.getLanguage(DummyLanguageModule.NAME));
-        rule.setMinimumLanguageVersion(LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getVersion("1.3"));
-        rule.setMaximumLanguageVersion(LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getVersion("1.7"));
+        rule.setLanguage(DummyLanguageModule.getInstance());
+        rule.setMinimumLanguageVersion(DummyLanguageModule.getInstance().getVersion("1.3"));
+        rule.setMaximumLanguageVersion(DummyLanguageModule.getInstance().getVersion("1.7"));
         rule.setName("name1");
         rule.setProperty(PROPERTY1_DESCRIPTOR, "value1");
         rule.setMessage("message1");
@@ -191,9 +189,9 @@ class RuleReferenceTest {
         RuleReference ruleReference = new RuleReference();
         ruleReference.setRule(rule);
         ruleReference
-                .setMinimumLanguageVersion(LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getVersion("1.3"));
+            .setMinimumLanguageVersion(DummyLanguageModule.getInstance().getVersion("1.3"));
         ruleReference
-                .setMaximumLanguageVersion(LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getVersion("1.7"));
+            .setMaximumLanguageVersion(DummyLanguageModule.getInstance().getVersion("1.7"));
         ruleReference.setDeprecated(false);
         ruleReference.setName("name1");
         ruleReference.setProperty(PROPERTY1_DESCRIPTOR, "value1");
@@ -204,12 +202,12 @@ class RuleReferenceTest {
         ruleReference.setPriority(RulePriority.HIGH);
 
 
-        assertEquals(LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getVersion("1.3"), ruleReference.getMinimumLanguageVersion(),
-                "Override failed");
+        assertEquals(DummyLanguageModule.getInstance().getVersion("1.3"), ruleReference.getMinimumLanguageVersion(),
+                     "Override failed");
         assertNull(ruleReference.getOverriddenMinimumLanguageVersion(), "Override failed");
 
-        assertEquals(LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getVersion("1.7"), ruleReference.getMaximumLanguageVersion(),
-                "Override failed");
+        assertEquals(DummyLanguageModule.getInstance().getVersion("1.7"), ruleReference.getMaximumLanguageVersion(),
+                     "Override failed");
         assertNull(ruleReference.getOverriddenMaximumLanguageVersion(), "Override failed");
 
         assertEquals(false, ruleReference.isDeprecated(), "Override failed");

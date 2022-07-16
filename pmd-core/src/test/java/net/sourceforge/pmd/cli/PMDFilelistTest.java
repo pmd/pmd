@@ -15,16 +15,17 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.PMDConfiguration;
+import net.sourceforge.pmd.PmdContextualizedTest;
 import net.sourceforge.pmd.internal.util.FileCollectionUtil;
 import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
 import net.sourceforge.pmd.lang.document.FileCollector;
 import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.util.log.internal.NoopReporter;
 
-class PMDFilelistTest {
+class PMDFilelistTest extends PmdContextualizedTest {
 
-    private static @NonNull FileCollector newCollector() {
-        return FileCollector.newCollector(new LanguageVersionDiscoverer(), new NoopReporter());
+    private @NonNull FileCollector newCollector() {
+        return FileCollector.newCollector(new LanguageVersionDiscoverer(languageRegistry()), new NoopReporter());
     }
 
     @Test

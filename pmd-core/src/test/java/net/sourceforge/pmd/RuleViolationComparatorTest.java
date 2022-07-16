@@ -24,8 +24,8 @@ class RuleViolationComparatorTest extends PmdContextualizedTest {
 
     @Test
     void testComparator() {
-        Rule rule1 = dummyRule(new MockRule("name1", "desc", "msg", "rulesetname1"));
-        Rule rule2 = dummyRule(new MockRule("name2", "desc", "msg", "rulesetname2"));
+        Rule rule1 = setDummyLanguage(new MockRule("name1", "desc", "msg", "rulesetname1"));
+        Rule rule2 = setDummyLanguage(new MockRule("name2", "desc", "msg", "rulesetname2"));
 
         // RuleViolations created in pre-sorted order
         RuleViolation[] expectedOrder = new RuleViolation[12];

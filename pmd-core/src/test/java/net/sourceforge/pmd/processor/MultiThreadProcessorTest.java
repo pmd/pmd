@@ -19,7 +19,6 @@ import net.sourceforge.pmd.RuleSetLoader;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.DummyLanguageModule;
-import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.document.TextFile;
@@ -38,7 +37,7 @@ class MultiThreadProcessorTest {
     RuleSets setUpForTest(final String ruleset) {
         configuration = new PMDConfiguration();
         configuration.setThreads(2);
-        LanguageVersion lv = DummyLanguageModule.INSTANCE.getDefaultVersion();
+        LanguageVersion lv = DummyLanguageModule.getInstance().getDefaultVersion();
         files = listOf(
             TextFile.forCharSeq("abc", "file1-violation.dummy", lv),
             TextFile.forCharSeq("DEF", "file2-foo.dummy", lv)

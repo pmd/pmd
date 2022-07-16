@@ -24,8 +24,6 @@ import java.util.Set;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import net.sourceforge.pmd.lang.DummyLanguageModule;
-import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.rule.MockRule;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
@@ -631,7 +629,7 @@ class RuleSetFactoryTest extends RulesetFactoryTestBase {
                 attrs -> attrs.put(SchemaConstants.LANGUAGE, "dummy")
             )
         ));
-        assertEquals(LanguageRegistry.getLanguage(DummyLanguageModule.NAME), r.getLanguage());
+        assertEquals(dummyLanguage(), r.getLanguage());
     }
 
     @Test
@@ -660,7 +658,7 @@ class RuleSetFactoryTest extends RulesetFactoryTestBase {
                 attrs -> attrs.put(SchemaConstants.MINIMUM_LANGUAGE_VERSION, "1.4")
             )
         ));
-        assertEquals(LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getVersion("1.4"),
+        assertEquals(dummyLanguage().getVersion("1.4"),
                      r.getMinimumLanguageVersion());
     }
 
@@ -703,7 +701,7 @@ class RuleSetFactoryTest extends RulesetFactoryTestBase {
         Rule r = loadFirstRule(rulesetXml(
             dummyRule(attrs -> attrs.put(SchemaConstants.MAXIMUM_LANGUAGE_VERSION, "1.7"))
         ));
-        assertEquals(LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getVersion("1.7"),
+        assertEquals(dummyLanguage().getVersion("1.7"),
                      r.getMaximumLanguageVersion());
     }
 

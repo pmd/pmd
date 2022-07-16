@@ -13,8 +13,8 @@ import java.io.IOException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import net.sourceforge.pmd.PmdContextualizedTest;
 import net.sourceforge.pmd.lang.DummyLanguageModule;
-import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.util.IOUtil;
 
@@ -22,13 +22,11 @@ import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 
 @RunWith(JUnitParamsRunner.class)
-public class TextDocumentTest {
-
-    private final LanguageVersion dummyVersion = LanguageRegistry.getDefaultLanguage().getDefaultVersion();
+public class TextDocumentTest extends PmdContextualizedTest {
 
     @Test
     public void testSingleLineRegion() {
-        TextDocument doc = TextDocument.readOnlyString("bonjour\ntristesse", dummyVersion);
+        TextDocument doc = TextDocument.readOnlyString("bonjour\ntristesse", dummyVersion());
 
         TextRegion region = TextRegion.fromOffsetLength(0, "bonjour".length());
 
@@ -47,7 +45,7 @@ public class TextDocumentTest {
 
     @Test
     public void testRegionAtEol() {
-        TextDocument doc = TextDocument.readOnlyString("bonjour\ntristesse", dummyVersion);
+        TextDocument doc = TextDocument.readOnlyString("bonjour\ntristesse", dummyVersion());
 
         TextRegion region = TextRegion.fromOffsetLength(0, "bonjour\n".length());
         assertEquals("bonjour\n", doc.sliceText(region).toString());
@@ -62,7 +60,7 @@ public class TextDocumentTest {
 
     @Test
     public void testEmptyRegionAtEol() {
-        TextDocument doc = TextDocument.readOnlyString("bonjour\ntristesse", dummyVersion);
+        TextDocument doc = TextDocument.readOnlyString("bonjour\ntristesse", dummyVersion());
         //                                                             ^ The caret position right after the \n
         //                                                               We consider it's part of the next line
 
@@ -79,7 +77,7 @@ public class TextDocumentTest {
 
     @Test
     public void testRegionForEol() {
-        TextDocument doc = TextDocument.readOnlyString("bonjour\ntristesse", dummyVersion);
+        TextDocument doc = TextDocument.readOnlyString("bonjour\ntristesse", dummyVersion());
         //                                                           [ [ The region containing the \n
         //                                                               We consider it ends on the same line, not the next one
 
@@ -97,7 +95,7 @@ public class TextDocumentTest {
 
     @Test
     public void testRegionAtEndOfFile() {
-        TextDocument doc = TextDocument.readOnlyString("flemme", dummyVersion);
+        TextDocument doc = TextDocument.readOnlyString("flemme", dummyVersion());
 
         TextRegion region = TextRegion.fromOffsetLength(0, doc.getLength());
         assertEquals(doc.getText(), doc.sliceText(region));
@@ -112,7 +110,7 @@ public class TextDocumentTest {
 
     @Test
     public void testMultiLineRegion() {
-        TextDocument doc = TextDocument.readOnlyString("bonjour\noha\ntristesse", dummyVersion);
+        TextDocument doc = TextDocument.readOnlyString("bonjour\noha\ntristesse", dummyVersion());
 
         TextRegion region = TextRegion.fromOffsetLength("bonjou".length(), "r\noha\ntri".length());
 
@@ -131,7 +129,7 @@ public class TextDocumentTest {
 
     @Test
     public void testLineColumnFromOffset() {
-        TextDocument doc = TextDocument.readOnlyString("ab\ncd\n", dummyVersion);
+        TextDocument doc = TextDocument.readOnlyString("ab\ncd\n", dummyVersion());
 
         assertPos2dEqualsAt(doc, 0, "a", pos2d(1, 1), true);
         assertPos2dEqualsAt(doc, 0, "a", pos2d(1, 1), false);
@@ -154,7 +152,7 @@ public class TextDocumentTest {
 
     @Test
     public void testEmptyRegion() {
-        TextDocument doc = TextDocument.readOnlyString("bonjour\noha\ntristesse", dummyVersion);
+        TextDocument doc = TextDocument.readOnlyString("bonjour\noha\ntristesse", dummyVersion());
 
         TextRegion region = TextRegion.fromOffsetLength("bonjour".length(), 0);
 
@@ -173,7 +171,7 @@ public class TextDocumentTest {
 
     @Test
     public void testLineRange() {
-        TextDocument doc = TextDocument.readOnlyString("bonjour\noha\ntristesse", dummyVersion);
+        TextDocument doc = TextDocument.readOnlyString("bonjour\noha\ntristesse", dummyVersion());
 
         assertEquals(Chars.wrap("bonjour\n"), doc.sliceText(doc.createLineRange(1, 1)));
         assertEquals(Chars.wrap("bonjour\noha\n"), doc.sliceText(doc.createLineRange(1, 2)));
@@ -205,7 +203,7 @@ public class TextDocumentTest {
 
     @Test
     public void testRegionOutOfBounds() {
-        TextDocument doc = TextDocument.readOnlyString("bonjour\noha\ntristesse", dummyVersion);
+        TextDocument doc = TextDocument.readOnlyString("bonjour\noha\ntristesse", dummyVersion());
 
         assertThrows(AssertionError.class, () -> TextRegion.isValidRegion(0, 40, doc));
     }

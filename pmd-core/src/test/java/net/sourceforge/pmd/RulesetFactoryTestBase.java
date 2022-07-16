@@ -32,7 +32,7 @@ import net.sourceforge.pmd.util.internal.xml.SchemaConstants;
 import net.sourceforge.pmd.util.log.MessageReporter;
 import net.sourceforge.pmd.util.log.internal.SimpleMessageReporter;
 
-public class RulesetFactoryTestBase {
+public class RulesetFactoryTestBase extends PmdContextualizedTest {
 
     protected MessageReporter mockReporter;
 

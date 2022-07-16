@@ -9,20 +9,11 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertSame;
 
-import net.sourceforge.pmd.PmdContextualizedTest;
-
 import org.junit.jupiter.api.Test;
 
-class LanguageRegistryTest extends PmdContextualizedTest {
+import net.sourceforge.pmd.PmdContextualizedTest;
 
-    @Test
-    void getDefaultLanguageTest() {
-        Language defaultLanguage = LanguageRegistry.getDefaultLanguage();
-        assertNotNull(defaultLanguage);
-        // as we don't have java language in this test, we get the first
-        // available language now -> DummyLanguage
-        assertSame(DummyLanguageModule.class, defaultLanguage.getClass());
-    }
+class LanguageRegistryTest extends PmdContextualizedTest {
 
     @Test
     public void getDefaultVersionLanguageTest() {

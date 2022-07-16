@@ -53,7 +53,7 @@ class FileCollectorTest {
     void testAddFileForceLanguage() throws IOException {
         Path bar = newFile(tempFolder, "bar.unknown");
 
-        Language dummy = DummyLanguageModule.INSTANCE;
+        Language dummy = DummyLanguageModule.getInstance();
 
         FileCollector collector = newCollector(dummy.getDefaultVersion());
 
