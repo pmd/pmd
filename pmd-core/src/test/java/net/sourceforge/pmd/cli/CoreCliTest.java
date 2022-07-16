@@ -161,7 +161,7 @@ class CoreCliTest {
         String reportFile = "reportFile.txt";
         Path absoluteReportFile = FileSystems.getDefault().getPath(reportFile).toAbsolutePath();
         // verify the file doesn't exist yet - we will delete the file at the end!
-        assertFalse(Files.exists(absoluteReportFile), "Report file must not exist yet!");
+        assertFalse(Files.exists(absoluteReportFile), "Report file must not exist yet! " + absoluteReportFile);
 
         try {
             runPmdSuccessfully("--no-cache", "-d", srcDir, "-R", DUMMY_RULESET, "-r", reportFile);

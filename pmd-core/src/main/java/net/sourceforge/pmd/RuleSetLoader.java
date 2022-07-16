@@ -16,6 +16,7 @@ import java.util.Properties;
 
 import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -144,6 +145,9 @@ public final class RuleSetLoader {
         );
     }
 
+    private @Nullable MessageReporter filteredReporter() {
+        return warnDeprecated ? reporter : null;
+    }
 
     /**
      * Parses and returns a ruleset from its location. The location may
@@ -154,7 +158,7 @@ public final class RuleSetLoader {
      * @throws RuleSetLoadException If any error occurs (eg, invalid syntax, or resource not found)
      */
     public RuleSet loadFromResource(String rulesetPath) {
-        return loadFromResource(new RuleSetReferenceId(rulesetPath, null, warnDeprecated));
+        return loadFromResource(new RuleSetReferenceId(rulesetPath, null, filteredReporter()));
     }
 
     /**
@@ -166,7 +170,7 @@ public final class RuleSetLoader {
      * @throws RuleSetLoadException If any error occurs (eg, invalid syntax)
      */
     public RuleSet loadFromString(String filename, final String rulesetXmlContent) {
-        return loadFromResource(new RuleSetReferenceId(filename, null, warnDeprecated) {
+        return loadFromResource(new RuleSetReferenceId(filename, null, filteredReporter()) {
             @Override
             public InputStream getInputStream(ResourceLoader rl) {
                 return new ByteArrayInputStream(rulesetXmlContent.getBytes(StandardCharsets.UTF_8));

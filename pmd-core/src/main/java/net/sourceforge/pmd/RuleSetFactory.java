@@ -9,9 +9,11 @@ import static net.sourceforge.pmd.util.internal.xml.SchemaConstants.DESCRIPTION;
 import static net.sourceforge.pmd.util.internal.xml.SchemaConstants.EXCLUDE;
 import static net.sourceforge.pmd.util.internal.xml.SchemaConstants.EXCLUDE_PATTERN;
 import static net.sourceforge.pmd.util.internal.xml.SchemaConstants.INCLUDE_PATTERN;
+import static net.sourceforge.pmd.util.internal.xml.SchemaConstants.NAME;
 import static net.sourceforge.pmd.util.internal.xml.SchemaConstants.PRIORITY;
 import static net.sourceforge.pmd.util.internal.xml.SchemaConstants.REF;
 import static net.sourceforge.pmd.util.internal.xml.SchemaConstants.RULE;
+import static net.sourceforge.pmd.util.internal.xml.SchemaConstants.RULESET;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -38,6 +40,7 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.event.Level;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
@@ -47,10 +50,10 @@ import net.sourceforge.pmd.rules.RuleFactory;
 import net.sourceforge.pmd.util.ResourceLoader;
 import net.sourceforge.pmd.util.StringUtil;
 import net.sourceforge.pmd.util.internal.xml.PmdXmlReporter;
-import net.sourceforge.pmd.util.internal.xml.SchemaConstants;
 import net.sourceforge.pmd.util.internal.xml.XmlErrorMessages;
 import net.sourceforge.pmd.util.internal.xml.XmlUtil;
 import net.sourceforge.pmd.util.log.MessageReporter;
+import net.sourceforge.pmd.util.log.internal.NoopReporter;
 
 import com.github.oowekyala.ooxml.DomUtils;
 import com.github.oowekyala.ooxml.messages.NiceXmlMessageSpec;
@@ -242,7 +245,7 @@ final class RuleSetFactory {
             } else {
                 err.at(node).error(XmlErrorMessages.ERR__UNEXPECTED_ELEMENT_IN,
                                    node.getTagName(),
-                                   SchemaConstants.RULESET);
+                                   RULESET);
             }
         }
 
@@ -322,9 +325,9 @@ final class RuleSetFactory {
                                boolean withDeprecatedRuleReferences,
                                Set<String> rulesetReferences,
                                PmdXmlReporter err) {
-        if (ruleNode.hasAttribute("ref")) {
-            String ref = ruleNode.getAttribute("ref");
-            RuleSetReferenceId refId = parseReferenceAndWarn(ruleSetBuilder, ref);
+        if (REF.hasAttribute(ruleNode)) {
+            String ref = REF.getAttributeOrThrow(ruleNode, err);
+            RuleSetReferenceId refId = parseReferenceAndWarn(ref, REF.getAttributeNode(ruleNode), err);
             if (refId != null) {
                 if (refId.isAllRules()) {
                     parseRuleSetReferenceNode(ruleSetBuilder, ruleNode, ref, refId, rulesetReferences, err);
@@ -362,7 +365,7 @@ final class RuleSetFactory {
             if (EXCLUDE.matchesElt(child)) {
                 String excludedRuleName;
                 try {
-                    excludedRuleName = SchemaConstants.NAME.getAttributeOrThrow(child, err);
+                    excludedRuleName = NAME.getAttributeOrThrow(child, err);
                 } catch (XmlException ignored) {
                     // has been reported
                     continue;
@@ -431,19 +434,23 @@ final class RuleSetFactory {
         rulesetReferences.add(ref);
     }
 
-    private RuleSetReferenceId parseReferenceAndWarn(RuleSetBuilder ruleSetBuilder, String ref) {
+    private RuleSetReferenceId parseReferenceAndWarn(String ref,
+                                                     Node xmlPlace,
+                                                     PmdXmlReporter err) {
         ref = compatibilityFilter.applyRef(ref, this.warnDeprecated);
         if (ref == null) {
-            LOG.debug("Rule ref {} references a deleted rule, ignoring", ref);
+            err.at(xmlPlace).warn("Rule reference references a deleted rule, ignoring");
             return null; // deleted rule
         }
+        // only emit a warning if we check for deprecated syntax
+        MessageReporter subReporter = warnDeprecated ? err.at(xmlPlace) : new NoopReporter();
 
-        List<RuleSetReferenceId> references = RuleSetReferenceId.parse(ref, warnDeprecated);
+        List<RuleSetReferenceId> references = RuleSetReferenceId.parse(ref, subReporter);
         if (references.size() > 1 && warnDeprecated) {
-            LOG.warn("Using a comma separated list as a ref attribute is deprecated. "
-                        + "All references but the first are ignored. Reference: '{}'", ref);
+            err.at(xmlPlace).warn("Using a comma separated list as a ref attribute is deprecated. "
+                                      + "All references but the first are ignored.");
         } else if (references.isEmpty()) {
-            LOG.warn("Empty ref attribute in ruleset '{}'", ruleSetBuilder.getName());
+            err.at(xmlPlace).warn("Empty ref attribute");
             return null;
         }
         return references.get(0);
@@ -518,11 +525,11 @@ final class RuleSetFactory {
         boolean isSameRuleSet = false;
         if (!otherRuleSetReferenceId.isExternal()
             && containsRule(ruleSetReferenceId, otherRuleSetReferenceId.getRuleName())) {
-            otherRuleSetReferenceId = new RuleSetReferenceId(ref, ruleSetReferenceId);
+            otherRuleSetReferenceId = new RuleSetReferenceId(ref, ruleSetReferenceId, err.at(REF.getAttributeNode(ruleNode)));
             isSameRuleSet = true;
         } else if (otherRuleSetReferenceId.isExternal()
             && otherRuleSetReferenceId.getRuleSetFileName().equals(ruleSetReferenceId.getRuleSetFileName())) {
-            otherRuleSetReferenceId = new RuleSetReferenceId(otherRuleSetReferenceId.getRuleName(), ruleSetReferenceId);
+            otherRuleSetReferenceId = new RuleSetReferenceId(otherRuleSetReferenceId.getRuleName(), ruleSetReferenceId, err.at(REF.getAttributeNode(ruleNode)));
             isSameRuleSet = true;
         }
         // do not ignore deprecated rule references

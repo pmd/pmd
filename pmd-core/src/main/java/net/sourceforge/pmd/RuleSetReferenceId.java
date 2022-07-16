@@ -21,6 +21,7 @@ import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.util.ResourceLoader;
+import net.sourceforge.pmd.util.log.MessageReporter;
 
 /**
  * This class is used to parse a RuleSet reference value. Most commonly used for
@@ -105,7 +106,7 @@ public class RuleSetReferenceId {
      */
     public RuleSetReferenceId(final String id) {
 
-        this(id, null);
+        this(id, null, null);
     }
 
     private RuleSetReferenceId(final String ruleSetFileName, boolean external, String ruleName, RuleSetReferenceId externalRuleSetReferenceId) {
@@ -132,7 +133,7 @@ public class RuleSetReferenceId {
      *                                  RuleSetReferenceId.
      */
     public RuleSetReferenceId(final String id, final RuleSetReferenceId externalRuleSetReferenceId) {
-        this(id, externalRuleSetReferenceId, false);
+        this(id, externalRuleSetReferenceId, null);
     }
 
     /**
@@ -149,7 +150,9 @@ public class RuleSetReferenceId {
      * @throws IllegalArgumentException If the ID is not Rule reference when there is an external
      *                                  RuleSetReferenceId.
      */
-    RuleSetReferenceId(final String id, final RuleSetReferenceId externalRuleSetReferenceId, boolean warnDeprecated) {
+    RuleSetReferenceId(final String id,
+                       final RuleSetReferenceId externalRuleSetReferenceId,
+                       final @Nullable MessageReporter err) {
         this.originalRef = id;
 
         if (externalRuleSetReferenceId != null && !externalRuleSetReferenceId.isExternal()) {
@@ -179,7 +182,7 @@ public class RuleSetReferenceId {
         } else {
             String tempRuleName = getRuleName(id);
             String tempRuleSetFileName = tempRuleName != null && id != null
-                    ? id.substring(0, id.length() - tempRuleName.length() - 1) : id;
+                                         ? id.substring(0, id.length() - tempRuleName.length() - 1) : id;
 
             if (isValidUrl(tempRuleSetFileName)) {
                 // remaining part is a xml ruleset file, so the tempRuleName is
@@ -208,9 +211,9 @@ public class RuleSetReferenceId {
                 String expandedRuleset = resolveDeprecatedBuiltInRulesetShorthand(tempRuleSetFileName);
                 String builtinRuleSet = expandedRuleset == null ? tempRuleSetFileName : expandedRuleset;
                 if (checkRulesetExists(builtinRuleSet)) {
-                    if (expandedRuleset != null && warnDeprecated) {
-                        LOG.warn(
-                            "Ruleset reference '{}' uses a deprecated form, use '{}' instead",
+                    if (expandedRuleset != null && err != null) {
+                        err.warn(
+                            "Ruleset reference ''{0}'' uses a deprecated form, use ''{1}'' instead",
                             tempRuleSetFileName, builtinRuleSet
                         );
                     }
@@ -376,27 +379,21 @@ public class RuleSetReferenceId {
      *
      * @return The corresponding List of RuleSetReferenceId instances.
      */
+    // TODO deprecate and remove
     public static List<RuleSetReferenceId> parse(String referenceString) {
-        return parse(referenceString, false);
+        return parse(referenceString, null);
     }
 
-    /**
-     * Parse a String comma separated list of RuleSet reference IDs into a List
-     * of RuleReferenceId instances.
-     *
-     * @param referenceString A comma separated list of RuleSet reference IDs.
-     *
-     * @return The corresponding List of RuleSetReferenceId instances.
-     */
-    public static List<RuleSetReferenceId> parse(String referenceString, boolean warnDeprecated) {
+    static List<RuleSetReferenceId> parse(String referenceString,
+                                          MessageReporter err) {
         List<RuleSetReferenceId> references = new ArrayList<>();
         if (referenceString != null && referenceString.trim().length() > 0) {
 
             if (referenceString.indexOf(',') == -1) {
-                references.add(new RuleSetReferenceId(referenceString, null, warnDeprecated));
+                references.add(new RuleSetReferenceId(referenceString, null, err));
             } else {
                 for (String name : referenceString.split(",")) {
-                    references.add(new RuleSetReferenceId(name.trim(), null, warnDeprecated));
+                    references.add(new RuleSetReferenceId(name.trim(), null, err));
                 }
             }
         }
@@ -407,7 +404,7 @@ public class RuleSetReferenceId {
      * Is this an external RuleSet reference?
      *
      * @return <code>true</code> if this is an external reference,
-     *         <code>false</code> otherwise.
+     *     <code>false</code> otherwise.
      */
     public boolean isExternal() {
         return external;

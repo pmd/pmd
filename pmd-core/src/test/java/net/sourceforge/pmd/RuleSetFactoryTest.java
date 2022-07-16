@@ -135,7 +135,7 @@ class RuleSetFactoryTest extends RulesetFactoryTestBase {
             assertEquals("net.sourceforge.pmd.lang.rule.MockRule", r.getRuleClass());
             assertEquals("avoid the mock rule", r.getMessage());
         });
-        assertThat(log, containsString("Empty ref attribute in ruleset 'test'"));
+        assertThat(log, containsString("Empty ref attribute"));
     }
 
     @Test
@@ -910,50 +910,48 @@ class RuleSetFactoryTest extends RulesetFactoryTestBase {
      */
     @Test
     void testExcludeAndImportTwice() {
-        RuleSet ruleset = loadRuleSet("<?xml version=\"1.0\"?>\n" + "<ruleset name=\"Custom ruleset for tests\"\n"
-                                          + "    xmlns=\"http://pmd.sourceforge.net/ruleset/2.0.0\"\n"
-                                          + "    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
-                                          + "    xsi:schemaLocation=\"http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd\">\n"
-                                          + "  <description>Custom ruleset for tests</description>\n"
-                                          + "  <rule ref=\"rulesets/dummy/basic.xml\">\n"
-                                          + "    <exclude name=\"DummyBasicMockRule\"/>\n"
-                                          + "  </rule>\n" + "</ruleset>\n");
+        RuleSet ruleset = loadRuleSet(
+            rulesetXml(
+                rulesetRef("rulesets/dummy/basic.xml",
+                           excludeRule("DummyBasicMockRule")
+                )
+            )
+        );
+
         assertNull(ruleset.getRuleByName("DummyBasicMockRule"));
 
-        RuleSet ruleset2 = loadRuleSet("<?xml version=\"1.0\"?>\n" + "<ruleset name=\"Custom ruleset for tests\"\n"
-                                           + "    xmlns=\"http://pmd.sourceforge.net/ruleset/2.0.0\"\n"
-                                           + "    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
-                                           + "    xsi:schemaLocation=\"http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd\">\n"
-                                           + "  <description>Custom ruleset for tests</description>\n"
-                                           + "  <rule ref=\"rulesets/dummy/basic.xml\">\n"
-                                           + "    <exclude name=\"DummyBasicMockRule\"/>\n"
-                                           + "  </rule>\n" + "  <rule ref=\"rulesets/dummy/basic.xml\"/>\n"
-                                           + "</ruleset>\n");
+        RuleSet ruleset2 = loadRuleSet(
+            rulesetXml(
+                rulesetRef("rulesets/dummy/basic.xml",
+                           excludeRule("DummyBasicMockRule")
+                ),
+                rulesetRef("rulesets/dummy/basic.xml")
+            )
+        );
         assertNotNull(ruleset2.getRuleByName("DummyBasicMockRule"));
 
-        RuleSet ruleset3 = loadRuleSet("<?xml version=\"1.0\"?>\n" + "<ruleset name=\"Custom ruleset for tests\"\n"
-                                           + "    xmlns=\"http://pmd.sourceforge.net/ruleset/2.0.0\"\n"
-                                           + "    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
-                                           + "    xsi:schemaLocation=\"http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd\">\n"
-                                           + "  <description>Custom ruleset for tests</description>\n"
-                                           + "  <rule ref=\"rulesets/dummy/basic.xml\"/>\n"
-                                           + "  <rule ref=\"rulesets/dummy/basic.xml\">\n"
-                                           + "    <exclude name=\"DummyBasicMockRule\"/>\n" + "  </rule>\n"
-                                           + "</ruleset>\n");
+        RuleSet ruleset3 = loadRuleSet(
+            rulesetXml(
+                rulesetRef("rulesets/dummy/basic.xml"),
+                rulesetRef("rulesets/dummy/basic.xml",
+                           excludeRule("DummyBasicMockRule")
+                )
+            )
+        );
         assertNotNull(ruleset3.getRuleByName("DummyBasicMockRule"));
     }
 
     @Test
     void testMissingRuleSetNameIsWarning() throws Exception {
-        String log = SystemLambda.tapSystemErr(() -> {
+        SystemLambda.tapSystemErr(() -> {
             loadRuleSetWithDeprecationWarnings(
-                    "<?xml version=\"1.0\"?>\n" + "<ruleset \n"
-                            + "    xmlns=\"http://pmd.sourceforge.net/ruleset/2.0.0\"\n"
-                            + "    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
-                            + "    xsi:schemaLocation=\"http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd\">\n"
-                            + "  <description>Custom ruleset for tests</description>\n"
-                            + "  <rule ref=\"rulesets/dummy/basic.xml\"/>\n"
-                            + "  </ruleset>\n"
+                "<?xml version=\"1.0\"?>\n" + "<ruleset \n"
+                    + "    xmlns=\"http://pmd.sourceforge.net/ruleset/2.0.0\"\n"
+                    + "    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
+                    + "    xsi:schemaLocation=\"http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd\">\n"
+                    + "  <description>Custom ruleset for tests</description>\n"
+                    + "  <rule ref=\"rulesets/dummy/basic.xml\"/>\n"
+                    + "  </ruleset>\n"
             );
         });
 
@@ -975,11 +973,12 @@ class RuleSetFactoryTest extends RulesetFactoryTestBase {
 
     @Test
     void testDeprecatedRulesetReferenceProducesWarning() throws Exception {
-        SystemLambda.tapSystemErr(
+        String log = SystemLambda.tapSystemErr(
             () -> loadRuleSetWithDeprecationWarnings(
                 rulesetXml(
                     ruleRef("dummy-basic")
                 )));
+        System.out.println(log);
 
         verifyFoundAWarningWithMessage(containing(
             "Ruleset reference 'dummy-basic' uses a deprecated form, use 'rulesets/dummy/basic.xml' instead"
@@ -1109,7 +1108,8 @@ class RuleSetFactoryTest extends RulesetFactoryTestBase {
             )
         );
 
-    private static final String SINGLE_RULE_EMPTY_REF = "<?xml version=\"1.0\"?>\n"
+    private static final String SINGLE_RULE_EMPTY_REF =
+        "<?xml version=\"1.0\"?>\n"
         + "<ruleset name=\"test\">\n"
         + "<description>testdesc</description>\n"
         + "<rule \n"
