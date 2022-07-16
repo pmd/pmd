@@ -8,15 +8,15 @@ import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report.ConfigurationError;
 import net.sourceforge.pmd.Report.ProcessingError;
 
-public class VBHTMLRendererTest extends AbstractRendererTest {
+class VBHTMLRendererTest extends AbstractRendererTest {
 
     @Override
-    public Renderer getRenderer() {
+    Renderer getRenderer() {
         return new VBHTMLRenderer();
     }
 
     @Override
-    public String getExpected() {
+    String getExpected() {
         return "<html><head><title>PMD</title></head><style type=\"text/css\"><!--" + PMD.EOL
                 + "body { background-color: white; font-family:verdana, arial, helvetica, geneva; font-size: 16px; font-style: italic; color: black; }"
                 + PMD.EOL
@@ -33,7 +33,7 @@ public class VBHTMLRendererTest extends AbstractRendererTest {
     }
 
     @Override
-    public String getExpectedEmpty() {
+    String getExpectedEmpty() {
         return "<html><head><title>PMD</title></head><style type=\"text/css\"><!--" + PMD.EOL
                 + "body { background-color: white; font-family:verdana, arial, helvetica, geneva; font-size: 16px; font-style: italic; color: black; }"
                 + PMD.EOL
@@ -46,7 +46,7 @@ public class VBHTMLRendererTest extends AbstractRendererTest {
     }
 
     @Override
-    public String getExpectedMultiple() {
+    String getExpectedMultiple() {
         return "<html><head><title>PMD</title></head><style type=\"text/css\"><!--" + PMD.EOL
                 + "body { background-color: white; font-family:verdana, arial, helvetica, geneva; font-size: 16px; font-style: italic; color: black; }"
                 + PMD.EOL
@@ -65,7 +65,7 @@ public class VBHTMLRendererTest extends AbstractRendererTest {
     }
 
     @Override
-    public String getExpectedError(ProcessingError error) {
+    String getExpectedError(ProcessingError error) {
         return "<html><head><title>PMD</title></head><style type=\"text/css\"><!--" + PMD.EOL
                 + "body { background-color: white; font-family:verdana, arial, helvetica, geneva; font-size: 16px; font-style: italic; color: black; }"
                 + PMD.EOL
@@ -80,7 +80,7 @@ public class VBHTMLRendererTest extends AbstractRendererTest {
     }
 
     @Override
-    public String getExpectedError(ConfigurationError error) {
+    String getExpectedError(ConfigurationError error) {
         return "<html><head><title>PMD</title></head><style type=\"text/css\"><!--" + PMD.EOL
                 + "body { background-color: white; font-family:verdana, arial, helvetica, geneva; font-size: 16px; font-style: italic; color: black; }"
                 + PMD.EOL

@@ -4,9 +4,10 @@
 
 package net.sourceforge.pmd.cpd.token.internal;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -14,12 +15,12 @@ import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.ast.GenericToken;
 
-public class BaseTokenFilterTest {
+class BaseTokenFilterTest {
 
     static class StringToken implements GenericToken<StringToken> {
 
@@ -114,7 +115,7 @@ public class BaseTokenFilterTest {
     }
 
     @Test
-    public void testRemainingTokensFunctionality1() {
+    void testRemainingTokensFunctionality1() {
         final TokenManager<StringToken> tokenManager = new StringTokenManager();
         final DummyTokenFilter<StringToken> tokenFilter = new DummyTokenFilter<>(tokenManager);
         final StringToken firstToken = tokenFilter.getNextToken();
@@ -140,7 +141,7 @@ public class BaseTokenFilterTest {
     }
 
     @Test
-    public void testRemainingTokensFunctionality2() {
+    void testRemainingTokensFunctionality2() {
         final TokenManager<StringToken> tokenManager = new StringTokenManager();
         final DummyTokenFilter<StringToken> tokenFilter = new DummyTokenFilter<>(tokenManager);
         final StringToken firstToken = tokenFilter.getNextToken();
@@ -165,8 +166,8 @@ public class BaseTokenFilterTest {
         assertEquals("c", secondValSecondIt.getImage());
     }
 
-    @Test(expected = NoSuchElementException.class)
-    public void testRemainingTokensFunctionality3() {
+    @Test
+    void testRemainingTokensFunctionality3() {
         final TokenManager<StringToken> tokenManager = new StringTokenManager();
         final DummyTokenFilter<StringToken> tokenFilter = new DummyTokenFilter<>(tokenManager);
         final StringToken firstToken = tokenFilter.getNextToken();
@@ -178,11 +179,11 @@ public class BaseTokenFilterTest {
         it1.next();
         it2.next();
         it2.next();
-        it1.next();
+        assertThrows(NoSuchElementException.class, () -> it1.next());
     }
 
-    @Test(expected = ConcurrentModificationException.class)
-    public void testRemainingTokensFunctionality4() {
+    @Test
+    void testRemainingTokensFunctionality4() {
         final TokenManager<StringToken> tokenManager = new StringTokenManager();
         final DummyTokenFilter<StringToken> tokenFilter = new DummyTokenFilter<>(tokenManager);
         final StringToken firstToken = tokenFilter.getNextToken();
@@ -191,7 +192,7 @@ public class BaseTokenFilterTest {
         final Iterator<StringToken> it1 = iterable.iterator();
         final StringToken secondToken = tokenFilter.getNextToken();
         assertEquals("b", secondToken.getImage());
-        it1.next();
+        assertThrows(ConcurrentModificationException.class, () -> it1.next());
     }
 
 }

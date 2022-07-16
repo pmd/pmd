@@ -4,8 +4,8 @@
 
 package net.sourceforge.pmd.testframework;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.Language;
@@ -16,10 +16,10 @@ import net.sourceforge.pmd.lang.rule.AbstractRule;
 public class TestDescriptorTest {
     @Test
     public void testMethodName() {
-        Assert.assertEquals("MockRule_1_Name", create("Name"));
-        Assert.assertEquals("MockRule_1_Tests_xyz", create("Tests xyz"));
-        Assert.assertEquals("MockRule_1_Tests_xyz__false_positive_", create("Tests xyz (false positive)"));
-        Assert.assertEquals("MockRule_1_Tests_xyz__123", create("Tests xyz #123"));
+        Assertions.assertEquals("MockRule_1_Name", create("Name"));
+        Assertions.assertEquals("MockRule_1_Tests_xyz", create("Tests xyz"));
+        Assertions.assertEquals("MockRule_1_Tests_xyz__false_positive_", create("Tests xyz (false positive)"));
+        Assertions.assertEquals("MockRule_1_Tests_xyz__123", create("Tests xyz #123"));
     }
 
     private String create(String description) {

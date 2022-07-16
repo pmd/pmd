@@ -4,12 +4,12 @@
 
 package net.sourceforge.pmd.util.treeexport;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import java.io.IOException;
 
-import org.junit.Assert;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.lang.ast.Node;
@@ -18,13 +18,10 @@ import net.sourceforge.pmd.util.treeexport.XmlTreeRenderer.XmlRenderingConfig;
 
 /**
  */
-public class XmlTreeRendererTest {
-
-    @Rule
-    public ExpectedException expect = ExpectedException.none();
+class XmlTreeRendererTest {
 
     @Test
-    public void testRenderWithAttributes() throws IOException {
+    void testRenderWithAttributes() throws IOException {
 
         DummyNode dummy = TreeRenderersTest.dummyTree1();
 
@@ -37,7 +34,7 @@ public class XmlTreeRendererTest {
 
         renderer.renderSubtree(dummy, out);
 
-        Assert.assertEquals("<?xml version='1.0' encoding='UTF-8' ?>\n"
+        assertEquals("<?xml version='1.0' encoding='UTF-8' ?>\n"
                                 + "<dummyNode foo='bar' ohio='4'>\n"
                                 + "    <dummyNode o='ha' />\n"
                                 + "    <dummyNode />\n"
@@ -46,7 +43,7 @@ public class XmlTreeRendererTest {
     }
 
     @Test
-    public void testRenderWithCustomLineSep() throws IOException {
+    void testRenderWithCustomLineSep() throws IOException {
 
         DummyNode dummy = TreeRenderersTest.dummyTree1();
 
@@ -59,7 +56,7 @@ public class XmlTreeRendererTest {
 
         renderer.renderSubtree(dummy, out);
 
-        Assert.assertEquals("<?xml version='1.0' encoding='UTF-8' ?>\r\n"
+        assertEquals("<?xml version='1.0' encoding='UTF-8' ?>\r\n"
                                 + "<dummyNode foo='bar' ohio='4'>\r\n"
                                 + "    <dummyNode o='ha' />\r\n"
                                 + "    <dummyNode />\r\n"
@@ -68,7 +65,7 @@ public class XmlTreeRendererTest {
     }
 
     @Test
-    public void testRenderWithCustomIndent() throws IOException {
+    void testRenderWithCustomIndent() throws IOException {
 
         DummyNode dummy = TreeRenderersTest.dummyTree1();
 
@@ -81,7 +78,7 @@ public class XmlTreeRendererTest {
 
         renderer.renderSubtree(dummy, out);
 
-        Assert.assertEquals("<?xml version='1.0' encoding='UTF-8' ?>"
+        assertEquals("<?xml version='1.0' encoding='UTF-8' ?>"
                                 + "<dummyNode foo='bar' ohio='4'>"
                                 + "<dummyNode o='ha' />"
                                 + "<dummyNode />"
@@ -90,7 +87,7 @@ public class XmlTreeRendererTest {
     }
 
     @Test
-    public void testRenderWithNoAttributes() throws IOException {
+    void testRenderWithNoAttributes() throws IOException {
 
         DummyNode dummy = TreeRenderersTest.dummyTree1();
 
@@ -108,7 +105,7 @@ public class XmlTreeRendererTest {
 
         renderer.renderSubtree(dummy, out);
 
-        Assert.assertEquals("<?xml version='1.0' encoding='UTF-8' ?>\n"
+        assertEquals("<?xml version='1.0' encoding='UTF-8' ?>\n"
                                 + "<dummyNode>\n"
                                 + "    <dummyNode />\n"
                                 + "    <dummyNode />\n"
@@ -117,7 +114,7 @@ public class XmlTreeRendererTest {
     }
 
     @Test
-    public void testRenderFilterAttributes() throws IOException {
+    void testRenderFilterAttributes() throws IOException {
 
         DummyNode dummy = TreeRenderersTest.dummyTree1();
 
@@ -134,7 +131,7 @@ public class XmlTreeRendererTest {
 
         renderer.renderSubtree(dummy, out);
 
-        Assert.assertEquals("<?xml version='1.0' encoding='UTF-8' ?>\n"
+        assertEquals("<?xml version='1.0' encoding='UTF-8' ?>\n"
                                 + "<dummyNode ohio='4'>\n"
                                 + "    <dummyNode />\n"
                                 + "    <dummyNode />\n"
@@ -143,7 +140,7 @@ public class XmlTreeRendererTest {
     }
 
     @Test
-    public void testInvalidAttributeName() throws IOException {
+    void testInvalidAttributeName() throws IOException {
 
         DummyNode dummy = TreeRenderersTest.dummyTree1();
 
@@ -156,15 +153,13 @@ public class XmlTreeRendererTest {
 
         StringBuilder out = new StringBuilder();
 
-        expect.expect(IllegalArgumentException.class);
-
-        renderer.renderSubtree(dummy, out);
+        assertThrows(IllegalArgumentException.class, () -> renderer.renderSubtree(dummy, out));
 
     }
 
 
     @Test
-    public void testEscapeAttributes() throws IOException {
+    void testEscapeAttributes() throws IOException {
 
         DummyNode dummy = TreeRenderersTest.dummyTree1();
 
@@ -178,7 +173,7 @@ public class XmlTreeRendererTest {
 
         renderer.renderSubtree(dummy, out);
 
-        Assert.assertEquals("<?xml version='1.0' encoding='UTF-8' ?>\n"
+        assertEquals("<?xml version='1.0' encoding='UTF-8' ?>\n"
                                 + "<dummyNode eh=' &apos;a &amp;> b\" ' foo='bar' ohio='4'>\n"
                                 + "    <dummyNode o='ha' />\n"
                                 + "    <dummyNode />\n"
@@ -187,7 +182,7 @@ public class XmlTreeRendererTest {
     }
 
     @Test
-    public void testEscapeDoubleAttributes() throws IOException {
+    void testEscapeDoubleAttributes() throws IOException {
 
         DummyNode dummy = TreeRenderersTest.dummyTree1();
 
@@ -201,7 +196,7 @@ public class XmlTreeRendererTest {
 
         renderer.renderSubtree(dummy, out);
 
-        Assert.assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n"
+        assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n"
                                 + "<dummyNode eh=\" 'a &amp;> b&quot; \" foo=\"bar\" ohio=\"4\">\n"
                                 + "    <dummyNode o=\"ha\" />\n"
                                 + "    <dummyNode />\n"
@@ -210,7 +205,7 @@ public class XmlTreeRendererTest {
     }
 
     @Test
-    public void testNoProlog() throws IOException {
+    void testNoProlog() throws IOException {
 
         DummyNode dummy = TreeRenderersTest.dummyTree1();
 
@@ -223,7 +218,7 @@ public class XmlTreeRendererTest {
 
         renderer.renderSubtree(dummy, out);
 
-        Assert.assertEquals("<dummyNode foo='bar' ohio='4'>\n"
+        assertEquals("<dummyNode foo='bar' ohio='4'>\n"
                                 + "    <dummyNode o='ha' />\n"
                                 + "    <dummyNode />\n"
                                 + "</dummyNode>\n", out.toString());
@@ -232,7 +227,7 @@ public class XmlTreeRendererTest {
 
 
     @Test
-    public void testDefaultLineSep() throws IOException {
+    void testDefaultLineSep() throws IOException {
 
         DummyNode dummy = TreeRenderersTest.dummyTree1();
 
@@ -243,7 +238,7 @@ public class XmlTreeRendererTest {
 
         renderer.renderSubtree(dummy, out);
 
-        Assert.assertEquals("<?xml version='1.0' encoding='UTF-8' ?>" + System.lineSeparator()
+        assertEquals("<?xml version='1.0' encoding='UTF-8' ?>" + System.lineSeparator()
                                 + "<dummyNode foo='bar' ohio='4'>" + System.lineSeparator()
                                 + "    <dummyNode o='ha' />" + System.lineSeparator()
                                 + "    <dummyNode />" + System.lineSeparator()

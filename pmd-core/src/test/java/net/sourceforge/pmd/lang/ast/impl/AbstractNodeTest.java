@@ -7,40 +7,36 @@ package net.sourceforge.pmd.lang.ast.impl;
 import static net.sourceforge.pmd.lang.ast.impl.DummyTreeUtil.node;
 import static net.sourceforge.pmd.lang.ast.impl.DummyTreeUtil.root;
 import static net.sourceforge.pmd.lang.ast.impl.DummyTreeUtil.tree;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.lang.ast.DummyNode.DummyRootNode;
 import net.sourceforge.pmd.lang.ast.Node;
 
-import junitparams.JUnitParamsRunner;
-import junitparams.Parameters;
-
-
 /**
  * Unit test for {@link AbstractNode}.
  */
-@RunWith(JUnitParamsRunner.class)
-public class AbstractNodeTest {
+class AbstractNodeTest {
     private static final int NUM_CHILDREN = 3;
     private static final int NUM_GRAND_CHILDREN = 3;
 
     // Note that in order to successfully run JUnitParams, we need to explicitly use `Integer` instead of `int`
 
-    private Integer[] childrenIndexes() {
+    static Integer[] childrenIndexes() {
         return getIntRange(NUM_CHILDREN);
     }
 
-    private Integer[] grandChildrenIndexes() {
+    static Integer[] grandChildrenIndexes() {
         return getIntRange(NUM_GRAND_CHILDREN);
     }
 
@@ -52,7 +48,7 @@ public class AbstractNodeTest {
         return childIndexes;
     }
 
-    public Object childrenAndGrandChildrenIndexes() {
+    static Object childrenAndGrandChildrenIndexes() {
         final Integer[] childrenIndexes = childrenIndexes();
         final Integer[] grandChildrenIndexes = grandChildrenIndexes();
         final Object[] indexes = new Object[childrenIndexes.length * grandChildrenIndexes.length];
@@ -67,8 +63,8 @@ public class AbstractNodeTest {
 
     private DummyRootNode rootNode;
 
-    @Before
-    public void setUpSampleNodeTree() {
+    @BeforeEach
+    void setUpSampleNodeTree() {
         rootNode = tree(
             () -> {
                 DummyRootNode root = root();
@@ -89,9 +85,9 @@ public class AbstractNodeTest {
     /**
      * Explicitly tests the {@code remove} method, and implicitly the {@code removeChildAtIndex} method
      */
-    @Test
-    @Parameters(method = "childrenIndexes")
-    public void testRemoveChildOfRootNode(final int childIndex) {
+    @ParameterizedTest
+    @MethodSource("childrenIndexes")
+    void testRemoveChildOfRootNode(final int childIndex) {
         final DummyNode child = rootNode.getChild(childIndex);
         final List<? extends DummyNode> grandChildren = child.children().toList();
 
@@ -109,7 +105,7 @@ public class AbstractNodeTest {
     }
 
     @Test
-    public void testPrevNextSiblings() {
+    void testPrevNextSiblings() {
         DummyRootNode root = tree(() -> root(node(), node()));
 
         assertNull(root.getNextSibling());
@@ -129,7 +125,7 @@ public class AbstractNodeTest {
      * This is a border case as the root node does not have any parent.
      */
     @Test
-    public void testRemoveRootNode() {
+    void testRemoveRootNode() {
         // Check that the root node has the expected properties
         final List<? extends DummyNode> children = rootNode.children().toList();
 
@@ -149,9 +145,9 @@ public class AbstractNodeTest {
      * Explicitly tests the {@code remove} method, and implicitly the {@code removeChildAtIndex} method.
      * These are border cases as grandchildren nodes do not have any child.
      */
-    @Test
-    @Parameters(method = "childrenAndGrandChildrenIndexes")
-    public void testRemoveGrandChildNode(final int childIndex, final int grandChildIndex) {
+    @ParameterizedTest
+    @MethodSource("childrenAndGrandChildrenIndexes")
+    void testRemoveGrandChildNode(final int childIndex, final int grandChildIndex) {
         final DummyNode child = rootNode.getChild(childIndex);
         final DummyNode grandChild = child.getChild(grandChildIndex);
 
@@ -167,9 +163,9 @@ public class AbstractNodeTest {
     /**
      * Explicitly tests the {@code removeChildAtIndex} method.
      */
-    @Test
-    @Parameters(method = "childrenIndexes")
-    public void testRemoveRootNodeChildAtIndex(final int childIndex) {
+    @ParameterizedTest
+    @MethodSource("childrenIndexes")
+    void testRemoveRootNodeChildAtIndex(final int childIndex) {
         final List<? extends DummyNode> originalChildren = rootNode.children().toList();
 
         // Do the actual removal
@@ -195,7 +191,7 @@ public class AbstractNodeTest {
      * Test that invalid indexes cases are handled without exception.
      */
     @Test
-    public void testRemoveChildAtIndexWithInvalidIndex() {
+    void testRemoveChildAtIndexWithInvalidIndex() {
         try {
             rootNode.removeChildAtIndex(-1);
             rootNode.removeChildAtIndex(rootNode.getNumChildren());
@@ -208,9 +204,9 @@ public class AbstractNodeTest {
      * Explicitly tests the {@code removeChildAtIndex} method.
      * This is a border case as the method invocation should do nothing.
      */
-    @Test
-    @Parameters(method = "grandChildrenIndexes")
-    public void testRemoveChildAtIndexOnNodeWithNoChildren(final int grandChildIndex) {
+    @ParameterizedTest
+    @MethodSource("grandChildrenIndexes")
+    void testRemoveChildAtIndexOnNodeWithNoChildren(final int grandChildIndex) {
         // grandChild does not have any child
         final DummyNode grandChild = rootNode.getChild(grandChildIndex).getChild(grandChildIndex);
 

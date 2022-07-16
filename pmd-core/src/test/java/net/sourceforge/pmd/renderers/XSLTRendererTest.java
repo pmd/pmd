@@ -4,8 +4,9 @@
 
 package net.sourceforge.pmd.renderers;
 
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.FooRule;
 import net.sourceforge.pmd.ReportTest;
@@ -15,15 +16,15 @@ import net.sourceforge.pmd.lang.ast.DummyNode.DummyRootNode;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 
-public class XSLTRendererTest {
+class XSLTRendererTest {
 
     @Test
-    public void testDefaultStylesheet() throws Exception {
+    void testDefaultStylesheet() throws Exception {
         XSLTRenderer renderer = new XSLTRenderer();
         DummyNode node = new DummyRootNode().withFileName("file");
         node.setCoords(1, 1, 1, 2);
         RuleViolation rv = new ParametricRuleViolation<Node>(new FooRule(), node, "violation message");
         String result = ReportTest.render(renderer, it -> it.onRuleViolation(rv));
-        Assert.assertTrue(result.contains("violation message"));
+        assertTrue(result.contains("violation message"));
     }
 }

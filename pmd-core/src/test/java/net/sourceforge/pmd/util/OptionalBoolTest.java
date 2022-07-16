@@ -8,36 +8,36 @@ import static net.sourceforge.pmd.util.OptionalBool.NO;
 import static net.sourceforge.pmd.util.OptionalBool.UNKNOWN;
 import static net.sourceforge.pmd.util.OptionalBool.YES;
 import static net.sourceforge.pmd.util.OptionalBool.definitely;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class OptionalBoolTest {
+class OptionalBoolTest {
 
     @Test
-    public void testDefinitely() {
+    void testDefinitely() {
         assertEquals(YES, definitely(true));
         assertEquals(NO, definitely(false));
     }
 
     @Test
-    public void testIsKnown() {
+    void testIsKnown() {
         assertTrue(YES.isKnown());
         assertTrue(NO.isKnown());
         assertFalse(UNKNOWN.isKnown());
     }
 
     @Test
-    public void testIsTrue() {
+    void testIsTrue() {
         assertTrue(YES.isTrue());
         assertFalse(NO.isTrue());
         assertFalse(UNKNOWN.isTrue());
     }
 
     @Test
-    public void testComplement() {
+    void testComplement() {
         assertEquals(YES, NO.complement());
         assertEquals(NO, YES.complement());
         assertEquals(UNKNOWN, UNKNOWN.complement());

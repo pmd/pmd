@@ -4,12 +4,12 @@
 
 package net.sourceforge.pmd.renderers;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Collections;
 import java.util.function.Consumer;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.FooRule;
 import net.sourceforge.pmd.PMD;
@@ -19,10 +19,10 @@ import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.DummyNode.DummyRootNode;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
 
-public class SummaryHTMLRendererTest extends AbstractRendererTest {
+class SummaryHTMLRendererTest extends AbstractRendererTest {
 
     @Override
-    public Renderer getRenderer() {
+    Renderer getRenderer() {
         Renderer result = new SummaryHTMLRenderer();
         result.setProperty(HTMLRenderer.LINK_PREFIX, "link_prefix");
         result.setProperty(HTMLRenderer.LINE_PREFIX, "line_prefix");
@@ -36,7 +36,7 @@ public class SummaryHTMLRendererTest extends AbstractRendererTest {
     }
 
     @Override
-    public String getExpected() {
+    String getExpected() {
         return "<html><head><title>PMD</title></head><body>" + PMD.EOL + "<center><h2>Summary</h2></center>" + PMD.EOL
                 + "<table align=\"center\" cellspacing=\"0\" cellpadding=\"3\">" + PMD.EOL
                 + "<tr><th>Rule name</th><th>Number of violations</th></tr>" + PMD.EOL
@@ -53,7 +53,7 @@ public class SummaryHTMLRendererTest extends AbstractRendererTest {
     }
 
     @Override
-    public String getExpectedEmpty() {
+    String getExpectedEmpty() {
         return "<html><head><title>PMD</title></head><body>" + PMD.EOL + "<center><h2>Summary</h2></center>" + PMD.EOL
                 + "<table align=\"center\" cellspacing=\"0\" cellpadding=\"3\">" + PMD.EOL
                 + "<tr><th>Rule name</th><th>Number of violations</th></tr>" + PMD.EOL + "</table>" + PMD.EOL
@@ -65,7 +65,7 @@ public class SummaryHTMLRendererTest extends AbstractRendererTest {
     }
 
     @Override
-    public String getExpectedMultiple() {
+    String getExpectedMultiple() {
         return "<html><head><title>PMD</title></head><body>" + PMD.EOL + "<center><h2>Summary</h2></center>" + PMD.EOL
                 + "<table align=\"center\" cellspacing=\"0\" cellpadding=\"3\">" + PMD.EOL
                 + "<tr><th>Rule name</th><th>Number of violations</th></tr>" + PMD.EOL
@@ -85,7 +85,7 @@ public class SummaryHTMLRendererTest extends AbstractRendererTest {
     }
 
     @Override
-    public String getExpectedError(ProcessingError error) {
+    String getExpectedError(ProcessingError error) {
         return "<html><head><title>PMD</title></head><body>" + PMD.EOL + "<center><h2>Summary</h2></center>" + PMD.EOL
                 + "<table align=\"center\" cellspacing=\"0\" cellpadding=\"3\">" + PMD.EOL
                 + "<tr><th>Rule name</th><th>Number of violations</th></tr>" + PMD.EOL + "</table>" + PMD.EOL
@@ -100,7 +100,7 @@ public class SummaryHTMLRendererTest extends AbstractRendererTest {
     }
 
     @Override
-    public String getExpectedError(ConfigurationError error) {
+    String getExpectedError(ConfigurationError error) {
         return "<html><head><title>PMD</title></head><body>" + PMD.EOL + "<center><h2>Summary</h2></center>" + PMD.EOL
                 + "<table align=\"center\" cellspacing=\"0\" cellpadding=\"3\">" + PMD.EOL
                 + "<tr><th>Rule name</th><th>Number of violations</th></tr>" + PMD.EOL + "</table>" + PMD.EOL
@@ -115,7 +115,7 @@ public class SummaryHTMLRendererTest extends AbstractRendererTest {
     }
 
     @Test
-    public void testShowSuppressions() throws Exception {
+    void testShowSuppressions() throws Exception {
         Renderer renderer = getRenderer();
         renderer.setShowSuppressedViolations(true);
         String actual = renderReport(renderer, createEmptyReportWithSuppression());
@@ -136,7 +136,7 @@ public class SummaryHTMLRendererTest extends AbstractRendererTest {
     }
 
     @Test
-    public void testHideSuppressions() throws Exception {
+    void testHideSuppressions() throws Exception {
         Renderer renderer = getRenderer();
         renderer.setShowSuppressedViolations(false);
         String actual = renderReport(renderer, createEmptyReportWithSuppression());
