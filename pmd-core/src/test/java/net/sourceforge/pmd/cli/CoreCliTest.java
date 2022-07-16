@@ -12,8 +12,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
+import java.io.FilterOutputStream;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystems;
@@ -187,6 +190,24 @@ public class CoreCliTest {
             assertTrue("Report file should have been created", Files.exists(absoluteReportFile));
         } finally {
             Files.deleteIfExists(absoluteReportFile);
+        }
+    }
+
+    @Test
+    public void testReportToStdoutNotClosing() {
+        PrintStream originalOut = System.out;
+        PrintStream out = new PrintStream(new FilterOutputStream(originalOut) {
+            @Override
+            public void close() {
+                fail("Stream must not be closed");
+            }
+        });
+        try {
+            System.setOut(out);
+            startCapturingErrAndOut();
+            runPmd(StatusCode.VIOLATIONS_FOUND, "--no-cache", "--dir", srcDir, "--rulesets", "dummy-basic");
+        } finally {
+            System.setOut(originalOut);
         }
     }
 

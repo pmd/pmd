@@ -41,6 +41,8 @@ Being based on a proper Antlr grammar, CPD can:
 * honor [comment-based suppressions](pmd_userdocs_cpd.html#suppression)
 
 ### Fixed Issues
+* core
+    * [#4031](https://github.com/pmd/pmd/issues/4031): \[core] If report is written to stdout, stdout should not be closed
 * java
     * [#4015](https://github.com/pmd/pmd/issues/4015): \[java] Support JDK 19
 * java-bestpractices
