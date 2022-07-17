@@ -88,6 +88,7 @@ public class TextFilesTest extends PmdContextualizedTest {
 
         DataSource ds = new FileDataSource(file.toFile());
         PMDConfiguration config = new PMDConfiguration();
+        config.setForceLanguageVersion(dummyVersion);
         try (TextFile tf = TextFile.dataSourceCompat(ds, config)) {
             assertEquals(ds.getNiceFileName(false, null), tf.getPathId());
             assertEquals(ds.getNiceFileName(false, null), tf.getDisplayName());

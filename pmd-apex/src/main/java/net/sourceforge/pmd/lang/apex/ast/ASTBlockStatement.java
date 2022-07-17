@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
+import java.util.Objects;
+
 import net.sourceforge.pmd.lang.document.TextDocument;
 
 import apex.jorje.semantic.ast.statement.BlockStatement;
@@ -40,6 +42,6 @@ public final class ASTBlockStatement extends AbstractApexNode<BlockStatement> {
 
     @Override
     public boolean hasRealLoc() {
-        return super.hasRealLoc() && node.getLoc() != getParent().getNode().getLoc();
+        return super.hasRealLoc() && !Objects.equals(node.getLoc(), getParent().getNode().getLoc());
     }
 }

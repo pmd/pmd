@@ -31,8 +31,11 @@ public class UselessOperationOnImmutableRule extends AbstractJavaRulechainRule {
 
             // these types are immutable, so any method of those whose
             // result is ignored is a violation
-            if (TypeTestUtil.isA(String.class, qualifier)
-                || TypeTestUtil.isA(BigDecimal.class, qualifier)
+            if (TypeTestUtil.isA(String.class, qualifier)) {
+                if (!"getChars".equals(node.getMethodName())) {
+                    addViolation(data, node);
+                }
+            } else if (TypeTestUtil.isA(BigDecimal.class, qualifier)
                 || TypeTestUtil.isA(BigInteger.class, qualifier)) {
                 addViolation(data, node);
             }
