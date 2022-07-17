@@ -13,7 +13,7 @@ import net.sourceforge.pmd.lang.ast.AstInfo;
 import net.sourceforge.pmd.lang.ast.Parser;
 import net.sourceforge.pmd.lang.ast.RootNode;
 
-public class ASTHtmlDocument extends ASTHtmlElement implements RootNode {
+public final class ASTHtmlDocument extends ASTHtmlElement implements RootNode {
 
     private final AstInfo<ASTHtmlDocument> astInfo;
 

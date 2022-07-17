@@ -15,7 +15,13 @@ import net.sourceforge.pmd.lang.ast.DummyNode.DummyRootNode;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.Parser;
-import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
+import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
+import net.sourceforge.pmd.lang.ast.SemanticErrorReporter;
+import net.sourceforge.pmd.lang.document.Chars;
+import net.sourceforge.pmd.lang.document.FileLocation;
+import net.sourceforge.pmd.lang.document.TextDocument;
+import net.sourceforge.pmd.lang.document.TextFile;
+import net.sourceforge.pmd.lang.document.TextRegion;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 import net.sourceforge.pmd.lang.rule.impl.DefaultRuleViolationFactory;
 import net.sourceforge.pmd.processor.PmdRunnableTest;
@@ -47,17 +53,20 @@ public class DummyLanguageModule extends BaseLanguageModule {
     }
 
     public static DummyRootNode parse(String code) {
-        return parse(code, "nofilename");
+        return parse(code, TextFile.UNKNOWN_FILENAME);
     }
 
     public static DummyRootNode parse(String code, String filename) {
-        DummyRootNode rootNode = readLispNode(code);
-        rootNode.withFileName(filename);
-        return rootNode;
+        LanguageVersion version = DummyLanguageModule.getInstance().getDefaultVersion();
+        ParserTask task = new ParserTask(
+            TextDocument.readOnlyString(code, filename, version),
+            SemanticErrorReporter.noop()
+        );
+        return (DummyRootNode) version.getLanguageVersionHandler().getParser().parse(task);
     }
 
-
     public static class Handler extends AbstractPmdLanguageVersionHandler {
+
         @Override
         public RuleViolationFactory getRuleViolationFactory() {
             return new RuleViolationFactory();
@@ -65,13 +74,7 @@ public class DummyLanguageModule extends BaseLanguageModule {
 
         @Override
         public Parser getParser() {
-            return task -> {
-                DummyRootNode rootNode = readLispNode(task.getSourceText());
-                rootNode.withFileName(task.getFileDisplayName());
-                rootNode.withLanguage(task.getLanguageVersion());
-                rootNode.withSourceText(task.getSourceText());
-                return rootNode;
-            };
+            return DummyLanguageModule::readLispNode;
         }
     }
 
@@ -85,22 +88,23 @@ public class DummyLanguageModule extends BaseLanguageModule {
      * children "b" and "c". "x" is ignored. The node "a" is not the root
      * node, it has a {@link DummyRootNode} as parent, whose image is "".
      */
-    private static DummyRootNode readLispNode(String text) {
-        final DummyRootNode root = new DummyRootNode().withSourceText(text);
+    private static DummyRootNode readLispNode(ParserTask task) {
+        TextDocument document = task.getTextDocument();
+        final DummyRootNode root = new DummyRootNode().withTaskInfo(task);
+        root.setRegion(document.getEntireRegion());
+
         DummyNode top = root;
-        SourceCodePositioner positioner = new SourceCodePositioner(text);
-        top.setCoords(1, 1, positioner.getLastLine(), positioner.getLastLineColumn());
         int lastNodeStart = 0;
+        Chars text = document.getText();
         for (int i = 0; i < text.length(); i++) {
             char c = text.charAt(i);
             if (c == '(') {
                 DummyNode node = new DummyNode();
                 node.setParent(top);
                 top.addChild(node, top.getNumChildren());
-                // setup coordinates
-                int bline = positioner.lineNumberFromOffset(i);
-                int bcol = positioner.columnFromOffset(bline, i);
-                node.setCoords(bline, bcol, bline, bcol);
+                // setup coordinates, temporary (will be completed when node closes)
+                node.setRegion(TextRegion.caretAt(i));
+
                 // cut out image
                 if (top.getImage() == null) {
                     // image may be non null if this is not the first child of 'top'
@@ -116,10 +120,8 @@ public class DummyLanguageModule extends BaseLanguageModule {
                 if (top == null) {
                     throw new ParseException("Unbalanced parentheses: " + text);
                 }
-                // setup coordinates
-                int eline = positioner.lineNumberFromOffset(i);
-                int ecol = positioner.columnFromOffset(eline, i);
-                top.setCoords(top.getBeginLine(), top.getBeginColumn(), eline, ecol);
+
+                top.setRegion(TextRegion.fromBothOffsets(top.getTextRegion().getStartOffset(), i));
 
                 if (top.getImage() == null) {
                     // cut out image (if node doesn't have children it hasn't been populated yet)
@@ -139,8 +141,8 @@ public class DummyLanguageModule extends BaseLanguageModule {
     public static class RuleViolationFactory extends DefaultRuleViolationFactory {
 
         @Override
-        public RuleViolation createViolation(Rule rule, @NonNull Node location, @NonNull String formattedMessage) {
-            return new ParametricRuleViolation<Node>(rule, location, formattedMessage) {
+        public RuleViolation createViolation(Rule rule, @NonNull Node node, FileLocation location, @NonNull String formattedMessage) {
+            return new ParametricRuleViolation(rule, location, formattedMessage) {
                 {
                     this.packageName = "foo"; // just for testing variable expansion
                 }

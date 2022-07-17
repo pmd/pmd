@@ -4,15 +4,30 @@
 
 package net.sourceforge.pmd.test.lang.ast;
 
-import net.sourceforge.pmd.lang.ast.impl.AbstractNodeWithTextCoordinates;
+import java.util.Objects;
 
-public class DummyNode extends AbstractNodeWithTextCoordinates<DummyNode, DummyNode> {
+import net.sourceforge.pmd.lang.ast.impl.AbstractNode;
+import net.sourceforge.pmd.lang.document.TextRegion;
+
+public class DummyNode extends AbstractNode<DummyNode, DummyNode> {
 
     private String image;
+    private TextRegion region = TextRegion.caretAt(0);
+
+    public DummyNode withCoords(TextRegion region) {
+        this.region = Objects.requireNonNull(region);
+        return this;
+    }
+
+    public DummyNode newChild() {
+        DummyNode child = new DummyNode();
+        addChild(child, getNumChildren());
+        return child;
+    }
 
     @Override
-    public void setCoords(int bline, int bcol, int eline, int ecol) {
-        super.setCoords(bline, bcol, eline, ecol);
+    public TextRegion getTextRegion() {
+        return region;
     }
 
     @Deprecated

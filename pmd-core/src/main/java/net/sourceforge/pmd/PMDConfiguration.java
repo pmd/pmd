@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Properties;
 
-import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.LoggerFactory;
@@ -110,7 +109,7 @@ public class PMDConfiguration extends AbstractConfiguration {
     // Rule and source file options
     private List<String> ruleSets = new ArrayList<>();
     private RulePriority minimumPriority = RulePriority.LOW;
-    private List<String> inputPaths = new ArrayList<>();
+    private @NonNull List<String> inputPaths = Collections.emptyList();
     private String inputUri;
     private String inputFilePath;
     private String ignoreFilePath;
@@ -364,7 +363,7 @@ public class PMDConfiguration extends AbstractConfiguration {
         if (languageVersion == null) {
             // For compatibility with older code that does not always pass in
             // a correct filename.
-            languageVersion = languageVersionDiscoverer.getDefaultLanguageVersion(LanguageRegistry.getLanguage("Java"));
+            languageVersion = languageVersionDiscoverer.getDefaultLanguageVersion(LanguageRegistry.getDefaultLanguage());
         }
         return languageVersion;
     }
@@ -464,16 +463,14 @@ public class PMDConfiguration extends AbstractConfiguration {
      * @deprecated Use {@link #getAllInputPaths()}
      */
     @Deprecated
-    public String getInputPaths() {
-        return inputPaths.isEmpty() ? null : StringUtils.join(inputPaths, ",");
+    public @Nullable String getInputPaths() {
+        return inputPaths.isEmpty() ? null : String.join(",", inputPaths);
     }
 
     /**
      * Returns an unmodifiable list.
-     *
-     * @throws NullPointerException If the parameter is null
      */
-    public List<String> getAllInputPaths() {
+    public @NonNull List<String> getAllInputPaths() {
         return Collections.unmodifiableList(inputPaths);
     }
 
@@ -600,9 +597,6 @@ public class PMDConfiguration extends AbstractConfiguration {
     public Renderer createRenderer(boolean withReportWriter) {
         Renderer renderer = RendererFactory.createRenderer(reportFormat, reportProperties);
         renderer.setShowSuppressedViolations(showSuppressedViolations);
-        if (reportShortNames && inputPaths != null) {
-            renderer.setUseShortNames(Collections.unmodifiableList(new ArrayList<>(inputPaths)));
-        }
         if (withReportWriter) {
             renderer.setReportFile(reportFile);
         }

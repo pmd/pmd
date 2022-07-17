@@ -34,7 +34,7 @@ public final class UseTryWithResourcesRule extends AbstractJavaRulechainRule {
 
     @Override
     public Object visit(ASTTryStatement node, Object data) {
-        boolean isJava9OrLater = node.getAstInfo().getLanguageVersion().compareToVersion("9") >= 0;
+        boolean isJava9OrLater = node.getLanguageVersion().compareToVersion("9") >= 0;
 
         ASTFinallyClause finallyClause = node.getFinallyClause();
         if (finallyClause != null) {

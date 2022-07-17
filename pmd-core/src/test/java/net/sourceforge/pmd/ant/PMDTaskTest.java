@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.ant;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -73,7 +75,7 @@ class PMDTaskTest extends AbstractAntTest {
             String actual = IOUtil.readToString(in, StandardCharsets.UTF_8);
             // remove any trailing newline
             actual = actual.trim();
-            assertEquals("sample.dummy:1:\tSampleXPathRule:\tTest Rule 2", actual);
+            assertThat(actual, containsString("sample.dummy:1:\tSampleXPathRule:\tTest Rule 2"));
         }
     }
 
@@ -90,12 +92,6 @@ class PMDTaskTest extends AbstractAntTest {
             String expected = IOUtil.readToString(expectedStream, StandardCharsets.UTF_8);
             expected = expected.replaceFirst("timestamp=\"[^\"]+\"", "timestamp=\"\"");
             expected = expected.replaceFirst("\\.xsd\" version=\"[^\"]+\"", ".xsd\" version=\"\"");
-
-            // under windows, the file source sample.dummy has different line endings
-            // and therefore the endcolumn of the nodes also change
-            if (System.lineSeparator().equals("\r\n")) {
-                expected = expected.replaceFirst("endcolumn=\"109\"", "endcolumn=\"110\"");
-            }
 
             assertEquals(expected, actual);
         }

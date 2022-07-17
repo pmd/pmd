@@ -18,26 +18,29 @@ import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSetLoader;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
-import net.sourceforge.pmd.util.datasource.DataSource;
 
 class MultiThreadProcessorTest {
 
     private GlobalAnalysisListener listener;
 
-    private List<DataSource> files;
+    private List<TextFile> files;
     private SimpleReportListener reportListener;
     private PMDConfiguration configuration;
 
     RuleSets setUpForTest(final String ruleset) {
         configuration = new PMDConfiguration();
         configuration.setThreads(2);
+        LanguageVersion lv = LanguageRegistry.getDefaultLanguage().getDefaultVersion();
         files = listOf(
-            DataSource.forString("abc", "file1-violation.dummy"),
-            DataSource.forString("DEF", "file2-foo.dummy")
+            TextFile.forCharSeq("abc", "file1-violation.dummy", lv),
+            TextFile.forCharSeq("DEF", "file2-foo.dummy", lv)
         );
 
         reportListener = new SimpleReportListener();
@@ -94,7 +97,7 @@ class MultiThreadProcessorTest {
         public void apply(Node target, RuleContext ctx) {
             count.incrementAndGet();
 
-            if (target.getAstInfo().getFileName().contains("violation")) {
+            if (target.getTextDocument().getDisplayName().contains("violation")) {
                 hasViolation = true;
             } else {
                 letTheOtherThreadRun(10);
@@ -137,7 +140,7 @@ class MultiThreadProcessorTest {
         public AtomicInteger violations = new AtomicInteger(0);
 
         @Override
-        public FileAnalysisListener startFileAnalysis(DataSource file) {
+        public FileAnalysisListener startFileAnalysis(TextFile file) {
             return new FileAnalysisListener() {
                 @Override
                 public void onRuleViolation(RuleViolation violation) {

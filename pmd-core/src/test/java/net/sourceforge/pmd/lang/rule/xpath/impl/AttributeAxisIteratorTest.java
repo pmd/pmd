@@ -36,7 +36,6 @@ class AttributeAxisIteratorTest {
     @Test
     void testAttributeAxisIterator() {
         DummyNode dummyNode = new DummyNode();
-        dummyNode.setCoords(1, 1, 2, 2);
 
         AttributeAxisIterator it = new AttributeAxisIterator(dummyNode);
 

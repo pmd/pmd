@@ -6,6 +6,7 @@ package net.sourceforge.pmd.internal.util;
 
 
 import java.util.Collection;
+import java.util.function.Function;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
@@ -132,6 +133,10 @@ public final class AssertionUtil {
         return value;
     }
 
+
+    /**
+     * @throws IllegalArgumentException If value < 0
+     */
     public static int requireNonNegative(String name, int value) {
         if (value < 0) {
             throw mustBe(name, value, "non-negative");
@@ -139,8 +144,62 @@ public final class AssertionUtil {
         return value;
     }
 
+
+    /**
+     * @throws IndexOutOfBoundsException If value < 0
+     */
+    public static int requireIndexNonNegative(String name, int value) {
+        if (value < 0) {
+            throw mustBe(name, value, "non-negative", IndexOutOfBoundsException::new);
+        }
+        return value;
+    }
+
+    /**
+     * @throws IndexOutOfBoundsException If value < 0 || value >= maxValue
+     */
+    public static int requireInNonNegativeRange(String name, int value, int maxValue) {
+        return requireInExclusiveRange(name, value, 0, maxValue);
+    }
+
+    /**
+     * @throws IndexOutOfBoundsException If value < 1 || value >= maxValue
+     */
+    public static int requireInPositiveRange(String name, int value, int maxValue) {
+        return requireInExclusiveRange(name, value, 1, maxValue);
+    }
+
+    // the difference between those two is the message
+
+    /**
+     * @throws IndexOutOfBoundsException If {@code value < minValue || value > maxValue}
+     */
+    public static int requireInInclusiveRange(String name, int value, int minValue, int maxValue) {
+        return requireInRange(name, value, minValue, maxValue, true);
+    }
+
+    /**
+     * @throws IndexOutOfBoundsException If {@code value < minValue || value > maxValue}
+     */
+    public static int requireInExclusiveRange(String name, int value, int minValue, int maxValue) {
+        return requireInRange(name, value, minValue, maxValue, false);
+    }
+
+    public static int requireInRange(String name, int value, int minValue, int maxValue, boolean inclusive) {
+        if (value < 0 || inclusive && value > maxValue || !inclusive && value >= maxValue) {
+            String message = "in range [" + minValue + "," + maxValue;
+            message += inclusive ? "]" : "[";
+            throw mustBe(name, value, message, IndexOutOfBoundsException::new);
+        }
+        return value;
+    }
+
     public static RuntimeException mustBe(String name, Object value, String condition) {
-        return new IllegalArgumentException(String.format("%s must be %s, got %s", name, condition, value));
+        return mustBe(name, value, condition, IllegalArgumentException::new);
+    }
+
+    public static <E extends RuntimeException> E mustBe(String name, Object value, String condition, Function<String, E> exceptionMaker) {
+        return exceptionMaker.apply(String.format("%s must be %s, got %s", name, condition, value));
     }
 
     @NonNull

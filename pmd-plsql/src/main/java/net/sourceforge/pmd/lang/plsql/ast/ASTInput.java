@@ -32,10 +32,6 @@ public final class ASTInput extends AbstractPLSQLNode implements RootNode {
         return visitor.visit(this, data);
     }
 
-    public String getSourcecode() {
-        return getAstInfo().getSourceText();
-    }
-
     private int excludedRangesCount = 0;
     private int excludedLinesCount = 0;
 
@@ -44,7 +40,7 @@ public final class ASTInput extends AbstractPLSQLNode implements RootNode {
      *
      * @param first First line of the excluded line range (1-based).
      * @param last Last line  of the excluded line range (1-based).
-    */
+     */
     void addExcludedLineRange(int first, int last) {
         excludedLinesCount += last - first + 1;
         excludedRangesCount += 1;

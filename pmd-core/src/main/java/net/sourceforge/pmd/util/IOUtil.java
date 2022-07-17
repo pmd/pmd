@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.util;
 
-import java.io.BufferedReader;
 import java.io.Closeable;
 import java.io.File;
 import java.io.FilterInputStream;
@@ -44,7 +43,12 @@ import net.sourceforge.pmd.annotation.InternalApi;
 @InternalApi
 @Deprecated
 public final class IOUtil {
-
+    /**
+     * Unicode BOM character. Replaces commons io ByteOrderMark.
+     */
+    public static final char UTF_BOM = '\uFEFF';
+    /** Conventional return value for readers. */
+    public static final int EOF = -1;
     private static final int BUFFER_SIZE = 8192;
 
     private IOUtil() {
@@ -113,20 +117,6 @@ public final class IOUtil {
         } catch (IOException e) {
             throw new IllegalArgumentException(e);
         }
-    }
-
-    public static Reader skipBOM(Reader source) {
-        Reader in = new BufferedReader(source);
-        try {
-            in.mark(1);
-            int firstCharacter = in.read();
-            if (firstCharacter != '\ufeff') {
-                in.reset();
-            }
-        } catch (IOException e) {
-            throw new RuntimeException("Error while trying to skip BOM marker", e);
-        }
-        return in;
     }
 
     public static void tryCloseClassLoader(ClassLoader classLoader) {

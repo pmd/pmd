@@ -14,8 +14,12 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.annotation.DeprecatedUntil700;
+import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.NodeStream.DescendantNodeStream;
 import net.sourceforge.pmd.lang.ast.internal.StreamImpl;
+import net.sourceforge.pmd.lang.document.FileLocation;
+import net.sourceforge.pmd.lang.document.TextDocument;
+import net.sourceforge.pmd.lang.document.TextRegion;
 import net.sourceforge.pmd.lang.rule.xpath.Attribute;
 import net.sourceforge.pmd.lang.rule.xpath.NoAttribute;
 import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
@@ -23,6 +27,7 @@ import net.sourceforge.pmd.lang.rule.xpath.impl.AttributeAxisIterator;
 import net.sourceforge.pmd.lang.rule.xpath.impl.XPathHandler;
 import net.sourceforge.pmd.lang.rule.xpath.internal.DeprecatedAttrLogger;
 import net.sourceforge.pmd.lang.rule.xpath.internal.SaxonXPathRuleQuery;
+import net.sourceforge.pmd.reporting.Reportable;
 import net.sourceforge.pmd.util.DataMap;
 import net.sourceforge.pmd.util.DataMap.DataKey;
 
@@ -52,13 +57,15 @@ import net.sourceforge.pmd.util.DataMap.DataKey;
  * are indeed of the same type. Possibly, a type parameter will be added to
  * the Node interface in 7.0.0 to enforce it at compile-time.
  */
-public interface Node {
+public interface Node extends Reportable {
 
+    /**
+     * Compares nodes according to their location in the file.
+     * Note that this comparator is not <i>consistent with equals</i>
+     * (see {@link Comparator}) as some nodes have the same location.
+     */
     Comparator<Node> COORDS_COMPARATOR =
-        Comparator.comparingInt(Node::getBeginLine)
-                  .thenComparingInt(Node::getBeginColumn)
-                  .thenComparingInt(Node::getEndLine)
-                  .thenComparingInt(Node::getEndColumn);
+        Comparator.comparing(Node::getReportLocation, FileLocation.COMPARATOR);
 
     /**
      * Returns a string token, usually filled-in by the parser, which describes some textual characteristic of this
@@ -103,17 +110,49 @@ public interface Node {
         return COORDS_COMPARATOR.compare(this, other);
     }
 
-    int getBeginLine();
+    /**
+     * {@inheritDoc}
+     * This is not necessarily the exact boundaries of the node in the
+     * text. Nodes that can provide exact position information do so
+     * using a {@link TextRegion}, by implementing {@link TextAvailableNode}.
+     *
+     * <p>Use this instead of {@link #getBeginColumn()}/{@link #getBeginLine()}, etc.
+     */
+    @Override
+    default FileLocation getReportLocation() {
+        return getAstInfo().getTextDocument().toLocation(getTextRegion());
+    }
+
+    /**
+     * Returns a region of text delimiting the node in the underlying
+     * text document. This does not necessarily match the
+     * {@link #getReportLocation() report location}.
+     */
+    TextRegion getTextRegion();
 
 
-    int getBeginColumn();
+    // Those are kept here because they're handled specially as XPath
+    // attributes
 
+    @Override
+    default int getBeginLine() {
+        return Reportable.super.getBeginLine();
+    }
 
-    int getEndLine();
+    @Override
+    default int getBeginColumn() {
+        return Reportable.super.getBeginColumn();
+    }
 
+    @Override
+    default int getEndLine() {
+        return Reportable.super.getEndLine();
+    }
 
-    // FIXME should not be inclusive
-    int getEndColumn();
+    @Override
+    default int getEndColumn() {
+        return Reportable.super.getEndColumn();
+    }
 
 
     /**
@@ -317,6 +356,16 @@ public interface Node {
      */
     DataMap<DataKey<?, ?>> getUserMap();
 
+
+    /**
+     * Returns the text document from which this tree was parsed. This
+     * means, that the whole file text is in memory while the AST is.
+     *
+     * @return The text document
+     */
+    default @NonNull TextDocument getTextDocument() {
+        return getAstInfo().getTextDocument();
+    }
 
     /**
      * Returns the parent of this node, or null if this is the {@linkplain RootNode root}
@@ -630,5 +679,12 @@ public interface Node {
             throw new AssertionError("Root of the tree should implement RootNode");
         }
         return (RootNode) r;
+    }
+
+    /**
+     * Returns the language version of this node.
+     */
+    default LanguageVersion getLanguageVersion() {
+        return getTextDocument().getLanguageVersion();
     }
 }

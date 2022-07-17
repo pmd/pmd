@@ -22,6 +22,6 @@ class LanguageParameterTest {
         String[] args = { "-d", "source_folder", "-f", "ideaj", "-P", "sourcePath=/home/user/source/", "-R", "java-empty", "-force-language", "dummy"};
         PMDCommandLineInterface.extractParameters(params, args, "PMD");
 
-        assertEquals(new DummyLanguageModule().getDefaultVersion().getName(), params.toConfiguration().getForceLanguageVersion().getName());
+        assertEquals(DummyLanguageModule.getInstance().getDefaultVersion().getName(), params.toConfiguration().getForceLanguageVersion().getName());
     }
 }

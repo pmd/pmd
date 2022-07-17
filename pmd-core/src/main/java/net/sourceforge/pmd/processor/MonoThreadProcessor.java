@@ -8,8 +8,8 @@ import java.util.List;
 
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.RuleSets;
+import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
-import net.sourceforge.pmd.util.datasource.DataSource;
 
 /**
  * @author Romain Pelisse &lt;belaran@gmail.com&gt;
@@ -23,8 +23,8 @@ final class MonoThreadProcessor extends AbstractPMDProcessor {
 
     @Override
     @SuppressWarnings("PMD.CloseResource") // closed by the PMDRunnable
-    public void processFiles(RuleSets rulesets, List<DataSource> files, GlobalAnalysisListener listener) {
-        for (DataSource file : files) {
+    public void processFiles(RuleSets rulesets, List<TextFile> files, GlobalAnalysisListener listener) {
+        for (TextFile file : files) {
             new MonothreadRunnable(rulesets, file, listener, configuration).run();
         }
     }
@@ -38,7 +38,7 @@ final class MonoThreadProcessor extends AbstractPMDProcessor {
 
         private final RuleSets ruleSets;
 
-        MonothreadRunnable(RuleSets ruleSets, DataSource dataSource, GlobalAnalysisListener ruleContext, PMDConfiguration configuration) {
+        MonothreadRunnable(RuleSets ruleSets, TextFile dataSource, GlobalAnalysisListener ruleContext, PMDConfiguration configuration) {
             super(dataSource, ruleContext, configuration);
             this.ruleSets = ruleSets;
         }

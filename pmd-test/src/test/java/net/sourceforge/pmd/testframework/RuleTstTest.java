@@ -20,6 +20,7 @@ import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.document.TextRegion;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 import net.sourceforge.pmd.test.lang.DummyLanguageModule.DummyRootNode;
 
@@ -59,17 +60,22 @@ public class RuleTstTest {
         when(rule.getTargetSelector()).thenReturn(RuleTargetSelector.forRootOnly());
         when(rule.deepCopy()).thenReturn(rule);
 
+        final String code = "the\ncode";
         Mockito.doAnswer(invocation -> {
             RuleContext context = invocation.getArgument(1, RuleContext.class);
+            DummyRootNode node = invocation.getArgument(0, DummyRootNode.class);
+
             // the violations are reported out of order
-            context.addViolation(new DummyRootNode().withCoords(15, 1, 15, 5));
-            context.addViolation(new DummyRootNode().withCoords(1, 1, 2, 5));
+            // line 2
+            context.addViolation(node.newChild().withCoords(TextRegion.fromOffsetLength("the\n".length(), "code".length())));
+            // line 1
+            context.addViolation(node.newChild().withCoords(TextRegion.fromOffsetLength(0, "the".length())));
             return null;
         }).when(rule).apply(any(Node.class), Mockito.any(RuleContext.class));
 
-        TestDescriptor testDescriptor = new TestDescriptor("the code", "sample test", 2, rule, dummyLanguage);
+        TestDescriptor testDescriptor = new TestDescriptor(code, "sample test", 2, rule, dummyLanguage);
         testDescriptor.setReinitializeRule(false);
-        testDescriptor.setExpectedLineNumbers(Arrays.asList(1, 15));
+        testDescriptor.setExpectedLineNumbers(Arrays.asList(1, 2));
 
         ruleTester.runTest(testDescriptor);
     }

@@ -8,11 +8,14 @@ package net.sourceforge.pmd.lang.html.ast;
 import org.jsoup.nodes.Node;
 
 import net.sourceforge.pmd.lang.ast.AstVisitor;
-import net.sourceforge.pmd.lang.ast.impl.AbstractNodeWithTextCoordinates;
+import net.sourceforge.pmd.lang.ast.impl.AbstractNode;
+import net.sourceforge.pmd.lang.document.TextRegion;
 
-abstract class AbstractHtmlNode<T extends Node> extends AbstractNodeWithTextCoordinates<AbstractHtmlNode<?>, HtmlNode> implements HtmlNode {
+abstract class AbstractHtmlNode<T extends Node> extends AbstractNode<AbstractHtmlNode<?>, HtmlNode> implements HtmlNode {
 
     protected final T node;
+    protected int startOffset;
+    protected int endOffset;
 
     AbstractHtmlNode(T node) {
         this.node = node;
@@ -25,6 +28,11 @@ abstract class AbstractHtmlNode<T extends Node> extends AbstractNodeWithTextCoor
     @Override
     public String getXPathNodeName() {
         return node.nodeName();
+    }
+
+    @Override
+    public TextRegion getTextRegion() {
+        return TextRegion.fromBothOffsets(startOffset, endOffset);
     }
 
     @Override
@@ -44,8 +52,4 @@ abstract class AbstractHtmlNode<T extends Node> extends AbstractNodeWithTextCoor
         super.addChild(child, index);
     }
 
-    @Override
-    protected void setCoords(int bline, int bcol, int eline, int ecol) {
-        super.setCoords(bline, bcol, eline, ecol);
-    }
 }

@@ -12,6 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
+import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.lang.ast.DummyNode.DummyRootNode;
 
@@ -23,16 +24,13 @@ class ElementNodeTest {
 
     @Test
     void testCompareOrder() {
-        DummyRootNode root = new DummyRootNode();
+        DummyRootNode root = DummyLanguageModule.parse(
+            "(#foo)"
+                + "(#foo)"
+        );
 
-        DummyNode c0 = new DummyNode(false, "foo");
-        c0.setCoords(1, 1, 2, 2);
-        root.addChild(c0, 0);
-
-        DummyNode c1 = new DummyNode(false, "foo");
-        c1.setCoords(2, 1, 2, 2);
-        root.addChild(c1, 1);
-
+        DummyNode c0 = root.getChild(0);
+        DummyNode c1 = root.getChild(1);
 
         Configuration configuration = Configuration.newConfiguration();
 
@@ -64,15 +62,10 @@ class ElementNodeTest {
 
     @Test
     void verifyTextNodeType() {
-        DummyRootNode root = new DummyRootNode();
+        DummyRootNode root = DummyLanguageModule.parse("(foo)(#text)");
 
-        DummyNode c0 = new DummyNode(false, "foo");
-        c0.setCoords(1, 1, 2, 2);
-        root.addChild(c0, 0);
-
-        DummyNode c1 = new DummyNode(false, "#text");
-        c1.setCoords(2, 1, 2, 2);
-        root.addChild(c1, 1);
+        DummyNode c0 = root.getChild(0);
+        DummyNode c1 = root.getChild(1);
 
         Configuration configuration = Configuration.newConfiguration();
         AstTreeInfo treeInfo = new AstTreeInfo(root, configuration);
@@ -95,17 +88,16 @@ class ElementNodeTest {
 
     @Test
     void verifyCommentNodeType() {
-        DummyRootNode root = new DummyRootNode();
+        DummyRootNode root = DummyLanguageModule.parse("(#comment)");
 
-        DummyNode c1 = new DummyNode(false, "#comment");
-        c1.setCoords(2, 1, 2, 2);
-        root.addChild(c1, 0);
+        DummyNode c1 = root.getChild(0);
 
         Configuration configuration = Configuration.newConfiguration();
         AstTreeInfo treeInfo = new AstTreeInfo(root, configuration);
         AstElementNode rootElt = treeInfo.getRootNode().getRootElement();
 
         AstElementNode elementComment = rootElt.getChildren().get(0);
+        assertEquals("#comment", c1.getXPathNodeName());
         assertEquals(Type.COMMENT, elementComment.getNodeKind());
         assertSame(c1, elementComment.getUnderlyingNode());
         assertSame(elementComment, treeInfo.findWrapperFor(c1));

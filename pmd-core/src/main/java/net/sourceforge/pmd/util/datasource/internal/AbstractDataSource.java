@@ -8,6 +8,7 @@ import java.io.IOException;
 
 import net.sourceforge.pmd.util.datasource.DataSource;
 
+@Deprecated
 public abstract class AbstractDataSource implements DataSource {
 
     @Override

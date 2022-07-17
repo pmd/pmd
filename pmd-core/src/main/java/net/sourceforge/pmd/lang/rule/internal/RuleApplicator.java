@@ -61,7 +61,7 @@ public class RuleApplicator {
                 Iterator<? extends Node> targets = rule.getTargetSelector().getVisitedNodes(idx);
                 while (targets.hasNext()) {
                     Node node = targets.next();
-                    if (!RuleSet.applies(rule, node.getAstInfo().getLanguageVersion())) {
+                    if (!RuleSet.applies(rule, node.getTextDocument().getLanguageVersion())) {
                         continue;
                     }
 
@@ -99,10 +99,10 @@ public class RuleApplicator {
     private void reportException(FileAnalysisListener listener, Rule rule, Node node, Throwable e) {
         // The listener handles logging if needed,
         // it may also rethrow the error.
-        listener.onError(new ProcessingError(e, node.getAstInfo().getFileName()));
+        listener.onError(new ProcessingError(e, node.getTextDocument().getDisplayName()));
 
         // fixme - maybe duplicated logging
-        LOG.warn("Exception applying rule {} on file {}, continuing with next rule", rule.getName(), node.getAstInfo().getFileName(), e);
+        LOG.warn("Exception applying rule {} on file {}, continuing with next rule", rule.getName(), node.getTextDocument().getPathId(), e);
         String nodeToString = StringUtil.elide(node.toString(), 600, " ... (truncated)");
         LOG.warn("Exception occurred on node {}", nodeToString);
     }

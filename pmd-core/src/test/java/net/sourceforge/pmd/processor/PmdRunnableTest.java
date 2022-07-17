@@ -8,7 +8,6 @@ import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.contains;
 import static org.mockito.Mockito.eq;
@@ -44,9 +43,9 @@ import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.Parser;
 import net.sourceforge.pmd.lang.ast.RootNode;
+import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
 import net.sourceforge.pmd.processor.MonoThreadProcessor.MonothreadRunnable;
-import net.sourceforge.pmd.util.datasource.DataSource;
 import net.sourceforge.pmd.util.log.MessageReporter;
 
 import com.github.stefanbirkner.systemlambda.SystemLambda;
@@ -60,95 +59,99 @@ public class PmdRunnableTest {
 
     private PMDConfiguration configuration;
     private PmdRunnable pmdRunnable;
-    private GlobalReportBuilderListener reportBuilder;
     private MessageReporter reporter;
     private Rule rule;
 
+
     @BeforeEach
-    void prepare() {
-        DataSource dataSource = DataSource.forString("test", "test.dummy");
-
-
+    public void prepare() {
+        // reset data
         rule = spy(new RuleThatThrows());
         configuration = new PMDConfiguration();
-        reportBuilder = new GlobalReportBuilderListener();
         reporter = mock(MessageReporter.class);
         configuration.setReporter(reporter);
+
+        // will be populated by a call to process(LanguageVersion)
+        pmdRunnable = null;
+    }
+
+
+    private Report process(LanguageVersion lv) {
+        TextFile dataSource = TextFile.forCharSeq("test", "test.dummy", lv);
+
+        GlobalReportBuilderListener reportBuilder = new GlobalReportBuilderListener();
+
         pmdRunnable = new MonothreadRunnable(new RuleSets(RuleSet.forSingleRule(rule)),
                                              dataSource,
                                              reportBuilder,
                                              configuration);
 
+        pmdRunnable.run();
+        reportBuilder.close();
+        return reportBuilder.getResult();
     }
 
     @Test
-    void inErrorRecoveryModeErrorsShouldBeLoggedByParser() throws Exception {
+    public void inErrorRecoveryModeErrorsShouldBeLoggedByParser() throws Exception {
         SystemLambda.restoreSystemProperties(() -> {
             System.setProperty(SystemProps.PMD_ERROR_RECOVERY, "");
-            configuration.setDefaultLanguageVersion(versionWithParserThatThrowsAssertionError());
 
-            pmdRunnable.run();
-            reportBuilder.close();
-            assertEquals(1, reportBuilder.getResult().getProcessingErrors().size());
+            Report report = process(versionWithParserThatThrowsAssertionError());
+
+            assertEquals(1, report.getProcessingErrors().size());
         });
     }
 
     @Test
-    void inErrorRecoveryModeErrorsShouldBeLoggedByRule() throws Exception {
+    public void inErrorRecoveryModeErrorsShouldBeLoggedByRule() throws Exception {
         SystemLambda.restoreSystemProperties(() -> {
             System.setProperty(SystemProps.PMD_ERROR_RECOVERY, "");
-            configuration.setDefaultLanguageVersion(DummyLanguageModule.getInstance().getDefaultVersion());
 
-            pmdRunnable.run();
-            reportBuilder.close();
-            Report report = reportBuilder.getResult();
+            Report report = process(DummyLanguageModule.getInstance().getDefaultVersion());
+
             List<ProcessingError> errors = report.getProcessingErrors();
             assertThat(errors, hasSize(1));
             assertThat(errors.get(0).getError(), instanceOf(ContextedAssertionError.class));
         });
+
     }
 
     @Test
-    void withoutErrorRecoveryModeProcessingShouldBeAbortedByParser() {
-        assertNull(System.getProperty(SystemProps.PMD_ERROR_RECOVERY));
-        configuration.setDefaultLanguageVersion(versionWithParserThatThrowsAssertionError());
-
-        assertThrows(AssertionError.class, pmdRunnable::run);
+    public void withoutErrorRecoveryModeProcessingShouldBeAbortedByParser() throws Exception {
+        SystemLambda.restoreSystemProperties(() -> {
+            System.clearProperty(SystemProps.PMD_ERROR_RECOVERY);
+            assertThrows(AssertionError.class, () -> process(versionWithParserThatThrowsAssertionError()));
+        });
     }
 
     @Test
-    void withoutErrorRecoveryModeProcessingShouldBeAbortedByRule() {
-        assertNull(System.getProperty(SystemProps.PMD_ERROR_RECOVERY));
-        configuration.setDefaultLanguageVersion(DummyLanguageModule.getInstance().getDefaultVersion());
-
-        assertThrows(AssertionError.class, pmdRunnable::run);
+    public void withoutErrorRecoveryModeProcessingShouldBeAbortedByRule() throws Exception {
+        SystemLambda.restoreSystemProperties(() -> {
+            System.clearProperty(SystemProps.PMD_ERROR_RECOVERY);
+            assertThrows(AssertionError.class, () -> process(DummyLanguageModule.getInstance().getDefaultVersion()));
+        });
     }
 
 
     @Test
-    void semanticErrorShouldAbortTheRun() {
-        configuration.setDefaultLanguageVersion(versionWithParserThatReportsSemanticError());
+    public void semanticErrorShouldAbortTheRun() {
+        Report report = process(versionWithParserThatReportsSemanticError());
 
-        pmdRunnable.run();
-
-        verify(reporter, times(1)).log(eq(Level.ERROR), eq("at test.dummy :1:1: " + TEST_MESSAGE_SEMANTIC_ERROR));
+        verify(reporter, times(1))
+            .log(eq(Level.ERROR), eq("at !debug only! test.dummy:1:1: " + TEST_MESSAGE_SEMANTIC_ERROR));
         verify(rule, never()).apply(Mockito.any(), Mockito.any());
 
-        reportBuilder.close();
-        assertEquals(1, reportBuilder.getResult().getProcessingErrors().size());
+        assertEquals(1, report.getProcessingErrors().size());
     }
 
     @Test
-    void semanticErrorThrownShouldAbortTheRun() {
-        configuration.setDefaultLanguageVersion(getVersionWithParserThatThrowsSemanticError());
-
-        pmdRunnable.run();
+    public void semanticErrorThrownShouldAbortTheRun() {
+        Report report = process(getVersionWithParserThatThrowsSemanticError());
 
         verify(reporter, times(1)).log(eq(Level.ERROR), contains(TEST_MESSAGE_SEMANTIC_ERROR));
         verify(rule, never()).apply(Mockito.any(), Mockito.any());
 
-        reportBuilder.close();
-        assertEquals(1, reportBuilder.getResult().getProcessingErrors().size());
+        assertEquals(1, report.getProcessingErrors().size());
     }
 
     public static void registerCustomVersions(BiConsumer<String, Handler> addVersion) {

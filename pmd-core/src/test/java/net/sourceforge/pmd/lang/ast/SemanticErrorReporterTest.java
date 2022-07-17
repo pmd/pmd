@@ -22,8 +22,8 @@ import org.slf4j.helpers.NOPLogger;
 
 import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.Language;
-import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
+import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.util.log.MessageReporter;
 
 /**
@@ -75,12 +75,11 @@ class SemanticErrorReporterTest {
     }
 
     private RootNode parseMockNode(SemanticErrorReporter reporter) {
-        Language language = LanguageRegistry.getLanguage(DummyLanguageModule.NAME);
+        Language language = DummyLanguageModule.getInstance();
         Parser parser = language.getDefaultVersion().getLanguageVersionHandler().getParser();
+        TextDocument doc = TextDocument.readOnlyString("(mock (node))", MOCK_FILENAME, language.getDefaultVersion());
         return parser.parse(new ParserTask(
-            language.getDefaultVersion(),
-            MOCK_FILENAME,
-            "(mock (node))",
+            doc,
             reporter
         ));
     }

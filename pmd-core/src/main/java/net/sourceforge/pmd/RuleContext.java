@@ -13,8 +13,9 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import net.sourceforge.pmd.Report.SuppressedViolation;
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.document.FileLocation;
+import net.sourceforge.pmd.lang.document.TextRange2d;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
-import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
 import net.sourceforge.pmd.processor.AbstractPMDProcessor;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
@@ -121,20 +122,22 @@ public final class RuleContext {
      * @param message    Violation message
      * @param formatArgs Format arguments for the message
      */
-    public void addViolationWithPosition(Node location, int beginLine, int endLine, String message, Object... formatArgs) {
-        Objects.requireNonNull(location, "Node was null");
+    public void addViolationWithPosition(Node node, int beginLine, int endLine, String message, Object... formatArgs) {
+        Objects.requireNonNull(node, "Node was null");
         Objects.requireNonNull(message, "Message was null");
         Objects.requireNonNull(formatArgs, "Format arguments were null, use an empty array");
 
-        RuleViolationFactory fact = location.getAstInfo().getLanguageVersion().getLanguageVersionHandler().getRuleViolationFactory();
+        RuleViolationFactory fact = node.getTextDocument().getLanguageVersion().getLanguageVersionHandler().getRuleViolationFactory();
 
-        RuleViolation violation = fact.createViolation(rule, location, makeMessage(message, formatArgs));
+
+        FileLocation location = node.getReportLocation();
         if (beginLine != -1 && endLine != -1) {
-            // fixme, this is needed until we have actual Location objects
-            ((ParametricRuleViolation<?>) violation).setLines(beginLine, endLine);
+            location = FileLocation.range(location.getFileName(), TextRange2d.range2d(beginLine, 1, endLine, 1));
         }
 
-        SuppressedViolation suppressed = fact.suppressOrNull(location, violation);
+        RuleViolation violation = fact.createViolation(rule, node, location, makeMessage(message, formatArgs));
+
+        SuppressedViolation suppressed = fact.suppressOrNull(node, violation);
 
         if (suppressed != null) {
             listener.onSuppressedRuleViolation(suppressed);

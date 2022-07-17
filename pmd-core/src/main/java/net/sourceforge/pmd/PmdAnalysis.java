@@ -30,6 +30,7 @@ import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
 import net.sourceforge.pmd.lang.document.FileCollector;
+import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.processor.AbstractPMDProcessor;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
@@ -38,7 +39,6 @@ import net.sourceforge.pmd.reporting.ReportStatsListener;
 import net.sourceforge.pmd.util.ClasspathClassLoader;
 import net.sourceforge.pmd.util.IOUtil;
 import net.sourceforge.pmd.util.StringUtil;
-import net.sourceforge.pmd.util.datasource.DataSource;
 import net.sourceforge.pmd.util.log.MessageReporter;
 
 /**
@@ -271,19 +271,18 @@ public final class PmdAnalysis implements AutoCloseable {
     void performAnalysisImpl(List<? extends GlobalReportBuilderListener> extraListeners) {
         try (FileCollector files = collector) {
             files.filterLanguages(getApplicableLanguages());
-            List<DataSource> dataSources = FileCollectionUtil.collectorToDataSource(files);
-            performAnalysisImpl(extraListeners, dataSources);
+            performAnalysisImpl(extraListeners, files.getCollectedFiles());
         }
     }
 
-    void performAnalysisImpl(List<? extends GlobalReportBuilderListener> extraListeners, List<DataSource> dataSources) {
+    void performAnalysisImpl(List<? extends GlobalReportBuilderListener> extraListeners, List<TextFile> textFiles) {
         RuleSets rulesets = new RuleSets(this.ruleSets);
 
         GlobalAnalysisListener listener;
         try {
             @SuppressWarnings("PMD.CloseResource") AnalysisCacheListener cacheListener = new AnalysisCacheListener(configuration.getAnalysisCache(), rulesets, configuration.getClassLoader());
             if (configuration.isProgressBar()) {
-                @SuppressWarnings("PMD.CloseResource") ProgressBarListener progressBarListener = new ProgressBarListener(dataSources.size(), System.out::print);
+                @SuppressWarnings("PMD.CloseResource") ProgressBarListener progressBarListener = new ProgressBarListener(textFiles.size(), System.out::print);
                 addListener(progressBarListener);
             }
             listener = GlobalAnalysisListener.tee(listOf(createComposedRendererListener(renderers),
@@ -306,7 +305,7 @@ public final class PmdAnalysis implements AutoCloseable {
 
             PMD.encourageToUseIncrementalAnalysis(configuration);
             try (AbstractPMDProcessor processor = AbstractPMDProcessor.newFileProcessor(configuration)) {
-                processor.processFiles(rulesets, dataSources, listener);
+                processor.processFiles(rulesets, textFiles, listener);
             }
         } finally {
             try {

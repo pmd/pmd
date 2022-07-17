@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -8,12 +8,18 @@ import java.util.Iterator;
 
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.internal.util.IteratorUtil;
-import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
+import net.sourceforge.pmd.lang.document.TextRegion;
+import net.sourceforge.pmd.reporting.Reportable;
 
 /**
- * Represents a language-independent token such as constants, values language reserved keywords, or comments.
+ * Represents a token, part of a token chain in a source file. Tokens
+ * are the individual "words" of a programming language, such as literals,
+ * identifiers, keywords, or comments. Tokens are produced by a lexer and
+ * are used by a parser implementation to build an AST {@link Node}. Tokens
+ * should generally not be manipulated in rules directly as they have little
+ * to no semantic information.
  */
-public interface GenericToken<T extends GenericToken<T>> {
+public interface GenericToken<T extends GenericToken<T>> extends Comparable<T>, Reportable {
 
     /**
      * Obtain the next generic token according to the input stream which generated the instance of this token.
@@ -33,64 +39,24 @@ public interface GenericToken<T extends GenericToken<T>> {
     /**
      * Returns the token's text.
      */
-    String getImage();
+    default String getImage() {
+        return getImageCs().toString();
+    }
 
+    /**
+     * Returns the image as a {@link CharSequence}.
+     */
+    CharSequence getImageCs();
+
+
+    /** Returns a text region with the coordinates of this token. */
+    TextRegion getRegion();
 
     /**
      * Returns true if this token is an end-of-file token. This is the
      * last token of token sequences that have been fully lexed.
      */
     boolean isEof();
-
-
-    // TODO these default implementations are here for compatibility because
-    //  the functionality is only used in pmd-java for now, though it could
-    //  be ported. I prefer doing this as changing all the GenericToken in
-    //  pmd-java to JavaccToken
-
-
-    /** Inclusive start offset in the source file text. */
-    default int getStartInDocument() {
-        return -1;
-    }
-
-
-    /** Exclusive end offset in the source file text. */
-    default int getEndInDocument() {
-        return -1;
-    }
-
-
-    /**
-     * Gets the line where the token's region begins
-     *
-     * @return a non-negative integer containing the begin line
-     */
-    int getBeginLine();
-
-
-    /**
-     * Gets the line where the token's region ends
-     *
-     * @return a non-negative integer containing the end line
-     */
-    int getEndLine();
-
-
-    /**
-     * Gets the column offset from the start of the begin line where the token's region begins
-     *
-     * @return a non-negative integer containing the begin column
-     */
-    int getBeginColumn();
-
-
-    /**
-     * Gets the column offset from the start of the end line where the token's region ends
-     *
-     * @return a non-negative integer containing the begin column
-     */
-    int getEndColumn();
 
     /**
      * Returns true if this token is implicit, ie was inserted artificially
@@ -100,6 +66,16 @@ public interface GenericToken<T extends GenericToken<T>> {
         return false;
     }
 
+
+    /**
+     * This must return true if this token comes before the other token.
+     * If they start at the same index, then the smaller token comes before
+     * the other.
+     */
+    @Override
+    default int compareTo(T o) {
+        return getRegion().compareTo(o.getRegion());
+    }
 
 
     /**
@@ -113,12 +89,9 @@ public interface GenericToken<T extends GenericToken<T>> {
      *
      * @throws IllegalArgumentException If the first token does not come before the other token
      */
-    static Iterator<JavaccToken> range(JavaccToken from, JavaccToken to) {
-        if (from.getStartInDocument() > to.getStartInDocument()) {
-            throw new IllegalArgumentException(
-                from + " (at " + from.getStartInDocument()
-                    + ") must come before " + to + " (at " + to.getStartInDocument() + ")"
-            );
+    static <T extends GenericToken<T>> Iterator<T> range(T from, T to) {
+        if (from.compareTo(to) > 0) {
+            throw new IllegalArgumentException(from + " must come before " + to);
         }
         return IteratorUtil.generate(from, t -> t == to ? null : t.getNext());
     }
@@ -135,8 +108,8 @@ public interface GenericToken<T extends GenericToken<T>> {
      *
      * @throws NullPointerException If the parameter s null
      */
-    static Iterable<JavaccToken> previousSpecials(JavaccToken from) {
-        return () -> IteratorUtil.generate(from.getPreviousComment(), JavaccToken::getPreviousComment);
+    static <T extends GenericToken<T>> Iterable<T> previousSpecials(T from) {
+        return () -> IteratorUtil.generate(from.getPreviousComment(), GenericToken::getPreviousComment);
     }
 
     /**

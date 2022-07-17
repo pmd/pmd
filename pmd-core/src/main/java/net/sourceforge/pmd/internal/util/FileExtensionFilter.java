@@ -4,11 +4,12 @@
 
 package net.sourceforge.pmd.internal.util;
 
-import java.io.File;
 import java.util.Locale;
 import java.util.function.Predicate;
 
-final class FileExtensionFilter implements Predicate<File> {
+import org.apache.commons.lang3.StringUtils;
+
+final class FileExtensionFilter implements Predicate<String> {
 
     private final String[] extensions;
     private final boolean ignoreCase;
@@ -27,12 +28,14 @@ final class FileExtensionFilter implements Predicate<File> {
     }
 
     @Override
-    public boolean test(File file) {
+    public boolean test(String path) {
         boolean accept = extensions == null;
         if (!accept) {
             for (String extension : extensions) {
-                String name = file.getName();
-                if (ignoreCase ? name.toUpperCase(Locale.ROOT).endsWith(extension) : name.endsWith(extension)) {
+                boolean matches =
+                    ignoreCase ? StringUtils.endsWithIgnoreCase(path, extension)
+                               : path.endsWith(extension);
+                if (matches) {
                     accept = true;
                     break;
                 }

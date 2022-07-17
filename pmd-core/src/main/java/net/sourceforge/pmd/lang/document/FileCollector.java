@@ -48,6 +48,7 @@ import net.sourceforge.pmd.util.log.MessageReporter;
  */
 @SuppressWarnings("PMD.CloseResource")
 public final class FileCollector implements AutoCloseable {
+
     private static final Logger LOG = LoggerFactory.getLogger(FileCollector.class);
 
     private final List<TextFile> allFilesToProcess = new ArrayList<>();
@@ -143,7 +144,9 @@ public final class FileCollector implements AutoCloseable {
         }
         LanguageVersion languageVersion = discoverLanguage(file.toString());
         if (languageVersion != null) {
-            addFileImpl(new NioTextFile(file, charset, languageVersion, getDisplayName(file)));
+            addFileImpl(TextFile.builderForPath(file, charset, languageVersion)
+                                .withDisplayName(getDisplayName(file))
+                                .build());
             return true;
         }
         return false;
@@ -165,8 +168,11 @@ public final class FileCollector implements AutoCloseable {
             reporter.error("Not a regular file: {0}", file);
             return false;
         }
-        NioTextFile nioTextFile = new NioTextFile(file, charset, discoverer.getDefaultLanguageVersion(language), getDisplayName(file));
-        addFileImpl(nioTextFile);
+        LanguageVersion lv = discoverer.getDefaultLanguageVersion(language);
+        Objects.requireNonNull(lv);
+        addFileImpl(TextFile.builderForPath(file, charset, lv)
+                            .withDisplayName(getDisplayName(file))
+                            .build());
         return true;
     }
 
@@ -198,7 +204,7 @@ public final class FileCollector implements AutoCloseable {
 
         LanguageVersion version = discoverLanguage(pathId);
         if (version != null) {
-            addFileImpl(new StringTextFile(sourceContents, pathId, pathId, version));
+            addFileImpl(TextFile.builderForCharSeq(sourceContents, pathId, version).build());
             return true;
         }
 

@@ -14,9 +14,8 @@ public final class HtmlParser implements net.sourceforge.pmd.lang.ast.Parser {
 
     @Override
     public ASTHtmlDocument parse(ParserTask task) {
-        String data = task.getSourceText();
-        Document doc = Parser.xmlParser().parseInput(data, "");
+        Document doc = Parser.xmlParser().parseInput(task.getTextDocument().getText().newReader(), "");
         HtmlTreeBuilder builder = new HtmlTreeBuilder();
-        return builder.build(doc, data, task, new HashMap<>());
+        return builder.build(doc, task, new HashMap<>());
     }
 }

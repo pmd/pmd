@@ -33,7 +33,7 @@ public class BigIntegerInstantiationRule extends AbstractJavaRulechainRule {
 
     @Override
     public Object visit(ASTConstructorCall node, Object data) {
-        LanguageVersion languageVersion = node.getAstInfo().getLanguageVersion();
+        LanguageVersion languageVersion = node.getTextDocument().getLanguageVersion();
         boolean jdk15 = languageVersion.compareToVersion("1.5") >= 0;
         boolean jdk9 = languageVersion.compareToVersion("9") >= 0;
 
