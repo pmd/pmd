@@ -10,10 +10,10 @@ import java.util.Set;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.w3c.dom.Element;
 
-import net.sourceforge.pmd.internal.util.xml.PmdXmlReporter;
-import net.sourceforge.pmd.internal.util.xml.XmlErrorMessages;
 import net.sourceforge.pmd.properties.constraints.PropertyConstraint;
 import net.sourceforge.pmd.util.CollectionUtil;
+import net.sourceforge.pmd.util.internal.xml.PmdXmlReporter;
+import net.sourceforge.pmd.util.internal.xml.XmlErrorMessages;
 
 /**
  * Decorates an XmlMapper with some {@link PropertyConstraint}s.

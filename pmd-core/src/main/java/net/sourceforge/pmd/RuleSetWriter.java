@@ -30,15 +30,15 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Text;
 
-import net.sourceforge.pmd.internal.util.xml.SchemaConstants;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertySource;
 import net.sourceforge.pmd.properties.PropertyTypeId;
-import net.sourceforge.pmd.util.IOUtil;
 import net.sourceforge.pmd.properties.xml.XmlMapper;
+import net.sourceforge.pmd.util.IOUtil;
+import net.sourceforge.pmd.util.internal.xml.SchemaConstants;
 
 /**
  * This class represents a way to serialize a RuleSet to an XML configuration

@@ -305,7 +305,7 @@ class PropertyDescriptorTest {
 
         IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () ->
             descriptor.valueFrom("InvalidEnumValue"));
-        assertThat(thrown.getMessage(), containsString("Value was not in the set [TEST_A, TEST_B, TEST_C]"));
+        assertThat(thrown.getMessage(), containsString("'InvalidEnumValue' should be one of 'TEST_A', 'TEST_B', 'TEST_C'"));
     }
 
     @Test

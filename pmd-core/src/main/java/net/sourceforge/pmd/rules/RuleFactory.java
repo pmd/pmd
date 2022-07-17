@@ -4,17 +4,18 @@
 
 package net.sourceforge.pmd.rules;
 
-import static net.sourceforge.pmd.internal.util.xml.SchemaConstants.PROPERTY_TYPE;
-import static net.sourceforge.pmd.internal.util.xml.SchemaConstants.PROPERTY_VALUE;
-import static net.sourceforge.pmd.internal.util.xml.XmlErrorMessages.ERR__INVALID_LANG_VERSION;
-import static net.sourceforge.pmd.internal.util.xml.XmlErrorMessages.ERR__INVALID_LANG_VERSION_NO_NAMED_VERSION;
-import static net.sourceforge.pmd.internal.util.xml.XmlErrorMessages.ERR__PROPERTY_DOES_NOT_EXIST;
-import static net.sourceforge.pmd.internal.util.xml.XmlErrorMessages.ERR__UNSUPPORTED_VALUE_ATTRIBUTE;
-import static net.sourceforge.pmd.internal.util.xml.XmlErrorMessages.IGNORED__DUPLICATE_PROPERTY_SETTER;
-import static net.sourceforge.pmd.internal.util.xml.XmlUtil.getSingleChildIn;
 import static net.sourceforge.pmd.util.internal.xml.SchemaConstants.MAXIMUM_LANGUAGE_VERSION;
 import static net.sourceforge.pmd.util.internal.xml.SchemaConstants.MINIMUM_LANGUAGE_VERSION;
 import static net.sourceforge.pmd.util.internal.xml.SchemaConstants.NAME;
+import static net.sourceforge.pmd.util.internal.xml.SchemaConstants.PROPERTY_TYPE;
+import static net.sourceforge.pmd.util.internal.xml.SchemaConstants.PROPERTY_VALUE;
+import static net.sourceforge.pmd.util.internal.xml.XmlErrorMessages.ERR__INVALID_LANG_VERSION;
+import static net.sourceforge.pmd.util.internal.xml.XmlErrorMessages.ERR__INVALID_LANG_VERSION_NO_NAMED_VERSION;
+import static net.sourceforge.pmd.util.internal.xml.XmlErrorMessages.ERR__PROPERTY_DOES_NOT_EXIST;
+import static net.sourceforge.pmd.util.internal.xml.XmlErrorMessages.ERR__UNSUPPORTED_VALUE_ATTRIBUTE;
+import static net.sourceforge.pmd.util.internal.xml.XmlErrorMessages.IGNORED__DUPLICATE_PROPERTY_SETTER;
+import static net.sourceforge.pmd.util.internal.xml.XmlUtil.getSingleChildIn;
+
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -28,10 +29,6 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.RuleSetReference;
 import net.sourceforge.pmd.annotation.InternalApi;
-import net.sourceforge.pmd.internal.util.xml.PmdXmlReporter;
-import net.sourceforge.pmd.internal.util.xml.SchemaConstants;
-import net.sourceforge.pmd.internal.util.xml.XmlErrorMessages;
-import net.sourceforge.pmd.internal.util.xml.XmlUtil;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
@@ -379,7 +376,7 @@ public class RuleFactory {
     }
 
     private static <T> T parsePropertyValue(Element propertyElt, PmdXmlReporter err, XmlMapper<T> syntax) {
-        @Nullable String defaultAttr = PROPERTY_VALUE.getAttributeOpt(propertyElt);
+        @Nullable String defaultAttr = PROPERTY_VALUE.getAttributeOrNull(propertyElt);
         if (defaultAttr != null) {
             Attr attrNode = PROPERTY_VALUE.getAttributeNode(propertyElt);
 
@@ -400,7 +397,10 @@ public class RuleFactory {
             }
 
         } else {
-            Element child = getSingleChildIn(propertyElt, true, err, syntax.getReadElementNames());
+            Element child = getSingleChildIn(propertyElt,
+                                             true,
+                                             err,
+                                             XmlUtil.toConstants(syntax.getReadElementNames()));
             // this will report the correct error if any
             return syntax.fromXml(child, err);
         }

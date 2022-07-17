@@ -19,9 +19,9 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.internal.util.IteratorUtil;
-import net.sourceforge.pmd.internal.util.xml.XmlUtil;
 import net.sourceforge.pmd.properties.PropertyFactory;
 import net.sourceforge.pmd.properties.constraints.PropertyConstraint;
+import net.sourceforge.pmd.util.internal.xml.XmlUtil;
 
 /**
  * This is internal API and shouldn't be used directly by clients.
@@ -227,7 +227,7 @@ public final class XmlSyntaxUtils {
             mappings::get,
             PropertyConstraint.fromPredicate(
                 mappings::containsKey,
-                "Should be " + XmlUtil.formatPossibleNames(mappings.keySet())
+                "Should be " + XmlUtil.formatPossibleNames(XmlUtil.toConstants(mappings.keySet()))
             )
         );
     }

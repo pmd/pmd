@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.java.rule.documentation;
 
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
