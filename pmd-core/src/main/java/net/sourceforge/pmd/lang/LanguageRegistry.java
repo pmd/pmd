@@ -40,6 +40,10 @@ public final class LanguageRegistry implements Iterable<Language> {
     private final Map<String, Language> languagesById;
     private final Map<String, Language> languagesByFullName;
 
+    /**
+     * Create a new registry that contains the given set of languages.
+     * @throws NullPointerException If the parameter is null
+     */
     public LanguageRegistry(Set<Language> languages) {
         this.languages = languages.stream()
                                   .sorted(Comparator.comparing(Language::getTerseName, String::compareToIgnoreCase))

@@ -6,9 +6,7 @@ package net.sourceforge.pmd.lang.plsql.rule;
 
 
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.plsql.PLSQLLanguageModule;
 import net.sourceforge.pmd.lang.plsql.ast.ASTInput;
 import net.sourceforge.pmd.lang.plsql.ast.ASTPackageBody;
 import net.sourceforge.pmd.lang.plsql.ast.ASTPackageSpecification;
@@ -21,9 +19,6 @@ import net.sourceforge.pmd.lang.rule.AbstractRule;
 
 public abstract class AbstractPLSQLRule extends AbstractRule implements PLSQLParserVisitor {
 
-    public AbstractPLSQLRule() {
-        super.setLanguage(LanguageRegistry.getLanguage(PLSQLLanguageModule.NAME));
-    }
 
     @Override
     public void apply(Node target, RuleContext ctx) {

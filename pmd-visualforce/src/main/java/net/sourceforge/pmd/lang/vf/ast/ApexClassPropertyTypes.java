@@ -67,7 +67,7 @@ class ApexClassPropertyTypes extends SalesforceFieldTypes {
     }
 
     static Node parseApex(Path apexFilePath) {
-        LanguageVersion languageVersion = LanguageRegistry.getLanguage(ApexLanguageModule.NAME).getDefaultVersion();
+        LanguageVersion languageVersion = LanguageRegistry.PMD.getLanguage(ApexLanguageModule.NAME).getDefaultVersion();
         try (TextFile file = TextFile.forPath(apexFilePath, StandardCharsets.UTF_8, languageVersion);
              TextDocument textDocument = TextDocument.create(file)) {
 

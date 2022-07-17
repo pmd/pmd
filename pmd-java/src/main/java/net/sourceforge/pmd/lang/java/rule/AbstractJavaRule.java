@@ -5,9 +5,7 @@
 package net.sourceforge.pmd.lang.java.rule;
 
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitor;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
 
@@ -20,10 +18,6 @@ import net.sourceforge.pmd.lang.rule.AbstractRule;
  *
  */
 public abstract class AbstractJavaRule extends AbstractRule implements JavaParserVisitor {
-
-    public AbstractJavaRule() {
-        super.setLanguage(LanguageRegistry.getLanguage(JavaLanguageModule.NAME));
-    }
 
     @Override
     public void apply(Node target, RuleContext ctx) {

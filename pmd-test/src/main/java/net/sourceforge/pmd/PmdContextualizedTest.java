@@ -13,7 +13,7 @@ public class PmdContextualizedTest {
     private final LanguageRegistry registry;
 
     public PmdContextualizedTest() {
-        this.registry = LanguageRegistry.STATIC;
+        this.registry = LanguageRegistry.PMD;
     }
 
     public final LanguageRegistry languageRegistry() {

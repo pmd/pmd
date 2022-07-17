@@ -24,9 +24,9 @@ import org.junit.jupiter.api.io.TempDir;
 
 import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
-import net.sourceforge.pmd.lang.LanguageVersionDiscovererTest;
 
 /**
  * @author Clément Fournier
@@ -131,7 +131,7 @@ class FileCollectorTest {
     }
 
     private FileCollector newCollector(LanguageVersion forcedVersion) {
-        LanguageVersionDiscoverer discoverer = LanguageVersionDiscovererTest.createForcedDiscoverer(forcedVersion);
+        LanguageVersionDiscoverer discoverer = new LanguageVersionDiscoverer(LanguageRegistry.PMD, forcedVersion);
         FileCollector collector = FileCollector.newCollector(discoverer, new TestMessageReporter());
         collector.relativizeWith(tempFolder.toAbsolutePath().toString());
         return collector;

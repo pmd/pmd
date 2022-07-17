@@ -9,10 +9,12 @@ import net.sourceforge.pmd.lang.LanguageRegistry
 import net.sourceforge.pmd.lang.LanguageVersion
 import net.sourceforge.pmd.lang.LanguageVersionHandler
 import net.sourceforge.pmd.lang.ast.*
-import net.sourceforge.pmd.processor.AbstractPMDProcessor
-import net.sourceforge.pmd.reporting.GlobalAnalysisListener
 import net.sourceforge.pmd.lang.document.TextDocument
 import net.sourceforge.pmd.lang.document.TextFile
+import net.sourceforge.pmd.lang.rule.XPathRule
+import net.sourceforge.pmd.lang.rule.xpath.XPathVersion
+import net.sourceforge.pmd.processor.AbstractPMDProcessor
+import net.sourceforge.pmd.reporting.GlobalAnalysisListener
 import net.sourceforge.pmd.util.IOUtil
 import java.io.InputStream
 import java.nio.charset.StandardCharsets
@@ -203,6 +205,12 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
         return consume(input)
     }
 
+    @JvmOverloads
+    fun newXpathRule(expr: String, version: XPathVersion = XPathVersion.DEFAULT) =
+        XPathRule(version, expr).apply {
+            language = this@BaseParsingHelper.language
+            message = "XPath Rule Failed"
+        }
 
     /**
      * Execute the given [rule] on the [code]. Produce a report with the violations

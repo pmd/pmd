@@ -70,7 +70,7 @@ public class AbstractLanguageVersionTest {
     }
 
     protected static Language getLanguage(String name) {
-        return LanguageRegistry.STATIC.getLanguage(name);
+        return LanguageRegistry.PMD.getLanguageByFullName(name);
     }
 
     /**

@@ -16,9 +16,7 @@ import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
@@ -29,22 +27,18 @@ import net.sourceforge.pmd.lang.rule.xpath.internal.DeprecatedAttrLogger;
 import net.sourceforge.pmd.lang.rule.xpath.internal.SaxonXPathRuleQuery;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
-import net.sourceforge.pmd.testframework.RuleTst;
 
 /**
  * @author daniels
  */
-public class XPathRuleTest extends RuleTst {
+public class XPathRuleTest {
 
     private XPathRule makeXPath(String expression) {
-        XPathRule rule = new XPathRule(XPathVersion.XPATH_2_0, expression);
-        rule.setLanguage(LanguageRegistry.getLanguage(JavaLanguageModule.NAME));
-        rule.setMessage("XPath Rule Failed");
-        return rule;
+        return JavaParsingHelper.DEFAULT.newXpathRule(expression);
     }
 
     @Test
-    public void testPluginname() throws Exception {
+    public void testPluginname() {
         XPathRule rule = makeXPath("//VariableDeclaratorId[string-length(@Name) < 3]");
         rule.setMessage("{0}");
         Report report = getReportForTestString(rule, TEST1);

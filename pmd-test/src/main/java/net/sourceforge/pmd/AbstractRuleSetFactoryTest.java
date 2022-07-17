@@ -273,7 +273,7 @@ public abstract class AbstractRuleSetFactoryTest {
     private List<String> getRuleSetFileNames() throws IOException {
         List<String> result = new ArrayList<>();
 
-        for (Language language : LanguageRegistry.getLanguages()) {
+        for (Language language : LanguageRegistry.PMD.getLanguages()) {
             if (this.languagesToSkip.contains(language.getTerseName())) {
                 continue;
             }
