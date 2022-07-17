@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -25,6 +24,7 @@ import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.cache.ChecksumAware;
 import net.sourceforge.pmd.internal.util.PredicateUtil;
 import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 
@@ -55,7 +55,7 @@ public class RuleSet implements ChecksumAware {
     private final List<Pattern> excludePatterns;
     private final List<Pattern> includePatterns;
 
-    private final Predicate<File> filter;
+    private final Predicate<String> filter;
 
     /**
      * Creates a new RuleSet with the given checksum.
@@ -602,13 +602,31 @@ public class RuleSet implements ChecksumAware {
      * which also matches the file. In other words, <code>include</code>
      * patterns override <code>exclude</code> patterns.
      *
-     * @param file
-     *            the source file to check
+     * @param qualFileName the source path to check
+     *
      * @return <code>true</code> if the file should be checked,
-     *         <code>false</code> otherwise
+     *     <code>false</code> otherwise
      */
-    public boolean applies(File file) {
-        return file == null || filter.test(file);
+    // TODO get rid of this overload
+    @InternalApi
+    public boolean applies(String qualFileName) {
+        return filter.test(qualFileName);
+    }
+
+    /**
+     * Check if a given source file should be checked by rules in this RuleSet.
+     * A file should not be checked if there is an <code>exclude</code> pattern
+     * which matches the file, unless there is an <code>include</code> pattern
+     * which also matches the file. In other words, <code>include</code>
+     * patterns override <code>exclude</code> patterns.
+     *
+     * @param file a text file
+     *
+     * @return <code>true</code> if the file should be checked,
+     *     <code>false</code> otherwise
+     */
+    boolean applies(TextFile file) {
+        return applies(file.getPathId());
     }
 
     /**

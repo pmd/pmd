@@ -26,9 +26,11 @@ public class BinaryDistributionIT extends AbstractBinaryDistributionTest {
     private static final String SUPPORTED_LANGUAGES_PMD;
 
     static {
-        SUPPORTED_LANGUAGES_CPD = "Supported languages: [apex, cpp, cs, dart, ecmascript, fortran, go, groovy, java, jsp, kotlin, lua, matlab, modelica, objectivec, perl, php, plsql, python, ruby, scala, swift, vf, xml]";
-        SUPPORTED_LANGUAGES_PMD = "apex, ecmascript, java, jsp, modelica, plsql, pom, scala, swift, vf, vm, wsdl, xml, xsl";
+        SUPPORTED_LANGUAGES_CPD = "Supported languages: [apex, cpp, cs, dart, ecmascript, fortran, gherkin, go, groovy, html, java, jsp, kotlin, lua, matlab, modelica, objectivec, perl, php, plsql, python, ruby, scala, swift, vf, xml]";
+        SUPPORTED_LANGUAGES_PMD = "apex, ecmascript, html, java, jsp, kotlin, modelica, plsql, pom, scala, swift, vf, vm, wsdl, xml, xsl";
     }
+
+    private final String srcDir = new File(".", "src/test/resources/sample-source/java/").getAbsolutePath();
 
     @Test
     public void testFileExistence() {
@@ -69,27 +71,34 @@ public class BinaryDistributionIT extends AbstractBinaryDistributionTest {
     }
 
     @Test
-    public void runPMD() throws Exception {
-        String srcDir = new File(".", "src/test/resources/sample-source/java/").getAbsolutePath();
+    public void testPmdJavaQuickstart() throws Exception {
+        ExecutionResult result = PMDExecutor.runPMDRules(folder.newFile().toPath(), tempDir, srcDir, "rulesets/java/quickstart.xml");
+        result.assertExecutionResult(4, "");
+    }
 
-        ExecutionResult result;
-
-        result = PMDExecutor.runPMD(tempDir); // without any argument, display usage help and error
-        result.assertExecutionResultErrOutput(1, CliMessages.runWithHelpFlagMessage());
-
-        result = PMDExecutor.runPMD(tempDir, "-h");
-        result.assertExecutionResult(0, SUPPORTED_LANGUAGES_PMD);
-
-        result = PMDExecutor.runPMDRules(folder.newFile().toPath(), tempDir, srcDir, "src/test/resources/rulesets/sample-ruleset.xml");
-        result.assertExecutionResult(4, "", "JumbledIncrementer.java:8:");
-
-        // also test XML format
-        result = PMDExecutor.runPMDRules(folder.newFile().toPath(), tempDir, srcDir, "src/test/resources/rulesets/sample-ruleset.xml", "xml");
+    @Test
+    public void testPmdXmlFormat() throws Exception {
+        ExecutionResult result = PMDExecutor.runPMDRules(folder.newFile().toPath(), tempDir, srcDir, "src/test/resources/rulesets/sample-ruleset.xml", "xml");
         result.assertExecutionResult(4, "", "JumbledIncrementer.java\">");
         result.assertExecutionResult(4, "", "<violation beginline=\"8\" endline=\"10\" begincolumn=\"13\" endcolumn=\"14\" rule=\"JumbledIncrementer\"");
+    }
 
-        result = PMDExecutor.runPMDRules(folder.newFile().toPath(), tempDir, srcDir, "rulesets/java/quickstart.xml");
-        result.assertExecutionResult(4, "");
+    @Test
+    public void testPmdSample() throws Exception {
+        ExecutionResult result = PMDExecutor.runPMDRules(folder.newFile().toPath(), tempDir, srcDir, "src/test/resources/rulesets/sample-ruleset.xml");
+        result.assertExecutionResult(4, "", "JumbledIncrementer.java:8:");
+    }
+
+    @Test
+    public void testPmdHelp() throws Exception {
+        ExecutionResult result = PMDExecutor.runPMD(tempDir, "-h");
+        result.assertExecutionResult(0, SUPPORTED_LANGUAGES_PMD);
+    }
+
+    @Test
+    public void testPmdNoArgs() throws Exception {
+        ExecutionResult result = PMDExecutor.runPMD(tempDir); // without any argument, display usage help and error
+        result.assertExecutionResultErrOutput(1, CliMessages.runWithHelpFlagMessage());
     }
 
     @Test

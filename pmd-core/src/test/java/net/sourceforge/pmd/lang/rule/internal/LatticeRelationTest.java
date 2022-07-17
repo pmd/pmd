@@ -8,7 +8,8 @@ import static java.util.Collections.emptyList;
 import static java.util.Collections.emptySet;
 import static java.util.Collections.singletonList;
 import static net.sourceforge.pmd.util.CollectionUtil.setOf;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -19,21 +20,16 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.junit.jupiter.api.Test;
 import org.pcollections.HashTreePSet;
 import org.pcollections.PSet;
 
 import net.sourceforge.pmd.internal.util.PredicateUtil;
 
-public class LatticeRelationTest {
-
-    @Rule
-    public ExpectedException expect = ExpectedException.none();
+class LatticeRelationTest {
 
     @Test
-    public void testCustomTopo() {
+    void testCustomTopo() {
 
         LatticeRelation<Set<Integer>, String, Set<String>> lattice = setLattice(PredicateUtil.always());
 
@@ -52,7 +48,7 @@ public class LatticeRelationTest {
     }
 
     @Test
-    public void testClearing() {
+    void testClearing() {
 
         LatticeRelation<Set<Integer>, String, Set<String>> lattice = setLattice(PredicateUtil.always());
 
@@ -79,7 +75,7 @@ public class LatticeRelationTest {
 
 
     @Test
-    public void testTopoFilter() {
+    void testTopoFilter() {
 
         // filter out sets with size 2
         // this cuts out one level of the graph
@@ -114,7 +110,7 @@ public class LatticeRelationTest {
 
 
     @Test
-    public void testInitialSetFilter() {
+    void testInitialSetFilter() {
 
         LatticeRelation<Set<Integer>, String, Set<String>> lattice =
             new LatticeRelation<>(
@@ -146,7 +142,7 @@ public class LatticeRelationTest {
 
 
     @Test
-    public void testDiamond() {
+    void testDiamond() {
 
         LatticeRelation<Set<Integer>, String, Set<String>> lattice = setLattice(PredicateUtil.always());
 
@@ -172,7 +168,7 @@ public class LatticeRelationTest {
 
 
     @Test
-    public void testFilterOnChainSetup() {
+    void testFilterOnChainSetup() {
         // setup for the next test (difference here is no filter)
 
         LatticeRelation<String, String, Set<String>> lattice = stringLattice(PredicateUtil.always());
@@ -189,7 +185,7 @@ public class LatticeRelationTest {
     }
 
     @Test
-    public void testFilterOnChain() {
+    void testFilterOnChain() {
 
         LatticeRelation<String, String, Set<String>> lattice = stringLattice(s -> s.length() != 2 && s.length() != 1);
 
@@ -208,7 +204,7 @@ public class LatticeRelationTest {
     }
 
     @Test
-    public void testTransitiveSucc() {
+    void testTransitiveSucc() {
 
         LatticeRelation<String, String, Set<String>> lattice =
             stringLattice(s -> s.equals("c") || s.equals("bc"));
@@ -235,7 +231,7 @@ public class LatticeRelationTest {
     }
 
     @Test
-    public void testTransitiveSuccWithHoleInTheMiddle() {
+    void testTransitiveSuccWithHoleInTheMiddle() {
 
         LatticeRelation<String, String, Set<String>> lattice =
             stringLattice(setOf("abc", "bbc", "c")::contains);
@@ -269,7 +265,7 @@ public class LatticeRelationTest {
 
 
     @Test
-    public void testToString() {
+    void testToString() {
         LatticeRelation<Set<Integer>, String, Set<String>> lattice = setLattice(set -> set.size() < 2);
 
         lattice.put(setOf(1, 2), "12");
@@ -296,7 +292,7 @@ public class LatticeRelationTest {
     }
 
     @Test
-    public void testCycleDetection() {
+    void testCycleDetection() {
         List<String> cycle = Arrays.asList("a", "b", "c", "d");
 
         TopoOrder<String> cyclicOrder = str -> {
@@ -307,10 +303,10 @@ public class LatticeRelationTest {
         LatticeRelation<String, String, Set<String>> lattice =
             new LatticeRelation<>(cyclicOrder, PredicateUtil.always(), Objects::toString, Collectors.toSet());
 
-        expect.expect(IllegalStateException.class);
-        expect.expectMessage("a -> b -> c -> d -> a");
-
-        lattice.put("a", "1");
+        IllegalStateException exception = assertThrows(IllegalStateException.class, () -> {
+            lattice.put("a", "1");
+        });
+        assertEquals("Cycle in graph: a -> b -> c -> d -> a", exception.getMessage());
 
     }
 

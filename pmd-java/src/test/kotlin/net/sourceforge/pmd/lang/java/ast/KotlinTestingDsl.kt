@@ -29,8 +29,9 @@ enum class JavaVersion : Comparable<JavaVersion> {
     J14,
     J15,
     J16,
-    J17, J17__PREVIEW,
-    J18, J18__PREVIEW;
+    J17,
+    J18, J18__PREVIEW,
+    J19, J19__PREVIEW;
 
     /** Name suitable for use with e.g. [JavaParsingHelper.parse] */
     val pmdName: String = name.removePrefix("J").replaceFirst("__", "-").replace('_', '.').toLowerCase()
@@ -211,7 +212,8 @@ open class ParserTestCtx(val javaVersion: JavaVersion = JavaVersion.Latest,
         parser = parser.withProcessing(true).logTypeInference(verbose, to)
     }
 
-    var fullSource: String? = null
+    /** Populated after an [asIfIn] call, used by [TypeBodyParsingCtx]. */
+    internal var fullSource: String? = null
 
     /** Imports to add to the top of the parsing contexts. */
     internal val imports: List<String>

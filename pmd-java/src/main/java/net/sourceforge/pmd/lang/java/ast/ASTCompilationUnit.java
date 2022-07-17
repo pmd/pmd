@@ -51,7 +51,7 @@ public final class ASTCompilationUnit extends AbstractJavaNode implements JavaNo
         return comments;
     }
 
-    public void setAstInfo(AstInfo<ASTCompilationUnit> task) {
+    void setAstInfo(AstInfo<ASTCompilationUnit> task) {
         this.astInfo = task;
     }
 
@@ -98,6 +98,13 @@ public final class ASTCompilationUnit extends AbstractJavaNode implements JavaNo
      */
     public NodeStream<ASTAnyTypeDeclaration> getTypeDeclarations() {
         return children(ASTAnyTypeDeclaration.class);
+    }
+
+    /**
+     * Returns the module declaration, if this is a modular compilation unit.
+     */
+    public @Nullable ASTModuleDeclaration getModuleDeclaration() {
+        return firstChild(ASTModuleDeclaration.class);
     }
 
     @Override

@@ -4,26 +4,28 @@
 
 package net.sourceforge.pmd.renderers;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Collections;
 import java.util.Optional;
 import java.util.function.Consumer;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.FooRule;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report.ConfigurationError;
 import net.sourceforge.pmd.Report.ProcessingError;
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.lang.ast.DummyRoot;
+import net.sourceforge.pmd.lang.DummyLanguageModule;
+import net.sourceforge.pmd.lang.ast.DummyNode.DummyRootNode;
+import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
 
-public class SummaryHTMLRendererTest extends AbstractRendererTest {
+class SummaryHTMLRendererTest extends AbstractRendererTest {
 
     @Override
-    public Renderer getRenderer() {
+    Renderer getRenderer() {
         Renderer result = new SummaryHTMLRenderer();
         result.setProperty(HTMLRenderer.LINK_PREFIX, "link_prefix");
         result.setProperty(HTMLRenderer.LINE_PREFIX, Optional.of("line_prefix"));
@@ -37,7 +39,7 @@ public class SummaryHTMLRendererTest extends AbstractRendererTest {
     }
 
     @Override
-    public String getExpected() {
+    String getExpected() {
         return "<html><head><title>PMD</title></head><body>" + PMD.EOL + "<center><h2>Summary</h2></center>" + PMD.EOL
                 + "<table align=\"center\" cellspacing=\"0\" cellpadding=\"3\">" + PMD.EOL
                 + "<tr><th>Rule name</th><th>Number of violations</th></tr>" + PMD.EOL
@@ -54,7 +56,7 @@ public class SummaryHTMLRendererTest extends AbstractRendererTest {
     }
 
     @Override
-    public String getExpectedEmpty() {
+    String getExpectedEmpty() {
         return "<html><head><title>PMD</title></head><body>" + PMD.EOL + "<center><h2>Summary</h2></center>" + PMD.EOL
                 + "<table align=\"center\" cellspacing=\"0\" cellpadding=\"3\">" + PMD.EOL
                 + "<tr><th>Rule name</th><th>Number of violations</th></tr>" + PMD.EOL + "</table>" + PMD.EOL
@@ -66,7 +68,7 @@ public class SummaryHTMLRendererTest extends AbstractRendererTest {
     }
 
     @Override
-    public String getExpectedMultiple() {
+    String getExpectedMultiple() {
         return "<html><head><title>PMD</title></head><body>" + PMD.EOL + "<center><h2>Summary</h2></center>" + PMD.EOL
                 + "<table align=\"center\" cellspacing=\"0\" cellpadding=\"3\">" + PMD.EOL
                 + "<tr><th>Rule name</th><th>Number of violations</th></tr>" + PMD.EOL
@@ -86,7 +88,7 @@ public class SummaryHTMLRendererTest extends AbstractRendererTest {
     }
 
     @Override
-    public String getExpectedError(ProcessingError error) {
+    String getExpectedError(ProcessingError error) {
         return "<html><head><title>PMD</title></head><body>" + PMD.EOL + "<center><h2>Summary</h2></center>" + PMD.EOL
                 + "<table align=\"center\" cellspacing=\"0\" cellpadding=\"3\">" + PMD.EOL
                 + "<tr><th>Rule name</th><th>Number of violations</th></tr>" + PMD.EOL + "</table>" + PMD.EOL
@@ -101,7 +103,7 @@ public class SummaryHTMLRendererTest extends AbstractRendererTest {
     }
 
     @Override
-    public String getExpectedError(ConfigurationError error) {
+    String getExpectedError(ConfigurationError error) {
         return "<html><head><title>PMD</title></head><body>" + PMD.EOL + "<center><h2>Summary</h2></center>" + PMD.EOL
                 + "<table align=\"center\" cellspacing=\"0\" cellpadding=\"3\">" + PMD.EOL
                 + "<tr><th>Rule name</th><th>Number of violations</th></tr>" + PMD.EOL + "</table>" + PMD.EOL
@@ -116,7 +118,7 @@ public class SummaryHTMLRendererTest extends AbstractRendererTest {
     }
 
     @Test
-    public void testShowSuppressions() throws Exception {
+    void testShowSuppressions() throws Exception {
         Renderer renderer = getRenderer();
         renderer.setShowSuppressedViolations(true);
         String actual = renderReport(renderer, createEmptyReportWithSuppression());
@@ -137,17 +139,22 @@ public class SummaryHTMLRendererTest extends AbstractRendererTest {
     }
 
     @Test
-    public void testHideSuppressions() throws Exception {
+    void testHideSuppressions() throws Exception {
         Renderer renderer = getRenderer();
         renderer.setShowSuppressedViolations(false);
         String actual = renderReport(renderer, createEmptyReportWithSuppression());
         assertEquals(getExpectedEmpty(), actual);
     }
 
-    private Consumer<FileAnalysisListener> createEmptyReportWithSuppression() throws Exception {
+    private Consumer<FileAnalysisListener> createEmptyReportWithSuppression() {
         return listener -> {
-            DummyRoot root = new DummyRoot().withNoPmdComments(Collections.singletonMap(1, "test")).withFileName(getSourceCodeFilename());
-            root.setCoords(1, 10, 4, 5);
+            TextDocument doc = TextDocument.readOnlyString(
+                "dummy code",
+                getSourceCodeFilename(),
+                DummyLanguageModule.getInstance().getDefaultVersion()
+            );
+            DummyRootNode root = DummyLanguageModule.parse("dummy code", getSourceCodeFilename())
+                                                    .withNoPmdComments(Collections.singletonMap(1, "test"));
 
             RuleContext ruleContext = RuleContext.create(listener, new FooRule());
             ruleContext.addViolationWithPosition(root, 1, 1, "suppress test");

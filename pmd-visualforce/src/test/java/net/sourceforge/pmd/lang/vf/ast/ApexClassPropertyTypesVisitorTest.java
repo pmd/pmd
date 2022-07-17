@@ -20,9 +20,10 @@ import net.sourceforge.pmd.lang.vf.VFTestUtils;
 import apex.jorje.semantic.symbol.type.BasicType;
 
 public class ApexClassPropertyTypesVisitorTest {
-    @Test
-    public void testApexClassIsProperlyParsed() {
 
+    @Test
+    @SuppressWarnings("PMD.CloseResource")
+    public void testApexClassIsProperlyParsed() {
         Path apexPath = VFTestUtils.getMetadataPath(this, VFTestUtils.MetadataFormat.SFDX, VFTestUtils.MetadataType.Apex)
                                    .resolve("ApexController.cls")
                                    .toAbsolutePath();

@@ -48,6 +48,7 @@ import net.sourceforge.pmd.util.log.MessageReporter;
  */
 @SuppressWarnings("PMD.CloseResource")
 public final class FileCollector implements AutoCloseable {
+
     private static final Logger LOG = LoggerFactory.getLogger(FileCollector.class);
 
     private final List<TextFile> allFilesToProcess = new ArrayList<>();
@@ -138,12 +139,14 @@ public final class FileCollector implements AutoCloseable {
      */
     public boolean addFile(Path file) {
         if (!Files.isRegularFile(file)) {
-            reporter.error("Not a regular file {0}", file);
+            reporter.error("Not a regular file: {0}", file);
             return false;
         }
         LanguageVersion languageVersion = discoverLanguage(file.toString());
         if (languageVersion != null) {
-            addFileImpl(new NioTextFile(file, charset, languageVersion, getDisplayName(file)));
+            addFileImpl(TextFile.builderForPath(file, charset, languageVersion)
+                                .withDisplayName(getDisplayName(file))
+                                .build());
             return true;
         }
         return false;
@@ -162,11 +165,14 @@ public final class FileCollector implements AutoCloseable {
     public boolean addFile(Path file, Language language) {
         AssertionUtil.requireParamNotNull("language", language);
         if (!Files.isRegularFile(file)) {
-            reporter.error("Not a regular file {}", file);
+            reporter.error("Not a regular file: {0}", file);
             return false;
         }
-        NioTextFile nioTextFile = new NioTextFile(file, charset, discoverer.getDefaultLanguageVersion(language), getDisplayName(file));
-        addFileImpl(nioTextFile);
+        LanguageVersion lv = discoverer.getDefaultLanguageVersion(language);
+        Objects.requireNonNull(lv);
+        addFileImpl(TextFile.builderForPath(file, charset, lv)
+                            .withDisplayName(getDisplayName(file))
+                            .build());
         return true;
     }
 
@@ -198,7 +204,7 @@ public final class FileCollector implements AutoCloseable {
 
         LanguageVersion version = discoverLanguage(pathId);
         if (version != null) {
-            addFileImpl(new StringTextFile(sourceContents, pathId, pathId, version));
+            addFileImpl(TextFile.builderForCharSeq(sourceContents, pathId, version).build());
             return true;
         }
 
@@ -238,7 +244,7 @@ public final class FileCollector implements AutoCloseable {
         LanguageVersion contextVersion = discoverer.getDefaultLanguageVersion(language);
         if (!fileVersion.equals(contextVersion)) {
             reporter.error(
-                "Cannot add file {}: version ''{}'' does not match ''{}''",
+                "Cannot add file {0}: version ''{1}'' does not match ''{2}''",
                 textFile.getPathId(),
                 fileVersion,
                 contextVersion
@@ -281,7 +287,7 @@ public final class FileCollector implements AutoCloseable {
      */
     public boolean addDirectory(Path dir) throws IOException {
         if (!Files.isDirectory(dir)) {
-            reporter.error("Not a directory {}", dir);
+            reporter.error("Not a directory {0}", dir);
             return false;
         }
         Files.walkFileTree(dir, new SimpleFileVisitor<Path>() {
@@ -309,7 +315,7 @@ public final class FileCollector implements AutoCloseable {
         } else if (Files.isRegularFile(file)) {
             return addFile(file);
         } else {
-            reporter.error("Not a file or directory {}", file);
+            reporter.error("Not a file or directory {0}", file);
             return false;
         }
     }

@@ -13,6 +13,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument;
+import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.util.StringUtil;
 
 public class ParseException extends FileAnalysisException {
@@ -122,7 +123,8 @@ public class ParseException extends FileAnalysisException {
         if (maxSize > 1) {
             retval.append(']');
         }
-        retval.append(" at line ").append(currentToken.next.getBeginLine()).append(", column ").append(currentToken.next.getBeginColumn());
+        FileLocation loc = currentToken.next.getReportLocation();
+        retval.append(" at ").append(loc.getStartPos().toDisplayStringInEnglish());
         retval.append('.').append(eol);
         if (expectedTokenSequences.length == 1) {
             retval.append("Was expecting:").append(eol).append("    ");

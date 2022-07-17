@@ -4,91 +4,59 @@
 
 package net.sourceforge.pmd.lang.document;
 
-import java.io.StringReader;
-import java.util.Objects;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
-import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.lang.LanguageVersion;
-import net.sourceforge.pmd.util.datasource.DataSource;
-import net.sourceforge.pmd.util.datasource.ReaderDataSource;
+import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * Read-only view on a string.
- *
- * @author Clément Fournier
  */
-@Experimental
 class StringTextFile implements TextFile {
 
-    private final String content;
-    private final String pathId;
-    private final String displayName;
+    private final TextFileContent content;
+    private final String name;
     private final LanguageVersion languageVersion;
 
-    StringTextFile(String content,
-                   String pathId,
-                   String displayName,
-                   LanguageVersion languageVersion) {
-        AssertionUtil.requireParamNotNull("source text", content);
-        AssertionUtil.requireParamNotNull("file name", displayName);
-        AssertionUtil.requireParamNotNull("file ID", pathId);
+    StringTextFile(CharSequence source, String name, LanguageVersion languageVersion) {
+        AssertionUtil.requireParamNotNull("source text", source);
+        AssertionUtil.requireParamNotNull("file name", name);
         AssertionUtil.requireParamNotNull("language version", languageVersion);
 
         this.languageVersion = languageVersion;
-        this.content = content;
-        this.pathId = pathId;
-        this.displayName = displayName;
+        this.content = TextFileContent.fromCharSeq(source);
+        this.name = name;
     }
 
-
     @Override
-    public LanguageVersion getLanguageVersion() {
+    public @NonNull LanguageVersion getLanguageVersion() {
         return languageVersion;
     }
 
     @Override
-    public String getDisplayName() {
-        return displayName;
+    public @NonNull String getDisplayName() {
+        return name;
     }
 
     @Override
     public String getPathId() {
-        return pathId;
+        return name;
     }
 
     @Override
-    public String readContents() {
+    public TextFileContent readContents() {
         return content;
     }
 
     @Override
-    public DataSource toDataSourceCompat() {
-        return new ReaderDataSource(
-            new StringReader(content),
-            pathId
-        );
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        StringTextFile that = (StringTextFile) o;
-        return Objects.equals(pathId, that.pathId);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(pathId);
+    public void close() {
+        // nothing to do
     }
 
     @Override
     public String toString() {
-        return getPathId();
+        return "ReadOnlyString[" + StringUtil.elide(content.getNormalizedText().toString(), 40, "...") + "]";
     }
+
 }

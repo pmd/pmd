@@ -11,6 +11,7 @@ import java.util.Objects;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.event.Level;
 
 import net.sourceforge.pmd.util.log.MessageReporter;
@@ -23,12 +24,12 @@ import net.sourceforge.pmd.util.log.MessageReporter;
 abstract class MessageReporterBase implements MessageReporter {
 
     private int numErrors;
-    private Level minLevel = Level.TRACE;
+    private @Nullable Level minLevel = Level.TRACE;
 
     /**
      * null level means off.
      */
-    public final void setLevel(Level minLevel) {
+    public final void setLevel(@Nullable Level minLevel) {
         this.minLevel = minLevel;
     }
 
@@ -44,7 +45,7 @@ abstract class MessageReporterBase implements MessageReporter {
     }
 
     @Override
-    public void logEx(Level level, String message, Object[] formatArgs, Throwable error) {
+    public void logEx(Level level, @Nullable String message, Object[] formatArgs, @Nullable Throwable error) {
         if (isLoggable(level)) {
             if (error == null) {
                 Objects.requireNonNull(message, "cannot call this method with null message and error");
@@ -54,9 +55,12 @@ abstract class MessageReporterBase implements MessageReporter {
             if (level == Level.ERROR) {
                 this.numErrors++;
             }
-            message = MessageFormat.format(message, formatArgs);
-            String errorMessage = getErrorMessage(error);
-            logImpl(level, message + ": " + errorMessage);
+            String fullMessage = getErrorMessage(error);
+            if (message != null) {
+                message = MessageFormat.format(message, formatArgs);
+                fullMessage = message + ": " + fullMessage;
+            }
+            logImpl(level, fullMessage);
             if (isLoggable(Level.DEBUG)) {
                 String stackTrace = quoteMessageFormat(ExceptionUtils.getStackTrace(error));
                 log(Level.DEBUG, stackTrace);

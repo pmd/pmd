@@ -80,8 +80,6 @@ import org.mozilla.javascript.ast.XmlPropRef;
 import org.mozilla.javascript.ast.XmlString;
 import org.mozilla.javascript.ast.Yield;
 
-import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
-
 final class EcmascriptTreeBuilder implements NodeVisitor {
 
     private static final Map<Class<? extends AstNode>, Constructor<? extends AbstractEcmascriptNode<?>>> NODE_TYPE_TO_NODE_ADAPTER_TYPE = new HashMap<>();
@@ -162,10 +160,7 @@ final class EcmascriptTreeBuilder implements NodeVisitor {
     // The Rhino nodes with children to build.
     private final Deque<AstNode> parents = new ArrayDeque<>();
 
-    private final SourceCodePositioner sourceCodePositioner;
-
-    EcmascriptTreeBuilder(String sourceCode, List<ParseProblem> parseProblems) {
-        this.sourceCodePositioner = new SourceCodePositioner(sourceCode);
+    EcmascriptTreeBuilder(List<ParseProblem> parseProblems) {
         this.parseProblems = parseProblems;
     }
 
@@ -198,8 +193,6 @@ final class EcmascriptTreeBuilder implements NodeVisitor {
 
     public <T extends AstNode> EcmascriptNode<T> build(T astNode) {
         EcmascriptNode<T> node = buildInternal(astNode);
-
-        calculateLineNumbers(node);
 
         // Set all the trailing comma nodes
         for (AbstractEcmascriptNode<?> trailingCommaNode : parseProblemToNode.values()) {
@@ -259,7 +252,7 @@ final class EcmascriptTreeBuilder implements NodeVisitor {
                     if (trailingCommaLocalizedMessage.equals(parseProblem.getMessage())) {
                         // Report on the shortest code block containing the
                         // problem (i.e. inner most code in nested structures).
-                        AbstractEcmascriptNode<?> currentNode = (AbstractEcmascriptNode<?>) parseProblemToNode.get(parseProblem);
+                        AbstractEcmascriptNode<?> currentNode = parseProblemToNode.get(parseProblem);
                         if (currentNode == null || node.node.getLength() < currentNode.node.getLength()) {
                             parseProblemToNode.put(parseProblem, node);
                         }
@@ -267,9 +260,5 @@ final class EcmascriptTreeBuilder implements NodeVisitor {
                 }
             }
         }
-    }
-
-    private void calculateLineNumbers(EcmascriptNode<?> node) {
-        node.descendantsOrSelf().forEach(n -> ((AbstractEcmascriptNode<?>) n).calculateLineNumbers(sourceCodePositioner));
     }
 }

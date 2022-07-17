@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.StringJoiner;
 
 import org.apache.tools.ant.AntClassLoader;
 import org.apache.tools.ant.BuildException;
@@ -32,13 +31,13 @@ import net.sourceforge.pmd.internal.Slf4jSimpleConfiguration;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
 import net.sourceforge.pmd.reporting.ReportStats;
 import net.sourceforge.pmd.reporting.ReportStatsListener;
 import net.sourceforge.pmd.util.ClasspathClassLoader;
 import net.sourceforge.pmd.util.IOUtil;
-import net.sourceforge.pmd.util.datasource.DataSource;
 
 public class PMDTaskImpl {
 
@@ -105,9 +104,6 @@ public class PMDTaskImpl {
         }
 
 
-        @SuppressWarnings("PMD.CloseResource") final List<String> reportShortNamesPaths = new ArrayList<>();
-        StringJoiner fullInputPath = new StringJoiner(",");
-
         List<String> ruleSetPaths = expandRuleSetPaths(configuration.getRuleSetPaths());
         // don't let PmdAnalysis.create create rulesets itself.
         configuration.setRuleSets(Collections.emptyList());
@@ -120,20 +116,17 @@ public class PMDTaskImpl {
 
             for (FileSet fileset : filesets) {
                 DirectoryScanner ds = fileset.getDirectoryScanner(project);
+                if (configuration.isReportShortNames()) {
+                    pmd.files().relativizeWith(ds.getBasedir().getPath());
+                }
                 for (String srcFile : ds.getIncludedFiles()) {
                     pmd.files().addFile(ds.getBasedir().toPath().resolve(srcFile));
-                }
-
-                final String commonInputPath = ds.getBasedir().getPath();
-                fullInputPath.add(commonInputPath);
-                if (configuration.isReportShortNames()) {
-                    reportShortNamesPaths.add(commonInputPath);
                 }
             }
 
             @SuppressWarnings("PMD.CloseResource")
             ReportStatsListener reportStatsListener = new ReportStatsListener();
-            pmd.addListener(getListener(reportStatsListener, reportShortNamesPaths, fullInputPath.toString()));
+            pmd.addListener(getListener(reportStatsListener));
 
             pmd.performAnalysis();
             stats = reportStatsListener.getResult();
@@ -163,16 +156,14 @@ public class PMDTaskImpl {
         return paths;
     }
 
-    private @NonNull GlobalAnalysisListener getListener(ReportStatsListener reportSizeListener,
-                                                        List<String> reportShortNamesPaths,
-                                                        String inputPaths) {
+    private @NonNull GlobalAnalysisListener getListener(ReportStatsListener reportSizeListener) {
         List<GlobalAnalysisListener> renderers = new ArrayList<>(formatters.size() + 1);
         try {
-            renderers.add(makeLogListener(inputPaths));
+            renderers.add(makeLogListener());
             renderers.add(reportSizeListener);
             for (Formatter formatter : formatters) {
                 project.log("Sending a report to " + formatter, Project.MSG_VERBOSE);
-                renderers.add(formatter.newListener(project, reportShortNamesPaths));
+                renderers.add(formatter.newListener(project));
             }
             return GlobalAnalysisListener.tee(renderers);
         } catch (Exception e) {
@@ -185,12 +176,12 @@ public class PMDTaskImpl {
         }
     }
 
-    private GlobalAnalysisListener makeLogListener(String commonInputPath) {
+    private GlobalAnalysisListener makeLogListener() {
         return new GlobalAnalysisListener() {
 
             @Override
-            public FileAnalysisListener startFileAnalysis(DataSource dataSource) {
-                String name = dataSource.getNiceFileName(false, commonInputPath);
+            public FileAnalysisListener startFileAnalysis(TextFile dataSource) {
+                String name = dataSource.getDisplayName();
                 project.log("Processing file " + name, Project.MSG_VERBOSE);
                 return FileAnalysisListener.noop();
             }
@@ -239,7 +230,7 @@ public class PMDTaskImpl {
         Slf4jSimpleConfiguration.installJulBridge();
         // need to reload the logger with the new configuration
         Logger log = LoggerFactory.getLogger(PMDTaskImpl.class);
-        log.atLevel(level).log("Logging is at {}", level);
+        log.info("Logging is at {}", level);
         try {
             doTask();
         } finally {

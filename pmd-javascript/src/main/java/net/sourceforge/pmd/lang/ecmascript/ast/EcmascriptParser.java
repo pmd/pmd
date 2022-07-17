@@ -53,10 +53,9 @@ public final class EcmascriptParser implements net.sourceforge.pmd.lang.ast.Pars
     @Override
     public RootNode parse(ParserTask task) throws FileAnalysisException {
         final List<ParseProblem> parseProblems = new ArrayList<>();
-        final String sourceCode = task.getSourceText();
-        final AstRoot astRoot = parseEcmascript(sourceCode, parseProblems);
-        final EcmascriptTreeBuilder treeBuilder = new EcmascriptTreeBuilder(sourceCode, parseProblems);
-        final ASTAstRoot tree = (ASTAstRoot) treeBuilder.build(astRoot);
+        final AstRoot astRoot = parseEcmascript(task.getSourceText(), parseProblems);
+        final EcmascriptTreeBuilder treeBuilder = new EcmascriptTreeBuilder(parseProblems);
+        ASTAstRoot tree = (ASTAstRoot) treeBuilder.build(astRoot);
 
         String suppressMarker = task.getCommentMarker();
         Map<Integer, String> suppressMap = new HashMap<>();
@@ -65,8 +64,7 @@ public final class EcmascriptParser implements net.sourceforge.pmd.lang.ast.Pars
                 int nopmd = comment.getValue().indexOf(suppressMarker);
                 if (nopmd > -1) {
                     String suppression = comment.getValue().substring(nopmd + suppressMarker.length());
-                    EcmascriptNode<Comment> node = treeBuilder.build(comment);
-                    suppressMap.put(node.getBeginLine(), suppression);
+                    suppressMap.put(comment.getLineno(), suppression);
                 }
             }
         }

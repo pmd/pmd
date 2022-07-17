@@ -4,18 +4,18 @@
 
 package net.sourceforge.pmd.renderers;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
 import java.util.Optional;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report.ConfigurationError;
 import net.sourceforge.pmd.Report.ProcessingError;
 
-public class HTMLRendererTest extends AbstractRendererTest {
+class HTMLRendererTest extends AbstractRendererTest {
 
     @Override
     protected String getSourceCodeFilename() {
@@ -27,12 +27,12 @@ public class HTMLRendererTest extends AbstractRendererTest {
     }
 
     @Override
-    public Renderer getRenderer() {
+    Renderer getRenderer() {
         return new HTMLRenderer();
     }
 
     @Override
-    public String getExpected() {
+    String getExpected() {
         return getExpected(null, null);
     }
 
@@ -49,13 +49,13 @@ public class HTMLRendererTest extends AbstractRendererTest {
     }
 
     @Override
-    public String getExpectedEmpty() {
+    String getExpectedEmpty() {
         return getHeader()
                 + "</table></body></html>" + PMD.EOL;
     }
 
     @Override
-    public String getExpectedMultiple() {
+    String getExpectedMultiple() {
         return getHeader()
                 + "<tr bgcolor=\"lightgrey\"> " + PMD.EOL + "<td align=\"center\">1</td>" + PMD.EOL
                 + "<td width=\"*%\">" + getEscapedFilename() + "</td>" + PMD.EOL + "<td align=\"center\" width=\"5%\">1</td>" + PMD.EOL
@@ -66,7 +66,7 @@ public class HTMLRendererTest extends AbstractRendererTest {
     }
 
     @Override
-    public String getExpectedError(ProcessingError error) {
+    String getExpectedError(ProcessingError error) {
         return getHeader()
                 + "</table><hr/><center><h3>Processing errors</h3></center><table align=\"center\" cellspacing=\"0\" cellpadding=\"3\"><tr>"
                 + PMD.EOL + "<th>File</th><th>Problem</th></tr>" + PMD.EOL + "<tr bgcolor=\"lightgrey\"> " + PMD.EOL
@@ -75,7 +75,7 @@ public class HTMLRendererTest extends AbstractRendererTest {
     }
 
     @Override
-    public String getExpectedError(ConfigurationError error) {
+    String getExpectedError(ConfigurationError error) {
         return getHeader()
                 + "</table><hr/><center><h3>Configuration errors</h3></center><table align=\"center\" cellspacing=\"0\" cellpadding=\"3\"><tr>"
                 + PMD.EOL + "<th>Rule</th><th>Problem</th></tr>" + PMD.EOL + "<tr bgcolor=\"lightgrey\"> " + PMD.EOL
@@ -90,7 +90,7 @@ public class HTMLRendererTest extends AbstractRendererTest {
     }
 
     @Test
-    public void testLinkPrefix() throws IOException {
+    void testLinkPrefix() throws IOException {
         final HTMLRenderer renderer = new HTMLRenderer();
         final String linkPrefix = "https://github.com/pmd/pmd/blob/master/";
         final String linePrefix = "L";
@@ -103,7 +103,7 @@ public class HTMLRendererTest extends AbstractRendererTest {
     }
 
     @Test
-    public void testLinePrefixNotSet() throws IOException {
+    void testLinePrefixNotSet() throws IOException {
         final HTMLRenderer renderer = new HTMLRenderer();
         final String linkPrefix = "https://github.com/pmd/pmd/blob/master/";
         renderer.setProperty(HTMLRenderer.LINK_PREFIX, linkPrefix);
@@ -115,7 +115,7 @@ public class HTMLRendererTest extends AbstractRendererTest {
     }
 
     @Test
-    public void testEmptyLinePrefix() throws IOException {
+    void testEmptyLinePrefix() throws IOException {
         final HTMLRenderer renderer = new HTMLRenderer();
         final String linkPrefix = "https://github.com/pmd/pmd/blob/master/";
         renderer.setProperty(HTMLRenderer.LINK_PREFIX, linkPrefix);

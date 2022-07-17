@@ -12,11 +12,14 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import org.apache.commons.lang3.StringUtils;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.util.ResourceLoader;
+import net.sourceforge.pmd.util.log.MessageReporter;
 
 /**
  * This class is used to parse a RuleSet reference value. Most commonly used for
@@ -59,16 +62,6 @@ import net.sourceforge.pmd.util.ResourceLoader;
  * <td>all</td>
  * </tr>
  * <tr>
- * <td>java-basic</td>
- * <td>rulesets/java/basic.xml</td>
- * <td>all</td>
- * </tr>
- * <tr>
- * <td>50</td>
- * <td>rulesets/releases/50.xml</td>
- * <td>all</td>
- * </tr>
- * <tr>
  * <td>rulesets/java/basic.xml/EmptyCatchBlock</td>
  * <td>rulesets/java/basic.xml</td>
  * <td>EmptyCatchBlock</td>
@@ -86,11 +79,17 @@ import net.sourceforge.pmd.util.ResourceLoader;
 @Deprecated
 @InternalApi
 public class RuleSetReferenceId {
+
+    // todo this class has issues... What is even an "external" ruleset?
+    //  terminology and API should be clarified.
+
     private final boolean external;
     private final String ruleSetFileName;
     private final boolean allRules;
     private final String ruleName;
     private final RuleSetReferenceId externalRuleSetReferenceId;
+
+    private final String originalRef;
 
     /**
      * Construct a RuleSetReferenceId for the given single ID string.
@@ -102,7 +101,16 @@ public class RuleSetReferenceId {
      */
     public RuleSetReferenceId(final String id) {
 
-        this(id, null);
+        this(id, null, null);
+    }
+
+    private RuleSetReferenceId(final String ruleSetFileName, boolean external, String ruleName, RuleSetReferenceId externalRuleSetReferenceId) {
+        this.ruleSetFileName = Objects.requireNonNull(ruleSetFileName);
+        this.originalRef = ruleName == null ? ruleSetFileName : ruleSetFileName + "/" + ruleName;
+        this.allRules = ruleName == null;
+        this.external = external;
+        this.ruleName = ruleName;
+        this.externalRuleSetReferenceId = externalRuleSetReferenceId;
     }
 
     /**
@@ -111,19 +119,36 @@ public class RuleSetReferenceId {
      * Rule. The external RuleSetReferenceId will be responsible for producing
      * the InputStream containing the Rule.
      *
-     * @param id
-     *            The id string.
-     * @param externalRuleSetReferenceId
-     *            A RuleSetReferenceId to associate with this new instance.
-     * @throws IllegalArgumentException
-     *             If the ID contains a comma character.
-     * @throws IllegalArgumentException
-     *             If external RuleSetReferenceId is not external.
-     * @throws IllegalArgumentException
-     *             If the ID is not Rule reference when there is an external
-     *             RuleSetReferenceId.
+     * @param id                         The id string.
+     * @param externalRuleSetReferenceId A RuleSetReferenceId to associate with this new instance.
+     *
+     * @throws IllegalArgumentException If the ID contains a comma character.
+     * @throws IllegalArgumentException If external RuleSetReferenceId is not external.
+     * @throws IllegalArgumentException If the ID is not Rule reference when there is an external
+     *                                  RuleSetReferenceId.
      */
     public RuleSetReferenceId(final String id, final RuleSetReferenceId externalRuleSetReferenceId) {
+        this(id, externalRuleSetReferenceId, null);
+    }
+
+    /**
+     * Construct a RuleSetReferenceId for the given single ID string. If an
+     * external RuleSetReferenceId is given, the ID must refer to a non-external
+     * Rule. The external RuleSetReferenceId will be responsible for producing
+     * the InputStream containing the Rule.
+     *
+     * @param id                         The id string.
+     * @param externalRuleSetReferenceId A RuleSetReferenceId to associate with this new instance.
+     *
+     * @throws IllegalArgumentException If the ID contains a comma character.
+     * @throws IllegalArgumentException If external RuleSetReferenceId is not external.
+     * @throws IllegalArgumentException If the ID is not Rule reference when there is an external
+     *                                  RuleSetReferenceId.
+     */
+    RuleSetReferenceId(final String id,
+                       final RuleSetReferenceId externalRuleSetReferenceId,
+                       final @Nullable MessageReporter err) {
+        this.originalRef = id;
 
         if (externalRuleSetReferenceId != null && !externalRuleSetReferenceId.isExternal()) {
             throw new IllegalArgumentException("Cannot pair with non-external <" + externalRuleSetReferenceId + ">.");
@@ -152,7 +177,7 @@ public class RuleSetReferenceId {
         } else {
             String tempRuleName = getRuleName(id);
             String tempRuleSetFileName = tempRuleName != null && id != null
-                    ? id.substring(0, id.length() - tempRuleName.length() - 1) : id;
+                                         ? id.substring(0, id.length() - tempRuleName.length() - 1) : id;
 
             if (isValidUrl(tempRuleSetFileName)) {
                 // remaining part is a xml ruleset file, so the tempRuleName is
@@ -178,8 +203,16 @@ public class RuleSetReferenceId {
                 allRules = tempRuleName == null;
             } else {
                 // resolve the ruleset name - it's maybe a built in ruleset
-                String builtinRuleSet = resolveBuiltInRuleset(tempRuleSetFileName);
+                String expandedRuleset = resolveDeprecatedBuiltInRulesetShorthand(tempRuleSetFileName);
+                String builtinRuleSet = expandedRuleset == null ? tempRuleSetFileName : expandedRuleset;
                 if (checkRulesetExists(builtinRuleSet)) {
+                    if (expandedRuleset != null && err != null) {
+                        err.warn(
+                            "Ruleset reference ''{0}'' uses a deprecated form, use ''{1}'' instead",
+                            tempRuleSetFileName, builtinRuleSet
+                        );
+                    }
+
                     external = true;
                     ruleSetFileName = builtinRuleSet;
                     ruleName = tempRuleName;
@@ -221,6 +254,19 @@ public class RuleSetReferenceId {
         this.externalRuleSetReferenceId = externalRuleSetReferenceId;
     }
 
+    @Nullable RuleSetReferenceId getParentRulesetIfThisIsARule() {
+        if (ruleName == null) {
+            return null;
+        }
+        return new RuleSetReferenceId(
+            ruleSetFileName,
+            external,
+            null,
+
+            null
+        );
+    }
+
     /**
      * Tries to load the given ruleset.
      *
@@ -250,25 +296,22 @@ public class RuleSetReferenceId {
      *            the ruleset name
      * @return the full classpath to the ruleset
      */
-    private String resolveBuiltInRuleset(final String name) {
-        String result = null;
-        if (name != null) {
-            // Likely a simple RuleSet name
-            int index = name.indexOf('-');
-            if (index >= 0) {
-                // Standard short name
-                result = "rulesets/" + name.substring(0, index) + '/' + name.substring(index + 1) + ".xml";
-            } else {
-                // A release RuleSet?
-                if (name.matches("[0-9]+.*")) {
-                    result = "rulesets/releases/" + name + ".xml";
-                } else {
-                    // Appears to be a non-standard RuleSet name
-                    result = name;
-                }
-            }
+    private String resolveDeprecatedBuiltInRulesetShorthand(final String name) {
+        if (name == null) {
+            return null;
         }
-        return result;
+        // Likely a simple RuleSet name
+        int index = name.indexOf('-');
+        if (index > 0) {
+            // Standard short name
+            return "rulesets/" + name.substring(0, index) + '/' + name.substring(index + 1) + ".xml";
+        }
+        // A release RuleSet?
+        if (name.matches("[0-9]+.*")) {
+            return "rulesets/releases/" + name + ".xml";
+        }
+        // Appears to be a non-standard RuleSet name
+        return null;
     }
 
     /**
@@ -327,19 +370,25 @@ public class RuleSetReferenceId {
      * Parse a String comma separated list of RuleSet reference IDs into a List
      * of RuleReferenceId instances.
      *
-     * @param referenceString
-     *            A comma separated list of RuleSet reference IDs.
+     * @param referenceString A comma separated list of RuleSet reference IDs.
+     *
      * @return The corresponding List of RuleSetReferenceId instances.
      */
+    // TODO deprecate and remove
     public static List<RuleSetReferenceId> parse(String referenceString) {
+        return parse(referenceString, null);
+    }
+
+    static List<RuleSetReferenceId> parse(String referenceString,
+                                          MessageReporter err) {
         List<RuleSetReferenceId> references = new ArrayList<>();
         if (referenceString != null && referenceString.trim().length() > 0) {
 
             if (referenceString.indexOf(',') == -1) {
-                references.add(new RuleSetReferenceId(referenceString));
+                references.add(new RuleSetReferenceId(referenceString, null, err));
             } else {
                 for (String name : referenceString.split(",")) {
-                    references.add(new RuleSetReferenceId(name.trim()));
+                    references.add(new RuleSetReferenceId(name.trim(), null, err));
                 }
             }
         }
@@ -350,7 +399,7 @@ public class RuleSetReferenceId {
      * Is this an external RuleSet reference?
      *
      * @return <code>true</code> if this is an external reference,
-     *         <code>false</code> otherwise.
+     *     <code>false</code> otherwise.
      */
     public boolean isExternal() {
         return external;
@@ -411,10 +460,9 @@ public class RuleSetReferenceId {
     }
 
     private FileNotFoundException notFoundException() {
-        return new FileNotFoundException("Can't find resource '" + ruleSetFileName + "' for rule '" + ruleName
-                                            + "'" + ".  Make sure the resource is a valid file or URL and is on the classpath. "
-                                            + "Here's the current classpath: " 
-                                            + System.getProperty("java.class.path"));
+        return new FileNotFoundException("Cannot resolve rule/ruleset reference '" + originalRef
+                + "'" + ".  Make sure the resource is a valid file or URL and is on the CLASSPATH. "
+                + "Use --debug (or a fine log level) to see the current classpath.");
     }
 
     /**
@@ -424,8 +472,11 @@ public class RuleSetReferenceId {
      *         <i>ruleSetFileName</i> for all Rule external references,
      *         <i>ruleSetFileName/ruleName</i>, for a single Rule external
      *         references, or <i>ruleName</i> otherwise.
+     *
+     * @deprecated Do not rely on the format of this method, it may be changed in PMD 7.
      */
     @Override
+    @Deprecated
     public String toString() {
         if (ruleSetFileName != null) {
             if (allRules) {

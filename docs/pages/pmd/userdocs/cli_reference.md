@@ -76,14 +76,14 @@ The tool comes with a rather extensive help text, simply running with `--help`!
     %}
     {% include custom/cli_option_row.html options="--file-list"
                option_arg="filepath"
-               description="Path to file containing a comma delimited list of files to analyze.
+               description="Path to file containing a list of files to analyze, one path per line.
                             If this is given, then you don't need to provide `--dir`."
     %}
     {% include custom/cli_option_row.html options="--force-language"
                option_arg="lang"
                description="Force a language to be used for all input files, irrespective of
-                            filenames. When using this option, the automatic language selection
-                            by extension is disabled and all files are tried to be parsed with
+                            file names. When using this option, the automatic language selection
+                            by extension is disabled and PMD tries to parse all files with
                             the given language `&lt;lang&gt;`. Parsing errors are ignored and unparsable files
                             are skipped.
                             
@@ -92,9 +92,9 @@ The tool comes with a rather extensive help text, simply running with `--help`!
     %}
     {% include custom/cli_option_row.html options="--ignore-list"
                option_arg="filepath"
-               description="Path to file containing a comma delimited list of files to ignore.
+               description="Path to file containing a list of files to ignore, one path per line.
                             This option can be combined with `--dir` and `--file-list`.
-                            This ignore list takes precedence over any files in the filelist."
+                            This ignore list takes precedence over any files in the file-list."
     %}
     {% include custom/cli_option_row.html options="--help,-h,-H"
                description="Display help on usage."
@@ -114,6 +114,9 @@ The tool comes with a rather extensive help text, simply running with `--help`!
     {% include custom/cli_option_row.html options="--no-cache"
                description="Explicitly disables incremental analysis. This switch turns off suggestions to use Incremental Analysis,
                and causes the `--cache` option to be discarded if it is provided."
+    %}
+    {% include custom/cli_option_row.html options="--no-progress"
+               description="Disable progress bar indicator of live analysis progress."
     %}
     {% include custom/cli_option_row.html options="--property,-P"
                option_arg="name>=<value"

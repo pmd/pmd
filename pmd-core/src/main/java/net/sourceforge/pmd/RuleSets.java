@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -18,6 +17,7 @@ import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.benchmark.TimedOperation;
 import net.sourceforge.pmd.benchmark.TimedOperationCategory;
 import net.sourceforge.pmd.lang.ast.RootNode;
+import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.lang.rule.internal.RuleApplicator;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
 
@@ -105,7 +105,7 @@ public class RuleSets {
      * @return <code>true</code> if the file should be checked,
      *         <code>false</code> otherwise
      */
-    public boolean applies(File file) {
+    public boolean applies(TextFile file) {
         for (RuleSet ruleSet : ruleSets) {
             if (ruleSet.applies(file)) {
                 return true;
@@ -135,9 +135,8 @@ public class RuleSets {
             ruleApplicator.index(root);
         }
 
-        File file = new File(root.getAstInfo().getFileName());
         for (RuleSet ruleSet : ruleSets) {
-            if (ruleSet.applies(file)) {
+            if (ruleSet.applies(root.getTextDocument().getPathId())) {
                 ruleApplicator.apply(ruleSet.getRules(), listener);
             }
         }

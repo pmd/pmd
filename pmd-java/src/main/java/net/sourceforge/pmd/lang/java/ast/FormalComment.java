@@ -16,18 +16,19 @@ public class FormalComment extends Comment {
 
     private static final Pattern JAVADOC_TAG = Pattern.compile("@([A-Za-z0-9]+)");
 
+    private final List<JavadocElement> children;
+
     public FormalComment(JavaccToken t) {
         super(t);
         assert t.kind == JavaTokenKinds.FORMAL_COMMENT;
-        findJavadocs();
+        this.children = findJavadocs();
     }
 
-    @Override
-    public String getXPathNodeName() {
-        return "FormalComment";
+    public List<JavadocElement> getChildren() {
+        return children;
     }
 
-    private void findJavadocs() {
+    private List<JavadocElement> findJavadocs() {
         List<JavadocElement> kids = new ArrayList<>();
 
         Matcher javadocTagMatcher = JAVADOC_TAG.matcher(getFilteredComment());
@@ -35,14 +36,12 @@ public class FormalComment extends Comment {
             JavadocTag tag = JavadocTag.tagFor(javadocTagMatcher.group(1));
             int tagStartIndex = javadocTagMatcher.start(1);
             if (tag != null) {
-                kids.add(new JavadocElement(getFirstToken(), getBeginLine(), getBeginLine(),
-                        // TODO valid?
-                        tagStartIndex, tagStartIndex + tag.label.length() + 1, tag));
+                kids.add(new JavadocElement(getToken(), getBeginLine(), getBeginLine(),
+                                            // TODO valid?
+                                            tagStartIndex, tagStartIndex + tag.label.length() + 1, tag));
             }
         }
 
-        for (int i = kids.size() - 1; i >= 0; i--) {
-            addChild(kids.get(i), i);
-        }
+        return kids;
     }
 }

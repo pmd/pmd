@@ -5,9 +5,9 @@
 package net.sourceforge.pmd.cpd;
 
 import org.antlr.v4.runtime.CharStream;
+import org.antlr.v4.runtime.Lexer;
 
 import net.sourceforge.pmd.cpd.internal.AntlrTokenizer;
-import net.sourceforge.pmd.lang.ast.impl.antlr4.AntlrTokenManager;
 import net.sourceforge.pmd.lang.swift.ast.SwiftLexer;
 
 /**
@@ -16,8 +16,7 @@ import net.sourceforge.pmd.lang.swift.ast.SwiftLexer;
 public class SwiftTokenizer extends AntlrTokenizer {
 
     @Override
-    protected AntlrTokenManager getLexerForSource(final SourceCode sourceCode) {
-        CharStream charStream = AntlrTokenizer.getCharStreamFromSourceCode(sourceCode);
-        return new AntlrTokenManager(new SwiftLexer(charStream), sourceCode.getFileName());
+    protected Lexer getLexerForSource(final CharStream charStream) {
+        return new SwiftLexer(charStream);
     }
 }

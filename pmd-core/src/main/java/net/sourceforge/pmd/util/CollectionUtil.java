@@ -17,6 +17,7 @@ import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +27,7 @@ import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.BinaryOperator;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collector;
@@ -42,6 +44,7 @@ import org.pcollections.PSet;
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.internal.util.IteratorUtil;
+import net.sourceforge.pmd.lang.document.Chars;
 
 /**
  * Generic collection and array-related utility functions for java.util types.
@@ -272,6 +275,22 @@ public final class CollectionUtil {
         union.add(first);
         union.addAll(asList(rest));
         return Collections.unmodifiableList(union);
+    }
+
+    public static <K, V> Map<K, V> mapOf(K k0, V v0) {
+        return Collections.singletonMap(k0, v0);
+    }
+
+    public static <K, V> Map<K, V> buildMap(Consumer<Map<K, V>> effect) {
+        Map<K, V> map = new LinkedHashMap<>();
+        effect.accept(map);
+        return Collections.unmodifiableMap(map);
+    }
+
+    public static <K, V> Map<K, V> buildMap(Map<K, V> initialMap, Consumer<Map<K, V>> effect) {
+        Map<K, V> map = new LinkedHashMap<>(initialMap);
+        effect.accept(map);
+        return Collections.unmodifiableMap(map);
     }
 
     public static <T, R> List<@NonNull R> mapNotNull(Iterable<? extends T> from, Function<? super T, ? extends @Nullable R> f) {
@@ -667,15 +686,25 @@ public final class CollectionUtil {
                                            String delimiter) {
         boolean first = true;
         for (T t : iterable) {
-            appendItem.accept(sb, t);
             if (first) {
                 first = false;
             } else {
                 sb.append(delimiter);
             }
+            appendItem.accept(sb, t);
         }
         return sb;
     }
+
+    public static @NonNull StringBuilder joinCharsIntoStringBuilder(List<Chars> lines, String delimiter) {
+        return joinOn(
+            new StringBuilder(),
+            lines,
+            (buf, line) -> line.appendChars(buf),
+            delimiter
+        );
+    }
+
 
     /**
      * Merge the second map into the first. If some keys are in common,

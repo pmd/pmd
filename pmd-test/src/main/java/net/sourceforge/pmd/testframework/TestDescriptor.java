@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.testframework;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -31,6 +32,8 @@ public class TestDescriptor {
     private boolean isRegressionTest = true;
     private boolean useAuxClasspath = true;
     private int numberInDocument = -1;
+
+    private URI testSourceUri;
 
     public TestDescriptor() {
         // Empty default descriptor added to please mvn surefire plugin
@@ -152,5 +155,23 @@ public class TestDescriptor {
     @Override
     public String toString() {
         return description + "\n\n" + code;
+    }
+
+    public String getTestMethodName() {
+        return getRule().getName() + "_"
+                + getNumberInDocument()
+                + "_"
+                + getDescription()
+                .replaceAll("\n|\r", "_")
+                .replaceAll("[^\\w\\d_$]", "_")
+                .replaceAll("\\s+", "_");
+    }
+
+    public void setTestSourceUri(String absoluteUri, int line) {
+        this.testSourceUri = URI.create(absoluteUri + "?line=" + line);
+    }
+
+    public URI getTestSourceUri() {
+        return testSourceUri;
     }
 }

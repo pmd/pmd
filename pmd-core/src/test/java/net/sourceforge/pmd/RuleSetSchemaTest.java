@@ -4,9 +4,9 @@
 
 package net.sourceforge.pmd;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -24,8 +24,8 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.xml.sax.EntityResolver;
@@ -34,18 +34,18 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
-public class RuleSetSchemaTest {
+class RuleSetSchemaTest {
 
     private CollectingErrorHandler errorHandler;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         Locale.setDefault(Locale.ROOT);
         errorHandler = new CollectingErrorHandler();
     }
 
     @Test
-    public void verifyVersion2() throws Exception {
+    void verifyVersion2() throws Exception {
         String ruleset = generateRuleSet("2.0.0");
         Document doc = parseWithVersion2(ruleset);
         assertNotNull(doc);
@@ -56,7 +56,7 @@ public class RuleSetSchemaTest {
     }
 
     @Test
-    public void validateOnly() throws Exception {
+    void validateOnly() throws Exception {
         Validator validator = PMDRuleSetEntityResolver.getSchemaVersion2().newValidator();
         validator.setErrorHandler(errorHandler);
         validator.validate(new StreamSource(new ByteArrayInputStream(generateRuleSet("2.0.0").getBytes(StandardCharsets.UTF_8))));

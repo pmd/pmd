@@ -4,19 +4,19 @@
 
 package net.sourceforge.pmd.renderers;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
 import java.util.function.Consumer;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import net.sourceforge.pmd.FooRule;
 import net.sourceforge.pmd.Report;
@@ -26,54 +26,57 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.RuleWithProperties;
-import net.sourceforge.pmd.lang.ast.DummyNode;
-import net.sourceforge.pmd.lang.ast.DummyRoot;
-import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.DummyLanguageModule;
+import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.document.FileLocation;
+import net.sourceforge.pmd.lang.document.TextFile;
+import net.sourceforge.pmd.lang.document.TextRange2d;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
-import net.sourceforge.pmd.util.datasource.DataSource;
+import net.sourceforge.pmd.util.IOUtil;
 
-public abstract class AbstractRendererTest {
+abstract class AbstractRendererTest {
 
-    @org.junit.Rule
-    public TemporaryFolder temporaryFolder = new TemporaryFolder();
+    @TempDir
+    private Path tempDir;
 
-    public abstract Renderer getRenderer();
+    abstract Renderer getRenderer();
 
-    public abstract String getExpected();
+    abstract String getExpected();
 
-    public String getExpectedWithProperties() {
+    String getExpectedWithProperties() {
         return getExpected();
     }
 
-    public abstract String getExpectedEmpty();
+    abstract String getExpectedEmpty();
 
-    public abstract String getExpectedMultiple();
+    abstract String getExpectedMultiple();
 
-    public String getExpectedError(ProcessingError error) {
+    String getExpectedError(ProcessingError error) {
         return "";
     }
 
-    public String getExpectedErrorWithoutMessage(ProcessingError error) {
+    String getExpectedErrorWithoutMessage(ProcessingError error) {
         return getExpectedError(error);
     }
 
-    public String getExpectedError(ConfigurationError error) {
+    String getExpectedError(ConfigurationError error) {
         return "";
     }
 
-    public String filter(String expected) {
+    String filter(String expected) {
         return expected;
     }
 
-    protected String getSourceCodeFilename() {
+    String getSourceCodeFilename() {
         return "notAvailable.ext";
     }
 
-    @Test(expected = NullPointerException.class)
-    public void testNullPassedIn() throws Exception {
-        getRenderer().renderFileReport(null);
+    @Test
+    void testNullPassedIn() throws Exception {
+        assertThrows(NullPointerException.class, () ->
+            getRenderer().renderFileReport(null));
     }
 
     protected Consumer<FileAnalysisListener> reportOneViolation() {
@@ -89,15 +92,14 @@ public abstract class AbstractRendererTest {
         };
     }
 
-    protected DummyNode createNode(int beginLine, int beginColumn, int endLine, int endColumn) {
-        DummyNode node = new DummyRoot().withFileName(getSourceCodeFilename());
-        node.setCoords(beginLine, beginColumn, endLine, endColumn);
-        return node;
+    protected FileLocation createLocation(int beginLine, int beginColumn, int endLine, int endColumn) {
+        TextRange2d range2d = TextRange2d.range2d(beginLine, beginColumn, endLine, endColumn);
+        return FileLocation.range(getSourceCodeFilename(), range2d);
     }
 
     protected RuleViolation newRuleViolation(int beginLine, int beginColumn, int endLine, int endColumn, Rule rule) {
-        DummyNode node = createNode(beginLine, beginColumn, endLine, endColumn);
-        return new ParametricRuleViolation<Node>(rule, node, "blah");
+        FileLocation loc = createLocation(beginLine, beginColumn, endLine, endColumn);
+        return new ParametricRuleViolation(rule, loc, "blah");
     }
 
     /**
@@ -126,25 +128,24 @@ public abstract class AbstractRendererTest {
      */
     protected String readFile(String relativePath) {
         try (InputStream in = getClass().getResourceAsStream(relativePath)) {
-            return IOUtils.toString(in, StandardCharsets.UTF_8);
+            return IOUtil.readToString(in, StandardCharsets.UTF_8);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
     @Test
-    public void testRuleWithProperties() throws Exception {
-        DummyNode node = createNode(1, 1, 1, 1);
+    void testRuleWithProperties() throws Exception {
         RuleWithProperties theRule = new RuleWithProperties();
         theRule.setProperty(RuleWithProperties.STRING_PROPERTY_DESCRIPTOR,
                 "the string value\nsecond line with \"quotes\"");
-        String rendered = renderReport(getRenderer(),
-                it -> it.onRuleViolation(newRuleViolation(1, 1, 1, 1, theRule)));
+        RuleViolation violation = newRuleViolation(1, 1, 1, 1, theRule);
+        String rendered = renderReport(getRenderer(), it -> it.onRuleViolation(violation));
         assertEquals(filter(getExpectedWithProperties()), filter(rendered));
     }
 
     @Test
-    public void testRenderer() throws Exception {
+    void testRenderer() throws Exception {
         testRenderer(Charset.defaultCharset());
     }
 
@@ -154,26 +155,26 @@ public abstract class AbstractRendererTest {
     }
 
     @Test
-    public void testRendererEmpty() throws Exception {
+    void testRendererEmpty() throws Exception {
         String actual = render(it -> {});
         assertEquals(filter(getExpectedEmpty()), filter(actual));
     }
 
     @Test
-    public void testRendererMultiple() throws Exception {
+    void testRendererMultiple() throws Exception {
         String actual = render(reportTwoViolations());
         assertEquals(filter(getExpectedMultiple()), filter(actual));
     }
 
     @Test
-    public void testError() throws Exception {
+    void testError() throws Exception {
         Report.ProcessingError err = new Report.ProcessingError(new RuntimeException("Error"), "file");
         String actual = render(it -> it.onError(err));
         assertEquals(filter(getExpectedError(err)), filter(actual));
     }
 
     @Test
-    public void testErrorWithoutMessage() throws Exception {
+    void testErrorWithoutMessage() throws Exception {
         Report.ProcessingError err = new Report.ProcessingError(new NullPointerException(), "file");
         String actual = render(it -> it.onError(err));
         assertEquals(filter(getExpectedErrorWithoutMessage(err)), filter(actual));
@@ -184,7 +185,7 @@ public abstract class AbstractRendererTest {
     }
 
     @Test
-    public void testConfigError() throws Exception {
+    void testConfigError() throws Exception {
         Report.ConfigurationError err = new Report.ConfigurationError(new FooRule(), "a configuration error");
         String actual = renderGlobal(getRenderer(), it -> it.onConfigError(err));
         assertEquals(filter(getExpectedError(err)), filter(actual));
@@ -197,7 +198,9 @@ public abstract class AbstractRendererTest {
     protected String renderReport(Renderer renderer, Consumer<? super FileAnalysisListener> listenerEffects,
                                   Charset expectedEncoding) throws IOException {
         return renderGlobal(renderer, globalListener -> {
-            DataSource dummyFile = DataSource.forString("dummyText", "file");
+
+            LanguageVersion version = DummyLanguageModule.getInstance().getDefaultVersion();
+            TextFile dummyFile = TextFile.forCharSeq("dummyText", "file", version);
             try (FileAnalysisListener fal = globalListener.startFileAnalysis(dummyFile)) {
                 listenerEffects.accept(fal);
             } catch (Exception e) {
@@ -212,7 +215,7 @@ public abstract class AbstractRendererTest {
 
     private String renderGlobal(Renderer renderer, Consumer<? super GlobalAnalysisListener> listenerEffects,
                                 Charset expectedEncoding) throws IOException {
-        File file = temporaryFolder.newFile();
+        File file = tempDir.resolve("report.out").toFile();
         renderer.setReportFile(file.getAbsolutePath());
 
         try (GlobalAnalysisListener listener = renderer.newListener()) {
@@ -221,7 +224,7 @@ public abstract class AbstractRendererTest {
             throw new AssertionError(e);
         }
 
-        return FileUtils.readFileToString(file, expectedEncoding);
+        return IOUtil.readFileToString(file, expectedEncoding);
     }
 
 }

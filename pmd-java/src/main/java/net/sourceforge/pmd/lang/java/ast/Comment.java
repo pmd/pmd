@@ -13,10 +13,11 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringUtils;
 
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.lang.ast.impl.javacc.AbstractJjtreeNode;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
+import net.sourceforge.pmd.lang.document.FileLocation;
+import net.sourceforge.pmd.reporting.Reportable;
 
-public abstract class Comment extends AbstractJjtreeNode<Comment, Comment> {
+public abstract class Comment implements Reportable {
 
     // single regex, that captures: the start of a multi-line comment (/**|/*), the start of a single line comment (//)
     // or the start of line within a multiline comment (*). It removes the end of the comment (*/) if existing.
@@ -25,36 +26,31 @@ public abstract class Comment extends AbstractJjtreeNode<Comment, Comment> {
     // Same as "\\R" - but \\R is only available with java8+
     static final Pattern NEWLINES_PATTERN = Pattern.compile("\\u000D\\u000A|[\\u000A\\u000B\\u000C\\u000D\\u0085\\u2028\\u2029]");
 
+    private final JavaccToken token;
+
     protected Comment(JavaccToken t) {
-        super(0);
-
-        setImage(t.getImage());
-        setFirstToken(t);
-        setLastToken(t);
+        this.token = t;
     }
 
     @Override
-    public String toString() {
-        return getImage();
-    }
-
-
-    @Override
-    public final CharSequence getText() {
-        return super.getText();
+    public FileLocation getReportLocation() {
+        return token.getReportLocation();
     }
 
     /**
      * @deprecated Use {@link #getText()}
      */
-    @Override
     @Deprecated
     public String getImage() {
-        return super.getImage();
+        return getToken().getImage();
     }
 
     public final JavaccToken getToken() {
-        return super.getFirstToken();
+        return token;
+    }
+
+    public final CharSequence getText() {
+        return getToken().getImageCs();
     }
 
     /**
@@ -79,7 +75,7 @@ public abstract class Comment extends AbstractJjtreeNode<Comment, Comment> {
      * @return List of lines of the comments
      */
     private List<String> multiLinesIn() {
-        String[] lines = NEWLINES_PATTERN.split(getImage());
+        String[] lines = NEWLINES_PATTERN.split(getText());
         List<String> filteredLines = new ArrayList<>(lines.length);
 
         for (String rawLine : lines) {

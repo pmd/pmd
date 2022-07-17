@@ -36,11 +36,16 @@ import org.junit.runners.model.InitializationError;
  * ...
  * }
  * </pre>
+ *
+ * @deprecated This is not needed anymore with JUnit5. Just extend from {@link SimpleAggregatorTst}.
  */
+@Deprecated
 public class PMDTestRunner extends Runner implements Filterable, Sortable {
     private final Class<? extends SimpleAggregatorTst> klass;
     private final RuleTestRunner ruleTests;
     private final ParentRunner<?> unitTests;
+
+    private final Description description;
 
     public PMDTestRunner(final Class<? extends SimpleAggregatorTst> klass) throws InitializationError {
         this.klass = klass;
@@ -51,6 +56,8 @@ public class PMDTestRunner extends Runner implements Filterable, Sortable {
         } else {
             unitTests = new EmptyRunner(klass);
         }
+
+        this.description = createDescription();
     }
 
     @Override
@@ -76,6 +83,10 @@ public class PMDTestRunner extends Runner implements Filterable, Sortable {
 
     @Override
     public Description getDescription() {
+        return description;
+    }
+
+    private Description createDescription() {
         Description description = Description.createSuiteDescription(klass);
         description.addChild(createChildrenDescriptions(ruleTests, "Rule Tests"));
         if (ruleTests.hasUnitTests()) {

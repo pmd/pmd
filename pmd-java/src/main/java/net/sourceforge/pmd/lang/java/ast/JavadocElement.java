@@ -5,24 +5,19 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
+import net.sourceforge.pmd.lang.document.FileLocation;
+import net.sourceforge.pmd.lang.document.TextRange2d;
 import net.sourceforge.pmd.lang.java.javadoc.JavadocTag;
 
 public class JavadocElement extends Comment {
 
-    private final int beginLine;
-    private final int endLine;
-    private final int beginColumn;
-    private final int endColumn;
-
     private final JavadocTag tag;
+    private final FileLocation reportLoc;
 
     public JavadocElement(JavaccToken t, int theBeginLine, int theEndLine, int theBeginColumn, int theEndColumn, JavadocTag theTag) {
         super(t);
         this.tag = theTag;
-        this.beginLine = theBeginLine;
-        this.endLine = theEndLine;
-        this.beginColumn = theBeginColumn;
-        this.endColumn = theEndColumn;
+        this.reportLoc = FileLocation.range("TODO", TextRange2d.range2d(theBeginLine, theBeginColumn, theEndLine, theEndColumn));
     }
 
     public JavadocTag tag() {
@@ -30,27 +25,8 @@ public class JavadocElement extends Comment {
     }
 
     @Override
-    public int getBeginLine() {
-        return beginLine;
+    public FileLocation getReportLocation() {
+        return reportLoc;
     }
 
-    @Override
-    public int getEndColumn() {
-        return endColumn;
-    }
-
-    @Override
-    public int getEndLine() {
-        return endLine;
-    }
-
-    @Override
-    public int getBeginColumn() {
-        return beginColumn;
-    }
-
-    @Override
-    public String getXPathNodeName() {
-        return tag.label + " : " + tag.description;
-    }
 }

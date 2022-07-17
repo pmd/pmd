@@ -8,9 +8,9 @@ import java.io.IOException;
 
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
-import net.sourceforge.pmd.util.datasource.DataSource;
 
 /**
  * Adapter to wrap {@link AnalysisCache} behaviour in a {@link GlobalAnalysisListener}.
@@ -26,10 +26,10 @@ public class AnalysisCacheListener implements GlobalAnalysisListener {
         cache.checkValidity(ruleSets, classLoader);
     }
 
-
     @Override
-    public FileAnalysisListener startFileAnalysis(DataSource file) {
-        return cache.startFileAnalysis(file);
+    public FileAnalysisListener startFileAnalysis(TextFile file) {
+        // AnalysisCache instances are handled specially in PmdRunnable
+        return FileAnalysisListener.noop();
     }
 
     @Override

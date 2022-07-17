@@ -8,8 +8,11 @@ import static net.sourceforge.pmd.properties.constraints.NumericConstraints.posi
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import net.sourceforge.pmd.lang.apex.ast.ASTApexFile;
+import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 import net.sourceforge.pmd.lang.rule.internal.CommonPropertyDescriptors;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
@@ -83,7 +86,12 @@ public abstract class AbstractCounterCheckRule<T extends ApexNode<?>> extends Ab
 
         @Override
         protected int getMetric(T node) {
-            return node.getEndLine() - node.getBeginLine();
+            Node measured = node;
+            if (node instanceof ASTUserClass && node.getParent() instanceof ASTApexFile) {
+                measured = node.getParent();
+            }
+
+            return measured.getEndLine() - measured.getBeginLine();
         }
 
     }

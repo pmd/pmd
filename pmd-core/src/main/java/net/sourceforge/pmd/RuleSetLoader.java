@@ -16,6 +16,7 @@ import java.util.Properties;
 
 import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -144,6 +145,9 @@ public final class RuleSetLoader {
         );
     }
 
+    private @Nullable MessageReporter filteredReporter() {
+        return warnDeprecated ? reporter : null;
+    }
 
     /**
      * Parses and returns a ruleset from its location. The location may
@@ -154,7 +158,7 @@ public final class RuleSetLoader {
      * @throws RuleSetLoadException If any error occurs (eg, invalid syntax, or resource not found)
      */
     public RuleSet loadFromResource(String rulesetPath) {
-        return loadFromResource(new RuleSetReferenceId(rulesetPath));
+        return loadFromResource(new RuleSetReferenceId(rulesetPath, null, filteredReporter()));
     }
 
     /**
@@ -166,7 +170,7 @@ public final class RuleSetLoader {
      * @throws RuleSetLoadException If any error occurs (eg, invalid syntax)
      */
     public RuleSet loadFromString(String filename, final String rulesetXmlContent) {
-        return loadFromResource(new RuleSetReferenceId(filename) {
+        return loadFromResource(new RuleSetReferenceId(filename, null, filteredReporter()) {
             @Override
             public InputStream getInputStream(ResourceLoader rl) {
                 return new ByteArrayInputStream(rulesetXmlContent.getBytes(StandardCharsets.UTF_8));
@@ -202,6 +206,7 @@ public final class RuleSetLoader {
     public List<RuleSet> loadRuleSetsWithoutException(List<String> rulesetPaths) {
         List<RuleSet> ruleSets = new ArrayList<>(rulesetPaths.size());
         boolean anyRules = false;
+        boolean error = false;
         for (String path : rulesetPaths) {
             try {
                 RuleSet ruleset = this.loadFromResource(path);
@@ -209,15 +214,11 @@ public final class RuleSetLoader {
                 printRulesInDebug(path, ruleset);
                 ruleSets.add(ruleset);
             } catch (RuleSetLoadException e) {
-                if (e.getCause() != null) {
-                    // eg RuleSetNotFoundException
-                    reporter.errorEx("Cannot load ruleset {0}", new Object[] { path }, e.getCause());
-                } else {
-                    reporter.errorEx("Cannot load ruleset {0}", new Object[] { path }, e);
-                }
+                error = true;
+                reporter.error(e);
             }
         }
-        if (!anyRules) {
+        if (!anyRules && !error) {
             reporter.warn("No rules found. Maybe you misspelled a rule name? ({0})",
                           StringUtils.join(rulesetPaths, ','));
         }

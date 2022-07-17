@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.util.log;
 
 import java.text.MessageFormat;
-import java.util.Objects;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.event.Level;
@@ -26,6 +25,9 @@ import net.sourceforge.pmd.annotation.InternalApi;
 @InternalApi
 public interface MessageReporter {
 
+    // todo change String to MessageFormat in those arg lists, it's too confusing
+    // where to apply MessageFormat otherwise...
+
     boolean isLoggable(Level level);
 
     default void log(Level level, String message, Object... formatArgs) {
@@ -34,8 +36,15 @@ public interface MessageReporter {
 
     void logEx(Level level, @Nullable String message, Object[] formatArgs, @Nullable Throwable error);
 
-    default RuntimeException newException(Level level, @Nullable Throwable cause, String message, Object... formatArgs) {
+    /**
+     * Logs and returns a new exception.
+     * Message and cause may not be null a the same time.
+     */
+    default RuntimeException newException(Level level, @Nullable Throwable cause, @Nullable String message, Object... formatArgs) {
         logEx(level, message, formatArgs, cause);
+        if (message == null) {
+            return new RuntimeException(cause);
+        }
         return new RuntimeException(MessageFormat.format(message, formatArgs), cause);
     }
 
@@ -56,18 +65,18 @@ public interface MessageReporter {
     }
 
     default RuntimeException error(String message, Object... formatArgs) {
-        log(Level.ERROR, message, formatArgs);
-        return newException(Level.ERROR, null, message, formatArgs);
+        return error(null, message, formatArgs);
     }
 
-    default RuntimeException error(Throwable cause, String contextMessage, Object... formatArgs) {
-        logEx(Level.ERROR, contextMessage, formatArgs, Objects.requireNonNull(cause));
-        return newException(Level.ERROR, null, contextMessage, formatArgs);
+    /**
+     * Only one of the cause or the message can be null.
+     */
+    default RuntimeException error(@Nullable Throwable cause, @Nullable String contextMessage, Object... formatArgs) {
+        return newException(Level.ERROR, cause, contextMessage, formatArgs);
     }
 
     default RuntimeException error(Throwable error) {
-        logEx(Level.ERROR, null, new Object[0], Objects.requireNonNull(error));
-        return newException(Level.ERROR, error, error.getMessage());
+        return error(error, null);
     }
 
     default void errorEx(String message, Throwable error) {

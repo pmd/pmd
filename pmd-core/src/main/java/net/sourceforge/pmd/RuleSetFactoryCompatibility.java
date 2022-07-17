@@ -19,7 +19,7 @@ import org.slf4j.LoggerFactory;
  *
  * @see <a href="https://sourceforge.net/p/pmd/bugs/1360/">issue 1360</a>
  */
-public final class RuleSetFactoryCompatibility {
+final class RuleSetFactoryCompatibility {
 
     static final RuleSetFactoryCompatibility EMPTY = new RuleSetFactoryCompatibility();
     /** The instance with the built-in filters for the modified PMD rules. */

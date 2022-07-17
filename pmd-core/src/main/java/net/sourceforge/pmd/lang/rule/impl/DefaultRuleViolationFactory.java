@@ -9,14 +9,10 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
-
 import net.sourceforge.pmd.Report.SuppressedViolation;
-import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.ViolationSuppressor;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
 
 /**
@@ -31,11 +27,6 @@ public class DefaultRuleViolationFactory implements RuleViolationFactory {
 
     private static final DefaultRuleViolationFactory DEFAULT = new DefaultRuleViolationFactory();
     private Set<ViolationSuppressor> allSuppressors;
-
-    @Override
-    public RuleViolation createViolation(Rule rule, @NonNull Node location, @NonNull String formattedMessage) {
-        return new ParametricRuleViolation<>(rule, location, formattedMessage);
-    }
 
     @Override
     public SuppressedViolation suppressOrNull(Node location, RuleViolation violation) {

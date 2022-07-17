@@ -5,12 +5,12 @@
 package net.sourceforge.pmd.processor;
 
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.Report.GlobalReportBuilderListener;
@@ -18,26 +18,29 @@ import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSetLoader;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
-import net.sourceforge.pmd.util.datasource.DataSource;
 
-public class MultiThreadProcessorTest {
+class MultiThreadProcessorTest {
 
     private GlobalAnalysisListener listener;
 
-    private List<DataSource> files;
+    private List<TextFile> files;
     private SimpleReportListener reportListener;
     private PMDConfiguration configuration;
 
-    public RuleSets setUpForTest(final String ruleset) {
+    RuleSets setUpForTest(final String ruleset) {
         configuration = new PMDConfiguration();
         configuration.setThreads(2);
+        LanguageVersion lv = LanguageRegistry.getDefaultLanguage().getDefaultVersion();
         files = listOf(
-            DataSource.forString("abc", "file1-violation.dummy"),
-            DataSource.forString("DEF", "file2-foo.dummy")
+            TextFile.forCharSeq("abc", "file1-violation.dummy", lv),
+            TextFile.forCharSeq("DEF", "file2-foo.dummy", lv)
         );
 
         reportListener = new SimpleReportListener();
@@ -52,7 +55,7 @@ public class MultiThreadProcessorTest {
     // Dysfunctional rules are pruned upstream of the processor.
     //
     //    @Test
-    //    public void testRulesDysnfunctionalLog() throws Exception {
+    //    void testRulesDysnfunctionalLog() throws Exception {
     //        RuleSets ruleSets = setUpForTest("rulesets/MultiThreadProcessorTest/dysfunctional.xml");
     //        final SimpleRenderer renderer = new SimpleRenderer(null, null);
     //        renderer.start();
@@ -62,15 +65,15 @@ public class MultiThreadProcessorTest {
     //        final Iterator<ConfigurationError> configErrors = renderer.getReport().getConfigurationErrors().iterator();
     //        final ConfigurationError error = configErrors.next();
     //
-    //        Assert.assertEquals("Dysfunctional rule message not present",
+    //        assertEquals("Dysfunctional rule message not present",
     //                DysfunctionalRule.DYSFUNCTIONAL_RULE_REASON, error.issue());
-    //        Assert.assertEquals("Dysfunctional rule is wrong",
+    //        assertEquals("Dysfunctional rule is wrong",
     //                DysfunctionalRule.class, error.rule().getClass());
-    //        Assert.assertFalse("More configuration errors found than expected", configErrors.hasNext());
+    //        assertFalse("More configuration errors found than expected", configErrors.hasNext());
     //    }
 
     @Test
-    public void testRulesThreadSafety() throws Exception {
+    void testRulesThreadSafety() throws Exception {
         RuleSets ruleSets = setUpForTest("rulesets/MultiThreadProcessorTest/basic.xml");
         try (AbstractPMDProcessor processor = AbstractPMDProcessor.newFileProcessor(configuration)) {
             processor.processFiles(ruleSets, files, listener);
@@ -79,10 +82,10 @@ public class MultiThreadProcessorTest {
 
         // if the rule is not executed, then maybe a
         // ConcurrentModificationException happened
-        Assert.assertEquals("Test rule has not been executed", 2, NotThreadSafeRule.count.get());
+        assertEquals(2, NotThreadSafeRule.count.get(), "Test rule has not been executed");
         // if the violation is not reported, then the rule instances have been
         // shared between the threads
-        Assert.assertEquals("Missing violation", 1, reportListener.violations.get());
+        assertEquals(1, reportListener.violations.get(), "Missing violation");
     }
 
     public static class NotThreadSafeRule extends AbstractRule {
@@ -94,7 +97,7 @@ public class MultiThreadProcessorTest {
         public void apply(Node target, RuleContext ctx) {
             count.incrementAndGet();
 
-            if (target.getAstInfo().getFileName().contains("violation")) {
+            if (target.getTextDocument().getDisplayName().contains("violation")) {
                 hasViolation = true;
             } else {
                 letTheOtherThreadRun(10);
@@ -137,7 +140,7 @@ public class MultiThreadProcessorTest {
         public AtomicInteger violations = new AtomicInteger(0);
 
         @Override
-        public FileAnalysisListener startFileAnalysis(DataSource file) {
+        public FileAnalysisListener startFileAnalysis(TextFile file) {
             return new FileAnalysisListener() {
                 @Override
                 public void onRuleViolation(RuleViolation violation) {

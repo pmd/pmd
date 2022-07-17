@@ -10,8 +10,8 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.lang.ast.NodeStream;
-import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument;
+import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.internal.JavaAstProcessor;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
@@ -59,11 +59,6 @@ public final class InternalApiBridge {
         return varid;
     }
 
-
-    public static JavaccTokenDocument javaTokenDoc(String fullText) {
-        return new JavaTokenDocument(fullText);
-    }
-
     public static void setSymbol(SymbolDeclaratorNode node, JElementSymbol symbol) {
         if (node instanceof ASTMethodDeclaration) {
             ((ASTMethodDeclaration) node).setSymbol((JMethodSymbol) symbol);
@@ -98,7 +93,7 @@ public final class InternalApiBridge {
                 try {
                     it.getTypeMirror();
                 } catch (Exception e) {
-                    processor.getLogger().error(it, "Error during type resolution of node " + it.getXPathNodeName());
+                    processor.getLogger().warning(it, "Error during type resolution of node " + it.getXPathNodeName());
                 }
             });
     }
@@ -197,8 +192,8 @@ public final class InternalApiBridge {
         CommentAssignmentPass.assignCommentsToDeclarations(root);
     }
 
-    public static @Nullable JavaccToken getReportLocation(JavaNode node) {
-        return ((AbstractJavaNode) node).getPreferredReportLocation();
+    public static JavaccTokenDocument javaTokenDoc(TextDocument fullText) {
+        return new JavaTokenDocument(fullText);
     }
 
     public static void setStandaloneTernary(ASTConditionalExpression node) {

@@ -4,10 +4,10 @@
 
 package net.sourceforge.pmd.lang.ast.impl.javacc;
 
-import java.util.Comparator;
-
 import net.sourceforge.pmd.lang.ast.CharStream;
 import net.sourceforge.pmd.lang.ast.GenericToken;
+import net.sourceforge.pmd.lang.document.FileLocation;
+import net.sourceforge.pmd.lang.document.TextRegion;
 
 /**
  * A generic token implementation for JavaCC parsers.
@@ -25,7 +25,7 @@ import net.sourceforge.pmd.lang.ast.GenericToken;
  * class in a typical PMD run and this may reduce GC pressure.
  * </ul>
  */
-public class JavaccToken implements GenericToken<JavaccToken>, Comparable<JavaccToken> {
+public class JavaccToken implements GenericToken<JavaccToken> {
 
     /**
      * Kind for EOF tokens.
@@ -38,10 +38,6 @@ public class JavaccToken implements GenericToken<JavaccToken>, Comparable<Javacc
      */
     public static final int IMPLICIT_TOKEN = -1;
 
-    private static final Comparator<JavaccToken> COMPARATOR =
-        Comparator.comparingInt(JavaccToken::getStartInDocument)
-                  .thenComparing(JavaccToken::getEndInDocument);
-
 
     /**
      * An integer that describes the kind of this token.  This numbering
@@ -52,8 +48,8 @@ public class JavaccToken implements GenericToken<JavaccToken>, Comparable<Javacc
 
     private final JavaccTokenDocument document;
     private final CharSequence image;
-    private final int startInclusive;
-    private final int endExclusive;
+    private final int startOffset;
+    private final int endOffset;
 
     /**
      * A reference to the next regular (non-special) token from the input
@@ -94,13 +90,13 @@ public class JavaccToken implements GenericToken<JavaccToken>, Comparable<Javacc
                        int startInclusive,
                        int endExclusive,
                        JavaccTokenDocument document) {
-        assert startInclusive <= endExclusive
-            : "Offsets should be correctly ordered: " + startInclusive + " <= " + endExclusive;
+        assert document != null : "Null document";
+        assert TextRegion.isValidRegion(startInclusive, endExclusive, document.getTextDocument());
 
         this.kind = kind;
         this.image = image;
-        this.startInclusive = startInclusive;
-        this.endExclusive = endExclusive;
+        this.startOffset = startInclusive;
+        this.endOffset = endExclusive;
         this.document = document;
     }
 
@@ -132,40 +128,27 @@ public class JavaccToken implements GenericToken<JavaccToken>, Comparable<Javacc
     }
 
     @Override
-    public String getImage() {
-        return image.toString();
+    public CharSequence getImageCs() {
+        return image;
     }
 
     @Override
-    public int getStartInDocument() {
-        return startInclusive;
+    public TextRegion getRegion() {
+        return TextRegion.fromBothOffsets(startOffset, endOffset);
+    }
+
+    int getStartOffset() {
+        return startOffset;
+    }
+
+    int getEndOffset() {
+        return endOffset;
     }
 
     @Override
-    public int getEndInDocument() {
-        return endExclusive;
+    public FileLocation getReportLocation() {
+        return document.getTextDocument().toLocation(getRegion());
     }
-
-    @Override
-    public int getBeginLine() {
-        return document == null ? -1 : document.lineNumberFromOffset(startInclusive);
-    }
-
-    @Override
-    public int getEndLine() {
-        return document == null ? -1 : document.lineNumberFromOffset(endExclusive);
-    }
-
-    @Override
-    public int getBeginColumn() {
-        return document == null ? -1 : document.columnFromOffset(startInclusive);
-    }
-
-    @Override
-    public int getEndColumn() {
-        return document == null ? -1 : document.columnFromOffset(endExclusive);
-    }
-
 
     @Override
     public boolean isImplicit() {
@@ -189,7 +172,7 @@ public class JavaccToken implements GenericToken<JavaccToken>, Comparable<Javacc
         return new JavaccToken(
             this.kind,
             charStream.GetImage(),
-            this.startInclusive,
+            this.startOffset,
             charStream.getEndOffset(),
             this.document
         );
@@ -199,8 +182,8 @@ public class JavaccToken implements GenericToken<JavaccToken>, Comparable<Javacc
         return new JavaccToken(
             this.kind,
             image,
-            this.startInclusive,
-            this.endExclusive,
+            this.startOffset,
+            this.endOffset,
             this.document
         );
     }
@@ -219,20 +202,14 @@ public class JavaccToken implements GenericToken<JavaccToken>, Comparable<Javacc
         JavaccToken tok = new JavaccToken(
             newKind,
             this.image,
-            this.startInclusive,
-            this.endExclusive,
+            this.startOffset,
+            this.endOffset,
             this.document
         );
         tok.specialToken = this.specialToken;
         tok.next = this.next;
         return tok;
     }
-
-    @Override
-    public int compareTo(JavaccToken o) {
-        return COMPARATOR.compare(this, o);
-    }
-
 
     /**
      * Creates an implicit token, with zero length, that is linked to
@@ -244,7 +221,7 @@ public class JavaccToken implements GenericToken<JavaccToken>, Comparable<Javacc
      */
     public static JavaccToken implicitBefore(JavaccToken next) {
 
-        JavaccToken implicit = newImplicit(next.getStartInDocument(), next.document);
+        JavaccToken implicit = newImplicit(next.getRegion().getStartOffset(), next.document);
 
         // insert it right before the next token
         // as a special token
@@ -269,11 +246,7 @@ public class JavaccToken implements GenericToken<JavaccToken>, Comparable<Javacc
      * @return A new token
      */
     public static JavaccToken newImplicit(int offset, JavaccTokenDocument document) {
-        return new JavaccToken(IMPLICIT_TOKEN,
-                               "",
-                               offset,
-                               offset,
-                               document);
+        return new JavaccToken(IMPLICIT_TOKEN, "", offset, offset, document);
     }
 }
 

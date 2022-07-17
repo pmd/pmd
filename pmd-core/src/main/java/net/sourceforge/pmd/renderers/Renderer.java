@@ -6,7 +6,6 @@ package net.sourceforge.pmd.renderers;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.List;
 
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Report.ConfigurationError;
@@ -19,11 +18,11 @@ import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.benchmark.TimedOperation;
 import net.sourceforge.pmd.benchmark.TimedOperationCategory;
+import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertySource;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
-import net.sourceforge.pmd.util.datasource.DataSource;
 
 /**
  * This is an interface for rendering a Report. When a Renderer is being
@@ -31,10 +30,9 @@ import net.sourceforge.pmd.util.datasource.DataSource;
  * <ol>
  * <li>Renderer construction/initialization</li>
  * <li>{@link Renderer#setShowSuppressedViolations(boolean)}</li>
- * <li>{@link Renderer#setUseShortNames(List)}</li>
  * <li>{@link Renderer#setWriter(Writer)}</li>
  * <li>{@link Renderer#start()}</li>
- * <li>{@link Renderer#startFileAnalysis(DataSource)} for each source file
+ * <li>{@link Renderer#startFileAnalysis(TextFile)} for each source file
  * processed</li>
  * <li>{@link Renderer#renderFileReport(Report)} for each Report instance</li>
  * <li>{@link Renderer#end()}</li>
@@ -104,16 +102,6 @@ public interface Renderer extends PropertySource {
     void setShowSuppressedViolations(boolean showSuppressedViolations);
 
     /**
-     * Render the filenames of found violations with short names. That is, any prefix
-     * given as inputPaths is removed.
-     * By default, the full pathnames are used. If the given list of {@code inputPaths}
-     * is empty, then the full pathnames are used.
-     *
-     * @param inputPaths
-     */
-    void setUseShortNames(List<String> inputPaths);
-
-    /**
      * Get the Writer for the Renderer.
      *
      * @return The Writer.
@@ -149,13 +137,13 @@ public interface Renderer extends PropertySource {
      * @param dataSource
      *            The source file.
      */
-    void startFileAnalysis(DataSource dataSource);
+    void startFileAnalysis(TextFile dataSource);
 
     /**
      * Render the given file Report. There may be multiple Report instances
      * which need to be rendered if produced by different threads. It is called
      * after {@link Renderer#start()} and
-     * {@link Renderer#startFileAnalysis(DataSource)}, but before
+     * {@link Renderer#startFileAnalysis(TextFile)}, but before
      * {@link Renderer#end()}.
      *
      * @param report
@@ -215,7 +203,7 @@ public interface Renderer extends PropertySource {
             }
 
             @Override
-            public FileAnalysisListener startFileAnalysis(DataSource file) {
+            public FileAnalysisListener startFileAnalysis(TextFile file) {
                 Renderer renderer = Renderer.this;
 
                 renderer.startFileAnalysis(file); // this routine is thread-safe by contract

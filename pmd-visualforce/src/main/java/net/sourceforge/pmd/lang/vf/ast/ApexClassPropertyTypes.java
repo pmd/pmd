@@ -4,14 +4,12 @@
 
 package net.sourceforge.pmd.lang.vf.ast;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.exception.ContextedRuntimeException;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
@@ -24,6 +22,8 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.Parser;
 import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
 import net.sourceforge.pmd.lang.ast.SemanticErrorReporter;
+import net.sourceforge.pmd.lang.document.TextDocument;
+import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.lang.vf.DataType;
 
 import apex.jorje.semantic.symbol.type.BasicType;
@@ -67,26 +67,18 @@ class ApexClassPropertyTypes extends SalesforceFieldTypes {
     }
 
     static Node parseApex(Path apexFilePath) {
-        String fileText;
-        try (BufferedReader reader = Files.newBufferedReader(apexFilePath, StandardCharsets.UTF_8)) {
-            fileText = IOUtils.toString(reader);
+        LanguageVersion languageVersion = LanguageRegistry.getLanguage(ApexLanguageModule.NAME).getDefaultVersion();
+        try (TextFile file = TextFile.forPath(apexFilePath, StandardCharsets.UTF_8, languageVersion);
+             TextDocument textDocument = TextDocument.create(file)) {
+
+            Parser parser = languageVersion.getLanguageVersionHandler().getParser();
+            ParserTask task = new ParserTask(textDocument, SemanticErrorReporter.noop(), ApexClassPropertyTypes.class.getClassLoader());
+            languageVersion.getLanguageVersionHandler().declareParserTaskProperties(task.getProperties());
+
+            return parser.parse(task);
         } catch (IOException e) {
             throw new ContextedRuntimeException(e).addContextValue("apexFilePath", apexFilePath);
         }
-
-        LanguageVersion languageVersion = LanguageRegistry.getLanguage(ApexLanguageModule.NAME).getDefaultVersion();
-        Parser parser = languageVersion.getLanguageVersionHandler().getParser();
-
-        ParserTask task = new ParserTask(
-            languageVersion,
-            apexFilePath.toString(),
-            fileText,
-            SemanticErrorReporter.noop()
-        );
-
-        languageVersion.getLanguageVersionHandler().declareParserTaskProperties(task.getProperties());
-
-        return parser.parse(task);
     }
 
     static Node parseApex(String contextExpr, Path apexFilePath) {
