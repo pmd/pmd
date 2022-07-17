@@ -33,7 +33,9 @@ import net.sourceforge.pmd.Rule;
  * TestRules.
  *
  * @author Andreas Dangel
+ * @deprecated This is not needed anymore with JUnit5
  */
+@Deprecated
 public class RuleTestRunner extends ParentRunner<TestDescriptor> {
     private ConcurrentMap<TestDescriptor, Description> testDescriptions = new ConcurrentHashMap<>();
     private final RuleTst instance;

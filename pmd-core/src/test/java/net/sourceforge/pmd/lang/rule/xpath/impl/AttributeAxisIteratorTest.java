@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.rule.xpath.impl;
 
 
 import static net.sourceforge.pmd.util.CollectionUtil.setOf;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.lang.ast.Node;
@@ -26,7 +26,7 @@ import net.sourceforge.pmd.util.CollectionUtil;
 /**
  * Unit test for {@link AttributeAxisIterator}
  */
-public class AttributeAxisIteratorTest {
+class AttributeAxisIteratorTest {
 
     private static final Set<String> DEFAULT_ATTRS = setOf("BeginColumn", "BeginLine", "Image", "EndColumn", "EndLine");
 
@@ -34,7 +34,7 @@ public class AttributeAxisIteratorTest {
      * Test hasNext and next.
      */
     @Test
-    public void testAttributeAxisIterator() {
+    void testAttributeAxisIterator() {
         DummyNode dummyNode = new DummyNode();
 
         AttributeAxisIterator it = new AttributeAxisIterator(dummyNode);
@@ -43,7 +43,7 @@ public class AttributeAxisIteratorTest {
     }
 
     @Test
-    public void testAttributeAxisIteratorWithEnum() {
+    void testAttributeAxisIteratorWithEnum() {
         DummyNodeWithEnum dummyNode = new DummyNodeWithEnum();
 
         AttributeAxisIterator it = new AttributeAxisIterator(dummyNode);
@@ -54,7 +54,7 @@ public class AttributeAxisIteratorTest {
     }
 
     @Test
-    public void testAttributeAxisIteratorWithList() {
+    void testAttributeAxisIteratorWithList() {
         // list attributes are not supported anymore
         DummyNodeWithList dummyNode = new DummyNodeWithList();
 

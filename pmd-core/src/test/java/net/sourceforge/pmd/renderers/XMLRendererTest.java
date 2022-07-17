@@ -4,20 +4,21 @@
 
 package net.sourceforge.pmd.renderers;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.StringReader;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import org.apache.commons.io.IOUtils;
-import org.junit.Assert;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.contrib.java.lang.system.RestoreSystemProperties;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
@@ -32,34 +33,34 @@ import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.document.TextRange2d;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
+import net.sourceforge.pmd.util.IOUtil;
 
-public class XMLRendererTest extends AbstractRendererTest {
+import com.github.stefanbirkner.systemlambda.SystemLambda;
 
-    @Rule // Restores system properties after test
-    public final RestoreSystemProperties restoreSystemProperties = new RestoreSystemProperties();
+class XMLRendererTest extends AbstractRendererTest {
 
-    @Rule
-    public TemporaryFolder folder = new TemporaryFolder();
+    @TempDir
+    private Path folder;
 
     @Override
-    public Renderer getRenderer() {
+    Renderer getRenderer() {
         return new XMLRenderer();
     }
 
     @Override
-    public String getExpected() {
+    String getExpected() {
         return getHeader() + "<file name=\"" + getSourceCodeFilename() + "\">" + PMD.EOL
                 + "<violation beginline=\"1\" endline=\"1\" begincolumn=\"1\" endcolumn=\"1\" rule=\"Foo\" ruleset=\"RuleSet\" priority=\"5\">"
                 + PMD.EOL + "blah" + PMD.EOL + "</violation>" + PMD.EOL + "</file>" + PMD.EOL + "</pmd>" + PMD.EOL;
     }
 
     @Override
-    public String getExpectedEmpty() {
+    String getExpectedEmpty() {
         return getHeader() + "</pmd>" + PMD.EOL;
     }
 
     @Override
-    public String getExpectedMultiple() {
+    String getExpectedMultiple() {
         return getHeader() + "<file name=\"" + getSourceCodeFilename() + "\">" + PMD.EOL
                 + "<violation beginline=\"1\" endline=\"1\" begincolumn=\"1\" endcolumn=\"1\" rule=\"Foo\" ruleset=\"RuleSet\" priority=\"5\">"
                 + PMD.EOL + "blah" + PMD.EOL + "</violation>" + PMD.EOL
@@ -68,25 +69,25 @@ public class XMLRendererTest extends AbstractRendererTest {
     }
 
     @Override
-    public String getExpectedError(ProcessingError error) {
+    String getExpectedError(ProcessingError error) {
         return getHeader() + "<error filename=\"file\" msg=\"RuntimeException: Error\">"
                 + PMD.EOL + "<![CDATA[" + error.getDetail() + "]]>" + PMD.EOL + "</error>" + PMD.EOL + "</pmd>" + PMD.EOL;
     }
 
     @Override
-    public String getExpectedErrorWithoutMessage(ProcessingError error) {
+    String getExpectedErrorWithoutMessage(ProcessingError error) {
         return getHeader() + "<error filename=\"file\" msg=\"NullPointerException: null\">"
                 + PMD.EOL + "<![CDATA[" + error.getDetail() + "]]>" + PMD.EOL + "</error>" + PMD.EOL + "</pmd>" + PMD.EOL;
     }
 
     @Override
-    public String getExpectedError(ConfigurationError error) {
+    String getExpectedError(ConfigurationError error) {
         return getHeader() + "<configerror rule=\"Foo\" msg=\"a configuration error\"/>"
                 + PMD.EOL + "</pmd>" + PMD.EOL;
     }
 
     @Override
-    public String filter(String expected) {
+    String filter(String expected) {
         return expected.replaceAll(" timestamp=\"[^\"]+\">", " timestamp=\"\">");
     }
 
@@ -101,33 +102,33 @@ public class XMLRendererTest extends AbstractRendererTest {
         String msg = "The String 'literal' \"TokénizĀr " + surrogatePair + "\" appears...";
         Report report = Report.buildReport(it -> it.onRuleViolation(createRuleViolation(msg)));
         String actual = renderTempFile(renderer, report, charset);
-        Assert.assertTrue(actual.contains(shouldContain));
+        assertTrue(actual.contains(shouldContain));
         Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder()
                 .parse(new InputSource(new StringReader(actual)));
         NodeList violations = doc.getElementsByTagName("violation");
-        Assert.assertEquals(1, violations.getLength());
-        Assert.assertEquals(msg, violations.item(0).getTextContent().trim());
+        assertEquals(1, violations.getLength());
+        assertEquals(msg, violations.item(0).getTextContent().trim());
     }
 
     @Test
-    public void testXMLEscapingWithUTF8() throws Exception {
+    void testXMLEscapingWithUTF8() throws Exception {
         Renderer renderer = getRenderer();
         verifyXmlEscaping(renderer, "\ud801\udc1c", StandardCharsets.UTF_8);
     }
 
     @Test
-    public void testXMLEscapingWithUTF16() throws Exception {
+    void testXMLEscapingWithUTF16() throws Exception {
         Renderer renderer = getRenderer();
         verifyXmlEscaping(renderer, "&#x1041c;", StandardCharsets.UTF_16);
     }
 
     @Test
-    public void testXMLEscapingWithoutUTF8() throws Exception {
+    void testXMLEscapingWithoutUTF8() throws Exception {
         Renderer renderer = getRenderer();
         verifyXmlEscaping(renderer, "&#x1041c;", StandardCharsets.ISO_8859_1);
     }
 
-    public String getHeader() {
+    String getHeader() {
         return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + PMD.EOL
                 + "<pmd xmlns=\"http://pmd.sourceforge.net/report/2.0.0\""
                 + " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
@@ -136,30 +137,32 @@ public class XMLRendererTest extends AbstractRendererTest {
     }
 
     @Test
-    public void testCorrectCharset() throws Exception {
-        System.setProperty("file.encoding", StandardCharsets.ISO_8859_1.name());
+    void testCorrectCharset() throws Exception {
+        SystemLambda.restoreSystemProperties(() -> {
+            System.setProperty("file.encoding", StandardCharsets.ISO_8859_1.name());
 
-        Renderer renderer = getRenderer();
+            Renderer renderer = getRenderer();
 
-        String formFeed = "\u000C";
-        // é = U+00E9 : can be represented in ISO-8859-1 as is
-        // Ā = U+0100 : cannot be represented in ISO-8859-1 -> would be a unmappable character, needs to be escaped
-        String specialChars = "éĀ";
-        String originalChars = formFeed + specialChars; // u000C should be removed, é should be encoded correctly as UTF-8
-        String msg = "The String literal \"" + originalChars + "\" appears...";
-        Report report = Report.buildReport(it -> it.onRuleViolation(createRuleViolation(msg)));
-        String actual = renderTempFile(renderer, report, StandardCharsets.UTF_8);
-        Assert.assertTrue(actual.contains(specialChars));
-        Assert.assertFalse(actual.contains(formFeed));
-        Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder()
-                .parse(new InputSource(new StringReader(actual)));
-        NodeList violations = doc.getElementsByTagName("violation");
-        Assert.assertEquals(1, violations.getLength());
-        Assert.assertEquals(msg.replaceAll(formFeed, ""), violations.item(0).getTextContent().trim());
+            String formFeed = "\u000C";
+            // é = U+00E9 : can be represented in ISO-8859-1 as is
+            // Ā = U+0100 : cannot be represented in ISO-8859-1 -> would be a unmappable character, needs to be escaped
+            String specialChars = "éĀ";
+            String originalChars = formFeed + specialChars; // u000C should be removed, é should be encoded correctly as UTF-8
+            String msg = "The String literal \"" + originalChars + "\" appears...";
+            Report report = Report.buildReport(it -> it.onRuleViolation(createRuleViolation(msg)));
+            String actual = renderTempFile(renderer, report, StandardCharsets.UTF_8);
+            assertTrue(actual.contains(specialChars));
+            assertFalse(actual.contains(formFeed));
+            Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder()
+                    .parse(new InputSource(new StringReader(actual)));
+            NodeList violations = doc.getElementsByTagName("violation");
+            assertEquals(1, violations.getLength());
+            assertEquals(msg.replaceAll(formFeed, ""), violations.item(0).getTextContent().trim());
+        });
     }
 
     private String renderTempFile(Renderer renderer, Report report, Charset expectedCharset) throws IOException {
-        File reportFile = folder.newFile();
+        File reportFile = folder.resolve("report.out").toFile();
 
         renderer.setReportFile(reportFile.getAbsolutePath());
         renderer.start();
@@ -168,7 +171,7 @@ public class XMLRendererTest extends AbstractRendererTest {
         renderer.flush();
 
         try (FileInputStream input = new FileInputStream(reportFile)) {
-            return IOUtils.toString(input, expectedCharset);
+            return IOUtil.readToString(input, expectedCharset);
         }
     }
 }

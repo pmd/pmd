@@ -10,13 +10,13 @@ import static org.junit.Assert.assertThrows;
 
 import java.io.IOException;
 
-import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.util.IOUtil;
 
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
@@ -198,7 +198,7 @@ public class TextDocumentTest {
 
         assertEquals("NewReader should read the text",
                      doc.getText().toString(),
-                     IOUtils.toString(doc.newReader())
+                     IOUtil.readToString(doc.newReader())
         );
 
     }

@@ -20,10 +20,10 @@ import java.util.zip.Adler32;
 import java.util.zip.CheckedInputStream;
 import java.util.zip.Checksum;
 
-import org.apache.commons.io.ByteOrderMark;
-import org.apache.commons.io.IOUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
+
+import net.sourceforge.pmd.util.IOUtil;
 
 /**
  * Contents of a text file.
@@ -161,7 +161,7 @@ public final class TextFileContent {
     static @NonNull TextFileContent normalizeCharSeq(CharSequence text, String fallBackLineSep) {
         long checksum = getCheckSum(text); // the checksum is computed on the original file
 
-        if (text.length() > 0 && text.charAt(0) == ByteOrderMark.UTF_BOM) {
+        if (text.length() > 0 && text.charAt(0) == IOUtil.UTF_BOM) {
             text = text.subSequence(1, text.length()); // skip the BOM
         }
         Matcher matcher = NEWLINE_PATTERN.matcher(text);
@@ -208,11 +208,11 @@ public final class TextFileContent {
         int bufOffset = 0;
         int nextCharToCopy = 0;
         int n = input.read(cbuf);
-        if (n > 0 && cbuf[0] == ByteOrderMark.UTF_BOM) {
+        if (n > 0 && cbuf[0] == IOUtil.UTF_BOM) {
             nextCharToCopy = 1;
         }
 
-        while (n != IOUtils.EOF) {
+        while (n != IOUtil.EOF) {
             if (updateChecksum) {
                 // if we use a checked input stream we dont need to update the checksum manually
                 // note that this checksum operates on non-normalized characters

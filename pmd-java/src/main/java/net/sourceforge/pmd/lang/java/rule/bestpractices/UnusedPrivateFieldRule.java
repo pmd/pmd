@@ -37,7 +37,16 @@ public class UnusedPrivateFieldRule extends AbstractJavaRulechainRule {
             "lombok.Getter",
             "java.lang.Deprecated",
             "lombok.experimental.Delegate",
-            "javafx.fxml.FXML"
+            "javafx.fxml.FXML",
+            "javax.persistence.Id",
+            "javax.persistence.EmbeddedId",
+            "javax.persistence.Version",
+            "jakarta.persistence.Id",
+            "jakarta.persistence.EmbeddedId",
+            "jakarta.persistence.Version",
+            "org.mockito.Mock",
+            "org.mockito.Spy",
+            "org.springframework.boot.test.mock.mockito.MockBean"
         );
 
     private static final PropertyDescriptor<List<String>> IGNORED_FIELD_NAMES =

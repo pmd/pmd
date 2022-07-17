@@ -8,7 +8,7 @@
         <groupId>net.sourceforge.pmd</groupId>
         <artifactId>pmd</artifactId>
         <version>7.0.0-SNAPSHOT</version>
-        <relativePath>../</relativePath>
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
     <build>
@@ -68,10 +68,6 @@
             <groupId>com.beust</groupId>
             <artifactId>jcommander</artifactId>
         </dependency>
-        <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-        </dependency>
 
         <dependency>
             <groupId>net.sf.saxon</groupId>
@@ -98,6 +94,11 @@
             <groupId>org.pcollections</groupId>
             <artifactId>pcollections</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.github.oowekyala.ooxml</groupId>
+            <artifactId>nice-xml-messages</artifactId>
+            <version>3.1</version>
+        </dependency>
 
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -106,7 +107,7 @@
         </dependency>
         <dependency>
             <groupId>com.github.tomakehurst</groupId>
-            <artifactId>wiremock</artifactId>
+            <artifactId>wiremock-jre8</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -115,18 +116,18 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.platform</groupId>
+            <artifactId>junit-platform-suite</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>pl.pragmatists</groupId>
             <artifactId>JUnitParams</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.ant</groupId>
-            <artifactId>ant-testutil</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -137,6 +138,11 @@
         <dependency>
             <groupId>com.github.stefanbirkner</groupId>
             <artifactId>system-rules</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.stefanbirkner</groupId>
+            <artifactId>system-lambda</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>

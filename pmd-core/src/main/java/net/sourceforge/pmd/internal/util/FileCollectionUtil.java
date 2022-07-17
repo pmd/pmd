@@ -15,7 +15,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,6 +22,7 @@ import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.document.FileCollector;
 import net.sourceforge.pmd.util.FileUtil;
+import net.sourceforge.pmd.util.IOUtil;
 import net.sourceforge.pmd.util.database.DBMSMetadata;
 import net.sourceforge.pmd.util.database.DBURI;
 import net.sourceforge.pmd.util.database.SourceObject;
@@ -118,7 +118,7 @@ public final class FileCollectionUtil {
     private static void addRoot(FileCollector collector, String rootLocation) throws IOException {
         Path path = Paths.get(rootLocation);
         if (!Files.exists(path)) {
-            collector.getReporter().error("No such file {}", path);
+            collector.getReporter().error("No such file {0}", path);
             return;
         }
 
@@ -156,7 +156,7 @@ public final class FileCollectionUtil {
                 LOG.trace("Adding database source object {}", falseFilePath);
 
                 try (Reader sourceCode = dbmsMetadata.getSourceCode(sourceObject)) {
-                    String source = IOUtils.toString(sourceCode);
+                    String source = IOUtil.readToString(sourceCode);
                     collector.addSourceFile(source, falseFilePath);
                 } catch (SQLException ex) {
                     collector.getReporter().warnEx("Cannot get SourceCode for {}  - skipping ...",

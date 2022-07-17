@@ -17,13 +17,12 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.document.FileLocation;
+import net.sourceforge.pmd.util.IOUtil;
 
 public class ApexParserTest extends ApexParserTestBase {
 
@@ -158,7 +157,7 @@ public class ApexParserTest extends ApexParserTestBase {
 
         for (File file : fList) {
             if (file.isFile() && file.getName().endsWith(".cls")) {
-                String sourceCode = FileUtils.readFileToString(file, StandardCharsets.UTF_8);
+                String sourceCode = IOUtil.readFileToString(file, StandardCharsets.UTF_8);
                 Assert.assertNotNull(parse(sourceCode));
             }
         }
@@ -170,7 +169,7 @@ public class ApexParserTest extends ApexParserTestBase {
      */
     @Test
     public void parseInheritedSharingClass() throws IOException {
-        String source = IOUtils.toString(ApexParserTest.class.getResourceAsStream("InheritedSharing.cls"),
+        String source = IOUtil.readToString(ApexParserTest.class.getResourceAsStream("InheritedSharing.cls"),
                 StandardCharsets.UTF_8);
         parse(source);
     }
@@ -182,7 +181,7 @@ public class ApexParserTest extends ApexParserTestBase {
      */
     @Test
     public void stackOverflowDuringClassParsing() throws Exception {
-        String source = IOUtils.toString(ApexParserTest.class.getResourceAsStream("StackOverflowClass.cls"),
+        String source = IOUtil.readToString(ApexParserTest.class.getResourceAsStream("StackOverflowClass.cls"),
                 StandardCharsets.UTF_8);
         ASTUserClassOrInterface<?> rootNode = parse(source);
 

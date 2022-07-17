@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.ast;
 
 import java.text.MessageFormat;
 
-import org.slf4j.Logger;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.event.Level;
 
 import net.sourceforge.pmd.util.StringUtil;
@@ -21,20 +21,10 @@ public interface SemanticErrorReporter {
 
 
     /**
-     * Report an informational message at the given location.
-     *
-     * @param location   Location where the message should be reported
-     * @param message    Message (rendered using a {@link MessageFormat})
-     * @param formatArgs Format arguments
-     */
-    default void info(Node location, String message, Object... formatArgs) {
-        // noop
-    }
-
-
-    /**
      * Report a warning at the given location. Warnings do not abort
-     * the analysis.
+     * the analysis. They are usually recoverable errors. They are used
+     * to warn the user that something wrong is going on, which may cause
+     * subsequent errors or inconsistent behavior.
      *
      * @param location   Location where the warning should be reported
      * @param message    Message (rendered using a {@link MessageFormat})
@@ -44,9 +34,9 @@ public interface SemanticErrorReporter {
 
 
     /**
-     * Report an error at the given location. Errors abort subsequent analysis.
-     * The produced error can be thrown by the caller if it cannot be recovered
-     * from.
+     * Report an error at the given location. Errors abort subsequent analysis
+     * and cause a processing error to be put in the report. The produced error
+     * can be thrown by the caller if it cannot be recovered from.
      *
      * @param location   Location where the error should be reported
      * @param message    Message (rendered using a {@link MessageFormat})
@@ -56,14 +46,17 @@ public interface SemanticErrorReporter {
 
 
     /**
-     * Returns true if at least one error has been reported.
+     * If {@link #error(Node, String, Object...)} has been called, return
+     * a semantic exception instance with the correct message. If it has been
+     * called more than once, return the first exception, possibly with suppressed
+     * exceptions for subsequent calls to {@link #error(Node, String, Object...)}.
      */
-    boolean hasError();
+    @Nullable SemanticException getFirstError();
 
     static SemanticErrorReporter noop() {
         return new SemanticErrorReporter() {
 
-            private boolean hasError = false;
+            private SemanticException exception;
 
             @Override
             public void warning(Node location, String message, Object... formatArgs) {
@@ -72,13 +65,18 @@ public interface SemanticErrorReporter {
 
             @Override
             public SemanticException error(Node location, String message, Object... formatArgs) {
-                hasError = true;
-                return new SemanticException(MessageFormat.format(message, formatArgs));
+                SemanticException ex = new SemanticException(MessageFormat.format(message, formatArgs));
+                if (this.exception == null) {
+                    this.exception = ex;
+                } else {
+                    this.exception.addSuppressed(ex);
+                }
+                return ex;
             }
 
             @Override
-            public boolean hasError() {
-                return hasError;
+            public @Nullable SemanticException getFirstError() {
+                return exception;
             }
         };
     }
@@ -88,9 +86,10 @@ public interface SemanticErrorReporter {
      * Forwards to a {@link MessageReporter}, except trace and debug
      * messages which are reported on a logger.
      */
-    static SemanticErrorReporter reportToLogger(MessageReporter reporter, Logger logger) {
+    static SemanticErrorReporter reportToLogger(MessageReporter reporter) {
         return new SemanticErrorReporter() {
-            private boolean hasError = false;
+
+            private SemanticException exception = null;
 
             private String locPrefix(Node loc) {
                 return "at " + loc.getReportLocation()
@@ -103,17 +102,8 @@ public interface SemanticErrorReporter {
 
             private String logMessage(Level level, Node location, String message, Object[] args) {
                 String fullMessage = makeMessage(location, message, args);
-                if (level.compareTo(Level.INFO) > 0) {
-                    logger.atLevel(level).log(fullMessage);
-                } else {
-                    reporter.log(level, StringUtil.quoteMessageFormat(fullMessage)); // already formatted
-                }
+                reporter.log(level, StringUtil.quoteMessageFormat(fullMessage)); // already formatted
                 return fullMessage;
-            }
-
-            @Override
-            public void info(Node location, String message, Object... formatArgs) {
-                logMessage(Level.INFO, location, message, formatArgs);
             }
 
             @Override
@@ -123,14 +113,19 @@ public interface SemanticErrorReporter {
 
             @Override
             public SemanticException error(Node location, String message, Object... args) {
-                hasError = true;
                 String fullMessage = logMessage(Level.ERROR, location, message, args);
-                return new SemanticException(fullMessage);
+                SemanticException ex = new SemanticException(fullMessage);
+                if (this.exception == null) {
+                    this.exception = ex;
+                } else {
+                    this.exception.addSuppressed(ex);
+                }
+                return ex;
             }
 
             @Override
-            public boolean hasError() {
-                return hasError;
+            public @Nullable SemanticException getFirstError() {
+                return exception;
             }
         };
     }

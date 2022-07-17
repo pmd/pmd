@@ -4,23 +4,23 @@
 
 package net.sourceforge.pmd.ant;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.File;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.renderers.CSVRenderer;
 import net.sourceforge.pmd.renderers.HTMLRenderer;
 import net.sourceforge.pmd.renderers.TextRenderer;
 import net.sourceforge.pmd.renderers.XMLRenderer;
 
-public class FormatterTest {
+class FormatterTest {
 
     @Test
-    public void testType() {
+    void testType() {
         Formatter f = new Formatter();
         f.setType("xml");
         assertTrue(f.createRenderer() instanceof XMLRenderer);
@@ -40,10 +40,10 @@ public class FormatterTest {
     }
 
     @Test
-    public void testNull() {
+    void testNull() {
         Formatter f = new Formatter();
-        assertTrue("Formatter toFile should start off null!", f.isNoOutputSupplied());
+        assertTrue(f.isNoOutputSupplied(), "Formatter toFile should start off null!");
         f.setToFile(new File("foo"));
-        assertFalse("Formatter toFile should not be null!", f.isNoOutputSupplied());
+        assertFalse(f.isNoOutputSupplied(), "Formatter toFile should not be null!");
     }
 }

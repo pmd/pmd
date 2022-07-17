@@ -4,13 +4,14 @@
 
 package net.sourceforge.pmd;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.ByteArrayOutputStream;
 import java.util.Random;
 
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.RuleSet.RuleSetBuilder;
 import net.sourceforge.pmd.lang.rule.RuleReference;
@@ -19,7 +20,7 @@ import net.sourceforge.pmd.lang.rule.RuleReference;
  * Unit test for {@link RuleSetWriter}.
  *
  */
-public class RuleSetWriterTest {
+class RuleSetWriterTest {
 
     private ByteArrayOutputStream out;
     private RuleSetWriter writer;
@@ -27,8 +28,8 @@ public class RuleSetWriterTest {
     /**
      * Prepare the output stream.
      */
-    @Before
-    public void setupOutputStream() {
+    @BeforeEach
+    void setupOutputStream() {
         out = new ByteArrayOutputStream();
         writer = new RuleSetWriter(out);
     }
@@ -36,8 +37,8 @@ public class RuleSetWriterTest {
     /**
      * Closes the output stream at the end.
      */
-    @After
-    public void cleanupStream() {
+    @AfterEach
+    void cleanupStream() {
         if (writer != null) {
             writer.close();
         }
@@ -50,7 +51,7 @@ public class RuleSetWriterTest {
      *             any error
      */
     @Test
-    public void testWrite() throws Exception {
+    void testWrite() throws Exception {
         RuleSet braces = new RuleSetLoader().loadFromResource("net/sourceforge/pmd/TestRuleset1.xml");
         RuleSet ruleSet = new RuleSetBuilder(new Random().nextLong())
                 .withName("ruleset")
@@ -61,7 +62,7 @@ public class RuleSetWriterTest {
         writer.write(ruleSet);
 
         String written = out.toString("UTF-8");
-        Assert.assertTrue(written.contains("<exclude name=\"MockRule2\""));
+        assertTrue(written.contains("<exclude name=\"MockRule2\""));
     }
 
     /**
@@ -71,7 +72,7 @@ public class RuleSetWriterTest {
      *             any error
      */
     @Test
-    public void testRuleReferenceOverriddenName() throws Exception {
+    void testRuleReferenceOverriddenName() throws Exception {
         RuleSet rs = new RuleSetLoader().loadFromResource("rulesets/dummy/basic.xml");
 
         RuleReference ruleRef = new RuleReference();
@@ -84,6 +85,6 @@ public class RuleSetWriterTest {
         writer.write(ruleSet);
 
         String written = out.toString("UTF-8");
-        Assert.assertTrue(written.contains("ref=\"rulesets/dummy/basic.xml/DummyBasicMockRule\""));
+        assertTrue(written.contains("ref=\"rulesets/dummy/basic.xml/DummyBasicMockRule\""));
     }
 }

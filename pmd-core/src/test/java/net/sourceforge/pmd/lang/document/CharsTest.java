@@ -5,13 +5,13 @@
 package net.sourceforge.pmd.lang.document;
 
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -19,7 +19,7 @@ import java.io.StringWriter;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.util.CollectionUtil;
 
@@ -423,7 +423,7 @@ public class CharsTest {
         //                      ------------
 
         try (Reader reader = bc.newReader()) {
-            assertTrue("markSupported", reader.markSupported());
+            assertTrue(reader.markSupported(), "markSupported");
 
             assertEquals('b', reader.read());
             assertEquals('c', reader.read());
@@ -453,7 +453,7 @@ public class CharsTest {
         //                      ------------
 
         try (Reader reader = bc.newReader()) {
-            assertTrue("markSupported", reader.markSupported());
+            assertTrue(reader.markSupported(), "markSupported");
 
             assertEquals('b', reader.read());
             assertThrows(IOException.class, reader::reset);
@@ -491,7 +491,7 @@ public class CharsTest {
         char[] cbuf = new char[4];
 
         try (Reader reader = bc.newReader()) {
-            assertTrue("markSupported", reader.markSupported());
+            assertTrue(reader.markSupported(), "markSupported");
 
             assertEquals('b', reader.read());
             assertThrows(NullPointerException.class, () -> reader.read(null, 0, 0));

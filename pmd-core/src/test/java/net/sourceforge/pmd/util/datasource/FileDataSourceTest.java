@@ -4,20 +4,21 @@
 
 package net.sourceforge.pmd.util.datasource;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
-public class FileDataSourceTest {
+class FileDataSourceTest {
 
-    @Rule
-    public TemporaryFolder tempFolder = new TemporaryFolder();
+    @TempDir
+    private Path tempFolder;
 
     private static final String SOMEFILE_DIR = "path/";
     private static final String SOMEFILE_TXT = "somefile.txt";
@@ -27,77 +28,78 @@ public class FileDataSourceTest {
     private File someFile;
     private File someFolder;
 
-    @Before
-    public void setup() throws IOException {
-        someFolder = tempFolder.newFolder(SOMEFILE_DIR);
-        someFile = tempFolder.newFile(SOMEFILE_TXT_FULL_PATH);
+    @BeforeEach
+    void setup() throws IOException {
+        someFolder = tempFolder.resolve(SOMEFILE_DIR).toFile();
+        assertTrue(someFolder.mkdir());
+        someFile = tempFolder.resolve(SOMEFILE_TXT_FULL_PATH).toFile();
         ds = new FileDataSource(someFile);
     }
 
     @Test
-    public void testShortNamesSingleFile() {
+    void testShortNamesSingleFile() {
         assertEquals(SOMEFILE_TXT, ds.getNiceFileName(true, someFile.getAbsolutePath()));
     }
 
     @Test
-    public void testShortNamesSingleDir() {
+    void testShortNamesSingleDir() {
         assertEquals(SOMEFILE_TXT, ds.getNiceFileName(true, someFolder.getAbsolutePath()));
     }
 
     @Test
-    public void testShortNamesNullBase() {
+    void testShortNamesNullBase() {
         assertEquals(SOMEFILE_TXT, ds.getNiceFileName(true, null));
     }
 
     @Test
-    public void testShortNamesCommaSeparatedDirs() {
+    void testShortNamesCommaSeparatedDirs() {
         // use 2 dirs, one relative (similar, but not resolving to the same location) and one absolute
         assertEquals(SOMEFILE_TXT, ds.getNiceFileName(true, SOMEFILE_DIR + "," + someFolder.getAbsolutePath()));
     }
 
     @Test
-    public void testShortNamesCommaSeparatedFiles() {
+    void testShortNamesCommaSeparatedFiles() {
         // use 2 files, one relative (similar, but not resolving to the same location) and one absolute
         assertEquals(SOMEFILE_TXT, ds.getNiceFileName(true, SOMEFILE_TXT_FULL_PATH + "," + someFile.getAbsolutePath()));
     }
 
     @Test
-    public void testShortNamesCommaSeparatedMixed() {
+    void testShortNamesCommaSeparatedMixed() {
         // use a file and a dir, one relative (similar, but not resolving to the same location) and one absolute
         assertEquals(SOMEFILE_TXT, ds.getNiceFileName(true, SOMEFILE_TXT_FULL_PATH + "," + someFolder.getAbsolutePath()));
     }
 
     @Test
-    public void testLongNamesSingleFile() throws IOException {
+    void testLongNamesSingleFile() throws IOException {
         assertEquals(someFile.getCanonicalFile().getAbsolutePath(), ds.getNiceFileName(false, someFile.getAbsolutePath()));
     }
 
     @Test
-    public void testLongNamesSingleDir() throws IOException {
+    void testLongNamesSingleDir() throws IOException {
         assertEquals(someFile.getCanonicalFile().getAbsolutePath(), ds.getNiceFileName(false, someFolder.getAbsolutePath()));
     }
 
     @Test
-    public void testLongNamesNullBase() throws IOException {
+    void testLongNamesNullBase() throws IOException {
         assertEquals(someFile.getCanonicalFile().getAbsolutePath(), ds.getNiceFileName(false, null));
     }
 
     @Test
-    public void testLongNamesCommaSeparatedDirs() throws IOException {
+    void testLongNamesCommaSeparatedDirs() throws IOException {
         // use 2 dirs, one relative (similar, but not resolving to the same location) and one absolute
         assertEquals(someFile.getCanonicalFile().getAbsolutePath(),
                 ds.getNiceFileName(false, SOMEFILE_DIR + "," + someFolder.getAbsolutePath()));
     }
 
     @Test
-    public void testLongNamesCommaSeparatedFiles() throws IOException {
+    void testLongNamesCommaSeparatedFiles() throws IOException {
         // use 2 files, one relative (similar, but not resolving to the same location) and one absolute
         assertEquals(someFile.getCanonicalFile().getAbsolutePath(),
                 ds.getNiceFileName(false, SOMEFILE_TXT_FULL_PATH + "," + someFile.getAbsolutePath()));
     }
 
     @Test
-    public void testLongNamesCommaSeparatedMixed() throws IOException {
+    void testLongNamesCommaSeparatedMixed() throws IOException {
         // use a file and a dir, one relative (similar, but not resolving to the same location) and one absolute
         assertEquals(someFile.getCanonicalFile().getAbsolutePath(),
                 ds.getNiceFileName(false, SOMEFILE_TXT_FULL_PATH + "," + someFolder.getAbsolutePath()));

@@ -185,6 +185,12 @@ public class ParserCornersTest extends BaseJavaTreeDumpTest {
     }
 
     @Test
+    public void testUnicodeIndent() {
+        // https://github.com/pmd/pmd/issues/3423
+        java7.parseResource("UnicodeIdentifier.java");
+    }
+
+    @Test
     public void testParsersCases15() {
         doTest("ParserCornerCases", java5);
     }

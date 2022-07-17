@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
 import net.sourceforge.pmd.lang.ast.impl.AbstractNode;
@@ -93,8 +92,7 @@ public class DummyNode extends AbstractNode<DummyNode, DummyNode> implements Gen
     public void setImage(String image) {
         this.image = image;
         if (image.startsWith("#")) {
-            xpathName = image.substring(1);
-            assert AssertionUtil.isJavaIdentifier(xpathName) : "need an ident after '#': " + image;
+            xpathName = image;
         }
     }
 

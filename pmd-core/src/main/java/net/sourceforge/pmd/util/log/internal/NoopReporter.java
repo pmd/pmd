@@ -25,7 +25,7 @@ public final class NoopReporter extends MessageReporterBase implements MessageRe
     }
 
     @Override
-    protected void logImpl(Level level, String message, Object[] formatArgs) {
+    protected void logImpl(Level level, String message) {
         // noop
     }
 }

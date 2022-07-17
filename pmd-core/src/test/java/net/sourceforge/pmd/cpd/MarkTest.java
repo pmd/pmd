@@ -4,16 +4,16 @@
 
 package net.sourceforge.pmd.cpd;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.cpd.SourceCode.StringCodeLoader;
 
-public class MarkTest {
+class MarkTest {
 
     @Test
-    public void testSimple() {
+    void testSimple() {
         String filename = "/var/Foo.java";
         int beginLine = 1;
         TokenEntry token = new TokenEntry("public", "/var/Foo.java", 1);
@@ -35,7 +35,7 @@ public class MarkTest {
     }
 
     @Test
-    public void testColumns() {
+    void testColumns() {
         final String filename = "/var/Foo.java";
         final int beginLine = 1;
         final int beginColumn = 2;
@@ -58,9 +58,5 @@ public class MarkTest {
         assertEquals(beginColumn, mark.getBeginColumn());
         assertEquals(endColumn, mark.getEndColumn());
         assertEquals(codeFragment, mark.getSourceCodeSlice());
-    }
-
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(MarkTest.class);
     }
 }

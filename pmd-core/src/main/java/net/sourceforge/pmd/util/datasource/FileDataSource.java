@@ -17,6 +17,7 @@ import net.sourceforge.pmd.util.datasource.internal.AbstractDataSource;
 /**
  * DataSource implementation to read data from a file.
  */
+@Deprecated
 public class FileDataSource extends AbstractDataSource {
     private final File file;
 
