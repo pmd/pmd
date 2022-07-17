@@ -17,6 +17,7 @@ public class FooRule extends AbstractApexRule {
 
     public FooRule() {
         setMessage("No Foo allowed");
+        setLanguage(ApexLanguageModule.getInstance());
     }
 
     @Override

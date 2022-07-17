@@ -25,6 +25,10 @@ public class SuppressWarningsTest extends ApexParserTestBase {
 
     private static class BarRule extends AbstractApexRule {
 
+        BarRule() {
+            setLanguage(ApexLanguageModule.getInstance());
+        }
+
         @Override
         public String getMessage() {
             return "a message";

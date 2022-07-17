@@ -12,10 +12,6 @@ import net.sourceforge.pmd.lang.rule.AbstractRule;
 public abstract class AbstractApexRule extends AbstractRule
         implements ApexParserVisitor {
 
-    public AbstractApexRule() {
-
-    }
-
     @Override
     public void apply(Node target, RuleContext ctx) {
         target.acceptVisitor(this, ctx);

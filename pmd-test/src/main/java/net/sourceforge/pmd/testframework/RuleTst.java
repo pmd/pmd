@@ -43,7 +43,6 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
 import net.sourceforge.pmd.PMDConfiguration;
-import net.sourceforge.pmd.PmdContextualizedTest;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Report.GlobalReportBuilderListener;
 import net.sourceforge.pmd.Rule;
@@ -51,6 +50,7 @@ import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetLoadException;
 import net.sourceforge.pmd.RuleSetLoader;
 import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.document.Chars;
 import net.sourceforge.pmd.lang.document.TextFile;
@@ -63,7 +63,7 @@ import net.sourceforge.pmd.util.IOUtil;
 /**
  * Advanced methods for test cases
  */
-public abstract class RuleTst extends PmdContextualizedTest {
+public abstract class RuleTst {
     private final DocumentBuilder documentBuilder;
 
     /** Use a single classloader for all tests. */
@@ -562,7 +562,7 @@ public abstract class RuleTst extends PmdContextualizedTest {
             version = null;
             terseName = terseNameAndVersion;
         }
-        return languageRegistry().getLanguageVersionById(terseName, version);
+        return LanguageRegistry.PMD.getLanguageVersionById(terseName, version);
     }
 
     private String getNodeValue(Element parentElm, String nodeName, boolean required) {

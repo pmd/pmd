@@ -70,7 +70,7 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
             params.languageRegistry.getLanguageByFullName(langName)
                 ?: run {
                     val langNames = params.languageRegistry.commaSeparatedList { it.name }
-                    throw AssertionError("'$langName' is not a supported language (available $langNames")
+                    throw AssertionError("'$langName' is not a supported language (available $langNames)")
                 }
 
 
@@ -222,6 +222,8 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
         code: String,
         fileName: String = "testfile.${language.extensions[0]}"
     ): Report {
+        if (rule.language == null)
+            rule.language = language
         val config = PMDConfiguration().apply {
             suppressMarker = params.suppressMarker
             setDefaultLanguageVersion(defaultVersion)

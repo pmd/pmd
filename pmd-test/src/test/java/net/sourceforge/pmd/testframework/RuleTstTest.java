@@ -5,8 +5,8 @@
 package net.sourceforge.pmd.testframework;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -15,17 +15,17 @@ import java.util.Arrays;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import net.sourceforge.pmd.PmdContextualizedTest;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.document.TextRegion;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
+import net.sourceforge.pmd.test.lang.DummyLanguageModule;
 import net.sourceforge.pmd.test.lang.DummyLanguageModule.DummyRootNode;
 
-public class RuleTstTest extends PmdContextualizedTest {
-    private LanguageVersion dummyLanguage = languageRegistry().findLanguageByTerseName("dummy").getDefaultVersion();
+public class RuleTstTest {
+    private LanguageVersion dummyLanguage = DummyLanguageModule.getInstance().getDefaultVersion();
 
     private Rule rule = mock(Rule.class);
 
@@ -43,12 +43,12 @@ public class RuleTstTest extends PmdContextualizedTest {
 
         verify(rule).start(any(RuleContext.class));
         verify(rule).end(any(RuleContext.class));
-        verify(rule).getLanguage();
-        verify(rule, times(2)).getTargetSelector();
+        verify(rule, atLeastOnce()).getLanguage();
+        verify(rule, atLeastOnce()).getTargetSelector();
         verify(rule).getMinimumLanguageVersion();
         verify(rule).getMaximumLanguageVersion();
         verify(rule).apply(any(Node.class), any(RuleContext.class));
-        verify(rule, times(4)).getName();
+        verify(rule, atLeastOnce()).getName();
         verify(rule).getPropertiesByPropertyDescriptor();
     }
 
