@@ -227,17 +227,17 @@ public class RulesetFactoryTestBase {
         ));
     }
 
-    private static @NonNull String tag(String tagName, String... body) {
+    protected static @NonNull String tag(String tagName, String... body) {
         return "<" + tagName + ">\n"
             + body(body)
             + "</" + tagName + ">";
     }
 
-    private static @NonNull String emptyTag(String tagName, Map<SchemaConstant, String> attrs) {
+    protected static @NonNull String emptyTag(String tagName, Map<SchemaConstant, String> attrs) {
         return "<" + tagName + " " + attrs(attrs) + " />";
     }
 
-    private static @NonNull String tagOneLine(String tagName, String text) {
+    protected static @NonNull String tagOneLine(String tagName, String text) {
         return "<" + tagName + ">" + text + "</" + tagName + ">";
     }
 }

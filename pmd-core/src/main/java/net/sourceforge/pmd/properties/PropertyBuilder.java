@@ -254,7 +254,7 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
          * converted to collection validators. The default value cannot
          * have previously been set. The returned builder will support
          * conversion to and from a delimited string if this property does.
-         * Otherwise it will only support the {@code <seq>} syntax.
+         * Otherwise, it will only support the {@code <seq>} syntax.
          *
          * <p>Example usage:
          * <pre>{@code

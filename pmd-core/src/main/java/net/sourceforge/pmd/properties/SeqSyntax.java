@@ -6,16 +6,17 @@ package net.sourceforge.pmd.properties;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import org.w3c.dom.Element;
 
 import net.sourceforge.pmd.properties.XmlMapper.StableXmlMapper;
+import net.sourceforge.pmd.util.CollectionUtil;
 import net.sourceforge.pmd.util.internal.xml.PmdXmlReporter;
-import net.sourceforge.pmd.util.internal.xml.XmlErrorMessages;
 import net.sourceforge.pmd.util.internal.xml.XmlUtil;
+
+import com.github.oowekyala.ooxml.DomUtils;
 
 /**
  * Serialize to and from a simple string. Examples:
@@ -46,25 +47,30 @@ final class SeqSyntax<T, C extends Iterable<T>> extends StableXmlMapper<C> {
 
     @Override
     public C fromXml(Element element, PmdXmlReporter err) {
-        RuntimeException aggregateEx = err.at(element).error(XmlErrorMessages.ERR__LIST_CONSTRAINT_NOT_SATISFIED);
+        return collectFromXml(element, err, collector);
+    }
 
-        C result = XmlUtil.getElementChildren(element)
-                          .map(child -> {
-                              try {
-                                  return XmlUtil.expectElement(err, child, itemSyntax);
-                              } catch (Exception e) {
-                                  aggregateEx.addSuppressed(e);
-                                  return null;
-                              }
-                          })
-                          .filter(Objects::nonNull)
-                          .collect(collector);
-
-        if (aggregateEx.getSuppressed().length > 0) {
-            throw aggregateEx;
-        } else {
-            return result;
+    // capture the A type var.
+    private <A> C collectFromXml(Element element, PmdXmlReporter err, Collector<? super T, A, ? extends C> collector) {
+        RuntimeException error = null;
+        A acc = collector.supplier().get();
+        for (Element child : DomUtils.children(element)) {
+            try {
+                T elt = XmlUtil.expectElement(err, child, itemSyntax);
+                collector.accumulator().accept(acc, elt);
+            } catch (RuntimeException e) {
+                if (error == null) {
+                    error = err.at(child).error(e);
+                } else {
+                    error.addSuppressed(e);
+                }
+            }
         }
+
+        if (error != null) {
+            throw error;
+        }
+        return CollectionUtil.finish(collector, acc);
     }
 
     @Override
