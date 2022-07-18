@@ -20,6 +20,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.internal.util.IteratorUtil;
 import net.sourceforge.pmd.properties.PropertyFactory;
+import net.sourceforge.pmd.properties.constraints.ConstraintViolatedException;
 import net.sourceforge.pmd.properties.constraints.PropertyConstraint;
 import net.sourceforge.pmd.util.internal.xml.XmlUtil;
 
@@ -101,7 +102,7 @@ public final class XmlSyntaxUtils {
 
     public static <T> void checkConstraintsThrow(T t,
                                                  List<? extends PropertyConstraint<? super T>> constraints,
-                                                 Function<String, ? extends RuntimeException> exceptionMaker) {
+                                                 Function<String, ? extends ConstraintViolatedException> exceptionMaker) {
 
         String failures = checkConstraintsJoin(t, constraints);
         if (failures != null) {

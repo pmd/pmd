@@ -10,6 +10,7 @@ import java.util.Set;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.w3c.dom.Element;
 
+import net.sourceforge.pmd.properties.constraints.ConstraintViolatedException;
 import net.sourceforge.pmd.properties.constraints.PropertyConstraint;
 import net.sourceforge.pmd.util.CollectionUtil;
 import net.sourceforge.pmd.util.internal.xml.PmdXmlReporter;
@@ -45,7 +46,7 @@ class ConstraintDecorator<T> extends XmlMapper<T> {
         XmlSyntaxUtils.checkConstraintsThrow(
             t,
             constraints,
-            s -> err.at(element).error(XmlErrorMessages.ERR__CONSTRAINT_NOT_SATISFIED, s)
+            s -> new ConstraintViolatedException(err.at(element).error(XmlErrorMessages.ERR__CONSTRAINT_NOT_SATISFIED, s))
         );
 
         return t;

@@ -15,4 +15,8 @@ public class ConstraintViolatedException extends IllegalArgumentException {
     public ConstraintViolatedException(String message) {
         super(message);
     }
+
+    public ConstraintViolatedException(Throwable cause) {
+        super(cause);
+    }
 }
