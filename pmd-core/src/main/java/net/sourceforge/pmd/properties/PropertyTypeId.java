@@ -9,9 +9,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-import net.sourceforge.pmd.properties.xml.XmlMapper;
-import net.sourceforge.pmd.properties.xml.XmlSyntaxUtils;
-
 
 /**
  * Enumerates the properties that can be built from the XML. Defining a property in

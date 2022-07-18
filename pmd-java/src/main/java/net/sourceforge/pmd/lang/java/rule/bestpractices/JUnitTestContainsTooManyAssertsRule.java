@@ -11,7 +11,7 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.rule.internal.TestFrameworksUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
-import net.sourceforge.pmd.properties.constraints.NumericConstraints;
+import net.sourceforge.pmd.properties.NumericConstraints;
 
 public class JUnitTestContainsTooManyAssertsRule extends AbstractJavaRulechainRule {
 

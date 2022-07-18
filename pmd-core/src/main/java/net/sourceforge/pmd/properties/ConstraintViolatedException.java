@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.properties.constraints;
+package net.sourceforge.pmd.properties;
 
 /**
  * Thrown when a property constraint is violated. Detected while parsing

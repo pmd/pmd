@@ -7,7 +7,7 @@ package net.sourceforge.pmd.lang.java.rule.errorprone;
 import static net.sourceforge.pmd.properties.PropertyFactory.booleanProperty;
 import static net.sourceforge.pmd.properties.PropertyFactory.intProperty;
 import static net.sourceforge.pmd.properties.PropertyFactory.stringProperty;
-import static net.sourceforge.pmd.properties.constraints.NumericConstraints.positive;
+import static net.sourceforge.pmd.properties.NumericConstraints.positive;
 
 import java.util.Collections;
 import java.util.HashMap;

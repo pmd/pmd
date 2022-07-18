@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd;
 
-import static net.sourceforge.pmd.properties.constraints.NumericConstraints.inRange;
+import static net.sourceforge.pmd.properties.NumericConstraints.inRange;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;

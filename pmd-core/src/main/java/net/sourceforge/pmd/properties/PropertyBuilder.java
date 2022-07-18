@@ -20,9 +20,6 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.internal.util.IteratorUtil;
-import net.sourceforge.pmd.properties.constraints.PropertyConstraint;
-import net.sourceforge.pmd.properties.xml.XmlMapper;
-import net.sourceforge.pmd.properties.xml.XmlSyntaxUtils;
 
 // @formatter:off
 /**
@@ -157,7 +154,7 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
      *
      * @return The same builder
      *
-     * @see net.sourceforge.pmd.properties.constraints.NumericConstraints
+     * @see NumericConstraints
      */
     @SuppressWarnings("unchecked")
     public abstract B require(PropertyConstraint<? super T> constraint);

@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.properties.xml;
+package net.sourceforge.pmd.properties;
 
 import java.util.Collections;
 import java.util.List;
@@ -12,8 +12,7 @@ import java.util.stream.Collectors;
 
 import org.w3c.dom.Element;
 
-import net.sourceforge.pmd.properties.constraints.PropertyConstraint;
-import net.sourceforge.pmd.properties.xml.XmlMapper.StableXmlMapper;
+import net.sourceforge.pmd.properties.XmlMapper.StableXmlMapper;
 import net.sourceforge.pmd.util.internal.xml.PmdXmlReporter;
 import net.sourceforge.pmd.util.internal.xml.XmlErrorMessages;
 import net.sourceforge.pmd.util.internal.xml.XmlUtil;

@@ -19,7 +19,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
-import net.sourceforge.pmd.properties.xml.XmlMapper;
+import net.sourceforge.pmd.properties.XmlMapper;
 import net.sourceforge.pmd.util.CollectionUtil;
 import net.sourceforge.pmd.util.StringUtil;
 

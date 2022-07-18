@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.apex.rule.internal;
 
-import static net.sourceforge.pmd.properties.constraints.NumericConstraints.positive;
+import static net.sourceforge.pmd.properties.NumericConstraints.positive;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 

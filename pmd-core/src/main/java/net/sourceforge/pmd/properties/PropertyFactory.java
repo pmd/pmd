@@ -5,7 +5,7 @@
 package net.sourceforge.pmd.properties;
 
 import static java.util.Arrays.asList;
-import static net.sourceforge.pmd.properties.xml.XmlSyntaxUtils.enumerationParser;
+import static net.sourceforge.pmd.properties.XmlSyntaxUtils.enumerationParser;
 
 import java.util.Arrays;
 import java.util.List;
@@ -20,10 +20,6 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import net.sourceforge.pmd.properties.PropertyBuilder.GenericCollectionPropertyBuilder;
 import net.sourceforge.pmd.properties.PropertyBuilder.GenericPropertyBuilder;
 import net.sourceforge.pmd.properties.PropertyBuilder.RegexPropertyBuilder;
-import net.sourceforge.pmd.properties.constraints.NumericConstraints;
-import net.sourceforge.pmd.properties.constraints.PropertyConstraint;
-import net.sourceforge.pmd.properties.xml.XmlMapper;
-import net.sourceforge.pmd.properties.xml.XmlSyntaxUtils;
 import net.sourceforge.pmd.util.CollectionUtil;
 
 //@formatter:off

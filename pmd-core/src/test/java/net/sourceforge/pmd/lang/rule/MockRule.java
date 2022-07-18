@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.rule;
 
-import static net.sourceforge.pmd.properties.constraints.NumericConstraints.inRange;
+import static net.sourceforge.pmd.properties.NumericConstraints.inRange;
 
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RulePriority;

@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.properties.xml;
+package net.sourceforge.pmd.properties;
 
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 
@@ -15,9 +15,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.w3c.dom.Element;
 
 import net.sourceforge.pmd.internal.util.PredicateUtil;
-import net.sourceforge.pmd.properties.constraints.ConstraintViolatedException;
-import net.sourceforge.pmd.properties.constraints.PropertyConstraint;
-import net.sourceforge.pmd.properties.xml.XmlMapper.StableXmlMapper;
+import net.sourceforge.pmd.properties.XmlMapper.StableXmlMapper;
 import net.sourceforge.pmd.util.internal.xml.PmdXmlReporter;
 
 /**

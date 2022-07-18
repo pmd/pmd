@@ -10,9 +10,6 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.RuleSetWriter;
 import net.sourceforge.pmd.annotation.InternalApi;
-import net.sourceforge.pmd.properties.constraints.ConstraintViolatedException;
-import net.sourceforge.pmd.properties.xml.XmlMapper;
-import net.sourceforge.pmd.properties.xml.XmlSyntaxUtils;
 
 
 /**

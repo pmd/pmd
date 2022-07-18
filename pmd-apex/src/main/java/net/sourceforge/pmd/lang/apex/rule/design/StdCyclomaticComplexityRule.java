@@ -5,7 +5,7 @@
 package net.sourceforge.pmd.lang.apex.rule.design;
 
 import static net.sourceforge.pmd.properties.PropertyFactory.booleanProperty;
-import static net.sourceforge.pmd.properties.constraints.NumericConstraints.inRange;
+import static net.sourceforge.pmd.properties.NumericConstraints.inRange;
 
 import java.util.ArrayDeque;
 import java.util.Deque;

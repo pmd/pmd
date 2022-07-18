@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.properties.xml;
+package net.sourceforge.pmd.properties;
 
 import java.util.HashSet;
 import java.util.List;
@@ -13,7 +13,6 @@ import java.util.stream.Collectors;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.w3c.dom.Element;
 
-import net.sourceforge.pmd.properties.constraints.PropertyConstraint;
 import net.sourceforge.pmd.util.CollectionUtil;
 import net.sourceforge.pmd.util.internal.xml.PmdXmlReporter;
 

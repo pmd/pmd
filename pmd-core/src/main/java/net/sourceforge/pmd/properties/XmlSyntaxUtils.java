@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.properties.xml;
+package net.sourceforge.pmd.properties;
 
 
 import java.util.ArrayList;
@@ -19,9 +19,6 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.internal.util.IteratorUtil;
-import net.sourceforge.pmd.properties.PropertyFactory;
-import net.sourceforge.pmd.properties.constraints.ConstraintViolatedException;
-import net.sourceforge.pmd.properties.constraints.PropertyConstraint;
 import net.sourceforge.pmd.util.internal.xml.XmlUtil;
 
 /**

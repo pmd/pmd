@@ -5,7 +5,7 @@
 package net.sourceforge.pmd.properties;
 
 import static java.util.Collections.emptyList;
-import static net.sourceforge.pmd.properties.constraints.NumericConstraints.inRange;
+import static net.sourceforge.pmd.properties.NumericConstraints.inRange;
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.allOf;
@@ -34,8 +34,6 @@ import org.junit.jupiter.api.Test;
 import net.sourceforge.pmd.FooRule;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.properties.constraints.PropertyConstraint;
-import net.sourceforge.pmd.properties.xml.XmlSyntaxUtils;
 
 
 /**

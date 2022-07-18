@@ -38,7 +38,7 @@ import net.sourceforge.pmd.properties.PropertyBuilder.GenericCollectionPropertyB
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyTypeId;
 import net.sourceforge.pmd.properties.PropertyTypeId.BuilderAndMapper;
-import net.sourceforge.pmd.properties.xml.XmlMapper;
+import net.sourceforge.pmd.properties.XmlMapper;
 import net.sourceforge.pmd.util.ResourceLoader;
 import net.sourceforge.pmd.util.StringUtil;
 import net.sourceforge.pmd.util.internal.xml.PmdXmlReporter;

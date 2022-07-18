@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.rule.documentation;
 
-import static net.sourceforge.pmd.properties.constraints.NumericConstraints.positive;
+import static net.sourceforge.pmd.properties.NumericConstraints.positive;
 import static net.sourceforge.pmd.util.CollectionUtil.setOf;
 
 import java.util.ArrayList;
