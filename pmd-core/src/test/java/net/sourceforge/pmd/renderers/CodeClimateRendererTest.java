@@ -48,7 +48,7 @@ class CodeClimateRendererTest extends AbstractRendererTest {
                 + "violationSuppressRegex | | Suppress violations with messages matching a regular expression\\n"
                 + "violationSuppressXPath | | Suppress violations on nodes which match a given relative XPath expression.\\n"
                 + "stringProperty | the string value\\nsecond line with 'quotes' | simple string property\\n"
-                + "multiString | default1,default2 | multi string property\\n"
+                + "multiString | default1|default2 | multi string property\\n" // todo doesn't the delimiter need escaping?
                 + "\"},\"categories\":[\"Style\"],\"location\":{\"path\":\"" + getSourceCodeFilename() + "\",\"lines\":{\"begin\":1,\"end\":1}},\"severity\":\"info\",\"remediation_points\":50000}"
                 + "\u0000" + PMD.EOL;
     }

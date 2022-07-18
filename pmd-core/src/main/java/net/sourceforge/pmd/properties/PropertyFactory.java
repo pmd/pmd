@@ -88,8 +88,12 @@ import net.sourceforge.pmd.util.CollectionUtil;
 public final class PropertyFactory {
 
 
-    /** Default delimiter for all multi-valued properties. */
-    public static final char DEFAULT_DELIMITER = ',';
+    /** Default delimiter for all properties. */
+    public static final char DEFAULT_DELIMITER = '|';
+
+
+    /** Default delimiter for numeric properties. */
+    public static final char DEFAULT_NUMERIC_DELIMITER = ',';
 
 
     private PropertyFactory() {
@@ -128,7 +132,7 @@ public final class PropertyFactory {
      * @return A new builder
      */
     public static GenericCollectionPropertyBuilder<Integer, List<Integer>> intListProperty(String name) {
-        return intProperty(name).toList();
+        return intProperty(name).toList().delim(DEFAULT_NUMERIC_DELIMITER);
     }
 
 
@@ -165,7 +169,7 @@ public final class PropertyFactory {
      * @return A new builder
      */
     public static GenericCollectionPropertyBuilder<Long, List<Long>> longIntListProperty(String name) {
-        return longIntProperty(name).toList();
+        return longIntProperty(name).toList().delim(DEFAULT_NUMERIC_DELIMITER);
     }
 
 
@@ -197,7 +201,7 @@ public final class PropertyFactory {
      * @return A new builder
      */
     public static GenericCollectionPropertyBuilder<Double, List<Double>> doubleListProperty(String name) {
-        return doubleProperty(name).toList();
+        return doubleProperty(name).toList().delim(DEFAULT_NUMERIC_DELIMITER);
     }
 
 

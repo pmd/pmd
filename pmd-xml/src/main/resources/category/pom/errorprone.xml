@@ -30,9 +30,8 @@ The following types are considered valid: pom, jar, maven-plugin, ejb, war, ear,
 ]]>
                 </value>
             </property>
-            <!-- XPath 2.0 is needed to use a multi-valued property. -->
             <property name="validTypes"
-                      value="pom,jar,maven-plugin,ejb,war,ear,rar,par"
+                      value="pom|jar|maven-plugin|ejb|war|ear|rar|par"
                       type="List[String]"
                       description="Set of valid types."/>
         </properties>

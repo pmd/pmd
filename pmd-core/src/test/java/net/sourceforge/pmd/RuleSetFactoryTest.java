@@ -183,7 +183,7 @@ class RuleSetFactoryTest extends RulesetFactoryTestBase {
                 + "class=\"net.sourceforge.pmd.lang.rule.XPathRule\" language=\"dummy\">\n"
                 + "         <description>Please move your class to the right folder(rest \nfolder)</description>\n"
                 + "         <priority>2</priority>\n         <properties>\n             <property name=\"packageRegEx\""
-                + " value=\"com.aptsssss,com.abc\" \ntype=\"List[String]\" "
+                + " value=\"com.aptsssss|com.abc\" \ntype=\"List[String]\" "
                 + "description=\"valid packages\"/>\n         </properties></rule></ruleset>");
         Object propValue = r.getProperty(r.getPropertyDescriptor("packageRegEx"));
 

@@ -18,6 +18,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.internal.util.IteratorUtil;
 import net.sourceforge.pmd.properties.constraints.PropertyConstraint;
 import net.sourceforge.pmd.properties.xml.XmlMapper;
@@ -57,6 +58,10 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
     private final String name;
     private String description;
     private T defaultValue;
+
+    /**
+     * Non-null if declared in XML.
+     */
     protected @Nullable PropertyTypeId typeId;
     protected boolean isXPathAvailable = false;
 
@@ -464,6 +469,12 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
         public GenericCollectionPropertyBuilder<V, C> delim(char delim) {
             this.multiValueDelimiter = delim;
             return this;
+        }
+
+
+        @InternalApi
+        public char getMultiValueDelimiter() {
+            return multiValueDelimiter;
         }
 
         /**

@@ -15,6 +15,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.w3c.dom.Element;
 
 import net.sourceforge.pmd.internal.util.PredicateUtil;
+import net.sourceforge.pmd.properties.constraints.ConstraintViolatedException;
 import net.sourceforge.pmd.properties.constraints.PropertyConstraint;
 import net.sourceforge.pmd.properties.xml.XmlMapper.StableXmlMapper;
 import net.sourceforge.pmd.util.internal.xml.PmdXmlReporter;
@@ -106,9 +107,10 @@ class ValueSyntax<T> extends StableXmlMapper<T> {
         return new ValueSyntax<>(
             toString,
             s -> {
+                // this is the crucial place where constraints are applied.
                 String error = checker.validate(s);
                 if (error != null) {
-                    throw new IllegalArgumentException(error);
+                    throw new ConstraintViolatedException(error);
                 }
                 return fromString.apply(s);
             },

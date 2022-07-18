@@ -34,6 +34,7 @@ public final class SchemaConstants {
     public static final SchemaConstant EXTERNAL_INFO_URL = new SchemaConstant("externalInfoUrl");
     public static final SchemaConstant EXAMPLE = new SchemaConstant("example");
     public static final SchemaConstant SINCE = new SchemaConstant("since");
+    public static final SchemaConstant DELIMITER = new SchemaConstant("delimiter");
 
 
     private SchemaConstants() {
