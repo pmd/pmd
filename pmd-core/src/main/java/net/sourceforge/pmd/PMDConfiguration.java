@@ -137,7 +137,7 @@ public class PMDConfiguration extends AbstractConfiguration {
 
     public PMDConfiguration(@NonNull LanguageRegistry languageRegistry) {
         this.langRegistry = Objects.requireNonNull(languageRegistry);
-        this.languageVersionDiscoverer = new LanguageVersionDiscoverer(languageRegistry, null);
+        this.languageVersionDiscoverer = new LanguageVersionDiscoverer(languageRegistry);
     }
 
     /**

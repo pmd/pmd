@@ -27,7 +27,7 @@ public class LanguageVersionDiscovererTest extends AbstractVfTest {
      */
     @Test
     public void testVFFile() {
-        LanguageVersionDiscoverer discoverer = new LanguageVersionDiscoverer(languageRegistry());
+        LanguageVersionDiscoverer discoverer = new LanguageVersionDiscoverer(LanguageRegistry.PMD);
         File vfFile = new File("/path/to/MyPage.page");
         LanguageVersion languageVersion = discoverer.getDefaultLanguageVersionForFile(vfFile);
         assertEquals("LanguageVersion must be VF!",
