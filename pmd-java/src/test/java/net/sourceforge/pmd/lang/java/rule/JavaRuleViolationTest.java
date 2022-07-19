@@ -4,9 +4,10 @@
 
 package net.sourceforge.pmd.lang.java.rule;
 
-import static net.sourceforge.pmd.RuleViolation.*;
 import static net.sourceforge.pmd.RuleViolation.CLASS_NAME;
+import static net.sourceforge.pmd.RuleViolation.METHOD_NAME;
 import static net.sourceforge.pmd.RuleViolation.PACKAGE_NAME;
+import static net.sourceforge.pmd.RuleViolation.VARIABLE_NAME;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasEntry;
 import static org.junit.Assert.assertEquals;
