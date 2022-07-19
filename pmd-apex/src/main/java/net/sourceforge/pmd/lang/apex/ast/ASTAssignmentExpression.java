@@ -22,7 +22,12 @@ public class ASTAssignmentExpression extends AbstractApexNode<AssignmentExpressi
         return visitor.visit(this, data);
     }
 
+    @Deprecated
     public AssignmentOp getOperator() {
         return node.getOp();
+    }
+
+    public AssignmentOperator getOp() {
+        return AssignmentOperator.valueOf(node.getOp());
     }
 }
