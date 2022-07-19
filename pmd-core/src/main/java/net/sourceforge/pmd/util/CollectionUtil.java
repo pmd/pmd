@@ -512,12 +512,12 @@ public final class CollectionUtil {
     /**
      * A collector that returns a mutable set. This contrasts with
      * {@link Collectors#toSet()}, which makes no guarantee about the
-     * mutability of the set.
+     * mutability of the set. The set preserves insertion order.
      *
      * @param <T> Type of accumulated values
      */
     public static <T> Collector<T, ?, Set<T>> toMutableSet() {
-        return Collectors.toCollection(HashSet::new);
+        return Collectors.toCollection(LinkedHashSet::new);
     }
 
     /**
@@ -536,7 +536,7 @@ public final class CollectionUtil {
      * A collector that returns an unmodifiable set. This contrasts with
      * {@link Collectors#toSet()}, which makes no guarantee about the
      * mutability of the set. {@code Collectors::toUnmodifiableSet} was
-     * only added in JDK 9.
+     * only added in JDK 9. The set preserves insertion order.
      *
      * @param <T> Type of accumulated values
      */
