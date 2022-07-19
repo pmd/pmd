@@ -7,8 +7,6 @@ package net.sourceforge.pmd.renderers;
 import java.io.IOException;
 import java.io.Writer;
 
-import org.apache.commons.io.IOUtils;
-
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.cli.PMDParameters;
@@ -103,7 +101,7 @@ public abstract class AbstractRenderer extends AbstractPropertySource implements
         } catch (IOException e) {
             throw new IllegalStateException(e);
         } finally {
-            IOUtils.closeQuietly(writer);
+            IOUtil.closeQuietly(writer);
         }
     }
 

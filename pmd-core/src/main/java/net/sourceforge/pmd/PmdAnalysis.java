@@ -18,11 +18,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.Report.GlobalReportBuilderListener;
-import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.benchmark.TimedOperation;
 import net.sourceforge.pmd.benchmark.TimedOperationCategory;
 import net.sourceforge.pmd.cache.AnalysisCacheListener;
+import net.sourceforge.pmd.cli.internal.CliMessages;
+import net.sourceforge.pmd.cli.internal.ProgressBarListener;
 import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.internal.util.FileCollectionUtil;
 import net.sourceforge.pmd.lang.Language;
@@ -33,10 +34,12 @@ import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.processor.AbstractPMDProcessor;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
+import net.sourceforge.pmd.reporting.ReportStats;
+import net.sourceforge.pmd.reporting.ReportStatsListener;
 import net.sourceforge.pmd.util.ClasspathClassLoader;
 import net.sourceforge.pmd.util.IOUtil;
+import net.sourceforge.pmd.util.StringUtil;
 import net.sourceforge.pmd.util.log.MessageReporter;
-import net.sourceforge.pmd.util.log.internal.SimpleMessageReporter;
 
 /**
  * Main programmatic API of PMD. Create and configure a {@link PMDConfiguration},
@@ -87,9 +90,9 @@ public final class PmdAnalysis implements AutoCloseable {
      * the file collector ({@link #files()}), but more can be added
      * programmatically using the file collector.
      */
-    private PmdAnalysis(PMDConfiguration config, MessageReporter reporter) {
+    private PmdAnalysis(PMDConfiguration config) {
         this.configuration = config;
-        this.reporter = reporter;
+        this.reporter = config.getReporter();
         this.collector = FileCollector.newCollector(
             config.getLanguageVersionDiscoverer(),
             reporter
@@ -110,15 +113,7 @@ public final class PmdAnalysis implements AutoCloseable {
      * </ul>
      */
     public static PmdAnalysis create(PMDConfiguration config) {
-        return create(
-            config,
-            new SimpleMessageReporter(LoggerFactory.getLogger(PmdAnalysis.class))
-        );
-    }
-
-    @InternalApi
-    static PmdAnalysis create(PMDConfiguration config, MessageReporter reporter) {
-        PmdAnalysis pmd = new PmdAnalysis(config, reporter);
+        PmdAnalysis pmd = new PmdAnalysis(config);
 
         // note: do not filter files by language
         // they could be ignored later. The problem is if you call
@@ -286,7 +281,14 @@ public final class PmdAnalysis implements AutoCloseable {
         GlobalAnalysisListener listener;
         try {
             @SuppressWarnings("PMD.CloseResource") AnalysisCacheListener cacheListener = new AnalysisCacheListener(configuration.getAnalysisCache(), rulesets, configuration.getClassLoader());
-            listener = GlobalAnalysisListener.tee(listOf(createComposedRendererListener(renderers), GlobalAnalysisListener.tee(listeners), GlobalAnalysisListener.tee(extraListeners), cacheListener));
+            if (configuration.isProgressBar()) {
+                @SuppressWarnings("PMD.CloseResource") ProgressBarListener progressBarListener = new ProgressBarListener(textFiles.size(), System.out::print);
+                addListener(progressBarListener);
+            }
+            listener = GlobalAnalysisListener.tee(listOf(createComposedRendererListener(renderers),
+                                                         GlobalAnalysisListener.tee(listeners),
+                                                         GlobalAnalysisListener.tee(extraListeners),
+                                                         cacheListener));
         } catch (Exception e) {
             reporter.errorEx("Exception while initializing analysis listeners", e);
             throw new RuntimeException("Exception while initializing analysis listeners", e);
@@ -366,7 +368,7 @@ public final class PmdAnalysis implements AutoCloseable {
         ruleSets.removeDysfunctionalRules(brokenRules);
 
         for (final Rule rule : brokenRules) {
-            reporter.warn("Removed misconfigured rule: {} cause: {}",
+            reporter.warn("Removed misconfigured rule: {0} cause: {1}",
                           rule.getName(), rule.dysfunctionReason());
         }
 
@@ -399,4 +401,41 @@ public final class PmdAnalysis implements AutoCloseable {
         }
     }
 
+    ReportStats runAndReturnStats() {
+        if (getRulesets().isEmpty()) {
+            return ReportStats.empty();
+        }
+
+        @SuppressWarnings("PMD.CloseResource")
+        ReportStatsListener listener = new ReportStatsListener();
+
+        addListener(listener);
+
+        try {
+            performAnalysis();
+        } catch (Exception e) {
+            getReporter().errorEx("Exception during processing", e);
+            ReportStats stats = listener.getResult();
+            printErrorDetected(1 + stats.getNumErrors());
+            return stats; // should have been closed
+        }
+        ReportStats stats = listener.getResult();
+
+        if (stats.getNumErrors() > 0) {
+            printErrorDetected(stats.getNumErrors());
+        }
+
+        return stats;
+    }
+
+    static void printErrorDetected(MessageReporter reporter, int errors) {
+        String msg = CliMessages.errorDetectedMessage(errors, "PMD");
+        // note: using error level here increments the error count of the reporter,
+        // which we don't want.
+        reporter.info(StringUtil.quoteMessageFormat(msg));
+    }
+
+    void printErrorDetected(int errors) {
+        printErrorDetected(getReporter(), errors);
+    }
 }

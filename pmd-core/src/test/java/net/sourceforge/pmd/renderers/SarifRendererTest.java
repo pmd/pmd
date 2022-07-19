@@ -4,42 +4,54 @@
 
 package net.sourceforge.pmd.renderers;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.nio.charset.StandardCharsets;
 import java.util.function.Consumer;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.ReportTest;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
 
-public class SarifRendererTest extends AbstractRendererTest {
+import com.github.stefanbirkner.systemlambda.SystemLambda;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+
+class SarifRendererTest extends AbstractRendererTest {
+
     @Override
-    public Renderer getRenderer() {
+    Renderer getRenderer() {
         return new SarifRenderer();
     }
 
+    @Test
+    void testRendererWithASCII() throws Exception {
+        SystemLambda.restoreSystemProperties(() -> {
+            System.setProperty("file.encoding", StandardCharsets.US_ASCII.name());
+            testRenderer(StandardCharsets.UTF_8);
+        });
+    }
+
     @Override
-    public String getExpected() {
+    String getExpected() {
         return readFile("expected.sarif.json");
     }
 
     @Override
-    public String getExpectedEmpty() {
+    String getExpectedEmpty() {
         return readFile("empty.sarif.json");
     }
 
     @Override
-    public String getExpectedMultiple() {
+    String getExpectedMultiple() {
         return readFile("expected-multiple.sarif.json");
     }
 
     @Override
-    public String getExpectedError(Report.ProcessingError error) {
+    String getExpectedError(Report.ProcessingError error) {
         String expected = readFile("expected-error.sarif.json");
         expected = expected.replace("###REPLACE_ME###", error.getDetail()
                 .replaceAll("\r", "\\\\r")
@@ -49,12 +61,12 @@ public class SarifRendererTest extends AbstractRendererTest {
     }
 
     @Override
-    public String getExpectedError(Report.ConfigurationError error) {
+    String getExpectedError(Report.ConfigurationError error) {
         return readFile("expected-configerror.sarif.json");
     }
 
     @Override
-    public String getExpectedErrorWithoutMessage(Report.ProcessingError error) {
+    String getExpectedErrorWithoutMessage(Report.ProcessingError error) {
         String expected = readFile("expected-error-nomessage.sarif.json");
         expected = expected.replace("###REPLACE_ME###", error.getDetail()
                 .replaceAll("\r", "\\\\r")
@@ -64,7 +76,7 @@ public class SarifRendererTest extends AbstractRendererTest {
     }
 
     @Override
-    public String filter(String expected) {
+    String filter(String expected) {
         return expected.replaceAll("\r\n", "\n") // make the test run on Windows, too
                 .replaceAll("\"version\": \".+\",", "\"version\": \"unknown\",");
     }
@@ -76,12 +88,13 @@ public class SarifRendererTest extends AbstractRendererTest {
      *      when it should report multiple results #3768</a>
      */
     @Test
-    public void testRendererMultipleLocations() throws Exception {
-        String actual = ReportTest.render(getRenderer(), reportThreeViolationsTwoRules());
+    void testRendererMultipleLocations() throws Exception {
+        String actual = renderReport(getRenderer(), reportThreeViolationsTwoRules());
 
-        JSONObject json = new JSONObject(actual);
-        JSONArray results = json.getJSONArray("runs").getJSONObject(0).getJSONArray("results");
-        assertEquals(3, results.length());
+        Gson gson = new Gson();
+        JsonObject json = gson.fromJson(actual, JsonObject.class);
+        JsonArray results = json.getAsJsonArray("runs").get(0).getAsJsonObject().getAsJsonArray("results");
+        assertEquals(3, results.size());
         assertEquals(filter(readFile("expected-multiple-locations.sarif.json")), filter(actual));
     }
 

@@ -13,9 +13,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Properties;
 
-import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.annotation.DeprecatedUntil700;
 import net.sourceforge.pmd.cache.AnalysisCache;
@@ -29,6 +29,8 @@ import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.renderers.RendererFactory;
 import net.sourceforge.pmd.util.ClasspathClassLoader;
+import net.sourceforge.pmd.util.log.MessageReporter;
+import net.sourceforge.pmd.util.log.internal.SimpleMessageReporter;
 
 /**
  * This class contains the details for the runtime configuration of a PMD run.
@@ -102,6 +104,7 @@ public class PMDConfiguration extends AbstractConfiguration {
     private ClassLoader classLoader = getClass().getClassLoader();
     private LanguageVersionDiscoverer languageVersionDiscoverer = new LanguageVersionDiscoverer();
     private LanguageVersion forceLanguageVersion;
+    private MessageReporter reporter = new SimpleMessageReporter(LoggerFactory.getLogger(PMD.class));
 
     // Rule and source file options
     private List<String> ruleSets = new ArrayList<>();
@@ -124,6 +127,7 @@ public class PMDConfiguration extends AbstractConfiguration {
     private boolean benchmark;
     private AnalysisCache analysisCache = new NoopAnalysisCache();
     private boolean ignoreIncrementalAnalysis;
+    private boolean progressBar = false;
 
     /**
      * Get the suppress marker. This is the source level marker used to indicate
@@ -249,6 +253,25 @@ public class PMDConfiguration extends AbstractConfiguration {
     }
 
     /**
+     * Returns the message reporter that is to be used while running
+     * the analysis.
+     */
+    public @NonNull MessageReporter getReporter() {
+        return reporter;
+    }
+
+    /**
+     * Sets the message reporter that is to be used while running
+     * the analysis.
+     *
+     * @param reporter A non-null message reporter
+     */
+    public void setReporter(@NonNull MessageReporter reporter) {
+        AssertionUtil.requireParamNotNull("reporter", reporter);
+        this.reporter = reporter;
+    }
+
+    /**
      * Get the LanguageVersionDiscoverer, used to determine the LanguageVersion
      * of a source file.
      *
@@ -340,7 +363,7 @@ public class PMDConfiguration extends AbstractConfiguration {
         if (languageVersion == null) {
             // For compatibility with older code that does not always pass in
             // a correct filename.
-            languageVersion = languageVersionDiscoverer.getDefaultLanguageVersion(LanguageRegistry.getLanguage("Java"));
+            languageVersion = languageVersionDiscoverer.getDefaultLanguageVersion(LanguageRegistry.getDefaultLanguage());
         }
         return languageVersion;
     }
@@ -440,7 +463,6 @@ public class PMDConfiguration extends AbstractConfiguration {
      * @deprecated Use {@link #getAllInputPaths()}
      */
     @Deprecated
-    @DeprecatedUntil700
     public @Nullable String getInputPaths() {
         return inputPaths.isEmpty() ? null : String.join(",", inputPaths);
     }
@@ -455,20 +477,34 @@ public class PMDConfiguration extends AbstractConfiguration {
     /**
      * Set the comma separated list of input paths to process for source files.
      *
-     * @param inputPaths
-     *            The comma separated list.
+     * @param inputPaths The comma separated list.
+     *
+     * @throws NullPointerException If the parameter is null
+     * @deprecated Use {@link #setInputPaths(List)} or {@link #addInputPath(String)}
      */
-    public void setInputPaths(@NonNull String inputPaths) {
+    @Deprecated
+    public void setInputPaths(String inputPaths) {
         List<String> paths = new ArrayList<>();
         Collections.addAll(paths, inputPaths.split(","));
-        paths.removeIf(StringUtils::isBlank);
         this.inputPaths = paths;
     }
 
-    public void setInputPaths(@NonNull List<String> inputPaths) {
-        List<String> paths = new ArrayList<>(inputPaths);
-        paths.removeIf(StringUtils::isBlank);
-        this.inputPaths = paths;
+    /**
+     * Set the input paths to the given list of paths.
+     * @throws NullPointerException If the parameter is null
+     */
+    public void setInputPaths(List<String> inputPaths) {
+        this.inputPaths = new ArrayList<>(inputPaths);
+    }
+
+    /**
+     * Add an input path. It is not split on commas.
+     *
+     * @throws NullPointerException If the parameter is null
+     */
+    public void addInputPath(String inputPath) {
+        Objects.requireNonNull(inputPath);
+        this.inputPaths.add(inputPath);
     }
 
     public String getInputFilePath() {
@@ -799,5 +835,26 @@ public class PMDConfiguration extends AbstractConfiguration {
     public boolean isIgnoreIncrementalAnalysis() {
         return ignoreIncrementalAnalysis;
     }
+
+    /**
+     * Sets whether to indicate analysis progress in command line output.
+     *
+     * @param progressBar Whether to enable progress bar indicator in CLI
+     */
+    public void setProgressBar(boolean progressBar) {
+        this.progressBar = progressBar;
+    }
+
+
+    /**
+     * Returns whether progress bar indicator should be used. The default
+     * is false.
+     *
+     * @return {@code true} if progress bar indicator is enabled
+     */
+    public boolean isProgressBar() {
+        return progressBar;
+    }
+
 
 }

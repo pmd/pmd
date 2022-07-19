@@ -8,6 +8,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
@@ -15,18 +16,21 @@ import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
 
+import net.sourceforge.pmd.RuleSetTest.MockRule;
+import net.sourceforge.pmd.processor.PmdRunnableTest;
 import net.sourceforge.pmd.renderers.Renderer;
+import net.sourceforge.pmd.reporting.ReportStats;
 
 /**
  * @author Clément Fournier
  */
-public class PmdAnalysisTest {
+class PmdAnalysisTest {
 
     @Test
-    public void testPmdAnalysisWithEmptyConfig() {
+    void testPmdAnalysisWithEmptyConfig() {
         PMDConfiguration config = new PMDConfiguration();
         try (PmdAnalysis pmd = PmdAnalysis.create(config)) {
             assertThat(pmd.files().getCollectedFiles(), empty());
@@ -36,7 +40,7 @@ public class PmdAnalysisTest {
     }
 
     @Test
-    public void testRendererInteractions() throws IOException {
+    void testRendererInteractions() throws IOException {
         PMDConfiguration config = new PMDConfiguration();
         config.setInputPaths("sample-source/dummy");
         Renderer renderer = spy(Renderer.class);
@@ -53,7 +57,7 @@ public class PmdAnalysisTest {
     }
 
     @Test
-    public void testRulesetLoading() {
+    void testRulesetLoading() {
         PMDConfiguration config = new PMDConfiguration();
         config.addRuleSet("rulesets/dummy/basic.xml");
         try (PmdAnalysis pmd = PmdAnalysis.create(config)) {
@@ -62,7 +66,7 @@ public class PmdAnalysisTest {
     }
 
     @Test
-    public void testRulesetWhenSomeoneHasAnError() {
+    void testRulesetWhenSomeoneHasAnError() {
         PMDConfiguration config = new PMDConfiguration();
         config.addRuleSet("rulesets/dummy/basic.xml");
         config.addRuleSet("rulesets/xxxe/notaruleset.xml");
@@ -72,4 +76,18 @@ public class PmdAnalysisTest {
         }
     }
 
+    @Test
+    public void testParseException() {
+        PMDConfiguration config = new PMDConfiguration();
+        config.setThreads(1);
+        config.setForceLanguageVersion(PmdRunnableTest.getVersionWithParserThatThrowsSemanticError());
+        try (PmdAnalysis pmd = PmdAnalysis.create(config)) {
+            pmd.addRuleSet(RuleSet.forSingleRule(new MockRule()));
+            pmd.files().addSourceFile("file", "some source");
+
+            ReportStats stats = pmd.runAndReturnStats();
+            assertEquals("Errors", 1, stats.getNumErrors());
+            assertEquals("Violations", 0, stats.getNumViolations());
+        }
+    }
 }

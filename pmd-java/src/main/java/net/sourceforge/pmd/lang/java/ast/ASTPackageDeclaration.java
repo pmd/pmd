@@ -6,8 +6,7 @@ package net.sourceforge.pmd.lang.java.ast;
 
 /**
  * Package declaration at the top of a {@linkplain ASTCompilationUnit source file}.
- * Since 7.0, there is no {@linkplain ASTName Name} node anymore. Use
- * {@link #getName()} instead.
+ * Since 7.0, there is no Name node anymore. Use {@link #getName()} instead.
  *
  *
  * <pre class="grammar">

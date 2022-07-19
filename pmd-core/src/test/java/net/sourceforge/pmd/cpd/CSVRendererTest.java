@@ -4,21 +4,21 @@
 
 package net.sourceforge.pmd.cpd;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.cpd.renderer.CPDRenderer;
 
-public class CSVRendererTest {
+class CSVRendererTest {
     @Test
-    public void testLineCountPerFile() throws IOException {
+    void testLineCountPerFile() throws IOException {
         CPDRenderer renderer = new CSVRenderer(true);
         List<Match> list = new ArrayList<>();
         String codeFragment = "code\nfragment";
@@ -37,7 +37,7 @@ public class CSVRendererTest {
     }
 
     @Test
-    public void testFilenameEscapes() throws IOException {
+    void testFilenameEscapes() throws IOException {
         CPDRenderer renderer = new CSVRenderer();
         List<Match> list = new ArrayList<>();
         String codeFragment = "code\nfragment";

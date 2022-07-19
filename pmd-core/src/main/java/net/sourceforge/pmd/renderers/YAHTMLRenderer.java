@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.renderers;
 
-import static net.sourceforge.pmd.util.StringUtil.nullToEmpty;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -23,6 +21,7 @@ import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
+import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * Renderer to another HTML format.
@@ -165,15 +164,17 @@ public class YAHTMLRenderer extends AbstractAccumulatingRenderer {
                     out.println("        <tr><th>Method</th><th>Violation</th></tr>");
                     for (RuleViolation violation : node.getViolations()) {
                         out.print("        <tr><td>");
-                        out.print(violation.getMethodName());
+                        String methodName = violation.getAdditionalInfo().get(RuleViolation.METHOD_NAME);
+                        out.print(StringUtil.nullToEmpty(methodName));
                         out.print("</td><td>");
                         out.print("<table border=\"0\">");
 
                         out.print(renderViolationRow("Rule:", violation.getRule().getName()));
                         out.print(renderViolationRow("Description:", violation.getDescription()));
 
-                        if (StringUtils.isNotBlank(violation.getVariableName())) {
-                            out.print(renderViolationRow("Variable:", violation.getVariableName()));
+                        String variableName = violation.getAdditionalInfo().get(RuleViolation.VARIABLE_NAME);
+                        if (StringUtils.isNotBlank(variableName)) {
+                            out.print(renderViolationRow("Variable:", variableName));
                         }
 
                         out.print(renderViolationRow("Line:", violation.getEndLine() > 0

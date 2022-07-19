@@ -63,49 +63,34 @@ final class RootTextDocument extends BaseCloseable implements TextDocument {
     }
 
     @Override
+    public Chars getText() {
+        return content.getNormalizedText();
+    }
+
+    @Override
     public FileLocation toLocation(TextRegion region) {
         checkInRange(region, this.getLength());
         SourceCodePositioner positioner = content.getPositioner();
 
         // We use longs to return both numbers at the same time
         // This limits us to 2 billion lines or columns, which is FINE
-        long bpos = positioner.lineColFromOffset(region.getStartOffset(), true);
-        long epos = region.isEmpty() ? bpos
-                                     : positioner.lineColFromOffset(region.getEndOffset(), false);
+        TextPos2d bpos = positioner.lineColFromOffset(region.getStartOffset(), true);
+        TextPos2d epos = region.isEmpty() ? bpos
+                                          : positioner.lineColFromOffset(region.getEndOffset(), false);
 
         return new FileLocation(
             fileName,
-            SourceCodePositioner.unmaskLine(bpos),
-            SourceCodePositioner.unmaskCol(bpos),
-            SourceCodePositioner.unmaskLine(epos),
-            SourceCodePositioner.unmaskCol(epos),
+            bpos.getLine(),
+            bpos.getColumn(),
+            epos.getLine(),
+            epos.getColumn(),
             region
         );
     }
 
     @Override
-    public int offsetAtLineColumn(int line, int column) {
-        SourceCodePositioner positioner = content.getPositioner();
-        return positioner.offsetFromLineColumn(line, column);
-    }
-
-    @Override
-    public boolean isInRange(TextPos2d textPos2d) {
-        if (textPos2d.getLine() <= content.getPositioner().getNumLines()) {
-            int maxColumn = content.getPositioner().offsetOfEndOfLine(textPos2d.getLine());
-            return textPos2d.getColumn()
-                < content.getPositioner().columnFromOffset(textPos2d.getLine(), maxColumn);
-        }
-        return false;
-    }
-
-    @Override
     public TextPos2d lineColumnAtOffset(int offset, boolean inclusive) {
-        long longPos = content.getPositioner().lineColFromOffset(offset, inclusive);
-        return TextPos2d.pos2d(
-            SourceCodePositioner.unmaskLine(longPos),
-            SourceCodePositioner.unmaskCol(longPos)
-        );
+        return content.getPositioner().lineColFromOffset(offset, inclusive);
     }
 
     @Override
@@ -130,8 +115,8 @@ final class RootTextDocument extends BaseCloseable implements TextDocument {
     }
 
     @Override
-    public TextFileContent getContent() {
-        return content;
+    public long getCheckSum() {
+        return content.getCheckSum();
     }
 
     @Override

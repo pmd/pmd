@@ -8,7 +8,6 @@ import org.mozilla.javascript.ast.AstNode;
 
 import net.sourceforge.pmd.lang.ast.AstVisitor;
 import net.sourceforge.pmd.lang.ast.impl.AbstractNode;
-import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.document.TextRegion;
 
 abstract class AbstractEcmascriptNode<T extends AstNode> extends AbstractNode<AbstractEcmascriptNode<?>, EcmascriptNode<?>> implements EcmascriptNode<T> {
@@ -32,11 +31,6 @@ abstract class AbstractEcmascriptNode<T extends AstNode> extends AbstractNode<Ab
 
     protected void setImage(String image) {
         this.image = image;
-    }
-
-    @Override
-    public FileLocation getReportLocation() {
-        return getTextDocument().toLocation(getTextRegion());
     }
 
     @Override

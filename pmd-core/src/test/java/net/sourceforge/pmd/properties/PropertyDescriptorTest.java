@@ -9,8 +9,10 @@ import static net.sourceforge.pmd.properties.constraints.NumericConstraints.inRa
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.hasItem;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -26,8 +28,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
 import org.hamcrest.core.SubstringMatcher;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.FooRule;
 import net.sourceforge.pmd.Rule;
@@ -41,14 +42,10 @@ import net.sourceforge.pmd.properties.constraints.PropertyConstraint;
  * @author Clément Fournier
  * @since 7.0.0
  */
-public class PropertyDescriptorTest {
-
-    @org.junit.Rule
-    public ExpectedException thrown = ExpectedException.none();
-
+class PropertyDescriptorTest {
 
     @Test
-    public void testConstraintViolationCausesDysfunctionalRule() {
+    void testConstraintViolationCausesDysfunctionalRule() {
         PropertyDescriptor<Integer> intProperty = PropertyFactory.intProperty("fooProp")
                                                                  .desc("hello")
                                                                  .defaultValue(4)
@@ -69,7 +66,7 @@ public class PropertyDescriptorTest {
 
 
     @Test
-    public void testConstraintViolationCausesDysfunctionalRuleMulti() {
+    void testConstraintViolationCausesDysfunctionalRuleMulti() {
         PropertyDescriptor<List<Double>> descriptor = PropertyFactory.doubleListProperty("fooProp")
                                                                      .desc("hello")
                                                                      .defaultValues(2., 11.) // 11. is in range
@@ -89,39 +86,37 @@ public class PropertyDescriptorTest {
     }
 
     @Test
-    public void testDefaultValueConstraintViolationCausesFailure() {
+    void testDefaultValueConstraintViolationCausesFailure() {
         PropertyConstraint<Integer> constraint = inRange(1, 10);
 
-        thrown.expect(IllegalArgumentException.class);
-        thrown.expectMessage(allOf(containsIgnoreCase("Constraint violat"/*-ed or -ion*/),
-                                   containsIgnoreCase(constraint.getConstraintDescription())));
-
-        PropertyFactory.intProperty("fooProp")
-                       .desc("hello")
-                       .defaultValue(1000)
-                       .require(constraint)
-                       .build();
+        IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () ->
+            PropertyFactory.intProperty("fooProp")
+                           .desc("hello")
+                           .defaultValue(1000)
+                           .require(constraint)
+                           .build());
+        assertThat(thrown.getMessage(), allOf(containsIgnoreCase("Constraint violat"/*-ed or -ion*/),
+                containsIgnoreCase(constraint.getConstraintDescription())));
     }
 
 
     @Test
-    public void testDefaultValueConstraintViolationCausesFailureMulti() {
+    void testDefaultValueConstraintViolationCausesFailureMulti() {
         PropertyConstraint<Double> constraint = inRange(1d, 10d);
 
-        thrown.expect(IllegalArgumentException.class);
-        thrown.expectMessage(allOf(containsIgnoreCase("Constraint violat"/*-ed or -ion*/),
-                                   containsIgnoreCase(constraint.getConstraintDescription())));
-
-        PropertyFactory.doubleListProperty("fooProp")
-                       .desc("hello")
-                       .defaultValues(2., 11.) // 11. is out of range
-                       .requireEach(constraint)
-                       .build();
+        IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () ->
+            PropertyFactory.doubleListProperty("fooProp")
+                           .desc("hello")
+                           .defaultValues(2., 11.) // 11. is out of range
+                           .requireEach(constraint)
+                           .build());
+        assertThat(thrown.getMessage(), allOf(containsIgnoreCase("Constraint violat"/*-ed or -ion*/),
+                containsIgnoreCase(constraint.getConstraintDescription())));
     }
 
 
     @Test
-    public void testNoConstraintViolationCausesIsOkMulti() {
+    void testNoConstraintViolationCausesIsOkMulti() {
 
         PropertyDescriptor<List<Double>> descriptor = PropertyFactory.doubleListProperty("fooProp")
                                                                      .desc("hello")
@@ -137,7 +132,7 @@ public class PropertyDescriptorTest {
 
 
     @Test
-    public void testNoConstraintViolationCausesIsOk() {
+    void testNoConstraintViolationCausesIsOk() {
 
         PropertyDescriptor<String> descriptor = PropertyFactory.stringProperty("fooProp")
                                                                      .desc("hello")
@@ -150,7 +145,7 @@ public class PropertyDescriptorTest {
     }
 
     @Test
-    public void testIntProperty() {
+    void testIntProperty() {
         PropertyDescriptor<Integer> descriptor = PropertyFactory.intProperty("intProp")
                 .desc("hello")
                 .defaultValue(1)
@@ -173,18 +168,19 @@ public class PropertyDescriptorTest {
     }
 
     @Test
-    public void testIntPropertyInvalidValue() {
+    void testIntPropertyInvalidValue() {
         PropertyDescriptor<Integer> descriptor = PropertyFactory.intProperty("intProp")
                 .desc("hello")
                 .defaultValue(1)
                 .build();
-        thrown.expect(NumberFormatException.class);
-        thrown.expectMessage("not a number");
-        descriptor.valueFrom("not a number");
+
+        NumberFormatException thrown = assertThrows(NumberFormatException.class, () ->
+            descriptor.valueFrom("not a number"));
+        assertThat(thrown.getMessage(), containsString("not a number"));
     }
 
     @Test
-    public void testDoubleProperty() {
+    void testDoubleProperty() {
         PropertyDescriptor<Double> descriptor = PropertyFactory.doubleProperty("doubleProp")
                 .desc("hello")
                 .defaultValue(1.0)
@@ -207,18 +203,18 @@ public class PropertyDescriptorTest {
     }
 
     @Test
-    public void testDoublePropertyInvalidValue() {
+    void testDoublePropertyInvalidValue() {
         PropertyDescriptor<Double> descriptor = PropertyFactory.doubleProperty("doubleProp")
                 .desc("hello")
                 .defaultValue(1.0)
                 .build();
-        thrown.expect(NumberFormatException.class);
-        thrown.expectMessage("this is not a number");
-        descriptor.valueFrom("this is not a number");
+        NumberFormatException thrown = assertThrows(NumberFormatException.class, () ->
+            descriptor.valueFrom("this is not a number"));
+        assertThat(thrown.getMessage(), containsString("this is not a number"));
     }
 
     @Test
-    public void testStringProperty() {
+    void testStringProperty() {
         PropertyDescriptor<String> descriptor = PropertyFactory.stringProperty("stringProp")
                 .desc("hello")
                 .defaultValue("default value")
@@ -251,7 +247,7 @@ public class PropertyDescriptorTest {
     }
 
     @Test
-    public void testEnumProperty() {
+    void testEnumProperty() {
         PropertyDescriptor<SampleEnum> descriptor = PropertyFactory.enumProperty("enumProp", nameMap)
                 .desc("hello")
                 .defaultValue(SampleEnum.B)
@@ -273,42 +269,41 @@ public class PropertyDescriptorTest {
 
 
     @Test
-    public void testEnumPropertyNullValueFailsBuild() {
+    void testEnumPropertyNullValueFailsBuild() {
         Map<String, SampleEnum> map = new HashMap<>(nameMap);
         map.put("TEST_NULL", null);
 
-        thrown.expect(IllegalArgumentException.class);
-        thrown.expectMessage(containsIgnoreCase("null value"));
-
-        PropertyFactory.enumProperty("enumProp", map);
+        IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () ->
+            PropertyFactory.enumProperty("enumProp", map));
+        assertThat(thrown.getMessage(), containsIgnoreCase("null value"));
     }
 
 
     @Test
-    public void testEnumListPropertyNullValueFailsBuild() {
+    void testEnumListPropertyNullValueFailsBuild() {
         Map<String, SampleEnum> map = new HashMap<>(nameMap);
         map.put("TEST_NULL", null);
 
-        thrown.expect(IllegalArgumentException.class);
-        thrown.expectMessage(containsIgnoreCase("null value"));
-
-        PropertyFactory.enumListProperty("enumProp", map);
+        IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () ->
+            PropertyFactory.enumListProperty("enumProp", map));
+        assertThat(thrown.getMessage(), containsIgnoreCase("null value"));
     }
 
 
     @Test
-    public void testEnumPropertyInvalidValue() {
+    void testEnumPropertyInvalidValue() {
         PropertyDescriptor<SampleEnum> descriptor = PropertyFactory.enumProperty("enumProp", nameMap)
                 .desc("hello")
                 .defaultValue(SampleEnum.B)
                 .build();
-        thrown.expect(IllegalArgumentException.class);
-        thrown.expectMessage("Value was not in the set [TEST_A, TEST_B, TEST_C]");
-        descriptor.valueFrom("InvalidEnumValue");
+
+        IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () ->
+            descriptor.valueFrom("InvalidEnumValue"));
+        assertThat(thrown.getMessage(), containsString("Value was not in the set [TEST_A, TEST_B, TEST_C]"));
     }
 
     @Test
-    public void testRegexProperty() {
+    void testRegexProperty() {
         PropertyDescriptor<Pattern> descriptor = PropertyFactory.regexProperty("regexProp")
                 .desc("hello")
                 .defaultValue("^[A-Z].*$")
@@ -320,24 +315,25 @@ public class PropertyDescriptorTest {
     }
 
     @Test
-    public void testRegexPropertyInvalidValue() {
+    void testRegexPropertyInvalidValue() {
         PropertyDescriptor<Pattern> descriptor = PropertyFactory.regexProperty("regexProp")
                 .desc("hello")
                 .defaultValue("^[A-Z].*$")
                 .build();
-        thrown.expect(PatternSyntaxException.class);
-        thrown.expectMessage("Unclosed character class");
-        descriptor.valueFrom("[open class");
+
+        PatternSyntaxException thrown = assertThrows(PatternSyntaxException.class, () ->
+            descriptor.valueFrom("[open class"));
+        assertThat(thrown.getMessage(), containsString("Unclosed character class"));
     }
 
     @Test
-    public void testRegexPropertyInvalidDefaultValue() {
-        thrown.expect(PatternSyntaxException.class);
-        thrown.expectMessage("Unclosed character class");
-        PropertyDescriptor<Pattern> descriptor = PropertyFactory.regexProperty("regexProp")
-                .desc("hello")
-                .defaultValue("[open class")
-                .build();
+    void testRegexPropertyInvalidDefaultValue() {
+        PatternSyntaxException thrown = assertThrows(PatternSyntaxException.class, () ->
+            PropertyFactory.regexProperty("regexProp")
+                    .desc("hello")
+                    .defaultValue("[open class")
+                    .build());
+        assertThat(thrown.getMessage(), containsString("Unclosed character class"));
     }
 
 
@@ -346,37 +342,37 @@ public class PropertyDescriptorTest {
     }
 
     @Test
-    public void testStringParserEmptyString() {
+    void testStringParserEmptyString() {
         assertEquals(emptyList(), parseEscaped("", ','));
     }
 
 
     @Test
-    public void testStringParserSimple() {
+    void testStringParserSimple() {
         assertEquals(listOf("a", "b", "c"),
                      parseEscaped("a,b,c", ','));
     }
 
     @Test
-    public void testStringParserEscapedChar() {
+    void testStringParserEscapedChar() {
         assertEquals(listOf("a", "b,c"),
                      parseEscaped("a,b\\,c", ','));
     }
 
     @Test
-    public void testStringParserEscapedEscapedChar() {
+    void testStringParserEscapedEscapedChar() {
         assertEquals(listOf("a", "b\\", "c"),
                      parseEscaped("a,b\\\\,c", ','));
     }
 
     @Test
-    public void testStringParserDelimIsBackslash() {
+    void testStringParserDelimIsBackslash() {
         assertEquals(listOf("a,b", "", ",c"),
                      parseEscaped("a,b\\\\,c", '\\'));
     }
 
     @Test
-    public void testStringParserTrailingBackslash() {
+    void testStringParserTrailingBackslash() {
         assertEquals(listOf("a", "b\\"),
                      parseEscaped("a,b\\", ','));
     }

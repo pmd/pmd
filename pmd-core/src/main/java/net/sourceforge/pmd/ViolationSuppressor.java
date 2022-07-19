@@ -121,7 +121,14 @@ public interface ViolationSuppressor {
     SuppressedViolation suppressOrNull(RuleViolation rv, @NonNull Node node);
 
 
-    static @Nullable SuppressedViolation suppressOrNull(List<ViolationSuppressor> suppressorList, RuleViolation rv, Node node) {
+    /**
+     * Apply a list of suppressors on the violation. Returns the violation
+     * of the first suppressor that matches the input violation. If no
+     * suppressor matches, then returns null.
+     */
+    static @Nullable SuppressedViolation suppressOrNull(List<ViolationSuppressor> suppressorList,
+                                                        RuleViolation rv,
+                                                        Node node) {
         for (ViolationSuppressor suppressor : suppressorList) {
             SuppressedViolation suppressed = suppressor.suppressOrNull(rv, node);
             if (suppressed != null) {

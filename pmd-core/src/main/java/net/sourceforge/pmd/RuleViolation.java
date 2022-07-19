@@ -8,7 +8,6 @@ import java.util.Comparator;
 import java.util.Map;
 
 import net.sourceforge.pmd.lang.document.FileLocation;
-import net.sourceforge.pmd.util.DataMap.DataKey;
 
 /**
  * A RuleViolation is created by a Rule when it identifies a violation of the
@@ -128,7 +127,12 @@ public interface RuleViolation {
         return getLocation().getEndPos().getColumn();
     }
 
-
+    /**
+     * A map of additional key-value pairs known about this violation.
+     * What data is in there is language specific. Common keys supported
+     * by several languages are defined as constants on this interface.
+     * The map is unmodifiable.
+     */
     Map<String, String> getAdditionalInfo();
 
 
@@ -136,6 +140,8 @@ public interface RuleViolation {
      * Get the package name of the Class in which this violation was identified.
      *
      * @return The package name.
+     *
+     * @deprecated Use {@link #PACKAGE_NAME}
      */
     @Deprecated
     default String getPackageName() {
@@ -146,6 +152,7 @@ public interface RuleViolation {
      * Get the name of the Class in which this violation was identified.
      *
      * @return The Class name.
+     * @deprecated Use {@link #CLASS_NAME}
      */
     @Deprecated
     default String getClassName() {
@@ -156,6 +163,7 @@ public interface RuleViolation {
      * Get the method name in which this violation was identified.
      *
      * @return The method name.
+     * @deprecated Use {@link #METHOD_NAME}
      */
     @Deprecated
     default String getMethodName() {
@@ -166,6 +174,7 @@ public interface RuleViolation {
      * Get the variable name on which this violation was identified.
      *
      * @return The variable name.
+     * @deprecated Use {@link #VARIABLE_NAME}
      */
     @Deprecated
     default String getVariableName() {
@@ -173,16 +182,4 @@ public interface RuleViolation {
     }
 
 
-    final class RuleViolationDataKey implements DataKey<RuleViolationDataKey, String> {
-
-        private final String name;
-
-        public RuleViolationDataKey(String name) {
-            this.name = name;
-        }
-
-        public String getName() {
-            return name;
-        }
-    }
 }

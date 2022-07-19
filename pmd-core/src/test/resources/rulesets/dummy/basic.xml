@@ -47,7 +47,7 @@ Just for test
             <property name="version" value="2.0"/>
             <property name="xpath">
                 <value><![CDATA[
-//DummyRootNode
+//dummyRootNode
                 ]]></value>
             </property>
         </properties>

@@ -41,10 +41,10 @@ public final class ASTMethodCallExpression extends AbstractApexNode<MethodCallEx
     }
 
     @Override
-    protected @NonNull TextRegion getRegion() {
+    public @NonNull TextRegion getTextRegion() {
         int fullLength = getFullMethodName().length();
         int nameLength = getMethodName().length();
-        TextRegion base = super.getRegion();
+        TextRegion base = super.getTextRegion();
         if (fullLength > nameLength) {
             base = base.growLeft(fullLength - nameLength);
         }

@@ -6,7 +6,6 @@ package net.sourceforge.pmd.renderers;
 
 /**
  * @author Brian Remedios
- * @deprecated Is internal API
  */
 final class ColumnDescriptor<T> {
 
@@ -19,7 +18,7 @@ final class ColumnDescriptor<T> {
         String get(int idx, T violation, String lineSeparator);
     }
 
-    public ColumnDescriptor(String theId, String theTitle, Accessor<T> theAccessor) {
+    ColumnDescriptor(String theId, String theTitle, Accessor<T> theAccessor) {
         id = theId;
         title = theTitle;
         accessor = theAccessor;

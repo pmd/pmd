@@ -4,12 +4,15 @@
 
 package net.sourceforge.pmd.lang.ast.internal;
 
-import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertSame;
 import static net.sourceforge.pmd.lang.ast.impl.DummyTreeUtil.node;
 import static net.sourceforge.pmd.lang.ast.impl.DummyTreeUtil.nodeB;
 import static net.sourceforge.pmd.lang.ast.impl.DummyTreeUtil.root;
 import static net.sourceforge.pmd.lang.ast.impl.DummyTreeUtil.tree;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -19,13 +22,8 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.junit.Assert;
-import org.junit.Assume;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.lang.ast.DummyNode.DummyNodeTypeB;
@@ -36,8 +34,7 @@ import net.sourceforge.pmd.lang.ast.NodeStream;
  * Asserts invariants independent of the NodeStream implementation. Error
  * messages are not great but coverage is.
  */
-@RunWith(Parameterized.class)
-public class NodeStreamBlanketTest<T extends Node> {
+class NodeStreamBlanketTest<T extends Node> {
 
     private static final List<Node> ASTS = Arrays.asList(
         tree(
@@ -70,17 +67,9 @@ public class NodeStreamBlanketTest<T extends Node> {
         )
     );
 
-    @Rule
-    public ExpectedException expect = ExpectedException.none();
-
-    private final NodeStream<T> stream;
-
-    public NodeStreamBlanketTest(NodeStream<T> stream) {
-        this.stream = stream;
-    }
-
-    @Test
-    public void testToListConsistency() {
+    @ParameterizedTest
+    @MethodSource("primeNumbers")
+    void testToListConsistency(NodeStream<T> stream) {
         List<T> toList = stream.toList();
         List<T> collected = stream.collect(Collectors.toList());
         List<T> fromStream = stream.toStream().collect(Collectors.toList());
@@ -91,16 +80,18 @@ public class NodeStreamBlanketTest<T extends Node> {
         assertEquals(toList, cached);
     }
 
-    @Test
-    public void testToListSize() {
+    @ParameterizedTest
+    @MethodSource("primeNumbers")
+    void testToListSize(NodeStream<T> stream) {
         List<T> toList = stream.toList();
 
         assertEquals(toList.size(), stream.count());
     }
 
 
-    @Test
-    public void testLast() {
+    @ParameterizedTest
+    @MethodSource("primeNumbers")
+    void testLast(NodeStream<T> stream) {
         assertImplication(
             stream,
             prop("nonEmpty", NodeStream::nonEmpty),
@@ -108,8 +99,9 @@ public class NodeStreamBlanketTest<T extends Node> {
         );
     }
 
-    @Test
-    public void testFirst() {
+    @ParameterizedTest
+    @MethodSource("primeNumbers")
+    void testFirst(NodeStream<T> stream) {
         assertImplication(
             stream,
             prop("nonEmpty", NodeStream::nonEmpty),
@@ -118,8 +110,9 @@ public class NodeStreamBlanketTest<T extends Node> {
     }
 
 
-    @Test
-    public void testDrop() {
+    @ParameterizedTest
+    @MethodSource("primeNumbers")
+    void testDrop(NodeStream<T> stream) {
         assertImplication(
             stream,
             prop("nonEmpty", NodeStream::nonEmpty),
@@ -129,8 +122,9 @@ public class NodeStreamBlanketTest<T extends Node> {
         );
     }
 
-    @Test
-    public void testDropLast() {
+    @ParameterizedTest
+    @MethodSource("primeNumbers")
+    void testDropLast(NodeStream<T> stream) {
         assertImplication(
             stream,
             prop("nonEmpty", NodeStream::nonEmpty),
@@ -140,8 +134,9 @@ public class NodeStreamBlanketTest<T extends Node> {
         );
     }
 
-    @Test
-    public void testDropMoreThan1() {
+    @ParameterizedTest
+    @MethodSource("primeNumbers")
+    void testDropMoreThan1(NodeStream<T> stream) {
         assertImplication(
             stream,
             prop("count() > 1", it -> it.count() > 1),
@@ -150,8 +145,9 @@ public class NodeStreamBlanketTest<T extends Node> {
         );
     }
 
-    @Test
-    public void testTake() {
+    @ParameterizedTest
+    @MethodSource("primeNumbers")
+    void testTake(NodeStream<T> stream) {
         assertImplication(
             stream,
             prop("nonEmpty", NodeStream::nonEmpty),
@@ -161,33 +157,35 @@ public class NodeStreamBlanketTest<T extends Node> {
         );
     }
 
-    @Test
-    public void testGet() {
+    @ParameterizedTest
+    @MethodSource("primeNumbers")
+    void testGet(NodeStream<T> stream) {
         for (int i = 0; i < 100; i++) {
-            assertSame("stream.get(i) == stream.drop(i).first()", stream.get(i), stream.drop(i).first());
+            assertSame(stream.get(i), stream.drop(i).first(), "stream.get(i) == stream.drop(i).first()");
         }
     }
 
-    @Test
-    public void testGetNegative() {
-        expect.expect(IllegalArgumentException.class);
-        stream.get(-1);
+    @ParameterizedTest
+    @MethodSource("primeNumbers")
+    void testGetNegative(NodeStream<T> stream) {
+        assertThrows(IllegalArgumentException.class, () -> stream.get(-1));
     }
 
-    @Test
-    public void testDropNegative() {
-        expect.expect(IllegalArgumentException.class);
-        stream.drop(-1);
+    @ParameterizedTest
+    @MethodSource("primeNumbers")
+    void testDropNegative(NodeStream<T> stream) {
+        assertThrows(IllegalArgumentException.class, () -> stream.drop(-1));
     }
 
-    @Test
-    public void testTakeNegative() {
-        expect.expect(IllegalArgumentException.class);
-        stream.take(-1);
+    @ParameterizedTest
+    @MethodSource("primeNumbers")
+    void testTakeNegative(NodeStream<T> stream) {
+        assertThrows(IllegalArgumentException.class, () -> stream.take(-1));
     }
 
-    @Test
-    public void testEmpty() {
+    @ParameterizedTest
+    @MethodSource("primeNumbers")
+    void testEmpty(NodeStream<T> stream) {
         assertEquivalence(
             stream,
             prop("isEmpty", NodeStream::isEmpty),
@@ -203,8 +201,7 @@ public class NodeStreamBlanketTest<T extends Node> {
         );
     }
 
-    @Parameterized.Parameters(name = "{index} On {0}")
-    public static Collection<?> primeNumbers() {
+    static Collection<?> primeNumbers() {
         return ASTS.stream().flatMap(
             root -> Stream.of(
                 root.asStream(),
@@ -251,10 +248,10 @@ public class NodeStreamBlanketTest<T extends Node> {
         for (Prop<? super T> prop1 : properties) {
             for (Prop<? super T> prop2 : properties) {
                 boolean p1 = prop1.test(input);
-                Assert.assertEquals(
+                assertEquals(
+                    p1, prop2.test(input),
                     "Expected (" + prop1.description + ") === (" + prop2.description
-                        + "), but the LHS was " + p1 + " and the RHS was " + !p1,
-                    p1, prop2.test(input)
+                            + "), but the LHS was " + p1 + " and the RHS was " + !p1
                 );
             }
         }
@@ -262,13 +259,13 @@ public class NodeStreamBlanketTest<T extends Node> {
 
     @SafeVarargs
     private static <T> void assertImplication(T input, Prop<? super T> precond, Prop<? super T>... properties) {
-        Assume.assumeTrue(precond.test(input));
+        assumeTrue(precond.test(input));
 
         for (Prop<? super T> prop2 : properties) {
-            Assert.assertTrue(
+            assertTrue(
+                prop2.test(input),
                 "Expected (" + precond.description + ") to entail (" + prop2.description
-                    + "), but the latter was false",
-                prop2.test(input)
+                        + "), but the latter was false"
             );
         }
     }

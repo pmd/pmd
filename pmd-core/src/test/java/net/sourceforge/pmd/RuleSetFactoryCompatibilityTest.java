@@ -1,16 +1,19 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
 package net.sourceforge.pmd;
 
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
-public class RuleSetFactoryCompatibilityTest {
+import org.junit.jupiter.api.Test;
+
+class RuleSetFactoryCompatibilityTest {
 
     @Test
-    public void testCorrectOldReference() throws Exception {
+    void testCorrectOldReference() throws Exception {
         final String ruleset = "<?xml version=\"1.0\"?>\n" + "\n" + "<ruleset name=\"Test\"\n"
                 + "    xmlns=\"http://pmd.sourceforge.net/ruleset/2.0.0\"\n"
                 + "    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
@@ -25,11 +28,11 @@ public class RuleSetFactoryCompatibilityTest {
         RuleSetLoader rulesetLoader = new RuleSetLoader().setCompatibility(compat);
         RuleSet createdRuleSet = rulesetLoader.loadFromString("dummy.xml", ruleset);
 
-        Assert.assertNotNull(createdRuleSet.getRuleByName("DummyBasicMockRule"));
+        assertNotNull(createdRuleSet.getRuleByName("DummyBasicMockRule"));
     }
 
     @Test
-    public void testCorrectMovedAndRename() {
+    void testCorrectMovedAndRename() {
 
         RuleSetFactoryCompatibility rsfc = new RuleSetFactoryCompatibility();
         rsfc.addFilterRuleMoved("dummy", "notexisting", "basic", "OldDummyBasicMockRule");
@@ -37,11 +40,11 @@ public class RuleSetFactoryCompatibilityTest {
 
         String out = rsfc.applyRef("rulesets/dummy/notexisting.xml/OldDummyBasicMockRule");
 
-        Assert.assertEquals("rulesets/dummy/basic.xml/NewNameForDummyBasicMockRule", out);
+        assertEquals("rulesets/dummy/basic.xml/NewNameForDummyBasicMockRule", out);
     }
 
     @Test
-    public void testExclusion() {
+    void testExclusion() {
         final String ruleset = "<?xml version=\"1.0\"?>\n" + "\n" + "<ruleset name=\"Test\"\n"
                 + "    xmlns=\"http://pmd.sourceforge.net/ruleset/2.0.0\"\n"
                 + "    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
@@ -55,12 +58,12 @@ public class RuleSetFactoryCompatibilityTest {
         RuleSetLoader rulesetLoader = new RuleSetLoader().setCompatibility(compat);
         RuleSet createdRuleSet = rulesetLoader.loadFromString("dummy.xml", ruleset);
 
-        Assert.assertNotNull(createdRuleSet.getRuleByName("DummyBasicMockRule"));
-        Assert.assertNull(createdRuleSet.getRuleByName("SampleXPathRule"));
+        assertNotNull(createdRuleSet.getRuleByName("DummyBasicMockRule"));
+        assertNull(createdRuleSet.getRuleByName("SampleXPathRule"));
     }
 
     @Test
-    public void testExclusionRenamedAndMoved() {
+    void testExclusionRenamedAndMoved() {
 
         RuleSetFactoryCompatibility rsfc = new RuleSetFactoryCompatibility();
         rsfc.addFilterRuleMovedAndRenamed("dummy", "oldbasic", "OldDummyBasicMockRule", "basic", "NewNameForDummyBasicMockRule");
@@ -68,33 +71,33 @@ public class RuleSetFactoryCompatibilityTest {
         String in = "rulesets/dummy/oldbasic.xml";
         String out = rsfc.applyRef(in);
 
-        Assert.assertEquals(in, out);
+        assertEquals(in, out);
     }
 
     @Test
-    public void testFilter() {
+    void testFilter() {
         RuleSetFactoryCompatibility rsfc = new RuleSetFactoryCompatibility();
         rsfc.addFilterRuleMoved("dummy", "notexisting", "basic", "DummyBasicMockRule");
         rsfc.addFilterRuleRemoved("dummy", "basic", "DeletedRule");
         rsfc.addFilterRuleRenamed("dummy", "basic", "OldNameOfBasicMockRule", "NewNameOfBasicMockRule");
 
-        Assert.assertEquals("rulesets/dummy/basic.xml/DummyBasicMockRule",
+        assertEquals("rulesets/dummy/basic.xml/DummyBasicMockRule",
                             rsfc.applyRef("rulesets/dummy/notexisting.xml/DummyBasicMockRule"));
 
-        Assert.assertEquals("rulesets/dummy/basic.xml/NewNameOfBasicMockRule",
+        assertEquals("rulesets/dummy/basic.xml/NewNameOfBasicMockRule",
                             rsfc.applyRef("rulesets/dummy/basic.xml/OldNameOfBasicMockRule"));
 
-        Assert.assertNull(rsfc.applyRef("rulesets/dummy/basic.xml/DeletedRule"));
+        assertNull(rsfc.applyRef("rulesets/dummy/basic.xml/DeletedRule"));
     }
 
     @Test
-    public void testExclusionFilter() {
+    void testExclusionFilter() {
         RuleSetFactoryCompatibility rsfc = new RuleSetFactoryCompatibility();
         rsfc.addFilterRuleRenamed("dummy", "basic", "AnotherOldNameOfBasicMockRule", "NewNameOfBasicMockRule");
 
         String out = rsfc.applyExclude("rulesets/dummy/basic.xml", "AnotherOldNameOfBasicMockRule", false);
 
-        Assert.assertEquals("NewNameOfBasicMockRule", out);
+        assertEquals("NewNameOfBasicMockRule", out);
     }
 
 }

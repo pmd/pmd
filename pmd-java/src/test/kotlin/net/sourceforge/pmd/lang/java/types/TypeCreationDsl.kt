@@ -115,6 +115,7 @@ interface TypeDslMixin {
 
 class TypeDslOf(override val ts: TypeSystem) : TypeDslMixin
 
+fun JavaNode.withTypeDsl(f: TypeDslMixin.() -> Unit) = with(TypeDslOf(this.typeSystem), f)
 
 class WildcardDsl(override val ts: TypeSystem) : JWildcardType by ts.UNBOUNDED_WILD, TypeDslMixin {
 

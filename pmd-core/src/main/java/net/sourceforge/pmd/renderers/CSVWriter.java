@@ -22,7 +22,7 @@ class CSVWriter<T> {
     private final String lineSeparator; // cr
     private final List<ColumnDescriptor<T>> columns;
 
-    public CSVWriter(List<ColumnDescriptor<T>> theColumns, String theSeparator, String theLineSeparator) {
+    CSVWriter(List<ColumnDescriptor<T>> theColumns, String theSeparator, String theLineSeparator) {
         columns = theColumns;
         separator = theSeparator;
         lineSeparator = theLineSeparator;

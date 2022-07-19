@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.document;
 
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
@@ -13,7 +14,10 @@ import java.nio.CharBuffer;
 import java.nio.charset.Charset;
 import java.util.Iterator;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
+import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
@@ -34,6 +38,15 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 public final class Chars implements CharSequence {
 
     public static final Chars EMPTY = wrap("");
+    /**
+     * Special sentinel used by {@link #lines()}.
+     */
+    private static final int NOT_TRIED = -2;
+
+    /**
+     * See {@link StringUtils#INDEX_NOT_FOUND}.
+     */
+    private static final int NOT_FOUND = -1;
 
     private final String str;
     private final int start;
@@ -90,8 +103,8 @@ public final class Chars implements CharSequence {
     }
 
     /**
-     * Copies 'len' characters from index 'from' into the given array,
-     * starting at 'off'.
+     * Copies 'count' characters from index 'srcBegin' into the given array,
+     * starting at 'dstBegin'.
      *
      * @param srcBegin Start offset in this CharSequence
      * @param cbuf     Character array
@@ -108,26 +121,21 @@ public final class Chars implements CharSequence {
     }
 
     /**
-     * Appends the character range identified by offset and length into
+     * Appends the character range identified by start and end offset into
      * the string builder. This is much more efficient than calling
      * {@link StringBuilder#append(CharSequence)} with this as the
      * parameter, especially on Java 9+.
      *
-     * <p>Be aware that {@link StringBuilder#append(CharSequence, int, int)}
-     * takes a start and <i>end</i> offset, whereas this method (like all
-     * the others in this class) take a start offset and a length.
-     *
-     * @param off Start (inclusive)
-     * @param len Number of characters
+     * @param start Start index (inclusive)
+     * @param end   End index (exclusive)
      *
      * @throws IndexOutOfBoundsException See {@link StringBuilder#append(CharSequence, int, int)}
      */
-    public void appendChars(StringBuilder sb, int off, int len) {
-        if (len == 0) {
+    public void appendChars(StringBuilder sb, int start, int end) {
+        if (end == 0) {
             return;
         }
-        int idx = idx(off);
-        sb.append(str, idx, idx + len);
+        sb.append(str, idx(start), idx(end));
     }
 
     /**
@@ -158,20 +166,20 @@ public final class Chars implements CharSequence {
         final int max = start + len - searched.length();
 
         if (fromIndex < 0 || max < start + fromIndex) {
-            return -1;
+            return NOT_FOUND;
         } else if (searched.isEmpty()) {
             return 0;
         }
 
         final char fst = searched.charAt(0);
-        int strpos = str.indexOf(fst, start + fromIndex);
-        while (strpos != -1 && strpos <= max) {
+        int strpos = str.indexOf(fst, idx(fromIndex));
+        while (strpos != NOT_FOUND && strpos <= max) {
             if (str.startsWith(searched, strpos)) {
                 return strpos - start;
             }
             strpos = str.indexOf(fst, strpos + 1);
         }
-        return -1;
+        return NOT_FOUND;
     }
 
     /**
@@ -179,7 +187,7 @@ public final class Chars implements CharSequence {
      */
     public int indexOf(int ch, int fromIndex) {
         if (fromIndex < 0 || fromIndex >= len) {
-            return -1;
+            return NOT_FOUND;
         }
         // we want to avoid searching too far in the string
         // so we don't use String#indexOf, as it would be looking
@@ -193,7 +201,28 @@ public final class Chars implements CharSequence {
                 return i - start;
             }
         }
-        return -1;
+        return NOT_FOUND;
+    }
+
+    /**
+     * See {@link String#lastIndexOf(int, int)}.
+     */
+    public int lastIndexOf(int ch, int fromIndex) {
+        if (fromIndex < 0 || fromIndex >= len) {
+            return NOT_FOUND;
+        }
+        // we want to avoid searching too far in the string
+        // so we don't use String#indexOf, as it would be looking
+        // in the rest of the file too, which in the worst case is
+        // horrible
+
+        for (int i = start + fromIndex; i >= start; i--) {
+            char c = str.charAt(i);
+            if (c == ch) {
+                return i - start;
+            }
+        }
+        return NOT_FOUND;
     }
 
     /**
@@ -218,7 +247,14 @@ public final class Chars implements CharSequence {
         if (fromIndex < 0 || fromIndex + 1 > len) {
             return false;
         }
-        return str.charAt(start + fromIndex) == prefix;
+        return str.charAt(idx(fromIndex)) == prefix;
+    }
+
+    /**
+     * See {@link String#endsWith(String)}.
+     */
+    public boolean endsWith(String suffix) {
+        return startsWith(suffix, length() - suffix.length());
     }
 
     /**
@@ -254,6 +290,64 @@ public final class Chars implements CharSequence {
         return trimStart().trimEnd();
     }
 
+    /**
+     * Remove trailing and leading blank lines. The resulting string
+     * does not end with a line terminator.
+     */
+    public Chars trimBlankLines() {
+        int offsetOfFirstNonBlankChar = length();
+        for (int i = 0; i < length(); i++) {
+            if (!Character.isWhitespace(charAt(i))) {
+                offsetOfFirstNonBlankChar = i;
+                break;
+            }
+        }
+        int offsetOfLastNonBlankChar = 0;
+        for (int i = length() - 1; i > offsetOfFirstNonBlankChar; i--) {
+            if (!Character.isWhitespace(charAt(i))) {
+                offsetOfLastNonBlankChar = i;
+                break;
+            }
+        }
+
+        // look backwards before the first non-blank char
+        int cutFromInclusive = lastIndexOf('\n', offsetOfFirstNonBlankChar);
+        // If firstNonBlankLineStart == -1, ie we're on the first line,
+        // we want to start at zero: then we add 1 to get 0
+        // If firstNonBlankLineStart >= 0, then it's the index of the
+        // \n, we want to cut right after that, so we add 1.
+        cutFromInclusive += 1;
+
+        // look forwards after the last non-blank char
+        int cutUntilExclusive = indexOf('\n', offsetOfLastNonBlankChar);
+        if (cutUntilExclusive == StringUtils.INDEX_NOT_FOUND) {
+            cutUntilExclusive = length();
+        }
+
+        return subSequence(cutFromInclusive, cutUntilExclusive);
+    }
+
+    /**
+     * Remove the suffix if it is present, otherwise returns this.
+     */
+    public Chars removeSuffix(String charSeq) {
+        int trimmedLen = length() - charSeq.length();
+        if (startsWith(charSeq, trimmedLen)) {
+            return slice(0, trimmedLen);
+        }
+        return this;
+    }
+
+    /**
+     * Remove the prefix if it is present, otherwise returns this.
+     */
+    public Chars removePrefix(String charSeq) {
+        if (startsWith(charSeq)) {
+            return subSequence(charSeq.length(), length());
+        }
+        return this;
+    }
+
 
     /**
      * Returns true if this char sequence is logically equal to the
@@ -269,15 +363,9 @@ public final class Chars implements CharSequence {
     public boolean contentEquals(CharSequence cs, boolean ignoreCase) {
         if (cs instanceof Chars) {
             Chars chars2 = (Chars) cs;
-            if (len != chars2.len) {
-                return false;
-            }
-            return str.regionMatches(ignoreCase, start, chars2.str, chars2.start, len);
+            return len == chars2.len && str.regionMatches(ignoreCase, start, chars2.str, chars2.start, len);
         } else {
-            if (length() != cs.length()) {
-                return false;
-            }
-            return str.regionMatches(ignoreCase, start, cs.toString(), 0, len);
+            return length() == cs.length() && str.regionMatches(ignoreCase, start, cs.toString(), 0, len);
         }
     }
 
@@ -309,6 +397,14 @@ public final class Chars implements CharSequence {
     @Override
     public Chars subSequence(int start, int end) {
         return slice(start, end - start);
+    }
+
+    /**
+     * Returns the subsequence that starts at the given offset and ends
+     * at the end of this string. Similar to {@link String#substring(int)}.
+     */
+    public Chars subSequence(int start) {
+        return slice(start, len - start);
     }
 
     /**
@@ -346,29 +442,32 @@ public final class Chars implements CharSequence {
     }
 
     /**
-     * Returns the substring starting at the given offset and with the
-     * given length. This differs from {@link String#substring(int, int)}
-     * in that it uses offset + length instead of start + end.
+     * Returns the substring between the given offsets.
+     * given length.
      *
-     * @param off Start offset ({@code 0 <= off < this.length()})
-     * @param len Length of the substring ({@code 0 <= len <= this.length() - off})
+     * <p>Note: Unlike slice or subSequence, this method will create a
+     * new String which involves copying the backing char array. Don't
+     * use it unnecessarily.
+     *
+     * @param start Start offset ({@code 0 <= start < this.length()})
+     * @param end   End offset ({@code start <= end <= this.length()})
      *
      * @return A substring
      *
      * @throws IndexOutOfBoundsException If the parameters are not a valid range
+     * @see String#substring(int, int)
      */
-    public String substring(int off, int len) {
-        validateRange(off, len, this.len);
-        int start = idx(off);
-        return str.substring(start, start + len);
+    public String substring(int start, int end) {
+        validateRange(start, end - start, this.len);
+        return str.substring(idx(start), idx(end));
     }
 
     private static void validateRangeWithAssert(int off, int len, int bound) {
-        assert len >= 0 && off >= 0 && (off + len) <= bound : invalidRange(off, len, bound);
+        assert len >= 0 && off >= 0 && off + len <= bound : invalidRange(off, len, bound);
     }
 
     private static void validateRange(int off, int len, int bound) {
-        if (len < 0 || off < 0 || (off + len) > bound) {
+        if (len < 0 || off < 0 || off + len > bound) {
             throw new IndexOutOfBoundsException(invalidRange(off, len, bound));
         }
     }
@@ -378,20 +477,14 @@ public final class Chars implements CharSequence {
     }
 
     @Override
-    public String toString() {
+    public @NonNull String toString() {
         // this already avoids the copy if start == 0 && len == str.length()
         return str.substring(start, start + len);
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof Chars)) {
-            return false;
-        }
-        return contentEquals((Chars) o);
+        return this == o || o instanceof Chars && contentEquals((Chars) o);
     }
 
     @Override
@@ -406,19 +499,26 @@ public final class Chars implements CharSequence {
         return h;
     }
 
-    private boolean isFullString() {
+    // test only
+    boolean isFullString() {
         return start == 0 && len == str.length();
     }
 
     /**
      * Returns an iterable over the lines of this char sequence. The lines
-     * are yielded without line separators. For the purposes of this method,
-     * a line delimiter is {@code LF} or {@code CR+LF}.
+     * are yielded without line separators. Like {@link BufferedReader#readLine()},
+     * a line delimiter is {@code CR}, {@code LF} or {@code CR+LF}.
      */
     public Iterable<Chars> lines() {
         return () -> new Iterator<Chars>() {
             final int max = len;
             int pos = 0;
+            // If those are NOT_TRIED, then we should scan ahead to find them
+            // If the scan fails then they'll stay -1 forever and won't be tried again.
+            // This is important to scan in documents where we know there are no
+            // CR characters, as in our normalized TextFileContent.
+            int nextCr = NOT_TRIED;
+            int nextLf = NOT_TRIED;
 
             @Override
             public boolean hasNext() {
@@ -427,21 +527,58 @@ public final class Chars implements CharSequence {
 
             @Override
             public Chars next() {
-                int nl = indexOf('\n', pos);
-                Chars next;
-                if (nl < 0) {
-                    next = subSequence(pos, max);
-                    pos = max;
-                    return next;
-                } else if (startsWith('\r', nl - 1)) {
-                    next = subSequence(pos, nl - 1);
-                } else {
-                    next = subSequence(pos, nl);
+                final int curPos = pos;
+                if (nextCr == NOT_TRIED) {
+                    nextCr = indexOf('\r', curPos);
                 }
-                pos = nl + 1;
-                return next;
+                if (nextLf == NOT_TRIED) {
+                    nextLf = indexOf('\n', curPos);
+                }
+                final int cr = nextCr;
+                final int lf = nextLf;
+
+                if (cr != NOT_FOUND && lf != NOT_FOUND) {
+                    // found both CR and LF
+                    int min = Math.min(cr, lf);
+                    if (lf == cr + 1) {
+                        // CRLF
+                        pos = lf + 1;
+                        nextCr = NOT_TRIED;
+                        nextLf = NOT_TRIED;
+                    } else {
+                        pos = min + 1;
+                        resetLookahead(cr, min);
+                    }
+
+                    return subSequence(curPos, min);
+                } else if (cr == NOT_FOUND && lf == NOT_FOUND) {
+                    // no following line terminator, cut until the end
+                    pos = max;
+                    return subSequence(curPos, max);
+                } else {
+                    // lf or cr (exactly one is != -1 and max returns that one)
+                    int idx = Math.max(cr, lf);
+                    resetLookahead(cr, idx);
+                    pos = idx + 1;
+                    return subSequence(curPos, idx);
+                }
+            }
+
+            private void resetLookahead(int cr, int idx) {
+                if (idx == cr) {
+                    nextCr = NOT_TRIED;
+                } else {
+                    nextLf = NOT_TRIED;
+                }
             }
         };
+    }
+
+    /**
+     * Returns a stream of lines yielded by {@link #lines()}.
+     */
+    public Stream<Chars> lineStream() {
+        return StreamSupport.stream(lines().spliterator(), false);
     }
 
 
@@ -449,40 +586,79 @@ public final class Chars implements CharSequence {
      * Returns a new reader for the whole contents of this char sequence.
      */
     public Reader newReader() {
-        return new Reader() {
-            private int pos = start;
-            private final int max = start + len;
+        return new CharsReader(this);
+    }
 
-            @Override
-            public int read(char[] cbuf, int off, int len) {
-                if (len < 0 || off < 0 || off + len > cbuf.length) {
-                    throw new IndexOutOfBoundsException();
-                }
-                if (pos >= max) {
-                    return -1;
-                }
-                int toRead = Integer.min(max - pos, len);
-                str.getChars(pos, pos + toRead, cbuf, off);
-                pos += toRead;
-                return toRead;
-            }
+    private static final class CharsReader extends Reader {
 
-            @Override
-            public int read() {
-                return pos >= max ? -1 : str.charAt(pos++);
-            }
+        private Chars chars;
+        private int pos;
+        private final int max;
+        private int mark = -1;
 
-            @Override
-            public long skip(long n) {
-                int oldPos = pos;
-                pos = Math.min(max, pos + (int) n);
-                return pos - oldPos;
-            }
+        private CharsReader(Chars chars) {
+            this.chars = chars;
+            this.pos = chars.start;
+            this.max = chars.start + chars.len;
+        }
 
-            @Override
-            public void close() {
-                // nothing to do
+        @Override
+        public int read(char @NonNull [] cbuf, int off, int len) throws IOException {
+            if (len < 0 || off < 0 || off + len > cbuf.length) {
+                throw new IndexOutOfBoundsException();
             }
-        };
+            ensureOpen();
+            if (pos >= max) {
+                return NOT_FOUND;
+            }
+            int toRead = Integer.min(max - pos, len);
+            chars.str.getChars(pos, pos + toRead, cbuf, off);
+            pos += toRead;
+            return toRead;
+        }
+
+        @Override
+        public int read() throws IOException {
+            ensureOpen();
+            return pos >= max ? NOT_FOUND : chars.str.charAt(pos++);
+        }
+
+        @Override
+        public long skip(long n) throws IOException {
+            ensureOpen();
+            int oldPos = pos;
+            pos = Math.min(max, pos + (int) n);
+            return pos - oldPos;
+        }
+
+        private void ensureOpen() throws IOException {
+            if (chars == null) {
+                throw new IOException("Closed");
+            }
+        }
+
+        @Override
+        public void close() {
+            chars = null;
+        }
+
+        @Override
+        public void mark(int readAheadLimit) {
+            mark = pos;
+        }
+
+        @Override
+        public void reset() throws IOException {
+            ensureOpen();
+            if (mark == -1) {
+                throw new IOException("Reader was not marked");
+            }
+            pos = mark;
+        }
+
+        @Override
+        public boolean markSupported() {
+            return true;
+        }
     }
 }

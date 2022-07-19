@@ -88,6 +88,12 @@ public abstract class BaseAntlrInnerNode<N extends AntlrNode<N>> extends BaseAnt
         return pmdWrapper != null ? pmdWrapper.asAntlrNode() : null;
     }
 
+    protected List<TerminalNode> getTokens(int kind) {
+        return children(BaseAntlrTerminalNode.class)
+            .filter(it -> it.getTokenKind() == kind)
+            .toList(BaseAntlrTerminalNode::asAntlrNode);
+    }
+
     protected void copyFrom(BaseAntlrInnerNode<N> other) {
         asAntlrNode().copyFrom(other.asAntlrNode());
     }

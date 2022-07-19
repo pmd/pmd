@@ -52,7 +52,7 @@ public final class AstElementNode extends BaseNodeInfo implements SiblingCountin
                    BaseNodeInfo parent,
                    Node wrappedNode,
                    Configuration configuration) {
-        super(Type.ELEMENT, configuration.getNamePool(), wrappedNode.getXPathNodeName(), parent);
+        super(determineType(wrappedNode), configuration.getNamePool(), wrappedNode.getXPathNodeName(), parent);
 
         this.treeInfo = document;
         this.wrappedNode = wrappedNode;
@@ -63,6 +63,19 @@ public final class AstElementNode extends BaseNodeInfo implements SiblingCountin
         for (int i = 0; i < wrappedNode.getNumChildren(); i++) {
             children.add(new AstElementNode(document, idGenerator, this, wrappedNode.getChild(i), configuration));
         }
+    }
+
+    private static int determineType(Node node) {
+        // As of PMD 6.48.0, only the experimental HTML module uses this naming
+        // convention to identify non-element nodes.
+        // TODO PMD 7: maybe generalize this to other languages
+        String name = node.getXPathNodeName();
+        if ("#text".equals(name)) {
+            return Type.TEXT;
+        } else if ("#comment".equals(name)) {
+            return Type.COMMENT;
+        }
+        return Type.ELEMENT;
     }
 
     public Map<String, AstAttributeNode> makeAttributes(Node wrappedNode) {
@@ -179,6 +192,10 @@ public final class AstElementNode extends BaseNodeInfo implements SiblingCountin
 
     @Override
     public CharSequence getStringValueCS() {
+        if (getNodeKind() == Type.TEXT || getNodeKind() == Type.COMMENT) {
+            return getUnderlyingNode().getImage();
+        }
+
         // https://www.w3.org/TR/xpath-datamodel-31/#ElementNode
         // The string-value property of an Element Node must be the
         // concatenation of the string-values of all its Text Node
@@ -187,6 +204,7 @@ public final class AstElementNode extends BaseNodeInfo implements SiblingCountin
 
         // Since we represent all our Nodes as elements, there are no
         // text nodes
+        // TODO: for some languages like html we have text nodes
         return "";
     }
 

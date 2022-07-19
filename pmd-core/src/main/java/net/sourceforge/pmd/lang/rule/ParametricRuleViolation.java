@@ -29,6 +29,7 @@ public class ParametricRuleViolation implements RuleViolation {
 
     private final Map<String, String> extraData;
 
+    // todo add factory methods on the interface and hide the class.
 
     /**
      * @deprecated Update tests that use this not to call the ctor directly.
@@ -36,6 +37,10 @@ public class ParametricRuleViolation implements RuleViolation {
     @Deprecated
     public ParametricRuleViolation(Rule theRule, Reportable node, String message) {
         this(theRule, node.getReportLocation(), message, Collections.emptyMap());
+    }
+
+    public ParametricRuleViolation(Rule theRule, FileLocation location, String message) {
+        this(theRule, location, message, Collections.emptyMap());
     }
 
     public ParametricRuleViolation(Rule theRule, Reportable node, String message, Map<String, String> extraData) {

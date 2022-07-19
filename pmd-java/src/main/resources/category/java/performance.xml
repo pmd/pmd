@@ -17,7 +17,7 @@ Rules that flag suboptimal code.
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#addemptystring">
         <description>
 The conversion of literals to strings by concatenating them with empty strings is inefficient.
-It is much better to use one of the type-specific toString() methods instead.
+It is much better to use one of the type-specific `toString()` methods instead or `String.valueOf()`.
         </description>
         <priority>3</priority>
         <properties>
@@ -25,6 +25,12 @@ It is much better to use one of the type-specific toString() methods instead.
                 <value>
 <![CDATA[
 //InfixExpression[@Operator='+']/StringLiteral[@Empty=true()][not(ancestor::Annotation)]
+|
+//InfixExpression[@Operator='+']/VariableAccess
+  [@Name = (//FieldDeclaration[pmd-java:modifiers() = 'final']|ancestor::MethodDeclaration//LocalVariableDeclaration[pmd-java:modifiers() = 'final'])
+                /VariableDeclarator[@Initializer = true()]
+                    [StringLiteral[@Empty=true()]]
+                    /VariableDeclaratorId/@Name]
 ]]>
                 </value>
             </property>
@@ -671,8 +677,8 @@ You must use `new ArrayList<>(Arrays.asList(...))` if that is inconvenient for y
       [VariableDeclarator[NumericLiteral[@IntLiteral][@Image = '0']]]
     ]
   ]
-  [not(.//IfStatement)]
-  /*[last()]//
+  [*[2]//FieldAccess[@Name = 'length']/VariableAccess[pmd-java:typeIs("java.lang.Object[]")]]
+  /*[last()]/ExpressionStatement/
     MethodCall
       [pmd-java:matchesSig('java.util.Collection#add(_)')]
       [ArgumentList/ArrayAccess
@@ -680,9 +686,8 @@ You must use `new ArrayList<>(Arrays.asList(...))` if that is inconvenient for y
       ]
 |
 //ForeachStatement
-  [not(.//IfStatement)]
   [VariableAccess[pmd-java:typeIs("java.lang.Object[]")]]
-  /*[last()]//MethodCall
+  /*[last()]/ExpressionStatement/MethodCall
       [pmd-java:matchesSig('java.util.Collection#add(_)')]
       [ArgumentList
         [VariableAccess[@Name = ancestor::ForeachStatement/LocalVariableDeclaration/VariableDeclarator/VariableDeclaratorId/@Name]]
@@ -696,12 +701,14 @@ You must use `new ArrayList<>(Arrays.asList(...))` if that is inconvenient for y
 public class Test {
     public void foo(Integer[] ints) {
         // could just use Arrays.asList(ints)
-        List<Integer> l= new ArrayList<>(100);
-        for (int i=0; i< 100; i++) {
+        List<Integer> l = new ArrayList<>(100);
+        for (int i = 0; i < ints.length; i++) {
             l.add(ints[i]);
         }
-        for (int i=0; i< 100; i++) {
-            l.add(a[i].toString()); // won't trigger the rule
+
+        List<Integer> anotherList = new ArrayList<>();
+        for (int i = 0; i < ints.length; i++) {
+            anotherList.add(ints[i].toString()); // won't trigger the rule
         }
     }
 }

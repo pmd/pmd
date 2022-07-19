@@ -14,7 +14,6 @@ import java.io.Reader;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
 
-import org.apache.commons.io.IOUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.PMDConfiguration;
@@ -25,6 +24,7 @@ import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.document.TextFileBuilder.ForCharSeq;
 import net.sourceforge.pmd.lang.document.TextFileBuilder.ForNio;
 import net.sourceforge.pmd.lang.document.TextFileBuilder.ForReader;
+import net.sourceforge.pmd.util.IOUtil;
 import net.sourceforge.pmd.util.datasource.DataSource;
 
 /**
@@ -109,7 +109,7 @@ public interface TextFile extends Closeable {
      * @throws ReadOnlyFileException If this text source is read-only
      */
     default void writeContents(TextFileContent content) throws IOException {
-        throw new ReadOnlyFileException();
+        throw new ReadOnlyFileException(this);
     }
 
 
@@ -132,6 +132,18 @@ public interface TextFile extends Closeable {
      */
     @Override
     void close() throws IOException;
+
+
+    /**
+     * Text file equality is implementation-defined. The only constraint
+     * is that equal text files should have equal path IDs (and the usual
+     * properties mandated by {@link Object#equals(Object)}).
+     */
+    // currently:
+    // - Path-based TextFiles compare their path for equality, where the path is not normalized.
+    // - Reader- and String-based TextFiles use identity semantics.
+    @Override
+    boolean equals(Object o);
 
     // factory methods
 
@@ -212,7 +224,24 @@ public interface TextFile extends Closeable {
      *
      * @throws NullPointerException If any parameter is null
      */
-    static TextFileBuilder forReader(Reader reader, String pathId, LanguageVersion languageVersion) {
+    static TextFile forReader(Reader reader, String pathId, LanguageVersion languageVersion) {
+        return builderForReader(reader, pathId, languageVersion).build();
+    }
+
+    /**
+     * Returns a read-only builder reading from a reader.
+     * The reader is first read when {@link TextFile#readContents()} is first
+     * called, and is closed when that method exits. Note that this may
+     * only be called once, afterwards, {@link TextFile#readContents()} will
+     * throw an {@link IOException}.
+     *
+     * @param reader          Text of the file
+     * @param pathId          File name to use as path id
+     * @param languageVersion Language version
+     *
+     * @throws NullPointerException If any parameter is null
+     */
+    static TextFileBuilder builderForReader(Reader reader, String pathId, LanguageVersion languageVersion) {
         return new ForReader(languageVersion, reader, pathId);
     }
 
@@ -227,16 +256,21 @@ public interface TextFile extends Closeable {
     @Deprecated
     @DeprecatedUntil700
     static TextFile dataSourceCompat(DataSource ds, PMDConfiguration config) {
+        String pathId = ds.getNiceFileName(false, null);
+        LanguageVersion languageVersion = config.getLanguageVersionOfFile(pathId);
+        if (languageVersion == null) {
+            throw new NullPointerException("no language version detected for " + pathId);
+        }
         class DataSourceTextFile extends BaseCloseable implements TextFile {
 
             @Override
             public @NonNull LanguageVersion getLanguageVersion() {
-                return config.getLanguageVersionOfFile(getPathId());
+                return languageVersion;
             }
 
             @Override
             public String getPathId() {
-                return ds.getNiceFileName(false, null);
+                return pathId;
             }
 
             @Override
@@ -249,7 +283,7 @@ public interface TextFile extends Closeable {
                 ensureOpen();
                 try (InputStream is = ds.getInputStream();
                      Reader reader = new BufferedReader(new InputStreamReader(is, config.getSourceEncoding()))) {
-                    String contents = IOUtils.toString(reader);
+                    String contents = IOUtil.readToString(reader);
                     return TextFileContent.fromCharSeq(contents);
                 }
             }

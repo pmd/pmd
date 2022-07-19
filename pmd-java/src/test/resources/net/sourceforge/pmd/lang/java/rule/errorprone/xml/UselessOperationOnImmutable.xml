@@ -153,6 +153,18 @@ public class Foo {
     </test-code>
 
     <test-code>
+        <description>String::getChars is allowed</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo(String s, char[] buf) {
+        s.getChars(0,0, buf, 2);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
         <description>BigInteger calls in expression</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[

@@ -4,12 +4,12 @@
 
 package net.sourceforge.pmd.properties;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.regex.Pattern;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.properties.builders.PropertyDescriptorExternalBuilder;
 
@@ -29,7 +29,7 @@ import net.sourceforge.pmd.properties.builders.PropertyDescriptorExternalBuilder
  *
  * @author Brian Remedios
  */
-public abstract class AbstractPropertyDescriptorTester<T> {
+abstract class AbstractPropertyDescriptorTester<T> {
 
     public static final String PUNCTUATION_CHARS = "!@#$%^&*()_-+=[]{}\\|;:'\",.<>/?`~";
     public static final String WHITESPACE_CHARS = " \t\n";
@@ -44,7 +44,7 @@ public abstract class AbstractPropertyDescriptorTester<T> {
     protected final String typeName;
 
 
-    public AbstractPropertyDescriptorTester(String typeName) {
+    AbstractPropertyDescriptorTester(String typeName) {
         this.typeName = typeName;
     }
 
@@ -53,7 +53,7 @@ public abstract class AbstractPropertyDescriptorTester<T> {
 
 
     @Test
-    public void testFactorySingleValue() {
+    void testFactorySingleValue() {
         PropertyDescriptor<T> prop = getSingleFactory().build(getPropertyDescriptorValues());
         T originalValue = createValue();
         T value = prop.valueFrom(originalValue instanceof Class ? ((Class) originalValue).getName() : String.valueOf(originalValue));
@@ -92,7 +92,7 @@ public abstract class AbstractPropertyDescriptorTester<T> {
 
 
     @Test
-    public void testFactoryMultiValueDefaultDelimiter() {
+    void testFactoryMultiValueDefaultDelimiter() {
         PropertyDescriptorExternalBuilder<List<T>> multiFactory = getMultiFactory();
         PropertyDescriptor<List<T>> prop = multiFactory.build(getPropertyDescriptorValues());
         List<T> originalValue = createMultipleValues(MULTI_VALUE_COUNT);
@@ -119,7 +119,7 @@ public abstract class AbstractPropertyDescriptorTester<T> {
 
 
     @Test
-    public void testFactoryMultiValueCustomDelimiter() {
+    void testFactoryMultiValueCustomDelimiter() {
         PropertyDescriptorExternalBuilder<List<T>> multiFactory = getMultiFactory();
         Map<PropertyDescriptorField, String> valuesById = getPropertyDescriptorValues();
         String customDelimiter = "ä";
@@ -135,18 +135,10 @@ public abstract class AbstractPropertyDescriptorTester<T> {
 
 
     @Test
-    public void testConstructors() {
-
+    void testConstructors() {
         PropertyDescriptor<T> desc = createProperty();
         assertNotNull(desc);
-
-        try {
-            createBadProperty();
-        } catch (Exception ex) {
-            return; // caught ok
-        }
-
-        fail("uncaught constructor exception");
+        assertThrows(Exception.class, () -> createBadProperty());
     }
 
 
@@ -168,7 +160,7 @@ public abstract class AbstractPropertyDescriptorTester<T> {
 
 
     @Test
-    public void testAsDelimitedString() {
+    void testAsDelimitedString() {
 
         List<T> testValue = createMultipleValues(MULTI_VALUE_COUNT);
         PropertyDescriptor<List<T>> pmdProp = createMultiProperty();
@@ -184,7 +176,7 @@ public abstract class AbstractPropertyDescriptorTester<T> {
 
 
     @Test
-    public void testValueFrom() {
+    void testValueFrom() {
 
         T testValue = createValue();
         PropertyDescriptor<T> pmdProp = createProperty();
@@ -204,7 +196,7 @@ public abstract class AbstractPropertyDescriptorTester<T> {
 
 
     @Test
-    public void testErrorForCorrectSingle() {
+    void testErrorForCorrectSingle() {
         T testValue = createValue();
         PropertyDescriptor<T> pmdProp = createProperty(); // plain vanilla
         // property & valid test value
@@ -214,7 +206,7 @@ public abstract class AbstractPropertyDescriptorTester<T> {
 
 
     @Test
-    public void testErrorForCorrectMulti() {
+    void testErrorForCorrectMulti() {
         List<T> testMultiValues = createMultipleValues(MULTI_VALUE_COUNT); // multi-value property, all
         // valid test values
         PropertyDescriptor<List<T>> multiProperty = createMultiProperty();
@@ -225,7 +217,7 @@ public abstract class AbstractPropertyDescriptorTester<T> {
 
 
     @Test
-    public void testErrorForBadSingle() {
+    void testErrorForBadSingle() {
         T testValue = createBadValue();
         PropertyDescriptor<T> pmdProp = createProperty(); // plain vanilla
         // property & valid test value
@@ -243,12 +235,12 @@ public abstract class AbstractPropertyDescriptorTester<T> {
 
 
     @Test
-    public void testErrorForBadMulti() {
+    void testErrorForBadMulti() {
         List<T> testMultiValues = createMultipleBadValues(MULTI_VALUE_COUNT); // multi-value property, all
         // valid test values
         PropertyDescriptor<List<T>> multiProperty = createMultiProperty();
         String errorMsg = multiProperty.errorFor(testMultiValues);
-        assertNotNull("uncaught bad value in: " + testMultiValues, errorMsg);
+        assertNotNull(errorMsg, "uncaught bad value in: " + testMultiValues);
     }
 
 
@@ -263,18 +255,18 @@ public abstract class AbstractPropertyDescriptorTester<T> {
 
 
     @Test
-    public void testIsMultiValue() {
+    void testIsMultiValue() {
         assertFalse(createProperty().isMultiValue());
     }
 
 
     @Test
-    public void testIsMultiValueMulti() {
+    void testIsMultiValueMulti() {
         assertTrue(createMultiProperty().isMultiValue());
     }
 
     @Test
-    public void testAddAttributes() {
+    void testAddAttributes() {
         Map<PropertyDescriptorField, String> atts = createProperty().attributeValuesById();
         assertTrue(atts.containsKey(PropertyDescriptorField.NAME));
         assertTrue(atts.containsKey(PropertyDescriptorField.DESCRIPTION));
@@ -283,7 +275,7 @@ public abstract class AbstractPropertyDescriptorTester<T> {
 
 
     @Test
-    public void testAddAttributesMulti() {
+    void testAddAttributesMulti() {
         Map<PropertyDescriptorField, String> multiAtts = createMultiProperty().attributeValuesById();
         assertTrue(multiAtts.containsKey(PropertyDescriptorField.DELIMITER));
         assertTrue(multiAtts.containsKey(PropertyDescriptorField.NAME));
@@ -293,13 +285,13 @@ public abstract class AbstractPropertyDescriptorTester<T> {
 
 
     @Test
-    public void testType() {
+    void testType() {
         assertNotNull(createProperty().type());
     }
 
 
     @Test
-    public void testTypeMulti() {
+    void testTypeMulti() {
         assertNotNull(createMultiProperty().type());
     }
 

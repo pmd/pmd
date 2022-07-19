@@ -4,28 +4,29 @@
 
 package net.sourceforge.pmd.util.database;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import java.io.InputStream;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  *
  * @author sturton
  */
-public class ResourceLoaderTest {
+class ResourceLoaderTest {
 
     /**
      * Test of getResourceStream method, of class ResourceLoader.
      */
     @Test
-    public void testGetResourceStream() throws Exception {
+    void testGetResourceStream() throws Exception {
         System.out.println("getResourceStream");
         String path = "";
         ResourceLoader instance = new ResourceLoader();
         InputStream expResult = null;
         InputStream result = instance.getResourceStream(path);
-        Assert.assertNotNull(result);
+        assertNotNull(result);
         // assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to
         // fail.

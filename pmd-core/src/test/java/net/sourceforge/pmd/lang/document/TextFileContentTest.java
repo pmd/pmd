@@ -34,7 +34,7 @@ public class TextFileContentTest {
     @Parameters(source = TextContentOrigin.class)
     public void testMixedDelimiters(TextContentOrigin origin) throws IOException {
         TextFileContent content = origin.normalize("a\r\nb\n\rc");
-        Assert.assertEquals(Chars.wrap("a\nb\n\rc"), content.getNormalizedText());
+        Assert.assertEquals(Chars.wrap("a\nb\n\nc"), content.getNormalizedText());
         Assert.assertEquals(LINESEP_SENTINEL, content.getLineTerminator());
     }
 
@@ -60,8 +60,10 @@ public class TextFileContentTest {
         TextFileContent content = origin.normalize("\ufeffabc");
         Chars normalizedText = content.getNormalizedText();
         Assert.assertEquals(Chars.wrap("abc"), normalizedText);
-        // this means the underlying string does not start with the bom marker
-        // it's useful for performance to have `textDocument.getText().toString()` be O(1).
+        // This means the string underlying the Chars does not start with the bom marker.
+        // It's useful for performance to have `textDocument.getText().toString()` be O(1),
+        // and not create a new string.
+        Assert.assertTrue("should be full string", normalizedText.isFullString());
         Assert.assertSame(normalizedText.toString(), normalizedText.toString());
     }
 
@@ -85,6 +87,7 @@ public class TextFileContentTest {
     public void testCrlfSplitOnBuffer() throws IOException {
         StringReader reader = new StringReader("a\r\nb");
         // now the buffer is of size 2, so we read first [a\r] then [\nb]
+        // but there is a single line
         TextFileContent content = TextFileContent.normalizingRead(reader, 2, System.lineSeparator());
         Assert.assertEquals(Chars.wrap("a\nb"), content.getNormalizedText());
         Assert.assertEquals("\r\n", content.getLineTerminator());
@@ -94,18 +97,26 @@ public class TextFileContentTest {
     public void testCrSplitOnBufferFp() throws IOException {
         StringReader reader = new StringReader("a\rb\n");
         // the buffer is of size 2, so we read first [a\r] then [b\n]
-        // the \r is not a line terminator though
+        // the \r is a line terminator on its own
         TextFileContent content = TextFileContent.normalizingRead(reader, 2, LINESEP_SENTINEL);
-        Assert.assertEquals(Chars.wrap("a\rb\n"), content.getNormalizedText());
-        Assert.assertEquals("\n", content.getLineTerminator());
+        Assert.assertEquals(Chars.wrap("a\nb\n"), content.getNormalizedText());
+        Assert.assertEquals(LINESEP_SENTINEL, content.getLineTerminator());
     }
 
     @Test
     @Parameters(source = TextContentOrigin.class)
     public void testCrCr(TextContentOrigin origin) throws IOException {
         TextFileContent content = origin.normalize("a\r\rb");
-        Assert.assertEquals(Chars.wrap("a\r\rb"), content.getNormalizedText());
-        Assert.assertEquals(LINESEP_SENTINEL, content.getLineTerminator());
+        Assert.assertEquals(Chars.wrap("a\n\nb"), content.getNormalizedText());
+        Assert.assertEquals("\r", content.getLineTerminator());
+    }
+
+    @Test
+    @Parameters(source = TextContentOrigin.class)
+    public void testCrIsEol(TextContentOrigin origin) throws IOException {
+        TextFileContent content = origin.normalize("a\rb\rdede");
+        Assert.assertEquals(Chars.wrap("a\nb\ndede"), content.getNormalizedText());
+        Assert.assertEquals("\r", content.getLineTerminator());
     }
 
     @Test
@@ -122,8 +133,8 @@ public class TextFileContentTest {
         // the buffer is of size 2, so we read first [a\r] then [\ro]
         // the \r is not a line terminator though
         TextFileContent content = TextFileContent.normalizingRead(reader, 2, LINESEP_SENTINEL);
-        Assert.assertEquals(Chars.wrap("a\r\r"), content.getNormalizedText());
-        Assert.assertEquals(LINESEP_SENTINEL, content.getLineTerminator());
+        Assert.assertEquals(Chars.wrap("a\n\n"), content.getNormalizedText());
+        Assert.assertEquals("\r", content.getLineTerminator());
     }
 
     enum TextContentOrigin {

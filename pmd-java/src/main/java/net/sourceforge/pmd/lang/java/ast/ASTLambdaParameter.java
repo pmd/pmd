@@ -41,6 +41,12 @@ public final class ASTLambdaParameter extends AbstractJavaTypeNode
         return visitor.visit(this, data);
     }
 
+    /**
+     * Returns the lambda that owns this parameter.
+     */
+    public ASTLambdaExpression getOwner() {
+        return (ASTLambdaExpression) getParent().getParent();
+    }
 
     /**
      * Returns the declarator ID of this formal parameter.
