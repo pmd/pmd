@@ -21,6 +21,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.sourceforge.pmd.annotation.DeprecatedUntil700;
 import net.sourceforge.pmd.util.CollectionUtil;
 
 /**
@@ -108,11 +109,12 @@ public final class LanguageRegistry implements Iterable<Language> {
      *
      * @return A language, or null if the name is unknown
      *
-     * @deprecated Use {@link #getLanguageByFullName(String)}
+     * @deprecated Use {@link #getLanguageByFullName(String) PMD.getLanguageByFullName}
      */
     @Deprecated
-    public Language getLanguage(String languageName) {
-        return languagesByFullName.get(languageName);
+    @DeprecatedUntil700
+    public static Language getLanguage(String languageName) {
+        return PMD.getLanguageByFullName(languageName);
     }
 
     /**
@@ -165,21 +167,26 @@ public final class LanguageRegistry implements Iterable<Language> {
      *
      * @return A language, or null if the name is unknown
      *
-     * @deprecated Use {@link #getLanguageById(String)}.
+     * @deprecated Use {@link #getLanguageById(String) PMD.getLanguageById}.
      */
     @Deprecated
-    public @Nullable Language findLanguageByTerseName(@Nullable String terseName) {
-        return languagesById.get(terseName);
+    @DeprecatedUntil700
+    public static @Nullable Language findLanguageByTerseName(@Nullable String terseName) {
+        return PMD.getLanguageById(terseName);
     }
 
     /**
      * Returns all languages that support the given extension.
      *
      * @param extensionWithoutDot A file extension (without '.' prefix)
+     *
+     * @deprecated Not replaced, extension will be extended to match full name in PMD 7.
      */
-    public List<Language> findByExtension(String extensionWithoutDot) {
+    @Deprecated
+    @DeprecatedUntil700
+    public static List<Language> findByExtension(String extensionWithoutDot) {
         List<Language> languages = new ArrayList<>();
-        for (Language language : getLanguages()) {
+        for (Language language : PMD.getLanguages()) {
             if (language.hasExtension(extensionWithoutDot)) {
                 languages.add(language);
             }
@@ -187,8 +194,12 @@ public final class LanguageRegistry implements Iterable<Language> {
         return languages;
     }
 
-    public @NonNull String commaSeparatedList(Function<Language, String> getter) {
-        return getLanguages().stream().map(getter).sorted().collect(Collectors.joining(", "));
+    /**
+     * Formats the set of languages with the given formatter, sort and
+     * join everything with commas. Convenience method.
+     */
+    public @NonNull String commaSeparatedList(Function<? super Language, String> languageToString) {
+        return getLanguages().stream().map(languageToString).sorted().collect(Collectors.joining(", "));
     }
 
 

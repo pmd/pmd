@@ -263,7 +263,7 @@ public class RuleFactory {
     }
 
     private @NonNull String supportedLanguages() {
-        return languageRegistry.getLanguages().stream().map(Language::getTerseName).map(StringUtil::inSingleQuotes).collect(Collectors.joining(", "));
+        return languageRegistry.commaSeparatedList(l -> StringUtil.inSingleQuotes(l.getId()));
     }
 
     /**

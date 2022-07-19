@@ -29,7 +29,7 @@ public class ScalaLanguageModule extends BaseLanguageModule {
         addVersion("2.10", new ScalaLanguageHandler(scala.meta.dialects.package$.MODULE$.Scala210()), false);
     }
 
-    public static net.sourceforge.pmd.lang.Language getInstance() {
-        return LanguageRegistry.PMD.getLanguage(NAME);
+    public static ScalaLanguageModule getInstance() {
+        return (ScalaLanguageModule) LanguageRegistry.PMD.getLanguageByFullName(NAME);
     }
 }

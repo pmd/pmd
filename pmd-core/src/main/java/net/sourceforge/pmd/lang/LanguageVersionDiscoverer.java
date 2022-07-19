@@ -9,10 +9,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.annotation.DeprecatedUntil700;
 import net.sourceforge.pmd.internal.util.AssertionUtil;
 
 /**
@@ -130,7 +132,11 @@ public class LanguageVersionDiscoverer {
      * @param sourceFile
      *            The file.
      * @return The Languages for the source file, may be empty.
+     *
+     * @deprecated PMD 7 avoids using {@link File}.
      */
+    @Deprecated
+    @DeprecatedUntil700
     public List<Language> getLanguagesForFile(File sourceFile) {
         return getLanguagesForFile(sourceFile.getName());
     }
@@ -144,7 +150,9 @@ public class LanguageVersionDiscoverer {
      */
     public List<Language> getLanguagesForFile(String fileName) {
         String extension = getExtension(fileName);
-        return languageRegistry.findByExtension(extension);
+        return languageRegistry.getLanguages().stream()
+                               .filter(it -> it.hasExtension(extension))
+                               .collect(Collectors.toList());
     }
 
     // Get the extensions from a file
