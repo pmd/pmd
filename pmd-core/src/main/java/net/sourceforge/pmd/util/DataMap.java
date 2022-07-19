@@ -4,10 +4,8 @@
 
 package net.sourceforge.pmd.util;
 
-import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.Map;
-import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -21,9 +19,9 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  *
  * @param <K> Type of keys in this map.
  */
-public class DataMap<K> {
+public final class DataMap<K> {
 
-    Map<DataKey<? extends K, ?>, Object> map;
+    private Map<DataKey<? extends K, ?>, Object> map;
 
     private DataMap() {
 
@@ -118,29 +116,8 @@ public class DataMap<K> {
         return new DataMap<>();
     }
 
-    public static <K> TransparentDataMap<K> newTransparentMap() {
-        return new TransparentDataMap<>();
-    }
-
     public static <T> SimpleDataKey<T> simpleDataKey(final String name) {
         return new SimpleDataKey<>(name);
-    }
-
-    /**
-     * A transparent data map is one that gives access to the keys
-     * currently stored. By default a DataMap is opaque, to promote
-     * encapsulation.
-     *
-     * @param <K> Type of keys
-     */
-    public static final class TransparentDataMap<K> extends DataMap<K> {
-
-        private TransparentDataMap() {
-        }
-
-        public Set<DataKey<? extends K, ?>> keySet() {
-            return map == null ? Collections.emptySet() : Collections.unmodifiableSet(map.keySet());
-        }
     }
 
     /**

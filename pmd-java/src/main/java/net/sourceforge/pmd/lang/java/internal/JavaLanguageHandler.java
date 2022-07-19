@@ -78,7 +78,7 @@ public class JavaLanguageHandler extends AbstractPmdLanguageVersionHandler {
     }
 
     @Override
-    public List<ViolationSuppressor> getExtraViolationSuppressor() {
+    public List<ViolationSuppressor> getExtraViolationSuppressors() {
         return AnnotationSuppressionUtil.ALL_JAVA_SUPPRESSORS;
     }
 

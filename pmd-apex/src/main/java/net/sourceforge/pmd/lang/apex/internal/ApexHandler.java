@@ -25,7 +25,7 @@ public class ApexHandler extends AbstractPmdLanguageVersionHandler {
     private final ApexMetricsProvider myMetricsProvider = new ApexMetricsProvider();
 
     @Override
-    public List<ViolationSuppressor> getExtraViolationSuppressor() {
+    public List<ViolationSuppressor> getExtraViolationSuppressors() {
         return ApexViolationSuppressors.ALL_APEX_SUPPRESSORS;
     }
 

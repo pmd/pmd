@@ -45,18 +45,23 @@ public interface LanguageVersionHandler {
 
 
     /**
-     * Get the Parser.
-     *
-     * @return Parser
+     * Returns the parser instance.
      */
     Parser getParser();
 
-
+    /**
+     * Returns the language-specific violation decorator.
+     */
     default ViolationDecorator getViolationDecorator() {
         return ViolationDecorator.noop();
     }
 
-    default List<ViolationSuppressor> getExtraViolationSuppressor() {
+    /**
+     * Returns additional language-specific violation suppressors.
+     * These take precedence over the default suppressors (eg nopmd comment),
+     * but do not replace them.
+     */
+    default List<ViolationSuppressor> getExtraViolationSuppressors() {
         return Collections.emptyList();
     }
 
