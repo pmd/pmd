@@ -43,6 +43,7 @@ Being based on a proper Antlr grammar, CPD can:
 ### Fixed Issues
 * core
     * [#4031](https://github.com/pmd/pmd/issues/4031): \[core] If report is written to stdout, stdout should not be closed
+    * [#4051](https://github.com/pmd/pmd/issues/4051): \[doc] Additional rulesets are not listed in documentation
 * java
     * [#4015](https://github.com/pmd/pmd/issues/4015): \[java] Support JDK 19
 * java-bestpractices

@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.docs;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.nio.file.FileSystems;
@@ -34,6 +36,8 @@ public class RuleSetResolverTest {
 
         filterRuleSets(additionalRulesets);
 
+        assertFalse(additionalRulesets.isEmpty());
+
         RuleSetFactory ruleSetFactory = RulesetsFactoryUtils.defaultFactory();
         for (String filename : additionalRulesets) {
             try {
@@ -42,6 +46,11 @@ public class RuleSetResolverTest {
                 fail("Couldn't load ruleset " + filename + ": " + e.getMessage());
             }
         }
+    }
+
+    @Test
+    public void testAdditionalRulesetPattern() {
+        assertTrue(GenerateRuleDocsCmd.ADDITIONAL_RULESET_PATTERN.matcher("/home/foo/pmd/pmd-java/src/main/resources/rulesets/java/quickstart.xml").matches());
     }
 
     private void filterRuleSets(List<String> additionalRulesets) {
