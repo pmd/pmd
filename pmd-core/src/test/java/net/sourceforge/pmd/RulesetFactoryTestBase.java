@@ -32,7 +32,7 @@ import net.sourceforge.pmd.util.internal.xml.SchemaConstants;
 import net.sourceforge.pmd.util.log.MessageReporter;
 import net.sourceforge.pmd.util.log.internal.SimpleMessageReporter;
 
-public class RulesetFactoryTestBase extends PmdContextualizedTest {
+public class RulesetFactoryTestBase {
 
     protected MessageReporter mockReporter;
 
@@ -83,8 +83,7 @@ public class RulesetFactoryTestBase extends PmdContextualizedTest {
 
 
     protected RuleSet loadRuleSetInDir(String resourceDir, String ruleSetFilename) {
-        RuleSetLoader loader = new RuleSetLoader();
-        loader.setReporter(mockReporter);
+        RuleSetLoader loader = new RuleSetLoader().withReporter(mockReporter);
         return loader.loadFromResource(resourceDir + "/" + ruleSetFilename);
     }
 
@@ -99,8 +98,7 @@ public class RulesetFactoryTestBase extends PmdContextualizedTest {
     }
 
     protected RuleSet loadRuleSet(String fileName, String ruleSetXml) {
-        RuleSetLoader loader = new RuleSetLoader();
-        loader.setReporter(mockReporter);
+        RuleSetLoader loader = new RuleSetLoader().withReporter(mockReporter);
         return loader.loadFromString(fileName, ruleSetXml);
     }
 

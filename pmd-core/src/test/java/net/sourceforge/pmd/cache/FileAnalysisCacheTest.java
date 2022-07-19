@@ -33,9 +33,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.mockito.Mockito;
 
+import net.sourceforge.pmd.PmdCoreTestUtils;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.document.FileLocation;
@@ -56,7 +56,7 @@ class FileAnalysisCacheTest {
     private TextDocument sourceFile;
     private TextFile sourceFileBackend;
 
-    private final LanguageVersion dummyVersion = DummyLanguageModule.getInstance().getDefaultVersion();
+    private final LanguageVersion dummyVersion = PmdCoreTestUtils.dummyVersion();
 
 
     @BeforeEach

@@ -31,7 +31,6 @@ import net.sourceforge.pmd.cli.PMDCommandLineInterface;
 import net.sourceforge.pmd.cli.PmdParametersParseResult;
 import net.sourceforge.pmd.cli.internal.CliMessages;
 import net.sourceforge.pmd.internal.Slf4jSimpleConfiguration;
-import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.reporting.ReportStats;
@@ -167,7 +166,7 @@ public final class PMD {
         }
 
         PMDConfiguration configuration = Objects.requireNonNull(
-            parseResult.toConfiguration(LanguageRegistry.PMD)
+            parseResult.toConfiguration()
         );
         MessageReporter pmdReporter = setupMessageReporter(configuration);
         configuration.setReporter(pmdReporter);

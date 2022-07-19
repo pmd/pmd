@@ -45,7 +45,6 @@ public class TreeExportCli {
     @Parameter(names = { "--format", "-f" }, description = "The output format.")
     private String format = "xml";
     @Parameter(names = { "--language", "-l" }, description = "Specify the language to use.", required = true)
-    // todo there is also a @Nullable from Jcommander, investigate
     private @Nullable String language = null;
     @Parameter(names = { "--encoding", "-e" }, description = "Encoding of the source file.")
     private String encoding = StandardCharsets.UTF_8.name();

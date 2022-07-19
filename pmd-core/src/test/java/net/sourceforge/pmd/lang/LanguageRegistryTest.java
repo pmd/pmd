@@ -11,13 +11,13 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 
 import org.junit.jupiter.api.Test;
 
-import net.sourceforge.pmd.PmdContextualizedTest;
+class LanguageRegistryTest {
 
-class LanguageRegistryTest extends PmdContextualizedTest {
+    private final LanguageRegistry languageRegistry = LanguageRegistry.PMD;
 
     @Test
     public void getDefaultVersionLanguageTest() {
-        Language dummy = languageRegistry().findLanguageByTerseName("dummy");
+        Language dummy = languageRegistry.getLanguageById("dummy");
         LanguageVersion dummy12 = dummy.getVersion("1.2");
         assertNotNull(dummy12);
 
@@ -29,7 +29,7 @@ class LanguageRegistryTest extends PmdContextualizedTest {
 
     @Test
     public void getLanguageVersionByAliasTest() {
-        Language dummy = languageRegistry().findLanguageByTerseName("dummy");
+        Language dummy = languageRegistry.getLanguageById("dummy");
 
         LanguageVersion dummy17 = dummy.getVersion("1.7");
         assertNotNull(dummy17);

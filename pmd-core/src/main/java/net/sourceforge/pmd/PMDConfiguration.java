@@ -373,7 +373,7 @@ public class PMDConfiguration extends AbstractConfiguration {
         return languageVersionDiscoverer.getDefaultLanguageVersionForFile(fileName);
     }
 
-    public LanguageRegistry languages() {
+    LanguageRegistry languages() {
         return langRegistry;
     }
 

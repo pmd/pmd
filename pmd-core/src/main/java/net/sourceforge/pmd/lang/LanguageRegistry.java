@@ -18,6 +18,8 @@ import java.util.stream.Collectors;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.util.CollectionUtil;
 
@@ -28,6 +30,8 @@ import net.sourceforge.pmd.util.CollectionUtil;
  * languages, eg filter some out.
  */
 public final class LanguageRegistry implements Iterable<Language> {
+
+    private static final Logger LOG = LoggerFactory.getLogger(LanguageRegistry.class);
 
     /**
      * Contains the languages that support PMD and are found on the classpath
@@ -57,7 +61,12 @@ public final class LanguageRegistry implements Iterable<Language> {
         return languages.iterator();
     }
 
-
+    /**
+     * Create a new registry by loading the languages registered via {@link ServiceLoader}
+     * on the classpath of the given classloader.
+     *
+     * @param classLoader A classloader
+     */
     public static @NonNull LanguageRegistry loadLanguages(ClassLoader classLoader) {
         // sort languages by terse name. Avoiding differences in the order of languages
         // across JVM versions / OS.
@@ -77,7 +86,7 @@ public final class LanguageRegistry implements Iterable<Language> {
             } catch (UnsupportedClassVersionError | ServiceConfigurationError e) {
                 // Some languages require java8 and are therefore only available
                 // if java8 or later is used as runtime.
-                System.err.println("Ignoring language for PMD: " + e);
+                LOG.warn("Cannot load PMD language, ignored", e);
             }
         }
         return new LanguageRegistry(languages);

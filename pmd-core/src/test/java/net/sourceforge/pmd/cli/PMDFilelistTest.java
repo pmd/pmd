@@ -8,28 +8,27 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.hasSize;
 
-import java.io.IOException;
 import java.util.List;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.PMDConfiguration;
-import net.sourceforge.pmd.PmdContextualizedTest;
 import net.sourceforge.pmd.internal.util.FileCollectionUtil;
+import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
 import net.sourceforge.pmd.lang.document.FileCollector;
 import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.util.log.internal.NoopReporter;
 
-class PMDFilelistTest extends PmdContextualizedTest {
+class PMDFilelistTest {
 
     private @NonNull FileCollector newCollector() {
-        return FileCollector.newCollector(new LanguageVersionDiscoverer(languageRegistry()), new NoopReporter());
+        return FileCollector.newCollector(new LanguageVersionDiscoverer(LanguageRegistry.PMD), new NoopReporter());
     }
 
     @Test
-    void testGetApplicableFiles() throws IOException {
+    void testGetApplicableFiles() {
         FileCollector collector = newCollector();
 
         FileCollectionUtil.collectFileList(collector, "src/test/resources/net/sourceforge/pmd/cli/filelist.txt");
@@ -41,7 +40,7 @@ class PMDFilelistTest extends PmdContextualizedTest {
     }
 
     @Test
-    void testGetApplicableFilesMultipleLines() throws IOException {
+    void testGetApplicableFilesMultipleLines() {
         FileCollector collector = newCollector();
 
         FileCollectionUtil.collectFileList(collector, "src/test/resources/net/sourceforge/pmd/cli/filelist2.txt");
@@ -54,7 +53,7 @@ class PMDFilelistTest extends PmdContextualizedTest {
     }
 
     @Test
-    void testGetApplicableFilesWithIgnores() throws IOException {
+    void testGetApplicableFilesWithIgnores() {
         FileCollector collector = newCollector();
 
         PMDConfiguration configuration = new PMDConfiguration();
@@ -69,7 +68,7 @@ class PMDFilelistTest extends PmdContextualizedTest {
     }
 
     @Test
-    void testGetApplicableFilesWithDirAndIgnores() throws IOException {
+    void testGetApplicableFilesWithDirAndIgnores() {
 
         PMDConfiguration configuration = new PMDConfiguration();
         configuration.setInputPaths("src/test/resources/net/sourceforge/pmd/cli/src");

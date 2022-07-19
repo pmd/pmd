@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd;
 
+import static net.sourceforge.pmd.PmdCoreTestUtils.dummyLanguage;
 import static net.sourceforge.pmd.util.internal.xml.SchemaConstants.DEPRECATED;
 import static net.sourceforge.pmd.util.internal.xml.SchemaConstants.NAME;
 import static org.hamcrest.MatcherAssert.assertThat;

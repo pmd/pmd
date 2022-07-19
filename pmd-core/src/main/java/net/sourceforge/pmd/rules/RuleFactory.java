@@ -67,7 +67,7 @@ public class RuleFactory {
     /**
      * @param resourceLoader The resource loader to load the rule from jar
      */
-    public RuleFactory(final ResourceLoader resourceLoader,
+    public RuleFactory(ResourceLoader resourceLoader,
                        LanguageRegistry languageRegistry) {
         this.resourceLoader = resourceLoader;
         this.languageRegistry = languageRegistry;
@@ -253,7 +253,7 @@ public class RuleFactory {
 
     private void setLanguage(Element ruleElement, PmdXmlReporter err, Rule rule) {
         String langId = SchemaConstants.LANGUAGE.getNonBlankAttribute(ruleElement, err);
-        Language lang = languageRegistry.findLanguageByTerseName(langId);
+        Language lang = languageRegistry.getLanguageById(langId);
         if (lang == null) {
             Attr node = SchemaConstants.LANGUAGE.getAttributeNode(ruleElement);
             throw err.at(node)

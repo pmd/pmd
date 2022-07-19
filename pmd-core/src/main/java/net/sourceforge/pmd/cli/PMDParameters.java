@@ -352,7 +352,7 @@ public class PMDParameters {
 
     private @Nullable LanguageVersion getLangVersion(LanguageRegistry registry) {
         if (language != null) {
-            Language lang = registry.findLanguageByTerseName(language);
+            Language lang = registry.getLanguageById(language);
             if (lang != null) {
                 return version != null ? lang.getVersion(version)
                                        : lang.getDefaultVersion();
@@ -366,7 +366,7 @@ public class PMDParameters {
     }
 
     private @Nullable LanguageVersion getForceLangVersion(LanguageRegistry registry) {
-        Language lang = forceLanguage != null ? registry.findLanguageByTerseName(forceLanguage) : null;
+        Language lang = forceLanguage != null ? registry.getLanguageById(forceLanguage) : null;
         return lang != null ? lang.getDefaultVersion() : null;
     }
 

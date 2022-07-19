@@ -53,8 +53,9 @@ public final class RuleSetLoader {
         // default
     }
 
-    void setReporter(MessageReporter reporter) {
+    RuleSetLoader withReporter(MessageReporter reporter) {
         this.reporter = reporter;
+        return this;
     }
 
     /**
@@ -277,7 +278,9 @@ public final class RuleSetLoader {
      */
     public static RuleSetLoader fromPmdConfig(PMDConfiguration configuration) {
         return new RuleSetLoader().filterAbovePriority(configuration.getMinimumPriority())
-                                  .enableCompatibility(configuration.isRuleSetFactoryCompatibilityEnabled());
+                                  .enableCompatibility(configuration.isRuleSetFactoryCompatibilityEnabled())
+                                  .withLanguages(configuration.languages())
+                                  .withReporter(configuration.getReporter());
     }
 
 

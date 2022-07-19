@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.document;
 
+import static net.sourceforge.pmd.PmdCoreTestUtils.dummyVersion;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
@@ -24,12 +25,11 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
 import net.sourceforge.pmd.PMDConfiguration;
-import net.sourceforge.pmd.PmdContextualizedTest;
 import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.util.datasource.DataSource;
 import net.sourceforge.pmd.util.datasource.FileDataSource;
 
-public class TextFilesTest extends PmdContextualizedTest {
+public class TextFilesTest {
 
     @Rule
     public TemporaryFolder tempDir = TemporaryFolder.builder().build();

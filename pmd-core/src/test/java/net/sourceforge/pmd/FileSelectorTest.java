@@ -4,12 +4,14 @@
 
 package net.sourceforge.pmd;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 
 import org.junit.jupiter.api.Test;
 
+import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.LanguageFilenameFilter;
 
 /**
@@ -17,19 +19,19 @@ import net.sourceforge.pmd.lang.LanguageFilenameFilter;
  *
  * @author pieter_van_raemdonck - Application Engineers NV/SA - www.ae.be
  */
-class FileSelectorTest extends PmdContextualizedTest {
+class FileSelectorTest {
 
     /**
      * Test wanted selection of a source file.
      */
     @Test
     void testWantedFile() {
-        LanguageFilenameFilter fileSelector = new LanguageFilenameFilter(dummyLanguage());
+        LanguageFilenameFilter fileSelector = new LanguageFilenameFilter(DummyLanguageModule.getInstance());
 
         File javaFile = new File("/path/to/myFile.dummy");
 
         boolean selected = fileSelector.accept(javaFile.getParentFile(), javaFile.getName());
-        assertEquals(true, selected, "This file should be selected !");
+        assertTrue(selected, "This file should be selected !");
     }
 
     /**
@@ -37,12 +39,12 @@ class FileSelectorTest extends PmdContextualizedTest {
      */
     @Test
     void testUnwantedFile() {
-        LanguageFilenameFilter fileSelector = new LanguageFilenameFilter(dummyLanguage());
+        LanguageFilenameFilter fileSelector = new LanguageFilenameFilter(DummyLanguageModule.getInstance());
 
         File javaFile = new File("/path/to/myFile.txt");
 
         boolean selected = fileSelector.accept(javaFile.getParentFile(), javaFile.getName());
-        assertEquals(false, selected, "Not-source file must not be selected!");
+        assertFalse(selected, "Not-source file must not be selected!");
     }
 
     /**
@@ -50,11 +52,11 @@ class FileSelectorTest extends PmdContextualizedTest {
      */
     @Test
     void testUnwantedJavaFile() {
-        LanguageFilenameFilter fileSelector = new LanguageFilenameFilter(dummyLanguage());
+        LanguageFilenameFilter fileSelector = new LanguageFilenameFilter(DummyLanguageModule.getInstance());
 
         File javaFile = new File("/path/to/MyClass.java");
 
         boolean selected = fileSelector.accept(javaFile.getParentFile(), javaFile.getName());
-        assertEquals(false, selected, "Unwanted java file must not be selected!");
+        assertFalse(selected, "Unwanted java file must not be selected!");
     }
 }

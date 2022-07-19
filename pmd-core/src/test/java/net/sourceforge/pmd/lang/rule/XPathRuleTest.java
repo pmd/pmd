@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.rule;
 
+import static net.sourceforge.pmd.PmdCoreTestUtils.setDummyLanguage;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -11,7 +12,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
-import net.sourceforge.pmd.PmdContextualizedTest;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleContextTest;
 import net.sourceforge.pmd.lang.DummyLanguageModule;
@@ -23,7 +23,7 @@ import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
 
 import com.github.stefanbirkner.systemlambda.SystemLambda;
 
-class XPathRuleTest extends PmdContextualizedTest {
+class XPathRuleTest {
 
     @Test
     void testAttributeDeprecation10() throws Exception {

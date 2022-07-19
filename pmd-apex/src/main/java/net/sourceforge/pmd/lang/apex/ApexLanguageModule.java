@@ -14,8 +14,6 @@ import apex.jorje.services.Version;
 
 public class ApexLanguageModule extends BaseLanguageModule {
 
-    public static final ApexLanguageModule INSTANCE = new ApexLanguageModule();
-
     public static final String NAME = "Apex";
     public static final String TERSE_NAME = "apex";
 

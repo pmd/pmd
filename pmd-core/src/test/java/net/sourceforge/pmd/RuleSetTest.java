@@ -4,6 +4,9 @@
 
 package net.sourceforge.pmd;
 
+import static net.sourceforge.pmd.PmdCoreTestUtils.dummyLanguage;
+import static net.sourceforge.pmd.PmdCoreTestUtils.dummyLanguage2;
+import static net.sourceforge.pmd.PmdCoreTestUtils.dummyVersion;
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import static net.sourceforge.pmd.util.CollectionUtil.setOf;
 import static org.hamcrest.CoreMatchers.containsString;
@@ -46,7 +49,7 @@ import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 import net.sourceforge.pmd.util.IOUtil;
 
-class RuleSetTest extends PmdContextualizedTest {
+class RuleSetTest {
 
     @Test
     void testRuleSetRequiresName() {

@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang;
 
+import java.util.Objects;
+
 /**
  * A second dummy language used for testing PMD.
  */
@@ -16,4 +18,9 @@ public class Dummy2LanguageModule extends BaseLanguageModule {
         super(NAME, null, TERSE_NAME, "dummy2");
         addVersion("1.0", new DummyLanguageModule.Handler(), true);
     }
+
+    public static Dummy2LanguageModule getInstance() {
+        return (Dummy2LanguageModule) Objects.requireNonNull(LanguageRegistry.PMD.getLanguageByFullName(NAME));
+    }
+
 }

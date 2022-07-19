@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.document;
 
+import static net.sourceforge.pmd.PmdCoreTestUtils.dummyVersion;
 import static net.sourceforge.pmd.lang.document.TextPos2d.pos2d;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThrows;
@@ -13,7 +14,6 @@ import java.io.IOException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import net.sourceforge.pmd.PmdContextualizedTest;
 import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.util.IOUtil;
@@ -22,7 +22,7 @@ import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 
 @RunWith(JUnitParamsRunner.class)
-public class TextDocumentTest extends PmdContextualizedTest {
+public class TextDocumentTest {
 
     @Test
     public void testSingleLineRegion() {

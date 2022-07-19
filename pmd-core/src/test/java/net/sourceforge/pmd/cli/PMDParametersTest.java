@@ -12,7 +12,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.PMDConfiguration;
-import net.sourceforge.pmd.lang.LanguageRegistry;
 
 class PMDParametersTest {
 
@@ -51,7 +50,7 @@ class PMDParametersTest {
 
     private void assertMultipleDirsAndRulesets(PmdParametersParseResult result) {
         assertFalse(result.isError());
-        PMDConfiguration config = result.toConfiguration(LanguageRegistry.PMD);
+        PMDConfiguration config = result.toConfiguration();
         assertEquals(config.getAllInputPaths(), listOf("a", "b"));
         assertEquals(config.getRuleSetPaths(), listOf("x.xml", "y.xml"));
     }

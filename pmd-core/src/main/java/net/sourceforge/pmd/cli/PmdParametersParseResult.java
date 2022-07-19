@@ -14,7 +14,6 @@ import java.util.Objects;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.PMDConfiguration;
-import net.sourceforge.pmd.lang.LanguageRegistry;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
@@ -86,8 +85,8 @@ public final class PmdParametersParseResult {
      * Returns the resulting configuration if parsing succeeded and neither {@link #isHelp()} nor {@link #isVersion()} is requested.
      * Otherwise returns null.
      */
-    public @Nullable PMDConfiguration toConfiguration(LanguageRegistry registry) {
-        return isValidParameterSet() ? result.toConfiguration(registry) : null;
+    public @Nullable PMDConfiguration toConfiguration() {
+        return isValidParameterSet() ? result.toConfiguration() : null;
     }
 
     private boolean isValidParameterSet() {

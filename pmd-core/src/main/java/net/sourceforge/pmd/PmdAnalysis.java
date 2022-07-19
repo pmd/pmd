@@ -27,7 +27,6 @@ import net.sourceforge.pmd.cli.internal.ProgressBarListener;
 import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.internal.util.FileCollectionUtil;
 import net.sourceforge.pmd.lang.Language;
-import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
 import net.sourceforge.pmd.lang.document.FileCollector;
@@ -154,13 +153,6 @@ public final class PmdAnalysis implements AutoCloseable {
     }
 
     /**
-     * Returns the language registry for this analysis.
-     */
-    public LanguageRegistry languages() {
-        return configuration.languages();
-    }
-
-    /**
      * Returns a new ruleset loader, which can be used to create new
      * rulesets (add them then with {@link #addRuleSet(RuleSet)}).
      *
@@ -171,9 +163,7 @@ public final class PmdAnalysis implements AutoCloseable {
      * }</pre>
      */
     public RuleSetLoader newRuleSetLoader() {
-        RuleSetLoader loader = RuleSetLoader.fromPmdConfig(configuration);
-        loader.setReporter(this.reporter);
-        return loader;
+        return RuleSetLoader.fromPmdConfig(configuration);
     }
 
     /**
