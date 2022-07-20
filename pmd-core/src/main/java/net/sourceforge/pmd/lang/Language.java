@@ -31,7 +31,6 @@ import java.util.ServiceLoader;
  */
 public interface Language extends Comparable<Language> {
 
-    String LANGUAGE_MODULES_CLASS_NAMES_PROPERTY = "languageModulesClassNames";
 
     /**
      * Returns the full name of this Language. This is generally the name of this
@@ -129,5 +128,13 @@ public interface Language extends Comparable<Language> {
      * @return The current default language version for this language.
      */
     LanguageVersion getDefaultVersion();
+
+    default LanguagePropertyBundle newPropertyBundle() {
+        return new LanguagePropertyBundle(this);
+    }
+
+    default LanguageProcessor createProcessor(LanguagePropertyBundle bundle) {
+        return new BatchLanguageProcessor(this, bundle);
+    }
 
 }

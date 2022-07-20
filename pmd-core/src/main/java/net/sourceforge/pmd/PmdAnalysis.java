@@ -27,11 +27,14 @@ import net.sourceforge.pmd.cli.internal.ProgressBarListener;
 import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.internal.util.FileCollectionUtil;
 import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.lang.LanguageProcessor.AnalysisTask;
+import net.sourceforge.pmd.lang.LanguageProcessorRegistry;
+import net.sourceforge.pmd.lang.LanguageProcessorRegistry.LanguageTerminationException;
+import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
 import net.sourceforge.pmd.lang.document.FileCollector;
 import net.sourceforge.pmd.lang.document.TextFile;
-import net.sourceforge.pmd.processor.AbstractPMDProcessor;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
 import net.sourceforge.pmd.reporting.ReportStats;
@@ -302,16 +305,44 @@ public final class PmdAnalysis implements AutoCloseable {
             }
 
             PMD.encourageToUseIncrementalAnalysis(configuration);
-            try (AbstractPMDProcessor processor = AbstractPMDProcessor.newFileProcessor(configuration)) {
-                processor.processFiles(rulesets, textFiles, listener);
+
+            try (LanguageProcessorRegistry lpr = LanguageProcessorRegistry.create(
+                // only start the applicable languages
+                new LanguageRegistry(getApplicableLanguages()),
+                // todo - these come from the CLI (through the PMDConfiguration)
+                Collections.emptyMap(),
+                reporter
+            )) {
+                AnalysisTask analysisTask = new AnalysisTask(
+                    rulesets,
+                    textFiles,
+                    listener,
+                    1,
+                    configuration.getAnalysisCache(),
+                    reporter
+                );
+                List<AutoCloseable> analyses = new ArrayList<>();
+                try {
+                    for (Language lang : lpr) {
+                        analyses.add(lpr.getProcessor(lang).launchAnalysis(analysisTask));
+                    }
+                } finally {
+                    Exception e = IOUtil.closeAll(analyses);
+                    if (e != null) {
+                        reporter.errorEx("Error while joining analysis", e);
+                    }
+                }
+
+            } catch (LanguageTerminationException e) {
+                reporter.errorEx("Error while closing language processors", e);
             }
         } finally {
             try {
                 listener.close();
             } catch (Exception e) {
-                reporter.errorEx("Exception while initializing analysis listeners", e);
+                reporter.errorEx("Exception while closing analysis listeners", e);
                 // todo better exception
-                throw new RuntimeException("Exception while initializing analysis listeners", e);
+                throw new RuntimeException("Exception while closing analysis listeners", e);
             }
         }
     }

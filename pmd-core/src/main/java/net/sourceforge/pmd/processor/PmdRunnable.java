@@ -9,7 +9,6 @@ import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RuleViolation;
@@ -18,6 +17,8 @@ import net.sourceforge.pmd.benchmark.TimedOperation;
 import net.sourceforge.pmd.benchmark.TimedOperationCategory;
 import net.sourceforge.pmd.cache.AnalysisCache;
 import net.sourceforge.pmd.internal.SystemProps;
+import net.sourceforge.pmd.lang.LanguageProcessor;
+import net.sourceforge.pmd.lang.LanguageProcessor.AnalysisTask;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.ast.FileAnalysisException;
 import net.sourceforge.pmd.lang.ast.Parser;
@@ -28,7 +29,6 @@ import net.sourceforge.pmd.lang.ast.SemanticException;
 import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
-import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
 
 /**
  * A processing task for a single file.
@@ -37,20 +37,14 @@ abstract class PmdRunnable implements Runnable {
 
     private static final Logger LOG = LoggerFactory.getLogger(PmdRunnable.class);
     private final TextFile textFile;
-    private final GlobalAnalysisListener globalListener;
+    private final AnalysisTask task;
+    private final LanguageProcessor processor;
 
-    private final AnalysisCache analysisCache;
-    /** @deprecated Get rid of this */
-    @Deprecated
-    private final PMDConfiguration configuration;
-
-    PmdRunnable(TextFile textFile,
-                GlobalAnalysisListener globalListener,
-                PMDConfiguration configuration) {
+    PmdRunnable(TextFile textFile, AnalysisTask task, LanguageProcessor processor) {
         this.textFile = textFile;
-        this.globalListener = globalListener;
-        this.analysisCache = configuration.getAnalysisCache();
-        this.configuration = configuration;
+        this.task = task;
+        this.processor = processor;
+        assert processor.getLanguage().equals(textFile.getLanguageVersion().getLanguage());
     }
 
     /**
@@ -66,10 +60,11 @@ abstract class PmdRunnable implements Runnable {
 
         RuleSets ruleSets = getRulesets();
 
-        try (FileAnalysisListener listener = globalListener.startFileAnalysis(textFile)) {
+        try (FileAnalysisListener listener = task.getListener().startFileAnalysis(textFile)) {
 
             // Coarse check to see if any RuleSet applies to file, will need to do a finer RuleSet specific check later
             if (ruleSets.applies(textFile)) {
+                AnalysisCache analysisCache = task.getAnalysisCache();
                 try (TextDocument textDocument = TextDocument.create(textFile);
                      FileAnalysisListener cacheListener = analysisCache.startFileAnalysis(textDocument)) {
 
@@ -109,7 +104,7 @@ abstract class PmdRunnable implements Runnable {
     }
 
     private void reportCachedRuleViolations(final FileAnalysisListener ctx, TextDocument file) {
-        for (final RuleViolation rv : analysisCache.getCachedViolations(file)) {
+        for (final RuleViolation rv : task.getAnalysisCache().getCachedViolations(file)) {
             ctx.onRuleViolation(rv);
         }
     }
@@ -125,18 +120,13 @@ abstract class PmdRunnable implements Runnable {
                                TextDocument textDocument,
                                RuleSets ruleSets) throws FileAnalysisException {
 
-        SemanticErrorReporter reporter = SemanticErrorReporter.reportToLogger(configuration.getReporter());
+        SemanticErrorReporter reporter = SemanticErrorReporter.reportToLogger(task.getMessageReporter());
         ParserTask task = new ParserTask(
             textDocument,
-            reporter,
-            configuration.getClassLoader()
+            reporter
         );
 
-
-        LanguageVersionHandler handler = textDocument.getLanguageVersion().getLanguageVersionHandler();
-
-        handler.declareParserTaskProperties(task.getProperties());
-        task.getProperties().setProperty(ParserTask.COMMENT_MARKER, configuration.getSuppressMarker());
+        LanguageVersionHandler handler = processor.services();
 
         Parser parser = handler.getParser();
 

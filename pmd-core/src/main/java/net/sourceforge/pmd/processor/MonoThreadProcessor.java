@@ -4,28 +4,27 @@
 
 package net.sourceforge.pmd.processor;
 
-import java.util.List;
-
-import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.RuleSets;
+import net.sourceforge.pmd.lang.LanguageProcessor;
+import net.sourceforge.pmd.lang.LanguageProcessor.AnalysisTask;
 import net.sourceforge.pmd.lang.document.TextFile;
-import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
 
 /**
  * @author Romain Pelisse &lt;belaran@gmail.com&gt;
- *
  */
 final class MonoThreadProcessor extends AbstractPMDProcessor {
 
-    MonoThreadProcessor(PMDConfiguration configuration) {
-        super(configuration);
+    MonoThreadProcessor(AnalysisTask configuration, LanguageProcessor processor) {
+        super(configuration, processor);
     }
 
     @Override
     @SuppressWarnings("PMD.CloseResource") // closed by the PMDRunnable
-    public void processFiles(RuleSets rulesets, List<TextFile> files, GlobalAnalysisListener listener) {
-        for (TextFile file : files) {
-            new MonothreadRunnable(rulesets, file, listener, configuration).run();
+    public void processFiles() {
+        for (TextFile file : task.getFiles()) {
+            if (file.getLanguageVersion().getLanguage().equals(processor.getLanguage())) {
+                new MonothreadRunnable(file, task, processor).run();
+            }
         }
     }
 
@@ -38,10 +37,11 @@ final class MonoThreadProcessor extends AbstractPMDProcessor {
 
         private final RuleSets ruleSets;
 
-        MonothreadRunnable(RuleSets ruleSets, TextFile dataSource, GlobalAnalysisListener ruleContext, PMDConfiguration configuration) {
-            super(dataSource, ruleContext, configuration);
-            this.ruleSets = ruleSets;
+        MonothreadRunnable(TextFile textFile, AnalysisTask task, LanguageProcessor processor) {
+            super(textFile, task, processor);
+            this.ruleSets = task.getRulesets();
         }
+
 
         @Override
         protected RuleSets getRulesets() {
