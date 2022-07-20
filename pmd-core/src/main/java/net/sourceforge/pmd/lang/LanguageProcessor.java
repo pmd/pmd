@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang;
 
+import java.util.Collections;
 import java.util.List;
 
 import net.sourceforge.pmd.RuleSets;
@@ -32,9 +33,10 @@ public interface LanguageProcessor extends AutoCloseable {
         private final RuleSets rulesets;
         private final List<TextFile> files;
         private final GlobalAnalysisListener listener;
-        private int threadCount;
+        private final int threadCount;
         private final AnalysisCache analysisCache;
         private final MessageReporter messageReporter;
+        private final LanguageProcessorRegistry lpRegistry;
 
 
         public AnalysisTask(RuleSets rulesets,
@@ -42,13 +44,15 @@ public interface LanguageProcessor extends AutoCloseable {
                             GlobalAnalysisListener listener,
                             int threadCount,
                             AnalysisCache analysisCache,
-                            MessageReporter messageReporter) {
+                            MessageReporter messageReporter,
+                            LanguageProcessorRegistry lpRegistry) {
             this.rulesets = rulesets;
             this.files = files;
             this.listener = listener;
             this.threadCount = threadCount;
             this.analysisCache = analysisCache;
             this.messageReporter = messageReporter;
+            this.lpRegistry = lpRegistry;
         }
 
         public RuleSets getRulesets() {
@@ -56,7 +60,7 @@ public interface LanguageProcessor extends AutoCloseable {
         }
 
         public List<TextFile> getFiles() {
-            return files;
+            return Collections.unmodifiableList(files);
         }
 
         public GlobalAnalysisListener getListener() {
@@ -73,6 +77,22 @@ public interface LanguageProcessor extends AutoCloseable {
 
         public MessageReporter getMessageReporter() {
             return messageReporter;
+        }
+
+        public LanguageProcessorRegistry getLpRegistry() {
+            return lpRegistry;
+        }
+
+        public AnalysisTask withFiles(List<TextFile> newFiles) {
+            return new AnalysisTask(
+                rulesets,
+                newFiles,
+                listener,
+                threadCount,
+                analysisCache,
+                messageReporter,
+                lpRegistry
+            );
         }
     }
 

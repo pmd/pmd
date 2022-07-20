@@ -7,6 +7,8 @@ package net.sourceforge.pmd.lang;
 import java.util.List;
 import java.util.ServiceLoader;
 
+import net.sourceforge.pmd.processor.BatchLanguageProcessor;
+
 /**
  * Represents a language module, and provides access to language-specific
  * functionality. You can get a language instance from {@link LanguageRegistry}.
@@ -134,7 +136,7 @@ public interface Language extends Comparable<Language> {
     }
 
     default LanguageProcessor createProcessor(LanguagePropertyBundle bundle) {
-        return new BatchLanguageProcessor(this, bundle);
+        return new BatchLanguageProcessor<LanguagePropertyBundle>(bundle) {};
     }
 
 }

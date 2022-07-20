@@ -6,11 +6,10 @@ package net.sourceforge.pmd.lang.java.internal;
 
 import java.util.Objects;
 
-import net.sourceforge.pmd.lang.BatchLanguageProcessor;
+import net.sourceforge.pmd.processor.BatchLanguageProcessor;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.ast.Parser;
-import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import net.sourceforge.pmd.lang.java.ast.JavaParser;
 import net.sourceforge.pmd.lang.java.ast.internal.LanguageLevelChecker;
 import net.sourceforge.pmd.lang.java.ast.internal.ReportingStrategy;
@@ -44,7 +43,7 @@ public class JavaLanguageProcessor extends BatchLanguageProcessor<JavaLanguagePr
     private TypeSystem typeSystem;
 
     public JavaLanguageProcessor(JavaLanguageProperties properties, TypeSystem typeSystem) {
-        super(JavaLanguageModule.getInstance(), properties);
+        super(properties);
         this.typeSystem = typeSystem;
 
         LanguageLevelChecker<?> levelChecker =

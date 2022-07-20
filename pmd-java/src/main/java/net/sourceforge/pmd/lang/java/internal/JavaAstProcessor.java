@@ -10,7 +10,6 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.benchmark.TimeTracker;
-import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.ast.SemanticErrorReporter;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
@@ -39,28 +38,23 @@ import net.sourceforge.pmd.lang.java.types.internal.infer.TypeInferenceLogger;
  */
 public final class JavaAstProcessor {
     private final TypeInferenceLogger typeInferenceLogger;
+    private final JavaLanguageProcessor globalProc;
     private final SemanticErrorReporter logger;
-    private final LanguageVersion languageVersion;
-    private final TypeSystem typeSystem;
 
     private SymbolResolver symResolver;
 
     private final UnresolvedClassStore unresolvedTypes;
 
 
-    private JavaAstProcessor(TypeSystem typeSystem,
-                             SymbolResolver symResolver,
+    private JavaAstProcessor(JavaLanguageProcessor globalProc,
                              SemanticErrorReporter logger,
-                             TypeInferenceLogger typeInfLogger,
-                             LanguageVersion languageVersion) {
+                             TypeInferenceLogger typeInfLogger) {
 
-        this.symResolver = symResolver;
+        this.symResolver = globalProc.getTypeSystem().bootstrapResolver();
+        this.globalProc = globalProc;
         this.logger = logger;
         this.typeInferenceLogger = typeInfLogger;
-        this.languageVersion = languageVersion;
-
-        this.typeSystem = typeSystem;
-        this.unresolvedTypes = new UnresolvedClassStore(typeSystem);
+        this.unresolvedTypes = new UnresolvedClassStore(globalProc.getTypeSystem());
     }
 
     public UnresolvedClassStore getUnresolvedStore() {
@@ -114,12 +108,8 @@ public final class JavaAstProcessor {
         return logger;
     }
 
-    public LanguageVersion getLanguageVersion() {
-        return languageVersion;
-    }
-
     public int getJdkVersion() {
-        return ((JavaLanguageHandler) languageVersion.getLanguageVersionHandler()).getJdkVersion();
+        return globalProc.getProperties().getInternalJdkVersion();
     }
 
     /**
@@ -145,7 +135,7 @@ public final class JavaAstProcessor {
     }
 
     public TypeSystem getTypeSystem() {
-        return typeSystem;
+        return globalProc.getTypeSystem();
     }
 
 
@@ -154,13 +144,10 @@ public final class JavaAstProcessor {
                                           TypeInferenceLogger typeInfLogger) {
 
 
-        TypeSystem typeSystem1 = globalProcessor.getTypeSystem();
         return new JavaAstProcessor(
-            typeSystem1,
-            typeSystem1.bootstrapResolver(),
+            globalProcessor,
             semanticErrorReporter,
-            typeInfLogger,
-            globalProcessor.getLanguageVersion()
+            typeInfLogger
         );
     }
 

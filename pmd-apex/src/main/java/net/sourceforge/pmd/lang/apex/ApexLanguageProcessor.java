@@ -9,7 +9,7 @@ import static net.sourceforge.pmd.util.CollectionUtil.setOf;
 import java.util.Set;
 
 import net.sourceforge.pmd.annotation.InternalApi;
-import net.sourceforge.pmd.lang.BatchLanguageProcessor;
+import net.sourceforge.pmd.processor.BatchLanguageProcessor;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.apex.ast.ApexParser;
 import net.sourceforge.pmd.lang.apex.internal.ApexDesignerBindings;
@@ -28,8 +28,8 @@ public class ApexLanguageProcessor
 
     private final ApexMetricsProvider myMetricsProvider = new ApexMetricsProvider();
 
-    public ApexLanguageProcessor(ApexLanguageProperties bundle) {
-        super(ApexLanguageModule.getInstance(), bundle);
+    ApexLanguageProcessor(ApexLanguageProperties bundle) {
+        super(bundle);
     }
 
     @Override

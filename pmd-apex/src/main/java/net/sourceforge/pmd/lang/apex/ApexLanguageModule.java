@@ -21,12 +21,13 @@ public class ApexLanguageModule extends BaseLanguageModule {
 
     public ApexLanguageModule() {
         super(NAME, null, TERSE_NAME, listOf("cls", "trigger"));
-        addVersion(String.valueOf((int) Version.CURRENT.getExternal()), new ApexLanguageProcessor(new ApexLanguageProperties()), true);
+        addVersion(String.valueOf((int) Version.CURRENT.getExternal()),
+                   new ApexLanguageProcessor(new ApexLanguageProperties(this)), true);
     }
 
     @Override
     public ApexLanguageProperties newPropertyBundle() {
-        return new ApexLanguageProperties();
+        return new ApexLanguageProperties(this);
     }
 
     @Override

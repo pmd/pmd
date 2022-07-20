@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.processor;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-import net.sourceforge.pmd.lang.LanguageProcessor;
 import net.sourceforge.pmd.lang.LanguageProcessor.AnalysisTask;
 import net.sourceforge.pmd.lang.document.TextFile;
 
@@ -14,15 +12,12 @@ import net.sourceforge.pmd.lang.document.TextFile;
  *
  * @author Romain Pelisse &lt;belaran@gmail.com&gt;
  */
-@InternalApi
-public abstract class AbstractPMDProcessor implements AutoCloseable {
+abstract class AbstractPMDProcessor implements AutoCloseable {
 
     protected final AnalysisTask task;
-    protected final LanguageProcessor processor;
 
-    AbstractPMDProcessor(AnalysisTask task, LanguageProcessor processor) {
+    AbstractPMDProcessor(AnalysisTask task) {
         this.task = task;
-        this.processor = processor;
     }
 
     /**
@@ -41,11 +36,10 @@ public abstract class AbstractPMDProcessor implements AutoCloseable {
      * Returns a new file processor. The strategy used for threading is
      * determined by {@link AnalysisTask#getThreads()}.
      */
-    public static AbstractPMDProcessor newFileProcessor(AnalysisTask analysisTask,
-                                                        LanguageProcessor processor) {
+    public static AbstractPMDProcessor newFileProcessor(AnalysisTask analysisTask) {
         return analysisTask.getThreadCount() > 1
-               ? new MultiThreadProcessor(analysisTask, processor)
-               : new MonoThreadProcessor(analysisTask, processor);
+               ? new MultiThreadProcessor(analysisTask)
+               : new MonoThreadProcessor(analysisTask);
     }
 
 }

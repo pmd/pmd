@@ -16,7 +16,6 @@ import net.sourceforge.pmd.lang.document.TextDocument
 import net.sourceforge.pmd.lang.document.TextFile
 import net.sourceforge.pmd.lang.rule.XPathRule
 import net.sourceforge.pmd.lang.rule.xpath.XPathVersion
-import net.sourceforge.pmd.processor.AbstractPMDProcessor
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener
 import net.sourceforge.pmd.util.IOUtil
 import java.io.InputStream
@@ -134,7 +133,7 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
     ): T {
         val lversion = if (version == null) defaultVersion else getVersion(version)
         val textDoc = TextDocument.readOnlyString(sourceCode, fileName, lversion)
-        val task = ParserTask(textDoc, SemanticErrorReporter.noop())
+        val task = ParserTask(textDoc, SemanticErrorReporter.noop(), lpRegistry)
         return doParse(
             // params and task must match
             params.copy(defaultVerString = lversion.version),

@@ -4,9 +4,6 @@
 
 package net.sourceforge.pmd.processor;
 
-import static net.sourceforge.pmd.util.CollectionUtil.listOf;
-import static net.sourceforge.pmd.util.CollectionUtil.mapOf;
-import static net.sourceforge.pmd.util.CollectionUtil.setOf;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
@@ -29,23 +26,17 @@ import org.mockito.Mockito;
 import org.slf4j.event.Level;
 
 import net.sourceforge.pmd.PMDConfiguration;
+import net.sourceforge.pmd.PmdAnalysis;
 import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.Report.GlobalReportBuilderListener;
 import net.sourceforge.pmd.Report.ProcessingError;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.RuleSets;
-import net.sourceforge.pmd.cache.NoopAnalysisCache;
 import net.sourceforge.pmd.internal.SystemProps;
 import net.sourceforge.pmd.internal.util.ContextedAssertionError;
 import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.DummyLanguageModule.Handler;
 import net.sourceforge.pmd.lang.Language;
-import net.sourceforge.pmd.lang.LanguageProcessor.AnalysisTask;
-import net.sourceforge.pmd.lang.LanguageProcessorRegistry;
-import net.sourceforge.pmd.lang.LanguagePropertyBundle;
-import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.Parser;
@@ -83,34 +74,13 @@ public class PmdRunnableTest {
 
 
     private Report process(LanguageVersion lv) {
-        TextFile dataSource = TextFile.forCharSeq("test", "test.dummy", lv);
 
-        GlobalReportBuilderListener reportBuilder = new GlobalReportBuilderListener();
-
-        LanguagePropertyBundle langProperties = lv.getLanguage().newPropertyBundle();
-        langProperties.setLanguageVersion(lv.getVersion());
-
-        try (LanguageProcessorRegistry registry =
-                 LanguageProcessorRegistry.create(new LanguageRegistry(setOf(lv.getLanguage())),
-                                                  mapOf(lv.getLanguage(), langProperties),
-                                                  reporter)) {
-
-            registry.getProcessor(lv.getLanguage()).launchAnalysis(
-                new AnalysisTask(
-                    new RuleSets(RuleSet.forSingleRule(rule)),
-                    listOf(dataSource),
-                    reportBuilder,
-                    1,
-                    new NoopAnalysisCache(),
-                    reporter
-                )
-            ).close();
-            reportBuilder.close();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        try (PmdAnalysis pmd = PmdAnalysis.create(configuration)) {
+            pmd.files().addFile(TextFile.forCharSeq("test", "test.dummy", lv));
+            pmd.addRuleSet(RuleSet.forSingleRule(rule));
+            pmd.getLanguageProperties(lv.getLanguage()).setLanguageVersion(lv.getVersion());
+            return pmd.performAnalysisAndCollectReport();
         }
-
-        return reportBuilder.getResult();
     }
 
     @Test

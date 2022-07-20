@@ -17,7 +17,6 @@ import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.document.TextRange2d;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
 import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
-import net.sourceforge.pmd.processor.AbstractPMDProcessor;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
 
 /**
@@ -165,8 +164,7 @@ public final class RuleContext {
     }
 
     /**
-     * Create a new RuleContext. This is internal API owned by {@link AbstractPMDProcessor}
-     * (can likely be hidden when everything relevant is moved into rule package).
+     * Create a new RuleContext.
      *
      * The listener must be closed by its creator.
      */

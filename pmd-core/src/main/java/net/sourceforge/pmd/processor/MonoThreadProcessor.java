@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.processor;
 
 import net.sourceforge.pmd.RuleSets;
-import net.sourceforge.pmd.lang.LanguageProcessor;
 import net.sourceforge.pmd.lang.LanguageProcessor.AnalysisTask;
 import net.sourceforge.pmd.lang.document.TextFile;
 
@@ -14,17 +13,15 @@ import net.sourceforge.pmd.lang.document.TextFile;
  */
 final class MonoThreadProcessor extends AbstractPMDProcessor {
 
-    MonoThreadProcessor(AnalysisTask configuration, LanguageProcessor processor) {
-        super(configuration, processor);
+    MonoThreadProcessor(AnalysisTask task) {
+        super(task);
     }
 
     @Override
     @SuppressWarnings("PMD.CloseResource") // closed by the PMDRunnable
     public void processFiles() {
         for (TextFile file : task.getFiles()) {
-            if (file.getLanguageVersion().getLanguage().equals(processor.getLanguage())) {
-                new MonothreadRunnable(file, task, processor).run();
-            }
+            new MonothreadRunnable(file, task).run();
         }
     }
 
@@ -37,8 +34,8 @@ final class MonoThreadProcessor extends AbstractPMDProcessor {
 
         private final RuleSets ruleSets;
 
-        MonothreadRunnable(TextFile textFile, AnalysisTask task, LanguageProcessor processor) {
-            super(textFile, task, processor);
+        MonothreadRunnable(TextFile textFile, AnalysisTask task) {
+            super(textFile, task);
             this.ruleSets = task.getRulesets();
         }
 

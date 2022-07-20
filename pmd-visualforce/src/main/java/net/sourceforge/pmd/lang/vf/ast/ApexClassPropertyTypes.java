@@ -72,7 +72,7 @@ class ApexClassPropertyTypes extends SalesforceFieldTypes {
              TextDocument textDocument = TextDocument.create(file)) {
 
             Parser parser = languageVersion.getLanguageVersionHandler().getParser();
-            ParserTask task = new ParserTask(textDocument, SemanticErrorReporter.noop());
+            ParserTask task = new ParserTask(textDocument, SemanticErrorReporter.noop(), lpRegistry);
 
             return parser.parse(task);
         } catch (IOException e) {
@@ -80,7 +80,7 @@ class ApexClassPropertyTypes extends SalesforceFieldTypes {
         }
     }
 
-    static Node parseApex(String contextExpr, Path apexFilePath) {
+    private Node parseApex(String contextExpr, Path apexFilePath) {
         try {
             return parseApex(apexFilePath);
         } catch (ContextedRuntimeException e) {

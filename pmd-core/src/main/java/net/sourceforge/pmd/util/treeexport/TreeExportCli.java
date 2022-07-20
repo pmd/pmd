@@ -22,6 +22,7 @@ import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.internal.Slf4jSimpleConfiguration;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageProcessor;
+import net.sourceforge.pmd.lang.LanguageProcessorRegistry;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
@@ -208,7 +209,7 @@ public class TreeExportCli {
             LanguageProcessor processor = lang.createProcessor(lang.newPropertyBundle());
             TextDocument textDocument = TextDocument.create(textFile)) {
 
-            ParserTask task = new ParserTask(textDocument, SemanticErrorReporter.noop());
+            ParserTask task = new ParserTask(textDocument, SemanticErrorReporter.noop(), LanguageProcessorRegistry.singleton(processor));
             RootNode root = processor.services().getParser().parse(task);
 
             renderer.renderSubtree(root, io.stdout);

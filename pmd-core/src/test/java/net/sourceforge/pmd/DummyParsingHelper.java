@@ -42,8 +42,8 @@ public class DummyParsingHelper implements Extension, BeforeEachCallback, AfterE
         LanguageVersion version = DummyLanguageModule.getInstance().getDefaultVersion();
         ParserTask task = new ParserTask(
             TextDocument.readOnlyString(code, filename, version),
-            SemanticErrorReporter.noop()
-        );
+            SemanticErrorReporter.noop(),
+            LanguageProcessorRegistry.singleton(dummyProcessor));
         return (DummyRootNode) dummyProcessor.services().getParser().parse(task);
     }
 

@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang;
 
+import static net.sourceforge.pmd.util.CollectionUtil.mapOf;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -48,6 +50,11 @@ public final class LanguageProcessorRegistry implements Iterable<Language>, Auto
     @Override
     public Iterator<Language> iterator() {
         return processors.keySet().iterator();
+    }
+
+
+    public static LanguageProcessorRegistry singleton(LanguageProcessor lp) {
+        return new LanguageProcessorRegistry(mapOf(lp.getLanguage(), lp));
     }
 
     public static LanguageProcessorRegistry create(LanguageRegistry registry,

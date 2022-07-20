@@ -343,7 +343,7 @@ public final class PmdAnalysis implements AutoCloseable {
 
             PMD.encourageToUseIncrementalAnalysis(configuration);
 
-            try (LanguageProcessorRegistry lpr = LanguageProcessorRegistry.create(
+            try (LanguageProcessorRegistry lpRegistry = LanguageProcessorRegistry.create(
                 // only start the applicable languages
                 new LanguageRegistry(getApplicableLanguages()),
                 langProperties,
@@ -353,14 +353,15 @@ public final class PmdAnalysis implements AutoCloseable {
                     rulesets,
                     textFiles,
                     listener,
-                    1,
+                    configuration.getThreads(),
                     configuration.getAnalysisCache(),
-                    reporter
-                );
+                    reporter,
+                    lpRegistry);
+
                 List<AutoCloseable> analyses = new ArrayList<>();
                 try {
-                    for (Language lang : lpr) {
-                        analyses.add(lpr.getProcessor(lang).launchAnalysis(analysisTask));
+                    for (Language lang : lpRegistry) {
+                        analyses.add(lpRegistry.getProcessor(lang).launchAnalysis(analysisTask));
                     }
                 } finally {
                     Exception e = IOUtil.closeAll(analyses);

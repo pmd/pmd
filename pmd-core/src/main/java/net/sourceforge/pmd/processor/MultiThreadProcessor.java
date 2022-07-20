@@ -9,7 +9,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import net.sourceforge.pmd.RuleSets;
-import net.sourceforge.pmd.lang.LanguageProcessor;
 import net.sourceforge.pmd.lang.LanguageProcessor.AnalysisTask;
 import net.sourceforge.pmd.lang.document.TextFile;
 
@@ -18,10 +17,11 @@ import net.sourceforge.pmd.lang.document.TextFile;
  * @author Romain Pelisse &lt;belaran@gmail.com&gt;
  */
 final class MultiThreadProcessor extends AbstractPMDProcessor {
+
     private final ExecutorService executor;
 
-    MultiThreadProcessor(final AnalysisTask task, LanguageProcessor processor) {
-        super(task, processor);
+    MultiThreadProcessor(final AnalysisTask task) {
+        super(task);
 
         executor = Executors.newFixedThreadPool(task.getThreadCount(), new PmdThreadFactory());
     }
@@ -35,14 +35,12 @@ final class MultiThreadProcessor extends AbstractPMDProcessor {
         final ThreadLocal<RuleSets> ruleSetCopy = ThreadLocal.withInitial(() -> new RuleSets(task.getRulesets()));
 
         for (final TextFile textFile : task.getFiles()) {
-            if (textFile.getLanguageVersion().getLanguage().equals(processor.getLanguage())) {
-                executor.submit(new PmdRunnable(textFile, task, processor) {
-                    @Override
-                    protected RuleSets getRulesets() {
-                        return ruleSetCopy.get();
-                    }
-                });
-            }
+            executor.submit(new PmdRunnable(textFile, task) {
+                @Override
+                protected RuleSets getRulesets() {
+                    return ruleSetCopy.get();
+                }
+            });
         }
     }
 

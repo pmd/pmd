@@ -68,6 +68,7 @@ public class LanguageVersion implements Comparable<LanguageVersion> {
      * Returns the {@link LanguageVersionHandler}, which provides access
      * to version-specific services, like the parser.
      */
+    @Deprecated
     public LanguageVersionHandler getLanguageVersionHandler() {
         return languageVersionHandler;
     }

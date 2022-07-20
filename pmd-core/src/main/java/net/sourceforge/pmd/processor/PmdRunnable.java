@@ -38,13 +38,10 @@ abstract class PmdRunnable implements Runnable {
     private static final Logger LOG = LoggerFactory.getLogger(PmdRunnable.class);
     private final TextFile textFile;
     private final AnalysisTask task;
-    private final LanguageProcessor processor;
 
-    PmdRunnable(TextFile textFile, AnalysisTask task, LanguageProcessor processor) {
+    PmdRunnable(TextFile textFile, AnalysisTask task) {
         this.textFile = textFile;
         this.task = task;
-        this.processor = processor;
-        assert processor.getLanguage().equals(textFile.getLanguageVersion().getLanguage());
     }
 
     /**
@@ -121,16 +118,16 @@ abstract class PmdRunnable implements Runnable {
                                RuleSets ruleSets) throws FileAnalysisException {
 
         SemanticErrorReporter reporter = SemanticErrorReporter.reportToLogger(task.getMessageReporter());
-        ParserTask task = new ParserTask(
-            textDocument,
-            reporter
-        );
+        LanguageProcessor processor = task.getLpRegistry().getProcessor(textDocument.getLanguageVersion().getLanguage());
+        ParserTask parserTask = new ParserTask(textDocument,
+                                               reporter,
+                                               task.getLpRegistry());
 
         LanguageVersionHandler handler = processor.services();
 
         Parser parser = handler.getParser();
 
-        RootNode rootNode = parse(parser, task);
+        RootNode rootNode = parse(parser, parserTask);
 
         SemanticException semanticError = reporter.getFirstError();
         if (semanticError != null) {

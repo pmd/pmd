@@ -23,8 +23,8 @@ public class HtmlTokenizer implements Tokenizer {
         try (TextDocument textDoc = TextDocument.create(CpdCompat.cpdCompat(sourceCode))) {
             ParserTask task = new ParserTask(
                 textDoc,
-                SemanticErrorReporter.noop()// fixme
-            );
+                SemanticErrorReporter.noop(),// fixme
+                lpRegistry);
 
             HtmlParser parser = new HtmlParser();
             ASTHtmlDocument root = parser.parse(task);

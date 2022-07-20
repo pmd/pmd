@@ -6,6 +6,8 @@ package net.sourceforge.pmd.lang.ast;
 
 import java.util.Objects;
 
+import net.sourceforge.pmd.internal.util.AssertionUtil;
+import net.sourceforge.pmd.lang.LanguageProcessorRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.document.TextDocument;
 
@@ -37,10 +39,12 @@ public interface Parser {
 
         private final TextDocument textDoc;
         private final SemanticErrorReporter reporter;
+        private final LanguageProcessorRegistry lpRegistry;
 
-        public ParserTask(TextDocument textDoc, SemanticErrorReporter reporter) {
+        public ParserTask(TextDocument textDoc, SemanticErrorReporter reporter, LanguageProcessorRegistry lpRegistry) {
             this.textDoc = Objects.requireNonNull(textDoc, "Text document was null");
             this.reporter = Objects.requireNonNull(reporter, "reporter was null");
+            this.lpRegistry = AssertionUtil.requireParamNotNull("lpRegistry", lpRegistry);
         }
 
 
@@ -77,7 +81,9 @@ public interface Parser {
             return reporter;
         }
 
-
+        public LanguageProcessorRegistry getLpRegistry() {
+            return lpRegistry;
+        }
     }
 
 

@@ -6,18 +6,17 @@ package net.sourceforge.pmd.lang.ecmascript.internal;
 
 import org.mozilla.javascript.Context;
 
-import net.sourceforge.pmd.lang.BatchLanguageProcessor;
+import net.sourceforge.pmd.processor.BatchLanguageProcessor;
 import net.sourceforge.pmd.lang.LanguagePropertyBundle;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.ast.Parser;
-import net.sourceforge.pmd.lang.ecmascript.EcmascriptLanguageModule;
 import net.sourceforge.pmd.lang.ecmascript.ast.EcmascriptParser;
 
 public class EcmascriptProcessor extends BatchLanguageProcessor<LanguagePropertyBundle>
     implements LanguageVersionHandler {
 
     public EcmascriptProcessor(LanguagePropertyBundle properties) {
-        super(EcmascriptLanguageModule.getInstance(), properties);
+        super(properties);
     }
 
     public int getRhinoVersion() {

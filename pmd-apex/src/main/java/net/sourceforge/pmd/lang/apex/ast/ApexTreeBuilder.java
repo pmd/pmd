@@ -258,7 +258,7 @@ final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
     ApexTreeBuilder(ParserTask task, ApexLanguageProperties apexProperties) {
         this.sourceCode = task.getTextDocument();
         this.task = task;
-        commentInfo = extractInformationFromComments(sourceCode, apexProperties.getCommentMarker());
+        commentInfo = extractInformationFromComments(sourceCode, apexProperties.getSuppressMarker());
     }
 
     static <T extends AstNode> AbstractApexNode<T> createNodeAdapter(T node) {
