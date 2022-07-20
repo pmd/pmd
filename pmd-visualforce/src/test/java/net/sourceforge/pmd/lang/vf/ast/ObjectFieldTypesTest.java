@@ -19,7 +19,7 @@ import org.junit.Test;
 
 import net.sourceforge.pmd.lang.vf.DataType;
 import net.sourceforge.pmd.lang.vf.VFTestUtils;
-import net.sourceforge.pmd.lang.vf.VfHandler;
+import net.sourceforge.pmd.lang.vf.VfLanguageProperties;
 
 public class ObjectFieldTypesTest {
     private static final Map<String, DataType> EXPECTED_SFDX_DATA_TYPES;
@@ -57,7 +57,7 @@ public class ObjectFieldTypesTest {
         Path vfPagePath = VFTestUtils.getMetadataPath(this, VFTestUtils.MetadataFormat.SFDX, VFTestUtils.MetadataType.Vf).resolve("SomePage.page");
 
         ObjectFieldTypes objectFieldTypes = new ObjectFieldTypes();
-        validateSfdxAccount(objectFieldTypes, vfPagePath, VfHandler.OBJECTS_DIRECTORIES_DESCRIPTOR.defaultValue());
+        validateSfdxAccount(objectFieldTypes, vfPagePath, VfLanguageProperties.OBJECTS_DIRECTORIES_DESCRIPTOR.defaultValue());
     }
 
     /**
@@ -68,7 +68,7 @@ public class ObjectFieldTypesTest {
         Path vfPagePath = VFTestUtils.getMetadataPath(this, VFTestUtils.MetadataFormat.MDAPI, VFTestUtils.MetadataType.Vf).resolve("SomePage.page");
 
         ObjectFieldTypes objectFieldTypes = new ObjectFieldTypes();
-        validateMDAPIAccount(objectFieldTypes, vfPagePath, VfHandler.OBJECTS_DIRECTORIES_DESCRIPTOR.defaultValue());
+        validateMDAPIAccount(objectFieldTypes, vfPagePath, VfLanguageProperties.OBJECTS_DIRECTORIES_DESCRIPTOR.defaultValue());
     }
 
     /**
@@ -80,8 +80,8 @@ public class ObjectFieldTypesTest {
         Path vfPagePath = VFTestUtils.getMetadataPath(this, VFTestUtils.MetadataFormat.SFDX, VFTestUtils.MetadataType.Vf)
             .resolve("SomePage.page");
 
-        List<String> paths = Arrays.asList(VfHandler.OBJECTS_DIRECTORIES_DESCRIPTOR.defaultValue().get(0),
-                VFTestUtils.getMetadataPath(this, VFTestUtils.MetadataFormat.MDAPI, VFTestUtils.MetadataType.Objects).toString());
+        List<String> paths = Arrays.asList(VfLanguageProperties.OBJECTS_DIRECTORIES_DESCRIPTOR.defaultValue().get(0),
+                                           VFTestUtils.getMetadataPath(this, VFTestUtils.MetadataFormat.MDAPI, VFTestUtils.MetadataType.Objects).toString());
         objectFieldTypes = new ObjectFieldTypes();
         validateSfdxAccount(objectFieldTypes, vfPagePath, paths);
         validateMDAPIAccount(objectFieldTypes, vfPagePath, paths);

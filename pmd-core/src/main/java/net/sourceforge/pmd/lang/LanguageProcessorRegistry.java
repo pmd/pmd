@@ -50,13 +50,13 @@ public class LanguageProcessorRegistry implements Iterable<Language>, AutoClosea
     }
 
     public static LanguageProcessorRegistry create(LanguageRegistry registry,
-                                                   Map<Language, Properties> languageProperties,
+                                                   Map<Language, LanguagePropertyBundle> languageProperties,
                                                    MessageReporter messageReporter) {
         Map<Language, LanguageProcessor> processors = new HashMap<>();
         for (Language language : registry) {
-            LanguagePropertyBundle properties = language.newPropertyBundle();
-            setLanguageProperties(languageProperties, messageReporter, language, properties);
+            LanguagePropertyBundle properties = languageProperties.getOrDefault(language, language.newPropertyBundle());
             try {
+                assert properties.getLanguage().equals(language): "Mismatched language";
                 LanguageProcessor processor = language.createProcessor(properties);
                 processors.put(language, processor);
             } catch (IllegalArgumentException e) {
@@ -66,6 +66,19 @@ public class LanguageProcessorRegistry implements Iterable<Language>, AutoClosea
 
         return new LanguageProcessorRegistry(processors);
     }
+
+    private static Map<Language, LanguagePropertyBundle> derivePropertiesFromStrings(
+        Map<Language, Properties> stringProperties,
+        MessageReporter reporter
+    ) {
+        Map<Language, LanguagePropertyBundle> typedProperties = new HashMap<>();
+        stringProperties.forEach((l, props) -> {
+            LanguagePropertyBundle properties = l.newPropertyBundle();
+            setLanguageProperties(stringProperties, reporter, l, properties);
+        });
+        return typedProperties;
+    }
+
 
     private static void setLanguageProperties(Map<Language, Properties> languageProperties, MessageReporter messageReporter, Language language, LanguagePropertyBundle properties) {
         Properties props = languageProperties.get(language);

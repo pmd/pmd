@@ -9,7 +9,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
 
@@ -23,6 +25,8 @@ import net.sourceforge.pmd.cache.FileAnalysisCache;
 import net.sourceforge.pmd.cache.NoopAnalysisCache;
 import net.sourceforge.pmd.cli.PmdParametersParseResult;
 import net.sourceforge.pmd.internal.util.AssertionUtil;
+import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.lang.LanguagePropertyBundle;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
@@ -130,6 +134,7 @@ public class PMDConfiguration extends AbstractConfiguration {
     private boolean ignoreIncrementalAnalysis;
     private final LanguageRegistry langRegistry;
     private boolean progressBar = false;
+    private final Map<Language, LanguagePropertyBundle> langProperties = new HashMap<>();
 
     public PMDConfiguration() {
         this(DEFAULT_REGISTRY);
@@ -865,5 +870,16 @@ public class PMDConfiguration extends AbstractConfiguration {
         return progressBar;
     }
 
-
+    /**
+     * Returns a mutable bundle of language properties that are associated
+     * to the given language (always the same for a given language).
+     *
+     * @param language A language, which must be registered
+     */
+    public @NonNull LanguagePropertyBundle getLanguageProperties(Language language) {
+        if (!langRegistry.getLanguages().contains(language)) {
+            throw new IllegalArgumentException(language.getId());
+        }
+        return langProperties.computeIfAbsent(language, Language::newPropertyBundle);
+    }
 }

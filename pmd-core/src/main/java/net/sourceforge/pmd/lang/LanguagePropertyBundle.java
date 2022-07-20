@@ -57,7 +57,15 @@ public class LanguagePropertyBundle extends AbstractPropertySource {
         return language.getName();
     }
 
+    public Language getLanguage() {
+        return language;
+    }
+
     public LanguageVersion getLanguageVersion() {
         return getProperty(languageVersion);
+    }
+
+    public String getSuppressMarker() {
+        return getProperty(SUPPRESS_MARKER);
     }
 }

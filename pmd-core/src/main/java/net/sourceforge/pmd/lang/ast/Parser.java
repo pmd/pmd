@@ -6,15 +6,8 @@ package net.sourceforge.pmd.lang.ast;
 
 import java.util.Objects;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
-
-import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.document.TextDocument;
-import net.sourceforge.pmd.properties.AbstractPropertySource;
-import net.sourceforge.pmd.properties.PropertyDescriptor;
-import net.sourceforge.pmd.properties.PropertyFactory;
-import net.sourceforge.pmd.properties.PropertySource;
 
 /**
  * Produces an AST from a source file. Instances of this interface must
@@ -44,38 +37,12 @@ public interface Parser {
 
         private final TextDocument textDoc;
         private final SemanticErrorReporter reporter;
-        private final ClassLoader auxclasspathClassLoader;
-
-        private final PropertySource propertySource;
-
-        public ParserTask(TextDocument textDoc, SemanticErrorReporter reporter, ClassLoader auxclasspathClassLoader) {
-            this.textDoc = Objects.requireNonNull(textDoc, "Text document was null");
-            this.reporter = Objects.requireNonNull(reporter, "reporter was null");
-            this.auxclasspathClassLoader = Objects.requireNonNull(auxclasspathClassLoader, "auxclasspathClassLoader was null");
-
-            this.propertySource = new ParserTaskProperties();
-            propertySource.definePropertyDescriptor(COMMENT_MARKER);
-        }
 
         public ParserTask(TextDocument textDoc, SemanticErrorReporter reporter) {
-            this(textDoc, reporter, Parser.class.getClassLoader());
+            this.textDoc = Objects.requireNonNull(textDoc, "Text document was null");
+            this.reporter = Objects.requireNonNull(reporter, "reporter was null");
         }
 
-        public static final PropertyDescriptor<String> COMMENT_MARKER =
-            PropertyFactory.stringProperty("suppressionCommentMarker")
-                           .desc("deprecated! NOPMD")
-                           .defaultValue(PMDConfiguration.DEFAULT_SUPPRESS_MARKER)
-                           .build();
-
-        @Deprecated // transitional until language properties are implemented
-        public PropertySource getProperties() {
-            return propertySource;
-        }
-
-        @Deprecated // transitional until language properties are implemented
-        public ClassLoader getAuxclasspathClassLoader() {
-            return auxclasspathClassLoader;
-        }
 
         public LanguageVersion getLanguageVersion() {
             return textDoc.getLanguageVersion();
@@ -110,44 +77,7 @@ public interface Parser {
             return reporter;
         }
 
-        /**
-         * The suppression marker for comments.
-         */
-        public @NonNull String getCommentMarker() {
-            return getProperties().getProperty(COMMENT_MARKER);
-        }
 
-
-        private static final class ParserTaskProperties extends AbstractPropertySource {
-
-            @Override
-            protected String getPropertySourceType() {
-                return "ParserOptions";
-            }
-
-            @Override
-            public String getName() {
-                return "n/a";
-            }
-
-            @Override
-            public boolean equals(Object obj) {
-                if (this == obj) {
-                    return true;
-                }
-                if (!(obj instanceof ParserTaskProperties)) {
-                    return false;
-                }
-                final ParserTaskProperties that = (ParserTaskProperties) obj;
-                return Objects.equals(getPropertiesByPropertyDescriptor(),
-                                      that.getPropertiesByPropertyDescriptor());
-            }
-
-            @Override
-            public int hashCode() {
-                return getPropertiesByPropertyDescriptor().hashCode();
-            }
-        }
     }
 
 

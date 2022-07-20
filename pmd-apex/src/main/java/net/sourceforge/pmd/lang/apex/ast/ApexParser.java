@@ -6,11 +6,10 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.apex.ApexJorjeLogging;
+import net.sourceforge.pmd.lang.apex.ApexLanguageProperties;
 import net.sourceforge.pmd.lang.apex.multifile.ApexMultifileAnalysis;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.Parser;
-import net.sourceforge.pmd.properties.PropertyDescriptor;
-import net.sourceforge.pmd.properties.PropertyFactory;
 
 import apex.jorje.data.Locations;
 import apex.jorje.semantic.ast.compilation.Compilation;
@@ -18,15 +17,10 @@ import apex.jorje.semantic.ast.compilation.Compilation;
 @InternalApi
 public final class ApexParser implements Parser {
 
-    @InternalApi // todo change that to optional<file> when properties are updated
-    public static final PropertyDescriptor<String> MULTIFILE_DIRECTORY =
-        PropertyFactory.stringProperty("rootDirectory")
-                       .desc("The root directory of the Salesforce metadata, where `sfdx-project.json` resides. "
-                                 + "Set environment variable PMD_APEX_ROOTDIRECTORY to use this.")
-                       .defaultValue("") // is this ok?
-                       .build();
+    private final ApexLanguageProperties apexProperties;
 
-    public ApexParser() {
+    public ApexParser(ApexLanguageProperties apexProperties) {
+        this.apexProperties = apexProperties;
         ApexJorjeLogging.disableLogging();
         Locations.useIndexFactory();
     }
@@ -41,11 +35,11 @@ public final class ApexParser implements Parser {
                 throw new ParseException("Couldn't parse the source - there is not root node - Syntax Error??");
             }
 
-            String property = task.getProperties().getProperty(MULTIFILE_DIRECTORY);
+            String property = apexProperties.getProperty(ApexLanguageProperties.MULTIFILE_DIRECTORY);
             ApexMultifileAnalysis analysisHandler = ApexMultifileAnalysis.getAnalysisInstance(property);
 
 
-            final ApexTreeBuilder treeBuilder = new ApexTreeBuilder(task);
+            final ApexTreeBuilder treeBuilder = new ApexTreeBuilder(task, apexProperties);
             return treeBuilder.buildTree(astRoot, analysisHandler);
         } catch (apex.jorje.services.exception.ParseException e) {
             throw new ParseException(e);

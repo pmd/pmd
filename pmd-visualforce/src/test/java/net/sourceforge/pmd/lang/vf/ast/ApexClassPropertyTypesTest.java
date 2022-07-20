@@ -17,7 +17,7 @@ import org.junit.Test;
 
 import net.sourceforge.pmd.lang.vf.DataType;
 import net.sourceforge.pmd.lang.vf.VFTestUtils;
-import net.sourceforge.pmd.lang.vf.VfHandler;
+import net.sourceforge.pmd.lang.vf.VfLanguageProperties;
 
 public class ApexClassPropertyTypesTest {
     private static final Map<String, DataType> EXPECTED_DATA_TYPES;
@@ -58,7 +58,7 @@ public class ApexClassPropertyTypesTest {
         ApexClassPropertyTypes apexClassPropertyTypes = new ApexClassPropertyTypes();
 
         ObjectFieldTypesTest.validateDataTypes(EXPECTED_DATA_TYPES, apexClassPropertyTypes, vfPagePath,
-                                               VfHandler.APEX_DIRECTORIES_DESCRIPTOR.defaultValue());
+                                               VfLanguageProperties.APEX_DIRECTORIES_DESCRIPTOR.defaultValue());
     }
 
     @Test

@@ -13,6 +13,7 @@ import net.sourceforge.pmd.lang.ast.impl.javacc.JjtreeParserAdapter;
 import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.lang.java.ast.internal.LanguageLevelChecker;
 import net.sourceforge.pmd.lang.java.internal.JavaAstProcessor;
+import net.sourceforge.pmd.lang.java.internal.JavaLanguageProcessor;
 
 /**
  * Adapter for the JavaParser, using the specified grammar version.
@@ -23,10 +24,17 @@ import net.sourceforge.pmd.lang.java.internal.JavaAstProcessor;
 public class JavaParser extends JjtreeParserAdapter<ASTCompilationUnit> {
 
     private final LanguageLevelChecker<?> checker;
+    private final String suppressMarker;
+    private final JavaLanguageProcessor javaProcessor;
     private final boolean postProcess;
 
-    public JavaParser(LanguageLevelChecker<?> checker, boolean postProcess) {
+    public JavaParser(LanguageLevelChecker<?> checker,
+                      String suppressMarker,
+                      JavaLanguageProcessor javaProcessor,
+                      boolean postProcess) {
         this.checker = checker;
+        this.suppressMarker = suppressMarker;
+        this.javaProcessor = javaProcessor;
         this.postProcess = postProcess;
     }
 
@@ -44,7 +52,7 @@ public class JavaParser extends JjtreeParserAdapter<ASTCompilationUnit> {
     @Override
     protected ASTCompilationUnit parseImpl(CharStream cs, ParserTask task) throws ParseException {
         JavaParserImpl parser = new JavaParserImpl(cs);
-        parser.setSuppressMarker(task.getCommentMarker());
+        parser.setSuppressMarker(suppressMarker);
         parser.setJdkVersion(checker.getJdkVersion());
         parser.setPreview(checker.isPreviewEnabled());
 
@@ -53,9 +61,11 @@ public class JavaParser extends JjtreeParserAdapter<ASTCompilationUnit> {
         checker.check(root);
 
         if (postProcess) {
-            JavaAstProcessor processor = JavaAstProcessor.create(task.getAuxclasspathClassLoader(),
-                                                                 task.getLanguageVersion(),
-                                                                 task.getReporter());
+            JavaAstProcessor processor =
+                javaProcessor != null ? JavaAstProcessor.create(javaProcessor, task.getReporter())
+                                      : JavaAstProcessor.create(JavaParser.class.getClassLoader(),
+                                                                task.getLanguageVersion(),
+                                                                task.getReporter());
             processor.process(root);
         }
 

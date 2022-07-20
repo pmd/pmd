@@ -8,6 +8,7 @@ import static net.sourceforge.pmd.util.CollectionUtil.setOf;
 
 import java.util.Set;
 
+import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.lang.AbstractPmdLanguageVersionHandler;
 import net.sourceforge.pmd.lang.ast.Parser;
 import net.sourceforge.pmd.lang.java.ast.JavaParser;
@@ -59,11 +60,11 @@ public class JavaLanguageHandler extends AbstractPmdLanguageVersionHandler {
 
     @Override
     public Parser getParser() {
-        return new JavaParser(levelChecker, true);
+        return new JavaParser(levelChecker, PMDConfiguration.DEFAULT_SUPPRESS_MARKER, null, true);
     }
 
     public JavaParser getParserWithoutProcessing() {
-        return new JavaParser(levelChecker, false);
+        return new JavaParser(levelChecker, PMDConfiguration.DEFAULT_SUPPRESS_MARKER, null, false);
     }
 
     @Override

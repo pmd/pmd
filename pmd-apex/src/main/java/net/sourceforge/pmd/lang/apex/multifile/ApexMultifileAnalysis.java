@@ -16,7 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.annotation.Experimental;
-import net.sourceforge.pmd.lang.apex.ast.ApexParser;
+import net.sourceforge.pmd.lang.apex.ApexLanguageProperties;
 
 import com.nawforce.common.api.FileIssueOptions;
 import com.nawforce.common.api.Org;
@@ -101,7 +101,7 @@ public final class ApexMultifileAnalysis {
      * Returns the analysis instance. Returns a {@linkplain #isFailed() failed instance}
      * if this fails.
      *
-     * @param multiFileAnalysisDirectory Root directory of the configuration (see {@link ApexParser#MULTIFILE_DIRECTORY}).
+     * @param multiFileAnalysisDirectory Root directory of the configuration (see {@link ApexLanguageProperties#MULTIFILE_DIRECTORY}).
      */
     public static @NonNull ApexMultifileAnalysis getAnalysisInstance(String multiFileAnalysisDirectory) {
         if (INSTANCE_MAP.isEmpty()) {

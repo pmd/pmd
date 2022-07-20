@@ -4,9 +4,11 @@
 
 package net.sourceforge.pmd.lang.ecmascript;
 
-import org.mozilla.javascript.Context;
-
 import net.sourceforge.pmd.lang.BaseLanguageModule;
+import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.lang.LanguagePropertyBundle;
+import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.lang.ecmascript.internal.EcmascriptProcessor;
 
 /**
  * Created by christoferdutz on 20.09.14.
@@ -18,6 +20,10 @@ public class EcmascriptLanguageModule extends BaseLanguageModule {
 
     public EcmascriptLanguageModule() {
         super(NAME, null, TERSE_NAME, "js");
-        addDefaultVersion("ES6", new EcmascriptHandler(Context.VERSION_ES6));
+        addDefaultVersion("ES6", new EcmascriptProcessor(new LanguagePropertyBundle(this)));
+    }
+
+    public static Language getInstance() {
+        return LanguageRegistry.PMD.getLanguageByFullName(NAME);
     }
 }

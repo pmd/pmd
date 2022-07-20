@@ -71,8 +71,7 @@ class ApexClassPropertyTypes extends SalesforceFieldTypes {
              TextDocument textDocument = TextDocument.create(file)) {
 
             Parser parser = languageVersion.getLanguageVersionHandler().getParser();
-            ParserTask task = new ParserTask(textDocument, SemanticErrorReporter.noop(), ApexClassPropertyTypes.class.getClassLoader());
-            languageVersion.getLanguageVersionHandler().declareParserTaskProperties(task.getProperties());
+            ParserTask task = new ParserTask(textDocument, SemanticErrorReporter.noop());
 
             return parser.parse(task);
         } catch (IOException e) {

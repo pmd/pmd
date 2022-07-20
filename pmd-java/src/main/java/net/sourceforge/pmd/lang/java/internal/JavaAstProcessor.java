@@ -222,6 +222,15 @@ public final class JavaAstProcessor {
         return create(classLoader, languageVersion, logger, defaultTypeInfLogger());
     }
 
+
+    public static JavaAstProcessor create(JavaLanguageProcessor globalProcessor,
+                                          SemanticErrorReporter semanticErrorReporter) {
+        return create(globalProcessor.getProperties().getAnalysisClassLoader(),
+                      globalProcessor.getLanguageVersion(),
+                      semanticErrorReporter,
+                      defaultTypeInfLogger());
+    }
+
     public static JavaAstProcessor create(TypeSystem typeSystem,
                                           LanguageVersion languageVersion,
                                           SemanticErrorReporter semanticLogger,

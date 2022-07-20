@@ -133,13 +133,8 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
         fileName: String = TextFile.UNKNOWN_FILENAME
     ): T {
         val lversion = if (version == null) defaultVersion else getVersion(version)
-        val handler = lversion.languageVersionHandler
         val textDoc = TextDocument.readOnlyString(sourceCode, fileName, lversion)
         val task = Parser.ParserTask(textDoc, SemanticErrorReporter.noop())
-        task.properties.also {
-            handler.declareParserTaskProperties(it)
-            it.setProperty(Parser.ParserTask.COMMENT_MARKER, params.suppressMarker)
-        }
         return doParse(params, task)
     }
 

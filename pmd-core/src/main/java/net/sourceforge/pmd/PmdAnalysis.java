@@ -9,8 +9,10 @@ import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
@@ -26,10 +28,12 @@ import net.sourceforge.pmd.cli.internal.CliMessages;
 import net.sourceforge.pmd.cli.internal.ProgressBarListener;
 import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.internal.util.FileCollectionUtil;
+import net.sourceforge.pmd.lang.JvmLanguagePropertyBundle;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageProcessor.AnalysisTask;
 import net.sourceforge.pmd.lang.LanguageProcessorRegistry;
 import net.sourceforge.pmd.lang.LanguageProcessorRegistry.LanguageTerminationException;
+import net.sourceforge.pmd.lang.LanguagePropertyBundle;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
@@ -85,6 +89,7 @@ public final class PmdAnalysis implements AutoCloseable {
     private final PMDConfiguration configuration;
     private final MessageReporter reporter;
 
+    private final Map<Language, LanguagePropertyBundle> langProperties = new HashMap<>();
     private boolean closed;
 
     /**
@@ -134,6 +139,19 @@ public final class PmdAnalysis implements AutoCloseable {
             final List<RuleSet> ruleSets = ruleSetLoader.loadRuleSetsWithoutException(config.getRuleSetPaths());
             pmd.addRuleSets(ruleSets);
         }
+
+        for (Language language : config.languages()) {
+            LanguagePropertyBundle props = config.getLanguageProperties(language);
+            assert props.getLanguage().equals(language);
+            pmd.langProperties.put(language, props);
+            // TODO replace those with actual language properties when the
+            //  CLI syntax is implemented.
+            props.setProperty(LanguagePropertyBundle.SUPPRESS_MARKER, config.getSuppressMarker());
+            if (props instanceof JvmLanguagePropertyBundle) {
+                ((JvmLanguagePropertyBundle) props).setClassLoader(config.getClassLoader());
+            }
+        }
+
         return pmd;
     }
 
@@ -242,6 +260,19 @@ public final class PmdAnalysis implements AutoCloseable {
 
 
     /**
+     * Returns a mutable bundle of language properties that are associated
+     * to the given language (always the same for a given language).
+     *
+     * @param language A language, which must be registered
+     */
+    public LanguagePropertyBundle getLanguageProperties(Language language) {
+        if (!configuration.languages().getLanguages().contains(language)) {
+            throw new IllegalArgumentException(language.getId());
+        }
+        return langProperties.computeIfAbsent(language, Language::newPropertyBundle);
+    }
+
+    /**
      * Run PMD with the current state of this instance. This will start
      * and finish the registered renderers, and close all
      * {@linkplain #addListener(GlobalAnalysisListener) registered listeners}.
@@ -309,8 +340,7 @@ public final class PmdAnalysis implements AutoCloseable {
             try (LanguageProcessorRegistry lpr = LanguageProcessorRegistry.create(
                 // only start the applicable languages
                 new LanguageRegistry(getApplicableLanguages()),
-                // todo - these come from the CLI (through the PMDConfiguration)
-                Collections.emptyMap(),
+                langProperties,
                 reporter
             )) {
                 AnalysisTask analysisTask = new AnalysisTask(

@@ -6,8 +6,12 @@ package net.sourceforge.pmd.lang.java;
 
 import net.sourceforge.pmd.lang.BaseLanguageModule;
 import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.lang.LanguageProcessor;
+import net.sourceforge.pmd.lang.LanguagePropertyBundle;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.java.internal.JavaLanguageHandler;
+import net.sourceforge.pmd.lang.java.internal.JavaLanguageProcessor;
+import net.sourceforge.pmd.lang.java.internal.JavaLanguageProperties;
 
 /**
  * Created by christoferdutz on 20.09.14.
@@ -38,6 +42,17 @@ public class JavaLanguageModule extends BaseLanguageModule {
         addVersion("18-preview", new JavaLanguageHandler(18, true));
         addDefaultVersion("19", new JavaLanguageHandler(19)); // 19 is the default
         addVersion("19-preview", new JavaLanguageHandler(19, true));
+    }
+
+
+    @Override
+    public LanguagePropertyBundle newPropertyBundle() {
+        return new JavaLanguageProperties();
+    }
+
+    @Override
+    public LanguageProcessor createProcessor(LanguagePropertyBundle bundle) {
+        return new JavaLanguageProcessor((JavaLanguageProperties) bundle);
     }
 
     public static Language getInstance() {

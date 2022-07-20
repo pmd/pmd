@@ -9,14 +9,18 @@ import net.sourceforge.pmd.processor.AbstractPMDProcessor;
 /**
  * @author Clément Fournier
  */
-public class BatchLanguageProcessor implements LanguageProcessor {
+public class BatchLanguageProcessor<P extends LanguagePropertyBundle> implements LanguageProcessor {
 
     private final Language language;
-    private final LanguagePropertyBundle bundle;
+    private final P bundle;
 
-    public BatchLanguageProcessor(Language language, LanguagePropertyBundle bundle) {
+    public BatchLanguageProcessor(Language language, P bundle) {
         this.language = language;
         this.bundle = bundle;
+    }
+
+    protected P getProperties() {
+        return bundle;
     }
 
     @Override
@@ -25,7 +29,7 @@ public class BatchLanguageProcessor implements LanguageProcessor {
     }
 
     @Override
-    public Language getLanguage() {
+    public final Language getLanguage() {
         return language;
     }
 

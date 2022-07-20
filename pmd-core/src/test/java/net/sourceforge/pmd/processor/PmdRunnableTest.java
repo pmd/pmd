@@ -21,7 +21,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import java.util.List;
-import java.util.Properties;
 import java.util.function.BiConsumer;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -88,8 +87,8 @@ public class PmdRunnableTest {
 
         GlobalReportBuilderListener reportBuilder = new GlobalReportBuilderListener();
 
-        Properties langProperties = new Properties();
-        langProperties.setProperty(LanguagePropertyBundle.LANGUAGE_VERSION, lv.getVersion());
+        LanguagePropertyBundle langProperties = lv.getLanguage().newPropertyBundle();
+        langProperties.setLanguageVersion(lv.getVersion());
 
         try (LanguageProcessorRegistry registry =
                  LanguageProcessorRegistry.create(new LanguageRegistry(setOf(lv.getLanguage())),

@@ -41,6 +41,10 @@ public class JvmLanguagePropertyBundle extends LanguagePropertyBundle {
         }
     }
 
+    public void setClassLoader(ClassLoader classLoader) {
+        this.classLoader = classLoader;
+    }
+
     public @NonNull ClassLoader getAnalysisClassLoader() {
         if (classLoader == null) {
             classLoader = PMDConfiguration.class.getClassLoader();

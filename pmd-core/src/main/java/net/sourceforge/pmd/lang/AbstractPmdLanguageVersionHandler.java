@@ -20,10 +20,20 @@ import net.sourceforge.pmd.properties.PropertySource;
 public abstract class AbstractPmdLanguageVersionHandler extends AbstractLanguageVersionHandler {
 
 
+    public static void readLanguagePropertiesFromEnv(LanguagePropertyBundle props) {
+        for (PropertyDescriptor<?> propertyDescriptor : props.getPropertyDescriptors()) {
+            String propertyValue = getEnvValue(props.getLanguage().getTerseName(), propertyDescriptor);
+
+            if (propertyValue != null) {
+                setPropertyCapture(props, propertyDescriptor, propertyValue);
+            }
+        }
+    }
+
     /**
      * Returns the environment variable name that a user can set in order to override the default value.
      */
-    String getEnvironmentVariableName(String langTerseName, PropertyDescriptor<?> propertyDescriptor) {
+    static String getEnvironmentVariableName(String langTerseName, PropertyDescriptor<?> propertyDescriptor) {
         if (langTerseName == null) {
             throw new IllegalStateException("Language is null");
         }
@@ -36,7 +46,7 @@ public abstract class AbstractPmdLanguageVersionHandler extends AbstractLanguage
      *     variable has been set.
      */
 
-    String getEnvValue(String langTerseName, PropertyDescriptor<?> propertyDescriptor) {
+    static String getEnvValue(String langTerseName, PropertyDescriptor<?> propertyDescriptor) {
         // note: since we use environent variables and not system properties,
         // tests override this method.
         return System.getenv(getEnvironmentVariableName(langTerseName, propertyDescriptor));
@@ -58,7 +68,7 @@ public abstract class AbstractPmdLanguageVersionHandler extends AbstractLanguage
     }
 
     @Deprecated
-    private <T> void setPropertyCapture(PropertySource source, PropertyDescriptor<T> propertyDescriptor, String propertyValue) {
+    private static <T> void setPropertyCapture(PropertySource source, PropertyDescriptor<T> propertyDescriptor, String propertyValue) {
         T value = propertyDescriptor.valueFrom(propertyValue);
         source.setProperty(propertyDescriptor, value);
     }

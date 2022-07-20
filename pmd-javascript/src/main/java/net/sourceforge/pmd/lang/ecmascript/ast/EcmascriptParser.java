@@ -20,19 +20,20 @@ import net.sourceforge.pmd.lang.ast.AstInfo;
 import net.sourceforge.pmd.lang.ast.FileAnalysisException;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.RootNode;
+import net.sourceforge.pmd.lang.ecmascript.internal.EcmascriptProcessor;
 
 public final class EcmascriptParser implements net.sourceforge.pmd.lang.ast.Parser {
-    private final int esVersion;
+    private final EcmascriptProcessor processor;
 
-    public EcmascriptParser(int version) {
-        this.esVersion = version;
+    public EcmascriptParser(EcmascriptProcessor processor) {
+        this.processor = processor;
     }
 
     private AstRoot parseEcmascript(final String sourceCode, final List<ParseProblem> parseProblems) throws ParseException {
         final CompilerEnvirons compilerEnvirons = new CompilerEnvirons();
         compilerEnvirons.setRecordingComments(true);
         compilerEnvirons.setRecordingLocalJsDocComments(true);
-        compilerEnvirons.setLanguageVersion(esVersion);
+        compilerEnvirons.setLanguageVersion(processor.getRhinoVersion());
         // Scope's don't appear to get set right without this
         compilerEnvirons.setIdeMode(true);
         compilerEnvirons.setWarnTrailingComma(true);
@@ -57,7 +58,7 @@ public final class EcmascriptParser implements net.sourceforge.pmd.lang.ast.Pars
         final EcmascriptTreeBuilder treeBuilder = new EcmascriptTreeBuilder(parseProblems);
         ASTAstRoot tree = (ASTAstRoot) treeBuilder.build(astRoot);
 
-        String suppressMarker = task.getCommentMarker();
+        String suppressMarker = processor.getProperties().getSuppressMarker();
         Map<Integer, String> suppressMap = new HashMap<>();
         if (astRoot.getComments() != null) {
             for (Comment comment : astRoot.getComments()) {

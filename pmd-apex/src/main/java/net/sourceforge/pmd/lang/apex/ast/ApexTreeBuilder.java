@@ -17,6 +17,7 @@ import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.sourceforge.pmd.lang.apex.ApexLanguageProperties;
 import net.sourceforge.pmd.lang.apex.multifile.ApexMultifileAnalysis;
 import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
 import net.sourceforge.pmd.lang.document.Chars;
@@ -254,10 +255,10 @@ final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
     private final ParserTask task;
     private final CommentInformation commentInfo;
 
-    ApexTreeBuilder(ParserTask task) {
+    ApexTreeBuilder(ParserTask task, ApexLanguageProperties apexProperties) {
         this.sourceCode = task.getTextDocument();
         this.task = task;
-        commentInfo = extractInformationFromComments(sourceCode, task.getCommentMarker());
+        commentInfo = extractInformationFromComments(sourceCode, apexProperties.getCommentMarker());
     }
 
     static <T extends AstNode> AbstractApexNode<T> createNodeAdapter(T node) {
