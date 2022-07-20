@@ -23,6 +23,7 @@ import net.sourceforge.pmd.lang.document.TextRegion;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 import net.sourceforge.pmd.lang.rule.impl.DefaultRuleViolationFactory;
 import net.sourceforge.pmd.processor.PmdRunnableTest;
+import net.sourceforge.pmd.processor.SimpleBatchLanguageProcessor;
 
 /**
  * Dummy language used for testing PMD.
@@ -44,6 +45,11 @@ public class DummyLanguageModule extends BaseLanguageModule {
         addDefaultVersion("1.7", new Handler(), "7");
         addVersion("1.8", new Handler(), "8");
         PmdRunnableTest.registerCustomVersions(this::addVersion);
+    }
+
+    @Override
+    public LanguageProcessor createProcessor(LanguagePropertyBundle bundle) {
+        return new SimpleBatchLanguageProcessor(bundle, new Handler());
     }
 
     public static DummyLanguageModule getInstance() {

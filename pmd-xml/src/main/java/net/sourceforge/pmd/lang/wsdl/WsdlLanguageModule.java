@@ -5,7 +5,10 @@
 package net.sourceforge.pmd.lang.wsdl;
 
 import net.sourceforge.pmd.lang.BaseLanguageModule;
+import net.sourceforge.pmd.lang.LanguageProcessor;
+import net.sourceforge.pmd.lang.LanguagePropertyBundle;
 import net.sourceforge.pmd.lang.xml.XmlHandler;
+import net.sourceforge.pmd.processor.SimpleBatchLanguageProcessor;
 
 /**
  * Created by bernardo-macedo on 24.06.15.
@@ -17,6 +20,11 @@ public class WsdlLanguageModule extends BaseLanguageModule {
     public WsdlLanguageModule() {
         super(NAME, null, TERSE_NAME, "wsdl");
         addVersion("", new XmlHandler(), true);
+    }
+
+    @Override
+    public LanguageProcessor createProcessor(LanguagePropertyBundle bundle) {
+        return new SimpleBatchLanguageProcessor(bundle, new XmlHandler());
     }
 
 }

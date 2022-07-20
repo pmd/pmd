@@ -8,8 +8,11 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.BaseLanguageModule;
+import net.sourceforge.pmd.lang.LanguageProcessor;
+import net.sourceforge.pmd.lang.LanguagePropertyBundle;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.processor.SimpleBatchLanguageProcessor;
 
 import scala.meta.Dialect;
 
@@ -45,6 +48,14 @@ public class ScalaLanguageModule extends BaseLanguageModule {
         default:
             throw new IllegalArgumentException(v.getVersion());
         }
+    }
+
+
+    @Override
+    public LanguageProcessor createProcessor(LanguagePropertyBundle bundle) {
+        return new SimpleBatchLanguageProcessor(
+            bundle,
+            new ScalaLanguageHandler(dialectOf(bundle.getLanguageVersion())));
     }
 
     public static ScalaLanguageModule getInstance() {

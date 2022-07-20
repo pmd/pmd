@@ -11,6 +11,7 @@ import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.ast.impl.AbstractNode;
 import net.sourceforge.pmd.lang.document.TextRegion;
+import net.sourceforge.pmd.processor.SimpleBatchLanguageProcessor;
 
 /**
  * A dummy language implementation whose parser produces a single node.
@@ -31,7 +32,12 @@ public final class PlainTextLanguage extends BaseLanguageModule {
 
     private PlainTextLanguage() {
         super("Plain text", "Plain text", TERSE_NAME, "plain-text-file-goo-extension");
-        addVersion("default", new TextLvh(), true);
+        addVersion("", new TextLvh(), true);
+    }
+
+    @Override
+    public LanguageProcessor createProcessor(LanguagePropertyBundle bundle) {
+        return new SimpleBatchLanguageProcessor(bundle, new TextLvh());
     }
 
     /**

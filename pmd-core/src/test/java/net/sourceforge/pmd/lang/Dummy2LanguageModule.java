@@ -6,6 +6,9 @@ package net.sourceforge.pmd.lang;
 
 import java.util.Objects;
 
+import net.sourceforge.pmd.lang.DummyLanguageModule.Handler;
+import net.sourceforge.pmd.processor.SimpleBatchLanguageProcessor;
+
 /**
  * A second dummy language used for testing PMD.
  */
@@ -17,6 +20,11 @@ public class Dummy2LanguageModule extends BaseLanguageModule {
     public Dummy2LanguageModule() {
         super(NAME, null, TERSE_NAME, "dummy2");
         addVersion("1.0", new DummyLanguageModule.Handler(), true);
+    }
+
+    @Override
+    public LanguageProcessor createProcessor(LanguagePropertyBundle bundle) {
+        return new SimpleBatchLanguageProcessor(bundle, new Handler());
     }
 
     public static Dummy2LanguageModule getInstance() {

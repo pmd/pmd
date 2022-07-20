@@ -5,6 +5,9 @@
 package net.sourceforge.pmd.lang.plsql;
 
 import net.sourceforge.pmd.lang.BaseLanguageModule;
+import net.sourceforge.pmd.lang.LanguageProcessor;
+import net.sourceforge.pmd.lang.LanguagePropertyBundle;
+import net.sourceforge.pmd.processor.SimpleBatchLanguageProcessor;
 
 /**
  * Created by christoferdutz on 20.09.14.
@@ -26,5 +29,11 @@ public class PLSQLLanguageModule extends BaseLanguageModule {
                 "tps", "tpb" // Object Types
         );
         addVersion("", new PLSQLHandler(), true);
+    }
+
+
+    @Override
+    public LanguageProcessor createProcessor(LanguagePropertyBundle bundle) {
+        return new SimpleBatchLanguageProcessor(bundle, new PLSQLHandler());
     }
 }

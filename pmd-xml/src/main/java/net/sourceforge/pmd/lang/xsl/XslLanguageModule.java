@@ -5,7 +5,10 @@
 package net.sourceforge.pmd.lang.xsl;
 
 import net.sourceforge.pmd.lang.BaseLanguageModule;
+import net.sourceforge.pmd.lang.LanguageProcessor;
+import net.sourceforge.pmd.lang.LanguagePropertyBundle;
 import net.sourceforge.pmd.lang.xml.XmlHandler;
+import net.sourceforge.pmd.processor.SimpleBatchLanguageProcessor;
 
 /**
  * Created by christoferdutz on 20.09.14.
@@ -18,5 +21,11 @@ public class XslLanguageModule extends BaseLanguageModule {
     public XslLanguageModule() {
         super(NAME, null, TERSE_NAME, "xsl", "xslt");
         addVersion("", new XmlHandler(), true);
+    }
+
+
+    @Override
+    public LanguageProcessor createProcessor(LanguagePropertyBundle bundle) {
+        return new SimpleBatchLanguageProcessor(bundle, new XmlHandler());
     }
 }

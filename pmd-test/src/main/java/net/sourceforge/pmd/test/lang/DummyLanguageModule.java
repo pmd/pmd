@@ -7,6 +7,8 @@ package net.sourceforge.pmd.test.lang;
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.AbstractPmdLanguageVersionHandler;
 import net.sourceforge.pmd.lang.BaseLanguageModule;
+import net.sourceforge.pmd.lang.LanguageProcessor;
+import net.sourceforge.pmd.lang.LanguagePropertyBundle;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.ast.AstInfo;
 import net.sourceforge.pmd.lang.ast.Parser;
@@ -14,6 +16,7 @@ import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.document.TextRegion;
 import net.sourceforge.pmd.lang.rule.impl.DefaultRuleViolationFactory;
+import net.sourceforge.pmd.processor.SimpleBatchLanguageProcessor;
 import net.sourceforge.pmd.test.lang.ast.DummyNode;
 
 /**
@@ -40,6 +43,12 @@ public class DummyLanguageModule extends BaseLanguageModule {
         addVersion("1.6", new Handler(), false);
         addVersion("1.7", new Handler(), true);
         addVersion("1.8", new Handler(), false);
+    }
+
+
+    @Override
+    public LanguageProcessor createProcessor(LanguagePropertyBundle bundle) {
+        return new SimpleBatchLanguageProcessor(bundle, new Handler());
     }
 
     public static DummyLanguageModule getInstance() {

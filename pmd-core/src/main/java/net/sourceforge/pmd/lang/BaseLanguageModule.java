@@ -51,7 +51,7 @@ public abstract class BaseLanguageModule implements Language {
             versions = new HashMap<>();
         }
 
-        LanguageVersion languageVersion = new LanguageVersion(this, version, languageVersionHandler);
+        LanguageVersion languageVersion = new LanguageVersion(this, version, null);
 
         distinctVersions.add(languageVersion);
 

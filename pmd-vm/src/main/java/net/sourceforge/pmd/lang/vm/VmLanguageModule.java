@@ -5,6 +5,9 @@
 package net.sourceforge.pmd.lang.vm;
 
 import net.sourceforge.pmd.lang.BaseLanguageModule;
+import net.sourceforge.pmd.lang.LanguageProcessor;
+import net.sourceforge.pmd.lang.LanguagePropertyBundle;
+import net.sourceforge.pmd.processor.SimpleBatchLanguageProcessor;
 
 /**
  * Created by christoferdutz on 20.09.14.
@@ -19,4 +22,8 @@ public class VmLanguageModule extends BaseLanguageModule {
         addVersion("", new VmHandler(), true);
     }
 
+    @Override
+    public LanguageProcessor createProcessor(LanguagePropertyBundle bundle) {
+        return new SimpleBatchLanguageProcessor(bundle, new VmHandler());
+    }
 }
