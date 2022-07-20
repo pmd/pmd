@@ -336,7 +336,7 @@ public class Foo {
 public class Foo {
     public void test1() {
         String field1 = getSomeID();
-        String field2 = 'SELECT Id FROM Account WHERE Id =';
+        String field2 = 'SELECT COUNT() FROM Account WHERE Id =';
         Database.countQuery(field2 + field1);
     }
 }
@@ -350,7 +350,7 @@ public class Foo {
 public class Foo {
     public void test1() {
         String field1 = getSomeID();
-        String field2 = 'SELECT Id FROM Account WHERE Id =' + field1;
+        String field2 = 'SELECT COUNT() FROM Account WHERE Id =' + field1;
         Database.countQuery(field2);
     }
 }
@@ -364,7 +364,7 @@ public class Foo {
 public class Foo {
     public void test1() {
         String field1 = 'someIDhere';
-        String field2 = 'SELECT Id FROM Account WHERE Id =';
+        String field2 = 'SELECT COUNT() FROM Account WHERE Id =';
         Database.countQuery(field2 + field1);
     }
 }
@@ -378,7 +378,7 @@ public class Foo {
 public class Foo {
     public void test1() {
         String field1 = String.escapeSingleQuotes('yo');
-        String field2 = 'SELECT Id FROM Account WHERE Id =' + field1;
+        String field2 = 'SELECT COUNT() FROM Account WHERE Id =' + field1;
         Database.countQuery(field2);
     }
 }
@@ -392,7 +392,7 @@ public class Foo {
 public class Foo {
     public void test1() {
         String field1 = String.escapeSingleQuotes('yo');
-        Database.countQuery('SELECT Id FROM Account WHERE Id =' + field1);
+        Database.countQuery('SELECT COUNT() FROM Account WHERE Id =' + field1);
     }
 }
         ]]></code>
@@ -406,7 +406,7 @@ public class Foo {
 
     public void test1(String field1) {
         field2 = String.escapeSingleQuotes(field1);
-        Database.countQuery('SELECT Id FROM Account WHERE Id =' + field2);
+        Database.countQuery('SELECT COUNT() FROM Account WHERE Id =' + field2);
     }
 }
         ]]></code>
@@ -418,7 +418,7 @@ public class Foo {
         <code><![CDATA[
 public class Foo {
     public void test1() {
-        Database.countQuery('SELECT Id FROM Account');
+        Database.countQuery('SELECT COUNT() FROM Account');
     }
 }
         ]]></code>
@@ -430,7 +430,7 @@ public class Foo {
         <code><![CDATA[
 public class Foo {
     public void test1(String t1) {
-        Database.countQuery('SELECT Id FROM Account' + t1);
+        Database.countQuery('SELECT COUNT() FROM Account' + t1);
     }
 }
         ]]></code>
@@ -442,7 +442,7 @@ public class Foo {
         <code><![CDATA[
 public class Foo {
     public void test1(String t1, String t2) {
-        Database.countQuery('SELECT Id FROM Account ' + t1 + ' WHERE ' + t2 + ';');
+        Database.countQuery('SELECT COUNT() FROM Account ' + t1 + ' WHERE ' + t2 + ';');
     }
 }
         ]]></code>
@@ -454,7 +454,7 @@ public class Foo {
         <code><![CDATA[
 public class Foo {
     public void test1(List<String> t1) {
-        Database.countQuery('SELECT Id FROM Account ' + string.join(t1, ','));
+        Database.countQuery('SELECT COUNT() FROM Account ' + string.join(t1, ','));
     }
 }
         ]]></code>
@@ -467,7 +467,7 @@ public class Foo {
 public class Foo {
     public void test1() {
         String field1 = 'yo';
-        Database.countQuery('SELECT Id FROM Account WHERE Id =' + field1);
+        Database.countQuery('SELECT COUNT() FROM Account WHERE Id =' + field1);
     }
 }
         ]]></code>
@@ -480,7 +480,7 @@ public class Foo {
 public class Foo {
     public static String field1 = 'yo';
     public void test1() {
-        Database.countQuery('SELECT Id FROM Account WHERE Id =' + field1 + 'string');
+        Database.countQuery('SELECT COUNT() FROM Account WHERE Id =' + field1 + 'string');
     }
 }
         ]]></code>
@@ -493,7 +493,7 @@ public class Foo {
 public class Foo {
     public void test1() {
         String field1 = 'yo';
-        Database.countQuery('SELECT Id FROM Account WHERE Id =' + field1 + 'string');
+        Database.countQuery('SELECT COUNT() FROM Account WHERE Id =' + field1 + 'string');
     }
 }
         ]]></code>
@@ -505,7 +505,7 @@ public class Foo {
         <code><![CDATA[
 public class Foo {
     public void test1(String field1) {
-        Database.countQuery('SELECT Id FROM Account WHERE Id =' + String.escapeSingleQuotes(field1) + 'string');
+        Database.countQuery('SELECT COUNT() FROM Account WHERE Id =' + String.escapeSingleQuotes(field1) + 'string');
     }
 }
         ]]></code>
@@ -518,7 +518,7 @@ public class Foo {
 public class Foo {
     public void test1() {
         Integer field1 = 4;
-        Database.countQuery('SELECT Id FROM Account LIMIT ' + field1);
+        Database.countQuery('SELECT COUNT() FROM Account LIMIT ' + field1);
     }
 }
         ]]></code>
@@ -531,7 +531,7 @@ public class Foo {
 public class Foo {
     public void test1() {
         String name = 'Name';
-        String someQuery = 'SELECT Id, ' + name + ' FROM ' + String.escapeSingleQuotes(objectName);
+        String someQuery = 'SELECT COUNT(' + name + ') FROM ' + String.escapeSingleQuotes(objectName);
         Database.countQuery(someQuery);
     }
 }
@@ -545,7 +545,7 @@ public class Foo {
 public class Foo {
     public void test1(String objectName) {
         String name = 'Name';
-        String someQuery = 'SELECT Id, ' + name + ' FROM ' + objectName;
+        String someQuery = 'SELECT COUNT(' + name + ') FROM ' + objectName;
         Database.countQuery(someQuery);
     }
 }
@@ -575,7 +575,7 @@ public class Foo {
 public class Foo {
 
     public List<SObject> test1(String objName) {
-        String baseQuery = 'Select Id, Name From ' + String.escapeSingleQuotes(objName);
+        String baseQuery = 'Select Count() From ' + String.escapeSingleQuotes(objName);
         return Database.countQuery(baseQuery + ' LIMIT 1');
     }
 }
@@ -589,7 +589,7 @@ public class Foo {
 public class Foo {
     public void test1(String objName, String lim) { // "limit" is a kw
         Integer nLimit = Integer.valueOf(lim);
-        List<SObject> res = Database.countQuery('Select Id, Name From ' + String.escapeSingleQuotes(objName) + ' LIMIT ' + nLimit);
+        List<SObject> res = Database.countQuery('Select Count() From ' + String.escapeSingleQuotes(objName) + ' LIMIT ' + nLimit);
     }
 }
         ]]></code>
@@ -603,7 +603,7 @@ public class Foo {
     public void test1() {
         ID someId;
         someId = getId();
-        List<SObject> res = Database.countQuery('Select Id, Name From Account Where Id=' + someId);
+        List<SObject> res = Database.countQuery('Select Count() From Account Where Id=' + someId);
     }
 }
         ]]></code>
@@ -615,7 +615,7 @@ public class Foo {
         <code><![CDATA[
 public class Foo {
     public void test1(ID someId, String name) {
-        List<SObject> res = Database.countQuery('Select Id,' + name + ' From Account Where Id=' + someId);
+        List<SObject> res = Database.countQuery('Select Count(' + name + ') From Account Where Id=' + someId);
     }
 }
         ]]></code>
@@ -627,7 +627,7 @@ public class Foo {
         <code><![CDATA[
 public class Foo {
     public void test1(String name) {
-        List<SObject> res = Database.countQuery('Select Id,Name From ' + (name == 'Account' ? name : 'Cases'));
+        List<SObject> res = Database.countQuery('Select Count() From ' + (name == 'Account' ? name : 'Cases'));
     }
 }
         ]]></code>
@@ -642,7 +642,7 @@ public class Foo {
     class MyNestedClass {
         public void test1() {
             String field1 = getSomeID();
-            String field2 = 'SELECT Id FROM Account WHERE Id =';
+            String field2 = 'SELECT Count() FROM Account WHERE Id =';
             Database.countQuery(field2 + field1);
         }
     }
