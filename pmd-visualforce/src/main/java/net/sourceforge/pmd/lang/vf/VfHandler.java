@@ -20,4 +20,8 @@ public class VfHandler extends BatchLanguageProcessor<VfLanguageProperties> impl
         return new VfParser(getProperties());
     }
 
+    @Override
+    public LanguageVersionHandler services() {
+        return this;
+    }
 }

@@ -16,9 +16,11 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.sourceforge.pmd.lang.LanguageProcessor;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.SemanticErrorReporter;
 import net.sourceforge.pmd.lang.ast.SemanticException;
@@ -65,9 +67,9 @@ public class JavaParsingHelper extends BaseParsingHelper<JavaParsingHelper, ASTC
     }
 
     @Override
-    protected @NonNull ASTCompilationUnit doParse(@NonNull Params params, @NonNull ParserTask task) {
+    protected @NonNull ASTCompilationUnit doParse(@NotNull LanguageProcessor processor, @NotNull Params params, @NotNull ParserTask task) {
         @SuppressWarnings( { "PMD.CloseResource", "resource" })
-        JavaLanguageProcessor proc = (JavaLanguageProcessor) newProcessor(params);
+        JavaLanguageProcessor proc = (JavaLanguageProcessor) processor;
         proc.setTypeSystem(ts);
         JavaParser parser = proc.getParserWithoutProcessing();
         ASTCompilationUnit rootNode = parser.parse(task);

@@ -59,7 +59,7 @@ public class ScalaTokenizer implements Tokenizer {
         } else {
             langVer = ScalaLanguageModule.getInstance().getVersion(scalaVersion);
         }
-        dialect = ((ScalaLanguageHandler) langVer.getLanguageVersionHandler()).getDialect();
+        dialect = ScalaLanguageModule.dialectOf(langVer);
     }
 
     @Override

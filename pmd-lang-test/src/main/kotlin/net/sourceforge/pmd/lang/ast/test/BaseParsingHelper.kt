@@ -4,12 +4,7 @@
 package net.sourceforge.pmd.lang.ast.test
 
 import net.sourceforge.pmd.*
-import net.sourceforge.pmd.lang.Language
-import net.sourceforge.pmd.lang.LanguageProcessor
-import net.sourceforge.pmd.lang.LanguagePropertyBundle
-import net.sourceforge.pmd.lang.LanguageRegistry
-import net.sourceforge.pmd.lang.LanguageVersion
-import net.sourceforge.pmd.lang.LanguageVersionHandler
+import net.sourceforge.pmd.lang.*
 import net.sourceforge.pmd.lang.ast.*
 import net.sourceforge.pmd.lang.ast.Parser.ParserTask
 import net.sourceforge.pmd.lang.document.TextDocument
@@ -104,16 +99,8 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
             clone(params.copy(resourceLoader = contextClass, resourcePrefix = resourcePrefix))
 
 
-    fun withLanguageRegistry(languageRegistry: LanguageRegistry): Self =
-            clone(params.copy(languageRegistry = languageRegistry))
-
-
     fun withSuppressMarker(marker: String): Self =
             clone(params.copy(suppressMarker = marker))
-
-    fun getHandler(version: String): LanguageVersionHandler {
-        return getVersion(version).languageVersionHandler
-    }
 
 
     @JvmOverloads
@@ -133,21 +120,23 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
     ): T {
         val lversion = if (version == null) defaultVersion else getVersion(version)
         val textDoc = TextDocument.readOnlyString(sourceCode, fileName, lversion)
-        val task = ParserTask(textDoc, SemanticErrorReporter.noop(), lpRegistry)
+        val processor = newProcessor(params) // todo not closed...
+        val task = ParserTask(textDoc, SemanticErrorReporter.noop(), LanguageProcessorRegistry.singleton(processor))
         return doParse(
             // params and task must match
+            processor,
             params.copy(defaultVerString = lversion.version),
             task
         )
     }
 
-    protected open fun doParse(params: Params, task: ParserTask): T {
-        val processor = newProcessor(params)
+    protected open fun doParse(processor: LanguageProcessor, params: Params, task: ParserTask): T {
         val root = parseImpl(params, processor, task)
         return rootClass.cast(root)
     }
 
-    fun newProcessor(params: Params): LanguageProcessor {
+    @JvmOverloads
+    fun newProcessor(params: Params = this.params): LanguageProcessor {
         val props = language.newPropertyBundle().apply {
             setLanguageVersion(params.defaultVerString)
             setProperty(LanguagePropertyBundle.SUPPRESS_MARKER, params.suppressMarker)

@@ -33,6 +33,11 @@ public class ApexLanguageProcessor
     }
 
     @Override
+    public LanguageVersionHandler services() {
+        return this;
+    }
+
+    @Override
     public RuleViolationFactory getRuleViolationFactory() {
         return ApexRuleViolationFactory.INSTANCE;
     }

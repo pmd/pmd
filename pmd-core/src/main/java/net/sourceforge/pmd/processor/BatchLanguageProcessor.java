@@ -10,13 +10,12 @@ import java.util.List;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageProcessor;
 import net.sourceforge.pmd.lang.LanguagePropertyBundle;
-import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.document.TextFile;
 
 /**
  * @author Clément Fournier
  */
-public class BatchLanguageProcessor<P extends LanguagePropertyBundle> implements LanguageProcessor {
+public abstract class BatchLanguageProcessor<P extends LanguagePropertyBundle> implements LanguageProcessor {
 
     private final Language language;
     private final P bundle;
@@ -26,13 +25,8 @@ public class BatchLanguageProcessor<P extends LanguagePropertyBundle> implements
         this.bundle = bundle;
     }
 
-    protected P getProperties() {
+    public P getProperties() {
         return bundle;
-    }
-
-    @Override
-    public LanguageVersionHandler services() {
-        return bundle.getLanguageVersion().getLanguageVersionHandler();
     }
 
     @Override

@@ -67,11 +67,6 @@ public class JavaLanguageProcessor extends BatchLanguageProcessor<JavaLanguagePr
         return this;
     }
 
-    @Override
-    public JavaLanguageProperties getProperties() {
-        return super.getProperties();
-    }
-
     public LanguageVersion getLanguageVersion(){
         return getProperties().getLanguageVersion();
     }

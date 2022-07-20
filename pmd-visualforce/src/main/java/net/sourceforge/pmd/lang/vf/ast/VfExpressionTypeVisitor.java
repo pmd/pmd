@@ -50,7 +50,7 @@ class VfExpressionTypeVisitor extends VfParserVisitorAdapter {
         this.apexDirectories = vfProperties.getProperty(VfLanguageProperties.APEX_DIRECTORIES_DESCRIPTOR);
         this.objectsDirectories = vfProperties.getProperty(VfLanguageProperties.OBJECTS_DIRECTORIES_DESCRIPTOR);
         this.apexClassNames = new ArrayList<>();
-        this.apexClassPropertyTypes = new ApexClassPropertyTypes();
+        this.apexClassPropertyTypes = new ApexClassPropertyTypes(task.getLpRegistry());
         this.objectFieldTypes = new ObjectFieldTypes();
     }
 

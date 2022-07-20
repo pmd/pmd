@@ -29,7 +29,7 @@ public class JavaMetricsProviderTest {
     @Test
     public void testComputeAllMetrics() {
 
-        LanguageMetricsProvider provider = java8.getHandler("1.8").getLanguageMetricsProvider();
+        LanguageMetricsProvider provider = java8.newProcessor().services().getLanguageMetricsProvider();
 
         ASTCompilationUnit acu = java8.parse("class Foo { void bar() { System.out.println(1); } }");
 
@@ -44,7 +44,7 @@ public class JavaMetricsProviderTest {
     @Test
     public void testThereIsNoMemoisation() {
 
-        LanguageMetricsProvider provider = java8.getHandler("1.8").getLanguageMetricsProvider();
+        LanguageMetricsProvider provider = java8.newProcessor().services().getLanguageMetricsProvider();
 
         ASTAnyTypeDeclaration tdecl1 = java8.parse("class Foo { void bar() { System.out.println(1); } }")
                                             .getTypeDeclarations().firstOrThrow();

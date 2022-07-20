@@ -4,8 +4,14 @@
 
 package net.sourceforge.pmd.lang.scala;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.BaseLanguageModule;
 import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.lang.LanguageVersion;
+
+import scala.meta.Dialect;
 
 /**
  * Language Module for Scala.
@@ -27,6 +33,18 @@ public class ScalaLanguageModule extends BaseLanguageModule {
         addVersion("2.12", new ScalaLanguageHandler(scala.meta.dialects.package$.MODULE$.Scala212()), false);
         addVersion("2.11", new ScalaLanguageHandler(scala.meta.dialects.package$.MODULE$.Scala211()), false);
         addVersion("2.10", new ScalaLanguageHandler(scala.meta.dialects.package$.MODULE$.Scala210()), false);
+    }
+
+    @InternalApi
+    public static @NonNull Dialect dialectOf(LanguageVersion v) {
+        switch (v.getVersion()) {
+        case "2.10": return scala.meta.dialects.package$.MODULE$.Scala210();
+        case "2.11": return scala.meta.dialects.package$.MODULE$.Scala211();
+        case "2.12": return scala.meta.dialects.package$.MODULE$.Scala212();
+        case "2.13": return scala.meta.dialects.package$.MODULE$.Scala213();
+        default:
+            throw new IllegalArgumentException(v.getVersion());
+        }
     }
 
     public static ScalaLanguageModule getInstance() {

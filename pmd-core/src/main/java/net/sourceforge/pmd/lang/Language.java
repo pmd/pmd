@@ -136,7 +136,13 @@ public interface Language extends Comparable<Language> {
     }
 
     default LanguageProcessor createProcessor(LanguagePropertyBundle bundle) {
-        return new BatchLanguageProcessor<LanguagePropertyBundle>(bundle) {};
+        return new BatchLanguageProcessor<LanguagePropertyBundle>(bundle) {
+
+            @Override
+            public LanguageVersionHandler services() {
+                return bundle.getLanguageVersion().getLanguageVersionHandler();
+            }
+        };
     }
 
 }

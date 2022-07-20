@@ -24,13 +24,12 @@ public class EcmascriptProcessor extends BatchLanguageProcessor<LanguageProperty
     }
 
     @Override
-    public  LanguagePropertyBundle getProperties() {
-        return super.getProperties();
-    }
-
-    @Override
     public Parser getParser() {
         return new EcmascriptParser(this);
     }
 
+    @Override
+    public LanguageVersionHandler services() {
+        return this;
+    }
 }
