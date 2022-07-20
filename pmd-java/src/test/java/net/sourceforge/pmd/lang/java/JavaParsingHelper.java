@@ -26,7 +26,7 @@ import net.sourceforge.pmd.lang.ast.test.BaseParsingHelper;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.JavaParser;
 import net.sourceforge.pmd.lang.java.internal.JavaAstProcessor;
-import net.sourceforge.pmd.lang.java.internal.JavaLanguageHandler;
+import net.sourceforge.pmd.lang.java.internal.JavaLanguageProcessor;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
 import net.sourceforge.pmd.lang.java.types.internal.infer.TypeInferenceLogger;
 import net.sourceforge.pmd.lang.java.types.internal.infer.TypeInferenceLogger.SimpleLogger;
@@ -66,12 +66,14 @@ public class JavaParsingHelper extends BaseParsingHelper<JavaParsingHelper, ASTC
 
     @Override
     protected @NonNull ASTCompilationUnit doParse(@NonNull Params params, @NonNull ParserTask task) {
-        JavaLanguageHandler handler = (JavaLanguageHandler) task.getLanguageVersion().getLanguageVersionHandler();
-        JavaParser parser = handler.getParserWithoutProcessing();
+        @SuppressWarnings( { "PMD.CloseResource", "resource" })
+        JavaLanguageProcessor proc = (JavaLanguageProcessor) newProcessor(params);
+        proc.setTypeSystem(ts);
+        JavaParser parser = proc.getParserWithoutProcessing();
         ASTCompilationUnit rootNode = parser.parse(task);
         if (params.getDoProcess()) {
-            JavaAstProcessor.create(ts, task.getLanguageVersion(), semanticLogger, typeInfLogger)
-                            .process(rootNode);
+            JavaAstProcessor astProc = JavaAstProcessor.create(proc, semanticLogger, typeInfLogger);
+            astProc.process(rootNode);
         }
         return rootNode;
     }
@@ -108,9 +110,6 @@ public class JavaParsingHelper extends BaseParsingHelper<JavaParsingHelper, ASTC
 
         private final SemanticErrorReporter baseLogger;
 
-        public TestCheckLogger() {
-            this(false);
-        }
 
         public TestCheckLogger(boolean doLogOnConsole) {
             this(defaultMessageReporter(doLogOnConsole));

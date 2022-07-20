@@ -66,6 +66,7 @@ class ApexClassPropertyTypes extends SalesforceFieldTypes {
     }
 
     static Node parseApex(Path apexFilePath) {
+        // TODO to remove that, we need to make sure there is a started LanguageProcessor for Apex and fetch it.
         LanguageVersion languageVersion = ApexLanguageModule.getInstance().getDefaultVersion();
         try (TextFile file = TextFile.forPath(apexFilePath, StandardCharsets.UTF_8, languageVersion);
              TextDocument textDocument = TextDocument.create(file)) {

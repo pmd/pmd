@@ -16,8 +16,10 @@ import java.nio.file.Path;
 import java.util.function.Consumer;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 import org.junit.jupiter.api.io.TempDir;
 
+import net.sourceforge.pmd.DummyParsingHelper;
 import net.sourceforge.pmd.FooRule;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Report.ConfigurationError;
@@ -37,6 +39,9 @@ import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
 import net.sourceforge.pmd.util.IOUtil;
 
 abstract class AbstractRendererTest {
+
+    @RegisterExtension
+    protected final DummyParsingHelper helper = new DummyParsingHelper();
 
     @TempDir
     private Path tempDir;

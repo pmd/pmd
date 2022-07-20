@@ -45,8 +45,8 @@ public class RuleTstTest {
         verify(rule).end(any(RuleContext.class));
         verify(rule, atLeastOnce()).getLanguage();
         verify(rule, atLeastOnce()).getTargetSelector();
-        verify(rule).getMinimumLanguageVersion();
-        verify(rule).getMaximumLanguageVersion();
+        verify(rule, atLeastOnce()).getMinimumLanguageVersion();
+        verify(rule, atLeastOnce()).getMaximumLanguageVersion();
         verify(rule).apply(any(Node.class), any(RuleContext.class));
         verify(rule, atLeastOnce()).getName();
         verify(rule).getPropertiesByPropertyDescriptor();

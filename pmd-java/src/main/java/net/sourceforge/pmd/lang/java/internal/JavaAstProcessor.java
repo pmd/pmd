@@ -6,13 +6,8 @@ package net.sourceforge.pmd.lang.java.internal;
 
 import static net.sourceforge.pmd.lang.java.symbols.table.internal.JavaSemanticErrors.CANNOT_RESOLVE_SYMBOL;
 
-import java.util.IdentityHashMap;
-import java.util.Locale;
-import java.util.Map;
-
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
-import org.slf4j.event.Level;
 
 import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.lang.LanguageVersion;
@@ -30,8 +25,6 @@ import net.sourceforge.pmd.lang.java.symbols.table.internal.ReferenceCtx;
 import net.sourceforge.pmd.lang.java.symbols.table.internal.SymbolTableResolver;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
 import net.sourceforge.pmd.lang.java.types.internal.infer.TypeInferenceLogger;
-import net.sourceforge.pmd.lang.java.types.internal.infer.TypeInferenceLogger.SimpleLogger;
-import net.sourceforge.pmd.lang.java.types.internal.infer.TypeInferenceLogger.VerboseLogger;
 
 /**
  * Processes the output of the parser before rules get access to the AST.
@@ -45,27 +38,6 @@ import net.sourceforge.pmd.lang.java.types.internal.infer.TypeInferenceLogger.Ve
  * using {@link InternalApiBridge#getProcessor(JavaNode)}.
  */
 public final class JavaAstProcessor {
-
-    /**
-     * FIXME get rid of that, this prevents both ClassLoader and TypeSystem
-     *  to be garbage-collected, which is an important memory leak. Will be
-     *  fixed by https://github.com/pmd/pmd/issues/3782 (Language Lifecycle)
-     */
-    private static final Map<ClassLoader, TypeSystem> TYPE_SYSTEMS = new IdentityHashMap<>();
-    private static final Level INFERENCE_LOG_LEVEL;
-
-
-    static {
-        Level level;
-        try {
-            level = Level.valueOf(System.getenv("PMD_DEBUG_LEVEL").toLowerCase(Locale.ROOT));
-        } catch (IllegalArgumentException | NullPointerException ignored) {
-            level = null;
-        }
-        INFERENCE_LOG_LEVEL = level;
-    }
-
-
     private final TypeInferenceLogger typeInferenceLogger;
     private final SemanticErrorReporter logger;
     private final LanguageVersion languageVersion;
@@ -88,21 +60,11 @@ public final class JavaAstProcessor {
         this.languageVersion = languageVersion;
 
         this.typeSystem = typeSystem;
-        unresolvedTypes = new UnresolvedClassStore(typeSystem);
+        this.unresolvedTypes = new UnresolvedClassStore(typeSystem);
     }
 
     public UnresolvedClassStore getUnresolvedStore() {
         return unresolvedTypes;
-    }
-
-    static TypeInferenceLogger defaultTypeInfLogger() {
-        if (INFERENCE_LOG_LEVEL == Level.TRACE) {
-            return new VerboseLogger(System.err);
-        } else if (INFERENCE_LOG_LEVEL == Level.DEBUG) {
-            return new SimpleLogger(System.err);
-        } else {
-            return TypeInferenceLogger.noop();
-        }
     }
 
 
@@ -186,62 +148,23 @@ public final class JavaAstProcessor {
         return typeSystem;
     }
 
-    public static JavaAstProcessor create(SymbolResolver symResolver,
-                                          TypeSystem typeSystem,
-                                          LanguageVersion languageVersion,
-                                          SemanticErrorReporter logger) {
-
-        return new JavaAstProcessor(
-            typeSystem,
-            symResolver,
-            logger,
-            defaultTypeInfLogger(),
-            languageVersion
-        );
-    }
-
-    public static JavaAstProcessor create(ClassLoader classLoader,
-                                          LanguageVersion languageVersion,
-                                          SemanticErrorReporter logger,
-                                          TypeInferenceLogger typeInfLogger) {
-
-        TypeSystem typeSystem = TYPE_SYSTEMS.computeIfAbsent(classLoader, TypeSystem::usingClassLoaderClasspath);
-        return new JavaAstProcessor(
-            typeSystem,
-            typeSystem.bootstrapResolver(),
-            logger,
-            typeInfLogger,
-            languageVersion
-        );
-    }
-
-
-    public static JavaAstProcessor create(ClassLoader classLoader,
-                                          LanguageVersion languageVersion,
-                                          SemanticErrorReporter logger) {
-        return create(classLoader, languageVersion, logger, defaultTypeInfLogger());
-    }
-
 
     public static JavaAstProcessor create(JavaLanguageProcessor globalProcessor,
-                                          SemanticErrorReporter semanticErrorReporter) {
-        return create(globalProcessor.getProperties().getAnalysisClassLoader(),
-                      globalProcessor.getLanguageVersion(),
-                      semanticErrorReporter,
-                      defaultTypeInfLogger());
-    }
-
-    public static JavaAstProcessor create(TypeSystem typeSystem,
-                                          LanguageVersion languageVersion,
-                                          SemanticErrorReporter semanticLogger,
+                                          SemanticErrorReporter semanticErrorReporter,
                                           TypeInferenceLogger typeInfLogger) {
+
+
+        TypeSystem typeSystem1 = globalProcessor.getTypeSystem();
         return new JavaAstProcessor(
-            typeSystem,
-            typeSystem.bootstrapResolver(),
-            semanticLogger,
+            typeSystem1,
+            typeSystem1.bootstrapResolver(),
+            semanticErrorReporter,
             typeInfLogger,
-            languageVersion
+            globalProcessor.getLanguageVersion()
         );
     }
 
+    public static JavaAstProcessor create(JavaLanguageProcessor globalProcessor, SemanticErrorReporter reporter) {
+        return create(globalProcessor, reporter, globalProcessor.newTypeInfLogger());
+    }
 }

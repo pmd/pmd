@@ -16,11 +16,9 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.Parser;
 import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
-import net.sourceforge.pmd.lang.ast.SemanticErrorReporter;
 import net.sourceforge.pmd.lang.document.Chars;
 import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.document.TextDocument;
-import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.lang.document.TextRegion;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 import net.sourceforge.pmd.lang.rule.impl.DefaultRuleViolationFactory;
@@ -52,18 +50,6 @@ public class DummyLanguageModule extends BaseLanguageModule {
         return (DummyLanguageModule) Objects.requireNonNull(LanguageRegistry.PMD.getLanguageByFullName(NAME));
     }
 
-    public static DummyRootNode parse(String code) {
-        return parse(code, TextFile.UNKNOWN_FILENAME);
-    }
-
-    public static DummyRootNode parse(String code, String filename) {
-        LanguageVersion version = DummyLanguageModule.getInstance().getDefaultVersion();
-        ParserTask task = new ParserTask(
-            TextDocument.readOnlyString(code, filename, version),
-            SemanticErrorReporter.noop()
-        );
-        return (DummyRootNode) version.getLanguageVersionHandler().getParser().parse(task);
-    }
 
     public static class Handler extends AbstractPmdLanguageVersionHandler {
 

@@ -21,10 +21,9 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.internal.Slf4jSimpleConfiguration;
 import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.lang.LanguageProcessor;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
-import net.sourceforge.pmd.lang.LanguageVersionHandler;
-import net.sourceforge.pmd.lang.ast.Parser;
 import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.ast.SemanticErrorReporter;
@@ -180,7 +179,7 @@ public class TreeExportCli {
         run(LanguageRegistry.PMD, renderer);
     }
 
-    private void run(LanguageRegistry registry, TreeRenderer renderer) throws IOException {
+    private void run(LanguageRegistry registry, TreeRenderer renderer) {
         printWarning();
 
         Language lang = registry.getLanguageById(language);
@@ -191,8 +190,6 @@ public class TreeExportCli {
         }
 
         LanguageVersion langVersion = lang.getDefaultVersion();
-        LanguageVersionHandler languageHandler = langVersion.getLanguageVersionHandler();
-        Parser parser = languageHandler.getParser();
 
         @SuppressWarnings("PMD.CloseResource") TextFile textFile;
         if (file == null && !readStdin) {
@@ -207,12 +204,16 @@ public class TreeExportCli {
         // disable warnings for deprecated attributes
         Slf4jSimpleConfiguration.disableLogging(Attribute.class);
 
-        try (TextDocument textDocument = TextDocument.create(textFile)) {
+        try (
+            LanguageProcessor processor = lang.createProcessor(lang.newPropertyBundle());
+            TextDocument textDocument = TextDocument.create(textFile)) {
 
-            ParserTask task = new ParserTask(textDocument, SemanticErrorReporter.noop(), TreeExportCli.class.getClassLoader());
-            RootNode root = parser.parse(task);
+            ParserTask task = new ParserTask(textDocument, SemanticErrorReporter.noop());
+            RootNode root = processor.services().getParser().parse(task);
 
             renderer.renderSubtree(root, io.stdout);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 

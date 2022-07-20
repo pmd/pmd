@@ -335,7 +335,8 @@ public class PMDConfiguration extends AbstractConfiguration {
      */
     public void setDefaultLanguageVersion(LanguageVersion languageVersion) {
         Objects.requireNonNull(languageVersion);
-        setDefaultLanguageVersions(Arrays.asList(languageVersion));
+        languageVersionDiscoverer.setDefaultLanguageVersion(languageVersion);
+        getLanguageProperties(languageVersion.getLanguage()).setLanguageVersion(languageVersion.getVersion());
     }
 
     /**
@@ -347,8 +348,7 @@ public class PMDConfiguration extends AbstractConfiguration {
      */
     public void setDefaultLanguageVersions(List<LanguageVersion> languageVersions) {
         for (LanguageVersion languageVersion : languageVersions) {
-            Objects.requireNonNull(languageVersion);
-            languageVersionDiscoverer.setDefaultLanguageVersion(languageVersion);
+            setDefaultLanguageVersion(languageVersion);
         }
     }
 

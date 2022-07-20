@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.testframework;
 
-import static net.sourceforge.pmd.util.CollectionUtil.listOf;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -43,8 +41,8 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
 import net.sourceforge.pmd.PMDConfiguration;
+import net.sourceforge.pmd.PmdAnalysis;
 import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.Report.GlobalReportBuilderListener;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetLoadException;
@@ -54,7 +52,6 @@ import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.document.Chars;
 import net.sourceforge.pmd.lang.document.TextFile;
-import net.sourceforge.pmd.processor.AbstractPMDProcessor;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.renderers.TextRenderer;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
@@ -281,53 +278,40 @@ public abstract class RuleTst {
     }
 
     public Report runTestFromString(String code, Rule rule, LanguageVersion languageVersion, boolean isUseAuxClasspath) {
-        try {
-            PMDConfiguration configuration = new PMDConfiguration();
-            configuration.setIgnoreIncrementalAnalysis(true);
-            configuration.setDefaultLanguageVersion(languageVersion);
-            configuration.setThreads(1);
+        PMDConfiguration configuration = new PMDConfiguration();
+        configuration.setIgnoreIncrementalAnalysis(true);
+        configuration.setDefaultLanguageVersion(languageVersion);
+        configuration.setThreads(1);
+        configuration.setIgnoreIncrementalAnalysis(true);
 
-            if (isUseAuxClasspath) {
-                // configure the "auxclasspath" option for unit testing
-                // we share a single classloader so that pmd-java doesn't create
-                // a new TypeSystem for every test. This problem will go
-                // away when languages have a lifecycle.
-                configuration.setClassLoader(classpathClassLoader);
-            } else {
-                // simple class loader, that doesn't delegate to parent.
-                // this allows us in the tests to simulate PMD run without
-                // auxclasspath, not even the classes from the test dependencies
-                // will be found.
-                configuration.setClassLoader(new ClassLoader() {
-                    @Override
-                    protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
-                        if (name.startsWith("java.") || name.startsWith("javax.")) {
-                            return super.loadClass(name, resolve);
-                        }
-                        throw new ClassNotFoundException(name);
+
+        if (isUseAuxClasspath) {
+            // configure the "auxclasspath" option for unit testing
+            // we share a single classloader so that pmd-java doesn't create
+            // a new TypeSystem for every test. This problem will go
+            // away when languages have a lifecycle.
+            configuration.setClassLoader(classpathClassLoader);
+        } else {
+            // simple class loader, that doesn't delegate to parent.
+            // this allows us in the tests to simulate PMD run without
+            // auxclasspath, not even the classes from the test dependencies
+            // will be found.
+            configuration.setClassLoader(new ClassLoader() {
+                @Override
+                protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
+                    if (name.startsWith("java.") || name.startsWith("javax.")) {
+                        return super.loadClass(name, resolve);
                     }
-                });
-            }
+                    throw new ClassNotFoundException(name);
+                }
+            });
+        }
 
-            try (GlobalReportBuilderListener reportBuilder = new GlobalReportBuilderListener();
-                 // Add a listener that throws when an error occurs:
-                 //  this replaces ruleContext.setIgnoreExceptions(false)
-                 GlobalAnalysisListener listener = GlobalAnalysisListener.tee(listOf(GlobalAnalysisListener.exceptionThrower(), reportBuilder))) {
-
-                AbstractPMDProcessor.runSingleFile(
-                    listOf(RuleSet.forSingleRule(rule)),
-                    TextFile.forCharSeq(code, "testFile", languageVersion),
-                    listener,
-                    configuration
-                );
-
-                listener.close();
-                return reportBuilder.getResult();
-            }
-        } catch (RuntimeException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        try (PmdAnalysis pmd = PmdAnalysis.create(configuration)) {
+            pmd.files().addFile(TextFile.forCharSeq(code, "testFile", languageVersion));
+            pmd.addRuleSet(RuleSet.forSingleRule(rule));
+            pmd.addListener(GlobalAnalysisListener.exceptionThrower());
+            return pmd.performAnalysisAndCollectReport();
         }
     }
 

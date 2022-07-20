@@ -61,11 +61,7 @@ public class JavaParser extends JjtreeParserAdapter<ASTCompilationUnit> {
         checker.check(root);
 
         if (postProcess) {
-            JavaAstProcessor processor =
-                javaProcessor != null ? JavaAstProcessor.create(javaProcessor, task.getReporter())
-                                      : JavaAstProcessor.create(JavaParser.class.getClassLoader(),
-                                                                task.getLanguageVersion(),
-                                                                task.getReporter());
+            JavaAstProcessor processor = JavaAstProcessor.create(javaProcessor, task.getReporter());
             processor.process(root);
         }
 

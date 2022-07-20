@@ -144,6 +144,12 @@ public final class PmdAnalysis implements AutoCloseable {
             LanguagePropertyBundle props = config.getLanguageProperties(language);
             assert props.getLanguage().equals(language);
             pmd.langProperties.put(language, props);
+
+            LanguageVersion forcedVersion = config.getForceLanguageVersion();
+            if (forcedVersion != null && forcedVersion.getLanguage().equals(language)) {
+                props.setLanguageVersion(forcedVersion.getVersion());
+            }
+
             // TODO replace those with actual language properties when the
             //  CLI syntax is implemented.
             props.setProperty(LanguagePropertyBundle.SUPPRESS_MARKER, config.getSuppressMarker());

@@ -5,10 +5,13 @@ package net.sourceforge.pmd.lang.ast.test
 
 import net.sourceforge.pmd.*
 import net.sourceforge.pmd.lang.Language
+import net.sourceforge.pmd.lang.LanguageProcessor
+import net.sourceforge.pmd.lang.LanguagePropertyBundle
 import net.sourceforge.pmd.lang.LanguageRegistry
 import net.sourceforge.pmd.lang.LanguageVersion
 import net.sourceforge.pmd.lang.LanguageVersionHandler
 import net.sourceforge.pmd.lang.ast.*
+import net.sourceforge.pmd.lang.ast.Parser.ParserTask
 import net.sourceforge.pmd.lang.document.TextDocument
 import net.sourceforge.pmd.lang.document.TextFile
 import net.sourceforge.pmd.lang.rule.XPathRule
@@ -113,9 +116,6 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
         return getVersion(version).languageVersionHandler
     }
 
-    val defaultHandler: LanguageVersionHandler
-        get() = defaultVersion.languageVersionHandler
-
 
     @JvmOverloads
     fun <R : Node> getNodes(target: Class<R>, source: String, version: String? = null): List<R> =
@@ -127,21 +127,37 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
      * so.
      */
     @JvmOverloads
-    open fun parse(
+    fun parse(
         sourceCode: String,
         version: String? = null,
         fileName: String = TextFile.UNKNOWN_FILENAME
     ): T {
         val lversion = if (version == null) defaultVersion else getVersion(version)
         val textDoc = TextDocument.readOnlyString(sourceCode, fileName, lversion)
-        val task = Parser.ParserTask(textDoc, SemanticErrorReporter.noop())
-        return doParse(params, task)
+        val task = ParserTask(textDoc, SemanticErrorReporter.noop())
+        return doParse(
+            // params and task must match
+            params.copy(defaultVerString = lversion.version),
+            task
+        )
     }
 
-    protected open fun doParse(params: Params, task: Parser.ParserTask): T {
-        val parser = task.languageVersion.languageVersionHandler.parser
-        return rootClass.cast(parser.parse(task))
+    protected open fun doParse(params: Params, task: ParserTask): T {
+        val processor = newProcessor(params)
+        val root = parseImpl(params, processor, task)
+        return rootClass.cast(root)
     }
+
+    fun newProcessor(params: Params): LanguageProcessor {
+        val props = language.newPropertyBundle().apply {
+            setLanguageVersion(params.defaultVerString)
+            setProperty(LanguagePropertyBundle.SUPPRESS_MARKER, params.suppressMarker)
+        }
+        return language.createProcessor(props)
+    }
+
+    protected open fun parseImpl(params: Params, processor: LanguageProcessor, task: ParserTask): RootNode =
+        processor.services().parser.parse(task)
 
     /**
      * Fetches and [parse]s the [resource] using the context defined for this
@@ -222,21 +238,15 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
         val config = PMDConfiguration().apply {
             suppressMarker = params.suppressMarker
             setDefaultLanguageVersion(defaultVersion)
+            isIgnoreIncrementalAnalysis = true
         }
 
-        val reportBuilder = Report.GlobalReportBuilderListener()
-        val fullListener = GlobalAnalysisListener.tee(listOf(GlobalAnalysisListener.exceptionThrower(), reportBuilder))
-
-
-        AbstractPMDProcessor.runSingleFile(
-            listOf(RuleSet.forSingleRule(rule)),
-            TextFile.forCharSeq(code, fileName, defaultVersion),
-            fullListener,
-            config
-        )
-
-        fullListener.close()
-        return reportBuilder.result
+        return PmdAnalysis.create(config).use { pmd ->
+            pmd.addListener(GlobalAnalysisListener.exceptionThrower())
+            pmd.addRuleSet(RuleSet.forSingleRule(rule))
+            pmd.files().addSourceFile(fileName, code)
+            pmd.performAnalysisAndCollectReport()
+        }
     }
 
     fun executeRuleOnResource(rule: Rule, resourcePath: String): Report =

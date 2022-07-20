@@ -11,8 +11,9 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
-import net.sourceforge.pmd.lang.DummyLanguageModule;
+import net.sourceforge.pmd.DummyParsingHelper;
 import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.lang.ast.DummyNode.DummyRootNode;
 
@@ -22,9 +23,12 @@ import net.sf.saxon.type.Type;
 class ElementNodeTest {
 
 
+    @RegisterExtension
+    private final DummyParsingHelper helper = new DummyParsingHelper();
+
     @Test
     void testCompareOrder() {
-        DummyRootNode root = DummyLanguageModule.parse(
+        DummyRootNode root = helper.parse(
             "(#foo)"
                 + "(#foo)"
         );
@@ -62,7 +66,7 @@ class ElementNodeTest {
 
     @Test
     void verifyTextNodeType() {
-        DummyRootNode root = DummyLanguageModule.parse("(foo)(#text)");
+        DummyRootNode root = helper.parse("(foo)(#text)");
 
         DummyNode c0 = root.getChild(0);
         DummyNode c1 = root.getChild(1);
@@ -88,7 +92,7 @@ class ElementNodeTest {
 
     @Test
     void verifyCommentNodeType() {
-        DummyRootNode root = DummyLanguageModule.parse("(#comment)");
+        DummyRootNode root = helper.parse("(#comment)");
 
         DummyNode c1 = root.getChild(0);
 

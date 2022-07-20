@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
@@ -23,7 +24,7 @@ import net.sourceforge.pmd.util.log.MessageReporter;
  *
  * @author Clément Fournier
  */
-public class LanguageProcessorRegistry implements Iterable<Language>, AutoCloseable {
+public final class LanguageProcessorRegistry implements Iterable<Language>, AutoCloseable {
 
     private final Map<Language, LanguageProcessor> processors;
 
@@ -56,7 +57,11 @@ public class LanguageProcessorRegistry implements Iterable<Language>, AutoClosea
         for (Language language : registry) {
             LanguagePropertyBundle properties = languageProperties.getOrDefault(language, language.newPropertyBundle());
             try {
-                assert properties.getLanguage().equals(language): "Mismatched language";
+                assert properties.getLanguage().equals(language) : "Mismatched language";
+
+                readLanguagePropertiesFromEnv(properties, messageReporter);
+
+                @SuppressWarnings("PMD.CloseResource")
                 LanguageProcessor processor = language.createProcessor(properties);
                 processors.put(language, processor);
             } catch (IllegalArgumentException e) {
@@ -67,7 +72,8 @@ public class LanguageProcessorRegistry implements Iterable<Language>, AutoClosea
         return new LanguageProcessorRegistry(processors);
     }
 
-    private static Map<Language, LanguagePropertyBundle> derivePropertiesFromStrings(
+    // TODO this should be reused when implementing the CLI
+    public static Map<Language, LanguagePropertyBundle> derivePropertiesFromStrings(
         Map<Language, Properties> stringProperties,
         MessageReporter reporter
     ) {
@@ -111,8 +117,42 @@ public class LanguageProcessorRegistry implements Iterable<Language>, AutoClosea
         }
     }
 
+    // transitional until the CLI supports setting language properties
+    @Deprecated
+    public static void readLanguagePropertiesFromEnv(LanguagePropertyBundle props, MessageReporter reporter) {
+        for (PropertyDescriptor<?> propertyDescriptor : props.getPropertyDescriptors()) {
+            String propertyValue = getEnvValue(props.getLanguage().getTerseName(), propertyDescriptor);
+
+            if (propertyValue != null) {
+                trySetPropertyCapture(props, propertyDescriptor, propertyValue, reporter);
+            }
+        }
+    }
+
+    /**
+     * Returns the environment variable name that a user can set in order to override the default value.
+     */
+    private static String getEnvironmentVariableName(String langTerseName, PropertyDescriptor<?> propertyDescriptor) {
+        if (langTerseName == null) {
+            throw new IllegalStateException("Language is null");
+        }
+        return "PMD_" + langTerseName.toUpperCase(Locale.ROOT) + "_"
+            + propertyDescriptor.name().toUpperCase(Locale.ROOT);
+    }
+
+    /**
+     * @return environment variable that overrides the PropertyDesciptors default value. Returns null if no environment
+     *     variable has been set.
+     */
+    private static String getEnvValue(String langTerseName, PropertyDescriptor<?> propertyDescriptor) {
+        // note: since we use environent variables and not system properties,
+        // tests override this method.
+        return System.getenv(getEnvironmentVariableName(langTerseName, propertyDescriptor));
+    }
+
 
     public static class LanguageTerminationException extends RuntimeException {
+
         public LanguageTerminationException(Throwable cause) {
             super(cause);
         }

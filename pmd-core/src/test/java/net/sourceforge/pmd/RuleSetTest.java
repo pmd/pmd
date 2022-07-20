@@ -37,6 +37,7 @@ import java.util.stream.Collectors;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 import net.sourceforge.pmd.Report.ProcessingError;
 import net.sourceforge.pmd.RuleSet.RuleSetBuilder;
@@ -50,6 +51,9 @@ import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 import net.sourceforge.pmd.util.IOUtil;
 
 class RuleSetTest {
+
+    @RegisterExtension
+    private final DummyParsingHelper helper = new DummyParsingHelper();
 
     @Test
     void testRuleSetRequiresName() {
@@ -477,14 +481,9 @@ class RuleSetTest {
     }
 
     private RootNode makeCompilationUnits(String filename) {
-        DummyRootNode node = DummyLanguageModule.parse("dummyCode", filename);
+        DummyRootNode node = helper.parse("dummyCode", filename);
         node.setImage("Foo");
         return node;
-        //        DummyRootNode node = new DummyRootNode();
-        //        node.setCoordsReplaceText(1, 1, 2, 1);
-        //        node.setImage("Foo");
-        //        node.withFileName(filename);
-        //        return node;
     }
 
     @Test

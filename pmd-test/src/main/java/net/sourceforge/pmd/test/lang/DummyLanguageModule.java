@@ -8,13 +8,10 @@ import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.AbstractPmdLanguageVersionHandler;
 import net.sourceforge.pmd.lang.BaseLanguageModule;
 import net.sourceforge.pmd.lang.LanguageRegistry;
-import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.AstInfo;
 import net.sourceforge.pmd.lang.ast.Parser;
 import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
 import net.sourceforge.pmd.lang.ast.RootNode;
-import net.sourceforge.pmd.lang.ast.SemanticErrorReporter;
-import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.lang.document.TextRegion;
 import net.sourceforge.pmd.lang.rule.impl.DefaultRuleViolationFactory;
 import net.sourceforge.pmd.test.lang.ast.DummyNode;
@@ -47,15 +44,6 @@ public class DummyLanguageModule extends BaseLanguageModule {
 
     public static DummyLanguageModule getInstance() {
         return (DummyLanguageModule) LanguageRegistry.PMD.getLanguageByFullName(NAME);
-    }
-
-    public static DummyRootNode parse(String code, String filename) {
-        LanguageVersion version = DummyLanguageModule.getInstance().getDefaultVersion();
-        ParserTask task = new ParserTask(
-            TextDocument.readOnlyString(code, filename, version),
-            SemanticErrorReporter.noop()
-        );
-        return (DummyRootNode) version.getLanguageVersionHandler().getParser().parse(task);
     }
 
     public static class Handler extends AbstractPmdLanguageVersionHandler {

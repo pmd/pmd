@@ -4,17 +4,29 @@
 
 package net.sourceforge.pmd.lang.java.internal;
 
+import org.apache.commons.lang3.EnumUtils;
+
 import net.sourceforge.pmd.lang.JvmLanguagePropertyBundle;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.java.JavaLanguageModule;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.properties.PropertyFactory;
 
 /**
  * @author Clément Fournier
  */
 public class JavaLanguageProperties extends JvmLanguagePropertyBundle {
 
+    static final PropertyDescriptor<InferenceLoggingVerbosity> INTERNAL_INFERENCE_LOGGING_VERBOSITY =
+        PropertyFactory.enumProperty("xTypeInferenceLogging",
+                                     EnumUtils.getEnumMap(InferenceLoggingVerbosity.class))
+                       .desc("Verbosity of the type inference logging")
+                       .defaultValue(InferenceLoggingVerbosity.DISABLED)
+                       .build();
+
     public JavaLanguageProperties() {
         super(JavaLanguageModule.getInstance());
+        definePropertyDescriptor(INTERNAL_INFERENCE_LOGGING_VERBOSITY);
     }
 
     boolean isPreviewEnabled() {
@@ -25,13 +37,17 @@ public class JavaLanguageProperties extends JvmLanguagePropertyBundle {
         // Todo that's ugly..
         LanguageVersion version = getLanguageVersion();
         String verString = version.getVersion();
-        if (isPreviewEnabled()){
+        if (isPreviewEnabled()) {
             verString = verString.substring(0, verString.length() - "-preview".length());
         }
-        if (verString.startsWith("1."))
+        if (verString.startsWith("1.")) {
             verString = verString.substring(2);
+        }
 
         return Integer.parseInt(verString);
     }
 
+    public enum InferenceLoggingVerbosity {
+        DISABLED, SIMPLE, VERBOSE
+    }
 }

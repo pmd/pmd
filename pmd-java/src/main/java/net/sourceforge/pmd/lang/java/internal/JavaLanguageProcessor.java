@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.internal;
 
+import java.util.Objects;
+
 import net.sourceforge.pmd.lang.BatchLanguageProcessor;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
@@ -13,6 +15,7 @@ import net.sourceforge.pmd.lang.java.ast.JavaParser;
 import net.sourceforge.pmd.lang.java.ast.internal.LanguageLevelChecker;
 import net.sourceforge.pmd.lang.java.ast.internal.ReportingStrategy;
 import net.sourceforge.pmd.lang.java.internal.JavaLanguageHandler.JavaMetricsProvider;
+import net.sourceforge.pmd.lang.java.internal.JavaLanguageProperties.InferenceLoggingVerbosity;
 import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleViolationFactory;
 import net.sourceforge.pmd.lang.java.rule.xpath.internal.BaseContextNodeTestFun;
 import net.sourceforge.pmd.lang.java.rule.xpath.internal.GetCommentOnFunction;
@@ -20,6 +23,10 @@ import net.sourceforge.pmd.lang.java.rule.xpath.internal.GetModifiersFun;
 import net.sourceforge.pmd.lang.java.rule.xpath.internal.MatchesSignatureFunction;
 import net.sourceforge.pmd.lang.java.rule.xpath.internal.MetricFunction;
 import net.sourceforge.pmd.lang.java.rule.xpath.internal.NodeIsFunction;
+import net.sourceforge.pmd.lang.java.types.TypeSystem;
+import net.sourceforge.pmd.lang.java.types.internal.infer.TypeInferenceLogger;
+import net.sourceforge.pmd.lang.java.types.internal.infer.TypeInferenceLogger.SimpleLogger;
+import net.sourceforge.pmd.lang.java.types.internal.infer.TypeInferenceLogger.VerboseLogger;
 import net.sourceforge.pmd.lang.metrics.LanguageMetricsProvider;
 import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
 import net.sourceforge.pmd.lang.rule.xpath.impl.XPathHandler;
@@ -33,9 +40,12 @@ public class JavaLanguageProcessor extends BatchLanguageProcessor<JavaLanguagePr
 
     private final LanguageMetricsProvider myMetricsProvider = new JavaMetricsProvider();
     private final JavaParser parser;
+    private final JavaParser parserWithoutProcessing;
+    private TypeSystem typeSystem;
 
-    public JavaLanguageProcessor(JavaLanguageProperties properties) {
+    public JavaLanguageProcessor(JavaLanguageProperties properties, TypeSystem typeSystem) {
         super(JavaLanguageModule.getInstance(), properties);
+        this.typeSystem = typeSystem;
 
         LanguageLevelChecker<?> levelChecker =
             new LanguageLevelChecker<>(properties.getInternalJdkVersion(),
@@ -45,6 +55,12 @@ public class JavaLanguageProcessor extends BatchLanguageProcessor<JavaLanguagePr
 
         String suppressMarker = properties.getSuppressMarker();
         this.parser = new JavaParser(levelChecker, suppressMarker, this, true);
+        this.parserWithoutProcessing = new JavaParser(levelChecker, suppressMarker, this, false);
+    }
+
+    public JavaLanguageProcessor(JavaLanguageProperties properties) {
+      this(properties, TypeSystem.usingClassLoaderClasspath(properties.getAnalysisClassLoader()));
+
     }
 
     @Override
@@ -64,6 +80,25 @@ public class JavaLanguageProcessor extends BatchLanguageProcessor<JavaLanguagePr
     @Override
     public Parser getParser() {
         return parser;
+    }
+
+    public JavaParser getParserWithoutProcessing() {
+        return parserWithoutProcessing;
+    }
+
+    public TypeSystem getTypeSystem() {
+        return typeSystem;
+    }
+
+    public TypeInferenceLogger newTypeInfLogger() {
+        InferenceLoggingVerbosity verbosity = getProperties().getProperty(JavaLanguageProperties.INTERNAL_INFERENCE_LOGGING_VERBOSITY);
+        if (verbosity == InferenceLoggingVerbosity.VERBOSE) {
+            return new VerboseLogger(System.err);
+        } else if (verbosity == InferenceLoggingVerbosity.SIMPLE) {
+            return new SimpleLogger(System.err);
+        } else {
+            return TypeInferenceLogger.noop();
+        }
     }
 
     @Override
@@ -99,4 +134,8 @@ public class JavaLanguageProcessor extends BatchLanguageProcessor<JavaLanguagePr
             MetricFunction.INSTANCE,
             GetCommentOnFunction.INSTANCE
         );
+
+    public void setTypeSystem(TypeSystem ts) {
+        this.typeSystem = Objects.requireNonNull(ts);
+    }
 }
