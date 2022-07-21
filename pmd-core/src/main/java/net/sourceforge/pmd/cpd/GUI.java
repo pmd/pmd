@@ -276,7 +276,7 @@ public class GUI implements CPDListener {
             }
 
             if (!f.canWrite()) {
-                final CPDReport report = new CPDReport(matches.iterator(), numberOfTokensPerFile);
+                final CPDReport report = new CPDReport(matches, numberOfTokensPerFile);
                 try (PrintWriter pw = new PrintWriter(Files.newOutputStream(f.toPath()))) {
                     renderer.render(report, pw);
                     pw.flush();

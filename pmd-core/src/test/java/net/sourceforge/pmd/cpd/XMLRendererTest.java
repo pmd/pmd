@@ -203,7 +203,7 @@ public class XMLRendererTest {
         matches.add(match);
         final Map<String, Integer> numberOfTokensPerFile = new HashMap<>();
         numberOfTokensPerFile.put(filename, 888);
-        final CPDReport report = new CPDReport(matches.iterator(), numberOfTokensPerFile);
+        final CPDReport report = new CPDReport(matches, numberOfTokensPerFile);
         final StringWriter writer = new StringWriter();
         renderer.render(report, writer);
         final String xmlOutput = writer.toString();

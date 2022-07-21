@@ -27,6 +27,6 @@ public class CPDRendererAdapter implements CPDReportRenderer {
 
     @Override
     public void render(final CPDReport report, final Writer writer) throws IOException {
-        renderer.render(report.getMatches(), writer);
+        renderer.render(report.getMatches().iterator(), writer);
     }
 }

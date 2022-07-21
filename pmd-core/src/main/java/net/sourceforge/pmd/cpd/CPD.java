@@ -238,7 +238,7 @@ public class CPD {
     }
 
     public CPDReport toReport() {
-        return new CPDReport(this.getMatches(), numberOfTokensPerFile);
+        return new CPDReport(matchAlgorithm.getMatches(), numberOfTokensPerFile);
     }
 
     public enum StatusCode {

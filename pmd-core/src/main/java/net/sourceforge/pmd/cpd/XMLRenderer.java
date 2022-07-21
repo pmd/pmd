@@ -27,6 +27,7 @@ import org.w3c.dom.Element;
 
 import net.sourceforge.pmd.cpd.renderer.CPDRenderer;
 import net.sourceforge.pmd.cpd.renderer.CPDReportRenderer;
+import net.sourceforge.pmd.util.CollectionUtil;
 import net.sourceforge.pmd.util.StringUtil;
 
 /**
@@ -106,7 +107,7 @@ public final class XMLRenderer implements Renderer, CPDRenderer, CPDReportRender
 
     @Override
     public void render(Iterator<Match> matches, Writer writer) throws IOException {
-        render(new CPDReport(matches, Collections.<String, Integer>emptyMap()), writer);
+        render(new CPDReport(CollectionUtil.toList(matches), Collections.<String, Integer>emptyMap()), writer);
     }
 
     @Override
@@ -114,7 +115,7 @@ public final class XMLRenderer implements Renderer, CPDRenderer, CPDReportRender
         final Document doc = createDocument();
         final Element root = doc.createElement("pmd-cpd");
         final Map<String, Integer> numberOfTokensPerFile = report.getNumberOfTokensPerFile();
-        final Iterator<Match> matches = report.getMatches();
+        final List<Match> matches = report.getMatches();
         doc.appendChild(root);
 
         final List<Map.Entry<String, Integer>> entries = new ArrayList<>(numberOfTokensPerFile.entrySet());
@@ -125,9 +126,7 @@ public final class XMLRenderer implements Renderer, CPDRenderer, CPDReportRender
             root.appendChild(fileElement);
         }
 
-        Match match;
-        while (matches.hasNext()) {
-            match = matches.next();
+        for (Match match : matches) {
             root.appendChild(addCodeSnippet(doc,
                     addFilesToDuplicationElement(doc, createDuplicationElement(doc, match), match), match));
         }
