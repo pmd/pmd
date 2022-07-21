@@ -133,7 +133,7 @@ public class TestSchemaParser {
     }
 
 
-    static class Reporter {
+    static final class Reporter {
 
         private final XmlPosition position;
         private final XmlPositioner positioner;
