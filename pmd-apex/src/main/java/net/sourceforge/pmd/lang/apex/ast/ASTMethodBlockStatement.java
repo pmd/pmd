@@ -4,15 +4,14 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
+import com.google.summit.ast.Node;
 import net.sourceforge.pmd.annotation.InternalApi;
 
-import apex.jorje.semantic.ast.statement.MethodBlockStatement;
-
-public class ASTMethodBlockStatement extends AbstractApexNode<MethodBlockStatement> {
+public class ASTMethodBlockStatement extends AbstractApexNode<Node> {
 
     @Deprecated
     @InternalApi
-    public ASTMethodBlockStatement(MethodBlockStatement node) {
+    public ASTMethodBlockStatement(Node node) {
         super(node);
     }
 

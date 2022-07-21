@@ -4,15 +4,14 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
+import com.google.summit.ast.Node;
 import net.sourceforge.pmd.annotation.InternalApi;
 
-import apex.jorje.semantic.ast.statement.DmlUpdateStatement;
-
-public class ASTDmlUpdateStatement extends AbstractApexNode<DmlUpdateStatement> {
+public class ASTDmlUpdateStatement extends AbstractApexNode<Node> {
 
     @Deprecated
     @InternalApi
-    public ASTDmlUpdateStatement(DmlUpdateStatement dmlUpdateStatement) {
+    public ASTDmlUpdateStatement(Node dmlUpdateStatement) {
         super(dmlUpdateStatement);
     }
 

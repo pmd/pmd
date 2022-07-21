@@ -4,9 +4,8 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
+import com.google.summit.ast.Node;
 import net.sourceforge.pmd.annotation.Experimental;
-
-import apex.jorje.semantic.ast.AstNode;
 
 /**
  * Interface for nodes that can contain comments. Because comments are for the most part lost, the tree builder only
@@ -14,7 +13,7 @@ import apex.jorje.semantic.ast.AstNode;
  * comments. This is useful for rules which need to know whether a node did contain comments.
  */
 @Experimental
-public interface ASTCommentContainer<T extends AstNode> extends ApexNode<T> {
+public interface ASTCommentContainer<T extends Node> extends ApexNode<T> {
 
     boolean getContainsComment();
 }

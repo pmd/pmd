@@ -4,15 +4,14 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
+import com.google.summit.ast.Node;
 import net.sourceforge.pmd.annotation.InternalApi;
 
-import apex.jorje.semantic.ast.modifier.Modifier;
-
-public class ASTModifier extends AbstractApexNode<Modifier> {
+public class ASTModifier extends AbstractApexNode<Node> {
 
     @Deprecated
     @InternalApi
-    public ASTModifier(Modifier node) {
+    public ASTModifier(Node node) {
         super(node);
     }
 

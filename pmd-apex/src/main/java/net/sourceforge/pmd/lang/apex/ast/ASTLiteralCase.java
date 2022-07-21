@@ -4,12 +4,12 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import apex.jorje.semantic.ast.statement.WhenCases.LiteralCase;
+import com.google.summit.ast.Node;
 
-public final class ASTLiteralCase extends AbstractApexNode<LiteralCase> {
+public final class ASTLiteralCase extends AbstractApexNode<Node> {
 
 
-    ASTLiteralCase(LiteralCase node) {
+    ASTLiteralCase(Node node) {
         super(node);
     }
 

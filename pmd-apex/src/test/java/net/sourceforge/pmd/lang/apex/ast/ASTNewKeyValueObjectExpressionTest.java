@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
+import com.google.summit.ast.CompilationUnit;
 import java.util.List;
 
 import org.junit.Assert;

@@ -4,12 +4,12 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import apex.jorje.semantic.ast.statement.WhenCases.IdentifierCase;
+import com.google.summit.ast.Node;
 
-public final class ASTIdentifierCase extends AbstractApexNode<IdentifierCase> {
+public final class ASTIdentifierCase extends AbstractApexNode<Node> {
 
 
-    ASTIdentifierCase(IdentifierCase node) {
+    ASTIdentifierCase(Node node) {
         super(node);
     }
 

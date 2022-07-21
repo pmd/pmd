@@ -4,15 +4,14 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
+import com.google.summit.ast.Node;
 import net.sourceforge.pmd.annotation.InternalApi;
 
-import apex.jorje.semantic.ast.expression.NewKeyValueObjectExpression;
-
-public class ASTNewKeyValueObjectExpression extends AbstractApexNode<NewKeyValueObjectExpression> {
+public class ASTNewKeyValueObjectExpression extends AbstractApexNode<Node> {
 
     @Deprecated
     @InternalApi
-    public ASTNewKeyValueObjectExpression(NewKeyValueObjectExpression node) {
+    public ASTNewKeyValueObjectExpression(Node node) {
         super(node);
     }
 
@@ -22,10 +21,14 @@ public class ASTNewKeyValueObjectExpression extends AbstractApexNode<NewKeyValue
     }
 
     public String getType() {
-        return node.getTypeRef().getNames().get(0).getValue();
+        // return node.getTypeRef().getNames().get(0).getValue();
+        // TODO(b/239648780)
+        return null;
     }
 
     public int getParameterCount() {
-        return node.getParameters().size();
+        // return node.getParameters().size();
+        // TODO(b/239648780)
+        return 0;
     }
 }

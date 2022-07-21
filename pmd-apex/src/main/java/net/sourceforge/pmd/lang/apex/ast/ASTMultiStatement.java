@@ -4,15 +4,14 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
+import com.google.summit.ast.Node;
 import net.sourceforge.pmd.annotation.InternalApi;
 
-import apex.jorje.semantic.ast.statement.MultiStatement;
-
-public class ASTMultiStatement extends AbstractApexNode<MultiStatement> {
+public class ASTMultiStatement extends AbstractApexNode<Node> {
 
     @Deprecated
     @InternalApi
-    public ASTMultiStatement(MultiStatement node) {
+    public ASTMultiStatement(Node node) {
         super(node);
     }
 

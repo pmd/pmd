@@ -6,13 +6,13 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 
-import apex.jorje.semantic.ast.compilation.UserEnum;
+import com.google.summit.ast.CompilationUnit;
 
-public class ASTUserEnum extends ApexRootNode<UserEnum> {
+public class ASTUserEnum extends ApexRootNode<CompilationUnit> {
 
     @Deprecated
     @InternalApi
-    public ASTUserEnum(UserEnum userEnum) {
+    public ASTUserEnum(CompilationUnit userEnum) {
         super(userEnum);
     }
 

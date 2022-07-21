@@ -4,15 +4,14 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
+import com.google.summit.ast.Node;
 import net.sourceforge.pmd.annotation.InternalApi;
 
-import apex.jorje.semantic.ast.expression.InstanceOfExpression;
-
-public class ASTInstanceOfExpression extends AbstractApexNode<InstanceOfExpression> {
+public class ASTInstanceOfExpression extends AbstractApexNode<Node> {
 
     @Deprecated
     @InternalApi
-    public ASTInstanceOfExpression(InstanceOfExpression instanceOfExpression) {
+    public ASTInstanceOfExpression(Node instanceOfExpression) {
         super(instanceOfExpression);
     }
 

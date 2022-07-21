@@ -4,12 +4,12 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import apex.jorje.semantic.ast.expression.EmptyReferenceExpression;
+import com.google.summit.ast.Node;
 
-public final class ASTEmptyReferenceExpression extends AbstractApexNode<EmptyReferenceExpression> {
+public final class ASTEmptyReferenceExpression extends AbstractApexNode<Node> {
 
 
-    ASTEmptyReferenceExpression(EmptyReferenceExpression node) {
+    ASTEmptyReferenceExpression(Node node) {
         super(node);
     }
 

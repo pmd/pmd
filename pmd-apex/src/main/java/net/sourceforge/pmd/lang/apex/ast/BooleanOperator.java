@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import apex.jorje.data.ast.BooleanOp;
+import com.google.summit.ast.expression.BinaryExpression;
 
 /**
  * Apex boolean operator
@@ -34,31 +34,32 @@ public enum BooleanOperator {
     }
 
     /**
-     * Returns a {@link BooleanOperator} corresponding to the given {@link BooleanOp}.
+     * Returns a {@link BooleanOperator} corresponding to the given {@link
+     * BinaryExpression.Operator}.
      */
-    public static BooleanOperator valueOf(BooleanOp op) {
+    public static BooleanOperator valueOf(BinaryExpression.Operator op) {
         switch (op) {
-        case DOUBLE_EQUAL:
+        case EQUAL:
             return EQUAL;
         case NOT_EQUAL:
             return NOT_EQUAL;
-        case ALT_NOT_EQUAL:
+        case ALTERNATIVE_NOT_EQUAL:
             return ALT_NOT_EQUAL;
-        case TRIPLE_EQUAL:
+        case EXACTLY_EQUAL:
             return EXACTLY_EQUAL;
-        case NOT_TRIPLE_EQUAL:
+        case EXACTLY_NOT_EQUAL:
             return EXACTLY_NOT_EQUAL;
         case LESS_THAN:
             return LESS_THAN;
         case GREATER_THAN:
             return GREATER_THAN;
-        case LESS_THAN_EQUAL:
+        case LESS_THAN_OR_EQUAL:
             return LESS_THAN_OR_EQUAL;
-        case GREATER_THAN_EQUAL:
+        case GREATER_THAN_OR_EQUAL:
             return GREATER_THAN_OR_EQUAL;
-        case AND:
+        case LOGICAL_AND:
             return LOGICAL_AND;
-        case OR:
+        case LOGICAL_OR:
             return LOGICAL_OR;
         default:
             throw new IllegalArgumentException("Invalid boolean operator " + op);

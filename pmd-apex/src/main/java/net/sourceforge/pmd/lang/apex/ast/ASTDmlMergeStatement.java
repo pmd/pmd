@@ -4,15 +4,14 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
+import com.google.summit.ast.Node;
 import net.sourceforge.pmd.annotation.InternalApi;
 
-import apex.jorje.semantic.ast.statement.DmlMergeStatement;
-
-public class ASTDmlMergeStatement extends AbstractApexNode<DmlMergeStatement> {
+public class ASTDmlMergeStatement extends AbstractApexNode<Node> {
 
     @Deprecated
     @InternalApi
-    public ASTDmlMergeStatement(DmlMergeStatement dmlMergeStatement) {
+    public ASTDmlMergeStatement(Node dmlMergeStatement) {
         super(dmlMergeStatement);
     }
 

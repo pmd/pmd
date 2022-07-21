@@ -4,16 +4,15 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
+import com.google.summit.ast.Node;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.annotation.InternalApi;
 
-import apex.jorje.semantic.ast.statement.VariableDeclaration;
-
-public class ASTVariableDeclaration extends AbstractApexNode<VariableDeclaration> implements CanSuppressWarnings {
+public class ASTVariableDeclaration extends AbstractApexNode<Node> implements CanSuppressWarnings {
 
     @Deprecated
     @InternalApi
-    public ASTVariableDeclaration(VariableDeclaration variableDeclaration) {
+    public ASTVariableDeclaration(Node variableDeclaration) {
         super(variableDeclaration);
     }
 
@@ -24,9 +23,12 @@ public class ASTVariableDeclaration extends AbstractApexNode<VariableDeclaration
 
     @Override
     public String getImage() {
+        /*
         if (node.getLocalInfo() != null) {
             return node.getLocalInfo().getName();
         }
+         */
+        // TODO(b/239648780)
         return null;
     }
 
@@ -45,9 +47,12 @@ public class ASTVariableDeclaration extends AbstractApexNode<VariableDeclaration
     }
 
     public String getType() {
+        /*
         if (node.getLocalInfo() != null) {
             return node.getLocalInfo().getType().getApexName();
         }
+         */
+        // TODO(b/239648780)
         return null;
     }
 }

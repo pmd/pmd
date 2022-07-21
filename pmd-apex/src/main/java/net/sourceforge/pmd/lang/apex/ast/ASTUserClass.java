@@ -10,18 +10,16 @@ import java.util.stream.Collectors;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.annotation.InternalApi;
 
-import apex.jorje.data.Identifier;
-import apex.jorje.data.ast.TypeRef;
-import apex.jorje.semantic.ast.compilation.UserClass;
+import com.google.summit.ast.CompilationUnit;
 
-public class ASTUserClass extends ApexRootNode<UserClass> implements ASTUserClassOrInterface<UserClass>,
+public class ASTUserClass extends ApexRootNode<CompilationUnit> implements ASTUserClassOrInterface<CompilationUnit>,
        CanSuppressWarnings {
 
     private ApexQualifiedName qname;
 
     @Deprecated
     @InternalApi
-    public ASTUserClass(UserClass userClass) {
+    public ASTUserClass(CompilationUnit userClass) {
         super(userClass);
     }
 
@@ -78,14 +76,22 @@ public class ASTUserClass extends ApexRootNode<UserClass> implements ASTUserClas
 
 
     public String getSuperClassName() {
+        /*
         return node.getDefiningType().getCodeUnitDetails().getSuperTypeRef().map(TypeRef::getNames)
             .map(it -> it.stream().map(Identifier::getValue).collect(Collectors.joining(".")))
             .orElse("");
+         */
+        // TODO(b/239648780)
+        return null;
     }
 
     public List<String> getInterfaceNames() {
+        /*
         return node.getDefiningType().getCodeUnitDetails().getInterfaceTypeRefs().stream()
                 .map(TypeRef::getNames).map(it -> it.stream().map(Identifier::getValue).collect(Collectors.joining(".")))
                 .collect(Collectors.toList());
+         */
+        // TODO(b/239648780)
+        return null;
     }
 }

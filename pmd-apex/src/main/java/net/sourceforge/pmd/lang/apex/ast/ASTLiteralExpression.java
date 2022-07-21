@@ -4,23 +4,18 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
+import com.google.summit.ast.Node;
 import java.util.Optional;
 
 import org.apache.commons.lang3.reflect.FieldUtils;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 
-import apex.jorje.data.Identifier;
-import apex.jorje.data.ast.LiteralType;
-import apex.jorje.semantic.ast.expression.LiteralExpression;
-import apex.jorje.semantic.ast.expression.NewKeyValueObjectExpression.NameValueParameter;
-
-
-public class ASTLiteralExpression extends AbstractApexNode<LiteralExpression> {
+public class ASTLiteralExpression extends AbstractApexNode<Node> {
 
     @Deprecated
     @InternalApi
-    public ASTLiteralExpression(LiteralExpression literalExpression) {
+    public ASTLiteralExpression(Node literalExpression) {
         super(literalExpression);
     }
 
@@ -30,47 +25,68 @@ public class ASTLiteralExpression extends AbstractApexNode<LiteralExpression> {
         return visitor.visit(this, data);
     }
 
+    /*
     public LiteralType getLiteralType() {
         return node.getLiteralType();
     }
+     */
+    // TODO(b/239648780)
 
     public boolean isString() {
-        return node.getLiteralType() == LiteralType.STRING;
+        // return node.getLiteralType() == LiteralType.STRING;
+        // TODO(b/239648780)
+        return false;
     }
 
     public boolean isBoolean() {
-        return node.getLiteralType() == LiteralType.TRUE || node.getLiteralType() == LiteralType.FALSE;
+        // return node.getLiteralType() == LiteralType.TRUE || node.getLiteralType() == LiteralType.FALSE;
+        // TODO(b/239648780)
+        return false;
     }
 
     public boolean isInteger() {
-        return node.getLiteralType() == LiteralType.INTEGER;
+        // return node.getLiteralType() == LiteralType.INTEGER;
+        // TODO(b/239648780)
+        return false;
     }
 
     public boolean isDouble() {
-        return node.getLiteralType() == LiteralType.DOUBLE;
+        // return node.getLiteralType() == LiteralType.DOUBLE;
+        // TODO(b/239648780)
+        return false;
     }
 
     public boolean isLong() {
-        return node.getLiteralType() == LiteralType.LONG;
+        // return node.getLiteralType() == LiteralType.LONG;
+        // TODO(b/239648780)
+        return false;
     }
 
     public boolean isDecimal() {
-        return node.getLiteralType() == LiteralType.DECIMAL;
+        // return node.getLiteralType() == LiteralType.DECIMAL;
+        // TODO(b/239648780)
+        return false;
     }
 
     public boolean isNull() {
-        return node.getLiteralType() == LiteralType.NULL;
+        // return node.getLiteralType() == LiteralType.NULL;
+        // TODO(b/239648780)
+        return false;
     }
 
     @Override
     public String getImage() {
+        /*
         if (node.getLiteral() != null) {
             return String.valueOf(node.getLiteral());
         }
+         */
+        // TODO(b/239648780)
         return null;
     }
 
     public String getName() {
+        /*
         if (getParent() instanceof ASTNewKeyValueObjectExpression) {
             ASTNewKeyValueObjectExpression parent = (ASTNewKeyValueObjectExpression) getParent();
             Optional<NameValueParameter> parameter = parent.node.getParameters().stream().filter(p -> {
@@ -89,6 +105,8 @@ public class ASTLiteralExpression extends AbstractApexNode<LiteralExpression> {
                 }
             }).map(Identifier::getValue).orElse(null);
         }
+         */
+        // TODO(b/239648780)
         return null;
     }
 }

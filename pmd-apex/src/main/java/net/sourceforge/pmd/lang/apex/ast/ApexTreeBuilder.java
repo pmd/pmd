@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
+import com.google.summit.ast.Node;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.AbstractList;
@@ -20,123 +21,19 @@ import org.antlr.runtime.Token;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.apex.ApexParserOptions;
-import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
-
-import apex.jorje.data.Location;
-import apex.jorje.data.Locations;
-import apex.jorje.parser.impl.ApexLexer;
-import apex.jorje.semantic.ast.AstNode;
-import apex.jorje.semantic.ast.compilation.AnonymousClass;
-import apex.jorje.semantic.ast.compilation.ConstructorPreamble;
-import apex.jorje.semantic.ast.compilation.InvalidDependentCompilation;
-import apex.jorje.semantic.ast.compilation.UserClass;
-import apex.jorje.semantic.ast.compilation.UserClassMethods;
-import apex.jorje.semantic.ast.compilation.UserEnum;
-import apex.jorje.semantic.ast.compilation.UserExceptionMethods;
-import apex.jorje.semantic.ast.compilation.UserInterface;
-import apex.jorje.semantic.ast.compilation.UserTrigger;
-import apex.jorje.semantic.ast.condition.StandardCondition;
-import apex.jorje.semantic.ast.expression.ArrayLoadExpression;
-import apex.jorje.semantic.ast.expression.ArrayStoreExpression;
-import apex.jorje.semantic.ast.expression.AssignmentExpression;
-import apex.jorje.semantic.ast.expression.BinaryExpression;
-import apex.jorje.semantic.ast.expression.BindExpressions;
-import apex.jorje.semantic.ast.expression.BooleanExpression;
-import apex.jorje.semantic.ast.expression.CastExpression;
-import apex.jorje.semantic.ast.expression.ClassRefExpression;
-import apex.jorje.semantic.ast.expression.EmptyReferenceExpression;
-import apex.jorje.semantic.ast.expression.Expression;
-import apex.jorje.semantic.ast.expression.IllegalStoreExpression;
-import apex.jorje.semantic.ast.expression.InstanceOfExpression;
-import apex.jorje.semantic.ast.expression.JavaMethodCallExpression;
-import apex.jorje.semantic.ast.expression.JavaVariableExpression;
-import apex.jorje.semantic.ast.expression.LiteralExpression;
-import apex.jorje.semantic.ast.expression.MapEntryNode;
-import apex.jorje.semantic.ast.expression.MethodCallExpression;
-import apex.jorje.semantic.ast.expression.NestedExpression;
-import apex.jorje.semantic.ast.expression.NestedStoreExpression;
-import apex.jorje.semantic.ast.expression.NewKeyValueObjectExpression;
-import apex.jorje.semantic.ast.expression.NewListInitExpression;
-import apex.jorje.semantic.ast.expression.NewListLiteralExpression;
-import apex.jorje.semantic.ast.expression.NewMapInitExpression;
-import apex.jorje.semantic.ast.expression.NewMapLiteralExpression;
-import apex.jorje.semantic.ast.expression.NewObjectExpression;
-import apex.jorje.semantic.ast.expression.NewSetInitExpression;
-import apex.jorje.semantic.ast.expression.NewSetLiteralExpression;
-import apex.jorje.semantic.ast.expression.PackageVersionExpression;
-import apex.jorje.semantic.ast.expression.PostfixExpression;
-import apex.jorje.semantic.ast.expression.PrefixExpression;
-import apex.jorje.semantic.ast.expression.ReferenceExpression;
-import apex.jorje.semantic.ast.expression.SoqlExpression;
-import apex.jorje.semantic.ast.expression.SoslExpression;
-import apex.jorje.semantic.ast.expression.SuperMethodCallExpression;
-import apex.jorje.semantic.ast.expression.SuperVariableExpression;
-import apex.jorje.semantic.ast.expression.TernaryExpression;
-import apex.jorje.semantic.ast.expression.ThisMethodCallExpression;
-import apex.jorje.semantic.ast.expression.ThisVariableExpression;
-import apex.jorje.semantic.ast.expression.TriggerVariableExpression;
-import apex.jorje.semantic.ast.expression.VariableExpression;
-import apex.jorje.semantic.ast.member.Field;
-import apex.jorje.semantic.ast.member.Method;
-import apex.jorje.semantic.ast.member.Parameter;
-import apex.jorje.semantic.ast.member.Property;
-import apex.jorje.semantic.ast.member.bridge.BridgeMethodCreator;
-import apex.jorje.semantic.ast.modifier.Annotation;
-import apex.jorje.semantic.ast.modifier.AnnotationParameter;
-import apex.jorje.semantic.ast.modifier.Modifier;
-import apex.jorje.semantic.ast.modifier.ModifierNode;
-import apex.jorje.semantic.ast.modifier.ModifierOrAnnotation;
-import apex.jorje.semantic.ast.statement.BlockStatement;
-import apex.jorje.semantic.ast.statement.BreakStatement;
-import apex.jorje.semantic.ast.statement.CatchBlockStatement;
-import apex.jorje.semantic.ast.statement.ConstructorPreambleStatement;
-import apex.jorje.semantic.ast.statement.ContinueStatement;
-import apex.jorje.semantic.ast.statement.DmlDeleteStatement;
-import apex.jorje.semantic.ast.statement.DmlInsertStatement;
-import apex.jorje.semantic.ast.statement.DmlMergeStatement;
-import apex.jorje.semantic.ast.statement.DmlUndeleteStatement;
-import apex.jorje.semantic.ast.statement.DmlUpdateStatement;
-import apex.jorje.semantic.ast.statement.DmlUpsertStatement;
-import apex.jorje.semantic.ast.statement.DoLoopStatement;
-import apex.jorje.semantic.ast.statement.ElseWhenBlock;
-import apex.jorje.semantic.ast.statement.ExpressionStatement;
-import apex.jorje.semantic.ast.statement.FieldDeclaration;
-import apex.jorje.semantic.ast.statement.FieldDeclarationStatements;
-import apex.jorje.semantic.ast.statement.ForEachStatement;
-import apex.jorje.semantic.ast.statement.ForLoopStatement;
-import apex.jorje.semantic.ast.statement.IfBlockStatement;
-import apex.jorje.semantic.ast.statement.IfElseBlockStatement;
-import apex.jorje.semantic.ast.statement.MethodBlockStatement;
-import apex.jorje.semantic.ast.statement.MultiStatement;
-import apex.jorje.semantic.ast.statement.ReturnStatement;
-import apex.jorje.semantic.ast.statement.RunAsBlockStatement;
-import apex.jorje.semantic.ast.statement.Statement;
-import apex.jorje.semantic.ast.statement.StatementExecuted;
-import apex.jorje.semantic.ast.statement.SwitchStatement;
-import apex.jorje.semantic.ast.statement.ThrowStatement;
-import apex.jorje.semantic.ast.statement.TryCatchFinallyBlockStatement;
-import apex.jorje.semantic.ast.statement.TypeWhenBlock;
-import apex.jorje.semantic.ast.statement.ValueWhenBlock;
-import apex.jorje.semantic.ast.statement.VariableDeclaration;
-import apex.jorje.semantic.ast.statement.VariableDeclarationStatements;
-import apex.jorje.semantic.ast.statement.WhenCases.IdentifierCase;
-import apex.jorje.semantic.ast.statement.WhenCases.LiteralCase;
-import apex.jorje.semantic.ast.statement.WhileLoopStatement;
-import apex.jorje.semantic.ast.visitor.AdditionalPassScope;
-import apex.jorje.semantic.ast.visitor.AstVisitor;
-import apex.jorje.semantic.exception.Errors;
 
 @Deprecated
 @InternalApi
-public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
+public final class ApexTreeBuilder {
 
     private static final String DOC_COMMENT_PREFIX = "/**";
 
-    private static final Map<Class<? extends AstNode>, Constructor<? extends AbstractApexNode<?>>>
+    private static final Map<Class<? extends Node>, Constructor<? extends AbstractApexNode<?>>>
         NODE_TYPE_TO_NODE_ADAPTER_TYPE = new HashMap<>();
 
     static {
+        /*
         register(Annotation.class, ASTAnnotation.class);
         register(AnnotationParameter.class, ASTAnnotationParameter.class);
         register(AnonymousClass.class, ASTAnonymousClass.class);
@@ -233,9 +130,11 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
         register(VariableDeclarationStatements.class, ASTVariableDeclarationStatements.class);
         register(VariableExpression.class, ASTVariableExpression.class);
         register(WhileLoopStatement.class, ASTWhileLoopStatement.class);
+         */
+        // TODO(b/239648780)
     }
 
-    private static <T extends AstNode> void register(Class<T> nodeType,
+    private static <T extends Node> void register(Class<T> nodeType,
             Class<? extends AbstractApexNode<T>> nodeAdapterType) {
         try {
             NODE_TYPE_TO_NODE_ADAPTER_TYPE.put(nodeType, nodeAdapterType.getDeclaredConstructor(nodeType));
@@ -245,12 +144,10 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
     }
 
     // The nodes having children built.
-    private Stack<Node> nodes = new Stack<>();
+    private Stack<ApexNode<?>> nodes = new Stack<>();
 
     // The Apex nodes with children to build.
-    private Stack<AstNode> parents = new Stack<>();
-
-    private AdditionalPassScope scope = new AdditionalPassScope(Errors.createErrors());
+    private Stack<Node> parents = new Stack<>();
 
     private final SourceCodePositioner sourceCodePositioner;
     private final String sourceCode;
@@ -262,11 +159,11 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
         commentInfo = extractInformationFromComments(sourceCode, parserOptions.getSuppressMarker());
     }
 
-    static <T extends AstNode> AbstractApexNode<T> createNodeAdapter(T node) {
+    static <T extends Node> AbstractApexNode<T> createNodeAdapter(T node) {
         try {
             @SuppressWarnings("unchecked")
             // the register function makes sure only ApexNode<T> can be added,
-            // where T is "T extends AstNode".
+            // where T is "T extends Node".
             Constructor<? extends AbstractApexNode<T>> constructor = (Constructor<? extends AbstractApexNode<T>>) NODE_TYPE_TO_NODE_ADAPTER_TYPE
                     .get(node.getClass());
             if (constructor == null) {
@@ -281,13 +178,13 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
         }
     }
 
-    public <T extends AstNode> ApexNode<T> build(T astNode) {
+    public <T extends Node> ApexNode<T> build(T astNode) {
         // Create a Node
         AbstractApexNode<T> node = createNodeAdapter(astNode);
         node.handleSourceCode(sourceCode);
 
         // Append to parent
-        Node parent = nodes.isEmpty() ? null : nodes.peek();
+        ApexNode<?> parent = nodes.isEmpty() ? null : nodes.peek();
         if (parent != null) {
             parent.jjtAddChild(node, parent.getNumChildren());
             node.jjtSetParent(parent);
@@ -296,7 +193,8 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
         // Build the children...
         nodes.push(node);
         parents.push(astNode);
-        astNode.traverse(this, scope);
+        // astNode.traverse(this, scope);
+        // TODO(b/239648780)
         nodes.pop();
         parents.pop();
 
@@ -322,6 +220,7 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
     }
 
     private boolean containsComments(ASTCommentContainer<?> commentContainer) {
+        /*
         Location loc = commentContainer.getNode().getLoc();
         if (!Locations.isReal(loc)) {
             // Synthetic nodes don't have a location and can't have comments
@@ -341,6 +240,9 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
         return index >= 0 && index < allComments.size()
             && loc.getStartIndex() < allComments.get(index).index
             && loc.getEndIndex() > allComments.get(index).index;
+         */
+        // TODO(b/239648780)
+        return false;
     }
 
     private void addFormalComments() {
@@ -362,7 +264,7 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
         }
     }
 
-    private void buildFormalComment(AstNode node) {
+    private void buildFormalComment(Node node) {
         if (node.equals(parents.peek())) {
             ApexNode<?> parent = (ApexNode<?>) nodes.peek();
             assignApexDocTokenToNode(node, parent);
@@ -379,7 +281,8 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
      * @param jorjeNode the original node
      * @param node the potential parent node, to which the comment could belong
      */
-    private void assignApexDocTokenToNode(AstNode jorjeNode, ApexNode<?> node) {
+    private void assignApexDocTokenToNode(Node jorjeNode, ApexNode<?> node) {
+        /*
         Location loc = jorjeNode.getLoc();
         if (!Locations.isReal(loc)) {
             // Synthetic nodes such as "<clinit>" don't have a location in the
@@ -401,9 +304,12 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
                 tokenLocation.nearestNodeDistance = distance;
             }
         }
+         */
+        // TODO(b/239648780)
     }
 
     private static CommentInformation extractInformationFromComments(String source, String suppressMarker) {
+        /*
         ANTLRStringStream stream = new ANTLRStringStream(source);
         ApexLexer lexer = new ApexLexer(stream);
 
@@ -449,6 +355,9 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
         }
 
         return new CommentInformation(suppressMap, allCommentTokens, tokenLocations);
+         */
+        // TODO(b/239648780)
+        return null;
     }
 
     private static class CommentInformation {
@@ -512,7 +421,7 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
         }
     }
 
-    private boolean visit(AstNode node) {
+    private boolean visit(Node node) {
         if (node.equals(parents.peek())) {
             return true;
         } else {
@@ -525,6 +434,7 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
         return commentInfo.suppressMap;
     }
 
+    /*
     @Override
     public boolean visit(UserEnum node, AdditionalPassScope scope) {
         return visit(node);
@@ -947,4 +857,6 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
     public boolean visit(EmptyReferenceExpression node, AdditionalPassScope scope) {
         return visit(node);
     }
+     */
+    // TODO(b/239648780)
 }

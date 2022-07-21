@@ -4,18 +4,15 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
+import com.google.summit.ast.Node;
 import java.util.Iterator;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 
-import apex.jorje.data.Identifier;
-import apex.jorje.semantic.ast.expression.MethodCallExpression;
-
-
-public class ASTMethodCallExpression extends AbstractApexNode<MethodCallExpression> {
+public class ASTMethodCallExpression extends AbstractApexNode<Node> {
     @Deprecated
     @InternalApi
-    public ASTMethodCallExpression(MethodCallExpression methodCallExpression) {
+    public ASTMethodCallExpression(Node methodCallExpression) {
         super(methodCallExpression);
     }
 
@@ -25,19 +22,27 @@ public class ASTMethodCallExpression extends AbstractApexNode<MethodCallExpressi
     }
 
     public String getMethodName() {
-        return node.getMethodName();
+        // return node.getMethodName();
+        // TODO(b/239648780)
+        return null;
     }
 
     public String getFullMethodName() {
+        /*
         final String methodName = getMethodName();
         StringBuilder typeName = new StringBuilder();
         for (Iterator<Identifier> it = node.getReferenceContext().getNames().iterator(); it.hasNext();) {
             typeName.append(it.next().getValue()).append('.');
         }
         return typeName.toString() + methodName;
+         */
+        // TODO(b/239648780)
+        return null;
     }
 
     public int getInputParametersSize() {
-        return node.getInputParameters().size();
+        // return node.getInputParameters().size();
+        // TODO(b/239648780)
+        return 0;
     }
 }

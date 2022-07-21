@@ -6,25 +6,19 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 
-import apex.jorje.data.ast.PrefixOp;
-import apex.jorje.semantic.ast.expression.PrefixExpression;
+import com.google.summit.ast.expression.UnaryExpression;
 
-public class ASTPrefixExpression extends AbstractApexNode<PrefixExpression> {
+public class ASTPrefixExpression extends AbstractApexNode<UnaryExpression> {
 
     @Deprecated
     @InternalApi
-    public ASTPrefixExpression(PrefixExpression prefixExpression) {
+    public ASTPrefixExpression(UnaryExpression prefixExpression) {
         super(prefixExpression);
     }
 
     @Override
     public Object jjtAccept(ApexParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
-    }
-
-    @Deprecated
-    public PrefixOp getOperator() {
-        return node.getOp();
     }
 
     public PrefixOperator getOp() {

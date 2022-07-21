@@ -4,15 +4,14 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
+import com.google.summit.ast.Node;
 import net.sourceforge.pmd.annotation.InternalApi;
 
-import apex.jorje.semantic.ast.compilation.UserExceptionMethods;
-
-public class ASTUserExceptionMethods extends AbstractApexNode<UserExceptionMethods> {
+public class ASTUserExceptionMethods extends AbstractApexNode<Node> {
 
     @Deprecated
     @InternalApi
-    public ASTUserExceptionMethods(UserExceptionMethods userExceptionMethods) {
+    public ASTUserExceptionMethods(Node userExceptionMethods) {
         super(userExceptionMethods);
     }
 

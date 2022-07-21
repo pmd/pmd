@@ -4,12 +4,12 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import apex.jorje.semantic.ast.statement.ElseWhenBlock;
+import com.google.summit.ast.Node;
 
-public final class ASTElseWhenBlock extends AbstractApexNode<ElseWhenBlock> {
+public final class ASTElseWhenBlock extends AbstractApexNode<Node> {
 
 
-    ASTElseWhenBlock(ElseWhenBlock node) {
+    ASTElseWhenBlock(Node node) {
         super(node);
     }
 

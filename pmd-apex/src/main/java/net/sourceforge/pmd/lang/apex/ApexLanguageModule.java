@@ -7,8 +7,6 @@ package net.sourceforge.pmd.lang.apex;
 import net.sourceforge.pmd.lang.BaseLanguageModule;
 import net.sourceforge.pmd.util.CollectionUtil;
 
-import apex.jorje.services.Version;
-
 public class ApexLanguageModule extends BaseLanguageModule {
     private static final String FIRST_EXTENSION = "cls";
     private static final String[] REMAINING_EXTENSIONS = {"trigger"};
@@ -19,6 +17,8 @@ public class ApexLanguageModule extends BaseLanguageModule {
 
     public ApexLanguageModule() {
         super(NAME, null, TERSE_NAME, FIRST_EXTENSION, REMAINING_EXTENSIONS);
-        addVersion(String.valueOf((int) Version.CURRENT.getExternal()), new ApexHandler(), true);
+        // addVersion(String.valueOf((int) Version.CURRENT.getExternal()), new ApexHandler(), true);
+        // TODO(b/239648780)
+        addVersion("0", new ApexHandler(), true);
     }
 }

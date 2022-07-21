@@ -4,14 +4,14 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import apex.jorje.semantic.ast.AstNode;
+import com.google.summit.ast.Node;
 
 /**
  * Abstract base class for nodes which can contain comments.
  *
  * @param <T> the node type
  */
-abstract class AbstractApexCommentContainerNode<T extends AstNode> extends AbstractApexNode<T> implements ASTCommentContainer<T> {
+abstract class AbstractApexCommentContainerNode<T extends Node> extends AbstractApexNode<T> implements ASTCommentContainer<T> {
 
     private boolean containsComment = false;
 

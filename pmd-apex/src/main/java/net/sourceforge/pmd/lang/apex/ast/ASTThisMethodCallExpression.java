@@ -4,15 +4,14 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
+import com.google.summit.ast.Node;
 import net.sourceforge.pmd.annotation.InternalApi;
 
-import apex.jorje.semantic.ast.expression.ThisMethodCallExpression;
-
-public class ASTThisMethodCallExpression extends AbstractApexNode<ThisMethodCallExpression> {
+public class ASTThisMethodCallExpression extends AbstractApexNode<Node> {
 
     @Deprecated
     @InternalApi
-    public ASTThisMethodCallExpression(ThisMethodCallExpression thisMethodCallExpression) {
+    public ASTThisMethodCallExpression(Node thisMethodCallExpression) {
         super(thisMethodCallExpression);
     }
 

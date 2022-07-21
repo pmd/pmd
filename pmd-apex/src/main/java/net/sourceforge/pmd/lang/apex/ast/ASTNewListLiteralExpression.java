@@ -4,15 +4,14 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
+import com.google.summit.ast.Node;
 import net.sourceforge.pmd.annotation.InternalApi;
 
-import apex.jorje.semantic.ast.expression.NewListLiteralExpression;
-
-public class ASTNewListLiteralExpression extends AbstractApexNode<NewListLiteralExpression> {
+public class ASTNewListLiteralExpression extends AbstractApexNode<Node> {
 
     @Deprecated
     @InternalApi
-    public ASTNewListLiteralExpression(NewListLiteralExpression newListLiteralExpression) {
+    public ASTNewListLiteralExpression(Node newListLiteralExpression) {
         super(newListLiteralExpression);
     }
 

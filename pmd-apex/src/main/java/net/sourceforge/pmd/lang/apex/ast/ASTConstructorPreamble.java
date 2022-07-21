@@ -4,15 +4,14 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
+import com.google.summit.ast.Node;
 import net.sourceforge.pmd.annotation.InternalApi;
 
-import apex.jorje.semantic.ast.compilation.ConstructorPreamble;
-
-public class ASTConstructorPreamble extends AbstractApexNode<ConstructorPreamble> {
+public class ASTConstructorPreamble extends AbstractApexNode<Node> {
 
     @Deprecated
     @InternalApi
-    public ASTConstructorPreamble(ConstructorPreamble node) {
+    public ASTConstructorPreamble(Node node) {
         super(node);
     }
 

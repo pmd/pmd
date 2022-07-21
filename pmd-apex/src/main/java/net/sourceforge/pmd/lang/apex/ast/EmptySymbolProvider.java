@@ -23,17 +23,12 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 
-import apex.jorje.semantic.compiler.Namespace;
-import apex.jorje.semantic.compiler.sfdc.SymbolProvider;
-import apex.jorje.semantic.symbol.resolver.SymbolResolver;
-import apex.jorje.semantic.symbol.type.TypeInfo;
-
 /**
  * @author jspagnola
  */
 @Deprecated
 @InternalApi
-public final class EmptySymbolProvider implements SymbolProvider {
+public final class EmptySymbolProvider /*implements SymbolProvider*/ {
 
     private static final EmptySymbolProvider INSTANCE = new EmptySymbolProvider();
 
@@ -44,6 +39,7 @@ public final class EmptySymbolProvider implements SymbolProvider {
         return INSTANCE;
     }
 
+    /*
     @Override
     public TypeInfo find(final SymbolResolver symbols, final TypeInfo referencingType, final String lowerCaseFullName) {
         return null;
@@ -95,4 +91,6 @@ public final class EmptySymbolProvider implements SymbolProvider {
     public boolean isDynamicTypeNamespace(String var1) {
         return false;
     }
+     */
+    // TODO(b/239648780)
 }

@@ -4,12 +4,13 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import apex.jorje.semantic.ast.statement.ValueWhenBlock;
 
-public final class ASTValueWhenBlock extends AbstractApexNode<ValueWhenBlock> {
+import com.google.summit.ast.Node;
+
+public final class ASTValueWhenBlock extends AbstractApexNode<Node> {
 
 
-    ASTValueWhenBlock(ValueWhenBlock node) {
+    ASTValueWhenBlock(Node node) {
         super(node);
     }
 

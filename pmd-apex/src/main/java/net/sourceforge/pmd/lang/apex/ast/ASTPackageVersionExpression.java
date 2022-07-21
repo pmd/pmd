@@ -4,15 +4,14 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
+import com.google.summit.ast.Node;
 import net.sourceforge.pmd.annotation.InternalApi;
 
-import apex.jorje.semantic.ast.expression.PackageVersionExpression;
-
-public class ASTPackageVersionExpression extends AbstractApexNode<PackageVersionExpression> {
+public class ASTPackageVersionExpression extends AbstractApexNode<Node> {
 
     @Deprecated
     @InternalApi
-    public ASTPackageVersionExpression(PackageVersionExpression packageVersionExpression) {
+    public ASTPackageVersionExpression(Node packageVersionExpression) {
         super(packageVersionExpression);
     }
 

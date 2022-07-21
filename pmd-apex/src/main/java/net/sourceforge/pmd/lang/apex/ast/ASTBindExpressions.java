@@ -4,15 +4,14 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
+import com.google.summit.ast.Node;
 import net.sourceforge.pmd.annotation.InternalApi;
 
-import apex.jorje.semantic.ast.expression.BindExpressions;
-
-public class ASTBindExpressions extends AbstractApexNode<BindExpressions> {
+public class ASTBindExpressions extends AbstractApexNode<Node> {
 
     @Deprecated
     @InternalApi
-    public ASTBindExpressions(BindExpressions bindExpressions) {
+    public ASTBindExpressions(Node bindExpressions) {
         super(bindExpressions);
     }
 
