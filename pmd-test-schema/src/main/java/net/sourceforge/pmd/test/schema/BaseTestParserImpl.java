@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
-import java.util.stream.Stream;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.Attr;
@@ -240,7 +240,8 @@ class BaseTestParserImpl {
             }
             String propertyName = nameAttr.getNodeValue();
             if (knownProps.getPropertyDescriptor(propertyName) == null) {
-                Stream<String> knownNames = knownProps.getPropertyDescriptors().stream().map(PropertyDescriptor::name);
+                String knownNames = knownProps.getPropertyDescriptors().stream().map(PropertyDescriptor::name)
+                        .collect(Collectors.joining(", "));
                 err.at(nameAttr).error("Unknown property, known property names are {0}", knownNames);
                 continue;
             }
