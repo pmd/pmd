@@ -147,7 +147,7 @@ public abstract class LanguageModuleBase implements Language {
         return Objects.equals(getId(), other.getId());
     }
 
-    public static final class LanguageMetadata {
+    protected static final class LanguageMetadata {
         private String name;
         private String shortName;
         private final String id;
