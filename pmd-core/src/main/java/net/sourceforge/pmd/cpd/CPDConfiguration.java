@@ -21,6 +21,7 @@ import java.util.Properties;
 import java.util.Set;
 
 import net.sourceforge.pmd.AbstractConfiguration;
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.cpd.renderer.CPDRenderer;
 import net.sourceforge.pmd.cpd.renderer.CPDRendererAdapter;
 import net.sourceforge.pmd.cpd.renderer.CPDReportRenderer;
@@ -189,9 +190,10 @@ public class CPDConfiguration extends AbstractConfiguration {
     }
 
     /**
-     * @deprecated Use {@link #getCPDRendererFromString(String, String)} instead
+     * @deprecated Internal API
      */
     @Deprecated
+    @InternalApi
     public static Renderer getRendererFromString(String name, String encoding) {
         String clazzname = name;
         if (clazzname == null || "".equals(clazzname)) {
@@ -218,9 +220,10 @@ public class CPDConfiguration extends AbstractConfiguration {
     }
 
     /**
-     * @deprecated use {@link #getCPDReportRendererFromString(String, String)}
+     * @deprecated Internal API
      */
     @Deprecated
+    @InternalApi
     public static CPDRenderer getCPDRendererFromString(String name, String encoding) {
         String clazzname = name;
         if (clazzname == null || "".equals(clazzname)) {
@@ -245,7 +248,7 @@ public class CPDConfiguration extends AbstractConfiguration {
         }
     }
 
-    public static CPDReportRenderer getCPDReportRendererFromString(String name, String encoding) {
+    static CPDReportRenderer getCPDReportRendererFromString(String name, String encoding) {
         final CPDRenderer renderer = getCPDRendererFromString(name, encoding);
         if (renderer instanceof CPDReportRenderer) {
             return (CPDReportRenderer) renderer;
@@ -342,17 +345,19 @@ public class CPDConfiguration extends AbstractConfiguration {
     }
 
     /**
-     * @deprecated Use {@link #getCPDRenderer()} instead
+     * @deprecated Internal API.
      */
     @Deprecated
+    @InternalApi
     public Renderer getRenderer() {
         return renderer;
     }
 
     /**
-     * @deprecated Use {@link #getCPDReportRenderer()} instead
+     * @deprecated Internal API.
      */
     @Deprecated
+    @InternalApi
     public CPDRenderer getCPDRenderer() {
         return cpdRenderer;
     }
@@ -404,26 +409,28 @@ public class CPDConfiguration extends AbstractConfiguration {
     }
 
     /**
-     * @deprecated Use {@link #setCPDRenderer(CPDRenderer)} instead
+     * @deprecated Internal API. Use {@link #setRendererName(String)} instead.
      * @param renderer
      */
     @Deprecated
+    @InternalApi
     public void setRenderer(Renderer renderer) {
         this.renderer = renderer;
         this.cpdRenderer = null;
     }
 
     /**
-     * @deprecated Use {@link #setRenderer(CPDReportRenderer)} instead
+     * @deprecated Internal API. Use {@link #setRendererName(String)} instead.
      * @param renderer
      */
     @Deprecated
+    @InternalApi
     public void setCPDRenderer(CPDRenderer renderer) {
         this.cpdRenderer = renderer;
         this.renderer = null;
     }
 
-    public void setRenderer(CPDReportRenderer renderer) {
+    void setRenderer(CPDReportRenderer renderer) {
         this.renderer = null;
         this.cpdRenderer = null;
         this.cpdReportRenderer = renderer;
