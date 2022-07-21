@@ -15,6 +15,7 @@ import java.util.Map;
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.Test;
 
+import net.sourceforge.pmd.lang.LanguageProcessorRegistry;
 import net.sourceforge.pmd.lang.vf.VFTestUtils;
 
 import apex.jorje.semantic.symbol.type.BasicType;
@@ -29,7 +30,9 @@ public class ApexClassPropertyTypesVisitorTest {
                                    .toAbsolutePath();
 
         ApexClassPropertyTypesVisitor visitor = new ApexClassPropertyTypesVisitor();
-        ApexClassPropertyTypes.parseApex(apexPath).acceptVisitor(visitor, null);
+        try (LanguageProcessorRegistry lpReg = VFTestUtils.fakeLpRegistry()) {
+            new ApexClassPropertyTypes(lpReg).parseApex(apexPath).acceptVisitor(visitor, null);
+        }
 
         List<Pair<String, BasicType>> variables = visitor.getVariables();
         assertEquals(7, variables.size());

@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang;
 
 import java.util.List;
 import java.util.ServiceLoader;
+import java.util.Set;
 
 /**
  * Represents a language module, and provides access to language-specific
@@ -143,5 +144,12 @@ public interface Language extends Comparable<Language> {
     }
 
     LanguageProcessor createProcessor(LanguagePropertyBundle bundle);
+
+    /**
+     * Returns a set of the IDs of languages that this language instance
+     * depends on. Whenever this language is loaded into a {@link LanguageProcessorRegistry},
+     * those dependencies need to be loaded as well.
+     */
+    Set<String> getDependencies();
 
 }

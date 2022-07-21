@@ -28,16 +28,33 @@ import net.sourceforge.pmd.util.log.MessageReporter;
 public final class LanguageProcessorRegistry implements Iterable<Language>, AutoCloseable {
 
     private final Map<Language, LanguageProcessor> processors;
+    private final LanguageRegistry languages;
 
 
     private LanguageProcessorRegistry(Map<Language, LanguageProcessor> processors) {
         this.processors = Collections.unmodifiableMap(processors);
+        this.languages = new LanguageRegistry(processors.keySet());
+
+        for (Language language : languages.getLanguages()) {
+            for (String id : language.getDependencies()) {
+                if (languages.getLanguageById(id) == null) {
+                    throw new IllegalStateException(
+                        "Language " + language.getId() + " has unsatisfied dependencies: " + id + " is not loaded"
+                    );
+                }
+            }
+        }
+    }
+
+    public LanguageRegistry getLanguages() {
+        return languages;
     }
 
     public @NonNull LanguageProcessor getProcessor(Language l) {
-        net.sourceforge.pmd.lang.LanguageProcessor obj = processors.get(l);
-        if (obj == null)
+        LanguageProcessor obj = processors.get(l);
+        if (obj == null) {
             throw new IllegalStateException("Language " + l.getId() + " is not initialized in " + this);
+        }
         return obj;
     }
 
@@ -162,7 +179,9 @@ public final class LanguageProcessorRegistry implements Iterable<Language>, Auto
 
     @Override
     public String toString() {
-        return "LanguageProcessorRegistry(" + new LanguageRegistry(processors.keySet()).commaSeparatedList(Language::getId) +")";
+        return "LanguageProcessorRegistry("
+            + new LanguageRegistry(processors.keySet()).commaSeparatedList(Language::getId)
+            + ")";
     }
 
     public static class LanguageTerminationException extends RuntimeException {

@@ -381,7 +381,7 @@ public class PMDConfiguration extends AbstractConfiguration {
         return languageVersionDiscoverer.getDefaultLanguageVersionForFile(fileName);
     }
 
-    LanguageRegistry languages() {
+    LanguageRegistry getLanguageRegistry() {
         return langRegistry;
     }
 
@@ -887,7 +887,7 @@ public class PMDConfiguration extends AbstractConfiguration {
     void checkLanguageIsRegistered(Language language) {
         if (!langRegistry.getLanguages().contains(language)) {
             throw new IllegalArgumentException(
-                "Language '" + language.getId() + "' is not registered in " + languages());
+                "Language '" + language.getId() + "' is not registered in " + getLanguageRegistry());
         }
     }
 }

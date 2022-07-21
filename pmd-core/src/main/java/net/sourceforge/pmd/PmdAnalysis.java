@@ -140,7 +140,7 @@ public final class PmdAnalysis implements AutoCloseable {
             pmd.addRuleSets(ruleSets);
         }
 
-        for (Language language : config.languages()) {
+        for (Language language : config.getLanguageRegistry()) {
             LanguagePropertyBundle props = config.getLanguageProperties(language);
             assert props.getLanguage().equals(language);
             pmd.langProperties.put(language, props);
@@ -342,11 +342,14 @@ public final class PmdAnalysis implements AutoCloseable {
             PMD.encourageToUseIncrementalAnalysis(configuration);
 
             try (LanguageProcessorRegistry lpRegistry = LanguageProcessorRegistry.create(
-                // only start the applicable languages
+                // only start the applicable languages (and dependencies)
                 new LanguageRegistry(getApplicableLanguages()),
                 langProperties,
                 reporter
             )) {
+                // Note the analysis task is shared: all processors see
+                // the same file list, which may contain files for other
+                // languages.
                 AnalysisTask analysisTask = new AnalysisTask(
                     rulesets,
                     textFiles,
@@ -354,7 +357,8 @@ public final class PmdAnalysis implements AutoCloseable {
                     configuration.getThreads(),
                     configuration.getAnalysisCache(),
                     reporter,
-                    lpRegistry);
+                    lpRegistry
+                );
 
                 List<AutoCloseable> analyses = new ArrayList<>();
                 try {
@@ -405,22 +409,43 @@ public final class PmdAnalysis implements AutoCloseable {
     }
 
     private Set<Language> getApplicableLanguages() {
-        final Set<Language> languages = new HashSet<>();
-        final LanguageVersionDiscoverer discoverer = configuration.getLanguageVersionDiscoverer();
+        Set<Language> languages = new HashSet<>();
+        LanguageVersionDiscoverer discoverer = configuration.getLanguageVersionDiscoverer();
 
         for (RuleSet ruleSet : ruleSets) {
-            for (final Rule rule : ruleSet.getRules()) {
-                final Language ruleLanguage = rule.getLanguage();
+            for (Rule rule : ruleSet.getRules()) {
+                Language ruleLanguage = rule.getLanguage();
                 Objects.requireNonNull(ruleLanguage, "Rule has no language " + rule);
                 if (!languages.contains(ruleLanguage)) {
-                    final LanguageVersion version = discoverer.getDefaultLanguageVersion(ruleLanguage);
+                    LanguageVersion version = discoverer.getDefaultLanguageVersion(ruleLanguage);
                     if (RuleSet.applies(rule, version)) {
+                        configuration.checkLanguageIsRegistered(ruleLanguage);
                         languages.add(ruleLanguage);
                         LOG.trace("Using {} version ''{}''", version.getLanguage().getName(), version.getTerseName());
                     }
                 }
             }
         }
+
+        // collect all dependencies, they shouldn't be filtered out
+        LanguageRegistry reg = configuration.getLanguageRegistry();
+        boolean changed;
+        do {
+            changed = false;
+            for (Language lang : new HashSet<>(languages)) {
+                for (String depId : lang.getDependencies()) {
+                    Language depLang = reg.getLanguageById(depId);
+                    if (depLang == null) {
+                        // todo maybe report all then throw
+                        throw new IllegalStateException(
+                            "Language " + lang.getId() + " has unsatisfied dependencies: "
+                                + depId + " is not found in " + reg
+                        );
+                    }
+                    changed |= languages.add(depLang);
+                }
+            }
+        } while (changed);
         return languages;
     }
 

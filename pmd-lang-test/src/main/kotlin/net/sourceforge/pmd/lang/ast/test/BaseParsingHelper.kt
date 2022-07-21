@@ -119,16 +119,19 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
         fileName: String = TextFile.UNKNOWN_FILENAME
     ): T {
         val lversion = if (version == null) defaultVersion else getVersion(version)
+        val params = params.copy(defaultVerString = lversion.version)
         val textDoc = TextDocument.readOnlyString(sourceCode, fileName, lversion)
-        val processor = newProcessor(params) // todo not closed...
-        val task = ParserTask(textDoc, SemanticErrorReporter.noop(), LanguageProcessorRegistry.singleton(processor))
-        return doParse(
-            // params and task must match
-            processor,
-            params.copy(defaultVerString = lversion.version),
-            task
-        )
+        return loadLanguages(params).use { reg ->
+            val task = ParserTask(textDoc, SemanticErrorReporter.noop(), reg)
+            doParse(reg.getProcessor(language), params, task)
+        }
     }
+
+    // override if lang has dependencies
+    // todo maybe do that automatically
+    protected open fun loadLanguages(params: Params): LanguageProcessorRegistry =
+        LanguageProcessorRegistry.singleton(newProcessor(params))
+
 
     protected open fun doParse(processor: LanguageProcessor, params: Params, task: ParserTask): T {
         val root = parseImpl(params, processor, task)

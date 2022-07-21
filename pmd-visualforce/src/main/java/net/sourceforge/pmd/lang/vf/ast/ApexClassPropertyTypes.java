@@ -40,7 +40,7 @@ class ApexClassPropertyTypes extends SalesforceFieldTypes {
     private final ApexLanguageProcessor apexProcessor;
     private final LanguageProcessorRegistry lpReg;
 
-    public ApexClassPropertyTypes(LanguageProcessorRegistry lpReg) {
+    ApexClassPropertyTypes(LanguageProcessorRegistry lpReg) {
         this.apexProcessor = (ApexLanguageProcessor) lpReg.getProcessor(ApexLanguageModule.getInstance());
         this.lpReg = lpReg;
     }

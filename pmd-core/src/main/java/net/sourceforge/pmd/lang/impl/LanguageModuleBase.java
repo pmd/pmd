@@ -10,9 +10,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -32,11 +34,13 @@ public abstract class LanguageModuleBase implements Language {
     private final List<LanguageVersion> distinctVersions;
     private final Map<String, LanguageVersion> byName;
     private final LanguageVersion defaultVersion;
+    private final Set<String> dependencies;
 
 
     protected LanguageModuleBase(LanguageMetadata metadata) {
         this.meta = metadata;
         metadata.validate();
+        this.dependencies = Collections.unmodifiableSet(metadata.dependencies);
         List<LanguageVersion> versions = new ArrayList<>();
         Map<String, LanguageVersion> byName = new HashMap<>();
         LanguageVersion defaultVersion = null;
@@ -98,6 +102,11 @@ public abstract class LanguageModuleBase implements Language {
     }
 
     @Override
+    public Set<String> getDependencies() {
+        return dependencies;
+    }
+
+    @Override
     public String getName() {
         return meta.name;
     }
@@ -148,6 +157,8 @@ public abstract class LanguageModuleBase implements Language {
     }
 
     protected static final class LanguageMetadata {
+
+        public Set<String> dependencies = new HashSet<>();
         private String name;
         private String shortName;
         private final String id;
@@ -194,6 +205,11 @@ public abstract class LanguageModuleBase implements Language {
 
         public LanguageMetadata addDefaultVersion(String name, String... aliases) {
             versionMetadata.add(new LangVersionMetadata(name, Arrays.asList(aliases), true));
+            return this;
+        }
+
+        public LanguageMetadata dependsOnLanguage(String id) {
+            dependencies.add(id);
             return this;
         }
 
