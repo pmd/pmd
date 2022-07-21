@@ -42,6 +42,7 @@ Being based on a proper Antlr grammar, CPD can:
 
 ### Fixed Issues
 * core
+    * [#4021](https://github.com/pmd/pmd/pull/4021): \[core] CPD: Add total number of tokens to XML reports
     * [#4031](https://github.com/pmd/pmd/issues/4031): \[core] If report is written to stdout, stdout should not be closed
 * java
     * [#4015](https://github.com/pmd/pmd/issues/4015): \[java] Support JDK 19
@@ -60,6 +61,8 @@ Being based on a proper Antlr grammar, CPD can:
 * The experimental Java AST class {% jdoc java::lang.java.ast.ASTGuardedPattern %} has been deprecated and
   will be removed. It was introduced for Java 17 and Java 18 Preview as part of pattern matching for switch,
   but it is no longer supported with Java 19 Preview.
+* The interface {% jdoc core::cpd.renderer.CPDRenderer %} is deprecated. For custom CPD renderers
+  the new interface {% jdoc core::cpd.renderer.CPDReportRenderer %} should be used.
 
 #### Experimental APIs
 
@@ -69,12 +72,26 @@ Being based on a proper Antlr grammar, CPD can:
     * {% jdoc java::lang.java.ast.ASTRecordPattern %}
     * {% jdoc java::lang.java.ast.ASTComponentPatternList %}
 
+#### Internal API
+
+Those APIs are not intended to be used by clients, and will be hidden or removed with PMD 7.0.0.
+You can identify them with the `@InternalApi` annotation. You'll also get a deprecation warning.
+
+* {%jdoc !!core::cpd.CPDConfiguration#setRenderer(net.sourceforge.pmd.cpd.Renderer) %}
+* {%jdoc !!core::cpd.CPDConfiguration#setCPDRenderer(net.sourceforge.pmd.cpd.renderer.CPDRenderer) %}
+* {%jdoc !!core::cpd.CPDConfiguration#getRenderer() %}
+* {%jdoc !!core::cpd.CPDConfiguration#getCPDRenderer() %}
+* {%jdoc !!core::cpd.CPDConfiguration#getRendererFromString(java.lang.String,java.lang.String) %}
+* {%jdoc !!core::cpd.CPDConfiguration#getCPDRendererFromString(java.lang.String,java.lang.String) %}
+* {%jdoc core::cpd.renderer.CPDRendererAdapter %}
+
 ### External Contributions
 * [#3984](https://github.com/pmd/pmd/pull/3984): \[java] Fix AddEmptyString false-negative issue - [@LiGaOg](https://github.com/LiGaOg)
 * [#3988](https://github.com/pmd/pmd/pull/3988): \[java] Modify WhileLoopWithLiteralBoolean to meet the missing case #3455 - [@VoidxHoshi](https://github.com/VoidxHoshi)
 * [#3992](https://github.com/pmd/pmd/pull/3992): \[java] FinalFieldCouldBeStatic - fix false negative with unnecessary parenthesis - [@dalizi007](https://github.com/dalizi007)
 * [#3994](https://github.com/pmd/pmd/pull/3994): \[java] TooManyMethods - improve getter/setter detection (#3729) - [@341816041](https://github.com/341816041)
 * [#4017](https://github.com/pmd/pmd/pull/4017): Add Gherkin support to CPD - [@ASBrouwers](https://github.com/ASBrouwers)
+* [#4021](https://github.com/pmd/pmd/pull/4021): \[core] CPD: Add total number of tokens to XML reports - [@maikelsteneker](https://github.com/maikelsteneker)
 
 {% endtocmaker %}
 
