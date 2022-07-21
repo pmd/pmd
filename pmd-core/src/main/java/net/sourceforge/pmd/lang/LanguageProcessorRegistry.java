@@ -11,7 +11,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Properties;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -36,7 +35,10 @@ public final class LanguageProcessorRegistry implements Iterable<Language>, Auto
     }
 
     public @NonNull LanguageProcessor getProcessor(Language l) {
-        return Objects.requireNonNull(processors.get(l));
+        net.sourceforge.pmd.lang.LanguageProcessor obj = processors.get(l);
+        if (obj == null)
+            throw new IllegalStateException("Language " + l.getId() + " is not initialized in " + this);
+        return obj;
     }
 
     @Override
@@ -157,6 +159,11 @@ public final class LanguageProcessorRegistry implements Iterable<Language>, Auto
         return System.getenv(getEnvironmentVariableName(langTerseName, propertyDescriptor));
     }
 
+
+    @Override
+    public String toString() {
+        return "LanguageProcessorRegistry(" + new LanguageRegistry(processors.keySet()).commaSeparatedList(Language::getId) +")";
+    }
 
     public static class LanguageTerminationException extends RuntimeException {
 

@@ -45,6 +45,7 @@ public interface Parser {
             this.textDoc = Objects.requireNonNull(textDoc, "Text document was null");
             this.reporter = Objects.requireNonNull(reporter, "reporter was null");
             this.lpRegistry = AssertionUtil.requireParamNotNull("lpRegistry", lpRegistry);
+            Objects.requireNonNull(lpRegistry.getProcessor(textDoc.getLanguageVersion().getLanguage()));
         }
 
 

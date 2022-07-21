@@ -27,6 +27,6 @@ public class CLITest extends BaseCLITest {
                              "-l",
                              "ecmascript",
                              "--debug");
-        assertThat(log, containsPattern("Adding file .*\\.js \\(lang: ecmascript ES6\\)"));
+        assertThat(log, containsPattern("Adding file .*\\.js \\(lang: ecmascript\\)"));
     }
 }

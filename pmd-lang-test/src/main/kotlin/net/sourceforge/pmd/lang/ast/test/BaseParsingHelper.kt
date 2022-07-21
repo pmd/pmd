@@ -138,7 +138,7 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
     @JvmOverloads
     fun newProcessor(params: Params = this.params): LanguageProcessor {
         val props = language.newPropertyBundle().apply {
-            setLanguageVersion(params.defaultVerString)
+            setLanguageVersion(params.defaultVerString ?: defaultVersion.version)
             setProperty(LanguagePropertyBundle.SUPPRESS_MARKER, params.suppressMarker)
         }
         return language.createProcessor(props)
@@ -225,8 +225,9 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
             rule.language = language
         val config = PMDConfiguration().apply {
             suppressMarker = params.suppressMarker
-            setDefaultLanguageVersion(defaultVersion)
+            forceLanguageVersion = defaultVersion
             isIgnoreIncrementalAnalysis = true
+            threads = 1
         }
 
         return PmdAnalysis.create(config).use { pmd ->
