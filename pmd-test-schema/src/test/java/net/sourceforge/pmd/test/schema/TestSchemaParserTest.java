@@ -6,6 +6,7 @@ package net.sourceforge.pmd.test.schema;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -82,6 +83,31 @@ public class TestSchemaParserTest {
         assertEquals(1, parsed.getTests().size());
         MatcherAssert.assertThat(errStreamCaptor.getLog(), containsString(" 6|     <test-code regressionTest='false'>\n"
                                                                           + "                   ^^^^^^^^^^^^^^ Attribute 'regressionTest' is deprecated, use 'ignored' with inverted value\n"));
+    }
+
+    @Test
+    public void testUnknownProperty() throws IOException {
+        String file = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+                + "<test-data\n"
+                + "        xmlns=\"http://pmd.sourceforge.net/rule-tests\"\n"
+                + "        xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
+                + "        xsi:schemaLocation=\"http://pmd.sourceforge.net/rule-tests net/sourceforge/pmd/test/schema/rule-tests_1_0_0.xsd\">\n"
+                + "    <test-code>\n"
+                + "        <description>equality operators with Double.NaN</description>\n"
+                + "        <rule-property name='invalid_property'>foo</rule-property>\n"
+                + "        <expected-problems>0</expected-problems>\n"
+                + "        <code><![CDATA[\n"
+                + "            public class Foo {\n"
+                + "            }\n"
+                + "            ]]></code>\n"
+                + "    </test-code>\n"
+                + "</test-data>\n";
+
+        errStreamCaptor.enableLog();
+        assertThrows(IllegalStateException.class, () -> parseFile(file));
+
+        MatcherAssert.assertThat(errStreamCaptor.getLog(), containsString("  8|         <rule-property name='invalid_property'>foo</rule-property>\n"
+              + "                            ^^^^ Unknown property, known property names are violationSuppressRegex, violationSuppressXPath, testIntProperty\n"));
     }
 
     private RuleTestCollection parseFile(String file) throws IOException {

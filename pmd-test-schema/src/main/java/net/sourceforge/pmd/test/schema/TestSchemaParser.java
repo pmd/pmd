@@ -19,6 +19,7 @@ import net.sourceforge.pmd.annotation.Experimental;
 import com.github.oowekyala.ooxml.messages.NiceXmlMessageSpec;
 import com.github.oowekyala.ooxml.messages.OoxmlFacade;
 import com.github.oowekyala.ooxml.messages.PositionedXmlDoc;
+import com.github.oowekyala.ooxml.messages.PrintStreamMessageHandler;
 import com.github.oowekyala.ooxml.messages.XmlException;
 import com.github.oowekyala.ooxml.messages.XmlMessageReporter;
 import com.github.oowekyala.ooxml.messages.XmlMessageReporterBase;
@@ -57,7 +58,9 @@ public class TestSchemaParser {
      * @throws XmlException If parsing throws this
      */
     public RuleTestCollection parse(Rule rule, InputSource inputSource) throws IOException, XmlException {
-        OoxmlFacade ooxml = new OoxmlFacade();
+        // note: need to explicitly specify the writer here, so that in unit tests
+        // System.err can be swapped out and in
+        OoxmlFacade ooxml = new OoxmlFacade().withPrinter(new PrintStreamMessageHandler(System.err));
         PositionedXmlDoc doc = ooxml.parse(newDocumentBuilder(), inputSource);
 
         try (PmdXmlReporterImpl err = new PmdXmlReporterImpl(ooxml, doc.getPositioner())) {
