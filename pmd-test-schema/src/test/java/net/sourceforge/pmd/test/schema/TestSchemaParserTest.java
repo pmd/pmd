@@ -109,7 +109,7 @@ public class TestSchemaParserTest {
         assertThrows(IllegalStateException.class, () -> parseFile(file));
 
         MatcherAssert.assertThat(errStreamCaptor.getLog(), containsString("  8|         <rule-property name='invalid_property'>foo</rule-property>\n"
-              + "                            ^^^^ Unknown property, known property names are violationSuppressRegex, violationSuppressXPath, testIntProperty\n"));
+              + "                            ^^^^ Unknown property, known property names are violationSuppressRegex, violationSuppressXPath\n"));
     }
 
     private RuleTestCollection parseFile(String file) throws IOException {
