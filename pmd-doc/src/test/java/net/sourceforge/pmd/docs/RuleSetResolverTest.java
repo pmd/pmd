@@ -50,7 +50,8 @@ public class RuleSetResolverTest {
 
     @Test
     public void testAdditionalRulesetPattern() {
-        assertTrue(GenerateRuleDocsCmd.ADDITIONAL_RULESET_PATTERN.matcher("/home/foo/pmd/pmd-java/src/main/resources/rulesets/java/quickstart.xml").matches());
+        String filePath = IOUtil.normalizePath("/home/foo/pmd/pmd-java/src/main/resources/rulesets/java/quickstart.xml");
+        assertTrue(GenerateRuleDocsCmd.ADDITIONAL_RULESET_PATTERN.matcher(filePath).matches());
     }
 
     private void filterRuleSets(List<String> additionalRulesets) {
