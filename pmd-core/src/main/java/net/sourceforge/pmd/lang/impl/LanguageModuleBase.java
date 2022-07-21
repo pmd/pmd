@@ -13,7 +13,6 @@ import java.util.Objects;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.lang.Language;
-import net.sourceforge.pmd.lang.LanguageVersion;
 
 /**
  * The simplest implementation of a language with only a few versions,
@@ -24,13 +23,9 @@ import net.sourceforge.pmd.lang.LanguageVersion;
 public abstract class LanguageModuleBase implements Language {
 
     private final LanguageMetadata meta;
-    private final List<LanguageVersion> distinctVersions;
-    private final LanguageVersion defaultVersion;
 
     protected LanguageModuleBase(LanguageMetadata metadata) {
         this.meta = metadata;
-        this.defaultVersion = new LanguageVersion(this, "", null);
-        this.distinctVersions = listOf(defaultVersion);
     }
 
     @Override
@@ -51,16 +46,6 @@ public abstract class LanguageModuleBase implements Language {
     @Override
     public @NonNull List<String> getExtensions() {
         return Collections.unmodifiableList(meta.extensions);
-    }
-
-    @Override
-    public List<LanguageVersion> getVersions() {
-        return distinctVersions;
-    }
-
-    @Override
-    public LanguageVersion getDefaultVersion() {
-        return defaultVersion;
     }
 
     @Override

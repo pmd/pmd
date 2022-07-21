@@ -8,8 +8,6 @@ import static net.sourceforge.pmd.util.CollectionUtil.setOf;
 
 import java.util.Set;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-import net.sourceforge.pmd.processor.BatchLanguageProcessor;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.apex.ast.ApexParser;
 import net.sourceforge.pmd.lang.apex.internal.ApexDesignerBindings;
@@ -19,9 +17,9 @@ import net.sourceforge.pmd.lang.ast.Parser;
 import net.sourceforge.pmd.lang.metrics.LanguageMetricsProvider;
 import net.sourceforge.pmd.lang.metrics.Metric;
 import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
+import net.sourceforge.pmd.processor.BatchLanguageProcessor;
 import net.sourceforge.pmd.util.designerbindings.DesignerBindings;
 
-@InternalApi
 public class ApexLanguageProcessor
     extends BatchLanguageProcessor<ApexLanguageProperties>
     implements LanguageVersionHandler {

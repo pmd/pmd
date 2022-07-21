@@ -8,9 +8,9 @@ import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageProcessor;
 import net.sourceforge.pmd.lang.LanguagePropertyBundle;
 import net.sourceforge.pmd.lang.LanguageRegistry;
-import net.sourceforge.pmd.lang.impl.LanguageModuleBase;
+import net.sourceforge.pmd.lang.impl.LanguageModuleWithOneVersion;
 
-public class ApexLanguageModule extends LanguageModuleBase {
+public class ApexLanguageModule extends LanguageModuleWithOneVersion {
 
     public static final String NAME = "Apex";
     public static final String TERSE_NAME = "apex";
