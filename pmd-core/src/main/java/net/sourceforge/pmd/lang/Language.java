@@ -9,9 +9,7 @@ import java.util.ServiceLoader;
 
 /**
  * Represents a language module, and provides access to language-specific
- * functionality. You can get a language instance from {@link LanguageRegistry}.
- * Using a language involves first selecting the relevant {@link LanguageVersion}
- * for the sources, and accessing implemented services through {@link LanguageVersion#getLanguageVersionHandler()}.
+ * functionality. You can get a language instance from a {@link LanguageRegistry}.
  *
  * <p>Language instances must be registered with a {@linkplain ServiceLoader service file}
  * to be picked up on by the {@link LanguageRegistry}.

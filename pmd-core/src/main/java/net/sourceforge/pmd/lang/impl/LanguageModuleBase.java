@@ -21,8 +21,7 @@ import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.impl.LanguageModuleBase.LanguageMetadata.LangVersionMetadata;
 
 /**
- * The simplest implementation of a language with only a few versions,
- * and a single handler for all of them.
+ * Base class for language modules.
  *
  * @author Clément Fournier
  */
@@ -50,7 +49,7 @@ public abstract class LanguageModuleBase implements Language {
 
         for (LanguageMetadata.LangVersionMetadata versionId : metadata.versionMetadata) {
             String versionStr = versionId.name;
-            LanguageVersion languageVersion = new LanguageVersion(this, versionStr, null);
+            LanguageVersion languageVersion = new LanguageVersion(this, versionStr);
 
             versions.add(languageVersion);
 

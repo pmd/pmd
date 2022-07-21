@@ -35,7 +35,6 @@ public class LanguageVersion implements Comparable<LanguageVersion> {
 
     private final Language language;
     private final String version;
-    private final LanguageVersionHandler languageVersionHandler; // note: this is null if this is a cpd-only language...
 
     /**
      * @deprecated Use {@link Language#getVersion(String)}. This is only
@@ -43,10 +42,9 @@ public class LanguageVersion implements Comparable<LanguageVersion> {
      */
     @Deprecated
     @InternalApi
-    public LanguageVersion(Language language, String version, LanguageVersionHandler languageVersionHandler) {
+    public LanguageVersion(Language language, String version) {
         this.language = language;
         this.version = version;
-        this.languageVersionHandler = languageVersionHandler;
     }
 
     /**
@@ -64,14 +62,6 @@ public class LanguageVersion implements Comparable<LanguageVersion> {
         return version;
     }
 
-    /**
-     * Returns the {@link LanguageVersionHandler}, which provides access
-     * to version-specific services, like the parser.
-     */
-    @Deprecated
-    public LanguageVersionHandler getLanguageVersionHandler() {
-        return languageVersionHandler;
-    }
 
     /**
      * Returns the name of this language version. This is the version string
