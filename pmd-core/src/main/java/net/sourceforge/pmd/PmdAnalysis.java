@@ -273,7 +273,8 @@ public final class PmdAnalysis implements AutoCloseable {
      */
     public LanguagePropertyBundle getLanguageProperties(Language language) {
         if (!configuration.languages().getLanguages().contains(language)) {
-            throw new IllegalArgumentException(language.getId());
+            throw new IllegalArgumentException(
+                "Language '" + language.getId() + "' is not registered in " + configuration.languages());
         }
         return langProperties.computeIfAbsent(language, Language::newPropertyBundle);
     }

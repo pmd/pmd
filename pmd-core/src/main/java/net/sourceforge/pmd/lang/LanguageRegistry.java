@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
@@ -55,6 +56,10 @@ public final class LanguageRegistry implements Iterable<Language> {
                                   .collect(CollectionUtil.toUnmodifiableSet());
         this.languagesById = CollectionUtil.associateBy(languages, Language::getTerseName);
         this.languagesByFullName = CollectionUtil.associateBy(languages, Language::getName);
+    }
+
+    public static LanguageRegistry singleton(Language l) {
+        return new LanguageRegistry(Collections.singleton(l));
     }
 
     @Override
@@ -202,5 +207,8 @@ public final class LanguageRegistry implements Iterable<Language> {
         return getLanguages().stream().map(languageToString).sorted().collect(Collectors.joining(", "));
     }
 
-
+    @Override
+    public String toString() {
+        return "LanguageRegistry(" + commaSeparatedList(Language::getId) + ")";
+    }
 }

@@ -19,7 +19,7 @@ import net.sourceforge.pmd.lang.impl.LanguageModuleWithSeveralVersions.LanguageV
 /**
  * @author Clément Fournier
  */
-public class LanguageModuleWithSeveralVersions<V extends Enum<V> & LanguageVersionId> extends LanguageModuleBase {
+public abstract class LanguageModuleWithSeveralVersions<V extends Enum<V> & LanguageVersionId> extends LanguageModuleBase {
 
     private final List<LanguageVersion> distinctVersions;
     private final Map<String, LanguageVersion> byName;

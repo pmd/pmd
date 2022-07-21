@@ -11,8 +11,7 @@ import net.sourceforge.pmd.lang.LanguageProcessor;
 import net.sourceforge.pmd.lang.LanguagePropertyBundle;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
-import net.sourceforge.pmd.lang.impl.LanguageModuleWithSeveralVersions;
-import net.sourceforge.pmd.lang.scala.ScalaLanguageModule.ScalaVersionIds;
+import net.sourceforge.pmd.lang.impl.LanguageModuleBase;
 import net.sourceforge.pmd.processor.SimpleBatchLanguageProcessor;
 
 import scala.meta.Dialect;
@@ -20,7 +19,7 @@ import scala.meta.Dialect;
 /**
  * Language Module for Scala.
  */
-public class ScalaLanguageModule extends LanguageModuleWithSeveralVersions<ScalaVersionIds> {
+public class ScalaLanguageModule extends LanguageModuleBase {
 
     /** The name. */
     public static final String NAME = "Scala";
@@ -32,40 +31,24 @@ public class ScalaLanguageModule extends LanguageModuleWithSeveralVersions<Scala
      * Create a new instance of Scala Language Module.
      */
     public ScalaLanguageModule() {
-        super(LanguageMetadata.withId(TERSE_NAME).name(NAME).extensions("scala"),
-              ScalaVersionIds.class);
+        super(LanguageMetadata.withId(TERSE_NAME).name(NAME).extensions("scala")
+                              .addVersion("2.10")
+                              .addVersion("2.11")
+                              .addVersion("2.12")
+                              .addDefaultVersion("2.13"));
     }
 
-    enum ScalaVersionIds implements LanguageVersionId {
-        SCALA_210("2.10", scala.meta.dialects.package$.MODULE$.Scala210()),
-        SCALA_211("2.11", scala.meta.dialects.package$.MODULE$.Scala211()),
-        SCALA_212("2.12", scala.meta.dialects.package$.MODULE$.Scala212()),
-        SCALA_213("2.13", scala.meta.dialects.package$.MODULE$.Scala213()),
-        ;
-
-        private final String name;
-        private final Dialect dialect;
-
-        ScalaVersionIds(String name, Dialect dialect) {
-            this.name = name;
-            this.dialect = dialect;
-        }
-
-        @Override
-        public String getVersionString() {
-            return name;
-        }
-
-        @Override
-        public boolean isDefault() {
-            return this == SCALA_213;
-        }
-    }
     @InternalApi
     public static @NonNull Dialect dialectOf(LanguageVersion v) {
-        return getInstance().getIdOf(v).dialect;
+        switch (v.getVersion()) {
+        case "2.10": return scala.meta.dialects.package$.MODULE$.Scala210();
+        case "2.11": return scala.meta.dialects.package$.MODULE$.Scala211();
+        case "2.12": return scala.meta.dialects.package$.MODULE$.Scala212();
+        case "2.13": return scala.meta.dialects.package$.MODULE$.Scala213();
+        default:
+            throw new IllegalArgumentException(v.getVersion());
+        }
     }
-
 
     @Override
     public LanguageProcessor createProcessor(LanguagePropertyBundle bundle) {

@@ -22,7 +22,6 @@ import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.lang.document.TextRegion;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 import net.sourceforge.pmd.lang.rule.impl.DefaultRuleViolationFactory;
-import net.sourceforge.pmd.processor.PmdRunnableTest;
 import net.sourceforge.pmd.processor.SimpleBatchLanguageProcessor;
 
 /**
@@ -44,7 +43,6 @@ public class DummyLanguageModule extends BaseLanguageModule {
         addVersion("1.6", new Handler(), "6");
         addDefaultVersion("1.7", new Handler(), "7");
         addVersion("1.8", new Handler(), "8");
-        PmdRunnableTest.registerCustomVersions(this::addVersion);
     }
 
     @Override
@@ -80,7 +78,7 @@ public class DummyLanguageModule extends BaseLanguageModule {
      * children "b" and "c". "x" is ignored. The node "a" is not the root
      * node, it has a {@link DummyRootNode} as parent, whose image is "".
      */
-    private static DummyRootNode readLispNode(ParserTask task) {
+    public static DummyRootNode readLispNode(ParserTask task) {
         TextDocument document = task.getTextDocument();
         final DummyRootNode root = new DummyRootNode().withTaskInfo(task);
         root.setRegion(document.getEntireRegion());

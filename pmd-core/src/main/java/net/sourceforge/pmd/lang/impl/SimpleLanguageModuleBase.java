@@ -12,11 +12,12 @@ import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.processor.BatchLanguageProcessor;
 
 /**
- * The simplest implementation of a language with only a single version.
+ * The simplest implementation of a language, where only a {@link LanguageVersionHandler}
+ * needs to be implemented.
  *
  * @author Clément Fournier
  */
-public class SimpleLanguageModuleBase extends LanguageModuleWithOneVersion {
+public class SimpleLanguageModuleBase extends LanguageModuleBase {
 
     private final Function<LanguagePropertyBundle, LanguageVersionHandler> handler;
 
