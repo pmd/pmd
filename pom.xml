@@ -720,6 +720,11 @@
                 <version>${project.version}</version>
             </dependency>
             <dependency>
+                <groupId>net.sourceforge.pmd</groupId>
+                <artifactId>pmd-test-schema</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>net.sourceforge.saxon</groupId>
                 <artifactId>saxon</artifactId>
                 <version>9.1.0.8</version>
@@ -1172,5 +1177,6 @@
         <module>pmd-scala-modules/pmd-scala_2.13</module>
         <module>pmd-scala-modules/pmd-scala_2.12</module>
         <module>pmd-visualforce</module>
+        <module>pmd-test-schema</module>
     </modules>
 </project>
