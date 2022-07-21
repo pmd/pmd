@@ -431,7 +431,9 @@ public final class ApexTreeBuilder {
     }
 
     public Map<Integer, String> getSuppressMap() {
-        return commentInfo.suppressMap;
+//        return commentInfo.suppressMap;
+        // TODO(b/239648780)
+        return new HashMap<>();
     }
 
     /*

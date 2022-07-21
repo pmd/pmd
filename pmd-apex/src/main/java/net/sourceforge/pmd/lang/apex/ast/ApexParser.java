@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import com.google.summit.ast.CompilationUnit;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.Map;
@@ -14,6 +13,9 @@ import net.sourceforge.pmd.lang.apex.ApexJorjeLogging;
 import net.sourceforge.pmd.lang.apex.ApexParserOptions;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.util.IOUtil;
+
+import com.google.summit.SummitAST;
+import com.google.summit.ast.CompilationUnit;
 
 /**
  * @deprecated Internal API
@@ -31,15 +33,7 @@ public class ApexParser {
     }
 
     public CompilationUnit parseApex(final String sourceCode) throws ParseException {
-        /*
-        TopLevelVisitor visitor = new TopLevelVisitor();
-        Locations.useIndexFactory();
-        CompilerService.INSTANCE.visitAstFromString(sourceCode, visitor);
-
-        return visitor.getTopLevel();
-         */
-        // TODO(b/239648780)
-        return null;
+        return SummitAST.INSTANCE.parseAndTranslate(sourceCode, null);
     }
 
     public ApexNode<?> parse(final Reader reader) {
@@ -62,35 +56,4 @@ public class ApexParser {
     public Map<Integer, String> getSuppressMap() {
         return suppressMap;
     }
-
-    /*
-    private class TopLevelVisitor extends AstVisitor<AdditionalPassScope> {
-        Compilation topLevel;
-
-        public Compilation getTopLevel() {
-            return topLevel;
-        }
-
-        @Override
-        public void visitEnd(UserClass node, AdditionalPassScope scope) {
-            topLevel = node;
-        }
-
-        @Override
-        public void visitEnd(UserEnum node, AdditionalPassScope scope) {
-            topLevel = node;
-        }
-
-        @Override
-        public void visitEnd(UserInterface node, AdditionalPassScope scope) {
-            topLevel = node;
-        }
-
-        @Override
-        public void visitEnd(UserTrigger node, AdditionalPassScope scope) {
-            topLevel = node;
-        }
-    }
-     */
-    // TODO(b/239648780)
 }
