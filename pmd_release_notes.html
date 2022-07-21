@@ -1590,9 +1590,28 @@ for the <a href="https://cucumber.io/docs/gherkin/">Gherkin</a> language. It is 
       <li><a href="https://github.com/pmd/pmd/issues/3625">#3625</a>: [java] AddEmptyString - false negative with empty var</li>
     </ul>
   </li>
+  <li>test
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/3758">#3758</a>: [test] Move pmd-test to java 8</li>
+      <li><a href="https://github.com/pmd/pmd/pull/3976">#3976</a>: [test] Extract xml schema module</li>
+    </ul>
+  </li>
 </ul>
 
 <h3 id="api-changes">API Changes</h3>
+
+<h4 id="rule-test-framework">Rule Test Framework</h4>
+
+<ul>
+  <li>The module “pmd-test”, which contains support classes to write rule tests, now <strong>requires Java 8</strong>. If you depend on
+this module for testing your own custom rules, you’ll need to make sure to use at least Java 8.</li>
+  <li>The new module “pmd-test-schema” contains now the XSD schema and the code to parse the rule test XML files. The
+schema has been extracted in order to easily share it with other tools like the Rule Designer or IDE plugins.</li>
+  <li>The attribute <code class="language-plaintext highlighter-rouge">isRegressionTest</code> is deprecated and the new attribute <code class="language-plaintext highlighter-rouge">disabled</code> should be used instead for
+defining whether a rule test should be skipped or not.</li>
+  <li>More information about the rule test framework can be found in the documentation:
+<a href="pmd_userdocs_extending_testing.html">Testing your rules</a></li>
+</ul>
 
 <h4 id="deprecated-api">Deprecated API</h4>
 
