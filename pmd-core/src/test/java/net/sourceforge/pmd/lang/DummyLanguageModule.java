@@ -20,34 +20,29 @@ import net.sourceforge.pmd.lang.document.Chars;
 import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.lang.document.TextRegion;
+import net.sourceforge.pmd.lang.impl.SimpleLanguageModuleBase;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 import net.sourceforge.pmd.lang.rule.impl.DefaultRuleViolationFactory;
-import net.sourceforge.pmd.processor.SimpleBatchLanguageProcessor;
 
 /**
  * Dummy language used for testing PMD.
  */
-public class DummyLanguageModule extends BaseLanguageModule {
+public class DummyLanguageModule extends SimpleLanguageModuleBase {
 
     public static final String NAME = "Dummy";
     public static final String TERSE_NAME = "dummy";
 
     public DummyLanguageModule() {
-        super(NAME, null, TERSE_NAME, "dummy");
-        addVersion("1.0", new Handler());
-        addVersion("1.1", new Handler());
-        addVersion("1.2", new Handler());
-        addVersion("1.3", new Handler());
-        addVersion("1.4", new Handler());
-        addVersion("1.5", new Handler(), "5");
-        addVersion("1.6", new Handler(), "6");
-        addDefaultVersion("1.7", new Handler(), "7");
-        addVersion("1.8", new Handler(), "8");
-    }
-
-    @Override
-    public LanguageProcessor createProcessor(LanguagePropertyBundle bundle) {
-        return new SimpleBatchLanguageProcessor(bundle, new Handler());
+        super(LanguageMetadata.withId(TERSE_NAME).name(NAME).extensions("dummy")
+                              .addVersion("1.0")
+                              .addVersion("1.1")
+                              .addVersion("1.2")
+                              .addVersion("1.3")
+                              .addVersion("1.4")
+                              .addVersion("1.5", "5")
+                              .addVersion("1.6", "6")
+                              .addDefaultVersion("1.7", "7")
+                              .addVersion("1.8", "8"), new Handler());
     }
 
     public static DummyLanguageModule getInstance() {
