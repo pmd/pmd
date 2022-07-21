@@ -20,7 +20,6 @@ import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.io.Writer;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -66,35 +65,16 @@ import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
 
 import net.sourceforge.pmd.PMDVersion;
+import net.sourceforge.pmd.cpd.renderer.CPDRendererAdapter;
 import net.sourceforge.pmd.cpd.renderer.CPDReportRenderer;
 
 public class GUI implements CPDListener {
 
-    // private interface Renderer {
-    // String render(Iterator<Match> items);
-    // }
-
-    private static final Object[][] RENDERER_SETS = new Object[][] { { "Text", new CPDReportRenderer() {
-        @Override
-        public void render(CPDReport report, Writer writer) throws IOException {
-            new SimpleRenderer().render(report.getMatches(), writer);
-        }
-    }, }, { "XML", new CPDReportRenderer() {
-        @Override
-        public void render(CPDReport report, Writer writer) throws IOException {
-            new XMLRenderer().render(report, writer);
-        }
-    }, }, { "CSV (comma)", new CPDReportRenderer() {
-        @Override
-        public void render(CPDReport report, Writer writer) throws IOException {
-            new CSVRenderer(',').render(report.getMatches(), writer);
-        }
-    }, }, { "CSV (tab)", new CPDReportRenderer() {
-        @Override
-        public void render(CPDReport report, Writer writer) throws IOException {
-            new CSVRenderer('\t').render(report.getMatches(), writer);
-        }
-    }, }, };
+    private static final Object[][] RENDERER_SETS = new Object[][] {
+            { "Text", new CPDRendererAdapter(new SimpleRenderer()), },
+            { "XML", new XMLRenderer(), },
+            { "CSV (comma)", new CPDRendererAdapter(new CSVRenderer(',')), },
+            { "CSV (tab)", new CPDRendererAdapter(new CSVRenderer('\t')), }, };
 
     private abstract static class LanguageConfig {
         public abstract Language languageFor(Properties p);

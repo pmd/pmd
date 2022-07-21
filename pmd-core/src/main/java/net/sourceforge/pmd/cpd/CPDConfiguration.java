@@ -42,7 +42,7 @@ public class CPDConfiguration extends AbstractConfiguration {
     public static final String DEFAULT_LANGUAGE = "java";
     public static final String DEFAULT_RENDERER = "text";
 
-    private static final Map<String, Class<? extends CPDRenderer>> RENDERERS = new HashMap<>();
+    private static final Map<String, Class<?>> RENDERERS = new HashMap<>();
 
     static {
         RENDERERS.put(DEFAULT_RENDERER, SimpleRenderer.class);
@@ -175,18 +175,45 @@ public class CPDConfiguration extends AbstractConfiguration {
             setRendererName(DEFAULT_RENDERER);
         }
         if (getRenderer() == null && getCPDRenderer() == null) {
-            try {
-                try {
-                    setRenderer(getCPDReportRendererFromString(getRendererName(), getEncoding()));
-                } catch (ClassCastException e) {
-                    // The renderer class configured is not using the new CPDReportRenderer interface...
-                    setCPDRenderer(getCPDRendererFromString(getRendererName(), getEncoding()));
-                }
-            } catch (ClassCastException e) {
-                // The renderer class configured is not using the new CPDRenderer interface...
-                setRenderer(getRendererFromString(getRendererName(), getEncoding()));
+            Object renderer = createRendererByName(getRendererName(), getEncoding());
+            String className = getRendererName();
+
+            if (renderer instanceof CPDReportRenderer) {
+                setRenderer((CPDReportRenderer) renderer);
+            } else if (renderer instanceof CPDRenderer) {
+                setCPDRenderer((CPDRenderer) renderer);
+            } else if (renderer instanceof Renderer) {
+                setRenderer((Renderer) renderer);
+            } else {
+                System.err.println("Class '" + className + "' is not a supported renderer, defaulting to SimpleRenderer.");
+                setRenderer(new SimpleRenderer());
             }
         }
+    }
+
+    private static Object createRendererByName(String name, String encoding) {
+        if (name == null || "".equals(name)) {
+            name = DEFAULT_RENDERER;
+        }
+        Class<?> rendererClass = RENDERERS.get(name.toLowerCase(Locale.ROOT));
+        if (rendererClass == null) {
+            try {
+                rendererClass = Class.forName(name);
+            } catch (ClassNotFoundException e) {
+                System.err.println("Can't find class '" + name + "', defaulting to SimpleRenderer.");
+                rendererClass = SimpleRenderer.class;
+            }
+        }
+
+        Object renderer = null;
+        try {
+            renderer = rendererClass.getDeclaredConstructor().newInstance();
+            setRendererEncoding(renderer, encoding);
+        } catch (Exception e) {
+            System.err.println("Couldn't instantiate renderer, defaulting to SimpleRenderer: " + e);
+            renderer = new SimpleRenderer();
+        }
+        return renderer;
     }
 
     /**
@@ -195,28 +222,8 @@ public class CPDConfiguration extends AbstractConfiguration {
     @Deprecated
     @InternalApi
     public static Renderer getRendererFromString(String name, String encoding) {
-        String clazzname = name;
-        if (clazzname == null || "".equals(clazzname)) {
-            clazzname = DEFAULT_RENDERER;
-        }
-        @SuppressWarnings("unchecked") // Safe, all standard implementations implement both interfaces
-        Class<? extends Renderer> clazz = (Class<? extends Renderer>) RENDERERS.get(clazzname.toLowerCase(Locale.ROOT));
-        if (clazz == null) {
-            try {
-                clazz = Class.forName(clazzname).asSubclass(Renderer.class);
-            } catch (ClassNotFoundException e) {
-                System.err.println("Can't find class '" + name + "', defaulting to SimpleRenderer.");
-                clazz = SimpleRenderer.class;
-            }
-        }
-        try {
-            Renderer renderer = clazz.getDeclaredConstructor().newInstance();
-            setRendererEncoding(renderer, encoding);
-            return renderer;
-        } catch (Exception e) {
-            System.err.println("Couldn't instantiate renderer, defaulting to SimpleRenderer: " + e);
-            return new SimpleRenderer();
-        }
+        // will throw a ClassCastException if the renderer is of wrong type
+        return (Renderer) createRendererByName(name, encoding);
     }
 
     /**
@@ -225,36 +232,8 @@ public class CPDConfiguration extends AbstractConfiguration {
     @Deprecated
     @InternalApi
     public static CPDRenderer getCPDRendererFromString(String name, String encoding) {
-        String clazzname = name;
-        if (clazzname == null || "".equals(clazzname)) {
-            clazzname = DEFAULT_RENDERER;
-        }
-        Class<? extends CPDRenderer> clazz = RENDERERS.get(clazzname.toLowerCase(Locale.ROOT));
-        if (clazz == null) {
-            try {
-                clazz = Class.forName(clazzname).asSubclass(CPDRenderer.class);
-            } catch (ClassNotFoundException e) {
-                System.err.println("Can't find class '" + name + "', defaulting to SimpleRenderer.");
-                clazz = SimpleRenderer.class;
-            }
-        }
-        try {
-            CPDRenderer renderer = clazz.getDeclaredConstructor().newInstance();
-            setRendererEncoding(renderer, encoding);
-            return renderer;
-        } catch (Exception e) {
-            System.err.println("Couldn't instantiate renderer, defaulting to SimpleRenderer: " + e);
-            return new SimpleRenderer();
-        }
-    }
-
-    static CPDReportRenderer getCPDReportRendererFromString(String name, String encoding) {
-        final CPDRenderer renderer = getCPDRendererFromString(name, encoding);
-        if (renderer instanceof CPDReportRenderer) {
-            return (CPDReportRenderer) renderer;
-        } else {
-            return new CPDRendererAdapter(renderer);
-        }
+        // will throw a ClassCastException if the renderer is of wrong type
+        return (CPDRenderer) createRendererByName(name, encoding);
     }
 
     private static void setRendererEncoding(Object renderer, String encoding)
@@ -417,6 +396,7 @@ public class CPDConfiguration extends AbstractConfiguration {
     public void setRenderer(Renderer renderer) {
         this.renderer = renderer;
         this.cpdRenderer = null;
+        this.cpdReportRenderer = null;
     }
 
     /**
@@ -426,8 +406,9 @@ public class CPDConfiguration extends AbstractConfiguration {
     @Deprecated
     @InternalApi
     public void setCPDRenderer(CPDRenderer renderer) {
-        this.cpdRenderer = renderer;
         this.renderer = null;
+        this.cpdRenderer = renderer;
+        this.cpdReportRenderer = new CPDRendererAdapter(renderer);
     }
 
     void setRenderer(CPDReportRenderer renderer) {
