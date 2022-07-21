@@ -4,15 +4,21 @@
 
 package net.sourceforge.pmd.util;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.CharArrayReader;
+import java.io.FilterOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.PrintStream;
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.io.Writer;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -295,5 +301,27 @@ public class IOUtilTest {
         String testString = "testReadStreamToString";
         InputStream stream = new ByteArrayInputStream(testString.getBytes(StandardCharsets.UTF_8));
         Assert.assertEquals(testString, IOUtil.readToString(stream, StandardCharsets.UTF_8));
+    }
+
+    @Test
+    public void testCreateWriterStdout() throws IOException {
+        PrintStream originalOut = System.out;
+        ByteArrayOutputStream data = new ByteArrayOutputStream();
+        PrintStream out = new PrintStream(new FilterOutputStream(data) {
+            @Override
+            public void close() {
+                fail("Stream must not be closed");
+            }
+        });
+
+        try {
+            System.setOut(out);
+            Writer writer = IOUtil.createWriter();
+            writer.write("Test");
+            writer.close();
+            assertEquals("Test", data.toString());
+        } finally {
+            System.setOut(originalOut);
+        }
     }
 }

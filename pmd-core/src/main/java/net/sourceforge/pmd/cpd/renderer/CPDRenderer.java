@@ -10,6 +10,10 @@ import java.util.Iterator;
 
 import net.sourceforge.pmd.cpd.Match;
 
+/**
+ * @deprecated Use {@link CPDReportRenderer}
+ */
+@Deprecated
 public interface CPDRenderer {
     void render(Iterator<Match> matches, Writer writer) throws IOException;
 }
