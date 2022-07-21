@@ -19,6 +19,7 @@ import net.sourceforge.pmd.RuleContextTest;
 import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.lang.ast.DummyNode.DummyRootNode;
 import net.sourceforge.pmd.lang.ast.DummyNodeWithDeprecatedAttribute;
+import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.lang.document.TextRegion;
 import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
 
@@ -144,7 +145,7 @@ class XPathRuleTest {
 
 
     DummyRootNode newNode() {
-        DummyRootNode root = new DummyRootNode();
+        DummyRootNode root = newRoot(TextFile.UNKNOWN_FILENAME);
         DummyNode dummy = new DummyNodeWithDeprecatedAttribute();
         root.addChild(dummy, 0);
         dummy.setRegion(TextRegion.fromOffsetLength(0, 1));
