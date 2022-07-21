@@ -1565,6 +1565,7 @@ for the <a href="https://cucumber.io/docs/gherkin/">Gherkin</a> language. It is 
 <ul>
   <li>core
     <ul>
+      <li><a href="https://github.com/pmd/pmd/pull/4021">#4021</a>: [core] CPD: Add total number of tokens to XML reports</li>
       <li><a href="https://github.com/pmd/pmd/issues/4031">#4031</a>: [core] If report is written to stdout, stdout should not be closed</li>
     </ul>
   </li>
@@ -1599,6 +1600,8 @@ for the <a href="https://cucumber.io/docs/gherkin/">Gherkin</a> language. It is 
   <li>The experimental Java AST class <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.48.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTGuardedPattern.html#"><code>ASTGuardedPattern</code></a> has been deprecated and
 will be removed. It was introduced for Java 17 and Java 18 Preview as part of pattern matching for switch,
 but it is no longer supported with Java 19 Preview.</li>
+  <li>The interface <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.48.0-SNAPSHOT/net/sourceforge/pmd/cpd/renderer/CPDRenderer.html#"><code>CPDRenderer</code></a> is deprecated. For custom CPD renderers
+the new interface <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.48.0-SNAPSHOT/net/sourceforge/pmd/cpd/renderer/CPDReportRenderer.html#"><code>CPDReportRenderer</code></a> should be used.</li>
 </ul>
 
 <h4 id="experimental-apis">Experimental APIs</h4>
@@ -1614,6 +1617,21 @@ AST nodes have been introduced as experimental:
   </li>
 </ul>
 
+<h4 id="internal-api">Internal API</h4>
+
+<p>Those APIs are not intended to be used by clients, and will be hidden or removed with PMD 7.0.0.
+You can identify them with the <code class="language-plaintext highlighter-rouge">@InternalApi</code> annotation. You’ll also get a deprecation warning.</p>
+
+<ul>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.48.0-SNAPSHOT/net/sourceforge/pmd/cpd/CPDConfiguration.html#setRenderer(net.sourceforge.pmd.cpd.Renderer)"><code>CPDConfiguration#setRenderer</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.48.0-SNAPSHOT/net/sourceforge/pmd/cpd/CPDConfiguration.html#setCPDRenderer(net.sourceforge.pmd.cpd.renderer.CPDRenderer)"><code>CPDConfiguration#setCPDRenderer</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.48.0-SNAPSHOT/net/sourceforge/pmd/cpd/CPDConfiguration.html#getRenderer()"><code>CPDConfiguration#getRenderer</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.48.0-SNAPSHOT/net/sourceforge/pmd/cpd/CPDConfiguration.html#getCPDRenderer()"><code>CPDConfiguration#getCPDRenderer</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.48.0-SNAPSHOT/net/sourceforge/pmd/cpd/CPDConfiguration.html#getRendererFromString(java.lang.String,java.lang.String)"><code>CPDConfiguration#getRendererFromString</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.48.0-SNAPSHOT/net/sourceforge/pmd/cpd/CPDConfiguration.html#getCPDRendererFromString(java.lang.String,java.lang.String)"><code>CPDConfiguration#getCPDRendererFromString</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.48.0-SNAPSHOT/net/sourceforge/pmd/cpd/renderer/CPDRendererAdapter.html#"><code>CPDRendererAdapter</code></a></li>
+</ul>
+
 <h3 id="external-contributions">External Contributions</h3>
 <ul>
   <li><a href="https://github.com/pmd/pmd/pull/3984">#3984</a>: [java] Fix AddEmptyString false-negative issue - <a href="https://github.com/LiGaOg">@LiGaOg</a></li>
@@ -1621,6 +1639,7 @@ AST nodes have been introduced as experimental:
   <li><a href="https://github.com/pmd/pmd/pull/3992">#3992</a>: [java] FinalFieldCouldBeStatic - fix false negative with unnecessary parenthesis - <a href="https://github.com/dalizi007">@dalizi007</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/3994">#3994</a>: [java] TooManyMethods - improve getter/setter detection (#3729) - <a href="https://github.com/341816041">@341816041</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/4017">#4017</a>: Add Gherkin support to CPD - <a href="https://github.com/ASBrouwers">@ASBrouwers</a></li>
+  <li><a href="https://github.com/pmd/pmd/pull/4021">#4021</a>: [core] CPD: Add total number of tokens to XML reports - <a href="https://github.com/maikelsteneker">@maikelsteneker</a></li>
 </ul>
 
 
@@ -1654,7 +1673,7 @@ AST nodes have been introduced as experimental:
         <div class="col-lg-12 footer">
             &copy;2022 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Jul 16, 2022 <br />
+             Site last generated: Jul 21, 2022 <br />
             <p>
                 <img src="images/pmd-logo-small.png" alt="Company
                 logo"/>
