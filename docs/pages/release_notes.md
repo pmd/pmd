@@ -53,8 +53,22 @@ Being based on a proper Antlr grammar, CPD can:
     * [#3949](https://github.com/pmd/pmd/issues/3949): \[java] FinalFieldCouldBeStatic - false negative with unnecessary parenthesis
 * java-performance
     * [#3625](https://github.com/pmd/pmd/issues/3625): \[java] AddEmptyString - false negative with empty var
+* test
+    * [#3758](https://github.com/pmd/pmd/issues/3758): \[test] Move pmd-test to java 8
+    * [#3976](https://github.com/pmd/pmd/pull/3976): \[test] Extract xml schema module
 
 ### API Changes
+
+#### Rule Test Framework
+
+* The module "pmd-test", which contains support classes to write rule tests, now **requires Java 8**. If you depend on
+  this module for testing your own custom rules, you'll need to make sure to use at least Java 8.
+* The new module "pmd-test-schema" contains now the XSD schema and the code to parse the rule test XML files. The
+  schema has been extracted in order to easily share it with other tools like the Rule Designer or IDE plugins.
+* The attribute `isRegressionTest` is deprecated and the new attribute `disabled` should be used instead for
+  defining whether a rule test should be skipped or not.
+* More information about the rule test framework can be found in the documentation:
+  [Testing your rules](pmd_userdocs_extending_testing.html)
 
 #### Deprecated API
 
