@@ -4,15 +4,12 @@
 
 package net.sourceforge.pmd.lang.swift;
 
-import net.sourceforge.pmd.lang.BaseLanguageModule;
-import net.sourceforge.pmd.lang.LanguageProcessor;
-import net.sourceforge.pmd.lang.LanguagePropertyBundle;
-import net.sourceforge.pmd.processor.SimpleBatchLanguageProcessor;
+import net.sourceforge.pmd.lang.impl.SimpleLanguageModuleBase;
 
 /**
  * Language Module for Swift
  */
-public class SwiftLanguageModule extends BaseLanguageModule {
+public class SwiftLanguageModule extends SimpleLanguageModuleBase {
 
     /** The name. */
     public static final String NAME = "Swift";
@@ -23,13 +20,6 @@ public class SwiftLanguageModule extends BaseLanguageModule {
      * Create a new instance of Swift Language Module.
      */
     public SwiftLanguageModule() {
-        super(NAME, null, TERSE_NAME, "swift");
-        addDefaultVersion("", new SwiftHandler());
-    }
-
-
-    @Override
-    public LanguageProcessor createProcessor(LanguagePropertyBundle bundle) {
-        return new SimpleBatchLanguageProcessor(bundle, new SwiftHandler());
+        super(LanguageMetadata.withId(TERSE_NAME).name(NAME).extensions("swift"), new SwiftHandler());
     }
 }

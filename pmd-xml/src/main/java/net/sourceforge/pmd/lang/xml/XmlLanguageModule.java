@@ -4,26 +4,17 @@
 
 package net.sourceforge.pmd.lang.xml;
 
-import net.sourceforge.pmd.lang.BaseLanguageModule;
-import net.sourceforge.pmd.lang.LanguageProcessor;
-import net.sourceforge.pmd.lang.LanguagePropertyBundle;
-import net.sourceforge.pmd.processor.SimpleBatchLanguageProcessor;
+import net.sourceforge.pmd.lang.impl.SimpleLanguageModuleBase;
 
 /**
  * Created by christoferdutz on 20.09.14.
  */
-public class XmlLanguageModule extends BaseLanguageModule {
+public class XmlLanguageModule extends SimpleLanguageModuleBase {
 
     public static final String NAME = "XML";
     public static final String TERSE_NAME = "xml";
 
     public XmlLanguageModule() {
-        super(NAME, null, TERSE_NAME, "xml");
-        addVersion("", new XmlHandler(), true);
-    }
-
-    @Override
-    public LanguageProcessor createProcessor(LanguagePropertyBundle bundle) {
-        return new SimpleBatchLanguageProcessor(bundle, new XmlHandler());
+        super(LanguageMetadata.withId(TERSE_NAME).name(NAME).extensions("xml"), new XmlHandler());
     }
 }

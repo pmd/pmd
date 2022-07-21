@@ -4,24 +4,19 @@
 
 package net.sourceforge.pmd.lang.apex;
 
-import static net.sourceforge.pmd.util.CollectionUtil.listOf;
-
-import net.sourceforge.pmd.lang.BaseLanguageModule;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageProcessor;
 import net.sourceforge.pmd.lang.LanguagePropertyBundle;
 import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.lang.impl.LanguageModuleBase;
 
-import apex.jorje.services.Version;
-
-public class ApexLanguageModule extends BaseLanguageModule {
+public class ApexLanguageModule extends LanguageModuleBase {
 
     public static final String NAME = "Apex";
     public static final String TERSE_NAME = "apex";
 
     public ApexLanguageModule() {
-        super(NAME, null, TERSE_NAME, listOf("cls", "trigger"));
-        addDefaultVersion(String.valueOf((int) Version.CURRENT.getExternal()), null);
+        super(LanguageMetadata.withId(TERSE_NAME).name(NAME).extensions("cls", "trigger"));
     }
 
     @Override

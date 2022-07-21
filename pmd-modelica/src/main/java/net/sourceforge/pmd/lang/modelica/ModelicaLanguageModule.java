@@ -4,23 +4,15 @@
 
 package net.sourceforge.pmd.lang.modelica;
 
-import net.sourceforge.pmd.lang.BaseLanguageModule;
-import net.sourceforge.pmd.lang.LanguageProcessor;
-import net.sourceforge.pmd.lang.LanguagePropertyBundle;
-import net.sourceforge.pmd.processor.SimpleBatchLanguageProcessor;
+import net.sourceforge.pmd.lang.impl.SimpleLanguageModuleBase;
 
-public class ModelicaLanguageModule extends BaseLanguageModule {
+public class ModelicaLanguageModule extends SimpleLanguageModuleBase {
     public static final String NAME = "Modelica";
     public static final String TERSE_NAME = "modelica";
 
     public ModelicaLanguageModule() {
-        super(NAME, null, TERSE_NAME, "mo");
-        addVersion("", new ModelicaHandler(), true);
+        super(LanguageMetadata.withId(TERSE_NAME).name(NAME).extensions("mo"),
+              new ModelicaHandler());
     }
 
-
-    @Override
-    public LanguageProcessor createProcessor(LanguagePropertyBundle bundle) {
-        return new SimpleBatchLanguageProcessor(bundle, new ModelicaHandler());
-    }
 }

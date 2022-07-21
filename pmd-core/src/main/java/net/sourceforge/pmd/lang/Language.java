@@ -92,7 +92,9 @@ public interface Language extends Comparable<Language> {
      * @return <code>true</code> if this language handles the extension,
      *     <code>false</code> otherwise.
      */
-    boolean hasExtension(String extensionWithoutDot);
+    default boolean hasExtension(String extensionWithoutDot) {
+        return getExtensions().contains(extensionWithoutDot);
+    }
 
     /**
      * Returns an ordered list of supported versions for this language.
@@ -109,7 +111,9 @@ public interface Language extends Comparable<Language> {
      *
      * @return True if the version string is known
      */
-    boolean hasVersion(String version);
+    default boolean hasVersion(String version) {
+        return getVersion(version) != null;
+    }
 
     /**
      * Returns the language version with the given {@linkplain LanguageVersion#getVersion() version string}.
@@ -120,7 +124,14 @@ public interface Language extends Comparable<Language> {
      * @return The corresponding LanguageVersion, {@code null} if the
      *     version string is not recognized.
      */
-    LanguageVersion getVersion(String version);
+    default LanguageVersion getVersion(String version) {
+        for (LanguageVersion v : getVersions()) {
+            if (v.getVersion().equals(version)) {
+                return v;
+            }
+        }
+        return null;
+    }
 
     /**
      * Returns the default language version for this language.

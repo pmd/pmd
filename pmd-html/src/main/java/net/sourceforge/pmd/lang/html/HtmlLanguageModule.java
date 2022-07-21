@@ -5,24 +5,16 @@
 
 package net.sourceforge.pmd.lang.html;
 
-import net.sourceforge.pmd.lang.BaseLanguageModule;
-import net.sourceforge.pmd.lang.LanguageProcessor;
-import net.sourceforge.pmd.lang.LanguagePropertyBundle;
-import net.sourceforge.pmd.processor.SimpleBatchLanguageProcessor;
+import net.sourceforge.pmd.lang.impl.SimpleLanguageModuleBase;
 
-public final class HtmlLanguageModule extends BaseLanguageModule {
+public final class HtmlLanguageModule extends SimpleLanguageModuleBase {
 
     public static final String NAME = "HTML";
     public static final String TERSE_NAME = "html";
 
     public HtmlLanguageModule() {
-        super(NAME, null, TERSE_NAME, "html", "htm", "xhtml", "xht", "shtml");
-        addDefaultVersion("", new HtmlHandler());
+        super(LanguageMetadata.withId(TERSE_NAME).name(NAME)
+                              .extensions("html", "htm", "xhtml", "xht", "shtml"),
+              new HtmlHandler());
     }
-
-    @Override
-    public LanguageProcessor createProcessor(LanguagePropertyBundle bundle) {
-        return new SimpleBatchLanguageProcessor(bundle, new HtmlHandler());
-    }
-
 }

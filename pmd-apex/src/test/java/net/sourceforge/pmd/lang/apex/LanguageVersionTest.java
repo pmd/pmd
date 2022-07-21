@@ -20,7 +20,7 @@ public class LanguageVersionTest extends AbstractLanguageVersionTest {
 
     @Parameters
     public static Collection<?> data() {
-        return Arrays.asList(new Object[][] { { ApexLanguageModule.NAME, ApexLanguageModule.TERSE_NAME, "35",
-            getLanguage("Apex").getVersion("35"), }, });
+        return Arrays.asList(new Object[][] { { ApexLanguageModule.NAME, ApexLanguageModule.TERSE_NAME, "",
+            getLanguage("Apex").getVersion(""), }, });
     }
 }

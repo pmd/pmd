@@ -11,7 +11,7 @@ import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.ast.impl.AbstractNode;
 import net.sourceforge.pmd.lang.document.TextRegion;
-import net.sourceforge.pmd.processor.SimpleBatchLanguageProcessor;
+import net.sourceforge.pmd.lang.impl.SimpleLanguageModuleBase;
 
 /**
  * A dummy language implementation whose parser produces a single node.
@@ -24,20 +24,15 @@ import net.sourceforge.pmd.processor.SimpleBatchLanguageProcessor;
  * @since 6.48.0
  */
 @Experimental
-public final class PlainTextLanguage extends BaseLanguageModule {
+public final class PlainTextLanguage extends SimpleLanguageModuleBase {
 
     private static final Language INSTANCE = new PlainTextLanguage();
 
     static final String TERSE_NAME = "text";
 
     private PlainTextLanguage() {
-        super("Plain text", "Plain text", TERSE_NAME, "plain-text-file-goo-extension");
-        addVersion("", new TextLvh(), true);
-    }
-
-    @Override
-    public LanguageProcessor createProcessor(LanguagePropertyBundle bundle) {
-        return new SimpleBatchLanguageProcessor(bundle, new TextLvh());
+        super(LanguageMetadata.withId(TERSE_NAME).name("Plain text").extensions("plain-text-file-goo-extension"),
+              new TextLvh());
     }
 
     /**
