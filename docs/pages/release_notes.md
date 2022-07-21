@@ -60,6 +60,8 @@ Being based on a proper Antlr grammar, CPD can:
 * The experimental Java AST class {% jdoc java::lang.java.ast.ASTGuardedPattern %} has been deprecated and
   will be removed. It was introduced for Java 17 and Java 18 Preview as part of pattern matching for switch,
   but it is no longer supported with Java 19 Preview.
+* The interface {% jdoc core::cpd.renderer.CPDRenderer %} is deprecated. For custom CPD renderers
+  the new interface {% jdoc core::cpd.renderer.CPDReportRenderer %} should be used.
 
 #### Experimental APIs
 
