@@ -148,7 +148,7 @@ public class StatementAndBraceFinder {
 
     <test-code regressionTest="false">
         <description>TODO: known limitation, should report 1</description>
-        <rule-property name="reportClasses">false</rule-property>
+        <!-- <rule-property name="reportClasses">false</rule-property> -->
         <expected-problems>1</expected-problems>
         <expected-messages>
             <message>'Foo#bar()' has value 1.</message>
