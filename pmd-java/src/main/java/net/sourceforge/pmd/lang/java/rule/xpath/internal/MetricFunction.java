@@ -5,7 +5,7 @@
 package net.sourceforge.pmd.lang.java.rule.xpath.internal;
 
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.java.internal.JavaLanguageHandler.JavaMetricsProvider;
+import net.sourceforge.pmd.lang.metrics.LanguageMetricsProvider;
 import net.sourceforge.pmd.lang.metrics.Metric;
 import net.sourceforge.pmd.lang.metrics.MetricOptions;
 import net.sourceforge.pmd.lang.rule.xpath.internal.AstElementNode;
@@ -32,7 +32,6 @@ public final class MetricFunction extends BaseJavaXPathFunction {
 
     public static final MetricFunction INSTANCE = new MetricFunction();
 
-    private static final JavaMetricsProvider METRICS = new JavaMetricsProvider();
 
     private MetricFunction() {
         super("metric");
@@ -80,7 +79,9 @@ public final class MetricFunction extends BaseJavaXPathFunction {
 
 
     private static double getMetric(Node n, String metricKeyName) throws XPathException {
-        Metric<?, ?> metric = METRICS.getMetricWithName(metricKeyName);
+        LanguageMetricsProvider provider =
+            n.getAstInfo().getLanguageProcessor().services().getLanguageMetricsProvider();
+        Metric<?, ?> metric = provider.getMetricWithName(metricKeyName);
         if (metric == null) {
             throw new XPathException(badMetricKeyMessage(metricKeyName));
         }

@@ -35,11 +35,13 @@ public abstract class BatchLanguageProcessor<P extends LanguagePropertyBundle> i
     }
 
     @Override
-    public AutoCloseable launchAnalysis(AnalysisTask analysisTask) {
+    public AutoCloseable launchAnalysis(AnalysisTask task) {
         // The given analysis task has all files to analyse, not only the ones for this language.
-        List<TextFile> files = new ArrayList<>(analysisTask.getFiles());
+        List<TextFile> files = new ArrayList<>(task.getFiles());
         files.removeIf(it -> !it.getLanguageVersion().getLanguage().equals(getLanguage()));
-        AnalysisTask newTask = analysisTask.withFiles(files);
+        AnalysisTask newTask = task.withFiles(files);
+
+        task.getRulesets().initializeRules(task.getLpRegistry(), task.getMessageReporter());
 
         // launch processing.
         AbstractPMDProcessor processor = AbstractPMDProcessor.newFileProcessor(newTask);

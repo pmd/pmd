@@ -21,6 +21,7 @@ import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.lang.rule.internal.RuleApplicator;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
+import net.sourceforge.pmd.util.log.MessageReporter;
 
 /**
  * Grouping of Rules per Language in a RuleSet.
@@ -63,9 +64,19 @@ public class RuleSets {
         this.ruleSets = Collections.singletonList(ruleSet);
     }
 
-    public void initializeRules(LanguageProcessorRegistry lpReg) {
-        for (Rule rule : getAllRules()) {
-            rule.initialize(lpReg.getProcessor(rule.getLanguage()));
+    public void initializeRules(LanguageProcessorRegistry lpReg, MessageReporter reporter) {
+        // this is abusing the mutability of RuleSet, will go away eventually.
+        for (RuleSet rset : ruleSets) {
+            for (Iterator<Rule> iterator = rset.getRules().iterator(); iterator.hasNext();) {
+                Rule rule = iterator.next();
+                try {
+                    rule.initialize(lpReg.getProcessor(rule.getLanguage()));
+                } catch (Exception e) {
+                    reporter.errorEx(
+                        "Exception while initializing rule " + rule.getName() + ", the rule will not be run", e);
+                    iterator.remove();
+                }
+            }
         }
     }
 

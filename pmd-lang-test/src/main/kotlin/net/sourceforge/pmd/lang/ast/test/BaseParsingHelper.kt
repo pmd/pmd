@@ -226,6 +226,7 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
     ): Report {
         if (rule.language == null)
             rule.language = language
+
         val config = PMDConfiguration().apply {
             suppressMarker = params.suppressMarker
             forceLanguageVersion = defaultVersion

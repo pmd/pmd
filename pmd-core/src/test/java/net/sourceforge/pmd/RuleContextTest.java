@@ -15,6 +15,7 @@ import net.sourceforge.pmd.lang.ast.DummyNode.DummyRootNode;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.ast.impl.DummyTreeUtil;
+import net.sourceforge.pmd.lang.document.TestMessageReporter;
 
 public class RuleContextTest {
 
@@ -30,7 +31,8 @@ public class RuleContextTest {
     static Report getReportForRuleSetApply(RuleSet ruleset, RootNode node) {
         return Report.buildReport(listener -> {
             RuleSets ruleSets = new RuleSets(ruleset);
-            ruleSets.initializeRules(LanguageProcessorRegistry.singleton(node.getAstInfo().getLanguageProcessor()));
+            ruleSets.initializeRules(LanguageProcessorRegistry.singleton(node.getAstInfo().getLanguageProcessor()),
+                                     new TestMessageReporter());
             ruleSets.apply(node, listener);
         });
     }
