@@ -1491,7 +1491,7 @@ public class Something {
         ]]></code>
     </test-code>
 
-    <test-code ignored="true">
+    <test-code disabled="true">
         <!-- Todo I ignored this because the test is not useful. It only checks that we
               avoid the FP when auxclasspath is not set, while the FP is still here with
               auxclasspath. The FP should not be there with or without auxclasspath, and it's

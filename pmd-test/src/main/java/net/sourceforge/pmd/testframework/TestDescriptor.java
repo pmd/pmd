@@ -51,14 +51,14 @@ public class TestDescriptor {
     }
 
     // for compatibility
-    public TestDescriptor(RuleTestDescriptor td) {
+    TestDescriptor(RuleTestDescriptor td) {
         this.rule = td.getRule();
         this.code = td.getCode();
         this.description = td.getDescription();
         this.numberOfProblemsExpected = td.getExpectedProblems();
         this.expectedLineNumbers = td.getExpectedLineNumbers();
         this.expectedMessages = td.getExpectedMessages();
-        this.isRegressionTest = !td.isIgnored();
+        this.isRegressionTest = !td.isDisabled();
         this.numberInDocument = td.getIndex();
         this.properties = td.getProperties();
         this.languageVersion = td.getLanguageVersion();

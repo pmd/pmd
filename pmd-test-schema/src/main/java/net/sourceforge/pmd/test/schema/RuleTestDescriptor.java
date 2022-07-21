@@ -15,7 +15,7 @@ import net.sourceforge.pmd.lang.LanguageVersion;
  */
 public class RuleTestDescriptor {
 
-    private boolean ignored;
+    private boolean disabled;
     private String description;
     private LanguageVersion languageVersion;
     private final Properties properties = new Properties();
@@ -40,12 +40,12 @@ public class RuleTestDescriptor {
         return properties;
     }
 
-    public boolean isIgnored() {
-        return ignored;
+    public boolean isDisabled() {
+        return disabled;
     }
 
-    public void setIgnored(boolean ignored) {
-        this.ignored = ignored;
+    public void setDisabled(boolean disabled) {
+        this.disabled = disabled;
     }
 
     public String getDescription() {

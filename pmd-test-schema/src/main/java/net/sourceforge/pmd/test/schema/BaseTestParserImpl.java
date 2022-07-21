@@ -95,10 +95,10 @@ class BaseTestParserImpl {
         parseBoolAttribute(testCode, "reinitializeRule", true, err, "Attribute 'reinitializeRule' is deprecated and ignored, assumed true");
         parseBoolAttribute(testCode, "useAuxClasspath", true, err, "Attribute 'useAuxClasspath' is deprecated and ignored, assumed true");
 
-        boolean ignored = parseBoolAttribute(testCode, "ignored", false, err, null)
+        boolean disabled = parseBoolAttribute(testCode, "disabled", false, err, null)
                           | !parseBoolAttribute(testCode, "regressionTest", true, err, "Attribute ''regressionTest'' is deprecated, use ''ignored'' with inverted value");
 
-        descriptor.setIgnored(ignored);
+        descriptor.setDisabled(disabled);
 
         Properties properties = parseRuleProperties(testCode, descriptor.getRule(), err);
         descriptor.getProperties().putAll(properties);
