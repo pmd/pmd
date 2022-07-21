@@ -27,7 +27,7 @@ import org.w3c.dom.Element;
 
 import net.sourceforge.pmd.cpd.renderer.CPDRenderer;
 import net.sourceforge.pmd.cpd.renderer.CPDReportRenderer;
-import net.sourceforge.pmd.util.CollectionUtil;
+import net.sourceforge.pmd.internal.util.IteratorUtil;
 import net.sourceforge.pmd.util.StringUtil;
 
 /**
@@ -107,7 +107,7 @@ public final class XMLRenderer implements Renderer, CPDRenderer, CPDReportRender
 
     @Override
     public void render(Iterator<Match> matches, Writer writer) throws IOException {
-        render(new CPDReport(CollectionUtil.toList(matches), Collections.<String, Integer>emptyMap()), writer);
+        render(new CPDReport(IteratorUtil.toList(matches), Collections.<String, Integer>emptyMap()), writer);
     }
 
     @Override
