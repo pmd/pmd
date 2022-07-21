@@ -32,7 +32,11 @@ final class MultiThreadProcessor extends AbstractPMDProcessor {
         // The thread-local is not static, but analysis-global
         // This means we don't have to reset it manually, every analysis is isolated.
         // The initial value makes a copy of the rulesets
-        final ThreadLocal<RuleSets> ruleSetCopy = ThreadLocal.withInitial(() -> new RuleSets(task.getRulesets()));
+        final ThreadLocal<RuleSets> ruleSetCopy = ThreadLocal.withInitial(() -> {
+            RuleSets copy = new RuleSets(task.getRulesets());
+            copy.initializeRules(task.getLpRegistry());
+            return copy;
+        });
 
         for (final TextFile textFile : task.getFiles()) {
             executor.submit(new PmdRunnable(textFile, task) {

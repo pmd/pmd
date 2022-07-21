@@ -124,11 +124,11 @@ public final class XPathRule extends AbstractRule {
 
     @Override
     public void apply(Node target, RuleContext ctx) {
-        getQueryMaybeInitialize();
+        SaxonXPathRuleQuery query = getQueryMaybeInitialize();
 
         List<Node> nodesWithViolation;
         try {
-            nodesWithViolation = xpathRuleQuery.evaluate(target);
+            nodesWithViolation = query.evaluate(target);
         } catch (PmdXPathException e) {
             throw addExceptionContext(e);
         }
@@ -164,7 +164,7 @@ public final class XPathRule extends AbstractRule {
 
     private SaxonXPathRuleQuery getQueryMaybeInitialize() throws PmdXPathException {
         if (xpathRuleQuery == null) {
-           throw new IllegalStateException("Not initialized");
+            throw new IllegalStateException("Not initialized");
         }
         return xpathRuleQuery;
     }

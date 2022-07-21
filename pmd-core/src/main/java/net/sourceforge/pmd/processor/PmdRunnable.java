@@ -118,6 +118,7 @@ abstract class PmdRunnable implements Runnable {
                                RuleSets ruleSets) throws FileAnalysisException {
 
         SemanticErrorReporter reporter = SemanticErrorReporter.reportToLogger(task.getMessageReporter());
+        @SuppressWarnings("PMD.CloseResource")
         LanguageProcessor processor = task.getLpRegistry().getProcessor(textDocument.getLanguageVersion().getLanguage());
         ParserTask parserTask = new ParserTask(textDocument,
                                                reporter,

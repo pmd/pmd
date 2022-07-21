@@ -157,9 +157,9 @@ public class PmdRunnableTest {
         return ThrowingLanguageModule.INSTANCE.getVersion(PARSER_REPORTS_SEMANTIC_ERROR);
     }
 
-    static class ThrowingLanguageModule extends SimpleLanguageModuleBase {
+    public static class ThrowingLanguageModule extends SimpleLanguageModuleBase {
 
-        static final ThrowingLanguageModule INSTANCE = new ThrowingLanguageModule();
+        public static final ThrowingLanguageModule INSTANCE = new ThrowingLanguageModule();
 
         public ThrowingLanguageModule() {
             super(LanguageMetadata.withId("foo").name("Foo").extensions("foo")

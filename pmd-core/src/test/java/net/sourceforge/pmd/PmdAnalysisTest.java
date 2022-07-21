@@ -20,7 +20,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
 
 import net.sourceforge.pmd.RuleSetTest.MockRule;
-import net.sourceforge.pmd.processor.PmdRunnableTest;
+import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.reporting.ReportStats;
 
@@ -80,7 +80,7 @@ class PmdAnalysisTest {
     public void testParseException() {
         PMDConfiguration config = new PMDConfiguration();
         config.setThreads(1);
-        config.setForceLanguageVersion(PmdRunnableTest.getVersionWithParserThatThrowsSemanticError());
+        config.setForceLanguageVersion(DummyLanguageModule.getInstance().getVersionWhereParserThrows());
         try (PmdAnalysis pmd = PmdAnalysis.create(config)) {
             pmd.addRuleSet(RuleSet.forSingleRule(new MockRule()));
             pmd.files().addSourceFile("file", "some source");

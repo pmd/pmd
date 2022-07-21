@@ -19,7 +19,7 @@ public class Dummy2LanguageModule extends SimpleLanguageModuleBase {
 
     public Dummy2LanguageModule() {
         super(LanguageMetadata.withId(TERSE_NAME).name(NAME).extensions("dummy2")
-                              .addVersion("1.0"), new Handler());
+                              .addDefaultVersion("1.0"), new Handler());
     }
 
     public static Dummy2LanguageModule getInstance() {

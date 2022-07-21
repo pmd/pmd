@@ -16,6 +16,7 @@ import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.benchmark.TimedOperation;
 import net.sourceforge.pmd.benchmark.TimedOperationCategory;
+import net.sourceforge.pmd.lang.LanguageProcessorRegistry;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.lang.rule.internal.RuleApplicator;
@@ -60,6 +61,12 @@ public class RuleSets {
      */
     public RuleSets(RuleSet ruleSet) {
         this.ruleSets = Collections.singletonList(ruleSet);
+    }
+
+    public void initializeRules(LanguageProcessorRegistry lpReg) {
+        for (Rule rule : getAllRules()) {
+            rule.initialize(lpReg.getProcessor(rule.getLanguage()));
+        }
     }
 
     private RuleApplicator prepareApplicator() {

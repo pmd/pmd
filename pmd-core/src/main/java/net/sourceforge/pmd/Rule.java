@@ -266,7 +266,7 @@ public interface Rule extends PropertySource {
     }
 
     /**
-     * Start processing. Called once, before apply() is first called.
+     * Start processing. Called once per file, before apply() is first called.
      *
      * @param ctx the rule context
      */
@@ -283,7 +283,7 @@ public interface Rule extends PropertySource {
     void apply(Node target, RuleContext ctx);
 
     /**
-     * End processing. Called once, after apply() is last called.
+     * End processing. Called once per file, after apply() is last called.
      *
      * @param ctx
      *            the rule context

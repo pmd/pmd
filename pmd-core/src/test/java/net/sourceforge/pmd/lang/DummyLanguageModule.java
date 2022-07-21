@@ -31,6 +31,7 @@ public class DummyLanguageModule extends SimpleLanguageModuleBase {
 
     public static final String NAME = "Dummy";
     public static final String TERSE_NAME = "dummy";
+    private static final String PARSER_THROWS = "parserThrows";
 
     public DummyLanguageModule() {
         super(LanguageMetadata.withId(TERSE_NAME).name(NAME).extensions("dummy")
@@ -42,6 +43,7 @@ public class DummyLanguageModule extends SimpleLanguageModuleBase {
                               .addVersion("1.5", "5")
                               .addVersion("1.6", "6")
                               .addDefaultVersion("1.7", "7")
+                              .addVersion(PARSER_THROWS)
                               .addVersion("1.8", "8"), new Handler());
     }
 
@@ -49,6 +51,9 @@ public class DummyLanguageModule extends SimpleLanguageModuleBase {
         return (DummyLanguageModule) Objects.requireNonNull(LanguageRegistry.PMD.getLanguageByFullName(NAME));
     }
 
+    public LanguageVersion getVersionWhereParserThrows() {
+        return getVersion(PARSER_THROWS);
+    }
 
     public static class Handler extends AbstractPmdLanguageVersionHandler {
 
@@ -59,7 +64,12 @@ public class DummyLanguageModule extends SimpleLanguageModuleBase {
 
         @Override
         public Parser getParser() {
-            return DummyLanguageModule::readLispNode;
+            return task -> {
+                if (task.getLanguageVersion().getVersion().equals(PARSER_THROWS)) {
+                    throw new ParseException("ohio");
+                }
+                return readLispNode(task);
+            };
         }
     }
 

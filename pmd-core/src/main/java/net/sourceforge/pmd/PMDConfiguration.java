@@ -322,7 +322,10 @@ public class PMDConfiguration extends AbstractConfiguration {
      *
      * @param forceLanguageVersion the language version
      */
-    public void setForceLanguageVersion(LanguageVersion forceLanguageVersion) {
+    public void setForceLanguageVersion(@Nullable LanguageVersion forceLanguageVersion) {
+        if (forceLanguageVersion != null) {
+            checkLanguageIsRegistered(forceLanguageVersion.getLanguage());
+        }
         this.forceLanguageVersion = forceLanguageVersion;
         languageVersionDiscoverer.setForcedVersion(forceLanguageVersion);
     }
@@ -877,9 +880,14 @@ public class PMDConfiguration extends AbstractConfiguration {
      * @param language A language, which must be registered
      */
     public @NonNull LanguagePropertyBundle getLanguageProperties(Language language) {
-        if (!langRegistry.getLanguages().contains(language)) {
-            throw new IllegalArgumentException(language.getId());
-        }
+        checkLanguageIsRegistered(language);
         return langProperties.computeIfAbsent(language, Language::newPropertyBundle);
+    }
+
+    void checkLanguageIsRegistered(Language language) {
+        if (!langRegistry.getLanguages().contains(language)) {
+            throw new IllegalArgumentException(
+                "Language '" + language.getId() + "' is not registered in " + languages());
+        }
     }
 }
