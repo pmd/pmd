@@ -38,7 +38,7 @@ public class Java18PreviewTreeDumpTest extends BaseTreeDumpTest {
             }
         });
         Assert.assertTrue("Unexpected message: " + thrown.getMessage(),
-                thrown.getMessage().contains("Null case labels in switch are only supported with JDK 17 Preview or JDK 18 Preview."));
+                thrown.getMessage().contains("Null case labels in switch are only supported with JDK 18 Preview or JDK 19 Preview."));
     }
 
     @Test
@@ -65,7 +65,7 @@ public class Java18PreviewTreeDumpTest extends BaseTreeDumpTest {
             }
         });
         Assert.assertTrue("Unexpected message: " + thrown.getMessage(),
-                thrown.getMessage().contains("Guarded patterns are only supported with JDK 17 Preview or JDK 18 Preview."));
+                thrown.getMessage().contains("Guarded patterns are only supported with JDK 18 Preview."));
     }
 
     @Test
@@ -82,7 +82,7 @@ public class Java18PreviewTreeDumpTest extends BaseTreeDumpTest {
             }
         });
         Assert.assertTrue("Unexpected message: " + thrown.getMessage(),
-                thrown.getMessage().contains("Pattern Matching in Switch is only supported with JDK 17 Preview or JDK 18 Preview."));
+                thrown.getMessage().contains("Pattern Matching in Switch is only supported with JDK 18 Preview or JDK 19 Preview."));
     }
 
     @Test
