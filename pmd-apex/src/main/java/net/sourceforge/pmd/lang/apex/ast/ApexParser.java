@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
+import com.google.summit.ast.CompilationUnit;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.Map;
@@ -13,15 +14,6 @@ import net.sourceforge.pmd.lang.apex.ApexJorjeLogging;
 import net.sourceforge.pmd.lang.apex.ApexParserOptions;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.util.IOUtil;
-
-import apex.jorje.data.Locations;
-import apex.jorje.semantic.ast.compilation.Compilation;
-import apex.jorje.semantic.ast.compilation.UserClass;
-import apex.jorje.semantic.ast.compilation.UserEnum;
-import apex.jorje.semantic.ast.compilation.UserInterface;
-import apex.jorje.semantic.ast.compilation.UserTrigger;
-import apex.jorje.semantic.ast.visitor.AdditionalPassScope;
-import apex.jorje.semantic.ast.visitor.AstVisitor;
 
 /**
  * @deprecated Internal API
@@ -38,19 +30,22 @@ public class ApexParser {
         this.parserOptions = parserOptions;
     }
 
-    public Compilation parseApex(final String sourceCode) throws ParseException {
-
+    public CompilationUnit parseApex(final String sourceCode) throws ParseException {
+        /*
         TopLevelVisitor visitor = new TopLevelVisitor();
         Locations.useIndexFactory();
         CompilerService.INSTANCE.visitAstFromString(sourceCode, visitor);
 
         return visitor.getTopLevel();
+         */
+        // TODO(b/239648780)
+        return null;
     }
 
-    public ApexNode<Compilation> parse(final Reader reader) {
+    public ApexNode<CompilationUnit> parse(final Reader reader) {
         try {
             final String sourceCode = IOUtil.readToString(reader);
-            final Compilation astRoot = parseApex(sourceCode);
+            final CompilationUnit astRoot = parseApex(sourceCode);
             final ApexTreeBuilder treeBuilder = new ApexTreeBuilder(sourceCode, parserOptions);
             suppressMap = treeBuilder.getSuppressMap();
 
@@ -59,7 +54,7 @@ public class ApexParser {
             }
 
             return treeBuilder.build(astRoot);
-        } catch (IOException | apex.jorje.services.exception.ParseException e) {
+        } catch (IOException e) {
             throw new ParseException(e);
         }
     }
@@ -68,6 +63,7 @@ public class ApexParser {
         return suppressMap;
     }
 
+    /*
     private class TopLevelVisitor extends AstVisitor<AdditionalPassScope> {
         Compilation topLevel;
 
@@ -95,4 +91,6 @@ public class ApexParser {
             topLevel = node;
         }
     }
+     */
+    // TODO(b/239648780)
 }

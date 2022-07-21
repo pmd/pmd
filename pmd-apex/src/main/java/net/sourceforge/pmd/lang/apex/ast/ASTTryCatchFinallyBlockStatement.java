@@ -4,17 +4,16 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
+import com.google.summit.ast.Node;
 import java.util.List;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 
-import apex.jorje.semantic.ast.statement.TryCatchFinallyBlockStatement;
-
-public class ASTTryCatchFinallyBlockStatement extends AbstractApexNode<TryCatchFinallyBlockStatement> {
+public class ASTTryCatchFinallyBlockStatement extends AbstractApexNode<Node> {
 
     @Deprecated
     @InternalApi
-    public ASTTryCatchFinallyBlockStatement(TryCatchFinallyBlockStatement tryCatchFinallyBlockStatement) {
+    public ASTTryCatchFinallyBlockStatement(Node tryCatchFinallyBlockStatement) {
         super(tryCatchFinallyBlockStatement);
     }
 

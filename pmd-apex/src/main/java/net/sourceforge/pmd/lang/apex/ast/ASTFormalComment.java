@@ -5,34 +5,27 @@
 package net.sourceforge.pmd.lang.apex.ast;
 
 
+import com.google.summit.ast.Node;
 import org.antlr.runtime.Token;
 
 import net.sourceforge.pmd.annotation.InternalApi;
-import net.sourceforge.pmd.lang.apex.ast.ASTFormalComment.AstComment;
 
-import apex.jorje.data.Location;
-import apex.jorje.data.Locations;
-import apex.jorje.semantic.ast.AstNode;
-import apex.jorje.semantic.ast.context.Emitter;
-import apex.jorje.semantic.ast.visitor.AstVisitor;
-import apex.jorje.semantic.ast.visitor.Scope;
-import apex.jorje.semantic.ast.visitor.ValidationScope;
-import apex.jorje.semantic.symbol.resolver.SymbolResolver;
-import apex.jorje.semantic.symbol.type.TypeInfo;
-import apex.jorje.semantic.symbol.type.TypeInfos;
-
-public class ASTFormalComment extends AbstractApexNode<AstComment> {
+public class ASTFormalComment extends AbstractApexNode<Node> {
 
     private final String image;
 
     ASTFormalComment(Token token) {
-        super(new AstComment(token));
+        // super(new AstComment(token));
+        // TODO(b/239648780)
+        super(null);
         this.image = token.getText();
     }
 
     @Deprecated
     public ASTFormalComment(String token) {
-        super(new AstComment(null));
+        // super(new AstComment(null));
+        // TODO(b/239648780)
+        super(null);
         image = token;
     }
 
@@ -50,7 +43,7 @@ public class ASTFormalComment extends AbstractApexNode<AstComment> {
         return image;
     }
 
-
+    /*
     @Deprecated
     @InternalApi
     public static final class AstComment implements AstNode {
@@ -88,5 +81,6 @@ public class ASTFormalComment extends AbstractApexNode<AstComment> {
             return TypeInfos.VOID;
         }
     }
-
+     */
+    // TODO(b/239648780)
 }

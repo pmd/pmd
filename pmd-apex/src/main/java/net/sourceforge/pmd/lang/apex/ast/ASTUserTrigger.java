@@ -9,14 +9,13 @@ import java.util.stream.Collectors;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 
-import apex.jorje.data.Identifier;
-import apex.jorje.semantic.ast.compilation.UserTrigger;
+import com.google.summit.ast.CompilationUnit;
 
-public class ASTUserTrigger extends ApexRootNode<UserTrigger> {
+public class ASTUserTrigger extends ApexRootNode<CompilationUnit> {
 
     @Deprecated
     @InternalApi
-    public ASTUserTrigger(UserTrigger userTrigger) {
+    public ASTUserTrigger(CompilationUnit userTrigger) {
         super(userTrigger);
     }
 
@@ -35,13 +34,19 @@ public class ASTUserTrigger extends ApexRootNode<UserTrigger> {
     }
 
     public String getTargetName() {
-        return node.getTargetName().stream().map(Identifier::getValue).collect(Collectors.joining("."));
+        // return node.getTargetName().stream().map(Identifier::getValue).collect(Collectors.joining("."));
+        // TODO(b/239648780)
+        return null;
     }
 
     public List<TriggerUsage> getUsages() {
+        /*
         return node.getUsages().stream()
                 .map(TriggerUsage::of)
                 .sorted()
                 .collect(Collectors.toList());
+         */
+        // TODO(b/239648780)
+        return null;
     }
 }

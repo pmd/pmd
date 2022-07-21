@@ -9,6 +9,7 @@ import static org.hamcrest.core.IsInstanceOf.instanceOf;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import com.google.summit.ast.CompilationUnit;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;

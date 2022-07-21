@@ -4,15 +4,14 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
+import com.google.summit.ast.Node;
 import net.sourceforge.pmd.annotation.InternalApi;
 
-import apex.jorje.semantic.ast.member.bridge.BridgeMethodCreator;
-
-public class ASTBridgeMethodCreator extends AbstractApexNode<BridgeMethodCreator> {
+public class ASTBridgeMethodCreator extends AbstractApexNode<Node> {
 
     @Deprecated
     @InternalApi
-    public ASTBridgeMethodCreator(BridgeMethodCreator bridgeMethodCreator) {
+    public ASTBridgeMethodCreator(Node bridgeMethodCreator) {
         super(bridgeMethodCreator);
     }
 

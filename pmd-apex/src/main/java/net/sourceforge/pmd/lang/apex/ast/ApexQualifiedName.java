@@ -12,9 +12,6 @@ import org.apache.commons.lang3.StringUtils;
 
 import net.sourceforge.pmd.lang.ast.QualifiedName;
 
-import apex.jorje.semantic.symbol.type.TypeInfo;
-
-
 /**
  * Qualified name of an apex class or method.
  *
@@ -149,6 +146,7 @@ public final class ApexQualifiedName implements QualifiedName {
 
 
     private static String getOperationString(ASTMethod node) {
+        /*
         StringBuilder sb = new StringBuilder();
         sb.append(node.getImage()).append('(');
 
@@ -167,6 +165,9 @@ public final class ApexQualifiedName implements QualifiedName {
         sb.append(')');
 
         return sb.toString();
+         */
+        // TODO(b/239648780)
+        return null;
     }
 
 

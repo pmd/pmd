@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.apex.multifile;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import com.google.summit.ast.CompilationUnit;
 import java.io.IOException;
 
 import org.junit.Test;

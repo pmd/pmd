@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
+import com.google.summit.ast.Node;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -11,18 +12,12 @@ import java.util.stream.Collectors;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.annotation.InternalApi;
 
-import apex.jorje.data.Identifier;
-import apex.jorje.data.ast.TypeRef;
-import apex.jorje.data.ast.TypeRefs.ArrayTypeRef;
-import apex.jorje.data.ast.TypeRefs.ClassTypeRef;
-import apex.jorje.semantic.ast.statement.FieldDeclarationStatements;
-
-public class ASTFieldDeclarationStatements extends AbstractApexNode<FieldDeclarationStatements>
+public class ASTFieldDeclarationStatements extends AbstractApexNode<Node>
         implements CanSuppressWarnings {
 
     @Deprecated
     @InternalApi
-    public ASTFieldDeclarationStatements(FieldDeclarationStatements fieldDeclarationStatements) {
+    public ASTFieldDeclarationStatements(Node fieldDeclarationStatements) {
         super(fieldDeclarationStatements);
     }
 
@@ -48,20 +43,27 @@ public class ASTFieldDeclarationStatements extends AbstractApexNode<FieldDeclara
     }
 
     public String getTypeName() {
+        /*
         if (node.getTypeName() != null) {
             List<Identifier> names = node.getTypeName().getNames();
             return names.stream().map(Identifier::getValue).collect(Collectors.joining("."));
         }
+         */
+        // TODO(b/239648780)
         return null;
     }
 
+    /*
     private static String identifiersToString(List<Identifier> identifiers) {
         return identifiers.stream().map(Identifier::getValue).collect(Collectors.joining("."));
     }
+     */
+    // TODO(b/239648780)
 
     public List<String> getTypeArguments() {
         List<String> result = new ArrayList<>();
 
+        /*
         if (node.getTypeName() != null) {
             List<TypeRef> typeArgs = node.getTypeName().getTypeArguments();
             for (TypeRef arg : typeArgs) {
@@ -75,6 +77,8 @@ public class ASTFieldDeclarationStatements extends AbstractApexNode<FieldDeclara
                 }
             }
         }
+         */
+        // TODO(b/239648780)
 
         return result;
     }

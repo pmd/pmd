@@ -6,8 +6,6 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 import net.sourceforge.pmd.lang.ast.Node;
 
-import apex.jorje.semantic.ast.AstNode;
-
 /**
  * Root interface implemented by all Apex nodes. Apex nodes wrap a tree
  * obtained from an external parser (Jorje). The underlying AST node is
@@ -15,7 +13,7 @@ import apex.jorje.semantic.ast.AstNode;
  *
  * @param <T> Type of the underlying Jorje node
  */
-public interface ApexNode<T extends AstNode> extends Node {
+public interface ApexNode<T extends com.google.summit.ast.Node> extends Node {
 
     /**
      * Accept the visitor.

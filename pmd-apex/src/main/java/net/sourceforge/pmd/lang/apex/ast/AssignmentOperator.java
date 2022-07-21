@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import apex.jorje.data.ast.AssignmentOp;
+import com.google.summit.ast.expression.BinaryExpression;
 
 /**
  * Apex assignment operator
@@ -34,31 +34,33 @@ public enum AssignmentOperator {
     }
 
     /**
-     * Returns a {@link AssignmentOperator} corresponding to the given {@link AssignmentOp}.
+     * Returns a {@link AssignmentOperator} corresponding to the given {@link
+     * BinaryExpression.Operator}. If {@code op} is {@code null}, {@link #EQUALS} is returned.
      */
-    public static AssignmentOperator valueOf(AssignmentOp op) {
-        switch (op) {
-        case EQUALS:
+    public static AssignmentOperator valueOf(BinaryExpression.Operator op) {
+        if (op == null) {
             return EQUALS;
-        case ADDITION_EQUALS:
+        }
+        switch (op) {
+        case ADDITION:
             return ADDITION_EQUALS;
-        case SUBTRACTION_EQUALS:
+        case SUBTRACTION:
             return SUBTRACTION_EQUALS;
-        case MULTIPLICATION_EQUALS:
+        case MULTIPLICATION:
             return MULTIPLICATION_EQUALS;
-        case DIVISION_EQUALS:
+        case DIVISION:
             return DIVISION_EQUALS;
-        case LEFT_SHIFT_EQUALS:
+        case LEFT_SHIFT:
             return LEFT_SHIFT_EQUALS;
-        case RIGHT_SHIFT_EQUALS:
+        case RIGHT_SHIFT_SIGNED:
             return RIGHT_SHIFT_SIGNED_EQUALS;
-        case UNSIGNED_RIGHT_SHIFT_EQUALS:
+        case RIGHT_SHIFT_UNSIGNED:
             return RIGHT_SHIFT_UNSIGNED_EQUALS;
-        case AND_EQUALS:
+        case BITWISE_AND:
             return BITWISE_AND_EQUALS;
-        case OR_EQUALS:
+        case BITWISE_OR:
             return BITWISE_OR_EQUALS;
-        case XOR_EQUALS:
+        case BITWISE_XOR:
             return BITWISE_XOR_EQUALS;
         default:
             throw new IllegalArgumentException("Invalid assignment operator " + op);

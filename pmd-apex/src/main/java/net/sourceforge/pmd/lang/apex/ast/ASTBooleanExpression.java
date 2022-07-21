@@ -6,27 +6,19 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 
-import apex.jorje.data.ast.BooleanOp;
-import apex.jorje.semantic.ast.expression.BooleanExpression;
+import com.google.summit.ast.expression.BinaryExpression;
 
-
-public class ASTBooleanExpression extends AbstractApexNode<BooleanExpression> {
+public class ASTBooleanExpression extends AbstractApexNode<BinaryExpression> {
 
     @Deprecated
     @InternalApi
-    public ASTBooleanExpression(BooleanExpression booleanExpression) {
+    public ASTBooleanExpression(BinaryExpression booleanExpression) {
         super(booleanExpression);
     }
-
 
     @Override
     public Object jjtAccept(ApexParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
-    }
-
-    @Deprecated
-    public BooleanOp getOperator() {
-        return this.node.getOp();
     }
 
     public BooleanOperator getOp() {

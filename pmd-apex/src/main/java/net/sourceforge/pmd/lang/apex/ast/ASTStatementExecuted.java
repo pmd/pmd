@@ -4,15 +4,14 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
+import com.google.summit.ast.Node;
 import net.sourceforge.pmd.annotation.InternalApi;
 
-import apex.jorje.semantic.ast.statement.StatementExecuted;
-
-public class ASTStatementExecuted extends AbstractApexNode<StatementExecuted> {
+public class ASTStatementExecuted extends AbstractApexNode<Node> {
 
     @Deprecated
     @InternalApi
-    public ASTStatementExecuted(StatementExecuted node) {
+    public ASTStatementExecuted(Node node) {
         super(node);
     }
 

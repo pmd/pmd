@@ -45,17 +45,11 @@
         </dependency>
 
         <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>pmd-apex-jorje</artifactId>
-            <version>${project.version}</version>
-            <classifier>lib</classifier>
-        </dependency>
-
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>pmd-apex-jorje</artifactId>
-            <version>${project.version}</version>
-            <type>pom</type>
+            <groupId>com.google.summit</groupId>
+            <artifactId>summit</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/SummitLib_deploy.jar</systemPath>
         </dependency>
 
         <dependency>
