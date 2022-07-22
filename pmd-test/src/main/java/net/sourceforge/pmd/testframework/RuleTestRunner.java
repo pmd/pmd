@@ -5,9 +5,7 @@
 package net.sourceforge.pmd.testframework;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -26,6 +24,8 @@ import org.junit.runners.model.InitializationError;
 import org.junit.runners.model.Statement;
 
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.test.schema.RuleTestCollection;
+import net.sourceforge.pmd.test.schema.RuleTestDescriptor;
 
 /**
  * A JUnit Runner, that executes all declared rule tests in the class.
@@ -64,18 +64,18 @@ public class RuleTestRunner extends ParentRunner<TestDescriptor> {
     @Override
     protected List<TestDescriptor> getChildren() {
         List<Rule> rules = new ArrayList<>(instance.getRules());
-        Collections.sort(rules, new Comparator<Rule>() {
-            @Override
-            public int compare(Rule o1, Rule o2) {
-                return o1.getName().compareTo(o2.getName());
-            }
-        });
+        rules.sort(Comparator.comparing(Rule::getName));
 
-        List<TestDescriptor> tests = new LinkedList<>();
+        List<TestDescriptor> tests = new ArrayList<>();
         for (Rule r : rules) {
-            TestDescriptor[] ruleTests = instance.extractTestsFromXml(r);
-            for (TestDescriptor t : ruleTests) {
-                tests.add(t);
+            RuleTestCollection ruleTests = instance.parseTestCollection(r);
+            RuleTestDescriptor focused = ruleTests.getFocusedTestOrNull();
+            for (RuleTestDescriptor t : ruleTests.getTests()) {
+                TestDescriptor td = new TestDescriptor(t);
+                if (focused != null && focused != t) {
+                    td.setRegressionTest(false); // disable it
+                }
+                tests.add(td);
             }
         }
 

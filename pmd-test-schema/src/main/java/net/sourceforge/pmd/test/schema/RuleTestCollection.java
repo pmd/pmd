@@ -28,4 +28,17 @@ public class RuleTestCollection {
         return Collections.unmodifiableList(tests);
     }
 
+    /**
+     * Returns the last test of the collection which is focused.
+     */
+    public RuleTestDescriptor getFocusedTestOrNull() {
+        RuleTestDescriptor focused = null;
+        for (RuleTestDescriptor test : tests) {
+            if (test.isFocused()) {
+                focused = test;
+            }
+        }
+        return focused;
+    }
+
 }

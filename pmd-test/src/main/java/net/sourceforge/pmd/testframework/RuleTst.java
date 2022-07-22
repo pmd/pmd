@@ -290,6 +290,16 @@ public abstract class RuleTst {
         return extractTestsFromXml(rule, testsFileName);
     }
 
+    /**
+     * Extract a set of tests from an XML file. The file should be
+     * ./xml/RuleName.xml relative to the test class. The format is defined in
+     * test-data.xsd.
+     */
+    RuleTestCollection parseTestCollection(Rule rule) {
+        String testsFileName = getCleanRuleName(rule);
+        return parseTestXml(rule, testsFileName, "xml/");
+    }
+
     public TestDescriptor[] extractTestsFromXml(Rule rule, String testsFileName) {
         return extractTestsFromXml(rule, testsFileName, "xml/");
     }

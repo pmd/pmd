@@ -100,6 +100,13 @@ class BaseTestParserImpl {
 
         descriptor.setDisabled(disabled);
 
+
+        boolean focused = parseBoolAttribute(testCode, "focused", false, err,
+                                             "Attribute focused is used, do not forget to remove it when checking in sources");
+
+        descriptor.setFocused(focused);
+
+
         Properties properties = parseRuleProperties(testCode, descriptor.getRule(), err);
         descriptor.getProperties().putAll(properties);
 
