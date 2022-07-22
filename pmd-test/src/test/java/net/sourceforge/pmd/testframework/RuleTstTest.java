@@ -36,6 +36,10 @@ public class RuleTstTest {
     private Rule rule = mock(Rule.class);
 
     private RuleTst ruleTester = new RuleTst() {
+        @Override
+        public Rule findRule(String ruleSet, String ruleName) {
+            return rule;
+        }
     };
 
     @Test

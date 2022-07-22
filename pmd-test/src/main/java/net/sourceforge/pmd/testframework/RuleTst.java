@@ -81,9 +81,8 @@ public abstract class RuleTst {
     public void runTest(TestDescriptor test) {
         Rule rule = test.getRule();
 
-        if (test.getReinitializeRule()) {
-            rule = reinitializeRule(rule);
-        }
+        // always reinitialize the rule, regardless of test.getReinitializeRule() (#3976 / #3302)
+        rule = reinitializeRule(rule);
 
         Map<PropertyDescriptor<?>, Object> oldProperties = rule.getPropertiesByPropertyDescriptor();
         try {
@@ -237,24 +236,9 @@ public abstract class RuleTst {
             PMDConfiguration configuration = new PMDConfiguration();
             configuration.setDefaultLanguageVersion(languageVersion);
             configuration.setIgnoreIncrementalAnalysis(true);
-            if (isUseAuxClasspath) {
-                // configure the "auxclasspath" option for unit testing
-                configuration.prependAuxClasspath(".");
-            } else {
-                // simple class loader, that doesn't delegate to parent.
-                // this allows us in the tests to simulate PMD run without
-                // auxclasspath, not even the classes from the test dependencies
-                // will be found.
-                configuration.setClassLoader(new ClassLoader() {
-                    @Override
-                    protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
-                        if (name.startsWith("java.") || name.startsWith("javax.")) {
-                            return super.loadClass(name, resolve);
-                        }
-                        throw new ClassNotFoundException(name);
-                    }
-                });
-            }
+            // regardless of isUseAuxClasspath the auxclasspath is always used (#3976 / #3302)
+            // configure the "auxclasspath" option for unit testing
+            configuration.prependAuxClasspath(".");
             RuleContext ctx = new RuleContext();
             ctx.setReport(report);
             ctx.setSourceCodeFile(new File("n/a"));
