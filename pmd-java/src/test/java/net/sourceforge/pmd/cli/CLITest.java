@@ -67,6 +67,7 @@ public class CLITest extends BaseCLITest {
     public void changeJavaVersion() {
         String[] args = { "-d", SOURCE_FOLDER, "-f", "text", "-R", RSET_NO_VIOLATION, "-version", "1.5", "-language", "java", "--debug", "--no-progress", };
         String log = runTest(args);
+        assertThat(log, containsString(".java (lang: java 1.5)"));
         assertThat(log, containsPattern("Adding file .*\\.java \\(lang: java 1\\.5\\)"));
     }
 

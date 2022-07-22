@@ -52,9 +52,7 @@ public class ScalaLanguageModule extends LanguageModuleBase {
 
     @Override
     public LanguageProcessor createProcessor(LanguagePropertyBundle bundle) {
-        return new SimpleBatchLanguageProcessor(
-            bundle,
-            new ScalaLanguageHandler(dialectOf(bundle.getLanguageVersion())));
+        return new SimpleBatchLanguageProcessor(bundle, new ScalaLanguageHandler());
     }
 
     public static ScalaLanguageModule getInstance() {

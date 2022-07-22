@@ -24,18 +24,18 @@ public class HtmlTokenizer implements Tokenizer {
     @Override
     public void tokenize(SourceCode sourceCode, Tokens tokenEntries) {
         HtmlLanguageModule html = HtmlLanguageModule.getInstance();
-        TextFile tf = TextFile.forCharSeq(
-            sourceCode.getCodeBuffer(),
-            sourceCode.getFileName(),
-            html.getDefaultVersion()
-        );
 
         try (LanguageProcessor processor = html.createProcessor(html.newPropertyBundle());
+             TextFile tf = TextFile.forCharSeq(
+                 sourceCode.getCodeBuffer(),
+                 sourceCode.getFileName(),
+                 html.getDefaultVersion()
+             );
              TextDocument textDoc = TextDocument.create(tf)) {
 
             ParserTask task = new ParserTask(
                 textDoc,
-                SemanticErrorReporter.noop(), // fixme
+                SemanticErrorReporter.noop(),
                 LanguageProcessorRegistry.singleton(processor)
             );
 

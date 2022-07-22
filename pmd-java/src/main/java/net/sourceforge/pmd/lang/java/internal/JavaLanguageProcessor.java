@@ -6,13 +6,9 @@ package net.sourceforge.pmd.lang.java.internal;
 
 import java.util.Objects;
 
-import net.sourceforge.pmd.processor.BatchLanguageProcessor;
-import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.ast.Parser;
 import net.sourceforge.pmd.lang.java.ast.JavaParser;
-import net.sourceforge.pmd.lang.java.ast.internal.LanguageLevelChecker;
-import net.sourceforge.pmd.lang.java.ast.internal.ReportingStrategy;
 import net.sourceforge.pmd.lang.java.internal.JavaLanguageProperties.InferenceLoggingVerbosity;
 import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleViolationFactory;
 import net.sourceforge.pmd.lang.java.rule.xpath.internal.BaseContextNodeTestFun;
@@ -28,6 +24,7 @@ import net.sourceforge.pmd.lang.java.types.internal.infer.TypeInferenceLogger.Ve
 import net.sourceforge.pmd.lang.metrics.LanguageMetricsProvider;
 import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
 import net.sourceforge.pmd.lang.rule.xpath.impl.XPathHandler;
+import net.sourceforge.pmd.processor.BatchLanguageProcessor;
 import net.sourceforge.pmd.util.designerbindings.DesignerBindings;
 
 /**
@@ -45,15 +42,9 @@ public class JavaLanguageProcessor extends BatchLanguageProcessor<JavaLanguagePr
         super(properties);
         this.typeSystem = typeSystem;
 
-        LanguageLevelChecker<?> levelChecker =
-            new LanguageLevelChecker<>(properties.getInternalJdkVersion(),
-                                       properties.isPreviewEnabled(),
-                                       // TODO change this strategy with a new lang property
-                                       ReportingStrategy.reporterThatThrows());
-
         String suppressMarker = properties.getSuppressMarker();
-        this.parser = new JavaParser(levelChecker, suppressMarker, this, true);
-        this.parserWithoutProcessing = new JavaParser(levelChecker, suppressMarker, this, false);
+        this.parser = new JavaParser(suppressMarker, this, true);
+        this.parserWithoutProcessing = new JavaParser(suppressMarker, this, false);
     }
 
     public JavaLanguageProcessor(JavaLanguageProperties properties) {
@@ -64,10 +55,6 @@ public class JavaLanguageProcessor extends BatchLanguageProcessor<JavaLanguagePr
     @Override
     public LanguageVersionHandler services() {
         return this;
-    }
-
-    public LanguageVersion getLanguageVersion(){
-        return getProperties().getLanguageVersion();
     }
 
     @Override

@@ -35,7 +35,6 @@ import net.sourceforge.pmd.internal.SystemProps;
 import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.internal.util.ContextedAssertionError;
 import net.sourceforge.pmd.lang.DummyLanguageModule;
-import net.sourceforge.pmd.lang.LanguagePropertyBundle;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.Node;
@@ -167,31 +166,29 @@ public class PmdRunnableTest {
                                   .addVersion(THROWS_SEMANTIC_ERROR)
                                   .addVersion(PARSER_REPORTS_SEMANTIC_ERROR)
                                   .addDefaultVersion(""),
-                  props -> () -> makeParser(props));
+                  ThrowingLanguageModule::makeParser);
         }
 
-        private static Parser makeParser(LanguagePropertyBundle bundle) {
-            switch (bundle.getLanguageVersion().getVersion()) {
-            case THROWS_ASSERTION_ERROR:
-                return task -> {
+        private static Parser makeParser() {
+            return task -> {
+                switch (task.getLanguageVersion().getVersion()) {
+                case THROWS_ASSERTION_ERROR:
                     throw new AssertionError("test error while parsing");
-                };
-            case PARSER_REPORTS_SEMANTIC_ERROR:
-                return task -> {
+                case PARSER_REPORTS_SEMANTIC_ERROR: {
                     RootNode root = DummyLanguageModule.readLispNode(task);
                     task.getReporter().error(root, TEST_MESSAGE_SEMANTIC_ERROR);
                     return root;
-                };
-            case THROWS_SEMANTIC_ERROR:
-                return task -> {
+                }
+                case THROWS_SEMANTIC_ERROR: {
                     RootNode root = DummyLanguageModule.readLispNode(task);
                     throw task.getReporter().error(root, TEST_MESSAGE_SEMANTIC_ERROR);
-                };
-            case "":
-                return DummyLanguageModule::readLispNode;
-            default:
-                throw AssertionUtil.shouldNotReachHere("");
-            }
+                }
+                case "":
+                    return DummyLanguageModule.readLispNode(task);
+                default:
+                    throw AssertionUtil.shouldNotReachHere("");
+                }
+            };
         }
     }
 

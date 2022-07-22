@@ -362,7 +362,7 @@ public final class PmdAnalysis implements AutoCloseable {
 
                 List<AutoCloseable> analyses = new ArrayList<>();
                 try {
-                    for (Language lang : lpRegistry) {
+                    for (Language lang : lpRegistry.getLanguages()) {
                         analyses.add(lpRegistry.getProcessor(lang).launchAnalysis(analysisTask));
                     }
                 } finally {

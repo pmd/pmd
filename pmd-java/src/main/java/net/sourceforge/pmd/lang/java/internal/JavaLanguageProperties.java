@@ -29,15 +29,14 @@ public class JavaLanguageProperties extends JvmLanguagePropertyBundle {
         definePropertyDescriptor(INTERNAL_INFERENCE_LOGGING_VERBOSITY);
     }
 
-    boolean isPreviewEnabled() {
-        return getLanguageVersion().getVersion().endsWith("-preview");
+    public static boolean isPreviewEnabled(LanguageVersion version) {
+        return version.getVersion().endsWith("-preview");
     }
 
-    int getInternalJdkVersion() {
+    public static int getInternalJdkVersion(LanguageVersion version) {
         // Todo that's ugly..
-        LanguageVersion version = getLanguageVersion();
         String verString = version.getVersion();
-        if (isPreviewEnabled()) {
+        if (isPreviewEnabled(version)) {
             verString = verString.substring(0, verString.length() - "-preview".length());
         }
         if (verString.startsWith("1.")) {

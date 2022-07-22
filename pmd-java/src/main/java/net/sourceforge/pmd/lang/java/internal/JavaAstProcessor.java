@@ -44,17 +44,20 @@ public final class JavaAstProcessor {
     private SymbolResolver symResolver;
 
     private final UnresolvedClassStore unresolvedTypes;
+    private final ASTCompilationUnit acu;
 
 
     private JavaAstProcessor(JavaLanguageProcessor globalProc,
                              SemanticErrorReporter logger,
-                             TypeInferenceLogger typeInfLogger) {
+                             TypeInferenceLogger typeInfLogger,
+                             ASTCompilationUnit acu) {
 
         this.symResolver = globalProc.getTypeSystem().bootstrapResolver();
         this.globalProc = globalProc;
         this.logger = logger;
         this.typeInferenceLogger = typeInfLogger;
         this.unresolvedTypes = new UnresolvedClassStore(globalProc.getTypeSystem());
+        this.acu = acu;
     }
 
     public UnresolvedClassStore getUnresolvedStore() {
@@ -109,13 +112,13 @@ public final class JavaAstProcessor {
     }
 
     public int getJdkVersion() {
-        return globalProc.getProperties().getInternalJdkVersion();
+        return JavaLanguageProperties.getInternalJdkVersion(acu.getLanguageVersion());
     }
 
     /**
      * Performs semantic analysis on the given source file.
      */
-    public void process(ASTCompilationUnit acu) {
+    public void process() {
 
         SymbolResolver knownSyms = TimeTracker.bench("1. Symbol resolution", () -> SymbolResolutionPass.traverse(this, acu));
 
@@ -139,19 +142,19 @@ public final class JavaAstProcessor {
     }
 
 
-    public static JavaAstProcessor create(JavaLanguageProcessor globalProcessor,
+    public static void process(JavaLanguageProcessor globalProcessor,
                                           SemanticErrorReporter semanticErrorReporter,
-                                          TypeInferenceLogger typeInfLogger) {
+                                          TypeInferenceLogger typeInfLogger,
+                                           ASTCompilationUnit ast) {
 
 
-        return new JavaAstProcessor(
+        JavaAstProcessor astProc = new JavaAstProcessor(
             globalProcessor,
             semanticErrorReporter,
-            typeInfLogger
+            typeInfLogger,
+            ast
         );
-    }
 
-    public static JavaAstProcessor create(JavaLanguageProcessor globalProcessor, SemanticErrorReporter reporter) {
-        return create(globalProcessor, reporter, globalProcessor.newTypeInfLogger());
+        astProc.process();
     }
 }

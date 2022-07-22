@@ -74,8 +74,7 @@ public class JavaParsingHelper extends BaseParsingHelper<JavaParsingHelper, ASTC
         JavaParser parser = proc.getParserWithoutProcessing();
         ASTCompilationUnit rootNode = parser.parse(task);
         if (params.getDoProcess()) {
-            JavaAstProcessor astProc = JavaAstProcessor.create(proc, semanticLogger, typeInfLogger);
-            astProc.process(rootNode);
+            JavaAstProcessor.process(proc, semanticLogger, typeInfLogger, rootNode);
         }
         return rootNode;
     }
