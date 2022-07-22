@@ -7,15 +7,15 @@ package net.sourceforge.pmd.lang.apex.ast;
 import net.sourceforge.pmd.lang.apex.ApexLanguageModule;
 import net.sourceforge.pmd.lang.ast.test.BaseParsingHelper;
 
-import com.google.summit.ast.CompilationUnit;
+import com.google.summit.ast.declaration.TypeDeclaration;
 
-public class ApexParsingHelper extends BaseParsingHelper<ApexParsingHelper, ApexRootNode<CompilationUnit>> {
+public class ApexParsingHelper extends BaseParsingHelper<ApexParsingHelper, ApexRootNode<TypeDeclaration>> {
 
     public static final ApexParsingHelper DEFAULT = new ApexParsingHelper(Params.getDefaultProcess());
 
 
     private ApexParsingHelper(Params p) {
-        super(ApexLanguageModule.NAME, (Class<ApexRootNode<CompilationUnit>>) (Class) ApexRootNode.class, p);
+        super(ApexLanguageModule.NAME, (Class<ApexRootNode<TypeDeclaration>>) (Class) ApexRootNode.class, p);
     }
 
     @Override

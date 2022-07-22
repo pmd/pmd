@@ -4,11 +4,11 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import com.google.summit.ast.CompilationUnit;
+import com.google.summit.ast.declaration.TypeDeclaration;
 
-public final class ASTInvalidDependentCompilation extends ApexRootNode<CompilationUnit> {
+public final class ASTInvalidDependentCompilation extends ApexRootNode<TypeDeclaration> {
 
-    ASTInvalidDependentCompilation(CompilationUnit userClass) {
+    ASTInvalidDependentCompilation(TypeDeclaration userClass) {
         super(userClass);
     }
 

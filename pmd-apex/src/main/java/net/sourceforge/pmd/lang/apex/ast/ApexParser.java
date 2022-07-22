@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.Map;
 
+import com.google.summit.ast.declaration.TypeDeclaration;
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.apex.ApexJorjeLogging;
 import net.sourceforge.pmd.lang.apex.ApexParserOptions;
@@ -47,7 +48,7 @@ public class ApexParser {
                 throw new ParseException("Couldn't parse the source - there is not root node - Syntax Error??");
             }
 
-            return treeBuilder.build(astRoot);
+            return treeBuilder.build(astRoot.getTypeDeclaration());
         } catch (IOException e) {
             throw new ParseException(e);
         }

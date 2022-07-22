@@ -4,21 +4,21 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import com.google.summit.ast.CompilationUnit;
+import com.google.summit.ast.declaration.TypeDeclaration;
 
 public class ApexParserTestBase {
 
     protected final ApexParsingHelper apex = ApexParsingHelper.DEFAULT.withResourceContext(getClass());
 
-    protected ApexRootNode<? extends CompilationUnit> parse(String code) {
+    protected ApexRootNode<? extends TypeDeclaration> parse(String code) {
         return apex.parse(code);
     }
 
-    protected ApexRootNode<? extends CompilationUnit> parse(String code, String fileName) {
+    protected ApexRootNode<? extends TypeDeclaration> parse(String code, String fileName) {
         return apex.parse(code, null, fileName);
     }
 
-    protected ApexRootNode<? extends CompilationUnit> parseResource(String code) {
+    protected ApexRootNode<? extends TypeDeclaration> parseResource(String code) {
         return apex.parseResource(code);
     }
 }
