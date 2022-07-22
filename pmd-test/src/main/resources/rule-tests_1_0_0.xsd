@@ -73,7 +73,13 @@
                 </documentation>
             </annotation>
         </attribute>
-        <attribute name="useAuxClasspath" type="boolean" default="true"/>
+        <attribute name="useAuxClasspath" type="boolean" default="true">
+            <annotation>
+                <documentation>
+                    This attribute is deprecated, it is assumed true and ignored.
+                </documentation>
+            </annotation>
+        </attribute>
 
         <attribute name="disabled" type="boolean" default="false">
             <annotation>

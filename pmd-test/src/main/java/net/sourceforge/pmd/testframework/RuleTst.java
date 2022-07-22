@@ -308,7 +308,7 @@ public abstract class RuleTst {
     /**
      * Extract a set of tests from an XML file. The file should be
      * ./xml/RuleName.xml relative to the test class. The format is defined in
-     * test-data.xsd.
+     * rule-tests_1_0_0.xsd in pmd-test-schema.
      */
     RuleTestCollection parseTestCollection(Rule rule) {
         String testsFileName = getCleanRuleName(rule);
