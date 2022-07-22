@@ -6,16 +6,16 @@ import picocli.CommandLine.Command;
 import picocli.CommandLine.IVersionProvider;
 
 @Command(name = "pmd", mixinStandardHelpOptions = true,
-	versionProvider = PMDVersionProvider.class,
-	subcommands = { PMDCommand.class, CPDPicoCli.class })
+    versionProvider = PMDVersionProvider.class,
+    subcommands = { PMDCommand.class, CPDPicoCli.class })
 public class PMDBaseCommand {
 
 }
 
 class PMDVersionProvider implements IVersionProvider {
 
-	@Override
-	public String[] getVersion() throws Exception {
-		return new String[] { "PMD " + PMDVersion.VERSION };
-	}
+    @Override
+    public String[] getVersion() throws Exception {
+        return new String[] { "PMD " + PMDVersion.VERSION };
+    }
 }
