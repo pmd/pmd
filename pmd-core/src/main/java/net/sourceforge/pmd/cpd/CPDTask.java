@@ -23,7 +23,8 @@ import org.apache.tools.ant.Task;
 import org.apache.tools.ant.types.EnumeratedAttribute;
 import org.apache.tools.ant.types.FileSet;
 
-import net.sourceforge.pmd.cpd.renderer.CPDRenderer;
+import net.sourceforge.pmd.cpd.renderer.CPDRendererAdapter;
+import net.sourceforge.pmd.cpd.renderer.CPDReportRenderer;
 
 /**
  * CPDTask
@@ -130,7 +131,8 @@ public class CPDTask extends Task {
         if (!cpd.getMatches().hasNext()) {
             log("No duplicates over " + minimumTokenCount + " tokens found", Project.MSG_INFO);
         }
-        CPDRenderer renderer = createRenderer();
+        CPDReportRenderer renderer = createRenderer();
+        CPDReport report = cpd.toReport();
 
         try {
             // will be closed via BufferedWriter/OutputStreamWriter chain down below
@@ -148,7 +150,7 @@ public class CPDTask extends Task {
             }
 
             try (Writer writer = new BufferedWriter(new OutputStreamWriter(os, encoding))) {
-                renderer.render(cpd.getMatches(), writer);
+                renderer.render(report, writer);
             }
         } catch (IOException ioe) {
             throw new ReportException(ioe);
@@ -175,11 +177,11 @@ public class CPDTask extends Task {
         return stop - start;
     }
 
-    private CPDRenderer createRenderer() {
+    private CPDReportRenderer createRenderer() {
         if (TEXT_FORMAT.equals(format)) {
-            return new SimpleRenderer();
+            return new CPDRendererAdapter(new SimpleRenderer());
         } else if (CSV_FORMAT.equals(format)) {
-            return new CSVRenderer();
+            return new CPDRendererAdapter(new CSVRenderer());
         }
         return new XMLRenderer();
     }

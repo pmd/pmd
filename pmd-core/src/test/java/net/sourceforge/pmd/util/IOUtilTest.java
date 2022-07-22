@@ -11,16 +11,20 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.CharArrayReader;
+import java.io.FilterOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.PrintStream;
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.io.Writer;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -296,5 +300,27 @@ class IOUtilTest {
         String testString = "testReadStreamToString";
         InputStream stream = new ByteArrayInputStream(testString.getBytes(StandardCharsets.UTF_8));
         assertEquals(testString, IOUtil.readToString(stream, StandardCharsets.UTF_8));
+    }
+
+    @Test
+    void testCreateWriterStdout() throws IOException {
+        PrintStream originalOut = System.out;
+        ByteArrayOutputStream data = new ByteArrayOutputStream();
+        PrintStream out = new PrintStream(new FilterOutputStream(data) {
+            @Override
+            public void close() {
+                fail("Stream must not be closed");
+            }
+        });
+
+        try {
+            System.setOut(out);
+            Writer writer = IOUtil.createWriter();
+            writer.write("Test");
+            writer.close();
+            assertEquals("Test", data.toString());
+        } finally {
+            System.setOut(originalOut);
+        }
     }
 }
