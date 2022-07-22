@@ -26,7 +26,9 @@ public class DefaultRuleViolationFactory implements RuleViolationFactory {
     // todo move to package reporting
 
     private static final DefaultRuleViolationFactory DEFAULT = new DefaultRuleViolationFactory();
-    private Set<ViolationSuppressor> allSuppressors;
+
+    // volatile for lazy init - see #getAllSuppressors
+    private volatile Set<ViolationSuppressor> allSuppressors; // NOPMD volatile needed for lazy init
 
     @Override
     public SuppressedViolation suppressOrNull(Node location, RuleViolation violation) {
@@ -48,16 +50,22 @@ public class DefaultRuleViolationFactory implements RuleViolationFactory {
     }
 
     private Set<ViolationSuppressor> getAllSuppressors() {
-        if (allSuppressors == null) {
+        Set<ViolationSuppressor> result = allSuppressors;
+        if (result == null) {
             // lazy loaded because calling getSuppressors in constructor
             // is not safe wrt initialization of static constants
             // (order dependent otherwise)
-            this.allSuppressors = new LinkedHashSet<>(getSuppressors());
-            allSuppressors.add(ViolationSuppressor.NOPMD_COMMENT_SUPPRESSOR);
-            allSuppressors.add(ViolationSuppressor.REGEX_SUPPRESSOR);
-            allSuppressors.add(ViolationSuppressor.XPATH_SUPPRESSOR);
+            result = new LinkedHashSet<>(getSuppressors());
+            result.add(ViolationSuppressor.NOPMD_COMMENT_SUPPRESSOR);
+            result.add(ViolationSuppressor.REGEX_SUPPRESSOR);
+            result.add(ViolationSuppressor.XPATH_SUPPRESSOR);
+
+            // note 1: allSuppressors must be volatile to avoid other threads seeing the HashSet under construction
+            // note 2: multiple threads might create their own HashSets and the last HashSet is stored and overwrites
+            // previously created HashSets. This is ok, because this method is supposed to be idempotent.
+            allSuppressors = result;
         }
-        return allSuppressors;
+        return result;
     }
 
     /** Returns the default instance (no additional suppressors, creates a ParametricRuleViolation). */
