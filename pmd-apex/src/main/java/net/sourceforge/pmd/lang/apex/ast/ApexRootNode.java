@@ -8,11 +8,11 @@ import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
 
-import com.google.summit.ast.CompilationUnit;
+import com.google.summit.ast.declaration.TypeDeclaration;
 
 @Deprecated
 @InternalApi
-public abstract class ApexRootNode<T extends CompilationUnit> extends AbstractApexNode.Single<T> implements RootNode {
+public abstract class ApexRootNode<T extends TypeDeclaration> extends AbstractApexNode.Single<T> implements RootNode {
     @Deprecated
     @InternalApi
     public ApexRootNode(T node) {

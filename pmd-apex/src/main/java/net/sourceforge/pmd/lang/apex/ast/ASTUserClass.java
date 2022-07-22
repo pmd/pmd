@@ -10,16 +10,16 @@ import java.util.stream.Collectors;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.annotation.InternalApi;
 
-import com.google.summit.ast.CompilationUnit;
+import com.google.summit.ast.declaration.TypeDeclaration;
 
-public class ASTUserClass extends ApexRootNode<CompilationUnit> implements ASTUserClassOrInterface<CompilationUnit>,
+public class ASTUserClass extends ApexRootNode<TypeDeclaration> implements ASTUserClassOrInterface<TypeDeclaration>,
        CanSuppressWarnings {
 
     private ApexQualifiedName qname;
 
     @Deprecated
     @InternalApi
-    public ASTUserClass(CompilationUnit userClass) {
+    public ASTUserClass(TypeDeclaration userClass) {
         super(userClass);
     }
 

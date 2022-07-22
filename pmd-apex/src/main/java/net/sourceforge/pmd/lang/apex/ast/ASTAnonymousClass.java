@@ -6,13 +6,13 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 
-import com.google.summit.ast.CompilationUnit;
+import com.google.summit.ast.declaration.TypeDeclaration;
 
-public class ASTAnonymousClass extends ApexRootNode<CompilationUnit> {
+public class ASTAnonymousClass extends ApexRootNode<TypeDeclaration> {
 
     @Deprecated
     @InternalApi
-    public ASTAnonymousClass(CompilationUnit anonymousClass) {
+    public ASTAnonymousClass(TypeDeclaration anonymousClass) {
         super(anonymousClass);
     }
 

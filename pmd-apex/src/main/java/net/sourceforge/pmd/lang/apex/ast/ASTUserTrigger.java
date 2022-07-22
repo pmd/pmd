@@ -9,13 +9,13 @@ import java.util.stream.Collectors;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 
-import com.google.summit.ast.CompilationUnit;
+import com.google.summit.ast.declaration.TypeDeclaration;
 
-public class ASTUserTrigger extends ApexRootNode<CompilationUnit> {
+public class ASTUserTrigger extends ApexRootNode<TypeDeclaration> {
 
     @Deprecated
     @InternalApi
-    public ASTUserTrigger(CompilationUnit userTrigger) {
+    public ASTUserTrigger(TypeDeclaration userTrigger) {
         super(userTrigger);
     }
 
