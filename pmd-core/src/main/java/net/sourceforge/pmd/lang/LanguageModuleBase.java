@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.impl;
+package net.sourceforge.pmd.lang;
 
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 
@@ -18,9 +18,7 @@ import java.util.Set;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import net.sourceforge.pmd.lang.Language;
-import net.sourceforge.pmd.lang.LanguageVersion;
-import net.sourceforge.pmd.lang.impl.LanguageModuleBase.LanguageMetadata.LangVersionMetadata;
+import net.sourceforge.pmd.lang.LanguageModuleBase.LanguageMetadata.LangVersionMetadata;
 
 /**
  * Base class for language modules.
@@ -51,9 +49,10 @@ public abstract class LanguageModuleBase implements Language {
             metadata.versionMetadata.add(new LangVersionMetadata("", Collections.emptyList(), true));
         }
 
+        int i = 0;
         for (LanguageMetadata.LangVersionMetadata versionId : metadata.versionMetadata) {
             String versionStr = versionId.name;
-            LanguageVersion languageVersion = new LanguageVersion(this, versionStr);
+            LanguageVersion languageVersion = new LanguageVersion(this, versionStr, i++);
 
             versions.add(languageVersion);
 
@@ -156,6 +155,10 @@ public abstract class LanguageModuleBase implements Language {
         return Objects.equals(getId(), other.getId());
     }
 
+    /**
+     * Metadata about a language, basically a builder pattern for the
+     * language instance.
+     */
     protected static final class LanguageMetadata {
 
         public Set<String> dependencies = new HashSet<>();

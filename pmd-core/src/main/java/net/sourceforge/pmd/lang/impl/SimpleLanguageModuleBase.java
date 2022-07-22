@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.impl;
 
 import java.util.function.Function;
 
+import net.sourceforge.pmd.lang.LanguageModuleBase;
 import net.sourceforge.pmd.lang.LanguageProcessor;
 import net.sourceforge.pmd.lang.LanguagePropertyBundle;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;

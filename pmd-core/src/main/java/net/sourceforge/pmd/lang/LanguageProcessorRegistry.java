@@ -4,19 +4,21 @@
 
 package net.sourceforge.pmd.lang;
 
-import static net.sourceforge.pmd.util.CollectionUtil.mapOf;
-
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
+import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertySource;
+import net.sourceforge.pmd.util.CollectionUtil;
 import net.sourceforge.pmd.util.IOUtil;
 import net.sourceforge.pmd.util.log.MessageReporter;
 
@@ -25,15 +27,20 @@ import net.sourceforge.pmd.util.log.MessageReporter;
  *
  * @author Clément Fournier
  */
-public final class LanguageProcessorRegistry implements Iterable<Language>, AutoCloseable {
+public final class LanguageProcessorRegistry implements AutoCloseable {
+
+    private static final Logger LOG = LoggerFactory.getLogger(LanguageProcessorRegistry.class);
+
 
     private final Map<Language, LanguageProcessor> processors;
     private final LanguageRegistry languages;
 
 
-    private LanguageProcessorRegistry(Map<Language, LanguageProcessor> processors) {
-        this.processors = Collections.unmodifiableMap(processors);
-        this.languages = new LanguageRegistry(processors.keySet());
+    private LanguageProcessorRegistry(Set<LanguageProcessor> processors) {
+        this.processors = Collections.unmodifiableMap(
+            CollectionUtil.associateBy(processors, LanguageProcessor::getLanguage)
+        );
+        this.languages = new LanguageRegistry(this.processors.keySet());
 
         for (Language language : languages.getLanguages()) {
             for (String id : language.getDependencies()) {
@@ -46,18 +53,33 @@ public final class LanguageProcessorRegistry implements Iterable<Language>, Auto
         }
     }
 
+    /**
+     * Return the languages that are registered in this instance.
+     */
     public LanguageRegistry getLanguages() {
         return languages;
     }
 
+    /**
+     * Return the processor for a given language.
+     *
+     * @param l a language
+     *
+     * @throws IllegalArgumentException if the language is not part of this registry
+     */
     public @NonNull LanguageProcessor getProcessor(Language l) {
         LanguageProcessor obj = processors.get(l);
         if (obj == null) {
-            throw new IllegalStateException("Language " + l.getId() + " is not initialized in " + this);
+            throw new IllegalArgumentException("Language " + l.getId() + " is not initialized in " + this);
         }
         return obj;
     }
 
+    /**
+     * Close all processors in this registry.
+     *
+     * @throws LanguageTerminationException If closing any of the processors threw something
+     */
     @Override
     public void close() throws LanguageTerminationException {
         Exception e = IOUtil.closeAll(processors.values());
@@ -66,30 +88,44 @@ public final class LanguageProcessorRegistry implements Iterable<Language>, Auto
         }
     }
 
-    @Override
-    public Iterator<Language> iterator() {
-        return processors.keySet().iterator();
+    /**
+     * Create a registry with a single language processor.
+     *
+     * @throws IllegalStateException If the language depends on other languages,
+     *                               as they are then not included in this registry (see
+     *                               {@link Language#getDependencies()}).
+     */
+    public static LanguageProcessorRegistry singleton(@NonNull LanguageProcessor lp) {
+        return new LanguageProcessorRegistry(Collections.singleton(lp));
     }
 
-
-    public static LanguageProcessorRegistry singleton(LanguageProcessor lp) {
-        return new LanguageProcessorRegistry(mapOf(lp.getLanguage(), lp));
-    }
-
+    /**
+     * Create a new instance by creating a processor for each language in
+     * the given language registry. Each processor is created using the property
+     * bundle that is in the map, if present. Language properties are defaulted
+     * to environment variables if they are not already overridden.
+     *
+     * @throws IllegalStateException    If any language in the registry depends on
+     *                                  languages that are not found in it, or that
+     *                                  could not be instantiated (see {@link Language#getDependencies()}).
+     * @throws IllegalArgumentException If some entry in the map maps a language
+     *                                  to an incompatible property bundle
+     */
     public static LanguageProcessorRegistry create(LanguageRegistry registry,
                                                    Map<Language, LanguagePropertyBundle> languageProperties,
                                                    MessageReporter messageReporter) {
-        Map<Language, LanguageProcessor> processors = new HashMap<>();
+        Set<LanguageProcessor> processors = new HashSet<>();
         for (Language language : registry) {
             LanguagePropertyBundle properties = languageProperties.getOrDefault(language, language.newPropertyBundle());
-            try {
-                assert properties.getLanguage().equals(language) : "Mismatched language";
+            if (!properties.getLanguage().equals(language)) {
+                throw new IllegalArgumentException("Mismatched language");
+            }
 
+            try {
+                //
                 readLanguagePropertiesFromEnv(properties, messageReporter);
 
-                @SuppressWarnings("PMD.CloseResource")
-                LanguageProcessor processor = language.createProcessor(properties);
-                processors.put(language, processor);
+                processors.add(language.createProcessor(properties));
             } catch (IllegalArgumentException e) {
                 messageReporter.error(e); // todo
             }
@@ -143,14 +179,31 @@ public final class LanguageProcessorRegistry implements Iterable<Language>, Auto
         }
     }
 
-    // transitional until the CLI supports setting language properties
-    @Deprecated
-    public static void readLanguagePropertiesFromEnv(LanguagePropertyBundle props, MessageReporter reporter) {
+    private static void readLanguagePropertiesFromEnv(LanguagePropertyBundle props, MessageReporter reporter) {
         for (PropertyDescriptor<?> propertyDescriptor : props.getPropertyDescriptors()) {
-            String propertyValue = getEnvValue(props.getLanguage().getTerseName(), propertyDescriptor);
+
+            String envVarName = getEnvironmentVariableName(props.getLanguage(), propertyDescriptor);
+            String propertyValue = System.getenv(envVarName);
 
             if (propertyValue != null) {
-                trySetPropertyCapture(props, propertyDescriptor, propertyValue, reporter);
+                if (props.isPropertyOverridden(propertyDescriptor)) {
+                    // Env vars are a default, they don't override other ways to set properties.
+                    // If the property has already been set, don't set it.
+                    LOG.debug(
+                        "Property {} for lang {} is already set, ignoring value of {}",
+                        propertyDescriptor.name(),
+                        props.getLanguage().getId(),
+                        envVarName
+                    );
+                } else {
+                    LOG.debug(
+                        "Using env var {} to set property {} for lang {}",
+                        envVarName,
+                        propertyDescriptor.name(),
+                        props.getLanguage().getId()
+                    );
+                    trySetPropertyCapture(props, propertyDescriptor, propertyValue, reporter);
+                }
             }
         }
     }
@@ -158,22 +211,9 @@ public final class LanguageProcessorRegistry implements Iterable<Language>, Auto
     /**
      * Returns the environment variable name that a user can set in order to override the default value.
      */
-    private static String getEnvironmentVariableName(String langTerseName, PropertyDescriptor<?> propertyDescriptor) {
-        if (langTerseName == null) {
-            throw new IllegalStateException("Language is null");
-        }
-        return "PMD_" + langTerseName.toUpperCase(Locale.ROOT) + "_"
+    private static String getEnvironmentVariableName(Language lang, PropertyDescriptor<?> propertyDescriptor) {
+        return "PMD_" + lang.getId().toUpperCase(Locale.ROOT) + "_"
             + propertyDescriptor.name().toUpperCase(Locale.ROOT);
-    }
-
-    /**
-     * @return environment variable that overrides the PropertyDesciptors default value. Returns null if no environment
-     *     variable has been set.
-     */
-    private static String getEnvValue(String langTerseName, PropertyDescriptor<?> propertyDescriptor) {
-        // note: since we use environent variables and not system properties,
-        // tests override this method.
-        return System.getenv(getEnvironmentVariableName(langTerseName, propertyDescriptor));
     }
 
 
@@ -184,6 +224,9 @@ public final class LanguageProcessorRegistry implements Iterable<Language>, Auto
             + ")";
     }
 
+    /**
+     * An exception that occurs during the closing of a {@link LanguageProcessor},
+     */
     public static class LanguageTerminationException extends RuntimeException {
 
         public LanguageTerminationException(Throwable cause) {
