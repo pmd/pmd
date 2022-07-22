@@ -72,7 +72,7 @@ public class RuleTestRunner extends ParentRunner<TestDescriptor> {
             RuleTestDescriptor focused = ruleTests.getFocusedTestOrNull();
             for (RuleTestDescriptor t : ruleTests.getTests()) {
                 TestDescriptor td = new TestDescriptor(t);
-                if (focused != null && focused != t) {
+                if (focused != null && !focused.equals(t)) {
                     td.setRegressionTest(false); // disable it
                 }
                 tests.add(td);
