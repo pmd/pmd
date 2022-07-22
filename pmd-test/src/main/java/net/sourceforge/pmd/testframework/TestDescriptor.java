@@ -16,8 +16,11 @@ import net.sourceforge.pmd.test.schema.RuleTestDescriptor;
 
 /**
  * Stores the information required to run a complete test.
+ *
+ * @deprecated Use {@link RuleTestDescriptor} instead
  */
 @Ignore("this is not a unit test")
+@Deprecated
 public class TestDescriptor {
     private Rule rule;
     private Properties properties;
@@ -32,7 +35,6 @@ public class TestDescriptor {
     private boolean isRegressionTest = true;
     private boolean useAuxClasspath = true;
     private int numberInDocument = -1;
-    private boolean isFocused = false;
 
     public TestDescriptor() {
         // Empty default descriptor added to please mvn surefire plugin
@@ -63,7 +65,6 @@ public class TestDescriptor {
         this.numberInDocument = td.getIndex();
         this.properties = td.getProperties();
         this.languageVersion = td.getLanguageVersion();
-        this.isFocused = td.isFocused();
     }
 
     public int getNumberInDocument() {
