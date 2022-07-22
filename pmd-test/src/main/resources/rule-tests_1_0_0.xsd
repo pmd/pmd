@@ -58,7 +58,13 @@
                 </annotation>
             </element>
         </sequence>
-        <attribute name="reinitializeRule" type="boolean" default="true"/>
+        <attribute name="reinitializeRule" type="boolean" default="true">
+            <annotation>
+                <documentation>
+                    This attribute is deprecated, it is assumed true and ignored.
+                </documentation>
+            </annotation>
+        </attribute>
         <attribute name="regressionTest" type="boolean" default="true">
             <annotation>
                 <documentation>
@@ -73,6 +79,18 @@
             <annotation>
                 <documentation>
                     A reason why the test is disabled/ignored should be provided as a comment for the test.
+                </documentation>
+            </annotation>
+        </attribute>
+        <attribute name="focused" type="boolean" default="false">
+            <annotation>
+                <documentation>
+                    If true, only this test will be executed, and all others will be disabled.
+                    If several tests in the same file are focused, then the last one wins, in
+                    document order.
+                    This attribute is provided as a way for developers to temporarily focus on a single test.
+                    Test files with a focused test should not be checked in. For this reason,
+                    using this attribute produces a warning.
                 </documentation>
             </annotation>
         </attribute>
