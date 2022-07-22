@@ -14,7 +14,7 @@ import java.util.Collections;
 import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.Report.SuppressedViolation;
-import net.sourceforge.pmd.lang.ast.DummyNode;
+import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.ast.DummyNode.DummyRootNode;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
@@ -70,10 +70,10 @@ public class AbstractRuleTest {
     void testCreateRV() {
         MyRule r = new MyRule();
         r.setRuleSetName("foo");
-        DummyNode s = new DummyRootNode().withFileName("filename");
-        s.setCoords(5, 5, 5, 10);
-        RuleViolation rv = new ParametricRuleViolation<>(r, s, r.getMessage());
-        assertEquals(5, rv.getBeginLine(), "Line number mismatch!");
+        DummyRootNode s = DummyLanguageModule.parse("abc()", "filename");
+
+        RuleViolation rv = new ParametricRuleViolation(r, s, r.getMessage());
+        assertEquals(1, rv.getBeginLine(), "Line number mismatch!");
         assertEquals("filename", rv.getFilename(), "Filename mismatch!");
         assertEquals(r, rv.getRule(), "Rule object mismatch!");
         assertEquals("my rule msg", rv.getDescription(), "Rule msg mismatch!");
@@ -83,17 +83,16 @@ public class AbstractRuleTest {
     @Test
     void testCreateRV2() {
         MyRule r = new MyRule();
-        DummyNode s = new DummyRootNode().withFileName("filename");
-        s.setCoords(5, 5, 5, 10);
-        RuleViolation rv = new ParametricRuleViolation<>(r, s, "specificdescription");
-        assertEquals(5, rv.getBeginLine(), "Line number mismatch!");
+        DummyRootNode s = DummyLanguageModule.parse("abc()", "filename");
+        RuleViolation rv = new ParametricRuleViolation(r, s, "specificdescription");
+        assertEquals(1, rv.getBeginLine(), "Line number mismatch!");
         assertEquals("filename", rv.getFilename(), "Filename mismatch!");
         assertEquals(r, rv.getRule(), "Rule object mismatch!");
         assertEquals("specificdescription", rv.getDescription(), "Rule description mismatch!");
     }
 
     @Test
-    void testRuleWithVariableInMessage() throws Exception {
+    void testRuleWithVariableInMessage() {
         MyRule r = new MyRule() {
             @Override
             public void apply(Node target, RuleContext ctx) {
@@ -103,9 +102,7 @@ public class AbstractRuleTest {
         r.definePropertyDescriptor(PropertyFactory.intProperty("testInt").desc("description").require(inRange(0, 100)).defaultValue(10).build());
         r.setMessage("Message ${packageName} ${className} ${methodName} ${variableName} ${testInt} ${noSuchProperty}");
 
-        DummyNode s = new DummyRootNode().withFileName("filename");
-        s.setCoords(5, 1, 6, 1);
-        s.setImage("TestImage");
+        DummyRootNode s = DummyLanguageModule.parse("abc()", "filename");
 
         RuleViolation rv = RuleContextTest.getReportForRuleApply(r, s).getViolations().get(0);
         assertEquals("Message foo    10 ${noSuchProperty}", rv.getDescription());
@@ -113,9 +110,9 @@ public class AbstractRuleTest {
 
     @Test
     void testRuleSuppress() {
-        DummyRootNode n = new DummyRootNode().withNoPmdComments(Collections.singletonMap(5, ""));
-        n.setCoords(5, 1, 6, 1);
-        RuleViolation violation = DefaultRuleViolationFactory.defaultInstance().createViolation(new MyRule(), n, "specificdescription");
+        DummyRootNode n = DummyLanguageModule.parse("abc()", "filename")
+            .withNoPmdComments(Collections.singletonMap(1, "ohio"));
+        RuleViolation violation = DefaultRuleViolationFactory.defaultInstance().createViolation(new MyRule(), n, n.getReportLocation(), "specificdescription");
         SuppressedViolation suppressed = DefaultRuleViolationFactory.defaultInstance().suppressOrNull(n, violation);
 
         assertNotNull(suppressed);

@@ -12,8 +12,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
+import java.io.FilterOutputStream;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystems;
@@ -161,7 +164,7 @@ class CoreCliTest {
         String reportFile = "reportFile.txt";
         Path absoluteReportFile = FileSystems.getDefault().getPath(reportFile).toAbsolutePath();
         // verify the file doesn't exist yet - we will delete the file at the end!
-        assertFalse(Files.exists(absoluteReportFile), "Report file must not exist yet!");
+        assertFalse(Files.exists(absoluteReportFile), "Report file must not exist yet! " + absoluteReportFile);
 
         try {
             runPmdSuccessfully("--no-cache", "-d", srcDir, "-R", DUMMY_RULESET, "-r", reportFile);
@@ -209,6 +212,24 @@ class CoreCliTest {
         assertThat(log, containsString("Ruleset reference 'dummy-basic' uses a deprecated form, use 'rulesets/dummy/basic.xml' instead"));
     }
 
+    @Test
+    void testReportToStdoutNotClosing() throws Exception {
+        PrintStream originalOut = System.out;
+        PrintStream out = new PrintStream(new FilterOutputStream(originalOut) {
+            @Override
+            public void close() {
+                fail("Stream must not be closed");
+            }
+        });
+        try {
+            System.setOut(out);
+            SystemLambda.tapSystemErrAndOut(() -> {
+                runPmd(StatusCode.VIOLATIONS_FOUND, "--no-cache", "--dir", srcDir, "--rulesets", "dummy-basic");
+            });
+        } finally {
+            System.setOut(originalOut);
+        }
+    }
 
     @Test
     void testWrongCliOptionsDoNotPrintUsage() throws Exception {
@@ -261,6 +282,5 @@ class CoreCliTest {
         StatusCode actualExitCode = PMD.runPmd(argsToString(args));
         assertEquals(expectedExitCode, actualExitCode, "Exit code");
     }
-
 
 }

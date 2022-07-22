@@ -9,12 +9,12 @@ import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.slf4j.Logger;
@@ -31,9 +31,9 @@ import net.sourceforge.pmd.cli.PMDCommandLineInterface;
 import net.sourceforge.pmd.cli.PmdParametersParseResult;
 import net.sourceforge.pmd.cli.internal.CliMessages;
 import net.sourceforge.pmd.internal.Slf4jSimpleConfiguration;
+import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.reporting.ReportStats;
-import net.sourceforge.pmd.reporting.ReportStatsListener;
 import net.sourceforge.pmd.util.datasource.DataSource;
 import net.sourceforge.pmd.util.log.MessageReporter;
 import net.sourceforge.pmd.util.log.internal.SimpleMessageReporter;
@@ -73,34 +73,6 @@ public final class PMD {
     }
 
 
-    private static ReportStats runAndReturnStats(PmdAnalysis pmd) {
-        if (pmd.getRulesets().isEmpty()) {
-            return ReportStats.empty();
-        }
-
-        @SuppressWarnings("PMD.CloseResource")
-        ReportStatsListener listener = new ReportStatsListener();
-
-        pmd.addListener(listener);
-
-        try {
-            pmd.performAnalysis();
-        } catch (Exception e) {
-            pmd.getReporter().errorEx("Exception during processing", e);
-            ReportStats stats = listener.getResult();
-            printErrorDetected(1 + stats.getNumErrors());
-            return stats; // should have been closed
-        }
-        ReportStats stats = listener.getResult();
-
-        if (stats.getNumErrors() > 0) {
-            printErrorDetected(stats.getNumErrors());
-        }
-
-        return stats;
-    }
-
-
     static void encourageToUseIncrementalAnalysis(final PMDConfiguration configuration) {
         if (!configuration.isIgnoreIncrementalAnalysis()
             && configuration.getAnalysisCache() instanceof NoopAnalysisCache
@@ -125,7 +97,6 @@ public final class PMD {
      * @return Report in which violations are accumulated
      *
      * @throws Exception If there was a problem when opening or closing the renderers
-     *
      * @deprecated Use {@link PmdAnalysis}
      */
     @Deprecated
@@ -139,8 +110,10 @@ public final class PMD {
             pmd.addRenderers(renderers);
             @SuppressWarnings("PMD.CloseResource")
             GlobalReportBuilderListener reportBuilder = new GlobalReportBuilderListener();
-            List<DataSource> sortedFiles = new ArrayList<>(files);
-            sortedFiles.sort(Comparator.comparing(ds -> ds.getNiceFileName(false, "")));
+            List<TextFile> sortedFiles = files.stream()
+                                              .map(ds -> TextFile.dataSourceCompat(ds, configuration))
+                                              .sorted(Comparator.comparing(TextFile::getPathId))
+                                              .collect(Collectors.toList());
             pmd.performAnalysisImpl(listOf(reportBuilder), sortedFiles);
             return reportBuilder.getResult();
         }
@@ -199,11 +172,6 @@ public final class PMD {
         return runPmd(configuration);
     }
 
-    private static void printErrorDetected(int errors) {
-        String msg = CliMessages.errorDetectedMessage(errors, "PMD");
-        log.error(msg);
-    }
-
     /**
      * Execute PMD from a configuration. Returns the status code without
      * exiting the VM. This is the main entry point to run a full PMD run
@@ -231,8 +199,7 @@ public final class PMD {
             }
             try {
                 log.debug("Current classpath:\n{}", System.getProperty("java.class.path"));
-                ReportStats stats;
-                stats = PMD.runAndReturnStats(pmd);
+                ReportStats stats = pmd.runAndReturnStats();
                 if (pmdReporter.numErrors() > 0) {
                     // processing errors are ignored
                     return StatusCode.ERROR;
@@ -247,7 +214,7 @@ public final class PMD {
 
         } catch (Exception e) {
             pmdReporter.errorEx("Exception while running PMD.", e);
-            printErrorDetected(1);
+            PmdAnalysis.printErrorDetected(pmdReporter, 1);
             return StatusCode.ERROR;
         } finally {
             finishBenchmarker(configuration);

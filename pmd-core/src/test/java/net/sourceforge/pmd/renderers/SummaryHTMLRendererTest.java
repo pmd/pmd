@@ -16,7 +16,9 @@ import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report.ConfigurationError;
 import net.sourceforge.pmd.Report.ProcessingError;
 import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.ast.DummyNode.DummyRootNode;
+import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
 
 class SummaryHTMLRendererTest extends AbstractRendererTest {
@@ -143,10 +145,15 @@ class SummaryHTMLRendererTest extends AbstractRendererTest {
         assertEquals(getExpectedEmpty(), actual);
     }
 
-    private Consumer<FileAnalysisListener> createEmptyReportWithSuppression() throws Exception {
+    private Consumer<FileAnalysisListener> createEmptyReportWithSuppression() {
         return listener -> {
-            DummyRootNode root = new DummyRootNode().withNoPmdComments(Collections.singletonMap(1, "test")).withFileName(getSourceCodeFilename());
-            root.setCoords(1, 10, 4, 5);
+            TextDocument doc = TextDocument.readOnlyString(
+                "dummy code",
+                getSourceCodeFilename(),
+                DummyLanguageModule.getInstance().getDefaultVersion()
+            );
+            DummyRootNode root = DummyLanguageModule.parse("dummy code", getSourceCodeFilename())
+                                                    .withNoPmdComments(Collections.singletonMap(1, "test"));
 
             RuleContext ruleContext = RuleContext.create(listener, new FooRule());
             ruleContext.addViolationWithPosition(root, 1, 1, "suppress test");

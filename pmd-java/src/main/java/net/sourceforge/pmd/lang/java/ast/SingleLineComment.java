@@ -12,9 +12,4 @@ public class SingleLineComment extends Comment {
         super(t);
     }
 
-
-    @Override
-    public String getXPathNodeName() {
-        return "SingleLineComment";
-    }
 }

@@ -9,9 +9,9 @@ import java.util.function.Consumer;
 
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
-import net.sourceforge.pmd.util.datasource.DataSource;
 
 import me.tongfei.progressbar.DelegatingProgressBarConsumer;
 import me.tongfei.progressbar.ProgressBar;
@@ -58,7 +58,7 @@ public final class ProgressBarListener implements GlobalAnalysisListener {
     }
 
     @Override
-    public FileAnalysisListener startFileAnalysis(DataSource file) {
+    public FileAnalysisListener startFileAnalysis(TextFile file) {
         // Refresh progress on file analysis start
         refreshProgressBar();
 

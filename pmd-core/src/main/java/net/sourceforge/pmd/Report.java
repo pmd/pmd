@@ -18,11 +18,11 @@ import java.util.function.Predicate;
 import net.sourceforge.pmd.annotation.DeprecatedUntil700;
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.renderers.AbstractAccumulatingRenderer;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
 import net.sourceforge.pmd.util.BaseResultProducingCloseable;
-import net.sourceforge.pmd.util.datasource.DataSource;
 
 /**
  * A {@link Report} collects all informations during a PMD execution. This
@@ -348,7 +348,7 @@ public final class Report {
         private final Report report = new Report();
 
         @Override
-        public FileAnalysisListener startFileAnalysis(DataSource file) {
+        public FileAnalysisListener startFileAnalysis(TextFile file) {
             // note that the report is shared, but Report is now thread-safe
             return new ReportBuilderListener(this.report);
         }

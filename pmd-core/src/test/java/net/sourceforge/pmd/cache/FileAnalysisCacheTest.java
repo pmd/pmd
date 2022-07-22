@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.cache;
 
 import static com.github.stefanbirkner.systemlambda.SystemLambda.restoreSystemProperties;
+import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -18,6 +19,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -34,7 +36,13 @@ import org.mockito.Mockito;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.Language;
-import net.sourceforge.pmd.util.datasource.DataSource;
+import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.document.FileLocation;
+import net.sourceforge.pmd.lang.document.TextDocument;
+import net.sourceforge.pmd.lang.document.TextFile;
+import net.sourceforge.pmd.lang.document.TextFileContent;
+import net.sourceforge.pmd.lang.document.TextRange2d;
 
 class FileAnalysisCacheTest {
 
@@ -45,14 +53,21 @@ class FileAnalysisCacheTest {
     private File newCacheFile;
     private File emptyCacheFile;
 
-    private File sourceFile;
+    private TextDocument sourceFile;
+    private TextFile sourceFileBackend;
+
+    private final LanguageVersion dummyVersion = LanguageRegistry.getDefaultLanguage().getDefaultVersion();
+
 
     @BeforeEach
-    void setUp() throws IOException {
+    public void setUp() throws IOException {
         unexistingCacheFile = tempFolder.resolve("non-existing-file.cache").toFile();
         newCacheFile = tempFolder.resolve("pmd-analysis.cache").toFile();
         emptyCacheFile = Files.createTempFile(tempFolder, null, null).toFile();
-        sourceFile = Files.createTempFile(tempFolder, null, "Source.java").toFile();
+        Path sourceFile = tempFolder.resolve("Source.java");
+        Files.write(sourceFile, listOf("dummy text"));
+        this.sourceFileBackend = TextFile.forPath(sourceFile, Charset.defaultCharset(), dummyVersion);
+        this.sourceFile = TextDocument.create(sourceFileBackend);
     }
 
     @Test
@@ -99,14 +114,13 @@ class FileAnalysisCacheTest {
         cache.isUpToDate(sourceFile);
 
         final RuleViolation rv = mock(RuleViolation.class);
-        when(rv.getFilename()).thenReturn(sourceFile.getPath());
+        when(rv.getFilename()).thenReturn(sourceFile.getDisplayName());
+        when(rv.getLocation()).thenReturn(FileLocation.range(sourceFile.getDisplayName(), TextRange2d.range2d(1, 2, 3, 4)));
         final net.sourceforge.pmd.Rule rule = mock(net.sourceforge.pmd.Rule.class, Mockito.RETURNS_SMART_NULLS);
         when(rule.getLanguage()).thenReturn(mock(Language.class));
         when(rv.getRule()).thenReturn(rule);
 
-        DataSource ds = mock(DataSource.class);
-        when(ds.getNiceFileName(false, "")).thenReturn(sourceFile.getPath());
-        cache.startFileAnalysis(ds).onRuleViolation(rv);
+        cache.startFileAnalysis(sourceFile).onRuleViolation(rv);
         cache.persist();
 
         final FileAnalysisCache reloadedCache = new FileAnalysisCache(newCacheFile);
@@ -367,20 +381,25 @@ class FileAnalysisCacheTest {
         setupCacheWithFiles(newCacheFile, mock(RuleSets.class), mock(ClassLoader.class), sourceFile);
 
         // Edit the file
-        Files.write(sourceFile.toPath(), "some text".getBytes());
+        TextFileContent text = TextFileContent.fromCharSeq("some text");
+        assertEquals(System.lineSeparator(), text.getLineTerminator());
+        sourceFileBackend.writeContents(text);
+        sourceFile = TextDocument.create(sourceFileBackend);
 
         final FileAnalysisCache cache = new FileAnalysisCache(newCacheFile);
         assertFalse(cache.isUpToDate(sourceFile),
                 "Cache believes a known, changed file is up to date");
     }
 
-    private void setupCacheWithFiles(final File cacheFile, final RuleSets ruleSets,
-            final ClassLoader classLoader, final File... files) throws IOException {
+    private void setupCacheWithFiles(final File cacheFile,
+                                     final RuleSets ruleSets,
+                                     final ClassLoader classLoader,
+                                     final TextDocument... files) throws IOException {
         // Setup a cache file with an entry for an empty Source.java with no violations
         final FileAnalysisCache cache = new FileAnalysisCache(cacheFile);
         cache.checkValidity(ruleSets, classLoader);
 
-        for (final File f : files) {
+        for (final TextDocument f : files) {
             cache.isUpToDate(f);
         }
         cache.persist();

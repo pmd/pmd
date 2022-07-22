@@ -51,7 +51,7 @@ public final class ASTCompilationUnit extends AbstractJavaNode implements JavaNo
         return comments;
     }
 
-    public void setAstInfo(AstInfo<ASTCompilationUnit> task) {
+    void setAstInfo(AstInfo<ASTCompilationUnit> task) {
         this.astInfo = task;
     }
 

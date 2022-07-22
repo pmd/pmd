@@ -4,14 +4,13 @@
 
 package net.sourceforge.pmd.lang.ast;
 
-import static net.sourceforge.pmd.internal.util.AssertionUtil.requireParamNotNull;
-
 import java.util.Objects;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.properties.AbstractPropertySource;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
@@ -20,9 +19,6 @@ import net.sourceforge.pmd.properties.PropertySource;
 /**
  * Produces an AST from a source file. Instances of this interface must
  * be stateless (which makes them trivially threadsafe).
- *
- * TODO
- *  - The reader + filename would be a TextDocument
  */
 public interface Parser {
 
@@ -46,27 +42,23 @@ public interface Parser {
      */
     final class ParserTask {
 
-        private final LanguageVersion lv;
-        private final String filepath;
-        private final String sourceText;
+        private final TextDocument textDoc;
         private final SemanticErrorReporter reporter;
         private final ClassLoader auxclasspathClassLoader;
 
         private final PropertySource propertySource;
 
-        public ParserTask(LanguageVersion lv, String filepath, String sourceText, SemanticErrorReporter reporter, ClassLoader auxclasspathClassLoader) {
-            this.lv = requireParamNotNull("language version", lv);
-            this.filepath = requireParamNotNull("filepath", filepath);
-            this.sourceText = requireParamNotNull("sourceText", sourceText);
-            this.reporter = requireParamNotNull("reporter", reporter);
-            this.auxclasspathClassLoader = requireParamNotNull("auxclasspathClassLoader", auxclasspathClassLoader);
+        public ParserTask(TextDocument textDoc, SemanticErrorReporter reporter, ClassLoader auxclasspathClassLoader) {
+            this.textDoc = Objects.requireNonNull(textDoc, "Text document was null");
+            this.reporter = Objects.requireNonNull(reporter, "reporter was null");
+            this.auxclasspathClassLoader = Objects.requireNonNull(auxclasspathClassLoader, "auxclasspathClassLoader was null");
 
             this.propertySource = new ParserTaskProperties();
             propertySource.definePropertyDescriptor(COMMENT_MARKER);
         }
 
-        public ParserTask(LanguageVersion lv, String filepath, String sourceText, SemanticErrorReporter reporter) {
-            this(lv, filepath, sourceText, reporter, Parser.class.getClassLoader());
+        public ParserTask(TextDocument textDoc, SemanticErrorReporter reporter) {
+            this(textDoc, reporter, Parser.class.getClassLoader());
         }
 
         public static final PropertyDescriptor<String> COMMENT_MARKER =
@@ -86,7 +78,7 @@ public interface Parser {
         }
 
         public LanguageVersion getLanguageVersion() {
-            return lv;
+            return textDoc.getLanguageVersion();
         }
 
         /**
@@ -94,14 +86,21 @@ public interface Parser {
          * not be interpreted, it may not be a file-system path.
          */
         public String getFileDisplayName() {
-            return filepath;
+            return textDoc.getDisplayName();
+        }
+
+        /**
+         * The text document to parse.
+         */
+        public TextDocument getTextDocument() {
+            return textDoc;
         }
 
         /**
          * The full text of the file to parse.
          */
         public String getSourceText() {
-            return sourceText;
+            return getTextDocument().getText().toString();
         }
 
         /**

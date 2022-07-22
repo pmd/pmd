@@ -46,6 +46,10 @@ public class MatchAlgorithm {
         return matches.iterator();
     }
 
+    List<Match> getMatches() {
+        return matches;
+    }
+
     public TokenEntry tokenAt(int offset, TokenEntry m) {
         return code.get(offset + m.getIndex());
     }
@@ -82,6 +86,7 @@ public class MatchAlgorithm {
                 mark.setLineCount(lineCount);
                 mark.setEndToken(endToken);
                 SourceCode sourceCode = source.get(token.getTokenSrcID());
+                assert sourceCode != null : token.getTokenSrcID() + " is not registered in " + source.keySet();
                 mark.setSourceCode(sourceCode);
             }
         }

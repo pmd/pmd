@@ -13,7 +13,7 @@ import net.sourceforge.pmd.lang.apex.multifile.ApexMultifileAnalysis;
 import net.sourceforge.pmd.lang.ast.AstInfo;
 import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
 import net.sourceforge.pmd.lang.ast.RootNode;
-import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
+import net.sourceforge.pmd.lang.document.TextRegion;
 
 import apex.jorje.semantic.ast.AstNode;
 import apex.jorje.semantic.ast.compilation.Compilation;
@@ -24,20 +24,14 @@ public final class ASTApexFile extends AbstractApexNode<AstNode> implements Root
     private final AstInfo<ASTApexFile> astInfo;
     private final @NonNull ApexMultifileAnalysis multifileAnalysis;
 
-    ASTApexFile(SourceCodePositioner source,
-                ParserTask task,
-                AbstractApexNode<? extends Compilation> child,
+    ASTApexFile(ParserTask task,
+                Compilation jorjeNode,
                 Map<Integer, String> suppressMap,
                 @NonNull ApexMultifileAnalysis multifileAnalysis) {
-        super(child.getNode());
+        super(jorjeNode);
         this.astInfo = new AstInfo<>(task, this, suppressMap);
-        addChild(child, 0);
         this.multifileAnalysis = multifileAnalysis;
-        this.beginLine = 1;
-        this.endLine = source.getLastLine();
-        this.beginColumn = 1;
-        this.endColumn = source.getLastLineColumn();
-        child.setCoords(child.getBeginLine(), child.getBeginColumn(), source.getLastLine(), source.getLastLineColumn());
+        this.setRegion(TextRegion.fromOffsetLength(0, task.getTextDocument().getLength()));
     }
 
     @Override
@@ -55,14 +49,6 @@ public final class ASTApexFile extends AbstractApexNode<AstNode> implements Root
     }
 
     @Override
-    void calculateLineNumbers(SourceCodePositioner positioner) {
-        this.beginLine = 1;
-        this.beginColumn = 1;
-        this.endLine = positioner.getLastLine();
-        this.endColumn = positioner.getLastLineColumn();
-    }
-
-    @Override
     public @NonNull ASTApexFile getRoot() {
         return this;
     }
@@ -74,6 +60,6 @@ public final class ASTApexFile extends AbstractApexNode<AstNode> implements Root
     }
 
     public List<Issue> getGlobalIssues() {
-        return multifileAnalysis.getFileIssues(getAstInfo().getFileName());
+        return multifileAnalysis.getFileIssues(getAstInfo().getTextDocument().getPathId());
     }
 }

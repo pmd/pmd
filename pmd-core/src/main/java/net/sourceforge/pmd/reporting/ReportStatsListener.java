@@ -8,8 +8,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import net.sourceforge.pmd.Report.ProcessingError;
 import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.util.BaseResultProducingCloseable;
-import net.sourceforge.pmd.util.datasource.DataSource;
 
 /**
  * Collects summarized info about a PMD run.
@@ -22,7 +22,7 @@ public final class ReportStatsListener extends BaseResultProducingCloseable<Repo
     private final AtomicInteger numViolations = new AtomicInteger(0);
 
     @Override
-    public FileAnalysisListener startFileAnalysis(DataSource file) {
+    public FileAnalysisListener startFileAnalysis(TextFile file) {
         return new FileAnalysisListener() {
             // this object does not need thread-safety so we avoid using atomics,
             // except during the merge.

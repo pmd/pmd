@@ -5,13 +5,12 @@
 package net.sourceforge.pmd.util.treeexport;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,10 +27,11 @@ import net.sourceforge.pmd.lang.ast.Parser;
 import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.ast.SemanticErrorReporter;
+import net.sourceforge.pmd.lang.document.TextDocument;
+import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.lang.rule.xpath.Attribute;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertySource;
-import net.sourceforge.pmd.util.IOUtil;
 
 import com.beust.jcommander.DynamicParameter;
 import com.beust.jcommander.JCommander;
@@ -183,30 +183,25 @@ public class TreeExportCli {
         Parser parser = languageHandler.getParser();
 
         @SuppressWarnings("PMD.CloseResource")
-        Reader source;
-        String fileName;
+        TextFile textFile;
         if (file == null && !readStdin) {
             throw bail("One of --file or --read-stdin must be mentioned");
         } else if (readStdin) {
             io.stderr.println("Reading from stdin...");
-            source = readFromSystemIn();
-            fileName = "stdin";
+            textFile = TextFile.forReader(readFromSystemIn(), "stdin", langVersion);
         } else {
-            source = Files.newBufferedReader(new File(file).toPath(), Charset.forName(encoding));
-            fileName = file;
+            textFile = TextFile.forPath(Paths.get(file), Charset.forName(encoding), langVersion);
         }
 
         // disable warnings for deprecated attributes
         Slf4jSimpleConfiguration.disableLogging(Attribute.class);
 
-        try {
-            String fullSource = IOUtil.readToString(source);
-            ParserTask task = new ParserTask(langVersion, fileName, fullSource, SemanticErrorReporter.noop());
+        try (TextDocument textDocument = TextDocument.create(textFile)) {
+
+            ParserTask task = new ParserTask(textDocument, SemanticErrorReporter.noop(), TreeExportCli.class.getClassLoader());
             RootNode root = parser.parse(task);
 
             renderer.renderSubtree(root, io.stdout);
-        } finally {
-            source.close();
         }
     }
 

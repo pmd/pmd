@@ -289,10 +289,10 @@ public class JDKVersionTest extends BaseJavaTreeDumpTest {
     @Test
     public final void jdk7PrivateMethodInnerClassInterface2() {
         try {
-            ASTCompilationUnit acu = java7.parseResource("private_method_in_inner_class_interface2.java");
+            java7.parseResource("private_method_in_inner_class_interface2.java");
             fail("Expected exception");
         } catch (ParseException e) {
-            assertTrue(e.getMessage().startsWith("Line 19"));
+            assertTrue(e.getMessage().contains("line 19"));
         }
     }
 

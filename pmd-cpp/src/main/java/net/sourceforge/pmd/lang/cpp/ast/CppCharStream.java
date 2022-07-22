@@ -5,14 +5,13 @@
 package net.sourceforge.pmd.lang.cpp.ast;
 
 import java.io.IOException;
-import java.io.Reader;
 import java.util.regex.Pattern;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.lang.ast.impl.javacc.CharStreamFactory;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument;
 import net.sourceforge.pmd.lang.ast.impl.javacc.SimpleCharStream;
+import net.sourceforge.pmd.lang.document.TextDocument;
 
 /**
  * A SimpleCharStream, that supports the continuation of lines via backslash+newline,
@@ -65,9 +64,8 @@ public class CppCharStream extends SimpleCharStream {
         return CONTINUATION.matcher(image).replaceAll("");
     }
 
-    public static CppCharStream newCppCharStream(Reader dstream) {
-        String source = CharStreamFactory.toString(dstream);
-        JavaccTokenDocument document = new JavaccTokenDocument(source) {
+    public static CppCharStream newCppCharStream(TextDocument file) {
+        JavaccTokenDocument document = new JavaccTokenDocument(file) {
             @Override
             protected @Nullable String describeKindImpl(int kind) {
                 return CppTokenKinds.describe(kind);

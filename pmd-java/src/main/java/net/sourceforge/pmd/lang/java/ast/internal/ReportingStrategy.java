@@ -52,8 +52,7 @@ public interface ReportingStrategy<T> {
 
             @Override
             public void report(Node node, String message, Void acc) {
-                throw new ParseException(
-                    "Line " + node.getBeginLine() + ", Column " + node.getBeginColumn() + ": " + message);
+                throw new ParseException(node.getReportLocation().startPosToString() + ": " + message);
             }
         };
     }

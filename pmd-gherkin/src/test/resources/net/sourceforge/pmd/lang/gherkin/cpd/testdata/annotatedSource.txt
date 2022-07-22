@@ -1,0 +1,637 @@
+    [Image] or [Truncated image[            Bcol      Ecol
+L1
+    [@AnnotatedSource]                      1         17
+    [\n]                                    18        19
+L2
+    [Feature:]                              1         9
+    [Annotated]                             10        19
+    [Source]                                20        26
+    [\n]                                    26        27
+L3
+    [The]                                   3         6
+    [annotated]                             7         16
+    [source]                                17        23
+    [displays]                              24        32
+    [violations]                            33        43
+    [in]                                    44        46
+    [the]                                   47        50
+    [source]                                51        57
+    [file.]                                 58        63
+    [It]                                    64        66
+    [opens]                                 67        72
+    [in]                                    73        75
+    [a]                                     76        77
+    [new]                                   78        81
+    [window.]                               82        89
+    [\n]                                    89        90
+L4
+    [\n]                                    3         4
+L5
+    [Rules:]                                3         9
+    [\n]                                    9         10
+L6
+    [1]                                     3         4
+    [Annotation]                            5         15
+    [metrics]                               16        23
+    [can]                                   24        27
+    [be]                                    28        30
+    [selected]                              31        39
+    [with]                                  40        44
+    [a]                                     45        46
+    [dropdown]                              47        55
+    [menu.]                                 56        61
+    [Only]                                  62        66
+    [enabled]                               67        74
+    [metrics]                               75        82
+    [must]                                  83        87
+    [be]                                    88        90
+    [shown.]                                91        97
+    [\n]                                    97        98
+L7
+    [2]                                     3         4
+    [When]                                  5         9
+    [the]                                   10        13
+    [annotated]                             14        23
+    [source]                                24        30
+    [is]                                    31        33
+    [opened]                                34        40
+    [while]                                 41        46
+    [a]                                     47        48
+    [specific]                              49        57
+    [metric]                                58        64
+    [is]                                    65        67
+    [selected,]                             68        77
+    [only]                                  78        82
+    [that]                                  83        87
+    [metric]                                88        94
+    [should]                                95        101
+    [be]                                    102       104
+    [selected.]                             105       114
+    [\n]                                    114       115
+L8
+    [3]                                     3         4
+    [A]                                     5         6
+    [user]                                  7         11
+    [can]                                   12        15
+    [scroll]                                16        22
+    [through]                               23        30
+    [the]                                   31        34
+    [violations]                            35        45
+    [using]                                 46        51
+    [two]                                   52        55
+    [buttons]                               56        63
+    [(illustrated]                          64        76
+    [by]                                    77        79
+    [up]                                    80        82
+    [and]                                   83        86
+    [down]                                  87        91
+    [arrows).]                              92        100
+    [The]                                   101       104
+    [arrows]                                105       111
+    [wrap]                                  112       116
+    [around]                                117       123
+    [the]                                   124       127
+    [document.]                             128       137
+    [\n]                                    137       138
+L9
+    [4]                                     3         4
+    [The]                                   5         8
+    [table]                                 9         14
+    [collumn]                               15        22
+    ["Type"]                                23        29
+    [is]                                    30        32
+    [only]                                  33        37
+    [shown]                                 38        43
+    [when]                                  44        48
+    [multiple]                              49        57
+    [metrics]                               58        65
+    [are]                                   66        69
+    [selected]                              70        78
+    [\n]                                    78        79
+L10
+    [\n]                                    1         2
+L11
+    [Scenario:]                             3         12
+    [Select]                                13        19
+    [a]                                     20        21
+    [metric]                                22        28
+    [type]                                  29        33
+    [\n]                                    33        34
+L12
+    [Given]                                 4         9
+    [the]                                   10        13
+    [Annotated]                             14        23
+    [Source]                                24        30
+    [for]                                   31        34
+    [file]                                  35        39
+    ["HIE://11261-37/main/monop/execute[    40        77
+    [\n]                                    77        78
+L13
+    [When]                                  5         9
+    [a]                                     10        11
+    [user]                                  12        16
+    [opens]                                 17        22
+    [the]                                   23        26
+    [dropdown]                              27        35
+    [menu]                                  36        40
+    [containing]                            41        51
+    ["Metric:"]                             52        61
+    [\n]                                    61        62
+L14
+    [And]                                   6         9
+    [the]                                   10        13
+    [user]                                  14        18
+    [clicks]                                19        25
+    [on]                                    26        28
+    [the]                                   29        32
+    [dropdown]                              33        41
+    [option]                                42        48
+    ["Violations/Coding]                    49        67
+    [Standard]                              68        76
+    [Violations"]                           77        88
+    [\n]                                    88        89
+L15
+    [Then]                                  5         9
+    [the]                                   10        13
+    [selected]                              14        22
+    [annotation]                            23        33
+    [in]                                    34        36
+    [the]                                   37        40
+    [source]                                41        47
+    [code]                                  48        52
+    [should]                                53        59
+    [be]                                    60        62
+    [on]                                    63        65
+    [line]                                  66        70
+    [38]                                    71        73
+    [\n]                                    74        75
+L16
+    [And]                                   6         9
+    [the]                                   10        13
+    [selected]                              14        22
+    [annotation]                            23        33
+    [in]                                    34        36
+    [the]                                   37        40
+    [table]                                 41        46
+    [should]                                47        53
+    [be]                                    54        56
+    [on]                                    57        59
+    [line]                                  60        64
+    [38]                                    65        67
+    [\n]                                    67        68
+L17
+    [\n]                                    1         2
+L18
+    [Scenario:]                             3         12
+    [The]                                   13        16
+    [user]                                  17        21
+    [can]                                   22        25
+    [use]                                   26        29
+    [the]                                   30        33
+    [arrows,]                               34        41
+    [or]                                    42        44
+    ["a"]                                   45        48
+    [and]                                   49        52
+    ["z"]                                   53        56
+    [keys,]                                 57        62
+    [to]                                    63        65
+    [scroll]                                66        72
+    [through]                               73        80
+    [the]                                   81        84
+    [annotations]                           85        96
+    [\n]                                    96        97
+L19
+    [Given]                                 3         8
+    [the]                                   9         12
+    [Annotated]                             13        22
+    [Source]                                23        29
+    [for]                                   30        33
+    [file]                                  34        38
+    ["HIE://11261-37/main/monop/execute[    39        76
+    [\n]                                    76        77
+L20
+    [And]                                   5         8
+    [metric]                                9         15
+    ["Coding]                               16        23
+    [Standard]                              24        32
+    [Violation]                             33        42
+    [Annotations"]                          43        55
+    [is]                                    56        58
+    [selected]                              59        67
+    [\n]                                    67        68
+L21
+    [When]                                  4         8
+    [the]                                   9         12
+    [user]                                  13        17
+    [clicks]                                18        24
+    [on]                                    25        27
+    [the]                                   28        31
+    [down]                                  32        36
+    [arrow]                                 37        42
+    [\n]                                    42        43
+L22
+    [And]                                   5         8
+    [the]                                   9         12
+    [user]                                  13        17
+    [presses]                               18        25
+    [the]                                   26        29
+    ["Z"]                                   30        33
+    [key]                                   34        37
+    [\n]                                    37        38
+L23
+    [And]                                   5         8
+    [the]                                   9         12
+    [user]                                  13        17
+    [clicks]                                18        24
+    [on]                                    25        27
+    [the]                                   28        31
+    [up]                                    32        34
+    [arrow]                                 35        40
+    [\n]                                    40        41
+L24
+    [And]                                   5         8
+    [the]                                   9         12
+    [user]                                  13        17
+    [clicks]                                18        24
+    [on]                                    25        27
+    [the]                                   28        31
+    [up]                                    32        34
+    [arrow]                                 35        40
+    [\n]                                    40        41
+L25
+    [And]                                   5         8
+    [the]                                   9         12
+    [user]                                  13        17
+    [presses]                               18        25
+    [the]                                   26        29
+    ["A"]                                   30        33
+    [key]                                   34        37
+    [\n]                                    37        38
+L26
+    [Then]                                  4         8
+    [the]                                   9         12
+    [selected]                              13        21
+    [annotation]                            22        32
+    [in]                                    33        35
+    [the]                                   36        39
+    [source]                                40        46
+    [code]                                  47        51
+    [should]                                52        58
+    [be]                                    59        61
+    [on]                                    62        64
+    [line]                                  65        69
+    [254]                                   70        73
+    [\n]                                    74        75
+L27
+    [\n]                                    1         2
+L28
+    [@Rule2]                                3         9
+    [\n]                                    9         10
+L29
+    [Scenario Outline:]                     3         20
+    [If]                                    21        23
+    [the]                                   24        27
+    [user]                                  28        32
+    [opens]                                 33        38
+    [the]                                   39        42
+    [annotated]                             43        52
+    [source]                                53        59
+    [from]                                  60        64
+    [e.g.]                                  65        69
+    [the]                                   70        73
+    [dashboard]                             74        83
+    [for]                                   84        87
+    [a]                                     88        89
+    [metric,]                               90        97
+    [\n]                                    97        98
+L30
+    [only]                                  5         9
+    [the]                                   10        13
+    [related]                               14        21
+    [annotations]                           22        33
+    [should]                                34        40
+    [be]                                    41        43
+    [shown.]                                44        50
+    [\n]                                    50        51
+L31
+    [Given]                                 3         8
+    [the]                                   9         12
+    [Dashboard]                             13        22
+    [\n]                                    22        23
+L32
+    [And]                                   5         8
+    [filtering]                             9         18
+    [by]                                    19        21
+    [Project]                               22        29
+    ["17607"]                               30        37
+    [\n]                                    37        38
+L33
+    [And]                                   5         8
+    [grouping]                              9         17
+    [by]                                    18        20
+    ["File"]                                21        27
+    [\n]                                    27        28
+L34
+    [And]                                   5         8
+    [metric]                                9         15
+    ["<metric>"]                            16        26
+    [is]                                    27        29
+    [selected]                              30        38
+    [\n]                                    38        39
+L35
+    [When]                                  4         8
+    [a]                                     9         10
+    [user]                                  11        15
+    [opens]                                 16        21
+    [the]                                   22        25
+    [file]                                  26        30
+    ["clalgorithm_settings.c"]              31        55
+    [using]                                 56        61
+    [the]                                   62        65
+    [metric]                                66        72
+    [table]                                 73        78
+    [\n]                                    78        79
+L36
+    [Then]                                  4         8
+    [a]                                     9         10
+    [new]                                   11        14
+    [browser]                               15        22
+    [window]                                23        29
+    [with]                                  30        34
+    [an]                                    35        37
+    ["Annotated]                            38        48
+    [Source"]                               49        56
+    [should]                                57        63
+    [be]                                    64        66
+    [opened]                                67        73
+    [\n]                                    75        76
+L37
+    [Then]                                  4         8
+    [only]                                  9         13
+    [the]                                   14        17
+    [annotations]                           18        29
+    ["<annotations>"]                       30        45
+    [should]                                46        52
+    [be]                                    53        55
+    [selected]                              56        64
+    [\n]                                    64        65
+L38
+    [\n]                                    4         5
+L39
+    [Examples:]                             3         12
+    [\n]                                    12        13
+L40
+    [| metric                     ]         3         32
+    [| annotations                     [    32        72
+    [|]                                     72        73
+    [\n]                                    73        74
+L41
+    [| TQI Coding Standards       ]         3         32
+    [| Coding Standard Violation Annota[    32        72
+    [|]                                     72        73
+    [\n]                                    75        76
+L42
+    [| Coding Standard Violations ]         3         32
+    [| Coding Standard Violation Annota[    32        72
+    [|]                                     72        73
+    [\n]                                    75        76
+L43
+    [| TQI Compiler Warnings      ]         3         32
+    [| Compiler Warning Annotations    [    32        72
+    [|]                                     72        73
+    [\n]                                    75        76
+L44
+    [| Fan Out (%)                ]         3         32
+    [| Fan Out Annotations             [    32        72
+    [|]                                     72        73
+    [\n]                                    75        76
+L45
+    [| TQI Dead Code              ]         3         32
+    [| Dead Code Annotations           [    32        72
+    [|]                                     72        73
+    [\n]                                    75        76
+L46
+    [| TQI Code Duplication       ]         3         32
+    [| Code Duplication Annotations    [    32        72
+    [|]                                     72        73
+    [\n]                                    73        74
+L47
+    [\n]                                    3         4
+L48
+    [Scenario:]                             3         12
+    [The]                                   13        16
+    [user]                                  17        21
+    [should]                                22        28
+    [be]                                    29        31
+    [able]                                  32        36
+    [to]                                    37        39
+    [filter]                                40        46
+    [Coding]                                47        53
+    [Standard]                              54        62
+    [Violations]                            63        73
+    [by]                                    74        76
+    [Level]                                 77        82
+    [\n]                                    82        83
+L49
+    [Given]                                 5         10
+    [the]                                   11        14
+    [Annotated]                             15        24
+    [Source]                                25        31
+    [for]                                   32        35
+    [file]                                  36        40
+    ["HIE://11514/trunk/components/java[    41        126
+    [\n]                                    126       127
+L50
+    [And]                                   5         8
+    [the]                                   11        14
+    [metric]                                15        21
+    ["Coding]                               22        29
+    [Standard]                              30        38
+    [Violations"]                           39        50
+    [is]                                    51        53
+    [selected]                              54        62
+    [\n]                                    62        63
+L51
+    [When]                                  5         9
+    [the]                                   11        14
+    [user]                                  15        19
+    [opens]                                 20        25
+    [the]                                   26        29
+    [dropdown]                              30        38
+    [menu]                                  39        43
+    ["Level"]                               44        51
+    [\n]                                    51        52
+L52
+    [And]                                   5         8
+    [the]                                   11        14
+    [user]                                  15        19
+    [clicks]                                20        26
+    [on]                                    27        29
+    [the]                                   30        33
+    [dropdown]                              34        42
+    [option]                                43        49
+    ["5"]                                   50        53
+    [\n]                                    53        54
+L53
+    [Then]                                  5         9
+    [there]                                 11        16
+    [should]                                17        23
+    [be]                                    24        26
+    [1]                                     27        28
+    [violation]                             29        38
+    [\n]                                    38        39
+L54
+    [And]                                   5         8
+    [the]                                   11        14
+    [selected]                              15        23
+    [annotation]                            24        34
+    [in]                                    35        37
+    [the]                                   38        41
+    [source]                                42        48
+    [code]                                  49        53
+    [should]                                54        60
+    [be]                                    61        63
+    [on]                                    64        66
+    [line]                                  67        71
+    [57]                                    72        74
+    [\n]                                    74        75
+L55
+    [And]                                   5         8
+    [the]                                   11        14
+    [annotation]                            15        25
+    [should]                                26        32
+    [be]                                    33        35
+    [of]                                    36        38
+    [level]                                 39        44
+    [5]                                     45        46
+    [\n]                                    47        48
+L56
+    [\n]                                    1         2
+L57
+    [@PR27030]                              3         11
+    [\n]                                    11        12
+L58
+    [Scenario Outline:]                     3         20
+    [The]                                   21        24
+    [user]                                  25        29
+    [should]                                30        36
+    [be]                                    37        39
+    [able]                                  40        44
+    [to]                                    45        47
+    [filter]                                48        54
+    [Coding]                                55        61
+    [Standard]                              62        70
+    [Violations]                            71        81
+    [by]                                    82        84
+    [Level,]                                85        91
+    [Category,]                             92        101
+    [Rule,]                                 102       107
+    [etc]                                   108       111
+    [\n]                                    111       112
+L59
+    [Given]                                 5         10
+    [the]                                   11        14
+    [Annotated]                             15        24
+    [Source]                                25        31
+    [for]                                   32        35
+    [file]                                  36        40
+    ["HIE://12939/main/Implementatie/DR[    41        108
+    [\n]                                    108       109
+L60
+    [And]                                   5         8
+    [metric]                                9         15
+    ["<metric>"]                            16        26
+    [is]                                    27        29
+    [selected]                              30        38
+    [\n]                                    38        39
+L61
+    [When]                                  5         9
+    [the]                                   10        13
+    [user]                                  14        18
+    [opens]                                 19        24
+    [the]                                   25        28
+    [dropdown]                              29        37
+    [menu]                                  38        42
+    [containing]                            43        53
+    ["<filter>"]                            54        64
+    [inside]                                65        71
+    [the]                                   72        75
+    [filter]                                76        82
+    [bar]                                   83        86
+    [\n]                                    86        87
+L62
+    [And]                                   5         8
+    [the]                                   9         12
+    [user]                                  13        17
+    [clicks]                                18        24
+    [on]                                    25        27
+    [the]                                   28        31
+    [dropdown]                              32        40
+    [option]                                41        47
+    ["<option>"]                            48        58
+    [\n]                                    58        59
+L63
+    [Then]                                  5         9
+    [there]                                 10        15
+    [should]                                16        22
+    [be]                                    23        25
+    [<number>]                              26        34
+    [violations]                            35        45
+    [\n]                                    45        46
+L64
+    [\n]                                    5         6
+L65
+    [Examples:]                             3         12
+    [\n]                                    12        13
+L66
+    [| metric                      ]        5         35
+    [| filter        ]                      35        51
+    [| option      ]                        51        65
+    [| number  ]                            65        75
+    [|]                                     75        76
+    [\n]                                    76        77
+L67
+    [| Coding Standard Violations  ]        5         35
+    [| Level         ]                      35        51
+    [| 2           ]                        51        65
+    [| 7       ]                            65        75
+    [|]                                     75        76
+    [\n]                                    77        78
+L68
+    [| Coding Standard Violations  ]        5         35
+    [| Category      ]                      35        51
+    [| Comments    ]                        51        65
+    [| 1       ]                            65        75
+    [|]                                     75        76
+    [\n]                                    76        77
+L69
+    [| Coding Standard Violations  ]        5         35
+    [| Rule          ]                      35        51
+    [| CFL#011     ]                        51        65
+    [| 2       ]                            65        75
+    [|]                                     75        76
+    [\n]                                    76        77
+L70
+    [| Coding Standard Violations  ]        5         35
+    [| Suppressions  ]                      35        51
+    [| Yes         ]                        51        65
+    [| 0       ]                            65        75
+    [|]                                     75        76
+    [\n]                                    76        77
+L71
+    [| TQI Code Coverage           ]        5         35
+    [| Coverage Type ]                      35        51
+    [| Decision    ]                        51        65
+    [| 7       ]                            65        75
+    [|]                                     75        76
+    [\n]                                    76        77
+L72
+    [| TQI Code Coverage           ]        5         35
+    [| Kind          ]                      35        51
+    [| Issue       ]                        51        65
+    [| 10      ]                            65        75
+    [|]                                     75        76
+    [\n]                                    76        77
+L73
+    [\n]                                    1         2
+EOF

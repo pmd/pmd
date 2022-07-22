@@ -6,19 +6,12 @@ package net.sourceforge.pmd.lang.html;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.lang.LanguageRegistry;
-import net.sourceforge.pmd.lang.LanguageVersion;
-import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.ast.Parser;
-import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
-import net.sourceforge.pmd.lang.ast.SemanticErrorReporter;
 import net.sourceforge.pmd.lang.html.ast.ASTHtmlComment;
 import net.sourceforge.pmd.lang.html.ast.ASTHtmlDocument;
 import net.sourceforge.pmd.lang.html.ast.ASTHtmlTextNode;
@@ -27,6 +20,7 @@ import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
 
 class HtmlXPathRuleTest {
+
     // from https://developer.salesforce.com/docs/component-library/documentation/en/lwc/lwc.js_props_getter
     private static final String LIGHTNING_WEB_COMPONENT = "<!-- helloExpressions.html -->\n"
             + "<template>\n"
@@ -107,17 +101,10 @@ class HtmlXPathRuleTest {
     }
 
     private List<RuleViolation> runXPath(String html, String xpath) {
-        LanguageVersion htmlLanguage = LanguageRegistry.findLanguageByTerseName(HtmlLanguageModule.TERSE_NAME).getDefaultVersion();
-        Parser parser = htmlLanguage.getLanguageVersionHandler().getParser();
-        ParserTask parserTask = new ParserTask(htmlLanguage, "n/a", html, SemanticErrorReporter.noop());
-        Node node = parser.parse(parserTask);
-
-        List<RuleViolation> violations = new ArrayList<>();
         XPathRule rule = new XPathRule(XPathVersion.DEFAULT, xpath);
         rule.setMessage("test");
-        rule.setLanguage(htmlLanguage.getLanguage());
-        RuleContext context = RuleContext.create(violations::add, rule);
-        rule.apply(node, context);
-        return violations;
+        rule.setLanguage(HtmlParsingHelper.DEFAULT.getLanguage());
+        Report report = HtmlParsingHelper.DEFAULT.executeRule(rule, html);
+        return report.getViolations();
     }
 }

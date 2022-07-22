@@ -8,7 +8,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
+import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.rule.xpath.DeprecatedAttribute;
@@ -28,9 +28,13 @@ abstract class AbstractAnyTypeDeclaration extends AbstractTypedSymbolDeclarator<
     }
 
     @Override
-    protected @Nullable JavaccToken getPreferredReportLocation() {
-        return isAnonymous() ? null
-                             : getModifiers().getLastToken().getNext();
+    public FileLocation getReportLocation() {
+        if (isAnonymous()) {
+            return super.getReportLocation();
+        } else {
+            // report on the identifier, not the entire class.
+            return getModifiers().getLastToken().getNext().getReportLocation();
+        }
     }
 
     /**

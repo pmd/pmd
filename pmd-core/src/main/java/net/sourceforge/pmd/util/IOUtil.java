@@ -4,10 +4,10 @@
 
 package net.sourceforge.pmd.util;
 
-import java.io.BufferedReader;
 import java.io.Closeable;
 import java.io.File;
 import java.io.FilterInputStream;
+import java.io.FilterOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -44,14 +44,27 @@ import net.sourceforge.pmd.annotation.InternalApi;
 @InternalApi
 @Deprecated
 public final class IOUtil {
-
+    /**
+     * Unicode BOM character. Replaces commons io ByteOrderMark.
+     */
+    public static final char UTF_BOM = '\uFEFF';
+    /** Conventional return value for readers. */
+    public static final int EOF = -1;
     private static final int BUFFER_SIZE = 8192;
 
     private IOUtil() {
     }
 
+    /**
+     * Creates a writer that writes to stdout using the system default charset.
+     *
+     * @return a writer, never null
+     *
+     * @see #createWriter(String)
+     * @see #createWriter(Charset, String)
+     */
     public static Writer createWriter() {
-        return new OutputStreamWriter(System.out);
+        return createWriter(null);
     }
 
     /**
@@ -104,7 +117,12 @@ public final class IOUtil {
     public static Writer createWriter(Charset charset, String reportFile) {
         try {
             if (StringUtils.isBlank(reportFile)) {
-                return new OutputStreamWriter(System.out, charset);
+                return new OutputStreamWriter(new FilterOutputStream(System.out) {
+                    @Override
+                    public void close() {
+                        // do nothing, avoid closing stdout
+                    }
+                }, charset);
             }
             Path path = new File(reportFile).toPath().toAbsolutePath();
             Files.createDirectories(path.getParent()); // ensure parent dir exists
@@ -113,20 +131,6 @@ public final class IOUtil {
         } catch (IOException e) {
             throw new IllegalArgumentException(e);
         }
-    }
-
-    public static Reader skipBOM(Reader source) {
-        Reader in = new BufferedReader(source);
-        try {
-            in.mark(1);
-            int firstCharacter = in.read();
-            if (firstCharacter != '\ufeff') {
-                in.reset();
-            }
-        } catch (IOException e) {
-            throw new RuntimeException("Error while trying to skip BOM marker", e);
-        }
-        return in;
     }
 
     public static void tryCloseClassLoader(ClassLoader classLoader) {

@@ -5,24 +5,28 @@
 package net.sourceforge.pmd.lang.ast;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import net.sourceforge.pmd.lang.DummyLanguageModule;
-import net.sourceforge.pmd.lang.LanguageVersion;
-import net.sourceforge.pmd.lang.ast.impl.AbstractNodeWithTextCoordinates;
+import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
+import net.sourceforge.pmd.lang.ast.impl.AbstractNode;
 import net.sourceforge.pmd.lang.ast.impl.GenericNode;
+import net.sourceforge.pmd.lang.document.TextDocument;
+import net.sourceforge.pmd.lang.document.TextFile;
+import net.sourceforge.pmd.lang.document.TextRegion;
 import net.sourceforge.pmd.lang.rule.xpath.Attribute;
 
-public class DummyNode extends AbstractNodeWithTextCoordinates<DummyNode, DummyNode> implements GenericNode<DummyNode> {
+public class DummyNode extends AbstractNode<DummyNode, DummyNode> implements GenericNode<DummyNode> {
+
     private final boolean findBoundary;
-    private final String xpathName;
-    private final Map<String, String> userData = new HashMap<>();
+    private String xpathName;
     private String image;
     private final List<Attribute> attributes = new ArrayList<>();
+
+    private TextRegion region = TextRegion.caretAt(0);
 
     public DummyNode(String xpathName) {
         this(false, xpathName);
@@ -73,12 +77,23 @@ public class DummyNode extends AbstractNodeWithTextCoordinates<DummyNode, DummyN
     }
 
     @Override
-    public void setCoords(int bline, int bcol, int eline, int ecol) {
-        super.setCoords(bline, bcol, eline, ecol);
+    public TextRegion getTextRegion() {
+        return region;
     }
 
+    public void setRegion(TextRegion region) {
+        this.region = region;
+    }
+
+
+    /**
+     * Nodes with an image that starts with `#` also set the xpath name.
+     */
     public void setImage(String image) {
         this.image = image;
+        if (image.startsWith("#")) {
+            xpathName = image;
+        }
     }
 
     @Override
@@ -101,10 +116,6 @@ public class DummyNode extends AbstractNodeWithTextCoordinates<DummyNode, DummyN
         return findBoundary;
     }
 
-    public Map<String, String> getUserData() {
-        return userData;
-    }
-
     public void setXPathAttribute(String name, String value) {
         attributes.add(new Attribute(this, name, value));
     }
@@ -120,43 +131,40 @@ public class DummyNode extends AbstractNodeWithTextCoordinates<DummyNode, DummyN
     }
 
     public static class DummyRootNode extends DummyNode implements RootNode {
-        private Map<Integer, String> suppressMap = Collections.emptyMap();
-        private String filename = "sample.dummy";
-        private LanguageVersion languageVersion = DummyLanguageModule.getInstance().getDefaultVersion();
-        private String sourceText = "dummy text";
 
+        private AstInfo<DummyRootNode> astInfo;
 
-        public DummyRootNode withLanguage(LanguageVersion languageVersion) {
-            this.languageVersion = languageVersion;
-            return this;
+        public DummyRootNode() {
+            TextDocument document = TextDocument.readOnlyString(
+                "dummy text",
+                TextFile.UNKNOWN_FILENAME,
+                DummyLanguageModule.getInstance().getDefaultVersion()
+            );
+            astInfo = new AstInfo<>(
+                new ParserTask(
+                    document,
+                    SemanticErrorReporter.noop()
+                ),
+                this);
         }
 
-        public DummyRootNode withSourceText(String sourceText) {
-            this.sourceText = sourceText;
+        public DummyRootNode withTaskInfo(ParserTask task) {
+            this.astInfo = new AstInfo<>(task, this);
             return this;
         }
 
         public DummyRootNode withNoPmdComments(Map<Integer, String> suppressMap) {
-            this.suppressMap = suppressMap;
+            this.astInfo = new AstInfo<>(
+                astInfo.getTextDocument(),
+                this,
+                suppressMap
+            );
             return this;
         }
-
-
-        public DummyRootNode withFileName(String filename) {
-            this.filename = filename;
-            return this;
-        }
-
 
         @Override
         public AstInfo<DummyRootNode> getAstInfo() {
-            return new AstInfo<>(
-                    filename,
-                    languageVersion,
-                    sourceText,
-                    this,
-                    suppressMap
-            );
+            return Objects.requireNonNull(astInfo, "no ast info");
         }
 
         @Override

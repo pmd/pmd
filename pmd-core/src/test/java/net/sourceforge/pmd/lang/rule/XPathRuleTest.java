@@ -18,6 +18,7 @@ import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.lang.ast.DummyNode.DummyRootNode;
 import net.sourceforge.pmd.lang.ast.DummyNodeWithDeprecatedAttribute;
+import net.sourceforge.pmd.lang.document.TextRegion;
 import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
 
 import com.github.stefanbirkner.systemlambda.SystemLambda;
@@ -140,16 +141,14 @@ class XPathRuleTest {
 
     DummyRootNode newNode() {
         DummyRootNode root = new DummyRootNode();
-        DummyNode dummy = new DummyNodeWithDeprecatedAttribute(2);
-        dummy.setCoords(1, 1, 1, 2);
+        DummyNode dummy = new DummyNodeWithDeprecatedAttribute();
         root.addChild(dummy, 0);
+        dummy.setRegion(TextRegion.fromOffsetLength(0, 1));
         return root;
     }
 
-    DummyRootNode newRoot(String fileName) {
-        DummyRootNode dummy = new DummyRootNode().withFileName(fileName);
-        dummy.setCoords(1, 1, 1, 2);
-        return dummy;
+    public DummyRootNode newRoot(String fileName) {
+        return DummyLanguageModule.parse("dummy code", fileName);
     }
 
 

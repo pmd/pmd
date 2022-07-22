@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.cpd;
 
 import org.antlr.v4.runtime.CharStream;
+import org.antlr.v4.runtime.Lexer;
 
 import net.sourceforge.pmd.cpd.internal.AntlrTokenizer;
 import net.sourceforge.pmd.cpd.token.AntlrTokenFilter;
@@ -18,9 +19,8 @@ import net.sourceforge.pmd.lang.dart.ast.DartLexer;
 public class DartTokenizer extends AntlrTokenizer {
 
     @Override
-    protected AntlrTokenManager getLexerForSource(SourceCode sourceCode) {
-        CharStream charStream = AntlrTokenizer.getCharStreamFromSourceCode(sourceCode);
-        return new AntlrTokenManager(new DartLexer(charStream), sourceCode.getFileName());
+    protected Lexer getLexerForSource(CharStream charStream) {
+        return new DartLexer(charStream);
     }
 
     @Override

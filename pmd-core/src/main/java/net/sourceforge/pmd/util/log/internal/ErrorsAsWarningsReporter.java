@@ -32,10 +32,10 @@ public final class ErrorsAsWarningsReporter extends MessageReporterBase {
     }
 
     @Override
-    protected void logImpl(Level level, String message, Object[] formatArgs) {
+    protected void logImpl(Level level, String message) {
         if (level == Level.ERROR) {
             level = Level.WARN;
         }
-        backend.log(level, message, formatArgs);
+        backend.log(level, message);
     }
 }

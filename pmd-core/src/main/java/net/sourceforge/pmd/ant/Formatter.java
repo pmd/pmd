@@ -27,12 +27,12 @@ import org.apache.tools.ant.types.Parameter;
 
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.renderers.RendererFactory;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
 import net.sourceforge.pmd.util.IOUtil;
-import net.sourceforge.pmd.util.datasource.DataSource;
 
 @InternalApi
 public class Formatter {
@@ -246,16 +246,15 @@ public class Formatter {
 
     @Deprecated
     @InternalApi
-    public GlobalAnalysisListener newListener(Project project, List<String> inputPaths) throws IOException {
+    public GlobalAnalysisListener newListener(Project project) throws IOException {
         start(project.getBaseDir().toString());
         Renderer renderer = getRenderer();
-        renderer.setUseShortNames(inputPaths);
 
         return new GlobalAnalysisListener() {
             final GlobalAnalysisListener listener = renderer.newListener();
 
             @Override
-            public FileAnalysisListener startFileAnalysis(DataSource file) {
+            public FileAnalysisListener startFileAnalysis(TextFile file) {
                 return listener.startFileAnalysis(file);
             }
 

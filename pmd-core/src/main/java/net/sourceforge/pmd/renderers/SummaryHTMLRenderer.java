@@ -50,7 +50,6 @@ public class SummaryHTMLRenderer extends AbstractAccumulatingRenderer {
         htmlRenderer.setProperty(HTMLRenderer.LINE_PREFIX, getProperty(HTMLRenderer.LINE_PREFIX));
         htmlRenderer.setProperty(HTMLRenderer.HTML_EXTENSION, getProperty(HTMLRenderer.HTML_EXTENSION));
         htmlRenderer.setShowSuppressedViolations(showSuppressedViolations);
-        htmlRenderer.setUseShortNames(inputPathPrefixes);
         htmlRenderer.renderBody(writer, report);
 
         writer.write("</tr></table></body></html>" + PMD.EOL);

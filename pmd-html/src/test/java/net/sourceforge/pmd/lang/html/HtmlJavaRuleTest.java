@@ -6,20 +6,14 @@ package net.sourceforge.pmd.lang.html;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
+import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.lang.LanguageRegistry;
-import net.sourceforge.pmd.lang.LanguageVersion;
-import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.ast.Parser;
-import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
-import net.sourceforge.pmd.lang.ast.SemanticErrorReporter;
 import net.sourceforge.pmd.lang.html.ast.ASTHtmlElement;
 import net.sourceforge.pmd.lang.html.rule.AbstractHtmlRule;
 import net.sourceforge.pmd.lang.rule.xpath.Attribute;
@@ -64,14 +58,7 @@ class HtmlJavaRuleTest {
     }
 
     private List<RuleViolation> runRule(String html, Rule rule) {
-        LanguageVersion htmlLanguage = LanguageRegistry.findLanguageByTerseName(HtmlLanguageModule.TERSE_NAME).getDefaultVersion();
-        Parser parser = htmlLanguage.getLanguageVersionHandler().getParser();
-        ParserTask parserTask = new ParserTask(htmlLanguage, "n/a", html, SemanticErrorReporter.noop());
-        Node node = parser.parse(parserTask);
-
-        List<RuleViolation> violations = new ArrayList<>();
-        RuleContext context = RuleContext.create(violations::add, rule);
-        rule.apply(node, context);
-        return violations;
+        Report report = HtmlParsingHelper.DEFAULT.executeRule(rule, html);
+        return report.getViolations();
     }
 }
