@@ -7,6 +7,7 @@ package net.sourceforge.pmd.util;
 import java.io.Closeable;
 import java.io.File;
 import java.io.FilterInputStream;
+import java.io.FilterOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -54,8 +55,16 @@ public final class IOUtil {
     private IOUtil() {
     }
 
+    /**
+     * Creates a writer that writes to stdout using the system default charset.
+     *
+     * @return a writer, never null
+     *
+     * @see #createWriter(String)
+     * @see #createWriter(Charset, String)
+     */
     public static Writer createWriter() {
-        return new OutputStreamWriter(System.out);
+        return createWriter(null);
     }
 
     /**
@@ -108,7 +117,12 @@ public final class IOUtil {
     public static Writer createWriter(Charset charset, String reportFile) {
         try {
             if (StringUtils.isBlank(reportFile)) {
-                return new OutputStreamWriter(System.out, charset);
+                return new OutputStreamWriter(new FilterOutputStream(System.out) {
+                    @Override
+                    public void close() {
+                        // do nothing, avoid closing stdout
+                    }
+                }, charset);
             }
             Path path = new File(reportFile).toPath().toAbsolutePath();
             Files.createDirectories(path.getParent()); // ensure parent dir exists
