@@ -874,13 +874,13 @@
                 <groupId>org.jetbrains.kotlin</groupId>
                 <artifactId>kotlin-stdlib</artifactId>
                 <version>${kotlin.version}</version>
-                <scope>test</scope>
+                <scope>runtime</scope>
             </dependency>
             <dependency>
                 <groupId>org.jetbrains.kotlin</groupId>
                 <artifactId>kotlin-stdlib-jdk8</artifactId>
                 <version>${kotlin.version}</version>
-                <scope>test</scope>
+                <scope>runtime</scope>
             </dependency>
             <dependency>
                 <groupId>org.jetbrains.kotlin</groupId>
