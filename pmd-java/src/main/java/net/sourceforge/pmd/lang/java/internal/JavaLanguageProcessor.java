@@ -48,8 +48,7 @@ public class JavaLanguageProcessor extends BatchLanguageProcessor<JavaLanguagePr
     }
 
     public JavaLanguageProcessor(JavaLanguageProperties properties) {
-      this(properties, TypeSystem.usingClassLoaderClasspath(properties.getAnalysisClassLoader()));
-
+        this(properties, TypeSystem.usingClassLoaderClasspath(properties.getAnalysisClassLoader()));
     }
 
     @Override

@@ -7,11 +7,11 @@ package net.sourceforge.pmd.lang.scala;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.lang.LanguageModuleBase;
 import net.sourceforge.pmd.lang.LanguageProcessor;
 import net.sourceforge.pmd.lang.LanguagePropertyBundle;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
-import net.sourceforge.pmd.lang.LanguageModuleBase;
 import net.sourceforge.pmd.processor.SimpleBatchLanguageProcessor;
 
 import scala.meta.Dialect;

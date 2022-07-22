@@ -68,7 +68,7 @@ public class JavaParsingHelper extends BaseParsingHelper<JavaParsingHelper, ASTC
 
     @Override
     protected @NonNull ASTCompilationUnit doParse(@NotNull LanguageProcessor processor, @NotNull Params params, @NotNull ParserTask task) {
-        @SuppressWarnings( { "PMD.CloseResource", "resource" })
+        @SuppressWarnings({ "PMD.CloseResource", "resource" })
         JavaLanguageProcessor proc = (JavaLanguageProcessor) processor;
         proc.setTypeSystem(ts);
         JavaParser parser = proc.getParserWithoutProcessing();
