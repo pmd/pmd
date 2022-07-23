@@ -12,6 +12,7 @@ import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.apex.ast.ApexParser;
 import net.sourceforge.pmd.lang.apex.internal.ApexDesignerBindings;
 import net.sourceforge.pmd.lang.apex.metrics.ApexMetrics;
+import net.sourceforge.pmd.lang.apex.multifile.ApexMultifileAnalysis;
 import net.sourceforge.pmd.lang.apex.rule.internal.ApexRuleViolationFactory;
 import net.sourceforge.pmd.lang.ast.Parser;
 import net.sourceforge.pmd.lang.metrics.LanguageMetricsProvider;
@@ -25,9 +26,11 @@ public class ApexLanguageProcessor
     implements LanguageVersionHandler {
 
     private final ApexMetricsProvider myMetricsProvider = new ApexMetricsProvider();
+    private final ApexMultifileAnalysis multifileAnalysis;
 
     ApexLanguageProcessor(ApexLanguageProperties bundle) {
         super(bundle);
+        this.multifileAnalysis = new ApexMultifileAnalysis(bundle);
     }
 
     @Override
@@ -42,7 +45,7 @@ public class ApexLanguageProcessor
 
     @Override
     public Parser getParser() {
-        return new ApexParser(getProperties());
+        return new ApexParser(this);
     }
 
     @Override
@@ -53,6 +56,10 @@ public class ApexLanguageProcessor
     @Override
     public DesignerBindings getDesignerBindings() {
         return ApexDesignerBindings.INSTANCE;
+    }
+
+    public ApexMultifileAnalysis getMultiFileState() {
+        return multifileAnalysis;
     }
 
     private static final class ApexMetricsProvider implements LanguageMetricsProvider {

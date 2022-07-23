@@ -7,11 +7,11 @@ package net.sourceforge.pmd.cli;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.contrib.java.lang.system.RestoreSystemProperties;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.rules.TestRule;
 
 import net.sourceforge.pmd.PMD.StatusCode;
@@ -29,7 +29,7 @@ public class CLITest extends BaseCLITest {
     @Rule
     public final TestRule restoreSystemProperties = new RestoreSystemProperties();
 
-    @AfterClass
+    @BeforeEach
     public static void resetLogging() {
         Slf4jSimpleConfiguration.reconfigureDefaultLogLevel(null);
     }
@@ -67,7 +67,6 @@ public class CLITest extends BaseCLITest {
     public void changeJavaVersion() {
         String[] args = { "-d", SOURCE_FOLDER, "-f", "text", "-R", RSET_NO_VIOLATION, "-version", "1.5", "-language", "java", "--debug", "--no-progress", };
         String log = runTest(args);
-        assertThat(log, containsString(".java (lang: java 1.5)"));
         assertThat(log, containsPattern("Adding file .*\\.java \\(lang: java 1\\.5\\)"));
     }
 

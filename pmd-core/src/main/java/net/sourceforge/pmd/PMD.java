@@ -49,8 +49,9 @@ import net.sourceforge.pmd.util.log.internal.SimpleMessageReporter;
  */
 public final class PMD {
 
+    private static final String PMD_PACKAGE = "net.sourceforge.pmd";
     // not final, in order to re-initialize logging
-    private static Logger log = LoggerFactory.getLogger(PMD.class);
+    private static Logger log = LoggerFactory.getLogger(PMD_PACKAGE);
 
     /**
      * The line delimiter used by PMD in outputs. Usually the platform specific
@@ -229,7 +230,7 @@ public final class PMD {
         if (configuration.isDebug()) {
             Slf4jSimpleConfiguration.reconfigureDefaultLogLevel(Level.TRACE);
             // need to reload the logger with the new configuration
-            log = LoggerFactory.getLogger(PMD.class);
+            log = LoggerFactory.getLogger(PMD_PACKAGE);
         }
         // create a top-level reporter
         // TODO CLI errors should also be reported through this

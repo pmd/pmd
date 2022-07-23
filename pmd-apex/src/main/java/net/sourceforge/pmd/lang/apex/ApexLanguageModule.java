@@ -21,7 +21,7 @@ public class ApexLanguageModule extends LanguageModuleBase {
 
     @Override
     public ApexLanguageProperties newPropertyBundle() {
-        return new ApexLanguageProperties(this);
+        return new ApexLanguageProperties();
     }
 
     @Override

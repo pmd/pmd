@@ -20,8 +20,8 @@ public class ApexLanguageProperties extends LanguagePropertyBundle {
                        .defaultValue("") // is this ok?
                        .build();
 
-    public ApexLanguageProperties(ApexLanguageModule languageModule) {
-        super(languageModule);
+    public ApexLanguageProperties() {
+        super(ApexLanguageModule.getInstance());
         definePropertyDescriptor(MULTIFILE_DIRECTORY);
     }
 

@@ -21,6 +21,7 @@ import org.junit.Test;
 import org.junit.contrib.java.lang.system.SystemErrRule;
 import org.junit.rules.TemporaryFolder;
 
+import net.sourceforge.pmd.lang.apex.ApexLanguageProperties;
 import net.sourceforge.pmd.util.IOUtil;
 
 public class ApexMultifileAnalysisTest {
@@ -63,7 +64,9 @@ public class ApexMultifileAnalysisTest {
     }
 
     private @NonNull ApexMultifileAnalysis getAnalysisForTempFolder() {
-        return ApexMultifileAnalysis.getAnalysisInstance(tempFolder.getRoot().getAbsolutePath());
+        ApexLanguageProperties props = new ApexLanguageProperties();
+        props.setProperty(ApexLanguageProperties.MULTIFILE_DIRECTORY, tempFolder.getRoot().getAbsolutePath());
+        return new ApexMultifileAnalysis(props);
     }
 
     private void copyResource(String resourcePath, String relativePathInTempDir) throws IOException {

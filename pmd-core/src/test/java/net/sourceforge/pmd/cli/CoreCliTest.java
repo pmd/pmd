@@ -194,14 +194,14 @@ class CoreCliTest {
         // restoring system properties: --debug might change logging properties
         SystemLambda.restoreSystemProperties(() -> {
             String log = runPmdSuccessfully("--debug", "--no-cache", "--dir", srcDir, "--rulesets", DUMMY_RULESET);
-            assertThat(log, containsString("[main] INFO net.sourceforge.pmd.PMD - Log level is at TRACE"));
+            assertThat(log, containsString("[main] INFO net.sourceforge.pmd - Log level is at TRACE"));
         });
     }
 
     @Test
     void defaultLogging() throws Exception {
         String log = runPmdSuccessfully("--no-cache", "--dir", srcDir, "--rulesets", DUMMY_RULESET);
-        assertThat(log, containsString("[main] INFO net.sourceforge.pmd.PMD - Log level is at INFO"));
+        assertThat(log, containsString("[main] INFO net.sourceforge.pmd - Log level is at INFO"));
     }
 
     @Test

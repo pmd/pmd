@@ -20,15 +20,6 @@ import scala.meta.internal.parsers.ScalametaParser;
  */
 public final class ScalaParser implements Parser {
 
-    /**
-     * Create a parser using the given Scala Dialect and set of parser options.
-     *
-     * @param scalaDialect
-     *            the Scala Dialect for this parser
-     */
-    public ScalaParser() {
-    }
-
     @Override
     public ASTSource parse(ParserTask task) throws ParseException {
         Input.VirtualFile virtualFile = new Input.VirtualFile(task.getFileDisplayName(), task.getSourceText());
