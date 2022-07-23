@@ -135,13 +135,17 @@ between different test cases.
 
 The `<test-code>` elements understands the following optional attributes:
 
-* **reinitializeRule**: By default, it's `true`, so each test case starts with a fresh instantiated rule. Set it
-    to `false` to reproduce cases, where the previous run has influences.
+* **disabled**: By default, it's `false`. Set it to `true`, to ignore and skip a test case.
 
-* **disabled**: By default, it's `false`. Set ti to `true`, to ignore and skip a test case.
+* **focused**: By default, it's `false`. Set it to `true`, to ignore all other test cases.
 
-* **useAuxClasspath**: By default, it's `true`. Set it to `false` to reproduce issues which only
+* **useAuxClasspath**: _deprecated since PMD 6.48.0: assumed true, has no effect anymore._
+    By default, it's `true`. Set it to `false` to reproduce issues which only
     appear without type resolution.
+
+* **reinitializeRule**: _deprecated since PMD 6.48.0: assumed true, has no effect anymore._
+    By default, it's `true`, so each test case starts with a fresh instantiated rule. Set it
+    to `false` to reproduce cases, where the previous run has influences.
 
 * **regressionTest**: _deprecated since PMD 6.48.0: Use `disabled` instead. Note: It has the opposite boolean
   semantic._ By default, it's `true`. Set it to `false`, to ignore and skip a test case.

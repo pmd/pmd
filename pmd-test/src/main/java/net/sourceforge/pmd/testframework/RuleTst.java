@@ -30,6 +30,7 @@ import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.RulesetsFactoryUtils;
 import net.sourceforge.pmd.SourceCodeProcessor;
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.renderers.TextRenderer;
@@ -51,6 +52,8 @@ public abstract class RuleTst {
 
     /**
      * Find a rule in a certain ruleset by name
+     *
+     * todo make this static
      */
     public Rule findRule(String ruleSet, String ruleName) {
         try {
@@ -73,12 +76,13 @@ public abstract class RuleTst {
      * violations.
      */
     @SuppressWarnings("unchecked")
+    @InternalApi
+    @Deprecated
     public void runTest(TestDescriptor test) {
         Rule rule = test.getRule();
 
-        if (test.getReinitializeRule()) {
-            rule = reinitializeRule(rule);
-        }
+        // always reinitialize the rule, regardless of test.getReinitializeRule() (#3976 / #3302)
+        rule = reinitializeRule(rule);
 
         Map<PropertyDescriptor<?>, Object> oldProperties = rule.getPropertiesByPropertyDescriptor();
         try {
@@ -218,34 +222,23 @@ public abstract class RuleTst {
     /**
      * Run the rule on the given code and put the violations in the report.
      */
+    @InternalApi
+    @Deprecated
     public void runTestFromString(String code, Rule rule, Report report, LanguageVersion languageVersion) {
         runTestFromString(code, rule, report, languageVersion, true);
     }
 
+    @InternalApi
+    @Deprecated
     public void runTestFromString(String code, Rule rule, Report report, LanguageVersion languageVersion,
             boolean isUseAuxClasspath) {
         try {
             PMDConfiguration configuration = new PMDConfiguration();
             configuration.setDefaultLanguageVersion(languageVersion);
             configuration.setIgnoreIncrementalAnalysis(true);
-            if (isUseAuxClasspath) {
-                // configure the "auxclasspath" option for unit testing
-                configuration.prependAuxClasspath(".");
-            } else {
-                // simple class loader, that doesn't delegate to parent.
-                // this allows us in the tests to simulate PMD run without
-                // auxclasspath, not even the classes from the test dependencies
-                // will be found.
-                configuration.setClassLoader(new ClassLoader() {
-                    @Override
-                    protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
-                        if (name.startsWith("java.") || name.startsWith("javax.")) {
-                            return super.loadClass(name, resolve);
-                        }
-                        throw new ClassNotFoundException(name);
-                    }
-                });
-            }
+            // regardless of isUseAuxClasspath the auxclasspath is always used (#3976 / #3302)
+            // configure the "auxclasspath" option for unit testing
+            configuration.prependAuxClasspath(".");
             RuleContext ctx = new RuleContext();
             ctx.setReport(report);
             ctx.setSourceCodeFile(new File("n/a"));
@@ -259,6 +252,8 @@ public abstract class RuleTst {
         }
     }
 
+    @InternalApi
+    @Deprecated
     public void runTestFromString(TestDescriptor test, Rule rule, Report report) {
         runTestFromString(test.getCode(), rule, report, test.getLanguageVersion(), test.isUseAuxClasspath());
     }
@@ -267,6 +262,8 @@ public abstract class RuleTst {
      * getResourceAsStream tries to find the XML file in weird locations if the
      * ruleName includes the package, so we strip it here.
      */
+    @InternalApi
+    @Deprecated
     protected String getCleanRuleName(Rule rule) {
         String fullClassName = rule.getClass().getName();
         if (fullClassName.equals(rule.getName())) {
@@ -284,12 +281,26 @@ public abstract class RuleTst {
      * ./xml/RuleName.xml relative to the test class. The format is defined in
      * test-data.xsd.
      */
+    @InternalApi
+    @Deprecated
     public TestDescriptor[] extractTestsFromXml(Rule rule) {
         String testsFileName = getCleanRuleName(rule);
 
         return extractTestsFromXml(rule, testsFileName);
     }
 
+    /**
+     * Extract a set of tests from an XML file. The file should be
+     * ./xml/RuleName.xml relative to the test class. The format is defined in
+     * rule-tests_1_0_0.xsd in pmd-test-schema.
+     */
+    RuleTestCollection parseTestCollection(Rule rule) {
+        String testsFileName = getCleanRuleName(rule);
+        return parseTestXml(rule, testsFileName, "xml/");
+    }
+
+    @InternalApi
+    @Deprecated
     public TestDescriptor[] extractTestsFromXml(Rule rule, String testsFileName) {
         return extractTestsFromXml(rule, testsFileName, "xml/");
     }
@@ -299,6 +310,8 @@ public abstract class RuleTst {
      * should be ./xml/[testsFileName].xml relative to the test class. The
      * format is defined in test-data.xsd.
      */
+    @InternalApi
+    @Deprecated
     public TestDescriptor[] extractTestsFromXml(Rule rule, String testsFileName, String baseDirectory) {
         RuleTestCollection collection = parseTestXml(rule, testsFileName, baseDirectory);
         return toLegacyArray(collection);
@@ -355,6 +368,8 @@ public abstract class RuleTst {
     /**
      * Run a set of tests of a certain sourceType.
      */
+    @InternalApi
+    @Deprecated
     public void runTests(TestDescriptor[] tests) {
         for (int i = 0; i < tests.length; i++) {
             runTest(tests[i]);

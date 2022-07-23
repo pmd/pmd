@@ -16,8 +16,11 @@ import net.sourceforge.pmd.test.schema.RuleTestDescriptor;
 
 /**
  * Stores the information required to run a complete test.
+ *
+ * @deprecated Use {@link RuleTestDescriptor} instead
  */
 @Ignore("this is not a unit test")
+@Deprecated
 public class TestDescriptor {
     private Rule rule;
     private Properties properties;
