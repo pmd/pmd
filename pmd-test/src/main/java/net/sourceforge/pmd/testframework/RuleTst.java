@@ -343,10 +343,10 @@ public abstract class RuleTst {
     @Deprecated
     public TestDescriptor[] extractTestsFromXml(Rule rule, String testsFileName, String baseDirectory) {
         RuleTestCollection collection = parseTestXml(rule, testsFileName, baseDirectory);
-        return toLegacyArray(collection, testsFileName, baseDirectory);
+        return toLegacyArray(collection);
     }
 
-    private TestDescriptor[] toLegacyArray(RuleTestCollection collection, String testsFileName, String baseDirectory) {
+    private TestDescriptor[] toLegacyArray(RuleTestCollection collection) {
         TestDescriptor[] result = new TestDescriptor[collection.getTests().size()];
         for (int i = 0; i < collection.getTests().size(); i++) {
             result[i] = new TestDescriptor(collection.getTests().get(i), collection.getAbsoluteUriToTestXmlFile());
