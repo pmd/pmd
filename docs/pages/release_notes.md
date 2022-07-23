@@ -59,6 +59,7 @@ Being based on a proper Antlr grammar, CPD can:
 * java-performance
     * [#3625](https://github.com/pmd/pmd/issues/3625): \[java] AddEmptyString - false negative with empty var
 * test
+    * [#3302](https://github.com/pmd/pmd/pull/3302): \[test] Improve xml test schema
     * [#3758](https://github.com/pmd/pmd/issues/3758): \[test] Move pmd-test to java 8
     * [#3976](https://github.com/pmd/pmd/pull/3976): \[test] Extract xml schema module
 
@@ -70,8 +71,12 @@ Being based on a proper Antlr grammar, CPD can:
   this module for testing your own custom rules, you'll need to make sure to use at least Java 8.
 * The new module "pmd-test-schema" contains now the XSD schema and the code to parse the rule test XML files. The
   schema has been extracted in order to easily share it with other tools like the Rule Designer or IDE plugins.
-* The attribute `isRegressionTest` is deprecated and the new attribute `disabled` should be used instead for
-  defining whether a rule test should be skipped or not.
+* Test schema changes:
+    * The attribute `isRegressionTest` of `test-code` is deprecated. The new
+    attribute `disabled` should be used instead for defining whether a rule test should be skipped or not.
+    * The attributes `reinitializeRule` and `useAuxClasspath` of `test-code` are deprecated and assumed true.
+    They will not be replaced.
+    * The new attribute `focused` of `test-code` allows disabling all tests except the focused one temporarily.
 * More information about the rule test framework can be found in the documentation:
   [Testing your rules](pmd_userdocs_extending_testing.html)
 
@@ -82,6 +87,8 @@ Being based on a proper Antlr grammar, CPD can:
   but it is no longer supported with Java 19 Preview.
 * The interface {% jdoc core::cpd.renderer.CPDRenderer %} is deprecated. For custom CPD renderers
   the new interface {% jdoc core::cpd.renderer.CPDReportRenderer %} should be used.
+* The class {% jdoc test::testframework.TestDescriptor %} is deprecated, replaced with {% jdoc test-schema::testframework.RuleTestDescriptor %}.
+* Many methods of {% jdoc test::testframework.RuleTst %} have been deprecated as internal API.
 
 #### Experimental APIs
 

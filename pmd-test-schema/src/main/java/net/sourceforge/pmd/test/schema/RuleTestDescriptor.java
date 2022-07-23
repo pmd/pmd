@@ -16,6 +16,7 @@ import net.sourceforge.pmd.lang.LanguageVersion;
 public class RuleTestDescriptor {
 
     private boolean disabled;
+    private boolean focused;
     private String description;
     private LanguageVersion languageVersion;
     private final Properties properties = new Properties();
@@ -25,6 +26,7 @@ public class RuleTestDescriptor {
     private int expectedProblems;
     private List<Integer> expectedLineNumbers;
     private List<String> expectedMessages;
+    private int lineNumber;
 
     public RuleTestDescriptor(int index, Rule rule) {
         this.index = index;
@@ -105,5 +107,21 @@ public class RuleTestDescriptor {
 
     public List<String> getExpectedMessages() {
         return expectedMessages;
+    }
+
+    public boolean isFocused() {
+        return focused;
+    }
+
+    public void setFocused(boolean focused) {
+        this.focused = focused;
+    }
+
+    public int getLineNumber() {
+        return lineNumber;
+    }
+
+    public void setLineNumber(int lineNumber) {
+        this.lineNumber = lineNumber;
     }
 }

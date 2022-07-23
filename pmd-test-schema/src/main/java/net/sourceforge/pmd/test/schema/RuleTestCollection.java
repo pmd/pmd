@@ -18,6 +18,7 @@ import java.util.Objects;
 public class RuleTestCollection {
 
     private final List<RuleTestDescriptor> tests = new ArrayList<>();
+    private String absoluteUriToTestXmlFile;
 
     public void addTest(RuleTestDescriptor descriptor) {
         tests.add(Objects.requireNonNull(descriptor));
@@ -28,4 +29,24 @@ public class RuleTestCollection {
         return Collections.unmodifiableList(tests);
     }
 
+    /**
+     * Returns the last test of the collection which is focused.
+     */
+    public RuleTestDescriptor getFocusedTestOrNull() {
+        RuleTestDescriptor focused = null;
+        for (RuleTestDescriptor test : tests) {
+            if (test.isFocused()) {
+                focused = test;
+            }
+        }
+        return focused;
+    }
+
+    public String getAbsoluteUriToTestXmlFile() {
+        return absoluteUriToTestXmlFile;
+    }
+
+    public void setAbsoluteUriToTestXmlFile(String absoluteUriToTestXmlFile) {
+        this.absoluteUriToTestXmlFile = absoluteUriToTestXmlFile;
+    }
 }
