@@ -1592,6 +1592,7 @@ for the <a href="https://cucumber.io/docs/gherkin/">Gherkin</a> language. It is 
   </li>
   <li>test
     <ul>
+      <li><a href="https://github.com/pmd/pmd/pull/3302">#3302</a>: [test] Improve xml test schema</li>
       <li><a href="https://github.com/pmd/pmd/issues/3758">#3758</a>: [test] Move pmd-test to java 8</li>
       <li><a href="https://github.com/pmd/pmd/pull/3976">#3976</a>: [test] Extract xml schema module</li>
     </ul>
@@ -1607,8 +1608,15 @@ for the <a href="https://cucumber.io/docs/gherkin/">Gherkin</a> language. It is 
 this module for testing your own custom rules, you’ll need to make sure to use at least Java 8.</li>
   <li>The new module “pmd-test-schema” contains now the XSD schema and the code to parse the rule test XML files. The
 schema has been extracted in order to easily share it with other tools like the Rule Designer or IDE plugins.</li>
-  <li>The attribute <code class="language-plaintext highlighter-rouge">isRegressionTest</code> is deprecated and the new attribute <code class="language-plaintext highlighter-rouge">disabled</code> should be used instead for
-defining whether a rule test should be skipped or not.</li>
+  <li>Test schema changes:
+    <ul>
+      <li>The attribute <code class="language-plaintext highlighter-rouge">isRegressionTest</code> of <code class="language-plaintext highlighter-rouge">test-code</code> is deprecated. The new
+  attribute <code class="language-plaintext highlighter-rouge">disabled</code> should be used instead for defining whether a rule test should be skipped or not.</li>
+      <li>The attributes <code class="language-plaintext highlighter-rouge">reinitializeRule</code> and <code class="language-plaintext highlighter-rouge">useAuxClasspath</code> of <code class="language-plaintext highlighter-rouge">test-code</code> are deprecated and assumed true.
+  They will not be replaced.</li>
+      <li>The new attribute <code class="language-plaintext highlighter-rouge">focused</code> of <code class="language-plaintext highlighter-rouge">test-code</code> allows disabling all tests except the focused one temporarily.</li>
+    </ul>
+  </li>
   <li>More information about the rule test framework can be found in the documentation:
 <a href="pmd_userdocs_extending_testing.html">Testing your rules</a></li>
 </ul>
@@ -1621,6 +1629,8 @@ will be removed. It was introduced for Java 17 and Java 18 Preview as part of pa
 but it is no longer supported with Java 19 Preview.</li>
   <li>The interface <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.48.0-SNAPSHOT/net/sourceforge/pmd/cpd/renderer/CPDRenderer.html#"><code>CPDRenderer</code></a> is deprecated. For custom CPD renderers
 the new interface <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.48.0-SNAPSHOT/net/sourceforge/pmd/cpd/renderer/CPDReportRenderer.html#"><code>CPDReportRenderer</code></a> should be used.</li>
+  <li>The class <a href="https://docs.pmd-code.org/apidocs/pmd-test/6.48.0-SNAPSHOT/net/sourceforge/pmd/testframework/TestDescriptor.html#"><code>TestDescriptor</code></a> is deprecated, replaced with <a href="https://docs.pmd-code.org/apidocs/pmd-test-schema/6.48.0-SNAPSHOT/net/sourceforge/pmd/testframework/RuleTestDescriptor.html#"><code>RuleTestDescriptor</code></a>.</li>
+  <li>Many methods of <a href="https://docs.pmd-code.org/apidocs/pmd-test/6.48.0-SNAPSHOT/net/sourceforge/pmd/testframework/RuleTst.html#"><code>RuleTst</code></a> have been deprecated as internal API.</li>
 </ul>
 
 <h4 id="experimental-apis">Experimental APIs</h4>
@@ -1692,7 +1702,7 @@ You can identify them with the <code class="language-plaintext highlighter-rouge
         <div class="col-lg-12 footer">
             &copy;2022 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Jul 22, 2022 <br />
+             Site last generated: Jul 23, 2022 <br />
             <p>
                 <img src="images/pmd-logo-small.png" alt="Company
                 logo"/>
