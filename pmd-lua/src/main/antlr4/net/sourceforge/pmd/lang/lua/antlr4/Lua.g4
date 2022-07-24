@@ -60,6 +60,7 @@ Tested by Matt Hargett with:
     - Entire codebase for luvit: https://github.com/luvit/luvit/
     - Entire codebase for lit: https://github.com/luvit/lit/
     - Entire codebase and test suite for neovim v0.7.2: https://github.com/neovim/neovim/tree/v0.7.2
+    - Entire codebase for World of Warcraft Interface: https://github.com/tomrus88/BlizzardInterfaceCode
 */
 
 grammar Lua;
@@ -288,7 +289,7 @@ HexExponentPart
 
 fragment
 EscapeSequence
-    : '\\' [abfnrtvz"'\\]
+    : '\\' [abfnrtvz"'|$#\\]
     | '\\' '\r'? '\n'
     | DecimalEscape
     | HexEscape
