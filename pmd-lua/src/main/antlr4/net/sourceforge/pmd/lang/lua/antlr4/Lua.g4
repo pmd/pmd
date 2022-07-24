@@ -334,7 +334,7 @@ COMMENT
     ;
 
 LINE_COMMENT
-    :   '--' SingleLineInputCharacter* -> channel(HIDDEN)
+    : '--' SingleLineInputCharacter* -> channel(HIDDEN)
     ;
 
 WS
