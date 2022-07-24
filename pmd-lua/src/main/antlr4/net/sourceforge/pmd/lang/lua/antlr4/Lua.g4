@@ -290,7 +290,7 @@ HexExponentPart
 
 fragment
 EscapeSequence
-    : '\\' [abfnrtvz"'|$#\\]
+    : '\\' [abfnrtvz"'|$#\\]   // World of Warcraft Lua additionally escapes |$# 
     | '\\' '\r'? '\n'
     | DecimalEscape
     | HexEscape
@@ -324,14 +324,17 @@ HexDigit
     : [0-9a-fA-F]
     ;
 
+fragment
+SingleLineInputCharacter
+    : ~[\r\n\u0085\u2028\u2029]
+    ;
+
 COMMENT
     : '--['  NESTED_STR ']' -> channel(HIDDEN)
     ;
 
-fragment InputCharacter:       ~[\r\n\u0085\u2028\u2029];
-
 LINE_COMMENT
-    :   '--' InputCharacter* -> channel(HIDDEN)
+    :   '--' SingleLineInputCharacter* -> channel(HIDDEN)
     ;
 
 WS
@@ -339,5 +342,5 @@ WS
     ;
 
 SHEBANG
-    : '#' '!' InputCharacter* -> channel(HIDDEN)
+    : '#' '!' SingleLineInputCharacter* -> channel(HIDDEN)
     ;
