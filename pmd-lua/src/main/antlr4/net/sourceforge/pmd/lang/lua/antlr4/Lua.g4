@@ -330,7 +330,7 @@ SingleLineInputCharacter
     ;
 
 COMMENT
-    : '--['  NESTED_STR ']' -> channel(HIDDEN)
+    : '--[' NESTED_STR ']' -> channel(HIDDEN)
     ;
 
 LINE_COMMENT
