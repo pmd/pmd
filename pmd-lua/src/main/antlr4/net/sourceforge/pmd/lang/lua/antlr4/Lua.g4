@@ -32,6 +32,12 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 This grammar file derived from:
 
+    Luau 0.537 Grammar Documentation
+    https://github.com/Roblox/luau/blob/0.537/docs/_pages/grammar.md
+
+    Lua 5.4 Reference Manual
+    http://www.lua.org/manual/5.4/manual.html
+
     Lua 5.3 Reference Manual
     http://www.lua.org/manual/5.3/manual.html
 
@@ -44,6 +50,16 @@ This grammar file derived from:
 Tested by Kazunori Sakamoto with Test suite for Lua 5.2 (http://www.lua.org/tests/5.2/)
 
 Tested by Alexander Alexeev with Test suite for Lua 5.3 http://www.lua.org/tests/lua-5.3.2-tests.tar.gz
+
+Tested by Matt Hargett with:
+    - Test suite for Lua 5.4.4: http://www.lua.org/tests/lua-5.4.4-tests.tar.gz
+    - Test suite for Selene Lua lint tool v0.20.0: https://github.com/Kampfkarren/selene/tree/0.20.0/selene-lib/tests
+    - Test suite for full-moon Lua parsing library v0.15.1: https://github.com/Kampfkarren/full-moon/tree/main/full-moon/tests
+    - Test suite for IntelliJ-Luanalysis IDE plug-in v1.3.0: https://github.com/Benjamin-Dobell/IntelliJ-Luanalysis/tree/v1.3.0/src/test
+    - Test suite for StyLua formatting tool v.14.1: https://github.com/JohnnyMorganz/StyLua/tree/v0.14.1/tests
+    - Entire codebase for luvit: https://github.com/luvit/luvit/
+    - Entire codebase for lit: https://github.com/luvit/lit/
+    - Entire codebase and test suite for neovim v0.7.2: https://github.com/neovim/neovim/tree/v0.7.2
 */
 
 grammar Lua;
@@ -53,7 +69,7 @@ chunk
     ;
 
 block
-    : stat* retstat?
+    : stat* laststat?
     ;
 
 stat
@@ -71,11 +87,19 @@ stat
     | 'for' namelist 'in' explist 'do' block 'end'
     | 'function' funcname funcbody
     | 'local' 'function' NAME funcbody
-    | 'local' namelist ('=' explist)?
+    | 'local' attnamelist ('=' explist)?
     ;
 
-retstat
-    : 'return' explist? ';'?
+attnamelist
+    : NAME attrib (',' NAME attrib)*
+    ;
+
+attrib
+    : ('<' NAME '>')?
+    ;
+
+laststat
+    : 'return' explist? | 'break' | 'continue' ';'?
     ;
 
 label
@@ -95,7 +119,7 @@ namelist
     ;
 
 explist
-    : exp (',' exp)*
+    : (exp ',')* exp
     ;
 
 exp
@@ -140,20 +164,6 @@ varSuffix
 nameAndArgs
     : (':' NAME)? args
     ;
-
-/*
-var
-    : NAME | prefixexp '[' exp ']' | prefixexp '.' NAME
-    ;
-
-prefixexp
-    : var | functioncall | '(' exp ')'
-    ;
-
-functioncall
-    : prefixexp args | prefixexp ':' NAME args
-    ;
-*/
 
 args
     : '(' explist? ')' | tableconstructor | string
@@ -313,17 +323,13 @@ HexDigit
     ;
 
 COMMENT
-    : '--[' NESTED_STR ']' -> channel(HIDDEN)
+    : '--['  NESTED_STR ']' -> channel(HIDDEN)
     ;
 
+fragment InputCharacter:       ~[\r\n\u0085\u2028\u2029];
+
 LINE_COMMENT
-    : '--'
-    (                                               // --
-    | '[' '='*                                      // --[==
-    | '[' '='* ~('='|'['|'\r'|'\n') ~('\r'|'\n')*   // --[==AA
-    | ~('['|'\r'|'\n') ~('\r'|'\n')*                // --AAA
-    ) ('\r\n'|'\r'|'\n'|EOF)
-    -> channel(HIDDEN)
+    :   '--' InputCharacter* -> skip
     ;
 
 WS
@@ -331,5 +337,5 @@ WS
     ;
 
 SHEBANG
-    : '#' '!' ~('\n'|'\r')* -> channel(HIDDEN)
+    : '#' '!' InputCharacter* -> channel(HIDDEN)
     ;
