@@ -331,7 +331,7 @@ COMMENT
 fragment InputCharacter:       ~[\r\n\u0085\u2028\u2029];
 
 LINE_COMMENT
-    :   '--' InputCharacter* -> skip
+    :   '--' InputCharacter* -> channel(HIDDEN)
     ;
 
 WS
