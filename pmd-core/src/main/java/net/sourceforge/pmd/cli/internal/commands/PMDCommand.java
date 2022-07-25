@@ -32,6 +32,7 @@ public class PMDCommand implements Callable<ExecutionResult> {
     @Spec
     private CommandSpec spec; // injected by PicoCli, needed for validations
     
+    @SuppressWarnings("unused")
     @Mixin
     private SubCommandHelpMixin help;
 
@@ -45,7 +46,7 @@ public class PMDCommand implements Callable<ExecutionResult> {
 
     private Path ignoreListPath;
 
-    private String format; // Enhance to support other usage
+    private String format;
 
     private boolean debug;
 
@@ -71,7 +72,7 @@ public class PMDCommand implements Callable<ExecutionResult> {
 
     private String version;
 
-    private String language; // TODO : Actually use Language and support suggestions
+    private String language;
 
     private String forceLanguage;
 
@@ -433,7 +434,9 @@ public class PMDCommand implements Callable<ExecutionResult> {
     @Override
     public ExecutionResult call() throws Exception {
         if ((inputPaths == null || inputPaths.isEmpty()) && uri == null && fileListPath == null) {
-            throw new ParameterException(spec.commandLine(), "One of --dir, --file-list or --uri must be provided.");
+            throw new ParameterException(spec.commandLine(),
+                    "Please provide a parameter for source root directory (--dir or -d), "
+                            + "database URI (--uri or -u), or file list path (--file-list)");
         }
         
         System.out.println("threads: " + threads);
@@ -469,7 +472,7 @@ public class PMDCommand implements Callable<ExecutionResult> {
         @Override
         public Iterator<String> iterator() {
             return LanguageRegistry.getLanguages().stream()
-                    .map(Language::getTerseName).collect(Collectors.toList()).iterator();
+                    .map(Language::getTerseName).iterator();
         }
         
     }

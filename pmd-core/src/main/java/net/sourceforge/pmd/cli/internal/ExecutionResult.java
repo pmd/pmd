@@ -7,7 +7,7 @@ public enum ExecutionResult {
     
     private final int exitStatusCode;
     
-    private ExecutionResult(int exitStatusCode) {
+    ExecutionResult(int exitStatusCode) {
         this.exitStatusCode = exitStatusCode;
     }
     

@@ -22,11 +22,13 @@ public class PMDCLI {
 
     @Command(name = "cpd", mixinStandardHelpOptions = true, description = "The Copy Paste Detector")
     public static class CPDPicoCli implements Runnable {
+        @SuppressWarnings("unused")
         @Option(names = "--minimum-tokens",
                 description = "The minimum token length which should be reported as a duplicate.",
                 required = true)
         private int minimumTileSize;
 
+        @SuppressWarnings("unused")
         @Option(names = "--skip-duplicate-files",
                 description = "Ignore multiple copies of files of the same name and length in comparison",
                 required = false)
