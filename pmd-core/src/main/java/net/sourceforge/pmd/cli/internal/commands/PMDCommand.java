@@ -86,7 +86,7 @@ public class PMDCommand implements Callable<ExecutionResult> {
 
     private boolean noCache;
 
-    @Option(names = { "--rulesets", "-rulesets", "-R" },
+    @Option(names = { "--rulesets", "-R" },
                description = "Path to a ruleset xml file. "
                              + "The path may reference a resource on the classpath of the application, be a local file system path, or a URL. "
                              + "The option can be repeated, and multiple arguments separated by comma can be provided to a single occurrence of the option.",
@@ -96,14 +96,14 @@ public class PMDCommand implements Callable<ExecutionResult> {
         this.rulesets = rulesets;
     }
 
-    @Option(names = { "--uri", "-uri", "-u" },
+    @Option(names = { "--uri", "-u" },
             description = "Database URI for sources. "
                           + "One of --dir, --file-list or --uri must be provided.")
     public void setUri(final URI uri) {
         this.uri = uri;
     }
 
-    @Option(names = { "--dir", "-dir", "-d" },
+    @Option(names = { "--dir", "-d" },
             description = "Path to a source file, or directory containing source files to analyze. "
                           // About the following line:
                           // In PMD 6, this is only the case for files found in directories. If you
@@ -118,7 +118,7 @@ public class PMDCommand implements Callable<ExecutionResult> {
         this.inputPaths = inputPaths;
     }
 
-    @Option(names = { "--file-list", "-filelist" },
+    @Option(names = { "--file-list" },
             description =
                 "Path to a file containing a list of files to analyze, one path per line. "
                 + "One of --dir, --file-list or --uri must be provided.")
@@ -126,14 +126,14 @@ public class PMDCommand implements Callable<ExecutionResult> {
         this.fileListPath = fileListPath;
     }
 
-    @Option(names = { "--ignore-list", "-ignorelist" },
+    @Option(names = { "--ignore-list" },
             description = "Path to a file containing a list of files to exclude from the analysis, one path per line. "
                           + "This option can be combined with --dir and --file-list.")
     public void setIgnoreListPath(final Path ignoreListPath) {
         this.ignoreListPath = ignoreListPath;
     }
 
-    @Option(names = { "--format", "-format", "-f" },
+    @Option(names = { "--format", "-f" },
             description = "Report format.%nValid values: ${COMPLETION-CANDIDATES}%n"
                     + "Alternatively, you can provide the fully qualified name of a custom Renderer in the classpath.",
             defaultValue = "text", completionCandidates = PMDSupportedReportFormatsCandidates.class)
@@ -141,47 +141,49 @@ public class PMDCommand implements Callable<ExecutionResult> {
         this.format = format;
     }
 
-    @Option(names = { "--debug", "--verbose", "-debug", "-verbose", "-D", "-V" }, description = "Debug mode.")
+    @Option(names = { "--debug", "--verbose", "-D", "-V" }, description = "Debug mode.")
     public void setDebug(final boolean debug) {
         this.debug = debug;
     }
 
-    @Option(names = { "--encoding", "-encoding", "-e" },
+    @Option(names = { "--encoding", "-e" },
             description = "Specifies the character set encoding of the source code files PMD is reading (i.e., UTF-8).",
             defaultValue = "UTF-8")
     public void setEncoding(final String encoding) {
         this.encoding = encoding;
     }
 
-    @Option(names = { "--benchmark", "-benchmark", "-b" },
+    @Option(names = { "--benchmark", "-b" },
             description = "Benchmark mode - output a benchmark report upon completion; default to System.err.")
     public void setBenchmark(final boolean benchmark) {
         this.benchmark = benchmark;
     }
 
-    @Option(names = { "--stress", "-stress", "-S" }, description = "Performs a stress test.")
+    @Option(names = { "--stress", "-S" }, description = "Performs a stress test.")
     public void setStress(final boolean stress) {
         this.stress = stress;
     }
 
-    @Option(names = { "--short-names", "-shortnames" }, description = "Prints shortened filenames in the report.")
+    @Option(names = { "--short-names" }, description = "Prints shortened filenames in the report.")
     public void setShortnames(final boolean shortnames) {
         this.shortnames = shortnames;
     }
 
-    @Option(names = { "--show-suppressed", "-showsuppressed" }, description = "Report should show suppressed rule violations.")
+    @Option(names = { "--show-suppressed" }, description = "Report should show suppressed rule violations.")
     public void setShowSuppressed(final boolean showSuppressed) {
         this.showSuppressed = showSuppressed;
     }
 
-    @Option(names = { "--suppress-marker", "-suppressmarker" },
+    @Option(names = { "--suppress-marker" },
             description = "Specifies the string that marks a line which PMD should ignore.",
             defaultValue = "NOPMD")
     public void setSuppressMarker(final String suppressMarker) {
         this.suppressMarker = suppressMarker;
     }
     
-    @Option(names = { "--minimum-priority", "-minimumpriority", "-min" },
+    // TODO : "-min" is not a single letter option, but was never deprecated in PMD
+    // 6.x
+    @Option(names = { "--minimum-priority", "-min" },
             description = "Rule priority threshold; rules with lower priority than configured here won't be used.%n"
                     + "Valid values (case insensitive): ${COMPLETION-CANDIDATES}",
             defaultValue = "Low")
@@ -189,12 +191,12 @@ public class PMDCommand implements Callable<ExecutionResult> {
         this.minimumPriority = priority;
     }
 
-    @Option(names = { "--property", "-property", "-P" }, description = "Key-value pair defining a property for the report format.")
+    @Option(names = { "--property", "-P" }, description = "Key-value pair defining a property for the report format.")
     public void setProperties(final Properties properties) {
         this.properties = properties;
     }
 
-    @Option(names = { "--report-file", "-reportfile", "-r" },
+    @Option(names = { "--report-file", "-r" },
             description = "Path to a file to which report output is written. "
                 + "The file is created if it does not exist. "
                 + "If this option is not specified, the report is rendered to standard output.")
@@ -202,11 +204,14 @@ public class PMDCommand implements Callable<ExecutionResult> {
         this.reportFile = reportFile;
     }
 
+    // TODO : -version was never deprecated, should be replaced with --version… but
+    // --version is used to display the PMD version…
     @Option(names = { "-version", "-v" }, description = "Specify version of a language PMD should use.")
     public void setVersion(final String version) {
         this.version = version;
     }
 
+    // TODO : -langugae was never deprecated, should be replaced with --language
     @Option(names = { "-language", "-l" },
             description = "Specify a language PMD should use.%nValid values: ${COMPLETION-CANDIDATES}%n",
             completionCandidates = PMDSupportedLanguagesCandidates.class)
@@ -214,7 +219,7 @@ public class PMDCommand implements Callable<ExecutionResult> {
         this.language = language;
     }
 
-    @Option(names = { "--force-language", "-force-language" },
+    @Option(names = { "--force-language" },
             description = "Force a language to be used for all input files, irrespective of file names. "
                           + "When using this option, the automatic language selection by extension is disabled, and PMD "
                           + "tries to parse all input files with the given language's parser. "
@@ -224,7 +229,7 @@ public class PMDCommand implements Callable<ExecutionResult> {
         this.forceLanguage = forceLanguage;
     }
 
-    @Option(names = { "--aux-classpath", "-auxclasspath" },
+    @Option(names = { "--aux-classpath" },
             description = "Specifies the classpath for libraries used by the source code. "
                     + "This is used to resolve types in Java source files. The platform specific path delimiter "
                     + "(\":\" on Linux, \";\" on Windows) is used to separate the entries. "
@@ -234,20 +239,20 @@ public class PMDCommand implements Callable<ExecutionResult> {
         this.auxClasspath = auxClasspath;
     }
 
-    @Option(names = { "--fail-on-violation", "--failOnViolation", "-failOnViolation"},
+    @Option(names = { "--fail-on-violation" },
             description = "By default PMD exits with status 4 if violations are found. Disable this option with '-failOnViolation false' to exit with 0 instead and just write the report.",
             defaultValue = "true")
     public void setFailOnViolation(final boolean failOnViolation) {
         this.failOnViolation = failOnViolation;
     }
 
-    @Option(names = { "--no-ruleset-compatibility", "-norulesetcompatibility" },
+    @Option(names = { "--no-ruleset-compatibility" },
             description = "Disable the ruleset compatibility filter. The filter is active by default and tries automatically 'fix' old ruleset files with old rule names")
     public void setNoRuleSetCompatibility(final boolean noRuleSetCompatibility) {
         this.noRuleSetCompatibility = noRuleSetCompatibility;
     }
 
-    @Option(names = { "--cache", "-cache" },
+    @Option(names = { "--cache" },
             description = "Specify the location of the cache file for incremental analysis. "
                     + "This should be the full path to the file, including the desired file name (not just the parent directory). "
                     + "If the file doesn't exist, it will be created on the first run. The file will be overwritten on each run "
@@ -256,12 +261,12 @@ public class PMDCommand implements Callable<ExecutionResult> {
         this.cacheLocation = cacheLocation;
     }
 
-    @Option(names = { "--no-cache", "-no-cache" }, description = "Explicitly disable incremental analysis. The '-cache' option is ignored if this switch is present in the command line.")
+    @Option(names = { "--no-cache" }, description = "Explicitly disable incremental analysis. The '-cache' option is ignored if this switch is present in the command line.")
     public void setNoCache(final boolean noCache) {
         this.noCache = noCache;
     }
     
-    @Option(names = { "--threads", "-threads", "-t" }, description = "Sets the number of threads used by PMD.",
+    @Option(names = { "--threads", "-t" }, description = "Sets the number of threads used by PMD.",
             defaultValue = "1")
     public void setThreads(final int threads) {
         if (threads < 0) {
