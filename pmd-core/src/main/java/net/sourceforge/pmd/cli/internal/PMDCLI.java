@@ -1,6 +1,6 @@
 package net.sourceforge.pmd.cli.internal;
 
-import net.sourceforge.pmd.cli.internal.commands.PMDBaseCommand;
+import net.sourceforge.pmd.cli.internal.commands.PMDRootCommand;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
@@ -12,12 +12,9 @@ public class PMDCLI {
     }
 
     private static void tryPicoCli() {
-        new CommandLine(new PMDBaseCommand())
-                .setCaseInsensitiveEnumValuesAllowed(true)
-//			    .addSubcommand(new PMDCommand())
-//			    .addSubcommand(new CPDPicoCli())
-                .execute("run", "-h");
-//                .execute("run", "-t", "4", "-P", "foo=bar", "-R" , "foo,bar", "-R", "baz", "-d", "src/main/java", "-f", "xml");
+        new CommandLine(new PMDRootCommand()).setCaseInsensitiveEnumValuesAllowed(true)
+                .execute("-h");
+//                .execute("run", "-P", "foo=bar", "-R", "foo,bar", "-R", "baz", "-d", "src/main/java", "-f", "xml");
     }
 
     @Command(name = "cpd", mixinStandardHelpOptions = true, description = "The Copy Paste Detector")
