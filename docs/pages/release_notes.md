@@ -41,6 +41,8 @@ Being based on a proper Antlr grammar, CPD can:
 * honor [comment-based suppressions](pmd_userdocs_cpd.html#suppression)
 
 ### Fixed Issues
+* apex
+    * [#4056](https://github.com/pmd/pmd/pull/4056): \[apex] ApexSOQLInjection: Add support count query
 * core
     * [#4031](https://github.com/pmd/pmd/issues/4031): \[core] If report is written to stdout, stdout should not be closed
 * java
@@ -75,6 +77,7 @@ Being based on a proper Antlr grammar, CPD can:
 * [#3992](https://github.com/pmd/pmd/pull/3992): \[java] FinalFieldCouldBeStatic - fix false negative with unnecessary parenthesis - [@dalizi007](https://github.com/dalizi007)
 * [#3994](https://github.com/pmd/pmd/pull/3994): \[java] TooManyMethods - improve getter/setter detection (#3729) - [@341816041](https://github.com/341816041)
 * [#4017](https://github.com/pmd/pmd/pull/4017): Add Gherkin support to CPD - [@ASBrouwers](https://github.com/ASBrouwers)
+* [#4056](https://github.com/pmd/pmd/pull/4056): \[apex] ApexSOQLInjection: Add support count query - [@gwilymatgearset](https://github.com/gwilymatgearset)
 
 {% endtocmaker %}
 
