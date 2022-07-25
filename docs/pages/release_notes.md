@@ -53,6 +53,8 @@ Being based on a proper Antlr grammar, CPD can:
     * [#3949](https://github.com/pmd/pmd/issues/3949): \[java] FinalFieldCouldBeStatic - false negative with unnecessary parenthesis
 * java-performance
     * [#3625](https://github.com/pmd/pmd/issues/3625): \[java] AddEmptyString - false negative with empty var
+* lua
+    * [#4061](https://github.com/pmd/pmd/pull/4061): \[lua] Fix several related Lua parsing issues found when using CPD
 * test
     * [#3758](https://github.com/pmd/pmd/issues/3758): \[test] Move pmd-test to java 8
     * [#3976](https://github.com/pmd/pmd/pull/3976): \[test] Extract xml schema module
@@ -106,6 +108,7 @@ You can identify them with the `@InternalApi` annotation. You'll also get a depr
 * [#3994](https://github.com/pmd/pmd/pull/3994): \[java] TooManyMethods - improve getter/setter detection (#3729) - [@341816041](https://github.com/341816041)
 * [#4017](https://github.com/pmd/pmd/pull/4017): Add Gherkin support to CPD - [@ASBrouwers](https://github.com/ASBrouwers)
 * [#4021](https://github.com/pmd/pmd/pull/4021): \[core] CPD: Add total number of tokens to XML reports - [@maikelsteneker](https://github.com/maikelsteneker)
+* [#4061](https://github.com/pmd/pmd/pull/4061): \[lua] Fix several related Lua parsing issues found when using CPD - [@matthargett](https://github.com/matthargett)
 
 {% endtocmaker %}
 
