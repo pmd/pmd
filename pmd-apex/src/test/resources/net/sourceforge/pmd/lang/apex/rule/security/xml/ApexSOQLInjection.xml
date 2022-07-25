@@ -216,7 +216,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>Dynamic safe escaped SOQL with multipart</description>
+        <description>Dynamic unsafe SOQL with multipart</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -539,7 +539,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>Dynamic safe escaped SOQL with multipart</description>
+        <description>Dynamic unsafe SOQL with multipart</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
