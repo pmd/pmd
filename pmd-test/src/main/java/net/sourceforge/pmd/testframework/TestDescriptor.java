@@ -17,8 +17,11 @@ import net.sourceforge.pmd.test.schema.RuleTestDescriptor;
 
 /**
  * Stores the information required to run a complete test.
+ *
+ * @deprecated Use {@link RuleTestDescriptor} instead
  */
 @Ignore("this is not a unit test")
+@Deprecated
 public class TestDescriptor {
     private Rule rule;
     private Properties properties;
@@ -54,7 +57,7 @@ public class TestDescriptor {
     }
 
     // for compatibility
-    TestDescriptor(RuleTestDescriptor td, String absoluteUriToTestXmlFile, int lineNumber) {
+    TestDescriptor(RuleTestDescriptor td, String absoluteUriToTestXmlFile) {
         this.rule = td.getRule();
         this.code = td.getCode();
         this.description = td.getDescription();
@@ -66,7 +69,7 @@ public class TestDescriptor {
         this.properties = td.getProperties();
         this.languageVersion = td.getLanguageVersion();
         this.numberInDocument = td.getIndex();
-        this.setTestSourceUri(absoluteUriToTestXmlFile, lineNumber);
+        this.setTestSourceUri(absoluteUriToTestXmlFile, td.getLineNumber());
     }
 
     public int getNumberInDocument() {

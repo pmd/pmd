@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.java.types;
 
 
+import java.util.Comparator;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -32,6 +33,7 @@ abstract class MapFunction<T, R> implements Function<T, R> {
     @Override
     public String toString() {
         return map.entrySet().stream()
+                  .sorted(Comparator.comparing(e -> e.getKey().toString()))
                   .map(it -> it.getKey() + " => " + it.getValue())
                   .collect(Collectors.joining("; ", getClass().getSimpleName() + "[", "]"));
     }

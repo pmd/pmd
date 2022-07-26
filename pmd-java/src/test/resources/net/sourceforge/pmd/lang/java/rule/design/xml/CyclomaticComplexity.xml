@@ -149,7 +149,7 @@ public class Test {
         <code-ref id="constructor-violation"/>
     </test-code>
 
-    <test-code reinitializeRule="true">
+    <test-code>
         <description>#985 Suppressed methods shouldn't affect avg CyclomaticComplexity</description>
         <rule-property name="methodReportLevel">2</rule-property>
         <expected-problems>0</expected-problems>

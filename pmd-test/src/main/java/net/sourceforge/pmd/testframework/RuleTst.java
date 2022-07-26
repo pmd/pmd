@@ -10,12 +10,10 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -33,6 +31,7 @@ import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetLoadException;
 import net.sourceforge.pmd.RuleSetLoader;
 import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.processor.AbstractPMDProcessor;
@@ -40,8 +39,8 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.renderers.TextRenderer;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
 import net.sourceforge.pmd.test.schema.RuleTestCollection;
+import net.sourceforge.pmd.test.schema.RuleTestDescriptor;
 import net.sourceforge.pmd.test.schema.TestSchemaParser;
-import net.sourceforge.pmd.util.IOUtil;
 
 /**
  * Advanced methods for test cases
@@ -73,6 +72,8 @@ public abstract class RuleTst {
 
     /**
      * Find a rule in a certain ruleset by name
+     *
+     * todo make this static
      */
     public Rule findRule(String ruleSet, String ruleName) {
         try {
@@ -96,12 +97,13 @@ public abstract class RuleTst {
      * violations.
      */
     @SuppressWarnings("unchecked")
+    @InternalApi
+    @Deprecated
     public void runTest(TestDescriptor test) {
         Rule rule = test.getRule();
 
-        if (test.getReinitializeRule()) {
-            rule = reinitializeRule(rule);
-        }
+        // always reinitialize the rule, regardless of test.getReinitializeRule() (#3976 / #3302)
+        rule = reinitializeRule(rule);
 
         Map<PropertyDescriptor<?>, Object> oldProperties = rule.getPropertiesByPropertyDescriptor();
         try {
@@ -229,37 +231,33 @@ public abstract class RuleTst {
     }
 
     private Report processUsingStringReader(TestDescriptor test, Rule rule) {
-        return runTestFromString(test.getCode(), rule, test.getLanguageVersion(), test.isUseAuxClasspath());
+        return runTestFromString(test.getCode(), rule, test.getLanguageVersion());
     }
 
-    public Report runTestFromString(String code, Rule rule, LanguageVersion languageVersion, boolean isUseAuxClasspath) {
+    /**
+     * Run the rule on the given code and put the violations in the report.
+     */
+    @InternalApi
+    @Deprecated
+    public Report runTestFromString(String code, Rule rule, LanguageVersion languageVersion) {
+        return runTestFromString(code, rule, languageVersion, true);
+    }
+
+    @InternalApi
+    @Deprecated
+    public Report runTestFromString(String code, Rule rule, LanguageVersion languageVersion,
+            boolean isUseAuxClasspath) {
         try {
             PMDConfiguration configuration = new PMDConfiguration();
             configuration.setIgnoreIncrementalAnalysis(true);
             configuration.setDefaultLanguageVersion(languageVersion);
             configuration.setThreads(1);
-
-            if (isUseAuxClasspath) {
-                // configure the "auxclasspath" option for unit testing
-                // we share a single classloader so that pmd-java doesn't create
-                // a new TypeSystem for every test. This problem will go
-                // away when languages have a lifecycle.
-                configuration.setClassLoader(classpathClassLoader);
-            } else {
-                // simple class loader, that doesn't delegate to parent.
-                // this allows us in the tests to simulate PMD run without
-                // auxclasspath, not even the classes from the test dependencies
-                // will be found.
-                configuration.setClassLoader(new ClassLoader() {
-                    @Override
-                    protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
-                        if (name.startsWith("java.") || name.startsWith("javax.")) {
-                            return super.loadClass(name, resolve);
-                        }
-                        throw new ClassNotFoundException(name);
-                    }
-                });
-            }
+            // regardless of isUseAuxClasspath the auxclasspath is always used (#3976 / #3302)
+            // configure the "auxclasspath" option for unit testing
+            // we share a single classloader so that pmd-java doesn't create
+            // a new TypeSystem for every test. This problem will go
+            // away when languages have a lifecycle.
+            configuration.setClassLoader(classpathClassLoader);
 
             try (GlobalReportBuilderListener reportBuilder = new GlobalReportBuilderListener();
                  // Add a listener that throws when an error occurs:
@@ -283,10 +281,18 @@ public abstract class RuleTst {
         }
     }
 
+    @InternalApi
+    @Deprecated
+    public Report runTestFromString(TestDescriptor test, Rule rule) {
+        return runTestFromString(test.getCode(), rule, test.getLanguageVersion(), test.isUseAuxClasspath());
+    }
+
     /**
      * getResourceAsStream tries to find the XML file in weird locations if the
      * ruleName includes the package, so we strip it here.
      */
+    @InternalApi
+    @Deprecated
     protected String getCleanRuleName(Rule rule) {
         String fullClassName = rule.getClass().getName();
         if (fullClassName.equals(rule.getName())) {
@@ -304,12 +310,26 @@ public abstract class RuleTst {
      * ./xml/RuleName.xml relative to the test class. The format is defined in
      * test-data.xsd.
      */
+    @InternalApi
+    @Deprecated
     public TestDescriptor[] extractTestsFromXml(Rule rule) {
         String testsFileName = getCleanRuleName(rule);
 
         return extractTestsFromXml(rule, testsFileName);
     }
 
+    /**
+     * Extract a set of tests from an XML file. The file should be
+     * ./xml/RuleName.xml relative to the test class. The format is defined in
+     * rule-tests_1_0_0.xsd in pmd-test-schema.
+     */
+    RuleTestCollection parseTestCollection(Rule rule) {
+        String testsFileName = getCleanRuleName(rule);
+        return parseTestXml(rule, testsFileName, "xml/");
+    }
+
+    @InternalApi
+    @Deprecated
     public TestDescriptor[] extractTestsFromXml(Rule rule, String testsFileName) {
         return extractTestsFromXml(rule, testsFileName, "xml/");
     }
@@ -319,53 +339,19 @@ public abstract class RuleTst {
      * should be ./xml/[testsFileName].xml relative to the test class. The
      * format is defined in test-data.xsd.
      */
+    @InternalApi
+    @Deprecated
     public TestDescriptor[] extractTestsFromXml(Rule rule, String testsFileName, String baseDirectory) {
         RuleTestCollection collection = parseTestXml(rule, testsFileName, baseDirectory);
-        return toLegacyArray(collection, testsFileName, baseDirectory);
+        return toLegacyArray(collection);
     }
 
-    private TestDescriptor[] toLegacyArray(RuleTestCollection collection, String testsFileName, String baseDirectory) {
-        String testXmlFileName = baseDirectory + testsFileName + ".xml";
-        List<Integer> lineNumbersForTests;
-        try (InputStream inputStream = getClass().getResourceAsStream(testXmlFileName)) {
-            String testXml = IOUtil.readToString(inputStream, StandardCharsets.UTF_8);
-            lineNumbersForTests = determineLineNumbers(testXml);
-        } catch (Exception e) {
-            throw new RuntimeException("Couldn't parse " + testXmlFileName + ", due to: " + e, e);
-        }
-
-        if (lineNumbersForTests.size() != collection.getTests().size()) {
-            throw new IllegalStateException("Test to line number mapping doesn't work!");
-        }
-
-        String absoluteUriToTestXmlFile = new File(".").getAbsoluteFile().toURI() + "/src/test/resources/"
-                + this.getClass().getPackage().getName().replaceAll("\\.", "/")
-                + "/" + testXmlFileName;
-
-
+    private TestDescriptor[] toLegacyArray(RuleTestCollection collection) {
         TestDescriptor[] result = new TestDescriptor[collection.getTests().size()];
         for (int i = 0; i < collection.getTests().size(); i++) {
-            result[i] = new TestDescriptor(collection.getTests().get(i), absoluteUriToTestXmlFile, lineNumbersForTests.get(i));
+            result[i] = new TestDescriptor(collection.getTests().get(i), collection.getAbsoluteUriToTestXmlFile());
         }
         return result;
-    }
-
-    private List<Integer> determineLineNumbers(String testXml) {
-        List<Integer> tests = new ArrayList<>();
-        int lineNumber = 1;
-        int index = 0;
-        while (index < testXml.length()) {
-            char c = testXml.charAt(index);
-            if (c == '\n') {
-                lineNumber++;
-            } else if (c == '<') {
-                if (testXml.startsWith("<test-code", index)) {
-                    tests.add(lineNumber);
-                }
-            }
-            index++;
-        }
-        return tests;
     }
 
     /**
@@ -375,6 +361,9 @@ public abstract class RuleTst {
      */
     private RuleTestCollection parseTestXml(Rule rule, String testsFileName, String baseDirectory) {
         String testXmlFileName = baseDirectory + testsFileName + ".xml";
+        String absoluteUriToTestXmlFile = new File(".").getAbsoluteFile().toURI() + "/src/test/resources/"
+                + this.getClass().getPackage().getName().replaceAll("\\.", "/")
+                + "/" + testXmlFileName;
 
         try (InputStream inputStream = getClass().getResourceAsStream(testXmlFileName)) {
             if (inputStream == null) {
@@ -384,7 +373,9 @@ public abstract class RuleTst {
             source.setByteStream(inputStream);
             source.setSystemId(testXmlFileName);
             TestSchemaParser parser = new TestSchemaParser();
-            return parser.parse(rule, source);
+            RuleTestCollection ruleTestCollection = parser.parse(rule, source);
+            ruleTestCollection.setAbsoluteUriToTestXmlFile(absoluteUriToTestXmlFile);
+            return ruleTestCollection;
         } catch (Exception e) {
             throw new RuntimeException("Couldn't parse " + testXmlFileName + ", due to: " + e, e);
         }
@@ -411,6 +402,8 @@ public abstract class RuleTst {
     /**
      * Run a set of tests of a certain sourceType.
      */
+    @InternalApi
+    @Deprecated
     public void runTests(TestDescriptor[] tests) {
         for (TestDescriptor test : tests) {
             runTest(test);
@@ -423,10 +416,17 @@ public abstract class RuleTst {
         final List<Rule> rules = new ArrayList<>(getRules());
         rules.sort(Comparator.comparing(Rule::getName));
 
-        final List<TestDescriptor> tests = new LinkedList<>();
-        for (final Rule r : rules) {
-            final TestDescriptor[] ruleTests = extractTestsFromXml(r);
-            Collections.addAll(tests, ruleTests);
+        List<TestDescriptor> tests = new ArrayList<>();
+        for (Rule r : rules) {
+            RuleTestCollection ruleTests = parseTestCollection(r);
+            RuleTestDescriptor focused = ruleTests.getFocusedTestOrNull();
+            for (RuleTestDescriptor t : ruleTests.getTests()) {
+                TestDescriptor td = new TestDescriptor(t, ruleTests.getAbsoluteUriToTestXmlFile());
+                if (focused != null && !focused.equals(t)) {
+                    td.setRegressionTest(false); // disable it
+                }
+                tests.add(td);
+            }
         }
 
         return tests.stream().map(this::toDynamicTest).collect(Collectors.toList());

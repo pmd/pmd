@@ -106,7 +106,8 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <pmd.website.baseurl>https://pmd.github.io/pmd</pmd.website.baseurl>
 
-        <argLine>-Xmx512m -Dfile.encoding=${project.build.sourceEncoding}</argLine>
+        <argLine>-Xmx512m -Dfile.encoding=${project.build.sourceEncoding} ${extraArgLine}</argLine>
+        <extraArgLine></extraArgLine> <!-- empty by default, profiles set it as needed -->
 
         <pmd.build-tools.version>18</pmd.build-tools.version>
 
@@ -1068,6 +1069,18 @@
                 </dependency>
             </dependencies>
         </profile>
+
+        <profile>
+            <id>Java 18+</id>
+            <activation>
+                <jdk>[18,)</jdk>
+            </activation>
+            <properties>
+                <!-- java.security.manager=allow is needed under Java 18+ for usages of com.github.stefanbirkner.systemlambda.SystemLambda.catchSystemExit -->
+                <extraArgLine>-Djava.security.manager=allow</extraArgLine>
+            </properties>
+        </profile>
+
         <profile>
             <id>pmd-release</id>
             <properties>

@@ -190,6 +190,7 @@ class F {
         val (acu, spy) = parser.parseWithTypeInferenceSpy(
 
                 """
+interface Collection<E> {}
 class Sup { 
     static <E> void m(Collection<? extends E> e) {}
 }
@@ -379,19 +380,84 @@ class Scratch {
 
         spy.shouldBeOk {
             ctor.methodType.shouldBeSomeInstantiationOf(withSupplier)
-        }
-
-        spy.shouldBeOk {
             voidM.methodType.shouldBeSomeInstantiationOf(withRunnable)
-        }
-
-        spy.shouldBeOk {
             stdM.methodType.shouldBeSomeInstantiationOf(withSupplier)
-        }
-
-        spy.shouldBeOk {
             polyM.methodType.shouldBeSomeInstantiationOf(withSupplier)
         }
+    }
+
+    parserTest("Test specificity between exact mrefs") {
+
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+class Scratch {
+
+    interface Runnable { void run(); }
+    interface Supplier<E> { E get(); }
+
+    static void bench(String label, Runnable runnable) {  }
+    static <T> T bench(String label, Supplier<T> runnable) { return null; }
+
+    static void voidMethod() {}
+    static Scratch standaloneMethod() { return null; }
+    static <T> T polyMethod() { return null; }
+
+    static {
+        bench("foo", Scratch::new);  // selects the supplier
+        bench("foo", Scratch::voidMethod);   // selects the runnable
+        bench("foo", Scratch::standaloneMethod);  // selects the supplier
+        bench("foo", Scratch::<Object>polyMethod);  // selects the supplier
+        bench("foo", Scratch::polyMethod);  // ambiguous
+    }
+}
+
+                """.trimIndent()
+        )
+
+        val (_, _, withRunnable, withSupplier) = acu.declaredMethodSignatures()
+
+        val (ctor, voidM, stdM, polyM, ambigM) = acu.methodCalls().toList()
+
+        spy.shouldBeAmbiguous(ambigM)
+
+        ctor.methodType.shouldBeSomeInstantiationOf(withSupplier)
+        voidM.methodType.shouldBeSomeInstantiationOf(withRunnable)
+        stdM.methodType.shouldBeSomeInstantiationOf(withSupplier)
+        polyM.methodType.shouldBeSomeInstantiationOf(withSupplier)
+    }
+
+    parserTest("Test specificity between implicitly typed lamdbas (ambiguous)") {
+
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+class Scratch {
+
+    interface Runnable { void run(Object o); }
+    interface Supplier<E> { E get(Object u); }
+
+    static void bench(String label, Runnable runnable) {  }
+    static <T> T bench(String label, Supplier<T> runnable) { return null; }
+
+    static void voidMethod() {}
+    static Scratch standaloneMethod() { return null; }
+    static <T> T polyMethod() { return null; }
+
+    static {
+        bench("foo", o -> new Scratch());  // selects the supplier
+        bench("foo", o -> voidMethod());   // selects the runnable
+        bench("foo", o -> standaloneMethod());  // selects the supplier
+        bench("foo", o -> polyMethod());  // selects the supplier
+    }
+}
+
+                """.trimIndent()
+        )
+
+        val (ctor, voidM, stdM, polyM) = acu.methodCalls().toList()
+        spy.shouldBeAmbiguous(ctor)
+        spy.shouldBeAmbiguous(voidM)
+        spy.shouldBeAmbiguous(stdM)
+        spy.shouldBeAmbiguous(polyM)
     }
 
 })
