@@ -4,14 +4,17 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import com.google.summit.ast.Node;
+import java.util.List;
+
 import net.sourceforge.pmd.annotation.InternalApi;
 
-public class ASTModifierNode extends AbstractApexNode.Single<Node> implements AccessNode {
+import com.google.summit.ast.modifier.Modifier;
+
+public class ASTModifierNode extends AbstractApexNode.Many<Modifier> implements AccessNode {
 
     @Deprecated
     @InternalApi
-    public ASTModifierNode(Node modifierNode) {
+    public ASTModifierNode(List<Modifier> modifierNode) {
         super(modifierNode);
     }
 
