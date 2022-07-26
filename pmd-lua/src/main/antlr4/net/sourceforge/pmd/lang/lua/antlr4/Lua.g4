@@ -102,20 +102,28 @@ attrib
     : ('<' NAME '>')?
     ;
 
-laststat
-    : 'return' explist? | 'break' | 'continue'
-    ;
-
 label
     : '::' NAME '::'
+    ;
+
+laststat
+    : 'return' explist? | 'break' | 'continue'
     ;
 
 funcname
     : NAME ('.' NAME)* (':' NAME)?
     ;
 
-varlist
-    : var (',' var)*
+funcbody
+    : ('<' GenericTypeParameterList '>')? '(' parlist? ')' (':' '...'? ReturnType ) block 'end' // GenericTypeParameterList and ReturnType
+    ;
+
+parlist
+    : bindinglist (',' '...')? | '...'
+    ;
+
+explist
+    : (exp ',')* exp
     ;
 
 namelist
@@ -128,31 +136,13 @@ binding
 
 bindinglist: binding (',' bindinglist)?;
 
-explist
-    : (exp ',')* exp
+var
+    : (NAME | '(' exp ')' varSuffix) varSuffix*
     ;
 
-exp
-    : 'nil' | 'false' | 'true'
-    | number
-    | string
-    | '...'
-    | functiondef
-    | prefixexp
-    | ifelseexp
-    | tableconstructor
-    | <assoc=right> exp operatorPower exp
-    | operatorUnary exp
-    | exp operatorMulDivMod exp
-    | exp operatorAddSub exp
-    | <assoc=right> exp operatorStrcat exp
-    | exp operatorComparison exp
-    | exp operatorAnd exp
-    | exp operatorOr exp
-    | exp operatorBitwise exp
+varlist
+    : var (',' var)*
     ;
-
-ifelseexp: 'if' exp 'then' exp ('elseif' exp 'then' exp)* 'else' exp;
 
 prefixexp
     : varOrExp nameAndArgs*
@@ -162,12 +152,26 @@ functioncall
     : varOrExp nameAndArgs+
     ;
 
-varOrExp
-    : var | '(' exp ')'
+exp
+    : (asexp | operatorUnary exp) ( binop exp )*
     ;
 
-var
-    : (NAME | '(' exp ')' varSuffix) varSuffix*
+ifelseexp: 'if' exp 'then' exp ('elseif' exp 'then' exp)* 'else' exp;
+
+asexp: simpleexp ('::' Type)?;
+
+simpleexp
+    : 'nil' | 'false' | 'true'
+    | number
+    | string
+    | '...'
+    | 'function' funcbody
+    | prefixexp
+    | ifelseexp
+    | tableconstructor;
+
+varOrExp
+    : var | '(' exp ')'
     ;
 
 varSuffix
@@ -184,14 +188,6 @@ args
 
 functiondef
     : 'function' funcbody
-    ;
-
-funcbody
-    : ('<' NAME '>')? '(' parlist? ')' block (':' '...'? NAME ) 'end' // GenericTypeParameterList and ReturnType
-    ;
-
-parlist
-    : namelist (',' '...')? | '...'
     ;
 
 tableconstructor
@@ -211,6 +207,8 @@ fieldsep
     ;
 
 compoundop: '+=' | '-=' | '*=' | '/=' | '%=' | '^=' | '..=';
+
+binop: operatorAddSub | operatorMulDivMod | operatorPower | operatorStrcat | operatorComparison | operatorAnd | operatorOr | operatorBitwise;
 
 operatorOr
 	: 'or';
@@ -276,7 +274,7 @@ TypeList: Type (',' Type)? | VariadicTypePack;
 
 TypeParams: (Type | VariadicTypePack | GenericTypePack) (',' TypeParams)?; // had to remove TypePack
 
-// TypePack: 
+// TypePack: inlined everywhere to avoid overly greedy match when out-of-context
 
 GenericTypePack: NAME '...';
 
