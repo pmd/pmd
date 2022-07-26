@@ -29,8 +29,10 @@ public class ASTUserInterface extends ApexRootNode<TypeDeclaration> implements A
 
     @Override
     public String getImage() {
-        String apexName = getDefiningType();
-        return apexName.substring(apexName.lastIndexOf('.') + 1);
+//        String apexName = getDefiningType();
+//        return apexName.substring(apexName.lastIndexOf('.') + 1);
+        // TODO(b/239648780)
+        return "";
     }
 
     @Override

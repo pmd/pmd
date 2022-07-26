@@ -48,7 +48,7 @@ public class ApexParser {
                 throw new ParseException("Couldn't parse the source - there is not root node - Syntax Error??");
             }
 
-            return treeBuilder.build(astRoot.getTypeDeclaration());
+            return treeBuilder.buildTree(astRoot);
         } catch (IOException e) {
             throw new ParseException(e);
         }
