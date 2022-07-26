@@ -32,8 +32,10 @@ public class ASTUserClass extends ApexRootNode<TypeDeclaration> implements ASTUs
 
     @Override
     public String getImage() {
-        String apexName = getDefiningType();
-        return apexName.substring(apexName.lastIndexOf('.') + 1);
+//        String apexName = getDefiningType();
+//        return apexName.substring(apexName.lastIndexOf('.') + 1);
+        // TODO(b/239648780)
+        return "";
     }
 
     @Override

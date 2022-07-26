@@ -23,8 +23,10 @@ public class ASTUserEnum extends ApexRootNode<TypeDeclaration> {
 
     @Override
     public String getImage() {
-        String apexName = getDefiningType();
-        return apexName.substring(apexName.lastIndexOf('.') + 1);
+//        String apexName = getDefiningType();
+//        return apexName.substring(apexName.lastIndexOf('.') + 1);
+        // TODO(b/239648780)
+        return "";
     }
 
     public ASTModifierNode getModifiers() {
