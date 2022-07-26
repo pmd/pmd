@@ -16,6 +16,8 @@ import com.google.summit.ast.declaration.EnumDeclaration
 import com.google.summit.ast.declaration.InterfaceDeclaration
 import com.google.summit.ast.declaration.TriggerDeclaration
 import com.google.summit.ast.declaration.TypeDeclaration
+import com.google.summit.ast.modifier.KeywordModifier
+import com.google.summit.ast.modifier.Modifier
 
 @Deprecated("internal")
 @InternalApi
@@ -39,6 +41,7 @@ class ApexTreeBuilder(val sourceCode: String, val parserOptions: ApexParserOptio
                 null -> null
                 is CompilationUnit -> build(node.typeDeclaration, parent)
                 is TypeDeclaration -> buildTypeDeclaration(node)
+                is KeywordModifier -> null
                 else -> {
                     println("No adapter exists for type ${node::class.qualifiedName}")
                     // TODO(b/239648780): temporary print
@@ -52,6 +55,9 @@ class ApexTreeBuilder(val sourceCode: String, val parserOptions: ApexParserOptio
         return wrapper
     }
 
+    /** Calls [build] on each of [nodes]. */
+    private fun build(nodes: List<Node>, parent: ApexNode<*>?) = nodes.forEach { build(it, parent) }
+
     /** Builds an [ApexRootNode] wrapper for the [TypeDeclaration] node. */
     private fun buildTypeDeclaration(node: TypeDeclaration) =
         when (node) {
@@ -59,7 +65,14 @@ class ApexTreeBuilder(val sourceCode: String, val parserOptions: ApexParserOptio
             is InterfaceDeclaration -> ASTUserInterface(node)
             is EnumDeclaration -> ASTUserEnum(node)
             is TriggerDeclaration -> ASTUserTrigger(node)
+        }.apply {
+            val modifiers = buildModifiers(node.modifiers)
+            modifiers.setParent(this)
         }
+
+    /** Builds an [ASTModifierNode] wrapper for the list of [Modifier]s. */
+    private fun buildModifiers(modifiers: List<Modifier>) =
+        ASTModifierNode(modifiers).apply { build(modifiers, parent = this) }
 
     /**
      * If [parent] is not null, adds this [ApexNode] as a [child][ApexNode.jjtAddChild] and sets

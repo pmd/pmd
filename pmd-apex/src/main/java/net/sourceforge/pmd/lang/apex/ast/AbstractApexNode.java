@@ -4,9 +4,12 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import com.google.summit.ast.Node;
+import java.util.List;
+
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
+
+import com.google.summit.ast.Node;
 
 /**
  * @deprecated Use {@link ApexNode}
@@ -29,6 +32,23 @@ public abstract class AbstractApexNode extends AbstractApexNodeBase implements A
         protected Single(T node) {
             super(node.getClass());
             this.node = node;
+        }
+    }
+
+    /**
+     * {@link AbstractApexNode} wrapper around a {@link List} of {@link Node}s.
+     *
+     * @deprecated Use {@link ApexNode}
+     */
+    @Deprecated
+    @InternalApi
+    public static abstract class Many<T extends Node> extends AbstractApexNode {
+
+        protected final List<T> nodes;
+
+        protected Many(List<T> nodes) {
+            super(nodes.getClass());
+            this.nodes = nodes;
         }
     }
 
