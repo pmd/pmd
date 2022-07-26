@@ -10,7 +10,9 @@ import net.sourceforge.pmd.lang.ast.ParseException
 import net.sourceforge.pmd.lang.ast.SourceCodePositioner
 
 import com.google.summit.ast.CompilationUnit
+import com.google.summit.ast.Identifier
 import com.google.summit.ast.Node
+import com.google.summit.ast.TypeRef
 import com.google.summit.ast.declaration.ClassDeclaration
 import com.google.summit.ast.declaration.EnumDeclaration
 import com.google.summit.ast.declaration.InterfaceDeclaration
@@ -41,7 +43,9 @@ class ApexTreeBuilder(val sourceCode: String, val parserOptions: ApexParserOptio
                 null -> null
                 is CompilationUnit -> build(node.typeDeclaration, parent)
                 is TypeDeclaration -> buildTypeDeclaration(node)
-                is KeywordModifier -> null
+                is Identifier,
+                is KeywordModifier,
+                is TypeRef -> null
                 else -> {
                     println("No adapter exists for type ${node::class.qualifiedName}")
                     // TODO(b/239648780): temporary print
@@ -58,16 +62,34 @@ class ApexTreeBuilder(val sourceCode: String, val parserOptions: ApexParserOptio
     /** Calls [build] on each of [nodes]. */
     private fun build(nodes: List<Node>, parent: ApexNode<*>?) = nodes.forEach { build(it, parent) }
 
+    /**
+     * Calls [build] on each [child][Node.getChildren] of [node].
+     *
+     * If [exclude] is provided, child nodes matching this predicate are not visited.
+     */
+    private fun buildChildren(
+        node: Node,
+        parent: ApexNode<*>?,
+        exclude: (Node) -> Boolean = { false } // exclude none by default
+    ) = node.getChildren().filterNot(exclude).forEach { build(it, parent) }
+
     /** Builds an [ApexRootNode] wrapper for the [TypeDeclaration] node. */
     private fun buildTypeDeclaration(node: TypeDeclaration) =
         when (node) {
-            is ClassDeclaration -> ASTUserClass(node)
-            is InterfaceDeclaration -> ASTUserInterface(node)
-            is EnumDeclaration -> ASTUserEnum(node)
-            is TriggerDeclaration -> ASTUserTrigger(node)
-        }.apply {
-            val modifiers = buildModifiers(node.modifiers)
-            modifiers.setParent(this)
+            is ClassDeclaration ->
+                ASTUserClass(node).apply {
+                    val modifiers = buildModifiers(node.modifiers)
+                    modifiers.setParent(this)
+                    buildChildren(node, parent = this, exclude = { it in node.modifiers })
+                }
+            is InterfaceDeclaration ->
+                ASTUserInterface(node).apply {
+                    val modifiers = buildModifiers(node.modifiers)
+                    modifiers.setParent(this)
+                    buildChildren(node, parent = this, exclude = { it in node.modifiers })
+                }
+            is EnumDeclaration -> ASTUserEnum(node) // TODO(b/239648780): enum body is untranslated
+            is TriggerDeclaration -> ASTUserTrigger(node) // TODO(b/239648780): visit children
         }
 
     /** Builds an [ASTModifierNode] wrapper for the list of [Modifier]s. */
