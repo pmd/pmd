@@ -9,16 +9,16 @@ import java.util.stream.Collectors;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.annotation.InternalApi;
 
-import com.google.summit.ast.declaration.TypeDeclaration;
+import com.google.summit.ast.declaration.InterfaceDeclaration;
 
-public class ASTUserInterface extends ApexRootNode<TypeDeclaration> implements ASTUserClassOrInterface<TypeDeclaration>,
+public class ASTUserInterface extends ApexRootNode<InterfaceDeclaration> implements ASTUserClassOrInterface<InterfaceDeclaration>,
        CanSuppressWarnings {
 
     private ApexQualifiedName qname;
 
     @Deprecated
     @InternalApi
-    public ASTUserInterface(TypeDeclaration userInterface) {
+    public ASTUserInterface(InterfaceDeclaration userInterface) {
         super(userInterface);
     }
 
@@ -29,10 +29,7 @@ public class ASTUserInterface extends ApexRootNode<TypeDeclaration> implements A
 
     @Override
     public String getImage() {
-//        String apexName = getDefiningType();
-//        return apexName.substring(apexName.lastIndexOf('.') + 1);
-        // TODO(b/239648780)
-        return "";
+        return node.getId().asCodeString();
     }
 
     @Override
