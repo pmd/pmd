@@ -71,12 +71,13 @@ chunk
     ;
 
 block
-    : stat* laststat?
+    : (stat ';'?)* (laststat ';'?)?
     ;
 
 stat
     : ';'
     | varlist '=' explist
+    | var compoundop exp
     | functioncall
     | label
     | 'break'
@@ -85,11 +86,12 @@ stat
     | 'while' exp 'do' block 'end'
     | 'repeat' block 'until' exp
     | 'if' exp 'then' block ('elseif' exp 'then' block)* ('else' block)? 'end'
-    | 'for' NAME '=' exp ',' exp (',' exp)? 'do' block 'end'
-    | 'for' namelist 'in' explist 'do' block 'end'
+    | 'for' binding '=' exp ',' exp (',' exp)? 'do' block 'end'
+    | 'for' bindinglist 'in' explist 'do' block 'end'
     | 'function' funcname funcbody
     | 'local' 'function' NAME funcbody
-    | 'local' attnamelist ('=' explist)?
+    | 'local' bindinglist ('=' explist)?
+    | ('export')? 'type' NAME ('<' GenericTypeParameterList '>')? '=' Type
     ;
 
 attnamelist
@@ -101,7 +103,7 @@ attrib
     ;
 
 laststat
-    : 'return' explist? | 'break' | 'continue' ';'?
+    : 'return' explist? | 'break' | 'continue'
     ;
 
 label
@@ -120,6 +122,12 @@ namelist
     : NAME (',' NAME)*
     ;
 
+binding
+    : NAME (':' Type ('?')?)?
+    ;
+
+bindinglist: binding (',' bindinglist)?;
+
 explist
     : (exp ',')* exp
     ;
@@ -131,6 +139,7 @@ exp
     | '...'
     | functiondef
     | prefixexp
+    | ifelseexp
     | tableconstructor
     | <assoc=right> exp operatorPower exp
     | operatorUnary exp
@@ -142,6 +151,8 @@ exp
     | exp operatorOr exp
     | exp operatorBitwise exp
     ;
+
+ifelseexp: 'if' exp 'then' exp ('elseif' exp 'then' exp)* 'else' exp;
 
 prefixexp
     : varOrExp nameAndArgs*
@@ -176,7 +187,7 @@ functiondef
     ;
 
 funcbody
-    : '(' parlist? ')' block 'end'
+    : ('<' NAME '>')? '(' parlist? ')' block (':' '...'? NAME ) 'end' // GenericTypeParameterList and ReturnType
     ;
 
 parlist
@@ -198,6 +209,8 @@ field
 fieldsep
     : ',' | ';'
     ;
+
+compoundop: '+=' | '-=' | '*=' | '/=' | '%=' | '^=' | '..=';
 
 operatorOr
 	: 'or';
@@ -233,6 +246,58 @@ number
 string
     : NORMALSTRING | CHARSTRING | LONGSTRING
     ;
+
+SimpleType
+    : 'nil'
+    | SingletonType
+    | NAME /* ('.' NAME)? */ ('<' TypeParams '>')?
+    | 'typeof' '(' NAME ('(' ')')? | '...' ')' // can't use `exp`, manually handle common cases
+    | TableType
+    | FunctionType
+    ;
+
+SingletonType
+    : NORMALSTRING | CHARSTRING
+    | 'true'
+    | 'false'
+    ;
+
+Type
+    : SimpleType ('?')?
+    | SimpleType ('?')? ('|' Type) // can't use Type because it's mutually left-recursive
+    | SimpleType ('?')? ('&' Type) // can't use Type because it's mutually left-recursive
+    ;
+
+GenericTypePackParameter: NAME '...' ('=' (('(' (TypeList)? ')') | VariadicTypePack | GenericTypePack))?; // TypePack must be inlined here
+
+GenericTypeParameterList: NAME ('=' Type)? (',' GenericTypeParameterList)? | GenericTypePackParameter (',' GenericTypePackParameter)*;
+
+TypeList: Type (',' Type)? | VariadicTypePack;
+
+TypeParams: (Type | VariadicTypePack | GenericTypePack) (',' TypeParams)?; // had to remove TypePack
+
+// TypePack: 
+
+GenericTypePack: NAME '...';
+
+VariadicTypePack: '...' Type;
+
+ReturnType: Type | '(' Type ',' Type ')' | '(' ')'; // can't use TypePack, inline common cases
+
+TableIndexer: '[' Type ']' ':' Type;
+
+TableProp: NAME ':' Type;
+
+TablePropOrIndexer
+    : TableProp | TableIndexer;
+
+PropList
+    : TablePropOrIndexer ((','|';') TablePropOrIndexer)* (','|';')?;
+
+TableType
+    : '{' PropList '}';
+
+FunctionType: ('<' GenericTypeParameterList '>')? '(' (TypeList)? ')' '->' (Type | '(' ')' | '(' (TypeList) ')'); // inline ReturnType to avoid greediness
 
 // LEXER
 
