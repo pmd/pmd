@@ -8,17 +8,19 @@ local _notVariable = not x
 local _length = #{x}
 export type Function<T... = ...any> = (...any) -> T...
 
-return function (req, ...: boolean): ({[string|number]: any}, string, Function<...any>)
+return function <T>(req, ...: boolean): ({[string|number]: T}, string, Function<...any>)
   local body = string.format("%s %s\n", req.method, req.path)
   local res = {
     code = 200,
     { "Content-Type", "text/plain" },
     { "Content-Length", #body } :: Array<any>,
   } :: { [any]: number | Array<string | boolean> }
-  if req.keepAlive then
-    res[#res + 1] = { "Connection", "Keep-Alive" }
-    res[#res + 2] = { ... }
+  if (req :: any).keepAlive then
+    local socketType: "Connection" | "Pingback" | "" = "" :: ""
+    socketType = "Connection" :: "Connection"
+    res[#res + 1] = { socketType :: string, "Keep-Alive" }
+    res[#res - 2] = { ... }
   end
 
-  return res, body, function(...): ...any return ... end
+  return (res :: any) :: { T }, body, function(...): ...any return ... end
 end
