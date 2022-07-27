@@ -306,7 +306,7 @@ public final class PmdAnalysis implements AutoCloseable {
 
     void performAnalysisImpl(List<? extends GlobalReportBuilderListener> extraListeners) {
         try (FileCollector files = collector) {
-            files.filterLanguages(getApplicableLanguages());
+            files.filterLanguages(getApplicableLanguages(false));
             performAnalysisImpl(extraListeners, files.getCollectedFiles());
         }
     }
@@ -343,7 +343,7 @@ public final class PmdAnalysis implements AutoCloseable {
 
             try (LanguageProcessorRegistry lpRegistry = LanguageProcessorRegistry.create(
                 // only start the applicable languages (and dependencies)
-                new LanguageRegistry(getApplicableLanguages()),
+                new LanguageRegistry(getApplicableLanguages(true)),
                 langProperties,
                 reporter
             )) {
@@ -408,7 +408,7 @@ public final class PmdAnalysis implements AutoCloseable {
         return GlobalAnalysisListener.tee(rendererListeners);
     }
 
-    private Set<Language> getApplicableLanguages() {
+    private Set<Language> getApplicableLanguages(boolean quiet) {
         Set<Language> languages = new HashSet<>();
         LanguageVersionDiscoverer discoverer = configuration.getLanguageVersionDiscoverer();
 
@@ -421,7 +421,9 @@ public final class PmdAnalysis implements AutoCloseable {
                     if (RuleSet.applies(rule, version)) {
                         configuration.checkLanguageIsRegistered(ruleLanguage);
                         languages.add(ruleLanguage);
-                        LOG.trace("Using {} version ''{}''", version.getLanguage().getName(), version.getTerseName());
+                        if (!quiet) {
+                            LOG.trace("Using {} version ''{}''", version.getLanguage().getName(), version.getTerseName());
+                        }
                     }
                 }
             }
