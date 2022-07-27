@@ -3,7 +3,7 @@ title: Testing your rules
 tags: [extending, userdocs]
 summary: "Learn how to use PMD's simple test framework for unit testing rules."
 permalink: pmd_userdocs_extending_testing.html
-last_updated: November 2018
+last_updated: July 2022
 author: Andreas Dangel <andreas.dangel@adangel.org>
 ---
 
@@ -63,7 +63,8 @@ In general, the class name and file name pattern for the test class and data is 
 
 {%include tip.html content="This convention allows you to quickly find the test cases for a given rule:
 Just search in the project for a file `<RuleName>.xml`. Search for a class `<Rule Name>Test` to find the
-unit test class for the given rule." %}
+unit test class for the given rule. And if the rule is a Java-based rule, the search for `<Rule Name>Rule`
+finds the rule implementation class." %}
 
 {%include note.html content="If you want to use the test framework with a different package structure,
 see [Using the test framework externally](#using-the-test-framework-externally)." %}
@@ -132,15 +133,22 @@ between different test cases.
 
 ### `<test-code>` attributes
 
-The `<test-code>` elements understands three optional attributes:
+The `<test-code>` elements understands the following optional attributes:
 
-*   **reinitializeRule**: By default, it's `true`, so each test case starts with a fresh instantiated rule. Set it
+* **disabled**: By default, it's `false`. Set it to `true`, to ignore and skip a test case.
+
+* **focused**: By default, it's `false`. Set it to `true`, to ignore all other test cases.
+
+* **useAuxClasspath**: _deprecated since PMD 6.48.0: assumed true, has no effect anymore._
+    By default, it's `true`. Set it to `false` to reproduce issues which only
+    appear without type resolution.
+
+* **reinitializeRule**: _deprecated since PMD 6.48.0: assumed true, has no effect anymore._
+    By default, it's `true`, so each test case starts with a fresh instantiated rule. Set it
     to `false` to reproduce cases, where the previous run has influences.
 
-*   **regressionTest**: By default, it's `true`. Set it to `false`, to ignore and skip a test case.
-
-*   **useAuxClasspath**: By default, it's `true`. Set it to `false` to reproduce issues which only
-    appear without type resolution.
+* **regressionTest**: _deprecated since PMD 6.48.0: Use `disabled` instead. Note: It has the opposite boolean
+  semantic._ By default, it's `true`. Set it to `false`, to ignore and skip a test case.
 
 ### `<test-code>` children
 
@@ -188,7 +196,7 @@ in a "CDATA" section, so that no further XML escapes (entity references such as 
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests https://pmd.sourceforge.io/rule-tests_1_0_0.xsd">
 
-    <test-code reinitializeRule="true" regressionTest="true" useAuxClasspath="true">
+    <test-code reinitializeRule="true" disabled="false" useAuxClasspath="true">
         <description>Just a description, will be used as the test name for JUnit in the reports</description>
         <rule-property name="somePropName">propValue</rule-property>    <!-- optional -->
         <expected-problems>2</expected-problems>
@@ -270,17 +278,20 @@ The test data should be placed in an xml file located in "src/test/resources" un
 
 The framework uses a custom JUnit test runner under the hood, among a couple of utility classes:
 
-*   `PmdRuleTst`: This is the base class for tests in PMD's code base. It is a subclass of `RuleTst` and just
+* `PmdRuleTst`: This is the base class for tests in PMD's code base. It is a subclass of `RuleTst` and just
     contains the logic to determine the test resources based on the test class name.
 
-*   `SimpleAggregatorTst`: This is a more generic base class for the test classes and defines
+* `SimpleAggregatorTst`: This is a more generic base class for the test classes and defines
     the custom JUnit test runner. It doesn't register any test cases on its own.
     It itself is a subclass of `RuleTst`.
 
-*   `RuleTst`: contains the logic to parse the XML files and provide a list of `TestDescriptor`s. Each test descriptor
-    describes a single test case. It also contains the logic to execute such a test descriptor and assert the results.
+* The maven module "pmd-test-schema" contains the logic to parse the XML files and provide a `RuleTestCollection`. This
+  in turn contains a list of `RuleTestDescriptor`s. Each rule test descriptor describes a single test case.
 
-*   `PMDTestRunner`: A custom JUnit test runner, that combines two separate test runners: The custom `RuleTestRunner`
+* `RuleTst`: uses the `TestSchemaParser` from module "pmd-test-schema" to parse the test cases, executes each
+  rule test descriptor and asserts the results.
+
+* `PMDTestRunner`: A custom JUnit test runner, that combines two separate test runners: The custom `RuleTestRunner`
     and the standard `JUnit4` test runner. This combination allows you to add additional standard unit test methods
     annotated with `@Test` to your test class.
 
@@ -288,4 +299,4 @@ The framework uses a custom JUnit test runner under the hood, among a couple of 
     of this, if you do any initialization in the constructor. Also, the static hooks `@BeforeClass` and `@AfterClass`
     will be executed twice.
 
-*   `RuleTestRunner`: This test runner executes the test descriptors with the help of `RuleTst`.
+* `RuleTestRunner`: This test runner executes the test descriptors with the help of `RuleTst`.

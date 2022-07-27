@@ -47,6 +47,10 @@ public class MatchAlgorithm {
         return matches.iterator();
     }
 
+    List<Match> getMatches() {
+        return matches;
+    }
+
     public TokenEntry tokenAt(int offset, TokenEntry m) {
         return code.get(offset + m.getIndex());
     }

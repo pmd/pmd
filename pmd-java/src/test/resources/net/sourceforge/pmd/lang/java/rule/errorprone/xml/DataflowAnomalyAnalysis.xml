@@ -170,7 +170,7 @@ class Test{
         ]]></code>
     </test-code>
 
-    <test-code regressionTest="false">
+    <test-code disabled="true">
         <description>#1905 [java] DataflowAnomalyAnalysis Rule in right order : Case 3. DU-Anomaly(a)</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>5</expected-linenumbers>
