@@ -12,23 +12,17 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.cli.internal.ExecutionResult;
-import net.sourceforge.pmd.cli.internal.commands.mixins.SubCommandHelpMixin;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.renderers.RendererFactory;
 import picocli.CommandLine.Command;
-import picocli.CommandLine.Mixin;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.ParameterException;
 
 @Command(name = "analyze", aliases = {"analyse", "run" }, showDefaultValues = true,
     description = "The PMD standard source code analyzer")
 public class PMDCommand extends AbstractPMDSubcommand {
-
-    @SuppressWarnings("unused")
-    @Mixin
-    private SubCommandHelpMixin help;
 
     private List<String> rulesets;
     
