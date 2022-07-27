@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -214,20 +213,6 @@ public final class PropertyFactory {
      */
     public static RegexPropertyBuilder regexProperty(String name) {
         return new RegexPropertyBuilder(name);
-    }
-
-    /**
-     * Returns a builder for a property having as value a list of regex patterns.
-     * The format of the individual items is the same as for {@linkplain #regexProperty(String) regexProperty}.
-     * This property may only be written with the structured {@code <seq>} syntax
-     * in an XML ruleset.
-     *
-     * @param name Name of the property to build
-     *
-     * @return A new builder
-     */
-    public static GenericCollectionPropertyBuilder<Pattern, List<Pattern>> regexListProperty(String name) {
-        return regexProperty(name).toList().onlyAllowSeqSyntax();
     }
 
 

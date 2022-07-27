@@ -415,7 +415,6 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
         private final Collector<? super V, ?, ? extends C> collector;
         private final List<PropertyConstraint<? super C>> collectionConstraints = new ArrayList<>();
         private char multiValueDelimiter = PropertyFactory.DEFAULT_DELIMITER;
-        private boolean allowsStringSyntaxIfPossible = true;
 
 
         /**
@@ -474,15 +473,6 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
             return multiValueDelimiter;
         }
 
-        /**
-         * Specify that this property may not be parsed from a string.
-         * This is the case for lists of patterns, for instance.
-         */
-        GenericCollectionPropertyBuilder<V, C> onlyAllowSeqSyntax() {
-            this.allowsStringSyntaxIfPossible = false;
-            return this;
-        }
-
 
         /**
          * Specify default values. To specify an empty
@@ -525,7 +515,7 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
 
         @Override
         public PropertyDescriptor<C> build() {
-            XmlMapper<C> syntax = itemParser.supportsStringMapping() && allowsStringSyntaxIfPossible
+            XmlMapper<C> syntax = itemParser.supportsStringMapping()
                                   ? XmlSyntaxUtils.seqAndDelimited(itemParser, collector, false, multiValueDelimiter)
                                   : XmlSyntaxUtils.onlySeq(itemParser, collector);
 
