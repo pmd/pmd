@@ -75,7 +75,7 @@
                   <argument>--force</argument>
                   <argument>--completionScript</argument>
                   <argument>${project.build.directory}/pmd_completion.sh</argument>
-                  <argument>net.sourceforge.pmd.cli.internal.commands.PMDBaseCommand</argument>
+                  <argument>net.sourceforge.pmd.cli.internal.commands.PMDRootCommand</argument>
                 </arguments>
               </configuration>
             </plugin>
