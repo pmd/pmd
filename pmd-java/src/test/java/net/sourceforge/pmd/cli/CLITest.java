@@ -7,12 +7,8 @@ package net.sourceforge.pmd.cli;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.contrib.java.lang.system.RestoreSystemProperties;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.rules.TestRule;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.PMD.StatusCode;
 import net.sourceforge.pmd.internal.Slf4jSimpleConfiguration;
@@ -24,17 +20,7 @@ public class CLITest extends BaseCLITest {
     // note that the progress bar sometimes messes up the log so it is
     // disabled here in most tests.
 
-    // restoring system properties: -debug might change logging properties
-    // See Slf4jSimpleConfigurationForAnt and resetLogging
-    @Rule
-    public final TestRule restoreSystemProperties = new RestoreSystemProperties();
-
     @BeforeEach
-    public static void resetLogging() {
-        Slf4jSimpleConfiguration.reconfigureDefaultLogLevel(null);
-    }
-
-    @Before
     public void setupLogging() {
         Slf4jSimpleConfiguration.reconfigureDefaultLogLevel(null);
     }

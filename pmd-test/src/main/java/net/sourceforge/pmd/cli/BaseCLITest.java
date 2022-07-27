@@ -8,14 +8,12 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.file.Files;
 import java.util.regex.Pattern;
 
-import org.apache.tools.ant.util.TeeOutputStream;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
@@ -27,6 +25,8 @@ import org.junit.contrib.java.lang.system.SystemOutRule;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMD.StatusCode;
 import net.sourceforge.pmd.internal.util.AssertionUtil;
+
+import com.github.stefanbirkner.systemlambda.SystemLambda;
 
 /**
  * @author Romain Pelisse &lt;belaran@gmail.com&gt;
@@ -121,15 +121,18 @@ public abstract class BaseCLITest {
     }
 
     protected String runTest(StatusCode expectedExitCode, String... args) {
-        ByteArrayOutputStream console = new ByteArrayOutputStream();
-
-        PrintStream out = new PrintStream(new TeeOutputStream(console, System.out));
-        PrintStream err = new PrintStream(new TeeOutputStream(console, System.err));
-        System.setOut(out);
-        System.setErr(err);
-        StatusCode statusCode = PMD.runPmd(args);
-        assertEquals(expectedExitCode, statusCode);
-        return console.toString();
+        try {
+            return SystemLambda.tapSystemErrAndOut(() -> {
+                // restoring system properties: -debug might change logging properties
+                // See Slf4jSimpleConfigurationForAnt and resetLogging
+                SystemLambda.restoreSystemProperties(() -> {
+                    StatusCode statusCode = PMD.runPmd(args);
+                    assertEquals(expectedExitCode, statusCode);
+                });
+            });
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
