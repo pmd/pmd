@@ -57,7 +57,7 @@ public final class XmlSyntaxUtils {
 
 
     private static <T extends Number> XmlMapper<List<T>> numberList(ValueSyntax<T> valueSyntax) {
-        return seqAndDelimited(valueSyntax, Collectors.toList(), true, PropertyFactory.DEFAULT_DELIMITER);
+        return seqAndDelimited(valueSyntax, Collectors.toList(), true, PropertyFactory.DEFAULT_NUMERIC_DELIMITER);
     }
 
     private static <T> XmlMapper<List<T>> otherList(ValueSyntax<T> valueSyntax) {

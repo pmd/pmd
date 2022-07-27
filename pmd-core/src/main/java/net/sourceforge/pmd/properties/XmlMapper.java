@@ -6,13 +6,26 @@ package net.sourceforge.pmd.properties;
 
 import static net.sourceforge.pmd.util.CollectionUtil.setOf;
 
+import java.io.ByteArrayOutputStream;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import net.sourceforge.pmd.lang.document.Chars;
+import net.sourceforge.pmd.util.StringUtil;
 import net.sourceforge.pmd.util.internal.xml.PmdXmlReporter;
 import net.sourceforge.pmd.util.log.MessageReporter;
 
@@ -86,8 +99,7 @@ public abstract class XmlMapper<T> {
      * @throws UnsupportedOperationException if unsupported, see {@link #supportsStringMapping()}
      * @throws IllegalArgumentException      if something goes wrong (but should be reported on the error reporter)
      */
-    @NonNull
-    public String toString(T value) {
+    public @NonNull String toString(T value) {
         throw new UnsupportedOperationException("Check #supportsStringMapping()");
     }
 
@@ -115,6 +127,34 @@ public abstract class XmlMapper<T> {
      * @param baseIndent Base indentation string, adding one indent level concats this with the [curIndent]
      */
     protected abstract List<String> examplesImpl(String curIndent, String baseIndent);
+
+    public String xmlToString(T value) {
+        try {
+            DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+            documentBuilderFactory.setNamespaceAware(true);
+            DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
+            Document document = documentBuilder.newDocument();
+            Element container = document.createElement(getWriteElementName(value));
+            toXml(container, value);
+            document.appendChild(container);
+
+            TransformerFactory transformerFactory = TransformerFactory.newInstance();
+            Transformer transformer = transformerFactory.newTransformer();
+            transformer.setOutputProperty(OutputKeys.METHOD, "xml");
+            // This is as close to pretty printing as we'll get using standard
+            // Java APIs.
+            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+            transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+            ByteArrayOutputStream resultBuffer = new ByteArrayOutputStream();
+            transformer.transform(new DOMSource(document), new StreamResult(resultBuffer));
+            String result = resultBuffer.toString();
+            result = result.replace("<?xml version=\"1.0\" encoding=\"UTF-8\"?>", "");
+            result = StringUtil.trimIndent(Chars.wrap(result)).toString();
+            return result.trim();
+        } catch (ParserConfigurationException | TransformerException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     @Override
     public String toString() {

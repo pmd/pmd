@@ -25,7 +25,6 @@ import java.util.Objects;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
@@ -38,10 +37,12 @@ import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetLoadException;
 import net.sourceforge.pmd.RuleSetLoader;
 import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.lang.document.Chars;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.util.IOUtil;
+import net.sourceforge.pmd.util.StringUtil;
 
 public class RuleDocGenerator {
     private static final Logger LOG = LoggerFactory.getLogger(RuleDocGenerator.class);
@@ -55,7 +56,7 @@ public class RuleDocGenerator {
     private static final String RULESET_INDEX_PERMALINK_PATTERN = "pmd_rules_${language.tersename}_${ruleset.name}.html";
 
     private static final String DEPRECATION_LABEL_SMALL = "<span style=\"border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;\">Deprecated</span> ";
-    private static final String DEPRECATION_LABEL = "<span style=\"border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;\">Deprecated</span> ";
+    private static final String DEPRECATION_LABEL = "<span style=\"border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;\">Deprecated</span>";
     private static final String DEPRECATED_RULE_PROPERTY_MARKER = "deprecated!";
 
     private static final String GITHUB_SOURCE_LINK = "https://github.com/pmd/pmd/blob/master/";
@@ -440,12 +441,10 @@ public class RuleDocGenerator {
 
                             String defaultValue = determineDefaultValueAsString(propertyDescriptor, rule, true);
 
-                            // TODO document property syntax
-
                             lines.add("|"
                                     + EscapeUtils.escapeMarkdown(StringEscapeUtils.escapeHtml4(propertyDescriptor.name()))
                                     + "|"
-                                    + EscapeUtils.escapeMarkdown(StringEscapeUtils.escapeHtml4(defaultValue))
+                                    + EscapeUtils.escapeMarkdown(defaultValue)
                                     + "|"
                                     + EscapeUtils.escapeMarkdown((isDeprecated ? DEPRECATION_LABEL_SMALL : "") + StringEscapeUtils.escapeHtml4(description))
                                     + "|"
@@ -471,9 +470,12 @@ public class RuleDocGenerator {
                         lines.add("    <properties>");
                         for (PropertyDescriptor<?> propertyDescriptor : properties) {
                             if (!isDeprecated(propertyDescriptor)) {
-                                String defaultValue = determineDefaultValueAsString(propertyDescriptor, rule, false);
-                                lines.add("        <property name=\"" + propertyDescriptor.name() + "\" value=\""
-                                              + defaultValue + "\" />");
+                                lines.add("        <property name=\"" + propertyDescriptor.name() + "\">");
+                                String defaultValue = determineDefaultValueAsXml(propertyDescriptor, rule);
+
+                                defaultValue = StringUtil.replaceIndent(Chars.wrap(defaultValue), "            ").toString();
+                                Collections.addAll(lines, defaultValue.split("\\R"));
+                                lines.add("        </property>");
                             }
                         }
                         lines.add("    </properties>");
@@ -508,14 +510,28 @@ public class RuleDocGenerator {
         T realDefaultValue = rule.getProperty(propertyDescriptor);
 
         if (realDefaultValue != null) {
-            defaultValue = propertyDescriptor.asDelimitedString(realDefaultValue);
-            if (pad && realDefaultValue instanceof Collection) {
-                // surround the delimiter with spaces, so that the browser can wrap
-                // the value nicely
-                defaultValue = defaultValue.replaceAll(",", " , ");
+            if (propertyDescriptor.xmlMapper().supportsStringMapping()) {
+                defaultValue = propertyDescriptor.xmlMapper().toString(realDefaultValue);
+                if (pad && realDefaultValue instanceof Collection) {
+                    // surround the delimiter with spaces, so that the browser can wrap
+                    // the value nicely
+                    defaultValue = defaultValue.replaceAll(",", " , ");
+                }
+            } else {
+                defaultValue = propertyDescriptor.xmlMapper().xmlToString(realDefaultValue);
             }
         }
+        defaultValue = StringEscapeUtils.escapeHtml4(defaultValue);
         return defaultValue;
+    }
+
+    private <T> String determineDefaultValueAsXml(PropertyDescriptor<T> propertyDescriptor, Rule rule) {
+        T realDefaultValue = rule.getProperty(propertyDescriptor);
+        if (realDefaultValue != null) {
+            return propertyDescriptor.xmlMapper().xmlToString(realDefaultValue);
+        } else {
+            return "<value/>";
+        }
     }
 
     private static String stripIndentation(String description) {

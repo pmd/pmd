@@ -108,6 +108,24 @@ public class PropertySyntaxTest extends RulesetFactoryTestBase {
 
     }
 
+    @Test
+    void testXmlToString() {
+        // given an xml elt and a pdescriptor
+        // ensure fromXml runs properly
+        XmlMapper<List<String>> mapper = PropertyFactory.stringProperty("eude")
+                                                        .desc("eu")
+                                                        .toList()
+                                                        .emptyDefaultValue()
+                                                        .delim(',')
+                                                        .build()
+                                                        .xmlMapper();
+        assertEquals(
+            "<value>ad,u</value>",
+            mapper.xmlToString(listOf("ad", "u"))
+        );
+
+    }
+
     private <T> void assertParsesAs(XmlMapper<T> mapper, String xmlCode, T expected) {
         Element xml = parseXml(xmlCode);
         T parsed = mapper.fromXml(xml, mock(PmdXmlReporter.class));
