@@ -217,7 +217,7 @@ public class TreeExportCli {
     }
 
     private static <T> void setProperty(PropertyDescriptor<T> descriptor, PropertySource bundle, String value) {
-        bundle.setProperty(descriptor, descriptor.xmlMapper().fromString(value));
+        bundle.setProperty(descriptor, descriptor.serializer().fromString(value));
     }
 
 

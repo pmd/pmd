@@ -30,26 +30,26 @@ public enum PropertyTypeId {
     // property types around XML Schema Datatypes (XSD) 1.0 or 1.1 instead of Java datatypes (save for
     // e.g. the Class type), including the mnemonics (eg. xs:integer instead of Integer)
 
-    BOOLEAN("Boolean", XmlSyntaxUtils.BOOLEAN, PropertyFactory::booleanProperty),
-    STRING("String", XmlSyntaxUtils.STRING, PropertyFactory::stringProperty),
-    STRING_LIST("List[String]", XmlSyntaxUtils.STRING_LIST, PropertyFactory::stringListProperty),
-    CHARACTER("Character", XmlSyntaxUtils.CHARACTER, PropertyFactory::charProperty),
-    CHARACTER_LIST("List[Character]", XmlSyntaxUtils.CHAR_LIST, PropertyFactory::charListProperty),
+    BOOLEAN("Boolean", PropertyParsingUtil.BOOLEAN, PropertyFactory::booleanProperty),
+    STRING("String", PropertyParsingUtil.STRING, PropertyFactory::stringProperty),
+    STRING_LIST("List[String]", PropertyParsingUtil.STRING_LIST, PropertyFactory::stringListProperty),
+    CHARACTER("Character", PropertyParsingUtil.CHARACTER, PropertyFactory::charProperty),
+    CHARACTER_LIST("List[Character]", PropertyParsingUtil.CHAR_LIST, PropertyFactory::charListProperty),
 
-    REGEX("Regex", XmlSyntaxUtils.REGEX, PropertyFactory::regexProperty),
+    REGEX("Regex", PropertyParsingUtil.REGEX, PropertyFactory::regexProperty),
 
-    INTEGER("Integer", XmlSyntaxUtils.INTEGER, PropertyFactory::intProperty),
-    INTEGER_LIST("List[Integer]", XmlSyntaxUtils.INTEGER_LIST, PropertyFactory::intListProperty),
-    LONG("Long", XmlSyntaxUtils.LONG, PropertyFactory::longIntProperty),
-    LONG_LIST("List[Long]", XmlSyntaxUtils.LONG_LIST, PropertyFactory::longIntListProperty),
-    DOUBLE("Double", XmlSyntaxUtils.DOUBLE, PropertyFactory::doubleProperty),
-    DOUBLE_LIST("List[Double]", XmlSyntaxUtils.DOUBLE_LIST, PropertyFactory::doubleListProperty),
+    INTEGER("Integer", PropertyParsingUtil.INTEGER, PropertyFactory::intProperty),
+    INTEGER_LIST("List[Integer]", PropertyParsingUtil.INTEGER_LIST, PropertyFactory::intListProperty),
+    LONG("Long", PropertyParsingUtil.LONG, PropertyFactory::longIntProperty),
+    LONG_LIST("List[Long]", PropertyParsingUtil.LONG_LIST, PropertyFactory::longIntListProperty),
+    DOUBLE("Double", PropertyParsingUtil.DOUBLE, PropertyFactory::doubleProperty),
+    DOUBLE_LIST("List[Double]", PropertyParsingUtil.DOUBLE_LIST, PropertyFactory::doubleListProperty),
     ;  // SUPPRESS CHECKSTYLE enum trailing semi is awesome
 
 
     private static final Map<String, PropertyTypeId> CONSTANTS_BY_MNEMONIC;
     private final String stringId;
-    private final XmlMapper<?> xmlMapper;
+    private final PropertySerializer<?> propertySerializer;
     private final Function<String, ? extends PropertyBuilder<?, ?>> factory;
 
 
@@ -62,15 +62,15 @@ public enum PropertyTypeId {
     }
 
 
-    <T> PropertyTypeId(String id, XmlMapper<T> syntax, Function<String, PropertyBuilder<?, T>> factory) {
+    <T> PropertyTypeId(String id, PropertySerializer<T> syntax, Function<String, PropertyBuilder<?, T>> factory) {
         this.stringId = id;
-        this.xmlMapper = syntax;
+        this.propertySerializer = syntax;
         this.factory = factory;
     }
 
     /**
      * An factory for new properties, whose default value must be deserialized
-     * using an {@link XmlMapper}. This is provided so that the mapper and
+     * using an {@link PropertySerializer}. This is provided so that the mapper and
      * the factory may be related through the same type parameter, so that
      * capture works well.
      *
@@ -78,7 +78,7 @@ public enum PropertyTypeId {
      */
     public interface BuilderAndMapper<T> {
 
-        XmlMapper<T> getXmlMapper();
+        PropertySerializer<T> getXmlMapper();
 
         PropertyBuilder<?, T> newBuilder(String name);
     }
@@ -91,8 +91,8 @@ public enum PropertyTypeId {
     public BuilderAndMapper<?> getBuilderUtils() {
         return new BuilderAndMapper() {
             @Override
-            public XmlMapper<?> getXmlMapper() {
-                return xmlMapper;
+            public PropertySerializer<?> getXmlMapper() {
+                return propertySerializer;
             }
 
             @Override

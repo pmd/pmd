@@ -34,7 +34,7 @@ import net.sourceforge.pmd.annotation.InternalApi;
 public final class PropertyDescriptor<T> {
 
 
-    private final XmlMapper<T> parser;
+    private final PropertySerializer<T> parser;
     private final PropertyTypeId typeId;
     private final String name;
     private final String description;
@@ -44,7 +44,7 @@ public final class PropertyDescriptor<T> {
     PropertyDescriptor(String name,
                        String description,
                        T defaultValue,
-                       XmlMapper<T> parser,
+                       PropertySerializer<T> parser,
                        @Nullable PropertyTypeId typeId,
                        boolean isXPathAvailable) {
 
@@ -55,7 +55,7 @@ public final class PropertyDescriptor<T> {
         this.typeId = typeId;
         this.isXPathAvailable = isXPathAvailable;
 
-        XmlSyntaxUtils.checkConstraintsThrow(
+        PropertyParsingUtil.checkConstraintsThrow(
             defaultValue,
             parser.getConstraints(),
             ConstraintViolatedException::new
@@ -100,7 +100,7 @@ public final class PropertyDescriptor<T> {
      * Returns the strategy used to read and write this property to XML.
      * May support strings too.
      */
-    public XmlMapper<T> xmlMapper() {
+    public PropertySerializer<T> serializer() {
         return parser;
     }
 
@@ -116,7 +116,7 @@ public final class PropertyDescriptor<T> {
      */
     @Deprecated
     public String errorFor(T value) {
-        return XmlSyntaxUtils.checkConstraintsJoin(value, parser.getConstraints());
+        return PropertyParsingUtil.checkConstraintsJoin(value, parser.getConstraints());
     }
 
 
@@ -148,7 +148,7 @@ public final class PropertyDescriptor<T> {
      */
     @Deprecated
     public T valueFrom(String propertyString) throws IllegalArgumentException {
-        return xmlMapper().fromString(propertyString);
+        return serializer().fromString(propertyString);
     }
 
 
@@ -165,7 +165,7 @@ public final class PropertyDescriptor<T> {
      */
     @Deprecated
     public String asDelimitedString(T value) {
-        return xmlMapper().toString(value);
+        return serializer().toString(value);
     }
 
     @Override

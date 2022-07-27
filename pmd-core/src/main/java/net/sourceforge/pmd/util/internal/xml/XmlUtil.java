@@ -19,7 +19,6 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
-import net.sourceforge.pmd.properties.XmlMapper;
 import net.sourceforge.pmd.util.CollectionUtil;
 import net.sourceforge.pmd.util.StringUtil;
 
@@ -142,17 +141,6 @@ public final class XmlUtil {
             }
         }
         return buffer.toString();
-    }
-
-    public static <T> T expectElement(PmdXmlReporter err, Element elt, XmlMapper<T> syntax) {
-
-        if (!syntax.getReadElementNames().contains(elt.getTagName())) {
-            err.at(elt).warn("Wrong name, expected " + formatPossibleNames(toConstants(syntax.getReadElementNames())));
-        } else {
-            return syntax.fromXml(elt, err);
-        }
-
-        return null;
     }
 
 }

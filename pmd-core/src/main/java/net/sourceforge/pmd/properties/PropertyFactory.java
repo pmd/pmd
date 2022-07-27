@@ -5,7 +5,7 @@
 package net.sourceforge.pmd.properties;
 
 import static java.util.Arrays.asList;
-import static net.sourceforge.pmd.properties.XmlSyntaxUtils.enumerationParser;
+import static net.sourceforge.pmd.properties.PropertyParsingUtil.enumerationParser;
 
 import java.util.Arrays;
 import java.util.List;
@@ -114,7 +114,7 @@ public final class PropertyFactory {
      * @see NumericConstraints
      */
     public static GenericPropertyBuilder<Integer> intProperty(String name) {
-        return new GenericPropertyBuilder<>(name, XmlSyntaxUtils.INTEGER);
+        return new GenericPropertyBuilder<>(name, PropertyParsingUtil.INTEGER);
     }
 
 
@@ -151,7 +151,7 @@ public final class PropertyFactory {
      * @see NumericConstraints
      */
     public static GenericPropertyBuilder<Long> longIntProperty(String name) {
-        return new GenericPropertyBuilder<>(name, XmlSyntaxUtils.LONG);
+        return new GenericPropertyBuilder<>(name, PropertyParsingUtil.LONG);
     }
 
 
@@ -183,7 +183,7 @@ public final class PropertyFactory {
      * @see NumericConstraints
      */
     public static GenericPropertyBuilder<Double> doubleProperty(String name) {
-        return new GenericPropertyBuilder<>(name, XmlSyntaxUtils.DOUBLE);
+        return new GenericPropertyBuilder<>(name, PropertyParsingUtil.DOUBLE);
     }
 
 
@@ -229,7 +229,7 @@ public final class PropertyFactory {
      * @return A new builder
      */
     public static GenericPropertyBuilder<String> stringProperty(String name) {
-        return new GenericPropertyBuilder<>(name, XmlSyntaxUtils.STRING);
+        return new GenericPropertyBuilder<>(name, PropertyParsingUtil.STRING);
     }
 
     /**
@@ -259,7 +259,7 @@ public final class PropertyFactory {
      * @return A new builder
      */
     public static GenericPropertyBuilder<Character> charProperty(String name) {
-        return new GenericPropertyBuilder<>(name, XmlSyntaxUtils.CHARACTER);
+        return new GenericPropertyBuilder<>(name, PropertyParsingUtil.CHARACTER);
     }
 
 
@@ -286,7 +286,7 @@ public final class PropertyFactory {
      * @return A new builder
      */
     public static GenericPropertyBuilder<Boolean> booleanProperty(String name) {
-        return new GenericPropertyBuilder<>(name, XmlSyntaxUtils.BOOLEAN);
+        return new GenericPropertyBuilder<>(name, PropertyParsingUtil.BOOLEAN);
     }
 
     // We can add more useful factories with Java 8.
@@ -311,7 +311,7 @@ public final class PropertyFactory {
      * @return A new builder
      */
     public static <T> GenericPropertyBuilder<T> enumProperty(String name, Map<String, T> nameToValue) {
-        XmlMapper<T> parser = enumerationParser(
+        PropertySerializer<T> parser = enumerationParser(
             nameToValue,
             t -> Objects.requireNonNull(CollectionUtil.getKeyOfValue(nameToValue, t))
         );

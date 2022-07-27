@@ -340,7 +340,7 @@ class PropertyDescriptorTest {
 
 
     private static List<String> parseEscaped(String s, char d) {
-        return XmlSyntaxUtils.parseListWithEscapes(s, d, Function.identity());
+        return PropertyParsingUtil.parseListWithEscapes(s, d, Function.identity());
     }
 
     @Test

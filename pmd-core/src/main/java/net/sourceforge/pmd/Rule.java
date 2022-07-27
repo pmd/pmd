@@ -36,7 +36,7 @@ public interface Rule extends PropertySource {
     PropertyDescriptor<Optional<Pattern>> VIOLATION_SUPPRESS_REGEX_DESCRIPTOR =
         PropertyFactory.regexProperty("violationSuppressRegex")
                        .desc("Suppress violations with messages matching a regular expression")
-                       .toOptional()
+                       .toOptional("")
                        .defaultValue(Optional.empty())
                        .build();
 
@@ -48,7 +48,7 @@ public interface Rule extends PropertySource {
     PropertyDescriptor<Optional<String>> VIOLATION_SUPPRESS_XPATH_DESCRIPTOR =
         PropertyFactory.stringProperty("violationSuppressXPath")
                        .desc("Suppress violations on nodes which match a given relative XPath expression.")
-                       .toOptional()
+                       .toOptional("")
                        .defaultValue(Optional.empty())
                        .build();
 

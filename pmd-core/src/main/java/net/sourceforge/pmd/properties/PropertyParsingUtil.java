@@ -17,15 +17,13 @@ import java.util.stream.Collectors;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.internal.util.IteratorUtil;
 import net.sourceforge.pmd.util.internal.xml.XmlUtil;
 
 /**
  * This is internal API and shouldn't be used directly by clients.
  */
-@InternalApi
-public final class XmlSyntaxUtils {
+final class PropertyParsingUtil {
 
     public static final ValueSyntax<String> STRING = ValueSyntax.withDefaultToString(String::trim);
     public static final ValueSyntax<Character> CHARACTER =
@@ -44,32 +42,38 @@ public final class XmlSyntaxUtils {
     public static final ValueSyntax<Double> DOUBLE = ValueSyntax.withDefaultToString(preTrim(Double::valueOf));
 
 
-    public static final XmlMapper<List<Integer>> INTEGER_LIST = numberList(INTEGER);
-    public static final XmlMapper<List<Double>> DOUBLE_LIST = numberList(DOUBLE);
-    public static final XmlMapper<List<Long>> LONG_LIST = numberList(LONG);
+    public static final PropertySerializer<List<Integer>> INTEGER_LIST = numberList(INTEGER);
+    public static final PropertySerializer<List<Double>> DOUBLE_LIST = numberList(DOUBLE);
+    public static final PropertySerializer<List<Long>> LONG_LIST = numberList(LONG);
 
-    public static final XmlMapper<List<Character>> CHAR_LIST = otherList(CHARACTER);
-    public static final XmlMapper<List<String>> STRING_LIST = otherList(STRING);
+    public static final PropertySerializer<List<Character>> CHAR_LIST = otherList(CHARACTER);
+    public static final PropertySerializer<List<String>> STRING_LIST = otherList(STRING);
 
-    private XmlSyntaxUtils() {
+    private PropertyParsingUtil() {
 
     }
 
 
-    private static <T extends Number> XmlMapper<List<T>> numberList(ValueSyntax<T> valueSyntax) {
-        return seqAndDelimited(valueSyntax, Collectors.toList(), true, PropertyFactory.DEFAULT_NUMERIC_DELIMITER);
+    private static <T extends Number> PropertySerializer<List<T>> numberList(ValueSyntax<T> valueSyntax) {
+        return delimitedString(valueSyntax, Collectors.toList(), PropertyFactory.DEFAULT_NUMERIC_DELIMITER);
     }
 
-    private static <T> XmlMapper<List<T>> otherList(ValueSyntax<T> valueSyntax) {
-        return seqAndDelimited(valueSyntax, Collectors.toList(), /* prefer old syntax for now */ true, PropertyFactory.DEFAULT_DELIMITER);
+    private static <T> PropertySerializer<List<T>> otherList(ValueSyntax<T> valueSyntax) {
+        return delimitedString(valueSyntax, Collectors.toList(), /* prefer old syntax for now */  PropertyFactory.DEFAULT_DELIMITER);
     }
 
     private static <T> Function<String, ? extends T> preTrim(Function<? super String, ? extends T> parser) {
         return parser.compose(String::trim);
     }
 
-    public static <T> XmlMapper<Optional<T>> toOptional(XmlMapper<T> itemSyntax) {
-        return new OptionalSyntax<>(itemSyntax);
+    public static <T> PropertySerializer<Optional<T>> toOptional(PropertySerializer<T> itemSyntax, String missingValue) {
+        return ValueSyntax.create(
+            opt -> opt.map(itemSyntax::toString).orElse(missingValue),
+            str -> {
+                if (str.equals(missingValue)) return Optional.empty();
+                return Optional.of(itemSyntax.fromString(str));
+            }
+        );
     }
 
 
@@ -88,8 +92,7 @@ public final class XmlSyntaxUtils {
         return failures;
     }
 
-    @Nullable
-    public static <T> String checkConstraintsJoin(T t, List<? extends PropertyConstraint<? super T>> constraints) {
+    public static @Nullable <T> String checkConstraintsJoin(T t, List<? extends PropertyConstraint<? super T>> constraints) {
         List<String> failures = checkConstraints(t, constraints);
         if (!failures.isEmpty()) {
             return String.join(", ", failures);
@@ -107,8 +110,8 @@ public final class XmlSyntaxUtils {
         }
     }
 
-    public static <T> XmlMapper<T> withAllConstraints(XmlMapper<T> mapper, List<PropertyConstraint<? super T>> constraints) {
-        XmlMapper<T> result = mapper;
+    public static <T> PropertySerializer<T> withAllConstraints(PropertySerializer<T> mapper, List<PropertyConstraint<? super T>> constraints) {
+        PropertySerializer<T> result = mapper;
         for (PropertyConstraint<? super T> constraint : constraints) {
             result = result.withConstraint(constraint);
         }
@@ -122,44 +125,19 @@ public final class XmlSyntaxUtils {
      *
      * @param itemSyntax      Serializer for the items, must support string mapping
      * @param collector       Collector to create the collection from strings
-     * @param preferOldSyntax If true, the property will be written with {@code <value>},
-     *                        otherwise with {@code <seq>}.
      * @param delimiter       Delimiter for the {@code <value>} syntax
      * @param <T>             Type of items
      * @param <C>             Type of collection to handle
      *
      * @throws IllegalArgumentException If the item syntax doesn't support string mapping
      */
-    public static <T, C extends Iterable<T>> XmlMapper<C> seqAndDelimited(XmlMapper<T> itemSyntax,
-                                                                          Collector<? super T, ?, ? extends C> collector,
-                                                                          boolean preferOldSyntax,
-                                                                          char delimiter) {
-        if (!itemSyntax.supportsStringMapping()) {
-            throw new IllegalArgumentException("Item syntax does not support string mapping " + itemSyntax);
-        }
-        return new MapperSet<>(
-            new SeqSyntax<>(itemSyntax, collector),
-            delimitedString(itemSyntax::toString, itemSyntax::fromString, delimiter, collector),
-            preferOldSyntax
-        );
-    }
-
-    public static <T, C extends Iterable<T>> XmlMapper<C> onlySeq(XmlMapper<T> itemSyntax,
-                                                                  Collector<? super T, ?, ? extends C> collector) {
-        return new SeqSyntax<>(itemSyntax, collector);
-    }
-
-
-    private static <T, C extends Iterable<T>> ValueSyntax<C> delimitedString(
-        Function<? super T, String> toString,
-        Function<String, ? extends T> fromString,
-        char delimiter,
-        Collector<? super T, ?, ? extends C> collector
-    ) {
+    public static <T, C extends Iterable<T>> PropertySerializer<C> delimitedString(PropertySerializer<T> itemSyntax,
+                                                                                   Collector<? super T, ?, ? extends C> collector,
+                                                                                   char delimiter) {
         String delim = "" + delimiter;
         return ValueSyntax.create(
-            coll -> IteratorUtil.toStream(coll.iterator()).map(toString).collect(Collectors.joining(delim)),
-            string -> parseListWithEscapes(string, delimiter, fromString).stream().collect(collector)
+            coll -> IteratorUtil.toStream(coll.iterator()).map(itemSyntax::toString).collect(Collectors.joining(delim)),
+            string -> parseListWithEscapes(string, delimiter, itemSyntax::fromString).stream().collect(collector)
         );
     }
 

@@ -12,11 +12,8 @@ import java.util.Objects;
 import java.util.function.Function;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.w3c.dom.Element;
 
 import net.sourceforge.pmd.internal.util.PredicateUtil;
-import net.sourceforge.pmd.properties.XmlMapper.StableXmlMapper;
-import net.sourceforge.pmd.util.internal.xml.PmdXmlReporter;
 
 /**
  * Serialize to and from a simple string. Examples:
@@ -30,9 +27,8 @@ import net.sourceforge.pmd.util.internal.xml.PmdXmlReporter;
  * <pre>This class is special because it enables compatibility with the
  * pre 7.0.0 XML syntax.
  */
-class ValueSyntax<T> extends StableXmlMapper<T> {
+class ValueSyntax<T> extends PropertySerializer<T> {
 
-    private static final String VALUE_NAME = "value";
     private final Function<? super T, @NonNull String> toString;
     private final Function<@NonNull String, ? extends T> fromString;
 
@@ -42,15 +38,9 @@ class ValueSyntax<T> extends StableXmlMapper<T> {
     ValueSyntax(Function<? super T, String> toString,
                 Function<@NonNull String, ? extends T> fromString,
                 List<PropertyConstraint<? super T>> docConstraints) {
-        super(VALUE_NAME);
         this.toString = toString;
         this.fromString = fromString;
         this.docConstraints = docConstraints;
-    }
-
-    @Override
-    public boolean supportsStringMapping() {
-        return true;
     }
 
     @Override
@@ -66,26 +56,6 @@ class ValueSyntax<T> extends StableXmlMapper<T> {
     @Override
     public @NonNull String toString(T data) {
         return toString.apply(data);
-    }
-
-    @Override
-    public void toXml(Element container, T value) {
-        // TODO CDATA/ xml escape
-        container.setTextContent(toString.apply(value));
-    }
-
-    @Override
-    public T fromXml(Element element, PmdXmlReporter err) {
-        try {
-            return fromString.apply(element.getTextContent());
-        } catch (IllegalArgumentException e) {
-            throw err.at(element).error(e);
-        }
-    }
-
-    @Override
-    protected List<String> examplesImpl(String curIndent, String baseIndent) {
-        return Collections.singletonList(curIndent + "<value>data</value>");
     }
 
     /**

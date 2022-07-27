@@ -36,7 +36,7 @@ import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertySource;
 import net.sourceforge.pmd.properties.PropertyTypeId;
-import net.sourceforge.pmd.properties.XmlMapper;
+import net.sourceforge.pmd.properties.PropertySerializer;
 import net.sourceforge.pmd.util.IOUtil;
 import net.sourceforge.pmd.util.internal.xml.SchemaConstants;
 
@@ -303,10 +303,10 @@ public class RuleSetWriter {
         Element element = document.createElementNS(RULESET_2_0_0_NS_URI, "property");
         SchemaConstants.NAME.setOn(element, propertyDescriptor.name());
 
-        XmlMapper<T> xmlStrategy = propertyDescriptor.xmlMapper();
+        PropertySerializer<T> xmlStrategy = propertyDescriptor.serializer();
 
-        Element valueElt = createPropertyValueElement(xmlStrategy.getWriteElementName(value));
-        xmlStrategy.toXml(valueElt, value);
+        Element valueElt = createPropertyValueElement(SchemaConstants.PROPERTY_VALUE.xmlName());
+        valueElt.setTextContent(xmlStrategy.toString(value));
         element.appendChild(valueElt);
 
         return element;

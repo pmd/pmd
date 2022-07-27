@@ -34,7 +34,7 @@ public class HTMLRenderer extends AbstractIncrementingRenderer {
     public static final PropertyDescriptor<Optional<String>> LINE_PREFIX =
         PropertyFactory.stringProperty("linePrefix")
                        .desc("Prefix for line number anchor in the source file.")
-                       .toOptional()
+                       .toOptional("<none>")
                        .defaultValue(Optional.empty())
                        .build();
 

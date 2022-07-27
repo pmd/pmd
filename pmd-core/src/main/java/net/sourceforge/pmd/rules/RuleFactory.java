@@ -11,10 +11,10 @@ import static net.sourceforge.pmd.util.internal.xml.SchemaConstants.PROPERTY_TYP
 import static net.sourceforge.pmd.util.internal.xml.SchemaConstants.PROPERTY_VALUE;
 import static net.sourceforge.pmd.util.internal.xml.XmlErrorMessages.ERR__INVALID_LANG_VERSION;
 import static net.sourceforge.pmd.util.internal.xml.XmlErrorMessages.ERR__INVALID_LANG_VERSION_NO_NAMED_VERSION;
+import static net.sourceforge.pmd.util.internal.xml.XmlErrorMessages.ERR__MISSING_REQUIRED_ELEMENT;
 import static net.sourceforge.pmd.util.internal.xml.XmlErrorMessages.ERR__PROPERTY_DOES_NOT_EXIST;
-import static net.sourceforge.pmd.util.internal.xml.XmlErrorMessages.ERR__UNSUPPORTED_VALUE_ATTRIBUTE;
 import static net.sourceforge.pmd.util.internal.xml.XmlErrorMessages.IGNORED__DUPLICATE_PROPERTY_SETTER;
-import static net.sourceforge.pmd.util.internal.xml.XmlUtil.getSingleChildIn;
+import static net.sourceforge.pmd.util.internal.xml.XmlErrorMessages.IGNORED__PROPERTY_CHILD_HAS_PRECEDENCE;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -24,6 +24,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RulePriority;
@@ -36,9 +37,9 @@ import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.properties.PropertyBuilder;
 import net.sourceforge.pmd.properties.PropertyBuilder.GenericCollectionPropertyBuilder;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.properties.PropertySerializer;
 import net.sourceforge.pmd.properties.PropertyTypeId;
 import net.sourceforge.pmd.properties.PropertyTypeId.BuilderAndMapper;
-import net.sourceforge.pmd.properties.XmlMapper;
 import net.sourceforge.pmd.util.ResourceLoader;
 import net.sourceforge.pmd.util.StringUtil;
 import net.sourceforge.pmd.util.internal.xml.PmdXmlReporter;
@@ -317,7 +318,7 @@ public class RuleFactory {
     }
 
     private <T> void setRulePropertyCapture(Rule rule, PropertyDescriptor<T> descriptor, Element propertyElt, PmdXmlReporter err) {
-        T value = parsePropertyValue(propertyElt, err, descriptor.xmlMapper());
+        T value = parsePropertyValue(propertyElt, err, descriptor.serializer());
         rule.setProperty(descriptor, value);
     }
 
@@ -393,34 +394,29 @@ public class RuleFactory {
         }
     }
 
-    private static <T> T parsePropertyValue(Element propertyElt, PmdXmlReporter err, XmlMapper<T> syntax) {
-        @Nullable String defaultAttr = PROPERTY_VALUE.getAttributeOrNull(propertyElt);
-        if (defaultAttr != null) {
-            Attr attrNode = PROPERTY_VALUE.getAttributeNode(propertyElt);
-
-            // the attribute syntax could be deprecated.
-            //   err.warn(attrNode,
-            //            WARN__DEPRECATED_USE_OF_ATTRIBUTE,
-            //            PROPERTY_VALUE.xmlName(),
-            //            String.join("\nor\n", syntax.getExamples()));
-
-            try {
-                return syntax.fromString(defaultAttr);
-            } catch (IllegalArgumentException e) {
-                throw err.at(attrNode).error(e);
-            } catch (UnsupportedOperationException e) {
-                throw err.at(attrNode)
-                         .error(ERR__UNSUPPORTED_VALUE_ATTRIBUTE,
-                                String.join("\nor\n", syntax.getExamples()));
+    private static <T> T parsePropertyValue(Element propertyElt, PmdXmlReporter err, PropertySerializer<T> syntax) {
+        String valueAttr = PROPERTY_VALUE.getAttributeOrNull(propertyElt);
+        Element valueChild = PROPERTY_VALUE.getOptChildIn(propertyElt, err);
+        Attr attrNode = PROPERTY_VALUE.getAttributeNode(propertyElt);
+        Node node;
+        String valueStr;
+        if (valueChild != null) {
+            if (valueAttr != null) {
+                err.at(attrNode).warn(IGNORED__PROPERTY_CHILD_HAS_PRECEDENCE);
             }
-
+            valueStr = valueChild.getTextContent();
+            node = valueChild;
+        } else if (valueAttr != null) {
+            valueStr = valueAttr;
+            node = attrNode;
         } else {
-            Element child = getSingleChildIn(propertyElt,
-                                             true,
-                                             err,
-                                             XmlUtil.toConstants(syntax.getReadElementNames()));
-            // this will report the correct error if any
-            return syntax.fromXml(child, err);
+            throw err.at(propertyElt).error(ERR__MISSING_REQUIRED_ELEMENT, PROPERTY_VALUE.xmlName());
+        }
+
+        try {
+            return syntax.fromString(valueStr);
+        } catch (IllegalArgumentException e) {
+            throw err.at(node).error(e);
         }
     }
 }
