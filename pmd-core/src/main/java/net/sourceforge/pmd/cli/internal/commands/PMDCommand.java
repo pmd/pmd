@@ -5,7 +5,6 @@ import java.nio.file.Path;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
-import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -20,18 +19,13 @@ import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.renderers.RendererFactory;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Mixin;
-import picocli.CommandLine.Model.CommandSpec;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.ParameterException;
-import picocli.CommandLine.Spec;
 
 @Command(name = "analyze", aliases = {"analyse", "run" }, showDefaultValues = true,
     description = "The PMD standard source code analyzer")
-public class PMDCommand implements Callable<ExecutionResult> {
-    
-    @Spec
-    private CommandSpec spec; // injected by PicoCli, needed for validations
-    
+public class PMDCommand extends AbstractPMDSubcommand {
+
     @SuppressWarnings("unused")
     @Mixin
     private SubCommandHelpMixin help;
@@ -437,7 +431,7 @@ public class PMDCommand implements Callable<ExecutionResult> {
     }
 
     @Override
-    public ExecutionResult call() throws Exception {
+    protected ExecutionResult execute() {
         if ((inputPaths == null || inputPaths.isEmpty()) && uri == null && fileListPath == null) {
             throw new ParameterException(spec.commandLine(),
                     "Please provide a parameter for source root directory (--dir or -d), "
