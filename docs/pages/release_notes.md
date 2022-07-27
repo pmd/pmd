@@ -46,6 +46,7 @@ Being based on a proper Antlr grammar, CPD can:
 * core
     * [#4021](https://github.com/pmd/pmd/pull/4021): \[core] CPD: Add total number of tokens to XML reports
     * [#4031](https://github.com/pmd/pmd/issues/4031): \[core] If report is written to stdout, stdout should not be closed
+    * [#4051](https://github.com/pmd/pmd/issues/4051): \[doc] Additional rulesets are not listed in documentation
     * [#4053](https://github.com/pmd/pmd/pull/4053): \[core] Allow building PMD under Java 18+
 * java
     * [#4015](https://github.com/pmd/pmd/issues/4015): \[java] Support JDK 19
