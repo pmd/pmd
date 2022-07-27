@@ -19,6 +19,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.internal.util.IteratorUtil;
 
 // @formatter:off
@@ -303,8 +304,12 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
          * @return A new property builder for an optional.
          */
         public GenericPropertyBuilder<Optional<T>> toOptional(String missingValue) {
+            AssertionUtil.requireParamNotNull("missingValue", missingValue);
+
+            PropertySerializer<Optional<T>> serializer =
+                PropertyParsingUtil.toOptional(getParser(), missingValue);
             GenericPropertyBuilder<Optional<T>> result =
-                new GenericPropertyBuilder<>(this.getName(), PropertyParsingUtil.toOptional(getParser(), missingValue));
+                new GenericPropertyBuilder<>(this.getName(), serializer);
 
             if (isDefaultValueSet()) {
                 result.defaultValue(Optional.of(getDefaultValue()));

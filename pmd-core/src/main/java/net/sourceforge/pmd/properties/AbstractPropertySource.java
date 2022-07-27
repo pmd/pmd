@@ -188,22 +188,4 @@ public abstract class AbstractPropertySource implements PropertySource {
         return Collections.unmodifiableMap(propertiesByPropertyDescriptor);
     }
 
-
-    // todo Java 8 move up to interface
-    @Override
-    public String dysfunctionReason() {
-        for (PropertyDescriptor<?> descriptor : getOverriddenPropertyDescriptors()) {
-            String error = errorForPropCapture(descriptor);
-            if (error != null) {
-                return error;
-            }
-        }
-        return null;
-    }
-
-
-    private <T> String errorForPropCapture(PropertyDescriptor<T> descriptor) {
-        return descriptor.errorFor(getProperty(descriptor));
-    }
-
 }

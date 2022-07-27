@@ -104,22 +104,6 @@ public final class PropertyDescriptor<T> {
         return parser;
     }
 
-
-    /**
-     * TODO this needs to go away. Property constraints are now checked at
-     * the time the ruleset is parsed, to report errors on the specific
-     * XML nodes. Other than that, constraints should be checked when
-     * calling {@link PropertySource#setProperty(PropertyDescriptor, Object)}
-     * for fail-fast behaviour.
-     *
-     * @deprecated PMD 7.0.0 will change the return type to {@code Optional<String>}
-     */
-    @Deprecated
-    public String errorFor(T value) {
-        return PropertyParsingUtil.checkConstraintsJoin(value, parser.getConstraints());
-    }
-
-
     /**
      * Returns the type ID which was used to define this property. Returns
      * null if this property was defined in Java code and not in XML. This
