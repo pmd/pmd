@@ -68,7 +68,9 @@ final class PropertyParsingUtil {
         return ValueSyntax.create(
             opt -> opt.map(itemSyntax::toString).orElse(missingValue),
             str -> {
-                if (str.equals(missingValue)) return Optional.empty();
+                if (str.equals(missingValue)) {
+                    return Optional.empty();
+                }
                 return Optional.of(itemSyntax.fromString(str));
             }
         );

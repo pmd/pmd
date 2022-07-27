@@ -51,9 +51,9 @@ class ConstraintDecorator<T> extends PropertySerializer<T> {
 
     @Override
     public String toString() {
-        return "ConstraintDecorator{" +
-            "propertySerializer=" + propertySerializer +
-            ", constraints=" + constraints +
-            '}';
+        return "ConstraintDecorator{"
+            + "propertySerializer=" + propertySerializer
+            + ", constraints=" + constraints
+            + '}';
     }
 }

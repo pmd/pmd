@@ -48,11 +48,7 @@ public class RuleSetFactoryMessagesTest extends RulesetFactoryTestBase {
         ));
 
         assertThat(log, containsString(
-            "Error at dummyRuleset.xml:9:1\n"
-                + " 7| \n"
-                + " 8| <rule name=\"MockRuleName\" language=\"dummy\" class=\"net.sourceforge.pmd.lang.rule.MockRule\" message=\"avoid the mock rule\">\n"
-                + " 9| <properties>\n"
-                + " 10| <property name='testIntProperty' value='-4'/>\n"
+            " 10| <property name='testIntProperty' value='-4'/>\n"
                 + "                                      ^^^^^ Value should be between 1 and 100"
         ));
     }
