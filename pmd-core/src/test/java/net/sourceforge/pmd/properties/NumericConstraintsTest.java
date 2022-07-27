@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.junit.jupiter.api.Test;
 
 class NumericConstraintsTest {
@@ -15,40 +16,49 @@ class NumericConstraintsTest {
     @Test
     void testInRangeInteger() {
         PropertyConstraint<Integer> constraint = NumericConstraints.inRange(1, 10);
-        assertNull(constraint.validate(1));
-        assertNull(constraint.validate(5));
-        assertNull(constraint.validate(10));
-        assertNotNull(constraint.validate(0));
-        assertEquals("'-1' should be between 1 and 10", constraint.validate(-1));
-        assertNotNull(constraint.validate(11));
-        assertNotNull(constraint.validate(100));
+        assertNull(errorAsString(constraint, 1));
+        assertNull(errorAsString(constraint, 5));
+        assertNull(errorAsString(constraint, 10));
+        assertNotNull(errorAsString(constraint, 0));
+        assertEquals("'-1' should be between 1 and 10", errorAsString(constraint, -1));
+        assertNotNull(errorAsString(constraint, 11));
+        assertNotNull(errorAsString(constraint, 100));
+    }
+
+    private @Nullable <T> String errorAsString(PropertyConstraint<T> constraint, T value) {
+        try {
+            constraint.validate(value);
+            return null;
+        } catch (ConstraintViolatedException e) {
+            return e.getMessage();
+        }
     }
 
     @Test
     void testInRangeDouble() {
         PropertyConstraint<Double> constraint = NumericConstraints.inRange(1.0, 10.0);
-        assertNull(constraint.validate(1.0));
-        assertNull(constraint.validate(5.5));
-        assertNull(constraint.validate(10.0));
-        assertNotNull(constraint.validate(0.0));
-        assertNotNull(constraint.validate(-1.0));
-        assertNotNull(constraint.validate(11.1));
-        assertNotNull(constraint.validate(100.0));
+        assertNull(errorAsString(constraint, 1.0));
+        assertNull(errorAsString(constraint, 5.5));
+        assertNull(errorAsString(constraint, 10.0));
+        assertNotNull(errorAsString(constraint, 0.0));
+        assertNotNull(errorAsString(constraint, -1.0));
+        assertNotNull(errorAsString(constraint, 11.1));
+        assertNotNull(errorAsString(constraint, 100.0));
     }
 
     @Test
     void testPositive() {
         PropertyConstraint<Number> constraint = NumericConstraints.positive();
-        assertNull(constraint.validate(1));
-        assertNull(constraint.validate(1.5f));
-        assertNull(constraint.validate(1.5d));
-        assertNull(constraint.validate(100));
-        assertNotNull(constraint.validate(0));
-        assertEquals("'0.1' should be positive", constraint.validate(0.1f));
-        assertNotNull(constraint.validate(0.9d));
-        assertNotNull(constraint.validate(-1));
-        assertNotNull(constraint.validate(-100));
-        assertNotNull(constraint.validate(-0.1f));
-        assertNotNull(constraint.validate(-0.1d));
+        assertNull(errorAsString(constraint, 1));
+        assertNull(errorAsString(constraint, 1.5f));
+        assertNull(errorAsString(constraint, 1.5d));
+        assertNull(errorAsString(constraint, 100));
+        assertNotNull(errorAsString(constraint, 0));
+        assertEquals("'0.1' should be positive", errorAsString(constraint, 0.1f));
+        assertNotNull(errorAsString(constraint, 0.9d));
+        assertNotNull(errorAsString(constraint, -1));
+        assertNotNull(errorAsString(constraint, -100));
+        assertNotNull(errorAsString(constraint, -0.1f));
+        assertNotNull(errorAsString(constraint, -0.1d));
     }
 }

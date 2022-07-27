@@ -39,14 +39,8 @@ class ConstraintDecorator<T> extends PropertySerializer<T> {
     @Override
     public T fromString(@NonNull String attributeData) {
         T t = propertySerializer.fromString(attributeData);
-
         // perform constraint validation
-        PropertyParsingUtil.checkConstraintsThrow(
-            t,
-            constraints,
-            ConstraintViolatedException::new
-        );
-
+        PropertyParsingUtil.checkConstraintsThrow(t, constraints);
         return t;
     }
 

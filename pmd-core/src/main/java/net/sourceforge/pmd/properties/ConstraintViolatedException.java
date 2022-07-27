@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.properties;
 
+import org.apache.commons.lang3.StringUtils;
+
 /**
  * Thrown when a property constraint is violated. Detected while parsing
  * values from XML.
@@ -12,11 +14,18 @@ package net.sourceforge.pmd.properties;
  */
 public class ConstraintViolatedException extends IllegalArgumentException {
 
-    public ConstraintViolatedException(String message) {
-        super(message);
+    private final PropertyConstraint<?> constraint;
+
+    <T> ConstraintViolatedException(PropertyConstraint<T> constraint, T value) {
+        super("'" + value + "' " + StringUtils.uncapitalize(constraint.getConstraintDescription()));
+        this.constraint = constraint;
     }
 
-    public ConstraintViolatedException(Throwable cause) {
-        super(cause);
+    public PropertyConstraint<?> getConstraint() {
+        return constraint;
+    }
+
+    public String getMessageWithoutValue() {
+        return "Value " + StringUtils.uncapitalize(constraint.getConstraintDescription());
     }
 }

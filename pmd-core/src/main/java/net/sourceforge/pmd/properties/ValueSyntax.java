@@ -75,11 +75,7 @@ class ValueSyntax<T> extends PropertySerializer<T> {
         return new ValueSyntax<>(
             toString,
             s -> {
-                // this is the crucial place where constraints are applied.
-                String error = checker.validate(s);
-                if (error != null) {
-                    throw new ConstraintViolatedException(error);
-                }
+                checker.validate(s);
                 return fromString.apply(s);
             },
             listOf(docConstraint)

@@ -210,7 +210,7 @@ public class RulesetFactoryTestBase {
     }
 
     protected static @NonNull String propertyWithValueAttr(String name, String valueAttr) {
-        return "<property name='" + name + "' value='" + valueAttr + "/>\n";
+        return "<property name='" + name + "' value='" + valueAttr + "'/>\n";
     }
 
     protected static @NonNull String propertyDefWithValueAttr(String name,

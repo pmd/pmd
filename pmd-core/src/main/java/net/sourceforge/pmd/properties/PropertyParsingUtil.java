@@ -15,8 +15,6 @@ import java.util.regex.Pattern;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 import net.sourceforge.pmd.internal.util.IteratorUtil;
 import net.sourceforge.pmd.util.internal.xml.XmlUtil;
 
@@ -81,32 +79,22 @@ final class PropertyParsingUtil {
      * Checks the result of the constraints defined by this mapper on
      * the given element. Returns all failures as a list of strings.
      */
-    public static <T> List<String> checkConstraints(T t, List<? extends PropertyConstraint<? super T>> constraints) {
-        List<String> failures = new ArrayList<>();
+    public static <T> void checkConstraintsThrow(T t, List<? extends PropertyConstraint<? super T>> constraints) {
+        ConstraintViolatedException exception = null;
         for (PropertyConstraint<? super T> constraint : constraints) {
-            String validationResult = constraint.validate(t);
-            if (validationResult != null) {
-                failures.add(validationResult);
+            try {
+                constraint.validate(t);
+            } catch (ConstraintViolatedException e) {
+                if (exception == null) {
+                    exception = e;
+                } else {
+                    exception.addSuppressed(e);
+                }
             }
         }
-        return failures;
-    }
 
-    public static @Nullable <T> String checkConstraintsJoin(T t, List<? extends PropertyConstraint<? super T>> constraints) {
-        List<String> failures = checkConstraints(t, constraints);
-        if (!failures.isEmpty()) {
-            return String.join(", ", failures);
-        }
-        return null;
-    }
-
-    public static <T> void checkConstraintsThrow(T t,
-                                                 List<? extends PropertyConstraint<? super T>> constraints,
-                                                 Function<String, ? extends ConstraintViolatedException> exceptionMaker) {
-
-        String failures = checkConstraintsJoin(t, constraints);
-        if (failures != null) {
-            throw exceptionMaker.apply(failures);
+        if (exception != null) {
+            throw exception;
         }
     }
 

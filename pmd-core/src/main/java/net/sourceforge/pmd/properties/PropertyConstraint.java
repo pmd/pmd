@@ -4,13 +4,10 @@
 
 package net.sourceforge.pmd.properties;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
 
 import org.apache.commons.lang3.StringUtils;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.annotation.Experimental;
 
@@ -28,15 +25,14 @@ import net.sourceforge.pmd.annotation.Experimental;
 public interface PropertyConstraint<T> {
 
     /**
-     * Returns a diagnostic message if the value
-     * has a problem. Otherwise returns null.
+     * Checks that the value conforms to this constraint. Throws if that
+     * is not the case.
      *
      * @param value The value to validate
      *
-     * @return A diagnostic message
+     * @throws ConstraintViolatedException If this constraint is violated
      */
-    @Nullable
-    String validate(T value);
+    void validate(T value);
 
 
     /**
@@ -59,8 +55,8 @@ public interface PropertyConstraint<T> {
     default PropertyConstraint<Optional<? extends T>> toOptionalConstraint() {
         return new PropertyConstraint<Optional<? extends T>>() {
             @Override
-            public @Nullable String validate(Optional<? extends T> value) {
-                return value.map(PropertyConstraint.this::validate).orElse(null);
+            public void validate(Optional<? extends T> value) {
+                value.ifPresent(PropertyConstraint.this::validate);
             }
 
             @Override
@@ -80,16 +76,10 @@ public interface PropertyConstraint<T> {
     default PropertyConstraint<Iterable<? extends T>> toCollectionConstraint() {
         return new PropertyConstraint<Iterable<? extends T>>() {
             @Override
-            public @Nullable String validate(Iterable<? extends T> value) {
-                List<String> errors = new ArrayList<>();
+            public void validate(Iterable<? extends T> value) {
                 for (T t : value) {
-                    String compValidation = PropertyConstraint.this.validate(t);
-                    if (compValidation != null) {
-                        errors.add(compValidation);
-                    }
+                    PropertyConstraint.this.validate(t);
                 }
-                return errors.isEmpty() ? null
-                                        : String.join(", ", errors);
             }
 
             @Override
@@ -118,8 +108,10 @@ public interface PropertyConstraint<T> {
         return new PropertyConstraint<U>() {
 
             @Override
-            public String validate(U value) {
-                return pred.test(value) ? null : "'" + value + "' " + StringUtils.uncapitalize(constraintDescription);
+            public void validate(U value) {
+                if (!pred.test(value)) {
+                    throw new ConstraintViolatedException(this, value);
+                }
             }
 
             @Override

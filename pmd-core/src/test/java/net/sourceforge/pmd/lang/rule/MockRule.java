@@ -21,7 +21,10 @@ import net.sourceforge.pmd.properties.PropertyFactory;
  */
 public class MockRule extends AbstractRule {
 
-    private static final PropertyDescriptor<Integer> PROP = PropertyFactory.intProperty("testIntProperty").desc("testIntProperty").require(inRange(1, 100)).defaultValue(1).build();
+    public static final PropertyDescriptor<Integer> PROP =
+        PropertyFactory.intProperty("testIntProperty")
+                       .desc("testIntProperty")
+                       .require(inRange(1, 100)).defaultValue(1).build();
 
     public MockRule() {
         super();

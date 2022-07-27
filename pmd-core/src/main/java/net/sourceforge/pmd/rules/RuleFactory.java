@@ -34,6 +34,7 @@ import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.rule.RuleReference;
+import net.sourceforge.pmd.properties.ConstraintViolatedException;
 import net.sourceforge.pmd.properties.PropertyBuilder;
 import net.sourceforge.pmd.properties.PropertyBuilder.GenericCollectionPropertyBuilder;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
@@ -415,6 +416,8 @@ public class RuleFactory {
 
         try {
             return syntax.fromString(valueStr);
+        } catch (ConstraintViolatedException e) {
+            throw err.at(node).error(e, StringUtil.quoteMessageFormat(e.getMessageWithoutValue()));
         } catch (IllegalArgumentException e) {
             throw err.at(node).error(e);
         }

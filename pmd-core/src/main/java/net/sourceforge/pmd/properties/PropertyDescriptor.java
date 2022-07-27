@@ -57,8 +57,7 @@ public final class PropertyDescriptor<T> {
 
         PropertyParsingUtil.checkConstraintsThrow(
             defaultValue,
-            parser.getConstraints(),
-            ConstraintViolatedException::new
+            parser.getConstraints()
         );
     }
 
