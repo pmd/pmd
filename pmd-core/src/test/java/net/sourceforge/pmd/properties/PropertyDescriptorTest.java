@@ -8,15 +8,11 @@ import static java.util.Collections.emptyList;
 import static net.sourceforge.pmd.properties.NumericConstraints.inRange;
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.hasItem;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -31,10 +27,6 @@ import org.hamcrest.Matchers;
 import org.hamcrest.core.SubstringMatcher;
 import org.junit.jupiter.api.Test;
 
-import net.sourceforge.pmd.FooRule;
-import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.RuleSet;
-
 
 /**
  * @author Clément Fournier
@@ -42,59 +34,20 @@ import net.sourceforge.pmd.RuleSet;
  */
 class PropertyDescriptorTest {
 
-    @Test
-    void testConstraintViolationCausesDysfunctionalRule() {
-        PropertyDescriptor<Integer> intProperty = PropertyFactory.intProperty("fooProp")
-                                                                 .desc("hello")
-                                                                 .defaultValue(4)
-                                                                 .require(inRange(1, 10))
-                                                                 .build();
 
-        FooRule rule = new FooRule();
-        rule.definePropertyDescriptor(intProperty);
-        rule.setProperty(intProperty, 1000);
-        RuleSet ruleSet = RuleSet.forSingleRule(rule);
-
-        List<Rule> dysfunctional = new ArrayList<>();
-        ruleSet.removeDysfunctionalRules(dysfunctional);
-
-        assertEquals(1, dysfunctional.size());
-        assertThat(dysfunctional, hasItem(rule));
-    }
-
-
-    @Test
-    void testConstraintViolationCausesDysfunctionalRuleMulti() {
-        PropertyDescriptor<List<Double>> descriptor = PropertyFactory.doubleListProperty("fooProp")
-                                                                     .desc("hello")
-                                                                     .defaultValues(2., 11.) // 11. is in range
-                                                                     .requireEach(inRange(1d, 20d))
-                                                                     .build();
-
-        FooRule rule = new FooRule();
-        rule.definePropertyDescriptor(descriptor);
-        rule.setProperty(descriptor, Collections.singletonList(1000d)); // not in range
-        RuleSet ruleSet = RuleSet.forSingleRule(rule);
-
-        List<Rule> dysfunctional = new ArrayList<>();
-        ruleSet.removeDysfunctionalRules(dysfunctional);
-
-        assertEquals(1, dysfunctional.size());
-        assertThat(dysfunctional, hasItem(rule));
-    }
 
     @Test
     void testDefaultValueConstraintViolationCausesFailure() {
         PropertyConstraint<Integer> constraint = inRange(1, 10);
 
-        IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () ->
+        IllegalArgumentException thrown = assertThrows(ConstraintViolatedException.class, () ->
             PropertyFactory.intProperty("fooProp")
                            .desc("hello")
                            .defaultValue(1000)
                            .require(constraint)
                            .build());
-        assertThat(thrown.getMessage(), allOf(containsIgnoreCase("Constraint violat"/*-ed or -ion*/),
-                containsIgnoreCase(constraint.getConstraintDescription())));
+        assertThat(thrown.getMessage(),
+                containsIgnoreCase(constraint.getConstraintDescription()));
     }
 
 
@@ -102,14 +55,14 @@ class PropertyDescriptorTest {
     void testDefaultValueConstraintViolationCausesFailureMulti() {
         PropertyConstraint<Double> constraint = inRange(1d, 10d);
 
-        IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () ->
+        IllegalArgumentException thrown = assertThrows(ConstraintViolatedException.class, () ->
             PropertyFactory.doubleListProperty("fooProp")
                            .desc("hello")
                            .defaultValues(2., 11.) // 11. is out of range
                            .requireEach(constraint)
                            .build());
-        assertThat(thrown.getMessage(), allOf(containsIgnoreCase("Constraint violat"/*-ed or -ion*/),
-                containsIgnoreCase(constraint.getConstraintDescription())));
+        assertThat(thrown.getMessage(),
+                containsIgnoreCase(constraint.getConstraintDescription()));
     }
 
 

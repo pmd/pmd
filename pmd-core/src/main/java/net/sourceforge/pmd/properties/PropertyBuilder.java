@@ -21,6 +21,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.internal.util.IteratorUtil;
+import net.sourceforge.pmd.util.CollectionUtil;
 
 // @formatter:off
 /**
@@ -524,7 +525,7 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
         @Override
         public PropertyDescriptor<C> build() {
             PropertySerializer<C> syntax = PropertyParsingUtil.delimitedString(itemParser, collector, multiValueDelimiter);
-
+            syntax = PropertyParsingUtil.withAllConstraints(syntax, CollectionUtil.map(itemParser.getConstraints(), PropertyConstraint::toCollectionConstraint));
             syntax = PropertyParsingUtil.withAllConstraints(syntax, collectionConstraints);
 
             return new PropertyDescriptor<>(
