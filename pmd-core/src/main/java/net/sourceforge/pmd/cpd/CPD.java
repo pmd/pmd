@@ -4,12 +4,12 @@
 
 package net.sourceforge.pmd.cpd;
 
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -22,6 +22,7 @@ import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.cli.internal.CliMessages;
+import net.sourceforge.pmd.cpd.renderer.CPDReportRenderer;
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
 import net.sourceforge.pmd.util.FileFinder;
 import net.sourceforge.pmd.util.IOUtil;
@@ -39,6 +40,8 @@ public class CPD {
     private Tokens tokens = new Tokens();
     private MatchAlgorithm matchAlgorithm;
     private Set<String> current = new HashSet<>();
+    private final Map<String, Integer> numberOfTokensPerFile = new HashMap<>();
+    private int lastTokenSize = 0;
 
     public CPD(CPDConfiguration theConfiguration) {
         configuration = theConfiguration;
@@ -146,6 +149,8 @@ public class CPD {
         configuration.tokenizer().tokenize(sourceCode, tokens);
         listener.addedFile(1, new File(sourceCode.getFileName()));
         source.put(sourceCode.getFileName(), sourceCode);
+        numberOfTokensPerFile.put(sourceCode.getFileName(), tokens.size() - lastTokenSize - 1 /*EOF*/);
+        lastTokenSize = tokens.size();
     }
 
     private void addAndSkipLexicalErrors(SourceCode sourceCode) throws IOException {
@@ -208,11 +213,13 @@ public class CPD {
             CPDCommandLineInterface.addSourceFilesToCPD(cpd, arguments);
 
             cpd.go();
-            if (arguments.getCPDRenderer() == null) {
+            final CPDReportRenderer renderer = arguments.getCPDReportRenderer();
+            if (renderer == null) {
                 // legacy writer
                 System.out.println(arguments.getRenderer().render(cpd.getMatches()));
             } else {
-                arguments.getCPDRenderer().render(cpd.getMatches(), new BufferedWriter(new OutputStreamWriter(System.out)));
+                final CPDReport report = cpd.toReport();
+                renderer.render(report, IOUtil.createWriter(Charset.defaultCharset(), null));
             }
             if (cpd.getMatches().hasNext()) {
                 if (arguments.isFailOnViolation()) {
@@ -229,6 +236,10 @@ public class CPD {
             statusCode = StatusCode.ERROR;
         }
         return statusCode;
+    }
+
+    public CPDReport toReport() {
+        return new CPDReport(matchAlgorithm.getMatches(), numberOfTokensPerFile);
     }
 
     public enum StatusCode {

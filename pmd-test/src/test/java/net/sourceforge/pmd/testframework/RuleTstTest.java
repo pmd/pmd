@@ -30,6 +30,10 @@ public class RuleTstTest {
     private Rule rule = spy(AbstractRule.class);
 
     private RuleTst ruleTester = new RuleTst() {
+        @Override
+        public Rule findRule(String ruleSet, String ruleName) {
+            return rule;
+        }
     };
 
     @Test
