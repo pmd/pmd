@@ -2,6 +2,7 @@
 title: ADR NNN - Template
 sidebar: pmd_sidebar
 permalink: pmd_projectdocs_decisions_adr_NNN.html
+sidebaractiveurl: /pmd_projectdocs_decisions.html
 adr: true
 # Proposed / Accepted / Deprecated / Superseded
 adr_status: ""
