@@ -28,17 +28,40 @@ class ApexTreeBuilder(val sourceCode: String, val parserOptions: ApexParserOptio
     private val sourceCodePositioner = SourceCodePositioner(sourceCode)
 
     /** Builds and returns an [ApexNode] AST corresponding to the given [root] node. */
-    fun buildTree(root: CompilationUnit): ApexRootNode<TypeDeclaration> =
-        build(root, parent = null) as? ApexRootNode<TypeDeclaration>
-            ?: throw ParseException("Unable to build tree")
+    fun buildTree(root: CompilationUnit): ApexRootNode<TypeDeclaration> {
+        // Build tree
+        val result =
+            build(root, parent = null) as? ApexRootNode<TypeDeclaration>
+                ?: throw ParseException("Unable to build tree")
+
+        // Call additional methods
+        callAdditional(result)
+
+        return result
+    }
+
+    /** Calls additional methods for each node in [root] using a post-order traversal. */
+    private fun callAdditional(root: ApexNode<*>) =
+        root.jjtAccept(
+            object : ApexParserVisitorAdapter() {
+                override fun visit(node: ApexNode<*>?, data: Any?): Any? =
+                    super.visit(node, data).also {
+                        if (node is AbstractApexNode) {
+                            node.handleSourceCode(sourceCode)
+                            node.calculateLineNumbers(sourceCodePositioner)
+                        }
+                    }
+            },
+            null
+        )
 
     /**
      * Builds an [ApexNode] wrapper for [node].
      *
      * Sets the parent of the resulting [ApexNode] to [parent], if it's not `null`.
      */
-    private fun build(node: Node?, parent: ApexNode<*>?): AbstractApexNode? {
-        val wrapper: AbstractApexNode? =
+    private fun build(node: Node?, parent: ApexNode<*>?): ApexNode<*>? {
+        val wrapper: ApexNode<*>? =
             when (node) {
                 null -> null
                 is CompilationUnit -> build(node.typeDeclaration, parent)
@@ -54,8 +77,6 @@ class ApexTreeBuilder(val sourceCode: String, val parserOptions: ApexParserOptio
             }
 
         wrapper?.setParent(parent)
-        wrapper?.handleSourceCode(sourceCode)
-        wrapper?.calculateLineNumbers(sourceCodePositioner)
         return wrapper
     }
 
