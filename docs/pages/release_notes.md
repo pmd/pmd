@@ -88,7 +88,7 @@ Being based on a proper Antlr grammar, CPD can:
   but it is no longer supported with Java 19 Preview.
 * The interface {% jdoc core::cpd.renderer.CPDRenderer %} is deprecated. For custom CPD renderers
   the new interface {% jdoc core::cpd.renderer.CPDReportRenderer %} should be used.
-* The class {% jdoc test::testframework.TestDescriptor %} is deprecated, replaced with {% jdoc test-schema::testframework.RuleTestDescriptor %}.
+* The class {% jdoc test::testframework.TestDescriptor %} is deprecated, replaced with {% jdoc test-schema::test.schema.RuleTestDescriptor %}.
 * Many methods of {% jdoc test::testframework.RuleTst %} have been deprecated as internal API.
 
 #### Experimental APIs
