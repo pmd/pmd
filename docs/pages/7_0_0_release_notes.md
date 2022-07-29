@@ -184,6 +184,8 @@ The following previously deprecated rules have been finally removed:
 * miscellaneous
     *   [#896](https://github.com/pmd/pmd/issues/896): \[all] Use slf4j
     *   [#1451](https://github.com/pmd/pmd/issues/1451): \[core] RulesetFactoryCompatibility stores the whole ruleset file in memory as a string
+* core
+    * [#4035](https://github.com/pmd/pmd/issues/4035): \[core] ConcurrentModificationException in DefaultRuleViolationFactory
 * cli
     *   [#3828](https://github.com/pmd/pmd/issues/3828): \[core] Progress reporting
 * apex-design

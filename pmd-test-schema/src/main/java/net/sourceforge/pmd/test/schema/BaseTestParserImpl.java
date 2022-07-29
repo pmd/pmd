@@ -29,6 +29,9 @@ import net.sourceforge.pmd.properties.PropertySource;
 import net.sourceforge.pmd.test.schema.TestSchemaParser.PmdXmlReporter;
 
 import com.github.oowekyala.ooxml.DomUtils;
+import com.github.oowekyala.ooxml.messages.PositionedXmlDoc;
+import com.github.oowekyala.ooxml.messages.XmlPosition;
+import com.github.oowekyala.ooxml.messages.XmlPositioner;
 
 /**
  * @author Clément Fournier
@@ -39,7 +42,8 @@ class BaseTestParserImpl {
 
     }
 
-    public RuleTestCollection parseDocument(Rule rule, Document doc, PmdXmlReporter err) {
+    public RuleTestCollection parseDocument(Rule rule, PositionedXmlDoc positionedXmlDoc, PmdXmlReporter err) {
+        Document doc = positionedXmlDoc.getDocument();
         Element root = doc.getDocumentElement();
 
         Map<String, Element> codeFragments = parseCodeFragments(err, root);
@@ -51,7 +55,7 @@ class BaseTestParserImpl {
             RuleTestDescriptor descriptor = new RuleTestDescriptor(i, rule.deepCopy());
 
             try (PmdXmlReporter errScope = err.newScope()) {
-                parseSingleTest(testCodes.get(i), descriptor, codeFragments, usedFragments, errScope);
+                parseSingleTest(testCodes.get(i), descriptor, codeFragments, usedFragments, positionedXmlDoc.getPositioner(), errScope);
                 if (!errScope.hasError()) {
                     result.addTest(descriptor);
                 }
@@ -85,6 +89,7 @@ class BaseTestParserImpl {
                                  RuleTestDescriptor descriptor,
                                  Map<String, Element> fragments,
                                  Set<String> usedFragments,
+                                 XmlPositioner xmlPositioner,
                                  PmdXmlReporter err) {
         {
             String description = getSingleChildText(testCode, "description", true, err);
@@ -102,6 +107,13 @@ class BaseTestParserImpl {
 
         descriptor.setDisabled(disabled);
 
+
+        boolean focused = parseBoolAttribute(testCode, "focused", false, err,
+                                             "Attribute focused is used, do not forget to remove it when checking in sources");
+
+        descriptor.setFocused(focused);
+
+
         Properties properties = parseRuleProperties(testCode, descriptor.getRule(), err);
         descriptor.getProperties().putAll(properties);
 
@@ -118,6 +130,9 @@ class BaseTestParserImpl {
         if (lversion != null) {
             descriptor.setLanguageVersion(lversion);
         }
+
+        XmlPosition startPosition = xmlPositioner.startPositionOf(testCode);
+        descriptor.setLineNumber(startPosition.getLine());
     }
 
     private void parseExpectedProblems(Element testCode, RuleTestDescriptor descriptor, PmdXmlReporter err) {
