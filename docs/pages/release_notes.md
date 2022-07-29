@@ -44,6 +44,7 @@ Being based on a proper Antlr grammar, CPD can:
 * apex
     * [#4056](https://github.com/pmd/pmd/pull/4056): \[apex] ApexSOQLInjection: Add support count query
 * core
+    * [#3796](https://github.com/pmd/pmd/issues/3796): \[core] CPD should also provide a `--debug` flag
     * [#4021](https://github.com/pmd/pmd/pull/4021): \[core] CPD: Add total number of tokens to XML reports
     * [#4031](https://github.com/pmd/pmd/issues/4031): \[core] If report is written to stdout, stdout should not be closed
     * [#4051](https://github.com/pmd/pmd/issues/4051): \[doc] Additional rulesets are not listed in documentation
@@ -65,6 +66,11 @@ Being based on a proper Antlr grammar, CPD can:
     * [#3976](https://github.com/pmd/pmd/pull/3976): \[test] Extract xml schema module
 
 ### API Changes
+
+#### CPD CLI
+
+* CPD has a new CLI option `--debug`. This option has the same behavior as in PMD. It enables more verbose
+  logging output.
 
 #### Rule Test Framework
 
