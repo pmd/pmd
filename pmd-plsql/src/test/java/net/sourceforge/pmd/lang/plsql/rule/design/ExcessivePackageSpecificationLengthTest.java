@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.plsql.rule.design;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class ExcessivePackageSpecificationLengthTest extends PmdRuleTst {
+class ExcessivePackageSpecificationLengthTest extends PmdRuleTst {
     // no additional unit tests
 }

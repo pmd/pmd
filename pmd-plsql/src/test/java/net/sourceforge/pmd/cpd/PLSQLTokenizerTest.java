@@ -6,13 +6,13 @@ package net.sourceforge.pmd.cpd;
 
 import java.util.Properties;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.cpd.test.CpdTextComparisonTest;
 
-public class PLSQLTokenizerTest extends CpdTextComparisonTest {
+class PLSQLTokenizerTest extends CpdTextComparisonTest {
 
-    public PLSQLTokenizerTest() {
+    PLSQLTokenizerTest() {
         super(".sql");
     }
 
@@ -28,17 +28,17 @@ public class PLSQLTokenizerTest extends CpdTextComparisonTest {
 
     
     @Test
-    public void testSimple() {
+    void testSimple() {
         doTest("sample-plsql");
     }
 
     @Test
-    public void testSpecialComments() {
+    void testSpecialComments() {
         doTest("specialComments");
     }
 
     @Test
-    public void testTabWidth() {
+    void testTabWidth() {
         doTest("tabWidth");
     }
 }
