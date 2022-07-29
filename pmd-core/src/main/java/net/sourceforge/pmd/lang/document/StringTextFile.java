@@ -11,7 +11,7 @@ import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.util.datasource.DataSource;
-import net.sourceforge.pmd.util.datasource.ReaderDataSource;
+import net.sourceforge.pmd.util.datasource.internal.ReaderDataSourceWithLanguage;
 
 /**
  * Read-only view on a string.
@@ -64,9 +64,10 @@ class StringTextFile implements TextFile {
 
     @Override
     public DataSource toDataSourceCompat() {
-        return new ReaderDataSource(
+        return new ReaderDataSourceWithLanguage(
             new StringReader(content),
-            pathId
+            pathId,
+            languageVersion
         );
     }
 

@@ -24,6 +24,7 @@ import org.mockito.ArgumentMatchers;
 import net.sourceforge.pmd.lang.Dummy2LanguageModule;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.document.SimpleTestTextFile;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
 import net.sourceforge.pmd.renderers.Renderer;
 
@@ -90,6 +91,28 @@ public class PmdAnalysisTest {
             pmd.addRuleSet(ruleset);
             pmd.files().addFile(Paths.get("src", "test", "resources", "sample-source", "dummy", "foo.txt"), language);
             Report report = pmd.performAnalysisAndCollectReport();
+            for (Report.ProcessingError error : report.getProcessingErrors()) {
+                System.out.println("error = " + error.getMsg() + ": " + error.getDetail());
+            }
+            Assert.assertEquals(0, report.getProcessingErrors().size());
+            Assert.assertEquals(1, report.getViolations().size());
+        }
+    }
+
+    @Test
+    public void testTextFileWithSpecificLanguage() {
+        final Language language = Dummy2LanguageModule.getInstance();
+        PMDConfiguration config = new PMDConfiguration();
+        config.setIgnoreIncrementalAnalysis(true);
+        RuleSet ruleset = RuleSet.forSingleRule(new TestRule());
+
+        try (PmdAnalysis pmd = PmdAnalysis.create(config)) {
+            pmd.addRuleSet(ruleset);
+            pmd.files().addFile(new SimpleTestTextFile("test content foo", "foo.txt", "foo.txt", language.getDefaultVersion()));
+            Report report = pmd.performAnalysisAndCollectReport();
+            for (Report.ProcessingError error : report.getProcessingErrors()) {
+                System.out.println("error = " + error.getMsg() + ": " + error.getDetail());
+            }
             Assert.assertEquals(0, report.getProcessingErrors().size());
             Assert.assertEquals(1, report.getViolations().size());
         }

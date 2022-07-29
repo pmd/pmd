@@ -222,7 +222,7 @@ public class SourceCodeProcessor {
             ctx.setLanguageVersion(forceLanguage);
         } else {
             // otherwise determine by file extension
-            LanguageVersion languageVersion = configuration.getLanguageVersionOfFile(ctx.getSourceCodeFile().toString());
+            LanguageVersion languageVersion = configuration.getLanguageVersionOfFile(ctx.getSourceCodeFilename());
             ctx.setLanguageVersion(languageVersion);
         }
     }
