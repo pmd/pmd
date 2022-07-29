@@ -11,25 +11,32 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.contrib.java.lang.system.RestoreSystemProperties;
 import org.junit.contrib.java.lang.system.SystemOutRule;
 import org.junit.rules.TemporaryFolder;
-import org.junit.rules.TestRule;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.junit.JavaUtilLoggingRule;
 
+import com.google.common.collect.ImmutableMap;
+
 public class CPDCommandLineInterfaceTest {
     private static final String SRC_DIR = "src/test/resources/net/sourceforge/pmd/cpd/files/";
+    private static final Map<String, Integer> NUMBER_OF_TOKENS = ImmutableMap.of(
+            new File(SRC_DIR, "dup1.java").getAbsolutePath(), 126,
+            new File(SRC_DIR, "dup2.java").getAbsolutePath(), 126,
+            new File(SRC_DIR, "file_with_ISO-8859-1_encoding.java").getAbsolutePath(), 32,
+            new File(SRC_DIR, "file_with_utf8_bom.java").getAbsolutePath(), 29
+    );
 
-    @Rule
-    public final TestRule restoreSystemProperties = new RestoreSystemProperties();
     @Rule
     public final SystemOutRule log = new SystemOutRule().enableLog().muteForSuccessfulTests();
     @Rule
@@ -38,33 +45,47 @@ public class CPDCommandLineInterfaceTest {
     public TemporaryFolder tempDir = new TemporaryFolder();
 
 
-    @Before
-    public void setup() {
-        System.setProperty(CPDCommandLineInterface.NO_EXIT_AFTER_RUN, "true");
+    private String getExpectedFileEntryXml(final String filename) {
+        final int numberOfTokens = NUMBER_OF_TOKENS.get(filename);
+        return String.format("   <file path=\"%s\"\n         totalNumberOfTokens=\"%d\"/>\n",
+                new File(filename).getAbsolutePath(),
+                numberOfTokens);
     }
-    
+
+    private String getExpectedFileEntriesXml(final Collection<String> filenames) {
+        final StringBuilder expectedFilesXmlBuilder = new StringBuilder();
+        for (final String filename : filenames) {
+            expectedFilesXmlBuilder.append(getExpectedFileEntryXml(filename));
+        }
+        return expectedFilesXmlBuilder.toString();
+    }
+
     @Test
     public void testEmptyResultRendering() {
-        CPDCommandLineInterface.main(new String[] { "--minimum-tokens", "340", "--language", "java", "--files",
-            SRC_DIR, "--format", "xml", });
-        Assert.assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" + "<pmd-cpd/>", log.getLog());
+        CPD.StatusCode statusCode = CPD.runCpd("--minimum-tokens", "340", "--language", "java", "--files",
+                SRC_DIR, "--format", "xml");
+        final String expectedFilesXml = getExpectedFileEntriesXml(NUMBER_OF_TOKENS.keySet());
+        Assert.assertEquals(CPD.StatusCode.OK, statusCode);
+        Assert.assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" + "<pmd-cpd>" + "\n" + expectedFilesXml + "</pmd-cpd>", log.getLog());
     }
 
     @Test
     public void testDeprecatedOptionsWarning() throws IOException {
-        File filelist = new File(tempDir.getRoot(), "cpd-test-file-list.txt");
-        Files.write(filelist.toPath(), Arrays.asList(
+        final List<String> filepaths = Arrays.asList(
                 new File(SRC_DIR, "dup1.java").getAbsolutePath(),
-                new File(SRC_DIR, "dup2.java").getAbsolutePath()), StandardCharsets.UTF_8);
+                new File(SRC_DIR, "dup2.java").getAbsolutePath());
+        final Path filelist = tempDir.getRoot().toPath().resolve("cpd-test-file-list.txt");
+        Files.write(filelist, filepaths, StandardCharsets.UTF_8);
+        final String expectedFilesXml = getExpectedFileEntriesXml(filepaths);
 
-        CPDCommandLineInterface.main(new String[] { "--minimum-tokens", "340", "--language", "java", "--filelist",
-            filelist.getAbsolutePath(), "--format", "xml", "-failOnViolation", "true" });
-        Assert.assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" + "<pmd-cpd/>", log.getLog());
+        CPD.StatusCode statusCode = CPD.runCpd("--minimum-tokens", "340", "--language", "java", "--filelist",
+                filelist.toAbsolutePath().toString(), "--format", "xml", "-failOnViolation", "true");
+        Assert.assertEquals(CPD.StatusCode.OK, statusCode);
+        Assert.assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" + "<pmd-cpd>" + "\n" + expectedFilesXml + "</pmd-cpd>", log.getLog());
         assertTrue(loggingRule.getLog().contains("Some deprecated options were used on the command-line, including -failOnViolation"));
         assertTrue(loggingRule.getLog().contains("Consider replacing it with --fail-on-violation"));
         // only one parameter is logged
         assertFalse(loggingRule.getLog().contains("Some deprecated options were used on the command-line, including --filelist"));
         assertFalse(loggingRule.getLog().contains("Consider replacing it with --file-list"));
-
     }
 }

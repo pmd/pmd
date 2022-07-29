@@ -2171,21 +2171,52 @@ a block `{}` is sufficient.
         <properties>
             <property name="xpath">
                 <value>
-//DoStatement[Expression/PrimaryExpression/PrimaryPrefix/Literal/BooleanLiteral] |
-//WhileStatement[Expression/PrimaryExpression/PrimaryPrefix/Literal/BooleanLiteral[@True = false()]]
+<![CDATA[
+(: while loops with single boolean literal, maybe parenthesized :)
+//WhileStatement[Expression/(.|(PrimaryExpression/PrimaryPrefix/Expression))/PrimaryExpression/PrimaryPrefix/Literal/BooleanLiteral[@True = false()]]
+|
+(: do-while loops with single boolean literal, maybe parenthesized :)
+//DoStatement[Expression/(.|(PrimaryExpression/PrimaryPrefix/Expression))/PrimaryExpression/PrimaryPrefix/Literal/BooleanLiteral]
+|
+(: while loops with conditional or'ed boolean literals, maybe parenthesized :)
+//WhileStatement[Expression/(InclusiveOrExpression|ConditionalOrExpression|(PrimaryExpression/PrimaryPrefix/Expression/(InclusiveOrExpression|ConditionalOrExpression)))
+    [count(PrimaryExpression/PrimaryPrefix/Literal/BooleanLiteral) = 2]
+    (: at least one false literal :)
+    [count(PrimaryExpression/PrimaryPrefix/Literal/BooleanLiteral[@True = false()]) >= 1]]
+|
+(: while loops with conditional and'ed boolean literals, maybe parenthesized :)
+//WhileStatement[Expression/(AndExpression|ConditionalAndExpression|(PrimaryExpression/PrimaryPrefix/Expression/(AndExpression|ConditionalAndExpression)))
+    (: at least one false literal :)
+    [count(PrimaryExpression/PrimaryPrefix/Literal/BooleanLiteral[@True = false()]) >= 1]]
+|
+(: do-while loops with conditional or'ed boolean literals, maybe parenthesized :)
+//DoStatement[Expression/(InclusiveOrExpression|ConditionalOrExpression|(PrimaryExpression/PrimaryPrefix/Expression/(InclusiveOrExpression|ConditionalOrExpression)))
+    [count(PrimaryExpression/PrimaryPrefix/Literal/BooleanLiteral) = 2]]
+|
+(: do-while loops with conditional and'ed boolean literals, maybe parenthesized :)
+//DoStatement[Expression/(AndExpression|ConditionalAndExpression|(PrimaryExpression/PrimaryPrefix/Expression/(AndExpression|ConditionalAndExpression)))
+    (: at least one false literal :)
+    [count(PrimaryExpression/PrimaryPrefix/Literal/BooleanLiteral[@True = false()]) >= 1
+      (: or two true literals (e.g. true & true) :)
+      or count(PrimaryExpression/PrimaryPrefix/Literal/BooleanLiteral[@True = true()]) = 2]]
+]]>
                 </value>
             </property>
             <property name="version" value="2.0" />
         </properties>
         <example>
+<![CDATA[
 public class Example {
   {
     while (true) { } // allowed
     while (false) { } // disallowed
     do { } while (true); // disallowed
     do { } while (false); // disallowed
+    do { } while (false | false); // disallowed
+    do { } while (false || false); // disallowed
   }
 }
+]]>
         </example>
     </rule>
 

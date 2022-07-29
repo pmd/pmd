@@ -80,8 +80,8 @@ public class CLITest extends BaseCLITest {
     public void testWrongRuleset() {
         String[] args = { "-d", SOURCE_FOLDER, "-f", "text", "-R", "category/java/designn.xml", };
         String log = runTest(StatusCode.ERROR, args);
-        assertThat(log, containsString("Can't find resource 'category/java/designn.xml' for rule 'null'."
-                                           + "  Make sure the resource is a valid file"));
+        assertThat(log, containsString("Cannot resolve rule/ruleset reference "
+                                       + "'category/java/designn.xml'"));
     }
 
     /**
@@ -91,8 +91,8 @@ public class CLITest extends BaseCLITest {
     public void testWrongRulesetWithRulename() {
         String[] args = { "-d", SOURCE_FOLDER, "-f", "text", "-R", "category/java/designn.xml/UseCollectionIsEmpty", };
         String log = runTest(StatusCode.ERROR, args);
-        assertThat(log, containsString("Can't find resource 'category/java/designn.xml' for rule "
-                                           + "'UseCollectionIsEmpty'."));
+        assertThat(log, containsString("Cannot resolve rule/ruleset reference"
+                                       + " 'category/java/designn.xml/UseCollectionIsEmpty'"));
     }
 
     /**

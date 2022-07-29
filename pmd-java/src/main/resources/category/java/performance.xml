@@ -17,7 +17,7 @@ Rules that flag suboptimal code.
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#addemptystring">
         <description>
 The conversion of literals to strings by concatenating them with empty strings is inefficient.
-It is much better to use one of the type-specific toString() methods instead.
+It is much better to use one of the type-specific `toString()` methods instead or `String.valueOf()`.
         </description>
         <priority>3</priority>
         <properties>
@@ -26,6 +26,12 @@ It is much better to use one of the type-specific toString() methods instead.
                 <value>
 <![CDATA[
 //AdditiveExpression/PrimaryExpression/PrimaryPrefix/Literal[@Image='""' and not(ancestor::Annotation)]
+|
+//AdditiveExpression/PrimaryExpression/PrimaryPrefix/Name
+  [@Image = (//FieldDeclaration[@Final = true()]|ancestor::MethodDeclaration//LocalVariableDeclaration[@Final = true()])
+                /VariableDeclarator[@Initializer = true()]
+                    [VariableInitializer/Expression/PrimaryExpression/PrimaryPrefix/Literal[@Image='""']]
+                    /VariableDeclaratorId/@Name]
 ]]>
                 </value>
             </property>
@@ -968,7 +974,14 @@ You must use `new ArrayList<>(Arrays.asList(...))` if that is inconvenient for y
 <![CDATA[
 //Statement/ForStatement
     [not(.//IfStatement)]
+    [count(Statement//StatementExpression)=1]
     [@Foreach = true() or ForInit//VariableInitializer//Literal[@IntLiteral= true() and @Image='0']]
+    (: skip primitive types :)
+    [@Foreach = true() and Expression[pmd-java:typeIs('java.lang.Object[]')]
+        or Expression/RelationalExpression/PrimaryExpression/PrimaryPrefix/Name[substring-before(@Image, '.length') =
+           ancestor::MethodDeclaration[1]//VariableDeclaratorId[pmd-java:typeIs('java.lang.Object[]')]
+           /@Name]
+    ]
     //StatementExpression
       [PrimaryExpression
         [PrimaryPrefix/Name
@@ -1012,12 +1025,12 @@ public class Test {
     public void foo(Integer[] ints) {
         // could just use Arrays.asList(ints)
         List<Integer> l = new ArrayList<>(100);
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < ints.length; i++) {
             l.add(ints[i]);
         }
 
         List<Integer> anotherList = new ArrayList<>();
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < ints.length; i++) {
             anotherList.add(ints[i].toString()); // won't trigger the rule
         }
     }

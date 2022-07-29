@@ -80,7 +80,7 @@ public class Violation {
         ]]></code>
     </test-code>
 
-    <test-code regressionTest="false">
+    <test-code disabled="true">
         <!-- Note: type res doesn't work well on method call chains in PMD 6, so none
              of these are detected. -->
         <description>Make sure to detect method call chains</description>

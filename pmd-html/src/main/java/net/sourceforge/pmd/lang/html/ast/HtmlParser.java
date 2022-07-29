@@ -10,7 +10,6 @@ import java.io.Reader;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.io.IOUtils;
 import org.jsoup.nodes.Document;
 import org.jsoup.parser.Parser;
 
@@ -18,6 +17,7 @@ import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.ParseException;
+import net.sourceforge.pmd.util.IOUtil;
 
 public final class HtmlParser implements net.sourceforge.pmd.lang.Parser {
 
@@ -29,7 +29,7 @@ public final class HtmlParser implements net.sourceforge.pmd.lang.Parser {
     @Override
     public Node parse(String fileName, Reader source) throws ParseException {
         try {
-            String data = IOUtils.toString(source);
+            String data = IOUtil.readToString(source);
             Document doc = Parser.xmlParser().parseInput(data, "");
             HtmlTreeBuilder builder = new HtmlTreeBuilder();
             return builder.build(doc, data);

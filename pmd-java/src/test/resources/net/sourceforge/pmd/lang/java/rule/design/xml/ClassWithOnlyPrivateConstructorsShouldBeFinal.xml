@@ -161,7 +161,7 @@ public class Outer {
         ]]></code>
     </test-code>
 
-    <test-code regressionTest="false">
+    <test-code disabled="true">
         <description>Private abstract classes without abstract methods and subclasses #3668</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>2</expected-linenumbers>

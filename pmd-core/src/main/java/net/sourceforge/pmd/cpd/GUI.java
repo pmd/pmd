@@ -20,7 +20,6 @@ import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.io.Writer;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -66,35 +65,16 @@ import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
 
 import net.sourceforge.pmd.PMDVersion;
-import net.sourceforge.pmd.cpd.renderer.CPDRenderer;
+import net.sourceforge.pmd.cpd.renderer.CPDRendererAdapter;
+import net.sourceforge.pmd.cpd.renderer.CPDReportRenderer;
 
 public class GUI implements CPDListener {
 
-    // private interface Renderer {
-    // String render(Iterator<Match> items);
-    // }
-
-    private static final Object[][] RENDERER_SETS = new Object[][] { { "Text", new CPDRenderer() {
-        @Override
-        public void render(Iterator<Match> items, Writer writer) throws IOException {
-            new SimpleRenderer().render(items, writer);
-        }
-    }, }, { "XML", new CPDRenderer() {
-        @Override
-        public void render(Iterator<Match> items, Writer writer) throws IOException {
-            new XMLRenderer().render(items, writer);
-        }
-    }, }, { "CSV (comma)", new CPDRenderer() {
-        @Override
-        public void render(Iterator<Match> items, Writer writer) throws IOException {
-            new CSVRenderer(',').render(items, writer);
-        }
-    }, }, { "CSV (tab)", new CPDRenderer() {
-        @Override
-        public void render(Iterator<Match> items, Writer writer) throws IOException {
-            new CSVRenderer('\t').render(items, writer);
-        }
-    }, }, };
+    private static final Object[][] RENDERER_SETS = new Object[][] {
+            { "Text", new CPDRendererAdapter(new SimpleRenderer()), },
+            { "XML", new XMLRenderer(), },
+            { "CSV (comma)", new CPDRendererAdapter(new CSVRenderer(',')), },
+            { "CSV (tab)", new CPDRendererAdapter(new CSVRenderer('\t')), }, };
 
     private abstract static class LanguageConfig {
         public abstract Language languageFor(Properties p);
@@ -147,7 +127,16 @@ public class GUI implements CPDListener {
 
                 @Override
                 public boolean canIgnoreAnnotations() {
-                    return "java".equals(terseName);
+                    if (terseName == null) {
+                        return false;
+                    }
+                    switch (terseName) {
+                        case "cs":
+                        case "java":
+                            return true;
+                        default:
+                            return false;
+                    }
                 }
 
                 @Override
@@ -271,9 +260,9 @@ public class GUI implements CPDListener {
 
     private class SaveListener implements ActionListener {
 
-        final CPDRenderer renderer;
+        final CPDReportRenderer renderer;
 
-        SaveListener(CPDRenderer theRenderer) {
+        SaveListener(CPDReportRenderer theRenderer) {
             renderer = theRenderer;
         }
 
@@ -287,8 +276,9 @@ public class GUI implements CPDListener {
             }
 
             if (!f.canWrite()) {
+                final CPDReport report = new CPDReport(matches, numberOfTokensPerFile);
                 try (PrintWriter pw = new PrintWriter(Files.newOutputStream(f.toPath()))) {
-                    renderer.render(matches.iterator(), pw);
+                    renderer.render(report, pw);
                     pw.flush();
                     JOptionPane.showMessageDialog(frame, "Saved " + matches.size() + " matches");
                 } catch (IOException e) {
@@ -363,14 +353,15 @@ public class GUI implements CPDListener {
     private boolean trimLeadingWhitespace;
 
     private List<Match> matches = new ArrayList<>();
+    private Map<String, Integer> numberOfTokensPerFile;
 
     private void addSaveOptionsTo(JMenu menu) {
 
         JMenuItem saveItem;
 
-        for (int i = 0; i < RENDERER_SETS.length; i++) {
-            saveItem = new JMenuItem("Save as " + RENDERER_SETS[i][0]);
-            saveItem.addActionListener(new SaveListener((CPDRenderer) RENDERER_SETS[i][1]));
+        for (final Object[] rendererSet : RENDERER_SETS) {
+            saveItem = new JMenuItem("Save as " + rendererSet[0]);
+            saveItem.addActionListener(new SaveListener((CPDReportRenderer) rendererSet[1]));
             menu.add(saveItem);
         }
     }
@@ -719,6 +710,7 @@ public class GUI implements CPDListener {
             cpd.go();
             t.stop();
 
+            numberOfTokensPerFile = cpd.toReport().getNumberOfTokensPerFile();
             matches = new ArrayList<>();
             for (Iterator<Match> i = cpd.getMatches(); i.hasNext();) {
                 Match match = i.next();

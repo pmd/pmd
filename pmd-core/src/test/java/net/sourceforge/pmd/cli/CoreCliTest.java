@@ -5,14 +5,18 @@
 package net.sourceforge.pmd.cli;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.containsStringIgnoringCase;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
+import java.io.FilterOutputStream;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystems;
@@ -20,8 +24,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.logging.Logger;
 
-import org.apache.commons.io.IOUtils;
 import org.hamcrest.Matcher;
+import org.hamcrest.MatcherAssert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -33,6 +37,7 @@ import org.junit.rules.TemporaryFolder;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMD.StatusCode;
 import net.sourceforge.pmd.junit.JavaUtilLoggingRule;
+import net.sourceforge.pmd.util.IOUtil;
 
 /**
  *
@@ -64,7 +69,7 @@ public class CoreCliTest {
         // create a few files
         srcDir = Files.createDirectories(root.resolve("src"));
         writeString(srcDir.resolve("someSource.dummy"), "dummy text");
-        
+        // reset logger?
         Logger.getLogger("net.sourceforge.pmd");
     }
 
@@ -131,7 +136,7 @@ public class CoreCliTest {
         runPmdSuccessfully("--no-cache", "--dir", srcDir, "--rulesets", DUMMY_RULESET, "--report-file", reportFile, "--debug");
 
         assertTrue("Report file should have been created", Files.exists(reportFile));
-        String reportText = IOUtils.toString(Files.newBufferedReader(reportFile, StandardCharsets.UTF_8));
+        String reportText = IOUtil.readToString(Files.newBufferedReader(reportFile, StandardCharsets.UTF_8));
         assertThat(reportText, not(containsStringIgnoringCase("error")));
     }
 
@@ -188,6 +193,31 @@ public class CoreCliTest {
         }
     }
 
+    @Test
+    public void testReportToStdoutNotClosing() {
+        PrintStream originalOut = System.out;
+        PrintStream out = new PrintStream(new FilterOutputStream(originalOut) {
+            @Override
+            public void close() {
+                fail("Stream must not be closed");
+            }
+        });
+        try {
+            System.setOut(out);
+            startCapturingErrAndOut();
+            runPmd(StatusCode.VIOLATIONS_FOUND, "--no-cache", "--dir", srcDir, "--rulesets", "dummy-basic");
+        } finally {
+            System.setOut(originalOut);
+        }
+    }
+
+    @Test
+    public void testDeprecatedRulesetSyntaxOnCommandLine() {
+        startCapturingErrAndOut();
+        runPmd(StatusCode.VIOLATIONS_FOUND, "--no-cache", "--dir", srcDir, "--rulesets", "dummy-basic");
+        MatcherAssert.assertThat(errStreamCaptor.getLog(), containsString("Ruleset reference 'dummy-basic' uses a deprecated form, use 'rulesets/dummy/basic.xml' instead"));
+    }
+
 
     @Test
     public void testWrongCliOptionsDoNotPrintUsage() {
@@ -223,7 +253,7 @@ public class CoreCliTest {
 
 
     private static void runPmdSuccessfully(Object... args) {
-        runPmd(0, args);
+        runPmd(StatusCode.OK, args);
     }
 
     private static String[] argsToString(Object... args) {
@@ -248,9 +278,9 @@ public class CoreCliTest {
         return StandardCharsets.UTF_8.decode(buf).toString();
     }
 
-    private static void runPmd(int expectedExitCode, Object[] args) {
+    private static void runPmd(StatusCode expectedExitCode, Object... args) {
         StatusCode actualExitCode = PMD.runPmd(argsToString(args));
-        assertEquals("Exit code", expectedExitCode, actualExitCode.toInt());
+        assertEquals("Exit code", expectedExitCode, actualExitCode);
     }
 
 

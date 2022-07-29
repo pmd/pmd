@@ -16,9 +16,8 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.io.IOUtils;
-
 import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.util.IOUtil;
 
 /**
  * Provides a simple filter mechanism to avoid failing to parse an old ruleset,
@@ -116,7 +115,7 @@ public class RuleSetFactoryCompatibility {
      * @throws IOException if the stream couldn't be read
      */
     public Reader filterRuleSetFile(InputStream stream) throws IOException {
-        byte[] bytes = IOUtils.toByteArray(stream);
+        byte[] bytes = IOUtil.toByteArray(stream);
         String encoding = determineEncoding(bytes);
         String ruleset = new String(bytes, encoding);
 

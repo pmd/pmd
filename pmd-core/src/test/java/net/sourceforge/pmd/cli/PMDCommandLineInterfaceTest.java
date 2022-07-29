@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.cli;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Assert;
@@ -100,4 +102,15 @@ public class PMDCommandLineInterfaceTest {
         Assert.assertNotNull(PMDCommandLineInterface.buildUsageText());
     }
 
+    @Test
+    public void testOnlyFileListOption() {
+        PMDParameters params = new PMDParameters();
+        String[] args = {"--file-list", "pmd.filelist", "-f", "text", "-R", "rulesets/java/quickstart.xml", "--no-cache", };
+        PMDCommandLineInterface.extractParameters(params, args, "PMD");
+
+        PMDConfiguration config = params.toConfiguration();
+        assertEquals("pmd.filelist", config.getInputFilePath());
+        assertTrue(config.getAllInputPaths().isEmpty()); // no additional input paths
+        assertNull(config.getInputPaths());
+    }
 }

@@ -7,6 +7,7 @@ package net.sourceforge.pmd.util.treeexport;
 import static org.hamcrest.Matchers.containsString;
 
 import java.io.BufferedWriter;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -15,7 +16,6 @@ import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 
-import org.apache.commons.io.IOUtils;
 import org.hamcrest.Matcher;
 import org.hamcrest.MatcherAssert;
 import org.junit.Assert;
@@ -67,7 +67,7 @@ public class TreeExportCliTest {
     }
 
     private static InputStream stdinContaining(String input) {
-        return IOUtils.toInputStream(input, StandardCharsets.UTF_8);
+        return new ByteArrayInputStream(input.getBytes(StandardCharsets.UTF_8));
     }
 
     static class IoSpy {

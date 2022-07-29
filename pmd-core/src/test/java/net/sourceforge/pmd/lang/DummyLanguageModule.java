@@ -12,7 +12,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.io.IOUtils;
 import org.jaxen.Navigator;
 
 import net.sourceforge.pmd.Rule;
@@ -29,6 +28,7 @@ import net.sourceforge.pmd.lang.rule.AbstractRuleChainVisitor;
 import net.sourceforge.pmd.lang.rule.AbstractRuleViolationFactory;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 import net.sourceforge.pmd.lang.rule.RuleChainVisitor;
+import net.sourceforge.pmd.util.IOUtil;
 
 import net.sf.saxon.expr.XPathContext;
 import net.sf.saxon.sxpath.IndependentContext;
@@ -130,7 +130,7 @@ public class DummyLanguageModule extends BaseLanguageModule {
                 @Override
                 public Node parse(String fileName, Reader source) throws ParseException {
                     try {
-                        String text = IOUtils.toString(source);
+                        String text = IOUtil.readToString(source);
                         DummyRootNode rootNode = readLispNode(text);
                         AbstractParser.setFileName(fileName, rootNode);
                         return rootNode;

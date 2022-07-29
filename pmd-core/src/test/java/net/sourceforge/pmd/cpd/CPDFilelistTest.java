@@ -7,11 +7,11 @@ package net.sourceforge.pmd.cpd;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.nio.file.Paths;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.io.FilenameUtils;
 import org.junit.Test;
 
 public class CPDFilelistTest {
@@ -28,7 +28,7 @@ public class CPDFilelistTest {
         assertEquals(2, paths.size());
         Set<String> simpleNames = new HashSet<>();
         for (String path : paths) {
-            simpleNames.add(FilenameUtils.getName(path));
+            simpleNames.add(Paths.get(path).getFileName().toString());
         }
         assertTrue(simpleNames.contains("anotherfile.dummy"));
         assertTrue(simpleNames.contains("somefile.dummy"));
@@ -46,7 +46,7 @@ public class CPDFilelistTest {
         assertEquals(2, paths.size());
         Set<String> simpleNames = new HashSet<>();
         for (String path : paths) {
-            simpleNames.add(FilenameUtils.getName(path));
+            simpleNames.add(Paths.get(path).getFileName().toString());
         }
         assertTrue(simpleNames.contains("anotherfile.dummy"));
         assertTrue(simpleNames.contains("somefile.dummy"));

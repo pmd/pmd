@@ -19,9 +19,9 @@ import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
+import net.sourceforge.pmd.lang.java.ast.ASTRecordDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTResultType;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
-import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.rule.AbstractInefficientZeroCheck;
 import net.sourceforge.pmd.lang.java.symboltable.ClassScope;
@@ -123,11 +123,14 @@ public class UseCollectionIsEmptyRule extends AbstractInefficientZeroCheck {
         Node classOrEnumBody = expr.getFirstParentOfType(ASTClassOrInterfaceBody.class);
         if (classOrEnumBody == null) {
             classOrEnumBody = expr.getFirstParentOfType(ASTEnumBody.class);
-        }                 
-        List<ASTVariableDeclarator> varDeclarators = classOrEnumBody.findDescendantsOfType(ASTVariableDeclarator.class);
-        for (ASTVariableDeclarator varDeclarator : varDeclarators) {
-            if (varDeclarator.getName().equals(varName)) {
-                return varDeclarator.getVariableId().getTypeNode().getTypeDefinition();
+        }
+        if (classOrEnumBody == null) {
+            classOrEnumBody = expr.getFirstParentOfType(ASTRecordDeclaration.class);
+        }
+        List<ASTVariableDeclaratorId> varDeclaratorIds = classOrEnumBody.findDescendantsOfType(ASTVariableDeclaratorId.class);
+        for (ASTVariableDeclaratorId variableDeclaratorId : varDeclaratorIds) {
+            if (variableDeclaratorId.getName().equals(varName)) {
+                return variableDeclaratorId.getTypeNode().getTypeDefinition();
             }
         }
         return null;

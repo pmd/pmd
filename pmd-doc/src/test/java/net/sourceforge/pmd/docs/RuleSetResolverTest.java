@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.docs;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.nio.file.FileSystems;
@@ -12,19 +14,19 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.commons.io.FilenameUtils;
 import org.junit.Test;
 
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.RulesetsFactoryUtils;
+import net.sourceforge.pmd.util.IOUtil;
 
 public class RuleSetResolverTest {
 
     private static List<String> excludedRulesets = new ArrayList<>();
 
     static {
-        excludedRulesets.add(FilenameUtils.normalize("pmd-test/src/main/resources/rulesets/dummy/basic.xml"));
+        excludedRulesets.add(IOUtil.normalizePath("pmd-test/src/main/resources/rulesets/dummy/basic.xml"));
     }
 
     @Test
@@ -34,6 +36,8 @@ public class RuleSetResolverTest {
 
         filterRuleSets(additionalRulesets);
 
+        assertFalse(additionalRulesets.isEmpty());
+
         RuleSetFactory ruleSetFactory = RulesetsFactoryUtils.defaultFactory();
         for (String filename : additionalRulesets) {
             try {
@@ -42,6 +46,12 @@ public class RuleSetResolverTest {
                 fail("Couldn't load ruleset " + filename + ": " + e.getMessage());
             }
         }
+    }
+
+    @Test
+    public void testAdditionalRulesetPattern() {
+        String filePath = IOUtil.normalizePath("/home/foo/pmd/pmd-java/src/main/resources/rulesets/java/quickstart.xml");
+        assertTrue(GenerateRuleDocsCmd.ADDITIONAL_RULESET_PATTERN.matcher(filePath).matches());
     }
 
     private void filterRuleSets(List<String> additionalRulesets) {

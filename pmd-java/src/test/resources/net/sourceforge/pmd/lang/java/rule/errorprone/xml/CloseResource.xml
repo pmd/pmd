@@ -249,7 +249,7 @@ public class Foo {
         ]]></code>
     </test-code>
 
-    <test-code reinitializeRule="true">
+    <test-code>
         <description>invoke an external method that close the resource: bug 2920057</description>
         <rule-property name="closeTargets">closeStatement,closeStatement,closeResultSet,closeConnexion</rule-property>
         <rule-property name="types">java.sql.Connection,java.sql.Statement,java.sql.ResultSet,java.sql.PreparedStatement</rule-property>
@@ -280,7 +280,7 @@ public class StructureFactory {
         ]]></code>
     </test-code>
 
-    <test-code reinitializeRule="true">
+    <test-code>
         <description>invoke an external method that closes the resource, but one is not the right method and an another is not the right variable: see bug 2920057</description>
         <rule-property name="closeTargets">closeStatement,closeStatement,closeResultSet,closeConnexion</rule-property>
         <rule-property name="types">java.sql.Connection,java.sql.Statement,java.sql.ResultSet,java.sql.PreparedStatement</rule-property>
@@ -312,7 +312,7 @@ public class StructureFactory {
         ]]></code>
     </test-code>
 
-    <test-code reinitializeRule="true">
+    <test-code>
         <description>#1011 CloseResource Rule ignores Constructors</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
@@ -326,7 +326,7 @@ public class Test {
         ]]></code>
     </test-code>
 
-    <test-code reinitializeRule="true">
+    <test-code>
         <description>#1011 CloseResource Rule ignores Constructors - closed in finally</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
@@ -345,7 +345,7 @@ public class Test {
         ]]></code>
     </test-code>
 
-    <test-code reinitializeRule="true">
+    <test-code>
         <description>#1011 CloseResource Rule ignores Constructors - not a problem - instance variable</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
@@ -360,7 +360,7 @@ public class Test {
         ]]></code>
     </test-code>
 
-    <test-code reinitializeRule="true">
+    <test-code>
         <description>#1029 No instance level check in the close resource rule</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[

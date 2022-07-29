@@ -7,7 +7,9 @@ package net.sourceforge.pmd.cpd;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -17,11 +19,12 @@ import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.apache.commons.io.FilenameUtils;
-
 import net.sourceforge.pmd.annotation.Experimental;
+import net.sourceforge.pmd.cli.internal.CliMessages;
+import net.sourceforge.pmd.cpd.renderer.CPDReportRenderer;
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
 import net.sourceforge.pmd.util.FileFinder;
+import net.sourceforge.pmd.util.IOUtil;
 import net.sourceforge.pmd.util.database.DBMSMetadata;
 import net.sourceforge.pmd.util.database.DBURI;
 import net.sourceforge.pmd.util.database.SourceObject;
@@ -36,6 +39,8 @@ public class CPD {
     private Tokens tokens = new Tokens();
     private MatchAlgorithm matchAlgorithm;
     private Set<String> current = new HashSet<>();
+    private final Map<String, Integer> numberOfTokensPerFile = new HashMap<>();
+    private int lastTokenSize = 0;
 
     public CPD(CPDConfiguration theConfiguration) {
         configuration = theConfiguration;
@@ -93,8 +98,7 @@ public class CPD {
             current.add(signature);
         }
 
-        if (!FilenameUtils.equalsNormalizedOnSystem(file.getAbsoluteFile().getCanonicalPath(),
-                file.getAbsolutePath())) {
+        if (!IOUtil.equalsNormalizedPaths(file.getAbsoluteFile().getCanonicalPath(), file.getAbsolutePath())) {
             System.err.println("Skipping " + file + " since it appears to be a symlink");
             return;
         }
@@ -144,6 +148,8 @@ public class CPD {
         configuration.tokenizer().tokenize(sourceCode, tokens);
         listener.addedFile(1, new File(sourceCode.getFileName()));
         source.put(sourceCode.getFileName(), sourceCode);
+        numberOfTokensPerFile.put(sourceCode.getFileName(), tokens.size() - lastTokenSize - 1 /*EOF*/);
+        lastTokenSize = tokens.size();
     }
 
     private void addAndSkipLexicalErrors(SourceCode sourceCode) throws IOException {
@@ -174,7 +180,81 @@ public class CPD {
         return new ArrayList<>(source.values());
     }
 
+    /**
+     * Entry to invoke CPD as command line tool. Note that this will
+     * invoke {@link System#exit(int)}.
+     *
+     * @param args command line arguments
+     */
     public static void main(String[] args) {
-        CPDCommandLineInterface.main(args);
+        StatusCode statusCode = runCpd(args);
+        CPDCommandLineInterface.setStatusCodeOrExit(statusCode.toInt());
+    }
+
+    /**
+     * Parses the command line and executes CPD. Returns the status code
+     * without exiting the VM.
+     *
+     * @param args command line arguments
+     *
+     * @return the status code
+     */
+    public static StatusCode runCpd(String... args) {
+        CPDConfiguration arguments = new CPDConfiguration();
+        CPD.StatusCode statusCode = CPDCommandLineInterface.parseArgs(arguments, args);
+        if (statusCode != null) {
+            return statusCode;
+        }
+
+        CPD cpd = new CPD(arguments);
+
+        try {
+            CPDCommandLineInterface.addSourceFilesToCPD(cpd, arguments);
+
+            cpd.go();
+            final CPDReportRenderer renderer = arguments.getCPDReportRenderer();
+            if (renderer == null) {
+                // legacy writer
+                System.out.println(arguments.getRenderer().render(cpd.getMatches()));
+            } else {
+                final CPDReport report = cpd.toReport();
+                renderer.render(report, IOUtil.createWriter(Charset.defaultCharset(), null));
+            }
+            if (cpd.getMatches().hasNext()) {
+                if (arguments.isFailOnViolation()) {
+                    statusCode = StatusCode.DUPLICATE_CODE_FOUND;
+                } else {
+                    statusCode = StatusCode.OK;
+                }
+            } else {
+                statusCode = StatusCode.OK;
+            }
+        } catch (IOException | RuntimeException e) {
+            e.printStackTrace();
+            LOGGER.severe(CliMessages.errorDetectedMessage(1, CPDCommandLineInterface.PROGRAM_NAME));
+            statusCode = StatusCode.ERROR;
+        }
+        return statusCode;
+    }
+
+    public CPDReport toReport() {
+        return new CPDReport(matchAlgorithm.getMatches(), numberOfTokensPerFile);
+    }
+
+    public enum StatusCode {
+        OK(0),
+        ERROR(1),
+        DUPLICATE_CODE_FOUND(4);
+
+        private final int code;
+
+        StatusCode(int code) {
+            this.code = code;
+        }
+
+        /** Returns the exit code as used in CLI. */
+        public int toInt() {
+            return this.code;
+        }
     }
 }
