@@ -4,28 +4,28 @@
 
 package net.sourceforge.pmd;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.File;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
 import net.sourceforge.pmd.lang.jsp.JspLanguageModule;
 
-public class LanguageVersionDiscovererTest {
+class LanguageVersionDiscovererTest {
 
     /**
      * Test on JSP file.
      */
     @Test
-    public void testJspFile() {
+    void testJspFile() {
         LanguageVersionDiscoverer discoverer = new LanguageVersionDiscoverer();
         File jspFile = new File("/path/to/MyPage.jsp");
         LanguageVersion languageVersion = discoverer.getDefaultLanguageVersionForFile(jspFile);
-        assertEquals("LanguageVersion must be JSP!",
-                LanguageRegistry.getLanguage(JspLanguageModule.NAME).getDefaultVersion(), languageVersion);
+        assertEquals(LanguageRegistry.getLanguage(JspLanguageModule.NAME).getDefaultVersion(), languageVersion,
+                "LanguageVersion must be JSP!");
     }
 }

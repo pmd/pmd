@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.jsp.rule.bestpractices;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class NoJspForwardTest extends PmdRuleTst {
+class NoJspForwardTest extends PmdRuleTst {
     // no additional unit tests
 }
