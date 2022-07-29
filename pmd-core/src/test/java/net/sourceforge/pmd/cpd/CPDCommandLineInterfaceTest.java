@@ -4,6 +4,9 @@
 
 package net.sourceforge.pmd.cpd;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -99,7 +102,7 @@ public class CPDCommandLineInterfaceTest {
         CPD.StatusCode statusCode = CPD.runCpd("--minimum-tokens", "340", "--language", "java", "--files",
                 SRC_DIR, "--debug");
         assertEquals(CPD.StatusCode.OK, statusCode);
-        assertTrue(errLog.getLog().contains("Tokenizing ")); // this is a debug logging
+        assertThat(errLog.getLog(), containsString("Tokenizing ")); // this is a debug logging
     }
 
     @Test
@@ -108,6 +111,6 @@ public class CPDCommandLineInterfaceTest {
         CPD.StatusCode statusCode = CPD.runCpd("--minimum-tokens", "340", "--language", "java", "--files",
                 SRC_DIR);
         assertEquals(CPD.StatusCode.OK, statusCode);
-        assertFalse(errLog.getLog().contains("Tokenizing ")); // this is a debug logging
+        assertThat(errLog.getLog(), not(containsString("Tokenizing "))); // this is a debug logging
     }
 }
