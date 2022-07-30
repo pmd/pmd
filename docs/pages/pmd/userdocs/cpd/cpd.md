@@ -73,6 +73,9 @@ Novice as much as advanced readers may want to [read on on Refactoring Guru](htt
                description="Sources code language."
                default="java"
     %}
+    {% include custom/cli_option_row.html options="--debug,--verbose"
+               description="Debug mode. Prints more log output."
+    %}
     {% include custom/cli_option_row.html options="--encoding"
                description="Character encoding to use when processing files. If not specified, CPD uses the system default encoding."
     %}
