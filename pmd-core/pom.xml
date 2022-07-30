@@ -51,34 +51,6 @@
                     </execution>
                 </executions>
             </plugin>
-
-            <!-- TODO: Move this to pmd-dist, and have all modules in the classpath so language autocompletion works as expected -->
-            <plugin>
-              <groupId>org.codehaus.mojo</groupId>
-              <artifactId>exec-maven-plugin</artifactId>
-              <executions>
-                <execution>
-                  <id>generate-autocompletion-script</id>
-                  <phase>package</phase>
-                  <goals>
-                    <goal>exec</goal>
-                  </goals>
-                </execution>
-              </executions>
-              <configuration>
-                <executable>java</executable>
-                <arguments>
-                  <argument>-Dpicocli.autocomplete.systemExitOnError</argument>
-                  <argument>-cp</argument>
-                  <classpath/>
-                  <argument>picocli.AutoComplete</argument>
-                  <argument>--force</argument>
-                  <argument>--completionScript</argument>
-                  <argument>${project.build.directory}/pmd_completion.sh</argument>
-                  <argument>net.sourceforge.pmd.cli.internal.commands.PMDRootCommand</argument>
-                </arguments>
-              </configuration>
-            </plugin>
         </plugins>
     </build>
     <dependencies>

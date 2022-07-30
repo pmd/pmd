@@ -44,7 +44,7 @@
                   <argument>--force</argument>
                   <argument>--completionScript</argument>
                   <argument>${project.build.directory}/pmd_completion.sh</argument>
-                  <argument>net.sourceforge.pmd.cli.internal.commands.PMDRootCommand</argument>
+                  <argument>net.sourceforge.pmd.cli.commands.internal.PMDRootCommand</argument>
                 </arguments>
               </configuration>
             </plugin>
