@@ -1,7 +1,7 @@
-package net.sourceforge.pmd.cli.internal.commands;
+package net.sourceforge.pmd.cli.commands.internal;
 
 import net.sourceforge.pmd.PMDVersion;
-import net.sourceforge.pmd.cli.internal.PMDCLI.CPDPicoCli;
+import net.sourceforge.pmd.cli.PMDCLI.CPDPicoCli;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.IVersionProvider;
 

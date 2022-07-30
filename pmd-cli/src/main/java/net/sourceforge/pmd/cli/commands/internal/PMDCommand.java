@@ -1,7 +1,8 @@
-package net.sourceforge.pmd.cli.internal.commands;
+package net.sourceforge.pmd.cli.commands.internal;
 
 import java.net.URI;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
@@ -57,10 +58,6 @@ public class PMDCommand extends AbstractPMDSubcommand {
     private Properties properties;
 
     private Path reportFile;
-
-    private String version;
-
-    private String language;
 
     private String forceLanguage;
 
@@ -169,9 +166,7 @@ public class PMDCommand extends AbstractPMDSubcommand {
         this.suppressMarker = suppressMarker;
     }
     
-    // TODO : "-min" is not a single letter option, but was never deprecated in PMD
-    // 6.x
-    @Option(names = { "--minimum-priority", "-min" },
+    @Option(names = { "--minimum-priority" },
             description = "Rule priority threshold; rules with lower priority than configured here won't be used.%n"
                     + "Valid values (case insensitive): ${COMPLETION-CANDIDATES}",
             defaultValue = "Low")
@@ -192,19 +187,10 @@ public class PMDCommand extends AbstractPMDSubcommand {
         this.reportFile = reportFile;
     }
 
-    // TODO : -version was never deprecated, should be replaced with --version… but
-    // --version is used to display the PMD version…
-    @Option(names = { "-version", "-v" }, description = "Specify version of a language PMD should use.")
-    public void setVersion(final String version) {
-        this.version = version;
-    }
-
-    // TODO : -langugae was never deprecated, should be replaced with --language
-    @Option(names = { "-language", "-l" },
-            description = "Specify a language PMD should use.%nValid values: ${COMPLETION-CANDIDATES}%n",
-            completionCandidates = PMDSupportedLanguagesCandidates.class)
-    public void setLanguage(final String language) {
-        this.language = language;
+    @Option(names = { "--use-version" },
+            description = "Sepcify the language and version PMD should use.%n  Default: java latest", arity = "2", completionCandidates = LanguageVersionCandidates.class)
+    public void setLanguageVersion(String[] s) {
+        System.out.println(Arrays.asList(s));
     }
 
     @Option(names = { "--force-language" },
@@ -361,17 +347,6 @@ public class PMDCommand extends AbstractPMDSubcommand {
         return reportFile;
     }
 
-    public String getVersion() {
-        if (version != null) {
-            return version;
-        }
-        return LanguageRegistry.findLanguageByTerseName(getLanguage()).getDefaultVersion().getVersion();
-    }
-
-    public String getLanguage() {
-        return language != null ? language : LanguageRegistry.getDefaultLanguage().getTerseName();
-    }
-
     public String getForceLanguage() {
         return forceLanguage != null ? forceLanguage : "";
     }
@@ -417,11 +392,12 @@ public class PMDCommand extends AbstractPMDSubcommand {
     }
     
     private @Nullable LanguageVersion getLangVersion() {
-        Language lang = language != null ? LanguageRegistry.findLanguageByTerseName(language)
-                                         : LanguageRegistry.getDefaultLanguage();
-
-        return version != null ? lang.getVersion(version)
-                               : lang.getDefaultVersion();
+        return null;
+//        Language lang = language != null ? LanguageRegistry.findLanguageByTerseName(language)
+//                                         : LanguageRegistry.getDefaultLanguage();
+//
+//        return version != null ? lang.getVersion(version)
+//                               : lang.getDefaultVersion();
     }
 
     @Override
@@ -453,20 +429,33 @@ public class PMDCommand extends AbstractPMDSubcommand {
             return RendererFactory.supportedRenderers().iterator();
         }
     }
-    
+
     /**
      * Provider of candidates for valid languages.
      * 
-     * Beware, the help will report this on runtime, and be accurate to available modules in the classpath,
-     * but autocomplete will include all at build time.
+     * Beware, the help will report this on runtime, and be accurate to available
+     * modules in the classpath, but autocomplete will include all at build time.
      */
     private static class PMDSupportedLanguagesCandidates implements Iterable<String> {
 
         @Override
         public Iterator<String> iterator() {
-            return LanguageRegistry.getLanguages().stream()
-                    .map(Language::getTerseName).iterator();
+            return LanguageRegistry.getLanguages().stream().map(Language::getTerseName).iterator();
         }
+    }
+
+    /**
+     * Provider of candidates for valid language-version combinations.
+     * 
+     * Beware, the help will report this on runtime, and be accurate to available
+     * modules in the classpath, but autocomplete will include all at build time.
+     */
+    private static class LanguageVersionCandidates implements Iterable<String> {
         
+        @Override
+        public Iterator<String> iterator() {
+            return LanguageRegistry.getLanguages().stream().flatMap(l -> l.getVersions().stream())
+                    .map(LanguageVersion::getName).map(name -> name.replace(' ', '-')).iterator();
+        }
     }
 }

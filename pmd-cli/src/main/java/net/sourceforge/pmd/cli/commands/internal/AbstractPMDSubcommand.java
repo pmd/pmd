@@ -1,4 +1,4 @@
-package net.sourceforge.pmd.cli.internal.commands;
+package net.sourceforge.pmd.cli.commands.internal;
 
 import java.util.concurrent.Callable;
 

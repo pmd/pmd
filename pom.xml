@@ -1218,6 +1218,7 @@
     <modules>
         <module>pmd-apex-jorje</module>
         <module>pmd-apex</module>
+        <module>pmd-cli</module>
         <module>pmd-core</module>
         <module>pmd-cpp</module>
         <module>pmd-cs</module>
