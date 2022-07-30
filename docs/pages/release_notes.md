@@ -112,6 +112,12 @@ You can identify them with the `@InternalApi` annotation. You'll also get a depr
 * {%jdoc !!core::cpd.CPDConfiguration#getCPDRendererFromString(java.lang.String,java.lang.String) %}
 * {%jdoc core::cpd.renderer.CPDRendererAdapter %}
 
+### Financial Contributions
+
+Many thanks to our sponsors:
+
+* [Matt Hargett](https://github.com/matthargett) (@matthargett)
+
 ### External Contributions
 * [#3984](https://github.com/pmd/pmd/pull/3984): \[java] Fix AddEmptyString false-negative issue - [@LiGaOg](https://github.com/LiGaOg)
 * [#3988](https://github.com/pmd/pmd/pull/3988): \[java] Modify WhileLoopWithLiteralBoolean to meet the missing case #3455 - [@VoidxHoshi](https://github.com/VoidxHoshi)
