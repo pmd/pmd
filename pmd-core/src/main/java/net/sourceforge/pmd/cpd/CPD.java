@@ -218,9 +218,10 @@ public class CPD {
         // otherwise just use whatever is in conf/simplelogger.properties which happens automatically
         if (arguments.isDebug()) {
             Slf4jSimpleConfiguration.reconfigureDefaultLogLevel(Level.TRACE);
-            // need to reload the logger with the new configuration
-            log = LoggerFactory.getLogger(CPD.class);
         }
+        // always need to reload the logger with the new/changed configuration
+        // unit tests might reset the logging configuration
+        log = LoggerFactory.getLogger(CPD.class);
 
         // TODO CLI errors should also be reported through this
         // TODO this should not use the logger as backend, otherwise without

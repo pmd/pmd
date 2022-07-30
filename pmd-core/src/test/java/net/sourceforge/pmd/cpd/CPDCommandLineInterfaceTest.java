@@ -20,9 +20,12 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+
+import net.sourceforge.pmd.internal.Slf4jSimpleConfiguration;
 
 import com.github.stefanbirkner.systemlambda.SystemLambda;
 import com.google.common.collect.ImmutableMap;
@@ -38,6 +41,13 @@ class CPDCommandLineInterfaceTest {
 
     @TempDir
     private Path tempDir;
+
+    @AfterEach
+    void resetLogging() {
+        // reset logging in case "--debug" changed the logging properties
+        // See also Slf4jSimpleConfigurationForAnt
+        Slf4jSimpleConfiguration.reconfigureDefaultLogLevel(null);
+    }
 
     @BeforeEach
     void setup() {
@@ -98,12 +108,15 @@ class CPDCommandLineInterfaceTest {
 
     @Test
     void testDebugLogging() throws Exception {
-        String stderr = SystemLambda.tapSystemErr(() -> {
-            CPD.StatusCode statusCode = CPD.runCpd("--minimum-tokens", "340", "--language", "java", "--files",
-                    SRC_DIR, "--debug");
-            assertEquals(CPD.StatusCode.OK, statusCode);
+        // restoring system properties: --debug might change logging properties
+        SystemLambda.restoreSystemProperties(() -> {
+            String stderr = SystemLambda.tapSystemErr(() -> {
+                CPD.StatusCode statusCode = CPD.runCpd("--minimum-tokens", "340", "--language", "java", "--files",
+                        SRC_DIR, "--debug");
+                assertEquals(CPD.StatusCode.OK, statusCode);
+            });
+            assertThat(stderr, containsString("Tokenizing ")); // this is a debug logging
         });
-        assertThat(stderr, containsString("Tokenizing ")); // this is a debug logging
     }
 
     @Test
