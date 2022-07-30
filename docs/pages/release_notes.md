@@ -134,5 +134,10 @@ Many thanks to our sponsors:
 * [#4056](https://github.com/pmd/pmd/pull/4056): \[apex] ApexSOQLInjection: Add support count query - [@gwilymatgearset](https://github.com/gwilymatgearset)
 * [#4061](https://github.com/pmd/pmd/pull/4061): \[lua] Fix several related Lua parsing issues found when using CPD - [@matthargett](https://github.com/matthargett)
 
+### Stats
+* 102 commits
+* 26 closed tickets & PRs
+* Days since last release: 35
+
 {% endtocmaker %}
 
