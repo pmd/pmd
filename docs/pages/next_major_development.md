@@ -246,6 +246,59 @@ the breaking API changes will be performed in 7.0.0.
 an API is tagged as `@Deprecated` or not in the latest minor release. During the development of 7.0.0,
 we may decide to remove some APIs that were not tagged as deprecated, though we'll try to avoid it." %}
 
+#### 6.48.0
+
+##### CPD CLI
+
+* CPD has a new CLI option `--debug`. This option has the same behavior as in PMD. It enables more verbose
+  logging output.
+
+##### Rule Test Framework
+
+* The module "pmd-test", which contains support classes to write rule tests, now **requires Java 8**. If you depend on
+  this module for testing your own custom rules, you'll need to make sure to use at least Java 8.
+* The new module "pmd-test-schema" contains now the XSD schema and the code to parse the rule test XML files. The
+  schema has been extracted in order to easily share it with other tools like the Rule Designer or IDE plugins.
+* Test schema changes:
+    * The attribute `isRegressionTest` of `test-code` is deprecated. The new
+      attribute `disabled` should be used instead for defining whether a rule test should be skipped or not.
+    * The attributes `reinitializeRule` and `useAuxClasspath` of `test-code` are deprecated and assumed true.
+      They will not be replaced.
+    * The new attribute `focused` of `test-code` allows disabling all tests except the focused one temporarily.
+* More information about the rule test framework can be found in the documentation:
+  [Testing your rules](pmd_userdocs_extending_testing.html)
+
+##### Deprecated API
+
+* The experimental Java AST class {% jdoc java::lang.java.ast.ASTGuardedPattern %} has been deprecated and
+  will be removed. It was introduced for Java 17 and Java 18 Preview as part of pattern matching for switch,
+  but it is no longer supported with Java 19 Preview.
+* The interface {% jdoc core::cpd.renderer.CPDRenderer %} is deprecated. For custom CPD renderers
+  the new interface {% jdoc core::cpd.renderer.CPDReportRenderer %} should be used.
+* The class {% jdoc test::testframework.TestDescriptor %} is deprecated, replaced with {% jdoc test-schema::test.schema.RuleTestDescriptor %}.
+* Many methods of {% jdoc test::testframework.RuleTst %} have been deprecated as internal API.
+
+##### Experimental APIs
+
+* To support the Java preview language features "Pattern Matching for Switch" and "Record Patterns", the following
+  AST nodes have been introduced as experimental:
+    * {% jdoc java::lang.java.ast.ASTSwitchGuard %}
+    * {% jdoc java::lang.java.ast.ASTRecordPattern %}
+    * {% jdoc java::lang.java.ast.ASTComponentPatternList %}
+
+##### Internal API
+
+Those APIs are not intended to be used by clients, and will be hidden or removed with PMD 7.0.0.
+You can identify them with the `@InternalApi` annotation. You'll also get a deprecation warning.
+
+* {%jdoc !!core::cpd.CPDConfiguration#setRenderer(net.sourceforge.pmd.cpd.Renderer) %}
+* {%jdoc !!core::cpd.CPDConfiguration#setCPDRenderer(net.sourceforge.pmd.cpd.renderer.CPDRenderer) %}
+* {%jdoc !!core::cpd.CPDConfiguration#getRenderer() %}
+* {%jdoc !!core::cpd.CPDConfiguration#getCPDRenderer() %}
+* {%jdoc !!core::cpd.CPDConfiguration#getRendererFromString(java.lang.String,java.lang.String) %}
+* {%jdoc !!core::cpd.CPDConfiguration#getCPDRendererFromString(java.lang.String,java.lang.String) %}
+* {%jdoc core::cpd.renderer.CPDRendererAdapter %}
+
 #### 6.47.0
 
 No changes.
