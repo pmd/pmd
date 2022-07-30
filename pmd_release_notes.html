@@ -174,8 +174,8 @@
 
 
 <ul id="mysidebar" class="nav">
-    <li class="sidebarTitle">PMD 6.48.0</li>
-    <div class="sidebarTitleDate">Release date: 30-July-2022</div>
+    <li class="sidebarTitle">PMD 6.49.0-SNAPSHOT</li>
+    <div class="sidebarTitleDate">Release date: 31-August-2022</div>
     
     
     
@@ -1524,189 +1524,19 @@
    
     <div id="inline-toc"><!-- empty, move TOC here when screen size too small --></div>
     
-  <h2 id="30-july-2022---6480">30-July-2022 - 6.48.0</h2>
+  <h2 id="31-august-2022---6490-snapshot">31-August-2022 - 6.49.0-SNAPSHOT</h2>
 
-<p>The PMD team is pleased to announce PMD 6.48.0.</p>
+<p>The PMD team is pleased to announce PMD 6.49.0-SNAPSHOT.</p>
 
 <p>This is a minor release.</p>
 
 <h3 id="new-and-noteworthy">New and noteworthy</h3>
 
-<h4 id="java-19-support">Java 19 Support</h4>
-
-<p>This release of PMD brings support for Java 19. There are no new standard language features.</p>
-
-<p>PMD supports <a href="https://openjdk.org/jeps/427">JEP 427: Pattern Matching for switch (Third Preview)</a> and
-<a href="https://openjdk.org/jeps/405">JEP 405: Record Patterns (Preview)</a> as preview language features.</p>
-
-<p>In order to analyze a project with PMD that uses these language features,
-you’ll need to enable it via the environment variable <code class="language-plaintext highlighter-rouge">PMD_JAVA_OPTS</code> and select the new language
-version <code class="language-plaintext highlighter-rouge">19-preview</code>:</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>export PMD_JAVA_OPTS=--enable-preview
-./run.sh pmd -language java -version 19-preview ...
-</code></pre></div></div>
-
-<p>Note: Support for Java 17 preview language features have been removed. The version “17-preview” is no longer available.</p>
-
-<h4 id="gherkin-support">Gherkin support</h4>
-<p>Thanks to the contribution from <a href="https://github.com/ASBrouwers">Anne Brouwers</a> PMD now has CPD support
-for the <a href="https://cucumber.io/docs/gherkin/">Gherkin</a> language. It is used to defined test cases for the
-<a href="https://cucumber.io/">Cucumber</a> testing tool for behavior-driven development.</p>
-
-<p>Being based on a proper Antlr grammar, CPD can:</p>
-
-<ul>
-  <li>ignore comments</li>
-  <li>honor <a href="pmd_userdocs_cpd.html#suppression">comment-based suppressions</a></li>
-</ul>
-
 <h3 id="fixed-issues">Fixed Issues</h3>
-<ul>
-  <li>apex
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/pull/4056">#4056</a>: [apex] ApexSOQLInjection: Add support count query</li>
-    </ul>
-  </li>
-  <li>core
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/3796">#3796</a>: [core] CPD should also provide a <code class="language-plaintext highlighter-rouge">--debug</code> flag</li>
-      <li><a href="https://github.com/pmd/pmd/pull/4021">#4021</a>: [core] CPD: Add total number of tokens to XML reports</li>
-      <li><a href="https://github.com/pmd/pmd/issues/4031">#4031</a>: [core] If report is written to stdout, stdout should not be closed</li>
-      <li><a href="https://github.com/pmd/pmd/issues/4051">#4051</a>: [doc] Additional rulesets are not listed in documentation</li>
-      <li><a href="https://github.com/pmd/pmd/pull/4053">#4053</a>: [core] Allow building PMD under Java 18+</li>
-    </ul>
-  </li>
-  <li>java
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/4015">#4015</a>: [java] Support JDK 19</li>
-    </ul>
-  </li>
-  <li>java-bestpractices
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/3455">#3455</a>: [java] WhileLoopWithLiteralBoolean - false negative with complex expressions</li>
-    </ul>
-  </li>
-  <li>java-design
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/3729">#3729</a>: [java] TooManyMethods ignores “real” methods which are named like getters or setters</li>
-      <li><a href="https://github.com/pmd/pmd/issues/3949">#3949</a>: [java] FinalFieldCouldBeStatic - false negative with unnecessary parenthesis</li>
-    </ul>
-  </li>
-  <li>java-performance
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/3625">#3625</a>: [java] AddEmptyString - false negative with empty var</li>
-    </ul>
-  </li>
-  <li>lua
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/pull/4061">#4061</a>: [lua] Fix several related Lua parsing issues found when using CPD</li>
-    </ul>
-  </li>
-  <li>test
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/pull/3302">#3302</a>: [test] Improve xml test schema</li>
-      <li><a href="https://github.com/pmd/pmd/issues/3758">#3758</a>: [test] Move pmd-test to java 8</li>
-      <li><a href="https://github.com/pmd/pmd/pull/3976">#3976</a>: [test] Extract xml schema module</li>
-    </ul>
-  </li>
-</ul>
 
 <h3 id="api-changes">API Changes</h3>
 
-<h4 id="cpd-cli">CPD CLI</h4>
-
-<ul>
-  <li>CPD has a new CLI option <code class="language-plaintext highlighter-rouge">--debug</code>. This option has the same behavior as in PMD. It enables more verbose
-logging output.</li>
-</ul>
-
-<h4 id="rule-test-framework">Rule Test Framework</h4>
-
-<ul>
-  <li>The module “pmd-test”, which contains support classes to write rule tests, now <strong>requires Java 8</strong>. If you depend on
-this module for testing your own custom rules, you’ll need to make sure to use at least Java 8.</li>
-  <li>The new module “pmd-test-schema” contains now the XSD schema and the code to parse the rule test XML files. The
-schema has been extracted in order to easily share it with other tools like the Rule Designer or IDE plugins.</li>
-  <li>Test schema changes:
-    <ul>
-      <li>The attribute <code class="language-plaintext highlighter-rouge">isRegressionTest</code> of <code class="language-plaintext highlighter-rouge">test-code</code> is deprecated. The new
-  attribute <code class="language-plaintext highlighter-rouge">disabled</code> should be used instead for defining whether a rule test should be skipped or not.</li>
-      <li>The attributes <code class="language-plaintext highlighter-rouge">reinitializeRule</code> and <code class="language-plaintext highlighter-rouge">useAuxClasspath</code> of <code class="language-plaintext highlighter-rouge">test-code</code> are deprecated and assumed true.
-  They will not be replaced.</li>
-      <li>The new attribute <code class="language-plaintext highlighter-rouge">focused</code> of <code class="language-plaintext highlighter-rouge">test-code</code> allows disabling all tests except the focused one temporarily.</li>
-    </ul>
-  </li>
-  <li>More information about the rule test framework can be found in the documentation:
-<a href="pmd_userdocs_extending_testing.html">Testing your rules</a></li>
-</ul>
-
-<h4 id="deprecated-api">Deprecated API</h4>
-
-<ul>
-  <li>The experimental Java AST class <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.48.0/net/sourceforge/pmd/lang/java/ast/ASTGuardedPattern.html#"><code>ASTGuardedPattern</code></a> has been deprecated and
-will be removed. It was introduced for Java 17 and Java 18 Preview as part of pattern matching for switch,
-but it is no longer supported with Java 19 Preview.</li>
-  <li>The interface <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.48.0/net/sourceforge/pmd/cpd/renderer/CPDRenderer.html#"><code>CPDRenderer</code></a> is deprecated. For custom CPD renderers
-the new interface <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.48.0/net/sourceforge/pmd/cpd/renderer/CPDReportRenderer.html#"><code>CPDReportRenderer</code></a> should be used.</li>
-  <li>The class <a href="https://docs.pmd-code.org/apidocs/pmd-test/6.48.0/net/sourceforge/pmd/testframework/TestDescriptor.html#"><code>TestDescriptor</code></a> is deprecated, replaced with <a href="https://docs.pmd-code.org/apidocs/pmd-test-schema/6.48.0/net/sourceforge/pmd/test/schema/RuleTestDescriptor.html#"><code>RuleTestDescriptor</code></a>.</li>
-  <li>Many methods of <a href="https://docs.pmd-code.org/apidocs/pmd-test/6.48.0/net/sourceforge/pmd/testframework/RuleTst.html#"><code>RuleTst</code></a> have been deprecated as internal API.</li>
-</ul>
-
-<h4 id="experimental-apis">Experimental APIs</h4>
-
-<ul>
-  <li>To support the Java preview language features “Pattern Matching for Switch” and “Record Patterns”, the following
-AST nodes have been introduced as experimental:
-    <ul>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/6.48.0/net/sourceforge/pmd/lang/java/ast/ASTSwitchGuard.html#"><code>ASTSwitchGuard</code></a></li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/6.48.0/net/sourceforge/pmd/lang/java/ast/ASTRecordPattern.html#"><code>ASTRecordPattern</code></a></li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/6.48.0/net/sourceforge/pmd/lang/java/ast/ASTComponentPatternList.html#"><code>ASTComponentPatternList</code></a></li>
-    </ul>
-  </li>
-</ul>
-
-<h4 id="internal-api">Internal API</h4>
-
-<p>Those APIs are not intended to be used by clients, and will be hidden or removed with PMD 7.0.0.
-You can identify them with the <code class="language-plaintext highlighter-rouge">@InternalApi</code> annotation. You’ll also get a deprecation warning.</p>
-
-<ul>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.48.0/net/sourceforge/pmd/cpd/CPDConfiguration.html#setRenderer(net.sourceforge.pmd.cpd.Renderer)"><code>CPDConfiguration#setRenderer</code></a></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.48.0/net/sourceforge/pmd/cpd/CPDConfiguration.html#setCPDRenderer(net.sourceforge.pmd.cpd.renderer.CPDRenderer)"><code>CPDConfiguration#setCPDRenderer</code></a></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.48.0/net/sourceforge/pmd/cpd/CPDConfiguration.html#getRenderer()"><code>CPDConfiguration#getRenderer</code></a></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.48.0/net/sourceforge/pmd/cpd/CPDConfiguration.html#getCPDRenderer()"><code>CPDConfiguration#getCPDRenderer</code></a></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.48.0/net/sourceforge/pmd/cpd/CPDConfiguration.html#getRendererFromString(java.lang.String,java.lang.String)"><code>CPDConfiguration#getRendererFromString</code></a></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.48.0/net/sourceforge/pmd/cpd/CPDConfiguration.html#getCPDRendererFromString(java.lang.String,java.lang.String)"><code>CPDConfiguration#getCPDRendererFromString</code></a></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.48.0/net/sourceforge/pmd/cpd/renderer/CPDRendererAdapter.html#"><code>CPDRendererAdapter</code></a></li>
-</ul>
-
-<h3 id="financial-contributions">Financial Contributions</h3>
-
-<p>Many thanks to our sponsors:</p>
-
-<ul>
-  <li><a href="https://github.com/matthargett">Matt Hargett</a> (@matthargett)</li>
-</ul>
-
 <h3 id="external-contributions">External Contributions</h3>
-<ul>
-  <li><a href="https://github.com/pmd/pmd/pull/3984">#3984</a>: [java] Fix AddEmptyString false-negative issue - <a href="https://github.com/LiGaOg">@LiGaOg</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/3988">#3988</a>: [java] Modify WhileLoopWithLiteralBoolean to meet the missing case #3455 - <a href="https://github.com/VoidxHoshi">@VoidxHoshi</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/3992">#3992</a>: [java] FinalFieldCouldBeStatic - fix false negative with unnecessary parenthesis - <a href="https://github.com/dalizi007">@dalizi007</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/3994">#3994</a>: [java] TooManyMethods - improve getter/setter detection (#3729) - <a href="https://github.com/341816041">@341816041</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/4017">#4017</a>: Add Gherkin support to CPD - <a href="https://github.com/ASBrouwers">@ASBrouwers</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/4021">#4021</a>: [core] CPD: Add total number of tokens to XML reports - <a href="https://github.com/maikelsteneker">@maikelsteneker</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/4056">#4056</a>: [apex] ApexSOQLInjection: Add support count query - <a href="https://github.com/gwilymatgearset">@gwilymatgearset</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/4061">#4061</a>: [lua] Fix several related Lua parsing issues found when using CPD - <a href="https://github.com/matthargett">@matthargett</a></li>
-</ul>
-
-<h3 id="stats">Stats</h3>
-<ul>
-  <li>102 commits</li>
-  <li>26 closed tickets &amp; PRs</li>
-  <li>Days since last release: 35</li>
-</ul>
 
 
 
