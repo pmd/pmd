@@ -9,8 +9,10 @@ public class PMDCLI {
 
     public static void main(String[] args) {
         new CommandLine(new PMDRootCommand()).setCaseInsensitiveEnumValuesAllowed(true)
-                .execute("run", "-h");
-//        .execute("run", "-P", "foo=bar", "-R", "foo,bar", "-R", "baz", "-d", "src/main/java", "-f", "xml");
+//                .execute("run", "-h");
+                .execute("run", "--use-version", "scala-2.11", "--use-version", "apex", "--use-version",
+                        "ecmascript-latest", "-P", "foo=bar", "-R", "foo,bar", "-R", "baz", "-d",
+                        "src/main/java", "-f", "xml");
     }
 
     @Command(name = "cpd", mixinStandardHelpOptions = true, description = "The Copy Paste Detector")

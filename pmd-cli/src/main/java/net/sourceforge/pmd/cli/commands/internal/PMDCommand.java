@@ -2,13 +2,13 @@ package net.sourceforge.pmd.cli.commands.internal;
 
 import java.net.URI;
 import java.nio.file.Path;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 import java.util.Properties;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
-
-import org.checkerframework.checker.nullness.qual.Nullable;
+import java.util.stream.Stream;
 
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.RulePriority;
@@ -18,8 +18,10 @@ import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.renderers.RendererFactory;
 import picocli.CommandLine.Command;
+import picocli.CommandLine.ITypeConverter;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.ParameterException;
+import picocli.CommandLine.TypeConversionException;
 
 @Command(name = "analyze", aliases = {"analyse", "run" }, showDefaultValues = true,
     description = "The PMD standard source code analyzer")
@@ -39,6 +41,7 @@ public class PMDCommand extends AbstractPMDSubcommand {
 
     private boolean debug;
 
+    // TODO : Actually use an Charset instance?
     private String encoding;
     
     private int threads;
@@ -59,7 +62,9 @@ public class PMDCommand extends AbstractPMDSubcommand {
 
     private Path reportFile;
 
-    private String forceLanguage;
+    private List<LanguageVersion> languageVersion;
+
+    private Language forceLanguage;
 
     private String auxClasspath;
 
@@ -75,8 +80,7 @@ public class PMDCommand extends AbstractPMDSubcommand {
                description = "Path to a ruleset xml file. "
                              + "The path may reference a resource on the classpath of the application, be a local file system path, or a URL. "
                              + "The option can be repeated, and multiple arguments separated by comma can be provided to a single occurrence of the option.",
-               required = true, split = ",",
-               arity = "1..*")
+               required = true, split = ",")
     public void setRulesets(final List<String> rulesets) {
         this.rulesets = rulesets;
     }
@@ -98,7 +102,7 @@ public class PMDCommand extends AbstractPMDSubcommand {
                           + "(archive files found while exploring a directory are not recursively expanded). "
                           + "This option can be repeated, and multiple arguments can be provided to a single occurrence of the option. "
                           + "One of --dir, --file-list or --uri must be provided. ",
-            arity = "0..*")
+            arity = "1..*")
     public void setInputPaths(final List<Path> inputPaths) {
         this.inputPaths = inputPaths;
     }
@@ -174,6 +178,7 @@ public class PMDCommand extends AbstractPMDSubcommand {
         this.minimumPriority = priority;
     }
 
+    // TODO : Figure out how to surface the supported properties for each report format
     @Option(names = { "--property", "-P" }, description = "Key-value pair defining a property for the report format.")
     public void setProperties(final Properties properties) {
         this.properties = properties;
@@ -187,10 +192,21 @@ public class PMDCommand extends AbstractPMDSubcommand {
         this.reportFile = reportFile;
     }
 
-    @Option(names = { "--use-version" },
-            description = "Sepcify the language and version PMD should use.%n  Default: java latest", arity = "2", completionCandidates = LanguageVersionCandidates.class)
-    public void setLanguageVersion(String[] s) {
-        System.out.println(Arrays.asList(s));
+    @Option(names = { "--use-version" }, defaultValue = "java-latest",
+            description = "Sepcify the language and version PMD should use.%nValid values: ${COMPLETION-CANDIDATES}%n",
+            completionCandidates = PMDLanguageVersionCandidates.class, converter = PMDLanguageVersionConverter.class)
+    public void setLanguageVersion(final List<LanguageVersion> languageVersion) {
+        // Make sure we only set 1 version per language
+        languageVersion.stream().collect(Collectors.groupingBy(LanguageVersion::getLanguage))
+        .forEach((l, list) -> {
+            if (list.size() > 1) {
+                throw new ParameterException(spec.commandLine(), "Can only set one version per language, "
+                        + "but for language " + l.getName() + " multiple versions were provided "
+                        + list.stream().map(PMDCommand::normalizeName).collect(Collectors.joining("', '", "'", "'")));
+            }
+        });
+
+        this.languageVersion = languageVersion;
     }
 
     @Option(names = { "--force-language" },
@@ -198,8 +214,8 @@ public class PMDCommand extends AbstractPMDSubcommand {
                           + "When using this option, the automatic language selection by extension is disabled, and PMD "
                           + "tries to parse all input files with the given language's parser. "
                           + "Parsing errors are ignored.%nValid values: ${COMPLETION-CANDIDATES}%n",
-            completionCandidates = PMDSupportedLanguagesCandidates.class)
-    public void setForceLanguage(final String forceLanguage) {
+            completionCandidates = PMDLanguagesCandidates.class, converter = PMDLanguageConverter.class)
+    public void setForceLanguage(final Language forceLanguage) {
         this.forceLanguage = forceLanguage;
     }
 
@@ -259,40 +275,41 @@ public class PMDCommand extends AbstractPMDSubcommand {
      */
     public PMDConfiguration toConfiguration() {
         PMDConfiguration configuration = new PMDConfiguration();
-        configuration.setInputPaths(this.getInputPaths().stream().map(Path::toString).collect(Collectors.toList()));
-        configuration.setInputFilePath(this.getFileListPath().toString());
-        configuration.setIgnoreFilePath(this.getIgnoreListPath().toString());
-        configuration.setInputUri(this.getUri().toString());
-        configuration.setReportFormat(this.getFormat());
-        configuration.setBenchmark(this.isBenchmark());
-        configuration.setDebug(this.isDebug());
-        configuration.setMinimumPriority(this.getMinimumPriority());
-        configuration.setReportFile(this.getReportFile().toString());
-        configuration.setReportProperties(this.getProperties());
-        configuration.setReportShortNames(this.isShortnames());
-        configuration.setRuleSets(this.getRulesetRefs());
+        configuration.setInputPaths(inputPaths.stream().map(Path::toString).collect(Collectors.toList()));
+        configuration.setInputFilePath(fileListPath != null ? fileListPath.toString() : null);
+        configuration.setIgnoreFilePath(ignoreListPath != null ? ignoreListPath.toString() : null);
+        configuration.setInputUri(uri != null ? uri.toString() : null);
+        configuration.setReportFormat(format);
+        configuration.setBenchmark(benchmark);
+        configuration.setDebug(debug);
+        configuration.setMinimumPriority(minimumPriority);
+        configuration.setReportFile(reportFile != null ? reportFile.toString() : null);
+        configuration.setReportProperties(properties);
+        configuration.setReportShortNames(shortnames);
+        configuration.setRuleSets(rulesets);
         configuration.setRuleSetFactoryCompatibilityEnabled(!this.noRuleSetCompatibility);
-        configuration.setShowSuppressedViolations(this.isShowSuppressed());
-        configuration.setSourceEncoding(this.getEncoding());
-        configuration.setStressTest(this.isStress());
-        configuration.setSuppressMarker(this.getSuppressMarker());
-        configuration.setThreads(this.getThreads());
-        configuration.setFailOnViolation(this.isFailOnViolation());
-        configuration.setAnalysisCacheLocation(this.cacheLocation.toString());
-        configuration.setIgnoreIncrementalAnalysis(this.isIgnoreIncrementalAnalysis());
+        configuration.setShowSuppressedViolations(showSuppressed);
+        configuration.setSourceEncoding(encoding);
+        configuration.setStressTest(stress);
+        configuration.setSuppressMarker(suppressMarker);
+        configuration.setThreads(threads);
+        configuration.setFailOnViolation(failOnViolation);
+        configuration.setAnalysisCacheLocation(cacheLocation != null ? cacheLocation.toString() : null);
+        configuration.setIgnoreIncrementalAnalysis(noCache);
 
-        final LanguageVersion forceLangVersion = getForceLangVersion();
-        if (forceLangVersion != null) {
-            configuration.setForceLanguageVersion(forceLangVersion);
-        }
-
-        final LanguageVersion languageVersion = getLangVersion();
         if (languageVersion != null) {
-            configuration.getLanguageVersionDiscoverer().setDefaultLanguageVersion(languageVersion);
+            configuration.setDefaultLanguageVersions(languageVersion);
+        }
+        
+        // Important: do this after setting default versions, so we can pick them up
+        if (forceLanguage != null) {
+            final LanguageVersion forcedLangVer = configuration.getLanguageVersionDiscoverer()
+                    .getDefaultLanguageVersion(forceLanguage);
+            configuration.setForceLanguageVersion(forcedLangVer);
         }
 
         try {
-            configuration.prependAuxClasspath(this.getAuxClasspath());
+            configuration.prependAuxClasspath(auxClasspath);
         } catch (IllegalArgumentException e) {
             throw new ParameterException(spec.commandLine(), "Invalid auxiliary classpath: " + e.getMessage(), e);
         }
@@ -347,8 +364,8 @@ public class PMDCommand extends AbstractPMDSubcommand {
         return reportFile;
     }
 
-    public String getForceLanguage() {
-        return forceLanguage != null ? forceLanguage : "";
+    public Language getForceLanguage() {
+        return forceLanguage;
     }
 
     public String getAuxClasspath() {
@@ -385,20 +402,6 @@ public class PMDCommand extends AbstractPMDSubcommand {
     public URI getUri() {
         return uri;
     }
-    
-    private @Nullable LanguageVersion getForceLangVersion() {
-        Language lang = forceLanguage != null ? LanguageRegistry.findLanguageByTerseName(forceLanguage) : null;
-        return lang != null ? lang.getDefaultVersion() : null;
-    }
-    
-    private @Nullable LanguageVersion getLangVersion() {
-        return null;
-//        Language lang = language != null ? LanguageRegistry.findLanguageByTerseName(language)
-//                                         : LanguageRegistry.getDefaultLanguage();
-//
-//        return version != null ? lang.getVersion(version)
-//                               : lang.getDefaultVersion();
-    }
 
     @Override
     protected ExecutionResult execute() {
@@ -408,12 +411,14 @@ public class PMDCommand extends AbstractPMDSubcommand {
                             + "database URI (--uri or -u), or file list path (--file-list)");
         }
         
+        System.out.println("language versions: " + languageVersion);
         System.out.println("threads: " + threads);
         System.out.println("priority: " + minimumPriority);
         System.out.println("properties: " + properties);
         System.out.println("ruleset: " + rulesets);
         System.out.println("format: " + format);
         System.out.println("priority: " + minimumPriority);
+        System.out.println("force lang ver: " + toConfiguration().getForceLanguageVersion());
         
         // TODO Auto-generated method stub
         return ExecutionResult.OK;
@@ -436,12 +441,28 @@ public class PMDCommand extends AbstractPMDSubcommand {
      * Beware, the help will report this on runtime, and be accurate to available
      * modules in the classpath, but autocomplete will include all at build time.
      */
-    private static class PMDSupportedLanguagesCandidates implements Iterable<String> {
+    private static class PMDLanguagesCandidates implements Iterable<String> {
 
         @Override
         public Iterator<String> iterator() {
-            return LanguageRegistry.getLanguages().stream().map(Language::getTerseName).iterator();
+            return LanguageRegistry.getLanguages().stream().map(PMDCommand::normalizeName).iterator();
         }
+    }
+    
+    /**
+     * Maps a String back to a {@code Language}
+     * 
+     * Effectively reverses the stringification done by {@code PMDLanguagesCandidates}
+     */
+    private static class PMDLanguageConverter implements ITypeConverter<Language> {
+
+        @Override
+        public Language convert(final String value) throws Exception {
+            return LanguageRegistry.getLanguages().stream()
+                    .filter(l -> normalizeName(l).equals(value)).findFirst()
+                    .orElseThrow(() -> new TypeConversionException("Unknown language: " + value));
+        }
+        
     }
 
     /**
@@ -450,12 +471,65 @@ public class PMDCommand extends AbstractPMDSubcommand {
      * Beware, the help will report this on runtime, and be accurate to available
      * modules in the classpath, but autocomplete will include all at build time.
      */
-    private static class LanguageVersionCandidates implements Iterable<String> {
+    private static class PMDLanguageVersionCandidates implements Iterable<String> {
         
         @Override
         public Iterator<String> iterator() {
-            return LanguageRegistry.getLanguages().stream().flatMap(l -> l.getVersions().stream())
-                    .map(LanguageVersion::getName).map(name -> name.replace(' ', '-')).iterator();
+            // Raw language names / -latest versions, such as "java" or "java-latest"
+            final Stream<String> latestLangReferences = LanguageRegistry.getLanguages().stream()
+                    .map(PMDCommand::normalizeName).flatMap(name -> Stream.of(name, name + "-latest"));
+
+            // Explicit language-version pairs, such as "java-18" or "apex-54"
+            final Stream<String> allLangVersionReferences = LanguageRegistry.getLanguages().stream()
+                    .flatMap(l -> l.getVersions().stream())
+                    .map(PMDCommand::normalizeName);
+            
+            // Collect to a TreeSet to ensure alphabetical order
+            final TreeSet<String> candidates = Stream.concat(latestLangReferences, allLangVersionReferences)
+                    .collect(Collectors.toCollection(TreeSet::new));
+
+            return candidates.iterator();
         }
+    }
+
+    /**
+     * Maps a String back to a {@code LanguageVersion}
+     * 
+     * Effectively reverses the stringification done by {@code PMDLanguageVersionCandidates}
+     */
+    private static class PMDLanguageVersionConverter implements ITypeConverter<LanguageVersion> {
+
+        @Override
+        public LanguageVersion convert(final String value) throws Exception {
+            // Is it an exact match?
+            final Optional<LanguageVersion> langVer = LanguageRegistry.getLanguages().stream()
+                    .flatMap(l -> l.getVersions().stream())
+                    .filter(lv -> normalizeName(lv).equals(value)).findFirst();
+
+            if (langVer.isPresent()) {
+                return langVer.get();
+            }
+
+            // This is either a -latest or standalone language name
+            final String langName;
+            if (value.endsWith("-latest")) {
+                langName = value.substring(0, value.length() - "-latest".length());
+            } else {
+                langName = value;
+            }
+
+            return LanguageRegistry.getLanguages().stream()
+                    .filter(l -> normalizeName(l).equals(langName))
+                    .map(Language::getDefaultVersion).findFirst()
+                    .orElseThrow(() -> new TypeConversionException("Unknown language version: " + value));
+        }
+    }
+    
+    static String normalizeName(final LanguageVersion langVer) {
+        return langVer.getTerseName().replace(' ', '-');
+    }
+
+    static String normalizeName(final Language lang) {
+        return lang.getTerseName().replace(' ', '-');
     }
 }
