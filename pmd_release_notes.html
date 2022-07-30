@@ -174,7 +174,7 @@
 
 
 <ul id="mysidebar" class="nav">
-    <li class="sidebarTitle">PMD 6.48.0-SNAPSHOT</li>
+    <li class="sidebarTitle">PMD 6.48.0</li>
     <div class="sidebarTitleDate">Release date: 30-July-2022</div>
     
     
@@ -1524,9 +1524,9 @@
    
     <div id="inline-toc"><!-- empty, move TOC here when screen size too small --></div>
     
-  <h2 id="30-july-2022---6480-snapshot">30-July-2022 - 6.48.0-SNAPSHOT</h2>
+  <h2 id="30-july-2022---6480">30-July-2022 - 6.48.0</h2>
 
-<p>The PMD team is pleased to announce PMD 6.48.0-SNAPSHOT.</p>
+<p>The PMD team is pleased to announce PMD 6.48.0.</p>
 
 <p>This is a minor release.</p>
 
@@ -1644,13 +1644,13 @@ schema has been extracted in order to easily share it with other tools like the 
 <h4 id="deprecated-api">Deprecated API</h4>
 
 <ul>
-  <li>The experimental Java AST class <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.48.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTGuardedPattern.html#"><code>ASTGuardedPattern</code></a> has been deprecated and
+  <li>The experimental Java AST class <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.48.0/net/sourceforge/pmd/lang/java/ast/ASTGuardedPattern.html#"><code>ASTGuardedPattern</code></a> has been deprecated and
 will be removed. It was introduced for Java 17 and Java 18 Preview as part of pattern matching for switch,
 but it is no longer supported with Java 19 Preview.</li>
-  <li>The interface <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.48.0-SNAPSHOT/net/sourceforge/pmd/cpd/renderer/CPDRenderer.html#"><code>CPDRenderer</code></a> is deprecated. For custom CPD renderers
-the new interface <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.48.0-SNAPSHOT/net/sourceforge/pmd/cpd/renderer/CPDReportRenderer.html#"><code>CPDReportRenderer</code></a> should be used.</li>
-  <li>The class <a href="https://docs.pmd-code.org/apidocs/pmd-test/6.48.0-SNAPSHOT/net/sourceforge/pmd/testframework/TestDescriptor.html#"><code>TestDescriptor</code></a> is deprecated, replaced with <a href="https://docs.pmd-code.org/apidocs/pmd-test-schema/6.48.0-SNAPSHOT/net/sourceforge/pmd/test/schema/RuleTestDescriptor.html#"><code>RuleTestDescriptor</code></a>.</li>
-  <li>Many methods of <a href="https://docs.pmd-code.org/apidocs/pmd-test/6.48.0-SNAPSHOT/net/sourceforge/pmd/testframework/RuleTst.html#"><code>RuleTst</code></a> have been deprecated as internal API.</li>
+  <li>The interface <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.48.0/net/sourceforge/pmd/cpd/renderer/CPDRenderer.html#"><code>CPDRenderer</code></a> is deprecated. For custom CPD renderers
+the new interface <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.48.0/net/sourceforge/pmd/cpd/renderer/CPDReportRenderer.html#"><code>CPDReportRenderer</code></a> should be used.</li>
+  <li>The class <a href="https://docs.pmd-code.org/apidocs/pmd-test/6.48.0/net/sourceforge/pmd/testframework/TestDescriptor.html#"><code>TestDescriptor</code></a> is deprecated, replaced with <a href="https://docs.pmd-code.org/apidocs/pmd-test-schema/6.48.0/net/sourceforge/pmd/test/schema/RuleTestDescriptor.html#"><code>RuleTestDescriptor</code></a>.</li>
+  <li>Many methods of <a href="https://docs.pmd-code.org/apidocs/pmd-test/6.48.0/net/sourceforge/pmd/testframework/RuleTst.html#"><code>RuleTst</code></a> have been deprecated as internal API.</li>
 </ul>
 
 <h4 id="experimental-apis">Experimental APIs</h4>
@@ -1659,9 +1659,9 @@ the new interface <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.48.0-SNA
   <li>To support the Java preview language features “Pattern Matching for Switch” and “Record Patterns”, the following
 AST nodes have been introduced as experimental:
     <ul>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/6.48.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTSwitchGuard.html#"><code>ASTSwitchGuard</code></a></li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/6.48.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTRecordPattern.html#"><code>ASTRecordPattern</code></a></li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/6.48.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTComponentPatternList.html#"><code>ASTComponentPatternList</code></a></li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/6.48.0/net/sourceforge/pmd/lang/java/ast/ASTSwitchGuard.html#"><code>ASTSwitchGuard</code></a></li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/6.48.0/net/sourceforge/pmd/lang/java/ast/ASTRecordPattern.html#"><code>ASTRecordPattern</code></a></li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/6.48.0/net/sourceforge/pmd/lang/java/ast/ASTComponentPatternList.html#"><code>ASTComponentPatternList</code></a></li>
     </ul>
   </li>
 </ul>
@@ -1672,13 +1672,13 @@ AST nodes have been introduced as experimental:
 You can identify them with the <code class="language-plaintext highlighter-rouge">@InternalApi</code> annotation. You’ll also get a deprecation warning.</p>
 
 <ul>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.48.0-SNAPSHOT/net/sourceforge/pmd/cpd/CPDConfiguration.html#setRenderer(net.sourceforge.pmd.cpd.Renderer)"><code>CPDConfiguration#setRenderer</code></a></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.48.0-SNAPSHOT/net/sourceforge/pmd/cpd/CPDConfiguration.html#setCPDRenderer(net.sourceforge.pmd.cpd.renderer.CPDRenderer)"><code>CPDConfiguration#setCPDRenderer</code></a></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.48.0-SNAPSHOT/net/sourceforge/pmd/cpd/CPDConfiguration.html#getRenderer()"><code>CPDConfiguration#getRenderer</code></a></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.48.0-SNAPSHOT/net/sourceforge/pmd/cpd/CPDConfiguration.html#getCPDRenderer()"><code>CPDConfiguration#getCPDRenderer</code></a></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.48.0-SNAPSHOT/net/sourceforge/pmd/cpd/CPDConfiguration.html#getRendererFromString(java.lang.String,java.lang.String)"><code>CPDConfiguration#getRendererFromString</code></a></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.48.0-SNAPSHOT/net/sourceforge/pmd/cpd/CPDConfiguration.html#getCPDRendererFromString(java.lang.String,java.lang.String)"><code>CPDConfiguration#getCPDRendererFromString</code></a></li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.48.0-SNAPSHOT/net/sourceforge/pmd/cpd/renderer/CPDRendererAdapter.html#"><code>CPDRendererAdapter</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.48.0/net/sourceforge/pmd/cpd/CPDConfiguration.html#setRenderer(net.sourceforge.pmd.cpd.Renderer)"><code>CPDConfiguration#setRenderer</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.48.0/net/sourceforge/pmd/cpd/CPDConfiguration.html#setCPDRenderer(net.sourceforge.pmd.cpd.renderer.CPDRenderer)"><code>CPDConfiguration#setCPDRenderer</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.48.0/net/sourceforge/pmd/cpd/CPDConfiguration.html#getRenderer()"><code>CPDConfiguration#getRenderer</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.48.0/net/sourceforge/pmd/cpd/CPDConfiguration.html#getCPDRenderer()"><code>CPDConfiguration#getCPDRenderer</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.48.0/net/sourceforge/pmd/cpd/CPDConfiguration.html#getRendererFromString(java.lang.String,java.lang.String)"><code>CPDConfiguration#getRendererFromString</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.48.0/net/sourceforge/pmd/cpd/CPDConfiguration.html#getCPDRendererFromString(java.lang.String,java.lang.String)"><code>CPDConfiguration#getCPDRendererFromString</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.48.0/net/sourceforge/pmd/cpd/renderer/CPDRendererAdapter.html#"><code>CPDRendererAdapter</code></a></li>
 </ul>
 
 <h3 id="financial-contributions">Financial Contributions</h3>
@@ -1699,6 +1699,13 @@ You can identify them with the <code class="language-plaintext highlighter-rouge
   <li><a href="https://github.com/pmd/pmd/pull/4021">#4021</a>: [core] CPD: Add total number of tokens to XML reports - <a href="https://github.com/maikelsteneker">@maikelsteneker</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/4056">#4056</a>: [apex] ApexSOQLInjection: Add support count query - <a href="https://github.com/gwilymatgearset">@gwilymatgearset</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/4061">#4061</a>: [lua] Fix several related Lua parsing issues found when using CPD - <a href="https://github.com/matthargett">@matthargett</a></li>
+</ul>
+
+<h3 id="stats">Stats</h3>
+<ul>
+  <li>102 commits</li>
+  <li>26 closed tickets &amp; PRs</li>
+  <li>Days since last release: 35</li>
 </ul>
 
 
