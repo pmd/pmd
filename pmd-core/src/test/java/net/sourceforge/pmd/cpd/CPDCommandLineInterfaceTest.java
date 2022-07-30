@@ -4,6 +4,9 @@
 
 package net.sourceforge.pmd.cpd;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.not;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -35,7 +38,6 @@ class CPDCommandLineInterfaceTest {
 
     @TempDir
     private Path tempDir;
-
 
     @BeforeEach
     void setup() {
@@ -70,7 +72,6 @@ class CPDCommandLineInterfaceTest {
         return expectedFilesXmlBuilder.toString();
     }
 
-
     @Test
     void testDeprecatedOptionsWarning() throws Exception {
         final List<String> filepaths = Arrays.asList(
@@ -93,5 +94,25 @@ class CPDCommandLineInterfaceTest {
         // only one parameter is logged
         assertFalse(stderr.contains("Some deprecated options were used on the command-line, including --filelist"));
         assertFalse(stderr.contains("Consider replacing it with --file-list"));
+    }
+
+    @Test
+    void testDebugLogging() throws Exception {
+        String stderr = SystemLambda.tapSystemErr(() -> {
+            CPD.StatusCode statusCode = CPD.runCpd("--minimum-tokens", "340", "--language", "java", "--files",
+                    SRC_DIR, "--debug");
+            assertEquals(CPD.StatusCode.OK, statusCode);
+        });
+        assertThat(stderr, containsString("Tokenizing ")); // this is a debug logging
+    }
+
+    @Test
+    void testNormalLogging() throws Exception {
+        String stderr = SystemLambda.tapSystemErr(() -> {
+            CPD.StatusCode statusCode = CPD.runCpd("--minimum-tokens", "340", "--language", "java", "--files",
+                    SRC_DIR);
+            assertEquals(CPD.StatusCode.OK, statusCode);
+        });
+        assertThat(stderr, not(containsString("Tokenizing "))); // this is a debug logging
     }
 }

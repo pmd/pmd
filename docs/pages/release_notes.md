@@ -49,8 +49,10 @@ Being based on a proper Antlr grammar, CPD can:
 * apex
     * [#4056](https://github.com/pmd/pmd/pull/4056): \[apex] ApexSOQLInjection: Add support count query
 * core
+    * [#3796](https://github.com/pmd/pmd/issues/3796): \[core] CPD should also provide a `--debug` flag
     * [#4021](https://github.com/pmd/pmd/pull/4021): \[core] CPD: Add total number of tokens to XML reports
     * [#4031](https://github.com/pmd/pmd/issues/4031): \[core] If report is written to stdout, stdout should not be closed
+    * [#4051](https://github.com/pmd/pmd/issues/4051): \[doc] Additional rulesets are not listed in documentation
     * [#4053](https://github.com/pmd/pmd/pull/4053): \[core] Allow building PMD under Java 18+
 * java
     * [#4015](https://github.com/pmd/pmd/issues/4015): \[java] Support JDK 19
@@ -69,6 +71,11 @@ Being based on a proper Antlr grammar, CPD can:
     * [#3976](https://github.com/pmd/pmd/pull/3976): \[test] Extract xml schema module
 
 ### API Changes
+
+#### CPD CLI
+
+* CPD has a new CLI option `--debug`. This option has the same behavior as in PMD. It enables more verbose
+  logging output.
 
 #### Rule Test Framework
 
@@ -92,7 +99,7 @@ Being based on a proper Antlr grammar, CPD can:
   but it is no longer supported with Java 19 Preview.
 * The interface {% jdoc core::cpd.renderer.CPDRenderer %} is deprecated. For custom CPD renderers
   the new interface {% jdoc core::cpd.renderer.CPDReportRenderer %} should be used.
-* The class {% jdoc test::testframework.TestDescriptor %} is deprecated, replaced with {% jdoc test-schema::testframework.RuleTestDescriptor %}.
+* The class {% jdoc test::testframework.TestDescriptor %} is deprecated, replaced with {% jdoc test-schema::test.schema.RuleTestDescriptor %}.
 * Many methods of {% jdoc test::testframework.RuleTst %} have been deprecated as internal API.
 
 #### Experimental APIs
@@ -115,6 +122,12 @@ You can identify them with the `@InternalApi` annotation. You'll also get a depr
 * {%jdoc !!core::cpd.CPDConfiguration#getRendererFromString(java.lang.String,java.lang.String) %}
 * {%jdoc !!core::cpd.CPDConfiguration#getCPDRendererFromString(java.lang.String,java.lang.String) %}
 * {%jdoc core::cpd.renderer.CPDRendererAdapter %}
+
+### Financial Contributions
+
+Many thanks to our sponsors:
+
+* [Matt Hargett](https://github.com/matthargett) (@matthargett)
 
 ### External Contributions
 * [#3984](https://github.com/pmd/pmd/pull/3984): \[java] Fix AddEmptyString false-negative issue - [@LiGaOg](https://github.com/LiGaOg)

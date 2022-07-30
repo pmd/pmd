@@ -19,10 +19,12 @@ import java.util.TreeMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.event.Level;
 
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.cli.internal.CliMessages;
 import net.sourceforge.pmd.cpd.renderer.CPDReportRenderer;
+import net.sourceforge.pmd.internal.Slf4jSimpleConfiguration;
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
 import net.sourceforge.pmd.util.FileFinder;
 import net.sourceforge.pmd.util.IOUtil;
@@ -31,7 +33,8 @@ import net.sourceforge.pmd.util.database.DBURI;
 import net.sourceforge.pmd.util.database.SourceObject;
 
 public class CPD {
-    private static final Logger LOG = LoggerFactory.getLogger(CPD.class);
+    // not final, in order to re-initialize logging
+    private static Logger log = LoggerFactory.getLogger(CPD.class);
 
     private CPDConfiguration configuration;
 
@@ -55,8 +58,10 @@ public class CPD {
     }
 
     public void go() {
+        log.debug("Running match algorithm on {} files...", source.size());
         matchAlgorithm = new MatchAlgorithm(source, tokens, configuration.getMinimumTileSize(), listener);
         matchAlgorithm.findMatches();
+        log.debug("Finished: {} duplicates found", matchAlgorithm.getMatches().size());
     }
 
     public Iterator<Match> getMatches() {
@@ -81,6 +86,7 @@ public class CPD {
         if (!dir.exists()) {
             throw new FileNotFoundException("Couldn't find directory " + dir);
         }
+        log.debug("Searching directory " + dir + " for files");
         FileFinder finder = new FileFinder();
         // TODO - could use SourceFileSelector here
         add(finder.findFilesFrom(dir, configuration.filenameFilter(), recurse));
@@ -119,19 +125,19 @@ public class CPD {
             DBMSMetadata dbmsmetadata = new DBMSMetadata(dburi);
 
             List<SourceObject> sourceObjectList = dbmsmetadata.getSourceObjectList();
-            LOG.debug("Located {} database source objects", sourceObjectList.size());
+            log.debug("Located {} database source objects", sourceObjectList.size());
 
             for (SourceObject sourceObject : sourceObjectList) {
                 // Add DBURI as a faux-file
                 String falseFilePath = sourceObject.getPseudoFileName();
-                LOG.trace("Adding database source object {}", falseFilePath);
+                log.trace("Adding database source object {}", falseFilePath);
 
                 SourceCode sourceCode = configuration.sourceCodeFor(dbmsmetadata.getSourceCode(sourceObject),
                         falseFilePath);
                 add(sourceCode);
             }
         } catch (Exception sqlException) {
-            LOG.error("Problem with Input URI", sqlException);
+            log.error("Problem with Input URI", sqlException);
             throw new RuntimeException("Problem with DBURI: " + dburi, sqlException);
         }
     }
@@ -146,6 +152,7 @@ public class CPD {
     }
 
     private void addAndThrowLexicalError(SourceCode sourceCode) throws IOException {
+        log.debug("Tokenizing {}", sourceCode.getFileName());
         configuration.tokenizer().tokenize(sourceCode, tokens);
         listener.addedFile(1, new File(sourceCode.getFileName()));
         source.put(sourceCode.getFileName(), sourceCode);
@@ -207,6 +214,23 @@ public class CPD {
             return statusCode;
         }
 
+        // only reconfigure logging, if debug flag was used on command line
+        // otherwise just use whatever is in conf/simplelogger.properties which happens automatically
+        if (arguments.isDebug()) {
+            Slf4jSimpleConfiguration.reconfigureDefaultLogLevel(Level.TRACE);
+            // need to reload the logger with the new configuration
+            log = LoggerFactory.getLogger(CPD.class);
+        }
+
+        // TODO CLI errors should also be reported through this
+        // TODO this should not use the logger as backend, otherwise without
+        //  slf4j implementation binding, errors are entirely ignored.
+        // always install java.util.logging to slf4j bridge
+        Slf4jSimpleConfiguration.installJulBridge();
+        // logging, mostly for testing purposes
+        Level defaultLogLevel = Slf4jSimpleConfiguration.getDefaultLogLevel();
+        log.info("Log level is at {}", defaultLogLevel);
+
         CPD cpd = new CPD(arguments);
 
         try {
@@ -231,8 +255,8 @@ public class CPD {
                 statusCode = StatusCode.OK;
             }
         } catch (IOException | RuntimeException e) {
-            LOG.debug(e.toString(), e);
-            LOG.error(CliMessages.errorDetectedMessage(1, CPDCommandLineInterface.PROGRAM_NAME));
+            log.debug(e.toString(), e);
+            log.error(CliMessages.errorDetectedMessage(1, CPDCommandLineInterface.PROGRAM_NAME));
             statusCode = StatusCode.ERROR;
         }
         return statusCode;
