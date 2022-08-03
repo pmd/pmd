@@ -1,14 +1,14 @@
 package net.sourceforge.pmd.cli;
 
-import net.sourceforge.pmd.cli.commands.internal.PMDRootCommand;
+import net.sourceforge.pmd.cli.commands.internal.PmdRootCommand;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
-public class PMDCLI {
+public class PmdCli {
 
     public static void main(String[] args) {
-        new CommandLine(new PMDRootCommand()).setCaseInsensitiveEnumValuesAllowed(true)
+        new CommandLine(new PmdRootCommand()).setCaseInsensitiveEnumValuesAllowed(true)
 //                .execute("run", "-h");
                 .execute("run", "--use-version", "scala-2.11", "--use-version", "apex", "--use-version",
                         "ecmascript-latest", "-P", "foo=bar", "-R", "foo,bar", "-R", "baz", "-d",
@@ -16,7 +16,7 @@ public class PMDCLI {
     }
 
     @Command(name = "cpd", mixinStandardHelpOptions = true, description = "The Copy Paste Detector")
-    public static class CPDPicoCli implements Runnable {
+    public static class CpdPicoCli implements Runnable {
         @SuppressWarnings("unused")
         @Option(names = "--minimum-tokens",
                 description = "The minimum token length which should be reported as a duplicate.",

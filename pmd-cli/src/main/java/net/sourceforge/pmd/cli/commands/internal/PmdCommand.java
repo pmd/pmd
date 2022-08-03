@@ -25,7 +25,7 @@ import picocli.CommandLine.TypeConversionException;
 
 @Command(name = "analyze", aliases = {"analyse", "run" }, showDefaultValues = true,
     description = "The PMD standard source code analyzer")
-public class PMDCommand extends AbstractPMDSubcommand {
+public class PmdCommand extends AbstractPmdSubcommand {
 
     private List<String> rulesets;
     
@@ -202,7 +202,7 @@ public class PMDCommand extends AbstractPMDSubcommand {
             if (list.size() > 1) {
                 throw new ParameterException(spec.commandLine(), "Can only set one version per language, "
                         + "but for language " + l.getName() + " multiple versions were provided "
-                        + list.stream().map(PMDCommand::normalizeName).collect(Collectors.joining("', '", "'", "'")));
+                        + list.stream().map(PmdCommand::normalizeName).collect(Collectors.joining("', '", "'", "'")));
             }
         });
 
@@ -445,7 +445,7 @@ public class PMDCommand extends AbstractPMDSubcommand {
 
         @Override
         public Iterator<String> iterator() {
-            return LanguageRegistry.getLanguages().stream().map(PMDCommand::normalizeName).iterator();
+            return LanguageRegistry.getLanguages().stream().map(PmdCommand::normalizeName).iterator();
         }
     }
     
@@ -477,12 +477,12 @@ public class PMDCommand extends AbstractPMDSubcommand {
         public Iterator<String> iterator() {
             // Raw language names / -latest versions, such as "java" or "java-latest"
             final Stream<String> latestLangReferences = LanguageRegistry.getLanguages().stream()
-                    .map(PMDCommand::normalizeName).flatMap(name -> Stream.of(name, name + "-latest"));
+                    .map(PmdCommand::normalizeName).flatMap(name -> Stream.of(name, name + "-latest"));
 
             // Explicit language-version pairs, such as "java-18" or "apex-54"
             final Stream<String> allLangVersionReferences = LanguageRegistry.getLanguages().stream()
                     .flatMap(l -> l.getVersions().stream())
-                    .map(PMDCommand::normalizeName);
+                    .map(PmdCommand::normalizeName);
             
             // Collect to a TreeSet to ensure alphabetical order
             final TreeSet<String> candidates = Stream.concat(latestLangReferences, allLangVersionReferences)
