@@ -5,6 +5,7 @@ import net.sourceforge.pmd.cli.PmdCli.CpdPicoCli;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.IVersionProvider;
 
+// TODO : Status code 4 is actually contingent on using --fail-on-violation… we need to raise that to a common flag
 @Command(name = "pmd", mixinStandardHelpOptions = true,
     versionProvider = PMDVersionProvider.class,
     exitCodeListHeading = "Exit Codes:%n",

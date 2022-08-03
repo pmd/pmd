@@ -1,5 +1,8 @@
 package net.sourceforge.pmd.cli.commands.internal;
 
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.net.URI;
 import java.nio.file.Path;
 import java.util.Iterator;
@@ -10,13 +13,27 @@ import java.util.TreeSet;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.shaded.apache.commons.io.output.CloseShieldWriter;
+import org.slf4j.LoggerFactory;
+import org.slf4j.event.Level;
+
 import net.sourceforge.pmd.PMDConfiguration;
+import net.sourceforge.pmd.PmdAnalysis;
 import net.sourceforge.pmd.RulePriority;
+import net.sourceforge.pmd.benchmark.TextTimingReportRenderer;
+import net.sourceforge.pmd.benchmark.TimeTracker;
+import net.sourceforge.pmd.benchmark.TimingReport;
+import net.sourceforge.pmd.benchmark.TimingReportRenderer;
+import net.sourceforge.pmd.cli.internal.CliMessages;
 import net.sourceforge.pmd.cli.internal.ExecutionResult;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.renderers.RendererFactory;
+import net.sourceforge.pmd.reporting.ReportStats;
+import net.sourceforge.pmd.util.StringUtil;
+import net.sourceforge.pmd.util.log.MessageReporter;
+import net.sourceforge.pmd.util.log.internal.SimpleMessageReporter;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.ITypeConverter;
 import picocli.CommandLine.Option;
@@ -45,8 +62,6 @@ public class PmdCommand extends AbstractPmdSubcommand {
     private int threads;
 
     private boolean benchmark;
-
-    private boolean stress;
 
     private boolean shortnames;
 
@@ -139,11 +154,6 @@ public class PmdCommand extends AbstractPmdSubcommand {
             description = "Benchmark mode - output a benchmark report upon completion; default to System.err.")
     public void setBenchmark(final boolean benchmark) {
         this.benchmark = benchmark;
-    }
-
-    @Option(names = { "--stress", "-S" }, description = "Performs a stress test.")
-    public void setStress(final boolean stress) {
-        this.stress = stress;
     }
 
     @Option(names = { "--short-names" }, description = "Prints shortened filenames in the report.")
@@ -273,7 +283,6 @@ public class PmdCommand extends AbstractPmdSubcommand {
         configuration.setIgnoreFilePath(ignoreListPath != null ? ignoreListPath.toString() : null);
         configuration.setInputUri(uri != null ? uri.toString() : null);
         configuration.setReportFormat(format);
-        configuration.setBenchmark(benchmark);
         configuration.setDebug(debug);
         configuration.setMinimumPriority(minimumPriority);
         configuration.setReportFile(reportFile != null ? reportFile.toString() : null);
@@ -283,7 +292,6 @@ public class PmdCommand extends AbstractPmdSubcommand {
         configuration.setRuleSetFactoryCompatibilityEnabled(!this.noRuleSetCompatibility);
         configuration.setShowSuppressedViolations(showSuppressed);
         configuration.setSourceEncoding(encoding);
-        configuration.setStressTest(stress);
         configuration.setSuppressMarker(suppressMarker);
         configuration.setThreads(threads);
         configuration.setFailOnViolation(failOnViolation);
@@ -301,99 +309,15 @@ public class PmdCommand extends AbstractPmdSubcommand {
             configuration.setForceLanguageVersion(forcedLangVer);
         }
 
+        // Setup CLI message reporter
+        configuration.setReporter(new SimpleMessageReporter(LoggerFactory.getLogger(PmdCommand.class)));
+
         try {
             configuration.prependAuxClasspath(auxClasspath);
         } catch (IllegalArgumentException e) {
             throw new ParameterException(spec.commandLine(), "Invalid auxiliary classpath: " + e.getMessage(), e);
         }
         return configuration;
-    }
-
-    public boolean isIgnoreIncrementalAnalysis() {
-        return noCache;
-    }
-
-    public boolean isDebug() {
-        return debug;
-    }
-
-    public String getEncoding() {
-        return encoding;
-    }
-
-    public Integer getThreads() {
-        return threads;
-    }
-
-    public boolean isBenchmark() {
-        return benchmark;
-    }
-
-    public boolean isStress() {
-        return stress;
-    }
-
-    public boolean isShortnames() {
-        return shortnames;
-    }
-
-    public boolean isShowSuppressed() {
-        return showSuppressed;
-    }
-
-    public String getSuppressMarker() {
-        return suppressMarker;
-    }
-
-    public RulePriority getMinimumPriority() {
-        return minimumPriority;
-    }
-
-    public Properties getProperties() {
-        return properties;
-    }
-
-    public Path getReportFile() {
-        return reportFile;
-    }
-
-    public Language getForceLanguage() {
-        return forceLanguage;
-    }
-
-    public String getAuxClasspath() {
-        return auxClasspath;
-    }
-
-    public List<String> getRulesetRefs() {
-        return rulesets;
-    }
-
-    public List<Path> getInputPaths() {
-        return inputPaths;
-    }
-
-    public Path getFileListPath() {
-        return fileListPath;
-    }
-
-    public Path getIgnoreListPath() {
-        return ignoreListPath;
-    }
-
-    public String getFormat() {
-        return format;
-    }
-
-    public boolean isFailOnViolation() {
-        return failOnViolation;
-    }
-
-    /**
-     * @return the uri alternative to source directory.
-     */
-    public URI getUri() {
-        return uri;
     }
 
     @Override
@@ -403,20 +327,72 @@ public class PmdCommand extends AbstractPmdSubcommand {
                     "Please provide a parameter for source root directory (--dir or -d), "
                             + "database URI (--uri or -u), or file list path (--file-list)");
         }
-        
-        System.out.println("language versions: " + languageVersion);
-        System.out.println("threads: " + threads);
-        System.out.println("priority: " + minimumPriority);
-        System.out.println("properties: " + properties);
-        System.out.println("ruleset: " + rulesets);
-        System.out.println("format: " + format);
-        System.out.println("priority: " + minimumPriority);
-        System.out.println("force lang ver: " + toConfiguration().getForceLanguageVersion());
-        
-        // TODO Auto-generated method stub
-        return ExecutionResult.OK;
+
+        if (benchmark) {
+            TimeTracker.startGlobalTracking();
+        }
+
+        final PMDConfiguration configuration = toConfiguration();
+        final MessageReporter pmdReporter = configuration.getReporter();
+
+        try {
+            PmdAnalysis pmd = null;
+            try {
+                try {
+                    pmd = PmdAnalysis.create(configuration);
+                } catch (final Exception e) {
+                    pmdReporter.errorEx("Could not initialize analysis", e);
+                    return ExecutionResult.ERROR;
+                }
+
+                pmdReporter.log(Level.DEBUG, "Current classpath:\n{}", System.getProperty("java.class.path"));
+                final ReportStats stats = pmd.runAndReturnStats();
+                if (pmdReporter.numErrors() > 0) {
+                    // processing errors are ignored
+                    return ExecutionResult.ERROR;
+                } else if (stats.getNumViolations() > 0 && configuration.isFailOnViolation()) {
+                    return ExecutionResult.VIOLATIONS_FOUND;
+                } else {
+                    return ExecutionResult.OK;
+                }
+            } finally {
+                if (pmd != null) {
+                    pmd.close();
+                }
+            }
+
+        } catch (final Exception e) {
+            pmdReporter.errorEx("Exception while running PMD.", e);
+            printErrorDetected(pmdReporter, 1);
+            return ExecutionResult.ERROR;
+        } finally {
+            finishBenchmarker(pmdReporter);
+        }
     }
-    
+
+    private void printErrorDetected(MessageReporter reporter, int errors) {
+        String msg = CliMessages.errorDetectedMessage(errors, "PMD");
+        // note: using error level here increments the error count of the reporter,
+        // which we don't want.
+        reporter.info(StringUtil.quoteMessageFormat(msg));
+    }
+
+    private void finishBenchmarker(final MessageReporter pmdReporter) {
+        if (benchmark) {
+            final TimingReport timingReport = TimeTracker.stopGlobalTracking();
+
+            // TODO get specified report format from config
+            final TimingReportRenderer renderer = new TextTimingReportRenderer();
+
+            // Use a CloseShieldWriter to avoid closing STDERR
+            try (final Writer writer = new CloseShieldWriter(new OutputStreamWriter(System.err))) {
+                renderer.render(timingReport, writer);
+            } catch (final IOException e) {
+                pmdReporter.errorEx("Error producing benchmark report", e);
+            }
+        }
+    }
+
     /**
      * Provider of candidates for valid report formats.
      */
