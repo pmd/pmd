@@ -274,10 +274,10 @@ public class PmdCommand extends AbstractPmdSubcommand {
      *
      * @return A new PMDConfiguration corresponding to these parameters
      *
-     * @throws IllegalArgumentException if the parameters are inconsistent or incomplete
+     * @throws ParameterException if the parameters are inconsistent or incomplete
      */
     public PMDConfiguration toConfiguration() {
-        PMDConfiguration configuration = new PMDConfiguration();
+        final PMDConfiguration configuration = new PMDConfiguration();
         configuration.setInputPaths(inputPaths.stream().map(Path::toString).collect(Collectors.toList()));
         configuration.setInputFilePath(fileListPath != null ? fileListPath.toString() : null);
         configuration.setIgnoreFilePath(ignoreListPath != null ? ignoreListPath.toString() : null);
