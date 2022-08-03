@@ -2,7 +2,10 @@ package net.sourceforge.pmd.cli.commands.internal;
 
 import java.util.concurrent.Callable;
 
+import org.slf4j.event.Level;
+
 import net.sourceforge.pmd.cli.internal.ExecutionResult;
+import net.sourceforge.pmd.internal.Slf4jSimpleConfiguration;
 import picocli.CommandLine.Model.CommandSpec;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Spec;
@@ -15,10 +18,25 @@ public abstract class AbstractPmdSubcommand implements Callable<Integer> {
     @Option(names = { "-h", "--help" }, usageHelp = true, description = "Show this help message and exit.")
     protected boolean helpRequested;
 
+    @Option(names = { "--debug", "--verbose", "-D", "-V" }, description = "Debug mode.")
+    protected boolean debug;
+
     @Override
     public final Integer call() throws Exception {
+        setupCliLogger();
         return execute().getExitCode();
     }
 
     protected abstract ExecutionResult execute();
+
+    private void setupCliLogger() {
+        // only reconfigure logging, if debug flag was used on command line
+        // otherwise just use whatever is in conf/simplelogger.properties which happens automatically
+        if (debug) {
+            Slf4jSimpleConfiguration.reconfigureDefaultLogLevel(Level.TRACE);
+        }
+
+        // always install java.util.logging to slf4j bridge
+        Slf4jSimpleConfiguration.installJulBridge();
+    }
 }

@@ -39,8 +39,6 @@ public class PmdCommand extends AbstractPmdSubcommand {
 
     private String format;
 
-    private boolean debug;
-
     // TODO : Actually use an Charset instance?
     private String encoding;
     
@@ -128,11 +126,6 @@ public class PmdCommand extends AbstractPmdSubcommand {
             defaultValue = "text", completionCandidates = PMDSupportedReportFormatsCandidates.class)
     public void setFormat(final String format) {
         this.format = format;
-    }
-
-    @Option(names = { "--debug", "--verbose", "-D", "-V" }, description = "Debug mode.")
-    public void setDebug(final boolean debug) {
-        this.debug = debug;
     }
 
     @Option(names = { "--encoding", "-e" },
