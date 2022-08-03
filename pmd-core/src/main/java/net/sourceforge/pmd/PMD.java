@@ -26,7 +26,6 @@ import net.sourceforge.pmd.benchmark.TextTimingReportRenderer;
 import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.benchmark.TimingReport;
 import net.sourceforge.pmd.benchmark.TimingReportRenderer;
-import net.sourceforge.pmd.cache.NoopAnalysisCache;
 import net.sourceforge.pmd.cli.PMDCommandLineInterface;
 import net.sourceforge.pmd.cli.PmdParametersParseResult;
 import net.sourceforge.pmd.cli.internal.CliMessages;
@@ -70,18 +69,6 @@ public final class PMD {
     public static final String SUPPRESS_MARKER = PMDConfiguration.DEFAULT_SUPPRESS_MARKER;
 
     private PMD() {
-    }
-
-
-    static void encourageToUseIncrementalAnalysis(final PMDConfiguration configuration) {
-        if (!configuration.isIgnoreIncrementalAnalysis()
-            && configuration.getAnalysisCache() instanceof NoopAnalysisCache
-            && log.isWarnEnabled()) {
-            final String version =
-                PMDVersion.isUnknown() || PMDVersion.isSnapshot() ? "latest" : "pmd-" + PMDVersion.VERSION;
-            log.warn("This analysis could be faster, please consider using Incremental Analysis: "
-                            + "https://pmd.github.io/{}/pmd_userdocs_incremental_analysis.html", version);
-        }
     }
 
     /**
