@@ -22,6 +22,7 @@ import com.google.summit.ast.declaration.TypeDeclaration
 import com.google.summit.ast.modifier.KeywordModifier
 import com.google.summit.ast.modifier.KeywordModifier.Keyword
 import com.google.summit.ast.modifier.Modifier
+import com.google.summit.ast.statement.CompoundStatement
 
 @Deprecated("internal")
 @InternalApi
@@ -64,6 +65,7 @@ class ApexTreeBuilder(val sourceCode: String, val parserOptions: ApexParserOptio
             is CompilationUnit -> build(node.typeDeclaration, parent)
             is TypeDeclaration -> buildTypeDeclaration(node)
             is MethodDeclaration -> buildMethodDeclaration(node, parent)
+            is CompoundStatement -> ASTBlockStatement(node).apply { buildChildren(node, parent = this) }
             is Identifier,
             is KeywordModifier,
             is TypeRef -> null
