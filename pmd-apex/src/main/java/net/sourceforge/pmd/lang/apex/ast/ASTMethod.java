@@ -4,18 +4,29 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import com.google.summit.ast.Node;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.apex.metrics.signature.ApexOperationSignature;
 import net.sourceforge.pmd.lang.ast.SignedNode;
 
-public class ASTMethod extends AbstractApexNode.Single<Node> implements ApexQualifiableNode,
+import com.google.summit.ast.declaration.MethodDeclaration;
+
+public class ASTMethod extends AbstractApexNode.Single<MethodDeclaration> implements ApexQualifiableNode,
        SignedNode<ASTMethod>, CanSuppressWarnings {
+
+    /**
+     * Internal name used by constructors.
+     */
+    public static final String CONSTRUCTOR_ID = "<init>";
+
+    /**
+     * Internal name used by static initialization blocks.
+     */
+    public static final String STATIC_INIT_ID = "<clinit>";
 
     @Deprecated
     @InternalApi
-    public ASTMethod(Node method) {
+    public ASTMethod(MethodDeclaration method) {
         super(method);
     }
 
@@ -24,17 +35,28 @@ public class ASTMethod extends AbstractApexNode.Single<Node> implements ApexQual
         return visitor.visit(this, data);
     }
 
+    /**
+     * Returns the name of the method, converting the parser name to the internal PMD name as
+     * needed.
+     */
+    private String getName() {
+        if (node.isAnonymousInitializationCode()) {
+            return STATIC_INIT_ID;
+        } else if (node.isConstructor()) {
+            return CONSTRUCTOR_ID;
+        } else {
+            return node.getId().asCodeString();
+        }
+    }
+
     @Override
     public String getImage() {
-        // return node.getMethodInfo().getName();
-        // TODO(b/239648780)
-        return null;
+        return getName();
+        // TODO(b/239648780): differs from #getCanonicalName in some instances
     }
 
     public String getCanonicalName() {
-        // return node.getMethodInfo().getCanonicalName();
-        // TODO(b/239648780)
-        return null;
+        return getName();
     }
 
     @Override
@@ -123,9 +145,7 @@ public class ASTMethod extends AbstractApexNode.Single<Node> implements ApexQual
     }
 
     public boolean isConstructor() {
-        // return node.getMethodInfo().isConstructor();
-        // TODO(b/239648780)
-        return false;
+        return node.isConstructor();
     }
 
     public ASTModifierNode getModifiers() {
@@ -133,14 +153,10 @@ public class ASTMethod extends AbstractApexNode.Single<Node> implements ApexQual
     }
 
     public String getReturnType() {
-        // return node.getMethodInfo().getEmitSignature().getReturnType().getApexName();
-        // TODO(b/239648780)
-        return null;
+        return node.getReturnType().asCodeString();
     }
 
     public int getArity() {
-        // return node.getMethodInfo().getParameterTypes().size();
-        // TODO(b/239648780)
-        return 0;
+        return node.getParameterDeclarations().size();
     }
 }

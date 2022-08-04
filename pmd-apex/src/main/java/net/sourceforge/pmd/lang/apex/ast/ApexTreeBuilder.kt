@@ -16,9 +16,11 @@ import com.google.summit.ast.TypeRef
 import com.google.summit.ast.declaration.ClassDeclaration
 import com.google.summit.ast.declaration.EnumDeclaration
 import com.google.summit.ast.declaration.InterfaceDeclaration
+import com.google.summit.ast.declaration.MethodDeclaration
 import com.google.summit.ast.declaration.TriggerDeclaration
 import com.google.summit.ast.declaration.TypeDeclaration
 import com.google.summit.ast.modifier.KeywordModifier
+import com.google.summit.ast.modifier.KeywordModifier.Keyword
 import com.google.summit.ast.modifier.Modifier
 
 @Deprecated("internal")
@@ -61,6 +63,7 @@ class ApexTreeBuilder(val sourceCode: String, val parserOptions: ApexParserOptio
             null -> null
             is CompilationUnit -> build(node.typeDeclaration, parent)
             is TypeDeclaration -> buildTypeDeclaration(node)
+            is MethodDeclaration -> buildMethodDeclaration(node, parent)
             is Identifier,
             is KeywordModifier,
             is TypeRef -> null
@@ -102,6 +105,19 @@ class ApexTreeBuilder(val sourceCode: String, val parserOptions: ApexParserOptio
                 }
             is EnumDeclaration -> ASTUserEnum(node) // TODO(b/239648780): enum body is untranslated
             is TriggerDeclaration -> ASTUserTrigger(node) // TODO(b/239648780): visit children
+        }
+
+    /** Builds an [ASTMethod] wrapper for the [MethodDeclaration] node. */
+    private fun buildMethodDeclaration(node: MethodDeclaration, parent: ApexNode<*>?) =
+        when {
+            node.isAnonymousInitializationCode() && !node.hasKeyword(Keyword.STATIC) ->
+                build(node.body, parent)
+            else -> {
+                ASTMethod(node).apply {
+                    buildModifiers(node.modifiers).also { it.setParent(this) }
+                    buildChildren(node, parent = this, exclude = { it in node.modifiers })
+                }
+            }
         }
 
     /** Builds an [ASTModifierNode] wrapper for the list of [Modifier]s. */
