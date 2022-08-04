@@ -17,6 +17,7 @@ import com.google.summit.ast.declaration.ClassDeclaration
 import com.google.summit.ast.declaration.EnumDeclaration
 import com.google.summit.ast.declaration.InterfaceDeclaration
 import com.google.summit.ast.declaration.MethodDeclaration
+import com.google.summit.ast.declaration.PropertyDeclaration
 import com.google.summit.ast.declaration.TriggerDeclaration
 import com.google.summit.ast.declaration.TypeDeclaration
 import com.google.summit.ast.modifier.KeywordModifier
@@ -65,6 +66,7 @@ class ApexTreeBuilder(val sourceCode: String, val parserOptions: ApexParserOptio
             is CompilationUnit -> build(node.typeDeclaration, parent)
             is TypeDeclaration -> buildTypeDeclaration(node)
             is MethodDeclaration -> buildMethodDeclaration(node, parent)
+            is PropertyDeclaration -> buildPropertyDeclaration(node)
             is CompoundStatement -> ASTBlockStatement(node).apply { buildChildren(node, parent = this) }
             is Identifier,
             is KeywordModifier,
@@ -120,6 +122,13 @@ class ApexTreeBuilder(val sourceCode: String, val parserOptions: ApexParserOptio
                     buildChildren(node, parent = this, exclude = { it in node.modifiers })
                 }
             }
+        }
+
+    /** Builds an [ASTProperty] wrapper for the [PropertyDeclaration] node. */
+    private fun buildPropertyDeclaration(node: PropertyDeclaration) =
+        ASTProperty(node).apply {
+            buildModifiers(node.modifiers).also { it.setParent(this) }
+            buildChildren(node, parent = this, exclude = { it in node.modifiers })
         }
 
     /** Builds an [ASTModifierNode] wrapper for the list of [Modifier]s. */

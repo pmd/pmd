@@ -44,6 +44,8 @@ public class ASTMethod extends AbstractApexNode.Single<MethodDeclaration> implem
             return STATIC_INIT_ID;
         } else if (node.isConstructor()) {
             return CONSTRUCTOR_ID;
+        } else if (getParent() instanceof ASTProperty) {
+            return ASTProperty.formatAccessorName((ASTProperty) getParent());
         } else {
             return node.getId().asCodeString();
         }

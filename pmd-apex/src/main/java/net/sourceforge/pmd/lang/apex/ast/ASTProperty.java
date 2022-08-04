@@ -4,14 +4,20 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import com.google.summit.ast.Node;
 import net.sourceforge.pmd.annotation.InternalApi;
 
-public class ASTProperty extends AbstractApexNode.Single<Node> {
+import com.google.summit.ast.declaration.PropertyDeclaration;
+
+public class ASTProperty extends AbstractApexNode.Single<PropertyDeclaration> {
+
+    /**
+     * Prefix added to the property name to create an internal accessor name.
+     */
+    private static final String ACCESSOR_PREFIX = "__sfdc_";
 
     @Deprecated
     @InternalApi
-    public ASTProperty(Node property) {
+    public ASTProperty(PropertyDeclaration property) {
         super(property);
     }
 
@@ -21,12 +27,18 @@ public class ASTProperty extends AbstractApexNode.Single<Node> {
     }
 
     public String getType() {
-        // return node.getFieldInfo().getType().getApexName();
-        // TODO(b/239648780)
-        return null;
+        return node.getType().asCodeString();
     }
 
     public ASTModifierNode getModifiers() {
         return getFirstChildOfType(ASTModifierNode.class);
+    }
+
+    /**
+     * Returns the internal accessor (getter/setter) name of an {@link ASTProperty}. The accessor name is the
+     * constant {@link #ACCESSOR_PREFIX} prepended to the name of the property.
+     */
+    public static String formatAccessorName(ASTProperty property) {
+        return ACCESSOR_PREFIX + property.node.getId().asCodeString();
     }
 }
