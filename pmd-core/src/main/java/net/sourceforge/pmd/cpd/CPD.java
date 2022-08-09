@@ -32,6 +32,7 @@ import net.sourceforge.pmd.util.database.DBMSMetadata;
 import net.sourceforge.pmd.util.database.DBURI;
 import net.sourceforge.pmd.util.database.SourceObject;
 
+@Deprecated
 public class CPD {
     // not final, in order to re-initialize logging
     private static Logger log = LoggerFactory.getLogger(CPD.class);
@@ -267,6 +268,7 @@ public class CPD {
         return new CPDReport(matchAlgorithm.getMatches(), numberOfTokensPerFile);
     }
 
+    @Deprecated
     public enum StatusCode {
         OK(0),
         ERROR(1),

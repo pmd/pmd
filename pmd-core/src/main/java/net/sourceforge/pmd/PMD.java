@@ -46,6 +46,7 @@ import net.sourceforge.pmd.util.log.internal.SimpleMessageReporter;
  * <p><strong>Warning:</strong> This class is not intended to be instantiated or subclassed. It will
  * be made final in PMD7.
  */
+@Deprecated
 public final class PMD {
 
     // not final, in order to re-initialize logging
@@ -253,6 +254,7 @@ public final class PMD {
      *
      * @see #runPmd(String[])
      */
+    @Deprecated
     public enum StatusCode {
         /** No errors, no violations. This is exit code {@code 0}. */
         OK(0),
