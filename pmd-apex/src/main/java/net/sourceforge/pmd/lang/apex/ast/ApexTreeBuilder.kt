@@ -15,6 +15,8 @@ import com.google.summit.ast.Node
 import com.google.summit.ast.TypeRef
 import com.google.summit.ast.declaration.ClassDeclaration
 import com.google.summit.ast.declaration.EnumDeclaration
+import com.google.summit.ast.declaration.FieldDeclaration
+import com.google.summit.ast.declaration.FieldDeclarationGroup
 import com.google.summit.ast.declaration.InterfaceDeclaration
 import com.google.summit.ast.declaration.MethodDeclaration
 import com.google.summit.ast.declaration.PropertyDeclaration
@@ -67,6 +69,8 @@ class ApexTreeBuilder(val sourceCode: String, val parserOptions: ApexParserOptio
             is TypeDeclaration -> buildTypeDeclaration(node)
             is MethodDeclaration -> buildMethodDeclaration(node, parent)
             is PropertyDeclaration -> buildPropertyDeclaration(node)
+            is FieldDeclarationGroup -> buildFieldDeclarationGroup(node)
+            is FieldDeclaration -> ASTFieldDeclaration(node).apply { buildChildren(node, parent = this) }
             is CompoundStatement -> ASTBlockStatement(node).apply { buildChildren(node, parent = this) }
             is Identifier,
             is KeywordModifier,
@@ -127,6 +131,13 @@ class ApexTreeBuilder(val sourceCode: String, val parserOptions: ApexParserOptio
     /** Builds an [ASTProperty] wrapper for the [PropertyDeclaration] node. */
     private fun buildPropertyDeclaration(node: PropertyDeclaration) =
         ASTProperty(node).apply {
+            buildModifiers(node.modifiers).also { it.setParent(this) }
+            buildChildren(node, parent = this, exclude = { it in node.modifiers })
+        }
+
+    /** Builds an [ASTFieldDeclarationStatements] wrapper for the [FieldDeclarationGroup] node. */
+    private fun buildFieldDeclarationGroup(node: FieldDeclarationGroup) =
+        ASTFieldDeclarationStatements(node).apply {
             buildModifiers(node.modifiers).also { it.setParent(this) }
             buildChildren(node, parent = this, exclude = { it in node.modifiers })
         }
