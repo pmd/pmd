@@ -3289,7 +3289,7 @@ public class UnusedAssignmentNative {
             ]]></code>
     </test-code>
 
-    <test-code regressionTest="false">
+    <test-code disabled="true">
         <!-- TODO for later -->
         <description>Explicit this ctor call</description>
         <expected-problems>1</expected-problems>

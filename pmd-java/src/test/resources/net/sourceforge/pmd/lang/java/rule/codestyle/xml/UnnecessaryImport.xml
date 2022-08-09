@@ -158,7 +158,7 @@ public class Foo {
         ]]></code>
     </test-code>
 
-    <test-code regressionTest="false">
+    <test-code disabled="true">
         <!-- This doesn't work anymore since the import is unresolved -->
         <description>Used static import</description>
         <expected-problems>0</expected-problems>
