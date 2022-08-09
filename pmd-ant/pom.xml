@@ -29,6 +29,17 @@
 
 
         <!-- Test dependencies -->
+
+        <dependency>
+            <!-- Test classes of pmd-core, which contain dummy language modules. -->
+            <groupId>net.sourceforge.pmd</groupId>
+            <artifactId>pmd-core</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+            <classifier>tests</classifier>
+            <type>test-jar</type>
+        </dependency>
+
         <dependency>
             <groupId>org.apache.ant</groupId>
             <artifactId>ant-testutil</artifactId>
