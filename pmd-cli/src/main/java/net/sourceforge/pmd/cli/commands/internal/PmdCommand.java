@@ -284,6 +284,7 @@ public class PmdCommand extends AbstractPmdSubcommand {
         configuration.setInputUri(uri != null ? uri.toString() : null);
         configuration.setReportFormat(format);
         configuration.setDebug(debug);
+        configuration.setSourceEncoding(encoding);
         configuration.setMinimumPriority(minimumPriority);
         configuration.setReportFile(reportFile != null ? reportFile.toString() : null);
         configuration.setReportProperties(properties);
