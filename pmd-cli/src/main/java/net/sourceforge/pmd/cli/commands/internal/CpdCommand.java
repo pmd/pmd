@@ -4,11 +4,11 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.net.URI;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import net.sourceforge.pmd.cli.internal.ExecutionResult;
 import net.sourceforge.pmd.cpd.CPD;
@@ -23,7 +23,7 @@ import picocli.CommandLine.ParameterException;
 
 @Command(name = "cpd", showDefaultValues = true,
     description = "Copy/Paste Detector - find duplicate code")
-public class CpdCommand extends AbstractPmdSubcommand {
+public class CpdCommand extends AbstractAnalysisPmdSubcommand {
 
     @Option(names = "--language", description = "Source code language.%nValid values: ${COMPLETION-CANDIDATES}%n",
             defaultValue = "java", converter = CpdLanguageConverter.class, completionCandidates = CpdLanguageCompletionCandidates.class)
@@ -41,13 +41,9 @@ public class CpdCommand extends AbstractPmdSubcommand {
     // TODO : Can we unify with PmdCommand but keep separate completion candidates? I think not…
     @Option(names = { "--format", "-f" },
             description = "Report format.%nValid values: ${COMPLETION-CANDIDATES}%n"
-                        + "Alternatively, you can provide the fully qualified name of a custom Renderer in the classpath.",
+                        + "Alternatively, you can provide the fully qualified name of a custom CpdRenderer in the classpath.",
             defaultValue = "text", completionCandidates = CpdSupportedReportFormatsCandidates.class)
     private String rendererName;
-    
-    // TODO : Unify with PmdCommand
-    @Option(names = "--encoding", description = "Character encoding to use when processing files")
-    private String encoding;
 
     @Option(names = "--ignore-literals",
             description = "Ignore literal values such as numbers and strings when comparing text.")
@@ -79,29 +75,11 @@ public class CpdCommand extends AbstractPmdSubcommand {
             defaultValue = Tokenizer.DEFAULT_SKIP_BLOCKS_PATTERN)
     private String skipBlocksPattern;
 
-    // TODO This should be --dir and -d for consistency with PMD, and unify with PmdCommand
-    @Option(names = "--files", arity = "1..*", description = "List of files and directories to analyze.")
-    private List<File> files;
-
-    // TODO Unify with PmdCommand
-    @Option(names = "--file-list", description = "Path to a file containing a list of files to analyze.")
-    private Path fileListPath;
-
     @Option(names = "--exclude", arity = "1..*", description = "Files to be excluded from the analysis")
     private List<File> excludes;
 
     @Option(names = "--non-recursive", description = "Don't scan subdirectiories.")
     private boolean nonRecursive;
-
-    // TODO : Improve this description
-    // TODO : Unify with PmdCommand
-    @Option(names = "--uri", description = "URI to process", required = false)
-    private URI uri;
-
-    // TODO : Unify with PmdCommand
-    @Option(names = "--fail-on-violation",
-            description = "By default CPD exits with status 4 if code duplications are found. Disable this option with '-failOnViolation false' to exit with 0 instead and just write the report.")
-    private boolean failOnViolation = true;
 
     /**
      * Converts these parameters into a configuration.
@@ -116,7 +94,7 @@ public class CpdCommand extends AbstractPmdSubcommand {
         configuration.setExcludes(excludes);
         configuration.setFailOnViolation(failOnViolation);
         configuration.setFileListPath(fileListPath == null ? null : fileListPath.toString());
-        configuration.setFiles(files);
+        configuration.setFiles(inputPaths == null ? null : inputPaths.stream().map(Path::toFile).collect(Collectors.toList()));
         configuration.setIgnoreAnnotations(ignoreAnnotations);
         configuration.setIgnoreIdentifiers(ignoreIdentifiers);
         configuration.setIgnoreLiterals(ignoreLiterals);
@@ -130,10 +108,10 @@ public class CpdCommand extends AbstractPmdSubcommand {
         configuration.setSkipBlocksPattern(skipBlocksPattern);
         configuration.setSkipDuplicates(skipDuplicates);
         configuration.setSkipLexicalErrors(skipLexicalErrors);
-        configuration.setSourceEncoding(encoding);
+        configuration.setSourceEncoding(encoding.name());
         configuration.setURI(uri == null ? null : uri.toString());
 
-        configuration.setCPDRenderer(CPDConfiguration.getCPDRendererFromString(rendererName, encoding));
+        configuration.setCPDRenderer(CPDConfiguration.getCPDRendererFromString(rendererName, encoding.name()));
 
         // TODO
         // Setup CLI message reporter
@@ -144,13 +122,6 @@ public class CpdCommand extends AbstractPmdSubcommand {
 
     @Override
     protected ExecutionResult execute() {
-        // TODO : This check should be shared with PmdCommand
-        if ((files == null || files.isEmpty()) && uri == null && fileListPath == null) {
-            throw new ParameterException(spec.commandLine(),
-                    "Please provide a parameter for source files/directories (--files), "
-                            + "database URI (--uri), or file list path (--file-list)");
-        }
-
         // TODO : Create a new CpdAnalysis to match PmdAnalysis
         final CPDConfiguration configuration = toConfiguration();
         final CPD cpd = new CPD(configuration);

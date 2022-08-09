@@ -8,6 +8,7 @@ import net.sourceforge.pmd.cli.internal.ExecutionResult;
 import net.sourceforge.pmd.internal.Slf4jSimpleConfiguration;
 import picocli.CommandLine.Model.CommandSpec;
 import picocli.CommandLine.Option;
+import picocli.CommandLine.ParameterException;
 import picocli.CommandLine.Spec;
 
 public abstract class AbstractPmdSubcommand implements Callable<Integer> {
@@ -24,8 +25,18 @@ public abstract class AbstractPmdSubcommand implements Callable<Integer> {
     @Override
     public final Integer call() throws Exception {
         setupCliLogger();
+        validate();
         return execute().getExitCode();
     }
+
+    /**
+     * Extension point to validate provided configuration.
+     * 
+     * Implementations must throw {@code ParameterException} upon a violation.
+     * 
+     * @throws ParameterException
+     */
+    protected void validate() throws ParameterException { }
 
     protected abstract ExecutionResult execute();
 

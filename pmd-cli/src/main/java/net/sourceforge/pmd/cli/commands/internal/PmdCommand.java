@@ -3,7 +3,6 @@ package net.sourceforge.pmd.cli.commands.internal;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.net.URI;
 import java.nio.file.Path;
 import java.util.Iterator;
 import java.util.List;
@@ -42,23 +41,14 @@ import picocli.CommandLine.TypeConversionException;
 
 @Command(name = "analyze", aliases = {"analyse", "run" }, showDefaultValues = true,
     description = "The PMD standard source code analyzer")
-public class PmdCommand extends AbstractPmdSubcommand {
+public class PmdCommand extends AbstractAnalysisPmdSubcommand {
 
     private List<String> rulesets;
     
-    private URI uri;
-
-    private List<Path> inputPaths;
-
-    private Path fileListPath;
-
     private Path ignoreListPath;
 
     private String format;
 
-    // TODO : Actually use an Charset instance?
-    private String encoding;
-    
     private int threads;
 
     private boolean benchmark;
@@ -81,8 +71,6 @@ public class PmdCommand extends AbstractPmdSubcommand {
 
     private String auxClasspath;
 
-    private boolean failOnViolation;
-
     private boolean noRuleSetCompatibility;
 
     private Path cacheLocation;
@@ -98,36 +86,6 @@ public class PmdCommand extends AbstractPmdSubcommand {
         this.rulesets = rulesets;
     }
 
-    @Option(names = { "--uri", "-u" },
-            description = "Database URI for sources. "
-                          + "One of --dir, --file-list or --uri must be provided.")
-    public void setUri(final URI uri) {
-        this.uri = uri;
-    }
-
-    @Option(names = { "--dir", "-d" },
-            description = "Path to a source file, or directory containing source files to analyze. "
-                          // About the following line:
-                          // In PMD 6, this is only the case for files found in directories. If you
-                          // specify a file directly, and it is unknown, then the Java parser is used.
-                          + "Note that a file is only effectively added if it matches a language known by PMD. "
-                          + "Zip and Jar files are also supported, if they are specified directly "
-                          + "(archive files found while exploring a directory are not recursively expanded). "
-                          + "This option can be repeated, and multiple arguments can be provided to a single occurrence of the option. "
-                          + "One of --dir, --file-list or --uri must be provided. ",
-            arity = "1..*")
-    public void setInputPaths(final List<Path> inputPaths) {
-        this.inputPaths = inputPaths;
-    }
-
-    @Option(names = { "--file-list" },
-            description =
-                "Path to a file containing a list of files to analyze, one path per line. "
-                + "One of --dir, --file-list or --uri must be provided.")
-    public void setFileListPath(final Path fileListPath) {
-        this.fileListPath = fileListPath;
-    }
-
     @Option(names = { "--ignore-list" },
             description = "Path to a file containing a list of files to exclude from the analysis, one path per line. "
                           + "This option can be combined with --dir and --file-list.")
@@ -141,13 +99,6 @@ public class PmdCommand extends AbstractPmdSubcommand {
             defaultValue = "text", completionCandidates = PmdSupportedReportFormatsCandidates.class)
     public void setFormat(final String format) {
         this.format = format;
-    }
-
-    @Option(names = { "--encoding", "-e" },
-            description = "Specifies the character set encoding of the source code files PMD is reading (i.e., UTF-8).",
-            defaultValue = "UTF-8")
-    public void setEncoding(final String encoding) {
-        this.encoding = encoding;
     }
 
     @Option(names = { "--benchmark", "-b" },
@@ -232,13 +183,6 @@ public class PmdCommand extends AbstractPmdSubcommand {
         this.auxClasspath = auxClasspath;
     }
 
-    @Option(names = { "--fail-on-violation" },
-            description = "By default PMD exits with status 4 if violations are found. Disable this option with '-failOnViolation false' to exit with 0 instead and just write the report.",
-            defaultValue = "true")
-    public void setFailOnViolation(final boolean failOnViolation) {
-        this.failOnViolation = failOnViolation;
-    }
-
     @Option(names = { "--no-ruleset-compatibility" },
             description = "Disable the ruleset compatibility filter. The filter is active by default and tries automatically 'fix' old ruleset files with old rule names")
     public void setNoRuleSetCompatibility(final boolean noRuleSetCompatibility) {
@@ -284,7 +228,7 @@ public class PmdCommand extends AbstractPmdSubcommand {
         configuration.setInputUri(uri != null ? uri.toString() : null);
         configuration.setReportFormat(format);
         configuration.setDebug(debug);
-        configuration.setSourceEncoding(encoding);
+        configuration.setSourceEncoding(encoding.name());
         configuration.setMinimumPriority(minimumPriority);
         configuration.setReportFile(reportFile != null ? reportFile.toString() : null);
         configuration.setReportProperties(properties);
@@ -292,7 +236,6 @@ public class PmdCommand extends AbstractPmdSubcommand {
         configuration.setRuleSets(rulesets);
         configuration.setRuleSetFactoryCompatibilityEnabled(!this.noRuleSetCompatibility);
         configuration.setShowSuppressedViolations(showSuppressed);
-        configuration.setSourceEncoding(encoding);
         configuration.setSuppressMarker(suppressMarker);
         configuration.setThreads(threads);
         configuration.setFailOnViolation(failOnViolation);
@@ -323,12 +266,6 @@ public class PmdCommand extends AbstractPmdSubcommand {
 
     @Override
     protected ExecutionResult execute() {
-        if ((inputPaths == null || inputPaths.isEmpty()) && uri == null && fileListPath == null) {
-            throw new ParameterException(spec.commandLine(),
-                    "Please provide a parameter for source root directory (--dir or -d), "
-                            + "database URI (--uri or -u), or file list path (--file-list)");
-        }
-
         if (benchmark) {
             TimeTracker.startGlobalTracking();
         }
