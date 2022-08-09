@@ -138,7 +138,7 @@ public class PmdCommand extends AbstractPmdSubcommand {
     @Option(names = { "--format", "-f" },
             description = "Report format.%nValid values: ${COMPLETION-CANDIDATES}%n"
                     + "Alternatively, you can provide the fully qualified name of a custom Renderer in the classpath.",
-            defaultValue = "text", completionCandidates = PMDSupportedReportFormatsCandidates.class)
+            defaultValue = "text", completionCandidates = PmdSupportedReportFormatsCandidates.class)
     public void setFormat(final String format) {
         this.format = format;
     }
@@ -197,7 +197,7 @@ public class PmdCommand extends AbstractPmdSubcommand {
 
     @Option(names = { "--use-version" }, defaultValue = "java-latest",
             description = "Sepcify the language and version PMD should use.%nValid values: ${COMPLETION-CANDIDATES}%n",
-            completionCandidates = PMDLanguageVersionCandidates.class, converter = PMDLanguageVersionConverter.class)
+            completionCandidates = PmdLanguageVersionCandidates.class, converter = PmdLanguageVersionConverter.class)
     public void setLanguageVersion(final List<LanguageVersion> languageVersion) {
         // Make sure we only set 1 version per language
         languageVersion.stream().collect(Collectors.groupingBy(LanguageVersion::getLanguage))
@@ -217,7 +217,7 @@ public class PmdCommand extends AbstractPmdSubcommand {
                           + "When using this option, the automatic language selection by extension is disabled, and PMD "
                           + "tries to parse all input files with the given language's parser. "
                           + "Parsing errors are ignored.%nValid values: ${COMPLETION-CANDIDATES}%n",
-            completionCandidates = PMDLanguagesCandidates.class, converter = PMDLanguageConverter.class)
+            completionCandidates = PmdLanguageCandidates.class, converter = PmdLanguageConverter.class)
     public void setForceLanguage(final Language forceLanguage) {
         this.forceLanguage = forceLanguage;
     }
@@ -396,7 +396,7 @@ public class PmdCommand extends AbstractPmdSubcommand {
     /**
      * Provider of candidates for valid report formats.
      */
-    private static class PMDSupportedReportFormatsCandidates implements Iterable<String> {
+    private static class PmdSupportedReportFormatsCandidates implements Iterable<String> {
 
         @Override
         public Iterator<String> iterator() {
@@ -410,7 +410,7 @@ public class PmdCommand extends AbstractPmdSubcommand {
      * Beware, the help will report this on runtime, and be accurate to available
      * modules in the classpath, but autocomplete will include all at build time.
      */
-    private static class PMDLanguagesCandidates implements Iterable<String> {
+    private static class PmdLanguageCandidates implements Iterable<String> {
 
         @Override
         public Iterator<String> iterator() {
@@ -423,7 +423,7 @@ public class PmdCommand extends AbstractPmdSubcommand {
      * 
      * Effectively reverses the stringification done by {@code PMDLanguagesCandidates}
      */
-    private static class PMDLanguageConverter implements ITypeConverter<Language> {
+    private static class PmdLanguageConverter implements ITypeConverter<Language> {
 
         @Override
         public Language convert(final String value) throws Exception {
@@ -440,7 +440,7 @@ public class PmdCommand extends AbstractPmdSubcommand {
      * Beware, the help will report this on runtime, and be accurate to available
      * modules in the classpath, but autocomplete will include all at build time.
      */
-    private static class PMDLanguageVersionCandidates implements Iterable<String> {
+    private static class PmdLanguageVersionCandidates implements Iterable<String> {
         
         @Override
         public Iterator<String> iterator() {
@@ -466,7 +466,7 @@ public class PmdCommand extends AbstractPmdSubcommand {
      * 
      * Effectively reverses the stringification done by {@code PMDLanguageVersionCandidates}
      */
-    private static class PMDLanguageVersionConverter implements ITypeConverter<LanguageVersion> {
+    private static class PmdLanguageVersionConverter implements ITypeConverter<LanguageVersion> {
 
         @Override
         public LanguageVersion convert(final String value) throws Exception {
