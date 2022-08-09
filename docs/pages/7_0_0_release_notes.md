@@ -284,6 +284,9 @@ The following previously deprecated rules have been finally removed:
   `net.sourceforge.pmd.lang.rule.xpath`, `net.sourceforge.pmd.lang.rule`, and various language-specific packages 
   (which were made internal).
 
+* The implementation of the Ant integration has been moved from the module `pmd-core` to a new module `pmd-ant`.
+  This involves classes in packages `net.sourceforge.pmd.ant` and the class `net.sourceforge.pmd.cpd.CPDTask`.
+
 #### Metrics framework
 
 The metrics framework has been made simpler and more general.
