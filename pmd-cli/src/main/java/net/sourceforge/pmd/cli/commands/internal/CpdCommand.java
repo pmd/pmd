@@ -1,0 +1,212 @@
+package net.sourceforge.pmd.cli.commands.internal;
+
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.net.URI;
+import java.nio.file.Path;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+
+import net.sourceforge.pmd.cli.internal.ExecutionResult;
+import net.sourceforge.pmd.cpd.CPD;
+import net.sourceforge.pmd.cpd.CPDConfiguration;
+import net.sourceforge.pmd.cpd.Language;
+import net.sourceforge.pmd.cpd.LanguageFactory;
+import net.sourceforge.pmd.cpd.Tokenizer;
+import picocli.CommandLine.Command;
+import picocli.CommandLine.ITypeConverter;
+import picocli.CommandLine.Option;
+import picocli.CommandLine.ParameterException;
+
+@Command(name = "cpd", showDefaultValues = true,
+    description = "Copy/Paste Detector - find duplicate code")
+public class CpdCommand extends AbstractPmdSubcommand {
+
+    @Option(names = "--language", description = "Source code language.%nValid values: ${COMPLETION-CANDIDATES}%n",
+            defaultValue = "java", converter = CpdLanguageConverter.class, completionCandidates = CpdLanguageCompletionCandidates.class)
+    private Language language;
+
+    // TODO : Set a default for this value?
+    @Option(names = "--minimum-tokens",
+            description = "The minimum token length which should be reported as a duplicate.", required = true)
+    private int minimumTileSize;
+
+    @Option(names = "--skip-duplicate-files",
+            description = "Ignore multiple copies of files of the same name and length in comparison.")
+    private boolean skipDuplicates;
+
+    // TODO : Can we unify with PmdCommand but keep separate completion candidates? I think not…
+    @Option(names = { "--format", "-f" },
+            description = "Report format.%nValid values: ${COMPLETION-CANDIDATES}%n"
+                        + "Alternatively, you can provide the fully qualified name of a custom Renderer in the classpath.",
+            defaultValue = "text", completionCandidates = CpdSupportedReportFormatsCandidates.class)
+    private String rendererName;
+    
+    // TODO : Unify with PmdCommand
+    @Option(names = "--encoding", description = "Character encoding to use when processing files")
+    private String encoding;
+
+    @Option(names = "--ignore-literals",
+            description = "Ignore literal values such as numbers and strings when comparing text.")
+    private boolean ignoreLiterals;
+
+    @Option(names = "--ignore-identifiers",
+            description = "Ignore names of classes, methods, variables, constants, etc. when comparing text.")
+    private boolean ignoreIdentifiers;
+
+    @Option(names = "--ignore-annotations", description = "Ignore language annotations when comparing text.")
+    private boolean ignoreAnnotations;
+
+    @Option(names = "--ignore-usings", description = "Ignore using directives in C#")
+    private boolean ignoreUsings;
+
+    @Option(names = "--ignore-literal-sequences", description = "Ignore sequences of literals such as list initializers.")
+    private boolean ignoreLiteralSequences;
+
+    @Option(names = "--skip-lexical-errors",
+            description = "Skip files which can't be tokenized due to invalid characters, instead of aborting with an error.")
+    private boolean skipLexicalErrors;
+
+    @Option(names = "--no-skip-blocks",
+            description = "Do not skip code blocks marked with --skip-blocks-pattern (e.g. #if 0 until #endif).")
+    private boolean noSkipBlocks;
+
+    @Option(names = "--skip-blocks-pattern",
+            description = "Pattern to find the blocks to skip. Start and End pattern separated by |.",
+            defaultValue = Tokenizer.DEFAULT_SKIP_BLOCKS_PATTERN)
+    private String skipBlocksPattern;
+
+    // TODO This should be --dir and -d for consistency with PMD, and unify with PmdCommand
+    @Option(names = "--files", arity = "1..*", description = "List of files and directories to analyze.")
+    private List<File> files;
+
+    // TODO Unify with PmdCommand
+    @Option(names = "--file-list", description = "Path to a file containing a list of files to analyze.")
+    private Path fileListPath;
+
+    @Option(names = "--exclude", arity = "1..*", description = "Files to be excluded from the analysis")
+    private List<File> excludes;
+
+    @Option(names = "--non-recursive", description = "Don't scan subdirectiories.")
+    private boolean nonRecursive;
+
+    // TODO : Improve this description
+    // TODO : Unify with PmdCommand
+    @Option(names = "--uri", description = "URI to process", required = false)
+    private URI uri;
+
+    // TODO : Unify with PmdCommand
+    @Option(names = "--fail-on-violation",
+            description = "By default CPD exits with status 4 if code duplications are found. Disable this option with '-failOnViolation false' to exit with 0 instead and just write the report.")
+    private boolean failOnViolation = true;
+
+    /**
+     * Converts these parameters into a configuration.
+     *
+     * @return A new CPDConfiguration corresponding to these parameters
+     *
+     * @throws ParameterException if the parameters are inconsistent or incomplete
+     */
+    public CPDConfiguration toConfiguration() {
+        final CPDConfiguration configuration = new CPDConfiguration();
+        configuration.setDebug(debug);
+        configuration.setExcludes(excludes);
+        configuration.setFailOnViolation(failOnViolation);
+        configuration.setFileListPath(fileListPath == null ? null : fileListPath.toString());
+        configuration.setFiles(files);
+        configuration.setIgnoreAnnotations(ignoreAnnotations);
+        configuration.setIgnoreIdentifiers(ignoreIdentifiers);
+        configuration.setIgnoreLiterals(ignoreLiterals);
+        configuration.setIgnoreLiteralSequences(ignoreLiteralSequences);
+        configuration.setIgnoreUsings(ignoreUsings);
+        configuration.setLanguage(language);
+        configuration.setMinimumTileSize(minimumTileSize);
+        configuration.setNonRecursive(nonRecursive);
+        configuration.setNoSkipBlocks(noSkipBlocks);
+        configuration.setRendererName(null);
+        configuration.setSkipBlocksPattern(skipBlocksPattern);
+        configuration.setSkipDuplicates(skipDuplicates);
+        configuration.setSkipLexicalErrors(skipLexicalErrors);
+        configuration.setSourceEncoding(encoding);
+        configuration.setURI(uri == null ? null : uri.toString());
+
+        configuration.setCPDRenderer(CPDConfiguration.getCPDRendererFromString(rendererName, encoding));
+
+        // TODO
+        // Setup CLI message reporter
+        //configuration.setReporter(new SimpleMessageReporter(LoggerFactory.getLogger(CpdCommand.class)));
+
+        return configuration;
+    }
+
+    @Override
+    protected ExecutionResult execute() {
+        // TODO : This check should be shared with PmdCommand
+        if ((files == null || files.isEmpty()) && uri == null && fileListPath == null) {
+            throw new ParameterException(spec.commandLine(),
+                    "Please provide a parameter for source files/directories (--files), "
+                            + "database URI (--uri), or file list path (--file-list)");
+        }
+
+        // TODO : Create a new CpdAnalysis to match PmdAnalysis
+        final CPDConfiguration configuration = toConfiguration();
+        final CPD cpd = new CPD(configuration);
+
+        try {
+            // TODO : This should be done by CPD itself from the configuration…
+            //CPDCommandLineInterface.addSourceFilesToCPD(cpd, arguments);
+
+            cpd.go();
+
+            configuration.getCPDRenderer().render(cpd.getMatches(), new BufferedWriter(new OutputStreamWriter(System.out)));
+
+            if (cpd.getMatches().hasNext() && configuration.isFailOnViolation()) {
+                return ExecutionResult.VIOLATIONS_FOUND;
+            }
+        } catch (IOException | RuntimeException e) {
+            // TODO
+//            LOG.debug(e.toString(), e);
+//            LOG.error(CliMessages.errorDetectedMessage(1, CPDCommandLineInterface.PROGRAM_NAME));
+            return ExecutionResult.ERROR;
+        }
+
+        return ExecutionResult.OK;
+    }
+
+    /**
+     * Provider of candidates for valid Languages.
+     */
+    private static class CpdLanguageCompletionCandidates implements Iterable<String> {
+
+        @Override
+        public Iterator<String> iterator() {
+            return Arrays.stream(LanguageFactory.supportedLanguages).iterator();
+        }
+    }
+
+    /**
+     * Maps a String back to a {@code Language}.
+     */
+    private static class CpdLanguageConverter implements ITypeConverter<Language> {
+
+        @Override
+        public Language convert(final String languageString) {
+            // TODO : If an unknown value is passed, AnyLanguage is returned silently…
+            return LanguageFactory.createLanguage(languageString);
+        }
+    }
+
+    /**
+     * Provider of candidates for valid report formats.
+     */
+    private static class CpdSupportedReportFormatsCandidates implements Iterable<String> {
+
+        @Override
+        public Iterator<String> iterator() {
+            return Arrays.stream(CPDConfiguration.getRenderers()).iterator();
+        }
+    }
+}
