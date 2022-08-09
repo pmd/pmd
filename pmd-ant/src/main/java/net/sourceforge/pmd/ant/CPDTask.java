@@ -37,7 +37,8 @@ import net.sourceforge.pmd.cpd.renderer.CPDRendererAdapter;
 import net.sourceforge.pmd.cpd.renderer.CPDReportRenderer;
 
 /**
- * CPDTask
+ * CPD Ant task. Setters of this class are interpreted by Ant as properties
+ * settable in the XML. This is therefore published API.
  *
  * <p>Runs the CPD utility via ant. The ant task looks like this:</p>
  *
