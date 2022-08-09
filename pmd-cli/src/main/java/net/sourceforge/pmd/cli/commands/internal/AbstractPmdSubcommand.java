@@ -19,7 +19,7 @@ public abstract class AbstractPmdSubcommand implements Callable<Integer> {
     @Option(names = { "-h", "--help" }, usageHelp = true, description = "Show this help message and exit.")
     protected boolean helpRequested;
 
-    @Option(names = { "--debug", "--verbose", "-D", "-V" }, description = "Debug mode.")
+    @Option(names = { "--debug", "--verbose", "-D", "-v" }, description = "Debug mode.")
     protected boolean debug;
 
     @Override

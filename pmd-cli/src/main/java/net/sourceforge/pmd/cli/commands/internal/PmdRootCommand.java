@@ -4,13 +4,12 @@ import net.sourceforge.pmd.PMDVersion;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.IVersionProvider;
 
-// TODO : Status code 4 is actually contingent on using --fail-on-violation… we need to raise that to a common flag
 @Command(name = "pmd", mixinStandardHelpOptions = true,
     versionProvider = PMDVersionProvider.class,
     exitCodeListHeading = "Exit Codes:%n",
     exitCodeList = { "0:Succesful analysis, no violations found", "1:An unexpected error occurred during execution",
             "2:Usage error, please refer to the command help", "4:Successful analysis, at least 1 violation found" },
-    subcommands = { PmdCommand.class, CpdCommand.class })
+    subcommands = { PmdCommand.class, CpdCommand.class, DesignerCommand.class })
 public class PmdRootCommand {
 
 }
