@@ -12,7 +12,7 @@ import java.util.TreeSet;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.shaded.apache.commons.io.output.CloseShieldWriter;
+import org.apache.commons.io.output.CloseShieldWriter;
 import org.slf4j.LoggerFactory;
 import org.slf4j.event.Level;
 
