@@ -92,14 +92,12 @@ class ApexTreeBuilder(val sourceCode: String, val parserOptions: ApexParserOptio
         when (node) {
             is ClassDeclaration ->
                 ASTUserClass(node).apply {
-                    val modifiers = buildModifiers(node.modifiers)
-                    modifiers.setParent(this)
+                    buildModifiers(node.modifiers).also { it.setParent(this) }
                     buildChildren(node, parent = this, exclude = { it in node.modifiers })
                 }
             is InterfaceDeclaration ->
                 ASTUserInterface(node).apply {
-                    val modifiers = buildModifiers(node.modifiers)
-                    modifiers.setParent(this)
+                    buildModifiers(node.modifiers).also { it.setParent(this) }
                     buildChildren(node, parent = this, exclude = { it in node.modifiers })
                 }
             is EnumDeclaration -> ASTUserEnum(node) // TODO(b/239648780): enum body is untranslated
