@@ -42,7 +42,7 @@ public class ApexParser {
         return null;
     }
 
-    public ApexNode<CompilationUnit> parse(final Reader reader) {
+    public ApexNode<?> parse(final Reader reader) {
         try {
             final String sourceCode = IOUtil.readToString(reader);
             final CompilationUnit astRoot = parseApex(sourceCode);

@@ -178,7 +178,7 @@ public final class ApexTreeBuilder {
         }
     }
 
-    public <T extends Node> ApexNode<T> build(T astNode) {
+    public <T extends Node> ApexNode<?> build(T astNode) {
         // Create a Node
         AbstractApexNode<T> node = createNodeAdapter(astNode);
         node.handleSourceCode(sourceCode);
@@ -219,7 +219,7 @@ public final class ApexTreeBuilder {
         return node;
     }
 
-    private boolean containsComments(ASTCommentContainer<?> commentContainer) {
+    private boolean containsComments(ASTCommentContainer commentContainer) {
         /*
         Location loc = commentContainer.getNode().getLoc();
         if (!Locations.isReal(loc)) {
