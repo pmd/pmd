@@ -55,44 +55,37 @@ class ApexTreeBuilder(val sourceCode: String, val parserOptions: ApexParserOptio
             null
         )
 
-    /**
-     * Builds an [ApexNode] wrapper for [node].
-     *
-     * Sets the parent of the resulting [ApexNode] to [parent], if it's not `null`.
-     */
-    private fun build(node: Node?, parent: ApexNode<*>?): ApexNode<*>? {
-        val wrapper: ApexNode<*>? =
-            when (node) {
-                null -> null
-                is CompilationUnit -> build(node.typeDeclaration, parent)
-                is TypeDeclaration -> buildTypeDeclaration(node)
-                is Identifier,
-                is KeywordModifier,
-                is TypeRef -> null
-                else -> {
-                    println("No adapter exists for type ${node::class.qualifiedName}")
-                    // TODO(b/239648780): temporary print
-                    null
-                }
+    /** Builds an [ApexNode] wrapper for [node]. */
+    private fun build(node: Node?, parent: ApexNode<*>?): ApexNode<*>? =
+        when (node) {
+            null -> null
+            is CompilationUnit -> build(node.typeDeclaration, parent)
+            is TypeDeclaration -> buildTypeDeclaration(node)
+            is Identifier,
+            is KeywordModifier,
+            is TypeRef -> null
+            else -> {
+                println("No adapter exists for type ${node::class.qualifiedName}")
+                // TODO(b/239648780): temporary print
+                null
             }
+        }
 
-        wrapper?.setParent(parent)
-        return wrapper
-    }
-
-    /** Calls [build] on each of [nodes]. */
-    private fun build(nodes: List<Node>, parent: ApexNode<*>?) = nodes.forEach { build(it, parent) }
+    /** Builds an [ApexNode] wrapper for [node] and sets its parent to [parent]. */
+    private fun buildAndSetParent(node: Node, parent: ApexNode<*>) =
+        build(node, parent)?.also { it.setParent(parent) }
 
     /**
-     * Calls [build] on each [child][Node.getChildren] of [node].
+     * Builds an [ApexNode] wrapper for each [child][Node.getChildren] of [node] and sets its parent
+     * to [parent].
      *
      * If [exclude] is provided, child nodes matching this predicate are not visited.
      */
     private fun buildChildren(
         node: Node,
-        parent: ApexNode<*>?,
+        parent: ApexNode<*>,
         exclude: (Node) -> Boolean = { false } // exclude none by default
-    ) = node.getChildren().filterNot(exclude).forEach { build(it, parent) }
+    ) = node.getChildren().filterNot(exclude).forEach { buildAndSetParent(it, parent) }
 
     /** Builds an [ApexRootNode] wrapper for the [TypeDeclaration] node. */
     private fun buildTypeDeclaration(node: TypeDeclaration) =
@@ -115,7 +108,7 @@ class ApexTreeBuilder(val sourceCode: String, val parserOptions: ApexParserOptio
 
     /** Builds an [ASTModifierNode] wrapper for the list of [Modifier]s. */
     private fun buildModifiers(modifiers: List<Modifier>) =
-        ASTModifierNode(modifiers).apply { build(modifiers, parent = this) }
+        ASTModifierNode(modifiers).apply { modifiers.forEach { buildAndSetParent(it, parent = this) } }
 
     /**
      * If [parent] is not null, adds this [ApexNode] as a [child][ApexNode.jjtAddChild] and sets
