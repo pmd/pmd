@@ -11,7 +11,7 @@ import com.google.summit.ast.Node;
  *
  * @param <T> the node type
  */
-abstract class AbstractApexCommentContainerNode<T extends Node> extends AbstractApexNode<T> implements ASTCommentContainer<T> {
+abstract class AbstractApexCommentContainerNode<T extends Node> extends AbstractApexNode<T> implements ASTCommentContainer {
 
     private boolean containsComment = false;
 

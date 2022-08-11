@@ -13,7 +13,7 @@ import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
  */
 @Deprecated
 @InternalApi
-public abstract class AbstractApexNode<T extends Node> extends AbstractApexNodeBase implements ApexNode<T> {
+public abstract class AbstractApexNode<T extends Node> extends AbstractApexNodeBase implements ApexNode<Void> {
 
     protected final T node;
 
@@ -49,13 +49,6 @@ public abstract class AbstractApexNode<T extends Node> extends AbstractApexNodeB
 
     protected void handleSourceCode(String source) {
         // default implementation does nothing
-    }
-
-    @Deprecated
-    @InternalApi
-    @Override
-    public T getNode() {
-        return node;
     }
 
     @Override

@@ -8,8 +8,10 @@ import com.google.summit.ast.Node;
 
 /**
  * @author Clément Fournier
+ *
+ * @param <T> placeholder
  */
-public interface ASTUserClassOrInterface<T extends Node> extends ApexQualifiableNode, ApexNode<T> {
+public interface ASTUserClassOrInterface<T> extends ApexQualifiableNode, ApexNode<Void> {
 
     /**
      * Finds the type kind of this declaration.

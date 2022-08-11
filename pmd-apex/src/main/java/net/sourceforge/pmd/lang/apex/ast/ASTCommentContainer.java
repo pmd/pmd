@@ -13,7 +13,7 @@ import net.sourceforge.pmd.annotation.Experimental;
  * comments. This is useful for rules which need to know whether a node did contain comments.
  */
 @Experimental
-public interface ASTCommentContainer<T extends Node> extends ApexNode<T> {
+public interface ASTCommentContainer extends ApexNode<Void> {
 
     boolean getContainsComment();
 }
