@@ -10,7 +10,7 @@ import org.antlr.runtime.Token;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 
-public class ASTFormalComment extends AbstractApexNode<Node> {
+public class ASTFormalComment extends AbstractApexNode.Single<Node> {
 
     private final String image;
 

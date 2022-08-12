@@ -10,7 +10,7 @@ import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.apex.metrics.signature.ApexOperationSignature;
 import net.sourceforge.pmd.lang.ast.SignedNode;
 
-public class ASTMethod extends AbstractApexNode<Node> implements ApexQualifiableNode,
+public class ASTMethod extends AbstractApexNode.Single<Node> implements ApexQualifiableNode,
        SignedNode<ASTMethod>, CanSuppressWarnings {
 
     @Deprecated

@@ -11,7 +11,7 @@ import org.apache.commons.lang3.reflect.FieldUtils;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 
-public class ASTLiteralExpression extends AbstractApexNode<Node> {
+public class ASTLiteralExpression extends AbstractApexNode.Single<Node> {
 
     @Deprecated
     @InternalApi

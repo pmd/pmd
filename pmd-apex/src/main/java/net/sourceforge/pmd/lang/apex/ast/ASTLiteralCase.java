@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 import com.google.summit.ast.Node;
 
-public final class ASTLiteralCase extends AbstractApexNode<Node> {
+public final class ASTLiteralCase extends AbstractApexNode.Single<Node> {
 
 
     ASTLiteralCase(Node node) {

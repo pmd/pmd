@@ -7,7 +7,7 @@ package net.sourceforge.pmd.lang.apex.ast;
 import com.google.summit.ast.Node;
 import net.sourceforge.pmd.annotation.InternalApi;
 
-public class ASTAnnotationParameter extends AbstractApexNode<Node> {
+public class ASTAnnotationParameter extends AbstractApexNode.Single<Node> {
     public static final String SEE_ALL_DATA = "seeAllData";
 
     @Deprecated

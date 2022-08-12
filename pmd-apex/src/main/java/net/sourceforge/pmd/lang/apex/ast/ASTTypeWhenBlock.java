@@ -7,7 +7,7 @@ package net.sourceforge.pmd.lang.apex.ast;
 import com.google.summit.ast.Node;
 import org.apache.commons.lang3.reflect.FieldUtils;
 
-public final class ASTTypeWhenBlock extends AbstractApexNode<Node> {
+public final class ASTTypeWhenBlock extends AbstractApexNode.Single<Node> {
 
 
     ASTTypeWhenBlock(Node node) {

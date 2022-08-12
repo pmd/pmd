@@ -7,7 +7,7 @@ package net.sourceforge.pmd.lang.apex.ast;
 import com.google.summit.ast.Node;
 import net.sourceforge.pmd.annotation.InternalApi;
 
-public class ASTDoLoopStatement extends AbstractApexNode<Node> {
+public class ASTDoLoopStatement extends AbstractApexNode.Single<Node> {
 
     @Deprecated
     @InternalApi

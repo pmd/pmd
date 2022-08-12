@@ -8,7 +8,7 @@ import com.google.summit.ast.Node;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.annotation.InternalApi;
 
-public class ASTField extends AbstractApexNode<Node> implements CanSuppressWarnings {
+public class ASTField extends AbstractApexNode.Single<Node> implements CanSuppressWarnings {
 
     @Deprecated
     @InternalApi
