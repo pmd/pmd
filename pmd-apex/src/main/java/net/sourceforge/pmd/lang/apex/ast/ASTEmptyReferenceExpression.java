@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 import com.google.summit.ast.Node;
 
-public final class ASTEmptyReferenceExpression extends AbstractApexNode<Node> {
+public final class ASTEmptyReferenceExpression extends AbstractApexNode.Single<Node> {
 
 
     ASTEmptyReferenceExpression(Node node) {

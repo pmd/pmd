@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.annotation.InternalApi;
 
-public class ASTFieldDeclarationStatements extends AbstractApexNode<Node>
+public class ASTFieldDeclarationStatements extends AbstractApexNode.Single<Node>
         implements CanSuppressWarnings {
 
     @Deprecated

@@ -13,13 +13,27 @@ import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
  */
 @Deprecated
 @InternalApi
-public abstract class AbstractApexNode<T extends Node> extends AbstractApexNodeBase implements ApexNode<Void> {
+public abstract class AbstractApexNode extends AbstractApexNodeBase implements ApexNode<Void> {
 
-    protected final T node;
+    /**
+     * {@link AbstractApexNode} wrapper around a single {@link Node}.
+     *
+     * @deprecated Use {@link ApexNode}
+     */
+    @Deprecated
+    @InternalApi
+    public static abstract class Single<T extends Node> extends AbstractApexNode {
 
-    protected AbstractApexNode(T node) {
-        super(node.getClass());
-        this.node = node;
+        protected final T node;
+
+        protected Single(T node) {
+            super(node.getClass());
+            this.node = node;
+        }
+    }
+
+    protected AbstractApexNode(Class<?> klass) {
+        super(klass);
     }
 
     @Override

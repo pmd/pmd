@@ -12,7 +12,7 @@ import com.google.summit.ast.CompilationUnit;
 
 @Deprecated
 @InternalApi
-public abstract class ApexRootNode<T extends CompilationUnit> extends AbstractApexNode<T> implements RootNode {
+public abstract class ApexRootNode<T extends CompilationUnit> extends AbstractApexNode.Single<T> implements RootNode {
     @Deprecated
     @InternalApi
     public ApexRootNode(T node) {

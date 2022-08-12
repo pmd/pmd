@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 
-public class ASTReferenceExpression extends AbstractApexNode<Node> {
+public class ASTReferenceExpression extends AbstractApexNode.Single<Node> {
 
     @Deprecated
     @InternalApi

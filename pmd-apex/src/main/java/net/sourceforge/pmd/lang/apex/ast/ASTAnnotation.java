@@ -12,7 +12,7 @@ import java.util.TreeSet;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.annotation.InternalApi;
 
-public class ASTAnnotation extends AbstractApexNode<Node> {
+public class ASTAnnotation extends AbstractApexNode.Single<Node> {
 
     @Deprecated
     @InternalApi

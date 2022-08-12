@@ -8,7 +8,7 @@ import net.sourceforge.pmd.annotation.InternalApi;
 
 import com.google.summit.ast.expression.BinaryExpression;
 
-public class ASTBinaryExpression extends AbstractApexNode<BinaryExpression> {
+public class ASTBinaryExpression extends AbstractApexNode.Single<BinaryExpression> {
 
     @Deprecated
     @InternalApi

@@ -8,7 +8,7 @@ import net.sourceforge.pmd.annotation.InternalApi;
 
 import com.google.summit.ast.expression.AssignExpression;
 
-public class ASTAssignmentExpression extends AbstractApexNode<AssignExpression> {
+public class ASTAssignmentExpression extends AbstractApexNode.Single<AssignExpression> {
 
     @Deprecated
     @InternalApi

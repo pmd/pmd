@@ -7,7 +7,7 @@ package net.sourceforge.pmd.lang.apex.ast;
 import com.google.summit.ast.Node;
 import net.sourceforge.pmd.annotation.InternalApi;
 
-public class ASTSoqlExpression extends AbstractApexNode<Node> {
+public class ASTSoqlExpression extends AbstractApexNode.Single<Node> {
 
     @Deprecated
     @InternalApi

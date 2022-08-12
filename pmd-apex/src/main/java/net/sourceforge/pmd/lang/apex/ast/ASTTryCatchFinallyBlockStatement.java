@@ -9,7 +9,7 @@ import java.util.List;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 
-public class ASTTryCatchFinallyBlockStatement extends AbstractApexNode<Node> {
+public class ASTTryCatchFinallyBlockStatement extends AbstractApexNode.Single<Node> {
 
     @Deprecated
     @InternalApi

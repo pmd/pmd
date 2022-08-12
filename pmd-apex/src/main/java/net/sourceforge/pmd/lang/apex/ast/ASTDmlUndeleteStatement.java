@@ -7,7 +7,7 @@ package net.sourceforge.pmd.lang.apex.ast;
 import com.google.summit.ast.Node;
 import net.sourceforge.pmd.annotation.InternalApi;
 
-public class ASTDmlUndeleteStatement extends AbstractApexNode<Node> {
+public class ASTDmlUndeleteStatement extends AbstractApexNode.Single<Node> {
 
     @Deprecated
     @InternalApi

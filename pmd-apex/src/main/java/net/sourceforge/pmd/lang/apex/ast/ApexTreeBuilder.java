@@ -29,7 +29,7 @@ public final class ApexTreeBuilder {
 
     private static final String DOC_COMMENT_PREFIX = "/**";
 
-    private static final Map<Class<? extends Node>, Constructor<? extends AbstractApexNode<?>>>
+    private static final Map<Class<? extends Node>, Constructor<? extends AbstractApexNode.Single<?>>>
         NODE_TYPE_TO_NODE_ADAPTER_TYPE = new HashMap<>();
 
     static {
@@ -135,7 +135,7 @@ public final class ApexTreeBuilder {
     }
 
     private static <T extends Node> void register(Class<T> nodeType,
-            Class<? extends AbstractApexNode<T>> nodeAdapterType) {
+            Class<? extends AbstractApexNode.Single<T>> nodeAdapterType) {
         try {
             NODE_TYPE_TO_NODE_ADAPTER_TYPE.put(nodeType, nodeAdapterType.getDeclaredConstructor(nodeType));
         } catch (SecurityException | NoSuchMethodException e) {
@@ -159,12 +159,12 @@ public final class ApexTreeBuilder {
         commentInfo = extractInformationFromComments(sourceCode, parserOptions.getSuppressMarker());
     }
 
-    static <T extends Node> AbstractApexNode<T> createNodeAdapter(T node) {
+    static <T extends Node> AbstractApexNode.Single<T> createNodeAdapter(T node) {
         try {
             @SuppressWarnings("unchecked")
             // the register function makes sure only ApexNode<T> can be added,
             // where T is "T extends Node".
-            Constructor<? extends AbstractApexNode<T>> constructor = (Constructor<? extends AbstractApexNode<T>>) NODE_TYPE_TO_NODE_ADAPTER_TYPE
+            Constructor<? extends AbstractApexNode.Single<T>> constructor = (Constructor<? extends AbstractApexNode.Single<T>>) NODE_TYPE_TO_NODE_ADAPTER_TYPE
                     .get(node.getClass());
             if (constructor == null) {
                 throw new IllegalArgumentException(
@@ -180,7 +180,7 @@ public final class ApexTreeBuilder {
 
     public <T extends Node> ApexNode<?> build(T astNode) {
         // Create a Node
-        AbstractApexNode<T> node = createNodeAdapter(astNode);
+        AbstractApexNode.Single<T> node = createNodeAdapter(astNode);
         node.handleSourceCode(sourceCode);
 
         // Append to parent

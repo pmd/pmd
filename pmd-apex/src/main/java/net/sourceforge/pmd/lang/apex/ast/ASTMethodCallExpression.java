@@ -9,7 +9,7 @@ import java.util.Iterator;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 
-public class ASTMethodCallExpression extends AbstractApexNode<Node> {
+public class ASTMethodCallExpression extends AbstractApexNode.Single<Node> {
     @Deprecated
     @InternalApi
     public ASTMethodCallExpression(Node methodCallExpression) {

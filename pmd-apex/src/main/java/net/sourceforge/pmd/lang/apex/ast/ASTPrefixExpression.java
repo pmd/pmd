@@ -8,7 +8,7 @@ import net.sourceforge.pmd.annotation.InternalApi;
 
 import com.google.summit.ast.expression.UnaryExpression;
 
-public class ASTPrefixExpression extends AbstractApexNode<UnaryExpression> {
+public class ASTPrefixExpression extends AbstractApexNode.Single<UnaryExpression> {
 
     @Deprecated
     @InternalApi
