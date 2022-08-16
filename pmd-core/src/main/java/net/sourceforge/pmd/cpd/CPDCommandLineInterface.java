@@ -4,34 +4,24 @@
 
 package net.sourceforge.pmd.cpd;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.beust.jcommander.JCommander;
+import com.beust.jcommander.ParameterException;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMDVersion;
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.cli.internal.CliMessages;
 import net.sourceforge.pmd.cpd.CPD.StatusCode;
-import net.sourceforge.pmd.util.FileUtil;
-import net.sourceforge.pmd.util.database.DBURI;
-
-import com.beust.jcommander.JCommander;
-import com.beust.jcommander.ParameterException;
 
 /**
  * @deprecated Internal API. Use {@link CPD#runCpd(String...)} or {@link CPD#main(String[])}
@@ -141,66 +131,15 @@ public final class CPDCommandLineInterface {
         SUGGESTED_REPLACEMENT = Collections.unmodifiableMap(m);
     }
 
+    /**
+     * {@code CPD} now takes the sources from the {@code CPDConfiguration} itslef,
+     * this method is now an noop and will be removed.
+     * 
+     * @deprecated This method is now a noop and will be removed, CPD does this itself.
+     */
+    @Deprecated
     public static void addSourceFilesToCPD(CPD cpd, CPDConfiguration arguments) {
-        // Add files
-        if (null != arguments.getFiles() && !arguments.getFiles().isEmpty()) {
-            addSourcesFilesToCPD(arguments.getFiles(), cpd, !arguments.isNonRecursive());
-        }
-
-        // Add Database URIS
-        if (null != arguments.getURI() && !"".equals(arguments.getURI())) {
-            addSourceURIToCPD(arguments.getURI(), cpd);
-        }
-
-        if (null != arguments.getFileListPath() && !"".equals(arguments.getFileListPath())) {
-            addFilesFromFilelist(arguments.getFileListPath(), cpd, !arguments.isNonRecursive());
-        }
-    }
-
-    private static void addSourcesFilesToCPD(List<File> files, CPD cpd, boolean recursive) {
-        try {
-            for (File file : files) {
-                if (!file.exists()) {
-                    throw new FileNotFoundException("Couldn't find directory/file '" + file + "'");
-                } else if (file.isDirectory()) {
-                    if (recursive) {
-                        cpd.addRecursively(file);
-                    } else {
-                        cpd.addAllInDirectory(file);
-                    }
-                } else {
-                    cpd.add(file);
-                }
-            }
-        } catch (IOException e) {
-            throw new IllegalStateException(e);
-        }
-    }
-
-    private static void addFilesFromFilelist(String inputFilePath, CPD cpd, boolean recursive) {
-        List<File> files = new ArrayList<>();
-        try {
-            Path file = FileUtil.toExistingPath(inputFilePath);
-            for (String param : FileUtil.readFilelistEntries(file)) {
-                @NonNull Path fileToAdd = FileUtil.toExistingPath(param);
-                files.add(fileToAdd.toFile());
-            }
-            addSourcesFilesToCPD(files, cpd, recursive);
-        } catch (IOException ex) {
-            throw new IllegalStateException(ex);
-        }
-    }
-
-    private static void addSourceURIToCPD(String uri, CPD cpd) {
-        try {
-            LOG.debug("Attempting DBURI={}", uri);
-            DBURI dburi = new DBURI(uri);
-            LOG.debug("Initialised DBURI={}", dburi);
-            LOG.debug("Adding DBURI={} with DBType={}", dburi, dburi.getDbType());
-            cpd.add(dburi);
-        } catch (IOException | URISyntaxException e) {
-            throw new IllegalStateException("uri=" + uri, e);
-        }
+        // noop
     }
 
     @Deprecated
