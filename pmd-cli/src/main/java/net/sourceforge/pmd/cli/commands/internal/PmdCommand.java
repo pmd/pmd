@@ -108,6 +108,8 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand {
 
     private boolean noCache;
 
+    private boolean noProgressBar;
+
     @Option(names = { "--rulesets", "-R" },
                description = "Path to a ruleset xml file. "
                              + "The path may reference a resource on the classpath of the application, be a local file system path, or a URL. "
@@ -154,7 +156,7 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand {
     public void setSuppressMarker(final String suppressMarker) {
         this.suppressMarker = suppressMarker;
     }
-    
+
     @Option(names = "--minimum-priority",
             description = "Rule priority threshold; rules with lower priority than configured here won't be used.%n"
                     + "Valid values (case insensitive): ${COMPLETION-CANDIDATES}",
@@ -234,7 +236,7 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand {
     public void setNoCache(final boolean noCache) {
         this.noCache = noCache;
     }
-    
+
     @Option(names = { "--threads", "-t" }, description = "Sets the number of threads used by PMD.",
             defaultValue = "1")
     public void setThreads(final int threads) {
@@ -243,6 +245,11 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand {
         }
         
         this.threads = threads;
+    }
+
+    @Option(names = "--no-progress", description = "Disables progress bar indicator of live analysis progress.")
+    public void setNoProgressBar(final boolean noProgressBar) {
+        this.noProgressBar = noProgressBar;
     }
 
     /**
@@ -273,6 +280,7 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand {
         configuration.setFailOnViolation(failOnViolation);
         configuration.setAnalysisCacheLocation(cacheLocation != null ? cacheLocation.toString() : null);
         configuration.setIgnoreIncrementalAnalysis(noCache);
+        configuration.setProgressBar(!noProgressBar);
 
         if (languageVersion != null) {
             configuration.setDefaultLanguageVersions(languageVersion);
