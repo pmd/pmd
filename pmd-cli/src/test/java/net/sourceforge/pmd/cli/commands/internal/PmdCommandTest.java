@@ -7,7 +7,6 @@ package net.sourceforge.pmd.cli.commands.internal;
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -17,7 +16,6 @@ import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.PMDConfiguration;
-import net.sourceforge.pmd.cli.PmdParametersParseResult;
 
 import picocli.CommandLine;
 import picocli.CommandLine.ParseResult;
@@ -84,27 +82,34 @@ class PmdCommandTest {
         assertError("-R", "-d", "something");
     }
 
-    private void assertError(String... params) {
-        // TODO
-        PmdParametersParseResult result = PmdParametersParseResult.extractParameters(params);
-        assertTrue(result.isError());
+    private void assertError(final String... params) {
+        final PmdCommand cmd = new PmdCommand();
+        final ParseResult parseResult = parseCommand(cmd, params);
+        assertThat(parseResult.errors(), Matchers.not(Matchers.empty()));
     }
 
     private PmdCommand setupAndParse(final String... params) {
         final PmdCommand cmd = new PmdCommand();
-        
-        // Always run against dummy language
+        final ParseResult parseResult = parseCommand(cmd, params);
+
+        assertThat(parseResult.errors(), Matchers.empty());
+
+        return cmd;
+    }
+    
+    private ParseResult parseCommand(final Object cmd, final String... params) {
+     // Always run against dummy language
         final List<String> argList = new ArrayList<>();
         argList.add("--use-version");
         argList.add("dummy");
         argList.addAll(Arrays.asList(params));
 
-        ParseResult parseResult = new CommandLine(cmd)
-            .setCaseInsensitiveEnumValuesAllowed(true)
-            .parseArgs(argList.toArray(new String[0]));
-
-        assertThat(parseResult.errors(), Matchers.empty());
-
-        return cmd;
+         final CommandLine commandLine = new CommandLine(cmd)
+            .setCaseInsensitiveEnumValuesAllowed(true);
+         
+         // Collect errors instead of simply throwing during parsing
+         commandLine.getCommandSpec().parser().collectErrors(true);
+         
+         return commandLine.parseArgs(argList.toArray(new String[0]));
     }
 }
