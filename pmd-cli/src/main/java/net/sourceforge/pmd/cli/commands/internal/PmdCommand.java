@@ -323,6 +323,7 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand {
 
             try {
                 // No try-with-resources, do not want to close STDERR
+                @SuppressWarnings("PMD.CloseResource")
                 final Writer writer = new OutputStreamWriter(System.err);
                 renderer.render(timingReport, writer);
             } catch (final IOException e) {

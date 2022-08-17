@@ -36,7 +36,9 @@ public abstract class AbstractPmdSubcommand implements Callable<Integer> {
      * 
      * @throws ParameterException
      */
-    protected void validate() throws ParameterException { }
+    protected void validate() throws ParameterException {
+        // no-op, children may override
+    }
 
     protected abstract ExecutionResult execute();
 

@@ -13,6 +13,7 @@ import picocli.CommandLine.Option;
     description = "The PMD visual rule designer")
 public class DesignerCommand extends AbstractPmdSubcommand {
 
+    @SuppressWarnings("unused")
     @Option(names = {"-V", "--version"}, versionHelp = true, description = "Print version information and exit.")
     private boolean versionRequested;
 
