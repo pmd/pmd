@@ -449,7 +449,7 @@ public final class PmdAnalysis implements AutoCloseable {
             final String version =
                 PMDVersion.isUnknown() || PMDVersion.isSnapshot() ? "latest" : "pmd-" + PMDVersion.VERSION;
             reporter.warn("This analysis could be faster, please consider using Incremental Analysis: "
-                            + "https://pmd.github.io/{1}/pmd_userdocs_incremental_analysis.html", version);
+                            + "https://pmd.github.io/{0}/pmd_userdocs_incremental_analysis.html", version);
         }
     }
 }

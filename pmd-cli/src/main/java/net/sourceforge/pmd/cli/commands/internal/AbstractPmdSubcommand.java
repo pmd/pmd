@@ -6,6 +6,7 @@ package net.sourceforge.pmd.cli.commands.internal;
 
 import java.util.concurrent.Callable;
 
+import org.slf4j.LoggerFactory;
 import org.slf4j.event.Level;
 
 import net.sourceforge.pmd.cli.internal.ExecutionResult;
@@ -56,5 +57,9 @@ public abstract class AbstractPmdSubcommand implements Callable<Integer> {
 
         // always install java.util.logging to slf4j bridge
         Slf4jSimpleConfiguration.installJulBridge();
+
+        // logging, mostly for testing purposes
+        Level defaultLogLevel = Slf4jSimpleConfiguration.getDefaultLogLevel();
+        LoggerFactory.getLogger(AbstractPmdSubcommand.class).info("Log level is at {}", defaultLogLevel);
     }
 }

@@ -323,7 +323,7 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand {
                     return ExecutionResult.ERROR;
                 }
 
-                pmdReporter.log(Level.DEBUG, "Current classpath:\n{}", System.getProperty("java.class.path"));
+                pmdReporter.log(Level.DEBUG, "Current classpath:\n{0}", System.getProperty("java.class.path"));
                 final ReportStats stats = pmd.runAndReturnStats();
                 if (pmdReporter.numErrors() > 0) {
                     // processing errors are ignored
