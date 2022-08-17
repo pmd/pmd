@@ -24,7 +24,7 @@ public abstract class AbstractAnalysisPmdSubcommand extends AbstractPmdSubcomman
                           + "(archive files found while exploring a directory are not recursively expanded). "
                           + "This option can be repeated, and multiple arguments can be provided to a single occurrence of the option. "
                           + "One of --dir, --file-list or --uri must be provided. ",
-            arity = "1..*")
+            arity = "1..*", split = ",")
     protected List<Path> inputPaths;
 
     @Option(names = "--file-list",

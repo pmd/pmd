@@ -114,7 +114,7 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand {
                description = "Path to a ruleset xml file. "
                              + "The path may reference a resource on the classpath of the application, be a local file system path, or a URL. "
                              + "The option can be repeated, and multiple arguments separated by comma can be provided to a single occurrence of the option.",
-               required = true, split = ",")
+               required = true, split = ",", arity = "1..*")
     public void setRulesets(final List<String> rulesets) {
         this.rulesets = rulesets;
     }
