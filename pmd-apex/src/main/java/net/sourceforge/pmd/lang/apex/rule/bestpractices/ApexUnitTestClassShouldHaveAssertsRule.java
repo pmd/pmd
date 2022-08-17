@@ -37,6 +37,24 @@ public class ApexUnitTestClassShouldHaveAssertsRule extends AbstractApexUnitTest
         ASSERT_METHODS.add("system.assert");
         ASSERT_METHODS.add("system.assertequals");
         ASSERT_METHODS.add("system.assertnotequals");
+        ASSERT_METHODS.add("system.assert.areequal");
+        ASSERT_METHODS.add("system.assert.arenotequal");
+        ASSERT_METHODS.add("system.assert.fail");
+        ASSERT_METHODS.add("system.assert.isfalse");
+        ASSERT_METHODS.add("system.assert.isinstanceoftype");
+        ASSERT_METHODS.add("system.assert.isnotinstanceoftype");
+        ASSERT_METHODS.add("system.assert.isnnull");
+        ASSERT_METHODS.add("system.assert.isnotnull");
+        ASSERT_METHODS.add("system.assert.istrue");
+        ASSERT_METHODS.add("assert.areequal");
+        ASSERT_METHODS.add("assert.arenotequal");
+        ASSERT_METHODS.add("assert.fail");
+        ASSERT_METHODS.add("assert.isfalse");
+        ASSERT_METHODS.add("assert.isinstanceoftype");
+        ASSERT_METHODS.add("assert.isnotinstanceoftype");
+        ASSERT_METHODS.add("assert.isnnull");
+        ASSERT_METHODS.add("assert.isnotnull");
+        ASSERT_METHODS.add("assert.istrue");
         // Fully-qualified variants...rare but still valid/possible
         ASSERT_METHODS.add("system.system.assert");
         ASSERT_METHODS.add("system.system.assertequals");
