@@ -31,6 +31,8 @@ import net.sourceforge.pmd.cli.internal.ExecutionResult;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.renderers.RendererFactory;
 import net.sourceforge.pmd.reporting.ReportStats;
 import net.sourceforge.pmd.util.StringUtil;
@@ -46,6 +48,31 @@ import picocli.CommandLine.TypeConversionException;
 @Command(name = "analyze", aliases = {"analyse", "run" }, showDefaultValues = true,
     description = "The PMD standard source code analyzer")
 public class PmdCommand extends AbstractAnalysisPmdSubcommand {
+
+    static {
+        final Properties emptyProps = new Properties();
+        final StringBuilder reportPropertiesHelp = new StringBuilder();
+        
+        for (final String rendererName : RendererFactory.supportedRenderers()) {
+            final Renderer renderer = RendererFactory.createRenderer(rendererName, emptyProps);
+            
+            if (renderer.getPropertyDescriptors().size() > 0) {
+                reportPropertiesHelp.append(rendererName + ":" + System.getProperty("line.separator"));
+                for (final PropertyDescriptor<?> property : renderer.getPropertyDescriptors()) {
+                    reportPropertiesHelp.append("  ").append(property.name()).append(" - ")
+                        .append(property.description()).append(System.getProperty("line.separator"));
+                    final Object deflt = property.defaultValue();
+                    if (deflt != null && !"".equals(deflt)) {
+                        reportPropertiesHelp.append("    Default: ").append(deflt)
+                            .append(System.getProperty("line.separator"));
+                    }
+                }
+            }
+        }
+        
+        // System Properties are the easier way to inject dynamically computed values into the help of an option
+        System.setProperty("pmd-cli.pmd.report.properties.help", reportPropertiesHelp.toString());
+    }
 
     private List<String> rulesets;
     
@@ -136,8 +163,9 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand {
         this.minimumPriority = priority;
     }
 
-    // TODO : Figure out how to surface the supported properties for each report format
-    @Option(names = { "--property", "-P" }, description = "Key-value pair defining a property for the report format.")
+    // TODO : Autocomplete candidates?
+    @Option(names = { "--property", "-P" }, description = "Key-value pair defining a property for the report format.%n"
+            + "Supported values for each report format:%n${sys:pmd-cli.pmd.report.properties.help}")
     public void setProperties(final Properties properties) {
         this.properties = properties;
     }
