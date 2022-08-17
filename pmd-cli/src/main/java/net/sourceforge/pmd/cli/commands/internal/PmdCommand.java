@@ -12,7 +12,6 @@ import java.util.TreeSet;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.apache.commons.io.output.CloseShieldWriter;
 import org.slf4j.LoggerFactory;
 import org.slf4j.event.Level;
 
@@ -322,8 +321,9 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand {
             // TODO get specified report format from config
             final TimingReportRenderer renderer = new TextTimingReportRenderer();
 
-            // Use a CloseShieldWriter to avoid closing STDERR
-            try (final Writer writer = new CloseShieldWriter(new OutputStreamWriter(System.err))) {
+            try {
+                // No try-with-resources, do not want to close STDERR
+                final Writer writer = new OutputStreamWriter(System.err);
                 renderer.render(timingReport, writer);
             } catch (final IOException e) {
                 pmdReporter.errorEx("Error producing benchmark report", e);
