@@ -1,9 +1,14 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
+
 package net.sourceforge.pmd.cli.commands.internal;
 
 import net.sourceforge.pmd.cli.internal.ExecutionResult;
 import net.sourceforge.pmd.util.fxdesigner.DesignerStarter;
 import net.sourceforge.pmd.util.fxdesigner.DesignerStarter.ExitStatus;
 import net.sourceforge.pmd.util.fxdesigner.DesignerVersion;
+
 import picocli.CommandLine.Command;
 import picocli.CommandLine.IVersionProvider;
 import picocli.CommandLine.Option;

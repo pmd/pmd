@@ -1,3 +1,7 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
+
 package net.sourceforge.pmd.cli.commands.internal;
 
 import java.io.IOException;
@@ -32,6 +36,7 @@ import net.sourceforge.pmd.reporting.ReportStats;
 import net.sourceforge.pmd.util.StringUtil;
 import net.sourceforge.pmd.util.log.MessageReporter;
 import net.sourceforge.pmd.util.log.internal.SimpleMessageReporter;
+
 import picocli.CommandLine.Command;
 import picocli.CommandLine.ITypeConverter;
 import picocli.CommandLine.Option;
@@ -85,7 +90,7 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand {
         this.rulesets = rulesets;
     }
 
-    @Option(names = { "--ignore-list" },
+    @Option(names = "--ignore-list",
             description = "Path to a file containing a list of files to exclude from the analysis, one path per line. "
                           + "This option can be combined with --dir and --file-list.")
     public void setIgnoreListPath(final Path ignoreListPath) {
@@ -106,24 +111,24 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand {
         this.benchmark = benchmark;
     }
 
-    @Option(names = { "--short-names" }, description = "Prints shortened filenames in the report.")
+    @Option(names = "--short-names", description = "Prints shortened filenames in the report.")
     public void setShortnames(final boolean shortnames) {
         this.shortnames = shortnames;
     }
 
-    @Option(names = { "--show-suppressed" }, description = "Report should show suppressed rule violations.")
+    @Option(names = "--show-suppressed", description = "Report should show suppressed rule violations.")
     public void setShowSuppressed(final boolean showSuppressed) {
         this.showSuppressed = showSuppressed;
     }
 
-    @Option(names = { "--suppress-marker" },
+    @Option(names = "--suppress-marker",
             description = "Specifies the string that marks a line which PMD should ignore.",
             defaultValue = "NOPMD")
     public void setSuppressMarker(final String suppressMarker) {
         this.suppressMarker = suppressMarker;
     }
     
-    @Option(names = { "--minimum-priority" },
+    @Option(names = "--minimum-priority",
             description = "Rule priority threshold; rules with lower priority than configured here won't be used.%n"
                     + "Valid values (case insensitive): ${COMPLETION-CANDIDATES}",
             defaultValue = "Low")
@@ -145,24 +150,24 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand {
         this.reportFile = reportFile;
     }
 
-    @Option(names = { "--use-version" }, defaultValue = "java-latest",
+    @Option(names = "--use-version", defaultValue = "java-latest",
             description = "Sepcify the language and version PMD should use.%nValid values: ${COMPLETION-CANDIDATES}%n",
             completionCandidates = PmdLanguageVersionCandidates.class, converter = PmdLanguageVersionConverter.class)
     public void setLanguageVersion(final List<LanguageVersion> languageVersion) {
         // Make sure we only set 1 version per language
         languageVersion.stream().collect(Collectors.groupingBy(LanguageVersion::getLanguage))
-        .forEach((l, list) -> {
-            if (list.size() > 1) {
-                throw new ParameterException(spec.commandLine(), "Can only set one version per language, "
-                        + "but for language " + l.getName() + " multiple versions were provided "
-                        + list.stream().map(PmdCommand::normalizeName).collect(Collectors.joining("', '", "'", "'")));
-            }
-        });
+            .forEach((l, list) -> {
+                if (list.size() > 1) {
+                    throw new ParameterException(spec.commandLine(), "Can only set one version per language, "
+                            + "but for language " + l.getName() + " multiple versions were provided "
+                            + list.stream().map(PmdCommand::normalizeName).collect(Collectors.joining("', '", "'", "'")));
+                }
+            });
 
         this.languageVersion = languageVersion;
     }
 
-    @Option(names = { "--force-language" },
+    @Option(names = "--force-language",
             description = "Force a language to be used for all input files, irrespective of file names. "
                           + "When using this option, the automatic language selection by extension is disabled, and PMD "
                           + "tries to parse all input files with the given language's parser. "
@@ -172,7 +177,7 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand {
         this.forceLanguage = forceLanguage;
     }
 
-    @Option(names = { "--aux-classpath" },
+    @Option(names = "--aux-classpath",
             description = "Specifies the classpath for libraries used by the source code. "
                     + "This is used to resolve types in Java source files. The platform specific path delimiter "
                     + "(\":\" on Linux, \";\" on Windows) is used to separate the entries. "
@@ -182,13 +187,13 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand {
         this.auxClasspath = auxClasspath;
     }
 
-    @Option(names = { "--no-ruleset-compatibility" },
+    @Option(names = "--no-ruleset-compatibility",
             description = "Disable the ruleset compatibility filter. The filter is active by default and tries automatically 'fix' old ruleset files with old rule names")
     public void setNoRuleSetCompatibility(final boolean noRuleSetCompatibility) {
         this.noRuleSetCompatibility = noRuleSetCompatibility;
     }
 
-    @Option(names = { "--cache" },
+    @Option(names = "--cache",
             description = "Specify the location of the cache file for incremental analysis. "
                     + "This should be the full path to the file, including the desired file name (not just the parent directory). "
                     + "If the file doesn't exist, it will be created on the first run. The file will be overwritten on each run "
@@ -197,7 +202,7 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand {
         this.cacheLocation = cacheLocation;
     }
 
-    @Option(names = { "--no-cache" }, description = "Explicitly disable incremental analysis. The '-cache' option is ignored if this switch is present in the command line.")
+    @Option(names = "--no-cache", description = "Explicitly disable incremental analysis. The '-cache' option is ignored if this switch is present in the command line.")
     public void setNoCache(final boolean noCache) {
         this.noCache = noCache;
     }

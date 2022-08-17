@@ -1,3 +1,7 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
+
 package net.sourceforge.pmd.cli.commands.internal;
 
 import java.io.BufferedWriter;
@@ -16,6 +20,7 @@ import net.sourceforge.pmd.cpd.CPDConfiguration;
 import net.sourceforge.pmd.cpd.Language;
 import net.sourceforge.pmd.cpd.LanguageFactory;
 import net.sourceforge.pmd.cpd.Tokenizer;
+
 import picocli.CommandLine.Command;
 import picocli.CommandLine.ITypeConverter;
 import picocli.CommandLine.Option;
@@ -139,8 +144,8 @@ public class CpdCommand extends AbstractAnalysisPmdSubcommand {
             }
         } catch (IOException | RuntimeException e) {
             // TODO
-//            LOG.debug(e.toString(), e);
-//            LOG.error(CliMessages.errorDetectedMessage(1, CPDCommandLineInterface.PROGRAM_NAME));
+            //LOG.debug(e.toString(), e);
+            //LOG.error(CliMessages.errorDetectedMessage(1, CPDCommandLineInterface.PROGRAM_NAME));
             return ExecutionResult.ERROR;
         }
 

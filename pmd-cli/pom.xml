@@ -21,7 +21,6 @@
                 </configuration>
             </plugin>
 
-            <!-- TODO: Move this to pmd-dist, and have all modules in the classpath so language autocompletion works as expected -->
             <plugin>
               <groupId>org.codehaus.mojo</groupId>
               <artifactId>exec-maven-plugin</artifactId>

@@ -1,3 +1,7 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
+
 package net.sourceforge.pmd.cli.commands.internal;
 
 import java.net.URI;
@@ -23,7 +27,7 @@ public abstract class AbstractAnalysisPmdSubcommand extends AbstractPmdSubcomman
             arity = "1..*")
     protected List<Path> inputPaths;
 
-    @Option(names = { "--file-list" },
+    @Option(names = "--file-list",
             description =
                 "Path to a file containing a list of files to analyze, one path per line. "
                 + "One of --dir, --file-list or --uri must be provided.")
@@ -34,7 +38,7 @@ public abstract class AbstractAnalysisPmdSubcommand extends AbstractPmdSubcomman
                           + "One of --dir, --file-list or --uri must be provided.")
     protected URI uri;
     
-    @Option(names = { "--fail-on-violation" },
+    @Option(names = "--fail-on-violation",
             description = "By default PMD exits with status 4 if violations are found. "
                     + "Disable this option with '--fail-on-violation false' to exit with 0 instead and just write the report.",
             defaultValue = "true", arity = "1")

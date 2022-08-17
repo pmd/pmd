@@ -1,3 +1,7 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
+
 package net.sourceforge.pmd.cli.commands.internal;
 
 import java.util.concurrent.Callable;
@@ -6,6 +10,7 @@ import org.slf4j.event.Level;
 
 import net.sourceforge.pmd.cli.internal.ExecutionResult;
 import net.sourceforge.pmd.internal.Slf4jSimpleConfiguration;
+
 import picocli.CommandLine.Model.CommandSpec;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.ParameterException;
