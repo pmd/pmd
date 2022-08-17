@@ -132,9 +132,6 @@ public class CpdCommand extends AbstractAnalysisPmdSubcommand {
         final CPD cpd = new CPD(configuration);
 
         try {
-            // TODO : This should be done by CPD itself from the configuration…
-            //CPDCommandLineInterface.addSourceFilesToCPD(cpd, arguments);
-
             cpd.go();
 
             configuration.getCPDRenderer().render(cpd.getMatches(), new BufferedWriter(new OutputStreamWriter(System.out)));
