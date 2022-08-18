@@ -37,7 +37,7 @@ public class CpdCommand extends AbstractAnalysisPmdSubcommand {
     // TODO : Set a default for this value?
     @Option(names = "--minimum-tokens",
             description = "The minimum token length which should be reported as a duplicate.", required = true)
-    private int minimumTileSize;
+    private int minimumTokens;
 
     @Option(names = "--skip-duplicate-files",
             description = "Ignore multiple copies of files of the same name and length in comparison.")
@@ -106,7 +106,7 @@ public class CpdCommand extends AbstractAnalysisPmdSubcommand {
         configuration.setIgnoreLiteralSequences(ignoreLiteralSequences);
         configuration.setIgnoreUsings(ignoreUsings);
         configuration.setLanguage(language);
-        configuration.setMinimumTileSize(minimumTileSize);
+        configuration.setMinimumTileSize(minimumTokens);
         configuration.setNonRecursive(nonRecursive);
         configuration.setNoSkipBlocks(noSkipBlocks);
         configuration.setRendererName(null);

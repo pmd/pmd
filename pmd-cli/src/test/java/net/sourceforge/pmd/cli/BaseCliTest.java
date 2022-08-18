@@ -13,20 +13,20 @@ import com.github.stefanbirkner.systemlambda.SystemLambda;
 abstract class BaseCliTest {
 
     protected String runCliSuccessfully(String... args) throws Exception {
-        return SystemLambda.tapSystemErrAndOut(() -> {
-            runCli(ExecutionResult.OK, args);
-        });
+        return runCli(ExecutionResult.OK, args);
     }
 
-    protected void runCli(ExecutionResult expectedExitCode, String... args) throws Exception {
+    protected String runCli(ExecutionResult expectedExitCode, String... args) throws Exception {
         final List<String> argList = new ArrayList<>();
         argList.addAll(cliStandardArgs());
         argList.addAll(Arrays.asList(args));
         
-        final int actualExitCode = SystemLambda.catchSystemExit(() -> {
-            PmdCli.main(argList.toArray(new String[0]));
+        return SystemLambda.tapSystemErrAndOut(() -> {
+            final int actualExitCode = SystemLambda.catchSystemExit(() -> {
+                PmdCli.main(argList.toArray(new String[0]));
+            });
+            assertEquals(expectedExitCode.getExitCode(), actualExitCode, "Exit code");
         });
-        assertEquals(expectedExitCode.getExitCode(), actualExitCode, "Exit code");
     }
 
     abstract protected List<String> cliStandardArgs();

@@ -8,6 +8,7 @@ package net.sourceforge.pmd.cli.internal;
 public enum ExecutionResult {
     OK(0),
     ERROR(1),
+    USAGE_ERROR(2),
     VIOLATIONS_FOUND(4);
     
     private final int exitCode;

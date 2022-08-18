@@ -50,6 +50,25 @@ class CpdCliTest extends BaseCliTest {
     }
     
     @Test
+    void testMissingminimumTokens() throws Exception {
+        final String log = runCli(ExecutionResult.USAGE_ERROR);
+        assertThat(log, containsString("Missing required option: '--minimum-tokens=<minimumTokens>'"));
+    }
+    
+    @Test
+    void testMissingSource() throws Exception {
+        final String log = runCli(ExecutionResult.USAGE_ERROR, "--minimum-tokens", "340");
+        assertThat(log, containsString("Please provide a parameter for source root directory"));
+    }
+    
+    @Test
+    void testWrongCliOptionsDoPrintUsage() throws Exception {
+        final String log = runCli(ExecutionResult.USAGE_ERROR, "--invalid", "--minimum-tokens", "340", "-d", SRC_DIR);
+        assertThat(log, containsString("Unknown option: '--invalid'"));
+        assertThat(log, containsString("Usage: pmd cpd"));
+    }
+    
+    @Test
     void testEmptyResultRendering() throws Exception {
         final String stdout = SystemLambda.tapSystemErrAndOut(() -> {
             SystemLambda.tapSystemErr(() -> {

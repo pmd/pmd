@@ -8,7 +8,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.containsStringIgnoringCase;
 import static org.hamcrest.Matchers.not;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -184,22 +183,27 @@ class PmdCliTest extends BaseCliTest {
 
     @Test
     void testDeprecatedRulesetSyntaxOnCommandLine() throws Exception {
-        String log = SystemLambda.tapSystemErrAndOut(() -> {
-            runCli(ExecutionResult.VIOLATIONS_FOUND, "--dir", srcDir.toString(), "--rulesets", "dummy-basic");
-        });
+        String log = runCli(ExecutionResult.VIOLATIONS_FOUND, "--dir", srcDir.toString(), "--rulesets", "dummy-basic");
         assertThat(log, containsString("Ruleset reference 'dummy-basic' uses a deprecated form, use 'rulesets/dummy/basic.xml' instead"));
     }
 
-
     @Test
-    void testWrongCliOptionsDoNotPrintUsage() throws Exception {
-        final String log = SystemLambda.tapSystemErrAndOut(() -> {
-            final int actualExitCode = SystemLambda.catchSystemExit(() -> {
-                PmdCli.main(new String[] { "run", "--invalid" });
-            });
-            assertEquals(2, actualExitCode);
-        });
-        assertThat(log, not(containsStringIgnoringCase("Available report formats and")));
+    void testMissingRuleset() throws Exception {
+        final String log = runCli(ExecutionResult.USAGE_ERROR);
+        assertThat(log, containsString("Missing required option: '--rulesets=<rulesets>'"));
+    }
+    
+    @Test
+    void testMissingSource() throws Exception {
+        final String log = runCli(ExecutionResult.USAGE_ERROR, "--rulesets", DUMMY_RULESET);
+        assertThat(log, containsString("Please provide a parameter for source root directory"));
+    }
+    
+    @Test
+    void testWrongCliOptionsDoPrintUsage() throws Exception {
+        final String log = runCli(ExecutionResult.USAGE_ERROR, "--invalid", "--rulesets", DUMMY_RULESET, "-d", srcDir.toString());
+        assertThat(log, containsString("Unknown option: '--invalid'"));
+        assertThat(log, containsString("Usage: pmd analyze"));
     }
 
     // utilities
