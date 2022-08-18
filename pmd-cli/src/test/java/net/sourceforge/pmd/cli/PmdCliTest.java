@@ -20,7 +20,6 @@ import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.junit.jupiter.api.AfterAll;
@@ -33,7 +32,7 @@ import net.sourceforge.pmd.internal.Slf4jSimpleConfiguration;
 
 import com.github.stefanbirkner.systemlambda.SystemLambda;
 
-class PmdCliTest {
+class PmdCliTest extends BaseCliTest {
 
     @TempDir
     private Path tempDir;
@@ -71,7 +70,7 @@ class PmdCliTest {
 
         assertTrue(Files.exists(reportFile), "Report file should exist");
 
-        runPmdSuccessfully("-d", srcDir.toString(), "-R", DUMMY_RULESET, "-r", reportFile.toString());
+        runCliSuccessfully("-d", srcDir.toString(), "-R", DUMMY_RULESET, "-r", reportFile.toString());
 
         assertNotEquals(readString(reportFile), STRING_TO_REPLACE);
     }
@@ -85,7 +84,7 @@ class PmdCliTest {
 
         assertTrue(Files.exists(reportFile), "Report file should exist");
 
-        runPmdSuccessfully("--dir", srcDir.toString(), "--rulesets", DUMMY_RULESET, "--report-file", reportFile.toString());
+        runCliSuccessfully("--dir", srcDir.toString(), "--rulesets", DUMMY_RULESET, "--report-file", reportFile.toString());
 
         assertNotEquals(readString(reportFile), STRING_TO_REPLACE, "Report file should have been overwritten");
     }
@@ -97,7 +96,7 @@ class PmdCliTest {
         assertFalse(Files.exists(reportFile), "Report file should not exist");
 
         try {
-            runPmdSuccessfully("-d", srcDir.toString(), "-R", DUMMY_RULESET, "-r", reportFile.toString());
+            runCliSuccessfully("-d", srcDir.toString(), "-R", DUMMY_RULESET, "-r", reportFile.toString());
             assertTrue(Files.exists(reportFile), "Report file should have been created");
         } finally {
             Files.deleteIfExists(reportFile);
@@ -110,7 +109,7 @@ class PmdCliTest {
 
         assertFalse(Files.exists(reportFile), "Report file should not exist");
 
-        runPmdSuccessfully("--dir", srcDir.toString(), "--rulesets", DUMMY_RULESET, "--report-file", reportFile.toString());
+        runCliSuccessfully("--dir", srcDir.toString(), "--rulesets", DUMMY_RULESET, "--report-file", reportFile.toString());
 
         assertTrue(Files.exists(reportFile), "Report file should have been created");
     }
@@ -123,7 +122,7 @@ class PmdCliTest {
 
         // restoring system properties: --debug might change logging properties
         SystemLambda.restoreSystemProperties(() -> {
-            runPmdSuccessfully("--dir", srcDir.toString(), "--rulesets", DUMMY_RULESET, "--report-file", reportFile.toString(), "--debug");
+            runCliSuccessfully("--dir", srcDir.toString(), "--rulesets", DUMMY_RULESET, "--report-file", reportFile.toString(), "--debug");
         });
 
         assertTrue(Files.exists(reportFile), "Report file should have been created");
@@ -146,7 +145,7 @@ class PmdCliTest {
         assertFalse(Files.exists(absoluteReportFile), "Report file must not exist yet! " + absoluteReportFile);
 
         try {
-            runPmdSuccessfully("-d", srcDir.toString(), "-R", DUMMY_RULESET, "-r", reportFile.toString());
+            runCliSuccessfully("-d", srcDir.toString(), "-R", DUMMY_RULESET, "-r", reportFile.toString());
             assertTrue(Files.exists(absoluteReportFile), "Report file should have been created");
         } finally {
             Files.deleteIfExists(absoluteReportFile);
@@ -161,7 +160,7 @@ class PmdCliTest {
         assertFalse(Files.exists(absoluteReportFile), "Report file must not exist yet!");
 
         try {
-            runPmdSuccessfully("--dir", srcDir.toString(), "--rulesets", DUMMY_RULESET, "--report-file", reportFile.toString());
+            runCliSuccessfully("--dir", srcDir.toString(), "--rulesets", DUMMY_RULESET, "--report-file", reportFile.toString());
             assertTrue(Files.exists(absoluteReportFile), "Report file should have been created");
         } finally {
             Files.deleteIfExists(absoluteReportFile);
@@ -172,21 +171,21 @@ class PmdCliTest {
     void debugLogging() throws Exception {
         // restoring system properties: --debug might change logging properties
         SystemLambda.restoreSystemProperties(() -> {
-            String log = runPmdSuccessfully("--debug", "--dir", srcDir.toString(), "--rulesets", DUMMY_RULESET);
+            String log = runCliSuccessfully("--debug", "--dir", srcDir.toString(), "--rulesets", DUMMY_RULESET);
             assertThat(log, containsString("[main] INFO net.sourceforge.pmd.cli.commands.internal.AbstractPmdSubcommand - Log level is at TRACE"));
         });
     }
 
     @Test
     void defaultLogging() throws Exception {
-        String log = runPmdSuccessfully("--dir", srcDir.toString(), "--rulesets", DUMMY_RULESET);
+        String log = runCliSuccessfully("--dir", srcDir.toString(), "--rulesets", DUMMY_RULESET);
         assertThat(log, containsString("[main] INFO net.sourceforge.pmd.cli.commands.internal.AbstractPmdSubcommand - Log level is at INFO"));
     }
 
     @Test
     void testDeprecatedRulesetSyntaxOnCommandLine() throws Exception {
         String log = SystemLambda.tapSystemErrAndOut(() -> {
-            runPmd(ExecutionResult.VIOLATIONS_FOUND, "--dir", srcDir.toString(), "--rulesets", "dummy-basic");
+            runCli(ExecutionResult.VIOLATIONS_FOUND, "--dir", srcDir.toString(), "--rulesets", "dummy-basic");
         });
         assertThat(log, containsString("Ruleset reference 'dummy-basic' uses a deprecated form, use 'rulesets/dummy/basic.xml' instead"));
     }
@@ -209,12 +208,6 @@ class PmdCliTest {
     }
 
 
-    private static String runPmdSuccessfully(String... args) throws Exception {
-        return SystemLambda.tapSystemErrAndOut(() -> {
-            runPmd(ExecutionResult.OK, args);
-        });
-    }
-
     // available in Files on java 11+
     private static void writeString(Path path, String text) throws IOException {
         ByteBuffer encoded = StandardCharsets.UTF_8.encode(text);
@@ -228,24 +221,18 @@ class PmdCliTest {
         ByteBuffer buf = ByteBuffer.wrap(bytes);
         return StandardCharsets.UTF_8.decode(buf).toString();
     }
-
-    private static void runPmd(ExecutionResult expectedExitCode, String... args) throws Exception {
-        final int actualExitCode = SystemLambda.catchSystemExit(() -> {
-            final List<String> argList = new ArrayList<>();
-            
-            // Always run against dummy language without logging not cache to remove all logging noise
-            argList.add("run");
-            argList.add("--use-version");
-            argList.add("dummy");
-            argList.add("--no-cache");
-            argList.add("--no-progress");
-            
-            argList.addAll(Arrays.asList(args));
-            
-            PmdCli.main(argList.toArray(new String[0]));
-        });
-        assertEquals(expectedExitCode.getExitCode(), actualExitCode, "Exit code");
+    
+    @Override
+    protected List<String> cliStandardArgs() {
+        final List<String> argList = new ArrayList<>();
+        
+        // Always run against dummy language without logging not cache to remove all logging noise
+        argList.add("run");
+        argList.add("--use-version");
+        argList.add("dummy");
+        argList.add("--no-cache");
+        argList.add("--no-progress");
+        
+        return argList;
     }
-
-
 }
