@@ -5,24 +5,17 @@
 package net.sourceforge.pmd.cli.commands.internal;
 
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.LanguageVersion;
 
-import picocli.CommandLine;
-import picocli.CommandLine.ParseResult;
-
-class PmdCommandTest {
+class PmdCommandTest extends BaseCommandTest<PmdCommand> {
 
     @Test
     void testVersionDefault() throws Exception {
@@ -83,13 +76,6 @@ class PmdCommandTest {
         );
     }
 
-
-    private void assertMultipleDirsAndRulesets(final PmdCommand result) {
-        final PMDConfiguration config = result.toConfiguration();
-        assertEquals(listOf("a", "b"), config.getAllInputPaths());
-        assertEquals(listOf("x.xml", "y.xml"), config.getRuleSetPaths());
-    }
-
     @Test
     void testEmptyDirOption() {
         assertError("-d", "-R", "y.xml");
@@ -100,37 +86,23 @@ class PmdCommandTest {
         assertError("-R", "-d", "something");
     }
 
-    private void assertError(final String... params) {
-        final PmdCommand cmd = new PmdCommand();
-        final ParseResult parseResult = parseCommand(cmd, params);
-        assertThat(parseResult.errors(), Matchers.not(Matchers.empty()));
+    private void assertMultipleDirsAndRulesets(final PmdCommand result) {
+        final PMDConfiguration config = result.toConfiguration();
+        assertEquals(listOf("a", "b"), config.getAllInputPaths());
+        assertEquals(listOf("x.xml", "y.xml"), config.getRuleSetPaths());
     }
 
-    private PmdCommand setupAndParse(final String... params) {
-        final PmdCommand cmd = new PmdCommand();
-        final ParseResult parseResult = parseCommand(cmd, params);
-
-        assertThat(parseResult.errors(), Matchers.empty());
-
-        return cmd;
+    @Override
+    protected PmdCommand createCommand() {
+        return new PmdCommand();
     }
-    
-    private ParseResult parseCommand(final Object cmd, final String... params) {
-        final List<String> argList = new ArrayList<>();
 
+    @Override
+    protected void addStandardParams(final List<String> argList) {
         // If no language provided, set dummy latest
-        if (!Arrays.stream(params).anyMatch(s -> s.equals("--use-version"))) {
+        if (!argList.contains("--use-version")) {
             argList.add("--use-version");
             argList.add("dummy");
         }
-        argList.addAll(Arrays.asList(params));
-
-        final CommandLine commandLine = new CommandLine(cmd)
-            .setCaseInsensitiveEnumValuesAllowed(true);
-        
-        // Collect errors instead of simply throwing during parsing
-        commandLine.getCommandSpec().parser().collectErrors(true);
-        
-        return commandLine.parseArgs(argList.toArray(new String[0]));
     }
 }

@@ -43,7 +43,6 @@ public class CpdCommand extends AbstractAnalysisPmdSubcommand {
             description = "Ignore multiple copies of files of the same name and length in comparison.")
     private boolean skipDuplicates;
 
-    // TODO : Can we unify with PmdCommand but keep separate completion candidates? I think not…
     @Option(names = { "--format", "-f" },
             description = "Report format.%nValid values: ${COMPLETION-CANDIDATES}%n"
                         + "Alternatively, you can provide the fully qualified name of a custom CpdRenderer in the classpath.",
