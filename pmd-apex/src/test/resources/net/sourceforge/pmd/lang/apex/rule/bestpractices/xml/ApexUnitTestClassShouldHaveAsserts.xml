@@ -103,7 +103,7 @@ public class Foo {
 @isTest
 public class Foo {
    public static testMethod void testAssertIsTrue() {
-      Assert.isTrue(someCondition);
+      Assert.assertEquals(someCondition);
    }
 
    public static testMethod void testLocalVerify() {
@@ -115,4 +115,18 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+      <description>#4096 [apex] api 56.0 ApexAssertionsShouldIncludeMessage and new apex class : Assert</description>
+      <expected-problems>0</expected-problems>
+      <code><![CDATA[
+@isTest
+public class Foo {
+   public static testMethod void testSomething() {
+      Account a = null;
+      Assert.areEqual(a, null, 'account not found');
+   }
+}
+      ]]></code>
+   </test-code>
 </test-data>
