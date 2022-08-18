@@ -37,15 +37,6 @@ public class ApexUnitTestClassShouldHaveAssertsRule extends AbstractApexUnitTest
         ASSERT_METHODS.add("system.assert");
         ASSERT_METHODS.add("system.assertequals");
         ASSERT_METHODS.add("system.assertnotequals");
-        ASSERT_METHODS.add("system.assert.areequal");
-        ASSERT_METHODS.add("system.assert.arenotequal");
-        ASSERT_METHODS.add("system.assert.fail");
-        ASSERT_METHODS.add("system.assert.isfalse");
-        ASSERT_METHODS.add("system.assert.isinstanceoftype");
-        ASSERT_METHODS.add("system.assert.isnotinstanceoftype");
-        ASSERT_METHODS.add("system.assert.isnnull");
-        ASSERT_METHODS.add("system.assert.isnotnull");
-        ASSERT_METHODS.add("system.assert.istrue");
         ASSERT_METHODS.add("assert.areequal");
         ASSERT_METHODS.add("assert.arenotequal");
         ASSERT_METHODS.add("assert.fail");
@@ -59,6 +50,15 @@ public class ApexUnitTestClassShouldHaveAssertsRule extends AbstractApexUnitTest
         ASSERT_METHODS.add("system.system.assert");
         ASSERT_METHODS.add("system.system.assertequals");
         ASSERT_METHODS.add("system.system.assertnotequals");
+        ASSERT_METHODS.add("system.assert.areequal");
+        ASSERT_METHODS.add("system.assert.arenotequal");
+        ASSERT_METHODS.add("system.assert.fail");
+        ASSERT_METHODS.add("system.assert.isfalse");
+        ASSERT_METHODS.add("system.assert.isinstanceoftype");
+        ASSERT_METHODS.add("system.assert.isnotinstanceoftype");
+        ASSERT_METHODS.add("system.assert.isnnull");
+        ASSERT_METHODS.add("system.assert.isnotnull");
+        ASSERT_METHODS.add("system.assert.istrue");
     }
 
     // Using a string property instead of a regex property to ensure that the compiled pattern can be case-insensitive
