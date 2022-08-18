@@ -14,14 +14,14 @@ import java.util.Map.Entry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.beust.jcommander.JCommander;
-import com.beust.jcommander.ParameterException;
-
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMDVersion;
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.cli.internal.CliMessages;
 import net.sourceforge.pmd.cpd.CPD.StatusCode;
+
+import com.beust.jcommander.JCommander;
+import com.beust.jcommander.ParameterException;
 
 /**
  * @deprecated Internal API. Use {@link CPD#runCpd(String...)} or {@link CPD#main(String[])}

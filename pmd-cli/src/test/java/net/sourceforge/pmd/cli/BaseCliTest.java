@@ -1,3 +1,7 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
+
 package net.sourceforge.pmd.cli;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -29,5 +33,5 @@ abstract class BaseCliTest {
         });
     }
 
-    abstract protected List<String> cliStandardArgs();
+    protected abstract List<String> cliStandardArgs();
 }

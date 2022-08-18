@@ -70,12 +70,12 @@ class CpdCliTest extends BaseCliTest {
     
     @Test
     void testEmptyResultRendering() throws Exception {
-        final String stdout = SystemLambda.tapSystemErrAndOut(() -> {
+        final String stdout = SystemLambda.tapSystemOut(() -> {
             SystemLambda.tapSystemErr(() -> {
                 final int statusCode = SystemLambda.catchSystemExit(() -> {
                     PmdCli.main(new String[] {
                         "cpd", "--minimum-tokens", "340", "--language", "java", "--dir",
-                        SRC_DIR, "--format", "xml"
+                        SRC_DIR, "--format", "xml",
                     });
                 });
                 assertEquals(ExecutionResult.OK.getExitCode(), statusCode);
