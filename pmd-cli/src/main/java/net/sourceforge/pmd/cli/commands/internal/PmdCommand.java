@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
@@ -165,9 +166,9 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand {
         this.minimumPriority = priority;
     }
 
-    // TODO : Autocomplete candidates?
     @Option(names = { "--property", "-P" }, description = "Key-value pair defining a property for the report format.%n"
-            + "Supported values for each report format:%n${sys:pmd-cli.pmd.report.properties.help}")
+                + "Supported values for each report format:%n${sys:pmd-cli.pmd.report.properties.help}",
+            completionCandidates = PmdReportPropertiesCandidates.class)
     public void setProperties(final Properties properties) {
         this.properties = properties;
     }
@@ -384,6 +385,29 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand {
         }
     }
 
+    /**
+     * Provider of candidates for valid report properties.
+     * 
+     * Check the help for which ones are supported by each report format and possible values.
+     */
+    private static class PmdReportPropertiesCandidates implements Iterable<String> {
+
+        @Override
+        public Iterator<String> iterator() {
+            final List<String> propertyNames = new ArrayList<>();
+            final Properties emptyProps = new Properties();
+            for (final String rendererName : RendererFactory.supportedRenderers()) {
+                final Renderer renderer = RendererFactory.createRenderer(rendererName, emptyProps);
+                
+                for (final PropertyDescriptor<?> property : renderer.getPropertyDescriptors()) {
+                    propertyNames.add(property.name());
+                }
+            }
+            return propertyNames.iterator();
+        }
+        
+    }
+    
     /**
      * Provider of candidates for valid languages.
      * 
