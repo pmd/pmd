@@ -6,14 +6,14 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 
-import com.google.summit.ast.initializer.ConstructorInitializer;
+import com.google.summit.ast.initializer.Initializer;
 
-public class ASTNewListInitExpression extends AbstractApexNode.Single<ConstructorInitializer> {
+public class ASTNewListInitExpression extends AbstractApexNode.Single<Initializer> {
 
     @Deprecated
     @InternalApi
-    public ASTNewListInitExpression(ConstructorInitializer constructorInitializer) {
-        super(constructorInitializer);
+    public ASTNewListInitExpression(Initializer initializer) {
+        super(initializer);
     }
 
     @Override

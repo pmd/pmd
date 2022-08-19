@@ -38,6 +38,7 @@ import com.google.summit.ast.expression.UnaryExpression
 import com.google.summit.ast.expression.VariableExpression
 import com.google.summit.ast.initializer.ConstructorInitializer
 import com.google.summit.ast.initializer.MapInitializer
+import com.google.summit.ast.initializer.SizedArrayInitializer
 import com.google.summit.ast.initializer.ValuesInitializer
 import com.google.summit.ast.modifier.KeywordModifier
 import com.google.summit.ast.modifier.KeywordModifier.Keyword
@@ -114,6 +115,7 @@ class ApexTreeBuilder(val sourceCode: String, val parserOptions: ApexParserOptio
             is ConstructorInitializer -> buildConstructorInitializer(node)
             is ValuesInitializer -> buildValuesInitializer(node)
             is MapInitializer -> buildMapInitializer(node)
+            is SizedArrayInitializer -> buildSizedArrayInitializer(node)
             is Identifier,
             is KeywordModifier,
             is TypeRef -> null
@@ -413,6 +415,10 @@ class ApexTreeBuilder(val sourceCode: String, val parserOptions: ApexParserOptio
 
             node.pairs.forEach { pair -> buildMapEntry(pair).also { it.setParent(this) } }
         }
+
+    /** Builds an [ASTNewListInitExpression] wrapper for the [SizedArrayInitializer]. */
+    private fun buildSizedArrayInitializer(node: SizedArrayInitializer) =
+        ASTNewListInitExpression(node).apply { buildChildren(node, parent = this) }
 
     /** Builds an [ASTStandardCondition] wrapper for the [condition]. */
     private fun buildCondition(condition: Node?) =
