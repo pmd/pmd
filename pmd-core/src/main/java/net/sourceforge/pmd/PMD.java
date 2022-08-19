@@ -28,7 +28,7 @@ import net.sourceforge.pmd.benchmark.TimingReport;
 import net.sourceforge.pmd.benchmark.TimingReportRenderer;
 import net.sourceforge.pmd.cli.PMDCommandLineInterface;
 import net.sourceforge.pmd.cli.PmdParametersParseResult;
-import net.sourceforge.pmd.cli.internal.CliMessages;
+import net.sourceforge.pmd.internal.LogMessages;
 import net.sourceforge.pmd.internal.Slf4jSimpleConfiguration;
 import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.renderers.Renderer;
@@ -149,7 +149,7 @@ public final class PMD {
             return StatusCode.OK;
         } else if (parseResult.isError()) {
             System.err.println(parseResult.getError().getMessage());
-            System.err.println(CliMessages.runWithHelpFlagMessage());
+            System.err.println(LogMessages.runWithHelpFlagMessage());
             return StatusCode.ERROR;
         }
 

@@ -25,8 +25,8 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.event.Level;
 
 import net.sourceforge.pmd.annotation.Experimental;
-import net.sourceforge.pmd.cli.internal.CliMessages;
 import net.sourceforge.pmd.cpd.renderer.CPDReportRenderer;
+import net.sourceforge.pmd.internal.LogMessages;
 import net.sourceforge.pmd.internal.Slf4jSimpleConfiguration;
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
 import net.sourceforge.pmd.util.FileFinder;
@@ -325,7 +325,7 @@ public class CPD {
             }
         } catch (IOException | RuntimeException e) {
             log.debug(e.toString(), e);
-            log.error(CliMessages.errorDetectedMessage(1, CPDCommandLineInterface.PROGRAM_NAME));
+            log.error(LogMessages.errorDetectedMessage(1, CPDCommandLineInterface.PROGRAM_NAME));
             statusCode = StatusCode.ERROR;
         }
         return statusCode;

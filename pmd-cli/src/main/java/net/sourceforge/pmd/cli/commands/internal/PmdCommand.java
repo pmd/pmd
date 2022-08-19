@@ -27,8 +27,8 @@ import net.sourceforge.pmd.benchmark.TextTimingReportRenderer;
 import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.benchmark.TimingReport;
 import net.sourceforge.pmd.benchmark.TimingReportRenderer;
-import net.sourceforge.pmd.cli.internal.CliMessages;
 import net.sourceforge.pmd.cli.internal.ExecutionResult;
+import net.sourceforge.pmd.internal.LogMessages;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
@@ -350,7 +350,7 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand {
     }
 
     private void printErrorDetected(MessageReporter reporter, int errors) {
-        String msg = CliMessages.errorDetectedMessage(errors, "PMD");
+        String msg = LogMessages.errorDetectedMessage(errors, "PMD");
         // note: using error level here increments the error count of the reporter,
         // which we don't want.
         reporter.info(StringUtil.quoteMessageFormat(msg));

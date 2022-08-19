@@ -24,8 +24,8 @@ import net.sourceforge.pmd.benchmark.TimedOperation;
 import net.sourceforge.pmd.benchmark.TimedOperationCategory;
 import net.sourceforge.pmd.cache.AnalysisCacheListener;
 import net.sourceforge.pmd.cache.NoopAnalysisCache;
-import net.sourceforge.pmd.cli.internal.CliMessages;
 import net.sourceforge.pmd.cli.internal.ProgressBarListener;
+import net.sourceforge.pmd.internal.LogMessages;
 import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.internal.util.FileCollectionUtil;
 import net.sourceforge.pmd.lang.Language;
@@ -430,7 +430,7 @@ public final class PmdAnalysis implements AutoCloseable {
     }
 
     static void printErrorDetected(MessageReporter reporter, int errors) {
-        String msg = CliMessages.errorDetectedMessage(errors, "PMD");
+        String msg = LogMessages.errorDetectedMessage(errors, "PMD");
         // note: using error level here increments the error count of the reporter,
         // which we don't want.
         reporter.info(StringUtil.quoteMessageFormat(msg));

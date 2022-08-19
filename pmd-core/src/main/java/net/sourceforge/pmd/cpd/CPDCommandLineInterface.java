@@ -17,8 +17,8 @@ import org.slf4j.LoggerFactory;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMDVersion;
 import net.sourceforge.pmd.annotation.InternalApi;
-import net.sourceforge.pmd.cli.internal.CliMessages;
 import net.sourceforge.pmd.cpd.CPD.StatusCode;
+import net.sourceforge.pmd.internal.LogMessages;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
@@ -86,7 +86,7 @@ public final class CPDCommandLineInterface {
             }
         } catch (ParameterException e) {
             System.err.println(e.getMessage());
-            System.err.println(CliMessages.runWithHelpFlagMessage());
+            System.err.println(LogMessages.runWithHelpFlagMessage());
             return StatusCode.ERROR;
         }
 
