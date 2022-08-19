@@ -22,6 +22,7 @@ import com.google.summit.ast.declaration.MethodDeclaration
 import com.google.summit.ast.declaration.PropertyDeclaration
 import com.google.summit.ast.declaration.TriggerDeclaration
 import com.google.summit.ast.declaration.TypeDeclaration
+import com.google.summit.ast.declaration.VariableDeclaration
 import com.google.summit.ast.expression.ArrayExpression
 import com.google.summit.ast.expression.AssignExpression
 import com.google.summit.ast.expression.BinaryExpression
@@ -48,6 +49,7 @@ import com.google.summit.ast.statement.CompoundStatement
 import com.google.summit.ast.statement.ExpressionStatement
 import com.google.summit.ast.statement.IfStatement
 import com.google.summit.ast.statement.Statement
+import com.google.summit.ast.statement.VariableDeclarationStatement
 
 @Deprecated("internal")
 @InternalApi
@@ -121,6 +123,8 @@ class ApexTreeBuilder(val sourceCode: String, val parserOptions: ApexParserOptio
             is SizedArrayInitializer -> buildSizedArrayInitializer(node)
             is DmlStatement -> buildDmlStatement(node)
             is IfStatement -> buildIfStatement(node)
+            is VariableDeclarationStatement -> buildVariableDeclarations(node.variableDeclarations)
+            is VariableDeclaration -> buildVariableDeclaration(node)
             is Identifier,
             is KeywordModifier,
             is TypeRef -> null
@@ -353,7 +357,7 @@ class ApexTreeBuilder(val sourceCode: String, val parserOptions: ApexParserOptio
         components: List<Identifier>,
         receiver: Node?,
         referenceType: ReferenceType,
-        isSafe: Boolean
+        isSafe: Boolean = false
     ) =
         if (receiver == null && components.isEmpty()) {
             ASTEmptyReferenceExpression()
@@ -480,6 +484,30 @@ class ApexTreeBuilder(val sourceCode: String, val parserOptions: ApexParserOptio
             else ->
                 // Can't flatten
                 FlatIfStatement(ifBlocks, elseBlock = node)
+        }
+
+    /** Builds an [ASTVariableDeclarationStatements] for the [VariableDeclaration] list. */
+    private fun buildVariableDeclarations(declarations: List<VariableDeclaration>) =
+        ASTVariableDeclarationStatements(declarations).apply {
+            if (declarations.isNotEmpty()) {
+                // Modifiers are duplicated between all declarations - use any
+                buildModifiers(declarations.first().modifiers).also { it.setParent(this) }
+            }
+            declarations.forEach { buildAndSetParent(it, parent = this) }
+        }
+
+    /** Builds an [ASTVariableDeclaration] wrapper for the [VariableDeclaration]. */
+    private fun buildVariableDeclaration(node: VariableDeclaration) =
+        ASTVariableDeclaration(node).apply {
+            // Exclude modifiers - built in ASTVariableDeclarationStatements
+            buildChildren(node, parent = this, exclude = { it in node.modifiers })
+
+            ASTVariableExpression(node.id)
+                .apply {
+                    buildReferenceExpression(components = emptyList(), receiver = null, ReferenceType.NONE)
+                        .also { it.setParent(this) }
+                }
+                .also { it.setParent(this) }
         }
 
     /** Builds an [ASTStandardCondition] wrapper for the [condition]. */
