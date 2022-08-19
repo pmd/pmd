@@ -50,6 +50,7 @@ import com.google.summit.ast.statement.DmlStatement
 import com.google.summit.ast.statement.DoWhileLoopStatement
 import com.google.summit.ast.statement.EnhancedForLoopStatement
 import com.google.summit.ast.statement.ExpressionStatement
+import com.google.summit.ast.statement.ForLoopStatement
 import com.google.summit.ast.statement.IfStatement
 import com.google.summit.ast.statement.Statement
 import com.google.summit.ast.statement.VariableDeclarationStatement
@@ -101,7 +102,7 @@ class ApexTreeBuilder(val sourceCode: String, val parserOptions: ApexParserOptio
             is FieldDeclaration -> ASTFieldDeclaration(node).apply { buildChildren(node, parent = this) }
             is CompoundStatement -> ASTBlockStatement(node).apply { buildChildren(node, parent = this) }
             is ExpressionStatement ->
-                ASTExpressionStatement(node).apply { buildChildren(node, parent = this) }
+                ASTExpressionStatement(node.expression).apply { buildChildren(node, parent = this) }
             is AssignExpression ->
                 ASTAssignmentExpression(node).apply { buildChildren(node, parent = this) }
             is ArrayExpression -> buildArrayExpression(node)
@@ -132,6 +133,7 @@ class ApexTreeBuilder(val sourceCode: String, val parserOptions: ApexParserOptio
             is EnhancedForLoopStatement -> buildEnhancedForLoopStatement(node)
             is DoWhileLoopStatement -> buildDoWhileLoopStatement(node)
             is WhileLoopStatement -> buildWhileLoopStatement(node)
+            is ForLoopStatement -> buildForLoopStatement(node)
             is Identifier,
             is KeywordModifier,
             is TypeRef -> null
@@ -554,8 +556,36 @@ class ApexTreeBuilder(val sourceCode: String, val parserOptions: ApexParserOptio
             buildChildren(node, parent = this, exclude = { it == node.condition || it == node.body })
         }
 
+    /** Builds an [ASTForEachStatement] wrapper for the [ForLoopStatement]. */
+    private fun buildForLoopStatement(node: ForLoopStatement) =
+        ASTForLoopStatement(node).apply {
+            fun buildInitialization(expr: Expression) =
+                ASTExpressionStatement(expr).apply { buildAndSetParent(expr, parent = this) }
+
+            if (node.declarations.isNotEmpty()) {
+                buildVariableDeclarations(node.declarations).also { it.setParent(this) }
+            }
+            if (node.condition != null) {
+                buildCondition(node.condition!!).also { it.setParent(this) }
+            }
+            node.initializations.forEach { expr -> buildInitialization(expr).also { it.setParent(this) } }
+
+            wrapBody(node.body, parent = this).also { it.setParent(this) }
+
+            buildChildren(
+                node,
+                parent = this,
+                exclude = {
+                    it in node.declarations ||
+                        it == node.condition ||
+                        it in node.initializations ||
+                        it == node.body
+                }
+            )
+        }
+
     /** Builds an [ASTStandardCondition] wrapper for the [condition]. */
-    private fun buildCondition(condition: Node?) =
+    private fun buildCondition(condition: Node) =
         ASTStandardCondition(condition).apply { buildAndSetParent(condition, this) }
 
     /** Builds an [ASTModifierNode] wrapper for the list of [Modifier]s. */
