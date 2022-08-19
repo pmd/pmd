@@ -37,6 +37,7 @@ import com.google.summit.ast.expression.TypeRefExpression
 import com.google.summit.ast.expression.UnaryExpression
 import com.google.summit.ast.expression.VariableExpression
 import com.google.summit.ast.initializer.ConstructorInitializer
+import com.google.summit.ast.initializer.MapInitializer
 import com.google.summit.ast.initializer.ValuesInitializer
 import com.google.summit.ast.modifier.KeywordModifier
 import com.google.summit.ast.modifier.KeywordModifier.Keyword
@@ -112,6 +113,7 @@ class ApexTreeBuilder(val sourceCode: String, val parserOptions: ApexParserOptio
             is NewExpression -> build(node.initializer, parent)
             is ConstructorInitializer -> buildConstructorInitializer(node)
             is ValuesInitializer -> buildValuesInitializer(node)
+            is MapInitializer -> buildMapInitializer(node)
             is Identifier,
             is KeywordModifier,
             is TypeRef -> null
@@ -401,6 +403,16 @@ class ApexTreeBuilder(val sourceCode: String, val parserOptions: ApexParserOptio
             "set" -> ASTNewSetLiteralExpression(node)
             else -> ASTNewListLiteralExpression(node) // Array
         }.apply { buildChildren(node, parent = this) }
+
+    /** Builds an [ASTNewMapLiteralExpression] wrapper for the [MapInitializer]. */
+    private fun buildMapInitializer(node: MapInitializer) =
+        ASTNewMapLiteralExpression(node).apply {
+            /** Builds an [ASTMapEntryNode] for the [map entry][entry]. */
+            fun buildMapEntry(entry: Pair<Expression, Expression>) =
+                ASTMapEntryNode(entry.first, entry.second).apply { buildChildren(node, parent = this) }
+
+            node.pairs.forEach { pair -> buildMapEntry(pair).also { it.setParent(this) } }
+        }
 
     /** Builds an [ASTStandardCondition] wrapper for the [condition]. */
     private fun buildCondition(condition: Node?) =
