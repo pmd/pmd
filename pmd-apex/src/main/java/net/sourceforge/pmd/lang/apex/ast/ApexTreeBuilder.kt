@@ -37,6 +37,7 @@ import com.google.summit.ast.expression.TypeRefExpression
 import com.google.summit.ast.expression.UnaryExpression
 import com.google.summit.ast.expression.VariableExpression
 import com.google.summit.ast.initializer.ConstructorInitializer
+import com.google.summit.ast.initializer.ValuesInitializer
 import com.google.summit.ast.modifier.KeywordModifier
 import com.google.summit.ast.modifier.KeywordModifier.Keyword
 import com.google.summit.ast.modifier.Modifier
@@ -110,6 +111,7 @@ class ApexTreeBuilder(val sourceCode: String, val parserOptions: ApexParserOptio
             is TernaryExpression -> buildTernaryExpression(node)
             is NewExpression -> build(node.initializer, parent)
             is ConstructorInitializer -> buildConstructorInitializer(node)
+            is ValuesInitializer -> buildValuesInitializer(node)
             is Identifier,
             is KeywordModifier,
             is TypeRef -> null
@@ -386,6 +388,18 @@ class ApexTreeBuilder(val sourceCode: String, val parserOptions: ApexParserOptio
                     ASTNewObjectExpression(node)
                 }
             }
+        }.apply { buildChildren(node, parent = this) }
+
+    /**
+     * Builds an [ASTNewListLiteralExpression], [ASTNewMapLiteralExpression], or
+     * [ASTNewSetLiteralExpression] wrapper for the [ValuesInitializer].
+     */
+    private fun buildValuesInitializer(node: ValuesInitializer) =
+        when (node.type.components.first().id.string.lowercase()) {
+            "list" -> ASTNewListLiteralExpression(node)
+            "map" -> ASTNewMapLiteralExpression(node)
+            "set" -> ASTNewSetLiteralExpression(node)
+            else -> ASTNewListLiteralExpression(node) // Array
         }.apply { buildChildren(node, parent = this) }
 
     /** Builds an [ASTStandardCondition] wrapper for the [condition]. */
