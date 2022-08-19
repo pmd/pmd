@@ -4,15 +4,16 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import com.google.summit.ast.Node;
 import net.sourceforge.pmd.annotation.InternalApi;
 
-public class ASTIfBlockStatement extends AbstractApexNode.Single<Node> {
+import com.google.summit.ast.statement.IfStatement;
+
+public class ASTIfBlockStatement extends AbstractApexNode.Single<IfStatement> {
 
     @Deprecated
     @InternalApi
-    public ASTIfBlockStatement(Node ifBlockStatement) {
-        super(ifBlockStatement);
+    public ASTIfBlockStatement(IfStatement ifStatement) {
+        super(ifStatement);
     }
 
     @Override
