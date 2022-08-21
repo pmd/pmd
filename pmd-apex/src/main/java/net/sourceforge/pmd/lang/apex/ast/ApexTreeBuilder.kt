@@ -43,6 +43,9 @@ import com.google.summit.ast.initializer.ConstructorInitializer
 import com.google.summit.ast.initializer.MapInitializer
 import com.google.summit.ast.initializer.SizedArrayInitializer
 import com.google.summit.ast.initializer.ValuesInitializer
+import com.google.summit.ast.modifier.AnnotationModifier
+import com.google.summit.ast.modifier.ElementArgument
+import com.google.summit.ast.modifier.ElementValue
 import com.google.summit.ast.modifier.KeywordModifier
 import com.google.summit.ast.modifier.KeywordModifier.Keyword
 import com.google.summit.ast.modifier.Modifier
@@ -154,6 +157,10 @@ class ApexTreeBuilder(val sourceCode: String, val parserOptions: ApexParserOptio
             is ContinueStatement ->
                 ASTContinueStatement(node).apply { buildChildren(node, parent = this) }
             is ParameterDeclaration -> buildParameterDeclaration(node)
+            is AnnotationModifier -> ASTAnnotation(node).apply { buildChildren(node, parent = this) }
+            is ElementArgument ->
+                ASTAnnotationParameter(node).apply { buildChildren(node, parent = this) }
+            is ElementValue,
             is Identifier,
             is KeywordModifier,
             is TypeRef -> null

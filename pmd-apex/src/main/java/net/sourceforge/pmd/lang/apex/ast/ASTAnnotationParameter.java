@@ -4,16 +4,19 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import com.google.summit.ast.Node;
 import net.sourceforge.pmd.annotation.InternalApi;
 
-public class ASTAnnotationParameter extends AbstractApexNode.Single<Node> {
+import com.google.summit.ast.expression.LiteralExpression;
+import com.google.summit.ast.modifier.ElementArgument;
+import com.google.summit.ast.modifier.ElementValue;
+
+public class ASTAnnotationParameter extends AbstractApexNode.Single<ElementArgument> {
     public static final String SEE_ALL_DATA = "seeAllData";
 
     @Deprecated
     @InternalApi
-    public ASTAnnotationParameter(Node annotationParameter) {
-        super(annotationParameter);
+    public ASTAnnotationParameter(ElementArgument elementArgument) {
+        super(elementArgument);
     }
 
     @Override
@@ -22,25 +25,25 @@ public class ASTAnnotationParameter extends AbstractApexNode.Single<Node> {
     }
 
     public String getName() {
-        // if (node.getProperty() != null) {
-        //     return node.getProperty().getName();
-        // }
-        // TODO(b/239648780)
-        return null;
+        return node.getName().getString();
     }
 
     public String getValue() {
-        // if (node.getValue() != null) {
-        //     return node.getValueAsString();
-        // }
-        // TODO(b/239648780)
+        if (node.getValue() instanceof ElementValue.ExpressionValue) {
+            return expressionToString(((ElementValue.ExpressionValue) node.getValue()).getValue());
+        }
         return null;
     }
 
-    // public Boolean getBooleanValue() {
-    //     return node.getBooleanValue();
-    // }
-    // TODO(b/239648780)
+     public Boolean getBooleanValue() {
+         if (node.getValue() instanceof ElementValue.ExpressionValue) {
+             ElementValue.ExpressionValue value = (ElementValue.ExpressionValue) node.getValue();
+             if (value.getValue() instanceof LiteralExpression.BooleanVal) {
+                 return ((LiteralExpression.BooleanVal) value.getValue()).getValue();
+             }
+         }
+         return false;
+     }
 
     @Override
     public String getImage() {
