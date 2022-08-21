@@ -53,6 +53,7 @@ import com.google.summit.ast.statement.ExpressionStatement
 import com.google.summit.ast.statement.ForLoopStatement
 import com.google.summit.ast.statement.IfStatement
 import com.google.summit.ast.statement.Statement
+import com.google.summit.ast.statement.SwitchStatement
 import com.google.summit.ast.statement.VariableDeclarationStatement
 import com.google.summit.ast.statement.WhileLoopStatement
 
@@ -134,6 +135,8 @@ class ApexTreeBuilder(val sourceCode: String, val parserOptions: ApexParserOptio
             is DoWhileLoopStatement -> buildDoWhileLoopStatement(node)
             is WhileLoopStatement -> buildWhileLoopStatement(node)
             is ForLoopStatement -> buildForLoopStatement(node)
+            is SwitchStatement -> ASTSwitchStatement(node).apply { buildChildren(node, parent = this) }
+            is SwitchStatement.When -> buildSwitchWhen(node)
             is Identifier,
             is KeywordModifier,
             is TypeRef -> null
@@ -582,6 +585,32 @@ class ApexTreeBuilder(val sourceCode: String, val parserOptions: ApexParserOptio
                         it == node.body
                 }
             )
+        }
+
+    /**
+     * Builds an [ASTValueWhenBlock], [ASTTypeWhenBlock], or [ASTElseWhenBlock] wrapper for the
+     * [SwitchStatement.When].
+     */
+    private fun buildSwitchWhen(node: SwitchStatement.When) =
+        when (node) {
+            is SwitchStatement.WhenValue ->
+                ASTValueWhenBlock(node).apply {
+                    node.values.forEach { value ->
+                        when (value) {
+                            is LiteralExpression,
+                            is UnaryExpression /* negative */ ->
+                                ASTLiteralCase(value).apply { buildAndSetParent(value, parent = this) }
+                            is VariableExpression -> ASTIdentifierCase(value)
+                            else -> throw ParseException("Invalid when value type")
+                        }.also { it.setParent(this) }
+                    }
+
+                    buildChildren(node, parent = this, exclude = { it in node.values })
+                }
+            is SwitchStatement.WhenType ->
+                ASTTypeWhenBlock(node).apply { buildChildren(node, parent = this) }
+            is SwitchStatement.WhenElse ->
+                ASTElseWhenBlock(node).apply { buildChildren(node, parent = this) }
         }
 
     /** Builds an [ASTStandardCondition] wrapper for the [condition]. */

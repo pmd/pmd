@@ -4,15 +4,13 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import com.google.summit.ast.Node;
+import com.google.summit.ast.statement.SwitchStatement;
 
-public final class ASTSwitchStatement extends AbstractApexNode.Single<Node> {
+public final class ASTSwitchStatement extends AbstractApexNode.Single<SwitchStatement> {
 
-
-    ASTSwitchStatement(Node node) {
-        super(node);
+    ASTSwitchStatement(SwitchStatement switchStatement) {
+        super(switchStatement);
     }
-
 
     @Override
     public Object jjtAccept(ApexParserVisitor visitor, Object data) {
