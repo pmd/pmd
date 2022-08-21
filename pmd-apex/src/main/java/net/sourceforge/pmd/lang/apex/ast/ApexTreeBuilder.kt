@@ -47,6 +47,7 @@ import com.google.summit.ast.modifier.KeywordModifier.Keyword
 import com.google.summit.ast.modifier.Modifier
 import com.google.summit.ast.statement.BreakStatement
 import com.google.summit.ast.statement.CompoundStatement
+import com.google.summit.ast.statement.ContinueStatement
 import com.google.summit.ast.statement.DmlStatement
 import com.google.summit.ast.statement.DoWhileLoopStatement
 import com.google.summit.ast.statement.EnhancedForLoopStatement
@@ -149,6 +150,8 @@ class ApexTreeBuilder(val sourceCode: String, val parserOptions: ApexParserOptio
             is TryStatement.CatchBlock ->
                 ASTCatchBlockStatement(node).apply { buildChildren(node, parent = this) }
             is BreakStatement -> ASTBreakStatement(node).apply { buildChildren(node, parent = this) }
+            is ContinueStatement ->
+                ASTContinueStatement(node).apply { buildChildren(node, parent = this) }
             is Identifier,
             is KeywordModifier,
             is TypeRef -> null
