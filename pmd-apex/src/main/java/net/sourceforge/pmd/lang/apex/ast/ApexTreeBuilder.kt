@@ -67,6 +67,8 @@ import com.google.summit.ast.statement.TryStatement
 import com.google.summit.ast.statement.VariableDeclarationStatement
 import com.google.summit.ast.statement.WhileLoopStatement
 
+import kotlin.reflect.KClass
+
 @Deprecated("internal")
 @InternalApi
 @Suppress("DEPRECATION")
@@ -79,6 +81,9 @@ class ApexTreeBuilder(val sourceCode: String, val parserOptions: ApexParserOptio
         val result =
             build(root, parent = null) as? ApexRootNode<TypeDeclaration>
                 ?: throw ParseException("Unable to build tree")
+
+        // Generate additional nodes
+        generateAdditional(result)
 
         // Call additional methods
         callAdditional(result)
@@ -110,7 +115,7 @@ class ApexTreeBuilder(val sourceCode: String, val parserOptions: ApexParserOptio
             is MethodDeclaration -> buildMethodDeclaration(node, parent)
             is PropertyDeclaration -> buildPropertyDeclaration(node)
             is FieldDeclarationGroup -> buildFieldDeclarationGroup(node)
-            is FieldDeclaration -> ASTFieldDeclaration(node).apply { buildChildren(node, parent = this) }
+            is FieldDeclaration -> buildFieldDeclaration(node)
             is CompoundStatement -> ASTBlockStatement(node).apply { buildChildren(node, parent = this) }
             is ExpressionStatement ->
                 ASTExpressionStatement(node.expression).apply { buildChildren(node, parent = this) }
@@ -229,6 +234,18 @@ class ApexTreeBuilder(val sourceCode: String, val parserOptions: ApexParserOptio
         ASTFieldDeclarationStatements(node).apply {
             buildModifiers(node.modifiers).also { it.setParent(this) }
             buildChildren(node, parent = this, exclude = { it in node.modifiers })
+        }
+
+    private fun buildFieldDeclaration(node: FieldDeclaration) =
+        ASTFieldDeclaration(node).apply {
+            buildChildren(node, parent = this)
+
+            ASTVariableExpression(node.id)
+                .apply {
+                    buildReferenceExpression(components = emptyList(), receiver = null, ReferenceType.NONE)
+                        .also { it.setParent(this) }
+                }
+                .also { it.setParent(this) }
         }
 
     /**
@@ -658,6 +675,45 @@ class ApexTreeBuilder(val sourceCode: String, val parserOptions: ApexParserOptio
     /** Builds an [ASTModifierNode] wrapper for the list of [Modifier]s. */
     private fun buildModifiers(modifiers: List<Modifier>) =
         ASTModifierNode(modifiers).apply { modifiers.forEach { buildAndSetParent(it, parent = this) } }
+
+    /** Generates additional nodes for the [root] node. */
+    private fun generateAdditional(root: ApexNode<*>) {
+        // Generate fields
+        findDescendants(root, nodeType = ASTFieldDeclarationStatements::class).forEach { node ->
+            generateFields(node)
+        }
+
+        findDescendants(root, nodeType = ASTProperty::class).forEach { node -> generateFields(node) }
+    }
+
+    /** Returns all descendants of [root] of type [nodeType], including [root]. */
+    private inline fun <reified T : ApexNode<*>> findDescendants(
+        root: ApexNode<*>,
+        nodeType: KClass<T>
+    ): List<T> =
+        root.findDescendantsOfType(nodeType.java, true) + (if (root is T) listOf(root) else emptyList())
+
+    /** Generates [ASTField] nodes for the [ASTFieldDeclarationStatements]. */
+    private fun generateFields(node: ASTFieldDeclarationStatements) {
+        val parent = node.parent as ApexRootNode<*>
+
+        node.node.declarations
+            .map { decl ->
+                ASTField(decl.type, decl.id, decl.initializer).apply {
+                    buildModifiers(decl.modifiers).also { it.setParent(this) }
+                }
+            }
+            .forEach { field -> field.setParent(parent) }
+    }
+
+    /** Generates [ASTField] nodes for the [ASTProperty]. */
+    private fun generateFields(node: ASTProperty) {
+        val field =
+            ASTField(node.node.type, node.node.id, null).apply {
+                buildModifiers(node.node.modifiers).also { it.setParent(this) }
+            }
+        field.setParent(node)
+    }
 
     /**
      * If [parent] is not null, adds this [ApexNode] as a [child][ApexNode.jjtAddChild] and sets
