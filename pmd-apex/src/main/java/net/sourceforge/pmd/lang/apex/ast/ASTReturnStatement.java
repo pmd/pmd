@@ -4,14 +4,15 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import com.google.summit.ast.Node;
 import net.sourceforge.pmd.annotation.InternalApi;
 
-public class ASTReturnStatement extends AbstractApexNode.Single<Node> {
+import com.google.summit.ast.statement.ReturnStatement;
+
+public class ASTReturnStatement extends AbstractApexNode.Single<ReturnStatement> {
 
     @Deprecated
     @InternalApi
-    public ASTReturnStatement(Node returnStatement) {
+    public ASTReturnStatement(ReturnStatement returnStatement) {
         super(returnStatement);
     }
 
