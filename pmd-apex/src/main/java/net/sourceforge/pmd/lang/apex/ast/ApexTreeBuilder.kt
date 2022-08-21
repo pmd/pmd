@@ -53,6 +53,7 @@ import com.google.summit.ast.statement.ExpressionStatement
 import com.google.summit.ast.statement.IfStatement
 import com.google.summit.ast.statement.Statement
 import com.google.summit.ast.statement.VariableDeclarationStatement
+import com.google.summit.ast.statement.WhileLoopStatement
 
 @Deprecated("internal")
 @InternalApi
@@ -130,6 +131,7 @@ class ApexTreeBuilder(val sourceCode: String, val parserOptions: ApexParserOptio
             is VariableDeclaration -> buildVariableDeclaration(node)
             is EnhancedForLoopStatement -> buildEnhancedForLoopStatement(node)
             is DoWhileLoopStatement -> buildDoWhileLoopStatement(node)
+            is WhileLoopStatement -> buildWhileLoopStatement(node)
             is Identifier,
             is KeywordModifier,
             is TypeRef -> null
@@ -539,6 +541,14 @@ class ApexTreeBuilder(val sourceCode: String, val parserOptions: ApexParserOptio
     /** Builds an [ASTDoLoopStatement] wrapper for the [DoWhileLoopStatement]. */
     private fun buildDoWhileLoopStatement(node: DoWhileLoopStatement) =
         ASTDoLoopStatement(node).apply {
+            buildCondition(node.condition).also { it.setParent(this) }
+            wrapBody(node.body, parent = this).also { it.setParent(this) }
+            buildChildren(node, parent = this, exclude = { it == node.condition || it == node.body })
+        }
+
+    /** Builds an [ASTWhileLoopStatement] wrapper for the [WhileLoopStatement]. */
+    private fun buildWhileLoopStatement(node: WhileLoopStatement) =
+        ASTWhileLoopStatement(node).apply {
             buildCondition(node.condition).also { it.setParent(this) }
             wrapBody(node.body, parent = this).also { it.setParent(this) }
             buildChildren(node, parent = this, exclude = { it == node.condition || it == node.body })
