@@ -195,22 +195,13 @@ class ApexTreeBuilder(val sourceCode: String, val parserOptions: ApexParserOptio
     /** Builds an [ApexRootNode] wrapper for the [TypeDeclaration] node. */
     private fun buildTypeDeclaration(node: TypeDeclaration) =
         when (node) {
-            is ClassDeclaration ->
-                ASTUserClass(node).apply {
-                    buildModifiers(node.modifiers).also { it.setParent(this) }
-                    buildChildren(node, parent = this, exclude = { it in node.modifiers })
-                }
-            is InterfaceDeclaration ->
-                ASTUserInterface(node).apply {
-                    buildModifiers(node.modifiers).also { it.setParent(this) }
-                    buildChildren(node, parent = this, exclude = { it in node.modifiers })
-                }
-            is EnumDeclaration ->
-                ASTUserEnum(node).apply {
-                    buildModifiers(node.modifiers).also { it.setParent(this) }
-                    buildChildren(node, parent = this, exclude = { it in node.modifiers })
-                }
-            is TriggerDeclaration -> ASTUserTrigger(node) // TODO(b/239648780): visit children
+            is ClassDeclaration -> ASTUserClass(node)
+            is InterfaceDeclaration -> ASTUserInterface(node)
+            is EnumDeclaration -> ASTUserEnum(node)
+            is TriggerDeclaration -> ASTUserTrigger(node)
+        }.apply {
+            buildModifiers(node.modifiers).also { it.setParent(this) }
+            buildChildren(node, parent = this, exclude = { it in node.modifiers })
         }
 
     /** Builds an [ASTMethod] wrapper for the [MethodDeclaration] node. */

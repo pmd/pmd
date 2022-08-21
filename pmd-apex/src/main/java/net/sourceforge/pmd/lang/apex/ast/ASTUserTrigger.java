@@ -9,14 +9,14 @@ import java.util.stream.Collectors;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 
-import com.google.summit.ast.declaration.TypeDeclaration;
+import com.google.summit.ast.declaration.TriggerDeclaration;
 
-public class ASTUserTrigger extends ApexRootNode<TypeDeclaration> {
+public class ASTUserTrigger extends ApexRootNode<TriggerDeclaration> {
 
     @Deprecated
     @InternalApi
-    public ASTUserTrigger(TypeDeclaration userTrigger) {
-        super(userTrigger);
+    public ASTUserTrigger(TriggerDeclaration triggerDeclaration) {
+        super(triggerDeclaration);
     }
 
     @Override
@@ -34,19 +34,13 @@ public class ASTUserTrigger extends ApexRootNode<TypeDeclaration> {
     }
 
     public String getTargetName() {
-        // return node.getTargetName().stream().map(Identifier::getValue).collect(Collectors.joining("."));
-        // TODO(b/239648780)
-        return null;
+        return node.getTarget().getString();
     }
 
     public List<TriggerUsage> getUsages() {
-        /*
-        return node.getUsages().stream()
+        return node.getCases().stream()
                 .map(TriggerUsage::of)
                 .sorted()
                 .collect(Collectors.toList());
-         */
-        // TODO(b/239648780)
-        return null;
     }
 }
