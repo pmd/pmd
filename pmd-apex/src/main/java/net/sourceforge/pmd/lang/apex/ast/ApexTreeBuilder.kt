@@ -304,19 +304,28 @@ class ApexTreeBuilder(val sourceCode: String, val parserOptions: ApexParserOptio
             -> ASTPostfixExpression(node)
         }.apply { buildChildren(node, parent = this) }
 
-    /** Builds an [ASTVariableExpression] wrapper for the [FieldExpression] node. */
-    private fun buildFieldExpression(node: FieldExpression): ASTVariableExpression {
-        val (receiver, components, isSafe) = flattenExpression(node)
-        return ASTVariableExpression(components.last()).apply {
-            buildReferenceExpression(
-                components.dropLast(1),
-                receiver,
-                referenceTypeOf(expr = node),
-                isSafe
-            )
-                .also { it.setParent(this) }
+    /**
+     * Builds an [ASTVariableExpression] or [ASTTriggerVariableExpression] wrapper for the
+     * [FieldExpression] node.
+     */
+    private fun buildFieldExpression(node: FieldExpression) =
+        if (
+            node.obj is VariableExpression &&
+            (node.obj as VariableExpression).id.string.lowercase() == "trigger"
+        ) {
+            ASTTriggerVariableExpression(node)
+        } else {
+            val (receiver, components, isSafe) = flattenExpression(node)
+            ASTVariableExpression(components.last()).apply {
+                buildReferenceExpression(
+                    components.dropLast(1),
+                    receiver,
+                    referenceTypeOf(expr = node),
+                    isSafe
+                )
+                    .also { it.setParent(this) }
+            }
         }
-    }
 
     /** Builds an [ASTVariableExpression] wrapper for the [VariableExpression] node. */
     private fun buildVariableExpression(node: VariableExpression): ASTVariableExpression {
