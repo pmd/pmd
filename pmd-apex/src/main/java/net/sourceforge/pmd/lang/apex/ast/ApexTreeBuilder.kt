@@ -57,6 +57,7 @@ import com.google.summit.ast.statement.RunAsStatement
 import com.google.summit.ast.statement.Statement
 import com.google.summit.ast.statement.SwitchStatement
 import com.google.summit.ast.statement.ThrowStatement
+import com.google.summit.ast.statement.TryStatement
 import com.google.summit.ast.statement.VariableDeclarationStatement
 import com.google.summit.ast.statement.WhileLoopStatement
 
@@ -143,6 +144,9 @@ class ApexTreeBuilder(val sourceCode: String, val parserOptions: ApexParserOptio
             is ReturnStatement -> ASTReturnStatement(node).apply { buildChildren(node, parent = this) }
             is RunAsStatement -> ASTRunAsBlockStatement(node).apply { buildChildren(node, parent = this) }
             is ThrowStatement -> ASTThrowStatement(node).apply { buildChildren(node, parent = this) }
+            is TryStatement -> buildTryStatement(node)
+            is TryStatement.CatchBlock ->
+                ASTCatchBlockStatement(node).apply { buildChildren(node, parent = this) }
             is Identifier,
             is KeywordModifier,
             is TypeRef -> null
@@ -617,6 +621,13 @@ class ApexTreeBuilder(val sourceCode: String, val parserOptions: ApexParserOptio
                 ASTTypeWhenBlock(node).apply { buildChildren(node, parent = this) }
             is SwitchStatement.WhenElse ->
                 ASTElseWhenBlock(node).apply { buildChildren(node, parent = this) }
+        }
+
+    /** Builds an [ASTTryCatchFinallyBlockStatement] wrapper for the [TryStatement]. */
+    private fun buildTryStatement(node: TryStatement) =
+        ASTTryCatchFinallyBlockStatement(node).apply {
+            buildAndSetParent(node.body, parent = this)
+            buildChildren(node, parent = this, exclude = { it == node.body })
         }
 
     /** Builds an [ASTStandardCondition] wrapper for the [condition]. */
