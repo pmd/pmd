@@ -4,8 +4,13 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import com.google.summit.ast.modifier.AnnotationModifier;
+import com.google.summit.ast.modifier.KeywordModifier;
+import com.google.summit.ast.modifier.KeywordModifier.Keyword;
 import net.sourceforge.pmd.annotation.InternalApi;
 
 import com.google.summit.ast.modifier.Modifier;
@@ -23,125 +28,133 @@ public class ASTModifierNode extends AbstractApexNode.Many<Modifier> implements 
         return visitor.visit(this, data);
     }
 
+    private static final Map<Keyword, Integer> opcodes = new HashMap<>();
+
+    static {
+        opcodes.put(Keyword.PUBLIC, AccessNode.PUBLIC);
+        opcodes.put(Keyword.PRIVATE, AccessNode.PRIVATE);
+        opcodes.put(Keyword.PROTECTED, AccessNode.PROTECTED);
+        opcodes.put(Keyword.ABSTRACT, AccessNode.ABSTRACT);
+        opcodes.put(Keyword.STATIC, AccessNode.STATIC);
+        opcodes.put(Keyword.FINAL, AccessNode.FINAL);
+        opcodes.put(Keyword.TRANSIENT, AccessNode.TRANSIENT);
+    }
+
     @Override
     public int getModifiers() {
-        // return node.getModifiers().getJavaModifiers();
-        // TODO(b/239648780)
-        return 0;
+        int modifiers = nodes
+                .stream()
+                .filter(mod -> mod instanceof KeywordModifier)
+                .map(mod -> (KeywordModifier) mod)
+                .filter(mod -> opcodes.containsKey(mod.getKeyword()))
+                .mapToInt(mod -> opcodes.get(mod.getKeyword()))
+                .reduce(0, (current, bit) -> current | bit);
+
+        if ((modifiers & PUBLIC) > 0) {
+            // Remove PROTECTED and PRIVATE if PUBLIC
+            modifiers &= ~PROTECTED;
+            modifiers &= ~PRIVATE;
+        } else if ((modifiers & PROTECTED) > 0) {
+            // Remove PRIVATE if PROTECTED
+            modifiers &= ~PRIVATE;
+        }
+        return modifiers;
     }
 
     @Override
     public boolean isPublic() {
-        // return (node.getModifiers().getJavaModifiers() & PUBLIC) == PUBLIC;
-        // TODO(b/239648780)
-        return false;
+        return (getModifiers() & PUBLIC) == PUBLIC;
     }
 
     @Override
     public boolean isProtected() {
-        // return (node.getModifiers().getJavaModifiers() & PROTECTED) == PROTECTED;
-        // TODO(b/239648780)
-        return false;
+        return (getModifiers() & PROTECTED) == PROTECTED;
     }
 
     @Override
     public boolean isPrivate() {
-        // return (node.getModifiers().getJavaModifiers() & PRIVATE) == PRIVATE;
-        // TODO(b/239648780)
-        return false;
+        return (getModifiers() & PRIVATE) == PRIVATE;
     }
 
     @Override
     public boolean isAbstract() {
-        // return (node.getModifiers().getJavaModifiers() & ABSTRACT) == ABSTRACT;
-        // TODO(b/239648780)
-        return false;
+        return (getModifiers() & ABSTRACT) == ABSTRACT;
     }
 
     @Override
     public boolean isStatic() {
-        // return (node.getModifiers().getJavaModifiers() & STATIC) == STATIC;
-        // TODO(b/239648780)
-        return false;
+        return (getModifiers() & STATIC) == STATIC;
     }
 
     @Override
     public boolean isFinal() {
-        // return (node.getModifiers().getJavaModifiers() & FINAL) == FINAL;
-        // TODO(b/239648780)
-        return false;
+        return (getModifiers() & FINAL) == FINAL;
     }
 
     @Override
     public boolean isTransient() {
-        // return (node.getModifiers().getJavaModifiers() & TRANSIENT) == TRANSIENT;
-        // TODO(b/239648780)
-        return false;
+        return (getModifiers() & TRANSIENT) == TRANSIENT;
+    }
+
+    private boolean hasKeyword(Keyword keyword) {
+        return nodes
+                .stream()
+                .filter(mod -> mod instanceof KeywordModifier)
+                .map(mod -> (KeywordModifier) mod)
+                .anyMatch(mod -> mod.getKeyword() == keyword);
+    }
+
+    private boolean hasAnnotation(String name) {
+        return nodes
+                .stream()
+                .filter(mod -> mod instanceof AnnotationModifier)
+                .map(mod -> (AnnotationModifier) mod)
+                .anyMatch(mod -> mod.getName().getString().equalsIgnoreCase(name.toLowerCase()));
     }
 
     /**
      * Returns true if function has `@isTest` annotation or `testmethod` modifier
      */
     public boolean isTest() {
-        // return node.getModifiers().isTest();
-        // TODO(b/239648780)
-        return false;
+        return hasAnnotation("isTest") || hasKeyword(Keyword.TESTMETHOD);
     }
 
     /**
      * Returns true if function has `testmethod` modifier
      */
     public boolean hasDeprecatedTestMethod() {
-        // return node.getModifiers().has(TEST_METHOD);
-        // TODO(b/239648780)
-        return false;
+        return hasKeyword(Keyword.TESTMETHOD);
     }
 
     public boolean isTestOrTestSetup() {
-        // return node.getModifiers().isTestOrTestSetup();
-        // TODO(b/239648780)
-        return false;
+        return isTest() || hasAnnotation("testSetup");
     }
 
     public boolean isWithSharing() {
-        // return node.getModifiers().has(ModifierTypeInfos.WITH_SHARING);
-        // TODO(b/239648780)
-        return false;
+        return hasKeyword(Keyword.WITHSHARING);
     }
 
     public boolean isWithoutSharing() {
-        // return node.getModifiers().has(ModifierTypeInfos.WITHOUT_SHARING);
-        // TODO(b/239648780)
-        return false;
+        return hasKeyword(Keyword.WITHOUTSHARING);
     }
 
     public boolean isInheritedSharing() {
-        // return node.getModifiers().has(ModifierTypeInfos.INHERITED_SHARING);
-        // TODO(b/239648780)
-        return false;
+        return hasKeyword(Keyword.INHERITEDSHARING);
     }
 
     public boolean isWebService() {
-        // return node.getModifiers().has(ModifierTypeInfos.WEB_SERVICE);
-        // TODO(b/239648780)
-        return false;
+        return hasKeyword(Keyword.WEBSERVICE);
     }
 
     public boolean isGlobal() {
-        // return node.getModifiers().has(ModifierTypeInfos.GLOBAL);
-        // TODO(b/239648780)
-        return false;
+        return hasKeyword(Keyword.GLOBAL);
     }
 
     public boolean isOverride() {
-        // return node.getModifiers().has(ModifierTypeInfos.OVERRIDE);
-        // TODO(b/239648780)
-        return false;
+        return hasKeyword(Keyword.OVERRIDE);
     }
 
     public boolean isVirtual() {
-        // return node.getModifiers().has(ModifierTypeInfos.VIRTUAL);
-        // TODO(b/239648780)
-        return false;
+        return hasKeyword(Keyword.VIRTUAL);
     }
 }
