@@ -46,6 +46,8 @@ import com.google.summit.ast.modifier.KeywordModifier
 import com.google.summit.ast.modifier.KeywordModifier.Keyword
 import com.google.summit.ast.modifier.Modifier
 import com.google.summit.ast.statement.CompoundStatement
+import com.google.summit.ast.statement.DmlStatement
+import com.google.summit.ast.statement.EnhancedForLoopStatement
 import com.google.summit.ast.statement.ExpressionStatement
 import com.google.summit.ast.statement.IfStatement
 import com.google.summit.ast.statement.Statement
@@ -125,6 +127,7 @@ class ApexTreeBuilder(val sourceCode: String, val parserOptions: ApexParserOptio
             is IfStatement -> buildIfStatement(node)
             is VariableDeclarationStatement -> buildVariableDeclarations(node.variableDeclarations)
             is VariableDeclaration -> buildVariableDeclaration(node)
+            is EnhancedForLoopStatement -> buildEnhancedForLoopStatement(node)
             is Identifier,
             is KeywordModifier,
             is TypeRef -> null
@@ -508,6 +511,27 @@ class ApexTreeBuilder(val sourceCode: String, val parserOptions: ApexParserOptio
                         .also { it.setParent(this) }
                 }
                 .also { it.setParent(this) }
+        }
+
+    /** Builds an [ASTForEachStatement] wrapper for the [EnhancedForLoopStatement]. */
+    private fun buildEnhancedForLoopStatement(node: EnhancedForLoopStatement) =
+        ASTForEachStatement(node).apply {
+            buildVariableDeclarations(listOf(node.elementDeclaration)).also { it.setParent(this) }
+
+            ASTVariableExpression(node.elementDeclaration.id)
+                .apply {
+                    buildReferenceExpression(components = emptyList(), receiver = null, ReferenceType.NONE)
+                        .also { it.setParent(this) }
+                }
+                .also { it.setParent(this) }
+
+            wrapBody(node.body, parent = this).also { it.setParent(this) }
+
+            buildChildren(
+                node,
+                parent = this,
+                exclude = { it == node.elementDeclaration || it == node.body }
+            )
         }
 
     /** Builds an [ASTStandardCondition] wrapper for the [condition]. */
