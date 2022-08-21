@@ -31,12 +31,9 @@ public abstract class AbstractApexUnitTestRule extends AbstractApexRule {
      */
     @Override
     public Object visit(final ASTUserClass node, final Object data) {
-        /*
-        if (!isTestMethodOrClass(node) && node.getApexVersion() >= Version.V176.getExternal()) {
+        if (!isTestMethodOrClass(node) /*&& node.getApexVersion() >= Version.V176.getExternal()*/) { // TODO(b/239648780)
             return data;
         }
-         */
-        // TODO(b/239648780)
         return super.visit(node, data);
     }
 
