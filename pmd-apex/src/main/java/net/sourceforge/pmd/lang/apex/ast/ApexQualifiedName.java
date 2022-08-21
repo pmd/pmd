@@ -7,10 +7,14 @@ package net.sourceforge.pmd.lang.apex.ast;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 
 import net.sourceforge.pmd.lang.ast.QualifiedName;
+
+import com.google.summit.ast.TypeRef;
+import com.google.summit.ast.declaration.ParameterDeclaration;
 
 /**
  * Qualified name of an apex class or method.
@@ -160,28 +164,22 @@ public final class ApexQualifiedName implements QualifiedName {
 
 
     private static String getOperationString(ASTMethod node) {
-        /*
         StringBuilder sb = new StringBuilder();
         sb.append(node.getImage()).append('(');
 
-
-        List<TypeInfo> paramTypes = node.node.getMethodInfo().getParameterTypes();
+        List<TypeRef> paramTypes = node.node.getParameterDeclarations().stream().map(ParameterDeclaration::getType).collect(Collectors.toList());
 
         if (!paramTypes.isEmpty()) {
-            sb.append(paramTypes.get(0).getApexName());
+            sb.append(paramTypes.get(0).asCodeString());
 
             for (int i = 1; i < paramTypes.size(); i++) {
-                sb.append(", ").append(paramTypes.get(i).getApexName());
+                sb.append(", ").append(paramTypes.get(i).asCodeString());
             }
-
         }
 
         sb.append(')');
 
         return sb.toString();
-         */
-        // TODO(b/239648780)
-        return null;
     }
 
 
