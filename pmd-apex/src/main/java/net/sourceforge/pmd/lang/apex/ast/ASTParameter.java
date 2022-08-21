@@ -4,16 +4,17 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import com.google.summit.ast.Node;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.annotation.InternalApi;
 
-public class ASTParameter extends AbstractApexNode.Single<Node> implements CanSuppressWarnings {
+import com.google.summit.ast.declaration.ParameterDeclaration;
+
+public class ASTParameter extends AbstractApexNode.Single<ParameterDeclaration> implements CanSuppressWarnings {
 
     @Deprecated
     @InternalApi
-    public ASTParameter(Node parameter) {
-        super(parameter);
+    public ASTParameter(ParameterDeclaration parameterDeclaration) {
+        super(parameterDeclaration);
     }
 
     @Override
@@ -23,9 +24,7 @@ public class ASTParameter extends AbstractApexNode.Single<Node> implements CanSu
 
     @Override
     public String getImage() {
-        // return node.getName().getValue();
-        // TODO(b/239648780)
-        return null;
+        return node.getId().getString();
     }
 
     @Override
@@ -45,8 +44,6 @@ public class ASTParameter extends AbstractApexNode.Single<Node> implements CanSu
     }
 
     public String getType() {
-        // return node.getType().getApexName();
-        // TODO(b/239648780)
-        return null;
+        return node.getType().asCodeString();
     }
 }

@@ -19,6 +19,7 @@ import com.google.summit.ast.declaration.FieldDeclaration
 import com.google.summit.ast.declaration.FieldDeclarationGroup
 import com.google.summit.ast.declaration.InterfaceDeclaration
 import com.google.summit.ast.declaration.MethodDeclaration
+import com.google.summit.ast.declaration.ParameterDeclaration
 import com.google.summit.ast.declaration.PropertyDeclaration
 import com.google.summit.ast.declaration.TriggerDeclaration
 import com.google.summit.ast.declaration.TypeDeclaration
@@ -152,6 +153,7 @@ class ApexTreeBuilder(val sourceCode: String, val parserOptions: ApexParserOptio
             is BreakStatement -> ASTBreakStatement(node).apply { buildChildren(node, parent = this) }
             is ContinueStatement ->
                 ASTContinueStatement(node).apply { buildChildren(node, parent = this) }
+            is ParameterDeclaration -> buildParameterDeclaration(node)
             is Identifier,
             is KeywordModifier,
             is TypeRef -> null
@@ -633,6 +635,13 @@ class ApexTreeBuilder(val sourceCode: String, val parserOptions: ApexParserOptio
         ASTTryCatchFinallyBlockStatement(node).apply {
             buildAndSetParent(node.body, parent = this)
             buildChildren(node, parent = this, exclude = { it == node.body })
+        }
+
+    /** Builds an [ASTParameter] wrapper for the [ParameterDeclaration]. */
+    private fun buildParameterDeclaration(node: ParameterDeclaration) =
+        ASTParameter(node).apply {
+            buildModifiers(node.modifiers).also { it.setParent(this) }
+            buildChildren(node, parent = this, exclude = { it in node.modifiers })
         }
 
     /** Builds an [ASTStandardCondition] wrapper for the [condition]. */
