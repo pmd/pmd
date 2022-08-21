@@ -7,12 +7,14 @@ package net.sourceforge.pmd.cpd;
 import java.util.Locale;
 import java.util.Properties;
 
-import org.antlr.runtime.ANTLRStringStream;
-import org.antlr.runtime.Lexer;
-import org.antlr.runtime.Token;
+import org.antlr.v4.runtime.CharStream;
+import org.antlr.v4.runtime.CharStreams;
+import org.antlr.v4.runtime.Token;
 
 import net.sourceforge.pmd.lang.apex.ApexJorjeLogging;
-import net.sourceforge.pmd.lang.ast.TokenMgrError;
+
+import com.nawforce.apexparser.ApexLexer;
+import com.nawforce.apexparser.CaseInsensitiveInputStream;
 
 public class ApexTokenizer implements Tokenizer {
 
@@ -34,29 +36,23 @@ public class ApexTokenizer implements Tokenizer {
 
     @Override
     public void tokenize(SourceCode sourceCode, Tokens tokenEntries) {
-        /*
         StringBuilder code = sourceCode.getCodeBuffer();
 
-        ANTLRStringStream ass = new ANTLRStringStream(code.toString());
-        ApexLexer lexer = new ApexLexer(ass) {
-            @Override
-            public void emitErrorMessage(String msg) {
-                throw new TokenMgrError(msg, TokenMgrError.LEXICAL_ERROR);
-            }
-        };
+        CharStream charStream = CharStreams.fromString(code.toString());
+        ApexLexer lexer = new ApexLexer(new CaseInsensitiveInputStream(charStream));
 
         try {
             Token token = lexer.nextToken();
 
             while (token.getType() != Token.EOF) {
-                if (token.getChannel() != Lexer.HIDDEN) {
+                if (token.getChannel() == ApexLexer.DEFAULT_TOKEN_CHANNEL) { // exclude WHITESPACE_CHANNEL and COMMENT_CHANNEL
                     String tokenText = token.getText();
                     if (!caseSensitive) {
                         tokenText = tokenText.toLowerCase(Locale.ROOT);
                     }
                     TokenEntry tokenEntry = new TokenEntry(tokenText, sourceCode.getFileName(), token.getLine(),
-                                                           token.getCharPositionInLine() + 1,
-                                                           token.getCharPositionInLine() + tokenText.length());
+                            token.getCharPositionInLine() + 1,
+                            token.getCharPositionInLine() + tokenText.length());
                     tokenEntries.add(tokenEntry);
                 }
                 token = lexer.nextToken();
@@ -64,7 +60,5 @@ public class ApexTokenizer implements Tokenizer {
         } finally {
             tokenEntries.add(TokenEntry.getEOF());
         }
-         */
-        // TODO(b/239648780)
     }
 }
