@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.apex.ast;
 
 import com.google.summit.ast.expression.LiteralExpression;
+import com.google.summit.ast.expression.VariableExpression;
 
 public class ASTLiteralExpression extends AbstractApexNode.Single<LiteralExpression> {
 
@@ -83,27 +84,11 @@ public class ASTLiteralExpression extends AbstractApexNode.Single<LiteralExpress
     }
 
     public String getName() {
-        /*
-        if (getParent() instanceof ASTNewKeyValueObjectExpression) {
-            ASTNewKeyValueObjectExpression parent = (ASTNewKeyValueObjectExpression) getParent();
-            Optional<NameValueParameter> parameter = parent.node.getParameters().stream().filter(p -> {
-                try {
-                    return this.node.equals(FieldUtils.readDeclaredField(p, "expression", true));
-                } catch (IllegalArgumentException | ReflectiveOperationException e) {
-                    return false;
-                }
-            }).findFirst();
-
-            return parameter.map(p -> {
-                try {
-                    return (Identifier) FieldUtils.readDeclaredField(p, "name", true);
-                } catch (IllegalArgumentException | ReflectiveOperationException e) {
-                    return null;
-                }
-            }).map(Identifier::getValue).orElse(null);
+        if (getParent() instanceof ASTAssignmentExpression && getParent().getParent() instanceof ASTNewKeyValueObjectExpression) {
+            ASTAssignmentExpression parent = (ASTAssignmentExpression) getParent();
+            VariableExpression target = (VariableExpression) parent.node.getTarget();
+            return target.getId().getString();
         }
-         */
-        // TODO(b/239648780)
         return null;
     }
 }
