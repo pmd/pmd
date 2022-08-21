@@ -53,6 +53,7 @@ import com.google.summit.ast.statement.ExpressionStatement
 import com.google.summit.ast.statement.ForLoopStatement
 import com.google.summit.ast.statement.IfStatement
 import com.google.summit.ast.statement.ReturnStatement
+import com.google.summit.ast.statement.RunAsStatement
 import com.google.summit.ast.statement.Statement
 import com.google.summit.ast.statement.SwitchStatement
 import com.google.summit.ast.statement.VariableDeclarationStatement
@@ -139,6 +140,7 @@ class ApexTreeBuilder(val sourceCode: String, val parserOptions: ApexParserOptio
             is SwitchStatement -> ASTSwitchStatement(node).apply { buildChildren(node, parent = this) }
             is SwitchStatement.When -> buildSwitchWhen(node)
             is ReturnStatement -> ASTReturnStatement(node).apply { buildChildren(node, parent = this) }
+            is RunAsStatement -> ASTRunAsBlockStatement(node).apply { buildChildren(node, parent = this) }
             is Identifier,
             is KeywordModifier,
             is TypeRef -> null
