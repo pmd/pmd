@@ -411,7 +411,10 @@ class ApexTreeBuilder(val sourceCode: String, val parserOptions: ApexParserOptio
         ASTNewMapLiteralExpression(node).apply {
             /** Builds an [ASTMapEntryNode] for the [map entry][entry]. */
             fun buildMapEntry(entry: Pair<Expression, Expression>) =
-                ASTMapEntryNode(entry.first, entry.second).apply { buildChildren(node, parent = this) }
+                ASTMapEntryNode(entry.first, entry.second).apply {
+                    buildAndSetParent(entry.first, parent = this)
+                    buildAndSetParent(entry.second, parent = this)
+                }
 
             node.pairs.forEach { pair -> buildMapEntry(pair).also { it.setParent(this) } }
         }
