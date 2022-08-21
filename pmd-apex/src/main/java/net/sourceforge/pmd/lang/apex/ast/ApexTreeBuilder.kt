@@ -47,6 +47,7 @@ import com.google.summit.ast.modifier.KeywordModifier.Keyword
 import com.google.summit.ast.modifier.Modifier
 import com.google.summit.ast.statement.CompoundStatement
 import com.google.summit.ast.statement.DmlStatement
+import com.google.summit.ast.statement.DoWhileLoopStatement
 import com.google.summit.ast.statement.EnhancedForLoopStatement
 import com.google.summit.ast.statement.ExpressionStatement
 import com.google.summit.ast.statement.IfStatement
@@ -128,6 +129,7 @@ class ApexTreeBuilder(val sourceCode: String, val parserOptions: ApexParserOptio
             is VariableDeclarationStatement -> buildVariableDeclarations(node.variableDeclarations)
             is VariableDeclaration -> buildVariableDeclaration(node)
             is EnhancedForLoopStatement -> buildEnhancedForLoopStatement(node)
+            is DoWhileLoopStatement -> buildDoWhileLoopStatement(node)
             is Identifier,
             is KeywordModifier,
             is TypeRef -> null
@@ -532,6 +534,14 @@ class ApexTreeBuilder(val sourceCode: String, val parserOptions: ApexParserOptio
                 parent = this,
                 exclude = { it == node.elementDeclaration || it == node.body }
             )
+        }
+
+    /** Builds an [ASTDoLoopStatement] wrapper for the [DoWhileLoopStatement]. */
+    private fun buildDoWhileLoopStatement(node: DoWhileLoopStatement) =
+        ASTDoLoopStatement(node).apply {
+            buildCondition(node.condition).also { it.setParent(this) }
+            wrapBody(node.body, parent = this).also { it.setParent(this) }
+            buildChildren(node, parent = this, exclude = { it == node.condition || it == node.body })
         }
 
     /** Builds an [ASTStandardCondition] wrapper for the [condition]. */
