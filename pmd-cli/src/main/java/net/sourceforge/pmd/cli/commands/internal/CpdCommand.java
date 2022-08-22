@@ -14,15 +14,14 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import net.sourceforge.pmd.cli.commands.typesupport.internal.CpdLanguageTypeSupport;
 import net.sourceforge.pmd.cli.internal.ExecutionResult;
 import net.sourceforge.pmd.cpd.CPD;
 import net.sourceforge.pmd.cpd.CPDConfiguration;
 import net.sourceforge.pmd.cpd.Language;
-import net.sourceforge.pmd.cpd.LanguageFactory;
 import net.sourceforge.pmd.cpd.Tokenizer;
 
 import picocli.CommandLine.Command;
-import picocli.CommandLine.ITypeConverter;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.ParameterException;
 
@@ -31,7 +30,7 @@ import picocli.CommandLine.ParameterException;
 public class CpdCommand extends AbstractAnalysisPmdSubcommand {
 
     @Option(names = { "--language", "-l" }, description = "The source code language.%nValid values: ${COMPLETION-CANDIDATES}",
-            defaultValue = "java", converter = CpdLanguageConverter.class, completionCandidates = CpdLanguageCompletionCandidates.class)
+            defaultValue = "java", converter = CpdLanguageTypeSupport.class, completionCandidates = CpdLanguageTypeSupport.class)
     private Language language;
 
     // TODO : Set a default for this value?
@@ -146,29 +145,6 @@ public class CpdCommand extends AbstractAnalysisPmdSubcommand {
         }
 
         return ExecutionResult.OK;
-    }
-
-    /**
-     * Provider of candidates for valid Languages.
-     */
-    private static class CpdLanguageCompletionCandidates implements Iterable<String> {
-
-        @Override
-        public Iterator<String> iterator() {
-            return Arrays.stream(LanguageFactory.supportedLanguages).iterator();
-        }
-    }
-
-    /**
-     * Maps a String back to a {@code Language}.
-     */
-    private static class CpdLanguageConverter implements ITypeConverter<Language> {
-
-        @Override
-        public Language convert(final String languageString) {
-            // TODO : If an unknown value is passed, AnyLanguage is returned silently…
-            return LanguageFactory.createLanguage(languageString);
-        }
     }
 
     /**
