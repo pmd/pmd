@@ -10,6 +10,8 @@ import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
 
 import com.google.summit.ast.Node;
+import com.google.summit.ast.expression.Expression;
+import com.google.summit.ast.expression.LiteralExpression;
 
 /**
  * @deprecated Use {@link ApexNode}
@@ -175,6 +177,19 @@ public abstract class AbstractApexNode extends AbstractApexNodeBase implements A
         //     return definingType.getNamespace().toString();
         // }
         // TODO(b/239648780)
+        return null;
+    }
+
+    /** Returns the string value of the {@link Expression expr}. */
+    protected static String expressionToString(Expression expr) {
+        if (expr instanceof LiteralExpression) {
+            if (expr instanceof LiteralExpression.StringVal) {
+                return ((LiteralExpression.StringVal) expr).getValue();
+            } else if (expr instanceof LiteralExpression.NullVal) {
+                return "";
+            }
+            return ((LiteralExpression) expr).asCodeString();
+        }
         return null;
     }
 }
