@@ -268,7 +268,7 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand {
         configuration.setInputUri(uri != null ? uri.toString() : null);
         configuration.setReportFormat(format);
         configuration.setDebug(debug);
-        configuration.setSourceEncoding(encoding.name());
+        configuration.setSourceEncoding(encoding.getEncoding().name());
         configuration.setMinimumPriority(minimumPriority);
         configuration.setReportFile(reportFile != null ? reportFile.toString() : null);
         configuration.setReportProperties(properties);

@@ -112,10 +112,10 @@ public class CpdCommand extends AbstractAnalysisPmdSubcommand {
         configuration.setSkipBlocksPattern(skipBlocksPattern);
         configuration.setSkipDuplicates(skipDuplicates);
         configuration.setSkipLexicalErrors(skipLexicalErrors);
-        configuration.setSourceEncoding(encoding.name());
+        configuration.setSourceEncoding(encoding.getEncoding().name());
         configuration.setURI(uri == null ? null : uri.toString());
 
-        configuration.setCPDRenderer(CPDConfiguration.getCPDRendererFromString(rendererName, encoding.name()));
+        configuration.setCPDRenderer(CPDConfiguration.getCPDRendererFromString(rendererName, encoding.getEncoding().name()));
 
         // TODO
         // Setup CLI message reporter

@@ -5,18 +5,19 @@
 package net.sourceforge.pmd.cli.commands.internal;
 
 import java.net.URI;
-import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.util.List;
 
+import net.sourceforge.pmd.cli.commands.mixins.internal.EncodingMixin;
+
+import picocli.CommandLine.Mixin;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.ParameterException;
 
 public abstract class AbstractAnalysisPmdSubcommand extends AbstractPmdSubcommand {
 
-    @Option(names = { "--encoding", "-e" }, description = "Specifies the character set encoding of the source code files",
-            defaultValue = "UTF-8")
-    protected Charset encoding;
+    @Mixin
+    protected EncodingMixin encoding;
     
     @Option(names = { "--dir", "-d" },
             description = "Path to a source file, or directory containing source files to analyze. "
