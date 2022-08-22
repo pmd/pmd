@@ -4,18 +4,28 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
+import net.sourceforge.pmd.annotation.InternalApi;
+
+import com.google.common.collect.ImmutableMap;
 import com.google.summit.ast.modifier.AnnotationModifier;
 import com.google.summit.ast.modifier.KeywordModifier;
 import com.google.summit.ast.modifier.KeywordModifier.Keyword;
-import net.sourceforge.pmd.annotation.InternalApi;
 
 import com.google.summit.ast.modifier.Modifier;
 
 public class ASTModifierNode extends AbstractApexNode.Many<Modifier> implements AccessNode {
+
+    private static final ImmutableMap<Keyword, Integer> opcodes = ImmutableMap.<Keyword, Integer>builder()
+            .put(Keyword.PUBLIC, AccessNode.PUBLIC)
+            .put(Keyword.PRIVATE, AccessNode.PRIVATE)
+            .put(Keyword.PROTECTED, AccessNode.PROTECTED)
+            .put(Keyword.ABSTRACT, AccessNode.ABSTRACT)
+            .put(Keyword.STATIC, AccessNode.STATIC)
+            .put(Keyword.FINAL, AccessNode.FINAL)
+            .put(Keyword.TRANSIENT, AccessNode.TRANSIENT)
+            .build();
 
     @Deprecated
     @InternalApi
@@ -26,18 +36,6 @@ public class ASTModifierNode extends AbstractApexNode.Many<Modifier> implements 
     @Override
     public Object jjtAccept(ApexParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
-    }
-
-    private static final Map<Keyword, Integer> opcodes = new HashMap<>();
-
-    static {
-        opcodes.put(Keyword.PUBLIC, AccessNode.PUBLIC);
-        opcodes.put(Keyword.PRIVATE, AccessNode.PRIVATE);
-        opcodes.put(Keyword.PROTECTED, AccessNode.PROTECTED);
-        opcodes.put(Keyword.ABSTRACT, AccessNode.ABSTRACT);
-        opcodes.put(Keyword.STATIC, AccessNode.STATIC);
-        opcodes.put(Keyword.FINAL, AccessNode.FINAL);
-        opcodes.put(Keyword.TRANSIENT, AccessNode.TRANSIENT);
     }
 
     @Override
@@ -58,6 +56,7 @@ public class ASTModifierNode extends AbstractApexNode.Many<Modifier> implements 
             // Remove PRIVATE if PROTECTED
             modifiers &= ~PRIVATE;
         }
+
         return modifiers;
     }
 
