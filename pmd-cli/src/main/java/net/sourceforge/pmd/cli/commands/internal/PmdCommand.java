@@ -178,7 +178,7 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand {
     }
 
     @Option(names = "--use-version", defaultValue = "java-latest",
-            description = "Sepcify the language and version PMD should use.%nValid values: ${COMPLETION-CANDIDATES}%n",
+            description = "The language version PMD should use when parsing source code.%nValid values: ${COMPLETION-CANDIDATES}",
             completionCandidates = PmdLanguageVersionTypeSupport.class, converter = PmdLanguageVersionTypeSupport.class)
     public void setLanguageVersion(final List<LanguageVersion> languageVersion) {
         // Make sure we only set 1 version per language
@@ -198,7 +198,7 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand {
             description = "Force a language to be used for all input files, irrespective of file names. "
                           + "When using this option, the automatic language selection by extension is disabled, and PMD "
                           + "tries to parse all input files with the given language's parser. "
-                          + "Parsing errors are ignored.%nValid values: ${COMPLETION-CANDIDATES}%n",
+                          + "Parsing errors are ignored.%nValid values: ${COMPLETION-CANDIDATES}",
             completionCandidates = PmdLanguageTypeSupport.class, converter = PmdLanguageTypeSupport.class)
     public void setForceLanguage(final Language forceLanguage) {
         this.forceLanguage = forceLanguage;

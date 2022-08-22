@@ -30,7 +30,7 @@ import picocli.CommandLine.ParameterException;
     description = "Copy/Paste Detector - find duplicate code")
 public class CpdCommand extends AbstractAnalysisPmdSubcommand {
 
-    @Option(names = "--language", description = "Source code language.%nValid values: ${COMPLETION-CANDIDATES}%n",
+    @Option(names = { "--language", "-l" }, description = "The source code language.%nValid values: ${COMPLETION-CANDIDATES}",
             defaultValue = "java", converter = CpdLanguageConverter.class, completionCandidates = CpdLanguageCompletionCandidates.class)
     private Language language;
 
