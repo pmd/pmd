@@ -11,11 +11,8 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Optional;
 import java.util.Properties;
-import java.util.TreeSet;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.slf4j.LoggerFactory;
 import org.slf4j.event.Level;
@@ -27,10 +24,11 @@ import net.sourceforge.pmd.benchmark.TextTimingReportRenderer;
 import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.benchmark.TimingReport;
 import net.sourceforge.pmd.benchmark.TimingReportRenderer;
+import net.sourceforge.pmd.cli.commands.typesupport.internal.PmdLanguageTypeSupport;
+import net.sourceforge.pmd.cli.commands.typesupport.internal.PmdLanguageVersionTypeSupport;
 import net.sourceforge.pmd.cli.internal.ExecutionResult;
 import net.sourceforge.pmd.internal.LogMessages;
 import net.sourceforge.pmd.lang.Language;
-import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.renderers.Renderer;
@@ -41,10 +39,8 @@ import net.sourceforge.pmd.util.log.MessageReporter;
 import net.sourceforge.pmd.util.log.internal.SimpleMessageReporter;
 
 import picocli.CommandLine.Command;
-import picocli.CommandLine.ITypeConverter;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.ParameterException;
-import picocli.CommandLine.TypeConversionException;
 
 @Command(name = "analyze", aliases = {"analyse", "run" }, showDefaultValues = true,
     description = "The PMD standard source code analyzer")
@@ -183,7 +179,7 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand {
 
     @Option(names = "--use-version", defaultValue = "java-latest",
             description = "Sepcify the language and version PMD should use.%nValid values: ${COMPLETION-CANDIDATES}%n",
-            completionCandidates = PmdLanguageVersionCandidates.class, converter = PmdLanguageVersionConverter.class)
+            completionCandidates = PmdLanguageVersionTypeSupport.class, converter = PmdLanguageVersionTypeSupport.class)
     public void setLanguageVersion(final List<LanguageVersion> languageVersion) {
         // Make sure we only set 1 version per language
         languageVersion.stream().collect(Collectors.groupingBy(LanguageVersion::getLanguage))
@@ -191,7 +187,7 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand {
                 if (list.size() > 1) {
                     throw new ParameterException(spec.commandLine(), "Can only set one version per language, "
                             + "but for language " + l.getName() + " multiple versions were provided "
-                            + list.stream().map(PmdCommand::normalizeName).collect(Collectors.joining("', '", "'", "'")));
+                            + list.stream().map(PmdLanguageVersionTypeSupport::normalizeName).collect(Collectors.joining("', '", "'", "'")));
                 }
             });
 
@@ -203,7 +199,7 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand {
                           + "When using this option, the automatic language selection by extension is disabled, and PMD "
                           + "tries to parse all input files with the given language's parser. "
                           + "Parsing errors are ignored.%nValid values: ${COMPLETION-CANDIDATES}%n",
-            completionCandidates = PmdLanguageCandidates.class, converter = PmdLanguageConverter.class)
+            completionCandidates = PmdLanguageTypeSupport.class, converter = PmdLanguageTypeSupport.class)
     public void setForceLanguage(final Language forceLanguage) {
         this.forceLanguage = forceLanguage;
     }
@@ -405,104 +401,5 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand {
             }
             return propertyNames.iterator();
         }
-        
-    }
-    
-    /**
-     * Provider of candidates for valid languages.
-     * 
-     * Beware, the help will report this on runtime, and be accurate to available
-     * modules in the classpath, but autocomplete will include all at build time.
-     */
-    private static class PmdLanguageCandidates implements Iterable<String> {
-
-        @Override
-        public Iterator<String> iterator() {
-            return LanguageRegistry.getLanguages().stream().map(PmdCommand::normalizeName).iterator();
-        }
-    }
-    
-    /**
-     * Maps a String back to a {@code Language}
-     * 
-     * Effectively reverses the stringification done by {@code PMDLanguagesCandidates}
-     */
-    private static class PmdLanguageConverter implements ITypeConverter<Language> {
-
-        @Override
-        public Language convert(final String value) throws Exception {
-            return LanguageRegistry.getLanguages().stream()
-                    .filter(l -> normalizeName(l).equals(value)).findFirst()
-                    .orElseThrow(() -> new TypeConversionException("Unknown language: " + value));
-        }
-        
-    }
-
-    /**
-     * Provider of candidates for valid language-version combinations.
-     * 
-     * Beware, the help will report this on runtime, and be accurate to available
-     * modules in the classpath, but autocomplete will include all at build time.
-     */
-    private static class PmdLanguageVersionCandidates implements Iterable<String> {
-        
-        @Override
-        public Iterator<String> iterator() {
-            // Raw language names / -latest versions, such as "java" or "java-latest"
-            final Stream<String> latestLangReferences = LanguageRegistry.getLanguages().stream()
-                    .map(PmdCommand::normalizeName).flatMap(name -> Stream.of(name, name + "-latest"));
-
-            // Explicit language-version pairs, such as "java-18" or "apex-54"
-            final Stream<String> allLangVersionReferences = LanguageRegistry.getLanguages().stream()
-                    .flatMap(l -> l.getVersions().stream())
-                    .map(PmdCommand::normalizeName);
-            
-            // Collect to a TreeSet to ensure alphabetical order
-            final TreeSet<String> candidates = Stream.concat(latestLangReferences, allLangVersionReferences)
-                    .collect(Collectors.toCollection(TreeSet::new));
-
-            return candidates.iterator();
-        }
-    }
-
-    /**
-     * Maps a String back to a {@code LanguageVersion}
-     * 
-     * Effectively reverses the stringification done by {@code PMDLanguageVersionCandidates}
-     */
-    private static class PmdLanguageVersionConverter implements ITypeConverter<LanguageVersion> {
-
-        @Override
-        public LanguageVersion convert(final String value) throws Exception {
-            // Is it an exact match?
-            final Optional<LanguageVersion> langVer = LanguageRegistry.getLanguages().stream()
-                    .flatMap(l -> l.getVersions().stream())
-                    .filter(lv -> normalizeName(lv).equals(value)).findFirst();
-
-            if (langVer.isPresent()) {
-                return langVer.get();
-            }
-
-            // This is either a -latest or standalone language name
-            final String langName;
-            if (value.endsWith("-latest")) {
-                langName = value.substring(0, value.length() - "-latest".length());
-            } else {
-                langName = value;
-            }
-
-            return LanguageRegistry.getLanguages().stream()
-                    .filter(l -> normalizeName(l).equals(langName))
-                    .map(Language::getDefaultVersion).findFirst()
-                    .orElseThrow(() -> new TypeConversionException("Unknown language version: " + value));
-        }
-    }
-    
-    static String normalizeName(final LanguageVersion langVer) {
-        return langVer.getTerseName().replace(' ', '-');
-    }
-
-    static String normalizeName(final Language lang) {
-        return lang.getTerseName().replace(' ', '-');
     }
 }
