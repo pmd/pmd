@@ -122,7 +122,7 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand {
 
     @Option(names = "--ignore-list",
             description = "Path to a file containing a list of files to exclude from the analysis, one path per line. "
-                          + "This option can be combined with --dir and --file-list.")
+                          + "This option can be combined with --dir, --file-list and --uri.")
     public void setIgnoreListPath(final Path ignoreListPath) {
         this.ignoreListPath = ignoreListPath;
     }
