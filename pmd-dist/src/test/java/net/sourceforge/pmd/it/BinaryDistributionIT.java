@@ -18,7 +18,7 @@ import java.util.zip.ZipFile;
 import org.junit.Test;
 
 import net.sourceforge.pmd.PMDVersion;
-import net.sourceforge.pmd.cli.internal.CliMessages;
+import net.sourceforge.pmd.internal.LogMessages;
 
 public class BinaryDistributionIT extends AbstractBinaryDistributionTest {
 
@@ -98,7 +98,7 @@ public class BinaryDistributionIT extends AbstractBinaryDistributionTest {
     @Test
     public void testPmdNoArgs() throws Exception {
         ExecutionResult result = PMDExecutor.runPMD(tempDir); // without any argument, display usage help and error
-        result.assertExecutionResultErrOutput(1, CliMessages.runWithHelpFlagMessage());
+        result.assertExecutionResultErrOutput(1, LogMessages.runWithHelpFlagMessage());
     }
 
     @Test
@@ -135,7 +135,7 @@ public class BinaryDistributionIT extends AbstractBinaryDistributionTest {
         ExecutionResult result;
 
         result = CpdExecutor.runCpd(tempDir); // without any argument, display usage help and error
-        result.assertExecutionResultErrOutput(1, CliMessages.runWithHelpFlagMessage());
+        result.assertExecutionResultErrOutput(1, LogMessages.runWithHelpFlagMessage());
 
         result = CpdExecutor.runCpd(tempDir, "-h");
         result.assertExecutionResult(0, SUPPORTED_LANGUAGES_CPD);
