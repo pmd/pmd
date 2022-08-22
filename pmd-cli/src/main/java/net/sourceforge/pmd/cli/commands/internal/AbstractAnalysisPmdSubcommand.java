@@ -39,10 +39,10 @@ public abstract class AbstractAnalysisPmdSubcommand extends AbstractPmdSubcomman
                           + "One of --dir, --file-list or --uri must be provided.")
     protected URI uri;
     
-    @Option(names = "--fail-on-violation",
+    @Option(names = "--no-fail-on-violation",
             description = "By default PMD exits with status 4 if violations are found. "
-                    + "Disable this option with '--fail-on-violation false' to exit with 0 instead and just write the report.",
-            defaultValue = "true", arity = "1")
+                    + "Disable this option with '--no-fail-on-violation' to exit with 0 instead and just write the report.",
+            defaultValue = "true", negatable = true)
     protected boolean failOnViolation;
 
     @Override
