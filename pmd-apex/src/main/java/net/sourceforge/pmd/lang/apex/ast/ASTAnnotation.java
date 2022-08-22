@@ -11,40 +11,41 @@ import java.util.TreeSet;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.annotation.InternalApi;
 
+import com.google.common.collect.ImmutableSet;
 import com.google.summit.ast.modifier.AnnotationModifier;
 
 public class ASTAnnotation extends AbstractApexNode.Single<AnnotationModifier> {
 
-    private static final String[] VALID_ANNOTATION_NAMES = {
-            "SfdcOnly",
-            "Deprecated",
-            "AuraEnabled",
-            "ReadOnly",
-            "HiddenFromDoc",
-            "UseConnectSerializer",
-            "UseConnectDeserializer",
-            "VisibleApiVersion",
-            "RemoteAction",
-            "IsTest",
-            "Future",
-            "TestSetup",
-            "InvocableMethod",
-            "InvocableVariable",
-            "TestVisible",
-            "RestResource",
-            "HttpDelete",
-            "HttpGet",
-            "HttpPut",
-            "HttpPost",
-            "HttpPatch",
-            "PermGuard",
-            "NamespaceGuard",
-            "PrivateApi",
-            "AllowCertifiedApex",
-            "SuppressWarnings",
-            "NamespaceAccessible",
-            "JsonAccess"
-    };
+    private static final ImmutableSet<String> VALID_ANNOTATION_NAMES = ImmutableSet.of(
+            "allowcertifiedapex",
+            "auraenabled",
+            "deprecated",
+            "future",
+            "hiddenfromdoc",
+            "httpdelete",
+            "httpget",
+            "httppatch",
+            "httppost",
+            "httpput",
+            "invocablemethod",
+            "invocablevariable",
+            "istest",
+            "jsonaccess",
+            "namespaceaccessible",
+            "namespaceguard",
+            "permguard",
+            "privateapi",
+            "readonly",
+            "remoteaction",
+            "restresource",
+            "sfdconly",
+            "suppresswarnings",
+            "testsetup",
+            "testvisible",
+            "useconnectdeserializer",
+            "useconnectserializer",
+            "visibleapiversion"
+    );
 
     @Deprecated
     @InternalApi
@@ -87,6 +88,6 @@ public class ASTAnnotation extends AbstractApexNode.Single<AnnotationModifier> {
     }
 
     public boolean isResolved() {
-        return Arrays.stream(VALID_ANNOTATION_NAMES).anyMatch(name -> node.getName().getString().equalsIgnoreCase(name));
+        return VALID_ANNOTATION_NAMES.contains(node.getName().getString().toLowerCase());
     }
 }
