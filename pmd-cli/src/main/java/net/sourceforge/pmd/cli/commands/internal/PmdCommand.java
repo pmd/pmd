@@ -105,7 +105,7 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand {
 
     private boolean noCache;
 
-    private boolean noProgressBar;
+    private boolean showProgressBar;
 
     @Option(names = { "--rulesets", "-R" },
                description = "Path to a ruleset xml file. "
@@ -244,9 +244,10 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand {
         this.threads = threads;
     }
 
-    @Option(names = "--no-progress", description = "Disables progress bar indicator of live analysis progress.")
-    public void setNoProgressBar(final boolean noProgressBar) {
-        this.noProgressBar = noProgressBar;
+    @Option(names = "--no-progress", negatable = true, defaultValue = "true",
+            description = "Enables / disables progress bar indicator of live analysis progress.")
+    public void setShowProgressBar(final boolean showProgressBar) {
+        this.showProgressBar = showProgressBar;
     }
 
     /**
@@ -277,7 +278,7 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand {
         configuration.setFailOnViolation(failOnViolation);
         configuration.setAnalysisCacheLocation(cacheLocation != null ? cacheLocation.toString() : null);
         configuration.setIgnoreIncrementalAnalysis(noCache);
-        configuration.setProgressBar(!noProgressBar);
+        configuration.setProgressBar(showProgressBar);
 
         if (languageVersion != null) {
             configuration.setDefaultLanguageVersions(languageVersion);
