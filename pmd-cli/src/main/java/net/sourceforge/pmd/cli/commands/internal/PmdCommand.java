@@ -347,7 +347,7 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand {
     }
 
     private void printErrorDetected(MessageReporter reporter, int errors) {
-        String msg = LogMessages.errorDetectedMessage(errors, "PMD");
+        String msg = LogMessages.errorDetectedMessage(errors, "pmd");
         // note: using error level here increments the error count of the reporter,
         // which we don't want.
         reporter.info(StringUtil.quoteMessageFormat(msg));

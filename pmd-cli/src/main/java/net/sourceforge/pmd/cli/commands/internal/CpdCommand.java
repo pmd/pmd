@@ -14,12 +14,16 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.sourceforge.pmd.cli.commands.typesupport.internal.CpdLanguageTypeSupport;
 import net.sourceforge.pmd.cli.internal.ExecutionResult;
 import net.sourceforge.pmd.cpd.CPD;
 import net.sourceforge.pmd.cpd.CPDConfiguration;
 import net.sourceforge.pmd.cpd.Language;
 import net.sourceforge.pmd.cpd.Tokenizer;
+import net.sourceforge.pmd.internal.LogMessages;
 
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
@@ -115,15 +119,13 @@ public class CpdCommand extends AbstractAnalysisPmdSubcommand {
 
         configuration.setCPDRenderer(CPDConfiguration.getCPDRendererFromString(rendererName, encoding.getEncoding().name()));
 
-        // TODO
-        // Setup CLI message reporter
-        //configuration.setReporter(new SimpleMessageReporter(LoggerFactory.getLogger(CpdCommand.class)));
-
         return configuration;
     }
 
     @Override
     protected ExecutionResult execute() {
+        final Logger logger = LoggerFactory.getLogger(CpdCommand.class);
+        
         // TODO : Create a new CpdAnalysis to match PmdAnalysis
         final CPDConfiguration configuration = toConfiguration();
         final CPD cpd = new CPD(configuration);
@@ -137,9 +139,8 @@ public class CpdCommand extends AbstractAnalysisPmdSubcommand {
                 return ExecutionResult.VIOLATIONS_FOUND;
             }
         } catch (IOException | RuntimeException e) {
-            // TODO
-            //LOG.debug(e.toString(), e);
-            //LOG.error(CliMessages.errorDetectedMessage(1, CPDCommandLineInterface.PROGRAM_NAME));
+            logger.debug(e.toString(), e);
+            logger.error(LogMessages.errorDetectedMessage(1, "cpd"));
             return ExecutionResult.ERROR;
         }
 
