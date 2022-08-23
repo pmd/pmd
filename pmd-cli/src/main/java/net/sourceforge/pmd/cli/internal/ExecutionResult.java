@@ -4,7 +4,9 @@
 
 package net.sourceforge.pmd.cli.internal;
 
-// TODO : Unify with PMD.StatusCode / CPD.StatusCode
+/**
+ * The execution result of any given command.
+ */
 public enum ExecutionResult {
     OK(0),
     ERROR(1),

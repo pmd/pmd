@@ -33,7 +33,6 @@ public class CpdCommand extends AbstractAnalysisPmdSubcommand {
             defaultValue = "java", converter = CpdLanguageTypeSupport.class, completionCandidates = CpdLanguageTypeSupport.class)
     private Language language;
 
-    // TODO : Set a default for this value?
     @Option(names = "--minimum-tokens",
             description = "The minimum token length which should be reported as a duplicate.", required = true)
     private int minimumTokens;
