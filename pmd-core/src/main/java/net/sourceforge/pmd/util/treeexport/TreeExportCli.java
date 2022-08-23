@@ -51,7 +51,7 @@ public class TreeExportCli {
     }
 
     public static void main(String... args) {
-        TreeExportCli cli = new TreeExportCli(Io.SYSTEM);
+        TreeExportCli cli = new TreeExportCli(Io.system());
         System.exit(cli.runMain(args));
     }
 

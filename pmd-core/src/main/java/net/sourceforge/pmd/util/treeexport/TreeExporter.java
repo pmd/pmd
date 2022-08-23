@@ -31,7 +31,7 @@ public class TreeExporter {
     private final Io io;
     
     public TreeExporter(final TreeExportConfiguration configuration) {
-        this(configuration, Io.SYSTEM);
+        this(configuration, Io.system());
     }
     
     TreeExporter(final TreeExportConfiguration configuration, final Io io) {
