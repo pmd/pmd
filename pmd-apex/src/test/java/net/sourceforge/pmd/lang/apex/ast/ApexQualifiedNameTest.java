@@ -8,6 +8,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
@@ -92,6 +93,34 @@ public class ApexQualifiedNameTest extends ApexParserTestBase {
 
         for (ASTMethod m : methods) {
             assertEquals("c__trigger.Account#myAccountTrigger", m.getQualifiedName().toString());
+        }
+    }
+
+
+    @Test
+    public void testUnqualifiedEnum() {
+        ApexNode<?> root = parse("public enum primaryColor { RED, YELLOW, BLUE }");
+
+        ApexQualifiedName enumQName = ASTUserEnum.class.cast(root).getQualifiedName();
+        List<ASTMethod> methods = root.findDescendantsOfType(ASTMethod.class);
+
+        assertEquals("c__primaryColor", enumQName.toString());
+        for (ASTMethod m : methods) {
+            assertTrue(m.getQualifiedName().toString().startsWith("c__primaryColor#"));
+        }
+    }
+
+    @Test
+    public void testQualifiedEnum() {
+        ApexNode<?> root = parse("public class Outer { public enum Inner { OK } }");
+
+        ASTUserEnum enumNode = root.getFirstDescendantOfType(ASTUserEnum.class);
+        ApexQualifiedName enumQName = enumNode.getQualifiedName();
+        List<ASTMethod> methods = enumNode.findDescendantsOfType(ASTMethod.class);
+
+        assertEquals("c__Outer.Inner", enumQName.toString());
+        for (ASTMethod m : methods) {
+            assertTrue(m.getQualifiedName().toString().startsWith("c__Outer.Inner#"));
         }
     }
 }
