@@ -322,8 +322,8 @@ import java.lang.annotation.*;
     </test-code>
     <test-code>
         <description>[java] ConstructorCallsOverridableMethod should consider method calls with var access #4099</description>
-        <expected-problems>2</expected-problems>
-        <expected-linenumbers>4,11</expected-linenumbers>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>4,11,18</expected-linenumbers>
         <code><![CDATA[
 class Foo1 {
   final boolean tag = true;
@@ -340,6 +340,12 @@ class Foo2 {
   public void bar(boolean b) {}
 }
 
+class Foo3 {
+  public Foo3(String arg) {
+    bar(arg); // should report a warning at this line
+  }
+  public void bar(String s) {}
+}
 ]]></code>
     </test-code>
 </test-data>
