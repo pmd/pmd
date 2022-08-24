@@ -33,10 +33,9 @@ import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
-import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType;
 import net.sourceforge.pmd.lang.java.ast.ASTRecordDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTReferenceType;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.AccessNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
@@ -1043,17 +1042,14 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
         if (parameters != null) {
             for (ASTFormalParameter p : parameters) {
                 ASTType type = p.getFirstChildOfType(ASTType.class);
-                if (type.getChild(0) instanceof ASTPrimitiveType) {
-                    parameterTypes.add(type.getChild(0).getImage());
-                } else if (type.getChild(0) instanceof ASTReferenceType) {
-                    JavaTypeDefinition typeDefinition = type.getTypeDefinition();
-                    if (typeDefinition != null) {
-                        parameterTypes.add(typeDefinition.getType().getName());
-                    } else {
-                        parameterTypes.add("ref");
-                    }
+                ASTVariableDeclaratorId varId = p.getFirstChildOfType(ASTVariableDeclaratorId.class);
+
+                JavaTypeDefinition typeDefinition = type.getTypeDefinition();
+                if (typeDefinition != null) {
+                    typeDefinition = typeDefinition.withDimensions(varId.getArrayDepth());
+                    parameterTypes.add(typeDefinition.getType().getName());
                 } else {
-                    parameterTypes.add("<unknown>");
+                    parameterTypes.add("ref");
                 }
             }
         }
