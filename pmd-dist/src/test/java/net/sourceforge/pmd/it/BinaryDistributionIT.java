@@ -125,7 +125,7 @@ public class BinaryDistributionIT extends AbstractBinaryDistributionTest {
         String srcDir = new File(".", "src/test/resources/sample-source/unparsable/").getAbsolutePath();
 
         ExecutionResult result = PMDExecutor.runPMDRules(folder.newFile().toPath(), tempDir, srcDir, "src/test/resources/rulesets/sample-ruleset.xml");
-        result.assertExecutionResultErrOutput(0, "Run with --debug to see a stack-trace.");
+        result.assertExecutionResultErrOutput(0, "Run in verbose mode to see a stack-trace.");
     }
 
     @Test
