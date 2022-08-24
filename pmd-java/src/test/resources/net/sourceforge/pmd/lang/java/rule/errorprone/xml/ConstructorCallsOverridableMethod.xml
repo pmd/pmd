@@ -348,4 +348,32 @@ class Foo3 {
 }
 ]]></code>
     </test-code>
+    <test-code>
+        <description>False positive with public method call on new instance</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>4,5</expected-linenumbers>
+        <code><![CDATA[
+class Foo {
+  public Foo() {
+    privateInitOk(); // false positive
+    privateInitBad1(); // warning expected here
+    privateInitBad2(); // warning expected here
+  }
+
+  private void privateInitOk() {
+    new Foo().publicMethod();
+  }
+
+  private void privateInitBad1() {
+    publicMethod();
+  }
+
+  private void privateInitBad2() {
+    this.publicMethod();
+  }
+
+  public void publicMethod() { }
+}
+]]></code>
+    </test-code>
 </test-data>

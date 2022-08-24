@@ -14,6 +14,7 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotationTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTArguments;
@@ -275,21 +276,18 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
                                 // check prefix type match
                                 ASTPrimaryPrefix child2 = (ASTPrimaryPrefix) child;
                                 if (getNameFromPrefix(child2) == null) {
-                                    if (child2.getImage() == null) {
+                                    if (child2.usesThisModifier()) {
                                         thisIndex = x;
                                         break;
-                                    } else {
-                                        // happens when super is used
-                                        // [super.method(): image = 'method']
+                                    } else if (child2.usesSuperModifier()) {
                                         superFirst = true;
                                         thisIndex = x;
-                                        // the true super is at an unusable
-                                        // index because super.method() has only
-                                        // 2 nodes [method=0,()=1]
-                                        // as opposed to the 3 you might expect
-                                        // and which this.method() actually has.
-                                        // [this=0,method=1.()=2]
                                         break;
+                                    } else if (child2.getFirstChildOfType(ASTAllocationExpression.class) != null) {
+                                        // change of scope - the method call is neither on this or super,
+                                        // but on a different instance.
+                                        // ignore this method call
+                                        return null;
                                     }
                                 }
                             }
