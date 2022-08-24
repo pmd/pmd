@@ -787,8 +787,6 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
                     // but were never evaluated,
                     // they need reevaluation
                     MethodInvocation meth = calledMethsIter.next(); // CCE
-                    String methName = meth.getName();
-                    int methArgCount = meth.getArgumentCount();
                     // check each of the already evaluated methods: need to
                     // optimize this out
                     for (MethodHolder h : evaluatedMethods) {
