@@ -6768,6 +6768,15 @@
         "code",
         "financial"
       ]
+    },
+    {
+      "login": "abyss638",
+      "name": "Simon Abykov",
+      "avatar_url": "https://avatars.githubusercontent.com/u/90252673?v=4",
+      "profile": "https://github.com/abyss638",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
