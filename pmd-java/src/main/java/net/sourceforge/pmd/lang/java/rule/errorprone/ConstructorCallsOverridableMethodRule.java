@@ -1047,6 +1047,9 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
                 JavaTypeDefinition typeDefinition = type.getTypeDefinition();
                 if (typeDefinition != null) {
                     typeDefinition = typeDefinition.withDimensions(varId.getArrayDepth());
+                    if (p.isVarargs()) {
+                        typeDefinition = typeDefinition.withDimensions(1);
+                    }
                     parameterTypes.add(typeDefinition.getType().getName());
                 } else {
                     parameterTypes.add("ref");
