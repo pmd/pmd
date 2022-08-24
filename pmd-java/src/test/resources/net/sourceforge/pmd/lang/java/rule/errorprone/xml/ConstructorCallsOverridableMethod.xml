@@ -421,4 +421,15 @@ class Foo {
 }
 ]]></code>
     </test-code>
+    <test-code>
+        <description>NPE when trying to find method name of method call</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Foo {
+    void bar(Object o) {
+      ((String) o).length();
+    }
+}
+]]></code>
+    </test-code>
 </test-data>

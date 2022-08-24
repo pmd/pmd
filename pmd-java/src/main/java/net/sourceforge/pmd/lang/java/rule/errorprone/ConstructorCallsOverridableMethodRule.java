@@ -11,6 +11,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.StringTokenizer;
 import java.util.TreeMap;
 
 import net.sourceforge.pmd.lang.ast.Node;
@@ -390,8 +391,11 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
                             String toParse = getNameFromPrefix(child);
                             // System.out.println("parsing for var names in : "
                             // + toParse);
-                            java.util.StringTokenizer st = new java.util.StringTokenizer(toParse, ".");
-                            while (st.hasMoreTokens()) {
+                            StringTokenizer st = null;
+                            if (toParse != null) {
+                                st = new StringTokenizer(toParse, ".");
+                            }
+                            while (st != null && st.hasMoreTokens()) {
                                 String value = st.nextToken();
                                 if (!st.hasMoreTokens()) {
                                     if (i == 2) {
