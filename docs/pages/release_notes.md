@@ -16,6 +16,9 @@ This is a {{ site.pmd.release_type }} release.
 
 ### Fixed Issues
 
+* java-errorprone
+    * [#4099](https://github.com/pmd/pmd/issues/4099): \[java] ConstructorCallsOverridableMethod should consider method calls with var access
+
 ### API Changes
 
 ### External Contributions

@@ -38,6 +38,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTReferenceType;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.ast.AccessNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
 
 /**
  * Searches through all methods and constructors called from constructors. It
@@ -1083,8 +1084,13 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
                             type = "long";
                         }
                     } else if (arg.getChild(0) instanceof ASTName) {
-                        // ASTName n = (ASTName)arg.getChild(0);
-                        type = "ref";
+                        ASTName n = (ASTName) (arg.getChild(0));
+                        JavaTypeDefinition typeDefinition = n.getTypeDefinition();
+                        if (typeDefinition != null) {
+                            type = typeDefinition.getType().getName();
+                        } else {
+                            type = "ref";
+                        }
                     }
                 }
                 argumentTypes.add(type);
