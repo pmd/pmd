@@ -24,6 +24,9 @@ public class ASTPostfixExpression extends AbstractApexNode<PostfixExpression> {
         return visitor.visit(this, data);
     }
 
+    /**
+     * @deprecated Use {@link #getOp()} instead.
+     */
     @Deprecated
     public PostfixOp getOperator() {
         return node.getOp();

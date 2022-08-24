@@ -22,6 +22,9 @@ public class ASTBinaryExpression extends AbstractApexNode<BinaryExpression> {
         return visitor.visit(this, data);
     }
 
+    /**
+     * @deprecated Use {@link #getOp()} instead.
+     */
     @Deprecated
     public BinaryOp getOperator() {
         return node.getOp();
