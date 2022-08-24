@@ -18,8 +18,6 @@ import net.sourceforge.pmd.lang.apex.ast.ApexParserVisitorAdapter;
 import net.sourceforge.pmd.lang.apex.metrics.ApexSignatureMatcher;
 import net.sourceforge.pmd.lang.apex.metrics.signature.ApexOperationSigMask;
 
-import apex.jorje.semantic.ast.compilation.Compilation;
-
 /**
  * @author Clément Fournier
  */
@@ -33,7 +31,7 @@ public class ApexMultifileVisitorTest extends ApexParserTestBase {
 
     @Test
     public void testOperationsAreThere() throws IOException {
-        ApexNode<Compilation> acu = parseResource("MetadataDeployController.cls");
+        ApexNode<?> acu = parseResource("MetadataDeployController.cls");
 
         final ApexSignatureMatcher toplevel = ApexProjectMirror.INSTANCE;
 

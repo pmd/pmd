@@ -6777,6 +6777,16 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "eklimo",
+      "name": "Edward Klimoshenko",
+      "avatar_url": "https://avatars.githubusercontent.com/u/39220927?v=4",
+      "profile": "https://github.com/eklimo",
+      "contributions": [
+        "bug",
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
