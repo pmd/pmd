@@ -158,8 +158,7 @@ class ApexTreeBuilder(val sourceCode: String, val parserOptions: ApexParserOptio
             is RunAsStatement -> ASTRunAsBlockStatement(node).apply { buildChildren(node, parent = this) }
             is ThrowStatement -> ASTThrowStatement(node).apply { buildChildren(node, parent = this) }
             is TryStatement -> buildTryStatement(node)
-            is TryStatement.CatchBlock ->
-                ASTCatchBlockStatement(node).apply { buildChildren(node, parent = this) }
+            is TryStatement.CatchBlock -> buildCatchBlock(node)
             is BreakStatement -> ASTBreakStatement(node).apply { buildChildren(node, parent = this) }
             is ContinueStatement ->
                 ASTContinueStatement(node).apply { buildChildren(node, parent = this) }
@@ -665,6 +664,12 @@ class ApexTreeBuilder(val sourceCode: String, val parserOptions: ApexParserOptio
         ASTTryCatchFinallyBlockStatement(node).apply {
             buildAndSetParent(node.body, parent = this)
             buildChildren(node, parent = this, exclude = { it == node.body })
+        }
+
+    /** Builds an [ASTCatchBlockStatement] wrapper for the [TryStatement.CatchBlock]. */
+    private fun buildCatchBlock(node: TryStatement.CatchBlock) =
+        ASTCatchBlockStatement(node).apply {
+            buildChildren(node, parent = this, exclude = { it == node.exceptionVariable })
         }
 
     /** Builds an [ASTParameter] wrapper for the [ParameterDeclaration]. */
