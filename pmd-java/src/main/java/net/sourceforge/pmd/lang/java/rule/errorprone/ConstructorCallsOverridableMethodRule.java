@@ -18,7 +18,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotationTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTArguments;
-import net.sourceforge.pmd.lang.java.ast.ASTBooleanLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
@@ -179,11 +178,11 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
         private List<String> referenceNames;
         private List<String> qualifierNames;
         private int argumentSize;
-        private List<String> argumentTypes;
+        private List<Class<?>> argumentTypes;
         private boolean superCall;
 
         private MethodInvocation(ASTPrimaryExpression ape, List<String> qualifierNames, List<String> referenceNames,
-                String name, int argumentSize, List<String> argumentTypes, boolean superCall) {
+                String name, int argumentSize, List<Class<?>> argumentTypes, boolean superCall) {
             this.ape = ape;
             this.qualifierNames = qualifierNames;
             this.referenceNames = referenceNames;
@@ -205,7 +204,7 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
             return argumentSize;
         }
 
-        public List<String> getArgumentTypes() {
+        public List<Class<?>> getArgumentTypes() {
             return argumentTypes;
         }
 
@@ -219,6 +218,15 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
 
         public ASTPrimaryExpression getASTPrimaryExpression() {
             return ape;
+        }
+
+        public boolean matches(ASTMethodDeclaration methodDeclaration) {
+            String methName = methodDeclaration.getName();
+            int count = methodDeclaration.getArity();
+            List<Class<?>> parameterTypes = getMethodDeclaratorParameterTypes(methodDeclaration);
+            return methName.equals(getName())
+                    && getArgumentCount() == count
+                    && compareParameterAndArgumentTypes(parameterTypes, getArgumentTypes());
         }
 
         public static MethodInvocation getMethod(ASTPrimaryExpression node) {
@@ -238,7 +246,7 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
                     String methodName = null;
                     ASTArguments args = (ASTArguments) lastNode.getChild(0);
                     int numOfArguments = args.size();
-                    List<String> argumentTypes = ConstructorCallsOverridableMethodRule.getArgumentTypes(args);
+                    List<Class<?>> argumentTypes = ConstructorCallsOverridableMethodRule.getArgumentTypes(args);
                     boolean superFirst = false;
                     int thisIndex = -1;
 
@@ -448,7 +456,7 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
         private ASTExplicitConstructorInvocation eci;
         private String name;
         private int count = 0;
-        private List<String> argumentTypes = new ArrayList<>();
+        private List<Class<?>> argumentTypes = new ArrayList<>();
 
         ConstructorInvocation(ASTExplicitConstructorInvocation eci) {
             this.eci = eci;
@@ -469,12 +477,18 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
             return count;
         }
 
-        public List<String> getArgumentTypes() {
+        public List<Class<?>> getArgumentTypes() {
             return argumentTypes;
         }
 
         public String getName() {
             return name;
+        }
+
+        public boolean matches(ASTConstructorDeclaration constructorDeclaration) {
+            int matchConstArgCount = constructorDeclaration.getArity();
+            List<Class<?>> parameterTypes = getMethodDeclaratorParameterTypes(constructorDeclaration);
+            return matchConstArgCount == getArgumentCount() && compareParameterAndArgumentTypes(parameterTypes, getArgumentTypes());
         }
     }
 
@@ -673,14 +687,8 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
             for (MethodInvocation meth : getCurrentEvalPackage().calledMethods) {
                 // check against each dangerous method in class
                 for (MethodHolder h : getCurrentEvalPackage().allMethodsOfClass.keySet()) {
-                    if (h.isDangerous()) {
-                        String methName = h.getASTMethodDeclaration().getName();
-                        int count = h.getASTMethodDeclaration().getArity();
-                        List<String> parameterTypes = getMethodDeclaratorParameterTypes(h.getASTMethodDeclaration());
-                        if (methName.equals(meth.getName()) && meth.getArgumentCount() == count
-                                && parameterTypes.equals(meth.getArgumentTypes())) {
-                            addViolation(data, meth.getASTPrimaryExpression(), "method '" + h.getCalled() + "'");
-                        }
+                    if (h.isDangerous() && meth.matches(h.getASTMethodDeclaration())) {
+                        addViolation(data, meth.getASTPrimaryExpression(), "method '" + h.getCalled() + "'");
                     }
                 }
             }
@@ -737,19 +745,13 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
                 // System.out.println("Called meth is " + meth);
                 for (MethodHolder h3 : classMethodMap.keySet()) {
                     // need to skip self here h == h3
-                    if (h3.isDangerous()) {
-                        String matchMethodName = h3.getASTMethodDeclaration().getName();
-                        int matchMethodParamCount = h3.getASTMethodDeclaration().getArity();
-                        List<String> parameterTypes = getMethodDeclaratorParameterTypes(h3.getASTMethodDeclaration());
+                    if (h3.isDangerous() && meth.matches(h3.getASTMethodDeclaration())) {
                         // System.out.println("matching " + matchMethodName + "
                         // to " + meth.getName());
-                        if (matchMethodName.equals(meth.getName()) && matchMethodParamCount == meth.getArgumentCount()
-                                && parameterTypes.equals(meth.getArgumentTypes())) {
-                            h.setDangerous();
-                            h.setCalledMethod(matchMethodName);
-                            found = true;
-                            break;
-                        }
+                        h.setDangerous();
+                        h.setCalledMethod(meth.getName());
+                        found = true;
+                        break;
                     }
                 }
             }
@@ -786,19 +788,13 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
                     // check each of the already evaluated methods: need to
                     // optimize this out
                     for (MethodHolder h : evaluatedMethods) {
-                        if (h.isDangerous()) {
-                            String matchName = h.getASTMethodDeclaration().getName();
-                            int matchParamCount = h.getASTMethodDeclaration().getArity();
-                            List<String> parameterTypes = getMethodDeclaratorParameterTypes(h.getASTMethodDeclaration());
-                            if (methName.equals(matchName) && methArgCount == matchParamCount
-                                    && parameterTypes.equals(meth.getArgumentTypes())) {
-                                ch.setDangerous(true);
-                                // System.out.println("evaluateDangerOfConstructors1
-                                // setting dangerous constructor with " +
-                                // ch.getASTConstructorDeclaration().getParameterCount()
-                                // + " params");
-                                break;
-                            }
+                        if (h.isDangerous() && meth.matches(h.getASTMethodDeclaration())) {
+                            ch.setDangerous(true);
+                            // System.out.println("evaluateDangerOfConstructors1
+                            // setting dangerous constructor with " +
+                            // ch.getASTConstructorDeclaration().getParameterCount()
+                            // + " params");
+                            break;
                         }
                     }
                 }
@@ -825,23 +821,18 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
             }
             // if its not dangerous then evaluate if it should be
             // if it calls dangerous constructor mark it as dangerous
-            int cCount = calledC.getArgumentCount();
             for (Iterator<ConstructorHolder> innerConstIter = classConstructorMap.keySet().iterator(); innerConstIter
                     .hasNext() && !ch.isDangerous();) {
                 // forget skipping self because that introduces another
                 // check for each, but only 1 hit
                 ConstructorHolder h2 = innerConstIter.next();
-                if (h2.isDangerous()) {
-                    int matchConstArgCount = h2.getASTConstructorDeclaration().getArity();
-                    List<String> parameterTypes = getMethodDeclaratorParameterTypes(h2.getASTConstructorDeclaration());
-                    if (matchConstArgCount == cCount && parameterTypes.equals(calledC.getArgumentTypes())) {
-                        ch.setDangerous(true);
-                        found = true;
-                        // System.out.println("evaluateDangerOfConstructors2
-                        // setting dangerous constructor with " +
-                        // ch.getASTConstructorDeclaration().getParameterCount()
-                        // + " params");
-                    }
+                if (h2.isDangerous() && calledC.matches(h2.getASTConstructorDeclaration())) {
+                    ch.setDangerous(true);
+                    found = true;
+                    // System.out.println("evaluateDangerOfConstructors2
+                    // setting dangerous constructor with " +
+                    // ch.getASTConstructorDeclaration().getParameterCount()
+                    // + " params");
                 }
             }
         }
@@ -1036,9 +1027,9 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
         return name;
     }
 
-    private static List<String> getMethodDeclaratorParameterTypes(ASTMethodOrConstructorDeclaration methodOrConstructorDeclarator) {
+    private static List<Class<?>> getMethodDeclaratorParameterTypes(ASTMethodOrConstructorDeclaration methodOrConstructorDeclarator) {
         ASTFormalParameters parameters = methodOrConstructorDeclarator.getFirstDescendantOfType(ASTFormalParameters.class);
-        List<String> parameterTypes = new ArrayList<>();
+        List<Class<?>> parameterTypes = new ArrayList<>();
         if (parameters != null) {
             for (ASTFormalParameter p : parameters) {
                 ASTType type = p.getFirstChildOfType(ASTType.class);
@@ -1050,54 +1041,49 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
                     if (p.isVarargs()) {
                         typeDefinition = typeDefinition.withDimensions(1);
                     }
-                    parameterTypes.add(typeDefinition.getType().getName());
+                    parameterTypes.add(typeDefinition.getType());
                 } else {
-                    parameterTypes.add("ref");
+                    parameterTypes.add(null); // unknown type
                 }
             }
         }
         return parameterTypes;
     }
 
-    private static List<String> getArgumentTypes(ASTArguments args) {
-        List<String> argumentTypes = new ArrayList<>();
+    private static List<Class<?>> getArgumentTypes(ASTArguments args) {
+        List<Class<?>> argumentTypes = new ArrayList<>();
         ASTArgumentList argumentList = args.getFirstChildOfType(ASTArgumentList.class);
         if (argumentList != null) {
             for (int a = 0; a < argumentList.getNumChildren(); a++) {
                 Node expression = argumentList.getChild(a);
                 ASTPrimaryPrefix arg = expression.getFirstDescendantOfType(ASTPrimaryPrefix.class);
-                String type = "<unknown>";
-                if (arg != null && arg.getNumChildren() > 0) {
-                    if (arg.getChild(0) instanceof ASTLiteral) {
-                        ASTLiteral lit = (ASTLiteral) arg.getChild(0);
-                        if (lit.isCharLiteral()) {
-                            type = "char";
-                        } else if (lit.isFloatLiteral()) {
-                            type = "float";
-                        } else if (lit.isIntLiteral()) {
-                            type = "int";
-                        } else if (lit.isStringLiteral()) {
-                            type = "String";
-                        } else if (lit.getNumChildren() > 0 && lit.getChild(0) instanceof ASTBooleanLiteral) {
-                            type = "boolean";
-                        } else if (lit.isDoubleLiteral()) {
-                            type = "double";
-                        } else if (lit.isLongLiteral()) {
-                            type = "long";
-                        }
-                    } else if (arg.getChild(0) instanceof ASTName) {
-                        ASTName n = (ASTName) (arg.getChild(0));
-                        JavaTypeDefinition typeDefinition = n.getTypeDefinition();
-                        if (typeDefinition != null) {
-                            type = typeDefinition.getType().getName();
-                        } else {
-                            type = "ref";
-                        }
-                    }
+                Class<?> type = null;
+                JavaTypeDefinition typeDefinition = arg.getTypeDefinition();
+                if (typeDefinition != null) {
+                    type = typeDefinition.getType();
                 }
                 argumentTypes.add(type);
             }
         }
         return argumentTypes;
+    }
+
+    private static boolean compareParameterAndArgumentTypes(List<Class<?>> parameters, List<Class<?>> arguments) {
+        if (parameters.size() != arguments.size()) {
+            return false;
+        }
+
+        for (int i = 0; i < parameters.size(); i++) {
+            Class<?> param = parameters.get(i);
+            Class<?> argument = arguments.get(i);
+
+            if (param != null && argument != null
+                && param != argument
+                && !param.isAssignableFrom(argument)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }
