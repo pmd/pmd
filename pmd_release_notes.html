@@ -1544,10 +1544,32 @@
 
 <h3 id="api-changes">API Changes</h3>
 
+<h4 id="deprecated-api">Deprecated API</h4>
+
+<ul>
+  <li>In order to reduce the dependency on Apex Jorje classes, the following methods have been deprecated.
+These methods all leaked internal Jorje enums. These enums have been replaced now by enums the
+PMD’s AST package.
+    <ul>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-apex/6.49.0-SNAPSHOT/net/sourceforge/pmd/lang/apex/ast/ASTAssignmentExpression.html#getOperator()"><code>ASTAssignmentExpression#getOperator</code></a></li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-apex/6.49.0-SNAPSHOT/net/sourceforge/pmd/lang/apex/ast/ASTBinaryExpression.html#getOperator()"><code>ASTBinaryExpression#getOperator</code></a></li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-apex/6.49.0-SNAPSHOT/net/sourceforge/pmd/lang/apex/ast/ASTBooleanExpression.html#getOperator()"><code>ASTBooleanExpression#getOperator</code></a></li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-apex/6.49.0-SNAPSHOT/net/sourceforge/pmd/lang/apex/ast/ASTPostfixExpression.html#getOperator()"><code>ASTPostfixExpression#getOperator</code></a></li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-apex/6.49.0-SNAPSHOT/net/sourceforge/pmd/lang/apex/ast/ASTPrefixExpression.html#getOperator()"><code>ASTPrefixExpression#getOperator</code></a></li>
+    </ul>
+
+    <p>All these classes have now a new <code class="language-plaintext highlighter-rouge">getOp()</code> method. Existing code should be refactored to use this method instead.
+It returns the new enums, like <a href="https://docs.pmd-code.org/apidocs/pmd-apex/6.49.0-SNAPSHOT/net/sourceforge/pmd/lang/apex/ast/AssignmentOperator.html#"><code>AssignmentOperator</code></a>, and avoids
+the dependency to Jorje.</p>
+  </li>
+</ul>
+
 <h3 id="external-contributions">External Contributions</h3>
 
 <ul>
+  <li><a href="https://github.com/pmd/pmd/pull/4081">#4081</a>: [apex] Remove Jorje leaks outside <code class="language-plaintext highlighter-rouge">ast</code> package - <a href="https://github.com/eklimo">@eklimo</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/4083">#4083</a>: [java] UnnecessaryImport false positive for on-demand imports of nested classes (fix for #4082) - <a href="https://github.com/abyss638">@abyss638</a></li>
+  <li><a href="https://github.com/pmd/pmd/pull/4092">#4092</a>: [apex] Implement ApexQualifiableNode for ASTUserEnum - <a href="https://github.com/aaronhurst-google">@aaronhurst-google</a></li>
 </ul>
 
 
