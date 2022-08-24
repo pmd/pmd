@@ -23,7 +23,7 @@
 
         <fileSet>
             <includes>
-                <include>run.sh</include>
+                <include>pmd</include>
             </includes>
             <directory>target/extra-resources/scripts</directory>
             <outputDirectory>bin</outputDirectory>
