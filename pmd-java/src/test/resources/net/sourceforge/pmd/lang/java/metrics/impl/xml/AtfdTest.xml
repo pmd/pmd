@@ -139,7 +139,7 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
         <code-ref id="full-example"/>
     </test-code>
 
-    <test-code regressionTest="false">
+    <test-code disabled="true">
         <description>TODO: known limitation, should report 1</description>
         <rule-property name="reportClasses">false</rule-property>
         <expected-problems>1</expected-problems>

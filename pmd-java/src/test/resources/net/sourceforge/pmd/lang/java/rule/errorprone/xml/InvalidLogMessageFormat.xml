@@ -864,7 +864,7 @@ class InvalidLogMessageFormatTest {
         ]]></code>
     </test-code>
 
-    <test-code regressionTest="false">
+    <test-code disabled="true">
         <description>[java] InvalidLogMessageFormat false-negative for a lambda argument #2255</description>
         <expected-problems>3</expected-problems>
         <expected-linenumbers>11,13,16</expected-linenumbers>

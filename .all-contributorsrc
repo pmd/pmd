@@ -6758,6 +6758,25 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "matthargett",
+      "name": "Matt Hargett",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1550766?v=4",
+      "profile": "https://twitter.com/syke",
+      "contributions": [
+        "code",
+        "financial"
+      ]
+    },
+    {
+      "login": "abyss638",
+      "name": "Simon Abykov",
+      "avatar_url": "https://avatars.githubusercontent.com/u/90252673?v=4",
+      "profile": "https://github.com/abyss638",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,

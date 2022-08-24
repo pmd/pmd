@@ -47,16 +47,17 @@ public final class GenerateRuleDocsCmd {
         System.out.println("Generated docs in " + (System.currentTimeMillis() - start) + " ms");
     }
 
+    static final Pattern ADDITIONAL_RULESET_PATTERN = Pattern.compile("^.+" + Pattern.quote(File.separator) + "pmd-\\w+"
+            + Pattern.quote(IOUtil.normalizePath(File.separator + Paths.get("src", "main", "resources", "rulesets").toString()) + File.separator)
+            + "\\w+" + Pattern.quote(File.separator) + "\\w+.xml$");
+
     public static List<String> findAdditionalRulesets(Path basePath) {
         try {
             List<String> additionalRulesets = new ArrayList<>();
-            Pattern rulesetPattern = Pattern.compile("^.+" + Pattern.quote(File.separator) + "pmd-\\w+"
-                    + Pattern.quote(IOUtil.normalizePath(File.separator + Paths.get("src", "main", "resources", "rulesets").toString() + File.separator))
-                    + "\\w+" + Pattern.quote(File.separator) + "\\w+.xml$");
             Files.walkFileTree(basePath, new SimpleFileVisitor<Path>() {
                 @Override
                 public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                    if (rulesetPattern.matcher(file.toString()).matches()) {
+                    if (ADDITIONAL_RULESET_PATTERN.matcher(file.toString()).matches()) {
                         additionalRulesets.add(file.toString());
                     }
 

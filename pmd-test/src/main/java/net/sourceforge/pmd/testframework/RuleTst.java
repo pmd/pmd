@@ -12,27 +12,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
-import javax.xml.XMLConstants;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.FactoryConfigurationError;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.validation.Schema;
-import javax.xml.validation.SchemaFactory;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.ErrorHandler;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
+import org.xml.sax.InputSource;
 
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.PMDException;
@@ -45,47 +30,17 @@ import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.RulesetsFactoryUtils;
 import net.sourceforge.pmd.SourceCodeProcessor;
-import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.renderers.TextRenderer;
+import net.sourceforge.pmd.test.schema.RuleTestCollection;
+import net.sourceforge.pmd.test.schema.TestSchemaParser;
 
 /**
  * Advanced methods for test cases
  */
 public abstract class RuleTst {
-    private final DocumentBuilder documentBuilder;
-
-    public RuleTst() {
-        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-        SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-        Schema schema;
-        try {
-            schema = schemaFactory.newSchema(RuleTst.class.getResource("/rule-tests_1_0_0.xsd"));
-            dbf.setSchema(schema);
-            dbf.setNamespaceAware(true);
-            DocumentBuilder builder = dbf.newDocumentBuilder();
-            builder.setErrorHandler(new ErrorHandler() {
-                @Override
-                public void warning(SAXParseException exception) throws SAXException {
-                    throw exception;
-                }
-
-                @Override
-                public void fatalError(SAXParseException exception) throws SAXException {
-                    throw exception;
-                }
-
-                @Override
-                public void error(SAXParseException exception) throws SAXException {
-                    throw exception;
-                }
-            });
-            documentBuilder = builder;
-        } catch (SAXException | ParserConfigurationException e) {
-            throw new RuntimeException(e);
-        }
-    }
 
     protected void setUp() {
         // This method is intended to be overridden by subclasses.
@@ -97,6 +52,8 @@ public abstract class RuleTst {
 
     /**
      * Find a rule in a certain ruleset by name
+     *
+     * todo make this static
      */
     public Rule findRule(String ruleSet, String ruleName) {
         try {
@@ -119,12 +76,13 @@ public abstract class RuleTst {
      * violations.
      */
     @SuppressWarnings("unchecked")
+    @InternalApi
+    @Deprecated
     public void runTest(TestDescriptor test) {
         Rule rule = test.getRule();
 
-        if (test.getReinitializeRule()) {
-            rule = reinitializeRule(rule);
-        }
+        // always reinitialize the rule, regardless of test.getReinitializeRule() (#3976 / #3302)
+        rule = reinitializeRule(rule);
 
         Map<PropertyDescriptor<?>, Object> oldProperties = rule.getPropertiesByPropertyDescriptor();
         try {
@@ -264,34 +222,23 @@ public abstract class RuleTst {
     /**
      * Run the rule on the given code and put the violations in the report.
      */
+    @InternalApi
+    @Deprecated
     public void runTestFromString(String code, Rule rule, Report report, LanguageVersion languageVersion) {
         runTestFromString(code, rule, report, languageVersion, true);
     }
 
+    @InternalApi
+    @Deprecated
     public void runTestFromString(String code, Rule rule, Report report, LanguageVersion languageVersion,
             boolean isUseAuxClasspath) {
         try {
             PMDConfiguration configuration = new PMDConfiguration();
             configuration.setDefaultLanguageVersion(languageVersion);
             configuration.setIgnoreIncrementalAnalysis(true);
-            if (isUseAuxClasspath) {
-                // configure the "auxclasspath" option for unit testing
-                configuration.prependAuxClasspath(".");
-            } else {
-                // simple class loader, that doesn't delegate to parent.
-                // this allows us in the tests to simulate PMD run without
-                // auxclasspath, not even the classes from the test dependencies
-                // will be found.
-                configuration.setClassLoader(new ClassLoader() {
-                    @Override
-                    protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
-                        if (name.startsWith("java.") || name.startsWith("javax.")) {
-                            return super.loadClass(name, resolve);
-                        }
-                        throw new ClassNotFoundException(name);
-                    }
-                });
-            }
+            // regardless of isUseAuxClasspath the auxclasspath is always used (#3976 / #3302)
+            // configure the "auxclasspath" option for unit testing
+            configuration.prependAuxClasspath(".");
             RuleContext ctx = new RuleContext();
             ctx.setReport(report);
             ctx.setSourceCodeFile(new File("n/a"));
@@ -305,6 +252,8 @@ public abstract class RuleTst {
         }
     }
 
+    @InternalApi
+    @Deprecated
     public void runTestFromString(TestDescriptor test, Rule rule, Report report) {
         runTestFromString(test.getCode(), rule, report, test.getLanguageVersion(), test.isUseAuxClasspath());
     }
@@ -313,6 +262,8 @@ public abstract class RuleTst {
      * getResourceAsStream tries to find the XML file in weird locations if the
      * ruleName includes the package, so we strip it here.
      */
+    @InternalApi
+    @Deprecated
     protected String getCleanRuleName(Rule rule) {
         String fullClassName = rule.getClass().getName();
         if (fullClassName.equals(rule.getName())) {
@@ -330,12 +281,26 @@ public abstract class RuleTst {
      * ./xml/RuleName.xml relative to the test class. The format is defined in
      * test-data.xsd.
      */
+    @InternalApi
+    @Deprecated
     public TestDescriptor[] extractTestsFromXml(Rule rule) {
         String testsFileName = getCleanRuleName(rule);
 
         return extractTestsFromXml(rule, testsFileName);
     }
 
+    /**
+     * Extract a set of tests from an XML file. The file should be
+     * ./xml/RuleName.xml relative to the test class. The format is defined in
+     * rule-tests_1_0_0.xsd in pmd-test-schema.
+     */
+    RuleTestCollection parseTestCollection(Rule rule) {
+        String testsFileName = getCleanRuleName(rule);
+        return parseTestXml(rule, testsFileName, "xml/");
+    }
+
+    @InternalApi
+    @Deprecated
     public TestDescriptor[] extractTestsFromXml(Rule rule, String testsFileName) {
         return extractTestsFromXml(rule, testsFileName, "xml/");
     }
@@ -345,20 +310,41 @@ public abstract class RuleTst {
      * should be ./xml/[testsFileName].xml relative to the test class. The
      * format is defined in test-data.xsd.
      */
+    @InternalApi
+    @Deprecated
     public TestDescriptor[] extractTestsFromXml(Rule rule, String testsFileName, String baseDirectory) {
+        RuleTestCollection collection = parseTestXml(rule, testsFileName, baseDirectory);
+        return toLegacyArray(collection);
+    }
+
+    private TestDescriptor[] toLegacyArray(RuleTestCollection collection) {
+        TestDescriptor[] result = new TestDescriptor[collection.getTests().size()];
+        for (int i = 0; i < collection.getTests().size(); i++) {
+            result[i] = new TestDescriptor(collection.getTests().get(i));
+        }
+        return result;
+    }
+
+    /**
+     * Extract a set of tests from an XML file with the given name. The file
+     * should be ./xml/[testsFileName].xml relative to the test class. The
+     * format is defined in test-data.xsd.
+     */
+    private RuleTestCollection parseTestXml(Rule rule, String testsFileName, String baseDirectory) {
         String testXmlFileName = baseDirectory + testsFileName + ".xml";
 
-        Document doc;
         try (InputStream inputStream = getClass().getResourceAsStream(testXmlFileName)) {
             if (inputStream == null) {
                 throw new RuntimeException("Couldn't find " + testXmlFileName);
             }
-            doc = documentBuilder.parse(inputStream);
-        } catch (FactoryConfigurationError | IOException | SAXException e) {
+            InputSource source = new InputSource();
+            source.setByteStream(inputStream);
+            source.setSystemId(testXmlFileName);
+            TestSchemaParser parser = new TestSchemaParser();
+            return parser.parse(rule, source);
+        } catch (Exception e) {
             throw new RuntimeException("Couldn't parse " + testXmlFileName + ", due to: " + e, e);
         }
-
-        return parseTests(rule, doc);
     }
 
     /**
@@ -382,145 +368,12 @@ public abstract class RuleTst {
     /**
      * Run a set of tests of a certain sourceType.
      */
+    @InternalApi
+    @Deprecated
     public void runTests(TestDescriptor[] tests) {
         for (int i = 0; i < tests.length; i++) {
             runTest(tests[i]);
         }
     }
 
-    private TestDescriptor[] parseTests(Rule rule, Document doc) {
-        Element root = doc.getDocumentElement();
-        NodeList testCodes = root.getElementsByTagName("test-code");
-
-        TestDescriptor[] tests = new TestDescriptor[testCodes.getLength()];
-        for (int i = 0; i < testCodes.getLength(); i++) {
-            Element testCode = (Element) testCodes.item(i);
-
-            boolean reinitializeRule = true;
-            Node reinitializeRuleAttribute = testCode.getAttributes().getNamedItem("reinitializeRule");
-            if (reinitializeRuleAttribute != null) {
-                String reinitializeRuleValue = reinitializeRuleAttribute.getNodeValue();
-                if ("false".equalsIgnoreCase(reinitializeRuleValue) || "0".equalsIgnoreCase(reinitializeRuleValue)) {
-                    reinitializeRule = false;
-                }
-            }
-
-            boolean isRegressionTest = true;
-            Node regressionTestAttribute = testCode.getAttributes().getNamedItem("regressionTest");
-            if (regressionTestAttribute != null) {
-                String reinitializeRuleValue = regressionTestAttribute.getNodeValue();
-                if ("false".equalsIgnoreCase(reinitializeRuleValue)) {
-                    isRegressionTest = false;
-                }
-            }
-
-            boolean isUseAuxClasspath = true;
-            Node useAuxClasspathAttribute = testCode.getAttributes().getNamedItem("useAuxClasspath");
-            if (useAuxClasspathAttribute != null) {
-                String useAuxClasspathValue = useAuxClasspathAttribute.getNodeValue();
-                if ("false".equalsIgnoreCase(useAuxClasspathValue)) {
-                    isUseAuxClasspath = false;
-                }
-            }
-
-            NodeList ruleProperties = testCode.getElementsByTagName("rule-property");
-            Properties properties = new Properties();
-            for (int j = 0; j < ruleProperties.getLength(); j++) {
-                Node ruleProperty = ruleProperties.item(j);
-                String propertyName = ruleProperty.getAttributes().getNamedItem("name").getNodeValue();
-                properties.setProperty(propertyName, parseTextNode(ruleProperty));
-            }
-
-            NodeList expectedMessagesNodes = testCode.getElementsByTagName("expected-messages");
-            List<String> messages = new ArrayList<>();
-            if (expectedMessagesNodes != null && expectedMessagesNodes.getLength() > 0) {
-                Element item = (Element) expectedMessagesNodes.item(0);
-                NodeList messagesNodes = item.getElementsByTagName("message");
-                for (int j = 0; j < messagesNodes.getLength(); j++) {
-                    messages.add(parseTextNode(messagesNodes.item(j)));
-                }
-            }
-
-            NodeList expectedLineNumbersNodes = testCode.getElementsByTagName("expected-linenumbers");
-            List<Integer> expectedLineNumbers = new ArrayList<>();
-            if (expectedLineNumbersNodes != null && expectedLineNumbersNodes.getLength() > 0) {
-                Element item = (Element) expectedLineNumbersNodes.item(0);
-                String numbers = item.getTextContent();
-                for (String n : numbers.split(" *, *")) {
-                    expectedLineNumbers.add(Integer.valueOf(n));
-                }
-            }
-
-            String code = getNodeValue(testCode, "code", false);
-            if (code == null) {
-                // Should have a coderef
-                NodeList coderefs = testCode.getElementsByTagName("code-ref");
-                if (coderefs.getLength() == 0) {
-                    throw new RuntimeException(
-                            "Required tag is missing from the test-xml. Supply either a code or a code-ref tag");
-                }
-                Node coderef = coderefs.item(0);
-                String referenceId = coderef.getAttributes().getNamedItem("id").getNodeValue();
-                NodeList codeFragments = root.getElementsByTagName("code-fragment");
-                for (int j = 0; j < codeFragments.getLength(); j++) {
-                    String fragmentId = codeFragments.item(j).getAttributes().getNamedItem("id").getNodeValue();
-                    if (referenceId.equals(fragmentId)) {
-                        code = parseTextNode(codeFragments.item(j));
-                    }
-                }
-
-                if (code == null) {
-                    throw new RuntimeException("No matching code fragment found for coderef");
-                }
-            }
-
-            String description = getNodeValue(testCode, "description", true);
-            int expectedProblems = Integer.parseInt(getNodeValue(testCode, "expected-problems", true));
-
-            String languageVersionString = getNodeValue(testCode, "source-type", false);
-            if (languageVersionString == null) {
-                tests[i] = new TestDescriptor(code, description, expectedProblems, rule);
-            } else {
-                LanguageVersion languageVersion = LanguageRegistry
-                        .findLanguageVersionByTerseName(languageVersionString);
-                if (languageVersion != null) {
-                    tests[i] = new TestDescriptor(code, description, expectedProblems, rule, languageVersion);
-                } else {
-                    throw new RuntimeException("Unknown LanguageVersion for test: " + languageVersionString);
-                }
-            }
-            tests[i].setReinitializeRule(reinitializeRule);
-            tests[i].setRegressionTest(isRegressionTest);
-            tests[i].setUseAuxClasspath(isUseAuxClasspath);
-            tests[i].setExpectedMessages(messages);
-            tests[i].setExpectedLineNumbers(expectedLineNumbers);
-            tests[i].setProperties(properties);
-            tests[i].setNumberInDocument(i + 1);
-        }
-        return tests;
-    }
-
-    private String getNodeValue(Element parentElm, String nodeName, boolean required) {
-        NodeList nodes = parentElm.getElementsByTagName(nodeName);
-        if (nodes == null || nodes.getLength() == 0) {
-            if (required) {
-                throw new RuntimeException("Required tag is missing from the test-xml: " + nodeName);
-            } else {
-                return null;
-            }
-        }
-        Node node = nodes.item(0);
-        return parseTextNode(node);
-    }
-
-    private static String parseTextNode(Node exampleNode) {
-        StringBuilder buffer = new StringBuilder();
-        for (int i = 0; i < exampleNode.getChildNodes().getLength(); i++) {
-            Node node = exampleNode.getChildNodes().item(i);
-            if (node.getNodeType() == Node.CDATA_SECTION_NODE || node.getNodeType() == Node.TEXT_NODE) {
-                buffer.append(node.getNodeValue());
-            }
-        }
-        return buffer.toString().trim();
-    }
 }

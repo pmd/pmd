@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.sourceforge.pmd</groupId>
     <artifactId>pmd</artifactId>
-    <version>6.48.0-SNAPSHOT</version>
+    <version>6.49.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>PMD</name>
 
@@ -76,7 +76,7 @@
     </issueManagement>
 
     <properties>
-        <project.build.outputTimestamp>2022-06-25T07:30:42Z</project.build.outputTimestamp>
+        <project.build.outputTimestamp>2022-07-30T09:35:57Z</project.build.outputTimestamp>
 
         <java.version>7</java.version>
 
@@ -103,7 +103,8 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <pmd.website.baseurl>https://pmd.github.io/pmd</pmd.website.baseurl>
 
-        <argLine>-Xmx512m -Dfile.encoding=${project.build.sourceEncoding}</argLine>
+        <argLine>-Xmx512m -Dfile.encoding=${project.build.sourceEncoding} ${extraArgLine}</argLine>
+        <extraArgLine /> <!-- empty by default, profiles set it as needed -->
 
         <pmd.build-tools.version>18</pmd.build-tools.version>
 
@@ -406,22 +407,22 @@
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-core</artifactId>
-                            <version>6.47.0</version> <!-- pmd.dogfood.version -->
+                            <version>6.48.0</version> <!-- pmd.dogfood.version -->
                         </dependency>
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-java</artifactId>
-                            <version>6.47.0</version> <!-- pmd.dogfood.version -->
+                            <version>6.48.0</version> <!-- pmd.dogfood.version -->
                         </dependency>
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-jsp</artifactId>
-                            <version>6.47.0</version> <!-- pmd.dogfood.version -->
+                            <version>6.48.0</version> <!-- pmd.dogfood.version -->
                         </dependency>
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-javascript</artifactId>
-                            <version>6.47.0</version> <!-- pmd.dogfood.version -->
+                            <version>6.48.0</version> <!-- pmd.dogfood.version -->
                         </dependency>
                         <!-- This contains the dogfood ruleset -->
                         <dependency>
@@ -720,6 +721,11 @@
                 <version>${project.version}</version>
             </dependency>
             <dependency>
+                <groupId>net.sourceforge.pmd</groupId>
+                <artifactId>pmd-test-schema</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>net.sourceforge.saxon</groupId>
                 <artifactId>saxon</artifactId>
                 <version>9.1.0.8</version>
@@ -1009,6 +1015,17 @@
 
     <profiles>
         <profile>
+            <id>Java 18+</id>
+            <activation>
+                <jdk>[18,)</jdk>
+            </activation>
+            <properties>
+                <!-- java.security.manager=allow is needed under Java 18+ for usages of org.junit.contrib.java.lang.system.ExpectedSystemExit -->
+                <extraArgLine>-Djava.security.manager=allow</extraArgLine>
+            </properties>
+        </profile>
+
+        <profile>
             <id>pmd-release</id>
             <properties>
                 <pmd.website.baseurl>https://pmd.github.io/pmd-${project.version}</pmd.website.baseurl>
@@ -1172,5 +1189,6 @@
         <module>pmd-scala-modules/pmd-scala_2.13</module>
         <module>pmd-scala-modules/pmd-scala_2.12</module>
         <module>pmd-visualforce</module>
+        <module>pmd-test-schema</module>
     </modules>
 </project>

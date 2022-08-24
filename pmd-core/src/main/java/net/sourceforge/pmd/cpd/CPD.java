@@ -9,23 +9,27 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.logging.ConsoleHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.cli.internal.CliMessages;
+import net.sourceforge.pmd.cpd.renderer.CPDReportRenderer;
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
 import net.sourceforge.pmd.util.FileFinder;
 import net.sourceforge.pmd.util.IOUtil;
 import net.sourceforge.pmd.util.database.DBMSMetadata;
 import net.sourceforge.pmd.util.database.DBURI;
 import net.sourceforge.pmd.util.database.SourceObject;
+import net.sourceforge.pmd.util.log.ScopedLogHandlersManager;
 
 public class CPD {
     private static final Logger LOGGER = Logger.getLogger(CPD.class.getName());
@@ -37,6 +41,8 @@ public class CPD {
     private Tokens tokens = new Tokens();
     private MatchAlgorithm matchAlgorithm;
     private Set<String> current = new HashSet<>();
+    private final Map<String, Integer> numberOfTokensPerFile = new HashMap<>();
+    private int lastTokenSize = 0;
 
     public CPD(CPDConfiguration theConfiguration) {
         configuration = theConfiguration;
@@ -50,8 +56,10 @@ public class CPD {
     }
 
     public void go() {
+        LOGGER.fine("Running match algorithm on " + source.size() + " files...");
         matchAlgorithm = new MatchAlgorithm(source, tokens, configuration.getMinimumTileSize(), listener);
         matchAlgorithm.findMatches();
+        LOGGER.fine("Finished: " + matchAlgorithm.getMatches().size() + " duplicates found");
     }
 
     public Iterator<Match> getMatches() {
@@ -76,6 +84,7 @@ public class CPD {
         if (!dir.exists()) {
             throw new FileNotFoundException("Couldn't find directory " + dir);
         }
+        LOGGER.fine("Searching directory " + dir + " for files");
         FileFinder finder = new FileFinder();
         // TODO - could use SourceFileSelector here
         add(finder.findFilesFrom(dir, configuration.filenameFilter(), recurse));
@@ -141,9 +150,12 @@ public class CPD {
     }
 
     private void addAndThrowLexicalError(SourceCode sourceCode) throws IOException {
+        LOGGER.fine("Tokenizing " + sourceCode.getFileName());
         configuration.tokenizer().tokenize(sourceCode, tokens);
         listener.addedFile(1, new File(sourceCode.getFileName()));
         source.put(sourceCode.getFileName(), sourceCode);
+        numberOfTokensPerFile.put(sourceCode.getFileName(), tokens.size() - lastTokenSize - 1 /*EOF*/);
+        lastTokenSize = tokens.size();
     }
 
     private void addAndSkipLexicalErrors(SourceCode sourceCode) throws IOException {
@@ -200,17 +212,26 @@ public class CPD {
             return statusCode;
         }
 
+        final Level logLevel = arguments.isDebug() ? Level.FINER : Level.INFO;
+        final ScopedLogHandlersManager logHandlerManager = new ScopedLogHandlersManager(logLevel, new ConsoleHandler());
+        final Level oldLogLevel = LOGGER.getLevel();
+        // Need to do this, since the static logger has already been initialized
+        // at this point
+        LOGGER.setLevel(logLevel);
+
         CPD cpd = new CPD(arguments);
 
         try {
             CPDCommandLineInterface.addSourceFilesToCPD(cpd, arguments);
 
             cpd.go();
-            if (arguments.getCPDRenderer() == null) {
+            final CPDReportRenderer renderer = arguments.getCPDReportRenderer();
+            if (renderer == null) {
                 // legacy writer
                 System.out.println(arguments.getRenderer().render(cpd.getMatches()));
             } else {
-                arguments.getCPDRenderer().render(cpd.getMatches(), IOUtil.createWriter(Charset.defaultCharset(), null));
+                final CPDReport report = cpd.toReport();
+                renderer.render(report, IOUtil.createWriter(Charset.defaultCharset(), null));
             }
             if (cpd.getMatches().hasNext()) {
                 if (arguments.isFailOnViolation()) {
@@ -225,8 +246,15 @@ public class CPD {
             e.printStackTrace();
             LOGGER.severe(CliMessages.errorDetectedMessage(1, CPDCommandLineInterface.PROGRAM_NAME));
             statusCode = StatusCode.ERROR;
+        } finally {
+            logHandlerManager.close();
+            LOGGER.setLevel(oldLogLevel);
         }
         return statusCode;
+    }
+
+    public CPDReport toReport() {
+        return new CPDReport(matchAlgorithm.getMatches(), numberOfTokensPerFile);
     }
 
     public enum StatusCode {
