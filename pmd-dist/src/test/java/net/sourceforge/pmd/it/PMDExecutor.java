@@ -37,16 +37,19 @@ public class PMDExecutor {
     }
 
     private static ExecutionResult runPMDUnix(Path tempDir, Path reportFile, String... arguments) throws Exception {
-        String cmd = tempDir.resolve(AbstractBinaryDistributionTest.PMD_BIN_PREFIX + PMDVersion.VERSION + "/bin/run.sh").toAbsolutePath().toString();
+        String cmd = tempDir.resolve(AbstractBinaryDistributionTest.PMD_BIN_PREFIX + PMDVersion.VERSION + "/bin/pmd").toAbsolutePath().toString();
         List<String> args = new ArrayList<>();
-        args.add("pmd");
+        args.add("run");
         args.addAll(Arrays.asList(arguments));
         return runCommand(cmd, args, reportFile);
     }
 
     private static ExecutionResult runPMDWindows(Path tempDir, Path reportFile, String... arguments) throws Exception {
         String cmd = tempDir.resolve(AbstractBinaryDistributionTest.PMD_BIN_PREFIX + PMDVersion.VERSION + "/bin/pmd.bat").toAbsolutePath().toString();
-        return runCommand(cmd, Arrays.asList(arguments), reportFile);
+        List<String> args = new ArrayList<>();
+        args.add("run");
+        args.addAll(Arrays.asList(arguments));
+        return runCommand(cmd, args, reportFile);
     }
 
     static ExecutionResult runCommand(String cmd, List<String> arguments, Path reportFile) throws Exception {
@@ -116,7 +119,7 @@ public class PMDExecutor {
                     FORMAT_FLAG, formatter, REPORTFILE_FLAG, reportFile.toAbsolutePath().toString(), NO_PROGRESSBAR_FLAG);
         } else {
             return runPMDUnix(tempDir, reportFile, SOURCE_DIRECTORY_FLAG, sourceDirectory, RULESET_FLAG, ruleset,
-                    FORMAT_FLAG, formatter, REPORTFILE_FLAG, reportFile.toAbsolutePath().toString(), NO_PROGRESSBAR_FLAG);
+                    FORMAT_FLAG, formatter, REPORTFILE_FLAG, reportFile.toAbsolutePath().toString(), NO_PROGRESSBAR_FLAG, "--verbose");
         }
     }
 
