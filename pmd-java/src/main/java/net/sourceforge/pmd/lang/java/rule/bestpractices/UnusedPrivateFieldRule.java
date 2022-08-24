@@ -58,6 +58,7 @@ public class UnusedPrivateFieldRule extends AbstractLombokAwareRule {
         defaultValues.add("org.mockito.Mock");
         defaultValues.add("org.mockito.Spy");
         defaultValues.add("org.springframework.boot.test.mock.mockito.MockBean");
+        defaultValues.add("org.springframework.boot.test.mock.mockito.SpyBean");
         return defaultValues;
     }
 
