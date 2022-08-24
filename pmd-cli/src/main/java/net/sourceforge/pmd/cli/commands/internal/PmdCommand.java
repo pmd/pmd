@@ -89,7 +89,7 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand {
 
     private RulePriority minimumPriority;
 
-    private Properties properties;
+    private Properties properties = new Properties();
 
     private Path reportFile;
 
