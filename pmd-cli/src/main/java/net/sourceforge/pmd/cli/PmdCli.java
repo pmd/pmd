@@ -16,10 +16,6 @@ public final class PmdCli {
         final int exitCode = new CommandLine(new PmdRootCommand())
                 .setCaseInsensitiveEnumValuesAllowed(true)
                 .execute(args);
-        //        .execute("run", "-h");
-        //        .execute("run", "--use-version", "scala-2.11", "--use-version", "apex", "--use-version",
-        //                "ecmascript-latest", "-P", "foo=bar", "-R", "foo,bar", "-R", "baz", "-d",
-        //                "src/main/java", "-f", "xml");
         System.exit(exitCode);
     }
 }
