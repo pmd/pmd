@@ -210,6 +210,20 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
             }
         }
 
+        // check on-demand imports for inner classes
+        it = imports.iterator();
+        while (it.hasNext()) {
+            ImportWrapper i = it.next();
+            if (!i.isStaticOnDemand() && i.isOnDemand()) {
+                String possibleClassName = i.getFullName() + "$" + candName;
+                Class<?> possibleClazz = referenceNode.getRoot().getClassTypeResolver()
+                        .loadClassOrNull(possibleClassName);
+                if (possibleClazz != null) {
+                    it.remove();
+                }
+            }
+        }
+
         // check static on-demand imports
         it = imports.iterator();
         while (it.hasNext()) {
@@ -217,6 +231,20 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
             if (i.isStaticOnDemand() && i.matches(candFullName, candName)) {
                 it.remove();
                 return;
+            }
+        }
+
+        // check static on-demand imports for static inner classes
+        it = imports.iterator();
+        while (it.hasNext()) {
+            ImportWrapper i = it.next();
+            if (i.isStaticOnDemand()) {
+                String possibleClassName = i.getFullName() + "$" + candName;
+                Class<?> possibleClazz = referenceNode.getRoot().getClassTypeResolver()
+                        .loadClassOrNull(possibleClassName);
+                if (possibleClazz != null) {
+                    it.remove();
+                }
             }
         }
 
