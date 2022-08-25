@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 
+import com.google.summit.ast.expression.Expression;
 import com.google.summit.ast.expression.LiteralExpression;
 import com.google.summit.ast.modifier.ElementArgument;
 import com.google.summit.ast.modifier.ElementValue;
@@ -30,16 +31,19 @@ public class ASTAnnotationParameter extends AbstractApexNode.Single<ElementArgum
 
     public String getValue() {
         if (node.getValue() instanceof ElementValue.ExpressionValue) {
-            return expressionToString(((ElementValue.ExpressionValue) node.getValue()).getValue());
+            Expression value = ((ElementValue.ExpressionValue) node.getValue()).getValue();
+            if(value instanceof LiteralExpression) {
+                return literalToString((LiteralExpression) value);
+            }
         }
         return null;
     }
 
      public Boolean getBooleanValue() {
          if (node.getValue() instanceof ElementValue.ExpressionValue) {
-             ElementValue.ExpressionValue value = (ElementValue.ExpressionValue) node.getValue();
-             if (value.getValue() instanceof LiteralExpression.BooleanVal) {
-                 return ((LiteralExpression.BooleanVal) value.getValue()).getValue();
+             Expression value = ((ElementValue.ExpressionValue) node.getValue()).getValue();
+             if (value instanceof LiteralExpression.BooleanVal) {
+                 return ((LiteralExpression.BooleanVal) value).getValue();
              }
          }
          return false;

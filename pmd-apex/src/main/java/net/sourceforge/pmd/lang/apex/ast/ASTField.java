@@ -10,6 +10,7 @@ import net.sourceforge.pmd.annotation.InternalApi;
 import com.google.summit.ast.Identifier;
 import com.google.summit.ast.TypeRef;
 import com.google.summit.ast.expression.Expression;
+import com.google.summit.ast.expression.LiteralExpression;
 
 public class ASTField extends AbstractApexNode implements CanSuppressWarnings {
 
@@ -60,6 +61,9 @@ public class ASTField extends AbstractApexNode implements CanSuppressWarnings {
     }
 
     public String getValue() {
-        return expressionToString(value);
+        if(value instanceof LiteralExpression) {
+            return literalToString((LiteralExpression) value);
+        }
+        return null;
     }
 }
