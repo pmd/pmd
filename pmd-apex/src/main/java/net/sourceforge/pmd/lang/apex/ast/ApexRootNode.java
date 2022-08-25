@@ -8,12 +8,12 @@ import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
 
-import apex.jorje.semantic.ast.AstNode;
+import apex.jorje.semantic.ast.compilation.Compilation;
 import apex.jorje.services.Version;
 
 @Deprecated
 @InternalApi
-public abstract class ApexRootNode<T extends AstNode> extends AbstractApexNode<T> implements RootNode {
+public abstract class ApexRootNode<T extends Compilation> extends AbstractApexNode<T> implements RootNode {
     @Deprecated
     @InternalApi
     public ApexRootNode(T node) {

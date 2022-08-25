@@ -19,8 +19,6 @@ import net.sourceforge.pmd.lang.apex.ast.ASTUserTrigger;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.ast.ApexParserTestBase;
 
-import apex.jorje.semantic.ast.compilation.Compilation;
-
 public class AbstractApexRuleTest extends ApexParserTestBase {
 
     @Test
@@ -44,7 +42,7 @@ public class AbstractApexRuleTest extends ApexParserTestBase {
     }
 
     private void run(String code) {
-        ApexNode<Compilation> node = parse(code);
+        ApexNode<?> node = parse(code);
         TopLevelRule rule = new TopLevelRule();
         RuleContext ctx = new RuleContext();
         ctx.setLanguageVersion(apex.getDefaultVersion());
