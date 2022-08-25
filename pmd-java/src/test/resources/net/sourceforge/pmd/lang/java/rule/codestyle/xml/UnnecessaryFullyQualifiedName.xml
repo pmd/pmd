@@ -623,6 +623,25 @@ public class UnnecessaryFullyQualifiedName {
     </test-code>
 
     <test-code>
+        <description>False positive when same package inner class is referenced (not enum)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryfullyqualifiedname;
+
+public class OuterTestClass {
+	public static class TestClass{
+        private final net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryfullyqualifiedname.TestClass test;
+
+        public TestClass(net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryfullyqualifiedname.TestClass test){
+
+            this.test = test;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
         <description>#2098 false positive with annotated package</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
