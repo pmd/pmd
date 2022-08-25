@@ -65,7 +65,7 @@ public abstract class AbstractApexNodeBase extends AbstractNode {
 
     @Override
     public int getBeginColumn() {
-        if (this.beginColumn > 0) {
+        if (this.beginColumn >= 0) {
             return this.beginColumn;
         }
         Node parent = getParent();
@@ -77,7 +77,7 @@ public abstract class AbstractApexNodeBase extends AbstractNode {
 
     @Override
     public int getEndLine() {
-        if (this.endLine > 0) {
+        if (this.endLine >= 0) {
             return this.endLine;
         }
         Node parent = getParent();
