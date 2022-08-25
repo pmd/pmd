@@ -35,9 +35,9 @@ Unzip it into any directory, optionally add the `bin` subdirectory in your `PATH
 
 #### Shell completion
 
-PMD ships with built-in completion support for bash / zsh.
+PMD ships with built-in completion support for Bash / Zsh.
 
-To enable it, simply add `source path_to_pmd/shell/pmd-completion.sh` to your `~/.bashrc` / `~/.zshrc` file.
+To enable it, simply add `source *path_to_pmd*/shell/pmd-completion.sh` to your `~/.bashrc` / `~/.zshrc` file.
 
 ## Running PMD via command line
 

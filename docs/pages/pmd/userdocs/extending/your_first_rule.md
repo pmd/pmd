@@ -24,8 +24,8 @@ The rule designer is a tool that packs a lot of features to help you develop XPa
 rules quickly and painlessly. Basically, it allows you to examine the AST of a code
 snippet and evaluate an XPath expression against it.
 
-Like for PMD and CPD, you can launch it using `run.sh designer` on Linux/Unix
-and `designer.bat` on Windows. The interface looks like the following:
+Like for PMD and CPD, you can launch it using `pmd designer` on Linux/Unix
+and `pmd.bat designer` on Windows. The interface looks like the following:
 
 {% include image.html file="userdocs/designer-overview-with-nums.png" alt="Designer overview" %}
 
