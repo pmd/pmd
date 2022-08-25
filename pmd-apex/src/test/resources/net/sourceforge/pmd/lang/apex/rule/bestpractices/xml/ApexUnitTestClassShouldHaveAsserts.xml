@@ -117,7 +117,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-      <description>#4096 [apex] api 56.0 ApexAssertionsShouldIncludeMessage and new apex class : Assert</description>
+      <description>[apex] ApexUnitTestClassShouldHaveAssertsRule: Support new Assert class (Apex v56.0) #4097</description>
       <expected-problems>0</expected-problems>
       <code><![CDATA[
 @isTest

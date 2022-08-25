@@ -1053,7 +1053,8 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/86377278?v=4",
       "profile": "https://github.com/aaronhurst-google",
       "contributions": [
-        "bug"
+        "bug",
+        "code"
       ]
     },
     {
@@ -6767,6 +6768,25 @@
       "contributions": [
         "code",
         "financial"
+      ]
+    },
+    {
+      "login": "abyss638",
+      "name": "Simon Abykov",
+      "avatar_url": "https://avatars.githubusercontent.com/u/90252673?v=4",
+      "profile": "https://github.com/abyss638",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "eklimo",
+      "name": "Edward Klimoshenko",
+      "avatar_url": "https://avatars.githubusercontent.com/u/39220927?v=4",
+      "profile": "https://github.com/eklimo",
+      "contributions": [
+        "bug",
+        "code"
       ]
     }
   ],

@@ -22,8 +22,15 @@ public class ASTPrefixExpression extends AbstractApexNode<PrefixExpression> {
         return visitor.visit(this, data);
     }
 
-
+    /**
+     * @deprecated Use {@link #getOp()} instead.
+     */
+    @Deprecated
     public PrefixOp getOperator() {
         return node.getOp();
+    }
+
+    public PrefixOperator getOp() {
+        return PrefixOperator.valueOf(node.getOp());
     }
 }
