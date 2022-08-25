@@ -43,7 +43,7 @@ public class ApexUnitTestClassShouldHaveAssertsRule extends AbstractApexUnitTest
         ASSERT_METHODS.add("assert.isfalse");
         ASSERT_METHODS.add("assert.isinstanceoftype");
         ASSERT_METHODS.add("assert.isnotinstanceoftype");
-        ASSERT_METHODS.add("assert.isnnull");
+        ASSERT_METHODS.add("assert.isnull");
         ASSERT_METHODS.add("assert.isnotnull");
         ASSERT_METHODS.add("assert.istrue");
         // Fully-qualified variants...rare but still valid/possible
