@@ -124,18 +124,18 @@ public class Foo {
 public class Foo {
    public static testAreEqual void testSomething() {
       String sub = 'abcde'.substring(2);
-      Assert.areEqual('cde', sub, 'Expected characters after first two');
+      Assert.areEqual('cde', sub);
    }
 
    public static testAreNotEqual void testSomething() {
       String sub = 'abcde'.substring(2);
-      Assert.areNotEqual('xyz', sub, 'Characters not expected after first two');
+      Assert.areNotEqual('xyz', sub);
    }
 
    public static testFail void testSomething() {
       try {
          SomeClass.methodUnderTest();
-         Assert.fail('DmlException Expected');
+         Assert.fail();
      } catch (DmlException ex) {
          // Add assertions here about the expected exception
      }
@@ -143,7 +143,7 @@ public class Foo {
 
    public static testIsFalse void testSomething() {
       Boolean containsCode = 'Salesforce'.contains('code');
-      Assert.isFalse(containsCode, 'No code');
+      Assert.isFalse(containsCode);
    }
 
    public static testIsInstanceOf void testSomething() {
@@ -153,22 +153,22 @@ public class Foo {
 
    public static testIsNotInstanceOf void testSomething() {
       Contact con = new Contact();
-      Assert.isNotInstanceOfType(con, Account.class, 'Not expected type');
+      Assert.isNotInstanceOfType(con, Account.class);
    }
 
    public static testIsNotNull void testSomething() {
       String myString = 'value';
-      Assert.isNotNull(myString, 'myString should not be null');
+      Assert.isNotNull(myString);
    }
 
    public static testIsNull void testSomething() {
       String myString = null;
-      Assert.isNull(myString, 'String should be null');
+      Assert.isNull(myString);
    }
 
    public static testIsTrue void testSomething() {
       Boolean containsForce = 'Salesforce'.contains('force');
-      Assert.isTrue(containsForce, 'Contains force');
+      Assert.isTrue(containsForce);
    }
 }
       ]]></code>
