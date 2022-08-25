@@ -102,8 +102,8 @@ public class Foo {
         <code><![CDATA[
 @isTest
 public class Foo {
-   public static testMethod void testAssertEqual() {
-      Assert.assertEquals(null, someCondition);
+   public static testMethod void testAssertIsTrue() {
+      MyAssert.isTrue(someCondition);
    }
 
    public static testMethod void testLocalVerify() {
