@@ -23,7 +23,7 @@ sidebar: pmd_sidebar
     * For Windows: [Winzip](http://winzip.com) or the free [7-zip](http://www.7-zip.org/)
     * For Linux / Unix: [InfoZip](http://infozip.sourceforge.net/)
 
-{% include note.html content="For executing the Designer (./run.sh designer) using [OpenJDK](http://jdk.java.net) or Java 11, you need additionally [OpenJFX](http://jdk.java.net). Download it, extract it and set the environment variable JAVAFX_HOME." %}
+{% include note.html content="For executing the Designer (./pmd designer) using [OpenJDK](http://jdk.java.net) or Java 11+, you need additionally [OpenJFX](http://jdk.java.net). Download it, extract it and set the environment variable JAVAFX_HOME." %}
 
 
 ### Installation
@@ -31,21 +31,24 @@ sidebar: pmd_sidebar
 PMD is distributed as a zip archive, which includes both [PMD](#running-pmd-via-command-line) and [CPD](pmd_userdocs_cpd.html). 
 You can download the latest binary distribution from [the github releases page](https://github.com/pmd/pmd/releases).
 
-Unzip it into any directory, optionally add the `bin` subdirectory in your `PATH`, and you're good to go!         
+Unzip it into any directory, optionally add the `bin` subdirectory in your `PATH`, and you're good to go!
 
- 
+#### Shell completion
+
+PMD ships with built-in completion support for bash / zsh.
+
+To enable it, simply add `source path_to_pmd/shell/pmd-completion.sh` to your `~/.bashrc` / `~/.zshrc` file.
 
 ## Running PMD via command line
 
 {% include callout.html type="primary"
    content="PMD comes with several command line utilities, like CPD, the rule designer or PMD itself.
-            On Unix, you can run any of them using the script `run.sh`, located inside the `bin/`
+            You can run any of them using the script `pmd` (`pmd.bat` under Windows), located inside the `bin/`
             directory of the PMD distribution. The first argument is the name of the utility you want
-            to execute ('pmd', 'designer', ...), e.g. PMD is launched via `run.sh pmd`. The rest of
-            the arguments are specific to the utility used.<br/><br/>
-            On Windows, each utility has its own startup script, e.g. `pmd.bat`, `cpd.bat`." %}
+            to execute ('analyze', 'designer', ...), e.g. PMD is launched via `pmd analyze`. The rest of
+            the arguments are specific to the utility used.<br/><br/>" %}
 
-The PMD command (`pmd.bat` or `run.sh pmd`) requires two options:
+Running a PMD analysis (`pmd analyze` or `pmd.bat analyze`) requires at least two options:
 
 * `-d <path>`: path to the sources to analyse. This can be a file name, a directory, or a jar or zip file containing the
 sources.
@@ -89,7 +92,7 @@ Additionally, the following options, are specified most of the time even though 
   <div class="tab-content border">
     <div class="tab-pane fade show active" id="linux" role="tabpanel" aria-labelledby="linux-tab">
 <figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">~ $ </span><span class="s2">cd</span> ~/bin/pmd-bin-{{site.pmd.version}}/bin
-<span class="gp">~/.../bin $ </span><span class="s2">./run.sh</span> pmd -d ../../../src/main/java/ -f text -R rulesets/java/quickstart.xml
+<span class="gp">~/.../bin $ </span><span class="s2">./pmd</span> analyze -d ../../../src/main/java/ -f text -R rulesets/java/quickstart.xml
   
   .../src/main/java/com/me/RuleSet.java:123  These nested if statements could be combined
   .../src/main/java/com/me/RuleSet.java:231  Useless parentheses.
@@ -99,7 +102,7 @@ Additionally, the following options, are specified most of the time even though 
     </div>
     <div class="tab-pane fade" id="windows" role="tabpanel" aria-labelledby="windows-tab">
 <figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">C:\ &gt; </span><span class="s2">cd</span> C:\pmd-bin-{{site.pmd.version}}\bin
-<span class="gp">C:\...\bin > </span><span class="s2">.\pmd.bat</span> -d ..\..\src\main\java\ -f text -R rulesets/java/quickstart.xml
+<span class="gp">C:\...\bin > </span><span class="s2">.\pmd.bat</span> analyze -d ..\..\src\main\java\ -f text -R rulesets/java/quickstart.xml
       
   .../src/main/java/com/me/RuleSet.java:123  These nested if statements could be combined
   .../src/main/java/com/me/RuleSet.java:231  Useless parentheses.
@@ -117,7 +120,7 @@ Additionally, the following options, are specified most of the time even though 
    content="CPD supports Java, JSP, C, C++, C#, Fortran and PHP source code, among other languages.
             For the full list, see [Supported Languages](pmd_userdocs_cpd.html#supported-languages)." %}
 
-Like for PMD, CPD is started on Unix by `run.sh cpd` and on Windows by `cpd.bat`.
+Like for PMD, CPD is started on Unix by `pmd cpd` and on Windows by `pmd.bat cpd`.
 
 There are two required parameters:
 * `--files <path>`: path to the sources to analyse. This can be a file name, a
@@ -146,7 +149,7 @@ There are two required parameters:
   <div class="tab-content border">
     <div class="tab-pane fade show active" id="cpd-linux" role="tabpanel" aria-labelledby="cpd-linux-tab">
 <figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">~ $ </span><span class="s2">cd</span> ~/bin/pmd-bin-{{site.pmd.version}}/bin
-<span class="gp">~/.../bin $ </span><span class="s2">./run.sh</span> cpd --minimum-tokens 100 --files /home/me/src
+<span class="gp">~/.../bin $ </span><span class="s2">./pmd</span> cpd --minimum-tokens 100 --files /home/me/src
 
   Found a 7 line (110 tokens) duplication in the following files:
   Starting at line 579 of /home/me/src/test/java/foo/FooTypeTest.java
@@ -162,7 +165,7 @@ There are two required parameters:
     </div>
     <div class="tab-pane fade" id="cpd-windows" role="tabpanel" aria-labelledby="cpd-windows-tab">
 <figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">C:\ &gt; </span><span class="s2">cd</span> C:\pmd-bin-{{site.pmd.version}}\bin
-<span class="gp">C:\...\bin > </span><span class="s2">.\cpd.bat</span> --minimum-tokens 100 --files c:\temp\src
+<span class="gp">C:\...\bin > </span><span class="s2">.\pmd.bat</span> cpd --minimum-tokens 100 --files c:\temp\src
 
   Found a 7 line (110 tokens) duplication in the following files:
   Starting at line 579 of c:\temp\src\test\java\foo\FooTypeTest.java

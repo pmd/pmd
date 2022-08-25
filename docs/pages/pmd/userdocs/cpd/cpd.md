@@ -59,32 +59,48 @@ Novice as much as advanced readers may want to [read on on Refactoring Guru](htt
         <th>Applies to</th>
     </tr>
     {% include custom/cli_option_row.html options="--minimum-tokens"
+               option_arg="count"
                description="The minimum token length which should be reported as a duplicate."
                required="yes"
     %}
-    {% include custom/cli_option_row.html options="--files"
-               description="List of files and directories to process"
-               required="yes"
+    {% include custom/cli_option_row.html options="--dir,-d"
+               option_arg="path"
+               description="Path to a source file, or directory containing
+                               source files to analyze. Zip and Jar files are
+                               also supported, if they are specified directly
+                               (archive files found while exploring a directory
+                               are not recursively expanded). This option can
+                               be repeated, and multiple arguments can be
+                               provided to a single occurrence of the option.
+                               One of `--dir`, `--file-list` or `--uri` must be
+                               provided."
     %}
     {% include custom/cli_option_row.html options="--file-list"
-               description="Path to file containing a comma delimited list of files to analyze. If this is given, then you don't need to provide `--files`."
+               option_arg="filepath"
+               description="Path to a file containing a list of files to
+                               analyze, one path per line. One of `--dir`,
+                               `--file-list` or `--uri` must be provided."
     %}
-    {% include custom/cli_option_row.html options="--language"
-               description="Sources code language."
+    {% include custom/cli_option_row.html options="--language,-l"
+               option_arg="lang"
+               description="The source code language.
+                            <p>See also [Supported Languages](#supported-languages).
+                            Using `--help` will display a full list of supported languages.</p>"
                default="java"
     %}
-    {% include custom/cli_option_row.html options="--debug,--verbose"
-               description="Debug mode. Prints more log output."
-    %}
-    {% include custom/cli_option_row.html options="--encoding"
-               description="Character encoding to use when processing files. If not specified, CPD uses the system default encoding."
+    {% include custom/cli_option_row.html options="--encoding,-e"
+               option_arg="charset"
+               description="Specifies the character set encoding of the source code files PMD is reading.
+                            The valid values are the standard character sets of `java.nio.charset.Charset`."
+               default="UTF-8"
     %}
     {% include custom/cli_option_row.html options="--skip-duplicate-files"
                description="Ignore multiple copies of files of the same name and length in comparison."
                default="false"
     %}
     {% include custom/cli_option_row.html options="--exclude"
-               description="Files to be excluded from CPD check"
+               option_arg="path"
+               description="Files to be excluded from the analysis"
     %}
     {% include custom/cli_option_row.html options="--non-recursive"
                description="Don't scan subdirectories"
@@ -94,15 +110,16 @@ Novice as much as advanced readers may want to [read on on Refactoring Guru](htt
                description="Skip files which can't be tokenized due to invalid characters instead of aborting CPD"
                default="false"
     %}
-    {% include custom/cli_option_row.html options="--format"
-               description="Report format."
+    {% include custom/cli_option_row.html options="--format,-f"
+               option_arg="format"
+               description="Output format of the analysis report. The available formats
+                            are described [here](#available-report-formats)."
                default="text"
     %}
-    {% include custom/cli_option_row.html options="--fail-on-violation"
-               option_arg="bool"
-               description="By default CPD exits with status 4 if code duplications are found.
-                            Disable this option with `--fail-on-violation false` to exit with 0 instead and just write the report."
-               default="true"
+    {% include custom/cli_option_row.html options="--[no-]fail-on-violation"
+               description="Specifies whether CPD exits with non-zero status if violations are found.
+                            By default CPD exits with status 4 if violations are found.
+                            Disable this feature with `--no-fail-on-violation` to exit with 0 instead and just output the report."
     %}
     {% include custom/cli_option_row.html options="--ignore-literals"
                description="Ignore number values and string contents when comparing text"
@@ -140,66 +157,67 @@ Novice as much as advanced readers may want to [read on on Refactoring Guru](htt
                default="#if&nbsp;0|#endif"
                languages="C++"
     %}
-    {% include custom/cli_option_row.html options="--uri"
-               description="URI to process"
+    {% include custom/cli_option_row.html options="--uri,-u"
+               option_arg="uri"
+               description="Database URI for sources. One of `--dir`,
+                               `--file-list` or `--uri` must be provided."
                languages="PLSQL"
     %}
     {% include custom/cli_option_row.html options="--help,-h"
-               default="false"
                description="Print help text"
     %}
 </table>
 
 ### Examples
 
-_Note:_ The following example use the Linux start script. For Windows, just replace "./run.sh cpd" by "cpd.bat".
+_Note:_ The following example use the Linux start script. For Windows, just replace "./pmd cpd" by "pmd.bat cpd".
 
 
 Minimum required options: Just give it the minimum duplicate size and the source directory:
 
-    $ ./run.sh cpd --minimum-tokens 100 --files /usr/local/java/src/java
+    $ ./pmd cpd --minimum-tokens 100 --dir /usr/local/java/src/java
 
 You can also specify the language:
 
-    $ ./run.sh cpd --minimum-tokens 100 --files /path/to/c/source --language cpp
+    $ ./pmd cpd --minimum-tokens 100 --dir /path/to/c/source --language cpp
 
 You may wish to check sources that are stored in different directories:
 
-    $ ./run.sh cpd --minimum-tokens 100 --files /path/to/other/source  --files /path/to/other/source --files /path/to/other/source --language fortran
+    $ ./pmd cpd --minimum-tokens 100 --dir /path/to/other/source  --dir /path/to/other/source --dir /path/to/other/source --language fortran
 
-<em>There should be no limit to the number of '--files', you may add... But if you stumble one, please tell us !</em>
+<em>There should be no limit to the number of `--dir`, you may add... But if you stumble one, please tell us !</em>
 
 And if you're checking a C source tree with duplicate files in different architecture directories
-you can skip those using --skip-duplicate-files:
+you can skip those using `--skip-duplicate-files`:
 
-    $ ./run.sh cpd --minimum-tokens 100 --files /path/to/c/source --language cpp --skip-duplicate-files
+    $ ./pmd cpd --minimum-tokens 100 --dir /path/to/c/source --language cpp --skip-duplicate-files
 
 You can also specify the encoding to use when parsing files:
 
-    $ ./run.sh cpd --minimum-tokens 100 --files /usr/local/java/src/java --encoding utf-16le
+    $ ./pmd cpd --minimum-tokens 100 --dir /usr/local/java/src/java --encoding utf-16le
 
 You can also specify a report format - here we're using the XML report:
 
-    $ ./run.sh cpd --minimum-tokens 100 --files /usr/local/java/src/java --format xml
+    $ ./pmd cpd --minimum-tokens 100 --dir /usr/local/java/src/java --format xml
 
-The default format is a text report, and there's also a `csv` report.
+The default format is a text report, but there are [other supported formats](#available-report-formats)
 
 Note that CPD is pretty memory-hungry; you may need to give Java more memory to run it, like this:
 
     $ export PMD_JAVA_OPTS=-Xmx512m
-    $ ./run.sh cpd --minimum-tokens 100 --files /usr/local/java/src/java
+    $ ./pmd cpd --minimum-tokens 100 --dir /usr/local/java/src/java
 
-In order to change the heap size under Windows, you'll need to edit the batch file `cpd.bat` or
+In order to change the heap size under Windows, you'll need to edit the batch file `pmd.bat` or
 set the environment variable `PMD_JAVA_OPTS` prior to starting CPD:
 
     C:\ > cd C:\pmd-bin-{{site.pmd.version}}\bin
     C:\...\bin > set PMD_JAVA_OPTS=-Xmx512m
-    C:\...\bin > .\cpd.bat --minimum-tokens 100 --files c:\temp\src
+    C:\...\bin > .\pmd.bat cpd --minimum-tokens 100 --dir c:\temp\src
 
 
 If you specify a source directory but don't want to scan the sub-directories, you can use the non-recursive option:
 
-    $ ./run.sh cpd --minimum-tokens 100 --non-recursive --files /usr/local/java/src/java
+    $ ./pmd cpd --minimum-tokens 100 --non-recursive --dir /usr/local/java/src/java
 
 ### Exit status
 
@@ -207,9 +225,10 @@ Please note that if CPD detects duplicated source code, it will exit with status
 This behavior has been introduced to ease CPD integration into scripts or hooks, such as SVN hooks.
 
 <table>
-<tr><td>0</td><td>Everything is fine, no code duplications found</td></tr>
-<tr><td>1</td><td>Couldn't understand command line parameters or CPD exited with an exception</td></tr>
-<tr><td>4</td><td>At least one code duplication has been detected unless '--fail-on-violation false' is used.</td></tr>
+<tr><td>0</td><td>Everything is fine, no code duplications found.</td></tr>
+<tr><td>1</td><td>CPD exited with an exception.</td></tr>
+<tr><td>2</td><td>Usage error. Command-line parameters are invalid or missing.</td></tr>
+<tr><td>4</td><td>At least one code duplication has been detected unless <code>--no-fail-on-violation</code> is set.</td></tr>
 </table>
 
 
@@ -360,15 +379,15 @@ the CPD task as usual and right after it invoke the Ant XSLT script like this:
 
 ## GUI
 
-CPD also comes with a simple GUI. You can start it via some scripts in the `bin` folder:
+CPD also comes with a simple GUI. You can start it through the unified CLI interface provided in the `bin` folder:
 
 For Windows:
 
-    cpdgui.bat
+    pmd.bat cpd-gui
 
 For Linux:
 
-    ./run.sh cpdgui
+    ./pmd cpd-gui
 
 Here's a screenshot of CPD after running on the JDK 8 java.lang package:
 
@@ -405,7 +424,7 @@ Additionally, **Java** allows to toggle suppression by adding the annotations
 all code within will be ignored by CPD.
 
 This approach however, is limited to the locations were `@SuppressWarnings` is accepted.
-It's legacy and the new comment's based approach should be favored.
+It is legacy and the new comment based approach should be favored.
 
 ```java
 //enable suppression
