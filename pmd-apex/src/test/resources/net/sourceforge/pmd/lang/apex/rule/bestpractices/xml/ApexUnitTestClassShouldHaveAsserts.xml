@@ -122,51 +122,60 @@ public class Foo {
       <code><![CDATA[
 @isTest
 public class Foo {
-   public static testAreEqual void testSomething() {
+   @isTest
+      static void testAreEqual() {
       String sub = 'abcde'.substring(2);
       Assert.areEqual('cde', sub);
    }
 
-   public static testAreNotEqual void testSomething() {
+   @isTest
+      static void testAreNotEqual() {
       String sub = 'abcde'.substring(2);
       Assert.areNotEqual('xyz', sub);
    }
 
-   public static testFail void testSomething() {
+   @isTest
+   static void testFail() {
       try {
          SomeClass.methodUnderTest();
          Assert.fail();
-     } catch (DmlException ex) {
+      } catch (DmlException ex) {
          // Add assertions here about the expected exception
-     }
+      }
    }
 
-   public static testIsFalse void testSomething() {
+   @isTest
+   static void testIsFalse() {
       Boolean containsCode = 'Salesforce'.contains('code');
       Assert.isFalse(containsCode);
    }
 
-   public static testIsInstanceOf void testSomething() {
+   @isTest
+   static void testIsInstanceOf() {
       Account o = new Account();
       Assert.isInstanceOfType(o, Account.class);
    }
 
-   public static testIsNotInstanceOf void testSomething() {
+   @isTest
+   static void testIsNotInstanceOf() {
       Contact con = new Contact();
       Assert.isNotInstanceOfType(con, Account.class);
    }
 
-   public static testIsNotNull void testSomething() {
+   @isTest
+   static void testIsNotNull() {
       String myString = 'value';
       Assert.isNotNull(myString);
    }
 
-   public static testIsNull void testSomething() {
+   @isTest
+   static void testIsNull() {
       String myString = null;
       Assert.isNull(myString);
    }
 
-   public static testIsTrue void testSomething() {
+   @isTest
+   static void testIsTrue() {
       Boolean containsForce = 'Salesforce'.contains('force');
       Assert.isTrue(containsForce);
    }

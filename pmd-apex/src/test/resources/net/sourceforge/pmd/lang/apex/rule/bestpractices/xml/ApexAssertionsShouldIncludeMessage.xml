@@ -50,61 +50,70 @@ public class Foo {
         ]]></code>
     </test-code>
 
-        <test-code>
+    <test-code>
         <description>[apex] Support new Assert class (Apex v56.0) #4097</description>
          <expected-problems>0</expected-problems>
-        <code><![CDATA[
+         <code><![CDATA[
 @isTest
 public class Foo {
-   public static testAreEqual void testSomething() {
-      String sub = 'abcde'.substring(2);
-      Assert.areEqual('cde', sub, 'Expected characters after first two');
+    @isTest
+    static void testAreEqual() {
+        String sub = 'abcde'.substring(2);
+        Assert.areEqual('cde', sub, 'Expected characters after first two');
    }
 
-   public static testAreNotEqual void testSomething() {
-      String sub = 'abcde'.substring(2);
-      Assert.areNotEqual('xyz', sub, 'Characters not expected after first two');
+    @isTest
+    static void testAreNotEqual() {
+        String sub = 'abcde'.substring(2);
+        Assert.areNotEqual('xyz', sub, 'Characters not expected after first two');
    }
 
-   public static testFail void testSomething() {
-      try {
-         SomeClass.methodUnderTest();
-         Assert.fail('DmlException Expected');
-     } catch (DmlException ex) {
-         // Add assertions here about the expected exception
-     }
+    @isTest
+    static void testFail() {
+        try {
+            SomeClass.methodUnderTest();
+            Assert.fail('DmlException Expected');
+        } catch (DmlException ex) {
+            // Add assertions here about the expected exception
+        }
    }
 
-   public static testIsFalse void testSomething() {
-      Boolean containsCode = 'Salesforce'.contains('code');
-      Assert.isFalse(containsCode, 'No code');
+    @isTest
+    static void testIsFalse() {
+        Boolean containsCode = 'Salesforce'.contains('code');
+        Assert.isFalse(containsCode, 'No code');
    }
 
-   public static testIsInstanceOf void testSomething() {
-      Account o = new Account();
-      Assert.isInstanceOfType(o, Account.class, 'Wrong instance');
+    @isTest
+    static void testIsInstanceOf() {
+        Account o = new Account();
+        Assert.isInstanceOfType(o, Account.class, 'Wrong instance');
    }
 
-   public static testIsNotInstanceOf void testSomething() {
-      Contact con = new Contact();
-      Assert.isNotInstanceOfType(con, Account.class, 'Not expected type');
+    @isTest
+    static void testIsNotInstanceOf() {
+        Contact con = new Contact();
+        Assert.isNotInstanceOfType(con, Account.class, 'Not expected type');
    }
 
-   public static testIsNotNull void testSomething() {
-      String myString = 'value';
-      Assert.isNotNull(myString, 'myString should not be null');
+    @isTest
+    static void testIsNotNull() {
+        String myString = 'value';
+        Assert.isNotNull(myString, 'myString should not be null');
    }
 
-   public static testIsNull void testSomething() {
-      String myString = null;
-      Assert.isNull(myString, 'String should be null');
+    @isTest
+    static void testIsNull() {
+        String myString = null;
+        Assert.isNull(myString, 'String should be null');
    }
 
-   public static testIsTrue void testSomething() {
-      Boolean containsForce = 'Salesforce'.contains('force');
-      Assert.isTrue(containsForce, 'Contains force');
+    @isTest
+    static void testIsTrue() {
+        Boolean containsForce = 'Salesforce'.contains('force');
+        Assert.isTrue(containsForce, 'Contains force');
    }
 }
-      ]]></code>
+        ]]></code>
    </test-code>
 </test-data>
