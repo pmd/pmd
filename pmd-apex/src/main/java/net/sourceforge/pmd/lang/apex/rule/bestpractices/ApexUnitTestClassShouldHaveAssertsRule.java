@@ -56,17 +56,20 @@ public class ApexUnitTestClassShouldHaveAssertsRule extends AbstractApexUnitTest
         ASSERT_METHODS.add("system.assert.isfalse");
         ASSERT_METHODS.add("system.assert.isinstanceoftype");
         ASSERT_METHODS.add("system.assert.isnotinstanceoftype");
-        ASSERT_METHODS.add("system.assert.isnnull");
+        ASSERT_METHODS.add("system.assert.isnull");
         ASSERT_METHODS.add("system.assert.isnotnull");
         ASSERT_METHODS.add("system.assert.istrue");
     }
 
-    // Using a string property instead of a regex property to ensure that the compiled pattern can be case-insensitive
-    private static final PropertyDescriptor<String> ADDITIONAL_ASSERT_METHOD_PATTERN_DESCRIPTOR =
-            stringProperty("additionalAssertMethodPattern")
-                    .desc("A regular expression for one or more custom test assertion method patterns.").defaultValue("").build();
+    // Using a string property instead of a regex property to ensure that the
+    // compiled pattern can be case-insensitive
+    private static final PropertyDescriptor<String> ADDITIONAL_ASSERT_METHOD_PATTERN_DESCRIPTOR = stringProperty(
+            "additionalAssertMethodPattern")
+            .desc("A regular expression for one or more custom test assertion method patterns.").defaultValue("")
+            .build();
 
-    // A simple compiled pattern cache to ensure that we only ever try to compile the configured pattern once for a given run
+    // A simple compiled pattern cache to ensure that we only ever try to compile
+    // the configured pattern once for a given run
     private Optional<Pattern> compiledAdditionalAssertMethodPattern = null;
 
     public ApexUnitTestClassShouldHaveAssertsRule() {
@@ -99,7 +102,8 @@ public class ApexUnitTestClassShouldHaveAssertsRule extends AbstractApexUnitTest
             }
         }
 
-        // If we didn't find assert method invocations the simple way and we have a configured pattern, try it
+        // If we didn't find assert method invocations the simple way and we have a
+        // configured pattern, try it
         if (!isAssertFound) {
             final String additionalAssertMethodPattern = getProperty(ADDITIONAL_ASSERT_METHOD_PATTERN_DESCRIPTOR);
             final Pattern compiledPattern = getCompiledAdditionalAssertMethodPattern(additionalAssertMethodPattern);
@@ -123,12 +127,15 @@ public class ApexUnitTestClassShouldHaveAssertsRule extends AbstractApexUnitTest
 
     private Pattern getCompiledAdditionalAssertMethodPattern(String additionalAssertMethodPattern) {
         if (StringUtils.isNotBlank(additionalAssertMethodPattern)) {
-            // Check for presence first since we will cache a null value for patterns that don't compile
+            // Check for presence first since we will cache a null value for patterns that
+            // don't compile
             if (compiledAdditionalAssertMethodPattern == null) {
                 try {
-                    compiledAdditionalAssertMethodPattern = Optional.of(Pattern.compile(additionalAssertMethodPattern, Pattern.CASE_INSENSITIVE));
+                    compiledAdditionalAssertMethodPattern = Optional
+                            .of(Pattern.compile(additionalAssertMethodPattern, Pattern.CASE_INSENSITIVE));
                 } catch (IllegalArgumentException e) {
-                    // Cache a null compiled pattern so that we won't try to compile this one again during the run
+                    // Cache a null compiled pattern so that we won't try to compile this one again
+                    // during the run
                     compiledAdditionalAssertMethodPattern = Optional.ofNullable(null);
                     throw e;
                 }
