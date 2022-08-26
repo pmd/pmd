@@ -16,6 +16,24 @@ import com.google.summit.ast.modifier.AnnotationModifier;
 
 public class ASTAnnotation extends AbstractApexNode.Single<AnnotationModifier> {
 
+    /**
+     * Valid annotations in the Apex language.
+     * <p>
+     * Includes all annotations from the <a href="https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_classes_annotation.htm">official
+     * documentation</a>, plus
+     * <ul>
+     *     <li>{@code AllowCertifiedApex}</li>
+     *     <li>{@code HiddenFromDoc}</li>
+     *     <li>{@code NamespaceGuard}</li>
+     *     <li>{@code PermGuard}</li>
+     *     <li>{@code PrivateApi}</li>
+     *     <li>{@code SfdcOnly}</li>
+     *     <li>{@code UseConnectDeserializer}</li>
+     *     <li>{@code UseConnectSerializer}</li>
+     *     <li>{@code VisibleApiVersion}</li>
+     * </ul>
+     * for backward compatibility.
+     */
     private static final ImmutableSet<String> VALID_ANNOTATION_NAMES = ImmutableSet.of(
             "allowcertifiedapex",
             "auraenabled",
