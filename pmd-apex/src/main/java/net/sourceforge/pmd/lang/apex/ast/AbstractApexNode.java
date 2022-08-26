@@ -152,15 +152,6 @@ public abstract class AbstractApexNode extends AbstractApexNodeBase implements A
 
     public abstract String getLocation();
 
-    // private TypeInfo getDefiningTypeOrNull() {
-    //     try {
-    //         return node.getDefiningType();
-    //     } catch (UnsupportedOperationException e) {
-    //         return null;
-    //     }
-    // }
-    // TODO(b/239648780)
-
     @Override
     public String getDefiningType() {
         ApexRootNode<?> rootNode = this instanceof ApexRootNode ? (ApexRootNode<?>) this : getFirstParentOfType(ApexRootNode.class);
@@ -176,7 +167,7 @@ public abstract class AbstractApexNode extends AbstractApexNodeBase implements A
         // if (definingType != null) {
         //     return definingType.getNamespace().toString();
         // }
-        // TODO(b/239648780)
+        // TODO(b/243905954)
         return null;
     }
 
