@@ -141,6 +141,11 @@ public abstract class BaseLanguageModule implements Language {
     }
 
     @Override
+    public List<String> getVersionNamesAndAliases() {
+        return new ArrayList<>(versions.keySet());
+    }
+
+    @Override
     public boolean hasVersion(String version) {
         return versions != null && versions.containsKey(version);
     }

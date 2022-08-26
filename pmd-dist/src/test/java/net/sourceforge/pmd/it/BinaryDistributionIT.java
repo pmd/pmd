@@ -31,18 +31,19 @@ public class BinaryDistributionIT extends AbstractBinaryDistributionTest {
                 + "                               php, plsql, python, ruby, scala, swift, vf, xml";
         SUPPORTED_LANGUAGES_PMD = "Valid values: apex, apex-54, apex-latest,\n"
                 + "                              ecmascript, ecmascript-ES6, ecmascript-latest,\n"
-                + "                              html, html-latest, java, java-1.3, java-1.4,\n"
-                + "                              java-1.5, java-1.6, java-1.7, java-1.8, java-10,\n"
-                + "                              java-11, java-12, java-13, java-14, java-15,\n"
-                + "                              java-16, java-17, java-18, java-18-preview,\n"
-                + "                              java-19, java-19-preview, java-9, java-latest,\n"
-                + "                              jsp, jsp-latest, kotlin, kotlin-1.6-rfc+0.1,\n"
-                + "                              kotlin-latest, modelica, modelica-latest, plsql,\n"
-                + "                              plsql-latest, pom, pom-latest, scala, scala-2.10,\n"
-                + "                              scala-2.11, scala-2.12, scala-2.13, scala-latest,\n"
-                + "                              swift, swift-latest, vf, vf-latest, vm,\n"
-                + "                              vm-latest, wsdl, wsdl-latest, xml, xml-latest,\n"
-                + "                              xsl, xsl-latest";
+                + "                              html, html-latest, java, java-1.10, java-1.3,\n"
+                + "                              java-1.4, java-1.5, java-1.6, java-1.7, java-1.8,\n"
+                + "                              java-1.9, java-10, java-11, java-12, java-13,\n"
+                + "                              java-14, java-15, java-16, java-17, java-18,\n"
+                + "                              java-18-preview, java-19, java-19-preview,\n"
+                + "                              java-5, java-6, java-7, java-8, java-9,\n"
+                + "                              java-latest, jsp, jsp-latest, kotlin, kotlin-1.6,\n"
+                + "                              kotlin-1.6-rfc+0.1, kotlin-latest, modelica,\n"
+                + "                              modelica-latest, plsql, plsql-latest, pom,\n"
+                + "                              pom-latest, scala, scala-2.10, scala-2.11,\n"
+                + "                              scala-2.12, scala-2.13, scala-latest, swift,\n"
+                + "                              swift-latest, vf, vf-latest, vm, vm-latest, wsdl,\n"
+                + "                              wsdl-latest, xml, xml-latest, xsl, xsl-latest";
     }
 
     private final String srcDir = new File(".", "src/test/resources/sample-source/java/").getAbsolutePath();

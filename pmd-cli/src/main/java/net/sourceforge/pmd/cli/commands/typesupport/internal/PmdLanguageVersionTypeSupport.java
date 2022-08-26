@@ -24,17 +24,18 @@ import picocli.CommandLine.TypeConversionException;
  * modules in the classpath, but autocomplete will include all available at build time.
  */
 public class PmdLanguageVersionTypeSupport implements ITypeConverter<LanguageVersion>, Iterable<String> {
+
+    private static final String LATEST_SUFFIX = "-latest";
     
     @Override
     public Iterator<String> iterator() {
         // Raw language names / -latest versions, such as "java" or "java-latest"
         final Stream<String> latestLangReferences = LanguageRegistry.getLanguages().stream()
-                .map(PmdLanguageTypeSupport::normalizeName).flatMap(name -> Stream.of(name, name + "-latest"));
+                .map(PmdLanguageTypeSupport::normalizeName).flatMap(name -> Stream.of(name, name + LATEST_SUFFIX));
 
         // Explicit language-version pairs, such as "java-18" or "apex-54"
         final Stream<String> allLangVersionReferences = LanguageRegistry.getLanguages().stream()
-                .flatMap(l -> l.getVersions().stream())
-                .map(PmdLanguageVersionTypeSupport::normalizeName);
+                .flatMap(PmdLanguageVersionTypeSupport::getNormalizedLangVerStream);
         
         // Collect to a TreeSet to ensure alphabetical order
         final TreeSet<String> candidates = Stream.concat(latestLangReferences, allLangVersionReferences)
@@ -47,8 +48,10 @@ public class PmdLanguageVersionTypeSupport implements ITypeConverter<LanguageVer
     public LanguageVersion convert(final String value) throws Exception {
         // Is it an exact match?
         final Optional<LanguageVersion> langVer = LanguageRegistry.getLanguages().stream()
-                .flatMap(l -> l.getVersions().stream())
-                .filter(lv -> normalizeName(lv).equals(value)).findFirst();
+                .flatMap(l ->
+                    getNormalizedLangVerStream(l).filter(lv -> lv.equals(value))
+                        .map(lv -> l.getVersion(lv.substring(l.getTerseName().length() + 1))))
+                .findFirst();
 
         if (langVer.isPresent()) {
             return langVer.get();
@@ -56,8 +59,8 @@ public class PmdLanguageVersionTypeSupport implements ITypeConverter<LanguageVer
 
         // This is either a -latest or standalone language name
         final String langName;
-        if (value.endsWith("-latest")) {
-            langName = value.substring(0, value.length() - "-latest".length());
+        if (value.endsWith(LATEST_SUFFIX)) {
+            langName = value.substring(0, value.length() - LATEST_SUFFIX.length());
         } else {
             langName = value;
         }
@@ -67,8 +70,16 @@ public class PmdLanguageVersionTypeSupport implements ITypeConverter<LanguageVer
                 .map(Language::getDefaultVersion).findFirst()
                 .orElseThrow(() -> new TypeConversionException("Unknown language version: " + value));
     }
+
+    private static Stream<String> getNormalizedLangVerStream(final Language lang) {
+        return lang.getVersionNamesAndAliases().stream().map(v -> normalizeName(lang.getTerseName() + " " + v));
+    }
+
+    public static String normalizeName(final String langVer) {
+        return langVer.trim().replace(' ', '-');
+    }
     
     public static String normalizeName(final LanguageVersion langVer) {
-        return langVer.getTerseName().replace(' ', '-');
+        return normalizeName(langVer.getTerseName());
     }
 }
