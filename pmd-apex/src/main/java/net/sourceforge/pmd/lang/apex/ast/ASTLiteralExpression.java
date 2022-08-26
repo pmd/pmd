@@ -83,6 +83,17 @@ public class ASTLiteralExpression extends AbstractApexNode.Single<LiteralExpress
         return literalToString(node);
     }
 
+    /**
+     * Returns the name of this literal when it is labeled in an object initializer with named
+     * arguments ({@link ASTNewKeyValueObjectExpression}).
+     * <p>
+     * For example, in the Apex code
+     * <pre>{@code
+     * new X(a = 1, b = 2)
+     * }</pre>
+     * , the {@link ASTLiteralExpression} corresponding to {@code 2} will have the {@code name}
+     * "{@code b}".
+     */
     public String getName() {
         if (getParent() instanceof ASTAssignmentExpression && getParent().getParent() instanceof ASTNewKeyValueObjectExpression) {
             ASTAssignmentExpression parent = (ASTAssignmentExpression) getParent();
