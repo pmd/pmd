@@ -97,7 +97,7 @@ The tool comes with a rather extensive help text, simply running with `--help`!
                             the given language `&lt;lang&gt;`. Parsing errors are ignored and unparsable files
                             are skipped.
                             
-                            <p>`--use-version` is still needed to specify the version of the language to use</p>
+                            <p>Use `--use-version` to specify the language version to use, if it is not the default.</p>
 
                             <p>This option allows to use the xml language for files, that don't
                             use xml as extension. See [example](#analyze-other-xml-formats) below.</p>"
