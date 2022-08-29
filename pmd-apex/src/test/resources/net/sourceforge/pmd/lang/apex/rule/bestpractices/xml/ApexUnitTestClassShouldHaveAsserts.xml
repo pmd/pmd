@@ -76,13 +76,13 @@ private class C2_Assignment_Report_Job_Test {
 
     <test-code>
         <description>#1089 [apex] ApexUnitTestClassShouldHaveAsserts: Verify use of additionalAssertMethodPattern, positive test</description>
-        <rule-property name="additionalAssertMethodPattern">(Assert\.\w+|verify\w+)</rule-property>
+        <rule-property name="additionalAssertMethodPattern">(MyAssert\.\w+|verify\w+)</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 @isTest
 public class Foo {
    public static testMethod void testAssertIsTrue() {
-      Assert.isTrue(someCondition);
+      MyAssert.isTrue(someCondition);
    }
 
    public static testMethod void testLocalVerify() {

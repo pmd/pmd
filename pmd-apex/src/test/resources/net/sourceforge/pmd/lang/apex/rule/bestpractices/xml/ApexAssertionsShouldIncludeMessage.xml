@@ -116,4 +116,72 @@ public class Foo {
 }
         ]]></code>
    </test-code>
+
+    <test-code>
+        <description>[apex] Support new Assert class (Apex v56.0) - negative test case #4097</description>
+        <expected-problems>9</expected-problems>
+        <expected-linenumbers>6,12,19,28,34,40,46,52,58</expected-linenumbers>
+        <code><![CDATA[
+@isTest
+public class Foo {
+    @isTest
+    static void testAreEqual() {
+        String sub = 'abcde'.substring(2);
+        Assert.areEqual('cde', sub);
+   }
+
+    @isTest
+    static void testAreNotEqual() {
+        String sub = 'abcde'.substring(2);
+        Assert.areNotEqual('xyz', sub);
+   }
+
+    @isTest
+    static void testFail() {
+        try {
+            SomeClass.methodUnderTest();
+            Assert.fail();
+        } catch (DmlException ex) {
+            // Add assertions here about the expected exception
+        }
+   }
+
+    @isTest
+    static void testIsFalse() {
+        Boolean containsCode = 'Salesforce'.contains('code');
+        Assert.isFalse(containsCode);
+   }
+
+    @isTest
+    static void testIsInstanceOf() {
+        Account o = new Account();
+        Assert.isInstanceOfType(o, Account.class);
+   }
+
+    @isTest
+    static void testIsNotInstanceOf() {
+        Contact con = new Contact();
+        Assert.isNotInstanceOfType(con, Account.class);
+   }
+
+    @isTest
+    static void testIsNotNull() {
+        String myString = 'value';
+        Assert.isNotNull(myString);
+   }
+
+    @isTest
+    static void testIsNull() {
+        String myString = null;
+        Assert.isNull(myString);
+   }
+
+    @isTest
+    static void testIsTrue() {
+        Boolean containsForce = 'Salesforce'.contains('force');
+        Assert.isTrue(containsForce);
+   }
+}
+        ]]></code>
+    </test-code>
 </test-data>
