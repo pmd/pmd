@@ -6788,6 +6788,15 @@
         "bug",
         "code"
       ]
+    },
+    {
+      "login": "nvuillam",
+      "name": "Nicolas Vuillamy",
+      "avatar_url": "https://avatars.githubusercontent.com/u/17500430?v=4",
+      "profile": "https://github.com/nvuillam",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,
