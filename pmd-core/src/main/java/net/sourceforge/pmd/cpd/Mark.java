@@ -35,6 +35,10 @@ public class Mark implements Comparable<Mark> {
         return this.token.getBeginColumn(); // TODO Java 1.8 make optional
     }
 
+    public int getBeginTokenIndex() {
+        return this.token.getIndex();
+    }
+
     public int getEndLine() {
         return getBeginLine() + getLineCount() - 1;
     }
@@ -46,6 +50,10 @@ public class Mark implements Comparable<Mark> {
      */
     public int getEndColumn() {
         return this.endToken == null ? -1 : this.endToken.getEndColumn(); // TODO Java 1.8 make optional
+    }
+
+    public int getEndTokenIndex() {
+        return this.endToken == null ? -1 : this.endToken.getIndex();
     }
 
     public int getLineCount() {
