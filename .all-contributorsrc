@@ -6768,6 +6768,15 @@
         "code",
         "financial"
       ]
+    },
+    {
+      "login": "pacvz",
+      "name": "pacvz",
+      "avatar_url": "https://avatars.githubusercontent.com/u/35453365?v=4",
+      "profile": "https://github.com/pacvz",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
