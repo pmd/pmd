@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.logging.ConsoleHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -28,6 +29,7 @@ import net.sourceforge.pmd.util.IOUtil;
 import net.sourceforge.pmd.util.database.DBMSMetadata;
 import net.sourceforge.pmd.util.database.DBURI;
 import net.sourceforge.pmd.util.database.SourceObject;
+import net.sourceforge.pmd.util.log.ScopedLogHandlersManager;
 
 public class CPD {
     private static final Logger LOGGER = Logger.getLogger(CPD.class.getName());
@@ -54,8 +56,10 @@ public class CPD {
     }
 
     public void go() {
+        LOGGER.fine("Running match algorithm on " + source.size() + " files...");
         matchAlgorithm = new MatchAlgorithm(source, tokens, configuration.getMinimumTileSize(), listener);
         matchAlgorithm.findMatches();
+        LOGGER.fine("Finished: " + matchAlgorithm.getMatches().size() + " duplicates found");
     }
 
     public Iterator<Match> getMatches() {
@@ -80,6 +84,7 @@ public class CPD {
         if (!dir.exists()) {
             throw new FileNotFoundException("Couldn't find directory " + dir);
         }
+        LOGGER.fine("Searching directory " + dir + " for files");
         FileFinder finder = new FileFinder();
         // TODO - could use SourceFileSelector here
         add(finder.findFilesFrom(dir, configuration.filenameFilter(), recurse));
@@ -145,6 +150,7 @@ public class CPD {
     }
 
     private void addAndThrowLexicalError(SourceCode sourceCode) throws IOException {
+        LOGGER.fine("Tokenizing " + sourceCode.getFileName());
         configuration.tokenizer().tokenize(sourceCode, tokens);
         listener.addedFile(1, new File(sourceCode.getFileName()));
         source.put(sourceCode.getFileName(), sourceCode);
@@ -206,6 +212,13 @@ public class CPD {
             return statusCode;
         }
 
+        final Level logLevel = arguments.isDebug() ? Level.FINER : Level.INFO;
+        final ScopedLogHandlersManager logHandlerManager = new ScopedLogHandlersManager(logLevel, new ConsoleHandler());
+        final Level oldLogLevel = LOGGER.getLevel();
+        // Need to do this, since the static logger has already been initialized
+        // at this point
+        LOGGER.setLevel(logLevel);
+
         CPD cpd = new CPD(arguments);
 
         try {
@@ -233,6 +246,9 @@ public class CPD {
             e.printStackTrace();
             LOGGER.severe(CliMessages.errorDetectedMessage(1, CPDCommandLineInterface.PROGRAM_NAME));
             statusCode = StatusCode.ERROR;
+        } finally {
+            logHandlerManager.close();
+            LOGGER.setLevel(oldLogLevel);
         }
         return statusCode;
     }

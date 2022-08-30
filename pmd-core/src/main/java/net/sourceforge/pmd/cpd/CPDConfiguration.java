@@ -141,6 +141,9 @@ public class CPDConfiguration extends AbstractConfiguration {
             description = "By default CPD exits with status 4 if code duplications are found. Disable this option with '-failOnViolation false' to exit with 0 instead and just write the report.")
     private boolean failOnViolation = true;
 
+    @Parameter(names = { "--debug", "--verbose" }, description = "Debug mode.")
+    private boolean debug = false;
+
     // this has to be a public static class, so that JCommander can use it!
     public static class LanguageConverter implements IStringConverter<Language> {
 
@@ -539,5 +542,15 @@ public class CPDConfiguration extends AbstractConfiguration {
 
     public void setFailOnViolation(boolean failOnViolation) {
         this.failOnViolation = failOnViolation;
+    }
+
+    @Override
+    public boolean isDebug() {
+        return debug;
+    }
+
+    @Override
+    public void setDebug(boolean debug) {
+        this.debug = debug;
     }
 }

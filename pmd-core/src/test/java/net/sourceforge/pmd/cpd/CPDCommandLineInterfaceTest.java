@@ -4,6 +4,10 @@
 
 package net.sourceforge.pmd.cpd;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.not;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -17,9 +21,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.contrib.java.lang.system.SystemErrRule;
 import org.junit.contrib.java.lang.system.SystemOutRule;
 import org.junit.rules.TemporaryFolder;
 
@@ -39,6 +43,10 @@ public class CPDCommandLineInterfaceTest {
 
     @Rule
     public final SystemOutRule log = new SystemOutRule().enableLog().muteForSuccessfulTests();
+
+    @Rule
+    public final SystemErrRule errLog = new SystemErrRule().enableLog().muteForSuccessfulTests();
+
     @Rule
     public final JavaUtilLoggingRule loggingRule = new JavaUtilLoggingRule(PMD.class.getPackage().getName()).mute();
     @Rule
@@ -65,8 +73,8 @@ public class CPDCommandLineInterfaceTest {
         CPD.StatusCode statusCode = CPD.runCpd("--minimum-tokens", "340", "--language", "java", "--files",
                 SRC_DIR, "--format", "xml");
         final String expectedFilesXml = getExpectedFileEntriesXml(NUMBER_OF_TOKENS.keySet());
-        Assert.assertEquals(CPD.StatusCode.OK, statusCode);
-        Assert.assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" + "<pmd-cpd>" + "\n" + expectedFilesXml + "</pmd-cpd>", log.getLog());
+        assertEquals(CPD.StatusCode.OK, statusCode);
+        assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" + "<pmd-cpd>" + "\n" + expectedFilesXml + "</pmd-cpd>", log.getLog());
     }
 
     @Test
@@ -80,12 +88,29 @@ public class CPDCommandLineInterfaceTest {
 
         CPD.StatusCode statusCode = CPD.runCpd("--minimum-tokens", "340", "--language", "java", "--filelist",
                 filelist.toAbsolutePath().toString(), "--format", "xml", "-failOnViolation", "true");
-        Assert.assertEquals(CPD.StatusCode.OK, statusCode);
-        Assert.assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" + "<pmd-cpd>" + "\n" + expectedFilesXml + "</pmd-cpd>", log.getLog());
+        assertEquals(CPD.StatusCode.OK, statusCode);
+        assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" + "<pmd-cpd>" + "\n" + expectedFilesXml + "</pmd-cpd>", log.getLog());
         assertTrue(loggingRule.getLog().contains("Some deprecated options were used on the command-line, including -failOnViolation"));
         assertTrue(loggingRule.getLog().contains("Consider replacing it with --fail-on-violation"));
         // only one parameter is logged
         assertFalse(loggingRule.getLog().contains("Some deprecated options were used on the command-line, including --filelist"));
         assertFalse(loggingRule.getLog().contains("Consider replacing it with --file-list"));
+    }
+
+    @Test
+    public void testDebugLogging() {
+        CPD.StatusCode statusCode = CPD.runCpd("--minimum-tokens", "340", "--language", "java", "--files",
+                SRC_DIR, "--debug");
+        assertEquals(CPD.StatusCode.OK, statusCode);
+        assertThat(errLog.getLog(), containsString("Tokenizing ")); // this is a debug logging
+    }
+
+    @Test
+    public void testNormalLogging() {
+        loggingRule.clear();
+        CPD.StatusCode statusCode = CPD.runCpd("--minimum-tokens", "340", "--language", "java", "--files",
+                SRC_DIR);
+        assertEquals(CPD.StatusCode.OK, statusCode);
+        assertThat(errLog.getLog(), not(containsString("Tokenizing "))); // this is a debug logging
     }
 }

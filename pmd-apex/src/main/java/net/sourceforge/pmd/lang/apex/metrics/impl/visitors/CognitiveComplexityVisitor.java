@@ -19,9 +19,8 @@ import net.sourceforge.pmd.lang.apex.ast.ASTTernaryExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTWhileLoopStatement;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.ast.ApexParserVisitorAdapter;
-
-import apex.jorje.data.ast.BooleanOp;
-import apex.jorje.data.ast.PrefixOp;
+import net.sourceforge.pmd.lang.apex.ast.BooleanOperator;
+import net.sourceforge.pmd.lang.apex.ast.PrefixOperator;
 
 /**
  * @author Gwilym Kuiper
@@ -31,7 +30,7 @@ public class CognitiveComplexityVisitor extends ApexParserVisitorAdapter {
         private int complexity = 0;
         private int nestingLevel = 0;
 
-        private BooleanOp currentBooleanOperation = null;
+        private BooleanOperator currentBooleanOperation = null;
         private String methodName = null;
 
         public double getComplexity() {
@@ -53,7 +52,7 @@ public class CognitiveComplexityVisitor extends ApexParserVisitorAdapter {
             complexity++;
         }
 
-        void booleanOperation(BooleanOp op) {
+        void booleanOperation(BooleanOperator op) {
             if (currentBooleanOperation != op) {
                 if (op != null) {
                     fundamentalComplexity();
@@ -177,8 +176,8 @@ public class CognitiveComplexityVisitor extends ApexParserVisitorAdapter {
     public Object visit(ASTBooleanExpression node, Object data) {
         State state = (State) data;
 
-        BooleanOp op = node.getOperator();
-        if (op == BooleanOp.AND || op == BooleanOp.OR) {
+        BooleanOperator op = node.getOp();
+        if (op == BooleanOperator.LOGICAL_AND || op == BooleanOperator.LOGICAL_OR) {
             state.booleanOperation(op);
         }
 
@@ -189,8 +188,8 @@ public class CognitiveComplexityVisitor extends ApexParserVisitorAdapter {
     public Object visit(ASTPrefixExpression node, Object data) {
         State state = (State) data;
 
-        PrefixOp op = node.getOperator();
-        if (op == PrefixOp.NOT) {
+        PrefixOperator op = node.getOp();
+        if (op == PrefixOperator.LOGICAL_NOT) {
             state.booleanOperation(null);
         }
 
