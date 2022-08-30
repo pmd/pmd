@@ -18,6 +18,7 @@ import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.util.IOUtil;
 import net.sourceforge.pmd.util.datasource.DataSource;
 import net.sourceforge.pmd.util.datasource.FileDataSource;
+import net.sourceforge.pmd.util.datasource.internal.LanguageAwareDataSource;
 
 /**
  * A {@link TextFile} backed by a file in some {@link FileSystem}.
@@ -73,7 +74,7 @@ class NioTextFile implements TextFile {
 
     @Override
     public DataSource toDataSourceCompat() {
-        return new FileDataSource(path.toFile());
+        return new LanguageAwareDataSource(new FileDataSource(path.toFile()), languageVersion);
     }
 
     @Override
