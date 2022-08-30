@@ -103,7 +103,7 @@ class BaseTestParserImpl {
         parseBoolAttribute(testCode, "useAuxClasspath", true, err, "Attribute 'useAuxClasspath' is deprecated and ignored, assumed true");
 
         boolean disabled = parseBoolAttribute(testCode, "disabled", false, err, null)
-                          | !parseBoolAttribute(testCode, "regressionTest", true, err, "Attribute ''regressionTest'' is deprecated, use ''ignored'' with inverted value");
+                          | !parseBoolAttribute(testCode, "regressionTest", true, err, "Attribute ''regressionTest'' is deprecated, use ''disabled'' with inverted value");
 
         descriptor.setDisabled(disabled);
 
