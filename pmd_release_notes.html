@@ -174,7 +174,7 @@
 
 
 <ul id="mysidebar" class="nav">
-    <li class="sidebarTitle">PMD 6.49.0-SNAPSHOT</li>
+    <li class="sidebarTitle">PMD 6.49.0</li>
     <div class="sidebarTitleDate">Release date: 31-August-2022</div>
     
     
@@ -1524,9 +1524,9 @@
    
     <div id="inline-toc"><!-- empty, move TOC here when screen size too small --></div>
     
-  <h2 id="31-august-2022---6490-snapshot">31-August-2022 - 6.49.0-SNAPSHOT</h2>
+  <h2 id="31-august-2022---6490">31-August-2022 - 6.49.0</h2>
 
-<p>The PMD team is pleased to announce PMD 6.49.0-SNAPSHOT.</p>
+<p>The PMD team is pleased to announce PMD 6.49.0.</p>
 
 <p>This is a minor release.</p>
 
@@ -1566,15 +1566,15 @@ For the changes, see <a href="https://github.com/pmd/pmd-designer/releases/tag/6
 These methods all leaked internal Jorje enums. These enums have been replaced now by enums the
 PMD’s AST package.
     <ul>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-apex/6.49.0-SNAPSHOT/net/sourceforge/pmd/lang/apex/ast/ASTAssignmentExpression.html#getOperator()"><code>ASTAssignmentExpression#getOperator</code></a></li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-apex/6.49.0-SNAPSHOT/net/sourceforge/pmd/lang/apex/ast/ASTBinaryExpression.html#getOperator()"><code>ASTBinaryExpression#getOperator</code></a></li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-apex/6.49.0-SNAPSHOT/net/sourceforge/pmd/lang/apex/ast/ASTBooleanExpression.html#getOperator()"><code>ASTBooleanExpression#getOperator</code></a></li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-apex/6.49.0-SNAPSHOT/net/sourceforge/pmd/lang/apex/ast/ASTPostfixExpression.html#getOperator()"><code>ASTPostfixExpression#getOperator</code></a></li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-apex/6.49.0-SNAPSHOT/net/sourceforge/pmd/lang/apex/ast/ASTPrefixExpression.html#getOperator()"><code>ASTPrefixExpression#getOperator</code></a></li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-apex/6.49.0/net/sourceforge/pmd/lang/apex/ast/ASTAssignmentExpression.html#getOperator()"><code>ASTAssignmentExpression#getOperator</code></a></li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-apex/6.49.0/net/sourceforge/pmd/lang/apex/ast/ASTBinaryExpression.html#getOperator()"><code>ASTBinaryExpression#getOperator</code></a></li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-apex/6.49.0/net/sourceforge/pmd/lang/apex/ast/ASTBooleanExpression.html#getOperator()"><code>ASTBooleanExpression#getOperator</code></a></li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-apex/6.49.0/net/sourceforge/pmd/lang/apex/ast/ASTPostfixExpression.html#getOperator()"><code>ASTPostfixExpression#getOperator</code></a></li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-apex/6.49.0/net/sourceforge/pmd/lang/apex/ast/ASTPrefixExpression.html#getOperator()"><code>ASTPrefixExpression#getOperator</code></a></li>
     </ul>
 
     <p>All these classes have now a new <code class="language-plaintext highlighter-rouge">getOp()</code> method. Existing code should be refactored to use this method instead.
-It returns the new enums, like <a href="https://docs.pmd-code.org/apidocs/pmd-apex/6.49.0-SNAPSHOT/net/sourceforge/pmd/lang/apex/ast/AssignmentOperator.html#"><code>AssignmentOperator</code></a>, and avoids
+It returns the new enums, like <a href="https://docs.pmd-code.org/apidocs/pmd-apex/6.49.0/net/sourceforge/pmd/lang/apex/ast/AssignmentOperator.html#"><code>AssignmentOperator</code></a>, and avoids
 the dependency to Jorje.</p>
   </li>
 </ul>
@@ -1588,6 +1588,13 @@ the dependency to Jorje.</p>
   <li><a href="https://github.com/pmd/pmd/pull/4095">#4095</a>: [core] CPD: Added begin and end token to XML reports - <a href="https://github.com/pacvz">@pacvz</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/4097">#4097</a>: [apex] ApexUnitTestClassShouldHaveAssertsRule: Support new Assert class (Apex v56.0) - <a href="https://github.com/tprouvot">@tprouvot</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/4104">#4104</a>: [doc] Add MegaLinter in the list of integrations - <a href="https://github.com/nvuillam">@nvuillam</a></li>
+</ul>
+
+<h3 id="stats">Stats</h3>
+<ul>
+  <li>49 commits</li>
+  <li>10 closed tickets &amp; PRs</li>
+  <li>Days since last release: 32</li>
 </ul>
 
 
