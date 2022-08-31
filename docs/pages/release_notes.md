@@ -54,5 +54,10 @@ For the changes, see [PMD Designer Changelog](https://github.com/pmd/pmd-designe
 * [#4097](https://github.com/pmd/pmd/pull/4097): \[apex] ApexUnitTestClassShouldHaveAssertsRule: Support new Assert class (Apex v56.0) - [@tprouvot](https://github.com/tprouvot)
 * [#4104](https://github.com/pmd/pmd/pull/4104): \[doc] Add MegaLinter in the list of integrations - [@nvuillam](https://github.com/nvuillam)
 
+### Stats
+* 49 commits
+* 10 closed tickets & PRs
+* Days since last release: 32
+
 {% endtocmaker %}
 

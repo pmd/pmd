@@ -125,6 +125,23 @@ the breaking API changes will be performed in 7.0.0.
 an API is tagged as `@Deprecated` or not in the latest minor release. During the development of 7.0.0,
 we may decide to remove some APIs that were not tagged as deprecated, though we'll try to avoid it." %}
 
+#### 6.49.0
+
+##### Deprecated API
+
+* In order to reduce the dependency on Apex Jorje classes, the following methods have been deprecated.
+  These methods all leaked internal Jorje enums. These enums have been replaced now by enums the
+  PMD's AST package.
+    * {% jdoc !!apex::lang.apex.ast.ASTAssignmentExpression#getOperator() %}
+    * {% jdoc !!apex::lang.apex.ast.ASTBinaryExpression#getOperator() %}
+    * {% jdoc !!apex::lang.apex.ast.ASTBooleanExpression#getOperator() %}
+    * {% jdoc !!apex::lang.apex.ast.ASTPostfixExpression#getOperator() %}
+    * {% jdoc !!apex::lang.apex.ast.ASTPrefixExpression#getOperator() %}
+
+  All these classes have now a new `getOp()` method. Existing code should be refactored to use this method instead.
+  It returns the new enums, like {% jdoc apex::lang.apex.ast.AssignmentOperator %}, and avoids
+  the dependency to Jorje.
+
 #### 6.48.0
 
 ##### CPD CLI
