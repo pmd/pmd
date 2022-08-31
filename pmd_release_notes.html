@@ -174,8 +174,8 @@
 
 
 <ul id="mysidebar" class="nav">
-    <li class="sidebarTitle">PMD 6.49.0</li>
-    <div class="sidebarTitleDate">Release date: 31-August-2022</div>
+    <li class="sidebarTitle">PMD 6.50.0-SNAPSHOT</li>
+    <div class="sidebarTitleDate">Release date: 30-September-2022</div>
     
     
     
@@ -1524,78 +1524,19 @@
    
     <div id="inline-toc"><!-- empty, move TOC here when screen size too small --></div>
     
-  <h2 id="31-august-2022---6490">31-August-2022 - 6.49.0</h2>
+  <h2 id="30-september-2022---6500-snapshot">30-September-2022 - 6.50.0-SNAPSHOT</h2>
 
-<p>The PMD team is pleased to announce PMD 6.49.0.</p>
+<p>The PMD team is pleased to announce PMD 6.50.0-SNAPSHOT.</p>
 
 <p>This is a minor release.</p>
 
 <h3 id="new-and-noteworthy">New and noteworthy</h3>
 
-<h4 id="updated-pmd-designer">Updated PMD Designer</h4>
-
-<p>This PMD release ships a new version of the pmd-designer.
-For the changes, see <a href="https://github.com/pmd/pmd-designer/releases/tag/6.49.0">PMD Designer Changelog</a>.</p>
-
 <h3 id="fixed-issues">Fixed Issues</h3>
-
-<ul>
-  <li>apex
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/4096">#4096</a>: [apex] ApexAssertionsShouldIncludeMessage and ApexUnitTestClassShouldHaveAsserts: support new Assert class (introduced with Apex v56.0)</li>
-    </ul>
-  </li>
-  <li>core
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/3970">#3970</a>: [core] FileCollector.addFile ignores language parameter</li>
-    </ul>
-  </li>
-  <li>java-codestyle
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/4082">#4082</a>: [java] UnnecessaryImport false positive for on-demand imports of nested classes</li>
-    </ul>
-  </li>
-</ul>
 
 <h3 id="api-changes">API Changes</h3>
 
-<h4 id="deprecated-api">Deprecated API</h4>
-
-<ul>
-  <li>In order to reduce the dependency on Apex Jorje classes, the following methods have been deprecated.
-These methods all leaked internal Jorje enums. These enums have been replaced now by enums the
-PMD’s AST package.
-    <ul>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-apex/6.49.0/net/sourceforge/pmd/lang/apex/ast/ASTAssignmentExpression.html#getOperator()"><code>ASTAssignmentExpression#getOperator</code></a></li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-apex/6.49.0/net/sourceforge/pmd/lang/apex/ast/ASTBinaryExpression.html#getOperator()"><code>ASTBinaryExpression#getOperator</code></a></li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-apex/6.49.0/net/sourceforge/pmd/lang/apex/ast/ASTBooleanExpression.html#getOperator()"><code>ASTBooleanExpression#getOperator</code></a></li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-apex/6.49.0/net/sourceforge/pmd/lang/apex/ast/ASTPostfixExpression.html#getOperator()"><code>ASTPostfixExpression#getOperator</code></a></li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-apex/6.49.0/net/sourceforge/pmd/lang/apex/ast/ASTPrefixExpression.html#getOperator()"><code>ASTPrefixExpression#getOperator</code></a></li>
-    </ul>
-
-    <p>All these classes have now a new <code class="language-plaintext highlighter-rouge">getOp()</code> method. Existing code should be refactored to use this method instead.
-It returns the new enums, like <a href="https://docs.pmd-code.org/apidocs/pmd-apex/6.49.0/net/sourceforge/pmd/lang/apex/ast/AssignmentOperator.html#"><code>AssignmentOperator</code></a>, and avoids
-the dependency to Jorje.</p>
-  </li>
-</ul>
-
 <h3 id="external-contributions">External Contributions</h3>
-
-<ul>
-  <li><a href="https://github.com/pmd/pmd/pull/4081">#4081</a>: [apex] Remove Jorje leaks outside <code class="language-plaintext highlighter-rouge">ast</code> package - <a href="https://github.com/eklimo">@eklimo</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/4083">#4083</a>: [java] UnnecessaryImport false positive for on-demand imports of nested classes (fix for #4082) - <a href="https://github.com/abyss638">@abyss638</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/4092">#4092</a>: [apex] Implement ApexQualifiableNode for ASTUserEnum - <a href="https://github.com/aaronhurst-google">@aaronhurst-google</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/4095">#4095</a>: [core] CPD: Added begin and end token to XML reports - <a href="https://github.com/pacvz">@pacvz</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/4097">#4097</a>: [apex] ApexUnitTestClassShouldHaveAssertsRule: Support new Assert class (Apex v56.0) - <a href="https://github.com/tprouvot">@tprouvot</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/4104">#4104</a>: [doc] Add MegaLinter in the list of integrations - <a href="https://github.com/nvuillam">@nvuillam</a></li>
-</ul>
-
-<h3 id="stats">Stats</h3>
-<ul>
-  <li>49 commits</li>
-  <li>10 closed tickets &amp; PRs</li>
-  <li>Days since last release: 32</li>
-</ul>
 
 
 
