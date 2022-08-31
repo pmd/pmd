@@ -4,15 +4,16 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import com.google.summit.ast.Node;
 import net.sourceforge.pmd.annotation.InternalApi;
 
-public class ASTThisVariableExpression extends AbstractApexNode.Single<Node> {
+import com.google.summit.ast.expression.ThisExpression;
+
+public class ASTThisVariableExpression extends AbstractApexNode.Single<ThisExpression> {
 
     @Deprecated
     @InternalApi
-    public ASTThisVariableExpression(Node thisVariableExpression) {
-        super(thisVariableExpression);
+    public ASTThisVariableExpression(ThisExpression thisExpression) {
+        super(thisExpression);
     }
 
     @Override

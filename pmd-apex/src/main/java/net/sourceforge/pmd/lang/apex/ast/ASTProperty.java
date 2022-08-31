@@ -39,6 +39,6 @@ public class ASTProperty extends AbstractApexNode.Single<PropertyDeclaration> {
      * constant {@link #ACCESSOR_PREFIX} prepended to the name of the property.
      */
     public static String formatAccessorName(ASTProperty property) {
-        return ACCESSOR_PREFIX + property.node.getId().asCodeString();
+        return ACCESSOR_PREFIX + property.node.getId().getString();
     }
 }

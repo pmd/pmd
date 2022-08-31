@@ -4,14 +4,15 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import com.google.summit.ast.Node;
 import net.sourceforge.pmd.annotation.InternalApi;
 
-public class ASTExpressionStatement extends AbstractApexNode.Single<Node> {
+import com.google.summit.ast.statement.ExpressionStatement;
+
+public class ASTExpressionStatement extends AbstractApexNode.Single<ExpressionStatement> {
 
     @Deprecated
     @InternalApi
-    public ASTExpressionStatement(Node expressionStatement) {
+    public ASTExpressionStatement(ExpressionStatement expressionStatement) {
         super(expressionStatement);
     }
 
@@ -20,6 +21,7 @@ public class ASTExpressionStatement extends AbstractApexNode.Single<Node> {
         return visitor.visit(this, data);
     }
 
+    /*
     private int beginColumnDiff = -1;
 
     @Override
@@ -42,4 +44,6 @@ public class ASTExpressionStatement extends AbstractApexNode.Single<Node> {
 
         return super.getBeginColumn() - beginColumnDiff;
     }
+     */
+    // TODO(b/239648780)
 }

@@ -47,7 +47,7 @@ public class ASTMethod extends AbstractApexNode.Single<MethodDeclaration> implem
         } else if (getParent() instanceof ASTProperty) {
             return ASTProperty.formatAccessorName((ASTProperty) getParent());
         } else {
-            return node.getId().asCodeString();
+            return node.getId().getString();
         }
     }
 

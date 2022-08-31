@@ -88,8 +88,41 @@ public abstract class AbstractApexNode extends AbstractApexNodeBase implements A
         }
     }
 
+    /**
+     * {@link AbstractApexNode} that doesn't directly wrap a {@link Node}.
+     *
+     * @deprecated Use {@link ApexNode}
+     */
+    @Deprecated
+    @InternalApi
+    public static abstract class Empty extends AbstractApexNode {
+
+        protected Empty() {
+            super(Void.class);
+        }
+
+        @Override
+        void calculateLineNumbers(SourceCodePositioner positioner) {
+            // no operation
+        }
+
+        @Override
+        public boolean hasRealLoc() {
+            return false;
+        }
+
+        @Override
+        public String getLocation() {
+            return "no location";
+        }
+    }
+
     protected AbstractApexNode(Class<?> klass) {
         super(klass);
+    }
+
+    protected AbstractApexNode() {
+        this(Void.class);
     }
 
     @Override
@@ -128,11 +161,10 @@ public abstract class AbstractApexNode extends AbstractApexNodeBase implements A
 
     @Override
     public String getDefiningType() {
-        // TypeInfo definingType = getDefiningTypeOrNull();
-        // if (definingType != null) {
-        //     return definingType.getApexName();
-        // }
-        // TODO(b/239648780)
+        ApexRootNode<?> rootNode = this instanceof ApexRootNode ? (ApexRootNode<?>) this : getFirstParentOfType(ApexRootNode.class);
+        if (rootNode != null) {
+            return rootNode.node.getQualifiedName();
+        }
         return null;
     }
 

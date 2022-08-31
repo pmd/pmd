@@ -12,8 +12,8 @@ public class ASTPostfixExpression extends AbstractApexNode.Single<UnaryExpressio
 
     @Deprecated
     @InternalApi
-    public ASTPostfixExpression(UnaryExpression postfixExpression) {
-        super(postfixExpression);
+    public ASTPostfixExpression(UnaryExpression unaryExpression) {
+        super(unaryExpression);
     }
 
     @Override

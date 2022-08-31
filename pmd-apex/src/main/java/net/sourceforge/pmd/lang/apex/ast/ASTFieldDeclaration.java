@@ -27,6 +27,6 @@ public class ASTFieldDeclaration extends AbstractApexNode.Single<FieldDeclaratio
     }
 
     public String getName() {
-        return node.getId().asCodeString();
+        return node.getId().getString();
     }
 }
