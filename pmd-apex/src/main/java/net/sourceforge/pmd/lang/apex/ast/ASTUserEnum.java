@@ -18,10 +18,6 @@ public final class ASTUserEnum extends BaseApexClass<UserEnum> {
         return visitor.visit(this, data);
     }
 
-    public ASTModifierNode getModifiers() {
-        return getFirstChildOfType(ASTModifierNode.class);
-    }
-
     @Override
     public ApexQualifiedName getQualifiedName() {
         if (qname == null) {

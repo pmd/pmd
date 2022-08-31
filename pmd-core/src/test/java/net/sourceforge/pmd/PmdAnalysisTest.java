@@ -33,7 +33,7 @@ import net.sourceforge.pmd.reporting.ReportStats;
 /**
  * @author Clément Fournier
  */
-class PmdAnalysisTest {
+public class PmdAnalysisTest {
 
     @Test
     void testPmdAnalysisWithEmptyConfig() {
