@@ -109,6 +109,24 @@ class Foo {
         return bar;
     }
 }
-        ]]></code>
+        ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>[apex] UnusedLocalVariable - false positive on string query #2669</description>
+        <expected-problems>0</expected-problems>
+        <code>
+            <![CDATA[
+class Foo {
+    public Database.QueryLocator start(Database.BatchableContext BC) {
+        String customValue  = 'Test';
+        String query = 'SELECT Id FROM Case ';
+        query += 'WHERE CustomField__c = :customValue ';
+        return Database.getQueryLocator(query);
+    }
+}
+        ]]>
+        </code>
     </test-code>
 </test-data>
