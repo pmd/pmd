@@ -28,4 +28,10 @@ result of the PMD maven plugin.
 
 See [Other Tools / Integrations](pmd_userdocs_tools.html#github-actions)
 
+## MegaLinter
+
+[🦙 Mega-Linter](https://oxsecurity.github.io/megalinter/latest/) analyzes 50 languages, 22 formats, 21 tooling formats, excessive copy-pastes, spelling mistakes and security issues in your repository sources with a GitHub Action, other CI tools or locally.
+
+It [natively embeds PMD](https://oxsecurity.github.io/megalinter/latest/descriptors/java_pmd/).
+
 <!-- TODO: Find out about other plugins ? -->

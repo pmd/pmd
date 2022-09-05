@@ -12,6 +12,7 @@ import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.util.datasource.DataSource;
 import net.sourceforge.pmd.util.datasource.ReaderDataSource;
+import net.sourceforge.pmd.util.datasource.internal.LanguageAwareDataSource;
 
 /**
  * Read-only view on a string.
@@ -64,9 +65,10 @@ class StringTextFile implements TextFile {
 
     @Override
     public DataSource toDataSourceCompat() {
-        return new ReaderDataSource(
+        return new LanguageAwareDataSource(new ReaderDataSource(
             new StringReader(content),
-            pathId
+            pathId),
+            languageVersion
         );
     }
 

@@ -9,20 +9,18 @@ import java.util.Arrays;
 import org.junit.Assert;
 import org.junit.Test;
 
-import apex.jorje.semantic.ast.compilation.Compilation;
-
 public class ASTUserClassTest extends ApexParserTestBase {
 
     @Test
     public void testClassName() {
-        ApexNode<Compilation> node = parse("class Foo { }");
+        ApexNode<?> node = parse("class Foo { }");
         Assert.assertSame(ASTUserClass.class, node.getClass());
         Assert.assertEquals("Foo", node.getImage());
     }
 
     @Test
     public void testInnerClassName() {
-        ApexNode<Compilation> node = parse("class Foo { class Bar { } }");
+        ApexNode<?> node = parse("class Foo { class Bar { } }");
         Assert.assertSame(ASTUserClass.class, node.getClass());
         ASTUserClass innerNode = node.getFirstDescendantOfType(ASTUserClass.class);
         Assert.assertNotNull(innerNode);

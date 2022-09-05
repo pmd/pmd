@@ -9,13 +9,11 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 
-import apex.jorje.semantic.ast.compilation.Compilation;
-
 public class ASTSwitchStatementTest extends ApexParserTestBase {
 
     @Test
     public void testExamples() {
-        ApexNode<Compilation> node = parseResource("SwitchStatements.cls");
+        ApexNode<?> node = parseResource("SwitchStatements.cls");
         List<ASTSwitchStatement> switchStatements = node.findDescendantsOfType(ASTSwitchStatement.class);
         Assert.assertEquals(4, switchStatements.size());
 
