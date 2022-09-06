@@ -6,7 +6,7 @@ sidebaractiveurl: /pmd_projectdocs_decisions.html
 adr: true
 # Proposed / Accepted / Deprecated / Superseded
 adr_status: "Proposed"
-last_updated: July 2022
+last_updated: September 2022
 ---
 
 # Context
@@ -31,7 +31,7 @@ See also the blog post [Documenting Architecture Decisions](https://cognitect.co
 by Michael Nygard.
 
 There are many templates around to choose from. <https://github.com/joelparkerhenderson/architecture-decision-record>
-gives a nice summary.
+gives a nice summary. The page <https://adr.github.io/> gives a good overview on ADR and for adr-related tooling.
 
 # Decision
 
@@ -39,9 +39,19 @@ We will document the decisions we make as a project as a collection of "Architec
 In order to keep it simple, we will use only a simple template proposed by Michael Nygard.
 The documents are stored together with the source code and are part of the generated documentation site.
 
+A new ADR should be proposed with a pull request to open the discussion.
+The initial status of the new ADR is "Proposed". When maintainer consensus is reached during the PR
+review, then the status is changed to "Accepted" when the PR is merged.
+A new entry in the "Change History" section should be added, when the PR is merged.
+
+In order to propose a change to an existing ADR a new pull request should be opened which modifies the ADR.
+The change can be to amend the ADR or to challenge it and maybe deprecate it. A new entry in the
+"Change History" section should be added to summary the change. When maintainer consensus is reached
+during the PR review, then the PR can be merged and the ADR is updated.
+
 # Status
 
-{{ page.adr_status }}
+{{ page.adr_status }} (Last updated: {{ page.last_updated }})
 
 # Consequences
 
@@ -50,3 +60,9 @@ and can read the context and consequences of the decisions. This will likely als
 as the decisions need to be formulated and written down. Everybody is on the same page.
 
 However, this also adds additional tasks, and it takes time to write down and document the decisions.
+
+# Change History
+
+2022-09-06: Added section "Change History" to the template. Added "Last updated" to "Status" section.
+
+2022-07-28: Proposed initial version.

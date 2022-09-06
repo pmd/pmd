@@ -6,7 +6,7 @@ sidebaractiveurl: /pmd_projectdocs_decisions.html
 adr: true
 # Proposed / Accepted / Deprecated / Superseded
 adr_status: "Proposed"
-last_updated: July 2022
+last_updated: September 2022
 ---
 
 # Context
@@ -39,27 +39,31 @@ and to keep it within bounds and therefore maintainable we came up with the foll
 * For (unit) testing, Kotlin can be used in `pmd-core` and in the language modules. The test frameworks can also
   use Kotlin (`pmd-test` doesn't yet, `pmd-lang-test` does already).
 * Additionally: from now on, we allow to have the individual language modules be implemented in different languages
-  when it makes sense. So, a language module might decide to use plain Java (like now) or also Kotlin
-  (or other languages if it fits).
+  when it makes sense. So, a language module might decide to use plain Java (like now) or also Kotlin.
 * When mixing languages (e.g. Java + Kotlin), we need to care that the modules can still be used with plain Java.
   E.g. when writing custom rules: `pmd-java` provides a couple of APIs for rules (like symbol table, type resolution)
   and we should not force the users to use Kotlin (at least not for language modules which already exist and
   for which users might have written custom rules in Java already).
 * It is also possible to write the entire language module in Kotlin only. Then the rules would be written in Kotlin
   as well. And the possible problems when mixing languages are gone. But that applies only for new language modules.
-  For compatibility reasons an existing language modules shouldn't be rewritten into Kotlin. That would be a
+* When refactoring an existing language module from Java only to introduce Kotlin, care needs to be taken to
+  not make incompatible changes. If compatibility (binary or source) can't be maintained, then that would be a
   major version change.
 
 # Status
 
-{{ page.adr_status }}
+{{ page.adr_status }} (Last updated: {{ page.last_updated }})
 
 # Consequences
 
 Allowing more Kotlin in PMD can attract new contributions. It might make it easier to develop small DSLs.
-Also, other languages than Kotlin could be used, e.g. for `pmd-scala` Scala might make sense.
+In the future we might also consider to use other languages than Kotlin, e.g. for `pmd-scala` Scala might make sense.
 
-On the other side, other IDEs than IntelliJ IDEA will have a difficult time to deal with PMD's source code.
-Eclipse can't be used practically anymore.
+On the other side, other IDEs than IntelliJ IDEA will have a difficult time to deal with PMD's source code
+when Kotlin is used. Eclipse can't be used practically anymore.
 
 Maintaining a polyglot code base with multiple languages is likely to be more challenging.
+
+# Change History
+
+2022-07-28: Proposed initial version.

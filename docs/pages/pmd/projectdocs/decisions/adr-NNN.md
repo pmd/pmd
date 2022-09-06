@@ -21,8 +21,14 @@ What is the change that we're proposing and/or doing?
 
 # Status
 
-{{ page.adr_status }}
+{{ page.adr_status }} (Last updated: {{ page.last_updated }})
 
 # Consequences
 
 What becomes easier or more difficult to do because of this change?
+
+# Change History
+
+YYYY-MM-DD: Add xyz.
+
+YYYY-MM-DD: Proposed initial version.

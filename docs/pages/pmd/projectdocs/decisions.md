@@ -1,5 +1,5 @@
 ---
-title: Architecture Design Decisions
+title: Architecture Decisions
 sidebar: pmd_sidebar
 permalink: pmd_projectdocs_decisions.html
 last_updated: July 2022
