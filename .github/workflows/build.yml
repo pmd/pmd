@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - master
+      - experimental-apex-parser
     tags:
       - '**'
   pull_request:
