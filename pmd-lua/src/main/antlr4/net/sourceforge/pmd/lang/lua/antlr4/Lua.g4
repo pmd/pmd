@@ -91,7 +91,7 @@ stat
     | 'function' funcname funcbody
     | 'local' 'function' NAME funcbody
     | 'local' bindinglist ('=' explist)?
-    | ('export')? 'type' NAME ('<' GenericTypeParameterList '>')? '=' Type
+    | ('export')? 'type' NAME ('<' genericTypeParameterList '>')? '=' type
     ;
 
 attnamelist
@@ -115,7 +115,7 @@ funcname
     ;
 
 funcbody
-    : ('<' GenericTypeParameterList '>')? '(' parlist? ')' (':' '...'? ReturnType ) block 'end' // GenericTypeParameterList and ReturnType
+    : ('<' genericTypeParameterList '>')? '(' parlist? ')' (':' '...'? returnType ) block 'end' // genericTypeParameterList and returnType
     ;
 
 parlist
@@ -131,7 +131,7 @@ namelist
     ;
 
 binding
-    : NAME (':' Type ('?')?)?
+    : NAME (':' type ('?')?)?
     ;
 
 bindinglist: binding (',' bindinglist)?;
@@ -158,10 +158,10 @@ exp
 
 ifelseexp: 'if' exp 'then' exp ('elseif' exp 'then' exp)* 'else' exp;
 
-asexp: simpleexp ('::' Type)?;
+asexp: simpleexp ('::' type)?;
 
 simpleexp
-    : 'nil' | 'false' | 'true'
+    : NIL | BOOLEAN
     | number
     | string
     | '...'
@@ -242,62 +242,73 @@ number
     ;
 
 string
-    : NORMALSTRING | CHARSTRING | LONGSTRING
+    : NORMALSTRING | LONGSTRING
     ;
 
-SimpleType
-    : 'nil'
-    | SingletonType
-    | NAME /* ('.' NAME)? */ ('<' TypeParams '>')?
+simpleType
+    : NIL
+    | singletonType
+    | NAME ('.' NAME)? ('<' typeParams '>')?
     | 'typeof' '(' NAME ('(' ')')? | '...' ')' // can't use `exp`, manually handle common cases
-    | TableType
-    | FunctionType
+    | tableType
+    | functionType
     ;
 
-SingletonType
-    : NORMALSTRING | CHARSTRING
-    | 'true'
-    | 'false'
+singletonType
+    : NORMALSTRING | BOOLEAN
     ;
 
-Type
-    : SimpleType ('?')?
-    | SimpleType ('?')? ('|' Type) // can't use Type because it's mutually left-recursive
-    | SimpleType ('?')? ('&' Type) // can't use Type because it's mutually left-recursive
+type
+    : simpleType ('?')?
+    | simpleType ('?')? ('|' type) // can't use type because it's mutually left-recursive
+    | simpleType ('?')? ('&' type) // can't use type because it's mutually left-recursive
     ;
 
-GenericTypePackParameter: NAME '...' ('=' (('(' (TypeList)? ')') | VariadicTypePack | GenericTypePack))?; // TypePack must be inlined here
+genericTypePackParameter: NAME '...' ('=' (('(' (typeList)? ')') | variadicTypePack | genericTypePack))?; // typePack must be inlined here
 
-GenericTypeParameterList: NAME ('=' Type)? (',' GenericTypeParameterList)? | GenericTypePackParameter (',' GenericTypePackParameter)*;
+genericTypeParameterList: NAME ('=' type)? (',' genericTypeParameterList)? | genericTypePackParameter (',' genericTypePackParameter)*;
 
-TypeList: Type (',' Type)? | VariadicTypePack;
+typeList: type (',' type)? | variadicTypePack;
 
-TypeParams: (Type | VariadicTypePack | GenericTypePack) (',' TypeParams)?; // had to remove TypePack
+typeParams: (type | variadicTypePack | genericTypePack) (',' typeParams)?; // had to remove typePack
 
-// TypePack: inlined everywhere to avoid overly greedy match when out-of-context
+// typePack: inlined everywhere to avoid overly greedy match when out-of-context
 
-GenericTypePack: NAME '...';
+genericTypePack: NAME '...';
 
-VariadicTypePack: '...' Type;
+variadicTypePack: '...' type;
 
-ReturnType: Type | '(' Type ',' Type ')' | '(' ')'; // can't use TypePack, inline common cases
+returnType: variadicTypePack | '(' typeList ')' | '(' ')'; // can't use typePack, inline common cases
 
-TableIndexer: '[' Type ']' ':' Type;
+tableIndexer: '[' type ']' ':' type;
 
-TableProp: NAME ':' Type;
+tableProp: NAME ':' type;
 
-TablePropOrIndexer
-    : TableProp | TableIndexer;
+tablePropOrIndexer
+    : tableProp | tableIndexer;
 
-PropList
-    : TablePropOrIndexer ((','|';') TablePropOrIndexer)* (','|';')?;
+propList
+    : tablePropOrIndexer ((','|';') tablePropOrIndexer)* (','|';')?;
 
-TableType
-    : '{' PropList '}';
+tableType
+    : '{' propList '}';
 
-FunctionType: ('<' GenericTypeParameterList '>')? '(' (TypeList)? ')' '->' (Type | '(' ')' | '(' (TypeList) ')'); // inline ReturnType to avoid greediness
+functionType: ('<' genericTypeParameterList '>')? '(' (typeList)? ')' '->' returnType;
+
+require
+    : 'require' '(' (NAME ('.' NAME)*) | NORMALSTRING ')' ('::' type)?
+    ;
+
 
 // LEXER
+
+NIL 
+    : 'nil' 
+    ;
+
+BOOLEAN 
+    : 'true' | 'false' 
+    ;
 
 NAME
     : [a-zA-Z_][a-zA-Z_0-9]*
@@ -305,10 +316,7 @@ NAME
 
 NORMALSTRING
     : '"' ( EscapeSequence | ~('\\'|'"') )* '"'
-    ;
-
-CHARSTRING
-    : '\'' ( EscapeSequence | ~('\''|'\\') )* '\''
+    | '\'' ( EscapeSequence | ~('\\'|'\'') )* '\''
     ;
 
 LONGSTRING
@@ -401,7 +409,7 @@ LINE_COMMENT
     ;
 
 WS
-    : [ \t\u000C\r\n]+ -> skip
+    : [ \n\r\t\u000B\u000C\u0000]+ -> channel(HIDDEN)
     ;
 
 SHEBANG
