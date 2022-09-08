@@ -62,6 +62,7 @@ Tested by Matt Hargett with:
     - Entire codebase and test suite for neovim v0.7.2: https://github.com/neovim/neovim/tree/v0.7.2
     - Entire codebase for World of Warcraft Interface: https://github.com/tomrus88/BlizzardInterfaceCode
     - Benchmarks and conformance test suite for Luau 0.537: https://github.com/Roblox/luau/tree/0.537
+    - Entire Lua codebase for nmap 7.92 : https://github.com/nmap/nmap
 */
 
 grammar Lua;
@@ -115,7 +116,7 @@ funcname
     ;
 
 funcbody
-    : ('<' genericTypeParameterList '>')? '(' parlist? ')' (':' '...'? returnType ) block 'end' // genericTypeParameterList and returnType
+    : ('<' genericTypeParameterList '>')? '(' parlist? ')' (':' '...'? returnType ) block 'end'
     ;
 
 parlist
@@ -249,7 +250,7 @@ simpleType
     : NIL
     | singletonType
     | NAME ('.' NAME)? ('<' typeParams '>')?
-    | 'typeof' '(' NAME ('(' ')')? | '...' ')' // can't use `exp`, manually handle common cases
+    | 'typeof' '(' exp ')'
     | tableType
     | functionType
     ;
@@ -260,25 +261,25 @@ singletonType
 
 type
     : simpleType ('?')?
-    | simpleType ('?')? ('|' type) // can't use type because it's mutually left-recursive
-    | simpleType ('?')? ('&' type) // can't use type because it's mutually left-recursive
+    | type ('|' type)
+    | type ('&' type)
     ;
 
-genericTypePackParameter: NAME '...' ('=' (('(' (typeList)? ')') | variadicTypePack | genericTypePack))?; // typePack must be inlined here
+genericTypePackParameter: NAME '...' ('=' (typePack | variadicTypePack | genericTypePack))?;
 
 genericTypeParameterList: NAME ('=' type)? (',' genericTypeParameterList)? | genericTypePackParameter (',' genericTypePackParameter)*;
 
-typeList: type (',' type)? | variadicTypePack;
+typeList: type (',' typeList)? | variadicTypePack;
 
-typeParams: (type | variadicTypePack | genericTypePack) (',' typeParams)?; // had to remove typePack
+typeParams: (type | typePack | variadicTypePack | genericTypePack) (',' typeParams)?;
 
-// typePack: inlined everywhere to avoid overly greedy match when out-of-context
+typePack: '(' (typeList)? ')';
 
 genericTypePack: NAME '...';
 
 variadicTypePack: '...' type;
 
-returnType: variadicTypePack | '(' typeList ')' | '(' ')'; // can't use typePack, inline common cases
+returnType: type | typePack;
 
 tableIndexer: '[' type ']' ':' type;
 
@@ -288,7 +289,7 @@ tablePropOrIndexer
     : tableProp | tableIndexer;
 
 propList
-    : tablePropOrIndexer ((','|';') tablePropOrIndexer)* (','|';')?;
+    : tablePropOrIndexer (fieldsep tablePropOrIndexer)* fieldsep?;
 
 tableType
     : '{' propList '}';
@@ -296,7 +297,7 @@ tableType
 functionType: ('<' genericTypeParameterList '>')? '(' (typeList)? ')' '->' returnType;
 
 require
-    : 'require' '(' (NAME ('.' NAME)*) | NORMALSTRING ')' ('::' type)?
+    : 'local'? bindinglist '=' 'require' '(' exp ')' ('.' NAME)* ('::' type)? ';'?
     ;
 
 

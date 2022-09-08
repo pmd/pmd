@@ -8,7 +8,7 @@ local _notVariable = not x
 local _length = #{x}
 export type Function<T... = ...any> = (...any) -> T...
 local _PlatformService = nil
-local game = require(script.Parent.game) :: any
+local game = require(script.Parent.game).default :: any
 pcall(function() _PlatformService = game:GetService('PlatformService') end)
 
 
