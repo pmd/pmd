@@ -26,5 +26,5 @@ return function <T>(req, ...: boolean): ({[string|number]: T}, string, Function<
     res[#res - 2] = { ... }
   end
 
-  return (res :: any) :: { T }, body, function(...): ...any return ... end
+  return (res :: any) :: { T }, (if req then body else "") :: string, function(...): ...any return ... end
 end
