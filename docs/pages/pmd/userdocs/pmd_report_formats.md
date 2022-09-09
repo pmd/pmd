@@ -29,7 +29,8 @@ SARIF schema can be found here: <https://raw.githubusercontent.com/oasis-tcs/sar
 PMD holds an initial implementation version of SARIF rendering. This means SARIF allows for more complexity and the
 current implementation can be extended.
 
-[Example](report-examples/pmd-report.sarif.json)
+[Example](../../../report-examples/pmd-report.sarif.json)
+
 
 ## codeclimate
 
@@ -104,7 +105,7 @@ When using [Maven JXR Plugin](https://maven.apache.org/jxr/maven-jxr-plugin/inde
 of the project's sources, then the property "htmlExtension" needs to be set to "true". This will then replace the
 normal source file extensions (e.g. ".java") with ".html", so that the generated html pages are referenced.
 
-[Example](report-examples/pmd-report-html.html)
+[Example](../../../report-examples/pmd-report-html.html)
 
 **Properties:**
 
@@ -154,7 +155,7 @@ and then the violations grouped by file. The root object fields are
 * `timestamp`: explicit
 * `files`: an array of objects (see the example)
 
-[Example](report-examples/pmd-report-json.json)
+[Example](../../../report-examples/pmd-report-json.json)
 
 
 ## summaryhtml
