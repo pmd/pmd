@@ -120,7 +120,8 @@ funcbody
     ;
 
 parlist
-    : bindinglist (',' '...')? | '...'
+    : bindinglist (',' '...')? 
+    | '...'
     ;
 
 explist
@@ -135,7 +136,9 @@ binding
     : NAME (':' type ('?')?)?
     ;
 
-bindinglist: binding (',' bindinglist)?;
+bindinglist
+    : binding (',' bindinglist)?
+    ;
 
 var
     : (NAME | OPEN_PARENS exp CLOSE_PARENS varSuffix) varSuffix*
@@ -157,9 +160,13 @@ exp
     : (asexp | operatorUnary exp) ( binop exp )*
     ;
 
-ifelseexp: 'if' exp 'then' exp ('elseif' exp 'then' exp)* 'else' exp;
+ifelseexp
+    : 'if' exp 'then' exp ('elseif' exp 'then' exp)* 'else' exp
+    ;
 
-asexp: simpleexp ('::' type)?;
+asexp
+    : simpleexp ('::' type)?
+    ;
 
 simpleexp
     : NIL | BOOLEAN
@@ -172,7 +179,8 @@ simpleexp
     | tableconstructor;
 
 varOrExp
-    : var | OPEN_PARENS exp CLOSE_PARENS
+    : var 
+    | OPEN_PARENS exp CLOSE_PARENS
     ;
 
 varSuffix
@@ -184,7 +192,9 @@ nameAndArgs
     ;
 
 args
-    : OPEN_PARENS explist? CLOSE_PARENS | tableconstructor | string
+    : OPEN_PARENS explist? CLOSE_PARENS 
+    | tableconstructor 
+    | string
     ;
 
 functiondef
@@ -200,16 +210,34 @@ fieldlist
     ;
 
 field
-    : OPEN_BRACKET exp CLOSE_BRACKET ASSIGNMENT exp | NAME ASSIGNMENT exp | exp
+    : OPEN_BRACKET exp CLOSE_BRACKET ASSIGNMENT exp 
+    | NAME ASSIGNMENT exp 
+    | exp
     ;
 
 fieldsep
-    : ',' | ';'
+    : ',' 
+    | ';'
     ;
 
-compoundop: '+=' | '-=' | '*=' | '/=' | '%=' | '^=' | '..=';
+compoundop
+    : '+=' 
+    | '-=' 
+    
+    | '*=' 
+    | '/=' 
+    | '%=' 
+    | '^=' 
+    | '..=';
 
-binop: operatorAddSub | operatorMulDivMod | operatorPower | operatorStrcat | operatorComparison | operatorAnd | operatorOr | operatorBitwise;
+binop: operatorAddSub 
+    | operatorMulDivMod 
+    | operatorPower 
+    | operatorStrcat 
+    | operatorComparison 
+    | operatorAnd 
+    | operatorOr 
+    | operatorBitwise;
 
 operatorOr
 	: 'or';
@@ -218,34 +246,62 @@ operatorAnd
 	: 'and';
 
 operatorComparison
-	: '<' | '>' | '<=' | '>=' | '~=' | '==';
+	: '<' 
+    | '>' 
+    | '<=' 
+    | '>=' 
+    | '~=' 
+    | '=='
+    ;
 
-ASSIGNMENT:               '=';
+ASSIGNMENT
+    : '='
+    ;
 
 operatorStrcat
 	: '..';
 
 operatorAddSub
-	: '+' | '-';
+	: '+' 
+    | '-'
+    ;
 
 operatorMulDivMod
-	: '*' | '/' | '%' | '//';
+	: '*' 
+    | '/' 
+    | '%' 
+    | '//'
+    ;
 
 operatorBitwise
-	: '&' | '|' | '~' | '<<' | '>>';
+	: '&' 
+    | '|' 
+    | '~' 
+    | '<<' 
+    | '>>'
+    ;
 
 operatorUnary
-    : 'not' | '#' | '-' | '~';
+    : 'not' 
+    | '#' 
+    | '-' 
+    | '~'
+    ;
 
 operatorPower
     : '^';
 
 number
-    : INT | HEX | FLOAT | HEX_FLOAT
+    : INT 
+    | HEX 
+    | FLOAT 
+    | HEX_FLOAT
     ;
 
 string
-    : NORMAL_STRING | LONG_STRING | INTERPOLATED_STRING
+    : NORMAL_STRING 
+    | LONG_STRING 
+    | INTERPOLATED_STRING
     ;
 
 simpleType
@@ -258,7 +314,8 @@ simpleType
     ;
 
 singletonType
-    : NORMAL_STRING | BOOLEAN
+    : NORMAL_STRING 
+    | BOOLEAN
     ;
 
 type
@@ -267,41 +324,64 @@ type
     | type ('&' type)
     ;
 
-genericTypePackParameter: NAME '...' ('=' (typePack | variadicTypePack | genericTypePack))?;
-
-genericTypeParameterList: NAME ('=' type)? (',' genericTypeParameterList)? | genericTypePackParameter (',' genericTypePackParameter)*;
-
-typeList: type (',' typeList)? | variadicTypePack;
-
-typeParams: (type | typePack | variadicTypePack | genericTypePack) (',' typeParams)?;
-
-typePack: OPEN_PARENS (typeList)? CLOSE_PARENS;
-
-genericTypePack: NAME '...';
-
-variadicTypePack: '...' type;
-
-returnType: type | typePack;
-
-tableIndexer: OPEN_BRACKET type CLOSE_BRACKET ':' type;
-
-tableProp: NAME ':' type;
-
-tablePropOrIndexer
-    : tableProp | tableIndexer;
-
-propList
-    : tablePropOrIndexer (fieldsep tablePropOrIndexer)* fieldsep?;
-
-tableType
-    : OPEN_BRACE propList CLOSE_BRACE;
-
-functionType: ('<' genericTypeParameterList '>')? OPEN_PARENS (typeList)? CLOSE_PARENS '->' returnType;
-
-require
-    : 'local'? bindinglist '=' REQUIRE OPEN_PARENS exp CLOSE_PARENS ('.' NAME)* ('::' type)? ';'?
+genericTypePackParameter
+    : NAME '...' ('=' (typePack | variadicTypePack | genericTypePack))?
     ;
 
+genericTypeParameterList
+    : NAME ('=' type)? (',' genericTypeParameterList)? 
+    | genericTypePackParameter (',' genericTypePackParameter)*
+    ;
+
+typeList
+    : type (',' typeList)? | variadicTypePack
+    ;
+
+typeParams
+    : (type | typePack | variadicTypePack | genericTypePack) (',' typeParams)?
+    ;
+
+typePack
+    : OPEN_PARENS (typeList)? CLOSE_PARENS
+    ;
+
+genericTypePack
+    : NAME '...'
+    ;
+
+variadicTypePack
+    : '...' type
+    ;
+
+returnType
+    : type 
+    | typePack
+    ;
+
+tableIndexer
+    : OPEN_BRACKET type CLOSE_BRACKET ':' type
+    ;
+
+tableProp
+    : NAME ':' type
+    ;
+
+tablePropOrIndexer
+    : tableProp 
+    | tableIndexer
+    ;
+
+propList
+    : tablePropOrIndexer (fieldsep tablePropOrIndexer)* fieldsep?
+    ;
+
+tableType
+    : OPEN_BRACE propList CLOSE_BRACE
+    ;
+
+functionType
+    : ('<' genericTypeParameterList '>')? OPEN_PARENS (typeList)? CLOSE_PARENS '->' returnType
+    ;
 
 // LEXER
 
@@ -318,7 +398,8 @@ NIL
     ;
 
 BOOLEAN 
-    : 'true' | 'false' 
+    : 'true' 
+    | 'false' 
     ;
 
 NAME
@@ -364,14 +445,28 @@ HEX_FLOAT
     | '0' [xX] HexDigit+ HexExponentPart
     ;
 
-OPEN_BRACE:               '{';
-CLOSE_BRACE:              '}';
+OPEN_BRACE
+    : '{'
+    ;
 
-OPEN_BRACKET:             '[';
-CLOSE_BRACKET:            ']';
+CLOSE_BRACE
+    : '}'
+    ;
 
-OPEN_PARENS:              '(';
-CLOSE_PARENS:             ')';
+OPEN_BRACKET
+    : '['
+    ;
+CLOSE_BRACKET
+    : ']'
+    ;
+
+OPEN_PARENS:
+    '('
+    ;
+
+CLOSE_PARENS
+    : ')'
+    ;
 
 NL
 	: '\r\n' | '\r' | '\n'
