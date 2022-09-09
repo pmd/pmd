@@ -113,10 +113,7 @@ public class ReportTest {
 
 
     private static FileLocation getNode(int line, int column, String filename) {
-        return FileLocation.range(
-            filename,
-            TextRange2d.range2d(line, column, line, column)
-        );
+        return FileLocation.range(filename, TextRange2d.range2d(line, column, line, column));
     }
 
     public static String render(Renderer renderer, Consumer<? super FileAnalysisListener> listenerEffects) {

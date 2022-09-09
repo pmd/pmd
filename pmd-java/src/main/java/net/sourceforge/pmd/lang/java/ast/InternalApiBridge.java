@@ -11,7 +11,6 @@ import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument;
-import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.internal.JavaAstProcessor;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
@@ -192,8 +191,8 @@ public final class InternalApiBridge {
         CommentAssignmentPass.assignCommentsToDeclarations(root);
     }
 
-    public static JavaccTokenDocument javaTokenDoc(TextDocument fullText) {
-        return new JavaTokenDocument(fullText);
+    public static JavaccTokenDocument.TokenDocumentBehavior javaTokenDoc() {
+        return JavaTokenDocumentBehavior.INSTANCE;
     }
 
     public static void setStandaloneTernary(ASTConditionalExpression node) {

@@ -15,7 +15,7 @@ options {
 PARSER_BEGIN(Ecmascript5ParserImpl)
 package net.sourceforge.pmd.lang.ecmascript5.ast;
 
-import net.sourceforge.pmd.lang.ast.CharStream;
+import net.sourceforge.pmd.lang.ast.impl.javacc.CharStream;
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
 
 public class Ecmascript5ParserImpl {

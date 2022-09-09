@@ -10,23 +10,27 @@ import static net.sourceforge.pmd.lang.java.ast.JavaTokenKinds.MULTI_LINE_COMMEN
 import static net.sourceforge.pmd.lang.java.ast.JavaTokenKinds.RSIGNEDSHIFT;
 import static net.sourceforge.pmd.lang.java.ast.JavaTokenKinds.RUNSIGNEDSHIFT;
 import static net.sourceforge.pmd.lang.java.ast.JavaTokenKinds.SINGLE_LINE_COMMENT;
-import static net.sourceforge.pmd.lang.java.ast.JavaTokenKinds.WHITESPACE;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.lang.ast.CharStream;
+import net.sourceforge.pmd.lang.ast.impl.javacc.CharStream;
+import net.sourceforge.pmd.lang.ast.impl.javacc.JavaEscapeTranslator;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument;
+import net.sourceforge.pmd.lang.ast.impl.javacc.MalformedSourceException;
 import net.sourceforge.pmd.lang.document.TextDocument;
 
 /**
  * {@link JavaccTokenDocument} for Java.
  */
-final class JavaTokenDocument extends JavaccTokenDocument {
+final class JavaTokenDocumentBehavior extends JavaccTokenDocument.TokenDocumentBehavior {
 
-    JavaTokenDocument(TextDocument fullText) {
-        super(fullText);
+    static final JavaTokenDocumentBehavior INSTANCE = new JavaTokenDocumentBehavior();
+
+    private JavaTokenDocumentBehavior() {
+        super(JavaTokenKinds.TOKEN_NAMES);
     }
+
 
     /**
      * Returns true if the given token is a Java comment.
@@ -44,12 +48,13 @@ final class JavaTokenDocument extends JavaccTokenDocument {
 
 
     @Override
-    protected @Nullable String describeKindImpl(int kind) {
-        return JavaTokenKinds.describe(kind);
+    public TextDocument translate(TextDocument text) throws MalformedSourceException {
+        return new JavaEscapeTranslator(text).translateDocument();
     }
 
+
     @Override
-    public JavaccToken createToken(int kind, CharStream jcs, @Nullable String image) {
+    public JavaccToken createToken(JavaccTokenDocument self, int kind, CharStream jcs, @Nullable String image) {
         switch (kind) {
         case RUNSIGNEDSHIFT:
         case RSIGNEDSHIFT:
@@ -62,21 +67,8 @@ final class JavaTokenDocument extends JavaccTokenDocument {
                 jcs.getEndOffset(),
                 jcs.getTokenDocument()
             );
-
-        case WHITESPACE:
-            // We don't create a new string for the image of whitespace tokens eagerly
-
-            // It's unlikely that anybody cares about that, and since
-            // they're still 30% of all tokens this is advantageous
-            return new LazyImageToken(
-                kind,
-                jcs.getStartOffset(),
-                jcs.getEndOffset(),
-                jcs.getTokenDocument()
-            );
-
         default:
-            return super.createToken(kind, jcs, image);
+            return super.createToken(self, kind, jcs, image);
         }
     }
 
@@ -84,28 +76,14 @@ final class JavaTokenDocument extends JavaccTokenDocument {
         return token instanceof GTToken ? ((GTToken) token).realKind : token.kind;
     }
 
-    private static final class LazyImageToken extends JavaccToken {
-
-        LazyImageToken(int kind, int startInclusive, int endExclusive, JavaccTokenDocument document) {
-            super(kind, null, startInclusive, endExclusive, document);
-        }
-
-        @Override
-        public String getImage() {
-            return getDocument().getTextDocument().sliceText(getRegion()).toString();
-        }
-    }
-
     private static final class GTToken extends JavaccToken {
 
         final int realKind;
 
-        GTToken(int kind, int realKind, CharSequence image, int startOffset, int endOffset, JavaccTokenDocument doc) {
+        GTToken(int kind, int realKind, String image, int startOffset, int endOffset, JavaccTokenDocument doc) {
             super(kind, image, startOffset, endOffset, doc);
             this.realKind = realKind;
         }
 
     }
-
-
 }
