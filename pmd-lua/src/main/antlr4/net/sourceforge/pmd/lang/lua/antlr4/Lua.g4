@@ -77,7 +77,7 @@ block
 
 stat
     : ';'
-    | varlist '=' explist
+    | varlist ASSIGNMENT explist
     | var compoundop exp
     | functioncall
     | label
@@ -87,11 +87,11 @@ stat
     | 'while' exp 'do' block 'end'
     | 'repeat' block 'until' exp
     | 'if' exp 'then' block ('elseif' exp 'then' block)* ('else' block)? 'end'
-    | 'for' binding '=' exp ',' exp (',' exp)? 'do' block 'end'
+    | 'for' binding ASSIGNMENT exp ',' exp (',' exp)? 'do' block 'end'
     | 'for' bindinglist 'in' explist 'do' block 'end'
     | 'function' funcname funcbody
-    | 'local' 'function' NAME funcbody
-    | 'local' bindinglist ('=' explist)?
+    | LOCAL 'function' NAME funcbody
+    | LOCAL bindinglist (ASSIGNMENT explist)?
     | ('export')? 'type' NAME ('<' genericTypeParameterList '>')? '=' type
     ;
 
@@ -116,7 +116,7 @@ funcname
     ;
 
 funcbody
-    : ('<' genericTypeParameterList '>')? '(' parlist? ')' (':' '...'? returnType ) block 'end'
+    : ('<' genericTypeParameterList '>')? OPEN_PARENS parlist? CLOSE_PARENS (':' '...'? returnType ) block 'end'
     ;
 
 parlist
@@ -138,7 +138,7 @@ binding
 bindinglist: binding (',' bindinglist)?;
 
 var
-    : (NAME | '(' exp ')' varSuffix) varSuffix*
+    : (NAME | OPEN_PARENS exp CLOSE_PARENS varSuffix) varSuffix*
     ;
 
 varlist
@@ -172,11 +172,11 @@ simpleexp
     | tableconstructor;
 
 varOrExp
-    : var | '(' exp ')'
+    : var | OPEN_PARENS exp CLOSE_PARENS
     ;
 
 varSuffix
-    : nameAndArgs* ('[' exp ']' | '.' NAME)
+    : nameAndArgs* (OPEN_BRACKET exp CLOSE_BRACKET | '.' NAME)
     ;
 
 nameAndArgs
@@ -184,7 +184,7 @@ nameAndArgs
     ;
 
 args
-    : '(' explist? ')' | tableconstructor | string
+    : OPEN_PARENS explist? CLOSE_PARENS | tableconstructor | string
     ;
 
 functiondef
@@ -192,7 +192,7 @@ functiondef
     ;
 
 tableconstructor
-    : '{' fieldlist? '}'
+    : OPEN_BRACE fieldlist? CLOSE_BRACE
     ;
 
 fieldlist
@@ -200,7 +200,7 @@ fieldlist
     ;
 
 field
-    : '[' exp ']' '=' exp | NAME '=' exp | exp
+    : OPEN_BRACKET exp CLOSE_BRACKET ASSIGNMENT exp | NAME ASSIGNMENT exp | exp
     ;
 
 fieldsep
@@ -219,6 +219,8 @@ operatorAnd
 
 operatorComparison
 	: '<' | '>' | '<=' | '>=' | '~=' | '==';
+
+ASSIGNMENT:               '=';
 
 operatorStrcat
 	: '..';
@@ -243,20 +245,20 @@ number
     ;
 
 string
-    : NORMALSTRING | LONGSTRING
+    : NORMAL_STRING | LONG_STRING | INTERPOLATED_STRING
     ;
 
 simpleType
     : NIL
     | singletonType
     | NAME ('.' NAME)? ('<' typeParams '>')?
-    | 'typeof' '(' exp ')'
+    | 'typeof' OPEN_PARENS exp CLOSE_PARENS
     | tableType
     | functionType
     ;
 
 singletonType
-    : NORMALSTRING | BOOLEAN
+    : NORMAL_STRING | BOOLEAN
     ;
 
 type
@@ -273,7 +275,7 @@ typeList: type (',' typeList)? | variadicTypePack;
 
 typeParams: (type | typePack | variadicTypePack | genericTypePack) (',' typeParams)?;
 
-typePack: '(' (typeList)? ')';
+typePack: OPEN_PARENS (typeList)? CLOSE_PARENS;
 
 genericTypePack: NAME '...';
 
@@ -281,7 +283,7 @@ variadicTypePack: '...' type;
 
 returnType: type | typePack;
 
-tableIndexer: '[' type ']' ':' type;
+tableIndexer: OPEN_BRACKET type CLOSE_BRACKET ':' type;
 
 tableProp: NAME ':' type;
 
@@ -292,16 +294,24 @@ propList
     : tablePropOrIndexer (fieldsep tablePropOrIndexer)* fieldsep?;
 
 tableType
-    : '{' propList '}';
+    : OPEN_BRACE propList CLOSE_BRACE;
 
-functionType: ('<' genericTypeParameterList '>')? '(' (typeList)? ')' '->' returnType;
+functionType: ('<' genericTypeParameterList '>')? OPEN_PARENS (typeList)? CLOSE_PARENS '->' returnType;
 
 require
-    : 'local'? bindinglist '=' 'require' '(' exp ')' ('.' NAME)* ('::' type)? ';'?
+    : 'local'? bindinglist '=' REQUIRE OPEN_PARENS exp CLOSE_PARENS ('.' NAME)* ('::' type)? ';'?
     ;
 
 
 // LEXER
+
+LOCAL
+    : 'local'
+    ;
+
+REQUIRE
+    : 'require'
+    ;
 
 NIL 
     : 'nil' 
@@ -315,19 +325,23 @@ NAME
     : [a-zA-Z_][a-zA-Z_0-9]*
     ;
 
-NORMALSTRING
-    : '"' ( EscapeSequence | ~('\\'|'"') )* '"'
-    | '\'' ( EscapeSequence | ~('\\'|'\'') )* '\''
+NORMAL_STRING
+    : '"'  (~["\\\r\n\u0085\u2028\u2029] | EscapeSequence | '\\\n')* '"'
+    | '\'' (~['\\\r\n\u0085\u2028\u2029] | EscapeSequence | '\\\n')* '\''
     ;
 
-LONGSTRING
-    : '[' NESTED_STR ']'
+INTERPOLATED_STRING
+    : '`' (~[`\\\r\n\u0085\u2028\u2029] | EscapeSequence | '\\\n')* '`'
+    ;
+
+LONG_STRING
+    : OPEN_BRACKET NESTED_STR CLOSE_BRACKET
     ;
 
 fragment
 NESTED_STR
     : '=' NESTED_STR '='
-    | '[' .*? ']'
+    | OPEN_BRACKET .*? CLOSE_BRACKET
     ;
 
 INT
@@ -350,6 +364,26 @@ HEX_FLOAT
     | '0' [xX] HexDigit+ HexExponentPart
     ;
 
+OPEN_BRACE:               '{';
+CLOSE_BRACE:              '}';
+
+OPEN_BRACKET:             '[';
+CLOSE_BRACKET:            ']';
+
+OPEN_PARENS:              '(';
+CLOSE_PARENS:             ')';
+
+NL
+	: '\r\n' | '\r' | '\n'
+	| '\u0085' // <Next Line CHARACTER (U+0085)>'
+	| '\u2028' //'<Line Separator CHARACTER (U+2028)>'
+	| '\u2029' //'<Paragraph Separator CHARACTER (U+2029)>'
+	;
+
+COMMA
+    : ','
+    ;
+
 fragment
 ExponentPart
     : [eE] [+-]? Digit+
@@ -362,8 +396,8 @@ HexExponentPart
 
 fragment
 EscapeSequence
-    : '\\' [abfnrtvz"'|$#\\]   // World of Warcraft Lua additionally escapes |$# 
-    | '\\' '\r'? '\n'
+    : '\\' [abfnrtvz"'`|$#\\]   // World of Warcraft Lua additionally escapes |$# 
+    | NL
     | DecimalEscape
     | HexEscape
     | UtfEscape
