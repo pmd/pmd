@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.ast;
 
 import java.util.Objects;
 
+import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.lang.document.TextFile;
@@ -39,7 +40,7 @@ public class FileAnalysisException extends RuntimeException {
         super(message, cause);
     }
 
-    FileAnalysisException setFileName(String filename) {
+    public FileAnalysisException setFileName(String filename) {
         this.filename = Objects.requireNonNull(filename);
         return this;
     }
@@ -53,6 +54,22 @@ public class FileAnalysisException extends RuntimeException {
      */
     public @NonNull String getFileName() {
         return filename;
+    }
+
+    @Override
+    public String getMessage() {
+        return errorKind() + StringUtils.uncapitalize(positionToString()) + ": " + super.getMessage();
+    }
+
+    protected String errorKind() {
+        return "Error";
+    }
+
+    protected String positionToString() {
+        if (hasFileName()) {
+            return " in file '" + getFileName() + "'";
+        }
+        return "";
     }
 
 

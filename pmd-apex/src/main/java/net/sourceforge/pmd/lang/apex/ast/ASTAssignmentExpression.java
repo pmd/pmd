@@ -19,7 +19,15 @@ public final class ASTAssignmentExpression extends AbstractApexNode<AssignmentEx
         return visitor.visit(this, data);
     }
 
+    /**
+     * @deprecated Use {@link #getOp()} instead.
+     */
+    @Deprecated
     public AssignmentOp getOperator() {
         return node.getOp();
+    }
+
+    public AssignmentOperator getOp() {
+        return AssignmentOperator.valueOf(node.getOp());
     }
 }

@@ -138,7 +138,7 @@ public final class FileLocation {
     }
 
     /**
-     * Creates a new location from the given parameters.
+     * Creates a new location for a range of text.
      *
      * @throws IllegalArgumentException If the file name is null
      * @throws IllegalArgumentException If any of the line/col parameters are strictly less than 1
@@ -153,6 +153,21 @@ public final class FileLocation {
                                 start.getColumn(),
                                 end.getLine(),
                                 end.getColumn());
+    }
+
+    /**
+     * Returns a new location that starts and ends at the same position.
+     *
+     * @param fileName File name
+     * @param line     Line number
+     * @param column   Column number
+     *
+     * @return A new location
+     *
+     * @throws IllegalArgumentException See {@link #range(String, int, int, int, int)}
+     */
+    public static FileLocation caret(String fileName, int line, int column) {
+        return new FileLocation(fileName, line, column, line, column);
     }
 
 

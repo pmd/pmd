@@ -112,6 +112,24 @@ class SubstTest : ProcessorTestSpec({
 
     }
 
+    parserTest("Test subst toString") {
+
+
+        val (a, b, c) = makeDummyTVars("A", "B", "C")
+
+        with(TypeDslOf(a.typeSystem)) {
+            val `t_Iter{B}` = Iterable::class[b]
+            val `t_Coll{C}` = Collection::class[c]
+
+
+            val sub1 = subOf(a to `t_Iter{B}`, b to `t_Coll{C}`)
+
+            sub1.toString() shouldBe "Substitution[A => java.lang.Iterable<B>; B => java.util.Collection<C>]"
+        }
+
+
+    }
+
 
 })
 
