@@ -8,7 +8,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
 
@@ -51,10 +50,7 @@ public class PLSQLXPathRuleTest extends AbstractPLSQLParserTst {
 
 
     private void testOnVersion(XPathVersion xpath10) {
-        XPathRule rule = new XPathRule(xpath10, "//PrimaryPrefix");
-        rule.setLanguage(LanguageRegistry.getLanguage(PLSQLLanguageModule.NAME));
-        rule.setMessage("Test Violation");
-
+        XPathRule rule = plsql.newXpathRule("//PrimaryPrefix", xpath10);
         Report report = plsql.executeRule(rule, SOURCE);
         Assert.assertEquals(2, report.getViolations().size());
     }

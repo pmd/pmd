@@ -44,7 +44,7 @@ public class ScalaTokenAdapter implements GenericToken<ScalaTokenAdapter> {
 
     @Override
     public Chars getImageCs() {
-        return textDocument.sliceText(getRegion());
+        return textDocument.sliceTranslatedText(getRegion());
     }
 
     @Override

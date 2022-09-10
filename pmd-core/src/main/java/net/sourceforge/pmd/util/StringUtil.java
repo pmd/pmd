@@ -13,6 +13,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.internal.util.AssertionUtil;
@@ -550,6 +551,9 @@ public final class StringUtil {
         return str.replaceAll("'", "''");
     }
 
+    public static @NonNull String inDoubleQuotes(String expected) {
+        return "\"" + expected + "\"";
+    }
 
 
     public enum CaseConvention {

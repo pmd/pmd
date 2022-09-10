@@ -10,8 +10,6 @@ import static org.junit.Assert.assertFalse;
 
 import org.junit.Test;
 
-import net.sourceforge.pmd.lang.LanguageRegistry;
-import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 
 public class ReportTest {
@@ -45,7 +43,6 @@ public class ReportTest {
 
     @Test
     public void testExclusionsInReportWithAnnotations() {
-        LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5");
         Report rpt =
             java.executeRule(new FooRule(), TEST2);
         assertSize(rpt, 0);
@@ -54,7 +51,6 @@ public class ReportTest {
 
     @Test
     public void testExclusionsInReportWithAnnotationsFullName() {
-        LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5");
         Report rpt = java.executeRule(new FooRule(), TEST2_FULL);
         assertSize(rpt, 0);
         assertSuppressed(rpt, 1);

@@ -6,6 +6,7 @@ on:
       - main
       - master
       - pmd/7.0.x
+      - experimental-apex-parser
     tags:
       - '**'
   pull_request:

@@ -94,6 +94,7 @@ import net.sourceforge.pmd.util.log.internal.SimpleMessageReporter;
  * </ul>
  */
 public class PMDConfiguration extends AbstractConfiguration {
+    private static final LanguageRegistry DEFAULT_REGISTRY = LanguageRegistry.PMD;
 
     /** The default suppress marker string. */
     public static final String DEFAULT_SUPPRESS_MARKER = "NOPMD";
@@ -102,7 +103,7 @@ public class PMDConfiguration extends AbstractConfiguration {
     private String suppressMarker = DEFAULT_SUPPRESS_MARKER;
     private int threads = Runtime.getRuntime().availableProcessors();
     private ClassLoader classLoader = getClass().getClassLoader();
-    private LanguageVersionDiscoverer languageVersionDiscoverer = new LanguageVersionDiscoverer();
+    private LanguageVersionDiscoverer languageVersionDiscoverer;
     private LanguageVersion forceLanguageVersion;
     private MessageReporter reporter = new SimpleMessageReporter(LoggerFactory.getLogger(PMD.class));
 
@@ -127,7 +128,17 @@ public class PMDConfiguration extends AbstractConfiguration {
     private boolean benchmark;
     private AnalysisCache analysisCache = new NoopAnalysisCache();
     private boolean ignoreIncrementalAnalysis;
+    private final LanguageRegistry langRegistry;
     private boolean progressBar = false;
+
+    public PMDConfiguration() {
+        this(DEFAULT_REGISTRY);
+    }
+
+    public PMDConfiguration(@NonNull LanguageRegistry languageRegistry) {
+        this.langRegistry = Objects.requireNonNull(languageRegistry);
+        this.languageVersionDiscoverer = new LanguageVersionDiscoverer(languageRegistry);
+    }
 
     /**
      * Get the suppress marker. This is the source level marker used to indicate
@@ -351,7 +362,7 @@ public class PMDConfiguration extends AbstractConfiguration {
     // FUTURE Delete this? I can't think of a good reason to keep it around.
     // Failure to determine the LanguageVersion for a file should be a hard
     // error, or simply cause the file to be skipped?
-    public LanguageVersion getLanguageVersionOfFile(String fileName) {
+    public @Nullable LanguageVersion getLanguageVersionOfFile(String fileName) {
         LanguageVersion forcedVersion = getForceLanguageVersion();
         if (forcedVersion != null) {
             // use force language if given
@@ -359,13 +370,11 @@ public class PMDConfiguration extends AbstractConfiguration {
         }
 
         // otherwise determine by file extension
-        LanguageVersion languageVersion = languageVersionDiscoverer.getDefaultLanguageVersionForFile(fileName);
-        if (languageVersion == null) {
-            // For compatibility with older code that does not always pass in
-            // a correct filename.
-            languageVersion = languageVersionDiscoverer.getDefaultLanguageVersion(LanguageRegistry.getDefaultLanguage());
-        }
-        return languageVersion;
+        return languageVersionDiscoverer.getDefaultLanguageVersionForFile(fileName);
+    }
+
+    LanguageRegistry languages() {
+        return langRegistry;
     }
 
     /**

@@ -11,7 +11,7 @@ public final class VfParsingHelper extends BaseParsingHelper<VfParsingHelper, AS
 
     public static final VfParsingHelper DEFAULT = new VfParsingHelper(Params.getDefault());
 
-    private VfParsingHelper(Params params) {
+    public VfParsingHelper(Params params) {
         super(VfLanguageModule.NAME, ASTCompilationUnit.class, params);
     }
 

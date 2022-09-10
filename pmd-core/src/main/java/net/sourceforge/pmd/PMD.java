@@ -165,7 +165,9 @@ public final class PMD {
             return StatusCode.ERROR;
         }
 
-        PMDConfiguration configuration = Objects.requireNonNull(parseResult.toConfiguration());
+        PMDConfiguration configuration = Objects.requireNonNull(
+            parseResult.toConfiguration()
+        );
         MessageReporter pmdReporter = setupMessageReporter(configuration);
         configuration.setReporter(pmdReporter);
 

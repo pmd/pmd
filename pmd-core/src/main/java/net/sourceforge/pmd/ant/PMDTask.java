@@ -49,6 +49,8 @@ public class PMDTask extends Task {
         try {
             PMDTaskImpl mirror = new PMDTaskImpl(this);
             mirror.execute();
+        } catch (Exception e) {
+            throw new BuildException(e);
         } finally {
             Thread.currentThread().setContextClassLoader(oldClassloader);
         }

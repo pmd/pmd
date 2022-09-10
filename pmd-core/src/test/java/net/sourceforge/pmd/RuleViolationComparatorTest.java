@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd;
 
+import static net.sourceforge.pmd.PmdCoreTestUtils.setDummyLanguage;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 
@@ -24,8 +25,8 @@ class RuleViolationComparatorTest {
 
     @Test
     void testComparator() {
-        Rule rule1 = new MockRule("name1", "desc", "msg", "rulesetname1");
-        Rule rule2 = new MockRule("name2", "desc", "msg", "rulesetname2");
+        Rule rule1 = setDummyLanguage(new MockRule("name1", "desc", "msg", "rulesetname1"));
+        Rule rule2 = setDummyLanguage(new MockRule("name2", "desc", "msg", "rulesetname2"));
 
         // RuleViolations created in pre-sorted order
         RuleViolation[] expectedOrder = new RuleViolation[12];

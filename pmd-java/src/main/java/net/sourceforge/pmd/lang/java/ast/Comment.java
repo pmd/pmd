@@ -75,7 +75,7 @@ public abstract class Comment implements Reportable {
      * @return List of lines of the comments
      */
     private List<String> multiLinesIn() {
-        String[] lines = NEWLINES_PATTERN.split(getText());
+        String[] lines = NEWLINES_PATTERN.split(token.getImageCs());
         List<String> filteredLines = new ArrayList<>(lines.length);
 
         for (String rawLine : lines) {

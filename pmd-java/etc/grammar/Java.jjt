@@ -280,7 +280,7 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 import java.util.Map;
-import net.sourceforge.pmd.lang.ast.CharStream;
+import net.sourceforge.pmd.lang.ast.impl.javacc.CharStream;
 import net.sourceforge.pmd.lang.ast.GenericToken;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.ast.Node;
@@ -2659,14 +2659,14 @@ void AssertStatement() :
 void RUNSIGNEDSHIFT() #void:
 {}
 {
-   LOOKAHEAD({ JavaTokenDocument.getRealKind(getToken(1)) == RUNSIGNEDSHIFT})
+   LOOKAHEAD({ JavaTokenDocumentBehavior.getRealKind(getToken(1)) == RUNSIGNEDSHIFT})
    ">" ">" ">"
 }
 
 void RSIGNEDSHIFT() #void:
 {}
 {
-  LOOKAHEAD({ JavaTokenDocument.getRealKind(getToken(1)) == RSIGNEDSHIFT})
+  LOOKAHEAD({ JavaTokenDocumentBehavior.getRealKind(getToken(1)) == RSIGNEDSHIFT})
   ">" ">"
 }
 

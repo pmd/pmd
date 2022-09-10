@@ -4,6 +4,9 @@
 
 package net.sourceforge.pmd;
 
+import static net.sourceforge.pmd.PmdCoreTestUtils.dummyLanguage;
+import static net.sourceforge.pmd.PmdCoreTestUtils.dummyLanguage2;
+import static net.sourceforge.pmd.PmdCoreTestUtils.dummyVersion;
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import static net.sourceforge.pmd.util.CollectionUtil.setOf;
 import static org.hamcrest.CoreMatchers.containsString;
@@ -37,10 +40,7 @@ import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.Report.ProcessingError;
 import net.sourceforge.pmd.RuleSet.RuleSetBuilder;
-import net.sourceforge.pmd.lang.Dummy2LanguageModule;
 import net.sourceforge.pmd.lang.DummyLanguageModule;
-import net.sourceforge.pmd.lang.Language;
-import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.ast.DummyNode.DummyRootNode;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.RootNode;
@@ -50,8 +50,6 @@ import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 import net.sourceforge.pmd.util.IOUtil;
 
 class RuleSetTest {
-
-    private final Language dummyLang = DummyLanguageModule.getInstance();
 
     @Test
     void testRuleSetRequiresName() {
@@ -257,22 +255,22 @@ class RuleSetTest {
 
         Rule rule = new MockRule();
 
-        assertFalse(RuleSet.applies(rule, LanguageRegistry.getLanguage(Dummy2LanguageModule.NAME).getDefaultVersion()),
+        assertFalse(RuleSet.applies(rule, dummyLanguage2().getDefaultVersion()),
                 "Different languages should not apply");
 
-        assertTrue(RuleSet.applies(rule, dummyLang.getVersion("1.5")),
+        assertTrue(RuleSet.applies(rule, dummyLanguage().getVersion("1.5")),
                 "Same language with no min/max should apply");
 
-        rule.setMinimumLanguageVersion(dummyLang.getVersion("1.5"));
-        assertTrue(RuleSet.applies(rule, dummyLang.getVersion("1.5")),
+        rule.setMinimumLanguageVersion(dummyLanguage().getVersion("1.5"));
+        assertTrue(RuleSet.applies(rule, dummyLanguage().getVersion("1.5")),
                 "Same language with valid min only should apply");
 
-        rule.setMaximumLanguageVersion(dummyLang.getVersion("1.6"));
-        assertTrue(RuleSet.applies(rule, dummyLang.getVersion("1.5")),
+        rule.setMaximumLanguageVersion(dummyLanguage().getVersion("1.6"));
+        assertTrue(RuleSet.applies(rule, dummyLanguage().getVersion("1.5")),
                 "Same language with valid min and max should apply");
-        assertFalse(RuleSet.applies(rule, dummyLang.getVersion("1.4")),
+        assertFalse(RuleSet.applies(rule, dummyLanguage().getVersion("1.4")),
                 "Same language with outside range of min/max should not apply");
-        assertFalse(RuleSet.applies(rule, dummyLang.getVersion("1.7")),
+        assertFalse(RuleSet.applies(rule, dummyLanguage().getVersion("1.7")),
                 "Same language with outside range of min/max should not apply");
     }
 
@@ -384,7 +382,7 @@ class RuleSetTest {
 
     @Test
     void testIncludeExcludeApplies() {
-        TextFile file = TextFile.forPath(Paths.get("C:\\myworkspace\\project\\some\\random\\package\\RandomClass.java"), Charset.defaultCharset(), dummyLang.getDefaultVersion());
+        TextFile file = TextFile.forPath(Paths.get("C:\\myworkspace\\project\\some\\random\\package\\RandomClass.java"), Charset.defaultCharset(), dummyVersion());
 
         RuleSet ruleSet = createRuleSetBuilder("ruleset").build();
         assertTrue(ruleSet.applies(file), "No patterns");
@@ -419,7 +417,7 @@ class RuleSetTest {
     void testIncludeExcludeMultipleRuleSetWithRuleChainApplies() throws Exception {
         Rule rule = new FooRule();
         rule.setName("FooRule1");
-        rule.setLanguage(LanguageRegistry.getLanguage(DummyLanguageModule.NAME));
+        rule.setLanguage(dummyLanguage());
 
         RuleSet ruleSet1 = createRuleSetBuilder("RuleSet1").addRule(rule).build();
         RuleSet ruleSet2 = createRuleSetBuilder("RuleSet2").addRule(rule).build();

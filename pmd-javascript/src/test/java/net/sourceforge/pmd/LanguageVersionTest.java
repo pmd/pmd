@@ -9,7 +9,6 @@ import java.util.Collection;
 
 import org.junit.runners.Parameterized.Parameters;
 
-import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ecmascript.EcmascriptLanguageModule;
 
@@ -23,6 +22,6 @@ public class LanguageVersionTest extends AbstractLanguageVersionTest {
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] { { EcmascriptLanguageModule.NAME, EcmascriptLanguageModule.TERSE_NAME,
                 "ES6",
-                LanguageRegistry.getLanguage(EcmascriptLanguageModule.NAME).getDefaultVersion(), }, });
+                getLanguage(EcmascriptLanguageModule.NAME).getDefaultVersion(), }, });
     }
 }
