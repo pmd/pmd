@@ -10,7 +10,7 @@ import java.io.IOException;
 
 import org.junit.Test;
 
-import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.document.Chars;
 import net.sourceforge.pmd.lang.document.TextDocument;
 
@@ -18,7 +18,7 @@ import net.sourceforge.pmd.lang.document.TextDocument;
 public class JavaEscapeReaderTest {
 
     public TextDocument readString(String input) {
-        TextDocument intext = TextDocument.readOnlyString(Chars.wrap(input), LanguageRegistry.getDefaultLanguage().getDefaultVersion());
+        TextDocument intext = TextDocument.readOnlyString(Chars.wrap(input), DummyLanguageModule.getInstance().getDefaultVersion());
         return new JavaEscapeTranslator(intext).translateDocument();
     }
 

@@ -13,14 +13,14 @@ import java.util.Collections;
 
 import org.junit.Test;
 
-import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument.TokenDocumentBehavior;
 import net.sourceforge.pmd.lang.document.TextDocument;
 
 public class CharStreamTest {
 
-    private LanguageVersion dummyVersion = LanguageRegistry.getDefaultLanguage().getDefaultVersion();
+    private LanguageVersion dummyVersion = DummyLanguageModule.getInstance().getDefaultVersion();
 
     @Test
     public void testReadZeroChars() throws IOException {
