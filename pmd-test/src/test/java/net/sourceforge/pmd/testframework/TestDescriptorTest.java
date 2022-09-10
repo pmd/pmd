@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.Language;
-import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.lang.PlainTextLanguage;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
 
@@ -32,7 +32,7 @@ public class TestDescriptorTest {
     private static final class MockRule extends AbstractRule {
         @Override
         public Language getLanguage() {
-            return LanguageRegistry.getDefaultLanguage();
+            return PlainTextLanguage.getInstance();
         }
 
         @Override

@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
@@ -45,6 +46,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
 import net.sourceforge.pmd.RuleSet.RuleSetBuilder;
+import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.rules.RuleFactory;
 import net.sourceforge.pmd.util.ResourceLoader;
@@ -76,6 +78,7 @@ final class RuleSetFactory {
     private static final Logger LOG = LoggerFactory.getLogger(RuleSetFactory.class);
 
     private final ResourceLoader resourceLoader;
+    private final LanguageRegistry languageRegistry;
     private final RulePriority minimumPriority;
     private final boolean warnDeprecated;
     private final RuleSetFactoryCompatibility compatibilityFilter;
@@ -85,12 +88,14 @@ final class RuleSetFactory {
     private final Map<RuleSetReferenceId, RuleSet> parsedRulesets = new HashMap<>();
 
     RuleSetFactory(ResourceLoader resourceLoader,
+                   LanguageRegistry languageRegistry,
                    RulePriority minimumPriority,
                    boolean warnDeprecated,
                    RuleSetFactoryCompatibility compatFilter,
                    boolean includeDeprecatedRuleReferences,
                    MessageReporter reporter) {
         this.resourceLoader = resourceLoader;
+        this.languageRegistry = Objects.requireNonNull(languageRegistry);
         this.minimumPriority = minimumPriority;
         this.warnDeprecated = warnDeprecated;
         this.includeDeprecatedRuleReferences = includeDeprecatedRuleReferences;
@@ -476,7 +481,7 @@ final class RuleSetFactory {
             && !isRuleName(ruleNode, ruleSetReferenceId.getRuleName())) {
             return;
         }
-        Rule rule = new RuleFactory(resourceLoader).buildRule(ruleNode, err);
+        Rule rule = new RuleFactory(resourceLoader, languageRegistry).buildRule(ruleNode, err);
         rule.setRuleSetName(ruleSetBuilder.getName());
 
         if (warnDeprecated && StringUtils.isBlank(ruleNode.getAttribute("language"))) {
@@ -563,7 +568,7 @@ final class RuleSetFactory {
 
         RuleReference ruleReference;
         try {
-            ruleReference = new RuleFactory(resourceLoader).decorateRule(referencedRule, ruleSetReference, ruleNode, err);
+            ruleReference = new RuleFactory(resourceLoader, languageRegistry).decorateRule(referencedRule, ruleSetReference, ruleNode, err);
         } catch (XmlException e) {
             throw err.at(ruleNode).error(e, "Error while parsing rule reference");
         }

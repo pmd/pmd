@@ -15,7 +15,6 @@ import org.junit.Assert;
 
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.ast.FileAnalysisException;
 import net.sourceforge.pmd.lang.ast.test.TestUtilsKt;
 import net.sourceforge.pmd.lang.java.BaseParserTest;
@@ -42,7 +41,7 @@ public class BaseXPathFunctionTest extends BaseParserTest {
         XPathRule rule = new XPathRule(XPathVersion.DEFAULT, xpath);
         rule.setName("$rule_name");
         rule.setMessage(VIOLATION_MESSAGE);
-        rule.setLanguage(LanguageRegistry.getLanguage(JavaLanguageModule.NAME));
+        rule.setLanguage(JavaLanguageModule.getInstance());
         return rule;
     }
 

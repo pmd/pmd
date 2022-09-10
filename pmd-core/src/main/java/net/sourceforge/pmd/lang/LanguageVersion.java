@@ -24,7 +24,7 @@ import net.sourceforge.pmd.annotation.InternalApi;
  *
  * <p>Example usage:
  * <pre>
- * Language javaLanguage = LanguageRegistry.{@link LanguageRegistry#getLanguage(String) getLanguage}("Java");
+ * Language javaLanguage = LanguageRegistry.PMD.{@link LanguageRegistry#getLanguageById(String) getLanguageById}("java");
  * LanguageVersion java11 = javaLanguage.{@link Language#getVersion(String) getVersion}("11");
  * LanguageVersionHandler handler = java11.getLanguageVersionHandler();
  * Parser parser = handler.getParser(handler.getDefaultParserOptions());

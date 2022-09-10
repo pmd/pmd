@@ -9,7 +9,6 @@ import java.util.Collection;
 
 import org.junit.runners.Parameterized.Parameters;
 
-import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.vf.VfLanguageModule;
 
@@ -22,6 +21,6 @@ public class LanguageVersionTest extends AbstractLanguageVersionTest {
     @Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] { { VfLanguageModule.NAME, VfLanguageModule.TERSE_NAME, "",
-            LanguageRegistry.getLanguage(VfLanguageModule.NAME).getDefaultVersion(), }, });
+            getLanguage(VfLanguageModule.NAME).getDefaultVersion(), }, });
     }
 }

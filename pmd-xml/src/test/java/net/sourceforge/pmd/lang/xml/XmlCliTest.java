@@ -25,7 +25,8 @@ public class XmlCliTest extends BaseCLITest {
         List<String> arguments = new ArrayList<>(listOf(
             "-f",
             "text",
-            "-no-cache",
+            "--no-cache",
+            "--no-progress",
             "-R",
             BASE_DIR + "/ruleset.xml",
             "-d",

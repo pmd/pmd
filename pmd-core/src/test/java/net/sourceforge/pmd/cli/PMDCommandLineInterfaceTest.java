@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.cache.NoopAnalysisCache;
+import net.sourceforge.pmd.lang.LanguageRegistry;
 
 import com.github.stefanbirkner.systemlambda.SystemLambda;
 
@@ -58,7 +59,7 @@ class PMDCommandLineInterfaceTest {
         PMDCommandLineInterface.extractParameters(params, args, "PMD");
 
         assertTrue(params.isIgnoreIncrementalAnalysis());
-        PMDConfiguration config = params.toConfiguration();
+        PMDConfiguration config = params.toConfiguration(LanguageRegistry.PMD);
         assertTrue(config.isIgnoreIncrementalAnalysis());
         assertTrue(config.getAnalysisCache() instanceof NoopAnalysisCache);
     }

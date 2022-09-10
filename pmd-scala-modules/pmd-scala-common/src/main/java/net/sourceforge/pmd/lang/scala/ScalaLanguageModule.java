@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.scala;
 
 import net.sourceforge.pmd.lang.BaseLanguageModule;
+import net.sourceforge.pmd.lang.LanguageRegistry;
 
 /**
  * Language Module for Scala.
@@ -26,5 +27,9 @@ public class ScalaLanguageModule extends BaseLanguageModule {
         addVersion("2.12", new ScalaLanguageHandler(scala.meta.dialects.package$.MODULE$.Scala212()), false);
         addVersion("2.11", new ScalaLanguageHandler(scala.meta.dialects.package$.MODULE$.Scala211()), false);
         addVersion("2.10", new ScalaLanguageHandler(scala.meta.dialects.package$.MODULE$.Scala210()), false);
+    }
+
+    public static ScalaLanguageModule getInstance() {
+        return (ScalaLanguageModule) LanguageRegistry.PMD.getLanguageByFullName(NAME);
     }
 }

@@ -15,7 +15,7 @@ import java.util.function.Consumer;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.jupiter.api.Test;
 
-import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.document.TextFile;
@@ -118,7 +118,7 @@ public class ReportTest {
 
     public static String render(Renderer renderer, Consumer<? super FileAnalysisListener> listenerEffects) {
         return renderGlobal(renderer, globalListener -> {
-            LanguageVersion dummyVersion = LanguageRegistry.getDefaultLanguage().getDefaultVersion();
+            LanguageVersion dummyVersion = DummyLanguageModule.getInstance().getDefaultVersion();
 
             TextFile dummyFile = TextFile.forCharSeq("dummyText", "file", dummyVersion);
             try (FileAnalysisListener fal = globalListener.startFileAnalysis(dummyFile)) {
