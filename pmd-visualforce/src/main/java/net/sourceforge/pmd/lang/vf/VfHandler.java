@@ -9,7 +9,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.ast.Parser;
 import net.sourceforge.pmd.lang.vf.ast.VfParser;
-import net.sourceforge.pmd.processor.BatchLanguageProcessor;
+import net.sourceforge.pmd.lang.impl.BatchLanguageProcessor;
 
 public class VfHandler extends BatchLanguageProcessor<VfLanguageProperties> implements LanguageVersionHandler {
 

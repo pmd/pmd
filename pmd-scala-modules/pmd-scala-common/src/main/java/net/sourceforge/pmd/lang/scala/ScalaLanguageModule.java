@@ -7,19 +7,16 @@ package net.sourceforge.pmd.lang.scala;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.annotation.InternalApi;
-import net.sourceforge.pmd.lang.LanguageModuleBase;
-import net.sourceforge.pmd.lang.LanguageProcessor;
-import net.sourceforge.pmd.lang.LanguagePropertyBundle;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
-import net.sourceforge.pmd.processor.SimpleBatchLanguageProcessor;
+import net.sourceforge.pmd.lang.impl.SimpleLanguageModuleBase;
 
 import scala.meta.Dialect;
 
 /**
  * Language Module for Scala.
  */
-public class ScalaLanguageModule extends LanguageModuleBase {
+public class ScalaLanguageModule extends SimpleLanguageModuleBase {
 
     /** The name. */
     public static final String NAME = "Scala";
@@ -35,7 +32,8 @@ public class ScalaLanguageModule extends LanguageModuleBase {
                               .addVersion("2.10")
                               .addVersion("2.11")
                               .addVersion("2.12")
-                              .addDefaultVersion("2.13"));
+                              .addDefaultVersion("2.13"),
+              new ScalaLanguageHandler());
     }
 
     @InternalApi
@@ -48,11 +46,6 @@ public class ScalaLanguageModule extends LanguageModuleBase {
         default:
             throw new IllegalArgumentException(v.getVersion());
         }
-    }
-
-    @Override
-    public LanguageProcessor createProcessor(LanguagePropertyBundle bundle) {
-        return new SimpleBatchLanguageProcessor(bundle, new ScalaLanguageHandler());
     }
 
     public static ScalaLanguageModule getInstance() {

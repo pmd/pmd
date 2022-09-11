@@ -6,11 +6,12 @@ package net.sourceforge.pmd.lang.impl;
 
 import java.util.function.Function;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import net.sourceforge.pmd.lang.LanguageModuleBase;
 import net.sourceforge.pmd.lang.LanguageProcessor;
 import net.sourceforge.pmd.lang.LanguagePropertyBundle;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
-import net.sourceforge.pmd.processor.SimpleBatchLanguageProcessor;
 
 /**
  * The simplest implementation of a language, where only a {@link LanguageVersionHandler}
@@ -34,7 +35,12 @@ public class SimpleLanguageModuleBase extends LanguageModuleBase {
     @Override
     public LanguageProcessor createProcessor(LanguagePropertyBundle bundle) {
         LanguageVersionHandler services = handler.apply(bundle);
-        return new SimpleBatchLanguageProcessor(bundle, services);
+        return new BatchLanguageProcessor<LanguagePropertyBundle>(bundle) {
+            @Override
+            public @NonNull LanguageVersionHandler services() {
+                return services;
+            }
+        };
     }
 
 }
