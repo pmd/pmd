@@ -16,7 +16,13 @@ import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.document.TextFile;
 
 /**
+ * A base class for language processors. It processes all files of the
+ * corresponding language as a single batch. It can operate in parallel
+ * or sequentially depending on the number of threads passed in the
+ * {@link AnalysisTask}.
+ *
  * @author Clément Fournier
+ * @since 7.0.0
  */
 public abstract class BatchLanguageProcessor<P extends LanguagePropertyBundle> implements LanguageProcessor {
 
