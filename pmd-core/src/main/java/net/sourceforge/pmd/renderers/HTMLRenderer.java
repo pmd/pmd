@@ -93,11 +93,23 @@ public class HTMLRenderer extends AbstractIncrementingRenderer {
         linePrefix = getProperty(LINE_PREFIX);
         replaceHtmlExtension = getProperty(HTML_EXTENSION);
 
-        writer.write("<html><head><title>PMD</title></head><body>" + PMD.EOL);
+        
+
+        writer.write("<html><head><title>PMD</title>");
+        final String style = "<link rel='stylesheet' type='text/css' href='https://cdn.datatables.net/1.12.1/css/jquery.dataTables.css'>" +
+        "<link rel='stylesheet' type='text/css' href='https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css'>"
+        ;
+
+        final String scripts = "<script src='https://code.jquery.com/jquery-3.6.1.min.js'></script> " +
+        "<script type='text/javascript' charset='utf8' src='https://cdn.datatables.net/1.12.1/js/jquery.dataTables.js'></script>"
+        ;
+    
+        writer.write( style + scripts + "</head><body>" + PMD.EOL);
         writer.write("<center><h3>PMD report</h3></center>");
         writer.write("<center><h3>Problems found</h3></center>");
-        writer.write("<table align=\"center\" cellspacing=\"0\" cellpadding=\"3\"><tr>" + PMD.EOL
-                + "<th>#</th><th>File</th><th>Line</th><th>Problem</th></tr>" + PMD.EOL);
+        // add priority
+        writer.write("<table id='pmdTable'  class='table table-bordered table-hover table-striped' align=\"center\" cellspacing=\"0\" cellpadding=\"3\"><thead><tr>" + PMD.EOL
+                + "<th>#</th><th>File</th><th>Line</th><th>Priority</th><th>Problem</th></tr></thead>" + PMD.EOL);
     }
 
     @Override
@@ -113,7 +125,9 @@ public class HTMLRenderer extends AbstractIncrementingRenderer {
             glomSuppressions(writer, suppressed);
         }
         glomConfigurationErrors(writer, configErrors);
-        writer.write("</body></html>" + PMD.EOL);
+
+        final String setupTableScript = "<script>$(document).ready( function () { $('#pmdTable').DataTable(); } );</script>";
+        writer.write( setupTableScript + "</body></html>" + PMD.EOL);
     }
 
     private void glomRuleViolations(Writer writer, Iterator<RuleViolation> violations) throws IOException {
@@ -127,6 +141,10 @@ public class HTMLRenderer extends AbstractIncrementingRenderer {
             if (colorize) {
                 buf.append(" bgcolor=\"lightgrey\"");
             }
+
+            // get priority
+            int priority = rv.getRule().getPriority().getPriority();
+            
             colorize = !colorize;
             buf.append("> ").append(PMD.EOL);
             buf.append("<td align=\"center\">").append(violationCount).append("</td>").append(PMD.EOL);
@@ -135,6 +153,9 @@ public class HTMLRenderer extends AbstractIncrementingRenderer {
                     .append("</td>")
                     .append(PMD.EOL);
             buf.append("<td align=\"center\" width=\"5%\">").append(rv.getBeginLine()).append("</td>").append(PMD.EOL);
+            // add priority
+            buf.append("<td align=\"center\" width=\"5%\">").append(priority).append(PMD.EOL);
+
 
             String d = StringEscapeUtils.escapeHtml4(rv.getDescription());
 
