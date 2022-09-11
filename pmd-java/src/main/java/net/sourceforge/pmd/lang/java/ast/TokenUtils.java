@@ -69,7 +69,7 @@ final class TokenUtils {
      */
     // test only
     public static <T extends GenericToken<T>> T nthPrevious(T startHint, T anchor, int n) {
-        if (compare(startHint, anchor) >= 0) {
+        if (startHint.compareTo(anchor) >= 0) {
             throw new IllegalStateException("Wrong left hint, possibly not left enough");
         }
         if (n <= 0) {

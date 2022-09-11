@@ -7,11 +7,11 @@ package net.sourceforge.pmd.lang.java.ast;
 import static net.sourceforge.pmd.lang.java.ast.ASTStringLiteral.determineTextBlockContent;
 import static org.junit.Assert.assertEquals;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.Test;
 
 import net.sourceforge.pmd.lang.document.Chars;
 import net.sourceforge.pmd.lang.java.BaseParserTest;
+import net.sourceforge.pmd.util.StringUtil;
 
 public class TextBlockEscapeTest extends BaseParserTest {
 
@@ -42,13 +42,9 @@ public class TextBlockEscapeTest extends BaseParserTest {
 
     // note the argument order
     private void testStringEscape(String actual, String expected) {
-        actual = inDoubleQuotes(actual);
+        actual = StringUtil.inDoubleQuotes(actual);
         assertEquals(expected,
                      ASTStringLiteral.determineStringContent(Chars.wrap(actual)));
-    }
-
-    private static @NonNull String inDoubleQuotes(String expected) {
-        return "\"" + expected + "\"";
     }
 
     @Test

@@ -43,10 +43,6 @@ public class LanguageVersionDiscoverer {
 
     /**
      * Build a new instance with no forced version.
-     *
-     * @param forcedVersion If non-null, all files should be assigned this version.
-     *                      The methods of this class still work as usual and do not
-     *                      care about the forced language version.
      */
     public LanguageVersionDiscoverer(LanguageRegistry registry) {
         this(registry, null);

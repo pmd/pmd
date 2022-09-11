@@ -17,6 +17,9 @@ import net.sourceforge.pmd.cpd.CPDCommandLineInterface;
 
 public abstract class BaseCPDCLITest {
     private ByteArrayOutputStream bufferStdout;
+
+    private ByteArrayOutputStream bufferStderr;
+
     private PrintStream originalStdout;
     private PrintStream originalStderr;
 
@@ -26,7 +29,9 @@ public abstract class BaseCPDCLITest {
         originalStderr = System.err;
         bufferStdout = new ByteArrayOutputStream();
         System.setOut(new PrintStream(bufferStdout, false, "UTF-8"));
-        System.setErr(System.out);
+
+        bufferStderr = new ByteArrayOutputStream();
+        System.setErr(new PrintStream(bufferStderr, false, "UTF-8"));
     }
 
     @After
@@ -54,6 +59,14 @@ public abstract class BaseCPDCLITest {
     protected void runCPD(String... args) {
         System.setProperty(CPDCommandLineInterface.NO_EXIT_AFTER_RUN, "true");
         CPD.main(args);
+    }
+
+    protected String getStderr() {
+        try {
+            return bufferStderr.toString("UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     protected String runTest(CPD.StatusCode expectedStatusCode, String... args) {

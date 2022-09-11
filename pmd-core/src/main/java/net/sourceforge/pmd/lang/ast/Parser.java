@@ -85,6 +85,14 @@ public interface Parser {
         public LanguageProcessorRegistry getLpRegistry() {
             return lpRegistry;
         }
+
+        public ParserTask withTextDocument(TextDocument textDocument) {
+            return new ParserTask(
+                textDocument,
+                this.reporter,
+                this.lpRegistry
+            );
+        }
     }
 
 

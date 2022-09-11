@@ -88,8 +88,7 @@ public class AvoidDuplicateLiteralsRule extends AbstractJavaRulechainRule {
             SortedSet<ASTStringLiteral> occurrences = entry.getValue();
             if (occurrences.size() >= threshold) {
                 ASTStringLiteral first = occurrences.first();
-                String rawImage = first.getImage();
-                Object[] args = {rawImage, occurrences.size(), first.getBeginLine(), };
+                Object[] args = { first.toPrintableString(), occurrences.size(), first.getBeginLine(), };
                 addViolation(data, first, args);
             }
         }

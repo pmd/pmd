@@ -48,7 +48,7 @@ public class TextDocumentTest {
         TextDocument doc = TextDocument.readOnlyString("bonjour\ntristesse", dummyVersion());
 
         TextRegion region = TextRegion.fromOffsetLength(0, "bonjour\n".length());
-        assertEquals("bonjour\n", doc.sliceText(region).toString());
+        assertEquals("bonjour\n", doc.sliceOriginalText(region).toString());
         FileLocation withLines = doc.toLocation(region);
 
         assertEquals(1, withLines.getStartLine());
@@ -65,7 +65,7 @@ public class TextDocumentTest {
         //                                                               We consider it's part of the next line
 
         TextRegion region = TextRegion.fromOffsetLength("bonjour\n".length(), 0);
-        assertEquals("", doc.sliceText(region).toString());
+        assertEquals("", doc.sliceOriginalText(region).toString());
 
         FileLocation withLines = doc.toLocation(region);
 
@@ -83,7 +83,7 @@ public class TextDocumentTest {
 
 
         TextRegion region = TextRegion.fromOffsetLength("bonjour".length(), 1);
-        assertEquals("\n", doc.sliceText(region).toString());
+        assertEquals("\n", doc.sliceOriginalText(region).toString());
 
         FileLocation withLines = doc.toLocation(region);
 
@@ -98,7 +98,7 @@ public class TextDocumentTest {
         TextDocument doc = TextDocument.readOnlyString("flemme", dummyVersion());
 
         TextRegion region = TextRegion.fromOffsetLength(0, doc.getLength());
-        assertEquals(doc.getText(), doc.sliceText(region));
+        assertEquals(doc.getText(), doc.sliceOriginalText(region));
 
         FileLocation withLines = doc.toLocation(region);
 
@@ -145,7 +145,7 @@ public class TextDocumentTest {
     }
 
     private void assertPos2dEqualsAt(TextDocument doc, int offset, String c, TextPos2d pos, boolean inclusive) {
-        Chars slicedChar = doc.sliceText(TextRegion.fromOffsetLength(offset, 1));
+        Chars slicedChar = doc.sliceTranslatedText(TextRegion.fromOffsetLength(offset, 1));
         assertEquals(c, slicedChar.toString());
         assertEquals(pos, doc.lineColumnAtOffset(offset, inclusive));
     }
@@ -173,10 +173,10 @@ public class TextDocumentTest {
     public void testLineRange() {
         TextDocument doc = TextDocument.readOnlyString("bonjour\noha\ntristesse", dummyVersion());
 
-        assertEquals(Chars.wrap("bonjour\n"), doc.sliceText(doc.createLineRange(1, 1)));
-        assertEquals(Chars.wrap("bonjour\noha\n"), doc.sliceText(doc.createLineRange(1, 2)));
-        assertEquals(Chars.wrap("oha\n"), doc.sliceText(doc.createLineRange(2, 2)));
-        assertEquals(Chars.wrap("oha\ntristesse"), doc.sliceText(doc.createLineRange(2, 3)));
+        assertEquals(Chars.wrap("bonjour\n"), doc.sliceTranslatedText(doc.createLineRange(1, 1)));
+        assertEquals(Chars.wrap("bonjour\noha\n"), doc.sliceTranslatedText(doc.createLineRange(1, 2)));
+        assertEquals(Chars.wrap("oha\n"), doc.sliceTranslatedText(doc.createLineRange(2, 2)));
+        assertEquals(Chars.wrap("oha\ntristesse"), doc.sliceTranslatedText(doc.createLineRange(2, 3)));
         assertThrows(IndexOutOfBoundsException.class, () -> doc.createLineRange(2, 1));
         assertThrows(IndexOutOfBoundsException.class, () -> doc.createLineRange(1, 5));
         assertThrows(IndexOutOfBoundsException.class, () -> doc.createLineRange(0, 2));

@@ -4,6 +4,9 @@
 
 package net.sourceforge.pmd.cpd;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.not;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -17,9 +20,12 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+
+import net.sourceforge.pmd.internal.Slf4jSimpleConfiguration;
 
 import com.github.stefanbirkner.systemlambda.SystemLambda;
 import com.google.common.collect.ImmutableMap;
@@ -36,6 +42,12 @@ class CPDCommandLineInterfaceTest {
     @TempDir
     private Path tempDir;
 
+    @AfterEach
+    void resetLogging() {
+        // reset logging in case "--debug" changed the logging properties
+        // See also Slf4jSimpleConfigurationForAnt
+        Slf4jSimpleConfiguration.reconfigureDefaultLogLevel(null);
+    }
 
     @BeforeEach
     void setup() {
@@ -70,7 +82,6 @@ class CPDCommandLineInterfaceTest {
         return expectedFilesXmlBuilder.toString();
     }
 
-
     @Test
     void testDeprecatedOptionsWarning() throws Exception {
         final List<String> filepaths = Arrays.asList(
@@ -93,5 +104,28 @@ class CPDCommandLineInterfaceTest {
         // only one parameter is logged
         assertFalse(stderr.contains("Some deprecated options were used on the command-line, including --filelist"));
         assertFalse(stderr.contains("Consider replacing it with --file-list"));
+    }
+
+    @Test
+    void testDebugLogging() throws Exception {
+        // restoring system properties: --debug might change logging properties
+        SystemLambda.restoreSystemProperties(() -> {
+            String stderr = SystemLambda.tapSystemErr(() -> {
+                CPD.StatusCode statusCode = CPD.runCpd("--minimum-tokens", "340", "--language", "java", "--files",
+                        SRC_DIR, "--debug");
+                assertEquals(CPD.StatusCode.OK, statusCode);
+            });
+            assertThat(stderr, containsString("Tokenizing ")); // this is a debug logging
+        });
+    }
+
+    @Test
+    void testNormalLogging() throws Exception {
+        String stderr = SystemLambda.tapSystemErr(() -> {
+            CPD.StatusCode statusCode = CPD.runCpd("--minimum-tokens", "340", "--language", "java", "--files",
+                    SRC_DIR);
+            assertEquals(CPD.StatusCode.OK, statusCode);
+        });
+        assertThat(stderr, not(containsString("Tokenizing "))); // this is a debug logging
     }
 }

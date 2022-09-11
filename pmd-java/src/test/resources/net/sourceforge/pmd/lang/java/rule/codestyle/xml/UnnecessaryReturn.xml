@@ -365,7 +365,7 @@ public class Foo {
             ]]></code>
     </test-code>
 
-    <test-code regressionTest="false">
+    <test-code disabled="true">
         <description>Ignore local class statements</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[

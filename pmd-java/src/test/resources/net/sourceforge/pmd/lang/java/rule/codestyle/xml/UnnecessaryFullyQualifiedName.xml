@@ -883,7 +883,7 @@ class Assert {
             }
             ]]></code>
     </test-code>
-    <test-code regressionTest="false">
+    <test-code disabled="true">
         <!-- TODO this causes an error, bc of early disambiguation       -->
         <!--  solution: import on demands must be made entirely lazy     -->
         <description>FN with static method imported through subtype (same file)</description>

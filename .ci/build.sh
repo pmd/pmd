@@ -28,6 +28,15 @@ function build() {
     pmd_ci_utils_determine_build_env pmd/pmd
     echo
 
+    if ! pmd_ci_utils_is_fork_or_pull_request; then
+      if [ "${PMD_CI_BRANCH}" = "experimental-apex-parser" ]; then
+        pmd_ci_log_group_start "Build with mvnw"
+            ./mvnw clean install --show-version --errors --batch-mode --no-transfer-progress "${PMD_MAVEN_EXTRA_OPTS[@]}"
+        pmd_ci_log_group_end
+        exit 0
+      fi
+    fi
+
     if pmd_ci_utils_is_fork_or_pull_request; then
         pmd_ci_log_group_start "Build with mvnw"
             ./mvnw clean install --show-version --errors --batch-mode --no-transfer-progress "${PMD_MAVEN_EXTRA_OPTS[@]}"

@@ -30,14 +30,12 @@ public final class ApexParser implements Parser {
 
             final Compilation astRoot = CompilerService.INSTANCE.parseApex(task.getTextDocument());
 
-            if (astRoot == null) {
-                throw new ParseException("Couldn't parse the source - there is not root node - Syntax Error??");
-            }
+            assert astRoot != null : "Normally replaced by Compilation.INVALID";
 
             final ApexTreeBuilder treeBuilder = new ApexTreeBuilder(task, proc);
             return treeBuilder.buildTree(astRoot);
         } catch (apex.jorje.services.exception.ParseException e) {
-            throw new ParseException(e);
+            throw new ParseException(e).setFileName(task.getFileDisplayName());
         }
     }
 }
