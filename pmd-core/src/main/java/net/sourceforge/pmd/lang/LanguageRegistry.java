@@ -58,6 +58,11 @@ public final class LanguageRegistry implements Iterable<Language> {
         this.languagesByFullName = CollectionUtil.associateBy(languages, Language::getName);
     }
 
+    /**
+     * Creates a language registry containing a single language. Note
+     * that this may be inconvertible to a {@link LanguageProcessorRegistry}
+     * if the language depends on other languages.
+     */
     public static LanguageRegistry singleton(Language l) {
         return new LanguageRegistry(Collections.singleton(l));
     }

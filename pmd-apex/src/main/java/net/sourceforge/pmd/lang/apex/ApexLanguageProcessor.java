@@ -8,6 +8,8 @@ import static net.sourceforge.pmd.util.CollectionUtil.setOf;
 
 import java.util.Set;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.apex.ast.ApexParser;
 import net.sourceforge.pmd.lang.apex.internal.ApexDesignerBindings;
@@ -34,7 +36,7 @@ public class ApexLanguageProcessor
     }
 
     @Override
-    public LanguageVersionHandler services() {
+    public @NonNull LanguageVersionHandler services() {
         return this;
     }
 

@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.properties.AbstractPropertySource;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
@@ -11,6 +13,10 @@ import net.sourceforge.pmd.properties.PropertyFactory;
 import net.sourceforge.pmd.util.CollectionUtil;
 
 /**
+ * A bundle of properties used by languages (see {@link Language#newPropertyBundle()}).
+ * This class declares language properties that are common to all languages.
+ * Subclasses may define more properties and provide convenient accessors to them.
+ *
  * @author Clément Fournier
  */
 public class LanguagePropertyBundle extends AbstractPropertySource {
@@ -25,7 +31,10 @@ public class LanguagePropertyBundle extends AbstractPropertySource {
     private final PropertyDescriptor<LanguageVersion> languageVersion;
     private final Language language;
 
-    public LanguagePropertyBundle(Language language) {
+    /**
+     * Create a new bundle for the given language.
+     */
+    public LanguagePropertyBundle(@NonNull Language language) {
         this.language = language;
 
         definePropertyDescriptor(SUPPRESS_MARKER);

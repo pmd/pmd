@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.vf;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.ast.Parser;
 import net.sourceforge.pmd.lang.vf.ast.VfParser;
@@ -21,7 +23,7 @@ public class VfHandler extends BatchLanguageProcessor<VfLanguageProperties> impl
     }
 
     @Override
-    public LanguageVersionHandler services() {
+    public @NonNull LanguageVersionHandler services() {
         return this;
     }
 }

@@ -7,9 +7,12 @@ package net.sourceforge.pmd.processor;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageProcessor;
 import net.sourceforge.pmd.lang.LanguagePropertyBundle;
+import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.document.TextFile;
 
 /**
@@ -19,10 +22,12 @@ public abstract class BatchLanguageProcessor<P extends LanguagePropertyBundle> i
 
     private final Language language;
     private final P bundle;
+    private final LanguageVersion version;
 
     protected BatchLanguageProcessor(P bundle) {
         this.language = bundle.getLanguage();
         this.bundle = bundle;
+        this.version = bundle.getLanguageVersion();
     }
 
     public P getProperties() {
@@ -30,12 +35,17 @@ public abstract class BatchLanguageProcessor<P extends LanguagePropertyBundle> i
     }
 
     @Override
-    public final Language getLanguage() {
+    public @NonNull LanguageVersion getLanguageVersion() {
+        return version;
+    }
+
+    @Override
+    public final @NonNull Language getLanguage() {
         return language;
     }
 
     @Override
-    public AutoCloseable launchAnalysis(AnalysisTask task) {
+    public @NonNull AutoCloseable launchAnalysis(@NonNull AnalysisTask task) {
         // The given analysis task has all files to analyse, not only the ones for this language.
         List<TextFile> files = new ArrayList<>(task.getFiles());
         files.removeIf(it -> !it.getLanguageVersion().getLanguage().equals(getLanguage()));

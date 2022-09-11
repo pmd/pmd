@@ -4,10 +4,15 @@
 
 package net.sourceforge.pmd.processor;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import net.sourceforge.pmd.lang.LanguagePropertyBundle;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
 
 /**
+ * A {@link BatchLanguageProcessor} with a simple predetermined
+ * {@link LanguageVersionHandler}.
+ *
  * @author Clément Fournier
  */
 public class SimpleBatchLanguageProcessor extends BatchLanguageProcessor<LanguagePropertyBundle> {
@@ -19,7 +24,7 @@ public class SimpleBatchLanguageProcessor extends BatchLanguageProcessor<Languag
     }
 
     @Override
-    public LanguageVersionHandler services() {
+    public @NonNull LanguageVersionHandler services() {
         return handler;
     }
 }
