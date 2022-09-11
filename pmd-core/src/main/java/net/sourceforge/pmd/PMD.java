@@ -169,10 +169,30 @@ public final class PMD {
         PMDConfiguration configuration = Objects.requireNonNull(
             parseResult.toConfiguration()
         );
-        MessageReporter pmdReporter = setupMessageReporter(configuration);
-        configuration.setReporter(pmdReporter);
 
-        return runPmd(configuration);
+        Level curLogLevel = Slf4jSimpleConfiguration.getDefaultLogLevel();
+        boolean resetLogLevel = false;
+        try {
+            // only reconfigure logging, if debug flag was used on command line
+            // otherwise just use whatever is in conf/simplelogger.properties which happens automatically
+            if (configuration.isDebug()) {
+                Slf4jSimpleConfiguration.reconfigureDefaultLogLevel(Level.TRACE);
+                // need to reload the logger with the new configuration
+                log = LoggerFactory.getLogger(PMD_PACKAGE);
+                resetLogLevel = true;
+            }
+
+            MessageReporter pmdReporter = setupMessageReporter();
+            configuration.setReporter(pmdReporter);
+
+            return runPmd(configuration);
+        } finally {
+            if (resetLogLevel) {
+                // reset to the previous value
+                Slf4jSimpleConfiguration.reconfigureDefaultLogLevel(curLogLevel);
+                log = LoggerFactory.getLogger(PMD_PACKAGE);
+            }
+        }
     }
 
     /**
@@ -224,14 +244,8 @@ public final class PMD {
         }
     }
 
-    private static @NonNull MessageReporter setupMessageReporter(PMDConfiguration configuration) {
-        // only reconfigure logging, if debug flag was used on command line
-        // otherwise just use whatever is in conf/simplelogger.properties which happens automatically
-        if (configuration.isDebug()) {
-            Slf4jSimpleConfiguration.reconfigureDefaultLogLevel(Level.TRACE);
-            // need to reload the logger with the new configuration
-            log = LoggerFactory.getLogger(PMD_PACKAGE);
-        }
+    private static @NonNull MessageReporter setupMessageReporter() {
+
         // create a top-level reporter
         // TODO CLI errors should also be reported through this
         // TODO this should not use the logger as backend, otherwise without
