@@ -22,6 +22,18 @@ public class HTMLRendererTest extends AbstractRendererTest {
         return "someFilename<br>thatNeedsEscaping.ext";
     }
 
+    final String style = "<link rel='stylesheet' type='text/css' href='https://cdn.datatables.net/1.12.1/css/jquery.dataTables.css'>" +
+    "<link rel='stylesheet' type='text/css' href='https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css'>"
+    ;
+
+    final String scripts = "<script src='https://code.jquery.com/jquery-3.6.1.min.js'></script> " +
+    "<script type='text/javascript' charset='utf8' src='https://cdn.datatables.net/1.12.1/js/jquery.dataTables.js'></script>"
+    ;
+    final String setupTableScript = "<script>$(document).ready( function () { $('#pmdTable').DataTable(); } );</script>";
+    final String tableClass = " class='table table-bordered table-hover table-striped'";
+    final String tableId = " id='pmdTable'";
+
+
     private String getEscapedFilename() {
         return "someFilename&lt;br&gt;thatNeedsEscaping.ext";
     }
@@ -42,16 +54,20 @@ public class HTMLRendererTest extends AbstractRendererTest {
             filename = "<a href=\"" + linkPrefix + filename + "#" + lineAnchor + "\">"
                     + filename + "</a>";
         }
+
         return getHeader()
                 + "<tr bgcolor=\"lightgrey\"> " + PMD.EOL + "<td align=\"center\">1</td>" + PMD.EOL
                 + "<td width=\"*%\">" + filename + "</td>" + PMD.EOL + "<td align=\"center\" width=\"5%\">1</td>" + PMD.EOL
-                + "<td width=\"*\">blah</td>" + PMD.EOL + "</tr>" + PMD.EOL + "</table></body></html>" + PMD.EOL;
+                + PMD.EOL + "<td align=\"center\" width=\"5%\">1</td>" + PMD.EOL
+                + "<td width=\"*\">blah</td>" + PMD.EOL + "</tr>" + PMD.EOL + "</table>" + setupTableScript + "</body></html>" + PMD.EOL;
+
     }
 
     @Override
     public String getExpectedEmpty() {
+
         return getHeader()
-                + "</table></body></html>" + PMD.EOL;
+                + "</table>" + setupTableScript + "</body></html>" + PMD.EOL;
     }
 
     @Override
@@ -61,8 +77,8 @@ public class HTMLRendererTest extends AbstractRendererTest {
                 + "<td width=\"*%\">" + getEscapedFilename() + "</td>" + PMD.EOL + "<td align=\"center\" width=\"5%\">1</td>" + PMD.EOL
                 + "<td width=\"*\">blah</td>" + PMD.EOL + "</tr>" + PMD.EOL + "<tr> " + PMD.EOL
                 + "<td align=\"center\">2</td>" + PMD.EOL + "<td width=\"*%\">" + getEscapedFilename() + "</td>" + PMD.EOL
-                + "<td align=\"center\" width=\"5%\">1</td>" + PMD.EOL + "<td width=\"*\">blah</td>" + PMD.EOL + "</tr>"
-                + PMD.EOL + "</table></body></html>" + PMD.EOL;
+                + "<td align=\"center\" width=\"5%\">1</td>" + PMD.EOL + "<td align=\"center\" width=\"5%\">1</td>" + PMD.EOL +  "<td width=\"*\">blah</td>" + PMD.EOL + "</tr>"
+                + PMD.EOL + "</table>" + setupTableScript + "</body></html>" + PMD.EOL;
     }
 
     @Override
@@ -84,9 +100,9 @@ public class HTMLRendererTest extends AbstractRendererTest {
     }
 
     private String getHeader() {
-        return "<html><head><title>PMD</title></head><body>" + PMD.EOL
-                + "<center><h3>PMD report</h3></center><center><h3>Problems found</h3></center><table align=\"center\" cellspacing=\"0\" cellpadding=\"3\"><tr>"
-                + PMD.EOL + "<th>#</th><th>File</th><th>Line</th><th>Problem</th></tr>" + PMD.EOL;
+        return "<html><head><title>PMD</title>" + style + scripts + "</head><body>"  + PMD.EOL
+                + "<center><h3>PMD report</h3></center><center><h3>Problems found</h3></center><table " + tableId + tableClass + " align=\"center\" cellspacing=\"0\" cellpadding=\"3\"><tr>"
+                + PMD.EOL + "<th>#</th><th>File</th><th>Line</th><th>Priority</th><th>Problem</th></tr>" + PMD.EOL;
     }
 
     @Test
