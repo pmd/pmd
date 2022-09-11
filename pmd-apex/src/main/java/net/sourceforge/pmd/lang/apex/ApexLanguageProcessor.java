@@ -17,10 +17,10 @@ import net.sourceforge.pmd.lang.apex.metrics.ApexMetrics;
 import net.sourceforge.pmd.lang.apex.multifile.ApexMultifileAnalysis;
 import net.sourceforge.pmd.lang.apex.rule.internal.ApexRuleViolationFactory;
 import net.sourceforge.pmd.lang.ast.Parser;
+import net.sourceforge.pmd.lang.impl.BatchLanguageProcessor;
 import net.sourceforge.pmd.lang.metrics.LanguageMetricsProvider;
 import net.sourceforge.pmd.lang.metrics.Metric;
 import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
-import net.sourceforge.pmd.lang.impl.BatchLanguageProcessor;
 import net.sourceforge.pmd.util.designerbindings.DesignerBindings;
 
 public class ApexLanguageProcessor

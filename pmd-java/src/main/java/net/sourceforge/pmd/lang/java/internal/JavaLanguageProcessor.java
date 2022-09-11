@@ -10,6 +10,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.ast.Parser;
+import net.sourceforge.pmd.lang.impl.BatchLanguageProcessor;
 import net.sourceforge.pmd.lang.java.ast.JavaParser;
 import net.sourceforge.pmd.lang.java.internal.JavaLanguageProperties.InferenceLoggingVerbosity;
 import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleViolationFactory;
@@ -26,7 +27,6 @@ import net.sourceforge.pmd.lang.java.types.internal.infer.TypeInferenceLogger.Ve
 import net.sourceforge.pmd.lang.metrics.LanguageMetricsProvider;
 import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
 import net.sourceforge.pmd.lang.rule.xpath.impl.XPathHandler;
-import net.sourceforge.pmd.lang.impl.BatchLanguageProcessor;
 import net.sourceforge.pmd.util.designerbindings.DesignerBindings;
 
 /**
