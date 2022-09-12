@@ -171,7 +171,7 @@ class ApexParserTest extends ApexParserTestBase {
     void parseInheritedSharingClass() throws IOException {
         String source = IOUtil.readToString(ApexParserTest.class.getResourceAsStream("InheritedSharing.cls"),
                 StandardCharsets.UTF_8);
-        Assert.assertNotNull(parse(source));
+        assertNotNull(parse(source));
     }
 
     /**
@@ -184,7 +184,7 @@ class ApexParserTest extends ApexParserTestBase {
         String source = IOUtil.readToString(ApexParserTest.class.getResourceAsStream("StackOverflowClass.cls"),
                 StandardCharsets.UTF_8);
         ASTUserClassOrInterface<?> rootNode = parse(source);
-        Assert.assertNotNull(rootNode);
+        assertNotNull(rootNode);
 
         int count = visitPosition(rootNode, 0);
         assertEquals(487, count);
