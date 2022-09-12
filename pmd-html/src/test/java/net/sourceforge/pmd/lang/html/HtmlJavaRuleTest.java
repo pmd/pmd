@@ -51,6 +51,7 @@ class HtmlJavaRuleTest {
                 return super.visit(node, data);
             }
         };
+        rule.setLanguage(HtmlParsingHelper.DEFAULT.getLanguage());
         List<RuleViolation> violations = runRule(LIGHTNING_WEB_COMPONENT, rule);
         assertEquals(2, violations.size());
         assertEquals(4, violations.get(0).getBeginLine());

@@ -10,8 +10,6 @@ import org.junit.Test;
 
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.lang.LanguageRegistry;
-import net.sourceforge.pmd.lang.xml.XmlLanguageModule;
 import net.sourceforge.pmd.lang.xml.XmlParsingHelper;
 
 public class XmlXPathRuleTest {
@@ -36,7 +34,7 @@ public class XmlXPathRuleTest {
 
     private Rule makeXPath(String expression, String nsUri) {
         DomXPathRule rule = new DomXPathRule(expression, nsUri);
-        rule.setLanguage(LanguageRegistry.getLanguage(XmlLanguageModule.NAME));
+        rule.setLanguage(xml.getLanguage());
         rule.setMessage("XPath Rule Failed");
         return rule;
     }

@@ -132,7 +132,7 @@ public interface Node extends Reportable {
 
 
     // Those are kept here because they're handled specially as XPath
-    // attributes
+    // attributes, for now
 
     @Override
     default int getBeginLine() {

@@ -12,7 +12,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTSwitchBranch;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchFallthroughBranch;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
-import net.sourceforge.pmd.lang.java.ast.JavaTokenKinds;
+import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.rule.internal.DataflowPass;
 import net.sourceforge.pmd.lang.java.rule.internal.DataflowPass.DataflowResult;
@@ -55,9 +55,8 @@ public class ImplicitSwitchFallThroughRule extends AbstractJavaRulechainRule {
             return false;
         }
         for (JavaccToken special : GenericToken.previousSpecials(nextBranch.getFirstToken())) {
-            if ((JavaTokenKinds.SINGLE_LINE_COMMENT == special.kind
-                || JavaTokenKinds.MULTI_LINE_COMMENT == special.kind)
-                && IGNORED_COMMENT.matcher(special.getImage()).find()) {
+            if (JavaAstUtils.isComment(special)
+                && IGNORED_COMMENT.matcher(special.getImageCs()).find()) {
                 return true;
             }
         }

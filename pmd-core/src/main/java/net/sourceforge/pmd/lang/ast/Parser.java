@@ -46,20 +46,27 @@ public interface Parser {
         private final SemanticErrorReporter reporter;
         private final ClassLoader auxclasspathClassLoader;
 
-        private final PropertySource propertySource;
+        private final ParserTaskProperties propertySource;
 
         public ParserTask(TextDocument textDoc, SemanticErrorReporter reporter, ClassLoader auxclasspathClassLoader) {
-            this.textDoc = Objects.requireNonNull(textDoc, "Text document was null");
-            this.reporter = Objects.requireNonNull(reporter, "reporter was null");
-            this.auxclasspathClassLoader = Objects.requireNonNull(auxclasspathClassLoader, "auxclasspathClassLoader was null");
-
-            this.propertySource = new ParserTaskProperties();
-            propertySource.definePropertyDescriptor(COMMENT_MARKER);
+            this(textDoc, reporter, new ParserTaskProperties(), auxclasspathClassLoader);
         }
 
         public ParserTask(TextDocument textDoc, SemanticErrorReporter reporter) {
             this(textDoc, reporter, Parser.class.getClassLoader());
         }
+
+        private ParserTask(TextDocument textDoc,
+                           SemanticErrorReporter reporter,
+                           ParserTaskProperties source,
+                           ClassLoader auxclasspathClassLoader) {
+            this.textDoc = Objects.requireNonNull(textDoc, "Text document was null");
+            this.reporter = Objects.requireNonNull(reporter, "reporter was null");
+            this.auxclasspathClassLoader = Objects.requireNonNull(auxclasspathClassLoader, "auxclasspathClassLoader was null");
+
+            this.propertySource = new ParserTaskProperties(source);
+        }
+
 
         public static final PropertyDescriptor<String> COMMENT_MARKER =
             PropertyFactory.stringProperty("suppressionCommentMarker")
@@ -117,8 +124,32 @@ public interface Parser {
             return getProperties().getProperty(COMMENT_MARKER);
         }
 
+        /**
+         * Replace the text document with another.
+         */
+        public ParserTask withTextDocument(TextDocument doc) {
+            return new ParserTask(doc, this.reporter, this.propertySource, this.auxclasspathClassLoader);
+        }
+
 
         private static final class ParserTaskProperties extends AbstractPropertySource {
+
+            ParserTaskProperties() {
+                definePropertyDescriptor(COMMENT_MARKER);
+            }
+
+            ParserTaskProperties(ParserTaskProperties toCopy) {
+                for (PropertyDescriptor<?> prop : toCopy.getPropertyDescriptors()) {
+                    definePropertyDescriptor(prop);
+                }
+                toCopy.getOverriddenPropertyDescriptors().forEach(
+                    prop -> copyProperty(prop, toCopy, this)
+                );
+            }
+
+            static <T> void copyProperty(PropertyDescriptor<T> prop, PropertySource source, PropertySource target) {
+                target.setProperty(prop, source.getProperty(prop));
+            }
 
             @Override
             protected String getPropertySourceType() {

@@ -23,7 +23,6 @@ import org.junit.contrib.java.lang.system.SystemOutRule;
 import org.junit.rules.TemporaryFolder;
 
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import net.sourceforge.pmd.util.IOUtil;
@@ -52,7 +51,7 @@ public class PMDCoverageTest {
 
     @Test
     public void runAllJavaPmdOnTestResourcesWithLatestJavaVersion() {
-        List<LanguageVersion> versions = LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersions();
+        List<LanguageVersion> versions = JavaLanguageModule.getInstance().getVersions();
         LanguageVersion latest = versions.get(versions.size() - 1);
 
         runPmd("-d src/test/resources -f text -R rulesets/internal/all-java.xml -language java -version " + latest.getVersion());

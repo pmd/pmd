@@ -9,23 +9,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.apache.commons.lang3.reflect.FieldUtils;
 import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.PMDConfiguration;
 
 class PMDParametersTest {
-
-    @Test
-    void testVersion() throws Exception {
-        PMDParameters parameters = new PMDParameters();
-        // no language set, uses default language
-        assertEquals("1.7", parameters.getVersion());
-
-        // now set language
-        FieldUtils.writeDeclaredField(parameters, "language", "dummy2", true);
-        assertEquals("1.0", parameters.getVersion());
-    }
 
     @Test
     void testMultipleDirsAndRuleSets() {

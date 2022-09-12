@@ -4,17 +4,8 @@
 
 package net.sourceforge.pmd.lang.jsp;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import java.io.File;
-import java.nio.file.Paths;
-
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 
-import net.sourceforge.pmd.lang.LanguageRegistry;
-import net.sourceforge.pmd.lang.LanguageVersion;
-import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
 import net.sourceforge.pmd.lang.jsp.ast.AbstractJspNodesTst;
 
 /**
@@ -48,28 +39,4 @@ class JspParserTest extends AbstractJspNodesTst {
     void testParseBooleanAttribute() {
         jsp.parse("<label><input type='checkbox' checked name=cheese disabled=''> Cheese</label>");
     }
-
-    @Test
-    void testParseJsp() {
-        testInternalJspFile(Paths.get("sample.jsp").toFile());
-        testInternalJspFile(Paths.get("sample.jspx").toFile());
-    }
-
-    @Test
-    void testParseTag() {
-        testInternalJspFile(Paths.get("sample.tag").toFile());
-    }
-
-    @Test
-    void testParseWrong() {
-        assertThrows(AssertionError.class, () -> testInternalJspFile(Paths.get("sample.xxx").toFile()));
-    }
-
-    private void testInternalJspFile(File jspFile) {
-        LanguageVersionDiscoverer discoverer = new LanguageVersionDiscoverer();
-        LanguageVersion languageVersion = discoverer.getDefaultLanguageVersionForFile(jspFile);
-        Assert.assertEquals("LanguageVersion must be JSP!",
-                LanguageRegistry.getLanguage(JspLanguageModule.NAME).getDefaultVersion(), languageVersion);
-    }
-
 }

@@ -22,6 +22,7 @@ import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
+import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
@@ -52,7 +53,7 @@ class FileCollectorTest {
     void testAddFileForceLanguage() throws IOException {
         Path bar = newFile(tempFolder, "bar.unknown");
 
-        Language dummy = LanguageRegistry.findLanguageByTerseName("dummy");
+        Language dummy = DummyLanguageModule.getInstance();
 
         FileCollector collector = newCollector(dummy.getDefaultVersion());
 
@@ -130,7 +131,7 @@ class FileCollectorTest {
     }
 
     private FileCollector newCollector(LanguageVersion forcedVersion) {
-        LanguageVersionDiscoverer discoverer = new LanguageVersionDiscoverer(forcedVersion);
+        LanguageVersionDiscoverer discoverer = new LanguageVersionDiscoverer(LanguageRegistry.PMD, forcedVersion);
         FileCollector collector = FileCollector.newCollector(discoverer, new TestMessageReporter());
         collector.relativizeWith(tempFolder.toAbsolutePath().toString());
         return collector;

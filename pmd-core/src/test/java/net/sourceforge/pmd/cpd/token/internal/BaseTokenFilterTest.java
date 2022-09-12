@@ -45,6 +45,11 @@ class BaseTokenFilterTest {
         }
 
         @Override
+        public TextRegion getRegion() {
+            return TextRegion.fromBothOffsets(0, text.length());
+        }
+
+        @Override
         public boolean isEof() {
             return text == null;
         }
@@ -52,11 +57,6 @@ class BaseTokenFilterTest {
         @Override
         public String getImageCs() {
             return text;
-        }
-
-        @Override
-        public TextRegion getRegion() {
-            return TextRegion.fromBothOffsets(0, text.length());
         }
 
         @Override

@@ -163,9 +163,7 @@ public final class PmdAnalysis implements AutoCloseable {
      * }</pre>
      */
     public RuleSetLoader newRuleSetLoader() {
-        RuleSetLoader loader = RuleSetLoader.fromPmdConfig(configuration);
-        loader.setReporter(this.reporter);
-        return loader;
+        return RuleSetLoader.fromPmdConfig(configuration);
     }
 
     /**
@@ -347,6 +345,7 @@ public final class PmdAnalysis implements AutoCloseable {
         for (RuleSet ruleSet : ruleSets) {
             for (final Rule rule : ruleSet.getRules()) {
                 final Language ruleLanguage = rule.getLanguage();
+                Objects.requireNonNull(ruleLanguage, "Rule has no language " + rule);
                 if (!languages.contains(ruleLanguage)) {
                     final LanguageVersion version = discoverer.getDefaultLanguageVersion(ruleLanguage);
                     if (RuleSet.applies(rule, version)) {

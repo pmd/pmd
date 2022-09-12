@@ -4,12 +4,10 @@
 
 package net.sourceforge.pmd.lang.ast.impl.javacc;
 
-import net.sourceforge.pmd.lang.ast.CharStream;
+import net.sourceforge.pmd.lang.ast.FileAnalysisException;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.Parser;
 import net.sourceforge.pmd.lang.ast.RootNode;
-import net.sourceforge.pmd.lang.ast.TokenMgrError;
-import net.sourceforge.pmd.lang.document.TextDocument;
 
 /**
  * Base implementation of the {@link Parser} interface for JavaCC language
@@ -24,20 +22,19 @@ public abstract class JjtreeParserAdapter<R extends RootNode> implements Parser 
         // inheritance only
     }
 
-    protected abstract JavaccTokenDocument newDocumentImpl(TextDocument textDocument);
-
-    protected CharStream newCharStream(JavaccTokenDocument tokenDocument) {
-        return new SimpleCharStream(tokenDocument);
-    }
+    protected abstract JavaccTokenDocument.TokenDocumentBehavior tokenBehavior();
 
     @Override
-    public R parse(ParserTask task) throws ParseException {
-        JavaccTokenDocument doc = newDocumentImpl(task.getTextDocument());
-        CharStream charStream = newCharStream(doc);
-
+    public final R parse(ParserTask task) throws ParseException {
         try {
+            // First read the source file and interpret escapes
+            CharStream charStream = CharStream.create(task.getTextDocument(), tokenBehavior());
+            // We replace the text document, so that it reflects escapes properly
+            // Escapes are processed by CharStream#create
+            task = task.withTextDocument(charStream.getTokenDocument().getTextDocument());
+            // Finally, do the parsing
             return parseImpl(charStream, task);
-        } catch (TokenMgrError tme) {
+        } catch (FileAnalysisException tme) {
             throw tme.setFileName(task.getFileDisplayName());
         }
     }

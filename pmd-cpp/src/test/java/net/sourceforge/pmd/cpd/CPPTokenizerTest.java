@@ -8,7 +8,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Properties;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.cpd.test.CpdTextComparisonTest;
@@ -84,13 +83,11 @@ class CPPTokenizerTest extends CpdTextComparisonTest {
     }
 
     @Test
-    @Disabled
     void testTokenizerWithSkipBlocks() {
         doTest("simpleSkipBlocks", "_skipDefault", skipBlocks());
     }
 
     @Test
-    @Disabled
     void testTokenizerWithSkipBlocksPattern() {
         doTest("simpleSkipBlocks", "_skipDebug", skipBlocks("#if debug|#endif"));
     }

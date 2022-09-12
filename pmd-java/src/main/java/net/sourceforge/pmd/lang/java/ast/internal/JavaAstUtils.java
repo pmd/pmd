@@ -4,6 +4,10 @@
 
 package net.sourceforge.pmd.lang.java.ast.internal;
 
+import static net.sourceforge.pmd.lang.java.ast.JavaTokenKinds.FORMAL_COMMENT;
+import static net.sourceforge.pmd.lang.java.ast.JavaTokenKinds.MULTI_LINE_COMMENT;
+import static net.sourceforge.pmd.lang.java.ast.JavaTokenKinds.SINGLE_LINE_COMMENT;
+
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -710,5 +714,19 @@ public final class JavaAstUtils {
             return operator == infix.getOperator();
         }
         return false;
+    }
+
+    /**
+     * Returns true if the given token is a Java comment.
+     */
+    public static boolean isComment(JavaccToken t) {
+        switch (t.kind) {
+        case FORMAL_COMMENT:
+        case MULTI_LINE_COMMENT:
+        case SINGLE_LINE_COMMENT:
+            return true;
+        default:
+            return false;
+        }
     }
 }

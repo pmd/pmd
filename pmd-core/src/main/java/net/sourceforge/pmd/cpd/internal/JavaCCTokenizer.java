@@ -13,10 +13,10 @@ import net.sourceforge.pmd.cpd.Tokens;
 import net.sourceforge.pmd.cpd.token.JavaCCTokenFilter;
 import net.sourceforge.pmd.cpd.token.TokenFilter;
 import net.sourceforge.pmd.lang.TokenManager;
-import net.sourceforge.pmd.lang.ast.CharStream;
-import net.sourceforge.pmd.lang.ast.TokenMgrError;
-import net.sourceforge.pmd.lang.ast.impl.javacc.CharStreamFactory;
+import net.sourceforge.pmd.lang.ast.FileAnalysisException;
+import net.sourceforge.pmd.lang.ast.impl.javacc.CharStream;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
+import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument.TokenDocumentBehavior;
 import net.sourceforge.pmd.lang.document.CpdCompat;
 import net.sourceforge.pmd.lang.document.TextDocument;
 
@@ -24,11 +24,11 @@ public abstract class JavaCCTokenizer implements Tokenizer {
 
     @SuppressWarnings("PMD.CloseResource")
     protected TokenManager<JavaccToken> getLexerForSource(TextDocument sourceCode) throws IOException {
-        return makeLexerImpl(makeCharStream(sourceCode));
+        return makeLexerImpl(CharStream.create(sourceCode, tokenBehavior()));
     }
 
-    protected CharStream makeCharStream(TextDocument sourceCode) {
-        return CharStreamFactory.simpleCharStream(sourceCode);
+    protected TokenDocumentBehavior tokenBehavior() {
+        return TokenDocumentBehavior.DEFAULT;
     }
 
     protected abstract TokenManager<JavaccToken> makeLexerImpl(CharStream sourceCode);
@@ -55,7 +55,7 @@ public abstract class JavaCCTokenizer implements Tokenizer {
                 tokenEntries.add(processToken(tokenEntries, currentToken));
                 currentToken = tokenFilter.getNextToken();
             }
-        } catch (TokenMgrError e) {
+        } catch (FileAnalysisException e) {
             throw e.setFileName(sourceCode.getFileName());
         } finally {
             tokenEntries.add(TokenEntry.getEOF());

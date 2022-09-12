@@ -5,6 +5,8 @@
 package net.sourceforge.pmd.docs;
 
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
@@ -28,9 +30,17 @@ public class RuleSetResolverTest {
 
         filterRuleSets(additionalRulesets);
 
+        assertFalse(additionalRulesets.isEmpty());
+
         for (String filename : additionalRulesets) {
             new RuleSetLoader().warnDeprecated(false).loadFromResource(filename); // will throw if invalid
         }
+    }
+
+    @Test
+    public void testAdditionalRulesetPattern() {
+        String filePath = IOUtil.normalizePath("/home/foo/pmd/pmd-java/src/main/resources/rulesets/java/quickstart.xml");
+        assertTrue(GenerateRuleDocsCmd.ADDITIONAL_RULESET_PATTERN.matcher(filePath).matches());
     }
 
     private void filterRuleSets(List<String> additionalRulesets) {

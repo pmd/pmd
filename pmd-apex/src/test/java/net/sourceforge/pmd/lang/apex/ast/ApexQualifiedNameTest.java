@@ -8,6 +8,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
@@ -87,5 +90,33 @@ class ApexQualifiedNameTest extends ApexParserTestBase {
 
         ASTMethod m = root.descendants(ASTMethod.class).firstOrThrow();
         assertEquals("c__trigger.Account#myAccountTrigger", m.getQualifiedName().toString());
+    }
+
+
+    @Test
+    public void testUnqualifiedEnum() {
+        ASTUserEnum root = (ASTUserEnum) parse("public enum primaryColor { RED, YELLOW, BLUE }");
+
+        ApexQualifiedName enumQName = root.getQualifiedName();
+        List<ASTMethod> methods = root.descendants(ASTMethod.class).toList();
+
+        assertEquals("c__primaryColor", enumQName.toString());
+        for (ASTMethod m : methods) {
+            assertTrue(m.getQualifiedName().toString().startsWith("c__primaryColor#"));
+        }
+    }
+
+    @Test
+    public void testQualifiedEnum() {
+        ASTUserClass root = (ASTUserClass) parse("public class Outer { public enum Inner { OK } }");
+
+        ASTUserEnum enumNode = root.descendants(ASTUserEnum.class).firstOrThrow();
+        ApexQualifiedName enumQName = enumNode.getQualifiedName();
+        List<ASTMethod> methods = enumNode.descendants(ASTMethod.class).toList();
+
+        assertEquals("c__Outer.Inner", enumQName.toString());
+        for (ASTMethod m : methods) {
+            assertTrue(m.getQualifiedName().toString().startsWith("c__Outer.Inner#"));
+        }
     }
 }

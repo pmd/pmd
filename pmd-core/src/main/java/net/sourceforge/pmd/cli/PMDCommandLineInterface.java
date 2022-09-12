@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.cli;
 
 import java.util.Properties;
-import java.util.stream.Collectors;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMD.StatusCode;
@@ -145,7 +144,7 @@ public final class PMDCommandLineInterface {
 
     private static String supportedVersions() {
         return "Languages and version suported:" + PMD.EOL
-                + LanguageRegistry.getLanguages().stream().map(Language::getTerseName).collect(Collectors.joining(", "))
+                + LanguageRegistry.PMD.commaSeparatedList(Language::getId)
                 + PMD.EOL;
     }
 

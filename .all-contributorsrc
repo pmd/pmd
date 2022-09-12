@@ -1053,7 +1053,8 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/86377278?v=4",
       "profile": "https://github.com/aaronhurst-google",
       "contributions": [
-        "bug"
+        "bug",
+        "code"
       ]
     },
     {
@@ -5917,7 +5918,8 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/35368290?v=4",
       "profile": "https://github.com/tprouvot",
       "contributions": [
-        "bug"
+        "bug",
+        "code"
       ]
     },
     {
@@ -6767,6 +6769,42 @@
       "contributions": [
         "code",
         "financial"
+      ]
+    },
+    {
+      "login": "abyss638",
+      "name": "Simon Abykov",
+      "avatar_url": "https://avatars.githubusercontent.com/u/90252673?v=4",
+      "profile": "https://github.com/abyss638",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "eklimo",
+      "name": "Edward Klimoshenko",
+      "avatar_url": "https://avatars.githubusercontent.com/u/39220927?v=4",
+      "profile": "https://github.com/eklimo",
+      "contributions": [
+        "bug",
+        "code"
+      ]
+    },
+    {
+      "login": "nvuillam",
+      "name": "Nicolas Vuillamy",
+      "avatar_url": "https://avatars.githubusercontent.com/u/17500430?v=4",
+      "profile": "https://github.com/nvuillam",
+      "contributions": [
+        "doc"
+      ]
+    },{
+      "login": "pacvz",
+      "name": "pacvz",
+      "avatar_url": "https://avatars.githubusercontent.com/u/35453365?v=4",
+      "profile": "https://github.com/pacvz",
+      "contributions": [
+        "code"
       ]
     }
   ],

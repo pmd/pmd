@@ -10,10 +10,7 @@ import org.junit.Test;
 
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.rule.XPathRule;
-import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
-import net.sourceforge.pmd.lang.scala.ScalaLanguageModule;
 import net.sourceforge.pmd.lang.scala.ast.BaseScalaTest;
 
 public class XPathRuleTest extends BaseScalaTest {
@@ -28,9 +25,7 @@ public class XPathRuleTest extends BaseScalaTest {
     }
 
     private Report evaluate(String testSource, String xpath) {
-        XPathRule rule = new XPathRule(XPathVersion.XPATH_2_0, xpath);
-        rule.setLanguage(LanguageRegistry.getLanguage(ScalaLanguageModule.NAME));
-        rule.setMessage("XPath Rule Failed");
+        XPathRule rule = scala.newXpathRule(xpath);
         return scala.executeRuleOnResource(rule, testSource);
     }
 }
