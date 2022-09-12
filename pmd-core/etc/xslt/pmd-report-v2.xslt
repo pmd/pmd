@@ -12,6 +12,7 @@ xmlns:scan="http://pmd.sourceforge.net/report/2.0.0"
 
   <html>
    <head>
+   <title>PMD Report </title>
    <link rel='stylesheet' type='text/css' href='https://cdn.datatables.net/1.12.1/css/jquery.dataTables.css'/>
    <link rel='stylesheet' type='text/css' href='https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css'/>
 
@@ -160,6 +161,8 @@ const arcSpec ={
       {"priority": 2, "count": p2},
       {"priority": 3, "count": p3},
       {"priority": 4, "count": p4},
+      {"priority": 5, "count": p5}
+  
     ]
   },
   "mark": {"type": "arc" , "innerRadius": 50, "tooltip": true},
@@ -184,8 +187,8 @@ const arcSpecRS ={
       {"rule": "Design", "count": design},
       {"rule": "Documentation", "count": doc},
 
-       {"rule": "Documentation", "count": ep},
-       {"rule": "Error Prone", "count": perf},
+      {"rule": "Documentation", "count": ep},
+      {"rule": "Error Prone", "count": perf},
       {"rule": "Security", "count": security}
 
     ]
@@ -210,7 +213,7 @@ const barSpec =
       {"priority": 2, "count": p2},
       {"priority": 3, "count": p3},
       {"priority": 4, "count": p4},
-      {"priority": 5, "count": p5},
+      {"priority": 5, "count": p5}
     ]
     },
   "mark": { type: "bar","tooltip": true},
