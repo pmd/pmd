@@ -21,6 +21,7 @@ import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.util.datasource.DataSource;
+import net.sourceforge.pmd.util.datasource.internal.LanguageAwareDataSource;
 
 /**
  *
@@ -82,6 +83,9 @@ public class PmdRunnable implements Callable<Report> {
 
         try (InputStream stream = new BufferedInputStream(dataSource.getInputStream())) {
             tc.ruleContext.setLanguageVersion(null);
+            if (dataSource instanceof LanguageAwareDataSource) {
+                tc.ruleContext.setLanguageVersion(((LanguageAwareDataSource) dataSource).getLanguageVersion());
+            }
             sourceCodeProcessor.processSourceCode(stream, tc.ruleSets, tc.ruleContext);
         } catch (PMDException pmde) {
             addError(report, pmde, "Error while processing file: " + fileName);

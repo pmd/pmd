@@ -8,7 +8,9 @@ import net.sourceforge.pmd.annotation.InternalApi;
 
 import com.google.summit.ast.declaration.TypeDeclaration;
 
-public class ASTUserEnum extends ApexRootNode<TypeDeclaration> {
+public class ASTUserEnum extends ApexRootNode<TypeDeclaration> implements ApexQualifiableNode {
+
+    private ApexQualifiedName qname;
 
     @Deprecated
     @InternalApi
@@ -31,5 +33,21 @@ public class ASTUserEnum extends ApexRootNode<TypeDeclaration> {
 
     public ASTModifierNode getModifiers() {
         return getFirstChildOfType(ASTModifierNode.class);
+    }
+
+    @Override
+    public ApexQualifiedName getQualifiedName() {
+        if (qname == null) {
+
+            ASTUserClass parent = this.getFirstParentOfType(ASTUserClass.class);
+
+            if (parent != null) {
+                qname = ApexQualifiedName.ofNestedEnum(parent.getQualifiedName(), this);
+            } else {
+                qname = ApexQualifiedName.ofOuterEnum(this);
+            }
+        }
+
+        return qname;
     }
 }
