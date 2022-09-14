@@ -75,11 +75,11 @@ public class LuaTokenizer extends AntlrTokenizer {
         @Override
         protected void analyzeTokens(final AntlrToken currentToken, final Iterable<AntlrToken> remainingTokens) {
             discardCurrent = false;
-            skipRequires(currentToken, remainingTokens);
+            skipRequires(currentToken);
             skipLiteralSequences(currentToken, remainingTokens);
         }
 
-        private void skipRequires(final AntlrToken currentToken, final Iterable<AntlrToken> remainingTokens) {
+        private void skipRequires(final AntlrToken currentToken) {
             final int type = currentToken.getKind();
             if (type == LuaLexer.REQUIRE) {
                 discardingRequires = true;
