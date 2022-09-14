@@ -22,7 +22,18 @@ if /I "%jvendor%" EQU "java" (
     if %jver% GEQ 900 (
         if %jver% LSS 1100 (
             :: enable reflection
-            Set jreopts=--add-opens javafx.controls/javafx.scene.control.skin=ALL-UNNAMED
+            SETLOCAL EnableDelayedExpansion
+            rem java9 and java10 from oracle contain javafx as a module
+            rem open internal module of javafx to reflection (for our TreeViewWrapper)
+            set "jreopts=--add-opens javafx.controls/javafx.scene.control.skin=ALL-UNNAMED"
+            rem The rest here is for RichtextFX
+            set "jreopts=!jreopts! --add-opens javafx.graphics/javafx.scene.text=ALL-UNNAMED"
+            set "jreopts=!jreopts! --add-opens javafx.graphics/com.sun.javafx.scene.text=ALL-UNNAMED"
+            set "jreopts=!jreopts! --add-opens javafx.graphics/com.sun.javafx.text=ALL-UNNAMED"
+            set "jreopts=!jreopts! --add-opens javafx.graphics/com.sun.javafx.geom=ALL-UNNAMED"
+            rem Warn of remaining illegal accesses
+            set "jreopts=!jreopts! --illegal-access=warn"
+
         )
     )
 )
