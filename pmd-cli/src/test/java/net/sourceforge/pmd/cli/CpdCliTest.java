@@ -69,7 +69,7 @@ class CpdCliTest extends BaseCliTest {
     }
     
     @Test
-    void testEmptyResultRendering() throws Exception {
+    void testNoDuplicatesResultRendering() throws Exception {
         final String stdout = SystemLambda.tapSystemOut(() -> {
             SystemLambda.tapSystemErr(() -> {
                 final int statusCode = SystemLambda.catchSystemExit(() -> {
@@ -81,7 +81,17 @@ class CpdCliTest extends BaseCliTest {
                 assertEquals(ExecutionResult.OK.getExitCode(), statusCode);
             });
         });
-        assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" + "<pmd-cpd/>", stdout.trim());
+        assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+                + "<pmd-cpd>\n"
+                + "   <file path=\"/Users/jsotuyo/Documents/workspace/pmd/pmd-cli/src/test/resources/net/sourceforge/pmd/cpd/files/dup1.java\"\n"
+                + "         totalNumberOfTokens=\"89\"/>\n"
+                + "   <file path=\"/Users/jsotuyo/Documents/workspace/pmd/pmd-cli/src/test/resources/net/sourceforge/pmd/cpd/files/dup2.java\"\n"
+                + "         totalNumberOfTokens=\"89\"/>\n"
+                + "   <file path=\"/Users/jsotuyo/Documents/workspace/pmd/pmd-cli/src/test/resources/net/sourceforge/pmd/cpd/files/file_with_ISO-8859-1_encoding.java\"\n"
+                + "         totalNumberOfTokens=\"8\"/>\n"
+                + "   <file path=\"/Users/jsotuyo/Documents/workspace/pmd/pmd-cli/src/test/resources/net/sourceforge/pmd/cpd/files/file_with_utf8_bom.java\"\n"
+                + "         totalNumberOfTokens=\"9\"/>\n"
+                + "</pmd-cpd>", stdout.trim());
     }
 
     @Override
