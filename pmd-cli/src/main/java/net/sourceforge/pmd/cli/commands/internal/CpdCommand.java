@@ -4,10 +4,9 @@
 
 package net.sourceforge.pmd.cli.commands.internal;
 
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
+import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -21,9 +20,11 @@ import net.sourceforge.pmd.cli.commands.typesupport.internal.CpdLanguageTypeSupp
 import net.sourceforge.pmd.cli.internal.ExecutionResult;
 import net.sourceforge.pmd.cpd.CPD;
 import net.sourceforge.pmd.cpd.CPDConfiguration;
+import net.sourceforge.pmd.cpd.CPDReport;
 import net.sourceforge.pmd.cpd.Language;
 import net.sourceforge.pmd.cpd.Tokenizer;
 import net.sourceforge.pmd.internal.LogMessages;
+import net.sourceforge.pmd.util.IOUtil;
 
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
@@ -34,7 +35,7 @@ import picocli.CommandLine.ParameterException;
 public class CpdCommand extends AbstractAnalysisPmdSubcommand {
 
     @Option(names = { "--language", "-l" }, description = "The source code language.%nValid values: ${COMPLETION-CANDIDATES}",
-            defaultValue = "java", converter = CpdLanguageTypeSupport.class, completionCandidates = CpdLanguageTypeSupport.class)
+            defaultValue = CPDConfiguration.DEFAULT_LANGUAGE, converter = CpdLanguageTypeSupport.class, completionCandidates = CpdLanguageTypeSupport.class)
     private Language language;
 
     @Option(names = "--minimum-tokens",
@@ -48,7 +49,7 @@ public class CpdCommand extends AbstractAnalysisPmdSubcommand {
     @Option(names = { "--format", "-f" },
             description = "Report format.%nValid values: ${COMPLETION-CANDIDATES}%n"
                         + "Alternatively, you can provide the fully qualified name of a custom CpdRenderer in the classpath.",
-            defaultValue = "text", completionCandidates = CpdSupportedReportFormatsCandidates.class)
+            defaultValue = CPDConfiguration.DEFAULT_RENDERER, completionCandidates = CpdSupportedReportFormatsCandidates.class)
     private String rendererName;
 
     @Option(names = "--ignore-literals",
@@ -110,14 +111,17 @@ public class CpdCommand extends AbstractAnalysisPmdSubcommand {
         configuration.setMinimumTileSize(minimumTokens);
         configuration.setNonRecursive(nonRecursive);
         configuration.setNoSkipBlocks(noSkipBlocks);
-        configuration.setRendererName(null);
+        configuration.setRendererName(rendererName);
         configuration.setSkipBlocksPattern(skipBlocksPattern);
         configuration.setSkipDuplicates(skipDuplicates);
         configuration.setSkipLexicalErrors(skipLexicalErrors);
         configuration.setSourceEncoding(encoding.getEncoding().name());
         configuration.setURI(uri == null ? null : uri.toString());
 
-        configuration.setCPDRenderer(CPDConfiguration.getCPDRendererFromString(rendererName, encoding.getEncoding().name()));
+        configuration.postContruct();
+        // Pass extra parameters as System properties to allow language
+        // implementation to retrieve their associate values...
+        CPDConfiguration.setSystemProperties(configuration);
 
         return configuration;
     }
@@ -133,7 +137,8 @@ public class CpdCommand extends AbstractAnalysisPmdSubcommand {
         try {
             cpd.go();
 
-            configuration.getCPDRenderer().render(cpd.getMatches(), new BufferedWriter(new OutputStreamWriter(System.out)));
+            final CPDReport report = cpd.toReport();
+            configuration.getCPDReportRenderer().render(report, IOUtil.createWriter(Charset.defaultCharset(), null));
 
             if (cpd.getMatches().hasNext() && configuration.isFailOnViolation()) {
                 return ExecutionResult.VIOLATIONS_FOUND;

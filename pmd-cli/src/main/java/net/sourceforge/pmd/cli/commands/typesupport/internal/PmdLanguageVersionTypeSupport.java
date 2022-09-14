@@ -26,14 +26,14 @@ public class PmdLanguageVersionTypeSupport implements ITypeConverter<LanguageVer
     public Iterator<String> iterator() {
         // Explicit language-version pairs, such as "java-18" or "apex-54".
         // We build these directly to retain aliases. "java-8" works, but the canonical name for the LanguageVersion is java-1.8
-        return LanguageRegistry.getLanguages().stream()
+        return LanguageRegistry.PMD.getLanguages().stream()
                 .flatMap(l -> l.getVersionNamesAndAliases().stream().map(v -> l.getTerseName() + "-" + v))
                 .collect(Collectors.toCollection(TreeSet::new)).iterator();
     }
 
     @Override
     public LanguageVersion convert(final String value) throws Exception {
-        return LanguageRegistry.getLanguages().stream()
+        return LanguageRegistry.PMD.getLanguages().stream()
             .filter(l -> value.startsWith(l.getTerseName() + "-"))
             .map(l -> l.getVersion(value.substring(l.getTerseName().length() + 1)))
             .filter(lv -> lv != null)

@@ -14,7 +14,7 @@ import net.sourceforge.pmd.lang.LanguageRegistry;
 public class TreeExportConfiguration extends AbstractConfiguration {
 
     private String format = "xml";
-    private Language language = LanguageRegistry.getDefaultLanguage();
+    private Language language = LanguageRegistry.PMD.getLanguageById("java");
     private Properties properties = new Properties();
     private Path file;
     private boolean readStdin;

@@ -22,13 +22,13 @@ public class PmdLanguageTypeSupport implements ITypeConverter<Language>, Iterabl
 
     @Override
     public Language convert(final String value) throws Exception {
-        return LanguageRegistry.getLanguages().stream()
+        return LanguageRegistry.PMD.getLanguages().stream()
                 .filter(l -> l.getTerseName().equals(value)).findFirst()
                 .orElseThrow(() -> new TypeConversionException("Unknown language: " + value));
     }
 
     @Override
     public Iterator<String> iterator() {
-        return LanguageRegistry.getLanguages().stream().map(Language::getTerseName).iterator();
+        return LanguageRegistry.PMD.getLanguages().stream().map(Language::getTerseName).iterator();
     }
 }
