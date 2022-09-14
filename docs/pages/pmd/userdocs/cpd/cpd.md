@@ -88,6 +88,9 @@ Novice as much as advanced readers may want to [read on on Refactoring Guru](htt
                             Using `--help` will display a full list of supported languages.</p>"
                default="java"
     %}
+    {% include custom/cli_option_row.html options="--debug,--verbose,-D,-v"
+               description="Debug mode. Prints more log output. See also [Logging](#logging)."
+    %}
     {% include custom/cli_option_row.html options="--encoding,-e"
                option_arg="charset"
                description="Specifies the character set encoding of the source code files PMD is reading.
@@ -230,6 +233,15 @@ This behavior has been introduced to ease CPD integration into scripts or hooks,
 <tr><td>2</td><td>Usage error. Command-line parameters are invalid or missing.</td></tr>
 <tr><td>4</td><td>At least one code duplication has been detected unless <code>--no-fail-on-violation</code> is set.</td></tr>
 </table>
+
+## Logging
+
+PMD internally uses [slf4j](https://www.slf4j.org/) and ships with slf4j-simple as the logging implementation.
+Logging messages are printed to System.err.
+
+The configuration for slf4j-simple is in the file `conf/simplelogger.properties`. There you can enable
+logging of specific classes if needed. The `--debug` command line option configures the default log level
+to be "debug".
 
 
 ## Supported Languages
