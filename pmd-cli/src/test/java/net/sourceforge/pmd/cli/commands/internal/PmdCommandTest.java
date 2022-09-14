@@ -18,24 +18,6 @@ import net.sourceforge.pmd.lang.LanguageVersion;
 class PmdCommandTest extends BaseCommandTest<PmdCommand> {
 
     @Test
-    void testVersionDefault() throws Exception {
-        final PmdCommand cmd = setupAndParse("--use-version", "dummy", "-d", "a", "-R", "x.xml");
-        final LanguageVersion dummyLatest = cmd.toConfiguration().getLanguageVersionOfFile("foo.dummy");
-        
-        // LanguageVersion do not implement equals, but we can check their string representations
-        assertEquals(DummyLanguageModule.getInstance().getDefaultVersion().toString(), dummyLatest.toString());
-    }
-
-    @Test
-    void testVersionLatest() throws Exception {
-        final PmdCommand cmd = setupAndParse("--use-version", "dummy-latest", "-d", "a", "-R", "x.xml");
-        final LanguageVersion dummyLatest = cmd.toConfiguration().getLanguageVersionOfFile("foo.dummy");
-        
-        // LanguageVersion do not implement equals, but we can check their string representations
-        assertEquals(DummyLanguageModule.getInstance().getDefaultVersion().toString(), dummyLatest.toString());
-    }
-
-    @Test
     void testVersionGiven() throws Exception {
         final PmdCommand cmd = setupAndParse("--use-version", "dummy-1.2", "-d", "a", "-R", "x.xml");
         final LanguageVersion dummyLatest = cmd.toConfiguration().getLanguageVersionOfFile("foo.dummy");
@@ -102,7 +84,7 @@ class PmdCommandTest extends BaseCommandTest<PmdCommand> {
         // If no language provided, set dummy latest
         if (!argList.contains("--use-version")) {
             argList.add("--use-version");
-            argList.add("dummy");
+            argList.add("dummy-1.0");
         }
     }
 }

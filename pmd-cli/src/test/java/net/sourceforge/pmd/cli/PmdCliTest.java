@@ -233,7 +233,7 @@ class PmdCliTest extends BaseCliTest {
         // Always run against dummy language without logging not cache to remove all logging noise
         argList.add("run");
         argList.add("--use-version");
-        argList.add("dummy");
+        argList.add("dummy-1.0");
         argList.add("--no-cache");
         argList.add("--no-progress");
         

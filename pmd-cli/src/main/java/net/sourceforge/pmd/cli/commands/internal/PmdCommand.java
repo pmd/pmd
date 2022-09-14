@@ -177,7 +177,7 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand {
         this.reportFile = reportFile;
     }
 
-    @Option(names = "--use-version", defaultValue = "java-latest",
+    @Option(names = "--use-version", defaultValue = "java-19",
             description = "The language version PMD should use when parsing source code.%nValid values: ${COMPLETION-CANDIDATES}",
             completionCandidates = PmdLanguageVersionTypeSupport.class, converter = PmdLanguageVersionTypeSupport.class)
     public void setLanguageVersion(final List<LanguageVersion> languageVersion) {
@@ -187,7 +187,7 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand {
                 if (list.size() > 1) {
                     throw new ParameterException(spec.commandLine(), "Can only set one version per language, "
                             + "but for language " + l.getName() + " multiple versions were provided "
-                            + list.stream().map(PmdLanguageVersionTypeSupport::normalizeName).collect(Collectors.joining("', '", "'", "'")));
+                            + list.stream().map(LanguageVersion::getTerseName).collect(Collectors.joining("', '", "'", "'")));
                 }
             });
 
