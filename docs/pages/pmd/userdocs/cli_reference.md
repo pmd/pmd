@@ -113,8 +113,7 @@ The tool comes with a rather extensive help text, simply running with `--help`!
     {% include custom/cli_option_row.html options="--use-version"
                option_arg="lang-version"
                description="The language version PMD should use when parsing source code.
-                            <p>Values are in the format of *language[-version]*. If version is omitted,
-                            or *-latest* is used the latest supported version is used.</p>
+                            <p>Values are in the format of *language-version*.</p>
                             <p>This option can be repeated to configure multiple languages to be analyzed during a single run</p>
                             <p>See also [Supported Languages](#supported-languages).
                             Using `--help` will display a full list of supported languages and versions.</p>"
@@ -206,11 +205,9 @@ to be "debug".
 
 The language is determined automatically by PMD from the file extensions. Some languages such as "Java"
 however support multiple versions. The default version will be used, which is usually the latest supported
-version. If you want to use an older version, so that e.g. rules, that suggest usage of language features,
+non-preview version. If you want to use an older version, so that e.g. rules, that suggest usage of language features,
 that are not available yet, won't be executed, you need to specify a specific version via the `--use-version`
 parameter.
-
-These parameters are irrelevant for languages that don't support different versions.
 
 Example:
 
