@@ -5,22 +5,27 @@ set COMMAND=%1
 set MAIN_CLASS=net.sourceforge.pmd.cli.PmdCli
 
 
-:: sets the jver variable to the java version, eg 901 for 9.0.1+x or 180 for 1.8.0_171-b11
+:: sets the jver variable to the java version, eg 90 for 9.0.1+x or 80 for 1.8.0_171-b11 or 110 for 11.0.6.1
 :: sets the jvendor variable to either java (oracle) or openjdk
 for /f tokens^=1^,3^,4^,5^ delims^=.-_+^"^  %%j in ('java -version 2^>^&1 ^| find "version"') do (
   set jvendor=%%j
   if %%l EQU ea (
-    set /A "jver=%%k00"
+    set /A "jver=%%k0"
   ) else (
-    set /A jver=%%k%%l%%m
+    if %%k EQU 1 (
+      :: for java version 1.7.x, 1.8.x, ignore the first 1.
+      set /A "jver=%%l%%m"
+    ) else (
+      set /A "jver=%%k%%l"
+    )
   )
 )
 
 Set "jreopts="
 :: oracle java 9 and 10 has javafx included as a module
-if /I "%jvendor%" EQU "java" (
-    if %jver% GEQ 900 (
-        if %jver% LSS 1100 (
+if /I %jvendor% == java (
+    if %jver% GEQ 90 (
+        if %jver% LSS 110 (
             :: enable reflection
             SETLOCAL EnableDelayedExpansion
             rem java9 and java10 from oracle contain javafx as a module
@@ -39,14 +44,14 @@ if /I "%jvendor%" EQU "java" (
 )
 
 set "_needjfxlib=0"
-if %COMMAND% EQU "designer" (
-    if /I "%jvendor%" EQU "openjdk" set _needjfxlib=1
-    if /I "%jvendor%" EQU "java" (
-        if %jver% GEQ 1100 set _needjfxlib=1
+if [%COMMAND%] == [designer] (
+    if /I %jvendor% == openjdk set _needjfxlib=1
+    if /I %jvendor% == java (
+        if %jver% GEQ 110 set _needjfxlib=1
     )
 )
 if %_needjfxlib% EQU 1 (
-    if %jver% LSS 1000 (
+    if %jver% LSS 100 (
         echo For openjfx at least java 10 is required.
         pause
         exit
