@@ -21,7 +21,7 @@ public class LuaTokenizer extends AntlrTokenizer {
     private boolean ignoreLiteralSequences = false;
 
     /**
-     * Sets the possible options for the C# tokenizer.
+     * Sets the possible options for the Lua tokenizer.
      *
      * @param properties the properties
      * @see #OPTION_IGNORE_LITERAL_SEQUENCES
@@ -49,8 +49,8 @@ public class LuaTokenizer extends AntlrTokenizer {
      * The {@link LuaTokenFilter} extends the {@link AntlrTokenFilter} to discard
      * Lua-specific tokens.
      * <p>
-     * By default, it enables annotation-based CPD suppression.
-     * If the --ignoreUsings flag is provided, require() directives are filtered out.
+     * By default, it discards semicolons, require statements, and
+     * enables annotation-based CPD suppression.
      * </p>
      */
     private static class LuaTokenFilter extends AntlrTokenFilter {
