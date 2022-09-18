@@ -188,10 +188,11 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
 
         if (matches.isEmpty()) {
             if (isJavaLangImplicit(node)) {
-                addViolation(data, node, new Object[]{node.getImage(), "java.lang.*", "implicit "});
+                asCtx(data).addViolation(node,
+                        node.getImage(), "java.lang.*", "implicit ");
             } else if (isSamePackage(node, name)) {
                 if (!hasSameSimpleNameInScope(node)) {
-                    addViolation(data, node, new Object[]{node.getImage(), currentPackage + ".*", "same package "});
+                    asCtx(data).addViolation(node, node.getImage(), currentPackage + ".*", "same package ");
                 }
             }
         } else {
@@ -217,10 +218,9 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
             return false;
         }
 
-        final String nodeSimpleName = nodeType.getSimpleName();
-
         for (ASTClassOrInterfaceDeclaration declarationDescendant : declarationDescendants) {
-            if (nodeSimpleName.equals(declarationDescendant.getSimpleName())) {
+            if (nodeType.getSimpleName().equals(declarationDescendant.getSimpleName())
+                    && !nodeType.getName().equals(declarationDescendant.getQualifiedName().toString())) {
                 return true;
             }
         }

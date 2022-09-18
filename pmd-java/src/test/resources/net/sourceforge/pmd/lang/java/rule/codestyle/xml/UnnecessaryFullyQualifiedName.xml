@@ -642,6 +642,21 @@ public class OuterTestClass {
     </test-code>
 
     <test-code>
+        <description>Should report fully-qualified name usage of a class in itself.</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+package net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryfullyqualifiedname;
+
+public class TestClass {
+    public static net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryfullyqualifiedname.TestClass INSTANCE(){
+        return new TestClass();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
         <description>#2098 false positive with annotated package</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
