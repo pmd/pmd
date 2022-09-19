@@ -82,16 +82,16 @@ class CpdCliTest extends BaseCliTest {
                 assertEquals(ExecutionResult.OK.getExitCode(), statusCode);
             });
         });
-        final String absoluteSrcDir = Paths.get(SRC_DIR).toAbsolutePath().toString();
+        final Path absoluteSrcDir = Paths.get(SRC_DIR).toAbsolutePath();
         assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
                 + "<pmd-cpd>\n"
-                + "   <file path=\"" + absoluteSrcDir + "/dup1.java\"\n"
+                + "   <file path=\"" + absoluteSrcDir.resolve("dup1.java").toString() + "\"\n"
                 + "         totalNumberOfTokens=\"89\"/>\n"
-                + "   <file path=\"" + absoluteSrcDir + "/dup2.java\"\n"
+                + "   <file path=\"" + absoluteSrcDir.resolve("dup2.java").toString() + "\"\n"
                 + "         totalNumberOfTokens=\"89\"/>\n"
-                + "   <file path=\"" + absoluteSrcDir + "/file_with_ISO-8859-1_encoding.java\"\n"
+                + "   <file path=\"" + absoluteSrcDir.resolve("file_with_ISO-8859-1_encoding.java").toString() + "\"\n"
                 + "         totalNumberOfTokens=\"8\"/>\n"
-                + "   <file path=\"" + absoluteSrcDir + "/file_with_utf8_bom.java\"\n"
+                + "   <file path=\"" + absoluteSrcDir.resolve("file_with_utf8_bom.java").toString() + "\"\n"
                 + "         totalNumberOfTokens=\"9\"/>\n"
                 + "</pmd-cpd>", stdout.trim());
     }
