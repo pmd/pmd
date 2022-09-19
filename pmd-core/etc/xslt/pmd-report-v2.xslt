@@ -13,11 +13,15 @@ xmlns:scan="http://pmd.sourceforge.net/report/2.0.0"
   <html>
    <head>
    <title>PMD Report </title>
-   <link rel='stylesheet' type='text/css' href='https://cdn.datatables.net/1.12.1/css/jquery.dataTables.css'/>
-   <link rel='stylesheet' type='text/css' href='https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css'/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous"/>
+<script src="https://code.jquery.com/jquery-3.6.1.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
+ 
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/jszip-2.5.0/dt-1.12.1/b-2.2.3/b-colvis-2.2.3/b-html5-2.2.3/b-print-2.2.3/datatables.min.css"/>
+ 
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/pdfmake.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/v/dt/jszip-2.5.0/dt-1.12.1/b-2.2.3/b-colvis-2.2.3/b-html5-2.2.3/b-print-2.2.3/datatables.min.js"></script>
 
-   <script src='https://code.jquery.com/jquery-3.6.1.min.js'></script> 
-   <script type='text/javascript' charset='utf8' src='https://cdn.datatables.net/1.12.1/js/jquery.dataTables.js'></script>
 
     <script src="https://cdn.jsdelivr.net/npm/vega@5.21.0"></script>
     <script src="https://cdn.jsdelivr.net/npm/vega-lite@5.2.0"></script>
@@ -43,7 +47,8 @@ xmlns:scan="http://pmd.sourceforge.net/report/2.0.0"
   </div>
 </nav>
   <div class='container' style='margin-top:100px;'>
-    <h5>Problems found ::  <small> Version: <xsl:value-of select="$version"/> @ <xsl:value-of select="$timestamp"/></small> </h5>
+    <h5>Problems found ::  <small> Version: <xsl:value-of select="$version"/> @ <xsl:value-of select="$timestamp"/></small>
+     <span id="summary"></span>  </h5>
     <table id='pmdTable' class='table table-hover table-striped'>
     <thead>
  
@@ -145,12 +150,19 @@ xmlns:scan="http://pmd.sourceforge.net/report/2.0.0"
      <div id="vizBar"></div>
      <div id="vizArc"></div>
      <div id="vizArcRS"></div>
-
    </div>
     <script>
-$(document).ready( function () { $('#pmdTable').DataTable(); 
-   console.log(total, p1,p2,p3, p4);
+$(document).ready( function () { $('#pmdTable').DataTable( {dom: 'Blfrtip',
+        buttons: [
+            'copy', 'csv', 'excel', 'pdf', 'print'
+        ] }); 
+   console.log(total, p1,p2,p3, p4,p5);
 
+const summaryEle = document.getElementById('summary');
+summaryEle.innerHTML = `<table class="table table-bordered table-hover table-striped">
+<tr><th>Total</th><th>P1</th><th>P2</th><th>P3</th><th>P4</th><th>P5</th></tr>
+<tr><td><b>${total}</b></td><td>${p1}</td><td>${p2}</td><td>${p3}</td><td>${p4}</td><td>${p5}</td></tr>
+</table>`;
 // charting
 const arcSpec ={
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
