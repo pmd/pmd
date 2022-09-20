@@ -10,12 +10,25 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+
 import net.sourceforge.pmd.cli.internal.ExecutionResult;
 
 import com.github.stefanbirkner.systemlambda.SystemLambda;
 
 abstract class BaseCliTest {
 
+    @BeforeAll
+    static void disablePicocliAnsi() {
+        System.setProperty("picocli.ansi", "false");
+    }
+    
+    @AfterAll
+    static void resetPicocliAnsi() {
+        System.clearProperty("picocli.ansi");
+    }
+    
     protected String runCliSuccessfully(String... args) throws Exception {
         return runCli(ExecutionResult.OK, args);
     }
