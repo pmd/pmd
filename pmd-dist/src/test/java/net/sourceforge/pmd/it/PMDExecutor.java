@@ -119,7 +119,7 @@ public class PMDExecutor {
                     FORMAT_FLAG, formatter, REPORTFILE_FLAG, reportFile.toAbsolutePath().toString(), NO_PROGRESSBAR_FLAG);
         } else {
             return runPMDUnix(tempDir, reportFile, SOURCE_DIRECTORY_FLAG, sourceDirectory, RULESET_FLAG, ruleset,
-                    FORMAT_FLAG, formatter, REPORTFILE_FLAG, reportFile.toAbsolutePath().toString(), NO_PROGRESSBAR_FLAG, "--verbose");
+                    FORMAT_FLAG, formatter, REPORTFILE_FLAG, reportFile.toAbsolutePath().toString(), NO_PROGRESSBAR_FLAG);
         }
     }
 
