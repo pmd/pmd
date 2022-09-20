@@ -7,7 +7,7 @@ set MAIN_CLASS=net.sourceforge.pmd.cli.PmdCli
 
 :: sets the jver variable to the java version, eg 90 for 9.0.1+x or 80 for 1.8.0_171-b11 or 110 for 11.0.6.1
 :: sets the jvendor variable to either java (oracle) or openjdk
-for /f tokens^=1^,3^,4^,5^ delims^=.-_+^"^  %%j in ('java -version 2^>^&1 ^| find "version"') do (
+for /f tokens^=1^,3^,4^,5^ delims^=.-_+^"^  %%j in ('java -version 2^>^&1 ^| findstr /c:"version"') do (
   set jvendor=%%j
   if %%l EQU ea (
     set /A "jver=%%k0"
