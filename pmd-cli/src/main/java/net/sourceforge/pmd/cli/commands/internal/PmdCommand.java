@@ -177,7 +177,7 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand {
         this.reportFile = reportFile;
     }
 
-    @Option(names = "--use-version", defaultValue = "java-19",
+    @Option(names = "--use-version",
             description = "The language version PMD should use when parsing source code.%nValid values: ${COMPLETION-CANDIDATES}",
             completionCandidates = PmdLanguageVersionTypeSupport.class, converter = PmdLanguageVersionTypeSupport.class)
     public void setLanguageVersion(final List<LanguageVersion> languageVersion) {
