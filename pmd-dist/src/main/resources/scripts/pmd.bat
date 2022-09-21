@@ -61,7 +61,9 @@ if %_needjfxlib% EQU 1 (
         pause
         exit
     )
-    set classpath=%TOPDIR%\conf;%TOPDIR%\lib\*;%JAVAFX_HOME%\lib\*
+    :: The wildcard will include only jar files, but we need to access also
+    :: property files such as javafx.properties that lay bare in the dir
+    set classpath=%TOPDIR%\conf;%TOPDIR%\lib\*;%JAVAFX_HOME%\lib\*;%JAVAFX_HOME%\lib\
 ) else (
     set classpath=%TOPDIR%\conf;%TOPDIR%\lib\*
 )
