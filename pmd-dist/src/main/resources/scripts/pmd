@@ -167,10 +167,12 @@ function add_openjfx_classpath() {
       then
         script_exit "The environment variable JAVAFX_HOME is missing."
       else
+        # The wildcard will include only jar files, but we need to access also
+        # property files such as javafx.properties that lay bare in the dir
         if [ -n "$classpath" ]; then
-          classpath="$classpath:${JAVAFX_HOME}/lib/*"
+          classpath="$classpath:${JAVAFX_HOME}/lib/*:${JAVAFX_HOME}/lib/"
         else
-          classpath="${JAVAFX_HOME}/lib/*"
+          classpath="${JAVAFX_HOME}/lib/*:${JAVAFX_HOME}/lib/"
         fi
       fi
     fi
