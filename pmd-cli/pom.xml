@@ -316,12 +316,5 @@
             <classifier>tests</classifier>
             <type>test-jar</type>
         </dependency>
-        
-<!-- TODO : Review if this should be part of pmd-cli… probably it does -->
-        <dependency>
-            <groupId>me.tongfei</groupId>
-            <artifactId>progressbar</artifactId>
-            <version>0.9.3</version>
-        </dependency>
     </dependencies>
 </project>

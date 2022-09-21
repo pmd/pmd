@@ -76,10 +76,6 @@
             <groupId>com.beust</groupId>
             <artifactId>jcommander</artifactId>
         </dependency>
-        <dependency>
-            <groupId>info.picocli</groupId>
-            <artifactId>picocli</artifactId>
-        </dependency>
 
         <dependency>
             <groupId>net.sf.saxon</groupId>
