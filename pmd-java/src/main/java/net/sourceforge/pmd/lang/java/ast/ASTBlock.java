@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.java.ast.ASTList.ASTMaybeEmptyListOf;
+import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 
 /**
  * A block of code. This is a {@linkplain ASTStatement statement} that
@@ -33,7 +34,7 @@ public final class ASTBlock extends ASTMaybeEmptyListOf<ASTStatement> implements
     public boolean containsComment() {
         JavaccToken t = getLastToken().getPreviousComment();
         while (t != null) {
-            if (JavaTokenDocumentBehavior.isComment(t)) {
+            if (JavaAstUtils.isComment(t)) {
                 return true;
             }
             t = t.getPreviousComment();
