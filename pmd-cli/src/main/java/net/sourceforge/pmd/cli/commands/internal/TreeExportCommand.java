@@ -40,7 +40,7 @@ public class TreeExportCommand extends AbstractPmdSubcommand {
         
         for (final TreeRendererDescriptor renderer : TreeRenderers.registeredRenderers()) {
             final PropertySource propertyBundle = renderer.newPropertyBundle();
-            if (propertyBundle.getPropertyDescriptors().size() > 0) {
+            if (!propertyBundle.getPropertyDescriptors().isEmpty()) {
                 reportPropertiesHelp.append(renderer.id() + ":" + System.getProperty("line.separator"));
                 for (final PropertyDescriptor<?> property : propertyBundle.getPropertyDescriptors()) {
                     reportPropertiesHelp.append("  ").append(property.name()).append(" - ")
@@ -121,7 +121,7 @@ public class TreeExportCommand extends AbstractPmdSubcommand {
     /**
      * Provides completion candidates for the report format.
      */
-    private static class TreeRenderersCandidates implements Iterable<String> {
+    private final static class TreeRenderersCandidates implements Iterable<String> {
 
         @Override
         public Iterator<String> iterator() {
@@ -134,7 +134,7 @@ public class TreeExportCommand extends AbstractPmdSubcommand {
      * 
      * Check the help for which ones are supported by each report format and possible values.
      */
-    private static class TreeExportReportPropertiesCandidates implements Iterable<String> {
+    private final static class TreeExportReportPropertiesCandidates implements Iterable<String> {
 
         @Override
         public Iterator<String> iterator() {

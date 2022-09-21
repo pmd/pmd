@@ -53,7 +53,7 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand {
         for (final String rendererName : RendererFactory.supportedRenderers()) {
             final Renderer renderer = RendererFactory.createRenderer(rendererName, emptyProps);
             
-            if (renderer.getPropertyDescriptors().size() > 0) {
+            if (!renderer.getPropertyDescriptors().isEmpty()) {
                 reportPropertiesHelp.append(rendererName + ":" + System.getProperty("line.separator"));
                 for (final PropertyDescriptor<?> property : renderer.getPropertyDescriptors()) {
                     reportPropertiesHelp.append("  ").append(property.name()).append(" - ")
@@ -374,7 +374,7 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand {
     /**
      * Provider of candidates for valid report formats.
      */
-    private static class PmdSupportedReportFormatsCandidates implements Iterable<String> {
+    private final static class PmdSupportedReportFormatsCandidates implements Iterable<String> {
 
         @Override
         public Iterator<String> iterator() {
@@ -387,7 +387,7 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand {
      * 
      * Check the help for which ones are supported by each report format and possible values.
      */
-    private static class PmdReportPropertiesCandidates implements Iterable<String> {
+    private final static class PmdReportPropertiesCandidates implements Iterable<String> {
 
         @Override
         public Iterator<String> iterator() {
