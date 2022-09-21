@@ -56,6 +56,7 @@ public class BinaryDistributionIT extends AbstractBinaryDistributionTest {
         result.add(basedir + "bin/pmd");
         result.add(basedir + "bin/pmd.bat");
         result.add(basedir + "conf/simplelogger.properties");
+        result.add(basedir + "shell/pmd-completion.sh");
         result.add(basedir + "lib/pmd-core-" + PMDVersion.VERSION + ".jar");
         result.add(basedir + "lib/pmd-java-" + PMDVersion.VERSION + ".jar");
         return result;
