@@ -374,7 +374,7 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand {
     /**
      * Provider of candidates for valid report formats.
      */
-    private final static class PmdSupportedReportFormatsCandidates implements Iterable<String> {
+    private static final class PmdSupportedReportFormatsCandidates implements Iterable<String> {
 
         @Override
         public Iterator<String> iterator() {
@@ -387,7 +387,7 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand {
      * 
      * Check the help for which ones are supported by each report format and possible values.
      */
-    private final static class PmdReportPropertiesCandidates implements Iterable<String> {
+    private static final class PmdReportPropertiesCandidates implements Iterable<String> {
 
         @Override
         public Iterator<String> iterator() {

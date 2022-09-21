@@ -155,7 +155,7 @@ public class CpdCommand extends AbstractAnalysisPmdSubcommand {
     /**
      * Provider of candidates for valid report formats.
      */
-    private final static class CpdSupportedReportFormatsCandidates implements Iterable<String> {
+    private static final class CpdSupportedReportFormatsCandidates implements Iterable<String> {
 
         @Override
         public Iterator<String> iterator() {

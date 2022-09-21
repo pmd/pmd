@@ -121,7 +121,7 @@ public class TreeExportCommand extends AbstractPmdSubcommand {
     /**
      * Provides completion candidates for the report format.
      */
-    private final static class TreeRenderersCandidates implements Iterable<String> {
+    private static final class TreeRenderersCandidates implements Iterable<String> {
 
         @Override
         public Iterator<String> iterator() {
@@ -134,7 +134,7 @@ public class TreeExportCommand extends AbstractPmdSubcommand {
      * 
      * Check the help for which ones are supported by each report format and possible values.
      */
-    private final static class TreeExportReportPropertiesCandidates implements Iterable<String> {
+    private static final class TreeExportReportPropertiesCandidates implements Iterable<String> {
 
         @Override
         public Iterator<String> iterator() {
