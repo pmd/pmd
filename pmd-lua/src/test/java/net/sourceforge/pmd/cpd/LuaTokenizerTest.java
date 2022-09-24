@@ -44,4 +44,9 @@ public class LuaTokenizerTest extends CpdTextComparisonTest {
     public void testRegression() {
         doTest("luauTypes");
     }
+
+    @Test
+    public void testComment() {
+        doTest("comment");
+    }
 }

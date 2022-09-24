@@ -469,11 +469,11 @@ CLOSE_PARENS
     ;
 
 NL
-	: '\r\n' | '\r' | '\n'
-	| '\u0085' // <Next Line CHARACTER (U+0085)>'
-	| '\u2028' //'<Line Separator CHARACTER (U+2028)>'
-	| '\u2029' //'<Paragraph Separator CHARACTER (U+2029)>'
-	;
+    : '\r\n' | '\r' | '\n'
+    | '\u0085' // <Next Line CHARACTER (U+0085)>'
+    | '\u2028' //'<Line Separator CHARACTER (U+2028)>'
+    | '\u2029' //'<Paragraph Separator CHARACTER (U+2029)>'
+    ;
 
 COMMA
     : ','
@@ -526,6 +526,11 @@ HexDigit
     ;
 
 fragment
+StartingSingleCommentLineInputCharacter
+    : ~[[\r\n\u0085\u2028\u2029]
+    ;
+
+fragment
 SingleLineInputCharacter
     : ~[\r\n\u0085\u2028\u2029]
     ;
@@ -535,7 +540,7 @@ COMMENT
     ;
 
 LINE_COMMENT
-    : '--' SingleLineInputCharacter* -> channel(HIDDEN)
+    : '--' (NL | StartingSingleCommentLineInputCharacter SingleLineInputCharacter*) -> channel(HIDDEN)
     ;
 
 WS
