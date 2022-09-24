@@ -21,6 +21,7 @@ This is a {{ site.pmd.release_type }} release.
 
 ### External Contributions
 * [#4116](https://github.com/pmd/pmd/pull/4116): \[core] Fix missing --file arg in TreeExport CLI example - [@mohan-chinnappan-n](https://github.com/mohan-chinnappan-n)
+* [#4131](https://github.com/pmd/pmd/pull/4131): \[doc] TooFewBranchesForASwitchStatement - Use "if-else" instead of "if-then" - [@Suvashri](https://github.com/Suvashri)
 
 {% endtocmaker %}
 
