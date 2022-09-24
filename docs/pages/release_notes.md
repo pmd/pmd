@@ -29,8 +29,9 @@ from Lua. This means, that the Lua language in PMD can now parse both Lua and Lu
 * CPD now supports the `--ignore-literal-sequences` argument when analyzing Lua code.
 
 ### External Contributions
-* [#4116](https://github.com/pmd/pmd/pull/4116): \[core] Fix missing --file arg in TreeExport CLI example - [@mohan-chinnappan-n](https://github.com/mohan-chinnappan-n)
 * [#4066](https://github.com/pmd/pmd/pull/4066): \[lua] Add support for Luau syntax and skipping literal sequences in CPD - [@matthargett](https://github.com/matthargett)
+* [#4116](https://github.com/pmd/pmd/pull/4116): \[core] Fix missing --file arg in TreeExport CLI example - [@mohan-chinnappan-n](https://github.com/mohan-chinnappan-n)
+* [#4131](https://github.com/pmd/pmd/pull/4131): \[doc] TooFewBranchesForASwitchStatement - Use "if-else" instead of "if-then" - [@Suvashri](https://github.com/Suvashri)
 
 {% endtocmaker %}
 
