@@ -108,6 +108,7 @@ label
     ;
 
 laststat
+    // "continue" is a luau addition and actually not a reserved keyword
     : 'return' explist? | 'break' | 'continue'
     ;
 
