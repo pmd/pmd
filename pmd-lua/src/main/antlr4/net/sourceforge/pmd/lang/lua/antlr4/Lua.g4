@@ -62,6 +62,7 @@ Tested by Matt Hargett with:
     - Entire codebase and test suite for neovim v0.7.2: https://github.com/neovim/neovim/tree/v0.7.2
     - Entire codebase for World of Warcraft Interface: https://github.com/tomrus88/BlizzardInterfaceCode
     - Benchmarks and conformance test suite for Luau 0.537: https://github.com/Roblox/luau/tree/0.537
+    - Entire Lua codebase for nmap 7.92 : https://github.com/nmap/nmap
 */
 
 grammar Lua;
@@ -71,12 +72,13 @@ chunk
     ;
 
 block
-    : stat* laststat?
+    : (stat ';'?)* (laststat ';'?)?
     ;
 
 stat
     : ';'
-    | varlist '=' explist
+    | varlist ASSIGNMENT explist
+    | var compoundop exp
     | functioncall
     | label
     | 'break'
@@ -85,11 +87,12 @@ stat
     | 'while' exp 'do' block 'end'
     | 'repeat' block 'until' exp
     | 'if' exp 'then' block ('elseif' exp 'then' block)* ('else' block)? 'end'
-    | 'for' NAME '=' exp ',' exp (',' exp)? 'do' block 'end'
-    | 'for' namelist 'in' explist 'do' block 'end'
+    | 'for' binding ASSIGNMENT exp ',' exp (',' exp)? 'do' block 'end'
+    | 'for' bindinglist 'in' explist 'do' block 'end'
     | 'function' funcname funcbody
-    | 'local' 'function' NAME funcbody
-    | 'local' attnamelist ('=' explist)?
+    | LOCAL 'function' NAME funcbody
+    | LOCAL bindinglist (ASSIGNMENT explist)?
+    | ('export')? 'type' NAME ('<' genericTypeParameterList '>')? '=' type
     ;
 
 attnamelist
@@ -100,47 +103,50 @@ attrib
     : ('<' NAME '>')?
     ;
 
-laststat
-    : 'return' explist? | 'break' | 'continue' ';'?
-    ;
-
 label
     : '::' NAME '::'
+    ;
+
+laststat
+    // "continue" is a luau addition and actually not a reserved keyword
+    : 'return' explist? | 'break' | 'continue'
     ;
 
 funcname
     : NAME ('.' NAME)* (':' NAME)?
     ;
 
-varlist
-    : var (',' var)*
+funcbody
+    : ('<' genericTypeParameterList '>')? OPEN_PARENS parlist? CLOSE_PARENS (':' '...'? returnType ) block 'end'
     ;
 
-namelist
-    : NAME (',' NAME)*
+parlist
+    : bindinglist (',' '...')? 
+    | '...'
     ;
 
 explist
     : (exp ',')* exp
     ;
 
-exp
-    : 'nil' | 'false' | 'true'
-    | number
-    | string
-    | '...'
-    | functiondef
-    | prefixexp
-    | tableconstructor
-    | <assoc=right> exp operatorPower exp
-    | operatorUnary exp
-    | exp operatorMulDivMod exp
-    | exp operatorAddSub exp
-    | <assoc=right> exp operatorStrcat exp
-    | exp operatorComparison exp
-    | exp operatorAnd exp
-    | exp operatorOr exp
-    | exp operatorBitwise exp
+namelist
+    : NAME (',' NAME)*
+    ;
+
+binding
+    : NAME (':' type ('?')?)?
+    ;
+
+bindinglist
+    : binding (',' bindinglist)?
+    ;
+
+var
+    : (NAME | OPEN_PARENS exp CLOSE_PARENS varSuffix) varSuffix*
+    ;
+
+varlist
+    : var (',' var)*
     ;
 
 prefixexp
@@ -151,16 +157,35 @@ functioncall
     : varOrExp nameAndArgs+
     ;
 
-varOrExp
-    : var | '(' exp ')'
+exp
+    : (asexp | operatorUnary exp) ( binop exp )*
     ;
 
-var
-    : (NAME | '(' exp ')' varSuffix) varSuffix*
+ifelseexp
+    : 'if' exp 'then' exp ('elseif' exp 'then' exp)* 'else' exp
+    ;
+
+asexp
+    : simpleexp ('::' type)?
+    ;
+
+simpleexp
+    : NIL | BOOLEAN
+    | number
+    | string
+    | '...'
+    | 'function' funcbody
+    | prefixexp
+    | ifelseexp
+    | tableconstructor;
+
+varOrExp
+    : var 
+    | OPEN_PARENS exp CLOSE_PARENS
     ;
 
 varSuffix
-    : nameAndArgs* ('[' exp ']' | '.' NAME)
+    : nameAndArgs* (OPEN_BRACKET exp CLOSE_BRACKET | '.' NAME)
     ;
 
 nameAndArgs
@@ -168,23 +193,17 @@ nameAndArgs
     ;
 
 args
-    : '(' explist? ')' | tableconstructor | string
+    : OPEN_PARENS explist? CLOSE_PARENS 
+    | tableconstructor 
+    | string
     ;
 
 functiondef
     : 'function' funcbody
     ;
 
-funcbody
-    : '(' parlist? ')' block 'end'
-    ;
-
-parlist
-    : namelist (',' '...')? | '...'
-    ;
-
 tableconstructor
-    : '{' fieldlist? '}'
+    : OPEN_BRACE fieldlist? CLOSE_BRACE
     ;
 
 fieldlist
@@ -192,12 +211,34 @@ fieldlist
     ;
 
 field
-    : '[' exp ']' '=' exp | NAME '=' exp | exp
+    : OPEN_BRACKET exp CLOSE_BRACKET ASSIGNMENT exp 
+    | NAME ASSIGNMENT exp 
+    | exp
     ;
 
 fieldsep
-    : ',' | ';'
+    : ',' 
+    | ';'
     ;
+
+compoundop
+    : '+=' 
+    | '-=' 
+    
+    | '*=' 
+    | '/=' 
+    | '%=' 
+    | '^=' 
+    | '..=';
+
+binop: operatorAddSub 
+    | operatorMulDivMod 
+    | operatorPower 
+    | operatorStrcat 
+    | operatorComparison 
+    | operatorAnd 
+    | operatorOr 
+    | operatorBitwise;
 
 operatorOr
 	: 'or';
@@ -206,56 +247,183 @@ operatorAnd
 	: 'and';
 
 operatorComparison
-	: '<' | '>' | '<=' | '>=' | '~=' | '==';
+	: '<' 
+    | '>' 
+    | '<=' 
+    | '>=' 
+    | '~=' 
+    | '=='
+    ;
+
+ASSIGNMENT
+    : '='
+    ;
 
 operatorStrcat
 	: '..';
 
 operatorAddSub
-	: '+' | '-';
+	: '+' 
+    | '-'
+    ;
 
 operatorMulDivMod
-	: '*' | '/' | '%' | '//';
+	: '*' 
+    | '/' 
+    | '%' 
+    | '//'
+    ;
 
 operatorBitwise
-	: '&' | '|' | '~' | '<<' | '>>';
+	: '&' 
+    | '|' 
+    | '~' 
+    | '<<' 
+    | '>>'
+    ;
 
 operatorUnary
-    : 'not' | '#' | '-' | '~';
+    : 'not' 
+    | '#' 
+    | '-' 
+    | '~'
+    ;
 
 operatorPower
     : '^';
 
 number
-    : INT | HEX | FLOAT | HEX_FLOAT
+    : INT 
+    | HEX 
+    | FLOAT 
+    | HEX_FLOAT
     ;
 
 string
-    : NORMALSTRING | CHARSTRING | LONGSTRING
+    : NORMAL_STRING 
+    | LONG_STRING 
+    | INTERPOLATED_STRING
+    ;
+
+simpleType
+    : NIL
+    | singletonType
+    | NAME ('.' NAME)? ('<' typeParams '>')?
+    | 'typeof' OPEN_PARENS exp CLOSE_PARENS
+    | tableType
+    | functionType
+    ;
+
+singletonType
+    : NORMAL_STRING 
+    | BOOLEAN
+    ;
+
+type
+    : simpleType ('?')?
+    | type ('|' type)
+    | type ('&' type)
+    ;
+
+genericTypePackParameter
+    : NAME '...' ('=' (typePack | variadicTypePack | genericTypePack))?
+    ;
+
+genericTypeParameterList
+    : NAME ('=' type)? (',' genericTypeParameterList)? 
+    | genericTypePackParameter (',' genericTypePackParameter)*
+    ;
+
+typeList
+    : type (',' typeList)? | variadicTypePack
+    ;
+
+typeParams
+    : (type | typePack | variadicTypePack | genericTypePack) (',' typeParams)?
+    ;
+
+typePack
+    : OPEN_PARENS (typeList)? CLOSE_PARENS
+    ;
+
+genericTypePack
+    : NAME '...'
+    ;
+
+variadicTypePack
+    : '...' type
+    ;
+
+returnType
+    : type 
+    | typePack
+    ;
+
+tableIndexer
+    : OPEN_BRACKET type CLOSE_BRACKET ':' type
+    ;
+
+tableProp
+    : NAME ':' type
+    ;
+
+tablePropOrIndexer
+    : tableProp 
+    | tableIndexer
+    ;
+
+propList
+    : tablePropOrIndexer (fieldsep tablePropOrIndexer)* fieldsep?
+    ;
+
+tableType
+    : OPEN_BRACE propList CLOSE_BRACE
+    ;
+
+functionType
+    : ('<' genericTypeParameterList '>')? OPEN_PARENS (typeList)? CLOSE_PARENS '->' returnType
     ;
 
 // LEXER
+
+LOCAL
+    : 'local'
+    ;
+
+REQUIRE
+    : 'require'
+    ;
+
+NIL 
+    : 'nil' 
+    ;
+
+BOOLEAN 
+    : 'true' 
+    | 'false' 
+    ;
 
 NAME
     : [a-zA-Z_][a-zA-Z_0-9]*
     ;
 
-NORMALSTRING
-    : '"' ( EscapeSequence | ~('\\'|'"') )* '"'
+NORMAL_STRING
+    : '"'  (~["\\\r\n\u0085\u2028\u2029] | EscapeSequence | '\\\n')* '"'
+    | '\'' (~['\\\r\n\u0085\u2028\u2029] | EscapeSequence | '\\\n')* '\''
     ;
 
-CHARSTRING
-    : '\'' ( EscapeSequence | ~('\''|'\\') )* '\''
+INTERPOLATED_STRING
+    : '`' (~[`\\\r\n\u0085\u2028\u2029] | EscapeSequence | '\\\n')* '`'
     ;
 
-LONGSTRING
-    : '[' NESTED_STR ']'
+LONG_STRING
+    : OPEN_BRACKET NESTED_STR CLOSE_BRACKET
     ;
 
 fragment
 NESTED_STR
     : '=' NESTED_STR '='
-    | '[' .*? ']'
+    | OPEN_BRACKET .*? CLOSE_BRACKET
     ;
 
 INT
@@ -278,6 +446,40 @@ HEX_FLOAT
     | '0' [xX] HexDigit+ HexExponentPart
     ;
 
+OPEN_BRACE
+    : '{'
+    ;
+
+CLOSE_BRACE
+    : '}'
+    ;
+
+OPEN_BRACKET
+    : '['
+    ;
+CLOSE_BRACKET
+    : ']'
+    ;
+
+OPEN_PARENS:
+    '('
+    ;
+
+CLOSE_PARENS
+    : ')'
+    ;
+
+NL
+    : '\r\n' | '\r' | '\n'
+    | '\u0085' // <Next Line CHARACTER (U+0085)>'
+    | '\u2028' //'<Line Separator CHARACTER (U+2028)>'
+    | '\u2029' //'<Paragraph Separator CHARACTER (U+2029)>'
+    ;
+
+COMMA
+    : ','
+    ;
+
 fragment
 ExponentPart
     : [eE] [+-]? Digit+
@@ -290,8 +492,8 @@ HexExponentPart
 
 fragment
 EscapeSequence
-    : '\\' [abfnrtvz"'|$#\\]   // World of Warcraft Lua additionally escapes |$# 
-    | '\\' '\r'? '\n'
+    : '\\' [abfnrtvz"'`|$#\\]   // World of Warcraft Lua additionally escapes |$# 
+    | NL
     | DecimalEscape
     | HexEscape
     | UtfEscape
@@ -325,6 +527,11 @@ HexDigit
     ;
 
 fragment
+StartingSingleCommentLineInputCharacter
+    : ~[[\r\n\u0085\u2028\u2029]
+    ;
+
+fragment
 SingleLineInputCharacter
     : ~[\r\n\u0085\u2028\u2029]
     ;
@@ -334,11 +541,11 @@ COMMENT
     ;
 
 LINE_COMMENT
-    : '--' SingleLineInputCharacter* -> channel(HIDDEN)
+    : '--' (NL | StartingSingleCommentLineInputCharacter SingleLineInputCharacter*) -> channel(HIDDEN)
     ;
 
 WS
-    : [ \t\u000C\r\n]+ -> skip
+    : [ \n\r\t\u000B\u000C\u0000]+ -> channel(HIDDEN)
     ;
 
 SHEBANG
