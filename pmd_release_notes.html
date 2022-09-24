@@ -1532,6 +1532,11 @@
 
 <h3 id="new-and-noteworthy">New and noteworthy</h3>
 
+<h4 id="lua-now-supports-additionally-luau">Lua now supports additionally Luau</h4>
+
+<p>This release of PMD adds support for <a href="https://github.com/Roblox/luau">Luau</a>, a gradually typed language derived
+from Lua. This means, that the Lua language in PMD can now parse both Lua and Luau.</p>
+
 <h3 id="fixed-issues">Fixed Issues</h3>
 <ul>
   <li><a href="https://github.com/pmd/pmd/pull/4116">#4116</a>: [core] Missing –file arg in TreeExport CLI example</li>
@@ -1539,9 +1544,17 @@
 
 <h3 id="api-changes">API Changes</h3>
 
+<h4 id="cpd-cli">CPD CLI</h4>
+
+<ul>
+  <li>CPD now supports the <code class="language-plaintext highlighter-rouge">--ignore-literal-sequences</code> argument when analyzing Lua code.</li>
+</ul>
+
 <h3 id="external-contributions">External Contributions</h3>
 <ul>
+  <li><a href="https://github.com/pmd/pmd/pull/4066">#4066</a>: [lua] Add support for Luau syntax and skipping literal sequences in CPD - <a href="https://github.com/matthargett">@matthargett</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/4116">#4116</a>: [core] Fix missing –file arg in TreeExport CLI example - <a href="https://github.com/mohan-chinnappan-n">@mohan-chinnappan-n</a></li>
+  <li><a href="https://github.com/pmd/pmd/pull/4131">#4131</a>: [doc] TooFewBranchesForASwitchStatement - Use “if-else” instead of “if-then” - <a href="https://github.com/Suvashri">@Suvashri</a></li>
 </ul>
 
 
@@ -1575,7 +1588,7 @@
         <div class="col-lg-12 footer">
             &copy;2022 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Sep 11, 2022 <br />
+             Site last generated: Sep 24, 2022 <br />
             <p>
                 <img src="images/pmd-logo-small.png" alt="Company
                 logo"/>
