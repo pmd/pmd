@@ -836,6 +836,8 @@ in each object at runtime.
     ]
  ]
 /VariableDeclaratorId
+  [not(@Image = //MethodDeclaration[@Static = false()]//SynchronizedStatement/Expression/PrimaryExpression/
+      (PrimaryPrefix/Name|PrimarySuffix[preceding-sibling::PrimaryPrefix[@ThisModifier = true()]])/@Image)]
 ]]>
                 </value>
             </property>
