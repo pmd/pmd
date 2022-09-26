@@ -20,7 +20,10 @@ This release of PMD adds support for [Luau](https://github.com/Roblox/luau), a g
 from Lua. This means, that the Lua language in PMD can now parse both Lua and Luau.
 
 ### Fixed Issues
-* [#4116](https://github.com/pmd/pmd/pull/4116): \[core] Missing --file arg in TreeExport CLI example
+* core
+    * [#4116](https://github.com/pmd/pmd/pull/4116): \[core] Missing --file arg in TreeExport CLI example
+* java
+    * [#3431](https://github.com/pmd/pmd/issues/3431): \[java] Add sample java project to regression-tester which uses new language constructs
 
 ### API Changes
 
