@@ -205,8 +205,8 @@ to be "debug".
 
 The language is determined automatically by PMD from the file extensions. Some languages such as "Java"
 however support multiple versions. The default version will be used, which is usually the latest supported
-non-preview version. If you want to use an older version, so that e.g. rules, that suggest usage of language features,
-that are not available yet, won't be executed, you need to specify a specific version via the `--use-version`
+non-preview version. If you want to use an older version, so that e.g. rules that suggest usage of language features
+that are not available yet won't be executed, you need to specify a specific version via the `--use-version`
 parameter.
 
 Example:
