@@ -39,7 +39,7 @@ Commands:
                            Warning: May not support the full CPD feature set
   ast-dump               Experimental: dumps the AST of parsing source code
 Exit Codes:
-  0   Succesful analysis, no violations found
+  0   Successful analysis, no violations found
   1   An unexpected error occurred during execution
   2   Usage error, please refer to the command help
   4   Successful analysis, at least 1 violation found
