@@ -8,7 +8,9 @@ import net.sourceforge.pmd.annotation.InternalApi;
 
 import apex.jorje.semantic.ast.compilation.UserEnum;
 
-public class ASTUserEnum extends ApexRootNode<UserEnum> {
+public class ASTUserEnum extends ApexRootNode<UserEnum> implements ApexQualifiableNode {
+
+    private ApexQualifiedName qname;
 
     @Deprecated
     @InternalApi
@@ -29,5 +31,21 @@ public class ASTUserEnum extends ApexRootNode<UserEnum> {
 
     public ASTModifierNode getModifiers() {
         return getFirstChildOfType(ASTModifierNode.class);
+    }
+
+    @Override
+    public ApexQualifiedName getQualifiedName() {
+        if (qname == null) {
+
+            ASTUserClass parent = this.getFirstParentOfType(ASTUserClass.class);
+
+            if (parent != null) {
+                qname = ApexQualifiedName.ofNestedEnum(parent.getQualifiedName(), this);
+            } else {
+                qname = ApexQualifiedName.ofOuterEnum(this);
+            }
+        }
+
+        return qname;
     }
 }
