@@ -246,7 +246,7 @@ All formats are described at [PMD Report formats](pmd_userdocs_report_formats.ht
 If your xml language doesn't use `xml` as file extension, you can still use PMD with `--force-language`:
 
 ```
-$ ./pmd analyze -d /home/me/src/xml-file.ext -f text -R ruleset.xml --force-language xml
+$ pmd analyze -d /home/me/src/xml-file.ext -f text -R ruleset.xml --force-language xml
 ```
 
 You can also specify a directory instead of a single file. Then all files are analyzed. In that case,
