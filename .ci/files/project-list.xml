@@ -173,7 +173,7 @@ EOF
   <project>
     <name>java-regression-tests</name>
     <type>git</type>
-    <connection>https://github.com/pmd/java-regression-tests.git</connection>
+    <connection>https://github.com/pmd/java-regression-tests</connection>
     <tag>main</tag>
     <auxclasspath-command>realpath java-regression-tests-*.jar</auxclasspath-command>
   </project>
