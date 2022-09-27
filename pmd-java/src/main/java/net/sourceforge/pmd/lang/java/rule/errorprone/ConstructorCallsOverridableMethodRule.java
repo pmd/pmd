@@ -37,6 +37,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTRecordDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.AccessNode;
+import net.sourceforge.pmd.lang.java.ast.JavaNode;
+import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
 
@@ -322,7 +324,7 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
                                 String name = child.getImage(); // special case
                                 if (i == 2) { // last named node = method name
                                     methodName = name;
-                                } else {
+                                } else if (name != null) {
                                     // not the last named node so its only
                                     // var name
                                     varNames.add(name);
@@ -1057,12 +1059,20 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
         ASTArgumentList argumentList = args.getFirstChildOfType(ASTArgumentList.class);
         if (argumentList != null) {
             for (int a = 0; a < argumentList.getNumChildren(); a++) {
-                Node expression = argumentList.getChild(a);
-                ASTPrimaryPrefix arg = expression.getFirstDescendantOfType(ASTPrimaryPrefix.class);
+                JavaNode expression = argumentList.getChild(a);
+                final TypeNode typeNode;
+                if (expression instanceof TypeNode) {
+                    typeNode = (TypeNode) expression;
+                } else {
+                    typeNode = expression.getFirstDescendantOfType(ASTPrimaryPrefix.class);
+                }
+
                 Class<?> type = null;
-                JavaTypeDefinition typeDefinition = arg.getTypeDefinition();
-                if (typeDefinition != null) {
-                    type = typeDefinition.getType();
+                if (typeNode != null) {
+                    JavaTypeDefinition typeDefinition = typeNode.getTypeDefinition();
+                    if (typeDefinition != null) {
+                        type = typeDefinition.getType();
+                    }
                 }
                 argumentTypes.add(type);
             }
