@@ -21,6 +21,7 @@ from Lua. This means, that the Lua language in PMD can now parse both Lua and Lu
 
 ### Fixed Issues
 * [#4116](https://github.com/pmd/pmd/pull/4116): \[core] Missing --file arg in TreeExport CLI example
+* [#3859](https://github.com/pmd/pmd/pull/3859): \[java] CommentDefaultAccessModifier is triggered in JUnit5 test class
 
 ### API Changes
 
@@ -32,6 +33,7 @@ from Lua. This means, that the Lua language in PMD can now parse both Lua and Lu
 * [#4066](https://github.com/pmd/pmd/pull/4066): \[lua] Add support for Luau syntax and skipping literal sequences in CPD - [@matthargett](https://github.com/matthargett)
 * [#4116](https://github.com/pmd/pmd/pull/4116): \[core] Fix missing --file arg in TreeExport CLI example - [@mohan-chinnappan-n](https://github.com/mohan-chinnappan-n)
 * [#4131](https://github.com/pmd/pmd/pull/4131): \[doc] TooFewBranchesForASwitchStatement - Use "if-else" instead of "if-then" - [@Suvashri](https://github.com/Suvashri)
+* [#3859](https://github.com/pmd/pmd/pull/3859): \[java] CommentDefaultAccessModifier is triggered in JUnit5 test class  [@lfalcantar](https://github.com/lfalcantar)
 
 {% endtocmaker %}
 

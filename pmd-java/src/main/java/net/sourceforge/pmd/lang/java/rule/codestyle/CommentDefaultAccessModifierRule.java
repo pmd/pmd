@@ -25,6 +25,7 @@ import net.sourceforge.pmd.lang.java.ast.AccessNode;
 import net.sourceforge.pmd.lang.java.ast.Annotatable;
 import net.sourceforge.pmd.lang.java.ast.Comment;
 import net.sourceforge.pmd.lang.java.rule.AbstractIgnoredAnnotationRule;
+import net.sourceforge.pmd.lang.java.types.TestingFrameworkTypeUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 
@@ -72,9 +73,14 @@ public class CommentDefaultAccessModifierRule extends AbstractIgnoredAnnotationR
         return super.visit(node, data);
     }
 
+    /*
+     * The method determines is the method needs to be included in the violations report
+     * Also, the code needs to check that the method is not a Test from junit5
+     * to avoid conflicts with JUnit5TestShouldBePackagePrivate
+     */
     @Override
     public Object visit(final ASTMethodDeclaration decl, final Object data) {
-        if (shouldReport(decl)) {
+        if (!TestingFrameworkTypeUtil.isJunit5Test(decl) && shouldReport(decl)) {
             addViolationWithMessage(data, decl,
                     String.format(MESSAGE, decl.getFirstChildOfType(ASTMethodDeclarator.class).getImage(), "method"));
         }

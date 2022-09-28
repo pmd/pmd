@@ -14,6 +14,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumConstant;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.java.types.TestingFrameworkTypeUtil;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.properties.BooleanProperty;
 import net.sourceforge.pmd.properties.PropertyBuilder.RegexPropertyBuilder;
@@ -46,10 +47,6 @@ public class MethodNamingConventionsRule extends AbstractNamingConventionRule<AS
         definePropertyDescriptor(junit3Regex);
         definePropertyDescriptor(junit4Regex);
         definePropertyDescriptor(junit5Regex);
-    }
-
-    private boolean isJunit5Test(ASTMethodDeclaration node) {
-        return node.isAnnotationPresent("org.junit.jupiter.api.Test") || node.isAnnotationPresent("org.junit.jupiter.params.ParameterizedTest");
     }
 
     private boolean isJunit4Test(ASTMethodDeclaration node) {
@@ -88,7 +85,7 @@ public class MethodNamingConventionsRule extends AbstractNamingConventionRule<AS
             }
         } else if (node.isStatic()) {
             checkMatches(node, staticRegex, data);
-        } else if (isJunit5Test(node)) {
+        } else if (TestingFrameworkTypeUtil.isJunit5Test(node)) {
             checkMatches(node, junit5Regex, data);
         } else if (isJunit4Test(node)) {
             checkMatches(node, junit4Regex, data);
