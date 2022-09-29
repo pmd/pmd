@@ -6825,6 +6825,15 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "osiegmar",
+      "name": "Oliver Siegmar",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1918869?v=4",
+      "profile": "https://github.com/osiegmar",
+      "contributions": [
+        "financial"
+      ]
     }
   ],
   "contributorsPerLine": 7,
