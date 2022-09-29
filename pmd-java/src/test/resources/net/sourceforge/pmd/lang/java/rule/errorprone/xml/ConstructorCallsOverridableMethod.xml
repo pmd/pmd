@@ -456,14 +456,18 @@ public abstract class AbstractThing implements Thing {
 
     <test-code>
         <description>Clone and finalize overridden</description>
-        <expected-problems>3</expected-problems>
-        <expected-linenumbers>3,4,5</expected-linenumbers>
+        <expected-problems>6</expected-problems>
+        <expected-linenumbers>3,4,5,7,8,9</expected-linenumbers>
         <code><![CDATA[
 class Foo {
     public Foo() throws Throwable {
         this.equals(new String());
         this.clone();
         this.finalize();
+
+        equals(new String());
+        clone();
+        finalize();
 
         super.equals(new String());
         super.clone();
@@ -479,6 +483,24 @@ class Foo {
     public void finalize() throws Throwable {
         super.finalize();
     }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>False negative with var args and Arrays.asList</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+import java.util.Arrays;
+import java.util.Collection;
+
+class Foo {
+    public Foo(String ... names) {
+        setNames(Arrays.asList(names));
+    }
+
+    public void setNames(Collection<String> names) { }
 }
 ]]></code>
     </test-code>
