@@ -20,6 +20,8 @@ This release of PMD adds support for [Luau](https://github.com/Roblox/luau), a g
 from Lua. This means, that the Lua language in PMD can now parse both Lua and Luau.
 
 ### Fixed Issues
+* cli
+    * [#4118](https://github.com/pmd/pmd/issues/4118): \[cli] run.sh designer reports "integer expression expected"
 * core
     * [#4116](https://github.com/pmd/pmd/pull/4116): \[core] Missing --file arg in TreeExport CLI example
 * doc
