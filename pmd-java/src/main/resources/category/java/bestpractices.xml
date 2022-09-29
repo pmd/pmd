@@ -1722,6 +1722,10 @@ public class Foo {
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#unusedprivatefield">
         <description>
 Detects when a private field is declared and/or assigned a value, but not used.
+
+Since PMD 6.50.0 private fields are ignored, if the fields are annotated with any annotation or the
+enclosing class has any annotation. Annotations often enable a framework (such as mocking or Lombok)
+which use the fields by reflection, which can't be detected by static code analysis.
         </description>
         <priority>3</priority>
         <example>
