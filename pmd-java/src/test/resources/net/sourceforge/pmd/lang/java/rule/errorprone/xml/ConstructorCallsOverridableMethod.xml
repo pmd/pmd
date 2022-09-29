@@ -507,15 +507,19 @@ class Foo {
 
     <test-code>
         <description>Misleading message for method call chain</description>
-        <expected-problems>1</expected-problems>
-        <expected-linenumbers>3</expected-linenumbers>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>3,4,5</expected-linenumbers>
         <expected-messages>
-            <message>Overridable method 'overridableMethod' called during object construction (call stack: [otherMethod1, otherMethod2, overridableMethod])</message>
+            <message>Overridable method 'overridableMethod' called during object construction (call stack: [intermediatePrivateMethod, otherMethod1, otherMethod2, overridableMethod])</message>
+            <message>Overridable method 'overridableMethod' called during object construction (call stack: [shorterChain, overridableMethod])</message>
+            <message>Overridable method 'otherOverridableMethod' called during object construction (call stack: [differentChain, otherOverridableMethod])</message>
         </expected-messages>
         <code><![CDATA[
 public class Foo {
     public Foo() {
         intermediatePrivateMethod();
+        shorterChain();
+        differentChain();
     }
 
     private void intermediatePrivateMethod() {
@@ -530,7 +534,17 @@ public class Foo {
         overridableMethod();
     }
 
+    private void shorterChain() {
+        overridableMethod();
+    }
+
     void overridableMethod();
+
+    private void differentChain() {
+        otherOverridableMethod();
+    }
+
+    void otherOverridableMethod();
 }
 ]]></code>
     </test-code>

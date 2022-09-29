@@ -702,12 +702,13 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
                 // check against each dangerous method in class
                 for (MethodHolder h : getCurrentEvalPackage().allMethodsOfClass.keySet()) {
                     if (h.isDangerous() && meth.matches(h.getASTMethodDeclaration())) {
-                        if (h.getCallStack().size() > 1) {
-                            String overridableMethod = h.getCallStack().getLast();
+                        Deque<String> completeCallStack = new LinkedList<>(h.getCallStack());
+                        completeCallStack.addFirst(meth.getName());
+                        String overridableMethod = completeCallStack.getLast();
+                        if (completeCallStack.size() > 1) {
                             asCtx(data).addViolation(meth.getASTPrimaryExpression(), "method '" + overridableMethod + "'",
-                                    " (call stack: " + h.getCallStack() + ")");
+                                    " (call stack: " + completeCallStack + ")");
                         } else {
-                            String overridableMethod = meth.getName();
                             asCtx(data).addViolation(meth.getASTPrimaryExpression(), "method '" + overridableMethod + "'", "");
                         }
                     }
