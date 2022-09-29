@@ -455,7 +455,7 @@ public abstract class AbstractThing implements Thing {
     </test-code>
 
     <test-code>
-        <description>Clone and finalize overridden</description>
+        <description>Clone and finalize overridden #1718</description>
         <expected-problems>6</expected-problems>
         <expected-linenumbers>3,4,5,7,8,9</expected-linenumbers>
         <code><![CDATA[
@@ -469,6 +469,7 @@ class Foo {
         clone();
         finalize();
 
+        // #1718 - super calls should be ignored
         super.equals(new String());
         super.clone();
         super.finalize();
@@ -545,6 +546,48 @@ public class Foo {
     }
 
     void otherOverridableMethod();
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] ConstructorCallsOverridableMethod occurs when unused overloaded method is defined #2348</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Scratch {
+    private Long member = 0L;
+
+    public Scratch(final Long v) {
+        setMember(v);
+    }
+
+    public final void setMember(final Long v) {
+        this.member = v;
+    }
+
+    // Renaming this or marking it as final prevents the
+    // 'ConstructorCallsOverridableMethod' rule from being broken.
+    public void setMember(final String n) {
+        setMember(Long.valueOf(n));
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] ConstructorCallsOverridableMethod occurs when unused overloaded method is defined #2348 - sample 2</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.Date;
+
+public class MyTimestamp {
+    private final long t;
+    public MyTimestamp() {
+        t = new Date().getTime(); // <-- false-positive violation here
+    }
+    public long getTime() {
+        return t;
+    }
 }
 ]]></code>
     </test-code>
