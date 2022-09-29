@@ -25,7 +25,6 @@ import net.sourceforge.pmd.lang.java.ast.AccessNode;
 import net.sourceforge.pmd.lang.java.ast.Annotatable;
 import net.sourceforge.pmd.lang.java.ast.Comment;
 import net.sourceforge.pmd.lang.java.rule.AbstractIgnoredAnnotationRule;
-import net.sourceforge.pmd.lang.java.types.TestingFrameworkTypeUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 
@@ -58,6 +57,15 @@ public class CommentDefaultAccessModifierRule extends AbstractIgnoredAnnotationR
         Collection<String> ignoredStrings = new ArrayList<>();
         ignoredStrings.add("com.google.common.annotations.VisibleForTesting");
         ignoredStrings.add("android.support.annotation.VisibleForTesting");
+        ignoredStrings.add("org.junit.jupiter.api.Test");
+        ignoredStrings.add("org.junit.jupiter.api.ParameterizedTest");
+        ignoredStrings.add("org.junit.jupiter.api.RepeatedTest");
+        ignoredStrings.add("org.junit.jupiter.api.TestFactory");
+        ignoredStrings.add("org.junit.jupiter.api.TestTemplate");
+        ignoredStrings.add("org.junit.jupiter.api.BeforeEach");
+        ignoredStrings.add("org.junit.jupiter.api.BeforeAll");
+        ignoredStrings.add("org.junit.jupiter.api.AfterEach");
+        ignoredStrings.add("org.junit.jupiter.api.AfterAll");
         return ignoredStrings;
     }
 
@@ -80,7 +88,7 @@ public class CommentDefaultAccessModifierRule extends AbstractIgnoredAnnotationR
      */
     @Override
     public Object visit(final ASTMethodDeclaration decl, final Object data) {
-        if (!TestingFrameworkTypeUtil.isJunit5Test(decl) && shouldReport(decl)) {
+        if (shouldReport(decl)) {
             addViolationWithMessage(data, decl,
                     String.format(MESSAGE, decl.getFirstChildOfType(ASTMethodDeclarator.class).getImage(), "method"));
         }
