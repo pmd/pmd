@@ -81,11 +81,6 @@ public class CommentDefaultAccessModifierRule extends AbstractIgnoredAnnotationR
         return super.visit(node, data);
     }
 
-    /*
-     * The method determines is the method needs to be included in the violations report
-     * Also, the code needs to check that the method is not a Test from junit5
-     * to avoid conflicts with JUnit5TestShouldBePackagePrivate
-     */
     @Override
     public Object visit(final ASTMethodDeclaration decl, final Object data) {
         if (shouldReport(decl)) {
