@@ -19,6 +19,11 @@ This is a {{ site.pmd.release_type }} release.
 This release of PMD adds support for [Luau](https://github.com/Roblox/luau), a gradually typed language derived
 from Lua. This means, that the Lua language in PMD can now parse both Lua and Luau.
 
+#### Modified rules
+
+*    The Java rule {% rule java/codestyle/CommentDefaultAccessModifier %} now by default ignores JUnit5 annotated
+     methods. This behavior can be customized using the property `ignoredAnnotations`.
+
 ### Fixed Issues
 * [#4116](https://github.com/pmd/pmd/pull/4116): \[core] Missing --file arg in TreeExport CLI example
 * [#3859](https://github.com/pmd/pmd/issues/3859): \[java] CommentDefaultAccessModifier is triggered in JUnit5 test class
