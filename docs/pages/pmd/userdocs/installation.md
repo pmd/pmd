@@ -31,7 +31,20 @@ sidebar: pmd_sidebar
 PMD is distributed as a zip archive, which includes both [PMD](#running-pmd-via-command-line) and [CPD](pmd_userdocs_cpd.html). 
 You can download the latest binary distribution from [the github releases page](https://github.com/pmd/pmd/releases).
 
-Unzip it into any directory, optionally add the `bin` subdirectory in your `PATH`, and you're good to go!
+It's highly recommended (but not required) to include it to your `PATH`.
+
+On Linux you can do this by adding `PATH=$PATH:*path_to_pmd*/bin/` to your `~/.bashrc` / `~/.zshrc` file.
+
+On Windows this is achieved by:
+1. On the **Start menu**, right-click **Computer**.
+2. On the context menu, click **Properties**.
+3. In the **System** dialog box, click **Advanced system settings**.
+4. On the **Advanced** tab of the **System Properties** dialog box, click **Environment Variables**
+5. In the **System Variables** box of the **Environment Variables** dialog box, scroll to **Path** and select it.
+6. Click the lower of the two **Edit** buttons in the dialog box.
+7. In the **Edit System Variable** dialog box, scroll to the end of the string in the **Variable value** box and add a semicolon (;).
+8. Add the proper value for `*path_to_pmd*/bin/` after the semicolon.
+9. Click **OK** in three successive dialog boxes, and then close the **System** dialog box.
 
 #### Shell completion
 
@@ -78,41 +91,22 @@ Additionally, the following options, are specified most of the time even though 
 
  The following shows a sample run of PMD with the `text` format:
 
+{% include cli_example.html
+   id="pmd"
+   linux="pmd analyze -d ../../../src/main/java/ -f text -R rulesets/java/quickstart.xml
 
-<div class="text-left">
-  <ul class="nav nav-tabs" role="tablist" id="pmd-sample-usage-tabs">
-    <li class="nav-item" role="presentation">
-      <a class="nav-link active" id="linux-tab" data-toggle="tab" href="#linux" role="tab" aria-controls="linux" aria-selected="true">Linux / Unix</a>
-    </li>
-    <li class="nav-item" role="presentation">
-      <a class="nav-link" id="windows-tab" data-toggle="tab" href="#windows" role="tab" aria-controls="windows" aria-selected="false">Windows</a>
-    </li>
-  </ul>
- 
-  <div class="tab-content border">
-    <div class="tab-pane fade show active" id="linux" role="tabpanel" aria-labelledby="linux-tab">
-<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">~ $ </span><span class="s2">cd</span> ~/bin/pmd-bin-{{site.pmd.version}}/bin
-<span class="gp">~/.../bin $ </span><span class="s2">./pmd</span> analyze -d ../../../src/main/java/ -f text -R rulesets/java/quickstart.xml
-  
   .../src/main/java/com/me/RuleSet.java:123  These nested if statements could be combined
   .../src/main/java/com/me/RuleSet.java:231  Useless parentheses.
   .../src/main/java/com/me/RuleSet.java:232  Useless parentheses.
   .../src/main/java/com/me/RuleSet.java:357  These nested if statements could be combined
-  .../src/main/java/com/me/RuleSetWriter.java:66     Avoid empty catch blocks</code></pre></figure>
-    </div>
-    <div class="tab-pane fade" id="windows" role="tabpanel" aria-labelledby="windows-tab">
-<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">C:\ &gt; </span><span class="s2">cd</span> C:\pmd-bin-{{site.pmd.version}}\bin
-<span class="gp">C:\...\bin > </span><span class="s2">.\pmd.bat</span> analyze -d ..\..\src\main\java\ -f text -R rulesets/java/quickstart.xml
-      
+  .../src/main/java/com/me/RuleSetWriter.java:66     Avoid empty catch blocks"
+   windows="pmd.bat analyze -d ..\..\src\main\java\ -f text -R rulesets/java/quickstart.xml
+
   .../src/main/java/com/me/RuleSet.java:123  These nested if statements could be combined
   .../src/main/java/com/me/RuleSet.java:231  Useless parentheses.
   .../src/main/java/com/me/RuleSet.java:232  Useless parentheses.
   .../src/main/java/com/me/RuleSet.java:357  These nested if statements could be combined
-  .../src/main/java/com/me/RuleSetWriter.java:66     Avoid empty catch blocks</code></pre></figure>
-    </div>
-  </div>
-</div>
-
+  .../src/main/java/com/me/RuleSetWriter.java:66     Avoid empty catch blocks" %}
 
 ## Running CPD via command line
 
@@ -135,21 +129,9 @@ There are two required parameters:
 
  The following shows a sample run of CPD with the `text` format:
 
-
-<div class="text-left">
-  <ul class="nav nav-tabs" role="tablist" id="cpd-sample-usage-tabs">
-    <li class="nav-item" role="presentation">
-      <a class="nav-link active" id="cpd-linux-tab" data-toggle="tab" href="#cpd-linux" role="tab" aria-controls="cpd-linux" aria-selected="true">Linux / Unix</a>
-    </li>
-    <li class="nav-item" role="presentation">
-      <a class="nav-link" id="cpd-windows-tab" data-toggle="tab" href="#cpd-windows" role="tab" aria-controls="windows" aria-selected="false">Windows</a>
-    </li>
-  </ul>
-
-  <div class="tab-content border">
-    <div class="tab-pane fade show active" id="cpd-linux" role="tabpanel" aria-labelledby="cpd-linux-tab">
-<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">~ $ </span><span class="s2">cd</span> ~/bin/pmd-bin-{{site.pmd.version}}/bin
-<span class="gp">~/.../bin $ </span><span class="s2">./pmd</span> cpd --minimum-tokens 100 --files /home/me/src
+{% include cli_example.html
+   id="cpd"
+   linux="pmd cpd --minimum-tokens 100 --files /home/me/src
 
   Found a 7 line (110 tokens) duplication in the following files:
   Starting at line 579 of /home/me/src/test/java/foo/FooTypeTest.java
@@ -161,11 +143,8 @@ There are two required parameters:
           assertEquals(Boolean.TYPE, expressions.get(index++).getType());
           assertEquals(Boolean.TYPE, expressions.get(index++).getType());
           assertEquals(Boolean.TYPE, expressions.get(index++).getType());
-          assertEquals(Boolean.TYPE, expressions.get(index++).getType());</code></pre></figure>
-    </div>
-    <div class="tab-pane fade" id="cpd-windows" role="tabpanel" aria-labelledby="cpd-windows-tab">
-<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">C:\ &gt; </span><span class="s2">cd</span> C:\pmd-bin-{{site.pmd.version}}\bin
-<span class="gp">C:\...\bin > </span><span class="s2">.\pmd.bat</span> cpd --minimum-tokens 100 --files c:\temp\src
+          assertEquals(Boolean.TYPE, expressions.get(index++).getType());"
+    windows="pmd.bat cpd --minimum-tokens 100 --files /home/me/src
 
   Found a 7 line (110 tokens) duplication in the following files:
   Starting at line 579 of c:\temp\src\test\java\foo\FooTypeTest.java
@@ -177,7 +156,5 @@ There are two required parameters:
           assertEquals(Boolean.TYPE, expressions.get(index++).getType());
           assertEquals(Boolean.TYPE, expressions.get(index++).getType());
           assertEquals(Boolean.TYPE, expressions.get(index++).getType());
-          assertEquals(Boolean.TYPE, expressions.get(index++).getType());</code></pre></figure>
-    </div>
-  </div>
-</div>
+          assertEquals(Boolean.TYPE, expressions.get(index++).getType());" %}
+

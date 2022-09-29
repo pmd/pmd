@@ -1,0 +1,24 @@
+{% assign linux_cmd = include.linux | split: ' ' | first %}
+{% assign linux_tail = include.linux | remove_first: linux_cmd %}
+{% assign windows_cmd = include.windows | split: ' ' | first %}
+{% assign windows_tail = include.windows | remove_first: windows_cmd %}
+
+<div class="text-left">
+  <ul class="nav nav-tabs" role="tablist"><!-- id="pmd-sample-usage-tabs" -->
+    <li class="nav-item" role="presentation">
+      <a class="nav-link active" id="linux-tab-{{include.id}}" data-toggle="tab" href="#linux-{{include.id}}" role="tab" aria-controls="linux" aria-selected="true">Linux / Unix</a>
+    </li>
+    <li class="nav-item" role="presentation">
+      <a class="nav-link" id="windows-tab-{{include.id}}" data-toggle="tab" href="#windows-{{include.id}}" role="tab" aria-controls="windows" aria-selected="false">Windows</a>
+    </li>
+  </ul>
+
+  <div class="tab-content border">
+    <div class="tab-pane fade show active" id="linux-{{include.id}}" role="tabpanel" aria-labelledby="linux-tab">
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">~ $ </span><span class="s2">{{linux_cmd}}</span>{{linux_tail}}</code></pre></figure>
+    </div>
+    <div class="tab-pane fade" id="windows-{{include.id}}" role="tabpanel" aria-labelledby="windows-tab">
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">C:\&gt; </span><span class="s2">{{windows_cmd}}</span>{{windows_tail}}</code></pre></figure>
+    </div>
+  </div>
+</div>
