@@ -1170,7 +1170,7 @@ boolean x = (y == Double.NaN);
     <rule name="ConstructorCallsOverridableMethod"
           language="java"
           since="1.04"
-          message="Overridable {0} called during object construction"
+          message="Overridable {0} called during object construction{1}"
           class="net.sourceforge.pmd.lang.java.rule.errorprone.ConstructorCallsOverridableMethodRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#constructorcallsoverridablemethod">
         <description>

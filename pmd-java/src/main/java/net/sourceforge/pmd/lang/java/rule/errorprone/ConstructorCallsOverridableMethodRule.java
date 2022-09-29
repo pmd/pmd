@@ -7,7 +7,9 @@ package net.sourceforge.pmd.lang.java.rule.errorprone;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Deque;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -501,18 +503,24 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
     private static final class MethodHolder {
         private ASTMethodDeclaration amd;
         private boolean dangerous;
-        private String called;
+        private Deque<String> callStack = new LinkedList<>();
 
         MethodHolder(ASTMethodDeclaration amd) {
             this.amd = amd;
         }
 
-        public void setCalledMethod(String name) {
-            this.called = name;
+        public void addToStack(String name) {
+            callStack.push(name);
         }
 
-        public String getCalled() {
-            return this.called;
+        public void addToStack(Deque<String> otherStack) {
+            for (String name : otherStack) {
+                callStack.addLast(name);
+            }
+        }
+
+        public Deque<String> getCallStack() {
+            return callStack;
         }
 
         public ASTMethodDeclaration getASTMethodDeclaration() {
@@ -694,7 +702,14 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
                 // check against each dangerous method in class
                 for (MethodHolder h : getCurrentEvalPackage().allMethodsOfClass.keySet()) {
                     if (h.isDangerous() && meth.matches(h.getASTMethodDeclaration())) {
-                        addViolation(data, meth.getASTPrimaryExpression(), "method '" + h.getCalled() + "'");
+                        if (h.getCallStack().size() > 1) {
+                            String overridableMethod = h.getCallStack().getLast();
+                            asCtx(data).addViolation(meth.getASTPrimaryExpression(), "method '" + overridableMethod + "'",
+                                    " (call stack: " + h.getCallStack() + ")");
+                        } else {
+                            String overridableMethod = meth.getName();
+                            asCtx(data).addViolation(meth.getASTPrimaryExpression(), "method '" + overridableMethod + "'", "");
+                        }
                     }
                 }
             }
@@ -712,7 +727,7 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
                     for (ConstructorInvocation ci : getCurrentEvalPackage().calledConstructors) {
                         if (ci.getArgumentCount() == paramCount) {
                             // match name super / this !?
-                            addViolation(data, ci.getASTExplicitConstructorInvocation(), "constructor");
+                            asCtx(data).addViolation(ci.getASTExplicitConstructorInvocation(), "constructor", "");
                         }
                     }
                 }
@@ -755,7 +770,8 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
                         // System.out.println("matching " + matchMethodName + "
                         // to " + meth.getName());
                         h.setDangerous();
-                        h.setCalledMethod(meth.getName());
+                        h.addToStack(h3.getCallStack());
+                        h.addToStack(meth.getName());
                         found = true;
                         break;
                     }
@@ -946,7 +962,6 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
             if (!node.isAbstract() && !node.isPrivate() && !node.isStatic() && !node.isFinal()) {
                 // Skip abstract methods, have a separate rule for that
                 h.setDangerous(); // this method is overridable
-                h.setCalledMethod(node.getName());
             }
             List<MethodInvocation> l = new ArrayList<>();
             addCalledMethodsOfNode(node, l, getCurrentEvalPackage().className);

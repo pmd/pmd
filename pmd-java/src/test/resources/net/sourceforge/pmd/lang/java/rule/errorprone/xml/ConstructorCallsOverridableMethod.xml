@@ -504,4 +504,34 @@ class Foo {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>Misleading message for method call chain</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <expected-messages>
+            <message>Overridable method 'overridableMethod' called during object construction (call stack: [otherMethod1, otherMethod2, overridableMethod])</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    public Foo() {
+        intermediatePrivateMethod();
+    }
+
+    private void intermediatePrivateMethod() {
+        otherMethod1();
+    }
+
+    private final void otherMethod1() {
+        otherMethod2();
+    }
+
+    private final void otherMethod2() {
+        overridableMethod();
+    }
+
+    void overridableMethod();
+}
+]]></code>
+    </test-code>
 </test-data>
