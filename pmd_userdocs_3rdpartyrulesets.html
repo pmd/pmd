@@ -4,9 +4,9 @@
     <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="">
-<meta name="keywords" content=" ">
-<title>Getting Help | PMD Source Code Analyzer</title>
+<meta name="description" content="Lists rulesets and rules from the community">
+<meta name="keywords" content="rule_referencesuserdocs,  ">
+<title>3rd party rulesets | PMD Source Code Analyzer</title>
 <link rel="stylesheet" href="css/syntax.css">
 
 
@@ -140,7 +140,7 @@
                                 searchInput: document.getElementById('search-input'),
                                 resultsContainer: document.getElementById('results-container'),
                                 dataSource: 'search.json',
-                                searchResultTemplate: '<li><a href="{url}" title="Getting Help">{title}</a></li>',
+                                searchResultTemplate: '<li><a href="{url}" title="3rd party rulesets">{title}</a></li>',
                     noResultsText: 'No results found.',
                             limit: 10,
                             fuzzy: true,
@@ -228,7 +228,7 @@
             
 
                 
-                <li class="active"><a href="pmd_about_help.html">Getting help</a></li>
+                <li><a href="pmd_about_help.html">Getting help</a></li>
                 
 
             
@@ -347,7 +347,7 @@
             
 
                 
-                <li><a href="pmd_userdocs_3rdpartyrulesets.html">3rd party rulesets</a></li>
+                <li class="active"><a href="pmd_userdocs_3rdpartyrulesets.html">3rd party rulesets</a></li>
                 
 
             
@@ -1509,10 +1509,10 @@
             <a href="./" role="button"
                 ><i class="fa fa-home fa-lg"></i
             ></a>
-            » Getting Help   
+            » 3rd party rulesets   
             <a
                 target="_blank"
-                href="https://github.com/pmd/pmd/blob/master/docs/pages/pmd/about/help.md"
+                href="https://github.com/pmd/pmd/blob/master/docs/pages/pmd/userdocs/3rdpartyrulesets.md"
                 class="pull-right"
                 role="button"
                 ><i class="fa fa-github fa-lg"></i> Edit on GitHub</a
@@ -1526,42 +1526,70 @@
 
 
 <div class="post-header">
-   <h1 class="post-title-main">Getting Help</h1>
+   <h1 class="post-title-main">3rd party rulesets</h1>
 </div>
 
 
 
-<div class="post-content" data-github-edit-url="https://github.com/pmd/pmd/blob/master/docs/pages/pmd/about/help.md">
+<div class="post-content" data-github-edit-url="https://github.com/pmd/pmd/blob/master/docs/pages/pmd/userdocs/3rdpartyrulesets.md">
 
+   
+    <div class="summary">Lists rulesets and rules from the community</div>
    
     <div id="inline-toc"><!-- empty, move TOC here when screen size too small --></div>
     
-  <p>There are numerous ways of getting help:</p>
+  <h2 id="for-java">For Java</h2>
 
 <ul>
-  <li>
-    <p>Search for already existing questions on <a href="https://stackoverflow.com/">StackOverflow</a>.</p>
+  <li><strong>jPinpoint rules:</strong> PMD rule set for performance aware Java and Kotlin coding.
+    <ul>
+      <li><a href="https://github.com/jborgers/PMD-jPinpoint-rules">https://github.com/jborgers/PMD-jPinpoint-rules</a></li>
+    </ul>
   </li>
-  <li>
-    <p>If you can’t find your problem, post a new question. Don’t forget to tag the question with <a href="https://stackoverflow.com/questions/tagged/pmd"><code class="language-plaintext highlighter-rouge">pmd</code></a>.</p>
+  <li><strong>arch4u-pmd</strong> is a library with pmd rules that bring new regulations related to known problems in REST API, logging,
+monitoring, etc., including reconfigured default pmd rules to decrease false-positive violations during usage of
+well-known frameworks like Spring, Quarkus, etc.
+    <ul>
+      <li><a href="https://github.com/dgroup/arch4u-pmd">https://github.com/dgroup/arch4u-pmd</a></li>
+    </ul>
   </li>
-  <li>
-    <p>If you found a bug, please create a new <a href="https://github.com/pmd/pmd/issues">github issue</a>.</p>
+  <li>Sample ruleset from <strong>maxdocs</strong>, a multi markup wiki engine.
+    <ul>
+      <li><a href="https://github.com/bohni/maxdocs/blob/master/src/main/config/pmd/pmd-ruleset.xml">https://github.com/bohni/maxdocs/blob/master/src/main/config/pmd/pmd-ruleset.xml</a></li>
+    </ul>
   </li>
-  <li>
-    <p>You can also ask questions on <a href="https://github.com/pmd/pmd/discussions">github discussions</a>.</p>
+  <li>Sample ruleset from <strong>geotools</strong>, an open source Java library that provides tools for geospatial data.
+    <ul>
+      <li><a href="https://github.com/geotools/geotools/blob/main/build/qa/pmd-ruleset.xml">https://github.com/geotools/geotools/blob/main/build/qa/pmd-ruleset.xml</a></li>
+      <li><a href="https://github.com/geotools/geotools/blob/main/build/qa/pmd-junit-ruleset.xml">https://github.com/geotools/geotools/blob/main/build/qa/pmd-junit-ruleset.xml</a></li>
+    </ul>
   </li>
-  <li>
-    <p>Or you can join the <a href="https://lists.sourceforge.net/lists/listinfo/pmd-devel">Mailing List</a> or browse
-through the archives (<a href="http://java-pmd.30631.n5.nabble.com/">archive1</a>, <a href="http://web.archive.org/web/20160715035623/http://blog.gmane.org:80/gmane.comp.java.audit.pmd.devel">archive2</a>).</p>
-  </li>
-  <li>
-    <p>Of course, you can also directly jump to our <a href="https://github.com/pmd/pmd">source code on github</a>.</p>
+</ul>
+
+<h2 id="for-apex">For Apex</h2>
+<ul>
+  <li><strong>unhappy-soup</strong>, a repository with problematic Salesforce code to showcase PMD, the SFDX Scanner CLI
+    <ul>
+      <li><a href="https://github.com/rsoesemann/unhappy-soup/blob/master/ruleset.xml">https://github.com/rsoesemann/unhappy-soup/blob/master/ruleset.xml</a></li>
+    </ul>
   </li>
 </ul>
 
 
+
     <div class="tags">
+        
+        <b>Tags: </b>
+        
+        
+        
+        <a href="tag_rule_references.html" class="btn btn-default navbar-btn cursorNorm" role="button">rule_references</a>
+        
+        
+        
+        <a href="tag_userdocs.html" class="btn btn-default navbar-btn cursorNorm" role="button">userdocs</a>
+        
+        
         
     </div>
 
@@ -1579,7 +1607,7 @@ through the archives (<a href="http://java-pmd.30631.n5.nabble.com/">archive1</a
         github and create a PR:
         <a
             target="_blank"
-            href="https://github.com/pmd/pmd/blob/master/docs/pages/pmd/about/help.md"
+            href="https://github.com/pmd/pmd/blob/master/docs/pages/pmd/userdocs/3rdpartyrulesets.md"
             role="button"
             ><i class="fa fa-github fa-lg"></i> Edit on GitHub</a
         >
@@ -1591,7 +1619,7 @@ through the archives (<a href="http://java-pmd.30631.n5.nabble.com/">archive1</a
             &copy;2022 PMD Open Source Project. All rights
             reserved. <br />
             <span>Page last updated:</span>
-            January 2021<br /> Site last generated: Sep 29, 2022 <br />
+            September 2022<br /> Site last generated: Sep 29, 2022 <br />
             <p>
                 <img src="images/pmd-logo-small.png" alt="Company
                 logo"/>
