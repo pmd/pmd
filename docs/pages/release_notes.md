@@ -26,6 +26,7 @@ from Lua. This means, that the Lua language in PMD can now parse both Lua and Lu
     * [#4116](https://github.com/pmd/pmd/pull/4116): \[core] Missing --file arg in TreeExport CLI example
 * doc
     * [#4109](https://github.com/pmd/pmd/pull/4109): \[doc] Add page for 3rd party rulesets
+    * [#4124](https://github.com/pmd/pmd/pull/4124): \[doc] Fix typos in Java rule docs
 
 ### API Changes
 
@@ -42,6 +43,7 @@ Many thanks to our sponsors:
 ### External Contributions
 * [#4066](https://github.com/pmd/pmd/pull/4066): \[lua] Add support for Luau syntax and skipping literal sequences in CPD - [Matt Hargett](https://github.com/matthargett) (@matthargett)
 * [#4116](https://github.com/pmd/pmd/pull/4116): \[core] Fix missing --file arg in TreeExport CLI example - [mohan-chinnappan-n](https://github.com/mohan-chinnappan-n) (@mohan-chinnappan-n)
+* [#4124](https://github.com/pmd/pmd/pull/4124) : \[doc] Fix typos in Java rule docs - [Piotrek Żygieło](https://github.com/pzygielo) (@pzygielo)
 * [#4131](https://github.com/pmd/pmd/pull/4131): \[doc] TooFewBranchesForASwitchStatement - Use "if-else" instead of "if-then" - [Suvashri](https://github.com/Suvashri) (@Suvashri)
 
 {% endtocmaker %}
