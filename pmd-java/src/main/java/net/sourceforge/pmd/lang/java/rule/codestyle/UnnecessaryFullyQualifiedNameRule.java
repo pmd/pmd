@@ -204,7 +204,7 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
                 String importStr = firstMatch.getImportedName() + (firstMatch.isImportOnDemand() ? ".*" : "");
                 String type = firstMatch.isStatic() ? "static " : "";
 
-                addViolation(data, node, new Object[]{node.getImage(), importStr, type});
+                asCtx(data).addViolation(node, node.getImage(), importStr, type);
             }
         }
     }
