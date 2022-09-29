@@ -20,7 +20,8 @@ This release of PMD adds support for [Luau](https://github.com/Roblox/luau), a g
 from Lua. This means, that the Lua language in PMD can now parse both Lua and Luau.
 
 ### Fixed Issues
-* [#4116](https://github.com/pmd/pmd/pull/4116): \[core] Missing --file arg in TreeExport CLI example
+* core
+    * [#4116](https://github.com/pmd/pmd/pull/4116): \[core] Missing --file arg in TreeExport CLI example
 
 ### API Changes
 
@@ -35,9 +36,9 @@ Many thanks to our sponsors:
 * [Oliver Siegmar](https://github.com/osiegmar) (@osiegmar)
 
 ### External Contributions
-* [#4066](https://github.com/pmd/pmd/pull/4066): \[lua] Add support for Luau syntax and skipping literal sequences in CPD - [@matthargett](https://github.com/matthargett)
-* [#4116](https://github.com/pmd/pmd/pull/4116): \[core] Fix missing --file arg in TreeExport CLI example - [@mohan-chinnappan-n](https://github.com/mohan-chinnappan-n)
-* [#4131](https://github.com/pmd/pmd/pull/4131): \[doc] TooFewBranchesForASwitchStatement - Use "if-else" instead of "if-then" - [@Suvashri](https://github.com/Suvashri)
+* [#4066](https://github.com/pmd/pmd/pull/4066): \[lua] Add support for Luau syntax and skipping literal sequences in CPD - [Matt Hargett](https://github.com/matthargett) (@matthargett)
+* [#4116](https://github.com/pmd/pmd/pull/4116): \[core] Fix missing --file arg in TreeExport CLI example - [mohan-chinnappan-n](https://github.com/mohan-chinnappan-n) (@mohan-chinnappan-n)
+* [#4131](https://github.com/pmd/pmd/pull/4131): \[doc] TooFewBranchesForASwitchStatement - Use "if-else" instead of "if-then" - [Suvashri](https://github.com/Suvashri) (@Suvashri)
 
 {% endtocmaker %}
 
