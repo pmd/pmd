@@ -80,5 +80,10 @@ Many thanks to our sponsors:
 * [#4131](https://github.com/pmd/pmd/pull/4131): \[doc] TooFewBranchesForASwitchStatement - Use "if-else" instead of "if-then" - [Suvashri](https://github.com/Suvashri) (@Suvashri)
 * [#4137](https://github.com/pmd/pmd/pull/4137): \[java] Fixes 3859: Exclude junit5 test methods from the commentDefaultAccessModifierRule - [Luis Alcantar](https://github.com/lfalcantar) (@lfalcantar)
 
+### Stats
+* 100 commits
+* 26 closed tickets & PRs
+* Days since last release: 29
+
 {% endtocmaker %}
 
