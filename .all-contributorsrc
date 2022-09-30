@@ -492,7 +492,8 @@
       "profile": "https://github.com/pzygielo",
       "contributions": [
         "code",
-        "bug"
+        "bug",
+        "doc"
       ]
     },
     {
@@ -6798,11 +6799,75 @@
       "contributions": [
         "doc"
       ]
-    },{
+    },
+    {
       "login": "pacvz",
       "name": "pacvz",
       "avatar_url": "https://avatars.githubusercontent.com/u/35453365?v=4",
       "profile": "https://github.com/pacvz",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "mohan-chinnappan-n",
+      "name": "mohan-chinnappan-n",
+      "avatar_url": "https://avatars.githubusercontent.com/u/5963194?v=4",
+      "profile": "https://mohan-chinnappan-n.github.io/about/cv.html",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "Suvashri",
+      "name": "Suvashri",
+      "avatar_url": "https://avatars.githubusercontent.com/u/112872981?v=4",
+      "profile": "https://github.com/Suvashri",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "osiegmar",
+      "name": "Oliver Siegmar",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1918869?v=4",
+      "profile": "https://github.com/osiegmar",
+      "contributions": [
+        "financial"
+      ]
+    },
+    {
+      "login": "OlegAndreych",
+      "name": "Oleg Andreych",
+      "avatar_url": "https://avatars.githubusercontent.com/u/2041351?v=4",
+      "profile": "https://github.com/OlegAndreych",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "lfalcantar",
+      "name": "Luis Alcantar",
+      "avatar_url": "https://avatars.githubusercontent.com/u/13026131?v=4",
+      "profile": "https://github.com/lfalcantar",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "LynnBroe",
+      "name": "Lynn",
+      "avatar_url": "https://avatars.githubusercontent.com/u/109954313?v=4",
+      "profile": "https://github.com/LynnBroe",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "sashashura",
+      "name": "Alex",
+      "avatar_url": "https://avatars.githubusercontent.com/u/93376818?v=4",
+      "profile": "https://github.com/sashashura",
       "contributions": [
         "code"
       ]

@@ -40,7 +40,16 @@ public class CommentDefaultAccessModifierRule extends AbstractJavaRulechainRule 
     private static final PropertyDescriptor<List<String>> IGNORED_ANNOTS =
         JavaPropertyUtil.ignoredAnnotationsDescriptor(
             "com.google.common.annotations.VisibleForTesting",
-            "android.support.annotation.VisibleForTesting"
+            "android.support.annotation.VisibleForTesting",
+            "org.junit.jupiter.api.Test",
+            "org.junit.jupiter.api.ParameterizedTest",
+            "org.junit.jupiter.api.RepeatedTest",
+            "org.junit.jupiter.api.TestFactory",
+            "org.junit.jupiter.api.TestTemplate",
+            "org.junit.jupiter.api.BeforeEach",
+            "org.junit.jupiter.api.BeforeAll",
+            "org.junit.jupiter.api.AfterEach",
+            "org.junit.jupiter.api.AfterAll"
         );
 
     private static final PropertyDescriptor<Pattern> REGEX_DESCRIPTOR =
