@@ -10,8 +10,10 @@ import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.Lexer;
 
 import net.sourceforge.pmd.cpd.internal.AntlrTokenizer;
-import net.sourceforge.pmd.lang.lua.ast.LuaLexer;
 import net.sourceforge.pmd.cpd.token.AntlrTokenFilter;
+import net.sourceforge.pmd.lang.ast.impl.antlr4.AntlrToken;
+import net.sourceforge.pmd.lang.ast.impl.antlr4.AntlrTokenManager;
+import net.sourceforge.pmd.lang.lua.ast.LuaLexer;
 
 /**
  * The Lua Tokenizer
@@ -37,6 +39,7 @@ public class LuaTokenizer extends AntlrTokenizer {
     @Override
     protected Lexer getLexerForSource(CharStream charStream) {
         return new LuaLexer(charStream);
+    }
 
     @Override
     protected AntlrTokenFilter getTokenFilter(final AntlrTokenManager tokenManager) {
