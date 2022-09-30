@@ -32,6 +32,24 @@
   
   
   <url>
+    <loc>https://pmd.github.io/pmd/pmd_projectdocs_decisions_adr_1.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_projectdocs_decisions_adr_2.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_projectdocs_decisions_adr_NNN.html</loc>
+  </url>
+  
+  
+  
+  <url>
     <loc>https://pmd.github.io/pmd/pmd_userdocs_tools_ant.html</loc>
   </url>
   
@@ -183,6 +201,12 @@
   
   <url>
     <loc>https://pmd.github.io/pmd/pmd_projectdocs_credits.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_projectdocs_decisions.html</loc>
   </url>
   
   

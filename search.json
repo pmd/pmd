@@ -70,6 +70,54 @@
 
 
 {
+"title": "ADR 1 - Use architecture decision records",
+"tags": "",
+"keywords": "",
+"url": "pmd_projectdocs_decisions_adr_1.html",
+"summary": ""
+}
+
+
+
+,
+
+
+
+
+
+{
+"title": "ADR 2 - Policy on the use of Kotlin for development",
+"tags": "",
+"keywords": "",
+"url": "pmd_projectdocs_decisions_adr_2.html",
+"summary": ""
+}
+
+
+
+,
+
+
+
+
+
+{
+"title": "ADR NNN - Template",
+"tags": "",
+"keywords": "",
+"url": "pmd_projectdocs_decisions_adr_NNN.html",
+"summary": ""
+}
+
+
+
+,
+
+
+
+
+
+{
 "title": "Ant Task Usage",
 "tags": "userdocstools",
 "keywords": "",
@@ -2141,6 +2189,22 @@
 "tags": "",
 "keywords": "",
 "url": "pmd_projectdocs_credits.html",
+"summary": ""
+}
+
+
+
+,
+
+
+
+
+
+{
+"title": "Architecture Decisions",
+"tags": "",
+"keywords": "",
+"url": "pmd_projectdocs_decisions.html",
 "summary": ""
 }
 

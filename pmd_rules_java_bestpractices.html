@@ -1444,6 +1444,18 @@
             
 
                 
+                <li><a href="pmd_projectdocs_decisions.html">Decisions</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
                 
                 <li class="subfolders">
                     <a href="#">Project management</a>
@@ -3528,6 +3540,12 @@ Variables whose name starts with <code class="language-plaintext highlighter-rou
 
 <p>Detects when a private field is declared and/or assigned a value, but not used.</p>
 
+<p>Since PMD 6.50.0 private fields are ignored, if the fields are annotated with any annotation or the
+enclosing class has any annotation. Annotations often enable a framework (such as dependency injection, mocking
+or e.g. Lombok) which use the fields by reflection or other means. This usage can’t be detected by static code analysis.
+Previously these frameworks where explicitly allowed by listing their annotations in the property
+"ignoredAnnotations", but that turned out to be prone of false positive for any not explicitly considered framework.</p>
+
 <p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/bestpractices/UnusedPrivateFieldRule.java">net.sourceforge.pmd.lang.java.rule.bestpractices.UnusedPrivateFieldRule</a></p>
 
 <p><strong>Example(s):</strong></p>
@@ -3556,8 +3574,8 @@ Variables whose name starts with <code class="language-plaintext highlighter-rou
   <tbody>
     <tr>
       <td>ignoredAnnotations</td>
-      <td>lombok.Setter | lombok.Getter | lombok.Builder | lombok.Data | lombok.RequiredArgsConstructor | lombok.AllArgsConstructor | lombok.Value | lombok.NoArgsConstructor | java.lang.Deprecated | javafx.fxml.FXML | lombok.experimental.Delegate | lombok.EqualsAndHashCode | javax.persistence.Id | javax.persistence.EmbeddedId | javax.persistence.Version | jakarta.persistence.Id | jakarta.persistence.EmbeddedId | jakarta.persistence.Version | org.mockito.Mock | org.mockito.Spy | org.springframework.boot.test.mock.mockito.MockBean</td>
-      <td>Fully qualified names of the annotation types that should be ignored by this rule</td>
+      <td> </td>
+      <td><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Fully qualified names of the annotation types that should be ignored by this rule. This property has been deprecated since PMD 6.50.0 and will be completely ignored.</td>
       <td>yes. Delimiter is ‘|’.</td>
     </tr>
     <tr>
@@ -3576,7 +3594,6 @@ Variables whose name starts with <code class="language-plaintext highlighter-rou
 <p><strong>Use this rule and customize it:</strong></p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/bestpractices.xml/UnusedPrivateField"</span><span class="nt">&gt;</span>
     <span class="nt">&lt;properties&gt;</span>
-        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"ignoredAnnotations"</span> <span class="na">value=</span><span class="s">"lombok.Setter|lombok.Getter|lombok.Builder|lombok.Data|lombok.RequiredArgsConstructor|lombok.AllArgsConstructor|lombok.Value|lombok.NoArgsConstructor|java.lang.Deprecated|javafx.fxml.FXML|lombok.experimental.Delegate|lombok.EqualsAndHashCode|javax.persistence.Id|javax.persistence.EmbeddedId|javax.persistence.Version|jakarta.persistence.Id|jakarta.persistence.EmbeddedId|jakarta.persistence.Version|org.mockito.Mock|org.mockito.Spy|org.springframework.boot.test.mock.mockito.MockBean"</span> <span class="nt">/&gt;</span>
         <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"ignoredFieldNames"</span> <span class="na">value=</span><span class="s">"serialVersionUID|serialPersistentFields"</span> <span class="nt">/&gt;</span>
     <span class="nt">&lt;/properties&gt;</span>
 <span class="nt">&lt;/rule&gt;</span>
@@ -4119,7 +4136,7 @@ a block <code class="language-plaintext highlighter-rouge">{}</code> is sufficie
         <div class="col-lg-12 footer">
             &copy;2022 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Sep 29, 2022 <br />
+             Site last generated: Sep 30, 2022 <br />
             <p>
                 <img src="images/pmd-logo-small.png" alt="Company
                 logo"/>

@@ -1444,6 +1444,18 @@
             
 
                 
+                <li><a href="pmd_projectdocs_decisions.html">Decisions</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
                 
                 <li class="subfolders">
                     <a href="#">Project management</a>
@@ -1552,8 +1564,15 @@ from Lua. This means, that the Lua language in PMD can now parse both Lua and Lu
 <h4 id="modified-rules">Modified rules</h4>
 
 <ul>
+  <li>The Java rule <a href="pmd_rules_java_bestpractices.html#unusedprivatefield"><code class="language-plaintext highlighter-rouge">UnusedPrivateField</code></a> now ignores private fields, if the fields are
+ annotated with any annotation or the enclosing class has any annotation. Annotations often enable a
+ framework (such as dependency injection, mocking or e.g. Lombok) which use the fields by reflection or other
+ means. This usage can’t be detected by static code analysis. Previously these frameworks where explicitly allowed
+ by listing their annotations in the property “ignoredAnnotations”, but that turned out to be prone of false
+ positive for any not explicitly considered framework. That’s why the property “ignoredAnnotations” has been
+ deprecated for this rule.</li>
   <li>The Java rule <a href="pmd_rules_java_codestyle.html#commentdefaultaccessmodifier"><code class="language-plaintext highlighter-rouge">CommentDefaultAccessModifier</code></a> now by default ignores JUnit5 annotated
-methods. This behavior can be customized using the property <code class="language-plaintext highlighter-rouge">ignoredAnnotations</code>.</li>
+ methods. This behavior can be customized using the property <code class="language-plaintext highlighter-rouge">ignoredAnnotations</code>.</li>
 </ul>
 
 <h3 id="fixed-issues">Fixed Issues</h3>
@@ -1570,8 +1589,20 @@ methods. This behavior can be customized using the property <code class="languag
   </li>
   <li>doc
     <ul>
+      <li><a href="https://github.com/pmd/pmd/pull/4072">#4072</a>: [doc] Add architecture decision records</li>
       <li><a href="https://github.com/pmd/pmd/pull/4109">#4109</a>: [doc] Add page for 3rd party rulesets</li>
       <li><a href="https://github.com/pmd/pmd/pull/4124">#4124</a>: [doc] Fix typos in Java rule docs</li>
+    </ul>
+  </li>
+  <li>java
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/3431">#3431</a>: [java] Add sample java project to regression-tester which uses new language constructs</li>
+    </ul>
+  </li>
+  <li>java-bestpractices
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/4033">#4033</a>: [java] UnusedPrivateField - false positive with Lombok @ToString.Include</li>
+      <li><a href="https://github.com/pmd/pmd/issues/4037">#4037</a>: [java] UnusedPrivateField - false positive with Spring @SpyBean</li>
     </ul>
   </li>
   <li>java-codestyle
@@ -1583,6 +1614,18 @@ methods. This behavior can be customized using the property <code class="languag
   <li>java-design
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/4090">#4090</a>: [java] FinalFieldCouldBeStatic false positive with non-static synchronized block (regression in 6.48, worked with 6.47)</li>
+    </ul>
+  </li>
+  <li>java-errorprone
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/1718">#1718</a>: [java] ConstructorCallsOverridableMethod false positive when calling super method</li>
+      <li><a href="https://github.com/pmd/pmd/issues/2348">#2348</a>: [java] ConstructorCallsOverridableMethod occurs when unused overloaded method is defined</li>
+      <li><a href="https://github.com/pmd/pmd/issues/4099">#4099</a>: [java] ConstructorCallsOverridableMethod should consider method calls with var access</li>
+    </ul>
+  </li>
+  <li>scala
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/pull/4138">#4138</a>: [scala] Upgrade scala-library to 2.12.7 / 2.13.9 and scalameta to 4.6.0</li>
     </ul>
   </li>
 </ul>
@@ -1606,9 +1649,11 @@ methods. This behavior can be customized using the property <code class="languag
 <h3 id="external-contributions">External Contributions</h3>
 <ul>
   <li><a href="https://github.com/pmd/pmd/pull/4066">#4066</a>: [lua] Add support for Luau syntax and skipping literal sequences in CPD - <a href="https://github.com/matthargett">Matt Hargett</a> (@matthargett)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/4100">#4100</a>: [java] Update UnusedPrivateFieldRule - ignore any annotations - <a href="https://github.com/LynnBroe">Lynn</a> (@LynnBroe)</li>
   <li><a href="https://github.com/pmd/pmd/pull/4116">#4116</a>: [core] Fix missing –file arg in TreeExport CLI example - <a href="https://github.com/mohan-chinnappan-n">mohan-chinnappan-n</a> (@mohan-chinnappan-n)</li>
   <li><a href="https://github.com/pmd/pmd/pull/4124">#4124</a>: [doc] Fix typos in Java rule docs - <a href="https://github.com/pzygielo">Piotrek Żygieło</a> (@pzygielo)</li>
   <li><a href="https://github.com/pmd/pmd/pull/4128">#4128</a>: [java] Fix False-positive UnnecessaryFullyQualifiedName when nested and non-nest… #4103 - <a href="https://github.com/OlegAndreych">Oleg Andreych</a> (@OlegAndreych)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/4130">#4130</a>: [ci] GitHub Workflows security hardening - <a href="https://github.com/sashashura">Alex</a> (@sashashura)</li>
   <li><a href="https://github.com/pmd/pmd/pull/4131">#4131</a>: [doc] TooFewBranchesForASwitchStatement - Use “if-else” instead of “if-then” - <a href="https://github.com/Suvashri">Suvashri</a> (@Suvashri)</li>
   <li><a href="https://github.com/pmd/pmd/pull/4137">#4137</a>: [java] Fixes 3859: Exclude junit5 test methods from the commentDefaultAccessModifierRule - <a href="https://github.com/lfalcantar">Luis Alcantar</a> (@lfalcantar)</li>
 </ul>
@@ -1644,7 +1689,7 @@ methods. This behavior can be customized using the property <code class="languag
         <div class="col-lg-12 footer">
             &copy;2022 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Sep 29, 2022 <br />
+             Site last generated: Sep 30, 2022 <br />
             <p>
                 <img src="images/pmd-logo-small.png" alt="Company
                 logo"/>
