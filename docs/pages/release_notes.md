@@ -21,8 +21,15 @@ from Lua. This means, that the Lua language in PMD can now parse both Lua and Lu
 
 #### Modified rules
 
-*    The Java rule {% rule java/codestyle/CommentDefaultAccessModifier %} now by default ignores JUnit5 annotated
-     methods. This behavior can be customized using the property `ignoredAnnotations`.
+* The Java rule {% rule java/bestpractives/UnusedPrivateField %} now ignores private fields, if the fields are
+ annotated with any annotation or the enclosing class has any annotation. Annotations often enable a
+ framework (such as dependency injection, mocking or e.g. Lombok) which use the fields by reflection or other
+ means. This usage can't be detected by static code analysis. Previously these frameworks where explicitly allowed
+ by listing their annotations in the property "ignoredAnnotations", but that turned out to be prone of false
+ positive for any not explicitly considered framework. That's why the property "ignoredAnnotations" has been
+ deprecated for this rule.
+* The Java rule {% rule java/codestyle/CommentDefaultAccessModifier %} now by default ignores JUnit5 annotated
+ methods. This behavior can be customized using the property `ignoredAnnotations`.
 
 ### Fixed Issues
 * cli

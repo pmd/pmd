@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.PMDVersion;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBody;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
@@ -56,15 +56,15 @@ public class UnusedPrivateFieldRule extends AbstractJavaRule {
     }
 
     @Override
-    public void start(RuleContext ctx) {
-        super.start(ctx);
-        List<String> property = getProperty(IGNORED_ANNOTATIONS_DESCRIPTOR);
-        if (!warnedAboutDeprecatedIgnoredAnnotationsProperty && !property.equals(IGNORED_ANNOTATIONS_DESCRIPTOR.defaultValue())) {
+    public String dysfunctionReason() {
+        List<PropertyDescriptor<?>> overriddenPropertyDescriptors = getOverriddenPropertyDescriptors();
+        if (!warnedAboutDeprecatedIgnoredAnnotationsProperty && overriddenPropertyDescriptors.contains(IGNORED_ANNOTATIONS_DESCRIPTOR)) {
             LOG.warning("The property '" + IGNORED_ANNOTATIONS_DESCRIPTOR.name() + "' for rule '"
                     + this.getName() + "' is deprecated. The value is being ignored and the property will "
-                    + "be removed with a future PMD version.");
+                    + "be removed in PMD " + PMDVersion.getNextMajorRelease());
             warnedAboutDeprecatedIgnoredAnnotationsProperty = true;
         }
+        return super.dysfunctionReason();
     }
 
     @Override
