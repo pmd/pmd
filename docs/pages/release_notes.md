@@ -39,6 +39,8 @@ from Lua. This means, that the Lua language in PMD can now parse both Lua and Lu
 * doc
     * [#4109](https://github.com/pmd/pmd/pull/4109): \[doc] Add page for 3rd party rulesets
     * [#4124](https://github.com/pmd/pmd/pull/4124): \[doc] Fix typos in Java rule docs
+* java
+    * [#3431](https://github.com/pmd/pmd/issues/3431): \[java] Add sample java project to regression-tester which uses new language constructs
 * java-bestpractices
     * [#4033](https://github.com/pmd/pmd/issues/4033): \[java] UnusedPrivateField - false positive with Lombok @ToString.Include
     * [#4037](https://github.com/pmd/pmd/issues/4037): \[java] UnusedPrivateField - false positive with Spring @SpyBean
@@ -47,7 +49,6 @@ from Lua. This means, that the Lua language in PMD can now parse both Lua and Lu
     * [#4085](https://github.com/pmd/pmd/issues/4085): \[java] UnnecessaryFullyQualifiedName false positive when nested and non-nested classes with the same name and in the same package are used together
 * java-design
     * [#4090](https://github.com/pmd/pmd/issues/4090): \[java] FinalFieldCouldBeStatic false positive with non-static synchronized block (regression in 6.48, worked with 6.47)
-
 * java-errorprone
     * [#1718](https://github.com/pmd/pmd/issues/1718): \[java] ConstructorCallsOverridableMethod false positive when calling super method
     * [#2348](https://github.com/pmd/pmd/issues/2348): \[java] ConstructorCallsOverridableMethod occurs when unused overloaded method is defined

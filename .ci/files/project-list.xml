@@ -169,4 +169,12 @@ EOF
     <tag>v2.3.0</tag>
     <src-subpath>samples</src-subpath>
   </project>
+
+  <project>
+    <name>java-regression-tests</name>
+    <type>git</type>
+    <connection>https://github.com/pmd/java-regression-tests</connection>
+    <tag>main</tag>
+    <auxclasspath-command>realpath java-regression-tests-*.jar</auxclasspath-command>
+  </project>
 </projectlist>
