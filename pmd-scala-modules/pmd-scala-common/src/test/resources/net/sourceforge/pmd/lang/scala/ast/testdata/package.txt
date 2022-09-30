@@ -11,10 +11,11 @@
             +- DefnType
             |  +- TypeName
             |  +- TypeSelect
-            |     +- TermSelect
-            |     |  +- TermName
-            |     |  +- TermName
-            |     +- TypeName
+            |  |  +- TermSelect
+            |  |  |  +- TermName
+            |  |  |  +- TermName
+            |  |  +- TypeName
+            |  +- TypeBounds
             +- DefnVal
             |  +- PatVar
             |  |  +- TermName
@@ -26,10 +27,11 @@
             +- DefnType
             |  +- TypeName
             |  +- TypeSelect
-            |     +- TermSelect
-            |     |  +- TermName
-            |     |  +- TermName
-            |     +- TypeName
+            |  |  +- TermSelect
+            |  |  |  +- TermName
+            |  |  |  +- TermName
+            |  |  +- TypeName
+            |  +- TypeBounds
             +- DefnVal
             |  +- PatVar
             |  |  +- TermName
@@ -51,8 +53,9 @@
             |  |  +- TypeName
             |  |  +- TypeBounds
             |  +- TypeApply
-            |     +- TypeName
-            |     +- TypeName
+            |  |  +- TypeName
+            |  |  +- TypeName
+            |  +- TypeBounds
             +- DefnVal
             |  +- ModAnnot
             |  |  +- Init
@@ -79,12 +82,13 @@
                |  +- TypeName
                |  +- TypeBounds
                +- TypeApply
-                  +- TypeSelect
-                  |  +- TermSelect
-                  |  |  +- TermSelect
-                  |  |  |  +- TermName
-                  |  |  |  +- TermName
-                  |  |  +- TermName
-                  |  +- TypeName
-                  +- TypeName
-                  +- TypeName
+               |  +- TypeSelect
+               |  |  +- TermSelect
+               |  |  |  +- TermSelect
+               |  |  |  |  +- TermName
+               |  |  |  |  +- TermName
+               |  |  |  +- TermName
+               |  |  +- TypeName
+               |  +- TypeName
+               |  +- TypeName
+               +- TypeBounds
