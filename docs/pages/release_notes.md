@@ -21,6 +21,7 @@ This is a {{ site.pmd.release_type }} release.
 
 ### External Contributions
 * [#4116](https://github.com/pmd/pmd/pull/4116): \[core] Fix missing --file arg in TreeExport CLI example - [@mohan-chinnappan-n](https://github.com/mohan-chinnappan-n)
+* [#4130](https://github.com/pmd/pmd/pull/4130): \[ci] GitHub Workflows security hardening - [Alex](https://github.com/sashashura) (@sashashura)
 
 {% endtocmaker %}
 
