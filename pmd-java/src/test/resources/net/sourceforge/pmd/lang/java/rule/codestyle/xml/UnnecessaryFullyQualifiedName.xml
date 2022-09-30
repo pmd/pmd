@@ -1044,4 +1044,16 @@ class Assert {
             }
             ]]></code>
     </test-code>
+
+    <test-code>
+        <description>[java] UnnecessaryFullyQualifiedName - FP for inner class pkg.ClassA.Foo implementing pkg.Foo #4133</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryfullyqualifiedname;
+
+public class ClassA {
+    public static class Foo implements net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryfullyqualifiedname.Foo {}
+}
+]]></code>
+    </test-code>
 </test-data>
