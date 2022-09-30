@@ -5,7 +5,7 @@ permalink: pmd_projectdocs_decisions_adr_1.html
 sidebaractiveurl: /pmd_projectdocs_decisions.html
 adr: true
 # Proposed / Accepted / Deprecated / Superseded
-adr_status: "Proposed"
+adr_status: "Accepted"
 last_updated: September 2022
 ---
 
@@ -62,6 +62,8 @@ as the decisions need to be formulated and written down. Everybody is on the sam
 However, this also adds additional tasks, and it takes time to write down and document the decisions.
 
 # Change History
+
+2022-09-30: Status changed to "Accepted".
 
 2022-09-06: Added section "Change History" to the template. Added "Last updated" to "Status" section.
 

@@ -5,7 +5,7 @@ permalink: pmd_projectdocs_decisions_adr_2.html
 sidebaractiveurl: /pmd_projectdocs_decisions.html
 adr: true
 # Proposed / Accepted / Deprecated / Superseded
-adr_status: "Proposed"
+adr_status: "Accepted"
 last_updated: September 2022
 ---
 
@@ -65,5 +65,7 @@ when Kotlin is used. Eclipse can't be used practically anymore.
 Maintaining a polyglot code base with multiple languages is likely to be more challenging.
 
 # Change History
+
+2022-09-30: Changed status to "Accepted".
 
 2022-07-28: Proposed initial version.
