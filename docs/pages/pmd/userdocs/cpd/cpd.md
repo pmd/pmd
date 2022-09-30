@@ -173,54 +173,67 @@ Novice as much as advanced readers may want to [read on on Refactoring Guru](htt
 
 ### Examples
 
-_Note:_ The following example use the Linux start script. For Windows, just replace "./pmd cpd" by "pmd.bat cpd".
-
-
 Minimum required options: Just give it the minimum duplicate size and the source directory:
 
-    $ ./pmd cpd --minimum-tokens 100 --dir /usr/local/java/src/java
+{% include cli_example.html
+   id="basic"
+   linux="pmd cpd --minimum-tokens 100 --dir src/main/java"
+   windows="pmd.bat cpd --minimum-tokens 100 --dir src\main\java" %}
 
 You can also specify the language:
 
-    $ ./pmd cpd --minimum-tokens 100 --dir /path/to/c/source --language cpp
+{% include cli_example.html
+   id="lang"
+   linux="pmd cpd --minimum-tokens 100 --dir src/main/cpp --language cpp"
+   windows="pmd.bat cpd --minimum-tokens 100 --dir src\main\cpp --language cpp" %}
 
 You may wish to check sources that are stored in different directories:
 
-    $ ./pmd cpd --minimum-tokens 100 --dir /path/to/other/source  --dir /path/to/other/source --dir /path/to/other/source --language fortran
+{% include cli_example.html
+   id="multiple"
+   linux="pmd cpd --minimum-tokens 100 --dir src/main/java --dir src/test/java"
+   windows="pmd.bat cpd --minimum-tokens 100 --dir src\main\java --dir src\test\java" %}
 
-<em>There should be no limit to the number of `--dir`, you may add... But if you stumble one, please tell us !</em>
+<em>There is no limit to the number of `--dir`, you may add.</em>
 
 And if you're checking a C source tree with duplicate files in different architecture directories
 you can skip those using `--skip-duplicate-files`:
 
-    $ ./pmd cpd --minimum-tokens 100 --dir /path/to/c/source --language cpp --skip-duplicate-files
+{% include cli_example.html
+   id="duplicates"
+   linux="pmd cpd --minimum-tokens 100 --dir src/main/cpp --language cpp --skip-duplicate-files"
+   windows="pmd.bat cpd --minimum-tokens 100 --dir src\main\cpp --language cpp --skip-duplicate-files" %}
 
 You can also specify the encoding to use when parsing files:
 
-    $ ./pmd cpd --minimum-tokens 100 --dir /usr/local/java/src/java --encoding utf-16le
+{% include cli_example.html
+   id="encoding"
+   linux="pmd cpd --minimum-tokens 100 --dir src/main/java --encoding utf-16le"
+   windows="pmd.bat cpd --minimum-tokens 100 --dir src\main\java --encoding utf-16le" %}
 
 You can also specify a report format - here we're using the XML report:
 
-    $ ./pmd cpd --minimum-tokens 100 --dir /usr/local/java/src/java --format xml
+{% include cli_example.html
+   id="report"
+   linux="pmd cpd --minimum-tokens 100 --dir src/main/java --format xml"
+   windows="pmd.bat cpd --minimum-tokens 100 --dir src\main\java --format xml" %}
 
 The default format is a text report, but there are [other supported formats](#available-report-formats)
 
-Note that CPD is pretty memory-hungry; you may need to give Java more memory to run it, like this:
-
-    $ export PMD_JAVA_OPTS=-Xmx512m
-    $ ./pmd cpd --minimum-tokens 100 --dir /usr/local/java/src/java
-
-In order to change the heap size under Windows, you'll need to edit the batch file `pmd.bat` or
-set the environment variable `PMD_JAVA_OPTS` prior to starting CPD:
-
-    C:\ > cd C:\pmd-bin-{{site.pmd.version}}\bin
-    C:\...\bin > set PMD_JAVA_OPTS=-Xmx512m
-    C:\...\bin > .\pmd.bat cpd --minimum-tokens 100 --dir c:\temp\src
-
+Note that CPD's memory usage increases linearly with the size of the analyzed source code; you may need to give Java more memory to run it, like this:
+{% include cli_example.html
+   id="memchange"
+   linux="export PMD_JAVA_OPTS=-Xmx512m
+          pmd cpd --minimum-tokens 100 --dir src/main/java"
+   windows="set PMD_JAVA_OPTS=-Xmx512m
+            pmd.bat cpd --minimum-tokens 100 --dir src\main\java" %}
 
 If you specify a source directory but don't want to scan the sub-directories, you can use the non-recursive option:
 
-    $ ./pmd cpd --minimum-tokens 100 --non-recursive --dir /usr/local/java/src/java
+{% include cli_example.html
+   id="nonrecursive"
+   linux="pmd cpd --minimum-tokens 100 --dir src/main/java --non-recursive"
+   windows="pmd.bat cpd --minimum-tokens 100 --dir src\main\java --non-recursive" %}
 
 ### Exit status
 
@@ -393,13 +406,10 @@ the CPD task as usual and right after it invoke the Ant XSLT script like this:
 
 CPD also comes with a simple GUI. You can start it through the unified CLI interface provided in the `bin` folder:
 
-For Windows:
-
-    pmd.bat cpd-gui
-
-For Linux:
-
-    ./pmd cpd-gui
+{% include cli_example.html
+   id="gui"
+   linux="pmd cpd-gui"
+   windows="pmd.bat cpd-gui" %}
 
 Here's a screenshot of CPD after running on the JDK 8 java.lang package:
 
