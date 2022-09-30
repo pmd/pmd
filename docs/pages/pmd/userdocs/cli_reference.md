@@ -134,7 +134,7 @@ The tool comes with a rather extensive help text, simply running with `--help`!
                and causes the `--cache` option to be discarded if it is provided."
     %}
     {% include custom/cli_option_row.html options="--[no-]progress"
-               description="Enables / disable progress bar indicator of live analysis progress."
+               description="Enables / disable progress bar indicator of live analysis progress. This ie enabled by default."
     %}
     {% include custom/cli_option_row.html options="--property,-P"
                option_arg="name>=<value"
