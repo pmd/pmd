@@ -21,7 +21,7 @@ from Lua. This means, that the Lua language in PMD can now parse both Lua and Lu
 
 #### Modified rules
 
-* The Java rule {% rule java/bestpractives/UnusedPrivateField %} now ignores private fields, if the fields are
+* The Java rule {% rule java/bestpractices/UnusedPrivateField %} now ignores private fields, if the fields are
  annotated with any annotation or the enclosing class has any annotation. Annotations often enable a
  framework (such as dependency injection, mocking or e.g. Lombok) which use the fields by reflection or other
  means. This usage can't be detected by static code analysis. Previously these frameworks where explicitly allowed
