@@ -48,6 +48,8 @@ Being based on a proper Antlr grammar, CPD can:
     * [#4031](https://github.com/pmd/pmd/issues/4031): \[core] If report is written to stdout, stdout should not be closed
     * [#4051](https://github.com/pmd/pmd/issues/4051): \[doc] Additional rulesets are not listed in documentation
     * [#4053](https://github.com/pmd/pmd/pull/4053): \[core] Allow building PMD under Java 18+
+* doc
+    * [#4072](https://github.com/pmd/pmd/pull/4072): \[doc] Add architecture decision records
 * java
     * [#4015](https://github.com/pmd/pmd/issues/4015): \[java] Support JDK 19
 * java-bestpractices
