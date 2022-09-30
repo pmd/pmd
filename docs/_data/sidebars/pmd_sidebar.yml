@@ -472,6 +472,9 @@ entries:
     - title: Old release notes
       url: /pmd_release_notes_old.html
       output: web, pdf
+    - title: Decisions
+      url: /pmd_projectdocs_decisions.html
+      output: web, pdf
     - title: null
       output: web, pdf
       subfolders:

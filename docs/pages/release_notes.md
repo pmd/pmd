@@ -37,6 +37,7 @@ from Lua. This means, that the Lua language in PMD can now parse both Lua and Lu
 * core
     * [#4116](https://github.com/pmd/pmd/pull/4116): \[core] Missing --file arg in TreeExport CLI example
 * doc
+    * [#4072](https://github.com/pmd/pmd/pull/4072): \[doc] Add architecture decision records
     * [#4109](https://github.com/pmd/pmd/pull/4109): \[doc] Add page for 3rd party rulesets
     * [#4124](https://github.com/pmd/pmd/pull/4124): \[doc] Fix typos in Java rule docs
 * java
