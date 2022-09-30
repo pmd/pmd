@@ -5,6 +5,7 @@ permalink: pmd_release_notes_old.html
 
 Previous versions of PMD can be downloaded here: https://github.com/pmd/pmd/releases
 
+
 ## 31-August-2022 - 6.49.0
 
 The PMD team is pleased to announce PMD 6.49.0.
