@@ -4,17 +4,17 @@
 
 package net.sourceforge.pmd.lang.vf;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import apex.jorje.semantic.symbol.type.BasicType;
 
-public class DataTypeTest {
+class DataTypeTest {
     @Test
-    public void testFromString() {
+    void testFromString() {
         assertEquals(DataType.AutoNumber, DataType.fromString("AutoNumber"));
         assertEquals(DataType.AutoNumber, DataType.fromString("autonumber"));
         assertEquals(DataType.Unknown, DataType.fromString(""));
@@ -22,7 +22,7 @@ public class DataTypeTest {
     }
 
     @Test
-    public void testFromBasicType() {
+    void testFromBasicType() {
         assertEquals(DataType.Checkbox, DataType.fromBasicType(BasicType.BOOLEAN));
         assertEquals(DataType.Number, DataType.fromBasicType(BasicType.DECIMAL));
         assertEquals(DataType.Number, DataType.fromBasicType(BasicType.DOUBLE));
@@ -31,7 +31,7 @@ public class DataTypeTest {
     }
 
     @Test
-    public void testRequiresEncoding() {
+    void testRequiresEncoding() {
         assertFalse(DataType.AutoNumber.requiresEscaping);
         assertTrue(DataType.Text.requiresEscaping);
     }
