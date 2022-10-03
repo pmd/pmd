@@ -142,7 +142,7 @@ public class TreeExportCli {
         sb.append(System.lineSeparator())
             .append(System.lineSeparator());
 
-        sb.append("Example: ast-dump --format xml --language java MyFile.java")
+        sb.append("Example: ast-dump --format xml --language java --file MyFile.java")
             .append(System.lineSeparator());
 
         System.err.print(sb);

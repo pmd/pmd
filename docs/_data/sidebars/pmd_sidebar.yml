@@ -58,6 +58,9 @@ entries:
     - title: PMD Report formats
       url: /pmd_userdocs_report_formats.html
       output: web, pdf
+    - title: 3rd party rulesets
+      output: web, pdf
+      url: /pmd_userdocs_3rdpartyrulesets.html
     - title: null
       output: web, pdf
       subfolders:
@@ -501,6 +504,9 @@ entries:
       output: web, pdf
     - title: Old release notes
       url: /pmd_release_notes_old.html
+      output: web, pdf
+    - title: Decisions
+      url: /pmd_projectdocs_decisions.html
       output: web, pdf
     - title: null
       output: web, pdf

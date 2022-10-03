@@ -39,4 +39,14 @@ class LuaTokenizerTest extends CpdTextComparisonTest {
     void testTabWidth() {
         doTest("tabWidth");
     }
+
+    @Test
+    public void testLuauTypes() {
+        doTest("luauTypes");
+    }
+
+    @Test
+    public void testComment() {
+        doTest("comment");
+    }
 }

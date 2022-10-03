@@ -122,7 +122,7 @@ Novice as much as advanced readers may want to [read on on Refactoring Guru](htt
     {% include custom/cli_option_row.html options="--ignore-literal-sequences"
                description="Ignore sequences of literals (common e.g. in list initializers)"
                default="false"
-               languages="C#, C++"
+               languages="C#, C++, Lua"
     %}
     {% include custom/cli_option_row.html options="--ignore-usings"
                description="Ignore `using` directives in C# when comparing text"
