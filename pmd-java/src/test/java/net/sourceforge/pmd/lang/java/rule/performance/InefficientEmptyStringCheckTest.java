@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.java.rule.performance;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class InefficientEmptyStringCheckTest extends PmdRuleTst {
+class InefficientEmptyStringCheckTest extends PmdRuleTst {
     // no additional unit tests
 }

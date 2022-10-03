@@ -4,23 +4,23 @@
 
 package net.sourceforge.pmd.lang.java.rule.documentation;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class CommentRequiredTest extends PmdRuleTst {
+class CommentRequiredTest extends PmdRuleTst {
     @Test
-    public void allCommentTypesIgnored() {
+    void allCommentTypesIgnored() {
         CommentRequiredRule rule = new CommentRequiredRule();
-        assertNull("By default, the rule should be functional", rule.dysfunctionReason());
+        assertNull(rule.dysfunctionReason(), "By default, the rule should be functional");
 
         List<PropertyDescriptor<?>> propertyDescriptors = getProperties(rule);
         // remove  deprecated properties
@@ -30,13 +30,13 @@ public class CommentRequiredTest extends PmdRuleTst {
             setPropertyValue(rule, property, "Ignored");
         }
 
-        assertNotNull("All properties are ignored, rule should be dysfunctional", rule.dysfunctionReason());
+        assertNotNull(rule.dysfunctionReason(), "All properties are ignored, rule should be dysfunctional");
 
         // now, try out combinations: only one of the properties is required.
         for (PropertyDescriptor<?> property : propertyDescriptors) {
             setPropertyValue(rule, property, "Required");
-            assertNull("The property " + property.name() + " is set to required, the rule should be functional.",
-                rule.dysfunctionReason());
+            assertNull(rule.dysfunctionReason(),
+                    "The property " + property.name() + " is set to required, the rule should be functional.");
             setPropertyValue(rule, property, "Ignored");
         }
     }

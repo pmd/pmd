@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class ForLoopCanBeForeachTest extends PmdRuleTst {
+class ForLoopCanBeForeachTest extends PmdRuleTst {
     // no additional unit tests
 }

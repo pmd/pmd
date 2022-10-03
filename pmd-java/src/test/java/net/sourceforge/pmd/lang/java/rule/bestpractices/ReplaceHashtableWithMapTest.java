@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class ReplaceHashtableWithMapTest extends PmdRuleTst {
+class ReplaceHashtableWithMapTest extends PmdRuleTst {
     // no additional unit tests
 }

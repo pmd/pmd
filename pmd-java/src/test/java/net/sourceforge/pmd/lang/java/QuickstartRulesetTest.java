@@ -4,24 +4,25 @@
 
 package net.sourceforge.pmd.lang.java;
 
-import org.junit.Assert;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.contrib.java.lang.system.SystemErrRule;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetLoader;
 
-public class QuickstartRulesetTest {
+import com.github.stefanbirkner.systemlambda.SystemLambda;
 
-    @Rule
-    public final SystemErrRule systemErrRule = new SystemErrRule().enableLog().muteForSuccessfulTests();
+class QuickstartRulesetTest {
 
     @Test
-    public void noDeprecations() {
+    void noDeprecations() throws Exception {
         RuleSetLoader ruleSetLoader = new RuleSetLoader().enableCompatibility(false);
-        RuleSet quickstart = ruleSetLoader.loadFromResource("rulesets/java/quickstart.xml");
-        Assert.assertFalse(quickstart.getRules().isEmpty());
-        Assert.assertTrue(systemErrRule.getLog().isEmpty());
+        String errorOutput = SystemLambda.tapSystemErr(() -> {
+            RuleSet quickstart = ruleSetLoader.loadFromResource("rulesets/java/quickstart.xml");
+            assertFalse(quickstart.getRules().isEmpty());
+        });
+        assertTrue(errorOutput.isEmpty());
     }
 }

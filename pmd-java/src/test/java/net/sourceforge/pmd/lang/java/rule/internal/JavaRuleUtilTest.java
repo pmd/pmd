@@ -10,14 +10,14 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.java.BaseParserTest;
 
-public class JavaRuleUtilTest extends BaseParserTest {
+class JavaRuleUtilTest extends BaseParserTest {
 
     @Test
-    public void testCamelCaseWords() {
+    void testCamelCaseWords() {
         assertFalse(startsWithCamelCaseWord("getter", "get"), "no word boundary");
         assertFalse(startsWithCamelCaseWord("get", "get"), "no following word");
         assertTrue(startsWithCamelCaseWord("getX", "get"), "ok prefix");
@@ -28,7 +28,7 @@ public class JavaRuleUtilTest extends BaseParserTest {
     }
 
     @Test
-    public void testContainsCamelCaseWords() {
+    void testContainsCamelCaseWords() {
 
         assertFalse(containsCamelCaseWord("isABoolean", "Bool"), "no word boundary");
         assertTrue(containsCamelCaseWord("isABoolean", "A"), "ok word in the middle");

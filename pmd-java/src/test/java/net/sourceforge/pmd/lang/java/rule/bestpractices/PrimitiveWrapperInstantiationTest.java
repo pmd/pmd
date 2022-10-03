@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class PrimitiveWrapperInstantiationTest extends PmdRuleTst {
+class PrimitiveWrapperInstantiationTest extends PmdRuleTst {
     // no additional unit tests
 }
