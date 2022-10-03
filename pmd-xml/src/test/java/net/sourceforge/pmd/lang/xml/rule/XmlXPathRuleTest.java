@@ -6,13 +6,13 @@ package net.sourceforge.pmd.lang.xml.rule;
 
 import static net.sourceforge.pmd.lang.ast.test.TestUtilsKt.assertSize;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.lang.xml.XmlParsingHelper;
 
-public class XmlXPathRuleTest {
+class XmlXPathRuleTest {
 
     private static final String A_URI = "http://soap.sforce.com/2006/04/metadata";
     private static final String FXML_IMPORTS = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -41,7 +41,7 @@ public class XmlXPathRuleTest {
 
 
     @Test
-    public void testFileNameInXpath() {
+    void testFileNameInXpath() {
         Report report = xml.executeRule(makeXPath("//b[pmd:fileName() = 'Foo.xml']"),
                                         "<a><b></b></a>",
                                         "src/Foo.xml");
@@ -50,7 +50,7 @@ public class XmlXPathRuleTest {
     }
 
     @Test
-    public void testTextFunctionInXpath() {
+    void testTextFunctionInXpath() {
         // https://github.com/pmd/pmd/issues/915
         Report report = xml.executeRule(makeXPath("//app[text()[1]='app2']"),
                                         "<a><app>app2</app></a>");
@@ -59,7 +59,7 @@ public class XmlXPathRuleTest {
     }
 
     @Test
-    public void testRootNodeWildcardUri() {
+    void testRootNodeWildcardUri() {
         // https://github.com/pmd/pmd/issues/3413#issuecomment-1072614398
         Report report = xml.executeRule(makeXPath("/*:Flow"),
                                         "<Flow xmlns=\"http://soap.sforce.com/2006/04/metadata\">\n"
@@ -69,7 +69,7 @@ public class XmlXPathRuleTest {
     }
 
     @Test
-    public void testNoNamespaceRoot() {
+    void testNoNamespaceRoot() {
         Report report = xml.executeRule(makeXPath("/Flow"),
                                         "<Flow>\n"
                                         + "</Flow>");
@@ -78,7 +78,7 @@ public class XmlXPathRuleTest {
     }
 
     @Test
-    public void testNamespaceDescendantWrongDefaultUri() {
+    void testNamespaceDescendantWrongDefaultUri() {
         Report report = xml.executeRule(makeXPath("//a"),
                                         "<Flow xmlns='" + A_URI + "'><a/></Flow>");
 
@@ -86,7 +86,7 @@ public class XmlXPathRuleTest {
     }
 
     @Test
-    public void testNamespaceDescendantOkUri() {
+    void testNamespaceDescendantOkUri() {
         Report report = xml.executeRule(makeXPath("//a", A_URI),
                                         "<Flow xmlns='" + A_URI + "'><a/></Flow>");
 
@@ -99,7 +99,7 @@ public class XmlXPathRuleTest {
     }
 
     @Test
-    public void testNamespaceDescendantWildcardUri() {
+    void testNamespaceDescendantWildcardUri() {
         Report report = xml.executeRule(makeXPath("//*:a"),
                                         "<Flow xmlns='" + A_URI + "'><a/></Flow>");
 
@@ -107,7 +107,7 @@ public class XmlXPathRuleTest {
     }
 
     @Test
-    public void testNamespacePrefixDescendantWildcardUri() {
+    void testNamespacePrefixDescendantWildcardUri() {
         Report report = xml.executeRule(makeXPath("//*:Flow"),
                                         "<my:Flow xmlns:my='" + A_URI + "'><a/></my:Flow>");
 
@@ -115,7 +115,7 @@ public class XmlXPathRuleTest {
     }
 
     @Test
-    public void testNamespacePrefixDescendantOkUri() {
+    void testNamespacePrefixDescendantOkUri() {
         Report report = xml.executeRule(makeXPath("//Flow", A_URI),
                                         "<my:Flow xmlns:my='" + A_URI + "'><a/></my:Flow>");
 
@@ -123,7 +123,7 @@ public class XmlXPathRuleTest {
     }
 
     @Test
-    public void testNamespacePrefixDescendantWrongUri() {
+    void testNamespacePrefixDescendantWrongUri() {
         Report report = xml.executeRule(makeXPath("//Flow", "wrongURI"),
                                         "<my:Flow xmlns:my='" + A_URI + "'><a/></my:Flow>");
 
@@ -131,7 +131,7 @@ public class XmlXPathRuleTest {
     }
 
     @Test
-    public void testRootExpr() {
+    void testRootExpr() {
         Report report = xml.executeRule(makeXPath("/"),
                                         "<Flow><a/></Flow>");
 
@@ -139,7 +139,7 @@ public class XmlXPathRuleTest {
     }
 
     @Test
-    public void testProcessingInstructions() {
+    void testProcessingInstructions() {
         Report report = xml.executeRule(makeXPath("/child::processing-instruction()", "http://javafx.com/javafx/8"),
                                         FXML_IMPORTS);
 
@@ -147,7 +147,7 @@ public class XmlXPathRuleTest {
     }
 
     @Test
-    public void testProcessingInstructionsNamed() {
+    void testProcessingInstructionsNamed() {
         Report report = xml.executeRule(makeXPath("/child::processing-instruction('import')"),
                                         FXML_IMPORTS);
 
@@ -155,7 +155,7 @@ public class XmlXPathRuleTest {
     }
 
     @Test
-    public void testProcessingInstructionXML() {
+    void testProcessingInstructionXML() {
         // <?xml ?> does not create a PI
         Report report = xml.executeRule(makeXPath("/child::processing-instruction('xml')", "http://javafx.com/javafx/8"),
                                         FXML_IMPORTS);
@@ -164,7 +164,7 @@ public class XmlXPathRuleTest {
     }
 
     @Test
-    public void testComments() {
+    void testComments() {
         Report report = xml.executeRule(makeXPath("/child::comment()[fn:starts-with(fn:string(.), 'suppress')]"),
                                         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
                                         + "<!--suppress JavaFxDefaultTag -->\n"
@@ -175,7 +175,7 @@ public class XmlXPathRuleTest {
     }
 
     @Test
-    public void testXmlNsFunctions() {
+    void testXmlNsFunctions() {
         // https://github.com/pmd/pmd/issues/2766
         Report report = xml.executeRule(
             makeXPath("/manifest[namespace-uri-for-prefix('android', .) = 'http://schemas.android.com/apk/res/android']"),
@@ -205,7 +205,7 @@ public class XmlXPathRuleTest {
     }
 
     @Test
-    public void testLocationFuns() {
+    void testLocationFuns() {
         Rule rule = makeXPath("//Flow[pmd:startLine(.) != pmd:endLine(.)]");
         Report report = xml.executeRule(rule, "<Flow><a/></Flow>");
         assertSize(report, 0);
