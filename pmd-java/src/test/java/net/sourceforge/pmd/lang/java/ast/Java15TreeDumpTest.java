@@ -4,14 +4,16 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.test.BaseParsingHelper;
 import net.sourceforge.pmd.lang.java.BaseJavaTreeDumpTest;
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 
-public class Java15TreeDumpTest extends BaseJavaTreeDumpTest {
+class Java15TreeDumpTest extends BaseJavaTreeDumpTest {
     private final JavaParsingHelper java15 =
             JavaParsingHelper.DEFAULT.withDefaultVersion("15")
                                      .withResourceContext(Java15TreeDumpTest.class, "jdkversiontests/java15/");
@@ -23,22 +25,22 @@ public class Java15TreeDumpTest extends BaseJavaTreeDumpTest {
     }
 
     @Test
-    public void textBlocks() {
+    void textBlocks() {
         doTest("TextBlocks");
     }
 
-    @Test(expected = net.sourceforge.pmd.lang.ast.ParseException.class)
-    public void textBlocksBeforeJava15ShouldFail() {
-        java14.parseResource("TextBlocks.java");
-    }
-
-    @Test(expected = ParseException.class)
-    public void stringEscapeSequenceShouldFail() {
-        java14.parse("class Foo { String s =\"a\\sb\"; }");
+    @Test
+    void textBlocksBeforeJava15ShouldFail() {
+        assertThrows(ParseException.class, () -> java14.parseResource("TextBlocks.java"));
     }
 
     @Test
-    public void sealedAndNonSealedIdentifiers() {
+    void stringEscapeSequenceShouldFail() {
+        assertThrows(ParseException.class, () -> java14.parse("class Foo { String s =\"a\\sb\"; }"));
+    }
+
+    @Test
+    void sealedAndNonSealedIdentifiers() {
         doTest("NonSealedIdentifier");
     }
 }

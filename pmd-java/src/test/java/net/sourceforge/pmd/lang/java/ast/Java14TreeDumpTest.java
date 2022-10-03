@@ -8,7 +8,7 @@ package net.sourceforge.pmd.lang.java.ast;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.test.BaseParsingHelper;
@@ -18,7 +18,7 @@ import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 /**
  * Tests new java14 standard features.
  */
-public class Java14TreeDumpTest extends BaseJavaTreeDumpTest {
+class Java14TreeDumpTest extends BaseJavaTreeDumpTest {
 
     private final JavaParsingHelper java14 =
         JavaParsingHelper.DEFAULT.withDefaultVersion("14")
@@ -35,7 +35,7 @@ public class Java14TreeDumpTest extends BaseJavaTreeDumpTest {
      * Tests switch expressions with yield.
      */
     @Test
-    public void switchExpressions() {
+    void switchExpressions() {
         doTest("SwitchExpressions");
     }
 
@@ -43,27 +43,27 @@ public class Java14TreeDumpTest extends BaseJavaTreeDumpTest {
      * In java13, switch expressions are only available with preview.
      */
     @Test
-    public void switchExpressions13ShouldFail() {
+    void switchExpressions13ShouldFail() {
         assertThrows(ParseException.class, () -> java13.parseResource("SwitchExpressions.java"));
     }
 
     @Test
-    public void checkYieldConditionalBehaviour() {
+    void checkYieldConditionalBehaviour() {
         doTest("YieldStatements");
     }
 
     @Test
-    public void multipleCaseLabels() {
+    void multipleCaseLabels() {
         doTest("MultipleCaseLabels");
     }
 
     @Test
-    public void switchRules() {
+    void switchRules() {
         doTest("SwitchRules");
     }
 
     @Test
-    public void simpleSwitchExpressions() {
+    void simpleSwitchExpressions() {
         doTest("SimpleSwitchExpressions");
     }
 
