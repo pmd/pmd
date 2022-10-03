@@ -4,27 +4,24 @@
 
 package net.sourceforge.pmd.lang.swift.ast;
 
-import org.jetbrains.annotations.NotNull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.lang.ast.test.BaseParsingHelper;
 import net.sourceforge.pmd.lang.swift.SwiftLanguageModule;
 import net.sourceforge.pmd.lang.swift.ast.SwiftParser.SwTopLevel;
 
-/**
- *
- */
 public class SwiftParsingHelper extends BaseParsingHelper<SwiftParsingHelper, SwTopLevel> {
 
     public static final SwiftParsingHelper DEFAULT = new SwiftParsingHelper(Params.getDefault());
 
 
-    public SwiftParsingHelper(@NotNull Params params) {
+    public SwiftParsingHelper(@NonNull Params params) {
         super(SwiftLanguageModule.NAME, SwTopLevel.class, params);
     }
 
-    @NotNull
+    @NonNull
     @Override
-    protected SwiftParsingHelper clone(@NotNull Params params) {
+    protected SwiftParsingHelper clone(@NonNull Params params) {
         return new SwiftParsingHelper(params);
     }
 }
