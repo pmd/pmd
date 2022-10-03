@@ -4,21 +4,21 @@
 
 package net.sourceforge.pmd.lang.scala.rule;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.lang.scala.ast.BaseScalaTest;
 
-public class XPathRuleTest extends BaseScalaTest {
+class XPathRuleTest extends BaseScalaTest {
 
     private static final String SCALA_TEST = "/parserFiles/helloworld.scala";
 
     @Test
-    public void testPrintHelloWorld() {
+    void testPrintHelloWorld() {
         Report report = evaluate(SCALA_TEST, "//TermApply/TermName[@Image=\"println\"]");
         RuleViolation rv = report.getViolations().get(0);
         assertEquals(2, rv.getBeginLine());
