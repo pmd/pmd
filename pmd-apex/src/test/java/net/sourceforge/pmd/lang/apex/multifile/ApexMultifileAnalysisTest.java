@@ -23,7 +23,7 @@ import net.sourceforge.pmd.util.IOUtil;
 
 import com.github.stefanbirkner.systemlambda.SystemLambda;
 
-public class ApexMultifileAnalysisTest {
+class ApexMultifileAnalysisTest {
 
     @TempDir
     private Path tempFolder;

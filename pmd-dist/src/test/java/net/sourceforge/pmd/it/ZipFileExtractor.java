@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.it;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.FileOutputStream;
