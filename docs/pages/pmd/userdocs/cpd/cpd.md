@@ -254,7 +254,7 @@ Andy Glover wrote an Ant task for CPD; here's how to use it:
 
 ```xml
 <target name="cpd">
-    <taskdef name="cpd" classname="net.sourceforge.pmd.cpd.CPDTask" />
+    <taskdef name="cpd" classname="net.sourceforge.pmd.ant.CPDTask" />
     <cpd minimumTokenCount="100" outputFile="/home/tom/cpd.txt">
         <fileset dir="/home/tom/tmp/ant">
             <include name="**/*.java"/>
