@@ -27,7 +27,8 @@
 
     <target name="testWithShortFilenames">
         <pmd noCache="true" shortFilenames="true">
-            <ruleset>${pmd.home}/src/test/resources/rulesets/dummy/basic.xml</ruleset>
+            <!-- note: this ruleset is in pmd-core/src/test/resources -->
+            <ruleset>rulesets/dummy/basic.xml</ruleset>
             <formatter type="text" toFile="${pmd.home}/target/pmd-ant-test.txt" />
             <fileset dir="${pmd.home}/src/test/resources/net/sourceforge/pmd/ant/src">
                 <include name="**/*dummy"/>
@@ -37,7 +38,8 @@
 
     <target name="testXmlFormatter">
         <pmd noCache="true" shortFilenames="true">
-            <ruleset>${pmd.home}/src/test/resources/rulesets/dummy/basic.xml</ruleset>
+            <!-- note: this ruleset is in pmd-core/src/test/resources -->
+            <ruleset>rulesets/dummy/basic.xml</ruleset>
             <formatter type="xml" toFile="${pmd.home}/target/pmd-ant-xml.xml" />
             <fileset dir="${pmd.home}/src/test/resources/net/sourceforge/pmd/ant/src">
                 <include name="**/*dummy"/>

@@ -1,18 +1,19 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
 package net.sourceforge.pmd.ant;
 
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 import org.apache.tools.ant.BuildException;
 import org.junit.jupiter.api.BeforeEach;
@@ -71,7 +72,7 @@ class PMDTaskTest extends AbstractAntTest {
     void testWithShortFilenames() throws IOException {
         executeTarget("testWithShortFilenames");
 
-        try (InputStream in = new FileInputStream("target/pmd-ant-test.txt")) {
+        try (InputStream in = Files.newInputStream(Paths.get("target/pmd-ant-test.txt"))) {
             String actual = IOUtil.readToString(in, StandardCharsets.UTF_8);
             // remove any trailing newline
             actual = actual.trim();
@@ -83,7 +84,7 @@ class PMDTaskTest extends AbstractAntTest {
     void testXmlFormatter() throws IOException {
         executeTarget("testXmlFormatter");
 
-        try (InputStream in = new FileInputStream("target/pmd-ant-xml.xml");
+        try (InputStream in = Files.newInputStream(Paths.get("target/pmd-ant-xml.xml"));
              InputStream expectedStream = PMDTaskTest.class.getResourceAsStream("xml/expected-pmd-ant-xml.xml")) {
             String actual = IOUtil.readToString(in, StandardCharsets.UTF_8);
             actual = actual.replaceFirst("timestamp=\"[^\"]+\"", "timestamp=\"\"");

@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -18,6 +18,10 @@ import org.apache.tools.ant.types.Reference;
 import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.ant.internal.PMDTaskImpl;
 
+/**
+ * PMD Ant task. Setters of this class are interpreted by Ant as properties
+ * settable in the XML. This is therefore published API.
+ */
 public class PMDTask extends Task {
 
     private Path classpath;

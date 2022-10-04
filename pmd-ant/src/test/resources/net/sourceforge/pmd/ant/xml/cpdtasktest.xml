@@ -3,7 +3,7 @@
 	<property name="pmd.home" value="${user.dir}"/>
     <property name="src"      value="src/main/java"/>
 
-    <taskdef name="cpd" classname="net.sourceforge.pmd.cpd.CPDTask"/>
+    <taskdef name="cpd" classname="net.sourceforge.pmd.ant.CPDTask"/>
 
     <target name="all" depends="testBasic"/>
 
