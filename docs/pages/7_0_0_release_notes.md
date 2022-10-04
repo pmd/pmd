@@ -184,6 +184,8 @@ The following previously deprecated rules have been finally removed:
 * miscellaneous
     *   [#896](https://github.com/pmd/pmd/issues/896): \[all] Use slf4j
     *   [#1451](https://github.com/pmd/pmd/issues/1451): \[core] RulesetFactoryCompatibility stores the whole ruleset file in memory as a string
+* ant
+    * [#4080](https://github.com/pmd/pmd/issues/4080): \[ant] Split off Ant integration into a new submodule 
 * core
     * [#4035](https://github.com/pmd/pmd/issues/4035): \[core] ConcurrentModificationException in DefaultRuleViolationFactory
 * cli
@@ -285,7 +287,9 @@ The following previously deprecated rules have been finally removed:
   (which were made internal).
 
 * The implementation of the Ant integration has been moved from the module `pmd-core` to a new module `pmd-ant`.
-  This involves classes in packages `net.sourceforge.pmd.ant` and the class `net.sourceforge.pmd.cpd.CPDTask`.
+  This involves classes in package {% jdoc_package ant::ant %}. The ant CPDTask class `net.sourceforge.pmd.cpd.CPDTask`
+  has been moved into the same package {% jdoc_package ant::ant %}. You'll need to update your taskdef entries in your
+  build.xml files with the FQCN {% jdoc !!ant::ant.CPDTask %} if you use it anywhere.
 
 #### Metrics framework
 
