@@ -1,6 +1,6 @@
 ---
 title: PMD Release Notes
-permalink: pmd_release_notes.html
+permalink: pmd_release_notes7.html
 keywords: changelog, release notes
 ---
 
