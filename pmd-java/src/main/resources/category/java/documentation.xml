@@ -102,7 +102,10 @@ and unintentional empty constructors.
                         [@containsComment = false()]
                         [not(BlockStatement)]
                         [$ignoreExplicitConstructorInvocation = true() or not(ExplicitConstructorInvocation)]
-                        [not(../Annotation/MarkerAnnotation/Name[pmd-java:typeIs('javax.inject.Inject')])]
+                        [not(../Annotation/MarkerAnnotation/Name[
+                                                                pmd-java:typeIs('javax.inject.Inject')
+                                                             or pmd-java:typeIs('org.springframework.beans.factory.annotation.Autowired')
+                                                                ])]
 ]]>
                 </value>
             </property>
