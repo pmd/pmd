@@ -215,9 +215,10 @@ parameter.
 
 Example:
 
-``` shell
-./pmd analyze -d src/main/java -f text -R rulesets/java/quickstart.xml --use-version java-1.8
-```
+{% include cli_example.html
+   id="lang-ver"
+   linux="pmd analyze -d src/main/java -f text -R rulesets/java/quickstart.xml --use-version java-1.8"
+   windows="pmd.bat analyze -d src\main\java -f text -R rulesets/java/quickstart.xml --use-version java-1.8" %}
 
 *   [apex](pmd_rules_apex.html) (Salesforce Apex)
 *   [ecmascript](pmd_rules_ecmascript.html) (JavaScript)
