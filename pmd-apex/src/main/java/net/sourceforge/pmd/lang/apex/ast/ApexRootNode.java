@@ -8,12 +8,11 @@ import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
 
-import apex.jorje.semantic.ast.compilation.Compilation;
-import apex.jorje.services.Version;
+import com.google.summit.ast.declaration.TypeDeclaration;
 
 @Deprecated
 @InternalApi
-public abstract class ApexRootNode<T extends Compilation> extends AbstractApexNode<T> implements RootNode {
+public abstract class ApexRootNode<T extends TypeDeclaration> extends AbstractApexNode.Single<T> implements RootNode {
     @Deprecated
     @InternalApi
     public ApexRootNode(T node) {
@@ -48,7 +47,9 @@ public abstract class ApexRootNode<T extends Compilation> extends AbstractApexNo
      * @return the apex version
      */
     public double getApexVersion() {
-        return node.getDefiningType().getCodeUnitDetails().getVersion().getExternal();
+        // return node.getDefiningType().getCodeUnitDetails().getVersion().getExternal();
+        // TODO(b/239648780)
+        return 0;
     }
 
     @Override

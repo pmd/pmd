@@ -4,16 +4,15 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
+import com.google.summit.ast.Node;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.annotation.InternalApi;
 
-import apex.jorje.semantic.ast.member.Field;
-
-public class ASTField extends AbstractApexNode<Field> implements CanSuppressWarnings {
+public class ASTField extends AbstractApexNode.Single<Node> implements CanSuppressWarnings {
 
     @Deprecated
     @InternalApi
-    public ASTField(Field field) {
+    public ASTField(Node field) {
         super(field);
     }
 
@@ -40,7 +39,9 @@ public class ASTField extends AbstractApexNode<Field> implements CanSuppressWarn
     }
 
     public String getType() {
-        return node.getFieldInfo().getType().getApexName();
+        // return node.getFieldInfo().getType().getApexName();
+        // TODO(b/239648780)
+        return null;
     }
 
     public ASTModifierNode getModifiers() {
@@ -48,13 +49,18 @@ public class ASTField extends AbstractApexNode<Field> implements CanSuppressWarn
     }
 
     public String getName() {
-        return node.getFieldInfo().getName();
+        // return node.getFieldInfo().getName();
+        // TODO(b/239648780)
+        return null;
     }
 
     public String getValue() {
+        /*
         if (node.getFieldInfo().getValue() != null) {
             return String.valueOf(node.getFieldInfo().getValue());
         }
+         */
+        // TODO(b/239648780)
         return null;
     }
 }

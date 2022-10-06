@@ -4,19 +4,18 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
+import com.google.summit.ast.Node;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.apex.metrics.signature.ApexOperationSignature;
 import net.sourceforge.pmd.lang.ast.SignedNode;
 
-import apex.jorje.semantic.ast.member.Method;
-
-public class ASTMethod extends AbstractApexNode<Method> implements ApexQualifiableNode,
+public class ASTMethod extends AbstractApexNode.Single<Node> implements ApexQualifiableNode,
        SignedNode<ASTMethod>, CanSuppressWarnings {
 
     @Deprecated
     @InternalApi
-    public ASTMethod(Method method) {
+    public ASTMethod(Node method) {
         super(method);
     }
 
@@ -27,11 +26,15 @@ public class ASTMethod extends AbstractApexNode<Method> implements ApexQualifiab
 
     @Override
     public String getImage() {
-        return node.getMethodInfo().getName();
+        // return node.getMethodInfo().getName();
+        // TODO(b/239648780)
+        return null;
     }
 
     public String getCanonicalName() {
-        return node.getMethodInfo().getCanonicalName();
+        // return node.getMethodInfo().getCanonicalName();
+        // TODO(b/239648780)
+        return null;
     }
 
     @Override
@@ -120,7 +123,9 @@ public class ASTMethod extends AbstractApexNode<Method> implements ApexQualifiab
     }
 
     public boolean isConstructor() {
-        return node.getMethodInfo().isConstructor();
+        // return node.getMethodInfo().isConstructor();
+        // TODO(b/239648780)
+        return false;
     }
 
     public ASTModifierNode getModifiers() {
@@ -128,10 +133,14 @@ public class ASTMethod extends AbstractApexNode<Method> implements ApexQualifiab
     }
 
     public String getReturnType() {
-        return node.getMethodInfo().getEmitSignature().getReturnType().getApexName();
+        // return node.getMethodInfo().getEmitSignature().getReturnType().getApexName();
+        // TODO(b/239648780)
+        return null;
     }
 
     public int getArity() {
-        return node.getMethodInfo().getParameterTypes().size();
+        // return node.getMethodInfo().getParameterTypes().size();
+        // TODO(b/239648780)
+        return 0;
     }
 }

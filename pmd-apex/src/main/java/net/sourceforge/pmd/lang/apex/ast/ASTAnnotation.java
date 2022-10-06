@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
+import com.google.summit.ast.Node;
 import java.util.Arrays;
 import java.util.Set;
 import java.util.TreeSet;
@@ -11,13 +12,11 @@ import java.util.TreeSet;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.annotation.InternalApi;
 
-import apex.jorje.semantic.ast.modifier.Annotation;
-
-public class ASTAnnotation extends AbstractApexNode<Annotation> {
+public class ASTAnnotation extends AbstractApexNode.Single<Node> {
 
     @Deprecated
     @InternalApi
-    public ASTAnnotation(Annotation annotation) {
+    public ASTAnnotation(Node annotation) {
         super(annotation);
     }
 
@@ -28,7 +27,9 @@ public class ASTAnnotation extends AbstractApexNode<Annotation> {
 
     @Override
     public String getImage() {
-        return node.getType().getApexName();
+        // return node.getType().getApexName();
+        // TODO(b/239648780)
+        return null;
     }
 
     /**
@@ -56,6 +57,8 @@ public class ASTAnnotation extends AbstractApexNode<Annotation> {
     }
 
     public boolean isResolved() {
-        return node.getType().isResolved();
+        // return node.getType().isResolved();
+        // TODO(b/239648780)
+        return false;
     }
 }

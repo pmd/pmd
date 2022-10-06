@@ -4,16 +4,15 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
+import com.google.summit.ast.Node;
 import net.sourceforge.pmd.annotation.InternalApi;
 
-import apex.jorje.semantic.ast.modifier.AnnotationParameter;
-
-public class ASTAnnotationParameter extends AbstractApexNode<AnnotationParameter> {
+public class ASTAnnotationParameter extends AbstractApexNode.Single<Node> {
     public static final String SEE_ALL_DATA = "seeAllData";
 
     @Deprecated
     @InternalApi
-    public ASTAnnotationParameter(AnnotationParameter annotationParameter) {
+    public ASTAnnotationParameter(Node annotationParameter) {
         super(annotationParameter);
     }
 
@@ -23,22 +22,25 @@ public class ASTAnnotationParameter extends AbstractApexNode<AnnotationParameter
     }
 
     public String getName() {
-        if (node.getProperty() != null) {
-            return node.getProperty().getName();
-        }
+        // if (node.getProperty() != null) {
+        //     return node.getProperty().getName();
+        // }
+        // TODO(b/239648780)
         return null;
     }
 
     public String getValue() {
-        if (node.getValue() != null) {
-            return node.getValueAsString();
-        }
+        // if (node.getValue() != null) {
+        //     return node.getValueAsString();
+        // }
+        // TODO(b/239648780)
         return null;
     }
 
-    public Boolean getBooleanValue() {
-        return node.getBooleanValue();
-    }
+    // public Boolean getBooleanValue() {
+    //     return node.getBooleanValue();
+    // }
+    // TODO(b/239648780)
 
     @Override
     public String getImage() {

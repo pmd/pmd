@@ -6,14 +6,13 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 
-import apex.jorje.data.ast.AssignmentOp;
-import apex.jorje.semantic.ast.expression.AssignmentExpression;
+import com.google.summit.ast.expression.AssignExpression;
 
-public class ASTAssignmentExpression extends AbstractApexNode<AssignmentExpression> {
+public class ASTAssignmentExpression extends AbstractApexNode.Single<AssignExpression> {
 
     @Deprecated
     @InternalApi
-    public ASTAssignmentExpression(AssignmentExpression assignmentExpression) {
+    public ASTAssignmentExpression(AssignExpression assignmentExpression) {
         super(assignmentExpression);
     }
 
@@ -22,15 +21,7 @@ public class ASTAssignmentExpression extends AbstractApexNode<AssignmentExpressi
         return visitor.visit(this, data);
     }
 
-    /**
-     * @deprecated Use {@link #getOp()} instead.
-     */
-    @Deprecated
-    public AssignmentOp getOperator() {
-        return node.getOp();
-    }
-
     public AssignmentOperator getOp() {
-        return AssignmentOperator.valueOf(node.getOp());
+        return AssignmentOperator.valueOf(node.getPreOperation());
     }
 }

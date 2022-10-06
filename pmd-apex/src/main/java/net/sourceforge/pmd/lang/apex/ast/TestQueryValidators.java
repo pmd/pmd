@@ -24,12 +24,6 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 
-import apex.jorje.semantic.ast.expression.SoqlExpression;
-import apex.jorje.semantic.ast.expression.SoslExpression;
-import apex.jorje.semantic.ast.visitor.ValidationScope;
-import apex.jorje.semantic.compiler.sfdc.QueryValidator;
-import apex.jorje.semantic.symbol.resolver.SymbolResolver;
-
 /**
  * The test query validators will return back the query it was given. The real implementation actually creates its own
  * query.
@@ -44,6 +38,7 @@ public final class TestQueryValidators {
     private TestQueryValidators() {
     }
 
+    /*
     public static class Noop implements QueryValidator {
         @Override
         public String validateSoql(
@@ -85,4 +80,6 @@ public final class TestQueryValidators {
             return sosl.getCanonicalQuery();
         }
     }
+     */
+    // TODO(b/239648780)
 }

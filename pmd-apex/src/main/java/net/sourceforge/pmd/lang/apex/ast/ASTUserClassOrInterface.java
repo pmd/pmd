@@ -4,12 +4,14 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import apex.jorje.semantic.ast.AstNode;
+import com.google.summit.ast.Node;
 
 /**
  * @author Clément Fournier
+ *
+ * @param <T> placeholder
  */
-public interface ASTUserClassOrInterface<T extends AstNode> extends ApexQualifiableNode, ApexNode<T> {
+public interface ASTUserClassOrInterface<T> extends ApexQualifiableNode, ApexNode<Void> {
 
     /**
      * Finds the type kind of this declaration.

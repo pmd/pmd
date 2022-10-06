@@ -4,15 +4,14 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
+import com.google.summit.ast.Node;
 import net.sourceforge.pmd.annotation.InternalApi;
 
-import apex.jorje.semantic.ast.statement.FieldDeclaration;
-
-public class ASTFieldDeclaration extends AbstractApexNode<FieldDeclaration> {
+public class ASTFieldDeclaration extends AbstractApexNode.Single<Node> {
 
     @Deprecated
     @InternalApi
-    public ASTFieldDeclaration(FieldDeclaration fieldDeclaration) {
+    public ASTFieldDeclaration(Node fieldDeclaration) {
         super(fieldDeclaration);
     }
 
@@ -27,6 +26,7 @@ public class ASTFieldDeclaration extends AbstractApexNode<FieldDeclaration> {
     }
 
     public String getName() {
+        /*
         if (node.getFieldInfo() != null) {
             return node.getFieldInfo().getName();
         }
@@ -34,6 +34,8 @@ public class ASTFieldDeclaration extends AbstractApexNode<FieldDeclaration> {
         if (variable != null) {
             return variable.getImage();
         }
+         */
+        // TODO(b/239648780)
         return null;
     }
 }

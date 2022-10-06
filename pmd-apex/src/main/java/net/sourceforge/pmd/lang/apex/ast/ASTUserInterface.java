@@ -9,18 +9,16 @@ import java.util.stream.Collectors;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.annotation.InternalApi;
 
-import apex.jorje.data.Identifier;
-import apex.jorje.data.ast.TypeRef;
-import apex.jorje.semantic.ast.compilation.UserInterface;
+import com.google.summit.ast.declaration.InterfaceDeclaration;
 
-public class ASTUserInterface extends ApexRootNode<UserInterface> implements ASTUserClassOrInterface<UserInterface>,
+public class ASTUserInterface extends ApexRootNode<InterfaceDeclaration> implements ASTUserClassOrInterface<InterfaceDeclaration>,
        CanSuppressWarnings {
 
     private ApexQualifiedName qname;
 
     @Deprecated
     @InternalApi
-    public ASTUserInterface(UserInterface userInterface) {
+    public ASTUserInterface(InterfaceDeclaration userInterface) {
         super(userInterface);
     }
 
@@ -31,8 +29,7 @@ public class ASTUserInterface extends ApexRootNode<UserInterface> implements AST
 
     @Override
     public String getImage() {
-        String apexName = getDefiningType();
-        return apexName.substring(apexName.lastIndexOf('.') + 1);
+        return node.getId().asCodeString();
     }
 
     @Override
@@ -73,8 +70,12 @@ public class ASTUserInterface extends ApexRootNode<UserInterface> implements AST
     }
 
     public String getSuperInterfaceName() {
+        /*
         return node.getDefiningType().getCodeUnitDetails().getInterfaceTypeRefs().stream().map(TypeRef::getNames)
                 .map(it -> it.stream().map(Identifier::getValue).collect(Collectors.joining(".")))
                 .findFirst().orElse("");
+         */
+        // TODO(b/239648780)
+        return null;
     }
 }

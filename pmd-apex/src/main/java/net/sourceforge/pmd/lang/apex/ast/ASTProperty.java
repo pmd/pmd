@@ -4,15 +4,14 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
+import com.google.summit.ast.Node;
 import net.sourceforge.pmd.annotation.InternalApi;
 
-import apex.jorje.semantic.ast.member.Property;
-
-public class ASTProperty extends AbstractApexNode<Property> {
+public class ASTProperty extends AbstractApexNode.Single<Node> {
 
     @Deprecated
     @InternalApi
-    public ASTProperty(Property property) {
+    public ASTProperty(Node property) {
         super(property);
     }
 
@@ -22,7 +21,9 @@ public class ASTProperty extends AbstractApexNode<Property> {
     }
 
     public String getType() {
-        return node.getFieldInfo().getType().getApexName();
+        // return node.getFieldInfo().getType().getApexName();
+        // TODO(b/239648780)
+        return null;
     }
 
     public ASTModifierNode getModifiers() {

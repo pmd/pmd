@@ -14,8 +14,6 @@ import org.antlr.runtime.Token;
 import net.sourceforge.pmd.lang.apex.ApexJorjeLogging;
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
 
-import apex.jorje.parser.impl.ApexLexer;
-
 public class ApexTokenizer implements Tokenizer {
 
     public ApexTokenizer() {
@@ -36,6 +34,7 @@ public class ApexTokenizer implements Tokenizer {
 
     @Override
     public void tokenize(SourceCode sourceCode, Tokens tokenEntries) {
+        /*
         StringBuilder code = sourceCode.getCodeBuffer();
 
         ANTLRStringStream ass = new ANTLRStringStream(code.toString());
@@ -65,5 +64,7 @@ public class ApexTokenizer implements Tokenizer {
         } finally {
             tokenEntries.add(TokenEntry.getEOF());
         }
+         */
+        // TODO(b/239648780)
     }
 }

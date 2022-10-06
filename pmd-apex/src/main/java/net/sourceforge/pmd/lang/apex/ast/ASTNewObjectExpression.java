@@ -4,15 +4,14 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
+import com.google.summit.ast.Node;
 import net.sourceforge.pmd.annotation.InternalApi;
 
-import apex.jorje.semantic.ast.expression.NewObjectExpression;
-
-public class ASTNewObjectExpression extends AbstractApexNode<NewObjectExpression> {
+public class ASTNewObjectExpression extends AbstractApexNode.Single<Node> {
 
     @Deprecated
     @InternalApi
-    public ASTNewObjectExpression(NewObjectExpression newObjectExpression) {
+    public ASTNewObjectExpression(Node newObjectExpression) {
         super(newObjectExpression);
     }
 
@@ -22,6 +21,8 @@ public class ASTNewObjectExpression extends AbstractApexNode<NewObjectExpression
     }
 
     public String getType() {
-        return String.valueOf(node.getTypeRef());
+        // return String.valueOf(node.getTypeRef());
+        // TODO(b/239648780)
+        return null;
     }
 }

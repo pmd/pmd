@@ -6,30 +6,19 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 
-import apex.jorje.data.ast.PostfixOp;
-import apex.jorje.semantic.ast.expression.PostfixExpression;
+import com.google.summit.ast.expression.UnaryExpression;
 
-
-public class ASTPostfixExpression extends AbstractApexNode<PostfixExpression> {
+public class ASTPostfixExpression extends AbstractApexNode.Single<UnaryExpression> {
 
     @Deprecated
     @InternalApi
-    public ASTPostfixExpression(PostfixExpression postfixExpression) {
+    public ASTPostfixExpression(UnaryExpression postfixExpression) {
         super(postfixExpression);
     }
-
 
     @Override
     public Object jjtAccept(ApexParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
-    }
-
-    /**
-     * @deprecated Use {@link #getOp()} instead.
-     */
-    @Deprecated
-    public PostfixOp getOperator() {
-        return node.getOp();
     }
 
     public PostfixOperator getOp() {

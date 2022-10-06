@@ -13,8 +13,6 @@ import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexUnitTestRule;
 
-import apex.jorje.services.Version;
-
 /**
  * <p>
  * It's a very bad practice to use @isTest(seeAllData=true) in Apex unit tests,
@@ -29,9 +27,12 @@ public class ApexUnitTestShouldNotUseSeeAllDataTrueRule extends AbstractApexUnit
     @Override
     public Object visit(final ASTUserClass node, final Object data) {
         // @isTest(seeAllData) was introduced in v24, and was set to false by default
+        /*
         if (!isTestMethodOrClass(node) && node.getApexVersion() >= Version.V176.getExternal()) {
             return data;
         }
+         */
+        // TODO(b/239648780)
 
         checkForSeeAllData(node, data);
         return super.visit(node, data);
@@ -52,10 +53,11 @@ public class ApexUnitTestShouldNotUseSeeAllDataTrueRule extends AbstractApexUnit
         if (modifierNode != null) {
             List<ASTAnnotationParameter> annotationParameters = modifierNode.findDescendantsOfType(ASTAnnotationParameter.class);
             for (ASTAnnotationParameter parameter : annotationParameters) {
-                if (ASTAnnotationParameter.SEE_ALL_DATA.equals(parameter.getName()) && parameter.getBooleanValue()) {
+                // if (ASTAnnotationParameter.SEE_ALL_DATA.equals(parameter.getName()) && parameter.getBooleanValue()) {
                     addViolation(data, node);
                     return data;
-                }
+                // }
+                // TODO(b/239648780)
             }
         }
 

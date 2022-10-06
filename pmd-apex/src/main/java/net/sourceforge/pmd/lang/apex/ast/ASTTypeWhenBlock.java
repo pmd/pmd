@@ -4,19 +4,20 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
+import com.google.summit.ast.Node;
 import org.apache.commons.lang3.reflect.FieldUtils;
 
-import apex.jorje.semantic.ast.statement.TypeWhenBlock;
-
-public final class ASTTypeWhenBlock extends AbstractApexNode<TypeWhenBlock> {
+public final class ASTTypeWhenBlock extends AbstractApexNode.Single<Node> {
 
 
-    ASTTypeWhenBlock(TypeWhenBlock node) {
+    ASTTypeWhenBlock(Node node) {
         super(node);
     }
 
     public String getType() {
-        return String.valueOf(node.getTypeRef());
+        // return String.valueOf(node.getTypeRef());
+        // TODO(b/239648780)
+        return null;
     }
 
     public String getName() {

@@ -4,16 +4,15 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
+import com.google.summit.ast.Node;
 import net.sourceforge.pmd.annotation.InternalApi;
 
-import apex.jorje.semantic.ast.statement.BlockStatement;
-
-public class ASTBlockStatement extends AbstractApexNode<BlockStatement> {
+public class ASTBlockStatement extends AbstractApexNode.Single<Node> {
     private boolean curlyBrace;
 
     @Deprecated
     @InternalApi
-    public ASTBlockStatement(BlockStatement blockStatement) {
+    public ASTBlockStatement(Node blockStatement) {
         super(blockStatement);
     }
 
@@ -35,7 +34,8 @@ public class ASTBlockStatement extends AbstractApexNode<BlockStatement> {
         // check, whether the this block statement really begins with a curly brace
         // unfortunately, for-loop and if-statements always contain a block statement,
         // regardless whether curly braces where present or not.
-        char firstChar = source.charAt(node.getLoc().getStartIndex());
-        curlyBrace = firstChar == '{';
+        // char firstChar = source.charAt(node.getLoc().getStartIndex());
+        // curlyBrace = firstChar == '{';
+        // TODO(b/239648780)
     }
 }

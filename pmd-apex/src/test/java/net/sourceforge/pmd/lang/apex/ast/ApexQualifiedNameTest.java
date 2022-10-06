@@ -10,6 +10,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import com.google.summit.ast.CompilationUnit;
 import java.util.List;
 
 import org.junit.Test;

@@ -4,27 +4,56 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
+import java.util.List;
+
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
 
-import apex.jorje.data.Location;
-import apex.jorje.data.Locations;
-import apex.jorje.semantic.ast.AstNode;
-import apex.jorje.semantic.exception.UnexpectedCodePathException;
-import apex.jorje.semantic.symbol.type.TypeInfo;
+import com.google.summit.ast.Node;
 
 /**
  * @deprecated Use {@link ApexNode}
  */
 @Deprecated
 @InternalApi
-public abstract class AbstractApexNode<T extends AstNode> extends AbstractApexNodeBase implements ApexNode<T> {
+public abstract class AbstractApexNode extends AbstractApexNodeBase implements ApexNode<Void> {
 
-    protected final T node;
+    /**
+     * {@link AbstractApexNode} wrapper around a single {@link Node}.
+     *
+     * @deprecated Use {@link ApexNode}
+     */
+    @Deprecated
+    @InternalApi
+    public static abstract class Single<T extends Node> extends AbstractApexNode {
 
-    protected AbstractApexNode(T node) {
-        super(node.getClass());
-        this.node = node;
+        protected final T node;
+
+        protected Single(T node) {
+            super(node.getClass());
+            this.node = node;
+        }
+    }
+
+    /**
+     * {@link AbstractApexNode} wrapper around a {@link List} of {@link Node}s.
+     *
+     * @deprecated Use {@link ApexNode}
+     */
+    @Deprecated
+    @InternalApi
+    public static abstract class Many<T extends Node> extends AbstractApexNode {
+
+        protected final List<T> nodes;
+
+        protected Many(List<T> nodes) {
+            super(nodes.getClass());
+            this.nodes = nodes;
+        }
+    }
+
+    protected AbstractApexNode(Class<?> klass) {
+        super(klass);
     }
 
     @Override
@@ -47,27 +76,21 @@ public abstract class AbstractApexNode<T extends AstNode> extends AbstractApexNo
             return;
         }
 
-        Location loc = node.getLoc();
-        calculateLineNumbers(positioner, loc.getStartIndex(), loc.getEndIndex());
+        // Location loc = node.getLoc();
+        // calculateLineNumbers(positioner, loc.getStartIndex(), loc.getEndIndex());
+        // TODO(b/239648780)
     }
 
     protected void handleSourceCode(String source) {
         // default implementation does nothing
     }
 
-    @Deprecated
-    @InternalApi
-    @Override
-    public T getNode() {
-        return node;
-    }
-
     @Override
     public boolean hasRealLoc() {
         try {
-            Location loc = node.getLoc();
-            return loc != null && Locations.isReal(loc);
-        } catch (UnexpectedCodePathException e) {
+            // Location loc = node.getLoc();
+            // return loc != null && Locations.isReal(loc);
+            // TODO(b/239648780)
             return false;
         } catch (IndexOutOfBoundsException | NullPointerException e) {
             // bug in apex-jorje? happens on some ReferenceExpression nodes
@@ -77,35 +100,40 @@ public abstract class AbstractApexNode<T extends AstNode> extends AbstractApexNo
 
     public String getLocation() {
         if (hasRealLoc()) {
-            return String.valueOf(node.getLoc());
+            // return String.valueOf(node.getLoc());
+            // TODO(b/239648780)
+            return null;
         } else {
             return "no location";
         }
     }
 
-    private TypeInfo getDefiningTypeOrNull() {
-        try {
-            return node.getDefiningType();
-        } catch (UnsupportedOperationException e) {
-            return null;
-        }
-    }
+    // private TypeInfo getDefiningTypeOrNull() {
+    //     try {
+    //         return node.getDefiningType();
+    //     } catch (UnsupportedOperationException e) {
+    //         return null;
+    //     }
+    // }
+    // TODO(b/239648780)
 
     @Override
     public String getDefiningType() {
-        TypeInfo definingType = getDefiningTypeOrNull();
-        if (definingType != null) {
-            return definingType.getApexName();
-        }
+        // TypeInfo definingType = getDefiningTypeOrNull();
+        // if (definingType != null) {
+        //     return definingType.getApexName();
+        // }
+        // TODO(b/239648780)
         return null;
     }
 
     @Override
     public String getNamespace() {
-        TypeInfo definingType = getDefiningTypeOrNull();
-        if (definingType != null) {
-            return definingType.getNamespace().toString();
-        }
+        // TypeInfo definingType = getDefiningTypeOrNull();
+        // if (definingType != null) {
+        //     return definingType.getNamespace().toString();
+        // }
+        // TODO(b/239648780)
         return null;
     }
 }

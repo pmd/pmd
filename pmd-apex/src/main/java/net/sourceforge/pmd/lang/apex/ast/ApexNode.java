@@ -6,16 +6,13 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 import net.sourceforge.pmd.lang.ast.Node;
 
-import apex.jorje.semantic.ast.AstNode;
-
 /**
  * Root interface implemented by all Apex nodes. Apex nodes wrap a tree
- * obtained from an external parser (Jorje). The underlying AST node is
- * available with {@link #getNode()}.
+ * obtained from an external parser.
  *
- * @param <T> Type of the underlying Jorje node
+ * @param <T> placeholder
  */
-public interface ApexNode<T extends AstNode> extends Node {
+public interface ApexNode<T> extends Node {
 
     /**
      * Accept the visitor.
@@ -31,16 +28,6 @@ public interface ApexNode<T extends AstNode> extends Node {
      */
     @Deprecated
     Object childrenAccept(ApexParserVisitor visitor, Object data);
-
-
-    /**
-     * Get the underlying AST node.
-     * @deprecated the underlying AST node should not be available outside of the AST node.
-     *      If information is needed from the underlying node, then PMD's AST node need to expose
-     *      this information.
-     */
-    @Deprecated
-    T getNode();
 
 
     @Override
