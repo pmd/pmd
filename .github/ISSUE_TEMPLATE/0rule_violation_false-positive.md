@@ -19,7 +19,7 @@ Please provide the rule name and a link to the rule documentation:
 
 **Code Sample demonstrating the issue:**
 
-```
+```java
 
 ```
 
