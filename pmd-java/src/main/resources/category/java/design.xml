@@ -17,7 +17,7 @@ Rules that help you discover design issues.
           message="No abstract method which means that the keyword is most likely used to prevent instantiation. Use a private or protected constructor instead."
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#abstractclasswithoutanymethod">
         <description>
-If an abstract class does not provides any methods, it may be acting as a simple data container
+If an abstract class does not provide any methods, it may be acting as a simple data container
 that is not meant to be instantiated. In this case, it is probably better to use a private or
 protected constructor in order to prevent instantiation than make the class misleadingly abstract.
         </description>
@@ -53,7 +53,7 @@ public abstract class Example {
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#avoidcatchinggenericexception">
         <description>
-Avoid catching generic exceptions such as NullPointerException, RuntimeException, Exception in try-catch block
+Avoid catching generic exceptions such as NullPointerException, RuntimeException, Exception in try-catch block.
         </description>
         <priority>3</priority>
         <properties>
@@ -836,6 +836,8 @@ in each object at runtime.
     ]
  ]
 /VariableDeclaratorId
+  [not(@Image = //MethodDeclaration[@Static = false()]//SynchronizedStatement/Expression/PrimaryExpression/
+      (PrimaryPrefix/Name|PrimarySuffix[preceding-sibling::PrimaryPrefix[@ThisModifier = true()]])/@Image)]
 ]]>
                 </value>
             </property>

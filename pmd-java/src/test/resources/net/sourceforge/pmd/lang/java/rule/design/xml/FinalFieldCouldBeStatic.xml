@@ -231,4 +231,34 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+    
+    <test-code>
+        <description>[java] FinalFieldCouldBeStatic false positive with non-static synchronized block (regression in 6.48, worked with 6.47) #4090</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+class foo {
+    private final Object[] lock = new Object[0];
+    private final Object[] lock2 = new Object[0];
+    private final Object[] o = new Object[0];
+
+
+    void init() {
+        synchronized (lock) {
+            // do init stuff
+        }
+    }
+
+    public void close() {
+        synchronized (this.lock2) {
+           // do close stuff
+        }
+    }
+
+    void foo() {
+        System.out.println(o);
+    }
+}
+]]></code>
+    </test-code>
 </test-data>
