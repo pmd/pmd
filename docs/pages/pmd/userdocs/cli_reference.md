@@ -176,8 +176,12 @@ if you want to analyze a project, that uses one of OpenJDK's [Preview Language F
 
 Just set the environment variable `PMD_JAVA_OPTS` before executing PMD, e.g.
 
-    export PMD_JAVA_OPTS="--enable-preview"
-    ./pmd analyze -d ../../../src/main/java/ -f text -R rulesets/java/quickstart.xml
+{% include cli_example.html
+   id="preview"
+   linux="export PMD_JAVA_OPTS=\"--enable-preview\"
+    pmd analyze -d src/main/java/ -f text -R rulesets/java/quickstart.xml"
+   windows="set \"PMD_JAVA_OPTS=--enable-preview\"
+    pmd.bat analyze -d src\main\java\ -f text -R rulesets/java/quickstart.xml" %}
 
 ## Exit Status
 
@@ -245,20 +249,25 @@ All formats are described at [PMD Report formats](pmd_userdocs_report_formats.ht
 
 If your xml language doesn't use `xml` as file extension, you can still use PMD with `--force-language`:
 
-```
-$ pmd analyze -d /home/me/src/xml-file.ext -f text -R ruleset.xml --force-language xml
-```
+{% include cli_example.html
+   id="force"
+   linux="pmd analyze -d src/xml-file.ext -f text -R ruleset.xml --force-language xml"
+   windows="pmd.bat analyze -d src\xml-file.ext -f text -R ruleset.xml --force-language xml" %}
 
 You can also specify a directory instead of a single file. Then all files are analyzed. In that case,
 parse errors are suppressed in order to reduce irrelevant noise:
 
-```
-$ ./pmd analyze -d /home/me/src/ -f text -R ruleset.xml --force-language xml
-```
+{% include cli_example.html
+   id="force-dir"
+   linux="pmd analyze -d src/ -f text -R ruleset.xml --force-language xml"
+   windows="pmd.bat analyze -d src\ -f text -R ruleset.xml --force-language xml" %}
 
 Alternatively, you can create a filelist to only analyze files with a given extension:
 
-```
-$ find /home/me/src -name "*.ext" > /home/me/src/filelist.txt
-$ ./pmd analyze --file-list /home/me/src/filelist.txt -f text -R ruleset.xml --force-language xml
-```
+{% include cli_example.html
+   id="file-list"
+   linux="find src/ -name \"*.ext\" > filelist.txt
+     pmd analyze --file-list filelist.txt -f text -R ruleset.xml --force-language xml"
+   windows="for /r src/ %i in (*.ext) do echo %i >> filelist.txt
+     pmd.bat analyze --file-list filelist.txt -f text -R ruleset.xml --force-language xml" %}
+

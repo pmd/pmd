@@ -37,18 +37,19 @@ public class TreeExportCommand extends AbstractPmdSubcommand {
 
     static {
         final StringBuilder reportPropertiesHelp = new StringBuilder();
+        final String lineSeparator = System.lineSeparator();
         
         for (final TreeRendererDescriptor renderer : TreeRenderers.registeredRenderers()) {
             final PropertySource propertyBundle = renderer.newPropertyBundle();
             if (!propertyBundle.getPropertyDescriptors().isEmpty()) {
-                reportPropertiesHelp.append(renderer.id() + ":" + System.getProperty("line.separator"));
+                reportPropertiesHelp.append(renderer.id() + ":" + lineSeparator);
                 for (final PropertyDescriptor<?> property : propertyBundle.getPropertyDescriptors()) {
                     reportPropertiesHelp.append("  ").append(property.name()).append(" - ")
-                        .append(property.description()).append(System.getProperty("line.separator"));
+                        .append(property.description()).append(lineSeparator);
                     final Object deflt = property.defaultValue();
                     if (deflt != null && !"".equals(deflt)) {
                         reportPropertiesHelp.append("    Default: ").append(StringUtil.escapeWhitespace(deflt))
-                            .append(System.getProperty("line.separator"));
+                            .append(lineSeparator);
                     }
                 }
             }

@@ -49,19 +49,20 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand {
     static {
         final Properties emptyProps = new Properties();
         final StringBuilder reportPropertiesHelp = new StringBuilder();
+        final String lineSeparator = System.lineSeparator();
         
         for (final String rendererName : RendererFactory.supportedRenderers()) {
             final Renderer renderer = RendererFactory.createRenderer(rendererName, emptyProps);
             
             if (!renderer.getPropertyDescriptors().isEmpty()) {
-                reportPropertiesHelp.append(rendererName + ":" + System.getProperty("line.separator"));
+                reportPropertiesHelp.append(rendererName + ":" + lineSeparator);
                 for (final PropertyDescriptor<?> property : renderer.getPropertyDescriptors()) {
                     reportPropertiesHelp.append("  ").append(property.name()).append(" - ")
-                        .append(property.description()).append(System.getProperty("line.separator"));
+                        .append(property.description()).append(lineSeparator);
                     final Object deflt = property.defaultValue();
                     if (deflt != null && !"".equals(deflt)) {
                         reportPropertiesHelp.append("    Default: ").append(deflt)
-                            .append(System.getProperty("line.separator"));
+                            .append(lineSeparator);
                     }
                 }
             }

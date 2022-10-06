@@ -22,6 +22,7 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.event.Level;
 
 import net.sourceforge.pmd.Report.GlobalReportBuilderListener;
+import net.sourceforge.pmd.annotation.DeprecatedUntil700;
 import net.sourceforge.pmd.benchmark.TextTimingReportRenderer;
 import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.benchmark.TimingReport;
@@ -45,7 +46,10 @@ import net.sourceforge.pmd.util.log.internal.SimpleMessageReporter;
  *
  * <p><strong>Warning:</strong> This class is not intended to be instantiated or subclassed. It will
  * be made final in PMD7.
+ * 
+ * @deprecated Use either {@link PmdAnalysis} or {@link PmdCli} under the pmd-cli module.
  */
+@DeprecatedUntil700
 @Deprecated
 public final class PMD {
 

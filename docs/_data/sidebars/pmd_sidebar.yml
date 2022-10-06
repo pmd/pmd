@@ -385,18 +385,9 @@ entries:
     - title: Apex
       url: /pmd_languages_apex.html
       output: web, pdf
-    - title: null
+    - title: Java
+      url: /pmd_languages_java.html
       output: web, pdf
-      subfolders:
-      - title: Java
-        output: web, pdf
-        subfolderitems:
-        - title: Java Support
-          url: /pmd_languages_java.html
-          output: web, pdf
-        - title: Java Versions
-          url: /pmd_languages_java_versions.html
-          output: web, pdf
     - title: JSP
       url: /pmd_languages_jsp.html
       output: web, pdf
