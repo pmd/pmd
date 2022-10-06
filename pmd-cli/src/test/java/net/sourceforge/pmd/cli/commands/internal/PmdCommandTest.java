@@ -52,10 +52,10 @@ class PmdCommandTest extends BaseCommandTest<PmdCommand> {
 
     @Test
     void testNoPositionalParametersAllowed() {
-        assertError(
-            //                        vvvv
-            "-R", "x.xml", "-d", "a", "--", "-d", "b"
+        final PmdCommand cmd = setupAndParse(
+            "-R", "x.xml", "-R", "y.xml", "-d", "a", "--", "b"
         );
+        assertMultipleDirsAndRulesets(cmd);
     }
 
     @Test
@@ -83,8 +83,8 @@ class PmdCommandTest extends BaseCommandTest<PmdCommand> {
     protected void addStandardParams(final List<String> argList) {
         // If no language provided, set dummy latest
         if (!argList.contains("--use-version")) {
-            argList.add("--use-version");
-            argList.add("dummy-1.0");
+            argList.add(0, "--use-version");
+            argList.add(1, "dummy-1.0");
         }
     }
 }

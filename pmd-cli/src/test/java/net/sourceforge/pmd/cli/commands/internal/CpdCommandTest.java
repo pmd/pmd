@@ -43,10 +43,10 @@ class CpdCommandTest extends BaseCommandTest<CpdCommand> {
 
     @Test
     void testNoPositionalParametersAllowed() {
-        assertError(
-            //         vvvv
-            "-d", "a", "--", "-d", "b"
+        final CpdCommand cmd = setupAndParse(
+            "-d", "a", "--", "b"
         );
+        assertMultipleDirs(cmd);
     }
 
     @Test
@@ -68,8 +68,8 @@ class CpdCommandTest extends BaseCommandTest<CpdCommand> {
     protected void addStandardParams(final List<String> argList) {
         // If no minimum tokens provided, set default value
         if (!argList.contains("--minimum-tokens")) {
-            argList.add("--minimum-tokens");
-            argList.add("100");
+            argList.add(0, "--minimum-tokens");
+            argList.add(1, "100");
         }
     }
 }
