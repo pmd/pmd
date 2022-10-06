@@ -197,18 +197,20 @@ Example:
 ```
 
 *   [apex](pmd_rules_apex.html) (Salesforce Apex)
+*   [ecmascript](pmd_rules_ecmascript.html) (JavaScript)
+*   [html](pmd_rules_html.html)
 *   [java](pmd_rules_java.html)
     *   [Supported Versions](pmd_languages_java.html)
-*   [ecmascript](pmd_rules_ecmascript.html) (JavaScript)
 *   [jsp](pmd_rules_jsp.html)
 *   [modelica](pmd_rules_modelica.html)
 *   [plsql](pmd_rules_plsql.html)
+*   [pom](pmd_rules_pom.html) (Maven POM)
 *   [scala](pmd_rules_scala.html)
     *   Supported Versions: 2.10, 2.11, 2.12, 2.13 (default)
 *   [vf](pmd_rules_vf.html) (Salesforce VisualForce)
 *   [vm](pmd_rules_vm.html) (Apache Velocity)
-*   [xml and xsl](pmd_rules_xml.html)
-
+*   [xml](pmd_rules_xml.html)
+*   [xsl](pmd_rules_xsl.html)
 
 ## Available Report Formats
 
