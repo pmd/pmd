@@ -49,6 +49,22 @@ public class Foo {
     </test-code>
 
     <test-code>
+        <description>copy via do-while loop</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar() {
+        int i = 0;
+        do {
+            a[i] = b[i];
+            i++;
+        } while (i < 10);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
         <description>copy involving multiple arrays is ok</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
