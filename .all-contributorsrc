@@ -6941,6 +6941,17 @@
       "contributions": [
         "bug"
       ]
+    },
+    {
+      "login": "tcopeland",
+      "name": "Tom Copeland",
+      "avatar_url": "https://avatars.githubusercontent.com/u/70536?v=4",
+      "profile": "https://thomasleecopeland.com/",
+      "contributions": [
+        "bug",
+        "code",
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,
