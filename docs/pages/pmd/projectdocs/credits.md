@@ -1002,13 +1002,19 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 
 These are collected contributors before we moved to github.
 
+### Founders
+
+According to the book [PMD Applied](https://pmdapplied.thomasleecopeland.com/) the following people are the founders of PMD:
+
+*   [Tom Copeland](https://thomasleecopeland.com/) ([@tcopeland](https://github.com/tcopeland)) - PMD core, lead developer, JDeveloper plugin, initial Gel plugin,
+    initial jEdit plugin, IDEAJ integration, BlueJ extension
+*   David Dixon-Peugh - PMD core, much of the early work on the grammar, initial Emacs plugin
+*   [David Craine](http://dcraine.blogspot.com/) - JBuilder plugin
+
 ### Committers
 
-*   David Dixon-Peugh - PMD core, much of the early work on the grammar, initial Emacs plugin
 *   Philippe Herlin - Eclipse plugin, fixed bugs in RuleSetFactory
 *   Nascif Abousalh Neto - Emacs plugin
-*   [Tom Copeland](https://thomasleecopeland.com/) - PMD core, lead developer, JDeveloper plugin, initial Gel plugin,
-    initial jEdit plugin, IDEAJ integration, BlueJ extension
 *   Jiger Patel - jEdit plugin
 *   Alan Ezust - jEdit plugin
 *   Ole-Martin Mork - NetBeans plugin
@@ -1037,7 +1043,6 @@ These are collected contributors before we moved to github.
 
 *   Gunnlaugur Thor Briem - NetBeans plugin, Maven build script fixes, bug report on JavaCC parser's use
     of java.lang.Error
-*   [David Craine](http://dcraine.blogspot.com/) - JBuilder plugin
 *   Tom Burke - Eclipse plugin
 *   Alex Chaffee - various bugfixes and features
 *   Siegfried Goeschl - original Maven plugin, various bugfixes and features
