@@ -15,10 +15,15 @@ This is a {{ site.pmd.release_type }} release.
 ### New and noteworthy
 
 ### Fixed Issues
+* doc
+    * [#4144](https://github.com/pmd/pmd/pull/4144) \[doc] Update docs to reflect supported languages
+* java-documentation
+    * [#4141](https://github.com/pmd/pmd/issues/4141): \[java] UncommentedEmptyConstructor FP when constructor annotated with @<!-- -->Autowired
 
 ### API Changes
 
 ### External Contributions
+* [#4142](https://github.com/pmd/pmd/pull/4142): \[java] fix #4141 Update UncommentedEmptyConstructor - ignore @<!-- -->Autowired annotations - [Lynn](https://github.com/LynnBroe) (@LynnBroe)
 
 {% endtocmaker %}
 

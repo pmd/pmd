@@ -15,7 +15,7 @@ sidebar: pmd_sidebar
     OpenJDK from [Azul](https://www.azul.com/downloads/zulu-community/)
     or [AdoptOpenJDK](https://adoptopenjdk.net/) 1.7 or higher.
     
-    **Note:** For analyzing Apex, JavaScript, Scala or VisualForce or running the [Designer](pmd_userdocs_extending_designer_reference.html)
+    **Note:** For analyzing Apex, HTML, JavaScript, Scala or VisualForce or running the [Designer](pmd_userdocs_extending_designer_reference.html)
     at least Java 8 is required.
     
 *   A zip archiver, e.g.:
@@ -23,7 +23,7 @@ sidebar: pmd_sidebar
     * For Windows: [Winzip](http://winzip.com) or the free [7-zip](http://www.7-zip.org/)
     * For Linux / Unix: [InfoZip](http://infozip.sourceforge.net/)
 
-{% include note.html content="For executing the Designer (./run.sh designer) using [OpenJDK](http://jdk.java.net) or Java 11, you need additionally [OpenJFX](http://jdk.java.net). Download it, extract it and set the environment variable JAVAFX_HOME." %}
+{% include note.html content="For executing the Designer (./run.sh designer) using [OpenJDK](http://jdk.java.net) or Java 11, you need additionally [OpenJFX](https://openjfx.io/). Download it, extract it and set the environment variable JAVAFX_HOME." %}
 
 
 ### Installation

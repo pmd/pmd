@@ -116,7 +116,7 @@ echo "* Days since last release: $(( ( $(date +%s) - $(git log --max-count=1 --f
 )
 
 TEMP_RELEASE_NOTES=$(cat docs/pages/release_notes.md)
-TEMP_RELEASE_NOTES=${TEMP_RELEASE_NOTES/\{\% endtocmaker \%\}/$STATS$'\n'$'\n'\{\% endtocmaker \%\}$'\n'}
+TEMP_RELEASE_NOTES=${TEMP_RELEASE_NOTES/\{\% endtocmaker \%\}/${STATS//\&/\\\&}$'\n'$'\n'\{\% endtocmaker \%\}$'\n'}
 echo "${TEMP_RELEASE_NOTES}" > docs/pages/release_notes.md
 
 echo
