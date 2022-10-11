@@ -33,6 +33,25 @@ public abstract class AbstractApexNode extends AbstractApexNodeBase implements A
             super(node.getClass());
             this.node = node;
         }
+
+        @Override
+        void calculateLineNumbers(SourceCodePositioner positioner) {
+            setLineNumbers(node.getSourceLocation());
+        }
+
+        @Override
+        public boolean hasRealLoc() {
+            return !node.getSourceLocation().isUnknown();
+        }
+
+        @Override
+        public String getLocation() {
+            if (hasRealLoc()) {
+                return String.valueOf(node.getSourceLocation());
+            } else {
+                return "no location";
+            }
+        }
     }
 
     /**
@@ -50,10 +69,60 @@ public abstract class AbstractApexNode extends AbstractApexNodeBase implements A
             super(nodes.getClass());
             this.nodes = nodes;
         }
+
+        @Override
+        void calculateLineNumbers(SourceCodePositioner positioner) {
+            for (Node node : nodes) {
+                setLineNumbers(node.getSourceLocation());
+            }
+        }
+
+        @Override
+        public boolean hasRealLoc() {
+            return false;
+        }
+
+        @Override
+        public String getLocation() {
+            return "no location";
+        }
+    }
+
+    /**
+     * {@link AbstractApexNode} that doesn't directly wrap a {@link Node}.
+     *
+     * @deprecated Use {@link ApexNode}
+     */
+    @Deprecated
+    @InternalApi
+    public static abstract class Empty extends AbstractApexNode {
+
+        protected Empty() {
+            super(Void.class);
+        }
+
+        @Override
+        void calculateLineNumbers(SourceCodePositioner positioner) {
+            // no operation
+        }
+
+        @Override
+        public boolean hasRealLoc() {
+            return false;
+        }
+
+        @Override
+        public String getLocation() {
+            return "no location";
+        }
     }
 
     protected AbstractApexNode(Class<?> klass) {
         super(klass);
+    }
+
+    protected AbstractApexNode() {
+        this(Void.class);
     }
 
     @Override
@@ -71,42 +140,15 @@ public abstract class AbstractApexNode extends AbstractApexNodeBase implements A
         return (Iterable<? extends ApexNode<?>>) super.children();
     }
 
-    void calculateLineNumbers(SourceCodePositioner positioner) {
-        if (!hasRealLoc()) {
-            return;
-        }
-
-        // Location loc = node.getLoc();
-        // calculateLineNumbers(positioner, loc.getStartIndex(), loc.getEndIndex());
-        // TODO(b/239648780)
-    }
+    abstract void calculateLineNumbers(SourceCodePositioner positioner);
 
     protected void handleSourceCode(String source) {
         // default implementation does nothing
     }
 
-    @Override
-    public boolean hasRealLoc() {
-        try {
-            // Location loc = node.getLoc();
-            // return loc != null && Locations.isReal(loc);
-            // TODO(b/239648780)
-            return false;
-        } catch (IndexOutOfBoundsException | NullPointerException e) {
-            // bug in apex-jorje? happens on some ReferenceExpression nodes
-            return false;
-        }
-    }
+    public abstract boolean hasRealLoc();
 
-    public String getLocation() {
-        if (hasRealLoc()) {
-            // return String.valueOf(node.getLoc());
-            // TODO(b/239648780)
-            return null;
-        } else {
-            return "no location";
-        }
-    }
+    public abstract String getLocation();
 
     // private TypeInfo getDefiningTypeOrNull() {
     //     try {
@@ -119,11 +161,10 @@ public abstract class AbstractApexNode extends AbstractApexNodeBase implements A
 
     @Override
     public String getDefiningType() {
-        // TypeInfo definingType = getDefiningTypeOrNull();
-        // if (definingType != null) {
-        //     return definingType.getApexName();
-        // }
-        // TODO(b/239648780)
+        ApexRootNode<?> rootNode = this instanceof ApexRootNode ? (ApexRootNode<?>) this : getFirstParentOfType(ApexRootNode.class);
+        if (rootNode != null) {
+            return rootNode.node.getQualifiedName();
+        }
         return null;
     }
 

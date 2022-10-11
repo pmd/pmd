@@ -12,8 +12,8 @@ public class ASTBooleanExpression extends AbstractApexNode.Single<BinaryExpressi
 
     @Deprecated
     @InternalApi
-    public ASTBooleanExpression(BinaryExpression booleanExpression) {
-        super(booleanExpression);
+    public ASTBooleanExpression(BinaryExpression binaryExpression) {
+        super(binaryExpression);
     }
 
     @Override

@@ -12,12 +12,14 @@ import java.util.stream.Collectors;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.annotation.InternalApi;
 
-public class ASTFieldDeclarationStatements extends AbstractApexNode.Single<Node>
+import com.google.summit.ast.declaration.FieldDeclarationGroup;
+
+public class ASTFieldDeclarationStatements extends AbstractApexNode.Single<FieldDeclarationGroup>
         implements CanSuppressWarnings {
 
     @Deprecated
     @InternalApi
-    public ASTFieldDeclarationStatements(Node fieldDeclarationStatements) {
+    public ASTFieldDeclarationStatements(FieldDeclarationGroup fieldDeclarationStatements) {
         super(fieldDeclarationStatements);
     }
 
@@ -43,14 +45,7 @@ public class ASTFieldDeclarationStatements extends AbstractApexNode.Single<Node>
     }
 
     public String getTypeName() {
-        /*
-        if (node.getTypeName() != null) {
-            List<Identifier> names = node.getTypeName().getNames();
-            return names.stream().map(Identifier::getValue).collect(Collectors.joining("."));
-        }
-         */
-        // TODO(b/239648780)
-        return null;
+        return node.getType().asCodeString();
     }
 
     /*

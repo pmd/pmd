@@ -7,12 +7,14 @@ package net.sourceforge.pmd.lang.apex.ast;
 import com.google.summit.ast.Node;
 import net.sourceforge.pmd.annotation.InternalApi;
 
-public class ASTVariableExpression extends AbstractApexNode.Single<Node> {
+import com.google.summit.ast.Identifier;
+
+public class ASTVariableExpression extends AbstractApexNode.Single<Identifier> {
 
     @Deprecated
     @InternalApi
-    public ASTVariableExpression(Node variableExpression) {
-        super(variableExpression);
+    public ASTVariableExpression(Identifier identifier) {
+        super(identifier);
     }
 
     @Override
@@ -22,12 +24,6 @@ public class ASTVariableExpression extends AbstractApexNode.Single<Node> {
 
     @Override
     public String getImage() {
-        /*
-        if (node.getIdentifier() != null) {
-            return node.getIdentifier().getValue();
-        }
-         */
-        // TODO(b/239648780)
-        return null;
+        return node.getString();
     }
 }

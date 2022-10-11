@@ -11,7 +11,9 @@ import org.apache.commons.lang3.reflect.FieldUtils;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 
-public class ASTLiteralExpression extends AbstractApexNode.Single<Node> {
+import com.google.summit.ast.expression.LiteralExpression;
+
+public class ASTLiteralExpression extends AbstractApexNode.Single<LiteralExpression> {
 
     @Deprecated
     @InternalApi
@@ -25,64 +27,75 @@ public class ASTLiteralExpression extends AbstractApexNode.Single<Node> {
         return visitor.visit(this, data);
     }
 
-    /*
+    public enum LiteralType {
+        STRING,
+        INTEGER,
+        LONG,
+        DOUBLE,
+        DECIMAL,
+        TRUE,
+        FALSE,
+        NULL
+    }
+
     public LiteralType getLiteralType() {
-        return node.getLiteralType();
+        if (node instanceof LiteralExpression.StringVal) {
+            return LiteralType.STRING;
+        } else if (node instanceof LiteralExpression.BooleanVal) {
+            return ((LiteralExpression.BooleanVal) node).getValue() ? LiteralType.TRUE : LiteralType.FALSE;
+        } else if (node instanceof LiteralExpression.IntegerVal) {
+            return LiteralType.INTEGER;
+        } else if (node instanceof LiteralExpression.DoubleVal) {
+            return LiteralType.DOUBLE;
+        } else if (node instanceof LiteralExpression.LongVal) {
+            return LiteralType.LONG;
+        } else if (false) { // TODO(b/239648780)
+            return LiteralType.DECIMAL;
+        } else if (node instanceof LiteralExpression.NullVal) {
+            return LiteralType.NULL;
+        } else {
+            return null;
+        }
     }
      */
     // TODO(b/239648780)
 
     public boolean isString() {
-        // return node.getLiteralType() == LiteralType.STRING;
-        // TODO(b/239648780)
-        return false;
+        return getLiteralType() == LiteralType.STRING;
     }
 
     public boolean isBoolean() {
-        // return node.getLiteralType() == LiteralType.TRUE || node.getLiteralType() == LiteralType.FALSE;
-        // TODO(b/239648780)
-        return false;
+        return getLiteralType() == LiteralType.TRUE || getLiteralType() == LiteralType.FALSE;
     }
 
     public boolean isInteger() {
-        // return node.getLiteralType() == LiteralType.INTEGER;
-        // TODO(b/239648780)
-        return false;
+        return getLiteralType() == LiteralType.INTEGER;
     }
 
     public boolean isDouble() {
-        // return node.getLiteralType() == LiteralType.DOUBLE;
-        // TODO(b/239648780)
-        return false;
+        return getLiteralType() == LiteralType.DOUBLE;
     }
 
     public boolean isLong() {
-        // return node.getLiteralType() == LiteralType.LONG;
-        // TODO(b/239648780)
-        return false;
+        return getLiteralType() == LiteralType.LONG;
     }
 
     public boolean isDecimal() {
-        // return node.getLiteralType() == LiteralType.DECIMAL;
-        // TODO(b/239648780)
-        return false;
+        return getLiteralType() == LiteralType.DECIMAL;
     }
 
     public boolean isNull() {
-        // return node.getLiteralType() == LiteralType.NULL;
-        // TODO(b/239648780)
-        return false;
+        return getLiteralType() == LiteralType.NULL;
     }
 
     @Override
     public String getImage() {
-        /*
-        if (node.getLiteral() != null) {
-            return String.valueOf(node.getLiteral());
+        if (isString()) {
+            return ((LiteralExpression.StringVal) node).getValue();
+        } else if (isNull()) {
+            return "";
         }
-         */
-        // TODO(b/239648780)
-        return null;
+        return node.asCodeString();
     }
 
     public String getName() {

@@ -4,16 +4,27 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import com.google.summit.ast.Node;
-import java.util.Iterator;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 
-public class ASTMethodCallExpression extends AbstractApexNode.Single<Node> {
+import com.google.summit.ast.Identifier;
+import com.google.summit.ast.expression.CallExpression;
+
+public class ASTMethodCallExpression extends AbstractApexNode.Single<CallExpression> {
+
+    /**
+     * The {@link Identifier}s that constitute the {@link CallExpression#getReceiver() receiver} of
+     * this method call.
+     */
+    private final List<Identifier> receiverComponents;
+
     @Deprecated
     @InternalApi
-    public ASTMethodCallExpression(Node methodCallExpression) {
-        super(methodCallExpression);
+    public ASTMethodCallExpression(CallExpression callExpression, List<Identifier> receiverComponents) {
+        super(callExpression);
+        this.receiverComponents = receiverComponents;
     }
 
     @Override
@@ -22,27 +33,14 @@ public class ASTMethodCallExpression extends AbstractApexNode.Single<Node> {
     }
 
     public String getMethodName() {
-        // return node.getMethodName();
-        // TODO(b/239648780)
-        return null;
+        return node.getId().getString();
     }
 
     public String getFullMethodName() {
-        /*
-        final String methodName = getMethodName();
-        StringBuilder typeName = new StringBuilder();
-        for (Iterator<Identifier> it = node.getReferenceContext().getNames().iterator(); it.hasNext();) {
-            typeName.append(it.next().getValue()).append('.');
-        }
-        return typeName.toString() + methodName;
-         */
-        // TODO(b/239648780)
-        return null;
+        return receiverComponents.stream().map(id -> id.getString() + ".").collect(Collectors.joining()) + getMethodName();
     }
 
     public int getInputParametersSize() {
-        // return node.getInputParameters().size();
-        // TODO(b/239648780)
-        return 0;
+        return node.getArgs().size();
     }
 }

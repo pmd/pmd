@@ -33,7 +33,7 @@ public class ASTUserClass extends ApexRootNode<ClassDeclaration> implements ASTU
 
     @Override
     public String getImage() {
-        return node.getId().asCodeString();
+        return node.getId().getString();
     }
 
     @Override

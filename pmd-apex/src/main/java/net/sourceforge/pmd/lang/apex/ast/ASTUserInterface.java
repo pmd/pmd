@@ -29,7 +29,7 @@ public class ASTUserInterface extends ApexRootNode<InterfaceDeclaration> impleme
 
     @Override
     public String getImage() {
-        return node.getId().asCodeString();
+        return node.getId().getString();
     }
 
     @Override
