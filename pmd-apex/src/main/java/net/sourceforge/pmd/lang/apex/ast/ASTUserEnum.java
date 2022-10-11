@@ -8,7 +8,9 @@ import net.sourceforge.pmd.annotation.InternalApi;
 
 import com.google.summit.ast.declaration.TypeDeclaration;
 
-public class ASTUserEnum extends ApexRootNode<TypeDeclaration> {
+public class ASTUserEnum extends ApexRootNode<TypeDeclaration> implements ApexQualifiableNode {
+
+    private ApexQualifiedName qname;
 
     @Deprecated
     @InternalApi

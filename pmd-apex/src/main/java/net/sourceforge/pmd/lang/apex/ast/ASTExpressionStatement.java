@@ -13,7 +13,7 @@ public class ASTExpressionStatement extends AbstractApexNode.Single<ExpressionSt
 
     @Deprecated
     @InternalApi
-    public ASTExpressionStatement(Node expressionStatement) {
+    public ASTExpressionStatement(ExpressionStatement expressionStatement) {
         super(expressionStatement);
     }
 

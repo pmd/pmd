@@ -13,7 +13,7 @@ public class ASTTernaryExpression extends AbstractApexNode.Single<TernaryExpress
 
     @Deprecated
     @InternalApi
-    public ASTTernaryExpression(Node ternaryExpression) {
+    public ASTTernaryExpression(TernaryExpression ternaryExpression) {
         super(ternaryExpression);
     }
 

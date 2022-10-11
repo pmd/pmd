@@ -5,7 +5,7 @@
 package net.sourceforge.pmd.lang.apex.ast;
 
 public final class ASTEmptyReferenceExpression extends AbstractApexNode.Empty {
-    
+
     @Override
     public Object jjtAccept(ApexParserVisitor visitor, Object data) {
         return visitor.visit(this, data);

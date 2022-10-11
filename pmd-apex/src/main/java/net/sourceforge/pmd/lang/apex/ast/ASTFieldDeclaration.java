@@ -13,7 +13,7 @@ public class ASTFieldDeclaration extends AbstractApexNode.Single<FieldDeclaratio
 
     @Deprecated
     @InternalApi
-    public ASTFieldDeclaration(Node fieldDeclaration) {
+    public ASTFieldDeclaration(FieldDeclaration fieldDeclaration) {
         super(fieldDeclaration);
     }
 

@@ -17,7 +17,7 @@ public class ASTLiteralExpression extends AbstractApexNode.Single<LiteralExpress
 
     @Deprecated
     @InternalApi
-    public ASTLiteralExpression(Node literalExpression) {
+    public ASTLiteralExpression(LiteralExpression literalExpression) {
         super(literalExpression);
     }
 
@@ -57,8 +57,6 @@ public class ASTLiteralExpression extends AbstractApexNode.Single<LiteralExpress
             return null;
         }
     }
-     */
-    // TODO(b/239648780)
 
     public boolean isString() {
         return getLiteralType() == LiteralType.STRING;
