@@ -357,4 +357,20 @@ public class Foo {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>[java] StringToString doesn't trigger on string literals #3681</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+class Impl {
+  String foo() {
+    return "123".toString();
+  }
+  String bar() {
+    return 'a'.toString();
+  }
+}
+]]></code>
+    </test-code>
 </test-data>

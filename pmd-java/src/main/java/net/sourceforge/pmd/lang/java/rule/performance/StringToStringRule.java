@@ -111,7 +111,7 @@ public class StringToStringRule extends AbstractJavaRule {
             for (NameOccurrence varUsage : varId.getUsages()) {
                 NameOccurrence qualifier = getVarUsageQualifier(varUsage);
                 if (isToStringOnStringCall(varId, qualifier)) {
-                    addViolation(data, varUsage.getLocation());
+                    asCtx(data).addViolation(varUsage.getLocation());
                 }
             }
         }
@@ -164,12 +164,23 @@ public class StringToStringRule extends AbstractJavaRule {
                     JavaNode prevMethodCall = primaryExpr.getChild(callIndex - 2);
                     ASTPrimarySuffix prevMethodCallArgs = (ASTPrimarySuffix) primaryExpr.getChild(callIndex - 1);
                     if (calledMethodReturnsString(prevMethodCall, prevMethodCallArgs)) {
-                        addViolation(data, methodCall);
+                        asCtx(data).addViolation(methodCall);
                     }
                 }
             }
         }
         return super.visit(primaryExpr, data);
+    }
+
+    @Override
+    public Object visit(ASTPrimarySuffix node, Object data) {
+        if (isToStringMethodCall(node) && node.getIndexInParent() > 0) {
+            JavaNode previousSibling = node.getParent().getChild(node.getIndexInParent() - 1);
+            if (previousSibling instanceof ASTPrimaryPrefix && TypeTestUtil.isA(String.class, (ASTPrimaryPrefix) previousSibling)) {
+                asCtx(data).addViolation(node);
+            }
+        }
+        return super.visit(node, data);
     }
 
     private boolean hasChainedMethods(ASTPrimaryExpression primaryExpr) {
