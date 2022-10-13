@@ -186,6 +186,13 @@ public class StringToStringRule extends AbstractJavaRule {
     }
 
     private boolean calledMethodReturnsString(JavaNode methodCall, ASTPrimarySuffix methodCallArgs) {
+        // first try to use type resolution for method call expression
+        // the return type is attached on the PrimarySuffix node which contains the arguments
+        if (methodCallArgs.isArguments() && methodCallArgs.getTypeDefinition() != null) {
+            return TypeTestUtil.isA(String.class, methodCallArgs);
+        }
+
+        // next: find method in the local compilation unit
         String returnTypeName = getCalledMethodReturnTypeName(methodCall, methodCallArgs);
         return "String".equals(returnTypeName);
     }
@@ -249,14 +256,6 @@ public class StringToStringRule extends AbstractJavaRule {
         String methodName = getCalledMethodName(methodCall);
         if (!methodCallArgs.isArguments()) {
             return null;
-        }
-
-        // exclude method call chains
-        if (methodCall.getIndexInParent() > 0) {
-            JavaNode previousSibling = methodCall.getParent().getChild(methodCall.getIndexInParent() - 1);
-            if (previousSibling instanceof ASTPrimarySuffix && ((ASTPrimarySuffix) previousSibling).isArguments()) {
-                return null;
-            }
         }
 
         ASTArguments arguments = methodCallArgs.getFirstChildOfType(ASTArguments.class);

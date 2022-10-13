@@ -250,7 +250,7 @@ public class Foo {
 import java.io.*;
 class B {
     public void foo() {
-        String s = new A().str().toString(); // not detected because str() is from another class
+        String s = new A().str().toString(); // not detected because str() is from another class which is not on the auxclasspath
         s = getString().toString(); // detected
         s = getData(new FileInputStream()).toString(); // detected because of argument (sub) type
         s = getData(new Integer(4), new Integer(5)).toString(); // detected because of unique args count
@@ -318,11 +318,12 @@ public class Foo {
         <description>[java] StringToString false-positive with local method name confusion #3977</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-public class StringToString_FP {
+package net.sourceforge.pmd.lang.java.rule.performance.stringtostring;
+public class StringToStringFP {
   private String s;
 
   public void print(A a) {
-    this.s = a.getB().getC().toString(); // line 5 - false positive
+    this.s = a.getB().getC().toString(); // line 6 - false positive
     this.s = String.valueOf(a.getB().getC()); // workaround
     System.out.println(s);
   }
@@ -330,14 +331,29 @@ public class StringToString_FP {
   public String getC() {
     return "";
   }
-}
 
-interface A {
-    B getB();
-}
+  interface A {
+      B getB();
+  }
 
-interface B {
-    Character getC();
+  interface B {
+      Character getC();
+  }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Use type resolution for method call return type</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+package net.sourceforge.pmd.lang.java.rule.performance.stringtostring;
+public class Foo {
+    public void bar() {
+        User user = new User();
+        String s = user.getName().toString();
+    }
 }
 ]]></code>
     </test-code>

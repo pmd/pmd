@@ -6,4 +6,7 @@ package net.sourceforge.pmd.lang.java.rule.performance.stringtostring;
 
 public class User {
 
+    public String getName() {
+        return "username";
+    }
 }
