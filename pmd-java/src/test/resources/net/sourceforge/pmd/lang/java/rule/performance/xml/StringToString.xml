@@ -396,4 +396,18 @@ public final class Issue2080 {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>[java] StringToString doesn't trigger on Bar.class.getSimpleName().toString() #3437</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+  @Override
+  public String toString() {
+    return new StringJoiner(",", Bar.class.getSimpleName().toString() + "[", "]");
+  }
+}
+]]></code>
+    </test-code>
 </test-data>

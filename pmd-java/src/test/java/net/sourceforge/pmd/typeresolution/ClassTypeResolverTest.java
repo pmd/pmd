@@ -1891,6 +1891,15 @@ public class ClassTypeResolverTest {
         assertEquals(forClass(Arrays.class), expr.getFirstChildOfType(ASTPrimaryPrefix.class).getTypeDefinition());
     }
 
+    @Test
+    public void testClassLiteral() {
+        ASTCompilationUnit unit = java11.parse("public class ClassLiteral { String s = ClassLiteral.class.getName(); }");
+        ASTPrimaryPrefix node = unit.getFirstDescendantOfType(ASTPrimaryPrefix.class);
+        assertEquals("class", node.jjtGetLastToken().getImage());
+        assertNotNull(node.getTypeDefinition());
+        assertSame(Class.class, node.getTypeDefinition().getType());
+    }
+
     private JavaTypeDefinition getChildTypeDef(Node node, int childIndex) {
         return ((TypeNode) node.getChild(childIndex)).getTypeDefinition();
     }
