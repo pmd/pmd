@@ -373,4 +373,27 @@ class Impl {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>[java] StringToString rule false-positive with field access #2080</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package net.sourceforge.pmd.lang.java.rule.performance.stringtostring;
+
+public final class Issue2080 {
+    String value;
+
+    public void foo() {
+        A a = new A();
+        value = a.value.toString(); // false positive
+    }
+
+    class A {
+        B value;
+    }
+
+    class B { }
+}
+]]></code>
+    </test-code>
 </test-data>

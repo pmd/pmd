@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTArguments;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBody;
@@ -133,9 +134,17 @@ public class StringToStringRule extends AbstractJavaRule {
     private boolean isToStringOnStringCall(ASTVariableDeclaratorId varDeclaratorId, NameOccurrence qualifier) {
         if (qualifier != null) {
             return isNotAMethodReference(qualifier) && isNotAnArrayField(varDeclaratorId, qualifier)
-                    && isToString(qualifier.getImage());
+                && isToString(qualifier.getImage()) && isStringAccess(qualifier);
         }
         return false;
+    }
+
+    private boolean isStringAccess(NameOccurrence qualifier) {
+        Node parent = qualifier.getLocation().getParent();
+        if (parent instanceof ASTPrimaryPrefix) {
+            return TypeTestUtil.isA(String.class, (ASTPrimaryPrefix) parent);
+        }
+        return true;
     }
 
     private boolean isNotAnArrayField(ASTVariableDeclaratorId varDeclaratorId, NameOccurrence qualifier) {
