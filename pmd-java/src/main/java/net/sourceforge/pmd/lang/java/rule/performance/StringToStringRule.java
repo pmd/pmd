@@ -191,7 +191,7 @@ public class StringToStringRule extends AbstractJavaRule {
     }
 
     private String getCalledMethodName(JavaNode methodCall) {
-        ASTName name = methodCall.getFirstDescendantOfType(ASTName.class);
+        ASTName name = methodCall.getFirstChildOfType(ASTName.class);
         return name != null ? name.getImage() : methodCall.getImage();
     }
 
