@@ -250,6 +250,15 @@ public class StringToStringRule extends AbstractJavaRule {
         if (!methodCallArgs.isArguments()) {
             return null;
         }
+
+        // exclude method call chains
+        if (methodCall.getIndexInParent() > 0) {
+            JavaNode previousSibling = methodCall.getParent().getChild(methodCall.getIndexInParent() - 1);
+            if (previousSibling instanceof ASTPrimarySuffix && ((ASTPrimarySuffix) previousSibling).isArguments()) {
+                return null;
+            }
+        }
+
         ASTArguments arguments = methodCallArgs.getFirstChildOfType(ASTArguments.class);
         ASTArgumentList argumentList = arguments.getFirstChildOfType(ASTArgumentList.class);
         List<ASTMethodDeclaration> candidates = getMethodsByNameAndArgsCount(methodName, arguments.size());

@@ -313,4 +313,32 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>[java] StringToString false-positive with local method name confusion #3977</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class StringToString_FP {
+  private String s;
+
+  public void print(A a) {
+    this.s = a.getB().getC().toString(); // line 5 - false positive
+    this.s = String.valueOf(a.getB().getC()); // workaround
+    System.out.println(s);
+  }
+
+  public String getC() {
+    return "";
+  }
+}
+
+interface A {
+    B getB();
+}
+
+interface B {
+    Character getC();
+}
+]]></code>
+    </test-code>
 </test-data>
