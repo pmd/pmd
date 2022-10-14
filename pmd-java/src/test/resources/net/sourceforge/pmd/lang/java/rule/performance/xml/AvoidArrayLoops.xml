@@ -49,7 +49,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>copy via do-while loop</description>
+        <description>copy via do-while loop #4091</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
