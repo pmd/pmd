@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.apex.rule.bestpractices;
 
 import java.util.List;
 
-import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
 import net.sourceforge.pmd.lang.apex.ast.ASTRunAsBlockStatement;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
@@ -18,12 +17,6 @@ import net.sourceforge.pmd.lang.apex.rule.AbstractApexUnitTestRule;
  * @author t.prouvot
  */
 public class ApexUnitTestClassShouldHaveRunAsRule extends AbstractApexUnitTestRule {
-
-    public ApexUnitTestClassShouldHaveRunAsRule() {
-        setName("ApexUnitTestClassShouldHaveRunAsRule");
-        setMessage("Apex unit test classes should have at least one System.runAs() call");
-        setPriority(RulePriority.MEDIUM);
-    }
 
     @Override
     public Object visit(ASTMethod node, Object data) {
