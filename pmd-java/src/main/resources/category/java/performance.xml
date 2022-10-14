@@ -86,7 +86,7 @@ Instead of manually copying data between two arrays, use the efficient Arrays.co
   [*/Statement/Block/BlockStatement/Statement
         /StatementExpression[AssignmentOperator[@Image = '=']]
         (: LHS - left hand side :)
-        [PrimaryExpression/PrimarySuffix[@ArrayDereference = true()]
+        [PrimaryExpression[count(PrimarySuffix) = 1]/PrimarySuffix[@ArrayDereference = true()]
         /Expression[PrimaryExpression or AdditiveExpression]
                    [count(.//PrimaryPrefix/Name) = 1]
         //PrimaryPrefix/Name/@Image]

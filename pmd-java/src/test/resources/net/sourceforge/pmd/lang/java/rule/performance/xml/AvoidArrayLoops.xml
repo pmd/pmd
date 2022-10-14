@@ -160,4 +160,29 @@ class AvoidArrayLoops {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>Ignore multi-dim array assignment #1167</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.Random;
+class AvoidArrayLoops {
+    void bar1(int[][] target, int[] source) {
+        for (int i = 0; i < 10; i++) {
+            for(int j = 0; j < 10; j++) {
+                target[i][j] = source[i * 10 + j];
+            }
+        }
+    }
+    void bar2(int[][] target, int[] source) {
+        for (int i = 0; i < 10; i++) {
+            for(int j = 0; j < 10; j++) {
+                int sourceIndex = new Random().nextInt(source.length);
+                target[i][j] = source[sourceIndex];
+            }
+        }
+    }
+}
+]]></code>
+    </test-code>
 </test-data>
