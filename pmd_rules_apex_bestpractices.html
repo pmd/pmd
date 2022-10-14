@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Rules which enforce generally accepted best practices.">
-<meta name="keywords" content=" Best Practices, ApexAssertionsShouldIncludeMessage, ApexUnitTestClassShouldHaveAsserts, ApexUnitTestMethodShouldHaveIsTestAnnotation, ApexUnitTestShouldNotUseSeeAllDataTrue, AvoidGlobalModifier, AvoidLogicInTrigger, DebugsShouldUseLoggingLevel, UnusedLocalVariable">
+<meta name="keywords" content=" Best Practices, ApexAssertionsShouldIncludeMessage, ApexUnitTestClassShouldHaveAsserts, ApexUnitTestClassShouldHaveRunAs, ApexUnitTestMethodShouldHaveIsTestAnnotation, ApexUnitTestShouldNotUseSeeAllDataTrue, AvoidGlobalModifier, AvoidLogicInTrigger, DebugsShouldUseLoggingLevel, UnusedLocalVariable">
 <title>Best Practices | PMD Source Code Analyzer</title>
 <link rel="stylesheet" href="css/syntax.css">
 
@@ -1690,6 +1690,79 @@ patterns can be specified using the ‘additionalAssertMethodPattern’ property
 <span class="nt">&lt;/rule&gt;</span>
 </code></pre></div></div>
 
+<h2 id="apexunittestclassshouldhaverunas">ApexUnitTestClassShouldHaveRunAs</h2>
+
+<p><strong>Since:</strong> PMD 6.51.0</p>
+
+<p><strong>Priority:</strong> Medium (3)</p>
+
+<p>Apex unit tests should include at least one runAs method.  This makes the tests more robust, and independent from the 
+user running it.</p>
+
+<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-apex/src/main/java/net/sourceforge/pmd/lang/apex/rule/bestpractices/ApexUnitTestClassShouldHaveRunAsRule.java">net.sourceforge.pmd.lang.apex.rule.bestpractices.ApexUnitTestClassShouldHaveRunAsRule</a></p>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@isTest</span>
+<span class="kd">private</span> <span class="kd">class</span> <span class="nc">TestRunAs</span> <span class="o">{</span>
+   <span class="kd">public</span> <span class="kd">static</span> <span class="n">testMethod</span> <span class="kt">void</span> <span class="nf">testRunAs</span><span class="o">()</span> <span class="o">{</span>
+        <span class="c1">// Setup test data</span>
+        <span class="c1">// Create a unique UserName</span>
+        <span class="nc">String</span> <span class="n">uniqueUserName</span> <span class="o">=</span> <span class="err">'</span><span class="n">standarduser</span><span class="err">'</span> <span class="o">+</span> <span class="nc">DateTime</span><span class="o">.</span><span class="na">now</span><span class="o">().</span><span class="na">getTime</span><span class="o">()</span> <span class="o">+</span> <span class="err">'</span><span class="nd">@testorg</span><span class="o">.</span><span class="na">com</span><span class="err">'</span><span class="o">;</span>
+        <span class="c1">// This code runs as the system user</span>
+        <span class="nc">Profile</span> <span class="n">p</span> <span class="o">=</span> <span class="o">[</span><span class="no">SELECT</span> <span class="nc">Id</span> <span class="no">FROM</span> <span class="nc">Profile</span> <span class="no">WHERE</span> <span class="nc">Name</span><span class="o">=</span><span class="err">'</span><span class="nc">Standard</span> <span class="nc">User</span><span class="err">'</span><span class="o">];</span>
+        <span class="nc">User</span> <span class="n">u</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">User</span><span class="o">(</span><span class="nc">Alias</span> <span class="o">=</span> <span class="err">'</span><span class="n">standt</span><span class="err">'</span><span class="o">,</span> <span class="nc">Email</span><span class="o">=</span><span class="err">'</span><span class="n">standarduser</span><span class="nd">@testorg</span><span class="o">.</span><span class="na">com</span><span class="err">'</span><span class="o">,</span>
+        <span class="nc">EmailEncodingKey</span><span class="o">=</span><span class="err">'</span><span class="no">UTF</span><span class="o">-</span><span class="mi">8</span><span class="err">'</span><span class="o">,</span> <span class="nc">LastName</span><span class="o">=</span><span class="err">'</span><span class="nc">Testing</span><span class="err">'</span><span class="o">,</span> <span class="nc">LanguageLocaleKey</span><span class="o">=</span><span class="err">'</span><span class="n">en_US</span><span class="err">'</span><span class="o">,</span>
+        <span class="nc">LocaleSidKey</span><span class="o">=</span><span class="err">'</span><span class="n">en_US</span><span class="err">'</span><span class="o">,</span> <span class="nc">ProfileId</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="na">Id</span><span class="o">,</span>
+        <span class="nc">TimeZoneSidKey</span><span class="o">=</span><span class="err">'</span><span class="nc">America</span><span class="o">/</span><span class="n">Los_Angeles</span><span class="err">'</span><span class="o">,</span>
+         <span class="nc">UserName</span><span class="o">=</span><span class="n">uniqueUserName</span><span class="o">);</span>
+
+        <span class="nc">System</span><span class="o">.</span><span class="na">runAs</span><span class="o">(</span><span class="n">u</span><span class="o">)</span> <span class="o">{</span>
+              <span class="c1">// The following code runs as user 'u'</span>
+              <span class="nc">System</span><span class="o">.</span><span class="na">debug</span><span class="o">(</span><span class="err">'</span><span class="nc">Current</span> <span class="nl">User:</span> <span class="err">'</span> <span class="o">+</span> <span class="nc">UserInfo</span><span class="o">.</span><span class="na">getUserName</span><span class="o">());</span>
+              <span class="nc">System</span><span class="o">.</span><span class="na">debug</span><span class="o">(</span><span class="err">'</span><span class="nc">Current</span> <span class="nl">Profile:</span> <span class="err">'</span> <span class="o">+</span> <span class="nc">UserInfo</span><span class="o">.</span><span class="na">getProfileId</span><span class="o">());</span>
+          <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>This rule has the following properties:</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Default Value</th>
+      <th>Description</th>
+      <th>Multivalued</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>cc_categories</td>
+      <td>Bug Risk</td>
+      <td><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Categories</td>
+      <td>yes. Delimiter is ‘|’.</td>
+    </tr>
+    <tr>
+      <td>cc_remediation_points_multiplier</td>
+      <td>100</td>
+      <td><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Remediation Points multiplier</td>
+      <td>no</td>
+    </tr>
+    <tr>
+      <td>cc_block_highlighting</td>
+      <td>false</td>
+      <td><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Block Highlighting</td>
+      <td>no</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Use this rule with the default properties by just referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/apex/bestpractices.xml/ApexUnitTestClassShouldHaveRunAs"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
 <h2 id="apexunittestmethodshouldhaveistestannotation">ApexUnitTestMethodShouldHaveIsTestAnnotation</h2>
 
 <p><strong>Since:</strong> PMD 6.13.0</p>
@@ -2113,7 +2186,7 @@ Therefore delegate the triggers work to a regular class (often called Trigger ha
         <div class="col-lg-12 footer">
             &copy;2022 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Oct 10, 2022 <br />
+             Site last generated: Oct 14, 2022 <br />
             <p>
                 <img src="images/pmd-logo-small.png" alt="Company
                 logo"/>

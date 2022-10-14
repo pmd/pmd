@@ -910,6 +910,15 @@
 ,
 
 {
+"title": "ApexUnitTestClassShouldHaveRunAs (Apex, Best Practices)",
+"tags": "",
+"keywords": "ApexUnitTestClassShouldHaveRunAs",
+"url": "pmd_rules_apex_bestpractices.html#apexunittestclassshouldhaverunas",
+"summary": "Rules which enforce generally accepted best practices."
+}
+,
+
+{
 "title": "ApexUnitTestMethodShouldHaveIsTestAnnotation (Apex, Best Practices)",
 "tags": "",
 "keywords": "ApexUnitTestMethodShouldHaveIsTestAnnotation",
