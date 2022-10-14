@@ -110,12 +110,54 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-    public void bar() {
+    public void bar1() {
         for (int i = 0; i < 10; i++) {
+            a[i] += b[i];
+        }
+    }
+    public void bar2() {
+        int i = 0;
+        for (i = 0; i < 10; i++) {
             a[i] += b[i];
         }
     }
 }
         ]]></code>
+    </test-code>
+    
+    <test-code>
+        <description>[java] AvoidArrayLoops false positive on double assignment #1167</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Test {
+  public static void main( String[] args ) {
+    double[] foo = new double[100];
+    double bar = 0.0;
+    int[] exps = new int[10];
+
+    for (int i = 0; i < exps.length; i++) {
+      double value = Math.random();
+      foo[i] = Math.exp(value);
+      bar += foo[i];
+    }
+  }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Nested array on RHS</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class AvoidArrayLoops {
+  void copy_a_to_b(int[] a, int[] b) {
+        int[] c = new int[10];
+        // this will not trigger the rule
+        for (int i = 0; i < 10; i++) {
+            b[i] = a[c[i]];
+        }
+  }
+}
+]]></code>
     </test-code>
 </test-data>

@@ -80,22 +80,22 @@ Instead of manually copying data between two arrays, use the efficient Arrays.co
             <property name="xpath">
                 <value>
 <![CDATA[
-//Statement[(ForStatement or WhileStatement) and
-count(*//AssignmentOperator[@Image = '='])=1
-and
-*/Statement
-[
-./Block/BlockStatement/Statement/StatementExpression/PrimaryExpression
-/PrimaryPrefix/Name/../../PrimarySuffix/Expression
-[(PrimaryExpression or AdditiveExpression) and count
-(.//PrimaryPrefix/Name)=1]//PrimaryPrefix/Name/@Image
-and
-./Block/BlockStatement/Statement/StatementExpression/Expression/PrimaryExpression
-/PrimaryPrefix/Name/../../PrimarySuffix[count
-(..//PrimarySuffix)=1]/Expression[(PrimaryExpression
-or AdditiveExpression) and count(.//PrimaryPrefix/Name)=1]
-//PrimaryPrefix/Name/@Image
-]]
+//Statement
+  [(ForStatement or WhileStatement)]
+  [count(*/Statement//AssignmentOperator[@Image = '='])=1]
+  [*/Statement/Block/BlockStatement/Statement
+        /StatementExpression[AssignmentOperator[@Image = '=']]
+        (: LHS - left hand side :)
+        [PrimaryExpression/PrimarySuffix[@ArrayDereference = true()]
+        /Expression[PrimaryExpression or AdditiveExpression]
+                   [count(.//PrimaryPrefix/Name) = 1]
+        //PrimaryPrefix/Name/@Image]
+        (: RHS - right hand side :)
+        [Expression/PrimaryExpression/PrimarySuffix[@ArrayDereference = true()][count(..//PrimarySuffix) = 1]
+        /Expression[PrimaryExpression or AdditiveExpression]
+                   [count(.//PrimaryPrefix/Name) = 1]
+        //PrimaryPrefix/Name/@Image]
+  ]
 ]]>
                 </value>
             </property>
@@ -103,17 +103,19 @@ or AdditiveExpression) and count(.//PrimaryPrefix/Name)=1]
         <example>
 <![CDATA[
 public class Test {
-    public void bar() {
+    public void copy_a_to_b() {
         int[] a = new int[10];
         int[] b = new int[10];
-        for (int i=0;i<10;i++) {
-            b[i]=a[i];
+        for (int i = 0; i < 10; i++) {
+            b[i] = a[i];
         }
+        // equivalent
+        System.arraycopy(a, 0, b, 0, 10);
 
         int[] c = new int[10];
-        // this will trigger the rule
-        for (int i=0;i<10;i++) {
-            b[i]=a[c[i]];
+        // this will not trigger the rule
+        for (int i = 0; i < 10; i++) {
+            b[i] = a[c[i]];
         }
     }
 }
