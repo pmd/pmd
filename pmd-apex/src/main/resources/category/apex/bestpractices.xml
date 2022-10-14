@@ -67,7 +67,7 @@ public class Foo {
     <rule name="ApexUnitTestClassShouldHaveRunAs"
           language="apex"
           since="6.51.0"
-          message="Apex unit tests should use System.runAs() method"
+          message="Apex unit test classes should have at least one System.runAs() call"
           class="net.sourceforge.pmd.lang.apex.rule.bestpractices.ApexUnitTestClassShouldHaveRunAsRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_bestpractices.html#apexunittestclassshouldhaverunas">
         <description>
