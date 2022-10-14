@@ -39,7 +39,7 @@ public class ApexUnitTestClassShouldHaveRunAsRule extends AbstractApexUnitTestRu
     private Object checkForRunAsStatements(ApexNode<?> node, Object data) {
         final List<ASTRunAsBlockStatement> runAsStatements = node.findDescendantsOfType(ASTRunAsBlockStatement.class);
 
-        if (!!runAsStatements.isEmpty()) {
+        if (runAsStatements.isEmpty()) {
             addViolation(data, node);
         }
         return data;
