@@ -88,12 +88,16 @@ Instead of manually copying data between two arrays, use the efficient Arrays.co
         (: LHS - left hand side :)
         [PrimaryExpression[count(PrimarySuffix) = 1]/PrimarySuffix[@ArrayDereference = true()]
         /Expression[PrimaryExpression or AdditiveExpression]
-                   [count(.//PrimaryPrefix/Name) = 1]
+                   [count(.//PrimaryPrefix/Name) = 1 or
+                    (count(.//PrimaryPrefix/Name) = 2 and .//PrimaryPrefix/Name/@Image = //VariableDeclaratorId[@Final = true()]/@Name)
+                   ]
         //PrimaryPrefix/Name/@Image]
         (: RHS - right hand side :)
         [Expression/PrimaryExpression/PrimarySuffix[@ArrayDereference = true()][count(..//PrimarySuffix) = 1]
         /Expression[PrimaryExpression or AdditiveExpression]
-                   [count(.//PrimaryPrefix/Name) = 1]
+                   [count(.//PrimaryPrefix/Name) = 1 or
+                    (count(.//PrimaryPrefix/Name) = 2 and .//PrimaryPrefix/Name/@Image = //VariableDeclaratorId[@Final = true()]/@Name)
+                   ]
         //PrimaryPrefix/Name/@Image]
   ]
 ]]>
