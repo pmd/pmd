@@ -4,11 +4,9 @@
 
 package net.sourceforge.pmd.lang.apex.rule.bestpractices;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import net.sourceforge.pmd.RulePriority;
-import net.sourceforge.pmd.lang.apex.ast.ASTBlockStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
 import net.sourceforge.pmd.lang.apex.ast.ASTRunAsBlockStatement;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
@@ -39,7 +37,7 @@ public class ApexUnitTestClassShouldHaveRunAsRule extends AbstractApexUnitTestRu
     private Object checkForRunAsStatements(ApexNode<?> node, Object data) {
         final List<ASTRunAsBlockStatement> runAsStatements = node.findDescendantsOfType(ASTRunAsBlockStatement.class);
 
-        if (!!runAsStatements.isEmpty()) {
+        if (runAsStatements.isEmpty()) {
             addViolation(data, node);
         }
         return data;
