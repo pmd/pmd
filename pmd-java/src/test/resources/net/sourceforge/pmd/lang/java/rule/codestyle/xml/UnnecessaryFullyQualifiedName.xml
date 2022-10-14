@@ -730,4 +730,17 @@ public class ClassA {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>[java] UnnecessaryFullyQualifiedName FP when the same simple class name exists in the current package #4139</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryfullyqualifiedname;
+class Scratch {
+    // note: there is also net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryfullyqualifiedname.Deprecated...
+    @java.lang.Deprecated
+    int aField;
+}
+]]></code>
+    </test-code>
 </test-data>
