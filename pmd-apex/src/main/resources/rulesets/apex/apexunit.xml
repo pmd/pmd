@@ -9,7 +9,6 @@
     </description>
 
     <rule ref="category/apex/bestpractices.xml/ApexUnitTestClassShouldHaveAsserts" deprecated="true" />
-    <rule ref="category/apex/bestpractices.xml/ApexUnitTestClassShouldHaveRunAs" deprecated="true" />
     <rule ref="category/apex/bestpractices.xml/ApexUnitTestShouldNotUseSeeAllDataTrue" deprecated="true" />
 
 </ruleset>
