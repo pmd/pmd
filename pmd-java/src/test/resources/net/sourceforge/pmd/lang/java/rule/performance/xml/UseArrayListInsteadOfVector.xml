@@ -116,4 +116,15 @@ public class C {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>Only consider Vector and not subclasses</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.Stack;
+class StackUser {
+    Stack s = new Stack();
+}
+]]></code>
+    </test-code>
 </test-data>
