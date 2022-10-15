@@ -39,7 +39,7 @@ public class PMDExecutor {
     private static ExecutionResult runPMDUnix(Path tempDir, Path reportFile, String... arguments) throws Exception {
         String cmd = tempDir.resolve(AbstractBinaryDistributionTest.PMD_BIN_PREFIX + PMDVersion.VERSION + "/bin/pmd").toAbsolutePath().toString();
         List<String> args = new ArrayList<>();
-        args.add("run");
+        args.add("check");
         args.addAll(Arrays.asList(arguments));
         return runCommand(cmd, args, reportFile);
     }
@@ -47,7 +47,7 @@ public class PMDExecutor {
     private static ExecutionResult runPMDWindows(Path tempDir, Path reportFile, String... arguments) throws Exception {
         String cmd = tempDir.resolve(AbstractBinaryDistributionTest.PMD_BIN_PREFIX + PMDVersion.VERSION + "/bin/pmd.bat").toAbsolutePath().toString();
         List<String> args = new ArrayList<>();
-        args.add("run");
+        args.add("check");
         args.addAll(Arrays.asList(arguments));
         return runCommand(cmd, args, reportFile);
     }
