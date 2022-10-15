@@ -109,7 +109,7 @@ public class BinaryDistributionIT extends AbstractBinaryDistributionTest {
     @Test
     public void testPmdNoArgs() throws Exception {
         ExecutionResult result = PMDExecutor.runPMD(tempDir); // without any argument, display usage help and error
-        result.assertExecutionResultErrOutput(2, "Usage: pmd analyze ");
+        result.assertExecutionResultErrOutput(2, "Usage: pmd check ");
     }
 
     @Test

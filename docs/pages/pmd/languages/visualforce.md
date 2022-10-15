@@ -31,7 +31,7 @@ We'll probably extend the CLI instead of relying on environment variables in a f
 ```
 PMD_VF_APEXDIRECTORIES=../classes \
 PMD_VF_OBJECTSDIRECTORIES=../objects \
-pmd run -d $GITHUB_WORKSPACE/force-app/main/default/pages \
+pmd check -d $GITHUB_WORKSPACE/force-app/main/default/pages \
     -R category/vf/security.xml/VfUnescapeEl -f text
 ```
 

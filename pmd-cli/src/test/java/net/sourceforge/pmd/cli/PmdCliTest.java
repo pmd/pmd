@@ -203,7 +203,7 @@ class PmdCliTest extends BaseCliTest {
     void testWrongCliOptionsDoPrintUsage() throws Exception {
         final String log = runCli(ExecutionResult.USAGE_ERROR, "--invalid", "--rulesets", DUMMY_RULESET, "-d", srcDir.toString());
         assertThat(log, containsString("Unknown option: '--invalid'"));
-        assertThat(log, containsString("Usage: pmd analyze"));
+        assertThat(log, containsString("Usage: pmd check"));
     }
 
     // utilities
@@ -231,7 +231,7 @@ class PmdCliTest extends BaseCliTest {
         final List<String> argList = new ArrayList<>();
         
         // Always run against dummy language without logging not cache to remove all logging noise
-        argList.add("run");
+        argList.add("check");
         argList.add("--use-version");
         argList.add("dummy-1.0");
         argList.add("--no-cache");

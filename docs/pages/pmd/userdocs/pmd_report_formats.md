@@ -122,11 +122,11 @@ It has two ways of calling:
 
 1. For a single file: then all three properties need to be provided
 
-`pmd run -d src/Foo.java -R rulesets/java/quickstart.xml -f ideaj -P fileName=src/Foo.java -P sourcePath=/home/pmd/src -P classAndMethodName=Foo`
+`pmd check -d src/Foo.java -R rulesets/java/quickstart.xml -f ideaj -P fileName=src/Foo.java -P sourcePath=/home/pmd/src -P classAndMethodName=Foo`
 
 2. For a directory: then the fileName property can be omitted
 
-`pmd run -d src -R rulesets/java/quickstart.xml -f ideaj -P sourcePath=/home/pmd/src -P classAndMethodName=.method`
+`pmd check -d src -R rulesets/java/quickstart.xml -f ideaj -P sourcePath=/home/pmd/src -P classAndMethodName=.method`
 
 Example:
 

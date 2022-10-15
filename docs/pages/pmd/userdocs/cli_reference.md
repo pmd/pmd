@@ -179,9 +179,9 @@ Just set the environment variable `PMD_JAVA_OPTS` before executing PMD, e.g.
 {% include cli_example.html
    id="preview"
    linux="export PMD_JAVA_OPTS=\"--enable-preview\"
-    pmd analyze -d src/main/java/ -f text -R rulesets/java/quickstart.xml"
+    pmd check -d src/main/java/ -f text -R rulesets/java/quickstart.xml"
    windows="set \"PMD_JAVA_OPTS=--enable-preview\"
-    pmd.bat analyze -d src\main\java\ -f text -R rulesets/java/quickstart.xml" %}
+    pmd.bat check -d src\main\java\ -f text -R rulesets/java/quickstart.xml" %}
 
 ## Exit Status
 
@@ -217,8 +217,8 @@ Example:
 
 {% include cli_example.html
    id="lang-ver"
-   linux="pmd analyze -d src/main/java -f text -R rulesets/java/quickstart.xml --use-version java-1.8"
-   windows="pmd.bat analyze -d src\main\java -f text -R rulesets/java/quickstart.xml --use-version java-1.8" %}
+   linux="pmd check -d src/main/java -f text -R rulesets/java/quickstart.xml --use-version java-1.8"
+   windows="pmd.bat check -d src\main\java -f text -R rulesets/java/quickstart.xml --use-version java-1.8" %}
 
 *   [apex](pmd_rules_apex.html) (Salesforce Apex)
 *   [ecmascript](pmd_rules_ecmascript.html) (JavaScript)
@@ -252,23 +252,23 @@ If your xml language doesn't use `xml` as file extension, you can still use PMD 
 
 {% include cli_example.html
    id="force"
-   linux="pmd analyze -d src/xml-file.ext -f text -R ruleset.xml --force-language xml"
-   windows="pmd.bat analyze -d src\xml-file.ext -f text -R ruleset.xml --force-language xml" %}
+   linux="pmd check -d src/xml-file.ext -f text -R ruleset.xml --force-language xml"
+   windows="pmd.bat check -d src\xml-file.ext -f text -R ruleset.xml --force-language xml" %}
 
 You can also specify a directory instead of a single file. Then all files are analyzed. In that case,
 parse errors are suppressed in order to reduce irrelevant noise:
 
 {% include cli_example.html
    id="force-dir"
-   linux="pmd analyze -d src/ -f text -R ruleset.xml --force-language xml"
-   windows="pmd.bat analyze -d src\ -f text -R ruleset.xml --force-language xml" %}
+   linux="pmd check -d src/ -f text -R ruleset.xml --force-language xml"
+   windows="pmd.bat check -d src\ -f text -R ruleset.xml --force-language xml" %}
 
 Alternatively, you can create a filelist to only analyze files with a given extension:
 
 {% include cli_example.html
    id="file-list"
    linux="find src/ -name \"*.ext\" > filelist.txt
-     pmd analyze --file-list filelist.txt -f text -R ruleset.xml --force-language xml"
+     pmd check --file-list filelist.txt -f text -R ruleset.xml --force-language xml"
    windows="for /r src/ %i in (*.ext) do echo %i >> filelist.txt
-     pmd.bat analyze --file-list filelist.txt -f text -R ruleset.xml --force-language xml" %}
+     pmd.bat check --file-list filelist.txt -f text -R ruleset.xml --force-language xml" %}
 

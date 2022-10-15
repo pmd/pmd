@@ -42,7 +42,7 @@ import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.ParameterException;
 
-@Command(name = "analyze", aliases = {"analyse", "run" }, showDefaultValues = true,
+@Command(name = "check", showDefaultValues = true,
     description = "The PMD standard source code analyzer")
 public class PmdCommand extends AbstractAnalysisPmdSubcommand {
 

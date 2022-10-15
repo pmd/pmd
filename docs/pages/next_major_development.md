@@ -20,48 +20,6 @@ The current tasks are listed here: [Integrate new PMD logo #1931](https://github
 
 The new logo is available from the [Logo Project Page](pmd_projectdocs_logo.html).
 
-### Revamped Command Line Interface
-
-PMD now ships with a unified Command Line Interface for both Linux/Unix and Windows. Instead of having a collection of scripts 
-for the different utilities shipped with PMD, a single script `pmd` (`pmd.bat` for Windows) can now launch all
-utilities using subcommands, e.g. `pmd run`, `pmd designer`. All commands and options are thoroughly documented in the help,
-with full color support where available. Moreover, efforts were made to provide consistency in the usage of all PMD utilities.
-
-```
-$ pmd --help    
-Usage: pmd [-hV] [COMMAND]
-  -h, --help      Show this help message and exit.
-  -V, --version   Print version information and exit.
-Commands:
-  analyze, analyse, run  The PMD standard source code analyzer
-  cpd                    Copy/Paste Detector - find duplicate code
-  designer               The PMD visual rule designer
-  cpd-gui                GUI for the Copy/Paste Detector
-                           Warning: May not support the full CPD feature set
-  ast-dump               Experimental: dumps the AST of parsing source code
-Exit Codes:
-  0   Successful analysis, no violations found
-  1   An unexpected error occurred during execution
-  2   Usage error, please refer to the command help
-  4   Successful analysis, at least 1 violation found
-```
-
-For instance, where you previously would have run
-```shell
-run.sh pmd -d src -R ruleset.xml
-```
-you should now use
-```shell
-pmd run -d src -R ruleset.xml
-```
-Additionally, we now provide a completion script for Bash/Zsh to further help daily usage.
-This script can be found under `shell/pmd-completion.sh` in the binary distribution.
-To use it, edit your `~/.bashrc` / `~/.zshrc` file and add the following line:
-
-```
-source *path_to_pmd*/shell/pmd-completion.sh
-```
-
 ### API
 
 The API of PMD has been growing over the years and needs to be cleaned up. The goal is, to

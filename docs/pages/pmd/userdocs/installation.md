@@ -58,10 +58,10 @@ To enable it, simply add `source *path_to_pmd*/shell/pmd-completion.sh` to your 
    content="PMD comes with several command line utilities, like CPD, the rule designer or PMD itself.
             You can run any of them using the script `pmd` (`pmd.bat` under Windows), located inside the `bin/`
             directory of the PMD distribution. The first argument is the name of the utility you want
-            to execute ('analyze', 'designer', ...), e.g. PMD is launched via `pmd analyze`. The rest of
+            to execute ('check', 'designer', ...), e.g. PMD is launched via `pmd check`. The rest of
             the arguments are specific to the utility used.<br/><br/>" %}
 
-Running a PMD analysis (`pmd analyze` or `pmd.bat analyze`) requires at least two options:
+Running a PMD analysis (`pmd check` or `pmd.bat check`) requires at least two options:
 
 * `-d <path>`: path to the sources to analyse. This can be a file name, a directory, or a jar or zip file containing the
 sources.
@@ -93,14 +93,14 @@ Additionally, the following options, are specified most of the time even though 
 
 {% include cli_example.html
    id="pmd"
-   linux="pmd analyze -d ../../../src/main/java/ -f text -R rulesets/java/quickstart.xml
+   linux="pmd check -d ../../../src/main/java/ -f text -R rulesets/java/quickstart.xml
 
   .../src/main/java/com/me/RuleSet.java:123  These nested if statements could be combined
   .../src/main/java/com/me/RuleSet.java:231  Useless parentheses.
   .../src/main/java/com/me/RuleSet.java:232  Useless parentheses.
   .../src/main/java/com/me/RuleSet.java:357  These nested if statements could be combined
   .../src/main/java/com/me/RuleSetWriter.java:66     Avoid empty catch blocks"
-   windows="pmd.bat analyze -d ..\..\src\main\java\ -f text -R rulesets/java/quickstart.xml
+   windows="pmd.bat check -d ..\..\src\main\java\ -f text -R rulesets/java/quickstart.xml
 
   .../src/main/java/com/me/RuleSet.java:123  These nested if statements could be combined
   .../src/main/java/com/me/RuleSet.java:231  Useless parentheses.
