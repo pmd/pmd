@@ -525,7 +525,7 @@ public class PMDConfiguration extends AbstractConfiguration {
      */
     @Deprecated
     public String getInputFilePath() {
-        return inputFilePath.toString();
+        return inputFilePath == null ? null : inputFilePath.toString();
     }
 
     public Path getInputFile() {
@@ -537,7 +537,7 @@ public class PMDConfiguration extends AbstractConfiguration {
      */
     @Deprecated
     public String getIgnoreFilePath() {
-        return ignoreFilePath.toString();
+        return ignoreFilePath == null ? null : ignoreFilePath.toString();
     }
 
     public Path getIgnoreFile() {
@@ -596,7 +596,7 @@ public class PMDConfiguration extends AbstractConfiguration {
      */
     @Deprecated
     public String getInputUri() {
-        return inputUri.toString();
+        return inputUri == null ? null : inputUri.toString();
     }
 
     /**
@@ -707,7 +707,7 @@ public class PMDConfiguration extends AbstractConfiguration {
      */
     @Deprecated
     public String getReportFile() {
-        return reportFile.toString();
+        return reportFile == null ? null : reportFile.toString();
     }
 
     /**
