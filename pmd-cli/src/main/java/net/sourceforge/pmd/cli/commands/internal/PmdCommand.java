@@ -260,15 +260,15 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand {
      */
     public PMDConfiguration toConfiguration() {
         final PMDConfiguration configuration = new PMDConfiguration();
-        configuration.setInputPaths(inputPaths.stream().map(Path::toString).collect(Collectors.toList()));
-        configuration.setInputFilePath(fileListPath != null ? fileListPath.toString() : null);
-        configuration.setIgnoreFilePath(ignoreListPath != null ? ignoreListPath.toString() : null);
-        configuration.setInputUri(uri != null ? uri.toString() : null);
+        configuration.setInputPathList(inputPaths);
+        configuration.setInputFilePath(fileListPath);
+        configuration.setIgnoreFilePath(ignoreListPath);
+        configuration.setInputUri(uri);
         configuration.setReportFormat(format);
         configuration.setDebug(debug);
         configuration.setSourceEncoding(encoding.getEncoding().name());
         configuration.setMinimumPriority(minimumPriority);
-        configuration.setReportFile(reportFile != null ? reportFile.toString() : null);
+        configuration.setReportFile(reportFile);
         configuration.setReportProperties(properties);
         configuration.setReportShortNames(shortnames);
         configuration.setRuleSets(rulesets);
