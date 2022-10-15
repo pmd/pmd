@@ -25,6 +25,13 @@ This is a {{ site.pmd.release_type }} release.
 
 The rule is part of the quickstart.xml ruleset.
 
+#### Modified Rules
+
+* The Java rule {% rule java/errorprone/TestClassWithoutTestCases %} has a new property `testClassPattern`. This is
+  used to detect empty test classes by name. Previously this rule could only detect empty JUnit3 test cases
+  properly. To switch back to the old behavior, this property can be set to an empty value which disables the
+  test class detection by pattern.
+
 ### Fixed Issues
 * apex
     * [#4149](https://github.com/pmd/pmd/issues/4149): \[apex] New rule: ApexUnitTestClassShouldHaveRunAs
@@ -32,6 +39,9 @@ The rule is part of the quickstart.xml ruleset.
     * [#4144](https://github.com/pmd/pmd/pull/4144) \[doc] Update docs to reflect supported languages
 * java-documentation
     * [#4141](https://github.com/pmd/pmd/issues/4141): \[java] UncommentedEmptyConstructor FP when constructor annotated with @<!-- -->Autowired
+* java-errorprone
+    * [#929](https://github.com/pmd/pmd/issues/929): \[java] Inconsistent results with TestClassWithoutTestCases
+    * [#2636](https://github.com/pmd/pmd/issues/2636): \[java] TestClassWithoutTestCases false positive with JUnit5 ParameterizedTest
 
 ### API Changes
 
