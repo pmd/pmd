@@ -52,6 +52,11 @@ you should now use
 ```shell
 pmd check -d src -R ruleset.xml
 ```
+or even better, omit using `-d` / `--dir` and simply pass the sources as positional parameters
+
+```shell
+pmd check -R ruleset.xml src
+```
 
 Additionally, the CLI has been enhanced with a progress bar, which interactively displays the
 current progress of the analysis.
