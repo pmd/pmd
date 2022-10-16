@@ -4,19 +4,17 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
+import java.util.Arrays;
 
 import com.google.summit.ast.expression.Expression;
 
-public class ASTMapEntryNode extends AbstractApexNode {
+public class ASTMapEntryNode extends AbstractApexNode.Many<Expression> {
 
-    private final Expression key;
-    private final Expression value;
+     private final Expression key;
+     private final Expression value;
 
-    @Deprecated
-    @InternalApi
-    public ASTMapEntryNode(Expression key, Expression value) {
-        super(Void.class);
+     ASTMapEntryNode(Expression key, Expression value) {
+        super(Arrays.asList(key, value));
         this.key = key;
         this.value = value;
     }

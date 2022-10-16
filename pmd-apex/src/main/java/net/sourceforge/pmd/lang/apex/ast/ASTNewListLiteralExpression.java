@@ -4,15 +4,11 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 import com.google.summit.ast.initializer.ValuesInitializer;
 
 public class ASTNewListLiteralExpression extends AbstractApexNode.Single<ValuesInitializer> {
 
-    @Deprecated
-    @InternalApi
-    public ASTNewListLiteralExpression(ValuesInitializer valuesInitializer) {
+    ASTNewListLiteralExpression(ValuesInitializer valuesInitializer) {
         super(valuesInitializer);
     }
 

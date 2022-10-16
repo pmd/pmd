@@ -4,15 +4,11 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 import com.google.summit.ast.initializer.ConstructorInitializer;
 
 public class ASTNewKeyValueObjectExpression extends AbstractApexNode.Single<ConstructorInitializer> {
 
-    @Deprecated
-    @InternalApi
-    public ASTNewKeyValueObjectExpression(ConstructorInitializer constructorInitializer) {
+    ASTNewKeyValueObjectExpression(ConstructorInitializer constructorInitializer) {
         super(constructorInitializer);
     }
 
