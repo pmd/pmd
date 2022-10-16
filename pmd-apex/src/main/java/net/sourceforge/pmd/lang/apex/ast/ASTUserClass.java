@@ -18,9 +18,7 @@ public class ASTUserClass extends ApexRootNode<ClassDeclaration> implements ASTU
 
     private ApexQualifiedName qname;
 
-    @Deprecated
-    @InternalApi
-    public ASTUserClass(ClassDeclaration userClass) {
+    ASTUserClass(ClassDeclaration userClass) {
         super(userClass);
     }
 

@@ -11,9 +11,7 @@ import com.google.summit.ast.expression.ThisExpression;
 
 public class ASTThisVariableExpression extends AbstractApexNode.Single<ThisExpression> {
 
-    @Deprecated
-    @InternalApi
-    public ASTThisVariableExpression(ThisExpression thisExpression) {
+    ASTThisVariableExpression(ThisExpression thisExpression) {
         super(thisExpression);
     }
 

@@ -11,9 +11,7 @@ import com.google.summit.ast.statement.ExpressionStatement;
 
 public class ASTExpressionStatement extends AbstractApexNode.Single<ExpressionStatement> {
 
-    @Deprecated
-    @InternalApi
-    public ASTExpressionStatement(ExpressionStatement expressionStatement) {
+    ASTExpressionStatement(ExpressionStatement expressionStatement) {
         super(expressionStatement);
     }
 

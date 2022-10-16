@@ -10,9 +10,7 @@ import com.google.summit.ast.expression.BinaryExpression;
 
 public class ASTBooleanExpression extends AbstractApexNode.Single<BinaryExpression> {
 
-    @Deprecated
-    @InternalApi
-    public ASTBooleanExpression(BinaryExpression binaryExpression) {
+    ASTBooleanExpression(BinaryExpression binaryExpression) {
         super(binaryExpression);
     }
 

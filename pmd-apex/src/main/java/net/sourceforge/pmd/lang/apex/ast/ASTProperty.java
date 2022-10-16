@@ -16,9 +16,7 @@ public class ASTProperty extends AbstractApexNode.Single<PropertyDeclaration> {
      */
     private static final String ACCESSOR_PREFIX = "__sfdc_";
 
-    @Deprecated
-    @InternalApi
-    public ASTProperty(PropertyDeclaration property) {
+    ASTProperty(PropertyDeclaration property) {
         super(property);
     }
 

@@ -17,9 +17,7 @@ import com.google.summit.ast.declaration.FieldDeclarationGroup;
 public class ASTFieldDeclarationStatements extends AbstractApexNode.Single<FieldDeclarationGroup>
         implements CanSuppressWarnings {
 
-    @Deprecated
-    @InternalApi
-    public ASTFieldDeclarationStatements(FieldDeclarationGroup fieldDeclarationStatements) {
+    ASTFieldDeclarationStatements(FieldDeclarationGroup fieldDeclarationStatements) {
         super(fieldDeclarationStatements);
     }
 

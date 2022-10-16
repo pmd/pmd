@@ -10,9 +10,7 @@ import com.google.summit.ast.expression.UnaryExpression;
 
 public class ASTPrefixExpression extends AbstractApexNode.Single<UnaryExpression> {
 
-    @Deprecated
-    @InternalApi
-    public ASTPrefixExpression(UnaryExpression unaryExpression) {
+    ASTPrefixExpression(UnaryExpression unaryExpression) {
         super(unaryExpression);
     }
 

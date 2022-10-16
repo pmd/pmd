@@ -11,9 +11,7 @@ import com.google.summit.ast.Identifier;
 
 public class ASTVariableExpression extends AbstractApexNode.Single<Identifier> {
 
-    @Deprecated
-    @InternalApi
-    public ASTVariableExpression(Identifier identifier) {
+    ASTVariableExpression(Identifier identifier) {
         super(identifier);
     }
 

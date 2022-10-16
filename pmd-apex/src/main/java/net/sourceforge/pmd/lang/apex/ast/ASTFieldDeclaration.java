@@ -11,9 +11,7 @@ import com.google.summit.ast.declaration.FieldDeclaration;
 
 public class ASTFieldDeclaration extends AbstractApexNode.Single<FieldDeclaration> {
 
-    @Deprecated
-    @InternalApi
-    public ASTFieldDeclaration(FieldDeclaration fieldDeclaration) {
+    ASTFieldDeclaration(FieldDeclaration fieldDeclaration) {
         super(fieldDeclaration);
     }
 

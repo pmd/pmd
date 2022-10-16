@@ -20,9 +20,7 @@ public class ASTMethodCallExpression extends AbstractApexNode.Single<CallExpress
      */
     private final List<Identifier> receiverComponents;
 
-    @Deprecated
-    @InternalApi
-    public ASTMethodCallExpression(CallExpression callExpression, List<Identifier> receiverComponents) {
+    ASTMethodCallExpression(CallExpression callExpression, List<Identifier> receiverComponents) {
         super(callExpression);
         this.receiverComponents = receiverComponents;
     }

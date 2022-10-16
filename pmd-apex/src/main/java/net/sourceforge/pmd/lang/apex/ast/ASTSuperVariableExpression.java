@@ -11,9 +11,7 @@ import com.google.summit.ast.expression.SuperExpression;
 
 public class ASTSuperVariableExpression extends AbstractApexNode.Single<SuperExpression> {
 
-    @Deprecated
-    @InternalApi
-    public ASTSuperVariableExpression(SuperExpression superExpression) {
+    ASTSuperVariableExpression(SuperExpression superExpression) {
         super(superExpression);
     }
 

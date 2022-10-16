@@ -16,9 +16,7 @@ public class ASTUserInterface extends ApexRootNode<InterfaceDeclaration> impleme
 
     private ApexQualifiedName qname;
 
-    @Deprecated
-    @InternalApi
-    public ASTUserInterface(InterfaceDeclaration userInterface) {
+    ASTUserInterface(InterfaceDeclaration userInterface) {
         super(userInterface);
     }
 

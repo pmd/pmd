@@ -11,9 +11,7 @@ import com.google.summit.ast.expression.CastExpression;
 
 public class ASTCastExpression extends AbstractApexNode.Single<CastExpression> {
 
-    @Deprecated
-    @InternalApi
-    public ASTCastExpression(CastExpression castExpression) {
+    ASTCastExpression(CastExpression castExpression) {
         super(castExpression);
     }
 

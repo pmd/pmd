@@ -11,9 +11,7 @@ import com.google.summit.ast.expression.BinaryExpression;
 
 public class ASTInstanceOfExpression extends AbstractApexNode.Single<BinaryExpression> {
 
-    @Deprecated
-    @InternalApi
-    public ASTInstanceOfExpression(BinaryExpression binaryExpression) {
+    ASTInstanceOfExpression(BinaryExpression binaryExpression) {
         super(binaryExpression);
     }
 

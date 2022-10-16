@@ -11,9 +11,7 @@ import com.google.summit.ast.expression.CallExpression;
 
 public class ASTSuperMethodCallExpression extends AbstractApexNode.Single<CallExpression> {
 
-    @Deprecated
-    @InternalApi
-    public ASTSuperMethodCallExpression(CallExpression callExpression) {
+    ASTSuperMethodCallExpression(CallExpression callExpression) {
         super(callExpression);
     }
 

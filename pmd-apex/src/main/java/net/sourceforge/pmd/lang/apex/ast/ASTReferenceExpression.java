@@ -18,9 +18,7 @@ public class ASTReferenceExpression extends AbstractApexNode.Many<Identifier> {
     private final ReferenceType referenceType;
     private final boolean isSafe;
 
-    @Deprecated
-    @InternalApi
-    public ASTReferenceExpression(List<Identifier> identifiers, ReferenceType referenceType, boolean isSafe) {
+    ASTReferenceExpression(List<Identifier> identifiers, ReferenceType referenceType, boolean isSafe) {
         super(identifiers);
         this.referenceType = referenceType;
         this.isSafe = isSafe;

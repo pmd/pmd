@@ -15,9 +15,7 @@ import com.google.summit.ast.expression.LiteralExpression;
 
 public class ASTLiteralExpression extends AbstractApexNode.Single<LiteralExpression> {
 
-    @Deprecated
-    @InternalApi
-    public ASTLiteralExpression(LiteralExpression literalExpression) {
+    ASTLiteralExpression(LiteralExpression literalExpression) {
         super(literalExpression);
     }
 

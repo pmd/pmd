@@ -11,9 +11,7 @@ import com.google.summit.ast.expression.TernaryExpression;
 
 public class ASTTernaryExpression extends AbstractApexNode.Single<TernaryExpression> {
 
-    @Deprecated
-    @InternalApi
-    public ASTTernaryExpression(TernaryExpression ternaryExpression) {
+    ASTTernaryExpression(TernaryExpression ternaryExpression) {
         super(ternaryExpression);
     }
 

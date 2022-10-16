@@ -25,9 +25,7 @@ public class ASTMethod extends AbstractApexNode.Single<MethodDeclaration> implem
      */
     public static final String STATIC_INIT_ID = "<clinit>";
 
-    @Deprecated
-    @InternalApi
-    public ASTMethod(MethodDeclaration method) {
+    ASTMethod(MethodDeclaration method) {
         super(method);
     }
 
@@ -55,11 +53,14 @@ public class ASTMethod extends AbstractApexNode.Single<MethodDeclaration> implem
     @Override
     public String getImage() {
         return getName();
-        // TODO(b/239648780): differs from #getCanonicalName in some instances
     }
 
     public String getCanonicalName() {
-        return getName();
+        if (node.isConstructor()) {
+            return CONSTRUCTOR_ID;
+        } else {
+            return getName();
+        }
     }
 
     @Override

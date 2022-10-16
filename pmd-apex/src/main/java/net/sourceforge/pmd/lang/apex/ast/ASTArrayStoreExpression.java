@@ -11,9 +11,7 @@ import com.google.summit.ast.expression.ArrayExpression;
 
 public class ASTArrayStoreExpression extends AbstractApexNode.Single<ArrayExpression> {
 
-    @Deprecated
-    @InternalApi
-    public ASTArrayStoreExpression(ArrayExpression arrayExpression) {
+    ASTArrayStoreExpression(ArrayExpression arrayExpression) {
         super(arrayExpression);
     }
 

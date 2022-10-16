@@ -13,9 +13,7 @@ import com.google.summit.ast.SourceLocation;
 public class ASTBlockStatement extends AbstractApexNode.Single<Node> {
     private boolean curlyBrace;
 
-    @Deprecated
-    @InternalApi
-    public ASTBlockStatement(Node blockStatement) {
+    ASTBlockStatement(Node blockStatement) {
         super(blockStatement);
     }
 
