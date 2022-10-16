@@ -8,13 +8,9 @@ import java.util.List;
 
 import com.google.summit.ast.statement.TryStatement;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 public class ASTTryCatchFinallyBlockStatement extends AbstractApexNode.Single<TryStatement> {
 
-    @Deprecated
-    @InternalApi
-    public ASTTryCatchFinallyBlockStatement(TryStatement tryStatement) {
+    ASTTryCatchFinallyBlockStatement(TryStatement tryStatement) {
         super(tryStatement);
     }
 

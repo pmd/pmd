@@ -4,15 +4,11 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 import com.google.summit.ast.statement.IfStatement;
 
 public class ASTIfBlockStatement extends AbstractApexNode.Single<IfStatement> {
 
-    @Deprecated
-    @InternalApi
-    public ASTIfBlockStatement(IfStatement ifStatement) {
+    ASTIfBlockStatement(IfStatement ifStatement) {
         super(ifStatement);
     }
 

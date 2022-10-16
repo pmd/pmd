@@ -4,15 +4,11 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 import com.google.summit.ast.statement.EnhancedForLoopStatement;
 
 public class ASTForEachStatement extends AbstractApexNode.Single<EnhancedForLoopStatement> {
 
-    @Deprecated
-    @InternalApi
-    public ASTForEachStatement(EnhancedForLoopStatement enhancedForLoopStatement) {
+    ASTForEachStatement(EnhancedForLoopStatement enhancedForLoopStatement) {
         super(enhancedForLoopStatement);
     }
 

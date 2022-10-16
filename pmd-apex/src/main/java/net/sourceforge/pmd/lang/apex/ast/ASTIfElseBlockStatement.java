@@ -4,17 +4,13 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 import com.google.summit.ast.statement.IfStatement;
 
 public class ASTIfElseBlockStatement extends AbstractApexNode.Single<IfStatement> {
 
     private final boolean hasElseStatement;
 
-    @Deprecated
-    @InternalApi
-    public ASTIfElseBlockStatement(IfStatement ifStatement, boolean hasElseStatement) {
+    ASTIfElseBlockStatement(IfStatement ifStatement, boolean hasElseStatement) {
         super(ifStatement);
         this.hasElseStatement = hasElseStatement;
     }

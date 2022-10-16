@@ -4,15 +4,11 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 import com.google.summit.ast.statement.TryStatement;
 
 public class ASTCatchBlockStatement extends AbstractApexCommentContainerNode<TryStatement.CatchBlock> {
 
-    @Deprecated
-    @InternalApi
-    public ASTCatchBlockStatement(TryStatement.CatchBlock catchBlock) {
+    ASTCatchBlockStatement(TryStatement.CatchBlock catchBlock) {
         super(catchBlock);
     }
 
