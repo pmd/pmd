@@ -61,14 +61,14 @@ To enable it, simply add `source *path_to_pmd*/shell/pmd-completion.sh` to your 
             to execute ('check', 'designer', ...), e.g. PMD is launched via `pmd check`. The rest of
             the arguments are specific to the utility used.<br/><br/>" %}
 
-Running a PMD analysis (`pmd check` or `pmd.bat check`) requires at least two options:
+Running a PMD analysis (`pmd check` or `pmd.bat check`) requires at least one option and a list of sources:
 
-* `-d <path>`: path to the sources to analyse. This can be a file name, a directory, or a jar or zip file containing the
-sources.
 * `-R <path>`: the ruleset file you want to use. PMD uses xml configuration files, called *rulesets*, which specify 
 which rules to execute on your sources. You can also run a single rule by referencing it using its *category* and
 name (more details [here](pmd_userdocs_making_rulesets.html#referencing-a-single-rule)). For example, you can check for unnecessary
 modifiers on Java sources with `-R category/java/codestyle.xml/UnnecessaryModifier`.
+* `<source> …`: path to the sources to analyse. This can be a file name, a directory, or a jar or zip file containing the
+sources. Alternatively You can use the `-d` or `--dir` flag, which is equivalent.
 
 {% include note.html
    content="At the moment the formerly provided rulesets (eg `rulesets/java/basic.xml`) are deprecated,
@@ -93,7 +93,7 @@ Additionally, the following options, are specified most of the time even though 
 
 {% include cli_example.html
    id="pmd"
-   linux="pmd check -d ../../../src/main/java/ -f text -R rulesets/java/quickstart.xml
+   linux="pmd check -f text -R rulesets/java/quickstart.xml src/main/java
 
   .../src/main/java/com/me/RuleSet.java:123  These nested if statements could be combined
   .../src/main/java/com/me/RuleSet.java:231  Useless parentheses.

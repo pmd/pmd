@@ -52,7 +52,7 @@ you should now use
 ```shell
 pmd check -d src -R ruleset.xml
 ```
-or even better, omit using `-d` / `--dir` and simply pass the sources as positional parameters
+or even better, omit using `-d` / `--dir` and simply pass the sources at the end of the parameter list
 
 ```shell
 pmd check -R ruleset.xml src
