@@ -4,13 +4,11 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import com.google.summit.ast.Node;
+import com.google.summit.ast.declaration.MethodDeclaration;
+
 import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.apex.metrics.signature.ApexOperationSignature;
 import net.sourceforge.pmd.lang.ast.SignedNode;
-
-import com.google.summit.ast.declaration.MethodDeclaration;
 
 public class ASTMethod extends AbstractApexNode.Single<MethodDeclaration> implements ApexQualifiableNode,
        SignedNode<ASTMethod>, CanSuppressWarnings {

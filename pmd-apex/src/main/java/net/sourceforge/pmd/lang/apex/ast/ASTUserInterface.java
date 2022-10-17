@@ -4,12 +4,9 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import java.util.stream.Collectors;
+import com.google.summit.ast.declaration.InterfaceDeclaration;
 
 import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.annotation.InternalApi;
-
-import com.google.summit.ast.declaration.InterfaceDeclaration;
 
 public class ASTUserInterface extends ApexRootNode<InterfaceDeclaration> implements ASTUserClassOrInterface<InterfaceDeclaration>,
        CanSuppressWarnings {

@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 import com.google.summit.ast.expression.UnaryExpression;
 
 public class ASTPostfixExpression extends AbstractApexNode.Single<UnaryExpression> {

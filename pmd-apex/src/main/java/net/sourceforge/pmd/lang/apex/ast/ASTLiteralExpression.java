@@ -4,13 +4,6 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import com.google.summit.ast.Node;
-import java.util.Optional;
-
-import org.apache.commons.lang3.reflect.FieldUtils;
-
-import net.sourceforge.pmd.annotation.InternalApi;
-
 import com.google.summit.ast.expression.LiteralExpression;
 
 public class ASTLiteralExpression extends AbstractApexNode.Single<LiteralExpression> {

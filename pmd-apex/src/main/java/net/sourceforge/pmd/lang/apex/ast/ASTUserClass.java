@@ -7,11 +7,10 @@ package net.sourceforge.pmd.lang.apex.ast;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.annotation.InternalApi;
-
 import com.google.summit.ast.TypeRef;
 import com.google.summit.ast.declaration.ClassDeclaration;
+
+import net.sourceforge.pmd.Rule;
 
 public class ASTUserClass extends ApexRootNode<ClassDeclaration> implements ASTUserClassOrInterface<ClassDeclaration>,
         CanSuppressWarnings {

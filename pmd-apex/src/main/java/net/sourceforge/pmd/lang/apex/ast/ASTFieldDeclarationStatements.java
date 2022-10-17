@@ -4,15 +4,12 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import com.google.summit.ast.Node;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-
-import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.annotation.InternalApi;
 
 import com.google.summit.ast.declaration.FieldDeclarationGroup;
+
+import net.sourceforge.pmd.Rule;
 
 public class ASTFieldDeclarationStatements extends AbstractApexNode.Single<FieldDeclarationGroup>
         implements CanSuppressWarnings {

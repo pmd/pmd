@@ -4,9 +4,6 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import com.google.summit.ast.Node;
-import net.sourceforge.pmd.annotation.InternalApi;
-
 import com.google.summit.ast.expression.CastExpression;
 
 public class ASTCastExpression extends AbstractApexNode.Single<CastExpression> {

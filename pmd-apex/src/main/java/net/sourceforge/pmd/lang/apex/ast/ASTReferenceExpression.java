@@ -4,12 +4,8 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import com.google.summit.ast.Node;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import net.sourceforge.pmd.annotation.InternalApi;
 
 import com.google.summit.ast.Identifier;
 
