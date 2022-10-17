@@ -100,7 +100,7 @@ Additionally, the following options, are specified most of the time even though 
   .../src/main/java/com/me/RuleSet.java:232  Useless parentheses.
   .../src/main/java/com/me/RuleSet.java:357  These nested if statements could be combined
   .../src/main/java/com/me/RuleSetWriter.java:66     Avoid empty catch blocks"
-   windows="pmd.bat check -f text -R rulesets/java/quickstart.xml ..\..\src\main\java\
+   windows="pmd.bat check -f text -R rulesets/java/quickstart.xml ..\..\src\main\java
 
   .../src/main/java/com/me/RuleSet.java:123  These nested if statements could be combined
   .../src/main/java/com/me/RuleSet.java:231  Useless parentheses.
