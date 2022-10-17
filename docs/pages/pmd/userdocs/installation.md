@@ -100,7 +100,7 @@ Additionally, the following options, are specified most of the time even though 
   .../src/main/java/com/me/RuleSet.java:232  Useless parentheses.
   .../src/main/java/com/me/RuleSet.java:357  These nested if statements could be combined
   .../src/main/java/com/me/RuleSetWriter.java:66     Avoid empty catch blocks"
-   windows="pmd.bat check -d ..\..\src\main\java\ -f text -R rulesets/java/quickstart.xml
+   windows="pmd.bat check -f text -R rulesets/java/quickstart.xml ..\..\src\main\java\
 
   .../src/main/java/com/me/RuleSet.java:123  These nested if statements could be combined
   .../src/main/java/com/me/RuleSet.java:231  Useless parentheses.
@@ -114,12 +114,11 @@ Additionally, the following options, are specified most of the time even though 
    content="CPD supports Java, JSP, C, C++, C#, Fortran and PHP source code, among other languages.
             For the full list, see [Supported Languages](pmd_userdocs_cpd.html#supported-languages)." %}
 
-Like for PMD, CPD is started on Unix by `pmd cpd` and on Windows by `pmd.bat cpd`.
+Like for PMD, CPD is started on Unix by `pmd cpd` and on Windows by `pmd.bat cpd`, and it requires one option and a list of sources:
 
-There are two required parameters:
-* `--files <path>`: path to the sources to analyse. This can be a file name, a
-  directory or a jar or zip file containing the sources.
 * `--minimum-tokens <number>`: the minimum token length which should be reported as a duplicate.
+* `<source> …`: path to the sources to analyse. This can be a file name, a directory, or a jar or zip file containing the
+sources. Alternatively You can use the `-d` or `--dir` flag, which is equivalent.
 
 {% include tip.html
    content="CPD's command-line reference, Ant task usage, and many examples are documented in the
@@ -131,7 +130,7 @@ There are two required parameters:
 
 {% include cli_example.html
    id="cpd"
-   linux="pmd cpd --minimum-tokens 100 --files /home/me/src
+   linux="pmd cpd --minimum-tokens 100 /home/me/src
 
   Found a 7 line (110 tokens) duplication in the following files:
   Starting at line 579 of /home/me/src/test/java/foo/FooTypeTest.java
@@ -144,7 +143,7 @@ There are two required parameters:
           assertEquals(Boolean.TYPE, expressions.get(index++).getType());
           assertEquals(Boolean.TYPE, expressions.get(index++).getType());
           assertEquals(Boolean.TYPE, expressions.get(index++).getType());"
-    windows="pmd.bat cpd --minimum-tokens 100 --files /home/me/src
+    windows="pmd.bat cpd --minimum-tokens 100 /home/me/src
 
   Found a 7 line (110 tokens) duplication in the following files:
   Starting at line 579 of c:\temp\src\test\java\foo\FooTypeTest.java

@@ -58,7 +58,17 @@ or even better, omit using `-d` / `--dir` and simply pass the sources at the end
 pmd check -R ruleset.xml src
 ```
 
-Additionally, the CLI has been enhanced with a progress bar, which interactively displays the
+Multiple source directories can passed, such as:
+```shell
+pmd check -R ruleset.xml src/main/java src/test/java
+```
+
+And the exact same applies to CPD:
+```shell
+pmd cpd --minimum-tokens 100 src/main/java
+```
+
+Additionally, the CLI for the `check` command has been enhanced with a progress bar, which interactively displays the
 current progress of the analysis.
 
 TODO screenshot (take it right before releasing, because other changes to the CLI will occur until then)
