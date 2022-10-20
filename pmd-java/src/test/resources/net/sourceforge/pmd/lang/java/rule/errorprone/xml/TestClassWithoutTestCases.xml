@@ -7,6 +7,10 @@
     <test-code>
         <description>JUnit3: failure case</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <expected-messages>
+            <message>The class 'FooTest' might be a test class, but it contains no test cases.</message>
+        </expected-messages>
         <code><![CDATA[
 import junit.framework.TestCase;
 public class FooTest extends TestCase {
@@ -234,6 +238,10 @@ class MyEmptyCase { }
         <rule-property name="testClassPattern">my\.pkg\..*Case$</rule-property>
         <expected-problems>2</expected-problems>
         <expected-linenumbers>2,3</expected-linenumbers>
+        <expected-messages>
+            <message>The class 'MyEmptyCase' might be a test class, but it contains no test cases.</message>
+            <message>The class 'MyNestedCase' might be a test class, but it contains no test cases.</message>
+        </expected-messages>
         <code><![CDATA[
 package my.pkg;
 class MyEmptyCase {

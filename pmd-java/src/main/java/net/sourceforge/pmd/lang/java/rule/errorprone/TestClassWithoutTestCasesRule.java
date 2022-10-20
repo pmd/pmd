@@ -45,10 +45,18 @@ public class TestClassWithoutTestCasesRule extends AbstractJavaRule {
                 }
             }
             if (testMethods == 0 && nestedTestClasses == 0) {
-                addViolation(data, node);
+                addViolation(data, node, getSimpleClassName(node));
             }
         }
         return data;
+    }
+
+    private String getSimpleClassName(ASTClassOrInterfaceBody node) {
+        JavaNode parent = node.getParent();
+        if (parent instanceof ASTClassOrInterfaceDeclaration) {
+            return ((ASTClassOrInterfaceDeclaration) parent).getSimpleName();
+        }
+        return "<anon>";
     }
 
     private boolean isTestClassByPattern(ASTClassOrInterfaceBody node) {
