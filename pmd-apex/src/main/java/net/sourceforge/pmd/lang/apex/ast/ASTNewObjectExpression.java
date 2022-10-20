@@ -4,15 +4,12 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import com.google.summit.ast.Node;
-import net.sourceforge.pmd.annotation.InternalApi;
+import com.google.summit.ast.initializer.ConstructorInitializer;
 
-public class ASTNewObjectExpression extends AbstractApexNode.Single<Node> {
+public class ASTNewObjectExpression extends AbstractApexNode.Single<ConstructorInitializer> {
 
-    @Deprecated
-    @InternalApi
-    public ASTNewObjectExpression(Node newObjectExpression) {
-        super(newObjectExpression);
+    ASTNewObjectExpression(ConstructorInitializer constructorInitializer) {
+        super(constructorInitializer);
     }
 
     @Override
@@ -21,8 +18,6 @@ public class ASTNewObjectExpression extends AbstractApexNode.Single<Node> {
     }
 
     public String getType() {
-        // return String.valueOf(node.getTypeRef());
-        // TODO(b/239648780)
-        return null;
+        return node.getType().asCodeString();
     }
 }

@@ -30,12 +30,17 @@ import com.google.summit.ast.expression.CastExpression
 import com.google.summit.ast.expression.Expression
 import com.google.summit.ast.expression.FieldExpression
 import com.google.summit.ast.expression.LiteralExpression
+import com.google.summit.ast.expression.NewExpression
 import com.google.summit.ast.expression.SuperExpression
 import com.google.summit.ast.expression.TernaryExpression
 import com.google.summit.ast.expression.ThisExpression
 import com.google.summit.ast.expression.TypeRefExpression
 import com.google.summit.ast.expression.UnaryExpression
 import com.google.summit.ast.expression.VariableExpression
+import com.google.summit.ast.initializer.ConstructorInitializer
+import com.google.summit.ast.initializer.MapInitializer
+import com.google.summit.ast.initializer.SizedArrayInitializer
+import com.google.summit.ast.initializer.ValuesInitializer
 import com.google.summit.ast.modifier.KeywordModifier
 import com.google.summit.ast.modifier.KeywordModifier.Keyword
 import com.google.summit.ast.modifier.Modifier
@@ -107,6 +112,11 @@ class ApexTreeBuilder(val sourceCode: String, val parserOptions: ApexParserOptio
             is VariableExpression -> buildVariableExpression(node)
             is CallExpression -> buildCallExpression(node)
             is TernaryExpression -> buildTernaryExpression(node)
+            is NewExpression -> build(node.initializer, parent)
+            is ConstructorInitializer -> buildConstructorInitializer(node)
+            is ValuesInitializer -> buildValuesInitializer(node)
+            is MapInitializer -> buildMapInitializer(node)
+            is SizedArrayInitializer -> buildSizedArrayInitializer(node)
             is Identifier,
             is KeywordModifier,
             is TypeRef -> null
@@ -362,6 +372,57 @@ class ApexTreeBuilder(val sourceCode: String, val parserOptions: ApexParserOptio
             buildCondition(node.condition).also { it.setParent(this) }
             buildChildren(node, parent = this, exclude = { it == node.condition })
         }
+
+    /**
+     * Builds an [ASTNewListInitExpression], [ASTNewMapInitExpression], [ASTNewSetInitExpression],
+     * [ASTNewKeyValueObjectExpression], or [ASTNewObjectExpression] wrapper for the
+     * [ConstructorInitializer].
+     */
+    private fun buildConstructorInitializer(node: ConstructorInitializer) =
+        when (node.type.components.first().id.string.lowercase()) {
+            "list" -> ASTNewListInitExpression(node)
+            "map" -> ASTNewMapInitExpression(node)
+            "set" -> ASTNewSetInitExpression(node)
+            else -> {
+                // Object initializer
+                if (node.args.isNotEmpty() && node.args.first() is AssignExpression) {
+                    // Named arguments
+                    ASTNewKeyValueObjectExpression(node)
+                } else {
+                    // Unnamed arguments
+                    ASTNewObjectExpression(node)
+                }
+            }
+        }.apply { buildChildren(node, parent = this) }
+
+    /**
+     * Builds an [ASTNewListLiteralExpression], [ASTNewMapLiteralExpression], or
+     * [ASTNewSetLiteralExpression] wrapper for the [ValuesInitializer].
+     */
+    private fun buildValuesInitializer(node: ValuesInitializer) =
+        when (node.type.components.first().id.string.lowercase()) {
+            "list" -> ASTNewListLiteralExpression(node)
+            "map" -> ASTNewMapLiteralExpression(node)
+            "set" -> ASTNewSetLiteralExpression(node)
+            else -> ASTNewListLiteralExpression(node) // Array
+        }.apply { buildChildren(node, parent = this) }
+
+    /** Builds an [ASTNewMapLiteralExpression] wrapper for the [MapInitializer]. */
+    private fun buildMapInitializer(node: MapInitializer) =
+        ASTNewMapLiteralExpression(node).apply {
+            /** Builds an [ASTMapEntryNode] for the [map entry][entry]. */
+            fun buildMapEntry(entry: Pair<Expression, Expression>) =
+                ASTMapEntryNode(entry.first, entry.second).apply {
+                    buildAndSetParent(entry.first, parent = this)
+                    buildAndSetParent(entry.second, parent = this)
+                }
+
+            node.pairs.forEach { pair -> buildMapEntry(pair).also { it.setParent(this) } }
+        }
+
+    /** Builds an [ASTNewListInitExpression] wrapper for the [SizedArrayInitializer]. */
+    private fun buildSizedArrayInitializer(node: SizedArrayInitializer) =
+        ASTNewListInitExpression(node).apply { buildChildren(node, parent = this) }
 
     /** Builds an [ASTStandardCondition] wrapper for the [condition]. */
     private fun buildCondition(condition: Node?) =

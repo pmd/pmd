@@ -4,15 +4,12 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import com.google.summit.ast.Node;
-import net.sourceforge.pmd.annotation.InternalApi;
+import com.google.summit.ast.initializer.Initializer;
 
-public class ASTNewMapLiteralExpression extends AbstractApexNode.Single<Node> {
+public class ASTNewMapLiteralExpression extends AbstractApexNode.Single<Initializer> {
 
-    @Deprecated
-    @InternalApi
-    public ASTNewMapLiteralExpression(Node newMapLiteralExpression) {
-        super(newMapLiteralExpression);
+    ASTNewMapLiteralExpression(Initializer initializer) {
+        super(initializer);
     }
 
     @Override
