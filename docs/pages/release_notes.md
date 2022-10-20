@@ -33,6 +33,8 @@ The rule is part of the quickstart.xml ruleset.
     * [#4163](https://github.com/pmd/pmd/issues/4163): \[doc] Broken links on page "Architecture Decisions"
 * java-documentation
     * [#4141](https://github.com/pmd/pmd/issues/4141): \[java] UncommentedEmptyConstructor FP when constructor annotated with @<!-- -->Autowired
+* javascript
+    * [#4165](https://github.com/pmd/pmd/issues/4165): \[javascript] InaccurateNumericLiteral underscore separator notation false positive
 
 ### API Changes
 

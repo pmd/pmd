@@ -58,4 +58,17 @@ var hex1 = 0x20;
 var hex2 = 0X20;
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>[javascript] InaccurateNumericLiteral underscore separator notation false positive #4165</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+const value1a = 1_000_000; // number
+const value1b = 1_000.12_34; // decimal
+const value2 = 0b1010_0001_1000_0101; // binary
+const value3 = 0xA0_B0; // hex
+const value4 = 9_223_372_036_854_775_807n; // big int
+const value5 = 0o1234_5670; // octal
+]]></code>
+    </test-code>
 </test-data>
