@@ -36,12 +36,15 @@ public class TestClassWithoutTestCasesRule extends AbstractJavaRule {
         if (AbstractJUnitRule.isTestClass(node) || isTestClassByPattern(node)) {
             List<ASTClassOrInterfaceBodyDeclaration> declarations = node.findChildrenOfType(ASTClassOrInterfaceBodyDeclaration.class);
             int testMethods = 0;
+            int nestedTestClasses = 0;
             for (ASTClassOrInterfaceBodyDeclaration decl : declarations) {
                 if (isTestMethod(decl)) {
                     testMethods++;
+                } else if (isNestedClass(decl)) {
+                    nestedTestClasses++;
                 }
             }
-            if (testMethods == 0) {
+            if (testMethods == 0 && nestedTestClasses == 0) {
                 addViolation(data, node);
             }
         }
@@ -82,6 +85,15 @@ public class TestClassWithoutTestCasesRule extends AbstractJavaRule {
         JavaNode node = decl.getDeclarationNode();
         if (node instanceof ASTMethodDeclaration) {
             return AbstractJUnitRule.isTestMethod((ASTMethodDeclaration) node);
+        }
+        return false;
+    }
+
+    private boolean isNestedClass(ASTClassOrInterfaceBodyDeclaration decl) {
+        JavaNode node = decl.getDeclarationNode();
+        if (node instanceof ASTClassOrInterfaceDeclaration) {
+            ASTClassOrInterfaceDeclaration classDecl = (ASTClassOrInterfaceDeclaration) node;
+            return classDecl.isAnnotationPresent("org.junit.jupiter.api.Nested");
         }
         return false;
     }

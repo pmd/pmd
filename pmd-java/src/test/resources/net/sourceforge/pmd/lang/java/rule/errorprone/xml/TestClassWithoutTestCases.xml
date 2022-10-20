@@ -275,4 +275,41 @@ public class SampleTest {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>JUnit5 @Nested tests with tests</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+class DemoNestedTest {
+    @Nested
+    class SomeTest {
+        @Test
+        void isCorrect() {
+            assertTrue(42 == 42);
+        }
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>JUnit5 @Nested tests without tests</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
+
+class DemoNestedTest {
+    @Nested
+    class SomeTest {
+        // missing tests
+    }
+}
+]]></code>
+    </test-code>
 </test-data>
