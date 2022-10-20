@@ -4,15 +4,12 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import com.google.summit.ast.Node;
-import net.sourceforge.pmd.annotation.InternalApi;
+import com.google.summit.ast.expression.CastExpression;
 
-public class ASTCastExpression extends AbstractApexNode.Single<Node> {
+public class ASTCastExpression extends AbstractApexNode.Single<CastExpression> {
 
-    @Deprecated
-    @InternalApi
-    public ASTCastExpression(Node node) {
-        super(node);
+    ASTCastExpression(CastExpression castExpression) {
+        super(castExpression);
     }
 
     @Override

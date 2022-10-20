@@ -4,16 +4,12 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 import com.google.summit.ast.expression.BinaryExpression;
 
 public class ASTBooleanExpression extends AbstractApexNode.Single<BinaryExpression> {
 
-    @Deprecated
-    @InternalApi
-    public ASTBooleanExpression(BinaryExpression booleanExpression) {
-        super(booleanExpression);
+    ASTBooleanExpression(BinaryExpression binaryExpression) {
+        super(binaryExpression);
     }
 
     @Override

@@ -4,15 +4,12 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import com.google.summit.ast.Node;
-import net.sourceforge.pmd.annotation.InternalApi;
+import com.google.summit.ast.expression.BinaryExpression;
 
-public class ASTInstanceOfExpression extends AbstractApexNode.Single<Node> {
+public class ASTInstanceOfExpression extends AbstractApexNode.Single<BinaryExpression> {
 
-    @Deprecated
-    @InternalApi
-    public ASTInstanceOfExpression(Node instanceOfExpression) {
-        super(instanceOfExpression);
+    ASTInstanceOfExpression(BinaryExpression binaryExpression) {
+        super(binaryExpression);
     }
 
     @Override

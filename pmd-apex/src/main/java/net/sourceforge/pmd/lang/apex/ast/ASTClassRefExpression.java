@@ -4,15 +4,12 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import com.google.summit.ast.Node;
-import net.sourceforge.pmd.annotation.InternalApi;
+import com.google.summit.ast.expression.TypeRefExpression;
 
-public class ASTClassRefExpression extends AbstractApexNode.Single<Node> {
+public class ASTClassRefExpression extends AbstractApexNode.Single<TypeRefExpression> {
 
-    @Deprecated
-    @InternalApi
-    public ASTClassRefExpression(Node classRefExpression) {
-        super(classRefExpression);
+    ASTClassRefExpression(TypeRefExpression typeRefExpression) {
+        super(typeRefExpression);
     }
 
     @Override

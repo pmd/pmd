@@ -4,14 +4,11 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import com.google.summit.ast.Node;
-import net.sourceforge.pmd.annotation.InternalApi;
+import com.google.summit.ast.expression.TernaryExpression;
 
-public class ASTTernaryExpression extends AbstractApexNode.Single<Node> {
+public class ASTTernaryExpression extends AbstractApexNode.Single<TernaryExpression> {
 
-    @Deprecated
-    @InternalApi
-    public ASTTernaryExpression(Node ternaryExpression) {
+    ASTTernaryExpression(TernaryExpression ternaryExpression) {
         super(ternaryExpression);
     }
 

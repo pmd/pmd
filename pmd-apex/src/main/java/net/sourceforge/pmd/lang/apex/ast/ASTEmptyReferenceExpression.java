@@ -4,19 +4,15 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import com.google.summit.ast.Node;
-
-public final class ASTEmptyReferenceExpression extends AbstractApexNode.Single<Node> {
-
-
-    ASTEmptyReferenceExpression(Node node) {
-        super(node);
-    }
-
+public final class ASTEmptyReferenceExpression extends AbstractApexNode.Empty {
 
     @Override
     public Object jjtAccept(ApexParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }
 
+    @Override
+    public String getDefiningType() {
+        return null;
+    }
 }

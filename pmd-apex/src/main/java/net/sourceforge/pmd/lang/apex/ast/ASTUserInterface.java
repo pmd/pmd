@@ -4,21 +4,16 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import java.util.stream.Collectors;
+import com.google.summit.ast.declaration.InterfaceDeclaration;
 
 import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.annotation.InternalApi;
-
-import com.google.summit.ast.declaration.InterfaceDeclaration;
 
 public class ASTUserInterface extends ApexRootNode<InterfaceDeclaration> implements ASTUserClassOrInterface<InterfaceDeclaration>,
        CanSuppressWarnings {
 
     private ApexQualifiedName qname;
 
-    @Deprecated
-    @InternalApi
-    public ASTUserInterface(InterfaceDeclaration userInterface) {
+    ASTUserInterface(InterfaceDeclaration userInterface) {
         super(userInterface);
     }
 
@@ -29,7 +24,7 @@ public class ASTUserInterface extends ApexRootNode<InterfaceDeclaration> impleme
 
     @Override
     public String getImage() {
-        return node.getId().asCodeString();
+        return node.getId().getString();
     }
 
     @Override

@@ -4,15 +4,12 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import com.google.summit.ast.Node;
-import net.sourceforge.pmd.annotation.InternalApi;
+import com.google.summit.ast.expression.ArrayExpression;
 
-public class ASTArrayLoadExpression extends AbstractApexNode.Single<Node> {
+public class ASTArrayLoadExpression extends AbstractApexNode.Single<ArrayExpression> {
 
-    @Deprecated
-    @InternalApi
-    public ASTArrayLoadExpression(Node arrayLoadExpression) {
-        super(arrayLoadExpression);
+    ASTArrayLoadExpression(ArrayExpression arrayExpression) {
+        super(arrayExpression);
     }
 
     @Override

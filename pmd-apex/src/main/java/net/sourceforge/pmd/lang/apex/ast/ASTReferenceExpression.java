@@ -4,27 +4,26 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import com.google.summit.ast.Node;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import net.sourceforge.pmd.annotation.InternalApi;
+import com.google.summit.ast.Identifier;
 
-public class ASTReferenceExpression extends AbstractApexNode.Single<Node> {
+public class ASTReferenceExpression extends AbstractApexNode.Many<Identifier> {
 
-    @Deprecated
-    @InternalApi
-    public ASTReferenceExpression(Node referenceExpression) {
-        super(referenceExpression);
+    private final ReferenceType referenceType;
+    private final boolean isSafe;
+
+    ASTReferenceExpression(List<Identifier> identifiers, ReferenceType referenceType, boolean isSafe) {
+        super(identifiers);
+        this.referenceType = referenceType;
+        this.isSafe = isSafe;
     }
-
 
     @Override
     public Object jjtAccept(ApexParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }
-
 
     /*
     public IdentifierContext getContext() {
@@ -33,50 +32,35 @@ public class ASTReferenceExpression extends AbstractApexNode.Single<Node> {
      */
     // TODO(b/239648780)
 
-
     /*
     public ReferenceType getReferenceType() {
-        return node.getReferenceType();
+        return referenceType;
     }
      */
     // TODO(b/239648780)
 
     @Override
     public String getImage() {
-        /*
-        if (node.getNames() != null && !node.getNames().isEmpty()) {
-            return node.getNames().get(0).getValue();
+        if (!nodes.isEmpty()) {
+            return nodes.get(0).getString();
         }
-         */
-        // TODO(b/239648780)
-        return null;
+        return "";
     }
 
     public List<String> getNames() {
-        /*
-        List<Identifier> identifiers = node.getNames();
-        if (identifiers != null) {
-            return identifiers.stream().map(id -> id.getValue()).collect(Collectors.toList());
-        }
-         */
-        // TODO(b/239648780)
-        return Collections.emptyList();
+        return nodes.stream().map(Identifier::getString).collect(Collectors.toList());
     }
 
     public boolean isSafeNav() {
-        // return node.isSafeNav();
-        // TODO(b/239648780)
-        return false;
+        return this.isSafe;
     }
 
     public boolean isSObjectType() {
-        /*
-        List<Identifier> identifiers = node.getNames();
-        if (identifiers != null) {
-            return identifiers.stream().anyMatch(id -> "sobjecttype".equalsIgnoreCase(id.getValue()));
-        }
-         */
-        // TODO(b/239648780)
-        return false;
+        return nodes.stream().anyMatch(id -> "sobjecttype".contentEquals(id.getString()));
+    }
+
+    @Override
+    public boolean hasRealLoc() {
+        return !nodes.isEmpty();
     }
 }
