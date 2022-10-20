@@ -33,7 +33,7 @@ public class TestClassWithoutTestCasesRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTClassOrInterfaceBody node, Object data) {
-        if (AbstractJUnitRule.isTestClass(node) || isTestClassByPattern(node)) {
+        if (AbstractJUnitRule.isTestClass(node) || AbstractJUnitRule.isJUnit5NestedClass(node) || isTestClassByPattern(node)) {
             List<ASTClassOrInterfaceBodyDeclaration> declarations = node.findChildrenOfType(ASTClassOrInterfaceBodyDeclaration.class);
             int testMethods = 0;
             int nestedTestClasses = 0;
@@ -90,10 +90,9 @@ public class TestClassWithoutTestCasesRule extends AbstractJavaRule {
     }
 
     private boolean isNestedClass(ASTClassOrInterfaceBodyDeclaration decl) {
-        JavaNode node = decl.getDeclarationNode();
-        if (node instanceof ASTClassOrInterfaceDeclaration) {
-            ASTClassOrInterfaceDeclaration classDecl = (ASTClassOrInterfaceDeclaration) node;
-            return classDecl.isAnnotationPresent("org.junit.jupiter.api.Nested");
+        JavaNode node = decl.getParent();
+        if (node instanceof ASTClassOrInterfaceBody) {
+            return AbstractJUnitRule.isJUnit5NestedClass((ASTClassOrInterfaceBody) node);
         }
         return false;
     }

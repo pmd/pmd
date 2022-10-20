@@ -34,6 +34,7 @@ public abstract class AbstractJUnitRule extends AbstractJavaRule {
     protected static final String JUNIT3_CLASS_NAME = "junit.framework.TestCase";
     protected static final String JUNIT4_CLASS_NAME = "org.junit.Test";
     protected static final String JUNIT5_CLASS_NAME = "org.junit.jupiter.api.Test";
+    private static final String JUNIT5_NESTED = "org.junit.jupiter.api.Nested";
     private static final Set<String> JUNIT5_TEST_ANNOTATIONS = new HashSet<>(Arrays.asList(
             JUNIT5_CLASS_NAME,
             "org.junit.jupiter.api.RepeatedTest",
@@ -159,6 +160,10 @@ public abstract class AbstractJUnitRule extends AbstractJavaRule {
                 || isTestClassJUnit4(type) && method.isPublic() && doesNodeContainJUnitAnnotation(method.getParent(), JUNIT4_CLASS_NAME)
                 || isTestClassJUnit5(type) && doesNodeContainJUnitAnnotation(method.getParent(), JUNIT5_TEST_ANNOTATIONS)
                 || doesNodeContainJUnitAnnotation(method.getParent(), TESTNG_ANNOTATION);
+    }
+
+    public static boolean isJUnit5NestedClass(ASTClassOrInterfaceBody innerClassDecl) {
+        return doesNodeContainJUnitAnnotation((JavaNode) innerClassDecl.getNthParent(2), JUNIT5_NESTED);
     }
 
     public boolean isJUnitMethod(ASTMethodDeclaration method, Object data) {

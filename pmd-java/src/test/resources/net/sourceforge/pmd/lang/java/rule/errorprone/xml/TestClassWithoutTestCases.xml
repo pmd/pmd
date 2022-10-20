@@ -230,7 +230,7 @@ class MyEmptyCase { }
     </test-code>
 
     <test-code>
-        <description>empty test class identified by special testClassPattern and nested classes</description>
+        <description>empty test class identified by special testClassPattern with nested classes</description>
         <rule-property name="testClassPattern">my\.pkg\..*Case$</rule-property>
         <expected-problems>2</expected-problems>
         <expected-linenumbers>2,3</expected-linenumbers>
@@ -284,7 +284,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class DemoNestedTest {
+class DemoNestedTests {
     @Nested
     class SomeTest {
         @Test
@@ -298,17 +298,39 @@ class DemoNestedTest {
 
     <test-code>
         <description>JUnit5 @Nested tests without tests</description>
-        <expected-problems>1</expected-problems>
-        <expected-linenumbers>6</expected-linenumbers>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>6,11</expected-linenumbers>
         <code><![CDATA[
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-class DemoNestedTest {
+class DemoNestedTests {
     @Nested
     class SomeTest {
         // missing tests
     }
+
+    @Nested
+    class Other {
+        // missing tests
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Ignore other nested classes that are not test classes</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+import org.junit.jupiter.api.Test;
+class SampleTest {
+    @Test
+    void usesNestedHelperClass() { }
+
+    private static class TestHelper {} // matches the default testClassPattern
+
+    private static class Other {}
 }
 ]]></code>
     </test-code>
