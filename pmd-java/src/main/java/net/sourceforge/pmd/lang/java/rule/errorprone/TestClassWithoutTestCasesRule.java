@@ -21,7 +21,7 @@ import net.sourceforge.pmd.properties.PropertyFactory;
 public class TestClassWithoutTestCasesRule extends AbstractJavaRule {
 
     private static final PropertyDescriptor<Pattern> TEST_CLASS_PATTERN = PropertyFactory.regexProperty("testClassPattern")
-            .defaultValue("^(.*\\.)?Test.*$|^(.*\\.)?.*Tests?$|^(.*\\.)?.*TestCase$")
+            .defaultValue("^(?:.*\\.)?Test[^\\.]*$|^(?:.*\\.)?.*Tests?$|^(?:.*\\.)?.*TestCase$")
             .desc("Test class name pattern to identify test classes by their fully qualified name. "
                     + "A empty pattern disables test class detection by name. Since PMD 6.51.0.")
             .build();

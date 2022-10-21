@@ -342,4 +342,23 @@ class SampleTest {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>Default pattern shouldn't match inner classes that are not named test</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>2,9</expected-linenumbers>
+        <code><![CDATA[
+package org.example;
+public final class TestInputConfiguration {
+    public static final class Builder {
+        public TestInputConfiguration build() {
+            return new TestInputConfiguration();
+        }
+    }
+
+    public static final class InnerTest {
+    }
+}
+]]></code>
+    </test-code>
 </test-data>
