@@ -87,7 +87,7 @@
         <kotlin.compiler.jvmTarget>${maven.compiler.test.target}</kotlin.compiler.jvmTarget>
         <kotlin.version>1.7.20</kotlin.version>
         <kotest.version>4.4.3</kotest.version>
-        <dokka.version>1.6.21</dokka.version>
+        <dokka.version>1.7.20</dokka.version>
 
 
         <javacc.version>5.0</javacc.version>
