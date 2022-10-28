@@ -38,6 +38,8 @@ The rule is part of the quickstart.xml ruleset.
 * doc
     * [#4144](https://github.com/pmd/pmd/pull/4144): \[doc] Update docs to reflect supported languages
     * [#4163](https://github.com/pmd/pmd/issues/4163): \[doc] Broken links on page "Architecture Decisions"
+* java-bestpractices
+    * [#4140](https://github.com/pmd/pmd/issues/4140): \[java] \[doc] AccessorClassGeneration violations hidden with Java 11
 * java-codestyle
     * [#4139](https://github.com/pmd/pmd/issues/4139): \[java] UnnecessaryFullyQualifiedName FP when the same simple class name exists in the current package
 * java-documentation
