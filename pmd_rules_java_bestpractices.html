@@ -1584,11 +1584,17 @@ directly) a protected constructor can be provided to prevent direct instantiatio
 
 <p><strong>Priority:</strong> Medium (3)</p>
 
-<p>Instantiation by way of private constructors from outside of the constructor’s class often causes the
+<p><strong>Maximum Language Version:</strong> Java 10</p>
+
+<p>Instantiation by way of private constructors from outside the constructor’s class often causes the
 generation of an accessor. A factory method, or non-privatization of the constructor can eliminate this
 situation. The generated class file is actually an interface.  It gives the accessing class the ability
 to invoke a new hidden package scope constructor that takes the interface as a supplementary parameter.
 This turns a private constructor effectively into one with package scope, and is challenging to discern.</p>
+
+<p><em>Note:</em> This rule is only executed for Java 10 or lower.
+Since Java 11, <a href="https://openjdk.org/jeps/181">JEP 181: Nest-Based Access Control</a> has been implemented. This
+means that in Java 11 and above accessor classes are not generated anymore.</p>
 
 <p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/bestpractices/AccessorClassGenerationRule.java">net.sourceforge.pmd.lang.java.rule.bestpractices.AccessorClassGenerationRule</a></p>
 
@@ -1614,9 +1620,15 @@ This turns a private constructor effectively into one with package scope, and is
 
 <p><strong>Priority:</strong> Medium (3)</p>
 
+<p><strong>Maximum Language Version:</strong> Java 10</p>
+
 <p>When accessing private fields / methods from another class, the Java compiler will generate accessor methods
 with package-private visibility. This adds overhead, and to the dex method count on Android. This situation can
 be avoided by changing the visibility of the field / method from private to package-private.</p>
+
+<p><em>Note:</em> This rule is only executed for Java 10 or lower.
+Since Java 11, <a href="https://openjdk.org/jeps/181">JEP 181: Nest-Based Access Control</a> has been implemented. This
+means that in Java 11 and above accessor classes are not generated anymore.</p>
 
 <p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/bestpractices/AccessorMethodGenerationRule.java">net.sourceforge.pmd.lang.java.rule.bestpractices.AccessorMethodGenerationRule</a></p>
 

@@ -1568,6 +1568,15 @@ at least once. This makes the tests more robust, and independent from the user r
 
 <p>The rule is part of the quickstart.xml ruleset.</p>
 
+<h4 id="modified-rules">Modified Rules</h4>
+
+<ul>
+  <li>The Java rule <a href="pmd_rules_java_errorprone.html#testclasswithouttestcases"><code class="language-plaintext highlighter-rouge">TestClassWithoutTestCases</code></a> has a new property <code class="language-plaintext highlighter-rouge">testClassPattern</code>. This is
+used to detect empty test classes by name. Previously this rule could only detect empty JUnit3 test cases
+properly. To switch back to the old behavior, this property can be set to an empty value which disables the
+test class detection by pattern.</li>
+</ul>
+
 <h3 id="fixed-issues">Fixed Issues</h3>
 <ul>
   <li>apex
@@ -1579,6 +1588,16 @@ at least once. This makes the tests more robust, and independent from the user r
     <ul>
       <li><a href="https://github.com/pmd/pmd/pull/4144">#4144</a>: [doc] Update docs to reflect supported languages</li>
       <li><a href="https://github.com/pmd/pmd/issues/4163">#4163</a>: [doc] Broken links on page “Architecture Decisions”</li>
+    </ul>
+  </li>
+  <li>java-bestpractices
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/4140">#4140</a>: [java] [doc] AccessorClassGeneration violations hidden with Java 11</li>
+    </ul>
+  </li>
+  <li>java-codestyle
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/4139">#4139</a>: [java] UnnecessaryFullyQualifiedName FP when the same simple class name exists in the current package</li>
     </ul>
   </li>
   <li>java-documentation
@@ -1597,6 +1616,17 @@ at least once. This makes the tests more robust, and independent from the user r
       <li><a href="https://github.com/pmd/pmd/issues/3977">#3977</a>: [java] StringToString false-positive with local method name confusion</li>
       <li><a href="https://github.com/pmd/pmd/issues/4091">#4091</a>: [java] AvoidArrayLoops false negative with do-while loops</li>
       <li><a href="https://github.com/pmd/pmd/issues/4148">#4148</a>: [java] UseArrayListInsteadOfVector ignores Vector when other classes are imported</li>
+    </ul>
+  </li>
+  <li>java-errorprone
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/929">#929</a>: [java] Inconsistent results with TestClassWithoutTestCases</li>
+      <li><a href="https://github.com/pmd/pmd/issues/2636">#2636</a>: [java] TestClassWithoutTestCases false positive with JUnit5 ParameterizedTest</li>
+    </ul>
+  </li>
+  <li>javascript
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/4165">#4165</a>: [javascript] InaccurateNumericLiteral underscore separator notation false positive</li>
     </ul>
   </li>
 </ul>

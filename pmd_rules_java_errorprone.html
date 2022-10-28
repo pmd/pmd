@@ -5273,8 +5273,12 @@ the literal character "8".</p>
 
 <p><strong>Priority:</strong> Medium (3)</p>
 
-<p>Test classes end with the suffix Test. Having a non-test class with that name is not a good practice,
-since most people will assume it is a test case. Test classes have test methods named testXXX.</p>
+<p>Test classes typically end with the suffix "Test", "Tests" or "TestCase". Having a non-test class with that name
+is not a good practice, since most people will assume it is a test case. Test classes have test methods
+named "testXXX" (JUnit3) or use annotations (e.g. <code class="language-plaintext highlighter-rouge">@Test</code>).</p>
+
+<p>The suffix can be configured using the property <code class="language-plaintext highlighter-rouge">testClassPattern</code>. To disable the detection of possible test classes
+by name, set this property to an empty string.</p>
 
 <p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/errorprone/TestClassWithoutTestCasesRule.java">net.sourceforge.pmd.lang.java.rule.errorprone.TestClassWithoutTestCasesRule</a></p>
 
@@ -5290,8 +5294,37 @@ since most people will assume it is a test case. Test classes have test methods 
 <span class="o">}</span>
 </code></pre></div></div>
 
-<p><strong>Use this rule by referencing it:</strong></p>
+<p><strong>This rule has the following properties:</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Default Value</th>
+      <th>Description</th>
+      <th>Multivalued</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>testClassPattern</td>
+      <td>^(?:.*\.)?Test[^\.]*$|^(?:.*\.)?.*Tests?$|^(?:.*\.)?.*TestCase$</td>
+      <td>Test class name pattern to identify test classes by their fully qualified name. A empty pattern disables test class detection by name. Since PMD 6.51.0.</td>
+      <td>no</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Use this rule with the default properties by just referencing it:</strong></p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/errorprone.xml/TestClassWithoutTestCases"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule and customize it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/errorprone.xml/TestClassWithoutTestCases"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;properties&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"testClassPattern"</span> <span class="na">value=</span><span class="s">"^(?:.*\.)?Test[^\.]*$|^(?:.*\.)?.*Tests?$|^(?:.*\.)?.*TestCase$"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/properties&gt;</span>
+<span class="nt">&lt;/rule&gt;</span>
 </code></pre></div></div>
 
 <h2 id="unconditionalifstatement">UnconditionalIfStatement</h2>
