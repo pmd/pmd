@@ -99,11 +99,6 @@
             <artifactId>kotest-runner-junit5-jvm</artifactId>
             <scope>compile</scope>
         </dependency>
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-api</artifactId>
-            <scope>compile</scope>
-        </dependency>
 
         <dependency>
             <groupId>org.jetbrains</groupId>
