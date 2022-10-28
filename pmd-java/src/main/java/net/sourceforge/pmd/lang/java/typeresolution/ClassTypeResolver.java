@@ -1130,7 +1130,11 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter implements Nulla
     @Override
     public Object visit(ASTPrimaryPrefix node, Object data) {
         super.visit(node, data);
-        rollupTypeUnary(node);
+        if ("class".equals(node.jjtGetLastToken().getImage())) {
+            node.setTypeDefinition(JavaTypeDefinition.forClass(Class.class));
+        } else {
+            rollupTypeUnary(node);
+        }
 
         return data;
     }

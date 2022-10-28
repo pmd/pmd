@@ -34,6 +34,10 @@ The rule is part of the quickstart.xml ruleset.
 * java-documentation
     * [#4141](https://github.com/pmd/pmd/issues/4141): \[java] UncommentedEmptyConstructor FP when constructor annotated with @<!-- -->Autowired
 * java-performance
+    * [#2080](https://github.com/pmd/pmd/issues/2080): \[java] StringToString rule false-positive with field access
+    * [#3437](https://github.com/pmd/pmd/issues/3437): \[java] StringToString doesn't trigger on Bar.class.getSimpleName().toString()
+    * [#3681](https://github.com/pmd/pmd/issues/3681): \[java] StringToString doesn't trigger on string literals
+    * [#3977](https://github.com/pmd/pmd/issues/3977): \[java] StringToString false-positive with local method name confusion
     * [#4091](https://github.com/pmd/pmd/issues/4091): \[java] AvoidArrayLoops false negative with do-while loops
 
 ### API Changes
