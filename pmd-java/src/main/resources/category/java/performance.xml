@@ -83,7 +83,7 @@ If you want to copy/move elements inside the _same_ array (e.g. shift the elemen
             <property name="xpath">
                 <value>
 <![CDATA[
-//(ForStatement[ForUpdate//(UnaryExpression[@Operator='++'] | AssignmentExpression[@Operator = '+='][NumericLiteral[@Image = '1']])]
+//(ForStatement[ForUpdate//(UnaryExpression[@Operator=('++','--')] | AssignmentExpression[@Operator = ('+=', '-=')][NumericLiteral[@Image = '1']])]
  | WhileStatement | DoStatement)
     [not(.//ContinueStatement)]
     [not(.//BreakStatement)]
@@ -93,10 +93,10 @@ If you want to copy/move elements inside the _same_ array (e.g. shift the elemen
                                       (: no nested arrays or method calls as array index :)
                                       [count(ArrayAccess[not(.//ArrayAccess)]
                                                         [not(.//MethodCall)])=2]
-                                      (: array names must be different :)
-                                      [count(distinct-values(ArrayAccess/VariableAccess[1]/@Name)) = 2]
                                       (: array index must be same :)
-                                      [count(distinct-values(ArrayAccess/VariableAccess[2]/@Name)) = 1]
+                                      [distinct-values(ArrayAccess[1]/(VariableAccess[2]|InfixExpression//VariableAccess)/@Name)
+                                       = distinct-values(ArrayAccess[2]/(VariableAccess[2]|InfixExpression//VariableAccess)/@Name)
+                                      ]
      )=1]
 ]]>
                 </value>
@@ -655,7 +655,7 @@ ArrayList is a much better Collection implementation than Vector if thread-safe 
             <property name="xpath">
                 <value>
 <![CDATA[
-//ConstructorCall/ClassOrInterfaceType[pmd-java:typeIsExactly('java.util.Vector')]
+//ConstructorCall/ClassOrInterfaceType[pmd-java:typeIsExactly('java.util.Vector') or pmd-java:typeIsExactly('Vector')]
 ]]>
                 </value>
             </property>

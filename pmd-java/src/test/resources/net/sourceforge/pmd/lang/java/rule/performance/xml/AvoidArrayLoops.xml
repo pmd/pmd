@@ -368,8 +368,9 @@ class AvoidArrayLoops {
     <test-code>
         <description>Shifting left and right #2692</description>
         <expected-problems>2</expected-problems>
-        <expected-linenumbers>9,19</expected-linenumbers>
+        <expected-linenumbers>10,20</expected-linenumbers>
         <code><![CDATA[
+import java.util.Arrays;
 class Scratch {
     public static void main(String[] args) {
         int[] ints;

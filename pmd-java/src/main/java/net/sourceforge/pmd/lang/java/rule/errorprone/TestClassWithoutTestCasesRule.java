@@ -53,6 +53,11 @@ public class TestClassWithoutTestCasesRule extends AbstractJavaRulechainRule {
             return false;
         }
 
-        return testClassPattern.matcher(node.getBinaryName()).find();
+        if (node.isAbstract() || node.isInterface()) {
+            return false;
+        }
+
+        String fullName = node.getCanonicalName();
+        return fullName != null && testClassPattern.matcher(fullName).find();
     }
 }
