@@ -10,10 +10,12 @@ import java.util.Set;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBody;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.AccessNode.Visibility;
 import net.sourceforge.pmd.lang.java.ast.JModifier;
+import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
@@ -36,6 +38,8 @@ public final class TestFrameworksUtil {
               "org.junit.jupiter.api.TestTemplate",
               "org.junit.jupiter.params.ParameterizedTest"
         );
+
+    private static final String JUNIT5_NESTED = "org.junit.jupiter.api.Nested";
 
     private static final Set<String> ASSERT_CONTAINERS = setOf("org.junit.Assert",
                                                                "org.junit.jupiter.api.Assertions",
@@ -127,6 +131,10 @@ public final class TestFrameworksUtil {
             && !node.isNested()
             && !node.isAbstract()
             && TypeTestUtil.isA(JUNIT3_CLASS_NAME, node);
+    }
+
+    public static boolean isJUnit5NestedClass(ASTAnyTypeDeclaration innerClassDecl) {
+        return innerClassDecl.isAnnotationPresent(JUNIT5_NESTED);
     }
 
     public static boolean isExpectExceptionCall(ASTMethodCall call) {

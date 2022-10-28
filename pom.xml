@@ -10,10 +10,10 @@
     <description>
         PMD is a source code analyzer. It finds common programming flaws like unused variables, empty catch blocks,
         unnecessary object creation, and so forth. It supports Java, JavaScript, Salesforce.com Apex and Visualforce,
-        Modelica, PLSQL, Apache Velocity, XML, XSL, Scala.
+        Modelica, PLSQL, Apache Velocity, HTML, XML, XSL, Scala.
 
         Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code in
-        C/C++, C#, Dart, Fortran, Go, Groovy, Java, JavaScript, JSP, Kotlin, Lua, Matlab, Modelica,
+        C/C++, C#, Dart, Fortran, Gherkin, Go, Groovy, HTML, Java, JavaScript, JSP, Kotlin, Lua, Matlab, Modelica,
         Objective-C, Perl, PHP, PLSQL, Python, Ruby, Salesforce.com Apex, Scala, Swift and Visualforce.
     </description>
 
@@ -795,7 +795,7 @@
             <dependency>
                 <groupId>org.yaml</groupId>
                 <artifactId>snakeyaml</artifactId>
-                <version>1.32</version>
+                <version>1.33</version>
             </dependency>
 
 
@@ -989,11 +989,13 @@
             <!-- transitive dependency through org.scalameta:trees_2.13
                  upgrade to 3.16.1 to fix CVE-2021-22569 A potential Denial of Service issue in protobuf-java
                  https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-wrvw-hg22-4m67
+                 upgrade to 3.16.3 to fix CVE-2022-3171 protobuf-java has a potential Denial of Service issue
+                 https://github.com/advisories/GHSA-h4h5-3hr4-j3g2
             -->
             <dependency>
                 <groupId>com.google.protobuf</groupId>
                 <artifactId>protobuf-java</artifactId>
-                <version>3.16.1</version>
+                <version>3.16.3</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
