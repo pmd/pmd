@@ -6952,7 +6952,7 @@
         "code",
         "doc"
       ]
-    ],
+    },
     {
       "login": "yasarshaikh",
       "name": "Yasar Shaikh",
@@ -6960,6 +6960,15 @@
       "profile": "https://github.com/yasarshaikh",
       "contributions": [
         "code"
+      ]
+    },
+    {
+      "login": "rnveach",
+      "name": "rnveach",
+      "avatar_url": "https://avatars.githubusercontent.com/u/5427943?v=4",
+      "profile": "https://github.com/rnveach",
+      "contributions": [
+        "bug"
       ]
     }
   ],
