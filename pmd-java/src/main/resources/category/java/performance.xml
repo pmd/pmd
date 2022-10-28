@@ -928,16 +928,15 @@ ArrayList is a much better Collection implementation than Vector if thread-safe 
             <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
-<![CDATA[
-//CompilationUnit[not(ImportDeclaration) or ImportDeclaration[@ImportedName='java.util.Vector']]
-  //AllocationExpression/ClassOrInterfaceType
-    [@Image='Vector' or @Image='java.util.Vector']
+                    <![CDATA[
+//AllocationExpression/ClassOrInterfaceType[pmd-java:typeIsExactly('java.util.Vector')]
 ]]>
                 </value>
             </property>
         </properties>
         <example>
 <![CDATA[
+import java.util.*;
 public class SimpleTest extends TestCase {
     public void testX() {
     Collection c1 = new Vector();
