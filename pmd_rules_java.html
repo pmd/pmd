@@ -1883,7 +1883,7 @@
 <ul>
   <li><a href="pmd_rules_java_performance.html#addemptystring">AddEmptyString</a>: The conversion of literals to strings by concatenating them with empty strings is inefficient. It…</li>
   <li><a href="pmd_rules_java_performance.html#appendcharacterwithchar">AppendCharacterWithChar</a>: Avoid concatenating characters as strings in StringBuffer/StringBuilder.append methods.</li>
-  <li><a href="pmd_rules_java_performance.html#avoidarrayloops">AvoidArrayLoops</a>: Instead of manually copying data between two arrays, use the efficient Arrays.copyOf or System.ar…</li>
+  <li><a href="pmd_rules_java_performance.html#avoidarrayloops">AvoidArrayLoops</a>: Instead of manually copying data between two arrays, use the more efficient ‘Arrays.copyOf’ or ‘S…</li>
   <li><a href="pmd_rules_java_performance.html#avoidcalendardatecreation">AvoidCalendarDateCreation</a>: Problem: A Calendar is a heavyweight object and expensive to create. Solution: Use ‘new Date()’, …</li>
   <li><a href="pmd_rules_java_performance.html#avoidfilestream">AvoidFileStream</a>: The FileInputStream and FileOutputStream classes contains a finalizer method which will cause gar…</li>
   <li><a href="pmd_rules_java_performance.html#avoidinstantiatingobjectsinloops">AvoidInstantiatingObjectsInLoops</a>: New objects created within loops should be checked to see if they can created outside them and re…</li>
@@ -2227,7 +2227,7 @@
         <div class="col-lg-12 footer">
             &copy;2022 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Oct 27, 2022 <br />
+             Site last generated: Oct 28, 2022 <br />
             <p>
                 <img src="images/pmd-logo-small.png" alt="Company
                 logo"/>

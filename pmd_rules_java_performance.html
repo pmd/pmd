@@ -1609,42 +1609,73 @@ It is much better to use one of the type-specific <code class="language-plaintex
 
 <p><strong>Priority:</strong> Medium (3)</p>
 
-<p>Instead of manually copying data between two arrays, use the efficient Arrays.copyOf or System.arraycopy method instead.</p>
+<p>Instead of manually copying data between two arrays, use the more efficient <code class="language-plaintext highlighter-rouge">Arrays.copyOf</code>
+or <code class="language-plaintext highlighter-rouge">System.arraycopy</code> method instead.</p>
+
+<p>To copy only part of the array, use <code class="language-plaintext highlighter-rouge">Arrays.copyOfRange</code> or <code class="language-plaintext highlighter-rouge">System.arraycopy</code>.</p>
+
+<p>If you want to copy/move elements inside the <em>same</em> array (e.g. shift the elements), use <code class="language-plaintext highlighter-rouge">System.arraycopy</code>.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
-<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">Statement</span><span class="p">[(</span><span class="nt">ForStatement</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="nt">WhileStatement</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="nt">DoStatement</span><span class="p">)</span><span class="w"> </span><span class="ow">and</span><span class="w">
-</span><span class="nf">count</span><span class="p">(</span><span class="err">*</span><span class="o">//</span><span class="nt">AssignmentOperator</span><span class="p">[</span><span class="na">@Image</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s1">'='</span><span class="p">])</span><span class="err">=</span><span class="m">1</span><span class="w">
-</span><span class="ow">and</span><span class="w">
-</span><span class="err">*</span><span class="o">/</span><span class="nt">Statement</span><span class="w">
-</span><span class="p">[</span><span class="w">
-</span><span class="p">.</span><span class="o">/</span><span class="nt">Block</span><span class="o">/</span><span class="nt">BlockStatement</span><span class="o">/</span><span class="nt">Statement</span><span class="o">/</span><span class="nt">StatementExpression</span><span class="o">/</span><span class="nt">PrimaryExpression</span><span class="w">
-</span><span class="o">/</span><span class="nt">PrimaryPrefix</span><span class="o">/</span><span class="nt">Name</span><span class="err">/</span><span class="p">..</span><span class="err">/</span><span class="p">..</span><span class="o">/</span><span class="nt">PrimarySuffix</span><span class="o">/</span><span class="nt">Expression</span><span class="w">
-</span><span class="p">[(</span><span class="nt">PrimaryExpression</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="nt">AdditiveExpression</span><span class="p">)</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="nf">count</span><span class="w">
-</span><span class="p">(.</span><span class="o">//</span><span class="nt">PrimaryPrefix</span><span class="o">/</span><span class="nt">Name</span><span class="p">)</span><span class="err">=</span><span class="m">1</span><span class="p">]</span><span class="o">//</span><span class="nt">PrimaryPrefix</span><span class="o">/</span><span class="nt">Name</span><span class="err">/</span><span class="na">@Image</span><span class="w">
-</span><span class="ow">and</span><span class="w">
-</span><span class="p">.</span><span class="o">/</span><span class="nt">Block</span><span class="o">/</span><span class="nt">BlockStatement</span><span class="o">/</span><span class="nt">Statement</span><span class="o">/</span><span class="nt">StatementExpression</span><span class="o">/</span><span class="nt">Expression</span><span class="o">/</span><span class="nt">PrimaryExpression</span><span class="w">
-</span><span class="o">/</span><span class="nt">PrimaryPrefix</span><span class="o">/</span><span class="nt">Name</span><span class="err">/</span><span class="p">..</span><span class="err">/</span><span class="p">..</span><span class="o">/</span><span class="nt">PrimarySuffix</span><span class="p">[</span><span class="nf">count</span><span class="w">
-</span><span class="p">(..</span><span class="o">//</span><span class="nt">PrimarySuffix</span><span class="p">)</span><span class="err">=</span><span class="m">1</span><span class="p">]</span><span class="o">/</span><span class="nt">Expression</span><span class="p">[(</span><span class="nt">PrimaryExpression</span><span class="w">
-</span><span class="ow">or</span><span class="w"> </span><span class="nt">AdditiveExpression</span><span class="p">)</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="nf">count</span><span class="p">(.</span><span class="o">//</span><span class="nt">PrimaryPrefix</span><span class="o">/</span><span class="nt">Name</span><span class="p">)</span><span class="err">=</span><span class="m">1</span><span class="p">]</span><span class="w">
-</span><span class="o">//</span><span class="nt">PrimaryPrefix</span><span class="o">/</span><span class="nt">Name</span><span class="err">/</span><span class="na">@Image</span><span class="w">
-</span><span class="p">]]</span><span class="w">
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">Statement</span><span class="w">
+  </span><span class="p">[(</span><span class="nt">ForStatement</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="nt">WhileStatement</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="nt">DoStatement</span><span class="p">)]</span><span class="w">
+  </span><span class="p">[</span><span class="nf">count</span><span class="p">(</span><span class="err">*</span><span class="o">/</span><span class="nt">Statement</span><span class="o">//</span><span class="nt">AssignmentOperator</span><span class="p">[</span><span class="na">@Image</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s1">'='</span><span class="p">])</span><span class="err">=</span><span class="m">1</span><span class="p">]</span><span class="w">
+  </span><span class="p">[</span><span class="err">*</span><span class="o">/</span><span class="nt">Statement</span><span class="o">/</span><span class="nt">Block</span><span class="o">/</span><span class="nt">BlockStatement</span><span class="o">/</span><span class="nt">Statement</span><span class="w">
+        </span><span class="o">/</span><span class="nt">StatementExpression</span><span class="p">[</span><span class="nt">AssignmentOperator</span><span class="p">[</span><span class="na">@Image</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s1">'='</span><span class="p">]]</span><span class="w">
+        </span><span class="c">(: LHS - left hand side :)</span><span class="w">
+        </span><span class="p">[</span><span class="nt">PrimaryExpression</span><span class="p">[</span><span class="nf">count</span><span class="p">(</span><span class="nt">PrimarySuffix</span><span class="p">)</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="m">1</span><span class="p">]</span><span class="o">/</span><span class="nt">PrimarySuffix</span><span class="p">[</span><span class="na">@ArrayDereference</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">true</span><span class="p">()]</span><span class="w">
+        </span><span class="o">/</span><span class="nt">Expression</span><span class="p">[</span><span class="nt">PrimaryExpression</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="nt">AdditiveExpression</span><span class="p">]</span><span class="w">
+                   </span><span class="p">[</span><span class="nf">count</span><span class="p">(.</span><span class="o">//</span><span class="nt">PrimaryPrefix</span><span class="o">/</span><span class="nt">Name</span><span class="p">)</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="ow">or</span><span class="w">
+                    </span><span class="p">(</span><span class="nf">count</span><span class="p">(.</span><span class="o">//</span><span class="nt">PrimaryPrefix</span><span class="o">/</span><span class="nt">Name</span><span class="p">)</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="m">2</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="p">.</span><span class="o">//</span><span class="nt">PrimaryPrefix</span><span class="o">/</span><span class="nt">Name</span><span class="err">/</span><span class="na">@Image</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="o">//</span><span class="nt">VariableDeclaratorId</span><span class="p">[</span><span class="na">@Final</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">true</span><span class="p">()]</span><span class="err">/</span><span class="na">@Name</span><span class="p">)</span><span class="w">
+                   </span><span class="p">]</span><span class="w">
+        </span><span class="o">//</span><span class="nt">PrimaryPrefix</span><span class="o">/</span><span class="nt">Name</span><span class="err">/</span><span class="na">@Image</span><span class="p">]</span><span class="w">
+        </span><span class="c">(: RHS - right hand side :)</span><span class="w">
+        </span><span class="p">[</span><span class="nt">Expression</span><span class="o">/</span><span class="nt">PrimaryExpression</span><span class="o">/</span><span class="nt">PrimarySuffix</span><span class="p">[</span><span class="na">@ArrayDereference</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">true</span><span class="p">()][</span><span class="nf">count</span><span class="p">(..</span><span class="o">//</span><span class="nt">PrimarySuffix</span><span class="p">)</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="m">1</span><span class="p">]</span><span class="w">
+        </span><span class="o">/</span><span class="nt">Expression</span><span class="p">[</span><span class="nt">PrimaryExpression</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="nt">AdditiveExpression</span><span class="p">]</span><span class="w">
+                   </span><span class="p">[</span><span class="nf">count</span><span class="p">(.</span><span class="o">//</span><span class="nt">PrimaryPrefix</span><span class="o">/</span><span class="nt">Name</span><span class="p">)</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="ow">or</span><span class="w">
+                    </span><span class="p">(</span><span class="nf">count</span><span class="p">(.</span><span class="o">//</span><span class="nt">PrimaryPrefix</span><span class="o">/</span><span class="nt">Name</span><span class="p">)</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="m">2</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="p">.</span><span class="o">//</span><span class="nt">PrimaryPrefix</span><span class="o">/</span><span class="nt">Name</span><span class="err">/</span><span class="na">@Image</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="o">//</span><span class="nt">VariableDeclaratorId</span><span class="p">[</span><span class="na">@Final</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">true</span><span class="p">()]</span><span class="err">/</span><span class="na">@Name</span><span class="p">)</span><span class="w">
+                   </span><span class="p">]</span><span class="w">
+        </span><span class="o">//</span><span class="nt">PrimaryPrefix</span><span class="o">/</span><span class="nt">Name</span><span class="err">/</span><span class="na">@Image</span><span class="p">]</span><span class="w">
+  </span><span class="p">]</span><span class="w">
 </span></code></pre></div></div>
 
 <p><strong>Example(s):</strong></p>
 
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Test</span> <span class="o">{</span>
-    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">bar</span><span class="o">()</span> <span class="o">{</span>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">Scratch</span> <span class="o">{</span>
+    <span class="kt">void</span> <span class="nf">copy_a_to_b</span><span class="o">()</span> <span class="o">{</span>
         <span class="kt">int</span><span class="o">[]</span> <span class="n">a</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">int</span><span class="o">[</span><span class="mi">10</span><span class="o">];</span>
         <span class="kt">int</span><span class="o">[]</span> <span class="n">b</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">int</span><span class="o">[</span><span class="mi">10</span><span class="o">];</span>
-        <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span><span class="n">i</span><span class="o">&lt;</span><span class="mi">10</span><span class="o">;</span><span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
-            <span class="n">b</span><span class="o">[</span><span class="n">i</span><span class="o">]=</span><span class="n">a</span><span class="o">[</span><span class="n">i</span><span class="o">];</span>
+        <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">a</span><span class="o">.</span><span class="na">length</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+            <span class="n">b</span><span class="o">[</span><span class="n">i</span><span class="o">]</span> <span class="o">=</span> <span class="n">a</span><span class="o">[</span><span class="n">i</span><span class="o">];</span>
         <span class="o">}</span>
+        <span class="c1">// equivalent</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="nc">Arrays</span><span class="o">.</span><span class="na">copyOf</span><span class="o">(</span><span class="n">a</span><span class="o">,</span> <span class="n">a</span><span class="o">.</span><span class="na">length</span><span class="o">);</span>
+        <span class="c1">// equivalent</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">arraycopy</span><span class="o">(</span><span class="n">a</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="n">b</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="n">a</span><span class="o">.</span><span class="na">length</span><span class="o">);</span>
 
         <span class="kt">int</span><span class="o">[]</span> <span class="n">c</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">int</span><span class="o">[</span><span class="mi">10</span><span class="o">];</span>
-        <span class="c1">// this will trigger the rule</span>
-        <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span><span class="n">i</span><span class="o">&lt;</span><span class="mi">10</span><span class="o">;</span><span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
-            <span class="n">b</span><span class="o">[</span><span class="n">i</span><span class="o">]=</span><span class="n">a</span><span class="o">[</span><span class="n">c</span><span class="o">[</span><span class="n">i</span><span class="o">]];</span>
+        <span class="c1">// this will not trigger the rule</span>
+        <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">c</span><span class="o">.</span><span class="na">length</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+            <span class="n">b</span><span class="o">[</span><span class="n">i</span><span class="o">]</span> <span class="o">=</span> <span class="n">a</span><span class="o">[</span><span class="n">c</span><span class="o">[</span><span class="n">i</span><span class="o">]];</span>
         <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">Scratch</span> <span class="o">{</span>
+    <span class="kt">void</span> <span class="nf">shift_left</span><span class="o">(</span><span class="kt">int</span><span class="o">[]</span> <span class="n">a</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">a</span><span class="o">.</span><span class="na">length</span> <span class="o">-</span> <span class="mi">1</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+            <span class="n">a</span><span class="o">[</span><span class="n">i</span><span class="o">]</span> <span class="o">=</span> <span class="n">a</span><span class="o">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="o">];</span>
+        <span class="o">}</span>
+        <span class="c1">// equivalent</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">arraycopy</span><span class="o">(</span><span class="n">a</span><span class="o">,</span> <span class="mi">1</span><span class="o">,</span> <span class="n">a</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="n">a</span><span class="o">.</span><span class="na">length</span> <span class="o">-</span> <span class="mi">1</span><span class="o">);</span>
+    <span class="o">}</span>
+    <span class="kt">void</span> <span class="nf">shift_right</span><span class="o">(</span><span class="kt">int</span><span class="o">[]</span> <span class="n">a</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="na">length</span> <span class="o">-</span> <span class="mi">1</span><span class="o">;</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span><span class="o">--)</span> <span class="o">{</span>
+            <span class="n">a</span><span class="o">[</span><span class="n">i</span><span class="o">]</span> <span class="o">=</span> <span class="n">a</span><span class="o">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="o">];</span>
+        <span class="o">}</span>
+        <span class="c1">// equivalent</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">arraycopy</span><span class="o">(</span><span class="n">a</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="n">a</span><span class="o">,</span> <span class="mi">1</span><span class="o">,</span> <span class="n">a</span><span class="o">.</span><span class="na">length</span> <span class="o">-</span> <span class="mi">1</span><span class="o">);</span>
     <span class="o">}</span>
 <span class="o">}</span>
 </code></pre></div></div>
@@ -2481,14 +2512,13 @@ garbage-collected later.</p>
 <p>ArrayList is a much better Collection implementation than Vector if thread-safe operation is not required.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
-<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">CompilationUnit</span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="nt">ImportDeclaration</span><span class="p">)</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="nt">ImportDeclaration</span><span class="p">[</span><span class="na">@ImportedName</span><span class="err">=</span><span class="s1">'java.util.Vector'</span><span class="p">]]</span><span class="w">
-  </span><span class="o">//</span><span class="nt">AllocationExpression</span><span class="o">/</span><span class="nt">ClassOrInterfaceType</span><span class="w">
-    </span><span class="p">[</span><span class="na">@Image</span><span class="err">=</span><span class="s1">'Vector'</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="na">@Image</span><span class="err">=</span><span class="s1">'java.util.Vector'</span><span class="p">]</span><span class="w">
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">AllocationExpression</span><span class="o">/</span><span class="nt">ClassOrInterfaceType</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">typeIsExactly</span><span class="p">(</span><span class="s1">'java.util.Vector'</span><span class="p">)]</span><span class="w">
 </span></code></pre></div></div>
 
 <p><strong>Example(s):</strong></p>
 
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">SimpleTest</span> <span class="kd">extends</span> <span class="nc">TestCase</span> <span class="o">{</span>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">java.util.*</span><span class="o">;</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">SimpleTest</span> <span class="kd">extends</span> <span class="nc">TestCase</span> <span class="o">{</span>
     <span class="kd">public</span> <span class="kt">void</span> <span class="nf">testX</span><span class="o">()</span> <span class="o">{</span>
     <span class="nc">Collection</span> <span class="n">c1</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Vector</span><span class="o">();</span>
     <span class="nc">Collection</span> <span class="n">c2</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ArrayList</span><span class="o">();</span>    <span class="c1">// achieves the same with much better performance</span>
@@ -2775,7 +2805,7 @@ or StringBuffer.toString().length() == …</p>
         <div class="col-lg-12 footer">
             &copy;2022 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Oct 27, 2022 <br />
+             Site last generated: Oct 28, 2022 <br />
             <p>
                 <img src="images/pmd-logo-small.png" alt="Company
                 logo"/>
