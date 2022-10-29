@@ -62,10 +62,17 @@ The rule is part of the quickstart.xml ruleset.
 
 ### API Changes
 
+No changes.
+
 ### External Contributions
 * [#4142](https://github.com/pmd/pmd/pull/4142): \[java] fix #4141 Update UncommentedEmptyConstructor - ignore @<!-- -->Autowired annotations - [Lynn](https://github.com/LynnBroe) (@LynnBroe)
 * [#4147](https://github.com/pmd/pmd/pull/4147): \[java] Added support for Do-While for AvoidArrayLoops - [Yasar Shaikh](https://github.com/yasarshaikh) (@yasarshaikh)
 * [#4150](https://github.com/pmd/pmd/pull/4150): \[apex] New rule ApexUnitTestClassShouldHaveRunAs #4149 - [Thomas Prouvot](https://github.com/tprouvot) (@tprouvot)
+
+### Stats
+* 63 commits
+* 28 closed tickets & PRs
+* Days since last release: 28
 
 {% endtocmaker %}
 
