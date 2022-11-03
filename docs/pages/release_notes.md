@@ -15,6 +15,8 @@ This is a {{ site.pmd.release_type }} release.
 ### New and noteworthy
 
 ### Fixed Issues
+* java-errorprone
+    * [#4185](https://github.com/pmd/pmd/issues/4185): \[java] InvalidLogMessageFormat rule produces a NPE
 
 ### API Changes
 
