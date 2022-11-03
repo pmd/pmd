@@ -15,6 +15,8 @@ This is a {{ site.pmd.release_type }} release.
 ### New and noteworthy
 
 ### Fixed Issues
+* java-performance
+    * [#4183](https://github.com/pmd/pmd/issues/4183): \[java] AvoidArrayLoops regression: from false negative to false positive with final variables
 
 ### API Changes
 
