@@ -5,10 +5,37 @@
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
 
     <test-code>
-        <description>private String, no accessor</description>
+        <description>Example code</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <expected-messages>
+            <message>The field 'stream' of serializable class 'Buzz' is of non-serializable type 'java.io.InputStream'.</message>
+        </expected-messages>
         <code><![CDATA[
-public class Foo {
+class Buzz implements java.io.Serializable {
+    private static final long serialVersionUID = 1L;
+
+    private transient int someFoo;      // good, it's transient
+    private static int otherFoo;        // also OK, it's static
+    private java.io.InputStream stream; // bad - InputStream is not serializable
+
+    public void setStream(InputStream stream) {
+        this.stream = stream;
+    }
+
+    public int getSomeFoo() {
+          return this.someFoo;
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>String, no accessor, ok</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.io.Serializable;
+public class Foo implements Serializable {
     private String foo;
     private String bar = foo;
 }
@@ -16,123 +43,48 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>private static String</description>
+        <description>private static InputStream</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-public class Foo {
-    private static String foo;
-    private String bar = Foo.foo;
+import java.io.InputStream;
+import java.io.Serializable;
+public class Foo implements Serializable {
+    private static InputStream foo;
 }
         ]]></code>
     </test-code>
 
     <test-code>
-        <description>private transient String</description>
+        <description>private transient InputStream</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-public class Foo {
-    private transient String foo;
-    private String bar = Foo.foo;
+import java.io.InputStream;
+import java.io.Serializable;
+public class Foo implements Serializable {
+    private transient InputStream foo;
 }
         ]]></code>
     </test-code>
 
     <test-code>
-        <description>getter, no setter</description>
-        <expected-problems>1</expected-problems>
-        <code><![CDATA[
-public class Foo {
-    private String foo;
-    private String bar = Foo.foo;
-    public String getFoo() {return foo;}
-}
-        ]]></code>
-    </test-code>
-
-    <test-code>
-        <description>setter, no getter</description>
-        <expected-problems>1</expected-problems>
-        <code><![CDATA[
-public class Foo {
-    private String foo;
-    private String bar = Foo.foo;
-    public void setFoo(Foo foo) {this.foo = foo;}
-}
-        ]]></code>
-    </test-code>
-
-    <test-code>
-        <description>both accessors, yay!</description>
+        <description>InputStream in a non-serializable class is OK</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.io.InputStream;
 public class Foo {
-    private String foo;
-    private String bar = Foo.foo;
-    public void setFoo(Foo foo) {this.foo = foo;}
-    public String getFoo() {return foo;}
+    private InputStream foo;
 }
-        ]]></code>
-    </test-code>
-
-    <test-code>
-        <description>setFoo and isFoo is OK for booleans</description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-public class Foo {
-    private boolean foo;
-    public void setFoo(boolean foo) {this.foo = foo;}
-    public boolean isFoo() {return foo;}
-}
-        ]]></code>
-    </test-code>
-
-    <test-code>
-        <description>setFoo and isFoo is not OK for Strings</description>
-        <expected-problems>1</expected-problems>
-        <code><![CDATA[
-public class Foo {
-    private String foo;
-    public void setFoo(String foo) {this.foo = foo;}
-    public String isFoo() {return foo;}
-}
-        ]]></code>
-    </test-code>
-
-    <code-fragment id="prefix"><![CDATA[
-public class Foo {
-    private String m_foo;
-    public void setFoo(String foo) {m_foo = foo;}
-    public String getFoo() {return m_foo;}
-}
-    ]]></code-fragment>
-
-    <test-code>
-        <description>prefix is off by default</description>
-        <expected-problems>1</expected-problems>
-        <code-ref id="prefix"/>
-    </test-code>
-
-    <test-code>
-        <description>valid prefix</description>
-        <rule-property name="prefix">m_</rule-property>
-        <expected-problems>0</expected-problems>
-        <code-ref id="prefix"/>
-    </test-code>
-
-    <test-code>
-        <description>invalid prefix</description>
-        <rule-property name="prefix">xxxxxx</rule-property>
-        <expected-problems>1</expected-problems>
-        <code-ref id="prefix"/>
+]]></code>
     </test-code>
 
     <test-code>
         <description>interface</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-public interface Foo {
-    public String foo;
-    public String bar = foo;
+import java.io.InputStream;
+import java.io.Serializable;
+public interface Foo extends Serializable {
+    public InputStream getFoo();
 }
         ]]></code>
     </test-code>
@@ -141,11 +93,11 @@ public interface Foo {
         <description>@SuppressWarnings("serial")</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.io.InputStream;
+import java.io.Serializable;
 @SuppressWarnings("serial")
-public class Foo {
-    private String foo;
-    private String bar = Foo.foo;
-    public void setFoo(Foo foo) {this.foo = foo;}
+public class Foo implements Serializable {
+    private InputStream foo;
 }
         ]]></code>
     </test-code>
@@ -154,208 +106,61 @@ public class Foo {
         <description>ClassCastException on generic method</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.util.List;
 public abstract class List<A> implements Iterable<A> {
     public static <A> F<List<A>, Boolean> isEmpty() {
         return null;
     }
 }
+class F<X, Y> {}
         ]]></code>
     </test-code>
 
     <test-code>
-        <description>#881 private final without setter is flagged</description>
+        <description>Ignore Externalizable</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-public class Foo {
-    private final String bar = "BAR";
-    public String getBar() { return bar; }
-
-    private String baz;
-    public void setBaz(String b) { baz = b; }
-    public String getBaz() { return baz; }
+import java.io.Externalizable;
+import java.io.InputStream;
+import java.io.IOException;
+import java.io.ObjectOutput;
+import java.io.ObjectInput;
+class Foo implements Externalizable {
+    private InputStream foo;
+    void writeExternal(ObjectOutput out) throws IOException {}
+    void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {}
 }
-        ]]></code>
+]]></code>
     </test-code>
 
     <test-code>
-        <description>#780 [java] BeanMembersShouldSerializeRule does not recognize lombok accessors - 1</description>
+        <description>Ignore manual serialization</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-import lombok.Data;
-
-@Data
-public class Buzz {
-    private String foo;
-
-    public Buzz(String s) {
-        foo = s;
-    }
+import java.io.InputStream;
+import java.io.Serializable;
+import java.io.IOException;
+import java.io.ObjectStreamException;
+class Foo implements Serializable {
+    private InputStream foo; // no violation, because writeObject/readObject is present
+    private void writeObject(java.io.ObjectOutputStream out) throws IOException {}
+    private void readObject(java.io.ObjectInputStream in) throws IOException, ClassNotFoundException {}
+    private void readObjectNoData() throws ObjectStreamException {}
 }
-        ]]></code>
+]]></code>
     </test-code>
 
     <test-code>
-        <description>#780 [java] BeanMembersShouldSerializeRule does not recognize lombok accessors - 2</description>
+        <description>Ignore manual serialization with replacement object</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-@lombok.Data
-public class Foo {
-    private String bar;
-}
-        ]]></code>
-    </test-code>
-
-    <test-code>
-        <description>#780 [java] BeanMembersShouldSerializeRule does not recognize lombok accessors - 3</description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-import lombok.*;
-@Data
-public class Foo {
-    private String bar;
-}
-        ]]></code>
-    </test-code>
-
-    <test-code>
-        <description>#780 [java] BeanMembersShouldSerializeRule does not recognize lombok accessors - 4</description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-import lombok.Getter;
-@Getter
-public class Foo {
-    private String bar;
-}
-        ]]></code>
-    </test-code>
-
-    <test-code>
-        <description>#780 [java] BeanMembersShouldSerializeRule does not recognize lombok accessors - 5</description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-import lombok.Getter;
-public class Foo {
-    @Getter private String bar;
-}
-        ]]></code>
-    </test-code>
-
-    <test-code>
-        <description>#780 [java] BeanMembersShouldSerializeRule does not recognize lombok accessors - 6</description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-import lombok.Getter;
-public class Foo {
-    @Getter(lazy=true) private String bar;
-}
-        ]]></code>
-    </test-code>
-
-    <test-code>
-        <description>#780 [java] BeanMembersShouldSerializeRule does not recognize lombok accessors - 7</description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-@Data
-public class Foo {
-    private String bar;
-}
-        ]]></code>
-    </test-code>
-
-    <test-code>
-        <description>#1796 BeanMembersShouldSerialize should still report with @Delegate</description>
-        <expected-problems>1</expected-problems>
-        <code><![CDATA[
-import lombok.experimental.Delegate;
-
-public class Foo {
-    @Delegate
-    private String bar;
-
-    public String toString() {
-        return "Foo: " + bar;
-    }
-}
-        ]]></code>
-    </test-code>
-
-    <test-code>
-        <description>False negatives for inner class references</description>
-        <expected-problems>4</expected-problems>
-        <expected-linenumbers>3,5,7,21</expected-linenumbers>
-        <code><![CDATA[
-// from https://github.com/checkstyle/checkstyle/blob/checkstyle-9.1/src/test/resources-noncompilable/com/puppycrawl/tools/checkstyle/grammar/antlr4/InputAntlr4AstRegressionUncommon.java#L185
-class OtherClass {
-    Object x;
-    class SuperClassA{
-        protected SuperClassA bs;
-        protected SuperClassA s; // this is actually a false negative
-        Object s2;
-
-        private void method() {
-            x = new Object();
-        }
-    }
-    class SuperClassA2{}
-
-
-    /*
-     * Note: inherited fields of a nested class shadow outer scope variables
-     *      Note: only if they are accessible!
-     */
-    public class FieldAccessSuper extends SuperClassA {
-        private SuperClassA s;
-
-        public void foo() {
-            // simple super field access
-            // Primary[Prefix[Name[s]]]
-            s = new SuperClassA();
-
-            // access inherited field through primary
-            // Primary[ Prefix[Primary[(this)]], Suffix[s], Suffix[s2] ]
-            (this).s.s2 = new SuperClassA2();
-            this.s.s2 = new SuperClassA2();
-
-            // access inherited field, second 's' has inherited field 's2'
-            // Primary[Prefix[Name[s.s.s2]]]
-            s.s.s2 = new SuperClassA2();
-
-            // field access through super
-            // Primary[Prefix["super"], Suffix["field"]]
-            super.s = new SuperClassA();
-
-            // fully qualified case
-            // Primary[Prefix[Name[net...FieldAccessSuper]], Suffix[this], Suffix[s]]
-            FieldAccessSuper.this.s
-                    = new SuperClassA();
-        }
-
-        public class Nested extends SuperClassA {
-            SuperClassA a;
-            class SubscriptionAdapter{}
-            final /* synthetic */ SubscriptionAdapter this$0 = null;
-            final /* synthetic */ Object val$argHolder = null;
-
-            public void foo() {
-                // access enclosing super field
-                // Primary[Prefix[Name[s]]]
-                s = new SuperClassA();
-
-                // access Nested inherited field
-                // Primary[Prefix[Name[bs]]]
-                bs = new SuperClassA();
-
-                // access super field with fully qualified stuff
-                // Primary[Prefix["FieldAccessSuper"], Suffix[Nested],
-                //                  Suffix["super"], Suffix["bs"]]
-                FieldAccessSuper.Nested.super.bs = new SuperClassA();
-
-                // refers to the enclosing class's immediate super class's field
-                // Primary[Prefix["FieldAccessSuper"], Suffix["super"], Suffix["s"]]
-                FieldAccessSuper.super.s = new SuperClassA();
-            }
-        }
-    }
+import java.io.InputStream;
+import java.io.Serializable;
+import java.io.ObjectStreamException;
+class Foo implements Serializable {
+    private InputStream foo; // no violation, because writeReplace/readResolve is present
+    private Object writeReplace() throws ObjectStreamException {}
+    private Object readResolve() throws ObjectStreamException {}
 }
 ]]></code>
     </test-code>
