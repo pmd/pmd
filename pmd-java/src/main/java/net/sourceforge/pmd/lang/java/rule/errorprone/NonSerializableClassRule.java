@@ -30,13 +30,13 @@ import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
-public class BeanMembersShouldSerializeRule extends AbstractLombokAwareRule {
+public class NonSerializableClassRule extends AbstractLombokAwareRule {
 
     private String prefixProperty;
 
     private static final PropertyDescriptor<String> PREFIX_DESCRIPTOR = stringProperty("prefix").desc("A variable prefix to skip, i.e., m_").defaultValue("").build();
 
-    public BeanMembersShouldSerializeRule() {
+    public NonSerializableClassRule() {
         definePropertyDescriptor(PREFIX_DESCRIPTOR);
     }
 
