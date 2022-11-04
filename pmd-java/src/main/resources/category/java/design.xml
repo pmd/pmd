@@ -31,7 +31,12 @@ protected constructor in order to prevent instantiation than make the class misl
     [@Abstract = true()]
     [not(./ClassOrInterfaceBody/*/ConstructorDeclaration)]
     [not(./ClassOrInterfaceBody/*/MethodDeclaration)]
-    [not(../Annotation/MarkerAnnotation/Name[pmd-java:typeIs('com.google.auto.value.AutoValue')])]
+    [not(../Annotation[pmd-java:typeIs('com.google.auto.value.AutoValue')
+                    or pmd-java:typeIs('lombok.AllArgsConstructor')
+                    or pmd-java:typeIs('lombok.NoArgsConstructor')
+                    or pmd-java:typeIs('lombok.RequiredArgsConstructor')
+                      ]
+    )]
 ]]>
                 </value>
             </property>
