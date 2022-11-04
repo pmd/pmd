@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.types.ast
 
+import io.kotest.assertions.withClue
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.property.checkAll
@@ -24,7 +25,9 @@ class ConditionalTypeTest : FunSpec({}) {
 
         tested[key] = expected
 
-        PolyResolution.computeStandaloneConditionalType(testTypeSystem, t1, t2) shouldBe expected
+        withClue("$t1 : $t2 => $expected") {
+            PolyResolution.computeStandaloneConditionalType(testTypeSystem, t1, t2) shouldBe expected
+        }
     }
 
 
