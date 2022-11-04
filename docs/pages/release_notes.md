@@ -14,7 +14,16 @@ This is a {{ site.pmd.release_type }} release.
 
 ### New and noteworthy
 
+#### Modified rules
+
+* The rule {% rule java/codestyle/ClassNamingConventions %} has a new property `testClassPattern`, which is applied
+  to test classes. By default, test classes should end with the suffix "Test". Test classes are classes, that
+  either inherit from JUnit 3 TestCase or have at least one method annotated with the Test annotations from
+  JUnit4/5 or TestNG.
+
 ### Fixed Issues
+* java-codestyle
+    * [#2867](https://github.com/pmd/pmd/issues/2867): \[java] Separate pattern for test classes in ClassNamingConventions rule for Java
 
 ### API Changes
 

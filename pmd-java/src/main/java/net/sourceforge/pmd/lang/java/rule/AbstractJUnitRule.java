@@ -111,7 +111,7 @@ public abstract class AbstractJUnitRule extends AbstractJavaRule {
 
     public static boolean isTestClass(ASTClassOrInterfaceBody node) {
         return !isAbstractClass(node) && node.getParent() instanceof ASTClassOrInterfaceDeclaration
-                && (isTestClassJUnit3(node) || isTestClassJUnit4(node) || isTestClassJUnit5(node));
+                && (isTestClassJUnit3(node) || isTestClassJUnit4(node) || isTestClassJUnit5(node) || isTestClassTestNg(node));
     }
 
     private static boolean isAbstractClass(ASTClassOrInterfaceBody node) {
@@ -149,6 +149,14 @@ public abstract class AbstractJUnitRule extends AbstractJavaRule {
         return false;
     }
 
+    private static boolean isTestClassTestNg(ASTClassOrInterfaceBody node) {
+        Node parent = node.getParent();
+        if (parent instanceof TypeNode) {
+            TypeNode type = (TypeNode) parent;
+            return doesNodeContainJUnitAnnotation(type, TESTNG_ANNOTATION) || hasImports(type, TESTNG_ANNOTATION);
+        }
+        return false;
+    }
 
     public static boolean isTestMethod(ASTMethodDeclaration method) {
         if (method.isAbstract() || method.isNative() || method.isStatic()) {
