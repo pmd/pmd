@@ -24,6 +24,7 @@ This is a {{ site.pmd.release_type }} release.
 ### API Changes
 
 ### External Contributions
+* [#4184](https://github.com/pmd/pmd/pull/4184): \[java]\[doc] TestClassWithoutTestCases - fix small typo in description - [Valery Yatsynovich](https://github.com/valfirst) (@valfirst)
 
 {% endtocmaker %}
 
