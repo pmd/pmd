@@ -42,11 +42,15 @@ public abstract class Foo {
           class="net.sourceforge.pmd.lang.java.rule.bestpractices.AccessorClassGenerationRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#accessorclassgeneration">
         <description>
-Instantiation by way of private constructors from outside of the constructor's class often causes the
+Instantiation by way of private constructors from outside the constructor's class often causes the
 generation of an accessor. A factory method, or non-privatization of the constructor can eliminate this
 situation. The generated class file is actually an interface.  It gives the accessing class the ability
 to invoke a new hidden package scope constructor that takes the interface as a supplementary parameter.
 This turns a private constructor effectively into one with package scope, and is challenging to discern.
+
+_Note:_ This rule is only executed for Java 10 or lower.
+Since Java 11, [JEP 181: Nest-Based Access Control](https://openjdk.org/jeps/181) has been implemented. This
+means that in Java 11 and above accessor classes are not generated anymore.
         </description>
         <priority>3</priority>
         <example>
@@ -74,6 +78,11 @@ public class Outer {
 When accessing private fields / methods from another class, the Java compiler will generate accessor methods
 with package-private visibility. This adds overhead, and to the dex method count on Android. This situation can
 be avoided by changing the visibility of the field / method from private to package-private.
+
+
+_Note:_ This rule is only executed for Java 10 or lower.
+Since Java 11, [JEP 181: Nest-Based Access Control](https://openjdk.org/jeps/181) has been implemented. This
+means that in Java 11 and above accessor classes are not generated anymore.
         </description>
         <priority>3</priority>
         <example>

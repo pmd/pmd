@@ -392,6 +392,12 @@ public class RuleDocGenerator {
                         lines.add("");
                     }
 
+                    if (rule.getMaximumLanguageVersion() != null) {
+                        lines.add("**Maximum Language Version:** "
+                                + rule.getLanguage().getName() + " " + rule.getMaximumLanguageVersion().getVersion());
+                        lines.add("");
+                    }
+
                     lines.addAll(EscapeUtils.escapeLines(toLines(stripIndentation(rule.getDescription()))));
                     lines.add("");
 

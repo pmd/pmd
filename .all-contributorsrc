@@ -6952,6 +6952,42 @@
         "code",
         "doc"
       ]
+    },
+    {
+      "login": "yasarshaikh",
+      "name": "Yasar Shaikh",
+      "avatar_url": "https://avatars.githubusercontent.com/u/20971327?v=4",
+      "profile": "https://github.com/yasarshaikh",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "rnveach",
+      "name": "rnveach",
+      "avatar_url": "https://avatars.githubusercontent.com/u/5427943?v=4",
+      "profile": "https://github.com/rnveach",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "tysonstewart",
+      "name": "Tyson Stewart",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1292640?v=4",
+      "profile": "https://github.com/tysonstewart",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "valfirst",
+      "name": "Valery Yatsynovich",
+      "avatar_url": "https://avatars.githubusercontent.com/u/5081226?v=4",
+      "profile": "https://github.com/valfirst",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,

@@ -187,7 +187,7 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
         }
 
         if (matches.isEmpty()) {
-            if (isJavaLangImplicit(node)) {
+            if (isJavaLangImplicit(node) && !existsSameTypeInCurrentPackage(node)) {
                 asCtx(data).addViolation(node,
                         node.getImage(), "java.lang.*", "implicit ");
             } else if (isSamePackage(node, name)) {
@@ -207,6 +207,12 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
                 asCtx(data).addViolation(node, node.getImage(), importStr, type);
             }
         }
+    }
+
+    private boolean existsSameTypeInCurrentPackage(TypeNode node) {
+        String simpleName = node.getTypeDefinition().getType().getSimpleName();
+        String fullyQualifiedName = currentPackage + "." + simpleName;
+        return node.getRoot().getClassTypeResolver().classNameExists(fullyQualifiedName);
     }
 
     private boolean hasSameSimpleNameInScope(TypeNode node) {

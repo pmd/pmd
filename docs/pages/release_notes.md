@@ -14,31 +14,12 @@ This is a {{ site.pmd.release_type }} release.
 
 ### New and noteworthy
 
-#### New Rules
-* The new Apex rule {% rule apex/bestpractices/ApexUnitTestClassShouldHaveRunAs %} ensures that unit tests
-  use [System.runAs()](https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_testing_tools_runas.htm)
-  at least once. This makes the tests more robust, and independent from the user running it.
-
-```xml
-<rule ref="category/apex/bestpractices.xml/ApexUnitTestClassShouldHaveRunAs"/>
-```
-
-The rule is part of the quickstart.xml ruleset.
-
 ### Fixed Issues
-* apex
-    * [#4149](https://github.com/pmd/pmd/issues/4149): \[apex] New rule: ApexUnitTestClassShouldHaveRunAs
-* doc
-    * [#4144](https://github.com/pmd/pmd/pull/4144): \[doc] Update docs to reflect supported languages
-    * [#4163](https://github.com/pmd/pmd/issues/4163): \[doc] Broken links on page "Architecture Decisions"
-* java-documentation
-    * [#4141](https://github.com/pmd/pmd/issues/4141): \[java] UncommentedEmptyConstructor FP when constructor annotated with @<!-- -->Autowired
 
 ### API Changes
 
 ### External Contributions
-* [#4142](https://github.com/pmd/pmd/pull/4142): \[java] fix #4141 Update UncommentedEmptyConstructor - ignore @<!-- -->Autowired annotations - [Lynn](https://github.com/LynnBroe) (@LynnBroe)
-* [#4150](https://github.com/pmd/pmd/pull/4150): \[apex] New rule ApexUnitTestClassShouldHaveRunAs #4149 - [Thomas Prouvot](https://github.com/tprouvot) (@tprouvot)
+* [#4184](https://github.com/pmd/pmd/pull/4184): \[java]\[doc] TestClassWithoutTestCases - fix small typo in description - [Valery Yatsynovich](https://github.com/valfirst) (@valfirst)
 
 {% endtocmaker %}
 
