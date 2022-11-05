@@ -736,6 +736,12 @@ public class JavaParser {
     token_source.setSuppressMarker(marker);
   }
 
+  /**
+     * Keeps track during tree construction, whether we are currently building an
+     * explicit constructor invocation. Then the PrimaryExpression that may prefix
+     * a qualified super constructor call may not consume "super" tokens.
+     */
+    private boolean inExplicitConstructorInvoc = false;
 
 }
 PARSER_END(JavaParser)
@@ -1559,13 +1565,14 @@ Token t;}
 }
 
 void ExplicitConstructorInvocation() :
-{}
-{
-  LOOKAHEAD("this" Arguments() ";") "this" {jjtThis.setIsThis();} Arguments() ";"
+{boolean prev = inExplicitConstructorInvoc; inExplicitConstructorInvoc = true;}
+{ (
+  LOOKAHEAD([TypeArguments()] "this" Arguments() ";") [TypeArguments()] "this" {jjtThis.setIsThis();}
 |
-  LOOKAHEAD(TypeArguments() "this" Arguments() ";") TypeArguments() "this" {jjtThis.setIsThis();} Arguments() ";"
-|
-  [ LOOKAHEAD(PrimaryExpression() ".") PrimaryExpression() "." ] [ TypeArguments() ] "super" {jjtThis.setIsSuper();} Arguments() ";"
+  [ LOOKAHEAD(PrimaryExpression() "." [TypeArguments()] "super" ) PrimaryExpression() "." ] [ TypeArguments() ] "super" {jjtThis.setIsSuper();}
+  )
+  {inExplicitConstructorInvoc = prev;}
+   Arguments() ";"
 }
 
 void Initializer() :
@@ -1957,8 +1964,17 @@ void SwitchExpression() :
 void PrimaryExpression() :
 {}
 {
-  PrimaryPrefix() ( LOOKAHEAD(2) PrimarySuffix() )*
+  PrimaryPrefix() ( LOOKAHEAD(SuffixLAhead()) PrimarySuffix() )*
 }
+
+private void SuffixLAhead() #void:
+{}
+{
+   "::" | "[" | "("
+   | LOOKAHEAD({!inExplicitConstructorInvoc}) "."
+   | LOOKAHEAD({inExplicitConstructorInvoc}) "." (<IDENTIFIER> | TypeArguments() <IDENTIFIER> | "new") // not super or this in this case
+}
+
 
 void MemberSelector():
 {
@@ -2077,10 +2093,12 @@ void ArgumentList() :
 void AllocationExpression():
 {}
 {
-  "new" (TypeAnnotation())*
+  "new"
   (LOOKAHEAD(2)
     PrimitiveType() ArrayDimsAndInits()
   |
+    [TypeArguments()]
+    (AnnotationNoNode())*
     ClassOrInterfaceType()
      (
       ArrayDimsAndInits()
