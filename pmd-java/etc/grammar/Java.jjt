@@ -1483,7 +1483,7 @@ void VariableDeclaratorId() :
 {
   (LOOKAHEAD(2) t=<IDENTIFIER> "." <THIS> { checkforBadExplicitReceiverParameter(); jjtThis.setExplicitReceiverParameter(); image=t.image + ".this"; }
    | t=<THIS> { checkforBadExplicitReceiverParameter(); jjtThis.setExplicitReceiverParameter(); image = t.image;}
-   | t=<IDENTIFIER> { image = t.image; } ( "[" "]"  { jjtThis.bumpArrayDepth(); })*
+   | t=<IDENTIFIER> { image = t.image; } ( (AnnotationNoNode())* "[" "]"  { jjtThis.bumpArrayDepth(); })*
   )
   {
     checkForBadAssertUsage(image, "a variable name");
@@ -1526,7 +1526,7 @@ void MethodDeclarator() :
     checkForBadEnumUsage(t.image, "a method name");
     jjtThis.setImage( t.image );
   }
-  FormalParameters() ( "[" "]" )*
+  FormalParameters() ( (AnnotationNoNode())* "[" "]" )*
 }
 
 
@@ -1606,7 +1606,7 @@ void ClassOrInterfaceType():
 {
   t=<IDENTIFIER> {s.append(t.image);}
   [ LOOKAHEAD(2) TypeArguments() ]
-  ( LOOKAHEAD(2) "." t=<IDENTIFIER> {s.append('.').append(t.image);} [ LOOKAHEAD(2) TypeArguments() ] )*
+  ( LOOKAHEAD(2) "." (AnnotationNoNode())* t=<IDENTIFIER> {s.append('.').append(t.image);} [ LOOKAHEAD(2) TypeArguments() ] )*
   {jjtThis.setImage(s.toString());}
 }
 
@@ -1832,7 +1832,7 @@ void InstanceOfExpression() #InstanceOfExpression(>1):
 {}
 {
   RelationalExpression()
-  [ "instanceof"
+  [ "instanceof" (AnnotationNoNode())*
       (
         LOOKAHEAD("final" | "@") {checkforBadInstanceOfPattern();} Pattern()
       |
@@ -2103,11 +2103,11 @@ void AllocationExpression():
 void ArrayDimsAndInits() :
 {}
 {
+  LOOKAHEAD((TypeAnnotation())* "[" "]")
+    ((AnnotationNoNode())* "[" "]" {jjtThis.bumpArrayDepth();})+ ArrayInitializer()
+| ( LOOKAHEAD((TypeAnnotation())* "[" UnaryExprNotPmStart() ) (AnnotationNoNode())* "[" Expression() "]" {jjtThis.bumpArrayDepth();} )+
+  ( LOOKAHEAD((TypeAnnotation())* "[")                        (AnnotationNoNode())* "[" "]"              {jjtThis.bumpArrayDepth();} )*
 
-  LOOKAHEAD(2)
-  ( LOOKAHEAD(2) (TypeAnnotation())* "[" Expression() "]" {jjtThis.bumpArrayDepth();})+ ( LOOKAHEAD(2) "[" "]" {jjtThis.bumpArrayDepth();} )*
-|
-  ( "[" "]" {jjtThis.bumpArrayDepth();})+ ArrayInitializer()
 }
 
 
