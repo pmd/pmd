@@ -1541,8 +1541,8 @@ void FormalParameter() :
 }
 {
    ( "final" {jjtThis.setFinal(true);} | Annotation() )*
-   Type() ("|" {checkForBadMultipleExceptionsCatching();} Type())*
-   [ "..." {checkForBadVariableArgumentsUsage();} {jjtThis.setVarargs();} ]
+   Type() ("|" {checkForBadMultipleExceptionsCatching();} (AnnotationNoNode())* Type())*
+   [ (AnnotationNoNode())* "..." {checkForBadVariableArgumentsUsage();} {jjtThis.setVarargs();} ]
    VariableDeclaratorId()
 }
 
@@ -1586,18 +1586,16 @@ void Type():
     Token t;
 }
 {
- LOOKAHEAD(2) ReferenceType()
+ LOOKAHEAD(<IDENTIFIER> | PrimitiveType() (AnnotationNoNode())* "[" "]" ) ReferenceType()
  | PrimitiveType()
 }
 
 void ReferenceType():
 {}
 {
-  // The grammar here is mildly wrong, the annotations can be before each []
-  // This will wait for #997
-   PrimitiveType() (TypeAnnotation())* ( LOOKAHEAD(2) "[" "]" { jjtThis.bumpArrayDepth(); })+
+   PrimitiveType() (LOOKAHEAD((AnnotationNoNode())* "[" "]") (AnnotationNoNode())* "[" "]" { jjtThis.bumpArrayDepth(); })+
   |
-   ( ClassOrInterfaceType()) (TypeAnnotation())* ( LOOKAHEAD(2) "[" "]" { jjtThis.bumpArrayDepth(); })*
+   ClassOrInterfaceType()  (LOOKAHEAD((AnnotationNoNode())* "[" "]") (AnnotationNoNode())* "[" "]" { jjtThis.bumpArrayDepth(); })*
 }
 
 void ClassOrInterfaceType():
@@ -1989,8 +1987,8 @@ void PrimaryPrefix() :
 | LOOKAHEAD(3) "(" Expression() ")"
 | AllocationExpression()
 | LOOKAHEAD( ResultType() "." "class" ) ResultType() "." "class"
-| LOOKAHEAD( Name() "::" ) Name()
-| LOOKAHEAD( ReferenceType() MethodReference() ) ReferenceType() MethodReference()
+| LOOKAHEAD( Name() "::" ) Name() // followed by method reference in PrimarySuffix
+| LOOKAHEAD( "@" | Type() "::" ) (AnnotationNoNode())* (LOOKAHEAD(2) ReferenceType()|PrimitiveType()) // followed by method reference in PrimarySuffix
 | Name()
 }
 
@@ -2532,6 +2530,15 @@ void RSIGNEDSHIFT(): // TODO 7.0.0 make #void
 }
 
 /* Annotation syntax follows. */
+
+
+// Todo PMD7 remove this, this is transitional in the PMD6 branch.
+void AnnotationNoNode() #void:
+{checkForBadTypeAnnotations();}
+{
+    Annotation()
+    {jjtree.popNode();}
+}
 
 void Annotation():
 {}
