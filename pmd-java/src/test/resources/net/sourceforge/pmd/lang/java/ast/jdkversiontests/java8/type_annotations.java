@@ -12,6 +12,8 @@
 class AnnotedArrayType {
     @NonNull int @NonNull[] @NonNull[] field1;
     @NonNull int @NonNull [] @NonNull [] field2;
+    private @NonNull int array2 @NonNull [] @NonNull [];
+
     public String m2()@NonNull[]@NonNull[] { return null; }
     public String@NonNull[]@NonNull[] m2a() { return null; }
     public void run() {
@@ -49,6 +51,7 @@ class TypeAnnotations {
     public final Rectangle2D.Double getRect3() {
         Rectangle2D.@TypeAnnotation Double rect = null;
         int[][] i = new int @TypeAnnotation [1] @TypeAnnotation[];
+        int[][] i = new @TypeAnnotation int [1] @TypeAnnotation[];
         return rect;
     }
 

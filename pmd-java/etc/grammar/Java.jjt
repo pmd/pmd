@@ -1460,7 +1460,7 @@ void ClassOrInterfaceBodyDeclaration():
     | LOOKAHEAD({isKeyword("enum")}) EnumDeclaration(modifiers)
     | LOOKAHEAD({isKeyword("record")}) RecordDeclaration(modifiers)
     | LOOKAHEAD( [ TypeParameters() ] <IDENTIFIER> "(" ) ConstructorDeclaration(modifiers)
-    | LOOKAHEAD( Type() <IDENTIFIER> ( "[" "]" )* ( "," | "=" | ";" ) )  FieldDeclaration(modifiers)
+    | LOOKAHEAD( Type() <IDENTIFIER> ( (Annotation())* "[" "]" )* ( "," | "=" | ";" ) )  FieldDeclaration(modifiers)
     | LOOKAHEAD(2) MethodDeclaration(modifiers)
     | LOOKAHEAD(2) AnnotationTypeDeclaration(modifiers)
   )
@@ -2091,8 +2091,8 @@ void AllocationExpression():
 {}
 {
   "new"
-  (LOOKAHEAD(2)
-    PrimitiveType() ArrayDimsAndInits()
+  (LOOKAHEAD((TypeAnnotation())* PrimitiveType())
+    (TypeAnnotation())* PrimitiveType() ArrayDimsAndInits()
   |
     [TypeArguments()]
     (TypeAnnotation())*
