@@ -54,12 +54,11 @@ class ASTPatternTest : ParserTestSpec({
         "obj instanceof @Deprecated Class c" should matchExpr<ASTInstanceOfExpression> {
             unspecifiedChild()
             child<ASTTypePattern> {
-// TODO PMD 7 reenable
-//                child<ASTAnnotation>(ignoreChildren = true) {
-//                    it.annotationName shouldBe "Deprecated"
-//                }
-//
-//                it.isAnnotationPresent("java.lang.Deprecated") shouldBe true
+                child<ASTAnnotation>(ignoreChildren = true) {
+                    it.annotationName shouldBe "Deprecated"
+                }
+
+                it.isAnnotationPresent("java.lang.Deprecated") shouldBe true
 
                 it::getTypeNode typeShouldBe child(ignoreChildren = true) {}
 

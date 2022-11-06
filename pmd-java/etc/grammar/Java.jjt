@@ -1383,7 +1383,7 @@ void RecordComponent():
 {
   (RecordComponentModifier())*
   Type()
-  [ (AnnotationNoNode())* "..." {jjtThis.setVarargs();} ]
+  [ (TypeAnnotation())* "..." {jjtThis.setVarargs();} ]
   VariableDeclaratorId()
 }
 
@@ -1489,7 +1489,7 @@ void VariableDeclaratorId() :
 {
   (LOOKAHEAD(2) t=<IDENTIFIER> "." <THIS> { checkforBadExplicitReceiverParameter(); jjtThis.setExplicitReceiverParameter(); image=t.image + ".this"; }
    | t=<THIS> { checkforBadExplicitReceiverParameter(); jjtThis.setExplicitReceiverParameter(); image = t.image;}
-   | t=<IDENTIFIER> { image = t.image; } ( (AnnotationNoNode())* "[" "]"  { jjtThis.bumpArrayDepth(); })*
+   | t=<IDENTIFIER> { image = t.image; } ( (TypeAnnotation())* "[" "]"  { jjtThis.bumpArrayDepth(); })*
   )
   {
     checkForBadAssertUsage(image, "a variable name");
@@ -1532,7 +1532,7 @@ void MethodDeclarator() :
     checkForBadEnumUsage(t.image, "a method name");
     jjtThis.setImage( t.image );
   }
-  FormalParameters() ( (AnnotationNoNode())* "[" "]" )*
+  FormalParameters() ( (TypeAnnotation())* "[" "]" )*
 }
 
 
@@ -1547,8 +1547,8 @@ void FormalParameter() :
 }
 {
    ( "final" {jjtThis.setFinal(true);} | Annotation() )*
-   Type() ("|" {checkForBadMultipleExceptionsCatching();} (AnnotationNoNode())* Type())*
-   [ (AnnotationNoNode())* "..." {checkForBadVariableArgumentsUsage();} {jjtThis.setVarargs();} ]
+   Type() ("|" {checkForBadMultipleExceptionsCatching();} (TypeAnnotation())* Type())*
+   [ (TypeAnnotation())* "..." {checkForBadVariableArgumentsUsage();} {jjtThis.setVarargs();} ]
    VariableDeclaratorId()
 }
 
@@ -1593,16 +1593,16 @@ void Type():
     Token t;
 }
 {
- LOOKAHEAD(<IDENTIFIER> | PrimitiveType() (AnnotationNoNode())* "[" "]" ) ReferenceType()
+ LOOKAHEAD(<IDENTIFIER> | PrimitiveType() (TypeAnnotation())* "[" "]" ) ReferenceType()
  | PrimitiveType()
 }
 
 void ReferenceType():
 {}
 {
-   PrimitiveType() (LOOKAHEAD((AnnotationNoNode())* "[" "]") (AnnotationNoNode())* "[" "]" { jjtThis.bumpArrayDepth(); })+
+   PrimitiveType() (LOOKAHEAD((TypeAnnotation())* "[" "]") (TypeAnnotation())* "[" "]" { jjtThis.bumpArrayDepth(); })+
   |
-   ClassOrInterfaceType()  (LOOKAHEAD((AnnotationNoNode())* "[" "]") (AnnotationNoNode())* "[" "]" { jjtThis.bumpArrayDepth(); })*
+   ClassOrInterfaceType()  (LOOKAHEAD((TypeAnnotation())* "[" "]") (TypeAnnotation())* "[" "]" { jjtThis.bumpArrayDepth(); })*
 }
 
 void ClassOrInterfaceType():
@@ -1613,7 +1613,7 @@ void ClassOrInterfaceType():
 {
   t=<IDENTIFIER> {s.append(t.image);}
   [ LOOKAHEAD(2) TypeArguments() ]
-  ( LOOKAHEAD(2) "." (AnnotationNoNode())* t=<IDENTIFIER> {s.append('.').append(t.image);} [ LOOKAHEAD(2) TypeArguments() ] )*
+  ( LOOKAHEAD(2) "." (TypeAnnotation())* t=<IDENTIFIER> {s.append('.').append(t.image);} [ LOOKAHEAD(2) TypeArguments() ] )*
   {jjtThis.setImage(s.toString());}
 }
 
@@ -1745,8 +1745,6 @@ void AssignmentOperator() :
     | "|="    {jjtThis.setImage("|="); jjtThis.setCompound();}
 }
 
-// TODO Setting isTernary is unnecessary, since the node is only pushed on the stack if there is at least one child,
-// ie if it's a ternary
 void ConditionalExpression() #ConditionalExpression(>1) :
 {}
 {
@@ -1792,7 +1790,7 @@ void EqualityExpression() #EqualityExpression(>1):
 void Pattern() #void:
 {}
 {
-    LOOKAHEAD(ReferenceType() "(") RecordPattern()
+    LOOKAHEAD((Annotation())* ReferenceType() "(") RecordPattern()
     | LOOKAHEAD("(") ParenthesizedPattern()
     | TypePattern() [ GuardedPatternCondition() #GuardedPattern(2) {checkForGuardedPatterns();} ]
 }
@@ -1820,7 +1818,7 @@ void TypePattern():
 void RecordPattern():
 { checkForRecordPatterns(); }
 {
-  ReferenceType() RecordStructurePattern() [ VariableDeclaratorId() ]
+  (Annotation())* ReferenceType() RecordStructurePattern() [ VariableDeclaratorId() ]
 }
 
 void RecordStructurePattern() #ComponentPatternList:
@@ -1839,16 +1837,15 @@ void InstanceOfExpression() #InstanceOfExpression(>1):
 {}
 {
   RelationalExpression()
-  [ "instanceof" (AnnotationNoNode())*
+  [ "instanceof"
       (
-        LOOKAHEAD("final" | "@") {checkforBadInstanceOfPattern();} Pattern()
-      |
-        LOOKAHEAD("(") Pattern() {checkForParenthesizedInstanceOfPattern();}
-      |
-        LOOKAHEAD(ReferenceType() "(") RecordPattern()
-      |
-        Type()
-        [ {checkforBadInstanceOfPattern();} VariableDeclaratorId() #TypePattern(2) ]
+      // Note: this can be simplified when support for java 18 preview is removed.
+      // Here the production Pattern is inlined to avoid that a following conditional &&
+      // be parsed as a pattern guard.
+        LOOKAHEAD("final" | (Annotation())* Type() <IDENTIFIER>) {checkforBadInstanceOfPattern();} TypePattern()
+      | LOOKAHEAD((Annotation())* ReferenceType() "(")  {checkForRecordPatterns();} RecordPattern()
+      | LOOKAHEAD("(") {checkForParenthesizedInstanceOfPattern();} ParenthesizedPattern()
+      | (Annotation())* Type()
       )
   ]
 }
@@ -2004,7 +2001,7 @@ void PrimaryPrefix() :
 | AllocationExpression()
 | LOOKAHEAD( ResultType() "." "class" ) ResultType() "." "class"
 | LOOKAHEAD( Name() "::" ) Name() // followed by method reference in PrimarySuffix
-| LOOKAHEAD( "@" | Type() "::" ) (AnnotationNoNode())* (LOOKAHEAD(2) ReferenceType()|PrimitiveType()) // followed by method reference in PrimarySuffix
+| LOOKAHEAD( "@" | Type() "::" ) (Annotation())* (LOOKAHEAD(2) ReferenceType()|PrimitiveType()) // followed by method reference in PrimarySuffix
 | Name()
 }
 
@@ -2033,7 +2030,7 @@ void LambdaParameter() #FormalParameter :
 {
     ( "final" {jjtThis.setFinal(true);} | Annotation() )*
     LambdaParameterType()
-    [(AnnotationNoNode())* "..." {checkForBadVariableArgumentsUsage();} {jjtThis.setVarargs();} ]
+    [(TypeAnnotation())* "..." {checkForBadVariableArgumentsUsage();} {jjtThis.setVarargs();} ]
     VariableDeclaratorId()
 }
 
@@ -2098,7 +2095,7 @@ void AllocationExpression():
     PrimitiveType() ArrayDimsAndInits()
   |
     [TypeArguments()]
-    (AnnotationNoNode())*
+    (TypeAnnotation())*
     ClassOrInterfaceType()
      (
       ArrayDimsAndInits()
@@ -2121,10 +2118,9 @@ void AllocationExpression():
 void ArrayDimsAndInits() :
 {}
 {
-  LOOKAHEAD((TypeAnnotation())* "[" "]")
-    ((AnnotationNoNode())* "[" "]" {jjtThis.bumpArrayDepth();})+ ArrayInitializer()
-| ( LOOKAHEAD((TypeAnnotation())* "[" UnaryExprNotPmStart() ) (AnnotationNoNode())* "[" Expression() "]" {jjtThis.bumpArrayDepth();} )+
-  ( LOOKAHEAD((TypeAnnotation())* "[")                        (AnnotationNoNode())* "[" "]"              {jjtThis.bumpArrayDepth();} )*
+  LOOKAHEAD((TypeAnnotation())* "[" "]")                     ((TypeAnnotation())* "[" "]" {jjtThis.bumpArrayDepth();})+ ArrayInitializer()
+| ( LOOKAHEAD((TypeAnnotation())* "[" UnaryExprNotPmStart() ) (TypeAnnotation())* "[" Expression() "]" {jjtThis.bumpArrayDepth();} )+
+  ( LOOKAHEAD((TypeAnnotation())* "[")                        (TypeAnnotation())* "[" "]"              {jjtThis.bumpArrayDepth();} )*
 
 }
 
@@ -2548,15 +2544,6 @@ void RSIGNEDSHIFT(): // TODO 7.0.0 make #void
 }
 
 /* Annotation syntax follows. */
-
-
-// Todo PMD7 remove this, this is transitional in the PMD6 branch.
-void AnnotationNoNode() #void:
-{checkForBadTypeAnnotations();}
-{
-    Annotation()
-    {jjtree.popNode();}
-}
 
 void Annotation():
 {}
