@@ -1383,7 +1383,7 @@ void RecordComponent():
 {
   (RecordComponentModifier())*
   Type()
-  [ "..." {jjtThis.setVarargs();} ]
+  [ (AnnotationNoNode())* "..." {jjtThis.setVarargs();} ]
   VariableDeclaratorId()
 }
 
@@ -2033,7 +2033,7 @@ void LambdaParameter() #FormalParameter :
 {
     ( "final" {jjtThis.setFinal(true);} | Annotation() )*
     LambdaParameterType()
-    [ "..." {checkForBadVariableArgumentsUsage();} {jjtThis.setVarargs();} ]
+    [(AnnotationNoNode())* "..." {checkForBadVariableArgumentsUsage();} {jjtThis.setVarargs();} ]
     VariableDeclaratorId()
 }
 
