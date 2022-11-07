@@ -51,7 +51,7 @@ class TypeAnnotations {
     public final Rectangle2D.Double getRect3() {
         Rectangle2D.@TypeAnnotation Double rect = null;
         int[][] i = new int @TypeAnnotation [1] @TypeAnnotation[];
-        int[][] i = new @TypeAnnotation int [1] @TypeAnnotation[];
+        i = new @TypeAnnotation int [1] @TypeAnnotation[];
         return rect;
     }
 
