@@ -164,4 +164,23 @@ class Foo implements Serializable {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>Enum is serializable by default</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <expected-messages>
+            <message>The field 'nonSerializableMember' of serializable class 'sample.OuterClass$InnerEnum' is of non-serializable type 'java.lang.Object'.</message>
+        </expected-messages>
+        <code><![CDATA[
+package sample;
+class OuterClass {
+    enum InnerEnum {
+        A;
+
+        private Object nonSerializableMember;
+    }
+}
+]]></code>
+    </test-code>
 </test-data>

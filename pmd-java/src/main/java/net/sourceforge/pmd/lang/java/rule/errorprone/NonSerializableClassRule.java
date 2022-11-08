@@ -12,7 +12,7 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeBodyDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
@@ -25,38 +25,22 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 public class NonSerializableClassRule extends AbstractJavaRule {
 
-    private String currentClassName;
-
     private static final PropertyDescriptor<String> PREFIX_DESCRIPTOR = stringProperty("prefix")
             .desc("deprecated! A variable prefix to skip, i.e., m_").defaultValue("").build();
 
     public NonSerializableClassRule() {
         definePropertyDescriptor(PREFIX_DESCRIPTOR);
+        addRuleChainVisit(ASTVariableDeclaratorId.class);
     }
 
-    @Override
-    public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
-        // ignore non-serializable classes
-        if (!TypeTestUtil.isA(Serializable.class, node)
-            // ignore Externalizable classes explicitly
-            || TypeTestUtil.isA(Externalizable.class, node)
-            // ignore manual serialization
-            || hasManualSerializationMethod(node)) {
-            return null;
-        }
-
-        currentClassName = node.getSimpleName();
-        return super.visit(node, data);
-    }
-
-    private boolean hasManualSerializationMethod(ASTClassOrInterfaceDeclaration node) {
+    private boolean hasManualSerializationMethod(ASTAnyTypeDeclaration node) {
         boolean hasWriteObject = false;
         boolean hasReadObject = false;
         boolean hasWriteReplace = false;
         boolean hasReadResolve = false;
         for (ASTAnyTypeBodyDeclaration decl : node.getDeclarations()) {
             if (decl.getKind() == ASTAnyTypeBodyDeclaration.DeclarationKind.METHOD) {
-                ASTMethodDeclaration methodDeclaration = (ASTMethodDeclaration) decl.getChild(0);
+                ASTMethodDeclaration methodDeclaration = decl.getFirstChildOfType(ASTMethodDeclaration.class);
                 String methodName = methodDeclaration.getName();
                 int parameterCount = methodDeclaration.getFormalParameters().size();
                 ASTFormalParameter firstParameter = methodDeclaration.getFormalParameters().getFirstChildOfType(ASTFormalParameter.class);
@@ -79,16 +63,23 @@ public class NonSerializableClassRule extends AbstractJavaRule {
     }
 
     @Override
-    public Object visit(ASTFieldDeclaration node, Object data) {
-        return super.visit(node, data);
-    }
-
-    @Override
     public Object visit(ASTVariableDeclaratorId node, Object data) {
-        if (isNonStaticNonTransientField(node) && isNotSerializable(node)) {
-            asCtx(data).addViolation(node, node.getName(), currentClassName, getTypeName(node.getType()));
+        ASTAnyTypeDeclaration typeDeclaration = node.getFirstParentOfType(ASTAnyTypeDeclaration.class);
+
+        if (typeDeclaration == null
+                // ignore non-serializable classes
+                || !TypeTestUtil.isA(Serializable.class, typeDeclaration)
+                // ignore Externalizable classes explicitly
+                || TypeTestUtil.isA(Externalizable.class, typeDeclaration)
+                // ignore manual serialization
+                || hasManualSerializationMethod(typeDeclaration)) {
+            return null;
         }
-        return super.visit(node, data);
+
+        if (isNonStaticNonTransientField(node) && isNotSerializable(node)) {
+            asCtx(data).addViolation(node, node.getName(), typeDeclaration.getQualifiedName().toString(), getTypeName(node.getType()));
+        }
+        return null;
     }
 
     private boolean isNotSerializable(TypeNode node) {
