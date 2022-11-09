@@ -188,4 +188,16 @@ class Another {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>[java] ClassWithOnlyPrivateConstructorsShouldBeFinal should consider lombok's @Value #4200</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import lombok.Value;
+
+@Value
+public class Test {
+    private Test(int a, int b, int c, String abc, long d, double p, String[] arr, int data, long in, float fl, String res) {}
+}
+        ]]></code>
+    </test-code>
 </test-data>
