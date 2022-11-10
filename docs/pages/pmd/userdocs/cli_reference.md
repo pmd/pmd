@@ -103,9 +103,12 @@ The tool comes with a rather extensive help text, simply running with `--help`!
     %}
     {% include custom/cli_option_row.html options="--use-version"
                option_arg="lang-version"
-               description="The language version PMD should use when parsing source code.
+               description="The specific language version PMD should use when parsing source code for a given language.
                             <p>Values are in the format of *language-version*.</p>
-                            <p>This option can be repeated to configure multiple languages to be analyzed during a single run</p>
+                            <p>This option can be repeated to configure several languages for the same run.</p>
+                            <p>Note that this option does not change how languages are assigned to files.
+                            It only changes something if the project you analyze contains some files that PMD detects as the given language.
+                            Language detection is only influenced by file extensions and the `--force-language` option.</p>
                             <p>See also [Supported Languages](#supported-languages).</p>"
     %}
     {% include custom/cli_option_row.html options="-language,-l"
