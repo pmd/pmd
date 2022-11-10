@@ -29,7 +29,7 @@ This supersedes the usage of `-language` / `-l` and `-version` / `-v`, allowing 
 PMD 7 will completely remove support for `-language` and `-version` in favor of this new flag.
 
 * Support for `-V` is being deprecated in favor of `--verbose` in preparation for PMD 7.
-In PMD 7, `-v` will enable verbose mode and `-V` will show the PMD version for conssitency with most Unix/Linux tools.
+In PMD 7, `-v` will enable verbose mode and `-V` will show the PMD version for consistency with most Unix/Linux tools.
 
 * Support for `-min` is being deprecated in favor of `--minimum-priority` for consistency with most Unix/Linux tools, where `-min` would be equivalent to `-m -i -n`.
 
