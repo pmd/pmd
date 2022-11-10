@@ -10,10 +10,10 @@ import com.google.summit.ast.expression.Expression;
 
 public class ASTMapEntryNode extends AbstractApexNode.Many<Expression> {
 
-     private final Expression key;
-     private final Expression value;
+    private final Expression key;
+    private final Expression value;
 
-     ASTMapEntryNode(Expression key, Expression value) {
+    ASTMapEntryNode(Expression key, Expression value) {
         super(Arrays.asList(key, value));
         this.key = key;
         this.value = value;

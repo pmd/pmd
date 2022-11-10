@@ -4,15 +4,18 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import com.google.summit.ast.Node;
+import java.util.List;
+
 import net.sourceforge.pmd.annotation.InternalApi;
 
-public class ASTVariableDeclarationStatements extends AbstractApexNode.Single<Node> {
+import com.google.summit.ast.declaration.VariableDeclaration;
+
+public class ASTVariableDeclarationStatements extends AbstractApexNode.Many<VariableDeclaration> {
 
     @Deprecated
     @InternalApi
-    public ASTVariableDeclarationStatements(Node variableDeclarationStatements) {
-        super(variableDeclarationStatements);
+    public ASTVariableDeclarationStatements(List<VariableDeclaration> variableDeclarations) {
+        super(variableDeclarations);
     }
 
     @Override

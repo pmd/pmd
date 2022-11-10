@@ -4,15 +4,15 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import com.google.summit.ast.Node;
-import net.sourceforge.pmd.annotation.InternalApi;
+import com.google.summit.ast.statement.IfStatement;
 
-public class ASTIfElseBlockStatement extends AbstractApexNode.Single<Node> {
+public class ASTIfElseBlockStatement extends AbstractApexNode.Single<IfStatement> {
 
-    @Deprecated
-    @InternalApi
-    public ASTIfElseBlockStatement(Node ifElseBlockStatement) {
-        super(ifElseBlockStatement);
+    private final boolean hasElseStatement;
+
+    ASTIfElseBlockStatement(IfStatement ifStatement, boolean hasElseStatement) {
+        super(ifStatement);
+        this.hasElseStatement = hasElseStatement;
     }
 
     @Override
@@ -21,8 +21,6 @@ public class ASTIfElseBlockStatement extends AbstractApexNode.Single<Node> {
     }
 
     public boolean hasElseStatement() {
-        // return node.hasElseStatement();
-        // TODO(b/239648780)
-        return false;
+        return hasElseStatement;
     }
 }

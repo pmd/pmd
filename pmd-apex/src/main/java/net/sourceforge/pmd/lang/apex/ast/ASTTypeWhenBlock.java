@@ -4,29 +4,20 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import com.google.summit.ast.Node;
-import org.apache.commons.lang3.reflect.FieldUtils;
+import com.google.summit.ast.statement.SwitchStatement;
 
-public final class ASTTypeWhenBlock extends AbstractApexNode.Single<Node> {
+public final class ASTTypeWhenBlock extends AbstractApexNode.Single<SwitchStatement.WhenType> {
 
-
-    ASTTypeWhenBlock(Node node) {
-        super(node);
+    ASTTypeWhenBlock(SwitchStatement.WhenType whenType) {
+        super(whenType);
     }
 
     public String getType() {
-        // return String.valueOf(node.getTypeRef());
-        // TODO(b/239648780)
-        return null;
+        return node.getType().asCodeString();
     }
 
     public String getName() {
-        // unfortunately the name is not exposed...
-        try {
-            return String.valueOf(FieldUtils.readDeclaredField(node, "name", true));
-        } catch (IllegalArgumentException | ReflectiveOperationException e) {
-            return null;
-        }
+        return node.getVariableDeclaration().getId().getString();
     }
 
     @Override

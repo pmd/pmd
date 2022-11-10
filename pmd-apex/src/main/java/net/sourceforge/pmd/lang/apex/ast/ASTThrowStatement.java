@@ -4,14 +4,11 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import com.google.summit.ast.Node;
-import net.sourceforge.pmd.annotation.InternalApi;
+import com.google.summit.ast.statement.ThrowStatement;
 
-public class ASTThrowStatement extends AbstractApexNode.Single<Node> {
+public class ASTThrowStatement extends AbstractApexNode.Single<ThrowStatement> {
 
-    @Deprecated
-    @InternalApi
-    public ASTThrowStatement(Node throwStatement) {
+    ASTThrowStatement(ThrowStatement throwStatement) {
         super(throwStatement);
     }
 

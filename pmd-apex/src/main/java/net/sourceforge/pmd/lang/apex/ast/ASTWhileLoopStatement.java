@@ -4,14 +4,11 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import com.google.summit.ast.Node;
-import net.sourceforge.pmd.annotation.InternalApi;
+import com.google.summit.ast.statement.WhileLoopStatement;
 
-public class ASTWhileLoopStatement extends AbstractApexNode.Single<Node> {
+public class ASTWhileLoopStatement extends AbstractApexNode.Single<WhileLoopStatement> {
 
-    @Deprecated
-    @InternalApi
-    public ASTWhileLoopStatement(Node whileLoopStatement) {
+    ASTWhileLoopStatement(WhileLoopStatement whileLoopStatement) {
         super(whileLoopStatement);
     }
 
