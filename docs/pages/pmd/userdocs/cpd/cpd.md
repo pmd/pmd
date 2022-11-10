@@ -220,8 +220,10 @@ This behavior has been introduced to ease CPD integration into scripts or hooks,
 * Dart
 * EcmaScript (JavaScript)
 * Fortran
+* Gherkin (Cucumber)
 * Go
 * Groovy
+* Html
 * Java
 * Jsp
 * Kotlin
