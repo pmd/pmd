@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTArguments;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBody;
@@ -35,38 +36,6 @@ import net.sourceforge.pmd.lang.symboltable.ScopedNode;
 
 /**
  *  Finds toString() call on String object.
- *
- *  <b>Note:</b> due to an issue with type resolution, this implementation doesn't detect cases when toString()
- *  call is chained to a method returning String which is not declared in the class having the call or the call
- *  arguments are not of the exact same type as method parameters are, excluding the case when method name and
- *  number of it's parameters is enough to identify the method. Example:
- *    <pre>{@code
- *    class A {
- *         public String str() {
- *            return "exampleStr";
- *         }
- *    }
- *    class B {
- *        public void foo() {
- *            String s = new A().str().toString(); // not detected because str() is from another class
- *            s = getString().toString(); // detected
- *            s = getData(new FileInputStream()).toString(); // detected because of argument type
- *            s = getData(new Integer(4), new Integer(5)).toString(); // detected because of unique args count
- *        }
- *        public String getString() {
- *            return "exampleStr";
- *        }
- *        public String getData(InputStream is) {
- *            return "argsResolutionIssueExample";
- *        }
- *        public int getData(String s) {
- *            return 0;
- *        }
- *        public String getData(Number a, Number b) {
- *            return "uniqueArgsCountExample";
- *        }
- *    }
- *    }</pre>
  */
 public class StringToStringRule extends AbstractJavaRule {
 
@@ -111,7 +80,7 @@ public class StringToStringRule extends AbstractJavaRule {
             for (NameOccurrence varUsage : varId.getUsages()) {
                 NameOccurrence qualifier = getVarUsageQualifier(varUsage);
                 if (isToStringOnStringCall(varId, qualifier)) {
-                    addViolation(data, varUsage.getLocation());
+                    asCtx(data).addViolation(varUsage.getLocation());
                 }
             }
         }
@@ -133,9 +102,17 @@ public class StringToStringRule extends AbstractJavaRule {
     private boolean isToStringOnStringCall(ASTVariableDeclaratorId varDeclaratorId, NameOccurrence qualifier) {
         if (qualifier != null) {
             return isNotAMethodReference(qualifier) && isNotAnArrayField(varDeclaratorId, qualifier)
-                    && isToString(qualifier.getImage());
+                && isToString(qualifier.getImage()) && isStringAccess(qualifier);
         }
         return false;
+    }
+
+    private boolean isStringAccess(NameOccurrence qualifier) {
+        Node parent = qualifier.getLocation().getParent();
+        if (parent instanceof ASTPrimaryPrefix) {
+            return TypeTestUtil.isA(String.class, (ASTPrimaryPrefix) parent);
+        }
+        return true;
     }
 
     private boolean isNotAnArrayField(ASTVariableDeclaratorId varDeclaratorId, NameOccurrence qualifier) {
@@ -164,12 +141,23 @@ public class StringToStringRule extends AbstractJavaRule {
                     JavaNode prevMethodCall = primaryExpr.getChild(callIndex - 2);
                     ASTPrimarySuffix prevMethodCallArgs = (ASTPrimarySuffix) primaryExpr.getChild(callIndex - 1);
                     if (calledMethodReturnsString(prevMethodCall, prevMethodCallArgs)) {
-                        addViolation(data, methodCall);
+                        asCtx(data).addViolation(methodCall);
                     }
                 }
             }
         }
         return super.visit(primaryExpr, data);
+    }
+
+    @Override
+    public Object visit(ASTPrimarySuffix node, Object data) {
+        if (isToStringMethodCall(node) && node.getIndexInParent() > 0) {
+            JavaNode previousSibling = node.getParent().getChild(node.getIndexInParent() - 1);
+            if (previousSibling instanceof ASTPrimaryPrefix && TypeTestUtil.isA(String.class, (ASTPrimaryPrefix) previousSibling)) {
+                asCtx(data).addViolation(node);
+            }
+        }
+        return super.visit(node, data);
     }
 
     private boolean hasChainedMethods(ASTPrimaryExpression primaryExpr) {
@@ -186,6 +174,13 @@ public class StringToStringRule extends AbstractJavaRule {
     }
 
     private boolean calledMethodReturnsString(JavaNode methodCall, ASTPrimarySuffix methodCallArgs) {
+        // first try to use type resolution for method call expression
+        // the return type is attached on the PrimarySuffix node which contains the arguments
+        if (methodCallArgs.isArguments() && methodCallArgs.getTypeDefinition() != null) {
+            return TypeTestUtil.isA(String.class, methodCallArgs);
+        }
+
+        // next: find method in the local compilation unit
         String returnTypeName = getCalledMethodReturnTypeName(methodCall, methodCallArgs);
         return "String".equals(returnTypeName);
     }
@@ -196,7 +191,7 @@ public class StringToStringRule extends AbstractJavaRule {
     }
 
     private String getCalledMethodName(JavaNode methodCall) {
-        ASTName name = methodCall.getFirstDescendantOfType(ASTName.class);
+        ASTName name = methodCall.getFirstChildOfType(ASTName.class);
         return name != null ? name.getImage() : methodCall.getImage();
     }
 
@@ -250,6 +245,7 @@ public class StringToStringRule extends AbstractJavaRule {
         if (!methodCallArgs.isArguments()) {
             return null;
         }
+
         ASTArguments arguments = methodCallArgs.getFirstChildOfType(ASTArguments.class);
         ASTArgumentList argumentList = arguments.getFirstChildOfType(ASTArgumentList.class);
         List<ASTMethodDeclaration> candidates = getMethodsByNameAndArgsCount(methodName, arguments.size());

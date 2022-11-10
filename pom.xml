@@ -3,17 +3,17 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.sourceforge.pmd</groupId>
     <artifactId>pmd</artifactId>
-    <version>6.51.0-SNAPSHOT</version>
+    <version>6.52.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>PMD</name>
 
     <description>
         PMD is a source code analyzer. It finds common programming flaws like unused variables, empty catch blocks,
         unnecessary object creation, and so forth. It supports Java, JavaScript, Salesforce.com Apex and Visualforce,
-        Modelica, PLSQL, Apache Velocity, XML, XSL, Scala.
+        Modelica, PLSQL, Apache Velocity, HTML, XML, XSL, Scala.
 
         Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code in
-        C/C++, C#, Dart, Fortran, Go, Groovy, Java, JavaScript, JSP, Kotlin, Lua, Matlab, Modelica,
+        C/C++, C#, Dart, Fortran, Gherkin, Go, Groovy, HTML, Java, JavaScript, JSP, Kotlin, Lua, Matlab, Modelica,
         Objective-C, Perl, PHP, PLSQL, Python, Ruby, Salesforce.com Apex, Scala, Swift and Visualforce.
     </description>
 
@@ -76,7 +76,7 @@
     </issueManagement>
 
     <properties>
-        <project.build.outputTimestamp>2022-09-30T13:39:13Z</project.build.outputTimestamp>
+        <project.build.outputTimestamp>2022-10-29T07:34:24Z</project.build.outputTimestamp>
 
         <java.version>7</java.version>
 
@@ -407,22 +407,22 @@
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-core</artifactId>
-                            <version>6.50.0</version> <!-- pmd.dogfood.version -->
+                            <version>6.51.0</version> <!-- pmd.dogfood.version -->
                         </dependency>
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-java</artifactId>
-                            <version>6.50.0</version> <!-- pmd.dogfood.version -->
+                            <version>6.51.0</version> <!-- pmd.dogfood.version -->
                         </dependency>
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-jsp</artifactId>
-                            <version>6.50.0</version> <!-- pmd.dogfood.version -->
+                            <version>6.51.0</version> <!-- pmd.dogfood.version -->
                         </dependency>
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-javascript</artifactId>
-                            <version>6.50.0</version> <!-- pmd.dogfood.version -->
+                            <version>6.51.0</version> <!-- pmd.dogfood.version -->
                         </dependency>
                         <!-- This contains the dogfood ruleset -->
                         <dependency>
@@ -770,7 +770,7 @@
             <dependency>
                 <groupId>org.yaml</groupId>
                 <artifactId>snakeyaml</artifactId>
-                <version>1.32</version>
+                <version>1.33</version>
             </dependency>
 
 
@@ -942,11 +942,13 @@
             <!-- transitive dependency through org.scalameta:trees_2.13
                  upgrade to 3.16.1 to fix CVE-2021-22569 A potential Denial of Service issue in protobuf-java
                  https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-wrvw-hg22-4m67
+                 upgrade to 3.16.3 to fix CVE-2022-3171 protobuf-java has a potential Denial of Service issue
+                 https://github.com/advisories/GHSA-h4h5-3hr4-j3g2
             -->
             <dependency>
                 <groupId>com.google.protobuf</groupId>
                 <artifactId>protobuf-java</artifactId>
-                <version>3.16.1</version>
+                <version>3.16.3</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
