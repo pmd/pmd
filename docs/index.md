@@ -7,7 +7,7 @@ summary: >
     Welcome to the documentation site for PMD and CPD! <br/><br/>
 
 
-last_updated: August 2017
+last_updated: October 2022
 author: Jeff Jensen <jjensen@apache.org>, Andreas Dangel <andreas.dangel@adangel.org>,
         Clément Fournier <clement.fournier76@gmail.com>
 

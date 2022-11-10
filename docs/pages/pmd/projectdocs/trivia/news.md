@@ -36,6 +36,9 @@ author: Tom Copeland <tom@infoether.org>
 
 ### PMD in general and other Language Modules
 
+*   April 2022 - Prediction of who should refactor the code, research available at
+    <https://github.com/rkipp/DSCI644-2022-RefactoringRanking>.
+
 *   February 2021 - Artem Krosheninnikov's talk about Quality Assurance Automation:
     [Artem Krosheninnikov, Wrike - How static analysis can help in QAA processes](
     https://www.youtube.com/watch?v=L42zH5ne074)

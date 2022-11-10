@@ -224,7 +224,8 @@ Example:
 *   [ecmascript](pmd_rules_ecmascript.html) (JavaScript)
 *   [html](pmd_rules_html.html)
 *   [java](pmd_rules_java.html)
-    *   [Supported Versions](pmd_languages_java_versions.html)
+    *   [Supported Versions](pmd_languages_java.html)
+*   [ecmascript](pmd_rules_ecmascript.html) (JavaScript)
 *   [jsp](pmd_rules_jsp.html)
 *   [kotlin](pmd_rules_kotlin.html)
 *   [modelica](pmd_rules_modelica.html)
@@ -237,7 +238,6 @@ Example:
 *   [vm](pmd_rules_vm.html) (Apache Velocity)
 *   [xml](pmd_rules_xml.html)
 *   [xsl](pmd_rules_xsl.html)
-
 
 ## Available Report Formats
 

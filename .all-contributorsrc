@@ -6866,7 +6866,8 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/109954313?v=4",
       "profile": "https://github.com/LynnBroe",
       "contributions": [
-        "code"
+        "code",
+        "bug"
       ]
     },
     {
@@ -6937,6 +6938,44 @@
       "name": "Alex",
       "avatar_url": "https://avatars.githubusercontent.com/u/3869268?v=4",
       "profile": "https://github.com/Alexx-G",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "tcopeland",
+      "name": "Tom Copeland",
+      "avatar_url": "https://avatars.githubusercontent.com/u/70536?v=4",
+      "profile": "https://thomasleecopeland.com/",
+      "contributions": [
+        "bug",
+        "code",
+        "doc"
+      ]
+    },
+    {
+      "login": "yasarshaikh",
+      "name": "Yasar Shaikh",
+      "avatar_url": "https://avatars.githubusercontent.com/u/20971327?v=4",
+      "profile": "https://github.com/yasarshaikh",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "rnveach",
+      "name": "rnveach",
+      "avatar_url": "https://avatars.githubusercontent.com/u/5427943?v=4",
+      "profile": "https://github.com/rnveach",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "tysonstewart",
+      "name": "Tyson Stewart",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1292640?v=4",
+      "profile": "https://github.com/tysonstewart",
       "contributions": [
         "bug"
       ]

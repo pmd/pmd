@@ -37,6 +37,8 @@ public final class TestFrameworksUtil {
               "org.junit.jupiter.params.ParameterizedTest"
         );
 
+    private static final String JUNIT5_NESTED = "org.junit.jupiter.api.Nested";
+
     private static final Set<String> ASSERT_CONTAINERS = setOf("org.junit.Assert",
                                                                "org.junit.jupiter.api.Assertions",
                                                                "org.hamcrest.MatcherAssert",
@@ -127,6 +129,10 @@ public final class TestFrameworksUtil {
             && !node.isNested()
             && !node.isAbstract()
             && TypeTestUtil.isA(JUNIT3_CLASS_NAME, node);
+    }
+
+    public static boolean isJUnit5NestedClass(ASTAnyTypeDeclaration innerClassDecl) {
+        return innerClassDecl.isAnnotationPresent(JUNIT5_NESTED);
     }
 
     public static boolean isExpectExceptionCall(ASTMethodCall call) {
