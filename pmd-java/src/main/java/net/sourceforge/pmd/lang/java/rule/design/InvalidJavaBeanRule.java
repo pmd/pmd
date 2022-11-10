@@ -9,7 +9,9 @@ import java.util.List;
 import java.util.Locale;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeBodyDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
@@ -27,6 +29,12 @@ public class InvalidJavaBeanRule extends AbstractJavaRule {
             asCtx(data).addViolationWithMessage(node, "The bean ''{0}'' does not implement java.io.Serializable.",
                     node.getSimpleName());
         }
+
+        if (!hasNoArgConstructor(node)) {
+            asCtx(data).addViolationWithMessage(node, "The bean ''{0}'' is missing a no-arg constructor.",
+                    node.getSimpleName());
+        }
+
         return super.visit(node, data);
     }
 
@@ -36,8 +44,17 @@ public class InvalidJavaBeanRule extends AbstractJavaRule {
         if (!node.isTransient() && !node.isStatic() && enclosingClass != null) {
             String beanName = enclosingClass.getSimpleName();
             for (ASTVariableDeclaratorId varId : node) {
-                if (hasGetter(varId) && !hasSetter(varId)) {
+                if (!node.isFinal() && hasGetter(varId) && !hasSetter(varId)) {
                     asCtx(data).addViolationWithMessage(varId, "The bean ''{0}'' is missing a setter for property ''{1}''.",
+                            beanName, varId.getName());
+                } else if (!node.isFinal() && !hasGetter(varId) && hasSetter(varId)) {
+                    asCtx(data).addViolationWithMessage(varId, "The bean ''{0}'' is missing a getter for property ''{1}''.",
+                            beanName, varId.getName());
+                } else if (!node.isFinal() && !hasGetter(varId) && !hasSetter(varId)) {
+                    asCtx(data).addViolationWithMessage(varId, "The bean ''{0}'' is missing a getter and a setter for property ''{1}''.",
+                            beanName, varId.getName());
+                } else if (node.isFinal() && !hasGetter(varId)) {
+                    asCtx(data).addViolationWithMessage(varId, "The bean ''{0}'' is missing a getter for property ''{1}''.",
                             beanName, varId.getName());
                 }
             }
@@ -64,7 +81,11 @@ public class InvalidJavaBeanRule extends AbstractJavaRule {
 
     private boolean hasGetter(ASTVariableDeclaratorId varId) {
         String propertyName = varId.getName();
-        String getterName = "get" + propertyName.substring(0, 1).toUpperCase(Locale.ROOT) + propertyName.substring(1);
+        propertyName = propertyName.substring(0, 1).toUpperCase(Locale.ROOT) + propertyName.substring(1);
+        String getterName = "get" + propertyName;
+        if (TypeTestUtil.isA(Boolean.class, varId) || TypeTestUtil.isA(Boolean.TYPE, varId)) {
+            getterName = "is" + propertyName;
+        }
         List<ASTAnyTypeBodyDeclaration> declarations = varId.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class).getDeclarations();
         for (ASTAnyTypeBodyDeclaration declaration : declarations) {
             if (ASTAnyTypeBodyDeclaration.DeclarationKind.METHOD == declaration.getKind()) {
@@ -78,4 +99,21 @@ public class InvalidJavaBeanRule extends AbstractJavaRule {
         return false;
     }
 
+    public boolean hasNoArgConstructor(ASTClassOrInterfaceDeclaration node) {
+        int constructorCount = 0;
+        for (ASTAnyTypeBodyDeclaration declaration : node.getDeclarations()) {
+            if (ASTAnyTypeBodyDeclaration.DeclarationKind.CONSTRUCTOR == declaration.getKind()) {
+                ASTConstructorDeclaration ctor = declaration.getFirstChildOfType(ASTConstructorDeclaration.class);
+                if (ctor.getArity() == 0) {
+                    return true;
+                }
+                constructorCount++;
+            }
+        }
+        if (constructorCount == 0) {
+            // default constructor
+            return true;
+        }
+        return false;
+    }
 }

@@ -22,4 +22,245 @@ public class MyBean {        // <-- bean is not serializable, missing "implement
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>Valid Bean with all getters and setters</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package org.example.beans;
+import java.io.Serializable;
+public final class Button implements Serializable {
+    private String label;
+    private boolean active;
+    private Boolean enabled;
+    private transient String notImportant;
+    private final String constant = "Foo";
+
+    public String getLabel() { return label; }
+    public void setLabel(String label) { this.label = label; }
+
+    public boolean isActive() { return active; }
+    public void setActive(boolean active) { this.active = active; }
+
+    public boolean isEnabled() { return enabled; }
+    public void setEnabled(boolean enabled) { this.enabled = enabled; }
+
+    public String getConstant() { return constant; }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Bean with missing getters and setters</description>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>4,5,7</expected-linenumbers>
+        <expected-messages>
+            <message>The bean 'Button' is missing a setter for property 'label'.</message>
+            <message>The bean 'Button' is missing a getter and a setter for property 'active'.</message>
+            <message>The bean 'Button' is missing a getter for property 'constant'.</message>
+        </expected-messages>
+        <code><![CDATA[
+package org.example.beans;
+import java.io.Serializable;
+public final class Button implements Serializable {
+    private String label;
+    private boolean active;
+    private transient String notImportant;
+    private final String constant = "Foo";
+
+    public String getLabel() { return label; }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Bean with missing default ctor</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <expected-messages>
+            <message>The bean 'Button' is missing a no-arg constructor.</message>
+        </expected-messages>
+        <code><![CDATA[
+package org.example.beans;
+import java.io.Serializable;
+public final class Button implements Serializable {
+    private String label;
+    private final String constant;
+
+    public Button(String constant) {
+        this.constant = constant;
+    }
+
+    public String getConstant() { return constant; }
+    public String getLabel() { return label; }
+    public void setLabel(String label) { this.label = label; }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Bean with different type for property in getter and setter</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <expected-messages>
+            <message>The bean 'Button' should return a 'java.lang.String' in getter of property 'label'.</message>
+        </expected-messages>
+        <code><![CDATA[
+package org.example.beans;
+import java.io.Serializable;
+public final class Button implements Serializable {
+    private String label;
+
+    public int getLabel() { return 42; }
+    public void setLabel(String label) { this.label = label; }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Bean with wrong getter name for boolean property</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <expected-messages>
+            <message>The bean 'Button' should use the method name 'isActive' for the getter of property 'active'.</message>
+        </expected-messages>
+        <code><![CDATA[
+package org.example.beans;
+import java.io.Serializable;
+public final class Button implements Serializable {
+    private boolean active;
+
+    public boolean getActive() { return active; }
+    public void setActive(boolean active) { this.active = active; }
+}
+]]></code>
+    </test-code>
+    
+    <test-code>
+        <description>#881 private final without setter is flagged</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private final String bar = "BAR";
+    public String getBar() { return bar; }
+
+    private String baz;
+    public void setBaz(String b) { baz = b; }
+    public String getBaz() { return baz; }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#780 [java] BeanMembersShouldSerializeRule does not recognize lombok accessors - 1</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import lombok.Data;
+
+@Data
+public class Buzz {
+    private String foo;
+
+    public Buzz() {}
+
+    public Buzz(String s) {
+        foo = s;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#780 [java] BeanMembersShouldSerializeRule does not recognize lombok accessors - 2</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+@lombok.Data
+public class Foo {
+    private String bar;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#780 [java] BeanMembersShouldSerializeRule does not recognize lombok accessors - 3</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import lombok.*;
+@Data
+public class Foo {
+    private String bar;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#780 [java] BeanMembersShouldSerializeRule does not recognize lombok accessors - 4</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import lombok.Getter;
+import lombok.Setter;
+@Getter
+@Setter
+public class Foo {
+    private String bar;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#780 [java] BeanMembersShouldSerializeRule does not recognize lombok accessors - 5</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import lombok.Getter;
+import lombok.Setter;
+public class Foo {
+    @Getter @Setter private String bar;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#780 [java] BeanMembersShouldSerializeRule does not recognize lombok accessors - 6</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import lombok.Getter;
+public class Foo {
+    @Getter(lazy=true) private final String cached = expensive();
+
+    private String expensive() { return "expensive calculation that should be cached."; }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#780 [java] BeanMembersShouldSerializeRule does not recognize lombok accessors - 7</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+@Data
+public class Foo {
+    private String bar;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1796 BeanMembersShouldSerialize should still report with @Delegate</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <expected-messages>
+            <message>The bean 'Foo' is missing a getter and a setter for property 'bar'.</message>
+        </expected-messages>
+        <code><![CDATA[
+import lombok.experimental.Delegate;
+
+public class Foo {
+    @Delegate
+    private String bar;
+
+    public String toString() {
+        return "Foo: " + bar;
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
