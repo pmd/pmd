@@ -389,4 +389,32 @@ public class FooTest {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>Don't consider nested classes #2867</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
+class MyTests {
+    @Test
+    void firstCheck() {}
+
+    @Nested
+    class Reactor {
+        @Test
+        void secondCheck() {}
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>TestCase should be a valid pattern by default #2867</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import junit.framework.TestCase;
+public class ExampleTestCase extends TestCase { }
+]]></code>
+    </test-code>
 </test-data>
