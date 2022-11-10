@@ -901,6 +901,29 @@ public class Foo {
         </example>
     </rule>
 
+    <rule name="InvalidJavaBean"
+          language="java"
+          since="6.52.0"
+          message="Invalid Java Bean"
+          class="net.sourceforge.pmd.lang.java.rule.design.InvalidJavaBeanRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#invalidjavabean">
+        <description>
+
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+public class MyBean {        // <-- bean is not serializable, missing "implements Serializable"
+    private String label;    // <-- missing setter for property "label"
+
+    public String getLabel() {
+        return label;
+    }
+}
+]]>
+        </example>
+    </rule>
+
     <rule name="LawOfDemeter"
           language="java"
           since="5.0"

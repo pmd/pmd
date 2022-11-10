@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+        xmlns="http://pmd.sourceforge.net/rule-tests"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>Example code</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>1,2</expected-linenumbers>
+        <expected-messages>
+            <message>The bean 'MyBean' does not implement java.io.Serializable.</message>
+            <message>The bean 'MyBean' is missing a setter for property 'label'.</message>
+        </expected-messages>
+        <code><![CDATA[
+public class MyBean {        // <-- bean is not serializable, missing "implements Serializable"
+    private String label;    // <-- missing setter for property "label"
+
+    public String getLabel() {
+        return label;
+    }
+}
+        ]]></code>
+    </test-code>
+</test-data>
