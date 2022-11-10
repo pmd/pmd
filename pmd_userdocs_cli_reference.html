@@ -1820,6 +1820,8 @@
                             the given language <code>&lt;lang&gt;</code>. Parsing errors are ignored and unparsable files
                             are skipped.
                             
+                            <p>Use <code>--use-version</code> to specify the language version to use, if it is not the default.</p>
+
                             <p>This option allows to use the xml language for files, that don't
                             use xml as extension. See <a href="#analyze-other-xml-formats">example</a> below.</p></td>
     <td><code></code></td>
@@ -1868,6 +1870,34 @@
 <tr>
     <td><a style="pointer-events: none; cursor: default;" name="-help"><code>--help</code><br /><code>-h</code><br /><code>-H</code></a></td>
     <td>Display help on usage.</td>
+    <td><code></code></td>
+    <td></td>
+</tr>
+
+    <!-- Row of the CLI reference table, describing an option -->
+<!-- Rows can be linked to the name of the option (without leading dash) -->
+<!-- Argument summary: -->
+<!-- options: comma separated list of aliases for the option.-->
+<!-- option_arg: optional name for the argument of the option, eg 'arg', will be formatted eg to '<arg>'-->
+<!-- description: description, you can use "some" inline markdown -->
+<!-- required: whether the option is required, if specified, whatever the value, it's considered required -->
+<!-- languages: languages to which the option applies -->
+<!-- default: default value -->
+
+
+
+<!-- fragment id in the page -->
+
+
+<tr>
+    <td><a style="pointer-events: none; cursor: default;" name="-use-version"><code>--use-version&nbsp;&lt;lang-version&gt;</code></a></td>
+    <td>The specific language version PMD should use when parsing source code for a given language.
+                            <p>Values are in the format of <i>language-version</i>.</p>
+                            <p>This option can be repeated to configure several languages for the same run.</p>
+                            <p>Note that this option does not change how languages are assigned to files.
+                            It only changes something if the project you analyze contains some files that PMD detects as the given language.
+                            Language detection is only influenced by file extensions and the <code>--force-language</code> option.</p>
+                            <p>See also <a href="#supported-languages">Supported Languages</a>.</p></td>
     <td><code></code></td>
     <td></td>
 </tr>
@@ -2210,15 +2240,15 @@ This behavior has been introduced to ease PMD integration into scripts or hooks,
 
 <p>The language is determined automatically by PMD from the file extensions. Some languages such as “Java”
 however support multiple versions. The default version will be used, which is usually the latest supported
-version. If you want to use an older version, so that e.g. rules, that suggest usage of language features,
-that are not available yet, won’t be executed, you need to specify a specific version via the <code class="language-plaintext highlighter-rouge">-language</code>
-and <code class="language-plaintext highlighter-rouge">-version</code> parameter.</p>
+non-preview version. If you want to use an older version, so that e.g. rules that suggest usage of language features
+that are not available yet won’t be executed, you need to specify a specific version via the <code class="language-plaintext highlighter-rouge">--use-version</code>
+parameter.</p>
 
 <p>These parameters are irrelevant for languages that don’t support different versions.</p>
 
 <p>Example:</p>
 
-<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./run.sh pmd <span class="nt">-d</span> src/main/java <span class="nt">-f</span> text <span class="nt">-R</span> rulesets/java/quickstart.xml <span class="nt">-language</span> java <span class="nt">-version</span> 8
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./run.sh pmd <span class="nt">-d</span> src/main/java <span class="nt">-f</span> text <span class="nt">-R</span> rulesets/java/quickstart.xml <span class="nt">--use-version</span> java-1.8
 </code></pre></div></div>
 
 <ul>

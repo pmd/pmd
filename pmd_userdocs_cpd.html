@@ -1649,7 +1649,7 @@ See how to add it <a href="pmd_devdocs_major_adding_new_cpd_language.html">here<
 
 
 <tr>
-    <td><a style="pointer-events: none; cursor: default;" name="-files"><code>--files</code></a></td>
+    <td><a style="pointer-events: none; cursor: default;" name="-files"><code>--files</code><br /><code>--dir</code><br /><code>-d</code></a></td>
     <td><span class="label label-primary">Required</span>  List of files and directories to process</td>
     <td><code></code></td>
     <td></td>
@@ -1715,7 +1715,7 @@ See how to add it <a href="pmd_devdocs_major_adding_new_cpd_language.html">here<
 
 
 <tr>
-    <td><a style="pointer-events: none; cursor: default;" name="-debug"><code>--debug</code><br /><code>--verbose</code></a></td>
+    <td><a style="pointer-events: none; cursor: default;" name="-debug"><code>--debug</code><br /><code>--verbose</code><br /><code>-v</code><br /><code>-D</code></a></td>
     <td>Debug mode. Prints more log output.</td>
     <td><code></code></td>
     <td></td>
@@ -1737,7 +1737,7 @@ See how to add it <a href="pmd_devdocs_major_adding_new_cpd_language.html">here<
 
 
 <tr>
-    <td><a style="pointer-events: none; cursor: default;" name="-encoding"><code>--encoding</code></a></td>
+    <td><a style="pointer-events: none; cursor: default;" name="-encoding"><code>--encoding</code><br /><code>-e</code></a></td>
     <td>Character encoding to use when processing files. If not specified, CPD uses the system default encoding.</td>
     <td><code></code></td>
     <td></td>
@@ -2536,7 +2536,7 @@ the CPD task as usual and right after it invoke the Ant XSLT script like this:</
 
 <p>For Linux:</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./run.sh cpdgui
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./run.sh cpd-gui
 </code></pre></div></div>
 
 <p>Here’s a screenshot of CPD after running on the JDK 8 java.lang package:</p>

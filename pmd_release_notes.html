@@ -1560,6 +1560,66 @@
 
 <h3 id="api-changes">API Changes</h3>
 
+<h4 id="pmd-cli">PMD CLI</h4>
+
+<ul>
+  <li>
+    <p>PMD now supports a new <code class="language-plaintext highlighter-rouge">--use-version</code> flag, which receives a language-version pair (such as <code class="language-plaintext highlighter-rouge">java-8</code> or <code class="language-plaintext highlighter-rouge">apex-54</code>).
+This supersedes the usage of <code class="language-plaintext highlighter-rouge">-language</code> / <code class="language-plaintext highlighter-rouge">-l</code> and <code class="language-plaintext highlighter-rouge">-version</code> / <code class="language-plaintext highlighter-rouge">-v</code>, allowing for multiple versions to be set in a single run.
+PMD 7 will completely remove support for <code class="language-plaintext highlighter-rouge">-language</code> and <code class="language-plaintext highlighter-rouge">-version</code> in favor of this new flag.</p>
+  </li>
+  <li>
+    <p>Support for <code class="language-plaintext highlighter-rouge">-V</code> is being deprecated in favor of <code class="language-plaintext highlighter-rouge">--verbose</code> in preparation for PMD 7.
+In PMD 7, <code class="language-plaintext highlighter-rouge">-v</code> will enable verbose mode and <code class="language-plaintext highlighter-rouge">-V</code> will show the PMD version for consistency with most Unix/Linux tools.</p>
+  </li>
+  <li>
+    <p>Support for <code class="language-plaintext highlighter-rouge">-min</code> is being deprecated in favor of <code class="language-plaintext highlighter-rouge">--minimum-priority</code> for consistency with most Unix/Linux tools, where <code class="language-plaintext highlighter-rouge">-min</code> would be equivalent to <code class="language-plaintext highlighter-rouge">-m -i -n</code>.</p>
+  </li>
+</ul>
+
+<h4 id="cpd-cli">CPD CLI</h4>
+
+<ul>
+  <li>CPD now supports using <code class="language-plaintext highlighter-rouge">-d</code> or <code class="language-plaintext highlighter-rouge">--dir</code> as an alias to <code class="language-plaintext highlighter-rouge">--files</code>, in favor of consistency with PMD.
+PMD 7 will remove support for <code class="language-plaintext highlighter-rouge">--files</code> in favor of these new flags.</li>
+</ul>
+
+<h4 id="linux-runsh-parameters">Linux run.sh parameters</h4>
+
+<ul>
+  <li>
+    <p>Using <code class="language-plaintext highlighter-rouge">run.sh cpdgui</code> will now warn about it being deprecated. Use <code class="language-plaintext highlighter-rouge">run.sh cpd-gui</code> instead.</p>
+  </li>
+  <li>
+    <p>The old designer (<code class="language-plaintext highlighter-rouge">run.sh designerold</code>) is completely deprecated and will be removed in PMD 7. Switch to the new JavaFX designer: <code class="language-plaintext highlighter-rouge">run.sh designer</code>.</p>
+  </li>
+  <li>
+    <p>The old visual AST viewer (<code class="language-plaintext highlighter-rouge">run.sh bgastviewer</code>) is completely deprecated and will be removed in PMD 7. Switch to the new JavaFX designer: <code class="language-plaintext highlighter-rouge">run.sh designer</code> for a visual tool, or use <code class="language-plaintext highlighter-rouge">run.sh ast-dump</code> for a text-based aleternative.</p>
+  </li>
+</ul>
+
+<h4 id="deprecated-api">Deprecated API</h4>
+
+<p>The following APIs have been marked as deprecated for removal in PMD 7:</p>
+
+<ul>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0-SNAPSHOT/net/sourceforge/pmd/PMD.html#"><code>PMD</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0-SNAPSHOT/net/sourceforge/pmd/PMD.StatusCode.html#"><code>PMD.StatusCode</code></a> - PMD 7 will ship with a revamped CLI split from pmd-core. To programatically launch analysis you can use <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0-SNAPSHOT/net/sourceforge/pmd/PmdAnalysis.html#"><code>PmdAnalysis</code></a>.</li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0-SNAPSHOT/net/sourceforge/pmd/PMDConfiguration.html#getAllInputPaths()"><code>PMDConfiguration#getAllInputPaths</code></a> - It is now superceded by <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0-SNAPSHOT/net/sourceforge/pmd/PMDConfiguration.html#getInputPathList()"><code>PMDConfiguration#getInputPathList</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0-SNAPSHOT/net/sourceforge/pmd/PMDConfiguration.html#setInputPaths(List)"><code>PMDConfiguration#setInputPaths</code></a> - It is now superceded by <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0-SNAPSHOT/net/sourceforge/pmd/PMDConfiguration.html#setInputPathList(List)"><code>PMDConfiguration#setInputPathList</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0-SNAPSHOT/net/sourceforge/pmd/PMDConfiguration.html#addInputPath(String)"><code>PMDConfiguration#addInputPath</code></a> - It is now superceded by <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0-SNAPSHOT/net/sourceforge/pmd/PMDConfiguration.html#addInputPath(Path)"><code>PMDConfiguration#addInputPath</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0-SNAPSHOT/net/sourceforge/pmd/PMDConfiguration.html#getInputFilePath()"><code>PMDConfiguration#getInputFilePath</code></a> - It is now superceded by <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0-SNAPSHOT/net/sourceforge/pmd/PMDConfiguration.html#getInputFile()"><code>PMDConfiguration#getInputFile</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0-SNAPSHOT/net/sourceforge/pmd/PMDConfiguration.html#getIgnoreFilePath()"><code>PMDConfiguration#getIgnoreFilePath</code></a> - It is now superceded by <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0-SNAPSHOT/net/sourceforge/pmd/PMDConfiguration.html#getIgnoreFile()"><code>PMDConfiguration#getIgnoreFile</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0-SNAPSHOT/net/sourceforge/pmd/PMDConfiguration.html#setInputFilePath(String)"><code>PMDConfiguration#setInputFilePath</code></a> - It is now superceded by <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0-SNAPSHOT/net/sourceforge/pmd/PMDConfiguration.html#setInputFilePath(Path)"><code>PMDConfiguration#setInputFilePath</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0-SNAPSHOT/net/sourceforge/pmd/PMDConfiguration.html#setIgnoreFilePath(String)"><code>PMDConfiguration#setIgnoreFilePath</code></a> - It is now superceded by <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0-SNAPSHOT/net/sourceforge/pmd/PMDConfiguration.html#setIgnoreFilePath(Path)"><code>PMDConfiguration#setIgnoreFilePath</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0-SNAPSHOT/net/sourceforge/pmd/PMDConfiguration.html#getInputUri()"><code>PMDConfiguration#getInputUri</code></a> - It is now superceded by <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0-SNAPSHOT/net/sourceforge/pmd/PMDConfiguration.html#getUri()"><code>PMDConfiguration#getUri</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0-SNAPSHOT/net/sourceforge/pmd/PMDConfiguration.html#setInputUri(String)"><code>PMDConfiguration#setInputUri</code></a> - It is now superceded by <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0-SNAPSHOT/net/sourceforge/pmd/PMDConfiguration.html#setInputUri(URI)"><code>PMDConfiguration#setInputUri</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0-SNAPSHOT/net/sourceforge/pmd/PMDConfiguration.html#getReportFile()"><code>PMDConfiguration#getReportFile</code></a> - It is now superceded by <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0-SNAPSHOT/net/sourceforge/pmd/PMDConfiguration.html#getReportFilePath()"><code>PMDConfiguration#getReportFilePath</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0-SNAPSHOT/net/sourceforge/pmd/PMDConfiguration.html#setReportFile(String)"><code>PMDConfiguration#setReportFile</code></a> - It is now superceded by <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0-SNAPSHOT/net/sourceforge/pmd/PMDConfiguration.html#setReportFile(Path)"><code>PMDConfiguration#setReportFile</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0-SNAPSHOT/net/sourceforge/pmd/PMDConfiguration.html#isStressTest()"><code>PMDConfiguration#isStressTest</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0-SNAPSHOT/net/sourceforge/pmd/PMDConfiguration.html#setStressTest(boolean)"><code>PMDConfiguration#setStressTest</code></a> - Will be removed with no replacement.</li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0-SNAPSHOT/net/sourceforge/pmd/PMDConfiguration.html#isBenchmark()"><code>PMDConfiguration#isBenchmark</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0-SNAPSHOT/net/sourceforge/pmd/PMDConfiguration.html#setBenchmark(boolean)"><code>PMDConfiguration#setBenchmark</code></a> - Will be removed with no replacement, the CLI will still support it.</li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0-SNAPSHOT/net/sourceforge/pmd/CPD.html#"><code>CPD</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0-SNAPSHOT/net/sourceforge/pmd/CPD/StatusCode.html#"><code>StatusCode</code></a> - PMD 7 will ship with a revamped CLI split from pmd-core. An alterative to programatically launch CPD analysis will be added in due time.</li>
+</ul>
+
 <h3 id="external-contributions">External Contributions</h3>
 <ul>
   <li><a href="https://github.com/pmd/pmd/pull/4184">#4184</a>: [java][doc] TestClassWithoutTestCases - fix small typo in description - <a href="https://github.com/valfirst">Valery Yatsynovich</a> (@valfirst)</li>
