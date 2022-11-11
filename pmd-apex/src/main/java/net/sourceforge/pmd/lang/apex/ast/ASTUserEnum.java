@@ -4,11 +4,9 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 import com.google.summit.ast.declaration.EnumDeclaration;
 
-public class ASTUserEnum extends ApexRootNode<TypeDeclaration> implements ApexQualifiableNode {
+public class ASTUserEnum extends ApexRootNode<EnumDeclaration> implements ApexQualifiableNode {
 
     private ApexQualifiedName qname;
 

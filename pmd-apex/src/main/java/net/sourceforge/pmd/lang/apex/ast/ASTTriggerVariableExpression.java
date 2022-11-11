@@ -4,15 +4,11 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 import com.google.summit.ast.expression.FieldExpression;
 
 public class ASTTriggerVariableExpression extends AbstractApexNode.Single<FieldExpression> {
 
-    @Deprecated
-    @InternalApi
-    public ASTTriggerVariableExpression(FieldExpression fieldExpression) {
+    ASTTriggerVariableExpression(FieldExpression fieldExpression) {
         super(fieldExpression);
     }
 

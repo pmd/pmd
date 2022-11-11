@@ -7,15 +7,11 @@ package net.sourceforge.pmd.lang.apex.ast;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 import com.google.summit.ast.declaration.TriggerDeclaration;
 
 public class ASTUserTrigger extends ApexRootNode<TriggerDeclaration> {
 
-    @Deprecated
-    @InternalApi
-    public ASTUserTrigger(TriggerDeclaration triggerDeclaration) {
+    ASTUserTrigger(TriggerDeclaration triggerDeclaration) {
         super(triggerDeclaration);
     }
 

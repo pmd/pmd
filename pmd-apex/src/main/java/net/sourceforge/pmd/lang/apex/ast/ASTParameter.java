@@ -5,15 +5,12 @@
 package net.sourceforge.pmd.lang.apex.ast;
 
 import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.annotation.InternalApi;
 
 import com.google.summit.ast.declaration.ParameterDeclaration;
 
 public class ASTParameter extends AbstractApexNode.Single<ParameterDeclaration> implements CanSuppressWarnings {
 
-    @Deprecated
-    @InternalApi
-    public ASTParameter(ParameterDeclaration parameterDeclaration) {
+    ASTParameter(ParameterDeclaration parameterDeclaration) {
         super(parameterDeclaration);
     }
 

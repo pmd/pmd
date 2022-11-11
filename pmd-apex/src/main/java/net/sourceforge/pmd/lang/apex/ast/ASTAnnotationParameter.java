@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 import com.google.summit.ast.expression.Expression;
 import com.google.summit.ast.expression.LiteralExpression;
 import com.google.summit.ast.modifier.ElementArgument;
@@ -14,9 +12,7 @@ import com.google.summit.ast.modifier.ElementValue;
 public class ASTAnnotationParameter extends AbstractApexNode.Single<ElementArgument> {
     public static final String SEE_ALL_DATA = "seeAllData";
 
-    @Deprecated
-    @InternalApi
-    public ASTAnnotationParameter(ElementArgument elementArgument) {
+    ASTAnnotationParameter(ElementArgument elementArgument) {
         super(elementArgument);
     }
 

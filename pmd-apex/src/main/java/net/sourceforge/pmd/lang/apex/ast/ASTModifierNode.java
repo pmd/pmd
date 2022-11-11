@@ -6,8 +6,6 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 import java.util.List;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 import com.google.common.collect.ImmutableMap;
 import com.google.summit.ast.modifier.AnnotationModifier;
 import com.google.summit.ast.modifier.KeywordModifier;
@@ -27,9 +25,7 @@ public class ASTModifierNode extends AbstractApexNode.Many<Modifier> implements 
             .put(Keyword.TRANSIENT, AccessNode.TRANSIENT)
             .build();
 
-    @Deprecated
-    @InternalApi
-    public ASTModifierNode(List<Modifier> modifierNode) {
+    ASTModifierNode(List<Modifier> modifierNode) {
         super(modifierNode);
     }
 

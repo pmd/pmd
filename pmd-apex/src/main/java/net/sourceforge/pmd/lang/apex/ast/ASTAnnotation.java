@@ -9,7 +9,6 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.annotation.InternalApi;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.summit.ast.modifier.AnnotationModifier;
@@ -65,9 +64,7 @@ public class ASTAnnotation extends AbstractApexNode.Single<AnnotationModifier> {
             "visibleapiversion"
     );
 
-    @Deprecated
-    @InternalApi
-    public ASTAnnotation(AnnotationModifier annotationModifier) {
+    ASTAnnotation(AnnotationModifier annotationModifier) {
         super(annotationModifier);
     }
 

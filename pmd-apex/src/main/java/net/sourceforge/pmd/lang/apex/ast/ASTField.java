@@ -4,23 +4,24 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
+import java.util.Arrays;
+
 import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.annotation.InternalApi;
 
 import com.google.summit.ast.Identifier;
+import com.google.summit.ast.Node;
 import com.google.summit.ast.TypeRef;
 import com.google.summit.ast.expression.Expression;
 import com.google.summit.ast.expression.LiteralExpression;
 
-public class ASTField extends AbstractApexNode implements CanSuppressWarnings {
+public class ASTField extends AbstractApexNode.Many<Node> implements CanSuppressWarnings {
 
     private final TypeRef type;
     private final Identifier name;
     private final Expression value;
 
-    @Deprecated
-    @InternalApi
-    public ASTField(TypeRef type, Identifier name, Expression value) {
+    ASTField(TypeRef type, Identifier name, Expression value) {
+        super(Arrays.asList(type, name, value));
         this.type = type;
         this.name = name;
         this.value = value;
