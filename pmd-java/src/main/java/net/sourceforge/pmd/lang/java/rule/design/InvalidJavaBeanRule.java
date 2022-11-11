@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.design;
 
+import static net.sourceforge.pmd.properties.PropertyFactory.stringListProperty;
+
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
@@ -17,6 +19,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTPackageDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTResultType;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
@@ -39,18 +42,33 @@ public class InvalidJavaBeanRule extends AbstractJavaRule {
             .defaultValue(false)
             .build();
 
-    // TODO: Add property "package"
-
+    private static final PropertyDescriptor<List<String>> PACKAGES_DESCRIPTOR = stringListProperty("packages")
+            .desc("Consider classes in only these package to be beans. Set to an empty value to check all classes.")
+            .defaultValues("org.example.beans")
+            .delim(',')
+            .build();
 
     private Map<String, PropertyInfo> properties;
 
     public InvalidJavaBeanRule() {
         definePropertyDescriptor(ENSURE_SERIALIZATION);
+        definePropertyDescriptor(PACKAGES_DESCRIPTOR);
         addRuleChainVisit(ASTClassOrInterfaceDeclaration.class);
     }
 
     @Override
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
+        String packageName = "";
+        ASTPackageDeclaration packageDeclaration = node.getRoot().getPackageDeclaration();
+        if (packageDeclaration != null) {
+            packageName = packageDeclaration.getName();
+        }
+        List<String> packages = getProperty(PACKAGES_DESCRIPTOR);
+        if (!packages.isEmpty() && !packages.contains(packageName)) {
+            // skip analysis outside the configured packages
+            return null;
+        }
+
         String beanName = node.getSimpleName();
 
         if (getProperty(ENSURE_SERIALIZATION) && !TypeTestUtil.isA(Serializable.class, node)) {
