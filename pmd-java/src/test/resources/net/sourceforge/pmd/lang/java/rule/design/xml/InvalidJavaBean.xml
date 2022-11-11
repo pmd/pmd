@@ -249,7 +249,7 @@ public class Foo {
         <expected-problems>1</expected-problems>
         <expected-linenumbers>5</expected-linenumbers>
         <expected-messages>
-            <message>The bean 'Foo' is missing a getter and a setter for property 'bar'.</message>
+            <message>The bean 'Foo' is missing a getter and a setter for property 'Bar'.</message>
         </expected-messages>
         <code><![CDATA[
 import lombok.experimental.Delegate;

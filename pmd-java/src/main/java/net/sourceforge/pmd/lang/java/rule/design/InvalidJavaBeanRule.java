@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.rule.design;
 
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -28,11 +29,15 @@ import net.sourceforge.pmd.properties.PropertyFactory;
 import net.sourceforge.pmd.util.StringUtil;
 
 public class InvalidJavaBeanRule extends AbstractJavaRule {
+    private static final String LOMBOK_DATA = "lombok.Data";
+    private static final String LOMBOK_GETTER = "lombok.Getter";
+    private static final String LOMBOK_SETTER = "lombok.Setter";
 
     private static final PropertyDescriptor<Boolean> ENSURE_SERIALIZATION = PropertyFactory.booleanProperty("ensureSerialization")
             .desc("Require that beans implement java.io.Serializable.")
             .defaultValue(false)
             .build();
+
     // TODO: Add property "package"
 
 
@@ -57,26 +62,35 @@ public class InvalidJavaBeanRule extends AbstractJavaRule {
                     beanName);
         }
 
+        if (hasClassLevelLombokDataAnnotation(node)) {
+            // skip further analysis
+            return null;
+        }
+
         properties = new HashMap<>();
         collectFields(node);
         collectMethods(node);
 
+        filterPropertiesWithoutField();
+
         for (PropertyInfo propertyInfo : properties.values()) {
-            if (propertyInfo.hasMissingGetter() && propertyInfo.hasMissingSetter()) {
+            if (!hasClassLevelLombokGetterAnnotation(node) && !hasClassLevelLombokSetterAnnotation(node)
+                && propertyInfo.hasMissingGetter() && propertyInfo.hasMissingSetter()) {
                 asCtx(data).addViolationWithMessage(propertyInfo.getDeclaratorId(),
                         "The bean ''{0}'' is missing a getter and a setter for property ''{1}''.",
                         beanName, propertyInfo.getName());
-            } else if (propertyInfo.hasMissingGetter()) {
+            } else if (!hasClassLevelLombokGetterAnnotation(node) && propertyInfo.hasMissingGetter()) {
                 asCtx(data).addViolationWithMessage(propertyInfo.getDeclaratorId(),
                         "The bean ''{0}'' is missing a getter for property ''{1}''.",
                         beanName, propertyInfo.getName());
 
-            } else if (propertyInfo.hasMissingSetter()) {
+            } else if (!hasClassLevelLombokSetterAnnotation(node) && propertyInfo.hasMissingSetter()) {
                 asCtx(data).addViolationWithMessage(propertyInfo.getDeclaratorId(),
                         "The bean ''{0}'' is missing a setter for property ''{1}''.",
                         beanName, propertyInfo.getName());
 
             }
+
             if (propertyInfo.hasWrongGetterType()) {
                 asCtx(data).addViolationWithMessage(propertyInfo.getGetter(),
                         "The bean ''{0}'' should return a ''{1}'' in getter of property ''{2}''.",
@@ -133,7 +147,17 @@ public class InvalidJavaBeanRule extends AbstractJavaRule {
         }
     }
 
-    public boolean hasNoArgConstructor(ASTClassOrInterfaceDeclaration node) {
+    private void filterPropertiesWithoutField() {
+        Iterator<Map.Entry<String, PropertyInfo>> iterator = properties.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry<String, PropertyInfo> entry = iterator.next();
+            if (entry.getValue().getDeclaratorId() == null) {
+                iterator.remove();
+            }
+        }
+    }
+
+    private boolean hasNoArgConstructor(ASTClassOrInterfaceDeclaration node) {
         int constructorCount = 0;
         for (ASTAnyTypeBodyDeclaration declaration : node.getDeclarations()) {
             if (ASTAnyTypeBodyDeclaration.DeclarationKind.CONSTRUCTOR == declaration.getKind()) {
@@ -144,11 +168,20 @@ public class InvalidJavaBeanRule extends AbstractJavaRule {
                 constructorCount++;
             }
         }
-        if (constructorCount == 0) {
-            // default constructor
-            return true;
-        }
-        return false;
+        // default constructor is ok
+        return constructorCount == 0;
+    }
+
+    private boolean hasClassLevelLombokDataAnnotation(ASTClassOrInterfaceDeclaration node) {
+        return node.isAnnotationPresent(LOMBOK_DATA);
+    }
+
+    private boolean hasClassLevelLombokGetterAnnotation(ASTClassOrInterfaceDeclaration node) {
+        return node.isAnnotationPresent(LOMBOK_GETTER);
+    }
+
+    private boolean hasClassLevelLombokSetterAnnotation(ASTClassOrInterfaceDeclaration node) {
+        return node.isAnnotationPresent(LOMBOK_SETTER);
     }
 
     private static class PropertyInfo {
@@ -199,11 +232,11 @@ public class InvalidJavaBeanRule extends AbstractJavaRule {
         }
 
         private boolean hasMissingGetter() {
-            return getter == null;
+            return getter == null && !hasFieldLombokGetter();
         }
 
         private boolean hasMissingSetter() {
-            return !readonly && setter == null;
+            return !readonly && setter == null && !hasFieldLombokSetter();
         }
 
         private String getTypeName() {
@@ -222,6 +255,22 @@ public class InvalidJavaBeanRule extends AbstractJavaRule {
         private boolean hasWrongBooleanGetterName() {
             if (getter != null && (TypeTestUtil.isA(Boolean.class, declaratorId) || TypeTestUtil.isA(Boolean.TYPE, declaratorId))) {
                 return !getter.getName().startsWith("is");
+            }
+            return false;
+        }
+
+        private boolean hasFieldLombokGetter() {
+            ASTFieldDeclaration fieldDeclaration = declaratorId != null ? declaratorId.getFirstParentOfType(ASTFieldDeclaration.class) : null;
+            if (fieldDeclaration != null) {
+                return fieldDeclaration.isAnnotationPresent(LOMBOK_GETTER);
+            }
+            return false;
+        }
+
+        private boolean hasFieldLombokSetter() {
+            ASTFieldDeclaration fieldDeclaration = declaratorId != null ? declaratorId.getFirstParentOfType(ASTFieldDeclaration.class) : null;
+            if (fieldDeclaration != null) {
+                return fieldDeclaration.isAnnotationPresent(LOMBOK_SETTER);
             }
             return false;
         }
