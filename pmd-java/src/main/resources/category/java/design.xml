@@ -339,6 +339,8 @@ is invoked by a inner class.
                 <value>
 <![CDATA[
 //TypeDeclaration
+(: no lombok constructor annotations :)
+  [not(Annotation[pmd-java:typeIs('lombok.Value')])]
   /ClassOrInterfaceDeclaration
   [@Final = false()]
   (: at least one private constructor :)
