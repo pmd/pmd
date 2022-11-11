@@ -148,10 +148,10 @@ public class ParserCornersTest {
     public void testParsersCases18() throws Exception {
         ASTCompilationUnit cu = java8.parseResource("ParserCornerCases18.java");
 
-        Assert.assertEquals(21, cu.findChildNodesWithXPath("//FormalParameter").size());
-        Assert.assertEquals(4,
+        Assert.assertEquals(24, cu.findChildNodesWithXPath("//FormalParameter").size());
+        Assert.assertEquals(5,
                 cu.findChildNodesWithXPath("//FormalParameter[@ExplicitReceiverParameter='true']").size());
-        Assert.assertEquals(17,
+        Assert.assertEquals(19,
                 cu.findChildNodesWithXPath("//FormalParameter[@ExplicitReceiverParameter='false']").size());
     }
 
