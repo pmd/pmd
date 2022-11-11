@@ -153,7 +153,7 @@ public abstract class AbstractJUnitRule extends AbstractJavaRule {
         Node parent = node.getParent();
         if (parent instanceof TypeNode) {
             TypeNode type = (TypeNode) parent;
-            return doesNodeContainJUnitAnnotation(type, TESTNG_ANNOTATION) || hasImports(type, TESTNG_ANNOTATION);
+            return doesNodeContainJUnitAnnotation(type, TESTNG_ANNOTATION);
         }
         return false;
     }
