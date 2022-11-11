@@ -196,7 +196,7 @@ import lombok.Value;
 
 @Value
 public class Test {
-    private Test(int a, int b, int c, String abc, long d, double p, String[] arr, int data, long in, float fl, String res) {}
+    private Test(int a, int b) {}
 }
         ]]></code>
     </test-code>

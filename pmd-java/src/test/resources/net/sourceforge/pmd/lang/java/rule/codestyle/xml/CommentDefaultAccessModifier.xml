@@ -407,7 +407,7 @@ class SomeTest {
 import lombok.Value;
 @Value
 public class Test {
-    int fo$o;
+    int foo;
 }
         ]]></code>
     </test-code>
