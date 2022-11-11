@@ -52,6 +52,8 @@ public class RuleDocGenerator {
 
     private static final String LANGUAGE_INDEX_FILENAME_PATTERN = "docs/pages/pmd/rules/${language.tersename}.md";
     private static final String LANGUAGE_INDEX_PERMALINK_PATTERN = "pmd_rules_${language.tersename}.html";
+    private static final String LANGUAGE_INDEX_RULESET_DEFAULT_PATTERN = "docs/pages/pmd/rules/${language.tersename}-defaults.xml";
+    private static final String LANGUAGE_INDEX_RULESET_DEFAULT_PERMALINK = "pmd_rules_${language.tersename}-defaults.xml";
     private static final String RULESET_INDEX_FILENAME_PATTERN = "docs/pages/pmd/rules/${language.tersename}/${ruleset.name}.md";
     private static final String RULESET_INDEX_PERMALINK_PATTERN = "pmd_rules_${language.tersename}_${ruleset.name}.html";
 
@@ -98,6 +100,7 @@ public class RuleDocGenerator {
         determineRuleClassSourceFiles(sortedRulesets);
         generateLanguageIndex(sortedRulesets, sortedAdditionalRulesets);
         generateRuleSetIndex(sortedRulesets);
+        generateAllRulesetWithDefaults(sortedRulesets);
 
         generateSidebar(sortedRulesets);
     }
@@ -173,6 +176,7 @@ public class RuleDocGenerator {
             String filename = LANGUAGE_INDEX_FILENAME_PATTERN
                     .replace("${language.tersename}", languageTersename);
             Path path = getAbsoluteOutputPath(filename);
+            String languageRulesDefaults = LANGUAGE_INDEX_RULESET_DEFAULT_PERMALINK.replace("${language.tersename}", languageTersename);
 
             List<String> lines = new LinkedList<>();
             lines.add("---");
@@ -185,6 +189,10 @@ public class RuleDocGenerator {
             lines.add("editmepath: false");
             lines.add("---");
             lines.add(GENERATED_WARNING_NO_SOURCE);
+            lines.add("");
+            lines.add("Download a template ruleset file with all rules including their default properties: "
+                    + "[" + languageRulesDefaults + "](" + languageRulesDefaults + ")");
+            lines.add("");
 
             for (RuleSet ruleset : entry.getValue()) {
                 lines.add("## " + ruleset.getName());
@@ -496,6 +504,86 @@ public class RuleDocGenerator {
                 writer.write(path, lines);
                 System.out.println("Generated " + path);
             }
+        }
+    }
+
+    /**
+     * Generates for each language a ruleset.xml file, that contains all rules with their default properties.
+     *
+     * @param rulesets
+     * @throws IOException
+     */
+    private void generateAllRulesetWithDefaults(Map<Language, List<RuleSet>> rulesets) throws IOException {
+        for (Map.Entry<Language, List<RuleSet>> entry : rulesets.entrySet()) {
+            Language language = entry.getKey();
+            String languageTersename = language.getTerseName();
+            String languageName = language.getName();
+            String filename = LANGUAGE_INDEX_RULESET_DEFAULT_PATTERN
+                    .replace("${language.tersename}", languageTersename);
+            Path path = getAbsoluteOutputPath(filename);
+            List<String> lines = new LinkedList<>();
+            lines.add("---");
+            lines.add("permalink: " + LANGUAGE_INDEX_RULESET_DEFAULT_PERMALINK
+                    .replace("${language.tersename}", languageTersename));
+            lines.add("layout: none");
+            lines.add("---");
+            lines.add("<?xml version=\"1.0\"?>");
+            lines.add("<ruleset name=\"" + languageTersename + "-defaults\"");
+            lines.add("    xmlns=\"http://pmd.sourceforge.net/ruleset/2.0.0\"");
+            lines.add("    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"");
+            lines.add("    xsi:schemaLocation=\"http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd\">");
+            lines.add("    <description>");
+            lines.add("All Rules for language " + languageName + " with their default properties");
+            lines.add("    </description>");
+            lines.add("");
+
+            for (RuleSet ruleset : entry.getValue()) {
+                lines.add("<!-- Ruleset: " + ruleset.getName() + " -->");
+                lines.add("");
+                String rulesetFilename = RuleSetUtils.getRuleSetFilename(ruleset);
+                for (Rule rule : getSortedRules(ruleset)) {
+
+                    if (rule.isDeprecated()) {
+                        continue;
+                    }
+                    if (rule instanceof RuleReference) {
+                        continue;
+                    }
+
+                    List<PropertyDescriptor<?>> properties = new ArrayList<>(rule.getPropertyDescriptors());
+                    // filter out standard properties
+                    properties.remove(Rule.VIOLATION_SUPPRESS_REGEX_DESCRIPTOR);
+                    properties.remove(Rule.VIOLATION_SUPPRESS_XPATH_DESCRIPTOR);
+                    properties.remove(XPathRule.XPATH_DESCRIPTOR);
+                    properties.remove(XPathRule.VERSION_DESCRIPTOR);
+
+                    // sort by name
+                    properties.sort(Comparator.comparing(PropertyDescriptor::name));
+
+                    if (properties.stream().anyMatch(it -> !isDeprecated(it))) {
+                        lines.add("<rule ref=\"category/" + languageTersename + "/" + rulesetFilename + ".xml/" + rule.getName() + "\">");
+                        lines.add("    <properties>");
+                        for (PropertyDescriptor<?> propertyDescriptor : properties) {
+                            if (!isDeprecated(propertyDescriptor)) {
+                                String defaultValue = determineDefaultValueAsString(propertyDescriptor, rule, false);
+                                lines.add("        <property name=\"" + propertyDescriptor.name() + "\" value=\""
+                                        + defaultValue + "\" />");
+                            }
+                        }
+                        lines.add("    </properties>");
+                        lines.add("</rule>");
+                    } else {
+                        lines.add("<rule ref=\"category/" + languageTersename + "/" + rulesetFilename + ".xml/" + rule.getName() + "\"/>");
+                    }
+                    lines.add("");
+
+                }
+            }
+
+            lines.add("</ruleset>");
+            lines.add("");
+            writer.write(path, lines);
+            System.out.println("Generated " + path);
         }
     }
 

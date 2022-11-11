@@ -89,10 +89,15 @@ public class DeadLinksChecker {
         // read all .md-files in the pages directory
         final List<Path> mdFiles = listMdFiles(pagesDirectory);
 
+        // collect all .md-files and rule xml files
+        final List<Path> jekyllFiles = new ArrayList<>();
+        jekyllFiles.addAll(mdFiles);
+        jekyllFiles.addAll(listRuleXmlFiles(pagesDirectory));
+
         // Stores file path to the future deadlinks. If a future evaluates to null, the link is not dead
         final Map<Path, List<Future<String>>> fileToDeadLinks = new HashMap<>();
         // make a list of all valid link targets
-        final Set<String> htmlPages = extractLinkTargets(mdFiles);
+        final Set<String> htmlPages = extractLinkTargets(jekyllFiles);
 
         // scan all .md-files for dead local links
         int scannedFiles = 0;
@@ -294,6 +299,17 @@ public class DeadLinksChecker {
         }
     }
 
+    private List<Path> listRuleXmlFiles(Path pagesDirectory) {
+        Path ruleXmlFiles = pagesDirectory.resolve("pmd/rules");
+        try (Stream<Path> stream = Files.walk(pagesDirectory)) {
+            return stream
+                .filter(Files::isRegularFile)
+                .filter(path -> path.toString().endsWith(".xml"))
+                .collect(Collectors.toList());
+        } catch (IOException ex) {
+            throw new RuntimeException("Error listing files in " + ruleXmlFiles, ex);
+        }
+    }
 
     private String fileToString(Path mdFile) {
         try (InputStream inputStream = Files.newInputStream(mdFile)) {
