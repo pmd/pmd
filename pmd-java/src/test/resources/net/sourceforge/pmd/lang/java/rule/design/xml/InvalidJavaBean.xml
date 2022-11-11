@@ -264,4 +264,25 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>Consider properties not backed by a field (computed values)</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <expected-messages>
+            <message>The bean 'Button' has a property 'Size' with getter and setter that don't have the same type.</message>
+        </expected-messages>
+        <code><![CDATA[
+package org.example.beans;
+public final class Button {
+    public String getLabel() { return "foo"; }
+    public void setLabel(String label) { /* ignored */ }
+
+    public String getSize() { return "1"; }
+    public void setSize(int size) { /* ignored */ }
+
+    public String getName() { return "bar"; } // read-only property
+}
+]]></code>
+    </test-code>
 </test-data>

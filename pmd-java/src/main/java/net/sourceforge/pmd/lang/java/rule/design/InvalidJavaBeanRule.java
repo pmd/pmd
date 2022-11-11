@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.java.rule.design;
 
 import java.io.Serializable;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -16,6 +15,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
@@ -71,8 +71,6 @@ public class InvalidJavaBeanRule extends AbstractJavaRule {
         collectFields(node);
         collectMethods(node);
 
-        filterPropertiesWithoutField();
-
         for (PropertyInfo propertyInfo : properties.values()) {
             if (!hasClassLevelLombokGetterAnnotation(node) && !hasClassLevelLombokSetterAnnotation(node)
                 && propertyInfo.hasMissingGetter() && propertyInfo.hasMissingSetter()) {
@@ -100,6 +98,11 @@ public class InvalidJavaBeanRule extends AbstractJavaRule {
                 asCtx(data).addViolationWithMessage(propertyInfo.getGetter(),
                         "The bean ''{0}'' should use the method name ''is{1}'' for the getter of property ''{2}''.",
                         beanName, propertyInfo.getName(), propertyInfo.getName());
+            }
+            if (propertyInfo.hasWrongTypeGetterAndSetter()) {
+                asCtx(data).addViolationWithMessage(propertyInfo.getGetter(),
+                        "The bean ''{0}'' has a property ''{1}'' with getter and setter that don''t have the same type.",
+                        beanName, propertyInfo.getName());
             }
         }
 
@@ -143,16 +146,6 @@ public class InvalidJavaBeanRule extends AbstractJavaRule {
             } else if (methodName.startsWith("set") && parameterCount == 1) {
                 PropertyInfo propertyInfo = getOrCreatePropertyInfo(propertyName);
                 propertyInfo.setSetter(declaration.getMethodNameDeclaratorNode().getParent());
-            }
-        }
-    }
-
-    private void filterPropertiesWithoutField() {
-        Iterator<Map.Entry<String, PropertyInfo>> iterator = properties.entrySet().iterator();
-        while (iterator.hasNext()) {
-            Map.Entry<String, PropertyInfo> entry = iterator.next();
-            if (entry.getValue().getDeclaratorId() == null) {
-                iterator.remove();
             }
         }
     }
@@ -232,22 +225,27 @@ public class InvalidJavaBeanRule extends AbstractJavaRule {
         }
 
         private boolean hasMissingGetter() {
-            return getter == null && !hasFieldLombokGetter();
+            return declaratorId != null && getter == null && !hasFieldLombokGetter();
         }
 
         private boolean hasMissingSetter() {
-            return !readonly && setter == null && !hasFieldLombokSetter();
+            return declaratorId != null && !readonly && setter == null && !hasFieldLombokSetter();
         }
 
         private String getTypeName() {
-            if (declaratorId.getType() != null) {
+            if (declaratorId != null && declaratorId.getType() != null) {
                 return declaratorId.getType().getName();
+            }
+            if (getter != null) {
+                return getter.getResultType().getFirstChildOfType(ASTType.class).getType().getName();
             }
             return "<unknown type>";
         }
 
         private boolean hasWrongGetterType() {
-            return declaratorId.getType() != null && getter != null
+            return declaratorId != null
+                    && declaratorId.getType() != null
+                    && getter != null
                     && !getter.getResultType().isVoid()
                     && declaratorId.getType() != getter.getResultType().getFirstChildOfType(ASTType.class).getType();
         }
@@ -257,6 +255,15 @@ public class InvalidJavaBeanRule extends AbstractJavaRule {
                 return !getter.getName().startsWith("is");
             }
             return false;
+        }
+
+        private boolean hasWrongTypeGetterAndSetter() {
+            if (declaratorId != null || getter == null || setter == null) {
+                return false;
+            }
+            Class<?> parameterType = setter.getFormalParameters().getFirstChildOfType(ASTFormalParameter.class).getType();
+            return getter.getResultType().isVoid()
+                    || getter.getResultType().getFirstChildOfType(ASTType.class).getType() != parameterType;
         }
 
         private boolean hasFieldLombokGetter() {
