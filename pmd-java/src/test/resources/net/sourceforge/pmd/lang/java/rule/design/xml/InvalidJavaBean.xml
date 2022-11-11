@@ -10,7 +10,7 @@
         <expected-linenumbers>1,2</expected-linenumbers>
         <expected-messages>
             <message>The bean 'MyBean' does not implement java.io.Serializable.</message>
-            <message>The bean 'MyBean' is missing a setter for property 'label'.</message>
+            <message>The bean 'MyBean' is missing a setter for property 'Label'.</message>
         </expected-messages>
         <code><![CDATA[
 public class MyBean {        // <-- bean is not serializable, missing "implements Serializable"
@@ -42,8 +42,8 @@ public final class Button implements Serializable {
     public boolean isActive() { return active; }
     public void setActive(boolean active) { this.active = active; }
 
-    public boolean isEnabled() { return enabled; }
-    public void setEnabled(boolean enabled) { this.enabled = enabled; }
+    public Boolean isEnabled() { return enabled; }
+    public void setEnabled(Boolean enabled) { this.enabled = enabled; }
 
     public String getConstant() { return constant; }
 }
@@ -55,9 +55,9 @@ public final class Button implements Serializable {
         <expected-problems>3</expected-problems>
         <expected-linenumbers>4,5,7</expected-linenumbers>
         <expected-messages>
-            <message>The bean 'Button' is missing a setter for property 'label'.</message>
-            <message>The bean 'Button' is missing a getter and a setter for property 'active'.</message>
-            <message>The bean 'Button' is missing a getter for property 'constant'.</message>
+            <message>The bean 'Button' is missing a setter for property 'Label'.</message>
+            <message>The bean 'Button' is missing a getter and a setter for property 'Active'.</message>
+            <message>The bean 'Button' is missing a getter for property 'Constant'.</message>
         </expected-messages>
         <code><![CDATA[
 package org.example.beans;
@@ -103,7 +103,7 @@ public final class Button implements Serializable {
         <expected-problems>1</expected-problems>
         <expected-linenumbers>6</expected-linenumbers>
         <expected-messages>
-            <message>The bean 'Button' should return a 'java.lang.String' in getter of property 'label'.</message>
+            <message>The bean 'Button' should return a 'java.lang.String' in getter of property 'Label'.</message>
         </expected-messages>
         <code><![CDATA[
 package org.example.beans;
@@ -122,7 +122,7 @@ public final class Button implements Serializable {
         <expected-problems>1</expected-problems>
         <expected-linenumbers>6</expected-linenumbers>
         <expected-messages>
-            <message>The bean 'Button' should use the method name 'isActive' for the getter of property 'active'.</message>
+            <message>The bean 'Button' should use the method name 'isActive' for the getter of property 'Active'.</message>
         </expected-messages>
         <code><![CDATA[
 package org.example.beans;

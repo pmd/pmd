@@ -5,98 +5,125 @@
 package net.sourceforge.pmd.lang.java.rule.design;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
+import java.util.Map;
+
+import org.apache.commons.lang3.StringUtils;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeBodyDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.symboltable.MethodNameDeclaration;
+import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
+import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
+import net.sourceforge.pmd.util.StringUtil;
 
 public class InvalidJavaBeanRule extends AbstractJavaRule {
 
     // TODO: Add property "ensureSerialization"
     // TODO: Add property "package"
 
+    private Map<String, PropertyInfo> properties;
+
+    public InvalidJavaBeanRule() {
+        addRuleChainVisit(ASTClassOrInterfaceDeclaration.class);
+    }
+
     @Override
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
+        String beanName = node.getSimpleName();
+
         if (!TypeTestUtil.isA(Serializable.class, node)) {
             asCtx(data).addViolationWithMessage(node, "The bean ''{0}'' does not implement java.io.Serializable.",
-                    node.getSimpleName());
+                    beanName);
         }
 
         if (!hasNoArgConstructor(node)) {
             asCtx(data).addViolationWithMessage(node, "The bean ''{0}'' is missing a no-arg constructor.",
-                    node.getSimpleName());
+                    beanName);
         }
 
-        return super.visit(node, data);
+        properties = new HashMap<>();
+        collectFields(node);
+        collectMethods(node);
+
+        for (PropertyInfo propertyInfo : properties.values()) {
+            if (propertyInfo.hasMissingGetter() && propertyInfo.hasMissingSetter()) {
+                asCtx(data).addViolationWithMessage(propertyInfo.getDeclaratorId(),
+                        "The bean ''{0}'' is missing a getter and a setter for property ''{1}''.",
+                        beanName, propertyInfo.getName());
+            } else if (propertyInfo.hasMissingGetter()) {
+                asCtx(data).addViolationWithMessage(propertyInfo.getDeclaratorId(),
+                        "The bean ''{0}'' is missing a getter for property ''{1}''.",
+                        beanName, propertyInfo.getName());
+
+            } else if (propertyInfo.hasMissingSetter()) {
+                asCtx(data).addViolationWithMessage(propertyInfo.getDeclaratorId(),
+                        "The bean ''{0}'' is missing a setter for property ''{1}''.",
+                        beanName, propertyInfo.getName());
+
+            }
+            if (propertyInfo.hasWrongGetterType()) {
+                asCtx(data).addViolationWithMessage(propertyInfo.getGetter(),
+                        "The bean ''{0}'' should return a ''{1}'' in getter of property ''{2}''.",
+                        beanName, propertyInfo.getTypeName(), propertyInfo.getName());
+            }
+            if (propertyInfo.hasWrongBooleanGetterName()) {
+                asCtx(data).addViolationWithMessage(propertyInfo.getGetter(),
+                        "The bean ''{0}'' should use the method name ''is{1}'' for the getter of property ''{2}''.",
+                        beanName, propertyInfo.getName(), propertyInfo.getName());
+            }
+        }
+
+        return null;
     }
 
-    @Override
-    public Object visit(ASTFieldDeclaration node, Object data) {
-        ASTClassOrInterfaceDeclaration enclosingClass = node.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
-        if (!node.isTransient() && !node.isStatic() && enclosingClass != null) {
-            String beanName = enclosingClass.getSimpleName();
-            for (ASTVariableDeclaratorId varId : node) {
-                if (!node.isFinal() && hasGetter(varId) && !hasSetter(varId)) {
-                    asCtx(data).addViolationWithMessage(varId, "The bean ''{0}'' is missing a setter for property ''{1}''.",
-                            beanName, varId.getName());
-                } else if (!node.isFinal() && !hasGetter(varId) && hasSetter(varId)) {
-                    asCtx(data).addViolationWithMessage(varId, "The bean ''{0}'' is missing a getter for property ''{1}''.",
-                            beanName, varId.getName());
-                } else if (!node.isFinal() && !hasGetter(varId) && !hasSetter(varId)) {
-                    asCtx(data).addViolationWithMessage(varId, "The bean ''{0}'' is missing a getter and a setter for property ''{1}''.",
-                            beanName, varId.getName());
-                } else if (node.isFinal() && !hasGetter(varId)) {
-                    asCtx(data).addViolationWithMessage(varId, "The bean ''{0}'' is missing a getter for property ''{1}''.",
-                            beanName, varId.getName());
+    private void collectFields(ASTClassOrInterfaceDeclaration node) {
+        Map<VariableNameDeclaration, List<NameOccurrence>> declarations = node.getScope().getDeclarations(VariableNameDeclaration.class);
+        for (VariableNameDeclaration declaration : declarations.keySet()) {
+            String propertyName = StringUtils.capitalize(declaration.getName());
+            if (declaration.getAccessNodeParent() instanceof ASTFieldDeclaration) {
+                ASTFieldDeclaration fieldDeclaration = (ASTFieldDeclaration) declaration.getAccessNodeParent();
+                if (!fieldDeclaration.isStatic() && !fieldDeclaration.isTransient()) {
+                    PropertyInfo field = getOrCreatePropertyInfo(propertyName);
+                    field.setDeclaratorId(declaration.getDeclaratorId());
+                    field.setReadonly(fieldDeclaration.isFinal());
                 }
             }
         }
-        return super.visit(node, data);
     }
 
-    private boolean hasSetter(ASTVariableDeclaratorId varId) {
-        // TODO: use scope / symbol table
-        String propertyName = varId.getName();
-        String setterName = "set" + propertyName.substring(0, 1).toUpperCase(Locale.ROOT) + propertyName.substring(1);
-        List<ASTAnyTypeBodyDeclaration> declarations = varId.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class).getDeclarations();
-        for (ASTAnyTypeBodyDeclaration declaration : declarations) {
-            if (ASTAnyTypeBodyDeclaration.DeclarationKind.METHOD == declaration.getKind()) {
-                ASTMethodDeclaration method = declaration.getFirstChildOfType(ASTMethodDeclaration.class);
-                if (method.getName().equals(setterName) && method.getArity() == 1) {
-                    // TODO: check parameter type
-                    return true;
-                }
-            }
+    private PropertyInfo getOrCreatePropertyInfo(String propertyName) {
+        PropertyInfo propertyInfo = properties.get(propertyName);
+        if (propertyInfo == null) {
+            propertyInfo = new PropertyInfo(propertyName);
+            properties.put(propertyName, propertyInfo);
         }
-        return false;
+        return propertyInfo;
     }
 
-    private boolean hasGetter(ASTVariableDeclaratorId varId) {
-        String propertyName = varId.getName();
-        propertyName = propertyName.substring(0, 1).toUpperCase(Locale.ROOT) + propertyName.substring(1);
-        String getterName = "get" + propertyName;
-        if (TypeTestUtil.isA(Boolean.class, varId) || TypeTestUtil.isA(Boolean.TYPE, varId)) {
-            getterName = "is" + propertyName;
-        }
-        List<ASTAnyTypeBodyDeclaration> declarations = varId.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class).getDeclarations();
-        for (ASTAnyTypeBodyDeclaration declaration : declarations) {
-            if (ASTAnyTypeBodyDeclaration.DeclarationKind.METHOD == declaration.getKind()) {
-                ASTMethodDeclaration method = declaration.getFirstChildOfType(ASTMethodDeclaration.class);
-                if (method.getName().equals(getterName) && method.getArity() == 0) {
-                    // TODO check result type
-                    return true;
-                }
+    private void collectMethods(ASTClassOrInterfaceDeclaration node) {
+        Map<MethodNameDeclaration, List<NameOccurrence>> declarations = node.getScope().getDeclarations(MethodNameDeclaration.class);
+        for (MethodNameDeclaration declaration : declarations.keySet()) {
+            String methodName = declaration.getName();
+            int parameterCount = declaration.getParameterCount();
+            String propertyName = StringUtil.withoutPrefixes(methodName, "get", "set", "is");
+
+            if (methodName.startsWith("get") || methodName.startsWith("is") && parameterCount == 0) {
+                PropertyInfo propertyInfo = getOrCreatePropertyInfo(propertyName);
+                propertyInfo.setGetter(declaration.getMethodNameDeclaratorNode().getParent());
+            } else if (methodName.startsWith("set") && parameterCount == 1) {
+                PropertyInfo propertyInfo = getOrCreatePropertyInfo(propertyName);
+                propertyInfo.setSetter(declaration.getMethodNameDeclaratorNode().getParent());
             }
         }
-        return false;
     }
 
     public boolean hasNoArgConstructor(ASTClassOrInterfaceDeclaration node) {
@@ -115,5 +142,81 @@ public class InvalidJavaBeanRule extends AbstractJavaRule {
             return true;
         }
         return false;
+    }
+
+    private static class PropertyInfo {
+        private final String name;
+        private ASTVariableDeclaratorId declaratorId;
+        private boolean readonly;
+        private ASTMethodDeclaration getter;
+        private ASTMethodDeclaration setter;
+
+        PropertyInfo(String name) {
+            this.name = name;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public ASTVariableDeclaratorId getDeclaratorId() {
+            return declaratorId;
+        }
+
+        public void setDeclaratorId(ASTVariableDeclaratorId declaratorId) {
+            this.declaratorId = declaratorId;
+        }
+
+        public boolean isReadonly() {
+            return readonly;
+        }
+
+        public void setReadonly(boolean readonly) {
+            this.readonly = readonly;
+        }
+
+        public ASTMethodDeclaration getGetter() {
+            return getter;
+        }
+
+        public void setGetter(ASTMethodDeclaration getter) {
+            this.getter = getter;
+        }
+
+        public ASTMethodDeclaration getSetter() {
+            return setter;
+        }
+
+        public void setSetter(ASTMethodDeclaration setter) {
+            this.setter = setter;
+        }
+
+        private boolean hasMissingGetter() {
+            return getter == null;
+        }
+
+        private boolean hasMissingSetter() {
+            return !readonly && setter == null;
+        }
+
+        private String getTypeName() {
+            if (declaratorId.getType() != null) {
+                return declaratorId.getType().getName();
+            }
+            return "<unknown type>";
+        }
+
+        private boolean hasWrongGetterType() {
+            return declaratorId.getType() != null && getter != null
+                    && !getter.getResultType().isVoid()
+                    && declaratorId.getType() != getter.getResultType().getFirstChildOfType(ASTType.class).getType();
+        }
+
+        private boolean hasWrongBooleanGetterName() {
+            if (getter != null && (TypeTestUtil.isA(Boolean.class, declaratorId) || TypeTestUtil.isA(Boolean.TYPE, declaratorId))) {
+                return !getter.getName().startsWith("is");
+            }
+            return false;
+        }
     }
 }
