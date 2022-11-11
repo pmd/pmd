@@ -15,6 +15,9 @@ This is a {{ site.pmd.release_type }} release.
 ### New and noteworthy
 
 ### Fixed Issues
+* java
+    * [#3643](https://github.com/pmd/pmd/issues/3643): \[java] More parser edge cases
+    * [#4152](https://github.com/pmd/pmd/issues/4152): \[java] Parse error on array type annotations
 * java-codestyle
     * [#4201](https://github.com/pmd/pmd/issues/4201): \[java] CommentDefaultAccessModifier should consider lombok's @<!-- -->Value
 * java-design
