@@ -17,6 +17,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTResultType;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
@@ -104,6 +105,16 @@ public class InvalidJavaBeanRule extends AbstractJavaRule {
                         "The bean ''{0}'' has a property ''{1}'' with getter and setter that don''t have the same type.",
                         beanName, propertyInfo.getName());
             }
+            if (propertyInfo.hasWrongIndexedGetterType()) {
+                asCtx(data).addViolationWithMessage(propertyInfo.indexedGetter,
+                        "The bean ''{0}'' has a property ''{1}'' with an indexed getter using the wrong type.",
+                        beanName, propertyInfo.getName());
+            }
+            if (propertyInfo.hasWrongIndexedSetterType()) {
+                asCtx(data).addViolationWithMessage(propertyInfo.indexedSetter,
+                        "The bean ''{0}'' has a property ''{1}'' with an indexed setter using the wrong type.",
+                        beanName, propertyInfo.getName());
+            }
         }
 
         return null;
@@ -136,18 +147,49 @@ public class InvalidJavaBeanRule extends AbstractJavaRule {
     private void collectMethods(ASTClassOrInterfaceDeclaration node) {
         Map<MethodNameDeclaration, List<NameOccurrence>> declarations = node.getScope().getDeclarations(MethodNameDeclaration.class);
         for (MethodNameDeclaration declaration : declarations.keySet()) {
+            ASTMethodDeclaration methodDeclaration = declaration.getMethodNameDeclaratorNode().getParent();
             String methodName = declaration.getName();
             int parameterCount = declaration.getParameterCount();
             String propertyName = StringUtil.withoutPrefixes(methodName, "get", "set", "is");
 
-            if (methodName.startsWith("get") || methodName.startsWith("is") && parameterCount == 0) {
-                PropertyInfo propertyInfo = getOrCreatePropertyInfo(propertyName);
-                propertyInfo.setGetter(declaration.getMethodNameDeclaratorNode().getParent());
-            } else if (methodName.startsWith("set") && parameterCount == 1) {
-                PropertyInfo propertyInfo = getOrCreatePropertyInfo(propertyName);
-                propertyInfo.setSetter(declaration.getMethodNameDeclaratorNode().getParent());
+            if (methodName.startsWith("get") || methodName.startsWith("is")) {
+                if (parameterCount == 0) {
+                    PropertyInfo propertyInfo = getOrCreatePropertyInfo(propertyName);
+                    propertyInfo.setGetter(methodDeclaration);
+                } else if (parameterCount == 1 && getFirstParameterType(methodDeclaration) == Integer.TYPE) {
+                    PropertyInfo propertyInfo = getOrCreatePropertyInfo(propertyName);
+                    propertyInfo.setIndexedGetter(methodDeclaration);
+                }
+            } else if (methodName.startsWith("set")) {
+                if (parameterCount == 1) {
+                    PropertyInfo propertyInfo = getOrCreatePropertyInfo(propertyName);
+                    propertyInfo.setSetter(methodDeclaration);
+                } else if (parameterCount == 2 && getFirstParameterType(methodDeclaration) == Integer.TYPE) {
+                    PropertyInfo propertyInfo = getOrCreatePropertyInfo(propertyName);
+                    propertyInfo.setIndexedSetter(methodDeclaration);
+                }
             }
         }
+    }
+
+    private static Class<?> getFirstParameterType(ASTMethodDeclaration declaration) {
+        return getParameterType(declaration, 0);
+    }
+
+    private static Class<?> getParameterType(ASTMethodDeclaration declaration, int i) {
+        if (declaration.getArity() >= i + 1) {
+            ASTFormalParameter firstParameter = declaration.getFormalParameters().findChildrenOfType(ASTFormalParameter.class).get(i);
+            return firstParameter.getType();
+        }
+        return null;
+    }
+
+    private static Class<?> getResultType(ASTMethodDeclaration declaration) {
+        ASTResultType resultType = declaration.getResultType();
+        if (resultType.isVoid()) {
+            return Void.class;
+        }
+        return resultType.getFirstChildOfType(ASTType.class).getType();
     }
 
     private boolean hasNoArgConstructor(ASTClassOrInterfaceDeclaration node) {
@@ -182,7 +224,9 @@ public class InvalidJavaBeanRule extends AbstractJavaRule {
         private ASTVariableDeclaratorId declaratorId;
         private boolean readonly;
         private ASTMethodDeclaration getter;
+        private ASTMethodDeclaration indexedGetter;
         private ASTMethodDeclaration setter;
+        private ASTMethodDeclaration indexedSetter;
 
         PropertyInfo(String name) {
             this.name = name;
@@ -216,12 +260,28 @@ public class InvalidJavaBeanRule extends AbstractJavaRule {
             this.getter = getter;
         }
 
+        public ASTMethodDeclaration getIndexedGetter() {
+            return indexedGetter;
+        }
+
+        public void setIndexedGetter(ASTMethodDeclaration indexedGetter) {
+            this.indexedGetter = indexedGetter;
+        }
+
         public ASTMethodDeclaration getSetter() {
             return setter;
         }
 
         public void setSetter(ASTMethodDeclaration setter) {
             this.setter = setter;
+        }
+
+        public ASTMethodDeclaration getIndexedSetter() {
+            return indexedSetter;
+        }
+
+        public void setIndexedSetter(ASTMethodDeclaration indexedSetter) {
+            this.indexedSetter = indexedSetter;
         }
 
         private boolean hasMissingGetter() {
@@ -233,11 +293,19 @@ public class InvalidJavaBeanRule extends AbstractJavaRule {
         }
 
         private String getTypeName() {
+            Class<?> type = null;
             if (declaratorId != null && declaratorId.getType() != null) {
-                return declaratorId.getType().getName();
+                type = declaratorId.getType();
+            } else if (getter != null) {
+                type = getResultType(getter);
+            } else if (setter != null) {
+                type = getFirstParameterType(setter);
             }
-            if (getter != null) {
-                return getter.getResultType().getFirstChildOfType(ASTType.class).getType().getName();
+            if (type != null) {
+                if (type.isArray()) {
+                    return type.getComponentType().getName() + "[]";
+                }
+                return type.getName();
             }
             return "<unknown type>";
         }
@@ -247,7 +315,7 @@ public class InvalidJavaBeanRule extends AbstractJavaRule {
                     && declaratorId.getType() != null
                     && getter != null
                     && !getter.getResultType().isVoid()
-                    && declaratorId.getType() != getter.getResultType().getFirstChildOfType(ASTType.class).getType();
+                    && declaratorId.getType() != getResultType(getter);
         }
 
         private boolean hasWrongBooleanGetterName() {
@@ -261,9 +329,33 @@ public class InvalidJavaBeanRule extends AbstractJavaRule {
             if (declaratorId != null || getter == null || setter == null) {
                 return false;
             }
-            Class<?> parameterType = setter.getFormalParameters().getFirstChildOfType(ASTFormalParameter.class).getType();
+            Class<?> parameterType = getFirstParameterType(setter);
             return getter.getResultType().isVoid()
-                    || getter.getResultType().getFirstChildOfType(ASTType.class).getType() != parameterType;
+                    || getResultType(getter) != parameterType;
+        }
+
+        private boolean hasWrongIndexedGetterType() {
+            if (getter == null || indexedGetter == null) {
+                return false;
+            }
+            Class<?> propertyType = getResultType(getter);
+            if (propertyType != null && propertyType.isArray()) {
+                propertyType = propertyType.getComponentType();
+            }
+            Class<?> getterType = getResultType(indexedGetter);
+            return propertyType != getterType;
+        }
+
+        private boolean hasWrongIndexedSetterType() {
+            if (setter == null || indexedSetter == null) {
+                return false;
+            }
+            Class<?> propertyType = getFirstParameterType(setter);
+            if (propertyType != null && propertyType.isArray()) {
+                propertyType = propertyType.getComponentType();
+            }
+            Class<?> setterType = getParameterType(indexedSetter, 1);
+            return propertyType != setterType;
         }
 
         private boolean hasFieldLombokGetter() {

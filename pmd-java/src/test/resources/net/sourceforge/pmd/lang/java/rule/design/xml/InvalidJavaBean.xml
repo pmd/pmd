@@ -285,4 +285,31 @@ public final class Button {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>Consider indexed properties</description>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>4,12,13</expected-linenumbers>
+        <expected-messages>
+            <message>The bean 'Button' should return a 'java.lang.String[]' in getter of property 'Labels'.</message>
+            <message>The bean 'Button' has a property 'Names' with an indexed getter using the wrong type.</message>
+            <message>The bean 'Button' has a property 'Names' with an indexed setter using the wrong type.</message>
+        </expected-messages>
+        <code><![CDATA[
+package org.example.beans;
+public final class Button {
+    private String[] labels;
+    public String getLabels() { return labels[0]; }
+    public void setLabels(String[] labels) { this.labels = labels; }
+    public String getLabels(int i) { return labels[i]; }
+    public void setLabels(int i, String label) { this.labels[i] = label; }
+
+    private String[] names;
+    public String[] getNames() { return names; }
+    public void setNames(String[] names) { this.names = names; }
+    public int getNames(int i) { return i; } // wrong result type
+    public void setNames(int i, int name) { /* ... */ } // wrong type
+}
+]]></code>
+    </test-code>
 </test-data>
