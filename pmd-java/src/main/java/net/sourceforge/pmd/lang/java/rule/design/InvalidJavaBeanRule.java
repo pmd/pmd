@@ -23,16 +23,23 @@ import net.sourceforge.pmd.lang.java.symboltable.MethodNameDeclaration;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.properties.PropertyFactory;
 import net.sourceforge.pmd.util.StringUtil;
 
 public class InvalidJavaBeanRule extends AbstractJavaRule {
 
-    // TODO: Add property "ensureSerialization"
+    private static final PropertyDescriptor<Boolean> ENSURE_SERIALIZATION = PropertyFactory.booleanProperty("ensureSerialization")
+            .desc("Require that beans implement java.io.Serializable.")
+            .defaultValue(false)
+            .build();
     // TODO: Add property "package"
+
 
     private Map<String, PropertyInfo> properties;
 
     public InvalidJavaBeanRule() {
+        definePropertyDescriptor(ENSURE_SERIALIZATION);
         addRuleChainVisit(ASTClassOrInterfaceDeclaration.class);
     }
 
@@ -40,7 +47,7 @@ public class InvalidJavaBeanRule extends AbstractJavaRule {
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
         String beanName = node.getSimpleName();
 
-        if (!TypeTestUtil.isA(Serializable.class, node)) {
+        if (getProperty(ENSURE_SERIALIZATION) && !TypeTestUtil.isA(Serializable.class, node)) {
             asCtx(data).addViolationWithMessage(node, "The bean ''{0}'' does not implement java.io.Serializable.",
                     beanName);
         }

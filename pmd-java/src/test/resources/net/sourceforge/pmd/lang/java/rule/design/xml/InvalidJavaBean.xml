@@ -6,6 +6,7 @@
 
     <test-code>
         <description>Example code</description>
+        <rule-property name="ensureSerialization">true</rule-property>
         <expected-problems>2</expected-problems>
         <expected-linenumbers>1,2</expected-linenumbers>
         <expected-messages>
