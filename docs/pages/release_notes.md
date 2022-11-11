@@ -14,7 +14,19 @@ This is a {{ site.pmd.release_type }} release.
 
 ### New and noteworthy
 
+#### New rules
+
+* The new Java rule {% rule java/design/InvalidJavaBean %} identifies beans, that don't follow the [JavaBeans API specification](https://download.oracle.com/otndocs/jcp/7224-javabeans-1.01-fr-spec-oth-JSpec/),
+  like beans with missing getters or setters.
+
+```xml
+<rule ref="category/java/design.xml/InvalidJavaBean"/>
+```
+
+
 ### Fixed Issues
+* java-design
+    * [#4177](https://github.com/pmd/pmd/issues/4177): \[java] New Rule InvalidJavaBean
 
 ### API Changes
 
