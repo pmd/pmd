@@ -1286,7 +1286,6 @@ void MethodDeclaration() :
   ( Block() | ";" )
 }
 
-
 void FormalParameters() :
 {}
 {
@@ -1719,7 +1718,7 @@ void EqualityExpression() #void:
 void Pattern() #void:
 {}
 {
-    LOOKAHEAD(ReferenceType() "(") RecordPattern()
+    LOOKAHEAD((Annotation())* ReferenceType() "(") RecordPattern()
     | LOOKAHEAD("(") ParenthesizedPattern()
     | TypePattern() [ LOOKAHEAD({getToken(1).kind == SC_AND && jdkVersion < 19}) GuardedPatternCondition() #GuardedPattern(2) ]
 }
@@ -1745,7 +1744,7 @@ void TypePattern():
 void RecordPattern():
 {}
 {
-  ReferenceType() RecordStructurePattern() [ VariableDeclaratorId() ]
+  (Annotation())* ReferenceType() RecordStructurePattern() [ VariableDeclaratorId() ]
 }
 
 void RecordStructurePattern() #ComponentPatternList:
@@ -2716,7 +2715,7 @@ void MemberValue() #void:
 void  MemberValueArrayInitializer():
 {}
 {
-  "{" (MemberValue() ( LOOKAHEAD(2) "," MemberValue() )* [ "," ])? "}"
+  "{" (MemberValue() ( LOOKAHEAD(2) "," MemberValue() )*)? [ "," ] "}"
 }
 
 /*

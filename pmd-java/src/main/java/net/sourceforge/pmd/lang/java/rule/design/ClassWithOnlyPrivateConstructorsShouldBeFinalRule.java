@@ -23,6 +23,7 @@ public class ClassWithOnlyPrivateConstructorsShouldBeFinalRule extends AbstractJ
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
         if (node.isRegularClass()
             && !node.hasModifiers(JModifier.FINAL)
+            && !node.isAnnotationPresent("lombok.Value")
             && hasOnlyPrivateCtors(node)
             && hasNoSubclasses(node)) {
             addViolation(data, node);

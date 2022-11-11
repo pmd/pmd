@@ -399,4 +399,17 @@ class SomeTest {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>[java] CommentDefaultAccessModifier should consider lombok's @Value #4201</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+
+import lombok.Value;
+@Value
+public class Test {
+    int foo;
+}
+        ]]></code>
+    </test-code>
 </test-data>

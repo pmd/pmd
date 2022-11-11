@@ -46,7 +46,10 @@ import net.sourceforge.pmd.util.log.internal.SimpleMessageReporter;
  *
  * <p><strong>Warning:</strong> This class is not intended to be instantiated or subclassed. It will
  * be made final in PMD7.
+ *
+ * @deprecated This class is to be removed in PMD 7 in favor of a unified PmdCli entry point. {@link PmdAnalysis} should be used for non-CLI use-cases.
  */
+@Deprecated
 public final class PMD {
 
     // not final, in order to re-initialize logging
@@ -265,7 +268,9 @@ public final class PMD {
      * Represents status codes that are used as exit codes during CLI runs.
      *
      * @see #runPmd(String[])
+     * @deprecated This class is to be removed in PMD 7 in favor of a unified PmdCli entry point.
      */
+    @Deprecated
     public enum StatusCode {
         /** No errors, no violations. This is exit code {@code 0}. */
         OK(0),
