@@ -7,14 +7,14 @@
     <test-code>
         <description>Example code</description>
         <rule-property name="ensureSerialization">true</rule-property>
-        <rule-property name="packages"></rule-property>
         <expected-problems>2</expected-problems>
-        <expected-linenumbers>1,2</expected-linenumbers>
+        <expected-linenumbers>2,3</expected-linenumbers>
         <expected-messages>
             <message>The bean 'MyBean' does not implement java.io.Serializable.</message>
             <message>The bean 'MyBean' is missing a setter for property 'Label'.</message>
         </expected-messages>
         <code><![CDATA[
+package org.example.beans;
 public class MyBean {        // <-- bean is not serializable, missing "implements Serializable"
     private String label;    // <-- missing setter for property "label"
 
