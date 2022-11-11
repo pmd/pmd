@@ -22,6 +22,8 @@ This is a {{ site.pmd.release_type }} release.
     * [#4201](https://github.com/pmd/pmd/issues/4201): \[java] CommentDefaultAccessModifier should consider lombok's @<!-- -->Value
 * java-design
     * [#4200](https://github.com/pmd/pmd/issues/4200): \[java] ClassWithOnlyPrivateConstructorsShouldBeFinal should consider lombok's @<!-- -->Value
+* java-errorprone
+    * [#4174](https://github.com/pmd/pmd/issues/4174): \[java] MissingStaticMethodInNonInstantiatableClass does not consider nested builder class
 
 ### API Changes
 

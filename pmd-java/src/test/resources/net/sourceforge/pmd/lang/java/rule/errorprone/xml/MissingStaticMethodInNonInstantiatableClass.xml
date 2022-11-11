@@ -379,4 +379,37 @@ public class Scratch {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>[java] MissingStaticMethodInNonInstantiatableClass does not consider nested builder class #4174</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public final class TestPrivateClassWithFactory implements GenericTest {
+  private final boolean shouldFail;
+
+  private TestPrivateClassWithFactory(TestStep step) {
+    this.shouldFail = step.shouldFail;
+  }
+
+  public void run() {
+    if (shouldFail) {
+      throw new AssertionError("fail");
+    }
+  }
+
+  public static final class TestStep {
+    private boolean shouldFail = false;
+
+    public TestStep shouldFail() {
+      this.shouldFail = true;
+      return this;
+    }
+
+    public GenericTest newTest() {
+      return new TestPrivateClassWithFactory(this);
+    }
+  }
+}
+]]></code>
+    </test-code>
 </test-data>
