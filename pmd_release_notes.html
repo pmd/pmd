@@ -1635,7 +1635,7 @@ PMD 7 will remove support for <code class="language-plaintext highlighter-rouge"
   <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0-SNAPSHOT/net/sourceforge/pmd/PMDConfiguration.html#setReportFile(String)"><code>PMDConfiguration#setReportFile</code></a> - It is now superceded by <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0-SNAPSHOT/net/sourceforge/pmd/PMDConfiguration.html#setReportFile(Path)"><code>PMDConfiguration#setReportFile</code></a></li>
   <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0-SNAPSHOT/net/sourceforge/pmd/PMDConfiguration.html#isStressTest()"><code>PMDConfiguration#isStressTest</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0-SNAPSHOT/net/sourceforge/pmd/PMDConfiguration.html#setStressTest(boolean)"><code>PMDConfiguration#setStressTest</code></a> - Will be removed with no replacement.</li>
   <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0-SNAPSHOT/net/sourceforge/pmd/PMDConfiguration.html#isBenchmark()"><code>PMDConfiguration#isBenchmark</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0-SNAPSHOT/net/sourceforge/pmd/PMDConfiguration.html#setBenchmark(boolean)"><code>PMDConfiguration#setBenchmark</code></a> - Will be removed with no replacement, the CLI will still support it.</li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0-SNAPSHOT/net/sourceforge/pmd/CPD.html#"><code>CPD</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0-SNAPSHOT/net/sourceforge/pmd/CPD/StatusCode.html#"><code>StatusCode</code></a> - PMD 7 will ship with a revamped CLI split from pmd-core. An alterative to programatically launch CPD analysis will be added in due time.</li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0-SNAPSHOT/net/sourceforge/pmd/cpd/CPD.html#"><code>CPD</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0-SNAPSHOT/net/sourceforge/pmd/cpd/CPD.StatusCode.html#"><code>CPD.StatusCode</code></a> - PMD 7 will ship with a revamped CLI split from pmd-core. An alterative to programatically launch CPD analysis will be added in due time.</li>
 </ul>
 
 <h3 id="external-contributions">External Contributions</h3>
@@ -1643,6 +1643,7 @@ PMD 7 will remove support for <code class="language-plaintext highlighter-rouge"
   <li><a href="https://github.com/pmd/pmd/pull/4184">#4184</a>: [java][doc] TestClassWithoutTestCases - fix small typo in description - <a href="https://github.com/valfirst">Valery Yatsynovich</a> (@valfirst)</li>
   <li><a href="https://github.com/pmd/pmd/pull/4198">#4198</a>: [doc] Add supported CPD languages - <a href="https://github.com/jvwilge">Jeroen van Wilgenburg</a> (@jvwilge)</li>
   <li><a href="https://github.com/pmd/pmd/pull/4202">#4202</a>: [java] Fix #4200 and #4201: ClassWithOnlyPrivateConstructorsShouldBeFinal, CommentDefaultAccessModifier: Exclude lombok @<!-- -->Value annotation - <a href="https://github.com/LynnBroe">Lynn</a> (@LynnBroe)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/4205">#4205</a>: [doc] Clarify Scala support (no built-in rules) - <a href="https://github.com/Eldrick19">Eldrick Wega</a> (@Eldrick19)</li>
 </ul>
 
 
