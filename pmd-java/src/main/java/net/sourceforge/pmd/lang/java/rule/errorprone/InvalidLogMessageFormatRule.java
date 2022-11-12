@@ -262,13 +262,40 @@ public class InvalidLogMessageFormatRule extends AbstractJavaRule {
                 + params.size();
     }
 
-    private boolean isStringFormatCall(ASTExpression node) {
-        if (node.getNumChildren() > 0 && node.getChild(0) instanceof ASTPrimaryExpression
-                && node.getChild(0).getNumChildren() > 0 && node.getChild(0).getChild(0) instanceof ASTPrimaryPrefix
-                && node.getChild(0).getChild(0).getNumChildren() > 0 && node.getChild(0).getChild(0).getChild(0) instanceof ASTName) {
-            String name = node.getChild(0).getChild(0).getChild(0).getImage();
+    /**
+     * Checks for {@code String.format("%s", x)} and {@code "%s".formatted(x)} calls.
+     */
+    private boolean isStringFormatCall(ASTExpression expression) {
+        ASTPrimaryExpression primaryExpression = null;
+        ASTPrimaryPrefix primaryPrefix = null;
+
+        // Check beginning of tree: Expression/PrimaryExpression
+        if (expression.getNumChildren() > 0 && expression.getChild(0) instanceof ASTPrimaryExpression) {
+            primaryExpression = (ASTPrimaryExpression) expression.getChild(0);
+        }
+
+        if (primaryExpression != null
+                && primaryExpression.getNumChildren() > 0 && primaryExpression.getChild(0) instanceof ASTPrimaryPrefix) {
+            primaryPrefix = (ASTPrimaryPrefix) primaryExpression.getChild(0);
+        }
+
+        // check for static String::format calls
+        // Tree: Expression/PrimaryExpression/PrimaryPrefix/Name
+        if (primaryPrefix != null && primaryPrefix.getNumChildren() > 0 && primaryPrefix.getChild(0) instanceof ASTName) {
+            String name = primaryPrefix.getChild(0).getImage();
 
             return "String.format".equals(name) || formatIsStringFormat && "format".equals(name);
+        }
+
+        // check for String::formatted calls - this method has been added with Java 15
+        // Tree: //Expression/PrimaryExpression[PrimaryPrefix/Literal[@StringLiteral = true()]]/PrimarySuffix[@Image = 'formatted']
+        if (primaryPrefix != null && primaryPrefix.getNumChildren() > 0 && primaryPrefix.getChild(0) instanceof ASTLiteral) {
+            ASTLiteral literal = (ASTLiteral) primaryPrefix.getChild(0);
+            if (literal.isStringLiteral()
+                && primaryExpression.getNumChildren() > 1 && primaryExpression.getChild(1) instanceof ASTPrimarySuffix) {
+                ASTPrimarySuffix primarySuffix = (ASTPrimarySuffix) primaryExpression.getChild(1);
+                return "formatted".equals(primarySuffix.getImage());
+            }
         }
         return false;
     }
