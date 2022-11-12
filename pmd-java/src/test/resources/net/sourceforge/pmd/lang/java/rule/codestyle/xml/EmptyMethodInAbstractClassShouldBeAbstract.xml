@@ -205,4 +205,18 @@ public abstract class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+    <description>[java] EmptyMethodInAbstractClassShouldBeAbstract should considers lombok's @Synchronized #4211</description>
+    <expected-problems>0</expected-problems>
+    <code><![CDATA[
+    import lombok.Synchronized;
+    public abstract class Test {
+       @Synchronized
+       public void isVisible() {
+           ;
+       }
+    }
+            ]]></code>
+    </test-code>
 </test-data>
