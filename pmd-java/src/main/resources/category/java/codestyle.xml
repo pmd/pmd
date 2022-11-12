@@ -409,7 +409,7 @@ public class Foo extends Bar{
             inherit from a super class or implement any interface and only has static fields
             or methods.
 
-            This rule detects test classes using the following convention: Test classes are classes, that
+            This rule detects test classes using the following convention: Test classes are top-level classes, that
             either inherit from JUnit 3 TestCase or have at least one method annotated with the Test annotations from
             JUnit4/5 or TestNG.
         </description>
