@@ -36,6 +36,7 @@ class NioTextFile implements TextFile {
         AssertionUtil.requireParamNotNull("path", path);
         AssertionUtil.requireParamNotNull("charset", charset);
         AssertionUtil.requireParamNotNull("language version", languageVersion);
+        AssertionUtil.requireParamNotNull("display name", displayName);
 
         this.displayName = displayName;
         this.path = path;
@@ -74,7 +75,7 @@ class NioTextFile implements TextFile {
 
     @Override
     public DataSource toDataSourceCompat() {
-        return new LanguageAwareDataSource(new FileDataSource(path.toFile()), languageVersion);
+        return new LanguageAwareDataSource(new FileDataSource(path.toFile(), displayName), languageVersion);
     }
 
     @Override

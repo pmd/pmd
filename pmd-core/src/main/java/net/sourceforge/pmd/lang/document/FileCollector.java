@@ -51,7 +51,9 @@ public final class FileCollector implements AutoCloseable {
     private Charset charset = StandardCharsets.UTF_8;
     private final LanguageVersionDiscoverer discoverer;
     private final MessageReporter reporter;
-    private final List<String> relativizeRoots = new ArrayList<>();
+    @Deprecated
+    private final List<String> legacyRelativizeRoots = new ArrayList<>();
+    private final List<Path> relativizeRootPaths = new ArrayList<>();
     private boolean closed;
 
     // construction
@@ -239,14 +241,18 @@ public final class FileCollector implements AutoCloseable {
     }
 
     private String getDisplayName(Path file) {
-        return getDisplayName(file, relativizeRoots);
+        if (!relativizeRootPaths.isEmpty()) {
+            // takes precedence over legacy behavior
+            return getDisplayName(file, relativizeRootPaths);
+        }
+        return getDisplayNameLegacy(file, legacyRelativizeRoots);
     }
 
     /**
      * Return the textfile's display name.
      * test only
      */
-    static String getDisplayName(Path file, List<String> relativizeRoots) {
+    static String getDisplayNameLegacy(Path file, List<String> relativizeRoots) {
         String fileName = file.toString();
         for (String root : relativizeRoots) {
             if (file.startsWith(root)) {
@@ -258,6 +264,34 @@ public final class FileCollector implements AutoCloseable {
             }
         }
         return fileName;
+    }
+
+    /**
+     * Return the textfile's display name. Takes the shortest path we
+     * can construct from the relativize roots.
+     * test only
+     */
+    static String getDisplayName(Path file, List<Path> relativizeRoots) {
+        Path best = file;
+        for (Path root : relativizeRoots) {
+            Path candidate;
+            if (isFileSystemRoot(root)) {
+                // Absolutize the path.
+                candidate = file.toAbsolutePath();
+            } else {
+                candidate = root.relativize(file);
+            }
+            // take the shortest path.
+            if (candidate.getNameCount() < best.getNameCount()) {
+                best = candidate;
+            }
+        }
+        return best.toString();
+    }
+
+    /** Return whether the path is the root path (/). */
+    private static boolean isFileSystemRoot(Path root) {
+        return root.isAbsolute() && root.getNameCount() == 0;
     }
 
 
@@ -344,12 +378,30 @@ public final class FileCollector implements AutoCloseable {
      * will have a path id of {@code /tmp/src/main/java/org/foo.java}, and a
      * display name of {@code main/java/org/foo.java}.
      *
-     * This only matters for files added from a {@link Path} object.
+     * <p>This only matters for files added from a {@link Path} object.
      *
      * @param prefix Prefix to relativize (if a directory, include a trailing slash)
+     *
+     * @deprecated Use {@link #relativizeWith(Path)}
      */
+    @Deprecated
     public void relativizeWith(String prefix) {
-        this.relativizeRoots.add(Objects.requireNonNull(prefix));
+        this.legacyRelativizeRoots.add(Objects.requireNonNull(prefix));
+    }
+
+    /**
+     * Add a prefix that is used to relativize file paths as their display name.
+     * For instance, when adding a file {@code /tmp/src/main/java/org/foo.java},
+     * and relativizing with {@code /tmp/src/}, the registered {@link TextFile}
+     * will have a path id of {@code /tmp/src/main/java/org/foo.java}, and a
+     * display name of {@code main/java/org/foo.java}.
+     *
+     * <p>This only matters for files added from a {@link Path} object.
+     *
+     * @param path Path with which to relativize
+     */
+    public void relativizeWith(Path path) {
+        this.relativizeRootPaths.add(Objects.requireNonNull(path));
     }
 
     // filtering
@@ -359,7 +411,7 @@ public final class FileCollector implements AutoCloseable {
      */
     public void exclude(FileCollector excludeCollector) {
         HashSet<TextFile> toExclude = new HashSet<>(excludeCollector.allFilesToProcess);
-        for (Iterator<TextFile> iterator = allFilesToProcess.iterator(); iterator.hasNext();) {
+        for (Iterator<TextFile> iterator = allFilesToProcess.iterator(); iterator.hasNext(); ) {
             TextFile file = iterator.next();
             if (toExclude.contains(file)) {
                 reporter.trace("Excluding file {0}", file.getPathId());

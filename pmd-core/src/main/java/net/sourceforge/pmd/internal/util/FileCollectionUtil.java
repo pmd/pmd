@@ -12,6 +12,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -46,12 +47,14 @@ public final class FileCollectionUtil {
         return result;
     }
 
+    @Deprecated
     public static FileCollector collectFiles(PMDConfiguration configuration, Set<Language> languages, MessageReporter reporter) {
         FileCollector collector = collectFiles(configuration, reporter);
         collector.filterLanguages(languages);
         return collector;
     }
 
+    @Deprecated
     private static FileCollector collectFiles(PMDConfiguration configuration, MessageReporter reporter) {
         FileCollector collector = FileCollector.newCollector(
             configuration.getLanguageVersionDiscoverer(),
@@ -66,8 +69,22 @@ public final class FileCollectionUtil {
             collector.setCharset(configuration.getSourceEncoding());
         }
 
+        // This is to be removed when --short-names is removed.
+        // If the new --relativize-paths-with option is specified (!= null), it takes precedence.
+        boolean legacyShortNamesBehavior =
+            configuration.getRelativizeRoots().isEmpty() && configuration.isReportShortNames();
+
         if (configuration.getInputPaths() != null) {
-            collectFiles(collector, configuration.getInputPaths());
+            for (Path path : configuration.getInputPathList()) {
+                try {
+                    if (legacyShortNamesBehavior) {
+                        collector.relativizeWith(path.toString());
+                    }
+                    addRoot(collector, path);
+                } catch (IOException e) {
+                    collector.getReporter().errorEx("Error collecting " + path, e);
+                }
+            }
         }
 
         if (configuration.getInputUri() != null) {
@@ -90,11 +107,11 @@ public final class FileCollectionUtil {
     }
 
 
-    public static void collectFiles(FileCollector collector, String fileLocations) {
-        for (String rootLocation : fileLocations.split(",")) {
+    public static void collectFiles(FileCollector collector, List<String> fileLocations) {
+        for (String rootLocation : fileLocations) {
             try {
-                collector.relativizeWith(rootLocation);
-                addRoot(collector, rootLocation);
+                // no relativizeWith call
+                addRoot(collector, Paths.get(rootLocation));
             } catch (IOException e) {
                 collector.getReporter().errorEx("Error collecting " + rootLocation, e);
             }
@@ -115,11 +132,10 @@ public final class FileCollectionUtil {
             collector.getReporter().errorEx("Error reading {0}", new Object[] { fileListLocation }, e);
             return;
         }
-        collectFiles(collector, filePaths);
+        collectFiles(collector, Arrays.asList(filePaths.split(",")));
     }
 
-    private static void addRoot(FileCollector collector, String rootLocation) throws IOException {
-        Path path = Paths.get(rootLocation);
+    private static void addRoot(FileCollector collector, Path path) throws IOException {
         if (!Files.exists(path)) {
             collector.getReporter().error("No such file {0}", path);
             return;
@@ -127,7 +143,7 @@ public final class FileCollectionUtil {
 
         if (Files.isDirectory(path)) {
             collector.addDirectory(path);
-        } else if (rootLocation.endsWith(".zip") || rootLocation.endsWith(".jar")) {
+        } else if (path.toString().endsWith(".zip") || path.toString().endsWith(".jar")) {
             @SuppressWarnings("PMD.CloseResource")
             FileSystem fs = collector.addZipFile(path);
             if (fs == null) {

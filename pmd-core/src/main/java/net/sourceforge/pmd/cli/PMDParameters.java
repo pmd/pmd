@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.cli;
 
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -31,6 +32,7 @@ import com.beust.jcommander.validators.PositiveInteger;
 @InternalApi
 public class PMDParameters {
 
+    static final String RELATIVIZE_PATHS_WITH = "--relativize-paths-with";
     @Parameter(names = { "--rulesets", "-rulesets", "-R" },
                description = "Path to a ruleset xml file. "
                              + "The path may reference a resource on the classpath of the application, be a local file system path, or a URL. "
@@ -120,6 +122,13 @@ public class PMDParameters {
                    + "The file is created if it does not exist. "
                    + "If this option is not specified, the report is rendered to standard output.")
     private String reportfile = null;
+
+    @Parameter(names = { RELATIVIZE_PATHS_WITH },
+               arity = 1,
+               description = "Path relative to which directories are rendered in the report."
+                   + "This option can be used to render shorter paths. "
+                   + "This option replaces --short-names since PMD 6.52.0.")
+    private String relativizePathRoot = null;
 
     @Parameter(names = { "-version", "-v" }, description = "Specify version of a language PMD should use.")
     private String version = null;
@@ -235,6 +244,9 @@ public class PMDParameters {
         configuration.setReportFormat(this.getFormat());
         configuration.setBenchmark(this.isBenchmark());
         configuration.setDebug(this.isDebug());
+        if (relativizePathRoot != null) {
+            configuration.addRelativizeRoot(Paths.get(this.relativizePathRoot));
+        }
         configuration.setMinimumPriority(this.getMinimumPriority());
         configuration.setReportFile(this.getReportfile());
         configuration.setReportProperties(this.getProperties());

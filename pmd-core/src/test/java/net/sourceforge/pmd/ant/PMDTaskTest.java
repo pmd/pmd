@@ -10,6 +10,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.BuildFileRule;
@@ -74,11 +76,23 @@ public class PMDTaskTest {
     public void testWithShortFilenames() throws IOException {
         buildRule.executeTarget("testWithShortFilenames");
 
-        try (InputStream in = new FileInputStream("target/pmd-ant-test.txt")) {
+        try (InputStream in = Files.newInputStream(Paths.get("target/pmd-ant-test.txt"))) {
             String actual = IOUtil.readToString(in, StandardCharsets.UTF_8);
             // remove any trailing newline
             actual = actual.replaceAll("\n|\r", "");
-            Assert.assertEquals("sample.dummy:0:\tSampleXPathRule:\tTest Rule 2", actual);
+            Assert.assertEquals("src/sample.dummy:0:\tSampleXPathRule:\tTest Rule 2", actual);
+        }
+    }
+
+    @Test
+    public void testRelativizeWith() throws IOException {
+        buildRule.executeTarget("testRelativizeWith");
+
+        try (InputStream in = Files.newInputStream(Paths.get("target/pmd-ant-test.txt"))) {
+            String actual = IOUtil.readToString(in, StandardCharsets.UTF_8);
+            // remove any trailing newline
+            actual = actual.replaceAll("\n|\r", "");
+            Assert.assertEquals("src/sample.dummy:0:\tSampleXPathRule:\tTest Rule 2", actual);
         }
     }
 

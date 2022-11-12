@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.ant;
 
+import java.io.File;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -25,7 +27,9 @@ public class PMDTask extends Task {
     private final List<FileSet> filesets = new ArrayList<>();
     private boolean failOnError;
     private boolean failOnRuleViolation;
+    @Deprecated
     private boolean shortFilenames;
+    private String relativizePathsWith;
     private String suppressMarker;
     private String rulesetFiles;
     private boolean noRuleSetCompatibility;
@@ -263,5 +267,19 @@ public class PMDTask extends Task {
 
     public void setNoCache(boolean noCache) {
         this.noCache = noCache;
+    }
+
+    public void setRelativizePathsWith(String relativizePathsWith) {
+        this.relativizePathsWith = relativizePathsWith;
+    }
+
+    public List<java.nio.file.Path> getRelativizeRoots() {
+        List<java.nio.file.Path> paths = new ArrayList<>();
+        if (relativizePathsWith != null) {
+            for (String file : relativizePathsWith.split(File.pathSeparator)) {
+                paths.add(Paths.get(file));
+            }
+        }
+        return paths;
     }
 }

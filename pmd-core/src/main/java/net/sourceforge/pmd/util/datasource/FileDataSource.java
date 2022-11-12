@@ -19,13 +19,22 @@ import net.sourceforge.pmd.util.datasource.internal.AbstractDataSource;
  */
 public class FileDataSource extends AbstractDataSource {
     private final File file;
+    private final String displayName;
 
     /**
-     * @param file
-     *            the file to read
+     * @param file the file to read
      */
     public FileDataSource(File file) {
         this.file = file;
+        this.displayName = null;
+    }
+
+    /**
+     * @param file the file to read
+     */
+    public FileDataSource(File file, String displayName) {
+        this.file = file;
+        this.displayName = displayName;
     }
 
     @Override
@@ -39,6 +48,9 @@ public class FileDataSource extends AbstractDataSource {
     }
 
     private String glomName(boolean shortNames, String inputPaths, File file) {
+        if (displayName != null) {
+            return displayName;
+        }
         if (shortNames) {
             if (inputPaths != null) {
                 List<String> inputPathPrefixes = Arrays.asList(inputPaths.split(","));

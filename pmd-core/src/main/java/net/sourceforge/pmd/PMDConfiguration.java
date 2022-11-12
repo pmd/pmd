@@ -7,6 +7,7 @@ package net.sourceforge.pmd;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -126,6 +127,7 @@ public class PMDConfiguration extends AbstractConfiguration {
     private boolean benchmark;
     private AnalysisCache analysisCache = new NoopAnalysisCache();
     private boolean ignoreIncrementalAnalysis;
+    private final List<Path> relativizeRoots = new ArrayList<>();
 
     /**
      * Get the suppress marker. This is the source level marker used to indicate
@@ -913,8 +915,8 @@ public class PMDConfiguration extends AbstractConfiguration {
      */
     public void setAnalysisCacheLocation(final String cacheLocation) {
         setAnalysisCache(cacheLocation == null
-                                 ? new NoopAnalysisCache()
-                                 : new FileAnalysisCache(new File(cacheLocation)));
+                         ? new NoopAnalysisCache()
+                         : new FileAnalysisCache(new File(cacheLocation)));
     }
 
 
@@ -939,5 +941,41 @@ public class PMDConfiguration extends AbstractConfiguration {
      */
     public boolean isIgnoreIncrementalAnalysis() {
         return ignoreIncrementalAnalysis;
+    }
+
+    /**
+     * Set the path used to shorten paths output in the report.
+     * The path does not need to exist. If it exists, it must point
+     * to a directory and not a file. See {@link #getRelativizeRoots()}
+     * for the interpretation.
+     *
+     * <p>Setting to null is not recommended as it is only used for
+     * compatibility with the older {@link #isReportShortNames()} functionality.
+     * It will possibly be disallowed with PMD 7. The default value is
+     * null.
+     *
+     * @param path A path
+     *
+     * @throws IllegalArgumentException If the path points to a file
+     */
+    public void addRelativizeRoot(Path path) {
+        // TODO symlinks?
+        this.relativizeRoots.add(Objects.requireNonNull(path));
+
+        if (Files.isRegularFile(path)) {
+            throw new IllegalArgumentException("Relativize root should be a directory: " + path);
+        }
+    }
+
+    /**
+     * Returns the path used to shorten paths output in the report.
+     * <ul>
+     * <li>If the path is {@code /} (root), then paths are rendered as absolute.
+     * <li>If the path is null, then paths are not touched (unless {@link #isReportShortNames()} is true)
+     * <li>Otherwise, the path is a directory.
+     * </ul>
+     */
+    public List<Path> getRelativizeRoots() {
+        return Collections.unmodifiableList(relativizeRoots);
     }
 }
