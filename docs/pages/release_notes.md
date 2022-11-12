@@ -14,11 +14,19 @@ This is a {{ site.pmd.release_type }} release.
 
 ### New and noteworthy
 
+#### Modified rules
+
+* The rule {% rule java/codestyle/ClassNamingConventions %} has a new property `testClassPattern`, which is applied
+  to test classes. By default, test classes should end with the suffix "Test". Test classes are top-level classes, that
+  either inherit from JUnit 3 TestCase or have at least one method annotated with the Test annotations from
+  JUnit4/5 or TestNG.
+
 ### Fixed Issues
 * java
     * [#3643](https://github.com/pmd/pmd/issues/3643): \[java] More parser edge cases
     * [#4152](https://github.com/pmd/pmd/issues/4152): \[java] Parse error on array type annotations
 * java-codestyle
+    * [#2867](https://github.com/pmd/pmd/issues/2867): \[java] Separate pattern for test classes in ClassNamingConventions rule for Java
     * [#4201](https://github.com/pmd/pmd/issues/4201): \[java] CommentDefaultAccessModifier should consider lombok's @<!-- -->Value
 * java-design
     * [#4200](https://github.com/pmd/pmd/issues/4200): \[java] ClassWithOnlyPrivateConstructorsShouldBeFinal should consider lombok's @<!-- -->Value
