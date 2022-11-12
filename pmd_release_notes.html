@@ -1556,6 +1556,15 @@
 
 <h3 id="new-and-noteworthy">New and noteworthy</h3>
 
+<h4 id="modified-rules">Modified rules</h4>
+
+<ul>
+  <li>The rule <a href="pmd_rules_java_codestyle.html#classnamingconventions"><code class="language-plaintext highlighter-rouge">ClassNamingConventions</code></a> has a new property <code class="language-plaintext highlighter-rouge">testClassPattern</code>, which is applied
+to test classes. By default, test classes should end with the suffix “Test”. Test classes are top-level classes, that
+either inherit from JUnit 3 TestCase or have at least one method annotated with the Test annotations from
+JUnit4/5 or TestNG.</li>
+</ul>
+
 <h3 id="fixed-issues">Fixed Issues</h3>
 <ul>
   <li>java
@@ -1566,6 +1575,7 @@
   </li>
   <li>java-codestyle
     <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/2867">#2867</a>: [java] Separate pattern for test classes in ClassNamingConventions rule for Java</li>
       <li><a href="https://github.com/pmd/pmd/issues/4201">#4201</a>: [java] CommentDefaultAccessModifier should consider lombok’s @<!-- -->Value</li>
     </ul>
   </li>
@@ -1677,7 +1687,7 @@ PMD 7 will remove support for <code class="language-plaintext highlighter-rouge"
         <div class="col-lg-12 footer">
             &copy;2022 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Nov 11, 2022 <br />
+             Site last generated: Nov 12, 2022 <br />
             <p>
                 <img src="images/pmd-logo-small.png" alt="Company
                 logo"/>

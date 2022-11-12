@@ -1983,7 +1983,7 @@ type declarations which do not match the regex that applies to their
 specific kind (e.g. enum or interface). Each regex can be configured through
 properties.</p>
 
-<p>By default this rule uses the standard Java naming convention (Pascal case).</p>
+<p>By default, this rule uses the standard Java naming convention (Pascal case).</p>
 
 <p>The rule can detect utility classes and enforce a different naming convention
 on those. E.g. setting the property <code class="language-plaintext highlighter-rouge">utilityClassPattern</code> to
@@ -1993,6 +1993,10 @@ does not end in "Util(s)", "Helper" or "Constants".</p>
 <p>For this rule, a utility class is defined as: a concrete class that does not
 inherit from a super class or implement any interface and only has static fields
 or methods.</p>
+
+<p>This rule detects test classes using the following convention: Test classes are top-level classes, that
+either inherit from JUnit 3 TestCase or have at least one method annotated with the Test annotations from
+JUnit4/5 or TestNG.</p>
 
 <p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/codestyle/ClassNamingConventionsRule.java">net.sourceforge.pmd.lang.java.rule.codestyle.ClassNamingConventionsRule</a></p>
 
@@ -2060,6 +2064,12 @@ or methods.</p>
       <td>Regex which applies to utility class names</td>
       <td>no</td>
     </tr>
+    <tr>
+      <td>testClassPattern</td>
+      <td>^Test.*$|^[A-Z][a-zA-Z0-9]*Test(s|Case)?$</td>
+      <td>Regex which applies to test class names. Since PMD 6.52.0.</td>
+      <td>no</td>
+    </tr>
   </tbody>
 </table>
 
@@ -2076,6 +2086,7 @@ or methods.</p>
         <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"enumPattern"</span> <span class="na">value=</span><span class="s">"[A-Z][a-zA-Z0-9]*"</span> <span class="nt">/&gt;</span>
         <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"annotationPattern"</span> <span class="na">value=</span><span class="s">"[A-Z][a-zA-Z0-9]*"</span> <span class="nt">/&gt;</span>
         <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"utilityClassPattern"</span> <span class="na">value=</span><span class="s">"[A-Z][a-zA-Z0-9]*"</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"testClassPattern"</span> <span class="na">value=</span><span class="s">"^Test.*$|^[A-Z][a-zA-Z0-9]*Test(s|Case)?$"</span> <span class="nt">/&gt;</span>
     <span class="nt">&lt;/properties&gt;</span>
 <span class="nt">&lt;/rule&gt;</span>
 </code></pre></div></div>
@@ -4978,7 +4989,7 @@ by the rule <a href="pmd_rules_java_codestyle.html#controlstatementbraces"><code
         <div class="col-lg-12 footer">
             &copy;2022 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Nov 11, 2022 <br />
+             Site last generated: Nov 12, 2022 <br />
             <p>
                 <img src="images/pmd-logo-small.png" alt="Company
                 logo"/>
