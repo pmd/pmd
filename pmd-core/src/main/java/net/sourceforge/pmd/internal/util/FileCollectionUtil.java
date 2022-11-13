@@ -6,7 +6,6 @@ package net.sourceforge.pmd.internal.util;
 
 import java.io.IOException;
 import java.io.Reader;
-import java.nio.file.FileSystem;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -143,14 +142,7 @@ public final class FileCollectionUtil {
         if (Files.isDirectory(path)) {
             collector.addDirectory(path);
         } else if (path.toString().endsWith(".zip") || path.toString().endsWith(".jar")) {
-            @SuppressWarnings("PMD.CloseResource")
-            FileSystem fs = collector.addZipFile(path);
-            if (fs == null) {
-                return;
-            }
-            for (Path zipRoot : fs.getRootDirectories()) {
-                collector.addFileOrDirectory(zipRoot);
-            }
+            collector.addZipFile(path);
         } else if (Files.isRegularFile(path)) {
             collector.addFile(path);
         } else {

@@ -30,6 +30,7 @@ import java.util.Objects;
 import java.util.Set;
 
 import net.sourceforge.pmd.PmdAnalysis;
+import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.lang.Language;
@@ -52,6 +53,7 @@ public final class FileCollector implements AutoCloseable {
     private Charset charset = StandardCharsets.UTF_8;
     private final LanguageVersionDiscoverer discoverer;
     private final MessageReporter reporter;
+    private final String outerFsDisplayName;
     @Deprecated
     private final List<String> legacyRelativizeRoots = new ArrayList<>();
     private final List<Path> relativizeRootPaths = new ArrayList<>();
@@ -59,9 +61,10 @@ public final class FileCollector implements AutoCloseable {
 
     // construction
 
-    private FileCollector(LanguageVersionDiscoverer discoverer, MessageReporter reporter) {
+    private FileCollector(LanguageVersionDiscoverer discoverer, MessageReporter reporter, String outerFsDisplayName) {
         this.discoverer = discoverer;
         this.reporter = reporter;
+        this.outerFsDisplayName = outerFsDisplayName;
     }
 
     /**
@@ -70,7 +73,7 @@ public final class FileCollector implements AutoCloseable {
      */
     @InternalApi
     public static FileCollector newCollector(LanguageVersionDiscoverer discoverer, MessageReporter reporter) {
-        return new FileCollector(discoverer, reporter);
+        return new FileCollector(discoverer, reporter, null);
     }
 
     // public behaviour
@@ -243,6 +246,14 @@ public final class FileCollector implements AutoCloseable {
     }
 
     private String getDisplayName(Path file) {
+        String localDisplayName = getLocalDisplayName(file);
+        if (outerFsDisplayName != null) {
+            return outerFsDisplayName + "!" + localDisplayName;
+        }
+        return localDisplayName;
+    }
+
+    private String getLocalDisplayName(Path file) {
         if (!relativizeRootPaths.isEmpty()) {
             // takes precedence over legacy behavior
             return getDisplayName(file, relativizeRootPaths);
@@ -284,6 +295,14 @@ public final class FileCollector implements AutoCloseable {
                 best = file.toAbsolutePath();
                 continue;
             } else {
+                if (!root.getFileSystem().equals(file.getFileSystem())) {
+                    // maybe the file is in a zip
+                    root = file.getFileSystem().getPath(root.toString()); // SUPPRESS CHECKSTYLE ModifiedControlVariable
+                }
+                if (root.isAbsolute() != file.isAbsolute()) { // this causes IllegalArgumentException
+                    root = root.toAbsolutePath(); // SUPPRESS CHECKSTYLE ModifiedControlVariable
+                    file = file.toAbsolutePath();
+                }
                 candidate = root.relativize(file);
             }
             // take the shortest path.
@@ -349,19 +368,48 @@ public final class FileCollector implements AutoCloseable {
      * {@link #addFile(Path)} and such. The zip file is registered as
      * a resource to close at the end of analysis.
      */
-    public FileSystem addZipFile(Path zipFile) {
+    @Experimental
+    public void addZipFile(Path zipFile) throws IOException {
         if (!Files.isRegularFile(zipFile)) {
             throw new IllegalArgumentException("Not a regular file: " + zipFile);
         }
-        URI zipUri = URI.create("zip:" + zipFile.toUri());
+        URI zipUri = URI.create("jar:" + zipFile.toUri());
+        FileSystem fs;
+        boolean isNewFileSystem = false;
         try {
-            FileSystem fs = FileSystems.getFileSystem(zipUri);
-            resourcesToClose.add(fs);
-            return fs;
-        } catch (FileSystemNotFoundException | ProviderNotFoundException e) {
-            reporter.errorEx("Cannot open zip file " + zipFile, e);
-            return null;
+            // find an existing file system, may fail
+            fs = FileSystems.getFileSystem(zipUri);
+        } catch (FileSystemNotFoundException ignored) {
+            // if it fails, try to create it.
+            try {
+                fs = FileSystems.newFileSystem(zipUri, Collections.<String, Object>emptyMap());
+                isNewFileSystem = true;
+            } catch (ProviderNotFoundException | IOException e) {
+                reporter.errorEx("Cannot open zip file " + zipFile, e);
+                return;
+            }
         }
+        try (FileCollector zipCollector = newZipCollector(zipFile)) {
+            for (Path zipRoot : fs.getRootDirectories()) {
+                zipCollector.addFileOrDirectory(zipRoot);
+            }
+            this.absorb(zipCollector);
+            if (isNewFileSystem) {
+                resourcesToClose.add(fs);
+            }
+
+        } catch (IOException ioe) {
+            reporter.errorEx("Error reading zip file " + zipFile + ", will be skipped", ioe);
+            fs.close();
+        }
+    }
+
+
+    /** A collector that prefixes the display name of the files it will contain with the path of the zip. */
+    @Experimental
+    private FileCollector newZipCollector(Path zipFilePath) {
+        String zipDisplayName = getDisplayName(zipFilePath);
+        return new FileCollector(discoverer, reporter, zipDisplayName);
     }
 
     // configuration
@@ -433,6 +481,17 @@ public final class FileCollector implements AutoCloseable {
     }
 
     /**
+     * Add all files collected in the other collector into this one.
+     * Transfers resources to close as well. The parameter is left empty.
+     */
+    public void absorb(FileCollector otherCollector) {
+        this.allFilesToProcess.addAll(otherCollector.allFilesToProcess);
+        this.resourcesToClose.addAll(otherCollector.resourcesToClose);
+        otherCollector.allFilesToProcess.clear();
+        otherCollector.resourcesToClose.clear();
+    }
+
+    /**
      * Exclude all collected files whose language is not part of the given
      * collection.
      */
@@ -446,6 +505,7 @@ public final class FileCollector implements AutoCloseable {
             }
         }
     }
+
 
     @Override
     public String toString() {
