@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.cli;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
@@ -123,12 +125,17 @@ public class PMDParameters {
                    + "If this option is not specified, the report is rendered to standard output.")
     private String reportfile = null;
 
-    @Parameter(names = { RELATIVIZE_PATHS_WITH },
-               arity = 1,
+    @Parameter(names = { RELATIVIZE_PATHS_WITH, "-z" },
+               variableArity = true,
                description = "Path relative to which directories are rendered in the report."
-                   + "This option can be used to render shorter paths. "
-                   + "This option replaces --short-names since PMD 6.52.0.")
-    private String relativizePathRoot = null;
+                             + "This option allows shortening directories in the report; "
+                             + "without it, paths are rendered as absolute paths. "
+                             + "The option can be repeated, in which case the shortest relative path."
+                             + "If / is mentioned (root path), then the paths will be rendered as absolute."
+                             + "This option replaces --short-names since PMD 6.52.0.",
+               validateValueWith = PathToRelativizeRootValidator.class,
+               converter = StringToPathConverter.class)
+    private List<Path> relativizePathRoot = new ArrayList<>();
 
     @Parameter(names = { "-version", "-v" }, description = "Specify version of a language PMD should use.")
     private String version = null;
@@ -227,6 +234,27 @@ public class PMDParameters {
         }
     }
 
+    public static class PathToRelativizeRootValidator implements IValueValidator<List<Path>> {
+
+        @Override
+        public void validate(String name, List<Path> value) throws ParameterException {
+            for (Path p : value) {
+                if (Files.isRegularFile(p)) {
+                    throw new ParameterException("Expected a directory path for option " + name + ", found a file: " + p);
+                }
+            }
+        }
+    }
+
+
+    public static class StringToPathConverter implements IStringConverter<Path> {
+
+        @Override
+        public Path convert(String value) {
+            return Paths.get(value);
+        }
+    }
+
 
     /**
      * Converts these parameters into a configuration.
@@ -244,8 +272,8 @@ public class PMDParameters {
         configuration.setReportFormat(this.getFormat());
         configuration.setBenchmark(this.isBenchmark());
         configuration.setDebug(this.isDebug());
-        if (relativizePathRoot != null) {
-            configuration.addRelativizeRoot(Paths.get(this.relativizePathRoot));
+        for (Path path: relativizePathRoot) {
+            configuration.addRelativizeRoot(path);
         }
         configuration.setMinimumPriority(this.getMinimumPriority());
         configuration.setReportFile(this.getReportfile());

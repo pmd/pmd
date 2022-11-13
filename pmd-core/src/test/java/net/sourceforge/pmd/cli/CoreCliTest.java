@@ -22,6 +22,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.logging.Logger;
 
 import org.hamcrest.Matcher;
@@ -36,7 +37,10 @@ import org.junit.rules.TemporaryFolder;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMD.StatusCode;
+import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.junit.JavaUtilLoggingRule;
+import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.rule.MockRule;
 import net.sourceforge.pmd.util.IOUtil;
 
 /**
@@ -45,6 +49,7 @@ import net.sourceforge.pmd.util.IOUtil;
 public class CoreCliTest {
 
     private static final String DUMMY_RULESET = "net/sourceforge/pmd/cli/FakeRuleset.xml";
+    private static final String DUMMY_RULESET_WITH_VIOLATIONS = "net/sourceforge/pmd/cli/FakeRuleset2.xml";
     private static final String STRING_TO_REPLACE = "__should_be_replaced__";
 
     @Rule
@@ -125,6 +130,42 @@ public class CoreCliTest {
         runPmdSuccessfully("--no-cache", "--dir", srcDir, "--rulesets", DUMMY_RULESET, "--report-file", reportFile);
 
         assertTrue("Report file should have been created", Files.exists(reportFile));
+    }
+
+    @Test
+    public void testNoRelativizeWith() {
+        startCapturingErrAndOut();
+        runPmd(StatusCode.VIOLATIONS_FOUND, "--no-cache", "--dir", srcDir, "--rulesets", DUMMY_RULESET_WITH_VIOLATIONS);
+
+        assertThat(outStreamCaptor.getLog(), containsString(srcDir.resolve("someSource.dummy").toString()));
+    }
+
+    @Test
+    public void testRelativizeWith() {
+        startCapturingErrAndOut();
+        runPmd(StatusCode.VIOLATIONS_FOUND, "--no-cache", "--dir", srcDir, "--rulesets", DUMMY_RULESET_WITH_VIOLATIONS, "-z", srcDir.getParent());
+
+        assertThat(outStreamCaptor.getLog(), not(containsString(srcDir.resolve("someSource.dummy").toString())));
+        assertThat(outStreamCaptor.getLog(), containsString("src/someSource.dummy"));
+    }
+
+    @Test
+    public void testRelativizeWithMultiple() {
+        startCapturingErrAndOut();
+        runPmd(StatusCode.VIOLATIONS_FOUND, "--no-cache", "--dir", srcDir, "--rulesets", DUMMY_RULESET_WITH_VIOLATIONS, "-z", srcDir.getParent(), srcDir);
+
+        assertThat(outStreamCaptor.getLog(), not(containsString(srcDir.resolve("someSource.dummy").toString())));
+        assertThat(outStreamCaptor.getLog(), containsString("someSource.dummy"));
+    }
+
+    @Test
+    public void testRelativizeWithFileIsError() {
+        startCapturingErrAndOut();
+        runPmd(StatusCode.ERROR, "--no-cache", "--dir", srcDir, "--rulesets", DUMMY_RULESET_WITH_VIOLATIONS, "-z", srcDir.resolve("someSource.dummy"));
+
+        assertThat(errStreamCaptor.getLog(), containsString(
+            "Expected a directory path for option --relativize-paths-with, found a file: "
+            + srcDir.resolve("someSource.dummy")));
     }
 
     @Test
@@ -281,6 +322,16 @@ public class CoreCliTest {
     private static void runPmd(StatusCode expectedExitCode, Object... args) {
         StatusCode actualExitCode = PMD.runPmd(argsToString(args));
         assertEquals("Exit code", expectedExitCode, actualExitCode);
+    }
+
+    public static class FooRule extends MockRule {
+
+        @Override
+        public void apply(List<? extends Node> nodes, RuleContext ctx) {
+            for (Node node : nodes) {
+                ctx.addViolation(node);
+            }
+        }
     }
 
 

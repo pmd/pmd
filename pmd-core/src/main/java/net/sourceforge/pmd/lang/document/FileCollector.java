@@ -24,6 +24,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -46,7 +47,7 @@ import net.sourceforge.pmd.util.log.MessageReporter;
 @SuppressWarnings("PMD.CloseResource")
 public final class FileCollector implements AutoCloseable {
 
-    private final List<TextFile> allFilesToProcess = new ArrayList<>();
+    private final Set<TextFile> allFilesToProcess = new LinkedHashSet<>();
     private final List<Closeable> resourcesToClose = new ArrayList<>();
     private Charset charset = StandardCharsets.UTF_8;
     private final LanguageVersionDiscoverer discoverer;
@@ -84,6 +85,7 @@ public final class FileCollector implements AutoCloseable {
         if (closed) {
             throw new IllegalStateException("Collector was closed!");
         }
+        List<TextFile> allFilesToProcess = new ArrayList<>(this.allFilesToProcess);
         Collections.sort(allFilesToProcess, new Comparator<TextFile>() {
             @Override
             public int compare(TextFile o1, TextFile o2) {
@@ -135,8 +137,7 @@ public final class FileCollector implements AutoCloseable {
         }
         LanguageVersion languageVersion = discoverLanguage(file.toString());
         if (languageVersion != null) {
-            addFileImpl(new NioTextFile(file, charset, languageVersion, getDisplayName(file)));
-            return true;
+            return addFileImpl(new NioTextFile(file, charset, languageVersion, getDisplayName(file)));
         }
         return false;
     }
@@ -158,8 +159,7 @@ public final class FileCollector implements AutoCloseable {
             return false;
         }
         NioTextFile nioTextFile = new NioTextFile(file, charset, discoverer.getDefaultLanguageVersion(language), getDisplayName(file));
-        addFileImpl(nioTextFile);
-        return true;
+        return addFileImpl(nioTextFile);
     }
 
     /**
@@ -172,8 +172,7 @@ public final class FileCollector implements AutoCloseable {
     public boolean addFile(TextFile textFile) {
         AssertionUtil.requireParamNotNull("textFile", textFile);
         if (checkContextualVersion(textFile)) {
-            addFileImpl(textFile);
-            return true;
+            return addFileImpl(textFile);
         }
         return false;
     }
@@ -190,16 +189,19 @@ public final class FileCollector implements AutoCloseable {
 
         LanguageVersion version = discoverLanguage(pathId);
         if (version != null) {
-            addFileImpl(new StringTextFile(sourceContents, pathId, pathId, version));
-            return true;
+            return addFileImpl(new StringTextFile(sourceContents, pathId, pathId, version));
         }
 
         return false;
     }
 
-    private void addFileImpl(TextFile textFile) {
+    private boolean addFileImpl(TextFile textFile) {
         reporter.trace("Adding file {0} (lang: {1}) ", textFile.getPathId(), textFile.getLanguageVersion().getTerseName());
-        allFilesToProcess.add(textFile);
+        if (allFilesToProcess.add(textFile)) {
+            return true;
+        }
+        reporter.trace("File was already collected, skipping");
+        return false;
     }
 
     private LanguageVersion discoverLanguage(String file) {
@@ -411,7 +413,7 @@ public final class FileCollector implements AutoCloseable {
      */
     public void exclude(FileCollector excludeCollector) {
         HashSet<TextFile> toExclude = new HashSet<>(excludeCollector.allFilesToProcess);
-        for (Iterator<TextFile> iterator = allFilesToProcess.iterator(); iterator.hasNext(); ) {
+        for (Iterator<TextFile> iterator = allFilesToProcess.iterator(); iterator.hasNext();) {
             TextFile file = iterator.next();
             if (toExclude.contains(file)) {
                 reporter.trace("Excluding file {0}", file.getPathId());

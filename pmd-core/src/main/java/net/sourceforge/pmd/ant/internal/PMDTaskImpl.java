@@ -47,9 +47,7 @@ public class PMDTaskImpl {
 
     public PMDTaskImpl(PMDTask task) {
         configuration.setReportShortNames(task.isShortFilenames());
-        for (java.nio.file.Path path : task.getRelativizeRoots()) {
-            configuration.addRelativizeRoot(path);
-        }
+        configuration.addRelativizeRoots(task.getRelativizeRoots());
         configuration.setSuppressMarker(task.getSuppressMarker());
         this.failOnError = task.isFailOnError();
         this.failOnRuleViolation = task.isFailOnRuleViolation();

@@ -949,14 +949,13 @@ public class PMDConfiguration extends AbstractConfiguration {
      * to a directory and not a file. See {@link #getRelativizeRoots()}
      * for the interpretation.
      *
-     * <p>Setting to null is not recommended as it is only used for
-     * compatibility with the older {@link #isReportShortNames()} functionality.
-     * It will possibly be disallowed with PMD 7. The default value is
-     * null.
+     * <p>If several paths are added, the shortest paths possible are
+     * built.
      *
      * @param path A path
      *
-     * @throws IllegalArgumentException If the path points to a file
+     * @throws IllegalArgumentException If the path points to a file, and not a directory
+     * @throws NullPointerException If the path is null
      */
     public void addRelativizeRoot(Path path) {
         // TODO symlinks?
@@ -967,12 +966,28 @@ public class PMDConfiguration extends AbstractConfiguration {
         }
     }
 
+
     /**
-     * Returns the path used to shorten paths output in the report.
+     * Add several paths to shorten paths that are output in the report.
+     * See {@link #addRelativizeRoot(Path)}.
+     *
+     * @param paths A list of non-null paths
+     *
+     * @throws IllegalArgumentException If any path points to a file, and not a directory
+     * @throws NullPointerException     If the list, or any path in the list is null
+     */
+    public void addRelativizeRoots(List<Path> paths) {
+        for (Path path : paths) {
+            addRelativizeRoot(path);
+        }
+    }
+
+    /**
+     * Returns the paths used to shorten paths output in the report.
      * <ul>
-     * <li>If the path is {@code /} (root), then paths are rendered as absolute.
-     * <li>If the path is null, then paths are not touched (unless {@link #isReportShortNames()} is true)
-     * <li>Otherwise, the path is a directory.
+     * <li>If the list is empty, then paths are not touched (unless {@link #isReportShortNames()} is true)
+     * <li>If the list is non-empty, then source file paths are relativized with all the items in the list.
+     * The shortest of these relative paths is taken as the display name of the file.
      * </ul>
      */
     public List<Path> getRelativizeRoots() {
