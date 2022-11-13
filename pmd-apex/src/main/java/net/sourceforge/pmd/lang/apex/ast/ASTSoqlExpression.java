@@ -4,11 +4,11 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import com.google.summit.ast.Node;
+import com.google.summit.ast.expression.SoqlExpression;
 
-public class ASTSoqlExpression extends AbstractApexNode.Single<Node> {
+public class ASTSoqlExpression extends AbstractApexNode.Single<SoqlExpression> {
 
-    ASTSoqlExpression(Node soqlExpression) {
+    ASTSoqlExpression(SoqlExpression soqlExpression) {
         super(soqlExpression);
     }
 
@@ -18,12 +18,10 @@ public class ASTSoqlExpression extends AbstractApexNode.Single<Node> {
     }
 
     public String getQuery() {
-        // return node.getRawQuery();
-        return null;
+        return node.getQuery();
     }
 
     public String getCanonicalQuery() {
-        // return node.getCanonicalQuery();
-        return null;
+        return node.getQuery();
     }
 }

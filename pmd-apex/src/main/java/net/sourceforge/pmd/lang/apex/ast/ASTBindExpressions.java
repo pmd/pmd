@@ -4,15 +4,11 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
+import com.google.summit.ast.expression.SoqlOrSoslBinding;
 
-import com.google.summit.ast.Node;
+public class ASTBindExpressions extends AbstractApexNode.Single<SoqlOrSoslBinding> {
 
-public class ASTBindExpressions extends AbstractApexNode.Single<Node> {
-
-    @Deprecated
-    @InternalApi
-    public ASTBindExpressions(Node bindExpressions) {
+    ASTBindExpressions(SoqlOrSoslBinding bindExpressions) {
         super(bindExpressions);
     }
 

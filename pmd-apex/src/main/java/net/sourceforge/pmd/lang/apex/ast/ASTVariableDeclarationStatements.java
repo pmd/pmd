@@ -4,13 +4,11 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import java.util.List;
+import com.google.summit.ast.declaration.VariableDeclarationGroup;
 
-import com.google.summit.ast.declaration.VariableDeclaration;
+public class ASTVariableDeclarationStatements extends AbstractApexNode.Single<VariableDeclarationGroup> {
 
-public class ASTVariableDeclarationStatements extends AbstractApexNode.Many<VariableDeclaration> {
-
-    ASTVariableDeclarationStatements(List<VariableDeclaration> variableDeclarations) {
+    ASTVariableDeclarationStatements(VariableDeclarationGroup variableDeclarations) {
         super(variableDeclarations);
     }
 

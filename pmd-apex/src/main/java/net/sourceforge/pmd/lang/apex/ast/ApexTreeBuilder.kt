@@ -26,6 +26,7 @@ import com.google.summit.ast.declaration.PropertyDeclaration
 import com.google.summit.ast.declaration.TriggerDeclaration
 import com.google.summit.ast.declaration.TypeDeclaration
 import com.google.summit.ast.declaration.VariableDeclaration
+import com.google.summit.ast.declaration.VariableDeclarationGroup
 import com.google.summit.ast.expression.ArrayExpression
 import com.google.summit.ast.expression.AssignExpression
 import com.google.summit.ast.expression.BinaryExpression
@@ -35,6 +36,9 @@ import com.google.summit.ast.expression.Expression
 import com.google.summit.ast.expression.FieldExpression
 import com.google.summit.ast.expression.LiteralExpression
 import com.google.summit.ast.expression.NewExpression
+import com.google.summit.ast.expression.SoqlExpression
+import com.google.summit.ast.expression.SoslExpression
+import com.google.summit.ast.expression.SoqlOrSoslBinding
 import com.google.summit.ast.expression.SuperExpression
 import com.google.summit.ast.expression.TernaryExpression
 import com.google.summit.ast.expression.ThisExpression
@@ -140,13 +144,16 @@ class ApexTreeBuilder(val sourceCode: String, val parserOptions: ApexParserOptio
             is CallExpression -> buildCallExpression(node)
             is TernaryExpression -> buildTernaryExpression(node)
             is NewExpression -> build(node.initializer, parent)
+            is SoqlExpression -> ASTSoqlExpression(node).apply { buildChildren(node, parent = this) }
+            is SoslExpression -> ASTSoslExpression(node).apply { buildChildren(node, parent = this) }
+            is SoqlOrSoslBinding -> ASTBindExpressions(node).apply { buildChildren(node, parent = this) }
             is ConstructorInitializer -> buildConstructorInitializer(node)
             is ValuesInitializer -> buildValuesInitializer(node)
             is MapInitializer -> buildMapInitializer(node)
             is SizedArrayInitializer -> buildSizedArrayInitializer(node)
             is DmlStatement -> buildDmlStatement(node)
             is IfStatement -> buildIfStatement(node)
-            is VariableDeclarationStatement -> buildVariableDeclarations(node.variableDeclarations)
+            is VariableDeclarationStatement -> buildVariableDeclarationGroup(node.group)
             is VariableDeclaration -> buildVariableDeclaration(node)
             is EnhancedForLoopStatement -> buildEnhancedForLoopStatement(node)
             is DoWhileLoopStatement -> buildDoWhileLoopStatement(node)
@@ -544,21 +551,17 @@ class ApexTreeBuilder(val sourceCode: String, val parserOptions: ApexParserOptio
                 FlatIfStatement(ifBlocks, elseBlock = node)
         }
 
-    /** Builds an [ASTVariableDeclarationStatements] for the [VariableDeclaration] list. */
-    private fun buildVariableDeclarations(declarations: List<VariableDeclaration>) =
-        ASTVariableDeclarationStatements(declarations).apply {
-            if (declarations.isNotEmpty()) {
-                // Modifiers are duplicated between all declarations - use any
-                buildModifiers(declarations.first().modifiers).also { it.setParent(this) }
-            }
-            declarations.forEach { buildAndSetParent(it, parent = this) }
+    /** Builds an [ASTVariableDeclarationStatements] for the [VariableDeclarationGroup]. */
+    private fun buildVariableDeclarationGroup(node: VariableDeclarationGroup) =
+        ASTVariableDeclarationStatements(node).apply {
+            buildModifiers(node.modifiers).also { it.setParent(this) }
+            buildChildren(node, parent = this, exclude = { it in node.modifiers })
         }
 
     /** Builds an [ASTVariableDeclaration] wrapper for the [VariableDeclaration]. */
     private fun buildVariableDeclaration(node: VariableDeclaration) =
         ASTVariableDeclaration(node).apply {
-            // Exclude modifiers - built in ASTVariableDeclarationStatements
-            buildChildren(node, parent = this, exclude = { it in node.modifiers })
+            buildChildren(node, parent = this)
 
             ASTVariableExpression(node.id)
                 .apply {
@@ -571,9 +574,12 @@ class ApexTreeBuilder(val sourceCode: String, val parserOptions: ApexParserOptio
     /** Builds an [ASTForEachStatement] wrapper for the [EnhancedForLoopStatement]. */
     private fun buildEnhancedForLoopStatement(node: EnhancedForLoopStatement) =
         ASTForEachStatement(node).apply {
-            buildVariableDeclarations(listOf(node.elementDeclaration)).also { it.setParent(this) }
+            buildVariableDeclarationGroup(node.element).also { it.setParent(this) }
 
-            ASTVariableExpression(node.elementDeclaration.id)
+            if (node.element.declarations.size != 1) {
+              throw ParseException("Expected enhanced-for to declare a single variable")
+            }
+            ASTVariableExpression(node.element.declarations.first().id)
                 .apply {
                     buildReferenceExpression(components = emptyList(), receiver = null, ReferenceType.NONE)
                         .also { it.setParent(this) }
@@ -585,7 +591,7 @@ class ApexTreeBuilder(val sourceCode: String, val parserOptions: ApexParserOptio
             buildChildren(
                 node,
                 parent = this,
-                exclude = { it == node.elementDeclaration || it == node.body }
+                exclude = { it == node.element || it == node.body }
             )
         }
 
@@ -611,11 +617,11 @@ class ApexTreeBuilder(val sourceCode: String, val parserOptions: ApexParserOptio
             fun buildInitialization(expr: Expression) =
                 ASTExpression(expr).apply { buildAndSetParent(expr, parent = this) }
 
-            if (node.declarations.isNotEmpty()) {
-                buildVariableDeclarations(node.declarations).also { it.setParent(this) }
+            node.declarationGroup?.let{ group ->
+                buildVariableDeclarationGroup(group).also { it.setParent(this) }
             }
-            if (node.condition != null) {
-                buildCondition(node.condition!!).also { it.setParent(this) }
+            node.condition?.let{ condition ->
+                buildCondition(condition).also { it.setParent(this) }
             }
             node.initializations.forEach { expr -> buildInitialization(expr).also { it.setParent(this) } }
 
@@ -625,7 +631,7 @@ class ApexTreeBuilder(val sourceCode: String, val parserOptions: ApexParserOptio
                 node,
                 parent = this,
                 exclude = {
-                    it in node.declarations ||
+                    it == node.declarationGroup ||
                         it == node.condition ||
                         it in node.initializations ||
                         it == node.body
@@ -669,7 +675,7 @@ class ApexTreeBuilder(val sourceCode: String, val parserOptions: ApexParserOptio
     /** Builds an [ASTCatchBlockStatement] wrapper for the [TryStatement.CatchBlock]. */
     private fun buildCatchBlock(node: TryStatement.CatchBlock) =
         ASTCatchBlockStatement(node).apply {
-            buildChildren(node, parent = this, exclude = { it == node.exceptionVariable })
+            buildChildren(node, parent = this, exclude = { it == node.exception })
         }
 
     /** Builds an [ASTParameter] wrapper for the [ParameterDeclaration]. */
