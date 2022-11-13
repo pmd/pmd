@@ -5,9 +5,12 @@
 package net.sourceforge.pmd.lang.apex.ast;
 
 import java.util.Arrays;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import net.sourceforge.pmd.Rule;
 
+import com.beust.jcommander.internal.Nullable;
 import com.google.summit.ast.Identifier;
 import com.google.summit.ast.Node;
 import com.google.summit.ast.TypeRef;
@@ -18,10 +21,12 @@ public class ASTField extends AbstractApexNode.Many<Node> implements CanSuppress
 
     private final TypeRef type;
     private final Identifier name;
-    private final Expression value;
+    private final Optional<Expression> value;
 
-    ASTField(TypeRef type, Identifier name, Expression value) {
-        super(Arrays.asList(type, name, value));
+    ASTField(TypeRef type, Identifier name, Optional<Expression> value) {
+        super(value.isPresent()
+              ? Arrays.asList(type, name, value.get())
+              : Arrays.asList(type, name));
         this.type = type;
         this.name = name;
         this.value = value;
@@ -62,8 +67,10 @@ public class ASTField extends AbstractApexNode.Many<Node> implements CanSuppress
     }
 
     public String getValue() {
-        if(value instanceof LiteralExpression) {
-            return literalToString((LiteralExpression) value);
+        if (value.isPresent()) {
+            if (value.get() instanceof LiteralExpression) {
+                return literalToString((LiteralExpression) value.get());
+            }
         }
         return null;
     }

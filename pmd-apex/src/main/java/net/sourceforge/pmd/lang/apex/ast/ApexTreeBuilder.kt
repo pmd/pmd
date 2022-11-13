@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.apex.ast
 
+import java.util.Optional
+
 import net.sourceforge.pmd.annotation.InternalApi
 import net.sourceforge.pmd.lang.apex.ApexParserOptions
 import net.sourceforge.pmd.lang.ast.ParseException
@@ -703,7 +705,7 @@ class ApexTreeBuilder(val sourceCode: String, val parserOptions: ApexParserOptio
 
         node.node.declarations
             .map { decl ->
-                ASTField(decl.type, decl.id, decl.initializer).apply {
+                ASTField(decl.type, decl.id, Optional.ofNullable(decl.initializer)).apply {
                     buildModifiers(decl.modifiers).also { it.setParent(this) }
                 }
             }
@@ -713,7 +715,7 @@ class ApexTreeBuilder(val sourceCode: String, val parserOptions: ApexParserOptio
     /** Generates [ASTField] nodes for the [ASTProperty]. */
     private fun generateFields(node: ASTProperty) {
         val field =
-            ASTField(node.node.type, node.node.id, null).apply {
+            ASTField(node.node.type, node.node.id, Optional.empty()).apply {
                 buildModifiers(node.node.modifiers).also { it.setParent(this) }
             }
         field.setParent(node)
