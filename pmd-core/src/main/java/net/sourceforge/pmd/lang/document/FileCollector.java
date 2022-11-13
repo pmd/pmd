@@ -278,8 +278,11 @@ public final class FileCollector implements AutoCloseable {
         for (Path root : relativizeRoots) {
             Path candidate;
             if (isFileSystemRoot(root)) {
-                // Absolutize the path.
-                candidate = file.toAbsolutePath();
+                // Absolutize the path. Since the relativize roots are
+                // sorted by ascending length, this should be the first in the list
+                // (so another root can override it).
+                best = file.toAbsolutePath();
+                continue;
             } else {
                 candidate = root.relativize(file);
             }
@@ -404,6 +407,13 @@ public final class FileCollector implements AutoCloseable {
      */
     public void relativizeWith(Path path) {
         this.relativizeRootPaths.add(Objects.requireNonNull(path));
+        Collections.sort(relativizeRootPaths, new Comparator<Path>() {
+            @Override
+            public int compare(Path o1, Path o2) {
+                int lengthCmp = Integer.compare(o1.getNameCount(), o2.getNameCount());
+                return lengthCmp == 0 ? o1.compareTo(o2) : lengthCmp;
+            }
+        });
     }
 
     // filtering
