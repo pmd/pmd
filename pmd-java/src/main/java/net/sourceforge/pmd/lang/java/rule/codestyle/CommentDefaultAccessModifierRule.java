@@ -49,7 +49,8 @@ public class CommentDefaultAccessModifierRule extends AbstractJavaRulechainRule 
             "org.junit.jupiter.api.BeforeEach",
             "org.junit.jupiter.api.BeforeAll",
             "org.junit.jupiter.api.AfterEach",
-            "org.junit.jupiter.api.AfterAll"
+            "org.junit.jupiter.api.AfterAll",
+            "lombok.Value"
         );
 
     private static final PropertyDescriptor<Pattern> REGEX_DESCRIPTOR =
@@ -142,7 +143,7 @@ public class CommentDefaultAccessModifierRule extends AbstractJavaRulechainRule 
         boolean isConcreteClass = !enclosing.isInterface() && !enclosing.isEnum();
 
         // ignore if it's inside an interface / Annotation
-        return isConcreteClass && isMissingComment(decl);
+        return isConcreteClass && isMissingComment(decl) && !hasIgnoredAnnotation(parentClassOrInterface);
     }
 
     private boolean isMissingComment(AccessNode decl) {

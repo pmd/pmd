@@ -307,4 +307,133 @@ public record MyRecordOk(boolean b) {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>Test class (JUnit3) #2867</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <code><![CDATA[
+import junit.framework.TestCase;
+public class Foo extends TestCase {
+    public void testBar() { }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Test class (JUnit4) #2867</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <code><![CDATA[
+import org.junit.Test;
+public class Foo {
+    @Test
+    public void testBar() { }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Test class (JUnit5) #2867</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <code><![CDATA[
+import org.junit.jupiter.api.Test;
+class Foo {
+    @Test
+    void testBar() { }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Test class (JUnit5) correctly named #2867</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.junit.jupiter.api.Test;
+class FooTest {
+    @Test
+    void testBar() { }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Test class (JUnit5) with non-default testClassPattern #2867</description>
+        <rule-property name="testClassPattern">Test[A-Z][a-zA-Z0-9]*</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.junit.jupiter.api.Test;
+class TestFoo {
+    @Test
+    void testBar() { }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Test class (JUnit5, Parameterized) #2867</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
+class Foo {
+    @ParameterizedTest
+    @ValueSource(ints = {1})
+    void testBar(int i) { }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Test class (TestNG) #2867</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <code><![CDATA[
+import org.testng.annotations.Test;
+public class Foo {
+    @Test
+    public void testBar() {}
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Not a test class (despite its name) #2867</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class FooTest {
+    public void testBar() { }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Don't consider nested classes #2867</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
+class MyTests {
+    @Test
+    void firstCheck() {}
+
+    @Nested
+    class Reactor {
+        @Test
+        void secondCheck() {}
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>TestCase should be a valid pattern by default #2867</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import junit.framework.TestCase;
+public class ExampleTestCase extends TestCase { }
+]]></code>
+    </test-code>
 </test-data>

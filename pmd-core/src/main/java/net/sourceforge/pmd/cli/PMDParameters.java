@@ -167,6 +167,9 @@ public class PMDParameters {
     @Parameter(names = { "--no-cache", "-no-cache" }, description = "Explicitly disable incremental analysis. The '-cache' option is ignored if this switch is present in the command line.")
     private boolean noCache = false;
 
+    @Parameter(names = "--use-version", description = "The language version PMD should use when parsing source code in the language-version format, ie: 'java-1.8'")
+    private List<String> languageVersions = new ArrayList<>();
+
     @Parameter(names = { "--no-progress", "-no-progress" }, description = "Disables progress bar indicator of live analysis progress.")
     private boolean noProgressBar = false;
 
@@ -280,6 +283,24 @@ public class PMDParameters {
             configuration.getLanguageVersionDiscoverer().setDefaultLanguageVersion(languageVersion);
         }
 
+        for (String langVerStr : this.getLanguageVersions()) {
+            int dashPos = langVerStr.indexOf('-');
+            if (dashPos == -1) {
+                throw new IllegalArgumentException("Invalid language version: " + langVerStr);
+            }
+            String langStr = langVerStr.substring(0, dashPos);
+            String verStr = langVerStr.substring(dashPos + 1);
+            Language lang = LanguageRegistry.findLanguageByTerseName(langStr);
+            LanguageVersion langVer = null;
+            if (lang != null) {
+                langVer = lang.getVersion(verStr);
+            }
+            if (lang == null || langVer == null) {
+                throw new IllegalArgumentException("Invalid language version: " + langVerStr);
+            }
+            configuration.getLanguageVersionDiscoverer().setDefaultLanguageVersion(langVer);
+        }
+
         try {
             configuration.prependAuxClasspath(this.getAuxclasspath());
         } catch (IllegalArgumentException e) {
@@ -360,7 +381,7 @@ public class PMDParameters {
         }
         return null;
     }
-    
+
     public @Nullable String getLanguage() {
         return language;
     }
@@ -368,6 +389,10 @@ public class PMDParameters {
     private @Nullable LanguageVersion getForceLangVersion(LanguageRegistry registry) {
         Language lang = forceLanguage != null ? registry.getLanguageById(forceLanguage) : null;
         return lang != null ? lang.getDefaultVersion() : null;
+    }
+
+    public List<String> getLanguageVersions() {
+        return languageVersions;
     }
 
     public String getForceLanguage() {

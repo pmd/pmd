@@ -9,6 +9,7 @@ import io.kotest.matchers.shouldBe
 import net.sourceforge.pmd.lang.ast.test.shouldBe as typeShouldBe
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.*
 import java.io.IOException
+import net.sourceforge.pmd.lang.ast.test.shouldBe as typeShouldBe
 
 class ASTPatternTest : ProcessorTestSpec({
 

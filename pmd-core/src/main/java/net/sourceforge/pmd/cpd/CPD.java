@@ -32,6 +32,10 @@ import net.sourceforge.pmd.util.database.DBMSMetadata;
 import net.sourceforge.pmd.util.database.DBURI;
 import net.sourceforge.pmd.util.database.SourceObject;
 
+/**
+ * @deprecated This class is to be removed in PMD 7 in favor of a unified PmdCli entry point.
+ */
+@Deprecated
 public class CPD {
     // not final, in order to re-initialize logging
     private static Logger log = LoggerFactory.getLogger(CPD.class);
@@ -267,6 +271,10 @@ public class CPD {
         return new CPDReport(matchAlgorithm.getMatches(), numberOfTokensPerFile);
     }
 
+    /**
+     * @deprecated This class is to be removed in PMD 7 in favor of a unified PmdCli entry point.
+     */
+    @Deprecated
     public enum StatusCode {
         OK(0),
         ERROR(1),

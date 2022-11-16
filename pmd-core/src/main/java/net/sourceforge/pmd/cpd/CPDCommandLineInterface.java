@@ -138,6 +138,7 @@ public final class CPDCommandLineInterface {
         m.put("--failOnViolation", "--fail-on-violation");
         m.put("-failOnViolation", "--fail-on-violation");
         m.put("--filelist", "--file-list");
+        m.put("--files", "--dir");
         SUGGESTED_REPLACEMENT = Collections.unmodifiableMap(m);
     }
 
