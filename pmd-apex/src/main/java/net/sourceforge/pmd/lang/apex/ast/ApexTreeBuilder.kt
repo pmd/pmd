@@ -17,6 +17,7 @@ import com.google.summit.ast.Node
 import com.google.summit.ast.TypeRef
 import com.google.summit.ast.declaration.ClassDeclaration
 import com.google.summit.ast.declaration.EnumDeclaration
+import com.google.summit.ast.declaration.EnumValue
 import com.google.summit.ast.declaration.FieldDeclaration
 import com.google.summit.ast.declaration.FieldDeclarationGroup
 import com.google.summit.ast.declaration.InterfaceDeclaration
@@ -118,6 +119,7 @@ class ApexTreeBuilder(val sourceCode: String, val parserOptions: ApexParserOptio
             null -> null
             is CompilationUnit -> build(node.typeDeclaration, parent)
             is TypeDeclaration -> buildTypeDeclaration(node)
+            is EnumValue -> buildEnumValue(node)
             is MethodDeclaration -> buildMethodDeclaration(node, parent)
             is PropertyDeclaration -> buildPropertyDeclaration(node)
             is FieldDeclarationGroup -> buildFieldDeclarationGroup(node)
@@ -238,6 +240,10 @@ class ApexTreeBuilder(val sourceCode: String, val parserOptions: ApexParserOptio
             buildModifiers(node.modifiers).also { it.setParent(this) }
             buildChildren(node, parent = this, exclude = { it in node.modifiers })
         }
+
+    /** Builds an [ASTField] wrapper for the [EnumValue] node. */
+    private fun buildEnumValue(node: EnumValue) =
+        ASTField(node.parent as EnumDeclaration, node.id)
 
     private fun buildFieldDeclaration(node: FieldDeclaration) =
         ASTFieldDeclaration(node).apply {

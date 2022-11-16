@@ -9,6 +9,8 @@ import java.util.Optional;
 
 import net.sourceforge.pmd.Rule;
 
+import com.beust.jcommander.internal.Nullable;
+import com.google.summit.ast.declaration.EnumDeclaration;
 import com.google.summit.ast.Identifier;
 import com.google.summit.ast.Node;
 import com.google.summit.ast.TypeRef;
@@ -17,17 +19,29 @@ import com.google.summit.ast.expression.LiteralExpression;
 
 public class ASTField extends AbstractApexNode.Many<Node> implements CanSuppressWarnings {
 
-    private final TypeRef type;
+    // One of the following two must be non-null
+    @Nullable private final TypeRef typeRef;
+    @Nullable private final EnumDeclaration enumType;
+
     private final Identifier name;
     private final Optional<Expression> value;
 
-    ASTField(TypeRef type, Identifier name, Optional<Expression> value) {
+    ASTField(TypeRef typeRef, Identifier name, Optional<Expression> value) {
         super(value.isPresent()
-              ? Arrays.asList(type, name, value.get())
-              : Arrays.asList(type, name));
-        this.type = type;
+              ? Arrays.asList(typeRef, name, value.get())
+              : Arrays.asList(typeRef, name));
+        this.typeRef = typeRef;
+        this.enumType = null;
         this.name = name;
         this.value = value;
+    }
+
+    ASTField(EnumDeclaration enumType, Identifier name) {
+        super(Arrays.asList(name));
+        this.typeRef = null;
+        this.enumType = enumType;
+        this.name = name;
+        this.value = Optional.empty();
     }
 
     @Override
@@ -53,7 +67,7 @@ public class ASTField extends AbstractApexNode.Many<Node> implements CanSuppress
     }
 
     public String getType() {
-        return type.asCodeString();
+        return typeRef != null ? typeRef.asCodeString() : enumType.getId().asCodeString();
     }
 
     public ASTModifierNode getModifiers() {
