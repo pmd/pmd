@@ -143,7 +143,7 @@ public class CommentDefaultAccessModifierRule extends AbstractJavaRulechainRule 
         boolean isConcreteClass = !enclosing.isInterface() && !enclosing.isEnum();
 
         // ignore if it's inside an interface / Annotation
-        return isConcreteClass && isMissingComment(decl) && !hasIgnoredAnnotation(parentClassOrInterface);
+        return isConcreteClass && isMissingComment(decl) && isNotIgnored(decl) && isNotIgnored(enclosing);
     }
 
     private boolean isMissingComment(AccessNode decl) {
@@ -152,9 +152,7 @@ public class CommentDefaultAccessModifierRule extends AbstractJavaRulechainRule 
         return decl.getVisibility() == Visibility.V_PACKAGE
             // if is a default access modifier check if there is a comment
             // in this line
-            && !interestingLineNumberComments.contains(decl.getBeginLine())
-            // that it is not annotated with e.g. @VisibleForTesting
-            && isNotIgnored(decl);
+            && !interestingLineNumberComments.contains(decl.getBeginLine());
     }
 
     private boolean isNotIgnored(AccessNode decl) {

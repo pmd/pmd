@@ -1774,7 +1774,7 @@ void InstanceOfExpression() #void:
                     {
                         AbstractJavaNode id = jjtree.popNode();
                         ASTRecordPattern pat = (ASTRecordPattern) jjtree.peekNode();
-                        pat.addChild(id);
+                        pat.addChild(id, pat.getNumChildren());
                     }
                   ]
             ]
