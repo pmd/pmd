@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -167,11 +168,11 @@ public class PMDParameters {
     @Parameter(names = { "--no-cache", "-no-cache" }, description = "Explicitly disable incremental analysis. The '-cache' option is ignored if this switch is present in the command line.")
     private boolean noCache = false;
 
-    @Parameter(names = { "--no-progress", "-no-progress" }, description = "Disables progress bar indicator of live analysis progress.")
-    private boolean noProgressBar = false;
-
     @Parameter(names = "--use-version", description = "The language version PMD should use when parsing source code in the language-version format, ie: 'java-1.8'")
     private List<String> languageVersions = new ArrayList<>();
+
+    @Parameter(names = { "--no-progress", "-no-progress" }, description = "Disables progress bar indicator of live analysis progress.")
+    private boolean noProgressBar = false;
 
     // this has to be a public static class, so that JCommander can use it!
     public static class PropertyConverter implements IStringConverter<Properties> {
@@ -250,7 +251,7 @@ public class PMDParameters {
                     "Please provide a parameter for source root directory (-dir or -d), database URI (-uri or -u), or file list path (-filelist).");
         }
         PMDConfiguration configuration = new PMDConfiguration();
-        configuration.setInputPaths(this.getInputPaths());
+        configuration.setInputPaths(this.getInputPaths().stream().collect(Collectors.joining(",")));
         configuration.setInputFilePath(this.getFileListPath());
         configuration.setIgnoreFilePath(this.getIgnoreListPath());
         configuration.setInputUri(this.getUri());
@@ -381,7 +382,7 @@ public class PMDParameters {
         }
         return null;
     }
-    
+
     public @Nullable String getLanguage() {
         return language;
     }

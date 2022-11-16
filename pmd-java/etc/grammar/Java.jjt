@@ -1286,6 +1286,7 @@ void MethodDeclaration() :
   ( Block() | ";" )
 }
 
+
 void FormalParameters() :
 {}
 {
@@ -1342,7 +1343,7 @@ private void ConstructorBlock() #Block:
 }
 
 void ExplicitConstructorInvocation() :
-{inExplicitConstructorInvoc = true;}
+{boolean prev = inExplicitConstructorInvoc; inExplicitConstructorInvoc = true;}
 {
    // We may only lookahead one token here, because:
    // * "this" or "super" can't appear in the primary expression in case of
@@ -1357,7 +1358,7 @@ void ExplicitConstructorInvocation() :
   | PrimaryExpression() "." [ TypeArguments() ] "super"    {jjtThis.setIsSuper();}
   )
   // reset this before parsing the arguments list
-  {inExplicitConstructorInvoc = false;}
+  {inExplicitConstructorInvoc = prev;}
   ArgumentList() ";"
 }
 
@@ -1763,11 +1764,20 @@ void InstanceOfExpression() #void:
 {}
 {
   RelationalExpression() [
-    LOOKAHEAD(1)
     ("instanceof"
         (
               LOOKAHEAD(ReferenceType() "(") RecordPattern()
-            | AnnotatedRefType() [ VariableDeclaratorId() #TypePattern(2) ]
+            | AnnotatedRefType() [
+                  VariableDeclaratorId() #TypePattern(2)
+                | RecordStructurePattern() #RecordPattern(2)
+                  [ VariableDeclaratorId()
+                    {
+                        AbstractJavaNode id = jjtree.popNode();
+                        ASTRecordPattern pat = (ASTRecordPattern) jjtree.peekNode();
+                        pat.addChild(id, pat.getNumChildren());
+                    }
+                  ]
+            ]
             | Pattern()
         )
         {
@@ -1783,7 +1793,7 @@ void InstanceOfExpression() #void:
             }
             jjtree.pushNode(top);
         }
-        {} // seems to be important?
+        {} // manipulate node before it is closed.
     ) #InfixExpression(2)
   ]
 }
@@ -2184,7 +2194,6 @@ void QualifiedAllocationExpr() #ConstructorCall(jjtree.nodeArity() + 1):
    AnnotatedClassOrInterfaceType()
    ArgumentList()
    [ AnonymousClassDeclaration() ]
-
 }
 
 
