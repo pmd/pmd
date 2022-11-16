@@ -116,7 +116,7 @@ public class CPDConfiguration extends AbstractConfiguration {
             required = false)
     private String skipBlocksPattern = Tokenizer.DEFAULT_SKIP_BLOCKS_PATTERN;
 
-    @Parameter(names = "--files", variableArity = true, description = "List of files and directories to process",
+    @Parameter(names = { "--files", "-d", "--dir" }, variableArity = true, description = "List of files and directories to process",
             required = false, converter = FileConverter.class)
     private List<File> files;
 
@@ -141,7 +141,7 @@ public class CPDConfiguration extends AbstractConfiguration {
             description = "By default CPD exits with status 4 if code duplications are found. Disable this option with '-failOnViolation false' to exit with 0 instead and just write the report.")
     private boolean failOnViolation = true;
 
-    @Parameter(names = { "--debug", "--verbose" }, description = "Debug mode.")
+    @Parameter(names = { "--debug", "--verbose", "-v", "-D" }, description = "Debug mode.")
     private boolean debug = false;
 
     // this has to be a public static class, so that JCommander can use it!
@@ -156,7 +156,7 @@ public class CPDConfiguration extends AbstractConfiguration {
         }
     }
 
-    @Parameter(names = "--encoding", description = "Character encoding to use when processing files", required = false)
+    @Parameter(names = { "--encoding", "-e" }, description = "Character encoding to use when processing files", required = false)
     public void setEncoding(String encoding) {
         this.encoding = encoding;
         setSourceEncoding(encoding);

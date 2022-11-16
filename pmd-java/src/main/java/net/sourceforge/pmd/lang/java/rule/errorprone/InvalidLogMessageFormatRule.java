@@ -242,11 +242,16 @@ public class InvalidLogMessageFormatRule extends AbstractJavaRule {
                 varName = name.getImage();
             }
         }
+        if (varName == null) {
+            return false;
+        }
+
         Scope scope = prefix == null ? null : prefix.getScope();
         while (scope != null) {
             // Try recursively to find the expected NameDeclaration
             for (NameDeclaration decl : scope.getDeclarations().keySet()) {
-                if (decl.getName().equals(varName)) {
+                // anonymous classes have no names, so decl.getName() can be null
+                if (varName.equals(decl.getName())) {
                     // If the last parameter is a lambda parameter, then we also ignore it - regardless of the type.
                     // This is actually a workaround, since type resolution doesn't resolve the types of lambda parameters.
                     return decl.getNode().getParent() instanceof ASTLambdaExpression;
