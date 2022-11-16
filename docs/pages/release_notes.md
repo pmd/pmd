@@ -30,6 +30,8 @@ This is a {{ site.pmd.release_type }} release.
     * [#4201](https://github.com/pmd/pmd/issues/4201): \[java] CommentDefaultAccessModifier should consider lombok's @<!-- -->Value
 * java-design
     * [#4200](https://github.com/pmd/pmd/issues/4200): \[java] ClassWithOnlyPrivateConstructorsShouldBeFinal should consider lombok's @<!-- -->Value
+* java-errorprone
+    * [#4185](https://github.com/pmd/pmd/issues/4185): \[java] InvalidLogMessageFormat rule produces a NPE
 
 ### API Changes
 
