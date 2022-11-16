@@ -166,6 +166,13 @@ public final class PmdParametersParseResult {
         m.put("-norulesetcompatibility", "--no-ruleset-compatibility");
         m.put("-cache", "--cache");
         m.put("-no-cache", "--no-cache");
+        m.put("-v", "--use-version"); // In PMD 7, -v will enable verbose mode
+        m.put("-V", "--verbose"); // In PMD 7, -V will show the tool version
+        m.put("-min", "--minimum-priority");
+        m.put("-version", "--use-version");
+        m.put("-language", "--use-version");
+        m.put("-l", "--use-version");
+
         SUGGESTED_REPLACEMENT = Collections.unmodifiableMap(m);
     }
 }

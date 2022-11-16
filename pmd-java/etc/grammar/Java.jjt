@@ -736,6 +736,12 @@ public class JavaParser {
     token_source.setSuppressMarker(marker);
   }
 
+  /**
+     * Keeps track during tree construction, whether we are currently building an
+     * explicit constructor invocation. Then the PrimaryExpression that may prefix
+     * a qualified super constructor call may not consume "super" tokens.
+     */
+    private boolean inExplicitConstructorInvoc = false;
 
 }
 PARSER_END(JavaParser)
@@ -1377,7 +1383,7 @@ void RecordComponent():
 {
   (RecordComponentModifier())*
   Type()
-  [ "..." {jjtThis.setVarargs();} ]
+  [ (TypeAnnotation())* "..." {jjtThis.setVarargs();} ]
   VariableDeclaratorId()
 }
 
@@ -1454,7 +1460,7 @@ void ClassOrInterfaceBodyDeclaration():
     | LOOKAHEAD({isKeyword("enum")}) EnumDeclaration(modifiers)
     | LOOKAHEAD({isKeyword("record")}) RecordDeclaration(modifiers)
     | LOOKAHEAD( [ TypeParameters() ] <IDENTIFIER> "(" ) ConstructorDeclaration(modifiers)
-    | LOOKAHEAD( Type() <IDENTIFIER> ( "[" "]" )* ( "," | "=" | ";" ) )  FieldDeclaration(modifiers)
+    | LOOKAHEAD( Type() <IDENTIFIER> ( (Annotation())* "[" "]" )* ( "," | "=" | ";" ) )  FieldDeclaration(modifiers)
     | LOOKAHEAD(2) MethodDeclaration(modifiers)
     | LOOKAHEAD(2) AnnotationTypeDeclaration(modifiers)
   )
@@ -1483,7 +1489,7 @@ void VariableDeclaratorId() :
 {
   (LOOKAHEAD(2) t=<IDENTIFIER> "." <THIS> { checkforBadExplicitReceiverParameter(); jjtThis.setExplicitReceiverParameter(); image=t.image + ".this"; }
    | t=<THIS> { checkforBadExplicitReceiverParameter(); jjtThis.setExplicitReceiverParameter(); image = t.image;}
-   | t=<IDENTIFIER> { image = t.image; } ( "[" "]"  { jjtThis.bumpArrayDepth(); })*
+   | t=<IDENTIFIER> { image = t.image; } ( (TypeAnnotation())* "[" "]"  { jjtThis.bumpArrayDepth(); })*
   )
   {
     checkForBadAssertUsage(image, "a variable name");
@@ -1526,7 +1532,7 @@ void MethodDeclarator() :
     checkForBadEnumUsage(t.image, "a method name");
     jjtThis.setImage( t.image );
   }
-  FormalParameters() ( "[" "]" )*
+  FormalParameters() ( (TypeAnnotation())* "[" "]" )*
 }
 
 
@@ -1541,8 +1547,8 @@ void FormalParameter() :
 }
 {
    ( "final" {jjtThis.setFinal(true);} | Annotation() )*
-   Type() ("|" {checkForBadMultipleExceptionsCatching();} Type())*
-   [ "..." {checkForBadVariableArgumentsUsage();} {jjtThis.setVarargs();} ]
+   Type() ("|" {checkForBadMultipleExceptionsCatching();} (TypeAnnotation())* Type())*
+   [ (TypeAnnotation())* "..." {checkForBadVariableArgumentsUsage();} {jjtThis.setVarargs();} ]
    VariableDeclaratorId()
 }
 
@@ -1559,13 +1565,14 @@ Token t;}
 }
 
 void ExplicitConstructorInvocation() :
-{}
-{
-  LOOKAHEAD("this" Arguments() ";") "this" {jjtThis.setIsThis();} Arguments() ";"
+{boolean prev = inExplicitConstructorInvoc; inExplicitConstructorInvoc = true;}
+{ (
+  LOOKAHEAD([TypeArguments()] "this" Arguments() ";") [TypeArguments()] "this" {jjtThis.setIsThis();}
 |
-  LOOKAHEAD(TypeArguments() "this" Arguments() ";") TypeArguments() "this" {jjtThis.setIsThis();} Arguments() ";"
-|
-  [ LOOKAHEAD(PrimaryExpression() ".") PrimaryExpression() "." ] [ TypeArguments() ] "super" {jjtThis.setIsSuper();} Arguments() ";"
+  [ LOOKAHEAD(PrimaryExpression() "." [TypeArguments()] "super" ) PrimaryExpression() "." ] [ TypeArguments() ] "super" {jjtThis.setIsSuper();}
+  )
+  {inExplicitConstructorInvoc = prev;}
+   Arguments() ";"
 }
 
 void Initializer() :
@@ -1586,18 +1593,16 @@ void Type():
     Token t;
 }
 {
- LOOKAHEAD(2) ReferenceType()
+ LOOKAHEAD(<IDENTIFIER> | PrimitiveType() (TypeAnnotation())* "[" "]" ) ReferenceType()
  | PrimitiveType()
 }
 
 void ReferenceType():
 {}
 {
-  // The grammar here is mildly wrong, the annotations can be before each []
-  // This will wait for #997
-   PrimitiveType() (TypeAnnotation())* ( LOOKAHEAD(2) "[" "]" { jjtThis.bumpArrayDepth(); })+
+   PrimitiveType() (LOOKAHEAD((TypeAnnotation())* "[" "]") (TypeAnnotation())* "[" "]" { jjtThis.bumpArrayDepth(); })+
   |
-   ( ClassOrInterfaceType()) (TypeAnnotation())* ( LOOKAHEAD(2) "[" "]" { jjtThis.bumpArrayDepth(); })*
+   ClassOrInterfaceType()  (LOOKAHEAD((TypeAnnotation())* "[" "]") (TypeAnnotation())* "[" "]" { jjtThis.bumpArrayDepth(); })*
 }
 
 void ClassOrInterfaceType():
@@ -1608,7 +1613,7 @@ void ClassOrInterfaceType():
 {
   t=<IDENTIFIER> {s.append(t.image);}
   [ LOOKAHEAD(2) TypeArguments() ]
-  ( LOOKAHEAD(2) "." t=<IDENTIFIER> {s.append('.').append(t.image);} [ LOOKAHEAD(2) TypeArguments() ] )*
+  ( LOOKAHEAD(2) "." (TypeAnnotation())* t=<IDENTIFIER> {s.append('.').append(t.image);} [ LOOKAHEAD(2) TypeArguments() ] )*
   {jjtThis.setImage(s.toString());}
 }
 
@@ -1740,8 +1745,6 @@ void AssignmentOperator() :
     | "|="    {jjtThis.setImage("|="); jjtThis.setCompound();}
 }
 
-// TODO Setting isTernary is unnecessary, since the node is only pushed on the stack if there is at least one child,
-// ie if it's a ternary
 void ConditionalExpression() #ConditionalExpression(>1) :
 {}
 {
@@ -1787,7 +1790,7 @@ void EqualityExpression() #EqualityExpression(>1):
 void Pattern() #void:
 {}
 {
-    LOOKAHEAD(ReferenceType() "(") RecordPattern()
+    LOOKAHEAD((Annotation())* ReferenceType() "(") RecordPattern()
     | LOOKAHEAD("(") ParenthesizedPattern()
     | TypePattern() [ GuardedPatternCondition() #GuardedPattern(2) {checkForGuardedPatterns();} ]
 }
@@ -1815,7 +1818,7 @@ void TypePattern():
 void RecordPattern():
 { checkForRecordPatterns(); }
 {
-  ReferenceType() RecordStructurePattern() [ VariableDeclaratorId() ]
+  (Annotation())* ReferenceType() RecordStructurePattern() [ VariableDeclaratorId() ]
 }
 
 void RecordStructurePattern() #ComponentPatternList:
@@ -1836,14 +1839,13 @@ void InstanceOfExpression() #InstanceOfExpression(>1):
   RelationalExpression()
   [ "instanceof"
       (
-        LOOKAHEAD("final" | "@") {checkforBadInstanceOfPattern();} Pattern()
-      |
-        LOOKAHEAD("(") Pattern() {checkForParenthesizedInstanceOfPattern();}
-      |
-        LOOKAHEAD(ReferenceType() "(") RecordPattern()
-      |
-        Type()
-        [ {checkforBadInstanceOfPattern();} VariableDeclaratorId() #TypePattern(2) ]
+      // Note: this can be simplified when support for java 18 preview is removed.
+      // Here the production Pattern is inlined to avoid that a following conditional &&
+      // be parsed as a pattern guard.
+        LOOKAHEAD("final" | (Annotation())* Type() <IDENTIFIER>) {checkforBadInstanceOfPattern();} TypePattern()
+      | LOOKAHEAD((Annotation())* ReferenceType() "(")  {checkForRecordPatterns();} RecordPattern()
+      | LOOKAHEAD("(") {checkForParenthesizedInstanceOfPattern();} ParenthesizedPattern()
+      | (Annotation())* Type()
       )
   ]
 }
@@ -1959,8 +1961,17 @@ void SwitchExpression() :
 void PrimaryExpression() :
 {}
 {
-  PrimaryPrefix() ( LOOKAHEAD(2) PrimarySuffix() )*
+  PrimaryPrefix() ( LOOKAHEAD(SuffixLAhead()) PrimarySuffix() )*
 }
+
+private void SuffixLAhead() #void:
+{}
+{
+   "::" | "[" | "("
+   | LOOKAHEAD({!inExplicitConstructorInvoc}) "."
+   | LOOKAHEAD({inExplicitConstructorInvoc}) "." (<IDENTIFIER> | TypeArguments() <IDENTIFIER> | "new") // not super or this in this case
+}
+
 
 void MemberSelector():
 {
@@ -1989,8 +2000,8 @@ void PrimaryPrefix() :
 | LOOKAHEAD(3) "(" Expression() ")"
 | AllocationExpression()
 | LOOKAHEAD( ResultType() "." "class" ) ResultType() "." "class"
-| LOOKAHEAD( Name() "::" ) Name()
-| LOOKAHEAD( ReferenceType() MethodReference() ) ReferenceType() MethodReference()
+| LOOKAHEAD( Name() "::" ) Name() // followed by method reference in PrimarySuffix
+| LOOKAHEAD( "@" | Type() "::" ) (Annotation())* (LOOKAHEAD(2) ReferenceType()|PrimitiveType()) // followed by method reference in PrimarySuffix
 | Name()
 }
 
@@ -2019,7 +2030,7 @@ void LambdaParameter() #FormalParameter :
 {
     ( "final" {jjtThis.setFinal(true);} | Annotation() )*
     LambdaParameterType()
-    [ "..." {checkForBadVariableArgumentsUsage();} {jjtThis.setVarargs();} ]
+    [(TypeAnnotation())* "..." {checkForBadVariableArgumentsUsage();} {jjtThis.setVarargs();} ]
     VariableDeclaratorId()
 }
 
@@ -2079,10 +2090,12 @@ void ArgumentList() :
 void AllocationExpression():
 {}
 {
-  "new" (TypeAnnotation())*
-  (LOOKAHEAD(2)
-    PrimitiveType() ArrayDimsAndInits()
+  "new"
+  (LOOKAHEAD((TypeAnnotation())* PrimitiveType())
+    (TypeAnnotation())* PrimitiveType() ArrayDimsAndInits()
   |
+    [TypeArguments()]
+    (TypeAnnotation())*
     ClassOrInterfaceType()
      (
       ArrayDimsAndInits()
@@ -2105,11 +2118,10 @@ void AllocationExpression():
 void ArrayDimsAndInits() :
 {}
 {
+  LOOKAHEAD((TypeAnnotation())* "[" "]")                     ((TypeAnnotation())* "[" "]" {jjtThis.bumpArrayDepth();})+ ArrayInitializer()
+| ( LOOKAHEAD((TypeAnnotation())* "[" UnaryExprNotPmStart() ) (TypeAnnotation())* "[" Expression() "]" {jjtThis.bumpArrayDepth();} )+
+  ( LOOKAHEAD((TypeAnnotation())* "[")                        (TypeAnnotation())* "[" "]"              {jjtThis.bumpArrayDepth();} )*
 
-  LOOKAHEAD(2)
-  ( LOOKAHEAD(2) (TypeAnnotation())* "[" Expression() "]" {jjtThis.bumpArrayDepth();})+ ( LOOKAHEAD(2) "[" "]" {jjtThis.bumpArrayDepth();} )*
-|
-  ( "[" "]" {jjtThis.bumpArrayDepth();})+ ArrayInitializer()
 }
 
 
@@ -2588,7 +2600,7 @@ void MemberValue():
 void  MemberValueArrayInitializer():
 {}
 {
-  "{" (MemberValue() ( LOOKAHEAD(2) "," MemberValue() )* [ "," ])? "}"
+  "{" (MemberValue() ( LOOKAHEAD(2) "," MemberValue() )*)? [ "," ] "}"
 }
 
 /*

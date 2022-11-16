@@ -10,7 +10,7 @@ usage() {
 }
 
 valid_app_options () {
-    echo "pmd, cpd, cpdgui, designer, bgastviewer, designerold, ast-dump"
+    echo "pmd, cpd, cpd-gui, designer, bgastviewer, designerold, ast-dump"
 }
 
 is_cygwin() {
@@ -159,10 +159,12 @@ function add_openjfx_classpath() {
       then
         script_exit "The environment variable JAVAFX_HOME is missing."
       else
+        # The wildcard will include only jar files, but we need to access also
+        # property files such as javafx.properties that lay bare in the dir
         if [ -n "$classpath" ]; then
-          classpath="$classpath:${JAVAFX_HOME}/lib/*"
+          classpath="$classpath:${JAVAFX_HOME}/lib/*:${JAVAFX_HOME}/lib/"
         else
-          classpath="${JAVAFX_HOME}/lib/*"
+          classpath="${JAVAFX_HOME}/lib/*:${JAVAFX_HOME}/lib/"
         fi
       fi
     fi
@@ -187,12 +189,18 @@ case "${APPNAME}" in
     readonly CLASSNAME="net.sourceforge.pmd.util.fxdesigner.DesignerStarter"
     ;;
   "designerold")
+    echo "'designerold' is deprecated and will be removed in PMD 7.0.0, try the new 'designer' instead."
     readonly CLASSNAME="net.sourceforge.pmd.util.designer.Designer"
     ;;
   "bgastviewer")
+    echo "'bgastviewer' is deprecated and will be removed in PMD 7.0.0, try the new 'designer' instead."
     readonly CLASSNAME="net.sourceforge.pmd.util.viewer.Viewer"
     ;;
   "cpdgui")
+    echo "'cpdgui' is deprecated and will be removed in PMD 7.0.0, use 'cpd-gui' instead."
+    readonly CLASSNAME="net.sourceforge.pmd.cpd.GUI"
+    ;;
+  "cpd-gui")
     readonly CLASSNAME="net.sourceforge.pmd.cpd.GUI"
     ;;
   "ast-dump")
