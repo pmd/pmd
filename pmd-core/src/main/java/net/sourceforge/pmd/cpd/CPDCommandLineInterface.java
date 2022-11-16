@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -18,7 +19,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -181,9 +181,11 @@ public final class CPDCommandLineInterface {
     private static void addFilesFromFilelist(String inputFilePath, CPD cpd, boolean recursive) {
         List<File> files = new ArrayList<>();
         try {
-            Path file = FileUtil.toExistingPath(inputFilePath);
-            for (String param : FileUtil.readFilelistEntries(file)) {
-                @NonNull Path fileToAdd = FileUtil.toExistingPath(param);
+            Path fileList = FileUtil.toExistingPath(inputFilePath);
+            for (Path fileToAdd : FileUtil.readFilelistEntries(fileList)) {
+                if (!Files.exists(fileToAdd)) {
+                    throw new FileNotFoundException(fileToAdd.toString());
+                }
                 files.add(fileToAdd.toFile());
             }
             addSourcesFilesToCPD(files, cpd, recursive);

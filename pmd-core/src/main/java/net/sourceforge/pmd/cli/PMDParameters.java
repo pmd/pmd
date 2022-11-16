@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -250,7 +251,7 @@ public class PMDParameters {
                     "Please provide a parameter for source root directory (-dir or -d), database URI (-uri or -u), or file list path (-filelist).");
         }
         PMDConfiguration configuration = new PMDConfiguration();
-        configuration.setInputPaths(this.getInputPaths());
+        configuration.setInputPaths(this.getInputPaths().stream().collect(Collectors.joining(",")));
         configuration.setInputFilePath(this.getFileListPath());
         configuration.setIgnoreFilePath(this.getIgnoreListPath());
         configuration.setInputUri(this.getUri());

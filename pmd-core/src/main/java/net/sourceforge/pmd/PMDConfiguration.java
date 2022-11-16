@@ -45,7 +45,7 @@ import net.sourceforge.pmd.util.log.internal.SimpleMessageReporter;
  * <p>The aspects related to generic PMD behavior:</p>
  * <ul>
  * <li>Suppress marker is used in source files to suppress a RuleViolation,
- * defaults to {@link PMD#SUPPRESS_MARKER}. {@link #getSuppressMarker()}</li>
+ * defaults to {@value DEFAULT_SUPPRESS_MARKER}. {@link #getSuppressMarker()}</li>
  * <li>The number of threads to create when invoking on multiple files, defaults
  * one thread per available processor. {@link #getThreads()}</li>
  * <li>A ClassLoader to use when loading classes during Rule processing (e.g.
@@ -68,9 +68,9 @@ import net.sourceforge.pmd.util.log.internal.SimpleMessageReporter;
  * <li>The character encoding of source files, defaults to the system default as
  * returned by <code>System.getProperty("file.encoding")</code>.
  * {@link #getSourceEncoding()}</li>
- * <li>A comma separated list of input paths to process for source files. This
+ * <li>A list of input paths to process for source files. This
  * may include files, directories, archives (e.g. ZIP files), etc.
- * {@link #getInputPaths()}</li>
+ * {@link #getInputPathList()}</li>
  * <li>A flag which controls, whether {@link RuleSetLoader#enableCompatibility(boolean)} filter
  * should be used or not: #isRuleSetFactoryCompatibilityEnabled;
  * </ul>
@@ -469,32 +469,6 @@ public class PMDConfiguration extends AbstractConfiguration {
         this.minimumPriority = minimumPriority;
     }
 
-    /**
-     * Get the comma separated list of input paths to process for source files.
-     *
-     * @return A comma separated list.
-     *
-     * @deprecated Use {@link #getAllInputPaths()}
-     */
-    @Deprecated
-    public @Nullable String getInputPaths() {
-        return inputPaths.isEmpty() ? null : String.join(",", inputPaths);
-    }
-
-    /**
-     * Returns an unmodifiable list.
-     *
-     * @deprecated Use {@link #getInputPathList()}
-     */
-    @Deprecated
-    public List<String> getAllInputPaths() {
-        final List<String> ret = new ArrayList<>(inputPaths.size());
-        for (final Path p : inputPaths) {
-            ret.add(p.toString());
-        }
-
-        return Collections.unmodifiableList(ret);
-    }
 
     /**
      * Returns the list of input paths to explore. This is an
@@ -514,6 +488,9 @@ public class PMDConfiguration extends AbstractConfiguration {
      */
     @Deprecated
     public void setInputPaths(String inputPaths) {
+        if (inputPaths.isEmpty()) {
+            return;
+        }
         List<Path> paths = new ArrayList<>();
         for (String s : inputPaths.split(",")) {
             paths.add(Paths.get(s));
@@ -523,36 +500,12 @@ public class PMDConfiguration extends AbstractConfiguration {
 
     /**
      * Set the input paths to the given list of paths.
-     * @throws NullPointerException If the parameter is null
-     * @deprecated Use {@link #setInputPathList(List)}
-     */
-    @Deprecated
-    public void setInputPaths(List<String> inputPaths) {
-        final List<Path> paths = new ArrayList<>(inputPaths.size());
-        for (String s : inputPaths) {
-            paths.add(Paths.get(s));
-        }
-        this.inputPaths = paths;
-    }
-
-    /**
-     * Set the input paths to the given list of paths.
-     * @throws NullPointerException If the parameter is null
+     *
+     * @throws NullPointerException If the parameter is null or contains a null value
      */
     public void setInputPathList(final List<Path> inputPaths) {
+        AssertionUtil.requireContainsNoNullValue("input paths", inputPaths);
         this.inputPaths = new ArrayList<>(inputPaths);
-    }
-
-    /**
-     * Add an input path. It is not split on commas.
-     *
-     * @throws NullPointerException If the parameter is null
-     * @deprecated Use {@link #addInputPath(Path)}
-     */
-    @Deprecated
-    public void addInputPath(String inputPath) {
-        Objects.requireNonNull(inputPath);
-        this.inputPaths.add(Paths.get(inputPath));
     }
 
     /**
@@ -565,25 +518,9 @@ public class PMDConfiguration extends AbstractConfiguration {
         this.inputPaths.add(inputPath);
     }
 
-    /**
-     * @deprecated Use {@link #getInputFile()}
-     */
-    @Deprecated
-    public String getInputFilePath() {
-        return inputFilePath == null ? null : inputFilePath.toString();
-    }
-
     /** Returns the path to the file list text file. */
     public @Nullable Path getInputFile() {
         return inputFilePath;
-    }
-
-    /**
-     * @deprecated Use {@link #getIgnoreFile()}
-     */
-    @Deprecated
-    public String getIgnoreFilePath() {
-        return ignoreFilePath == null ? null : ignoreFilePath.toString();
     }
 
     public @Nullable Path getIgnoreFile() {
@@ -632,17 +569,6 @@ public class PMDConfiguration extends AbstractConfiguration {
      */
     public void setIgnoreFilePath(Path ignoreFilePath) {
         this.ignoreFilePath = ignoreFilePath;
-    }
-
-    /**
-     * Get the input URI to process for source code objects.
-     *
-     * @return URI
-     * @deprecated Use {@link #getUri}
-     */
-    @Deprecated
-    public String getInputUri() {
-        return inputUri == null ? null : inputUri.toString();
     }
 
     /**
