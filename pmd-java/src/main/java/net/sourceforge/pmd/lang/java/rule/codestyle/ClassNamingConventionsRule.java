@@ -44,6 +44,7 @@ public class ClassNamingConventionsRule extends AbstractNamingConventionRule<AST
         definePropertyDescriptor(enumerationRegex);
         definePropertyDescriptor(annotationRegex);
         definePropertyDescriptor(utilityClassRegex);
+        definePropertyDescriptor(testClassRegex);
     }
 
 
@@ -60,7 +61,7 @@ public class ClassNamingConventionsRule extends AbstractNamingConventionRule<AST
             checkMatches(node, testClassRegex, data);
         } else if (JavaRuleUtil.isUtilityClass(node)) {
             checkMatches(node, utilityClassRegex, data);
-        }else if (node.isInterface()) {
+        } else if (node.isInterface()) {
             checkMatches(node, interfaceRegex, data);
         } else {
             checkMatches(node, classRegex, data);
