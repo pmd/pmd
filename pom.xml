@@ -85,13 +85,14 @@
 
 
         <kotlin.compiler.jvmTarget>${maven.compiler.test.target}</kotlin.compiler.jvmTarget>
-        <kotlin.version>1.7.0</kotlin.version>
-        <kotest.version>4.4.3</kotest.version>
-        <dokka.version>1.6.21</dokka.version>
+        <kotlin.version>1.7.20</kotlin.version>
+        <kotest.version>5.5.4</kotest.version>
+        <junit5.version>5.8.2</junit5.version> <!-- needed by kotest -->
+        <dokka.version>1.7.20</dokka.version>
 
 
         <javacc.version>5.0</javacc.version>
-        <surefire.version>3.0.0-M5</surefire.version>
+        <surefire.version>3.0.0-M7</surefire.version>
         <checkstyle.version>10.3.3</checkstyle.version>
         <checkstyle.plugin.version>3.2.0</checkstyle.plugin.version>
         <pmd.plugin.version>3.19.0</pmd.plugin.version>
@@ -275,7 +276,7 @@
                         <dependency>
                             <groupId>org.junit.vintage</groupId>
                             <artifactId>junit-vintage-engine</artifactId>
-                            <version>5.7.0</version>
+                            <version>${junit5.version}</version>
                         </dependency>
                         <!-- Junit5 Platform Engine for Kotlin Tests -->
                         <dependency>
@@ -899,15 +900,6 @@
                 <artifactId>kotest-runner-junit5-jvm</artifactId>
                 <version>${kotest.version}</version>
                 <scope>test</scope>
-                <exclusions>
-                    <!-- exclude transitive dependency to fix CVE-2021-29425
-                         kotest 4.4.3 depends on commons-io 2.6
-                      -->
-                    <exclusion>
-                        <groupId>commons-io</groupId>
-                        <artifactId>commons-io</artifactId>
-                    </exclusion>
-                </exclusions>
             </dependency>
             <dependency>
                 <groupId>io.kotest</groupId>
@@ -927,16 +919,6 @@
                 <artifactId>annotations</artifactId>
                 <version>13.0</version>
                 <scope>test</scope>
-            </dependency>
-
-            <!-- transitive dependency through io.kotest/kotest-runner-junit5-jvm@4.4.3
-                 upgrade to 4.8.112 to fix [sonatype-2021-1074] CWE-611: Improper Restriction of XML External Entity Reference ('XXE')
-                 https://github.com/classgraph/classgraph/releases/tag/classgraph-4.8.112
-              -->
-            <dependency>
-                <groupId>io.github.classgraph</groupId>
-                <artifactId>classgraph</artifactId>
-                <version>4.8.112</version>
             </dependency>
 
             <!-- transitive dependency through org.scalameta:trees_2.13
