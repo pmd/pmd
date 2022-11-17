@@ -11,12 +11,14 @@ import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeBodyDeclaration.DeclarationKind;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration.TypeKind;
+import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBody;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTInitializer;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.AccessNode;
 import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
+import net.sourceforge.pmd.lang.java.rule.AbstractJUnitRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 
@@ -31,6 +33,9 @@ public class ClassNamingConventionsRule extends AbstractNamingConventionRule<AST
     private final PropertyDescriptor<Pattern> enumerationRegex = defaultProp("enum").build();
     private final PropertyDescriptor<Pattern> annotationRegex = defaultProp("annotation").build();
     private final PropertyDescriptor<Pattern> utilityClassRegex = defaultProp("utility class").build();
+    private final PropertyDescriptor<Pattern> testClassRegex = defaultProp("test class")
+            .desc("Regex which applies to test class names. Since PMD 6.52.0.")
+            .defaultValue("^Test.*$|^[A-Z][a-zA-Z0-9]*Test(s|Case)?$").build();
 
 
     public ClassNamingConventionsRule() {
@@ -40,6 +45,7 @@ public class ClassNamingConventionsRule extends AbstractNamingConventionRule<AST
         definePropertyDescriptor(enumerationRegex);
         definePropertyDescriptor(annotationRegex);
         definePropertyDescriptor(utilityClassRegex);
+        definePropertyDescriptor(testClassRegex);
 
         addRuleChainVisit(ASTClassOrInterfaceDeclaration.class);
         addRuleChainVisit(ASTEnumDeclaration.class);
@@ -108,12 +114,17 @@ public class ClassNamingConventionsRule extends AbstractNamingConventionRule<AST
                 && String[].class.equals(decl.getFormalParameters().iterator().next().getType());
     }
 
+    private boolean isTestClass(ASTClassOrInterfaceDeclaration node) {
+        return !node.isNested() && AbstractJUnitRule.isTestClass(node.getFirstChildOfType(ASTClassOrInterfaceBody.class));
+    }
 
     @Override
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
 
         if (node.isAbstract()) {
             checkMatches(node, abstractClassRegex, data);
+        } else if (isTestClass(node)) {
+            checkMatches(node, testClassRegex, data);
         } else if (isUtilityClass(node)) {
             checkMatches(node, utilityClassRegex, data);
         } else if (node.isInterface()) {
