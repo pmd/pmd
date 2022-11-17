@@ -22,6 +22,8 @@ This is a {{ site.pmd.release_type }} release.
   JUnit4/5 or TestNG.
 
 ### Fixed Issues
+* cli
+    * [#4215](https://github.com/pmd/pmd/discussions/4215): NullPointerException when trying to open designer
 * java
     * [#3643](https://github.com/pmd/pmd/issues/3643): \[java] More parser edge cases
     * [#4152](https://github.com/pmd/pmd/issues/4152): \[java] Parse error on array type annotations
