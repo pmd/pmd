@@ -81,6 +81,7 @@ import kotlin.reflect.KClass
 @Suppress("DEPRECATION")
 class ApexTreeBuilder(val sourceCode: String, val parserOptions: ApexParserOptions) {
     private val sourceCodePositioner = SourceCodePositioner(sourceCode)
+    private val commentBuilder = ApexCommentBuilder(sourceCode, parserOptions)
 
     /** Builds and returns an [ApexNode] AST corresponding to the given [root] node. */
     fun buildTree(root: CompilationUnit): ApexRootNode<TypeDeclaration> {
@@ -92,14 +93,15 @@ class ApexTreeBuilder(val sourceCode: String, val parserOptions: ApexParserOptio
         // Generate additional nodes
         generateAdditional(result)
 
-        // Call additional methods
-        callAdditional(result)
+        postProcessTree(result)
+
+        commentBuilder.addFormalComments()
 
         return result
     }
 
     /** Calls additional methods for each node in [root] using a post-order traversal. */
-    private fun callAdditional(root: ApexNode<*>) =
+    private fun postProcessTree(root: ApexNode<*>) =
         root.jjtAccept(
             object : ApexParserVisitorAdapter() {
                 override fun visit(node: ApexNode<*>?, data: Any?): Any? =
@@ -107,6 +109,15 @@ class ApexTreeBuilder(val sourceCode: String, val parserOptions: ApexParserOptio
                         if (node is AbstractApexNode) {
                             node.handleSourceCode(sourceCode)
                             node.calculateLineNumbers(sourceCodePositioner)
+                        }
+                        if (node is AbstractApexCommentContainerNode<*>) {
+                            node.setContainsComment(commentBuilder.containsComments(node));
+                        }
+                        when (node) {
+                          is ASTUserInterface,
+                          is ASTProperty,
+                          is ASTUserClass,
+                          is ASTMethod -> commentBuilder.buildFormalComment(node)
                         }
                     }
             },
@@ -750,6 +761,5 @@ class ApexTreeBuilder(val sourceCode: String, val parserOptions: ApexParserOptio
     }
 
     val suppressMap
-        get() = emptyMap<Int, String>()
-    // TODO(b/239648780)
+        get() = commentBuilder.getSuppressMap()
 }

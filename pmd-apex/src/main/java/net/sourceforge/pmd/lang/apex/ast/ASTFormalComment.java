@@ -4,27 +4,16 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import org.antlr.runtime.Token;
+import org.antlr.v4.runtime.Token;
 
-import com.google.summit.ast.Node;
+import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
 
+public class ASTFormalComment extends AbstractApexNode.Empty {
 
-// TODO(b/243905823)
-public class ASTFormalComment extends AbstractApexNode.Single<Node> {
-
-    private final String image;
+    private final Token token;
 
     ASTFormalComment(Token token) {
-        // super(new AstComment(token));
-        super(null);
-        this.image = token.getText();
-    }
-
-    @Deprecated
-    public ASTFormalComment(String token) {
-        // super(new AstComment(null));
-        super(null);
-        image = token;
+        this.token = token;
     }
 
     @Override
@@ -34,50 +23,29 @@ public class ASTFormalComment extends AbstractApexNode.Single<Node> {
 
     @Override
     public String getImage() {
-        return image;
+        return token.getText();
     }
 
     public String getToken() {
-        return image;
+        return token.getText();
     }
 
-    /*
-    @Deprecated
-    @InternalApi
-    public static final class AstComment implements AstNode {
-
-        private final Location loc;
-
-        private AstComment(Token token) {
-            this.loc = token == null
-                       ? Locations.NONE
-                       : Locations.loc(token.getLine(), token.getCharPositionInLine() + 1);
-        }
-
-        @Override
-        public Location getLoc() {
-            return loc;
-        }
-
-        @Override
-        public <T extends Scope> void traverse(AstVisitor<T> astVisitor, T t) {
-            // do nothing
-        }
-
-        @Override
-        public void validate(SymbolResolver symbolResolver, ValidationScope validationScope) {
-            // do nothing
-        }
-
-        @Override
-        public void emit(Emitter emitter) {
-            // do nothing
-        }
-
-        @Override
-        public TypeInfo getDefiningType() {
-            return TypeInfos.VOID;
-        }
+    @Override
+    void calculateLineNumbers(SourceCodePositioner positioner) {
+        this.beginLine = positioner.lineNumberFromOffset(token.getStartIndex());
+        this.beginColumn = positioner.columnFromOffset(this.beginLine, token.getStartIndex());
+        this.endLine = positioner.lineNumberFromOffset(token.getStopIndex());
+        this.endColumn = positioner.columnFromOffset(this.endLine, token.getStopIndex());
     }
-     */
+
+    @Override
+    public boolean hasRealLoc() {
+        return true;
+    }
+
+    @Override
+    public String getLocation() {
+        return String.format("[%d:%d,%d:%d]", this.beginLine, this.beginColumn,
+                this.endLine, this.endColumn);
+    }
 }
