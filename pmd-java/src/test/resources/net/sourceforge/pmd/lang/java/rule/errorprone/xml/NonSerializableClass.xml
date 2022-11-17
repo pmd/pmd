@@ -9,17 +9,17 @@
         <expected-problems>1</expected-problems>
         <expected-linenumbers>6</expected-linenumbers>
         <expected-messages>
-            <message>The field 'stream' of serializable class 'Buzz' is of non-serializable type 'java.io.InputStream'.</message>
+            <message>The field 'stream' of serializable class 'Buzz' is of non-serializable type 'java.io.FileInputStream'.</message>
         </expected-messages>
         <code><![CDATA[
 class Buzz implements java.io.Serializable {
     private static final long serialVersionUID = 1L;
 
-    private transient int someFoo;      // good, it's transient
-    private static int otherFoo;        // also OK, it's static
-    private java.io.InputStream stream; // bad - InputStream is not serializable
+    private transient int someFoo;          // good, it's transient
+    private static int otherFoo;            // also OK, it's static
+    private java.io.FileInputStream stream; // bad - FileInputStream is not serializable
 
-    public void setStream(InputStream stream) {
+    public void setStream(FileInputStream stream) {
         this.stream = stream;
     }
 
@@ -43,25 +43,25 @@ public class Foo implements Serializable {
     </test-code>
 
     <test-code>
-        <description>private static InputStream</description>
+        <description>private static FileInputStream</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-import java.io.InputStream;
+import java.io.FileInputStream;
 import java.io.Serializable;
 public class Foo implements Serializable {
-    private static InputStream foo;
+    private static FileInputStream foo;
 }
         ]]></code>
     </test-code>
 
     <test-code>
-        <description>private transient InputStream</description>
+        <description>private transient FileInputStream</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-import java.io.InputStream;
+import java.io.FileInputStream;
 import java.io.Serializable;
 public class Foo implements Serializable {
-    private transient InputStream foo;
+    private transient FileInputStream foo;
 }
         ]]></code>
     </test-code>
@@ -70,9 +70,9 @@ public class Foo implements Serializable {
         <description>InputStream in a non-serializable class is OK</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-import java.io.InputStream;
+import java.io.FileInputStream;
 public class Foo {
-    private InputStream foo;
+    private FileInputStream foo;
 }
 ]]></code>
     </test-code>
@@ -81,10 +81,10 @@ public class Foo {
         <description>interface</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-import java.io.InputStream;
+import java.io.FileInputStream;
 import java.io.Serializable;
 public interface Foo extends Serializable {
-    public InputStream getFoo();
+    public FileInputStream getFoo();
 }
         ]]></code>
     </test-code>
@@ -93,11 +93,11 @@ public interface Foo extends Serializable {
         <description>@SuppressWarnings("serial")</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-import java.io.InputStream;
+import java.io.FileInputStream;
 import java.io.Serializable;
 @SuppressWarnings("serial")
 public class Foo implements Serializable {
-    private InputStream foo;
+    private FileInputStream foo;
 }
         ]]></code>
     </test-code>
@@ -121,12 +121,12 @@ class F<X, Y> {}
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import java.io.Externalizable;
-import java.io.InputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectOutput;
 import java.io.ObjectInput;
 class Foo implements Externalizable {
-    private InputStream foo;
+    private FileInputStream foo;
     void writeExternal(ObjectOutput out) throws IOException {}
     void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {}
 }
@@ -137,12 +137,12 @@ class Foo implements Externalizable {
         <description>Ignore manual serialization</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-import java.io.InputStream;
+import java.io.FileInputStream;
 import java.io.Serializable;
 import java.io.IOException;
 import java.io.ObjectStreamException;
 class Foo implements Serializable {
-    private InputStream foo; // no violation, because writeObject/readObject is present
+    private FileInputStream foo; // no violation, because writeObject/readObject is present
     private void writeObject(java.io.ObjectOutputStream out) throws IOException {}
     private void readObject(java.io.ObjectInputStream in) throws IOException, ClassNotFoundException {}
     private void readObjectNoData() throws ObjectStreamException {}
@@ -154,11 +154,11 @@ class Foo implements Serializable {
         <description>Ignore manual serialization with replacement object</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-import java.io.InputStream;
+import java.io.FileInputStream;
 import java.io.Serializable;
 import java.io.ObjectStreamException;
 class Foo implements Serializable {
-    private InputStream foo; // no violation, because writeReplace/readResolve is present
+    private FileInputStream foo; // no violation, because writeReplace/readResolve is present
     private Object writeReplace() throws ObjectStreamException {}
     private Object readResolve() throws ObjectStreamException {}
 }
@@ -170,7 +170,7 @@ class Foo implements Serializable {
         <expected-problems>1</expected-problems>
         <expected-linenumbers>6</expected-linenumbers>
         <expected-messages>
-            <message>The field 'nonSerializableMember' of serializable class 'sample.OuterClass$InnerEnum' is of non-serializable type 'java.lang.Object'.</message>
+            <message>The field 'nonSerializableMember' of serializable class 'sample.OuterClass$InnerEnum' is of non-serializable type 'java.io.FileInputStream'.</message>
         </expected-messages>
         <code><![CDATA[
 package sample;
@@ -178,9 +178,50 @@ class OuterClass {
     enum InnerEnum {
         A;
 
-        private Object nonSerializableMember;
+        private java.io.FileInputStream nonSerializableMember;
     }
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>Ignore fields that are interfaces or abstract classes</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.AbstractList;
+import java.util.ArrayList;
+import java.util.List;
+public class Foo<T> implements Serializable {
+    private List<String> names = new ArrayList<>();
+    private AbstractList<String> anotherList;
+    private T someData;
+    private Object canBeAnything;
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Check fields that are interfaces or abstract classes</description>
+        <rule-property name="checkAbstractTypes">true</rule-property>
+        <expected-problems>4</expected-problems>
+        <expected-linenumbers>5,6,7,8</expected-linenumbers>
+        <expected-messages>
+            <message>The field 'names' of serializable class 'Foo' is of non-serializable type 'java.util.List'.</message>
+            <message>The field 'anotherList' of serializable class 'Foo' is of non-serializable type 'java.util.AbstractList'.</message>
+            <message>The field 'someData' of serializable class 'Foo' is of non-serializable type 'java.lang.Object'.</message>
+            <message>The field 'canBeAnything' of serializable class 'Foo' is of non-serializable type 'java.lang.Object'.</message>
+        </expected-messages>
+        <code><![CDATA[
+import java.util.AbstractList;
+import java.util.ArrayList;
+import java.util.List;
+public class Foo<T> implements Serializable {
+    private List<String> names = new ArrayList<>();
+    private AbstractList<String> anotherList;
+    private T someData;
+    private Object canBeAnything;
+}
+]]></code>
+    </test-code>
+
 </test-data>
