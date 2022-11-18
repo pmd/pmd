@@ -4,11 +4,11 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import com.google.summit.ast.expression.Expression;
+import com.google.summit.ast.statement.ExpressionStatement;
 
-public class ASTExpressionStatement extends AbstractApexNode.Single<Expression> {
+public class ASTExpressionStatement extends AbstractApexNode.Single<ExpressionStatement> {
 
-    ASTExpressionStatement(Expression expression) {
+    ASTExpressionStatement(ExpressionStatement expression) {
         super(expression);
     }
 

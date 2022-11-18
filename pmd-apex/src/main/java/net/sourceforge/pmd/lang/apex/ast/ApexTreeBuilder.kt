@@ -120,7 +120,7 @@ class ApexTreeBuilder(val sourceCode: String, val parserOptions: ApexParserOptio
             is FieldDeclaration -> buildFieldDeclaration(node)
             is CompoundStatement -> ASTBlockStatement(node).apply { buildChildren(node, parent = this) }
             is ExpressionStatement ->
-                ASTExpressionStatement(node.expression).apply { buildChildren(node, parent = this) }
+                ASTExpressionStatement(node).apply { buildChildren(node, parent = this) }
             is AssignExpression ->
                 ASTAssignmentExpression(node).apply { buildChildren(node, parent = this) }
             is ArrayExpression -> buildArrayExpression(node)
@@ -610,7 +610,7 @@ class ApexTreeBuilder(val sourceCode: String, val parserOptions: ApexParserOptio
     private fun buildForLoopStatement(node: ForLoopStatement) =
         ASTForLoopStatement(node).apply {
             fun buildInitialization(expr: Expression) =
-                ASTExpressionStatement(expr).apply { buildAndSetParent(expr, parent = this) }
+                ASTExpression(expr).apply { buildAndSetParent(expr, parent = this) }
 
             if (node.declarations.isNotEmpty()) {
                 buildVariableDeclarations(node.declarations).also { it.setParent(this) }
