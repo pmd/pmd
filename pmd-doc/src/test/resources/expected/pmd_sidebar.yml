@@ -57,6 +57,15 @@ entries:
     - title: null
       output: web, pdf
       subfolders:
+      - title: Kotlin Rules
+        output: web, pdf
+        subfolderitems:
+        - title: Index
+          output: web, pdf
+          url: /pmd_rules_kotlin.html
+    - title: null
+      output: web, pdf
+      subfolders:
       - title: Maven POM Rules
         output: web, pdf
         subfolderitems:
@@ -99,6 +108,15 @@ entries:
         - title: Index
           output: web, pdf
           url: /pmd_rules_scala.html
+    - title: null
+      output: web, pdf
+      subfolders:
+      - title: Swift Rules
+        output: web, pdf
+        subfolderitems:
+        - title: Index
+          output: web, pdf
+          url: /pmd_rules_swift.html
     - title: null
       output: web, pdf
       subfolders:

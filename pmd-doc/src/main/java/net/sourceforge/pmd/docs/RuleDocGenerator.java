@@ -105,7 +105,7 @@ public class RuleDocGenerator {
     }
 
     private void ensureAllLanguages(Map<Language, List<RuleSet>> sortedRulesets) {
-        for (Language language : LanguageRegistry.findWithRuleSupport()) {
+        for (Language language : LanguageRegistry.PMD.getLanguages()) {
             sortedRulesets.putIfAbsent(language, Collections.emptyList());
         }
     }
