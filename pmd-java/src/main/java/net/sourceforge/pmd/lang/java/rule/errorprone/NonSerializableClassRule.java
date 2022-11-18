@@ -12,20 +12,30 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.lang.reflect.Modifier;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
+import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
+import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.TypeDefinitionType;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.util.StringUtil;
 
 // Note: This rule has been formerly known as "BeanMembersShouldSerialize".
 public class NonSerializableClassRule extends AbstractJavaRule {
@@ -39,39 +49,41 @@ public class NonSerializableClassRule extends AbstractJavaRule {
             .defaultValue(false)
             .build();
 
+    private static final String SERIAL_PERSISTENT_FIELDS_TYPE = "java.io.ObjectStreamField[]";
+    private static final String SERIAL_PERSISTENT_FIELDS_NAME = "serialPersistentFields";
+
+    private Map<ASTAnyTypeDeclaration, Set<String>> cachedPersistentFieldNames;
+
     public NonSerializableClassRule() {
         definePropertyDescriptor(PREFIX_DESCRIPTOR);
         definePropertyDescriptor(CHECK_ABSTRACT_TYPES);
         addRuleChainVisit(ASTVariableDeclaratorId.class);
+        addRuleChainVisit(ASTTypeDeclaration.class);
     }
 
-    private boolean hasManualSerializationMethod(ASTAnyTypeDeclaration node) {
-        boolean hasWriteObject = false;
-        boolean hasReadObject = false;
-        boolean hasWriteReplace = false;
-        boolean hasReadResolve = false;
-        for (ASTAnyTypeBodyDeclaration decl : node.getDeclarations()) {
-            if (decl.getKind() == ASTAnyTypeBodyDeclaration.DeclarationKind.METHOD) {
-                ASTMethodDeclaration methodDeclaration = decl.getFirstChildOfType(ASTMethodDeclaration.class);
-                String methodName = methodDeclaration.getName();
-                int parameterCount = methodDeclaration.getFormalParameters().size();
-                ASTFormalParameter firstParameter = methodDeclaration.getFormalParameters().getFirstChildOfType(ASTFormalParameter.class);
-                ASTType resultType = methodDeclaration.getResultType().getFirstChildOfType(ASTType.class);
+    @Override
+    public void start(RuleContext ctx) {
+        cachedPersistentFieldNames = new HashMap<>();
+    }
 
-                hasWriteObject |= "writeObject".equals(methodName) && parameterCount == 1
-                    && TypeTestUtil.isA(ObjectOutputStream.class, firstParameter)
-                    && resultType == null;
-                hasReadObject |= "readObject".equals(methodName) && parameterCount == 1
-                    && TypeTestUtil.isA(ObjectInputStream.class, firstParameter)
-                    && resultType == null;
-                hasWriteReplace |= "writeReplace".equals(methodName) && parameterCount == 0
-                        && TypeTestUtil.isExactlyA(Object.class, resultType);
-                hasReadResolve |= "readResolve".equals(methodName) && parameterCount == 0
-                        && TypeTestUtil.isExactlyA(Object.class, resultType);
+    @Override
+    public Object visit(ASTTypeDeclaration node, Object data) {
+        ASTAnyTypeDeclaration anyTypeDeclaration = node.getFirstChildOfType(ASTAnyTypeDeclaration.class);
+        for (ASTFieldDeclaration field : anyTypeDeclaration.findDescendantsOfType(ASTFieldDeclaration.class)) {
+            for (ASTVariableDeclaratorId varId : field) {
+                if (SERIAL_PERSISTENT_FIELDS_NAME.equals(varId.getName())) {
+                    if (!TypeTestUtil.isA(SERIAL_PERSISTENT_FIELDS_TYPE, field)
+                            || !field.isPrivate()
+                            || !field.isStatic()
+                            || !field.isFinal()) {
+                        asCtx(data).addViolationWithMessage(varId, "The field ''{0}'' should be private static final with type ''{1}''.",
+                                varId.getName(), SERIAL_PERSISTENT_FIELDS_TYPE);
+                    }
+                }
             }
         }
 
-        return hasWriteObject && hasReadObject || hasWriteReplace && hasReadResolve;
+        return null;
     }
 
     @Override
@@ -88,10 +100,39 @@ public class NonSerializableClassRule extends AbstractJavaRule {
             return null;
         }
 
-        if (isNonStaticNonTransientField(node) && isNotSerializable(node)) {
+        if (isPersistentField(typeDeclaration, node) && isNotSerializable(node)) {
             asCtx(data).addViolation(node, node.getName(), typeDeclaration.getQualifiedName().toString(), getTypeName(node.getType()));
         }
         return null;
+    }
+
+    private boolean hasManualSerializationMethod(ASTAnyTypeDeclaration node) {
+        boolean hasWriteObject = false;
+        boolean hasReadObject = false;
+        boolean hasWriteReplace = false;
+        boolean hasReadResolve = false;
+        for (ASTAnyTypeBodyDeclaration decl : node.getDeclarations()) {
+            if (decl.getKind() == ASTAnyTypeBodyDeclaration.DeclarationKind.METHOD) {
+                ASTMethodDeclaration methodDeclaration = decl.getFirstChildOfType(ASTMethodDeclaration.class);
+                String methodName = methodDeclaration.getName();
+                int parameterCount = methodDeclaration.getFormalParameters().size();
+                ASTFormalParameter firstParameter = methodDeclaration.getFormalParameters().getFirstChildOfType(ASTFormalParameter.class);
+                ASTType resultType = methodDeclaration.getResultType().getFirstChildOfType(ASTType.class);
+
+                hasWriteObject |= "writeObject".equals(methodName) && parameterCount == 1
+                        && TypeTestUtil.isA(ObjectOutputStream.class, firstParameter)
+                        && resultType == null;
+                hasReadObject |= "readObject".equals(methodName) && parameterCount == 1
+                        && TypeTestUtil.isA(ObjectInputStream.class, firstParameter)
+                        && resultType == null;
+                hasWriteReplace |= "writeReplace".equals(methodName) && parameterCount == 0
+                        && TypeTestUtil.isExactlyA(Object.class, resultType);
+                hasReadResolve |= "readResolve".equals(methodName) && parameterCount == 0
+                        && TypeTestUtil.isExactlyA(Object.class, resultType);
+            }
+        }
+
+        return hasWriteObject && hasReadObject || hasWriteReplace && hasReadResolve;
     }
 
     private boolean isNotSerializable(TypeNode node) {
@@ -121,8 +162,51 @@ public class NonSerializableClassRule extends AbstractJavaRule {
         return clazz != null ? clazz.getName() : "<unknown>";
     }
 
-    private boolean isNonStaticNonTransientField(ASTVariableDeclaratorId node) {
-        if (node.isField()) {
+    private Set<String> determinePersistentFields(ASTAnyTypeDeclaration typeDeclaration) {
+        if (cachedPersistentFieldNames.containsKey(typeDeclaration)) {
+            return cachedPersistentFieldNames.get(typeDeclaration);
+        }
+
+        ASTVariableDeclarator persistentFieldsDecl = null;
+        for (ASTFieldDeclaration field : typeDeclaration.findDescendantsOfType(ASTFieldDeclaration.class)) {
+            if (TypeTestUtil.isA(SERIAL_PERSISTENT_FIELDS_TYPE, field)
+                    && field.isPrivate() && field.isStatic() && field.isFinal()) {
+                for (ASTVariableDeclaratorId varId : field) {
+                    if (SERIAL_PERSISTENT_FIELDS_NAME.equals(varId.getName())) {
+                        persistentFieldsDecl = varId.getFirstParentOfType(ASTVariableDeclarator.class);
+                    }
+                }
+            }
+        }
+        Set<String> fields = null;
+        if (persistentFieldsDecl != null) {
+            fields = new HashSet<>();
+            for (ASTLiteral literal : persistentFieldsDecl.findDescendantsOfType(ASTLiteral.class)) {
+                if (literal.isStringLiteral()) {
+                    fields.add(StringUtil.removeDoubleQuotes(literal.getImage()));
+                }
+            }
+            if (fields.isEmpty()) {
+                // field initializer might be a reference to a constant
+                ASTName reference = persistentFieldsDecl.getFirstDescendantOfType(ASTName.class);
+                if (reference.getNameDeclaration() != null) {
+                    for (ASTLiteral literal : reference.getNameDeclaration().getNode().getParent().findDescendantsOfType(ASTLiteral.class)) {
+                        if (literal.isStringLiteral()) {
+                            fields.add(StringUtil.removeDoubleQuotes(literal.getImage()));
+                        }
+                    }
+                }
+            }
+        }
+
+        cachedPersistentFieldNames.put(typeDeclaration, fields);
+        return fields;
+    }
+
+    private boolean isPersistentField(ASTAnyTypeDeclaration typeDeclaration, ASTVariableDeclaratorId node) {
+        Set<String> persistentFields = determinePersistentFields(typeDeclaration);
+
+        if (node.isField() && (persistentFields == null || persistentFields.contains(node.getName()))) {
             ASTFieldDeclaration field = node.getFirstParentOfType(ASTFieldDeclaration.class);
             return !field.isStatic() && !field.isTransient();
         }

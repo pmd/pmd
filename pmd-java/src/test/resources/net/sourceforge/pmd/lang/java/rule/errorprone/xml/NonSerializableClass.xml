@@ -224,4 +224,131 @@ public class Foo<T> implements Serializable {
 ]]></code>
     </test-code>
 
+    <test-code>
+        <description>Take serialPersistentFields into account - variant 1</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.io.FileInputStream;
+import java.io.ObjectStreamField;
+import java.io.Serializable;
+class Buzz implements Serializable {
+    private static final long serialVersionUID = 1L;
+    private static final ObjectStreamField[] serialPersistentFields = { new ObjectStreamField("name", String.class) };
+
+    private FileInputStream stream; // not serializable, but that's ok, because it is not among the persistent fields
+    private String name;
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Take serialPersistentFields into account - variant 2</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.io.FileInputStream;
+import java.io.ObjectStreamField;
+import java.io.Serializable;
+class Buzz implements Serializable {
+    public static final ObjectStreamField[] FIELDS = { new ObjectStreamField("name", String.class) };
+
+    private static final long serialVersionUID = 1L;
+    private static final ObjectStreamField[] serialPersistentFields = FIELDS;
+
+    private FileInputStream stream; // not serializable, but that's ok, because it is not among the persistent fields
+    private String name;
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Take serialPersistentFields into account - variant 3</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>13</expected-linenumbers>
+        <expected-messages>
+            <message>The field 'stream' of serializable class 'Buzz' is of non-serializable type 'java.io.FileInputStream'.</message>
+        </expected-messages>
+        <code><![CDATA[
+import java.io.FileInputStream;
+import java.io.ObjectStreamField;
+import java.io.Serializable;
+class Buzz implements Serializable {
+    public static final ObjectStreamField[] FIELDS = {
+        new ObjectStreamField("name", String.class),
+        new ObjectStreamField("stream", FileInputStream.class),
+     };
+
+    private static final long serialVersionUID = 1L;
+    private static final ObjectStreamField[] serialPersistentFields = FIELDS;
+
+    private FileInputStream stream; // not serializable
+    private String name;
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Take serialPersistentFields into account - variant 4</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.io.FileInputStream;
+import java.io.ObjectStreamField;
+import java.io.Serializable;
+class Buzz implements Serializable {
+    public static final ObjectStreamField[] NO_FIELDS = new ObjectStreamField[0];
+
+    private static final long serialVersionUID = 1L;
+    private static final ObjectStreamField[] serialPersistentFields = NO_FIELDS;
+
+    private FileInputStream stream; // not serializable, but that's ok, because it is not among the persistent fields
+    private String name;
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Take serialPersistentFields into account - variant 5</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>11</expected-linenumbers>
+        <expected-messages>
+            <message>The field 'stream' of serializable class 'Buzz' is of non-serializable type 'java.io.FileInputStream'.</message>
+        </expected-messages>
+        <code><![CDATA[
+import java.io.FileInputStream;
+import java.io.ObjectStreamField;
+import java.io.Serializable;
+class Buzz implements Serializable {
+    private static final long serialVersionUID = 1L;
+    private static final ObjectStreamField[] serialPersistentFields = {
+        new ObjectStreamField("name", String.class),
+        new ObjectStreamField("stream", FileInputStream.class),
+    };
+
+    private FileInputStream stream; // not serializable
+    private String name;
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Take serialPersistentFields into account - variant 6</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>7,9</expected-linenumbers>
+        <expected-messages>
+            <message>The field 'serialPersistentFields' should be private static final with type 'java.io.ObjectStreamField[]'.</message>
+            <message>The field 'stream' of serializable class 'Buzz' is of non-serializable type 'java.io.FileInputStream'.</message>
+        </expected-messages>
+        <code><![CDATA[
+import java.io.FileInputStream;
+import java.io.ObjectStreamField;
+import java.io.Serializable;
+class Buzz implements Serializable {
+    private static final long serialVersionUID = 1L;
+    // wrong modifiers for serialPersistentFields: not final, not private, not static
+    ObjectStreamField[] serialPersistentFields = { new ObjectStreamField("name", String.class) };
+
+    private FileInputStream stream; // not serializable
+    private String name;
+}
+]]></code>
+    </test-code>
 </test-data>
