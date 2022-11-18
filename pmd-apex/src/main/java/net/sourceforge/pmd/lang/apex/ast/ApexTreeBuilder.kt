@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.apex.ast
 
+import java.util.Optional
+
 import net.sourceforge.pmd.annotation.InternalApi
 import net.sourceforge.pmd.lang.apex.ApexParserOptions
 import net.sourceforge.pmd.lang.ast.ParseException
@@ -19,6 +21,7 @@ import com.google.summit.ast.declaration.FieldDeclaration
 import com.google.summit.ast.declaration.FieldDeclarationGroup
 import com.google.summit.ast.declaration.InterfaceDeclaration
 import com.google.summit.ast.declaration.MethodDeclaration
+import com.google.summit.ast.declaration.ParameterDeclaration
 import com.google.summit.ast.declaration.PropertyDeclaration
 import com.google.summit.ast.declaration.TriggerDeclaration
 import com.google.summit.ast.declaration.TypeDeclaration
@@ -42,6 +45,9 @@ import com.google.summit.ast.initializer.ConstructorInitializer
 import com.google.summit.ast.initializer.MapInitializer
 import com.google.summit.ast.initializer.SizedArrayInitializer
 import com.google.summit.ast.initializer.ValuesInitializer
+import com.google.summit.ast.modifier.AnnotationModifier
+import com.google.summit.ast.modifier.ElementArgument
+import com.google.summit.ast.modifier.ElementValue
 import com.google.summit.ast.modifier.KeywordModifier
 import com.google.summit.ast.modifier.KeywordModifier.Keyword
 import com.google.summit.ast.modifier.Modifier
@@ -63,6 +69,8 @@ import com.google.summit.ast.statement.TryStatement
 import com.google.summit.ast.statement.VariableDeclarationStatement
 import com.google.summit.ast.statement.WhileLoopStatement
 
+import kotlin.reflect.KClass
+
 @Deprecated("internal")
 @InternalApi
 @Suppress("DEPRECATION")
@@ -75,6 +83,9 @@ class ApexTreeBuilder(val sourceCode: String, val parserOptions: ApexParserOptio
         val result =
             build(root, parent = null) as? ApexRootNode<TypeDeclaration>
                 ?: throw ParseException("Unable to build tree")
+
+        // Generate additional nodes
+        generateAdditional(result)
 
         // Call additional methods
         callAdditional(result)
@@ -106,7 +117,7 @@ class ApexTreeBuilder(val sourceCode: String, val parserOptions: ApexParserOptio
             is MethodDeclaration -> buildMethodDeclaration(node, parent)
             is PropertyDeclaration -> buildPropertyDeclaration(node)
             is FieldDeclarationGroup -> buildFieldDeclarationGroup(node)
-            is FieldDeclaration -> ASTFieldDeclaration(node).apply { buildChildren(node, parent = this) }
+            is FieldDeclaration -> buildFieldDeclaration(node)
             is CompoundStatement -> ASTBlockStatement(node).apply { buildChildren(node, parent = this) }
             is ExpressionStatement ->
                 ASTExpressionStatement(node.expression).apply { buildChildren(node, parent = this) }
@@ -152,6 +163,11 @@ class ApexTreeBuilder(val sourceCode: String, val parserOptions: ApexParserOptio
             is BreakStatement -> ASTBreakStatement(node).apply { buildChildren(node, parent = this) }
             is ContinueStatement ->
                 ASTContinueStatement(node).apply { buildChildren(node, parent = this) }
+            is ParameterDeclaration -> buildParameterDeclaration(node)
+            is AnnotationModifier -> ASTAnnotation(node).apply { buildChildren(node, parent = this) }
+            is ElementArgument ->
+                ASTAnnotationParameter(node).apply { buildChildren(node, parent = this) }
+            is ElementValue,
             is Identifier,
             is KeywordModifier,
             is TypeRef -> null
@@ -181,18 +197,13 @@ class ApexTreeBuilder(val sourceCode: String, val parserOptions: ApexParserOptio
     /** Builds an [ApexRootNode] wrapper for the [TypeDeclaration] node. */
     private fun buildTypeDeclaration(node: TypeDeclaration) =
         when (node) {
-            is ClassDeclaration ->
-                ASTUserClass(node).apply {
-                    buildModifiers(node.modifiers).also { it.setParent(this) }
-                    buildChildren(node, parent = this, exclude = { it in node.modifiers })
-                }
-            is InterfaceDeclaration ->
-                ASTUserInterface(node).apply {
-                    buildModifiers(node.modifiers).also { it.setParent(this) }
-                    buildChildren(node, parent = this, exclude = { it in node.modifiers })
-                }
-            is EnumDeclaration -> ASTUserEnum(node) // TODO(b/239648780): enum body is untranslated
-            is TriggerDeclaration -> ASTUserTrigger(node) // TODO(b/239648780): visit children
+            is ClassDeclaration -> ASTUserClass(node)
+            is InterfaceDeclaration -> ASTUserInterface(node)
+            is EnumDeclaration -> ASTUserEnum(node)
+            is TriggerDeclaration -> ASTUserTrigger(node)
+        }.apply {
+            buildModifiers(node.modifiers).also { it.setParent(this) }
+            buildChildren(node, parent = this, exclude = { it in node.modifiers })
         }
 
     /** Builds an [ASTMethod] wrapper for the [MethodDeclaration] node. */
@@ -220,6 +231,18 @@ class ApexTreeBuilder(val sourceCode: String, val parserOptions: ApexParserOptio
         ASTFieldDeclarationStatements(node).apply {
             buildModifiers(node.modifiers).also { it.setParent(this) }
             buildChildren(node, parent = this, exclude = { it in node.modifiers })
+        }
+
+    private fun buildFieldDeclaration(node: FieldDeclaration) =
+        ASTFieldDeclaration(node).apply {
+            buildChildren(node, parent = this)
+
+            ASTVariableExpression(node.id)
+                .apply {
+                    buildReferenceExpression(components = emptyList(), receiver = null, ReferenceType.NONE)
+                        .also { it.setParent(this) }
+                }
+                .also { it.setParent(this) }
         }
 
     /**
@@ -283,19 +306,28 @@ class ApexTreeBuilder(val sourceCode: String, val parserOptions: ApexParserOptio
             -> ASTPostfixExpression(node)
         }.apply { buildChildren(node, parent = this) }
 
-    /** Builds an [ASTVariableExpression] wrapper for the [FieldExpression] node. */
-    private fun buildFieldExpression(node: FieldExpression): ASTVariableExpression {
-        val (receiver, components, isSafe) = flattenExpression(node)
-        return ASTVariableExpression(components.last()).apply {
-            buildReferenceExpression(
-                components.dropLast(1),
-                receiver,
-                referenceTypeOf(expr = node),
-                isSafe
-            )
-                .also { it.setParent(this) }
+    /**
+     * Builds an [ASTVariableExpression] or [ASTTriggerVariableExpression] wrapper for the
+     * [FieldExpression] node.
+     */
+    private fun buildFieldExpression(node: FieldExpression) =
+        if (
+            node.obj is VariableExpression &&
+            (node.obj as VariableExpression).id.string.lowercase() == "trigger"
+        ) {
+            ASTTriggerVariableExpression(node)
+        } else {
+            val (receiver, components, isSafe) = flattenExpression(node)
+            ASTVariableExpression(components.last()).apply {
+                buildReferenceExpression(
+                    components.dropLast(1),
+                    receiver,
+                    referenceTypeOf(expr = node),
+                    isSafe
+                )
+                    .also { it.setParent(this) }
+            }
         }
-    }
 
     /** Builds an [ASTVariableExpression] wrapper for the [VariableExpression] node. */
     private fun buildVariableExpression(node: VariableExpression): ASTVariableExpression {
@@ -635,6 +667,13 @@ class ApexTreeBuilder(val sourceCode: String, val parserOptions: ApexParserOptio
             buildChildren(node, parent = this, exclude = { it == node.body })
         }
 
+    /** Builds an [ASTParameter] wrapper for the [ParameterDeclaration]. */
+    private fun buildParameterDeclaration(node: ParameterDeclaration) =
+        ASTParameter(node).apply {
+            buildModifiers(node.modifiers).also { it.setParent(this) }
+            buildChildren(node, parent = this, exclude = { it in node.modifiers })
+        }
+
     /** Builds an [ASTStandardCondition] wrapper for the [condition]. */
     private fun buildCondition(condition: Node) =
         ASTStandardCondition(condition).apply { buildAndSetParent(condition, this) }
@@ -642,6 +681,45 @@ class ApexTreeBuilder(val sourceCode: String, val parserOptions: ApexParserOptio
     /** Builds an [ASTModifierNode] wrapper for the list of [Modifier]s. */
     private fun buildModifiers(modifiers: List<Modifier>) =
         ASTModifierNode(modifiers).apply { modifiers.forEach { buildAndSetParent(it, parent = this) } }
+
+    /** Generates additional nodes for the [root] node. */
+    private fun generateAdditional(root: ApexNode<*>) {
+        // Generate fields
+        findDescendants(root, nodeType = ASTFieldDeclarationStatements::class).forEach { node ->
+            generateFields(node)
+        }
+
+        findDescendants(root, nodeType = ASTProperty::class).forEach { node -> generateFields(node) }
+    }
+
+    /** Returns all descendants of [root] of type [nodeType], including [root]. */
+    private inline fun <reified T : ApexNode<*>> findDescendants(
+        root: ApexNode<*>,
+        nodeType: KClass<T>
+    ): List<T> =
+        root.findDescendantsOfType(nodeType.java, true) + (if (root is T) listOf(root) else emptyList())
+
+    /** Generates [ASTField] nodes for the [ASTFieldDeclarationStatements]. */
+    private fun generateFields(node: ASTFieldDeclarationStatements) {
+        val parent = node.parent as ApexRootNode<*>
+
+        node.node.declarations
+            .map { decl ->
+                ASTField(decl.type, decl.id, Optional.ofNullable(decl.initializer)).apply {
+                    buildModifiers(decl.modifiers).also { it.setParent(this) }
+                }
+            }
+            .forEach { field -> field.setParent(parent) }
+    }
+
+    /** Generates [ASTField] nodes for the [ASTProperty]. */
+    private fun generateFields(node: ASTProperty) {
+        val field =
+            ASTField(node.node.type, node.node.id, Optional.empty()).apply {
+                buildModifiers(node.node.modifiers).also { it.setParent(this) }
+            }
+        field.setParent(node)
+    }
 
     /**
      * If [parent] is not null, adds this [ApexNode] as a [child][ApexNode.jjtAddChild] and sets

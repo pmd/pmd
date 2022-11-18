@@ -4,61 +4,57 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
+import com.google.summit.ast.declaration.TriggerDeclaration.TriggerCase;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
 /**
- * This maps the apex enum {@link apex.jorje.data.ast.TriggerUsage} to the PMD equivalent.
+ * This maps the apex enum {@link TriggerCase} to the PMD equivalent.
  */
 public enum TriggerUsage {
 
-    AFTER_DELETE(/*apex.jorje.data.ast.TriggerUsage.AFTER_DELETE*/),
+    AFTER_DELETE(TriggerCase.TRIGGER_AFTER_DELETE),
 
-    AFTER_INSERT(/*apex.jorje.data.ast.TriggerUsage.AFTER_INSERT*/),
+    AFTER_INSERT(TriggerCase.TRIGGER_AFTER_INSERT),
 
-    AFTER_UNDELETE(/*apex.jorje.data.ast.TriggerUsage.AFTER_UNDELETE*/),
+    AFTER_UNDELETE(TriggerCase.TRIGGER_AFTER_UNDELETE),
 
-    AFTER_UPDATE(/*apex.jorje.data.ast.TriggerUsage.AFTER_UPDATE*/),
+    AFTER_UPDATE(TriggerCase.TRIGGER_AFTER_UPDATE),
 
-    BEFORE_DELETE(/*apex.jorje.data.ast.TriggerUsage.BEFORE_DELETE*/),
+    BEFORE_DELETE(TriggerCase.TRIGGER_BEFORE_DELETE),
 
-    BEFORE_INSERT(/*apex.jorje.data.ast.TriggerUsage.BEFORE_INSERT*/),
+    BEFORE_INSERT(TriggerCase.TRIGGER_BEFORE_INSERT),
 
-    BEFORE_UNDELETE(/*apex.jorje.data.ast.TriggerUsage.BEFORE_UNDELETE*/),
+    BEFORE_UNDELETE(TriggerCase.TRIGGER_BEFORE_UNDELETE),
 
-    BEFORE_UPDATE(/*apex.jorje.data.ast.TriggerUsage.BEFORE_UPDATE*/);
+    BEFORE_UPDATE(TriggerCase.TRIGGER_BEFORE_UPDATE);
 
-    // private final apex.jorje.data.ast.TriggerUsage apexTriggerUsage;
+    private final TriggerCase triggerCase;
 
-    // private static final Map<apex.jorje.data.ast.TriggerUsage, TriggerUsage> APEX_TO_PMD;
+    private static final Map<TriggerCase, TriggerUsage> APEX_TO_PMD;
 
     static {
-        // APEX_TO_PMD = new HashMap<>();
+        APEX_TO_PMD = new HashMap<>();
         for (TriggerUsage triggerUsage : TriggerUsage.values()) {
-            // APEX_TO_PMD.put(triggerUsage.getApexTriggerUsage(), triggerUsage);
-            // TODO(b/239648780)
+            APEX_TO_PMD.put(triggerUsage.getTriggerCase(), triggerUsage);
         }
     }
 
-    TriggerUsage(/*apex.jorje.data.ast.TriggerUsage apexTriggerUsage*/) {
-        // this.apexTriggerUsage = apexTriggerUsage;
-        // TODO(b/239648780)
+    TriggerUsage(TriggerCase triggerCase) {
+        this.triggerCase = triggerCase;
     }
 
-    // private apex.jorje.data.ast.TriggerUsage getApexTriggerUsage() {
-    //     return apexTriggerUsage;
-    // }
-    // TODO(b/239648780)
+    private TriggerCase getTriggerCase() {
+        return triggerCase;
+    }
 
-    /*
-    public static TriggerUsage of(apex.jorje.data.ast.TriggerUsage apexTriggerUsage) {
-        TriggerUsage result = APEX_TO_PMD.get(apexTriggerUsage);
+    public static TriggerUsage of(TriggerCase triggerCase) {
+        TriggerUsage result = APEX_TO_PMD.get(triggerCase);
         if (result != null) {
             return result;
         }
-        throw new NoSuchElementException("Unknown TriggerUsage value '" + apexTriggerUsage.name() + "'");
+        throw new NoSuchElementException("Unknown TriggerUsage value '" + triggerCase.name() + "'");
     }
-     */
-    // TODO(b/239648780)
 }
