@@ -71,8 +71,8 @@ public class NonSerializableClassRule extends AbstractJavaRule {
         ASTAnyTypeDeclaration anyTypeDeclaration = node.getFirstChildOfType(ASTAnyTypeDeclaration.class);
         for (ASTFieldDeclaration field : anyTypeDeclaration.findDescendantsOfType(ASTFieldDeclaration.class)) {
             for (ASTVariableDeclaratorId varId : field) {
-                if (SERIAL_PERSISTENT_FIELDS_NAME.equals(varId.getName())) {
-                    if (!TypeTestUtil.isA(SERIAL_PERSISTENT_FIELDS_TYPE, field)
+                if (SERIAL_PERSISTENT_FIELDS_NAME.equals(varId.getName()) && varId.getType() != null) {
+                    if (!TypeTestUtil.isA(SERIAL_PERSISTENT_FIELDS_TYPE, varId)
                             || !field.isPrivate()
                             || !field.isStatic()
                             || !field.isFinal()) {
@@ -189,7 +189,7 @@ public class NonSerializableClassRule extends AbstractJavaRule {
             if (fields.isEmpty()) {
                 // field initializer might be a reference to a constant
                 ASTName reference = persistentFieldsDecl.getFirstDescendantOfType(ASTName.class);
-                if (reference.getNameDeclaration() != null) {
+                if (reference != null && reference.getNameDeclaration() != null) {
                     for (ASTLiteral literal : reference.getNameDeclaration().getNode().getParent().findDescendantsOfType(ASTLiteral.class)) {
                         if (literal.isStringLiteral()) {
                             fields.add(StringUtil.removeDoubleQuotes(literal.getImage()));
