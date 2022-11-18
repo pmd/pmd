@@ -4,14 +4,11 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import com.google.summit.ast.Node;
-import net.sourceforge.pmd.annotation.InternalApi;
+import com.google.summit.ast.statement.ContinueStatement;
 
-public class ASTContinueStatement extends AbstractApexNode.Single<Node> {
+public class ASTContinueStatement extends AbstractApexNode.Single<ContinueStatement> {
 
-    @Deprecated
-    @InternalApi
-    public ASTContinueStatement(Node continueStatement) {
+    ASTContinueStatement(ContinueStatement continueStatement) {
         super(continueStatement);
     }
 

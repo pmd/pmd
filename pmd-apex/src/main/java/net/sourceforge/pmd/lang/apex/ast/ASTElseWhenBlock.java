@@ -4,15 +4,13 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import com.google.summit.ast.Node;
+import com.google.summit.ast.statement.SwitchStatement;
 
-public final class ASTElseWhenBlock extends AbstractApexNode.Single<Node> {
+public final class ASTElseWhenBlock extends AbstractApexNode.Single<SwitchStatement.WhenElse> {
 
-
-    ASTElseWhenBlock(Node node) {
-        super(node);
+    ASTElseWhenBlock(SwitchStatement.WhenElse whenElse) {
+        super(whenElse);
     }
-
 
     @Override
     public Object jjtAccept(ApexParserVisitor visitor, Object data) {

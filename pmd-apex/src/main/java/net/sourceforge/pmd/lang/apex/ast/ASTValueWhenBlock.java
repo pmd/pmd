@@ -4,16 +4,13 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
+import com.google.summit.ast.statement.SwitchStatement;
 
-import com.google.summit.ast.Node;
+public final class ASTValueWhenBlock extends AbstractApexNode.Single<SwitchStatement.WhenValue> {
 
-public final class ASTValueWhenBlock extends AbstractApexNode.Single<Node> {
-
-
-    ASTValueWhenBlock(Node node) {
-        super(node);
+    ASTValueWhenBlock(SwitchStatement.WhenValue whenValue) {
+        super(whenValue);
     }
-
 
     @Override
     public Object jjtAccept(ApexParserVisitor visitor, Object data) {

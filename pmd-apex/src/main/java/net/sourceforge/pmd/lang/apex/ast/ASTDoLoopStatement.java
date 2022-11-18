@@ -4,15 +4,12 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import com.google.summit.ast.Node;
-import net.sourceforge.pmd.annotation.InternalApi;
+import com.google.summit.ast.statement.DoWhileLoopStatement;
 
-public class ASTDoLoopStatement extends AbstractApexNode.Single<Node> {
+public class ASTDoLoopStatement extends AbstractApexNode.Single<DoWhileLoopStatement> {
 
-    @Deprecated
-    @InternalApi
-    public ASTDoLoopStatement(Node doLoopStatement) {
-        super(doLoopStatement);
+    ASTDoLoopStatement(DoWhileLoopStatement doWhileLoopStatement) {
+        super(doWhileLoopStatement);
     }
 
     @Override

@@ -22,6 +22,7 @@ import com.google.summit.ast.declaration.MethodDeclaration
 import com.google.summit.ast.declaration.PropertyDeclaration
 import com.google.summit.ast.declaration.TriggerDeclaration
 import com.google.summit.ast.declaration.TypeDeclaration
+import com.google.summit.ast.declaration.VariableDeclaration
 import com.google.summit.ast.expression.ArrayExpression
 import com.google.summit.ast.expression.AssignExpression
 import com.google.summit.ast.expression.BinaryExpression
@@ -44,8 +45,23 @@ import com.google.summit.ast.initializer.ValuesInitializer
 import com.google.summit.ast.modifier.KeywordModifier
 import com.google.summit.ast.modifier.KeywordModifier.Keyword
 import com.google.summit.ast.modifier.Modifier
+import com.google.summit.ast.statement.BreakStatement
 import com.google.summit.ast.statement.CompoundStatement
+import com.google.summit.ast.statement.ContinueStatement
+import com.google.summit.ast.statement.DmlStatement
+import com.google.summit.ast.statement.DoWhileLoopStatement
+import com.google.summit.ast.statement.EnhancedForLoopStatement
 import com.google.summit.ast.statement.ExpressionStatement
+import com.google.summit.ast.statement.ForLoopStatement
+import com.google.summit.ast.statement.IfStatement
+import com.google.summit.ast.statement.ReturnStatement
+import com.google.summit.ast.statement.RunAsStatement
+import com.google.summit.ast.statement.Statement
+import com.google.summit.ast.statement.SwitchStatement
+import com.google.summit.ast.statement.ThrowStatement
+import com.google.summit.ast.statement.TryStatement
+import com.google.summit.ast.statement.VariableDeclarationStatement
+import com.google.summit.ast.statement.WhileLoopStatement
 
 @Deprecated("internal")
 @InternalApi
@@ -93,7 +109,7 @@ class ApexTreeBuilder(val sourceCode: String, val parserOptions: ApexParserOptio
             is FieldDeclaration -> ASTFieldDeclaration(node).apply { buildChildren(node, parent = this) }
             is CompoundStatement -> ASTBlockStatement(node).apply { buildChildren(node, parent = this) }
             is ExpressionStatement ->
-                ASTExpressionStatement(node).apply { buildChildren(node, parent = this) }
+                ASTExpressionStatement(node.expression).apply { buildChildren(node, parent = this) }
             is AssignExpression ->
                 ASTAssignmentExpression(node).apply { buildChildren(node, parent = this) }
             is ArrayExpression -> buildArrayExpression(node)
@@ -117,6 +133,25 @@ class ApexTreeBuilder(val sourceCode: String, val parserOptions: ApexParserOptio
             is ValuesInitializer -> buildValuesInitializer(node)
             is MapInitializer -> buildMapInitializer(node)
             is SizedArrayInitializer -> buildSizedArrayInitializer(node)
+            is DmlStatement -> buildDmlStatement(node)
+            is IfStatement -> buildIfStatement(node)
+            is VariableDeclarationStatement -> buildVariableDeclarations(node.variableDeclarations)
+            is VariableDeclaration -> buildVariableDeclaration(node)
+            is EnhancedForLoopStatement -> buildEnhancedForLoopStatement(node)
+            is DoWhileLoopStatement -> buildDoWhileLoopStatement(node)
+            is WhileLoopStatement -> buildWhileLoopStatement(node)
+            is ForLoopStatement -> buildForLoopStatement(node)
+            is SwitchStatement -> ASTSwitchStatement(node).apply { buildChildren(node, parent = this) }
+            is SwitchStatement.When -> buildSwitchWhen(node)
+            is ReturnStatement -> ASTReturnStatement(node).apply { buildChildren(node, parent = this) }
+            is RunAsStatement -> ASTRunAsBlockStatement(node).apply { buildChildren(node, parent = this) }
+            is ThrowStatement -> ASTThrowStatement(node).apply { buildChildren(node, parent = this) }
+            is TryStatement -> buildTryStatement(node)
+            is TryStatement.CatchBlock ->
+                ASTCatchBlockStatement(node).apply { buildChildren(node, parent = this) }
+            is BreakStatement -> ASTBreakStatement(node).apply { buildChildren(node, parent = this) }
+            is ContinueStatement ->
+                ASTContinueStatement(node).apply { buildChildren(node, parent = this) }
             is Identifier,
             is KeywordModifier,
             is TypeRef -> null
@@ -349,7 +384,7 @@ class ApexTreeBuilder(val sourceCode: String, val parserOptions: ApexParserOptio
         components: List<Identifier>,
         receiver: Node?,
         referenceType: ReferenceType,
-        isSafe: Boolean
+        isSafe: Boolean = false
     ) =
         if (receiver == null && components.isEmpty()) {
             ASTEmptyReferenceExpression()
@@ -424,8 +459,184 @@ class ApexTreeBuilder(val sourceCode: String, val parserOptions: ApexParserOptio
     private fun buildSizedArrayInitializer(node: SizedArrayInitializer) =
         ASTNewListInitExpression(node).apply { buildChildren(node, parent = this) }
 
+    /** Builds an [ApexNode] wrapper for the [DmlStatement]. */
+    private fun buildDmlStatement(node: DmlStatement) =
+        when (node) {
+            is DmlStatement.Insert -> ASTDmlInsertStatement(node)
+            is DmlStatement.Update -> ASTDmlUpdateStatement(node)
+            is DmlStatement.Delete -> ASTDmlDeleteStatement(node)
+            is DmlStatement.Undelete -> ASTDmlUndeleteStatement(node)
+            is DmlStatement.Upsert -> ASTDmlUpsertStatement(node)
+            is DmlStatement.Merge -> ASTDmlMergeStatement(node)
+        }.apply { buildChildren(node, parent = this) }
+
+    /** Wraps the body of a control statement with an [ASTBlockStatement] if it isn't already one. */
+    private fun wrapBody(body: Statement, parent: ApexNode<*>) =
+        when (body) {
+            is CompoundStatement -> build(body, parent) as ASTBlockStatement
+            else -> ASTBlockStatement(body).apply { buildAndSetParent(body, parent = this) }
+        }
+
+    /** Builds an [ASTIfElseBlockStatement] wrapper for the [IfStatement]. */
+    private fun buildIfStatement(node: IfStatement): ASTIfElseBlockStatement {
+        val (ifBlocks, elseBlock) = flattenIfStatement(node)
+
+        /** Builds an [ASTIfBlockStatement] wrapper for the [if block][IfStatement]. */
+        fun buildIfBlock(ifBlock: IfStatement) =
+            ASTIfBlockStatement(ifBlock).apply {
+                buildCondition(ifBlock.condition).also { it.setParent(this) }
+                wrapBody(ifBlock.thenStatement, parent = this).also { it.setParent(this) }
+            }
+
+        return ASTIfElseBlockStatement(node, elseBlock != null).apply {
+            ifBlocks.forEach { ifBlock -> buildIfBlock(ifBlock).also { it.setParent(this) } }
+            if (elseBlock != null) {
+                wrapBody(elseBlock, parent = this).also { it.setParent(this) }
+            }
+        }
+    }
+
+    /** Result of [flattenIfStatement]. */
+    private data class FlatIfStatement(val ifBlocks: List<IfStatement>, val elseBlock: Statement?)
+
+    /** Flattens an [IfStatement] into a list of [IfStatement]s. */
+    private fun flattenIfStatement(
+        node: Statement?,
+        ifBlocks: List<IfStatement> = emptyList()
+    ): FlatIfStatement =
+        when (node) {
+            is IfStatement ->
+                // Extract node and continue flattening
+                flattenIfStatement(node = node.elseStatement, ifBlocks = ifBlocks + node)
+            else ->
+                // Can't flatten
+                FlatIfStatement(ifBlocks, elseBlock = node)
+        }
+
+    /** Builds an [ASTVariableDeclarationStatements] for the [VariableDeclaration] list. */
+    private fun buildVariableDeclarations(declarations: List<VariableDeclaration>) =
+        ASTVariableDeclarationStatements(declarations).apply {
+            if (declarations.isNotEmpty()) {
+                // Modifiers are duplicated between all declarations - use any
+                buildModifiers(declarations.first().modifiers).also { it.setParent(this) }
+            }
+            declarations.forEach { buildAndSetParent(it, parent = this) }
+        }
+
+    /** Builds an [ASTVariableDeclaration] wrapper for the [VariableDeclaration]. */
+    private fun buildVariableDeclaration(node: VariableDeclaration) =
+        ASTVariableDeclaration(node).apply {
+            // Exclude modifiers - built in ASTVariableDeclarationStatements
+            buildChildren(node, parent = this, exclude = { it in node.modifiers })
+
+            ASTVariableExpression(node.id)
+                .apply {
+                    buildReferenceExpression(components = emptyList(), receiver = null, ReferenceType.NONE)
+                        .also { it.setParent(this) }
+                }
+                .also { it.setParent(this) }
+        }
+
+    /** Builds an [ASTForEachStatement] wrapper for the [EnhancedForLoopStatement]. */
+    private fun buildEnhancedForLoopStatement(node: EnhancedForLoopStatement) =
+        ASTForEachStatement(node).apply {
+            buildVariableDeclarations(listOf(node.elementDeclaration)).also { it.setParent(this) }
+
+            ASTVariableExpression(node.elementDeclaration.id)
+                .apply {
+                    buildReferenceExpression(components = emptyList(), receiver = null, ReferenceType.NONE)
+                        .also { it.setParent(this) }
+                }
+                .also { it.setParent(this) }
+
+            wrapBody(node.body, parent = this).also { it.setParent(this) }
+
+            buildChildren(
+                node,
+                parent = this,
+                exclude = { it == node.elementDeclaration || it == node.body }
+            )
+        }
+
+    /** Builds an [ASTDoLoopStatement] wrapper for the [DoWhileLoopStatement]. */
+    private fun buildDoWhileLoopStatement(node: DoWhileLoopStatement) =
+        ASTDoLoopStatement(node).apply {
+            buildCondition(node.condition).also { it.setParent(this) }
+            wrapBody(node.body, parent = this).also { it.setParent(this) }
+            buildChildren(node, parent = this, exclude = { it == node.condition || it == node.body })
+        }
+
+    /** Builds an [ASTWhileLoopStatement] wrapper for the [WhileLoopStatement]. */
+    private fun buildWhileLoopStatement(node: WhileLoopStatement) =
+        ASTWhileLoopStatement(node).apply {
+            buildCondition(node.condition).also { it.setParent(this) }
+            wrapBody(node.body, parent = this).also { it.setParent(this) }
+            buildChildren(node, parent = this, exclude = { it == node.condition || it == node.body })
+        }
+
+    /** Builds an [ASTForEachStatement] wrapper for the [ForLoopStatement]. */
+    private fun buildForLoopStatement(node: ForLoopStatement) =
+        ASTForLoopStatement(node).apply {
+            fun buildInitialization(expr: Expression) =
+                ASTExpressionStatement(expr).apply { buildAndSetParent(expr, parent = this) }
+
+            if (node.declarations.isNotEmpty()) {
+                buildVariableDeclarations(node.declarations).also { it.setParent(this) }
+            }
+            if (node.condition != null) {
+                buildCondition(node.condition!!).also { it.setParent(this) }
+            }
+            node.initializations.forEach { expr -> buildInitialization(expr).also { it.setParent(this) } }
+
+            wrapBody(node.body, parent = this).also { it.setParent(this) }
+
+            buildChildren(
+                node,
+                parent = this,
+                exclude = {
+                    it in node.declarations ||
+                        it == node.condition ||
+                        it in node.initializations ||
+                        it == node.body
+                }
+            )
+        }
+
+    /**
+     * Builds an [ASTValueWhenBlock], [ASTTypeWhenBlock], or [ASTElseWhenBlock] wrapper for the
+     * [SwitchStatement.When].
+     */
+    private fun buildSwitchWhen(node: SwitchStatement.When) =
+        when (node) {
+            is SwitchStatement.WhenValue ->
+                ASTValueWhenBlock(node).apply {
+                    node.values.forEach { value ->
+                        when (value) {
+                            is LiteralExpression,
+                            is UnaryExpression /* negative */ ->
+                                ASTLiteralCase(value).apply { buildAndSetParent(value, parent = this) }
+                            is VariableExpression -> ASTIdentifierCase(value)
+                            else -> throw ParseException("Invalid when value type")
+                        }.also { it.setParent(this) }
+                    }
+
+                    buildChildren(node, parent = this, exclude = { it in node.values })
+                }
+            is SwitchStatement.WhenType ->
+                ASTTypeWhenBlock(node).apply { buildChildren(node, parent = this) }
+            is SwitchStatement.WhenElse ->
+                ASTElseWhenBlock(node).apply { buildChildren(node, parent = this) }
+        }
+
+    /** Builds an [ASTTryCatchFinallyBlockStatement] wrapper for the [TryStatement]. */
+    private fun buildTryStatement(node: TryStatement) =
+        ASTTryCatchFinallyBlockStatement(node).apply {
+            buildAndSetParent(node.body, parent = this)
+            buildChildren(node, parent = this, exclude = { it == node.body })
+        }
+
     /** Builds an [ASTStandardCondition] wrapper for the [condition]. */
-    private fun buildCondition(condition: Node?) =
+    private fun buildCondition(condition: Node) =
         ASTStandardCondition(condition).apply { buildAndSetParent(condition, this) }
 
     /** Builds an [ASTModifierNode] wrapper for the list of [Modifier]s. */

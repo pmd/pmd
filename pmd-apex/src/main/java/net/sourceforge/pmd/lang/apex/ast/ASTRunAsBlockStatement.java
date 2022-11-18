@@ -4,15 +4,12 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import com.google.summit.ast.Node;
-import net.sourceforge.pmd.annotation.InternalApi;
+import com.google.summit.ast.statement.RunAsStatement;
 
-public class ASTRunAsBlockStatement extends AbstractApexNode.Single<Node> {
+public class ASTRunAsBlockStatement extends AbstractApexNode.Single<RunAsStatement> {
 
-    @Deprecated
-    @InternalApi
-    public ASTRunAsBlockStatement(Node runAsBlockStatement) {
-        super(runAsBlockStatement);
+    ASTRunAsBlockStatement(RunAsStatement runAsStatement) {
+        super(runAsStatement);
     }
 
     @Override
