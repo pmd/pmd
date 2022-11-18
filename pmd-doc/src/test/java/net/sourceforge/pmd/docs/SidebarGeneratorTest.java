@@ -11,9 +11,9 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystems;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.apache.commons.lang3.SystemUtils;
 import org.junit.Before;
@@ -38,11 +38,12 @@ public class SidebarGeneratorTest {
 
     @Test
     public void testSidebar() throws IOException {
-        Map<Language, List<RuleSet>> rulesets = new HashMap<>();
+        Map<Language, List<RuleSet>> rulesets = new TreeMap<>();
         RuleSet ruleSet1 = RuleSet.create("test", "test", "bestpractices.xml", Collections.emptyList(), Collections.emptyList(), Collections.emptyList());
         RuleSet ruleSet2 = RuleSet.create("test2", "test", "codestyle.xml", Collections.emptyList(), Collections.emptyList(), Collections.emptyList());
         rulesets.put(LanguageRegistry.PMD.getLanguageById("java"), Arrays.asList(ruleSet1, ruleSet2));
         rulesets.put(LanguageRegistry.PMD.getLanguageById("ecmascript"), Arrays.asList(ruleSet1));
+        rulesets.put(LanguageRegistry.PMD.getLanguageById("scala"), Collections.emptyList());
 
         SidebarGenerator generator = new SidebarGenerator(writer, FileSystems.getDefault().getPath(".."));
         List<Map<String, Object>> result = generator.generateRuleReferenceSection(rulesets);

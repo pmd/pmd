@@ -322,6 +322,15 @@ entries:
     - title: null
       output: web, pdf
       subfolders:
+      - title: Scala Rules
+        output: web, pdf
+        subfolderitems:
+          - title: Index
+            output: web, pdf
+            url: /pmd_rules_scala.html
+    - title: null
+      output: web, pdf
+      subfolders:
       - title: Swift Rules
         output: web, pdf
         subfolderitems:
@@ -352,6 +361,15 @@ entries:
         - title: Error Prone
           output: web, pdf
           url: /pmd_rules_vm_errorprone.html
+    - title: null
+      output: web, pdf
+      subfolders:
+      - title: WSDL Rules
+        output: web, pdf
+        subfolderitems:
+        - title: Index
+          output: web, pdf
+          url: /pmd_rules_wsdl.html
     - title: null
       output: web, pdf
       subfolders:
