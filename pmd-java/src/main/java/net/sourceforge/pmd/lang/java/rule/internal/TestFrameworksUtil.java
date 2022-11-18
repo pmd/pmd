@@ -58,8 +58,7 @@ public final class TestFrameworksUtil {
             return false; // skip various inapplicable method variations
         }
 
-        boolean result = false;
-        result = result || isJUnit5Method(method);
+        boolean result = isJUnit5Method(method);
         result = result || isJUnit4Method(method);
         result = result || isJUnit3Method(method);
         return result;
@@ -131,12 +130,21 @@ public final class TestFrameworksUtil {
             && TypeTestUtil.isA(JUNIT3_CLASS_NAME, node);
     }
 
+    public static boolean isTestClass(ASTAnyTypeDeclaration node) {
+        return node.isRegularClass() && !node.isAbstract() && !node.isNested()
+            && (isJUnit3Class(node)
+            || node.getDeclarations(ASTMethodDeclaration.class)
+                   .any(TestFrameworksUtil::isTestMethod));
+    }
+
+
     public static boolean isJUnit5NestedClass(ASTAnyTypeDeclaration innerClassDecl) {
         return innerClassDecl.isAnnotationPresent(JUNIT5_NESTED);
     }
 
     public static boolean isExpectExceptionCall(ASTMethodCall call) {
-        return "expect".equals(call.getMethodName()) && TypeTestUtil.isA("org.junit.rules.ExpectedException", call.getQualifier());
+        return "expect".equals(call.getMethodName())
+            && TypeTestUtil.isA("org.junit.rules.ExpectedException", call.getQualifier());
     }
 
     public static boolean isCallOnAssertionContainer(ASTMethodCall call) {

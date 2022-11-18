@@ -9,6 +9,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,12 +20,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.event.Level;
 
-import net.sourceforge.pmd.annotation.DeprecatedUntil700;
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.cpd.renderer.CPDReportRenderer;
 import net.sourceforge.pmd.internal.LogMessages;
@@ -40,7 +39,6 @@ import net.sourceforge.pmd.util.database.SourceObject;
 /**
  * @deprecated {@link PmdCli} under the pmd-cli offers CLI support.
  */
-@DeprecatedUntil700
 @Deprecated
 public class CPD {
     // not final, in order to re-initialize logging
@@ -106,8 +104,10 @@ public class CPD {
         List<File> files = new ArrayList<>();
         try {
             Path file = FileUtil.toExistingPath(inputFilePath);
-            for (String param : FileUtil.readFilelistEntries(file)) {
-                @NonNull Path fileToAdd = FileUtil.toExistingPath(param);
+            for (Path fileToAdd : FileUtil.readFilelistEntries(file)) {
+                if (!Files.exists(fileToAdd)) {
+                    throw new RuntimeException("No such file " + fileToAdd);
+                }
                 files.add(fileToAdd.toFile());
             }
             addSourcesFilesToCPD(files);
@@ -340,6 +340,9 @@ public class CPD {
         return new CPDReport(matchAlgorithm.getMatches(), numberOfTokensPerFile);
     }
 
+    /**
+     * @deprecated This class is to be removed in PMD 7 in favor of a unified PmdCli entry point.
+     */
     @Deprecated
     public enum StatusCode {
         OK(0),

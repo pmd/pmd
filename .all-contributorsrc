@@ -6979,6 +6979,33 @@
       "contributions": [
         "bug"
       ]
+    },
+    {
+      "login": "valfirst",
+      "name": "Valery Yatsynovich",
+      "avatar_url": "https://avatars.githubusercontent.com/u/5081226?v=4",
+      "profile": "https://github.com/valfirst",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "jvwilge",
+      "name": "Jeroen van Wilgenburg",
+      "avatar_url": "https://avatars.githubusercontent.com/u/251901?v=4",
+      "profile": "https://vanwilgenburg.wordpress.com/",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "Eldrick19",
+      "name": "Eldrick Wega",
+      "avatar_url": "https://avatars.githubusercontent.com/u/26189114?v=4",
+      "profile": "https://github.com/Eldrick19",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,
