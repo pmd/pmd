@@ -15,6 +15,8 @@ This is a {{ site.pmd.release_type }} release.
 ### New and noteworthy
 
 ### Fixed Issues
+* doc
+    * [#4207](https://github.com/pmd/pmd/pull/4207): \[doc] List all languages in rule doc
 * java
     * [#3643](https://github.com/pmd/pmd/issues/3643): \[java] More parser edge cases
     * [#4152](https://github.com/pmd/pmd/issues/4152): \[java] Parse error on array type annotations
