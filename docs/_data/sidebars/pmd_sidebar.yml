@@ -325,9 +325,9 @@ entries:
       - title: Scala Rules
         output: web, pdf
         subfolderitems:
-          - title: Index
-            output: web, pdf
-            url: /pmd_rules_scala.html
+        - title: Index
+          output: web, pdf
+          url: /pmd_rules_scala.html
     - title: null
       output: web, pdf
       subfolders:
