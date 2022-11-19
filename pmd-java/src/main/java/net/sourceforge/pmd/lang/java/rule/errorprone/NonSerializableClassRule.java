@@ -21,12 +21,14 @@ import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTRecordDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTStringLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.AccessNode;
@@ -89,7 +91,7 @@ public class NonSerializableClassRule extends AbstractJavaRulechainRule {
     private void checkSerialPersistentFieldsField(ASTAnyTypeDeclaration anyTypeDeclaration, Object data) {
         for (ASTFieldDeclaration field : anyTypeDeclaration.descendants(ASTFieldDeclaration.class)) {
             for (ASTVariableDeclaratorId varId : field) {
-                if (SERIAL_PERSISTENT_FIELDS_NAME.equals(varId.getName()) && varId.getType() != null) {
+                if (SERIAL_PERSISTENT_FIELDS_NAME.equals(varId.getName())) {
                     if (!TypeTestUtil.isA(SERIAL_PERSISTENT_FIELDS_TYPE, varId)
                             || field.getVisibility() != AccessNode.Visibility.V_PRIVATE
                             || !field.hasModifiers(JModifier.STATIC)
@@ -117,7 +119,7 @@ public class NonSerializableClassRule extends AbstractJavaRulechainRule {
         }
 
         if (isPersistentField(typeDeclaration, node) && isNotSerializable(node)) {
-            asCtx(data).addViolation(node, node.getName(), typeDeclaration.getCanonicalName(), node.getTypeMirror());
+            asCtx(data).addViolation(node, node.getName(), typeDeclaration.getBinaryName(), node.getTypeMirror());
         }
         return null;
     }
@@ -163,7 +165,7 @@ public class NonSerializableClassRule extends AbstractJavaRulechainRule {
         if (!getProperty(CHECK_ABSTRACT_TYPES) && classSymbol != null) {
             // exclude java.lang.Object, interfaces, abstract classes, and generic types
             notSerializable &= !TypeTestUtil.isExactlyA(Object.class, node)
-                    && !typeMirror.isInterface()
+                    && !classSymbol.isInterface()
                     && !classSymbol.isAbstract()
                     && !classSymbol.isGeneric();
         }
@@ -192,6 +194,17 @@ public class NonSerializableClassRule extends AbstractJavaRulechainRule {
             fields = persistentFieldsDecl.descendants(ASTStringLiteral.class).toStream()
                         .map(ASTStringLiteral::getConstValue)
                         .collect(Collectors.toSet());
+            if (fields.isEmpty()) {
+                // field initializer might be a reference to a constant
+                ASTExpression initializer = persistentFieldsDecl.getInitializer();
+                if (initializer instanceof ASTVariableAccess) {
+                    ASTVariableAccess variableAccess = (ASTVariableAccess) initializer;
+                    ASTVariableDeclaratorId reference = variableAccess.getReferencedSym().tryGetNode();
+                    fields = reference.getParent().descendants(ASTStringLiteral.class).toStream()
+                            .map(ASTStringLiteral::getConstValue)
+                            .collect(Collectors.toSet());
+                }
+            }
         }
 
         cachedPersistentFieldNames.put(typeDeclaration, fields);
@@ -203,7 +216,7 @@ public class NonSerializableClassRule extends AbstractJavaRulechainRule {
 
         if (node.isField() && (persistentFields == null || persistentFields.contains(node.getName()))) {
             ASTFieldDeclaration field = node.ancestors(ASTFieldDeclaration.class).first();
-            return field != null && !field.hasModifiers(JModifier.STATIC, JModifier.TRANSIENT);
+            return field != null && !field.hasModifiers(JModifier.STATIC) && !field.hasModifiers(JModifier.TRANSIENT);
         }
         return false;
     }
