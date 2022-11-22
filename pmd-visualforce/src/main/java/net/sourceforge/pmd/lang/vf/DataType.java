@@ -68,19 +68,19 @@ public enum DataType {
     private final Set<String> basicTypeNames;
 
     /**
-     * A case insensitive map of the enum name to its instance. The case metadata is not guaranteed to have the correct
+     * A map of the lower-case-normalized enum name to its instance. The case metadata is not guaranteed to have the correct
      * case.
      */
-    private static final Map<String, DataType> CASE_INSENSITIVE_MAP = new HashMap<>();
+    private static final Map<String, DataType> CASE_NORMALIZED_MAP = new HashMap<>();
 
     /**
-     * A case insensitive map of the primitive type names to DataType. Multiple types may map to one DataType.
+     * A map of the lower-case-normalized primitive type names to DataType. Multiple types may map to one DataType.
      */
     private static final Map<String, DataType> BASIC_TYPE_MAP = new HashMap<>();
 
     static {
         for (DataType dataType : DataType.values()) {
-            CASE_INSENSITIVE_MAP.put(dataType.name().toLowerCase(Locale.ROOT), dataType);
+            CASE_NORMALIZED_MAP.put(dataType.name().toLowerCase(Locale.ROOT), dataType);
             for (String typeName : dataType.basicTypeNames) {
                 BASIC_TYPE_MAP.put(typeName.toLowerCase(Locale.ROOT), dataType);
             }
@@ -92,7 +92,7 @@ public enum DataType {
      */
     public static DataType fromString(String value) {
         value = value != null ? value : "";
-        DataType dataType = CASE_INSENSITIVE_MAP.get(value.toLowerCase(Locale.ROOT));
+        DataType dataType = CASE_NORMALIZED_MAP.get(value.toLowerCase(Locale.ROOT));
 
         if (dataType == null) {
             dataType = DataType.Unknown;
