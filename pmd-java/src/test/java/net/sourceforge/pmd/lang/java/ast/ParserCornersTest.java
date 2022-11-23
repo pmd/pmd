@@ -16,7 +16,7 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import net.sourceforge.pmd.lang.ast.ParseException;
-import net.sourceforge.pmd.lang.ast.TokenMgrError;
+import net.sourceforge.pmd.lang.ast.impl.javacc.MalformedSourceException;
 import net.sourceforge.pmd.lang.ast.test.BaseParsingHelper;
 import net.sourceforge.pmd.lang.java.BaseJavaTreeDumpTest;
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
@@ -43,8 +43,8 @@ public class ParserCornersTest extends BaseJavaTreeDumpTest {
 
     @Test
     public void testInvalidUnicodeEscape() {
-        expect.expect(TokenMgrError.class); // previously Error
-        expect.expectMessage("Lexical error in file x/filename.java at line 1, column 2.  Encountered: Invalid unicode escape");
+        expect.expect(MalformedSourceException.class); // previously Error
+        expect.expectMessage("Source format error in file 'x/filename.java' at line 1, column 1: Invalid unicode escape");
         java.parse("\\u00k0", null, "x/filename.java");
     }
 
@@ -86,6 +86,45 @@ public class ParserCornersTest extends BaseJavaTreeDumpTest {
                         + "    return p;\n"
                         + "  }\n"
                         + "}");
+    }
+
+    @Test
+    public void testUnicodeEscapes() {
+        // todo i'd like to test the coordinates of the literals, but this has to wait for java-grammar to be merged
+        java8.parse("public class Foo { String[] s = { \"Ven\\u00E4j\\u00E4\" }; }");
+    }
+
+    @Test
+    public void testUnicodeEscapes2() {
+        java.parse("\n"
+                       + "public final class TimeZoneNames_zh_TW extends TimeZoneNamesBundle {\n"
+                       + "\n"
+                       + "        String ACT[] = new String[] {\"Acre \\u6642\\u9593\", \"ACT\",\n"
+                       + "                                     \"Acre \\u590f\\u4ee4\\u6642\\u9593\", \"ACST\",\n"
+                       + "                                     \"Acre \\u6642\\u9593\", \"ACT\"};"
+                       + "}");
+    }
+
+    @Test
+    public void testUnicodeEscapesInComment() {
+        java.parse("class Foo {"
+                       + "\n"
+                       + "    /**\n"
+                       + "     * The constant value of this field is the smallest value of type\n"
+                       + "     * {@code char}, {@code '\\u005Cu0000'}.\n"
+                       + "     *\n"
+                       + "     * @since   1.0.2\n"
+                       + "     */\n"
+                       + "    public static final char MIN_VALUE = '\\u0000';\n"
+                       + "\n"
+                       + "    /**\n"
+                       + "     * The constant value of this field is the largest value of type\n"
+                       + "     * {@code char}, {@code '\\u005C\\uFFFF'}.\n"
+                       + "     *\n"
+                       + "     * @since   1.0.2\n"
+                       + "     */\n"
+                       + "    public static final char MAX_VALUE = '\\uFFFF';"
+                       + "}");
     }
 
     @Test

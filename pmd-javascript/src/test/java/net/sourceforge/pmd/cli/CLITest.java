@@ -24,8 +24,7 @@ public class CLITest extends BaseCLITest {
                              "xml",
                              "-R",
                              "rulesets/testing/js-rset1.xml",
-                             "-l",
-                             "ecmascript",
+                             "--no-progress",
                              "--debug");
         assertThat(log, containsPattern("Adding file .*\\.js \\(lang: ecmascript ES6\\)"));
     }

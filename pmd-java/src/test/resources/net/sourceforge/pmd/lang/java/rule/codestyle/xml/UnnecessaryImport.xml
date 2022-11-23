@@ -158,7 +158,7 @@ public class Foo {
         ]]></code>
     </test-code>
 
-    <test-code regressionTest="false">
+    <test-code disabled="true">
         <!-- This doesn't work anymore since the import is unresolved -->
         <description>Used static import</description>
         <expected-problems>0</expected-problems>
@@ -1063,6 +1063,33 @@ public class SubmissionPublisher<T> implements Publisher<T> {
     static final class ConsumerSubscriber<T> implements Subscriber<T> {
         Subscription subscription;
     }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>[java] UnnecessaryImport false positive for on-demand imports of non-static nested classes</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryimport.package1;
+
+import net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryimport.package2.C.*; // SUPPRESS CHECKSTYLE needed for test case
+
+public class U {
+    IC c;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] UnnecessaryImport false positive for static on-demand imports of static nested classes</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryimport.package1;
+
+import static net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryimport.package2.C.*; // SUPPRESS CHECKSTYLE needed for test case
+
+public class U {
+    ISC sc;
 }
         ]]></code>
     </test-code>

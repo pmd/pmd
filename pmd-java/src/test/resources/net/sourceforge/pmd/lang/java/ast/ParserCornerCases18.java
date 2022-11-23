@@ -189,6 +189,29 @@ public class ParserCornerCases18 {
         return new Object @NonNull[0];
     }
 
+    // this comes from https://github.com/pmd/pmd/issues/4152
+    public static <T> T[][] check(T @Anno[] @Anno [] arr) {
+        if (arr == null) {
+            throw new NullPointerException();
+        }
+        return arr;
+    }
+
+    // this comes from https://github.com/pmd/pmd/issues/4152
+    public Function func(Main this) {
+        return @A Main.Inner::new;  // this line lead to the crash
+    }
+
+    // this comes from https://github.com/pmd/pmd/issues/4152
+    public static byte max(final byte @NotNull ... array) { return 0;}
+
+    // this comes from https://github.com/pmd/pmd/issues/4152
+    @Retention(RetentionPolicy.CLASS)
+    @Target({ TYPE_USE })
+    @interface Anno {
+    }
+
+
     private static void testMultiDimArrayWithAnnotations() {
         // ever used a 3D-Array in java??
         Object x = new Object @NonNull[2] @Nullable[1] @NonNull[3];

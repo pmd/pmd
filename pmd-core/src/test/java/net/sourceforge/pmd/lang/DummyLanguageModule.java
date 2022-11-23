@@ -43,7 +43,7 @@ public class DummyLanguageModule extends BaseLanguageModule {
     }
 
     public static DummyLanguageModule getInstance() {
-        return (DummyLanguageModule) Objects.requireNonNull(LanguageRegistry.getLanguage(NAME));
+        return (DummyLanguageModule) Objects.requireNonNull(LanguageRegistry.PMD.getLanguageByFullName(NAME));
     }
 
     public static DummyRootNode parse(String code) {

@@ -254,7 +254,7 @@ public class Foo extends Bar{
             specific kind (e.g. enum or interface). Each regex can be configured through
             properties.
 
-            By default this rule uses the standard Java naming convention (Pascal case).
+            By default, this rule uses the standard Java naming convention (Pascal case).
             
             The rule can detect utility classes and enforce a different naming convention
             on those. E.g. setting the property `utilityClassPattern` to
@@ -264,6 +264,10 @@ public class Foo extends Bar{
             For this rule, a utility class is defined as: a concrete class that does not
             inherit from a super class or implement any interface and only has static fields
             or methods.
+
+            This rule detects test classes using the following convention: Test classes are top-level classes, that
+            either inherit from JUnit 3 TestCase or have at least one method annotated with the Test annotations from
+            JUnit4/5 or TestNG.
         </description>
         <priority>1</priority>
         <example>
@@ -292,9 +296,10 @@ public class Éléphant {}
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#commentdefaultaccessmodifier">
         <description>
 To avoid mistakes if we want that an Annotation, Class, Enum, Method, Constructor or Field have a default access modifier
-we must add a comment at the beginning of it's declaration.
-By default the comment must be `/* default */` or `/* package */`, if you want another, you have to provide a regular expression.
-This rule ignores by default all cases that have a @VisibleForTesting annotation. Use the
+we must add a comment at the beginning of its declaration.
+By default, the comment must be `/* default */` or `/* package */`, if you want another, you have to provide a regular expression.
+
+This rule ignores by default all cases that have a `@VisibleForTesting` annotation or any JUnit5 annotation. Use the
 property "ignoredAnnotations" to customize the recognized annotations.
         </description>
         <priority>3</priority>

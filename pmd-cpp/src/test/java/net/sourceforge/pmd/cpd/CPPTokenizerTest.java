@@ -8,7 +8,6 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.Properties;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import net.sourceforge.pmd.cpd.test.CpdTextComparisonTest;
@@ -84,13 +83,11 @@ public class CPPTokenizerTest extends CpdTextComparisonTest {
     }
 
     @Test
-    @Ignore
     public void testTokenizerWithSkipBlocks() {
         doTest("simpleSkipBlocks", "_skipDefault", skipBlocks());
     }
 
     @Test
-    @Ignore
     public void testTokenizerWithSkipBlocksPattern() {
         doTest("simpleSkipBlocks", "_skipDebug", skipBlocks("#if debug|#endif"));
     }

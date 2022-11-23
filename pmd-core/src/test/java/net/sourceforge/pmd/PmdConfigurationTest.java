@@ -22,7 +22,9 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collections;
+import java.util.List;
 import java.util.Properties;
 
 import org.junit.jupiter.api.Test;
@@ -157,9 +159,12 @@ class PmdConfigurationTest {
     @Test
     void testInputPaths() {
         PMDConfiguration configuration = new PMDConfiguration();
-        assertEquals(null, configuration.getInputPaths(), "Default input paths");
+        assertThat(configuration.getInputPathList(), empty());
         configuration.setInputPaths("a,b,c");
-        assertEquals("a,b,c", configuration.getInputPaths(), "Changed input paths");
+        List<Path> expected = listOf(
+            Paths.get("a"), Paths.get("b"), Paths.get("c")
+        );
+        assertEquals(expected, configuration.getInputPathList(), "Changed input paths");
     }
 
     @Test

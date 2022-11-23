@@ -61,6 +61,19 @@ public interface Language extends Comparable<Language> {
      */
     String getTerseName();
 
+
+    /**
+     * Returns the ID of this language. This is a short, alphanumeric,
+     * lowercase name, eg {@code "java"}. It's used to identify the language
+     * in the ruleset XML, and is also in the package name of the language
+     * module.
+     *
+     * @return The ID of this language.
+     */
+    default String getId() {
+        return getTerseName();
+    }
+
     /**
      * Returns the list of file extensions associated with this language.
      * This list is unmodifiable. Extensions do not have a '.' prefix.
@@ -86,6 +99,13 @@ public interface Language extends Comparable<Language> {
      * @return All supported language versions.
      */
     List<LanguageVersion> getVersions();
+
+    /**
+     * Returns a complete list of supported version names for this language including all aliases.
+     *
+     * @return All supported language version names and aliases.
+     */
+    List<String> getVersionNamesAndAliases();
 
     /**
      * Returns true if a language version with the given {@linkplain LanguageVersion#getVersion() version string}

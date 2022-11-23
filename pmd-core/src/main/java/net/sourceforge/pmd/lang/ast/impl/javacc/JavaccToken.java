@@ -4,8 +4,8 @@
 
 package net.sourceforge.pmd.lang.ast.impl.javacc;
 
-import net.sourceforge.pmd.lang.ast.CharStream;
 import net.sourceforge.pmd.lang.ast.GenericToken;
+import net.sourceforge.pmd.lang.document.Chars;
 import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.document.TextRegion;
 
@@ -76,6 +76,19 @@ public class JavaccToken implements GenericToken<JavaccToken> {
     public JavaccToken specialToken;
 
 
+    // common constructor, with a CharSequence parameter
+    JavaccToken(int kind, CharSequence image, int startInclusive, int endExclusive, JavaccTokenDocument document) {
+        assert document != null : "Null document";
+        assert image instanceof String || image instanceof Chars : "Null image";
+        assert TextRegion.isValidRegion(startInclusive, endExclusive, document.getTextDocument());
+
+        this.kind = kind;
+        this.image = image;
+        this.startOffset = startInclusive;
+        this.endOffset = endExclusive;
+        this.document = document;
+    }
+
     /**
      * Builds a new token of the specified kind.
      *
@@ -85,19 +98,15 @@ public class JavaccToken implements GenericToken<JavaccToken> {
      * @param endExclusive   End of the token in the text file (before translating escapes)
      * @param document       Document owning the token
      */
-    public JavaccToken(int kind,
-                       CharSequence image,
-                       int startInclusive,
-                       int endExclusive,
-                       JavaccTokenDocument document) {
-        assert document != null : "Null document";
-        assert TextRegion.isValidRegion(startInclusive, endExclusive, document.getTextDocument());
+    public JavaccToken(int kind, Chars image, int startInclusive, int endExclusive, JavaccTokenDocument document) {
+        this(kind, (CharSequence) image, startInclusive, endExclusive, document);
+    }
 
-        this.kind = kind;
-        this.image = image;
-        this.startOffset = startInclusive;
-        this.endOffset = endExclusive;
-        this.document = document;
+    /**
+     * Constructor with a {@link String} image (see {@link #JavaccToken(int, Chars, int, int, JavaccTokenDocument) the other ctor}).
+     */
+    public JavaccToken(int kind, String image, int startInclusive, int endExclusive, JavaccTokenDocument document) {
+        this(kind, (CharSequence) image, startInclusive, endExclusive, document);
     }
 
     /**
@@ -128,12 +137,18 @@ public class JavaccToken implements GenericToken<JavaccToken> {
     }
 
     @Override
-    public CharSequence getImageCs() {
-        return image;
+    public Chars getImageCs() {
+        // wrap it: it's zero cost (images are either Chars or String) and Chars has a nice API
+        return Chars.wrap(image);
     }
 
     @Override
-    public TextRegion getRegion() {
+    public String getImage() {
+        return image.toString();
+    }
+
+    @Override
+    public final TextRegion getRegion() {
         return TextRegion.fromBothOffsets(startOffset, endOffset);
     }
 
@@ -171,23 +186,12 @@ public class JavaccToken implements GenericToken<JavaccToken> {
     public JavaccToken replaceImage(CharStream charStream) {
         return new JavaccToken(
             this.kind,
-            charStream.GetImage(),
+            charStream.getTokenImageCs(),
             this.startOffset,
             charStream.getEndOffset(),
             this.document
         );
     }
-
-    public JavaccToken withImage(String image) {
-        return new JavaccToken(
-            this.kind,
-            image,
-            this.startOffset,
-            this.endOffset,
-            this.document
-        );
-    }
-
 
 
     /**

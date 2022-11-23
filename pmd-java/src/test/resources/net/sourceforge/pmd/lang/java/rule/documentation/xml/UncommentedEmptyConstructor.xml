@@ -188,4 +188,30 @@ public class MyClass {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#4141 UncommentedEmptyConstructor FP when annotated constructor with @Autowired</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.springframework.beans.factory.annotation.Autowired;
+public class Bug {
+    @Autowired
+    public Bug() {
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#4141 UncommentedEmptyConstructor FP when annotated constructor with @Autowired</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Bug {
+    @org.springframework.beans.factory.annotation.Autowired
+    public Bug() {
+    }
+}
+        ]]></code>
+    </test-code>
+
 </test-data>

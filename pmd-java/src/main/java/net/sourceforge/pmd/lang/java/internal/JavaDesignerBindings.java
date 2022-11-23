@@ -16,6 +16,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTCompactConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
@@ -35,8 +36,8 @@ import net.sourceforge.pmd.lang.java.ast.JModifier;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.JavaVisitorBase;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
+import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
-import net.sourceforge.pmd.lang.java.types.JVariableSig;
 import net.sourceforge.pmd.lang.rule.xpath.Attribute;
 import net.sourceforge.pmd.util.designerbindings.DesignerBindings.DefaultDesignerBindings;
 import net.sourceforge.pmd.util.designerbindings.RelatedNodesSelector;
@@ -118,15 +119,10 @@ public final class JavaDesignerBindings extends DefaultDesignerBindings {
     @Override
     public RelatedNodesSelector getRelatedNodesSelector() {
         return n -> {
-            if (n instanceof ASTVariableAccess) {
-                // poor man's reference search
-                JVariableSig var = ((JavaNode) n).getSymbolTable()
-                                                 .variables()
-                                                 .resolveFirst(n.getImage());
-                if (var != null) {
-                    return n.getRoot().descendants(ASTVariableDeclaratorId.class)
-                            .filter(it -> it.getSymbol().equals(var.getSymbol()))
-                            .toList(it -> it);
+            if (n instanceof ASTNamedReferenceExpr) {
+                JVariableSymbol sym = ((ASTNamedReferenceExpr) n).getReferencedSym();
+                if (sym != null && sym.tryGetNode() != null) {
+                    return Collections.unmodifiableList(sym.tryGetNode().getLocalUsages());
                 }
             }
 

@@ -9,6 +9,33 @@ entries:
     - title: null
       output: web, pdf
       subfolders:
+      - title: Apex Rules
+        output: web, pdf
+        subfolderitems:
+        - title: Index
+          output: web, pdf
+          url: /pmd_rules_apex.html
+    - title: null
+      output: web, pdf
+      subfolders:
+      - title: Ecmascript Rules
+        output: web, pdf
+        subfolderitems:
+        - title: Index
+          output: web, pdf
+          url: /pmd_rules_ecmascript.html
+    - title: null
+      output: web, pdf
+      subfolders:
+      - title: HTML Rules
+        output: web, pdf
+        subfolderitems:
+        - title: Index
+          output: web, pdf
+          url: /pmd_rules_html.html
+    - title: null
+      output: web, pdf
+      subfolders:
       - title: Java Rules
         output: web, pdf
         subfolderitems:
@@ -18,3 +45,111 @@ entries:
         - title: Sample
           output: web, pdf
           url: /pmd_rules_java_sample.html
+    - title: null
+      output: web, pdf
+      subfolders:
+      - title: Java Server Pages Rules
+        output: web, pdf
+        subfolderitems:
+        - title: Index
+          output: web, pdf
+          url: /pmd_rules_jsp.html
+    - title: null
+      output: web, pdf
+      subfolders:
+      - title: Kotlin Rules
+        output: web, pdf
+        subfolderitems:
+        - title: Index
+          output: web, pdf
+          url: /pmd_rules_kotlin.html
+    - title: null
+      output: web, pdf
+      subfolders:
+      - title: Maven POM Rules
+        output: web, pdf
+        subfolderitems:
+        - title: Index
+          output: web, pdf
+          url: /pmd_rules_pom.html
+    - title: null
+      output: web, pdf
+      subfolders:
+      - title: Modelica Rules
+        output: web, pdf
+        subfolderitems:
+        - title: Index
+          output: web, pdf
+          url: /pmd_rules_modelica.html
+    - title: null
+      output: web, pdf
+      subfolders:
+      - title: PLSQL Rules
+        output: web, pdf
+        subfolderitems:
+        - title: Index
+          output: web, pdf
+          url: /pmd_rules_plsql.html
+    - title: null
+      output: web, pdf
+      subfolders:
+      - title: Salesforce VisualForce Rules
+        output: web, pdf
+        subfolderitems:
+        - title: Index
+          output: web, pdf
+          url: /pmd_rules_vf.html
+    - title: null
+      output: web, pdf
+      subfolders:
+      - title: Scala Rules
+        output: web, pdf
+        subfolderitems:
+        - title: Index
+          output: web, pdf
+          url: /pmd_rules_scala.html
+    - title: null
+      output: web, pdf
+      subfolders:
+      - title: Swift Rules
+        output: web, pdf
+        subfolderitems:
+        - title: Index
+          output: web, pdf
+          url: /pmd_rules_swift.html
+    - title: null
+      output: web, pdf
+      subfolders:
+      - title: VM Rules
+        output: web, pdf
+        subfolderitems:
+        - title: Index
+          output: web, pdf
+          url: /pmd_rules_vm.html
+    - title: null
+      output: web, pdf
+      subfolders:
+      - title: WSDL Rules
+        output: web, pdf
+        subfolderitems:
+        - title: Index
+          output: web, pdf
+          url: /pmd_rules_wsdl.html
+    - title: null
+      output: web, pdf
+      subfolders:
+      - title: XML Rules
+        output: web, pdf
+        subfolderitems:
+        - title: Index
+          output: web, pdf
+          url: /pmd_rules_xml.html
+    - title: null
+      output: web, pdf
+      subfolders:
+      - title: XSL Rules
+        output: web, pdf
+        subfolderitems:
+        - title: Index
+          output: web, pdf
+          url: /pmd_rules_xsl.html

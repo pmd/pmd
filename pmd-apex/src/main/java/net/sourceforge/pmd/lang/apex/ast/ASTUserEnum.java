@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.apex.ast;
 import apex.jorje.semantic.ast.compilation.UserEnum;
 
 public final class ASTUserEnum extends BaseApexClass<UserEnum> {
+    private ApexQualifiedName qname;
 
     ASTUserEnum(UserEnum userEnum) {
         super(userEnum);
@@ -17,4 +18,19 @@ public final class ASTUserEnum extends BaseApexClass<UserEnum> {
         return visitor.visit(this, data);
     }
 
+    @Override
+    public ApexQualifiedName getQualifiedName() {
+        if (qname == null) {
+
+            ASTUserClass parent = this.getFirstParentOfType(ASTUserClass.class);
+
+            if (parent != null) {
+                qname = ApexQualifiedName.ofNestedEnum(parent.getQualifiedName(), this);
+            } else {
+                qname = ApexQualifiedName.ofOuterEnum(this);
+            }
+        }
+
+        return qname;
+    }
 }

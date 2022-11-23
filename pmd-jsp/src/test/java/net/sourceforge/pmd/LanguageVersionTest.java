@@ -9,7 +9,6 @@ import java.util.Collection;
 
 import org.junit.runners.Parameterized.Parameters;
 
-import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.jsp.JspLanguageModule;
 
@@ -22,6 +21,6 @@ public class LanguageVersionTest extends AbstractLanguageVersionTest {
     @Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] { { JspLanguageModule.NAME, JspLanguageModule.TERSE_NAME, "",
-            LanguageRegistry.getLanguage(JspLanguageModule.NAME).getDefaultVersion(), }, });
+            getLanguage(JspLanguageModule.NAME).getDefaultVersion(), }, });
     }
 }

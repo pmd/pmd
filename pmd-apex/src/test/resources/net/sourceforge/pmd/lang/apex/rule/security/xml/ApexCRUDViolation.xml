@@ -1501,7 +1501,7 @@ public class Foo {
     </test-code>
 
 
-    <test-code regressionTest="false">
+    <test-code disabled="true">
         <!--
             Demonstrate that authorization for sub-relation queries doesn't work properly; see checkForAccessibility()
             See https://github.com/pmd/pmd/issues/2775

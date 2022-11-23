@@ -285,7 +285,7 @@ public class Foo {
         ]]></code>
     </test-code>
 
-    <test-code regressionTest="false">
+    <test-code disabled="true">
         <description>#46 False +: Unused private field: call to instance of self, received from another class</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
@@ -1447,7 +1447,12 @@ public class Purse {
         ]]></code>
     </test-code>
 
-    <test-code useAuxClasspath="false">
+    <test-code disabled="true">
+        <!-- Todo I ignored this because the test is not useful. It only checks that we
+              avoid the FP when auxclasspath is not set, while the FP is still here with
+              auxclasspath. The FP should not be there with or without auxclasspath, and it's
+              pointless to ensure it's not there only when the user has configured
+              their analysis incorrectly. -->
         <description>#1405 UnusedPrivateMethod false positive?</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[import java.util.ArrayList;

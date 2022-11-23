@@ -34,7 +34,7 @@ class TreeExportCliTest {
     @Test
     void testReadStandardInput() {
         IoSpy spy = IoSpy.withStdin("(a(b))");
-        int status = spy.runMain("-i", "-f", "xml", "-PlineSeparator=LF");
+        int status = spy.runMain("-i", "-f", "xml", "-PlineSeparator=LF", "-l", "dummy");
         assertEquals(0, status);
         spy.assertThatStdout(containsString("<?xml version='1.0' encoding='UTF-8' ?>\n"
                                             + "<dummyRootNode Image=''>\n"
@@ -48,7 +48,7 @@ class TreeExportCliTest {
     void testReadFile() throws IOException {
         File file = newFileWithContents("(a(b))");
         IoSpy spy = new IoSpy();
-        int status = spy.runMain("--file", file.getAbsolutePath(), "-f", "xml", "-PlineSeparator=LF");
+        int status = spy.runMain("--file", file.getAbsolutePath(), "-f", "xml", "-PlineSeparator=LF", "-l", "dummy");
         assertEquals(0, status);
         spy.assertThatStdout(containsString("<?xml version='1.0' encoding='UTF-8' ?>\n"
                                             + "<dummyRootNode Image=''>\n"

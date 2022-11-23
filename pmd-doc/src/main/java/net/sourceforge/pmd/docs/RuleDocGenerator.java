@@ -38,6 +38,7 @@ import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetLoadException;
 import net.sourceforge.pmd.RuleSetLoader;
 import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.properties.MultiValuePropertyDescriptor;
@@ -99,7 +100,14 @@ public class RuleDocGenerator {
         generateLanguageIndex(sortedRulesets, sortedAdditionalRulesets);
         generateRuleSetIndex(sortedRulesets);
 
+        ensureAllLanguages(sortedRulesets);
         generateSidebar(sortedRulesets);
+    }
+
+    private void ensureAllLanguages(Map<Language, List<RuleSet>> sortedRulesets) {
+        for (Language language : LanguageRegistry.PMD.getLanguages()) {
+            sortedRulesets.putIfAbsent(language, Collections.emptyList());
+        }
     }
 
     private void generateSidebar(Map<Language, List<RuleSet>> sortedRulesets) throws IOException {
@@ -389,6 +397,12 @@ public class RuleDocGenerator {
                     if (rule.getMinimumLanguageVersion() != null) {
                         lines.add("**Minimum Language Version:** "
                                 + rule.getLanguage().getName() + " " + rule.getMinimumLanguageVersion().getVersion());
+                        lines.add("");
+                    }
+
+                    if (rule.getMaximumLanguageVersion() != null) {
+                        lines.add("**Maximum Language Version:** "
+                                + rule.getLanguage().getName() + " " + rule.getMaximumLanguageVersion().getVersion());
                         lines.add("");
                     }
 

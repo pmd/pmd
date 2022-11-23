@@ -1,0 +1,23 @@
+    [Image] or [Truncated image[            Bcol      Ecol
+L3
+    [print]                                 1         6
+    [(]                                     6         7
+    [1]                                     7         8
+    [)]                                     18        19
+L6
+    [print]                                 1         6
+    [(]                                     6         7
+    [1]                                     7         8
+    [)]                                     8         9
+L9
+    [print]                                 1         6
+    [(]                                     6         7
+    [1]                                     7         8
+L10
+    [)]                                     17        18
+L13
+    [print]                                 1         6
+    [(]                                     6         7
+    [1]                                     7         8
+    [)]                                     8         9
+EOF

@@ -8,6 +8,7 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.emptyIterator;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
+import static java.util.Collections.emptySet;
 import static java.util.Collections.singletonList;
 
 import java.util.ArrayList;
@@ -518,12 +519,12 @@ public final class CollectionUtil {
     /**
      * A collector that returns a mutable set. This contrasts with
      * {@link Collectors#toSet()}, which makes no guarantee about the
-     * mutability of the set.
+     * mutability of the set. The set preserves insertion order.
      *
      * @param <T> Type of accumulated values
      */
     public static <T> Collector<T, ?, Set<T>> toMutableSet() {
-        return Collectors.toCollection(HashSet::new);
+        return Collectors.toCollection(LinkedHashSet::new);
     }
 
     /**
@@ -536,6 +537,18 @@ public final class CollectionUtil {
      */
     public static <T> Collector<T, ?, List<T>> toUnmodifiableList() {
         return Collectors.collectingAndThen(toMutableList(), Collections::unmodifiableList);
+    }
+
+    /**
+     * A collector that returns an unmodifiable set. This contrasts with
+     * {@link Collectors#toSet()}, which makes no guarantee about the
+     * mutability of the set. {@code Collectors::toUnmodifiableSet} was
+     * only added in JDK 9. The set preserves insertion order.
+     *
+     * @param <T> Type of accumulated values
+     */
+    public static <T> Collector<T, ?, Set<T>> toUnmodifiableSet() {
+        return Collectors.collectingAndThen(toMutableSet(), Collections::unmodifiableSet);
     }
 
     /**
@@ -639,6 +652,13 @@ public final class CollectionUtil {
             return emptyList();
         }
         return Collections.unmodifiableList(new ArrayList<>(list));
+    }
+
+    public static <T> Set<T> defensiveUnmodifiableCopyToSet(Collection<? extends T> list) {
+        if (list.isEmpty()) {
+            return emptySet();
+        }
+        return Collections.unmodifiableSet(new LinkedHashSet<>(list));
     }
 
     /**

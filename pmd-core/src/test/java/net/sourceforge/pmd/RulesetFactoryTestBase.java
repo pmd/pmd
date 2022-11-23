@@ -83,8 +83,7 @@ public class RulesetFactoryTestBase {
 
 
     protected RuleSet loadRuleSetInDir(String resourceDir, String ruleSetFilename) {
-        RuleSetLoader loader = new RuleSetLoader();
-        loader.setReporter(mockReporter);
+        RuleSetLoader loader = new RuleSetLoader().withReporter(mockReporter);
         return loader.loadFromResource(resourceDir + "/" + ruleSetFilename);
     }
 
@@ -99,8 +98,7 @@ public class RulesetFactoryTestBase {
     }
 
     protected RuleSet loadRuleSet(String fileName, String ruleSetXml) {
-        RuleSetLoader loader = new RuleSetLoader();
-        loader.setReporter(mockReporter);
+        RuleSetLoader loader = new RuleSetLoader().withReporter(mockReporter);
         return loader.loadFromString(fileName, ruleSetXml);
     }
 

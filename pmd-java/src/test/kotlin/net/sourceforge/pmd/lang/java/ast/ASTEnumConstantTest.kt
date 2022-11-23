@@ -213,7 +213,7 @@ class ASTEnumConstantTest : ParserTestSpec({
 
                             it::getModifiers shouldBe modifiers {
                                 it.explicitModifiers should beEmpty()
-                                it.effectiveModifiers.shouldContainExactly(PUBLIC, STATIC, FINAL)
+                                it.effectiveModifiers.shouldContainExactly(setOf(PUBLIC, STATIC, FINAL))
                             }
 
                             it::getVarId shouldBe variableId("B") {

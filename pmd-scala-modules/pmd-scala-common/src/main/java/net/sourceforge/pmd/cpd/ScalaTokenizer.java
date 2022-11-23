@@ -10,7 +10,6 @@ import java.util.Properties;
 import org.apache.commons.lang3.StringUtils;
 
 import net.sourceforge.pmd.cpd.token.internal.BaseTokenFilter;
-import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
@@ -56,9 +55,9 @@ public class ScalaTokenizer implements Tokenizer {
         String scalaVersion = properties.getProperty(SCALA_VERSION_PROPERTY);
         LanguageVersion langVer;
         if (scalaVersion == null) {
-            langVer = LanguageRegistry.getLanguage(ScalaLanguageModule.NAME).getDefaultVersion();
+            langVer = ScalaLanguageModule.getInstance().getDefaultVersion();
         } else {
-            langVer = LanguageRegistry.getLanguage(ScalaLanguageModule.NAME).getVersion(scalaVersion);
+            langVer = ScalaLanguageModule.getInstance().getVersion(scalaVersion);
         }
         dialect = ((ScalaLanguageHandler) langVer.getLanguageVersionHandler()).getDialect();
     }
