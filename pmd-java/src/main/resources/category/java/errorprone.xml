@@ -2579,7 +2579,10 @@ See the property `annotations`.
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassOrInterfaceDeclaration[@Nested= false() and @Local= false()]
+//TypeDeclaration
+(: no lombok constructor annotations :)
+[not(Annotation[pmd-java:typeIs('lombok.NoArgsConstructor')])]
+/ClassOrInterfaceDeclaration[@Nested= false() and @Local= false()]
 [
   (
     (: at least one constructor :)
