@@ -14,7 +14,6 @@ import java.io.PrintStream;
  */
 final class Io {
 
-    public static final Io SYSTEM = new Io(System.out, System.err, System.in);
     public final PrintStream stdout;
     public final PrintStream stderr;
     public final InputStream stdin;
@@ -23,5 +22,9 @@ final class Io {
         this.stdout = stdout;
         this.stderr = stderr;
         this.stdin = stdin;
+    }
+    
+    public static Io system() {
+        return new Io(System.out, System.err, System.in);
     }
 }

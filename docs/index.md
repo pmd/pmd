@@ -7,7 +7,7 @@ summary: >
     Welcome to the documentation site for PMD and CPD! <br/><br/>
 
 
-last_updated: August 2017
+last_updated: October 2022
 author: Jeff Jensen <jjensen@apache.org>, Andreas Dangel <andreas.dangel@adangel.org>,
         Clément Fournier <clement.fournier76@gmail.com>
 
@@ -26,7 +26,7 @@ additional_js:
 
 **PMD** is a static source code analyzer. It finds common programming flaws like
 unused variables, empty catch blocks, unnecessary object creation, and
-so forth. It's mainly concerned with **Java and Apex**, but **supports six other
+so forth. It's mainly concerned with **Java and Apex**, but **supports 14 other
 languages**.
 
 PMD features many **built-in checks** (in PMD lingo, *rules*), which are documented

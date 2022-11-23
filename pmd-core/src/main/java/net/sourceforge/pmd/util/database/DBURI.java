@@ -150,82 +150,14 @@ public class DBURI {
      * @throws URISyntaxException
      */
     public DBURI(String string) throws URISyntaxException, IOException {
-        /*
-         * A JDBC URL is an opaque URL and does not have a query.
-         *
-         * We pretend that it does, strip off the query, use the real JDBC URL
-         * component to infer languages JDBC driver class supported languages
-         * default source code types default schemas generate a faux HTTP URI
-         * with the query, extract the query parameters
-         */
-
-        uri = new URI(string);
-
-        try {
-            // Split the string between JDBC URL and the query
-            String[] splitURI = string.split("\\?");
-
-            if (splitURI.length > 1) {
-                url = splitURI[0];
-            } else {
-                url = string;
-            }
-
-            LOG.debug("Extracted URL={}", url);
-
-            // Explode URL into its separate components
-            setFields();
-
-            // If the original URI string contained a query component, split it
-            // into parameters
-            if (splitURI.length > 1) {
-                // Generate a fake HTTP URI to allow easy extraction of the
-                // query parameters
-                String chimeraString = "http://local?" + string.substring(url.length() + 1);
-                LOG.trace("chimeraString={}", chimeraString);
-                URI chimeraURI = new URI(chimeraString);
-                dump("chimeraURI", chimeraURI);
-
-                parameters = getParameterMap(chimeraURI);
-
-                LOG.trace("parameterMap=={}", parameters);
-
-                characterSet = parameters.get("characterset");
-                sourceCodeTypes = parameters.get("sourcecodetypes");
-                sourceCodeNames = parameters.get("sourcecodenames");
-                languages = parameters.get("languages");
-
-                // Populate the lists
-                if (null != sourceCodeNames) {
-                    sourceCodeNamesList = Arrays.asList(sourceCodeNames.split(","));
-                }
-
-                if (null != languages) {
-                    languagesList = Arrays.asList(languages.split(","));
-                }
-
-                if (null != parameters.get("schemas")) {
-                    schemasList = Arrays.asList(parameters.get("schemas").split(","));
-                }
-
-                if (null != sourceCodeTypes) {
-                    sourceCodeTypesList = Arrays.asList(sourceCodeTypes.split(","));
-                }
-
-            }
-
-        } catch (URISyntaxException ex) {
-            URISyntaxException uriException = new URISyntaxException(string, "Problem generating DBURI.");
-            uriException.initCause(ex);
-            throw uriException;
-        }
+        this(new URI(string));
     }
 
     /**
-     * Create a DBURI from standard individual {@link URI} components.
+     * Create DBURI from a URI, combining a JDBC URL and query parameters.
      *
      * <p>
-     * From the JDBC URL components, infer:
+     * From the JDBC URL component, infer:
      * </p>
      * <ul>
      * <li>JDBC driver class</li>
@@ -244,18 +176,72 @@ public class DBURI {
      * <li>source code</li>
      * </ul>
      *
-     * @param scheme
-     * @param userInfo
-     * @param host
-     * @param port
-     * @param path
-     * @param query
-     * @param fragment
-     * @throws URISyntaxException
+     * @param uri A URI
      */
-    public DBURI(String scheme, String userInfo, String host, int port, String path, String query, String fragment)
-            throws URISyntaxException {
-        uri = new URI(scheme, userInfo, host, port, path, query, fragment);
+    public DBURI(URI uri) throws URISyntaxException, IOException {
+        /*
+         * A JDBC URL is an opaque URL and does not have a query.
+         *
+         * We pretend that it does, strip off the query, use the real JDBC URL
+         * component to infer languages JDBC driver class supported languages
+         * default source code types default schemas generate a faux HTTP URI
+         * with the query, extract the query parameters
+         */
+
+        this.uri = uri;
+
+        // Split the string between JDBC URL and the query
+        String[] splitURI = uri.toString().split("\\?");
+
+        if (splitURI.length > 1) {
+            url = splitURI[0];
+        } else {
+            url = uri.toString();
+        }
+
+        LOG.debug("Extracted URL={}", url);
+
+        // Explode URL into its separate components
+        setFields();
+
+
+        // If the original URI string contained a query component, split it
+        // into parameters
+        if (splitURI.length > 1) {
+            // Generate a fake HTTP URI to allow easy extraction of the
+            // query parameters
+            String chimeraString = "http://local?" + uri.toString().substring(url.length() + 1);
+            LOG.trace("chimeraString={}", chimeraString);
+            URI chimeraURI = new URI(chimeraString);
+            dump("chimeraURI", chimeraURI);
+
+            parameters = getParameterMap(chimeraURI);
+
+            LOG.trace("parameterMap=={}", parameters);
+
+            characterSet = parameters.get("characterset");
+            sourceCodeTypes = parameters.get("sourcecodetypes");
+            sourceCodeNames = parameters.get("sourcecodenames");
+            languages = parameters.get("languages");
+
+            // Populate the lists
+            if (null != sourceCodeNames) {
+                sourceCodeNamesList = Arrays.asList(sourceCodeNames.split(","));
+            }
+
+            if (null != languages) {
+                languagesList = Arrays.asList(languages.split(","));
+            }
+
+            if (null != parameters.get("schemas")) {
+                schemasList = Arrays.asList(parameters.get("schemas").split(","));
+            }
+
+            if (null != sourceCodeTypes) {
+                sourceCodeTypesList = Arrays.asList(sourceCodeTypes.split(","));
+            }
+
+        }
 
     }
 

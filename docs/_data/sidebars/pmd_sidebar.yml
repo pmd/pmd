@@ -23,7 +23,7 @@ entries:
       output: web, pdf
       type: homepage
     - title: Release notes
-      url: /pmd_release_notes.html
+      url: /pmd_release_notes7.html
       output: web, pdf
     - title: PMD 7.0.0 development
       url: /pmd_next_major_development.html
@@ -322,6 +322,15 @@ entries:
     - title: null
       output: web, pdf
       subfolders:
+      - title: Scala Rules
+        output: web, pdf
+        subfolderitems:
+        - title: Index
+          output: web, pdf
+          url: /pmd_rules_scala.html
+    - title: null
+      output: web, pdf
+      subfolders:
       - title: Swift Rules
         output: web, pdf
         subfolderitems:
@@ -355,6 +364,15 @@ entries:
     - title: null
       output: web, pdf
       subfolders:
+      - title: WSDL Rules
+        output: web, pdf
+        subfolderitems:
+        - title: Index
+          output: web, pdf
+          url: /pmd_rules_wsdl.html
+    - title: null
+      output: web, pdf
+      subfolders:
       - title: XML Rules
         output: web, pdf
         subfolderitems:
@@ -385,18 +403,9 @@ entries:
     - title: Apex
       url: /pmd_languages_apex.html
       output: web, pdf
-    - title: null
+    - title: Java
+      url: /pmd_languages_java.html
       output: web, pdf
-      subfolders:
-      - title: Java
-        output: web, pdf
-        subfolderitems:
-        - title: Java Support
-          url: /pmd_languages_java.html
-          output: web, pdf
-        - title: Java Versions
-          url: /pmd_languages_java_versions.html
-          output: web, pdf
     - title: JSP
       url: /pmd_languages_jsp.html
       output: web, pdf

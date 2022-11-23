@@ -4,10 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.ast
 
-import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.shouldBe
-import net.sourceforge.pmd.lang.ast.test.shouldBe as typeShouldBe
-import net.sourceforge.pmd.lang.java.ast.JavaVersion.*
+import net.sourceforge.pmd.lang.java.ast.JavaVersion.J16
 import java.io.IOException
 
 class ASTPatternTest : ProcessorTestSpec({

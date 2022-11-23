@@ -9,9 +9,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.nio.file.Path;
+
 import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.PMDConfiguration;
+import net.sourceforge.pmd.util.CollectionUtil;
 
 class PMDParametersTest {
 
@@ -51,7 +54,7 @@ class PMDParametersTest {
     private void assertMultipleDirsAndRulesets(PmdParametersParseResult result) {
         assertFalse(result.isError());
         PMDConfiguration config = result.toConfiguration();
-        assertEquals(config.getAllInputPaths(), listOf("a", "b"));
+        assertEquals(CollectionUtil.map(config.getInputPathList(), Path::toString), listOf("a", "b"));
         assertEquals(config.getRuleSetPaths(), listOf("x.xml", "y.xml"));
     }
 

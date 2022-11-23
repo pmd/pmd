@@ -13,6 +13,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
+import java.util.stream.Collectors;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -261,6 +262,7 @@ public interface TextFile extends Closeable {
         if (languageVersion == null) {
             throw new NullPointerException("no language version detected for " + pathId);
         }
+        String shortPaths = config.getInputPathList().stream().map(Path::toString).collect(Collectors.joining(","));
         class DataSourceTextFile extends BaseCloseable implements TextFile {
 
             @Override
@@ -275,7 +277,7 @@ public interface TextFile extends Closeable {
 
             @Override
             public @NonNull String getDisplayName() {
-                return ds.getNiceFileName(config.isReportShortNames(), config.getInputPaths());
+                return ds.getNiceFileName(config.isReportShortNames(), shortPaths);
             }
 
             @Override
