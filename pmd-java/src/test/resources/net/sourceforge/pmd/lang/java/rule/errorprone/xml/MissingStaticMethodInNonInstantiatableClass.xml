@@ -379,4 +379,19 @@ public class Scratch {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#4224 [java] MissingStaticMethodInNonInstantiatableClass should considers lombok's UtilityClass</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import lombok.experimental.UtilityClass;
+
+@UtilityClass
+public final class Test {
+   private int x;
+}
+
+
+        ]]></code>
+    </test-code>
 </test-data>
