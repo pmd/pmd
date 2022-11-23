@@ -106,7 +106,7 @@ public class PMDConfiguration extends AbstractConfiguration {
     private String suppressMarker = DEFAULT_SUPPRESS_MARKER;
     private int threads = Runtime.getRuntime().availableProcessors();
     private ClassLoader classLoader = getClass().getClassLoader();
-    private LanguageVersionDiscoverer languageVersionDiscoverer;
+    private final LanguageVersionDiscoverer languageVersionDiscoverer;
     private LanguageVersion forceLanguageVersion;
     private MessageReporter reporter = new SimpleMessageReporter(LoggerFactory.getLogger(PMD.class));
 
@@ -508,12 +508,13 @@ public class PMDConfiguration extends AbstractConfiguration {
         this.inputPaths = new ArrayList<>(inputPaths);
     }
 
+
     /**
      * Add an input path. It is not split on commas.
      *
      * @throws NullPointerException If the parameter is null
      */
-    public void addInputPath(Path inputPath) {
+    public void addInputPath(@NonNull Path inputPath) {
         Objects.requireNonNull(inputPath);
         this.inputPaths.add(inputPath);
     }
@@ -575,6 +576,7 @@ public class PMDConfiguration extends AbstractConfiguration {
      * Get the input URI to process for source code objects.
      *
      * @return URI
+     * @deprecated Use {@link #getUri}
      */
     public URI getUri() {
         return inputUri;
@@ -642,7 +644,7 @@ public class PMDConfiguration extends AbstractConfiguration {
         Renderer renderer = RendererFactory.createRenderer(reportFormat, reportProperties);
         renderer.setShowSuppressedViolations(showSuppressedViolations);
         if (withReportWriter) {
-            renderer.setReportFile(getReportFile());
+            renderer.setReportFile(reportFile == null ? null : reportFile.toString());
         }
         return renderer;
     }
@@ -684,7 +686,7 @@ public class PMDConfiguration extends AbstractConfiguration {
      *
      * @return The file to which to render.
      */
-    public @Nullable Path getReportFilePath() {
+    public Path getReportFilePath() {
         return reportFile;
     }
 

@@ -7,7 +7,10 @@ package net.sourceforge.pmd.cpd;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -22,18 +25,19 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.event.Level;
 
 import net.sourceforge.pmd.annotation.Experimental;
-import net.sourceforge.pmd.cli.internal.CliMessages;
 import net.sourceforge.pmd.cpd.renderer.CPDReportRenderer;
+import net.sourceforge.pmd.internal.LogMessages;
 import net.sourceforge.pmd.internal.Slf4jSimpleConfiguration;
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
 import net.sourceforge.pmd.util.FileFinder;
+import net.sourceforge.pmd.util.FileUtil;
 import net.sourceforge.pmd.util.IOUtil;
 import net.sourceforge.pmd.util.database.DBMSMetadata;
 import net.sourceforge.pmd.util.database.DBURI;
 import net.sourceforge.pmd.util.database.SourceObject;
 
 /**
- * @deprecated This class is to be removed in PMD 7 in favor of a unified PmdCli entry point.
+ * @deprecated {@link PmdCli} under the pmd-cli offers CLI support.
  */
 @Deprecated
 public class CPD {
@@ -55,6 +59,73 @@ public class CPD {
         // before we start any tokenizing (add(File...)), we need to reset the
         // static TokenEntry status
         TokenEntry.clearImages();
+
+        // Add all sources
+        extractAllSources();
+    }
+
+    private void extractAllSources() {
+        // Add files
+        if (null != configuration.getFiles() && !configuration.getFiles().isEmpty()) {
+            addSourcesFilesToCPD(configuration.getFiles());
+        }
+
+        // Add Database URIS
+        if (null != configuration.getURI() && !"".equals(configuration.getURI())) {
+            addSourceURIToCPD(configuration.getURI());
+        }
+
+        if (null != configuration.getFileListPath() && !"".equals(configuration.getFileListPath())) {
+            addFilesFromFilelist(configuration.getFileListPath());
+        }
+    }
+
+    private void addSourcesFilesToCPD(List<File> files) {
+        try {
+            for (File file : files) {
+                if (!file.exists()) {
+                    throw new FileNotFoundException("Couldn't find directory/file '" + file + "'");
+                } else if (file.isDirectory()) {
+                    if (configuration.isNonRecursive()) {
+                        addAllInDirectory(file);
+                    } else {
+                        addRecursively(file);
+                    }
+                } else {
+                    add(file);
+                }
+            }
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
+    }
+
+    private void addFilesFromFilelist(String inputFilePath) {
+        List<File> files = new ArrayList<>();
+        try {
+            Path file = FileUtil.toExistingPath(inputFilePath);
+            for (Path fileToAdd : FileUtil.readFilelistEntries(file)) {
+                if (!Files.exists(fileToAdd)) {
+                    throw new RuntimeException("No such file " + fileToAdd);
+                }
+                files.add(fileToAdd.toFile());
+            }
+            addSourcesFilesToCPD(files);
+        } catch (IOException ex) {
+            throw new IllegalStateException(ex);
+        }
+    }
+
+    private void addSourceURIToCPD(String uri) {
+        try {
+            log.debug("Attempting DBURI={}", uri);
+            DBURI dburi = new DBURI(uri);
+            log.debug("Initialised DBURI={}", dburi);
+            log.debug("Adding DBURI={} with DBType={}", dburi, dburi.getDbType());
+            add(dburi);
+        } catch (IOException | URISyntaxException e) {
+            throw new IllegalStateException("uri=" + uri, e);
+        }
     }
 
     public void setCpdListener(CPDListener cpdListener) {
@@ -123,7 +194,7 @@ public class CPD {
         add(sourceCode);
     }
 
-    public void add(DBURI dburi) throws IOException {
+    public void add(DBURI dburi) {
 
         try {
             DBMSMetadata dbmsmetadata = new DBMSMetadata(dburi);
@@ -239,8 +310,6 @@ public class CPD {
         CPD cpd = new CPD(arguments);
 
         try {
-            CPDCommandLineInterface.addSourceFilesToCPD(cpd, arguments);
-
             cpd.go();
             final CPDReportRenderer renderer = arguments.getCPDReportRenderer();
             if (renderer == null) {
@@ -261,7 +330,7 @@ public class CPD {
             }
         } catch (IOException | RuntimeException e) {
             log.debug(e.toString(), e);
-            log.error(CliMessages.errorDetectedMessage(1, CPDCommandLineInterface.PROGRAM_NAME));
+            log.error(LogMessages.errorDetectedMessage(1, CPDCommandLineInterface.PROGRAM_NAME));
             statusCode = StatusCode.ERROR;
         }
         return statusCode;

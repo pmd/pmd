@@ -344,7 +344,7 @@ public class CPDConfiguration extends AbstractConfiguration {
         return cpdRenderer;
     }
 
-    CPDReportRenderer getCPDReportRenderer() {
+    public CPDReportRenderer getCPDReportRenderer() {
         return cpdReportRenderer;
     }
 
