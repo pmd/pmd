@@ -8,6 +8,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.hasSize;
 
+import java.nio.file.Paths;
 import java.util.List;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -27,11 +28,15 @@ class PMDFilelistTest {
         return FileCollector.newCollector(new LanguageVersionDiscoverer(LanguageRegistry.PMD), new NoopReporter());
     }
 
+    private static void collectFileList(FileCollector collector, String x) {
+        FileCollectionUtil.collectFileList(collector, Paths.get(x));
+    }
+
     @Test
     void testGetApplicableFiles() {
         FileCollector collector = newCollector();
 
-        FileCollectionUtil.collectFileList(collector, "src/test/resources/net/sourceforge/pmd/cli/filelist.txt");
+        collectFileList(collector, "src/test/resources/net/sourceforge/pmd/cli/filelist.txt");
 
         List<TextFile> applicableFiles = collector.getCollectedFiles();
         assertThat(applicableFiles, hasSize(2));
@@ -43,7 +48,7 @@ class PMDFilelistTest {
     void testGetApplicableFilesMultipleLines() {
         FileCollector collector = newCollector();
 
-        FileCollectionUtil.collectFileList(collector, "src/test/resources/net/sourceforge/pmd/cli/filelist2.txt");
+        collectFileList(collector, "src/test/resources/net/sourceforge/pmd/cli/filelist2.txt");
 
         List<TextFile> applicableFiles = collector.getCollectedFiles();
         assertThat(applicableFiles, hasSize(3));

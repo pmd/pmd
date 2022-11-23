@@ -264,8 +264,10 @@ to be "debug".
 * Dart
 * EcmaScript (JavaScript)
 * Fortran
+* Gherkin (Cucumber)
 * Go
 * Groovy
+* Html
 * Java
 * Jsp
 * Kotlin

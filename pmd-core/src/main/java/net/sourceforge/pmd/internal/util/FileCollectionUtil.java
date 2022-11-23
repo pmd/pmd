@@ -6,20 +6,17 @@ package net.sourceforge.pmd.internal.util;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.net.URI;
 import java.nio.file.FileSystem;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.sql.SQLException;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.PMDConfiguration;
-import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.document.FileCollector;
 import net.sourceforge.pmd.util.FileUtil;
 import net.sourceforge.pmd.util.IOUtil;
@@ -40,55 +37,37 @@ public final class FileCollectionUtil {
 
     }
 
-    public static FileCollector collectFiles(PMDConfiguration configuration, Set<Language> languages, MessageReporter reporter) {
-        FileCollector collector = collectFiles(configuration, reporter);
-        collector.filterLanguages(languages);
-        return collector;
-    }
-
-    private static FileCollector collectFiles(PMDConfiguration configuration, MessageReporter reporter) {
-        FileCollector collector = FileCollector.newCollector(
-            configuration.getLanguageVersionDiscoverer(),
-            reporter
-        );
-        collectFiles(configuration, collector);
-        return collector;
-    }
-
     public static void collectFiles(PMDConfiguration configuration, FileCollector collector) {
         if (configuration.getSourceEncoding() != null) {
             collector.setCharset(configuration.getSourceEncoding());
         }
 
-        if (configuration.getInputPaths() != null) {
-            List<String> paths = Arrays.asList(configuration.getInputPaths().split(","));
-            collectFiles(collector, paths);
+        collectFiles(collector, configuration.getInputPathList());
+
+        if (configuration.getUri() != null) {
+            collectDB(collector, configuration.getUri());
         }
 
-        if (configuration.getInputUri() != null) {
-            collectDB(collector, configuration.getInputUri());
+        if (configuration.getInputFile() != null) {
+            collectFileList(collector, configuration.getInputFile());
         }
 
-        if (configuration.getInputFilePath() != null) {
-            collectFileList(collector, configuration.getInputFilePath());
-        }
-
-        if (configuration.getIgnoreFilePath() != null) {
+        if (configuration.getIgnoreFile() != null) {
             // This is to be able to interpret the log (will report 'adding' xxx)
             LOG.debug("Now collecting files to exclude.");
             // errors like "excluded file does not exist" are reported as warnings.
             // todo better reporting of *where* exactly the path is
             MessageReporter mutedLog = new ErrorsAsWarningsReporter(collector.getReporter());
             try (FileCollector excludeCollector = collector.newCollector(mutedLog)) {
-                collectFileList(excludeCollector, configuration.getIgnoreFilePath());
+                collectFileList(excludeCollector, configuration.getIgnoreFile());
                 collector.exclude(excludeCollector);
             }
         }
     }
 
 
-    public static void collectFiles(FileCollector collector, List<String> filePaths) {
-        for (String rootLocation : filePaths) {
+    public static void collectFiles(FileCollector collector, List<Path> filePaths) {
+        for (Path rootLocation : filePaths) {
             try {
                 addRoot(collector, rootLocation);
             } catch (IOException e) {
@@ -97,26 +76,25 @@ public final class FileCollectionUtil {
         }
     }
 
-    public static void collectFileList(FileCollector collector, String fileListLocation) {
-        LOG.debug("Reading file list {}.", fileListLocation);
-        Path path = Paths.get(fileListLocation);
-        if (!Files.exists(path)) {
-            collector.getReporter().error("No such file {}", fileListLocation);
+    public static void collectFileList(FileCollector collector, Path fileList) {
+        LOG.debug("Reading file list {}.", fileList);
+        if (!Files.exists(fileList)) {
+            collector.getReporter().error("No such file {}", fileList);
             return;
         }
 
-        List<String> filePaths;
+        List<Path> filePaths;
         try {
-            filePaths = FileUtil.readFilelistEntries(path);
+            filePaths = FileUtil.readFilelistEntries(fileList);
         } catch (IOException e) {
-            collector.getReporter().errorEx("Error reading {}", new Object[] { fileListLocation }, e);
+            collector.getReporter().errorEx("Error reading {}", new Object[] { fileList }, e);
             return;
         }
         collectFiles(collector, filePaths);
     }
 
-    private static void addRoot(FileCollector collector, String rootLocation) throws IOException {
-        Path path = Paths.get(rootLocation);
+    private static void addRoot(FileCollector collector, Path path) throws IOException {
+        String pathStr = path.toString();
         if (!Files.exists(path)) {
             collector.getReporter().error("No such file {0}", path);
             return;
@@ -125,7 +103,7 @@ public final class FileCollectionUtil {
         if (Files.isDirectory(path)) {
             LOG.debug("Adding directory {}.", path);
             collector.addDirectory(path);
-        } else if (rootLocation.endsWith(".zip") || rootLocation.endsWith(".jar")) {
+        } else if (pathStr.endsWith(".zip") || pathStr.endsWith(".jar")) {
             LOG.debug("Adding zip file {}.", path);
             @SuppressWarnings("PMD.CloseResource")
             FileSystem fs = collector.addZipFile(path);
@@ -143,10 +121,10 @@ public final class FileCollectionUtil {
         }
     }
 
-    public static void collectDB(FileCollector collector, String uriString) {
+    public static void collectDB(FileCollector collector, URI uri) {
         try {
-            LOG.debug("Connecting to {}", uriString);
-            DBURI dbUri = new DBURI(uriString);
+            LOG.debug("Connecting to {}", uri);
+            DBURI dbUri = new DBURI(uri);
             DBMSMetadata dbmsMetadata = new DBMSMetadata(dbUri);
             LOG.trace("DBMSMetadata retrieved");
             List<SourceObject> sourceObjectList = dbmsMetadata.getSourceObjectList();
@@ -167,7 +145,7 @@ public final class FileCollectionUtil {
         } catch (ClassNotFoundException e) {
             collector.getReporter().errorEx("Cannot get files from DB - probably missing database JDBC driver", e);
         } catch (Exception e) {
-            collector.getReporter().errorEx("Cannot get files from DB - ''{}''", new Object[] { uriString }, e);
+            collector.getReporter().errorEx("Cannot get files from DB - ''{}''", new Object[] { uri }, e);
         }
     }
 }

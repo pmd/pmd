@@ -362,4 +362,32 @@ public final class TestInputConfiguration {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>Don't consider nested classes (JUnit4)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.junit.Test;
+public class MyTests {
+    @Test
+    public void myCheck() {}
+
+    static class Config {}
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Don't consider nested classes (TestNG)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.testng.annotations.Test;
+public class MyTests {
+    @Test
+    public void myCheck() {}
+
+    static class Config {}
+}
+]]></code>
+    </test-code>
 </test-data>

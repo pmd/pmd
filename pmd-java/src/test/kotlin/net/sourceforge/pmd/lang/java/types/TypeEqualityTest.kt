@@ -60,13 +60,13 @@ class TypeEqualityTest : FunSpec({
                 fun canBeWildCardBound(t: JTypeMirror) = !(t.isPrimitive || t is JWildcardType)
 
                 forAll(ts.allTypesGen, ts.allTypesGen) { t, s ->
-                    canBeWildCardBound(t) implies {
+                    (canBeWildCardBound(t) && canBeWildCardBound(s)) implies {
                         (t == s) == (`?` extends t == `?` extends s)
                     }
                 }
 
                 forAll(ts.allTypesGen, ts.allTypesGen) { t, s ->
-                    canBeWildCardBound(t) implies {
+                    (canBeWildCardBound(t) && canBeWildCardBound(s)) implies {
                         (t == s) == (`?` `super` t == `?` `super` s)
                     }
                 }

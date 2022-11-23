@@ -4,9 +4,10 @@
 
 package net.sourceforge.pmd.cli;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.empty;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -103,8 +104,7 @@ class PMDCommandLineInterfaceTest {
         PMDCommandLineInterface.extractParameters(params, args, "PMD");
 
         PMDConfiguration config = params.toConfiguration();
-        assertEquals("pmd.filelist", config.getInputFilePath());
-        assertTrue(config.getAllInputPaths().isEmpty()); // no additional input paths
-        assertNull(config.getInputPaths());
+        assertEquals("pmd.filelist", config.getInputFile().toString());
+        assertThat(config.getInputPathList(), empty()); // no additional input paths
     }
 }

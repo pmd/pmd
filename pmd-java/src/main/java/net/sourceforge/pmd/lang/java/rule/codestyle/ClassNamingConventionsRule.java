@@ -13,6 +13,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTRecordDeclaration;
 import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
 import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
+import net.sourceforge.pmd.lang.java.rule.internal.TestFrameworksUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 
@@ -27,6 +28,9 @@ public class ClassNamingConventionsRule extends AbstractNamingConventionRule<AST
     private final PropertyDescriptor<Pattern> enumerationRegex = defaultProp("enum").build();
     private final PropertyDescriptor<Pattern> annotationRegex = defaultProp("annotation").build();
     private final PropertyDescriptor<Pattern> utilityClassRegex = defaultProp("utility class").build();
+    private final PropertyDescriptor<Pattern> testClassRegex = defaultProp("test class")
+            .desc("Regex which applies to test class names. Since PMD 6.52.0.")
+            .defaultValue("^Test.*$|^[A-Z][a-zA-Z0-9]*Test(s|Case)?$").build();
 
 
     public ClassNamingConventionsRule() {
@@ -40,6 +44,12 @@ public class ClassNamingConventionsRule extends AbstractNamingConventionRule<AST
         definePropertyDescriptor(enumerationRegex);
         definePropertyDescriptor(annotationRegex);
         definePropertyDescriptor(utilityClassRegex);
+        definePropertyDescriptor(testClassRegex);
+    }
+
+
+    private boolean isTestClass(ASTClassOrInterfaceDeclaration node) {
+        return !node.isNested() && TestFrameworksUtil.isTestClass(node);
     }
 
     @Override
@@ -47,6 +57,8 @@ public class ClassNamingConventionsRule extends AbstractNamingConventionRule<AST
 
         if (node.isAbstract()) {
             checkMatches(node, abstractClassRegex, data);
+        } else if (isTestClass(node)) {
+            checkMatches(node, testClassRegex, data);
         } else if (JavaRuleUtil.isUtilityClass(node)) {
             checkMatches(node, utilityClassRegex, data);
         } else if (node.isInterface()) {

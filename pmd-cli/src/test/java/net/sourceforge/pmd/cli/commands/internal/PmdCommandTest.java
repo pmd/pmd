@@ -7,6 +7,7 @@ package net.sourceforge.pmd.cli.commands.internal;
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.nio.file.Path;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -14,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.util.CollectionUtil;
 
 class PmdCommandTest extends BaseCommandTest<PmdCommand> {
 
@@ -70,7 +72,7 @@ class PmdCommandTest extends BaseCommandTest<PmdCommand> {
 
     private void assertMultipleDirsAndRulesets(final PmdCommand result) {
         final PMDConfiguration config = result.toConfiguration();
-        assertEquals(listOf("a", "b"), config.getAllInputPaths());
+        assertEquals(listOf("a", "b"), CollectionUtil.map(config.getInputPathList(), Path::toString));
         assertEquals(listOf("x.xml", "y.xml"), config.getRuleSetPaths());
     }
 

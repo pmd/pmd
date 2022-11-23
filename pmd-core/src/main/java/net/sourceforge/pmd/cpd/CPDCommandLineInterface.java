@@ -128,13 +128,14 @@ public final class CPDCommandLineInterface {
         m.put("--failOnViolation", "--fail-on-violation");
         m.put("-failOnViolation", "--fail-on-violation");
         m.put("--filelist", "--file-list");
+        m.put("--files", "--dir");
         SUGGESTED_REPLACEMENT = Collections.unmodifiableMap(m);
     }
 
     /**
      * {@code CPD} now takes the sources from the {@code CPDConfiguration} itslef,
      * this method is now an noop and will be removed.
-     * 
+     *
      * @deprecated This method is now a noop and will be removed, CPD does this itself.
      */
     @Deprecated

@@ -23,11 +23,10 @@ import kotlin.streams.toList
 
 
 val TypeSystem.primitiveGen: Exhaustive<JPrimitiveType> get() = exhaustive(this.allPrimitives.toList())
-val TypeSystem.refTypeGen: Arb<JTypeMirror> get() = RefTypeGenArb(this)
+val TypeSystem.refTypeGen: RefTypeGenArb get() = RefTypeGenArb(this)
 val TypeSystem.allTypesGen: Arb<JTypeMirror>
     get() {
-        val refs = refTypeGen
-        return arbitrary(edgecases = refs.edgecases() + primitiveGen.values) { rs ->
+        return arbitrary(edgecases = refTypeGen.allEdgecases + primitiveGen.values) { rs ->
             refTypeGen.sample(rs).value
         }
     }
@@ -44,11 +43,16 @@ infix fun Boolean.implies(v: () -> Boolean): Boolean = !this || v()
 
 class RefTypeGenArb(val ts: TypeSystem) : Arb<JTypeMirror>() {
 
-    override fun edgecases(): List<JTypeMirror> =
-            listOf(ts.OBJECT,
-                    // we exclude the null type because it's not ok as an array component
-                    ts.SERIALIZABLE,
-                    ts.CLONEABLE)
+    val allEdgecases = listOf(
+        ts.OBJECT,
+        // we exclude the null type because it's not ok as an array component
+        ts.SERIALIZABLE,
+        ts.CLONEABLE
+        );
+
+    override fun edgecase(rs: RandomSource): JTypeMirror {
+        return allEdgecases.random(rs.random)
+    }
 
     private fun generateTypes(rs : RandomSource) : List<JTypeMirror> {
         with(TypeDslOf(ts).gen) {
