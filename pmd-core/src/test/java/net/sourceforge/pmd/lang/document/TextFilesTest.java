@@ -5,12 +5,12 @@
 package net.sourceforge.pmd.lang.document;
 
 import static net.sourceforge.pmd.PmdCoreTestUtils.dummyVersion;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -20,22 +20,21 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.util.datasource.DataSource;
 import net.sourceforge.pmd.util.datasource.FileDataSource;
 
-public class TextFilesTest {
+class TextFilesTest {
 
-    @Rule
-    public TemporaryFolder tempDir = TemporaryFolder.builder().build();
+    @TempDir
+    Path tempDir;
 
     @Test
-    public void testNioFile() throws IOException {
+    void testNioFile() throws IOException {
         Path file = makeTmpFile(StandardCharsets.UTF_8, "some content");
         try (TextFile tf = TextFile.forPath(file, StandardCharsets.UTF_8, dummyVersion())) {
             assertEquals(file.toAbsolutePath().toString(), tf.getPathId());
@@ -46,7 +45,7 @@ public class TextFilesTest {
     }
 
     @Test
-    public void testEquals() throws IOException {
+    void testEquals() throws IOException {
         Path file = makeTmpFile(StandardCharsets.UTF_8, "some content").toAbsolutePath();
         try (TextFile tf = TextFile.forPath(file, StandardCharsets.UTF_8, dummyVersion())) {
             try (TextFile tfPrime = TextFile.forPath(file, StandardCharsets.UTF_8, dummyVersion())) {
@@ -71,7 +70,7 @@ public class TextFilesTest {
     }
 
     @Test
-    public void testStringDataSourceCompat() throws IOException {
+    void testStringDataSourceCompat() throws IOException {
         DataSource ds = DataSource.forString("text", "filename.dummy");
         PMDConfiguration config = new PMDConfiguration();
         try (TextFile tf = TextFile.dataSourceCompat(ds, config)) {
@@ -83,7 +82,7 @@ public class TextFilesTest {
     }
 
     @Test
-    public void testFileDataSourceCompat() throws IOException {
+    void testFileDataSourceCompat() throws IOException {
         Path file = makeTmpFile(StandardCharsets.UTF_8, "some content");
 
         DataSource ds = new FileDataSource(file.toFile());
@@ -97,7 +96,7 @@ public class TextFilesTest {
     }
 
     @Test
-    public void testFileDataSourceCompatWithEncoding() throws IOException {
+    void testFileDataSourceCompatWithEncoding() throws IOException {
         Path file = makeTmpFile(StandardCharsets.UTF_16BE, "some content");
 
         DataSource ds = new FileDataSource(file.toFile());
@@ -116,11 +115,11 @@ public class TextFilesTest {
     }
 
     @Test
-    public void testNioFileWrite() throws IOException {
+    void testNioFileWrite() throws IOException {
         Path file = makeTmpFile(StandardCharsets.UTF_8, "some content");
         try (TextFile tf = TextFile.forPath(file, StandardCharsets.UTF_8, dummyVersion())) {
             assertEquals(Chars.wrap("some content"), tf.readContents().getNormalizedText());
-            assertFalse("readonly", tf.isReadOnly());
+            assertFalse(tf.isReadOnly(), "readonly");
 
             // write with CRLF
             tf.writeContents(
@@ -142,11 +141,11 @@ public class TextFilesTest {
     }
 
     @Test
-    public void testNioFileExplicitReadOnly() throws IOException {
+    void testNioFileExplicitReadOnly() throws IOException {
         Path file = makeTmpFile(StandardCharsets.UTF_8, "some content");
         try (TextFile tf = TextFile.builderForPath(file, StandardCharsets.UTF_8, dummyVersion())
                                    .asReadOnly().build()) {
-            assertTrue("readonly", tf.isReadOnly());
+            assertTrue(tf.isReadOnly(), "readonly");
 
             assertThrows(ReadOnlyFileException.class, () -> tf.writeContents(
                 TextFileContent.fromCharSeq("new content")
@@ -155,7 +154,7 @@ public class TextFilesTest {
     }
 
     @Test
-    public void testNioFileCanBeReadMultipleTimes() throws IOException {
+    void testNioFileCanBeReadMultipleTimes() throws IOException {
         Path file = makeTmpFile(StandardCharsets.UTF_8, "some content");
         try (TextFile tf = TextFile.forPath(file, StandardCharsets.UTF_8, dummyVersion())) {
             assertEquals(Chars.wrap("some content"), tf.readContents().getNormalizedText());
@@ -164,7 +163,7 @@ public class TextFilesTest {
     }
 
     @Test
-    public void testNioFileBuilder() throws IOException {
+    void testNioFileBuilder() throws IOException {
         Path file = makeTmpFile(StandardCharsets.UTF_8, "some content");
         try (TextFile tf = TextFile.builderForPath(file, StandardCharsets.UTF_8, dummyVersion())
                                    .withDisplayName("aname")
@@ -177,7 +176,7 @@ public class TextFilesTest {
     }
 
     @Test
-    public void testNioFileEscape() throws IOException {
+    void testNioFileEscape() throws IOException {
         Path file = makeTmpFile(StandardCharsets.UTF_8, "some\r\ncontent");
         try (TextFile tf = TextFile.forPath(file, StandardCharsets.UTF_8, dummyVersion())) {
             assertEquals(Chars.wrap("some\ncontent"), tf.readContents().getNormalizedText());
@@ -185,7 +184,7 @@ public class TextFilesTest {
     }
 
     @Test
-    public void testReaderFile() throws IOException {
+    void testReaderFile() throws IOException {
         Path file = makeTmpFile(StandardCharsets.UTF_8, "some\r\ncontent");
         try (TextFile tf = TextFile.forReader(Files.newBufferedReader(file, StandardCharsets.UTF_8), "filename", dummyVersion())) {
             assertEquals("filename", tf.getPathId());
@@ -196,10 +195,10 @@ public class TextFilesTest {
     }
 
     @Test
-    public void testReaderFileIsReadOnly() throws IOException {
+    void testReaderFileIsReadOnly() throws IOException {
         Path file = makeTmpFile(StandardCharsets.UTF_8, "some\r\ncontent");
         try (TextFile tf = TextFile.forReader(Files.newBufferedReader(file, StandardCharsets.UTF_8), "filename", dummyVersion())) {
-            assertTrue("readonly", tf.isReadOnly());
+            assertTrue(tf.isReadOnly(), "readonly");
             assertThrows(ReadOnlyFileException.class, () -> tf.writeContents(
                 TextFileContent.fromCharSeq("new content")
             ));
@@ -207,7 +206,7 @@ public class TextFilesTest {
     }
 
     @Test
-    public void testStringFileEscape() throws IOException {
+    void testStringFileEscape() throws IOException {
         try (TextFile tf = TextFile.forCharSeq("cont\r\nents", "filename", dummyVersion())) {
             assertEquals("filename", tf.getPathId());
             assertEquals("filename", tf.getDisplayName());
@@ -220,7 +219,7 @@ public class TextFilesTest {
     }
 
     @Test
-    public void testStringFileCanBeReadMultipleTimes() throws IOException {
+    void testStringFileCanBeReadMultipleTimes() throws IOException {
         try (TextFile tf = TextFile.forCharSeq("contents", "filename", dummyVersion())) {
             assertEquals(Chars.wrap("contents"), tf.readContents().getNormalizedText());
             assertEquals(Chars.wrap("contents"), tf.readContents().getNormalizedText());
@@ -229,9 +228,9 @@ public class TextFilesTest {
     }
 
     @Test
-    public void testStringFileIsReadonly() throws IOException {
+    void testStringFileIsReadonly() throws IOException {
         try (TextFile tf = TextFile.forCharSeq("contents", "filename", dummyVersion())) {
-            assertTrue("readonly", tf.isReadOnly());
+            assertTrue(tf.isReadOnly(), "readonly");
             assertThrows(ReadOnlyFileException.class, () -> tf.writeContents(
                 TextFileContent.fromCharSeq("new content")
             ));
@@ -239,7 +238,7 @@ public class TextFilesTest {
     }
 
     private @NonNull Path makeTmpFile(Charset charset, String content) throws IOException {
-        Path file = tempDir.newFile().toPath();
+        Path file = Files.createTempFile(tempDir, null, null);
         try (BufferedWriter writer = Files.newBufferedWriter(file, charset)) {
             writer.write(content);
         }

@@ -5,26 +5,26 @@
 package net.sourceforge.pmd.lang.document;
 
 import static org.hamcrest.CoreMatchers.containsString;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
-import org.hamcrest.MatcherAssert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author Clément Fournier
  */
-public class TextRange2dTest {
+class TextRange2dTest {
 
     @Test
-    public void testCtors() {
+    void testCtors() {
         TextRange2d pos = TextRange2d.range2d(1, 2, 3, 4);
         TextRange2d pos2 = TextRange2d.range2d(TextPos2d.pos2d(1, 2), TextPos2d.pos2d(3, 4));
         assertEquals(pos, pos2);
     }
 
     @Test
-    public void testEquals() {
+    void testEquals() {
         TextRange2d pos = TextRange2d.range2d(1, 1, 1, 1);
         TextRange2d pos2 = TextRange2d.range2d(1, 1, 1, 2);
         assertNotEquals(pos, pos2);
@@ -33,7 +33,7 @@ public class TextRange2dTest {
     }
 
     @Test
-    public void testCompareTo() {
+    void testCompareTo() {
         TextRange2d pos = TextRange2d.range2d(1, 1, 1, 1);
         TextRange2d pos2 = TextRange2d.range2d(1, 1, 1, 2);
 
@@ -43,13 +43,13 @@ public class TextRange2dTest {
     }
 
     @Test
-    public void testToString() {
+    void testToString() {
         TextRange2d range = TextRange2d.range2d(1, 2, 3, 4);
         assertEquals(
             "1:2-3:4",
             range.toDisplayStringWithColon()
         );
-        MatcherAssert.assertThat(range.toString(), containsString("!debug only!"));
+        assertThat(range.toString(), containsString("!debug only!"));
     }
 
 }

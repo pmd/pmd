@@ -6,16 +6,16 @@ package net.sourceforge.pmd.cpd;
 
 import java.util.Properties;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.cpd.test.CpdTextComparisonTest;
 
 /**
  *
  */
-public class AnyTokenizerForTypescriptTest extends CpdTextComparisonTest {
+class AnyTokenizerForTypescriptTest extends CpdTextComparisonTest {
 
-    public AnyTokenizerForTypescriptTest() {
+    AnyTokenizerForTypescriptTest() {
         super(".ts");
     }
 
@@ -30,7 +30,7 @@ public class AnyTokenizerForTypescriptTest extends CpdTextComparisonTest {
     }
 
     @Test
-    public void testFile1() {
+    void testFile1() {
         doTest("SampleTypeScript");
     }
 

@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.apex.rule.bestpractices;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class ApexAssertionsShouldIncludeMessageTest extends PmdRuleTst {
+class ApexAssertionsShouldIncludeMessageTest extends PmdRuleTst {
     // no additional unit tests
 }

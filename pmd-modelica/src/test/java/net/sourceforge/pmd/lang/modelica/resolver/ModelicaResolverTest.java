@@ -4,10 +4,15 @@
 
 package net.sourceforge.pmd.lang.modelica.resolver;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.List;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.modelica.ModelicaParsingHelper;
 import net.sourceforge.pmd.lang.modelica.ast.ASTExtendsClause;
@@ -16,7 +21,7 @@ import net.sourceforge.pmd.lang.modelica.ast.ModelicaClassSpecifierNode;
 import net.sourceforge.pmd.lang.modelica.ast.ModelicaNode;
 import net.sourceforge.pmd.lang.modelica.ast.ModelicaParserVisitorAdapter;
 
-public class ModelicaResolverTest {
+class ModelicaResolverTest {
 
     private final ModelicaParsingHelper modelica = ModelicaParsingHelper.DEFAULT;
 
@@ -33,7 +38,7 @@ public class ModelicaResolverTest {
         @Override
         public Object visitModelicaNode(ModelicaNode node, Object data) {
             if (nodeClass.isInstance(node) && node.getImage().equals(nodeName)) {
-                Assert.assertNull(result);
+                assertNull(result);
                 result = node;
             }
             return super.visitModelicaNode(node, data);
@@ -51,9 +56,9 @@ public class ModelicaResolverTest {
     }
 
     private void ensureCounts(ResolutionResult result, int best, int hidden) {
-        Assert.assertFalse(result.wasTimedOut());
-        Assert.assertEquals(best, result.getBestCandidates().size());
-        Assert.assertEquals(hidden, result.getHiddenCandidates().size());
+        assertFalse(result.wasTimedOut());
+        assertEquals(best, result.getBestCandidates().size());
+        assertEquals(hidden, result.getHiddenCandidates().size());
     }
 
     private ResolutionResult<ResolvableEntity> resolveIn(int best, int hidden, ResolutionState state, SubcomponentResolver resolver, boolean absolute, String[] names) {
@@ -88,24 +93,24 @@ public class ModelicaResolverTest {
     }
 
     @Test
-    public void verySimpleScopeTest() {
+    void verySimpleScopeTest() {
         String contents =
               "model TestPackage"
             + "  Real x;"
             + "end TestPackage;";
 
         ASTStoredDefinition ast = modelica.parse(contents);
-        Assert.assertNotNull(ast);
+        assertNotNull(ast);
 
-        Assert.assertTrue(ast.getMostSpecificScope() instanceof ModelicaSourceFileScope);
+        assertTrue(ast.getMostSpecificScope() instanceof ModelicaSourceFileScope);
         ModelicaSourceFileScope scope = (ModelicaSourceFileScope) ast.getMostSpecificScope();
 
-        Assert.assertTrue(scope.getParent() instanceof RootScope);
-        Assert.assertNull(scope.getParent().getParent());
+        assertTrue(scope.getParent() instanceof RootScope);
+        assertNull(scope.getParent().getParent());
     }
 
     @Test
-    public void simpleScopeTest() {
+    void simpleScopeTest() {
         String contents =
               "package TestPackage"
             + "  connector TestConnector"
@@ -120,23 +125,23 @@ public class ModelicaResolverTest {
         ASTStoredDefinition ast = modelica.parse(contents);
         ModelicaSourceFileScope sourceFileScope = (ModelicaSourceFileScope) ast.getMostSpecificScope();
 
-        Assert.assertEquals(1, sourceFileScope.getContainedDeclarations().size());
+        assertEquals(1, sourceFileScope.getContainedDeclarations().size());
 
         ModelicaNode testSubmodel = findNodeByClassAndImage(ast, ModelicaClassSpecifierNode.class, "TestSubmodel");
-        Assert.assertNotNull(testSubmodel);
-        Assert.assertEquals(
+        assertNotNull(testSubmodel);
+        assertEquals(
                 "#ROOT#FILE#Class:TestPackage#Class:TestModel#Class:TestSubmodel",
                 ((AbstractModelicaScope) testSubmodel.getMostSpecificScope()).getNestingRepresentation()
         );
 
         ModelicaScope testPackage = testSubmodel.getMostSpecificScope().getParent().getParent();
-        Assert.assertTrue(testPackage instanceof ModelicaClassScope);
-        Assert.assertEquals("TestPackage", ((ModelicaClassScope) testPackage).getClassDeclaration().getSimpleTypeName());
-        Assert.assertEquals(3, testPackage.getContainedDeclarations().size());
+        assertTrue(testPackage instanceof ModelicaClassScope);
+        assertEquals("TestPackage", ((ModelicaClassScope) testPackage).getClassDeclaration().getSimpleTypeName());
+        assertEquals(3, testPackage.getContainedDeclarations().size());
     }
 
     @Test
-    public void extendsScopeTest() {
+    void extendsScopeTest() {
         String contents =
                   "package Test"
                 + "  model A"
@@ -149,13 +154,13 @@ public class ModelicaResolverTest {
         ASTStoredDefinition ast = modelica.parse(contents);
 
         List<ASTExtendsClause> extendsClauses = ast.findDescendantsOfType(ASTExtendsClause.class);
-        Assert.assertEquals(1, extendsClauses.size());
+        assertEquals(1, extendsClauses.size());
         ASTExtendsClause extendsB = extendsClauses.get(0);
-        Assert.assertEquals("#ROOT#FILE#Class:Test#Class:A", ((AbstractModelicaScope) extendsB.getMostSpecificScope()).getNestingRepresentation());
+        assertEquals("#ROOT#FILE#Class:Test#Class:A", ((AbstractModelicaScope) extendsB.getMostSpecificScope()).getNestingRepresentation());
     }
 
     @Test
-    public void absoluteResolutionTest() {
+    void absoluteResolutionTest() {
         String contents =
               "package TestPackage"
             + "  model TestModel"
@@ -170,7 +175,7 @@ public class ModelicaResolverTest {
 
 
     @Test
-    public void nonAbsoluteResolutionTest() {
+    void nonAbsoluteResolutionTest() {
         String contents =
               "package TestPackage"
             + "  model TestModel"
@@ -184,7 +189,7 @@ public class ModelicaResolverTest {
     }
 
     @Test
-    public void multipleResolutionTest() {
+    void multipleResolutionTest() {
         String contents =
               "package TestPackage"
             + "  model TestModel"
@@ -200,7 +205,7 @@ public class ModelicaResolverTest {
 
         ResolutionResult<ResolvableEntity> testModelCandidates = testResolvedTypeCount(1, 0, ast.getMostSpecificScope(), true, "TestPackage", "TestModel");
         ModelicaClassScope testModelScope = ((ModelicaClassType) testModelCandidates.getBestCandidates().get(0)).getClassScope();
-        Assert.assertEquals(
+        assertEquals(
                 "#ROOT#FILE#Class:TestPackage#Class:TestModel",
                 testModelScope.getNestingRepresentation()
         );
@@ -208,14 +213,14 @@ public class ModelicaResolverTest {
         ResolutionResult<ResolvableEntity> aCandidates = testLexicallyResolvedComponents(1, 1, testModelScope, false, "A");
         ModelicaClassType aBest = (ModelicaClassType) aCandidates.getBestCandidates().get(0);
         ModelicaClassType aHidden = (ModelicaClassType) aCandidates.getHiddenCandidates().get(0);
-        Assert.assertEquals("#ROOT#FILE#Class:TestPackage#Class:TestModel#Class:A",
+        assertEquals("#ROOT#FILE#Class:TestPackage#Class:TestModel#Class:A",
                 aBest.getClassScope().getNestingRepresentation());
-        Assert.assertEquals("#ROOT#FILE#Class:TestPackage#Class:A",
+        assertEquals("#ROOT#FILE#Class:TestPackage#Class:A",
                 aHidden.getClassScope().getNestingRepresentation());
     }
 
     @Test
-    public void constantComponentResolutionTest() {
+    void constantComponentResolutionTest() {
         String contents =
               "model Test"
             + "  model A"
@@ -226,14 +231,14 @@ public class ModelicaResolverTest {
         ASTStoredDefinition ast = modelica.parse(contents);
 
         List<ResolvableEntity> xs = testResolvedTypeCount(1, 0, ast.getMostSpecificScope(), false, "Test", "A", "x").getBestCandidates();
-        Assert.assertEquals(
+        assertEquals(
             "#ROOT#FILE#Class:Test#Class:A",
                 ((ModelicaComponentDeclaration) xs.get(0)).getContainingScope().getNestingRepresentation()
         );
     }
 
     @Test
-    public void nestedStoredDefinitionTest() {
+    void nestedStoredDefinitionTest() {
         String contents =
               "within TestPackage.SubPackage;\n"
             + "model Test\n"
@@ -243,7 +248,7 @@ public class ModelicaResolverTest {
         RootScope rootScope = (RootScope) ast.getMostSpecificScope().getParent();
 
         List<ResolvableEntity> nestedTest = testResolvedTypeCount(1, 0, rootScope, false, "TestPackage", "SubPackage", "Test").getBestCandidates();
-        Assert.assertEquals(
+        assertEquals(
                 "#ROOT#FILE#Class:Test",
                 ((ModelicaClassType) nestedTest.get(0)).getClassScope().getNestingRepresentation()
         );
@@ -256,7 +261,7 @@ public class ModelicaResolverTest {
     }
 
     @Test
-    public void extendsTest() {
+    void extendsTest() {
         String contents =
               "model A\n"
             + "  model X\n"
@@ -272,7 +277,7 @@ public class ModelicaResolverTest {
     }
 
     @Test
-    public void importTest() {
+    void importTest() {
         String contents =
               "model I\n"
             + "  model Z\n"
@@ -294,7 +299,7 @@ public class ModelicaResolverTest {
     }
 
     @Test
-    public void builtinTest() {
+    void builtinTest() {
         String contents =
               "model A"
             + "  encapsulated model B"
@@ -309,12 +314,12 @@ public class ModelicaResolverTest {
         ResolutionResult<ModelicaType> xTypes = x.getTypeCandidates();
         ensureCounts(xTypes, 1, 0);
         ResolvableEntity tpe = xTypes.getBestCandidates().get(0);
-        Assert.assertTrue(tpe instanceof ModelicaBuiltinType);
-        Assert.assertEquals(ModelicaBuiltinType.BaseType.REAL, ((ModelicaBuiltinType) tpe).getBaseType());
+        assertTrue(tpe instanceof ModelicaBuiltinType);
+        assertEquals(ModelicaBuiltinType.BaseType.REAL, ((ModelicaBuiltinType) tpe).getBaseType());
     }
 
     @Test
-    public void testRepeatingNameResolution() {
+    void testRepeatingNameResolution() {
         String contents =
                   "package Test"
                 + "  model X"

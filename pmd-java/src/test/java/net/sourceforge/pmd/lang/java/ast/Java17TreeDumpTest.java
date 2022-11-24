@@ -4,9 +4,10 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.function.ThrowingRunnable;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.test.BaseParsingHelper;
@@ -14,13 +15,13 @@ import net.sourceforge.pmd.lang.ast.test.BaseTreeDumpTest;
 import net.sourceforge.pmd.lang.ast.test.RelevantAttributePrinter;
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 
-public class Java17TreeDumpTest extends BaseTreeDumpTest {
+class Java17TreeDumpTest extends BaseTreeDumpTest {
     private final JavaParsingHelper java17 =
             JavaParsingHelper.DEFAULT.withDefaultVersion("17")
                                      .withResourceContext(Java17TreeDumpTest.class, "jdkversiontests/java17/");
     private final JavaParsingHelper java16 = java17.withDefaultVersion("16");
 
-    public Java17TreeDumpTest() {
+    Java17TreeDumpTest() {
         super(new RelevantAttributePrinter(), ".java");
     }
 
@@ -30,51 +31,41 @@ public class Java17TreeDumpTest extends BaseTreeDumpTest {
     }
 
     @Test
-    public void sealedClassBeforeJava17() {
-        ParseException thrown = Assert.assertThrows(ParseException.class, new ThrowingRunnable() {
-            @Override
-            public void run() throws Throwable {
-                java16.parseResource("geometry/Shape.java");
-            }
-        });
-        Assert.assertTrue("Unexpected message: " + thrown.getMessage(),
-                thrown.getMessage().contains("Sealed classes are a feature of Java 17, you should select your language version accordingly"));
+    void sealedClassBeforeJava17() {
+        ParseException thrown = assertThrows(ParseException.class, () -> java16.parseResource("geometry/Shape.java"));
+        assertTrue(thrown.getMessage().contains("Sealed classes are a feature of Java 17, you should select your language version accordingly"),
+                "Unexpected message: " + thrown.getMessage());
     }
 
     @Test
-    public void sealedClass() {
+    void sealedClass() {
         doTest("geometry/Shape");
     }
 
     @Test
-    public void nonSealedClass() {
+    void nonSealedClass() {
         doTest("geometry/Square");
     }
 
     @Test
-    public void sealedQualifiedPermitClass() {
+    void sealedQualifiedPermitClass() {
         doTest("SealedInnerClasses");
     }
 
     @Test
-    public void sealedInterfaceBeforeJava17() {
-        ParseException thrown = Assert.assertThrows(ParseException.class, new ThrowingRunnable() {
-            @Override
-            public void run() throws Throwable {
-                java16.parseResource("expression/Expr.java");
-            }
-        });
-        Assert.assertTrue("Unexpected message: " + thrown.getMessage(),
-                thrown.getMessage().contains("Sealed classes are a feature of Java 17, you should select your language version accordingly"));
+    void sealedInterfaceBeforeJava17() {
+        ParseException thrown = assertThrows(ParseException.class, () -> java16.parseResource("expression/Expr.java"));
+        assertTrue(thrown.getMessage().contains("Sealed classes are a feature of Java 17, you should select your language version accordingly"),
+                "Unexpected message: " + thrown.getMessage());
     }
 
     @Test
-    public void sealedInterface() {
+    void sealedInterface() {
         doTest("expression/Expr");
     }
 
     @Test
-    public void localVars() {
+    void localVars() {
         doTest("LocalVars");
     }
 }

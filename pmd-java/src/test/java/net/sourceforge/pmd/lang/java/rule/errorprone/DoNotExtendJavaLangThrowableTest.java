@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.java.rule.errorprone;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class DoNotExtendJavaLangThrowableTest extends PmdRuleTst {
+class DoNotExtendJavaLangThrowableTest extends PmdRuleTst {
     // no additional unit tests
 }

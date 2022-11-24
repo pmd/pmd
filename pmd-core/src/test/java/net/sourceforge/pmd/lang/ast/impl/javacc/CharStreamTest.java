@@ -4,26 +4,26 @@
 
 package net.sourceforge.pmd.lang.ast.impl.javacc;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.EOFException;
 import java.io.IOException;
 import java.util.Collections;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument.TokenDocumentBehavior;
 import net.sourceforge.pmd.lang.document.TextDocument;
 
-public class CharStreamTest {
+class CharStreamTest {
 
     private LanguageVersion dummyVersion = DummyLanguageModule.getInstance().getDefaultVersion();
 
     @Test
-    public void testReadZeroChars() throws IOException {
+    void testReadZeroChars() throws IOException {
 
         CharStream stream = simpleCharStream("");
 
@@ -34,7 +34,7 @@ public class CharStreamTest {
     }
 
     @Test
-    public void testMultipleEofReads() throws IOException {
+    void testMultipleEofReads() throws IOException {
 
         CharStream stream = simpleCharStream("");
 
@@ -45,7 +45,7 @@ public class CharStreamTest {
     }
 
     @Test
-    public void testReadStuff() throws IOException {
+    void testReadStuff() throws IOException {
 
         CharStream stream = simpleCharStream("abcd");
 
@@ -58,7 +58,7 @@ public class CharStreamTest {
     }
 
     @Test
-    public void testReadBacktrack() throws IOException {
+    void testReadBacktrack() throws IOException {
 
         CharStream stream = simpleCharStream("abcd");
 
@@ -78,7 +78,7 @@ public class CharStreamTest {
     }
 
     @Test
-    public void testReadBacktrackWithEscapes() throws IOException {
+    void testReadBacktrackWithEscapes() throws IOException {
 
         CharStream stream = javaCharStream("__\\u00a0_\\u00a0_");
 
@@ -106,7 +106,7 @@ public class CharStreamTest {
     }
 
     @Test
-    public void testBacktrackTooMuch() throws IOException {
+    void testBacktrackTooMuch() throws IOException {
 
         CharStream stream = simpleCharStream("abcd");
 
@@ -121,7 +121,7 @@ public class CharStreamTest {
     }
 
     @Test
-    public void testBacktrackTooMuch2() throws IOException {
+    void testBacktrackTooMuch2() throws IOException {
 
         CharStream stream = simpleCharStream("abcd");
 
@@ -134,11 +134,11 @@ public class CharStreamTest {
     }
 
 
-    public CharStream simpleCharStream(String abcd) {
+    CharStream simpleCharStream(String abcd) {
         return CharStream.create(TextDocument.readOnlyString(abcd, dummyVersion), TokenDocumentBehavior.DEFAULT);
     }
 
-    public CharStream javaCharStream(String abcd) {
+    CharStream javaCharStream(String abcd) {
         return CharStream.create(
             TextDocument.readOnlyString(abcd, dummyVersion),
             new TokenDocumentBehavior(Collections.emptyList()) {

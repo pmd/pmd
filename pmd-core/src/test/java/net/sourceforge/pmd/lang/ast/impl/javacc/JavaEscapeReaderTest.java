@@ -4,27 +4,27 @@
 
 package net.sourceforge.pmd.lang.ast.impl.javacc;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.document.Chars;
 import net.sourceforge.pmd.lang.document.TextDocument;
 
 
-public class JavaEscapeReaderTest {
+class JavaEscapeReaderTest {
 
-    public TextDocument readString(String input) {
+    TextDocument readString(String input) {
         TextDocument intext = TextDocument.readOnlyString(Chars.wrap(input), DummyLanguageModule.getInstance().getDefaultVersion());
         return new JavaEscapeTranslator(intext).translateDocument();
     }
 
 
     @Test
-    public void testSimpleRead() throws IOException {
+    void testSimpleRead() throws IOException {
 
         String input = "abcdede";
         try (TextDocument r = readString(input)) {
@@ -33,7 +33,7 @@ public class JavaEscapeReaderTest {
     }
 
     @Test
-    public void testNotAnEscape1Read() throws IOException {
+    void testNotAnEscape1Read() throws IOException {
 
         String input = "abc\\dede";
         try (TextDocument r = readString(input)) {
@@ -42,7 +42,7 @@ public class JavaEscapeReaderTest {
     }
 
     @Test
-    public void testNotAnEscape1Read2() throws IOException {
+    void testNotAnEscape1Read2() throws IOException {
 
         String input = "abc\\\\\\dede";
         try (TextDocument r = readString(input)) {
@@ -51,7 +51,7 @@ public class JavaEscapeReaderTest {
     }
 
     @Test
-    public void testAnEscapeStopAtEnd() throws IOException {
+    void testAnEscapeStopAtEnd() throws IOException {
 
         String input = "abc\\\\\\u00a0dede";
         try (TextDocument r = readString(input)) {
@@ -60,7 +60,7 @@ public class JavaEscapeReaderTest {
     }
 
     @Test
-    public void testSeveralEscapes() throws IOException {
+    void testSeveralEscapes() throws IOException {
 
         String input = "abc\\\\\\u00a0d\\uu00a0ede";
         try (TextDocument r = readString(input)) {
@@ -69,7 +69,7 @@ public class JavaEscapeReaderTest {
     }
 
     @Test
-    public void testAnEscapeInsideBlock() throws IOException {
+    void testAnEscapeInsideBlock() throws IOException {
 
         String input = "abc\\\\\\u00a0dede\\u00a0";
         try (TextDocument r = readString(input)) {

@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.java.rule.documentation;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class UncommentedEmptyConstructorTest extends PmdRuleTst {
+class UncommentedEmptyConstructorTest extends PmdRuleTst {
     // no additional unit tests
 }

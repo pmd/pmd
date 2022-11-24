@@ -4,13 +4,12 @@
 
 package net.sourceforge.pmd.lang.java.metrics;
 
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import java.util.Map;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
@@ -18,16 +17,15 @@ import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.metrics.LanguageMetricsProvider;
 import net.sourceforge.pmd.lang.metrics.Metric;
 
-
 /**
  * @author Clément Fournier
  */
-public class JavaMetricsProviderTest {
+class JavaMetricsProviderTest {
 
     private final JavaParsingHelper java8 = JavaParsingHelper.DEFAULT.withDefaultVersion("1.8");
 
     @Test
-    public void testComputeAllMetrics() {
+    void testComputeAllMetrics() {
 
         LanguageMetricsProvider provider = java8.getHandler("1.8").getLanguageMetricsProvider();
 
@@ -42,7 +40,7 @@ public class JavaMetricsProviderTest {
 
 
     @Test
-    public void testThereIsNoMemoisation() {
+    void testThereIsNoMemoisation() {
 
         LanguageMetricsProvider provider = java8.getHandler("1.8").getLanguageMetricsProvider();
 

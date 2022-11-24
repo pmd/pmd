@@ -4,14 +4,14 @@
 
 package net.sourceforge.pmd.lang.plsql.ast;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.plsql.AbstractPLSQLParserTst;
 
-public class OrderByExpressionsTest extends AbstractPLSQLParserTst {
+class OrderByExpressionsTest extends AbstractPLSQLParserTst {
 
     @Test
-    public void parseOrderByExpression() {
+    void parseOrderByExpression() {
         plsql.parseResource("OrderByExpression.pls");
     }
 }

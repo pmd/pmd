@@ -6,14 +6,14 @@ package net.sourceforge.pmd.xml.cpd;
 
 import java.util.Properties;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.cpd.Tokenizer;
 import net.sourceforge.pmd.cpd.test.CpdTextComparisonTest;
 
-public class XmlCPDTokenizerTest extends CpdTextComparisonTest {
+class XmlCPDTokenizerTest extends CpdTextComparisonTest {
 
-    public XmlCPDTokenizerTest() {
+    XmlCPDTokenizerTest() {
         super(".xml");
     }
 
@@ -23,7 +23,7 @@ public class XmlCPDTokenizerTest extends CpdTextComparisonTest {
     }
 
     @Test
-    public void tokenizeTest() {
+    void tokenizeTest() {
         doTest("simple");
     }
 }

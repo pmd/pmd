@@ -7,7 +7,7 @@ package net.sourceforge.pmd.lang.java.types;
 import java.util.List;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.test.BaseParsingHelper;
@@ -23,9 +23,9 @@ import net.sourceforge.pmd.lang.rule.xpath.Attribute;
 /**
  *
  */
-public class TypesTreeDumpTest extends BaseTreeDumpTest {
+class TypesTreeDumpTest extends BaseTreeDumpTest {
 
-    public TypesTreeDumpTest() {
+    TypesTreeDumpTest() {
         super(new JavaTypeAttrPrinter(), ".java");
     }
 
@@ -35,7 +35,7 @@ public class TypesTreeDumpTest extends BaseTreeDumpTest {
     }
 
     @Test
-    public void testIteratorUtilCopy() {
+    void testIteratorUtilCopy() {
         doTest("IteratorUtilCopy");
     }
 

@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.jsp;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.jsp.ast.AbstractJspNodesTst;
 
@@ -12,22 +12,23 @@ import net.sourceforge.pmd.lang.jsp.ast.AbstractJspNodesTst;
  * Unit test for JSP parsing.
  *
  */
-public class JspParserTest extends AbstractJspNodesTst {
+class JspParserTest extends AbstractJspNodesTst {
 
     /**
      * Verifies bug #939 Jsp parser fails on $
      */
     @Test
-    public void testParseDollar() {
+    void testParseDollar() {
+        jsp.parse("<span class=\"CostUnit\">$</span><span class=\"CostMain\">129</span><span class=\"CostFrac\">.00</span>");
     }
 
     @Test
-    public void testParseELAttribute() {
+    void testParseELAttribute() {
         jsp.parse("<div ${something ? 'class=\"red\"' : ''}> Div content here.</div>");
     }
 
     @Test
-    public void testParseELAttributeValue() {
+    void testParseELAttributeValue() {
         jsp.parse("<div class=\"${something == 0 ? 'zero_something' : something == 1 ? 'one_something' : 'other_something'}\">Div content here.</div>");
     }
 
@@ -35,8 +36,7 @@ public class JspParserTest extends AbstractJspNodesTst {
      * Verifies bug #311 Jsp parser fails on boolean attribute
      */
     @Test
-    public void testParseBooleanAttribute() {
+    void testParseBooleanAttribute() {
         jsp.parse("<label><input type='checkbox' checked name=cheese disabled=''> Cheese</label>");
     }
-
 }

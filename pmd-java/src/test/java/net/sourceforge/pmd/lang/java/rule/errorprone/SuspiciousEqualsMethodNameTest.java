@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.java.rule.errorprone;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class SuspiciousEqualsMethodNameTest extends PmdRuleTst {
+class SuspiciousEqualsMethodNameTest extends PmdRuleTst {
     // no additional unit tests
 }

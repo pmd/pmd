@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.kotlin.rule.errorprone;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class OverrideBothEqualsAndHashcodeTest extends PmdRuleTst {
+class OverrideBothEqualsAndHashcodeTest extends PmdRuleTst {
     // no additional unit tests
 }

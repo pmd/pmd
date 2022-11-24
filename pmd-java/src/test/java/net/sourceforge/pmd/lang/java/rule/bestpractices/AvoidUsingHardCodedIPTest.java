@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class AvoidUsingHardCodedIPTest extends PmdRuleTst {
+class AvoidUsingHardCodedIPTest extends PmdRuleTst {
     // no additional unit tests
 }

@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.java.rule.errorprone;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class AvoidFieldNameMatchingMethodNameTest extends PmdRuleTst {
+class AvoidFieldNameMatchingMethodNameTest extends PmdRuleTst {
     // no additional unit tests
 }

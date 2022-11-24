@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class SimplifiableTestAssertionTest extends PmdRuleTst {
+class SimplifiableTestAssertionTest extends PmdRuleTst {
     // no additional unit tests
 }

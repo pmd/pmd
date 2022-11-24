@@ -4,14 +4,14 @@
 
 package net.sourceforge.pmd.lang.html.ast;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.ast.test.BaseParsingHelper;
 import net.sourceforge.pmd.lang.ast.test.BaseTreeDumpTest;
 import net.sourceforge.pmd.lang.ast.test.CoordinatesPrinter;
 
-public class PositionTest extends BaseTreeDumpTest {
-    public PositionTest() {
+class PositionTest extends BaseTreeDumpTest {
+    PositionTest() {
         super(CoordinatesPrinter.INSTANCE, ".html");
     }
 
@@ -21,7 +21,7 @@ public class PositionTest extends BaseTreeDumpTest {
     }
 
     @Test
-    public void testPositions() {
+    void testPositions() {
         doTest("SimpleHtmlFile2");
     }
 }

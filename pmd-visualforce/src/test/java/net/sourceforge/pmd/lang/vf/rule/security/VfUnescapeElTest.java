@@ -4,13 +4,13 @@
 
 package net.sourceforge.pmd.lang.vf.rule.security;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Rule;
@@ -19,20 +19,20 @@ import net.sourceforge.pmd.lang.vf.VFTestUtils;
 import net.sourceforge.pmd.lang.vf.ast.VfParsingHelper;
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class VfUnescapeElTest extends PmdRuleTst {
-    public static final String EXPECTED_RULE_MESSAGE = "Avoid unescaped user controlled content in EL";
+class VfUnescapeElTest extends PmdRuleTst {
+    private static final String EXPECTED_RULE_MESSAGE = "Avoid unescaped user controlled content in EL";
 
     /**
      * Verify that CustomFields stored in sfdx project format are correctly parsed
      */
     @Test
-    public void testSfdxCustomFields() {
+    void testSfdxCustomFields() {
         Path vfPagePath = VFTestUtils.getMetadataPath(this, VFTestUtils.MetadataFormat.SFDX, VFTestUtils.MetadataType.Vf)
                 .resolve("StandardAccount.page");
 
         Report report = runRule(vfPagePath);
         List<RuleViolation> ruleViolations = report.getViolations();
-        assertEquals("Number of violations", 20, ruleViolations.size());
+        assertEquals(20, ruleViolations.size(), "Number of violations");
 
         int firstLineWithErrors = 14;
         for (int i = 0; i < ruleViolations.size(); i++) {
@@ -43,7 +43,7 @@ public class VfUnescapeElTest extends PmdRuleTst {
                 // The last line has two errors on the same page
                 expectedLineNumber = expectedLineNumber - 1;
             }
-            assertEquals("Line Number", expectedLineNumber, ruleViolation.getBeginLine());
+            assertEquals(expectedLineNumber, ruleViolation.getBeginLine(), "Line Number");
         }
     }
 
@@ -51,17 +51,17 @@ public class VfUnescapeElTest extends PmdRuleTst {
      * Verify that CustomFields stored in mdapi format are correctly parsed
      */
     @Test
-    public void testMdapiCustomFields() {
+    void testMdapiCustomFields() {
         Path vfPagePath = VFTestUtils.getMetadataPath(this, VFTestUtils.MetadataFormat.MDAPI, VFTestUtils.MetadataType.Vf).resolve("StandardAccount.page");
 
         Report report = runRule(vfPagePath);
         List<RuleViolation> ruleViolations = report.getViolations();
-        assertEquals("Number of violations", 6, ruleViolations.size());
+        assertEquals(6, ruleViolations.size(), "Number of violations");
         int firstLineWithErrors = 8;
         for (int i = 0; i < ruleViolations.size(); i++) {
             RuleViolation ruleViolation = ruleViolations.get(i);
             assertEquals(EXPECTED_RULE_MESSAGE, ruleViolation.getDescription());
-            assertEquals("Line Number", firstLineWithErrors + i, ruleViolation.getBeginLine());
+            assertEquals(firstLineWithErrors + i, ruleViolation.getBeginLine(), "Line Number");
         }
     }
 
@@ -69,18 +69,18 @@ public class VfUnescapeElTest extends PmdRuleTst {
      * Tests a page with a single Apex controller
      */
     @Test
-    public void testApexController() {
+    void testApexController() {
         Path vfPagePath = VFTestUtils.getMetadataPath(this, VFTestUtils.MetadataFormat.SFDX, VFTestUtils.MetadataType.Vf).resolve("ApexController.page");
 
         Report report = runRule(vfPagePath);
         List<RuleViolation> ruleViolations = report.getViolations();
-        assertEquals("Number of violations", 2, ruleViolations.size());
+        assertEquals(2, ruleViolations.size(), "Number of violations");
         int firstLineWithErrors = 9;
         for (int i = 0; i < ruleViolations.size(); i++) {
             // There should start at line 9
             RuleViolation ruleViolation = ruleViolations.get(i);
             assertEquals(EXPECTED_RULE_MESSAGE, ruleViolation.getDescription());
-            assertEquals("Line Number", firstLineWithErrors + i, ruleViolation.getBeginLine());
+            assertEquals(firstLineWithErrors + i, ruleViolation.getBeginLine(), "Line Number");
         }
     }
 
@@ -88,7 +88,7 @@ public class VfUnescapeElTest extends PmdRuleTst {
      * Tests a page with a standard controller and two Apex extensions
      */
     @Test
-    public void testExtensions() {
+    void testExtensions() {
         Path vfPagePath = VFTestUtils.getMetadataPath(this, VFTestUtils.MetadataFormat.SFDX, VFTestUtils.MetadataType.Vf)
                 .resolve(Paths.get("StandardAccountWithExtensions.page"));
 

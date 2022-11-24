@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.java.rule.performance;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class StringInstantiationTest extends PmdRuleTst {
+class StringInstantiationTest extends PmdRuleTst {
     // no additional unit tests
 }
