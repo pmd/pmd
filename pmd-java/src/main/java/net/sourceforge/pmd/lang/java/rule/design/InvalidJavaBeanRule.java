@@ -375,18 +375,12 @@ public class InvalidJavaBeanRule extends AbstractJavaRulechainRule {
 
         private boolean hasFieldLombokGetter() {
             ASTFieldDeclaration fieldDeclaration = declaratorId != null ? declaratorId.ancestors(ASTFieldDeclaration.class).first() : null;
-            if (fieldDeclaration != null) {
-                return hasLombokGetterAnnotation(fieldDeclaration);
-            }
-            return false;
+            return fieldDeclaration != null && hasLombokGetterAnnotation(fieldDeclaration);
         }
 
         private boolean hasFieldLombokSetter() {
             ASTFieldDeclaration fieldDeclaration = declaratorId != null ? declaratorId.ancestors(ASTFieldDeclaration.class).first() : null;
-            if (fieldDeclaration != null) {
-                return hasLombokSetterAnnotation(fieldDeclaration);
-            }
-            return false;
+            return fieldDeclaration != null && hasLombokSetterAnnotation(fieldDeclaration);
         }
     }
 }
