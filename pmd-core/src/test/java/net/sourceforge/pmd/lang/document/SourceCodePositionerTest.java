@@ -12,10 +12,10 @@ import org.junit.jupiter.api.Test;
 /**
  * Unit test for {@link SourceCodePositioner}.
  */
-public class SourceCodePositionerTest {
+class SourceCodePositionerTest {
 
     @Test
-    public void testLineNumberFromOffset() {
+    void testLineNumberFromOffset() {
         final String source = "abcd\ndefghi\n\rjklmn\ropq";
 
         SourceCodePositioner positioner = SourceCodePositioner.create(source);
@@ -48,7 +48,7 @@ public class SourceCodePositionerTest {
     }
 
     @Test
-    public void testOffsetFromLineColumn() {
+    void testOffsetFromLineColumn() {
         final String source = "abcd\ndefghi\r\njklmn\nopq";
 
         SourceCodePositioner positioner = SourceCodePositioner.create(source);
@@ -71,7 +71,7 @@ public class SourceCodePositionerTest {
 
 
     @Test
-    public void testWrongOffsets() {
+    void testWrongOffsets() {
         final String source = "abcd\ndefghi\r\njklmn\nopq";
 
         SourceCodePositioner positioner = SourceCodePositioner.create(source);
@@ -89,7 +89,7 @@ public class SourceCodePositionerTest {
 
 
     @Test
-    public void testEmptyDocument() {
+    void testEmptyDocument() {
 
         SourceCodePositioner positioner = SourceCodePositioner.create("");
 
@@ -105,7 +105,7 @@ public class SourceCodePositionerTest {
     }
 
     @Test
-    public void testDocumentStartingWithNl() {
+    void testDocumentStartingWithNl() {
 
         SourceCodePositioner positioner = SourceCodePositioner.create("\n");
 
@@ -121,7 +121,7 @@ public class SourceCodePositionerTest {
 
 
     @Test
-    public void lineToOffsetMappingWithLineFeedShouldSucceed() {
+    void lineToOffsetMappingWithLineFeedShouldSucceed() {
         final String code = "public static int main(String[] args) {\n"
             + "int var;\n"
             + "}";
@@ -132,7 +132,7 @@ public class SourceCodePositionerTest {
     }
 
     @Test
-    public void lineToOffsetMappingWithCarriageReturnFeedLineFeedShouldSucceed() {
+    void lineToOffsetMappingWithCarriageReturnFeedLineFeedShouldSucceed() {
         final String code = "public static int main(String[] args) {\r\n"
             + "int var;\r\n"
             + "}";
@@ -143,7 +143,7 @@ public class SourceCodePositionerTest {
     }
 
     @Test
-    public void lineToOffsetMappingWithMixedLineSeparatorsShouldSucceed() {
+    void lineToOffsetMappingWithMixedLineSeparatorsShouldSucceed() {
         final String code = "public static int main(String[] args) {\r\n"
             + "int var;\n"
             + "}";

@@ -4,19 +4,19 @@
 
 package net.sourceforge.pmd.cpd;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.ast.impl.javacc.CharStream;
 import net.sourceforge.pmd.lang.document.CpdCompat;
 import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.lang.document.TextFile;
 
-public class CppCharStreamTest {
+class CppCharStreamTest {
 
     @NonNull
     public CharStream charStreamFor(String source) throws IOException {
@@ -25,20 +25,20 @@ public class CppCharStreamTest {
     }
 
     @Test
-    public void testContinuationUnix() throws IOException {
+    void testContinuationUnix() throws IOException {
         CharStream stream = charStreamFor("a\\\nb");
         assertStream(stream, "ab");
     }
 
     @Test
-    public void testContinuationWindows() throws IOException {
+    void testContinuationWindows() throws IOException {
         // note that the \r is normalized to a \n by the TextFile
         CharStream stream = charStreamFor("a\\\r\nb");
         assertStream(stream, "ab");
     }
 
     @Test
-    public void testBackup() throws IOException {
+    void testBackup() throws IOException {
         // note that the \r is normalized to a \n by the TextFile
         CharStream stream = charStreamFor("a\\b\\qc");
         assertStream(stream, "a\\b\\qc");
@@ -49,7 +49,7 @@ public class CppCharStreamTest {
         assertEquals(token.charAt(0), c);
         for (int i = 1; i < token.length(); i++) {
             c = stream.readChar();
-            assertEquals(token + " char at " + i + ": " + token.charAt(i) + " != " + c, token.charAt(i), c);
+            assertEquals(token.charAt(i), c, token + " char at " + i + ": " + token.charAt(i) + " != " + c);
         }
         assertEquals(token, stream.getTokenImage());
         // StringBuilder sb = new StringBuilder();

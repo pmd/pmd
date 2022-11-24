@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.jsp.rule.bestpractices;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class NoHtmlCommentsTest extends PmdRuleTst {
+class NoHtmlCommentsTest extends PmdRuleTst {
     // no additional unit tests
 }

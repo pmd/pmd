@@ -7,7 +7,7 @@ package net.sourceforge.pmd.lang.java.rule.xpath.internal;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.Rule;
 
@@ -15,10 +15,10 @@ import net.sourceforge.pmd.Rule;
  * @author Clément Fournier
  * @since 6.0.0
  */
-public class XPathMetricFunctionTest extends BaseXPathFunctionTest {
+class XPathMetricFunctionTest extends BaseXPathFunctionTest {
 
     @Test
-    public void testWellFormedClassMetricRule() {
+    void testWellFormedClassMetricRule() {
         Rule rule = makeXpathRuleFromXPath("//ClassOrInterfaceDeclaration[pmd-java:metric('NCSS') > 0]");
         String code = "class Foo { Foo() {} void bar() {}}";
 
@@ -27,7 +27,7 @@ public class XPathMetricFunctionTest extends BaseXPathFunctionTest {
 
 
     @Test
-    public void testWellFormedOperationMetricRule() {
+    void testWellFormedOperationMetricRule() {
         Rule rule = makeXpathRuleFromXPath("//ConstructorDeclaration[pmd-java:metric('CYCLO') > 1]");
         String code = "class Goo { Goo() {if(true){}} }";
 
@@ -36,7 +36,7 @@ public class XPathMetricFunctionTest extends BaseXPathFunctionTest {
 
 
     @Test
-    public void testBadCase() {
+    void testBadCase() {
         Rule rule = makeXpathRuleFromXPath("//ConstructorDeclaration[pmd-java:metric('cYclo') > 1]");
         String code = "class Hoo { Hoo() {if(true){}} }";
 
@@ -45,7 +45,7 @@ public class XPathMetricFunctionTest extends BaseXPathFunctionTest {
 
 
     @Test
-    public void testNonexistentMetric() {
+    void testNonexistentMetric() {
         testWithExpectedException(
             "//ConstructorDeclaration[pmd-java:metric('FOOBAR') > 1]",
             "class Joo { Joo() {if(true){}} }",
@@ -54,7 +54,7 @@ public class XPathMetricFunctionTest extends BaseXPathFunctionTest {
 
 
     @Test
-    public void testIfStmt() {
+    void testIfStmt() {
         Rule rule = makeXpathRuleFromXPath("//IfStatement[pmd-java:metric('NCSS') = 1]");
         String code = "class Hoo { Hoo() {if(true){}} }";
 
@@ -63,7 +63,7 @@ public class XPathMetricFunctionTest extends BaseXPathFunctionTest {
 
 
     @Test
-    public void testWrongNodeTypeMeansEmptySequence() {
+    void testWrongNodeTypeMeansEmptySequence() {
         Rule rule = makeXpathRuleFromXPath("//EnumDeclaration[not(pmd-java:metric('NPATH'))]");
         String code = "enum Loo { FOO; }";
 

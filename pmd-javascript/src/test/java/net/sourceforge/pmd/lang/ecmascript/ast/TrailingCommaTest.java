@@ -4,38 +4,42 @@
 
 package net.sourceforge.pmd.lang.ecmascript.ast;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.Locale;
 
-import org.junit.Assert;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class TrailingCommaTest extends EcmascriptParserTestBase {
-
-    @Rule
-    public DefaultLocale defaultLocale = new DefaultLocale();
-
+class TrailingCommaTest extends EcmascriptParserTestBase {
 
     @Test
-    public void testTrailingCommaDefaultLocale() {
+    void testTrailingCommaDefaultLocale() {
         testTrailingComma();
     }
 
     @Test
-    public void testTrailingCommaFrFr() {
-        defaultLocale.set(Locale.FRANCE);
-        testTrailingComma();
+    void testTrailingCommaFrFr() {
+        runWithLocale(Locale.FRANCE, () -> testTrailingComma());
     }
 
     @Test
-    public void testTrailingCommaRootLocale() {
-        defaultLocale.set(Locale.ROOT);
-        testTrailingComma();
+    void testTrailingCommaRootLocale() {
+        runWithLocale(Locale.ROOT, () -> testTrailingComma());
     }
 
-    public void testTrailingComma() {
+    private void testTrailingComma() {
         ASTAstRoot node = js.parse("x = {a : 1, };\n");
         ASTObjectLiteral fn = node.getFirstDescendantOfType(ASTObjectLiteral.class);
-        Assert.assertTrue(fn.isTrailingComma());
+        assertTrue(fn.isTrailingComma());
+    }
+
+    private void runWithLocale(Locale locale, Runnable runnable) {
+        Locale prev = Locale.getDefault();
+        try {
+            Locale.setDefault(locale);
+            runnable.run();
+        } finally {
+            Locale.setDefault(prev);
+        }
     }
 }

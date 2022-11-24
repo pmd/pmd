@@ -4,8 +4,8 @@
 
 package net.sourceforge.pmd.lang.vf.ast;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -15,13 +15,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.vf.DataType;
 import net.sourceforge.pmd.lang.vf.VFTestUtils;
 import net.sourceforge.pmd.lang.vf.VfHandler;
 
-public class ObjectFieldTypesTest {
+class ObjectFieldTypesTest {
     private static final Map<String, DataType> EXPECTED_SFDX_DATA_TYPES;
     private static final Map<String, DataType> EXPECTED_MDAPI_DATA_TYPES;
 
@@ -53,7 +53,7 @@ public class ObjectFieldTypesTest {
      * Verify that CustomFields stored in sfdx project format are correctly parsed
      */
     @Test
-    public void testSfdxAccountIsProperlyParsed() {
+    void testSfdxAccountIsProperlyParsed() {
         Path vfPagePath = VFTestUtils.getMetadataPath(this, VFTestUtils.MetadataFormat.SFDX, VFTestUtils.MetadataType.Vf).resolve("SomePage.page");
 
         ObjectFieldTypes objectFieldTypes = new ObjectFieldTypes();
@@ -64,7 +64,7 @@ public class ObjectFieldTypesTest {
      * Verify that CustomFields stored in mdapi format are correctly parsed
      */
     @Test
-    public void testMdapiAccountIsProperlyParsed() {
+    void testMdapiAccountIsProperlyParsed() {
         Path vfPagePath = VFTestUtils.getMetadataPath(this, VFTestUtils.MetadataFormat.MDAPI, VFTestUtils.MetadataType.Vf).resolve("SomePage.page");
 
         ObjectFieldTypes objectFieldTypes = new ObjectFieldTypes();
@@ -75,7 +75,7 @@ public class ObjectFieldTypesTest {
      * Verify that fields are found across multiple directories
      */
     @Test
-    public void testFieldsAreFoundInMultipleDirectories() {
+    void testFieldsAreFoundInMultipleDirectories() {
         ObjectFieldTypes objectFieldTypes;
         Path vfPagePath = VFTestUtils.getMetadataPath(this, VFTestUtils.MetadataFormat.SFDX, VFTestUtils.MetadataType.Vf)
             .resolve("SomePage.page");
@@ -93,7 +93,7 @@ public class ObjectFieldTypesTest {
     }
 
     @Test
-    public void testInvalidDirectoryDoesNotCauseAnException() {
+    void testInvalidDirectoryDoesNotCauseAnException() {
         Path vfPagePath = VFTestUtils.getMetadataPath(this, VFTestUtils.MetadataFormat.SFDX, VFTestUtils.MetadataType.Vf).resolve("SomePage.page");
         String vfFileName = vfPagePath.toString();
 
@@ -120,12 +120,12 @@ public class ObjectFieldTypesTest {
      * Verify that return values of {@link SalesforceFieldTypes#getDataType(String, String, List)} using the keys of
      * {@code expectedDataTypes} matches the values of {@code expectedDataTypes}
      */
-    public static void validateDataTypes(Map<String, DataType> expectedDataTypes, SalesforceFieldTypes fieldTypes,
+    static void validateDataTypes(Map<String, DataType> expectedDataTypes, SalesforceFieldTypes fieldTypes,
                                          Path vfPagePath, List<String> paths) {
         String vfFileName = vfPagePath.toString();
 
         for (Map.Entry<String, DataType> entry : expectedDataTypes.entrySet()) {
-            assertEquals(entry.getKey(), entry.getValue(), fieldTypes.getDataType(entry.getKey(), vfFileName, paths));
+            assertEquals(entry.getValue(), fieldTypes.getDataType(entry.getKey(), vfFileName, paths), entry.getKey());
         }
     }
 }

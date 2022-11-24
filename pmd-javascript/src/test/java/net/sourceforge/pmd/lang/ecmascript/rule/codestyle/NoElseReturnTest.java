@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.ecmascript.rule.codestyle;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class NoElseReturnTest extends PmdRuleTst {
+class NoElseReturnTest extends PmdRuleTst {
     // no additional unit tests
 }

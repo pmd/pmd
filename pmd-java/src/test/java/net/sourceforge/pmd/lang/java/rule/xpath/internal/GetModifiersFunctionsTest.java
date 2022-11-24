@@ -8,7 +8,7 @@ import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.lang.rule.xpath.PmdXPathException.Phase;
@@ -17,11 +17,11 @@ import net.sourceforge.pmd.lang.rule.xpath.PmdXPathException.Phase;
  * @author Clément Fournier
  * @since 7.0.0
  */
-public class GetModifiersFunctionsTest extends BaseXPathFunctionTest {
+class GetModifiersFunctionsTest extends BaseXPathFunctionTest {
 
 
     @Test
-    public void testEffectiveModifiers() {
+    void testEffectiveModifiers() {
         Rule rule = makeXpathRuleFromXPath("//ClassOrInterfaceDeclaration[pmd-java:modifiers() = ('public', 'abstract')]");
         String code = "interface O { class Foo { } }";
 
@@ -29,7 +29,7 @@ public class GetModifiersFunctionsTest extends BaseXPathFunctionTest {
     }
 
     @Test
-    public void testExplicitModifiers() {
+    void testExplicitModifiers() {
         Rule rule = makeXpathRuleFromXPath("//ClassOrInterfaceDeclaration[pmd-java:explicitModifiers() = ('public', 'abstract')]");
         String code = "interface O { class Foo { } }";
 
@@ -38,7 +38,7 @@ public class GetModifiersFunctionsTest extends BaseXPathFunctionTest {
 
 
     @Test
-    public void testNotAccessNodeReturnsEmptySequence() {
+    void testNotAccessNodeReturnsEmptySequence() {
         Rule rule = makeXpathRuleFromXPath("//ClassOrInterfaceBody[pmd-java:modifiers()]");
         String code = "interface O { class Foo { } }";
 
@@ -47,7 +47,7 @@ public class GetModifiersFunctionsTest extends BaseXPathFunctionTest {
 
 
     @Test
-    public void testStaticTypeError() {
+    void testStaticTypeError() {
         testWithExpectedException(
             "//MethodDeclaration[(., .) is pmd-java:modifiers()]",
             "class Moo { void foo() {if(true){}} }",

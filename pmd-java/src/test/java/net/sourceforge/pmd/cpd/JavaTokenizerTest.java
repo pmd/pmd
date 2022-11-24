@@ -6,15 +6,16 @@ package net.sourceforge.pmd.cpd;
 
 import java.util.Properties;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.cpd.test.CpdTextComparisonTest;
 
-@Ignore("Needs to be enabled after java-grammar changes are finalized")
-public class JavaTokenizerTest extends CpdTextComparisonTest {
+// TODO - enable test
+@Disabled("Needs to be enabled after java-grammar changes are finalized")
+class JavaTokenizerTest extends CpdTextComparisonTest {
 
-    public JavaTokenizerTest() {
+    JavaTokenizerTest() {
         super(".java");
     }
 
@@ -31,62 +32,62 @@ public class JavaTokenizerTest extends CpdTextComparisonTest {
     }
 
     @Test
-    public void testCommentsIgnored() {
+    void testCommentsIgnored() {
         doTest("simpleClassWithComments");
     }
 
     @Test
-    public void testDiscardedElements() {
+    void testDiscardedElements() {
         doTest("discardedElements", "_ignore_annots", ignoreAnnotations());
     }
 
     @Test
-    public void testDiscardedElementsExceptAnnots() {
+    void testDiscardedElementsExceptAnnots() {
         doTest("discardedElements", "_no_ignore_annots");
     }
 
     @Test
-    public void testIgnoreBetweenSpecialComments() {
+    void testIgnoreBetweenSpecialComments() {
         doTest("specialComments");
     }
 
     @Test
-    public void testIgnoreBetweenSpecialAnnotation() {
+    void testIgnoreBetweenSpecialAnnotation() {
         doTest("ignoreSpecialAnnotations");
     }
 
     @Test
-    public void testIgnoreBetweenSpecialAnnotationAndIgnoreAnnotations() {
+    void testIgnoreBetweenSpecialAnnotationAndIgnoreAnnotations() {
         doTest("ignoreSpecialAnnotations", "_ignore_annots", ignoreAnnotations());
     }
 
     @Test
-    public void testIgnoreIdentifiersDontAffectConstructors() {
+    void testIgnoreIdentifiersDontAffectConstructors() {
         doTest("ignoreIdentsPreservesCtor", "", ignoreIdents());
     }
 
     @Test
-    public void testIgnoreIdentifiersHandlesEnums() {
+    void testIgnoreIdentifiersHandlesEnums() {
         doTest("ignoreIdentsPreservesEnum", "", ignoreIdents());
     }
 
     @Test
-    public void testIgnoreIdentifiersWithClassKeyword() {
+    void testIgnoreIdentifiersWithClassKeyword() {
         doTest("ignoreIdentsPreservesClassLiteral", "", ignoreIdents());
     }
 
     @Test
-    public void testIgnoreLiterals() {
+    void testIgnoreLiterals() {
         doTest("ignoreLiterals", "", ignoreLiterals());
     }
 
     @Test
-    public void testNoIgnoreLiterals() {
+    void testNoIgnoreLiterals() {
         doTest("ignoreLiterals", "_noignore");
     }
 
     @Test
-    public void testTabWidth() {
+    void testTabWidth() {
         doTest("tabWidth");
     }
 

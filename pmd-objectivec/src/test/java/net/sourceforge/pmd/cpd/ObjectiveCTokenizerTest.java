@@ -6,14 +6,14 @@ package net.sourceforge.pmd.cpd;
 
 import java.util.Properties;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.cpd.test.CpdTextComparisonTest;
 
-public class ObjectiveCTokenizerTest extends CpdTextComparisonTest {
+class ObjectiveCTokenizerTest extends CpdTextComparisonTest {
 
 
-    public ObjectiveCTokenizerTest() {
+    ObjectiveCTokenizerTest() {
         super(".m");
     }
 
@@ -28,22 +28,22 @@ public class ObjectiveCTokenizerTest extends CpdTextComparisonTest {
     }
 
     @Test
-    public void testLongSample() {
+    void testLongSample() {
         doTest("big_sample");
     }
 
     @Test
-    public void testUnicodeEscape() {
+    void testUnicodeEscape() {
         doTest("unicodeEscapeInString");
     }
 
     @Test
-    public void testUnicodeCharInIdent() {
+    void testUnicodeCharInIdent() {
         doTest("unicodeCharInIdent");
     }
 
     @Test
-    public void testTabWidth() {
+    void testTabWidth() {
         doTest("tabWidth");
     }
 }

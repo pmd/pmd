@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.java.rule.errorprone;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class CloneMethodMustBePublicTest extends PmdRuleTst {
+class CloneMethodMustBePublicTest extends PmdRuleTst {
     // no additional unit tests
 }

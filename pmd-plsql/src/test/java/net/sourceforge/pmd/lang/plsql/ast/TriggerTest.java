@@ -5,13 +5,15 @@
 
 package net.sourceforge.pmd.lang.plsql.ast;
 
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.plsql.AbstractPLSQLParserTst;
 
 
-public class TriggerTest extends AbstractPLSQLParserTst {
+class TriggerTest extends AbstractPLSQLParserTst {
 
     /**
      * Parsing a trigger should not result in a NPE.
@@ -19,10 +21,10 @@ public class TriggerTest extends AbstractPLSQLParserTst {
      * @see <a href="https://github.com/pmd/pmd/issues/2325">#2325 [plsql] NullPointerException while running parsing test for CREATE TRIGGER</a>
      */
     @Test
-    public void parseCreateTrigger() {
+    void parseCreateTrigger() {
         ASTInput input = plsql.parseResource("TriggerUnit.pls");
         PLSQLNode trigger = input.getChild(0);
-        Assert.assertEquals(ASTTriggerUnit.class, trigger.getClass());
-        Assert.assertNotNull(trigger.getScope());
+        assertEquals(ASTTriggerUnit.class, trigger.getClass());
+        assertNotNull(trigger.getScope());
     }
 }

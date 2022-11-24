@@ -4,23 +4,22 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 
-
 /**
  * @author Clément Fournier
  */
-public class JavaQualifiedNameTest {
+class JavaQualifiedNameTest {
 
 
     private <T extends Node> List<T> getNodes(Class<T> target, String code) {
@@ -28,7 +27,7 @@ public class JavaQualifiedNameTest {
     }
 
     @Test
-    public void testEmptyPackage() {
+    void testEmptyPackage() {
         final String TEST = "class Foo {}";
         List<ASTClassOrInterfaceDeclaration> nodes = getNodes(ASTClassOrInterfaceDeclaration.class, TEST);
         for (ASTClassOrInterfaceDeclaration coid : nodes) {
@@ -39,7 +38,7 @@ public class JavaQualifiedNameTest {
 
 
     @Test
-    public void testPackage() {
+    void testPackage() {
         final String TEST = "package foo.bar; class Bzaz{}";
 
         List<ASTClassOrInterfaceDeclaration> nodes = getNodes(ASTClassOrInterfaceDeclaration.class, TEST);
@@ -50,7 +49,7 @@ public class JavaQualifiedNameTest {
 
 
     @Test
-    public void testNestedClass() {
+    void testNestedClass() {
         final String TEST = "package foo.bar; class Bzaz{ class Bor{ class Foo{}}}";
 
         List<ASTClassOrInterfaceDeclaration> nodes = getNodes(ASTClassOrInterfaceDeclaration.class, TEST);
@@ -64,7 +63,7 @@ public class JavaQualifiedNameTest {
 
 
     @Test
-    public void testNestedEnum() {
+    void testNestedEnum() {
         final String TEST = "package foo.bar; class Foo { enum Bzaz{HOO;}}";
 
         List<ASTEnumDeclaration> nodes = getNodes(ASTEnumDeclaration.class, TEST);
@@ -78,7 +77,7 @@ public class JavaQualifiedNameTest {
 
 
     @Test
-    public void testEnum() {
+    void testEnum() {
         final String TEST = "package foo.bar; enum Bzaz{HOO;}";
 
         List<ASTEnumDeclaration> nodes = getNodes(ASTEnumDeclaration.class, TEST);
@@ -92,7 +91,7 @@ public class JavaQualifiedNameTest {
 
 
     @Test
-    public void testNestedEmptyPackage() {
+    void testNestedEmptyPackage() {
         final String TEST = "class Bzaz{ class Bor{ class Foo{}}}";
 
         List<ASTClassOrInterfaceDeclaration> nodes = getNodes(ASTClassOrInterfaceDeclaration.class, TEST);
@@ -106,7 +105,7 @@ public class JavaQualifiedNameTest {
     }
 
     @Test
-    public void testSimpleLocalClass() {
+    void testSimpleLocalClass() {
         final String TEST = "package bar; class Boron { public void foo(String j) { class Local {} } }";
 
         List<ASTClassOrInterfaceDeclaration> classes = getNodes(ASTClassOrInterfaceDeclaration.class, TEST);
@@ -116,7 +115,7 @@ public class JavaQualifiedNameTest {
 
 
     @Test
-    public void testLocalClassNameClash() {
+    void testLocalClassNameClash() {
         final String TEST = "package bar; class Bzaz{ void foo() { class Local {} } {// initializer\n class Local {}}}";
 
         List<ASTClassOrInterfaceDeclaration> classes
@@ -128,7 +127,7 @@ public class JavaQualifiedNameTest {
 
 
     @Test
-    public void testLocalClassDeepNesting() {
+    void testLocalClassDeepNesting() {
         final String TEST
             = "class Bzaz{ void foo() { "
             + "  class Local { "
@@ -159,7 +158,7 @@ public class JavaQualifiedNameTest {
 
 
     @Test
-    public void testAnonymousClass() {
+    void testAnonymousClass() {
         final String TEST
             = "class Bzaz{ void foo() { "
             + "  new Runnable() {"
@@ -177,7 +176,7 @@ public class JavaQualifiedNameTest {
 
 
     @Test
-    public void testMultipleAnonymousClasses() {
+    void testMultipleAnonymousClasses() {
         final String TEST
             = "class Bzaz{ void foo() { "
             + "  new Runnable() {"
@@ -197,7 +196,7 @@ public class JavaQualifiedNameTest {
 
 
     @Test
-    public void testNestedAnonymousClass() {
+    void testNestedAnonymousClass() {
         final String TEST
             = "class Bzaz{ void foo() {"
             + "  new Runnable() {"
@@ -218,7 +217,7 @@ public class JavaQualifiedNameTest {
 
 
     @Test
-    public void testLocalInAnonymousClass() {
+    void testLocalInAnonymousClass() {
         final String TEST
                 = "class Bzaz{ void foo() {"
                 + "  new Runnable() {"

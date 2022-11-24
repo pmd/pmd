@@ -6,13 +6,13 @@ package net.sourceforge.pmd.cpd;
 
 import java.util.Properties;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.cpd.test.CpdTextComparisonTest;
 
-public class RubyTokenizerTest extends CpdTextComparisonTest {
+class RubyTokenizerTest extends CpdTextComparisonTest {
 
-    public RubyTokenizerTest() {
+    RubyTokenizerTest() {
         super(".rb");
     }
 
@@ -28,12 +28,12 @@ public class RubyTokenizerTest extends CpdTextComparisonTest {
 
 
     @Test
-    public void testSimple() {
+    void testSimple() {
         doTest("server");
     }
 
     @Test
-    public void testTabWidth() {
+    void testTabWidth() {
         doTest("tabWidth");
     }
 }

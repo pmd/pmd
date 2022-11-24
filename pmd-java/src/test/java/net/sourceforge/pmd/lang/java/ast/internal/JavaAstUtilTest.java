@@ -10,17 +10,17 @@ import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.java.BaseParserTest;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTInfixExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
 
-public class JavaAstUtilTest extends BaseParserTest {
+class JavaAstUtilTest extends BaseParserTest {
 
     @Test
-    public void testFlattenConcatOperands() {
+    void testFlattenConcatOperands() {
         ASTExpression e = parseExpr("s1+s2+s3");
 
         assertTrue(isStringConcatExpr(e));
@@ -29,7 +29,7 @@ public class JavaAstUtilTest extends BaseParserTest {
     }
 
     @Test
-    public void testFlattenConcatOperandsRespectsTyping() {
+    void testFlattenConcatOperandsRespectsTyping() {
         ASTInfixExpression e = (ASTInfixExpression) parseExpr("i+j+s2+s3");
         assertTrue(isStringConcatExpr(e));
         ASTInfixExpression left = (ASTInfixExpression) e.getLeftOperand();

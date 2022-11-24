@@ -26,7 +26,7 @@ additional_js:
 
 **PMD** is a static source code analyzer. It finds common programming flaws like
 unused variables, empty catch blocks, unnecessary object creation, and
-so forth. It's mainly concerned with **Java and Apex**, but **supports 12 other
+so forth. It's mainly concerned with **Java and Apex**, but **supports 14 other
 languages**.
 
 PMD features many **built-in checks** (in PMD lingo, *rules*), which are documented

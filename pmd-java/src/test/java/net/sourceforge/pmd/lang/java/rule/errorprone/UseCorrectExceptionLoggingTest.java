@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.java.rule.errorprone;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class UseCorrectExceptionLoggingTest extends PmdRuleTst {
+class UseCorrectExceptionLoggingTest extends PmdRuleTst {
     // no additional unit tests
 }

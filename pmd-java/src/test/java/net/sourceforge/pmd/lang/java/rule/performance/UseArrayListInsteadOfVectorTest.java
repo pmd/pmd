@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.java.rule.performance;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class UseArrayListInsteadOfVectorTest extends PmdRuleTst {
+class UseArrayListInsteadOfVectorTest extends PmdRuleTst {
     // no additional unit tests
 }

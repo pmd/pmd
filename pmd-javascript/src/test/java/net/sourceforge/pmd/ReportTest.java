@@ -7,16 +7,16 @@ package net.sourceforge.pmd;
 import static net.sourceforge.pmd.lang.ast.test.TestUtilsKt.assertSize;
 import static net.sourceforge.pmd.lang.ast.test.TestUtilsKt.assertSuppressed;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.ecmascript.ast.ASTFunctionNode;
 import net.sourceforge.pmd.lang.ecmascript.ast.EcmascriptParserTestBase;
 import net.sourceforge.pmd.lang.ecmascript.rule.AbstractEcmascriptRule;
 
-public class ReportTest extends EcmascriptParserTestBase {
+class ReportTest extends EcmascriptParserTestBase {
 
     @Test
-    public void testExclusionsInReportWithNOPMDEcmascript() {
+    void testExclusionsInReportWithNOPMDEcmascript() {
         Rule rule = new AbstractEcmascriptRule() {
             @Override
             public Object visit(ASTFunctionNode node, Object data) {

@@ -1,18 +1,5 @@
 #!/bin/bash
 
-usage() {
-    echo "Usage:"
-    echo "    $(basename "$0") <application-name> [-h|-v] ..."
-    echo ""
-    echo "application-name: valid options are: $(valid_app_options)"
-    echo "-h print this help"
-    echo "-v display PMD's version"
-}
-
-valid_app_options () {
-    echo "pmd, cpd, cpd-gui, designer, ast-dump"
-}
-
 is_cygwin() {
     case "$(uname)" in
         CYGWIN*|MINGW*)
@@ -193,32 +180,6 @@ function add_openjfx_classpath() {
 }
 
 readonly APPNAME="${1}"
-if [ -z "${APPNAME}" ]; then
-    usage
-    exit 1
-fi
-shift
-
-case "${APPNAME}" in
-  "pmd")
-    readonly CLASSNAME="net.sourceforge.pmd.PMD"
-    ;;
-  "cpd")
-    readonly CLASSNAME="net.sourceforge.pmd.cpd.CPD"
-    ;;
-  "designer")
-    readonly CLASSNAME="net.sourceforge.pmd.util.fxdesigner.DesignerStarter"
-    ;;
-  "cpd-gui")
-    readonly CLASSNAME="net.sourceforge.pmd.cpd.GUI"
-    ;;
-  "ast-dump")
-    readonly CLASSNAME="net.sourceforge.pmd.util.treeexport.TreeExportCli"
-    ;;
-  *)
-    echo "${APPNAME} is NOT a valid application name, valid options are: $(valid_app_options)"
-    ;;
-esac
 
 is_cygwin
 
@@ -239,4 +200,4 @@ cygwin_paths
 
 java_heapsize_settings
 
-java ${HEAPSIZE} ${PMD_JAVA_OPTS} $(jre_specific_vm_options) -cp "${classpath}" "${CLASSNAME}" "$@"
+java ${HEAPSIZE} ${PMD_JAVA_OPTS} $(jre_specific_vm_options) -cp "${classpath}" net.sourceforge.pmd.cli.PmdCli "$@"

@@ -4,14 +4,16 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.ast.ParseException;
 
-public class ApexCompilerTest extends ApexParserTestBase {
+class ApexCompilerTest extends ApexParserTestBase {
 
-    @Test(expected = ParseException.class)
-    public void compileShouldFail() {
-        apex.parse("public class Foo { private String myField = \"a\"; }");
+    @Test
+    void compileShouldFail() {
+        assertThrows(ParseException.class, () -> apex.parse("public class Foo { private String myField = \"a\"; }"));
     }
 }

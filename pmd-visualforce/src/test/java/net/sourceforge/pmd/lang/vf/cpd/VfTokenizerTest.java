@@ -7,15 +7,15 @@ package net.sourceforge.pmd.lang.vf.cpd;
 
 import java.util.Properties;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.cpd.Tokenizer;
 import net.sourceforge.pmd.cpd.VfTokenizer;
 import net.sourceforge.pmd.cpd.test.CpdTextComparisonTest;
 
-public class VfTokenizerTest extends CpdTextComparisonTest {
+class VfTokenizerTest extends CpdTextComparisonTest {
 
-    public VfTokenizerTest() {
+    VfTokenizerTest() {
         super(".page");
     }
 
@@ -26,7 +26,7 @@ public class VfTokenizerTest extends CpdTextComparisonTest {
     }
 
     @Test
-    public void testTokenize() {
+    void testTokenize() {
         doTest("SampleUnescapeElWithTab");
     }
 }
