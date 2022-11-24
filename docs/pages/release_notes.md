@@ -21,6 +21,13 @@ This is a {{ site.pmd.release_type }} release.
   either inherit from JUnit 3 TestCase or have at least one method annotated with the Test annotations from
   JUnit4/5 or TestNG.
 
+* The property `ignoredAnnotations` of rule {% rule java/design/ImmutableField %} has been deprecated  and doesn't
+  have any effect anymore.
+  Since PMD 6.47.0, the rule only considers fields, that are initialized once and never changed. If the field is just
+  declared but never explicitly initialized, it won't be reported. That's the typical case when a framework sets
+  the field value by reflection. Therefore, the property is not needed anymore. If there is a special case where
+  this rule misidentifies fields as immutable, then the rule should be suppressed for these fields explicitly.
+
 ### Fixed Issues
 * cli
     * [#4215](https://github.com/pmd/pmd/discussions/4215): NullPointerException when trying to open designer
@@ -33,6 +40,7 @@ This is a {{ site.pmd.release_type }} release.
     * [#2867](https://github.com/pmd/pmd/issues/2867): \[java] Separate pattern for test classes in ClassNamingConventions rule for Java
     * [#4201](https://github.com/pmd/pmd/issues/4201): \[java] CommentDefaultAccessModifier should consider lombok's @<!-- -->Value
 * java-design
+    * [#4175](https://github.com/pmd/pmd/issues/4175): \[java] ImmutableField - deprecate property `ignoredAnnotations`
     * [#4200](https://github.com/pmd/pmd/issues/4200): \[java] ClassWithOnlyPrivateConstructorsShouldBeFinal should consider lombok's @<!-- -->Value
 * java-errorprone
     * [#4185](https://github.com/pmd/pmd/issues/4185): \[java] InvalidLogMessageFormat rule produces a NPE
