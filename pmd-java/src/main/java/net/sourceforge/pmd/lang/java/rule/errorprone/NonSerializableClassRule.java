@@ -38,6 +38,7 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
+import net.sourceforge.pmd.lang.java.types.JTypeVar;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
@@ -166,8 +167,10 @@ public class NonSerializableClassRule extends AbstractJavaRulechainRule {
             // exclude java.lang.Object, interfaces, abstract classes, and generic types
             notSerializable &= !TypeTestUtil.isExactlyA(Object.class, node)
                     && !classSymbol.isInterface()
-                    && !classSymbol.isAbstract()
-                    && !classSymbol.isGeneric();
+                    && !classSymbol.isAbstract();
+        }
+        if (!getProperty(CHECK_ABSTRACT_TYPES) && typeMirror instanceof JTypeVar) {
+            notSerializable = false;
         }
         return notSerializable;
     }
