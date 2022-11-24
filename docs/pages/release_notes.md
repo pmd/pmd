@@ -19,6 +19,15 @@ This is a {{ site.pmd.release_type }} release.
 
 ### New and noteworthy
 
+#### New rules
+
+* The new Java rule {% rule java/design/InvalidJavaBean %} identifies beans, that don't follow the [JavaBeans API specification](https://download.oracle.com/otndocs/jcp/7224-javabeans-1.01-fr-spec-oth-JSpec/),
+  like beans with missing getters or setters.
+
+```xml
+<rule ref="category/java/design.xml/InvalidJavaBean"/>
+```
+
 #### Modified rules
 
 * The rule {% rule java/codestyle/ClassNamingConventions %} has a new property `testClassPattern`, which is applied
@@ -38,6 +47,7 @@ This is a {{ site.pmd.release_type }} release.
     * [#2867](https://github.com/pmd/pmd/issues/2867): \[java] Separate pattern for test classes in ClassNamingConventions rule for Java
     * [#4201](https://github.com/pmd/pmd/issues/4201): \[java] CommentDefaultAccessModifier should consider lombok's @<!-- -->Value
 * java-design
+    * [#4177](https://github.com/pmd/pmd/issues/4177): \[java] New Rule InvalidJavaBean
     * [#4200](https://github.com/pmd/pmd/issues/4200): \[java] ClassWithOnlyPrivateConstructorsShouldBeFinal should consider lombok's @<!-- -->Value
 * java-errorprone
     * [#4185](https://github.com/pmd/pmd/issues/4185): \[java] InvalidLogMessageFormat rule produces a NPE
