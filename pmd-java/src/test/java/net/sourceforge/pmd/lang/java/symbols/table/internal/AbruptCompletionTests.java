@@ -5,12 +5,15 @@
 package net.sourceforge.pmd.lang.java.symbols.table.internal;
 
 
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
+
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import org.junit.Test;
-import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
 
 import net.sourceforge.pmd.lang.java.BaseParserTest;
@@ -20,9 +23,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTStatement;
 
-import junit.framework.AssertionFailedError;
-
-public class AbruptCompletionTests extends BaseParserTest {
+class AbruptCompletionTests extends BaseParserTest {
 
     private final JavaParsingHelper java17 = java.withDefaultVersion("17");
 
@@ -45,8 +46,7 @@ public class AbruptCompletionTests extends BaseParserTest {
     private Executable canCompleteNormally(String stmtText, boolean expected, Function<ASTBlock, ASTStatement> getNode) {
         return canCompleteNormally(
             stmtText,
-            (actual, stmt) -> Assertions.assertEquals(expected, actual,
-                                                      "Can " + stmt.getText() + " complete normally?"),
+            (actual, stmt) -> assertEquals(expected, actual, "Can " + stmt.getText() + " complete normally?"),
             getNode
         );
     }
@@ -54,7 +54,7 @@ public class AbruptCompletionTests extends BaseParserTest {
     private Executable canCompleteNormally(String stmt) {
         return canCompleteNormally(stmt, actual -> {
             if (!actual) {
-                throw new AssertionFailedError("Code CAN complete normally: `" + stmt + "`");
+                fail("Code CAN complete normally: `" + stmt + "`");
             }
         });
     }
@@ -62,14 +62,14 @@ public class AbruptCompletionTests extends BaseParserTest {
     private Executable mustCompleteAbruptly(String stmt) {
         return canCompleteNormally(stmt, actual -> {
             if (actual) {
-                throw new AssertionFailedError("Code MUST complete abruptly: `" + stmt + "`");
+                fail("Code MUST complete abruptly: `" + stmt + "`");
             }
         });
     }
 
     @Test
-    public void testIfStatements() {
-        Assertions.assertAll(
+    void testIfStatements() {
+        assertAll(
             canCompleteNormally(
                 "if (foo) {}"
                     + "else { throw new Exception(); }"
@@ -87,7 +87,7 @@ public class AbruptCompletionTests extends BaseParserTest {
 
     @Test
     public void testWhileStmt() {
-        Assertions.assertAll(
+        assertAll(
             canCompleteNormally("while(foo) { return; }"),
             canCompleteNormally("while(foo) { break; }"),
             canCompleteNormally("l: while(foo) { break; }"),
@@ -107,8 +107,8 @@ public class AbruptCompletionTests extends BaseParserTest {
     }
 
     @Test
-    public void testForLoop() {
-        Assertions.assertAll(
+    void testForLoop() {
+        assertAll(
             canCompleteNormally("for(; foo; ) { return; }"),
             canCompleteNormally("for(;foo;) { break; }"),
             canCompleteNormally("l: for(;foo;) { break; }"),
@@ -128,8 +128,8 @@ public class AbruptCompletionTests extends BaseParserTest {
     }
 
     @Test
-    public void testDoLoop() {
-        Assertions.assertAll(
+    void testDoLoop() {
+        assertAll(
             canCompleteNormally("do { } while(foo);"),
             canCompleteNormally("do { continue; } while(foo);"),
             canCompleteNormally("do { break; } while(foo);"),
@@ -145,8 +145,8 @@ public class AbruptCompletionTests extends BaseParserTest {
     }
 
     @Test
-    public void testForeachLoop() {
-        Assertions.assertAll(
+    void testForeachLoop() {
+        assertAll(
             canCompleteNormally("for (int i : new int[]{}) { }"),
             canCompleteNormally("for (int i : new int[]{}) { continue; }"),
             canCompleteNormally("for (int i : new int[]{}) { break; }"),
@@ -155,8 +155,8 @@ public class AbruptCompletionTests extends BaseParserTest {
     }
 
     @Test
-    public void testWhileContinue() {
-        Assertions.assertAll(
+    void testWhileContinue() {
+        assertAll(
             canCompleteNormally("while(foo) { if (x) continue; }"),
 
             // this is trivial, but the condition may have side-effects
@@ -169,8 +169,8 @@ public class AbruptCompletionTests extends BaseParserTest {
     }
 
     @Test
-    public void testSwitchFallthrough() {
-        Assertions.assertAll(
+    void testSwitchFallthrough() {
+        assertAll(
             canCompleteNormally("switch(foo) {}"),
             canCompleteNormally("switch(foo) { case 1: break; }"),
             canCompleteNormally("switch(foo) { case 1: break; case 2: foo(); }"),
@@ -179,8 +179,8 @@ public class AbruptCompletionTests extends BaseParserTest {
     }
 
     @Test
-    public void testSwitchArrow() {
-        Assertions.assertAll(
+    void testSwitchArrow() {
+        assertAll(
             canCompleteNormally("switch(foo) {}"),
             canCompleteNormally("switch(foo) { case 1 -> X; default->  X;}"),
 
@@ -192,8 +192,8 @@ public class AbruptCompletionTests extends BaseParserTest {
     }
 
     @Test
-    public void testTry() {
-        Assertions.assertAll(
+    void testTry() {
+        assertAll(
             canCompleteNormally("try {}"),
             canCompleteNormally("try { foo(); }"),
             canCompleteNormally("try {{}}"),
@@ -216,8 +216,8 @@ public class AbruptCompletionTests extends BaseParserTest {
     }
 
     @Test
-    public void testSwitchExhaustive() {
-        Assertions.assertAll(
+    void testSwitchExhaustive() {
+        assertAll(
             // no default, even with exhaustive enum, means it can complete normally
             canCompleteNormally("enum Local { A } Local a = Local.A;\n"
                                     + "switch(a) { case A: return; }"),
@@ -227,8 +227,8 @@ public class AbruptCompletionTests extends BaseParserTest {
     }
 
     @Test
-    public void testYield() {
-        Assertions.assertAll(
+    void testYield() {
+        assertAll(
             canCompleteNormally("int i = switch(1) {"
                                     + "  case 1 -> { yield 1; }"
                                     + "  default -> { yield 2; }"
@@ -251,16 +251,16 @@ public class AbruptCompletionTests extends BaseParserTest {
     }
 
     @Test
-    public void testFalseLoopIsUnreachable() {
-        Assertions.assertAll(
+    void testFalseLoopIsUnreachable() {
+        assertAll(
             canCompleteNormally("while(false) { }"),
             canCompleteNormally("for(;false;) { }")
         );
     }
 
     @Test
-    public void testLabeledStmt() {
-        Assertions.assertAll(
+    void testLabeledStmt() {
+        assertAll(
             canCompleteNormally("l: if (foo) break l; else break l;"),
             mustCompleteAbruptly("if (foo) break l; else break l;")
         );

@@ -4,15 +4,16 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class ASTSoqlExpressionTest extends ApexParserTestBase {
+import org.junit.jupiter.api.Test;
+
+class ASTSoqlExpressionTest extends ApexParserTestBase {
 
     @Test
-    public void testQuery() {
+    void testQuery() {
         ApexNode<?> root = parse("class Foo { void test1() { Account acc = [SELECT col FROM Account]; } }");
         ASTSoqlExpression soqlExpression = root.descendants(ASTSoqlExpression.class).firstOrThrow();
-        Assert.assertEquals("SELECT col FROM Account", soqlExpression.getQuery());
+        assertEquals("SELECT col FROM Account", soqlExpression.getQuery());
     }
 }

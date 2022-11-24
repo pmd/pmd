@@ -9,8 +9,7 @@ import java.util.Set;
 
 import net.sourceforge.pmd.lang.apex.ast.ASTBooleanExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTStandardCondition;
-
-import apex.jorje.data.ast.BooleanOp;
+import net.sourceforge.pmd.lang.apex.ast.BooleanOperator;
 
 /**
  *
@@ -34,8 +33,8 @@ public final class ApexMetricsHelper {
         int complexity = 0;
 
         for (ASTBooleanExpression sub : subs) {
-            BooleanOp op = sub.getOperator();
-            if (op != null && (op == BooleanOp.AND || op == BooleanOp.OR)) {
+            BooleanOperator op = sub.getOp();
+            if (op == BooleanOperator.LOGICAL_AND || op == BooleanOperator.LOGICAL_OR) {
                 complexity++;
             }
         }

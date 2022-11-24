@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.java.rule.performance;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class OptimizableToArrayCallTest extends PmdRuleTst {
+class OptimizableToArrayCallTest extends PmdRuleTst {
     // no additional unit tests
 }

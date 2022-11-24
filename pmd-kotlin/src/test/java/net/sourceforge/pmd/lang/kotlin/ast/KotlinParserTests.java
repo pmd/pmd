@@ -4,15 +4,15 @@
 
 package net.sourceforge.pmd.lang.kotlin.ast;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  *
  */
-public class KotlinParserTests extends BaseKotlinTreeDumpTest {
+class KotlinParserTests extends BaseKotlinTreeDumpTest {
 
     @Test
-    public void testSimpleKotlin() {
+    void testSimpleKotlin() {
         doTest("Simple");
     }
 

@@ -91,7 +91,8 @@ public class CPDCommandLineInterfaceTest extends BaseCPDCLITest {
     public void testBrokenAndValidFile() {
         String out = runTest(CPD.StatusCode.DUPLICATE_CODE_FOUND, "--minimum-tokens", "10", "--language", "java", "--files",
                 "src/test/resources/net/sourceforge/pmd/cpd/badandgood/", "--format", "text", "--skip-lexical-errors");
-        assertThat(out, containsPattern("Skipping .*?BadFile\\.java\\. Reason: Lexical error in file"));
+        String stderr = getStderr();
+        assertThat(stderr, containsPattern("Skipping .*?BadFile\\.java\\. Reason: Lexical error in file"));
         assertThat(out, containsString("Found a 5 line (13 tokens) duplication"));
     }
 

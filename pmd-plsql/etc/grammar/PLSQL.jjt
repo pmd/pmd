@@ -159,6 +159,9 @@ package net.sourceforge.pmd.lang.plsql.ast;
 
 import java.util.List;
 import java.util.ArrayList;
+import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.document.Chars;
+import net.sourceforge.pmd.lang.ast.impl.javacc.CharStream;
 import net.sourceforge.pmd.lang.plsql.ast.internal.ParsingExclusion;
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
 
@@ -5306,6 +5309,7 @@ TOKEN :
 <IN_STRING_LITERAL> MORE : {
     <~["'"]>
   | <"'"> {
+     Chars image = input_stream.getTokenImageCs();
      int quoteDelimiter = image.charAt(2);
      if (image.charAt(0) == 'n' || image.charAt(0) == 'N') {
          quoteDelimiter = image.charAt(3);
@@ -5313,7 +5317,6 @@ TOKEN :
      int beforeQuote = image.charAt(image.length() - 2);
      if (quoteDelimiter == beforeQuote) {
          input_stream.backup(1);
-         image.setLength(image.length() - 1);
          SwitchTo(IN_STRING_LITERAL_TOKENIZE);
      }
   }

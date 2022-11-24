@@ -4,20 +4,18 @@
 
 package net.sourceforge.pmd.cpd;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import java.util.Properties;
 
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.cpd.test.CpdTextComparisonTest;
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
 
-public class ScalaTokenizerTest extends CpdTextComparisonTest {
+class ScalaTokenizerTest extends CpdTextComparisonTest {
 
-    @org.junit.Rule
-    public ExpectedException ex = ExpectedException.none();
-
-    public ScalaTokenizerTest() {
+    ScalaTokenizerTest() {
         super(".scala");
     }
 
@@ -32,23 +30,22 @@ public class ScalaTokenizerTest extends CpdTextComparisonTest {
     }
 
     @Test
-    public void testSample() {
+    void testSample() {
         doTest("sample-LiftActor");
     }
 
     @Test
-    public void testSuppressionComments() {
+    void testSuppressionComments() {
         doTest("special_comments");
     }
 
     @Test
-    public void tokenizeFailTest() {
-        ex.expect(TokenMgrError.class);
-        doTest("unlexable_sample");
+    void tokenizeFailTest() {
+        assertThrows(TokenMgrError.class, () -> doTest("unlexable_sample"));
     }
 
     @Test
-    public void testTabWidth() {
+    void testTabWidth() {
         doTest("tabWidth");
     }
 }

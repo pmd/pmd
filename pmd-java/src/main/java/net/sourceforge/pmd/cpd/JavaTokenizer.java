@@ -13,10 +13,9 @@ import net.sourceforge.pmd.cpd.internal.JavaCCTokenizer;
 import net.sourceforge.pmd.cpd.token.JavaCCTokenFilter;
 import net.sourceforge.pmd.cpd.token.TokenFilter;
 import net.sourceforge.pmd.lang.TokenManager;
-import net.sourceforge.pmd.lang.ast.CharStream;
-import net.sourceforge.pmd.lang.ast.impl.javacc.CharStreamFactory;
+import net.sourceforge.pmd.lang.ast.impl.javacc.CharStream;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
-import net.sourceforge.pmd.lang.document.TextDocument;
+import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument;
 import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.java.ast.JavaTokenKinds;
 
@@ -44,8 +43,8 @@ public class JavaTokenizer extends JavaCCTokenizer {
     }
 
     @Override
-    protected CharStream makeCharStream(TextDocument sourceCode) {
-        return CharStreamFactory.javaCharStream(sourceCode, InternalApiBridge::javaTokenDoc);
+    protected JavaccTokenDocument.TokenDocumentBehavior tokenBehavior() {
+        return InternalApiBridge.javaTokenDoc();
     }
 
     @Override

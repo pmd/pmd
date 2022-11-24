@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.java.rule.codestyle;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class OnlyOneReturnTest extends PmdRuleTst {
+class OnlyOneReturnTest extends PmdRuleTst {
     // no additional unit tests
 }

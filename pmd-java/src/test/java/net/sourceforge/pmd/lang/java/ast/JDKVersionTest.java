@@ -4,22 +4,22 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.test.BaseParsingHelper;
 import net.sourceforge.pmd.lang.java.BaseJavaTreeDumpTest;
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 
-public class JDKVersionTest extends BaseJavaTreeDumpTest {
+class JDKVersionTest extends BaseJavaTreeDumpTest {
 
     private final JavaParsingHelper java3 = JavaParsingHelper.DEFAULT
         .withDefaultVersion("1.3")
@@ -32,89 +32,104 @@ public class JDKVersionTest extends BaseJavaTreeDumpTest {
     private final JavaParsingHelper java9 = java3.withDefaultVersion("9");
 
     // enum keyword/identifier
-    @Test(expected = ParseException.class)
+    @Test
     public void testEnumAsKeywordShouldFailWith14() {
-        java5.parseResource("jdk14_enum.java");
+        assertThrows(ParseException.class, () -> java5.parseResource("jdk14_enum.java"));
     }
 
     @Test
-    public void testEnumAsIdentifierShouldPassWith14() {
+    void testEnumAsIdentifierShouldPassWith14() {
         java4.parseResource("jdk14_enum.java");
     }
 
     @Test
-    public void testEnumAsKeywordShouldPassWith15() {
+    void testEnumAsKeywordShouldPassWith15() {
         java5.parseResource("jdk15_enum.java");
     }
 
-    @Test(expected = ParseException.class)
-    public void testEnumAsIdentifierShouldFailWith15() {
-        java5.parseResource("jdk14_enum.java");
+    @Test
+    void testEnumAsIdentifierShouldFailWith15() {
+        assertThrows(ParseException.class, () -> java5.parseResource("jdk14_enum.java"));
     }
     // enum keyword/identifier
 
     // assert keyword/identifier
     @Test
-    public void testAssertAsKeywordVariantsSucceedWith14() {
+    void testAssertAsKeywordVariantsSucceedWith14() {
         java4.parseResource("assert_test1.java");
         java4.parseResource("assert_test2.java");
         java4.parseResource("assert_test3.java");
         java4.parseResource("assert_test4.java");
     }
 
-    @Test(expected = ParseException.class)
-    public void testAssertAsVariableDeclIdentifierFailsWith14() {
-        java4.parseResource("assert_test5.java");
-    }
-
-    @Test(expected = ParseException.class)
-    public void testAssertAsMethodNameIdentifierFailsWith14() {
-        java4.parseResource("assert_test7.java");
+    @Test
+    void testAssertAsVariableDeclIdentifierFailsWith14() {
+        assertThrows(ParseException.class, () -> java4.parseResource("assert_test5.java"));
     }
 
     @Test
-    public void testAssertAsIdentifierSucceedsWith13() {
+    void testAssertAsMethodNameIdentifierFailsWith14() {
+        assertThrows(ParseException.class, () -> java4.parseResource("assert_test7.java"));
+    }
+
+    @Test
+    void testAssertAsIdentifierSucceedsWith13() {
         java3.parseResource("assert_test5.java");
     }
 
-    @Test(expected = ParseException.class)
-    public void testAssertAsKeywordFailsWith13() {
-        java3.parseResource("assert_test6.java");
+    @Test
+    void testAssertAsKeywordFailsWith13() {
+        assertThrows(ParseException.class, () -> java3.parseResource("assert_test6.java"));
     }
     // assert keyword/identifier
 
     @Test
-    public void testVarargsShouldPassWith15() {
+    void testVarargsShouldPassWith15() {
         java5.parseResource("jdk15_varargs.java");
     }
 
-    @Test(expected = ParseException.class)
-    public void testVarargsShouldFailWith14() {
-        java4.parseResource("jdk15_varargs.java");
+    @Test
+    public void testGenericCtorCalls() {
+        java5.parseResource("java5/generic_ctors.java");
     }
 
     @Test
-    public void testJDK15ForLoopSyntaxShouldPassWith15() {
+    public void testGenericSuperCtorCalls() {
+        java5.parseResource("java5/generic_super_ctor.java");
+    }
+
+    @Test
+    public void testAnnotArrayInitializer() {
+        java5.parseResource("java5/annotation_array_init.java");
+    }
+
+    @Test
+    void testVarargsShouldFailWith14() {
+        assertThrows(ParseException.class, () -> java4.parseResource("jdk15_varargs.java"));
+    }
+
+    @Test
+    void testJDK15ForLoopSyntaxShouldPassWith15() {
         java5.parseResource("jdk15_forloop.java");
     }
 
     @Test
-    public void testJDK15ForLoopSyntaxWithModifiers() {
+    void testJDK15ForLoopSyntaxWithModifiers() {
         java5.parseResource("jdk15_forloop_with_modifier.java");
     }
 
-    @Test(expected = ParseException.class)
-    public void testJDK15ForLoopShouldFailWith14() {
-        java4.parseResource("jdk15_forloop.java");
+    @Test
+    void testJDK15ForLoopShouldFailWith14() {
+        assertThrows(ParseException.class, () -> java4.parseResource("jdk15_forloop.java"));
     }
 
     @Test
-    public void testJDK15GenericsSyntaxShouldPassWith15() {
+    void testJDK15GenericsSyntaxShouldPassWith15() {
         java5.parseResource("jdk15_generics.java");
     }
 
     @Test
-    public void testVariousParserBugs() {
+    void testVariousParserBugs() {
         java5.parseResource("fields_bug.java");
         java5.parseResource("gt_bug.java");
         java5.parseResource("annotations_bug.java");
@@ -123,28 +138,28 @@ public class JDKVersionTest extends BaseJavaTreeDumpTest {
     }
 
     @Test
-    public void testNestedClassInMethodBug() {
+    void testNestedClassInMethodBug() {
         java5.parseResource("inner_bug.java");
         java5.parseResource("inner_bug2.java");
     }
 
     @Test
-    public void testGenericsInMethodCall() {
+    void testGenericsInMethodCall() {
         java5.parseResource("generic_in_method_call.java");
     }
 
     @Test
-    public void testGenericINAnnotation() {
+    void testGenericINAnnotation() {
         java5.parseResource("generic_in_annotation.java");
     }
 
     @Test
-    public void testGenericReturnType() {
+    void testGenericReturnType() {
         java5.parseResource("generic_return_type.java");
     }
 
     @Test
-    public void testMultipleGenerics() {
+    void testMultipleGenerics() {
         // See java/lang/concurrent/CopyOnWriteArraySet
         java5.parseResource("funky_generics.java");
         // See java/lang/concurrent/ConcurrentHashMap
@@ -152,132 +167,137 @@ public class JDKVersionTest extends BaseJavaTreeDumpTest {
     }
 
     @Test
-    public void testAnnotatedParams() {
+    void testAnnotatedParams() {
         java5.parseResource("annotated_params.java");
     }
 
     @Test
-    public void testAnnotatedLocals() {
+    void testAnnotatedLocals() {
         java5.parseResource("annotated_locals.java");
     }
 
     @Test
-    public void testAssertAsIdentifierSucceedsWith13Test2() {
+    void testAssertAsIdentifierSucceedsWith13Test2() {
         java3.parseResource("assert_test5_a.java");
     }
 
     @Test
-    public final void testBinaryAndUnderscoresInNumericalLiterals() {
+    void testBinaryAndUnderscoresInNumericalLiterals() {
         java7.parseResource("jdk17_numerical_literals.java");
     }
 
     @Test
-    public final void testStringInSwitch() {
+    void testStringInSwitch() {
         java7.parseResource("jdk17_string_in_switch.java");
     }
 
     @Test
-    public final void testGenericDiamond() {
+    void testGenericDiamond() {
         java7.parseResource("jdk17_generic_diamond.java");
     }
 
     @Test
-    public final void testTryWithResources() {
+    void testTryWithResources() {
         java7.parseResource("jdk17_try_with_resources.java");
     }
 
     @Test
-    public final void testTryWithResourcesSemi() {
+    void testTryWithResourcesSemi() {
         java7.parseResource("jdk17_try_with_resources_semi.java");
     }
 
     @Test
-    public final void testTryWithResourcesMulti() {
+    void testTryWithResourcesMulti() {
         java7.parseResource("jdk17_try_with_resources_multi.java");
     }
 
     @Test
-    public final void testTryWithResourcesWithAnnotations() {
+    void testTryWithResourcesWithAnnotations() {
         java7.parseResource("jdk17_try_with_resources_with_annotations.java");
     }
 
     @Test
-    public final void testMulticatch() {
+    void testMulticatch() {
         java7.parseResource("jdk17_multicatch.java");
     }
 
     @Test
-    public final void testMulticatchWithAnnotations() {
+    void testMulticatchWithAnnotations() {
         java7.parseResource("jdk17_multicatch_with_annotations.java");
     }
 
-    @Test(expected = ParseException.class)
-    public final void jdk9PrivateInterfaceMethodsInJava18() {
-        java8.parseResource("java9/jdk9_private_interface_methods.java");
+    @Test
+    void jdk9PrivateInterfaceMethodsInJava18() {
+        assertThrows(ParseException.class, () -> java8.parseResource("java9/jdk9_private_interface_methods.java"));
     }
 
     @Test
-    public final void testPrivateMethods() {
+    void testPrivateMethods() {
         java8.parse("public class Foo { private void bar() { } }");
     }
 
     @Test
-    public final void testNestedPrivateMethods() {
+    public final void testTypeAnnotations() {
+        java8.parseResource("java8/type_annotations.java");
+    }
+
+    @Test
+    void testNestedPrivateMethods() {
         java8.parse("public interface Baz { public static class Foo { private void bar() { } } }");
     }
 
     @Test
-    public final void jdk9PrivateInterfaceMethods() {
+    void jdk9PrivateInterfaceMethods() {
         java9.parseResource("java9/jdk9_private_interface_methods.java");
     }
 
     @Test
-    public final void jdk9InvalidIdentifierInJava18() {
+    void jdk9InvalidIdentifierInJava18() {
         java8.parseResource("java9/jdk9_invalid_identifier.java");
     }
 
-    @Test(expected = ParseException.class)
-    public final void jdk9InvalidIdentifier() {
-        java9.parseResource("java9/jdk9_invalid_identifier.java");
-    }
-
-    @Test(expected = ParseException.class)
-    public final void jdk9AnonymousDiamondInJava8() {
-        java8.parseResource("java9/jdk9_anonymous_diamond.java");
+    @Test
+    void jdk9InvalidIdentifier() {
+        assertThrows(ParseException.class, () -> java9.parseResource("java9/jdk9_invalid_identifier.java"));
     }
 
     @Test
-    public final void jdk9AnonymousDiamond() {
+    void jdk9AnonymousDiamondInJava8() {
+        assertThrows(ParseException.class, () -> java8.parseResource("java9/jdk9_anonymous_diamond.java"));
+    }
+
+    @Test
+    void jdk9AnonymousDiamond() {
         java9.parseResource("java9/jdk9_anonymous_diamond.java");
     }
 
-    @Test(expected = ParseException.class)
-    public final void jdk9ModuleInfoInJava8() {
-        java8.parseResource("java9/jdk9_module_info.java");
+    @Test
+    void jdk9ModuleInfoInJava8() {
+        assertThrows(ParseException.class, () -> java8.parseResource("java9/jdk9_module_info.java"));
     }
 
     @Test
-    public final void jdk9ModuleInfo() {
+    void jdk9ModuleInfo() {
         java9.parseResource("java9/jdk9_module_info.java");
     }
 
     @Test
-    public void testAnnotatedModule() {
+    void testAnnotatedModule() {
         java9.parseResource("java9/jdk9_module_info_with_annot.java");
     }
 
-    @Test(expected = ParseException.class)
-    public final void jdk9TryWithResourcesInJava8() {
-        java8.parseResource("java9/jdk9_try_with_resources.java");
+    @Test
+    void jdk9TryWithResourcesInJava8() {
+        assertThrows(ParseException.class, () -> java8.parseResource("java9/jdk9_try_with_resources.java"));
     }
 
     @Test
-    public final void jdk9TryWithResources() {
+    void jdk9TryWithResources() {
         java9.parseResource("java9/jdk9_try_with_resources.java");
     }
 
     @Test
-    public final void jdk7PrivateMethodInnerClassInterface1() {
+    void jdk7PrivateMethodInnerClassInterface1() {
         ASTCompilationUnit acu = java7.parseResource("private_method_in_inner_class_interface1.java");
         List<ASTMethodDeclaration> methods = acu.findDescendantsOfType(ASTMethodDeclaration.class, true);
         assertEquals(3, methods.size());
@@ -287,13 +307,9 @@ public class JDKVersionTest extends BaseJavaTreeDumpTest {
     }
 
     @Test
-    public final void jdk7PrivateMethodInnerClassInterface2() {
-        try {
-            java7.parseResource("private_method_in_inner_class_interface2.java");
-            fail("Expected exception");
-        } catch (ParseException e) {
-            assertTrue(e.getMessage().contains("line 19"));
-        }
+    void jdk7PrivateMethodInnerClassInterface2() {
+        ParseException thrown = assertThrows(ParseException.class, () -> java7.parseResource("private_method_in_inner_class_interface2.java"));
+        assertTrue(thrown.getMessage().contains("line 19"));
     }
 
     @Override

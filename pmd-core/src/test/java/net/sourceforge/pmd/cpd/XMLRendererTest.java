@@ -12,17 +12,21 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import net.sourceforge.pmd.cpd.renderer.CPDRenderer;
+import net.sourceforge.pmd.cpd.renderer.CPDReportRenderer;
 
 /**
  * @author Philippe T'Seyen
@@ -184,6 +188,64 @@ class XMLRendererTest {
         assertTrue(report.contains(espaceChar));
         assertFalse(report.contains(FORM_FEED));
         assertFalse(report.contains(FORM_FEED_ENTITY));
+    }
+
+    @Test
+    void testFilesWithNumberOfTokens() throws IOException, ParserConfigurationException, SAXException {
+        final CPDReportRenderer renderer = new XMLRenderer();
+        final List<Match> matches = new ArrayList<>();
+        final String filename = "/var/Foo.java";
+        final int lineCount = 6;
+        final String codeFragment = "code\nfragment";
+        final Mark mark1 = createMark("public", filename, 1, lineCount, codeFragment, 2, 3);
+        final Mark mark2 = createMark("stuff", filename, 73, lineCount, codeFragment, 4, 5);
+        final Match match = new Match(75, mark1, mark2);
+        matches.add(match);
+        final Map<String, Integer> numberOfTokensPerFile = new HashMap<>();
+        numberOfTokensPerFile.put(filename, 888);
+        final CPDReport report = new CPDReport(matches, numberOfTokensPerFile);
+        final StringWriter writer = new StringWriter();
+        renderer.render(report, writer);
+        final String xmlOutput = writer.toString();
+        final Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder()
+                .parse(new ByteArrayInputStream(xmlOutput.getBytes(ENCODING)));
+        final NodeList files = doc.getElementsByTagName("file");
+        final Node file = files.item(0);
+        final NamedNodeMap attributes = file.getAttributes();
+        assertEquals("/var/Foo.java", attributes.getNamedItem("path").getNodeValue());
+        assertEquals("888", attributes.getNamedItem("totalNumberOfTokens").getNodeValue());
+    }
+
+    @Test
+    public void testGetDuplicationStartEnd() throws IOException, ParserConfigurationException, SAXException {
+        TokenEntry.clearImages();
+        final CPDReportRenderer renderer = new XMLRenderer();
+        final List<Match> matches = new ArrayList<>();
+        final String filename = "/var/Foo.java";
+        final int lineCount = 6;
+        final String codeFragment = "code\nfragment";
+        final Mark mark1 = createMark("public", filename, 1, lineCount, codeFragment, 2, 3);
+        final Mark mark2 = createMark("stuff", filename, 73, lineCount, codeFragment, 4, 5);
+        final Match match = new Match(75, mark1, mark2);
+        matches.add(match);
+        final Map<String, Integer> numberOfTokensPerFile = new HashMap<>();
+        numberOfTokensPerFile.put(filename, 888);
+        final CPDReport report = new CPDReport(matches, numberOfTokensPerFile);
+        final StringWriter writer = new StringWriter();
+        renderer.render(report, writer);
+        final String xmlOutput = writer.toString();
+        final Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder()
+                .parse(new ByteArrayInputStream(xmlOutput.getBytes(ENCODING)));
+        final NodeList files = doc.getElementsByTagName("file");
+        final Node dup_1 = files.item(1);
+        final NamedNodeMap attrs_1 = dup_1.getAttributes();
+        assertEquals("0", attrs_1.getNamedItem("begintoken").getNodeValue());
+        assertEquals("1", attrs_1.getNamedItem("endtoken").getNodeValue());
+
+        final Node dup_2 = files.item(2);
+        final NamedNodeMap attrs_2 = dup_2.getAttributes();
+        assertEquals("2", attrs_2.getNamedItem("begintoken").getNodeValue());
+        assertEquals("3", attrs_2.getNamedItem("endtoken").getNodeValue());
     }
 
     @Test

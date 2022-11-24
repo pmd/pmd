@@ -738,7 +738,7 @@ public class SomeOtherUserDefinedException extends Exception {
             }
             ]]></code>
     </test-code>
-    <test-code regressionTest="false">
+    <test-code disabled="true">
         <!-- todo reaching definitions analysis -->
         <description>FP with reassigned exception</description>
         <expected-problems>1</expected-problems>
@@ -755,7 +755,7 @@ public class SomeOtherUserDefinedException extends Exception {
             }
             ]]></code>
     </test-code>
-    <test-code regressionTest="false">
+    <test-code disabled="true">
         <!-- todo reaching definitions analysis -->
         <description>FP with reassigned exception (branch)</description>
         <expected-problems>1</expected-problems>
@@ -1080,7 +1080,7 @@ public class SomeOtherUserDefinedException extends Exception {
             ]]></code>
     </test-code>
 
-    <test-code regressionTest="false">
+    <test-code disabled="true">
         <!-- TODO both should have equivalent behavior       -->
         <description>Branch in dataflow should be merged</description>
         <expected-problems>2</expected-problems>

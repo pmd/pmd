@@ -23,7 +23,7 @@
 
         <fileSet>
             <includes>
-                <include>run.sh</include>
+                <include>pmd</include>
             </includes>
             <directory>target/extra-resources/scripts</directory>
             <outputDirectory>bin</outputDirectory>
@@ -54,8 +54,25 @@
     </fileSets>
 
     <dependencySets>
+        <!-- shell completion goes to shell/ -->
         <dependencySet>
             <scope>runtime</scope>
+            <includes>
+                <include>net.sourceforge.pmd:pmd-cli:sh:completion:*</include>
+            </includes>
+            <outputFileNameMapping>pmd-completion.sh</outputFileNameMapping>
+            <outputDirectory>shell</outputDirectory>
+            <directoryMode>0755</directoryMode>
+            <fileMode>0644</fileMode>
+            <useProjectArtifact>false</useProjectArtifact>
+        </dependencySet>
+
+        <!-- jar dependencies go to lib/ -->
+        <dependencySet>
+            <scope>runtime</scope>
+            <excludes>
+                <exclude>net.sourceforge.pmd:pmd-cli:sh:completion:*</exclude>
+            </excludes>
             <outputDirectory>lib</outputDirectory>
             <directoryMode>0755</directoryMode>
             <fileMode>0644</fileMode>

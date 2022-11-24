@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.kotlin.rule.bestpractices;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class FunctionNameTooShortTest extends PmdRuleTst {
+class FunctionNameTooShortTest extends PmdRuleTst {
     // no additional unit tests
 }

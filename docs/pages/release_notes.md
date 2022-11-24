@@ -19,65 +19,80 @@ This is a {{ site.pmd.release_type }} release.
 
 ### New and noteworthy
 
-#### Java 19 Support
+#### Modified rules
 
-This release of PMD brings support for Java 19. There are no new standard language features.
-
-PMD supports [JEP 427: Pattern Matching for switch (Third Preview)](https://openjdk.org/jeps/427) and
-[JEP 405: Record Patterns (Preview)](https://openjdk.org/jeps/405) as preview language features.
-
-In order to analyze a project with PMD that uses these language features,
-you'll need to enable it via the environment variable `PMD_JAVA_OPTS` and select the new language
-version `19-preview`:
-
-    export PMD_JAVA_OPTS=--enable-preview
-    ./run.sh pmd -language java -version 19-preview ...
-
-Note: Support for Java 17 preview language features have been removed. The version "17-preview" is no longer available.
-
-#### Gherkin support
-Thanks to the contribution from [Anne Brouwers](https://github.com/ASBrouwers) PMD now has CPD support
-for the [Gherkin](https://cucumber.io/docs/gherkin/) language. It is used to defined test cases for the
-[Cucumber](https://cucumber.io/) testing tool for behavior-driven development.
-
-Being based on a proper Antlr grammar, CPD can:
-
-* ignore comments
-* honor [comment-based suppressions](pmd_userdocs_cpd.html#suppression)
+* The rule {% rule java/codestyle/ClassNamingConventions %} has a new property `testClassPattern`, which is applied
+  to test classes. By default, test classes should end with the suffix "Test". Test classes are top-level classes, that
+  either inherit from JUnit 3 TestCase or have at least one method annotated with the Test annotations from
+  JUnit4/5 or TestNG.
 
 ### Fixed Issues
+* cli
+    * [#4215](https://github.com/pmd/pmd/discussions/4215): NullPointerException when trying to open designer
+* doc
+    * [#4207](https://github.com/pmd/pmd/pull/4207): \[doc] List all languages in rule doc
 * java
-    * [#4015](https://github.com/pmd/pmd/issues/4015): \[java] Support JDK 19
-* java-bestpractices
-    * [#3455](https://github.com/pmd/pmd/issues/3455): \[java] WhileLoopWithLiteralBoolean - false negative with complex expressions
+    * [#3643](https://github.com/pmd/pmd/issues/3643): \[java] More parser edge cases
+    * [#4152](https://github.com/pmd/pmd/issues/4152): \[java] Parse error on array type annotations
+* java-codestyle
+    * [#2867](https://github.com/pmd/pmd/issues/2867): \[java] Separate pattern for test classes in ClassNamingConventions rule for Java
+    * [#4201](https://github.com/pmd/pmd/issues/4201): \[java] CommentDefaultAccessModifier should consider lombok's @<!-- -->Value
 * java-design
-    * [#3729](https://github.com/pmd/pmd/issues/3729): \[java] TooManyMethods ignores "real" methods which are named like getters or setters
-    * [#3949](https://github.com/pmd/pmd/issues/3949): \[java] FinalFieldCouldBeStatic - false negative with unnecessary parenthesis
-* java-performance
-    * [#3625](https://github.com/pmd/pmd/issues/3625): \[java] AddEmptyString - false negative with empty var
+    * [#4200](https://github.com/pmd/pmd/issues/4200): \[java] ClassWithOnlyPrivateConstructorsShouldBeFinal should consider lombok's @<!-- -->Value
+* java-errorprone
+    * [#4185](https://github.com/pmd/pmd/issues/4185): \[java] InvalidLogMessageFormat rule produces a NPE
 
 ### API Changes
 
+#### PMD CLI
+
+* PMD now supports a new `--use-version` flag, which receives a language-version pair (such as `java-8` or `apex-54`).
+This supersedes the usage of `-language` / `-l` and `-version` / `-v`, allowing for multiple versions to be set in a single run.
+PMD 7 will completely remove support for `-language` and `-version` in favor of this new flag.
+
+* Support for `-V` is being deprecated in favor of `--verbose` in preparation for PMD 7.
+In PMD 7, `-v` will enable verbose mode and `-V` will show the PMD version for consistency with most Unix/Linux tools.
+
+* Support for `-min` is being deprecated in favor of `--minimum-priority` for consistency with most Unix/Linux tools, where `-min` would be equivalent to `-m -i -n`.
+
+#### CPD CLI
+
+* CPD now supports using `-d` or `--dir` as an alias to `--files`, in favor of consistency with PMD.
+PMD 7 will remove support for `--files` in favor of these new flags.
+
+#### Linux run.sh parameters
+
+* Using `run.sh cpdgui` will now warn about it being deprecated. Use `run.sh cpd-gui` instead.
+
+* The old designer (`run.sh designerold`) is completely deprecated and will be removed in PMD 7. Switch to the new JavaFX designer: `run.sh designer`.
+
+* The old visual AST viewer (`run.sh bgastviewer`) is completely deprecated and will be removed in PMD 7. Switch to the new JavaFX designer: `run.sh designer` for a visual tool, or use `run.sh ast-dump` for a text-based aleternative.
+
 #### Deprecated API
 
-* The experimental Java AST class {% jdoc java::lang.java.ast.ASTGuardedPattern %} has been deprecated and
-  will be removed. It was introduced for Java 17 and Java 18 Preview as part of pattern matching for switch,
-  but it is no longer supported with Java 19 Preview.
+The following APIs have been marked as deprecated for removal in PMD 7:
 
-#### Experimental APIs
-
-* To support the Java preview language features "Pattern Matching for Switch" and "Record Patterns", the following
-  AST nodes have been introduced as experimental:
-    * {% jdoc java::lang.java.ast.ASTSwitchGuard %}
-    * {% jdoc java::lang.java.ast.ASTRecordPattern %}
-    * {% jdoc java::lang.java.ast.ASTComponentPatternList %}
+- {% jdoc core::PMD %} and {% jdoc core::PMD.StatusCode %} - PMD 7 will ship with a revamped CLI split from pmd-core. To programatically launch analysis you can use {% jdoc core::PmdAnalysis %}.
+- {% jdoc !!core::PMDConfiguration#getAllInputPaths() %} - It is now superceded by {% jdoc !!core::PMDConfiguration#getInputPathList() %}
+- {% jdoc !!core::PMDConfiguration#setInputPaths(List) %} - It is now superceded by {% jdoc !!core::PMDConfiguration#setInputPathList(List) %}
+- {% jdoc !!core::PMDConfiguration#addInputPath(String) %} - It is now superceded by {% jdoc !!core::PMDConfiguration#addInputPath(Path) %}
+- {% jdoc !!core::PMDConfiguration#getInputFilePath() %} - It is now superceded by {% jdoc !!core::PMDConfiguration#getInputFile() %}
+- {% jdoc !!core::PMDConfiguration#getIgnoreFilePath() %} - It is now superceded by {% jdoc !!core::PMDConfiguration#getIgnoreFile() %}
+- {% jdoc !!core::PMDConfiguration#setInputFilePath(String) %} - It is now superceded by {% jdoc !!core::PMDConfiguration#setInputFilePath(Path) %}
+- {% jdoc !!core::PMDConfiguration#setIgnoreFilePath(String) %} - It is now superceded by {% jdoc !!core::PMDConfiguration#setIgnoreFilePath(Path) %}
+- {% jdoc !!core::PMDConfiguration#getInputUri() %} - It is now superceded by {% jdoc !!core::PMDConfiguration#getUri() %}
+- {% jdoc !!core::PMDConfiguration#setInputUri(String) %} - It is now superceded by {% jdoc !!core::PMDConfiguration#setInputUri(URI) %}
+- {% jdoc !!core::PMDConfiguration#getReportFile() %} - It is now superceded by {% jdoc !!core::PMDConfiguration#getReportFilePath() %}
+- {% jdoc !!core::PMDConfiguration#setReportFile(String) %} - It is now superceded by {% jdoc !!core::PMDConfiguration#setReportFile(Path) %}
+- {% jdoc !!core::PMDConfiguration#isStressTest() %} and {% jdoc !!core::PMDConfiguration#setStressTest(boolean) %} - Will be removed with no replacement.
+- {% jdoc !!core::PMDConfiguration#isBenchmark() %} and {% jdoc !!core::PMDConfiguration#setBenchmark(boolean) %} - Will be removed with no replacement, the CLI will still support it.
+- {% jdoc core::cpd.CPD %} and {% jdoc core::cpd.CPD.StatusCode %} - PMD 7 will ship with a revamped CLI split from pmd-core. An alterative to programatically launch CPD analysis will be added in due time.
 
 ### External Contributions
-* [#3984](https://github.com/pmd/pmd/pull/3984): \[java] Fix AddEmptyString false-negative issue - [@LiGaOg](https://github.com/LiGaOg)
-* [#3988](https://github.com/pmd/pmd/pull/3988): \[java] Modify WhileLoopWithLiteralBoolean to meet the missing case #3455 - [@VoidxHoshi](https://github.com/VoidxHoshi)
-* [#3992](https://github.com/pmd/pmd/pull/3992): \[java] FinalFieldCouldBeStatic - fix false negative with unnecessary parenthesis - [@dalizi007](https://github.com/dalizi007)
-* [#3994](https://github.com/pmd/pmd/pull/3994): \[java] TooManyMethods - improve getter/setter detection (#3729) - [@341816041](https://github.com/341816041)
-* [#4017](https://github.com/pmd/pmd/pull/4017): Add Gherkin support to CPD - [@ASBrouwers](https://github.com/ASBrouwers)
+* [#4184](https://github.com/pmd/pmd/pull/4184): \[java]\[doc] TestClassWithoutTestCases - fix small typo in description - [Valery Yatsynovich](https://github.com/valfirst) (@valfirst)
+* [#4198](https://github.com/pmd/pmd/pull/4198): \[doc] Add supported CPD languages - [Jeroen van Wilgenburg](https://github.com/jvwilge) (@jvwilge)
+* [#4202](https://github.com/pmd/pmd/pull/4202): \[java] Fix #4200 and #4201: ClassWithOnlyPrivateConstructorsShouldBeFinal, CommentDefaultAccessModifier: Exclude lombok @<!-- -->Value annotation - [Lynn](https://github.com/LynnBroe) (@LynnBroe)
+* [#4205](https://github.com/pmd/pmd/pull/4205): \[doc] Clarify Scala support (no built-in rules) - [Eldrick Wega](https://github.com/Eldrick19) (@Eldrick19)
 
 {% endtocmaker %}
 

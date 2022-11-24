@@ -5,14 +5,14 @@
 
 package net.sourceforge.pmd.lang.ecmascript.ast;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.ast.test.BaseParsingHelper;
 import net.sourceforge.pmd.lang.ast.test.BaseTreeDumpTest;
 import net.sourceforge.pmd.lang.ast.test.NodePrintersKt;
 
-public class JsTreeDumpTest extends BaseTreeDumpTest {
-    public JsTreeDumpTest() {
+class JsTreeDumpTest extends BaseTreeDumpTest {
+    JsTreeDumpTest() {
         super(NodePrintersKt.getSimpleNodePrinter(), ".js");
     }
 
@@ -22,27 +22,27 @@ public class JsTreeDumpTest extends BaseTreeDumpTest {
     }
 
     @Test
-    public void simpleJavascriptFile() {
+    void simpleJavascriptFile() {
         doTest("SimpleJavascriptFile");
     }
 
     @Test
-    public void jquerySelector() {
+    void jquerySelector() {
         doTest("jquery-selector");
     }
 
     @Test
-    public void decorators() {
+    void decorators() {
         doTest("decorators");
     }
 
     @Test
-    public void templateStrings() {
+    void templateStrings() {
         doTest("templateStrings");
     }
 
     @Test
-    public void issue3948() {
+    void issue3948() {
         // https://github.com/pmd/pmd/issues/3948
         doTest("issue3948");
     }

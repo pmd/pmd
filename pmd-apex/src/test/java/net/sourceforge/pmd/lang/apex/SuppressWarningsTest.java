@@ -6,11 +6,11 @@ package net.sourceforge.pmd.lang.apex;
 
 import static net.sourceforge.pmd.lang.ast.test.TestUtilsKt.assertSize;
 import static net.sourceforge.pmd.lang.ast.test.TestUtilsKt.assertSuppressed;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report;
@@ -19,7 +19,7 @@ import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.ast.ApexParserTestBase;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 
-public class SuppressWarningsTest extends ApexParserTestBase {
+class SuppressWarningsTest extends ApexParserTestBase {
 
     // This could be a regular xml test
 
@@ -45,7 +45,7 @@ public class SuppressWarningsTest extends ApexParserTestBase {
     }
 
     @Test
-    public void testClassLevelSuppression() {
+    void testClassLevelSuppression() {
         Report rpt = apex.executeRule(new FooRule(), TEST1);
         assertSize(rpt, 0);
         rpt = apex.executeRule(new FooRule(), TEST2);
@@ -53,86 +53,86 @@ public class SuppressWarningsTest extends ApexParserTestBase {
     }
 
     @Test
-    public void testInheritedSuppression() {
+    void testInheritedSuppression() {
         Report rpt = apex.executeRule(new FooRule(), TEST3);
         assertSize(rpt, 0);
     }
 
     @Test
-    public void testMethodLevelSuppression() {
+    void testMethodLevelSuppression() {
         Report rpt = apex.executeRule(new FooRule(), TEST4);
         assertSize(rpt, 1);
     }
 
     @Test
-    public void testConstructorLevelSuppression() {
+    void testConstructorLevelSuppression() {
         Report rpt = apex.executeRule(new FooRule(), TEST5);
         assertSize(rpt, 0);
     }
 
     @Test
-    public void testFieldLevelSuppression() {
+    void testFieldLevelSuppression() {
         Report rpt = apex.executeRule(new FooRule(), TEST6);
         assertSize(rpt, 1);
     }
 
     @Test
-    public void testParameterLevelSuppression() {
+    void testParameterLevelSuppression() {
         Report rpt = apex.executeRule(new FooRule(), TEST7);
         assertSize(rpt, 1);
     }
 
     @Test
-    public void testLocalVariableLevelSuppression() {
+    void testLocalVariableLevelSuppression() {
         Report rpt = apex.executeRule(new FooRule(), TEST8);
         assertSize(rpt, 1);
     }
 
     @Test
-    public void testSpecificSuppression() {
+    void testSpecificSuppression() {
         Report rpt = apex.executeRule(new FooRule(), TEST9);
         assertSize(rpt, 1);
     }
 
     @Test
-    public void testSpecificSuppressionMulitpleValues() {
+    void testSpecificSuppressionMulitpleValues() {
         Report rpt = apex.executeRule(new FooRule(), TEST9_MULTIPLE_VALUES);
         assertSize(rpt, 0);
     }
 
     @Test
-    public void testNoSuppressionBlank() {
+    void testNoSuppressionBlank() {
         Report rpt = apex.executeRule(new FooRule(), TEST10);
         assertSize(rpt, 2);
     }
 
     @Test
-    public void testNoSuppressionSomethingElseS() {
+    void testNoSuppressionSomethingElseS() {
         Report rpt = apex.executeRule(new FooRule(), TEST11);
         assertSize(rpt, 2);
     }
 
     @Test
-    public void testSuppressAll() {
+    void testSuppressAll() {
         Report rpt = apex.executeRule(new FooRule(), TEST12);
         assertSize(rpt, 0);
     }
 
     @Test
-    public void testSpecificSuppressionAtTopLevel() {
+    void testSpecificSuppressionAtTopLevel() {
         Report rpt = apex.executeRule(new BarRule(), TEST13);
         assertSize(rpt, 0);
     }
 
     @Test
-    public void testCommentSuppression() {
+    void testCommentSuppression() {
         Report rpt = apex.executeRule(new FooRule(), TEST14);
         assertSize(rpt, 0);
         assertSuppressed(rpt, 1);
     }
 
     @Test
-    public void testMessageWithCommentSuppression() {
+    void testMessageWithCommentSuppression() {
         Report rpt = apex.executeRule(new FooRule(), TEST15);
         assertSize(rpt, 0);
 

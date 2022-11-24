@@ -4,16 +4,16 @@
 
 package net.sourceforge.pmd.lang.plsql.ast;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.ast.test.BaseParsingHelper;
 import net.sourceforge.pmd.lang.ast.test.BaseTreeDumpTest;
 import net.sourceforge.pmd.lang.ast.test.RelevantAttributePrinter;
 import net.sourceforge.pmd.lang.plsql.PlsqlParsingHelper;
 
-public class ParenthesisGroupTest extends BaseTreeDumpTest {
+class ParenthesisGroupTest extends BaseTreeDumpTest {
 
-    public ParenthesisGroupTest() {
+    ParenthesisGroupTest() {
         super(new RelevantAttributePrinter(), ".pls");
     }
 
@@ -23,17 +23,17 @@ public class ParenthesisGroupTest extends BaseTreeDumpTest {
     }
 
     @Test
-    public void parseParenthesisGroup0() {
+    void parseParenthesisGroup0() {
         doTest("ParenthesisGroup0");
     }
 
     @Test
-    public void parseParenthesisGroup1() {
+    void parseParenthesisGroup1() {
         doTest("ParenthesisGroup1");
     }
 
     @Test
-    public void parseParenthesisGroup2() {
+    void parseParenthesisGroup2() {
         doTest("ParenthesisGroup2");
     }
 

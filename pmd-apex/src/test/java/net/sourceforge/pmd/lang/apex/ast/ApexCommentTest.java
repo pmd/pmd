@@ -4,11 +4,11 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ApexCommentTest extends ApexParserTestBase {
+import org.junit.jupiter.api.Test;
 
+class ApexCommentTest extends ApexParserTestBase {
 
     @Test
     public void testContainsComment1() {
@@ -18,6 +18,6 @@ public class ApexCommentTest extends ApexParserTestBase {
                                           + "}}}");
 
         ASTCatchBlockStatement catchBlock = file.descendants(ASTCatchBlockStatement.class).crossFindBoundaries().firstOrThrow();
-        Assert.assertTrue(catchBlock.getContainsComment());
+        assertTrue(catchBlock.getContainsComment());
     }
 }

@@ -67,10 +67,10 @@ public class Foo {
 
     <test-code>
         <description>Test default report level - report 200</description>
-        <rule-property name="reportLevel">0</rule-property>
+        <rule-property name="reportLevel">1</rule-property>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>The method 'bar()' has an NPath complexity of 200, current threshold is 0</message>
+            <message>The method 'bar()' has an NPath complexity of 200, current threshold is 1</message>
         </expected-messages>
         <code><![CDATA[
 public class Foo {

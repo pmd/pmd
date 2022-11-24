@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.java.rule.codestyle;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class AvoidUsingNativeCodeTest extends PmdRuleTst {
+class AvoidUsingNativeCodeTest extends PmdRuleTst {
     // no additional unit tests
 }

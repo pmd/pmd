@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.perl.cpd;
 
 import java.util.Properties;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.cpd.PerlLanguage;
 import net.sourceforge.pmd.cpd.Tokenizer;
@@ -15,9 +15,9 @@ import net.sourceforge.pmd.cpd.test.CpdTextComparisonTest;
 /**
  *
  */
-public class PerlTokenizerTest extends CpdTextComparisonTest {
+class PerlTokenizerTest extends CpdTextComparisonTest {
 
-    public PerlTokenizerTest() {
+    PerlTokenizerTest() {
         super(".pl");
     }
 
@@ -27,7 +27,7 @@ public class PerlTokenizerTest extends CpdTextComparisonTest {
     }
 
     @Test
-    public void testSample() {
+    void testSample() {
         doTest("sample");
     }
 }

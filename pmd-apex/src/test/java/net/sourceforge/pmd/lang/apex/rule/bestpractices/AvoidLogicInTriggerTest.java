@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.apex.rule.bestpractices;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class AvoidLogicInTriggerTest extends PmdRuleTst {
+class AvoidLogicInTriggerTest extends PmdRuleTst {
     // no additional unit tests
 }

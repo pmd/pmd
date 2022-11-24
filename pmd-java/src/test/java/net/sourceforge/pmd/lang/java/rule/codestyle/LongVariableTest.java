@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.java.rule.codestyle;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class LongVariableTest extends PmdRuleTst {
+class LongVariableTest extends PmdRuleTst {
     // no additional unit tests
 }

@@ -4,37 +4,33 @@
 
 package net.sourceforge.pmd.lang.document;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.junit.jupiter.api.Test;
 
-public class TextRegionTest {
-
-    @Rule
-    public ExpectedException expect = ExpectedException.none();
+class TextRegionTest {
 
     @Test
-    public void testIsEmpty() {
+    void testIsEmpty() {
         TextRegion r = TextRegion.fromOffsetLength(0, 0);
 
         assertTrue(r.isEmpty());
     }
 
     @Test
-    public void testEmptyContains() {
+    void testEmptyContains() {
         TextRegion r1 = TextRegion.fromOffsetLength(0, 0);
 
         assertFalse(r1.contains(0));
     }
 
     @Test
-    public void testContains() {
+    void testContains() {
         TextRegion r1 = TextRegion.fromOffsetLength(1, 2);
 
         assertFalse(r1.contains(0));
@@ -44,7 +40,7 @@ public class TextRegionTest {
     }
 
     @Test
-    public void testIntersectZeroLen() {
+    void testIntersectZeroLen() {
         // r1: [[-----
         // r2: [ -----[
         TextRegion r1 = TextRegion.fromOffsetLength(0, 0);
@@ -56,7 +52,7 @@ public class TextRegionTest {
     }
 
     @Test
-    public void testIntersectZeroLen2() {
+    void testIntersectZeroLen2() {
         // r1:  -----[[
         // r2: [-----[
         TextRegion r1 = TextRegion.fromOffsetLength(5, 0);
@@ -68,7 +64,7 @@ public class TextRegionTest {
     }
 
     @Test
-    public void testIntersectZeroLen3() {
+    void testIntersectZeroLen3() {
         // r1:  -- -[---[
         // r2:  --[-[---
         TextRegion r1 = TextRegion.fromOffsetLength(3, 3);
@@ -82,7 +78,7 @@ public class TextRegionTest {
 
 
     @Test
-    public void testIntersectZeroLen4() {
+    void testIntersectZeroLen4() {
         TextRegion r1 = TextRegion.fromOffsetLength(0, 0);
 
         TextRegion inter = doIntersect(r1, r1);
@@ -91,7 +87,7 @@ public class TextRegionTest {
     }
 
     @Test
-    public void testNonEmptyIntersect() {
+    void testNonEmptyIntersect() {
         // r1:  ---[-- --[
         // r2: [--- --[--
         // i:   ---[--[--
@@ -104,7 +100,7 @@ public class TextRegionTest {
     }
 
     @Test
-    public void testIntersectContained() {
+    void testIntersectContained() {
         // r1:  --[- - ---[
         // r2:  -- -[-[---
         // i:   -- -[-[---
@@ -117,7 +113,7 @@ public class TextRegionTest {
     }
 
     @Test
-    public void testIntersectDisjoint() {
+    void testIntersectDisjoint() {
         // r1:  -- -[---[
         // r2:  --[-[---
         TextRegion r1 = TextRegion.fromOffsetLength(4, 3);
@@ -127,7 +123,7 @@ public class TextRegionTest {
     }
 
     @Test
-    public void testOverlapContained() {
+    void testOverlapContained() {
         // r1:  --[- - ---[
         // r2:  -- -[-[---
         // i:   -- -[-[---
@@ -138,7 +134,7 @@ public class TextRegionTest {
     }
 
     @Test
-    public void testOverlapDisjoint() {
+    void testOverlapDisjoint() {
         // r1:  -- -[---[
         // r2:  --[-[---
         TextRegion r1 = TextRegion.fromOffsetLength(4, 3);
@@ -149,7 +145,7 @@ public class TextRegionTest {
 
 
     @Test
-    public void testOverlapBoundary() {
+    void testOverlapBoundary() {
         // r1:  -- -[---[
         // r2:  --[-[---
         TextRegion r1 = TextRegion.fromOffsetLength(3, 3);
@@ -159,7 +155,7 @@ public class TextRegionTest {
     }
 
     @Test
-    public void testCompare() {
+    void testCompare() {
         // r1:  --[-[---
         // r2:  -- -[---[
         TextRegion r1 = TextRegion.fromOffsetLength(2, 1);
@@ -169,7 +165,7 @@ public class TextRegionTest {
     }
 
     @Test
-    public void testCompareSameOffset() {
+    void testCompareSameOffset() {
         // r1:  [-[--
         // r2:  [- --[
         TextRegion r1 = TextRegion.fromOffsetLength(0, 1);
@@ -180,7 +176,7 @@ public class TextRegionTest {
 
 
     @Test
-    public void testUnion() {
+    void testUnion() {
         // r1:  --[-[---
         // r2:  -- -[---[
         TextRegion r1 = TextRegion.fromOffsetLength(2, 1);
@@ -192,7 +188,7 @@ public class TextRegionTest {
     }
 
     @Test
-    public void testUnionDisjoint() {
+    void testUnionDisjoint() {
         // r1:  --[-[- ---
         // r2:  -- ---[---[
         TextRegion r1 = TextRegion.fromOffsetLength(2, 1);
@@ -204,7 +200,7 @@ public class TextRegionTest {
     }
 
     @Test
-    public void testGrowLeft() {
+    void testGrowLeft() {
         // r1:   --[-[-
         // r2:  [-- -[-
         TextRegion r1 = TextRegion.fromOffsetLength(2, 1);
@@ -215,7 +211,7 @@ public class TextRegionTest {
     }
 
     @Test
-    public void testGrowLeftNegative() {
+    void testGrowLeftNegative() {
         // r1:  --[- [-
         // r2:  -- -[[-
         TextRegion r1 = TextRegion.fromOffsetLength(2, 1);
@@ -226,16 +222,15 @@ public class TextRegionTest {
     }
 
     @Test
-    public void testGrowLeftOutOfBounds() {
+    void testGrowLeftOutOfBounds() {
         // r1:  --[-[-
         TextRegion r1 = TextRegion.fromOffsetLength(2, 1);
 
-        expect.expect(AssertionError.class);
-        r1.growLeft(4);
+        assertThrows(AssertionError.class, () -> r1.growLeft(4));
     }
 
     @Test
-    public void testGrowRight() {
+    void testGrowRight() {
         // r1:  --[-[-
         // r2:  --[- -[
         TextRegion r1 = TextRegion.fromOffsetLength(2, 1);
@@ -246,7 +241,7 @@ public class TextRegionTest {
     }
 
     @Test
-    public void testGrowRightNegative() {
+    void testGrowRightNegative() {
         // r1:  --[ -[-
         // r2:  --[[- -
         TextRegion r1 = TextRegion.fromOffsetLength(2, 1);
@@ -257,39 +252,38 @@ public class TextRegionTest {
     }
 
     @Test
-    public void testGrowRightOutOfBounds() {
+    void testGrowRightOutOfBounds() {
         // r1:  --[-[-
         TextRegion r1 = TextRegion.fromOffsetLength(2, 1);
 
-        expect.expect(AssertionError.class);
-        r1.growRight(-2);
+        assertThrows(AssertionError.class, () -> r1.growRight(-2));
     }
 
 
-    public void assertRegionEquals(TextRegion region, int start, int len) {
-        assertEquals("Start offset", start, region.getStartOffset());
-        assertEquals("Length", len, region.getLength());
+    private static void assertRegionEquals(TextRegion region, int start, int len) {
+        assertEquals(start, region.getStartOffset(), "Start offset");
+        assertEquals(len, region.getLength(), "Length");
     }
 
-    public void assertIsBefore(TextRegion r1, TextRegion r2) {
-        assertTrue("Region " + r1 + " should be before " + r2, r1.compareTo(r2) < 0);
-        assertTrue("Region " + r2 + " should be after " + r1, r2.compareTo(r1) > 0);
+    private static void assertIsBefore(TextRegion r1, TextRegion r2) {
+        assertTrue(r1.compareTo(r2) < 0, "Region " + r1 + " should be before " + r2);
+        assertTrue(r2.compareTo(r1) > 0, "Region " + r2 + " should be after " + r1);
     }
 
-    private void assertNoOverlap(TextRegion r1, TextRegion r2) {
-        assertFalse("Regions " + r1 + " and " + r2 + " should not overlap", r1.overlaps(r2));
+    private static void assertNoOverlap(TextRegion r1, TextRegion r2) {
+        assertFalse(r1.overlaps(r2), "Regions " + r1 + " and " + r2 + " should not overlap");
     }
 
-    private void assertOverlap(TextRegion r1, TextRegion r2) {
-        assertTrue("Regions " + r1 + " and " + r2 + " should overlap", r1.overlaps(r2));
+    private static void assertOverlap(TextRegion r1, TextRegion r2) {
+        assertTrue(r1.overlaps(r2), "Regions " + r1 + " and " + r2 + " should overlap");
     }
 
 
     private TextRegion doIntersect(TextRegion r1, TextRegion r2) {
         TextRegion inter = TextRegion.intersect(r1, r2);
-        assertNotNull("Intersection of " + r1 + " and " + r2 + " must exist", inter);
+        assertNotNull(inter, "Intersection of " + r1 + " and " + r2 + " must exist");
         TextRegion symmetric = TextRegion.intersect(r2, r1);
-        assertEquals("Intersection of " + r1 + " and " + r2 + " must be symmetric", inter, symmetric);
+        assertEquals(inter, symmetric, "Intersection of " + r1 + " and " + r2 + " must be symmetric");
 
         return inter;
     }
@@ -297,20 +291,20 @@ public class TextRegionTest {
     private TextRegion doUnion(TextRegion r1, TextRegion r2) {
         TextRegion union = TextRegion.union(r1, r2);
 
-        assertTrue("Union of " + r1 + " and " + r2 + " must contain first region", union.contains(r1));
-        assertTrue("Union of " + r1 + " and " + r2 + " must contain second region", union.contains(r2));
+        assertTrue(union.contains(r1), "Union of " + r1 + " and " + r2 + " must contain first region");
+        assertTrue(union.contains(r2), "Union of " + r1 + " and " + r2 + " must contain second region");
 
         TextRegion symmetric = TextRegion.union(r2, r1);
-        assertEquals("Union of " + r1 + " and " + r2 + " must be symmetric", union, symmetric);
+        assertEquals(union, symmetric, "Union of " + r1 + " and " + r2 + " must be symmetric");
 
         return union;
     }
 
     private void noIntersect(TextRegion r1, TextRegion r2) {
         TextRegion inter = TextRegion.intersect(r1, r2);
-        assertNull("Intersection of " + r1 + " and " + r2 + " must not exist", inter);
+        assertNull(inter, "Intersection of " + r1 + " and " + r2 + " must not exist");
         TextRegion symmetric = TextRegion.intersect(r2, r1);
-        assertEquals("Intersection of " + r1 + " and " + r2 + " must be symmetric", inter, symmetric);
+        assertEquals(inter, symmetric, "Intersection of " + r1 + " and " + r2 + " must be symmetric");
     }
 
 }

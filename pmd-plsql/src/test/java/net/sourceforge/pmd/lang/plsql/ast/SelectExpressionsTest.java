@@ -4,41 +4,43 @@
 
 package net.sourceforge.pmd.lang.plsql.ast;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import java.util.List;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.plsql.AbstractPLSQLParserTst;
 
-public class SelectExpressionsTest extends AbstractPLSQLParserTst {
+class SelectExpressionsTest extends AbstractPLSQLParserTst {
 
     @Test
-    public void parseSelectExpression() {
+    void parseSelectExpression() {
         plsql.parseResource("SelectExpressions.pls");
     }
 
     @Test
-    public void parseSelectSimpleExpression() {
+    void parseSelectSimpleExpression() {
         ASTInput input = plsql.parseResource("SelectSimpleExpression.pls");
-        Assert.assertNotNull(input);
+        assertNotNull(input);
 
         List<ASTSimpleExpression> simpleExpressions = input.findDescendantsOfType(ASTSimpleExpression.class);
-        Assert.assertEquals(1, simpleExpressions.size());
+        assertEquals(1, simpleExpressions.size());
         ASTSimpleExpression exp = simpleExpressions.get(0);
-        Assert.assertEquals("e.first_name", exp.getImage());
-        Assert.assertEquals(2, exp.getNumChildren());
-        Assert.assertEquals(ASTTableName.class, exp.getChild(0).getClass());
-        Assert.assertEquals(ASTColumn.class, exp.getChild(1).getClass());
+        assertEquals("e.first_name", exp.getImage());
+        assertEquals(2, exp.getNumChildren());
+        assertEquals(ASTTableName.class, exp.getChild(0).getClass());
+        assertEquals(ASTColumn.class, exp.getChild(1).getClass());
     }
 
     @Test
-    public void parseSelectCount() {
+    void parseSelectCount() {
         plsql.parseResource("SelectCount.pls");
     }
 
     @Test
-    public void parseSelectSubqueryExpression() {
+    void parseSelectSubqueryExpression() {
         plsql.parseResource("SelectSubqueryExpressions.pls");
     }
 }

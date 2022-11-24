@@ -4,8 +4,8 @@
 
 package net.sourceforge.pmd.lang.vf.ast;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.nio.file.Path;
 import java.util.Hashtable;
@@ -13,17 +13,17 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.tuple.Pair;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.vf.VFTestUtils;
 
 import apex.jorje.semantic.symbol.type.BasicType;
 
-public class ApexClassPropertyTypesVisitorTest {
+class ApexClassPropertyTypesVisitorTest {
 
     @Test
     @SuppressWarnings("PMD.CloseResource")
-    public void testApexClassIsProperlyParsed() {
+    void testApexClassIsProperlyParsed() {
         Path apexPath = VFTestUtils.getMetadataPath(this, VFTestUtils.MetadataFormat.SFDX, VFTestUtils.MetadataType.Apex)
                                    .resolve("ApexController.cls")
                                    .toAbsolutePath();
@@ -37,7 +37,7 @@ public class ApexClassPropertyTypesVisitorTest {
         for (Pair<String, BasicType> variable : variables) {
             // Map the values and ensure there were no duplicates
             BasicType previous = variableNameToVariableType.put(variable.getKey(), variable.getValue());
-            assertNull(variable.getKey(), previous);
+            assertNull(previous, variable.getKey());
         }
 
         assertEquals(BasicType.ID, variableNameToVariableType.get("ApexController.AccountIdProp"));

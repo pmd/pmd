@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data xmlns="http://pmd.sourceforge.net/rule-tests" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+   <test-code>
+      <description>Problematic apex unit test - no runAs calls</description>
+      <expected-problems>1</expected-problems>
+      <code>
+         <![CDATA[
+@isTest
+private class TestRunAs {
+
+   public static testMethod void testNoRunAs() {
+
+      Profile p = [SELECT Id FROM Profile WHERE Name='Standard User'];
+      User u2 = new User(Alias = 'newUser', Email='newuser@testorg.com',
+         EmailEncodingKey='UTF-8', LastName='Testing', LanguageLocaleKey='en_US',
+         LocaleSidKey='en_US', ProfileId = p.Id,
+         TimeZoneSidKey='America/Los_Angeles', UserName='newuser@testorg.com');
+      System.debug('Current User: ' + UserInfo.getUserName());
+   }
+}
+        ]]>
+      </code>
+   </test-code>
+
+   <test-code>
+      <description>ApexUnitTestClassShouldHaveRunAs assumes APEX is case sensitive</description>
+      <expected-problems>0</expected-problems>
+      <code>
+         <![CDATA[
+@isTest
+private class TestRunAs {
+
+   @isTest
+   static void testIgnoreCase() {
+
+      Profile p = [SELECT Id FROM Profile WHERE Name='Standard User'];
+      User usr = new User(Alias = 'newUser', Email='newuser@testorg.com',
+         EmailEncodingKey='UTF-8', LastName='Testing', LanguageLocaleKey='en_US',
+         LocaleSidKey='en_US', ProfileId = p.Id,
+         TimeZoneSidKey='America/Los_Angeles', UserName='newuser@testorg.com');
+
+      SYSTEM.runAs(usr) {
+         System.debug('Current User: ' + UserInfo.getUserName());
+      }
+   }
+}
+     ]]>
+      </code>
+   </test-code>
+
+   <test-code>
+      <description>ApexUnitTestClassShouldHaveRunAs normal test case</description>
+      <expected-problems>0</expected-problems>
+      <code>
+         <![CDATA[
+@isTest
+private class TestRunAs {
+
+   public static testMethod void testIgnoreCase() {
+
+      Profile p = [SELECT Id FROM Profile WHERE Name='Standard User'];
+      User usr = new User(Alias = 'newUser', Email='newuser@testorg.com',
+         EmailEncodingKey='UTF-8', LastName='Testing', LanguageLocaleKey='en_US',
+         LocaleSidKey='en_US', ProfileId = p.Id,
+         TimeZoneSidKey='America/Los_Angeles', UserName='newuser@testorg.com');
+
+      System.runAs(usr) {
+         System.debug('Current User: ' + UserInfo.getUserName());
+      }
+   }
+}
+        ]]>
+      </code>
+   </test-code>
+
+   <test-code>
+      <description>ApexUnitTestClassShouldHaveRunAs: Verify use of custom class, negative test</description>
+      <expected-problems>2</expected-problems>
+      <expected-linenumbers>3,7</expected-linenumbers>
+      <code>
+         <![CDATA[
+@isTest
+public class RunAs {
+   public static testMethod void testRunAs() {
+      MyRunAs.runAs(someUser);
+   }
+
+   public static testMethod void testLocalVerify() {
+      verifyState();
+   }
+
+   private static void verifyState() {
+   }
+}
+        ]]>
+      </code>
+   </test-code>
+
+   <test-code>
+      <description>ApexUnitTestClassShouldHaveRunAs  - no runAs calls outside a test class</description>
+      <expected-problems>0</expected-problems>
+      <code>
+         <![CDATA[
+
+private class RunAs {
+
+ public static void noRunAs() {
+
+    Profile p = [SELECT Id FROM Profile WHERE Name='Standard User'];
+    User u2 = new User(Alias = 'newUser', Email='newuser@testorg.com',
+       EmailEncodingKey='UTF-8', LastName='Testing', LanguageLocaleKey='en_US',
+       LocaleSidKey='en_US', ProfileId = p.Id,
+       TimeZoneSidKey='America/Los_Angeles', UserName='newuser@testorg.com');
+    System.debug('Current User: ' + UserInfo.getUserName());
+ }
+}
+      ]]>
+      </code>
+   </test-code>
+</test-data>

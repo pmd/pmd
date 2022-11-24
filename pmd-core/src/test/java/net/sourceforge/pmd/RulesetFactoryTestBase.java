@@ -5,7 +5,7 @@
 package net.sourceforge.pmd;
 
 import static net.sourceforge.pmd.util.CollectionUtil.buildMap;
-import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.argThat;
 import static org.mockito.Mockito.eq;
@@ -32,12 +32,12 @@ import net.sourceforge.pmd.util.internal.xml.SchemaConstants;
 import net.sourceforge.pmd.util.log.MessageReporter;
 import net.sourceforge.pmd.util.log.internal.SimpleMessageReporter;
 
-public class RulesetFactoryTestBase {
+class RulesetFactoryTestBase {
 
     protected MessageReporter mockReporter;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         SimpleMessageReporter reporter = new SimpleMessageReporter(LoggerFactory.getLogger(RulesetFactoryTestBase.class));
         mockReporter = spy(reporter);
     }
@@ -83,8 +83,7 @@ public class RulesetFactoryTestBase {
 
 
     protected RuleSet loadRuleSetInDir(String resourceDir, String ruleSetFilename) {
-        RuleSetLoader loader = new RuleSetLoader();
-        loader.setReporter(mockReporter);
+        RuleSetLoader loader = new RuleSetLoader().withReporter(mockReporter);
         return loader.loadFromResource(resourceDir + "/" + ruleSetFilename);
     }
 
@@ -99,8 +98,7 @@ public class RulesetFactoryTestBase {
     }
 
     protected RuleSet loadRuleSet(String fileName, String ruleSetXml) {
-        RuleSetLoader loader = new RuleSetLoader();
-        loader.setReporter(mockReporter);
+        RuleSetLoader loader = new RuleSetLoader().withReporter(mockReporter);
         return loader.loadFromString(fileName, ruleSetXml);
     }
 

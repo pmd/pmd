@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.ecmascript.rule.codestyle;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class ForLoopsMustUseBracesTest extends PmdRuleTst {
+class ForLoopsMustUseBracesTest extends PmdRuleTst {
     // no additional unit tests
 }

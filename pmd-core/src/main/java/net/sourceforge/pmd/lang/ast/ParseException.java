@@ -40,11 +40,6 @@ public class ParseException extends FileAnalysisException {
         this.currentToken = null;
     }
 
-    public ParseException(String message, Throwable cause) {
-        super(message, cause);
-        this.currentToken = null;
-    }
-
     public ParseException(String message, JavaccToken token) {
         super(message);
         this.currentToken = token;
@@ -57,6 +52,11 @@ public class ParseException extends FileAnalysisException {
                           int[][] expectedTokenSequencesVal) {
         super(makeMessage(currentTokenVal, expectedTokenSequencesVal));
         currentToken = currentTokenVal;
+    }
+
+    @Override
+    protected String errorKind() {
+        return "Parse exception";
     }
 
     /**

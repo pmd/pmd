@@ -9,7 +9,6 @@ import java.util.Collection;
 
 import org.junit.runners.Parameterized.Parameters;
 
-import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.pom.PomLanguageModule;
 import net.sourceforge.pmd.lang.wsdl.WsdlLanguageModule;
@@ -26,12 +25,12 @@ public class LanguageVersionTest extends AbstractLanguageVersionTest {
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
             { XmlLanguageModule.NAME, XmlLanguageModule.TERSE_NAME, "",
-                LanguageRegistry.getLanguage(XmlLanguageModule.NAME).getDefaultVersion(), },
+                getLanguage(XmlLanguageModule.NAME).getDefaultVersion(), },
             { XslLanguageModule.NAME, XslLanguageModule.TERSE_NAME, "",
-                LanguageRegistry.getLanguage(XslLanguageModule.NAME).getDefaultVersion(), },
+                getLanguage(XslLanguageModule.NAME).getDefaultVersion(), },
             { WsdlLanguageModule.NAME, WsdlLanguageModule.TERSE_NAME, "",
-                LanguageRegistry.getLanguage(WsdlLanguageModule.NAME).getDefaultVersion(), },
+                getLanguage(WsdlLanguageModule.NAME).getDefaultVersion(), },
             { PomLanguageModule.NAME, PomLanguageModule.TERSE_NAME, "",
-                LanguageRegistry.getLanguage(PomLanguageModule.NAME).getDefaultVersion(), }, });
+                getLanguage(PomLanguageModule.NAME).getDefaultVersion(), }, });
     }
 }

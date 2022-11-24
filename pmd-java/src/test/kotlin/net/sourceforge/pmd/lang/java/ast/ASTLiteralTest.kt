@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.ast
 
+import io.kotest.matchers.shouldBe
 import net.sourceforge.pmd.lang.ast.test.NodeSpec
 import net.sourceforge.pmd.lang.ast.test.ValuedNodeSpec
 import net.sourceforge.pmd.lang.ast.test.shouldBe
@@ -166,12 +167,12 @@ $delim
                 }
             }
 
-            // todo fixed in followup branch
-            // "\"abc\\u1234abc\"" should parseAs {
-            //     stringLit("\"abc\\u1234abc\"") {
-            //         it::getConstValue shouldBe "abc\u1234abc"
-            //     }
-            // }
+            "\"abc\\u1234abc\"" should parseAs {
+                stringLit("\"abc\u1234abc\"") {
+                    it::getConstValue shouldBe "abc\u1234abc"
+                    it.originalText.toString() shouldBe "\"abc\\u1234abc\""
+                }
+            }
 
             "\"abcüabc\"" should parseAs {
                 stringLit("\"abcüabc\"") {

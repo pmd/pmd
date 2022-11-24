@@ -45,7 +45,7 @@ public class Foo {
     </test-code>
 
     <!-- TODO Once this is implemented, perhaps it should be optional? The compiler will technically let you use varargs. -->
-    <test-code regressionTest="false">
+    <test-code disabled="true">
         <description>method, do not varargs as the signature is dictated by an interface</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[

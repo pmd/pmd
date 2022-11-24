@@ -650,6 +650,7 @@ public class RuleSet implements ChecksumAware {
     public static boolean applies(Rule rule, LanguageVersion languageVersion) {
         final LanguageVersion min = rule.getMinimumLanguageVersion();
         final LanguageVersion max = rule.getMaximumLanguageVersion();
+        Objects.requireNonNull(rule.getLanguage(), "Rule has no language " + rule);
         return rule.getLanguage().equals(languageVersion.getLanguage())
                 && (min == null || min.compareTo(languageVersion) <= 0)
                 && (max == null || max.compareTo(languageVersion) >= 0);

@@ -4,17 +4,17 @@
 
 package net.sourceforge.pmd.docs;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class EscapeUtilsTest {
+class EscapeUtilsTest {
 
     @Test
-    public void testEscapeMarkdown() {
+    void testEscapeMarkdown() {
         assertEquals("This is a \\\\backslash", EscapeUtils.escapeMarkdown("This is a \\backslash"));
         assertEquals("This \"\\*\" is not a emphasis", EscapeUtils.escapeMarkdown("This \"*\" is not a emphasis"));
         assertEquals("This \"\\*\\*\" is not a strong style", EscapeUtils.escapeMarkdown("This \"**\" is not a strong style"));
@@ -25,7 +25,7 @@ public class EscapeUtilsTest {
     }
 
     @Test
-    public void testEscapeHtmlWithinMarkdownSingleLine() {
+    void testEscapeHtmlWithinMarkdownSingleLine() {
         assertEquals("a &lt;script&gt; tag outside of `<script>` backticks should be escaped",
                 EscapeUtils.escapeSingleLine("a <script> tag outside of `<script>` backticks should be escaped"));
         assertEquals("a &lt;script&gt; &quot;tag&quot; outside of `<script>` backticks should be escaped &lt;multiple&gt; times `<strong>`.",
@@ -45,7 +45,7 @@ public class EscapeUtilsTest {
     }
 
     @Test
-    public void testEscapeHtmlWithinMarkdownBlocks() {
+    void testEscapeHtmlWithinMarkdownBlocks() {
         String text = "paragraph\n\n> quote <script>\n> quote line \"2\"\n>quote line `<script>` 3\n\n"
                 + "next paragraph\n\n    code <script> \"a < b\"\n    code line 2\n\n"
                 + "next paragraph\n\n```\ncode <script> \"a < b\"\ncode line 2\n```\n\n"
