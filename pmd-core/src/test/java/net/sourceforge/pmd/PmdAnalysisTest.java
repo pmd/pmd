@@ -88,7 +88,7 @@ public class PmdAnalysisTest {
     }
 
     @Test
-    public void testParseException() {
+    void testParseException() {
         PMDConfiguration config = new PMDConfiguration();
         config.setThreads(1);
         config.setForceLanguageVersion(DummyLanguageModule.getInstance().getVersionWhereParserThrows());
@@ -103,7 +103,7 @@ public class PmdAnalysisTest {
     }
 
     @Test
-    public void testRuleFailureDuringInitialization() {
+    void testRuleFailureDuringInitialization() {
         PMDConfiguration config = new PMDConfiguration();
         config.setThreads(1);
         MessageReporter mockReporter = spy(NoopReporter.class);
@@ -130,7 +130,7 @@ public class PmdAnalysisTest {
     }
 
     @Test
-    public void testFileWithSpecificLanguage() {
+    void testFileWithSpecificLanguage() {
         final Language language = Dummy2LanguageModule.getInstance();
         PMDConfiguration config = new PMDConfiguration();
         config.setIgnoreIncrementalAnalysis(true);
@@ -149,7 +149,7 @@ public class PmdAnalysisTest {
     }
 
     @Test
-    public void testTextFileWithSpecificLanguage() {
+    void testTextFileWithSpecificLanguage() {
         final Language language = Dummy2LanguageModule.getInstance();
         PMDConfiguration config = new PMDConfiguration();
         config.setIgnoreIncrementalAnalysis(true);

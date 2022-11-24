@@ -4,17 +4,17 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 
-public class Java8Test {
+class Java8Test {
     private final JavaParsingHelper java8 =
             JavaParsingHelper.DEFAULT.withDefaultVersion("8")
                                      .withResourceContext(Java8Test.class);
 
     @Test
-    public void interfaceMethodShouldBeParseable() {
+    void interfaceMethodShouldBeParseable() {
         java8.parse("interface WithStaticAndDefaultMethod {\n"
                         + "        static void performOn() {\n"
                         + "        }\n"
@@ -25,7 +25,7 @@ public class Java8Test {
     }
 
     @Test
-    public void repeatableAnnotationsMethodShouldBeParseable() {
+    void repeatableAnnotationsMethodShouldBeParseable() {
         java8.parse("@Multitude(\"1\")\n"
                         + "@Multitude(\"2\")\n"
                         + "@Multitude(\"3\")\n"

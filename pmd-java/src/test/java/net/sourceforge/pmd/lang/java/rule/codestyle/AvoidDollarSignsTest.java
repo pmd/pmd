@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.java.rule.codestyle;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class AvoidDollarSignsTest extends PmdRuleTst {
+class AvoidDollarSignsTest extends PmdRuleTst {
     // no additional unit tests
 }

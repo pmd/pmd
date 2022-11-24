@@ -4,20 +4,17 @@
 
 package net.sourceforge.pmd.lang.swift.ast;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-/**
- *
- */
-public class SwiftParserTests extends BaseSwiftTreeDumpTest {
+class SwiftParserTests extends BaseSwiftTreeDumpTest {
 
     @Test
-    public void testSimpleSwift() {
+    void testSimpleSwift() {
         doTest("Simple");
     }
 
     @Test
-    public void testBtree() {
+    void testBtree() {
         doTest("BTree");
     }
 

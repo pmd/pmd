@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.vf.ast;
 
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -13,14 +13,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.LanguageProcessorRegistry;
 import net.sourceforge.pmd.lang.vf.DataType;
 import net.sourceforge.pmd.lang.vf.VFTestUtils;
 import net.sourceforge.pmd.lang.vf.VfLanguageProperties;
 
-public class ApexClassPropertyTypesTest {
+class ApexClassPropertyTypesTest {
     private static final Map<String, DataType> EXPECTED_DATA_TYPES;
 
     static {
@@ -53,7 +53,7 @@ public class ApexClassPropertyTypesTest {
     }
 
     @Test
-    public void testApexClassIsProperlyParsed() {
+    void testApexClassIsProperlyParsed() {
         Path vfPagePath = VFTestUtils.getMetadataPath(this, VFTestUtils.MetadataFormat.SFDX, VFTestUtils.MetadataType.Vf)
                                      .resolve("SomePage.page");
         try (LanguageProcessorRegistry lpReg = VFTestUtils.fakeLpRegistry()) {
@@ -65,7 +65,7 @@ public class ApexClassPropertyTypesTest {
     }
 
     @Test
-    public void testInvalidDirectoryDoesNotCauseAnException() {
+    void testInvalidDirectoryDoesNotCauseAnException() {
         Path vfPagePath = VFTestUtils.getMetadataPath(this, VFTestUtils.MetadataFormat.SFDX, VFTestUtils.MetadataType.Vf)
                 .resolve("SomePage.page");
         String vfFileName = vfPagePath.toString();

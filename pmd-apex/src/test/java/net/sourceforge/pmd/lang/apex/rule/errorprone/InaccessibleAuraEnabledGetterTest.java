@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.apex.rule.errorprone;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class InaccessibleAuraEnabledGetterTest extends PmdRuleTst {
+class InaccessibleAuraEnabledGetterTest extends PmdRuleTst {
     // no additional unit tests
 }

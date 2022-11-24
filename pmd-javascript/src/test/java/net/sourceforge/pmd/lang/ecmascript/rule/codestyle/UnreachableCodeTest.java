@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.ecmascript.rule.codestyle;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class UnreachableCodeTest extends PmdRuleTst {
+class UnreachableCodeTest extends PmdRuleTst {
     // no additional unit tests
 }

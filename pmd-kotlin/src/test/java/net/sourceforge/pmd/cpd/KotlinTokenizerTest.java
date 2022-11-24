@@ -6,13 +6,13 @@ package net.sourceforge.pmd.cpd;
 
 import java.util.Properties;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.cpd.test.CpdTextComparisonTest;
 
-public class KotlinTokenizerTest extends CpdTextComparisonTest {
+class KotlinTokenizerTest extends CpdTextComparisonTest {
 
-    public KotlinTokenizerTest() {
+    KotlinTokenizerTest() {
         super(".kt");
     }
 
@@ -27,22 +27,22 @@ public class KotlinTokenizerTest extends CpdTextComparisonTest {
     }
 
     @Test
-    public void testComments() {
+    void testComments() {
         doTest("comment");
     }
 
     @Test
-    public void testIncrement() {
+    void testIncrement() {
         doTest("increment");
     }
 
     @Test
-    public void testImportsIgnored() {
+    void testImportsIgnored() {
         doTest("imports");
     }
 
     @Test
-    public void testTabWidth() {
+    void testTabWidth() {
         doTest("tabWidth");
     }
 }

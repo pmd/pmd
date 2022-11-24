@@ -4,13 +4,13 @@
 
 package net.sourceforge.pmd.lang.java.rule;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.HashMap;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report;
@@ -32,14 +32,14 @@ import net.sourceforge.pmd.properties.PropertyFactory;
 /**
  * @author daniels
  */
-public class XPathRuleTest {
+class XPathRuleTest {
 
     private XPathRule makeXPath(String expression) {
         return JavaParsingHelper.DEFAULT.newXpathRule(expression);
     }
 
     @Test
-    public void testPluginname() {
+    void testPluginname() {
         XPathRule rule = makeXPath("//VariableDeclaratorId[string-length(@Name) < 3]");
         rule.setMessage("{0}");
         Report report = getReportForTestString(rule, TEST1);
@@ -49,7 +49,7 @@ public class XPathRuleTest {
 
 
     @Test
-    public void testXPathMultiProperty() throws Exception {
+    void testXPathMultiProperty() throws Exception {
         XPathRule rule = makeXPath("//VariableDeclaratorId[@Name=$forbiddenNames]");
         rule.setMessage("Avoid vars");
         PropertyDescriptor<List<String>> varDescriptor
@@ -67,7 +67,7 @@ public class XPathRuleTest {
 
 
     @Test
-    public void testVariables() throws Exception {
+    void testVariables() throws Exception {
         XPathRule rule = makeXPath("//VariableDeclaratorId[@Name=$var]");
         rule.setMessage("Avoid vars");
         PropertyDescriptor<String> varDescriptor =
@@ -80,7 +80,7 @@ public class XPathRuleTest {
     }
 
     @Test
-    public void testFnPrefixOnSaxon() throws Exception {
+    void testFnPrefixOnSaxon() throws Exception {
         XPathRule rule = makeXPath("//VariableDeclaratorId[fn:matches(@Name, 'fiddle')]");
         Report report = getReportForTestString(rule, TEST2);
         RuleViolation rv = report.getViolations().get(0);
@@ -88,7 +88,7 @@ public class XPathRuleTest {
     }
 
     @Test
-    public void testNoFnPrefixOnSaxon() {
+    void testNoFnPrefixOnSaxon() {
         XPathRule rule = makeXPath("//VariableDeclaratorId[matches(@Name, 'fiddle')]");
         Report report = getReportForTestString(rule, TEST2);
         RuleViolation rv = report.getViolations().get(0);
@@ -96,13 +96,13 @@ public class XPathRuleTest {
     }
 
     @Test
-    public void testSimpleQueryIsRuleChain() {
+    void testSimpleQueryIsRuleChain() {
         // ((/)/descendant::element(Q{}VariableDeclaratorId))[matches(convertUntyped(data(@Name)), "fiddle", "")]
         assertIsRuleChain("//VariableDeclaratorId[matches(@Name, 'fiddle')]");
     }
 
     @Test
-    public void testSimpleQueryIsRuleChain2() {
+    void testSimpleQueryIsRuleChain2() {
         // docOrder(((/)/descendant-or-self::node())/(child::element(ClassOrInterfaceType)[typeIs("java.util.Vector")]))
         assertIsRuleChain("//ClassOrInterfaceType[pmd-java:typeIs('java.util.Vector')]");
     }
@@ -111,7 +111,7 @@ public class XPathRuleTest {
         XPathRule rule = makeXPath(xpath);
         try (LanguageProcessor proc = JavaParsingHelper.DEFAULT.newProcessor()) {
             rule.initialize(proc);
-            assertTrue("Not recognized as a rulechain query: " + xpath, rule.getTargetSelector().isRuleChain());
+            assertTrue(rule.getTargetSelector().isRuleChain(), "Not recognized as a rulechain query: " + xpath);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -124,7 +124,7 @@ public class XPathRuleTest {
      * @throws Exception any error
      */
     @Test
-    public void testFollowingSibling() throws Exception {
+    void testFollowingSibling() throws Exception {
         final String source = "public interface dummy extends Foo, Bar, Baz {}";
         ASTCompilationUnit cu = JavaParsingHelper.DEFAULT.parse(source);
 

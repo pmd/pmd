@@ -4,24 +4,24 @@
 
 package net.sourceforge.pmd.lang.plsql.ast;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.plsql.AbstractPLSQLParserTst;
 
-public class InsertIntoClauseTest extends AbstractPLSQLParserTst {
+class InsertIntoClauseTest extends AbstractPLSQLParserTst {
 
     @Test
-    public void parseInsertInto() {
+    void parseInsertInto() {
         plsql.parseResource("InsertIntoClause.pls");
     }
 
     @Test
-    public void parseInsertIntoReturning() {
+    void parseInsertIntoReturning() {
         plsql.parseResource("InsertIntoClauseReturning.pls");
     }
 
     @Test
-    public void parseInsertIntoWithRecord() {
+    void parseInsertIntoWithRecord() {
         plsql.parseResource("InsertIntoClauseRecord.pls");
     }
 }

@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.java.rule.performance;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class AppendCharacterWithCharTest extends PmdRuleTst {
+class AppendCharacterWithCharTest extends PmdRuleTst {
     // no additional unit tests
 }

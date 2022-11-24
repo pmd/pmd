@@ -5,23 +5,24 @@
 package net.sourceforge.pmd.it;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 
-import org.junit.BeforeClass;
-import org.junit.ClassRule;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.io.TempDir;
 
 import net.sourceforge.pmd.PMDVersion;
 
-public abstract class AbstractBinaryDistributionTest {
+abstract class AbstractBinaryDistributionTest {
     public static final String PMD_BIN_PREFIX = "pmd-bin-";
 
     protected static File getBinaryDistribution() {
         return new File(".", "target/" + PMD_BIN_PREFIX + PMDVersion.VERSION + ".zip");
     }
 
-    @ClassRule
-    public static TemporaryFolder folder = new TemporaryFolder();
+    @TempDir
+    static Path folder;
 
     /**
      * The temporary directory, to which the binary distribution will be extracted.
@@ -29,9 +30,13 @@ public abstract class AbstractBinaryDistributionTest {
      */
     protected static Path tempDir;
 
-    @BeforeClass
-    public static void setupTempDirectory() throws Exception {
-        tempDir = folder.newFolder().toPath();
+    protected Path createTemporaryReportFile() throws IOException {
+        return Files.createTempFile(folder, null, null);
+    }
+
+    @BeforeAll
+    static void setupTempDirectory() throws Exception {
+        tempDir = Files.createTempDirectory(folder, null);
         if (getBinaryDistribution().exists()) {
             ZipFileExtractor.extractZipFile(getBinaryDistribution().toPath(), tempDir);
         }

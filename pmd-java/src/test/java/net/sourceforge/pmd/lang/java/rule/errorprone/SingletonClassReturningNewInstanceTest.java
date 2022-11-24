@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.java.rule.errorprone;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class SingletonClassReturningNewInstanceTest extends PmdRuleTst {
+class SingletonClassReturningNewInstanceTest extends PmdRuleTst {
     // no additional unit tests
 }

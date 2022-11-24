@@ -6,9 +6,6 @@ package net.sourceforge.pmd.lang.scala.ast
 
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.should
-import net.sourceforge.pmd.lang.LanguageRegistry
-import net.sourceforge.pmd.lang.ast.Node
-import net.sourceforge.pmd.lang.ast.test.assertBounds
 import net.sourceforge.pmd.lang.ast.test.matchNode
 import net.sourceforge.pmd.lang.ast.test.assertPosition
 import net.sourceforge.pmd.lang.ast.test.shouldBe

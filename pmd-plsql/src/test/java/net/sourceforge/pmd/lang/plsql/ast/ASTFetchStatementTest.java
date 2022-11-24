@@ -4,32 +4,35 @@
 
 package net.sourceforge.pmd.lang.plsql.ast;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.List;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.plsql.AbstractPLSQLParserTst;
 
-public class ASTFetchStatementTest extends AbstractPLSQLParserTst {
+class ASTFetchStatementTest extends AbstractPLSQLParserTst {
 
     @Test
-    public void testBulkCollectLimit() {
+    void testBulkCollectLimit() {
         ASTInput input = plsql.parseResource("FetchStatementBulkCollectLimit.pls");
         List<ASTFetchStatement> fetchStatements = input.findDescendantsOfType(ASTFetchStatement.class);
-        Assert.assertEquals(1, fetchStatements.size());
+        assertEquals(1, fetchStatements.size());
         ASTFetchStatement fetch = fetchStatements.get(0);
-        Assert.assertTrue(fetch.isBulkCollect());
-        Assert.assertTrue(fetch.isLimit());
+        assertTrue(fetch.isBulkCollect());
+        assertTrue(fetch.isLimit());
     }
 
     @Test
-    public void testFetch() {
+    void testFetch() {
         ASTInput input = plsql.parseResource("FetchStatement.pls");
         List<ASTFetchStatement> fetchStatements = input.findDescendantsOfType(ASTFetchStatement.class);
-        Assert.assertEquals(1, fetchStatements.size());
+        assertEquals(1, fetchStatements.size());
         ASTFetchStatement fetch = fetchStatements.get(0);
-        Assert.assertFalse(fetch.isBulkCollect());
-        Assert.assertFalse(fetch.isLimit());
+        assertFalse(fetch.isBulkCollect());
+        assertFalse(fetch.isLimit());
     }
 }

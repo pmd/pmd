@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.java.rule.documentation;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class CommentSizeTest extends PmdRuleTst {
+class CommentSizeTest extends PmdRuleTst {
     // no additional unit tests
 }

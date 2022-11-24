@@ -4,10 +4,12 @@
 
 package net.sourceforge.pmd;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.LanguageRegistry;
@@ -29,14 +31,14 @@ class LanguageVersionDiscovererTest extends AbstractJspNodesTst {
     }
 
 
-    void testLanguageIsJsp(String first) {
-        Assertions.assertEquals(jsp.getLanguage().getDefaultVersion(),
+    private void testLanguageIsJsp(String first) {
+        assertEquals(jsp.getLanguage().getDefaultVersion(),
                                 getLanguageVersion(Paths.get(first)));
     }
 
     @Test
     void testParseWrong() {
-        Assertions.assertNotEquals(jsp.getLanguage().getDefaultVersion(),
+        assertNotEquals(jsp.getLanguage().getDefaultVersion(),
                                 getLanguageVersion(Paths.get("sample.xxx")));
     }
 

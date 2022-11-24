@@ -5,7 +5,7 @@
 package net.sourceforge.pmd.lang.xml.ast;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.ast.test.BaseParsingHelper;
 import net.sourceforge.pmd.lang.ast.test.BaseTreeDumpTest;
@@ -13,9 +13,9 @@ import net.sourceforge.pmd.lang.ast.test.CoordinatesPrinter;
 import net.sourceforge.pmd.lang.ast.test.TestUtilsKt;
 import net.sourceforge.pmd.lang.xml.XmlParsingHelper;
 
-public class XmlCoordinatesTest extends BaseTreeDumpTest {
+class XmlCoordinatesTest extends BaseTreeDumpTest {
 
-    public XmlCoordinatesTest() {
+    XmlCoordinatesTest() {
         super(CoordinatesPrinter.INSTANCE, ".xml");
     }
 
@@ -29,12 +29,12 @@ public class XmlCoordinatesTest extends BaseTreeDumpTest {
      * where the error occurs
      */
     @Test
-    public void testLineNumbers() {
+    void testLineNumbers() {
         doTest("xmlCoords");
     }
 
     @Test
-    public void testAutoclosingElementLength() {
+    void testAutoclosingElementLength() {
         final String xml = "<elementName att1='foo' att2='bar' att3='other' />";
         TestUtilsKt.assertPosition(XmlParsingHelper.XML.parse(xml), 1, 1, 1, xml.length());
     }

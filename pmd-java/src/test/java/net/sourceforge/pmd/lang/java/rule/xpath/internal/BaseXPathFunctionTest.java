@@ -7,11 +7,11 @@ package net.sourceforge.pmd.lang.java.rule.xpath.internal;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.function.Consumer;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.junit.Assert;
 
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Rule;
@@ -29,7 +29,7 @@ import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
  * @author Clément Fournier
  * @since 7.0.0
  */
-public class BaseXPathFunctionTest extends BaseParserTest {
+class BaseXPathFunctionTest extends BaseParserTest {
 
     private static final String VIOLATION_MESSAGE = "violation";
     private static final String RULE_NAME_PLACEHOLDER = "$rule_name";
@@ -59,7 +59,7 @@ public class BaseXPathFunctionTest extends BaseParserTest {
                                              Consumer<? super PmdXPathException> exceptionSpec) {
 
         Rule rule = makeXpathRuleFromXPath(xpath);
-        FileAnalysisException thrown = Assert.assertThrows(FileAnalysisException.class, () -> executeRule(rule, code));
+        FileAnalysisException thrown = assertThrows(FileAnalysisException.class, () -> executeRule(rule, code));
 
         assertThat(thrown.getCause(), instanceOf(PmdXPathException.class));
 

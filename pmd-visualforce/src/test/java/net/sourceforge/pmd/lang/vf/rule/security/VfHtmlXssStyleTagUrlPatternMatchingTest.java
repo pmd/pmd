@@ -4,56 +4,56 @@
 
 package net.sourceforge.pmd.lang.vf.rule.security;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /***
  * Unit tests to focus on regex pattern used to identify URL methods within style tags
  */
-public class VfHtmlXssStyleTagUrlPatternMatchingTest {
+class VfHtmlXssStyleTagUrlPatternMatchingTest {
 
 
     @Test
-    public void testUrlMethodPatternMatchForPositive() {
+    void testUrlMethodPatternMatchForPositive() {
         final String sampleString = "div {  background: url(blah";
-        assertTrue("Sample should be considered as starting a URL method: " + sampleString, VfHtmlStyleTagXssRule.isWithinUrlMethod(sampleString));
+        assertTrue(VfHtmlStyleTagXssRule.isWithinUrlMethod(sampleString), "Sample should be considered as starting a URL method: " + sampleString);
     }
 
     @Test
-    public void testUrlMethodPatternMatchForCaseInsensitive() {
+    void testUrlMethodPatternMatchForCaseInsensitive() {
         final String sampleString = "div {  background: uRl(";
-        assertTrue("Sample should be considered as starting a URL method: " + sampleString, VfHtmlStyleTagXssRule.isWithinUrlMethod(sampleString));
+        assertTrue(VfHtmlStyleTagXssRule.isWithinUrlMethod(sampleString), "Sample should be considered as starting a URL method: " + sampleString);
     }
 
     @Test
-    public void testUrlMethodPatternMatchForWhitespaceAfterUrl() {
+    void testUrlMethodPatternMatchForWhitespaceAfterUrl() {
         final String sampleString = "div {  background: url (";
-        assertTrue("Sample should be considered as starting a URL method: " + sampleString, VfHtmlStyleTagXssRule.isWithinUrlMethod(sampleString));
+        assertTrue(VfHtmlStyleTagXssRule.isWithinUrlMethod(sampleString), "Sample should be considered as starting a URL method: " + sampleString);
     }
 
     @Test
-    public void testUrlMethodPatternMatchForClosedUrl() {
+    void testUrlMethodPatternMatchForClosedUrl() {
         final String sampleString = "div {  background: url('myUrl')";
-        assertFalse("Sample should not be considered as starting a URL method: " + sampleString, VfHtmlStyleTagXssRule.isWithinUrlMethod(sampleString));
+        assertFalse(VfHtmlStyleTagXssRule.isWithinUrlMethod(sampleString), "Sample should not be considered as starting a URL method: " + sampleString);
     }
 
     @Test
-    public void testUrlMethodPatternMatchForClosedUrlWithNoContent() {
+    void testUrlMethodPatternMatchForClosedUrlWithNoContent() {
         final String sampleString = "div {  background: url() ";
-        assertFalse("Sample should not be considered as starting a URL method: " + sampleString, VfHtmlStyleTagXssRule.isWithinUrlMethod(sampleString));
+        assertFalse(VfHtmlStyleTagXssRule.isWithinUrlMethod(sampleString), "Sample should not be considered as starting a URL method: " + sampleString);
     }
 
     @Test
-    public void testUrlMethodPatternMatchForUrlNoBracket() {
+    void testUrlMethodPatternMatchForUrlNoBracket() {
         final String sampleString = "div {  background: url";
-        assertFalse("Sample should not be considered as starting a URL method: " + sampleString, VfHtmlStyleTagXssRule.isWithinUrlMethod(sampleString));
+        assertFalse(VfHtmlStyleTagXssRule.isWithinUrlMethod(sampleString), "Sample should not be considered as starting a URL method: " + sampleString);
     }
 
     @Test
-    public void testUrlMethodPatternMatchForNoUrl() {
+    void testUrlMethodPatternMatchForNoUrl() {
         final String sampleString = "div {  background: myStyle('";
-        assertFalse("Sample should not be considered as starting a URL method: " + sampleString, VfHtmlStyleTagXssRule.isWithinUrlMethod(sampleString));
+        assertFalse(VfHtmlStyleTagXssRule.isWithinUrlMethod(sampleString), "Sample should not be considered as starting a URL method: " + sampleString);
     }
 }

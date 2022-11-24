@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.java.rule.performance;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class UseStringBufferLengthTest extends PmdRuleTst {
+class UseStringBufferLengthTest extends PmdRuleTst {
     // no additional unit tests
 }

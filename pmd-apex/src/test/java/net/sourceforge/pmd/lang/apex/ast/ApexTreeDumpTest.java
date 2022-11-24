@@ -5,15 +5,15 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.ast.test.BaseParsingHelper;
 import net.sourceforge.pmd.lang.ast.test.BaseTreeDumpTest;
 import net.sourceforge.pmd.lang.ast.test.RelevantAttributePrinter;
 
-public class ApexTreeDumpTest extends BaseTreeDumpTest {
+class ApexTreeDumpTest extends BaseTreeDumpTest {
 
-    public ApexTreeDumpTest() {
+    ApexTreeDumpTest() {
         super(new RelevantAttributePrinter(), ".cls");
     }
 
@@ -23,7 +23,7 @@ public class ApexTreeDumpTest extends BaseTreeDumpTest {
     }
 
     @Test
-    public void safeNavigationOperator() {
+    void safeNavigationOperator() {
         doTest("SafeNavigationOperator");
     }
 }

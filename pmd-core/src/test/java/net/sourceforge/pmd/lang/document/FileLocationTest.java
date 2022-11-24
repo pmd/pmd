@@ -5,18 +5,18 @@
 package net.sourceforge.pmd.lang.document;
 
 import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.Test;
 
 /**
  * @author Clément Fournier
  */
-public class FileLocationTest {
+class FileLocationTest {
 
     @Test
-    public void testSimple() {
+    void testSimple() {
         FileLocation loc = FileLocation.range("fname", TextRange2d.range2d(1, 1, 1, 2));
         assertEquals("fname", loc.getFileName());
         assertEquals(1, loc.getStartLine());
@@ -26,14 +26,14 @@ public class FileLocationTest {
     }
 
     @Test
-    public void testToRange() {
+    void testToRange() {
         TextRange2d range2d = TextRange2d.range2d(1, 1, 1, 2);
         FileLocation loc = FileLocation.range("fname", range2d);
         assertEquals(range2d, loc.toRange2d());
     }
 
     @Test
-    public void testToString() {
+    void testToString() {
         FileLocation loc = FileLocation.range("fname", TextRange2d.range2d(1, 1, 1, 2));
 
         assertEquals(
@@ -45,7 +45,7 @@ public class FileLocationTest {
             loc.startPosToStringWithFile()
         );
 
-        MatcherAssert.assertThat(loc.toString(), containsString("!debug only!"));
+        assertThat(loc.toString(), containsString("!debug only!"));
     }
 
 }

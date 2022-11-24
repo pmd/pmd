@@ -6,55 +6,55 @@ package net.sourceforge.pmd.lang.plsql.ast;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.plsql.AbstractPLSQLParserTst;
 
-public class SelectIntoStatementTest extends AbstractPLSQLParserTst {
+class SelectIntoStatementTest extends AbstractPLSQLParserTst {
 
     @Test
-    public void testParsingComplex() {
+    void testParsingComplex() {
         plsql.parseResource("SelectIntoStatement.pls");
     }
 
     @Test
-    public void testParsingExample1() {
+    void testParsingExample1() {
         plsql.parseResource("SelectIntoStatementExample1.pls");
     }
 
     @Test
-    public void testParsingExample2() {
+    void testParsingExample2() {
         plsql.parseResource("SelectIntoStatementExample2.pls");
     }
 
     @Test
-    public void testParsingExample3() {
+    void testParsingExample3() {
         plsql.parseResource("SelectIntoStatementExample3.pls");
     }
 
     @Test
-    public void testParsingExample4() {
+    void testParsingExample4() {
         plsql.parseResource("SelectIntoStatementExample4.pls");
     }
 
     @Test
-    public void testParsingExample5() {
+    void testParsingExample5() {
         plsql.parseResource("SelectIntoStatementExample5.pls");
     }
 
     @Test
-    public void testParsingExample6Invalid() {
+    void testParsingExample6Invalid() {
         assertThrows(ParseException.class, () -> plsql.parseResource("SelectIntoStatementExample6Invalid.pls"));
     }
 
     @Test
-    public void testParsingWithFunctionCall() {
+    void testParsingWithFunctionCall() {
         plsql.parseResource("SelectIntoStatementFunctionCall.pls");
     }
 
     @Test
-    public void testParsingIntoRecordField() {
+    void testParsingIntoRecordField() {
         plsql.parseResource("SelectIntoStatementRecordField.pls");
     }
 }

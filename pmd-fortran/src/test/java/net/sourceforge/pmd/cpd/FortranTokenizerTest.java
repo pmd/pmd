@@ -6,7 +6,7 @@ package net.sourceforge.pmd.cpd;
 
 import java.util.Properties;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.cpd.test.CpdTextComparisonTest;
 
@@ -14,9 +14,9 @@ import net.sourceforge.pmd.cpd.test.CpdTextComparisonTest;
  * @author rpelisse
  *
  */
-public class FortranTokenizerTest extends CpdTextComparisonTest {
+class FortranTokenizerTest extends CpdTextComparisonTest {
 
-    public FortranTokenizerTest() {
+    FortranTokenizerTest() {
         super(".for");
     }
 
@@ -31,7 +31,7 @@ public class FortranTokenizerTest extends CpdTextComparisonTest {
     }
 
     @Test
-    public void testSample() {
+    void testSample() {
         doTest("sample");
     }
 }
