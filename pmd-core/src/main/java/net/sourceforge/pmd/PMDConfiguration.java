@@ -6,6 +6,9 @@ package net.sourceforge.pmd;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -46,7 +49,7 @@ import net.sourceforge.pmd.util.log.internal.SimpleMessageReporter;
  * <p>The aspects related to generic PMD behavior:</p>
  * <ul>
  * <li>Suppress marker is used in source files to suppress a RuleViolation,
- * defaults to {@link PMD#SUPPRESS_MARKER}. {@link #getSuppressMarker()}</li>
+ * defaults to {@value DEFAULT_SUPPRESS_MARKER}. {@link #getSuppressMarker()}</li>
  * <li>The number of threads to create when invoking on multiple files, defaults
  * one thread per available processor. {@link #getThreads()}</li>
  * <li>A ClassLoader to use when loading classes during Rule processing (e.g.
@@ -69,9 +72,9 @@ import net.sourceforge.pmd.util.log.internal.SimpleMessageReporter;
  * <li>The character encoding of source files, defaults to the system default as
  * returned by <code>System.getProperty("file.encoding")</code>.
  * {@link #getSourceEncoding()}</li>
- * <li>A comma separated list of input paths to process for source files. This
+ * <li>A list of input paths to process for source files. This
  * may include files, directories, archives (e.g. ZIP files), etc.
- * {@link #getInputPaths()}</li>
+ * {@link #getInputPathList()}</li>
  * <li>A flag which controls, whether {@link RuleSetLoader#enableCompatibility(boolean)} filter
  * should be used or not: #isRuleSetFactoryCompatibilityEnabled;
  * </ul>
@@ -107,28 +110,30 @@ public class PMDConfiguration extends AbstractConfiguration {
     private String suppressMarker = DEFAULT_SUPPRESS_MARKER;
     private int threads = Runtime.getRuntime().availableProcessors();
     private ClassLoader classLoader = getClass().getClassLoader();
-    private LanguageVersionDiscoverer languageVersionDiscoverer;
+    private final LanguageVersionDiscoverer languageVersionDiscoverer;
     private LanguageVersion forceLanguageVersion;
     private MessageReporter reporter = new SimpleMessageReporter(LoggerFactory.getLogger(PMD.class));
 
     // Rule and source file options
     private List<String> ruleSets = new ArrayList<>();
     private RulePriority minimumPriority = RulePriority.LOW;
-    private @NonNull List<String> inputPaths = Collections.emptyList();
-    private String inputUri;
-    private String inputFilePath;
-    private String ignoreFilePath;
+    private @NonNull List<Path> inputPaths = new ArrayList<>();
+    private URI inputUri;
+    private Path inputFilePath;
+    private Path ignoreFilePath;
     private boolean ruleSetFactoryCompatibilityEnabled = true;
 
     // Reporting options
     private String reportFormat;
-    private String reportFile;
+    private Path reportFile;
     private boolean reportShortNames = false;
     private Properties reportProperties = new Properties();
     private boolean showSuppressedViolations = false;
     private boolean failOnViolation = true;
 
+    @Deprecated
     private boolean stressTest;
+    @Deprecated
     private boolean benchmark;
     private AnalysisCache analysisCache = new NoopAnalysisCache();
     private boolean ignoreIncrementalAnalysis;
@@ -472,22 +477,12 @@ public class PMDConfiguration extends AbstractConfiguration {
         this.minimumPriority = minimumPriority;
     }
 
-    /**
-     * Get the comma separated list of input paths to process for source files.
-     *
-     * @return A comma separated list.
-     *
-     * @deprecated Use {@link #getAllInputPaths()}
-     */
-    @Deprecated
-    public @Nullable String getInputPaths() {
-        return inputPaths.isEmpty() ? null : String.join(",", inputPaths);
-    }
 
     /**
-     * Returns an unmodifiable list.
+     * Returns the list of input paths to explore. This is an
+     * unmodifiable list.
      */
-    public @NonNull List<String> getAllInputPaths() {
+    public @NonNull List<Path> getInputPathList() {
         return Collections.unmodifiableList(inputPaths);
     }
 
@@ -501,34 +496,43 @@ public class PMDConfiguration extends AbstractConfiguration {
      */
     @Deprecated
     public void setInputPaths(String inputPaths) {
-        List<String> paths = new ArrayList<>();
-        Collections.addAll(paths, inputPaths.split(","));
+        if (inputPaths.isEmpty()) {
+            return;
+        }
+        List<Path> paths = new ArrayList<>();
+        for (String s : inputPaths.split(",")) {
+            paths.add(Paths.get(s));
+        }
         this.inputPaths = paths;
     }
 
     /**
      * Set the input paths to the given list of paths.
-     * @throws NullPointerException If the parameter is null
+     *
+     * @throws NullPointerException If the parameter is null or contains a null value
      */
-    public void setInputPaths(List<String> inputPaths) {
+    public void setInputPathList(final List<Path> inputPaths) {
+        AssertionUtil.requireContainsNoNullValue("input paths", inputPaths);
         this.inputPaths = new ArrayList<>(inputPaths);
     }
+
 
     /**
      * Add an input path. It is not split on commas.
      *
      * @throws NullPointerException If the parameter is null
      */
-    public void addInputPath(String inputPath) {
+    public void addInputPath(@NonNull Path inputPath) {
         Objects.requireNonNull(inputPath);
         this.inputPaths.add(inputPath);
     }
 
-    public String getInputFilePath() {
+    /** Returns the path to the file list text file. */
+    public @Nullable Path getInputFile() {
         return inputFilePath;
     }
 
-    public String getIgnoreFilePath() {
+    public @Nullable Path getIgnoreFile() {
         return ignoreFilePath;
     }
 
@@ -536,10 +540,21 @@ public class PMDConfiguration extends AbstractConfiguration {
      * The input file path points to a single file, which contains a
      * comma-separated list of source file names to process.
      *
-     * @param inputFilePath
-     *            path to the file
+     * @param inputFilePath path to the file
+     * @deprecated Use {@link #setInputFilePath(Path)}
      */
+    @Deprecated
     public void setInputFilePath(String inputFilePath) {
+        this.inputFilePath = inputFilePath == null ? null : Paths.get(inputFilePath);
+    }
+
+    /**
+     * The input file path points to a single file, which contains a
+     * comma-separated list of source file names to process.
+     *
+     * @param inputFilePath path to the file
+     */
+    public void setInputFilePath(Path inputFilePath) {
         this.inputFilePath = inputFilePath;
     }
 
@@ -547,10 +562,21 @@ public class PMDConfiguration extends AbstractConfiguration {
      * The input file path points to a single file, which contains a
      * comma-separated list of source file names to ignore.
      *
-     * @param ignoreFilePath
-     *            path to the file
+     * @param ignoreFilePath path to the file
+     * @deprecated Use {@link #setIgnoreFilePath(Path)}
      */
+    @Deprecated
     public void setIgnoreFilePath(String ignoreFilePath) {
+        this.ignoreFilePath = ignoreFilePath == null ? null : Paths.get(ignoreFilePath);
+    }
+
+    /**
+     * The input file path points to a single file, which contains a
+     * comma-separated list of source file names to ignore.
+     *
+     * @param ignoreFilePath  path to the file
+     */
+    public void setIgnoreFilePath(Path ignoreFilePath) {
         this.ignoreFilePath = ignoreFilePath;
     }
 
@@ -558,18 +584,29 @@ public class PMDConfiguration extends AbstractConfiguration {
      * Get the input URI to process for source code objects.
      *
      * @return URI
+     * @deprecated Use {@link #getUri}
      */
-    public String getInputUri() {
+    public URI getUri() {
         return inputUri;
     }
 
     /**
      * Set the input URI to process for source code objects.
      *
-     * @param inputUri
-     *            a single URI
+     * @param inputUri a single URI
+     * @deprecated Use {@link PMDConfiguration#setInputUri(URI)}
      */
+    @Deprecated
     public void setInputUri(String inputUri) {
+        this.inputUri = inputUri == null ? null : URI.create(inputUri);
+    }
+
+    /**
+     * Set the input URI to process for source code objects.
+     *
+     * @param inputUri a single URI
+     */
+    public void setInputUri(URI inputUri) {
         this.inputUri = inputUri;
     }
 
@@ -615,7 +652,7 @@ public class PMDConfiguration extends AbstractConfiguration {
         Renderer renderer = RendererFactory.createRenderer(reportFormat, reportProperties);
         renderer.setShowSuppressedViolations(showSuppressedViolations);
         if (withReportWriter) {
-            renderer.setReportFile(reportFile);
+            renderer.setReportFile(reportFile == null ? null : reportFile.toString());
         }
         return renderer;
     }
@@ -645,18 +682,39 @@ public class PMDConfiguration extends AbstractConfiguration {
      * Get the file to which the report should render.
      *
      * @return The file to which to render.
+     * @deprecated Use {@link #getReportFilePath()}
      */
+    @Deprecated
     public String getReportFile() {
+        return reportFile == null ? null : reportFile.toString();
+    }
+
+    /**
+     * Get the file to which the report should render.
+     *
+     * @return The file to which to render.
+     */
+    public Path getReportFilePath() {
         return reportFile;
     }
 
     /**
      * Set the file to which the report should render.
      *
-     * @param reportFile
-     *            the file to set
+     * @param reportFile the file to set
+     * @deprecated Use {@link #setReportFile(Path)}
      */
+    @Deprecated
     public void setReportFile(String reportFile) {
+        this.reportFile = reportFile == null ? null : Paths.get(reportFile);
+    }
+
+    /**
+     * Set the file to which the report should render.
+     *
+     * @param reportFile the file to set
+     */
+    public void setReportFile(Path reportFile) {
         this.reportFile = reportFile;
     }
 
@@ -707,7 +765,10 @@ public class PMDConfiguration extends AbstractConfiguration {
      *
      * @return <code>true</code> if stress test is enbaled, <code>false</code>
      *         otherwise.
+     *
+     * @deprecated For removal
      */
+    @Deprecated
     public boolean isStressTest() {
         return stressTest;
     }
@@ -718,7 +779,9 @@ public class PMDConfiguration extends AbstractConfiguration {
      * @param stressTest
      *            The stree test indicator to set.
      * @see #isStressTest()
+     * @deprecated For removal.
      */
+    @Deprecated
     public void setStressTest(boolean stressTest) {
         this.stressTest = stressTest;
     }
@@ -729,7 +792,9 @@ public class PMDConfiguration extends AbstractConfiguration {
      *
      * @return <code>true</code> if benchmark logging is enbaled,
      *         <code>false</code> otherwise.
+     * @deprecated This behavior is down to CLI, not part of the core analysis.
      */
+    @Deprecated
     public boolean isBenchmark() {
         return benchmark;
     }
@@ -740,7 +805,9 @@ public class PMDConfiguration extends AbstractConfiguration {
      * @param benchmark
      *            The benchmark indicator to set.
      * @see #isBenchmark()
+     * @deprecated This behavior is down to CLI, not part of the core analysis.
      */
+    @Deprecated
     public void setBenchmark(boolean benchmark) {
         this.benchmark = benchmark;
     }

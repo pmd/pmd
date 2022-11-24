@@ -18,14 +18,16 @@ import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.event.Level;
 
 import net.sourceforge.pmd.Report.GlobalReportBuilderListener;
 import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.benchmark.TimedOperation;
 import net.sourceforge.pmd.benchmark.TimedOperationCategory;
 import net.sourceforge.pmd.cache.AnalysisCacheListener;
-import net.sourceforge.pmd.cli.internal.CliMessages;
+import net.sourceforge.pmd.cache.NoopAnalysisCache;
 import net.sourceforge.pmd.cli.internal.ProgressBarListener;
+import net.sourceforge.pmd.internal.LogMessages;
 import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.internal.util.FileCollectionUtil;
 import net.sourceforge.pmd.lang.JvmLanguagePropertyBundle;
@@ -339,7 +341,7 @@ public final class PmdAnalysis implements AutoCloseable {
                 listener.onConfigError(new Report.ConfigurationError(rule, rule.dysfunctionReason()));
             }
 
-            PMD.encourageToUseIncrementalAnalysis(configuration);
+            encourageToUseIncrementalAnalysis(configuration);
 
             try (LanguageProcessorRegistry lpRegistry = LanguageProcessorRegistry.create(
                 // only start the applicable languages (and dependencies)
@@ -493,7 +495,7 @@ public final class PmdAnalysis implements AutoCloseable {
         }
     }
 
-    ReportStats runAndReturnStats() {
+    public ReportStats runAndReturnStats() {
         if (getRulesets().isEmpty()) {
             return ReportStats.empty();
         }
@@ -521,7 +523,7 @@ public final class PmdAnalysis implements AutoCloseable {
     }
 
     static void printErrorDetected(MessageReporter reporter, int errors) {
-        String msg = CliMessages.errorDetectedMessage(errors, "PMD");
+        String msg = LogMessages.errorDetectedMessage(errors, "PMD");
         // note: using error level here increments the error count of the reporter,
         // which we don't want.
         reporter.info(StringUtil.quoteMessageFormat(msg));
@@ -529,5 +531,18 @@ public final class PmdAnalysis implements AutoCloseable {
 
     void printErrorDetected(int errors) {
         printErrorDetected(getReporter(), errors);
+    }
+
+    private static void encourageToUseIncrementalAnalysis(final PMDConfiguration configuration) {
+        final MessageReporter reporter = configuration.getReporter();
+
+        if (!configuration.isIgnoreIncrementalAnalysis()
+            && configuration.getAnalysisCache() instanceof NoopAnalysisCache
+            && reporter.isLoggable(Level.WARN)) {
+            final String version =
+                PMDVersion.isUnknown() || PMDVersion.isSnapshot() ? "latest" : "pmd-" + PMDVersion.VERSION;
+            reporter.warn("This analysis could be faster, please consider using Incremental Analysis: "
+                            + "https://pmd.github.io/{0}/pmd_userdocs_incremental_analysis.html", version);
+        }
     }
 }

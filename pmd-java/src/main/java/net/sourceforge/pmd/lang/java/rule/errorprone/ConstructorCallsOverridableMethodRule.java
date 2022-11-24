@@ -5,9 +5,13 @@
 package net.sourceforge.pmd.lang.java.rule.errorprone;
 
 import java.lang.reflect.Modifier;
+import java.util.Deque;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
+import java.util.stream.Collectors;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.pcollections.PVector;
 import org.pcollections.TreePVector;
 
@@ -40,13 +44,15 @@ import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
 public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRulechainRule {
 
     private static final String MESSAGE = "Overridable method called during object construction: {0} ";
-    private static final String MESSAGE_TRANSITIVE = "This method may call an overridable method during object construction: {0}";
+    private static final String MESSAGE_TRANSITIVE = "This method may call an overridable method during object construction: {0} (call stack: [{1}])";
 
 
-    // Maps methods to the method that makes them unsafe
-    // Safe methods are mapped to null
-    // The value is used for better messages
-    private final Map<JMethodSymbol, JMethodSymbol> safeMethods = new HashMap<>();
+    // Maps methods to the method call stack that makes them unsafe
+    // Safe methods are mapped to an empty stack
+    // The method call stack (value of the map) is used for better messages
+    private final Map<JMethodSymbol, Deque<JMethodSymbol>> safeMethods = new HashMap<>();
+
+    private static final Deque<JMethodSymbol> EMPTY_STACK = new LinkedList<>();
 
     public ConstructorCallsOverridableMethodRule() {
         super(ASTConstructorDeclaration.class);
@@ -64,47 +70,53 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
             return null; // then cannot be overridden
         }
         for (ASTMethodCall call : node.getBody().descendants(ASTMethodCall.class)) {
-            JMethodSymbol unsafetyReason = getUnsafetyReason(call, TreePVector.empty());
-            if (unsafetyReason != null) {
+            Deque<JMethodSymbol> unsafetyReason = getUnsafetyReason(call, TreePVector.empty());
+            if (!unsafetyReason.isEmpty()) {
                 JMethodSig overload = call.getOverloadSelectionInfo().getMethodType();
-                JMethodSig unsafeMethod = call.getTypeSystem().sigOf(unsafetyReason);
+                JMethodSig unsafeMethod = call.getTypeSystem().sigOf(unsafetyReason.getLast());
                 String message = unsafeMethod.equals(overload) ? MESSAGE : MESSAGE_TRANSITIVE;
-                addViolationWithMessage(data, call, message, new Object[] { PrettyPrintingUtil.prettyPrintOverload(unsafetyReason) });
+                String lastMethod = PrettyPrintingUtil.prettyPrintOverload(unsafetyReason.getLast());
+                String stack = unsafetyReason.stream().map(PrettyPrintingUtil::prettyPrintOverload).collect(Collectors.joining(", "));
+                asCtx(data).addViolationWithMessage(call, message, lastMethod, stack);
             }
         }
         return null;
     }
 
-    private JMethodSymbol getUnsafetyReason(ASTMethodCall call, PVector<ASTMethodDeclaration> recursionGuard) {
+    @NonNull
+    private Deque<JMethodSymbol> getUnsafetyReason(ASTMethodCall call, PVector<ASTMethodDeclaration> recursionGuard) {
         if (!isCallOnThisInstance(call)) {
-            return null;
+            return EMPTY_STACK;
         }
 
         OverloadSelectionResult overload = call.getOverloadSelectionInfo();
         if (overload.isFailed()) {
-            return null;
+            return EMPTY_STACK;
         }
 
         JMethodSymbol method = (JMethodSymbol) overload.getMethodType().getSymbol();
         if (isOverridable(method)) {
-            return method; // the method itself
+            Deque<JMethodSymbol> stack = new LinkedList<>();
+            stack.addFirst(method); // the method itself
+            return stack;
         } else {
             return getUnsafetyReason(method, recursionGuard);
         }
     }
 
-    private JMethodSymbol getUnsafetyReason(JMethodSymbol method, PVector<ASTMethodDeclaration> recursionGuard) {
+    @NonNull
+    private Deque<JMethodSymbol> getUnsafetyReason(JMethodSymbol method, PVector<ASTMethodDeclaration> recursionGuard) {
         if (method.isStatic()) {
-            return null; // no access to this instance anyway
+            return EMPTY_STACK; // no access to this instance anyway
         }
         // we need to prove that all calls on this instance are safe
 
         ASTMethodDeclaration declaration = method.tryGetNode();
         if (declaration == null) {
-            return null; // no idea
+            return EMPTY_STACK; // no idea
         } else if (recursionGuard.contains(declaration)) {
             // being visited, assume body is safe
-            return null;
+            return EMPTY_STACK;
         }
 
         // note we can't use computeIfAbsent because of comodification
@@ -117,18 +129,19 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
         for (ASTMethodCall call : NodeStream.of(declaration.getBody())
                                             .descendants(ASTMethodCall.class)
                                             .filter(ConstructorCallsOverridableMethodRule::isCallOnThisInstance)) {
-            JMethodSymbol unsafetyReason = getUnsafetyReason(call, deeperRecursion);
-            if (unsafetyReason != null) {
+            Deque<JMethodSymbol> unsafetyReason = getUnsafetyReason(call, deeperRecursion);
+            if (!unsafetyReason.isEmpty()) {
                 // this method call is unsafe for some reason,
                 // body is unsafe for the same reason
-                safeMethods.put(method, unsafetyReason);
-                return unsafetyReason;
+                safeMethods.putIfAbsent(method, new LinkedList<>(unsafetyReason));
+                safeMethods.get(method).addFirst(method);
+                return safeMethods.get(method);
             }
         }
 
         // body is safe
-        safeMethods.put(method, null);
-        return null;
+        safeMethods.remove(method);
+        return EMPTY_STACK;
     }
 
     private static boolean isCallOnThisInstance(ASTMethodCall call) {

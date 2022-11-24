@@ -71,16 +71,20 @@ sb.append('a');     // use this instead
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#avoidarrayloops">
         <description>
-Instead of manually copying data between two arrays, use the more efficient `Arrays.copyOf` or `System.arraycopy`
-methods instead.
+Instead of manually copying data between two arrays, use the more efficient `Arrays.copyOf`
+or `System.arraycopy` method instead.
+
+To copy only part of the array, use `Arrays.copyOfRange` or `System.arraycopy`.
+
+If you want to copy/move elements inside the _same_ array (e.g. shift the elements), use `System.arraycopy`.
         </description>
         <priority>3</priority>
         <properties>
             <property name="xpath">
                 <value>
 <![CDATA[
-//(ForStatement[ForUpdate//(UnaryExpression[@Operator='++'] | AssignmentExpression[@Operator = '+='][NumericLiteral[@Image = '1']])]
- | WhileStatement)
+//(ForStatement[ForUpdate//(UnaryExpression[@Operator=('++','--')] | AssignmentExpression[@Operator = ('+=', '-=')][NumericLiteral[@Image = '1']])]
+ | WhileStatement | DoStatement)
     [not(.//ContinueStatement)]
     [not(.//BreakStatement)]
     [not(.//ThrowStatement)]
@@ -89,10 +93,10 @@ methods instead.
                                       (: no nested arrays or method calls as array index :)
                                       [count(ArrayAccess[not(.//ArrayAccess)]
                                                         [not(.//MethodCall)])=2]
-                                      (: array names must be different :)
-                                      [count(distinct-values(ArrayAccess/VariableAccess[1]/@Name)) = 2]
                                       (: array index must be same :)
-                                      [count(distinct-values(ArrayAccess/VariableAccess[2]/@Name)) = 1]
+                                      [distinct-values(ArrayAccess[1]/(VariableAccess[2]|InfixExpression//VariableAccess)/@Name)
+                                       = distinct-values(ArrayAccess[2]/(VariableAccess[2]|InfixExpression//VariableAccess)/@Name)
+                                      ]
      )=1]
 ]]>
                 </value>
@@ -100,22 +104,43 @@ methods instead.
         </properties>
         <example>
 <![CDATA[
-public class Test {
-    public void bar() {
+class Scratch {
+    void copy_a_to_b() {
         int[] a = new int[10];
         int[] b = new int[10];
-
-        // instead of this loop
-        for (int i=0;i<10;i++) {
-            b[i]=a[i];
+        for (int i = 0; i < a.length; i++) {
+            b[i] = a[i];
         }
-        // use: System.arraycopy(a, 0, b, 0, 10);
+        // equivalent
+        b = Arrays.copyOf(a, a.length);
+        // equivalent
+        System.arraycopy(a, 0, b, 0, a.length);
 
         int[] c = new int[10];
-        // this won't trigger the rule
-        for (int i=0;i<10;i++) {
-            b[i]=a[c[i]];
+        // this will not trigger the rule
+        for (int i = 0; i < c.length; i++) {
+            b[i] = a[c[i]];
         }
+    }
+}
+]]>
+        </example>
+        <example>
+<![CDATA[
+class Scratch {
+    void shift_left(int[] a) {
+        for (int i = 0; i < a.length - 1; i++) {
+            a[i] = a[i + 1];
+        }
+        // equivalent
+        System.arraycopy(a, 1, a, 0, a.length - 1);
+    }
+    void shift_right(int[] a) {
+        for (int i = a.length - 1; i > 0; i--) {
+            a[i] = a[i - 1];
+        }
+        // equivalent
+        System.arraycopy(a, 0, a, 1, a.length - 1);
     }
 }
 ]]>
@@ -584,8 +609,8 @@ private String baz() {
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#toofewbranchesforaswitchstatement">
         <description>
 Switch statements are intended to be used to support complex branching behaviour. Using a switch for only a few
-cases is ill-advised, since switches are not as easy to understand as if-then statements. In these cases use the
-if-then statement to increase code readability.
+cases is ill-advised, since switches are not as easy to understand as if-else statements. In these cases use the
+if-else statement to increase code readability.
         </description>
         <priority>3</priority>
         <properties>
@@ -630,13 +655,14 @@ ArrayList is a much better Collection implementation than Vector if thread-safe 
             <property name="xpath">
                 <value>
 <![CDATA[
-//ConstructorCall/ClassOrInterfaceType[pmd-java:typeIs('java.util.Vector')]
+//ConstructorCall/ClassOrInterfaceType[pmd-java:typeIsExactly('java.util.Vector') or pmd-java:typeIsExactly('Vector')]
 ]]>
                 </value>
             </property>
         </properties>
         <example>
 <![CDATA[
+import java.util.*;
 public class SimpleTest extends TestCase {
     public void testX() {
     Collection c1 = new Vector();

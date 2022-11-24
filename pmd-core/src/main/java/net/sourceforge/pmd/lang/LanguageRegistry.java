@@ -67,6 +67,21 @@ public final class LanguageRegistry implements Iterable<Language> {
         return new LanguageRegistry(Collections.singleton(l));
     }
 
+    /**
+     * Creates a language registry containing the given languages and
+     * their dependencies, fetched from this language registry or the
+     * parameter.
+     */
+    public LanguageRegistry getDependenciesOf(Language lang) {
+        Set<Language> dependencies =
+            lang.getDependencies().stream()
+                .map(this::getLanguageById)
+                .collect(CollectionUtil.toMutableSet());
+        dependencies.add(lang);
+
+        return new LanguageRegistry(dependencies);
+    }
+
     @Override
     public @NonNull Iterator<Language> iterator() {
         return languages.iterator();

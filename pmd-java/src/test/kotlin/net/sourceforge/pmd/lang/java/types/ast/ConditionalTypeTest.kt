@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.types.ast
 
+import io.kotest.assertions.withClue
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.property.checkAll
@@ -16,7 +17,7 @@ class ConditionalTypeTest : FunSpec({}) {
 
     private val tested = mutableMapOf<TypePair, JTypeMirror>()
 
-    fun test(t1: JTypeMirror, t2: JTypeMirror, expected: JTypeMirror) {
+    private fun runTest(t1: JTypeMirror, t2: JTypeMirror, expected: JTypeMirror) {
         val key = TypePair(t1, t2)
         if (key in tested && tested[key] != expected)
             throw AssertionError("Already tested $t1 : $t2 against ${tested[key]}, doesn't match $expected")
@@ -24,7 +25,7 @@ class ConditionalTypeTest : FunSpec({}) {
 
         tested[key] = expected
 
-        test("$t1 : $t2 => $expected") {
+        withClue("$t1 : $t2 => $expected") {
             PolyResolution.computeStandaloneConditionalType(testTypeSystem, t1, t2) shouldBe expected
         }
     }
@@ -41,21 +42,64 @@ class ConditionalTypeTest : FunSpec({}) {
         context("Tests for conditional expressions") {
             // we need a suspend fun
 
-            prims.checkAll {
-                test(it, it, it)
-                test(it.box(), it, it)
-                test(it, it.box(), it)
-                test(it.box(), it.box(), it.box())
-
-                test(ts.NULL_TYPE, it, ts.lub(ts.NULL_TYPE, it.box()))
-                test(it, ts.NULL_TYPE, ts.lub(it.box(), ts.NULL_TYPE))
-                test(it.box(), ts.NULL_TYPE, it.box())
+            test("Primitive Types") {
+                prims.checkAll {
+                    runTest(it, it, it)
+                }
             }
 
-            refTypes.checkAll {
-                test(it, it, it)
-                test(ts.NULL_TYPE, it, it)
-                test(it, ts.NULL_TYPE, it)
+            test("Primitive Types with left one boxed") {
+                prims.checkAll {
+                    runTest(it.box(), it, it)
+                }
+            }
+
+            test("Primitive Types with right one boxed") {
+                prims.checkAll {
+                    runTest(it, it.box(), it)
+                }
+            }
+
+            test("Primitive Types all boxed") {
+                prims.checkAll {
+                    runTest(it.box(), it.box(), it.box())
+                }
+            }
+
+            test("Primitive Types with left one null") {
+                prims.checkAll {
+                    runTest(ts.NULL_TYPE, it, ts.lub(ts.NULL_TYPE, it.box()))
+                }
+            }
+
+            test("Primitive Types with right one null") {
+                prims.checkAll {
+                    runTest(it, ts.NULL_TYPE, ts.lub(it.box(), ts.NULL_TYPE))
+                }
+            }
+
+            test("Primitive Types with null and boxed") {
+                prims.checkAll {
+                    runTest(it.box(), ts.NULL_TYPE, it.box())
+                }
+            }
+
+            test("Reference Types") {
+                refTypes.checkAll {
+                    runTest(it, it, it)
+                }
+            }
+
+            test("Reference Types with left one null") {
+                refTypes.checkAll {
+                    runTest(ts.NULL_TYPE, it, it)
+                }
+            }
+
+            test("Reference Types with right one null") {
+                refTypes.checkAll {
+                    runTest(it, ts.NULL_TYPE, it)
+                }
             }
 
             val shortOnes =
@@ -65,7 +109,9 @@ class ConditionalTypeTest : FunSpec({}) {
                             }
 
 
-            shortOnes.forEach { (a, b) -> test(a, b, ts.SHORT) }
+            test("Short Types (BYTE, SHORT)") {
+                shortOnes.forEach { (a, b) -> runTest(a, b, ts.SHORT) }
+            }
 
             val allPrims: List<JTypeMirror> = (prims.values + prims.values.map { it.box() })
 
@@ -74,13 +120,15 @@ class ConditionalTypeTest : FunSpec({}) {
                     .filter { (a, b) -> a != b }
                     .filter { (a, b) -> a.isNumeric && b.isNumeric }
 
-            bnpOnes.forEach { (a, b) ->
-                test(a, b, bnp(a, b))
+            test("Binary Numeric Promotion") {
+                bnpOnes.forEach { (a, b) -> runTest(a, b, bnp(a, b)) }
             }
 
-            (allPrims - ts.BOOLEAN - ts.BOOLEAN.box()).forEach {
-                test(it, ts.BOOLEAN, ts.lub(it.box(), ts.BOOLEAN.box()))
-                test(ts.BOOLEAN, it, ts.lub(it.box(), ts.BOOLEAN.box()))
+            test("Boolean") {
+                (allPrims - ts.BOOLEAN - ts.BOOLEAN.box()).forEach {
+                    runTest(it, ts.BOOLEAN, ts.lub(it.box(), ts.BOOLEAN.box()))
+                    runTest(ts.BOOLEAN, it, ts.lub(it.box(), ts.BOOLEAN.box()))
+                }
             }
         }
     }

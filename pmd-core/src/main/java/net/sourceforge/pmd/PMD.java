@@ -26,10 +26,9 @@ import net.sourceforge.pmd.benchmark.TextTimingReportRenderer;
 import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.benchmark.TimingReport;
 import net.sourceforge.pmd.benchmark.TimingReportRenderer;
-import net.sourceforge.pmd.cache.NoopAnalysisCache;
 import net.sourceforge.pmd.cli.PMDCommandLineInterface;
 import net.sourceforge.pmd.cli.PmdParametersParseResult;
-import net.sourceforge.pmd.cli.internal.CliMessages;
+import net.sourceforge.pmd.internal.LogMessages;
 import net.sourceforge.pmd.internal.Slf4jSimpleConfiguration;
 import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.renderers.Renderer;
@@ -46,7 +45,10 @@ import net.sourceforge.pmd.util.log.internal.SimpleMessageReporter;
  *
  * <p><strong>Warning:</strong> This class is not intended to be instantiated or subclassed. It will
  * be made final in PMD7.
+ *
+ * @deprecated This class is to be removed in PMD 7 in favor of a unified PmdCli entry point. {@link PmdAnalysis} should be used for non-CLI use-cases.
  */
+@Deprecated
 public final class PMD {
 
     private static final String PMD_PACKAGE = "net.sourceforge.pmd";
@@ -71,18 +73,6 @@ public final class PMD {
     public static final String SUPPRESS_MARKER = PMDConfiguration.DEFAULT_SUPPRESS_MARKER;
 
     private PMD() {
-    }
-
-
-    static void encourageToUseIncrementalAnalysis(final PMDConfiguration configuration) {
-        if (!configuration.isIgnoreIncrementalAnalysis()
-            && configuration.getAnalysisCache() instanceof NoopAnalysisCache
-            && log.isWarnEnabled()) {
-            final String version =
-                PMDVersion.isUnknown() || PMDVersion.isSnapshot() ? "latest" : "pmd-" + PMDVersion.VERSION;
-            log.warn("This analysis could be faster, please consider using Incremental Analysis: "
-                            + "https://pmd.github.io/{}/pmd_userdocs_incremental_analysis.html", version);
-        }
     }
 
     /**
@@ -162,7 +152,7 @@ public final class PMD {
             return StatusCode.OK;
         } else if (parseResult.isError()) {
             System.err.println(parseResult.getError().getMessage());
-            System.err.println(CliMessages.runWithHelpFlagMessage());
+            System.err.println(LogMessages.runWithHelpFlagMessage());
             return StatusCode.ERROR;
         }
 
@@ -280,7 +270,9 @@ public final class PMD {
      * Represents status codes that are used as exit codes during CLI runs.
      *
      * @see #runPmd(String[])
+     * @deprecated This class is to be removed in PMD 7 in favor of a unified PmdCli entry point.
      */
+    @Deprecated
     public enum StatusCode {
         /** No errors, no violations. This is exit code {@code 0}. */
         OK(0),

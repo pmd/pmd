@@ -101,6 +101,11 @@ public abstract class LanguageModuleBase implements Language {
     }
 
     @Override
+    public Set<String> getVersionNamesAndAliases() {
+        return Collections.unmodifiableSet(byName.keySet());
+    }
+
+    @Override
     public Set<String> getDependencies() {
         return dependencies;
     }

@@ -31,7 +31,7 @@ Some XML-based file formats do not conventionally use a `.xml` extension. To ass
 these files with the XML language, you need to use the `--force-language xml` command-line
 arguments, for instance:
 ```
-$ ./run.sh pmd -d /home/me/src/xml-file.ext -f text -R ruleset.xml --force-language xml
+$ pmd check -d /home/me/src/xml-file.ext -f text -R ruleset.xml --force-language xml
 ```
 Please refer to [PMD CLI reference](pmd_userdocs_cli_reference.html#analyze-other-xml-formats)
 for more examples.

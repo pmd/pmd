@@ -41,7 +41,7 @@ In order to analyze a project with PMD that uses preview language features, you'
 it via the environment variable `PMD_JAVA_OPTS` and select the new language version, e.g. `19-preview`:
 
     export PMD_JAVA_OPTS=--enable-preview
-    ./run.sh pmd -language java -version 19-preview ...
+    pmd check --use-version java-19-preview ...
 
 Note: we only support preview language features for the latest two java versions.
 

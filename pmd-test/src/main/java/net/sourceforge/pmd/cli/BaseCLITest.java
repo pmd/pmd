@@ -31,7 +31,9 @@ import com.github.stefanbirkner.systemlambda.SystemLambda;
 /**
  * @author Romain Pelisse &lt;belaran@gmail.com&gt;
  *
+ * @deprecated Only pmd-cli module should use / test the CLI.
  */
+@Deprecated
 public abstract class BaseCLITest {
 
     protected static final String TEST_OUPUT_DIRECTORY = "target/cli-tests/";

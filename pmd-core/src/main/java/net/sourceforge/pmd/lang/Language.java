@@ -98,6 +98,14 @@ public interface Language extends Comparable<Language> {
     List<LanguageVersion> getVersions();
 
     /**
+     * Returns a complete set of supported version names for this language
+     * including all aliases.
+     *
+     * @return All supported language version names and aliases.
+     */
+    Set<String> getVersionNamesAndAliases();
+
+    /**
      * Returns true if a language version with the given {@linkplain LanguageVersion#getVersion() version string}
      * is registered. Then, {@link #getVersion(String) getVersion} will return a non-null value.
      *

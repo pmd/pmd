@@ -131,7 +131,25 @@
         </dependency>
         <dependency>
             <groupId>net.sourceforge.pmd</groupId>
+            <artifactId>pmd-cli</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <!-- include bash/zsh completions -->
+        <dependency>
+            <groupId>net.sourceforge.pmd</groupId>
+            <artifactId>pmd-cli</artifactId>
+            <version>${project.version}</version>
+            <type>sh</type>
+            <classifier>completion</classifier>
+        </dependency>
+        <dependency>
+            <groupId>net.sourceforge.pmd</groupId>
             <artifactId>pmd-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>net.sourceforge.pmd</groupId>
+            <artifactId>pmd-ant</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

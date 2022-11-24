@@ -17,7 +17,8 @@ It uses JavaCC and Antlr to parse source files into abstract syntax trees (AST) 
 Rules can be written in Java or using a XPath query.
 
 It supports Java, JavaScript, Salesforce.com Apex and Visualforce,
-Modelica, PLSQL, Apache Velocity, XML, XSL, Scala.
+Modelica, PLSQL, Apache Velocity, XML, XSL.
+Scala is supported, but there are currently no Scala rules available.
 
 Additionally it includes **CPD**, the copy-paste-detector. CPD finds duplicated code in
 C/C++, C#, Dart, Fortran, Go, Groovy, Java, JavaScript, JSP, Kotlin, Lua, Matlab, Modelica,

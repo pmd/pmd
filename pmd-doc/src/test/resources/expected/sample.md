@@ -155,6 +155,8 @@ Avoid jumbled loop incrementers - its usually a mistake, and is confusing even i
 
 **Minimum Language Version:** Java 1.5
 
+**Maximum Language Version:** Java 11
+
 Override both `public boolean Object.equals(Object other)`, and `public int Object.hashCode()`, or override neither.
 Even if you are inheriting a `hashCode()` from a parent class, consider implementing hashCode and explicitly
 delegating to your superclass.

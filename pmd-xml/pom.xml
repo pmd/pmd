@@ -30,6 +30,7 @@
                     <delimiters>
                         <delimiter>${*}</delimiter>
                     </delimiters>
+                    <escapeString>\</escapeString>
                 </configuration>
             </plugin>
         </plugins>
