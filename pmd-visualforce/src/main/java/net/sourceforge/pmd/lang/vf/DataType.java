@@ -112,9 +112,9 @@ public enum DataType {
     @Deprecated
     public static DataType fromBasicType(BasicType value) {
         if (value != null) {
-            switch(value) {
+            switch (value) {
             case BOOLEAN:
-               return Checkbox;
+                return Checkbox;
             case CURRENCY:
                 return Currency;
             case DATE:
