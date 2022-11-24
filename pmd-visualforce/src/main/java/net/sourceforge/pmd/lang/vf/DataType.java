@@ -12,6 +12,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 
+import apex.jorje.semantic.symbol.type.BasicType;
+
 /**
  * Represents all data types that can be referenced from a Visualforce page. This enum consolidates the data types
  * available to CustomFields and Apex. It uses the naming convention of CustomFields.
@@ -100,6 +102,42 @@ public enum DataType {
         }
 
         return dataType;
+    }
+
+    /**
+     * Map to correct instance, returns {@code Unknown} if the value can't be mapped.
+     *
+     * Use {@link fromTypeName} instead.
+     */
+    @Deprecated
+    public static DataType fromBasicType(BasicType value) {
+        if (value != null) {
+            switch(value) {
+            case BOOLEAN:
+               return Checkbox;
+            case CURRENCY:
+                return Currency;
+            case DATE:
+                return Date;
+            case DATE_TIME:
+                return DateTime;
+            case ID:
+                return Lookup;
+            case DECIMAL:
+            case DOUBLE:
+            case INTEGER:
+            case LONG:
+                return Number;
+            case STRING:
+                return Text;
+            case TIME:
+                return Time;
+            default:
+                break;
+            }
+        }
+        LOGGER.fine("Unable to determine DataType of " + value);
+        return Unknown;
     }
 
     /**
