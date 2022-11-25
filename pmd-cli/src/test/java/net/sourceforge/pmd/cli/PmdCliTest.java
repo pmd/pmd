@@ -263,7 +263,7 @@ class PmdCliTest extends BaseCliTest {
             ));
     }
 
-   @Test
+    @Test
     public void exitStatusWithNoViolations() throws Exception {
         runCli(OK, "-d", srcDir.toString(), "-f", "text", "-R", RSET_NO_VIOLATIONS)
             .verify(r -> r.checkStdOut(equalTo("")));

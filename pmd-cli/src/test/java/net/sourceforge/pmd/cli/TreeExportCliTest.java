@@ -35,7 +35,7 @@ class TreeExportCliTest extends BaseCliTest {
                                            + "    <dummyNode Image='a'>\n"
                                            + "        <dummyNode Image='b' />\n"
                                            + "    </dummyNode>\n"
-                                           + "</dummyRootNode>"));
+                                           + "</dummyRootNode>\n"));
         });
     }
 
@@ -48,7 +48,7 @@ class TreeExportCliTest extends BaseCliTest {
                                        + "    <dummyNode Image='a'>\n"
                                        + "        <dummyNode Image='b' />\n"
                                        + "    </dummyNode>\n"
-                                       + "</dummyRootNode>"));
+                                       + "</dummyRootNode>\n"));
     }
 
     private File newFileWithContents(String data) throws IOException {

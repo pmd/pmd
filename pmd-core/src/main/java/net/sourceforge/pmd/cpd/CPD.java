@@ -8,7 +8,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -22,12 +21,8 @@ import java.util.TreeMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.event.Level;
 
 import net.sourceforge.pmd.annotation.Experimental;
-import net.sourceforge.pmd.cpd.renderer.CPDReportRenderer;
-import net.sourceforge.pmd.internal.LogMessages;
-import net.sourceforge.pmd.internal.Slf4jSimpleConfiguration;
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
 import net.sourceforge.pmd.util.FileFinder;
 import net.sourceforge.pmd.util.FileUtil;
@@ -37,7 +32,7 @@ import net.sourceforge.pmd.util.database.DBURI;
 import net.sourceforge.pmd.util.database.SourceObject;
 
 /**
- * @deprecated {@link PmdCli} under the pmd-cli offers CLI support.
+ * @deprecated Use the module pmd-cli for CLI support.
  */
 @Deprecated
 public class CPD {
@@ -139,6 +134,10 @@ public class CPD {
         log.debug("Finished: {} duplicates found", matchAlgorithm.getMatches().size());
     }
 
+    /**
+     * @deprecated Use {@link #toReport()}.
+     */
+    @Deprecated
     public Iterator<Match> getMatches() {
         return matchAlgorithm.matches();
     }
@@ -273,94 +272,11 @@ public class CPD {
      */
     @Deprecated
     public static void main(String[] args) {
-        StatusCode statusCode = runCpd(args);
-        CPDCommandLineInterface.setStatusCodeOrExit(statusCode.toInt());
-    }
-
-    /**
-     * Parses the command line and executes CPD. Returns the status code
-     * without exiting the VM.
-     *
-     * @param args command line arguments
-     *
-     * @return the status code
-     */
-    public static StatusCode runCpd(String... args) {
-        CPDConfiguration arguments = new CPDConfiguration();
-        CPD.StatusCode statusCode = CPDCommandLineInterface.parseArgs(arguments, args);
-        if (statusCode != null) {
-            return statusCode;
-        }
-
-        // only reconfigure logging, if debug flag was used on command line
-        // otherwise just use whatever is in conf/simplelogger.properties which happens automatically
-        if (arguments.isDebug()) {
-            Slf4jSimpleConfiguration.reconfigureDefaultLogLevel(Level.TRACE);
-        }
-        // always need to reload the logger with the new/changed configuration
-        // unit tests might reset the logging configuration
-        log = LoggerFactory.getLogger(CPD.class);
-
-        // TODO CLI errors should also be reported through this
-        // TODO this should not use the logger as backend, otherwise without
-        //  slf4j implementation binding, errors are entirely ignored.
-        // always install java.util.logging to slf4j bridge
-        Slf4jSimpleConfiguration.installJulBridge();
-        // logging, mostly for testing purposes
-        Level defaultLogLevel = Slf4jSimpleConfiguration.getDefaultLogLevel();
-        log.info("Log level is at {}", defaultLogLevel);
-
-        CPD cpd = new CPD(arguments);
-
-        try {
-            cpd.go();
-            final CPDReportRenderer renderer = arguments.getCPDReportRenderer();
-            if (renderer == null) {
-                // legacy writer
-                System.out.println(arguments.getRenderer().render(cpd.getMatches()));
-            } else {
-                final CPDReport report = cpd.toReport();
-                renderer.render(report, IOUtil.createWriter(Charset.defaultCharset(), null));
-            }
-            if (cpd.getMatches().hasNext()) {
-                if (arguments.isFailOnViolation()) {
-                    statusCode = StatusCode.DUPLICATE_CODE_FOUND;
-                } else {
-                    statusCode = StatusCode.OK;
-                }
-            } else {
-                statusCode = StatusCode.OK;
-            }
-        } catch (IOException | RuntimeException e) {
-            log.debug(e.toString(), e);
-            log.error(LogMessages.errorDetectedMessage(1, CPDCommandLineInterface.PROGRAM_NAME));
-            statusCode = StatusCode.ERROR;
-        }
-        return statusCode;
+        throw new UnsupportedOperationException("Use the pmd-cli module.");
     }
 
     public CPDReport toReport() {
         return new CPDReport(matchAlgorithm.getMatches(), numberOfTokensPerFile);
     }
 
-    /**
-     * @deprecated This class is to be removed in PMD 7 in favor of a unified PmdCli entry point.
-     */
-    @Deprecated
-    public enum StatusCode {
-        OK(0),
-        ERROR(1),
-        DUPLICATE_CODE_FOUND(4);
-
-        private final int code;
-
-        StatusCode(int code) {
-            this.code = code;
-        }
-
-        /** Returns the exit code as used in CLI. */
-        public int toInt() {
-            return this.code;
-        }
-    }
 }
