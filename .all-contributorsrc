@@ -7033,6 +7033,15 @@
       "contributions": [
         "bug"
       ]
+    },
+    {
+      "login": "nvervelle",
+      "name": "Nicolas Vervelle",
+      "avatar_url": "https://avatars.githubusercontent.com/u/77850427?v=4",
+      "profile": "https://www.quicksign.com/en/",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,
