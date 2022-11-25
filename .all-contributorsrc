@@ -7024,6 +7024,15 @@
       "contributions": [
         "bug"
       ]
+    },
+    {
+      "login": "mihalyr",
+      "name": "Robert Mihaly",
+      "avatar_url": "https://avatars.githubusercontent.com/u/26523902?v=4",
+      "profile": "https://www.linkedin.com/in/mihalyr",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,
