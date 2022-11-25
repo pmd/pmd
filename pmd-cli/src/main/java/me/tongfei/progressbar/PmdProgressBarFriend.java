@@ -25,7 +25,7 @@ public final class PmdProgressBarFriend {
     
     private static class PostCarriageReturnConsoleProgressBarConsumer extends ConsoleProgressBarConsumer {
 
-        public PostCarriageReturnConsoleProgressBarConsumer(PrintStream out) {
+        PostCarriageReturnConsoleProgressBarConsumer(PrintStream out) {
             super(out);
         }
 
