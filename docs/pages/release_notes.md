@@ -90,6 +90,7 @@ PMD 7 will remove support for `--files` in favor of these new flags.
 * [#4198](https://github.com/pmd/pmd/pull/4198): \[doc] Add supported CPD languages - [Jeroen van Wilgenburg](https://github.com/jvwilge) (@jvwilge)
 * [#4202](https://github.com/pmd/pmd/pull/4202): \[java] Fix #4200 and #4201: ClassWithOnlyPrivateConstructorsShouldBeFinal, CommentDefaultAccessModifier: Exclude lombok @<!-- -->Value annotation - [Lynn](https://github.com/LynnBroe) (@LynnBroe)
 * [#4205](https://github.com/pmd/pmd/pull/4205): \[doc] Clarify Scala support (no built-in rules) - [Eldrick Wega](https://github.com/Eldrick19) (@Eldrick19)
+* [#4226](https://github.com/pmd/pmd/pull/4226): \[visualforce] Replace uses of Jorje types in pmd-visualforce - [Aaron Hurst](https://github.com/aaronhurst-google) (@aaronhurst-google)
 
 {% endtocmaker %}
 
