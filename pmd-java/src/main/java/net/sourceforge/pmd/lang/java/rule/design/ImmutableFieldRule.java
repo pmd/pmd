@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.rule.design;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -22,7 +23,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTTryStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableInitializer;
 import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
 import net.sourceforge.pmd.lang.java.ast.AccessNode;
-import net.sourceforge.pmd.lang.java.ast.Annotatable;
 import net.sourceforge.pmd.lang.java.rule.AbstractLombokAwareRule;
 import net.sourceforge.pmd.lang.java.symboltable.JavaNameOccurrence;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
@@ -32,6 +32,17 @@ import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
  * @author Olander
  */
 public class ImmutableFieldRule extends AbstractLombokAwareRule {
+
+
+    @Override
+    protected String defaultIgnoredAnnotationsDescription() {
+        return "deprecated! " + super.defaultIgnoredAnnotationsDescription();
+    }
+
+    @Override
+    protected Collection<String> defaultSuppressionAnnotations() {
+        return Collections.emptyList();
+    }
 
     @Override
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
@@ -45,8 +56,7 @@ public class ImmutableFieldRule extends AbstractLombokAwareRule {
             AccessNode accessNodeParent = field.getAccessNodeParent();
             if (accessNodeParent.isStatic() || !accessNodeParent.isPrivate() || accessNodeParent.isFinal()
                     || accessNodeParent.isVolatile()
-                    || hasLombokAnnotation(node)
-                    || hasIgnoredAnnotation((Annotatable) accessNodeParent)) {
+                    || hasLombokAnnotation(node)) {
                 continue;
             }
 
