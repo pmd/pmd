@@ -71,29 +71,32 @@ PMD 7 will remove support for `--files` in favor of these new flags.
 
 #### Deprecated API
 
-The following APIs have been marked as deprecated for removal in PMD 7:
+* The following core APIs have been marked as deprecated for removal in PMD 7:
+  - {% jdoc core::PMD %} and {% jdoc core::PMD.StatusCode %} - PMD 7 will ship with a revamped CLI split from pmd-core. To programatically launch analysis you can use {% jdoc core::PmdAnalysis %}.
+  - {% jdoc !!core::PMDConfiguration#getAllInputPaths() %} - It is now superceded by {% jdoc !!core::PMDConfiguration#getInputPathList() %}
+  - {% jdoc !!core::PMDConfiguration#setInputPaths(List) %} - It is now superceded by {% jdoc !!core::PMDConfiguration#setInputPathList(List) %}
+  - {% jdoc !!core::PMDConfiguration#addInputPath(String) %} - It is now superceded by {% jdoc !!core::PMDConfiguration#addInputPath(Path) %}
+  - {% jdoc !!core::PMDConfiguration#getInputFilePath() %} - It is now superceded by {% jdoc !!core::PMDConfiguration#getInputFile() %}
+  - {% jdoc !!core::PMDConfiguration#getIgnoreFilePath() %} - It is now superceded by {% jdoc !!core::PMDConfiguration#getIgnoreFile() %}
+  - {% jdoc !!core::PMDConfiguration#setInputFilePath(String) %} - It is now superceded by {% jdoc !!core::PMDConfiguration#setInputFilePath(Path) %}
+  - {% jdoc !!core::PMDConfiguration#setIgnoreFilePath(String) %} - It is now superceded by {% jdoc !!core::PMDConfiguration#setIgnoreFilePath(Path) %}
+  - {% jdoc !!core::PMDConfiguration#getInputUri() %} - It is now superceded by {% jdoc !!core::PMDConfiguration#getUri() %}
+  - {% jdoc !!core::PMDConfiguration#setInputUri(String) %} - It is now superceded by {% jdoc !!core::PMDConfiguration#setInputUri(URI) %}
+  - {% jdoc !!core::PMDConfiguration#getReportFile() %} - It is now superceded by {% jdoc !!core::PMDConfiguration#getReportFilePath() %}
+  - {% jdoc !!core::PMDConfiguration#setReportFile(String) %} - It is now superceded by {% jdoc !!core::PMDConfiguration#setReportFile(Path) %}
+  - {% jdoc !!core::PMDConfiguration#isStressTest() %} and {% jdoc !!core::PMDConfiguration#setStressTest(boolean) %} - Will be removed with no replacement.
+  - {% jdoc !!core::PMDConfiguration#isBenchmark() %} and {% jdoc !!core::PMDConfiguration#setBenchmark(boolean) %} - Will be removed with no replacement, the CLI will still support it.
+  - {% jdoc core::cpd.CPD %} and {% jdoc core::cpd.CPD.StatusCode %} - PMD 7 will ship with a revamped CLI split from pmd-core. An alterative to programatically launch CPD analysis will be added in due time.
 
-- {% jdoc core::PMD %} and {% jdoc core::PMD.StatusCode %} - PMD 7 will ship with a revamped CLI split from pmd-core. To programatically launch analysis you can use {% jdoc core::PmdAnalysis %}.
-- {% jdoc !!core::PMDConfiguration#getAllInputPaths() %} - It is now superceded by {% jdoc !!core::PMDConfiguration#getInputPathList() %}
-- {% jdoc !!core::PMDConfiguration#setInputPaths(List) %} - It is now superceded by {% jdoc !!core::PMDConfiguration#setInputPathList(List) %}
-- {% jdoc !!core::PMDConfiguration#addInputPath(String) %} - It is now superceded by {% jdoc !!core::PMDConfiguration#addInputPath(Path) %}
-- {% jdoc !!core::PMDConfiguration#getInputFilePath() %} - It is now superceded by {% jdoc !!core::PMDConfiguration#getInputFile() %}
-- {% jdoc !!core::PMDConfiguration#getIgnoreFilePath() %} - It is now superceded by {% jdoc !!core::PMDConfiguration#getIgnoreFile() %}
-- {% jdoc !!core::PMDConfiguration#setInputFilePath(String) %} - It is now superceded by {% jdoc !!core::PMDConfiguration#setInputFilePath(Path) %}
-- {% jdoc !!core::PMDConfiguration#setIgnoreFilePath(String) %} - It is now superceded by {% jdoc !!core::PMDConfiguration#setIgnoreFilePath(Path) %}
-- {% jdoc !!core::PMDConfiguration#getInputUri() %} - It is now superceded by {% jdoc !!core::PMDConfiguration#getUri() %}
-- {% jdoc !!core::PMDConfiguration#setInputUri(String) %} - It is now superceded by {% jdoc !!core::PMDConfiguration#setInputUri(URI) %}
-- {% jdoc !!core::PMDConfiguration#getReportFile() %} - It is now superceded by {% jdoc !!core::PMDConfiguration#getReportFilePath() %}
-- {% jdoc !!core::PMDConfiguration#setReportFile(String) %} - It is now superceded by {% jdoc !!core::PMDConfiguration#setReportFile(Path) %}
-- {% jdoc !!core::PMDConfiguration#isStressTest() %} and {% jdoc !!core::PMDConfiguration#setStressTest(boolean) %} - Will be removed with no replacement.
-- {% jdoc !!core::PMDConfiguration#isBenchmark() %} and {% jdoc !!core::PMDConfiguration#setBenchmark(boolean) %} - Will be removed with no replacement, the CLI will still support it.
-- {% jdoc core::cpd.CPD %} and {% jdoc core::cpd.CPD.StatusCode %} - PMD 7 will ship with a revamped CLI split from pmd-core. An alterative to programatically launch CPD analysis will be added in due time.
+* In order to reduce the dependency on Apex Jorje classes, the method {% jdoc !!visualforce::lang.vf.DataType#fromBasicType(apex.jorje.semantic.symbol.type.BasicType) %}
+  has been deprecated. The equivalent method {% jdoc visualforce::lang.vf.DataType#fromTypeName(java.lang.String) %} should be used instead.
 
 ### External Contributions
 * [#4184](https://github.com/pmd/pmd/pull/4184): \[java]\[doc] TestClassWithoutTestCases - fix small typo in description - [Valery Yatsynovich](https://github.com/valfirst) (@valfirst)
 * [#4198](https://github.com/pmd/pmd/pull/4198): \[doc] Add supported CPD languages - [Jeroen van Wilgenburg](https://github.com/jvwilge) (@jvwilge)
 * [#4202](https://github.com/pmd/pmd/pull/4202): \[java] Fix #4200 and #4201: ClassWithOnlyPrivateConstructorsShouldBeFinal, CommentDefaultAccessModifier: Exclude lombok @<!-- -->Value annotation - [Lynn](https://github.com/LynnBroe) (@LynnBroe)
 * [#4205](https://github.com/pmd/pmd/pull/4205): \[doc] Clarify Scala support (no built-in rules) - [Eldrick Wega](https://github.com/Eldrick19) (@Eldrick19)
+* [#4226](https://github.com/pmd/pmd/pull/4226): \[visualforce] Replace uses of Jorje types in pmd-visualforce - [Aaron Hurst](https://github.com/aaronhurst-google) (@aaronhurst-google)
 
 {% endtocmaker %}
 

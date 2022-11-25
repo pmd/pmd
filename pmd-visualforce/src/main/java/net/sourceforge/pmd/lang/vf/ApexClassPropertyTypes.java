@@ -23,8 +23,6 @@ import net.sourceforge.pmd.lang.apex.ApexLanguageModule;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.ast.Node;
 
-import apex.jorje.semantic.symbol.type.BasicType;
-
 /**
  * Responsible for storing a mapping of Apex Class properties that can be referenced from Visualforce to the type of the
  * property.
@@ -51,8 +49,8 @@ class ApexClassPropertyTypes extends SalesforceFieldTypes {
                         Node node = parser.parse(apexFilePath.toString(), reader);
                         ApexClassPropertyTypesVisitor visitor = new ApexClassPropertyTypesVisitor();
                         visitor.visit((ApexNode<?>) node, null);
-                        for (Pair<String, BasicType> variable : visitor.getVariables()) {
-                            putDataType(variable.getKey(), DataType.fromBasicType(variable.getValue()));
+                        for (Pair<String, String> variable : visitor.getVariables()) {
+                            putDataType(variable.getKey(), DataType.fromTypeName(variable.getValue()));
                         }
                     } catch (IOException e) {
                         throw new ContextedRuntimeException(e)
