@@ -364,4 +364,21 @@ class Buzz implements Serializable {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>Explicitly ignore unresolved types (missing in auxclasspath)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Buzz implements java.io.Serializable {
+    private static final long serialVersionUID = 1L;
+
+    private FileInputStream stream; // bad - FileInputStream is not serializable, but: it is not imported, so
+    // the type is unresolved
+
+    public void setStream(FileInputStream stream) {
+        this.stream = stream;
+    }
+}
+]]></code>
+    </test-code>
 </test-data>

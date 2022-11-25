@@ -164,12 +164,17 @@ public class NonSerializableClassRule extends AbstractJavaRulechainRule {
         boolean notSerializable = !TypeTestUtil.isA(Serializable.class, node)
                 && !typeMirror.isPrimitive();
         if (!getProperty(CHECK_ABSTRACT_TYPES) && classSymbol != null) {
-            // exclude java.lang.Object, interfaces, abstract classes, and generic types
+            // exclude java.lang.Object, interfaces, abstract classes
             notSerializable &= !TypeTestUtil.isExactlyA(Object.class, node)
                     && !classSymbol.isInterface()
                     && !classSymbol.isAbstract();
         }
+        // exclude generic types
         if (!getProperty(CHECK_ABSTRACT_TYPES) && typeMirror instanceof JTypeVar) {
+            notSerializable = false;
+        }
+        // exclude unresolved types in general
+        if (typeSymbol != null && typeSymbol.isUnresolved()) {
             notSerializable = false;
         }
         return notSerializable;
