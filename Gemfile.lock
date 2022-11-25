@@ -1,9 +1,9 @@
 GIT
-  remote: https://github.com/pmd/pmd-regression-tester.git
-  revision: 3b26e7fc28203f5ea4f1cb840d990ad7f28b5491
-  branch: master
+  remote: https://github.com/adangel/pmd-regression-tester.git
+  revision: 6d2a07100b52f1df2a987530e336a4b2af9e42ab
+  branch: issue-116-relativize-paths
   specs:
-    pmdtester (1.5.2.pre.SNAPSHOT)
+    pmdtester (1.5.3.pre.SNAPSHOT)
       differ (~> 0.1)
       liquid (~> 5.2)
       logger-colors (~> 1.0)
