@@ -2335,24 +2335,23 @@ See the property `annotations`.
             <property name="xpath">
                 <value>
 <![CDATA[
-//TypeDeclaration
-    [Annotation[pmd-java:typeIs('lombok.experimental.UtilityClass')]]
-    [ClassOrInterfaceDeclaration/ClassOrInterfaceBody
+//ClassOrInterfaceDeclaration
+    [pmd-java:hasAnnotation('lombok.experimental.UtilityClass')]
+    [ClassOrInterfaceBody
         [
             (: no methods :)
-            not(ClassOrInterfaceBodyDeclaration/MethodDeclaration)
+            not(MethodDeclaration)
             or
             (: only private methods :)
-            count(ClassOrInterfaceBodyDeclaration/MethodDeclaration) = count(ClassOrInterfaceBodyDeclaration/MethodDeclaration[@Private=true()])
+            count(MethodDeclaration) = count(MethodDeclaration[@Private=true()])
         ]
     ]
 |
-//TypeDeclaration
+//ClassOrInterfaceDeclaration[@Nested= false() and @Local= false()]
 (: no lombok constructor annotations :)
-[not(Annotation[pmd-java:typeIs('lombok.NoArgsConstructor') or
-                pmd-java:typeIs('lombok.RequiredArgsConstructor') or
-                pmd-java:typeIs('lombok.AllArgsConstructor')])]
-/ClassOrInterfaceDeclaration[@Nested= false() and @Local= false()]
+[not(pmd-java:hasAnnotation('lombok.NoArgsConstructor') or
+     pmd-java:hasAnnotation('lombok.RequiredArgsConstructor') or
+     pmd-java:hasAnnotation('lombok.AllArgsConstructor'))]
 [
     (: at least one constructor :) ./ClassOrInterfaceBody/ConstructorDeclaration
     and
