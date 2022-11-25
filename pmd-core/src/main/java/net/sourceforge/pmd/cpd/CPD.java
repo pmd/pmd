@@ -84,7 +84,7 @@ public class CPD {
         try {
             for (File file : files) {
                 if (!file.exists()) {
-                    throw new FileNotFoundException("Couldn't find directory/file '" + file + "'");
+                    throw new FileNotFoundException("Could not find directory/file '" + file + "'");
                 } else if (file.isDirectory()) {
                     if (configuration.isNonRecursive()) {
                         addAllInDirectory(file);
@@ -268,7 +268,10 @@ public class CPD {
      * invoke {@link System#exit(int)}.
      *
      * @param args command line arguments
+     *
+     * @deprecated Use module pmd-cli -- to be removed before 7.0.0 is out.
      */
+    @Deprecated
     public static void main(String[] args) {
         StatusCode statusCode = runCpd(args);
         CPDCommandLineInterface.setStatusCodeOrExit(statusCode.toInt());

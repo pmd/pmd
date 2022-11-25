@@ -94,7 +94,7 @@ public class CPDTask extends Task {
             CPDConfiguration config = new CPDConfiguration();
             config.setMinimumTileSize(minimumTokenCount);
             config.setLanguage(createLanguage());
-            config.setEncoding(encoding);
+            config.setSourceEncoding(encoding);
             config.setSkipDuplicates(skipDuplicateFiles);
             config.setSkipLexicalErrors(skipLexicalErrors);
 

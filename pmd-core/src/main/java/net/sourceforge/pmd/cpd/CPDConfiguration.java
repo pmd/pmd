@@ -80,7 +80,6 @@ public class CPDConfiguration extends AbstractConfiguration {
 
     private CPDReportRenderer cpdReportRenderer;
 
-    private String encoding;
 
     @Parameter(names = "--ignore-literals",
             description = "Ignore number values and string contents when comparing text", required = false)
@@ -158,7 +157,6 @@ public class CPDConfiguration extends AbstractConfiguration {
 
     @Parameter(names = { "--encoding", "-e" }, description = "Character encoding to use when processing files", required = false)
     public void setEncoding(String encoding) {
-        this.encoding = encoding;
         setSourceEncoding(encoding);
     }
 
@@ -178,7 +176,7 @@ public class CPDConfiguration extends AbstractConfiguration {
             setRendererName(DEFAULT_RENDERER);
         }
         if (getRenderer() == null && getCPDRenderer() == null) {
-            Object renderer = createRendererByName(getRendererName(), getEncoding());
+            Object renderer = createRendererByName(getRendererName(), getSourceEncoding().name());
             String className = getRendererName();
 
             if (renderer instanceof CPDReportRenderer) {
@@ -514,10 +512,6 @@ public class CPDConfiguration extends AbstractConfiguration {
 
     public void setHelp(boolean help) {
         this.help = help;
-    }
-
-    public String getEncoding() {
-        return encoding;
     }
 
     public boolean isNoSkipBlocks() {

@@ -676,7 +676,7 @@ public class GUI implements CPDListener {
             Properties p = new Properties();
             CPDConfiguration config = new CPDConfiguration();
             config.setMinimumTileSize(Integer.parseInt(minimumLengthField.getText()));
-            config.setEncoding(encodingField.getText());
+            config.setSourceEncoding(encodingField.getText());
             config.setIgnoreIdentifiers(ignoreIdentifiersCheckbox.isSelected());
             config.setIgnoreLiterals(ignoreLiteralsCheckbox.isSelected());
             config.setIgnoreAnnotations(ignoreAnnotationsCheckbox.isSelected());

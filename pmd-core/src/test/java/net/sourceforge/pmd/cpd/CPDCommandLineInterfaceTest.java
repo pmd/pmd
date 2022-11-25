@@ -4,20 +4,11 @@
 
 package net.sourceforge.pmd.cpd;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.not;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 
 import org.junit.jupiter.api.AfterEach;
@@ -82,50 +73,5 @@ class CPDCommandLineInterfaceTest {
         return expectedFilesXmlBuilder.toString();
     }
 
-    @Test
-    void testDeprecatedOptionsWarning() throws Exception {
-        final List<String> filepaths = Arrays.asList(
-                new File(SRC_DIR, "dup1.java").getAbsolutePath(),
-                new File(SRC_DIR, "dup2.java").getAbsolutePath());
-        Path filelist = tempDir.resolve("cpd-test-file-list.txt");
-        Files.write(filelist, filepaths, StandardCharsets.UTF_8);
-        final String expectedFilesXml = getExpectedFileEntriesXml(filepaths);
 
-        String stderr = SystemLambda.tapSystemErr(() -> {
-            String stdout = SystemLambda.tapSystemOut(() -> {
-                CPD.StatusCode statusCode = CPD.runCpd("--minimum-tokens", "340", "--language", "java", "--filelist",
-                        filelist.toAbsolutePath().toString(), "--format", "xml", "-failOnViolation", "true");
-                assertEquals(CPD.StatusCode.OK, statusCode);
-            });
-            assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" + "<pmd-cpd>\n" + expectedFilesXml + "</pmd-cpd>", stdout.trim());
-        });
-        assertTrue(stderr.contains("Some deprecated options were used on the command-line, including -failOnViolation"));
-        assertTrue(stderr.contains("Consider replacing it with --fail-on-violation"));
-        // only one parameter is logged
-        assertFalse(stderr.contains("Some deprecated options were used on the command-line, including --filelist"));
-        assertFalse(stderr.contains("Consider replacing it with --file-list"));
-    }
-
-    @Test
-    void testDebugLogging() throws Exception {
-        // restoring system properties: --debug might change logging properties
-        SystemLambda.restoreSystemProperties(() -> {
-            String stderr = SystemLambda.tapSystemErr(() -> {
-                CPD.StatusCode statusCode = CPD.runCpd("--minimum-tokens", "340", "--language", "java", "--files",
-                        SRC_DIR, "--debug");
-                assertEquals(CPD.StatusCode.OK, statusCode);
-            });
-            assertThat(stderr, containsString("Tokenizing ")); // this is a debug logging
-        });
-    }
-
-    @Test
-    void testNormalLogging() throws Exception {
-        String stderr = SystemLambda.tapSystemErr(() -> {
-            CPD.StatusCode statusCode = CPD.runCpd("--minimum-tokens", "340", "--language", "java", "--files",
-                    SRC_DIR);
-            assertEquals(CPD.StatusCode.OK, statusCode);
-        });
-        assertThat(stderr, not(containsString("Tokenizing "))); // this is a debug logging
-    }
 }

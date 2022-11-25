@@ -24,11 +24,9 @@ import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 
 /**
- * @deprecated Internal API. Use {@link CPD#runCpd(String...)} or {@link CPD#main(String[])}
- *      in order to execute CPD.
+ * @deprecated Use the cli module to execute CPD.
  */
 @Deprecated
-@InternalApi
 public final class CPDCommandLineInterface {
     private static final Logger LOG = LoggerFactory.getLogger(CPDCommandLineInterface.class);
 
