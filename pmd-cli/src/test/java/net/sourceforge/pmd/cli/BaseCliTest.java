@@ -4,16 +4,22 @@
 
 package net.sourceforge.pmd.cli;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.hamcrest.Matcher;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.opentest4j.AssertionFailedError;
 
-import net.sourceforge.pmd.cli.internal.ExecutionResult;
+import net.sourceforge.pmd.cli.internal.CliExitCode;
 
 import com.github.stefanbirkner.systemlambda.SystemLambda;
 
@@ -23,28 +29,127 @@ abstract class BaseCliTest {
     static void disablePicocliAnsi() {
         System.setProperty("picocli.ansi", "false");
     }
-    
+
     @AfterAll
     static void resetPicocliAnsi() {
         System.clearProperty("picocli.ansi");
     }
-    
-    protected String runCliSuccessfully(String... args) throws Exception {
-        return runCli(ExecutionResult.OK, args);
+
+    protected CliExecutionResult runCliSuccessfully(String... args) throws Exception {
+        return runCli(CliExitCode.OK, args);
     }
 
-    protected String runCli(ExecutionResult expectedExitCode, String... args) throws Exception {
+    protected CliExecutionResult runCli(CliExitCode expectedExitCode, String... args) throws Exception {
         final List<String> argList = new ArrayList<>();
         argList.addAll(cliStandardArgs());
         argList.addAll(Arrays.asList(args));
-        
-        return SystemLambda.tapSystemErrAndOut(() -> {
-            final int actualExitCode = SystemLambda.catchSystemExit(() -> {
-                PmdCli.main(argList.toArray(new String[0]));
-            });
-            assertEquals(expectedExitCode.getExitCode(), actualExitCode, "Exit code");
-        });
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        ByteArrayOutputStream err = new ByteArrayOutputStream();
+
+        final PrintStream formerOut = System.out;
+        final PrintStream formerErr = System.err;
+
+        CliExitCode exitCode;
+        try {
+            System.out.println("running: pmd " + String.join(" ", argList));
+            System.setOut(new PrintStream(out));
+            System.setErr(new PrintStream(err));
+            int actualExitCode = SystemLambda.catchSystemExit(
+                // restoring system properties: --debug might change logging properties
+                () -> SystemLambda.restoreSystemProperties(
+                    () -> PmdCli.main(argList.toArray(new String[0]))
+                )
+            );
+            exitCode = CliExitCode.fromInt(actualExitCode);
+
+        } finally {
+            System.setOut(formerOut);
+            System.setErr(formerErr);
+        }
+
+        return new CliExecutionResult(
+            out, err, exitCode
+        ).verify(e -> assertEquals(expectedExitCode, e.exitCode));
     }
 
     protected abstract List<String> cliStandardArgs();
+
+
+    static class CliExecutionResult {
+
+        private final ByteArrayOutputStream out;
+        private final ByteArrayOutputStream err;
+        private final CliExitCode exitCode;
+
+        CliExecutionResult(ByteArrayOutputStream out,
+                           ByteArrayOutputStream err,
+                           CliExitCode exitCode) {
+            this.out = out;
+            this.err = err;
+            this.exitCode = exitCode;
+        }
+
+        public String getOut() {
+            return out.toString();
+        }
+
+        public String getErr() {
+            return err.toString();
+        }
+
+
+        public void checkOk() {
+            assertEquals(CliExitCode.OK, exitCode);
+        }
+
+        public void checkFailed() {
+            assertEquals(CliExitCode.ERROR, exitCode);
+        }
+
+        public void checkNoErrorOutput() {
+            checkStdErr(equalTo(""));
+        }
+
+        public void checkStdOut(Matcher<? super String> matcher) {
+            assertThat(getOut(), matcher);
+        }
+
+        public void checkStdErr(Matcher<? super String> matcher) {
+            assertThat(getErr(), matcher);
+        }
+
+        /**
+         * Use this method to wrap assertions.
+         */
+        public CliExecutionResult verify(ThrowingConsumer<CliExecutionResult> actions) {
+            try {
+                actions.accept(this);
+            } catch (Exception | AssertionError e) {
+                System.out.println("TEST FAILED");
+                System.out.println("> Return code: " + exitCode);
+                System.out.println("> Standard output -------------------------");
+                System.err.println(out.toString());
+                System.err.flush();
+                System.out.println("> Standard error --------------------------");
+                System.err.println(err.toString());
+                System.err.flush();
+                System.out.println("> -----------------------------------------");
+
+                if (e instanceof Exception) {
+                    throw new AssertionFailedError("Expected no exception to be thrown", e);
+                }
+                throw (AssertionError) e;
+            }
+            return this;
+        }
+
+
+        @FunctionalInterface
+        interface ThrowingConsumer<T> {
+
+            void accept(T t) throws Exception;
+        }
+    }
+
 }

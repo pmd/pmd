@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.cli;
 
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -17,7 +16,7 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-import net.sourceforge.pmd.cli.internal.ExecutionResult;
+import net.sourceforge.pmd.cli.internal.CliExitCode;
 import net.sourceforge.pmd.internal.Slf4jSimpleConfiguration;
 
 import com.github.stefanbirkner.systemlambda.SystemLambda;
@@ -39,34 +38,34 @@ class CpdCliTest extends BaseCliTest {
     void debugLogging() throws Exception {
         // restoring system properties: --debug might change logging properties
         SystemLambda.restoreSystemProperties(() -> {
-            String log = runCliSuccessfully("--debug", "--minimum-tokens", "340", "--dir", SRC_DIR);
-            assertThat(log, containsString("[main] INFO net.sourceforge.pmd.cli.commands.internal.AbstractPmdSubcommand - Log level is at TRACE"));
+            CliExecutionResult result = runCliSuccessfully("--debug", "--minimum-tokens", "340", "--dir", SRC_DIR);
+            result.checkStdOut(containsString("[main] INFO net.sourceforge.pmd.cli.commands.internal.AbstractPmdSubcommand - Log level is at TRACE"));
         });
     }
 
     @Test
     void defaultLogging() throws Exception {
-        String log = runCliSuccessfully("--minimum-tokens", "340", "--dir", SRC_DIR);
-        assertThat(log, containsString("[main] INFO net.sourceforge.pmd.cli.commands.internal.AbstractPmdSubcommand - Log level is at INFO"));
+        CliExecutionResult result = runCliSuccessfully("--minimum-tokens", "340", "--dir", SRC_DIR);
+        result.checkStdOut(containsString("[main] INFO net.sourceforge.pmd.cli.commands.internal.AbstractPmdSubcommand - Log level is at INFO"));
     }
     
     @Test
     void testMissingminimumTokens() throws Exception {
-        final String log = runCli(ExecutionResult.USAGE_ERROR);
-        assertThat(log, containsString("Missing required option: '--minimum-tokens=<minimumTokens>'"));
+        final CliExecutionResult result = runCli(CliExitCode.USAGE_ERROR);
+        result.checkStdErr(containsString("Missing required option: '--minimum-tokens=<minimumTokens>'"));
     }
     
     @Test
     void testMissingSource() throws Exception {
-        final String log = runCli(ExecutionResult.USAGE_ERROR, "--minimum-tokens", "340");
-        assertThat(log, containsString("Please provide a parameter for source root directory"));
+        final CliExecutionResult result = runCli(CliExitCode.USAGE_ERROR, "--minimum-tokens", "340");
+        result.checkStdErr(containsString("Please provide a parameter for source root directory"));
     }
     
     @Test
     void testWrongCliOptionsDoPrintUsage() throws Exception {
-        final String log = runCli(ExecutionResult.USAGE_ERROR, "--invalid", "--minimum-tokens", "340", "-d", SRC_DIR);
-        assertThat(log, containsString("Unknown option: '--invalid'"));
-        assertThat(log, containsString("Usage: pmd cpd"));
+        final CliExecutionResult result = runCli(CliExitCode.USAGE_ERROR, "--invalid", "--minimum-tokens", "340", "-d", SRC_DIR);
+        result.checkStdErr(containsString("Unknown option: '--invalid'"));
+        result.checkStdErr(containsString("Usage: pmd cpd"));
     }
     
     @Test
@@ -79,7 +78,7 @@ class CpdCliTest extends BaseCliTest {
                         SRC_DIR, "--format", "xml",
                     });
                 });
-                assertEquals(ExecutionResult.OK.getExitCode(), statusCode);
+                assertEquals(CliExitCode.OK.getExitCode(), statusCode);
             });
         });
         final Path absoluteSrcDir = Paths.get(SRC_DIR).toAbsolutePath();

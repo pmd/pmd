@@ -26,7 +26,7 @@ import net.sourceforge.pmd.benchmark.TimingReport;
 import net.sourceforge.pmd.benchmark.TimingReportRenderer;
 import net.sourceforge.pmd.cli.commands.typesupport.internal.PmdLanguageTypeSupport;
 import net.sourceforge.pmd.cli.commands.typesupport.internal.PmdLanguageVersionTypeSupport;
-import net.sourceforge.pmd.cli.internal.ExecutionResult;
+import net.sourceforge.pmd.cli.internal.CliExitCode;
 import net.sourceforge.pmd.internal.LogMessages;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
@@ -304,7 +304,7 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand {
     }
 
     @Override
-    protected ExecutionResult execute() {
+    protected CliExitCode execute() {
         if (benchmark) {
             TimeTracker.startGlobalTracking();
         }
@@ -319,18 +319,18 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand {
                     pmd = PmdAnalysis.create(configuration);
                 } catch (final Exception e) {
                     pmdReporter.errorEx("Could not initialize analysis", e);
-                    return ExecutionResult.ERROR;
+                    return CliExitCode.ERROR;
                 }
 
                 pmdReporter.log(Level.DEBUG, "Current classpath:\n{0}", System.getProperty("java.class.path"));
                 final ReportStats stats = pmd.runAndReturnStats();
                 if (pmdReporter.numErrors() > 0) {
                     // processing errors are ignored
-                    return ExecutionResult.ERROR;
+                    return CliExitCode.ERROR;
                 } else if (stats.getNumViolations() > 0 && configuration.isFailOnViolation()) {
-                    return ExecutionResult.VIOLATIONS_FOUND;
+                    return CliExitCode.VIOLATIONS_FOUND;
                 } else {
-                    return ExecutionResult.OK;
+                    return CliExitCode.OK;
                 }
             } finally {
                 if (pmd != null) {
@@ -341,7 +341,7 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand {
         } catch (final Exception e) {
             pmdReporter.errorEx("Exception while running PMD.", e);
             printErrorDetected(pmdReporter, 1);
-            return ExecutionResult.ERROR;
+            return CliExitCode.ERROR;
         } finally {
             finishBenchmarker(pmdReporter);
         }

@@ -26,7 +26,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-import net.sourceforge.pmd.cli.internal.ExecutionResult;
+import net.sourceforge.pmd.cli.internal.CliExitCode;
 import net.sourceforge.pmd.internal.Slf4jSimpleConfiguration;
 
 import com.github.stefanbirkner.systemlambda.SystemLambda;
@@ -144,7 +144,7 @@ class PmdCliTest extends BaseCliTest {
         assertFalse(Files.exists(absoluteReportFile), "Report file must not exist yet! " + absoluteReportFile);
 
         try {
-            runCliSuccessfully("-d", srcDir.toString(), "-R", DUMMY_RULESET, "-r", reportFile.toString());
+            runCliSuccessfully("-d", srcDir.toString(), "-R", DUMMY_RULESET, "-r", reportFile);
             assertTrue(Files.exists(absoluteReportFile), "Report file should have been created");
         } finally {
             Files.deleteIfExists(absoluteReportFile);
@@ -168,42 +168,40 @@ class PmdCliTest extends BaseCliTest {
 
     @Test
     void debugLogging() throws Exception {
-        // restoring system properties: --debug might change logging properties
-        SystemLambda.restoreSystemProperties(() -> {
-            String log = runCliSuccessfully("--debug", "--dir", srcDir.toString(), "--rulesets", DUMMY_RULESET);
-            assertThat(log, containsString("[main] INFO net.sourceforge.pmd.cli.commands.internal.AbstractPmdSubcommand - Log level is at TRACE"));
-        });
+        CliExecutionResult result = runCliSuccessfully("--debug", "--dir", srcDir.toString(), "--rulesets", DUMMY_RULESET);
+        result.checkStdErr(containsString("[main] INFO net.sourceforge.pmd.cli.commands.internal.AbstractPmdSubcommand - Log level is at TRACE"));
     }
 
     @Test
     void defaultLogging() throws Exception {
-        String log = runCliSuccessfully("--dir", srcDir.toString(), "--rulesets", DUMMY_RULESET);
-        assertThat(log, containsString("[main] INFO net.sourceforge.pmd.cli.commands.internal.AbstractPmdSubcommand - Log level is at INFO"));
+        CliExecutionResult result = runCliSuccessfully("--dir", srcDir.toString(), "--rulesets", DUMMY_RULESET);
+        result.checkStdErr(containsString("[main] INFO net.sourceforge.pmd.cli.commands.internal.AbstractPmdSubcommand - Log level is at INFO"));
     }
 
     @Test
     void testDeprecatedRulesetSyntaxOnCommandLine() throws Exception {
-        String log = runCli(ExecutionResult.VIOLATIONS_FOUND, "--dir", srcDir.toString(), "--rulesets", "dummy-basic");
-        assertThat(log, containsString("Ruleset reference 'dummy-basic' uses a deprecated form, use 'rulesets/dummy/basic.xml' instead"));
+        CliExecutionResult result = runCli(CliExitCode.VIOLATIONS_FOUND, "--dir", srcDir.toString(), "--rulesets", "dummy-basic");
+        result.checkStdErr(containsString("Ruleset reference 'dummy-basic' uses a deprecated form, use 'rulesets/dummy/basic.xml' instead"));
     }
 
     @Test
     void testMissingRuleset() throws Exception {
-        final String log = runCli(ExecutionResult.USAGE_ERROR);
-        assertThat(log, containsString("Missing required option: '--rulesets=<rulesets>'"));
+        CliExecutionResult result = runCli(CliExitCode.USAGE_ERROR);
+        result.checkStdErr(containsString("Missing required option: '--rulesets=<rulesets>'"));
     }
     
     @Test
     void testMissingSource() throws Exception {
-        final String log = runCli(ExecutionResult.USAGE_ERROR, "--rulesets", DUMMY_RULESET);
-        assertThat(log, containsString("Please provide a parameter for source root directory"));
+        CliExecutionResult result = runCli(CliExitCode.USAGE_ERROR, "--rulesets", DUMMY_RULESET);
+        result.checkStdErr(containsString("Please provide a parameter for source root directory"));
     }
-    
+
     @Test
     void testWrongCliOptionsDoPrintUsage() throws Exception {
-        final String log = runCli(ExecutionResult.USAGE_ERROR, "--invalid", "--rulesets", DUMMY_RULESET, "-d", srcDir.toString());
-        assertThat(log, containsString("Unknown option: '--invalid'"));
-        assertThat(log, containsString("Usage: pmd check"));
+        CliExecutionResult result = runCli(CliExitCode.USAGE_ERROR, "--invalid", "--rulesets", DUMMY_RULESET, "-d", srcDir.toString());
+        result.checkStdErr(containsString("Unknown option: '--invalid'"));
+        result.checkStdErr(containsString("Usage: pmd check"));
+        result.checkStdErr(not(containsStringIgnoringCase("Available report formats and")));
     }
 
     // utilities
@@ -232,8 +230,6 @@ class PmdCliTest extends BaseCliTest {
         
         // Always run against dummy language without logging not cache to remove all logging noise
         argList.add("check");
-        argList.add("--use-version");
-        argList.add("dummy-1.0");
         argList.add("--no-cache");
         argList.add("--no-progress");
         
