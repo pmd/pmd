@@ -639,36 +639,7 @@ k = i * j;      // set k with 80 not 120
 
     <rule name="BadComparison" ref="ComparisonWithNaN" deprecated="true" />
 
-    <rule name="BeanMembersShouldSerialize"
-          language="java"
-          since="1.1"
-          message="Found non-transient, non-static member. Please mark as transient or provide accessors."
-          class="net.sourceforge.pmd.lang.java.rule.errorprone.BeanMembersShouldSerializeRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#beanmembersshouldserialize">
-        <description>
-If a class is a bean, or is referenced by a bean directly or indirectly it needs to be serializable.
-Member variables need to be marked as transient, static, or have accessor methods in the class. Marking
-variables as transient is the safest and easiest modification. Accessor methods should follow the Java
-naming conventions, i.e. for a variable named foo, getFoo() and setFoo() accessor methods should be provided.
-        </description>
-        <priority>3</priority>
-        <example>
-<![CDATA[
-private transient int someFoo;  // good, it's transient
-private static int otherFoo;    // also OK
-private int moreFoo;            // OK, has proper accessors, see below
-private int badFoo;             // bad, should be marked transient
-
-private void setMoreFoo(int moreFoo){
-      this.moreFoo = moreFoo;
-}
-
-private int getMoreFoo(){
-      return this.moreFoo;
-}
-]]>
-        </example>
-    </rule>
+    <rule name="BeanMembersShouldSerialize" ref="NonSerializableClass" deprecated="true" />
 
     <rule name="BrokenNullCheck"
           language="java"
@@ -2721,6 +2692,47 @@ public class Foo {
        break;
     }
   }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="NonSerializableClass"
+          language="java"
+          since="1.1"
+          message="The field ''{0}'' of serializable class ''{1}'' is of non-serializable type ''{2}''."
+          class="net.sourceforge.pmd.lang.java.rule.errorprone.NonSerializableClassRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#nonserializableclass">
+        <description>
+If a class is marked as `Serializable`, then all fields need to be serializable as well. In order to exclude
+a field, it can be marked as transient. Static fields are not considered.
+
+This rule reports all fields, that are not serializable.
+
+If a class implements the methods to perform manual serialization (`writeObject`, `readObject`) or uses
+a replacement object (`writeReplace`, `readResolve`) then this class is ignored.
+
+Note: This rule has been revamped with PMD 6.52.0. It was previously called "BeanMembersShouldSerialize".
+The property `prefix` has been deprecated, since in a serializable class all fields have to be
+serializable regardless of the name.
+        </description>
+        <priority>3</priority>
+        <example>
+            <![CDATA[
+class Buzz implements java.io.Serializable {
+    private static final long serialVersionUID = 1L;
+
+    private transient int someFoo;          // good, it's transient
+    private static int otherFoo;            // also OK, it's static
+    private java.io.FileInputStream stream; // bad - FileInputStream is not serializable
+
+    public void setStream(FileInputStream stream) {
+        this.stream = stream;
+    }
+
+    public int getSomeFoo() {
+          return this.someFoo;
+    }
 }
 ]]>
         </example>
