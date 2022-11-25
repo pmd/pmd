@@ -33,6 +33,7 @@ This is a {{ site.pmd.release_type }} release.
     * [#2867](https://github.com/pmd/pmd/issues/2867): \[java] Separate pattern for test classes in ClassNamingConventions rule for Java
     * [#4201](https://github.com/pmd/pmd/issues/4201): \[java] CommentDefaultAccessModifier should consider lombok's @<!-- -->Value
 * java-design
+    * [#4188](https://github.com/pmd/pmd/issues/4188): \[java] ClassWithOnlyPrivateConstructorsShouldBeFinal false positive with Lombok's @<!-- -->NoArgsConstructor
     * [#4200](https://github.com/pmd/pmd/issues/4200): \[java] ClassWithOnlyPrivateConstructorsShouldBeFinal should consider lombok's @<!-- -->Value
 * java-errorprone
     * [#4185](https://github.com/pmd/pmd/issues/4185): \[java] InvalidLogMessageFormat rule produces a NPE
