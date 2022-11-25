@@ -2580,17 +2580,16 @@ See the property `annotations`.
                 <value>
 <![CDATA[
 //TypeDeclaration
-[
-Annotation[pmd-java:typeIs('lombok.experimental.UtilityClass')]
-and
-(
-(: no methods :)
-not(./ClassOrInterfaceDeclaration/ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/MethodDeclaration)
-or
-(: only private methods :)
-count(./ClassOrInterfaceDeclaration/ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/MethodDeclaration) = count(./ClassOrInterfaceDeclaration/ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/MethodDeclaration[@Private=true()])
-)
-]
+    [Annotation[pmd-java:typeIs('lombok.experimental.UtilityClass')]]
+    [ClassOrInterfaceDeclaration/ClassOrInterfaceBody
+        [
+            (: no methods :)
+            not(ClassOrInterfaceBodyDeclaration/MethodDeclaration)
+            or
+            (: only private methods :)
+            count(ClassOrInterfaceBodyDeclaration/MethodDeclaration) = count(ClassOrInterfaceBodyDeclaration/MethodDeclaration[@Private=true()])
+        ]
+    ]
 |
 //ClassOrInterfaceDeclaration[@Nested= false() and @Local= false()]
 [

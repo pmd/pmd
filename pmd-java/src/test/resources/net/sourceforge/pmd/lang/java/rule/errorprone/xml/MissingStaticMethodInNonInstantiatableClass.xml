@@ -411,7 +411,7 @@ public final class Test {
         ]]></code>
     </test-code>
     <test-code>
-        <description>#4224 [java] MissingStaticMethodInNonInstantiatableClass should considers lombok's UtilityClass</description>
+        <description>#4224 [java] MissingStaticMethodInNonInstantiatableClass should consider lombok's UtilityClass</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 import lombok.experimental.UtilityClass;
@@ -426,7 +426,7 @@ public final class Test {
         ]]></code>
     </test-code>
     <test-code>
-        <description>#4224 [java] MissingStaticMethodInNonInstantiatableClass should considers lombok's UtilityClass</description>
+        <description>#4224 [java] MissingStaticMethodInNonInstantiatableClass should consider lombok's UtilityClass</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import lombok.experimental.UtilityClass;
