@@ -138,7 +138,7 @@ public enum DataType {
                 break;
             }
         }
-        LOGGER.fine("Unable to determine DataType of " + value);
+        LOG.debug("Unable to determine DataType of {}", value);
         return Unknown;
     }
 
