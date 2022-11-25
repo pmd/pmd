@@ -4,12 +4,12 @@
 
 package net.sourceforge.pmd.cli;
 
+import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.jupiter.api.AfterAll;
@@ -97,10 +97,8 @@ class CpdCliTest extends BaseCliTest {
 
     @Override
     protected List<String> cliStandardArgs() {
-        final List<String> argList = new ArrayList<>();
-        
-        argList.add("cpd");
-        
-        return argList;
+        return listOf(
+            "cpd"
+        );
     }
 }

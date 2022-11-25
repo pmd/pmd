@@ -4,9 +4,14 @@
 
 package net.sourceforge.pmd.cli;
 
+import static net.sourceforge.pmd.cli.internal.CliExitCode.ERROR;
+import static net.sourceforge.pmd.cli.internal.CliExitCode.OK;
+import static net.sourceforge.pmd.cli.internal.CliExitCode.VIOLATIONS_FOUND;
+import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.containsStringIgnoringCase;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.not;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -18,7 +23,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.jupiter.api.AfterAll;
@@ -33,12 +37,13 @@ import com.github.stefanbirkner.systemlambda.SystemLambda;
 
 class PmdCliTest extends BaseCliTest {
 
-    @TempDir
-    private Path tempDir;
-
-    private static final String DUMMY_RULESET = "net/sourceforge/pmd/cli/FakeRuleset.xml";
+    static final String RSET_WITH_VIOLATION = "net/sourceforge/pmd/cli/RuleSetWithViolations.xml";
+    private static final String RSET_NO_VIOLATIONS = "net/sourceforge/pmd/cli/FakeRuleset.xml";
+    private static final String NOT_A_RULESET = "ThisRuleSetDoesNotExist.xml";
     private static final String STRING_TO_REPLACE = "__should_be_replaced__";
 
+    @TempDir
+    private Path tempDir;
     private Path srcDir;
 
     @AfterAll
@@ -69,7 +74,7 @@ class PmdCliTest extends BaseCliTest {
 
         assertTrue(Files.exists(reportFile), "Report file should exist");
 
-        runCliSuccessfully("-d", srcDir.toString(), "-R", DUMMY_RULESET, "-r", reportFile.toString());
+        runCliSuccessfully("-d", srcDir.toString(), "-R", RSET_NO_VIOLATIONS, "-r", reportFile.toString());
 
         assertNotEquals(readString(reportFile), STRING_TO_REPLACE);
     }
@@ -83,7 +88,7 @@ class PmdCliTest extends BaseCliTest {
 
         assertTrue(Files.exists(reportFile), "Report file should exist");
 
-        runCliSuccessfully("--dir", srcDir.toString(), "--rulesets", DUMMY_RULESET, "--report-file", reportFile.toString());
+        runCliSuccessfully("--dir", srcDir.toString(), "--rulesets", RSET_NO_VIOLATIONS, "--report-file", reportFile.toString());
 
         assertNotEquals(readString(reportFile), STRING_TO_REPLACE, "Report file should have been overwritten");
     }
@@ -95,7 +100,7 @@ class PmdCliTest extends BaseCliTest {
         assertFalse(Files.exists(reportFile), "Report file should not exist");
 
         try {
-            runCliSuccessfully("-d", srcDir.toString(), "-R", DUMMY_RULESET, "-r", reportFile.toString());
+            runCliSuccessfully("-d", srcDir.toString(), "-R", RSET_NO_VIOLATIONS, "-r", reportFile.toString());
             assertTrue(Files.exists(reportFile), "Report file should have been created");
         } finally {
             Files.deleteIfExists(reportFile);
@@ -108,7 +113,7 @@ class PmdCliTest extends BaseCliTest {
 
         assertFalse(Files.exists(reportFile), "Report file should not exist");
 
-        runCliSuccessfully("--dir", srcDir.toString(), "--rulesets", DUMMY_RULESET, "--report-file", reportFile.toString());
+        runCliSuccessfully("--dir", srcDir.toString(), "--rulesets", RSET_NO_VIOLATIONS, "--report-file", reportFile.toString());
 
         assertTrue(Files.exists(reportFile), "Report file should have been created");
     }
@@ -121,7 +126,7 @@ class PmdCliTest extends BaseCliTest {
 
         // restoring system properties: --debug might change logging properties
         SystemLambda.restoreSystemProperties(() -> {
-            runCliSuccessfully("--dir", srcDir.toString(), "--rulesets", DUMMY_RULESET, "--report-file", reportFile.toString(), "--debug");
+            runCliSuccessfully("--dir", srcDir.toString(), "--rulesets", RSET_NO_VIOLATIONS, "--report-file", reportFile.toString(), "--debug");
         });
 
         assertTrue(Files.exists(reportFile), "Report file should have been created");
@@ -144,7 +149,7 @@ class PmdCliTest extends BaseCliTest {
         assertFalse(Files.exists(absoluteReportFile), "Report file must not exist yet! " + absoluteReportFile);
 
         try {
-            runCliSuccessfully("-d", srcDir.toString(), "-R", DUMMY_RULESET, "-r", reportFile);
+            runCliSuccessfully("-d", srcDir.toString(), "-R", RSET_NO_VIOLATIONS, "-r", reportFile);
             assertTrue(Files.exists(absoluteReportFile), "Report file should have been created");
         } finally {
             Files.deleteIfExists(absoluteReportFile);
@@ -159,7 +164,7 @@ class PmdCliTest extends BaseCliTest {
         assertFalse(Files.exists(absoluteReportFile), "Report file must not exist yet!");
 
         try {
-            runCliSuccessfully("--dir", srcDir.toString(), "--rulesets", DUMMY_RULESET, "--report-file", reportFile.toString());
+            runCliSuccessfully("--dir", srcDir.toString(), "--rulesets", RSET_NO_VIOLATIONS, "--report-file", reportFile.toString());
             assertTrue(Files.exists(absoluteReportFile), "Report file should have been created");
         } finally {
             Files.deleteIfExists(absoluteReportFile);
@@ -168,13 +173,13 @@ class PmdCliTest extends BaseCliTest {
 
     @Test
     void debugLogging() throws Exception {
-        CliExecutionResult result = runCliSuccessfully("--debug", "--dir", srcDir.toString(), "--rulesets", DUMMY_RULESET);
+        CliExecutionResult result = runCliSuccessfully("--debug", "--dir", srcDir.toString(), "--rulesets", RSET_NO_VIOLATIONS);
         result.checkStdErr(containsString("[main] INFO net.sourceforge.pmd.cli.commands.internal.AbstractPmdSubcommand - Log level is at TRACE"));
     }
 
     @Test
     void defaultLogging() throws Exception {
-        CliExecutionResult result = runCliSuccessfully("--dir", srcDir.toString(), "--rulesets", DUMMY_RULESET);
+        CliExecutionResult result = runCliSuccessfully("--dir", srcDir.toString(), "--rulesets", RSET_NO_VIOLATIONS);
         result.checkStdErr(containsString("[main] INFO net.sourceforge.pmd.cli.commands.internal.AbstractPmdSubcommand - Log level is at INFO"));
     }
 
@@ -192,16 +197,84 @@ class PmdCliTest extends BaseCliTest {
     
     @Test
     void testMissingSource() throws Exception {
-        CliExecutionResult result = runCli(CliExitCode.USAGE_ERROR, "--rulesets", DUMMY_RULESET);
+        CliExecutionResult result = runCli(CliExitCode.USAGE_ERROR, "--rulesets", RSET_NO_VIOLATIONS);
         result.checkStdErr(containsString("Please provide a parameter for source root directory"));
     }
 
     @Test
     void testWrongCliOptionsDoPrintUsage() throws Exception {
-        CliExecutionResult result = runCli(CliExitCode.USAGE_ERROR, "--invalid", "--rulesets", DUMMY_RULESET, "-d", srcDir.toString());
+        CliExecutionResult result = runCli(CliExitCode.USAGE_ERROR, "--invalid", "--rulesets", RSET_NO_VIOLATIONS, "-d", srcDir.toString());
         result.checkStdErr(containsString("Unknown option: '--invalid'"));
         result.checkStdErr(containsString("Usage: pmd check"));
         result.checkStdErr(not(containsStringIgnoringCase("Available report formats and")));
+    }
+
+    /**
+     * See https://sourceforge.net/p/pmd/bugs/1231/
+     */
+    @Test
+    void testWrongRuleset() throws Exception {
+        runCli(ERROR, "-d", srcDir.toString(), "-f", "text", "-R", NOT_A_RULESET)
+            .verify(result -> result.checkStdErr(
+                containsString("Cannot resolve rule/ruleset reference"
+                                   + " '" + NOT_A_RULESET + "'")));
+    }
+
+    /**
+     * See https://sourceforge.net/p/pmd/bugs/1231/
+     */
+    @Test
+    void testWrongRulesetWithRulename() throws Exception {
+        runCli(ERROR, "-d", srcDir.toString(), "-f", "text", "-R", NOT_A_RULESET + "/NotARule")
+            .verify(result -> result.checkStdErr(
+                containsString("Cannot resolve rule/ruleset reference"
+                                   + " '" + NOT_A_RULESET + "/NotARule'")));
+    }
+
+    /**
+     * See https://sourceforge.net/p/pmd/bugs/1231/
+     */
+    @Test
+    void testWrongRulename() throws Exception {
+        runCli(OK, "-d", srcDir.toString(), "-f", "text", "-R", RSET_NO_VIOLATIONS + "/ThisRuleDoesNotExist")
+            .verify(result -> result.checkStdErr(
+                containsString(
+                    "No rules found. Maybe you misspelled a rule name?"
+                        + " (" + RSET_NO_VIOLATIONS + "/ThisRuleDoesNotExist)"
+                )
+            ));
+    }
+
+    @Test
+    public void changeSourceVersion() throws Exception {
+        runCli(OK, "-d", srcDir.toString(), "-f", "text", "-R", RSET_NO_VIOLATIONS, "--debug",
+               "--use-version", "dummy-1.2")
+            .verify(result -> result.checkStdErr(
+                containsPattern("Adding file .*\\.dummy \\(lang: dummy 1\\.2\\)"))
+            );
+    }
+
+
+    @Test
+    public void exitStatusWithViolationsAndWithoutFailOnViolations() throws Exception {
+        runCli(OK, "-d", srcDir.toString(), "-f", "text", "-R", RSET_WITH_VIOLATION, "--no-fail-on-violation")
+            .verify(r -> r.checkStdOut(
+                containsString("Violation from ReportAllRootNodes")
+            ));
+    }
+
+   @Test
+    public void exitStatusWithNoViolations() throws Exception {
+        runCli(OK, "-d", srcDir.toString(), "-f", "text", "-R", RSET_NO_VIOLATIONS)
+            .verify(r -> r.checkStdOut(equalTo("")));
+    }
+
+    @Test
+    public void exitStatusWithViolations() throws Exception {
+        runCli(VIOLATIONS_FOUND, "-d", srcDir.toString(), "-f", "text", "-R", RSET_WITH_VIOLATION)
+            .verify(r -> r.checkStdOut(
+                containsString("Violation from ReportAllRootNodes")
+            ));
     }
 
     // utilities
@@ -226,13 +299,8 @@ class PmdCliTest extends BaseCliTest {
     
     @Override
     protected List<String> cliStandardArgs() {
-        final List<String> argList = new ArrayList<>();
-        
-        // Always run against dummy language without logging not cache to remove all logging noise
-        argList.add("check");
-        argList.add("--no-cache");
-        argList.add("--no-progress");
-        
-        return argList;
+        return listOf(
+            "check", "--no-cache", "--no-progress"
+        );
     }
 }
