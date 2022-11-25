@@ -31,7 +31,7 @@ protected constructor in order to prevent instantiation than make the class misl
     [not(pmd-java:hasAnnotation('com.google.auto.value.AutoValue')
          or pmd-java:hasAnnotation('lombok.AllArgsConstructor')
          or pmd-java:hasAnnotation('lombok.NoArgsConstructor')
-         or pmd-java:hasAnnotation('lombok.RequiredArgsConstructor')
+         or pmd-java:hasAnnotation('lombok.RequiredArgsConstructor'))
     ]
 ]]>
                 </value>

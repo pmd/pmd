@@ -2386,7 +2386,7 @@ See the property `annotations`.
            [not(./ClassOrInterfaceBody/ConstructorDeclaration) or ./ClassOrInterfaceBody/ConstructorDeclaration[pmd-java:modifiers() = "public"]]
            [(./ClassOrInterfaceBody/MethodDeclaration
                 [pmd-java:modifiers() = "public"]
-                [./ClassOrInterfaceType
+                [.//ClassOrInterfaceType
                     [@SimpleName = //ClassOrInterfaceDeclaration[@Nested = false()]/@SimpleName]
                 ]
             ) or (

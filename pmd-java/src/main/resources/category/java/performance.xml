@@ -93,10 +93,31 @@ If you want to copy/move elements inside the _same_ array (e.g. shift the elemen
                                       (: no nested arrays or method calls as array index :)
                                       [count(ArrayAccess[not(.//ArrayAccess)]
                                                         [not(.//MethodCall)])=2]
-                                      (: array index must be same :)
-                                      [distinct-values(ArrayAccess[1]/(VariableAccess[2]|InfixExpression//VariableAccess)/@Name)
-                                       = distinct-values(ArrayAccess[2]/(VariableAccess[2]|InfixExpression//VariableAccess)/@Name)
-                                      ]
+                                      (: array access indexes must be same (excluding constants) :)
+                                      [deep-equal(
+                                        sort(distinct-values(ArrayAccess[1]/(VariableAccess[2]|InfixExpression//VariableAccess)
+                                            (: don't consider array length accesses :)
+                                            [not(parent::FieldAccess[@Name='length'])]
+                                            [
+                                               (: exclude referenced constants :)
+                                               not(@Name = (ancestor::MethodDeclaration|//FieldDeclaration)//VariableDeclarator[NumericLiteral][not(../../../parent::ForInit)]/VariableDeclaratorId/@Name)
+                                               or
+                                               (: include loop variable :)
+                                               @Name = ancestor::ForStatement/ForInit/LocalVariableDeclaration/VariableDeclarator/VariableDeclaratorId/@Name
+                                            ]
+                                            /@Name)),
+                                        sort(distinct-values(ArrayAccess[2]/(VariableAccess[2]|InfixExpression//VariableAccess)
+                                            (: don't consider array length accesses :)
+                                            [not(parent::FieldAccess[@Name='length'])]
+                                            [
+                                               (: exclude referenced constants :)
+                                               not(@Name = (ancestor::MethodDeclaration|//FieldDeclaration)//VariableDeclarator[NumericLiteral][not(../../../parent::ForInit)]/VariableDeclaratorId/@Name)
+                                               or
+                                               (: include loop variable :)
+                                               @Name = ancestor::ForStatement/ForInit/LocalVariableDeclaration/VariableDeclarator/VariableDeclaratorId/@Name
+                                            ]
+                                            /@Name))
+                                      )]
      )=1]
 ]]>
                 </value>
