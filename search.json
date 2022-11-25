@@ -2709,6 +2709,15 @@
 ,
 
 {
+"title": "InvalidJavaBean (Java, Design)",
+"tags": "",
+"keywords": "InvalidJavaBean",
+"url": "pmd_rules_java_design.html#invalidjavabean",
+"summary": "Rules that help you discover design issues."
+}
+,
+
+{
 "title": "LawOfDemeter (Java, Design)",
 "tags": "",
 "keywords": "LawOfDemeter",
@@ -4212,6 +4221,15 @@
 "tags": "",
 "keywords": "NonCaseLabelInSwitchStatement",
 "url": "pmd_rules_java_errorprone.html#noncaselabelinswitchstatement",
+"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
+}
+,
+
+{
+"title": "NonSerializableClass (Java, Error Prone)",
+"tags": "",
+"keywords": "NonSerializableClass",
+"url": "pmd_rules_java_errorprone.html#nonserializableclass",
 "summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
 }
 ,

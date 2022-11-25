@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors.">
-<meta name="keywords" content=" Error Prone, AssignmentInOperand, AssignmentToNonFinalStatic, AvoidAccessibilityAlteration, AvoidAssertAsIdentifier, AvoidBranchingStatementAsLastInLoop, AvoidCallingFinalize, AvoidCatchingNPE, AvoidCatchingThrowable, AvoidDecimalLiteralsInBigDecimalConstructor, AvoidDuplicateLiterals, AvoidEnumAsIdentifier, AvoidFieldNameMatchingMethodName, AvoidFieldNameMatchingTypeName, AvoidInstanceofChecksInCatchClause, AvoidLiteralsInIfCondition, AvoidLosingExceptionInformation, AvoidMultipleUnaryOperators, AvoidUsingOctalValues, BadComparison, BeanMembersShouldSerialize, BrokenNullCheck, CallSuperFirst, CallSuperLast, CheckSkipResult, ClassCastExceptionWithToArray, CloneMethodMustBePublic, CloneMethodMustImplementCloneable, CloneMethodReturnTypeMustMatchClassName, CloneThrowsCloneNotSupportedException, CloseResource, CompareObjectsWithEquals, ComparisonWithNaN, ConstructorCallsOverridableMethod, DataflowAnomalyAnalysis, DetachedTestCase, DoNotCallGarbageCollectionExplicitly, DoNotCallSystemExit, DoNotExtendJavaLangThrowable, DoNotHardCodeSDCard, DoNotTerminateVM, DoNotThrowExceptionInFinally, DontImportSun, DontUseFloatTypeForLoopIndices, EmptyCatchBlock, EmptyFinalizer, EmptyFinallyBlock, EmptyIfStmt, EmptyInitializer, EmptyStatementBlock, EmptyStatementNotInLoop, EmptySwitchStatements, EmptySynchronizedBlock, EmptyTryBlock, EmptyWhileStmt, EqualsNull, FinalizeDoesNotCallSuperFinalize, FinalizeOnlyCallsSuperFinalize, FinalizeOverloaded, FinalizeShouldBeProtected, IdempotentOperations, ImplicitSwitchFallThrough, ImportFromSamePackage, InstantiationToGetClass, InvalidSlf4jMessageFormat, InvalidLogMessageFormat, JumbledIncrementer, JUnitSpelling, JUnitStaticSuite, LoggerIsNotStaticFinal, MethodWithSameNameAsEnclosingClass, MisplacedNullCheck, MissingBreakInSwitch, MissingSerialVersionUID, MissingStaticMethodInNonInstantiatableClass, MoreThanOneLogger, NonCaseLabelInSwitchStatement, NonStaticInitializer, NullAssignment, OverrideBothEqualsAndHashcode, ProperCloneImplementation, ProperLogger, ReturnEmptyArrayRatherThanNull, ReturnEmptyCollectionRatherThanNull, ReturnFromFinallyBlock, SimpleDateFormatNeedsLocale, SingleMethodSingleton, SingletonClassReturningNewInstance, StaticEJBFieldShouldBeFinal, StringBufferInstantiationWithChar, SuspiciousEqualsMethodName, SuspiciousHashcodeMethodName, SuspiciousOctalEscape, TestClassWithoutTestCases, UnconditionalIfStatement, UnnecessaryBooleanAssertion, UnnecessaryCaseChange, UnnecessaryConversionTemporary, UnusedNullCheckInEquals, UseCorrectExceptionLogging, UseEqualsToCompareStrings, UselessOperationOnImmutable, UseLocaleWithCaseConversions, UseProperClassLoader">
+<meta name="keywords" content=" Error Prone, AssignmentInOperand, AssignmentToNonFinalStatic, AvoidAccessibilityAlteration, AvoidAssertAsIdentifier, AvoidBranchingStatementAsLastInLoop, AvoidCallingFinalize, AvoidCatchingNPE, AvoidCatchingThrowable, AvoidDecimalLiteralsInBigDecimalConstructor, AvoidDuplicateLiterals, AvoidEnumAsIdentifier, AvoidFieldNameMatchingMethodName, AvoidFieldNameMatchingTypeName, AvoidInstanceofChecksInCatchClause, AvoidLiteralsInIfCondition, AvoidLosingExceptionInformation, AvoidMultipleUnaryOperators, AvoidUsingOctalValues, BadComparison, BeanMembersShouldSerialize, BrokenNullCheck, CallSuperFirst, CallSuperLast, CheckSkipResult, ClassCastExceptionWithToArray, CloneMethodMustBePublic, CloneMethodMustImplementCloneable, CloneMethodReturnTypeMustMatchClassName, CloneThrowsCloneNotSupportedException, CloseResource, CompareObjectsWithEquals, ComparisonWithNaN, ConstructorCallsOverridableMethod, DataflowAnomalyAnalysis, DetachedTestCase, DoNotCallGarbageCollectionExplicitly, DoNotCallSystemExit, DoNotExtendJavaLangThrowable, DoNotHardCodeSDCard, DoNotTerminateVM, DoNotThrowExceptionInFinally, DontImportSun, DontUseFloatTypeForLoopIndices, EmptyCatchBlock, EmptyFinalizer, EmptyFinallyBlock, EmptyIfStmt, EmptyInitializer, EmptyStatementBlock, EmptyStatementNotInLoop, EmptySwitchStatements, EmptySynchronizedBlock, EmptyTryBlock, EmptyWhileStmt, EqualsNull, FinalizeDoesNotCallSuperFinalize, FinalizeOnlyCallsSuperFinalize, FinalizeOverloaded, FinalizeShouldBeProtected, IdempotentOperations, ImplicitSwitchFallThrough, ImportFromSamePackage, InstantiationToGetClass, InvalidSlf4jMessageFormat, InvalidLogMessageFormat, JumbledIncrementer, JUnitSpelling, JUnitStaticSuite, LoggerIsNotStaticFinal, MethodWithSameNameAsEnclosingClass, MisplacedNullCheck, MissingBreakInSwitch, MissingSerialVersionUID, MissingStaticMethodInNonInstantiatableClass, MoreThanOneLogger, NonCaseLabelInSwitchStatement, NonSerializableClass, NonStaticInitializer, NullAssignment, OverrideBothEqualsAndHashcode, ProperCloneImplementation, ProperLogger, ReturnEmptyArrayRatherThanNull, ReturnEmptyCollectionRatherThanNull, ReturnFromFinallyBlock, SimpleDateFormatNeedsLocale, SingleMethodSingleton, SingletonClassReturningNewInstance, StaticEJBFieldShouldBeFinal, StringBufferInstantiationWithChar, SuspiciousEqualsMethodName, SuspiciousHashcodeMethodName, SuspiciousOctalEscape, TestClassWithoutTestCases, UnconditionalIfStatement, UnnecessaryBooleanAssertion, UnnecessaryCaseChange, UnnecessaryConversionTemporary, UnusedNullCheckInEquals, UseCorrectExceptionLogging, UseEqualsToCompareStrings, UselessOperationOnImmutable, UseLocaleWithCaseConversions, UseProperClassLoader">
 <title>Error Prone | PMD Source Code Analyzer</title>
 <link rel="stylesheet" href="css/syntax.css">
 
@@ -2463,30 +2463,46 @@ and will always evaluate to false.</p>
 
 <h2 id="beanmembersshouldserialize">BeanMembersShouldSerialize</h2>
 
+<p><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span></p>
+
+<p>This rule has been renamed. Use instead: <a href="#nonserializableclass">NonSerializableClass</a></p>
+
+<p><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span></p>
+
 <p><strong>Since:</strong> PMD 1.1</p>
 
 <p><strong>Priority:</strong> Medium (3)</p>
 
-<p>If a class is a bean, or is referenced by a bean directly or indirectly it needs to be serializable.
-Member variables need to be marked as transient, static, or have accessor methods in the class. Marking
-variables as transient is the safest and easiest modification. Accessor methods should follow the Java
-naming conventions, i.e. for a variable named foo, getFoo() and setFoo() accessor methods should be provided.</p>
+<p>If a class is marked as <code class="language-plaintext highlighter-rouge">Serializable</code>, then all fields need to be serializable as well. In order to exclude
+a field, it can be marked as transient. Static fields are not considered.</p>
 
-<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/errorprone/BeanMembersShouldSerializeRule.java">net.sourceforge.pmd.lang.java.rule.errorprone.BeanMembersShouldSerializeRule</a></p>
+<p>This rule reports all fields, that are not serializable.</p>
+
+<p>If a class implements the methods to perform manual serialization (<code class="language-plaintext highlighter-rouge">writeObject</code>, <code class="language-plaintext highlighter-rouge">readObject</code>) or uses
+a replacement object (<code class="language-plaintext highlighter-rouge">writeReplace</code>, <code class="language-plaintext highlighter-rouge">readResolve</code>) then this class is ignored.</p>
+
+<p>Note: This rule has been revamped with PMD 6.52.0. It was previously called "BeanMembersShouldSerialize".
+The property <code class="language-plaintext highlighter-rouge">prefix</code> has been deprecated, since in a serializable class all fields have to be
+serializable regardless of the name.</p>
+
+<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/errorprone/NonSerializableClassRule.java">net.sourceforge.pmd.lang.java.rule.errorprone.NonSerializableClassRule</a></p>
 
 <p><strong>Example(s):</strong></p>
 
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">private</span> <span class="kd">transient</span> <span class="kt">int</span> <span class="n">someFoo</span><span class="o">;</span>  <span class="c1">// good, it's transient</span>
-<span class="kd">private</span> <span class="kd">static</span> <span class="kt">int</span> <span class="n">otherFoo</span><span class="o">;</span>    <span class="c1">// also OK</span>
-<span class="kd">private</span> <span class="kt">int</span> <span class="n">moreFoo</span><span class="o">;</span>            <span class="c1">// OK, has proper accessors, see below</span>
-<span class="kd">private</span> <span class="kt">int</span> <span class="n">badFoo</span><span class="o">;</span>             <span class="c1">// bad, should be marked transient</span>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">Buzz</span> <span class="kd">implements</span> <span class="n">java</span><span class="o">.</span><span class="na">io</span><span class="o">.</span><span class="na">Serializable</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="kt">long</span> <span class="n">serialVersionUID</span> <span class="o">=</span> <span class="mi">1L</span><span class="o">;</span>
 
-<span class="kd">private</span> <span class="kt">void</span> <span class="nf">setMoreFoo</span><span class="o">(</span><span class="kt">int</span> <span class="n">moreFoo</span><span class="o">){</span>
-      <span class="k">this</span><span class="o">.</span><span class="na">moreFoo</span> <span class="o">=</span> <span class="n">moreFoo</span><span class="o">;</span>
-<span class="o">}</span>
+    <span class="kd">private</span> <span class="kd">transient</span> <span class="kt">int</span> <span class="n">someFoo</span><span class="o">;</span>          <span class="c1">// good, it's transient</span>
+    <span class="kd">private</span> <span class="kd">static</span> <span class="kt">int</span> <span class="n">otherFoo</span><span class="o">;</span>            <span class="c1">// also OK, it's static</span>
+    <span class="kd">private</span> <span class="n">java</span><span class="o">.</span><span class="na">io</span><span class="o">.</span><span class="na">FileInputStream</span> <span class="n">stream</span><span class="o">;</span> <span class="c1">// bad - FileInputStream is not serializable</span>
 
-<span class="kd">private</span> <span class="kt">int</span> <span class="nf">getMoreFoo</span><span class="o">(){</span>
-      <span class="k">return</span> <span class="k">this</span><span class="o">.</span><span class="na">moreFoo</span><span class="o">;</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setStream</span><span class="o">(</span><span class="nc">FileInputStream</span> <span class="n">stream</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">stream</span> <span class="o">=</span> <span class="n">stream</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">int</span> <span class="nf">getSomeFoo</span><span class="o">()</span> <span class="o">{</span>
+          <span class="k">return</span> <span class="k">this</span><span class="o">.</span><span class="na">someFoo</span><span class="o">;</span>
+    <span class="o">}</span>
 <span class="o">}</span>
 </code></pre></div></div>
 
@@ -2503,15 +2519,15 @@ naming conventions, i.e. for a variable named foo, getFoo() and setFoo() accesso
   </thead>
   <tbody>
     <tr>
-      <td>ignoredAnnotations</td>
-      <td>lombok.Data | lombok.Getter | lombok.Value</td>
-      <td>Fully qualified names of the annotation types that should be ignored by this rule</td>
-      <td>yes. Delimiter is ‘|’.</td>
-    </tr>
-    <tr>
       <td>prefix</td>
       <td> </td>
-      <td>A variable prefix to skip, i.e., m_</td>
+      <td><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  A variable prefix to skip, i.e., m_</td>
+      <td>no</td>
+    </tr>
+    <tr>
+      <td>checkAbstractTypes</td>
+      <td>false</td>
+      <td>Enable to verify fields with abstract types like abstract classes, interfaces, generic types or java.lang.Object. Enabling this might lead to more false positives, since the concrete runtime type can actually be serializable.</td>
       <td>no</td>
     </tr>
   </tbody>
@@ -2524,8 +2540,7 @@ naming conventions, i.e. for a variable named foo, getFoo() and setFoo() accesso
 <p><strong>Use this rule and customize it:</strong></p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/errorprone.xml/BeanMembersShouldSerialize"</span><span class="nt">&gt;</span>
     <span class="nt">&lt;properties&gt;</span>
-        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"ignoredAnnotations"</span> <span class="na">value=</span><span class="s">"lombok.Data|lombok.Getter|lombok.Value"</span> <span class="nt">/&gt;</span>
-        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"prefix"</span> <span class="na">value=</span><span class="s">""</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"checkAbstractTypes"</span> <span class="na">value=</span><span class="s">"false"</span> <span class="nt">/&gt;</span>
     <span class="nt">&lt;/properties&gt;</span>
 <span class="nt">&lt;/rule&gt;</span>
 </code></pre></div></div>
@@ -4541,7 +4556,24 @@ non-instantiatable anymore and no violation will be reported.
 See the property <code class="language-plaintext highlighter-rouge">annotations</code>.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
-<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">ClassOrInterfaceDeclaration</span><span class="p">[</span><span class="na">@Nested</span><span class="err">=</span><span class="w"> </span><span class="nf">false</span><span class="p">()</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="na">@Local</span><span class="err">=</span><span class="w"> </span><span class="nf">false</span><span class="p">()]</span><span class="w">
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">TypeDeclaration</span><span class="w">
+    </span><span class="p">[</span><span class="nt">Annotation</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'lombok.experimental.UtilityClass'</span><span class="p">)]]</span><span class="w">
+    </span><span class="p">[</span><span class="nt">ClassOrInterfaceDeclaration</span><span class="o">/</span><span class="nt">ClassOrInterfaceBody</span><span class="w">
+        </span><span class="p">[</span><span class="w">
+            </span><span class="c">(: no methods :)</span><span class="w">
+            </span><span class="ow">not</span><span class="p">(</span><span class="nt">ClassOrInterfaceBodyDeclaration</span><span class="o">/</span><span class="nt">MethodDeclaration</span><span class="p">)</span><span class="w">
+            </span><span class="ow">or</span><span class="w">
+            </span><span class="c">(: only private methods :)</span><span class="w">
+            </span><span class="nf">count</span><span class="p">(</span><span class="nt">ClassOrInterfaceBodyDeclaration</span><span class="o">/</span><span class="nt">MethodDeclaration</span><span class="p">)</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">count</span><span class="p">(</span><span class="nt">ClassOrInterfaceBodyDeclaration</span><span class="o">/</span><span class="nt">MethodDeclaration</span><span class="p">[</span><span class="na">@Private</span><span class="err">=</span><span class="nf">true</span><span class="p">()])</span><span class="w">
+        </span><span class="p">]</span><span class="w">
+    </span><span class="p">]</span><span class="w">
+</span><span class="p">|</span><span class="w">
+</span><span class="o">//</span><span class="nf">TypeDeclaration</span><span class="w">
+</span><span class="c">(: no lombok constructor annotations :)</span><span class="w">
+</span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="nt">Annotation</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'lombok.NoArgsConstructor'</span><span class="p">)</span><span class="w"> </span><span class="ow">or</span><span class="w">
+                </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'lombok.RequiredArgsConstructor'</span><span class="p">)</span><span class="w"> </span><span class="ow">or</span><span class="w">
+                </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'lombok.AllArgsConstructor'</span><span class="p">)])]</span><span class="w">
+</span><span class="o">/</span><span class="nt">ClassOrInterfaceDeclaration</span><span class="p">[</span><span class="na">@Nested</span><span class="err">=</span><span class="w"> </span><span class="nf">false</span><span class="p">()</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="na">@Local</span><span class="err">=</span><span class="w"> </span><span class="nf">false</span><span class="p">()]</span><span class="w">
 </span><span class="p">[</span><span class="w">
   </span><span class="p">(</span><span class="w">
     </span><span class="c">(: at least one constructor :)</span><span class="w">
@@ -4691,6 +4723,84 @@ This legal, but confusing. It is easy to mix up the case labels and the non-case
 
 <p><strong>Use this rule by referencing it:</strong></p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/errorprone.xml/NonCaseLabelInSwitchStatement"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<h2 id="nonserializableclass">NonSerializableClass</h2>
+
+<p><strong>Since:</strong> PMD 1.1</p>
+
+<p><strong>Priority:</strong> Medium (3)</p>
+
+<p>If a class is marked as <code class="language-plaintext highlighter-rouge">Serializable</code>, then all fields need to be serializable as well. In order to exclude
+a field, it can be marked as transient. Static fields are not considered.</p>
+
+<p>This rule reports all fields, that are not serializable.</p>
+
+<p>If a class implements the methods to perform manual serialization (<code class="language-plaintext highlighter-rouge">writeObject</code>, <code class="language-plaintext highlighter-rouge">readObject</code>) or uses
+a replacement object (<code class="language-plaintext highlighter-rouge">writeReplace</code>, <code class="language-plaintext highlighter-rouge">readResolve</code>) then this class is ignored.</p>
+
+<p>Note: This rule has been revamped with PMD 6.52.0. It was previously called "BeanMembersShouldSerialize".
+The property <code class="language-plaintext highlighter-rouge">prefix</code> has been deprecated, since in a serializable class all fields have to be
+serializable regardless of the name.</p>
+
+<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/errorprone/NonSerializableClassRule.java">net.sourceforge.pmd.lang.java.rule.errorprone.NonSerializableClassRule</a></p>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">Buzz</span> <span class="kd">implements</span> <span class="n">java</span><span class="o">.</span><span class="na">io</span><span class="o">.</span><span class="na">Serializable</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="kt">long</span> <span class="n">serialVersionUID</span> <span class="o">=</span> <span class="mi">1L</span><span class="o">;</span>
+
+    <span class="kd">private</span> <span class="kd">transient</span> <span class="kt">int</span> <span class="n">someFoo</span><span class="o">;</span>          <span class="c1">// good, it's transient</span>
+    <span class="kd">private</span> <span class="kd">static</span> <span class="kt">int</span> <span class="n">otherFoo</span><span class="o">;</span>            <span class="c1">// also OK, it's static</span>
+    <span class="kd">private</span> <span class="n">java</span><span class="o">.</span><span class="na">io</span><span class="o">.</span><span class="na">FileInputStream</span> <span class="n">stream</span><span class="o">;</span> <span class="c1">// bad - FileInputStream is not serializable</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setStream</span><span class="o">(</span><span class="nc">FileInputStream</span> <span class="n">stream</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">stream</span> <span class="o">=</span> <span class="n">stream</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">int</span> <span class="nf">getSomeFoo</span><span class="o">()</span> <span class="o">{</span>
+          <span class="k">return</span> <span class="k">this</span><span class="o">.</span><span class="na">someFoo</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>This rule has the following properties:</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Default Value</th>
+      <th>Description</th>
+      <th>Multivalued</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>prefix</td>
+      <td> </td>
+      <td><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  A variable prefix to skip, i.e., m_</td>
+      <td>no</td>
+    </tr>
+    <tr>
+      <td>checkAbstractTypes</td>
+      <td>false</td>
+      <td>Enable to verify fields with abstract types like abstract classes, interfaces, generic types or java.lang.Object. Enabling this might lead to more false positives, since the concrete runtime type can actually be serializable.</td>
+      <td>no</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Use this rule with the default properties by just referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/errorprone.xml/NonSerializableClass"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule and customize it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/errorprone.xml/NonSerializableClass"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;properties&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"checkAbstractTypes"</span> <span class="na">value=</span><span class="s">"false"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/properties&gt;</span>
+<span class="nt">&lt;/rule&gt;</span>
 </code></pre></div></div>
 
 <h2 id="nonstaticinitializer">NonStaticInitializer</h2>

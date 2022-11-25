@@ -1760,6 +1760,7 @@
   <li><a href="pmd_rules_java_design.html#finalfieldcouldbestatic">FinalFieldCouldBeStatic</a>: If a final field is assigned to a compile-time constant, it could be made static, thus saving ove…</li>
   <li><a href="pmd_rules_java_design.html#godclass">GodClass</a>: The God Class rule detects the God Class design flaw using metrics. God classes do too many thing…</li>
   <li><a href="pmd_rules_java_design.html#immutablefield">ImmutableField</a>: Identifies private fields whose values never change once object initialization ends either in the…</li>
+  <li><a href="pmd_rules_java_design.html#invalidjavabean">InvalidJavaBean</a>: Identifies beans, that don’t follow the [JavaBeans API specification](https://download.oracle.com…</li>
   <li><a href="pmd_rules_java_design.html#lawofdemeter">LawOfDemeter</a>: The Law of Demeter is a simple rule, that says "only talk to friends". It helps to reduce couplin…</li>
   <li><a href="pmd_rules_java_design.html#logicinversion">LogicInversion</a>: Use opposite operator instead of negating the whole expression with a logic complement operator.</li>
   <li><a href="pmd_rules_java_design.html#loosepackagecoupling">LoosePackageCoupling</a>: Avoid using classes from the configured package hierarchy outside of the package hierarchy, excep…</li>
@@ -1822,7 +1823,7 @@
   <li><a href="pmd_rules_java_errorprone.html#avoidmultipleunaryoperators">AvoidMultipleUnaryOperators</a>: The use of multiple unary operators may be problematic, and/or confusing. Ensure that the intende…</li>
   <li><a href="pmd_rules_java_errorprone.html#avoidusingoctalvalues">AvoidUsingOctalValues</a>: Integer literals should not start with zero since this denotes that the rest of literal will be i…</li>
   <li><a href="pmd_rules_java_errorprone.html#badcomparison">BadComparison</a>: <span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span> The rule has been renamed. Use instead <a href="pmd_rules_java_errorprone.html#comparisonwithnan">ComparisonWithNaN</a>.</li>
-  <li><a href="pmd_rules_java_errorprone.html#beanmembersshouldserialize">BeanMembersShouldSerialize</a>: If a class is a bean, or is referenced by a bean directly or indirectly it needs to be serializab…</li>
+  <li><a href="pmd_rules_java_errorprone.html#beanmembersshouldserialize">BeanMembersShouldSerialize</a>: <span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span> The rule has been renamed. Use instead <a href="pmd_rules_java_errorprone.html#nonserializableclass">NonSerializableClass</a>.</li>
   <li><a href="pmd_rules_java_errorprone.html#brokennullcheck">BrokenNullCheck</a>: The null check is broken since it will throw a NullPointerException itself. It is likely that you…</li>
   <li><a href="pmd_rules_java_errorprone.html#callsuperfirst">CallSuperFirst</a>: Super should be called at the start of the method</li>
   <li><a href="pmd_rules_java_errorprone.html#callsuperlast">CallSuperLast</a>: Super should be called at the end of the method</li>
@@ -1879,6 +1880,7 @@
   <li><a href="pmd_rules_java_errorprone.html#missingstaticmethodinnoninstantiatableclass">MissingStaticMethodInNonInstantiatableClass</a>: A class that has private constructors and does not have any static methods or fields cannot be us…</li>
   <li><a href="pmd_rules_java_errorprone.html#morethanonelogger">MoreThanOneLogger</a>: Normally only one logger is used in each class. This rule supports slf4j, log4j, Java Util Loggin…</li>
   <li><a href="pmd_rules_java_errorprone.html#noncaselabelinswitchstatement">NonCaseLabelInSwitchStatement</a>: A non-case label (e.g. a named break/continue label) was present in a switch statement. This lega…</li>
+  <li><a href="pmd_rules_java_errorprone.html#nonserializableclass">NonSerializableClass</a>: If a class is marked as ‘Serializable’, then all fields need to be serializable as well. In order…</li>
   <li><a href="pmd_rules_java_errorprone.html#nonstaticinitializer">NonStaticInitializer</a>: A non-static initializer block will be called any time a constructor is invoked (just prior to in…</li>
   <li><a href="pmd_rules_java_errorprone.html#nullassignment">NullAssignment</a>: Assigning a "null" to a variable (outside of its declaration) is usually bad form.  Sometimes, th…</li>
   <li><a href="pmd_rules_java_errorprone.html#overridebothequalsandhashcode">OverrideBothEqualsAndHashcode</a>: Override both public boolean Object.equals(Object other), and public int Object.hashCode(), or ov…</li>
@@ -2101,7 +2103,7 @@
 
     <p>It contains the following rules:</p>
 
-    <p><a href="pmd_rules_java_errorprone.html#beanmembersshouldserialize">BeanMembersShouldSerialize</a>, <a href="pmd_rules_java_errorprone.html#missingserialversionuid">MissingSerialVersionUID</a></p>
+    <p><a href="pmd_rules_java_errorprone.html#nonserializableclass">BeanMembersShouldSerialize</a>, <a href="pmd_rules_java_errorprone.html#missingserialversionuid">MissingSerialVersionUID</a></p>
   </li>
   <li>
     <p>JUnit (<code class="language-plaintext highlighter-rouge">rulesets/java/junit.xml</code>):</p>
