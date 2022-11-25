@@ -24,7 +24,6 @@ import net.sourceforge.pmd.benchmark.TimedOperation;
 import net.sourceforge.pmd.benchmark.TimedOperationCategory;
 import net.sourceforge.pmd.cache.AnalysisCacheListener;
 import net.sourceforge.pmd.cache.NoopAnalysisCache;
-import net.sourceforge.pmd.cli.internal.ProgressBarListener;
 import net.sourceforge.pmd.internal.LogMessages;
 import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.internal.util.FileCollectionUtil;
@@ -280,11 +279,8 @@ public final class PmdAnalysis implements AutoCloseable {
 
         GlobalAnalysisListener listener;
         try {
-            @SuppressWarnings("PMD.CloseResource") AnalysisCacheListener cacheListener = new AnalysisCacheListener(configuration.getAnalysisCache(), rulesets, configuration.getClassLoader());
-            if (configuration.isProgressBar()) {
-                @SuppressWarnings("PMD.CloseResource") ProgressBarListener progressBarListener = new ProgressBarListener(textFiles.size(), System.out::print);
-                addListener(progressBarListener);
-            }
+            @SuppressWarnings("PMD.CloseResource")
+            AnalysisCacheListener cacheListener = new AnalysisCacheListener(configuration.getAnalysisCache(), rulesets, configuration.getClassLoader());
             listener = GlobalAnalysisListener.tee(listOf(createComposedRendererListener(renderers),
                                                          GlobalAnalysisListener.tee(listeners),
                                                          GlobalAnalysisListener.tee(extraListeners),
@@ -295,6 +291,8 @@ public final class PmdAnalysis implements AutoCloseable {
         }
 
         try (TimedOperation ignored = TimeTracker.startOperation(TimedOperationCategory.FILE_PROCESSING)) {
+            // Notify analysis is starting with so many files collected
+            listener.startAnalysis(textFiles.size());
 
             for (final Rule rule : removeBrokenRules(rulesets)) {
                 // todo Just like we throw for invalid properties, "broken rules"

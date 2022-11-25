@@ -25,7 +25,7 @@ import net.sourceforge.pmd.util.IOUtil;
 
 /**
  * Listens to an analysis. This object produces new {@link FileAnalysisListener}
- * for each analysed file, which themselves handle events like violations,
+ * for each analyzed file, which themselves handle events like violations,
  * in their file. Thread-safety is required.
  *
  * <p>Listeners are the main API to obtain results of an analysis. The
@@ -38,6 +38,16 @@ import net.sourceforge.pmd.util.IOUtil;
  */
 public interface GlobalAnalysisListener extends AutoCloseable {
 
+    /**
+     * Notify the implementation that the analysis is about to start,
+     * and how many files are to be processed.
+     * 
+     * @param totalFilesToAnalyze The total number of files to be analyzed.
+     */
+    default void startAnalysis(int totalFilesToAnalyze) {
+        // Nothing to do
+    }
+    
     /**
      * Returns a file listener that will handle events occurring during
      * the analysis of the given file. The new listener may receive events
@@ -114,6 +124,11 @@ public interface GlobalAnalysisListener extends AutoCloseable {
 
             TeeListener(List<GlobalAnalysisListener> myList) {
                 this.myList = myList;
+            }
+            
+            @Override
+            public void startAnalysis(int totalFilesToAnalyze) {
+                myList.forEach(it -> it.startAnalysis(totalFilesToAnalyze));
             }
 
             @Override

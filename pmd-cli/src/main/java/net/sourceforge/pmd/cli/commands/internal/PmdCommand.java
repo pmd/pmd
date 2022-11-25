@@ -27,6 +27,7 @@ import net.sourceforge.pmd.benchmark.TimingReportRenderer;
 import net.sourceforge.pmd.cli.commands.typesupport.internal.PmdLanguageTypeSupport;
 import net.sourceforge.pmd.cli.commands.typesupport.internal.PmdLanguageVersionTypeSupport;
 import net.sourceforge.pmd.cli.internal.ExecutionResult;
+import net.sourceforge.pmd.cli.internal.ProgressBarListener;
 import net.sourceforge.pmd.internal.LogMessages;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
@@ -279,7 +280,6 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand {
         configuration.setFailOnViolation(failOnViolation);
         configuration.setAnalysisCacheLocation(cacheLocation != null ? cacheLocation.toString() : null);
         configuration.setIgnoreIncrementalAnalysis(noCache);
-        configuration.setProgressBar(showProgressBar);
 
         if (languageVersion != null) {
             configuration.setDefaultLanguageVersions(languageVersion);
@@ -323,6 +323,16 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand {
                 }
 
                 pmdReporter.log(Level.DEBUG, "Current classpath:\n{0}", System.getProperty("java.class.path"));
+                
+                if (showProgressBar) {
+                    if (reportFile == null) {
+                        pmdReporter.log(Level.WARN, "Progressbar rendering conflicts with reporting to STDOUT. "
+                                + "No progressbar will be shown. Try running with '-r'");
+                    } else {
+                        pmd.addListener(new ProgressBarListener());
+                    }
+                }
+                
                 final ReportStats stats = pmd.runAndReturnStats();
                 if (pmdReporter.numErrors() > 0) {
                     // processing errors are ignored

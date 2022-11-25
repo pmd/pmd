@@ -21,9 +21,6 @@ import net.sourceforge.pmd.internal.Slf4jSimpleConfiguration;
  * @author Romain Pelisse &lt;belaran@gmail.com&gt;
  */
 public class CLITest extends BaseCLITest {
-    // note that the progress bar sometimes messes up the log so it is
-    // disabled here in most tests.
-
     // restoring system properties: -debug might change logging properties
     // See Slf4jSimpleConfigurationForAnt and resetLogging
     @Rule
@@ -65,7 +62,7 @@ public class CLITest extends BaseCLITest {
 
     @Test
     public void changeJavaVersion() {
-        String[] args = { "-d", SOURCE_FOLDER, "-f", "text", "-R", RSET_NO_VIOLATION, "-version", "1.5", "-language", "java", "--debug", "--no-progress", };
+        String[] args = { "-d", SOURCE_FOLDER, "-f", "text", "-R", RSET_NO_VIOLATION, "-version", "1.5", "-language", "java", "--debug", };
         String log = runTest(args);
         assertThat(log, containsPattern("Adding file .*\\.java \\(lang: java 1\\.5\\)"));
     }
@@ -77,21 +74,21 @@ public class CLITest extends BaseCLITest {
 
     @Test
     public void exitStatusWithViolations() {
-        String[] args = { "-d", SOURCE_FOLDER, "-f", "text", "-R", RSET_WITH_VIOLATION, "--no-progress", };
+        String[] args = { "-d", SOURCE_FOLDER, "-f", "text", "-R", RSET_WITH_VIOLATION, };
         String log = runTest(StatusCode.VIOLATIONS_FOUND, args);
         assertThat(log, containsString("Violation from test-rset-1.xml"));
     }
 
     @Test
     public void exitStatusWithViolationsAndWithoutFailOnViolations() {
-        String[] args = { "-d", SOURCE_FOLDER, "-f", "text", "-R", RSET_WITH_VIOLATION, "-failOnViolation", "false", "--no-progress", };
+        String[] args = { "-d", SOURCE_FOLDER, "-f", "text", "-R", RSET_WITH_VIOLATION, "-failOnViolation", "false", };
         String log = runTest(StatusCode.OK, args);
         assertThat(log, containsString("Violation from test-rset-1.xml"));
     }
 
     @Test
     public void exitStatusWithViolationsAndWithoutFailOnViolationsLongOption() {
-        String[] args = { "-d", SOURCE_FOLDER, "-f", "text", "-R", RSET_WITH_VIOLATION, "--fail-on-violation", "false", "--no-progress", };
+        String[] args = { "-d", SOURCE_FOLDER, "-f", "text", "-R", RSET_WITH_VIOLATION, "--fail-on-violation", "false", };
         String log = runTest(StatusCode.OK, args);
         assertThat(log, containsString("Violation from test-rset-1.xml"));
     }
