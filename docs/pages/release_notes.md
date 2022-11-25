@@ -36,6 +36,8 @@ This is a {{ site.pmd.release_type }} release.
     * [#4200](https://github.com/pmd/pmd/issues/4200): \[java] ClassWithOnlyPrivateConstructorsShouldBeFinal should consider lombok's @<!-- -->Value
 * java-errorprone
     * [#4185](https://github.com/pmd/pmd/issues/4185): \[java] InvalidLogMessageFormat rule produces a NPE
+* java-performance
+    * [#4183](https://github.com/pmd/pmd/issues/4183): \[java] AvoidArrayLoops regression: from false negative to false positive with final variables
 
 ### API Changes
 
