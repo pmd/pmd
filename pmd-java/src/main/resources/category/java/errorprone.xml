@@ -2591,7 +2591,12 @@ See the property `annotations`.
         ]
     ]
 |
-//ClassOrInterfaceDeclaration[@Nested= false() and @Local= false()]
+//TypeDeclaration
+(: no lombok constructor annotations :)
+[not(Annotation[pmd-java:typeIs('lombok.NoArgsConstructor') or
+                pmd-java:typeIs('lombok.RequiredArgsConstructor') or
+                pmd-java:typeIs('lombok.AllArgsConstructor')])]
+/ClassOrInterfaceDeclaration[@Nested= false() and @Local= false()]
 [
   (
     (: at least one constructor :)

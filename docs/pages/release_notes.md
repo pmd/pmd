@@ -41,6 +41,7 @@ This is a {{ site.pmd.release_type }} release.
     * [#4174](https://github.com/pmd/pmd/issues/4174): \[java] MissingStaticMethodInNonInstantiatableClass does not consider nested builder class
     * [#4185](https://github.com/pmd/pmd/issues/4185): \[java] InvalidLogMessageFormat rule produces a NPE
     * [#4224](https://github.com/pmd/pmd/issues/4224): \[java] MissingStaticMethodInNonInstantiatableClass should consider Lombok's @<!-- -->UtilityClass
+    * [#4225](https://github.com/pmd/pmd/issues/4225): \[java] MissingStaticMethodInNonInstantiatableClass should consider Lombok's @<!-- -->NoArgsConstructor
 * java-performance
     * [#4183](https://github.com/pmd/pmd/issues/4183): \[java] AvoidArrayLoops regression: from false negative to false positive with final variables
 
@@ -98,6 +99,7 @@ PMD 7 will remove support for `--files` in favor of these new flags.
 * [#4202](https://github.com/pmd/pmd/pull/4202): \[java] Fix #4200 and #4201: ClassWithOnlyPrivateConstructorsShouldBeFinal, CommentDefaultAccessModifier: Exclude lombok @<!-- -->Value annotation - [Lynn](https://github.com/LynnBroe) (@LynnBroe)
 * [#4205](https://github.com/pmd/pmd/pull/4205): \[doc] Clarify Scala support (no built-in rules) - [Eldrick Wega](https://github.com/Eldrick19) (@Eldrick19)
 * [#4226](https://github.com/pmd/pmd/pull/4226): \[visualforce] Replace uses of Jorje types in pmd-visualforce - [Aaron Hurst](https://github.com/aaronhurst-google) (@aaronhurst-google)
+* [#4227](https://github.com/pmd/pmd/pull/4227): \[java] Fix #4225 MissingStaticMethodInNonInstantiatableClass: Exclude lombok's @<!-- -->NoArgsConstructor annotation - [Lynn](https://github.com/LynnBroe) (@LynnBroe)
 * [#4228](https://github.com/pmd/pmd/pull/4228): \[java] Fix #4224 MissingStaticMethodInNonInstantiatableClass: Exclude lombok's UtilityClass - [Lynn](https://github.com/LynnBroe) (@LynnBroe)
 
 {% endtocmaker %}
