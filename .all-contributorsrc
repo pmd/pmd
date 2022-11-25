@@ -7015,6 +7015,15 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "ctoomey",
+      "name": "Chris Toomey",
+      "avatar_url": "https://avatars.githubusercontent.com/u/2244924?v=4",
+      "profile": "https://github.com/ctoomey",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,
