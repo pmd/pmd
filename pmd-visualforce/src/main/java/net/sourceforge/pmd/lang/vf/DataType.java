@@ -107,7 +107,7 @@ public enum DataType {
     /**
      * Map to correct instance, returns {@code Unknown} if the value can't be mapped.
      *
-     * Use {@link fromTypeName} instead.
+     * @deprecated Use {@link #fromTypeName(String)} instead.
      */
     @Deprecated
     public static DataType fromBasicType(BasicType value) {
