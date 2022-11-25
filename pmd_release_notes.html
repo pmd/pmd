@@ -1641,12 +1641,21 @@ JUnit4/5 or TestNG.</li>
   </li>
   <li>java-design
     <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/4188">#4188</a>: [java] ClassWithOnlyPrivateConstructorsShouldBeFinal false positive with Lombok’s @<!-- -->NoArgsConstructor</li>
+      <li><a href="https://github.com/pmd/pmd/issues/4189">#4189</a>: [java] AbstractClassWithoutAnyMethod should consider lombok’s @<!-- -->AllArgsConstructor</li>
       <li><a href="https://github.com/pmd/pmd/issues/4200">#4200</a>: [java] ClassWithOnlyPrivateConstructorsShouldBeFinal should consider lombok’s @<!-- -->Value</li>
     </ul>
   </li>
   <li>java-errorprone
     <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/4172">#4172</a>: [java] InvalidLogMessageFormat false positive on externally formatted strings</li>
+      <li><a href="https://github.com/pmd/pmd/issues/4174">#4174</a>: [java] MissingStaticMethodInNonInstantiatableClass does not consider nested builder class</li>
       <li><a href="https://github.com/pmd/pmd/issues/4185">#4185</a>: [java] InvalidLogMessageFormat rule produces a NPE</li>
+    </ul>
+  </li>
+  <li>java-performance
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/4183">#4183</a>: [java] AvoidArrayLoops regression: from false negative to false positive with final variables</li>
     </ul>
   </li>
 </ul>
@@ -1752,7 +1761,7 @@ PMD 7 will remove support for <code class="language-plaintext highlighter-rouge"
         <div class="col-lg-12 footer">
             &copy;2022 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Nov 18, 2022 <br />
+             Site last generated: Nov 25, 2022 <br />
             <p>
                 <img src="images/pmd-logo-small.png" alt="Company
                 logo"/>
