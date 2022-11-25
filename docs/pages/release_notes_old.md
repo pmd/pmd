@@ -1298,7 +1298,7 @@ This is a minor release.
     
     By default, both properties are `true` to not change the default behaviour of this rule.
 
-*   The Apex rule [`EmptyCatchBlock`](https://pmd.github.io/pmd-6.41.0-SNAPSHOT/pmd_rules_apex_errorprone.html#emptycatchblock) has two new properties modeled after the analgous Java rule:
+*   The Apex rule [`EmptyCatchBlock`](https://pmd.github.io/pmd-6.41.0-SNAPSHOT/pmd_rules_apex_errorprone.html#emptycatchblock) has two new properties modeled after the analogous Java rule:
     
     The `allowCommentedBlocks` property, when set to `true` (defaults to `false`), ignores empty blocks containing comments, e.g.:
 
@@ -3263,7 +3263,7 @@ See [the documentation and example](https://pmd.github.io/latest/pmd_userdocs_re
 *   java-errorprone
     *   [#2402](https://github.com/pmd/pmd/issues/2402): \[java] CloseResource possible false positive with Primitive Streams
 *   java-multithreading
-    *   [#2313](https://github.com/pmd/pmd/issues/2313): \[java] Documenation for DoNotUseThreads is outdated
+    *   [#2313](https://github.com/pmd/pmd/issues/2313): \[java] Documentation for DoNotUseThreads is outdated
 *   javascript
     *   [#1235](https://github.com/pmd/pmd/issues/1235): \[javascript] Use of let results in an Empty Statement in the AST
     *   [#2379](https://github.com/pmd/pmd/issues/2379): \[javascript] Support for-of loop
@@ -7532,7 +7532,7 @@ public class Foo {
 Detects hardcoded credentials used in requests to an endpoint.
 
 You should refrain from hardcoding credentials:
-  * They are hard to mantain by being mixed in application code
+  * They are hard to maintain by being mixed in application code
   * Particularly hard to update them when used from different classes
   * Granting a developer access to the codebase means granting knowledge
      of credentials, keeping a two-level access is not possible.
