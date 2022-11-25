@@ -2579,6 +2579,18 @@ See the property `annotations`.
             <property name="xpath">
                 <value>
 <![CDATA[
+//TypeDeclaration
+    [Annotation[pmd-java:typeIs('lombok.experimental.UtilityClass')]]
+    [ClassOrInterfaceDeclaration/ClassOrInterfaceBody
+        [
+            (: no methods :)
+            not(ClassOrInterfaceBodyDeclaration/MethodDeclaration)
+            or
+            (: only private methods :)
+            count(ClassOrInterfaceBodyDeclaration/MethodDeclaration) = count(ClassOrInterfaceBodyDeclaration/MethodDeclaration[@Private=true()])
+        ]
+    ]
+|
 //ClassOrInterfaceDeclaration[@Nested= false() and @Local= false()]
 [
   (
