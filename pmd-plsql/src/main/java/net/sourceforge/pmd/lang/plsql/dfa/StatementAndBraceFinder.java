@@ -570,7 +570,7 @@ public class StatementAndBraceFinder extends PLSQLParserVisitorAdapter {
          * PLSQL AST now has explicit ELSIF and ELSE clauses All of the
          * ELSE_END_STATEMENTS in an IF clause should point to the outer last
          * clause because we have to convert a single PL/SQL IF/ELSIF/ELSE
-         * satement into the equivalent set of nested Java if/else {if/else
+         * statement into the equivalent set of nested Java if/else {if/else
          * {if/else}} statements
          */
         List<ASTElsifClause> elsifs = node.findChildrenOfType(ASTElsifClause.class);

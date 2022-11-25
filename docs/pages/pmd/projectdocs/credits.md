@@ -1358,7 +1358,7 @@ According to the book [PMD Applied](https://pmdapplied.thomasleecopeland.com/) t
 *   Colin Simmonds - detailed bug reports
 *   [Trond Andersen](http://reassess.blogspot.com/) - AvoidCatchingThrowable, ExceptionSignatureDeclaration,
     ExceptionTypeChecking
-*   Bernd Jansen - grammer modification
+*   Bernd Jansen - grammar modification
 *   Jarle Naess - bug report
 *   Jeff Anderson - VariableNamingConventionsRule, MethodNamingConventionsRule, ClassNamingConventionsRule
 *   Frank van Puffelen - documentation suggestions
