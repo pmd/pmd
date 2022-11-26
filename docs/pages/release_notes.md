@@ -132,5 +132,10 @@ PMD 7 will remove support for `--files` in favor of these new flags.
 * [#4228](https://github.com/pmd/pmd/pull/4228): \[java] Fix #4224 MissingStaticMethodInNonInstantiatableClass: Exclude lombok's UtilityClass - [Lynn](https://github.com/LynnBroe) (@LynnBroe)
 * [#4232](https://github.com/pmd/pmd/pull/4232): \[doc] Fixing typos - [Andreas Deininger](https://github.com/deining) (@deining)
 
+### Stats
+* 96 commits
+* 40 closed tickets & PRs
+* Days since last release: 28
+
 {% endtocmaker %}
 
