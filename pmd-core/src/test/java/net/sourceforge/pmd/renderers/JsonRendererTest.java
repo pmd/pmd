@@ -5,45 +5,42 @@
 
 package net.sourceforge.pmd.renderers;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 
-import org.apache.commons.io.IOUtils;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import net.sourceforge.pmd.Report;
+import net.sourceforge.pmd.FooRule;
 import net.sourceforge.pmd.Report.ConfigurationError;
 import net.sourceforge.pmd.Report.ProcessingError;
 import net.sourceforge.pmd.Report.SuppressedViolation;
-import net.sourceforge.pmd.ReportTest;
 import net.sourceforge.pmd.ViolationSuppressor;
 
-public class JsonRendererTest extends AbstractRendererTest {
+class JsonRendererTest extends AbstractRendererTest {
 
     @Override
-    public Renderer getRenderer() {
+    Renderer getRenderer() {
         return new JsonRenderer();
     }
 
     @Override
-    public String getExpected() {
+    String getExpected() {
         return readFile("expected.json");
     }
 
     @Override
-    public String getExpectedEmpty() {
+    String getExpectedEmpty() {
         return readFile("empty.json");
     }
 
     @Override
-    public String getExpectedMultiple() {
+    String getExpectedMultiple() {
         return readFile("expected-multiple.json");
     }
 
     @Override
-    public String getExpectedError(ProcessingError error) {
+    String getExpectedError(ProcessingError error) {
         String expected = readFile("expected-processingerror.json");
         expected = expected.replace("###REPLACE_ME###", error.getDetail()
                 .replaceAll("\r", "\\\\r")
@@ -53,12 +50,12 @@ public class JsonRendererTest extends AbstractRendererTest {
     }
 
     @Override
-    public String getExpectedError(ConfigurationError error) {
+    String getExpectedError(ConfigurationError error) {
         return readFile("expected-configurationerror.json");
     }
 
     @Override
-    public String getExpectedErrorWithoutMessage(ProcessingError error) {
+    String getExpectedErrorWithoutMessage(ProcessingError error) {
         String expected = readFile("expected-processingerror-no-message.json");
         expected = expected.replace("###REPLACE_ME###", error.getDetail()
                 .replaceAll("\r", "\\\\r")
@@ -67,31 +64,28 @@ public class JsonRendererTest extends AbstractRendererTest {
         return expected;
     }
 
-    private String readFile(String name) {
-        try (InputStream in = JsonRendererTest.class.getResourceAsStream("json/" + name)) {
-            return IOUtils.toString(in, StandardCharsets.UTF_8);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    @Override
+    protected String readFile(String relativePath) {
+        return super.readFile("json/" + relativePath);
     }
 
     @Override
-    public String filter(String expected) {
-        String result = expected
+    String filter(String expected) {
+        return expected
                 .replaceAll("\"timestamp\":\\s*\"[^\"]+\"", "\"timestamp\": \"--replaced--\"")
                 .replaceAll("\"pmdVersion\":\\s*\"[^\"]+\"", "\"pmdVersion\": \"unknown\"")
                 .replaceAll("\r\n", "\n"); // make the test run on Windows, too
-        return result;
     }
 
     @Test
-    public void suppressedViolations() throws IOException {
-        Report rep = new Report();
-        SuppressedViolation suppressed = new SuppressedViolation(newRuleViolation(1),
-                ViolationSuppressor.NOPMD_COMMENT_SUPPRESSOR, "test");
-        rep.addSuppressedViolation(suppressed);
-        String actual = ReportTest.render(getRenderer(), rep);
+    void suppressedViolations() throws IOException {
+        SuppressedViolation suppressed = new SuppressedViolation(
+            newRuleViolation(1, 1, 1, 1, new FooRule()),
+            ViolationSuppressor.NOPMD_COMMENT_SUPPRESSOR,
+            "test"
+        );
+        String actual = renderReport(getRenderer(), it -> it.onSuppressedRuleViolation(suppressed));
         String expected = readFile("expected-suppressed.json");
-        Assert.assertEquals(filter(expected), filter(actual));
+        assertEquals(filter(expected), filter(actual));
     }
 }

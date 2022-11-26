@@ -4,18 +4,18 @@
 
 package net.sourceforge.pmd.cpd;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Iterator;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class MatchTest {
+class MatchTest {
 
     @Test
-    public void testSimple() {
+    void testSimple() {
         int lineCount1 = 10;
         String codeFragment1 = "code fragment";
         Mark mark1 = createMark("public", "/var/Foo.java", 1, lineCount1, codeFragment1);
@@ -46,7 +46,7 @@ public class MatchTest {
     }
 
     @Test
-    public void testCompareTo() {
+    void testCompareTo() {
         Match m1 = new Match(1, new TokenEntry("public", "/var/Foo.java", 1),
                 new TokenEntry("class", "/var/Foo.java", 1));
         Match m2 = new Match(2, new TokenEntry("Foo", "/var/Foo.java", 1), new TokenEntry("{", "/var/Foo.java", 1));
@@ -59,9 +59,5 @@ public class MatchTest {
         result.setLineCount(lineCount);
         result.setSourceCode(new SourceCode(new SourceCode.StringCodeLoader(code)));
         return result;
-    }
-
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(MatchTest.class);
     }
 }

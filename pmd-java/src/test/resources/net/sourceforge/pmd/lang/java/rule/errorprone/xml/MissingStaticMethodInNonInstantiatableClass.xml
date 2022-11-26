@@ -26,6 +26,7 @@ public class Foo {
     <test-code>
         <description>simple failure</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>1</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     private Foo() {}
@@ -37,6 +38,7 @@ public class Foo {
     <test-code>
         <description>failure with multiple constructors</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>1</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     private Foo(){}
@@ -96,6 +98,7 @@ public class Foo {
     <test-code>
         <description>not ok, non-public static field</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>1</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     private static int BUZ = 2;
@@ -150,7 +153,10 @@ public class Suit {
         <description>#1125 Missing Static Method In Non Instantiatable Class / Factory</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-public class AccountSelectionSubForm extends Form implements WidgetEventListener
+import java.awt.Frame;
+import java.awt.event.ActionListener;
+
+public class AccountSelectionSubForm extends Frame implements ActionListener
 {
     public static class Factory
     {
@@ -159,7 +165,7 @@ public class AccountSelectionSubForm extends Form implements WidgetEventListener
             // do
         }
         // factory method which creates the outer class
-        public AccountSelectionSubForm create( Form parent, boolean supportAllAccountsSelection )
+        public AccountSelectionSubForm create( Frame parent, boolean supportAllAccountsSelection )
         {
             return new AccountSelectionSubForm();
         }
@@ -288,6 +294,7 @@ public class Foo {
     <test-code>
         <description>#1832 but fail with both private constructors annotated with @PersistenceConstructor</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
         <code><![CDATA[
 import org.springframework.data.annotation.PersistenceConstructor;
 
@@ -312,6 +319,8 @@ public class Foo {
         <description>#2102 [java] False positive MissingStaticMethodInNonInstantiatableClass when inheritors are instantiable</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.util.Function;
+
 public abstract class MyADT {
     private MyADT() {
     }
@@ -348,5 +357,173 @@ public abstract class MyADT {
     }
 }
         ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#3701 - false positive with method inner class</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Scratch {
+
+    public static void main(String[] args) {
+        Scratch scratch = new Scratch();
+
+        scratch.callMethod();
+    }
+
+    void callMethod() {
+
+        class InnerClass {
+            private InnerClass() {
+            }
+
+            void display() {
+                System.out.println("Works OK!");
+            }
+        }
+
+        InnerClass innerClass = new InnerClass();
+        innerClass.display();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#4224 [java] MissingStaticMethodInNonInstantiatableClass should considers lombok's UtilityClass</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import lombok.experimental.UtilityClass;
+
+@UtilityClass
+public final class Test {
+   private int x;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#4224 [java] MissingStaticMethodInNonInstantiatableClass should considers lombok's UtilityClass</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import lombok.experimental.UtilityClass;
+
+@UtilityClass
+public final class Test {
+    public int test(){
+        return 0;
+    }
+   private int x;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#4224 [java] MissingStaticMethodInNonInstantiatableClass should consider lombok's UtilityClass</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import lombok.experimental.UtilityClass;
+
+@UtilityClass
+public final class Test {
+    private int test(){
+        return 0;
+    }
+   private int x;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#4224 [java] MissingStaticMethodInNonInstantiatableClass should consider lombok's UtilityClass</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import lombok.experimental.UtilityClass;
+
+@UtilityClass
+public final class Test {
+    private int test(){
+        return 0;
+    }
+    public int test0(){
+        return 0;
+    }
+   private int x;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#4225 [java] MissingStaticMethodInNonInstantiatableClass should consider Lombok's @NoArgsConstructor</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor
+public class Test {
+    private int a;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#4225 [java] MissingStaticMethodInNonInstantiatableClass should consider Lombok's @RequiredArgsConstructor</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
+public class Test {
+    private int a;
+    private final int b;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#4225 [java] MissingStaticMethodInNonInstantiatableClass should consider Lombok's @AllArgsConstructor</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import lombok.AllArgsConstructor;
+
+@AllArgsConstructor
+public class Test {
+    private int a;
+    private final int b;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] MissingStaticMethodInNonInstantiatableClass does not consider nested builder class #4174</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public final class TestPrivateClassWithFactory implements GenericTest {
+  private final boolean shouldFail;
+
+  private TestPrivateClassWithFactory(TestStep step) {
+    this.shouldFail = step.shouldFail;
+  }
+
+  public void run() {
+    if (shouldFail) {
+      throw new AssertionError("fail");
+    }
+  }
+
+  public static final class TestStep {
+    private boolean shouldFail = false;
+
+    public TestStep shouldFail() {
+      this.shouldFail = true;
+      return this;
+    }
+
+    public GenericTest newTest() {
+      return new TestPrivateClassWithFactory(this);
+    }
+  }
+}
+]]></code>
     </test-code>
 </test-data>

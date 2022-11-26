@@ -14,15 +14,14 @@ import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTInfixExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTNullLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType;
 import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTSynchronizedStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
-import net.sourceforge.pmd.lang.java.ast.BinaryOp;
+import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JLocalVariableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
@@ -87,21 +86,21 @@ public class DoubleCheckedLockingRule extends AbstractJavaRule {
         // if the return variable is local and only written with the volatile
         // field, then it's ok, too
         if (isLocalOnlyStoredWithVolatileField(node, returnVariable)) {
-            return super.visit(node, data);
+            return data;
         }
 
         List<ASTIfStatement> isl = node.findDescendantsOfType(ASTIfStatement.class);
         if (isl.size() == 2) {
             ASTIfStatement outerIf = isl.get(0);
-            if (isNullCheck(outerIf.getCondition(), returnVariable)) {
+            if (JavaRuleUtil.isNullCheck(outerIf.getCondition(), returnVariable)) {
                 // find synchronized
                 List<ASTSynchronizedStatement> ssl = outerIf.findDescendantsOfType(ASTSynchronizedStatement.class);
                 if (ssl.size() == 1 && ssl.get(0).ancestors().any(it -> it == outerIf)) {
                     ASTIfStatement is2 = isl.get(1);
-                    if (isNullCheck(is2.getCondition(), returnVariable)) {
+                    if (JavaRuleUtil.isNullCheck(is2.getCondition(), returnVariable)) {
                         List<ASTAssignmentExpression> assignments = is2.findDescendantsOfType(ASTAssignmentExpression.class);
                         if (assignments.size() == 1
-                            && isReferenceTo(assignments.get(0).getLeftOperand(), returnVariable)) {
+                            && JavaAstUtils.isReferenceToVar(assignments.get(0).getLeftOperand(), returnVariable)) {
                             addViolation(data, node);
 
                         }
@@ -109,7 +108,7 @@ public class DoubleCheckedLockingRule extends AbstractJavaRule {
                 }
             }
         }
-        return super.visit(node, data);
+        return data;
     }
 
     private boolean isLocalOnlyStoredWithVolatileField(ASTMethodDeclaration method, JVariableSymbol local) {
@@ -127,7 +126,7 @@ public class DoubleCheckedLockingRule extends AbstractJavaRule {
 
         return (initializer == null || isVolatileFieldReference(initializer))
             && method.descendants(ASTAssignmentExpression.class)
-                     .filter(it -> isReferenceTo(it.getLeftOperand(), local))
+                     .filter(it -> JavaAstUtils.isReferenceToVar(it.getLeftOperand(), local))
                      .all(it -> isVolatileFieldReference(it.getRightOperand()));
     }
 
@@ -138,28 +137,6 @@ public class DoubleCheckedLockingRule extends AbstractJavaRule {
         } else {
             return false;
         }
-    }
-
-    private boolean isReferenceTo(@Nullable ASTExpression expr, JVariableSymbol symbol) {
-        if (expr instanceof ASTNamedReferenceExpr) {
-            return symbol != null && symbol.equals(((ASTNamedReferenceExpr) expr).getReferencedSym());
-        } else {
-            return false;
-        }
-    }
-
-    private boolean isNullCheck(ASTExpression expr, JVariableSymbol var) {
-        if (expr instanceof ASTInfixExpression) {
-            ASTInfixExpression condition = (ASTInfixExpression) expr;
-            if (condition.getOperator().hasSamePrecedenceAs(BinaryOp.EQ)) {
-                ASTNullLiteral nullLit = condition.getFirstChildOfType(ASTNullLiteral.class);
-                if (nullLit != null) {
-                    ASTExpression otherChild = (ASTExpression) condition.getChild(1 - nullLit.getIndexInParent());
-                    return isReferenceTo(otherChild, var);
-                }
-            }
-        }
-        return false;
     }
 
 }

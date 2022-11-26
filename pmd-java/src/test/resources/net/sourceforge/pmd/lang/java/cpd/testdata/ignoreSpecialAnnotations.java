@@ -10,4 +10,4 @@ package foo.bar.baz;
 
 public class Foo {}
 @SuppressWarnings({"ugh","CPD-END"})
-
+class Other {}

@@ -4,14 +4,12 @@
 
 package net.sourceforge.pmd.cpd;
 
-import java.io.IOException;
-import java.io.Reader;
-
 import net.sourceforge.pmd.cpd.internal.JavaCCTokenizer;
 import net.sourceforge.pmd.lang.TokenManager;
-import net.sourceforge.pmd.lang.ast.CharStream;
-import net.sourceforge.pmd.lang.ast.impl.javacc.CharStreamFactory;
+import net.sourceforge.pmd.lang.ast.impl.javacc.CharStream;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
+import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument;
+import net.sourceforge.pmd.lang.jsp.ast.JspParser;
 import net.sourceforge.pmd.lang.jsp.ast.JspTokenKinds;
 
 public class JSPTokenizer extends JavaCCTokenizer {
@@ -22,7 +20,8 @@ public class JSPTokenizer extends JavaCCTokenizer {
     }
 
     @Override
-    protected CharStream makeCharStream(Reader sourceCode) throws IOException {
-        return CharStreamFactory.javaCharStream(sourceCode);
+    protected JavaccTokenDocument.TokenDocumentBehavior tokenBehavior() {
+        return JspParser.getTokenBehavior();
     }
+
 }

@@ -76,6 +76,7 @@ class Foo {
         <description>flag public methods if checkall property is set</description>
         <rule-property name="checkAll">true</rule-property>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
         <code-ref id="public-methods"/>
     </test-code>
 
@@ -307,6 +308,32 @@ class Imp1 {
                 int ignoredArg2,
                 int unused,
                 String ignored) {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>anonymous classes defined in methods should be considered</description>
+        <rule-property name="checkAll">false</rule-property>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>4,12</expected-linenumbers>
+        <code><![CDATA[
+class Impl {
+    public void m1() {
+        class Local {
+            private void m2(int arg1) { }
+            private void m3() { m2(0); }
+        }
+        Local l = new Local();
+        l.m3();
+    }
+    public void m4() {
+        Object o = new Object() {
+            private void m5(int arg1) { }
+            public boolean equals(Object other) { m5(0); return false; }
+        };
+        o.equals(o);
+    }
 }
         ]]></code>
     </test-code>

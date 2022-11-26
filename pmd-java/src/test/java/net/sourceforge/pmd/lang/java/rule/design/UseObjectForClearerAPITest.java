@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.java.rule.design;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-@org.junit.Ignore("Rule has not been updated yet")
-public class UseObjectForClearerAPITest extends PmdRuleTst {
+class UseObjectForClearerAPITest extends PmdRuleTst {
     // no additional unit tests
 }

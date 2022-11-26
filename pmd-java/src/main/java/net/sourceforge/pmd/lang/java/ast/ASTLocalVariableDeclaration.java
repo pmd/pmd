@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
+import net.sourceforge.pmd.lang.document.FileLocation;
 
 /**
  * Represents a local variable declaration. This is a {@linkplain ASTStatement statement},
@@ -36,8 +36,9 @@ public final class ASTLocalVariableDeclaration extends AbstractJavaNode
     }
 
     @Override
-    protected @Nullable JavaccToken getPreferredReportLocation() {
-        return getVarIds().firstOrThrow().getFirstToken();
+    public @Nullable FileLocation getReportLocation() {
+        // the first varId
+        return getVarIds().firstOrThrow().getFirstToken().getReportLocation();
     }
 
     @Override

@@ -4,35 +4,33 @@
 
 package net.sourceforge.pmd.lang.vf.ast;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.logging.Logger;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.exception.ContextedRuntimeException;
 import org.apache.commons.lang3.tuple.Pair;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.apex.ApexLanguageModule;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.Parser;
 import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
 import net.sourceforge.pmd.lang.ast.SemanticErrorReporter;
+import net.sourceforge.pmd.lang.document.TextDocument;
+import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.lang.vf.DataType;
-
-import apex.jorje.semantic.symbol.type.BasicType;
 
 /**
  * Responsible for storing a mapping of Apex Class properties that can be referenced from Visualforce to the type of the
  * property.
  */
 class ApexClassPropertyTypes extends SalesforceFieldTypes {
-    private static final Logger LOGGER = Logger.getLogger(ApexClassPropertyTypes.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(ApexClassPropertyTypes.class);
     private static final String APEX_CLASS_FILE_SUFFIX = ".cls";
 
     /**
@@ -52,8 +50,8 @@ class ApexClassPropertyTypes extends SalesforceFieldTypes {
                     ApexClassPropertyTypesVisitor visitor = new ApexClassPropertyTypesVisitor();
                     node.acceptVisitor(visitor, null);
 
-                    for (Pair<String, BasicType> variable : visitor.getVariables()) {
-                        putDataType(variable.getKey(), DataType.fromBasicType(variable.getValue()));
+                    for (Pair<String, String> variable : visitor.getVariables()) {
+                        putDataType(variable.getKey(), DataType.fromTypeName(variable.getValue()));
                     }
 
                     if (containsExpression(expression)) {
@@ -66,26 +64,18 @@ class ApexClassPropertyTypes extends SalesforceFieldTypes {
     }
 
     static Node parseApex(Path apexFilePath) {
-        String fileText;
-        try (BufferedReader reader = Files.newBufferedReader(apexFilePath, StandardCharsets.UTF_8)) {
-            fileText = IOUtils.toString(reader);
+        LanguageVersion languageVersion = ApexLanguageModule.getInstance().getDefaultVersion();
+        try (TextFile file = TextFile.forPath(apexFilePath, StandardCharsets.UTF_8, languageVersion);
+             TextDocument textDocument = TextDocument.create(file)) {
+
+            Parser parser = languageVersion.getLanguageVersionHandler().getParser();
+            ParserTask task = new ParserTask(textDocument, SemanticErrorReporter.noop(), ApexClassPropertyTypes.class.getClassLoader());
+            languageVersion.getLanguageVersionHandler().declareParserTaskProperties(task.getProperties());
+
+            return parser.parse(task);
         } catch (IOException e) {
             throw new ContextedRuntimeException(e).addContextValue("apexFilePath", apexFilePath);
         }
-
-        LanguageVersion languageVersion = LanguageRegistry.getLanguage(ApexLanguageModule.NAME).getDefaultVersion();
-        Parser parser = languageVersion.getLanguageVersionHandler().getParser();
-
-        ParserTask task = new ParserTask(
-            languageVersion,
-            apexFilePath.toString(),
-            fileText,
-            SemanticErrorReporter.noop()
-        );
-
-        languageVersion.getLanguageVersionHandler().declareParserTaskProperties(task.getProperties());
-
-        return parser.parse(task);
     }
 
     static Node parseApex(String contextExpr, Path apexFilePath) {
@@ -107,12 +97,8 @@ class ApexClassPropertyTypes extends SalesforceFieldTypes {
             // but we will allow a false positive in order to let the user know that the code could be refactored to be
             // more clear.
             super.putDataType(name, DataType.Unknown);
-            LOGGER.warning("Conflicting types for "
-                    + name
-                    + ". CurrentType="
-                    + dataType
-                    + ", PreviousType="
-                    + previousType);
+            LOG.warn("Conflicting types for {}. CurrentType={}, PreviousType={}",
+                    name, dataType, previousType);
         }
         return previousType;
     }

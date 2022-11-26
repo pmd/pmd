@@ -6,5 +6,6 @@ package net.sourceforge.pmd.lang.java.rule.design;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class NPathComplexityTest extends PmdRuleTst {
+class NPathComplexityTest extends PmdRuleTst {
+    // no additional unit tests
 }

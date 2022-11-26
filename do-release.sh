@@ -72,6 +72,14 @@ export RELEASE_VERSION
 export DEVELOPMENT_VERSION
 export CURRENT_BRANCH
 
+# check for SNAPSHOT version of pmd.build-tools.version
+BUILD_TOOLS_VERSION=$(./mvnw org.apache.maven.plugins:maven-help-plugin:3.2.0:evaluate -Dexpression=pmd.build-tools.version -q -DforceStdout)
+BUILD_TOOLS_VERSION_RELEASE=${BUILD_TOOLS_VERSION%-SNAPSHOT}
+if [ "${BUILD_TOOLS_VERSION}" != "${BUILD_TOOLS_VERSION_RELEASE}" ]; then
+  echo "Error: version pmd.build-tools.version is ${BUILD_TOOLS_VERSION} - snapshot is not allowed"
+  exit 1
+fi
+
 RELEASE_RULESET="pmd-core/src/main/resources/rulesets/releases/${RELEASE_VERSION//\./}.xml"
 
 echo "*   Update date info in **docs/_config.yml**."
@@ -103,12 +111,12 @@ read -r
 STATS=$(
 echo "### Stats"
 echo "* $(git log pmd_releases/"${LAST_VERSION}"..HEAD --oneline --no-merges |wc -l) commits"
-echo "* $(curl -s https://api.github.com/repos/pmd/pmd/milestones|jq ".[] | select(.title == \"$RELEASE_VERSION\") | .closed_issues") closed tickets & PRs"
+echo "* $(curl -s "https://api.github.com/repos/pmd/pmd/milestones?state=all&direction=desc&per_page=5"|jq ".[] | select(.title == \"$RELEASE_VERSION\") | .closed_issues") closed tickets & PRs"
 echo "* Days since last release: $(( ( $(date +%s) - $(git log --max-count=1 --format="%at" pmd_releases/"${LAST_VERSION}") ) / 86400))"
 )
 
 TEMP_RELEASE_NOTES=$(cat docs/pages/release_notes.md)
-TEMP_RELEASE_NOTES=${TEMP_RELEASE_NOTES/\{\% endtocmaker \%\}/$STATS$'\n'$'\n'\{\% endtocmaker \%\}$'\n'}
+TEMP_RELEASE_NOTES=${TEMP_RELEASE_NOTES/\{\% endtocmaker \%\}/${STATS//\&/\\\&}$'\n'$'\n'\{\% endtocmaker \%\}$'\n'}
 echo "${TEMP_RELEASE_NOTES}" > docs/pages/release_notes.md
 
 echo
@@ -221,7 +229,7 @@ This is a {{ site.pmd.release_type }} release.
 
 EOF
 
-git commit -a -m "Prepare next development version"
+git commit -a -m "Prepare next development version [skip ci]"
 git push origin "${CURRENT_BRANCH}"
 ./mvnw -B release:clean
 echo
@@ -245,8 +253,8 @@ tweet="${tweet// /%20}"
 tweet="${tweet//:/%3A}"
 tweet="${tweet//#/%23}"
 tweet="${tweet//\//%2F}"
-tweet="${tweet//$'\r'//}"
-tweet="${tweet//$'\n'//%0A}"
+tweet="${tweet//$'\r'/}"
+tweet="${tweet//$'\n'/%0A}"
 echo "*   Tweet about this release on https://twitter.com/pmd_analyzer:"
 echo "        <https://twitter.com/intent/tweet?text=$tweet>"
 echo

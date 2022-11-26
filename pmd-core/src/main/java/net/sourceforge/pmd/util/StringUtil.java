@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.util;
 
+import java.text.MessageFormat;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.regex.Matcher;
@@ -11,8 +13,11 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.internal.util.AssertionUtil;
+import net.sourceforge.pmd.lang.document.Chars;
 
 /**
  * A number of String-specific utility methods for use by PMD or its IDE
@@ -34,6 +39,13 @@ public final class StringUtil {
           + "\\x19|\\x1a|\\x1b|\\x1c|\\x1d|\\x1e|\\x1f");
 
     private StringUtil() {
+    }
+
+    public static String inSingleQuotes(String s) {
+        if (s == null) {
+            s = "";
+        }
+        return "'" + s + "'";
     }
 
 
@@ -142,6 +154,21 @@ public final class StringUtil {
             next = c;
         }
         return col;
+    }
+
+    /**
+     * Like {@link StringBuilder#append(CharSequence)}, but uses an optimized
+     * implementation if the charsequence happens to be a {@link Chars}. {@link StringBuilder}
+     * already optimises the cases where the charseq is a string, a StringBuilder,
+     * or a stringBuffer. This is especially useful in parsers.
+     */
+    public static StringBuilder append(StringBuilder sb, CharSequence charSeq) {
+        if (charSeq instanceof Chars) {
+            ((Chars) charSeq).appendChars(sb);
+            return sb;
+        } else {
+            return sb.append(charSeq);
+        }
     }
 
     /**
@@ -274,75 +301,79 @@ public final class StringUtil {
      * leading characters can be removed to shift all the text in the strings to
      * the left without misaligning them.
      *
-     * @throws NullPointerException If the parameter is null
-     */
-    public static int maxCommonLeadingWhitespaceForAll(String[] strings) {
-
-        int shortest = lengthOfShortestIn(strings);
-        if (shortest == 0) {
-            return 0;
-        }
-
-        char[] matches = new char[shortest];
-
-        for (int m = 0; m < matches.length; m++) {
-            matches[m] = strings[0].charAt(m);
-            if (!Character.isWhitespace(matches[m])) {
-                return m;
-            }
-            for (String str : strings) {
-                if (str.charAt(m) != matches[m]) {
-                    return m;
-                }
-            }
-        }
-
-        return shortest;
-    }
-
-
-    /**
-     * Return the length of the shortest string in the array. If the collection
-     * is empty or any one of them is null then it returns 0.
+     * <p>Note: the spec is described in
+     * <a href='https://docs.oracle.com/en/java/javase/16/docs/api/java.base/java/lang/String.html#stripIndent()'>String#stripIndent</a>
+     *
+     * <quote>
+     * The minimum indentation (min) is determined as follows:
+     * <ul>
+     *     <li>For each non-blank line (as defined by isBlank()), the leading white space characters are counted.
+     *     <li>The leading white space characters on the last line are also counted even if blank.
+     * </ul>
+     * The min value is the smallest of these counts.
+     * </quote>
      *
      * @throws NullPointerException If the parameter is null
      */
-    public static int lengthOfShortestIn(String[] strings) {
-
-        if (strings.length == 0) {
-            return 0;
-        }
-
-        int minLength = Integer.MAX_VALUE;
-
-        for (String string : strings) {
-            if (string == null) {
-                return 0;
+    private static int maxCommonLeadingWhitespaceForAll(List<? extends CharSequence> lines) {
+        int maxCommonWs = Integer.MAX_VALUE;
+        for (int i = 0; i < lines.size(); i++) {
+            CharSequence line = lines.get(i);
+            // compute common prefix
+            if (!StringUtils.isBlank(line) || i == lines.size() - 1) {
+                maxCommonWs = Math.min(maxCommonWs, countLeadingWhitespace(line));
             }
-            minLength = Math.min(minLength, string.length());
         }
+        if (maxCommonWs == Integer.MAX_VALUE) {
+            // common prefix not found
+            maxCommonWs = 0;
+        }
+        return maxCommonWs;
+    }
 
-        return minLength;
+    /**
+     * Returns a list of
+     */
+    public static List<Chars> linesWithTrimIndent(String source) {
+        List<String> lines = Arrays.asList(source.split("\n"));
+        List<Chars> result = lines.stream().map(Chars::wrap).collect(CollectionUtil.toMutableList());
+        trimIndentInPlace(result);
+        return result;
+    }
+
+    /**
+     * Trim the common indentation of each line in place in the input list.
+     * Trailing whitespace is removed on each line. Note that blank lines do
+     * not count towards computing the max common indentation, except
+     * the last one.
+     *
+     * @param lines mutable list
+     */
+    public static void trimIndentInPlace(List<Chars> lines) {
+        int trimDepth = maxCommonLeadingWhitespaceForAll(lines);
+        lines.replaceAll(chars -> chars.length() >= trimDepth
+                                  ? chars.subSequence(trimDepth).trimEnd()
+                                  : chars.trimEnd());
+    }
+
+    /**
+     * Trim common indentation in the lines of the string. Like
+     * {@link #trimIndentInPlace(List)} called with the list of lines
+     * and joined with {@code \n}.
+     */
+    public static StringBuilder trimIndent(Chars string) {
+        List<Chars> lines = string.lineStream().collect(CollectionUtil.toMutableList());
+        trimIndentInPlace(lines);
+        return CollectionUtil.joinCharsIntoStringBuilder(lines, "\n");
     }
 
 
-    /**
-     * Trims off the leading characters off the strings up to the trimDepth
-     * specified. Returns the same strings if trimDepth = 0
-     *
-     * @return String[]
-     */
-    public static String[] trimStartOn(String[] strings, int trimDepth) {
-
-        if (trimDepth == 0) {
-            return strings;
+    private static int countLeadingWhitespace(CharSequence s) {
+        int count = 0;
+        while (count < s.length() && Character.isWhitespace(s.charAt(count))) {
+            count++;
         }
-
-        String[] results = new String[strings.length];
-        for (int i = 0; i < strings.length; i++) {
-            results[i] = strings[i].substring(trimDepth);
-        }
-        return results;
+        return count;
     }
 
 
@@ -408,6 +439,51 @@ public final class StringUtil {
         return sb.toString();
     }
 
+    /**
+     * If the string starts and ends with the delimiter, returns the substring
+     * within the delimiters. Otherwise returns the original string. The
+     * start and end delimiter must be 2 separate instances.
+     * <pre>{@code
+     * removeSurrounding("",     _ )  = ""
+     * removeSurrounding("q",   'q')  = "q"
+     * removeSurrounding("qq",  'q')  = ""
+     * removeSurrounding("q_q", 'q')  = "_"
+     * }</pre>
+     */
+    public static String removeSurrounding(String string, char delimiter) {
+        if (string.length() >= 2
+            && string.charAt(0) == delimiter
+            && string.charAt(string.length() - 1) == delimiter) {
+            return string.substring(1, string.length() - 1);
+        }
+        return string;
+    }
+
+    /**
+     * Like {@link #removeSurrounding(String, char) removeSurrounding} with
+     * a double quote as a delimiter.
+     */
+    public static String removeDoubleQuotes(String string) {
+        return removeSurrounding(string, '"');
+    }
+
+    /**
+     * Truncate the given string to some maximum length. If it needs
+     * truncation, the ellipsis string is appended. The length of the
+     * returned string is always lower-or-equal to the maxOutputLength,
+     * even when truncation occurs.
+     */
+    public static String elide(String string, int maxOutputLength, String ellipsis) {
+        AssertionUtil.requireNonNegative("maxOutputLength", maxOutputLength);
+        if (ellipsis.length() > maxOutputLength) {
+            throw new IllegalArgumentException("Ellipsis too long '" + ellipsis + "', maxOutputLength=" + maxOutputLength);
+        }
+        if (string.length() <= maxOutputLength) {
+            return string;
+        }
+        String truncated = string.substring(0, maxOutputLength - ellipsis.length());
+        return truncated + ellipsis;
+    }
 
     /**
      * Returns an empty array of string
@@ -465,6 +541,18 @@ public final class StringUtil {
             }
         }
         return retval.toString();
+    }
+
+    /**
+     * Escape the string so that it appears literally when interpreted
+     * by a {@link MessageFormat}.
+     */
+    public static String quoteMessageFormat(String str) {
+        return str.replaceAll("'", "''");
+    }
+
+    public static @NonNull String inDoubleQuotes(String expected) {
+        return "\"" + expected + "\"";
     }
 
 

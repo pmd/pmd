@@ -28,18 +28,18 @@ are suggested.
 
     <rule ref="category/java/errorprone.xml/AssignmentToNonFinalStatic" deprecated="true" />
     <rule ref="category/java/errorprone.xml/AvoidInstanceofChecksInCatchClause" deprecated="true" />
-    <rule ref="category/java/errorprone.xml/BadComparison" deprecated="true" />
+<!--    <rule ref="category/java/errorprone.xml/BadComparison" deprecated="true" />-->
     <rule ref="category/java/errorprone.xml/CloseResource" deprecated="true" />
     <rule ref="category/java/errorprone.xml/CompareObjectsWithEquals" deprecated="true" />
     <rule ref="category/java/errorprone.xml/ConstructorCallsOverridableMethod" deprecated="true" />
     <rule ref="category/java/errorprone.xml/EqualsNull" deprecated="true" />
     <rule ref="category/java/errorprone.xml/IdempotentOperations" deprecated="true" />
     <rule ref="category/java/errorprone.xml/InstantiationToGetClass" deprecated="true" />
-    <rule ref="category/java/errorprone.xml/MissingBreakInSwitch" deprecated="true" />
+<!--    <rule ref="category/java/errorprone.xml/MissingBreakInSwitch" deprecated="true" />-->
     <rule ref="category/java/errorprone.xml/MissingStaticMethodInNonInstantiatableClass" deprecated="true" />
     <rule ref="category/java/errorprone.xml/NonCaseLabelInSwitchStatement" deprecated="true" />
     <rule ref="category/java/errorprone.xml/NonStaticInitializer" deprecated="true" />
-    <rule ref="category/java/errorprone.xml/ReturnEmptyArrayRatherThanNull" deprecated="true" />
+<!--    <rule ref="category/java/errorprone.xml/ReturnEmptyArrayRatherThanNull" deprecated="true" />-->
     <rule ref="category/java/errorprone.xml/SimpleDateFormatNeedsLocale" deprecated="true" />
     <rule ref="category/java/errorprone.xml/SingleMethodSingleton" deprecated="true" />
     <rule ref="category/java/errorprone.xml/SingletonClassReturningNewInstance" deprecated="true" />

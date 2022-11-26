@@ -4,66 +4,96 @@
 
 package net.sourceforge.pmd.cli;
 
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
 
-import java.io.File;
-import java.util.regex.Pattern;
-
-import org.junit.Assert;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.contrib.java.lang.system.RestoreSystemProperties;
+import org.junit.rules.TestRule;
 
-import net.sourceforge.pmd.util.FileUtil;
+import net.sourceforge.pmd.PMD.StatusCode;
+import net.sourceforge.pmd.internal.Slf4jSimpleConfiguration;
 
 /**
  * @author Romain Pelisse &lt;belaran@gmail.com&gt;
- *
  */
 public class CLITest extends BaseCLITest {
+    // note that the progress bar sometimes messes up the log so it is
+    // disabled here in most tests.
+
+    // restoring system properties: -debug might change logging properties
+    // See Slf4jSimpleConfigurationForAnt and resetLogging
+    @Rule
+    public final TestRule restoreSystemProperties = new RestoreSystemProperties();
+
+    @AfterClass
+    public static void resetLogging() {
+        Slf4jSimpleConfiguration.reconfigureDefaultLogLevel(null);
+    }
+
+    @Before
+    public void setupLogging() {
+        Slf4jSimpleConfiguration.reconfigureDefaultLogLevel(null);
+    }
+
+    private static final String RSET_NO_VIOLATION = "rulesets/testing/rset-without-violations.xml";
+    private static final String RSET_WITH_VIOLATION = "rulesets/testing/test-rset-1.xml";
+
     @Test
     public void minimalArgs() {
-        String[] args = { "-d", SOURCE_FOLDER, "-f", "text", "-R", "category/java/bestpractices.xml,category/java/design.xml", };
-        runTest(args, "minimalArgs");
+        runTest("-d", SOURCE_FOLDER, "-f", "text", "-R", RSET_NO_VIOLATION);
     }
 
     @Test
     public void minimumPriority() {
-        String[] args = { "-d", SOURCE_FOLDER, "-f", "text", "-R", "category/java/design.xml", "-min", "1", };
-        runTest(args, "minimumPriority");
+        String[] args = { "-d", SOURCE_FOLDER, "-f", "text", "-R", RSET_WITH_VIOLATION, "-min", "1", };
+        runTest(args);
     }
 
     @Test
     public void usingDebug() {
-        String[] args = { "-d", SOURCE_FOLDER, "-f", "text", "-R", "category/java/design.xml", "-debug", };
-        runTest(args, "minimalArgsWithDebug");
+        runTest("-d", SOURCE_FOLDER, "-f", "text", "-R", RSET_NO_VIOLATION, "-debug");
+    }
+
+    @Test
+    public void usingDebugLongOption() {
+        runTest("-d", SOURCE_FOLDER, "-f", "text", "-R", RSET_NO_VIOLATION, "--debug");
     }
 
     @Test
     public void changeJavaVersion() {
-        String[] args = { "-d", SOURCE_FOLDER, "-f", "text", "-R", "category/java/design.xml", "-version", "1.5", "-language",
-            "java", "-debug", };
-        String resultFilename = runTest(args, "chgJavaVersion");
-        assertTrue("Invalid Java version",
-                FileUtil.findPatternInFile(new File(resultFilename), "Using Java version: Java 1.5"));
+        String[] args = { "-d", SOURCE_FOLDER, "-f", "text", "-R", RSET_NO_VIOLATION, "-version", "1.5", "-language", "java", "--debug", "--no-progress", };
+        String log = runTest(args);
+        assertThat(log, containsPattern("Adding file .*\\.java \\(lang: java 1\\.5\\)"));
     }
 
     @Test
     public void exitStatusNoViolations() {
-        String[] args = { "-d", SOURCE_FOLDER, "-f", "text", "-R", "category/java/design.xml", };
-        runTest(args, "exitStatusNoViolations");
+        runTest("-d", SOURCE_FOLDER, "-f", "text", "-R", "rulesets/testing/rset-without-violations.xml");
     }
 
     @Test
     public void exitStatusWithViolations() {
-        String[] args = { "-d", SOURCE_FOLDER, "-f", "text", "-R", "category/java/errorprone.xml", };
-        String resultFilename = runTest(args, "exitStatusWithViolations", 4);
-        assertTrue(FileUtil.findPatternInFile(new File(resultFilename), "Avoid empty if"));
+        String[] args = { "-d", SOURCE_FOLDER, "-f", "text", "-R", RSET_WITH_VIOLATION, "--no-progress", };
+        String log = runTest(StatusCode.VIOLATIONS_FOUND, args);
+        assertThat(log, containsString("Violation from test-rset-1.xml"));
     }
 
     @Test
     public void exitStatusWithViolationsAndWithoutFailOnViolations() {
-        String[] args = { "-d", SOURCE_FOLDER, "-f", "text", "-R", "category/java/errorprone.xml", "-failOnViolation", "false", };
-        String resultFilename = runTest(args, "exitStatusWithViolationsAndWithoutFailOnViolations", 0);
-        assertTrue(FileUtil.findPatternInFile(new File(resultFilename), "Avoid empty if"));
+        String[] args = { "-d", SOURCE_FOLDER, "-f", "text", "-R", RSET_WITH_VIOLATION, "-failOnViolation", "false", "--no-progress", };
+        String log = runTest(StatusCode.OK, args);
+        assertThat(log, containsString("Violation from test-rset-1.xml"));
+    }
+
+    @Test
+    public void exitStatusWithViolationsAndWithoutFailOnViolationsLongOption() {
+        String[] args = { "-d", SOURCE_FOLDER, "-f", "text", "-R", RSET_WITH_VIOLATION, "--fail-on-violation", "false", "--no-progress", };
+        String log = runTest(StatusCode.OK, args);
+        assertThat(log, containsString("Violation from test-rset-1.xml"));
     }
 
     /**
@@ -72,12 +102,9 @@ public class CLITest extends BaseCLITest {
     @Test
     public void testWrongRuleset() {
         String[] args = { "-d", SOURCE_FOLDER, "-f", "text", "-R", "category/java/designn.xml", };
-        String filename = TEST_OUPUT_DIRECTORY + "testWrongRuleset.txt";
-        createTestOutputFile(filename);
-        runPMDWith(args);
-        Assert.assertEquals(1, getStatusCode());
-        assertTrue(FileUtil.findPatternInFile(new File(filename),
-                "Can't find resource 'category/java/designn.xml' for rule 'null'." + "  Make sure the resource is a valid file"));
+        String log = runTest(StatusCode.ERROR, args);
+        assertThat(log, containsString("Cannot resolve rule/ruleset reference "
+                                       + "'category/java/designn.xml'"));
     }
 
     /**
@@ -86,12 +113,9 @@ public class CLITest extends BaseCLITest {
     @Test
     public void testWrongRulesetWithRulename() {
         String[] args = { "-d", SOURCE_FOLDER, "-f", "text", "-R", "category/java/designn.xml/UseCollectionIsEmpty", };
-        String filename = TEST_OUPUT_DIRECTORY + "testWrongRuleset.txt";
-        createTestOutputFile(filename);
-        runPMDWith(args);
-        Assert.assertEquals(1, getStatusCode());
-        assertTrue(FileUtil.findPatternInFile(new File(filename),
-                "Can't find resource 'category/java/designn.xml' for rule " + "'UseCollectionIsEmpty'."));
+        String log = runTest(StatusCode.ERROR, args);
+        assertThat(log, containsString("Cannot resolve rule/ruleset reference"
+                                       + " 'category/java/designn.xml/UseCollectionIsEmpty'"));
     }
 
     /**
@@ -99,12 +123,9 @@ public class CLITest extends BaseCLITest {
      */
     @Test
     public void testWrongRulename() {
-        String[] args = { "-d", SOURCE_FOLDER, "-f", "text", "-R", "category/java/design.xml/ThisRuleDoesNotExist", };
-        String filename = TEST_OUPUT_DIRECTORY + "testWrongRuleset.txt";
-        createTestOutputFile(filename);
-        runPMDWith(args);
-        Assert.assertEquals(1, getStatusCode());
-        assertTrue(FileUtil.findPatternInFile(new File(filename), Pattern
-                .quote("No rules found. Maybe you misspelled a rule name?" + " (category/java/design.xml/ThisRuleDoesNotExist)")));
+        String[] args = { "-d", SOURCE_FOLDER, "-f", "text", "-R", RSET_WITH_VIOLATION + "/ThisRuleDoesNotExist", };
+        String log = runTest(StatusCode.OK, args);
+        assertThat(log, containsString("No rules found. Maybe you misspelled a rule name?"
+                                       + " (" + RSET_WITH_VIOLATION + "/ThisRuleDoesNotExist)"));
     }
 }

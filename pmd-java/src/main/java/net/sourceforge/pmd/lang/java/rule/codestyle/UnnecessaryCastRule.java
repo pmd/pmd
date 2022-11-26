@@ -14,9 +14,10 @@ import static net.sourceforge.pmd.lang.java.ast.BinaryOp.MOD;
 import static net.sourceforge.pmd.lang.java.ast.BinaryOp.MUL;
 import static net.sourceforge.pmd.lang.java.ast.BinaryOp.SHIFT_OPS;
 import static net.sourceforge.pmd.lang.java.ast.BinaryOp.SUB;
-import static net.sourceforge.pmd.lang.java.ast.BinaryOp.isInfixExprWithOperator;
+import static net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils.isInfixExprWithOperator;
 
 import java.util.EnumSet;
+import java.util.Set;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -28,14 +29,15 @@ import net.sourceforge.pmd.lang.java.ast.ASTInfixExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodReference;
 import net.sourceforge.pmd.lang.java.ast.BinaryOp;
-import net.sourceforge.pmd.lang.java.ast.ExprContext;
+import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
-import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.TypeConversion;
 import net.sourceforge.pmd.lang.java.types.TypeOps;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
+import net.sourceforge.pmd.lang.java.types.ast.ExprContext;
+import net.sourceforge.pmd.lang.java.types.ast.ExprContext.ExprContextKind;
 
 /**
  * Detects casts where the operand is already a subtype of the context
@@ -43,7 +45,7 @@ import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
  */
 public class UnnecessaryCastRule extends AbstractJavaRulechainRule {
 
-    private static final EnumSet<BinaryOp> BINARY_PROMOTED_OPS =
+    private static final Set<BinaryOp> BINARY_PROMOTED_OPS =
         EnumSet.of(LE, GE, GT, LT, ADD, SUB, MUL, DIV, MOD);
 
     public UnnecessaryCastRule() {
@@ -72,7 +74,7 @@ public class UnnecessaryCastRule extends AbstractJavaRulechainRule {
         if (operand instanceof ASTLambdaExpression || operand instanceof ASTMethodReference) {
             // Then the cast provides a target type for the expression (always).
             // We need to check the enclosing context, as if it's invocation we give up for now
-            if (context.isMissing() || context.isInvocationContext()) {
+            if (context.isMissing() || context.hasKind(ExprContextKind.INVOCATION)) {
                 // Then the cast may be used to determine the overload.
                 // We need to treat the casted lambda as a whole unit.
                 // todo see below
@@ -119,7 +121,7 @@ public class UnnecessaryCastRule extends AbstractJavaRulechainRule {
     private static boolean castIsUnnecessaryToMatchContext(ExprContext context,
                                                            JTypeMirror coercionType,
                                                            JTypeMirror operandType) {
-        if (context.isInvocationContext()) {
+        if (context.hasKind(ExprContextKind.INVOCATION)) {
             // todo unsupported for now, the cast may be disambiguating overloads
             return false;
         }
@@ -152,26 +154,23 @@ public class UnnecessaryCastRule extends AbstractJavaRulechainRule {
             // a branch of a ternary
             return true;
 
-        } else if (context.isString() && isInfixExprWithOperator(castExpr.getParent(), ADD)) {
+        } else if (context.hasKind(ExprContextKind.STRING) && isInfixExprWithOperator(castExpr.getParent(), ADD)) {
 
             // inside string concatenation
-            return !TypeTestUtil.isA(String.class, JavaRuleUtil.getOtherOperandIfInInfixExpr(castExpr))
+            return !TypeTestUtil.isA(String.class, JavaAstUtils.getOtherOperandIfInInfixExpr(castExpr))
                 && !TypeTestUtil.isA(String.class, operandType);
 
-        } else if (context.isNumeric() && castExpr.getParent() instanceof ASTInfixExpression) {
+        } else if (context.hasKind(ExprContextKind.NUMERIC) && castExpr.getParent() instanceof ASTInfixExpression) {
             // numeric expr
             ASTInfixExpression parent = (ASTInfixExpression) castExpr.getParent();
 
             if (isInfixExprWithOperator(parent, SHIFT_OPS)) {
                 // if so, then the cast is determining the width of expr
                 // the right operand is always int
-                if (castExpr == parent.getLeftOperand()) {
-                    return !TypeOps.isStrictSubtype(operandType.unbox(), operandType.getTypeSystem().INT);
-                } else {
-                    return false;
-                }
+                return castExpr == parent.getLeftOperand()
+                        && !TypeOps.isStrictSubtype(operandType.unbox(), operandType.getTypeSystem().INT);
             } else if (isInfixExprWithOperator(parent, BINARY_PROMOTED_OPS)) {
-                ASTExpression otherOperand = JavaRuleUtil.getOtherOperandIfInInfixExpr(castExpr);
+                ASTExpression otherOperand = JavaAstUtils.getOtherOperandIfInInfixExpr(castExpr);
                 JTypeMirror otherType = otherOperand.getTypeMirror();
 
                 // Ie, the type that is taken by the binary promotion

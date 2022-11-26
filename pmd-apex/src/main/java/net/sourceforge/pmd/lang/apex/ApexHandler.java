@@ -11,6 +11,7 @@ import java.util.Set;
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.AbstractPmdLanguageVersionHandler;
 import net.sourceforge.pmd.lang.apex.ast.ApexParser;
+import net.sourceforge.pmd.lang.apex.internal.ApexDesignerBindings;
 import net.sourceforge.pmd.lang.apex.metrics.ApexMetrics;
 import net.sourceforge.pmd.lang.apex.rule.internal.ApexRuleViolationFactory;
 import net.sourceforge.pmd.lang.ast.Parser;
@@ -18,6 +19,7 @@ import net.sourceforge.pmd.lang.metrics.LanguageMetricsProvider;
 import net.sourceforge.pmd.lang.metrics.Metric;
 import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
 import net.sourceforge.pmd.properties.PropertySource;
+import net.sourceforge.pmd.util.designerbindings.DesignerBindings;
 
 @InternalApi
 public class ApexHandler extends AbstractPmdLanguageVersionHandler {
@@ -46,7 +48,12 @@ public class ApexHandler extends AbstractPmdLanguageVersionHandler {
         return myMetricsProvider;
     }
 
-    private static class ApexMetricsProvider implements LanguageMetricsProvider {
+    @Override
+    public DesignerBindings getDesignerBindings() {
+        return ApexDesignerBindings.INSTANCE;
+    }
+
+    private static final class ApexMetricsProvider implements LanguageMetricsProvider {
 
         private final Set<Metric<?, ?>> metrics = setOf(
             ApexMetrics.COGNITIVE_COMPLEXITY,

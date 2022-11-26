@@ -1,0 +1,336 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>pos - new Integer(int)</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    Integer i = new Integer(42);
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>neg - new Integer(String)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    Integer i = new Integer("42");
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>neg - Integer.valueOf(String)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    Integer i = Integer.valueOf("42");
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>pos - Integer.valueOf(int)</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <expected-messages>
+            <message>Unnecessary explicit boxing</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    Integer i = Integer.valueOf(42);
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>pos - new Integer(int)</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <expected-messages>
+            <message>Unnecessary explicit boxing</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    Integer i = new Integer(42);
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>pos - new Integer(int) with widening</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <expected-messages>
+            <message>Unnecessary explicit conversion from char to Integer</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {{
+    char c = 0;
+    Integer i = new Integer(c);
+}}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>pos - new Integer(int) assigned to object</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <expected-messages>
+            <message>Unnecessary explicit boxing</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {{
+    char c = 0;
+    Object obj = new Integer(2);
+}}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>pos - unboxing</description>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>3,4,5</expected-linenumbers>
+        <expected-messages>
+            <message>Unnecessary explicit unboxing</message>
+            <message>Unnecessary explicit conversion from Integer to double</message>
+            <message>Unnecessary explicit conversion from Integer to double</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    void fun(Integer c) {
+        int i0 = c.intValue();
+        double d = c.doubleValue();
+        d = c.longValue();
+
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>neg - unboxing to smaller type</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void fun(Integer c) {
+        byte i2 = c.byteValue();  // necessary
+        short i = c.shortValue(); // necessary
+        int i = c.byteValue();    // necessary, because it truncates the value before widening it.
+
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>pos - unboxing to smaller type</description>
+        <expected-problems>5</expected-problems>
+        <expected-linenumbers>5,6,7,8,9</expected-linenumbers>
+        <expected-messages>
+            <message>Unnecessary explicit boxing</message>
+            <message>Unnecessary explicit unboxing</message>
+            <message>Unnecessary explicit unboxing</message>
+            <message>Unnecessary explicit boxing</message>
+            <message>Unnecessary boxing of boxed value</message>
+        </expected-messages>
+        <code><![CDATA[
+            class Scratch {
+                public static void main(String[] args) {
+                    Integer integer = 2; // ok
+
+                    Object a = Integer.valueOf(2);  // explicit boxing where the value would be autoboxed
+                    int b = integer.intValue();     // explicit unboxing where the value would be auto-unboxed
+                    Object c = integer.intValue();  // unboxing where the value is immediately reboxed
+                    int i = Integer.valueOf(0);     // boxing where the value is immediately unboxed
+                    Integer.valueOf(integer);       // boxing of already boxed value
+                }
+            }
+        ]]></code>
+    </test-code>
+    <test-code>
+        <!-- Casts are left to UnnecessaryCast -->
+        <description>Unnecessary (primitive -> primitive) casts</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <expected-messages>
+            <message>Unnecessary explicit boxing</message>
+        </expected-messages>
+        <code><![CDATA[
+            class Scratch {
+                public static void main(String[] args) {
+                    Integer integer = 2; // ok
+
+                    long a = (int) Integer.valueOf(2);  // explicit boxing where the value would be autoboxed
+                    int b = (int) 2;                    // ignored, left to UnnecessaryCast
+                    long c = (int) 4;                   // widening can be implicit
+                    double c = (int) 4;                 // widening can be implicit
+                    double c = (int) 4.0;               // cast is narrowing so necessary
+                }
+            }
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Patch 2075906: Add toString() to the rule UnnecessaryWrapperObjectCreation</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Unnecessary explicit boxing</message>
+        </expected-messages>
+        <code><![CDATA[
+            public class Bar {
+                void foo(boolean value) {
+                    String b = Boolean.valueOf(value).toString();
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1057 False positive for UnnecessaryWrapperObjectCreation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <expected-messages>
+            <message>Unnecessary explicit conversion from int to Float</message>
+        </expected-messages>
+        <code><![CDATA[
+            public class Test {
+                public void test() {
+                    Float.valueOf(5).toString(); // this will raise the rule
+                    Float.toString(5); // this is the preferred way
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Uses of Integer.valueOf(someString) where an int is expected</description>
+        <expected-problems>4</expected-problems>
+        <expected-linenumbers>3,4,5,6</expected-linenumbers>
+        <expected-messages>
+            <message>Unnecessary implicit unboxing. Use Integer.parseInt(...) instead</message>
+            <message>Unnecessary implicit unboxing. Use Integer.parseInt(...) instead</message>
+            <message>Unnecessary implicit unboxing. Use Integer.parseInt(...) instead</message>
+            <message>Unnecessary implicit unboxing. Use Integer.parseInt(...) instead</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    public void test(String number) {
+        int i1 = Integer.valueOf("42");
+        int i2 = Integer.valueOf("42", 10);
+        int x1 = Integer.valueOf(number);
+        int x2 = Integer.valueOf(number, 10);
+        int y = Integer.parseInt("42");
+        int z = Integer.parseInt(number);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Uses of Long.valueOf(someString) where an long is expected</description>
+        <expected-problems>4</expected-problems>
+        <expected-linenumbers>3,4,5,6</expected-linenumbers>
+        <expected-messages>
+            <message>Unnecessary implicit unboxing. Use Long.parseLong(...) instead</message>
+            <message>Unnecessary implicit unboxing. Use Long.parseLong(...) instead</message>
+            <message>Unnecessary implicit unboxing. Use Long.parseLong(...) instead</message>
+            <message>Unnecessary implicit unboxing. Use Long.parseLong(...) instead</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    public void test(String number) {
+        long l1 = Long.valueOf("42");
+        long l2 = Long.valueOf("42", 10);
+        long x1 = Long.valueOf(number);
+        long x2 = Long.valueOf(number, 10);
+        long y = Long.parseLong("42");
+        long z = Long.parseLong(number);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Uses of Double.valueOf(someString) where an double is expected</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,4</expected-linenumbers>
+        <expected-messages>
+            <message>Unnecessary implicit unboxing. Use Double.parseDouble(...) instead</message>
+            <message>Unnecessary implicit unboxing. Use Double.parseDouble(...) instead</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    public void test(String number) {
+        double d1 = Double.valueOf("42");
+        double x1 = Double.valueOf(number);
+        double y = Double.parseDouble("42");
+        double z = Double.parseDouble(number);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Uses of Float.valueOf(someString) where an float is expected</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,4</expected-linenumbers>
+        <expected-messages>
+            <message>Unnecessary implicit unboxing. Use Float.parseFloat(...) instead</message>
+            <message>Unnecessary implicit unboxing. Use Float.parseFloat(...) instead</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    public void test(String number) {
+        float f1 = Float.valueOf("42");
+        float x1 = Float.valueOf(number);
+        float y = Float.parseFloat("42");
+        float z = Float.parseFloat(number);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Uses of Short.valueOf(someString) where an short is expected</description>
+        <expected-problems>4</expected-problems>
+        <expected-linenumbers>3,4,5,6</expected-linenumbers>
+        <expected-messages>
+            <message>Unnecessary implicit unboxing. Use Short.parseShort(...) instead</message>
+            <message>Unnecessary implicit unboxing. Use Short.parseShort(...) instead</message>
+            <message>Unnecessary implicit unboxing. Use Short.parseShort(...) instead</message>
+            <message>Unnecessary implicit unboxing. Use Short.parseShort(...) instead</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    public void test(String number) {
+        short s1 = Short.valueOf("42");
+        short s2 = Short.valueOf("42", 10);
+        short x1 = Short.valueOf(number);
+        short x2 = Short.valueOf(number, 10);
+        short y = Short.parseShort("42");
+        short z = Short.parseShort(number);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Uses of Boolean.valueOf(someString) where an boolean is expected</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,4</expected-linenumbers>
+        <expected-messages>
+            <message>Unnecessary implicit unboxing. Use Boolean.parseBoolean(...) instead</message>
+            <message>Unnecessary implicit unboxing. Use Boolean.parseBoolean(...) instead</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    public void test(String number) {
+        boolean b = Boolean.valueOf("42");
+        boolean x = Boolean.valueOf(number);
+        boolean y = Boolean.parseBoolean("42");
+        boolean z = Boolean.parseBoolean(number);
+    }
+}
+        ]]></code>
+    </test-code>
+</test-data>

@@ -28,7 +28,7 @@ import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 import net.sourceforge.pmd.lang.apex.rule.internal.Helper;
 
 /**
- * Detects if variables in Database.query(variable) is escaped with
+ * Detects if variables in Database.query(variable) or Database.countQuery is escaped with
  * String.escapeSingleQuotes
  *
  * @author sergey.gorbaty
@@ -46,9 +46,14 @@ public class ApexSOQLInjectionRule extends AbstractApexRule {
     private static final String STRING = "String";
     private static final String DATABASE = "Database";
     private static final String QUERY = "query";
+    private static final String COUNT_QUERY = "countQuery";
     private static final Pattern SELECT_PATTERN = Pattern.compile("^select[\\s]+?.*?$", Pattern.CASE_INSENSITIVE);
     private final Set<String> safeVariables = new HashSet<>();
     private final Map<String, Boolean> selectContainingVariables = new HashMap<>();
+
+    public ApexSOQLInjectionRule() {
+        addRuleChainVisit(ASTUserClass.class);
+    }
 
     @Override
     public Object visit(ASTUserClass node, Object data) {
@@ -87,7 +92,7 @@ public class ApexSOQLInjectionRule extends AbstractApexRule {
                 .findDescendantsOfType(ASTMethodCallExpression.class);
 
         for (ASTMethodCallExpression m : potentialDbQueryCalls) {
-            if (!Helper.isTestMethodOrClass(m) && Helper.isMethodName(m, DATABASE, QUERY)) {
+            if (!Helper.isTestMethodOrClass(m) && isQueryMethodCall(m)) {
                 reportStrings(m, data);
                 reportVariables(m, data);
             }
@@ -97,6 +102,10 @@ public class ApexSOQLInjectionRule extends AbstractApexRule {
         selectContainingVariables.clear();
 
         return data;
+    }
+
+    private boolean isQueryMethodCall(ASTMethodCallExpression m) {
+        return Helper.isMethodName(m, DATABASE, QUERY) || Helper.isMethodName(m, DATABASE, COUNT_QUERY);
     }
 
     private void findSafeVariablesInSignature(ASTMethod m) {
@@ -216,7 +225,7 @@ public class ApexSOQLInjectionRule extends AbstractApexRule {
     }
 
     private void reportStrings(ASTMethodCallExpression m, Object data) {
-        final HashSet<ASTVariableExpression> setOfSafeVars = new HashSet<>();
+        final Set<ASTVariableExpression> setOfSafeVars = new HashSet<>();
         final List<ASTStandardCondition> conditions = m.findDescendantsOfType(ASTStandardCondition.class);
         for (ASTStandardCondition c : conditions) {
             List<ASTVariableExpression> vars = c.findDescendantsOfType(ASTVariableExpression.class);

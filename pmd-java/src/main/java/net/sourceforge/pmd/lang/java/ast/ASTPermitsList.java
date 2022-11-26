@@ -4,16 +4,15 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.java.ast.ASTList.ASTNonEmptyList;
 
 
 /**
  * Represents the {@code permits} clause of a (sealed) class declaration.
  *
- * <p>This is a Java 15 Preview and Java 16 Preview feature.
+ * <p>This is a Java 17 Feature.
  *
- * <p>See https://openjdk.java.net/jeps/397
+ * <p>See https://openjdk.java.net/jeps/409
  *
  * <pre class="grammar">
  *
@@ -21,7 +20,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTList.ASTNonEmptyList;
  *                ( "," ClassOrInterfaceType )*
  * </pre>
  */
-@Experimental
 public final class ASTPermitsList extends ASTNonEmptyList<ASTClassOrInterfaceType> {
 
     ASTPermitsList(int id) {

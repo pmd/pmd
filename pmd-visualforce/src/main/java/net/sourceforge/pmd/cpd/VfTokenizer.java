@@ -4,14 +4,15 @@
 
 package net.sourceforge.pmd.cpd;
 
-import java.io.IOException;
-import java.io.Reader;
-
 import net.sourceforge.pmd.cpd.internal.JavaCCTokenizer;
 import net.sourceforge.pmd.lang.TokenManager;
-import net.sourceforge.pmd.lang.ast.CharStream;
-import net.sourceforge.pmd.lang.ast.impl.javacc.CharStreamFactory;
+import net.sourceforge.pmd.lang.ast.impl.javacc.CharStream;
+import net.sourceforge.pmd.lang.ast.impl.javacc.JavaEscapeTranslator;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
+import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument;
+import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument.TokenDocumentBehavior;
+import net.sourceforge.pmd.lang.ast.impl.javacc.MalformedSourceException;
+import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.lang.vf.ast.VfTokenKinds;
 
 /**
@@ -25,7 +26,13 @@ public class VfTokenizer extends JavaCCTokenizer {
     }
 
     @Override
-    protected CharStream makeCharStream(Reader sourceCode) throws IOException {
-        return CharStreamFactory.javaCharStream(sourceCode);
+    protected TokenDocumentBehavior tokenBehavior() {
+        return new JavaccTokenDocument.TokenDocumentBehavior(VfTokenKinds.TOKEN_NAMES) {
+            @Override
+            public TextDocument translate(TextDocument text) throws MalformedSourceException {
+                return new JavaEscapeTranslator(text).translateDocument();
+            }
+        };
     }
+
 }

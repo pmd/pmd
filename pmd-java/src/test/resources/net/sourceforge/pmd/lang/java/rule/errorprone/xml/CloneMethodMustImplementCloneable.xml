@@ -199,6 +199,7 @@ class CloneableClass implements TestInterface {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>[java] CloneMethodMustImplementCloneable triggers for interfaces #1005</description>
         <expected-problems>0</expected-problems>
@@ -207,6 +208,28 @@ class CloneableClass implements TestInterface {
                     extends java.io.Serializable, Cloneable {
                 Foo clone() throws CloneNotSupportedException;
             }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] CloneMethodMustImplementCloneable: False negative with local classes #3343</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,9</expected-linenumbers>
+        <code><![CDATA[
+public class Outer {
+    public static class Inner {
+        public Object clone() throws CloneNotSupportedException {
+            return super.clone();
+        }
+    }
+    public void foo() {
+        class Local {
+            public Object clone() throws CloneNotSupportedException {
+                return super.clone();
+            }
+        }
+    }
+}
         ]]></code>
     </test-code>
 </test-data>

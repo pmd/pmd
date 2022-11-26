@@ -7,15 +7,16 @@ package net.sourceforge.pmd;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Stores the current PMD version and provides utility methods around it.
  */
 public final class PMDVersion {
 
-    private static final Logger LOG = Logger.getLogger(PMDVersion.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(PMDVersion.class);
 
     /**
      * Constant that contains always the current version of PMD.
@@ -36,7 +37,7 @@ public final class PMDVersion {
                 pmdVersion = properties.getProperty("version");
             }
         } catch (final IOException e) {
-            LOG.log(Level.FINE, "Couldn't determine version of PMD", e);
+            LOG.debug("Couldn't determine version of PMD", e);
         }
 
         VERSION = pmdVersion;
@@ -65,6 +66,7 @@ public final class PMDVersion {
      * Checks if the current version is unknown.
      * @return True if an unknown version, false otherwise
      */
+    @SuppressWarnings("PMD.LiteralsFirstInComparisons")
     public static boolean isUnknown() {
         return UNKNOWN_VERSION.equals(VERSION);
     }

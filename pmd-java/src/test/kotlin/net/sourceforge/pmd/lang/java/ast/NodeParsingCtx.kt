@@ -87,10 +87,31 @@ object ExpressionParsingCtx : NodeParsingCtx<ASTExpression>("expression") {
                     .firstOrThrow()
 }
 
+object RootParsingCtx : NodeParsingCtx<ASTCompilationUnit>("compilation unit") {
+
+    override fun getTemplate(construct: String, ctx: ParserTestCtx): String =
+            construct
+
+    override fun retrieveNode(acu: ASTCompilationUnit): ASTCompilationUnit = acu
+}
+
+object ModuleDirectiveParsingContext : NodeParsingCtx<ASTModuleDirective>("module directive") {
+
+    override fun getTemplate(construct: String, ctx: ParserTestCtx): String =
+            """
+                module test.module {
+                    $construct
+                }
+            """.trimIndent()
+
+    override fun retrieveNode(acu: ASTCompilationUnit): ASTModuleDirective =
+        acu.descendants(ASTModuleDirective::class.java).firstOrThrow()
+}
+
 object StatementParsingCtx : NodeParsingCtx<ASTStatement>("statement") {
 
     override fun getTemplate(construct: String, ctx: ParserTestCtx): String =
-            TypeBodyParsingCtx.getTemplate("{\n$construct}", ctx)
+            TypeBodyParsingCtx.getTemplate("  {\n    $construct\n  }", ctx)
 
 
     override fun retrieveNode(acu: ASTCompilationUnit): ASTStatement =
@@ -101,6 +122,9 @@ object StatementParsingCtx : NodeParsingCtx<ASTStatement>("statement") {
 
 object TypeBodyParsingCtx : NodeParsingCtx<ASTBodyDeclaration>("body declaration") {
 
+    /**
+     * Note: this code allows calling [ParserTestCtx.asIfIn]
+     */
     override fun getTemplate(construct: String, ctx: ParserTestCtx): String {
         val source = ctx.fullSource
         return if (source != null) {

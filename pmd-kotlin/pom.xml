@@ -8,14 +8,27 @@
         <groupId>net.sourceforge.pmd</groupId>
         <artifactId>pmd</artifactId>
         <version>7.0.0-SNAPSHOT</version>
-        <relativePath>../</relativePath>
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
+    <properties>
+        <antlr4.visitor>true</antlr4.visitor>
+    </properties>
+
     <build>
+        <resources>
+            <resource>
+                <directory>${project.basedir}/src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.antlr</groupId>
                 <artifactId>antlr4-maven-plugin</artifactId>
+                <configuration combine.self="override">
+                    <libDirectory>src/main/antlr4/net/sourceforge/pmd/lang/kotlin/ast</libDirectory>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -29,9 +42,11 @@
                         </goals>
                         <configuration>
                             <target>
-                                <ant antfile="${antlr4.ant.wrapper}" target="cpd-language">
+                                <ant antfile="${antlr4.ant.wrapper}" target="pmd-language">
                                     <property name="lang-name" value="Kotlin" />
                                     <property name="lang-terse-name" value="kotlin" />
+                                    <property name="root-node-name" value="KotlinFile" />
+                                    <property name="node-prefix" value="Kt" />
                                 </ant>
                             </target>
                         </configuration>
@@ -62,8 +77,8 @@
         </dependency>
 
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>

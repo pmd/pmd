@@ -4,28 +4,30 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 
-public class ASTSwitchLabelTest extends BaseParserTest {
+import net.sourceforge.pmd.lang.java.BaseParserTest;
 
-    private final JavaParsingHelper java = JavaParsingHelper.WITH_PROCESSING.withDefaultVersion("15-preview");
+class ASTSwitchLabelTest extends BaseParserTest {
+
+    private final JavaParsingHelper java = JavaParsingHelper.DEFAULT.withDefaultVersion("15-preview");
 
     @Test
-    public void testDefaultOff() {
-        List<ASTSwitchLabel> ops = java.getNodes(ASTSwitchLabel.class, TEST1);
+    void testDefaultOff() {
+        List<ASTSwitchLabel> ops = java.getNodes(ASTSwitchLabel.class, "public class Foo {\n void bar() {\n  switch (x) {\n   case 1: y = 2;\n  }\n }\n}");
         assertFalse(ops.get(0).isDefault());
     }
 
     @Test
-    public void testDefaultSet() {
+    void testDefaultSet() {
         @NonNull ASTSwitchStatement switchStmt = java.parse(SWITCH_WITH_DEFAULT).descendants(ASTSwitchStatement.class).firstOrThrow();
         assertTrue(switchStmt.hasDefaultCase());
         assertFalse(switchStmt.isExhaustiveEnumSwitch());
@@ -34,21 +36,21 @@ public class ASTSwitchLabelTest extends BaseParserTest {
     }
 
     @Test
-    public void testExhaustiveEnum() {
+    void testExhaustiveEnum() {
         @NonNull ASTSwitchStatement switchStmt = java.parse(EXHAUSTIVE_ENUM).descendants(ASTSwitchStatement.class).firstOrThrow();
         assertFalse(switchStmt.hasDefaultCase());
         assertTrue(switchStmt.isExhaustiveEnumSwitch());
     }
 
     @Test
-    public void testNotExhaustiveEnum() {
+    void testNotExhaustiveEnum() {
         @NonNull ASTSwitchStatement switchStmt = java.parse(NOT_EXHAUSTIVE_ENUM).descendants(ASTSwitchStatement.class).firstOrThrow();
         assertFalse(switchStmt.hasDefaultCase());
         assertFalse(switchStmt.isExhaustiveEnumSwitch());
     }
 
     @Test
-    public void testEnumWithDefault() {
+    void testEnumWithDefault() {
         @NonNull ASTSwitchStatement switchStmt = java.parse(ENUM_SWITCH_WITH_DEFAULT).descendants(ASTSwitchStatement.class).firstOrThrow();
         assertTrue(switchStmt.hasDefaultCase());
         assertFalse(switchStmt.isExhaustiveEnumSwitch());

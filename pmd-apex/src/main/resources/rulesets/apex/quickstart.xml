@@ -83,6 +83,8 @@
    <rule ref="category/apex/errorprone.xml/AvoidHardcodingId" message="Avoid hardcoding ID's">
       <priority>3</priority>
    </rule>
+<!--    <rule ref="category/apex/performance.xml/AvoidDebugStatements" /> -->
+<!--    <rule ref="category/apex/performance.xml/EagerlyLoadedDescribeSObjectResult" /> -->
 
    <!-- NAMING -->
    <rule ref="category/apex/codestyle.xml/ClassNamingConventions" message="Class names should begin with an uppercase character">
@@ -116,6 +118,7 @@
    <rule ref="category/apex/bestpractices.xml/ApexUnitTestShouldNotUseSeeAllDataTrue" message="@isTest(seeAllData=true) should not be used in Apex unit tests because it opens up the existing database data for unexpected modification by tests">
       <priority>3</priority>
    </rule>
+   <rule ref="category/apex/bestpractices.xml/ApexUnitTestClassShouldHaveRunAs" />
 <!--    <rule ref="category/apex/bestpractices.xml/ApexAssertionsShouldIncludeMessage"/> -->
 <!--    <rule ref="category/apex/bestpractices.xml/ApexUnitTestMethodShouldHaveIsTestAnnotation"/> -->
 <!--    <rule ref="category/apex/errorprone.xml/TestMethodsMustBeInTestClasses"/> -->
@@ -203,5 +206,6 @@
    </rule>
    <!-- <rule ref="category/apex/bestpractices.xml/UnusedLocalVariable"/> -->
    <!-- <rule ref="category/apex/errorprone.xml/OverrideBothEqualsAndHashcode" /> -->
+   <!-- <rule ref="category/apex/errorprone.xml/InaccessibleAuraEnabledGetter" /> -->
 
 </ruleset>

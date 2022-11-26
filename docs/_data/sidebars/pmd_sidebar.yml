@@ -23,7 +23,7 @@ entries:
       output: web, pdf
       type: homepage
     - title: Release notes
-      url: /pmd_release_notes.html
+      url: /pmd_release_notes7.html
       output: web, pdf
     - title: PMD 7.0.0 development
       url: /pmd_next_major_development.html
@@ -58,6 +58,9 @@ entries:
     - title: PMD Report formats
       url: /pmd_userdocs_report_formats.html
       output: web, pdf
+    - title: 3rd party rulesets
+      output: web, pdf
+      url: /pmd_userdocs_3rdpartyrulesets.html
     - title: null
       output: web, pdf
       subfolders:
@@ -178,6 +181,18 @@ entries:
     - title: null
       output: web, pdf
       subfolders:
+      - title: HTML Rules
+        output: web, pdf
+        subfolderitems:
+        - title: Index
+          output: web, pdf
+          url: /pmd_rules_html.html
+        - title: Best Practices
+          output: web, pdf
+          url: /pmd_rules_html_bestpractices.html
+    - title: null
+      output: web, pdf
+      subfolders:
       - title: Java Rules
         output: web, pdf
         subfolderitems:
@@ -232,6 +247,21 @@ entries:
         - title: Security
           output: web, pdf
           url: /pmd_rules_jsp_security.html
+    - title: null
+      output: web, pdf
+      subfolders:
+      - title: Kotlin Rules
+        output: web, pdf
+        subfolderitems:
+        - title: Index
+          output: web, pdf
+          url: /pmd_rules_kotlin.html
+        - title: Best Practices
+          output: web, pdf
+          url: /pmd_rules_kotlin_bestpractices.html
+        - title: Error Prone
+          output: web, pdf
+          url: /pmd_rules_kotlin_errorprone.html
     - title: null
       output: web, pdf
       subfolders:
@@ -292,6 +322,15 @@ entries:
     - title: null
       output: web, pdf
       subfolders:
+      - title: Scala Rules
+        output: web, pdf
+        subfolderitems:
+        - title: Index
+          output: web, pdf
+          url: /pmd_rules_scala.html
+    - title: null
+      output: web, pdf
+      subfolders:
       - title: Swift Rules
         output: web, pdf
         subfolderitems:
@@ -322,6 +361,15 @@ entries:
         - title: Error Prone
           output: web, pdf
           url: /pmd_rules_vm_errorprone.html
+    - title: null
+      output: web, pdf
+      subfolders:
+      - title: WSDL Rules
+        output: web, pdf
+        subfolderitems:
+        - title: Index
+          output: web, pdf
+          url: /pmd_rules_wsdl.html
     - title: null
       output: web, pdf
       subfolders:
@@ -361,8 +409,23 @@ entries:
     - title: JSP
       url: /pmd_languages_jsp.html
       output: web, pdf
+    - title: Kotlin
+      url: /pmd_languages_kotlin.html
+      output: web, pdf
     - title: PLSQL
       url: /pmd_languages_plsql.html
+      output: web, pdf
+    - title: Visualforce
+      url: /pmd_languages_visualforce.html
+      output: web, pdf
+    - title: XML and XML dialects
+      url: /pmd_languages_xml.html
+      output: web, pdf
+    - title: HTML
+      url: /pmd_languages_html.html
+      output: web, pdf
+    - title: Gherkin
+      url: /pmd_languages_gherkin.html
       output: web, pdf
   - title: Developer Documentation
     output: web, pdf
@@ -397,8 +460,14 @@ entries:
       - title: Major contributions
         output: web, pdf
         subfolderitems:
-        - title: Adding a new language
-          url: /pmd_devdocs_major_adding_new_language.html
+        - title: Rule Guidelines
+          url: /pmd_devdocs_major_rule_guidelines.html
+          output: web, pdf
+        - title: Adding a new language (JavaCC)
+          url: /pmd_devdocs_major_adding_new_language_javacc.html
+          output: web, pdf
+        - title: Adding a new language (Antlr)
+          url: /pmd_devdocs_major_adding_new_language_antlr.html
           output: web, pdf
         - title: Adding a new CPD language
           url: /pmd_devdocs_major_adding_new_cpd_language.html
@@ -444,6 +513,9 @@ entries:
       output: web, pdf
     - title: Old release notes
       url: /pmd_release_notes_old.html
+      output: web, pdf
+    - title: Decisions
+      url: /pmd_projectdocs_decisions.html
       output: web, pdf
     - title: null
       output: web, pdf

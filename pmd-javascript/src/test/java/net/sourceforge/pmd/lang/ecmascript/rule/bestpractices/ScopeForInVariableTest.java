@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.ecmascript.rule.bestpractices;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class ScopeForInVariableTest extends PmdRuleTst {
+class ScopeForInVariableTest extends PmdRuleTst {
     // no additional unit tests
 }

@@ -8,6 +8,7 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.emptyIterator;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
+import static java.util.Collections.emptySet;
 import static java.util.Collections.singletonList;
 
 import java.util.ArrayList;
@@ -17,11 +18,15 @@ import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
+import java.util.function.BinaryOperator;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collector;
@@ -32,13 +37,13 @@ import org.apache.commons.lang3.Validate;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.pcollections.HashTreePSet;
-import org.pcollections.MapPSet;
 import org.pcollections.PMap;
 import org.pcollections.PSet;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.internal.util.IteratorUtil;
+import net.sourceforge.pmd.lang.document.Chars;
 
 /**
  * Generic collection and array-related utility functions for java.util types.
@@ -93,12 +98,8 @@ public final class CollectionUtil {
      */
     @Deprecated
     public static boolean isCollectionType(String typeName, boolean includeInterfaces) {
-
-        if (COLLECTION_CLASSES_BY_NAMES.contains(typeName)) {
-            return true;
-        }
-
-        return includeInterfaces && COLLECTION_INTERFACES_BY_NAMES.contains(typeName);
+        return COLLECTION_CLASSES_BY_NAMES.contains(typeName)
+                || includeInterfaces && COLLECTION_INTERFACES_BY_NAMES.contains(typeName);
     }
 
     /**
@@ -275,6 +276,22 @@ public final class CollectionUtil {
         return Collections.unmodifiableList(union);
     }
 
+    public static <K, V> Map<K, V> mapOf(K k0, V v0) {
+        return Collections.singletonMap(k0, v0);
+    }
+
+    public static <K, V> Map<K, V> buildMap(Consumer<Map<K, V>> effect) {
+        Map<K, V> map = new LinkedHashMap<>();
+        effect.accept(map);
+        return Collections.unmodifiableMap(map);
+    }
+
+    public static <K, V> Map<K, V> buildMap(Map<K, V> initialMap, Consumer<Map<K, V>> effect) {
+        Map<K, V> map = new LinkedHashMap<>(initialMap);
+        effect.accept(map);
+        return Collections.unmodifiableMap(map);
+    }
+
     public static <T, R> List<@NonNull R> mapNotNull(Iterable<? extends T> from, Function<? super T, ? extends @Nullable R> f) {
         Iterator<? extends T> it = from.iterator();
         if (!it.hasNext()) {
@@ -301,7 +318,7 @@ public final class CollectionUtil {
         if (m.isEmpty()) {
             return Collections.singletonMap(k, v);
         }
-        HashMap<K, V> newM = new HashMap<>(m);
+        Map<K, V> newM = new HashMap<>(m);
         newM.put(k, v);
         return newM;
     }
@@ -495,12 +512,12 @@ public final class CollectionUtil {
     /**
      * A collector that returns a mutable set. This contrasts with
      * {@link Collectors#toSet()}, which makes no guarantee about the
-     * mutability of the set.
+     * mutability of the set. The set preserves insertion order.
      *
      * @param <T> Type of accumulated values
      */
     public static <T> Collector<T, ?, Set<T>> toMutableSet() {
-        return Collectors.toCollection(HashSet::new);
+        return Collectors.toCollection(LinkedHashSet::new);
     }
 
     /**
@@ -516,6 +533,18 @@ public final class CollectionUtil {
     }
 
     /**
+     * A collector that returns an unmodifiable set. This contrasts with
+     * {@link Collectors#toSet()}, which makes no guarantee about the
+     * mutability of the set. {@code Collectors::toUnmodifiableSet} was
+     * only added in JDK 9. The set preserves insertion order.
+     *
+     * @param <T> Type of accumulated values
+     */
+    public static <T> Collector<T, ?, Set<T>> toUnmodifiableSet() {
+        return Collectors.collectingAndThen(toMutableSet(), Collections::unmodifiableSet);
+    }
+
+    /**
      * A collectors that accumulates into a persistent set.
      *
      * @param <T> Type of accumulated values
@@ -523,7 +552,7 @@ public final class CollectionUtil {
     public static <T> Collector<T, ?, PSet<T>> toPersistentSet() {
         class Holder {
 
-            MapPSet<T> set = HashTreePSet.empty();
+            PSet<T> set = HashTreePSet.empty();
         }
 
         return Collector.of(
@@ -618,6 +647,13 @@ public final class CollectionUtil {
         return Collections.unmodifiableList(new ArrayList<>(list));
     }
 
+    public static <T> Set<T> defensiveUnmodifiableCopyToSet(Collection<? extends T> list) {
+        if (list.isEmpty()) {
+            return emptySet();
+        }
+        return Collections.unmodifiableSet(new LinkedHashSet<>(list));
+    }
+
     /**
      * Like {@link String#join(CharSequence, Iterable)}, except it appends
      * on a preexisting {@link StringBuilder}. The result value is that StringBuilder.
@@ -628,14 +664,35 @@ public final class CollectionUtil {
                                            String delimiter) {
         boolean first = true;
         for (T t : iterable) {
-            appendItem.accept(sb, t);
             if (first) {
                 first = false;
             } else {
                 sb.append(delimiter);
             }
+            appendItem.accept(sb, t);
         }
         return sb;
+    }
+
+    public static @NonNull StringBuilder joinCharsIntoStringBuilder(List<Chars> lines, String delimiter) {
+        return joinOn(
+            new StringBuilder(),
+            lines,
+            (buf, line) -> line.appendChars(buf),
+            delimiter
+        );
+    }
+
+
+    /**
+     * Merge the second map into the first. If some keys are in common,
+     * merge them using the merge function, like {@link Map#merge(Object, Object, BiFunction)}.
+     */
+    public static <K, V> void mergeMaps(Map<K, V> result, Map<K, V> other, BinaryOperator<V> mergeFun) {
+        for (K otherKey : other.keySet()) {
+            V otherInfo = other.get(otherKey); // non-null
+            result.merge(otherKey, otherInfo, mergeFun);
+        }
     }
 
     public static @NonNull <T> List<T> makeUnmodifiableAndNonNull(@Nullable List<? extends T> list) {

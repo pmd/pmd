@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.vm.rule.bestpractices;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class AvoidReassigningParametersTest extends PmdRuleTst {
+class AvoidReassigningParametersTest extends PmdRuleTst {
     // no additional unit tests
 }

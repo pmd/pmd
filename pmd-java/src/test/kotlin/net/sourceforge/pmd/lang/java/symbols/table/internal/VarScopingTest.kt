@@ -61,10 +61,12 @@ class VarScopingTest : ProcessorTestSpec({
                 acu.descendants(ASTClassOrInterfaceDeclaration::class.java).toList()
 
         val (outerField, localInInit, foreachParam, methodParam, localInBlock, innerField) =
-                acu.descendants(ASTVariableDeclaratorId::class.java).toList()
+                acu.descendants(ASTVariableDeclaratorId::class.java)
+                   .crossFindBoundaries().toList()
 
         val (inInitializer, inForeachInit, inForeach, inMethod, inLocalBlock, inInnerClass) =
-                acu.descendants(ASTMethodCall::class.java).toList()
+                acu.descendants(ASTMethodCall::class.java)
+                   .crossFindBoundaries().toList()
 
 
         doTest("Inside outer initializer: f is outerField") {
@@ -234,6 +236,92 @@ class VarScopingTest : ProcessorTestSpec({
         }
     }
 
+    parserTest("For init variables") {
+
+        val acu = parser.withProcessing().parse("""
+            class Outer extends Sup {
+                {
+                    for (int i = 0, x = i; i < 20; i++) {
+                        i++;
+                        for (i++; false;) {}
+                    }
+                }
+            }
+        """.trimIndent())
+
+        val (ivar, _) =
+                acu.descendants(ASTVariableDeclaratorId::class.java).toList()
+
+        val iUsages = acu.descendants(ASTVariableAccess::class.java).toList()
+        val (initAccess, condAccess, updateAccess, bodyAccess, innerLoopAccess) =
+                iUsages
+
+        doTest("Usages") {
+            ivar.localUsages shouldBe iUsages
+        }
+        doTest("Inside init") {
+            initAccess shouldResolveToLocal ivar
+        }
+        doTest("Inside condition") {
+            condAccess shouldResolveToLocal ivar
+        }
+
+        doTest("Inside update") {
+            updateAccess shouldResolveToLocal ivar
+        }
+
+        doTest("Inside body") {
+            bodyAccess shouldResolveToLocal ivar
+        }
+
+        doTest("Inside init of nested loop") {
+            innerLoopAccess shouldResolveToLocal ivar
+        }
+    }
+    parserTest("If stmt without a block") {
+
+        val acu = parser.withProcessing().parse("""
+            class Outer extends Sup {
+                {
+                    if ("" !=null)
+                    for (int i = 0, x = i; i < 20; i++) {
+                        i++;
+                        for (i++; false;) {}
+                    }
+                }
+            }
+        """.trimIndent())
+
+        val (ivar, _) =
+                acu.descendants(ASTVariableDeclaratorId::class.java).toList()
+
+        val iUsages = acu.descendants(ASTVariableAccess::class.java).toList()
+        val (initAccess, condAccess, updateAccess, bodyAccess, innerLoopAccess) =
+                iUsages
+
+        doTest("Usages") {
+            ivar.localUsages shouldBe iUsages
+        }
+        doTest("Inside init") {
+            initAccess shouldResolveToLocal ivar
+        }
+        doTest("Inside condition") {
+            condAccess shouldResolveToLocal ivar
+        }
+
+        doTest("Inside update") {
+            updateAccess shouldResolveToLocal ivar
+        }
+
+        doTest("Inside body") {
+            bodyAccess shouldResolveToLocal ivar
+        }
+
+        doTest("Inside init of nested loop") {
+            innerLoopAccess shouldResolveToLocal ivar
+        }
+    }
+
     parserTest("Record constructors") {
 
         val acu = parser.withProcessing().parse("""
@@ -341,7 +429,8 @@ class VarScopingTest : ProcessorTestSpec({
         val (_, t_SomeEnum) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
 
         val (enumA, enumB) =
-                acu.descendants(ASTVariableDeclaratorId::class.java).toList()
+                acu.descendants(ASTEnumDeclaration::class.java)
+                   .descendants(ASTVariableDeclaratorId::class.java).toList()
 
         val (e, caseA, caseB) =
                 acu.descendants(ASTVariableAccess::class.java).toList()

@@ -4,23 +4,22 @@
 
 package net.sourceforge.pmd.lang.java.metrics;
 
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.BaseParserTest;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JavaVisitorBase;
 import net.sourceforge.pmd.lang.java.metrics.testdata.MetricsVisitorTestData;
-import net.sourceforge.pmd.lang.java.symboltable.BaseNonParserTest;
 import net.sourceforge.pmd.lang.metrics.Metric;
 import net.sourceforge.pmd.lang.metrics.MetricOptions;
 import net.sourceforge.pmd.lang.metrics.MetricsUtil;
@@ -28,7 +27,7 @@ import net.sourceforge.pmd.lang.metrics.MetricsUtil;
 /**
  * @author Clément Fournier
  */
-public class MetricsMemoizationTest extends BaseNonParserTest {
+class MetricsMemoizationTest extends BaseParserTest {
 
     private final Metric<Node, Integer> randomMetric = randomMetric();
 
@@ -38,7 +37,7 @@ public class MetricsMemoizationTest extends BaseNonParserTest {
     }
 
     @Test
-    public void memoizationTest() {
+    void memoizationTest() {
         ASTCompilationUnit acu = java.parseClass(MetricsVisitorTestData.class);
 
         List<Integer> expected = visitWith(acu, true);
@@ -49,7 +48,7 @@ public class MetricsMemoizationTest extends BaseNonParserTest {
 
 
     @Test
-    public void forceMemoizationTest() {
+    void forceMemoizationTest() {
 
         ASTCompilationUnit acu = java.parseClass(MetricsVisitorTestData.class);
 

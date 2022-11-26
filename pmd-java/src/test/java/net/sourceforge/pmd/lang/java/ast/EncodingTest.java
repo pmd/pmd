@@ -4,18 +4,19 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class EncodingTest extends BaseParserTest {
+import net.sourceforge.pmd.lang.java.BaseParserTest;
+
+class EncodingTest extends BaseParserTest {
 
     @Test
-    public void testDecodingOfUTF8() {
-        ASTCompilationUnit acu = java.parse(TEST_UTF8);
-        String methodName = acu.getFirstDescendantOfType(ASTMethodDeclaration.class).getImage();
+    void testDecodingOfUTF8() {
+        ASTCompilationUnit acu = java.parse("class Foo { void é() {} }");
+        String methodName = acu.descendants(ASTMethodDeclaration.class).firstOrThrow().getName();
         assertEquals("é", methodName);
     }
 
-    private static final String TEST_UTF8 = "class Foo {\n  void é() {}\n  void fiddle() {}\n}";
 }

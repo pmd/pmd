@@ -22,6 +22,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTMemberValue;
 import net.sourceforge.pmd.lang.java.ast.ASTMemberValuePair;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.Annotatable;
+import net.sourceforge.pmd.lang.java.rule.errorprone.ImplicitSwitchFallThroughRule;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 
 /**
@@ -39,7 +40,7 @@ import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
  * <p>Additionally, the following values suppress a specific set of rules:
  * <ul>
  * <li>{@code "unused"}: suppresses rules like UnusedLocalVariable or UnusedPrivateField;
- * <li>{@code "serial"}: suppresses BeanMembersShouldSerialize and MissingSerialVersionUID;
+ * <li>{@code "serial"}: suppresses BeanMembersShouldSerialize, NonSerializableClass and MissingSerialVersionUID;
  * <li>TODO "fallthrough" #1899
  * </ul>
  */
@@ -47,9 +48,9 @@ final class AnnotationSuppressionUtil {
 
     private static final Set<String> UNUSED_RULES
         = new HashSet<>(Arrays.asList("UnusedPrivateField", "UnusedLocalVariable", "UnusedPrivateMethod",
-                "UnusedFormalParameter", "UnusedAssignment"));
+                "UnusedFormalParameter", "UnusedAssignment", "SingularField"));
     private static final Set<String> SERIAL_RULES =
-        new HashSet<>(Arrays.asList("BeanMembersShouldSerialize", "MissingSerialVersionUID"));
+        new HashSet<>(Arrays.asList("BeanMembersShouldSerialize", "NonSerializableClass", "MissingSerialVersionUID"));
 
     private AnnotationSuppressionUtil() {
 
@@ -80,11 +81,7 @@ final class AnnotationSuppressionUtil {
      */
     private static boolean suppresses(final Node node, Rule rule) {
         Annotatable suppressor = getSuppressor(node);
-        if (suppressor == null) {
-            return false;
-        }
-
-        return hasSuppressWarningsAnnotationFor(suppressor, rule);
+        return suppressor != null && hasSuppressWarningsAnnotationFor(suppressor, rule);
     }
 
     @Nullable
@@ -119,6 +116,7 @@ final class AnnotationSuppressionUtil {
                         || "all".equals(stringVal)
                         || "serial".equals(stringVal) && SERIAL_RULES.contains(rule.getName())
                         || "unused".equals(stringVal) && UNUSED_RULES.contains(rule.getName())
+                        || "fallthrough".equals(stringVal) && rule instanceof ImplicitSwitchFallThroughRule
                     ) {
                         return true;
                     }

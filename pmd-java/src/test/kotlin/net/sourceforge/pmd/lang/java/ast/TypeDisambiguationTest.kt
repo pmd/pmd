@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.ast
 
+import io.kotest.matchers.collections.shouldBeEmpty
+import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeSameInstanceAs
 import net.sourceforge.pmd.lang.ast.test.*
@@ -70,6 +72,30 @@ class TypeDisambiguationTest : ParserTestSpec({
         }
     }
 
+    parserTest("Package names in module") {
+
+        val code = """
+            module java.base {
+               opens java.util;
+               provides java.util.Map with java.util.HashMap;
+               //       ^^^^^^^^^          ^^^^^^^^^
+            }
+        """
+
+        doTest("test without disambig") {
+            val acu = parser.parse(code)
+
+            acu.descendants(ASTAmbiguousName::class.java).toList().shouldHaveSize(2)
+        }
+
+        doTest("test with disambig") {
+            enableProcessing()
+            val acu = parser.parse(code)
+
+            acu.descendants(ASTAmbiguousName::class.java).toList().shouldBeEmpty()
+        }
+    }
+
 
     parserTest("Failures") {
         val logger = enableProcessing()
@@ -124,17 +150,19 @@ class TypeDisambiguationTest : ParserTestSpec({
            }
         """)
 
-        val (refInFoo, refInScratch) = acu.descendants(ASTFieldDeclaration::class.java).map { it.typeNode as ASTClassOrInterfaceType }.toList()
-        val (_, _, aMem) = acu.descendants(ASTClassOrInterfaceDeclaration::class.java).toList { it.symbol }
+        val (refInFoo, refInScratch) = acu.descendants(ASTFieldDeclaration::class.java)
+            .crossFindBoundaries().map { it.typeNode as ASTClassOrInterfaceType }.toList()
+        val (_, _, aMem) = acu.descendants(ASTClassOrInterfaceDeclaration::class.java)
+            .crossFindBoundaries().toList { it.symbol }
 
 
         doTest("Ambiguous inner type should produce an error (ref in Foo)") {
-            val (_, args) = logger.errors[AMBIGUOUS_NAME_REFERENCE]?.first { it.first == refInFoo }!!
+            val (_, args) = logger.warnings[AMBIGUOUS_NAME_REFERENCE]?.first { it.first == refInFoo }!!
             args.map { it.toString() } shouldBe listOf("Mem", "p.Scratch.A.Mem", "p.Scratch.B.Mem")
         }
 
         doTest("Ambiguous inner type should produce an error (ref in Scratch)") {
-            val (_, args) = logger.errors[AMBIGUOUS_NAME_REFERENCE]?.first { it.first == refInScratch }!!
+            val (_, args) = logger.warnings[AMBIGUOUS_NAME_REFERENCE]?.first { it.first == refInScratch }!!
             args.map { it.toString() } shouldBe listOf("Mem", "p.Scratch.A.Mem", "p.Scratch.B.Mem")
         }
 
@@ -178,14 +206,14 @@ class TypeDisambiguationTest : ParserTestSpec({
                 acu.descendants(ASTFieldDeclaration::class.java).map { it.typeNode as ASTClassOrInterfaceType }.toList()
 
         fun assertErrored(t: ASTClassOrInterfaceType, expected: Int, actual: Int) {
-            val errs = logger.errors[MALFORMED_GENERIC_TYPE]?.filter { it.first == t }
+            val errs = logger.warnings[MALFORMED_GENERIC_TYPE]?.filter { it.first == t }
                     ?: emptyList()
             assertEquals(errs.size, 1, "`${t.text}` should have produced a single error")
             errs.single().second.toList() shouldBe listOf(expected, actual)
         }
 
         fun assertNoError(t: ASTClassOrInterfaceType) {
-            val err = logger.errors[MALFORMED_GENERIC_TYPE]?.firstOrNull { it.first == t }
+            val err = logger.warnings[MALFORMED_GENERIC_TYPE]?.firstOrNull { it.first == t }
             assertNull(err, "`${t.text}` should not have produced an error")
         }
 
@@ -260,14 +288,14 @@ class TypeDisambiguationTest : ParserTestSpec({
                 acu.descendants(ASTAnnotation::class.java).map { it.typeNode }.toList()
 
         fun assertErrored(t: ASTClassOrInterfaceType) {
-            val errs = logger.errors[EXPECTED_ANNOTATION_TYPE]?.filter { it.first == t }
+            val errs = logger.warnings[EXPECTED_ANNOTATION_TYPE]?.filter { it.first == t }
                     ?: emptyList()
             assertEquals(errs.size, 1, "`${t.text}` should have produced a single error")
             errs.single().second.toList() shouldBe emptyList()
         }
 
         fun assertNoError(t: ASTClassOrInterfaceType) {
-            val err = logger.errors[MALFORMED_GENERIC_TYPE]?.firstOrNull { it.first == t }
+            val err = logger.warnings[MALFORMED_GENERIC_TYPE]?.firstOrNull { it.first == t }
             assertNull(err, "`${t.text}` should not have produced an error")
         }
 

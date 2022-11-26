@@ -117,7 +117,7 @@ public final class TypeOps {
         return true;
     }
 
-    private static class SameTypeVisitor implements JTypeVisitor<Boolean, JTypeMirror> {
+    private static final class SameTypeVisitor implements JTypeVisitor<Boolean, JTypeMirror> {
 
         static final SameTypeVisitor INFERENCE = new SameTypeVisitor(true);
         static final SameTypeVisitor PURE = new SameTypeVisitor(false);
@@ -222,10 +222,8 @@ public final class TypeOps {
 
         @Override
         public Boolean visitArray(JArrayType t, JTypeMirror s) {
-            if (s instanceof JArrayType) {
-                return isSameType(t.getComponentType(), ((JArrayType) s).getComponentType(), inInference);
-            }
-            return false;
+            return s instanceof JArrayType
+                    && isSameType(t.getComponentType(), ((JArrayType) s).getComponentType(), inInference);
         }
     }
 
@@ -387,11 +385,15 @@ public final class TypeOps {
         } else if (isSpecialUnresolved(t)) {
             // error type or unresolved type
             return Convertibility.SUBTYPING;
-        } else if (hasUnresolvedSymbol(t)) {
+        } else if (hasUnresolvedSymbol(t) && t instanceof JClassType) {
             // This also considers types with an unresolved symbol
             // subtypes of (nearly) anything. This allows them to
             // pass bound checks on type variables.
-            return Convertibility.subtypeIf(s instanceof JClassType); // excludes array or so
+            if (Objects.equals(t.getSymbol(), s.getSymbol())) {
+                return typeArgsAreContained((JClassType) t, (JClassType) s);
+            } else {
+                return Convertibility.subtypeIf(s instanceof JClassType); // excludes array or so
+            }
         } else if (s instanceof JIntersectionType) { // TODO test intersection with tvars & arrays
             // If S is an intersection, then T must conform to *all* bounds of S
             // Symmetrically, if T is an intersection, T <: S requires only that
@@ -690,6 +692,11 @@ public final class TypeOps {
             // no unchecked warning.
             return allArgsAreUnboundedWildcards(sargs) ? Convertibility.UNCHECKED_NO_WARNING
                                                        : Convertibility.UNCHECKED_WARNING;
+        }
+
+        if (targs.size() != sargs.size()) {
+            // types are not well-formed
+            return Convertibility.NEVER;
         }
 
         Convertibility result = Convertibility.SUBTYPING;
@@ -1140,7 +1147,7 @@ public final class TypeOps {
     // <editor-fold  defaultstate="collapsed" desc="Overriding">
 
     /**
-     * Returns true if m1 is return-type substitutable with m2. . The notion of return-type-substitutability
+     * Returns true if m1 is return-type substitutable with m2. The notion of return-type-substitutability
      * supports covariant returns, that is, the specialization of the return type to a subtype.
      *
      * https://docs.oracle.com/javase/specs/jls/se9/html/jls-8.html#jls-8.4.5
@@ -1159,15 +1166,8 @@ public final class TypeOps {
         }
 
         JMethodSig m1Prime = adaptForTypeParameters(m1, m2);
-        if (m1Prime != null && isConvertible(m1Prime.getReturnType(), r2) != Convertibility.NEVER) {
-            return true;
-        }
-
-        if (!haveSameSignature(m1, m2)) {
-            return isSameType(r1, r2.getErasure());
-        }
-
-        return false;
+        return m1Prime != null && isConvertible(m1Prime.getReturnType(), r2) != Convertibility.NEVER
+                || !haveSameSignature(m1, m2) && isSameType(r1, r2.getErasure());
     }
 
     /**
@@ -1256,7 +1256,7 @@ public final class TypeOps {
      * - m2 has the same signature as m1, or
      * - the signature of m1 is the same as the erasure (§4.6) of the signature of m2.
      */
-    private static boolean isSubSignature(JMethodSig m1, JMethodSig m2) {
+    public static boolean isSubSignature(JMethodSig m1, JMethodSig m2) {
         // prune easy cases
         if (m1.getArity() != m2.getArity() || !m1.getName().equals(m2.getName())) {
             return false;
@@ -1282,15 +1282,10 @@ public final class TypeOps {
      * Thrown exceptions are not part of the signature of a method.
      */
     private static boolean haveSameSignature(JMethodSig m1, JMethodSig m2) {
-        if (!m1.getName().equals(m2.getName()) || m1.getArity() != m2.getArity()) {
-            return false;
-        }
-
-        if (!haveSameTypeParams(m1, m2)) {
-            return false;
-        }
-
-        return areSameTypes(m1.getFormalParameters(),
+        return m1.getName().equals(m2.getName())
+                && m1.getArity() == m2.getArity()
+                && haveSameTypeParams(m1, m2)
+                && areSameTypes(m1.getFormalParameters(),
                             m2.getFormalParameters(),
                             Substitution.mapping(m2.getTypeParameters(), m1.getTypeParameters()));
     }
@@ -1360,8 +1355,8 @@ public final class TypeOps {
      * this does not check the static modifier, and tests for hiding
      * if the method is static.
      *
-     * @param m         Method to test
-     * @param origin    Site of the potential override
+     * @param m      Method to test
+     * @param origin Site of the potential override
      */
     public static boolean isOverridableIn(JExecutableSymbol m, JTypeDeclSymbol origin) {
         if (m instanceof JConstructorSymbol) {
@@ -1664,11 +1659,12 @@ public final class TypeOps {
 
         // Notice that this loop needs a well-behaved subtyping relation,
         // i.e. antisymmetric: A <: B && A != B implies not(B <: A)
-        // This is not the case if we include unchecked conversion in there.
+        // This is not the case if we include unchecked conversion in there,
+        // or special provisions for unresolved types.
         vLoop:
         for (JTypeMirror v : set) {
             for (JTypeMirror w : set) {
-                if (!w.equals(v) && isSubtypePure(w, v).bySubtyping()) {
+                if (!w.equals(v) && !hasUnresolvedSymbol(w) && isSubtypePure(w, v).bySubtyping()) {
                     continue vLoop;
                 }
             }
@@ -1920,6 +1916,28 @@ public final class TypeOps {
     // <editor-fold  defaultstate="collapsed" desc="Miscellaneous">
 
     /**
+     * Returns true if both types have a common supertype that is not Object.
+     * Primitive types are only related to themselves.
+     *
+     * @param t Non-null type
+     * @param s Non-null type
+     *
+     * @throws NullPointerException if a parameter is null
+     */
+    public static boolean areRelated(@NonNull JTypeMirror t, JTypeMirror s) {
+        if (t.isPrimitive() || s.isPrimitive()) {
+            return s.equals(t);
+        }
+        if (t.equals(s)) {
+            return true;
+        }
+        // maybe they have a common supertype
+        Set<JTypeMirror> tSupertypes = new HashSet<>(t.getSuperTypeSet());
+        tSupertypes.retainAll(s.getSuperTypeSet());
+        return !tSupertypes.equals(Collections.singleton(t.getTypeSystem().OBJECT));
+    }
+
+    /**
      * Returns true if the type is {@link TypeSystem#UNKNOWN},
      * {@link TypeSystem#ERROR}, or its symbol is unresolved.
      *
@@ -1936,9 +1954,14 @@ public final class TypeOps {
         return t == ts.UNKNOWN || t == ts.ERROR;
     }
 
+    /**
+     * Return true if the argument is a {@link JClassType} with
+     * {@linkplain JClassSymbol#isUnresolved() an unresolved symbol} or
+     * a {@link JArrayType} whose element type matches the first criterion.
+     */
     public static boolean hasUnresolvedSymbol(@Nullable JTypeMirror t) {
         if (!(t instanceof JClassType)) {
-            return false;
+            return t instanceof JArrayType && hasUnresolvedSymbol(((JArrayType) t).getElementType());
         }
         return t.getSymbol() != null && t.getSymbol().isUnresolved();
     }

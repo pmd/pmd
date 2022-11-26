@@ -4,11 +4,11 @@
 
 package net.sourceforge.pmd.it;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import net.sourceforge.pmd.PMD;
 
@@ -68,22 +68,50 @@ public class ExecutionResult {
      * generated report.
      *
      * @param expectedExitCode the exit code, e.g. 0 if no rule violations are expected, or 4 if violations are found
-     * @param expectedOutput the output to search for
-     * @param expectedReport the string to search for tin the report
+     * @param expectedOutput   the output to search for
+     * @param expectedReport   the string to search for tin the report
      */
     public void assertExecutionResult(int expectedExitCode, String expectedOutput, String expectedReport) {
-        assertEquals("Command exited with wrong code.\nComplete result:\n\n" + this, expectedExitCode, exitCode);
-        assertNotNull("No output found", output);
+        assertExecResultImpl(expectedExitCode, output, expectedOutput, expectedReport);
+    }
+
+    /**
+     * Asserts that the command exited with the expected exit code and that the given expected
+     * output is contained in the actual command ERROR output, and the given expected report is in the
+     * generated report.
+     *
+     * @param expectedExitCode    the exit code, e.g. 0 if no rule violations are expected, or 4 if violations are found
+     * @param expectedErrorOutput the output to search for in stderr
+     * @param expectedReport      the string to search for tin the report
+     */
+    public void assertExecutionResultErrOutput(int expectedExitCode, String expectedErrorOutput, String expectedReport) {
+        assertExecResultImpl(expectedExitCode, errorOutput, expectedErrorOutput, expectedReport);
+    }
+
+    /**
+     * Asserts that the command exited with the expected exit code and that the given expected
+     * output is contained in the actual command ERROR output.
+     *
+     * @param expectedExitCode    the exit code, e.g. 0 if no rule violations are expected, or 4 if violations are found
+     * @param expectedErrorOutput the output to search for in stderr
+     */
+    public void assertExecutionResultErrOutput(int expectedExitCode, String expectedErrorOutput) {
+        assertExecResultImpl(expectedExitCode, errorOutput, expectedErrorOutput, null);
+    }
+
+    private void assertExecResultImpl(int expectedExitCode, String output, String expectedOutput, String expectedReport) {
+        assertEquals(expectedExitCode, exitCode, "Command exited with wrong code.\nComplete result:\n\n" + this);
+        assertNotNull(output, "No output found");
         if (expectedOutput != null && !expectedOutput.isEmpty()) {
             if (!output.contains(expectedOutput)) {
                 fail("Expected output '" + expectedOutput + "' not present.\nComplete result:\n\n" + this);
             }
         } else if (expectedOutput != null && expectedOutput.isEmpty()) {
-            assertTrue("The output should have been empty.\nComplete result:\n\n" + this, output.isEmpty());
+            assertTrue(output.isEmpty(), "The output should have been empty.\nComplete result:\n\n" + this);
         }
         if (expectedReport != null && !expectedReport.isEmpty()) {
-            assertTrue("Expected report '" + expectedReport + "'.\nComplete result:\n\n" + this,
-                    report.contains(expectedReport));
+            assertTrue(report.contains(expectedReport),
+                    "Expected report '" + expectedReport + "'.\nComplete result:\n\n" + this);
         }
     }
 
@@ -92,8 +120,8 @@ public class ExecutionResult {
      * @param errorMessage the error message to search for
      */
     public void assertNoError(String errorMessage) {
-        assertFalse("Found error message: " + errorMessage + ".\nComplete result:\n\n" + this,
-                errorOutput.contains(errorMessage));
+        assertFalse(errorOutput.contains(errorMessage),
+                "Found error message: " + errorMessage + ".\nComplete result:\n\n" + this);
     }
 
     /**
@@ -101,8 +129,12 @@ public class ExecutionResult {
      * @param errorMessage the error message to search for
      */
     public void assertNoErrorInReport(String errorMessage) {
-        assertFalse("Found error message in report: " + errorMessage + ".\nComplete result:\n\n" + this,
-                report.contains(errorMessage));
+        assertFalse(report.contains(errorMessage),
+                "Found error message in report: " + errorMessage + ".\nComplete result:\n\n" + this);
+    }
+
+    public void assertErrorOutputContains(String message) {
+        assertTrue(errorOutput.contains(message), "erroroutput didn't contain " + message);
     }
 
     static class Builder {

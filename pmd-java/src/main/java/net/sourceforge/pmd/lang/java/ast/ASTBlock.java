@@ -6,6 +6,8 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.java.ast.ASTList.ASTMaybeEmptyListOf;
+import net.sourceforge.pmd.lang.java.ast.InternalInterfaces.AllChildrenAreOfType;
+import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 
 /**
  * A block of code. This is a {@linkplain ASTStatement statement} that
@@ -17,7 +19,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTList.ASTMaybeEmptyListOf;
  *
  * </pre>
  */
-public final class ASTBlock extends ASTMaybeEmptyListOf<ASTStatement> implements Iterable<ASTStatement>, ASTSwitchArrowRHS, ASTStatement {
+public final class ASTBlock extends ASTMaybeEmptyListOf<ASTStatement>
+        implements ASTSwitchArrowRHS, ASTStatement, AllChildrenAreOfType<ASTStatement> {
 
     ASTBlock(int id) {
         super(id, ASTStatement.class);
@@ -33,7 +36,7 @@ public final class ASTBlock extends ASTMaybeEmptyListOf<ASTStatement> implements
     public boolean containsComment() {
         JavaccToken t = getLastToken().getPreviousComment();
         while (t != null) {
-            if (JavaTokenDocument.isComment(t)) {
+            if (JavaAstUtils.isComment(t)) {
                 return true;
             }
             t = t.getPreviousComment();

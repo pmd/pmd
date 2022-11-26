@@ -84,6 +84,15 @@ public final class ApexMetrics {
         Metric.of(ApexMetrics::computeCyclo, isRegularApexNode(),
                   "Cyclomatic Complexity", "Cyclo");
 
+    /**
+     * See the corresponding {@link net.sourceforge.pmd.lang.java.metrics.JavaMetrics.COGNITIVE_COMPLEXITY Cognitive Complexity}
+     * for a general description.
+     * <p>
+     * The rule {@link net.sourceforge.pmd.lang.apex.rule.design.CognitiveComplexityRule CognitiveComplexity}
+     * by default reports methods with a complexity of 15 or more
+     * and classes the have a total complexity (sum of all methods) of 50 or more.
+     * These reported methods should be broken down into less complex components.
+     */
     public static final Metric<ApexNode<?>, Integer> COGNITIVE_COMPLEXITY =
         Metric.of(ApexMetrics::computeCognitiveComp, isRegularApexNode(),
                   "Cognitive Complexity");

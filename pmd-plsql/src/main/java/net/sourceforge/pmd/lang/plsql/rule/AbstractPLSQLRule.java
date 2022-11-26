@@ -4,14 +4,9 @@
 
 package net.sourceforge.pmd.lang.plsql.rule;
 
-import java.util.logging.Logger;
 
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.lang.LanguageRegistry;
-import net.sourceforge.pmd.lang.ast.AstProcessingStage;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.plsql.PLSQLLanguageModule;
-import net.sourceforge.pmd.lang.plsql.PlsqlProcessingStage;
 import net.sourceforge.pmd.lang.plsql.ast.ASTInput;
 import net.sourceforge.pmd.lang.plsql.ast.ASTPackageBody;
 import net.sourceforge.pmd.lang.plsql.ast.ASTPackageSpecification;
@@ -23,12 +18,7 @@ import net.sourceforge.pmd.lang.plsql.ast.PLSQLParserVisitor;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
 
 public abstract class AbstractPLSQLRule extends AbstractRule implements PLSQLParserVisitor {
-    private static final Logger LOGGER = Logger.getLogger(AbstractPLSQLRule.class.getName());
-    private static final String CLASS_NAME = AbstractPLSQLRule.class.getName();
 
-    public AbstractPLSQLRule() {
-        super.setLanguage(LanguageRegistry.getLanguage(PLSQLLanguageModule.NAME));
-    }
 
     @Override
     public void apply(Node target, RuleContext ctx) {
@@ -85,20 +75,10 @@ public abstract class AbstractPLSQLRule extends AbstractRule implements PLSQLPar
         return false;
     }
 
-
-    @Override
-    public boolean dependsOn(AstProcessingStage<?> stage) {
-        if (!(stage instanceof PlsqlProcessingStage)) {
-            throw new IllegalArgumentException("Processing stage wasn't a " + PLSQLLanguageModule.NAME + " one: " + stage);
-        }
-        return true;
-    }
-
     /*
      * Treat all Executable Code
      */
     public Object visit(ExecutableCode node, Object data) {
-        LOGGER.entering(CLASS_NAME, "visit(ExecutableCode)");
         return visitPlsqlNode(node, data);
     }
 }

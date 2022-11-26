@@ -101,10 +101,12 @@ Example:
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <pmd-cpd>
+   <file path="/home/pmd/source/pmd-core/src/test/java/net/sourceforge/pmd/RuleReferenceTest.java" totalNumberOfTokens="523"/>
+   <file path="/home/pmd/source/pmd-core/src/test/java/net/sourceforge/pmd/lang/rule/xpath/JaxenXPathRuleQueryTest.java" totalNumberOfTokens="120"/>
    <duplication lines="33" tokens="239">
-      <file column="29" endcolumn="75" endline="64" line="32"
+      <file column="29" endcolumn="75" endline="64" line="32" begintoken="2356" endtoken="2594"
             path="/home/pmd/source/pmd-core/src/test/java/net/sourceforge/pmd/RuleReferenceTest.java"/>
-      <file column="37" endcolumn="75" endline="100" line="68"
+      <file column="37" endcolumn="75" endline="100" line="68" begintoken="5700" endtoken="5938"
             path="/home/pmd/source/pmd-core/src/test/java/net/sourceforge/pmd/RuleReferenceTest.java"/>
       <codefragment><![CDATA[    public void testOverride() {
         final StringProperty PROPERTY1_DESCRIPTOR = new StringProperty("property1", "Test property", null, 0f);
@@ -141,11 +143,11 @@ Example:
         validateOverriddenValues(PROPERTY1_DESCRIPTOR, PROPERTY2_DESCRIPTOR, ruleReference);]]></codefragment>
    </duplication>
    <duplication lines="16" tokens="110">
-      <file column="9" endcolumn="28" endline="81" line="66"
+      <file column="9" endcolumn="28" endline="81" line="66" begintoken="3000" endtoken="3109"
             path="/home/pmd/source/pmd-core/src/test/java/net/sourceforge/pmd/lang/rule/xpath/JaxenXPathRuleQueryTest.java"/>
-      <file column="9" endcolumn="28" endline="103" line="88"
+      <file column="9" endcolumn="28" endline="103" line="88" begintoken="3200" endtoken="3309"
             path="/home/pmd/source/pmd-core/src/test/java/net/sourceforge/pmd/lang/rule/xpath/JaxenXPathRuleQueryTest.java"/>
-      <file column="9" endcolumn="28" endline="125" line="110"
+      <file column="9" endcolumn="28" endline="125" line="110" begintoken="3400" endtoken="3509"
             path="/home/pmd/source/pmd-core/src/test/java/net/sourceforge/pmd/lang/rule/xpath/JaxenXPathRuleQueryTest.java"/>
       <codefragment><![CDATA[        JaxenXPathRuleQuery query = createQuery(xpath);
         List<String> ruleChainVisits = query.getRuleChainVisits();

@@ -7,10 +7,10 @@ package net.sourceforge.pmd.lang.ecmascript.ast;
 import org.mozilla.javascript.ast.AstNode;
 
 import net.sourceforge.pmd.lang.ast.AstVisitor;
-import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
-import net.sourceforge.pmd.lang.ast.impl.AbstractNodeWithTextCoordinates;
+import net.sourceforge.pmd.lang.ast.impl.AbstractNode;
+import net.sourceforge.pmd.lang.document.TextRegion;
 
-abstract class AbstractEcmascriptNode<T extends AstNode> extends AbstractNodeWithTextCoordinates<AbstractEcmascriptNode<?>, EcmascriptNode<?>> implements EcmascriptNode<T> {
+abstract class AbstractEcmascriptNode<T extends AstNode> extends AbstractNode<AbstractEcmascriptNode<?>, EcmascriptNode<?>> implements EcmascriptNode<T> {
 
     protected final T node;
     private String image;
@@ -33,19 +33,9 @@ abstract class AbstractEcmascriptNode<T extends AstNode> extends AbstractNodeWit
         this.image = image;
     }
 
-    /* package private */
-    void calculateLineNumbers(SourceCodePositioner positioner) {
-        int startOffset = node.getAbsolutePosition();
-        int endOffset = startOffset + node.getLength();
-
-        this.beginLine = positioner.lineNumberFromOffset(startOffset);
-        this.beginColumn = positioner.columnFromOffset(this.beginLine, startOffset);
-        this.endLine = positioner.lineNumberFromOffset(endOffset);
-        // end column is inclusive
-        this.endColumn = positioner.columnFromOffset(this.endLine, endOffset) - 1;
-        if (this.endColumn < 0) {
-            this.endColumn = 0;
-        }
+    @Override
+    public TextRegion getTextRegion() {
+        return TextRegion.fromOffsetLength(node.getAbsolutePosition(), node.getLength());
     }
 
     @Override

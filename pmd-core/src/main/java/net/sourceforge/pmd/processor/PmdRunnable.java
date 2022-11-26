@@ -4,110 +4,152 @@
 
 package net.sourceforge.pmd.processor;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 
-import net.sourceforge.pmd.PMDException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSets;
-import net.sourceforge.pmd.SourceCodeProcessor;
-import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.benchmark.TimeTracker;
-import net.sourceforge.pmd.renderers.Renderer;
-import net.sourceforge.pmd.util.datasource.DataSource;
+import net.sourceforge.pmd.benchmark.TimedOperation;
+import net.sourceforge.pmd.benchmark.TimedOperationCategory;
+import net.sourceforge.pmd.cache.AnalysisCache;
+import net.sourceforge.pmd.internal.SystemProps;
+import net.sourceforge.pmd.lang.LanguageVersionHandler;
+import net.sourceforge.pmd.lang.ast.FileAnalysisException;
+import net.sourceforge.pmd.lang.ast.Parser;
+import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
+import net.sourceforge.pmd.lang.ast.RootNode;
+import net.sourceforge.pmd.lang.ast.SemanticErrorReporter;
+import net.sourceforge.pmd.lang.ast.SemanticException;
+import net.sourceforge.pmd.lang.document.TextDocument;
+import net.sourceforge.pmd.lang.document.TextFile;
+import net.sourceforge.pmd.reporting.FileAnalysisListener;
+import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
 
 /**
- *
- * @deprecated Is internal API
+ * A processing task for a single file.
  */
-@Deprecated
-@InternalApi
-public class PmdRunnable implements Callable<Report> {
+abstract class PmdRunnable implements Runnable {
 
-    private static final Logger LOG = Logger.getLogger(PmdRunnable.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(PmdRunnable.class);
+    private final TextFile textFile;
+    private final GlobalAnalysisListener globalListener;
 
-    private static final ThreadLocal<ThreadContext> LOCAL_THREAD_CONTEXT = new ThreadLocal<>();
+    private final AnalysisCache analysisCache;
+    /** @deprecated Get rid of this */
+    @Deprecated
+    private final PMDConfiguration configuration;
 
-    private final DataSource dataSource;
-    private final String fileName;
-    private final List<Renderer> renderers;
-    private final RuleContext ruleContext;
-    private final RuleSets ruleSets;
-    private final SourceCodeProcessor sourceCodeProcessor;
-
-    public PmdRunnable(DataSource dataSource, String fileName, List<Renderer> renderers,
-            RuleContext ruleContext, RuleSets ruleSets, SourceCodeProcessor sourceCodeProcessor) {
-        this.ruleSets = ruleSets;
-        this.dataSource = dataSource;
-        this.fileName = fileName;
-        this.renderers = renderers;
-        this.ruleContext = ruleContext;
-        this.sourceCodeProcessor = sourceCodeProcessor;
+    PmdRunnable(TextFile textFile,
+                GlobalAnalysisListener globalListener,
+                PMDConfiguration configuration) {
+        this.textFile = textFile;
+        this.globalListener = globalListener;
+        this.analysisCache = configuration.getAnalysisCache();
+        this.configuration = configuration;
     }
 
-    public static void reset() {
-        LOCAL_THREAD_CONTEXT.remove();
-    }
-
-    private void addError(Report report, Exception e, String errorMessage) {
-        // unexpected exception: log and stop executor service
-        LOG.log(Level.FINE, errorMessage, e);
-        report.addError(new Report.ProcessingError(e, fileName));
-    }
+    /**
+     * This is only called within the run method (when we are on the actual carrier thread).
+     * That way an implementation that uses a ThreadLocal will see the
+     * correct thread.
+     */
+    protected abstract RuleSets getRulesets();
 
     @Override
-    public Report call() {
+    public void run() throws FileAnalysisException {
         TimeTracker.initThread();
 
-        ThreadContext tc = LOCAL_THREAD_CONTEXT.get();
-        if (tc == null) {
-            tc = new ThreadContext(new RuleSets(ruleSets), new RuleContext(ruleContext));
-            LOCAL_THREAD_CONTEXT.set(tc);
-        }
+        RuleSets ruleSets = getRulesets();
 
-        Report report = Report.createReport(tc.ruleContext, fileName);
+        try (FileAnalysisListener listener = globalListener.startFileAnalysis(textFile)) {
 
-        if (LOG.isLoggable(Level.FINE)) {
-            LOG.fine("Processing " + fileName);
-        }
-        for (Renderer r : renderers) {
-            r.startFileAnalysis(dataSource);
-        }
+            // Coarse check to see if any RuleSet applies to file, will need to do a finer RuleSet specific check later
+            if (ruleSets.applies(textFile)) {
+                try (TextDocument textDocument = TextDocument.create(textFile);
+                     FileAnalysisListener cacheListener = analysisCache.startFileAnalysis(textDocument)) {
 
-        try (InputStream stream = new BufferedInputStream(dataSource.getInputStream())) {
-            tc.ruleContext.setLanguageVersion(null);
-            tc.ruleContext.setSourceCodeFile(new File(dataSource.getNiceFileName(false, null)));
-            sourceCodeProcessor.processSourceCode(stream, tc.ruleSets, tc.ruleContext);
-        } catch (PMDException pmde) {
-            addError(report, pmde, "Error while processing file: " + fileName);
-        } catch (IOException ioe) {
-            addError(report, ioe, "IOException during processing of " + fileName);
-        } catch (RuntimeException re) {
-            addError(report, re, "RuntimeException during processing of " + fileName);
+                    @SuppressWarnings("PMD.CloseResource")
+                    FileAnalysisListener completeListener = FileAnalysisListener.tee(listOf(listener, cacheListener));
+
+                    if (analysisCache.isUpToDate(textDocument)) {
+                        LOG.trace("Skipping file (lang: {}) because it was found in the cache: {}", textFile.getLanguageVersion(), textFile.getPathId());
+                        // note: no cache listener here
+                        //                         vvvvvvvv
+                        reportCachedRuleViolations(listener, textDocument);
+                    } else {
+                        LOG.trace("Processing file (lang: {}): {}", textFile.getLanguageVersion(), textFile.getPathId());
+                        try {
+                            processSource(completeListener, textDocument, ruleSets);
+                        } catch (Exception | StackOverflowError | AssertionError e) {
+                            if (e instanceof Error && !SystemProps.isErrorRecoveryMode()) { // NOPMD:
+                                throw e;
+                            }
+
+                            // The listener handles logging if needed,
+                            // it may also rethrow the error, as a FileAnalysisException (which we let through below)
+                            completeListener.onError(new Report.ProcessingError(e, textFile.getDisplayName()));
+                        }
+                    }
+                }
+            } else {
+                LOG.trace("Skipping file (lang: {}) because no rule applies: {}", textFile.getLanguageVersion(), textFile.getPathId());
+            }
+        } catch (FileAnalysisException e) {
+            throw e; // bubble managed exceptions, they were already reported
+        } catch (Exception e) {
+            throw FileAnalysisException.wrap(textFile.getDisplayName(), "An unknown exception occurred", e);
         }
 
         TimeTracker.finishThread();
-
-        // merge the sub-report into the global report (thread-safe)
-        ruleContext.getReport().merge(report);
-
-        return report;
     }
 
-    private static class ThreadContext {
-        /* default */ final RuleSets ruleSets;
-        /* default */ final RuleContext ruleContext;
-
-        ThreadContext(RuleSets ruleSets, RuleContext ruleContext) {
-            this.ruleSets = ruleSets;
-            this.ruleContext = ruleContext;
+    private void reportCachedRuleViolations(final FileAnalysisListener ctx, TextDocument file) {
+        for (final RuleViolation rv : analysisCache.getCachedViolations(file)) {
+            ctx.onRuleViolation(rv);
         }
     }
+
+    private RootNode parse(Parser parser, ParserTask task) {
+        try (TimedOperation ignored = TimeTracker.startOperation(TimedOperationCategory.PARSER)) {
+            return parser.parse(task);
+        }
+    }
+
+
+    private void processSource(FileAnalysisListener listener,
+                               TextDocument textDocument,
+                               RuleSets ruleSets) throws FileAnalysisException {
+
+        SemanticErrorReporter reporter = SemanticErrorReporter.reportToLogger(configuration.getReporter());
+        ParserTask task = new ParserTask(
+            textDocument,
+            reporter,
+            configuration.getClassLoader()
+        );
+
+
+        LanguageVersionHandler handler = textDocument.getLanguageVersion().getLanguageVersionHandler();
+
+        handler.declareParserTaskProperties(task.getProperties());
+        task.getProperties().setProperty(ParserTask.COMMENT_MARKER, configuration.getSuppressMarker());
+        assert task.getCommentMarker().equals(configuration.getSuppressMarker());
+
+        Parser parser = handler.getParser();
+
+        RootNode rootNode = parse(parser, task);
+
+        SemanticException semanticError = reporter.getFirstError();
+        if (semanticError != null) {
+            // cause a processing error to be reported and rule analysis to be skipped
+            throw semanticError;
+        }
+
+        ruleSets.apply(rootNode, listener);
+    }
+
 }

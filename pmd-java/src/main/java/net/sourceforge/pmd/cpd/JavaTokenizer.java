@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.cpd;
 
 import java.io.IOException;
-import java.io.Reader;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.Properties;
@@ -14,9 +13,9 @@ import net.sourceforge.pmd.cpd.internal.JavaCCTokenizer;
 import net.sourceforge.pmd.cpd.token.JavaCCTokenFilter;
 import net.sourceforge.pmd.cpd.token.TokenFilter;
 import net.sourceforge.pmd.lang.TokenManager;
-import net.sourceforge.pmd.lang.ast.CharStream;
-import net.sourceforge.pmd.lang.ast.impl.javacc.CharStreamFactory;
+import net.sourceforge.pmd.lang.ast.impl.javacc.CharStream;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
+import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument;
 import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.java.ast.JavaTokenKinds;
 
@@ -44,8 +43,8 @@ public class JavaTokenizer extends JavaCCTokenizer {
     }
 
     @Override
-    protected CharStream makeCharStream(Reader sourceCode) {
-        return CharStreamFactory.javaCharStream(sourceCode, InternalApiBridge::javaTokenDoc);
+    protected JavaccTokenDocument.TokenDocumentBehavior tokenBehavior() {
+        return InternalApiBridge.javaTokenDoc();
     }
 
     @Override
@@ -59,7 +58,7 @@ public class JavaTokenizer extends JavaCCTokenizer {
     }
 
     @Override
-    protected TokenEntry processToken(Tokens tokenEntries, JavaccToken javaToken, String fileName) {
+    protected TokenEntry processToken(Tokens tokenEntries, JavaccToken javaToken) {
         String image = javaToken.getImage();
 
         constructorDetector.restoreConstructorToken(tokenEntries, javaToken);
@@ -76,7 +75,7 @@ public class JavaTokenizer extends JavaCCTokenizer {
 
         constructorDetector.processToken(javaToken);
 
-        return new TokenEntry(image, fileName, javaToken.getBeginLine(), javaToken.getBeginColumn(), javaToken.getEndColumn());
+        return new TokenEntry(image, javaToken.getReportLocation());
     }
 
     public void setIgnoreLiterals(boolean ignore) {

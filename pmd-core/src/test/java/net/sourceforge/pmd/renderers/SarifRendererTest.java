@@ -4,50 +4,54 @@
 
 package net.sourceforge.pmd.renderers;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.function.Consumer;
 
-import org.apache.commons.io.IOUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import net.sourceforge.pmd.FooRule;
 import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.ReportTest;
-import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.RulePriority;
-import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.lang.ast.DummyNode;
-import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.rule.AbstractRule;
-import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
+import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.reporting.FileAnalysisListener;
 
-public class SarifRendererTest extends AbstractRendererTest {
+import com.github.stefanbirkner.systemlambda.SystemLambda;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+
+class SarifRendererTest extends AbstractRendererTest {
+
     @Override
-    public Renderer getRenderer() {
+    Renderer getRenderer() {
         return new SarifRenderer();
     }
 
+    @Test
+    void testRendererWithASCII() throws Exception {
+        SystemLambda.restoreSystemProperties(() -> {
+            System.setProperty("file.encoding", StandardCharsets.US_ASCII.name());
+            testRenderer(StandardCharsets.UTF_8);
+        });
+    }
+
     @Override
-    public String getExpected() {
+    String getExpected() {
         return readFile("expected.sarif.json");
     }
 
     @Override
-    public String getExpectedEmpty() {
+    String getExpectedEmpty() {
         return readFile("empty.sarif.json");
     }
 
     @Override
-    public String getExpectedMultiple() {
+    String getExpectedMultiple() {
         return readFile("expected-multiple.sarif.json");
     }
 
     @Override
-    public String getExpectedError(Report.ProcessingError error) {
+    String getExpectedError(Report.ProcessingError error) {
         String expected = readFile("expected-error.sarif.json");
         expected = expected.replace("###REPLACE_ME###", error.getDetail()
                 .replaceAll("\r", "\\\\r")
@@ -57,12 +61,12 @@ public class SarifRendererTest extends AbstractRendererTest {
     }
 
     @Override
-    public String getExpectedError(Report.ConfigurationError error) {
+    String getExpectedError(Report.ConfigurationError error) {
         return readFile("expected-configerror.sarif.json");
     }
 
     @Override
-    public String getExpectedErrorWithoutMessage(Report.ProcessingError error) {
+    String getExpectedErrorWithoutMessage(Report.ProcessingError error) {
         String expected = readFile("expected-error-nomessage.sarif.json");
         expected = expected.replace("###REPLACE_ME###", error.getDetail()
                 .replaceAll("\r", "\\\\r")
@@ -72,49 +76,40 @@ public class SarifRendererTest extends AbstractRendererTest {
     }
 
     @Override
-    public String filter(String expected) {
-        return expected.replaceAll("\r\n", "\n"); // make the test run on Windows, too
+    String filter(String expected) {
+        return expected.replaceAll("\r\n", "\n") // make the test run on Windows, too
+                .replaceAll("\"version\": \".+\",", "\"version\": \"unknown\",");
     }
 
-    @Override
+    /**
+     * Multiple occurrences of the same rule should be reported as individual results.
+     * 
+     * @see <a href="https://github.com/pmd/pmd/issues/3768"> [core] SARIF formatter reports multiple locations
+     *      when it should report multiple results #3768</a>
+     */
     @Test
-    public void testRendererMultiple() throws Exception {
-        // Setup
-        Report rep = reportTwoViolations();
+    void testRendererMultipleLocations() throws Exception {
+        String actual = renderReport(getRenderer(), reportThreeViolationsTwoRules());
 
-        // Exercise
-        String actual = ReportTest.render(getRenderer(), rep);
-
-        // Verify
-        assertEquals(filter(getExpectedMultiple()), filter(actual));
+        Gson gson = new Gson();
+        JsonObject json = gson.fromJson(actual, JsonObject.class);
+        JsonArray results = json.getAsJsonArray("runs").get(0).getAsJsonObject().getAsJsonArray("results");
+        assertEquals(3, results.size());
+        assertEquals(filter(readFile("expected-multiple-locations.sarif.json")), filter(actual));
     }
 
-    private Report reportTwoViolations() {
-        Report report = new Report();
-        RuleViolation informationalRuleViolation = newRuleViolation(1, "Foo");
-        informationalRuleViolation.getRule().setPriority(RulePriority.LOW);
-        report.addRuleViolation(informationalRuleViolation);
-        RuleViolation severeRuleViolation = newRuleViolation(2, "Boo");
-        severeRuleViolation.getRule().setPriority(RulePriority.HIGH);
-        report.addRuleViolation(severeRuleViolation);
-        return report;
+    private Consumer<FileAnalysisListener> reportThreeViolationsTwoRules() {
+        Rule fooRule = createFooRule();
+        Rule booRule = createBooRule();
+
+        return reportBuilder -> {
+            reportBuilder.onRuleViolation(newRuleViolation(1, 1, 1, 10, fooRule));
+            reportBuilder.onRuleViolation(newRuleViolation(5, 1, 5, 11, fooRule));
+            reportBuilder.onRuleViolation(newRuleViolation(2, 2, 3, 1, booRule));
+        };
     }
 
-    private RuleViolation newRuleViolation(int endColumn, String ruleName) {
-        DummyNode node = createNode(endColumn);
-        RuleContext ctx = new RuleContext();
-        ctx.setSourceCodeFile(new File(getSourceCodeFilename()));
-        AbstractRule fooRule = new FooRule();
-        fooRule.setName(ruleName);
-        return new ParametricRuleViolation<Node>(fooRule, ctx, node, "blah");
-    }
-
-    private String readFile(String name) {
-        try (InputStream in = SarifRendererTest.class.getResourceAsStream("sarif/" + name)) {
-            String asd = IOUtils.toString(in, StandardCharsets.UTF_8);
-            return asd;
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    protected String readFile(String relativePath) {
+        return super.readFile("sarif/" + relativePath);
     }
 }

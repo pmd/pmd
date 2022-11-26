@@ -9,6 +9,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsStringIgnoringCase;
 import static org.hamcrest.Matchers.emptyString;
 
+import java.io.ByteArrayOutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +18,7 @@ import java.util.logging.Handler;
 import java.util.logging.Logger;
 import java.util.logging.StreamHandler;
 
-import org.apache.commons.io.output.ByteArrayOutputStream;
+import org.junit.contrib.java.lang.system.SystemErrRule;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.MultipleFailureException;
@@ -30,7 +31,11 @@ import org.junit.runners.model.Statement;
  * @author Andreas Dangel
  * @author Clément Fournier
  * @see <a href="http://blog.diabol.se/?p=474">Testing the presence of log messages with java.util.logging</a>
+ *
+ * @deprecated Use {@link SystemErrRule} instead. With the switch to slf4j, the log output appears on System.err.
  */
+@Deprecated
+@SuppressWarnings("PMD.DoNotUseJavaUtilLogging")
 public class JavaUtilLoggingRule implements TestRule {
     // copied from pmd core test sources
 
@@ -116,7 +121,7 @@ public class JavaUtilLoggingRule implements TestRule {
      */
     public String getLog() {
         customLogHandler.flush();
-        return stream.toString(StandardCharsets.UTF_8);
+        return new String(stream.toByteArray(), StandardCharsets.UTF_8);
     }
 
     /**

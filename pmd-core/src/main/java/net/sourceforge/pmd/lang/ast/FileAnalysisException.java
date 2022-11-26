@@ -6,7 +6,10 @@ package net.sourceforge.pmd.lang.ast;
 
 import java.util.Objects;
 
+import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
+
+import net.sourceforge.pmd.lang.document.TextFile;
 
 /**
  * An exception that occurs while processing a file. Subtypes include
@@ -19,9 +22,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  */
 public class FileAnalysisException extends RuntimeException {
 
-    /** Default value of {@link #getFileName()}. */
-    public static final @NonNull String NO_FILE_NAME = "(unknown file)";
-    private String filename = NO_FILE_NAME;
+    private String filename = TextFile.UNKNOWN_FILENAME;
 
     public FileAnalysisException() {
         super();
@@ -39,13 +40,13 @@ public class FileAnalysisException extends RuntimeException {
         super(message, cause);
     }
 
-    FileAnalysisException setFileName(String filename) {
+    public FileAnalysisException setFileName(String filename) {
         this.filename = Objects.requireNonNull(filename);
         return this;
     }
 
     protected boolean hasFileName() {
-        return !NO_FILE_NAME.equals(filename);
+        return !TextFile.UNKNOWN_FILENAME.equals(filename);
     }
 
     /**
@@ -53,6 +54,22 @@ public class FileAnalysisException extends RuntimeException {
      */
     public @NonNull String getFileName() {
         return filename;
+    }
+
+    @Override
+    public String getMessage() {
+        return errorKind() + StringUtils.uncapitalize(positionToString()) + ": " + super.getMessage();
+    }
+
+    protected String errorKind() {
+        return "Error";
+    }
+
+    protected String positionToString() {
+        if (hasFileName()) {
+            return " in file '" + getFileName() + "'";
+        }
+        return "";
     }
 
 

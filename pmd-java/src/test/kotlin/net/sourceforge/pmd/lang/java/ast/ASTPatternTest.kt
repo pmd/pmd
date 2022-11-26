@@ -4,17 +4,15 @@
 
 package net.sourceforge.pmd.lang.java.ast
 
-import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.shouldBe
-import net.sourceforge.pmd.lang.ast.test.shouldBe as typeShouldBe
-import net.sourceforge.pmd.lang.java.ast.JavaVersion.*
+import net.sourceforge.pmd.lang.java.ast.JavaVersion.J16
 import java.io.IOException
 
 class ASTPatternTest : ProcessorTestSpec({
 
-    val typePatternsVersions = JavaVersion.since(J16).plus(J15__PREVIEW)
+    val typePatternsVersions = JavaVersion.since(J16)
 
-    parserTest("Test patterns only available on JDK 15 (preview) and JDK16 and JDK16 (preview)",
+    parserTest("Test patterns only available on JDK16 or higher (including preview)",
         javaVersions = JavaVersion.except(typePatternsVersions)) {
 
         inContext(ExpressionParsingCtx) {

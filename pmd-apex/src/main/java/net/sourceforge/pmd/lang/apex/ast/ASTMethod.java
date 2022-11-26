@@ -28,72 +28,9 @@ public final class ASTMethod extends AbstractApexNode<Method> implements ApexQua
     }
 
     @Override
-    public int getBeginLine() {
-        if (!hasRealLoc()) {
-            // this is a synthetic method, only in the AST, not in the source
-            // search for the last sibling with real location from the end
-            // and place this synthetic method after it.
-            for (int i = getParent().getNumChildren() - 1; i >= 0; i--) {
-                ApexNode<?> sibling = getParent().getChild(i);
-                if (sibling.hasRealLoc()) {
-                    return sibling.getEndLine();
-                }
-            }
-        }
-        return super.getBeginLine();
-    }
-
-    @Override
-    public int getBeginColumn() {
-        if (!hasRealLoc()) {
-            // this is a synthetic method, only in the AST, not in the source
-            // search for the last sibling with real location from the end
-            // and place this synthetic method after it.
-            for (int i = getParent().getNumChildren() - 1; i >= 0; i--) {
-                ApexNode<?> sibling = getParent().getChild(i);
-                if (sibling.hasRealLoc()) {
-                    return sibling.getEndColumn();
-                }
-            }
-        }
-        return super.getBeginColumn();
-    }
-
-    @Override
-    public int getEndLine() {
-        if (!hasRealLoc()) {
-            // this is a synthetic method, only in the AST, not in the source
-            return this.getBeginLine();
-        }
-
-        ASTBlockStatement block = getFirstChildOfType(ASTBlockStatement.class);
-        if (block != null) {
-            return block.getEndLine();
-        }
-
-        return super.getEndLine();
-    }
-
-    @Override
-    public int getEndColumn() {
-        if (!hasRealLoc()) {
-            // this is a synthetic method, only in the AST, not in the source
-            return this.getBeginColumn();
-        }
-
-        ASTBlockStatement block = getFirstChildOfType(ASTBlockStatement.class);
-        if (block != null) {
-            return block.getEndColumn();
-        }
-
-        return super.getEndColumn();
-    }
-
-    @Override
     public ApexQualifiedName getQualifiedName() {
         return ApexQualifiedName.ofMethod(this);
     }
-
 
     /**
      * Returns true if this is a synthetic class initializer, inserted

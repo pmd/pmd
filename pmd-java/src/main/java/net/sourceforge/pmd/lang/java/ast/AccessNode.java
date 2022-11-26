@@ -259,11 +259,11 @@ public interface AccessNode extends Annotatable {
         }
 
         /**
-         * Returns true if this visibility is strictly lower than the
+         * Returns true if this visibility is lower than or equal to the
          * parameter.
          */
         public boolean isAtMost(Visibility other) {
-            return this.compareTo(other) < 0;
+            return this.compareTo(other) <= 0;
         }
 
         /**

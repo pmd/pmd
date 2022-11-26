@@ -4,72 +4,42 @@
 
 package net.sourceforge.pmd.lang.rule;
 
-import java.io.File;
-
 import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.internal.util.AssertionUtil;
-import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.reporting.Reportable;
 
 /**
  * @deprecated This is internal. Clients should exclusively use {@link RuleViolation}.
  */
 @Deprecated
 @InternalApi
-public class ParametricRuleViolation<T extends Node> implements RuleViolation {
+public class ParametricRuleViolation implements RuleViolation {
+    // todo move to package reporting
 
     protected final Rule rule;
     protected final String description;
-    protected String filename;
 
-    protected int beginLine;
-    protected int beginColumn;
-
-    protected int endLine;
-    protected int endColumn;
+    private final FileLocation location;
 
     protected String packageName = "";
     protected String className = "";
     protected String methodName = "";
     protected String variableName = "";
 
-    // FUTURE Fix to understand when a violation _must_ have a Node, and when it
-    // must not (to prevent erroneous Rules silently logging w/o a Node). Modify
-    // RuleViolationFactory to support identifying without a Node, and update
-    // Rule base classes too.
-    // TODO we never need a node. We just have to have a "position", ie line/column, or offset, + file, whatever
 
-    /**
-     * @deprecated Use {@link #ParametricRuleViolation(Rule, String, Node, String)}
-     */
-    @Deprecated
-    public ParametricRuleViolation(Rule theRule, RuleContext ctx, T node, String message) {
-        this(theRule, getFilename(ctx), node, message);
+    public ParametricRuleViolation(Rule theRule, Reportable node, String message) {
+        this(theRule, node.getReportLocation(), message);
     }
 
-    public ParametricRuleViolation(Rule theRule, String filename, T node, String message) {
+    public ParametricRuleViolation(Rule theRule, FileLocation location, String message) {
         this.rule = AssertionUtil.requireParamNotNull("rule", theRule);
         this.description = AssertionUtil.requireParamNotNull("message", message);
-        this.filename = AssertionUtil.requireParamNotNull("file name", filename);
 
-        if (node != null) {
-            beginLine = node.getBeginLine();
-            beginColumn = node.getBeginColumn();
-            endLine = node.getEndLine();
-            endColumn = node.getEndColumn();
-        }
-    }
-
-    private static String getFilename(RuleContext ctx) {
-        File file = ctx.getSourceCodeFile();
-        if (file != null) {
-            return file.getPath();
-        } else {
-            return "";
-        }
+        this.location = location;
     }
 
     protected String expandVariables(String message) {
@@ -120,28 +90,8 @@ public class ParametricRuleViolation<T extends Node> implements RuleViolation {
     }
 
     @Override
-    public String getFilename() {
-        return filename;
-    }
-
-    @Override
-    public int getBeginLine() {
-        return beginLine;
-    }
-
-    @Override
-    public int getBeginColumn() {
-        return beginColumn;
-    }
-
-    @Override
-    public int getEndLine() {
-        return endLine;
-    }
-
-    @Override
-    public int getEndColumn() {
-        return endColumn;
+    public FileLocation getLocation() {
+        return location;
     }
 
     @Override
@@ -164,14 +114,8 @@ public class ParametricRuleViolation<T extends Node> implements RuleViolation {
         return variableName;
     }
 
-    public void setLines(int theBeginLine, int theEndLine) {
-        assert theBeginLine > 0 && theEndLine > 0 && theBeginLine <= theEndLine : "Line numbers are 1-based";
-        beginLine = theBeginLine;
-        endLine = theEndLine;
-    }
-
     @Override
     public String toString() {
-        return getFilename() + ':' + getRule() + ':' + getDescription() + ':' + beginLine;
+        return getFilename() + ':' + getRule() + ':' + getDescription() + ':' + getLocation().startPosToString();
     }
 }

@@ -57,7 +57,7 @@ public final class JavaSemanticErrors {
     /**
      * TODO Should be an error.
      */
-    public static final String MALFORMED_GENERIC_TYPE = "Maformed generic type: expected {0} type arguments, got {1}";
+    public static final String MALFORMED_GENERIC_TYPE = "Malformed generic type: expected {0} type arguments, got {1}";
     // this is an error
     public static final String EXPECTED_ANNOTATION_TYPE = "Expected an annotation type";
     /**

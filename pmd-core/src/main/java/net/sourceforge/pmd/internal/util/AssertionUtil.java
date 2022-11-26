@@ -4,9 +4,13 @@
 
 package net.sourceforge.pmd.internal.util;
 
+
+import java.util.Collection;
+import java.util.function.Function;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.exception.ContextedRuntimeException;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 public final class AssertionUtil {
@@ -17,6 +21,25 @@ public final class AssertionUtil {
 
     private AssertionUtil() {
         // utility class
+    }
+
+
+    /** @throws NullPointerException if $name */
+    public static void requireContainsNoNullValue(String name, Collection<?> c) {
+        int i = 0;
+        for (Object o : c) {
+            if (o == null) {
+                throw new NullPointerException(name + " contains a null element at index " + i);
+            }
+            i++;
+        }
+    }
+
+    /** @throws IllegalArgumentException if empty */
+    public static void requireNotEmpty(String name, Collection<?> c) {
+        if (c.isEmpty()) {
+            throw new IllegalArgumentException(name + " is empty");
+        }
     }
 
     public static boolean isValidJavaPackageName(CharSequence name) {
@@ -53,6 +76,14 @@ public final class AssertionUtil {
     private static String invalidRangeMessage(int startInclusive, int endExclusive, int minIndex, int maxIndex) {
         return "Invalid range [" + startInclusive + "," + endExclusive + "[ in [" + minIndex + "," + maxIndex + "[";
     }
+
+
+    public static void validateState(boolean condition, String failed) {
+        if (!condition) {
+            throw new IllegalStateException(failed);
+        }
+    }
+
 
     /**
      * @throws IllegalArgumentException if [startInclusive,endExclusive[ is
@@ -102,6 +133,10 @@ public final class AssertionUtil {
         return value;
     }
 
+
+    /**
+     * @throws IllegalArgumentException If value < 0
+     */
     public static int requireNonNegative(String name, int value) {
         if (value < 0) {
             throw mustBe(name, value, "non-negative");
@@ -109,8 +144,62 @@ public final class AssertionUtil {
         return value;
     }
 
+
+    /**
+     * @throws IndexOutOfBoundsException If value < 0
+     */
+    public static int requireIndexNonNegative(String name, int value) {
+        if (value < 0) {
+            throw mustBe(name, value, "non-negative", IndexOutOfBoundsException::new);
+        }
+        return value;
+    }
+
+    /**
+     * @throws IndexOutOfBoundsException If value < 0 || value >= maxValue
+     */
+    public static int requireInNonNegativeRange(String name, int value, int maxValue) {
+        return requireInExclusiveRange(name, value, 0, maxValue);
+    }
+
+    /**
+     * @throws IndexOutOfBoundsException If value < 1 || value >= maxValue
+     */
+    public static int requireInPositiveRange(String name, int value, int maxValue) {
+        return requireInExclusiveRange(name, value, 1, maxValue);
+    }
+
+    // the difference between those two is the message
+
+    /**
+     * @throws IndexOutOfBoundsException If {@code value < minValue || value > maxValue}
+     */
+    public static int requireInInclusiveRange(String name, int value, int minValue, int maxValue) {
+        return requireInRange(name, value, minValue, maxValue, true);
+    }
+
+    /**
+     * @throws IndexOutOfBoundsException If {@code value < minValue || value > maxValue}
+     */
+    public static int requireInExclusiveRange(String name, int value, int minValue, int maxValue) {
+        return requireInRange(name, value, minValue, maxValue, false);
+    }
+
+    public static int requireInRange(String name, int value, int minValue, int maxValue, boolean inclusive) {
+        if (value < 0 || inclusive && value > maxValue || !inclusive && value >= maxValue) {
+            String message = "in range [" + minValue + "," + maxValue;
+            message += inclusive ? "]" : "[";
+            throw mustBe(name, value, message, IndexOutOfBoundsException::new);
+        }
+        return value;
+    }
+
     public static RuntimeException mustBe(String name, Object value, String condition) {
-        return new IllegalArgumentException(String.format("%s must be %s, got %s", name, condition, value));
+        return mustBe(name, value, condition, IllegalArgumentException::new);
+    }
+
+    public static <E extends RuntimeException> E mustBe(String name, Object value, String condition, Function<String, E> exceptionMaker) {
+        return exceptionMaker.apply(String.format("%s must be %s, got %s", name, condition, value));
     }
 
     @NonNull
@@ -128,4 +217,18 @@ public final class AssertionUtil {
                                                : prefix + ": " + message;
         return new AssertionError(message);
     }
+
+    public static @NonNull ContextedAssertionError contexted(AssertionError e) {
+        return ContextedAssertionError.wrap(e);
+    }
+
+    public static @NonNull ContextedStackOverflowError contexted(StackOverflowError e) {
+        return ContextedStackOverflowError.wrap(e);
+    }
+
+    public static @NonNull ContextedRuntimeException contexted(RuntimeException e) {
+        return e instanceof ContextedRuntimeException ? (ContextedRuntimeException) e
+                                                      : new ContextedRuntimeException(e);
+    }
+
 }

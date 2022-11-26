@@ -40,7 +40,7 @@ public class HTMLRenderer extends AbstractIncrementingRenderer {
 
     public static final PropertyDescriptor<Boolean> HTML_EXTENSION =
         PropertyFactory.booleanProperty("htmlExtension")
-                       .desc("Replace file extension with .html for the links (default: false)")
+                       .desc("Replace file extension with .html for the links.")
                        // default value is false - to have the old (pre 6.23.0) behavior, this needs to be set to true.
                        .defaultValue(false)
                        .build();
@@ -49,7 +49,6 @@ public class HTMLRenderer extends AbstractIncrementingRenderer {
     private String linePrefix;
     private boolean replaceHtmlExtension;
 
-    private int violationCount = 1;
     boolean colorize = true;
 
     public HTMLRenderer() {
@@ -121,6 +120,7 @@ public class HTMLRenderer extends AbstractIncrementingRenderer {
     }
 
     private void glomRuleViolations(Writer writer, Iterator<RuleViolation> violations) throws IOException {
+        int violationCount = 1;
 
         StringBuilder buf = new StringBuilder(500);
 

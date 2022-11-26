@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.java.rule.performance;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class InefficientStringBufferingTest extends PmdRuleTst {
+class InefficientStringBufferingTest extends PmdRuleTst {
     // no additional unit tests
 }

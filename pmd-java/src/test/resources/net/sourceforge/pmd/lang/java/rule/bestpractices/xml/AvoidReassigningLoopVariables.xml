@@ -674,7 +674,7 @@ public class Foo {
     </test-code>
 
     <!-- Deactivated because this is hard to implement in the general case. -->
-    <test-code regressionTest="false">
+    <test-code disabled="true">
         <description>violation: various conditional reassignments of 'for' loop variable, skip allowed</description>
         <rule-property name="forReassign">skip</rule-property>
         <expected-problems>4</expected-problems>
@@ -876,6 +876,35 @@ public class ClassWithAnon {
                 }
             }
         };
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>New fns after implementing pattern binding scope</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>17,17</expected-linenumbers>
+        <code><![CDATA[
+public class CompletableFuture<T> {
+    private T result;
+
+    private CompletableFuture() {
+
+    }
+    private CompletableFuture(T o) {
+
+    }
+
+    public static CompletableFuture<Object> anyOf(CompletableFuture<?>... cfs) {
+        cfs = cfs.clone();
+        CompletableFuture<Object> d = new CompletableFuture<>();
+        if (d.result != null)
+            for (int i = 0, len = cfs.length; i < len; i++)
+                if (cfs[i].result != null)
+                    for (i++; i < len; i++) // here
+                        if (cfs[i].result == null)
+                            cfs[i].cleanStack();
+        return d;
     }
 }
         ]]></code>

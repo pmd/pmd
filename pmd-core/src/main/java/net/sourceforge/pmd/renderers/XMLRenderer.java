@@ -22,15 +22,14 @@ import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.apache.commons.io.output.WriterOutputStream;
 import org.apache.commons.lang3.StringUtils;
 
-import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMDVersion;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
+import net.sourceforge.pmd.util.IOUtil;
 import net.sourceforge.pmd.util.StringUtil;
 
 /**
@@ -71,7 +70,7 @@ public class XMLRenderer extends AbstractIncrementingRenderer {
     public void start() throws IOException {
         String encoding = getProperty(ENCODING);
         String unmarkedEncoding = toUnmarkedEncoding(encoding);
-        lineSeparator = PMD.EOL.getBytes(unmarkedEncoding);
+        lineSeparator = System.lineSeparator().getBytes(unmarkedEncoding);
 
         try {
             xmlWriter.writeStartDocument(encoding, "1.0");
@@ -259,7 +258,7 @@ public class XMLRenderer extends AbstractIncrementingRenderer {
     public void setWriter(final Writer writer) {
         String encoding = getProperty(ENCODING);
         // for backwards compatibility, create a OutputStream that writes to the writer.
-        this.stream = new WriterOutputStream(writer, encoding);
+        this.stream = IOUtil.fromWriter(writer, encoding);
 
         XMLOutputFactory outputFactory = XMLOutputFactory.newFactory();
         try {

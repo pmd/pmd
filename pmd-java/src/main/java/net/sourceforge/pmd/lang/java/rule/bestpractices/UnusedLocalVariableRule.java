@@ -8,6 +8,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
@@ -22,7 +23,7 @@ public class UnusedLocalVariableRule extends AbstractJavaRule {
     @Override
     public Object visit(ASTLocalVariableDeclaration decl, Object data) {
         for (ASTVariableDeclaratorId varId : decl.getVarIds()) {
-            if (JavaRuleUtil.isNeverUsed(varId)
+            if (JavaAstUtils.isNeverUsed(varId)
                 && !JavaRuleUtil.isExplicitUnusedVarName(varId.getName())) {
                 addViolation(data, varId, varId.getName());
             }

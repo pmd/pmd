@@ -159,11 +159,11 @@ public class Complicated {
 
     <rule name="CognitiveComplexity"
           language="apex"
-          message="The {0} ''{1}'' has a{2} cognitive complexity of {3}."
+          message="The {0} ''{1}'' has a{2} cognitive complexity of {3}, current threshold is {4}"
           since="6.22.0"
           class="net.sourceforge.pmd.lang.apex.rule.design.CognitiveComplexityRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_design.html#cognitivecomplexity">
-        <description>
+        <description><![CDATA[
 Methods that are highly complex are difficult to read and more costly to maintain. If you include too much decisional
 logic within a single method, you make its behavior hard to understand and more difficult to modify.
 
@@ -173,10 +173,11 @@ complexity. Nested control flows can make a method more difficult to understand,
 control flow leading to an increase in cognitive complexity.
 
 Information about Cognitive complexity can be found in the original paper here:
-https://www.sonarsource.com/docs/CognitiveComplexity.pdf
+<https://www.sonarsource.com/docs/CognitiveComplexity.pdf>
 
 By default, this rule reports methods with a complexity of 15 or more. Reported methods should be broken down into less
 complex components.
+]]>
         </description>
         <priority>3</priority>
         <example>
@@ -199,15 +200,15 @@ public class Foo {
         return false;
     }
 
-    // Has a cognitive complexity of 5
+    // Has a cognitive complexity of 4
     public void updateContacts(List<Contact> contacts) {
         List<Contact> contactsToUpdate = new List<Contact>();
 
         for (Contact contact : contacts) {                           // +1
-            if (contact.Department == 'Finance') {                   // +2
+            if (contact.Department == 'Finance') {                   // +2 (nesting = 1)
                 contact.Title = 'Finance Specialist';
                 contactsToUpdate.add(contact);
-            } else if (contact.Department == 'Sales') {              // +2
+            } else if (contact.Department == 'Sales') {              // +1
                 contact.Title = 'Sales Specialist';
                 contactsToUpdate.add(contact);
             }

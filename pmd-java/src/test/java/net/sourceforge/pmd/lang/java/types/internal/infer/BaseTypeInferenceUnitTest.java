@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.types.internal.infer;
 
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -24,7 +25,6 @@ import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
 import org.hamcrest.SelfDescribing;
-import org.junit.Assert;
 
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
@@ -39,7 +39,7 @@ import net.sourceforge.pmd.lang.java.types.internal.infer.InferenceVar.BoundKind
 /**
  *
  */
-public class BaseTypeInferenceUnitTest {
+class BaseTypeInferenceUnitTest {
 
 
     protected final TypeSystem ts = JavaParsingHelper.TEST_TYPE_SYSTEM;
@@ -55,10 +55,14 @@ public class BaseTypeInferenceUnitTest {
 
 
     protected InferenceVar newIvar(InferenceContext ctx) {
+        return newIvar(ctx, ts.OBJECT);
+    }
+
+    protected InferenceVar newIvar(InferenceContext ctx, JTypeMirror upperBound) {
         JTypeVar mock = mock(JTypeVar.class);
         when(mock.getTypeSystem()).thenReturn(ts);
         when(mock.getLowerBound()).thenReturn(ts.NULL_TYPE);
-        when(mock.getUpperBound()).thenReturn(ts.OBJECT);
+        when(mock.getUpperBound()).thenReturn(upperBound);
 
         return ctx.addVar(mock);
     }
@@ -77,29 +81,28 @@ public class BaseTypeInferenceUnitTest {
 
     protected void subtypeConstraintShouldFail(InferenceContext ctx, JTypeMirror t, JTypeMirror s) {
         t.isConvertibleTo(s); // nota: this captures t
-        Assert.assertThrows(ResolutionFailedException.class,
-                            ctx::incorporate);
+        assertThrows(ResolutionFailedException.class, ctx::incorporate);
     }
 
-    public @NonNull JTypeMirror listType(JTypeMirror t) {
+    @NonNull JTypeMirror listType(JTypeMirror t) {
         return ts.parameterise(listSym, listOf(t));
     }
 
-    public @NonNull JWildcardType extendsWild(JTypeMirror t) {
+    @NonNull JWildcardType extendsWild(JTypeMirror t) {
         return ts.wildcard(true, t);
     }
 
-    public @NonNull JWildcardType superWild(JTypeMirror t) {
+    @NonNull JWildcardType superWild(JTypeMirror t) {
         return ts.wildcard(false, t);
     }
 
-    public @NonNull JIntersectionType intersect(JTypeMirror... types) {
+    @NonNull JIntersectionType intersect(JTypeMirror... types) {
         JTypeMirror glb = ts.glb(Arrays.asList(types));
         assertThat(glb, Matchers.isA(JIntersectionType.class));
         return (JIntersectionType) glb;
     }
 
-    public static Matcher<InferenceVar> hasBound(BoundKind kind, JTypeMirror t) {
+    static Matcher<InferenceVar> hasBound(BoundKind kind, JTypeMirror t) {
         return new BaseMatcher<InferenceVar>() {
             @Override
             public void describeTo(Description description) {
@@ -119,7 +122,7 @@ public class BaseTypeInferenceUnitTest {
     /**
      * Exactly, modulo the upper(OBJECT), which can be omitted.
      */
-    public static Matcher<InferenceVar> hasBoundsExactly(Bound... bounds) {
+    static Matcher<InferenceVar> hasBoundsExactly(Bound... bounds) {
         return new BaseMatcher<InferenceVar>() {
             @Override
             public void describeTo(Description description) {
@@ -157,10 +160,13 @@ public class BaseTypeInferenceUnitTest {
                 // use Set::contains
 
 
+                // caller may omit OBJECT for conciseness
                 boolean expectTop = Arrays.stream(bounds).anyMatch(it -> it.kind == BoundKind.UPPER && it.t == top);
+                // may not have top if it has a different default bound
+                boolean hasTop = actualBounds.get(BoundKind.UPPER).contains(top);
 
                 int numToTest = actualBounds.values().stream().mapToInt(Set::size).sum();
-                if (!expectTop) {
+                if (!expectTop && hasTop) {
                     numToTest--;
                 }
 
@@ -183,20 +189,20 @@ public class BaseTypeInferenceUnitTest {
         };
     }
 
-    public static @NonNull Map<BoundKind, Set<JTypeMirror>> getBounds(InferenceVar actual) {
+    static @NonNull Map<BoundKind, Set<JTypeMirror>> getBounds(InferenceVar actual) {
         Map<BoundKind, Set<JTypeMirror>> actualBounds = new HashMap<>();
 
         for (BoundKind kind : BoundKind.values()) {
             Set<JTypeMirror> bounds = actual.getBounds(kind);
+            actualBounds.put(kind, bounds);
             if (!bounds.isEmpty()) {
-                actualBounds.put(kind, bounds);
             }
         }
 
         return actualBounds;
     }
 
-    public static @NonNull Set<Bound> getBoundsObj(InferenceVar actual) {
+    static @NonNull Set<Bound> getBoundsObj(InferenceVar actual) {
         Set<Bound> bounds = new LinkedHashSet<>();
 
         for (BoundKind kind : BoundKind.values()) {
@@ -207,7 +213,7 @@ public class BaseTypeInferenceUnitTest {
         return bounds;
     }
 
-    public static class Bound implements SelfDescribing {
+    static class Bound implements SelfDescribing {
 
         final BoundKind kind;
         final JTypeMirror t;
@@ -219,7 +225,7 @@ public class BaseTypeInferenceUnitTest {
 
         @Override
         public void describeTo(Description description) {
-            description.appendText("_" + kind.getSym() + t);
+            description.appendText(toString());
         }
 
         public static Bound lower(JTypeMirror t) {
@@ -236,6 +242,11 @@ public class BaseTypeInferenceUnitTest {
 
         public static Description describeList(Description description, Collection<Bound> bounds) {
             return description.appendList("{", ", ", "}", bounds);
+        }
+
+        @Override
+        public String toString() {
+            return "_" + kind.getSym() + t;
         }
     }
 

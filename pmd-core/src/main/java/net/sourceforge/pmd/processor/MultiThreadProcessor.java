@@ -5,61 +5,56 @@
 package net.sourceforge.pmd.processor;
 
 import java.util.List;
-import java.util.concurrent.CompletionService;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import net.sourceforge.pmd.PMDConfiguration;
-import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.annotation.InternalApi;
-import net.sourceforge.pmd.renderers.Renderer;
+import net.sourceforge.pmd.RuleSets;
+import net.sourceforge.pmd.lang.document.TextFile;
+import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
 
 
 /**
  * @author Romain Pelisse &lt;belaran@gmail.com&gt;
- * @deprecated Is internal API
  */
-@Deprecated
-@InternalApi
-public class MultiThreadProcessor extends AbstractPMDProcessor {
+final class MultiThreadProcessor extends AbstractPMDProcessor {
     private final ExecutorService executor;
-    private final CompletionService<Report> completionService;
 
-    private long submittedTasks = 0L;
-
-    public MultiThreadProcessor(final PMDConfiguration configuration) {
+    MultiThreadProcessor(final PMDConfiguration configuration) {
         super(configuration);
 
         executor = Executors.newFixedThreadPool(configuration.getThreads(), new PmdThreadFactory());
-        completionService = new ExecutorCompletionService<>(executor);
     }
 
     @Override
-    protected void runAnalysis(PmdRunnable runnable) {
-        completionService.submit(runnable);
-        submittedTasks++;
+    @SuppressWarnings("PMD.CloseResource") // closed by the PMDRunnable
+    public void processFiles(RuleSets rulesets, List<TextFile> files, GlobalAnalysisListener listener) {
+        // The thread-local is not static, but analysis-global
+        // This means we don't have to reset it manually, every analysis is isolated.
+        // The initial value makes a copy of the rulesets
+        final ThreadLocal<RuleSets> ruleSetCopy = ThreadLocal.withInitial(() -> new RuleSets(rulesets));
+
+        for (final TextFile dataSource : files) {
+            executor.submit(new PmdRunnable(dataSource, listener, configuration) {
+                @Override
+                protected RuleSets getRulesets() {
+                    return ruleSetCopy.get();
+                }
+            });
+        }
     }
 
     @Override
-    protected void collectReports(List<Renderer> renderers) {
+    public void close() {
         try {
-            for (int i = 0; i < submittedTasks; i++) {
-                final Report report = completionService.take().get();
-                super.renderReports(renderers, report);
+            executor.shutdown();
+            while (!executor.awaitTermination(10, TimeUnit.HOURS)) {
+                // still waiting
+                Thread.yield();
             }
-        } catch (final InterruptedException ie) {
+        } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-        } catch (final ExecutionException ee) {
-            final Throwable t = ee.getCause();
-            if (t instanceof RuntimeException) {
-                throw (RuntimeException) t;
-            } else if (t instanceof Error) {
-                throw (Error) t;
-            } else {
-                throw new IllegalStateException("PmdRunnable exception", t);
-            }
         } finally {
             executor.shutdownNow();
         }

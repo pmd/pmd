@@ -6,13 +6,12 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.List;
 
-import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.ast.Node;
 
 
 /**
- * Represents class and interface declarations. This is a {@linkplain Node#isFindBoundary() find boundary}
- * for tree traversal methods.
+ * Represents class and interface declarations.
+ * This is a {@linkplain Node#isFindBoundary() find boundary} for tree traversal methods.
  *
  * <pre class="grammar">
  *
@@ -81,9 +80,7 @@ public final class ASTClassOrInterfaceDeclaration extends AbstractAnyTypeDeclara
     }
 
 
-    @Experimental
     public List<ASTClassOrInterfaceType> getPermittedSubclasses() {
         return ASTList.orEmpty(children(ASTPermitsList.class).first());
     }
-
 }

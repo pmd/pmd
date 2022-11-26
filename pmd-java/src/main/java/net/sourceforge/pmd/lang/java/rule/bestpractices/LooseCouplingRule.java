@@ -18,6 +18,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTExtendsList;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTModuleProvidesDirective;
 import net.sourceforge.pmd.lang.java.ast.ASTSuperExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTThisExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeExpression;
@@ -45,7 +46,8 @@ public class LooseCouplingRule extends AbstractJavaRulechainRule {
         if (isConcreteCollectionType(node)
             && !isInOverriddenMethodSignature(node)
             && !isInAllowedSyntacticCtx(node)
-            && !isAllowedType(node)) {
+            && !isAllowedType(node)
+            && !isTypeParameter(node)) {
             addViolation(data, node, node.getSimpleName());
         }
         return null;
@@ -61,6 +63,7 @@ public class LooseCouplingRule extends AbstractJavaRulechainRule {
             || parent instanceof ASTExtendsList          // extends AbstractMap<...>
             || parent instanceof ASTThisExpression       // Enclosing.this
             || parent instanceof ASTSuperExpression      // Enclosing.super
+            || parent instanceof ASTModuleProvidesDirective  // provides <interface> with <implementation>
             || parent instanceof ASTArrayType && parent.getParent() instanceof ASTArrayAllocation;
     }
 
@@ -81,10 +84,11 @@ public class LooseCouplingRule extends AbstractJavaRulechainRule {
 
     private static boolean isInOverriddenMethodSignature(JavaNode node) {
         JavaNode ancestor = node.ancestors().map(NodeStream.asInstanceOf(ASTMethodDeclaration.class, ASTBlock.class)).first();
-        if (ancestor instanceof ASTMethodDeclaration) {
-            // then it's in a signature and not the body
-            return ((ASTMethodDeclaration) ancestor).isOverridden();
-        }
-        return false;
+        // when it's in a signature and not the body
+        return ancestor instanceof ASTMethodDeclaration && ((ASTMethodDeclaration) ancestor).isOverridden();
+    }
+
+    private boolean isTypeParameter(ASTClassOrInterfaceType node) {
+        return node.getTypeMirror().isTypeVariable();
     }
 }

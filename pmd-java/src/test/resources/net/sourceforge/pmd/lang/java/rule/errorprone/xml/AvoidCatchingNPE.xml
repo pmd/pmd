@@ -7,6 +7,7 @@
     <test-code>
         <description>failure case</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     void bar() {
@@ -28,6 +29,7 @@ public class Foo {
         } catch (FooException e) {
         }
     }
+    public static class FooException extends NullPointerException {}
 }
         ]]></code>
     </test-code>

@@ -9,26 +9,37 @@
 <div id="topbar-content-offset">
 {% include topnav.html %}
 <!-- Page Content -->
-<div class="container">
-    <div class="col-lg-12">&nbsp;</div>
-    <!-- Content Row -->
-    <div class="row">
-        {% assign content_col_size = "col-md-12" %}
-        {% unless page.hide_sidebar %}
-        <!-- Sidebar Column -->
-        <div class="col-md-3" id="tg-sb-sidebar">
-            {% include sidebar.html %}
-        </div>
-        {% assign content_col_size = "col-md-9" %}
-        {% endunless %}
+<div class="container-toc-wrapper">
+    <div class="container">
+        <div class="col-lg-12">&nbsp;</div>
+        <!-- Content Row -->
+        <div class="row">
+            {% assign content_col_size = "col-md-12" %}
+            {% unless page.hide_sidebar %}
+            <!-- Sidebar Column -->
+            <div class="col-md-3" id="tg-sb-sidebar">
+                {% include sidebar.html %}
+            </div>
+            {% assign content_col_size = "col-md-9" %}
+            {% endunless %}
 
-        <!-- Content Column -->
-        <div class="{{content_col_size}}" id="tg-sb-content">
-            {{content}}
+            <!-- Content Column -->
+            <div class="{{content_col_size}}" id="tg-sb-content">
+                {{content}}
+            </div>
+
+            <!-- /.row -->
         </div>
-        <!-- /.row -->
+        <!-- /.container -->
     </div>
-    <!-- /.container -->
+
+    {% unless page.toc == false %}
+    <!-- Sticky TOC column -->
+    <div class="toc-col">
+        <div id="toc"></div>
+    </div>
+    {% endunless %}
+    <!-- /.toc-container-wrapper -->
 </div>
 </div>
 

@@ -7,6 +7,7 @@
     <test-code>
         <description>simple failure case</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     public final int BAR = 42;
@@ -37,6 +38,7 @@ public class Foo {
     <test-code>
         <description>non-primitive failure case - only works for String</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     public final String BAR = "42";
@@ -124,6 +126,7 @@ public class ExampleClass {
     <test-code>
         <description>#2708 - Should trigger with non-lombok @Builder.Default fields</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>11</expected-linenumbers>
         <code><![CDATA[
 package com.example;
 
@@ -134,7 +137,7 @@ import lombok.Data;
 @Builder
 public class ExampleClass {
 
-    @Builder.Default
+    @Builder.Default // that's not a lombok Builder!!
     private final long exampleField = 0L;
 }
         ]]></code>
@@ -143,6 +146,7 @@ public class ExampleClass {
     <test-code>
         <description>Should trigger multiple times for fields declared on one line</description>
         <expected-problems>2</expected-problems>
+        <expected-linenumbers>5,5</expected-linenumbers>
         <code><![CDATA[
 package com.example;
 
@@ -151,5 +155,114 @@ public class ExampleClass {
     private final String one = "one", two = "two";
 }
         ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#3679 - False-negative on initializing with another object</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+class Clazz {
+  public static final int a = 10;
+  public final int b = a;  // should report a warning here
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[OK] initializing with a method invocation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Clazz {
+  public final int a = getValue();
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>
+            #3724 - the rule should be triggered only if the referenced name is static
+        </description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    private int nonStaticPrivate = 1;                   //no violation cause non-final
+    private final int nonStatic = nonStaticPrivate;     //no violation cause referenced name is non-static
+
+    //private static final int staticFinal = nonStatic; //noncompliant: Non-static field 'nonStatic' cannot be referenced from a static context
+    private static int staticNonFinal = 1;              //no violation cause non-final
+    private final int nonStatic2 = staticNonFinal;      //violation because it could be static
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#3949 - FinalFieldCouldBeStatic false negative with unnecessary parenthesis</description>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>5,8,9</expected-linenumbers>
+        <code><![CDATA[
+import java.util.ArrayList;
+import java.util.List;
+
+public class Foo {
+    public final int BAR = (42);
+
+    // these empty arrays could theoretically be shared and therefore be static
+    private final Object[] argsObjs1 = new Object[0];
+    private final Object[] argsObjs2 = new Object[(0)];
+
+    // not flagging anonymous class instantiation
+    private final StringBuffer mFilter = new StringBuffer(new CharSequence() {
+        @Override public char charAt(int index) { return 'A'; }
+        @Override public int length() { return 1; }
+        @Override public CharSequence subSequence(int start, int end) { return this; }
+        @Override public String toString() { return "Foo"; }
+    });
+
+    // not flagging any instantiation in order to avoid false positives
+    // especially for lists one could still require a separate list for each instance...
+    public final List<String> mList = new ArrayList<>();
+
+    // not flagging instantiation of boxed types - would be a different rule
+    // this is to keep this rule simple
+    public final Integer DefaultInit = new Integer(27);
+    private final String mString = new String("Foo");
+
+    // not flagging array creation. Same reasoning as for lists:
+    // one could still require a separate array for each instance...
+    private final int[] p = new int[42];
+}
+        ]]></code>
+    </test-code>
+    
+    <test-code>
+        <description>[java] FinalFieldCouldBeStatic false positive with non-static synchronized block (regression in 6.48, worked with 6.47) #4090</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+class foo {
+    private final Object[] lock = new Object[0];
+    private final Object[] lock2 = new Object[0];
+    private final Object[] o = new Object[0];
+
+
+    void init() {
+        synchronized (lock) {
+            // do init stuff
+        }
+    }
+
+    public void close() {
+        synchronized (this.lock2) {
+           // do close stuff
+        }
+    }
+
+    void foo() {
+        System.out.println(o);
+    }
+}
+]]></code>
     </test-code>
 </test-data>

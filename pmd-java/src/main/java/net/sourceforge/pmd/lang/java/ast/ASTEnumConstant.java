@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
+import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
 
 /**
@@ -32,9 +32,10 @@ public final class ASTEnumConstant extends AbstractJavaTypeNode
         super(id);
     }
 
+
     @Override
-    protected @Nullable JavaccToken getPreferredReportLocation() {
-        return getVarId().getFirstToken();
+    public FileLocation getReportLocation() {
+        return getVarId().getFirstToken().getReportLocation();
     }
 
     @Override

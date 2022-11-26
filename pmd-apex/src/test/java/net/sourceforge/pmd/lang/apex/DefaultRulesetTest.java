@@ -4,55 +4,31 @@
 
 package net.sourceforge.pmd.lang.apex;
 
-import java.util.logging.Handler;
-import java.util.logging.LogRecord;
-import java.util.logging.Logger;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.contrib.java.lang.system.SystemErrRule;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetLoader;
 
-public class DefaultRulesetTest {
-    @Rule
-    public final SystemErrRule systemErrRule = new SystemErrRule().enableLog().muteForSuccessfulTests();
+import com.github.stefanbirkner.systemlambda.SystemLambda;
+
+class DefaultRulesetTest {
 
     @Test
-    public void loadDefaultRuleset() {
+    void loadDefaultRuleset() {
         RuleSet ruleset = rulesetLoader().loadFromResource("rulesets/apex/ruleset.xml");
-        Assert.assertNotNull(ruleset);
-    }
-
-    @After
-    public void cleanup() {
-        Handler[] handlers = Logger.getLogger(RuleSetLoader.class.getName()).getHandlers();
-        for (Handler handler : handlers) {
-            Logger.getLogger(RuleSetLoader.class.getName()).removeHandler(handler);
-        }
+        assertNotNull(ruleset);
     }
 
     @Test
-    public void loadQuickstartRuleset() {
-        Logger.getLogger(RuleSetLoader.class.getName()).addHandler(new Handler() {
-            @Override
-            public void publish(LogRecord record) {
-                Assert.fail("No Logging expected: " + record.getMessage());
-            }
-
-            @Override
-            public void flush() {
-            }
-
-            @Override
-            public void close() throws SecurityException {
-            }
+    void loadQuickstartRuleset() throws Exception {
+        String log = SystemLambda.tapSystemErr(() -> {
+            RuleSet ruleset = rulesetLoader().loadFromResource("rulesets/apex/quickstart.xml");
+            assertNotNull(ruleset);
         });
-        RuleSet ruleset = rulesetLoader().loadFromResource("rulesets/apex/quickstart.xml");
-        Assert.assertNotNull(ruleset);
+        assertTrue(log.isEmpty(), "No Logging expected");
     }
 
     private RuleSetLoader rulesetLoader() {

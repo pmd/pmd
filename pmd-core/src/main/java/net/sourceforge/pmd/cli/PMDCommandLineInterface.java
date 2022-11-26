@@ -5,9 +5,9 @@
 package net.sourceforge.pmd.cli;
 
 import java.util.Properties;
-import java.util.stream.Collectors;
 
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.PMD.StatusCode;
 import net.sourceforge.pmd.PMDVersion;
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.Language;
@@ -21,24 +21,56 @@ import com.beust.jcommander.ParameterException;
 
 /**
  * @author Romain Pelisse &lt;belaran@gmail.com&gt;
- *
- * @deprecated Internal API. Use {@link PMD#run(String[])} or {@link PMD#main(String[])}
+ * @deprecated Internal API. Use {@link PMD#runPmd(String...)} or {@link PMD#main(String[])},
+ *     or {@link PmdParametersParseResult} if you just want to produce a configuration.
  */
 @Deprecated
 @InternalApi
 public final class PMDCommandLineInterface {
 
+    @Deprecated
     public static final String PROG_NAME = "pmd";
 
+    /**
+     * @deprecated This is used for testing, but support for it will be removed in PMD 7.
+     * Use {@link PMD#runPmd(String...)} or an overload to avoid exiting the VM. In PMD 7,
+     * {@link PMD#main(String[])} will call {@link System#exit(int)} always.
+     */
+    @Deprecated
     public static final String NO_EXIT_AFTER_RUN = "net.sourceforge.pmd.cli.noExit";
+
+    /**
+     * @deprecated This is used for testing, but support for it will be removed in PMD 7.
+     * Use {@link PMD#runPmd(String...)} or an overload to avoid exiting the VM. In PMD 7,
+     * {@link PMD#main(String[])} will call {@link System#exit(int)} always.
+     */
+    @Deprecated
     public static final String STATUS_CODE_PROPERTY = "net.sourceforge.pmd.cli.status";
 
+    /**
+     * @deprecated Use {@link StatusCode#OK}
+     */
+    @Deprecated
     public static final int NO_ERRORS_STATUS = 0;
+    /**
+     * @deprecated Use {@link StatusCode#ERROR}
+     */
+    @Deprecated
     public static final int ERROR_STATUS = 1;
+    /**
+     * @deprecated Use {@link StatusCode#VIOLATIONS_FOUND}
+     */
+    @Deprecated
     public static final int VIOLATIONS_FOUND = 4;
 
     private PMDCommandLineInterface() { }
 
+    /**
+     * Note: this may terminate the VM.
+     *
+     * @deprecated Use {@link PmdParametersParseResult#extractParameters(String...)}
+     */
+    @Deprecated
     public static PMDParameters extractParameters(PMDParameters arguments, String[] args, String progName) {
         JCommander jcommander = new JCommander(arguments);
         jcommander.setProgramName(progName);
@@ -112,7 +144,7 @@ public final class PMDCommandLineInterface {
 
     private static String supportedVersions() {
         return "Languages and version suported:" + PMD.EOL
-                + LanguageRegistry.getLanguages().stream().map(Language::getTerseName).collect(Collectors.joining(", "))
+                + LanguageRegistry.PMD.commaSeparatedList(Language::getId)
                 + PMD.EOL;
     }
 
@@ -120,7 +152,10 @@ public final class PMDCommandLineInterface {
      * For testing purpose only...
      *
      * @param args
+     *
+     * @deprecated Use {@link PMD#runPmd(String...)}
      */
+    @Deprecated
     public static void main(String[] args) {
         System.out.println(PMDCommandLineInterface.buildUsageText());
     }
@@ -131,7 +166,7 @@ public final class PMDCommandLineInterface {
 
     private static String getReports() {
         StringBuilder buf = new StringBuilder();
-        for (String reportName : RendererFactory.REPORT_FORMAT_TO_RENDERER.keySet()) {
+        for (String reportName : RendererFactory.supportedRenderers()) {
             Renderer renderer = RendererFactory.createRenderer(reportName, new Properties());
             buf.append("   ").append(reportName).append(": ");
             if (!reportName.equals(renderer.getName())) {
@@ -154,10 +189,6 @@ public final class PMDCommandLineInterface {
         return buf.toString();
     }
 
-    public static void run(String[] args) {
-        setStatusCodeOrExit(PMD.run(args));
-    }
-
     public static void setStatusCodeOrExit(int status) {
         if (isExitAfterRunSet()) {
             System.exit(status);
@@ -178,4 +209,7 @@ public final class PMDCommandLineInterface {
         System.setProperty(STATUS_CODE_PROPERTY, Integer.toString(statusCode));
     }
 
+    public static void printJcommanderUsageOnConsole() {
+        new JCommander(new PMDParameters()).usage();
+    }
 }

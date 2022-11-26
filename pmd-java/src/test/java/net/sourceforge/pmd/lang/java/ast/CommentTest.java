@@ -4,88 +4,89 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.apache.commons.lang3.StringUtils;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.lang.java.symboltable.BaseNonParserTest;
+import net.sourceforge.pmd.lang.java.BaseParserTest;
 
-public class CommentTest extends BaseNonParserTest {
+class CommentTest extends BaseParserTest {
     @Test
-    public void testMultiLinesInSingleLine() {
+    void testMultiLinesInSingleLine() {
         String comment = "/* single line. */";
         String filtered = filter(comment);
-        Assert.assertEquals(1, lineCount(filtered));
-        Assert.assertEquals("single line.", filtered);
+        assertEquals(1, lineCount(filtered));
+        assertEquals("single line.", filtered);
     }
 
     @Test
-    public void testMultiLinesInSingleLineSimple() {
+    void testMultiLinesInSingleLineSimple() {
         String comment = "// single line.";
         String filtered = filter(comment);
-        Assert.assertEquals(1, lineCount(filtered));
-        Assert.assertEquals("single line.", filtered);
+        assertEquals(1, lineCount(filtered));
+        assertEquals("single line.", filtered);
     }
 
     @Test
-    public void testMultiLinesInSingleLineFormal() {
+    void testMultiLinesInSingleLineFormal() {
         String comment = "/** single line. */";
         String filtered = filter(comment);
-        Assert.assertEquals(1, lineCount(filtered));
-        Assert.assertEquals("single line.", filtered);
+        assertEquals(1, lineCount(filtered));
+        assertEquals("single line.", filtered);
     }
 
     @Test
-    public void testMultiLinesInMultiLine() {
+    void testMultiLinesInMultiLine() {
         String comment =
                   "/*\n"
                 + " * line 1\n"
                 + " * line 2\n"
                 + " */\n";
         String filtered = filter(comment);
-        Assert.assertEquals(2, lineCount(filtered));
-        Assert.assertEquals("line 1" + PMD.EOL + "line 2", filtered);
+        assertEquals(2, lineCount(filtered));
+        assertEquals("line 1" + PMD.EOL + "line 2", filtered);
     }
 
     @Test
-    public void testMultiLinesInMultiLineCrLf() {
+    void testMultiLinesInMultiLineCrLf() {
         String comment =
                   "/*\r\n"
                 + " * line 1\r\n"
                 + " * line 2\r\n"
                 + " */\r\n";
         String filtered = filter(comment);
-        Assert.assertEquals(2, lineCount(filtered));
-        Assert.assertEquals("line 1" + PMD.EOL + "line 2", filtered);
+        assertEquals(2, lineCount(filtered));
+        assertEquals("line 1" + PMD.EOL + "line 2", filtered);
     }
 
     @Test
-    public void testMultiLinesInMultiLineFormal() {
+    void testMultiLinesInMultiLineFormal() {
         String comment =
                   "/**\n"
                 + " * line 1\n"
                 + " * line 2\n"
                 + " */\n";
         String filtered = filter(comment);
-        Assert.assertEquals(2, lineCount(filtered));
-        Assert.assertEquals("line 1" + PMD.EOL + "line 2", filtered);
+        assertEquals(2, lineCount(filtered));
+        assertEquals("line 1" + PMD.EOL + "line 2", filtered);
     }
 
     @Test
-    public void testMultiLinesInMultiLineFormalCrLf() {
+    void testMultiLinesInMultiLineFormalCrLf() {
         String comment =
                   "/**\r\n"
                 + " * line 1\r\n"
                 + " * line 2\r\n"
                 + " */\r\n";
         String filtered = filter(comment);
-        Assert.assertEquals(2, lineCount(filtered));
-        Assert.assertEquals("line 1" + PMD.EOL + "line 2", filtered);
+        assertEquals(2, lineCount(filtered));
+        assertEquals("line 1" + PMD.EOL + "line 2", filtered);
     }
 
     @Test
-    public void testMultiLinesInMultiLineNoAsteriskEmpty() {
+    void testMultiLinesInMultiLineNoAsteriskEmpty() {
         String comment =
                   "/**\n"
                 + " * line 1\n"
@@ -93,8 +94,8 @@ public class CommentTest extends BaseNonParserTest {
                 + "\n"
                 + " */\n";
         String filtered = filter(comment);
-        Assert.assertEquals(2, lineCount(filtered));
-        Assert.assertEquals("line 1" + PMD.EOL + "line 2", filtered);
+        assertEquals(2, lineCount(filtered));
+        assertEquals("line 1" + PMD.EOL + "line 2", filtered);
     }
 
     private String filter(String comment) {

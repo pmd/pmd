@@ -388,7 +388,8 @@ class C {
 
         val call = acu.firstMethodCall()
 
-        spy.shouldBeAmbiguous {
+        spy.shouldBeAmbiguous(call)
+        acu.withTypeDsl {
             call.shouldMatchN {
                 methodCall("append") {
 
@@ -504,7 +505,7 @@ class C {
         }
     }
 
-    parserTest("f:Unresolved type in primitive switch label") {
+    parserTest("Unresolved type in primitive switch label") {
 
         val acu = parser.parse(
                 """
@@ -562,14 +563,15 @@ class C {
         val (lambda) = acu.descendants(ASTLambdaExpression::class.java).toList()
         val (mref) = acu.descendants(ASTMethodReference::class.java).toList()
 
-        spy.shouldTriggerNoApplicableMethods {
+        val (lambdaCall, mrefCall) = acu.descendants(ASTMethodCall::class.java).toList()
+
+        spy.shouldHaveNoApplicableMethods(lambdaCall)
+        spy.shouldHaveNoApplicableMethods(mrefCall)
+
+        acu.withTypeDsl {
             lambda shouldHaveType ts.UNKNOWN
             lambda.functionalMethod shouldBe ts.UNRESOLVED_METHOD
-        }
 
-        spy.resetInteractions()
-
-        spy.shouldTriggerNoApplicableMethods {
             mref shouldHaveType ts.UNKNOWN
             mref.functionalMethod shouldBe ts.UNRESOLVED_METHOD
             mref.referencedMethod shouldBe ts.UNRESOLVED_METHOD
@@ -596,17 +598,58 @@ class C {
         val (lambda) = acu.descendants(ASTLambdaExpression::class.java).toList()
         val (mref) = acu.descendants(ASTMethodReference::class.java).toList()
 
-        spy.shouldTriggerNoLambdaCtx {
+        spy.shouldHaveNoLambdaCtx(lambda)
+        spy.shouldHaveNoLambdaCtx(mref)
+
+        acu.withTypeDsl {
             lambda shouldHaveType ts.UNKNOWN
             lambda.functionalMethod shouldBe ts.UNRESOLVED_METHOD
-        }
 
-        spy.resetInteractions()
-
-        spy.shouldTriggerNoLambdaCtx {
             mref shouldHaveType ts.UNKNOWN
             mref.functionalMethod shouldBe ts.UNRESOLVED_METHOD
             mref.referencedMethod shouldBe ts.UNRESOLVED_METHOD
+        }
+    }
+
+
+    parserTest("Wrong syntax, return with expr in void method") {
+
+        val (acu, spy) = parser.parseWithTypeInferenceSpy("""
+                class Foo {
+                    void foo() { return foo; }
+                    static { return p1; }
+                    Foo() { return p2; }
+                }
+        """)
+
+        for (vaccess in acu.descendants(ASTVariableAccess::class.java)) {
+            spy.shouldBeOk {
+                vaccess shouldHaveType ts.UNKNOWN
+            }
+        }
+    }
+
+    parserTest("Lambda with wrong form") {
+
+        val (acu, _) = parser.parseWithTypeInferenceSpy("""
+                interface Lambda {
+                    void call();
+                }
+                class Foo {
+                    {
+                        Lambda l = () -> {}; // ok
+                        Lambda l = x -> {};  // wrong form!
+                    }
+                }
+        """)
+
+        val (ok, wrong) = acu.descendants(ASTLambdaExpression::class.java).toList()
+        val t_Lambda = acu.typeDeclarations.firstOrThrow().typeMirror
+
+        acu.withTypeDsl {
+            ok shouldHaveType t_Lambda
+            wrong shouldHaveType t_Lambda
+            wrong.parameters[0] shouldHaveType ts.ERROR
         }
     }
 

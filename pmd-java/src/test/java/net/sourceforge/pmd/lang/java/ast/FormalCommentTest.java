@@ -4,17 +4,19 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.Assert;
-import org.junit.Test;
+import java.util.List;
+
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
+import net.sourceforge.pmd.lang.java.BaseParserTest;
 
-public class FormalCommentTest extends BaseParserTest {
+class FormalCommentTest extends BaseParserTest {
 
     @Test
-    public void testJavadocTagsAsChildren() {
+    void testJavadocTagsAsChildren() {
         ASTCompilationUnit acu = java.parse(
             "interface Metric {"
                 + "   /**\n"
@@ -29,23 +31,23 @@ public class FormalCommentTest extends BaseParserTest {
 
         ASTType booleanT = acu.descendants(ASTType.class).firstOrThrow();
         JavaccToken firstToken = booleanT.getFirstToken();
-        assertEquals("Boolean", JavaTokenKinds.BOOLEAN, firstToken.kind);
+        assertEquals(JavaTokenKinds.BOOLEAN, firstToken.kind, "Boolean");
         JavaccToken comment = firstToken.getPreviousComment();
-        assertEquals("Implicit modifier list", JavaccToken.IMPLICIT_TOKEN, comment.kind);
+        assertEquals(JavaccToken.IMPLICIT_TOKEN, comment.kind, "Implicit modifier list");
         comment = comment.getPreviousComment();
-        assertEquals("Whitespace", JavaTokenKinds.WHITESPACE, comment.kind);
+        assertEquals(JavaTokenKinds.WHITESPACE, comment.kind, "Whitespace");
         assertEquals("\n    ", comment.getImage());
         comment = comment.getPreviousComment();
-        assertEquals("Formal comment", JavaTokenKinds.FORMAL_COMMENT, comment.kind);
+        assertEquals(JavaTokenKinds.FORMAL_COMMENT, comment.kind, "Formal comment");
 
-        FormalComment commentNode = new FormalComment(comment);
+        List<JavadocElement> javadocs = new FormalComment(comment).getChildren();
 
-        Assert.assertEquals(2, commentNode.getNumChildren());
+        assertEquals(2, javadocs.size());
 
-        JavadocElement paramTag = (JavadocElement) commentNode.getChild(0);
-        Assert.assertEquals("param", paramTag.tag().label);
+        JavadocElement paramTag = javadocs.get(0);
+        assertEquals("param", paramTag.tag().label);
 
-        JavadocElement returnTag = (JavadocElement) commentNode.getChild(1);
-        Assert.assertEquals("return", returnTag.tag().label);
+        JavadocElement returnTag = javadocs.get(1);
+        assertEquals("return", returnTag.tag().label);
     }
 }

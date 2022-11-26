@@ -5,32 +5,20 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.AstVisitor;
 import net.sourceforge.pmd.lang.ast.impl.javacc.AbstractJjtreeNode;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
-import net.sourceforge.pmd.lang.symboltable.Scope;
 
 abstract class AbstractJavaNode extends AbstractJjtreeNode<AbstractJavaNode, JavaNode> implements JavaNode {
 
-    private Scope scope;
     protected JSymbolTable symbolTable;
     private ASTCompilationUnit root;
 
     AbstractJavaNode(int id) {
         super(id);
-    }
-
-    /**
-     * Temporary hack so that classes and methods are reported on their
-     * identifier token and not the first annotation. Changes about text
-     * documents make that more general, in a future PR.
-     */
-    protected @Nullable JavaccToken getPreferredReportLocation() {
-        return null;
     }
 
 
@@ -97,8 +85,7 @@ abstract class AbstractJavaNode extends AbstractJjtreeNode<AbstractJavaNode, Jav
     }
 
     @Override
-    @NonNull
-    public JSymbolTable getSymbolTable() {
+    public @NonNull JSymbolTable getSymbolTable() {
         if (symbolTable == null) {
             return getParent().getSymbolTable();
         }
@@ -110,22 +97,10 @@ abstract class AbstractJavaNode extends AbstractJjtreeNode<AbstractJavaNode, Jav
         return getRoot().getTypeSystem();
     }
 
-    @Override
-    public Scope getScope() {
-        if (scope == null && getParent() != null) {
-            return getParent().getScope();
-        }
-        return scope;
-    }
-
-    void setScope(Scope scope) {
-        this.scope = scope;
-    }
 
 
     @Override
-    @NonNull
-    public ASTCompilationUnit getRoot() {
+    public @NonNull ASTCompilationUnit getRoot() {
         // storing a reference on each node ensures that each path is roamed
         // at most once.
         if (root == null) {

@@ -3,13 +3,12 @@ title: Making rulesets
 keywords: [rulesets, reference, rule, exclude, include, pattern, filter]
 tags: [getting_started, userdocs]
 summary: Making Custom Rulesets for PMD
-last_updated: November 2017
 summary: "A ruleset is an XML configuration file, which describes a collection of rules to be executed
           in a PMD run. PMD includes built-in rulesets to run quick analyses with a default configuration, but
           users are encouraged to make their own rulesets from the start, because they allow for so much
           configurability. This page walk you through the creation of a ruleset and the multiple configuration
           features offered by rulesets."
-last_updated: May 2018 (6.4.0)
+last_updated: October 2022 (6.51.0)
 permalink: pmd_userdocs_making_rulesets.html
 author: Tom Copeland <tomcopeland@users.sourceforge.net>, Clément Fournier <clement.fournier76@gmail.com>
 ---
@@ -100,7 +99,7 @@ a single rule reference." %}
 
 ### Filtering the processed files
 
-You can exclude some files from being processed by a ruleset using **exclude patterns**, with an optional overridding **include pattern**. A file will be excluded from processing *when there is a matching exclude pattern, but no matching include pattern*. This exclude/include technique works regardless of how PMD is used (e.g. command line, IDE, Ant), making it easier to keep application of your PMD rules consistent throughout your environment. Here is an example:
+You can exclude some files from being processed by a ruleset using **exclude patterns**, with an optional overriding **include pattern**. A file will be excluded from processing *when there is a matching exclude pattern, but no matching include pattern*. This exclude/include technique works regardless of how PMD is used (e.g. command line, IDE, Ant), making it easier to keep application of your PMD rules consistent throughout your environment. Here is an example:
 
 ```xml
 <?xml version="1.0"?>
@@ -118,3 +117,8 @@ You can exclude some files from being processed by a ruleset using **exclude pat
 
 </ruleset>
 ```
+
+## Sharing your ruleset
+
+{% include tip.html content="If you want to share your ruleset, you can add it to the list
+on [3rd party rulesets](pmd_userdocs_3rdpartyrulesets.html)." %}

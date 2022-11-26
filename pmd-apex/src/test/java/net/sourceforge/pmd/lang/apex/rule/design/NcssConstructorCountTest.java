@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.apex.rule.design;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class NcssConstructorCountTest extends PmdRuleTst {
+class NcssConstructorCountTest extends PmdRuleTst {
     // no additional unit tests
 }

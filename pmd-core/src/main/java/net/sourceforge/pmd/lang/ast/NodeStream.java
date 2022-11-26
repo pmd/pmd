@@ -621,6 +621,23 @@ public interface NodeStream<@NonNull T extends Node> extends Iterable<@NonNull T
         return result;
     }
 
+    /**
+     * Sum the elements of this stream by associating them to an integer.
+     *
+     * @param toInt Map an element to an integer, which will be added
+     *              to the running sum
+     *              returns the next intermediate result
+     *
+     * @return The sum, zero if the stream is empty.
+     */
+    default int sumBy(ToIntFunction<? super T> toInt) {
+        int result = 0;
+        for (T node : this) {
+            result += toInt.applyAsInt(node);
+        }
+        return result;
+    }
+
 
     /**
      * Returns the number of nodes in this stream.

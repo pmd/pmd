@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.apex.rule;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.lang.apex.ast.ASTAnonymousClass;
@@ -15,37 +15,41 @@ import net.sourceforge.pmd.lang.apex.ast.ASTUserTrigger;
 import net.sourceforge.pmd.lang.apex.ast.ApexParserTestBase;
 import net.sourceforge.pmd.lang.ast.test.TestUtilsKt;
 
-public class AbstractApexRuleTest extends ApexParserTestBase {
+class AbstractApexRuleTest extends ApexParserTestBase {
 
     @Test
-    public void shouldVisitTopLevelClass() {
+    void shouldVisitTopLevelClass() {
         run("class Foo { }");
     }
 
     @Test
-    public void shouldVisitTopLevelInterface() {
+    void shouldVisitTopLevelInterface() {
         run("interface Foo { }");
     }
 
     @Test
-    public void shouldVisitTopLevelTrigger() {
+    void shouldVisitTopLevelTrigger() {
         run("trigger Foo on Account (before insert, before update) { }");
     }
 
     @Test
-    public void shouldVisitTopLevelEnum() {
+    void shouldVisitTopLevelEnum() {
         run("enum Foo { }");
     }
 
     private void run(String code) {
         TopLevelRule rule = new TopLevelRule();
-        rule.setMessage("Message");
 
         Report report = apex.executeRule(rule, code);
         TestUtilsKt.assertSize(report, 1);
     }
 
     private static class TopLevelRule extends AbstractApexRule {
+
+        @Override
+        public String getMessage() {
+            return "a message";
+        }
 
         @Override
         public Object visit(ASTUserClass node, Object data) {

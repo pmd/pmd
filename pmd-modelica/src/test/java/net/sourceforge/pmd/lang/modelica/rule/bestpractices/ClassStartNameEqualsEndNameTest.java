@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.modelica.rule.bestpractices;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class ClassStartNameEqualsEndNameTest extends PmdRuleTst {
+class ClassStartNameEqualsEndNameTest extends PmdRuleTst {
     // no additional unit tests
 }

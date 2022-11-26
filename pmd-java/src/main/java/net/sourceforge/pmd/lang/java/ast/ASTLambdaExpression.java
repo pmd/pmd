@@ -22,7 +22,7 @@ import net.sourceforge.pmd.lang.java.types.JTypeMirror;
  *
  * </pre>
  */
-public final class ASTLambdaExpression extends AbstractJavaExpr {
+public final class ASTLambdaExpression extends AbstractJavaExpr implements FunctionalExpression {
 
     private JMethodSig functionalMethod;
 
@@ -50,6 +50,7 @@ public final class ASTLambdaExpression extends AbstractJavaExpr {
      *
      * @see #getTypeMirror()
      */
+    @Override
     public JMethodSig getFunctionalMethod() {
         forceTypeResolution();
         return assertNonNullAfterTypeRes(functionalMethod);
@@ -108,6 +109,13 @@ public final class ASTLambdaExpression extends AbstractJavaExpr {
         return true;
     }
 
+
+    /**
+     * Returns the number of formal parameters of this lambda.
+     */
+    public int getArity() {
+        return getParameters().size();
+    }
 
     @Override
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {

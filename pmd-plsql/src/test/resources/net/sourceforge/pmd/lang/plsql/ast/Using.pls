@@ -12,5 +12,5 @@ BEGIN
    open cursor for 'query' USING variable;
    open cursor for 'query' USING IN variable;
    open cursor for 'query' USING OUT variable, IN othervariable;
-   open cursor for 'query' USING IN_OUT variable;
+   open cursor for 'query' USING IN OUT variable;
 END;

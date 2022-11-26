@@ -27,6 +27,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 /**
+ * Add support for Select statement within OPEN FOR Statements
+ *
+ * Andreas Dangel 09/2021
+ *====================================================================
  * Add support for XMLROOT, improve ExtractExpression to support xml
  *
  * Piotr Szymanski 03/2020
@@ -84,7 +88,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  * Andreas Dangel 07/2018
  *====================================================================
- * Added ASTIsOfTypeCondition node, added support for USING IN|OUT|IN_OUT
+ * Added ASTIsOfTypeCondition node, added support for USING IN|OUT|IN OUT
  * See PMD Bug #1520
  *
  * Andreas Dangel 11/2016
@@ -153,13 +157,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 package net.sourceforge.pmd.lang.plsql.ast;
 
-import java.io.*;
 import java.util.List;
 import java.util.ArrayList;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.ast.CharStream;
-import net.sourceforge.pmd.lang.ast.TokenMgrError;
+import net.sourceforge.pmd.lang.document.Chars;
+import net.sourceforge.pmd.lang.ast.impl.javacc.CharStream;
 import net.sourceforge.pmd.lang.plsql.ast.internal.ParsingExclusion;
+import net.sourceforge.pmd.lang.ast.TokenMgrError;
 
 public class PLSQLParserImpl {
 
@@ -216,6 +220,7 @@ public class PLSQLParserImpl {
   private boolean isKeyword(String keyword) {
     return getToken(1).kind == IDENTIFIER && getToken(1).getImage().equalsIgnoreCase(keyword);
   }
+
 }
 
 PARSER_END(PLSQLParserImpl)
@@ -225,6 +230,35 @@ PARSER_END(PLSQLParserImpl)
 TOKEN_MGR_DECLS : {
 
   List<ParsingExclusion> exclusions = new ArrayList<ParsingExclusion>();
+}
+
+// add names to SINGLE CHARACTER tokens
+// multiple character operators are sequences of tokens.
+TOKEN: {
+  < LPAREN: "(" >
+| < RPAREN: ")" >
+| < LBRACE: "{" >
+| < RBRACE: "}" >
+| < LBRACKET: "[" >
+| < RBRACKET: "]" >
+| < SEMICOLON: ";" >
+| < COMMA: "," >
+| < DOT: "." >
+| < AROBASE: "@" >
+| < ASSIGN: "=" >
+| < LT: "<" >
+| < BANG: "!" >
+| < TILDE: "~" >
+| < HOOK: "?" >
+| < COLON: ":" >
+| < PLUSSIGN: "+" >
+| < MINUSSIGN: "-" >
+| < STAR: "*" >
+| < SLASH: "/" >
+| < BIT_AND: "&" >
+| < BIT_OR: "|" >
+| < XOR: "^" >
+| < REM: "%" >
 }
 
 /**
@@ -1571,18 +1605,26 @@ ASTInCondition InCondition() :
     { return jjtThis; }
 }
 
-ASTComparisonCondition ComparisonCondition() :
+private String ComparisonOp() #void :
 {}
 {
-    (
-    // SimpleComparisonCondition
-      LOOKAHEAD(3) (SqlExpression() ( "=" | "!=" | "^=" | "<>" | ">" | "<" | ">=" | "<=" ) { jjtThis.setOperator(token.getImage()); } SqlExpression() )
-    | LOOKAHEAD(3) ( "(" SqlExpression() ("," SqlExpression())* ")" ( "=" | "!=" | "^=" | "<>" ) { jjtThis.setOperator(token.getImage()); } "(" ( LOOKAHEAD(3) ExpressionList() | LOOKAHEAD(3) Subquery() ) ")" )
+      "=" {return "=";}
+    | "!" "=" {return "!=";}
+    | "^" "=" {return "^=";}
+    | "<" ( "=" {return "<=";} | ">" {return "<>";} )? {return "<";}
+    | ">" ( "=" {return ">=";} )? {return ">";}
+}
 
-    // GroupComparisonCondition
-    | LOOKAHEAD(3) (SqlExpression() ( "=" | "!=" | "^=" | "<>" | ">" | "<" | ">=" | "<=" ) { jjtThis.setOperator(token.getImage()); } ( <ANY> | <SOME> | <ALL> ) "(" ( LOOKAHEAD(3) ExpressionListSingle() | LOOKAHEAD(3) Subquery() ) ")" )
-    | LOOKAHEAD(3) ( "(" SqlExpression() ("," SqlExpression())* ")" ( "=" | "!=" | "^=" | "<>" ) { jjtThis.setOperator(token.getImage()); } ( <ANY> | <SOME> | <ALL> ) "(" ( LOOKAHEAD(3) ExpressionListMultiple() ("," ExpressionListMultiple())* | LOOKAHEAD(3) Subquery() ) ")" )
-    )
+ASTComparisonCondition ComparisonCondition() :
+{String op;}
+{
+    (LOOKAHEAD(3) SqlExpression() | ExpressionListMultiple() )
+    op=ComparisonOp() { jjtThis.setOperator(op); }
+    ( <ANY> | <SOME> | <ALL> )?
+    (LOOKAHEAD(3) "(" Subquery() ")"
+    |LOOKAHEAD(3) "(" ExpressionListSingle() ")"
+    |LOOKAHEAD(3) "(" ExpressionListMultiple() ("," ExpressionListMultiple())* ")"
+    |LOOKAHEAD(3) SqlExpression())
     { return jjtThis; }
 }
 
@@ -1996,10 +2038,13 @@ ASTIntoClause IntoClause() :
     { return jjtThis; }
 }
 
+// This might also be a associative array dereference...
+// see https://github.com/pmd/pmd/issues/3515
 ASTVariableName VariableName() :
-{ ASTID id; StringBuilder name = new StringBuilder(); }
+{ ASTID id; ASTLiteral lit; StringBuilder name = new StringBuilder(); }
 {
     id = ID() { name.append(id.getImage()); }
+    [ "(" lit = Literal() ")" { name.append('(').append(lit.getImage()).append(')'); } ]
     [ "." id = ID() { name.append('.').append(id.getImage()); } ]
     [ "." id = ID() { name.append('.').append(id.getImage()); } ]
     {
@@ -2053,7 +2098,11 @@ void QueryTableExpression() #void :
   |
     TableCollectionExpression()
   |
-    [ <LATERAL> ] "(" Subquery() [ SubqueryRestrictionClause() ] ")"
+    LOOKAHEAD(5) "(" [ LOOKAHEAD(2) SchemaName() "." ] TableName() [TableAlias()] ")"  
+  |  
+    LOOKAHEAD(5) [ <LATERAL> ] "(" Subquery() [ SubqueryRestrictionClause() ] ")"
+  | 
+    "(" JoinClause() ")"
   )
 }
 
@@ -2312,7 +2361,8 @@ ASTUnlabelledStatement UnlabelledStatement()  :
 	| OpenStatement()  ";"
 	| FetchStatement()  ";"
 	| Block()  ";"
-	| LOOKAHEAD(2) EmbeddedSqlStatement()
+	|   // Lookahead for EXECUTE IMMEDIATE to distinguish an identifier named "EXECUTE" from execute statement
+	    LOOKAHEAD(2) EmbeddedSqlStatement() ";"
 	| PipelineStatement()  ";"
 	| ConditionalCompilationStatement()  // Conditional Compilation works outside the normal parsing rules
         | InlinePragma() ";"
@@ -2713,13 +2763,17 @@ ASTCloseStatement CloseStatement()  :
       { jjtThis.setImage(cursor.getImage()) ; return jjtThis ; }
 }
 
+/*
+ * See https://docs.oracle.com/en/database/oracle/oracle-database/18/lnpls/OPEN-statement.html#GUID-FB5A9CC3-655F-4AF4-8105-14CB39F2FEA8
+ * and https://docs.oracle.com/en/database/oracle/oracle-database/18/lnpls/OPEN-FOR-statement.html#GUID-EB7AF439-FDD3-4461-9E3F-B621E8ABFB96
+ */
 ASTOpenStatement OpenStatement()  :
 {}
 {
-	 <OPEN> [Expression()]
-		//[LOOKAHEAD(functionCall()) functionCall() | QualifiedName()]
-		[<FOR> Expression() [<USING> (<IN> | <OUT> | <IN_OUT>)? Expression() ("," (<IN> | <OUT> | <IN_OUT>)? Expression())*]]
-      { return jjtThis ; }
+    <OPEN> [Expression()]
+    [<FOR> ( SelectStatement() | Expression() ) [ UsingClause() ] ]
+
+    { return jjtThis ; }
 }
 
 /*
@@ -2735,15 +2789,38 @@ ASTFetchStatement FetchStatement()  :
       { return jjtThis ; }
 }
 
+/**
+ * Execute Immediate: https://docs.oracle.com/en/database/oracle/oracle-database/18/lnpls/EXECUTE-IMMEDIATE-statement.html#GUID-C3245A95-B85B-4280-A01F-12307B108DC8
+ */
 ASTEmbeddedSqlStatement EmbeddedSqlStatement()  :
 {}
 {
    <EXECUTE> <IMMEDIATE> StringExpression()
-	[ <INTO> Name() ("," Name())* ]
-	[ <USING> [ <IN> [ <OUT> ] | <OUT> ]  Expression() ("," [ <IN> [ <OUT> ] | <OUT> ] Expression())* ]
-	[ ( <RETURN> | <RETURNING> )  <INTO> Expression() ("," Expression())*] ";"
-	// PIPELINED FUNCTION OUTPUT
-      { return jjtThis ; }
+    [
+            IntoClause() [ UsingClause() ]
+        |   BulkCollectIntoClause() [ UsingClause() ]
+        |   UsingClause() [ DynamicReturnClause() ]
+        |   DynamicReturnClause()
+    ]
+    { return jjtThis; }
+}
+
+/**
+* https://docs.oracle.com/en/database/oracle/oracle-database/18/lnpls/RETURNING-INTO-clause.html#GUID-38F735B9-1100-45AF-AE71-18FB74A899BE
+*/
+ASTDynamicReturnClause DynamicReturnClause() :
+{}
+{
+    ( <RETURN> | <RETURNING> )
+    ( IntoClause() | BulkCollectIntoClause() )
+    { return jjtThis; }
+}
+
+void UsingClause() #void :
+{}
+{
+    <USING> [ <IN> [ <OUT> ] | <OUT> ]  Expression()
+        ( "," [ <IN> [ <OUT> ] | <OUT> ] Expression() )*
 }
 
 ASTPipelineStatement PipelineStatement()  :
@@ -3134,17 +3211,17 @@ ASTEqualityExpression EqualityExpression() #EqualityExpression(>1) :
 {
   //RelationalExpression() ( ( "=" | "!=" | "<>" | <IS>) RelationalExpression() )*
   (
+
+	  simpleNode=RelationalExpression()
+	  {sb.append(simpleNode.getImage());}
 	  (
-	    simpleNode = RelationalExpression()
-	  ) {sb.append(simpleNode.getImage());}
-	  (
-	   ( ("=" ) {sb.append(" = ");}
-	   | ("!" "=" ) {sb.append(" != ");}
+	   ( "=" {sb.append(" = ");}
+	   | "!" "=" {sb.append(" != ");}
 	   // Now unde RelationalExpression | ("<" ">" ) {sb.append(" <> ");}
-	   | (<IS>) {sb.append(" IS ");})
-	   (
-	   simpleNode = RelationalExpression()
-	   ) {sb.append(simpleNode.getImage());}
+	   | <IS> {sb.append(" IS ");}
+	   )
+	   simpleNode=RelationalExpression()
+	   {sb.append(simpleNode.getImage());}
 	  )*
   )
  {
@@ -3164,17 +3241,16 @@ ASTRelationalExpression RelationalExpression() #RelationalExpression(>1) :
   (
     (
 
-      (
-          ("<>" { sb.append(" <> "); } )
-        | ("<=" { sb.append(" <= "); } )
-        | (">=" { sb.append(" >= "); } )
-        | ("!=" { sb.append(" != "); } )
-        | ("~=" { sb.append(" ~= "); } )
-        | ("^=" { sb.append(" ^= "); } )
-        | ("<" { sb.append(" < "); } )
-        | (">" { sb.append(" > "); } )
+      (  LOOKAHEAD(2) "<" ">" { sb.append(" <> "); }
+        |LOOKAHEAD(2) "<" "=" { sb.append(" <= "); }
+        |LOOKAHEAD(2) ">" "=" { sb.append(" >= "); }
+        // then lookahead(1) is enough
+        | "<" { sb.append(" < "); }
+        | ">" { sb.append(" > "); }
+        | "!" "=" { sb.append(" != "); }
+        | "~" "=" { sb.append(" ~= "); }
+        | "^" "=" { sb.append(" ^= "); }
       )
-
       { sb.append(" "); }
       | [(<NOT>) { sb.append(" NOT "); }]
       (
@@ -3472,7 +3548,7 @@ ASTPrimarySuffix PrimarySuffix() :
          )
   )
   |
-  ( arguments = Arguments() ) {sb.append(arguments) ; }
+  ( arguments = Arguments() ) {sb.append("Arguments") ; } // was broken before...
   )
  {
  jjtThis.setImage(sb.toString()); return jjtThis;
@@ -4872,7 +4948,6 @@ TOKEN [IGNORE_CASE]:
 <HOUR: "HOUR"> |
 <IMMEDIATE: "IMMEDIATE"> |
 <INNER: "INNER"> |
-<IN_OUT: "IN_OUT"> |
 <INDICES: "INDICES"> |
 <INCLUDING: "INCLUDING"> |
 <INDEXTYPE: "INDEXTYPE"> |
@@ -5234,6 +5309,7 @@ TOKEN :
 <IN_STRING_LITERAL> MORE : {
     <~["'"]>
   | <"'"> {
+     Chars image = input_stream.getTokenImageCs();
      int quoteDelimiter = image.charAt(2);
      if (image.charAt(0) == 'n' || image.charAt(0) == 'N') {
          quoteDelimiter = image.charAt(3);
@@ -5241,7 +5317,6 @@ TOKEN :
      int beforeQuote = image.charAt(image.length() - 2);
      if (quoteDelimiter == beforeQuote) {
          input_stream.backup(1);
-         image.setLength(image.length() - 1);
          SwitchTo(IN_STRING_LITERAL_TOKENIZE);
      }
   }
@@ -6501,7 +6576,6 @@ ASTID ID(): {}
 		//20120501 | <HEAP>
 		| <IF> //SYNTAX
 		//20120501 | <IMMEDIATE>
-		| <IN> //RESERVED WORD
 		| <INDEX> //RESERVED WORD
 		//20120501 | <INDICATOR>
 		| <INSERT> //SYNTAX  //RESERVED WORD
@@ -6734,7 +6808,6 @@ ASTQualifiedID QualifiedID(): {}
 		//20120501 | <HEAP>
 		//<IF>
 		//20120501 | <IMMEDIATE>
-		//<IN>
 		//<INDEX>
 		//20120501 | <INDICATOR>
 		//<INSERT>

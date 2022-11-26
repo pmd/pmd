@@ -12,6 +12,7 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 
 import net.sourceforge.pmd.lang.ast.impl.GenericNode;
 import net.sourceforge.pmd.lang.ast.impl.antlr4.BaseAntlrNode.AntlrToPmdParseTreeAdapter;
+import net.sourceforge.pmd.lang.document.TextRegion;
 import net.sourceforge.pmd.util.DataMap;
 import net.sourceforge.pmd.util.DataMap.DataKey;
 
@@ -67,6 +68,12 @@ public abstract class BaseAntlrNode<A extends AntlrToPmdParseTreeAdapter<N>, N e
     public abstract Token getFirstAntlrToken();
 
     public abstract Token getLastAntlrToken();
+
+    @Override
+    public TextRegion getTextRegion() {
+        return TextRegion.fromBothOffsets(getFirstAntlrToken().getStartIndex(),
+                                          getFirstAntlrToken().getStopIndex());
+    }
 
     void setIndexInParent(int indexInParent) {
         this.indexInParent = indexInParent;

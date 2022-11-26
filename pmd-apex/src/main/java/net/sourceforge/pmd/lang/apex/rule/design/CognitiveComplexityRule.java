@@ -6,7 +6,8 @@ package net.sourceforge.pmd.lang.apex.rule.design;
 
 import static net.sourceforge.pmd.properties.constraints.NumericConstraints.positive;
 
-import java.util.Stack;
+import java.util.ArrayDeque;
+import java.util.Deque;
 
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
@@ -33,7 +34,7 @@ public class CognitiveComplexityRule extends AbstractApexRule {
             .defaultValue(15)
             .build();
 
-    private Stack<String> classNames = new Stack<>();
+    private Deque<String> classNames = new ArrayDeque<>();
     private boolean inTrigger;
 
 
@@ -62,7 +63,8 @@ public class CognitiveComplexityRule extends AbstractApexRule {
         if (ApexMetrics.COGNITIVE_COMPLEXITY.supports(node)) {
             int classCognitive = MetricsUtil.computeMetric(ApexMetrics.COGNITIVE_COMPLEXITY, node);
 
-            if (classCognitive >= getProperty(CLASS_LEVEL_DESCRIPTOR)) {
+            Integer classLevelThreshold = getProperty(CLASS_LEVEL_DESCRIPTOR);
+            if (classCognitive >= classLevelThreshold) {
                 int classHighest = (int) MetricsUtil.computeStatistics(ApexMetrics.COGNITIVE_COMPLEXITY, node.getMethods()).getMax();
 
                 String[] messageParams = {
@@ -70,6 +72,7 @@ public class CognitiveComplexityRule extends AbstractApexRule {
                     node.getImage(),
                     " total",
                     classCognitive + " (highest " + classHighest + ")",
+                    String.valueOf(classLevelThreshold),
                 };
 
                 addViolation(data, node, messageParams);
@@ -84,7 +87,8 @@ public class CognitiveComplexityRule extends AbstractApexRule {
 
         if (ApexMetrics.COGNITIVE_COMPLEXITY.supports(node)) {
             int cognitive = MetricsUtil.computeMetric(ApexMetrics.COGNITIVE_COMPLEXITY, node);
-            if (cognitive >= getProperty(METHOD_LEVEL_DESCRIPTOR)) {
+            Integer methodLevelThreshold = getProperty(METHOD_LEVEL_DESCRIPTOR);
+            if (cognitive >= methodLevelThreshold) {
                 String opType = inTrigger ? "trigger"
                         : node.getImage().equals(classNames.peek()) ? "constructor"
                         : "method";
@@ -94,6 +98,7 @@ public class CognitiveComplexityRule extends AbstractApexRule {
                     node.getQualifiedName().getOperation(),
                     "",
                     "" + cognitive,
+                    String.valueOf(methodLevelThreshold),
                 });
             }
         }

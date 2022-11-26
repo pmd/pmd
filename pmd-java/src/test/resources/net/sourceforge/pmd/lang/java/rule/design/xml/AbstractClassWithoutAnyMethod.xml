@@ -57,7 +57,7 @@ public abstract class Foo {
         <code><![CDATA[
 import com.google.auto.value.AutoValue;
 
-@AutoValue public abstract class Something implements Some {
+@AutoValue public abstract class Something implements java.util.RandomAccess {
 }
         ]]></code>
     </test-code>
@@ -66,7 +66,7 @@ import com.google.auto.value.AutoValue;
         <description>#438 An abstract AutoValue class with no methods and fully qualified annotation, no violation</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-@com.google.auto.value.AutoValue public abstract class Something implements Some {
+@com.google.auto.value.AutoValue public abstract class Something implements java.util.RandomAccess {
 }
         ]]></code>
     </test-code>
@@ -101,5 +101,43 @@ class Foo {
 
 }
         ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Interfaces are ignored</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            interface Some {
+                // no abstract
+            }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] AbstractClassWithoutAnyMethod should consider lombok's @AllArgsConstructor #4189</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
+
+@AllArgsConstructor
+abstract class AllArgs {
+    private String field;
+    public int otherField;
+}
+
+@NoArgsConstructor
+abstract class NoArgs {
+    private String field;
+    public int otherField;
+}
+
+@RequiredArgsConstructor
+abstract class RequiredArgs {
+    private String field;
+    public int otherField;
+}
+]]></code>
     </test-code>
 </test-data>

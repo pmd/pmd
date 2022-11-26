@@ -6,10 +6,10 @@ package net.sourceforge.pmd.lang.java.symbols.table.internal;
 
 import static net.sourceforge.pmd.lang.java.symbols.table.internal.JavaSemanticErrors.AMBIGUOUS_NAME_REFERENCE;
 import static net.sourceforge.pmd.lang.java.symbols.table.internal.JavaSemanticErrors.CANNOT_RESOLVE_MEMBER;
-import static net.sourceforge.pmd.lang.java.types.JVariableSig.FieldSig;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -25,6 +25,7 @@ import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
+import net.sourceforge.pmd.lang.java.types.JVariableSig.FieldSig;
 
 /**
  * Context of a usage reference ("in which class does the name occur?"),
@@ -43,6 +44,10 @@ public final class ReferenceCtx {
         this.processor = processor;
         this.packageName = packageName;
         this.enclosingClass = enclosingClass;
+    }
+
+    public void reportCannotResolveSymbol(JavaNode location, String simpleName) {
+        processor.reportCannotResolveSymbol(location, simpleName);
     }
 
     public static ReferenceCtx root(JavaAstProcessor processor, ASTCompilationUnit root) {
@@ -81,11 +86,11 @@ public final class ReferenceCtx {
             return null;
         } else if (found.size() > 1) {
             // FIXME when type is reachable through several paths, there may be duplicates!
-            HashSet<? extends T> distinct = new HashSet<>(found);
+            Set<? extends T> distinct = new HashSet<>(found);
             if (distinct.size() == 1) {
                 return distinct.iterator().next();
             }
-            processor.getLogger().error(
+            processor.getLogger().warning(
                 errorLocation,
                 AMBIGUOUS_NAME_REFERENCE,
                 name,

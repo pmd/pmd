@@ -14,9 +14,18 @@
               "shortDescription": {
                 "text": "blah"
               },
+              "fullDescription": {
+                "text": "Description with Unicode Character U+2013: – ."
+              },
+              "help": {
+                "text": "Description with Unicode Character U+2013: – ."
+              },
               "properties": {
                 "ruleset": "RuleSet",
-                "priority": 5
+                "priority": 5,
+                "tags": [
+                  "RuleSet"
+                ]
               }
             }
           ]

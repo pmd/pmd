@@ -17,36 +17,48 @@ import net.sourceforge.pmd.lang.java.ast.ASTTypeParameter
 import net.sourceforge.pmd.lang.java.ast.ASTTypeParameters
 import net.sourceforge.pmd.lang.java.ast.ParserTestCtx
 import net.sourceforge.pmd.lang.java.symbols.internal.TestClassesGen
+import net.sourceforge.pmd.lang.java.symbols.internal.asm.createUnresolvedAsmSymbol
 import javax.lang.model.type.TypeMirror
 import kotlin.streams.toList
 
 
 val TypeSystem.primitiveGen: Exhaustive<JPrimitiveType> get() = exhaustive(this.allPrimitives.toList())
-val TypeSystem.refTypeGen: Arb<JTypeMirror> get() = RefTypeGenArb(this)
+val TypeSystem.refTypeGen: RefTypeGenArb get() = RefTypeGenArb(this)
 val TypeSystem.allTypesGen: Arb<JTypeMirror>
     get() {
-        val refs = refTypeGen
-        return arbitrary(edgecases = refs.edgecases() + primitiveGen.values) { rs ->
+        return arbitrary(edgecases = refTypeGen.allEdgecases + primitiveGen.values) { rs ->
             refTypeGen.sample(rs).value
         }
     }
 
-fun TypeSystem.subtypesArb(unchecked: Boolean = false) =
+/**
+ * Only well-behaved subtypes
+ */
+fun TypeSystem.subtypesArb() =
         Arb.pair(refTypeGen, refTypeGen)
                 .filter { (t, s) -> t.isConvertibleTo(s).bySubtyping() }
+                .filter { (t, s) -> !TypeOps.hasUnresolvedSymbol(t) && !TypeOps.hasUnresolvedSymbol(s) }
 
 infix fun Boolean.implies(v: () -> Boolean): Boolean = !this || v()
 
 class RefTypeGenArb(val ts: TypeSystem) : Arb<JTypeMirror>() {
 
-    override fun edgecases(): List<JTypeMirror> =
-            listOf(ts.OBJECT,
-                    // we exclude the null type because it's not ok as an array component
-                    ts.SERIALIZABLE,
-                    ts.CLONEABLE)
+    val allEdgecases = listOf(
+        ts.OBJECT,
+        // we exclude the null type because it's not ok as an array component
+        ts.SERIALIZABLE,
+        ts.CLONEABLE
+        );
+
+    override fun edgecase(rs: RandomSource): JTypeMirror {
+        return allEdgecases.random(rs.random)
+    }
 
     private fun generateTypes(rs : RandomSource) : List<JTypeMirror> {
         with(TypeDslOf(ts).gen) {
+            val unresolved1 = ts.createUnresolvedAsmSymbol("some.fake.Symbol")
+            val unresolved2 = ts.createUnresolvedAsmSymbol("another.fake.Symbol")
+
             val pool: List<JTypeMirror> = listOf(
                     `t_List{String}`,
                     t_Enum,
@@ -61,7 +73,10 @@ class RefTypeGenArb(val ts: TypeSystem) : Arb<JTypeMirror>() {
                     t_CharSequence,
                     t_StringBuilder,
                     t_MapEntry,
-                    `t_Array{Object}`
+                    `t_Array{Object}`,
+                    ts.declaration(unresolved1)[t_String],
+                    ts.declaration(unresolved2)[t_Integer, `?` extends `t_List{? extends Number}`],
+                    ts.declaration(unresolved2)
             ).flatMap {
                 it.superTypeSet.toList() + it + it.erasure + it.toArray()
             }

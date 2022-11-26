@@ -8,9 +8,9 @@ import com.github.oowekyala.treeutils.matchers.TreeNodeWrapper
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.collections.shouldBeEmpty
-import io.kotest.matchers.types.shouldBeInstanceOf
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
+import io.kotest.matchers.types.shouldBeInstanceOf
 import net.sourceforge.pmd.internal.util.IteratorUtil
 import net.sourceforge.pmd.lang.ast.Node
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken
@@ -400,6 +400,19 @@ fun TreeNodeWrapper<Node, *>.typeExpr(contents: ValuedNodeSpec<ASTTypeExpression
             it::getTypeNode shouldBe contents()
         }
 
+fun TreeNodeWrapper<Node, *>.patternExpr(contents: ValuedNodeSpec<ASTPatternExpression, ASTPattern>) =
+        child<ASTPatternExpression>(ignoreChildren = contents == EmptyAssertions) {
+            it::getPattern shouldBe contents()
+        }
+fun TreeNodeWrapper<Node, *>.typePattern(contents: NodeSpec<ASTTypePattern>) =
+        child<ASTTypePattern>(ignoreChildren = contents == EmptyAssertions) {
+            contents()
+        }
+fun TreeNodeWrapper<Node, *>.guardedPattern(contents: NodeSpec<ASTGuardedPattern>) =
+        child<ASTGuardedPattern>(ignoreChildren = contents == EmptyAssertions) {
+            contents()
+        }
+
 
 fun TreeNodeWrapper<Node, *>.arrayType(contents: NodeSpec<ASTArrayType> = EmptyAssertions) =
         child<ASTArrayType>(ignoreChildren = contents == EmptyAssertions) {
@@ -424,6 +437,7 @@ fun TreeNodeWrapper<Node, *>.stringLit(image: String, contents: NodeSpec<ASTStri
         child<ASTStringLiteral> {
             it::getImage shouldBe image
             it::isTextBlock shouldBe false
+            it::isEmpty shouldBe it.constValue.isEmpty()
             contents()
         }
 
@@ -455,6 +469,7 @@ fun TreeNodeWrapper<Node, *>.boolean(value: Boolean, contents: NodeSpec<ASTBoole
 fun TreeNodeWrapper<Node, *>.textBlock(contents: NodeSpec<ASTStringLiteral> = EmptyAssertions) =
         child<ASTStringLiteral> {
             it::isTextBlock shouldBe true
+            it::isEmpty shouldBe it.constValue.isEmpty()
             contents()
         }
 

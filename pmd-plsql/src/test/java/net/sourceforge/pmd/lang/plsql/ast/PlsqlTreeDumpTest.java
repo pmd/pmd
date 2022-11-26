@@ -4,32 +4,41 @@
 
 package net.sourceforge.pmd.lang.plsql.ast;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.ast.test.BaseParsingHelper;
 import net.sourceforge.pmd.lang.ast.test.BaseTreeDumpTest;
 import net.sourceforge.pmd.lang.ast.test.RelevantAttributePrinter;
 import net.sourceforge.pmd.lang.plsql.PlsqlParsingHelper;
 
-public class PlsqlTreeDumpTest extends BaseTreeDumpTest {
+class PlsqlTreeDumpTest extends BaseTreeDumpTest {
 
-    public PlsqlTreeDumpTest() {
+    PlsqlTreeDumpTest() {
         super(new RelevantAttributePrinter(), ".pls");
     }
 
     @Override
     public BaseParsingHelper<?, ?> getParser() {
-        return PlsqlParsingHelper.WITH_PROCESSING.withResourceContext(getClass());
+        return PlsqlParsingHelper.DEFAULT.withResourceContext(getClass());
     }
 
     @Test
-    public void sqlPlusLexicalVariables() {
+    void sqlPlusLexicalVariables() {
         doTest("SqlPlusLexicalVariablesIssue195");
     }
 
     @Test
-    public void parseParsingExclusion() {
+    void parseParsingExclusion() {
         doTest("ParsingExclusion");
     }
 
+    @Test
+    void parseOpenForStatement() {
+        doTest("OpenForStatement");
+    }
+
+    @Test
+    void parseSelectIntoAssociativeArrayType() {
+        doTest("SelectIntoArray");
+    }
 }

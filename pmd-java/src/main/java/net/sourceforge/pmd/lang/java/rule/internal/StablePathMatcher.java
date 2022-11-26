@@ -4,7 +4,9 @@
 
 package net.sourceforge.pmd.lang.java.rule.internal;
 
-import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -15,6 +17,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTSuperExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTThisExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
+import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 
 /**
@@ -31,9 +34,9 @@ public final class StablePathMatcher {
 
     // if owner == null, then the owner is `this`.
     private final @Nullable JVariableSymbol owner;
-    private final ArrayDeque<Segment> path;
+    private final List<Segment> path;
 
-    private StablePathMatcher(@Nullable JVariableSymbol owner, ArrayDeque<Segment> path) {
+    private StablePathMatcher(@Nullable JVariableSymbol owner, List<Segment> path) {
         this.owner = owner;
         this.path = path;
     }
@@ -75,10 +78,8 @@ public final class StablePathMatcher {
             return Objects.equals(((ASTVariableAccess) e).getReferencedSym(), owner);
         } else if (e instanceof ASTFieldAccess) {
             ASTFieldAccess fieldAccess = (ASTFieldAccess) e;
-            if (!JavaRuleUtil.isUnqualifiedThis(fieldAccess.getQualifier())) {
-                return false;
-            }
-            return Objects.equals(fieldAccess.getReferencedSym(), owner);
+            return JavaAstUtils.isUnqualifiedThis(fieldAccess.getQualifier())
+                    && Objects.equals(fieldAccess.getReferencedSym(), owner);
         }
         return false;
     }
@@ -88,18 +89,21 @@ public final class StablePathMatcher {
      * Otherwise returns null.
      */
     public static @Nullable StablePathMatcher matching(ASTExpression e) {
+        if (e == null) {
+            return null;
+        }
         JVariableSymbol owner = null;
-        ArrayDeque<Segment> segments = new ArrayDeque<>();
+        List<Segment> segments = new ArrayList<>();
 
         while (e != null) {
             if (e instanceof ASTFieldAccess) {
                 ASTFieldAccess access = (ASTFieldAccess) e;
-                segments.addLast(new Segment(access.getName(), true));
+                segments.add(new Segment(access.getName(), true));
                 e = access.getQualifier();
             } else if (e instanceof ASTMethodCall) {
                 ASTMethodCall call = (ASTMethodCall) e;
                 if (JavaRuleUtil.isGetterCall(call)) {
-                    segments.addLast(new Segment(call.getMethodName(), false));
+                    segments.add(new Segment(call.getMethodName(), false));
                     e = call.getQualifier();
                 } else {
                     return null;
@@ -126,6 +130,10 @@ public final class StablePathMatcher {
         }
 
         return new StablePathMatcher(owner, segments);
+    }
+
+    public static StablePathMatcher matching(JVariableSymbol e) {
+        return new StablePathMatcher(e, Collections.emptyList());
     }
 
     private static final class Segment {

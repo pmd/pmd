@@ -19,7 +19,10 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
 
 import net.sourceforge.pmd.internal.util.IteratorUtil;
+import net.sourceforge.pmd.lang.document.TextDocument;
+import net.sourceforge.pmd.lang.document.TextRegion;
 import net.sourceforge.pmd.lang.rule.xpath.Attribute;
+import net.sourceforge.pmd.lang.rule.xpath.internal.CoordinateXPathFunction;
 import net.sourceforge.pmd.lang.xml.ast.XmlNode;
 import net.sourceforge.pmd.util.DataMap;
 import net.sourceforge.pmd.util.DataMap.DataKey;
@@ -33,20 +36,30 @@ import net.sourceforge.pmd.util.DataMap.DataKey;
  */
 class XmlNodeWrapper implements XmlNode {
 
-    int beginLine = -1;
-    int endLine = -1;
-    int beginColumn = -1;
-    int endColumn = -1;
-
     private DataMap<DataKey<?, ?>> dataMap;
     private final XmlParserImpl parser;
     private final org.w3c.dom.Node node;
+
+    int startOffset;
+    int endOffset;
+    TextDocument textDoc;
 
 
     XmlNodeWrapper(XmlParserImpl parser, org.w3c.dom.Node domNode) {
         super();
         this.node = domNode;
         this.parser = parser;
+
+        domNode.setUserData(CoordinateXPathFunction.PMD_NODE_USER_DATA, this, null);
+    }
+
+    protected XmlNode wrap(org.w3c.dom.Node domNode) {
+        return parser.wrapDomNode(domNode);
+    }
+
+    @Override
+    public TextRegion getTextRegion() {
+        return TextRegion.fromBothOffsets(startOffset, endOffset);
     }
 
     @Override
@@ -156,44 +169,6 @@ class XmlNodeWrapper implements XmlNode {
     @Override
     public org.w3c.dom.Node getNode() {
         return node;
-    }
-
-    @Override
-    public int getBeginLine() {
-        return beginLine;
-    }
-
-    @Override
-    public int getBeginColumn() {
-        return beginColumn;
-    }
-
-    @Override
-    public int getEndLine() {
-        return endLine;
-    }
-
-    @Override
-    public int getEndColumn() {
-        return endColumn;
-    }
-
-    // package private, open only to DOMLineNumbers
-
-    void setBeginLine(int i) {
-        this.beginLine = i;
-    }
-
-    void setBeginColumn(int i) {
-        this.beginColumn = i;
-    }
-
-    void setEndLine(int i) {
-        this.endLine = i;
-    }
-
-    void setEndColumn(int i) {
-        this.endColumn = i;
     }
 
 }

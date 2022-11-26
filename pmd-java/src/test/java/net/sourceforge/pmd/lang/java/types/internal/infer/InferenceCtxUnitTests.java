@@ -9,9 +9,9 @@ import static net.sourceforge.pmd.lang.java.types.internal.infer.BaseTypeInferen
 import static net.sourceforge.pmd.lang.java.types.internal.infer.BaseTypeInferenceUnitTest.Bound.lower;
 import static net.sourceforge.pmd.lang.java.types.internal.infer.BaseTypeInferenceUnitTest.Bound.upper;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.never;
@@ -19,7 +19,7 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.TypeOps;
@@ -28,10 +28,35 @@ import net.sourceforge.pmd.lang.java.types.internal.infer.InferenceVar.BoundKind
 /**
  *
  */
-public class InferenceCtxUnitTests extends BaseTypeInferenceUnitTest {
+class InferenceCtxUnitTests extends BaseTypeInferenceUnitTest {
 
     @Test
-    public void testBoundsOnConvertibilityCheck() {
+    void testHasPrimaryBound() {
+        TypeInferenceLogger log = spy(TypeInferenceLogger.noop());
+        InferenceContext ctx = emptyCtx(log);
+
+        InferenceVar v1 = newIvar(ctx);
+        InferenceVar v2 = newIvar(ctx, ts.SERIALIZABLE);
+
+        assertThat(v1, hasBound(BoundKind.UPPER, ts.OBJECT));
+        assertThat(v2, hasBound(BoundKind.UPPER, ts.SERIALIZABLE));
+
+        assertTrue(v1.hasOnlyPrimaryBound());
+        assertTrue(v2.hasOnlyPrimaryBound());
+
+        JTypeMirror listOfV1 = listType(v1);
+        TypeOps.isConvertible(v2, listOfV1);
+
+        assertThat(v2, hasBoundsExactly(upper(ts.SERIALIZABLE), upper(listOfV1)));
+
+        assertFalse(v2.hasOnlyPrimaryBound());
+        assertTrue(v1.hasOnlyPrimaryBound());
+
+        verify(log).boundAdded(ctx, v2, BoundKind.UPPER, listOfV1, false);
+    }
+
+    @Test
+    void testBoundsOnConvertibilityCheck() {
         TypeInferenceLogger log = spy(TypeInferenceLogger.noop());
         InferenceContext ctx = emptyCtx(log);
 
@@ -50,7 +75,7 @@ public class InferenceCtxUnitTests extends BaseTypeInferenceUnitTest {
     }
 
     @Test
-    public void testEqBoundWithGenerics() {
+    void testEqBoundWithGenerics() {
         TypeInferenceLogger log = spy(TypeInferenceLogger.noop());
         InferenceContext ctx = emptyCtx(log);
 
@@ -79,7 +104,7 @@ public class InferenceCtxUnitTests extends BaseTypeInferenceUnitTest {
 
 
     @Test
-    public void testEqBoundMergesIvar() {
+    void testEqBoundMergesIvar() {
         TypeInferenceLogger log = spy(TypeInferenceLogger.noop());
         InferenceContext ctx = emptyCtx(log);
 
@@ -102,7 +127,7 @@ public class InferenceCtxUnitTests extends BaseTypeInferenceUnitTest {
     }
 
     @Test
-    public void testSymmetricPropagationOfUpper() {
+    void testSymmetricPropagationOfUpper() {
         TypeInferenceLogger log = spy(TypeInferenceLogger.noop());
         InferenceContext ctx = emptyCtx(log);
 
@@ -122,7 +147,7 @@ public class InferenceCtxUnitTests extends BaseTypeInferenceUnitTest {
     }
 
     @Test
-    public void testWildLowerLower() {
+    void testWildLowerLower() {
         InferenceContext ctx = emptyCtx();
 
         InferenceVar a = newIvar(ctx);
@@ -137,7 +162,7 @@ public class InferenceCtxUnitTests extends BaseTypeInferenceUnitTest {
     }
 
     @Test
-    public void testWildUpperUpper() {
+    void testWildUpperUpper() {
         InferenceContext ctx = emptyCtx();
 
         InferenceVar a = newIvar(ctx);
@@ -166,7 +191,7 @@ public class InferenceCtxUnitTests extends BaseTypeInferenceUnitTest {
      */
 
     @Test
-    public void testWildLowerUpper() {
+    void testWildLowerUpper() {
         InferenceContext ctx = emptyCtx();
 
         InferenceVar a = newIvar(ctx);
@@ -181,7 +206,7 @@ public class InferenceCtxUnitTests extends BaseTypeInferenceUnitTest {
     }
 
     @Test
-    public void testWildUpperLower() {
+    void testWildUpperLower() {
         InferenceContext ctx = emptyCtx();
 
         InferenceVar a = newIvar(ctx);
@@ -210,7 +235,7 @@ public class InferenceCtxUnitTests extends BaseTypeInferenceUnitTest {
 
 
     @Test
-    public void testIntersectionRight() {
+    void testIntersectionRight() {
         InferenceContext ctx = emptyCtx();
 
         InferenceVar a = newIvar(ctx);
@@ -231,7 +256,7 @@ public class InferenceCtxUnitTests extends BaseTypeInferenceUnitTest {
 
 
     @Test
-    public void testIntersectionLeft() {
+    void testIntersectionLeft() {
         InferenceContext ctx = emptyCtx();
 
         InferenceVar a = newIvar(ctx);
@@ -261,7 +286,7 @@ public class InferenceCtxUnitTests extends BaseTypeInferenceUnitTest {
     }
 
     @Test
-    public void testArrayLower() {
+    void testArrayLower() {
         InferenceContext ctx = emptyCtx();
 
         InferenceVar a = newIvar(ctx);
@@ -276,7 +301,7 @@ public class InferenceCtxUnitTests extends BaseTypeInferenceUnitTest {
     }
 
     @Test
-    public void testArrayUpper() {
+    void testArrayUpper() {
         InferenceContext ctx = emptyCtx();
 
         InferenceVar a = newIvar(ctx);

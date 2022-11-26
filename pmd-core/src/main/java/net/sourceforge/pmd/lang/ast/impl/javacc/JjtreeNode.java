@@ -17,7 +17,10 @@ import net.sourceforge.pmd.lang.ast.impl.GenericNode;
 public interface JjtreeNode<N extends JjtreeNode<N>> extends GenericNode<N>, TextAvailableNode {
 
 
+    // todo token accessors should most likely be protected in PMD 7.
+
     JavaccToken getFirstToken();
+
 
     JavaccToken getLastToken();
 

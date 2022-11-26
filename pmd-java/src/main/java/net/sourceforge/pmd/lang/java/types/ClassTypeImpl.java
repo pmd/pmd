@@ -168,7 +168,7 @@ class ClassTypeImpl implements JClassType {
     }
 
     @Override
-    @SuppressWarnings({"unchecked", "rawtypes"})
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public List<JTypeMirror> getTypeArgs() {
         return isGenericTypeDeclaration() ? (List) getFormalTypeParams() : typeArgs;
     }
@@ -199,9 +199,7 @@ class ClassTypeImpl implements JClassType {
         }
 
         int expected = symbol.getTypeParameterCount();
-        if (typeArgs.size() != expected && !typeArgs.isEmpty()) {
-            throw invalidTypeArgs(symbol, typeArgs);
-        } else if (expected == 0) {
+        if (expected == 0 && typeArgs.isEmpty() && this.typeArgs.isEmpty()) {
             return this; // non-generic
         }
         return new ClassTypeImpl(ts, symbol, CollectionUtil.defensiveUnmodifiableCopy(typeArgs), false);
@@ -344,19 +342,6 @@ class ClassTypeImpl implements JClassType {
         checkUserEnclosingTypeIsOk(enclosing, symbol);
 
         if (!typeArgsAreOk(symbol, typeArgs)) {
-            // fixme relax this
-            //  This will throw if the symbol is unresolved and was
-            //  resolved through AsmSymbolResolver (ie, a missing dependency
-            //  in classpath, found in a signature of some ASM class symbol member).
-            //  Currently the AST symbol impl tries to patch unresolved symbols by
-            //  making the number of type params flexible. But this does not help
-            //  the ASM implementation, and these errors are frequent if your classpath
-            //  is missing something. We still want pmd to continue processing in this case.
-            //    The best fix IMO is to admit malformed types provided they're unresolved.
-            //  We'll have to abandon the assumption that every parameterized type for
-            //  the same symbol has the same number of type params. And also, that the
-            //  formal type parameter list always matches the type argument lists in length.
-            //    Many places rely on this... For instance: TypeConversion#capture, TypeOps#isSameType, etc
             throw invalidTypeArgs(symbol, typeArgs);
         }
 

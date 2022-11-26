@@ -5,35 +5,35 @@
 package net.sourceforge.pmd.testframework;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
+import net.sourceforge.pmd.lang.document.TextRegion;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
-import net.sourceforge.pmd.test.lang.ast.DummyNode;
+import net.sourceforge.pmd.test.lang.DummyLanguageModule;
+import net.sourceforge.pmd.test.lang.DummyLanguageModule.DummyRootNode;
 
 public class RuleTstTest {
-    private LanguageVersion dummyLanguage = LanguageRegistry.findLanguageByTerseName("dummy").getDefaultVersion();
+    private LanguageVersion dummyLanguage = DummyLanguageModule.getInstance().getDefaultVersion();
 
     private Rule rule = mock(Rule.class);
 
     private RuleTst ruleTester = new RuleTst() {
+        @Override
+        public Rule findRule(String ruleSet, String ruleName) {
+            return rule;
+        }
     };
 
     @Test
@@ -47,12 +47,12 @@ public class RuleTstTest {
 
         verify(rule).start(any(RuleContext.class));
         verify(rule).end(any(RuleContext.class));
-        verify(rule).getLanguage();
-        verify(rule, times(2)).getTargetSelector();
+        verify(rule, atLeastOnce()).getLanguage();
+        verify(rule, atLeastOnce()).getTargetSelector();
         verify(rule).getMinimumLanguageVersion();
         verify(rule).getMaximumLanguageVersion();
         verify(rule).apply(any(Node.class), any(RuleContext.class));
-        verify(rule, times(4)).getName();
+        verify(rule, atLeastOnce()).getName();
         verify(rule).getPropertiesByPropertyDescriptor();
     }
 
@@ -60,36 +60,27 @@ public class RuleTstTest {
     public void shouldAssertLinenumbersSorted() {
         when(rule.getLanguage()).thenReturn(dummyLanguage.getLanguage());
         when(rule.getName()).thenReturn("test rule");
+        when(rule.getMessage()).thenReturn("test rule");
         when(rule.getTargetSelector()).thenReturn(RuleTargetSelector.forRootOnly());
         when(rule.deepCopy()).thenReturn(rule);
 
-        Mockito.doAnswer(new Answer<Void>() {
-            private RuleViolation createViolation(int beginLine, String message) {
-                DummyNode node = new DummyNode();
-                node.setCoords(beginLine, 1, beginLine + 1, 2);
-                return new ParametricRuleViolation<Node>(rule, "someFile", node, message);
-            }
+        final String code = "the\ncode";
+        Mockito.doAnswer(invocation -> {
+            RuleContext context = invocation.getArgument(1, RuleContext.class);
+            DummyRootNode node = invocation.getArgument(0, DummyRootNode.class);
 
-            @Override
-            public Void answer(InvocationOnMock invocation) throws Throwable {
-                RuleContext context = invocation.getArgument(1, RuleContext.class);
-                // the violations are reported out of order
-                context.getReport().addRuleViolation(createViolation(15, "first reported violation"));
-                context.getReport().addRuleViolation(createViolation(5, "second reported violation"));
-                return null;
-            }
+            // the violations are reported out of order
+            // line 2
+            context.addViolation(node.newChild().withCoords(TextRegion.fromOffsetLength("the\n".length(), "code".length())));
+            // line 1
+            context.addViolation(node.newChild().withCoords(TextRegion.fromOffsetLength(0, "the".length())));
+            return null;
         }).when(rule).apply(any(Node.class), Mockito.any(RuleContext.class));
 
-        TestDescriptor testDescriptor = new TestDescriptor("the code", "sample test", 2, rule, dummyLanguage);
+        TestDescriptor testDescriptor = new TestDescriptor(code, "sample test", 2, rule, dummyLanguage);
         testDescriptor.setReinitializeRule(false);
-        testDescriptor.setExpectedLineNumbers(Arrays.asList(5, 15));
+        testDescriptor.setExpectedLineNumbers(Arrays.asList(1, 2));
 
-        try {
-            ruleTester.runTest(testDescriptor);
-            // there should be no assertion failures
-            // expected line numbers and actual line numbers match
-        } catch (AssertionError assertionError) {
-            Assert.fail(assertionError.toString());
-        }
+        ruleTester.runTest(testDescriptor);
     }
 }

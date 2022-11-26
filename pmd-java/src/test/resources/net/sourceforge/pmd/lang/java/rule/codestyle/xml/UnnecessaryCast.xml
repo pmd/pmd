@@ -797,4 +797,15 @@ class Scratch {
             }
             ]]></code>
     </test-code>
+    <test-code>
+        <description>Cast with assertion error??</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class InputParenPadLeftRightAndNoSpace {
+                void method(boolean status) {
+                    for (int i = 0; i < (long) (2 * (4 / 2)); i++);
+                }
+            }
+            ]]></code>
+    </test-code>
 </test-data>

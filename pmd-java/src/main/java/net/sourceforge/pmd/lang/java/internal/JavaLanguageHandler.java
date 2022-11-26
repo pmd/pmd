@@ -50,7 +50,6 @@ public class JavaLanguageHandler extends AbstractPmdLanguageVersionHandler {
     }
 
     public JavaLanguageHandler(int jdkVersion, boolean preview) {
-        super(JavaProcessingStage.class);
         this.levelChecker = new LanguageLevelChecker<>(jdkVersion, preview, ReportingStrategy.reporterThatThrows());
     }
 
@@ -60,7 +59,11 @@ public class JavaLanguageHandler extends AbstractPmdLanguageVersionHandler {
 
     @Override
     public Parser getParser() {
-        return new JavaParser(levelChecker);
+        return new JavaParser(levelChecker, true);
+    }
+
+    public JavaParser getParserWithoutProcessing() {
+        return new JavaParser(levelChecker, false);
     }
 
     @Override

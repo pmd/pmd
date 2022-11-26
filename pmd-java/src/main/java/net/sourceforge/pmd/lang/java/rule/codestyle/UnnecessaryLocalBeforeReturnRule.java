@@ -19,12 +19,10 @@ public class UnnecessaryLocalBeforeReturnRule extends AbstractJavaRulechainRule 
 
     private static final PropertyDescriptor<Boolean> STATEMENT_ORDER_MATTERS = booleanProperty("statementOrderMatters").defaultValue(true).desc("If set to false this rule no longer requires the variable declaration and return statement to be on consecutive lines. Any variable that is used solely in a return statement will be reported.").build();
 
-
     public UnnecessaryLocalBeforeReturnRule() {
         super(ASTReturnStatement.class);
         definePropertyDescriptor(STATEMENT_ORDER_MATTERS);
     }
-
 
     @Override
     public Object visit(ASTReturnStatement returnStmt, Object data) {

@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.apex.rule.codestyle;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class OneDeclarationPerLineTest extends PmdRuleTst {
+class OneDeclarationPerLineTest extends PmdRuleTst {
     // no additional unit tests
 }

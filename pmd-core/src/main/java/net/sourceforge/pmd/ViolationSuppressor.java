@@ -25,6 +25,7 @@ import net.sourceforge.pmd.lang.rule.xpath.internal.SaxonXPathRuleQuery;
  * no knowledge of language-specific suppressors.
  */
 public interface ViolationSuppressor {
+    // todo move to package reporting
 
     /**
      * Suppressor for the violationSuppressRegex property.

@@ -6,22 +6,23 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.util.List;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import net.sourceforge.pmd.lang.java.symboltable.BaseNonParserTest;
+import net.sourceforge.pmd.lang.java.BaseParserTest;
 
-public class CommentAssignmentTest extends BaseNonParserTest {
+class CommentAssignmentTest extends BaseParserTest {
 
     /**
      * Blank lines in comments should not raise an exception. See bug #1048.
      */
     @Test
-    public void testFilteredCommentIn() {
+    void testFilteredCommentIn() {
         ASTCompilationUnit node = java.parse("public class Foo {\n"
                                                  + "     /* multi line comment with blank lines\n\n\n */\n"
                                                  + "        /** a formal comment with blank lines\n\n\n */"
@@ -39,7 +40,7 @@ public class CommentAssignmentTest extends BaseNonParserTest {
 
 
     @Test
-    public void testCommentAssignments() {
+    void testCommentAssignments() {
 
         ASTCompilationUnit node = java.parse("public class Foo {\n"
                                                  + "     /** Comment 1 */\n"
@@ -56,7 +57,7 @@ public class CommentAssignmentTest extends BaseNonParserTest {
     }
 
     @Test
-    public void testCommentAssignmentsWithAnnotation() {
+    void testCommentAssignmentsWithAnnotation() {
 
         ASTCompilationUnit node = java.parse("public class Foo {\n"
                                                  + "     /** Comment 1 */\n"
@@ -68,13 +69,13 @@ public class CommentAssignmentTest extends BaseNonParserTest {
                                                  + "        /** Comment 3 */\n"
                                                  + "        public void method2() {}" + "}");
 
-        List<ASTMethodDeclaration> methods = node.findDescendantsOfType(ASTMethodDeclaration.class);
+        List<ASTMethodDeclaration> methods = node.descendants(ASTMethodDeclaration.class).toList();
         assertCommentEquals(methods.get(0), "/** Comment 1 */");
         assertCommentEquals(methods.get(1), "/** Comment 2 */");
     }
 
     @Test
-    public void testCommentAssignmentOnPackage() {
+    void testCommentAssignmentOnPackage() {
 
         ASTCompilationUnit node = java.parse("/** Comment 1 */\n"
                                                  + "package bar;\n");
@@ -84,7 +85,7 @@ public class CommentAssignmentTest extends BaseNonParserTest {
     }
 
     @Test
-    public void testCommentAssignmentOnClass() {
+    void testCommentAssignmentOnClass() {
 
         ASTCompilationUnit node = java.parse("/** outer */\n"
                                                  + "class Foo { "
@@ -101,7 +102,7 @@ public class CommentAssignmentTest extends BaseNonParserTest {
     }
 
     @Test
-    public void testCommentAssignmentOnEnum() {
+    void testCommentAssignmentOnEnum() {
 
         ASTCompilationUnit node = java.parse("enum Foo { "
                                                  + " /** A */ A,"
@@ -119,11 +120,11 @@ public class CommentAssignmentTest extends BaseNonParserTest {
 
 
     private void assertCommentEquals(JavadocCommentOwner pack, String expected) {
-        Assert.assertNotNull("null comment on " + pack, pack.getJavadocComment());
-        Assert.assertEquals(expected, pack.getJavadocComment().getText().toString());
+        assertNotNull(pack.getJavadocComment(), "null comment on " + pack);
+        assertEquals(expected, pack.getJavadocComment().getText().toString());
     }
 
     private void assertHasNoComment(JavadocCommentOwner pack) {
-        Assert.assertNull("Expected null comment on " + pack, pack.getJavadocComment());
+        assertNull(pack.getJavadocComment(), "Expected null comment on " + pack);
     }
 }

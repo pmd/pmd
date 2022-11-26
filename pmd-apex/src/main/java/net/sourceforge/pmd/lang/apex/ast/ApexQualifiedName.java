@@ -151,10 +151,24 @@ public final class ApexQualifiedName {
     }
 
 
-    static ApexQualifiedName ofNestedClass(ApexQualifiedName parent, ASTUserClassOrInterface astUserClass) {
+    static ApexQualifiedName ofNestedClass(ApexQualifiedName parent, ASTUserClassOrInterface<?> astUserClass) {
 
         String[] classes = Arrays.copyOf(parent.classes, parent.classes.length + 1);
         classes[classes.length - 1] = astUserClass.getImage();
+        return new ApexQualifiedName(parent.nameSpace, classes, null);
+    }
+
+
+    static ApexQualifiedName ofOuterEnum(ASTUserEnum astUserEnum) {
+        String ns = astUserEnum.getNamespace();
+        String[] classes = {astUserEnum.getImage()};
+        return new ApexQualifiedName(StringUtils.isEmpty(ns) ? "c" : ns, classes, null);
+    }
+
+
+    static ApexQualifiedName ofNestedEnum(ApexQualifiedName parent, ASTUserEnum astUserEnum) {
+        String[] classes = Arrays.copyOf(parent.classes, parent.classes.length + 1);
+        classes[classes.length - 1] = astUserEnum.getImage();
         return new ApexQualifiedName(parent.nameSpace, classes, null);
     }
 
@@ -170,7 +184,7 @@ public final class ApexQualifiedName {
             sb.append(paramTypes.get(0).getApexName());
 
             for (int i = 1; i < paramTypes.size(); i++) {
-                sb.append(",").append(paramTypes.get(i).getApexName());
+                sb.append(", ").append(paramTypes.get(i).getApexName());
             }
 
         }
@@ -182,9 +196,17 @@ public final class ApexQualifiedName {
 
 
     static ApexQualifiedName ofMethod(ASTMethod node) {
-        ASTUserClassOrInterface<?> parent = node.getFirstParentOfType(ASTUserClassOrInterface.class);
-        if (parent == null) {
-            ASTUserTrigger trigger = node.getFirstParentOfType(ASTUserTrigger.class);
+        // Check first, as enum must be innermost potential parent
+        ASTUserEnum enumParent = node.ancestors(ASTUserEnum.class).first();
+        if (enumParent != null) {
+            ApexQualifiedName baseName = enumParent.getQualifiedName();
+
+            return new ApexQualifiedName(baseName.nameSpace, baseName.classes, getOperationString(node));
+        }
+
+        ASTUserClassOrInterface<?> parent = node.ancestors(ASTUserClassOrInterface.class).firstOrThrow();
+        if (parent instanceof ASTUserTrigger) {
+            ASTUserTrigger trigger = (ASTUserTrigger) parent;
             String ns = trigger.getNamespace();
             String targetObj = trigger.getTargetName();
 

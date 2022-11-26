@@ -147,10 +147,14 @@ or reported.
         </description>
         <priority>3</priority>
         <properties>
+            <property name="allowCommentedBlocks" type="Boolean" description="Empty blocks containing comments will be skipped" value="false"/>
+            <property name="allowExceptionNameRegex" type="Regex" description="Empty blocks catching exceptions with names matching this regular expression will be skipped" value="^(ignored|expected)$"/>
             <property name="xpath">
                 <value>
 <![CDATA[
-//CatchBlockStatement[./BlockStatement[count(*) = 0]]
+//CatchBlockStatement[./BlockStatement[count(*) = 0] and
+    not(matches(@VariableName, $allowExceptionNameRegex)) and
+    ($allowCommentedBlocks = false() or @ContainsComment = false())]
 ]]>
                 </value>
             </property>
@@ -213,11 +217,13 @@ Empty block statements serve no purpose and should be removed.
         </description>
         <priority>3</priority>
         <properties>
+            <property name="reportEmptyPrivateNoArgConstructor" type="Boolean" value="true" description="If false, empty private no-arg constructors are not flagged. This supports a common idiom used by singleton pattern implementations, utility classes, etc."/>
+            <property name="reportEmptyVirtualMethod" type="Boolean" value="true" description="If false, empty virtual methods are not flagged. This supports abstract base classes with default no-op implementations."/>
             <property name="xpath">
                 <value>
 <![CDATA[
-//Method/ModifierNode[@Abstract!= true() and ../BlockStatement[count(*) = 0]]
-| //Method/BlockStatement//BlockStatement[count(*) = 0 and @Location != parent::*/@Location]
+//Method[$reportEmptyPrivateNoArgConstructor = true() or (@Constructor != true() or ./ModifierNode[@Private != true()] or ./Parameter[count(*) > 0])]/ModifierNode[@Abstract != true() and ($reportEmptyVirtualMethod = true() or @Virtual != true()) and ../BlockStatement[count(*) = 0]]
+| //Method/BlockStatement//BlockStatement[count(*) = 0 and @RealLoc = true()]
 ]]>
                 </value>
             </property>
@@ -308,6 +314,68 @@ public void bar(Integer a, Integer b) {
   while (a == b) {
     // empty!
   }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="InaccessibleAuraEnabledGetter"
+          language="apex"
+          since="6.36.0"
+          message="AuraEnabled getter must be public or global if is referenced in Lightning components"
+          class="net.sourceforge.pmd.lang.apex.rule.errorprone.InaccessibleAuraEnabledGetterRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_errorprone.html#inaccessibleauraenabledgetter">
+        <description>
+In the Summer '21 release, a mandatory security update enforces access modifiers on Apex properties in
+Lightning component markup. The update prevents access to private or protected Apex getters from Aura
+and Lightning Web Components.
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+public class Foo {
+    @AuraEnabled
+    public Integer counter { private get; set; } // Violating - Private getter is inaccessible to Lightning components
+
+    @AuraEnabled
+    public static Foo bar()
+    {
+        Foo foo = new Foo();
+        foo.counter = 2; 
+        return foo;
+    }
+}
+]]>
+        </example>
+        <example>
+<![CDATA[
+public class Foo {
+    @AuraEnabled
+    public Integer counter { protected get; set; } // Violating - Protected getter is inaccessible to Lightning components
+
+    @AuraEnabled
+    public static Foo bar()
+    {
+        Foo foo = new Foo();
+        foo.counter = 2; 
+        return foo;
+    }
+}
+]]>
+        </example>
+        <example>
+<![CDATA[
+public class Foo {
+    @AuraEnabled
+    public Integer counter { get; set; } // Compliant - Public getter is accessible to Lightning components
+
+    @AuraEnabled
+    public static Foo bar()
+    {
+        Foo foo = new Foo();
+        foo.counter = 2; 
+        return foo;
+    }
 }
 ]]>
         </example>

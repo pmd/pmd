@@ -285,7 +285,7 @@ public class Foo {
         ]]></code>
     </test-code>
 
-    <test-code regressionTest="false">
+    <test-code disabled="true">
         <description>#46 False +: Unused private field: call to instance of self, received from another class</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
@@ -845,23 +845,25 @@ public class Foo {
         <description>#1228 UnusedPrivateMethod returns false positives (7)</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-
-interface JTree {}
-class TreeNode implements JTree {}
+class JTree {
+    JTree getRoot() {return this;}
+}
+class TreeNode extends JTree {}
 
 public class Box {
     interface Action { void perform(); }
+
+    void add(Action a) {}
 
     private final JTree tree = new JTree();
     public void makeUI() {
         Box box = new Box();
         box.add(new Action() {
             @Override public void perform() {
-                TreeNode root = (TreeNode) tree.getModel().getRoot();
+                TreeNode root = (TreeNode) tree.getRoot();
                 visitAll(tree, true); // line 14
             }
         });
-        return p;
     }
     private static void visitAll(JTree tree, boolean expand) { }
 }
@@ -1445,7 +1447,12 @@ public class Purse {
         ]]></code>
     </test-code>
 
-    <test-code useAuxClasspath="false">
+    <test-code disabled="true">
+        <!-- Todo I ignored this because the test is not useful. It only checks that we
+              avoid the FP when auxclasspath is not set, while the FP is still here with
+              auxclasspath. The FP should not be there with or without auxclasspath, and it's
+              pointless to ensure it's not there only when the user has configured
+              their analysis incorrectly. -->
         <description>#1405 UnusedPrivateMethod false positive?</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[import java.util.ArrayList;
@@ -1711,6 +1718,72 @@ public class Outer {
     public void publicOuterMethod() {
         Inner inner = new Inner();
         inner.innerUsedByOuterMethod();
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#1175 False positive with Junit 5 MethodSource</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.stream.Stream;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+
+public class Outer {
+    private static Stream<Arguments> basenameKeyArguments() {
+        return Stream.of(
+                Arguments.of("simple", "simple"),
+                Arguments.of("simple", "one/two/many/simple"),
+                Arguments.of("simple", "//////an/////awful/key////simple")
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("basenameKeyArguments")
+    void basenameKeyTest(final String expected, final String testString) {
+        assertEquals(expected, NetworkTable.basenameKey(testString));
+    }
+
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#3468 UnusedPrivateMethod false positive when outer class calls private static method on inner class</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class OuterClass {
+
+    public void foo() {
+        InnerClass.doSomething();
+    }
+
+    static class InnerClass {
+        private static void doSomething() {}
+    }
+}
+        ]]></code>
+    </test-code> 
+
+    <test-code>
+        <description>[java] UnusedPrivateMethod false positive with static method and cast expression #3209</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class UnusedAssignmentRule {
+    private static class ReachingDefsVisitor {
+        private static String getVarIfUnaryAssignment(String node) {
+            return null;
+        }
+    }
+    public static class AssignmentEntry {
+        final String var;
+        final Object rhs;
+        public boolean isUnaryReassign() {
+            return rhs instanceof String
+                && var.equals(ReachingDefsVisitor.getVarIfUnaryAssignment((String) rhs));
+        }
     }
 }
         ]]></code>

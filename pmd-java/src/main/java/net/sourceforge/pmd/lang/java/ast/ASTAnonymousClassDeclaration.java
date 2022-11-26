@@ -4,19 +4,17 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import static net.sourceforge.pmd.util.CollectionUtil.listOf;
-
-import java.util.Collections;
-import java.util.List;
-
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 
 /**
  * An anonymous class declaration. This can occur in a {@linkplain ASTConstructorCall class instance creation
  * expression}
  * or in an {@linkplain ASTEnumConstant enum constant declaration}.
+ * This is a {@linkplain Node#isFindBoundary() find boundary} for tree traversal methods.
  *
  *
  * <pre class="grammar">
@@ -44,15 +42,15 @@ public final class ASTAnonymousClassDeclaration extends AbstractAnyTypeDeclarati
     }
 
     @Override
-    public @NonNull List<ASTClassOrInterfaceType> getSuperInterfaceTypeNodes() {
+    public @NonNull NodeStream<ASTClassOrInterfaceType> getSuperInterfaceTypeNodes() {
         if (getParent() instanceof ASTConstructorCall) {
             ASTConstructorCall ctor = (ASTConstructorCall) getParent();
             @NonNull JTypeMirror type = ctor.getTypeMirror();
             if (type.isInterface()) {
-                return listOf(ctor.getTypeNode());
+                return NodeStream.of(ctor.getTypeNode());
             }
         }
-        return Collections.emptyList();
+        return NodeStream.empty();
     }
 
     @Override

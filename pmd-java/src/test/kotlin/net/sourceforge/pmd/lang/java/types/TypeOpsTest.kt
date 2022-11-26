@@ -8,9 +8,9 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotest.property.Arb
-import io.kotest.property.arbitrary.map
 import io.kotest.property.arbitrary.shuffle
 import io.kotest.property.checkAll
+import net.sourceforge.pmd.lang.java.symbols.internal.asm.createUnresolvedAsmSymbol
 
 /**
  * @author Clément Fournier
@@ -31,7 +31,7 @@ class TypeOpsTest : FunSpec({
 
             test("Test most specific") {
 
-                checkAll(ts.subtypesArb(false)) { (t, s) ->
+                checkAll(ts.subtypesArb()) { (t, s) ->
                     TypeOps.mostSpecific(setOf(t, s)).shouldContainExactly(t)
                 }
             }
@@ -41,6 +41,16 @@ class TypeOpsTest : FunSpec({
                 checkMostSpecific(
                         input = listOf(t_AbstractList, t_AbstractList),
                         output = listOf(t_AbstractList))
+            }
+
+            test("Test most specific of unresolved types") {
+                val tA = ts.declaration(ts.createUnresolvedAsmSymbol("a.A"))
+                val tB = ts.declaration(ts.createUnresolvedAsmSymbol("a.B"))
+
+                checkMostSpecific(
+                    input = listOf(tA, tB),
+                    output = listOf(tA, tB)
+                )
             }
 
             test("Test most specific unchecked") {

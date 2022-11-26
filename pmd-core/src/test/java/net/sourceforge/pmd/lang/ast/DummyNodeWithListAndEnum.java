@@ -8,13 +8,12 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class DummyNodeWithListAndEnum extends DummyRoot {
+import net.sourceforge.pmd.lang.document.TextRegion;
+
+public class DummyNodeWithListAndEnum extends DummyNode.DummyRootNode {
     public DummyNodeWithListAndEnum() {
         super();
-        beginLine = 1;
-        beginColumn = 1;
-        endLine = 1;
-        endColumn = 2;
+        setRegion(TextRegion.fromOffsetLength(0, 1));
     }
 
     public enum MyEnum {

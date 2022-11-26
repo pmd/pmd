@@ -6,13 +6,13 @@ package net.sourceforge.pmd.cpd;
 
 import java.util.Properties;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.cpd.test.CpdTextComparisonTest;
 
-public class PythonTokenizerTest extends CpdTextComparisonTest {
+class PythonTokenizerTest extends CpdTextComparisonTest {
 
-    public PythonTokenizerTest() {
+    PythonTokenizerTest() {
         super(".py");
     }
 
@@ -28,22 +28,33 @@ public class PythonTokenizerTest extends CpdTextComparisonTest {
     
     
     @Test
-    public void sampleTest() {
+    void sampleTest() {
         doTest("sample_python");
     }
 
     @Test
-    public void specialComments() {
+    void specialComments() {
         doTest("special_comments");
     }
 
     @Test
-    public void testBackticks() {
+    void testBackticks() {
         doTest("backticks");
     }
 
     @Test
-    public void testTabWidth() {
+    void testUnicode() {
+        doTest("sample_unicode");
+    }
+
+    @Test
+    void testTabWidth() {
         doTest("tabWidth");
     }
+
+    @Test
+    void testVarWithDollar() {
+        doTest("var_with_dollar");
+    }
+
 }

@@ -9,7 +9,7 @@ import net.sourceforge.pmd.lang.jsp.JspLanguageModule;
 
 public final class JspParsingHelper extends BaseParsingHelper<JspParsingHelper, ASTCompilationUnit> {
 
-    public static final JspParsingHelper DEFAULT = new JspParsingHelper(Params.getDefaultProcess());
+    public static final JspParsingHelper DEFAULT = new JspParsingHelper(Params.getDefault());
 
     private JspParsingHelper(Params params) {
         super(JspLanguageModule.NAME, ASTCompilationUnit.class, params);

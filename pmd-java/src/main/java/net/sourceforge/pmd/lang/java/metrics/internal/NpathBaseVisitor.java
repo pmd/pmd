@@ -27,7 +27,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTTryStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.JavaVisitorBase;
-import net.sourceforge.pmd.lang.java.internal.JavaAstUtils;
+import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 
 
 /**

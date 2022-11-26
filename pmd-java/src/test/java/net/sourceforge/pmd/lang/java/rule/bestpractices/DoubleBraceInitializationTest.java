@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class DoubleBraceInitializationTest extends PmdRuleTst {
+class DoubleBraceInitializationTest extends PmdRuleTst {
     // no additional unit tests
 }

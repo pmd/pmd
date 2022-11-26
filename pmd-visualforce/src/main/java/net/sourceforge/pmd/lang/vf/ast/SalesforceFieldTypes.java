@@ -56,7 +56,7 @@ abstract class SalesforceFieldTypes {
             return null;
         } else {
             // fixme getting a Path from the display name is just wrong.
-            Path vfFilePath = Paths.get(vfFileName);
+            Path vfFilePath = Paths.get(vfFileName).toAbsolutePath();
             List<Path> resolvedPaths = new ArrayList<>();
             for (String metadataDirectory : metadataDirectories) {
                 if (Paths.get(metadataDirectory).isAbsolute()) {

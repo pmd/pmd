@@ -80,10 +80,7 @@ public final class InvocationMatcher {
      * See {@link #matchesCall(InvocationNode)}.
      */
     public boolean matchesCall(@Nullable JavaNode node) {
-        if (node instanceof InvocationNode) {
-            return matchesCall((InvocationNode) node);
-        }
-        return false;
+        return node instanceof InvocationNode && matchesCall((InvocationNode) node);
     }
 
     /**
@@ -101,10 +98,8 @@ public final class InvocationMatcher {
             return false;
         }
         OverloadSelectionResult info = node.getOverloadSelectionInfo();
-        if (info.isFailed() || !matchQualifier(node)) {
-            return false;
-        }
-        return argsMatchOverload(info.getMethodType());
+        return !info.isFailed() && matchQualifier(node)
+                && argsMatchOverload(info.getMethodType());
     }
 
     private boolean matchQualifier(InvocationNode node) {
@@ -289,11 +284,9 @@ public final class InvocationMatcher {
         }
 
         boolean matches(JTypeMirror type, boolean exact) {
-            if (name == null) {
-                return true;
-            }
-            return exact ? TypeTestUtil.isExactlyAOrAnon(name, type) == OptionalBool.YES
-                         : TypeTestUtil.isA(name, type);
+            return name == null
+                   || (exact ? TypeTestUtil.isExactlyAOrAnon(name, type) == OptionalBool.YES
+                         : TypeTestUtil.isA(name, type));
         }
     }
 

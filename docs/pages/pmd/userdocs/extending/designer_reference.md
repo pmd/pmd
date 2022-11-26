@@ -16,8 +16,10 @@ The app needs JRE 1.8 or above to run. Be aware that on JRE 11+, the JavaFX dist
 
 If the bin directory of your PMD distribution is on your shell's path, then you can **launch the app** with
 
-    run.sh designer on Linux/ OSX
-    designer.bat on Windows
+{% include cli_example.html
+   id="pmd"
+   linux="pmd designer"
+   windows="pmd.bat designer" %}
 
 
 {% include note.html content="pmd-ui.jar is not a runnable jar, because it doesn't include any PMD language module, or PMD Core. " %}

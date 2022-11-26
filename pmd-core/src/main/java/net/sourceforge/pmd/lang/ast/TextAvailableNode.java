@@ -4,6 +4,9 @@
 
 package net.sourceforge.pmd.lang.ast;
 
+import net.sourceforge.pmd.lang.document.Chars;
+import net.sourceforge.pmd.lang.document.TextDocument;
+import net.sourceforge.pmd.lang.document.TextRegion;
 import net.sourceforge.pmd.lang.rule.xpath.NoAttribute;
 
 /**
@@ -14,25 +17,41 @@ import net.sourceforge.pmd.lang.rule.xpath.NoAttribute;
  */
 public interface TextAvailableNode extends Node {
 
-    /*
-      Note for future: I initially implemented a CharSequence that shares
-      the char array for the full file, which seems advantageous, but tbh
-      is out of scope of the first prototype
-
-      Problem with using strings is that I suspect it can be very easy to
-      create significant memory issues without paying attention...
-
-      See 046958adad for the removal commit
-     */
-
 
     /**
-     * Returns the original source code underlying this node. In
-     * particular, for a {@link RootNode}, returns the whole text
-     * of the file.
+     * Returns the exact region of text delimiting the node in the underlying
+     * text document. Note that {@link #getReportLocation()} does not need
+     * to match this region. {@link #getReportLocation()} can be scoped down
+     * to a specific token, eg the class identifier. This region uses
+     * the translated coordinate system, ie the coordinate system of
+     * {@link #getTextDocument()}.
+     */
+    @Override
+    TextRegion getTextRegion();
+
+    /**
+     * Returns the original source code underlying this node, before
+     * any escapes have been translated. In particular, for a {@link RootNode},
+     * returns the whole text of the file.
+     *
+     * @see TextDocument#sliceOriginalText(TextRegion)
      */
     @NoAttribute
-    CharSequence getText();
+    default Chars getOriginalText() {
+        return getTextDocument().sliceOriginalText(getTextRegion());
+    }
+
+    /**
+     * Returns the source code underlying this node, after any escapes
+     * have been translated. In particular, for a {@link RootNode}, returns
+     * the whole text of the file.
+     *
+     * @see TextDocument#sliceTranslatedText(TextRegion)
+     */
+    @NoAttribute
+    default Chars getText() {
+        return getTextDocument().sliceTranslatedText(getTextRegion());
+    }
 
 
 }

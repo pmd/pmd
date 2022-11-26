@@ -254,8 +254,20 @@ public class Foo extends Bar{
             specific kind (e.g. enum or interface). Each regex can be configured through
             properties.
 
-            By default this rule uses the standard Java naming convention (Pascal case),
-            and reports utility class names not ending with 'Util'.
+            By default, this rule uses the standard Java naming convention (Pascal case).
+            
+            The rule can detect utility classes and enforce a different naming convention
+            on those. E.g. setting the property `utilityClassPattern` to
+            `[A-Z][a-zA-Z0-9]+(Utils?|Helper|Constants)` reports any utility class, whose name
+            does not end in "Util(s)", "Helper" or "Constants".
+            
+            For this rule, a utility class is defined as: a concrete class that does not
+            inherit from a super class or implement any interface and only has static fields
+            or methods.
+
+            This rule detects test classes using the following convention: Test classes are top-level classes, that
+            either inherit from JUnit 3 TestCase or have at least one method annotated with the Test annotations from
+            JUnit4/5 or TestNG.
         </description>
         <priority>1</priority>
         <example>
@@ -284,9 +296,10 @@ public class Éléphant {}
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#commentdefaultaccessmodifier">
         <description>
 To avoid mistakes if we want that an Annotation, Class, Enum, Method, Constructor or Field have a default access modifier
-we must add a comment at the beginning of it's declaration.
-By default the comment must be `/* default */` or `/* package */`, if you want another, you have to provide a regular expression.
-This rule ignores by default all cases that have a @VisibleForTesting annotation. Use the
+we must add a comment at the beginning of its declaration.
+By default, the comment must be `/* default */` or `/* package */`, if you want another, you have to provide a regular expression.
+
+This rule ignores by default all cases that have a `@VisibleForTesting` annotation or any JUnit5 annotation. Use the
 property "ignoredAnnotations" to customize the recognized annotations.
         </description>
         <priority>3</priority>
@@ -403,43 +416,6 @@ while (true) {  // preferred approach
         </example>
     </rule>
 
-    <rule name="DefaultPackage"
-          language="java"
-          since="3.4"
-          message="Use explicit scoping instead of the default package private level"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#defaultpackage">
-        <description>
-Use explicit scoping instead of accidental usage of default package private level.
-The rule allows methods and fields annotated with Guava's @VisibleForTesting and JUnit 5's annotations.
-        </description>
-        <priority>3</priority>
-        <properties>
-            <property name="xpath">
-                <value>
-<![CDATA[
-//ClassOrInterfaceDeclaration[@Interface= false()]
-/ClassOrInterfaceBody
-/*[ self::FieldDeclaration or self::MethodDeclaration ]
-[@Visibility = "package"]
-[ not( pmd-java:hasAnnotation('org.junit.jupiter.api.Test')
-    or pmd-java:hasAnnotation('org.junit.jupiter.api.RepeatedTest')
-    or pmd-java:hasAnnotation('org.junit.jupiter.params.ParameterizedTest')
-    or pmd-java:hasAnnotation('org.junit.jupiter.api.TestFactory')
-    or pmd-java:hasAnnotation('org.junit.jupiter.api.TestTemplate')
-    or pmd-java:hasAnnotation('org.junit.jupiter.api.BeforeAll')
-    or pmd-java:hasAnnotation('org.junit.jupiter.api.AfterAll')
-    or pmd-java:hasAnnotation('org.junit.jupiter.api.BeforeEach')
-    or pmd-java:hasAnnotation('org.junit.jupiter.api.AfterEach')
-    or pmd-java:hasAnnotation('com.google.common.annotations.VisibleForTesting')
-  )
-]
-]]>
-                </value>
-            </property>
-        </properties>
-    </rule>
-
     <rule name="EmptyMethodInAbstractClassShouldBeAbstract"
           language="java"
           since="4.1"
@@ -477,6 +453,53 @@ public abstract class ShouldBeAbstract {
 
     public void couldBeAbstract() {
     }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="EmptyControlStatement"
+          language="java"
+          since="6.46.0"
+          message="This control statement has an empty branch"
+          class="net.sourceforge.pmd.lang.java.rule.codestyle.EmptyControlStatementRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#emptycontrolstatement">
+        <!-- Note about naming: EmptyCodeBlock does not work because the rule flags `if(true);`  -->
+        <!-- EmptyControlStatement is weird because `{}` is not a control statement, and we also flag initializers. -->
+        <!-- EmptyStatement does not work because `;` is called an "empty statement" and is not flagged by this rule, rather, by UnnecessarySemicolon. -->
+        <!-- EmptyCodeConstruct would work but sounds a bit odd (right?). -->
+        <description><![CDATA[
+            Reports control statements whose body is empty, as well as empty initializers.
+
+            The checked code constructs are the following:
+            - bodies of `try` statements
+            - `finally` clauses of `try` statements
+            - `switch` statements
+            - `synchronized` statements
+            - `if` statements
+            - loop statements: `while`, `for`, `do .. while`
+            - initializers
+            - blocks used as statements (for scoping)
+
+            This rule replaces the rules EmptyFinallyBlock, 
+            EmptyIfStmt, EmptyInitializer, EmptyStatementBlock, 
+            EmptySwitchStatements, EmptySynchronizedBlock, EmptyTryBlock, and EmptyWhileStmt.
+
+            Notice that {% rule java/errorprone/EmptyCatchBlock %} is still an independent rule.
+
+            EmptyStatementNotInLoop is replaced by {% rule java/codestyle/UnnecessarySemicolon %}.
+        ]]></description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+class Foo {
+    {
+        if (true); // empty if statement
+        if (true) { // empty as well
+        }
+    }
+
+    {} // empty initializer
 }
 ]]>
         </example>
@@ -570,6 +593,38 @@ public class HelloWorldBean {
                 }
             }
             ]]>
+        </example>
+    </rule>
+
+    <rule name="FinalParameterInAbstractMethod"
+          language="java"
+          since="6.42.0"
+          message="Final parameter in abstract method"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          typeResolution="true"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#finalparameterinabstractmethod">
+        <description>
+            Declaring a method parameter as final for an interface method is useless because the implementation may choose to not respect it.
+        </description>
+        <priority>1</priority>
+        <properties>
+            <property name="version" value="2.0"/>
+            <property name="xpath">
+                <value>
+                    <![CDATA[
+//MethodDeclaration
+    [FormalParameters/FormalParameter[@Final = true()]]
+    [not(Block)]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+            <![CDATA[
+public interface MyInterface {
+  void process(final Object arg); // Avoid using final here
+}
+]]>
         </example>
     </rule>
 
@@ -1466,6 +1521,41 @@ public class Foo {
         </example>
     </rule>
 
+    <rule name="UnnecessaryBoxing"
+          language="java"
+          since="7.0.0"
+          minimumLanguageVersion="1.5"
+          message="Unnecessary {0}"
+          class="net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryBoxingRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#unnecessaryboxing">
+        <description>
+            Reports explicit boxing and unboxing conversions that may safely be removed,
+            either because they would be inserted by the compiler automatically,
+            or because they're semantically a noop (eg unboxing a value to rebox it immediately).
+
+            Note that this only handles boxing and unboxing conversions occurring through
+            calls to `valueOf` or one of the `intValue`, `byteValue`, etc. methods. Casts
+            that command a conversion are reported by {% rule UnnecessaryCast %} instead.
+        </description>
+        <priority>3</priority>
+        <example><![CDATA[
+{
+        // Instead of
+        Integer integer = Integer.valueOf(2);
+        // you may just write
+        Integer integer = 2;
+
+        int i = integer.intValue(); // similarly for unboxing
+
+        // Instead of
+        int x = Integer.valueOf("42");
+        // you may just write
+        int x = Integer.parseInt("42");
+}
+            ]]>
+        </example>
+    </rule>
+
     <!-- This is only restricted to java 5+ because the rule doesn't support
          the type system pre-java5, where there were no autoboxing conversions. -->
     <rule name="UnnecessaryCast"
@@ -1671,6 +1761,12 @@ public class Bar {
         FOO;
     }
 }
+public class FooClass {
+    static record BarRecord() {}     // static ignored
+}
+public interface FooInterface {
+    static record BarRecord() {}     // static ignored
+}
 ]]>
         </example>
     </rule>
@@ -1698,52 +1794,86 @@ public class Foo {
         </example>
     </rule>
 
-    <rule name="UseDiamondOperator"
+    <rule name="UnnecessarySemicolon"
           language="java"
-          since="6.11.0"
-          message="Explicit type arguments can be replaced by Diamond Operator"
+          since="6.46.0"
+          message="Unnecessary semicolon"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#usediamondoperator"
-          minimumLanguageVersion="1.7">
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#unnecessarysemicolon">
         <description>
-Use the diamond operator to let the type be inferred automatically. With the Diamond operator it is possible
-to avoid duplication of the type parameters.
-Instead, the compiler is now able to infer the parameter types for constructor calls,
-which makes the code also more readable.
+            Reports unnecessary semicolons (so called "empty statements" and "empty declarations").
+            These can be removed without changing the program. The Java grammar
+            allows them for historical reasons, but they should be avoided.
+            
+            This rule will not report empty statements that are syntactically 
+            required, for instance, because they are the body of a control statement.
 
-The diamond operator has been introduced with java 7. However, type inference has been improved further
-with java8, rendering more type parameters unnecessary. This is only possible with java8 and the resulting
-code won't compile with java7. If you use java7, make sure to enable `java7Compatibility` for this rule to avoid
-false positives.
+            This rule replaces EmptyStatementNotInLoop.
         </description>
         <priority>3</priority>
         <properties>
-            <property name="version" value="2.0" />
+            <property name="version" value="2.0"/>
             <property name="xpath">
-                <value>
-                    <![CDATA[
-(
-//VariableInitializer[preceding-sibling::VariableDeclaratorId[1]/@TypeInferred=false()]
-|
-//StatementExpression[AssignmentOperator and PrimaryExpression/PrimaryPrefix[not(Expression)]]
-)
-/(Expression | Expression[$java7Compatibility = false()]/ConditionalExpression | Expression[$java7Compatibility = false()]/ConditionalExpression/Expression)
-/PrimaryExpression[not(PrimarySuffix) and not(ancestor::ArgumentList)]
-/PrimaryPrefix
-/AllocationExpression
-    [@AnonymousClass=false()]
-    [ClassOrInterfaceType/TypeArguments[@Diamond=false() and not($java7Compatibility = true() and .//TypeArgument[@Wildcard=true()])]]
-    [not(ArrayDimsAndInits)]
+                <value><![CDATA[
+      (: empty declarations :)
+      //EmptyDeclaration
+      (: empty statements :)
+    | //Block/EmptyStatement
+
 ]]>
                 </value>
             </property>
-            <property name="java7Compatibility" type="Boolean" description="If disabled, the rule shows also violations that are applicable for java8+" value="false" />
         </properties>
         <example>
-            <![CDATA[
-List<String> strings = new ArrayList<String>(); // unnecessary duplication of type parameters
-List<String> stringsWithDiamond = new ArrayList<>(); // using the diamond operator is more concise
+<![CDATA[
+class Foo {
+    {
+        toString();; // one of these semicolons is unnecessary
+        if (true); // this semicolon is not unnecessary, but it could be an empty block instead (not reported)
+    }
+}; // this semicolon is unnecessary
+
 ]]>
+        </example>
+    </rule>
+
+
+    <rule name="UseDiamondOperator"
+          language="java"
+          since="6.11.0"
+          message="Explicit type arguments can be replaced by a diamond: `{0}`"
+          class="net.sourceforge.pmd.lang.java.rule.codestyle.UseDiamondOperatorRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#usediamondoperator"
+          minimumLanguageVersion="1.7">
+        <description><![CDATA[
+In some cases, explicit type arguments in a constructor call for a generic type
+may be replaced by diamond type arguments (`<>`), and be inferred by the compiler.
+This rule recommends that you use diamond type arguments anywhere possible, since
+it avoids duplication of the type arguments, and makes the code more concise and readable.
+
+This rule is useful when upgrading a codebase to Java 1.7, Java 1.8, or Java 9.
+The diamond syntax was first introduced in Java 1.7. In Java 8, improvements in Java's
+type inference made more type arguments redundant. In Java 9, type arguments inference
+was made possible for anonymous class constructors.
+            ]]></description>
+        <priority>3</priority>
+        <example>
+            <![CDATA[
+            import java.util.*;
+            class Foo {
+                static {
+                    List<String> strings;
+                    strings = new ArrayList<String>(); // unnecessary duplication of type parameters
+                    strings = new ArrayList<>();       // using diamond type arguments is more concise
+
+                    strings = new ArrayList(); // accidental use of a raw type, you can use ArrayList<> instead
+
+                    strings = new ArrayList<>() {
+                        // for anonymous classes, this is possible since Java 9 only
+                    };
+                }
+            }
+            ]]>
         </example>
     </rule>
 

@@ -126,7 +126,7 @@ public abstract class BaseTokenFilter<T extends GenericToken<T>> implements Toke
         return currentToken.isEof();
     }
 
-    private class RemainingTokens implements Iterable<T> {
+    private final class RemainingTokens implements Iterable<T> {
 
         @Override
         public Iterator<T> iterator() {

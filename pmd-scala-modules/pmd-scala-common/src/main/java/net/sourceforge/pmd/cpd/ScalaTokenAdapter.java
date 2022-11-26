@@ -5,6 +5,10 @@
 package net.sourceforge.pmd.cpd;
 
 import net.sourceforge.pmd.lang.ast.GenericToken;
+import net.sourceforge.pmd.lang.document.Chars;
+import net.sourceforge.pmd.lang.document.FileLocation;
+import net.sourceforge.pmd.lang.document.TextDocument;
+import net.sourceforge.pmd.lang.document.TextRegion;
 
 import scala.meta.tokens.Token;
 
@@ -13,11 +17,13 @@ import scala.meta.tokens.Token;
  */
 public class ScalaTokenAdapter implements GenericToken<ScalaTokenAdapter> {
 
-    private Token token;
-    private ScalaTokenAdapter previousComment;
+    private final Token token;
+    private final TextDocument textDocument;
+    private final ScalaTokenAdapter previousComment;
 
-    ScalaTokenAdapter(Token token, ScalaTokenAdapter comment) {
+    ScalaTokenAdapter(Token token, TextDocument textDocument, ScalaTokenAdapter comment) {
         this.token = token;
+        this.textDocument = textDocument;
         this.previousComment = comment;
     }
 
@@ -37,23 +43,18 @@ public class ScalaTokenAdapter implements GenericToken<ScalaTokenAdapter> {
     }
 
     @Override
-    public int getBeginLine() {
-        return token.pos().startLine() + 1;
+    public Chars getImageCs() {
+        return textDocument.sliceTranslatedText(getRegion());
     }
 
     @Override
-    public int getEndLine() {
-        return token.pos().endLine() + 1;
+    public TextRegion getRegion() {
+        return TextRegion.fromBothOffsets(token.pos().start(), token.pos().end());
     }
 
     @Override
-    public int getBeginColumn() {
-        return token.pos().startColumn() + 1;
-    }
-
-    @Override
-    public int getEndColumn() {
-        return token.pos().endColumn() + 2;
+    public FileLocation getReportLocation() {
+        return textDocument.toLocation(getRegion());
     }
 
     @Override

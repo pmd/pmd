@@ -32,7 +32,9 @@ class CaptureInferenceTest : ProcessorTestSpec({
         val setCall = acu.firstMethodCall()
         val getCall = setCall.arguments[1] as ASTMethodCall
 
-        spy.shouldTriggerMissingCtDecl {
+        spy.shouldHaveMissingCtDecl(setCall)
+
+        acu.withTypeDsl {
             val capture1 = captureMatcher(`?`)
             getCall.methodType.shouldMatchMethod(
                     named = "get",

@@ -33,10 +33,17 @@ public abstract class BaseLanguageModule implements Language {
                               String terseName,
                               String firstExtension,
                               String... otherExtensions) {
+        this(name, shortName, terseName, CollectionUtil.listOf(firstExtension, otherExtensions));
+    }
+
+    public BaseLanguageModule(String name,
+                              String shortName,
+                              String terseName,
+                              List<String> extensions) {
         this.name = name;
         this.shortName = shortName;
         this.terseName = terseName;
-        this.extensions = CollectionUtil.listOf(firstExtension, otherExtensions);
+        this.extensions = CollectionUtil.defensiveUnmodifiableCopy(extensions);
     }
 
     private void addVersion(String version, LanguageVersionHandler languageVersionHandler, boolean isDefault, String... versionAliases) {
@@ -124,13 +131,18 @@ public abstract class BaseLanguageModule implements Language {
     }
 
     @Override
-    public boolean hasExtension(String extension) {
-        return extensions != null && extensions.contains(extension);
+    public boolean hasExtension(String extensionWithoutDot) {
+        return extensions != null && extensions.contains(extensionWithoutDot);
     }
 
     @Override
     public List<LanguageVersion> getVersions() {
         return new ArrayList<>(distinctVersions);
+    }
+
+    @Override
+    public List<String> getVersionNamesAndAliases() {
+        return new ArrayList<>(versions.keySet());
     }
 
     @Override
@@ -154,7 +166,7 @@ public abstract class BaseLanguageModule implements Language {
 
     @Override
     public String toString() {
-        return "LanguageModule:" + name + '(' + this.getClass().getSimpleName() + ')';
+        return getTerseName();
     }
 
     @Override

@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class AvoidStringBufferFieldTest extends PmdRuleTst {
+class AvoidStringBufferFieldTest extends PmdRuleTst {
     // no additional unit tests
 }

@@ -28,6 +28,7 @@ import net.sourceforge.pmd.lang.java.types.JTypeVar;
 import net.sourceforge.pmd.lang.java.types.Substitution;
 import net.sourceforge.pmd.lang.java.types.TypeOps;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
+import net.sourceforge.pmd.lang.java.types.TypingContext;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.BranchingMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.FunctionalExprMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.InvocationMirror;
@@ -142,26 +143,21 @@ final class ExprOps {
             //  not provide explicit type arguments, an explicitly typed
             //  lambda expression for which the corresponding target type
             //  (as derived from the signature of m) is a type parameter of m.
-            if (m.isGeneric() && invoc.getExplicitTypeArguments().isEmpty()) {
-                return !formalType.isTypeVariable();
-            }
-
-            return true;
+            return !m.isGeneric()
+                    || !invoc.getExplicitTypeArguments().isEmpty()
+                    || !formalType.isTypeVariable();
         }
 
         if (arg instanceof MethodRefMirror) {
             // An inexact method reference expression(§ 15.13 .1).
-            if (getExactMethod((MethodRefMirror) arg) == null) {
-                return false;
-            }
-            //  If m is a generic method and the method invocation does
-            //  not provide explicit type arguments, an exact method
-            //  reference expression for which the corresponding target type
-            //  (as derived from the signature of m) is a type parameter of m.
-            if (m.isGeneric() && invoc.getExplicitTypeArguments().isEmpty()) {
-                return !formalType.isTypeVariable();
-            }
-            return true;
+            return getExactMethod((MethodRefMirror) arg) != null
+                    //  If m is a generic method and the method invocation does
+                    //  not provide explicit type arguments, an exact method
+                    //  reference expression for which the corresponding target type
+                    //  (as derived from the signature of m) is a type parameter of m.
+                    && (!m.isGeneric()
+                        || !invoc.getExplicitTypeArguments().isEmpty()
+                        || !formalType.isTypeVariable());
         }
 
         if (arg instanceof BranchingMirror) {
@@ -329,6 +325,11 @@ final class ExprOps {
                 }
 
                 @Override
+                public @Nullable JTypeMirror getInferredType() {
+                    throw new UnsupportedOperationException();
+                }
+
+                @Override
                 public JavaNode getLocation() {
                     return mref.getLocation();
                 }
@@ -341,6 +342,16 @@ final class ExprOps {
                 @Override
                 public String toString() {
                     return "formal : " + fi;
+                }
+
+                @Override
+                public TypingContext getTypingContext() {
+                    return mref.getTypingContext();
+                }
+
+                @Override
+                public boolean isEquivalentToUnderlyingAst() {
+                    throw new UnsupportedOperationException("Cannot invoque isSemanticallyEquivalent on this mirror, it doesn't have a backing AST node: " + this);
                 }
             }
         );
@@ -396,18 +407,26 @@ final class ExprOps {
             }
 
             @Override
-            public void setMethodType(MethodCtDecl methodType) {
+            public void setCtDecl(MethodCtDecl methodType) {
                 this.mt = methodType;
             }
 
             @Override
-            public @Nullable MethodCtDecl getMethodType() {
+            public @Nullable MethodCtDecl getCtDecl() {
                 return mt;
             }
+
+            JTypeMirror inferred;
 
             @Override
             public void setInferredType(JTypeMirror mirror) {
                 // todo is this useful for method refs?
+                inferred = mirror;
+            }
+
+            @Override
+            public JTypeMirror getInferredType() {
+                return inferred;
             }
 
             @Override
@@ -418,6 +437,16 @@ final class ExprOps {
             @Override
             public String toString() {
                 return "Method ref adapter (for " + mref + ")";
+            }
+
+            @Override
+            public TypingContext getTypingContext() {
+                return mref.getTypingContext();
+            }
+
+            @Override
+            public boolean isEquivalentToUnderlyingAst() {
+                throw new UnsupportedOperationException("Cannot invoque isSemanticallyEquivalent on this mirror, it doesn't have a backing AST node: " + this);
             }
         };
     }
@@ -470,7 +499,8 @@ final class ExprOps {
             boolean acceptsInstanceMethods = canUseInstanceMethods(actualTypeToSearch, targetType, mref);
 
             Predicate<JMethodSymbol> prefilter = TypeOps.accessibleMethodFilter(mref.getMethodName(), mref.getEnclosingType().getSymbol())
-                                                        .and(m -> Modifier.isStatic(m.getModifiers()) || acceptsInstanceMethods);
+                                                        .and(m -> Modifier.isStatic(m.getModifiers())
+                                                            || acceptsInstanceMethods);
             return actualTypeToSearch.streamMethods(prefilter).collect(Collectors.toList());
         }
     }

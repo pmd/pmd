@@ -9,9 +9,9 @@ import net.sourceforge.pmd.lang.vf.VfLanguageModule;
 
 public final class VfParsingHelper extends BaseParsingHelper<VfParsingHelper, ASTCompilationUnit> {
 
-    public static final VfParsingHelper DEFAULT = new VfParsingHelper(Params.getDefaultProcess());
+    public static final VfParsingHelper DEFAULT = new VfParsingHelper(Params.getDefault());
 
-    private VfParsingHelper(Params params) {
+    public VfParsingHelper(Params params) {
         super(VfLanguageModule.NAME, ASTCompilationUnit.class, params);
     }
 

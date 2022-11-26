@@ -9,7 +9,6 @@ import static net.sourceforge.pmd.util.CollectionUtil.setOf;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.lang.DummyLanguageModule;
-import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
@@ -20,8 +19,9 @@ import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 public class FooRule extends AbstractRule {
 
     public FooRule() {
-        setLanguage(LanguageRegistry.getLanguage(DummyLanguageModule.NAME));
         setName("Foo");
+        setDescription("Description with Unicode Character U+2013: \u2013 .");
+        setLanguage(DummyLanguageModule.getInstance());
     }
 
     @Override
@@ -37,11 +37,6 @@ public class FooRule extends AbstractRule {
     @Override
     public String getRuleSetName() {
         return "RuleSet";
-    }
-
-    @Override
-    public String getDescription() {
-        return "desc";
     }
 
     @Override

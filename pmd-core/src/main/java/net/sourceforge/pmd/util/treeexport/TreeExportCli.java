@@ -4,106 +4,102 @@
 
 package net.sourceforge.pmd.util.treeexport;
 
-import java.io.File;
 import java.io.IOException;
-import java.io.Reader;
-import java.io.StringReader;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.Properties;
 
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.io.input.CloseShieldInputStream;
 import org.apache.commons.lang3.StringEscapeUtils;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
-import net.sourceforge.pmd.lang.LanguageVersion;
-import net.sourceforge.pmd.lang.LanguageVersionHandler;
-import net.sourceforge.pmd.lang.ast.AstAnalysisContext;
-import net.sourceforge.pmd.lang.ast.Parser;
-import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
-import net.sourceforge.pmd.lang.ast.RootNode;
-import net.sourceforge.pmd.lang.ast.SemanticErrorReporter;
-import net.sourceforge.pmd.lang.rule.xpath.Attribute;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
-import net.sourceforge.pmd.properties.PropertySource;
 
 import com.beust.jcommander.DynamicParameter;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParameterException;
 
+@Deprecated
 @Experimental
 public class TreeExportCli {
+
     @Parameter(names = { "--format", "-f" }, description = "The output format.")
     private String format = "xml";
-    @Parameter(names = { "--language", "-l" }, description = "Specify the language to use.")
-    private String language = LanguageRegistry.getDefaultLanguage().getTerseName();
+    @Parameter(names = { "--language", "-l" }, description = "Specify the language to use.", required = true)
+    private @Nullable String language = null;
     @Parameter(names = { "--encoding", "-e" }, description = "Encoding of the source file.")
     private String encoding = StandardCharsets.UTF_8.name();
     @DynamicParameter(names = "-P", description = "Properties for the renderer.")
     private Map<String, String> properties = new HashMap<>();
-
     @Parameter(names = { "--help", "-h" }, description = "Display usage.", help = true)
     private boolean help;
-
     @Parameter(names = "--file", description = "The file to dump")
     private String file;
-
     @Parameter(names = { "--read-stdin", "-i" }, description = "Read source from standard input")
     private boolean readStdin;
 
+    private final Io io;
 
-    public static void main(String[] args) throws IOException {
-        TreeExportCli cli = new TreeExportCli();
-        JCommander jcommander = new JCommander(cli);
+    TreeExportCli(Io io) {
+        this.io = io;
+    }
+
+    public static void main(String... args) {
+        TreeExportCli cli = new TreeExportCli(Io.system());
+        System.exit(cli.runMain(args));
+    }
+
+    public int runMain(String... args) {
+        try {
+            return runMainOrThrow(args);
+        } catch (RuntimeException unused) {
+            return 1;
+        } catch (IOException e) {
+            io.stderr.println("Error: " + e);
+            e.printStackTrace(io.stderr);
+            return 1;
+        }
+    }
+
+    private int runMainOrThrow(String[] args) throws IOException {
+
+        JCommander jcommander = new JCommander(this);
 
         try {
             jcommander.parse(args);
         } catch (ParameterException e) {
-            System.err.println(e.getMessage());
-            cli.usage(jcommander);
-            System.exit(1);
+            io.stderr.println(e.getMessage());
+            usage(jcommander);
+            return 1;
         }
 
-        if (cli.help) {
-            cli.usage(jcommander);
-            System.exit(0);
+        if (help) {
+            usage(jcommander);
+            return 0;
         }
 
+        TreeExportConfiguration configuration = new TreeExportConfiguration();
+        configuration.setFile(file == null ? null : Paths.get(file));
+        configuration.setFormat(format);
+        configuration.setLanguage(LanguageRegistry.findLanguageByTerseName(language));
+        configuration.setReadStdin(readStdin);
+        configuration.setSourceEncoding(encoding);
+        
+        Properties props = new Properties();
+        props.putAll(this.properties);
+        configuration.setProperties(props);
 
-        TreeRendererDescriptor descriptor = TreeRenderers.findById(cli.format);
-        if (descriptor == null) {
-            throw cli.bail("Unknown format '" + cli.format + "'");
-        }
-
-        PropertySource bundle = parseProperties(cli, descriptor);
-
-        cli.run(descriptor.produceRenderer(bundle));
+        TreeExporter exporter = new TreeExporter(configuration, io);
+        exporter.export();
+        
+        return 0;
     }
-
-    public static PropertySource parseProperties(TreeExportCli cli, TreeRendererDescriptor descriptor) {
-        PropertySource bundle = descriptor.newPropertyBundle();
-
-        for (String key : cli.properties.keySet()) {
-            PropertyDescriptor<?> d = bundle.getPropertyDescriptor(key);
-            if (d == null) {
-                throw cli.bail("Unknown property '" + key + "'");
-            }
-
-            setProperty(d, bundle, cli.properties.get(key));
-        }
-        return bundle;
-    }
-
 
     private void usage(JCommander commander) {
         StringBuilder sb = new StringBuilder();
@@ -112,7 +108,7 @@ public class TreeExportCli {
         sb.append(System.lineSeparator());
 
         sb.append("Available languages: ");
-        for (Language l : LanguageRegistry.getLanguages()) {
+        for (Language l : LanguageRegistry.PMD) {
             sb.append(l.getTerseName()).append(' ');
         }
         sb.append(System.lineSeparator());
@@ -123,7 +119,7 @@ public class TreeExportCli {
         sb.append(System.lineSeparator())
             .append(System.lineSeparator());
 
-        sb.append("Example: ast-dump --format xml --language java MyFile.java")
+        sb.append("Example: ast-dump --format xml --language java --file MyFile.java")
             .append(System.lineSeparator());
 
         System.err.print(sb);
@@ -155,86 +151,5 @@ public class TreeExportCli {
 
     private <T> String getDefault(PropertyDescriptor<T> prop) {
         return StringEscapeUtils.escapeJava(prop.asDelimitedString(prop.defaultValue()));
-    }
-
-    private void run(TreeRenderer renderer) throws IOException {
-        printWarning();
-
-        LanguageVersion langVersion = LanguageRegistry.findLanguageByTerseName(language).getDefaultVersion();
-        LanguageVersionHandler languageHandler = langVersion.getLanguageVersionHandler();
-        Parser parser = languageHandler.getParser();
-
-        @SuppressWarnings("PMD.CloseResource")
-        final Reader source;
-        final String filename;
-        if (file == null && !readStdin) {
-            throw bail("One of --file or --read-stdin must be mentioned");
-        } else if (readStdin) {
-            System.err.println("Reading from stdin...");
-            source = new StringReader(readFromSystemIn());
-            filename = "stdin";
-        } else {
-            source = Files.newBufferedReader(new File(file).toPath(), Charset.forName(encoding));
-            filename = file;
-        }
-
-        // disable warnings for deprecated attributes
-        Logger.getLogger(Attribute.class.getName()).setLevel(Level.OFF);
-
-        try {
-            String fullSource = IOUtils.toString(source);
-            ParserTask task = new ParserTask(langVersion, filename, fullSource, SemanticErrorReporter.noop());
-            RootNode root = parser.parse(task);
-
-            AstAnalysisContext ctx = new AstAnalysisContext() {
-                @Override
-                public ClassLoader getTypeResolutionClassLoader() {
-                    return getClass().getClassLoader();
-                }
-
-                @Override
-                public LanguageVersion getLanguageVersion() {
-                    return langVersion;
-                }
-            };
-
-            languageHandler.getProcessingStages().forEach(it -> it.processAST(root, ctx));
-
-            renderer.renderSubtree(root, System.out);
-        } finally {
-            source.close();
-        }
-    }
-
-    private String readFromSystemIn() {
-
-
-        StringBuilder sb = new StringBuilder();
-        try (Scanner scanner = new Scanner(new CloseShieldInputStream(System.in))) {
-            while (scanner.hasNextLine()) {
-                sb.append(scanner.nextLine());
-            }
-        }
-        return sb.toString();
-
-    }
-
-    private void printWarning() {
-        System.err.println("-------------------------------------------------------------------------------");
-        System.err.println("This command line utility is experimental. It might change at any time without");
-        System.err.println("prior notice.");
-        System.err.println("-------------------------------------------------------------------------------");
-    }
-
-    private static <T> void setProperty(PropertyDescriptor<T> descriptor, PropertySource bundle, String value) {
-        bundle.setProperty(descriptor, descriptor.valueFrom(value));
-    }
-
-
-    private RuntimeException bail(String message) {
-        System.err.println(message);
-        System.err.println("Use --help for usage information");
-        System.exit(1);
-        return new RuntimeException();
     }
 }
