@@ -336,7 +336,7 @@ public final class TypeSystem {
             }
             return getPrimitive(kind).getSymbol();
         } else if (clazz.isArray()) {
-            return new ArraySymbolImpl(this, getClassSymbol(clazz.getComponentType()));
+            return new ArraySymbolImpl(this, getClassSymbol(clazz.getComponentType()), Collections.emptyList());
         }
 
         return resolver.resolveClassFromBinaryName(clazz.getName());

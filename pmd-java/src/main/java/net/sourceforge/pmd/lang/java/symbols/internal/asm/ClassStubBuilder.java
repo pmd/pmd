@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.java.symbols.internal.asm;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.FieldVisitor;
 import org.objectweb.asm.MethodVisitor;
@@ -32,6 +33,11 @@ class ClassStubBuilder extends ClassVisitor {
         this.resolver = resolver;
     }
 
+    @Override
+    public AnnotationVisitor visitAnnotation(String descriptor, boolean visible) {
+        return new JAnnotationBuilder.ClassJAnnotationBuilder(descriptor, myStub);
+    }
+    
     @Override
     public void visit(int version, int access, String internalName, @Nullable String signature, String superName, String[] interfaces) {
         myStub.setModifiers(access, true);

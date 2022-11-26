@@ -17,6 +17,7 @@ import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
+import net.sourceforge.pmd.lang.java.types.JAnnotation;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JTypeVar;
 import net.sourceforge.pmd.lang.java.types.Substitution;
@@ -122,6 +123,10 @@ abstract class UnresolvedClassImpl implements JClassSymbol {
         return Collections.emptyList();
     }
 
+    @Override
+    public List<JAnnotation> getDeclaredAnnotations() {
+        return Collections.emptyList();
+    }
 
     @Override
     public @Nullable JClassType getSuperclassType(Substitution substitution) {

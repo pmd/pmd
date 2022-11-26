@@ -14,6 +14,7 @@ import java.util.Set;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
@@ -35,6 +36,7 @@ import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterOwnerSymbol;
 import net.sourceforge.pmd.lang.java.symbols.internal.ImplicitMemberSymbols;
+import net.sourceforge.pmd.lang.java.types.JAnnotation;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.Substitution;
@@ -52,6 +54,7 @@ final class AstClassSym
     private final List<JMethodSymbol> declaredMethods;
     private final List<JConstructorSymbol> declaredCtors;
     private final List<JFieldSymbol> declaredFields;
+    private final List<JAnnotation> declaredAnnotations;
     private final Set<String> enumConstantNames;
 
     AstClassSym(ASTAnyTypeDeclaration node,
@@ -67,6 +70,7 @@ final class AstClassSym
         final List<JMethodSymbol> myMethods = new ArrayList<>();
         final List<JConstructorSymbol> myCtors = new ArrayList<>();
         final List<JFieldSymbol> myFields = new ArrayList<>();
+        final List<JAnnotation> myAnnotations = new ArrayList<>();
         final Set<String> enumConstantNames;
 
         final List<JFieldSymbol> recordComponents;
@@ -114,6 +118,10 @@ final class AstClassSym
                 }
             }
         }
+        
+        for (ASTAnnotation anode : node.getDeclaredAnnotations()) {
+            myAnnotations.add(AstAnnotationParser.fromAst(anode));
+        }
 
         if (!recordComponents.isEmpty()) {
             // then the recordsComponents contains all record components
@@ -137,6 +145,7 @@ final class AstClassSym
         this.declaredMethods = Collections.unmodifiableList(myMethods);
         this.declaredCtors = Collections.unmodifiableList(myCtors);
         this.declaredFields = Collections.unmodifiableList(myFields);
+        this.declaredAnnotations = Collections.unmodifiableList(myAnnotations);
         this.enumConstantNames = enumConstantNames == null ? null : Collections.unmodifiableSet(enumConstantNames);
     }
 
@@ -203,6 +212,11 @@ final class AstClassSym
     @Override
     public List<JFieldSymbol> getDeclaredFields() {
         return declaredFields;
+    }
+    
+    @Override
+    public List<JAnnotation> getDeclaredAnnotations() {
+        return declaredAnnotations;
     }
 
     @Override

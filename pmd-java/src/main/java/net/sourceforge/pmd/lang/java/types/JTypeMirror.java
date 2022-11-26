@@ -422,6 +422,14 @@ public interface JTypeMirror extends JTypeVisitable {
         return Collections.emptyList();
     }
 
+    /**
+     * Returns a list of all annotations applied to this type.
+     * Primitive types can't have annotations.
+     */
+    @Experimental
+    default List<JAnnotation> getDeclaredAnnotations() {
+        return Collections.emptyList();
+    }
 
 
     @Override

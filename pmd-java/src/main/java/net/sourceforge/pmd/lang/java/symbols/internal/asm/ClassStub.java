@@ -4,9 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.symbols.internal.asm;
 
-import static net.sourceforge.pmd.lang.java.symbols.internal.asm.ExecutableStub.CtorStub;
-import static net.sourceforge.pmd.lang.java.symbols.internal.asm.ExecutableStub.MethodStub;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -31,7 +28,10 @@ import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterOwnerSymbol;
 import net.sourceforge.pmd.lang.java.symbols.internal.SymbolEquality;
 import net.sourceforge.pmd.lang.java.symbols.internal.SymbolToStrings;
+import net.sourceforge.pmd.lang.java.symbols.internal.asm.ExecutableStub.CtorStub;
+import net.sourceforge.pmd.lang.java.symbols.internal.asm.ExecutableStub.MethodStub;
 import net.sourceforge.pmd.lang.java.symbols.internal.asm.GenericSigBase.LazyClassSignature;
+import net.sourceforge.pmd.lang.java.types.JAnnotation;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JTypeVar;
 import net.sourceforge.pmd.lang.java.types.LexicalScope;
@@ -59,6 +59,7 @@ final class ClassStub implements JClassSymbol, AsmStub {
     private List<JClassSymbol> memberClasses = new ArrayList<>();
     private List<JMethodSymbol> methods = new ArrayList<>();
     private List<JConstructorSymbol> ctors = new ArrayList<>();
+    private List<JAnnotation> annotations = new ArrayList<>();
     private Set<String> enumConstantNames = null;
 
     private final ParseLock parseLock;
@@ -110,6 +111,7 @@ final class ClassStub implements JClassSymbol, AsmStub {
                 ctors = Collections.unmodifiableList(ctors);
                 fields = Collections.unmodifiableList(fields);
                 memberClasses = Collections.unmodifiableList(memberClasses);
+                annotations = Collections.unmodifiableList(annotations);
                 enumConstantNames = enumConstantNames == null ? null : Collections.unmodifiableSet(enumConstantNames);
 
                 if (EnclosingInfo.NO_ENCLOSING.equals(enclosingInfo)) {
@@ -238,6 +240,10 @@ final class ClassStub implements JClassSymbol, AsmStub {
     void addCtor(CtorStub methodStub) {
         ctors.add(methodStub);
     }
+    
+    void addAnnotation(JAnnotation annotation) {
+        annotations.add(annotation);
+    }
 
     // </editor-fold>
 
@@ -302,6 +308,12 @@ final class ClassStub implements JClassSymbol, AsmStub {
     public List<JClassSymbol> getDeclaredClasses() {
         parseLock.ensureParsed();
         return memberClasses;
+    }
+    
+    @Override
+    public List<JAnnotation> getDeclaredAnnotations() {
+        parseLock.ensureParsed();
+        return annotations;
     }
 
     @Override

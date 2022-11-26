@@ -72,6 +72,11 @@ class FakeIntersectionSymbol implements JClassSymbol {
     public List<JFieldSymbol> getDeclaredFields() {
         return Collections.emptyList();
     }
+    
+    @Override
+    public List<JAnnotation> getDeclaredAnnotations() {
+        return Collections.emptyList();
+    }
 
     @Override
     public @Nullable Set<String> getEnumConstantNames() {

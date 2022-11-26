@@ -276,6 +276,11 @@ class ClassTypeImpl implements JClassType {
             it -> new ClassMethodSigImpl(this, it)
         );
     }
+    
+    @Override
+    public List<JAnnotation> getDeclaredAnnotations() {
+        return symbol.getDeclaredAnnotations();
+    }
 
     @Override
     public Stream<JMethodSig> streamMethods(Predicate<? super JMethodSymbol> prefilter) {

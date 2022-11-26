@@ -38,6 +38,7 @@ import net.sourceforge.pmd.lang.java.types.Substitution;
  */
 public interface JClassSymbol extends JTypeDeclSymbol,
                                       JTypeParameterOwnerSymbol,
+                                      JAnnotatableElementSymbol, // TODO : Pull this up to JTypeDeclSymbol
                                       BoundToNode<ASTAnyTypeDeclaration> {
 
 

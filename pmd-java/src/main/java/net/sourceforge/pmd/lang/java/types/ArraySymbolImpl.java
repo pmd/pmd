@@ -38,10 +38,12 @@ class ArraySymbolImpl implements JClassSymbol {
 
     private final TypeSystem ts;
     private final JTypeDeclSymbol component;
+    private final List<JAnnotation> typeUseAnnotations;
 
-    ArraySymbolImpl(TypeSystem ts, JTypeDeclSymbol component) {
+    ArraySymbolImpl(TypeSystem ts, JTypeDeclSymbol component, List<JAnnotation> typeUseAnnotations) {
         this.component = Objects.requireNonNull(component, "Array symbol requires component");
         this.ts = Objects.requireNonNull(ts, "Array symbol requires symbol factory");
+        this.typeUseAnnotations = Objects.requireNonNull(typeUseAnnotations, "Array symbol requires typeUseAnnotations");
         if (component instanceof JClassSymbol && ((JClassSymbol) component).isAnonymousClass()) {
             throw new IllegalArgumentException("Anonymous classes cannot be array components: " + component);
         }
@@ -142,6 +144,11 @@ class ArraySymbolImpl implements JClassSymbol {
     @Override
     public List<JConstructorSymbol> getConstructors() {
         return Collections.singletonList(ImplicitMemberSymbols.arrayConstructor(this));
+    }
+    
+    @Override
+    public List<JAnnotation> getDeclaredAnnotations() {
+        return typeUseAnnotations;
     }
 
     @Override

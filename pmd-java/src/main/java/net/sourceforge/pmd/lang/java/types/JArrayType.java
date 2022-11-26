@@ -5,6 +5,7 @@
 
 package net.sourceforge.pmd.lang.java.types;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -26,6 +27,7 @@ public final class JArrayType implements JTypeMirror {
     private final JTypeMirror component;
     private final TypeSystem ts;
     private JClassSymbol symbol;
+    private final List<JAnnotation> typeUseAnnotations;
 
     JArrayType(TypeSystem ts, JTypeMirror component) {
         this(ts, component, null);
@@ -36,6 +38,7 @@ public final class JArrayType implements JTypeMirror {
         this.component = component;
         this.ts = ts;
         this.symbol = arraySymbol;
+        this.typeUseAnnotations = Collections.emptyList(); // TODO
     }
 
     @Override
@@ -50,7 +53,7 @@ public final class JArrayType implements JTypeMirror {
             if (comp == null) {
                 comp = getComponentType().getErasure().getSymbol();
             }
-            symbol = new ArraySymbolImpl(ts, comp); // will nullcheck
+            symbol = new ArraySymbolImpl(ts, comp, typeUseAnnotations); // will nullcheck
         }
         return symbol;
     }
