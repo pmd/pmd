@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.types.internal.infer;
 
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -24,7 +25,6 @@ import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
 import org.hamcrest.SelfDescribing;
-import org.junit.Assert;
 
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
@@ -39,7 +39,7 @@ import net.sourceforge.pmd.lang.java.types.internal.infer.InferenceVar.BoundKind
 /**
  *
  */
-public class BaseTypeInferenceUnitTest {
+class BaseTypeInferenceUnitTest {
 
 
     protected final TypeSystem ts = JavaParsingHelper.TEST_TYPE_SYSTEM;
@@ -81,29 +81,28 @@ public class BaseTypeInferenceUnitTest {
 
     protected void subtypeConstraintShouldFail(InferenceContext ctx, JTypeMirror t, JTypeMirror s) {
         t.isConvertibleTo(s); // nota: this captures t
-        Assert.assertThrows(ResolutionFailedException.class,
-                            ctx::incorporate);
+        assertThrows(ResolutionFailedException.class, ctx::incorporate);
     }
 
-    public @NonNull JTypeMirror listType(JTypeMirror t) {
+    @NonNull JTypeMirror listType(JTypeMirror t) {
         return ts.parameterise(listSym, listOf(t));
     }
 
-    public @NonNull JWildcardType extendsWild(JTypeMirror t) {
+    @NonNull JWildcardType extendsWild(JTypeMirror t) {
         return ts.wildcard(true, t);
     }
 
-    public @NonNull JWildcardType superWild(JTypeMirror t) {
+    @NonNull JWildcardType superWild(JTypeMirror t) {
         return ts.wildcard(false, t);
     }
 
-    public @NonNull JIntersectionType intersect(JTypeMirror... types) {
+    @NonNull JIntersectionType intersect(JTypeMirror... types) {
         JTypeMirror glb = ts.glb(Arrays.asList(types));
         assertThat(glb, Matchers.isA(JIntersectionType.class));
         return (JIntersectionType) glb;
     }
 
-    public static Matcher<InferenceVar> hasBound(BoundKind kind, JTypeMirror t) {
+    static Matcher<InferenceVar> hasBound(BoundKind kind, JTypeMirror t) {
         return new BaseMatcher<InferenceVar>() {
             @Override
             public void describeTo(Description description) {
@@ -123,7 +122,7 @@ public class BaseTypeInferenceUnitTest {
     /**
      * Exactly, modulo the upper(OBJECT), which can be omitted.
      */
-    public static Matcher<InferenceVar> hasBoundsExactly(Bound... bounds) {
+    static Matcher<InferenceVar> hasBoundsExactly(Bound... bounds) {
         return new BaseMatcher<InferenceVar>() {
             @Override
             public void describeTo(Description description) {
@@ -190,7 +189,7 @@ public class BaseTypeInferenceUnitTest {
         };
     }
 
-    public static @NonNull Map<BoundKind, Set<JTypeMirror>> getBounds(InferenceVar actual) {
+    static @NonNull Map<BoundKind, Set<JTypeMirror>> getBounds(InferenceVar actual) {
         Map<BoundKind, Set<JTypeMirror>> actualBounds = new HashMap<>();
 
         for (BoundKind kind : BoundKind.values()) {
@@ -203,7 +202,7 @@ public class BaseTypeInferenceUnitTest {
         return actualBounds;
     }
 
-    public static @NonNull Set<Bound> getBoundsObj(InferenceVar actual) {
+    static @NonNull Set<Bound> getBoundsObj(InferenceVar actual) {
         Set<Bound> bounds = new LinkedHashSet<>();
 
         for (BoundKind kind : BoundKind.values()) {
@@ -214,7 +213,7 @@ public class BaseTypeInferenceUnitTest {
         return bounds;
     }
 
-    public static class Bound implements SelfDescribing {
+    static class Bound implements SelfDescribing {
 
         final BoundKind kind;
         final JTypeMirror t;

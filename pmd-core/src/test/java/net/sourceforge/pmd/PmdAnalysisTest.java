@@ -8,7 +8,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
@@ -83,7 +83,7 @@ public class PmdAnalysisTest {
     }
 
     @Test
-    public void testParseException() {
+    void testParseException() {
         PMDConfiguration config = new PMDConfiguration();
         config.setThreads(1);
         config.setForceLanguageVersion(PmdRunnableTest.getVersionWithParserThatThrowsSemanticError());
@@ -92,13 +92,13 @@ public class PmdAnalysisTest {
             pmd.files().addSourceFile("file", "some source");
 
             ReportStats stats = pmd.runAndReturnStats();
-            assertEquals("Errors", 1, stats.getNumErrors());
-            assertEquals("Violations", 0, stats.getNumViolations());
+            assertEquals(1, stats.getNumErrors(), "Errors");
+            assertEquals(0, stats.getNumViolations(), "Violations");
         }
     }
 
     @Test
-    public void testFileWithSpecificLanguage() {
+    void testFileWithSpecificLanguage() {
         final Language language = Dummy2LanguageModule.getInstance();
         PMDConfiguration config = new PMDConfiguration();
         config.setIgnoreIncrementalAnalysis(true);
@@ -117,7 +117,7 @@ public class PmdAnalysisTest {
     }
 
     @Test
-    public void testTextFileWithSpecificLanguage() {
+    void testTextFileWithSpecificLanguage() {
         final Language language = Dummy2LanguageModule.getInstance();
         PMDConfiguration config = new PMDConfiguration();
         config.setIgnoreIncrementalAnalysis(true);

@@ -5,16 +5,16 @@
 package net.sourceforge.pmd.lang.xml.ast;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.ast.test.BaseParsingHelper;
 import net.sourceforge.pmd.lang.ast.test.BaseTreeDumpTest;
 import net.sourceforge.pmd.lang.ast.test.RelevantAttributePrinter;
 import net.sourceforge.pmd.lang.xml.XmlParsingHelper;
 
-public class XmlParserTest extends BaseTreeDumpTest {
+class XmlParserTest extends BaseTreeDumpTest {
 
-    public XmlParserTest() {
+    XmlParserTest() {
         super(new RelevantAttributePrinter(), ".xml");
     }
 
@@ -27,23 +27,23 @@ public class XmlParserTest extends BaseTreeDumpTest {
      * Verifies the default parsing behavior of the XML parser.
      */
     @Test
-    public void testDefaultParsing() {
+    void testDefaultParsing() {
         doTest("sampleXml");
     }
 
     @Test
-    public void testNamespaces() {
+    void testNamespaces() {
         doTest("sampleNs");
     }
 
     @Test
-    public void testBug1518() {
+    void testBug1518() {
         doTest("bug1518");
     }
 
 
     @Test
-    public void dtdIsNotLookedUp() {
+    void dtdIsNotLookedUp() {
         // no exception should be thrown
         XmlParsingHelper.XML.parse(
             "<!DOCTYPE struts-config PUBLIC "
@@ -53,7 +53,7 @@ public class XmlParserTest extends BaseTreeDumpTest {
     }
 
     @Test
-    public void xsdIsNotLookedUp() {
+    void xsdIsNotLookedUp() {
         // no exception should be thrown
         XmlParsingHelper.XML.parse(
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?> "

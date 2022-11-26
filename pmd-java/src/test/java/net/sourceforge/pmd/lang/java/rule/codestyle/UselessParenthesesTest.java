@@ -4,8 +4,11 @@
 
 package net.sourceforge.pmd.lang.java.rule.codestyle;
 
-import org.junit.Test;
-import org.junit.jupiter.api.Assertions;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
 
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
@@ -14,7 +17,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.rule.codestyle.UselessParenthesesRule.Necessity;
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class UselessParenthesesTest extends PmdRuleTst {
+class UselessParenthesesTest extends PmdRuleTst {
 
     Executable testImpl(String expression, Necessity necessity) {
         return () -> {
@@ -23,11 +26,11 @@ public class UselessParenthesesTest extends PmdRuleTst {
 
             ASTExpression paren = acu.descendants(ASTExpression.class).crossFindBoundaries().first(ASTExpression::isParenthesized);
 
-            Assertions.assertNotNull(paren, "No parenthesized expression in " + expression);
+            assertNotNull(paren, "No parenthesized expression in " + expression);
 
             UselessParenthesesRule.Necessity result = UselessParenthesesRule.needsParentheses(paren, paren.getParent());
 
-            Assertions.assertEquals(necessity, result, "In " + expression);
+            assertEquals(necessity, result, "In " + expression);
         };
     }
 
@@ -48,8 +51,8 @@ public class UselessParenthesesTest extends PmdRuleTst {
     }
 
     @Test
-    public void testOuterLambdas() {
-        Assertions.assertAll(
+    void testOuterLambdas() {
+        assertAll(
             unnecessary("() -> (a + b)"),
             unnecessary("() -> (() -> b)"),
             unnecessary("() -> (a ? b : c)"), // clarifying?
@@ -58,8 +61,8 @@ public class UselessParenthesesTest extends PmdRuleTst {
     }
 
     @Test
-    public void testInnerLambda() {
-        Assertions.assertAll(
+    void testInnerLambda() {
+        assertAll(
             necessary("(() -> 1) + 2"),
             unnecessary("((() -> 1)) + 2"),
             necessary("(() -> 1) * 2"),
@@ -69,10 +72,10 @@ public class UselessParenthesesTest extends PmdRuleTst {
     }
 
     @Test
-    public void testAssignments() {
+    void testAssignments() {
         //  (a = b) = c          (impossible)
 
-        Assertions.assertAll(
+        assertAll(
             necessary("a * (b = c)"),
             unnecessary("a * ((b = c))"),
             necessary("a ? (b = c) : d"),
@@ -81,8 +84,8 @@ public class UselessParenthesesTest extends PmdRuleTst {
     }
 
     @Test
-    public void testConditionals() {
-        Assertions.assertAll(
+    void testConditionals() {
+        assertAll(
             unnecessary("a ? b : (c ? d : e)"),
 
             necessary("a ? (b ? c : d) : e"),
@@ -95,10 +98,10 @@ public class UselessParenthesesTest extends PmdRuleTst {
     }
 
     @Test
-    public void testAdditiveMul() {
+    void testAdditiveMul() {
         // remember, a,b,c,d are ints
         // fp1,2,3 are floats
-        Assertions.assertAll(
+        assertAll(
             unnecessary("a + (b + c)"),
             unnecessary("a + (b - c)"),
             clarifying("a + (b * c)"),
@@ -128,8 +131,8 @@ public class UselessParenthesesTest extends PmdRuleTst {
     }
 
     @Test
-    public void testMultiplicative() {
-        Assertions.assertAll(
+    void testMultiplicative() {
+        assertAll(
             unnecessary("(a * b) * c"),
 
             unnecessary("a * (b * c)"),
@@ -146,8 +149,8 @@ public class UselessParenthesesTest extends PmdRuleTst {
     }
 
     @Test
-    public void testConcatenation() {
-        Assertions.assertAll(
+    void testConcatenation() {
+        assertAll(
             necessary("\"\" + (1 + 4)"),
             unnecessary("\"\" + (\"\" + 4)"),
             unnecessary("\"\" + (4 + \"\")"),
@@ -156,8 +159,8 @@ public class UselessParenthesesTest extends PmdRuleTst {
     }
 
     @Test
-    public void testEquality() {
-        Assertions.assertAll(
+    void testEquality() {
+        assertAll(
             necessary("a == null == (b == null)"),
             unnecessary("a == null == ((b == null))"),
             balancing("(a == null) == (b == null)"),
@@ -171,8 +174,8 @@ public class UselessParenthesesTest extends PmdRuleTst {
     }
 
     @Test
-    public void testRelational() {
-        Assertions.assertAll(
+    void testRelational() {
+        assertAll(
             clarifying("a <= b == (b <= c)"),
             clarifying("(a <= b) == (b <= c)"),
             necessary("(a == b) >= 0"),
@@ -181,8 +184,8 @@ public class UselessParenthesesTest extends PmdRuleTst {
     }
 
     @Test
-    public void testUnaries() {
-        Assertions.assertAll(
+    void testUnaries() {
+        assertAll(
             unnecessary("(String) ((String) c)"),
             unnecessary("(String) (+1)"),
             unnecessary("a + +((char) 1)"),
@@ -198,8 +201,8 @@ public class UselessParenthesesTest extends PmdRuleTst {
     }
 
     @Test
-    public void testSwitches() {
-        Assertions.assertAll(
+    void testSwitches() {
+        assertAll(
             unnecessary(" a + (switch (1) { })"),
             unnecessary("(switch (1) { }) + 1")
         );

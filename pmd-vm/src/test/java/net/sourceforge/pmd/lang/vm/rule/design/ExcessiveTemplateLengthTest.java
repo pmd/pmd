@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.vm.rule.design;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class ExcessiveTemplateLengthTest extends PmdRuleTst {
+class ExcessiveTemplateLengthTest extends PmdRuleTst {
     // no additional unit tests
 }

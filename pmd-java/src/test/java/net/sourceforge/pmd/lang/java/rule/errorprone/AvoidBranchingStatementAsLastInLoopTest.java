@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.java.rule.errorprone;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class AvoidBranchingStatementAsLastInLoopTest extends PmdRuleTst {
+class AvoidBranchingStatementAsLastInLoopTest extends PmdRuleTst {
     // no additional unit tests
 }

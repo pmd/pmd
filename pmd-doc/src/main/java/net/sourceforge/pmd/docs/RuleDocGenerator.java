@@ -554,7 +554,7 @@ public class RuleDocGenerator {
 
         int indentation = 0;
         int strLen = stripped.length();
-        while (Character.isWhitespace(stripped.charAt(indentation)) && indentation < strLen) {
+        while (indentation < strLen && Character.isWhitespace(stripped.charAt(indentation))) {
             indentation++;
         }
 

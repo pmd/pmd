@@ -8,12 +8,12 @@ package net.sourceforge.pmd.lang.java.symbols.table.internal;
 import static java.util.Collections.emptySet;
 import static java.util.stream.Collectors.toSet;
 import static net.sourceforge.pmd.util.CollectionUtil.setOf;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Set;
 
-import org.junit.Test;
-import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
 
 import net.sourceforge.pmd.lang.java.BaseParserTest;
@@ -24,13 +24,13 @@ import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.symbols.table.internal.PatternBindingsUtil.BindSet;
 import net.sourceforge.pmd.util.CollectionUtil;
 
-public class PatternBindingsTests extends BaseParserTest {
+class PatternBindingsTests extends BaseParserTest {
 
-    private final JavaParsingHelper java15p = java.withDefaultVersion("17");
+    private final JavaParsingHelper java17 = java.withDefaultVersion("17");
 
     private Executable declares(String expr, Set<String> trueVars, Set<String> falseVars) {
         return () -> {
-            ASTCompilationUnit ast = java15p.parse("class Foo {{ Object o = (" + expr + "); }}");
+            ASTCompilationUnit ast = java17.parse("class Foo {{ Object o = (" + expr + "); }}");
 
             ASTExpression e = ast.descendants(ASTExpression.class).crossFindBoundaries().firstOrThrow();
 
@@ -50,9 +50,9 @@ public class PatternBindingsTests extends BaseParserTest {
     }
 
     @Test
-    public void testUnaries() {
+    void testUnaries() {
         String stringS = "a instanceof String s";
-        Assertions.assertAll(
+        assertAll(
             declares(stringS, setOf("s"), emptySet()),
             declares("!(" + stringS + ")", emptySet(), setOf("s")),
 
@@ -62,10 +62,10 @@ public class PatternBindingsTests extends BaseParserTest {
     }
 
     @Test
-    public void testBooleanConditionals() {
+    void testBooleanConditionals() {
         String stringS = "(a instanceof String s)";
         String stringP = "(a instanceof String p)";
-        Assertions.assertAll(
+        assertAll(
             declares(stringS + " || " + stringP, emptySet(), emptySet()),
             declares(stringS + " && " + stringP, setOf("s", "p"), emptySet()),
             declares("!(" + stringS + " || " + stringP + ")", emptySet(), emptySet()),

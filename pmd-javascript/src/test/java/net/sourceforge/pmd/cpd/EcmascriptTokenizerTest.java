@@ -6,13 +6,13 @@ package net.sourceforge.pmd.cpd;
 
 import java.util.Properties;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.cpd.test.CpdTextComparisonTest;
 
-public class EcmascriptTokenizerTest extends CpdTextComparisonTest {
+class EcmascriptTokenizerTest extends CpdTextComparisonTest {
 
-    public EcmascriptTokenizerTest() {
+    EcmascriptTokenizerTest() {
         super(".js");
     }
 
@@ -27,17 +27,17 @@ public class EcmascriptTokenizerTest extends CpdTextComparisonTest {
     }
 
     @Test
-    public void testSimple() {
+    void testSimple() {
         doTest("simple");
     }
 
     @Test
-    public void testSimplewithSemis() {
+    void testSimplewithSemis() {
         doTest("simpleWithSemis");
     }
 
     @Test
-    public void testIgnoreBetweenSpecialComments() {
+    void testIgnoreBetweenSpecialComments() {
         doTest("specialComments");
     }
 
@@ -45,27 +45,27 @@ public class EcmascriptTokenizerTest extends CpdTextComparisonTest {
      * See: https://sourceforge.net/p/pmd/bugs/1239/
      */
     @Test
-    public void parseStringNotAsMultiline() {
+    void parseStringNotAsMultiline() {
         doTest("lineContinuations");
     }
 
     @Test
-    public void testIgnoreSingleLineComments() {
+    void testIgnoreSingleLineComments() {
         doTest("singleLineCommentIgnore");
     }
 
     @Test
-    public void testIgnoreMultiLineComments() {
+    void testIgnoreMultiLineComments() {
         doTest("multilineCommentIgnore");
     }
 
     @Test
-    public void testTemplateStrings() {
+    void testTemplateStrings() {
         doTest("templateStrings");
     }
 
     @Test
-    public void testTabWidth() {
+    void testTabWidth() {
         doTest("tabWidth");
     }
 }

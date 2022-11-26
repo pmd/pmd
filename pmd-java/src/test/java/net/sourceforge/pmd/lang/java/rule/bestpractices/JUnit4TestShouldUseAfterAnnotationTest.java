@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class JUnit4TestShouldUseAfterAnnotationTest extends PmdRuleTst {
+class JUnit4TestShouldUseAfterAnnotationTest extends PmdRuleTst {
     // no additional unit tests
 }

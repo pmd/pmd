@@ -4,10 +4,11 @@
 
 package net.sourceforge.pmd.lang.scala.rule;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleContext;
@@ -17,12 +18,12 @@ import net.sourceforge.pmd.lang.scala.ast.ASTTermName;
 import net.sourceforge.pmd.lang.scala.ast.BaseScalaTest;
 import net.sourceforge.pmd.lang.scala.ast.ScalaNode;
 
-public class ScalaRuleTest extends BaseScalaTest {
+class ScalaRuleTest extends BaseScalaTest {
 
     private static final String SCALA_TEST = "/parserFiles/helloworld.scala";
 
     @Test
-    public void testRuleVisits() {
+    void testRuleVisits() {
         final AtomicInteger visited = new AtomicInteger();
         ScalaRule rule = new ScalaRule() {
 
@@ -34,11 +35,11 @@ public class ScalaRuleTest extends BaseScalaTest {
         };
         ASTSource root = scala.parseResource(SCALA_TEST);
         rule.apply(root, null);
-        Assert.assertEquals(12, visited.get());
+        assertEquals(12, visited.get());
     }
 
     @Test
-    public void testDummyRule() {
+    void testDummyRule() {
         ScalaRule rule = new ScalaRule() {
             @Override
             public String getMessage() {
@@ -56,6 +57,6 @@ public class ScalaRuleTest extends BaseScalaTest {
         };
         Report report = scala.executeRuleOnResource(rule, SCALA_TEST);
 
-        Assert.assertEquals(1, report.getViolations().size());
+        assertEquals(1, report.getViolations().size());
     }
 }

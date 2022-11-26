@@ -7,7 +7,7 @@ package net.sourceforge.pmd.lang.java;
 import static net.sourceforge.pmd.lang.ast.test.TestUtilsKt.assertSize;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.FooRule;
 import net.sourceforge.pmd.Report;
@@ -15,7 +15,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 
-public class SuppressWarningsTest {
+class SuppressWarningsTest {
 
     private final JavaParsingHelper java = JavaParsingHelper.DEFAULT;
 
@@ -45,7 +45,7 @@ public class SuppressWarningsTest {
     }
 
     @Test
-    public void testClassLevelSuppression() {
+    void testClassLevelSuppression() {
         Report rpt = java.executeRule(new FooRule(), TEST1);
         assertSize(rpt, 0);
         rpt = java.executeRule(new FooRule(), TEST2);
@@ -53,104 +53,104 @@ public class SuppressWarningsTest {
     }
 
     @Test
-    public void testInheritedSuppression() {
+    void testInheritedSuppression() {
         Report rpt = java.executeRule(new FooRule(), TEST3);
         assertSize(rpt, 0);
     }
 
     @Test
-    public void testMethodLevelSuppression() {
+    void testMethodLevelSuppression() {
         Report rpt;
         rpt = java.executeRule(new FooRule(), TEST4);
         assertSize(rpt, 1);
     }
 
     @Test
-    public void testConstructorLevelSuppression() {
+    void testConstructorLevelSuppression() {
         Report rpt = java.executeRule(new FooRule(), TEST5);
         assertSize(rpt, 0);
     }
 
     @Test
-    public void testFieldLevelSuppression() {
+    void testFieldLevelSuppression() {
         Report rpt = java.executeRule(new FooRule(), TEST6);
         assertSize(rpt, 1);
     }
 
     @Test
-    public void testParameterLevelSuppression() {
+    void testParameterLevelSuppression() {
         Report rpt = java.executeRule(new FooRule(), TEST7);
         assertSize(rpt, 1);
     }
 
     @Test
-    public void testLocalVariableLevelSuppression() {
+    void testLocalVariableLevelSuppression() {
         Report rpt = java.executeRule(new FooRule(), TEST8);
         assertSize(rpt, 1);
     }
 
     @Test
-    public void testSpecificSuppression() {
+    void testSpecificSuppression() {
         Report rpt = java.executeRule(new FooRule(), TEST9);
         assertSize(rpt, 1);
     }
 
     @Test
-    public void testSpecificSuppressionValue1() {
+    void testSpecificSuppressionValue1() {
         Report rpt = java.executeRule(new FooRule(), TEST9_VALUE1);
         assertSize(rpt, 1);
     }
 
     @Test
-    public void testSpecificSuppressionValue2() {
+    void testSpecificSuppressionValue2() {
         Report rpt = java.executeRule(new FooRule(), TEST9_VALUE2);
         assertSize(rpt, 1);
     }
 
     @Test
-    public void testSpecificSuppressionValue3() {
+    void testSpecificSuppressionValue3() {
         Report rpt = java.executeRule(new FooRule(), TEST9_VALUE3);
         assertSize(rpt, 1);
     }
 
     @Test
-    public void testSpecificSuppressionMulitpleValues1() {
+    void testSpecificSuppressionMulitpleValues1() {
         Report rpt = java.executeRule(new FooRule(), TEST9_MULTIPLE_VALUES_1);
         assertSize(rpt, 0);
     }
 
     @Test
-    public void testSpecificSuppressionMulitpleValues2() {
+    void testSpecificSuppressionMulitpleValues2() {
         Report rpt = java.executeRule(new FooRule(), TEST9_MULTIPLE_VALUES_2);
         assertSize(rpt, 0);
     }
 
     @Test
-    public void testNoSuppressionBlank() {
+    void testNoSuppressionBlank() {
         Report rpt = java.executeRule(new FooRule(), TEST10);
         assertSize(rpt, 2);
     }
 
     @Test
-    public void testNoSuppressionSomethingElseS() {
+    void testNoSuppressionSomethingElseS() {
         Report rpt = java.executeRule(new FooRule(), TEST11);
         assertSize(rpt, 2);
     }
 
     @Test
-    public void testSuppressAll() {
+    void testSuppressAll() {
         Report rpt = java.executeRule(new FooRule(), TEST12);
         assertSize(rpt, 0);
     }
 
     @Test
-    public void testSpecificSuppressionAtTopLevel() {
+    void testSpecificSuppressionAtTopLevel() {
         Report rpt = java.executeRule(new BarRule(), TEST13);
         assertSize(rpt, 0);
     }
 
     @Test
-    public void testConstExpr() {
+    void testConstExpr() {
         testAboutConstExpr(true, 0); // with the annotation, we should get no violation
         testAboutConstExpr(false, 1); // without the annotation, we should get a violation
     }

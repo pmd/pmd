@@ -6,10 +6,10 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.function.ThrowingRunnable;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.test.BaseParsingHelper;
@@ -17,13 +17,13 @@ import net.sourceforge.pmd.lang.ast.test.BaseTreeDumpTest;
 import net.sourceforge.pmd.lang.ast.test.RelevantAttributePrinter;
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 
-public class Java18PreviewTreeDumpTest extends BaseTreeDumpTest {
+class Java18PreviewTreeDumpTest extends BaseTreeDumpTest {
     private final JavaParsingHelper java18p =
             JavaParsingHelper.DEFAULT.withDefaultVersion("18-preview")
                                      .withResourceContext(Java18PreviewTreeDumpTest.class, "jdkversiontests/java18p/");
     private final JavaParsingHelper java18 = java18p.withDefaultVersion("18");
 
-    public Java18PreviewTreeDumpTest() {
+    Java18PreviewTreeDumpTest() {
         super(new RelevantAttributePrinter(), ".java");
     }
 
@@ -33,72 +33,57 @@ public class Java18PreviewTreeDumpTest extends BaseTreeDumpTest {
     }
 
     @Test
-    public void dealingWithNullBeforeJava18Preview() {
-        ParseException thrown = Assert.assertThrows(ParseException.class, new ThrowingRunnable() {
-            @Override
-            public void run() throws Throwable {
-                java18.parseResource("DealingWithNull.java");
-            }
-        });
-        Assert.assertTrue("Unexpected message: " + thrown.getMessage(),
-                thrown.getMessage().contains("Null case labels is a preview feature of JDK 18, you should select your language version accordingly"));
+    void dealingWithNullBeforeJava18Preview() {
+        ParseException thrown = assertThrows(ParseException.class, () -> java18.parseResource("DealingWithNull.java"));
+        assertTrue(thrown.getMessage().contains("Null case labels is a preview feature of JDK 18, you should select your language version accordingly"),
+                "Unexpected message: " + thrown.getMessage());
     }
 
     @Test
-    public void dealingWithNull() {
+    void dealingWithNull() {
         doTest("DealingWithNull");
     }
 
     @Test
-    public void enhancedTypeCheckingSwitch() {
+    void enhancedTypeCheckingSwitch() {
         doTest("EnhancedTypeCheckingSwitch");
     }
 
     @Test
-    public void exhaustiveSwitch() {
+    void exhaustiveSwitch() {
         doTest("ExhaustiveSwitch");
     }
 
     @Test
-    public void guardedAndParenthesizedPatternsBeforeJava18Preview() {
-        ParseException thrown = Assert.assertThrows(ParseException.class, new ThrowingRunnable() {
-            @Override
-            public void run() throws Throwable {
-                java18.parseResource("GuardedAndParenthesizedPatterns.java");
-            }
-        });
+    void guardedAndParenthesizedPatternsBeforeJava18Preview() {
+        ParseException thrown = assertThrows(ParseException.class, () -> java18.parseResource("GuardedAndParenthesizedPatterns.java"));
         assertThat(thrown.getMessage(), containsString("Pattern matching for switch is a preview feature of JDK 18, you should select your language version accordingly"));
     }
 
     @Test
-    public void guardedAndParenthesizedPatterns() {
+    void guardedAndParenthesizedPatterns() {
         doTest("GuardedAndParenthesizedPatterns");
     }
 
     @Test
-    public void patternsInSwitchLabelsBeforeJava18Preview() {
-        ParseException thrown = Assert.assertThrows(ParseException.class, new ThrowingRunnable() {
-            @Override
-            public void run() throws Throwable {
-                java18.parseResource("PatternsInSwitchLabels.java");
-            }
-        });
-        Assert.assertTrue("Unexpected message: " + thrown.getMessage(),
-                thrown.getMessage().contains("Pattern matching for switch is a preview feature of JDK 18, you should select your language version accordingly"));
+    void patternsInSwitchLabelsBeforeJava18Preview() {
+        ParseException thrown = assertThrows(ParseException.class, () -> java18.parseResource("PatternsInSwitchLabels.java"));
+        assertTrue(thrown.getMessage().contains("Pattern matching for switch is a preview feature of JDK 18, you should select your language version accordingly"),
+                "Unexpected message: " + thrown.getMessage());
     }
 
     @Test
-    public void patternsInSwitchLabels() {
+    void patternsInSwitchLabels() {
         doTest("PatternsInSwitchLabels");
     }
 
     @Test
-    public void refiningPatternsInSwitch() {
+    void refiningPatternsInSwitch() {
         doTest("RefiningPatternsInSwitch");
     }
 
     @Test
-    public void scopeOfPatternVariableDeclarations() {
+    void scopeOfPatternVariableDeclarations() {
         doTest("ScopeOfPatternVariableDeclarations");
     }
 }

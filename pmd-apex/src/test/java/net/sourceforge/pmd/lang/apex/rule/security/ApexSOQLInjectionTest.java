@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.apex.rule.security;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class ApexSOQLInjectionTest extends PmdRuleTst {
+class ApexSOQLInjectionTest extends PmdRuleTst {
     // no additional unit tests
 }

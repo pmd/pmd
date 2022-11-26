@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.java.rule.security;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class HardCodedCryptoKeyTest extends PmdRuleTst {
+class HardCodedCryptoKeyTest extends PmdRuleTst {
     // no additional unit tests
 }

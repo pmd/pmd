@@ -6,13 +6,13 @@ package net.sourceforge.pmd.cpd;
 
 import java.util.Properties;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.cpd.test.CpdTextComparisonTest;
 
-public class GroovyTokenizerTest extends CpdTextComparisonTest {
+class GroovyTokenizerTest extends CpdTextComparisonTest {
 
-    public GroovyTokenizerTest() {
+    GroovyTokenizerTest() {
         super(".groovy");
     }
 
@@ -27,7 +27,7 @@ public class GroovyTokenizerTest extends CpdTextComparisonTest {
     }
 
     @Test
-    public void testSample() {
+    void testSample() {
         doTest("sample");
     }
 }

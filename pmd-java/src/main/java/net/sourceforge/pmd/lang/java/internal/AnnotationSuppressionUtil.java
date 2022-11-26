@@ -48,7 +48,7 @@ import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
  * <p>Additionally, the following values suppress a specific set of rules:
  * <ul>
  * <li>{@code "unused"}: suppresses rules like UnusedLocalVariable or UnusedPrivateField;
- * <li>{@code "serial"}: suppresses BeanMembersShouldSerialize and MissingSerialVersionUID;
+ * <li>{@code "serial"}: suppresses BeanMembersShouldSerialize, NonSerializableClass and MissingSerialVersionUID;
  * <li>TODO "fallthrough" #1899
  * </ul>
  */
@@ -58,7 +58,7 @@ final class AnnotationSuppressionUtil {
         = new HashSet<>(Arrays.asList("UnusedPrivateField", "UnusedLocalVariable", "UnusedPrivateMethod",
                                       "UnusedFormalParameter", "UnusedAssignment", "SingularField"));
     private static final Set<String> SERIAL_RULES =
-        new HashSet<>(Arrays.asList("BeanMembersShouldSerialize", "MissingSerialVersionUID"));
+        new HashSet<>(Arrays.asList("BeanMembersShouldSerialize", "NonSerializableClass", "MissingSerialVersionUID"));
 
     static final ViolationSuppressor JAVA_ANNOT_SUPPRESSOR = new ViolationSuppressor() {
         @Override

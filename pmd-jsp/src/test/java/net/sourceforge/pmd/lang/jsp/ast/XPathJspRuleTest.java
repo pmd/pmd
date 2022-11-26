@@ -4,25 +4,25 @@
 
 package net.sourceforge.pmd.lang.jsp.ast;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleViolation;
 
-public class XPathJspRuleTest extends AbstractJspNodesTst {
+class XPathJspRuleTest extends AbstractJspNodesTst {
 
     /**
      * Test matching a XPath expression against a JSP source.
      */
     @Test
-    public void testExpressionMatching() {
+    void testExpressionMatching() {
         Rule rule = jsp.newXpathRule("//Element [@Name='hr']");
         Report report = jsp.executeRule(rule, "<html><hr/></html>");
 
-        assertEquals("One violation expected!", 1, report.getViolations().size());
+        assertEquals(1, report.getViolations().size(), "One violation expected!");
 
         RuleViolation rv = report.getViolations().get(0);
         assertEquals(1, rv.getBeginLine());

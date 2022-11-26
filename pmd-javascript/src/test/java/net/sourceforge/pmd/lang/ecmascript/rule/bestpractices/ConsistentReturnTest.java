@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.ecmascript.rule.bestpractices;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class ConsistentReturnTest extends PmdRuleTst {
+class ConsistentReturnTest extends PmdRuleTst {
     // no additional unit tests
 }

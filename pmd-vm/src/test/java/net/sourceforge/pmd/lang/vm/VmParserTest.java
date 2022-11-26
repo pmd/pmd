@@ -4,14 +4,14 @@
 
 package net.sourceforge.pmd.lang.vm;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.vm.ast.VmParsingHelper;
 
 /**
  * Unit test for VM parsing.
  */
-public class VmParserTest {
+class VmParserTest {
 
     private static final String VM_SRC = "<HTML><BODY>Hello $customer.Name <table> "
         + "#foreach($mud in $mudsOnSpecial)" + "  #if ( $customer.hasPurchased($mud) )" + "     <tr>" + "      <td>"
@@ -29,17 +29,17 @@ public class VmParserTest {
     // 2) stuff #end #end";
 
     @Test
-    public void testParser() {
+    void testParser() {
         VmParsingHelper.DEFAULT.parse(VM_SRC);
     }
 
     @Test
-    public void testParser2() {
+    void testParser2() {
         VmParsingHelper.DEFAULT.parse(SRC2);
     }
 
     @Test
-    public void testParser3() {
+    void testParser3() {
         VmParsingHelper.DEFAULT.parse(SRC3);
     }
 
