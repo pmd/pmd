@@ -24,19 +24,6 @@ final class TokenUtils {
 
     }
 
-    public static <T extends GenericToken<T>> int compare(GenericToken<T> t1, GenericToken<T> t2) {
-        return t1.getRegion().compareTo(t2.getRegion());
-    }
-
-    public static <T extends GenericToken<T>> boolean isBefore(GenericToken<T> t1, GenericToken<T> t2) {
-        return t1.getRegion().compareTo(t2.getRegion()) < 0;
-    }
-
-    public static <T extends GenericToken<T>> boolean isAfter(GenericToken<T> t1, GenericToken<T> t2) {
-        return t1.getRegion().compareTo(t2.getRegion()) > 0;
-    }
-
-
     public static <T extends GenericToken<T>> T nthFollower(T token, int n) {
         if (n < 0) {
             throw new IllegalArgumentException("Negative index?");

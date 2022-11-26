@@ -62,7 +62,6 @@ public class CommentDefaultAccessModifierRule extends AbstractJavaRulechainRule 
             "org.junit.jupiter.api.AfterAll"
         );
 
-    private static final String MESSAGE = "To avoid mistakes add a comment at the beginning of the {0} {1} if you want a default access modifier";
 
     public CommentDefaultAccessModifierRule() {
         super(ASTMethodDeclaration.class, ASTAnyTypeDeclaration.class,
@@ -131,7 +130,7 @@ public class CommentDefaultAccessModifierRule extends AbstractJavaRulechainRule 
 
 
     private void report(RuleContext ctx, AccessNode decl, String kind, String signature) {
-        ctx.addViolationWithMessage(decl, MESSAGE, kind, signature);
+        ctx.addViolation(decl, kind, signature);
     }
 
     private boolean shouldReportNonTopLevel(final AccessNode decl) {

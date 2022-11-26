@@ -66,6 +66,8 @@ public final class Chars implements CharSequence {
         return this.start + off;
     }
 
+
+    /** Whether this slice is the empty string. */
     public boolean isEmpty() {
         return len == 0;
     }
