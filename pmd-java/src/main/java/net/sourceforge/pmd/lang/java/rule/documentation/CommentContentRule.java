@@ -65,7 +65,7 @@ public class CommentContentRule extends AbstractJavaRulechainRule {
 
         List<Integer> lines = new ArrayList<>();
         int i = 0;
-        for (Chars line : comment.filteredLines(true)) {
+        for (Chars line : comment.getFilteredLines(true)) {
             if (violationRegex.matcher(line).find()) {
                 lines.add(i);
             }

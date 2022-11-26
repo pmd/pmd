@@ -35,13 +35,13 @@ class CommentAssignmentTest extends BaseParserTest {
 
         assertFalse(comment.isSingleLine());
         assertFalse(comment.hasJavadocContent());
-        assertEquals("multi line comment with blank lines", StringUtils.join(comment.filteredLines(), ' '));
+        assertEquals("multi line comment with blank lines", StringUtils.join(comment.getFilteredLines(), ' '));
 
         comment = node.getComments().get(1);
         assertFalse(comment.isSingleLine());
         assertTrue(comment.hasJavadocContent());
         assertThat(comment, instanceOf(JavadocComment.class));
-        assertEquals("a formal comment with blank lines", StringUtils.join(comment.filteredLines(), ' '));
+        assertEquals("a formal comment with blank lines", StringUtils.join(comment.getFilteredLines(), ' '));
     }
 
 

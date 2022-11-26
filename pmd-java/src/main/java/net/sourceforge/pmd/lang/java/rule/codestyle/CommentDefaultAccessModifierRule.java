@@ -4,16 +4,13 @@
 
 package net.sourceforge.pmd.lang.java.rule.codestyle;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.regex.Pattern;
 
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotationTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
@@ -161,7 +158,7 @@ public class CommentDefaultAccessModifierRule extends AbstractJavaRulechainRule 
     private boolean hasOkComment(AccessNode node) {
         Pattern regex = getProperty(REGEX_DESCRIPTOR);
         return JavaComment.getLeadingComments(node)
-                          .anyMatch(it -> regex.matcher(it.getImageCs()).matches());
+                          .anyMatch(it -> regex.matcher(it.getText()).matches());
     }
 
     private boolean shouldReportTypeDeclaration(ASTAnyTypeDeclaration decl) {

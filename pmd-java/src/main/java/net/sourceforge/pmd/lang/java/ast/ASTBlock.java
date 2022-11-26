@@ -7,7 +7,6 @@ package net.sourceforge.pmd.lang.java.ast;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.java.ast.ASTList.ASTMaybeEmptyListOf;
 import net.sourceforge.pmd.lang.java.ast.InternalInterfaces.AllChildrenAreOfType;
-import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 
 /**
  * A block of code. This is a {@linkplain ASTStatement statement} that

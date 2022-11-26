@@ -12,6 +12,7 @@ import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JjtreeNode;
 import net.sourceforge.pmd.lang.document.Chars;
 import net.sourceforge.pmd.lang.document.FileLocation;
+import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.reporting.Reportable;
 
 /**
@@ -67,7 +68,7 @@ public class JavaComment implements Reportable {
      * of a comment token (there are three such kinds).
      */
     public static boolean isComment(JavaccToken token) {
-        return JavaTokenDocumentBehavior.isComment(token);
+        return JavaAstUtils.isComment(token);
     }
 
     /**
@@ -79,11 +80,11 @@ public class JavaComment implements Reportable {
      *
      * @return List of lines of the comments
      */
-    public Iterable<Chars> filteredLines() {
-        return filteredLines(false);
+    public Iterable<Chars> getFilteredLines() {
+        return getFilteredLines(false);
     }
 
-    public Iterable<Chars> filteredLines(boolean preserveEmptyLines) {
+    public Iterable<Chars> getFilteredLines(boolean preserveEmptyLines) {
         if (preserveEmptyLines) {
             return () -> IteratorUtil.map(getText().lines().iterator(), JavaComment::removeCommentMarkup);
         } else {
@@ -136,10 +137,40 @@ public class JavaComment implements Reportable {
                            .flatMap(it -> IteratorUtil.toStream(GenericToken.previousSpecials(it).iterator()));
     }
 
-    public static Stream<JavaccToken> getLeadingComments(JavaNode node) {
+    public static Stream<JavaComment> getLeadingComments(JavaNode node) {
         if (node instanceof AccessNode) {
             node = ((AccessNode) node).getModifiers();
         }
-        return getSpecialCommentsIn(node).filter(JavaComment::isComment);
+        return getSpecialCommentsIn(node).filter(JavaComment::isComment)
+                                         .map(JavaComment::toComment);
+    }
+
+    private static JavaComment toComment(JavaccToken tok) {
+        switch (tok.kind) {
+        case JavaTokenKinds.FORMAL_COMMENT:
+            return new JavadocComment(tok);
+        case JavaTokenKinds.MULTI_LINE_COMMENT:
+        case JavaTokenKinds.SINGLE_LINE_COMMENT:
+            return new JavaComment(tok);
+        default:
+            throw new IllegalArgumentException("Token is not a comment: " + tok);
+        }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof JavaComment)) {
+            return false;
+        }
+        JavaComment that = (JavaComment) o;
+        return token.equals(that.token);
+    }
+
+    @Override
+    public int hashCode() {
+        return token.hashCode();
     }
 }

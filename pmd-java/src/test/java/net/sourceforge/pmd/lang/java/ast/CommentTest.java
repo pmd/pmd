@@ -99,7 +99,7 @@ class CommentTest extends BaseParserTest {
 
     private String filter(String comment) {
         JavaComment firstComment = java.parse(comment).getComments().get(0);
-        return StringUtils.join(firstComment.filteredLines(), '\n');
+        return StringUtils.join(firstComment.getFilteredLines(), '\n');
     }
 
     private int lineCount(String filtered) {
