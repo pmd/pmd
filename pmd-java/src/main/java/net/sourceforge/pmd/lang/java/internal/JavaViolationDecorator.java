@@ -16,6 +16,7 @@ import net.sourceforge.pmd.internal.util.IteratorUtil;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTBodyDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTInitializer;
@@ -97,6 +98,8 @@ final class JavaViolationDecorator implements ViolationDecorator {
             return ((ASTVariableDeclaratorId) node).getName();
         } else if (node instanceof ASTFormalParameter) {
             return getVariableNameIfExists(node.firstChild(ASTVariableDeclaratorId.class));
+        } else if (node instanceof ASTExpression) {
+            return getVariableNameIfExists(node.getParent());
         }
         return null;
     }
