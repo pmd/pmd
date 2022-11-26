@@ -17,7 +17,7 @@ Rules that flag suboptimal code.
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#addemptystring">
         <description>
 The conversion of literals to strings by concatenating them with empty strings is inefficient.
-It is much better to use one of the type-specific toString() methods instead.
+It is much better to use one of the type-specific `toString()` methods instead or `String.valueOf()`.
         </description>
         <priority>3</priority>
         <properties>
@@ -25,6 +25,12 @@ It is much better to use one of the type-specific toString() methods instead.
                 <value>
 <![CDATA[
 //InfixExpression[@Operator='+']/StringLiteral[@Empty=true()][not(ancestor::Annotation)]
+|
+//InfixExpression[@Operator='+']/VariableAccess
+  [@Name = (//FieldDeclaration[pmd-java:modifiers() = 'final']|ancestor::MethodDeclaration//LocalVariableDeclaration[pmd-java:modifiers() = 'final'])
+                /VariableDeclarator[@Initializer = true()]
+                    [StringLiteral[@Empty=true()]]
+                    /VariableDeclaratorId/@Name]
 ]]>
                 </value>
             </property>
@@ -65,16 +71,20 @@ sb.append('a');     // use this instead
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#avoidarrayloops">
         <description>
-Instead of manually copying data between two arrays, use the more efficient `Arrays.copyOf` or `System.arraycopy`
-methods instead.
+Instead of manually copying data between two arrays, use the more efficient `Arrays.copyOf`
+or `System.arraycopy` method instead.
+
+To copy only part of the array, use `Arrays.copyOfRange` or `System.arraycopy`.
+
+If you want to copy/move elements inside the _same_ array (e.g. shift the elements), use `System.arraycopy`.
         </description>
         <priority>3</priority>
         <properties>
             <property name="xpath">
                 <value>
 <![CDATA[
-//(ForStatement[ForUpdate//(UnaryExpression[@Operator='++'] | AssignmentExpression[@Operator = '+='][NumericLiteral[@Image = '1']])]
- | WhileStatement)
+//(ForStatement[ForUpdate//(UnaryExpression[@Operator=('++','--')] | AssignmentExpression[@Operator = ('+=', '-=')][NumericLiteral[@Image = '1']])]
+ | WhileStatement | DoStatement)
     [not(.//ContinueStatement)]
     [not(.//BreakStatement)]
     [not(.//ThrowStatement)]
@@ -83,10 +93,31 @@ methods instead.
                                       (: no nested arrays or method calls as array index :)
                                       [count(ArrayAccess[not(.//ArrayAccess)]
                                                         [not(.//MethodCall)])=2]
-                                      (: array names must be different :)
-                                      [count(distinct-values(ArrayAccess/VariableAccess[1]/@Name)) = 2]
-                                      (: array index must be same :)
-                                      [count(distinct-values(ArrayAccess/VariableAccess[2]/@Name)) = 1]
+                                      (: array access indexes must be same (excluding constants) :)
+                                      [deep-equal(
+                                        sort(distinct-values(ArrayAccess[1]/(VariableAccess[2]|InfixExpression//VariableAccess)
+                                            (: don't consider array length accesses :)
+                                            [not(parent::FieldAccess[@Name='length'])]
+                                            [
+                                               (: exclude referenced constants :)
+                                               not(@Name = (ancestor::MethodDeclaration|//FieldDeclaration)//VariableDeclarator[NumericLiteral][not(../../../parent::ForInit)]/VariableDeclaratorId/@Name)
+                                               or
+                                               (: include loop variable :)
+                                               @Name = ancestor::ForStatement/ForInit/LocalVariableDeclaration/VariableDeclarator/VariableDeclaratorId/@Name
+                                            ]
+                                            /@Name)),
+                                        sort(distinct-values(ArrayAccess[2]/(VariableAccess[2]|InfixExpression//VariableAccess)
+                                            (: don't consider array length accesses :)
+                                            [not(parent::FieldAccess[@Name='length'])]
+                                            [
+                                               (: exclude referenced constants :)
+                                               not(@Name = (ancestor::MethodDeclaration|//FieldDeclaration)//VariableDeclarator[NumericLiteral][not(../../../parent::ForInit)]/VariableDeclaratorId/@Name)
+                                               or
+                                               (: include loop variable :)
+                                               @Name = ancestor::ForStatement/ForInit/LocalVariableDeclaration/VariableDeclarator/VariableDeclaratorId/@Name
+                                            ]
+                                            /@Name))
+                                      )]
      )=1]
 ]]>
                 </value>
@@ -94,22 +125,43 @@ methods instead.
         </properties>
         <example>
 <![CDATA[
-public class Test {
-    public void bar() {
+class Scratch {
+    void copy_a_to_b() {
         int[] a = new int[10];
         int[] b = new int[10];
-
-        // instead of this loop
-        for (int i=0;i<10;i++) {
-            b[i]=a[i];
+        for (int i = 0; i < a.length; i++) {
+            b[i] = a[i];
         }
-        // use: System.arraycopy(a, 0, b, 0, 10);
+        // equivalent
+        b = Arrays.copyOf(a, a.length);
+        // equivalent
+        System.arraycopy(a, 0, b, 0, a.length);
 
         int[] c = new int[10];
-        // this won't trigger the rule
-        for (int i=0;i<10;i++) {
-            b[i]=a[c[i]];
+        // this will not trigger the rule
+        for (int i = 0; i < c.length; i++) {
+            b[i] = a[c[i]];
         }
+    }
+}
+]]>
+        </example>
+        <example>
+<![CDATA[
+class Scratch {
+    void shift_left(int[] a) {
+        for (int i = 0; i < a.length - 1; i++) {
+            a[i] = a[i + 1];
+        }
+        // equivalent
+        System.arraycopy(a, 1, a, 0, a.length - 1);
+    }
+    void shift_right(int[] a) {
+        for (int i = a.length - 1; i > 0; i--) {
+            a[i] = a[i - 1];
+        }
+        // equivalent
+        System.arraycopy(a, 0, a, 1, a.length - 1);
     }
 }
 ]]>
@@ -578,8 +630,8 @@ private String baz() {
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#toofewbranchesforaswitchstatement">
         <description>
 Switch statements are intended to be used to support complex branching behaviour. Using a switch for only a few
-cases is ill-advised, since switches are not as easy to understand as if-then statements. In these cases use the
-if-then statement to increase code readability.
+cases is ill-advised, since switches are not as easy to understand as if-else statements. In these cases use the
+if-else statement to increase code readability.
         </description>
         <priority>3</priority>
         <properties>
@@ -624,13 +676,14 @@ ArrayList is a much better Collection implementation than Vector if thread-safe 
             <property name="xpath">
                 <value>
 <![CDATA[
-//ConstructorCall/ClassOrInterfaceType[pmd-java:typeIs('java.util.Vector')]
+//ConstructorCall/ClassOrInterfaceType[pmd-java:typeIsExactly('java.util.Vector') or pmd-java:typeIsExactly('Vector')]
 ]]>
                 </value>
             </property>
         </properties>
         <example>
 <![CDATA[
+import java.util.*;
 public class SimpleTest extends TestCase {
     public void testX() {
     Collection c1 = new Vector();
@@ -671,8 +724,8 @@ You must use `new ArrayList<>(Arrays.asList(...))` if that is inconvenient for y
       [VariableDeclarator[NumericLiteral[@IntLiteral][@Image = '0']]]
     ]
   ]
-  [not(.//IfStatement)]
-  /*[last()]//
+  [*[2]//FieldAccess[@Name = 'length']/VariableAccess[pmd-java:typeIs("java.lang.Object[]")]]
+  /*[last()]/ExpressionStatement/
     MethodCall
       [pmd-java:matchesSig('java.util.Collection#add(_)')]
       [ArgumentList/ArrayAccess
@@ -680,9 +733,8 @@ You must use `new ArrayList<>(Arrays.asList(...))` if that is inconvenient for y
       ]
 |
 //ForeachStatement
-  [not(.//IfStatement)]
   [VariableAccess[pmd-java:typeIs("java.lang.Object[]")]]
-  /*[last()]//MethodCall
+  /*[last()]/ExpressionStatement/MethodCall
       [pmd-java:matchesSig('java.util.Collection#add(_)')]
       [ArgumentList
         [VariableAccess[@Name = ancestor::ForeachStatement/LocalVariableDeclaration/VariableDeclarator/VariableDeclaratorId/@Name]]
@@ -697,12 +749,12 @@ public class Test {
     public void foo(Integer[] ints) {
         // could just use Arrays.asList(ints)
         List<Integer> l = new ArrayList<>(100);
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < ints.length; i++) {
             l.add(ints[i]);
         }
 
         List<Integer> anotherList = new ArrayList<>();
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < ints.length; i++) {
             anotherList.add(ints[i].toString()); // won't trigger the rule
         }
     }

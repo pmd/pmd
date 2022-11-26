@@ -7,21 +7,21 @@ package net.sourceforge.pmd;
 import static net.sourceforge.pmd.lang.ast.test.TestUtilsKt.assertSize;
 import static net.sourceforge.pmd.lang.ast.test.TestUtilsKt.assertSuppressed;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.java.BaseParserTest;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 
-public class ExcludeLinesTest extends BaseParserTest {
+class ExcludeLinesTest extends BaseParserTest {
 
     @Test
-    public void testAcceptance() {
+    void testAcceptance() {
         assertSize(java.executeRule(getRule(), TEST1), 0);
         assertSize(java.executeRule(getRule(), TEST2), 1);
     }
 
-    public Rule getRule() {
+    Rule getRule() {
         return new AbstractJavaRule() {
             {
                 setMessage("!");
@@ -36,7 +36,7 @@ public class ExcludeLinesTest extends BaseParserTest {
     }
 
     @Test
-    public void testAlternateMarker() {
+    void testAlternateMarker() {
         Report rpt = java.withSuppressMarker("FOOBAR").executeRule(getRule(), TEST3);
         assertSize(rpt, 0);
         assertSuppressed(rpt, 1);

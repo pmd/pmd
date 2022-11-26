@@ -6,69 +6,73 @@ package net.sourceforge.pmd.lang.apex.multifile;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsStringIgnoringCase;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Arrays;
 
-import org.apache.commons.io.IOUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.contrib.java.lang.system.SystemErrRule;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
-public class ApexMultifileAnalysisTest {
+import net.sourceforge.pmd.util.IOUtil;
 
-    @Rule
-    public final SystemErrRule systemErrRule = new SystemErrRule().muteForSuccessfulTests().enableLog();
+import com.github.stefanbirkner.systemlambda.SystemLambda;
 
-    @Rule
-    public final TemporaryFolder tempFolder = new TemporaryFolder();
+class ApexMultifileAnalysisTest {
+
+    @TempDir
+    private Path tempFolder;
 
     @Test
-    public void testNoSfdxProjectJsonProducesFailedAnalysis() {
-        ApexMultifileAnalysis analysisInstance = getAnalysisForTempFolder();
+    void testNoSfdxProjectJsonProducesFailedAnalysis() throws Exception {
+        String log = SystemLambda.tapSystemErr(() -> {
+            ApexMultifileAnalysis analysisInstance = getAnalysisForTempFolder();
 
-        assertTrue(analysisInstance.isFailed());
-        assertTrue(analysisInstance.getFileIssues("any file").isEmpty());
-        assertThat(systemErrRule.getLog(), containsStringIgnoringCase("Missing project file"));
+            assertTrue(analysisInstance.isFailed());
+            assertTrue(analysisInstance.getFileIssues("any file").isEmpty());
+        });
+        assertThat(log, containsStringIgnoringCase("Missing project file"));
     }
 
     @Test
-    public void testMalformedSfdxProjectJsonProducesFailedAnalysis() throws IOException {
+    void testMalformedSfdxProjectJsonProducesFailedAnalysis() throws Exception {
         copyResource("malformedSfdxFile.json", "sfdx-project.json");
 
-        ApexMultifileAnalysis analysisInstance = getAnalysisForTempFolder();
+        String log = SystemLambda.tapSystemErr(() -> {
+            ApexMultifileAnalysis analysisInstance = getAnalysisForTempFolder();
 
-        assertTrue(analysisInstance.isFailed());
-        assertTrue(analysisInstance.getFileIssues("any file").isEmpty());
-        assertThat(systemErrRule.getLog(),
+            assertTrue(analysisInstance.isFailed());
+            assertTrue(analysisInstance.getFileIssues("any file").isEmpty());
+        });
+        assertThat(log,
                 containsStringIgnoringCase("error: 'path' is required for all 'packageDirectories' elements"));
     }
 
     @Test
-    public void testWellFormedSfdxProjectJsonProducesFunctionalAnalysis() throws IOException {
+    void testWellFormedSfdxProjectJsonProducesFunctionalAnalysis() throws Exception {
         copyResource("correctSfdxFile.json", "sfdx-project.json");
 
-        ApexMultifileAnalysis analysisInstance = getAnalysisForTempFolder();
+        String log = SystemLambda.tapSystemErr(() -> {
+            ApexMultifileAnalysis analysisInstance = getAnalysisForTempFolder();
 
-        assertFalse(analysisInstance.isFailed());
-        assertTrue(systemErrRule.getLog().isEmpty());
+            assertFalse(analysisInstance.isFailed());
+        });
+        assertTrue(log.isEmpty());
     }
 
     private @NonNull ApexMultifileAnalysis getAnalysisForTempFolder() {
-        return ApexMultifileAnalysis.getAnalysisInstance(tempFolder.getRoot().getAbsolutePath());
+        return ApexMultifileAnalysis.getAnalysisInstance(tempFolder.toAbsolutePath().toString());
     }
 
     private void copyResource(String resourcePath, String relativePathInTempDir) throws IOException {
-        File file = tempFolder.newFile(relativePathInTempDir);
-        String fileContents = IOUtils.toString(getClass().getResourceAsStream(resourcePath), StandardCharsets.UTF_8);
-        Files.write(file.toPath(), Arrays.asList(fileContents.split("\\R").clone()));
+        Path file = tempFolder.resolve(relativePathInTempDir);
+        String fileContents = IOUtil.readToString(getClass().getResourceAsStream(resourcePath), StandardCharsets.UTF_8);
+        Files.write(file, Arrays.asList(fileContents.split("\\R").clone()));
     }
 
 }

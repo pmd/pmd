@@ -328,7 +328,7 @@ import java.lang.annotation.*;
         <expected-problems>1</expected-problems>
         <expected-linenumbers>3</expected-linenumbers>
         <expected-messages>
-            <message>This method may call an overridable method during object construction: Foo.bar(String)</message>
+            <message>This method may call an overridable method during object construction: Foo.bar(String) (call stack: [Foo.bar(boolean), Foo.bar(String)])</message>
         </expected-messages>
         <code><![CDATA[
             public class Foo {
@@ -343,5 +343,277 @@ import java.lang.annotation.*;
                 }
             }
             ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] ConstructorCallsOverridableMethod should consider method calls with var access #4099</description>
+        <expected-problems>9</expected-problems>
+        <expected-linenumbers>7,14,21,28,35,42,49,56,63</expected-linenumbers>
+        <code><![CDATA[
+import java.util.Collection;
+import java.util.Set;
+
+class Foo1 {
+  final boolean tag = true;
+  public Foo1() {
+    bar(tag);  // should report a warning at this line
+  }
+  public void bar(boolean b) {}
+}
+
+class Foo2 {
+  public Foo2() {
+    bar(true);  // should report a warning at this line
+  }
+  public void bar(boolean b) {}
+}
+
+class Foo3 {
+  public Foo3(String arg) {
+    bar(arg); // should report a warning at this line
+  }
+  public void bar(String s) {}
+}
+
+class Foo4 {
+  public Foo4(String[] arg) {
+    bar(arg); // should report a warning at this line
+  }
+  public void bar(String[] s) {}
+}
+
+class Foo5 {
+  public Foo5(int[] arg) {
+    bar(arg); // should report a warning at this line
+  }
+  public void bar(int[] i) {}
+}
+
+class Foo6 {
+  public Foo6(int[] arg) {
+    bar(arg); // should report a warning at this line
+  }
+  public void bar(int i[]) {} // note, the different array notation!
+}
+
+class Foo7 {
+  public Foo7(String[] arg) {
+    bar(arg); // should report a warning at this line
+  }
+  public void bar(String s[]) {} // note, the different array notation!
+}
+
+class Foo8 {
+  public Foo8(String[] arg) {
+    bar(arg); // should report a warning at this line
+  }
+  public void bar(String... s) {} // vararg
+}
+
+class Foo9<E> {
+  public Foo9(Set<E> arg) {
+    bar(arg); // should report a warning at this line
+  }
+  public void bar(Collection<E> s) {} // base type
+}
+]]></code>
+    </test-code>
+    <test-code>
+        <description>False positive with public method call on new instance</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>4,5</expected-linenumbers>
+        <code><![CDATA[
+class Foo {
+  public Foo() {
+    privateInitOk(); // false positive
+    privateInitBad1(); // warning expected here
+    privateInitBad2(); // warning expected here
+  }
+
+  private void privateInitOk() {
+    new Foo().publicMethod();
+  }
+
+  private void privateInitBad1() {
+    publicMethod();
+  }
+
+  private void privateInitBad2() {
+    this.publicMethod();
+  }
+
+  public void publicMethod() { }
+}
+]]></code>
+    </test-code>
+    <test-code>
+        <description>NPE when trying to find method name of method call</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Foo {
+    void bar(Object o) {
+      ((String) o).length();
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>False negative with method call as argument</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+package net.sourceforge.pmd.lang.java.rule.errorprone.constructorcallsoverridablemethod;
+
+public abstract class AbstractThing implements Thing {
+    protected AbstractThing(Thing original) {
+        setName(original.getName());
+    }
+
+    @Override
+    public void setName(String name) { }
+
+    @Override
+    public String getName() { return ""; }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Clone and finalize overridden #1718</description>
+        <expected-problems>6</expected-problems>
+        <expected-linenumbers>3,4,5,7,8,9</expected-linenumbers>
+        <code><![CDATA[
+class Foo {
+    public Foo() throws Throwable {
+        this.equals(new String());
+        this.clone();
+        this.finalize();
+
+        equals(new String());
+        clone();
+        finalize();
+
+        // #1718 - super calls should be ignored
+        super.equals(new String());
+        super.clone();
+        super.finalize();
+    }
+
+    public boolean equals(Object o) { return true; }
+
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }
+
+    public void finalize() throws Throwable {
+        super.finalize();
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>False negative with var args and Arrays.asList</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+import java.util.Arrays;
+import java.util.Collection;
+
+class Foo {
+    public Foo(String ... names) {
+        setNames(Arrays.asList(names));
+    }
+
+    public void setNames(Collection<String> names) { }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Misleading message for method call chain</description>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>3,4,5</expected-linenumbers>
+        <expected-messages>
+            <message>This method may call an overridable method during object construction: Foo.overridableMethod() (call stack: [Foo.intermediatePrivateMethod(), Foo.otherMethod1(), Foo.otherMethod2(), Foo.overridableMethod()])</message>
+            <message>This method may call an overridable method during object construction: Foo.overridableMethod() (call stack: [Foo.shorterChain(), Foo.overridableMethod()])</message>
+            <message>This method may call an overridable method during object construction: Foo.otherOverridableMethod() (call stack: [Foo.differentChain(), Foo.otherOverridableMethod()])</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    public Foo() {
+        intermediatePrivateMethod();
+        shorterChain();
+        differentChain();
+    }
+
+    private void intermediatePrivateMethod() {
+        otherMethod1();
+    }
+
+    private final void otherMethod1() {
+        otherMethod2();
+    }
+
+    private final void otherMethod2() {
+        overridableMethod();
+    }
+
+    private void shorterChain() {
+        overridableMethod();
+    }
+
+    void overridableMethod();
+
+    private void differentChain() {
+        otherOverridableMethod();
+    }
+
+    void otherOverridableMethod();
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] ConstructorCallsOverridableMethod occurs when unused overloaded method is defined #2348</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Scratch {
+    private Long member = 0L;
+
+    public Scratch(final Long v) {
+        setMember(v);
+    }
+
+    public final void setMember(final Long v) {
+        this.member = v;
+    }
+
+    // Renaming this or marking it as final prevents the
+    // 'ConstructorCallsOverridableMethod' rule from being broken.
+    public void setMember(final String n) {
+        setMember(Long.valueOf(n));
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] ConstructorCallsOverridableMethod occurs when unused overloaded method is defined #2348 - sample 2</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.Date;
+
+public class MyTimestamp {
+    private final long t;
+    public MyTimestamp() {
+        t = new Date().getTime(); // <-- false-positive violation here
+    }
+    public long getTime() {
+        return t;
+    }
+}
+]]></code>
     </test-code>
 </test-data>

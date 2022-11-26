@@ -196,4 +196,73 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#3949 - FinalFieldCouldBeStatic false negative with unnecessary parenthesis</description>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>5,8,9</expected-linenumbers>
+        <code><![CDATA[
+import java.util.ArrayList;
+import java.util.List;
+
+public class Foo {
+    public final int BAR = (42);
+
+    // these empty arrays could theoretically be shared and therefore be static
+    private final Object[] argsObjs1 = new Object[0];
+    private final Object[] argsObjs2 = new Object[(0)];
+
+    // not flagging anonymous class instantiation
+    private final StringBuffer mFilter = new StringBuffer(new CharSequence() {
+        @Override public char charAt(int index) { return 'A'; }
+        @Override public int length() { return 1; }
+        @Override public CharSequence subSequence(int start, int end) { return this; }
+        @Override public String toString() { return "Foo"; }
+    });
+
+    // not flagging any instantiation in order to avoid false positives
+    // especially for lists one could still require a separate list for each instance...
+    public final List<String> mList = new ArrayList<>();
+
+    // not flagging instantiation of boxed types - would be a different rule
+    // this is to keep this rule simple
+    public final Integer DefaultInit = new Integer(27);
+    private final String mString = new String("Foo");
+
+    // not flagging array creation. Same reasoning as for lists:
+    // one could still require a separate array for each instance...
+    private final int[] p = new int[42];
+}
+        ]]></code>
+    </test-code>
+    
+    <test-code>
+        <description>[java] FinalFieldCouldBeStatic false positive with non-static synchronized block (regression in 6.48, worked with 6.47) #4090</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+class foo {
+    private final Object[] lock = new Object[0];
+    private final Object[] lock2 = new Object[0];
+    private final Object[] o = new Object[0];
+
+
+    void init() {
+        synchronized (lock) {
+            // do init stuff
+        }
+    }
+
+    public void close() {
+        synchronized (this.lock2) {
+           // do close stuff
+        }
+    }
+
+    void foo() {
+        System.out.println(o);
+    }
+}
+]]></code>
+    </test-code>
 </test-data>

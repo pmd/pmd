@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.testframework;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -12,11 +13,15 @@ import org.junit.Ignore;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.test.schema.RuleTestDescriptor;
 
 /**
  * Stores the information required to run a complete test.
+ *
+ * @deprecated Use {@link RuleTestDescriptor} instead
  */
 @Ignore("this is not a unit test")
+@Deprecated
 public class TestDescriptor {
     private Rule rule;
     private Properties properties;
@@ -32,6 +37,8 @@ public class TestDescriptor {
     private boolean useAuxClasspath = true;
     private int numberInDocument = -1;
 
+    private URI testSourceUri;
+
     public TestDescriptor() {
         // Empty default descriptor added to please mvn surefire plugin
     }
@@ -41,12 +48,28 @@ public class TestDescriptor {
     }
 
     public TestDescriptor(String code, String description, int numberOfProblemsExpected, Rule rule,
-            LanguageVersion languageVersion) {
+                          LanguageVersion languageVersion) {
         this.rule = rule;
         this.code = code;
         this.description = description;
         this.numberOfProblemsExpected = numberOfProblemsExpected;
         this.languageVersion = languageVersion;
+    }
+
+    // for compatibility
+    TestDescriptor(RuleTestDescriptor td, String absoluteUriToTestXmlFile) {
+        this.rule = td.getRule();
+        this.code = td.getCode();
+        this.description = td.getDescription();
+        this.numberOfProblemsExpected = td.getExpectedProblems();
+        this.expectedLineNumbers = td.getExpectedLineNumbers();
+        this.expectedMessages = td.getExpectedMessages();
+        this.isRegressionTest = !td.isDisabled();
+        this.numberInDocument = td.getIndex();
+        this.properties = td.getProperties();
+        this.languageVersion = td.getLanguageVersion();
+        this.numberInDocument = td.getIndex();
+        this.setTestSourceUri(absoluteUriToTestXmlFile, td.getLineNumber());
     }
 
     public int getNumberInDocument() {
@@ -162,5 +185,13 @@ public class TestDescriptor {
                 .replaceAll("\n|\r", "_")
                 .replaceAll("[^\\w\\d_$]", "_")
                 .replaceAll("\\s+", "_");
+    }
+
+    public void setTestSourceUri(String absoluteUri, int line) {
+        this.testSourceUri = URI.create(absoluteUri + "?line=" + line);
+    }
+
+    public URI getTestSourceUri() {
+        return testSourceUri;
     }
 }

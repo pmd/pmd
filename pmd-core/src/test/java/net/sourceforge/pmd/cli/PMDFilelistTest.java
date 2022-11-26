@@ -8,30 +8,35 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.hasSize;
 
-import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.List;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.internal.util.FileCollectionUtil;
+import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
 import net.sourceforge.pmd.lang.document.FileCollector;
 import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.util.log.internal.NoopReporter;
 
-public class PMDFilelistTest {
+class PMDFilelistTest {
 
-    private static @NonNull FileCollector newCollector() {
-        return FileCollector.newCollector(new LanguageVersionDiscoverer(), new NoopReporter());
+    private @NonNull FileCollector newCollector() {
+        return FileCollector.newCollector(new LanguageVersionDiscoverer(LanguageRegistry.PMD), new NoopReporter());
+    }
+
+    private static void collectFileList(FileCollector collector, String x) {
+        FileCollectionUtil.collectFileList(collector, Paths.get(x));
     }
 
     @Test
-    public void testGetApplicableFiles() throws IOException {
+    void testGetApplicableFiles() {
         FileCollector collector = newCollector();
 
-        FileCollectionUtil.collectFileList(collector, "src/test/resources/net/sourceforge/pmd/cli/filelist.txt");
+        collectFileList(collector, "src/test/resources/net/sourceforge/pmd/cli/filelist.txt");
 
         List<TextFile> applicableFiles = collector.getCollectedFiles();
         assertThat(applicableFiles, hasSize(2));
@@ -40,10 +45,10 @@ public class PMDFilelistTest {
     }
 
     @Test
-    public void testGetApplicableFilesMultipleLines() throws IOException {
+    void testGetApplicableFilesMultipleLines() {
         FileCollector collector = newCollector();
 
-        FileCollectionUtil.collectFileList(collector, "src/test/resources/net/sourceforge/pmd/cli/filelist2.txt");
+        collectFileList(collector, "src/test/resources/net/sourceforge/pmd/cli/filelist2.txt");
 
         List<TextFile> applicableFiles = collector.getCollectedFiles();
         assertThat(applicableFiles, hasSize(3));
@@ -53,7 +58,7 @@ public class PMDFilelistTest {
     }
 
     @Test
-    public void testGetApplicableFilesWithIgnores() throws IOException {
+    void testGetApplicableFilesWithIgnores() {
         FileCollector collector = newCollector();
 
         PMDConfiguration configuration = new PMDConfiguration();
@@ -68,7 +73,7 @@ public class PMDFilelistTest {
     }
 
     @Test
-    public void testGetApplicableFilesWithDirAndIgnores() throws IOException {
+    void testGetApplicableFilesWithDirAndIgnores() {
 
         PMDConfiguration configuration = new PMDConfiguration();
         configuration.setInputPaths("src/test/resources/net/sourceforge/pmd/cli/src");

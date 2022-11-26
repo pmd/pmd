@@ -19,7 +19,7 @@ Rules which enforce generally accepted best practices.
 The abstract class does not contain any abstract methods. An abstract class suggests
 an incomplete implementation, which is to be completed by subclasses implementing the
 abstract methods. If the class is intended to be used as a base class only (not to be instantiated
-directly) a protected constructor can be provided prevent direct instantiation.
+directly) a protected constructor can be provided to prevent direct instantiation.
         </description>
         <priority>3</priority>
         <example>
@@ -42,11 +42,15 @@ public abstract class Foo {
           class="net.sourceforge.pmd.lang.java.rule.bestpractices.AccessorClassGenerationRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#accessorclassgeneration">
         <description>
-Instantiation by way of private constructors from outside of the constructor's class often causes the
+Instantiation by way of private constructors from outside the constructor's class often causes the
 generation of an accessor. A factory method, or non-privatization of the constructor can eliminate this
 situation. The generated class file is actually an interface.  It gives the accessing class the ability
 to invoke a new hidden package scope constructor that takes the interface as a supplementary parameter.
 This turns a private constructor effectively into one with package scope, and is challenging to discern.
+
+_Note:_ This rule is only executed for Java 10 or lower.
+Since Java 11, [JEP 181: Nest-Based Access Control](https://openjdk.org/jeps/181) has been implemented. This
+means that in Java 11 and above accessor classes are not generated anymore.
         </description>
         <priority>3</priority>
         <example>
@@ -74,6 +78,11 @@ public class Outer {
 When accessing private fields / methods from another class, the Java compiler will generate accessor methods
 with package-private visibility. This adds overhead, and to the dex method count on Android. This situation can
 be avoided by changing the visibility of the field / method from private to package-private.
+
+
+_Note:_ This rule is only executed for Java 10 or lower.
+Since Java 11, [JEP 181: Nest-Based Access Control](https://openjdk.org/jeps/181) has been implemented. This
+means that in Java 11 and above accessor classes are not generated anymore.
         </description>
         <priority>3</priority>
         <example>
@@ -1606,6 +1615,12 @@ public class Foo {
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#unusedprivatefield">
         <description>
 Detects when a private field is declared and/or assigned a value, but not used.
+
+Since PMD 6.50.0 private fields are ignored, if the fields are annotated with any annotation or the
+enclosing class has any annotation. Annotations often enable a framework (such as dependency injection, mocking
+or e.g. Lombok) which use the fields by reflection or other means. This usage can't be detected by static code analysis.
+Previously these frameworks where explicitly allowed by listing their annotations in the property
+"ignoredAnnotations", but that turned out to be prone of false positive for any not explicitly considered framework.
         </description>
         <priority>3</priority>
         <example>
@@ -1824,21 +1839,48 @@ a block `{}` is sufficient.
         <properties>
             <property name="xpath">
                 <value><![CDATA[
-  //DoStatement/BooleanLiteral
-| //WhileStatement/BooleanLiteral[@True = false()]
+(: while loops with single boolean literal, maybe parenthesized :)
+//WhileStatement/BooleanLiteral[@True = false()]
+|
+(: do-while loops with single boolean literal, maybe parenthesized :)
+//DoStatement/BooleanLiteral
+|
+(: while loops with conditional or'ed or and'ed boolean literals, maybe parenthesized :)
+//WhileStatement[(.|InfixExpression)
+    [count(BooleanLiteral) = 2]
+    (: at least one false literal :)
+    [count(BooleanLiteral[@True = false()]) >= 1]]
+|
+(: while loops with conditional and'ed boolean literals, maybe parenthesized :)
+//WhileStatement[(InfixExpression[@Operator=('&', '&&')])
+    (: at least one false literal :)
+    [count(BooleanLiteral[@True = false()]) >= 1]]
+|
+(: do-while loops with conditional or'ed or and'ed boolean literals, maybe parenthesized :)
+//DoStatement[(.|InfixExpression)
+    [count(BooleanLiteral) = 2]]
+|
+(: do-while loops with conditional and'ed boolean literals, maybe parenthesized :)
+//DoStatement[(InfixExpression[@Operator=('&', '&&')])
+    (: at least one false literal :)
+    [count(BooleanLiteral[@True = false()]) >= 1]]
                 ]]></value>
             </property>
             <property name="version" value="2.0" />
         </properties>
         <example>
+<![CDATA[
 public class Example {
   {
     while (true) { } // allowed
     while (false) { } // disallowed
     do { } while (true); // disallowed
     do { } while (false); // disallowed
+    do { } while (false | false); // disallowed
+    do { } while (false || false); // disallowed
   }
 }
+]]>
         </example>
     </rule>
 

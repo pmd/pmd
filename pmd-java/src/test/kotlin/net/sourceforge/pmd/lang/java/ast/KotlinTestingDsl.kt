@@ -29,13 +29,14 @@ enum class JavaVersion : Comparable<JavaVersion> {
     J14,
     J15,
     J16,
-    J17, J17__PREVIEW,
-    J18, J18__PREVIEW;
+    J17,
+    J18, J18__PREVIEW,
+    J19, J19__PREVIEW;
 
     /** Name suitable for use with e.g. [JavaParsingHelper.parse] */
-    val pmdName: String = name.removePrefix("J").replaceFirst("__", "-").replace('_', '.').toLowerCase()
+    val pmdName: String = name.removePrefix("J").replaceFirst("__", "-").replace('_', '.').lowercase()
 
-    val pmdVersion get() = LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion(pmdName)
+    val pmdVersion get() = JavaLanguageModule.getInstance().getVersion(pmdName)
 
     val parser: JavaParsingHelper = DEFAULT.withDefaultVersion(pmdName)
 

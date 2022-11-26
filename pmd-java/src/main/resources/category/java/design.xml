@@ -16,7 +16,7 @@ Rules that help you discover design issues.
           message="No abstract method which means that the keyword is most likely used to prevent instantiation. Use a private or protected constructor instead."
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#abstractclasswithoutanymethod">
         <description>
-If an abstract class does not provides any methods, it may be acting as a simple data container
+If an abstract class does not provide any methods, it may be acting as a simple data container
 that is not meant to be instantiated. In this case, it is probably better to use a private or
 protected constructor in order to prevent instantiation than make the class misleadingly abstract.
         </description>
@@ -28,7 +28,11 @@ protected constructor in order to prevent instantiation than make the class misl
 //ClassOrInterfaceDeclaration
     [@Abstract = true() and @Interface = false()]
     [ClassOrInterfaceBody[not(ConstructorDeclaration | MethodDeclaration)]]
-    [not(pmd-java:hasAnnotation('com.google.auto.value.AutoValue'))]
+    [not(pmd-java:hasAnnotation('com.google.auto.value.AutoValue')
+         or pmd-java:hasAnnotation('lombok.AllArgsConstructor')
+         or pmd-java:hasAnnotation('lombok.NoArgsConstructor')
+         or pmd-java:hasAnnotation('lombok.RequiredArgsConstructor'))
+    ]
 ]]>
                 </value>
             </property>
@@ -50,7 +54,7 @@ public abstract class Example {
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#avoidcatchinggenericexception">
         <description>
-Avoid catching generic exceptions such as NullPointerException, RuntimeException, Exception in try-catch block
+Avoid catching generic exceptions such as NullPointerException, RuntimeException, Exception in try-catch block.
         </description>
         <priority>3</priority>
         <properties>
@@ -785,8 +789,11 @@ in each object at runtime.
     [not(.//Annotation[pmd-java:typeIs('lombok.Builder.Default')])]
     /VariableDeclarator[*[pmd-java:nodeIs('Literal')]
          or VariableAccess[@Name = //FieldDeclaration[pmd-java:modifiers() = 'static']/VariableDeclarator/VariableDeclaratorId/@Name]
-         or FieldAccess]
+         or FieldAccess
+         or ArrayAllocation/ArrayType/ArrayDimensions/ArrayDimExpr/NumericLiteral[@IntLiteral = true()][@Image = "0"]]
     /VariableDeclaratorId
+        [not(@Name = //MethodDeclaration[not(pmd-java:modifiers() = 'static')]
+            //SynchronizedStatement/(VariableAccess|FieldAccess[ThisExpression])/@Name)]
 ]]>
                 </value>
             </property>
@@ -860,6 +867,44 @@ public class Foo {
   public void foo() {
      int a = x + 2;
   }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="InvalidJavaBean"
+          language="java"
+          since="6.52.0"
+          message="The bean ''{0}'' is missing a getter for property ''{1}''."
+          class="net.sourceforge.pmd.lang.java.rule.design.InvalidJavaBeanRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#invalidjavabean">
+        <description>
+Identifies beans, that don't follow the [JavaBeans API specification](https://download.oracle.com/otndocs/jcp/7224-javabeans-1.01-fr-spec-oth-JSpec/).
+
+Each non-static field should have both a getter and a setter method. If the field is just used internally and is not
+a bean property, then the field should be marked as `transient`.
+
+The rule verifies that the type of the field is the same as the result type of the getter. And that this type matches
+the type used in the setter.
+
+The rule also checks, that there is a no-arg or default constructor available.
+
+Optionally the rule also verifies, that the bean implements `java.io.Serializable`. While this is a requirement for the
+original JavaBeans specification, frameworks nowadays don't strictly require this anymore.
+
+In order to avoid many false positives in classes that are not beans, the rule needs to be explicitly
+enabled by configuring the property `packages`.
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+package org.example.beans;
+public class MyBean {        // <-- bean is not serializable, missing "implements Serializable"
+    private String label;    // <-- missing setter for property "label"
+
+    public String getLabel() {
+        return label;
+    }
 }
 ]]>
         </example>
@@ -1391,11 +1436,9 @@ complexity and find a way to have more fine grained objects.
      [
       count(MethodDeclaration[
          not (
-                starts-with(@Name,'get')
-                or
-                starts-with(@Name,'set')
-                or
-                starts-with(@Name,'is')
+                (starts-with(@Name,'get') or starts-with(@Name,'set') or starts-with(@Name,'is'))
+                and
+                count(Block/*) <= 1
             )
       ]) > $maxmethods
    ]

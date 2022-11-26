@@ -14,10 +14,10 @@ be customized further via properties. Violations might also be suppressed and th
 be processing errors or configuration errors. Not all report formats display all information.
 
 The header of the sections below are used to select the format on the command line, as
-arguments to the `-format` option. When a format accepts *properties*,
-those can be specified with the `-property` / `-P` option on the command-line.
+arguments to the `--format` option. When a format accepts *properties*,
+those can be specified with the `--property` / `-P` option on the command-line.
 
-{% include note.html content="Suppressed violations are only reported, if the CLI parameter `-showsuppressed` is set." %}
+{% include note.html content="Suppressed violations are only reported, if the CLI parameter `--show-suppressed` is set." %}
 
 ## sarif
 
@@ -122,11 +122,11 @@ It has two ways of calling:
 
 1. For a single file: then all three properties need to be provided
 
-`run.sh pmd -d src/Foo.java -R rulesets/java/quickstart.xml -f ideaj -P fileName=src/Foo.java -P sourcePath=/home/pmd/src -P classAndMethodName=Foo`
+`pmd check -d src/Foo.java -R rulesets/java/quickstart.xml -f ideaj -P fileName=src/Foo.java -P sourcePath=/home/pmd/src -P classAndMethodName=Foo`
 
 2. For a directory: then the fileName property can be omitted
 
-`run.sh pmd -d src -R rulesets/java/quickstart.xml -f ideaj -P sourcePath=/home/pmd/src -P classAndMethodName=.method`
+`pmd check -d src -R rulesets/java/quickstart.xml -f ideaj -P sourcePath=/home/pmd/src -P classAndMethodName=.method`
 
 Example:
 

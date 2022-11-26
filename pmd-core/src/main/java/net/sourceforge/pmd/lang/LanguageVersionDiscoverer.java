@@ -9,9 +9,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.annotation.DeprecatedUntil700;
 import net.sourceforge.pmd.internal.util.AssertionUtil;
 
 /**
@@ -20,13 +23,11 @@ import net.sourceforge.pmd.internal.util.AssertionUtil;
  * here.
  */
 public class LanguageVersionDiscoverer {
-    private Map<Language, LanguageVersion> languageToLanguageVersion = new HashMap<>();
 
+    private final LanguageRegistry languageRegistry;
+    private final Map<Language, LanguageVersion> languageToLanguageVersion = new HashMap<>();
     private LanguageVersion forcedVersion;
 
-    public LanguageVersionDiscoverer() {
-        this(null);
-    }
 
     /**
      * Build a new instance.
@@ -35,8 +36,16 @@ public class LanguageVersionDiscoverer {
      *                      The methods of this class still work as usual and do not
      *                      care about the forced language version.
      */
-    public LanguageVersionDiscoverer(LanguageVersion forcedVersion) {
+    public LanguageVersionDiscoverer(LanguageRegistry registry, LanguageVersion forcedVersion) {
+        this.languageRegistry = registry;
         this.forcedVersion = forcedVersion;
+    }
+
+    /**
+     * Build a new instance with no forced version.
+     */
+    public LanguageVersionDiscoverer(LanguageRegistry registry) {
+        this(registry, null);
     }
 
     /**
@@ -96,7 +105,7 @@ public class LanguageVersionDiscoverer {
      *         <code>null</code> if there are no supported Languages for the
      *         file.
      */
-    public LanguageVersion getDefaultLanguageVersionForFile(String fileName) {
+    public @Nullable LanguageVersion getDefaultLanguageVersionForFile(String fileName) {
         List<Language> languages = getLanguagesForFile(fileName);
         LanguageVersion languageVersion = null;
         if (!languages.isEmpty()) {
@@ -119,7 +128,11 @@ public class LanguageVersionDiscoverer {
      * @param sourceFile
      *            The file.
      * @return The Languages for the source file, may be empty.
+     *
+     * @deprecated PMD 7 avoids using {@link File}.
      */
+    @Deprecated
+    @DeprecatedUntil700
     public List<Language> getLanguagesForFile(File sourceFile) {
         return getLanguagesForFile(sourceFile.getName());
     }
@@ -133,7 +146,9 @@ public class LanguageVersionDiscoverer {
      */
     public List<Language> getLanguagesForFile(String fileName) {
         String extension = getExtension(fileName);
-        return LanguageRegistry.findByExtension(extension);
+        return languageRegistry.getLanguages().stream()
+                               .filter(it -> it.hasExtension(extension))
+                               .collect(Collectors.toList());
     }
 
     // Get the extensions from a file

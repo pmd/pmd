@@ -4,9 +4,12 @@
 
 package net.sourceforge.pmd.util.treeexport;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.BufferedWriter;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -14,28 +17,25 @@ import java.io.InputStream;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 
-import org.apache.commons.io.IOUtils;
 import org.hamcrest.Matcher;
-import org.hamcrest.MatcherAssert;
-import org.junit.Assert;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 /**
  *
  */
-public class TreeExportCliTest {
+class TreeExportCliTest {
 
-    @Rule
-    public TemporaryFolder tmp = new TemporaryFolder();
+    @TempDir
+    private Path tmp;
 
     @Test
-    public void testReadStandardInput() {
+    void testReadStandardInput() {
         IoSpy spy = IoSpy.withStdin("(a(b))");
-        int status = spy.runMain("-i", "-f", "xml", "-PlineSeparator=LF");
-        Assert.assertEquals(0, status);
+        int status = spy.runMain("-i", "-f", "xml", "-PlineSeparator=LF", "-l", "dummy");
+        assertEquals(0, status);
         spy.assertThatStdout(containsString("<?xml version='1.0' encoding='UTF-8' ?>\n"
                                             + "<dummyRootNode Image=''>\n"
                                             + "    <dummyNode Image='a'>\n"
@@ -45,11 +45,11 @@ public class TreeExportCliTest {
     }
 
     @Test
-    public void testReadFile() throws IOException {
+    void testReadFile() throws IOException {
         File file = newFileWithContents("(a(b))");
         IoSpy spy = new IoSpy();
-        int status = spy.runMain("--file", file.getAbsolutePath(), "-f", "xml", "-PlineSeparator=LF");
-        Assert.assertEquals(0, status);
+        int status = spy.runMain("--file", file.getAbsolutePath(), "-f", "xml", "-PlineSeparator=LF", "-l", "dummy");
+        assertEquals(0, status);
         spy.assertThatStdout(containsString("<?xml version='1.0' encoding='UTF-8' ?>\n"
                                             + "<dummyRootNode Image=''>\n"
                                             + "    <dummyNode Image='a'>\n"
@@ -59,7 +59,7 @@ public class TreeExportCliTest {
     }
 
     private File newFileWithContents(String data) throws IOException {
-        File file = tmp.newFile();
+        File file = Files.createTempFile(tmp, "TreeExportCliTest", "data").toFile();
         try (BufferedWriter br = Files.newBufferedWriter(file.toPath(), StandardCharsets.UTF_8)) {
             br.write(data);
         }
@@ -67,7 +67,7 @@ public class TreeExportCliTest {
     }
 
     private static InputStream stdinContaining(String input) {
-        return IOUtils.toInputStream(input, StandardCharsets.UTF_8);
+        return new ByteArrayInputStream(input.getBytes(StandardCharsets.UTF_8));
     }
 
     static class IoSpy {
@@ -85,7 +85,7 @@ public class TreeExportCliTest {
         }
 
         void assertThatStdout(Matcher<? super String> str) {
-            MatcherAssert.assertThat("stdout", out.toString(), str);
+            assertThat("stdout", out.toString(), str);
         }
 
         int runMain(String... args) {

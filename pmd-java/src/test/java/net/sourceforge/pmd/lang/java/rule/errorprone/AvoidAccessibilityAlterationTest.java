@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.java.rule.errorprone;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class AvoidAccessibilityAlterationTest extends PmdRuleTst {
+class AvoidAccessibilityAlterationTest extends PmdRuleTst {
     // no additional unit tests
 }

@@ -16,6 +16,7 @@ import java.util.Properties;
 
 import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,6 +37,7 @@ import net.sourceforge.pmd.util.log.internal.NoopReporter;
 public final class RuleSetLoader {
     private static final Logger LOG = LoggerFactory.getLogger(RuleSetLoader.class);
 
+    private LanguageRegistry languageRegistry = LanguageRegistry.PMD;
     private ResourceLoader resourceLoader = new ResourceLoader(RuleSetLoader.class.getClassLoader());
     private RulePriority minimumPriority = RulePriority.LOW;
     private boolean warnDeprecated = true;
@@ -51,8 +53,9 @@ public final class RuleSetLoader {
         // default
     }
 
-    void setReporter(MessageReporter reporter) {
+    RuleSetLoader withReporter(MessageReporter reporter) {
         this.reporter = reporter;
+        return this;
     }
 
     /**
@@ -68,6 +71,11 @@ public final class RuleSetLoader {
     // internal
     RuleSetLoader loadResourcesWith(ResourceLoader loader) {
         this.resourceLoader = loader;
+        return this;
+    }
+
+    public RuleSetLoader withLanguages(LanguageRegistry languageRegistry) {
+        this.languageRegistry = languageRegistry;
         return this;
     }
 
@@ -136,13 +144,18 @@ public final class RuleSetLoader {
     public RuleSetFactory toFactory() {
         return new RuleSetFactory(
             this.resourceLoader,
+            this.languageRegistry,
             this.minimumPriority,
             this.warnDeprecated,
             this.compatFilter,
-            this.includeDeprecatedRuleReferences
+            this.includeDeprecatedRuleReferences,
+            this.reporter
         );
     }
 
+    private @Nullable MessageReporter filteredReporter() {
+        return warnDeprecated ? reporter : null;
+    }
 
     /**
      * Parses and returns a ruleset from its location. The location may
@@ -153,7 +166,7 @@ public final class RuleSetLoader {
      * @throws RuleSetLoadException If any error occurs (eg, invalid syntax, or resource not found)
      */
     public RuleSet loadFromResource(String rulesetPath) {
-        return loadFromResource(new RuleSetReferenceId(rulesetPath));
+        return loadFromResource(new RuleSetReferenceId(rulesetPath, null, filteredReporter()));
     }
 
     /**
@@ -165,7 +178,7 @@ public final class RuleSetLoader {
      * @throws RuleSetLoadException If any error occurs (eg, invalid syntax)
      */
     public RuleSet loadFromString(String filename, final String rulesetXmlContent) {
-        return loadFromResource(new RuleSetReferenceId(filename) {
+        return loadFromResource(new RuleSetReferenceId(filename, null, filteredReporter()) {
             @Override
             public InputStream getInputStream(ResourceLoader rl) {
                 return new ByteArrayInputStream(rulesetXmlContent.getBytes(StandardCharsets.UTF_8));
@@ -201,6 +214,7 @@ public final class RuleSetLoader {
     public List<RuleSet> loadRuleSetsWithoutException(List<String> rulesetPaths) {
         List<RuleSet> ruleSets = new ArrayList<>(rulesetPaths.size());
         boolean anyRules = false;
+        boolean error = false;
         for (String path : rulesetPaths) {
             try {
                 RuleSet ruleset = this.loadFromResource(path);
@@ -208,16 +222,12 @@ public final class RuleSetLoader {
                 printRulesInDebug(path, ruleset);
                 ruleSets.add(ruleset);
             } catch (RuleSetLoadException e) {
-                if (e.getCause() != null) {
-                    // eg RuleSetNotFoundException
-                    reporter.errorEx("Cannot load ruleset {0}", new Object[] { path }, e.getCause());
-                } else {
-                    reporter.errorEx("Cannot load ruleset {0}", new Object[] { path }, e);
-                }
+                error = true;
+                reporter.error(e);
             }
         }
-        if (!anyRules) {
-            reporter.warn("No rules found. Maybe you misspelled a rule name? ({})",
+        if (!anyRules && !error) {
+            reporter.warn("No rules found. Maybe you misspelled a rule name? ({0})",
                           StringUtils.join(rulesetPaths, ','));
         }
         return ruleSets;
@@ -231,7 +241,7 @@ public final class RuleSetLoader {
             }
         }
         if (ruleset.getRules().isEmpty()) {
-            reporter.warn("No rules found in ruleset {}", path);
+            reporter.warn("No rules found in ruleset {0}", path);
         }
 
     }
@@ -254,8 +264,10 @@ public final class RuleSetLoader {
     RuleSet loadFromResource(RuleSetReferenceId ruleSetReferenceId) {
         try {
             return toFactory().createRuleSet(ruleSetReferenceId);
+        } catch (RuleSetLoadException e) {
+            throw e;
         } catch (Exception e) {
-            throw new RuleSetLoadException("Cannot parse " + ruleSetReferenceId, e);
+            throw new RuleSetLoadException(ruleSetReferenceId, e);
         }
     }
 
@@ -266,7 +278,9 @@ public final class RuleSetLoader {
      */
     public static RuleSetLoader fromPmdConfig(PMDConfiguration configuration) {
         return new RuleSetLoader().filterAbovePriority(configuration.getMinimumPriority())
-                                  .enableCompatibility(configuration.isRuleSetFactoryCompatibilityEnabled());
+                                  .enableCompatibility(configuration.isRuleSetFactoryCompatibilityEnabled())
+                                  .withLanguages(configuration.languages())
+                                  .withReporter(configuration.getReporter());
     }
 
 
@@ -285,7 +299,7 @@ public final class RuleSetLoader {
     public List<RuleSet> getStandardRuleSets() {
         String rulesetsProperties;
         List<String> ruleSetReferenceIds = new ArrayList<>();
-        for (Language language : LanguageRegistry.getLanguages()) {
+        for (Language language : languageRegistry.getLanguages()) {
             Properties props = new Properties();
             rulesetsProperties = "category/" + language.getTerseName() + "/categories.properties";
             try (InputStream inputStream = resourceLoader.loadClassPathResourceAsStreamOrThrow(rulesetsProperties)) {

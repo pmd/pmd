@@ -5,9 +5,7 @@
 package net.sourceforge.pmd.testframework;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -27,13 +25,17 @@ import org.junit.runners.model.InitializationError;
 import org.junit.runners.model.Statement;
 
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.test.schema.RuleTestCollection;
+import net.sourceforge.pmd.test.schema.RuleTestDescriptor;
 
 /**
  * A JUnit Runner, that executes all declared rule tests in the class. It supports Before and After methods as well as
  * TestRules.
  *
  * @author Andreas Dangel
+ * @deprecated This is not needed anymore with JUnit5
  */
+@Deprecated
 public class RuleTestRunner extends ParentRunner<TestDescriptor> {
     private ConcurrentMap<TestDescriptor, Description> testDescriptions = new ConcurrentHashMap<>();
     private final RuleTst instance;
@@ -65,13 +67,20 @@ public class RuleTestRunner extends ParentRunner<TestDescriptor> {
 
     @Override
     protected List<TestDescriptor> getChildren() {
-        final List<Rule> rules = new ArrayList<>(instance.getRules());
+        List<Rule> rules = new ArrayList<>(instance.getRules());
         rules.sort(Comparator.comparing(Rule::getName));
 
-        final List<TestDescriptor> tests = new LinkedList<>();
-        for (final Rule r : rules) {
-            final TestDescriptor[] ruleTests = instance.extractTestsFromXml(r);
-            Collections.addAll(tests, ruleTests);
+        List<TestDescriptor> tests = new ArrayList<>();
+        for (Rule r : rules) {
+            RuleTestCollection ruleTests = instance.parseTestCollection(r);
+            RuleTestDescriptor focused = ruleTests.getFocusedTestOrNull();
+            for (RuleTestDescriptor t : ruleTests.getTests()) {
+                TestDescriptor td = new TestDescriptor(t, ruleTests.getAbsoluteUriToTestXmlFile());
+                if (focused != null && !focused.equals(t)) {
+                    td.setRegressionTest(false); // disable it
+                }
+                tests.add(td);
+            }
         }
 
         return tests;

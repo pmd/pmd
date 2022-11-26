@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.rule.xpath.internal;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.Rule;
 
@@ -12,11 +12,11 @@ import net.sourceforge.pmd.Rule;
  * @author Clément Fournier
  * @since 7.0.0
  */
-public class HasAnnotationXPathTest extends BaseXPathFunctionTest {
+class HasAnnotationXPathTest extends BaseXPathFunctionTest {
 
 
     @Test
-    public void testHasAnnotation() {
+    void testHasAnnotation() {
         Rule rule = makeXpathRuleFromXPath("//MethodDeclaration[pmd-java:hasAnnotation('java.lang.Override')]");
         String code = "interface O { @Override void foo(); }";
 
@@ -25,7 +25,7 @@ public class HasAnnotationXPathTest extends BaseXPathFunctionTest {
 
 
     @Test
-    public void testHasAnnotationNonQual() {
+    void testHasAnnotationNonQual() {
         Rule rule = makeXpathRuleFromXPath("//MethodDeclaration[pmd-java:hasAnnotation('Override')]");
         String code = "interface O { @Override void foo(); }";
 
@@ -34,7 +34,7 @@ public class HasAnnotationXPathTest extends BaseXPathFunctionTest {
     }
 
     @Test
-    public void testWrongTypeReturnsFalse() {
+    void testWrongTypeReturnsFalse() {
         Rule rule = makeXpathRuleFromXPath("//ClassOrInterfaceBody[pmd-java:hasAnnotation('java.lang.Override')]");
         String code = "interface O { @Override void foo(); }";
 

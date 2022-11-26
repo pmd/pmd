@@ -254,7 +254,7 @@ public class Foo extends Bar{
             specific kind (e.g. enum or interface). Each regex can be configured through
             properties.
 
-            By default this rule uses the standard Java naming convention (Pascal case).
+            By default, this rule uses the standard Java naming convention (Pascal case).
             
             The rule can detect utility classes and enforce a different naming convention
             on those. E.g. setting the property `utilityClassPattern` to
@@ -264,6 +264,10 @@ public class Foo extends Bar{
             For this rule, a utility class is defined as: a concrete class that does not
             inherit from a super class or implement any interface and only has static fields
             or methods.
+
+            This rule detects test classes using the following convention: Test classes are top-level classes, that
+            either inherit from JUnit 3 TestCase or have at least one method annotated with the Test annotations from
+            JUnit4/5 or TestNG.
         </description>
         <priority>1</priority>
         <example>
@@ -292,9 +296,10 @@ public class Éléphant {}
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#commentdefaultaccessmodifier">
         <description>
 To avoid mistakes if we want that an Annotation, Class, Enum, Method, Constructor or Field have a default access modifier
-we must add a comment at the beginning of it's declaration.
-By default the comment must be `/* default */` or `/* package */`, if you want another, you have to provide a regular expression.
-This rule ignores by default all cases that have a @VisibleForTesting annotation. Use the
+we must add a comment at the beginning of its declaration.
+By default, the comment must be `/* default */` or `/* package */`, if you want another, you have to provide a regular expression.
+
+This rule ignores by default all cases that have a `@VisibleForTesting` annotation or any JUnit5 annotation. Use the
 property "ignoredAnnotations" to customize the recognized annotations.
         </description>
         <priority>3</priority>
@@ -448,6 +453,53 @@ public abstract class ShouldBeAbstract {
 
     public void couldBeAbstract() {
     }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="EmptyControlStatement"
+          language="java"
+          since="6.46.0"
+          message="This control statement has an empty branch"
+          class="net.sourceforge.pmd.lang.java.rule.codestyle.EmptyControlStatementRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#emptycontrolstatement">
+        <!-- Note about naming: EmptyCodeBlock does not work because the rule flags `if(true);`  -->
+        <!-- EmptyControlStatement is weird because `{}` is not a control statement, and we also flag initializers. -->
+        <!-- EmptyStatement does not work because `;` is called an "empty statement" and is not flagged by this rule, rather, by UnnecessarySemicolon. -->
+        <!-- EmptyCodeConstruct would work but sounds a bit odd (right?). -->
+        <description><![CDATA[
+            Reports control statements whose body is empty, as well as empty initializers.
+
+            The checked code constructs are the following:
+            - bodies of `try` statements
+            - `finally` clauses of `try` statements
+            - `switch` statements
+            - `synchronized` statements
+            - `if` statements
+            - loop statements: `while`, `for`, `do .. while`
+            - initializers
+            - blocks used as statements (for scoping)
+
+            This rule replaces the rules EmptyFinallyBlock, 
+            EmptyIfStmt, EmptyInitializer, EmptyStatementBlock, 
+            EmptySwitchStatements, EmptySynchronizedBlock, EmptyTryBlock, and EmptyWhileStmt.
+
+            Notice that {% rule java/errorprone/EmptyCatchBlock %} is still an independent rule.
+
+            EmptyStatementNotInLoop is replaced by {% rule java/codestyle/UnnecessarySemicolon %}.
+        ]]></description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+class Foo {
+    {
+        if (true); // empty if statement
+        if (true) { // empty as well
+        }
+    }
+
+    {} // empty initializer
 }
 ]]>
         </example>
@@ -1741,6 +1793,50 @@ public class Foo {
 ]]>
         </example>
     </rule>
+
+    <rule name="UnnecessarySemicolon"
+          language="java"
+          since="6.46.0"
+          message="Unnecessary semicolon"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#unnecessarysemicolon">
+        <description>
+            Reports unnecessary semicolons (so called "empty statements" and "empty declarations").
+            These can be removed without changing the program. The Java grammar
+            allows them for historical reasons, but they should be avoided.
+            
+            This rule will not report empty statements that are syntactically 
+            required, for instance, because they are the body of a control statement.
+
+            This rule replaces EmptyStatementNotInLoop.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="version" value="2.0"/>
+            <property name="xpath">
+                <value><![CDATA[
+      (: empty declarations :)
+      //EmptyDeclaration
+      (: empty statements :)
+    | //Block/EmptyStatement
+
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+class Foo {
+    {
+        toString();; // one of these semicolons is unnecessary
+        if (true); // this semicolon is not unnecessary, but it could be an empty block instead (not reported)
+    }
+}; // this semicolon is unnecessary
+
+]]>
+        </example>
+    </rule>
+
 
     <rule name="UseDiamondOperator"
           language="java"

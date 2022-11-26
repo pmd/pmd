@@ -547,8 +547,7 @@ public class Foo {
 
     <test-code>
         <description>#907 UnusedPrivateField false-positive with @FXML - 3</description>
-        <rule-property name="ignoredAnnotations">javafx.fxml.FXML</rule-property>
-        <expected-problems>1</expected-problems>
+        <expected-problems>0</expected-problems> <!-- since #4100 any annotation present won't trigger the rule anymore -->
         <code><![CDATA[
 public class Foo {
     @Deprecated
@@ -621,8 +620,7 @@ public class Foo {
 
     <test-code>
         <description>#1952 [java] UnusedPrivateField not triggering if @Value annotation present</description>
-        <expected-problems>1</expected-problems>
-        <expected-linenumbers>6</expected-linenumbers>
+        <expected-problems>0</expected-problems> <!-- since #4100 any annotation present won't trigger the rule anymore -->
         <code><![CDATA[
 import somewhere.Value; // 3rd party Value annotation, ie not lombok
 
@@ -647,8 +645,7 @@ public class Foo {
     </test-code>
     <test-code>
         <description>#2673 UnusedPrivateField false positive with lombok annotation EqualsAndHashCode</description>
-        <rule-property name="ignoredAnnotations">lombok.Getter|lombok.Data</rule-property>
-        <expected-problems>1</expected-problems>
+        <expected-problems>0</expected-problems> <!-- since #4100 any annotation present won't trigger the rule anymore -->
         <code><![CDATA[
 import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
@@ -689,5 +686,91 @@ public class Foo {
     }
 }
         ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#3824 #3825 Do not flag fields annotated with @Id, @EmbeddedId, or @Version</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Version;
+
+@Entity
+@Table(name = "my_table")
+public class MyTable implements Serializable {
+   private static final long serialVersionUID = 1L;
+
+   @Id
+   @Column(name = "id", nullable = false)
+   private long m_id;
+
+   @Version
+   @Column(name = "optimistic_lock", nullable = false)
+   private short m_optimisticLock;
+
+   public MyTable() {
+      // nothing to do
+   }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Do not flag Mockito fields that are injected into test target</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.mockito.Spy;
+import org.mockito.Mock;
+import org.mockito.InjectMocks;
+import org.springframework.boot.test.mock.mockito.MockBean;
+
+public class MyTest {
+   @Mock
+   private Object mock;
+
+   @MockBean
+   private Object bean;
+
+   @Spy
+   private Object spy;
+
+   @InjectMocks
+   private Object target;
+
+   void test() {
+      target.methodToTest();
+   }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#4037 false positive with Spring @SpyBean</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.springframework.boot.test.mock.mockito.SpyBean;
+import java.security.Provider.Service;
+public class C {
+    @SpyBean
+    private Service service; 
+}
+        ]]></code>
+    </test-code>
+    
+    <test-code>
+        <description>[java] UnusedPrivateField - false positive with Lombok @ToString.Include #4033</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import lombok.ToString;
+
+@ToString
+public class C {
+    @ToString.Include
+    private int a;  // Should not report a warning in this line
+}
+]]></code>
     </test-code>
 </test-data>

@@ -8,6 +8,7 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.emptyIterator;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
+import static java.util.Collections.emptySet;
 import static java.util.Collections.singletonList;
 
 import java.util.ArrayList;
@@ -17,6 +18,7 @@ import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +26,7 @@ import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.BinaryOperator;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collector;
@@ -273,6 +276,22 @@ public final class CollectionUtil {
         return Collections.unmodifiableList(union);
     }
 
+    public static <K, V> Map<K, V> mapOf(K k0, V v0) {
+        return Collections.singletonMap(k0, v0);
+    }
+
+    public static <K, V> Map<K, V> buildMap(Consumer<Map<K, V>> effect) {
+        Map<K, V> map = new LinkedHashMap<>();
+        effect.accept(map);
+        return Collections.unmodifiableMap(map);
+    }
+
+    public static <K, V> Map<K, V> buildMap(Map<K, V> initialMap, Consumer<Map<K, V>> effect) {
+        Map<K, V> map = new LinkedHashMap<>(initialMap);
+        effect.accept(map);
+        return Collections.unmodifiableMap(map);
+    }
+
     public static <T, R> List<@NonNull R> mapNotNull(Iterable<? extends T> from, Function<? super T, ? extends @Nullable R> f) {
         Iterator<? extends T> it = from.iterator();
         if (!it.hasNext()) {
@@ -493,12 +512,12 @@ public final class CollectionUtil {
     /**
      * A collector that returns a mutable set. This contrasts with
      * {@link Collectors#toSet()}, which makes no guarantee about the
-     * mutability of the set.
+     * mutability of the set. The set preserves insertion order.
      *
      * @param <T> Type of accumulated values
      */
     public static <T> Collector<T, ?, Set<T>> toMutableSet() {
-        return Collectors.toCollection(HashSet::new);
+        return Collectors.toCollection(LinkedHashSet::new);
     }
 
     /**
@@ -511,6 +530,18 @@ public final class CollectionUtil {
      */
     public static <T> Collector<T, ?, List<T>> toUnmodifiableList() {
         return Collectors.collectingAndThen(toMutableList(), Collections::unmodifiableList);
+    }
+
+    /**
+     * A collector that returns an unmodifiable set. This contrasts with
+     * {@link Collectors#toSet()}, which makes no guarantee about the
+     * mutability of the set. {@code Collectors::toUnmodifiableSet} was
+     * only added in JDK 9. The set preserves insertion order.
+     *
+     * @param <T> Type of accumulated values
+     */
+    public static <T> Collector<T, ?, Set<T>> toUnmodifiableSet() {
+        return Collectors.collectingAndThen(toMutableSet(), Collections::unmodifiableSet);
     }
 
     /**
@@ -614,6 +645,13 @@ public final class CollectionUtil {
             return emptyList();
         }
         return Collections.unmodifiableList(new ArrayList<>(list));
+    }
+
+    public static <T> Set<T> defensiveUnmodifiableCopyToSet(Collection<? extends T> list) {
+        if (list.isEmpty()) {
+            return emptySet();
+        }
+        return Collections.unmodifiableSet(new LinkedHashSet<>(list));
     }
 
     /**

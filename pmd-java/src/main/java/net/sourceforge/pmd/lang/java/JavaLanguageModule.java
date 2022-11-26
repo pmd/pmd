@@ -5,6 +5,8 @@
 package net.sourceforge.pmd.lang.java;
 
 import net.sourceforge.pmd.lang.BaseLanguageModule;
+import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.java.internal.JavaLanguageHandler;
 
 /**
@@ -32,9 +34,13 @@ public class JavaLanguageModule extends BaseLanguageModule {
         addVersion("15", new JavaLanguageHandler(15));
         addVersion("16", new JavaLanguageHandler(16));
         addVersion("17", new JavaLanguageHandler(17));
-        addVersion("17-preview", new JavaLanguageHandler(17, true));
-        addDefaultVersion("18", new JavaLanguageHandler(18)); // 18 is the default
+        addVersion("18", new JavaLanguageHandler(18));
         addVersion("18-preview", new JavaLanguageHandler(18, true));
+        addDefaultVersion("19", new JavaLanguageHandler(19)); // 19 is the default
+        addVersion("19-preview", new JavaLanguageHandler(19, true));
     }
 
+    public static Language getInstance() {
+        return LanguageRegistry.PMD.getLanguageByFullName(NAME);
+    }
 }

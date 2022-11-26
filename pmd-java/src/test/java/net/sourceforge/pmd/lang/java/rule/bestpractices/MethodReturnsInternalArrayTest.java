@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class MethodReturnsInternalArrayTest extends PmdRuleTst {
+class MethodReturnsInternalArrayTest extends PmdRuleTst {
     // no additional unit tests
 }

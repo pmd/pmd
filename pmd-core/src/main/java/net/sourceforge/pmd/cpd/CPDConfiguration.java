@@ -21,7 +21,10 @@ import java.util.Properties;
 import java.util.Set;
 
 import net.sourceforge.pmd.AbstractConfiguration;
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.cpd.renderer.CPDRenderer;
+import net.sourceforge.pmd.cpd.renderer.CPDRendererAdapter;
+import net.sourceforge.pmd.cpd.renderer.CPDReportRenderer;
 import net.sourceforge.pmd.util.FileFinder;
 import net.sourceforge.pmd.util.FileUtil;
 
@@ -39,7 +42,7 @@ public class CPDConfiguration extends AbstractConfiguration {
     public static final String DEFAULT_LANGUAGE = "java";
     public static final String DEFAULT_RENDERER = "text";
 
-    private static final Map<String, Class<? extends CPDRenderer>> RENDERERS = new HashMap<>();
+    private static final Map<String, Class<?>> RENDERERS = new HashMap<>();
 
     static {
         RENDERERS.put(DEFAULT_RENDERER, SimpleRenderer.class);
@@ -72,7 +75,10 @@ public class CPDConfiguration extends AbstractConfiguration {
     @Deprecated
     private Renderer renderer;
 
+    @Deprecated
     private CPDRenderer cpdRenderer;
+
+    private CPDReportRenderer cpdReportRenderer;
 
     private String encoding;
 
@@ -110,7 +116,7 @@ public class CPDConfiguration extends AbstractConfiguration {
             required = false)
     private String skipBlocksPattern = Tokenizer.DEFAULT_SKIP_BLOCKS_PATTERN;
 
-    @Parameter(names = "--files", variableArity = true, description = "List of files and directories to process",
+    @Parameter(names = { "--files", "-d", "--dir" }, variableArity = true, description = "List of files and directories to process",
             required = false, converter = FileConverter.class)
     private List<File> files;
 
@@ -135,6 +141,9 @@ public class CPDConfiguration extends AbstractConfiguration {
             description = "By default CPD exits with status 4 if code duplications are found. Disable this option with '-failOnViolation false' to exit with 0 instead and just write the report.")
     private boolean failOnViolation = true;
 
+    @Parameter(names = { "--debug", "--verbose", "-v", "-D" }, description = "Debug mode.")
+    private boolean debug = false;
+
     // this has to be a public static class, so that JCommander can use it!
     public static class LanguageConverter implements IStringConverter<Language> {
 
@@ -147,7 +156,7 @@ public class CPDConfiguration extends AbstractConfiguration {
         }
     }
 
-    @Parameter(names = "--encoding", description = "Character encoding to use when processing files", required = false)
+    @Parameter(names = { "--encoding", "-e" }, description = "Character encoding to use when processing files", required = false)
     public void setEncoding(String encoding) {
         this.encoding = encoding;
         setSourceEncoding(encoding);
@@ -169,66 +178,65 @@ public class CPDConfiguration extends AbstractConfiguration {
             setRendererName(DEFAULT_RENDERER);
         }
         if (getRenderer() == null && getCPDRenderer() == null) {
-            try {
-                setCPDRenderer(getCPDRendererFromString(getRendererName(), getEncoding()));
-            } catch (ClassCastException e) {
-                // The renderer class configured is not using the new CPDRenderer interface...
-                setRenderer(getRendererFromString(getRendererName(), getEncoding()));
+            Object renderer = createRendererByName(getRendererName(), getEncoding());
+            String className = getRendererName();
+
+            if (renderer instanceof CPDReportRenderer) {
+                setRenderer((CPDReportRenderer) renderer);
+            } else if (renderer instanceof CPDRenderer) {
+                setCPDRenderer((CPDRenderer) renderer);
+            } else if (renderer instanceof Renderer) {
+                setRenderer((Renderer) renderer);
+            } else {
+                System.err.println("Class '" + className + "' is not a supported renderer, defaulting to SimpleRenderer.");
+                setRenderer(new SimpleRenderer());
             }
         }
+    }
+
+    private static Object createRendererByName(String name, String encoding) {
+        if (name == null || "".equals(name)) {
+            name = DEFAULT_RENDERER;
+        }
+        Class<?> rendererClass = RENDERERS.get(name.toLowerCase(Locale.ROOT));
+        if (rendererClass == null) {
+            try {
+                rendererClass = Class.forName(name);
+            } catch (ClassNotFoundException e) {
+                System.err.println("Can't find class '" + name + "', defaulting to SimpleRenderer.");
+                rendererClass = SimpleRenderer.class;
+            }
+        }
+
+        Object renderer = null;
+        try {
+            renderer = rendererClass.getDeclaredConstructor().newInstance();
+            setRendererEncoding(renderer, encoding);
+        } catch (Exception e) {
+            System.err.println("Couldn't instantiate renderer, defaulting to SimpleRenderer: " + e);
+            renderer = new SimpleRenderer();
+        }
+        return renderer;
     }
 
     /**
-     * @deprecated Use {@link #getCPDRendererFromString(String, String)} instead
+     * @deprecated Internal API
      */
     @Deprecated
+    @InternalApi
     public static Renderer getRendererFromString(String name, String encoding) {
-        String clazzname = name;
-        if (clazzname == null || "".equals(clazzname)) {
-            clazzname = DEFAULT_RENDERER;
-        }
-        @SuppressWarnings("unchecked") // Safe, all standard implementations implement both interfaces
-        Class<? extends Renderer> clazz = (Class<? extends Renderer>) RENDERERS.get(clazzname.toLowerCase(Locale.ROOT));
-        if (clazz == null) {
-            try {
-                clazz = Class.forName(clazzname).asSubclass(Renderer.class);
-            } catch (ClassNotFoundException e) {
-                System.err.println("Can't find class '" + name + "', defaulting to SimpleRenderer.");
-                clazz = SimpleRenderer.class;
-            }
-        }
-        try {
-            Renderer renderer = clazz.getDeclaredConstructor().newInstance();
-            setRendererEncoding(renderer, encoding);
-            return renderer;
-        } catch (Exception e) {
-            System.err.println("Couldn't instantiate renderer, defaulting to SimpleRenderer: " + e);
-            return new SimpleRenderer();
-        }
+        // will throw a ClassCastException if the renderer is of wrong type
+        return (Renderer) createRendererByName(name, encoding);
     }
 
+    /**
+     * @deprecated Internal API
+     */
+    @Deprecated
+    @InternalApi
     public static CPDRenderer getCPDRendererFromString(String name, String encoding) {
-        String clazzname = name;
-        if (clazzname == null || "".equals(clazzname)) {
-            clazzname = DEFAULT_RENDERER;
-        }
-        Class<? extends CPDRenderer> clazz = RENDERERS.get(clazzname.toLowerCase(Locale.ROOT));
-        if (clazz == null) {
-            try {
-                clazz = Class.forName(clazzname).asSubclass(CPDRenderer.class);
-            } catch (ClassNotFoundException e) {
-                System.err.println("Can't find class '" + name + "', defaulting to SimpleRenderer.");
-                clazz = SimpleRenderer.class;
-            }
-        }
-        try {
-            CPDRenderer renderer = clazz.getDeclaredConstructor().newInstance();
-            setRendererEncoding(renderer, encoding);
-            return renderer;
-        } catch (Exception e) {
-            System.err.println("Couldn't instantiate renderer, defaulting to SimpleRenderer: " + e);
-            return new SimpleRenderer();
-        }
+        // will throw a ClassCastException if the renderer is of wrong type
+        return (CPDRenderer) createRendererByName(name, encoding);
     }
 
     private static void setRendererEncoding(Object renderer, String encoding)
@@ -319,15 +327,25 @@ public class CPDConfiguration extends AbstractConfiguration {
     }
 
     /**
-     * @deprecated Use {@link #getCPDRenderer()} instead
+     * @deprecated Internal API.
      */
     @Deprecated
+    @InternalApi
     public Renderer getRenderer() {
         return renderer;
     }
 
+    /**
+     * @deprecated Internal API.
+     */
+    @Deprecated
+    @InternalApi
     public CPDRenderer getCPDRenderer() {
         return cpdRenderer;
+    }
+
+    public CPDReportRenderer getCPDReportRenderer() {
+        return cpdReportRenderer;
     }
 
     public Tokenizer tokenizer() {
@@ -373,18 +391,33 @@ public class CPDConfiguration extends AbstractConfiguration {
     }
 
     /**
-     * @deprecated Use {@link #setCPDRenderer(CPDRenderer)} instead
+     * @deprecated Internal API. Use {@link #setRendererName(String)} instead.
      * @param renderer
      */
     @Deprecated
+    @InternalApi
     public void setRenderer(Renderer renderer) {
         this.renderer = renderer;
         this.cpdRenderer = null;
+        this.cpdReportRenderer = null;
     }
 
+    /**
+     * @deprecated Internal API. Use {@link #setRendererName(String)} instead.
+     * @param renderer
+     */
+    @Deprecated
+    @InternalApi
     public void setCPDRenderer(CPDRenderer renderer) {
-        this.cpdRenderer = renderer;
         this.renderer = null;
+        this.cpdRenderer = renderer;
+        this.cpdReportRenderer = new CPDRendererAdapter(renderer);
+    }
+
+    void setRenderer(CPDReportRenderer renderer) {
+        this.renderer = null;
+        this.cpdRenderer = null;
+        this.cpdReportRenderer = renderer;
     }
 
     public boolean isIgnoreLiterals() {
@@ -509,5 +542,15 @@ public class CPDConfiguration extends AbstractConfiguration {
 
     public void setFailOnViolation(boolean failOnViolation) {
         this.failOnViolation = failOnViolation;
+    }
+
+    @Override
+    public boolean isDebug() {
+        return debug;
+    }
+
+    @Override
+    public void setDebug(boolean debug) {
+        this.debug = debug;
     }
 }

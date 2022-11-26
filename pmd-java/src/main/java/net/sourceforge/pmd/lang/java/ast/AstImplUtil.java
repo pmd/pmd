@@ -49,11 +49,15 @@ final class AstImplUtil {
     }
 
     static void bumpParenDepth(ASTPattern pattern) {
-        assert pattern instanceof ASTTypePattern || pattern instanceof ASTGuardedPattern
+        assert pattern instanceof ASTTypePattern
+                || pattern instanceof ASTRecordPattern
+                || pattern instanceof ASTGuardedPattern
             : pattern.getClass() + " doesn't have parenDepth attribute!";
 
         if (pattern instanceof ASTTypePattern) {
             ((ASTTypePattern) pattern).bumpParenDepth();
+        } else if (pattern instanceof ASTRecordPattern) {
+            ((ASTRecordPattern) pattern).bumpParenDepth();
         } else if (pattern instanceof ASTGuardedPattern) {
             ((ASTGuardedPattern) pattern).bumpParenDepth();
         }

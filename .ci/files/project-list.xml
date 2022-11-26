@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 
 <projectlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-xsi:noNamespaceSchemaLocation="projectlist_1_1_0.xsd">
+             xsi:noNamespaceSchemaLocation="projectlist_1_1_0.xsd">
   <description>Standard Projects</description>
 
   <project>
@@ -40,6 +40,11 @@ mvn dependency:build-classpath -DincludeScope=test -Dmdep.outputFile=classpath.t
     <exclude-pattern>.*/build/generated-sources/.*</exclude-pattern>
 
     <build-command><![CDATA[#!/usr/bin/env bash
+## Skip gradle execution
+if test -e classpath.txt; then
+  exit
+fi
+
 set -e
 
 # Make sure to use java11. This is already installed by build.sh
@@ -129,11 +134,6 @@ index 6021fa574d..15d29ed699 100644
 EOF
 ) | patch --strip=1
 
-## Skip gradle execution
-if test -e classpath.txt; then
-  exit
-fi
-
 ./gradlew --console=plain --build-cache --no-daemon --max-workers=4 build testClasses -x test -x javadoc -x api -x asciidoctor -x asciidoctorPdf
 ./gradlew --console=plain --build-cache --no-daemon --max-workers=4 createSquishClasspath -q > classpath.txt
 ]]></build-command>
@@ -151,23 +151,15 @@ fi
   <project>
     <name>Schedul-o-matic-9000</name>
     <type>git</type>
-    <connection>https://github.com/pmd/Schedul-o-matic-9000</connection>
-    <!-- 
     <connection>https://github.com/SalesforceLabs/Schedul-o-matic-9000</connection>
-    Note: using forked repo from pmd, as original repo doesn't have any useful tags/branches
-    -->
-    <tag>pmd-regression-test</tag>
+    <tag>6b1229ba43b38931fbbab5924bc9b9611d19a786</tag>
   </project>
 
   <project>
     <name>fflib-apex-common</name>
     <type>git</type>
-    <connection>https://github.com/pmd/fflib-apex-common</connection>
-    <!-- 
     <connection>https://github.com/apex-enterprise-patterns/fflib-apex-common</connection>
-    Note: using forked repo from pmd, as original repo doesn't have any useful tags/branches
-     -->
-    <tag>pmd-regression-test</tag>
+    <tag>7e0891efb86d23de62811af56d87d0959082a322</tag>
   </project>
 
   <project>
@@ -176,5 +168,13 @@ fi
     <connection>https://github.com/nawforce/apex-link</connection>
     <tag>v2.3.0</tag>
     <src-subpath>samples</src-subpath>
+  </project>
+
+  <project>
+    <name>java-regression-tests</name>
+    <type>git</type>
+    <connection>https://github.com/pmd/java-regression-tests</connection>
+    <tag>main</tag>
+    <auxclasspath-command>realpath java-regression-tests-*.jar</auxclasspath-command>
   </project>
 </projectlist>

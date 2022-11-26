@@ -11,6 +11,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.sourceforge.pmd.PMDConfiguration;
 
 import com.beust.jcommander.JCommander;
@@ -83,8 +85,12 @@ public final class PmdParametersParseResult {
      * Returns the resulting configuration if parsing succeeded and neither {@link #isHelp()} nor {@link #isVersion()} is requested.
      * Otherwise returns null.
      */
-    public PMDConfiguration toConfiguration() {
-        return result != null && !isHelp() && !isVersion() ? result.toConfiguration() : null;
+    public @Nullable PMDConfiguration toConfiguration() {
+        return isValidParameterSet() ? result.toConfiguration() : null;
+    }
+
+    private boolean isValidParameterSet() {
+        return result != null && !isHelp() && !isVersion();
     }
 
     /**
@@ -105,11 +111,27 @@ public final class PmdParametersParseResult {
         jcommander.setProgramName("pmd");
 
         try {
-            jcommander.parse(args);
+            parseAndValidate(jcommander, result, args);
             return new PmdParametersParseResult(result, filterDeprecatedOptions(args));
         } catch (ParameterException e) {
             return new PmdParametersParseResult(e, filterDeprecatedOptions(args));
         }
+    }
+
+    private static void parseAndValidate(JCommander jcommander, PMDParameters result, String[] args) {
+        jcommander.parse(args);
+        if (result.isHelp() || result.isVersion()) {
+            return;
+        }
+        // jcommander has no special support for global parameter validation like this
+        // For consistency we report this with a ParameterException
+        if (result.getInputPaths().isEmpty()
+            && null == result.getUri()
+            && null == result.getFileListPath()) {
+            throw new ParameterException(
+                "Please provide a parameter for source root directory (--dir or -d), database URI (--uri or -u), or file list path (--file-list).");
+        }
+
     }
 
     private static Map<String, String> filterDeprecatedOptions(String... args) {
@@ -150,6 +172,13 @@ public final class PmdParametersParseResult {
         m.put("-norulesetcompatibility", "--no-ruleset-compatibility");
         m.put("-cache", "--cache");
         m.put("-no-cache", "--no-cache");
+        m.put("-v", "--use-version"); // In PMD 7, -v will enable verbose mode
+        m.put("-V", "--verbose"); // In PMD 7, -V will show the tool version
+        m.put("-min", "--minimum-priority");
+        m.put("-version", "--use-version");
+        m.put("-language", "--use-version");
+        m.put("-l", "--use-version");
+
         SUGGESTED_REPLACEMENT = Collections.unmodifiableMap(m);
     }
 }

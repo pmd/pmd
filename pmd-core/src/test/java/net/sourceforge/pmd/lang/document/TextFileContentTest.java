@@ -4,137 +4,132 @@
 
 package net.sourceforge.pmd.lang.document;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.StringReader;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
-import org.junit.Assert;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 
-import junitparams.JUnitParamsRunner;
-import junitparams.Parameters;
-
-@RunWith(JUnitParamsRunner.class)
-public class TextFileContentTest {
+class TextFileContentTest {
 
     // in real life it's System.lineSeparator()
     // to make the class more testable (and avoid some test failures being hidden depending on the platform),
     // we use this dummy value
     private static final String LINESEP_SENTINEL = ":fallback:";
 
-    @Rule
-    public ExpectedException expect = ExpectedException.none();
-
-    @Test
-    @Parameters(source = TextContentOrigin.class)
-    public void testMixedDelimiters(TextContentOrigin origin) throws IOException {
+    @ParameterizedTest
+    @EnumSource
+    void testMixedDelimiters(TextContentOrigin origin) throws IOException {
         TextFileContent content = origin.normalize("a\r\nb\n\rc");
-        Assert.assertEquals(Chars.wrap("a\nb\n\nc"), content.getNormalizedText());
-        Assert.assertEquals(LINESEP_SENTINEL, content.getLineTerminator());
+        assertEquals(Chars.wrap("a\nb\n\nc"), content.getNormalizedText());
+        assertEquals(LINESEP_SENTINEL, content.getLineTerminator());
     }
 
-    @Test
-    @Parameters(source = TextContentOrigin.class)
-    public void testFormFeedIsNotNewline(TextContentOrigin origin) throws IOException {
+    @ParameterizedTest
+    @EnumSource
+    void testFormFeedIsNotNewline(TextContentOrigin origin) throws IOException {
         TextFileContent content = origin.normalize("a\f\nb\nc");
-        Assert.assertEquals(Chars.wrap("a\f\nb\nc"), content.getNormalizedText());
-        Assert.assertEquals("\n", content.getLineTerminator());
+        assertEquals(Chars.wrap("a\f\nb\nc"), content.getNormalizedText());
+        assertEquals("\n", content.getLineTerminator());
     }
 
     @Test
-    public void testNormTextPreservation() {
+    void testNormTextPreservation() {
         Chars input = Chars.wrap("a\nb\nc");
         TextFileContent content = TextFileContent.fromCharSeq(input);
-        Assert.assertSame(input, content.getNormalizedText());
-        Assert.assertEquals("\n", content.getLineTerminator());
+        assertSame(input, content.getNormalizedText());
+        assertEquals("\n", content.getLineTerminator());
     }
 
-    @Test
-    @Parameters(source = TextContentOrigin.class)
-    public void testBomElimination(TextContentOrigin origin) throws IOException {
+    @ParameterizedTest
+    @EnumSource
+    void testBomElimination(TextContentOrigin origin) throws IOException {
         TextFileContent content = origin.normalize("\ufeffabc");
         Chars normalizedText = content.getNormalizedText();
-        Assert.assertEquals(Chars.wrap("abc"), normalizedText);
+        assertEquals(Chars.wrap("abc"), normalizedText);
         // This means the string underlying the Chars does not start with the bom marker.
         // It's useful for performance to have `textDocument.getText().toString()` be O(1),
         // and not create a new string.
-        Assert.assertTrue("should be full string", normalizedText.isFullString());
-        Assert.assertSame(normalizedText.toString(), normalizedText.toString());
+        assertTrue(normalizedText.isFullString(), "should be full string");
+        assertSame(normalizedText.toString(), normalizedText.toString());
     }
 
-    @Test
-    @Parameters(source = TextContentOrigin.class)
-    public void testNoExplicitLineMarkers(TextContentOrigin origin) throws IOException {
+    @ParameterizedTest
+    @EnumSource
+    void testNoExplicitLineMarkers(TextContentOrigin origin) throws IOException {
         TextFileContent content = origin.normalize("a");
-        Assert.assertEquals(Chars.wrap("a"), content.getNormalizedText());
-        Assert.assertEquals(LINESEP_SENTINEL, content.getLineTerminator());
+        assertEquals(Chars.wrap("a"), content.getNormalizedText());
+        assertEquals(LINESEP_SENTINEL, content.getLineTerminator());
     }
 
-    @Test
-    @Parameters(source = TextContentOrigin.class)
-    public void testEmptyFile(TextContentOrigin origin) throws IOException {
+    @ParameterizedTest
+    @EnumSource
+    void testEmptyFile(TextContentOrigin origin) throws IOException {
         TextFileContent content = origin.normalize("");
-        Assert.assertEquals(Chars.wrap(""), content.getNormalizedText());
-        Assert.assertEquals(LINESEP_SENTINEL, content.getLineTerminator());
+        assertEquals(Chars.wrap(""), content.getNormalizedText());
+        assertEquals(LINESEP_SENTINEL, content.getLineTerminator());
     }
 
     @Test
-    public void testCrlfSplitOnBuffer() throws IOException {
+    void testCrlfSplitOnBuffer() throws IOException {
         StringReader reader = new StringReader("a\r\nb");
         // now the buffer is of size 2, so we read first [a\r] then [\nb]
         // but there is a single line
         TextFileContent content = TextFileContent.normalizingRead(reader, 2, System.lineSeparator());
-        Assert.assertEquals(Chars.wrap("a\nb"), content.getNormalizedText());
-        Assert.assertEquals("\r\n", content.getLineTerminator());
+        assertEquals(Chars.wrap("a\nb"), content.getNormalizedText());
+        assertEquals("\r\n", content.getLineTerminator());
     }
 
     @Test
-    public void testCrSplitOnBufferFp() throws IOException {
+    void testCrSplitOnBufferFp() throws IOException {
         StringReader reader = new StringReader("a\rb\n");
         // the buffer is of size 2, so we read first [a\r] then [b\n]
         // the \r is a line terminator on its own
         TextFileContent content = TextFileContent.normalizingRead(reader, 2, LINESEP_SENTINEL);
-        Assert.assertEquals(Chars.wrap("a\nb\n"), content.getNormalizedText());
-        Assert.assertEquals(LINESEP_SENTINEL, content.getLineTerminator());
+        assertEquals(Chars.wrap("a\nb\n"), content.getNormalizedText());
+        assertEquals(LINESEP_SENTINEL, content.getLineTerminator());
     }
 
-    @Test
-    @Parameters(source = TextContentOrigin.class)
-    public void testCrCr(TextContentOrigin origin) throws IOException {
+    @ParameterizedTest
+    @EnumSource
+    void testCrCr(TextContentOrigin origin) throws IOException {
         TextFileContent content = origin.normalize("a\r\rb");
-        Assert.assertEquals(Chars.wrap("a\n\nb"), content.getNormalizedText());
-        Assert.assertEquals("\r", content.getLineTerminator());
+        assertEquals(Chars.wrap("a\n\nb"), content.getNormalizedText());
+        assertEquals("\r", content.getLineTerminator());
     }
 
-    @Test
-    @Parameters(source = TextContentOrigin.class)
-    public void testCrIsEol(TextContentOrigin origin) throws IOException {
+    @ParameterizedTest
+    @EnumSource
+    void testCrIsEol(TextContentOrigin origin) throws IOException {
         TextFileContent content = origin.normalize("a\rb\rdede");
-        Assert.assertEquals(Chars.wrap("a\nb\ndede"), content.getNormalizedText());
-        Assert.assertEquals("\r", content.getLineTerminator());
+        assertEquals(Chars.wrap("a\nb\ndede"), content.getNormalizedText());
+        assertEquals("\r", content.getLineTerminator());
     }
 
-    @Test
-    @Parameters(source = TextContentOrigin.class)
-    public void testLfAtStartOfFile(TextContentOrigin origin) throws IOException {
+    @ParameterizedTest
+    @EnumSource
+    void testLfAtStartOfFile(TextContentOrigin origin) throws IOException {
         TextFileContent content = origin.normalize("\nohio");
-        Assert.assertEquals(Chars.wrap("\nohio"), content.getNormalizedText());
-        Assert.assertEquals("\n", content.getLineTerminator());
+        assertEquals(Chars.wrap("\nohio"), content.getNormalizedText());
+        assertEquals("\n", content.getLineTerminator());
     }
 
     @Test
-    public void testCrCrSplitBuffer() throws IOException {
+    void testCrCrSplitBuffer() throws IOException {
         StringReader reader = new StringReader("a\r\r");
         // the buffer is of size 2, so we read first [a\r] then [\ro]
         // the \r is not a line terminator though
         TextFileContent content = TextFileContent.normalizingRead(reader, 2, LINESEP_SENTINEL);
-        Assert.assertEquals(Chars.wrap("a\n\n"), content.getNormalizedText());
-        Assert.assertEquals("\r", content.getLineTerminator());
+        assertEquals(Chars.wrap("a\n\n"), content.getNormalizedText());
+        assertEquals("\r", content.getLineTerminator());
     }
 
     enum TextContentOrigin {
@@ -164,10 +159,5 @@ public class TextFileContentTest {
         };
 
         abstract TextFileContent normalize(String input) throws IOException;
-
-        // for junitParams
-        public static Object[] provideParameters() {
-            return values();
-        }
     }
 }

@@ -72,6 +72,14 @@ export RELEASE_VERSION
 export DEVELOPMENT_VERSION
 export CURRENT_BRANCH
 
+# check for SNAPSHOT version of pmd.build-tools.version
+BUILD_TOOLS_VERSION=$(./mvnw org.apache.maven.plugins:maven-help-plugin:3.2.0:evaluate -Dexpression=pmd.build-tools.version -q -DforceStdout)
+BUILD_TOOLS_VERSION_RELEASE=${BUILD_TOOLS_VERSION%-SNAPSHOT}
+if [ "${BUILD_TOOLS_VERSION}" != "${BUILD_TOOLS_VERSION_RELEASE}" ]; then
+  echo "Error: version pmd.build-tools.version is ${BUILD_TOOLS_VERSION} - snapshot is not allowed"
+  exit 1
+fi
+
 RELEASE_RULESET="pmd-core/src/main/resources/rulesets/releases/${RELEASE_VERSION//\./}.xml"
 
 echo "*   Update date info in **docs/_config.yml**."
@@ -108,7 +116,7 @@ echo "* Days since last release: $(( ( $(date +%s) - $(git log --max-count=1 --f
 )
 
 TEMP_RELEASE_NOTES=$(cat docs/pages/release_notes.md)
-TEMP_RELEASE_NOTES=${TEMP_RELEASE_NOTES/\{\% endtocmaker \%\}/$STATS$'\n'$'\n'\{\% endtocmaker \%\}$'\n'}
+TEMP_RELEASE_NOTES=${TEMP_RELEASE_NOTES/\{\% endtocmaker \%\}/${STATS//\&/\\\&}$'\n'$'\n'\{\% endtocmaker \%\}$'\n'}
 echo "${TEMP_RELEASE_NOTES}" > docs/pages/release_notes.md
 
 echo

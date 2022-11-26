@@ -10,10 +10,10 @@
     <description>
         PMD is a source code analyzer. It finds common programming flaws like unused variables, empty catch blocks,
         unnecessary object creation, and so forth. It supports Java, JavaScript, Salesforce.com Apex and Visualforce,
-        Modelica, PLSQL, Apache Velocity, XML, XSL, Scala.
+        Modelica, PLSQL, Apache Velocity, HTML, XML, XSL, Scala.
 
         Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code in
-        C/C++, C#, Dart, Fortran, Go, Groovy, Java, JavaScript, JSP, Kotlin, Lua, Matlab, Modelica,
+        C/C++, C#, Dart, Fortran, Gherkin, Go, Groovy, HTML, Java, JavaScript, JSP, Kotlin, Lua, Matlab, Modelica,
         Objective-C, Perl, PHP, PLSQL, Python, Ruby, Salesforce.com Apex, Scala, Swift and Visualforce.
     </description>
 
@@ -76,7 +76,7 @@
     </issueManagement>
 
     <properties>
-        <project.build.outputTimestamp>2022-04-30T07:38:24Z</project.build.outputTimestamp>
+        <project.build.outputTimestamp>2022-10-29T07:34:24Z</project.build.outputTimestamp>
 
         <java.version>8</java.version>
 
@@ -85,31 +85,32 @@
 
 
         <kotlin.compiler.jvmTarget>${maven.compiler.test.target}</kotlin.compiler.jvmTarget>
-        <kotlin.version>1.4.10</kotlin.version>
-        <kotest.version>4.3.1</kotest.version>
-        <dokka.version>1.4.32</dokka.version>
-
+        <kotlin.version>1.7.20</kotlin.version>
+        <kotest.version>5.5.4</kotest.version>
+        <junit5.version>5.8.2</junit5.version> <!-- needed by kotest -->
+        <dokka.version>1.7.20</dokka.version>
 
         <javacc.version>5.0</javacc.version>
-        <surefire.version>3.0.0-M5</surefire.version>
-        <checkstyle.version>9.3</checkstyle.version>
-        <checkstyle.plugin.version>3.1.2</checkstyle.plugin.version>
-        <pmd.plugin.version>3.16.0</pmd.plugin.version>
+        <surefire.version>3.0.0-M7</surefire.version>
+        <checkstyle.version>10.3.3</checkstyle.version>
+        <checkstyle.plugin.version>3.2.0</checkstyle.plugin.version>
+        <pmd.plugin.version>3.19.0</pmd.plugin.version>
         <ant.version>1.10.12</ant.version>
         <javadoc.plugin.version>3.2.0</javadoc.plugin.version>
-        <antlr.version>4.8</antlr.version>
-        <slf4j.version>2.0.0-alpha6</slf4j.version>
+        <antlr.version>4.9.1</antlr.version>
+        <slf4j.version>1.7.36</slf4j.version>
         <saxon.version>10.7</saxon.version>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <pmd.website.baseurl>https://pmd.github.io/pmd</pmd.website.baseurl>
 
-        <argLine>-Xmx512m -Dfile.encoding=${project.build.sourceEncoding}</argLine>
+        <argLine>-Xmx512m -Dfile.encoding=${project.build.sourceEncoding} ${extraArgLine}</argLine>
+        <extraArgLine /> <!-- empty by default, profiles set it as needed -->
 
-        <pmd.build-tools.version>18-SNAPSHOT</pmd.build-tools.version>
+        <pmd.build-tools.version>18</pmd.build-tools.version>
 
-        <pmd-designer.version>6.37.0</pmd-designer.version>
+        <pmd-designer.version>7.0.0-SNAPSHOT</pmd-designer.version>
         <javacc.jar>${settings.localRepository}/net/java/dev/javacc/javacc/${javacc.version}/javacc-${javacc.version}.jar</javacc.jar>
         <javacc.outputDirectory>${project.build.directory}/generated-sources/javacc</javacc.outputDirectory>
         <javacc.ant.wrapper>${project.basedir}/../javacc-wrapper.xml</javacc.ant.wrapper>
@@ -286,7 +287,13 @@
                         <dependency>
                             <groupId>org.junit.vintage</groupId>
                             <artifactId>junit-vintage-engine</artifactId>
-                            <version>5.7.0</version>
+                            <version>${junit5.version}</version>
+                        </dependency>
+                        <!-- JUnit5 Platform Engine for Junit 5 -->
+                        <dependency>
+                            <groupId>org.junit.jupiter</groupId>
+                            <artifactId>junit-jupiter-engine</artifactId>
+                            <version>${junit5.version}</version>
                         </dependency>
                         <!-- Junit5 Platform Engine for Kotlin Tests -->
                         <dependency>
@@ -376,7 +383,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-enforcer-plugin</artifactId>
-                    <version>3.0.0-M2</version>
+                    <version>3.0.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -419,22 +426,22 @@
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-core</artifactId>
-                            <version>6.45.0</version> <!-- pmd.dogfood.version -->
+                            <version>6.51.0</version> <!-- pmd.dogfood.version -->
                         </dependency>
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-java</artifactId>
-                            <version>6.45.0</version> <!-- pmd.dogfood.version -->
+                            <version>6.51.0</version> <!-- pmd.dogfood.version -->
                         </dependency>
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-jsp</artifactId>
-                            <version>6.45.0</version> <!-- pmd.dogfood.version -->
+                            <version>6.51.0</version> <!-- pmd.dogfood.version -->
                         </dependency>
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-javascript</artifactId>
-                            <version>6.45.0</version> <!-- pmd.dogfood.version -->
+                            <version>6.51.0</version> <!-- pmd.dogfood.version -->
                         </dependency>
                         <!-- This contains the dogfood ruleset -->
                         <dependency>
@@ -443,6 +450,11 @@
                             <version>${pmd.build-tools.version}</version>
                         </dependency>
                     </dependencies>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-site-plugin</artifactId>
+                    <version>4.0.0-M1</version>
                 </plugin>
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
@@ -505,6 +517,33 @@
                                 <requireJavaVersion>
                                     <version>[11,)</version>
                                 </requireJavaVersion>
+                            </rules>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>enforce-no-snapshots</id>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <requireReleaseDeps>
+                                    <message>No Snapshots Allowed!</message>
+                                    <onlyWhenRelease>true</onlyWhenRelease>
+                                </requireReleaseDeps>
+                            </rules>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>enforce-plugin-versions</id>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <requirePluginVersions>
+                                    <message>Best Practice is to always define plugin versions!</message>
+                                </requirePluginVersions>
                             </rules>
                         </configuration>
                     </execution>
@@ -672,9 +711,14 @@
                 <version>1.48</version> <!-- 1.48 is the latest version compatible with java7 -->
             </dependency>
             <dependency>
+                <groupId>info.picocli</groupId>
+                <artifactId>picocli</artifactId>
+                <version>4.7.0</version>
+            </dependency>
+            <dependency>
                 <groupId>org.ow2.asm</groupId>
                 <artifactId>asm</artifactId>
-                <version>9.2</version>
+                <version>9.3</version>
             </dependency>
             <dependency>
                 <groupId>org.pcollections</groupId>
@@ -687,9 +731,24 @@
                 <version>${project.version}</version>
             </dependency>
             <dependency>
+                <groupId>net.sourceforge.pmd</groupId>
+                <artifactId>pmd-ant</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>net.sourceforge.pmd</groupId>
+                <artifactId>pmd-test-schema</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.checkerframework</groupId>
                 <artifactId>checker-qual</artifactId>
                 <version>2.5.2</version>
+            </dependency>
+            <dependency>
+                <groupId>net.sourceforge.saxon</groupId>
+                <artifactId>saxon</artifactId>
+                <version>9.1.0.8</version>
             </dependency>
             <dependency>
                 <groupId>net.sf.saxon</groupId>
@@ -701,11 +760,6 @@
                 <artifactId>javacc</artifactId>
                 <version>${javacc.version}</version>
                 <scope>provided</scope> <!-- only needed for generating the parser via ant -->
-            </dependency>
-            <dependency>
-                <groupId>commons-io</groupId>
-                <artifactId>commons-io</artifactId>
-                <version>2.6</version> <!-- note: this is the last version compatible with java7 -->
             </dependency>
             <dependency>
                 <groupId>org.apache.commons</groupId>
@@ -745,7 +799,7 @@
             <dependency>
                 <groupId>org.yaml</groupId>
                 <artifactId>snakeyaml</artifactId>
-                <version>1.30</version>
+                <version>1.33</version>
             </dependency>
 
 
@@ -793,6 +847,28 @@
             </dependency>
 
             <dependency>
+                <groupId>org.junit</groupId>
+                <artifactId>junit-bom</artifactId>
+                <version>5.8.2</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.junit.platform</groupId>
+                <artifactId>junit-platform-suite</artifactId>
+                <version>1.9.0-M1</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>com.github.stefanbirkner</groupId>
+                <artifactId>system-lambda</artifactId>
+                <version>1.2.1</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
                 <version>4.13.1</version>
@@ -820,15 +896,9 @@
 
             <dependency>
                 <groupId>com.github.tomakehurst</groupId>
-                <artifactId>wiremock</artifactId>
-                <version>1.57</version>
+                <artifactId>wiremock-jre8</artifactId>
+                <version>2.33.2</version>
                 <scope>test</scope>
-                <exclusions>
-                    <exclusion>
-                        <artifactId>commons-lang</artifactId>
-                        <groupId>commons-lang</groupId>
-                    </exclusion>
-                </exclusions>
             </dependency>
 
             <dependency>
@@ -900,6 +970,18 @@
                 <version>13.0</version>
                 <scope>test</scope>
             </dependency>
+
+            <!-- transitive dependency through org.scalameta:trees_2.13
+                 upgrade to 3.16.1 to fix CVE-2021-22569 A potential Denial of Service issue in protobuf-java
+                 https://github.com/protocolbuffers/protobuf/security/advisories/GHSA-wrvw-hg22-4m67
+                 upgrade to 3.16.3 to fix CVE-2022-3171 protobuf-java has a potential Denial of Service issue
+                 https://github.com/advisories/GHSA-h4h5-3hr4-j3g2
+            -->
+            <dependency>
+                <groupId>com.google.protobuf</groupId>
+                <artifactId>protobuf-java</artifactId>
+                <version>3.16.3</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -952,9 +1034,45 @@
                 <enabled>true</enabled>
             </snapshots>
         </pluginRepository>
+        <pluginRepository>
+            <id>apache.snapshots</id>
+            <name>Apache Snapshot Repository</name>
+            <url>https://repository.apache.org/snapshots</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </pluginRepository>
     </pluginRepositories>
 
     <profiles>
+        <profile>
+            <!-- Adds an SLF4J implementation, useful when developing within an IDE -->
+            <id>with-slf4j-impl</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <dependencies>
+                <dependency>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-simple</artifactId>
+                </dependency>
+            </dependencies>
+        </profile>
+
+        <profile>
+            <id>Java 18+</id>
+            <activation>
+                <jdk>[18,)</jdk>
+            </activation>
+            <properties>
+                <!-- java.security.manager=allow is needed under Java 18+ for usages of com.github.stefanbirkner.systemlambda.SystemLambda.catchSystemExit -->
+                <extraArgLine>-Djava.security.manager=allow</extraArgLine>
+            </properties>
+        </profile>
+
         <profile>
             <id>pmd-release</id>
             <properties>
@@ -1082,6 +1200,7 @@
     <modules>
         <module>pmd-apex-jorje</module>
         <module>pmd-apex</module>
+        <module>pmd-cli</module>
         <module>pmd-core</module>
         <module>pmd-cpp</module>
         <module>pmd-cs</module>
@@ -1089,6 +1208,7 @@
         <module>pmd-dist</module>
         <module>pmd-doc</module>
         <module>pmd-fortran</module>
+        <module>pmd-gherkin</module>
         <module>pmd-go</module>
         <module>pmd-groovy</module>
         <module>pmd-html</module>
@@ -1112,8 +1232,10 @@
         <module>pmd-scala-modules/pmd-scala_2.12</module>
         <module>pmd-swift</module>
         <module>pmd-test</module>
+        <module>pmd-test-schema</module>
         <module>pmd-visualforce</module>
         <module>pmd-vm</module>
         <module>pmd-xml</module>
+        <module>pmd-ant</module>
     </modules>
 </project>

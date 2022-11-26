@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.java.rule.codestyle;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class TooManyStaticImportsTest extends PmdRuleTst {
+class TooManyStaticImportsTest extends PmdRuleTst {
     // no additional unit tests
 }

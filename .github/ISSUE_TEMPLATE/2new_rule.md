@@ -17,7 +17,7 @@ assignees: ''
 **Code Sample:** This should include code, that should be flagged by the rule. If possible, the "correct" code
 according to this new rule should also be demonstrated.
 
-```
+```java
 
 ```
 

@@ -139,7 +139,7 @@ public final class FileCollector implements AutoCloseable {
      */
     public boolean addFile(Path file) {
         if (!Files.isRegularFile(file)) {
-            reporter.error("Not a regular file {}", file);
+            reporter.error("Not a regular file: {0}", file);
             return false;
         }
         LanguageVersion languageVersion = discoverLanguage(file.toString());
@@ -165,7 +165,7 @@ public final class FileCollector implements AutoCloseable {
     public boolean addFile(Path file, Language language) {
         AssertionUtil.requireParamNotNull("language", language);
         if (!Files.isRegularFile(file)) {
-            reporter.error("Not a regular file {}", file);
+            reporter.error("Not a regular file: {0}", file);
             return false;
         }
         LanguageVersion lv = discoverer.getDefaultLanguageVersion(language);
@@ -244,7 +244,7 @@ public final class FileCollector implements AutoCloseable {
         LanguageVersion contextVersion = discoverer.getDefaultLanguageVersion(language);
         if (!fileVersion.equals(contextVersion)) {
             reporter.error(
-                "Cannot add file {}: version ''{}'' does not match ''{}''",
+                "Cannot add file {0}: version ''{1}'' does not match ''{2}''",
                 textFile.getPathId(),
                 fileVersion,
                 contextVersion
@@ -287,7 +287,7 @@ public final class FileCollector implements AutoCloseable {
      */
     public boolean addDirectory(Path dir) throws IOException {
         if (!Files.isDirectory(dir)) {
-            reporter.error("Not a directory {}", dir);
+            reporter.error("Not a directory {0}", dir);
             return false;
         }
         Files.walkFileTree(dir, new SimpleFileVisitor<Path>() {
@@ -315,7 +315,7 @@ public final class FileCollector implements AutoCloseable {
         } else if (Files.isRegularFile(file)) {
             return addFile(file);
         } else {
-            reporter.error("Not a file or directory {}", file);
+            reporter.error("Not a file or directory {0}", file);
             return false;
         }
     }

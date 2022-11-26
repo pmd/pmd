@@ -134,7 +134,7 @@ public final class Chars implements CharSequence {
      * parameter, especially on Java 9+.
      *
      * @param start Start index (inclusive)
-     * @param end End index (exclusive)
+     * @param end   End index (exclusive)
      *
      * @throws IndexOutOfBoundsException See {@link StringBuilder#append(CharSequence, int, int)}
      */
@@ -345,6 +345,16 @@ public final class Chars implements CharSequence {
         return this;
     }
 
+    /**
+     * Remove the prefix if it is present, otherwise returns this.
+     */
+    public Chars removePrefix(String charSeq) {
+        if (startsWith(charSeq)) {
+            return subSequence(charSeq.length(), length());
+        }
+        return this;
+    }
+
 
     /**
      * Returns true if this char sequence is logically equal to the
@@ -360,15 +370,9 @@ public final class Chars implements CharSequence {
     public boolean contentEquals(CharSequence cs, boolean ignoreCase) {
         if (cs instanceof Chars) {
             Chars chars2 = (Chars) cs;
-            if (len != chars2.len) {
-                return false;
-            }
-            return str.regionMatches(ignoreCase, start, chars2.str, chars2.start, len);
+            return len == chars2.len && str.regionMatches(ignoreCase, start, chars2.str, chars2.start, len);
         } else {
-            if (length() != cs.length()) {
-                return false;
-            }
-            return str.regionMatches(ignoreCase, start, cs.toString(), 0, len);
+            return length() == cs.length() && str.regionMatches(ignoreCase, start, cs.toString(), 0, len);
         }
     }
 
@@ -487,13 +491,7 @@ public final class Chars implements CharSequence {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof Chars)) {
-            return false;
-        }
-        return contentEquals((Chars) o);
+        return this == o || o instanceof Chars && contentEquals((Chars) o);
     }
 
     @Override

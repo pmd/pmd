@@ -5,20 +5,17 @@
 package net.sourceforge.pmd.internal;
 
 import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import org.slf4j.ILoggerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.LoggerFactoryFriend;
+import org.slf4j.PmdLoggerFactoryFriend;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 import org.slf4j.event.Level;
 
 public final class Slf4jSimpleConfiguration {
-    private static final String SIMPLE_LOGGER_FACTORY_CLASS = "org.slf4j.simple.SimpleLoggerFactory";
-    private static final String SIMPLE_LOGGER_CLASS = "org.slf4j.simple.SimpleLogger";
+    private static final String SIMPLE_LOGGER_FACTORY_CLASS = "org.slf4j.impl.SimpleLoggerFactory";
+    private static final String SIMPLE_LOGGER_CLASS = "org.slf4j.impl.SimpleLogger";
 
     private Slf4jSimpleConfiguration() { }
 
@@ -43,22 +40,39 @@ public final class Slf4jSimpleConfiguration {
             Method initMethod = simpleLoggerClass.getDeclaredMethod("init");
             initMethod.setAccessible(true);
             initMethod.invoke(null);
+
+            // Call SimpleLoggerFactory.reset() by reflection.
+            Method resetMethod = loggerFactoryClass.getDeclaredMethod("reset");
+            resetMethod.setAccessible(true);
+            resetMethod.invoke(loggerFactory);
         } catch (ReflectiveOperationException ex) {
             System.err.println("Error while initializing logging: " + ex);
         }
 
-        LoggerFactoryFriend.reset();
+        PmdLoggerFactoryFriend.reset();
     }
 
     public static Level getDefaultLogLevel() {
         Logger rootLogger = LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
-        List<Level> enabledLogLevels = Arrays.asList(Level.values()).stream()
-                .filter(rootLogger::isEnabledForLevel).collect(Collectors.toList());
-        if (enabledLogLevels.isEmpty()) {
+
+        // check the lowest log level first
+        if (rootLogger.isTraceEnabled()) {
+            return Level.TRACE;
+        }
+        if (rootLogger.isDebugEnabled()) {
+            return Level.DEBUG;
+        }
+        if (rootLogger.isInfoEnabled()) {
             return Level.INFO;
         }
-        // return the lowest (last) level
-        return enabledLogLevels.get(enabledLogLevels.size() - 1);
+        if (rootLogger.isWarnEnabled()) {
+            return Level.WARN;
+        }
+        if (rootLogger.isErrorEnabled()) {
+            return Level.ERROR;
+        }
+
+        return Level.INFO;
     }
 
     public static void disableLogging(Class<?> clazz) {

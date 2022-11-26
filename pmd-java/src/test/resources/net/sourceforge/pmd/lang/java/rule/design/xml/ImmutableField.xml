@@ -484,6 +484,7 @@ class Foo {
         <code><![CDATA[
 public class Foo {
     @Deprecated
+    @SuppressWarnings("PMD.ImmutableField")
     private int x;
 
     public Foo() {
@@ -656,5 +657,158 @@ public class ExampleImmutableField {
     }
 }
         ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#3874 [java] ImmutableField reports fields annotated with @Autowired (Spring) and @Mock (Mockito)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.beans.factory.annotation.Autowired;
+
+public class ExampleImmutableField {
+
+    @Mock
+    private Foo foo;
+
+    @InjectMocks
+    private Bar bar;
+
+    @MockBean
+    private Baz Baz;
+
+    @Autowired
+    private Foo2 foo2;
+}
+
+class Foo {}
+class Bar {}
+class Baz {}
+class Foo2 {}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#3981 #3998 [java] ImmutableField reports fields annotated with @Value (Spring) and @Captor (Mockito)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.mockito.Captor;
+import org.mockito.ArgumentCaptor;
+import org.springframework.beans.factory.annotation.Value;
+
+public class ExampleImmutableField {
+
+    @Value("${property.value}")
+    private String bar2;
+
+    @Captor
+    private ArgumentCaptor<Object> baz2;
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#4008 FN with field assigned only in initializer</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            public class Foo {
+                private String variable = "hello";
+
+                public Goo() {
+
+                }
+                public String getVariable() {
+                    return variable;
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>#4008 FN with field assigned only in initializer (no ctor)</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            public class Foo {
+                private String variable = "hello";
+
+                public String getVariable() {
+                    return variable;
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>[java] ImmutableField: Do not flag fields annotated with @Inject #4011</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import javax.inject.Inject;
+public class Foo {
+    @Inject
+    private MyService service;
+}
+
+interface MyService {}
+]]></code>
+    </test-code>
+    <test-code>
+        <description>[java] ImmutableField reports fields annotated with @FindBy and @FindBys (Selenium) #4020</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class SomePage {
+    @org.openqa.selenium.support.FindBy(id = "id1")
+    private WebElement field1;
+
+    @org.openqa.selenium.support.FindBys(value = {@org.openqa.selenium.support.FindByFindBy(id = "id2"),
+                                                       @org.openqa.selenium.support.FindBy(xpath = "//div/table")})
+    private WebElement table;
+}
+]]></code>
+    </test-code>
+    <test-code>
+        <description>[java] ImmutableField reports fields annotated with @GwtMock (GwtMockito) and @Spy (Mockito) #4004</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class SomeTest {
+    @com.google.gwtmockito.GwtMock
+    private String someMock;
+
+    @org.mockito.Spy
+    private String someSpy;
+}
+]]></code>
+    </test-code>
+    <test-code>
+        <description>[java] ImmutableField: Do not flag fields in @Entity #3823</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import javax.persistence.Id;
+import javax.persistence.Column;
+@Entity
+@Table(name = "my_table")
+public class MyTable implements Serializable
+{
+   private static final long serialVersionUID = 1L;
+
+   @Id
+   @Column(name = "directory", nullable = false)
+   private long m_id;  // PMD Violation: ImmutableField
+
+   // other fields
+
+   /**
+    * For JPA
+    */
+   public MyTable()
+   {
+      // nothing to do
+   }
+
+   public long getId()
+   {
+      return m_id;
+   }
+}
+]]></code>
     </test-code>
 </test-data>

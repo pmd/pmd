@@ -22,10 +22,15 @@ expressions.
 
 The rule designer is a tool that packs a lot of features to help you develop XPath
 rules quickly and painlessly. Basically, it allows you to examine the AST of a code
-snippet and evaluate an XPath expression against it.
+snippet and evaluate an XPath expression against it. You can launch it from Command Line as follows:
 
-Like for PMD and CPD, you can launch it using `run.sh designer` on Linux/Unix
-and `designer.bat` on Windows. The interface looks like the following:
+{% include cli_example.html
+   id="designer"
+   linux="pmd designer"
+   windows="pmd.bat designer" %}
+
+
+The interface looks like the following:
 
 {% include image.html file="userdocs/designer-overview-with-nums.png" alt="Designer overview" %}
 

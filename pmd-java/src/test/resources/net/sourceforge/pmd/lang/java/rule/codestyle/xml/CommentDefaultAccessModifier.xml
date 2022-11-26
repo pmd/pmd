@@ -291,7 +291,22 @@ public enum Bar {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-    enum Bar {
+    /*package*/ enum Bar {
+        ONE, TWO;
+
+        Bar() {}
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Nested enum can trigger rule</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    enum Bar { // here
         ONE, TWO;
 
         Bar() {}
@@ -305,8 +320,46 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
+    /*package*/ @interface Bar {
+        String baz();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Nested annotation can trigger rule</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
     @interface Bar {
         String baz();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Nested interface can trigger rule</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    interface Bar {
+        String baz();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Nested record can trigger rule</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    record Bar(int i) {
     }
 }
         ]]></code>
@@ -378,11 +431,52 @@ public interface MyInterface {
 
     <test-code>
         <description>Nested classes inside enum</description>
-        <expected-problems>0</expected-problems>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
         <code><![CDATA[
 public enum MyEnum {
     FOO;
     class MyNestedClass {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#3859 [java] CommentDefaultAccessModifier is triggered in JUnit5 method and it was conflicting with rule JUnit5TestShouldBePackagePrivate</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.junit.jupiter.api.Test;
+
+class SomeTest {
+
+  @Test
+  void test() {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] CommentDefaultAccessModifier should consider lombok's @Value #4201</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+
+import lombok.Value;
+@Value
+public class Test {
+    int foo;
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>[java] CommentDefaultAccessModifier should consider lombok's @Value #4201, the value class should be reported</description>
+        <rule-property name="checkTopLevelTypes">true</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+import lombok.Value;
+@Value
+class Test { // missing
+    int foo;
 }
         ]]></code>
     </test-code>

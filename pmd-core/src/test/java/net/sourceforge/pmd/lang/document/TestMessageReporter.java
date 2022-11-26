@@ -18,6 +18,5 @@ public class TestMessageReporter extends SimpleMessageReporter {
 
     public TestMessageReporter() {
         super(LOG);
-        setLevel(null);
     }
 }

@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.AbstractList;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -15,6 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.RandomAccess;
+import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -134,115 +133,113 @@ final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
         // we only need to check for \n as the input is normalized
         Pattern.compile("/\\*([^*]++|\\*(?!/))*+\\*/|//[^\n]++\n");
 
-    private static final Map<Class<? extends AstNode>, Constructor<? extends AbstractApexNode<?>>>
+    private static final Map<Class<? extends AstNode>, Function<AstNode, ? extends AbstractApexNode<?>>>
         NODE_TYPE_TO_NODE_ADAPTER_TYPE = new HashMap<>();
 
 
     static {
-        register(Annotation.class, ASTAnnotation.class);
-        register(AnnotationParameter.class, ASTAnnotationParameter.class);
-        register(AnonymousClass.class, ASTAnonymousClass.class);
-        register(ArrayLoadExpression.class, ASTArrayLoadExpression.class);
-        register(ArrayStoreExpression.class, ASTArrayStoreExpression.class);
-        register(AssignmentExpression.class, ASTAssignmentExpression.class);
-        register(BinaryExpression.class, ASTBinaryExpression.class);
-        register(BindExpressions.class, ASTBindExpressions.class);
-        register(BlockStatement.class, ASTBlockStatement.class);
-        register(BooleanExpression.class, ASTBooleanExpression.class);
-        register(BreakStatement.class, ASTBreakStatement.class);
-        register(BridgeMethodCreator.class, ASTBridgeMethodCreator.class);
-        register(CastExpression.class, ASTCastExpression.class);
-        register(CatchBlockStatement.class, ASTCatchBlockStatement.class);
-        register(ClassRefExpression.class, ASTClassRefExpression.class);
-        register(ConstructorPreamble.class, ASTConstructorPreamble.class);
-        register(ConstructorPreambleStatement.class, ASTConstructorPreambleStatement.class);
-        register(ContinueStatement.class, ASTContinueStatement.class);
-        register(DmlDeleteStatement.class, ASTDmlDeleteStatement.class);
-        register(DmlInsertStatement.class, ASTDmlInsertStatement.class);
-        register(DmlMergeStatement.class, ASTDmlMergeStatement.class);
-        register(DmlUndeleteStatement.class, ASTDmlUndeleteStatement.class);
-        register(DmlUpdateStatement.class, ASTDmlUpdateStatement.class);
-        register(DmlUpsertStatement.class, ASTDmlUpsertStatement.class);
-        register(DoLoopStatement.class, ASTDoLoopStatement.class);
-        register(ElseWhenBlock.class, ASTElseWhenBlock.class);
-        register(EmptyReferenceExpression.class, ASTEmptyReferenceExpression.class);
-        register(Expression.class, ASTExpression.class);
-        register(ExpressionStatement.class, ASTExpressionStatement.class);
-        register(Field.class, ASTField.class);
-        register(FieldDeclaration.class, ASTFieldDeclaration.class);
-        register(FieldDeclarationStatements.class, ASTFieldDeclarationStatements.class);
-        register(ForEachStatement.class, ASTForEachStatement.class);
-        register(ForLoopStatement.class, ASTForLoopStatement.class);
-        register(IdentifierCase.class, ASTIdentifierCase.class);
-        register(IfBlockStatement.class, ASTIfBlockStatement.class);
-        register(IfElseBlockStatement.class, ASTIfElseBlockStatement.class);
-        register(IllegalStoreExpression.class, ASTIllegalStoreExpression.class);
-        register(InstanceOfExpression.class, ASTInstanceOfExpression.class);
-        register(InvalidDependentCompilation.class, ASTInvalidDependentCompilation.class);
-        register(JavaMethodCallExpression.class, ASTJavaMethodCallExpression.class);
-        register(JavaVariableExpression.class, ASTJavaVariableExpression.class);
-        register(LiteralCase.class, ASTLiteralCase.class);
-        register(LiteralExpression.class, ASTLiteralExpression.class);
-        register(MapEntryNode.class, ASTMapEntryNode.class);
-        register(Method.class, ASTMethod.class);
-        register(MethodBlockStatement.class, ASTMethodBlockStatement.class);
-        register(MethodCallExpression.class, ASTMethodCallExpression.class);
-        register(Modifier.class, ASTModifier.class);
-        register(ModifierNode.class, ASTModifierNode.class);
-        register(ModifierOrAnnotation.class, ASTModifierOrAnnotation.class);
-        register(MultiStatement.class, ASTMultiStatement.class);
-        register(NestedExpression.class, ASTNestedExpression.class);
-        register(NestedStoreExpression.class, ASTNestedStoreExpression.class);
-        register(NewKeyValueObjectExpression.class, ASTNewKeyValueObjectExpression.class);
-        register(NewListInitExpression.class, ASTNewListInitExpression.class);
-        register(NewListLiteralExpression.class, ASTNewListLiteralExpression.class);
-        register(NewMapInitExpression.class, ASTNewMapInitExpression.class);
-        register(NewMapLiteralExpression.class, ASTNewMapLiteralExpression.class);
-        register(NewObjectExpression.class, ASTNewObjectExpression.class);
-        register(NewSetInitExpression.class, ASTNewSetInitExpression.class);
-        register(NewSetLiteralExpression.class, ASTNewSetLiteralExpression.class);
-        register(PackageVersionExpression.class, ASTPackageVersionExpression.class);
-        register(Parameter.class, ASTParameter.class);
-        register(PostfixExpression.class, ASTPostfixExpression.class);
-        register(PrefixExpression.class, ASTPrefixExpression.class);
-        register(Property.class, ASTProperty.class);
-        register(ReferenceExpression.class, ASTReferenceExpression.class);
-        register(ReturnStatement.class, ASTReturnStatement.class);
-        register(RunAsBlockStatement.class, ASTRunAsBlockStatement.class);
-        register(SoqlExpression.class, ASTSoqlExpression.class);
-        register(SoslExpression.class, ASTSoslExpression.class);
-        register(StandardCondition.class, ASTStandardCondition.class);
-        register(Statement.class, ASTStatement.class);
-        register(StatementExecuted.class, ASTStatementExecuted.class);
-        register(SuperMethodCallExpression.class, ASTSuperMethodCallExpression.class);
-        register(SuperVariableExpression.class, ASTSuperVariableExpression.class);
-        register(SwitchStatement.class, ASTSwitchStatement.class);
-        register(TernaryExpression.class, ASTTernaryExpression.class);
-        register(ThisMethodCallExpression.class, ASTThisMethodCallExpression.class);
-        register(ThisVariableExpression.class, ASTThisVariableExpression.class);
-        register(ThrowStatement.class, ASTThrowStatement.class);
-        register(TriggerVariableExpression.class, ASTTriggerVariableExpression.class);
-        register(TryCatchFinallyBlockStatement.class, ASTTryCatchFinallyBlockStatement.class);
-        register(TypeWhenBlock.class, ASTTypeWhenBlock.class);
-        register(UserClass.class, ASTUserClass.class);
-        register(UserClassMethods.class, ASTUserClassMethods.class);
-        register(UserExceptionMethods.class, ASTUserExceptionMethods.class);
-        register(UserEnum.class, ASTUserEnum.class);
-        register(UserInterface.class, ASTUserInterface.class);
-        register(UserTrigger.class, ASTUserTrigger.class);
-        register(ValueWhenBlock.class, ASTValueWhenBlock.class);
-        register(VariableDeclaration.class, ASTVariableDeclaration.class);
-        register(VariableDeclarationStatements.class, ASTVariableDeclarationStatements.class);
-        register(VariableExpression.class, ASTVariableExpression.class);
-        register(WhileLoopStatement.class, ASTWhileLoopStatement.class);
+        register(Annotation.class, ASTAnnotation::new);
+        register(AnnotationParameter.class, ASTAnnotationParameter::new);
+        register(AnonymousClass.class, ASTAnonymousClass::new);
+        register(ArrayLoadExpression.class, ASTArrayLoadExpression::new);
+        register(ArrayStoreExpression.class, ASTArrayStoreExpression::new);
+        register(AssignmentExpression.class, ASTAssignmentExpression::new);
+        register(BinaryExpression.class, ASTBinaryExpression::new);
+        register(BindExpressions.class, ASTBindExpressions::new);
+        register(BlockStatement.class, ASTBlockStatement::new);
+        register(BooleanExpression.class, ASTBooleanExpression::new);
+        register(BreakStatement.class, ASTBreakStatement::new);
+        register(BridgeMethodCreator.class, ASTBridgeMethodCreator::new);
+        register(CastExpression.class, ASTCastExpression::new);
+        register(CatchBlockStatement.class, ASTCatchBlockStatement::new);
+        register(ClassRefExpression.class, ASTClassRefExpression::new);
+        register(ConstructorPreamble.class, ASTConstructorPreamble::new);
+        register(ConstructorPreambleStatement.class, ASTConstructorPreambleStatement::new);
+        register(ContinueStatement.class, ASTContinueStatement::new);
+        register(DmlDeleteStatement.class, ASTDmlDeleteStatement::new);
+        register(DmlInsertStatement.class, ASTDmlInsertStatement::new);
+        register(DmlMergeStatement.class, ASTDmlMergeStatement::new);
+        register(DmlUndeleteStatement.class, ASTDmlUndeleteStatement::new);
+        register(DmlUpdateStatement.class, ASTDmlUpdateStatement::new);
+        register(DmlUpsertStatement.class, ASTDmlUpsertStatement::new);
+        register(DoLoopStatement.class, ASTDoLoopStatement::new);
+        register(ElseWhenBlock.class, ASTElseWhenBlock::new);
+        register(EmptyReferenceExpression.class, ASTEmptyReferenceExpression::new);
+        register(Expression.class, ASTExpression::new);
+        register(ExpressionStatement.class, ASTExpressionStatement::new);
+        register(Field.class, ASTField::new);
+        register(FieldDeclaration.class, ASTFieldDeclaration::new);
+        register(FieldDeclarationStatements.class, ASTFieldDeclarationStatements::new);
+        register(ForEachStatement.class, ASTForEachStatement::new);
+        register(ForLoopStatement.class, ASTForLoopStatement::new);
+        register(IdentifierCase.class, ASTIdentifierCase::new);
+        register(IfBlockStatement.class, ASTIfBlockStatement::new);
+        register(IfElseBlockStatement.class, ASTIfElseBlockStatement::new);
+        register(IllegalStoreExpression.class, ASTIllegalStoreExpression::new);
+        register(InstanceOfExpression.class, ASTInstanceOfExpression::new);
+        register(InvalidDependentCompilation.class, ASTInvalidDependentCompilation::new);
+        register(JavaMethodCallExpression.class, ASTJavaMethodCallExpression::new);
+        register(JavaVariableExpression.class, ASTJavaVariableExpression::new);
+        register(LiteralCase.class, ASTLiteralCase::new);
+        register(LiteralExpression.class, ASTLiteralExpression::new);
+        register(MapEntryNode.class, ASTMapEntryNode::new);
+        register(Method.class, ASTMethod::new);
+        register(MethodBlockStatement.class, ASTMethodBlockStatement::new);
+        register(MethodCallExpression.class, ASTMethodCallExpression::new);
+        register(Modifier.class, ASTModifier::new);
+        register(ModifierNode.class, ASTModifierNode::new);
+        register(ModifierOrAnnotation.class, ASTModifierOrAnnotation::new);
+        register(MultiStatement.class, ASTMultiStatement::new);
+        register(NestedExpression.class, ASTNestedExpression::new);
+        register(NestedStoreExpression.class, ASTNestedStoreExpression::new);
+        register(NewKeyValueObjectExpression.class, ASTNewKeyValueObjectExpression::new);
+        register(NewListInitExpression.class, ASTNewListInitExpression::new);
+        register(NewListLiteralExpression.class, ASTNewListLiteralExpression::new);
+        register(NewMapInitExpression.class, ASTNewMapInitExpression::new);
+        register(NewMapLiteralExpression.class, ASTNewMapLiteralExpression::new);
+        register(NewObjectExpression.class, ASTNewObjectExpression::new);
+        register(NewSetInitExpression.class, ASTNewSetInitExpression::new);
+        register(NewSetLiteralExpression.class, ASTNewSetLiteralExpression::new);
+        register(PackageVersionExpression.class, ASTPackageVersionExpression::new);
+        register(Parameter.class, ASTParameter::new);
+        register(PostfixExpression.class, ASTPostfixExpression::new);
+        register(PrefixExpression.class, ASTPrefixExpression::new);
+        register(Property.class, ASTProperty::new);
+        register(ReferenceExpression.class, ASTReferenceExpression::new);
+        register(ReturnStatement.class, ASTReturnStatement::new);
+        register(RunAsBlockStatement.class, ASTRunAsBlockStatement::new);
+        register(SoqlExpression.class, ASTSoqlExpression::new);
+        register(SoslExpression.class, ASTSoslExpression::new);
+        register(StandardCondition.class, ASTStandardCondition::new);
+        register(Statement.class, ASTStatement::new);
+        register(StatementExecuted.class, ASTStatementExecuted::new);
+        register(SuperMethodCallExpression.class, ASTSuperMethodCallExpression::new);
+        register(SuperVariableExpression.class, ASTSuperVariableExpression::new);
+        register(SwitchStatement.class, ASTSwitchStatement::new);
+        register(TernaryExpression.class, ASTTernaryExpression::new);
+        register(ThisMethodCallExpression.class, ASTThisMethodCallExpression::new);
+        register(ThisVariableExpression.class, ASTThisVariableExpression::new);
+        register(ThrowStatement.class, ASTThrowStatement::new);
+        register(TriggerVariableExpression.class, ASTTriggerVariableExpression::new);
+        register(TryCatchFinallyBlockStatement.class, ASTTryCatchFinallyBlockStatement::new);
+        register(TypeWhenBlock.class, ASTTypeWhenBlock::new);
+        register(UserClass.class, ASTUserClass::new);
+        register(UserClassMethods.class, ASTUserClassMethods::new);
+        register(UserExceptionMethods.class, ASTUserExceptionMethods::new);
+        register(UserEnum.class, ASTUserEnum::new);
+        register(UserInterface.class, ASTUserInterface::new);
+        register(UserTrigger.class, ASTUserTrigger::new);
+        register(ValueWhenBlock.class, ASTValueWhenBlock::new);
+        register(VariableDeclaration.class, ASTVariableDeclaration::new);
+        register(VariableDeclarationStatements.class, ASTVariableDeclarationStatements::new);
+        register(VariableExpression.class, ASTVariableExpression::new);
+        register(WhileLoopStatement.class, ASTWhileLoopStatement::new);
     }
 
-    private static <T extends AstNode> void register(Class<T> nodeType, Class<? extends AbstractApexNode<T>> nodeAdapterType) {
-        try {
-            NODE_TYPE_TO_NODE_ADAPTER_TYPE.put(nodeType, nodeAdapterType.getDeclaredConstructor(nodeType));
-        } catch (SecurityException | NoSuchMethodException e) {
-            throw new RuntimeException(e);
-        }
+
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    private static <T extends AstNode> void register(Class<T> nodeType, Function<T, ? extends AbstractApexNode<T>> nodeAdapterType) {
+        NODE_TYPE_TO_NODE_ADAPTER_TYPE.put(nodeType, (Function) nodeAdapterType);
     }
 
     // The nodes having children built.
@@ -264,22 +261,16 @@ final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
     }
 
     static <T extends AstNode> AbstractApexNode<T> createNodeAdapter(T node) {
-        try {
-            @SuppressWarnings("unchecked")
-            // the register function makes sure only ApexNode<T> can be added,
-            // where T is "T extends AstNode".
-            Constructor<? extends AbstractApexNode<T>> constructor = (Constructor<? extends AbstractApexNode<T>>) NODE_TYPE_TO_NODE_ADAPTER_TYPE
-                    .get(node.getClass());
-            if (constructor == null) {
-                throw new IllegalArgumentException(
-                    "There is no Node adapter class registered for the Node class: " + node.getClass());
-            }
-            return constructor.newInstance(node);
-        } catch (InstantiationException | IllegalAccessException e) {
-            throw new RuntimeException(e);
-        } catch (InvocationTargetException e) {
-            throw new RuntimeException(e.getTargetException());
+        // the signature of the register function makes sure this cast is safe
+        @SuppressWarnings("unchecked")
+        Function<T, ? extends AbstractApexNode<T>> constructor =
+            (Function<T, ? extends AbstractApexNode<T>>) NODE_TYPE_TO_NODE_ADAPTER_TYPE.get(node.getClass());
+
+        if (constructor == null) {
+            throw new IllegalStateException(
+                "There is no Node adapter class registered for the Node class: " + node.getClass());
         }
+        return constructor.apply(node);
     }
 
     ASTApexFile buildTree(Compilation astNode, ApexMultifileAnalysis analysisHandler) {
@@ -380,7 +371,7 @@ final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
      * to the comment is smaller, it overrides the remembered node.
      *
      * @param jorjeNode the original node
-     * @param node the potential parent node, to which the comment could belong
+     * @param node      the potential parent node, to which the comment could belong
      */
     private void assignApexDocTokenToNode(AstNode jorjeNode, AbstractApexNode<?> node) {
         Location loc = jorjeNode.getLoc();
@@ -427,16 +418,18 @@ final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
             if (commentText.startsWith("/**")) {
                 ApexDocTokenLocation doctok = new ApexDocTokenLocation(commentRegion, commentText);
                 tokenLocations.add(doctok);
-                tok = doctok;
+                // TODO #3953 - if this is an FP, just uncomment the code and remove the continue statement
+                // tok = doctok;
+                continue;
             } else {
                 tok = new TokenLocation(commentRegion);
             }
             allCommentTokens.add(tok);
 
             if (checkForCommentSuppression && commentText.startsWith("//")) {
-                Chars trimmed = commentText.subSequence("//".length(), commentText.length()).trimStart();
+                Chars trimmed = commentText.removePrefix("//").trimStart();
                 if (trimmed.startsWith(suppressMarker)) {
-                    Chars userMessage = trimmed.subSequence(suppressMarker.length()).trim();
+                    Chars userMessage = trimmed.removePrefix(suppressMarker).trim();
                     suppressMap.put(source.lineColumnAtOffset(startIdx).getLine(), userMessage.toString());
                 }
             }
@@ -516,10 +509,6 @@ final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
             build(node);
             return false;
         }
-    }
-
-    public Map<Integer, String> getSuppressMap() {
-        return commentInfo.suppressMap;
     }
 
     @Override

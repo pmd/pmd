@@ -16,13 +16,16 @@ import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.event.Level;
 
 import net.sourceforge.pmd.Report.GlobalReportBuilderListener;
 import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.benchmark.TimedOperation;
 import net.sourceforge.pmd.benchmark.TimedOperationCategory;
 import net.sourceforge.pmd.cache.AnalysisCacheListener;
+import net.sourceforge.pmd.cache.NoopAnalysisCache;
 import net.sourceforge.pmd.cli.internal.ProgressBarListener;
+import net.sourceforge.pmd.internal.LogMessages;
 import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.internal.util.FileCollectionUtil;
 import net.sourceforge.pmd.lang.Language;
@@ -33,8 +36,11 @@ import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.processor.AbstractPMDProcessor;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
+import net.sourceforge.pmd.reporting.ReportStats;
+import net.sourceforge.pmd.reporting.ReportStatsListener;
 import net.sourceforge.pmd.util.ClasspathClassLoader;
 import net.sourceforge.pmd.util.IOUtil;
+import net.sourceforge.pmd.util.StringUtil;
 import net.sourceforge.pmd.util.log.MessageReporter;
 
 /**
@@ -159,9 +165,7 @@ public final class PmdAnalysis implements AutoCloseable {
      * }</pre>
      */
     public RuleSetLoader newRuleSetLoader() {
-        RuleSetLoader loader = RuleSetLoader.fromPmdConfig(configuration);
-        loader.setReporter(this.reporter);
-        return loader;
+        return RuleSetLoader.fromPmdConfig(configuration);
     }
 
     /**
@@ -299,7 +303,7 @@ public final class PmdAnalysis implements AutoCloseable {
                 listener.onConfigError(new Report.ConfigurationError(rule, rule.dysfunctionReason()));
             }
 
-            PMD.encourageToUseIncrementalAnalysis(configuration);
+            encourageToUseIncrementalAnalysis(configuration);
             try (AbstractPMDProcessor processor = AbstractPMDProcessor.newFileProcessor(configuration)) {
                 processor.processFiles(rulesets, textFiles, listener);
             }
@@ -343,6 +347,7 @@ public final class PmdAnalysis implements AutoCloseable {
         for (RuleSet ruleSet : ruleSets) {
             for (final Rule rule : ruleSet.getRules()) {
                 final Language ruleLanguage = rule.getLanguage();
+                Objects.requireNonNull(ruleLanguage, "Rule has no language " + rule);
                 if (!languages.contains(ruleLanguage)) {
                     final LanguageVersion version = discoverer.getDefaultLanguageVersion(ruleLanguage);
                     if (RuleSet.applies(rule, version)) {
@@ -364,7 +369,7 @@ public final class PmdAnalysis implements AutoCloseable {
         ruleSets.removeDysfunctionalRules(brokenRules);
 
         for (final Rule rule : brokenRules) {
-            reporter.warn("Removed misconfigured rule: {} cause: {}",
+            reporter.warn("Removed misconfigured rule: {0} cause: {1}",
                           rule.getName(), rule.dysfunctionReason());
         }
 
@@ -397,4 +402,54 @@ public final class PmdAnalysis implements AutoCloseable {
         }
     }
 
+    public ReportStats runAndReturnStats() {
+        if (getRulesets().isEmpty()) {
+            return ReportStats.empty();
+        }
+
+        @SuppressWarnings("PMD.CloseResource")
+        ReportStatsListener listener = new ReportStatsListener();
+
+        addListener(listener);
+
+        try {
+            performAnalysis();
+        } catch (Exception e) {
+            getReporter().errorEx("Exception during processing", e);
+            ReportStats stats = listener.getResult();
+            printErrorDetected(1 + stats.getNumErrors());
+            return stats; // should have been closed
+        }
+        ReportStats stats = listener.getResult();
+
+        if (stats.getNumErrors() > 0) {
+            printErrorDetected(stats.getNumErrors());
+        }
+
+        return stats;
+    }
+
+    static void printErrorDetected(MessageReporter reporter, int errors) {
+        String msg = LogMessages.errorDetectedMessage(errors, "PMD");
+        // note: using error level here increments the error count of the reporter,
+        // which we don't want.
+        reporter.info(StringUtil.quoteMessageFormat(msg));
+    }
+
+    void printErrorDetected(int errors) {
+        printErrorDetected(getReporter(), errors);
+    }
+
+    private static void encourageToUseIncrementalAnalysis(final PMDConfiguration configuration) {
+        final MessageReporter reporter = configuration.getReporter();
+
+        if (!configuration.isIgnoreIncrementalAnalysis()
+            && configuration.getAnalysisCache() instanceof NoopAnalysisCache
+            && reporter.isLoggable(Level.WARN)) {
+            final String version =
+                PMDVersion.isUnknown() || PMDVersion.isSnapshot() ? "latest" : "pmd-" + PMDVersion.VERSION;
+            reporter.warn("This analysis could be faster, please consider using Incremental Analysis: "
+                            + "https://pmd.github.io/{0}/pmd_userdocs_incremental_analysis.html", version);
+        }
+    }
 }

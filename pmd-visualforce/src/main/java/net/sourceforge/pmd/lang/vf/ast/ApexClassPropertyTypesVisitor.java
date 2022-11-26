@@ -12,12 +12,9 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
 import net.sourceforge.pmd.lang.apex.ast.ASTModifierNode;
+import net.sourceforge.pmd.lang.apex.ast.ASTProperty;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.ast.ApexVisitorBase;
-
-import apex.jorje.semantic.symbol.member.method.Generated;
-import apex.jorje.semantic.symbol.member.method.MethodInfo;
-import apex.jorje.semantic.symbol.type.BasicType;
 
 /**
  * Visits an Apex class to determine a mapping of referenceable expressions to expression type.
@@ -36,15 +33,15 @@ final class ApexClassPropertyTypesVisitor extends ApexVisitorBase<Void, Void> {
     private static final String RETURN_TYPE_VOID = "void";
 
     /**
-     * Pairs of (variableName, BasicType)
+     * Pairs of (variableName, typeName)
      */
-    private final List<Pair<String, BasicType>> variables;
+    private final List<Pair<String, String>> variables;
 
     ApexClassPropertyTypesVisitor() {
         this.variables = new ArrayList<>();
     }
 
-    public List<Pair<String, BasicType>> getVariables() {
+    public List<Pair<String, String>> getVariables() {
         return this.variables;
     }
 
@@ -54,11 +51,10 @@ final class ApexClassPropertyTypesVisitor extends ApexVisitorBase<Void, Void> {
      */
     @Override
     public Void visit(ASTMethod node, Void data) {
-        MethodInfo mi = node.getNode().getMethodInfo();
-        if (mi.getParameterTypes().isEmpty()
+        if (node.getArity() == 0
                 && isVisibleToVisualForce(node)
-                && !RETURN_TYPE_VOID.equalsIgnoreCase(mi.getReturnType().getApexName())
-                && (mi.getGenerated().equals(Generated.USER) || mi.isPropertyAccessor())) {
+                && !RETURN_TYPE_VOID.equalsIgnoreCase(node.getReturnType())
+                && (node.hasRealLoc() || node.getFirstParentOfType(ASTProperty.class) != null)) {
             StringBuilder sb = new StringBuilder();
             List<ASTUserClass> parents = node.getParentsOfType(ASTUserClass.class);
             Collections.reverse(parents);
@@ -73,7 +69,7 @@ final class ApexClassPropertyTypesVisitor extends ApexVisitorBase<Void, Void> {
             }
             sb.append(name);
 
-            variables.add(Pair.of(sb.toString(), mi.getReturnType().getBasicType()));
+            variables.add(Pair.of(sb.toString(), node.getReturnType()));
         }
         return visitApexNode(node, data);
     }

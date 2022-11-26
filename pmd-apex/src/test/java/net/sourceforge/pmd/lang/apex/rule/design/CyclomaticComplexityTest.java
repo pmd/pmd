@@ -6,5 +6,6 @@ package net.sourceforge.pmd.lang.apex.rule.design;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class CyclomaticComplexityTest extends PmdRuleTst {
+class CyclomaticComplexityTest extends PmdRuleTst {
+    // no additional unit tests
 }

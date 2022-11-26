@@ -14,9 +14,9 @@ import java.util.List;
 
 public class Bar {
     void foo() {
-        Integer[] ints = new Integer(10);
-        List l = new ArrayList(10);
-        for (int i = 0; i < 100; i++) {
+        Integer[] ints = new Integer[10];
+        List l = new ArrayList(ints.length);
+        for (int i = 0; i < ints.length; i++) {
             l.add(ints[i]);
         }
     }
@@ -114,11 +114,13 @@ public class Test {
     public void foo(Integer[] ints) {
         // could just use Arrays.asList(ints)
         List l = new ArrayList(10);
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < ints.length; i++) {
             l.add(ints[i]);
         }
-        for (int i = 0; i < 100; i++) {
-            l.add(a[i].toString()); // won't trigger the rule
+
+        List l2 = new ArrayList(10);
+        for (int i = 0; i < ints.length; i++) {
+            l2.add(ints[i].toString()); // won't trigger the rule
         }
     }
 }
@@ -179,15 +181,77 @@ public class Test {
     public void foo(Integer[] ints) {
         // could just use Arrays.asList(ints)
         List<Integer> l = new ArrayList<>(100);
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < ints.length; i++) {
             l.add(ints[i]); // line 9, here is the violation
         }
         List<Integer> anotherList = new ArrayList<>();
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < ints.length; i++) {
             anotherList.add(ints[i].toString()); // line 13 - false positive
         }
     }
 }
         ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] UseArraysAsList false positive with non-trivial loops #3965</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+public class Test {
+    public void foo(Integer[] ints) {
+        List<Integer> l = new ArrayList<>(100);
+        for (int i = 0; i < 100; i++) {
+            switch (lookup(ints[i])) {
+            case 1: l.add(ints[i]); break; // line 10 - false positive
+            case 2: l.addAll(getInts(i)); break;
+            }
+        }
+
+        List<Integer> anotherList = new ArrayList<>();
+        for (int i : ints) {
+            switch (lookup(i)) {
+            case 1: anotherList.add(i); break; // line 18 - false positive
+            case 2: anotherList.addAll(getInts(i)); break;
+            }
+        }
+    }
+
+    int lookup(int a) {
+        return a;
+    }
+
+    List<Integer> getInts(int a) {
+        return Arrays.asList(a);
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] UseArraysAsList must ignore primitive arrays #3379</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.ArrayList;
+import java.util.List;
+
+class Test {
+    public void convert(Object value) {
+        short[] array = (short[]) value;
+        List<Short> arrayList = new ArrayList<>(array.length);
+        for (short v : array) {
+            arrayList.add(v); // line 9 - false positive
+        }
+
+        List<Short> arrayList2 = new ArrayList<>(array.length);
+        for (int i = 0; i < array.length; i++) {
+            arrayList2.add(array[i]); // line 14 - false positive
+        }
+    }
+}
+]]></code>
     </test-code>
 </test-data>

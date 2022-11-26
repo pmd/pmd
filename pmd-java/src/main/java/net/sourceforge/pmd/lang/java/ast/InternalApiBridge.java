@@ -92,7 +92,7 @@ public final class InternalApiBridge {
                 try {
                     it.getTypeMirror();
                 } catch (Exception e) {
-                    processor.getLogger().error(it, "Error during type resolution of node " + it.getXPathNodeName());
+                    processor.getLogger().warning(it, "Error during type resolution of node " + it.getXPathNodeName());
                 }
             });
     }

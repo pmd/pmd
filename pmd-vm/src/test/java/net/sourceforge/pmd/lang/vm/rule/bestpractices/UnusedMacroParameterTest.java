@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.vm.rule.bestpractices;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class UnusedMacroParameterTest extends PmdRuleTst {
+class UnusedMacroParameterTest extends PmdRuleTst {
     // no additional unit tests
 }

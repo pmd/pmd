@@ -5,17 +5,11 @@
 package net.sourceforge.pmd.lang.html.rule;
 
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.html.HtmlLanguageModule;
 import net.sourceforge.pmd.lang.html.ast.HtmlVisitor;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
 
 public abstract class AbstractHtmlRule extends AbstractRule implements HtmlVisitor {
-
-    public AbstractHtmlRule() {
-        super.setLanguage(LanguageRegistry.getLanguage(HtmlLanguageModule.NAME));
-    }
 
     @Override
     public Object visitNode(Node node, Object param) {

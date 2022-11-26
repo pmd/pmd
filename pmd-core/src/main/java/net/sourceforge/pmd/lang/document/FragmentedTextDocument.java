@@ -76,14 +76,13 @@ final class FragmentedTextDocument extends BaseMappedDocument implements TextDoc
             lastAccessedFragment = f;
         }
 
-        if (!inclusive && f.outEnd() == outOffset) {
-            if (f.next != null) {
+        if (inclusive && f.outEnd() == outOffset && f.next != null) {
+            // Inclusive means, the offset must correspond to a character in the source document.
+            // Here we have to skip forward to the fragment that contains the character, because
+            // it's not this one.
+            do {
                 f = f.next;
-                lastAccessedFragment = f;
-                // fallthrough
-            } else {
-                return f.outToIn(outOffset) + 1;
-            }
+            } while (f.next != null && f.outLen() == 0);
         }
         return f.outToIn(outOffset);
     }

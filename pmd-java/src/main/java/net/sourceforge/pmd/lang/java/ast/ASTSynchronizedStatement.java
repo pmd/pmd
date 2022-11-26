@@ -34,7 +34,7 @@ public final class ASTSynchronizedStatement extends AbstractStatement {
     }
 
     /**
-     * Returns the body of the statement.
+     * Returns the body of this statement.
      */
     public ASTBlock getBody() {
         return (ASTBlock) getChild(1);

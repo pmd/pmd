@@ -211,7 +211,7 @@ final class AstDisambiguationPass {
             JTypeDeclSymbol sym = type.getReferencedSym();
             if (type.getParent() instanceof ASTAnnotation) {
                 if (!(sym instanceof JClassSymbol && (sym.isUnresolved() || ((JClassSymbol) sym).isAnnotation()))) {
-                    ctx.getLogger().error(type, JavaSemanticErrors.EXPECTED_ANNOTATION_TYPE);
+                    ctx.getLogger().warning(type, JavaSemanticErrors.EXPECTED_ANNOTATION_TYPE);
                 }
                 return;
             }
@@ -219,7 +219,7 @@ final class AstDisambiguationPass {
             int actualArity = ASTList.sizeOrZero(type.getTypeArguments());
             int expectedArity = sym instanceof JClassSymbol ? ((JClassSymbol) sym).getTypeParameterCount() : 0;
             if (actualArity != 0 && actualArity != expectedArity) {
-                ctx.getLogger().error(type, JavaSemanticErrors.MALFORMED_GENERIC_TYPE, expectedArity, actualArity);
+                ctx.getLogger().warning(type, JavaSemanticErrors.MALFORMED_GENERIC_TYPE, expectedArity, actualArity);
             }
         }
 

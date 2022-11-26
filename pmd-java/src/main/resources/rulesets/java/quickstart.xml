@@ -139,6 +139,11 @@
     <rule ref="category/java/design.xml/FinalFieldCouldBeStatic"/>
     <!-- <rule ref="category/java/design.xml/GodClass" /> -->
     <!-- <rule ref="category/java/design.xml/ImmutableField" /> -->
+    <!-- <rule ref="category/java/design.xml/InvalidJavaBean">-->
+    <!--     <properties>-->
+    <!--         <property name="packages" value="org.example.beans" />-->
+    <!--     </properties>-->
+    <!-- </rule>-->
     <!-- <rule ref="category/java/design.xml/LawOfDemeter" /> -->
     <rule ref="category/java/design.xml/LogicInversion"/>
     <!-- <rule ref="category/java/design.xml/LoosePackageCoupling"> -->
@@ -264,17 +269,10 @@
     <!-- <rule ref="category/java/errorprone.xml/UseProperClassLoader" /> -->
 
     <!-- Empty rules -->
+    <rule ref="category/java/codestyle.xml/EmptyControlStatement"/>
+    <rule ref="category/java/codestyle.xml/UnnecessarySemicolon"/>
     <rule ref="category/java/errorprone.xml/EmptyCatchBlock"/>
     <rule ref="category/java/errorprone.xml/EmptyFinalizer"/>
-    <rule ref="category/java/errorprone.xml/EmptyFinallyBlock"/>
-    <rule ref="category/java/errorprone.xml/EmptyIfStmt"/>
-    <rule ref="category/java/errorprone.xml/EmptyInitializer"/>
-    <rule ref="category/java/errorprone.xml/EmptyStatementBlock"/>
-    <rule ref="category/java/errorprone.xml/EmptyStatementNotInLoop"/>
-    <rule ref="category/java/errorprone.xml/EmptySwitchStatements"/>
-    <rule ref="category/java/errorprone.xml/EmptySynchronizedBlock"/>
-    <rule ref="category/java/errorprone.xml/EmptyTryBlock"/>
-    <rule ref="category/java/errorprone.xml/EmptyWhileStmt"/>
 
 
     <!-- <rule ref="category/java/multithreading.xml/AvoidSynchronizedAtMethodLevel" /> -->

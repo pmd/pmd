@@ -4,16 +4,16 @@
 
 package net.sourceforge.pmd.lang.modelica;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class ModelicaParserTest {
+class ModelicaParserTest {
     @Test
-    public void testParsingGrapgical() {
+    void testParsingGrapgical() {
         ModelicaParsingHelper.DEFAULT.parseResource("ParserTestGraphical.mo");
     }
 
     @Test
-    public void testParsingTextual() {
+    void testParsingTextual() {
         ModelicaParsingHelper.DEFAULT.parseResource("ParserTestTextual.mo");
     }
 }

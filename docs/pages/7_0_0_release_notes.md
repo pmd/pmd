@@ -1,6 +1,6 @@
 ---
 title: PMD Release Notes
-permalink: pmd_release_notes.html
+permalink: pmd_release_notes7.html
 keywords: changelog, release notes
 ---
 
@@ -19,14 +19,70 @@ This is a {{ site.pmd.release_type }} release.
 
 ### New and noteworthy
 
-#### CLI improvements
+#### Revamped Command Line Interface
 
-The PMD CLI has been enhanced with a progress bar, which interactively displays the
+PMD now ships with a unified Command Line Interface for both Linux/Unix and Windows. Instead of having a collection of scripts 
+for the different utilities shipped with PMD, a single script `pmd` (`pmd.bat` for Windows) can now launch all
+utilities using subcommands, e.g. `pmd check`, `pmd designer`. All commands and options are thoroughly documented in the help,
+with full color support where available. Moreover, efforts were made to provide consistency in the usage of all PMD utilities.
+
+```shell
+$ Usage: pmd [-hV] [COMMAND]
+  -h, --help      Show this help message and exit.
+  -V, --version   Print version information and exit.
+Commands:
+  check     The PMD standard source code analyzer
+  cpd       Copy/Paste Detector - find duplicate code
+  designer  The PMD visual rule designer
+  cpd-gui   GUI for the Copy/Paste Detector
+              Warning: May not support the full CPD feature set
+  ast-dump  Experimental: dumps the AST of parsing source code
+Exit Codes:
+  0   Succesful analysis, no violations found
+  1   An unexpected error occurred during execution
+  2   Usage error, please refer to the command help
+  4   Successful analysis, at least 1 violation found
+```
+
+For instance, where you previously would have run
+```shell
+run.sh pmd -d src -R ruleset.xml
+```
+you should now use
+```shell
+pmd check -d src -R ruleset.xml
+```
+or even better, omit using `-d` / `--dir` and simply pass the sources at the end of the parameter list
+
+```shell
+pmd check -R ruleset.xml src
+```
+
+Multiple source directories can passed, such as:
+```shell
+pmd check -R ruleset.xml src/main/java src/test/java
+```
+
+And the exact same applies to CPD:
+```shell
+pmd cpd --minimum-tokens 100 src/main/java
+```
+
+Additionally, the CLI for the `check` command has been enhanced with a progress bar, which interactively displays the
 current progress of the analysis.
 
 TODO screenshot (take it right before releasing, because other changes to the CLI will occur until then)
 
 This can be disabled with the `--no-progress` flag.
+
+
+Finally, we now provide a completion script for Bash/Zsh to further help daily usage.
+This script can be found under `shell/pmd-completion.sh` in the binary distribution.
+To use it, edit your `~/.bashrc` / `~/.zshrc` file and add the following line:
+
+```
+source *path_to_pmd*/shell/pmd-completion.sh
+```
 
 #### Full Antlr support
 
@@ -48,6 +104,26 @@ Given the full Antlr support, PMD now fully supports Swift. We are pleased to an
   files are prone to merge conflicts, and are impossible to code review, so larger teams usually try to avoid it or reduce it's usage.
 * {% rule "swift/bestpractices/UnavailableFunction" %} (`swift-bestpractices`) flags any function throwing a `fatalError` not marked as
   `@available(*, unavailable)` to ensure no calls are actually performed in the codebase.
+
+Contributors: [@lsoncini](https://github.com/lsoncini), [@matifraga](https://github.com/matifraga), [@tomidelucca](https://github.com/tomidelucca)
+
+#### Kotlin support (experimental)
+
+PMD now supports Kotlin as an additional language for analyzing source code. It is based on
+the official kotlin Antlr grammar. Java-based rules and XPath-based rules are supported.
+
+Kotlin support has **experimental** stability level, meaning no compatibility should
+be expected between even incremental releases. Any functionality can be added, removed or changed without
+warning.
+
+We are shipping the following rules:
+
+* {% rule kotlin/bestpractices/FunctionNameTooShort %} (`kotlin-bestpractices`) finds functions with a too short name.
+* {% rule kotlin/errorprone/OverrideBothEqualsAndHashcode %} (`kotlin-errorprone`) finds classes with only either `equals`
+  or `hashCode` overridden, but not both. This leads to unexpected behavior once instances of such classes
+  are used in collections (Lists, HashMaps, ...).
+
+Contributors: [@jborgers](https://github.com/jborgers), [@stokpop](https://github.com/stokpop)
 
 #### XPath 3.1 support
 
@@ -161,14 +237,20 @@ The following previously deprecated rules have been finally removed:
 
 ### Fixed Issues
 
-*   miscellaneous
+* miscellaneous
     *   [#896](https://github.com/pmd/pmd/issues/896): \[all] Use slf4j
     *   [#1451](https://github.com/pmd/pmd/issues/1451): \[core] RulesetFactoryCompatibility stores the whole ruleset file in memory as a string
-*   cli
+* ant
+    * [#4080](https://github.com/pmd/pmd/issues/4080): \[ant] Split off Ant integration into a new submodule 
+* core
+    * [#2234](https://github.com/pmd/pmd/issues/2234): \[core] Consolidate PMD CLI into a single command
+    * [#4035](https://github.com/pmd/pmd/issues/4035): \[core] ConcurrentModificationException in DefaultRuleViolationFactory
+* cli
     *   [#3828](https://github.com/pmd/pmd/issues/3828): \[core] Progress reporting
-*   apex-design
+    *   [#4079](https://github.com/pmd/pmd/issues/4079): \[cli] Split off CLI implementation into a pmd-cli submodule
+* apex-design
     *   [#2667](https://github.com/pmd/pmd/issues/2667): \[apex] Integrate nawforce/ApexLink to build robust Unused rule
-*   java-bestpractices
+* java-bestpractices
     * [#342](https://github.com/pmd/pmd/issues/342): \[java] AccessorMethodGeneration: Name clash with another public field not properly handled
     * [#755](https://github.com/pmd/pmd/issues/755): \[java] AccessorClassGeneration false positive for private constructors
     * [#770](https://github.com/pmd/pmd/issues/770): \[java] UnusedPrivateMethod yields false positive for counter-variant arguments
@@ -243,6 +325,8 @@ The following previously deprecated rules have been finally removed:
 * java-performance
     * [#1224](https://github.com/pmd/pmd/issues/1224): \[java] InefficientEmptyStringCheck false negative in anonymous class
     * [#2712](https://github.com/pmd/pmd/issues/2712): \[java] SimplifyStartsWith false-positive with AssertJ
+* kotlin
+    * [#419](https://github.com/pmd/pmd/issues/419): \[kotlin] Add support for Kotlin
 
 ### API Changes
 
@@ -259,6 +343,11 @@ The following previously deprecated rules have been finally removed:
   This includes API that was previously dispersed over `net.sourceforge.pmd.lang`, `net.sourceforge.pmd.lang.ast.xpath`,
   `net.sourceforge.pmd.lang.rule.xpath`, `net.sourceforge.pmd.lang.rule`, and various language-specific packages 
   (which were made internal).
+
+* The implementation of the Ant integration has been moved from the module `pmd-core` to a new module `pmd-ant`.
+  This involves classes in package {% jdoc_package ant::ant %}. The ant CPDTask class `net.sourceforge.pmd.cpd.CPDTask`
+  has been moved into the same package {% jdoc_package ant::ant %}. You'll need to update your taskdef entries in your
+  build.xml files with the FQCN {% jdoc !!ant::ant.CPDTask %} if you use it anywhere.
 
 #### Metrics framework
 

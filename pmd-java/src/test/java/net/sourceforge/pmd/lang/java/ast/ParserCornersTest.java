@@ -7,13 +7,16 @@ package net.sourceforge.pmd.lang.java.ast;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.startsWith;
 import static org.hamcrest.collection.IsEmptyCollection.empty;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import java.util.concurrent.TimeUnit;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.junit.Assert;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.impl.javacc.MalformedSourceException;
@@ -23,7 +26,7 @@ import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.types.AstTestUtil;
 
-public class ParserCornersTest extends BaseJavaTreeDumpTest {
+class ParserCornersTest extends BaseJavaTreeDumpTest {
     private final JavaParsingHelper java = JavaParsingHelper.DEFAULT.withResourceContext(getClass());
 
     private final JavaParsingHelper java4 = java.withDefaultVersion("1.4");
@@ -32,20 +35,16 @@ public class ParserCornersTest extends BaseJavaTreeDumpTest {
     private final JavaParsingHelper java8 = java.withDefaultVersion("1.8");
     private final JavaParsingHelper java9 = java.withDefaultVersion("9");
 
-    @Rule
-    public ExpectedException expect = ExpectedException.none();
-
-
     @Override
     public @NonNull BaseParsingHelper<?, ?> getParser() {
         return java4;
     }
 
     @Test
-    public void testInvalidUnicodeEscape() {
-        expect.expect(MalformedSourceException.class); // previously Error
-        expect.expectMessage("Source format error in file 'x/filename.java' at line 1, column 1: Invalid unicode escape");
-        java.parse("\\u00k0", null, "x/filename.java");
+    void testInvalidUnicodeEscape() {
+        MalformedSourceException thrown = assertThrows(MalformedSourceException.class, // previously Error
+                () -> java.parse("\\u00k0", null, "x/filename.java"));
+        assertThat(thrown.getMessage(), startsWith("Source format error in file 'x/filename.java' at line 1, column 1: Invalid unicode escape"));
     }
 
     /**
@@ -53,7 +52,7 @@ public class ParserCornersTest extends BaseJavaTreeDumpTest {
      * from inner class.
      */
     @Test
-    public void testInnerOuterClass() {
+    void testInnerOuterClass() {
         java7.parse("/**\n" + " * @author azagorulko\n" + " *\n" + " */\n"
                         + "public class TestInnerClassCallsOuterParent {\n" + "\n" + "    public void test() {\n"
                         + "        new Runnable() {\n" + "            @Override\n" + "            public void run() {\n"
@@ -65,7 +64,7 @@ public class ParserCornersTest extends BaseJavaTreeDumpTest {
      * #888 PMD 6.0.0 can't parse valid <> under 1.8.
      */
     @Test
-    public void testDiamondUsageJava8() {
+    void testDiamondUsageJava8() {
         java8.parse("public class PMDExceptionTest {\n"
                         + "  private Component makeUI() {\n"
                         + "    String[] model = {\"123456\", \"7890\"};\n"
@@ -89,13 +88,13 @@ public class ParserCornersTest extends BaseJavaTreeDumpTest {
     }
 
     @Test
-    public void testUnicodeEscapes() {
+    void testUnicodeEscapes() {
         // todo i'd like to test the coordinates of the literals, but this has to wait for java-grammar to be merged
         java8.parse("public class Foo { String[] s = { \"Ven\\u00E4j\\u00E4\" }; }");
     }
 
     @Test
-    public void testUnicodeEscapes2() {
+    void testUnicodeEscapes2() {
         java.parse("\n"
                        + "public final class TimeZoneNames_zh_TW extends TimeZoneNamesBundle {\n"
                        + "\n"
@@ -106,7 +105,7 @@ public class ParserCornersTest extends BaseJavaTreeDumpTest {
     }
 
     @Test
-    public void testUnicodeEscapesInComment() {
+    void testUnicodeEscapesInComment() {
         java.parse("class Foo {"
                        + "\n"
                        + "    /**\n"
@@ -128,7 +127,7 @@ public class ParserCornersTest extends BaseJavaTreeDumpTest {
     }
 
     @Test
-    public final void testGetFirstASTNameImageNull() {
+    final void testGetFirstASTNameImageNull() {
         java4.parse("public class Test {\n"
             + "  void bar() {\n"
             + "   abstract class X { public abstract void f(); }\n"
@@ -138,12 +137,12 @@ public class ParserCornersTest extends BaseJavaTreeDumpTest {
     }
 
     @Test
-    public final void testCastLookaheadProblem() {
+    void testCastLookaheadProblem() {
         java4.parse("public class BadClass {\n  public Class foo() {\n    return (byte[].class);\n  }\n}");
     }
 
     @Test
-    public final void testTryWithResourcesConcise() {
+    void testTryWithResourcesConcise() {
         // https://github.com/pmd/pmd/issues/3697
         java9.parse("import java.io.InputStream;\n"
                         + "public class Foo {\n"
@@ -157,7 +156,7 @@ public class ParserCornersTest extends BaseJavaTreeDumpTest {
     }
 
     @Test
-    public final void testTryWithResourcesThis() {
+    void testTryWithResourcesThis() {
         // https://github.com/pmd/pmd/issues/3697
         java9.parse("import java.io.InputStream;\n"
                         + "public class Foo {\n"
@@ -174,7 +173,7 @@ public class ParserCornersTest extends BaseJavaTreeDumpTest {
      * https://jira.codehaus.org/browse/MPMD-139
      */
     @Test
-    public void testGenericsProblem() {
+    void testGenericsProblem() {
         String code = "public class Test {\n"
             + " public void test() {\n"
             + "   String o = super.<String> doStuff(\"\");\n"
@@ -185,17 +184,23 @@ public class ParserCornersTest extends BaseJavaTreeDumpTest {
     }
 
     @Test
-    public void testParsersCases15() {
+    void testUnicodeIndent() {
+        // https://github.com/pmd/pmd/issues/3423
+        java7.parseResource("UnicodeIdentifier.java");
+    }
+
+    @Test
+    void testParsersCases15() {
         doTest("ParserCornerCases", java5);
     }
 
     @Test
-    public void testParsersCases17() {
+    void testParsersCases17() {
         doTest("ParserCornerCases17", java7);
     }
 
     @Test
-    public void testParsersCases18() {
+    void testParsersCases18() {
         doTest("ParserCornerCases18", java8);
     }
 
@@ -203,12 +208,12 @@ public class ParserCornersTest extends BaseJavaTreeDumpTest {
      * Test for https://sourceforge.net/p/pmd/bugs/1333/
      */
     @Test
-    public void testLambdaBug1333() {
+    void testLambdaBug1333() {
         doTest("LambdaBug1333", java8);
     }
 
     @Test
-    public void testLambdaBug1470() {
+    void testLambdaBug1470() {
         doTest("LambdaBug1470", java8);
     }
 
@@ -216,33 +221,33 @@ public class ParserCornersTest extends BaseJavaTreeDumpTest {
      * Test for https://sourceforge.net/p/pmd/bugs/1355/
      */
     @Test
-    public void emptyFileJustComment() {
+    void emptyFileJustComment() {
         getParser().parse("// just a comment");
     }
 
 
     @Test
-    public void testBug1429ParseError() {
+    void testBug1429ParseError() {
         doTest("Bug1429", java8);
     }
 
     @Test
-    public void testBug1530ParseError() {
+    void testBug1530ParseError() {
         doTest("Bug1530", java8);
     }
 
     @Test
-    public void testGitHubBug207() {
+    void testGitHubBug207() {
         doTest("GitHubBug207", java8);
     }
 
     @Test
-    public void testLambda2783() {
+    void testLambda2783() {
         java8.parseResource("LambdaBug2783.java");
     }
 
     @Test
-    public void testGitHubBug2767() {
+    void testGitHubBug2767() {
         // PMD fails to parse an initializer block.
         // PMD 6.26.0 parses this code just fine.
         java.withDefaultVersion("16")
@@ -252,33 +257,34 @@ public class ParserCornersTest extends BaseJavaTreeDumpTest {
     }
 
     @Test
-    public void testBug206() {
+    void testBug206() {
         doTest("LambdaBug206", java8);
     }
 
     @Test
-    public void testGitHubBug208ParseError() {
+    void testGitHubBug208ParseError() {
         doTest("GitHubBug208", java5);
     }
 
     @Test
-    public void testGitHubBug309() {
+    void testGitHubBug309() {
         doTest("GitHubBug309", java8);
     }
 
-    @Test(timeout = 30000)
-    public void testInfiniteLoopInLookahead() {
-        expect.expect(ParseException.class);
-        // https://github.com/pmd/pmd/issues/3117
-        java8.parseResource("InfiniteLoopInLookahead.java");
+    @Test
+    @Timeout(value = 30, unit = TimeUnit.SECONDS)
+    void testInfiniteLoopInLookahead() {
+        assertThrows(ParseException.class, () ->
+            // https://github.com/pmd/pmd/issues/3117
+            java8.parseResource("InfiniteLoopInLookahead.java"));
     }
 
     @Test
-    public void stringConcatentationShouldNotBeCast() {
+    void stringConcatentationShouldNotBeCast() {
         // https://github.com/pmd/pmd/issues/1484
         String code = "public class Test {\n" + "    public static void main(String[] args) {\n"
             + "        System.out.println(\"X\" + (args) + \"Y\");\n" + "    }\n" + "}";
-        Assert.assertEquals(0, java8.parse(code).descendants(ASTCastExpression.class).count());
+        assertEquals(0, java8.parse(code).descendants(ASTCastExpression.class).count());
     }
 
 
@@ -288,22 +294,22 @@ public class ParserCornersTest extends BaseJavaTreeDumpTest {
      * @see <a href="https://github.com/pmd/pmd/issues/378">github issue 378</a>
      */
     @Test
-    public void testEmptyStatements1() {
+    void testEmptyStatements1() {
         doTest("EmptyStmts1");
     }
 
     @Test
-    public void testEmptyStatements2() {
+    void testEmptyStatements2() {
         doTest("EmptyStmts2");
     }
 
     @Test
-    public void testEmptyStatements3() {
+    void testEmptyStatements3() {
         doTest("EmptyStmts3");
     }
 
     @Test
-    public void testMethodReferenceConfused() {
+    void testMethodReferenceConfused() {
         ASTCompilationUnit ast = java.parseResource("MethodReferenceConfused.java", "10");
         ASTVariableDeclaratorId varWithMethodName = AstTestUtil.varId(ast, "method");
         ASTVariableDeclaratorId someObject = AstTestUtil.varId(ast, "someObject");
@@ -315,23 +321,23 @@ public class ParserCornersTest extends BaseJavaTreeDumpTest {
     }
 
     @Test
-    public void testSwitchWithFallthrough() {
+    void testSwitchWithFallthrough() {
         doTest("SwitchWithFallthrough");
     }
 
     @Test
-    public void testSwitchStatements() {
+    void testSwitchStatements() {
         doTest("SwitchStatements");
     }
 
     @Test
-    public void testSynchronizedStatements() {
+    void testSynchronizedStatements() {
         doTest("SynchronizedStmts");
     }
 
 
     @Test
-    public void testGithubBug3101UnresolvedTypeParams() {
+    void testGithubBug3101UnresolvedTypeParams() {
         java.parseResource("GitHubBug3101.java");
     }
 }

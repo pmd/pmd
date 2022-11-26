@@ -13,8 +13,8 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
+import java.util.stream.Collectors;
 
-import org.apache.commons.io.IOUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.PMDConfiguration;
@@ -25,6 +25,7 @@ import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.document.TextFileBuilder.ForCharSeq;
 import net.sourceforge.pmd.lang.document.TextFileBuilder.ForNio;
 import net.sourceforge.pmd.lang.document.TextFileBuilder.ForReader;
+import net.sourceforge.pmd.util.IOUtil;
 import net.sourceforge.pmd.util.datasource.DataSource;
 
 /**
@@ -132,6 +133,18 @@ public interface TextFile extends Closeable {
      */
     @Override
     void close() throws IOException;
+
+
+    /**
+     * Text file equality is implementation-defined. The only constraint
+     * is that equal text files should have equal path IDs (and the usual
+     * properties mandated by {@link Object#equals(Object)}).
+     */
+    // currently:
+    // - Path-based TextFiles compare their path for equality, where the path is not normalized.
+    // - Reader- and String-based TextFiles use identity semantics.
+    @Override
+    boolean equals(Object o);
 
     // factory methods
 
@@ -249,6 +262,7 @@ public interface TextFile extends Closeable {
         if (languageVersion == null) {
             throw new NullPointerException("no language version detected for " + pathId);
         }
+        String shortPaths = config.getInputPathList().stream().map(Path::toString).collect(Collectors.joining(","));
         class DataSourceTextFile extends BaseCloseable implements TextFile {
 
             @Override
@@ -263,7 +277,7 @@ public interface TextFile extends Closeable {
 
             @Override
             public @NonNull String getDisplayName() {
-                return ds.getNiceFileName(config.isReportShortNames(), config.getInputPaths());
+                return ds.getNiceFileName(config.isReportShortNames(), shortPaths);
             }
 
             @Override
@@ -271,7 +285,7 @@ public interface TextFile extends Closeable {
                 ensureOpen();
                 try (InputStream is = ds.getInputStream();
                      Reader reader = new BufferedReader(new InputStreamReader(is, config.getSourceEncoding()))) {
-                    String contents = IOUtils.toString(reader);
+                    String contents = IOUtil.readToString(reader);
                     return TextFileContent.fromCharSeq(contents);
                 }
             }

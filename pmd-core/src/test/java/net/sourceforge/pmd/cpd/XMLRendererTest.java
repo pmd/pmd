@@ -4,31 +4,36 @@
 
 package net.sourceforge.pmd.cpd;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 import net.sourceforge.pmd.cpd.renderer.CPDRenderer;
+import net.sourceforge.pmd.cpd.renderer.CPDReportRenderer;
 
 /**
  * @author Philippe T'Seyen
  * @author Romain Pelisse &lt;belaran@gmail.com&gt;
  *
  */
-public class XMLRendererTest {
+class XMLRendererTest {
 
     private static final String ENCODING = (String) System.getProperties().get("file.encoding");
     private static final String FORM_FEED = "\u000C"; // this character is invalid in XML 1.0 documents
@@ -36,28 +41,23 @@ public class XMLRendererTest {
 
 
     @Test
-    public void testWithNoDuplication() throws IOException {
-
+    void testWithNoDuplication() throws IOException, ParserConfigurationException, SAXException {
         CPDRenderer renderer = new XMLRenderer();
         List<Match> list = new ArrayList<>();
         StringWriter sw = new StringWriter();
         renderer.render(list.iterator(), sw);
         String report = sw.toString();
-        try {
-            Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder()
-                    .parse(new ByteArrayInputStream(report.getBytes(ENCODING)));
-            NodeList nodes = doc.getChildNodes();
-            Node n = nodes.item(0);
-            assertEquals("pmd-cpd", n.getNodeName());
-            assertEquals(0, doc.getElementsByTagName("duplication").getLength());
-        } catch (Exception e) {
-            e.printStackTrace();
-            fail(e.getMessage());
-        }
+
+        Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder()
+                .parse(new ByteArrayInputStream(report.getBytes(ENCODING)));
+        NodeList nodes = doc.getChildNodes();
+        Node n = nodes.item(0);
+        assertEquals("pmd-cpd", n.getNodeName());
+        assertEquals(0, doc.getElementsByTagName("duplication").getLength());
     }
 
     @Test
-    public void testWithOneDuplication() throws IOException {
+    void testWithOneDuplication() throws Exception {
         CPDRenderer renderer = new XMLRenderer();
         List<Match> list = new ArrayList<>();
         int lineCount = 6;
@@ -70,42 +70,38 @@ public class XMLRendererTest {
         StringWriter sw = new StringWriter();
         renderer.render(list.iterator(), sw);
         String report = sw.toString();
-        try {
-            Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder()
-                    .parse(new ByteArrayInputStream(report.getBytes(ENCODING)));
-            NodeList dupes = doc.getElementsByTagName("duplication");
-            assertEquals(1, dupes.getLength());
-            Node file = dupes.item(0).getFirstChild();
+
+        Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder()
+                .parse(new ByteArrayInputStream(report.getBytes(ENCODING)));
+        NodeList dupes = doc.getElementsByTagName("duplication");
+        assertEquals(1, dupes.getLength());
+        Node file = dupes.item(0).getFirstChild();
+        while (file != null && file.getNodeType() != Node.ELEMENT_NODE) {
+            file = file.getNextSibling();
+        }
+        if (file != null) {
+            assertEquals("1", file.getAttributes().getNamedItem("line").getNodeValue());
+            assertEquals("/var/Foo.java", file.getAttributes().getNamedItem("path").getNodeValue());
+            assertEquals("6", file.getAttributes().getNamedItem("endline").getNodeValue());
+            assertEquals(null, file.getAttributes().getNamedItem("column"));
+            assertEquals(null, file.getAttributes().getNamedItem("endcolumn"));
+            file = file.getNextSibling();
             while (file != null && file.getNodeType() != Node.ELEMENT_NODE) {
                 file = file.getNextSibling();
             }
-            if (file != null) {
-                assertEquals("1", file.getAttributes().getNamedItem("line").getNodeValue());
-                assertEquals("/var/Foo.java", file.getAttributes().getNamedItem("path").getNodeValue());
-                assertEquals("6", file.getAttributes().getNamedItem("endline").getNodeValue());
-                assertEquals(null, file.getAttributes().getNamedItem("column"));
-                assertEquals(null, file.getAttributes().getNamedItem("endcolumn"));
-                file = file.getNextSibling();
-                while (file != null && file.getNodeType() != Node.ELEMENT_NODE) {
-                    file = file.getNextSibling();
-                }
-            }
-            if (file != null) {
-                assertEquals("73", file.getAttributes().getNamedItem("line").getNodeValue());
-                assertEquals("78", file.getAttributes().getNamedItem("endline").getNodeValue());
-                assertEquals(null, file.getAttributes().getNamedItem("column"));
-                assertEquals(null, file.getAttributes().getNamedItem("endcolumn"));
-            }
-            assertEquals(1, doc.getElementsByTagName("codefragment").getLength());
-            assertEquals(codeFragment, doc.getElementsByTagName("codefragment").item(0).getTextContent());
-        } catch (Exception e) {
-            e.printStackTrace();
-            fail(e.getMessage());
         }
+        if (file != null) {
+            assertEquals("73", file.getAttributes().getNamedItem("line").getNodeValue());
+            assertEquals("78", file.getAttributes().getNamedItem("endline").getNodeValue());
+            assertEquals(null, file.getAttributes().getNamedItem("column"));
+            assertEquals(null, file.getAttributes().getNamedItem("endcolumn"));
+        }
+        assertEquals(1, doc.getElementsByTagName("codefragment").getLength());
+        assertEquals(codeFragment, doc.getElementsByTagName("codefragment").item(0).getTextContent());
     }
 
     @Test
-    public void testRenderWithMultipleMatch() throws IOException {
+    void testRenderWithMultipleMatch() throws Exception {
         CPDRenderer renderer = new XMLRenderer();
         List<Match> list = new ArrayList<>();
         int lineCount1 = 6;
@@ -125,19 +121,15 @@ public class XMLRendererTest {
         StringWriter sw = new StringWriter();
         renderer.render(list.iterator(), sw);
         String report = sw.toString();
-        try {
-            Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder()
-                    .parse(new ByteArrayInputStream(report.getBytes(ENCODING)));
-            assertEquals(2, doc.getElementsByTagName("duplication").getLength());
-            assertEquals(4, doc.getElementsByTagName("file").getLength());
-        } catch (Exception e) {
-            e.printStackTrace();
-            fail(e.getMessage());
-        }
+
+        Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder()
+                .parse(new ByteArrayInputStream(report.getBytes(ENCODING)));
+        assertEquals(2, doc.getElementsByTagName("duplication").getLength());
+        assertEquals(4, doc.getElementsByTagName("file").getLength());
     }
 
     @Test
-    public void testWithOneDuplicationWithColumns() throws IOException {
+    void testWithOneDuplicationWithColumns() throws Exception {
         CPDRenderer renderer = new XMLRenderer();
         List<Match> list = new ArrayList<>();
         int lineCount = 6;
@@ -150,42 +142,38 @@ public class XMLRendererTest {
         StringWriter sw = new StringWriter();
         renderer.render(list.iterator(), sw);
         String report = sw.toString();
-        try {
-            Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder()
-                    .parse(new ByteArrayInputStream(report.getBytes(ENCODING)));
-            NodeList dupes = doc.getElementsByTagName("duplication");
-            assertEquals(1, dupes.getLength());
-            Node file = dupes.item(0).getFirstChild();
+
+        Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder()
+                .parse(new ByteArrayInputStream(report.getBytes(ENCODING)));
+        NodeList dupes = doc.getElementsByTagName("duplication");
+        assertEquals(1, dupes.getLength());
+        Node file = dupes.item(0).getFirstChild();
+        while (file != null && file.getNodeType() != Node.ELEMENT_NODE) {
+            file = file.getNextSibling();
+        }
+        if (file != null) {
+            assertEquals("1", file.getAttributes().getNamedItem("line").getNodeValue());
+            assertEquals("/var/Foo.java", file.getAttributes().getNamedItem("path").getNodeValue());
+            assertEquals("6", file.getAttributes().getNamedItem("endline").getNodeValue());
+            assertEquals("2", file.getAttributes().getNamedItem("column").getNodeValue());
+            assertEquals("3", file.getAttributes().getNamedItem("endcolumn").getNodeValue());
+            file = file.getNextSibling();
             while (file != null && file.getNodeType() != Node.ELEMENT_NODE) {
                 file = file.getNextSibling();
             }
-            if (file != null) {
-                assertEquals("1", file.getAttributes().getNamedItem("line").getNodeValue());
-                assertEquals("/var/Foo.java", file.getAttributes().getNamedItem("path").getNodeValue());
-                assertEquals("6", file.getAttributes().getNamedItem("endline").getNodeValue());
-                assertEquals("2", file.getAttributes().getNamedItem("column").getNodeValue());
-                assertEquals("3", file.getAttributes().getNamedItem("endcolumn").getNodeValue());
-                file = file.getNextSibling();
-                while (file != null && file.getNodeType() != Node.ELEMENT_NODE) {
-                    file = file.getNextSibling();
-                }
-            }
-            if (file != null) {
-                assertEquals("73", file.getAttributes().getNamedItem("line").getNodeValue());
-                assertEquals("78", file.getAttributes().getNamedItem("endline").getNodeValue());
-                assertEquals("4", file.getAttributes().getNamedItem("column").getNodeValue());
-                assertEquals("5", file.getAttributes().getNamedItem("endcolumn").getNodeValue());
-            }
-            assertEquals(1, doc.getElementsByTagName("codefragment").getLength());
-            assertEquals(codeFragment, doc.getElementsByTagName("codefragment").item(0).getTextContent());
-        } catch (Exception e) {
-            e.printStackTrace();
-            fail(e.getMessage());
         }
+        if (file != null) {
+            assertEquals("73", file.getAttributes().getNamedItem("line").getNodeValue());
+            assertEquals("78", file.getAttributes().getNamedItem("endline").getNodeValue());
+            assertEquals("4", file.getAttributes().getNamedItem("column").getNodeValue());
+            assertEquals("5", file.getAttributes().getNamedItem("endcolumn").getNodeValue());
+        }
+        assertEquals(1, doc.getElementsByTagName("codefragment").getLength());
+        assertEquals(codeFragment, doc.getElementsByTagName("codefragment").item(0).getTextContent());
     }
 
     @Test
-    public void testRendererEncodedPath() throws IOException {
+    void testRendererEncodedPath() throws IOException {
         CPDRenderer renderer = new XMLRenderer();
         List<Match> list = new ArrayList<>();
         final String espaceChar = "&lt;";
@@ -203,7 +191,65 @@ public class XMLRendererTest {
     }
 
     @Test
-    public void testRendererXMLEscaping() throws IOException {
+    void testFilesWithNumberOfTokens() throws IOException, ParserConfigurationException, SAXException {
+        final CPDReportRenderer renderer = new XMLRenderer();
+        final List<Match> matches = new ArrayList<>();
+        final String filename = "/var/Foo.java";
+        final int lineCount = 6;
+        final String codeFragment = "code\nfragment";
+        final Mark mark1 = createMark("public", filename, 1, lineCount, codeFragment, 2, 3);
+        final Mark mark2 = createMark("stuff", filename, 73, lineCount, codeFragment, 4, 5);
+        final Match match = new Match(75, mark1, mark2);
+        matches.add(match);
+        final Map<String, Integer> numberOfTokensPerFile = new HashMap<>();
+        numberOfTokensPerFile.put(filename, 888);
+        final CPDReport report = new CPDReport(matches, numberOfTokensPerFile);
+        final StringWriter writer = new StringWriter();
+        renderer.render(report, writer);
+        final String xmlOutput = writer.toString();
+        final Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder()
+                .parse(new ByteArrayInputStream(xmlOutput.getBytes(ENCODING)));
+        final NodeList files = doc.getElementsByTagName("file");
+        final Node file = files.item(0);
+        final NamedNodeMap attributes = file.getAttributes();
+        assertEquals("/var/Foo.java", attributes.getNamedItem("path").getNodeValue());
+        assertEquals("888", attributes.getNamedItem("totalNumberOfTokens").getNodeValue());
+    }
+
+    @Test
+    public void testGetDuplicationStartEnd() throws IOException, ParserConfigurationException, SAXException {
+        TokenEntry.clearImages();
+        final CPDReportRenderer renderer = new XMLRenderer();
+        final List<Match> matches = new ArrayList<>();
+        final String filename = "/var/Foo.java";
+        final int lineCount = 6;
+        final String codeFragment = "code\nfragment";
+        final Mark mark1 = createMark("public", filename, 1, lineCount, codeFragment, 2, 3);
+        final Mark mark2 = createMark("stuff", filename, 73, lineCount, codeFragment, 4, 5);
+        final Match match = new Match(75, mark1, mark2);
+        matches.add(match);
+        final Map<String, Integer> numberOfTokensPerFile = new HashMap<>();
+        numberOfTokensPerFile.put(filename, 888);
+        final CPDReport report = new CPDReport(matches, numberOfTokensPerFile);
+        final StringWriter writer = new StringWriter();
+        renderer.render(report, writer);
+        final String xmlOutput = writer.toString();
+        final Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder()
+                .parse(new ByteArrayInputStream(xmlOutput.getBytes(ENCODING)));
+        final NodeList files = doc.getElementsByTagName("file");
+        final Node dup_1 = files.item(1);
+        final NamedNodeMap attrs_1 = dup_1.getAttributes();
+        assertEquals("0", attrs_1.getNamedItem("begintoken").getNodeValue());
+        assertEquals("1", attrs_1.getNamedItem("endtoken").getNodeValue());
+
+        final Node dup_2 = files.item(2);
+        final NamedNodeMap attrs_2 = dup_2.getAttributes();
+        assertEquals("2", attrs_2.getNamedItem("begintoken").getNodeValue());
+        assertEquals("3", attrs_2.getNamedItem("endtoken").getNodeValue());
+    }
+
+    @Test
+    void testRendererXMLEscaping() throws IOException {
         String codefragment = "code fragment" + FORM_FEED + "\nline2\nline3\nno & escaping necessary in CDATA\nx=\"]]>\";";
         CPDRenderer renderer = new XMLRenderer();
         List<Match> list = new ArrayList<>();

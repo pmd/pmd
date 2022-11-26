@@ -28,7 +28,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringEscapeUtils;
 import org.slf4j.Logger;
@@ -39,10 +38,12 @@ import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetLoadException;
 import net.sourceforge.pmd.RuleSetLoader;
 import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.properties.MultiValuePropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.util.IOUtil;
 
 public class RuleDocGenerator {
     private static final Logger LOG = LoggerFactory.getLogger(RuleDocGenerator.class);
@@ -99,7 +100,14 @@ public class RuleDocGenerator {
         generateLanguageIndex(sortedRulesets, sortedAdditionalRulesets);
         generateRuleSetIndex(sortedRulesets);
 
+        ensureAllLanguages(sortedRulesets);
         generateSidebar(sortedRulesets);
+    }
+
+    private void ensureAllLanguages(Map<Language, List<RuleSet>> sortedRulesets) {
+        for (Language language : LanguageRegistry.PMD.getLanguages()) {
+            sortedRulesets.putIfAbsent(language, Collections.emptyList());
+        }
     }
 
     private void generateSidebar(Map<Language, List<RuleSet>> sortedRulesets) throws IOException {
@@ -131,7 +139,7 @@ public class RuleDocGenerator {
     }
 
     private Path getAbsoluteOutputPath(String filename) {
-        return root.resolve(FilenameUtils.normalize(filename));
+        return root.resolve(IOUtil.normalizePath(filename));
     }
 
     private Map<Language, List<RuleSet>> sortRulesets(List<RuleSet> rulesets) {
@@ -392,6 +400,12 @@ public class RuleDocGenerator {
                         lines.add("");
                     }
 
+                    if (rule.getMaximumLanguageVersion() != null) {
+                        lines.add("**Maximum Language Version:** "
+                                + rule.getLanguage().getName() + " " + rule.getMaximumLanguageVersion().getVersion());
+                        lines.add("");
+                    }
+
                     lines.addAll(EscapeUtils.escapeLines(toLines(stripIndentation(rule.getDescription()))));
                     lines.add("");
 
@@ -540,7 +554,7 @@ public class RuleDocGenerator {
 
         int indentation = 0;
         int strLen = stripped.length();
-        while (Character.isWhitespace(stripped.charAt(indentation)) && indentation < strLen) {
+        while (indentation < strLen && Character.isWhitespace(stripped.charAt(indentation))) {
             indentation++;
         }
 
@@ -608,17 +622,13 @@ public class RuleDocGenerator {
         // is replaced by a correct path.
         for (List<RuleSet> rulesets : sortedRulesets.values()) {
             for (RuleSet ruleset : rulesets) {
-                // Note: the path is normalized to unix path separators, so that the editme link
-                // uses forward slashes
-                String rulesetFilename = FilenameUtils.normalize(StringUtils.chomp(ruleset.getFileName()), true);
+                String rulesetFilename = RuleSetUtils.normalizeForwardSlashes(StringUtils.chomp(ruleset.getFileName()));
                 allRulesets.put(ruleset.getFileName(), rulesetFilename);
                 for (Rule rule : ruleset.getRules()) {
                     String ruleClass = rule.getRuleClass();
                     String relativeSourceFilename = ruleClass.replaceAll("\\.", Matcher.quoteReplacement(File.separator))
                             + ".java";
-                    // Note: the path is normalized to unix path separators, so that the editme link
-                    // uses forward slashes
-                    allRules.put(ruleClass, FilenameUtils.normalize(relativeSourceFilename, true));
+                    allRules.put(ruleClass, RuleSetUtils.normalizeForwardSlashes(relativeSourceFilename));
                 }
             }
         }
@@ -640,9 +650,7 @@ public class RuleDocGenerator {
                         }
                         if (foundRuleClass != null) {
                             Path foundPath = root.relativize(file);
-                            // Note: the path is normalized to unix path separators, so that the editme link
-                            // uses forward slashes
-                            allRules.put(foundRuleClass, FilenameUtils.normalize(foundPath.toString(), true));
+                            allRules.put(foundRuleClass, RuleSetUtils.normalizeForwardSlashes(foundPath.toString()));
                         }
 
                         String foundRuleset = null;
@@ -654,9 +662,7 @@ public class RuleDocGenerator {
                         }
                         if (foundRuleset != null) {
                             Path foundPath = root.relativize(file);
-                            // Note: the path is normalized to unix path separators, so that the editme link
-                            // uses forward slashes
-                            allRulesets.put(foundRuleset, FilenameUtils.normalize(foundPath.toString(), true));
+                            allRulesets.put(foundRuleset, RuleSetUtils.normalizeForwardSlashes(foundPath.toString()));
                         }
                     }
                     return FileVisitResult.CONTINUE;

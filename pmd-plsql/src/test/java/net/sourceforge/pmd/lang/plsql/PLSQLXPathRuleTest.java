@@ -4,32 +4,29 @@
 
 package net.sourceforge.pmd.lang.plsql;
 
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
 
 /**
  * Tests to use XPath rules with PLSQL.
  */
-public class PLSQLXPathRuleTest extends AbstractPLSQLParserTst {
+class PLSQLXPathRuleTest extends AbstractPLSQLParserTst {
 
     private static final String SOURCE =
         "create or replace\n" + "package pkg_xpath_problem\n" + "AS\n" + "    PROCEDURE pkg_minimal\n" + "    IS\n"
             + "        a_variable VARCHAR2(1);\n" + "    BEGIN \n" + "        --PRAGMA INLINE(output,'YES');\n"
             + "        a_variable := 'Y' ;\n" + "    END ;\n" + "end pkg_xpath_problem;\n" + "/\n";
 
-    public PLSQLXPathRuleTest() {
-    }
-
     /**
      * See https://sourceforge.net/p/pmd/bugs/1166/
      */
     @Test
-    public void testXPathRule1() {
+    void testXPathRule1() {
         testOnVersion(XPathVersion.XPATH_1_0);
     }
 
@@ -37,7 +34,7 @@ public class PLSQLXPathRuleTest extends AbstractPLSQLParserTst {
      * See https://sourceforge.net/p/pmd/bugs/1166/
      */
     @Test
-    public void testXPathRule1Compatibility() {
+    void testXPathRule1Compatibility() {
         testOnVersion(XPathVersion.XPATH_1_0_COMPATIBILITY);
     }
 
@@ -45,19 +42,15 @@ public class PLSQLXPathRuleTest extends AbstractPLSQLParserTst {
      * See https://sourceforge.net/p/pmd/bugs/1166/
      */
     @Test
-    public void testXPathRule2() {
+    void testXPathRule2() {
         testOnVersion(XPathVersion.XPATH_2_0);
     }
 
 
     private void testOnVersion(XPathVersion xpath10) {
-        XPathRule rule = new XPathRule(xpath10, "//PrimaryPrefix");
-        rule.setLanguage(LanguageRegistry.getLanguage(PLSQLLanguageModule.NAME));
-        rule.setMessage("Test Violation");
-
+        XPathRule rule = plsql.newXpathRule("//PrimaryPrefix", xpath10);
         Report report = plsql.executeRule(rule, SOURCE);
-        Assert.assertEquals(2, report.getViolations().size());
+        assertEquals(2, report.getViolations().size());
     }
-
 
 }

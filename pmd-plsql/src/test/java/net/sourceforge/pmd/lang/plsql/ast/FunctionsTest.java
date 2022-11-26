@@ -4,24 +4,24 @@
 
 package net.sourceforge.pmd.lang.plsql.ast;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.plsql.AbstractPLSQLParserTst;
 
-public class FunctionsTest extends AbstractPLSQLParserTst {
+class FunctionsTest extends AbstractPLSQLParserTst {
 
     @Test
-    public void parseTrimCall() {
+    void parseTrimCall() {
         plsql.parseResource("TrimFunction.pls");
     }
 
     @Test
-    public void parseSelectExtractExpression() {
+    void parseSelectExtractExpression() {
         plsql.parseResource("ExtractExpressions.pls");
     }
 
     @Test
-    public void parseXMLExpression() {
+    void parseXMLExpression() {
         plsql.parseResource("XMLFunctions.pls");
     }
 }

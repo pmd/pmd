@@ -10,7 +10,7 @@ import java.nio.charset.StandardCharsets;
 
 import com.google.common.io.Files;
 
-public class RawFileFingerprinterTest extends AbstractClasspathEntryFingerprinterTest {
+class RawFileFingerprinterTest extends AbstractClasspathEntryFingerprinterTest {
 
     @Override
     protected ClasspathEntryFingerprinter newFingerPrinter() {
@@ -29,7 +29,7 @@ public class RawFileFingerprinterTest extends AbstractClasspathEntryFingerprinte
 
     @Override
     protected File createValidNonEmptyFile() throws IOException {
-        final File file = tempFolder.newFile("Foo.class");
+        File file = tempDir.resolve("Foo.class").toFile();
 
         Files.write("some content", file, StandardCharsets.UTF_8);
         return file;

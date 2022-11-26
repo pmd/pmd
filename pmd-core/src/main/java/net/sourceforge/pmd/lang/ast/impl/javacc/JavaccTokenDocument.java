@@ -31,6 +31,9 @@ public final class JavaccTokenDocument extends TokenDocument<JavaccToken> {
         this.behavior = behavior;
     }
 
+    /**
+     * Overridable configuration of a token document.
+     */
     public static class TokenDocumentBehavior {
 
         public static final TokenDocumentBehavior DEFAULT = new TokenDocumentBehavior(Collections.emptyList());
@@ -43,8 +46,9 @@ public final class JavaccTokenDocument extends TokenDocument<JavaccToken> {
         /**
          * Returns true if the lexer should accumulate the image of MORE
          * tokens into the StringBuilder jjimage. This is useless in our
-         * current implementations. The default returns false, which makes
-         * {@link CharStream#appendSuffix(StringBuilder, int)} a noop.
+         * current implementations, because the image of tokens can be cut
+         * out using text coordinates, so doesn't need to be put into a separate string.
+         * The default returns false, which makes {@link CharStream#appendSuffix(StringBuilder, int)} a noop.
          */
         public boolean useMarkSuffix() {
             return false;

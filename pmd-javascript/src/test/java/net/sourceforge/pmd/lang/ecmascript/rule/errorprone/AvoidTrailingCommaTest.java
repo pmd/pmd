@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.ecmascript.rule.errorprone;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class AvoidTrailingCommaTest extends PmdRuleTst {
+class AvoidTrailingCommaTest extends PmdRuleTst {
     // no additional unit tests
 }

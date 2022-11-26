@@ -4,6 +4,10 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import java.util.Objects;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import net.sourceforge.pmd.annotation.Experimental;
 
 /**
@@ -35,13 +39,13 @@ public final class ASTTypePattern extends AbstractJavaNode implements ASTPattern
     /**
      * Gets the type against which the expression is tested.
      */
-    public ASTType getTypeNode() {
-        return getFirstChildOfType(ASTType.class);
+    public @NonNull ASTType getTypeNode() {
+        return Objects.requireNonNull(firstChild(ASTType.class));
     }
 
     /** Returns the declared variable. */
-    public ASTVariableDeclaratorId getVarId() {
-        return getFirstChildOfType(ASTVariableDeclaratorId.class);
+    public @NonNull ASTVariableDeclaratorId getVarId() {
+        return Objects.requireNonNull(firstChild(ASTVariableDeclaratorId.class));
     }
 
     void bumpParenDepth() {

@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.apex.rule.codestyle;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class FieldDeclarationsShouldBeAtStartTest extends PmdRuleTst {
+class FieldDeclarationsShouldBeAtStartTest extends PmdRuleTst {
     // no additional unit tests
 }

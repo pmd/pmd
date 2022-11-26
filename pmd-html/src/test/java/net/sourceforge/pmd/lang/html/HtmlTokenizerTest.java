@@ -7,15 +7,15 @@ package net.sourceforge.pmd.lang.html;
 
 import java.util.Properties;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.cpd.Tokenizer;
 import net.sourceforge.pmd.cpd.test.CpdTextComparisonTest;
 import net.sourceforge.pmd.lang.html.ast.HtmlTokenizer;
 
-public class HtmlTokenizerTest extends CpdTextComparisonTest {
+class HtmlTokenizerTest extends CpdTextComparisonTest {
 
-    public HtmlTokenizerTest() {
+    HtmlTokenizerTest() {
         super(".html");
     }
 
@@ -30,7 +30,7 @@ public class HtmlTokenizerTest extends CpdTextComparisonTest {
     }
 
     @Test
-    public void testSimpleHtmlFile() {
+    void testSimpleHtmlFile() {
         doTest("SimpleHtmlFile");
     }
 

@@ -41,6 +41,13 @@ public final class StringUtil {
     private StringUtil() {
     }
 
+    public static String inSingleQuotes(String s) {
+        if (s == null) {
+            s = "";
+        }
+        return "'" + s + "'";
+    }
+
 
     /**
      * Returns the (1-based) line number of the character at the given index.

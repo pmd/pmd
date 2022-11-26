@@ -4,29 +4,31 @@
 
 package net.sourceforge.pmd.lang.apex;
 
-import org.junit.Assert;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.contrib.java.lang.system.SystemErrRule;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetLoader;
 
-public class DefaultRulesetTest {
-    @Rule
-    public final SystemErrRule systemErrRule = new SystemErrRule().enableLog().muteForSuccessfulTests();
+import com.github.stefanbirkner.systemlambda.SystemLambda;
+
+class DefaultRulesetTest {
 
     @Test
-    public void loadDefaultRuleset() {
+    void loadDefaultRuleset() {
         RuleSet ruleset = rulesetLoader().loadFromResource("rulesets/apex/ruleset.xml");
-        Assert.assertNotNull(ruleset);
+        assertNotNull(ruleset);
     }
 
     @Test
-    public void loadQuickstartRuleset() {
-        RuleSet ruleset = rulesetLoader().loadFromResource("rulesets/apex/quickstart.xml");
-        Assert.assertNotNull(ruleset);
-        Assert.assertTrue("No Logging expected", systemErrRule.getLog().isEmpty());
+    void loadQuickstartRuleset() throws Exception {
+        String log = SystemLambda.tapSystemErr(() -> {
+            RuleSet ruleset = rulesetLoader().loadFromResource("rulesets/apex/quickstart.xml");
+            assertNotNull(ruleset);
+        });
+        assertTrue(log.isEmpty(), "No Logging expected");
     }
 
     private RuleSetLoader rulesetLoader() {

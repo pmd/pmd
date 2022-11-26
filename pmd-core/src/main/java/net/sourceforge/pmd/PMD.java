@@ -26,15 +26,13 @@ import net.sourceforge.pmd.benchmark.TextTimingReportRenderer;
 import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.benchmark.TimingReport;
 import net.sourceforge.pmd.benchmark.TimingReportRenderer;
-import net.sourceforge.pmd.cache.NoopAnalysisCache;
 import net.sourceforge.pmd.cli.PMDCommandLineInterface;
 import net.sourceforge.pmd.cli.PmdParametersParseResult;
-import net.sourceforge.pmd.cli.internal.CliMessages;
+import net.sourceforge.pmd.internal.LogMessages;
 import net.sourceforge.pmd.internal.Slf4jSimpleConfiguration;
 import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.reporting.ReportStats;
-import net.sourceforge.pmd.reporting.ReportStatsListener;
 import net.sourceforge.pmd.util.datasource.DataSource;
 import net.sourceforge.pmd.util.log.MessageReporter;
 import net.sourceforge.pmd.util.log.internal.SimpleMessageReporter;
@@ -47,7 +45,10 @@ import net.sourceforge.pmd.util.log.internal.SimpleMessageReporter;
  *
  * <p><strong>Warning:</strong> This class is not intended to be instantiated or subclassed. It will
  * be made final in PMD7.
+ *
+ * @deprecated This class is to be removed in PMD 7 in favor of a unified PmdCli entry point. {@link PmdAnalysis} should be used for non-CLI use-cases.
  */
+@Deprecated
 public final class PMD {
 
     // not final, in order to re-initialize logging
@@ -71,46 +72,6 @@ public final class PMD {
     public static final String SUPPRESS_MARKER = PMDConfiguration.DEFAULT_SUPPRESS_MARKER;
 
     private PMD() {
-    }
-
-
-    private static ReportStats runAndReturnStats(PmdAnalysis pmd) {
-        if (pmd.getRulesets().isEmpty()) {
-            return ReportStats.empty();
-        }
-
-        @SuppressWarnings("PMD.CloseResource")
-        ReportStatsListener listener = new ReportStatsListener();
-
-        pmd.addListener(listener);
-
-        try {
-            pmd.performAnalysis();
-        } catch (Exception e) {
-            pmd.getReporter().errorEx("Exception during processing", e);
-            ReportStats stats = listener.getResult();
-            printErrorDetected(1 + stats.getNumErrors());
-            return stats; // should have been closed
-        }
-        ReportStats stats = listener.getResult();
-
-        if (stats.getNumErrors() > 0) {
-            printErrorDetected(stats.getNumErrors());
-        }
-
-        return stats;
-    }
-
-
-    static void encourageToUseIncrementalAnalysis(final PMDConfiguration configuration) {
-        if (!configuration.isIgnoreIncrementalAnalysis()
-            && configuration.getAnalysisCache() instanceof NoopAnalysisCache
-            && log.isWarnEnabled()) {
-            final String version =
-                PMDVersion.isUnknown() || PMDVersion.isSnapshot() ? "latest" : "pmd-" + PMDVersion.VERSION;
-            log.warn("This analysis could be faster, please consider using Incremental Analysis: "
-                            + "https://pmd.github.io/{}/pmd_userdocs_incremental_analysis.html", version);
-        }
     }
 
     /**
@@ -190,20 +151,17 @@ public final class PMD {
             return StatusCode.OK;
         } else if (parseResult.isError()) {
             System.err.println(parseResult.getError().getMessage());
-            System.err.println(CliMessages.runWithHelpFlagMessage());
+            System.err.println(LogMessages.runWithHelpFlagMessage());
             return StatusCode.ERROR;
         }
 
-        PMDConfiguration configuration = Objects.requireNonNull(parseResult.toConfiguration());
+        PMDConfiguration configuration = Objects.requireNonNull(
+            parseResult.toConfiguration()
+        );
         MessageReporter pmdReporter = setupMessageReporter(configuration);
         configuration.setReporter(pmdReporter);
 
         return runPmd(configuration);
-    }
-
-    private static void printErrorDetected(int errors) {
-        String msg = CliMessages.errorDetectedMessage(errors, "PMD");
-        log.error(msg);
     }
 
     /**
@@ -232,8 +190,8 @@ public final class PMD {
                 return StatusCode.ERROR;
             }
             try {
-                ReportStats stats;
-                stats = PMD.runAndReturnStats(pmd);
+                log.debug("Current classpath:\n{}", System.getProperty("java.class.path"));
+                ReportStats stats = pmd.runAndReturnStats();
                 if (pmdReporter.numErrors() > 0) {
                     // processing errors are ignored
                     return StatusCode.ERROR;
@@ -248,7 +206,7 @@ public final class PMD {
 
         } catch (Exception e) {
             pmdReporter.errorEx("Exception while running PMD.", e);
-            printErrorDetected(1);
+            PmdAnalysis.printErrorDetected(pmdReporter, 1);
             return StatusCode.ERROR;
         } finally {
             finishBenchmarker(configuration);
@@ -297,7 +255,9 @@ public final class PMD {
      * Represents status codes that are used as exit codes during CLI runs.
      *
      * @see #runPmd(String[])
+     * @deprecated This class is to be removed in PMD 7 in favor of a unified PmdCli entry point.
      */
+    @Deprecated
     public enum StatusCode {
         /** No errors, no violations. This is exit code {@code 0}. */
         OK(0),

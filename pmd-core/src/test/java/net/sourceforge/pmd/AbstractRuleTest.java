@@ -5,13 +5,13 @@
 package net.sourceforge.pmd;
 
 import static net.sourceforge.pmd.properties.constraints.NumericConstraints.inRange;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.Collections;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.Report.SuppressedViolation;
 import net.sourceforge.pmd.lang.DummyLanguageModule;
@@ -67,32 +67,32 @@ public class AbstractRuleTest {
     }
 
     @Test
-    public void testCreateRV() {
+    void testCreateRV() {
         MyRule r = new MyRule();
         r.setRuleSetName("foo");
         DummyRootNode s = DummyLanguageModule.parse("abc()", "filename");
 
         RuleViolation rv = new ParametricRuleViolation(r, s, r.getMessage());
-        assertEquals("Line number mismatch!", s.getBeginLine(), rv.getBeginLine());
-        assertEquals("Filename mismatch!", s.getTextDocument().getDisplayName(), rv.getFilename());
-        assertEquals("Rule object mismatch!", r, rv.getRule());
-        assertEquals("Rule msg mismatch!", r.getMessage(), rv.getDescription());
-        assertEquals("RuleSet name mismatch!", r.getRuleSetName(), rv.getRule().getRuleSetName());
+        assertEquals(1, rv.getBeginLine(), "Line number mismatch!");
+        assertEquals("filename", rv.getFilename(), "Filename mismatch!");
+        assertEquals(r, rv.getRule(), "Rule object mismatch!");
+        assertEquals("my rule msg", rv.getDescription(), "Rule msg mismatch!");
+        assertEquals("foo", rv.getRule().getRuleSetName(), "RuleSet name mismatch!");
     }
 
     @Test
-    public void testCreateRV2() {
+    void testCreateRV2() {
         MyRule r = new MyRule();
         DummyRootNode s = DummyLanguageModule.parse("abc()", "filename");
         RuleViolation rv = new ParametricRuleViolation(r, s, "specificdescription");
-        assertEquals("Line number mismatch!", s.getBeginLine(), rv.getBeginLine());
-        assertEquals("Filename mismatch!", "filename", rv.getFilename());
-        assertEquals("Rule object mismatch!", r, rv.getRule());
-        assertEquals("Rule description mismatch!", "specificdescription", rv.getDescription());
+        assertEquals(1, rv.getBeginLine(), "Line number mismatch!");
+        assertEquals("filename", rv.getFilename(), "Filename mismatch!");
+        assertEquals(r, rv.getRule(), "Rule object mismatch!");
+        assertEquals("specificdescription", rv.getDescription(), "Rule description mismatch!");
     }
 
     @Test
-    public void testRuleWithVariableInMessage() throws Exception {
+    void testRuleWithVariableInMessage() {
         MyRule r = new MyRule() {
             @Override
             public void apply(Node target, RuleContext ctx) {
@@ -109,7 +109,7 @@ public class AbstractRuleTest {
     }
 
     @Test
-    public void testRuleSuppress() {
+    void testRuleSuppress() {
         DummyRootNode n = DummyLanguageModule.parse("abc()", "filename")
             .withNoPmdComments(Collections.singletonMap(1, "ohio"));
         RuleViolation violation = DefaultRuleViolationFactory.defaultInstance().createViolation(new MyRule(), n, n.getReportLocation(), "specificdescription");
@@ -119,82 +119,82 @@ public class AbstractRuleTest {
     }
 
     @Test
-    public void testEquals1() {
+    void testEquals1() {
         MyRule r = new MyRule();
-        assertFalse("A rule is never equals to null!", r.equals(null));
+        assertFalse(r.equals(null), "A rule is never equals to null!");
     }
 
     @Test
-    public void testEquals2() {
+    void testEquals2() {
         MyRule r = new MyRule();
-        assertEquals("A rule must be equals to itself", r, r);
+        assertEquals(r, r, "A rule must be equals to itself");
     }
 
     @Test
-    public void testEquals3() {
+    void testEquals3() {
         MyRule r1 = new MyRule();
         MyRule r2 = new MyRule();
-        assertEquals("Two instances of the same rule are equal", r1, r2);
-        assertEquals("Hashcode for two instances of the same rule must be equal", r1.hashCode(), r2.hashCode());
+        assertEquals(r1, r2, "Two instances of the same rule are equal");
+        assertEquals(r1.hashCode(), r2.hashCode(), "Hashcode for two instances of the same rule must be equal");
     }
 
     @Test
-    public void testEquals4() {
+    void testEquals4() {
         MyRule myRule = new MyRule();
-        assertFalse("A rule cannot be equal to an object of another class", myRule.equals("MyRule"));
+        assertFalse(myRule.equals("MyRule"), "A rule cannot be equal to an object of another class");
     }
 
     @Test
-    public void testEquals5() {
+    void testEquals5() {
         MyRule myRule = new MyRule();
         MyOtherRule myOtherRule = new MyOtherRule();
-        assertFalse("Two rules from different classes cannot be equal", myRule.equals(myOtherRule));
+        assertFalse(myRule.equals(myOtherRule), "Two rules from different classes cannot be equal");
     }
 
     @Test
-    public void testEquals6() {
+    void testEquals6() {
         MyRule r1 = new MyRule();
         MyRule r2 = new MyRule();
         r2.setName("MyRule2");
-        assertFalse("Rules with different names cannot be equal", r1.equals(r2));
+        assertFalse(r1.equals(r2), "Rules with different names cannot be equal");
     }
 
     @Test
-    public void testEquals7() {
+    void testEquals7() {
         MyRule r1 = new MyRule();
         MyRule r2 = new MyRule();
         r2.setPriority(RulePriority.HIGH);
-        assertFalse("Rules with different priority levels cannot be equal", r1.equals(r2));
+        assertFalse(r1.equals(r2), "Rules with different priority levels cannot be equal");
     }
 
     @Test
-    public void testEquals8() {
+    void testEquals8() {
         MyRule r1 = new MyRule();
         r1.setProperty(MyRule.XPATH_PROPERTY, "something");
         MyRule r2 = new MyRule();
         r2.setProperty(MyRule.XPATH_PROPERTY, "something else");
-        assertFalse("Rules with different properties values cannot be equal", r1.equals(r2));
+        assertFalse(r1.equals(r2), "Rules with different properties values cannot be equal");
     }
 
     @Test
-    public void testEquals9() {
+    void testEquals9() {
         MyRule r1 = new MyRule();
         MyRule r2 = new MyRule();
         r2.setProperty(MyRule.XPATH_PROPERTY, "something else");
-        assertFalse("Rules with different properties cannot be equal", r1.equals(r2));
+        assertFalse(r1.equals(r2), "Rules with different properties cannot be equal");
     }
 
     @Test
-    public void testEquals10() {
+    void testEquals10() {
         MyRule r1 = new MyRule();
         MyRule r2 = new MyRule();
         r2.setMessage("another message");
-        assertEquals("Rules with different messages are still equal", r1, r2);
-        assertEquals("Rules that are equal must have the an equal hashcode", r1.hashCode(), r2.hashCode());
+        assertEquals(r1, r2, "Rules with different messages are still equal");
+        assertEquals(r1.hashCode(), r2.hashCode(), "Rules that are equal must have the an equal hashcode");
     }
 
     @Test
-    public void testDeepCopyRule() {
+    void testDeepCopyRule() {
         MyRule r1 = new MyRule();
         MyRule r2 = (MyRule) r1.deepCopy();
         assertEquals(r1.getDescription(), r2.getDescription());

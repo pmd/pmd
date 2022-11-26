@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.apex.rule.security;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class ApexXSSFromEscapeFalseTest extends PmdRuleTst {
+class ApexXSSFromEscapeFalseTest extends PmdRuleTst {
     // no additional unit tests
 }

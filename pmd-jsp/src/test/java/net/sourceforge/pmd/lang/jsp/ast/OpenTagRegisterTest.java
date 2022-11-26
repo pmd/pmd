@@ -4,19 +4,19 @@
 
 package net.sourceforge.pmd.lang.jsp.ast;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class OpenTagRegisterTest {
+class OpenTagRegisterTest {
 
     private OpenTagRegister tagList;
 
     private int elmId = 0;
 
-    @Before
+    @BeforeEach
     public void newRegister() {
         tagList = new OpenTagRegister();
     }
@@ -25,7 +25,7 @@ public class OpenTagRegisterTest {
      * &lt;a&gt; &lt;b&gt; &lt;/a&gt;
      */
     @Test
-    public void testSimpleNesting() {
+    void testSimpleNesting() {
         ASTElement elm = element("a");
         ASTElement elm2 = element("b");
 
@@ -41,7 +41,7 @@ public class OpenTagRegisterTest {
      * &lt;a&gt; &lt;b&gt; &lt;b&gt; &lt;/a&gt;
      */
     @Test
-    public void doubleNesting() {
+    void doubleNesting() {
         ASTElement elm = element("a");
         ASTElement elm2 = element("b");
         ASTElement elm3 = element("b");
@@ -60,7 +60,7 @@ public class OpenTagRegisterTest {
      * &lt;x&gt; &lt;a&gt; &lt;b&gt; &lt;b&gt; &lt;/x&gt; &lt;/a&gt; &lt;/x&gt;
      */
     @Test
-    public void unopenedTags() {
+    void unopenedTags() {
         ASTElement elm = element("x");
         ASTElement elm2 = element("a");
         ASTElement elm3 = element("b");
@@ -86,7 +86,7 @@ public class OpenTagRegisterTest {
      *
      */
     @Test
-    public void interleavedTags() {
+    void interleavedTags() {
         ASTElement elm = element("x");
         ASTElement elm2 = element("a");
         ASTElement elm3 = element("b");
@@ -112,7 +112,7 @@ public class OpenTagRegisterTest {
      * &lt;a&gt; &lt;x&gt; &lt;a&gt; &lt;b&gt; &lt;b&gt; &lt;/z&gt; &lt;/a&gt; &lt;/x&gt;
      */
     @Test
-    public void openedIsolatedTag() {
+    void openedIsolatedTag() {
         ASTElement a = element("a");
         ASTElement x = element("x");
         ASTElement a2 = element("a");

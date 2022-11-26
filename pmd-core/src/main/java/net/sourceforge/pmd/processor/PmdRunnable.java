@@ -24,6 +24,7 @@ import net.sourceforge.pmd.lang.ast.Parser;
 import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.ast.SemanticErrorReporter;
+import net.sourceforge.pmd.lang.ast.SemanticException;
 import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
@@ -124,7 +125,7 @@ abstract class PmdRunnable implements Runnable {
                                TextDocument textDocument,
                                RuleSets ruleSets) throws FileAnalysisException {
 
-        SemanticErrorReporter reporter = SemanticErrorReporter.reportToLogger(configuration.getReporter(), LOG);
+        SemanticErrorReporter reporter = SemanticErrorReporter.reportToLogger(configuration.getReporter());
         ParserTask task = new ParserTask(
             textDocument,
             reporter,
@@ -142,9 +143,10 @@ abstract class PmdRunnable implements Runnable {
 
         RootNode rootNode = parse(parser, task);
 
-        if (reporter.hasError()) {
-            reporter.info(rootNode, "Errors occurred in file, skipping rule analysis");
-            return;
+        SemanticException semanticError = reporter.getFirstError();
+        if (semanticError != null) {
+            // cause a processing error to be reported and rule analysis to be skipped
+            throw semanticError;
         }
 
         ruleSets.apply(rootNode, listener);

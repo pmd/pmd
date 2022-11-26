@@ -150,7 +150,8 @@ public class TournamentTest extends TestCase {
         ]]></code>
     </test-code>
 
-    <test-code useAuxClasspath="false">
+    <!-- it's not possible anymore to test without auxclasspath. junit4 is always on the test auxclasspath -->
+    <test-code disabled="true">
         <description>JUnit 4 test detection without proper auxclasspath</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>7</expected-linenumbers>

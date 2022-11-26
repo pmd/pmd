@@ -16,7 +16,7 @@ public class RuleSetFactoryTest extends AbstractRuleSetFactoryTest {
     @Test
     public void testExclusionOfUselessParantheses() {
         RuleSet ruleset = new RuleSetLoader().loadFromString("",
-                "<?xml version=\"1.0\"?>\n" + "<ruleset name=\"Custom ruleset for tests\"\n"
+                                                             "<?xml version=\"1.0\"?>\n" + "<ruleset name=\"Custom ruleset for tests\"\n"
                         + "    xmlns=\"http://pmd.sourceforge.net/ruleset/2.0.0\"\n"
                         + "    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
                         + "    xsi:schemaLocation=\"http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd\">\n"

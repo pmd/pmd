@@ -367,6 +367,7 @@
         <replaceregexp>
             <regexp pattern="(public )?interface ${constants-itf-name} \{" />
             <substitution expression="/** Token kinds ({@link ${ast-impl-package}.JavaccToken#kind}) for this language. */${line.separator}
+@net.sourceforge.pmd.annotation.InternalApi${line.separator}
 public final class ${token-constants-name} \{${line.separator}
     private ${token-constants-name}() { /* Utility class */ }${line.separator}
 "/>

@@ -7,12 +7,13 @@ package net.sourceforge.pmd;
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.empty;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,13 +21,14 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collections;
+import java.util.List;
 import java.util.Properties;
 
-import org.junit.Assert;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import net.sourceforge.pmd.cache.FileAnalysisCache;
 import net.sourceforge.pmd.cache.NoopAnalysisCache;
@@ -34,64 +36,61 @@ import net.sourceforge.pmd.renderers.CSVRenderer;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.util.ClasspathClassLoader;
 
-public class PmdConfigurationTest {
-
-    @Rule
-    public TemporaryFolder folder = new TemporaryFolder();
+class PmdConfigurationTest {
 
     @Test
-    public void testSuppressMarker() {
+    void testSuppressMarker() {
         PMDConfiguration configuration = new PMDConfiguration();
-        assertEquals("Default suppress marker", PMDConfiguration.DEFAULT_SUPPRESS_MARKER, configuration.getSuppressMarker());
+        assertEquals(PMDConfiguration.DEFAULT_SUPPRESS_MARKER, configuration.getSuppressMarker(), "Default suppress marker");
         configuration.setSuppressMarker("CUSTOM_MARKER");
-        assertEquals("Changed suppress marker", "CUSTOM_MARKER", configuration.getSuppressMarker());
+        assertEquals("CUSTOM_MARKER", configuration.getSuppressMarker(), "Changed suppress marker");
     }
 
     @Test
-    public void testThreads() {
+    void testThreads() {
         PMDConfiguration configuration = new PMDConfiguration();
-        assertEquals("Default threads", Runtime.getRuntime().availableProcessors(), configuration.getThreads());
+        assertEquals(Runtime.getRuntime().availableProcessors(), configuration.getThreads(), "Default threads");
         configuration.setThreads(0);
-        assertEquals("Changed threads", 0, configuration.getThreads());
+        assertEquals(0, configuration.getThreads(), "Changed threads");
     }
 
     @Test
-    public void testClassLoader() {
+    void testClassLoader() {
         PMDConfiguration configuration = new PMDConfiguration();
-        assertEquals("Default ClassLoader", PMDConfiguration.class.getClassLoader(), configuration.getClassLoader());
+        assertEquals(PMDConfiguration.class.getClassLoader(), configuration.getClassLoader(), "Default ClassLoader");
         configuration.prependAuxClasspath("some.jar");
-        assertEquals("Prepended ClassLoader class", ClasspathClassLoader.class,
-                configuration.getClassLoader().getClass());
+        assertEquals(ClasspathClassLoader.class, configuration.getClassLoader().getClass(),
+                "Prepended ClassLoader class");
         URL[] urls = ((ClasspathClassLoader) configuration.getClassLoader()).getURLs();
-        assertEquals("urls length", 1, urls.length);
-        assertTrue("url[0]", urls[0].toString().endsWith("/some.jar"));
-        assertEquals("parent classLoader", PMDConfiguration.class.getClassLoader(),
-                configuration.getClassLoader().getParent());
+        assertEquals(1, urls.length, "urls length");
+        assertTrue(urls[0].toString().endsWith("/some.jar"), "url[0]");
+        assertEquals(PMDConfiguration.class.getClassLoader(), configuration.getClassLoader().getParent(),
+                "parent classLoader");
         configuration.setClassLoader(null);
-        assertEquals("Revert to default ClassLoader", PMDConfiguration.class.getClassLoader(),
-                configuration.getClassLoader());
+        assertEquals(PMDConfiguration.class.getClassLoader(), configuration.getClassLoader(),
+                "Revert to default ClassLoader");
     }
 
     @Test
-    public void auxClasspathWithRelativeFileEmpty() {
+    void auxClasspathWithRelativeFileEmpty() {
         String relativeFilePath = "src/test/resources/net/sourceforge/pmd/cli/auxclasspath-empty.cp";
         PMDConfiguration configuration = new PMDConfiguration();
         configuration.prependAuxClasspath("file:" + relativeFilePath);
         URL[] urls = ((ClasspathClassLoader) configuration.getClassLoader()).getURLs();
-        Assert.assertEquals(0, urls.length);
+        assertEquals(0, urls.length);
     }
 
     @Test
-    public void auxClasspathWithRelativeFileEmpty2() {
+    void auxClasspathWithRelativeFileEmpty2() {
         String relativeFilePath = "./src/test/resources/net/sourceforge/pmd/cli/auxclasspath-empty.cp";
         PMDConfiguration configuration = new PMDConfiguration();
         configuration.prependAuxClasspath("file:" + relativeFilePath);
         URL[] urls = ((ClasspathClassLoader) configuration.getClassLoader()).getURLs();
-        Assert.assertEquals(0, urls.length);
+        assertEquals(0, urls.length);
     }
 
     @Test
-    public void auxClasspathWithRelativeFile() throws URISyntaxException {
+    void auxClasspathWithRelativeFile() throws URISyntaxException {
         final String FILE_SCHEME = "file";
 
         String currentWorkingDirectory = new File("").getAbsoluteFile().toURI().getPath();
@@ -113,21 +112,21 @@ public class PmdConfigurationTest {
             new URI(FILE_SCHEME, null, currentWorkingDirectory, null),
             new URI(FILE_SCHEME, null, currentWorkingDirectory + "relative source dir/bar", null),
         };
-        Assert.assertArrayEquals(expectedUris, uris);
+        assertArrayEquals(expectedUris, uris);
     }
 
     @Test
-    public void testRuleSetsLegacy() {
+    void testRuleSetsLegacy() {
         PMDConfiguration configuration = new PMDConfiguration();
-        assertNull("Default RuleSets", configuration.getRuleSets());
+        assertNull(configuration.getRuleSets(), "Default RuleSets");
         configuration.setRuleSets("/rulesets/basic.xml");
-        assertEquals("Changed RuleSets", "/rulesets/basic.xml", configuration.getRuleSets());
+        assertEquals("/rulesets/basic.xml", configuration.getRuleSets(), "Changed RuleSets");
         configuration.setRuleSets((String) null);
         assertNull(configuration.getRuleSets());
     }
 
     @Test
-    public void testRuleSets() {
+    void testRuleSets() {
         PMDConfiguration configuration = new PMDConfiguration();
         assertThat(configuration.getRuleSetPaths(), empty());
         configuration.setRuleSets(listOf("/rulesets/basic.xml"));
@@ -142,151 +141,156 @@ public class PmdConfigurationTest {
     }
 
     @Test
-    public void testMinimumPriority() {
+    void testMinimumPriority() {
         PMDConfiguration configuration = new PMDConfiguration();
-        assertEquals("Default minimum priority", RulePriority.LOW, configuration.getMinimumPriority());
+        assertEquals(RulePriority.LOW, configuration.getMinimumPriority(), "Default minimum priority");
         configuration.setMinimumPriority(RulePriority.HIGH);
-        assertEquals("Changed minimum priority", RulePriority.HIGH, configuration.getMinimumPriority());
+        assertEquals(RulePriority.HIGH, configuration.getMinimumPriority(), "Changed minimum priority");
     }
 
     @Test
-    public void testSourceEncoding() {
+    void testSourceEncoding() {
         PMDConfiguration configuration = new PMDConfiguration();
-        assertEquals("Default source encoding", System.getProperty("file.encoding"), configuration.getSourceEncoding().name());
+        assertEquals(System.getProperty("file.encoding"), configuration.getSourceEncoding().name(), "Default source encoding");
         configuration.setSourceEncoding(StandardCharsets.UTF_16LE.name());
-        assertEquals("Changed source encoding", StandardCharsets.UTF_16LE, configuration.getSourceEncoding());
+        assertEquals(StandardCharsets.UTF_16LE, configuration.getSourceEncoding(), "Changed source encoding");
     }
 
     @Test
-    public void testInputPaths() {
+    void testInputPaths() {
         PMDConfiguration configuration = new PMDConfiguration();
-        assertEquals("Default input paths", null, configuration.getInputPaths());
+        assertThat(configuration.getInputPathList(), empty());
         configuration.setInputPaths("a,b,c");
-        assertEquals("Changed input paths", "a,b,c", configuration.getInputPaths());
+        List<Path> expected = listOf(
+            Paths.get("a"), Paths.get("b"), Paths.get("c")
+        );
+        assertEquals(expected, configuration.getInputPathList(), "Changed input paths");
     }
 
     @Test
-    public void testReportShortNames() {
+    void testReportShortNames() {
         PMDConfiguration configuration = new PMDConfiguration();
-        assertEquals("Default report short names", false, configuration.isReportShortNames());
+        assertEquals(false, configuration.isReportShortNames(), "Default report short names");
         configuration.setReportShortNames(true);
-        assertEquals("Changed report short names", true, configuration.isReportShortNames());
+        assertEquals(true, configuration.isReportShortNames(), "Changed report short names");
     }
 
     @Test
-    public void testReportFormat() {
+    void testReportFormat() {
         PMDConfiguration configuration = new PMDConfiguration();
-        assertEquals("Default report format", null, configuration.getReportFormat());
+        assertEquals(null, configuration.getReportFormat(), "Default report format");
         configuration.setReportFormat("csv");
-        assertEquals("Changed report format", "csv", configuration.getReportFormat());
+        assertEquals("csv", configuration.getReportFormat(), "Changed report format");
     }
 
     @Test
-    public void testCreateRenderer() {
+    void testCreateRenderer() {
         PMDConfiguration configuration = new PMDConfiguration();
         configuration.setReportFormat("csv");
         Renderer renderer = configuration.createRenderer();
-        assertEquals("Renderer class", CSVRenderer.class, renderer.getClass());
-        assertEquals("Default renderer show suppressed violations", false, renderer.isShowSuppressedViolations());
+        assertEquals(CSVRenderer.class, renderer.getClass(), "Renderer class");
+        assertEquals(false, renderer.isShowSuppressedViolations(), "Default renderer show suppressed violations");
 
         configuration.setShowSuppressedViolations(true);
         renderer = configuration.createRenderer();
-        assertEquals("Renderer class", CSVRenderer.class, renderer.getClass());
-        assertEquals("Changed renderer show suppressed violations", true, renderer.isShowSuppressedViolations());
+        assertEquals(CSVRenderer.class, renderer.getClass(), "Renderer class");
+        assertEquals(true, renderer.isShowSuppressedViolations(), "Changed renderer show suppressed violations");
     }
 
     @Test
-    public void testReportFile() {
+    void testReportFile() {
         PMDConfiguration configuration = new PMDConfiguration();
-        assertEquals("Default report file", null, configuration.getReportFile());
+        assertEquals(null, configuration.getReportFile(), "Default report file");
         configuration.setReportFile("somefile");
-        assertEquals("Changed report file", "somefile", configuration.getReportFile());
+        assertEquals("somefile", configuration.getReportFile(), "Changed report file");
     }
 
     @Test
-    public void testShowSuppressedViolations() {
+    void testShowSuppressedViolations() {
         PMDConfiguration configuration = new PMDConfiguration();
-        assertEquals("Default show suppressed violations", false, configuration.isShowSuppressedViolations());
+        assertEquals(false, configuration.isShowSuppressedViolations(), "Default show suppressed violations");
         configuration.setShowSuppressedViolations(true);
-        assertEquals("Changed show suppressed violations", true, configuration.isShowSuppressedViolations());
+        assertEquals(true, configuration.isShowSuppressedViolations(), "Changed show suppressed violations");
     }
 
     @Test
-    public void testReportProperties() {
+    void testReportProperties() {
         PMDConfiguration configuration = new PMDConfiguration();
-        assertEquals("Default report properties size", 0, configuration.getReportProperties().size());
+        assertEquals(0, configuration.getReportProperties().size(), "Default report properties size");
         configuration.getReportProperties().put("key", "value");
-        assertEquals("Changed report properties size", 1, configuration.getReportProperties().size());
-        assertEquals("Changed report properties value", "value", configuration.getReportProperties().get("key"));
+        assertEquals(1, configuration.getReportProperties().size(), "Changed report properties size");
+        assertEquals("value", configuration.getReportProperties().get("key"), "Changed report properties value");
         configuration.setReportProperties(new Properties());
-        assertEquals("Replaced report properties size", 0, configuration.getReportProperties().size());
+        assertEquals(0, configuration.getReportProperties().size(), "Replaced report properties size");
     }
 
     @Test
-    public void testDebug() {
+    void testDebug() {
         PMDConfiguration configuration = new PMDConfiguration();
-        assertEquals("Default debug", false, configuration.isDebug());
+        assertEquals(false, configuration.isDebug(), "Default debug");
         configuration.setDebug(true);
-        assertEquals("Changed debug", true, configuration.isDebug());
+        assertEquals(true, configuration.isDebug(), "Changed debug");
     }
 
     @Test
-    public void testStressTest() {
+    void testStressTest() {
         PMDConfiguration configuration = new PMDConfiguration();
-        assertEquals("Default stress test", false, configuration.isStressTest());
+        assertEquals(false, configuration.isStressTest(), "Default stress test");
         configuration.setStressTest(true);
-        assertEquals("Changed stress test", true, configuration.isStressTest());
+        assertEquals(true, configuration.isStressTest(), "Changed stress test");
     }
 
     @Test
-    public void testBenchmark() {
+    void testBenchmark() {
         PMDConfiguration configuration = new PMDConfiguration();
-        assertEquals("Default benchmark", false, configuration.isBenchmark());
+        assertEquals(false, configuration.isBenchmark(), "Default benchmark");
         configuration.setBenchmark(true);
-        assertEquals("Changed benchmark", true, configuration.isBenchmark());
+        assertEquals(true, configuration.isBenchmark(), "Changed benchmark");
     }
 
     @Test
-    public void testAnalysisCache() throws IOException {
+    void testAnalysisCache(@TempDir Path folder) throws IOException {
         final PMDConfiguration configuration = new PMDConfiguration();
-        assertNotNull("Default cache is null", configuration.getAnalysisCache());
-        assertTrue("Default cache is not a noop", configuration.getAnalysisCache() instanceof NoopAnalysisCache);
+        assertNotNull(configuration.getAnalysisCache(), "Default cache is null");
+        assertTrue(configuration.getAnalysisCache() instanceof NoopAnalysisCache, "Default cache is not a noop");
         configuration.setAnalysisCache(null);
-        assertNotNull("Default cache was set to null", configuration.getAnalysisCache());
+        assertNotNull(configuration.getAnalysisCache(), "Default cache was set to null");
 
-        final File cacheFile = folder.newFile();
+        final File cacheFile = folder.resolve("pmd-cachefile").toFile();
+        assertTrue(cacheFile.createNewFile());
         final FileAnalysisCache analysisCache = new FileAnalysisCache(cacheFile);
         configuration.setAnalysisCache(analysisCache);
-        assertSame("Configured cache not stored", analysisCache, configuration.getAnalysisCache());
+        assertSame(analysisCache, configuration.getAnalysisCache(), "Configured cache not stored");
     }
 
     @Test
-    public void testAnalysisCacheLocation() {
+    void testAnalysisCacheLocation() {
         final PMDConfiguration configuration = new PMDConfiguration();
 
         configuration.setAnalysisCacheLocation(null);
-        assertNotNull("Null cache location accepted", configuration.getAnalysisCache());
-        assertTrue("Null cache location accepted", configuration.getAnalysisCache() instanceof NoopAnalysisCache);
+        assertNotNull(configuration.getAnalysisCache(), "Null cache location accepted");
+        assertTrue(configuration.getAnalysisCache() instanceof NoopAnalysisCache, "Null cache location accepted");
 
         configuration.setAnalysisCacheLocation("pmd.cache");
-        assertNotNull("Not null cache location produces null cache", configuration.getAnalysisCache());
-        assertTrue("File cache location doesn't produce a file cache",
-                configuration.getAnalysisCache() instanceof FileAnalysisCache);
+        assertNotNull(configuration.getAnalysisCache(), "Not null cache location produces null cache");
+        assertTrue(configuration.getAnalysisCache() instanceof FileAnalysisCache,
+                "File cache location doesn't produce a file cache");
     }
 
 
     @Test
-    public void testIgnoreIncrementalAnalysis() throws IOException {
+    void testIgnoreIncrementalAnalysis(@TempDir Path folder) throws IOException {
         final PMDConfiguration configuration = new PMDConfiguration();
 
         // set dummy cache location
-        final File cacheFile = folder.newFile();
+        final File cacheFile = folder.resolve("pmd-cachefile").toFile();
+        assertTrue(cacheFile.createNewFile());
         final FileAnalysisCache analysisCache = new FileAnalysisCache(cacheFile);
         configuration.setAnalysisCache(analysisCache);
-        assertNotNull("Null cache location accepted", configuration.getAnalysisCache());
-        assertFalse("Non null cache location, cache should not be noop", configuration.getAnalysisCache() instanceof NoopAnalysisCache);
+        assertNotNull(configuration.getAnalysisCache(), "Null cache location accepted");
+        assertFalse(configuration.getAnalysisCache() instanceof NoopAnalysisCache, "Non null cache location, cache should not be noop");
 
         configuration.setIgnoreIncrementalAnalysis(true);
-        assertTrue("Ignoring incremental analysis should turn the cache into a noop", configuration.getAnalysisCache() instanceof NoopAnalysisCache);
+        assertTrue(configuration.getAnalysisCache() instanceof NoopAnalysisCache, "Ignoring incremental analysis should turn the cache into a noop");
     }
 }

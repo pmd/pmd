@@ -14,6 +14,7 @@ import net.sourceforge.pmd.util.datasource.internal.AbstractDataSource;
 /**
  * DataSource implementation to read data from an entry in a zip or jar file.
  */
+@Deprecated
 public class ZipDataSource extends AbstractDataSource {
     private final ZipFile zipFile;
     private final ZipEntry zipEntry;

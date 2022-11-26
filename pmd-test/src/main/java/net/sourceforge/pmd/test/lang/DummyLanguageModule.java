@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.test.lang;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.AbstractPmdLanguageVersionHandler;
 import net.sourceforge.pmd.lang.BaseLanguageModule;
 import net.sourceforge.pmd.lang.LanguageRegistry;
@@ -20,7 +21,12 @@ import net.sourceforge.pmd.test.lang.ast.DummyNode;
 
 /**
  * Dummy language used for testing PMD.
+ *
+ * @deprecated Don't use this directly. We can probably remove this in favour of plaintextlanguage
+ *  when https://github.com/pmd/pmd/issues/3918 is merged
  */
+@Deprecated
+@InternalApi
 public class DummyLanguageModule extends BaseLanguageModule {
 
     public static final String NAME = "Dummy";
@@ -40,7 +46,7 @@ public class DummyLanguageModule extends BaseLanguageModule {
     }
 
     public static DummyLanguageModule getInstance() {
-        return (DummyLanguageModule) LanguageRegistry.getLanguage(NAME);
+        return (DummyLanguageModule) LanguageRegistry.PMD.getLanguageByFullName(NAME);
     }
 
     public static DummyRootNode parse(String code, String filename) {

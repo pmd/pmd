@@ -159,6 +159,20 @@ public final class ApexQualifiedName {
     }
 
 
+    static ApexQualifiedName ofOuterEnum(ASTUserEnum astUserEnum) {
+        String ns = astUserEnum.getNamespace();
+        String[] classes = {astUserEnum.getImage()};
+        return new ApexQualifiedName(StringUtils.isEmpty(ns) ? "c" : ns, classes, null);
+    }
+
+
+    static ApexQualifiedName ofNestedEnum(ApexQualifiedName parent, ASTUserEnum astUserEnum) {
+        String[] classes = Arrays.copyOf(parent.classes, parent.classes.length + 1);
+        classes[classes.length - 1] = astUserEnum.getImage();
+        return new ApexQualifiedName(parent.nameSpace, classes, null);
+    }
+
+
     private static String getOperationString(ASTMethod node) {
         StringBuilder sb = new StringBuilder();
         sb.append(node.getImage()).append('(');
@@ -182,6 +196,14 @@ public final class ApexQualifiedName {
 
 
     static ApexQualifiedName ofMethod(ASTMethod node) {
+        // Check first, as enum must be innermost potential parent
+        ASTUserEnum enumParent = node.ancestors(ASTUserEnum.class).first();
+        if (enumParent != null) {
+            ApexQualifiedName baseName = enumParent.getQualifiedName();
+
+            return new ApexQualifiedName(baseName.nameSpace, baseName.classes, getOperationString(node));
+        }
+
         ASTUserClassOrInterface<?> parent = node.ancestors(ASTUserClassOrInterface.class).firstOrThrow();
         if (parent instanceof ASTUserTrigger) {
             ASTUserTrigger trigger = (ASTUserTrigger) parent;
