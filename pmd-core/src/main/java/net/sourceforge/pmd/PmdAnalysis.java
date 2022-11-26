@@ -35,6 +35,7 @@ import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.processor.AbstractPMDProcessor;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
+import net.sourceforge.pmd.reporting.ListenerInitializer;
 import net.sourceforge.pmd.reporting.ReportStats;
 import net.sourceforge.pmd.reporting.ReportStatsListener;
 import net.sourceforge.pmd.util.ClasspathClassLoader;
@@ -285,15 +286,17 @@ public final class PmdAnalysis implements AutoCloseable {
                                                          GlobalAnalysisListener.tee(listeners),
                                                          GlobalAnalysisListener.tee(extraListeners),
                                                          cacheListener));
+            
+            // Initialize listeners
+            try (ListenerInitializer initializer = listener.initializer()) {
+                initializer.setNumberOfFilesToAnalyze(textFiles.size());
+            }
         } catch (Exception e) {
             reporter.errorEx("Exception while initializing analysis listeners", e);
             throw new RuntimeException("Exception while initializing analysis listeners", e);
         }
 
         try (TimedOperation ignored = TimeTracker.startOperation(TimedOperationCategory.FILE_PROCESSING)) {
-            // Notify analysis is starting with so many files collected
-            listener.initializer().setNumberOfFilesToAnalyze(textFiles.size());
-
             for (final Rule rule : removeBrokenRules(rulesets)) {
                 // todo Just like we throw for invalid properties, "broken rules"
                 // shouldn't be a "config error". This is the only instance of
